@@ -1,0 +1,110 @@
+{
+	"name": "@tylerbu/cli",
+	"version": "0.2.1",
+	"description": "Tyler Butler's personal CLI.",
+	"keywords": ["oclif"],
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/cli/",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/cli"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		}
+	},
+	"types": "esm/index.d.ts",
+	"bin": {
+		"tbu": "./bin/run.js"
+	},
+	"files": ["/bin", "/esm", "/oclif.manifest.json"],
+	"scripts": {
+		"build": "fluid-build . --task build",
+		"check": "concurrently npm:check:format npm:check:snapshot",
+		"check:format": "biome check . --linter-enabled=false",
+		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/_snapshots/commands.json",
+		"clean": "concurrently npm:clean:build npm:clean:manifest",
+		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
+		"clean:manifest": "rimraf oclif.manifest.json",
+		"command-snapshots": "./bin/dev.js snapshot:generate --filepath test/commands/_snapshots/commands.json",
+		"compile": "tsc --project ./tsconfig.json",
+		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
+		"full": "fluid-build . --task full",
+		"generate": "concurrently npm:command-snapshots",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --apply",
+		"manifest": "oclif manifest",
+		"postpack": "npm run clean:manifest",
+		"readme": "oclif readme --multi --no-aliases",
+		"sort-package-json": "sort-package-json",
+		"test:mocha": "mocha --forbid-only \"test/**/*.test.ts\""
+	},
+	"oclif": {
+		"additionalHelpFlags": ["-h"],
+		"additionalVersionFlags": ["-V"],
+		"bin": "tbu",
+		"commands": "./esm/commands",
+		"devPlugins": ["@oclif/plugin-command-snapshot"],
+		"dirname": "tbu",
+		"plugins": [
+			"@oclif/plugin-help",
+			"@oclif/plugin-autocomplete",
+			"@oclif/plugin-commands",
+			"@oclif/plugin-not-found",
+			"@oclif/plugin-search",
+			"@oclif/plugin-warn-if-update-available"
+		],
+		"topicSeparator": " ",
+		"topics": {
+			"git": {
+				"description": "Git-related commands."
+			}
+		}
+	},
+	"dependencies": {
+		"@oclif/core": "^3.26.6",
+		"@oclif/plugin-autocomplete": "^3.0.18",
+		"@oclif/plugin-commands": "^3.3.4",
+		"@oclif/plugin-help": "^6.0.22",
+		"@oclif/plugin-not-found": "^3.1.9",
+		"@oclif/plugin-plugins": "^5.0.21",
+		"@oclif/plugin-search": "^1.0.24",
+		"@oclif/plugin-warn-if-update-available": "^3.0.19",
+		"@tylerbu/cli-api": "workspace:^",
+		"chalk": "^5.3.0",
+		"concurrently": "^8.2.2",
+		"debug": "^4.3.4",
+		"simple-git": "^3.24.0",
+		"strip-ansi": "^7.1.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.7.3",
+		"@oclif/plugin-command-snapshot": "^5.1.9",
+		"@oclif/test": "^3.2.15",
+		"@types/chai": "^4.3.16",
+		"@types/debug": "^4.1.12",
+		"@types/mocha": "^10.0.6",
+		"@types/node": "^20.12.7",
+		"chai": "^4.4.1",
+		"mocha": "^10.4.0",
+		"oclif": "^4.10.10",
+		"rimraf": "^5.0.7",
+		"sort-package-json": "2.10.0",
+		"ts-node": "^10.9.2",
+		"tslib": "^2.6.2",
+		"type-fest": "^4.18.2",
+		"typescript": "~5.4.5"
+	},
+	"packageManager": "pnpm@9.0.4+sha256.caa915eaae9d9aefccf50ee8aeda25a2f8684d8f9d5c6e367eaf176d97c1f89e",
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

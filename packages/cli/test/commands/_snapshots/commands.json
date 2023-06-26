@@ -1,0 +1,104 @@
+[
+    {
+        "alias": [],
+        "command": "autocomplete",
+        "flagAliases": [],
+        "flagChars": [
+            "r"
+        ],
+        "flags": [
+            "refresh-cache"
+        ],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "autocomplete:create",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "autocomplete:script",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "commands",
+        "flagAliases": [],
+        "flagChars": [
+            "h",
+            "x"
+        ],
+        "flags": [
+            "columns",
+            "csv",
+            "deprecated",
+            "extended",
+            "filter",
+            "help",
+            "hidden",
+            "json",
+            "no-header",
+            "no-truncate",
+            "output",
+            "sort",
+            "tree"
+        ],
+        "plugin": "@oclif/plugin-commands"
+    },
+    {
+        "alias": [
+            "mtp"
+        ],
+        "command": "git:merge-train:preview",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "git:squish",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "dry-run",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "help",
+        "flagAliases": [],
+        "flagChars": [
+            "n"
+        ],
+        "flags": [
+            "nested-commands"
+        ],
+        "plugin": "@oclif/plugin-help"
+    },
+    {
+        "alias": [],
+        "command": "search",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-search"
+    }
+]
