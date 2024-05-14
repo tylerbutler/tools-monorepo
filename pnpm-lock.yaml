@@ -100,8 +100,8 @@ importers:
         specifier: ^3.2.15
         version: 3.2.15
       '@types/chai':
-        specifier: ^4.3.14
-        version: 4.3.15
+        specifier: ^4.3.16
+        version: 4.3.16
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
@@ -121,7 +121,7 @@ importers:
         specifier: ^4.10.10
         version: 4.10.10
       rimraf:
-        specifier: ^5.0.5
+        specifier: ^5.0.7
         version: 5.0.7
       sort-package-json:
         specifier: 2.10.0
@@ -133,7 +133,7 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       type-fest:
-        specifier: ^4.17.0
+        specifier: ^4.18.2
         version: 4.18.2
       typescript:
         specifier: ~5.4.5
@@ -1301,9 +1301,6 @@ packages:
 
   '@types/cacheable-request@6.0.3':
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
-
-  '@types/chai@4.3.15':
-    resolution: {integrity: sha512-PYVSvyeZqy9++MoSegq88PxoPndWDDLGbJmE/OZnzUk3D4cCRTmA4N6EX3g0GgLVA+vtys7bj4luhkVCglGTkQ==}
 
   '@types/chai@4.3.16':
     resolution: {integrity: sha512-PatH4iOdyh3MyWtmHVFXLWCCIhUbopaltqddG9BzB+gMIzee2MJrvd+jouii9Z3wzQJruGWAm7WOMjgfG8hQlQ==}
@@ -6232,8 +6229,6 @@ snapshots:
       '@types/keyv': 3.1.4
       '@types/node': 20.12.11
       '@types/responselike': 1.0.0
-
-  '@types/chai@4.3.15': {}
 
   '@types/chai@4.3.16': {}
 
