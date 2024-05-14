@@ -110,11 +110,9 @@ export function shortCommit(commit: string): string;
 // @beta
 export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
 
-// @beta (undocumented)
+// @beta
 export interface SortTsconfigResult {
-    // (undocumented)
     alreadySorted: boolean;
-    // (undocumented)
     tsconfig: string;
 }
 

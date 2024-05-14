@@ -153,6 +153,9 @@ const sortOrder = [
 	"references",
 ];
 
+/**
+ * Map of each item in the order list to its sort index.
+ */
 const orderMap: Map<string, number> = new Map();
 
 for (const [index, key] of sortOrder.entries()) {
@@ -160,10 +163,19 @@ for (const [index, key] of sortOrder.entries()) {
 }
 
 /**
+ * The result of a tsconfig sort operation.
+ *
  * @beta
  */
 export interface SortTsconfigResult {
+	/**
+	 * Will be `true` if the file was already sorted.
+	 */
 	alreadySorted: boolean;
+
+	/**
+	 * The sorted tsconfig string.
+	 */
 	tsconfig: string;
 }
 
@@ -190,8 +202,6 @@ export function sortTsconfigFile(
 		spaces: indent,
 	});
 
-	// normalize the original and sorted string using prettier so we can compare them safely
-
 	if (!sorted && write) {
 		writeFileSync(tsconfigPath, sortedString);
 	}
@@ -203,9 +213,15 @@ export function sortTsconfigFile(
 }
 
 /**
- * Checks if a tsconfig file is sorted.
+ * Returns true if a tsconfig file is sorted; false otherwise.
+ *
+ * @param tsconfig - Path to a tsconfig file.
  *
  * @beta
+ *
+ * @privateRemarks
+ *
+ * TODO: Implement custom sort order?
  */
 export function isSorted(tsconfig: string): boolean {
 	// const { default: jsonc } = await JSONC;
@@ -215,13 +231,20 @@ export function isSorted(tsconfig: string): boolean {
 	return result;
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function objectIsSorted(obj: { [s: string]: any }): boolean {
+/**
+ * Returns true if an object is sorted.
+ *
+ * @privateRemarks
+ *
+ * TODO: This has a known bug where unknown keys are ignored as long as all of them are after all the known keys. See
+ * the
+ */
+// biome-ignore lint/suspicious/noExplicitAny: other types are very iconvenient here.
+function objectIsSorted(obj: Record<string, any>): boolean {
 	const properties = [...Object.entries(obj)];
 	let index = -1;
 	for (const [key, value] of Object.entries(obj)) {
 		index++;
-		// const [key, value] = entry;
 
 		// If the value is an object, recursively check the object's sort.
 		if (isObject(value) && !objectIsSorted(value)) {
@@ -239,12 +262,21 @@ function objectIsSorted(obj: { [s: string]: any }): boolean {
 	return true;
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+/**
+ * Returns true if the value is an object.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: any is the correct type here because this function's purpose is to discriminate types
 function isObject(value: any): boolean {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-unsafe-member-access
 	return value && typeof value === "object" && value.constructor === Object;
 }
 
+/**
+ * Gets the sort index of a key.
+ *
+ * @param key - The key to check.
+ * @returns The sort index. A number is always returned. If the key is not found, the returned index will be greater
+ * than the total number of known sort keys.
+ */
 function getSortIndex(key: string | undefined): number {
 	// get the expected sort index of the key; if not found, (unexpected key) use a number greater than any sortIndex,
 	// assuming those items will always be at the bottom
