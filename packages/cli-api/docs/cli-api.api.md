@@ -95,6 +95,9 @@ export interface Logger {
 // @public
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
+// @beta
+export type OrderList = string[];
+
 // @public
 export class Repository {
     constructor(gitOptions: SetRequired<Partial<SimpleGitOptions>, "baseDir">);
@@ -114,6 +117,13 @@ export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsco
 export interface SortTsconfigResult {
     alreadySorted: boolean;
     tsconfig: string;
+}
+
+// @beta
+export class TsConfigSorter {
+    constructor(order: OrderList);
+    isSorted(tsconfig: string): boolean;
+    sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
 }
 
 // (No @packageDocumentation comment for this package)

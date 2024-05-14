@@ -7,8 +7,11 @@ import { globby } from "globby";
 export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 	static readonly aliases = ["sort:tsconfigs"];
 
-	static readonly description =
+	static readonly summary =
 		"Sorts a tsconfig file in place, or check that one is sorted.";
+
+	static readonly description =
+		"By default, the command will only check if a tsconfig is sorted. Use the --write flag to write the sorted contents back to the file.";
 
 	static readonly args = {
 		tsconfig: Args.custom<string[]>({

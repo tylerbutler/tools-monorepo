@@ -27,6 +27,9 @@ LOGGING FLAGS
 DESCRIPTION
   Sorts a tsconfig file in place, or check that one is sorted.
 
+  By default, the command will only check if a tsconfig is sorted. Use the --write flag to write the sorted contents
+  back to the file.
+
 ALIASES
   $ tbu sort tsconfigs
 ```
