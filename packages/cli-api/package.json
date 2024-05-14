@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/cli-api",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Base classes and other API helpers for oclif-based CLI projects.",
 	"homepage": "https://github.com/tylerbutler/tylerbu-cli",
 	"bugs": "https://github.com/tylerbutler/tylerbu-cli/issues",

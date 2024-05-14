@@ -1,5 +1,21 @@
 # @tylerbu/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- 868d909: Add search command
+
+  The `search` command can be used to find other commands and display their help. This command is implemented by
+  [@oclif/plugin-search](https://github.com/oclif/plugin-search).
+
+### Patch Changes
+
+- 868d909: Bump dependencies
+- Updated dependencies [868d909]
+- Updated dependencies [868d909]
+  - @tylerbu/cli-api@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes
