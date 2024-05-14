@@ -80,6 +80,9 @@ export type Flags<T extends typeof Command> = Interfaces.InferredFlags<(typeof B
 // @beta (undocumented)
 export function getMergeBase(git: SimpleGit, reference1: string, reference2: string): Promise<string>;
 
+// @beta
+export function isSorted(tsconfig: string): boolean;
+
 // @public
 export interface Logger {
     errorLog: ErrorLoggingFunction;
@@ -103,6 +106,17 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 
 // @public
 export function shortCommit(commit: string): string;
+
+// @beta
+export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
+
+// @beta (undocumented)
+export interface SortTsconfigResult {
+    // (undocumented)
+    alreadySorted: boolean;
+    // (undocumented)
+    tsconfig: string;
+}
 
 // (No @packageDocumentation comment for this package)
 

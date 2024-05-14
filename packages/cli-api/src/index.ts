@@ -13,3 +13,8 @@ export type {
 	LoggingFunction,
 	Logger,
 } from "./logger.js";
+export {
+	isSorted,
+	sortTsconfigFile,
+	type SortTsconfigResult,
+} from "./tsconfig.js";

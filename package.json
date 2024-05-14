@@ -27,12 +27,14 @@
 		"lint:fix": "biome lint . --apply",
 		"prepare": "lefthook install",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
+		"sort-tsconfig": "tbu sort tsconfig",
 		"test": "fluid-build . --task test"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.7.3",
 		"@changesets/cli": "^2.27.1",
 		"@fluidframework/build-tools": "^0.38.0",
+		"@tylerbu/cli": "workspace:^",
 		"concurrently": "^8.2.2",
 		"lefthook": "^1.6.11",
 		"rimraf": "^5.0.7",
