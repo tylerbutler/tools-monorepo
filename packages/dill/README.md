@@ -12,7 +12,7 @@ $ npm install -g dill
 $ dill-cli COMMAND
 running command...
 $ dill-cli (--version)
-dill/0.0.1 darwin-arm64 node-v20.13.1
+dill/0.0.1 linux-x64 node-v20.12.2
 $ dill-cli --help [COMMAND]
 USAGE
   $ dill-cli COMMAND
