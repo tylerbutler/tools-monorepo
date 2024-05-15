@@ -1,7 +1,4 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "./tsconfig.base.json",
-	"compilerOptions": {
-		"moduleResolution": "Node16",
-		"module": "Node16",
-	},
 }
