@@ -44,8 +44,8 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
     // (undocumented)
     protected trace: Debugger | undefined;
     verbose(message: string | Error | undefined): void;
-    // @deprecated (undocumented)
-    warn(input: string | Error): string | Error;
+    // @deprecated
+    warn(_input: string | Error): string | Error;
     warning(message: string | Error | undefined): void;
     warningWithDebugTrace(message: string | Error): string | Error;
 }
