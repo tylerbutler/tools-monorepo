@@ -1,0 +1,72 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"config:recommended",
+		// "helpers:pinGitHubActionDigests",
+	],
+
+	// Disable the GitHub actions updates
+	"github-actions": {
+		"enabled": false
+	},
+	
+	"timezone": "America/Los_Angeles",
+	"schedule": [
+    // "after 10pm every weekday",
+    // "before 5am every weekday",
+    // "every weekend"
+		"after 9pm on sunday",
+  ],
+
+	"separateMajorMinor": true,
+  "separateMultipleMajor": true,
+
+	// Automerge settings
+	"platformAutomerge": true,
+	"automergeType": "pr",
+	"automergeSchedule": [
+    "before 4am on Monday"
+  ],
+
+	"lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
+
+	"packageRules": [
+		{
+			// Require Dependency Dashboard approval for major updates
+      "dependencyDashboardApproval": true,
+      "matchUpdateTypes": [
+        "major"
+      ]
+    },
+		{
+			// Group oclif dependencies together
+			"matchPackagePatterns": ["^oclif", "^@oclif/"],
+			"groupName": "oclif",
+		},
+		{
+			// TypeScript updates should be done separately
+			"matchPackagePatterns": ["typescript"],
+			"groupName": "typescript"
+		},
+		{
+			// Group dev dependencies together
+			"matchDepTypes": ["devDependencies"],
+			"matchUpdateTypes": ["patch", "minor"],
+			"groupName": "devDependencies (non-major)"
+		},
+		{
+			// Allow minor and patch updates to be auto-merged, except for oclif updates
+			"matchUpdateTypes": ["patch", "pin", "digest"],
+			"excludePackagePatterns": ["^oclif", "^@oclif/"],
+			"automerge": true
+		},
+	],
+	"ignoreDeps": [
+		// Next major of chai needs testing
+		"@types/chai",
+		"chai",
+	],
+}

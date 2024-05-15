@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    # Disable; use renovate instead
+    open-pull-requests-limit: 0
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'saturday'
+    versioning-strategy: 'increase'
+    labels:
+      - 'dependencies'
+    pull-request-branch-name:
+      separator: '-'
+    commit-message:
+      # cause a release for non-dev-deps
+      prefix: fix(deps)
+      # no release for dev-deps
+      prefix-development: chore(dev-deps)
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']

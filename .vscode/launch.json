@@ -1,0 +1,31 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "pnpm test cli-api",
+			"request": "launch",
+			"runtimeArgs": ["run-script", "test"],
+			"cwd": "${workspaceFolder}/packages/cli-api",
+			"runtimeExecutable": "pnpm",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+		},
+		{
+			"name": "tbu",
+			"request": "launch",
+			"program": "${workspaceFolder}/packages/cli/bin/dev.js",
+			"args": [],
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+		},
+
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Execute Command",
+			"skipFiles": ["<node_internals>/**"],
+			"program": "${workspaceFolder}/bin/dev",
+			"args": ["hello", "world"],
+		},
+	],
+}

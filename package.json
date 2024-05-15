@@ -1,0 +1,82 @@
+{
+	"name": "tools-monorepo",
+	"version": "0.0.0",
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": ""
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"scripts": {
+		"build": "fluid-build . --task build",
+		"check": "fluid-build . --task check",
+		"check:all": "concurrently npm:check:deps npm:check:format npm:lint",
+		"check:deps": "syncpack lint",
+		"check:format": "biome check . --linter-enabled=false",
+		"ci": "fluid-build . --task ci",
+		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
+		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
+		"clean": "fluid-build . --task clean",
+		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
+		"compile": "fluid-build . --task compile",
+		"format": "npm run sort-package-json && biome check . --linter-enabled=false --apply",
+		"full": "fluid-build . --task full",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --apply",
+		"prepare": "lefthook install",
+		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
+		"test": "fluid-build . --task test"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.7.3",
+		"@changesets/cli": "^2.27.1",
+		"@fluidframework/build-tools": "^0.38.0",
+		"concurrently": "^8.2.2",
+		"lefthook": "^1.6.11",
+		"rimraf": "^5.0.7",
+		"sort-package-json": "2.10.0",
+		"syncpack": "^12.3.2",
+		"ts-node": "^10.9.2",
+		"typescript": "~5.4.5"
+	},
+	"packageManager": "pnpm@9.1.0+sha256.22e36fba7f4880ecf749a5ca128b8435da085ecd49575e7fb9e64d6bf4fad394",
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"pnpm": {
+		"peerDependencyRules": {
+			"allowAny": ["@aws-sdk/*"],
+			"ignoreMissing": ["@aws-sdk/*"]
+		},
+		"updateConfig": {
+			"ignoreDependencies": ["chai", "@types/node"]
+		},
+		"overrides": {}
+	},
+	"fluidBuild": {
+		"tasks": {
+			"build": {
+				"dependsOn": ["^build"],
+				"script": false
+			},
+			"check": {
+				"dependsOn": ["^check", "check:all"],
+				"script": false
+			},
+			"ci": {
+				"dependsOn": ["full"],
+				"script": false
+			},
+			"clean": {
+				"dependsOn": ["^clean", "clean:root"],
+				"script": false
+			},
+			"full": {
+				"dependsOn": ["check", "^build", "lint", "^test"],
+				"script": false
+			}
+		}
+	}
+}

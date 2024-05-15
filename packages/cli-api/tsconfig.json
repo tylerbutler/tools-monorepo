@@ -1,0 +1,11 @@
+{
+	"extends": "../../config/tsconfig.default.json",
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"outDir": "./esm",
+		"rootDir": "./src",
+	},
+	"ts-node": {
+		"esm": true,
+	},
+}
