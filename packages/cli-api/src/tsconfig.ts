@@ -152,6 +152,7 @@ const compilerOptionsOrder: OrderList = [
  * Sorting order for tsconfig files.
  */
 const defaultSortOrder: OrderList = [
+	"$schema",
 	"extends",
 	"include",
 	"exclude",
@@ -233,7 +234,7 @@ export class TsConfigSorter {
 			}
 
 			const nextKey =
-				index >= properties.length - 1 ? undefined : properties[index + 1][0];
+				index >= properties.length - 1 ? undefined : properties[index + 1]?.[0];
 			const sortIndex = this.getSortIndex(key);
 			const nextSortIndex = this.getSortIndex(nextKey);
 			if (sortIndex > nextSortIndex) {

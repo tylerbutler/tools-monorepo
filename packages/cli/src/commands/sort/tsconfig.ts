@@ -5,15 +5,15 @@ import { BaseCommand, isSorted, sortTsconfigFile } from "@tylerbu/cli-api";
 import { globby } from "globby";
 
 export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
-	static readonly aliases = ["sort:tsconfigs"];
+	static override readonly aliases = ["sort:tsconfigs"];
 
-	static readonly summary =
+	static override readonly summary =
 		"Sorts a tsconfig file in place, or check that one is sorted.";
 
-	static readonly description =
+	static override readonly description =
 		"By default, the command will only check if a tsconfig is sorted. Use the --write flag to write the sorted contents back to the file.";
 
-	static readonly args = {
+	static override readonly args = {
 		tsconfig: Args.custom<string[]>({
 			description:
 				"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
@@ -35,7 +35,7 @@ export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 		})(),
 	};
 
-	static readonly flags = {
+	static override readonly flags = {
 		write: Flags.boolean({
 			description:
 				"Write the sorted contents back to the file. Without this flag, the command only checks that the file is sorted.",
