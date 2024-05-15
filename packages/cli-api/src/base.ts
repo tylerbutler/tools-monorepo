@@ -35,7 +35,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * The flags defined on the base class.
 	 */
-	static baseFlags = {
+	static override baseFlags = {
 		verbose: OclifFlags.boolean({
 			char: "v",
 			description: "Enable verbose logging.",
@@ -67,7 +67,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	private traceWarning: Debugger | undefined;
 	protected redirectLogToTrace = false;
 
-	public async init(): Promise<void> {
+	public override async init(): Promise<void> {
 		await super.init();
 
 		const namespace = [this.config.bin, "cmd", this.id].join(":");
@@ -174,10 +174,11 @@ export abstract class BaseCommand<T extends typeof Command>
 	}
 
 	/**
+	 * Don't use this method; use warning instead.
+	 *
 	 * @deprecated Use {@link BaseCommand.warning} or {@link BaseCommand.warningWithDebugTrace} instead.
 	 */
-	// biome-ignore lint/correctness/noUnusedVariables: Intentionally matches the oclif `warn` typing.
-	public warn(input: string | Error): string | Error {
+	public override warn(_input: string | Error): string | Error {
 		throw new Error(`Don't use the warn method; it is deprecated.`);
 	}
 
@@ -192,7 +193,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	 *
 	 * This method overrides the oclif Command error method so we can do some formatting on the strings.
 	 */
-	public error(
+	public override error(
 		input: string | Error,
 		options: { code?: string | undefined; exit: false } & PrettyPrintableError,
 	): void;
@@ -208,7 +209,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	 *
 	 * This method overrides the oclif Command error method so we can do some formatting on the strings.
 	 */
-	public error(
+	public override error(
 		input: string | Error,
 		options?:
 			| ({
@@ -229,7 +230,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	 *
 	 * This method overrides the oclif Command error method so we can do some formatting on the strings.
 	 */
-	public error(input: unknown, options?: unknown): void {
+	public override error(input: unknown, options?: unknown): void {
 		if (!this.suppressLogging) {
 			if (typeof input === "string") {
 				super.error(chalk.red(input), options as never);
@@ -279,7 +280,7 @@ export abstract class BaseGitCommand<
 	protected git: SimpleGit | undefined;
 	protected repo: Repository | undefined;
 
-	public async init(): Promise<void> {
+	public override async init(): Promise<void> {
 		await super.init();
 		this.repo = new Repository({ baseDir: process.cwd() });
 		this.git = this.repo.gitClient;

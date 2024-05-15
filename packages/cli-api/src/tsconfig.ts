@@ -229,7 +229,7 @@ function objectIsSorted(obj: { [s: string]: any }): boolean {
 		}
 
 		const nextKey =
-			index >= properties.length - 1 ? undefined : properties[index + 1][0];
+			index >= properties.length - 1 ? undefined : properties[index + 1]?.[0];
 		const sortIndex = getSortIndex(key);
 		const nextSortIndex = getSortIndex(nextKey);
 		if (sortIndex > nextSortIndex) {

@@ -6,17 +6,17 @@ import stripAnsi from "strip-ansi";
 export default class SquishCommand extends BaseGitCommand<
 	typeof SquishCommand
 > {
-	static description =
+	static override readonly description =
 		"Squash-merge a branch with another branch, and reset the source branch to the squash-merged HEAD. This process results in the branch containing a single commit on top of the target branch.";
 
-	static flags = {
+	static override readonly flags = {
 		"dry-run": Flags.boolean({
 			description: "Don't make any changes.",
 		}),
 		...BaseGitCommand.flags,
 	};
 
-	static args = {
+	static override readonly args = {
 		target: Args.string({
 			description: "Branch to rebase on top of.",
 			required: true,
@@ -29,7 +29,7 @@ export default class SquishCommand extends BaseGitCommand<
 		}),
 	};
 
-	protected redirectLogToTrace = true;
+	protected override redirectLogToTrace = true;
 
 	async run(): Promise<void> {
 		if (this.git === undefined) {
