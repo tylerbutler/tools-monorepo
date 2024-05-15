@@ -1,5 +1,5 @@
 {
-	"extends": "../../config/tsconfig.default.json",
+	"extends": "../../config/tsconfig.strict.json",
 	"include": ["src/**/*"],
 	"compilerOptions": {
 		"outDir": "./esm",
