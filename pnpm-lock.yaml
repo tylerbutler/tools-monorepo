@@ -236,7 +236,7 @@ importers:
         specifier: ^3.26.6
         version: 3.26.6
       '@oclif/plugin-help':
-        specifier: ^6.0.21
+        specifier: ^6.0.22
         version: 6.0.22
       '@tinyhttp/content-disposition':
         specifier: ^2.2.0
@@ -270,13 +270,13 @@ importers:
         specifier: ^7.43.4
         version: 7.43.4(@types/node@20.12.11)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.1.8
+        specifier: ^5.1.9
         version: 5.1.9
       '@oclif/test':
-        specifier: ^3.2.13
+        specifier: ^3.2.15
         version: 3.2.15
       '@types/chai':
-        specifier: ^4.3.14
+        specifier: ^4.3.16
         version: 4.3.16
       '@types/debug':
         specifier: ^4.1.12
@@ -303,16 +303,16 @@ importers:
         specifier: ^4.4.1
         version: 4.4.1
       lefthook:
-        specifier: ^1.6.10
+        specifier: ^1.6.11
         version: 1.6.11
       mocha:
         specifier: ^10.4.0
         version: 10.4.0
       oclif:
-        specifier: ^4.10.7
+        specifier: ^4.10.10
         version: 4.10.10
       rimraf:
-        specifier: ^5.0.5
+        specifier: ^5.0.7
         version: 5.0.7
       serve:
         specifier: ^14.2.3
@@ -330,7 +330,7 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.12.11)(typescript@5.4.5)
       type-fest:
-        specifier: ^4.17.0
+        specifier: ^4.18.2
         version: 4.18.2
       typescript:
         specifier: ~5.4.5
