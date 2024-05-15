@@ -1,0 +1,68 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"defaultBranch": "main",
+		"useIgnoreFile": true,
+		"root": ".",
+	},
+	"files": {
+		"ignore": ["built/**", "dist/**", "esm/**"],
+		"ignoreUnknown": true,
+	},
+	"formatter": {
+		"enabled": true,
+		"ignore": ["**/_snapshots/**"],
+		"formatWithErrors": true,
+		"indentStyle": "tab",
+		"lineEnding": "lf",
+	},
+	"organizeImports": { "enabled": true },
+	"linter": {
+		"enabled": true,
+		"include": ["config/**", "**/docs/**", "**/src/**", "**/test/**"],
+		"rules": {
+			"all": true,
+			"correctness": {
+				"noUnusedVariables": "error",
+			},
+		},
+	},
+	"javascript": {
+		"formatter": {
+			"jsxQuoteStyle": "double",
+			"trailingComma": "all",
+			"semicolons": "always",
+		},
+	},
+	"overrides": [
+		{
+			"include": [
+				"*.jsonc",
+				"*.json5",
+				"api-extractor*.json",
+				"tsconfig*.json",
+				".vscode/*.json",
+			],
+			"json": {
+				"parser": {
+					"allowComments": true,
+					"allowTrailingCommas": true,
+				},
+				"formatter": { "trailingCommas": "all" },
+			},
+		},
+		{
+			"include": ["packages/*/src/commands/**/*.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						// oclif commands are required to use default exports.
+						"noDefaultExport": "off",
+					},
+				},
+			},
+		},
+	],
+}
