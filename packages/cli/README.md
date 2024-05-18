@@ -23,6 +23,7 @@
 * [`tbu git`](docs/git.md) - Git-related commands.
 * [`tbu help`](docs/help.md) - Display help for tbu.
 * [`tbu search`](docs/search.md) - Search for a command.
+* [`tbu sort`](docs/sort.md) - Commands to sort config files like tsconfigs.
 * [`tbu version`](docs/version.md)
 * [`tbu which`](docs/which.md) - Show which plugin a command is in.
 

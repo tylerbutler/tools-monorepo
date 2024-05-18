@@ -5,12 +5,19 @@ import JSONC from "tiny-jsonc";
 import type { TsConfigJson } from "type-fest";
 
 /**
+ * A list of keys in desired sort order.
+ *
+ * @beta
+ */
+export type OrderList = string[];
+
+/**
  * Sorting order for keys in the compilerOptions section of tsconfig. The groups and the order within each group are
  * based on the order at https://www.typescriptlang.org/tsconfig#compiler-options. However, the order of the groups has
  * been adjusted, and a few properties are moved earlier in the order since they're more important to our repo
  * tsconfigs.
  */
-const compilerOptionsOrder = [
+const compilerOptionsOrder: OrderList = [
 	"rootDir", // From the Modules group
 	"outDir", // From the Emit group
 	"module", // From the Modules group
@@ -144,7 +151,8 @@ const compilerOptionsOrder = [
 /**
  * Sorting order for tsconfig files.
  */
-const sortOrder = [
+const defaultSortOrder: OrderList = [
+	"$schema",
 	"extends",
 	"include",
 	"exclude",
@@ -153,18 +161,150 @@ const sortOrder = [
 	"references",
 ];
 
-const orderMap: Map<string, number> = new Map();
-
-for (const [index, key] of sortOrder.entries()) {
-	orderMap.set(key, index);
+/**
+ * Returns a map of each item in the order list to its sort index.
+ */
+function getOrderMap(order: OrderList): Map<string, number> {
+	const orderMap: Map<string, number> = new Map();
+	for (const [index, key] of order.entries()) {
+		orderMap.set(key, index);
+	}
+	return orderMap;
 }
 
 /**
+ * The result of a tsconfig sort operation.
+ *
  * @beta
  */
 export interface SortTsconfigResult {
+	/**
+	 * Will be `true` if the file was already sorted.
+	 */
 	alreadySorted: boolean;
+
+	/**
+	 * The sorted tsconfig string.
+	 */
 	tsconfig: string;
+}
+
+/**
+ * Convenience class used to sort a tsconfig using a custom order.
+ *
+ * @beta
+ */
+export class TsConfigSorter {
+	private _order: OrderList;
+	private _orderMap: Map<string, number>;
+
+	public constructor(order: OrderList) {
+		this._order = order;
+		this._orderMap = getOrderMap(order);
+	}
+
+	/**
+	 * Gets the sort index of a key.
+	 *
+	 * @param key - The key to check.
+	 * @returns The sort index. A number is always returned. If the key is not found, the returned index will be greater
+	 * than the total number of known sort keys.
+	 */
+	private getSortIndex(key: string | undefined): number {
+		// get the expected sort index of the key; if not found, (unexpected key) use a number greater than any sortIndex,
+		// assuming those items will always be at the bottom
+		return key === undefined
+			? this._orderMap.size + 1
+			: this._orderMap.get(key) ?? this._orderMap.size + 1;
+	}
+
+	/**
+	 * Returns true if an object is sorted.
+	 */
+	// biome-ignore lint/suspicious/noExplicitAny: other types are very iconvenient here.
+	private objectIsSorted(obj: Record<string, any>): boolean {
+		const properties = [...Object.entries(obj)];
+		let index = -1;
+		for (const [key, value] of Object.entries(obj)) {
+			index++;
+
+			// If the value is an object, recursively check the object's sort.
+			if (isObject(value) && !this.objectIsSorted(value)) {
+				return false;
+			}
+
+			const nextKey =
+				index >= properties.length - 1 ? undefined : properties[index + 1]?.[0];
+			const sortIndex = this.getSortIndex(key);
+			const nextSortIndex = this.getSortIndex(nextKey);
+			if (sortIndex > nextSortIndex) {
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * Returns true if a tsconfig file is sorted; false otherwise.
+	 *
+	 * @param tsconfig - Path to a tsconfig file.
+	 *
+	 * @beta
+	 */
+	public isSorted(tsconfig: string): boolean {
+		// const { default: jsonc } = await JSONC;
+		const content = readFileSync(tsconfig, { encoding: "utf8" });
+		const currentValue: TsConfigJson = JSONC.parse(content);
+		const result = this.objectIsSorted(currentValue);
+		return result;
+	}
+
+	/**
+	 * Sorts a tsconfig file, optionally writing the changes back to the file.
+	 *
+	 * @param tsconfigPath - path to a tsconfig file
+	 * @param write - if true, the file will be overwritten with sorted content
+	 * @returns An object containing a boolean indicating whether the file was already sorted and the sorted tsconfig
+	 * string.
+	 */
+	public sortTsconfigFile(
+		tsconfigPath: string,
+		write: boolean,
+	): SortTsconfigResult {
+		const sorted = isSorted(tsconfigPath);
+
+		const origString = readFileSync(tsconfigPath).toString();
+		const { indent } = detectIndent(origString);
+		const sortedString = sortJsonc(origString, {
+			sort: this._order,
+			spaces: indent,
+		});
+
+		if (!sorted && write) {
+			writeFileSync(tsconfigPath, sortedString);
+		}
+
+		return {
+			alreadySorted: sorted,
+			tsconfig: sortedString,
+		};
+	}
+}
+
+const defaultSorter = new TsConfigSorter(defaultSortOrder);
+
+/**
+ * Returns true if a tsconfig file is sorted according to the default sort order; false otherwise.
+ *
+ * @param tsconfig - Path to a tsconfig file.
+ *
+ * @remarks
+ *
+ * To use a custom sort order, create a {@link TsConfigSorter} and use methods on that class.
+ *
+ * @beta
+ */
+export function isSorted(tsconfig: string): boolean {
+	return defaultSorter.isSorted(tsconfig);
 }
 
 /**
@@ -175,80 +315,23 @@ export interface SortTsconfigResult {
  * @returns An object containing a boolean indicating whether the file was already sorted and the sorted tsconfig
  * string.
  *
+ * @remarks
+ *
+ * To use a custom sort order, create a {@link TsConfigSorter} and use methods on that class.
+ *
  * @beta
  */
 export function sortTsconfigFile(
 	tsconfigPath: string,
 	write: boolean,
 ): SortTsconfigResult {
-	const sorted = isSorted(tsconfigPath);
-
-	const origString = readFileSync(tsconfigPath).toString();
-	const { indent } = detectIndent(origString);
-	const sortedString = sortJsonc(origString, {
-		sort: sortOrder,
-		spaces: indent,
-	});
-
-	// normalize the original and sorted string using prettier so we can compare them safely
-
-	if (!sorted && write) {
-		writeFileSync(tsconfigPath, sortedString);
-	}
-
-	return {
-		alreadySorted: sorted,
-		tsconfig: sortedString,
-	};
+	return defaultSorter.sortTsconfigFile(tsconfigPath, write);
 }
 
 /**
- * Checks if a tsconfig file is sorted.
- *
- * @beta
+ * Returns true if the value is an object.
  */
-export function isSorted(tsconfig: string): boolean {
-	// const { default: jsonc } = await JSONC;
-	const content = readFileSync(tsconfig, { encoding: "utf8" });
-	const currentValue: TsConfigJson = JSONC.parse(content);
-	const result = objectIsSorted(currentValue);
-	return result;
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-function objectIsSorted(obj: { [s: string]: any }): boolean {
-	const properties = [...Object.entries(obj)];
-	let index = -1;
-	for (const [key, value] of Object.entries(obj)) {
-		index++;
-		// const [key, value] = entry;
-
-		// If the value is an object, recursively check the object's sort.
-		if (isObject(value) && !objectIsSorted(value)) {
-			return false;
-		}
-
-		const nextKey =
-			index >= properties.length - 1 ? undefined : properties[index + 1]?.[0];
-		const sortIndex = getSortIndex(key);
-		const nextSortIndex = getSortIndex(nextKey);
-		if (sortIndex > nextSortIndex) {
-			return false;
-		}
-	}
-	return true;
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: any is the correct type here because this function's purpose is to discriminate types
 function isObject(value: any): boolean {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-unsafe-member-access
 	return value && typeof value === "object" && value.constructor === Object;
-}
-
-function getSortIndex(key: string | undefined): number {
-	// get the expected sort index of the key; if not found, (unexpected key) use a number greater than any sortIndex,
-	// assuming those items will always be at the bottom
-	return key === undefined
-		? orderMap.size + 1
-		: orderMap.get(key) ?? orderMap.size + 1;
 }
