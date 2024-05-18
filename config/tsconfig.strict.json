@@ -2,16 +2,16 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
-		"allowUnusedLabels": false,
 		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
 		"exactOptionalPropertyTypes": true,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitOverride": true,
 		"noImplicitReturns": false, // Consider setting noImplicitReturns to true for some projects.
 		"noPropertyAccessFromIndexSignature": true,
 		"noUncheckedIndexedAccess": true,
+		"checkJs": true,
 		"isolatedModules": true,
 		"skipLibCheck": true,
-		"checkJs": true,
 	},
 }
