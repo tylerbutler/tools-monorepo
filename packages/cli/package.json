@@ -60,7 +60,9 @@
 			"@oclif/plugin-commands",
 			"@oclif/plugin-not-found",
 			"@oclif/plugin-search",
-			"@oclif/plugin-warn-if-update-available"
+			"@oclif/plugin-version",
+			"@oclif/plugin-warn-if-update-available",
+			"@oclif/plugin-which"
 		],
 		"topicSeparator": " ",
 		"topics": {
@@ -77,7 +79,9 @@
 		"@oclif/plugin-not-found": "^3.1.9",
 		"@oclif/plugin-plugins": "^5.0.21",
 		"@oclif/plugin-search": "^1.0.24",
+		"@oclif/plugin-version": "^2.1.2",
 		"@oclif/plugin-warn-if-update-available": "^3.0.19",
+		"@oclif/plugin-which": "^3.1.10",
 		"@tylerbu/cli-api": "workspace:^",
 		"chalk": "^5.3.0",
 		"concurrently": "^8.2.2",
