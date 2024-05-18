@@ -27,7 +27,7 @@
 		"lint:fix": "biome lint . --apply",
 		"prepare": "lefthook install",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
-		"sort-tsconfig": "tbu sort tsconfig",
+		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
 		"test": "fluid-build . --task test"
 	},
 	"devDependencies": {

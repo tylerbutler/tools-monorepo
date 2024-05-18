@@ -61,8 +61,8 @@
 		},
 		"devPlugins": [],
 		"dirname": "dill",
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>",
-		"plugins": []
+		"plugins": [],
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
 	},
 	"dependencies": {
 		"@andrewbranch/untar.js": "^1.0.3",
