@@ -90,6 +90,7 @@
 		"concurrently": "^8.2.2",
 		"debug": "^4.3.4",
 		"globby": "^14.0.1",
+		"dill": "workspace:^",
 		"simple-git": "^3.24.0",
 		"strip-ansi": "^7.1.0"
 	},

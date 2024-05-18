@@ -54,6 +54,29 @@
     },
     {
         "alias": [
+            "dl",
+            "dill"
+        ],
+        "command": "download",
+        "flagAliases": [],
+        "flagChars": [
+            "e",
+            "o",
+            "s",
+            "v"
+        ],
+        "flags": [
+            "extract",
+            "filename",
+            "out",
+            "quiet",
+            "strip",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [
             "mtp"
         ],
         "command": "git:merge-train:preview",
