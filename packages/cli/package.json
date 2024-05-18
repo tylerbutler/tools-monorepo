@@ -60,7 +60,9 @@
 			"@oclif/plugin-commands",
 			"@oclif/plugin-not-found",
 			"@oclif/plugin-search",
-			"@oclif/plugin-warn-if-update-available"
+			"@oclif/plugin-version",
+			"@oclif/plugin-warn-if-update-available",
+			"@oclif/plugin-which"
 		],
 		"topicSeparator": " ",
 		"topics": {
@@ -80,7 +82,9 @@
 		"@oclif/plugin-not-found": "^3.1.9",
 		"@oclif/plugin-plugins": "^5.0.21",
 		"@oclif/plugin-search": "^1.0.24",
+		"@oclif/plugin-version": "^2.1.2",
 		"@oclif/plugin-warn-if-update-available": "^3.0.19",
+		"@oclif/plugin-which": "^3.1.10",
 		"@tylerbu/cli-api": "workspace:^",
 		"chalk": "^5.3.0",
 		"concurrently": "^8.2.2",
@@ -107,7 +111,7 @@
 		"type-fest": "^4.18.2",
 		"typescript": "~5.4.5"
 	},
-	"packageManager": "pnpm@9.0.4+sha256.caa915eaae9d9aefccf50ee8aeda25a2f8684d8f9d5c6e367eaf176d97c1f89e",
+	"packageManager": "pnpm@9.1.0+sha256.22e36fba7f4880ecf749a5ca128b8435da085ecd49575e7fb9e64d6bf4fad394",
 	"engines": {
 		"node": ">=18.0.0"
 	}
