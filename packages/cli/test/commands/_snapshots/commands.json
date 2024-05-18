@@ -123,5 +123,26 @@
         "flagChars": [],
         "flags": [],
         "plugin": "@oclif/plugin-search"
+    },
+    {
+        "alias": [],
+        "command": "version",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [
+            "json",
+            "verbose"
+        ],
+        "plugin": "@oclif/plugin-version"
+    },
+    {
+        "alias": [],
+        "command": "which",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [
+            "json"
+        ],
+        "plugin": "@oclif/plugin-which"
     }
 ]
