@@ -21,7 +21,9 @@
 	 * Configures how the doc model file (*.api.json) will be generated.
 	 */
 	"docModel": {
-		"enabled": false,
+		"enabled": true,
+		"apiJsonFilePath": "<projectFolder>/_temp/api-extractor/docs.api.json",
+		"includeForgottenExports": false,
 	},
 
 	/**

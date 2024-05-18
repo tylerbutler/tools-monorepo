@@ -1,4 +1,8 @@
 {
+	"unknownKey2": "value2",
+	"ts-node": {
+		"esm": true,
+	},
 	// Compiler options below.
 	"compilerOptions": {
 		"declaration": true,
@@ -14,8 +18,9 @@
 		"target": "es2019",
 		"esModuleInterop": true,
 	},
+	"foo": "foo",
+	"bar": "bar",
+	"unknownKey1": "value1",
 	"include": ["src/**/*"],
-	"ts-node": {
-		"esm": true,
-	},
+	"exclude": ["src/test/**/*"],
 }
