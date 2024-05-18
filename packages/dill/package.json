@@ -19,7 +19,7 @@
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
 		},
-		"./internal": {
+		"./command": {
 			"types": "./esm/commands/download.d.ts",
 			"import": "./esm/commands/download.js"
 		}
