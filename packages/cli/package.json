@@ -55,15 +55,16 @@
 		"devPlugins": ["@oclif/plugin-command-snapshot"],
 		"dirname": "tbu",
 		"plugins": [
-			"@oclif/plugin-help",
 			"@oclif/plugin-autocomplete",
 			"@oclif/plugin-commands",
+			"@oclif/plugin-help",
 			"@oclif/plugin-not-found",
 			"@oclif/plugin-search",
 			"@oclif/plugin-version",
 			"@oclif/plugin-warn-if-update-available",
 			"@oclif/plugin-which"
 		],
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/cli/<%- commandPath %>",
 		"topicSeparator": " ",
 		"topics": {
 			"git": {
