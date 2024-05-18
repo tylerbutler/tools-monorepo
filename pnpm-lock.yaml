@@ -86,6 +86,9 @@ importers:
       debug:
         specifier: ^4.3.4
         version: 4.3.4(supports-color@8.1.1)
+      dill:
+        specifier: workspace:^
+        version: link:../dill
       simple-git:
         specifier: ^3.24.0
         version: 3.24.0

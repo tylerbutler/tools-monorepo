@@ -6,7 +6,7 @@ import { download } from "../api.js";
 export default class DownloadCommand extends BaseCommand<
 	typeof DownloadCommand
 > {
-	static override aliases = ["dl"];
+	static override readonly aliases = ["dl", "dill"];
 	static override readonly description =
 		"Downloads a file from a URL and optionally extracts its contents.";
 

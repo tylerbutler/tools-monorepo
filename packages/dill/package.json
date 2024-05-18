@@ -2,7 +2,7 @@
 	"name": "dill",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Simple file downloads with an API and CLI.",
+	"description": "Simple CLI to download and optionally decompress files.",
 	"keywords": ["download", "ci"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/dill/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -19,9 +19,9 @@
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
 		},
-		"./api": {
-			"types": "./esm/api.d.ts",
-			"import": "./esm/api.js"
+		"./internal": {
+			"types": "./esm/commands/download.d.ts",
+			"import": "./esm/commands/download.js"
 		}
 	},
 	"types": "esm/index.d.ts",
@@ -31,17 +31,15 @@
 	"files": ["/bin", "/esm", "/oclif.manifest.json"],
 	"scripts": {
 		"build": "fluid-build . --task build",
-		"check": "concurrently npm:check:format npm:check:snapshot",
+		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/_snapshots/commands.json",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
-		"command-snapshots": "./bin/dev.js snapshot:generate --filepath test/commands/_snapshots/commands.json",
 		"compile": "tsc --project ./tsconfig.json",
 		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
 		"full": "fluid-build . --task full",
-		"generate": "concurrently npm:command-snapshots",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
 		"manifest": "oclif manifest",
@@ -58,12 +56,12 @@
 	"oclif": {
 		"bin": "dill",
 		"commands": {
-			"strategy": "pattern",
-			"target": "./esm/commands"
+			"strategy": "single",
+			"target": "./esm/commands/download.js"
 		},
-		"devPlugins": ["@oclif/plugin-command-snapshot"],
+		"devPlugins": [],
 		"dirname": "dill",
-		"plugins": ["@oclif/plugin-help"]
+		"plugins": []
 	},
 	"dependencies": {
 		"@andrewbranch/untar.js": "^1.0.3",
