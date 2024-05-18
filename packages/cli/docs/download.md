@@ -37,4 +37,4 @@ EXAMPLES
   $ tbu download
 ```
 
-_See code: [src/commands/download.ts](https://github.com/tylerbutler/tools-monorepo/blob/v0.2.1/src/commands/download.ts)_
+_See code: [src/commands/download.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/cli/src/commands/download.ts)_

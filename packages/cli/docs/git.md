@@ -29,4 +29,4 @@ DESCRIPTION
   in the branch containing a single commit on top of the target branch.
 ```
 
-_See code: [src/commands/git/squish.ts](https://github.com/tylerbutler/tools-monorepo/blob/v0.2.1/src/commands/git/squish.ts)_
+_See code: [src/commands/git/squish.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/cli/src/commands/git/squish.ts)_

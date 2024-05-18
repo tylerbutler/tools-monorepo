@@ -61,6 +61,7 @@
 		},
 		"devPlugins": [],
 		"dirname": "dill",
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>",
 		"plugins": []
 	},
 	"dependencies": {
