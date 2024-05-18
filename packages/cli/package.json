@@ -86,6 +86,7 @@
 		"chalk": "^5.3.0",
 		"concurrently": "^8.2.2",
 		"debug": "^4.3.4",
+		"dill": "workspace:^",
 		"simple-git": "^3.24.0",
 		"strip-ansi": "^7.1.0"
 	},
