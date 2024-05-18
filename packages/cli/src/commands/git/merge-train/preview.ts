@@ -18,18 +18,18 @@ interface CleanupBranch {
 export default class MergeTrainPreviewCommand extends BaseGitCommand<
 	typeof MergeTrainPreviewCommand
 > {
-	static readonly state = "alpha";
-	static readonly hidden = true;
-	static readonly description =
+	static override readonly state = "alpha";
+	static override readonly hidden = true;
+	static override readonly description =
 		"Previews the merge train between two branches. ALPHA QUALITY.";
 
-	static readonly aliases: string[] = ["mtp"];
+	static override readonly aliases: string[] = ["mtp"];
 
 	// static flags = {
 	//   ...BaseCommand.flags,
 	// };
 
-	static args = {
+	static override args = {
 		target: Args.string({
 			description: "Branch to merge commits into.",
 			required: true,
@@ -162,14 +162,14 @@ export default class MergeTrainPreviewCommand extends BaseGitCommand<
 	}
 
 	protected override async catch(
-		error: Error & { exitCode?: number | undefined },
+		error: Error & { exitCode?: number },
 	): Promise<unknown> {
 		if (this.git === undefined) {
 			throw error;
 		}
 
 		if (
-			this.flags.cleanup === true &&
+			// this.flags.cleanup === true &&
 			error.exitCode !== undefined &&
 			error.exitCode !== 0
 		) {
