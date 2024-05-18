@@ -24,7 +24,7 @@
 			"import": "./esm/api.js"
 		}
 	},
-	"types": "dist/index.d.ts",
+	"types": "esm/index.d.ts",
 	"bin": {
 		"dill": "./bin/run.js"
 	},
@@ -56,10 +56,10 @@
 		"update:test-snapshots": "vitest run \"test/vitest\" -u"
 	},
 	"oclif": {
-		"bin": "dill-cli",
+		"bin": "dill",
 		"commands": {
 			"strategy": "pattern",
-			"target": "./dist/commands"
+			"target": "./esm/commands"
 		},
 		"devPlugins": ["@oclif/plugin-command-snapshot"],
 		"dirname": "dill",
@@ -105,14 +105,8 @@
 		"typescript": "~5.4.5",
 		"vitest": "^1.6.0"
 	},
-	"packageManager": "pnpm@8.6.1+sha1.435b3c83c7de5c455ad80fd63ee7ecf3b67b949b",
+	"packageManager": "pnpm@9.1.0+sha256.22e36fba7f4880ecf749a5ca128b8435da085ecd49575e7fb9e64d6bf4fad394",
 	"engines": {
 		"node": ">=18.0.0"
-	},
-	"pnpm": {
-		"peerDependencyRules": {},
-		"updateConfig": {
-			"ignoreDependencies": ["@types/node"]
-		}
 	}
 }

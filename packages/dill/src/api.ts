@@ -1,16 +1,12 @@
+import { existsSync, statSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { TarLocalFile } from "@andrewbranch/untar.js";
 import { untar } from "@andrewbranch/untar.js";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
 import { Decompress } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
-import {
-	ensureDirSync,
-	existsSync,
-	readFile,
-	statSync,
-	writeFile,
-} from "fs-extra";
+import { ensureDirSync } from "fs-extra";
 import mime from "mime";
 import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
