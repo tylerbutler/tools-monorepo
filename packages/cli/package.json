@@ -32,7 +32,7 @@
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/_snapshots/commands.json",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
-		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
+		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"command-snapshots": "./bin/dev.js snapshot:generate --filepath test/commands/_snapshots/commands.json",
 		"compile": "tsc --project ./tsconfig.json",
