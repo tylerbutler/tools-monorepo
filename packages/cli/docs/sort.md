@@ -32,6 +32,19 @@ DESCRIPTION
 
 ALIASES
   $ tbu sort tsconfigs
+
+EXAMPLES
+  Check if the tsconfig.json file in the current working directory is sorted.
+
+    $ tbu sort tsconfig .
+
+  Sort the tsconfig.json file in the current working directory.
+
+    $ tbu sort tsconfig . --write
+
+  Sort all tsconfig.json files under the packages directory.
+
+    $ tbu sort tsconfig 'packages/**/tsconfig.json' --write
 ```
 
 _See code: [src/commands/sort/tsconfig.ts](https://github.com/tylerbutler/tools-monorepo/blob/v0.2.1/src/commands/sort/tsconfig.ts)_

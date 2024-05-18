@@ -1,6 +1,6 @@
 import { existsSync, statSync } from "node:fs";
 import path from "node:path";
-import { Args, Flags } from "@oclif/core";
+import { Args, type Command, Flags } from "@oclif/core";
 import { BaseCommand, isSorted, sortTsconfigFile } from "@tylerbu/cli-api";
 import { globby } from "globby";
 
@@ -43,6 +43,24 @@ export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 		}),
 		...BaseCommand.flags,
 	};
+
+	static override readonly examples: Command.Example[] = [
+		{
+			description:
+				"Check if the tsconfig.json file in the current working directory is sorted.",
+			command: "<%= config.bin %> <%= command.id %> .",
+		},
+		{
+			description:
+				"Sort the tsconfig.json file in the current working directory.",
+			command: "<%= config.bin %> <%= command.id %> . --write",
+		},
+		{
+			description: "Sort all tsconfig.json files under the packages directory.",
+			command:
+				"<%= config.bin %> <%= command.id %> 'packages/**/tsconfig.json' --write",
+		},
+	];
 
 	// biome-ignore lint/suspicious/useAwait: inherited method
 	async run(): Promise<void> {
