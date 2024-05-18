@@ -2,16 +2,15 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "@tsconfig/node18/tsconfig.json",
 	"compilerOptions": {
-		"composite": true,
 		"declaration": true,
 		"declarationMap": true,
-		"incremental": true,
 		"inlineSources": true,
-		"jsx": "react",
 		"sourceMap": true,
 		"types": [],
-
 		// This is enforced in lint instead.
 		"noUnusedLocals": false,
+		"composite": true,
+		"incremental": true,
+		"jsx": "react",
 	},
 }
