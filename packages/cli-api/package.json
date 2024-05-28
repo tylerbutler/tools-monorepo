@@ -3,7 +3,7 @@
 	"version": "0.2.0",
 	"description": "Base classes and other API helpers for oclif-based CLI projects.",
 	"homepage": "https://github.com/tylerbutler/tylerbu-cli",
-	"bugs": "https://github.com/tylerbutler/tylerbu-cli/issues",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": "tylerbutler/tylerbu-cli",
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -36,6 +36,7 @@
 	"dependencies": {
 		"@oclif/core": "^3.26.6",
 		"chalk": "^5.3.0",
+		"cosmiconfig": "^9.0.0",
 		"debug": "^4.3.4",
 		"detect-indent": "^7.0.1",
 		"simple-git": "^3.24.0",
