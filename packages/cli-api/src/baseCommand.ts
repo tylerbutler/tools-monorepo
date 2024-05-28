@@ -2,8 +2,6 @@ import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
 import type { PrettyPrintableError } from "@oclif/core/lib/interfaces";
 import chalk from "chalk";
 import registerDebug, { type Debugger } from "debug";
-import type { SimpleGit } from "simple-git";
-import { Repository } from "./git.js";
 import type { Logger } from "./logger.js";
 
 /**
@@ -60,12 +58,25 @@ export abstract class BaseCommand<T extends typeof Command>
 	 * If true, all logs except those sent using the .log function will be suppressed.
 	 */
 	private suppressLogging = false;
+
 	protected trace: Debugger | undefined;
 	private traceLog: Debugger | undefined;
 	private traceVerbose: Debugger | undefined;
 	private traceInfo: Debugger | undefined;
 	private traceWarning: Debugger | undefined;
+
+	/**
+	 * If true, log statements will be redirected to debug traces.
+	 */
 	protected redirectLogToTrace = false;
+
+	/**
+	 * If true, the command's `git` and `repo` properties will be populated. If the command is used outside a git
+	 * repository, it will fail with an error.
+	 */
+	// protected get useGit(): boolean {
+	// 	return false;
+	// }
 
 	public override async init(): Promise<void> {
 		await super.init();
@@ -269,20 +280,4 @@ export abstract class BaseCommand<T extends typeof Command>
  */
 function indentString(str: string, indentNumber = 2): string {
 	return `${" ".repeat(indentNumber)}${str}`;
-}
-
-/**
- * @beta
- */
-export abstract class BaseGitCommand<
-	T extends typeof Command & { flags: typeof BaseGitCommand.flags },
-> extends BaseCommand<T> {
-	protected git: SimpleGit | undefined;
-	protected repo: Repository | undefined;
-
-	public override async init(): Promise<void> {
-		await super.init();
-		this.repo = new Repository({ baseDir: process.cwd() });
-		this.git = this.repo.gitClient;
-	}
 }
