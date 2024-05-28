@@ -21,11 +21,13 @@
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
+		"curtis": "packages/curtis/bin/run.js build . -v",
 		"format": "npm run sort-package-json && biome check . --linter-enabled=false --apply",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
 		"prepare": "lefthook install",
+		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
 		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
 		"test": "fluid-build . --task test"
@@ -37,13 +39,13 @@
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
+		"@tylerbu/repopo": "workspace:^",
 		"concurrently": "^8.2.2",
 		"lefthook": "^1.6.11",
 		"rimraf": "^5.0.7",
 		"sort-package-json": "2.10.0",
 		"syncpack": "^12.3.2",
-		"ts-node": "^10.9.2",
-		"typescript": "~5.4.5"
+		"ts-node": "^10.9.2"
 	},
 	"packageManager": "pnpm@9.1.0+sha256.22e36fba7f4880ecf749a5ca128b8435da085ecd49575e7fb9e64d6bf4fad394",
 	"engines": {
