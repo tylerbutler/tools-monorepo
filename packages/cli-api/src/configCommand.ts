@@ -5,6 +5,9 @@ import { BaseCommand } from "./baseCommand.js";
 
 /**
  * A base command that loads typed configuration values from a config file.
+ * 
+ * @typeParam T - The type for the command.
+ * @typeParam C - The type for the command configuration.
  *
  * @beta
  */
@@ -13,7 +16,7 @@ export abstract class CommandWithConfig<
 		args: typeof CommandWithConfig.arguments;
 		flags: typeof CommandWithConfig.flags;
 	},
-	C = unknown | undefined,
+	C = unknown,
 > extends BaseCommand<T> {
 	private _commandConfig: C | undefined;
 	protected configPath: string | undefined;
@@ -68,4 +71,4 @@ export abstract class CommandWithoutConfig<
 		args: typeof CommandWithoutConfig.arguments;
 		flags: typeof CommandWithoutConfig.flags;
 	},
-> extends CommandWithConfig<T, undefined> {}
+> extends BaseCommand<T> {}
