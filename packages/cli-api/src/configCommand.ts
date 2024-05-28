@@ -5,7 +5,7 @@ import { BaseCommand } from "./baseCommand.js";
 
 /**
  * A base command that loads typed configuration values from a config file.
- * 
+ *
  * @typeParam T - The type for the command.
  * @typeParam C - The type for the command configuration.
  *
