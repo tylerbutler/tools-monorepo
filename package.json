@@ -13,9 +13,10 @@
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"check": "fluid-build . --task check",
-		"check:all": "concurrently npm:check:deps npm:check:format npm:lint",
+		"check:all": "concurrently npm:check:deps npm:check:format npm:check:policy npm:lint",
 		"check:deps": "syncpack lint",
 		"check:format": "biome check . --linter-enabled=false",
+		"check:policy": "./packages/repopo/bin/dev.js check",
 		"ci": "fluid-build . --task ci",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
 		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
