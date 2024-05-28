@@ -21,7 +21,6 @@
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
-		"curtis": "packages/curtis/bin/run.js build . -v",
 		"format": "npm run sort-package-json && biome check . --linter-enabled=false --apply",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
