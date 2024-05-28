@@ -3,7 +3,7 @@ import path from "node:path";
 import { updatePackageJsonFile } from "@fluidframework/build-tools";
 import { readJson } from "fs-extra/esm";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../api.js";
+import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
 	name: "PackageJsonRepoDirectoryProperty",

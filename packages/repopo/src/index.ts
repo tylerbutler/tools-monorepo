@@ -6,7 +6,7 @@ export type {
 	PolicyName,
 	PolicyFailure,
 	PolicyFixResult,
-} from "./api.js";
-export { DefaultPolicies } from "./api.js";
+} from "./policy.js";
+export { DefaultPolicies } from "./policy.js";
 export type { PolicyConfig } from "./config.js";
 export type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";

@@ -1,7 +1,4 @@
-import {
-	PackageJsonProperties,
-	type PackageJsonPropertiesSettings,
-} from "./policies/PackageJsonProperties.js";
+import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { NoJsFileExtensions } from "./policies/noJsFiles.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/packageJsonRepoDirectoryProperty.js";
 
@@ -118,24 +115,20 @@ export interface PolicyFixResult extends PolicyFailure {
 	resolved: boolean;
 }
 
-// export interface PackageJsonPolicy extends RepoPolicy {
-// 	match: typeof commonMatchPatterns["package.json"];
+// export const commonMatchPatterns = {
+// 	"package.json": /(^|\/)package\.json/i,
+// } as const;
+
+// export function createPackageJsonPolicy(
+// 	props: Omit<RepoPolicy, "match">,
+// ): RepoPolicy {
+// 	const newPolicy: RepoPolicy = {
+// 		...props,
+// 		match: commonMatchPatterns["package.json"],
+// 	};
+
+// 	return newPolicy;
 // }
-
-export const commonMatchPatterns = {
-	"package.json": /(^|\/)package\.json/i,
-} as const;
-
-export function createPackageJsonPolicy(
-	props: Omit<RepoPolicy, "match">,
-): RepoPolicy {
-	const newPolicy: RepoPolicy = {
-		...props,
-		match: commonMatchPatterns["package.json"],
-	};
-
-	return newPolicy;
-}
 
 export const DefaultPolicies: RepoPolicy[] = [
 	NoJsFileExtensions,

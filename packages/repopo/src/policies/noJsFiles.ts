@@ -1,4 +1,4 @@
-import type { PolicyFailure, RepoPolicy } from "../api.js";
+import type { PolicyFailure, RepoPolicy } from "../policy.js";
 
 /**
  * A repo policy that checks for JavaScript source files that just use the .js file extension. Such files may be

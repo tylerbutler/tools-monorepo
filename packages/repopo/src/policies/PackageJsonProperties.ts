@@ -1,6 +1,6 @@
 import { readJson, writeJson } from "fs-extra/esm";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../api.js";
+import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 export type PackageJsonProperty = string;
 

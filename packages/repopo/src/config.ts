@@ -1,8 +1,9 @@
 import type { RequireAtLeastOne, SetOptional } from "type-fest";
-import type { PolicyName, RepoPolicy } from "./api.js";
 import type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";
+import type { PolicyName, RepoPolicy } from "./policy.js";
 export type PerPolicySettings =
 	| ({
+			// biome-ignore lint/style/useNamingConvention: key needs to match policy name
 			PackageJsonProperties: PackageJsonPropertiesSettings;
 	  } & Record<PolicyName, unknown>)
 	| undefined;
