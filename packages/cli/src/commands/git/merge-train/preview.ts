@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { Args } from "@oclif/core";
 import {
-	BaseGitCommand,
+	GitCommand,
 	checkConflicts,
 	getMergeBase,
 	revList,
@@ -15,7 +15,7 @@ interface CleanupBranch {
 	remote: boolean;
 }
 
-export default class MergeTrainPreviewCommand extends BaseGitCommand<
+export default class MergeTrainPreviewCommand extends GitCommand<
 	typeof MergeTrainPreviewCommand
 > {
 	static override readonly state = "alpha";

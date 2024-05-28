@@ -1,11 +1,9 @@
 import { Args, Flags } from "@oclif/core";
-import { BaseGitCommand } from "@tylerbu/cli-api";
+import { CommandWithConfig, GitCommand } from "@tylerbu/cli-api";
 import chalk from "chalk";
 import stripAnsi from "strip-ansi";
 
-export default class SquishCommand extends BaseGitCommand<
-	typeof SquishCommand
-> {
+export default class SquishCommand extends GitCommand<typeof SquishCommand> {
 	static override readonly description =
 		"Squash-merge a branch with another branch, and reset the source branch to the squash-merged HEAD. This process results in the branch containing a single commit on top of the target branch.";
 
@@ -13,7 +11,7 @@ export default class SquishCommand extends BaseGitCommand<
 		"dry-run": Flags.boolean({
 			description: "Don't make any changes.",
 		}),
-		...BaseGitCommand.flags,
+		...CommandWithConfig.flags,
 	};
 
 	static override readonly args = {

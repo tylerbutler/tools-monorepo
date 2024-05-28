@@ -5,7 +5,10 @@
 ```ts
 
 import { Command } from '@oclif/core';
+import type { Config } from '@oclif/core';
+import { CustomOptions } from '@oclif/core/lib/interfaces/parser.js';
 import { Debugger } from 'debug';
+import { FlagDefinition } from '@oclif/core/lib/interfaces/parser.js';
 import { Interfaces } from '@oclif/core';
 import type { PrettyPrintableError } from '@oclif/core/lib/interfaces';
 import type { SetRequired } from 'type-fest';
@@ -35,11 +38,9 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
     // (undocumented)
     protected flags: Flags<T>;
     info(message: string | Error | undefined): void;
-    // (undocumented)
     init(): Promise<void>;
     logHr(): void;
     logIndent(input: string, indentNumber?: number): void;
-    // (undocumented)
     protected redirectLogToTrace: boolean;
     // (undocumented)
     protected trace: Debugger | undefined;
@@ -51,22 +52,35 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
 }
 
 // @beta (undocumented)
-export abstract class BaseGitCommand<T extends typeof Command & {
-    flags: typeof BaseGitCommand.flags;
-}> extends BaseCommand<T> {
-    // (undocumented)
-    protected git: SimpleGit | undefined;
-    // (undocumented)
-    init(): Promise<void>;
-    // (undocumented)
-    protected repo: Repository | undefined;
-}
-
-// @beta (undocumented)
 export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger): Promise<{
     commit: string;
     mergeability: CommitMergeability;
 }[]>;
+
+// @beta
+export abstract class CommandWithConfig<T extends typeof Command & {
+    args: typeof CommandWithConfig.arguments;
+    flags: typeof CommandWithConfig.flags;
+}, C = unknown | undefined> extends BaseCommand<T> {
+    // (undocumented)
+    protected get commandConfig(): C | undefined;
+    protected set commandConfig(value: C | undefined);
+    // (undocumented)
+    protected configPath: string | undefined;
+    // (undocumented)
+    protected get defaultConfig(): C | undefined;
+    // (undocumented)
+    init(): Promise<void>;
+    // (undocumented)
+    protected loadConfig(): Promise<C | undefined>;
+}
+
+// @beta
+export abstract class CommandWithoutConfig<T extends typeof Command & {
+    args: typeof CommandWithoutConfig.arguments;
+    flags: typeof CommandWithoutConfig.flags;
+}> extends CommandWithConfig<T, undefined> {
+}
 
 // @beta (undocumented)
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
@@ -74,11 +88,26 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
 
+// @beta (undocumented)
+export function findGitRoot(cwd?: string): Promise<string>;
+
 // @public
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<(typeof BaseCommand)["baseFlags"] & T["flags"]>;
 
 // @beta (undocumented)
 export function getMergeBase(git: SimpleGit, reference1: string, reference2: string): Promise<string>;
+
+// @beta
+export abstract class GitCommand<T extends typeof Command & {
+    args: typeof GitCommand.arguments;
+    flags: typeof GitCommand.flags;
+}, C = undefined> extends CommandWithConfig<T, C> {
+    constructor(argv: string[], config: Config);
+    // (undocumented)
+    protected git: SimpleGit;
+    // (undocumented)
+    protected repo: Repository;
+}
 
 // @beta
 export function isSorted(tsconfig: string): boolean;
@@ -97,6 +126,12 @@ export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
 // @beta
 export type OrderList = string[];
+
+// @beta (undocumented)
+export const RegExpFlag: FlagDefinition<RegExp, CustomOptions, {
+multiple: false;
+requiredOrDefaulted: false;
+}>;
 
 // @public
 export class Repository {

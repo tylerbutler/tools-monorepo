@@ -242,3 +242,13 @@ export async function checkConflicts(
 export function shortCommit(commit: string): string {
 	return commit.slice(0, 7);
 }
+
+/**
+ * @beta
+ */
+export async function findGitRoot(cwd = process.cwd()): Promise<string> {
+	const rootPath = await simpleGit({ baseDir: cwd }).revparse([
+		"--show-toplevel",
+	]);
+	return rootPath;
+}
