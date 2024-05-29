@@ -83,6 +83,10 @@
 			"full": {
 				"dependsOn": ["check", "^build", "lint", "^test"],
 				"script": false
+			},
+			"check:policy": {
+				"dependsOn": ["@tylerbu/repopo#build"],
+				"script": true
 			}
 		}
 	}
