@@ -1,29 +1,17 @@
-# dill - simple file download CLI and API
+# @tylerbu/repopo - police the files in your git repo with extensible policies
 
-![An anthropomorphic dill pickle in a doorman's uniform](https://tylerbutlerpublic.blob.core.windows.net/public-storage/dill-logo.jpg)
-
-dill is a CLI app to download files and optionally decompress their contents. It also provides a simple programmatic
-API.
-
-Implementation-wise, dill uses the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) via
-[node-fetch-native](https://github.com/unjs/node-fetch-native) to download files, which means it is reasonably
-cross-platform and will use native Fetch implementations where available.
+repopo is a tool to apply policies to the files in your git repo. You can think of it as a sort of lint tool for any
+file in your git repo, with a straightforward way to write your own policies.
 
 <!-- toc -->
-* [dill - simple file download CLI and API](#dill---simple-file-download-cli-and-api)
-* [Why?](#why)
+* [@tylerbu/repopo - police the files in your git repo with extensible policies](#tylerburepopo---police-the-files-in-your-git-repo-with-extensible-policies)
+* [Included policies](#included-policies)
 * [Usage](#usage)
 <!-- tocstop -->
 
-# Why?
+# Included policies
 
-dill is intended for use in CI/CD systems for TypeScript/JavaScript projects. It fills a similar need to curl or wget --
-a straightforward way to download a file given its URL.
-
-In TypeScript/JavaScript projects, dependencies are typically specified using package.json, and thus it's most
-convenient to use only things that can be specified and installed using package.json. Moreover, dill is written in
-TypeScript and doesn't have any direct native dependencies. Thus, dill enables you to run the same build process locally
-as in CI/CD.
+repopo includes the following policies. All of the included policies are enabled by default.
 
 # Usage
 
