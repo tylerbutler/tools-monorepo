@@ -1,5 +1,5 @@
 import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
-import type { PrettyPrintableError } from "@oclif/core/lib/interfaces";
+import type { PrettyPrintableError } from "@oclif/core/errors";
 import chalk from "chalk";
 import registerDebug, { type Debugger } from "debug";
 import type { Logger } from "./logger.js";
