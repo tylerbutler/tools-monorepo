@@ -32,21 +32,16 @@
         "command": "commands",
         "flagAliases": [],
         "flagChars": [
-            "h",
+            "c",
             "x"
         ],
         "flags": [
             "columns",
-            "csv",
             "deprecated",
             "extended",
-            "filter",
-            "help",
             "hidden",
             "json",
-            "no-header",
             "no-truncate",
-            "output",
             "sort",
             "tree"
         ],
@@ -101,6 +96,20 @@
             "dry-run",
             "quiet",
             "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "hello:world",
+        "flagAliases": [],
+        "flagChars": [
+            "f",
+            "n"
+        ],
+        "flags": [
+            "force",
+            "name"
         ],
         "plugin": "@tylerbu/cli"
     },
