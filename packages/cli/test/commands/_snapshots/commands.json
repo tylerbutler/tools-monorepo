@@ -101,6 +101,20 @@
     },
     {
         "alias": [],
+        "command": "hello:world",
+        "flagAliases": [],
+        "flagChars": [
+            "f",
+            "n"
+        ],
+        "flags": [
+            "force",
+            "name"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
         "command": "help",
         "flagAliases": [],
         "flagChars": [

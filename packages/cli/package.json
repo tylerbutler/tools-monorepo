@@ -45,7 +45,9 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --multi --no-aliases",
 		"sort-package-json": "sort-package-json",
-		"test:mocha": "mocha --forbid-only \"test/**/*.test.ts\""
+		"test": "npm run test:vitest",
+		"test:mocha": "mocha --forbid-only \"test/**/*.test.ts\"",
+		"test:vitest": "vitest run \"test\""
 	},
 	"oclif": {
 		"additionalHelpFlags": ["-h"],
@@ -111,7 +113,8 @@
 		"ts-node": "^10.9.2",
 		"tslib": "^2.6.2",
 		"type-fest": "^4.18.2",
-		"typescript": "~5.4.5"
+		"typescript": "~5.4.5",
+		"vitest": "^1.6.0"
 	},
 	"packageManager": "pnpm@9.1.0+sha256.22e36fba7f4880ecf749a5ca128b8435da085ecd49575e7fb9e64d6bf4fad394",
 	"engines": {
