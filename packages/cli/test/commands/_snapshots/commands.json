@@ -32,21 +32,16 @@
         "command": "commands",
         "flagAliases": [],
         "flagChars": [
-            "h",
+            "c",
             "x"
         ],
         "flags": [
             "columns",
-            "csv",
             "deprecated",
             "extended",
-            "filter",
-            "help",
             "hidden",
             "json",
-            "no-header",
             "no-truncate",
-            "output",
             "sort",
             "tree"
         ],
