@@ -6,11 +6,11 @@
 
 import { Command } from '@oclif/core';
 import type { Config } from '@oclif/core';
-import { CustomOptions } from '@oclif/core/lib/interfaces/parser.js';
+import { CustomOptions } from '@oclif/core/interfaces';
 import { Debugger } from 'debug';
-import { FlagDefinition } from '@oclif/core/lib/interfaces/parser.js';
+import { FlagDefinition } from '@oclif/core/interfaces';
 import { Interfaces } from '@oclif/core';
-import type { PrettyPrintableError } from '@oclif/core/lib/interfaces';
+import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
 import { SimpleGitOptions } from 'simple-git';

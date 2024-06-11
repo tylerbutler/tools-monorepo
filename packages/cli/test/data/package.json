@@ -1,0 +1,24 @@
+{
+	"name": "tools-monorepo",
+	"version": "0.0.0",
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/cli/test/data"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"scripts": {
+		"build": "fluid-build . --task build",
+		"check": "fluid-build . --task check",
+		"test": "fluid-build . --task test"
+	},
+	"devDependencies": {
+		"typescript": "~5.4.5"
+	},
+	"packageManager": "pnpm@9.1.0+sha256.22e36fba7f4880ecf749a5ca128b8435da085ecd49575e7fb9e64d6bf4fad394",
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

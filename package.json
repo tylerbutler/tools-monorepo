@@ -14,6 +14,7 @@
 		"check": "fluid-build . --task check",
 		"check:all": "concurrently npm:check:deps npm:check:format npm:lint",
 		"check:deps": "syncpack lint",
+		"check:deps:fix": "syncpack fix-mismatches",
 		"check:format": "biome check . --linter-enabled=false",
 		"ci": "fluid-build . --task ci",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",

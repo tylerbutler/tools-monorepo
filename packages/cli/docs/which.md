@@ -23,6 +23,18 @@ EXAMPLES
   See which plugin the `help` command is in:
 
     $ tbu which help
+
+  Use colon separators.
+
+    $ tbu which foo:bar:baz
+
+  Use spaces as separators.
+
+    $ tbu which foo bar baz
+
+  Wrap command in quotes to use spaces as separators.
+
+    $ tbu which "foo bar baz"
 ```
 
-_See code: [@oclif/plugin-which](https://github.com/oclif/plugin-which/blob/v3.1.10/src/commands/which.ts)_
+_See code: [@oclif/plugin-which](https://github.com/oclif/plugin-which/blob/v3.2.2/src/commands/which.ts)_

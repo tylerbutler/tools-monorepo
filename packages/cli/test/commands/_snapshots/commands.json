@@ -32,21 +32,16 @@
         "command": "commands",
         "flagAliases": [],
         "flagChars": [
-            "h",
+            "c",
             "x"
         ],
         "flags": [
             "columns",
-            "csv",
             "deprecated",
             "extended",
-            "filter",
-            "help",
             "hidden",
             "json",
-            "no-header",
             "no-truncate",
-            "output",
             "sort",
             "tree"
         ],
@@ -71,6 +66,24 @@
             "out",
             "quiet",
             "strip",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [
+            "get:package"
+        ],
+        "command": "edit:package",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "delete",
+            "onlyIfExists",
+            "package",
+            "quiet",
             "verbose"
         ],
         "plugin": "@tylerbu/cli"

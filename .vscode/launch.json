@@ -11,6 +11,15 @@
 			"type": "node",
 		},
 		{
+			"name": "pnpm test cli",
+			"request": "launch",
+			"runtimeArgs": ["run-script", "test"],
+			"cwd": "${workspaceFolder}/packages/cli",
+			"runtimeExecutable": "pnpm",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+		},
+		{
 			"name": "tbu",
 			"request": "launch",
 			"program": "${workspaceFolder}/packages/cli/bin/dev.js",
