@@ -51,35 +51,35 @@ importers:
   packages/cli:
     dependencies:
       '@oclif/core':
-        specifier: ^4.0.3
-        version: 4.0.3(typescript@5.4.5)
+        specifier: ^4.0.4
+        version: 4.0.4
       '@oclif/plugin-autocomplete':
         specifier: ^3.1.2
-        version: 3.1.2(typescript@5.4.5)
+        version: 3.1.2
       '@oclif/plugin-commands':
         specifier: ^4.0.2
-        version: 4.0.2(typescript@5.4.5)
+        version: 4.0.2
       '@oclif/plugin-help':
         specifier: ^6.2.1
-        version: 6.2.1(typescript@5.4.5)
+        version: 6.2.1
       '@oclif/plugin-not-found':
         specifier: ^3.2.3
-        version: 3.2.3(typescript@5.4.5)
+        version: 3.2.3
       '@oclif/plugin-plugins':
         specifier: ^5.2.4
-        version: 5.2.4(typescript@5.4.5)
+        version: 5.2.4
       '@oclif/plugin-search':
         specifier: ^1.1.2
-        version: 1.1.2(typescript@5.4.5)
+        version: 1.1.2
       '@oclif/plugin-version':
         specifier: ^2.2.3
-        version: 2.2.3(typescript@5.4.5)
+        version: 2.2.3
       '@oclif/plugin-warn-if-update-available':
         specifier: ^3.1.5
-        version: 3.1.5(typescript@5.4.5)
+        version: 3.1.5
       '@oclif/plugin-which':
         specifier: ^3.2.2
-        version: 3.2.2(typescript@5.4.5)
+        version: 3.2.2
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
@@ -110,10 +110,10 @@ importers:
         version: 1.7.3
       '@oclif/plugin-command-snapshot':
         specifier: ^5.2.2
-        version: 5.2.2(typescript@5.4.5)
+        version: 5.2.2
       '@oclif/test':
         specifier: ^4.0.3
-        version: 4.0.3(@oclif/core@4.0.3(typescript@5.4.5))
+        version: 4.0.3(@oclif/core@4.0.4)
       '@types/chai':
         specifier: ^4.3.16
         version: 4.3.16
@@ -134,7 +134,7 @@ importers:
         version: 10.4.0
       oclif:
         specifier: ^4.13.5
-        version: 4.13.5(typescript@5.4.5)
+        version: 4.13.5
       rimraf:
         specifier: ^5.0.7
         version: 5.0.7
@@ -160,8 +160,8 @@ importers:
   packages/cli-api:
     dependencies:
       '@oclif/core':
-        specifier: ^4.0.3
-        version: 4.0.3(typescript@5.4.5)
+        specifier: ^4.0.4
+        version: 4.0.4
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
@@ -198,7 +198,7 @@ importers:
         version: 7.43.4(@types/node@20.12.11)
       '@oclif/test':
         specifier: ^4.0.3
-        version: 4.0.3(@oclif/core@4.0.3(typescript@5.4.5))
+        version: 4.0.3(@oclif/core@4.0.4)
       '@types/chai':
         specifier: ^4.3.16
         version: 4.3.16
@@ -231,7 +231,7 @@ importers:
         version: 10.4.0
       oclif:
         specifier: ^4.13.5
-        version: 4.13.5(typescript@5.4.5)
+        version: 4.13.5
       rimraf:
         specifier: ^5.0.7
         version: 5.0.7
@@ -263,11 +263,11 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3
       '@oclif/core':
-        specifier: ^4.0.3
-        version: 4.0.3(typescript@5.4.5)
+        specifier: ^4.0.4
+        version: 4.0.4
       '@oclif/plugin-help':
         specifier: ^6.2.1
-        version: 6.2.1(typescript@5.4.5)
+        version: 6.2.1
       '@tinyhttp/content-disposition':
         specifier: ^2.2.0
         version: 2.2.0
@@ -301,10 +301,10 @@ importers:
         version: 7.43.4(@types/node@20.12.11)
       '@oclif/plugin-command-snapshot':
         specifier: ^5.2.2
-        version: 5.2.2(typescript@5.4.5)
+        version: 5.2.2
       '@oclif/test':
         specifier: ^4.0.3
-        version: 4.0.3(@oclif/core@4.0.3(typescript@5.4.5))
+        version: 4.0.3(@oclif/core@4.0.4)
       '@types/chai':
         specifier: ^4.3.16
         version: 4.3.16
@@ -340,7 +340,7 @@ importers:
         version: 10.4.0
       oclif:
         specifier: ^4.13.5
-        version: 4.13.5(typescript@5.4.5)
+        version: 4.13.5
       rimraf:
         specifier: ^5.0.7
         version: 5.0.7
@@ -991,8 +991,8 @@ packages:
     resolution: {integrity: sha512-+FiTw1IPuJTF9tSAlTsY8bGK4sgthehjz7c2SvYdgQncTkxI2xvUch/8QpjNYGLEmUneNygvYMRBax2KJcLccA==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/core@4.0.3':
-    resolution: {integrity: sha512-yM8R/M2WfSNfL9eF8clS/SbQvanvHZJgoij5bLs3ro7uAFCkL/LYcagyj0UVGbysx5AI+SNIof6OHQUXYZpOZw==}
+  '@oclif/core@4.0.4':
+    resolution: {integrity: sha512-gbmqgPCyT5f2ZtPRHQmoWbj+gdn5ZQDwAJ6t7rGJnABq89utLuADZfQ0ORjcAmNKAFLxerUZoJA4nPOxW/vIRw==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-autocomplete@3.1.2':
@@ -3170,6 +3170,10 @@ packages:
 
   lie@3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
+
+  lilconfig@3.1.2:
+    resolution: {integrity: sha512-eop+wDAvpItUys0FWkHIKeC9ybYrTGbU41U5K7+bttZZeohvnY7M9dZ5kB21GNWiFT2q1OoPTvncPCgSOVO5ow==}
+    engines: {node: '>=14'}
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -5696,23 +5700,22 @@ snapshots:
   '@esbuild/win32-x64@0.20.2':
     optional: true
 
-  '@fluid-tools/version-tools@0.38.0(typescript@5.1.6)':
+  '@fluid-tools/version-tools@0.38.0':
     dependencies:
       '@oclif/core': 3.26.6
-      '@oclif/plugin-autocomplete': 3.1.2(typescript@5.1.6)
+      '@oclif/plugin-autocomplete': 3.1.2
       '@oclif/plugin-commands': 3.3.4
-      '@oclif/plugin-help': 6.2.1(typescript@5.1.6)
-      '@oclif/plugin-not-found': 3.2.3(typescript@5.1.6)
+      '@oclif/plugin-help': 6.2.1
+      '@oclif/plugin-not-found': 3.2.3
       chalk: 2.4.2
       semver: 7.6.2
       table: 6.8.1
     transitivePeerDependencies:
       - supports-color
-      - typescript
 
   '@fluidframework/build-tools@0.38.0(@types/node@20.14.2)(encoding@0.1.13)':
     dependencies:
-      '@fluid-tools/version-tools': 0.38.0(typescript@5.1.6)
+      '@fluid-tools/version-tools': 0.38.0
       '@fluidframework/bundle-size-tools': 0.38.0
       '@manypkg/get-packages': 2.2.0
       '@octokit/core': 4.2.4(encoding@0.1.13)
@@ -6054,73 +6057,38 @@ snapshots:
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
 
-  '@oclif/core@4.0.3(typescript@5.1.6)':
+  '@oclif/core@4.0.4':
     dependencies:
       ansi-escapes: 4.3.2
       ansis: 3.2.0
       clean-stack: 3.0.1
       cli-spinners: 2.9.2
-      cosmiconfig: 9.0.0(typescript@5.1.6)
       debug: 4.3.5(supports-color@8.1.1)
       ejs: 3.1.10
       get-package-type: 0.1.0
       globby: 11.1.0
       indent-string: 4.0.0
       is-wsl: 2.2.0
+      lilconfig: 3.1.2
       minimatch: 9.0.4
       string-width: 4.2.3
       supports-color: 8.1.1
       widest-line: 3.1.0
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
-    transitivePeerDependencies:
-      - typescript
 
-  '@oclif/core@4.0.3(typescript@5.4.5)':
+  '@oclif/plugin-autocomplete@3.1.2':
     dependencies:
-      ansi-escapes: 4.3.2
-      ansis: 3.2.0
-      clean-stack: 3.0.1
-      cli-spinners: 2.9.2
-      cosmiconfig: 9.0.0(typescript@5.4.5)
-      debug: 4.3.5(supports-color@8.1.1)
-      ejs: 3.1.10
-      get-package-type: 0.1.0
-      globby: 11.1.0
-      indent-string: 4.0.0
-      is-wsl: 2.2.0
-      minimatch: 9.0.4
-      string-width: 4.2.3
-      supports-color: 8.1.1
-      widest-line: 3.1.0
-      wordwrap: 1.0.0
-      wrap-ansi: 7.0.0
-    transitivePeerDependencies:
-      - typescript
-
-  '@oclif/plugin-autocomplete@3.1.2(typescript@5.1.6)':
-    dependencies:
-      '@oclif/core': 4.0.3(typescript@5.1.6)
+      '@oclif/core': 4.0.4
       ansis: 3.2.0
       debug: 4.3.5(supports-color@8.1.1)
       ejs: 3.1.10
     transitivePeerDependencies:
       - supports-color
-      - typescript
 
-  '@oclif/plugin-autocomplete@3.1.2(typescript@5.4.5)':
+  '@oclif/plugin-command-snapshot@5.2.2':
     dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
-      ansis: 3.2.0
-      debug: 4.3.5(supports-color@8.1.1)
-      ejs: 3.1.10
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
-  '@oclif/plugin-command-snapshot@5.2.2(typescript@5.4.5)':
-    dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
+      '@oclif/core': 4.0.4
       ansis: 3.2.0
       globby: 14.0.1
       just-diff: 5.2.0
@@ -6129,56 +6097,33 @@ snapshots:
       lodash.sortby: 4.7.0
       semver: 7.6.2
       ts-json-schema-generator: 1.5.1
-    transitivePeerDependencies:
-      - typescript
 
   '@oclif/plugin-commands@3.3.4':
     dependencies:
       '@oclif/core': 3.26.6
       lodash: 4.17.21
 
-  '@oclif/plugin-commands@4.0.2(typescript@5.4.5)':
+  '@oclif/plugin-commands@4.0.2':
     dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
+      '@oclif/core': 4.0.4
       lodash: 4.17.21
       object-treeify: 4.0.1
       tty-table: 4.2.3
-    transitivePeerDependencies:
-      - typescript
 
-  '@oclif/plugin-help@6.2.1(typescript@5.1.6)':
+  '@oclif/plugin-help@6.2.1':
     dependencies:
-      '@oclif/core': 4.0.3(typescript@5.1.6)
-    transitivePeerDependencies:
-      - typescript
+      '@oclif/core': 4.0.4
 
-  '@oclif/plugin-help@6.2.1(typescript@5.4.5)':
-    dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
-    transitivePeerDependencies:
-      - typescript
-
-  '@oclif/plugin-not-found@3.2.3(typescript@5.1.6)':
+  '@oclif/plugin-not-found@3.2.3':
     dependencies:
       '@inquirer/confirm': 3.1.9
-      '@oclif/core': 4.0.3(typescript@5.1.6)
+      '@oclif/core': 4.0.4
       ansis: 3.2.0
       fast-levenshtein: 3.0.0
-    transitivePeerDependencies:
-      - typescript
 
-  '@oclif/plugin-not-found@3.2.3(typescript@5.4.5)':
+  '@oclif/plugin-plugins@5.2.4':
     dependencies:
-      '@inquirer/confirm': 3.1.9
-      '@oclif/core': 4.0.3(typescript@5.4.5)
-      ansis: 3.2.0
-      fast-levenshtein: 3.0.0
-    transitivePeerDependencies:
-      - typescript
-
-  '@oclif/plugin-plugins@5.2.4(typescript@5.4.5)':
-    dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
+      '@oclif/core': 4.0.4
       ansis: 3.2.0
       debug: 4.3.4(supports-color@8.1.1)
       npm: 10.8.1
@@ -6191,43 +6136,35 @@ snapshots:
       yarn: 1.22.22
     transitivePeerDependencies:
       - supports-color
-      - typescript
 
-  '@oclif/plugin-search@1.1.2(typescript@5.4.5)':
+  '@oclif/plugin-search@1.1.2':
     dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
+      '@oclif/core': 4.0.4
       inquirer-autocomplete-standalone: 0.8.1
-    transitivePeerDependencies:
-      - typescript
 
-  '@oclif/plugin-version@2.2.3(typescript@5.4.5)':
+  '@oclif/plugin-version@2.2.3':
     dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
+      '@oclif/core': 4.0.4
       ansis: 3.2.0
-    transitivePeerDependencies:
-      - typescript
 
-  '@oclif/plugin-warn-if-update-available@3.1.5(typescript@5.4.5)':
+  '@oclif/plugin-warn-if-update-available@3.1.5':
     dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
+      '@oclif/core': 4.0.4
       ansis: 3.2.0
       debug: 4.3.5(supports-color@8.1.1)
       http-call: 5.3.0
       lodash: 4.17.21
     transitivePeerDependencies:
       - supports-color
-      - typescript
 
-  '@oclif/plugin-which@3.2.2(typescript@5.4.5)':
+  '@oclif/plugin-which@3.2.2':
     dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
+      '@oclif/core': 4.0.4
       ansis: 3.2.0
-    transitivePeerDependencies:
-      - typescript
 
-  '@oclif/test@4.0.3(@oclif/core@4.0.3(typescript@5.4.5))':
+  '@oclif/test@4.0.3(@oclif/core@4.0.4)':
     dependencies:
-      '@oclif/core': 4.0.3(typescript@5.4.5)
+      '@oclif/core': 4.0.4
       ansis: 3.2.0
       debug: 4.3.5(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -7543,15 +7480,6 @@ snapshots:
       parse-json: 5.2.0
       path-type: 4.0.0
 
-  cosmiconfig@9.0.0(typescript@5.1.6):
-    dependencies:
-      env-paths: 2.2.1
-      import-fresh: 3.3.0
-      js-yaml: 4.1.0
-      parse-json: 5.2.0
-    optionalDependencies:
-      typescript: 5.1.6
-
   cosmiconfig@9.0.0(typescript@5.4.5):
     dependencies:
       env-paths: 2.2.1
@@ -8705,6 +8633,8 @@ snapshots:
     dependencies:
       immediate: 3.0.6
 
+  lilconfig@3.1.2: {}
+
   lines-and-columns@1.2.4: {}
 
   load-yaml-file@0.2.0:
@@ -9035,17 +8965,17 @@ snapshots:
       has-symbols: 1.0.3
       object-keys: 1.1.1
 
-  oclif@4.13.5(typescript@5.4.5):
+  oclif@4.13.5:
     dependencies:
       '@aws-sdk/client-cloudfront': 3.592.0
       '@aws-sdk/client-s3': 3.592.0
       '@inquirer/confirm': 3.1.6
       '@inquirer/input': 2.1.9
       '@inquirer/select': 2.3.5
-      '@oclif/core': 4.0.3(typescript@5.4.5)
-      '@oclif/plugin-help': 6.2.1(typescript@5.4.5)
-      '@oclif/plugin-not-found': 3.2.3(typescript@5.4.5)
-      '@oclif/plugin-warn-if-update-available': 3.1.5(typescript@5.4.5)
+      '@oclif/core': 4.0.4
+      '@oclif/plugin-help': 6.2.1
+      '@oclif/plugin-not-found': 3.2.3
+      '@oclif/plugin-warn-if-update-available': 3.1.5
       async-retry: 1.3.3
       chalk: 4.1.2
       change-case: 4.1.2
@@ -9064,7 +8994,6 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
       - supports-color
-      - typescript
 
   on-headers@1.0.2: {}
 
