@@ -45,8 +45,9 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --multi --no-aliases",
 		"sort-package-json": "sort-package-json",
-		"test": "vitest run \"test\"",
-		"test:mocha": "mocha --forbid-only \"test/**/*.test.ts\""
+		"test": "npm run test:mocha",
+		"test:vitest": "vitest run \"test\"",
+		"test:mocha": "mocha --forbid-only \"test/commands/**/*.test.ts\""
 	},
 	"oclif": {
 		"additionalHelpFlags": ["-h"],
