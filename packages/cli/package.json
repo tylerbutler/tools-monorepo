@@ -45,7 +45,7 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --multi --no-aliases",
 		"sort-package-json": "sort-package-json",
-		"test": "npm run test:mocha",
+		"test": "npm run test:vitest",
 		"test:vitest": "vitest run \"test\"",
 		"test:mocha": "mocha --forbid-only \"test/commands/**/*.test.ts\""
 	},
@@ -78,7 +78,7 @@
 		}
 	},
 	"dependencies": {
-		"@oclif/core": "^4.0.3",
+		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-autocomplete": "^3.1.2",
 		"@oclif/plugin-commands": "^4.0.2",
 		"@oclif/plugin-help": "^6.2.1",

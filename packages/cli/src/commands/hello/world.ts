@@ -1,30 +1,32 @@
-import {Args, Command, Flags} from '@oclif/core'
+import { Args, Command, Flags } from "@oclif/core";
 
 export default class HelloWorld extends Command {
-  static override args = {
-    file: Args.string({description: 'file to read'}),
-  }
+	static override hidden = true;
 
-  static override description = 'describe the command here'
+	static override args = {
+		file: Args.string({ description: "file to read" }),
+	};
 
-  static override examples = [
-    '<%= config.bin %> <%= command.id %>',
-  ]
+	static override description = "describe the command here";
 
-  static override flags = {
-    // flag with no value (-f, --force)
-    force: Flags.boolean({char: 'f'}),
-    // flag with a value (-n, --name=VALUE)
-    name: Flags.string({char: 'n', description: 'name to print'}),
-  }
+	static override examples = ["<%= config.bin %> <%= command.id %>"];
 
-  public async run(): Promise<void> {
-    const {args, flags} = await this.parse(HelloWorld)
+	static override flags = {
+		// flag with no value (-f, --force)
+		force: Flags.boolean({ char: "f" }),
+		// flag with a value (-n, --name=VALUE)
+		name: Flags.string({ char: "n", description: "name to print" }),
+	};
 
-    const name = flags.name ?? 'world'
-    this.log(`hello ${name} from /Volumes/Code/tools-monorepo/packages/cli/src/commands/hello/world.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
-    }
-  }
+	public async run(): Promise<void> {
+		const { args, flags } = await this.parse(HelloWorld);
+
+		const name = flags.name ?? "world";
+		this.log(
+			`hello ${name} from /Volumes/Code/tools-monorepo/packages/cli/src/commands/hello/world.ts`,
+		);
+		if (args.file && flags.force) {
+			this.log(`you input --force and --file: ${args.file}`);
+		}
+	}
 }
