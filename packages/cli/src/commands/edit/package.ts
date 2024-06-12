@@ -63,7 +63,6 @@ export default class EditPackage extends CommandWithoutConfig<
 	];
 
 	async run(): Promise<void> {
-		this.log("Running");
 		const { property, value } = this.args;
 		const { package: pkg, delete: deleteProperty, onlyIfExists } = this.flags;
 

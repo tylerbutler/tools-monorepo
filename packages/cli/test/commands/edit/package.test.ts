@@ -7,6 +7,7 @@ import { describe, expect } from "vitest";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const root = path.join(__dirname, "../../..");
 
 const testFiles = {
 	packageJson: "../../data/package.json",
@@ -21,7 +22,7 @@ describe("edit:package command", () => {
 		// const { stdout } = await runCommand<EditPackage>(
 		const { stdout } = await runCommand<{ name: string }>(
 			["edit:package", "private"],
-			undefined,
+			{ root },
 			{ print: true },
 		);
 		expect(stdout).to.equal("true");
