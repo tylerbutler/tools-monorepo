@@ -5,6 +5,10 @@ import { readJson } from "fs-extra/esm";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
+/**
+ * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository
+ * field is a string instead of an object the package will be ignored.
+ */
 export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
 	name: "PackageJsonRepoDirectoryProperty",
 	match: /(^|\/)package\.json/i,
@@ -20,7 +24,6 @@ export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
 			resolved: false,
 		};
 
-		// TODO
 		const pkg = (await readJson(file)) as PackageJson;
 		const pkgDir = path.dirname(file);
 		const relativePkgDir = path.relative(root, pkgDir);

@@ -1,6 +1,10 @@
 import type { RequireAtLeastOne, SetOptional } from "type-fest";
 import type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";
 import type { PolicyName, RepoPolicy } from "./policy.js";
+
+/**
+ * @alpha
+ */
 export type PerPolicySettings =
 	| ({
 			// biome-ignore lint/style/useNamingConvention: key needs to match policy name
@@ -8,6 +12,9 @@ export type PerPolicySettings =
 	  } & Record<PolicyName, unknown>)
 	| undefined;
 
+/**
+ * @alpha
+ */
 export interface OptionalPolicyConfig {
 	policies?: RepoPolicy[];
 
@@ -23,16 +30,15 @@ export interface OptionalPolicyConfig {
 	 */
 	excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
 	includeDefaultPolicies?: boolean;
-	// policySettings?: Record<
-	// 	PolicyName,
-	// 	{
-	// 		PackageJsonProperties: PackageJsonPropertiesSettings;
-	// 	} & Record<string, unknown>
-	// >;
 
 	policySettings?: PerPolicySettings | undefined;
 }
 
+/**
+ * A type representing policy configuration.
+ *
+ * @alpha
+ */
 export type PolicyConfig = RequireAtLeastOne<
 	OptionalPolicyConfig,
 	"policies" | "includeDefaultPolicies"

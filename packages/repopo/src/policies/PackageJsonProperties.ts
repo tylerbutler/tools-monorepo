@@ -2,10 +2,15 @@ import { readJson, writeJson } from "fs-extra/esm";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
+/**
+ * @alpha
+ */
 export type PackageJsonProperty = string;
 
 /**
  * Policy settings for the PackageJsonProperties repo policy.
+ *
+ * @alpha
  */
 export interface PackageJsonPropertiesSettings {
 	/**

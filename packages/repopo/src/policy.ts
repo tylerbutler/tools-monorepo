@@ -1,12 +1,17 @@
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
+import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { NoJsFileExtensions } from "./policies/noJsFiles.js";
-import { PackageJsonRepoDirectoryProperty } from "./policies/packageJsonRepoDirectoryProperty.js";
 
 /**
  * A type representing a policy name.
+ *
+ * @alpha
  */
 export type PolicyName = string;
 
+/**
+ * @alpha
+ */
 export interface PolicyFunctionArguments<C = unknown | undefined> {
 	file: string;
 	root: string;
@@ -14,6 +19,11 @@ export interface PolicyFunctionArguments<C = unknown | undefined> {
 	config?: C;
 }
 
+/**
+ * A policy handler is a function that is called to check policy against a file.
+ *
+ * @alpha
+ */
 export type PolicyHandler<C = unknown | undefined> = (
 	args: PolicyFunctionArguments<C>,
 ) => Promise<true | PolicyFailure | PolicyFixResult>;
@@ -23,6 +33,11 @@ export type PolicyHandler<C = unknown | undefined> = (
 // 	root: string,
 // ) => Promise<true | PolicyFailure | PolicyFixResult>;
 
+/**
+ * A standalone function that can be called to resolve a policy failure.
+ *
+ * @alpha
+ */
 export type PolicyStandaloneResolver<C = unknown | undefined> = (
 	args: Omit<PolicyFunctionArguments<C>, "resolve">,
 ) => PolicyFixResult;
@@ -39,6 +54,8 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
  * (automated resolutions depend on the policy implementation).
  *
  * @typeParam C - type of configuration object used by the policy
+ *
+ * @alpha
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
@@ -104,6 +121,11 @@ export class RepoPolicyClass implements RepoPolicy {
 	}
 }
 
+/**
+ * A policy failure.
+ *
+ * @alpha
+ */
 export interface PolicyFailure {
 	name: PolicyName;
 	file: string;
@@ -111,6 +133,9 @@ export interface PolicyFailure {
 	errorMessage?: string;
 }
 
+/**
+ * @alpha
+ */
 export interface PolicyFixResult extends PolicyFailure {
 	resolved: boolean;
 }
@@ -130,6 +155,11 @@ export interface PolicyFixResult extends PolicyFailure {
 // 	return newPolicy;
 // }
 
+/**
+ * Default policies included with repopo.
+ *
+ * @alpha
+ */
 export const DefaultPolicies: RepoPolicy[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
