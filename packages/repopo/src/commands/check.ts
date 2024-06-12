@@ -2,12 +2,7 @@ import fs from "node:fs";
 import { EOL as newline } from "node:os";
 import path from "node:path";
 import { Flags } from "@oclif/core";
-import {
-	BaseCommand,
-	GitCommand,
-	RegExpFlag,
-	findGitRoot,
-} from "@tylerbu/cli-api";
+import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
 import chalk from "chalk";
 import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
 import { DefaultPolicyConfig, type PolicyConfig } from "../config.js";
@@ -70,7 +65,13 @@ const handlerPerformanceData = new Map<PolicyAction, Map<string, number>>();
  *
  * `git ls-files -co --exclude-standard --full-name | repopo check --stdin --verbose`
  */
-export class CheckPolicy extends GitCommand<typeof CheckPolicy, PolicyConfig> {
+export class CheckPolicy extends GitCommand<
+	typeof CheckPolicy & {
+		args: typeof GitCommand.args;
+		flags: typeof GitCommand.flags;
+	},
+	PolicyConfig
+> {
 	static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
@@ -103,7 +104,7 @@ export class CheckPolicy extends GitCommand<typeof CheckPolicy, PolicyConfig> {
 			description: "Read list of files from stdin.",
 			required: false,
 		}),
-		...BaseCommand.flags,
+		...GitCommand.flags,
 	} as const;
 
 	private processed = 0;
@@ -258,7 +259,9 @@ export class CheckPolicy extends GitCommand<typeof CheckPolicy, PolicyConfig> {
 		}
 
 		if (this.commandContext === undefined) {
-			this.error("Command context was undefined - fatal error.", { exit: 100 });
+			this.error("Command context was undefined - fatal error.", {
+				exit: 100,
+			});
 		}
 
 		await this.executePolicy(filePathsToCheck, this.commandContext);

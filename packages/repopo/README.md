@@ -24,7 +24,7 @@ Checks and applies policies to the files in the repository.
 
 ```
 USAGE
-  $ repopo check [-v | --quiet] [-f] [-D <value> | -d <value>] [-p <value>] [--stdin]
+  $ repopo check [-v | --quiet] [-f] [-D <value>... | -d <value>] [-p <value>] [--stdin]
 
 FLAGS
   -D, --excludePolicy=<value>...  Exclude policies by name. Can be specified multiple times to exclude multiple
