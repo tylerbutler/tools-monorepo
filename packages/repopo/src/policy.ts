@@ -1,6 +1,6 @@
+import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
-import { NoJsFileExtensions } from "./policies/noJsFiles.js";
 
 /**
  * A type representing a policy name.
