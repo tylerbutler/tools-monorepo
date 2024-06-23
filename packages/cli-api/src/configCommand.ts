@@ -13,7 +13,7 @@ import { BaseCommand } from "./baseCommand.js";
  */
 export abstract class CommandWithConfig<
 	T extends typeof Command & {
-		args: typeof CommandWithConfig.arguments;
+		args: typeof CommandWithConfig.args;
 		flags: typeof CommandWithConfig.flags;
 	},
 	C = unknown,
@@ -68,7 +68,7 @@ export abstract class CommandWithConfig<
  */
 export abstract class CommandWithoutConfig<
 	T extends typeof Command & {
-		args: typeof CommandWithoutConfig.arguments;
+		args: typeof CommandWithoutConfig.args;
 		flags: typeof CommandWithoutConfig.flags;
 	},
 > extends BaseCommand<T> {}
