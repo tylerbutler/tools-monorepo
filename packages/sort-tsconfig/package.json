@@ -47,11 +47,7 @@
 		"readme": "oclif readme --no-aliases",
 		"sort-package-json": "sort-package-json",
 		"start": "serve ./test/data --listen 8080",
-		"test": "start-server-and-test start http://localhost:8080 test:vitest",
-		"test:mocha": "mocha --forbid-only \"test/mocha/**/*.test.ts\"",
-		"test:snapshots": "start-server-and-test start http://localhost:8080 update:test-snapshots",
-		"test:vitest": "vitest run \"test/vitest\"",
-		"update:test-snapshots": "vitest run \"test/vitest\" -u"
+		"test": "vitest run \"test\""
 	},
 	"oclif": {
 		"bin": "sort-tsconfig",
