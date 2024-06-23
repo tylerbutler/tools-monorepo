@@ -11,15 +11,21 @@
  * @param compareFn - A comparison function similar to the comparison function used by Array.prototype.sort.
  * @returns True if the array is sorted according to the comparison function, false otherwise.
  *
+ * @beta
+ *
  * @example
+ * ```ts
  * const numbers = [1, 2, 3, 4, 5];
  * const isNumSorted = isSorted(numbers, (a, b) => a - b);
  * console.log(isNumSorted); // true
+ * ```
  *
  * @example
+ * ```ts
  * const words = ['apple', 'banana', 'grape'];
  * const isWordsSorted = isSorted(words, (a, b) => a.localeCompare(b));
  * console.log(isWordsSorted); // true
+ * ```
  *
  * @privateRemarks
  * The function uses a non-null assertion (!) for `arr[i]` inside the comparison,

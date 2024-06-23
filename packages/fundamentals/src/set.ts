@@ -18,6 +18,8 @@
  *
  * @typeParam T - The type of elements in the set and iterable collection.
  *
+ * @beta
+ *
  * @example
  * // Example usage with a set of numbers and an array
  * const numberSet = new Set<number>();
