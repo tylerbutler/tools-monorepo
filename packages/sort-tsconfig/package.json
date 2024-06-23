@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/sort-tsconfig",
-	"version": "0.1.0",
+	"version": "0.0.1",
 	"private": true,
 	"description": "Sorts tsconfig files.",
 	"keywords": ["sort", "tsconfig"],
@@ -38,6 +38,7 @@
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
+		"docs": "api-extractor run --local",
 		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
