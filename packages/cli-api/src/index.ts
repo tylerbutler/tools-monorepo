@@ -17,10 +17,3 @@ export type {
 	LoggingFunction,
 	Logger,
 } from "./logger.js";
-export {
-	isSorted,
-	sortTsconfigFile,
-	type OrderList,
-	type SortTsconfigResult,
-	TsConfigSorter,
-} from "./tsconfig.js";
