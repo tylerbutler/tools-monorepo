@@ -59,7 +59,7 @@ export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger
 
 // @beta
 export abstract class CommandWithConfig<T extends typeof Command & {
-    args: typeof CommandWithConfig.arguments;
+    args: typeof CommandWithConfig.args;
     flags: typeof CommandWithConfig.flags;
 }, C = unknown> extends BaseCommand<T> {
     // (undocumented)
@@ -77,7 +77,7 @@ export abstract class CommandWithConfig<T extends typeof Command & {
 
 // @beta
 export abstract class CommandWithoutConfig<T extends typeof Command & {
-    args: typeof CommandWithoutConfig.arguments;
+    args: typeof CommandWithoutConfig.args;
     flags: typeof CommandWithoutConfig.flags;
 }> extends BaseCommand<T> {
 }
@@ -99,7 +99,7 @@ export function getMergeBase(git: SimpleGit, reference1: string, reference2: str
 
 // @beta
 export abstract class GitCommand<T extends typeof Command & {
-    args: typeof GitCommand.arguments;
+    args: typeof GitCommand.args;
     flags: typeof GitCommand.flags;
 }, C = undefined> extends CommandWithConfig<T, C> {
     constructor(argv: string[], config: Config);

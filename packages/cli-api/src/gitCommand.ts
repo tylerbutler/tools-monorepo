@@ -10,7 +10,7 @@ import { Repository } from "./git.js";
  */
 export abstract class GitCommand<
 	T extends typeof Command & {
-		args: typeof GitCommand.arguments;
+		args: typeof GitCommand.args;
 		flags: typeof GitCommand.flags;
 	},
 	C = undefined,

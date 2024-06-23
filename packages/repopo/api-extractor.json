@@ -1,0 +1,31 @@
+{
+	"$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+	"extends": "../../config/api-extractor.base.json",
+
+	"messages": {
+		"compilerMessageReporting": {
+			"default": {
+				"logLevel": "error",
+				"addToApiReportFile": false,
+			},
+		},
+
+		"extractorMessageReporting": {
+			"default": {
+				"logLevel": "error",
+				"addToApiReportFile": false,
+			},
+			"ae-internal-missing-underscore": {
+				"logLevel": "none",
+				"addToApiReportFile": false,
+			},
+		},
+
+		"tsdocMessageReporting": {
+			"default": {
+				"logLevel": "error",
+				"addToApiReportFile": false,
+			},
+		},
+	},
+}
