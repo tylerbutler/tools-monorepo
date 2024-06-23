@@ -1,6 +1,11 @@
 # @tylerbu/cli
 
-@tylerbutler's personal CLI.
+<!-- AUTO-GENERATED-CONTENT:START (PKGJSON:template=${description}) -->
+markdown-magic-package-json
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+<!-- AUTO-GENERATED-CONTENT:START (DEPENDENCYTABLE) -->
+<!-- AUTO-GENERATED-CONTENT:END -->
 
 [![oclif](https://badgers.space/badge/oclif/3.9.1?color=71c405&icon=feather-terminal)](https://oclif.io)
 <!-- [![npm](https://badgers.space/npm/name/tylerbu/cli)]() -->
