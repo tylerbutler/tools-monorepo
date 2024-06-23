@@ -1,15 +1,15 @@
 {
-	"name": "dill",
+	"name": "@tylerbu/repopo",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Simple CLI to download and optionally decompress files.",
-	"keywords": ["download", "ci"],
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/dill/",
+	"description": "Enforce policies on all or some of the files in a git repository.",
+	"keywords": ["policy", "ci"],
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/repopo/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/dill"
+		"directory": "packages/repopo"
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -18,15 +18,11 @@
 		".": {
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
-		},
-		"./command": {
-			"types": "./esm/commands/download.d.ts",
-			"import": "./esm/commands/download.js"
 		}
 	},
 	"types": "esm/index.d.ts",
 	"bin": {
-		"dill": "./bin/run.js"
+		"repopo": "./bin/run.js"
 	},
 	"files": ["/bin", "/esm", "/oclif.manifest.json"],
 	"scripts": {
@@ -38,6 +34,8 @@
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
+		"docs": "api-extractor run --local",
+		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
@@ -45,54 +43,37 @@
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --no-aliases",
-		"sort-package-json": "sort-package-json",
-		"start": "serve ./test/data --listen 8080",
-		"test": "start-server-and-test start http://localhost:8080 test:vitest",
-		"test:mocha": "mocha --forbid-only \"test/mocha/**/*.test.ts\"",
-		"test:snapshots": "start-server-and-test start http://localhost:8080 update:test-snapshots",
-		"test:vitest": "vitest run \"test/vitest\"",
-		"update:test-snapshots": "vitest run \"test/vitest\" -u"
+		"sort-package-json": "sort-package-json"
 	},
 	"oclif": {
-		"bin": "dill",
+		"bin": "repopo",
 		"commands": {
-			"strategy": "single",
-			"target": "./esm/commands/download.js"
+			"strategy": "pattern",
+			"target": "./esm/commands"
 		},
 		"devPlugins": [],
-		"dirname": "dill",
+		"dirname": "repopo",
 		"plugins": [],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@andrewbranch/untar.js": "^1.0.3",
+		"@fluidframework/build-tools": "^0.38.0",
 		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-help": "^6.2.1",
-		"@tinyhttp/content-disposition": "^2.2.0",
 		"@tylerbu/cli-api": "workspace:^",
-		"fflate": "^0.8.2",
-		"file-type": "^19.0.0",
-		"fs-extra": "^11.2.0",
-		"mime": "^4.0.3",
-		"node-fetch-native": "^1.6.4",
-		"whatwg-mimetype": "^4.0.0"
+		"chalk": "^5.3.0",
+		"cosmiconfig": "^9.0.0",
+		"fs-extra": "^11.2.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.7.3",
 		"@microsoft/api-extractor": "^7.43.4",
 		"@oclif/plugin-command-snapshot": "^5.2.2",
 		"@oclif/test": "^4.0.3",
-		"@types/chai": "^4.3.16",
-		"@types/debug": "^4.1.12",
 		"@types/fs-extra": "^11.0.4",
-		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.12.7",
-		"@types/semver": "^7.5.8",
 		"@types/tmp": "^0.2.6",
-		"@types/whatwg-mimetype": "^3.0.2",
-		"chai": "^4.4.1",
 		"lefthook": "^1.6.11",
-		"mocha": "^10.4.0",
 		"oclif": "^4.13.5",
 		"rimraf": "^5.0.7",
 		"serve": "^14.2.3",
