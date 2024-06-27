@@ -6,7 +6,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": ""
+		"directory": "."
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -23,6 +23,7 @@
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
+		"fix:policy": "./packages/repopo/bin/dev.js check --fix",
 		"format": "npm run sort-package-json && biome check . --linter-enabled=false --apply",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
