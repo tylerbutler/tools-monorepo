@@ -15,8 +15,8 @@ importers:
         specifier: ^2.27.1
         version: 2.27.6
       '@fluidframework/build-tools':
-        specifier: ^0.38.0
-        version: 0.38.0(@types/node@20.14.8)(encoding@0.1.13)
+        specifier: ^0.39.0
+        version: 0.39.0(@types/node@20.14.8)(encoding@0.1.13)
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4
@@ -372,8 +372,8 @@ importers:
   packages/repopo:
     dependencies:
       '@fluidframework/build-tools':
-        specifier: ^0.38.0
-        version: 0.38.0(@types/node@20.14.8)(encoding@0.1.13)
+        specifier: ^0.39.0
+        version: 0.39.0(@types/node@20.14.8)(encoding@0.1.13)
       '@oclif/core':
         specifier: ^4.0.4
         version: 4.0.6
@@ -632,10 +632,6 @@ packages:
 
   '@babel/highlight@7.22.5':
     resolution: {integrity: sha512-BSKlD1hgnedS5XRnGOljZawtag7H1yPfQp0tdNJCHoH6AZ+Pcm9VvkrK59/Yy593Ypg0zMxH2BxD1VPYUQ7UIw==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/runtime@7.22.6':
-    resolution: {integrity: sha512-wDb5pWm4WDdF6LFUde3Jl8WzPA+3ZbxYqkC6xAXuD3irdEHN1k0NfTRrJD8ZD378SJ61miMLCqIOXYhd8x+AJQ==}
     engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.24.7':
@@ -898,18 +894,18 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fluid-tools/version-tools@0.38.0':
-    resolution: {integrity: sha512-sPGkM+2BMv0/QSSXwGEl8y+/cprookyS7mKQFdk3UiBlLBPr8uQcNxG1xPxpmM9JwZH63Q55dy56u4TnjuNoNQ==}
-    engines: {node: '>=14.17.0'}
+  '@fluid-tools/version-tools@0.39.0':
+    resolution: {integrity: sha512-HWZxKOnbfpdlI9hNVD72b6PZcg+DCO1bFnx30gYacTYXQZOZltD/v+pMXfgBqvkfN6z4kGQlBDjUZrkuU3FGuA==}
+    engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/build-tools@0.38.0':
-    resolution: {integrity: sha512-ZEUnUmaPDGhKRHQBjFwDW1YEHk1twDMqcB7Bj5fSfDheQyxbBGAOyKDIST7zTn/NB3zpARC3rE3R5/3NFnCCcA==}
-    engines: {node: '>=14.17.0'}
+  '@fluidframework/build-tools@0.39.0':
+    resolution: {integrity: sha512-z6c5x7WkOQL/X01SY/lfUcRr7OohlfzAneKi2J6q/jBjWBLoyaQcnmU6CNeGC3xQh0mO480sa0Iei4irHqKkUA==}
+    engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/bundle-size-tools@0.38.0':
-    resolution: {integrity: sha512-OaevKCCZKwnSI1iF3wnSgKR52xwtI74AVJsO1o9rjVyZMd78cdBK2KIZjqv7rIDINaqVlsZnulvrEx+AbBrg/g==}
+  '@fluidframework/bundle-size-tools@0.39.0':
+    resolution: {integrity: sha512-X1eaDPuvQ3BHhB4+COK1sEauQxyRcXZ8aZdhqETASgLJqL3VqMlCEGqu3uGsENSkG55BU0zyFBTziZiW4aRIRQ==}
 
   '@gitbeaker/core@35.8.1':
     resolution: {integrity: sha512-KBrDykVKSmU9Q9Gly8KeHOgdc0lZSa435srECxuO0FGqqBcUQ82hPqUc13YFkkdOI9T1JRA3qSFajg8ds0mZKA==}
@@ -1878,10 +1874,6 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  at-least-node@1.0.0:
-    resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
-    engines: {node: '>= 4.0.0'}
-
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
@@ -2646,10 +2638,6 @@ packages:
   fs-extra@8.1.0:
     resolution: {integrity: sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==}
     engines: {node: '>=6 <7 || >=8'}
-
-  fs-extra@9.1.0:
-    resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
-    engines: {node: '>=10'}
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
@@ -5435,10 +5423,6 @@ snapshots:
       chalk: 2.4.2
       js-tokens: 4.0.0
 
-  '@babel/runtime@7.22.6':
-    dependencies:
-      regenerator-runtime: 0.13.11
-
   '@babel/runtime@7.24.7':
     dependencies:
       regenerator-runtime: 0.14.1
@@ -5712,7 +5696,7 @@ snapshots:
   '@esbuild/win32-x64@0.20.2':
     optional: true
 
-  '@fluid-tools/version-tools@0.38.0':
+  '@fluid-tools/version-tools@0.39.0':
     dependencies:
       '@oclif/core': 3.27.0
       '@oclif/plugin-autocomplete': 3.1.4
@@ -5725,10 +5709,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/build-tools@0.38.0(@types/node@20.14.8)(encoding@0.1.13)':
+  '@fluidframework/build-tools@0.39.0(@types/node@20.14.8)(encoding@0.1.13)':
     dependencies:
-      '@fluid-tools/version-tools': 0.38.0
-      '@fluidframework/bundle-size-tools': 0.38.0
+      '@fluid-tools/version-tools': 0.39.0
+      '@fluidframework/bundle-size-tools': 0.39.0
       '@manypkg/get-packages': 2.2.0
       '@octokit/core': 4.2.4(encoding@0.1.13)
       '@rushstack/node-core-library': 3.59.6(@types/node@20.14.8)
@@ -5740,7 +5724,7 @@ snapshots:
       debug: 4.3.5(supports-color@8.1.1)
       detect-indent: 6.1.0
       find-up: 7.0.0
-      fs-extra: 9.1.0
+      fs-extra: 11.2.0
       glob: 7.2.3
       ignore: 5.3.1
       json5: 2.2.3
@@ -5763,7 +5747,7 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@fluidframework/bundle-size-tools@0.38.0':
+  '@fluidframework/bundle-size-tools@0.39.0':
     dependencies:
       azure-devops-node-api: 11.2.0
       jszip: 3.10.1
@@ -7126,8 +7110,6 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  at-least-node@1.0.0: {}
-
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.0.0
@@ -7549,7 +7531,7 @@ snapshots:
       lodash.mapvalues: 4.6.0
       lodash.memoize: 4.1.2
       memfs-or-file-map-to-github-branch: 1.2.1(encoding@0.1.13)
-      micromatch: 4.0.5
+      micromatch: 4.0.7
       node-cleanup: 2.1.2
       node-fetch: 2.6.12(encoding@0.1.13)
       override-require: 1.1.1
@@ -7588,7 +7570,7 @@ snapshots:
 
   date-fns@2.30.0:
     dependencies:
-      '@babel/runtime': 7.22.6
+      '@babel/runtime': 7.24.7
 
   debug@2.6.9:
     dependencies:
@@ -8036,13 +8018,6 @@ snapshots:
       graceful-fs: 4.2.11
       jsonfile: 4.0.0
       universalify: 0.1.2
-
-  fs-extra@9.1.0:
-    dependencies:
-      at-least-node: 1.0.0
-      graceful-fs: 4.2.11
-      jsonfile: 6.1.0
-      universalify: 2.0.1
 
   fs.realpath@1.0.0: {}
 
