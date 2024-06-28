@@ -28,6 +28,7 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
 		"prepare": "lefthook install",
+		"readme": "remark \"**/README.md\" --output",
 		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
 		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
@@ -43,10 +44,20 @@
 		"@tylerbu/repopo": "workspace:^",
 		"concurrently": "^8.2.2",
 		"lefthook": "^1.6.11",
+		"remark-cli": "^12.0.1",
+		"remark-gfm": "^4.0.0",
+		"remark-lint": "^10.0.0",
+		"remark-lint-emphasis-marker": "^4.0.0",
+		"remark-lint-list-item-indent": "^4.0.0",
+		"remark-lint-strong-marker": "^4.0.0",
+		"remark-preset-lint-consistent": "^6.0.0",
+		"remark-preset-lint-recommended": "^7.0.0",
+		"remark-toc": "^9.0.0",
 		"rimraf": "^5.0.7",
 		"sort-package-json": "2.10.0",
 		"syncpack": "^12.3.2",
-		"ts-node": "^10.9.2"
+		"ts-node": "^10.9.2",
+		"unist-util-visit-parents": "^6.0.1"
 	},
 	"packageManager": "pnpm@9.1.0+sha256.22e36fba7f4880ecf749a5ca128b8435da085ecd49575e7fb9e64d6bf4fad394",
 	"engines": {
@@ -60,7 +71,14 @@
 		"updateConfig": {
 			"ignoreDependencies": ["chai", "@types/node"]
 		},
-		"overrides": {}
+		"overrides": {},
+		"packageExtensions": {
+			"markdown-magic": {
+				"dependencies": {
+					"ansi-styles": "^4.2.1"
+				}
+			}
+		}
 	},
 	"fluidBuild": {
 		"tasks": {

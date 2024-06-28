@@ -1,13 +1,13 @@
 const pkgJson = require("markdown-magic-package-json");
-const depTable = require("markdown-magic markdown-magic-dependency-table");
+// const depTable = require("markdown-magic markdown-magic-dependency-table");
 
 /* CLI markdown.config.js file example */
 module.exports = {
-	// matchWord: "MD-MAGIC-EXAMPLE",
+	matchWord: "AUTO-GENERATED-CONTENT",
 	transforms: {
 		/* Match <!-- AUTO-GENERATED-CONTENT:START (PKGJSON) --> */
 		PKGJSON: pkgJson(),
-		DEPENDENCYTABLE: depTable(),
+		// DEPENDENCYTABLE: depTable(),
 	},
 	callback: function () {
 		console.log("markdown processing done");
