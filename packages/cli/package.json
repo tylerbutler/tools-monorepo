@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/cli",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"description": "Tyler Butler's personal CLI.",
 	"keywords": ["oclif"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/cli/",
