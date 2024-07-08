@@ -1,0 +1,22 @@
+{
+	"name": "dill-docs",
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"astro": "astro",
+		"build": "astro check && astro build",
+		"dev": "astro dev",
+		"preview": "astro preview",
+		"start": "astro dev"
+	},
+	"dependencies": {
+		"@astrojs/check": "^0.7.0",
+		"@astrojs/starlight": "^0.25.0",
+		"astro": "^4.10.2",
+		"sharp": "^0.32.5",
+		"typescript": "~5.5.3"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues"
+}
