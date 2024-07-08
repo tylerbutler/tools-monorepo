@@ -1,7 +1,6 @@
 import { exec } from "node:child_process";
 import { readFile } from "node:fs/promises";
 
-// Function to execute a git command using child_process
 function executeGitCommand(command) {
 	return new Promise((resolve, reject) => {
 		exec(`git ${command}`, (error, stdout, stderr) => {
@@ -20,7 +19,6 @@ function executeGitCommand(command) {
 
 async function loadConfiguredEmail() {
 	try {
-    console.log(`process.cwd() = ${process.cwd()}`);
     const file = await readFile(".require-email.json", { encoding: "utf8" });
 		const config = JSON.parse(file);
 		if (config.email === undefined) {
@@ -50,5 +48,4 @@ async function checkEmailConfig() {
 	}
 }
 
-// Call the function to display the git config name and email
 checkEmailConfig();
