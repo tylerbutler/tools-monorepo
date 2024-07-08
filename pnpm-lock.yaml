@@ -372,8 +372,8 @@ importers:
   packages/repopo:
     dependencies:
       '@fluidframework/build-tools':
-        specifier: ^0.38.0
-        version: 0.38.0(@types/node@20.14.8)(encoding@0.1.13)
+        specifier: ^0.40.0
+        version: 0.40.0(@types/node@20.14.8)(encoding@0.1.13)
       '@oclif/core':
         specifier: ^4.0.4
         version: 4.0.6
@@ -903,13 +903,26 @@ packages:
     engines: {node: '>=14.17.0'}
     hasBin: true
 
+  '@fluid-tools/version-tools@0.40.0':
+    resolution: {integrity: sha512-cwgU16+buDe3hf0EotxCzy4GPFXBmaNpECGPTZ4FHkyP8ciGTbei+d7J+3NfP731tdInm5EVS5+e5DEawFykBQ==}
+    engines: {node: '>=18.17.1'}
+    hasBin: true
+
   '@fluidframework/build-tools@0.38.0':
     resolution: {integrity: sha512-ZEUnUmaPDGhKRHQBjFwDW1YEHk1twDMqcB7Bj5fSfDheQyxbBGAOyKDIST7zTn/NB3zpARC3rE3R5/3NFnCCcA==}
     engines: {node: '>=14.17.0'}
     hasBin: true
 
+  '@fluidframework/build-tools@0.40.0':
+    resolution: {integrity: sha512-4F5tNPlwrlD2QkaJgnkkECy3aWf7TR6fjbPI9RhnFJw2Fo6ZkamoIMWyliqSyiJwrAeLDvsdZsVgVRscjmZTBw==}
+    engines: {node: '>=18.17.1'}
+    hasBin: true
+
   '@fluidframework/bundle-size-tools@0.38.0':
     resolution: {integrity: sha512-OaevKCCZKwnSI1iF3wnSgKR52xwtI74AVJsO1o9rjVyZMd78cdBK2KIZjqv7rIDINaqVlsZnulvrEx+AbBrg/g==}
+
+  '@fluidframework/bundle-size-tools@0.40.0':
+    resolution: {integrity: sha512-80fG4pECvaey0GkEc/F2kNQ2Y/g70OYUbtKMp9vXtdNlZeRFoX6Z2B9vji+V+qw5u6FoYe5qErPCn1KqFCKkXQ==}
 
   '@gitbeaker/core@35.8.1':
     resolution: {integrity: sha512-KBrDykVKSmU9Q9Gly8KeHOgdc0lZSa435srECxuO0FGqqBcUQ82hPqUc13YFkkdOI9T1JRA3qSFajg8ds0mZKA==}
@@ -4934,8 +4947,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -4984,8 +4997,8 @@ snapshots:
       '@aws-crypto/sha1-browser': 5.2.0
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-bucket-endpoint': 3.598.0
@@ -5042,11 +5055,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sso-oidc@3.600.0':
+  '@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0)':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -5085,6 +5098,7 @@ snapshots:
       '@smithy/util-utf8': 3.0.0
       tslib: 2.6.3
     transitivePeerDependencies:
+      - '@aws-sdk/client-sts'
       - aws-crt
 
   '@aws-sdk/client-sso@3.598.0':
@@ -5130,11 +5144,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0)':
+  '@aws-sdk/client-sts@3.600.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0
+      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -5173,7 +5187,6 @@ snapshots:
       '@smithy/util-utf8': 3.0.0
       tslib: 2.6.3
     transitivePeerDependencies:
-      - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
   '@aws-sdk/core@3.598.0':
@@ -5207,7 +5220,7 @@ snapshots:
 
   '@aws-sdk/credential-provider-ini@3.598.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/credential-provider-env': 3.598.0
       '@aws-sdk/credential-provider-http': 3.598.0
       '@aws-sdk/credential-provider-process': 3.598.0
@@ -5265,7 +5278,7 @@ snapshots:
 
   '@aws-sdk/credential-provider-web-identity@3.598.0(@aws-sdk/client-sts@3.600.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/types': 3.598.0
       '@smithy/property-provider': 3.1.2
       '@smithy/types': 3.2.0
@@ -5381,7 +5394,7 @@ snapshots:
 
   '@aws-sdk/token-providers@3.598.0(@aws-sdk/client-sso-oidc@3.600.0)':
     dependencies:
-      '@aws-sdk/client-sso-oidc': 3.600.0
+      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/types': 3.598.0
       '@smithy/property-provider': 3.1.2
       '@smithy/shared-ini-file-loader': 3.1.2
@@ -5729,6 +5742,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@fluid-tools/version-tools@0.40.0':
+    dependencies:
+      '@oclif/core': 3.27.0
+      '@oclif/plugin-autocomplete': 3.1.4
+      '@oclif/plugin-commands': 3.3.4
+      '@oclif/plugin-help': 6.2.3
+      '@oclif/plugin-not-found': 3.2.6
+      chalk: 2.4.2
+      semver: 7.6.2
+      table: 6.8.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@fluidframework/build-tools@0.38.0(@types/node@20.14.8)(encoding@0.1.13)':
     dependencies:
       '@fluid-tools/version-tools': 0.38.0
@@ -5767,6 +5793,44 @@ snapshots:
       - uglify-js
       - webpack-cli
 
+  '@fluidframework/build-tools@0.40.0(@types/node@20.14.8)(encoding@0.1.13)':
+    dependencies:
+      '@fluid-tools/version-tools': 0.40.0
+      '@fluidframework/bundle-size-tools': 0.40.0
+      '@manypkg/get-packages': 2.2.0
+      '@octokit/core': 4.2.4(encoding@0.1.13)
+      '@rushstack/node-core-library': 3.59.6(@types/node@20.14.8)
+      async: 3.2.5
+      chalk: 2.4.2
+      cosmiconfig: 8.2.0
+      danger: 11.3.1(encoding@0.1.13)
+      date-fns: 2.30.0
+      debug: 4.3.5(supports-color@8.1.1)
+      detect-indent: 6.1.0
+      find-up: 7.0.0
+      fs-extra: 11.2.0
+      glob: 7.2.3
+      ignore: 5.3.1
+      json5: 2.2.3
+      lodash: 4.17.21
+      lodash.isequal: 4.5.0
+      picomatch: 2.3.1
+      rimraf: 4.4.1
+      semver: 7.6.2
+      sort-package-json: 1.57.0
+      ts-morph: 22.0.0
+      type-fest: 2.19.0
+      typescript: 5.4.5
+      yaml: 2.3.1
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@types/node'
+      - encoding
+      - esbuild
+      - supports-color
+      - uglify-js
+      - webpack-cli
+
   '@fluidframework/bundle-size-tools@0.38.0':
     dependencies:
       azure-devops-node-api: 11.2.0
@@ -5774,6 +5838,20 @@ snapshots:
       msgpack-lite: 0.1.26
       pako: 2.1.0
       typescript: 5.1.6
+      webpack: 5.88.2
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
+      - webpack-cli
+
+  '@fluidframework/bundle-size-tools@0.40.0':
+    dependencies:
+      azure-devops-node-api: 11.2.0
+      jszip: 3.10.1
+      msgpack-lite: 0.1.26
+      pako: 2.1.0
+      typescript: 5.4.5
       webpack: 5.88.2
     transitivePeerDependencies:
       - '@swc/core'
