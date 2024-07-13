@@ -97,7 +97,7 @@ importers:
         version: link:../dill
       globby:
         specifier: ^14.0.1
-        version: 14.0.1
+        version: 14.0.2
       simple-git:
         specifier: ^3.24.0
         version: 3.24.0
@@ -270,7 +270,7 @@ importers:
         version: 6.2.3
       '@tinyhttp/content-disposition':
         specifier: ^2.2.0
-        version: 2.2.0
+        version: 2.2.1
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
@@ -285,7 +285,7 @@ importers:
         version: 11.2.0
       mime:
         specifier: ^4.0.3
-        version: 4.0.3
+        version: 4.0.4
       node-fetch-native:
         specifier: ^1.6.4
         version: 1.6.4
@@ -1541,8 +1541,8 @@ packages:
     resolution: {integrity: sha512-+PmQX0PiAYPMeVYe237LJAYvOMYW1j2rH5YROyS3b4CTVJum34HfRvKvAzozHAQG0TnHNdUfY9nCeUyRAs//cw==}
     engines: {node: '>=14.16'}
 
-  '@tinyhttp/content-disposition@2.2.0':
-    resolution: {integrity: sha512-w1dJaSAtcCinOlT/YQg35RnFCOBbCHBGDVhH4yLoiJVtecRAJ2cYMf5HP+UhfbXURa38GC8fkRXO0vODDTjmeg==}
+  '@tinyhttp/content-disposition@2.2.1':
+    resolution: {integrity: sha512-PQ5IWdOn7arScqTV+usIDJvwbanoAXtaopzgxjMS9y7TFwLSIelCblihRBEVIPIkIpsdhSJFH3RF+Daosyj+Aw==}
     engines: {node: '>=12.20.0'}
 
   '@tokenizer/token@0.3.0':
@@ -2770,6 +2770,10 @@ packages:
     resolution: {integrity: sha512-jOMLD2Z7MAhyG8aJpNOpmziMOP4rPLcc95oQPKXBazW82z+CEgPFBQvEpRUa1KeIMUJo4Wsm+q6uzO/Q/4BksQ==}
     engines: {node: '>=18'}
 
+  globby@14.0.2:
+    resolution: {integrity: sha512-s3Fq41ZVh7vbbe2PN3nrW7yC7U7MFVc5c98/iTl9c2GawNMKx/J648KQRW6WKkuU8GIbbh2IXfIRQjOZnXcTnw==}
+    engines: {node: '>=18'}
+
   gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
 
@@ -3408,8 +3412,8 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
 
-  mime@4.0.3:
-    resolution: {integrity: sha512-KgUb15Oorc0NEKPbvfa0wRU+PItIEZmiv+pyAO2i0oTIVTJhlzMclU7w4RXWQrSOVH5ax/p/CkIO7KI4OyFJTQ==}
+  mime@4.0.4:
+    resolution: {integrity: sha512-v8yqInVjhXyqP6+Kw4fV3ZzeMRqEW6FotRsKXjRS5VMTNIuXsdRoAvklpoRgSqXm6o9VNH4/C0mgedko9DdLsQ==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -6090,7 +6094,7 @@ snapshots:
     dependencies:
       '@oclif/core': 4.0.6
       ansis: 3.2.0
-      globby: 14.0.1
+      globby: 14.0.2
       just-diff: 5.2.0
       lodash.difference: 4.5.0
       lodash.get: 4.4.2
@@ -6754,7 +6758,7 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
-  '@tinyhttp/content-disposition@2.2.0': {}
+  '@tinyhttp/content-disposition@2.2.1': {}
 
   '@tokenizer/token@0.3.0': {}
 
@@ -7912,7 +7916,7 @@ snapshots:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.5
+      micromatch: 4.0.7
 
   fast-json-patch@3.1.1: {}
 
@@ -8178,6 +8182,15 @@ snapshots:
       slash: 4.0.0
 
   globby@14.0.1:
+    dependencies:
+      '@sindresorhus/merge-streams': 2.3.0
+      fast-glob: 3.3.2
+      ignore: 5.3.1
+      path-type: 5.0.0
+      slash: 5.1.0
+      unicorn-magic: 0.1.0
+
+  globby@14.0.2:
     dependencies:
       '@sindresorhus/merge-streams': 2.3.0
       fast-glob: 3.3.2
@@ -8776,7 +8789,7 @@ snapshots:
 
   mime@3.0.0: {}
 
-  mime@4.0.3: {}
+  mime@4.0.4: {}
 
   mimic-fn@2.1.0: {}
 
