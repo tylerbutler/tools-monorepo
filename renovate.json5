@@ -29,7 +29,7 @@
   ],
 
 	"lockFileMaintenance": {
-    "enabled": true,
+    "enabled": false,
     "automerge": true
   },
 
@@ -55,6 +55,7 @@
 			// Group dev dependencies together
 			"matchDepTypes": ["devDependencies"],
 			"matchUpdateTypes": ["patch", "minor"],
+			"excludePackagePatterns": ["^oclif", "^@oclif/"],
 			"groupName": "devDependencies (non-major)"
 		},
 		{
