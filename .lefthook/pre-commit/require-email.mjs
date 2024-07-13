@@ -1,9 +1,9 @@
-import { exec } from "node:child_process";
+import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
 
-function executeGitCommand(command) {
+function executeGitCommand(command, args) {
 	return new Promise((resolve, reject) => {
-		exec(`git ${command}`, (error, stdout, stderr) => {
+		execFile("git", [command, ...args], (error, stdout, stderr) => {
 			if (error) {
 				reject(`error: ${error.message}`);
 				return;
@@ -19,7 +19,7 @@ function executeGitCommand(command) {
 
 async function loadConfiguredEmail() {
 	try {
-    const file = await readFile(".require-email.json", { encoding: "utf8" });
+		const file = await readFile(".require-email.json", { encoding: "utf8" });
 		const config = JSON.parse(file);
 		if (config.email === undefined) {
 			throw new Error("Email is not defined in .require-email.json");
@@ -29,14 +29,14 @@ async function loadConfiguredEmail() {
 		console.error(
 			`Error loading .require-email.json. Create the file if it doesn't exist. Error: ${error}`,
 		);
-    process.exit(1);
+		process.exit(1);
 	}
 }
 
 async function checkEmailConfig() {
 	try {
 		const configuredEmail = await loadConfiguredEmail();
-		const email = await executeGitCommand("config user.email");
+		const email = await executeGitCommand("config", ["user.email"]);
 		if (email !== configuredEmail) {
 			console.error(
 				`Email '${email}' does not match configured email '${configuredEmail}'`,
