@@ -6,6 +6,13 @@
 
 assert_lefthook_installed: true
 
+pre-commit:
+  commands:
+    renovate-config-validator:
+      files: git diff --name-only main
+      glob: renovate.json5
+      run: pnpm run check:renovate-config
+
 # pre-push:
 #   commands:
 #     packages-audit:
