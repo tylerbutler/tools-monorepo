@@ -15,8 +15,8 @@ importers:
         specifier: ^2.27.1
         version: 2.27.6
       '@fluidframework/build-tools':
-        specifier: ^0.38.0
-        version: 0.38.0(@types/node@20.14.8)(encoding@0.1.13)
+        specifier: ^0.40.0
+        version: 0.40.0(@types/node@20.14.8)(encoding@0.1.13)
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4
@@ -370,34 +370,6 @@ importers:
         version: 1.6.0(@types/node@20.14.8)(terser@5.19.2)
 
   packages/fundamentals:
-    dependencies:
-      '@oclif/core':
-        specifier: ^4.0.4
-        version: 4.0.6
-      chalk:
-        specifier: ^5.3.0
-        version: 5.3.0
-      cosmiconfig:
-        specifier: ^9.0.0
-        version: 9.0.0(typescript@5.4.5)
-      debug:
-        specifier: ^4.3.4
-        version: 4.3.5(supports-color@8.1.1)
-      detect-indent:
-        specifier: ^7.0.1
-        version: 7.0.1
-      simple-git:
-        specifier: ^3.24.0
-        version: 3.24.0
-      sort-jsonc:
-        specifier: ^1.0.1
-        version: 1.0.1
-      strip-ansi:
-        specifier: ^7.1.0
-        version: 7.1.0
-      tiny-jsonc:
-        specifier: ^1.0.1
-        version: 1.0.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.7.3
@@ -408,60 +380,15 @@ importers:
       '@microsoft/api-extractor':
         specifier: ^7.43.4
         version: 7.43.4(@types/node@20.14.8)
-      '@oclif/test':
-        specifier: ^4.0.3
-        version: 4.0.4(@oclif/core@4.0.6)
-      '@types/chai':
-        specifier: ^4.3.16
-        version: 4.3.16
-      '@types/debug':
-        specifier: ^4.1.12
-        version: 4.1.12
-      '@types/fs-extra':
-        specifier: ^11.0.4
-        version: 11.0.4
-      '@types/mocha':
-        specifier: ^10.0.6
-        version: 10.0.7
-      '@types/node':
-        specifier: ^20.12.7
-        version: 20.14.8
-      '@types/semver':
-        specifier: ^7.5.8
-        version: 7.5.8
-      chai:
-        specifier: ^4.4.1
-        version: 4.4.1
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
-      fs-extra:
-        specifier: ^11.2.0
-        version: 11.2.0
-      mocha:
-        specifier: ^10.4.0
-        version: 10.4.0
-      oclif:
-        specifier: ^4.13.5
-        version: 4.13.10
       rimraf:
         specifier: ^5.0.7
         version: 5.0.7
       sort-package-json:
         specifier: 2.10.0
         version: 2.10.0
-      tmp-promise:
-        specifier: ^3.0.3
-        version: 3.0.3
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.14.8)(typescript@5.4.5)
-      tslib:
-        specifier: ^2.6.2
-        version: 2.6.3
-      type-fest:
-        specifier: ^4.18.2
-        version: 4.20.1
       typescript:
         specifier: ~5.4.5
         version: 5.4.5
@@ -472,8 +399,8 @@ importers:
   packages/repopo:
     dependencies:
       '@fluidframework/build-tools':
-        specifier: ^0.38.0
-        version: 0.38.0(@types/node@20.14.8)(encoding@0.1.13)
+        specifier: ^0.40.0
+        version: 0.40.0(@types/node@20.14.8)(encoding@0.1.13)
       '@oclif/core':
         specifier: ^4.0.4
         version: 4.0.6
@@ -998,18 +925,18 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fluid-tools/version-tools@0.38.0':
-    resolution: {integrity: sha512-sPGkM+2BMv0/QSSXwGEl8y+/cprookyS7mKQFdk3UiBlLBPr8uQcNxG1xPxpmM9JwZH63Q55dy56u4TnjuNoNQ==}
-    engines: {node: '>=14.17.0'}
+  '@fluid-tools/version-tools@0.40.0':
+    resolution: {integrity: sha512-cwgU16+buDe3hf0EotxCzy4GPFXBmaNpECGPTZ4FHkyP8ciGTbei+d7J+3NfP731tdInm5EVS5+e5DEawFykBQ==}
+    engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/build-tools@0.38.0':
-    resolution: {integrity: sha512-ZEUnUmaPDGhKRHQBjFwDW1YEHk1twDMqcB7Bj5fSfDheQyxbBGAOyKDIST7zTn/NB3zpARC3rE3R5/3NFnCCcA==}
-    engines: {node: '>=14.17.0'}
+  '@fluidframework/build-tools@0.40.0':
+    resolution: {integrity: sha512-4F5tNPlwrlD2QkaJgnkkECy3aWf7TR6fjbPI9RhnFJw2Fo6ZkamoIMWyliqSyiJwrAeLDvsdZsVgVRscjmZTBw==}
+    engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/bundle-size-tools@0.38.0':
-    resolution: {integrity: sha512-OaevKCCZKwnSI1iF3wnSgKR52xwtI74AVJsO1o9rjVyZMd78cdBK2KIZjqv7rIDINaqVlsZnulvrEx+AbBrg/g==}
+  '@fluidframework/bundle-size-tools@0.40.0':
+    resolution: {integrity: sha512-80fG4pECvaey0GkEc/F2kNQ2Y/g70OYUbtKMp9vXtdNlZeRFoX6Z2B9vji+V+qw5u6FoYe5qErPCn1KqFCKkXQ==}
 
   '@gitbeaker/core@35.8.1':
     resolution: {integrity: sha512-KBrDykVKSmU9Q9Gly8KeHOgdc0lZSa435srECxuO0FGqqBcUQ82hPqUc13YFkkdOI9T1JRA3qSFajg8ds0mZKA==}
@@ -2036,10 +1963,6 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  at-least-node@1.0.0:
-    resolution: {integrity: sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==}
-    engines: {node: '>= 4.0.0'}
-
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
@@ -2804,10 +2727,6 @@ packages:
   fs-extra@8.1.0:
     resolution: {integrity: sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==}
     engines: {node: '>=6 <7 || >=8'}
-
-  fs-extra@9.1.0:
-    resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
-    engines: {node: '>=10'}
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
@@ -4721,11 +4640,6 @@ packages:
   typed-rest-client@1.8.11:
     resolution: {integrity: sha512-5UvfMpd1oelmUPRbbaVnq+rHP7ng2cE4qoQkQeAqxRL6PklkxsM0g32/HL0yfvruK6ojQ5x8EE+HF4YV6DtuCA==}
 
-  typescript@5.1.6:
-    resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   typescript@5.4.2:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
     engines: {node: '>=14.17'}
@@ -5096,7 +5010,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
-      '@aws-sdk/client-sts': 3.600.0
+      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -5146,7 +5060,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
       '@aws-sdk/middleware-bucket-endpoint': 3.598.0
@@ -5968,7 +5882,7 @@ snapshots:
   '@esbuild/win32-x64@0.20.2':
     optional: true
 
-  '@fluid-tools/version-tools@0.38.0':
+  '@fluid-tools/version-tools@0.40.0':
     dependencies:
       '@oclif/core': 3.27.0
       '@oclif/plugin-autocomplete': 3.1.4
@@ -5981,10 +5895,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/build-tools@0.38.0(@types/node@20.14.8)(encoding@0.1.13)':
+  '@fluidframework/build-tools@0.40.0(@types/node@20.14.8)(encoding@0.1.13)':
     dependencies:
-      '@fluid-tools/version-tools': 0.38.0
-      '@fluidframework/bundle-size-tools': 0.38.0
+      '@fluid-tools/version-tools': 0.40.0
+      '@fluidframework/bundle-size-tools': 0.40.0
       '@manypkg/get-packages': 2.2.0
       '@octokit/core': 4.2.4(encoding@0.1.13)
       '@rushstack/node-core-library': 3.59.6(@types/node@20.14.8)
@@ -5996,7 +5910,7 @@ snapshots:
       debug: 4.3.5(supports-color@8.1.1)
       detect-indent: 6.1.0
       find-up: 7.0.0
-      fs-extra: 9.1.0
+      fs-extra: 11.2.0
       glob: 7.2.3
       ignore: 5.3.1
       json5: 2.2.3
@@ -6008,7 +5922,7 @@ snapshots:
       sort-package-json: 1.57.0
       ts-morph: 22.0.0
       type-fest: 2.19.0
-      typescript: 5.1.6
+      typescript: 5.4.5
       yaml: 2.3.1
     transitivePeerDependencies:
       - '@swc/core'
@@ -6019,13 +5933,13 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@fluidframework/bundle-size-tools@0.38.0':
+  '@fluidframework/bundle-size-tools@0.40.0':
     dependencies:
       azure-devops-node-api: 11.2.0
       jszip: 3.10.1
       msgpack-lite: 0.1.26
       pako: 2.1.0
-      typescript: 5.1.6
+      typescript: 5.4.5
       webpack: 5.88.2
     transitivePeerDependencies:
       - '@swc/core'
@@ -7491,8 +7405,6 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  at-least-node@1.0.0: {}
-
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.0.0
@@ -8401,13 +8313,6 @@ snapshots:
       graceful-fs: 4.2.11
       jsonfile: 4.0.0
       universalify: 0.1.2
-
-  fs-extra@9.1.0:
-    dependencies:
-      at-least-node: 1.0.0
-      graceful-fs: 4.2.11
-      jsonfile: 6.1.0
-      universalify: 2.0.1
 
   fs.realpath@1.0.0: {}
 
@@ -10297,8 +10202,6 @@ snapshots:
       qs: 6.11.2
       tunnel: 0.0.6
       underscore: 1.13.6
-
-  typescript@5.1.6: {}
 
   typescript@5.4.2: {}
 

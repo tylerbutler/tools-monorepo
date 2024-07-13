@@ -21,16 +21,22 @@
  * @beta
  *
  * @example
+ *
+ * ```ts
  * // Example usage with a set of numbers and an array
  * const numberSet = new Set<number>();
  * addAll(numberSet, [1, 2, 3]);
  * console.log(numberSet); // Output: Set { 1, 2, 3 }
+ * ```
  *
  * @example
+ *
+ * ```ts
  * // Example usage with a set of strings and another set
  * const stringSet = new Set<string>(['hello']);
  * addAll(stringSet, new Set<string>(['world']));
  * console.log(stringSet); // Output: Set { 'hello', 'world' }
+ * ```
  */
 export function addAll<T>(theSet: Set<T>, items: Iterable<T>): Set<T> {
 	for (const item of items) {
