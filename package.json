@@ -45,7 +45,7 @@
 		"concurrently": "^8.2.2",
 		"lefthook": "^1.6.11",
 		"renovate": "^37.431.4",
-		"rimraf": "^5.0.7",
+		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
 		"syncpack": "^12.3.2",
 		"ts-node": "^10.9.2"

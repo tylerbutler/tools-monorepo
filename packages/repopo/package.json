@@ -75,7 +75,7 @@
 		"@types/tmp": "^0.2.6",
 		"lefthook": "^1.6.11",
 		"oclif": "^4.13.5",
-		"rimraf": "^5.0.7",
+		"rimraf": "^6.0.0",
 		"serve": "^14.2.3",
 		"sort-package-json": "2.10.0",
 		"start-server-and-test": "^2.0.3",

@@ -60,7 +60,7 @@
 		"fs-extra": "^11.2.0",
 		"mocha": "^10.4.0",
 		"oclif": "^4.13.5",
-		"rimraf": "^5.0.7",
+		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
