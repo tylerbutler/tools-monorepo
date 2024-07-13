@@ -24,6 +24,12 @@ const config = {
 	],
 	semverGroups: [
 		{
+			label: "Use exact ranges for packageManager field",
+			range: "",
+			dependencyTypes: ["packageManager"],
+			packages: ["**"],
+		},
+		{
 			label: "Use exact ranges for these deps",
 			range: "",
 			dependencies: ["@biomejs/biome", "nx", "sort-package-json"],
