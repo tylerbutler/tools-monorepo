@@ -6,6 +6,16 @@
 
 assert_lefthook_installed: true
 
+pre-commit:
+  scripts:
+    "require-email.mjs":
+      runner: node
+  commands:
+    renovate-config-validator:
+      files: git diff --name-only main
+      glob: renovate.json5
+      run: pnpm run check:renovate-config
+
 # pre-push:
 #   commands:
 #     packages-audit:
@@ -22,8 +32,8 @@ assert_lefthook_installed: true
 #       # glob: "*.{js,ts,jsx,tsx}"
 #       files: git diff --name-only origin/main
 #       run: "pnpm biome check --linter-enabled=false --apply --no-errors-on-unmatched {files} && git update-index --again"
-    
-    # rubocop:
+
+# rubocop:
 #       tags: backend style
 #       glob: "*.rb"
 #       exclude: '(^|/)(application|routes)\.rb$'
