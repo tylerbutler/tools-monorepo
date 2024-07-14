@@ -35,7 +35,7 @@
 	"javascript": {
 		"formatter": {
 			"jsxQuoteStyle": "double",
-			"trailingComma": "all",
+			"trailingCommas": "all",
 			"semicolons": "always",
 		},
 	},
@@ -63,6 +63,22 @@
 					"style": {
 						// oclif commands are required to use default exports.
 						"noDefaultExport": "off",
+					},
+				},
+			},
+		},
+		{
+			// these packages are node-only
+			"include": [
+				"packages/cli/**",
+				"packages/cli-api/**",
+				"packages/dill/**",
+				"packages/repopo/**",
+			],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noNodejsModules": "off",
 					},
 				},
 			},
