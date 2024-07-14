@@ -12,7 +12,7 @@ pre-commit:
       runner: node
   commands:
     renovate-config-validator:
-      files: git diff --name-only main
+      files: git diff --name-only origin/main
       glob: renovate.json5
       run: pnpm run check:renovate-config
 
@@ -25,13 +25,13 @@ pre-commit:
 #       tags: backend security
 #       run: bundle audit
 #
-# pre-push:
-#   # parallel: true
-#   commands:
-#     format:
-#       # glob: "*.{js,ts,jsx,tsx}"
-#       files: git diff --name-only origin/main
-#       run: "pnpm biome check --linter-enabled=false --apply --no-errors-on-unmatched {files} && git update-index --again"
+pre-push:
+  # parallel: true
+  commands:
+    format:
+      # glob: "*.{js,ts,jsx,tsx}"
+      files: git diff --name-only origin/main
+      run: "pnpm biome check --linter-enabled=false --apply --no-errors-on-unmatched {files} && git update-index --again"
 
 # rubocop:
 #       tags: backend style
