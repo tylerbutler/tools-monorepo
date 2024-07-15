@@ -14,7 +14,7 @@
 			"dist/**",
 			"esm/**",
 
-			// oclif manifestfile
+			// oclif manifest
 			"oclif.manifest.json",
 		],
 		"ignoreUnknown": true,
