@@ -8,7 +8,15 @@
 		"root": ".",
 	},
 	"files": {
-		"ignore": ["built/**", "dist/**", "esm/**"],
+		"ignore": [
+			// build output
+			"built/**",
+			"dist/**",
+			"esm/**",
+
+			// oclif manifestfile
+			"oclif.manifest.json",
+		],
 		"ignoreUnknown": true,
 	},
 	"formatter": {
@@ -70,10 +78,10 @@
 		{
 			// these packages are node-only
 			"include": [
-				"packages/cli/**",
-				"packages/cli-api/**",
-				"packages/dill/**",
-				"packages/repopo/**",
+				"packages/cli/**/*.ts",
+				"packages/cli-api/**/*.ts",
+				"packages/dill/**/*.ts",
+				"packages/repopo/**/*.ts",
 			],
 			"linter": {
 				"rules": {
