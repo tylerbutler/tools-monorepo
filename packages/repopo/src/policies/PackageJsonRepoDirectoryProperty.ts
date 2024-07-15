@@ -12,7 +12,7 @@ import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
 	name: "PackageJsonRepoDirectoryProperty",
 	match: /(^|\/)package\.json/i,
-	handler: async ({ file, root, resolve }) => {
+	handler: async ({ file, resolve }) => {
 		const failResult: PolicyFailure = {
 			name: PackageJsonRepoDirectoryProperty.name,
 			file,
@@ -25,8 +25,8 @@ export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
 		};
 
 		const pkg = (await readJson(file)) as PackageJson;
-		const pkgDir = path.dirname(file);
-		const relativePkgDir = path.relative(root, pkgDir);
+		// file is already relative to the repo root, so we can use it as-is.
+		const relativePkgDir = path.dirname(file).replace(/\\/g, "/");
 
 		if (typeof pkg.repository === "object") {
 			if (pkg.repository.directory !== relativePkgDir) {
