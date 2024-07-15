@@ -2131,9 +2131,6 @@ packages:
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
 
-  '@types/node@18.19.39':
-    resolution: {integrity: sha512-nPwTRDKUctxw3di5b4TfT3I0sWDiWoPQCZjXhvdkINntwr8lcoVCKsTgnXeRubKIlfnV+eN/HYk6Jb40tbcEAQ==}
-
   '@types/node@20.14.10':
     resolution: {integrity: sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==}
 
@@ -2379,10 +2376,6 @@ packages:
 
   ansicolors@0.3.2:
     resolution: {integrity: sha512-QXu7BPrP29VllRxH8GwB7x5iX5qWKAAMLqKQGWTeLWVlNHNOpVMJ91dsxQAIWXpjuW5wqvxu3Jd/nRjrJ+0pqg==}
-
-  ansis@3.2.0:
-    resolution: {integrity: sha512-Yk3BkHH9U7oPyCN3gL5Tc7CpahG/+UFv/6UG03C311Vy9lzRmA5uoxDTpU9CO3rGHL6KzJz/pdDeXZCZ5Mu/Sg==}
-    engines: {node: '>=15'}
 
   ansis@3.2.1:
     resolution: {integrity: sha512-SgzY+k2aa9UqJe3jzrPZhSVzLc2XrE4/h7rk0dMCDwhCq7ipmpPZvyODoxPCms4OpMLTiBTS+Mpl4VZQ6FDitw==}
@@ -8674,7 +8667,7 @@ snapshots:
   '@oclif/test@4.0.4(@oclif/core@4.0.12)':
     dependencies:
       '@oclif/core': 4.0.12
-      ansis: 3.2.0
+      ansis: 3.2.1
       debug: 4.3.5(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
@@ -9724,11 +9717,6 @@ snapshots:
 
   '@types/node@12.20.55': {}
 
-  '@types/node@18.19.39':
-    dependencies:
-      undici-types: 5.26.5
-    optional: true
-
   '@types/node@20.14.10':
     dependencies:
       undici-types: 5.26.5
@@ -9755,7 +9743,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 18.19.39
+      '@types/node': 20.14.10
     optional: true
 
   '@vitest/expect@2.0.2':
@@ -10044,8 +10032,6 @@ snapshots:
   ansi-styles@6.2.1: {}
 
   ansicolors@0.3.2: {}
-
-  ansis@3.2.0: {}
 
   ansis@3.2.1: {}
 
