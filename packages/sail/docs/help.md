@@ -1,17 +1,17 @@
-`tbu help`
-==========
+`sail help`
+===========
 
-Display help for tbu.
+Display help for sail.
 
-* [`tbu help [COMMAND]`](#tbu-help-command)
+* [`sail help [COMMAND]`](#sail-help-command)
 
-## `tbu help [COMMAND]`
+## `sail help [COMMAND]`
 
-Display help for tbu.
+Display help for sail.
 
 ```
 USAGE
-  $ tbu help [COMMAND...] [-n]
+  $ sail help [COMMAND...] [-n]
 
 ARGUMENTS
   COMMAND...  Command to show help for.
@@ -20,7 +20,7 @@ FLAGS
   -n, --nested-commands  Include all nested commands in the output.
 
 DESCRIPTION
-  Display help for tbu.
+  Display help for sail.
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v6.2.3/src/commands/help.ts)_

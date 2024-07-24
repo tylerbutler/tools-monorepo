@@ -30,6 +30,7 @@
 		"lint:fix": "biome lint . --write",
 		"prepare": "lefthook install",
 		"repopo": "repopo",
+		"sail": "packages/sail/bin/run.js build . -v",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
 		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
 		"test": "fluid-build . --task test"

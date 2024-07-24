@@ -1,17 +1,17 @@
-`tbu autocomplete`
-==================
+`sail autocomplete`
+===================
 
 Display autocomplete installation instructions.
 
-* [`tbu autocomplete [SHELL]`](#tbu-autocomplete-shell)
+* [`sail autocomplete [SHELL]`](#sail-autocomplete-shell)
 
-## `tbu autocomplete [SHELL]`
+## `sail autocomplete [SHELL]`
 
 Display autocomplete installation instructions.
 
 ```
 USAGE
-  $ tbu autocomplete [SHELL] [-r]
+  $ sail autocomplete [SHELL] [-r]
 
 ARGUMENTS
   SHELL  (zsh|bash|powershell) Shell type
@@ -23,15 +23,15 @@ DESCRIPTION
   Display autocomplete installation instructions.
 
 EXAMPLES
-  $ tbu autocomplete
+  $ sail autocomplete
 
-  $ tbu autocomplete bash
+  $ sail autocomplete bash
 
-  $ tbu autocomplete zsh
+  $ sail autocomplete zsh
 
-  $ tbu autocomplete powershell
+  $ sail autocomplete powershell
 
-  $ tbu autocomplete --refresh-cache
+  $ sail autocomplete --refresh-cache
 ```
 
 _See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v3.1.4/src/commands/autocomplete/index.ts)_
