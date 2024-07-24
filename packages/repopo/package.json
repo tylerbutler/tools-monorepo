@@ -26,7 +26,7 @@
 	},
 	"files": ["/bin", "/esm", "/oclif.manifest.json"],
 	"scripts": {
-		"build": "fluid-build . --task build",
+		"build": "sail . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/_snapshots/commands.json",
@@ -37,7 +37,7 @@
 		"docs": "api-extractor run --local",
 		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
-		"full": "fluid-build . --task full",
+		"full": "sail . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
 		"manifest": "oclif manifest",
