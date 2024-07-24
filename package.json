@@ -63,7 +63,10 @@
 		"updateConfig": {
 			"ignoreDependencies": ["chai", "@types/node"]
 		},
-		"overrides": {}
+		"overrides": {
+			"@fluid-tools/build-cli": "link:/Volumes/Code/Fluid-bt/build-tools/packages/build-cli",
+			"@fluidframework/build-tools": "link:/Volumes/Code/Fluid-bt/build-tools/packages/build-tools"	
+		}
 	},
 	"fluidBuild": {
 		"tasks": {

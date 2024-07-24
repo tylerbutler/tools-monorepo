@@ -42,6 +42,7 @@ const config = {
 			dependsOn: ["build"],
 		},
 	},
+	executableNames: ["sail"],
 };
 
 module.exports = config;
