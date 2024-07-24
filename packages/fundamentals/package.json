@@ -15,6 +15,12 @@
 				"default": "./esm/index.js"
 			}
 		},
+		"./git": {
+			"import": {
+				"types": "./esm/git.d.ts",
+				"default": "./esm/git.js"
+			}
+		},
 		"./set": {
 			"import": {
 				"types": "./esm/set.d.ts",
@@ -30,7 +36,8 @@
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"compile": "tsc --project ./tsconfig.json",
-		"docs": "concurrently npm:docs:api:main npm:docs:api:set",
+		"docs": "concurrently npm:docs:api:main npm:docs:api:git npm:docs:api:set",
+		"docs:api:git": "api-extractor run --local --config api-extractor.git.json",
 		"docs:api:main": "api-extractor run --local",
 		"docs:api:set": "api-extractor run --local --config api-extractor.set.json",
 		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
@@ -45,6 +52,7 @@
 		"@biomejs/biome": "1.8.3",
 		"@microsoft/api-documenter": "^7.24.8",
 		"@microsoft/api-extractor": "^7.43.4",
+		"@types/node": "^20.12.7",
 		"concurrently": "^8.2.2",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",

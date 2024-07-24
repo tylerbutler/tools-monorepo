@@ -383,6 +383,9 @@ importers:
       '@microsoft/api-extractor':
         specifier: ^7.43.4
         version: 7.47.0(@types/node@20.14.10)
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.14.10
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -2157,6 +2160,9 @@ packages:
 
   '@types/node@12.20.55':
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
+
+  '@types/node@18.19.42':
+    resolution: {integrity: sha512-d2ZFc/3lnK2YCYhos8iaNIYu9Vfhr92nHiyJHRltXWjXUBjEE+A4I58Tdbnw4VhggSW+2j5y5gTrLs4biNnubg==}
 
   '@types/node@20.14.10':
     resolution: {integrity: sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==}
@@ -9744,6 +9750,11 @@ snapshots:
 
   '@types/node@12.20.55': {}
 
+  '@types/node@18.19.42':
+    dependencies:
+      undici-types: 5.26.5
+    optional: true
+
   '@types/node@20.14.10':
     dependencies:
       undici-types: 5.26.5
@@ -9770,7 +9781,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.14.10
+      '@types/node': 18.19.42
     optional: true
 
   '@vitest/expect@2.0.2':
