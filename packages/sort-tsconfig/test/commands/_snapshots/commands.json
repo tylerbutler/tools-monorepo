@@ -1,0 +1,14 @@
+[
+    {
+        "alias": [],
+        "command": "help",
+        "flagAliases": [],
+        "flagChars": [
+            "n"
+        ],
+        "flags": [
+            "nested-commands"
+        ],
+        "plugin": "@oclif/plugin-help"
+    }
+]

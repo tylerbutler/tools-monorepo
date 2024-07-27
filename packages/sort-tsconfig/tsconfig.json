@@ -1,0 +1,13 @@
+{
+	"extends": "../../config/tsconfig.strict.json",
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "esm",
+		// TODO: Should this setting be disabled in the strict config?
+		"noPropertyAccessFromIndexSignature": false,
+	},
+	"ts-node": {
+		"esm": true,
+	},
+}
