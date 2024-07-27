@@ -1,272 +1,337 @@
-import { existsSync, statSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
-import type { TarLocalFile } from "@andrewbranch/untar.js";
-import { untar } from "@andrewbranch/untar.js";
-import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
-import { Decompress } from "fflate";
-import { fileTypeFromBuffer } from "file-type";
-import { ensureDirSync } from "fs-extra";
-import mime from "mime";
-import fetch from "node-fetch-native";
-import type { SetOptional } from "type-fest";
-
-const fileProtocol = "file://";
-
-const knownArchiveExtensions: ReadonlySet<string> = new Set([
-	"7z",
-	"bz2",
-	"gz",
-	"rar",
-	"tar",
-	"zip",
-	"xz",
-	"gz",
-]);
+import { readFileSync, writeFileSync } from "node:fs";
+import detectIndent from "detect-indent";
+import { sortJsonc } from "sort-jsonc";
+import JSONC from "tiny-jsonc";
+import type { TsConfigJson } from "type-fest";
 
 /**
- * The default name to use for the downloaded file. This is only used if the name is not provided by the caller or
- * cannot be determined from the fetch response.
- */
-const defaultDownloadName = "dill-download";
-
-/**
- * Options used to control Dill's behavior.
+ * A list of keys in desired sort order.
  *
- * @public
+ * @beta
  */
-export interface DillOptions {
+export type OrderList = string[];
+
+/**
+ * Sorting order for keys in the compilerOptions section of tsconfig. The groups and the order within each group are
+ * based on the order at https://www.typescriptlang.org/tsconfig#compiler-options. However, the order of the groups has
+ * been adjusted, and a few properties are moved earlier in the order since they're more important to our repo
+ * tsconfigs.
+ */
+const compilerOptionsOrder: OrderList = [
+	"rootDir", // From the Modules group
+	"outDir", // From the Emit group
+	"module", // From the Modules group
+	"moduleResolution", // From the Modules group
+
+	// Emit
+	"declaration",
+	"declarationDir",
+	"declarationMap",
+	"downlevelIteration",
+	"emitBOM",
+	"emitDeclarationOnly",
+	"importHelpers",
+	"importsNotUsedAsValues",
+	"inlineSourceMap",
+	"inlineSources",
+	"mapRoot",
+	"newLine",
+	"noEmit",
+	"noEmitHelpers",
+	"noEmitOnError",
+	"outFile",
+	"preserveConstEnums",
+	"preserveValueImports",
+	"removeComments",
+	"sourceMap",
+	"sourceRoot",
+	"stripInternal",
+
+	// Modules
+	"allowArbitraryExtensions",
+	"allowImportingTsExtensions",
+	"allowUmdGlobalAccess",
+	"baseUrl",
+	"noResolve",
+	"paths",
+	"resolveJsonModule",
+	"rootDirs",
+	"typeRoots",
+	"types",
+
+	// Type checking
+	"allowUnreachableCode",
+	"allowUnusedLabels",
+	"alwaysStrict",
+	"exactOptionalPropertyTypes",
+	"noFallthroughCasesInSwitch",
+	"noImplicitAny",
+	"noImplicitOverride",
+	"noImplicitReturns",
+	"noImplicitThis",
+	"noPropertyAccessFromIndexSignature",
+	"noUncheckedIndexedAccess",
+	"noUnusedLocals",
+	"noUnusedParameters",
+	"strict",
+	"strictBindCallApply",
+	"strictFunctionTypes",
+	"strictNullChecks",
+	"strictPropertyInitialization",
+	"useUnknownInCatchVariables",
+
+	// JavaScript Support
+	"allowJs",
+	"checkJs",
+	"maxNodeModuleJsDepth",
+
+	// Projects
+	"composite",
+	"disableReferencedProjectLoad",
+	"disableSolutionSearching",
+	"disableSourceOfProjectReferenceRedirect",
+	"incremental",
+	"tsBuildInfoFile",
+
+	// Editor Support
+	"disableSizeLimit",
+	"plugins",
+
+	// InteropConstraints
+	"allowSyntheticDefaultImports",
+	"esModuleInterop",
+	"forceConsistentCasingInFileNames",
+	"isolatedModules",
+	"preserveSymlinks",
+
+	// Language and Environment
+	"emitDecoratorMetadata",
+	"experimentalDecorators",
+	"jsx",
+	"jsxFactory",
+	"jsxFragmentFactory",
+	"jsxImportSource",
+	"lib",
+	"noLib",
+	"reactNamespace",
+	"target",
+	"useDefineForClassFields",
+
+	// Diagnostics
+	"diagnostics",
+	"explainFiles",
+	"extendedDiagnostics",
+	"generateCpuProfile",
+	"listEmittedFiles",
+	"listFiles",
+	"traceResolution",
+
+	// Output formatting
+	"noErrorTruncation",
+	"preserveWatchOutput",
+	"pretty",
+
+	// Completeness
+	"skipDefaultLibCheck",
+	"skipLibCheck",
+
+	// Watch Options
+	"assumeChangesOnlyAffectDirectDependencies",
+
+	// Backwards Compatibility
+	"charset",
+	"keyofStringsOnly",
+	"noImplicitUseStrict",
+	"noStrictGenericChecks",
+	"out",
+	"suppressExcessPropertyErrors",
+	"suppressImplicitAnyIndexErrors",
+] as const;
+
+/**
+ * Sorting order for tsconfig files.
+ */
+const defaultSortOrder: OrderList = [
+	"$schema",
+	"extends",
+	"include",
+	"exclude",
+	"compilerOptions",
+	...compilerOptionsOrder,
+	"references",
+];
+
+/**
+ * Returns a map of each item in the order list to its sort index.
+ */
+function getOrderMap(order: OrderList): Map<string, number> {
+	const orderMap: Map<string, number> = new Map();
+	for (const [index, key] of order.entries()) {
+		orderMap.set(key, index);
+	}
+	return orderMap;
+}
+
+/**
+ * The result of a tsconfig sort operation.
+ *
+ * @beta
+ */
+export interface SortTsconfigResult {
 	/**
-	 * If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate). Default value is
-	 * false.
+	 * Will be `true` if the file was already sorted.
 	 */
-	extract?: boolean;
+	alreadySorted: boolean;
 
 	/**
-	 * The directory to download the file. If this path is undefined, then the current working directory will be used.
+	 * The sorted tsconfig string.
+	 */
+	tsconfig: string;
+}
+
+/**
+ * Convenience class used to sort a tsconfig using a custom order.
+ *
+ * @beta
+ */
+export class TsConfigSorter {
+	private _order: OrderList;
+	private _orderMap: Map<string, number>;
+
+	public constructor(order: OrderList) {
+		this._order = order;
+		this._orderMap = getOrderMap(order);
+	}
+
+	/**
+	 * Gets the sort index of a key.
 	 *
-	 * If provided, this path must be to a directory that exists.
+	 * @param key - The key to check.
+	 * @returns The sort index. A number is always returned. If the key is not found, the returned index will be greater
+	 * than the total number of known sort keys.
 	 */
-	downloadDir?: string;
+	private getSortIndex(key: string | undefined): number {
+		// get the expected sort index of the key; if not found, (unexpected key) use a number greater than any sortIndex,
+		// assuming those items will always be at the bottom
+		return key === undefined
+			? this._orderMap.size + 1
+			: this._orderMap.get(key) ?? this._orderMap.size + 1;
+	}
 
 	/**
-	 * If provided, the filename to download the file to, including file extensions if applicable. If this is not
-	 * provided, the downloaded file will use the name in the Content-Disposition response header, if available. Otherwise
-	 * it will use `dill-download.<EXTENSION>`.
+	 * Returns true if an object is sorted.
 	 */
-	filename?: string | undefined;
+	// biome-ignore lint/suspicious/noExplicitAny: other types are very iconvenient here.
+	private objectIsSorted(obj: Record<string, any>): boolean {
+		const properties = [...Object.entries(obj)];
+		let index = -1;
+		for (const [key, value] of Object.entries(obj)) {
+			index++;
+
+			// If the value is an object, recursively check the object's sort.
+			if (isObject(value) && !this.objectIsSorted(value)) {
+				return false;
+			}
+
+			const nextKey =
+				index >= properties.length - 1 ? undefined : properties[index + 1]?.[0];
+			const sortIndex = this.getSortIndex(key);
+			const nextSortIndex = this.getSortIndex(nextKey);
+			if (sortIndex > nextSortIndex) {
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * Returns true if a tsconfig file is sorted; false otherwise.
+	 *
+	 * @param tsconfig - Path to a tsconfig file.
+	 *
+	 * @beta
+	 */
+	public isSorted(tsconfig: string): boolean {
+		// const { default: jsonc } = await JSONC;
+		const content = readFileSync(tsconfig, { encoding: "utf8" });
+		const currentValue: TsConfigJson = JSONC.parse(content);
+		const result = this.objectIsSorted(currentValue);
+		return result;
+	}
 
 	/**
-	 * If true, the file will not be saved to the file system. The file contents will be returned by the function call,
-	 * but it will otherwise not be saved.
+	 * Sorts a tsconfig file, optionally writing the changes back to the file.
+	 *
+	 * @param tsconfigPath - path to a tsconfig file
+	 * @param write - if true, the file will be overwritten with sorted content
+	 * @returns An object containing a boolean indicating whether the file was already sorted and the sorted tsconfig
+	 * string.
 	 */
-	noFile?: boolean;
+	public sortTsconfigFile(
+		tsconfigPath: string,
+		write: boolean,
+	): SortTsconfigResult {
+		const sorted = isSorted(tsconfigPath);
+
+		const origString = readFileSync(tsconfigPath).toString();
+		const { indent } = detectIndent(origString);
+		const sortedString = sortJsonc(origString, {
+			sort: this._order,
+			spaces: indent,
+		});
+
+		if (!sorted && write) {
+			writeFileSync(tsconfigPath, sortedString);
+		}
+
+		return {
+			alreadySorted: sorted,
+			tsconfig: sortedString,
+		};
+	}
+}
+
+const defaultSorter = new TsConfigSorter(defaultSortOrder);
+
+/**
+ * Returns true if a tsconfig file is sorted according to the default sort order; false otherwise.
+ *
+ * @param tsconfig - Path to a tsconfig file.
+ *
+ * @remarks
+ *
+ * To use a custom sort order, create a {@link TsConfigSorter} and use methods on that class.
+ *
+ * @beta
+ */
+export function isSorted(tsconfig: string): boolean {
+	return defaultSorter.isSorted(tsconfig);
 }
 
 /**
- * Resolved options type. All the options become required when resolved except for filename.
+ * Sorts a tsconfig file, optionally writing the changes back to the file.
+ *
+ * @param tsconfigPath - path to a tsconfig file
+ * @param write - if true, the file will be overwritten with sorted content
+ * @returns An object containing a boolean indicating whether the file was already sorted and the sorted tsconfig
+ * string.
+ *
+ * @remarks
+ *
+ * To use a custom sort order, create a {@link TsConfigSorter} and use methods on that class.
+ *
+ * @beta
  */
-export interface DillOptionsResolved
-	extends SetOptional<Required<DillOptions>, "filename"> {
-	// fullDownloadPath: string,
-}
-
-function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
-	const resolved = {
-		extract: options?.extract ?? false,
-		downloadDir: options?.downloadDir ?? process.cwd(),
-		filename: options?.filename,
-		noFile: options?.noFile ?? false,
-	};
-
-	// const fullDownloadPath = resolved.filename === undefined ?
-
-	return resolved;
+export function sortTsconfigFile(
+	tsconfigPath: string,
+	write: boolean,
+): SortTsconfigResult {
+	return defaultSorter.sortTsconfigFile(tsconfigPath, write);
 }
 
 /**
- *	Downloads a file from a URL.
- *
- * @param url - The URL to download.
- * @param options - Options to use.
- * @returns The file's contents
- *
- * @public
+ * Returns true if the value is an object.
  */
-export const download = async (
-	url: string,
-	options?: DillOptions,
-): Promise<{
-	data: Uint8Array;
-}> => {
-	const {
-		extract,
-		downloadDir,
-		filename: providedFilename,
-		noFile,
-	} = resolveOptions(options);
-
-	// The downloadDir must exist and be a directory.
-	if (!existsSync(downloadDir)) {
-		throw new Error(`Path doesn't exist: ${downloadDir}`);
-	}
-	const pathStats = statSync(downloadDir);
-	if (extract && !pathStats.isDirectory()) {
-		throw new Error(`Path is not a directory: ${downloadDir}`);
-	}
-
-	const { contents: file, response } = await fetchFile(url);
-	let extension: string;
-	let filename = providedFilename;
-
-	if (response === undefined) {
-		const filetype = await fileTypeFromBuffer(file);
-		if (filetype === undefined) {
-			throw new Error(`Can't find file type for URL: ${url}`);
-		}
-		extension = filetype.ext;
-		filename ??= `${defaultDownloadName}.${extension}`;
-	} else {
-		const {
-			mimeType,
-			extension: ext,
-			filename: responseFileName,
-		} = getMimeType(response);
-		if (mimeType === undefined || ext === null) {
-			throw new Error(`Can't find file type for URL: ${url}`);
-		}
-		extension = ext;
-		filename ??= responseFileName ?? `${defaultDownloadName}.${extension}`;
-	}
-
-	const decompressed =
-		extract && knownArchiveExtensions.has(extension) ? decompress(file) : file;
-
-	if (extract) {
-		await extractTarball(decompressed, downloadDir);
-	} else if (!noFile) {
-		const saveFile = path.join(downloadDir, filename);
-		await writeFile(saveFile, decompressed);
-	}
-	return { data: decompressed };
-};
-
-async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
-	const buffer = await readFile(filePath);
-	return new Uint8Array(buffer.buffer);
-}
-
-function getMimeType(response: Response): {
-	mimeType: string;
-	extension: string | null;
-	filename: string | undefined;
-} {
-	const { url } = response;
-	const contentType = response?.headers.get("Content-Type");
-	const urlType = mime.getType(url);
-	const mimeType = contentType ?? urlType ?? null;
-	const contentDispositionHeader = response?.headers.get("Content-Disposition");
-	const contentDisposition =
-		contentDispositionHeader === undefined || contentDispositionHeader === null
-			? undefined
-			: parseContentDisposition(contentDispositionHeader);
-
-	console.debug(`Content-Type header: ${contentType}`);
-	console.debug(`Content-Disposition header: ${contentDispositionHeader}`);
-	console.debug(`Type from URL: ${urlType}`);
-	if (mimeType === null) {
-		throw new Error(`Can't find mime type for URL: ${url}`);
-	}
-
-	const extension = mime.getExtension(mimeType);
-	return {
-		mimeType,
-		extension,
-		filename: contentDisposition?.parameters.filename as string,
-	};
-}
-
-/**
- * Fetches the file at the given URL and returns it as an in-memory Uint8Array.
- *
- * @param fileUrl - The URL of the file. If the URL begins with `file://`, then the path will be treated as a file
- * system path and loaded using `node:fs.readFile`.
- * @returns The file contents as a Uint8Array.
- */
-export async function fetchFile(
-	fileUrl: string,
-): Promise<{ contents: Uint8Array; response?: Response }> {
-	if (fileUrl.startsWith(fileProtocol)) {
-		const filePath = fileUrl.slice(fileProtocol.length);
-		return { contents: await readFileIntoUint8Array(filePath) };
-	}
-
-	const response = await fetch(fileUrl);
-
-	const contents = new Uint8Array(
-		(await response.arrayBuffer()) satisfies ArrayBuffer,
-	);
-	return { contents, response };
-}
-
-export function decompress(fileContent: Uint8Array): Uint8Array {
-	let decompressed: Uint8Array | undefined;
-
-	// biome-ignore lint/suspicious/noAssignInExpressions: TODO verify why this is OK
-	new Decompress((chunk) => (decompressed = chunk)).push(
-		fileContent,
-		/* final */ true,
-	);
-
-	if (decompressed === undefined) {
-		throw new Error("Failed to decompress file.");
-	}
-	return decompressed;
-}
-
-/**
- * Extracts files from a tarball.
- *
- * @param fileContent - The contents of the tarball as a Uint8Array. The contents is assumed to not be compressed.
- * @param destination - If provided, the contents of the tarball will be extracted to this directory. If this path does
- * not exist an exception will be thrown.
- * @returns Metadata about the tarball contents, including the file contents itself.
- */
-export async function extractTarball(
-	fileContent: Uint8Array,
-	destination?: string,
-): Promise<TarLocalFile[]> {
-	const fileType = await fileTypeFromBuffer(fileContent);
-	if (fileType?.ext !== "tar") {
-		console.warn("Didn't identify the file as a tarball.");
-		if (fileType === undefined) {
-			console.warn("Couldn't identify a file type.");
-		} else {
-			console.warn(
-				`Identified a ${fileType.ext} file, mime-type: ${fileType.mime}.`,
-			);
-		}
-	}
-	const data = untar(fileContent);
-
-	if (destination !== undefined) {
-		if (!existsSync(destination)) {
-			throw new Error(`Path does not exist: ${destination}`);
-		}
-
-		if (statSync(destination).isFile()) {
-			throw new Error(
-				`Destination path is a file that already exists: ${destination}`,
-			);
-		}
-
-		const filesP: Promise<void>[] = [];
-		for (const tarfile of data) {
-			const outPath = path.join(destination, tarfile.name);
-			ensureDirSync(path.dirname(outPath));
-			filesP.push(writeFile(outPath, tarfile.fileData));
-		}
-		await Promise.all(filesP);
-	}
-	return data;
+// biome-ignore lint/suspicious/noExplicitAny: any is the correct type here because this function's purpose is to discriminate types
+function isObject(value: any): boolean {
+	return value && typeof value === "object" && value.constructor === Object;
 }

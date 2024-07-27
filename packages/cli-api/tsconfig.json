@@ -1,6 +1,6 @@
 {
 	"extends": "../../config/tsconfig.strict.json",
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "../sort-tsconfig/src/commands/tsconfig.ts"],
 	"compilerOptions": {
 		"rootDir": "./src",
 		"outDir": "./esm",

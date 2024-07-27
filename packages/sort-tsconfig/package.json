@@ -1,9 +1,9 @@
 {
-	"name": "dill",
+	"name": "sort-tsconfig",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Simple CLI to download and optionally decompress files.",
-	"keywords": ["download", "ci"],
+	"description": "Sort tsconfig files using a CLI or API.",
+	"keywords": ["sort", "tsconfig", "typescript"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/dill/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -54,10 +54,10 @@
 		"update:test-snapshots": "vitest run \"test/vitest\" -u"
 	},
 	"oclif": {
-		"bin": "dill",
+		"bin": "sort-tsconfig",
 		"commands": {
 			"strategy": "single",
-			"target": "./esm/commands/download.js"
+			"target": "./esm/commands/sort.js"
 		},
 		"devPlugins": [],
 		"dirname": "dill",
@@ -68,21 +68,16 @@
 		"@andrewbranch/untar.js": "^1.0.3",
 		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-help": "^6.2.1",
-		"@tinyhttp/content-disposition": "^2.2.0",
 		"@tylerbu/cli-api": "workspace:^",
-		"fflate": "^0.8.2",
-		"file-type": "^19.0.0",
-		"fs-extra": "^11.2.0",
-		"mime": "^4.0.3",
-		"node-fetch-native": "^1.6.4",
-		"whatwg-mimetype": "^4.0.0"
+		"detect-indent": "^7.0.1",
+		"sort-jsonc": "^1.0.1",
+		"tiny-jsonc": "^1.0.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"@microsoft/api-extractor": "^7.43.4",
 		"@oclif/plugin-command-snapshot": "^5.2.2",
 		"@oclif/test": "^4.0.3",
-		"@types/chai": "^4.3.16",
 		"@types/debug": "^4.1.12",
 		"@types/fs-extra": "^11.0.4",
 		"@types/mocha": "^10.0.6",

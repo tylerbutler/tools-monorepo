@@ -174,21 +174,12 @@ importers:
       debug:
         specifier: ^4.3.4
         version: 4.3.5(supports-color@8.1.1)
-      detect-indent:
-        specifier: ^7.0.1
-        version: 7.0.1
       simple-git:
         specifier: ^3.24.0
         version: 3.25.0
-      sort-jsonc:
-        specifier: ^1.0.1
-        version: 1.0.1
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
-      tiny-jsonc:
-        specifier: ^1.0.1
-        version: 1.0.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.3
@@ -420,6 +411,103 @@ importers:
       lefthook:
         specifier: ^1.6.11
         version: 1.7.2
+      oclif:
+        specifier: ^4.13.5
+        version: 4.14.0
+      rimraf:
+        specifier: ^6.0.0
+        version: 6.0.1
+      serve:
+        specifier: ^14.2.3
+        version: 14.2.3
+      sort-package-json:
+        specifier: 2.10.0
+        version: 2.10.0
+      start-server-and-test:
+        specifier: ^2.0.3
+        version: 2.0.4
+      tmp-promise:
+        specifier: ^3.0.3
+        version: 3.0.3
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.14.10)(typescript@5.5.3)
+      type-fest:
+        specifier: ^4.18.2
+        version: 4.21.0
+      typescript:
+        specifier: ~5.5.0
+        version: 5.5.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.0.2(@types/node@20.14.10)(terser@5.19.2)
+
+  packages/sort-tsconfig:
+    dependencies:
+      '@andrewbranch/untar.js':
+        specifier: ^1.0.3
+        version: 1.0.3
+      '@oclif/core':
+        specifier: ^4.0.4
+        version: 4.0.12
+      '@oclif/plugin-help':
+        specifier: ^6.2.1
+        version: 6.2.6
+      '@tylerbu/cli-api':
+        specifier: workspace:^
+        version: link:../cli-api
+      detect-indent:
+        specifier: ^7.0.1
+        version: 7.0.1
+      sort-jsonc:
+        specifier: ^1.0.1
+        version: 1.0.1
+      tiny-jsonc:
+        specifier: ^1.0.1
+        version: 1.0.1
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 1.8.3
+        version: 1.8.3
+      '@microsoft/api-extractor':
+        specifier: ^7.43.4
+        version: 7.47.0(@types/node@20.14.10)
+      '@oclif/plugin-command-snapshot':
+        specifier: ^5.2.2
+        version: 5.2.6
+      '@oclif/test':
+        specifier: ^4.0.3
+        version: 4.0.4(@oclif/core@4.0.12)
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/mocha':
+        specifier: ^10.0.6
+        version: 10.0.7
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.14.10
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
+      '@types/tmp':
+        specifier: ^0.2.6
+        version: 0.2.6
+      '@types/whatwg-mimetype':
+        specifier: ^3.0.2
+        version: 3.0.2
+      chai:
+        specifier: ^4.4.1
+        version: 4.4.1
+      lefthook:
+        specifier: ^1.6.11
+        version: 1.7.2
+      mocha:
+        specifier: ^10.4.0
+        version: 10.6.0
       oclif:
         specifier: ^4.13.5
         version: 4.14.0
