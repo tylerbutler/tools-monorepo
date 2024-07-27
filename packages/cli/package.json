@@ -93,8 +93,8 @@
 		"concurrently": "^8.2.2",
 		"debug": "^4.3.4",
 		"dill": "workspace:^",
-		"globby": "^14.0.1",
 		"simple-git": "^3.24.0",
+		"sort-tsconfig": "workspace:^",
 		"strip-ansi": "^7.1.0"
 	},
 	"devDependencies": {

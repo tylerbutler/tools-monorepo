@@ -1,337 +1,106 @@
-import { readFileSync, writeFileSync } from "node:fs";
-import detectIndent from "detect-indent";
-import { sortJsonc } from "sort-jsonc";
-import JSONC from "tiny-jsonc";
-import type { TsConfigJson } from "type-fest";
+import { existsSync, statSync } from "node:fs";
+import path from "node:path";
+import { Args, type Command, Flags } from "@oclif/core";
+import { BaseCommand } from "@tylerbu/cli-api";
+import { globby } from "globby";
+import { isSorted, sortTsconfigFile } from "../api.js";
 
-/**
- * A list of keys in desired sort order.
- *
- * @beta
- */
-export type OrderList = string[];
+export default class SortTsconfigCommand extends BaseCommand<
+	typeof SortTsconfigCommand
+> {
+	static override readonly aliases = ["sort:tsconfigs"];
 
-/**
- * Sorting order for keys in the compilerOptions section of tsconfig. The groups and the order within each group are
- * based on the order at https://www.typescriptlang.org/tsconfig#compiler-options. However, the order of the groups has
- * been adjusted, and a few properties are moved earlier in the order since they're more important to our repo
- * tsconfigs.
- */
-const compilerOptionsOrder: OrderList = [
-	"rootDir", // From the Modules group
-	"outDir", // From the Emit group
-	"module", // From the Modules group
-	"moduleResolution", // From the Modules group
+	static override readonly summary =
+		"Sorts a tsconfig file in place, or check that one is sorted.";
 
-	// Emit
-	"declaration",
-	"declarationDir",
-	"declarationMap",
-	"downlevelIteration",
-	"emitBOM",
-	"emitDeclarationOnly",
-	"importHelpers",
-	"importsNotUsedAsValues",
-	"inlineSourceMap",
-	"inlineSources",
-	"mapRoot",
-	"newLine",
-	"noEmit",
-	"noEmitHelpers",
-	"noEmitOnError",
-	"outFile",
-	"preserveConstEnums",
-	"preserveValueImports",
-	"removeComments",
-	"sourceMap",
-	"sourceRoot",
-	"stripInternal",
+	static override readonly description =
+		"By default, the command will only check if a tsconfig is sorted. Use the --write flag to write the sorted contents back to the file.";
 
-	// Modules
-	"allowArbitraryExtensions",
-	"allowImportingTsExtensions",
-	"allowUmdGlobalAccess",
-	"baseUrl",
-	"noResolve",
-	"paths",
-	"resolveJsonModule",
-	"rootDirs",
-	"typeRoots",
-	"types",
+	static override readonly args = {
+		tsconfig: Args.custom<string[]>({
+			description:
+				"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
+			required: true,
+			parse: async (input) => {
+				const patterns: string[] = [];
+				if (existsSync(input)) {
+					const stats = statSync(input);
+					if (stats.isDirectory()) {
+						patterns.push(path.join(input, "tsconfig.json"));
+					}
+				} else {
+					patterns.push(input);
+				}
 
-	// Type checking
-	"allowUnreachableCode",
-	"allowUnusedLabels",
-	"alwaysStrict",
-	"exactOptionalPropertyTypes",
-	"noFallthroughCasesInSwitch",
-	"noImplicitAny",
-	"noImplicitOverride",
-	"noImplicitReturns",
-	"noImplicitThis",
-	"noPropertyAccessFromIndexSignature",
-	"noUncheckedIndexedAccess",
-	"noUnusedLocals",
-	"noUnusedParameters",
-	"strict",
-	"strictBindCallApply",
-	"strictFunctionTypes",
-	"strictNullChecks",
-	"strictPropertyInitialization",
-	"useUnknownInCatchVariables",
+				const results = await globby(patterns, { gitignore: true });
+				return results ?? [];
+			},
+		})(),
+	};
 
-	// JavaScript Support
-	"allowJs",
-	"checkJs",
-	"maxNodeModuleJsDepth",
+	static override readonly flags = {
+		write: Flags.boolean({
+			description:
+				"Write the sorted contents back to the file. Without this flag, the command only checks that the file is sorted.",
+			default: false,
+		}),
+		...BaseCommand.flags,
+	};
 
-	// Projects
-	"composite",
-	"disableReferencedProjectLoad",
-	"disableSolutionSearching",
-	"disableSourceOfProjectReferenceRedirect",
-	"incremental",
-	"tsBuildInfoFile",
+	static override readonly examples: Command.Example[] = [
+		{
+			description:
+				"Check if the tsconfig.json file in the current working directory is sorted.",
+			command: "<%= config.bin %> <%= command.id %> .",
+		},
+		{
+			description:
+				"Sort the tsconfig.json file in the current working directory.",
+			command: "<%= config.bin %> <%= command.id %> . --write",
+		},
+		{
+			description: "Sort all tsconfig.json files under the packages directory.",
+			command:
+				"<%= config.bin %> <%= command.id %> 'packages/**/tsconfig.json' --write",
+		},
+	];
 
-	// Editor Support
-	"disableSizeLimit",
-	"plugins",
+	// biome-ignore lint/suspicious/useAwait: inherited method
+	async run(): Promise<void> {
+		const { tsconfig: tsconfigs } = this.args;
+		const { write } = this.flags;
 
-	// InteropConstraints
-	"allowSyntheticDefaultImports",
-	"esModuleInterop",
-	"forceConsistentCasingInFileNames",
-	"isolatedModules",
-	"preserveSymlinks",
-
-	// Language and Environment
-	"emitDecoratorMetadata",
-	"experimentalDecorators",
-	"jsx",
-	"jsxFactory",
-	"jsxFragmentFactory",
-	"jsxImportSource",
-	"lib",
-	"noLib",
-	"reactNamespace",
-	"target",
-	"useDefineForClassFields",
-
-	// Diagnostics
-	"diagnostics",
-	"explainFiles",
-	"extendedDiagnostics",
-	"generateCpuProfile",
-	"listEmittedFiles",
-	"listFiles",
-	"traceResolution",
-
-	// Output formatting
-	"noErrorTruncation",
-	"preserveWatchOutput",
-	"pretty",
-
-	// Completeness
-	"skipDefaultLibCheck",
-	"skipLibCheck",
-
-	// Watch Options
-	"assumeChangesOnlyAffectDirectDependencies",
-
-	// Backwards Compatibility
-	"charset",
-	"keyofStringsOnly",
-	"noImplicitUseStrict",
-	"noStrictGenericChecks",
-	"out",
-	"suppressExcessPropertyErrors",
-	"suppressImplicitAnyIndexErrors",
-] as const;
-
-/**
- * Sorting order for tsconfig files.
- */
-const defaultSortOrder: OrderList = [
-	"$schema",
-	"extends",
-	"include",
-	"exclude",
-	"compilerOptions",
-	...compilerOptionsOrder,
-	"references",
-];
-
-/**
- * Returns a map of each item in the order list to its sort index.
- */
-function getOrderMap(order: OrderList): Map<string, number> {
-	const orderMap: Map<string, number> = new Map();
-	for (const [index, key] of order.entries()) {
-		orderMap.set(key, index);
-	}
-	return orderMap;
-}
-
-/**
- * The result of a tsconfig sort operation.
- *
- * @beta
- */
-export interface SortTsconfigResult {
-	/**
-	 * Will be `true` if the file was already sorted.
-	 */
-	alreadySorted: boolean;
-
-	/**
-	 * The sorted tsconfig string.
-	 */
-	tsconfig: string;
-}
-
-/**
- * Convenience class used to sort a tsconfig using a custom order.
- *
- * @beta
- */
-export class TsConfigSorter {
-	private _order: OrderList;
-	private _orderMap: Map<string, number>;
-
-	public constructor(order: OrderList) {
-		this._order = order;
-		this._orderMap = getOrderMap(order);
-	}
-
-	/**
-	 * Gets the sort index of a key.
-	 *
-	 * @param key - The key to check.
-	 * @returns The sort index. A number is always returned. If the key is not found, the returned index will be greater
-	 * than the total number of known sort keys.
-	 */
-	private getSortIndex(key: string | undefined): number {
-		// get the expected sort index of the key; if not found, (unexpected key) use a number greater than any sortIndex,
-		// assuming those items will always be at the bottom
-		return key === undefined
-			? this._orderMap.size + 1
-			: this._orderMap.get(key) ?? this._orderMap.size + 1;
-	}
-
-	/**
-	 * Returns true if an object is sorted.
-	 */
-	// biome-ignore lint/suspicious/noExplicitAny: other types are very iconvenient here.
-	private objectIsSorted(obj: Record<string, any>): boolean {
-		const properties = [...Object.entries(obj)];
-		let index = -1;
-		for (const [key, value] of Object.entries(obj)) {
-			index++;
-
-			// If the value is an object, recursively check the object's sort.
-			if (isObject(value) && !this.objectIsSorted(value)) {
-				return false;
-			}
-
-			const nextKey =
-				index >= properties.length - 1 ? undefined : properties[index + 1]?.[0];
-			const sortIndex = this.getSortIndex(key);
-			const nextSortIndex = this.getSortIndex(nextKey);
-			if (sortIndex > nextSortIndex) {
-				return false;
-			}
-		}
-		return true;
-	}
-	/**
-	 * Returns true if a tsconfig file is sorted; false otherwise.
-	 *
-	 * @param tsconfig - Path to a tsconfig file.
-	 *
-	 * @beta
-	 */
-	public isSorted(tsconfig: string): boolean {
-		// const { default: jsonc } = await JSONC;
-		const content = readFileSync(tsconfig, { encoding: "utf8" });
-		const currentValue: TsConfigJson = JSONC.parse(content);
-		const result = this.objectIsSorted(currentValue);
-		return result;
-	}
-
-	/**
-	 * Sorts a tsconfig file, optionally writing the changes back to the file.
-	 *
-	 * @param tsconfigPath - path to a tsconfig file
-	 * @param write - if true, the file will be overwritten with sorted content
-	 * @returns An object containing a boolean indicating whether the file was already sorted and the sorted tsconfig
-	 * string.
-	 */
-	public sortTsconfigFile(
-		tsconfigPath: string,
-		write: boolean,
-	): SortTsconfigResult {
-		const sorted = isSorted(tsconfigPath);
-
-		const origString = readFileSync(tsconfigPath).toString();
-		const { indent } = detectIndent(origString);
-		const sortedString = sortJsonc(origString, {
-			sort: this._order,
-			spaces: indent,
-		});
-
-		if (!sorted && write) {
-			writeFileSync(tsconfigPath, sortedString);
+		if (tsconfigs === undefined) {
+			this.error("No path or glob to tsconfigs provided.");
 		}
 
-		return {
-			alreadySorted: sorted,
-			tsconfig: sortedString,
-		};
+		if (tsconfigs.length === 0) {
+			this.error("No files found matching arguments");
+		}
+
+		const unsortedFiles: string[] = [];
+
+		for (const tsconfig of tsconfigs) {
+			if (write) {
+				const result = sortTsconfigFile(tsconfig, write);
+				this.log(
+					result.alreadySorted
+						? `File already sorted: ${tsconfig}`
+						: `Wrote sorted file: ${tsconfig}`,
+				);
+			} else {
+				const sorted = isSorted(tsconfig);
+				if (!sorted) {
+					unsortedFiles.push(tsconfig);
+					this.errorLog(`Not sorted! ${tsconfig}`);
+				}
+			}
+		}
+
+		if (unsortedFiles.length > 0) {
+			this.error(`Found ${unsortedFiles.length} unsorted files.`, {
+				exit: 1,
+			});
+		}
 	}
-}
-
-const defaultSorter = new TsConfigSorter(defaultSortOrder);
-
-/**
- * Returns true if a tsconfig file is sorted according to the default sort order; false otherwise.
- *
- * @param tsconfig - Path to a tsconfig file.
- *
- * @remarks
- *
- * To use a custom sort order, create a {@link TsConfigSorter} and use methods on that class.
- *
- * @beta
- */
-export function isSorted(tsconfig: string): boolean {
-	return defaultSorter.isSorted(tsconfig);
-}
-
-/**
- * Sorts a tsconfig file, optionally writing the changes back to the file.
- *
- * @param tsconfigPath - path to a tsconfig file
- * @param write - if true, the file will be overwritten with sorted content
- * @returns An object containing a boolean indicating whether the file was already sorted and the sorted tsconfig
- * string.
- *
- * @remarks
- *
- * To use a custom sort order, create a {@link TsConfigSorter} and use methods on that class.
- *
- * @beta
- */
-export function sortTsconfigFile(
-	tsconfigPath: string,
-	write: boolean,
-): SortTsconfigResult {
-	return defaultSorter.sortTsconfigFile(tsconfigPath, write);
-}
-
-/**
- * Returns true if the value is an object.
- */
-// biome-ignore lint/suspicious/noExplicitAny: any is the correct type here because this function's purpose is to discriminate types
-function isObject(value: any): boolean {
-	return value && typeof value === "object" && value.constructor === Object;
 }

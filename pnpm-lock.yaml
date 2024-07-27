@@ -98,12 +98,12 @@ importers:
       dill:
         specifier: workspace:^
         version: link:../dill
-      globby:
-        specifier: ^14.0.1
-        version: 14.0.2
       simple-git:
         specifier: ^3.24.0
         version: 3.25.0
+      sort-tsconfig:
+        specifier: workspace:^
+        version: link:../sort-tsconfig
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
@@ -459,6 +459,9 @@ importers:
       detect-indent:
         specifier: ^7.0.1
         version: 7.0.1
+      globby:
+        specifier: ^14.0.1
+        version: 14.0.2
       sort-jsonc:
         specifier: ^1.0.1
         version: 1.0.1
