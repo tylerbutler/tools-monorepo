@@ -30,8 +30,7 @@
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"sort-package-json": "sort-package-json",
-		"test": "vitest run \"test\""
+		"sort-package-json": "sort-package-json"
 	},
 	"dependencies": {
 		"@oclif/core": "^4.0.4",
