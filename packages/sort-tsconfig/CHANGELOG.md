@@ -1,1 +1,1 @@
-# @tylerbu/sort-tsconfig
+# sort-tsconfig

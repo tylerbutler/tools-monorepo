@@ -1,5 +1,5 @@
 ---
-"@tylerbu/sort-tsconfig": minor
+"sort-tsconfig": minor
 ---
 
 Introducing sort-tsconfig, a CLI app to sort tsconfigs. It also provides a simple programmatic API.
