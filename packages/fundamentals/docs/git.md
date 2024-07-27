@@ -1,10 +1,14 @@
-[**@tylerbu/fundamentals**](../../README.md) • **Docs**
+[**@tylerbu/fundamentals**](README.md) • **Docs**
 
 ***
 
-[@tylerbu/fundamentals](../../modules.md) / [git](../README.md) / findGitRootSync
+[@tylerbu/fundamentals](README.md) / git
 
-# Function: findGitRootSync()
+# git
+
+## Functions
+
+### findGitRootSync()
 
 > **findGitRootSync**(`cwd`): `string`
 
@@ -14,22 +18,22 @@ This function uses `git rev-parse --show-toplevel` command to find the top-level
 of the current Git repository. It executes the command synchronously using `child_process.execFileSync`.
 If the current directory is not part of a Git repository, it throws an error.
 
-## Parameters
+#### Parameters
 
 • **cwd**: `string` = `...`
 
 The current working directory from which to start searching for a Git repository root.
 
-## Returns
+#### Returns
 
 `string`
 
 The path to the root directory of the Git repository.
 
-## Throws
+#### Throws
 
 Error If the current directory is not part of a Git repository.
 
-## Defined in
+#### Defined in
 
-[git.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/e5c9b5f5c8bbad1b778226ca5d92ed07cf78f962/packages/fundamentals/src/git.ts#L17)
+[git.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/a3b16518e62e0859db66a1b21e16b028032454a8/packages/fundamentals/src/git.ts#L17)

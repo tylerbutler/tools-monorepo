@@ -36,7 +36,7 @@
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"compile": "tsc --project ./tsconfig.json",
-		"docs": "concurrently npm:docs:api:main npm:docs:api:array npm:docs:api:git npm:docs:api:set",
+		"docs": "concurrently typedoc npm:docs:api:main npm:docs:api:array npm:docs:api:git npm:docs:api:set",
 		"docs:api:array": "api-extractor run --local --config api-extractor.array.json",
 		"docs:api:git": "api-extractor run --local --config api-extractor.git.json",
 		"docs:api:main": "api-extractor run --local",
@@ -47,7 +47,8 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
 		"sort-package-json": "sort-package-json",
-		"test": "vitest run \"test\""
+		"test": "vitest run \"test\"",
+		"typedoc": "typedoc"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",

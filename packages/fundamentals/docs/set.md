@@ -1,10 +1,14 @@
-[**@tylerbu/fundamentals**](../../README.md) • **Docs**
+[**@tylerbu/fundamentals**](README.md) • **Docs**
 
 ***
 
-[@tylerbu/fundamentals](../../modules.md) / [set](../README.md) / addAll
+[@tylerbu/fundamentals](README.md) / set
 
-# Function: addAll()
+# set
+
+## Functions
+
+### addAll()
 
 > **addAll**\<`T`\>(`theSet`, `items`): `Set`\<`T`\>
 
@@ -12,13 +16,13 @@
 
 Adds all elements from an iterable collection to a specified set.
 
-## Type Parameters
+#### Type Parameters
 
 • **T**
 
 The type of elements in the set and iterable collection.
 
-## Parameters
+#### Parameters
 
 • **theSet**: `Set`\<`T`\>
 
@@ -31,13 +35,13 @@ An iterable collection of elements to be added to the set. This could
                be an array, another set, or any object implementing the Iterable
                interface.
 
-## Returns
+#### Returns
 
 `Set`\<`T`\>
 
 The modified set with the new elements added.
 
-## Remarks
+#### Remarks
 
 This function iterates over all elements in the provided iterable collection
 and adds each element to the specified set. It is a generic function that can
@@ -46,7 +50,7 @@ contain elements of the same type. After all elements from the iterable have
 been added to the set, the modified set is returned, allowing for chaining or
 further manipulation.
 
-## Examples
+#### Examples
 
 ```ts
 // Example usage with a set of numbers and an array
@@ -62,6 +66,6 @@ addAll(stringSet, new Set<string>(['world']));
 console.log(stringSet); // Output: Set { 'hello', 'world' }
 ```
 
-## Defined in
+#### Defined in
 
-[set.ts:41](https://github.com/tylerbutler/tools-monorepo/blob/e5c9b5f5c8bbad1b778226ca5d92ed07cf78f962/packages/fundamentals/src/set.ts#L41)
+[set.ts:41](https://github.com/tylerbutler/tools-monorepo/blob/a3b16518e62e0859db66a1b21e16b028032454a8/packages/fundamentals/src/set.ts#L41)

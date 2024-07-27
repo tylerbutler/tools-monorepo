@@ -9,5 +9,8 @@ module.exports = {
 		"./src/set.ts",
 	],
 	plugin: ["typedoc-plugin-markdown"],
+	outputFileStrategy: "modules",
 	out: "docs",
+	// entryModule: "index",
+	mergeReadme: true,
 };
