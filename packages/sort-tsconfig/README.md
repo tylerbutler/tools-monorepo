@@ -1,10 +1,9 @@
-# @tylerbu/sort-tsconfig - keep your tsconfigs clean and tidy.
+# sort-tsconfig - keep your tsconfigs clean and tidy.
 
-@tylerbu/sort-tsconfig is a CLI app sort tsconfig files. It also provides a simple programmatic
-API.
+sort-tsconfig is a CLI app sort tsconfig files. It also provides a simple programmatic API.
 
 <!-- toc -->
-* [@tylerbu/sort-tsconfig - keep your tsconfigs clean and tidy.](#tylerbusort-tsconfig---keep-your-tsconfigs-clean-and-tidy)
+* [sort-tsconfig - keep your tsconfigs clean and tidy.](#sort-tsconfig---keep-your-tsconfigs-clean-and-tidy)
 * [Usage](#usage)
 * [API](#api)
 <!-- tocstop -->
@@ -56,18 +55,4 @@ EXAMPLES
 
 # API
 
-```ts
-// Checks if a tsconfig file is sorted.
-export function isSorted(tsconfig: string): boolean;
-
-// Sorts a file in place. The sorted contents is always returned; use `write: true` to write file.
-export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-
-// Result of a tsconfig sort operation.
-export interface SortTsconfigResult {
-    // Will be `true` if the file was already sorted.
-    alreadySorted: boolean;
-    // The sorted tsconfig string.
-    tsconfig: string;
-}
-```
+See [sort-tsconfig.api.md](./api-docs/sort-tsconfig.api.md).

@@ -9,7 +9,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/dill"
+		"directory": "packages/sort-tsconfig"
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -39,10 +39,10 @@
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
 		"docs": "api-extractor run --local",
-		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
+		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint . --apply",
+		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --no-aliases",

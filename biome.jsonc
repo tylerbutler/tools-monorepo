@@ -85,6 +85,7 @@
 				"packages/cli-api/**/*.ts",
 				"packages/dill/**/*.ts",
 				"packages/repopo/**/*.ts",
+				"packages/sort-tsconfig/**/*.ts",
 			],
 			"linter": {
 				"rules": {
