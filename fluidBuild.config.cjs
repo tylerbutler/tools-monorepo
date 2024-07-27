@@ -10,12 +10,15 @@ const config = {
 		},
 	},
 	tasks: {
+		api: {
+			dependsOn: ["compile"],
+		},
 		build: {
-			dependsOn: ["^build", "compile", "docs", "manifest", "readme"],
+			dependsOn: ["^build", "compile", "api", "docs", "manifest", "readme"],
 			script: false,
 		},
 		docs: {
-			dependsOn: ["compile"],
+			dependsOn: [],
 		},
 		clean: {
 			before: ["*"],
