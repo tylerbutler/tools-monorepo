@@ -5,12 +5,6 @@
 ```ts
 
 // @beta
-export function addAll<T>(theSet: Set<T>, items: Iterable<T>): Set<T>;
-
-// @public
-export function findGitRootSync(cwd?: string): string;
-
-// @beta
 export function isSorted<T>(arr: T[], compareFn: (a: T, b: T) => number): boolean;
 
 // (No @packageDocumentation comment for this package)
