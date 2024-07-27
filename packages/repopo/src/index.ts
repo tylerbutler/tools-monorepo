@@ -1,4 +1,3 @@
-// biome-ignore lint/performance/noBarrelFile: Standard oclif pattern
 export { run } from "@oclif/core";
 
 export type {
