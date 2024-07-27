@@ -98,12 +98,12 @@ importers:
       dill:
         specifier: workspace:^
         version: link:../dill
-      globby:
-        specifier: ^14.0.1
-        version: 14.0.2
       simple-git:
         specifier: ^3.24.0
         version: 3.25.0
+      sort-tsconfig:
+        specifier: workspace:^
+        version: link:../sort-tsconfig
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
@@ -174,21 +174,12 @@ importers:
       debug:
         specifier: ^4.3.4
         version: 4.3.5(supports-color@8.1.1)
-      detect-indent:
-        specifier: ^7.0.1
-        version: 7.0.1
       simple-git:
         specifier: ^3.24.0
         version: 3.25.0
-      sort-jsonc:
-        specifier: ^1.0.1
-        version: 1.0.1
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
-      tiny-jsonc:
-        specifier: ^1.0.1
-        version: 1.0.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.3
@@ -395,6 +386,9 @@ importers:
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
+      sort-tsconfig:
+        specifier: workspace:^
+        version: link:../sort-tsconfig
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.3
@@ -429,6 +423,94 @@ importers:
       serve:
         specifier: ^14.2.3
         version: 14.2.3
+      sort-package-json:
+        specifier: 2.10.0
+        version: 2.10.0
+      start-server-and-test:
+        specifier: ^2.0.3
+        version: 2.0.4
+      tmp-promise:
+        specifier: ^3.0.3
+        version: 3.0.3
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.14.10)(typescript@5.5.3)
+      type-fest:
+        specifier: ^4.18.2
+        version: 4.21.0
+      typescript:
+        specifier: ~5.5.0
+        version: 5.5.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.0.2(@types/node@20.14.10)(terser@5.19.2)
+
+  packages/sort-tsconfig:
+    dependencies:
+      '@oclif/core':
+        specifier: ^4.0.4
+        version: 4.0.12
+      '@oclif/plugin-help':
+        specifier: ^6.2.1
+        version: 6.2.6
+      '@tylerbu/cli-api':
+        specifier: workspace:^
+        version: link:../cli-api
+      detect-indent:
+        specifier: ^7.0.1
+        version: 7.0.1
+      globby:
+        specifier: ^14.0.1
+        version: 14.0.1
+      sort-jsonc:
+        specifier: ^1.0.1
+        version: 1.0.1
+      tiny-jsonc:
+        specifier: ^1.0.1
+        version: 1.0.1
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 1.8.3
+        version: 1.8.3
+      '@microsoft/api-extractor':
+        specifier: ^7.43.4
+        version: 7.43.4(@types/node@20.14.10)
+      '@oclif/plugin-command-snapshot':
+        specifier: ^5.2.2
+        version: 5.2.6
+      '@oclif/test':
+        specifier: ^4.0.3
+        version: 4.0.4(@oclif/core@4.0.12)
+      '@types/chai':
+        specifier: ^4.3.16
+        version: 4.3.16
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/mocha':
+        specifier: ^10.0.6
+        version: 10.0.7
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.14.10
+      '@types/tmp':
+        specifier: ^0.2.6
+        version: 0.2.6
+      chai:
+        specifier: ^4.4.1
+        version: 4.4.1
+      lefthook:
+        specifier: ^1.6.11
+        version: 1.7.2
+      mocha:
+        specifier: ^10.4.0
+        version: 10.6.0
+      oclif:
+        specifier: ^4.13.5
+        version: 4.14.0
+      rimraf:
+        specifier: ^6.0.0
+        version: 6.0.1
       sort-package-json:
         specifier: 2.10.0
         version: 2.10.0
@@ -1213,15 +1295,28 @@ packages:
     resolution: {integrity: sha512-hGERhz4L11zni1ifapBK3zhHFcX1QIGoTf0WzoCC0mI2IXfWDJ5ToYMZTPO6qPmn3ElrZtSWcoaHVkaRz16Q/Q==}
     hasBin: true
 
+  '@microsoft/api-extractor-model@7.28.16':
+    resolution: {integrity: sha512-4/5gbW9zazr7hHHdv32QoCFDQl4vsrMOFp7g9k/uIQR2mn7AqQVN6NvNOAnFi1xwCM6X3K1BN1ZWf9ARF5hUmA==}
+
   '@microsoft/api-extractor-model@7.29.2':
     resolution: {integrity: sha512-hAYajOjQan3uslhKJRwvvHIdLJ+ZByKqdSsJ/dgHFxPtEbdKpzMDO8zuW4K5gkSMYl5D0LbNwxkhxr51P2zsmw==}
+
+  '@microsoft/api-extractor@7.43.4':
+    resolution: {integrity: sha512-HMzeVcTbzpiVvAUOnUVOxhPGPjOlPQQjiHVZy3fsXm6D5MUiEqX0OWEuupV8Ba3LM7h1Vk8xnNghlwpCkY73UA==}
+    hasBin: true
 
   '@microsoft/api-extractor@7.47.0':
     resolution: {integrity: sha512-LT8yvcWNf76EpDC+8/ArTVSYePvuDQ+YbAUrsTcpg3ptiZ93HIcMCozP/JOxDt+rrsFfFHcpfoselKfPyRI0GQ==}
     hasBin: true
 
+  '@microsoft/tsdoc-config@0.16.2':
+    resolution: {integrity: sha512-OGiIzzoBLgWWR0UdRJX98oYO+XKGf7tiK4Zk6tQ/E4IJqGCe7dvkTvgDZV5cFJUzLGDOjeAXrnZoA6QkVySuxw==}
+
   '@microsoft/tsdoc-config@0.17.0':
     resolution: {integrity: sha512-v/EYRXnCAIHxOHW+Plb6OWuUoMotxTN0GLatnpOb1xq0KuTNw/WI3pamJx/UbsoJP5k9MCw1QxvvhPcF9pH3Zg==}
+
+  '@microsoft/tsdoc@0.14.2':
+    resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
 
   '@microsoft/tsdoc@0.15.0':
     resolution: {integrity: sha512-HZpPoABogPvjeJOdzCOSJsXeL/SMCBgBZMVC3X3d7YYp2gf31MfxhUoYUNwf1ERPJOnQc0wkFn9trqI6ZEdZuA==}
@@ -1737,6 +1832,14 @@ packages:
       '@types/node':
         optional: true
 
+  '@rushstack/node-core-library@4.2.1':
+    resolution: {integrity: sha512-jO8tR7ySxwy2c34QXSQDT9C22EfyisQruKT39FpipPOJAwKejug86eM+FL0QmkqbWGwpmfzkp3pyV71I5ZD9FA==}
+    peerDependencies:
+      '@types/node': '*'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
   '@rushstack/node-core-library@5.4.1':
     resolution: {integrity: sha512-WNnwdS8r9NZ/2K3u29tNoSRldscFa7SxU0RT+82B6Dy2I4Hl2MeCSKm4EXLXPKeNzLGvJ1cqbUhTLviSF8E6iA==}
     peerDependencies:
@@ -1748,6 +1851,14 @@ packages:
   '@rushstack/rig-package@0.5.2':
     resolution: {integrity: sha512-mUDecIJeH3yYGZs2a48k+pbhM6JYwWlgjs2Ca5f2n1G2/kgdgP9D/07oglEGf6mRyXEnazhEENeYTSNDRCwdqA==}
 
+  '@rushstack/terminal@0.10.3':
+    resolution: {integrity: sha512-4wEPvn9bTD4cixW+FQxlCtZmVIp73gUEAFutPXDo7Nik5bqmbP+fkZcd3Zjr+hOQyyu85d6+1R1DOPcchJX5ww==}
+    peerDependencies:
+      '@types/node': '*'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
   '@rushstack/terminal@0.13.0':
     resolution: {integrity: sha512-Ou44Q2s81BqJu3dpYedAX54am9vn245F0HzqVrfJCMQk5pGgoKKOBOjkbfZC9QKcGNaECh6pwH2s5noJt7X6ew==}
     peerDependencies:
@@ -1755,6 +1866,9 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
+
+  '@rushstack/ts-command-line@4.19.5':
+    resolution: {integrity: sha512-0baDWdyMeB2LFHn1T8PKmy2rGclJoDruOjxwARrM4Oe66YjO9GfVZYwpM8ePdzJprWhkCnYLSxGUKJiWmUpapg==}
 
   '@rushstack/ts-command-line@4.22.0':
     resolution: {integrity: sha512-Qj28t6MO3HRgAZ72FDeFsrpdE6wBWxF3VENgvrXh7JF2qIT+CrXiOJIesW80VFZB9QwObSpkB1ilx794fGQg6g==}
@@ -5370,6 +5484,9 @@ packages:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
 
+  resolve@1.19.0:
+    resolution: {integrity: sha512-rArEXAgsBG4UgRGcynxWIWKFvh/XZCcS8UJdHhwy91zwAvCZIbcs+vAbflgBnNjYMs/i/i+/Ux6IZhML1yPvxg==}
+
   resolve@1.22.8:
     resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
     hasBin: true
@@ -8468,11 +8585,37 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
+  '@microsoft/api-extractor-model@7.28.16(@types/node@20.14.10)':
+    dependencies:
+      '@microsoft/tsdoc': 0.14.2
+      '@microsoft/tsdoc-config': 0.16.2
+      '@rushstack/node-core-library': 4.2.1(@types/node@20.14.10)
+    transitivePeerDependencies:
+      - '@types/node'
+
   '@microsoft/api-extractor-model@7.29.2(@types/node@20.14.10)':
     dependencies:
       '@microsoft/tsdoc': 0.15.0
       '@microsoft/tsdoc-config': 0.17.0
       '@rushstack/node-core-library': 5.4.1(@types/node@20.14.10)
+    transitivePeerDependencies:
+      - '@types/node'
+
+  '@microsoft/api-extractor@7.43.4(@types/node@20.14.10)':
+    dependencies:
+      '@microsoft/api-extractor-model': 7.28.16(@types/node@20.14.10)
+      '@microsoft/tsdoc': 0.14.2
+      '@microsoft/tsdoc-config': 0.16.2
+      '@rushstack/node-core-library': 4.2.1(@types/node@20.14.10)
+      '@rushstack/rig-package': 0.5.2
+      '@rushstack/terminal': 0.10.3(@types/node@20.14.10)
+      '@rushstack/ts-command-line': 4.19.5(@types/node@20.14.10)
+      lodash: 4.17.21
+      minimatch: 3.0.8
+      resolve: 1.22.8
+      semver: 7.5.4
+      source-map: 0.6.1
+      typescript: 5.4.2
     transitivePeerDependencies:
       - '@types/node'
 
@@ -8494,12 +8637,21 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
+  '@microsoft/tsdoc-config@0.16.2':
+    dependencies:
+      '@microsoft/tsdoc': 0.14.2
+      ajv: 6.12.6
+      jju: 1.4.0
+      resolve: 1.19.0
+
   '@microsoft/tsdoc-config@0.17.0':
     dependencies:
       '@microsoft/tsdoc': 0.15.0
       ajv: 8.12.0
       jju: 1.4.0
       resolve: 1.22.8
+
+  '@microsoft/tsdoc@0.14.2': {}
 
   '@microsoft/tsdoc@0.15.0': {}
 
@@ -9183,6 +9335,17 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.10
 
+  '@rushstack/node-core-library@4.2.1(@types/node@20.14.10)':
+    dependencies:
+      fs-extra: 7.0.1
+      import-lazy: 4.0.0
+      jju: 1.4.0
+      resolve: 1.22.8
+      semver: 7.5.4
+      z-schema: 5.0.5
+    optionalDependencies:
+      '@types/node': 20.14.10
+
   '@rushstack/node-core-library@5.4.1(@types/node@20.14.10)':
     dependencies:
       ajv: 8.13.0
@@ -9201,12 +9364,28 @@ snapshots:
       resolve: 1.22.8
       strip-json-comments: 3.1.1
 
+  '@rushstack/terminal@0.10.3(@types/node@20.14.10)':
+    dependencies:
+      '@rushstack/node-core-library': 4.2.1(@types/node@20.14.10)
+      supports-color: 8.1.1
+    optionalDependencies:
+      '@types/node': 20.14.10
+
   '@rushstack/terminal@0.13.0(@types/node@20.14.10)':
     dependencies:
       '@rushstack/node-core-library': 5.4.1(@types/node@20.14.10)
       supports-color: 8.1.1
     optionalDependencies:
       '@types/node': 20.14.10
+
+  '@rushstack/ts-command-line@4.19.5(@types/node@20.14.10)':
+    dependencies:
+      '@rushstack/terminal': 0.10.3(@types/node@20.14.10)
+      '@types/argparse': 1.0.38
+      argparse: 1.0.10
+      string-argv: 0.3.2
+    transitivePeerDependencies:
+      - '@types/node'
 
   '@rushstack/ts-command-line@4.22.0(@types/node@20.14.10)':
     dependencies:
@@ -13378,6 +13557,11 @@ snapshots:
   resolve-from@4.0.0: {}
 
   resolve-from@5.0.0: {}
+
+  resolve@1.19.0:
+    dependencies:
+      is-core-module: 2.14.0
+      path-parse: 1.0.7
 
   resolve@1.22.8:
     dependencies:

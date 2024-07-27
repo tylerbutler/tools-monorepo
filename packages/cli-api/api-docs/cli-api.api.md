@@ -109,9 +109,6 @@ export abstract class GitCommand<T extends typeof Command & {
     protected repo: Repository;
 }
 
-// @beta
-export function isSorted(tsconfig: string): boolean;
-
 // @public
 export interface Logger {
     errorLog: ErrorLoggingFunction;
@@ -123,9 +120,6 @@ export interface Logger {
 
 // @public
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
-
-// @beta
-export type OrderList = string[];
 
 // @beta (undocumented)
 export const RegExpFlag: FlagDefinition<RegExp, CustomOptions, {
@@ -144,22 +138,6 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 
 // @public
 export function shortCommit(commit: string): string;
-
-// @beta
-export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-
-// @beta
-export interface SortTsconfigResult {
-    alreadySorted: boolean;
-    tsconfig: string;
-}
-
-// @beta
-export class TsConfigSorter {
-    constructor(order: OrderList);
-    isSorted(tsconfig: string): boolean;
-    sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-}
 
 // (No @packageDocumentation comment for this package)
 
