@@ -9,6 +9,8 @@ module.exports = {
 		"./src/set.ts",
 	],
 	plugin: ["typedoc-plugin-markdown"],
+	sourceLinkTemplate:
+		"https://github.com/tylerbutler/tools-monorepo/blob/main/{path}#L{line}",
 	outputFileStrategy: "modules",
 	out: "docs",
 	// entryModule: "index",

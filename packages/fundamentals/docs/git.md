@@ -36,4 +36,4 @@ Error If the current directory is not part of a Git repository.
 
 #### Defined in
 
-[git.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/a3b16518e62e0859db66a1b21e16b028032454a8/packages/fundamentals/src/git.ts#L17)
+[git.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/git.ts#L17)
