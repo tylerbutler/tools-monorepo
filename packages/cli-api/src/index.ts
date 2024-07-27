@@ -1,4 +1,3 @@
-// biome-ignore lint/performance/noBarrelFile: <explanation>
 export { type Args, type Flags, BaseCommand } from "./baseCommand.js";
 export { CommandWithConfig, CommandWithoutConfig } from "./configCommand.js";
 export { RegExpFlag } from "./flags.js";
