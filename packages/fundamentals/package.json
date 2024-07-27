@@ -42,7 +42,7 @@
 		"docs:api:main": "api-extractor run --local",
 		"docs:api:set": "api-extractor run --local --config api-extractor.set.json",
 		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
+		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
@@ -57,6 +57,8 @@
 		"concurrently": "^8.2.2",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
+		"typedoc": "^0.26.5",
+		"typedoc-plugin-markdown": "^4.2.3",
 		"typescript": "~5.5.0",
 		"vitest": "^2.0.0"
 	},
