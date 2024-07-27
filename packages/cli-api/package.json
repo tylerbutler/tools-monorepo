@@ -26,10 +26,10 @@
 		"compile": "tsc --project ./tsconfig.json",
 		"docs": "api-extractor run --local",
 		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
+		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint . --apply",
+		"lint:fix": "biome lint . --write",
 		"sort-package-json": "sort-package-json",
 		"test": "vitest run \"test\""
 	},
