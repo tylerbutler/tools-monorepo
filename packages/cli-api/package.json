@@ -17,7 +17,7 @@
 		}
 	},
 	"types": "./esm/index.d.ts",
-	"files": ["esm"],
+	"files": ["/CHANGELOG.md", "/esm", "/THIRD-PARTY-LICENSES.txt"],
 	"scripts": {
 		"api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
