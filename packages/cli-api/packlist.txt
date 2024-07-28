@@ -1,5 +1,7 @@
+CHANGELOG.md
 LICENSE
 README.md
+THIRD-PARTY-LICENSES.txt
 package.json
 esm/baseCommand.d.ts
 esm/baseCommand.d.ts.map

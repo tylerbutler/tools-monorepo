@@ -24,7 +24,13 @@
 	"bin": {
 		"repopo": "./bin/run.js"
 	},
-	"files": ["/bin", "/esm", "/oclif.manifest.json"],
+	"files": [
+		"/bin",
+		"/CHANGELOG.md",
+		"/esm",
+		"/oclif.manifest.json",
+		"/THIRD-PARTY-LICENSES.txt"
+	],
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format",

@@ -1,5 +1,7 @@
+CHANGELOG.md
 LICENSE
 README.md
+THIRD-PARTY-LICENSES.txt
 oclif.manifest.json
 package.json
 bin/dev.cmd
