@@ -265,9 +265,6 @@ importers:
 
   packages/dill:
     dependencies:
-      '@andrewbranch/untar.js':
-        specifier: ^1.0.3
-        version: 1.0.3
       '@oclif/core':
         specifier: ^4.0.4
         version: 4.0.12
@@ -295,6 +292,9 @@ importers:
       node-fetch-native:
         specifier: ^1.6.4
         version: 1.6.4
+      untar.js:
+        specifier: npm:@andrewbranch/untar.js@^1.0.3
+        version: '@andrewbranch/untar.js@1.0.3'
       whatwg-mimetype:
         specifier: ^4.0.0
         version: 4.0.0
