@@ -1,6 +1,6 @@
 {
 	"name": "dill",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"private": true,
 	"description": "Simple CLI to download and optionally decompress files.",
 	"keywords": ["download", "ci"],
