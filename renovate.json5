@@ -11,12 +11,12 @@
 	},
 
 	"timezone": "America/Los_Angeles",
-	"schedule": [
-		// "after 10pm every weekday",
-		// "before 5am every weekday",
-		// "every weekend"
-		"after 9pm on sunday",
-	],
+	// "schedule": [
+	// 	// "after 10pm every weekday",
+	// 	// "before 5am every weekday",
+	// 	// "every weekend"
+	// 	"after 9pm on sunday",
+	// ],
 
 	"separateMajorMinor": true,
 	"separateMultipleMajor": true,
@@ -64,31 +64,32 @@
 	},
 
 	"packageRules": [
-		// {
-		// 	// Require Dependency Dashboard approval for major updates
-		// 	"dependencyDashboardApproval": true,
-		// 	"matchUpdateTypes": ["major"],
-		// },
+		{
+			// Require Dependency Dashboard approval for major updates
+			"dependencyDashboardApproval": true,
+			"matchUpdateTypes": ["major"],
+		},
 		{
 			// Group oclif dependencies together
-			"matchPackagePatterns": ["^oclif", "^@oclif/"],
 			"groupName": "oclif",
+			"matchPackagePatterns": ["^oclif", "^@oclif/"],
 		},
 		{
 			// TypeScript updates should be done separately
-			"matchPackagePatterns": ["typescript"],
 			"groupName": "typescript",
+			"matchPackagePatterns": ["typescript"],
 		},
 		{
 			// Group dev dependencies except oclif together
+			"groupName": "dev dependencies",
 			"matchDepTypes": ["devDependencies"],
-			"matchUpdateTypes": ["patch", "minor"],
+			"matchUpdateTypes": ["minor", "patch"],
 			"excludePackagePatterns": ["^oclif", "^@oclif/"],
-			"groupName": "devDependencies (non-major)",
 			"automerge": true,
 		},
 		{
 			// Allow patch updates to be auto-merged, except for oclif
+			"groupName": "dependency patch udpates",
 			"matchUpdateTypes": ["patch", "pin", "digest"],
 			"excludePackagePatterns": ["^oclif", "^@oclif/"],
 			"automerge": true,
