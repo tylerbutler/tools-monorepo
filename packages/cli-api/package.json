@@ -17,7 +17,7 @@
 		}
 	},
 	"types": "./esm/index.d.ts",
-	"files": ["esm"],
+	"files": ["/CHANGELOG.md", "/esm", "/THIRD-PARTY-LICENSES.txt"],
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"check": "npm run check:format",
