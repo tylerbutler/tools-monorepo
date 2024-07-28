@@ -3,7 +3,7 @@
 /** @type {import("@fluidframework/build-tools").IFluidBuildConfig} */
 const config = {
 	repoPackages: {
-		main: {
+		client: {
 			directory: "",
 			ignoredDirs: [],
 			defaultInterdependencyRange: "workspace:^",
