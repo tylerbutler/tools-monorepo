@@ -68,7 +68,7 @@
 			},
 		},
 		{
-			"include": ["packages/*/src/commands/**/*.ts"],
+			"include": ["**/src/commands/**/*.ts"],
 			"linter": {
 				"rules": {
 					"style": {
@@ -81,11 +81,11 @@
 		{
 			// these packages are node-only
 			"include": [
-				"packages/cli/**/*.ts",
-				"packages/cli-api/**/*.ts",
-				"packages/dill/**/*.ts",
-				"packages/repopo/**/*.ts",
-				"packages/sort-tsconfig/**/*.ts",
+				"**/cli/**/*.ts",
+				"**/cli-api/**/*.ts",
+				"**/dill/**/*.ts",
+				"**/repopo/**/*.ts",
+				"**/sort-tsconfig/**/*.ts",
 			],
 			"linter": {
 				"rules": {

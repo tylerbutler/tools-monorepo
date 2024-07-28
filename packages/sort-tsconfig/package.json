@@ -28,8 +28,15 @@
 	"bin": {
 		"dill": "./bin/run.js"
 	},
-	"files": ["/bin", "/esm", "/oclif.manifest.json"],
+	"files": [
+		"/bin",
+		"/CHANGELOG.md",
+		"/esm",
+		"/oclif.manifest.json",
+		"/THIRD-PARTY-LICENSES.txt"
+	],
 	"scripts": {
+		"api": "api-extractor run --local",
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
@@ -38,7 +45,6 @@
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
-		"docs": "api-extractor run --local",
 		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",

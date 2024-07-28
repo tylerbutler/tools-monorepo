@@ -31,8 +31,4 @@ esm/logger.d.ts
 esm/logger.d.ts.map
 esm/logger.js
 esm/logger.js.map
-esm/tsconfig.d.ts
-esm/tsconfig.d.ts.map
-esm/tsconfig.js
-esm/tsconfig.js.map
 esm/tsdoc-metadata.json
