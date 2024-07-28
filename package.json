@@ -26,7 +26,7 @@
 		"compile": "fluid-build . --task compile",
 		"format": "npm run sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate:license-file": "pnpm -r exec -- generate-license-file --input package.json --output THIRD-PARTY-LICENSES.txt --eol lf --overwrite --no-spinner",
+		"generate:license-file": "pnpm -r exec -- generate-license-file",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"prepare": "lefthook install",
