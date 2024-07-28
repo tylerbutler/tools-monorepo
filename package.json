@@ -26,6 +26,7 @@
 		"compile": "fluid-build . --task compile",
 		"format": "npm run sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
+		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"prepare": "lefthook install",
@@ -43,6 +44,7 @@
 		"@tylerbu/cli": "workspace:^",
 		"@tylerbu/repopo": "workspace:^",
 		"concurrently": "^8.2.2",
+		"generate-license-file": "^3.5.0",
 		"lefthook": "^1.6.11",
 		"renovate": "^37.431.4",
 		"rimraf": "^6.0.0",
@@ -83,7 +85,13 @@
 				"script": false
 			},
 			"full": {
-				"dependsOn": ["check", "^build", "lint", "^test"],
+				"dependsOn": [
+					"check",
+					"^build",
+					"lint",
+					"generate:license-file",
+					"^test"
+				],
 				"script": false
 			},
 			"check:policy": {
