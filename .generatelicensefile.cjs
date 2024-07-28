@@ -7,6 +7,6 @@ module.exports = {
 	noSpinner: true,
 	replace: {
 		"@andrewbranch/untar.js@1.0.3":
-			"https://github.com/antimatter15/untar.js/blob/master/LICENSE",
+			"https://raw.githubusercontent.com/antimatter15/untar.js/master/LICENSE",
 	},
 };
