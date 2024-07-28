@@ -24,8 +24,16 @@
 	"bin": {
 		"repopo": "./bin/run.js"
 	},
-	"files": ["/bin", "/esm", "/oclif.manifest.json"],
+	"files": [
+		"/bin",
+		"/CHANGELOG.md",
+		"/esm",
+		"/oclif.manifest.json",
+		"/THIRD-PARTY-LICENSES.txt"
+	],
 	"scripts": {
+		"api": "api-extractor run --local",
+		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
@@ -34,12 +42,10 @@
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
-		"docs": "api-extractor run --local",
-		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
+		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint . --apply",
+		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --no-aliases",
@@ -57,7 +63,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluidframework/build-tools": "^0.38.0",
+		"@fluidframework/build-tools": "^0.41.0",
 		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-help": "^6.2.1",
 		"@tylerbu/cli-api": "workspace:^",
@@ -66,7 +72,7 @@
 		"fs-extra": "^11.2.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.7.3",
+		"@biomejs/biome": "1.8.3",
 		"@microsoft/api-extractor": "^7.43.4",
 		"@oclif/plugin-command-snapshot": "^5.2.2",
 		"@oclif/test": "^4.0.3",
@@ -75,7 +81,7 @@
 		"@types/tmp": "^0.2.6",
 		"lefthook": "^1.6.11",
 		"oclif": "^4.13.5",
-		"rimraf": "^5.0.7",
+		"rimraf": "^6.0.0",
 		"serve": "^14.2.3",
 		"sort-package-json": "2.10.0",
 		"start-server-and-test": "^2.0.3",
@@ -83,9 +89,9 @@
 		"ts-node": "^10.9.2",
 		"type-fest": "^4.18.2",
 		"typescript": "~5.5.3",
-		"vitest": "^1.6.0"
+		"vitest": "^2.0.0"
 	},
-	"packageManager": "pnpm@9.5.0+sha256.dbdf5961c32909fb030595a9daa1dae720162e658609a8f92f2fa99835510ca5",
+	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
 	"engines": {
 		"node": ">=18.0.0"
 	}

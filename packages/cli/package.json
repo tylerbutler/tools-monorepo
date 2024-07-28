@@ -25,7 +25,13 @@
 	"bin": {
 		"tbu": "./bin/run.js"
 	},
-	"files": ["/bin", "/esm", "/oclif.manifest.json"],
+	"files": [
+		"/bin",
+		"/CHANGELOG.md",
+		"/esm",
+		"/oclif.manifest.json",
+		"/THIRD-PARTY-LICENSES.txt"
+	],
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format npm:check:snapshot",
@@ -36,11 +42,11 @@
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"command-snapshots": "./bin/dev.js snapshot:generate --filepath test/commands/_snapshots/commands.json",
 		"compile": "tsc --project ./tsconfig.json",
-		"format": "sort-package-json && biome check . --linter-enabled=false --apply",
+		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"generate": "concurrently npm:command-snapshots",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint . --apply",
+		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --multi --no-aliases",
@@ -98,7 +104,7 @@
 		"strip-ansi": "^7.1.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.7.3",
+		"@biomejs/biome": "1.8.3",
 		"@oclif/plugin-command-snapshot": "^5.2.2",
 		"@oclif/test": "^4.0.3",
 		"@types/chai": "^4.3.16",
@@ -108,15 +114,15 @@
 		"chai": "^4.4.1",
 		"mocha": "^10.4.0",
 		"oclif": "^4.13.5",
-		"rimraf": "^5.0.7",
+		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.6.2",
 		"type-fest": "^4.18.2",
 		"typescript": "~5.5.3",
-		"vitest": "^1.6.0"
+		"vitest": "^2.0.0"
 	},
-	"packageManager": "pnpm@9.5.0+sha256.dbdf5961c32909fb030595a9daa1dae720162e658609a8f92f2fa99835510ca5",
+	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
 	"engines": {
 		"node": ">=18.0.0"
 	}

@@ -3,19 +3,22 @@
 /** @type {import("@fluidframework/build-tools").IFluidBuildConfig} */
 const config = {
 	repoPackages: {
-		main: {
+		client: {
 			directory: "",
 			ignoredDirs: [],
 			defaultInterdependencyRange: "workspace:^",
 		},
 	},
 	tasks: {
+		api: {
+			dependsOn: ["compile"],
+		},
 		build: {
-			dependsOn: ["^build", "compile", "docs", "manifest", "readme"],
+			dependsOn: ["^build", "compile", "api", "docs", "manifest", "readme"],
 			script: false,
 		},
 		docs: {
-			dependsOn: ["compile"],
+			dependsOn: [],
 		},
 		clean: {
 			before: ["*"],
