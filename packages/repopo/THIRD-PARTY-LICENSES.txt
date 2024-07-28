@@ -27,7 +27,7 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 
 The following npm package may be included in this product:
 
- - @fluidframework/build-tools@0.40.0
+ - @fluidframework/build-tools@0.41.0
 
 This package contains the following license and notice below:
 
