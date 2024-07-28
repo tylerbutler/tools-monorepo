@@ -28,7 +28,13 @@
 	"bin": {
 		"dill": "./bin/run.js"
 	},
-	"files": ["/bin", "/esm", "/oclif.manifest.json"],
+	"files": [
+		"/bin",
+		"/CHANGELOG.md",
+		"/esm",
+		"/oclif.manifest.json",
+		"/THIRD-PARTY-LICENSES.txt"
+	],
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format",
@@ -65,7 +71,6 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@andrewbranch/untar.js": "^1.0.3",
 		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-help": "^6.2.1",
 		"@tinyhttp/content-disposition": "^2.2.0",
@@ -75,6 +80,7 @@
 		"fs-extra": "^11.2.0",
 		"mime": "^4.0.3",
 		"node-fetch-native": "^1.6.4",
+		"untar.js": "npm:@andrewbranch/untar.js@^1.0.3",
 		"whatwg-mimetype": "^4.0.0"
 	},
 	"devDependencies": {

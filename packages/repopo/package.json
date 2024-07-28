@@ -24,8 +24,16 @@
 	"bin": {
 		"repopo": "./bin/run.js"
 	},
-	"files": ["/bin", "/esm", "/oclif.manifest.json"],
+	"files": [
+		"/bin",
+		"/CHANGELOG.md",
+		"/esm",
+		"/oclif.manifest.json",
+		"/THIRD-PARTY-LICENSES.txt"
+	],
 	"scripts": {
+		"api": "api-extractor run --local",
+		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
@@ -34,8 +42,6 @@
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
-		"docs": "api-extractor run --local",
-		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
@@ -57,7 +63,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluidframework/build-tools": "^0.40.0",
+		"@fluidframework/build-tools": "^0.41.0",
 		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-help": "^6.2.1",
 		"@tylerbu/cli-api": "workspace:^",

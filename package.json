@@ -26,6 +26,8 @@
 		"compile": "fluid-build . --task compile",
 		"format": "npm run sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
+		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
+		"generate:packlist": "flub generate packlist -g client",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"prepare": "lefthook install",
@@ -37,12 +39,14 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"@changesets/cli": "^2.27.1",
-		"@fluidframework/build-tools": "^0.40.0",
+		"@fluid-tools/build-cli": "^0.41.0",
+		"@fluidframework/build-tools": "^0.41.0",
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
 		"@tylerbu/repopo": "workspace:^",
 		"concurrently": "^8.2.2",
+		"generate-license-file": "^3.5.0",
 		"lefthook": "^1.6.11",
 		"renovate": "^37.431.4",
 		"rimraf": "^6.0.0",
@@ -74,20 +78,28 @@
 				"dependsOn": ["^check", "check:all"],
 				"script": false
 			},
+			"check:policy": {
+				"dependsOn": ["@tylerbu/repopo#build"],
+				"script": true
+			},
 			"ci": {
-				"dependsOn": ["full"],
+				"dependsOn": ["full", "generate:license-file"],
 				"script": false
 			},
 			"clean": {
 				"dependsOn": ["^clean", "clean:root"],
 				"script": false
 			},
-			"full": {
-				"dependsOn": ["check", "^build", "lint", "^test"],
+			"compile": {
+				"dependsOn": ["^build"],
 				"script": false
 			},
-			"check:policy": {
-				"dependsOn": ["@tylerbu/repopo#build"],
+			"full": {
+				"dependsOn": ["check", "^build", "lint", "generate:packlist", "^test"],
+				"script": false
+			},
+			"generate:packlist": {
+				"dependsOn": ["^build"],
 				"script": true
 			}
 		}
