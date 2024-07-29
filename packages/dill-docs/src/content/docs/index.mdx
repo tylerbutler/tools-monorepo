@@ -5,29 +5,42 @@ template: splash
 hero:
   tagline: Download and decompress gzipped tar files with a CLI and API.
   image:
-    file: ../../assets/dill-logo.jpg
+    file: ../../assets/dill-logo.svg
   actions:
     - text: Get started
       link: /introduction/
       icon: right-arrow
       variant: primary
+banner:
+  content: |
+    Dill is extremely new and likely has bugs. Use at your own risk!
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-## Next steps
+## Features
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+<CardGrid>
+	<Card title="Download and decompress .tar.gz files in one step" icon="rocket">
+		It's as easy as `dill <URL>`! [Install Dill](/installation/) to get started.
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="Works almost anywhere" icon="random">
+		Dill works almost anywhere JavaScript can be run thanks to [node-fetch-native](https://www.npmjs.com/package/node-fetch-native).
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
+	<Card title="Programmatic API" icon="seti:javascript">
+		You can [use Dill in your own programs](/guides/api-usage/), or [include Dill as a subcommand in your own CLI app](/guides/subcommand/)!
+</Card>
+</CardGrid>
+
+## Get started
+
+<LinkCard
+  title="Customizing Starlight"
+  description="Learn how to make your Starlight site your own with custom styles, fonts, and more."
+  href="/guides/customization/"
+/>
+
+<CardGrid>
+  <LinkCard title="Authoring Markdown" href="/guides/authoring-content/" />
+  <LinkCard title="Components" href="/guides/components/" />
 </CardGrid>

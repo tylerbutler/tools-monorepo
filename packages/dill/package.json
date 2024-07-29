@@ -2,7 +2,7 @@
 	"name": "dill",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Simple CLI to download and optionally decompress files.",
+	"description": "Simple CLI to download and optionally decompress gzipped files.",
 	"keywords": ["download", "ci"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/dill/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
