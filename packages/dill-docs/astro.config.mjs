@@ -6,18 +6,27 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: "My Docs",
+			title: "Dill",
+			customCss: ["./src/styles/custom.css"],
 			plugins: [
-        // Generate the documentation.
-        // starlightTypeDoc({
-        //   entryPoints: ['../dill/src/index.ts'],
-        //   tsconfig: './tsconfig.json',
-        // }),
-      ],
+				// Generate the documentation.
+				// starlightTypeDoc({
+				//   entryPoints: ['../dill/src/index.ts'],
+				//   tsconfig: './tsconfig.json',
+				// }),
+			],
 			social: {
 				github: "https://github.com/tylerbutler/tools-monorepo/packages/dill",
 			},
 			sidebar: [
+				{
+					label: "Start here",
+					items: [
+						{ label: "What is dill?", slug: "introduction" },
+						{ label: "Installation", slug: "installation" },
+						{ label: "Usage", slug: "usage" },
+					],
+				},
 				{
 					label: "Guides",
 					items: [
@@ -25,12 +34,8 @@ export default defineConfig({
 						{ label: "Example Guide", slug: "guides/example" },
 					],
 				},
-				{
-					label: "Reference",
-					autogenerate: { directory: "reference" },
-				},
 				// Add the generated sidebar group to the sidebar.
-        typeDocSidebarGroup,
+				// typeDocSidebarGroup,
 			],
 		}),
 	],
