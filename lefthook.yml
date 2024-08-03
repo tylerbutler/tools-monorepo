@@ -7,9 +7,6 @@
 assert_lefthook_installed: true
 
 pre-commit:
-  scripts:
-    "require-email.mjs":
-      runner: node
   commands:
     renovate-config-validator:
       files: git diff --name-only main

@@ -35,6 +35,9 @@
 			"correctness": {
 				"noUnusedVariables": "error",
 			},
+			"performance": {
+				"noBarrelFile": "off",
+			},
 			"style": {
 				"noParameterProperties": "off",
 			},
