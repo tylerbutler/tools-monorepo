@@ -31,4 +31,4 @@ The file's contents
 
 ## Defined in
 
-[api.ts:96](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L96)
+[api.ts:98](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L98)
