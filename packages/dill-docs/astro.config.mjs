@@ -36,7 +36,7 @@ export default defineConfig({
 						gitRevision: "main",
 						sourceLinkTemplate:
 							"https://github.com/tylerbutler/tools-monorepo/blob/{gitRevision}/{path}#L{line}",
-						// plugin: ['typedoc-plugin-mdn-links', 'typedoc-plugin-frontmatter'],
+						plugin: ["typedoc-plugin-mdn-links"],
 					},
 				}),
 			],

@@ -18,8 +18,6 @@
 		"@fontsource/ibm-plex-serif": "^5.0.13",
 		"@fontsource/metropolis": "^5.0.11",
 		"@fontsource/open-sans": "^5.0.28",
-		"typedoc-plugin-frontmatter": "^1.0.0",
-    "typedoc-plugin-mdn-links": "^3.2.7",
 		"astro": "^4.13.1",
 		"dill": "workspace:^",
 		"sharp": "^0.33.4",
@@ -27,7 +25,9 @@
 		"starlight-package-managers": "^0.6.0",
 		"starlight-typedoc": "^0.14.0",
 		"typedoc": "^0.26.5",
+		"typedoc-plugin-frontmatter": "^1.0.0",
 		"typedoc-plugin-markdown": "^4.2.3",
+		"typedoc-plugin-mdn-links": "^3.2.7",
 		"typescript": "~5.5.4"
 	}
 }

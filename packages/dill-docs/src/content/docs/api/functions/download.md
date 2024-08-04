@@ -5,7 +5,7 @@ prev: false
 title: "download"
 ---
 
-> **download**(`url`, `options`?): `Promise`\<`object`\>
+> **download**(`url`, `options`?): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<`object`\>
 
 Downloads a file from a URL.
 
@@ -21,13 +21,13 @@ Options to use.
 
 ## Returns
 
-`Promise`\<`object`\>
+[`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<`object`\>
 
 The file's contents
 
 ### data
 
-> **data**: `Uint8Array`
+> **data**: [`Uint8Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
 
 ## Defined in
 
