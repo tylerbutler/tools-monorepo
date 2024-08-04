@@ -20,7 +20,24 @@ export default defineConfig({
 				starlightTypeDoc({
 					entryPoints: ["../dill/src/index.ts"],
 					tsconfig: "../dill/tsconfig.json",
-					sidebar: { label: "API Reference", collapsed: true },
+					sidebar: {
+						label: "API Reference",
+						collapsed: true,
+					},
+					typeDoc: {
+						excludeExternals: true,
+						// outputFileStrategy: "modules",
+						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill",
+						mergeReadme: true,
+						readme: "../dill/api-docs/README.md",
+						// readme: "none",
+						// entryModule: "index",
+						// entryFileName: "index",
+						gitRevision: "main",
+						sourceLinkTemplate:
+							"https://github.com/tylerbutler/tools-monorepo/blob/{gitRevision}/{path}#L{line}",
+						// plugin: ['typedoc-plugin-mdn-links', 'typedoc-plugin-frontmatter'],
+					},
 				}),
 			],
 			social: {
@@ -42,6 +59,9 @@ export default defineConfig({
 						{ label: "Using the Dill API", slug: "guides/api-usage" },
 					],
 				},
+				// {
+				// 	label: "API Summary",
+				// },
 				// Add the generated sidebar group to the sidebar.
 				typeDocSidebarGroup,
 			],

@@ -10,7 +10,7 @@ Implementation-wise, Dill uses the [Fetch API](https://developer.mozilla.org/en-
 cross-platform and will use native Fetch implementations where available.
 
 <!-- toc -->
-* [dill - simple file download CLI and API](#dill---simple-file-download-cli-and-api)
+* [dill - download and decompress gzipped tar files with a CLI and API](#dill---download-and-decompress-gzipped-tar-files-with-a-cli-and-api)
 * [Why?](#why)
 * [Usage](#usage)
 <!-- tocstop -->

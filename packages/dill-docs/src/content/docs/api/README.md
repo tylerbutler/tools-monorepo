@@ -5,6 +5,8 @@ prev: false
 title: "dill"
 ---
 
+# Dill API
+
 ## Interfaces
 
 - [DillOptions](/api/interfaces/dilloptions/)
@@ -12,4 +14,3 @@ title: "dill"
 ## Functions
 
 - [download](/api/functions/download/)
-- [run](/api/functions/run/)

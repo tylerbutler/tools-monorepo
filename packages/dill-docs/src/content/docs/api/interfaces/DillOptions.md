@@ -19,7 +19,7 @@ If provided, this path must be to a directory that exists.
 
 #### Defined in
 
-[packages/dill/src/api.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/79c7262a9bcef3aebc2acdc93b16938746bae939/packages/dill/src/api.ts#L50)
+[api.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L50)
 
 ***
 
@@ -32,7 +32,7 @@ false.
 
 #### Defined in
 
-[packages/dill/src/api.ts:43](https://github.com/tylerbutler/tools-monorepo/blob/79c7262a9bcef3aebc2acdc93b16938746bae939/packages/dill/src/api.ts#L43)
+[api.ts:43](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L43)
 
 ***
 
@@ -46,7 +46,7 @@ it will use `dill-download.<EXTENSION>`.
 
 #### Defined in
 
-[packages/dill/src/api.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/79c7262a9bcef3aebc2acdc93b16938746bae939/packages/dill/src/api.ts#L57)
+[api.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L57)
 
 ***
 
@@ -59,4 +59,4 @@ but it will otherwise not be saved.
 
 #### Defined in
 
-[packages/dill/src/api.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/79c7262a9bcef3aebc2acdc93b16938746bae939/packages/dill/src/api.ts#L63)
+[api.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L63)
