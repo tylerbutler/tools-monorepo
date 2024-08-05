@@ -15,11 +15,15 @@
 		"check": "fluid-build . --task check",
 		"check:all": "concurrently npm:check:deps npm:check:format npm:check:policy npm:lint",
 		"check:deps": "syncpack lint",
-		"check:format": "biome check . --linter-enabled=false",
+		"check:format": "biome check --linter-enabled=false",
 		"check:policy": "./packages/repopo/bin/dev.js check",
 		"check:renovate-config": "renovate-config-validator",
-		"ci": "fluid-build . --task ci",
+		"ci": "npm run ci:check && npm run ci:build && npm run ci:lint && npm run ci:test",
+		"ci:build": "fluid-build . --task build --task generate:packlist",
+		"ci:check": "npm run check",
+		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
+		"ci:test": "pnpm -r run test",
 		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
@@ -28,8 +32,8 @@
 		"full": "fluid-build . --task full",
 		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
 		"generate:packlist": "flub generate packlist -g client",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write",
+		"lint": "biome lint",
+		"lint:fix": "biome lint --write",
 		"prepare": "lefthook install",
 		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
@@ -83,7 +87,7 @@
 				"script": true
 			},
 			"ci": {
-				"dependsOn": ["full", "generate:license-file"],
+				"dependsOn": ["ci:check", "ci:build", "ci:lint", "ci:test"],
 				"script": false
 			},
 			"clean": {
@@ -95,12 +99,16 @@
 				"script": false
 			},
 			"full": {
-				"dependsOn": ["check", "^build", "lint", "generate:packlist", "^test"],
+				"dependsOn": ["check", "build", "lint", "docs", "generate:packlist"],
 				"script": false
 			},
 			"generate:packlist": {
 				"dependsOn": ["^build"],
 				"script": true
+			},
+			"test": {
+				"dependsOn": ["^test"],
+				"script": false
 			}
 		}
 	}

@@ -8,10 +8,10 @@ const config = defineConfig({
 			? ["verbose", "github-actions"]
 			: ["verbose"],
 		coverage: {
-      include: ["src/**"],
+			include: ["src/**"],
 			provider: "v8",
 			reporter: ["text", "json", "html"],
-      reportsDirectory: "_temp/coverage",
+			reportsDirectory: "_temp/coverage",
 		},
 	},
 });
