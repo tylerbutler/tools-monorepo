@@ -13,15 +13,17 @@ import { untar } from "untar.js";
 
 const fileProtocol = "file://";
 
-const knownArchiveExtensions: ReadonlySet<string> = new Set([
+export const KNOWN_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
+	"tar",
+	"gz",
+]);
+
+export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
 	"7z",
 	"bz2",
-	"gz",
 	"rar",
-	"tar",
 	"zip",
 	"xz",
-	"gz",
 ]);
 
 /**
@@ -98,6 +100,7 @@ export const download = async (
 	options?: DillOptions,
 ): Promise<{
 	data: Uint8Array;
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
 }> => {
 	const {
 		extract,
@@ -139,8 +142,14 @@ export const download = async (
 		filename ??= responseFileName ?? `${defaultDownloadName}.${extension}`;
 	}
 
+	if (extract && UNSUPPORTED_ARCHIVE_EXTENSIONS.has(extension)) {
+		throw new Error(`Can't decompress files of type: ${extension}`);
+	}
+
 	const decompressed =
-		extract && knownArchiveExtensions.has(extension) ? decompress(file) : file;
+		extract && KNOWN_ARCHIVE_EXTENSIONS.has(extension)
+			? decompress(file)
+			: file;
 
 	if (extract) {
 		await extractTarball(decompressed, downloadDir);
