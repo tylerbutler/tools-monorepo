@@ -1,12 +1,14 @@
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
-import deno from "@astrojs/deno";
+import netlify from "@astrojs/netlify";
+// import deno from "@astrojs/deno";
 
 // https://astro.build/config
 export default defineConfig({
 	output: "server",
-	adapter: deno(),
+	// adapter: deno(),
+	adapter: netlify({ edgeMiddleware: true }),
 	integrations: [
 		starlight({
 			title: "Dill",
