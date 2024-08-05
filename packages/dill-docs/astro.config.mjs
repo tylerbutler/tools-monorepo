@@ -1,7 +1,7 @@
+import netlify from "@astrojs/netlify";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
-import netlify from "@astrojs/netlify";
 // import deno from "@astrojs/deno";
 
 // https://astro.build/config
