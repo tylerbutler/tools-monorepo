@@ -1,13 +1,16 @@
 {
 	"name": "dill-docs",
 	"version": "0.0.1",
+	"private": true,
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
 	"scripts": {
 		"astro": "astro",
-		"build": "astro check && astro build",
+		"build": "astro build",
+		"check": "astro check",
+		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
 		"dev": "astro dev",
 		"preview": "astro preview",
 		"start": "astro dev"
@@ -30,5 +33,10 @@
 		"typedoc-plugin-markdown": "^4.2.3",
 		"typedoc-plugin-mdn-links": "^3.2.7",
 		"typescript": "~5.5.4"
+	},
+	"fluidBuild": {
+		"tasks": {
+			"build": []
+		}
 	}
 }
