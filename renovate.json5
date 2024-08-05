@@ -59,8 +59,8 @@
 	"postUpdateOptions": ["pnpmDedupe"],
 
 	"lockFileMaintenance": {
-		"enabled": false,
-		"automerge": true,
+		"enabled": true,
+		"automerge": false,
 	},
 
 	"packageRules": [
