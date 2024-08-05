@@ -1,9 +1,12 @@
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
+import deno from "@astrojs/deno";
 
 // https://astro.build/config
 export default defineConfig({
+	output: "server",
+	adapter: deno(),
 	integrations: [
 		starlight({
 			title: "Dill",
@@ -47,8 +50,14 @@ export default defineConfig({
 				{
 					label: "Start here",
 					items: [
-						{ label: "What is Dill?", slug: "introduction" },
-						{ label: "Installation & usage", slug: "installation" },
+						{
+							label: "What is Dill?",
+							slug: "introduction",
+						},
+						{
+							label: "Installation & usage",
+							slug: "installation",
+						},
 						// { label: "Usage", slug: "usage" },
 					],
 				},
@@ -56,7 +65,10 @@ export default defineConfig({
 					label: "Guides",
 					items: [
 						// Each item here is one entry in the navigation menu.
-						{ label: "Using the Dill API", slug: "guides/api-usage" },
+						{
+							label: "Using the Dill API",
+							slug: "guides/api-usage",
+						},
 					],
 				},
 				// {
