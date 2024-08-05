@@ -56,7 +56,9 @@
 	//   "before 4am on Monday"
 	// ],
 
-	"postUpdateOptions": ["pnpmDedupe"],
+	"postUpdateOptions": [
+		// "pnpmDedupe"
+	],
 
 	"lockFileMaintenance": {
 		"enabled": true,
