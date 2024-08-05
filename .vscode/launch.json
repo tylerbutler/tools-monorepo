@@ -2,7 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "pnpm test cli-api",
+			"name": "cli-api: pnpm test",
 			"request": "launch",
 			"runtimeArgs": ["run-script", "test"],
 			"cwd": "${workspaceFolder}/packages/cli-api",
@@ -17,6 +17,14 @@
 			"args": [],
 			"skipFiles": ["<node_internals>/**"],
 			"type": "node",
+		},
+
+		{
+			"name": "dill: astro dev",
+			"command": "./node_modules/.bin/astro dev",
+			"cwd": "${workspaceFolder}/packages/dill-docs",
+			"request": "launch",
+			"type": "node-terminal",
 		},
 
 		{
