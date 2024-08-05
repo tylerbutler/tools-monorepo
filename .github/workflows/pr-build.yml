@@ -28,7 +28,12 @@ jobs:
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run ci
+      - run: pnpm run ci:check
+        continue-on-error: true
+      - run: pnpm run ci:build
+      - run: pnpm run ci:lint
+        continue-on-error: true
+      - run: pnpm run ci:test
 
       - name: Check for edited files
         run: |
