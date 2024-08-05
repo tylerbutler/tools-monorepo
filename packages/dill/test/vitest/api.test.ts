@@ -10,6 +10,7 @@ const testUrls = [
 	"http://localhost:8080/test1.json",
 	"http://localhost:8080/tarball2.tar.gz",
 	"http://localhost:8080/tarball3.tar",
+	"http://localhost:8080/test4.zip",
 ] as const;
 
 describe("download", () => {
@@ -82,6 +83,20 @@ describe("download", () => {
 				unsafeCleanup: true,
 			},
 		);
+	});
+
+	it("zip file, no extract (default)", async () => {
+		const { data } = await download(testUrls[4], { noFile: true });
+		expect(data).toMatchSnapshot();
+	});
+
+	it("zip file with extract throws", () => {
+		expect(async () => {
+			await download(testUrls[4], {
+				downloadDir: "./foo",
+				extract: true,
+			});
+		}).rejects.toThrow();
 	});
 });
 
