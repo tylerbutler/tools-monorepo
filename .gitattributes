@@ -6,4 +6,4 @@ tsconfig*.json                 linguist-language=JSON-with-Comments
 # Hide docs from GitHub's language detection
 **/docs/**                     linguist-documentation
 
-*.lockb         binary         diff=lockb
+*.lockb binary diff=lockb
