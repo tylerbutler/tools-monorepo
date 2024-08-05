@@ -43,6 +43,7 @@
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
 		"@tylerbu/repopo": "workspace:^",
+		"check-dependencies": "^2.0.0",
 		"concurrently": "^8.2.2",
 		"lefthook": "^1.6.11",
 		"renovate": "^37.431.4",
