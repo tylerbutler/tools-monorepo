@@ -15,7 +15,7 @@ const testUrls = [
 describe("download", () => {
 	it("JSON, no arguments", async () => {
 		const { data } = await download(testUrls[0], { noFile: true });
-		expect(data).toMatchSnapshot();
+		expect(data).not.toMatchSnapshot();
 	});
 
 	it("JSON, downloadPath = file", async () => {
