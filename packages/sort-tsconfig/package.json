@@ -1,15 +1,15 @@
 {
-	"name": "@tylerbu/repopo",
+	"name": "sort-tsconfig",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Enforce policies on all or some of the files in a git repository.",
-	"keywords": ["policy", "ci"],
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/repopo/",
+	"description": "Sorts tsconfig files.",
+	"keywords": ["sort", "tsconfig", "typescript"],
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/dill/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/repopo"
+		"directory": "packages/sort-tsconfig"
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -18,11 +18,15 @@
 		".": {
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
+		},
+		"./command": {
+			"types": "./esm/commands/sort-tsconfig.d.ts",
+			"import": "./esm/commands/sort-tsconfig.js"
 		}
 	},
 	"types": "esm/index.d.ts",
 	"bin": {
-		"repopo": "./bin/run.js"
+		"dill": "./bin/run.js"
 	},
 	"files": [
 		"/bin",
@@ -33,7 +37,6 @@
 	],
 	"scripts": {
 		"api": "api-extractor run --local",
-		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
@@ -49,47 +52,51 @@
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --no-aliases",
-		"sort-package-json": "sort-package-json"
+		"sort-package-json": "sort-package-json",
+		"start": "serve ./test/data --listen 8080",
+		"test": "vitest run \"test\""
 	},
 	"oclif": {
-		"bin": "repopo",
+		"bin": "sort-tsconfig",
 		"commands": {
-			"strategy": "pattern",
-			"target": "./esm/commands"
+			"strategy": "single",
+			"target": "./esm/commands/sort-tsconfig.js"
 		},
 		"devPlugins": [],
-		"dirname": "repopo",
+		"dirname": "dill",
 		"plugins": [],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/sort-tsconfig/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluidframework/build-tools": "^0.41.0",
 		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-help": "^6.2.1",
 		"@tylerbu/cli-api": "workspace:^",
-		"chalk": "^5.3.0",
-		"cosmiconfig": "^9.0.0",
-		"fs-extra": "^11.2.0",
-		"sort-tsconfig": "workspace:^"
+		"detect-indent": "^7.0.1",
+		"globby": "^14.0.1",
+		"sort-jsonc": "^1.0.1",
+		"tiny-jsonc": "^1.0.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"@microsoft/api-extractor": "^7.43.4",
 		"@oclif/plugin-command-snapshot": "^5.2.2",
 		"@oclif/test": "^4.0.3",
+		"@types/chai": "^4.3.16",
 		"@types/fs-extra": "^11.0.4",
+		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.12.7",
 		"@types/tmp": "^0.2.6",
+		"chai": "^4.4.1",
 		"lefthook": "^1.6.11",
+		"mocha": "^10.4.0",
 		"oclif": "^4.13.5",
 		"rimraf": "^6.0.0",
-		"serve": "^14.2.3",
 		"sort-package-json": "2.10.0",
 		"start-server-and-test": "^2.0.3",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"type-fest": "^4.18.2",
-		"typescript": "~5.5.4",
+		"typescript": "~5.5.0",
 		"vitest": "^2.0.0"
 	},
 	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",

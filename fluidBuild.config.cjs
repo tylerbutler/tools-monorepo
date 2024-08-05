@@ -40,7 +40,7 @@ const config = {
 			dependsOn: ["compile"],
 		},
 		manifest: ["compile"],
-		readme: ["compile"],
+		readme: ["compile", "manifest"],
 		test: {
 			dependsOn: ["compile"],
 		},
