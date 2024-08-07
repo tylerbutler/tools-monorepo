@@ -33,7 +33,7 @@ export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
 const defaultDownloadName = "dill-download";
 
 /**
- * Options used to control Dill's behavior.
+ * Options used to control dill's behavior.
  *
  * @public
  */

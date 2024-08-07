@@ -3,15 +3,8 @@ import { readJson, readdir } from "fs-extra";
 import { withDir } from "tmp-promise";
 import { describe, expect, it } from "vitest";
 
-import { download, extractTarball, fetchFile } from "../../src/api.js";
-
-const testUrls = [
-	"http://localhost:8080/test0.json",
-	"http://localhost:8080/test1.json",
-	"http://localhost:8080/tarball2.tar.gz",
-	"http://localhost:8080/tarball3.tar",
-	"http://localhost:8080/test4.zip",
-] as const;
+import { download, extractTarball, fetchFile } from "../src/api.js";
+import { testUrls } from "./common.js";
 
 describe("download", () => {
 	it("JSON, no arguments", async () => {
