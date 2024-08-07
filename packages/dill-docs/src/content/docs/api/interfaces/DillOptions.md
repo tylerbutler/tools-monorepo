@@ -5,7 +5,7 @@ prev: false
 title: "DillOptions"
 ---
 
-Options used to control Dill's behavior.
+Options used to control dill's behavior.
 
 ## Properties
 

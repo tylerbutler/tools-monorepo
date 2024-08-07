@@ -1,6 +1,6 @@
 ---
-title: Using the Dill API
-description: A guide to using the Dill API to download an decompress files.
+title: Using the dill API
+description: A guide to using the dill API to download an decompress files.
 ---
 
 ## TODO

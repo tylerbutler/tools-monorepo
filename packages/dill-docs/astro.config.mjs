@@ -11,7 +11,7 @@ export default defineConfig({
 	adapter: netlify({ edgeMiddleware: true }),
 	integrations: [
 		starlight({
-			title: "Dill",
+			title: "dill",
 			customCss: [
 				// Fontsource files for to regular and semi-bold font weights.
 				"@fontsource/ibm-plex-serif/400.css",
@@ -53,7 +53,7 @@ export default defineConfig({
 					label: "Start here",
 					items: [
 						{
-							label: "What is Dill?",
+							label: "What is dill?",
 							slug: "introduction",
 						},
 						{
@@ -68,7 +68,7 @@ export default defineConfig({
 					items: [
 						// Each item here is one entry in the navigation menu.
 						{
-							label: "Using the Dill API",
+							label: "Using the dill API",
 							slug: "guides/api-usage",
 						},
 					],

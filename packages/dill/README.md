@@ -2,10 +2,10 @@
 
 ![An anthropomorphic dill pickle in a doorman's uniform](https://tylerbutlerpublic.blob.core.windows.net/public-storage/dill-logo.jpg)
 
-Dill is a CLI app to download gzipped files and optionally decompress their contents. It also provides a simple programmatic
+**dill** is a CLI app to download gzipped files and optionally decompress their contents. It also provides a simple programmatic
 API.
 
-Implementation-wise, Dill uses the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) via
+Implementation-wise, dill uses the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) via
 [node-fetch-native](https://github.com/unjs/node-fetch-native) to download files, which means it is reasonably
 cross-platform and will use native Fetch implementations where available.
 
