@@ -10,6 +10,7 @@
 	"files": {
 		"ignore": [
 			// build output
+			"_temp/**",
 			"built/**",
 			"dist/**",
 			"esm/**",
@@ -68,7 +69,7 @@
 			},
 		},
 		{
-			"include": ["packages/*/src/commands/**/*.ts"],
+			"include": ["**/src/commands/**/*.ts"],
 			"linter": {
 				"rules": {
 					"style": {
@@ -81,10 +82,10 @@
 		{
 			// these packages are node-only
 			"include": [
-				"packages/cli/**/*.ts",
-				"packages/cli-api/**/*.ts",
-				"packages/dill/**/*.ts",
-				"packages/repopo/**/*.ts",
+				"**/cli/**/*.ts",
+				"**/cli-api/**/*.ts",
+				"**/dill/**/*.ts",
+				"**/repopo/**/*.ts",
 			],
 			"linter": {
 				"rules": {

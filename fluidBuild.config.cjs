@@ -14,7 +14,15 @@ const config = {
 			dependsOn: ["^compile", "compile"],
 		},
 		build: {
-			dependsOn: ["^build", "compile", "api", "docs", "manifest", "readme"],
+			dependsOn: [
+				"^build",
+				"compile",
+				"api",
+				"docs",
+				"generate",
+				"manifest",
+				"readme",
+			],
 			script: false,
 		},
 		docs: {
