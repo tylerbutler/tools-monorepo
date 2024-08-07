@@ -1,9 +1,18 @@
 import netlify from "@astrojs/netlify";
 import starlight from "@astrojs/starlight";
+import a11yEmoji from "@fec/remark-a11y-emoji";
+import { includeMarkdown } from "@hashicorp/remark-plugins";
 import { defineConfig } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
+
 // import deno from "@astrojs/deno";
+
+// Get the current script URL
+const scriptUrl = new URL(import.meta.url);
+
+// Get the directory name from the script URL
+const rootDir = new URL("../..", import.meta.url).pathname;
 
 // https://astro.build/config
 export default defineConfig({
@@ -13,6 +22,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: "dill",
+			lastUpdated: true,
 			customCss: [
 				// Fontsource files for to regular and semi-bold font weights.
 				"@fontsource/ibm-plex-serif/400.css",
@@ -54,7 +64,7 @@ export default defineConfig({
 			},
 			sidebar: [
 				{
-					label: "Start here",
+					label: "Start Here",
 					items: [
 						{
 							label: "What is dill?",
@@ -75,12 +85,19 @@ export default defineConfig({
 					label: "Guides",
 					autogenerate: { directory: "usage" },
 				},
-				// {
-				// 	label: "API Summary",
-				// },
+				{
+					label: "CLI Reference",
+					slug: "cli-reference",
+				},
 				// Add the generated sidebar group to the sidebar.
 				typeDocSidebarGroup,
 			],
 		}),
 	],
+	markdown: {
+		remarkPlugins: [
+			a11yEmoji,
+			[includeMarkdown, { resolveMdx: true, resolveFrom: rootDir }],
+		],
+	},
 });

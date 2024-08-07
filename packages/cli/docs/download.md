@@ -29,10 +29,6 @@ LOGGING FLAGS
 DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.
 
-ALIASES
-  $ tbu dl
-  $ tbu dill
-
 EXAMPLES
   $ tbu download
 ```

@@ -35,6 +35,10 @@
 		"typedoc-plugin-mdn-links": "^3.2.7",
 		"typescript": "~5.5.4"
 	},
+	"devDependencies": {
+		"@fec/remark-a11y-emoji": "^4.0.2",
+		"@hashicorp/remark-plugins": "^4.1.1"
+	},
 	"fluidBuild": {
 		"tasks": {
 			"build": []

@@ -29,10 +29,6 @@ LOGGING FLAGS
 DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.
 
-ALIASES
-  $ dill dl
-  $ dill dill
-
 EXAMPLES
   $ dill
 ```

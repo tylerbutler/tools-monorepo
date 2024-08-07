@@ -4,46 +4,35 @@ sidebar:
   order: 1
 ---
 
-<!-- commands -->
-* [`dill [URL]`](#dill-url)
+To use dill, [install it](/installation) then run `dill [URL]` in a terminal to download a file. You can use 
+`dill --help` to see the [full usage info](/cli-reference).
 
-## `dill [URL]`
+## Download a file
 
-Downloads a file from a URL and optionally extracts its contents.
+The following command will download a JSON file named `test1.json` to the current directory.
 
+```shell
+$ dill https://github.com/tylerbutler/tools-monorepo/raw/main/packages/dill/test/data/test1.json
 ```
-USAGE
-  $ dill  [URL] [-v | --quiet] [-o <value>] [-s <value> -e] [--filename <value> | ]
 
-ARGUMENTS
-  URL  URL of the file to download.
+## Download a tarball and extract it to a folder
 
-FLAGS
-  -e, --extract           Decompress the file and, if it's a tarball, extract its contents.
-  -o, --out=<value>       Directory in which to place the downloaded files.
-  -s, --strip=<value>     Strip leading paths from file names during extraction. Only works with --extract.
-      --filename=<value>  Name to use for the downloaded file. Cannot be used with --extract.
+The following command will download tarball and extract its contents to the current directory.
 
-LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
-
-DESCRIPTION
-  Downloads a file from a URL and optionally extracts its contents.
-
-ALIASES
-  $ dill dl
-  $ dill dill
-
-EXAMPLES
-  $ dill
+```shell
+$ dill https://github.com/tylerbutler/tools-monorepo/raw/main/packages/dill/test/data/tarball2.tar.gz --extract
 ```
-<!-- commandsstop -->
 
-### Download a file
+### Extract to a specific folder
 
-TODO
+You can also extract the tarball to a different folder using the `--out` flag.
 
-### Download a file and decompress it
+```shell
+$ dill https://github.com/tylerbutler/tools-monorepo/raw/main/packages/dill/test/data/tarball2.tar.gz --extract --out folder
+```
 
-TODO
+## Decompress a single gzipped file
+
+```shell
+$ dill https://github.com/tylerbutler/tools-monorepo/raw/main/packages/dill/test/data/test5.json.gz --extract
+```
