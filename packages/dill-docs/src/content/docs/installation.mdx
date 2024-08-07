@@ -1,5 +1,5 @@
 ---
-title: Installation & usage
+title: Installation
 ---
 
 import { PackageManagers } from 'starlight-package-managers';
@@ -8,16 +8,19 @@ import { PackageManagers } from 'starlight-package-managers';
 
 You can install dill into your project using your favorite package manager.
 
+### For use as a CI/CD/dev tool
+
+If you're using dill for CI/CD purposes, then you probably want to install dill as a dev dependency only.
+
 <PackageManagers pkg="dill" dev="true" />
 
+### For use in your own program
+
+If you want to use [dill's API](/usage/api-usage) or [use it in your own oclif CLI](/usage/subcommand), then you
+should install it as a production dependency.
+
+<PackageManagers pkg="dill" />
+
+### Or install it globally
+
 You can also install dill globally if you prefer.
-
-## Usage
-
-### Download a file
-
-TODO
-
-### Download a file and decompress it
-
-TODO

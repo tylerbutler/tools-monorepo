@@ -1,0 +1,17 @@
+---
+title: Other things you can do with dill
+sidebar:
+  order: 4
+---
+
+dill is intended for one purpose, but it happens to be useful in a few related but separate scenarios. Note that dill
+does not optimize for these scenarios; they are happy side effects of what dill does and how it does it.
+
+## Download any file
+
+dill will happily download uncompressed files for you. While decompressing tarballs is dill's _raison d'etre_, it
+detects uncompressed files and will treat them as such.
+
+## Decompress zip files
+
+dill can decompress zip files - but only _single files_ that are compressed. In other words, if you have a 

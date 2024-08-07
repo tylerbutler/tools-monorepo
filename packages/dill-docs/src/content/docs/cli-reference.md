@@ -1,17 +1,17 @@
-`tbu download`
-==============
+---
+title: CLI reference
+---
 
-Downloads a file from a URL and optionally extracts its contents.
+<!-- commands -->
+* [`dill [URL]`](#dill-url)
 
-* [`tbu download [URL]`](#tbu-download-url)
-
-## `tbu download [URL]`
+## `dill [URL]`
 
 Downloads a file from a URL and optionally extracts its contents.
 
 ```
 USAGE
-  $ tbu download [URL] [-v | --quiet] [-o <value>] [-s <value> -e] [--filename <value> | ]
+  $ dill  [URL] [-v | --quiet] [-o <value>] [-s <value> -e] [--filename <value> | ]
 
 ARGUMENTS
   URL  URL of the file to download.
@@ -30,11 +30,10 @@ DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.
 
 ALIASES
-  $ tbu dl
-  $ tbu dill
+  $ dill dl
+  $ dill dill
 
 EXAMPLES
-  $ tbu download
+  $ dill
 ```
-
-_See code: [src/commands/download.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/cli/src/commands/download.ts)_
+<!-- commandsstop -->

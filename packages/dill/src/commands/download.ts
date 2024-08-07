@@ -16,7 +16,8 @@ export default class DownloadCommand extends BaseCommand<
 
 	static override readonly flags = {
 		extract: Flags.boolean({
-			description: "Decompress the file and extract its contents.",
+			description:
+				"Decompress the file and, if it's a tarball, extract its contents.",
 			char: "e",
 		}),
 		out: Flags.directory({
@@ -24,13 +25,15 @@ export default class DownloadCommand extends BaseCommand<
 			char: "o",
 		}),
 		strip: Flags.integer({
-			description: "Strip leading paths from file names during extraction.",
+			description:
+				"Strip leading paths from file names during extraction. Only works with --extract.",
 			char: "s",
 			min: 0,
 			dependsOn: ["extract"],
 		}),
 		filename: Flags.file({
-			description: "Name to use for the downloaded file.",
+			description:
+				"Name to use for the downloaded file. Cannot be used with --extract.",
 			exclusive: ["extract"],
 		}),
 		...BaseCommand.flags,

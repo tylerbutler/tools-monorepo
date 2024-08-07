@@ -410,6 +410,9 @@ importers:
       starlight-heading-badges:
         specifier: ^0.1.0
         version: 0.1.0(@astrojs/starlight@0.25.3(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4)))
+      starlight-links-validator:
+        specifier: ^0.10.1
+        version: 0.10.1(@astrojs/starlight@0.25.3(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4))
       starlight-package-managers:
         specifier: ^0.6.0
         version: 0.6.0(@astrojs/starlight@0.25.3(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4))
@@ -3100,6 +3103,9 @@ packages:
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
 
+  '@types/node@18.19.43':
+    resolution: {integrity: sha512-Mw/YlgXnyJdEwLoFv2dpuJaDFriX+Pc+0qOBJ57jC1H6cDxIj2xc5yUrdtArDVG0m+KV6622a4p2tenEqB3C/g==}
+
   '@types/node@20.14.14':
     resolution: {integrity: sha512-d64f00982fS9YoOgJkAMolK7MN8Iq3TDdVjchbYHdEmjth/DHowx82GnoA+tVUAN+7vxfYUgAzi+JXbKNd2SDQ==}
 
@@ -5371,6 +5377,10 @@ packages:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
     engines: {node: '>= 12'}
 
+  is-absolute-url@4.0.1:
+    resolution: {integrity: sha512-/51/TKE88Lmm7Gc4/8btclNXWS+g50wXhYJq8HWIBAGUBnoAdRu1aXeh364t/O7wXDAcTJDP8PNuNKWUDWie+A==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
   is-alphabetical@1.0.4:
     resolution: {integrity: sha512-DwzsA04LQ10FHTZuL0/grVDk4rFoVH1pjAToYwBrHSxcrBIGQuXrQMtD5U1b0U2XVgKZCTLLP8u2Qxqhy3l2Vg==}
 
@@ -7186,6 +7196,10 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
+  picomatch@4.0.2:
+    resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
+    engines: {node: '>=12'}
+
   pify@4.0.1:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
@@ -8011,6 +8025,13 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       '@astrojs/starlight': '>=0.24.5'
+
+  starlight-links-validator@0.10.1:
+    resolution: {integrity: sha512-Z8VaWXaP+/0F6Jsml0zkDsPTbOyVO12qwfqseTp1aUI2B0gfF6GYt+WHvZ2EB5SCqkPmxmzyCOomqwRB0QmE5g==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.15.0'
+      astro: '>=4.0.0'
 
   starlight-package-managers@0.6.0:
     resolution: {integrity: sha512-2tE0B4ZVEZXZ1LJjcSvVXLfJP8SB2nE+nhiFgSa3fuHUPtnbzmFxLVp7jEKD8jaMXKWPYtlNTy95gJSK9W1sbQ==}
@@ -13357,7 +13378,7 @@ snapshots:
 
   '@types/hast@3.0.4':
     dependencies:
-      '@types/unist': 2.0.10
+      '@types/unist': 3.0.2
 
   '@types/http-cache-semantics@4.0.4': {}
 
@@ -13377,7 +13398,7 @@ snapshots:
 
   '@types/mdast@4.0.4':
     dependencies:
-      '@types/unist': 2.0.10
+      '@types/unist': 3.0.2
 
   '@types/mdx@2.0.13': {}
 
@@ -13406,6 +13427,11 @@ snapshots:
   '@types/node@12.20.55': {}
 
   '@types/node@17.0.45': {}
+
+  '@types/node@18.19.43':
+    dependencies:
+      undici-types: 5.26.5
+    optional: true
 
   '@types/node@20.14.14':
     dependencies:
@@ -13445,7 +13471,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 22.1.0
+      '@types/node': 18.19.43
     optional: true
 
   '@ungap/structured-clone@1.2.0': {}
@@ -16377,6 +16403,8 @@ snapshots:
       jsbn: 1.1.0
       sprintf-js: 1.1.3
 
+  is-absolute-url@4.0.1: {}
+
   is-alphabetical@1.0.4: {}
 
   is-alphabetical@2.0.1: {}
@@ -18564,6 +18592,8 @@ snapshots:
 
   picomatch@2.3.1: {}
 
+  picomatch@4.0.2: {}
+
   pify@4.0.1: {}
 
   pinpoint@1.1.0: {}
@@ -19697,6 +19727,19 @@ snapshots:
       unist-util-visit: 5.0.0
     transitivePeerDependencies:
       - supports-color
+
+  starlight-links-validator@0.10.1(@astrojs/starlight@0.25.3(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4)):
+    dependencies:
+      '@astrojs/starlight': 0.25.3(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4))
+      astro: 4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4)
+      github-slugger: 2.0.0
+      hast-util-from-html: 2.0.1
+      hast-util-has-property: 3.0.0
+      is-absolute-url: 4.0.1
+      kleur: 4.1.5
+      mdast-util-to-string: 4.0.0
+      picomatch: 4.0.2
+      unist-util-visit: 5.0.0
 
   starlight-package-managers@0.6.0(@astrojs/starlight@0.25.3(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.1(@types/node@22.1.0)(terser@5.19.2)(typescript@5.5.4)):
     dependencies:

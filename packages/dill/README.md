@@ -42,10 +42,10 @@ ARGUMENTS
   URL  URL of the file to download.
 
 FLAGS
-  -e, --extract           Decompress the file and extract its contents.
+  -e, --extract           Decompress the file and, if it's a tarball, extract its contents.
   -o, --out=<value>       Directory in which to place the downloaded files.
-  -s, --strip=<value>     Strip leading paths from file names during extraction.
-      --filename=<value>  Name to use for the downloaded file.
+  -s, --strip=<value>     Strip leading paths from file names during extraction. Only works with --extract.
+      --filename=<value>  Name to use for the downloaded file. Cannot be used with --extract.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.

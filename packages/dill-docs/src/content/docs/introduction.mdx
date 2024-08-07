@@ -2,14 +2,14 @@
 title: What is dill?
 ---
 
-dill is a command-line (terminal) program intended to do one thing, and one thing only - to **download gzipped files and
-optionally decompress their contents.** It also provides a simple programmatic API to do the same thing.
+dill is a command-line (terminal) program intended to do one thing, and one thing only - to **download gzipped tar files
+and optionally decompress their contents.** It also provides a simple programmatic API to do the same thing.
 
 ## Why?
 
 dill is intended for use in CI/CD systems for TypeScript and JavaScript projects. It fills a similar need to `curl` or
 `wget` -- a straightforward way to download a file given its URL -- but is intended for use with gzipped [tar
-files](https://en.wikipedia.org/wiki/Tar_(computing)), also known as tarballs. Decompressing these files in a
+files](https://en.wikipedia.org/wiki/Tar_(computing)), also known as _tarballs_. Decompressing these files in a
 cross-platform way is quick and easy with dill.
 
 In TypeScript/JavaScript projects, dependencies are typically specified using package.json, and thus it's most
@@ -23,7 +23,7 @@ Implementation-wise, dill is written in TypeScript and uses the [Fetch API](http
 [node-fetch-native](https://github.com/unjs/node-fetch-native) to download files, which means it is reasonably
 cross-platform and will use native Fetch implementations where available.
 
-The dill CLI is built using [oclif](). If you have an oclif-powered CLI app, you can [use dill as a command in your own CLI.](/guides/subcommand/).
+The dill CLI is built using [oclif](https://oclif.io/). If you have an oclif-powered CLI app, you can [use dill as a command in your own CLI.](/usage/subcommand/).
 
 ## Inspiration
 

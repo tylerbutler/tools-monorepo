@@ -1,6 +1,7 @@
 import netlify from "@astrojs/netlify";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
+import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
 // import deno from "@astrojs/deno";
 
@@ -44,6 +45,9 @@ export default defineConfig({
 						plugin: ["typedoc-plugin-mdn-links"],
 					},
 				}),
+				starlightLinksValidator({
+					errorOnRelativeLinks: true,
+				}),
 			],
 			social: {
 				github: "https://github.com/tylerbutler/tools-monorepo/packages/dill",
@@ -57,21 +61,19 @@ export default defineConfig({
 							slug: "introduction",
 						},
 						{
-							label: "Installation & usage",
+							label: "Installation",
 							slug: "installation",
 						},
-						// { label: "Usage", slug: "usage" },
+						// {
+						// 	label: "Usage",
+						// 	slug: "usage",
+						// },
+						// { label: "Other uses", slug: "other-uses" },
 					],
 				},
 				{
 					label: "Guides",
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{
-							label: "Using the dill API",
-							slug: "guides/api-usage",
-						},
-					],
+					autogenerate: { directory: "usage" },
 				},
 				// {
 				// 	label: "API Summary",
