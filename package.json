@@ -31,7 +31,7 @@
 		"format": "npm run sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
-		"generate:packlist": "flub generate packlist -g client",
+		"generate:packlist": "flub generate packlist -g client --no-private",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
 		"prepare": "lefthook install",
