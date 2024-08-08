@@ -3,7 +3,10 @@
 	"version": "0.0.1",
 	"private": true,
 	"description": "Simple CLI to download and optionally decompress gzipped files.",
-	"keywords": ["download", "ci"],
+	"keywords": [
+		"download",
+		"ci"
+	],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/dill/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -62,8 +65,12 @@
 		"update:test-snapshots": "vitest run \"test/vitest\" -u"
 	},
 	"oclif": {
-		"additionalHelpFlags": ["-h"],
-		"additionalVersionFlags": ["-V"],
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
 		"bin": "dill",
 		"commands": {
 			"strategy": "single",
@@ -111,7 +118,9 @@
 		"@types/whatwg-mimetype": "^3.0.2",
 		"chai": "^4.4.1",
 		"lefthook": "^1.6.11",
+		"memfs": "^4.11.1",
 		"mocha": "^10.4.0",
+		"msw": "^2.3.5",
 		"oclif": "^4.13.5",
 		"rimraf": "^6.0.0",
 		"serve": "^14.2.3",
@@ -121,6 +130,7 @@
 		"ts-node": "^10.9.2",
 		"type-fest": "^4.18.2",
 		"typescript": "~5.5.4",
+		"unionfs": "^4.5.4",
 		"vitest": "^2.0.0"
 	},
 	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",

@@ -1,12 +1,29 @@
 import path from "node:path";
 import { readJson, readdir } from "fs-extra";
 import { withDir } from "tmp-promise";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+// import { ufs } from "unionfs";
+import { vol } from "memfs";
 
 import { download, extractTarball, fetchFile } from "../src/api.js";
-import { testUrls } from "./common.js";
+import { getTestUrls } from "./common.js";
+
+// tell vitest to use fs mock from __mocks__ folder
+// this can be done in a setup file if fs should always be mocked
+vi.mock("node:fs");
+vi.mock("node:fs/promises");
+
+// ufs.use(fs).use(vol);
+
+beforeEach(() => {
+	// reset the state of in-memory fs
+	vol.reset();
+	vol.fromJSON(testFsSnapshot);
+});
 
 describe("download", () => {
+	const testUrls = getTestUrls("http://localhost:8080");
+
 	it("JSON, no arguments", async () => {
 		const { data } = await download(testUrls[0], { noFile: true });
 		expect(data).toMatchSnapshot();
@@ -93,6 +110,7 @@ describe("download", () => {
 	});
 });
 
+const testUrls = getTestUrls("file://").map(toString);
 describe("fetchFile", () => {
 	it("fetches file", async () => {
 		const { contents } = await fetchFile(testUrls[2]);

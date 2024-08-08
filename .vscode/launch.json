@@ -11,6 +11,15 @@
 			"type": "node",
 		},
 		{
+			"name": "dill: pnpm test",
+			"request": "launch",
+			"runtimeArgs": ["run-script", "test"],
+			"cwd": "${workspaceFolder}/packages/dill",
+			"runtimeExecutable": "pnpm",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+		},
+		{
 			"name": "tbu",
 			"request": "launch",
 			"program": "${workspaceFolder}/packages/cli/bin/dev.js",
