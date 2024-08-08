@@ -87,21 +87,33 @@ function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
 }
 
 /**
+ * A response returned by the {@link download} function.
+ */
+export interface DownloadResponse {
+	/**
+	 * The raw file data.
+	 */
+	data: Uint8Array;
+
+	/**
+	 * The path that the downloaded file(s) were written to.
+	 */
+	writtenTo: string;
+}
+
+/**
  *	Downloads a file from a URL.
  *
  * @param url - The URL to download.
  * @param options - Options to use.
- * @returns The file's contents
  *
  * @public
  */
 export const download = async (
-	url: string,
+	url: URL,
 	options?: DillOptions,
-): Promise<{
-	data: Uint8Array;
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
-}> => {
+): Promise<DownloadResponse> => {
 	const {
 		extract,
 		downloadDir,
@@ -118,7 +130,7 @@ export const download = async (
 		throw new Error(`Path is not a directory: ${downloadDir}`);
 	}
 
-	const { contents: file, response } = await fetchFile(url);
+	const { contents: file, response } = await fetchFile(url.toString());
 	let extension: string;
 	let filename = providedFilename;
 
@@ -151,13 +163,16 @@ export const download = async (
 			? decompress(file)
 			: file;
 
+	const savePath: string = noFile
+		? downloadDir
+		: path.join(downloadDir, filename);
 	if (extract) {
 		await extractTarball(decompressed, downloadDir);
 	} else if (!noFile) {
-		const saveFile = path.join(downloadDir, filename);
-		await writeFile(saveFile, decompressed);
+		// savePath = path.join(downloadDir, filename);
+		await writeFile(savePath, decompressed);
 	}
-	return { data: decompressed };
+	return { data: decompressed, writtenTo: savePath };
 };
 
 async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
@@ -173,7 +188,7 @@ function getMimeType(response: Response): {
 	const { url } = response;
 	const contentType = response?.headers.get("Content-Type");
 	const urlType = mime.getType(url);
-	const mimeType = contentType ?? urlType ?? null;
+	const mimeType = urlType ?? contentType ?? null;
 	const contentDispositionHeader = response?.headers.get("Content-Disposition");
 	const contentDisposition =
 		contentDispositionHeader === undefined || contentDispositionHeader === null
@@ -183,6 +198,7 @@ function getMimeType(response: Response): {
 	console.debug(`Content-Type header: ${contentType}`);
 	console.debug(`Content-Disposition header: ${contentDispositionHeader}`);
 	console.debug(`Type from URL: ${urlType}`);
+	console.debug(`mimeType: ${mimeType}`);
 	if (mimeType === null) {
 		throw new Error(`Can't find mime type for URL: ${url}`);
 	}

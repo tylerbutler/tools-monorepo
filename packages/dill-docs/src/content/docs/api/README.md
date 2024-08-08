@@ -10,6 +10,7 @@ title: "dill"
 ## Interfaces
 
 - [DillOptions](/api/interfaces/dilloptions/)
+- [DownloadResponse](/api/interfaces/downloadresponse/)
 
 ## Variables
 

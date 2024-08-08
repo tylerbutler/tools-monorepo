@@ -74,8 +74,8 @@
 		"flexibleTaxonomy": true,
 		"helpOptions": {
 			"hideAliasesFromRoot": true,
-			"showFlagNameInTitle": false,
 			"hideCommandSummaryInDescription": true,
+			"showFlagNameInTitle": false,
 			"showFlagOptionsInTitle": true,
 			"stripAnsi": true,
 			"usageHeader": "CUSTOM USAGE HEADER"
