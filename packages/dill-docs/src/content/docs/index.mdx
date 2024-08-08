@@ -1,5 +1,5 @@
 ---
-title: Dill
+title: dill
 description: Download and decompress gzipped tar files with a CLI and API.
 template: splash
 hero:
@@ -8,12 +8,16 @@ hero:
     file: ../../assets/dill-logo.svg
   actions:
     - text: Get started
-      link: /introduction/
+      link: /usage/cli-usage/
       icon: right-arrow
       variant: primary
+    - text: What is dill?
+      link: /introduction/
+      # icon: bars
+      variant: secondary
 banner:
   content: |
-    Dill is extremely new and likely has bugs. Use at your own risk!
+    dill is extremely new and likely has bugs. Use at your own risk!
 ---
 
 import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
@@ -22,12 +26,12 @@ import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 <CardGrid>
 	<Card title="Download and decompress .tar.gz files in one step" icon="rocket">
-		It's as easy as `dill <URL>`! [Install Dill](/installation/) to get started.
+		It's as easy as `dill <URL>`! [Install dill](/installation/) to get started.
 	</Card>
 	<Card title="Works almost anywhere" icon="random">
-		Dill works almost anywhere JavaScript can be run thanks to [node-fetch-native](https://www.npmjs.com/package/node-fetch-native).
+		dill works almost anywhere JavaScript can be run thanks to [node-fetch-native](https://www.npmjs.com/package/node-fetch-native).
 	</Card>
 	<Card title="Programmatic API" icon="seti:javascript">
-		You can [use Dill in your own programs](/guides/api-usage/), or [include Dill as a subcommand in your own CLI app](/guides/subcommand/)!
+		You can [use dill in your own programs](/usage/api-usage/), or [include dill as a subcommand in your own CLI app](/usage/subcommand/)!
 </Card>
 </CardGrid>

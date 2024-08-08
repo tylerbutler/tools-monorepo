@@ -5,7 +5,7 @@ prev: false
 title: "dill"
 ---
 
-# Dill API
+# dill API
 
 ## Interfaces
 
