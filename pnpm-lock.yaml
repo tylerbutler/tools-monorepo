@@ -292,9 +292,6 @@ importers:
       mime:
         specifier: ^4.0.3
         version: 4.0.4
-      node-fetch-native:
-        specifier: ^1.6.4
-        version: 1.6.4
       untar.js:
         specifier: npm:@andrewbranch/untar.js@^1.0.3
         version: '@andrewbranch/untar.js@1.0.3'
@@ -6700,9 +6697,6 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
-
-  node-fetch-native@1.6.4:
-    resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
 
   node-fetch@2.7.0:
     resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
@@ -18125,8 +18119,6 @@ snapshots:
   node-cleanup@2.1.2: {}
 
   node-domexception@1.0.0: {}
-
-  node-fetch-native@1.6.4: {}
 
   node-fetch@2.7.0(encoding@0.1.13):
     dependencies:

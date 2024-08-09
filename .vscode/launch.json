@@ -18,6 +18,10 @@
 			"runtimeExecutable": "pnpm",
 			"skipFiles": ["<node_internals>/**"],
 			"type": "node",
+			"env": {
+				"NODE_ENV": "test",
+				"FORCE_NODE_FETCH": "true",
+			},
 		},
 		{
 			"name": "tbu",

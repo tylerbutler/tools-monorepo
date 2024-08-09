@@ -6,7 +6,7 @@ import { Decompress } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
 import { ensureDirSync } from "fs-extra";
 import mime from "mime";
-import fetch from "node-fetch-native";
+// import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
 import type { TarLocalFile } from "untar.js";
 import { untar } from "untar.js";
@@ -219,9 +219,9 @@ function getMimeType(response: Response): {
  * @returns The file contents as a Uint8Array.
  */
 export async function fetchFile(
-	fileUrl: string,
+	fileUrl: URL | string,
 ): Promise<{ contents: Uint8Array; response?: Response }> {
-	if (fileUrl.startsWith(fileProtocol)) {
+	if (typeof fileUrl === "string" && fileUrl.startsWith(fileProtocol)) {
 		const filePath = fileUrl.slice(fileProtocol.length);
 		return { contents: await readFileIntoUint8Array(filePath) };
 	}

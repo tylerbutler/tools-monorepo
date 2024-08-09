@@ -3,10 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"description": "Simple CLI to download and optionally decompress gzipped files.",
-	"keywords": [
-		"download",
-		"ci"
-	],
+	"keywords": ["download", "ci"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/dill/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -59,18 +56,15 @@
 		"readme:main": "oclif readme --no-aliases",
 		"sort-package-json": "sort-package-json",
 		"start": "serve ./test/data --listen 8080",
-		"test": "start-server-and-test start http://localhost:8080 test:vitest",
-		"test:snapshots": "start-server-and-test start http://localhost:8080 update:test-snapshots",
-		"test:vitest": "vitest run \"test\"",
-		"update:test-snapshots": "vitest run \"test/vitest\" -u"
+		"test": "npm run test:vitest",
+		"test2": "start-server-and-test start http://localhost:8080 test:vitest",
+		"test:snapshots": "npm run update:test-snapshots",
+		"test:vitest": "vitest run test",
+		"update:test-snapshots": "vitest run test -u"
 	},
 	"oclif": {
-		"additionalHelpFlags": [
-			"-h"
-		],
-		"additionalVersionFlags": [
-			"-V"
-		],
+		"additionalHelpFlags": ["-h"],
+		"additionalVersionFlags": ["-V"],
 		"bin": "dill",
 		"commands": {
 			"strategy": "single",
@@ -99,7 +93,6 @@
 		"file-type": "^19.0.0",
 		"fs-extra": "^11.2.0",
 		"mime": "^4.0.3",
-		"node-fetch-native": "^1.6.4",
 		"untar.js": "npm:@andrewbranch/untar.js@^1.0.3",
 		"whatwg-mimetype": "^4.0.0"
 	},
