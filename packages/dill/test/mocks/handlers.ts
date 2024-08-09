@@ -14,7 +14,25 @@ export const testHttpHandlers = [
 		assert(typeof test === "string");
 
 		const file = await readFile(path.join(testDataPath, fileName));
-		return new HttpResponse(file);
+		const response = new HttpResponse(file);
+
+		if (test === "content-disposition") {
+			// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
+			// When both filename and filename* are present in a single header field value, filename* is preferred over
+			// filename when both are understood. It's recommended to include both for maximum compatibility
+			// response.headers.append(
+			// 	"Content-Disposition",
+			// 	'inline; filename*="remote-filename.json"',
+			// );
+			return new HttpResponse(file, {
+				headers: {
+					// "Content-Type": "application/json",
+					"Content-Disposition": 'inline; filename="remote-filename.json"',
+				},
+			});
+		}
+
+		return response;
 	}),
 
 	http.get("http://localhost/files/:file", async ({ params }) => {

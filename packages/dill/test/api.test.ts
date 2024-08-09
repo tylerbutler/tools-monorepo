@@ -27,9 +27,7 @@ import { server } from "./mocks/node.js";
 
 // ufs.use(fs).use(vol);
 
-// const server = setupServer(...testHttpHandlers);
 beforeAll(() => {
-	console.log("start listening");
 	server.listen({
 		onUnhandledRequest: "error",
 	});
@@ -37,18 +35,16 @@ beforeAll(() => {
 
 //  Close server after all tests
 afterAll(() => {
-	console.log("stop listening");
 	server.close();
 });
 
 // Reset handlers after each test
 afterEach(() => {
-	console.log("resetting handlers");
 	server.resetHandlers();
 });
 
 server.events.on("request:start", ({ request }) => {
-	console.log("MSW intercepted:", request.method, request.url);
+	console.debug("MSW intercepted:", request.method, request.url);
 });
 
 // beforeEach(() => {
@@ -88,6 +84,24 @@ describe("download", () => {
 				const { data } = await download(testUrls[1], { downloadDir });
 				expect(data).toMatchSnapshot();
 				const expectedPath = path.join(downloadDir, "dill-download.json");
+				const dl = await readJson(expectedPath);
+				expect(dl).toMatchSnapshot();
+			},
+			{
+				// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+				unsafeCleanup: true,
+			},
+		);
+	});
+
+	it("JSON, downloadPath = directory, with Content-Disposition", async () => {
+		await withDir(
+			async ({ path: downloadDir }) => {
+				const url = testUrls[1];
+				url.pathname += "/content-disposition";
+				const { data } = await download(url, { downloadDir });
+				expect(data).toMatchSnapshot();
+				const expectedPath = path.join(downloadDir, "remote-filename.json");
 				const dl = await readJson(expectedPath);
 				expect(dl).toMatchSnapshot();
 			},

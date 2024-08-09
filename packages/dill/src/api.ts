@@ -187,18 +187,27 @@ function getMimeType(response: Response): {
 } {
 	const { url } = response;
 	const contentType = response?.headers.get("Content-Type");
-	const urlType = mime.getType(url);
-	const mimeType = urlType ?? contentType ?? null;
 	const contentDispositionHeader = response?.headers.get("Content-Disposition");
 	const contentDisposition =
 		contentDispositionHeader === undefined || contentDispositionHeader === null
 			? undefined
 			: parseContentDisposition(contentDispositionHeader);
 
+	const contentDispositionFilename = contentDisposition?.parameters
+		.filename as string;
+	const urlType = mime.getType(url);
+	const mimeType =
+		urlType ??
+		contentType ??
+		// Try to get the mime type from the content-disposition filename as a last resort
+		mime.getType(contentDispositionFilename) ??
+		null;
+
 	console.debug(`Content-Type header: ${contentType}`);
 	console.debug(`Content-Disposition header: ${contentDispositionHeader}`);
 	console.debug(`Type from URL: ${urlType}`);
 	console.debug(`mimeType: ${mimeType}`);
+
 	if (mimeType === null) {
 		throw new Error(`Can't find mime type for URL: ${url}`);
 	}
@@ -207,7 +216,7 @@ function getMimeType(response: Response): {
 	return {
 		mimeType,
 		extension,
-		filename: contentDisposition?.parameters.filename as string,
+		filename: contentDispositionFilename,
 	};
 }
 
