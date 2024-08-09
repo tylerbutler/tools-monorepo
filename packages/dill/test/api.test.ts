@@ -78,6 +78,25 @@ describe("download", () => {
 		);
 	});
 
+	it("JSON, downloadPath = file, with Content-Disposition", async () => {
+		await withDir(
+			async ({ path: downloadDir }) => {
+				const url = testUrls[0];
+				url.pathname += "/content-disposition";
+				const filename = "test-dill-dl-1.json";
+				const downloadPath = path.join(downloadDir, "test-dill-dl-1.json");
+				const { data } = await download(url, { downloadDir, filename });
+				expect(data).toMatchSnapshot();
+				const dl = await readJson(downloadPath);
+				expect(dl).toMatchSnapshot();
+			},
+			{
+				// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+				unsafeCleanup: true,
+			},
+		);
+	});
+
 	it("JSON, downloadPath = directory", async () => {
 		await withDir(
 			async ({ path: downloadDir }) => {
