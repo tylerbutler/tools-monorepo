@@ -414,8 +414,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0(@astrojs/starlight@0.25.4(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4))
       starlight-typedoc:
-        specifier: ^0.14.0
-        version: 0.14.0(@astrojs/starlight@0.25.4(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4))(typedoc-plugin-markdown@4.2.3(typedoc@0.26.5(typescript@5.5.4)))(typedoc@0.26.5(typescript@5.5.4))
+        specifier: ^0.15.0
+        version: 0.15.0(@astrojs/starlight@0.25.4(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4))(typedoc-plugin-markdown@4.2.3(typedoc@0.26.5(typescript@5.5.4)))(typedoc@0.26.5(typescript@5.5.4))
       typedoc:
         specifier: ^0.26.5
         version: 0.26.5(typescript@5.5.4)
@@ -8101,13 +8101,13 @@ packages:
       '@astrojs/starlight': '>=0.22.0'
       astro: '>=4.2.7'
 
-  starlight-typedoc@0.14.0:
-    resolution: {integrity: sha512-bqb8wlPEl7D54HFrB7YGvwIb1MMwy0x8pbYo+v0YdYszvjEt67naL1fb91TiTERFGVpdKPDC2vv2lWXPF5jfdw==}
+  starlight-typedoc@0.15.0:
+    resolution: {integrity: sha512-9xj7Zq8FohFMgGjeGrAZaPSXfVSNaNfEb5E4xbV1Mf/dU5Iau+QdNqJGd3utgLfI7Ire9Fo8AJZMYG+ncJr5Yg==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       '@astrojs/starlight': '>=0.15.0'
       astro: '>=4.0.0'
-      typedoc: '>=0.26.0'
+      typedoc: '>=0.26.5'
       typedoc-plugin-markdown: '>=4.0.0'
 
   start-server-and-test@2.0.5:
@@ -19859,7 +19859,7 @@ snapshots:
       '@astrojs/starlight': 0.25.4(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4))
       astro: 4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4)
 
-  starlight-typedoc@0.14.0(@astrojs/starlight@0.25.4(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4))(typedoc-plugin-markdown@4.2.3(typedoc@0.26.5(typescript@5.5.4)))(typedoc@0.26.5(typescript@5.5.4)):
+  starlight-typedoc@0.15.0(@astrojs/starlight@0.25.4(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4))(typedoc-plugin-markdown@4.2.3(typedoc@0.26.5(typescript@5.5.4)))(typedoc@0.26.5(typescript@5.5.4)):
     dependencies:
       '@astrojs/starlight': 0.25.4(astro@4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4))
       astro: 4.13.3(@types/node@22.2.0)(terser@5.19.2)(typescript@5.5.4)
