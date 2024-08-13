@@ -43,7 +43,7 @@ importers:
         version: 1.7.12
       renovate:
         specifier: ^38.18.16
-        version: 38.26.0(@aws-sdk/client-sso-oidc@3.621.0(@aws-sdk/client-sts@3.621.0))(encoding@0.1.13)(typanion@3.14.0)
+        version: 38.27.0(@aws-sdk/client-sso-oidc@3.621.0(@aws-sdk/client-sts@3.621.0))(encoding@0.1.13)(typanion@3.14.0)
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -7673,8 +7673,8 @@ packages:
     resolution: {integrity: sha512-C9hAO4eoEsX+OXA4rla66pXZQ+TLQ8T9dttgQj18yuKlPMTVkIkdYXvlMC55IuUsIkV6DpmQYi10JKFLaU+l7w==}
     engines: {node: '>=8'}
 
-  renovate@38.26.0:
-    resolution: {integrity: sha512-Fv+I1aJGSKJRDptNhCYEgClI1mBibTE6KRMyIpQp9qXXL32JNs4I4HKZQa/oFyrSP62rcgITlHbJQRetWzpmvA==}
+  renovate@38.27.0:
+    resolution: {integrity: sha512-v2jvGmM0hu26KuG+GWQLV1Eq41AV1pCTK+PIAtI9rMXrLvXlGRNxwc2vgNhFGCJyBZGaOWVU6eozD2LmUcBXHQ==}
     engines: {node: ^20.15.1, pnpm: ^9.0.0}
     hasBin: true
 
@@ -19272,7 +19272,7 @@ snapshots:
 
   remote-git-tags@3.0.0: {}
 
-  renovate@38.26.0(@aws-sdk/client-sso-oidc@3.621.0(@aws-sdk/client-sts@3.621.0))(encoding@0.1.13)(typanion@3.14.0):
+  renovate@38.27.0(@aws-sdk/client-sso-oidc@3.621.0(@aws-sdk/client-sts@3.621.0))(encoding@0.1.13)(typanion@3.14.0):
     dependencies:
       '@aws-sdk/client-codecommit': 3.621.0
       '@aws-sdk/client-ec2': 3.621.0
