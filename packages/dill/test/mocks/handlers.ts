@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { http, HttpResponse } from "msw";
-import { assert, beforeEach, describe, expect, it, vi } from "vitest";
+import { assert } from "vitest";
 
 import { testDataPath } from "../common";
 
