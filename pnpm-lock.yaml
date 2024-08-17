@@ -18,8 +18,8 @@ importers:
         specifier: ^0.41.0
         version: 0.41.0(@types/node@22.4.0)(encoding@0.1.13)
       '@fluidframework/build-tools':
-        specifier: ^0.41.0
-        version: 0.41.0(@types/node@22.4.0)(encoding@0.1.13)
+        specifier: ^0.42.0
+        version: 0.42.0
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4
@@ -3232,6 +3232,9 @@ packages:
 
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+
+  '@types/node@18.19.44':
+    resolution: {integrity: sha512-ZsbGerYg72WMXUIE9fYxtvfzLEuq6q8mKERdWFnqTmOvudMxnz+CBNRoOwJ2kNpFOncrKjT1hZwxjlFgQ9qvQA==}
 
   '@types/node@20.15.0':
     resolution: {integrity: sha512-eQf4OkH6gA9v1W0iEpht/neozCsZKMTK+C4cU6/fv7wtJCCL8LEQ4hie2Ln8ZP/0YYM2xGj7//f8xyqItkJ6QA==}
@@ -8677,6 +8680,9 @@ packages:
   underscore@1.13.7:
     resolution: {integrity: sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==}
 
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   undici-types@6.13.0:
     resolution: {integrity: sha512-xtFJHudx8S2DSoujjMd1WeWvn7KKWFRESZTMeL1RptAYERu29D6jphMjjY+vn96jvN3kVPDNxU/E13VTaXj6jg==}
 
@@ -13685,6 +13691,11 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
+  '@types/node@18.19.44':
+    dependencies:
+      undici-types: 5.26.5
+    optional: true
+
   '@types/node@20.15.0':
     dependencies:
       undici-types: 6.13.0
@@ -13727,7 +13738,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 22.4.0
+      '@types/node': 18.19.44
     optional: true
 
   '@ungap/structured-clone@1.2.0': {}
@@ -16925,7 +16936,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.4.0
+      '@types/node': 20.15.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -20561,6 +20572,9 @@ snapshots:
       which-boxed-primitive: 1.0.2
 
   underscore@1.13.7: {}
+
+  undici-types@5.26.5:
+    optional: true
 
   undici-types@6.13.0: {}
 
