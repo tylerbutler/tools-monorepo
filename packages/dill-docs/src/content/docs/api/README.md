@@ -2,7 +2,7 @@
 editUrl: false
 next: false
 prev: false
-title: "dill"
+title: "dill-cli"
 ---
 
 # dill API
@@ -11,11 +11,6 @@ title: "dill"
 
 - [DillOptions](/api/interfaces/dilloptions/)
 - [DownloadResponse](/api/interfaces/downloadresponse/)
-
-## Variables
-
-- [KNOWN\_ARCHIVE\_EXTENSIONS](/api/variables/known_archive_extensions/)
-- [UNSUPPORTED\_ARCHIVE\_EXTENSIONS](/api/variables/unsupported_archive_extensions/)
 
 ## Functions
 

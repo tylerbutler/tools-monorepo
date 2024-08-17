@@ -1,12 +1,5 @@
-import * as fs from "node:fs";
-import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Volume } from "memfs";
-import * as snapshot from "memfs/lib/snapshot";
-import { http, HttpResponse } from "msw";
-import { Union, ufs } from "unionfs";
-import { assert, beforeEach, describe, expect, it, vi } from "vitest";
 
 // const vol = Volume.fromJSON({ "/file.txt": "file.txt" });
 // const ufs1 = new Union();

@@ -1,19 +1,9 @@
 import path from "node:path";
 import { readJson, readdir } from "fs-extra";
-import { setupServer } from "msw/node";
 // import { ufs } from "unionfs";
 // import { vol } from "memfs";
 import { withDir } from "tmp-promise";
-import {
-	afterAll,
-	afterEach,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 // import { fetch } from "node-fetch";
 
 import { download, extractTarball, fetchFile } from "../src/api.js";

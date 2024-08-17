@@ -1,10 +1,9 @@
-import { existsSync, statSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
 import { Decompress } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
-import { ensureDirSync } from "fs-extra";
+import { mkdirp } from "fs-extra/esm";
 import mime from "mime";
 // import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
@@ -39,8 +38,9 @@ const defaultDownloadName = "dill-download";
  */
 export interface DillOptions {
 	/**
-	 * If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate). Default value is
-	 * false.
+	 * If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate).
+	 *
+	 * @defaultValue `false`
 	 */
 	extract?: boolean;
 
@@ -61,6 +61,8 @@ export interface DillOptions {
 	/**
 	 * If true, the file will not be saved to the file system. The file contents will be returned by the function call,
 	 * but it will otherwise not be saved.
+	 *
+	 * @defaultValue `false`
 	 */
 	noFile?: boolean;
 }
@@ -112,7 +114,7 @@ export interface DownloadResponse {
 export const download = async (
 	url: URL,
 	options?: DillOptions,
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: TODO
 ): Promise<DownloadResponse> => {
 	const {
 		extract,
@@ -122,10 +124,7 @@ export const download = async (
 	} = resolveOptions(options);
 
 	// The downloadDir must exist and be a directory.
-	if (!existsSync(downloadDir)) {
-		throw new Error(`Path doesn't exist: ${downloadDir}`);
-	}
-	const pathStats = statSync(downloadDir);
+	const pathStats = await stat(downloadDir);
 	if (extract && !pathStats.isDirectory()) {
 		throw new Error(`Path is not a directory: ${downloadDir}`);
 	}
@@ -169,7 +168,6 @@ export const download = async (
 	if (extract) {
 		await extractTarball(decompressed, downloadDir);
 	} else if (!noFile) {
-		// savePath = path.join(downloadDir, filename);
 		await writeFile(savePath, decompressed);
 	}
 	return { data: decompressed, writtenTo: savePath };
@@ -202,11 +200,6 @@ function getMimeType(response: Response): {
 		// Try to get the mime type from the content-disposition filename as a last resort
 		mime.getType(contentDispositionFilename) ??
 		null;
-
-	console.debug(`Content-Type header: ${contentType}`);
-	console.debug(`Content-Disposition header: ${contentDispositionHeader}`);
-	console.debug(`Type from URL: ${urlType}`);
-	console.debug(`mimeType: ${mimeType}`);
 
 	if (mimeType === null) {
 		throw new Error(`Can't find mime type for URL: ${url}`);
@@ -284,11 +277,8 @@ export async function extractTarball(
 	const data = untar(fileContent);
 
 	if (destination !== undefined) {
-		if (!existsSync(destination)) {
-			throw new Error(`Path does not exist: ${destination}`);
-		}
-
-		if (statSync(destination).isFile()) {
+		const stats = await stat(destination);
+		if (stats.isFile()) {
 			throw new Error(
 				`Destination path is a file that already exists: ${destination}`,
 			);
@@ -297,7 +287,7 @@ export async function extractTarball(
 		const filesP: Promise<void>[] = [];
 		for (const tarfile of data) {
 			const outPath = path.join(destination, tarfile.name);
-			ensureDirSync(path.dirname(outPath));
+			await mkdirp(path.dirname(outPath));
 			filesP.push(writeFile(outPath, tarfile.fileData));
 		}
 		await Promise.all(filesP);

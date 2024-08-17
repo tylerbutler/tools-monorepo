@@ -5,6 +5,9 @@ import { assert, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { testDataPath } from "../common";
 
+/**
+ * HTTP handlers for tests. These handlers are used in a Mock Service Worker instance to respond to requests.
+ */
 export const testHttpHandlers = [
 	http.get("http://localhost/files/:file/:test", async ({ params }) => {
 		// All request path params are provided in the "params"
@@ -14,8 +17,6 @@ export const testHttpHandlers = [
 		assert(typeof test === "string");
 
 		const file = await readFile(path.join(testDataPath, fileName));
-		const response = new HttpResponse(file);
-
 		if (test === "content-disposition") {
 			// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
 			// When both filename and filename* are present in a single header field value, filename* is preferred over
@@ -26,12 +27,14 @@ export const testHttpHandlers = [
 			// );
 			return new HttpResponse(file, {
 				headers: {
-					// "Content-Type": "application/json",
+					"Content-Type": "application/json",
 					"Content-Disposition": 'inline; filename="remote-filename.json"',
 				},
 			});
 		}
 
+		// Default response is just the file.
+		const response = new HttpResponse(file);
 		return response;
 	}),
 

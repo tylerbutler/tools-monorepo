@@ -17,7 +17,7 @@ The raw file data.
 
 #### Defined in
 
-[api.ts:96](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L96)
+[api.ts:98](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L98)
 
 ***
 
@@ -29,4 +29,4 @@ The path that the downloaded file(s) were written to.
 
 #### Defined in
 
-[api.ts:101](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L101)
+[api.ts:103](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L103)
