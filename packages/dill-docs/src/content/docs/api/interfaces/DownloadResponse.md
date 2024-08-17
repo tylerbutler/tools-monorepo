@@ -5,7 +5,7 @@ prev: false
 title: "DownloadResponse"
 ---
 
-A response returned by the [download](../../../../../../api/functions/download) function.
+A response returned by the [download](../../../../../../../api/functions/download) function.
 
 ## Properties
 
