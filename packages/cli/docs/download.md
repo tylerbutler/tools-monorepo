@@ -28,9 +28,6 @@ LOGGING FLAGS
 
 DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.
-
-EXAMPLES
-  $ tbu download
 ```
 
 _See code: [src/commands/download.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/cli/src/commands/download.ts)_

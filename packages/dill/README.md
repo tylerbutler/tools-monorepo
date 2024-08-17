@@ -53,8 +53,5 @@ LOGGING FLAGS
 
 DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.
-
-EXAMPLES
-  $ dill
 ```
 <!-- commandsstop -->

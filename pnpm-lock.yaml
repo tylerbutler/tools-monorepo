@@ -418,18 +418,18 @@ importers:
         version: 0.6.0(@astrojs/starlight@0.25.5(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4))
       starlight-typedoc:
         specifier: ^0.15.0
-        version: 0.15.0(@astrojs/starlight@0.25.5(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4))(typedoc-plugin-markdown@4.2.4(typedoc@0.26.5(typescript@5.5.4)))(typedoc@0.26.5(typescript@5.5.4))
+        version: 0.15.0(@astrojs/starlight@0.25.5(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4))(typedoc-plugin-markdown@4.2.5(typedoc@0.26.5(typescript@5.5.4)))(typedoc@0.26.5(typescript@5.5.4))
       typedoc:
         specifier: ^0.26.5
         version: 0.26.5(typescript@5.5.4)
       typedoc-plugin-frontmatter:
         specifier: ^1.0.0
-        version: 1.0.0(typedoc-plugin-markdown@4.2.4(typedoc@0.26.5(typescript@5.5.4)))
+        version: 1.0.0(typedoc-plugin-markdown@4.2.5(typedoc@0.26.5(typescript@5.5.4)))
       typedoc-plugin-markdown:
-        specifier: ^4.2.3
-        version: 4.2.4(typedoc@0.26.5(typescript@5.5.4))
+        specifier: ^4.2.5
+        version: 4.2.5(typedoc@0.26.5(typescript@5.5.4))
       typedoc-plugin-mdn-links:
-        specifier: ^3.2.7
+        specifier: ^3.2.8
         version: 3.2.8(typedoc@0.26.5(typescript@5.5.4))
       typescript:
         specifier: ~5.5.4
@@ -472,8 +472,8 @@ importers:
         specifier: ^0.26.5
         version: 0.26.5(typescript@5.5.4)
       typedoc-plugin-markdown:
-        specifier: ^4.2.3
-        version: 4.2.4(typedoc@0.26.5(typescript@5.5.4))
+        specifier: ^4.2.5
+        version: 4.2.5(typedoc@0.26.5(typescript@5.5.4))
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -8747,8 +8747,8 @@ packages:
     peerDependencies:
       typedoc-plugin-markdown: '>=4.0.0'
 
-  typedoc-plugin-markdown@4.2.4:
-    resolution: {integrity: sha512-9jdYqF5Sx1qxvSo7wV1mUHA2XYn3Y1DJ/ttCWW1V4lHdzDAwIA/EB9U92Ryx3GOSD73X1u8eTu8fBjoCmkURTQ==}
+  typedoc-plugin-markdown@4.2.5:
+    resolution: {integrity: sha512-ZWIfc0OqwEtQfuaqbmM1kesMi/Fhc++W+5f3TDEm1Tsi28pHSoZk4WCOm4lNuN30WtEImwAHhhXC4DIWki1DiA==}
     engines: {node: '>= 18'}
     peerDependencies:
       typedoc: 0.26.x
@@ -20341,13 +20341,13 @@ snapshots:
       '@astrojs/starlight': 0.25.5(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4))
       astro: 4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4)
 
-  starlight-typedoc@0.15.0(@astrojs/starlight@0.25.5(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4))(typedoc-plugin-markdown@4.2.4(typedoc@0.26.5(typescript@5.5.4)))(typedoc@0.26.5(typescript@5.5.4)):
+  starlight-typedoc@0.15.0(@astrojs/starlight@0.25.5(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4)))(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4))(typedoc-plugin-markdown@4.2.5(typedoc@0.26.5(typescript@5.5.4)))(typedoc@0.26.5(typescript@5.5.4)):
     dependencies:
       '@astrojs/starlight': 0.25.5(astro@4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4))
       astro: 4.13.3(@types/node@22.4.0)(terser@5.19.2)(typescript@5.5.4)
       github-slugger: 2.0.0
       typedoc: 0.26.5(typescript@5.5.4)
-      typedoc-plugin-markdown: 4.2.4(typedoc@0.26.5(typescript@5.5.4))
+      typedoc-plugin-markdown: 4.2.5(typedoc@0.26.5(typescript@5.5.4))
 
   start-server-and-test@2.0.5:
     dependencies:
@@ -20858,12 +20858,12 @@ snapshots:
     dependencies:
       is-typedarray: 1.0.0
 
-  typedoc-plugin-frontmatter@1.0.0(typedoc-plugin-markdown@4.2.4(typedoc@0.26.5(typescript@5.5.4))):
+  typedoc-plugin-frontmatter@1.0.0(typedoc-plugin-markdown@4.2.5(typedoc@0.26.5(typescript@5.5.4))):
     dependencies:
-      typedoc-plugin-markdown: 4.2.4(typedoc@0.26.5(typescript@5.5.4))
+      typedoc-plugin-markdown: 4.2.5(typedoc@0.26.5(typescript@5.5.4))
       yaml: 2.5.0
 
-  typedoc-plugin-markdown@4.2.4(typedoc@0.26.5(typescript@5.5.4)):
+  typedoc-plugin-markdown@4.2.5(typedoc@0.26.5(typescript@5.5.4)):
     dependencies:
       typedoc: 0.26.5(typescript@5.5.4)
 
