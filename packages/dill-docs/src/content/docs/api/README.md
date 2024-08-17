@@ -5,11 +5,12 @@ prev: false
 title: "dill"
 ---
 
-# Dill API
+# dill API
 
 ## Interfaces
 
 - [DillOptions](/api/interfaces/dilloptions/)
+- [DownloadResponse](/api/interfaces/downloadresponse/)
 
 ## Variables
 

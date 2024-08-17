@@ -48,16 +48,12 @@
         "plugin": "@oclif/plugin-commands"
     },
     {
-        "alias": [
-            "dl",
-            "dill"
-        ],
+        "alias": [],
         "command": "download",
         "flagAliases": [],
         "flagChars": [
             "e",
             "o",
-            "s",
             "v"
         ],
         "flags": [
@@ -65,7 +61,6 @@
             "filename",
             "out",
             "quiet",
-            "strip",
             "verbose"
         ],
         "plugin": "@tylerbu/cli"

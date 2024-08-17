@@ -2,10 +2,10 @@
 
 ![An anthropomorphic dill pickle in a doorman's uniform](https://tylerbutlerpublic.blob.core.windows.net/public-storage/dill-logo.jpg)
 
-Dill is a CLI app to download gzipped files and optionally decompress their contents. It also provides a simple programmatic
+**dill** is a CLI app to download gzipped files and optionally decompress their contents. It also provides a simple programmatic
 API.
 
-Implementation-wise, Dill uses the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) via
+Implementation-wise, dill uses the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) via
 [node-fetch-native](https://github.com/unjs/node-fetch-native) to download files, which means it is reasonably
 cross-platform and will use native Fetch implementations where available.
 
@@ -28,24 +28,23 @@ as in CI/CD.
 # Usage
 
 <!-- commands -->
-* [`dill [URL]`](#dill-url)
+* [`dill URL`](#dill-url)
 
-## `dill [URL]`
+## `dill URL`
 
 Downloads a file from a URL and optionally extracts its contents.
 
 ```
 USAGE
-  $ dill  [URL] [-v | --quiet] [-o <value>] [-s <value> -e] [--filename <value> | ]
+  $ dill  URL [-v | --quiet] [-o <value>] [--filename <value> | -e]
 
 ARGUMENTS
   URL  URL of the file to download.
 
 FLAGS
-  -e, --extract           Decompress the file and extract its contents.
+  -e, --extract           Decompress the file and, if it's a tarball, extract its contents.
   -o, --out=<value>       Directory in which to place the downloaded files.
-  -s, --strip=<value>     Strip leading paths from file names during extraction.
-      --filename=<value>  Name to use for the downloaded file.
+      --filename=<value>  Name to use for the downloaded file. Cannot be used with --extract.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
@@ -53,12 +52,5 @@ LOGGING FLAGS
 
 DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.
-
-ALIASES
-  $ dill dl
-  $ dill dill
-
-EXAMPLES
-  $ dill
 ```
 <!-- commandsstop -->

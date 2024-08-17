@@ -6,7 +6,7 @@ import { Decompress } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
 import { ensureDirSync } from "fs-extra";
 import mime from "mime";
-import fetch from "node-fetch-native";
+// import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
 import type { TarLocalFile } from "untar.js";
 import { untar } from "untar.js";
@@ -33,7 +33,7 @@ export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
 const defaultDownloadName = "dill-download";
 
 /**
- * Options used to control Dill's behavior.
+ * Options used to control dill's behavior.
  *
  * @public
  */
@@ -87,21 +87,33 @@ function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
 }
 
 /**
+ * A response returned by the {@link download} function.
+ */
+export interface DownloadResponse {
+	/**
+	 * The raw file data.
+	 */
+	data: Uint8Array;
+
+	/**
+	 * The path that the downloaded file(s) were written to.
+	 */
+	writtenTo: string;
+}
+
+/**
  *	Downloads a file from a URL.
  *
  * @param url - The URL to download.
  * @param options - Options to use.
- * @returns The file's contents
  *
  * @public
  */
 export const download = async (
-	url: string,
+	url: URL,
 	options?: DillOptions,
-): Promise<{
-	data: Uint8Array;
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
-}> => {
+): Promise<DownloadResponse> => {
 	const {
 		extract,
 		downloadDir,
@@ -118,7 +130,7 @@ export const download = async (
 		throw new Error(`Path is not a directory: ${downloadDir}`);
 	}
 
-	const { contents: file, response } = await fetchFile(url);
+	const { contents: file, response } = await fetchFile(url.toString());
 	let extension: string;
 	let filename = providedFilename;
 
@@ -151,13 +163,16 @@ export const download = async (
 			? decompress(file)
 			: file;
 
+	const savePath: string = noFile
+		? downloadDir
+		: path.join(downloadDir, filename);
 	if (extract) {
 		await extractTarball(decompressed, downloadDir);
 	} else if (!noFile) {
-		const saveFile = path.join(downloadDir, filename);
-		await writeFile(saveFile, decompressed);
+		// savePath = path.join(downloadDir, filename);
+		await writeFile(savePath, decompressed);
 	}
-	return { data: decompressed };
+	return { data: decompressed, writtenTo: savePath };
 };
 
 async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
@@ -172,17 +187,27 @@ function getMimeType(response: Response): {
 } {
 	const { url } = response;
 	const contentType = response?.headers.get("Content-Type");
-	const urlType = mime.getType(url);
-	const mimeType = contentType ?? urlType ?? null;
 	const contentDispositionHeader = response?.headers.get("Content-Disposition");
 	const contentDisposition =
 		contentDispositionHeader === undefined || contentDispositionHeader === null
 			? undefined
 			: parseContentDisposition(contentDispositionHeader);
 
+	const contentDispositionFilename = contentDisposition?.parameters
+		.filename as string;
+	const urlType = mime.getType(url);
+	const mimeType =
+		urlType ??
+		contentType ??
+		// Try to get the mime type from the content-disposition filename as a last resort
+		mime.getType(contentDispositionFilename) ??
+		null;
+
 	console.debug(`Content-Type header: ${contentType}`);
 	console.debug(`Content-Disposition header: ${contentDispositionHeader}`);
 	console.debug(`Type from URL: ${urlType}`);
+	console.debug(`mimeType: ${mimeType}`);
+
 	if (mimeType === null) {
 		throw new Error(`Can't find mime type for URL: ${url}`);
 	}
@@ -191,7 +216,7 @@ function getMimeType(response: Response): {
 	return {
 		mimeType,
 		extension,
-		filename: contentDisposition?.parameters.filename as string,
+		filename: contentDispositionFilename,
 	};
 }
 
@@ -203,9 +228,9 @@ function getMimeType(response: Response): {
  * @returns The file contents as a Uint8Array.
  */
 export async function fetchFile(
-	fileUrl: string,
+	fileUrl: URL | string,
 ): Promise<{ contents: Uint8Array; response?: Response }> {
-	if (fileUrl.startsWith(fileProtocol)) {
+	if (typeof fileUrl === "string" && fileUrl.startsWith(fileProtocol)) {
 		const filePath = fileUrl.slice(fileProtocol.length);
 		return { contents: await readFileIntoUint8Array(filePath) };
 	}
