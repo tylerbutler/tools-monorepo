@@ -28,7 +28,7 @@
 		"starlight-heading-badges": "^0.1.0",
 		"starlight-links-validator": "^0.10.1",
 		"starlight-package-managers": "^0.6.0",
-		"starlight-typedoc": "^0.14.0",
+		"starlight-typedoc": "^0.15.0",
 		"typedoc": "^0.26.5",
 		"typedoc-plugin-frontmatter": "^1.0.0",
 		"typedoc-plugin-markdown": "^4.2.3",
