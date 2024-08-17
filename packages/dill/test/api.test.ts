@@ -33,9 +33,9 @@ afterEach(() => {
 	server.resetHandlers();
 });
 
-server.events.on("request:start", ({ request }) => {
-	console.debug("MSW intercepted:", request.method, request.url);
-});
+// server.events.on("request:start", ({ request }) => {
+// 	console.debug("MSW intercepted:", request.method, request.url);
+// });
 
 // beforeEach(() => {
 // 	// reset the state of in-memory fs

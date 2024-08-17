@@ -47,10 +47,4 @@ export const testHttpHandlers = [
 		const file = await readFile(path.join(testDataPath, fileName));
 		return new HttpResponse(file);
 	}),
-	http.get("http://localhost/user", () => {
-		return HttpResponse.json({
-			firstName: "John",
-			lastName: "Maverick",
-		});
-	}),
 ];

@@ -58,6 +58,7 @@
 		"start": "serve ./test/data --listen 8080",
 		"test": "npm run test:vitest",
 		"test2": "start-server-and-test start http://localhost:8080 test:vitest",
+		"test:coverage": "npm run test:vitest -- --coverage",
 		"test:snapshots": "npm run update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
@@ -109,6 +110,7 @@
 		"@types/semver": "^7.5.8",
 		"@types/tmp": "^0.2.6",
 		"@types/whatwg-mimetype": "^3.0.2",
+		"@vitest/coverage-v8": "^2.0.5",
 		"chai": "^4.4.1",
 		"lefthook": "^1.6.11",
 		"memfs": "^4.11.1",
