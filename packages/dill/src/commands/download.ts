@@ -10,7 +10,10 @@ export default class DownloadCommand extends BaseCommand<
 		"Downloads a file from a URL and optionally extracts its contents.";
 
 	static override readonly args = {
-		url: Args.url({ description: "URL of the file to download." }),
+		url: Args.url({
+			description: "URL of the file to download.",
+			required: true,
+		}),
 	};
 
 	static override readonly flags = {
@@ -23,13 +26,14 @@ export default class DownloadCommand extends BaseCommand<
 			description: "Directory in which to place the downloaded files.",
 			char: "o",
 		}),
-		strip: Flags.integer({
-			description:
-				"Strip leading paths from file names during extraction. Only works with --extract.",
-			char: "s",
-			min: 0,
-			dependsOn: ["extract"],
-		}),
+		// TODO: Add this flag once testing is in better shape.
+		// strip: Flags.integer({
+		// 	description:
+		// 		"Strip leading paths from file names during extraction. Only works with --extract.",
+		// 	char: "s",
+		// 	min: 0,
+		// 	dependsOn: ["extract"],
+		// }),
 		filename: Flags.file({
 			description:
 				"Name to use for the downloaded file. Cannot be used with --extract.",
@@ -40,12 +44,17 @@ export default class DownloadCommand extends BaseCommand<
 
 	// static override readonly examples = ["<%= config.bin %> <%= command.id %>"];
 
-	// biome-ignore lint/suspicious/useAwait: not yet implemented
 	public async run(): Promise<void> {
-		// const { url } = this.args;
-		// const { extract, out, strip, filename } = this.flags;
+		const { url } = this.args;
+		const { extract, out, filename } = this.flags;
 
-		this.error("Not yet implemented!");
+		const options: DillOptions = {
+			extract,
+			downloadDir: out ?? ".",
+			filename,
+		};
+
+		await download(url, options);
 	}
 }
 

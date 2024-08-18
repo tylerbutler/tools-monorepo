@@ -49,7 +49,7 @@
 		"lint:fix": "biome lint . --apply",
 		"sort-package-json": "sort-package-json",
 		"test": "vitest run \"test\"",
-		"test:coverage": "pnpm run test --coverage"
+		"test:coverage": "npm run test:vitest -- --coverage"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
