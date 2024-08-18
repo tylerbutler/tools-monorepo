@@ -100,7 +100,7 @@ export interface DownloadResponse {
 	/**
 	 * The path that the downloaded file(s) were written to.
 	 */
-	writtenTo: string;
+	writtenTo: string | undefined;
 }
 
 /**
@@ -112,7 +112,7 @@ export interface DownloadResponse {
  * @public
  */
 export const download = async (
-	url: URL,
+	url: URL | string,
 	options?: DillOptions,
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: TODO
 ): Promise<DownloadResponse> => {
@@ -129,7 +129,7 @@ export const download = async (
 		throw new Error(`Path is not a directory: ${downloadDir}`);
 	}
 
-	const { contents: file, response } = await fetchFile(url.toString());
+	const { contents: file, response } = await fetchFile(url);
 	let extension: string;
 	let filename = providedFilename;
 
@@ -162,15 +162,15 @@ export const download = async (
 			? decompress(file)
 			: file;
 
-	const savePath: string = noFile
-		? downloadDir
-		: path.join(downloadDir, filename);
+	let writtenTo: string | undefined;
 	if (extract) {
-		await extractTarball(decompressed, downloadDir);
+		writtenTo = noFile ? undefined : downloadDir;
+		await extractTarball(decompressed, writtenTo);
 	} else if (!noFile) {
-		await writeFile(savePath, decompressed);
+		writtenTo = path.join(downloadDir, filename);
+		await writeFile(writtenTo, decompressed);
 	}
-	return { data: decompressed, writtenTo: savePath };
+	return { data: decompressed, writtenTo };
 };
 
 async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {

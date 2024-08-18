@@ -11,7 +11,7 @@ Downloads a file from a URL.
 
 ## Parameters
 
-• **url**: `URL`
+• **url**: `string` \| `URL`
 
 The URL to download.
 
