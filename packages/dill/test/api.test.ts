@@ -8,6 +8,53 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { download, extractTarball, fetchFile } from "../src/api.js";
 import { testDataPath, testUrls } from "./common.js";
 
+describe("download serverless tests", () => {
+	it("throws when downloadDir doesn't exist", () => {
+		// const filename = "test-dill-dl-1.json";
+		// The path won't be written to
+		// const downloadPath = path.join(testDataPath, "test-dill-dl-1.json");
+
+		expect(async () => {
+			await download(testUrls[0], {
+				downloadDir: "mock-path",
+			});
+		}).rejects.toThrow();
+	});
+
+	it("throws when downloadDir is an existing file, extract === true", () => {
+		expect(async () => {
+			await download(testUrls[0], {
+				extract: true,
+				downloadDir: path.join(testDataPath, "test0.json"),
+			});
+		}).rejects.toThrow("Path is not a directory");
+	});
+
+	it("fetch fails when downloadDir is an existing file, extract === false", () => {
+		expect(async () => {
+			await download(testUrls[0], {
+				extract: false,
+				downloadDir: path.join(testDataPath, "test0.json"),
+			});
+		}).rejects.toThrow("fetch failed");
+	});
+});
+
+describe("download file: URLs", () => {
+	it("throws when can't find file type from buffer", () => {
+		const testUrl = `file://${path.join(testDataPath, "test0.json")}`;
+		expect(async () => {
+			await download(testUrl, { noFile: true });
+		}).rejects.toThrow("Can't find file type for URL");
+	});
+
+	it("detects file type from buffer", async () => {
+		const testUrl = `file://${path.join(testDataPath, "tarball2.tar.gz")}`;
+		const { data } = await download(testUrl, { noFile: true, extract: true });
+		expect(data).toMatchSnapshot();
+	});
+});
+
 describe("with local server", () => {
 	const server = http.createServer((request, response) => {
 		// You pass two more arguments for config and middleware
