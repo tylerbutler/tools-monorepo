@@ -56,8 +56,9 @@
 		"readme:main": "oclif readme --no-aliases",
 		"sort-package-json": "sort-package-json",
 		"start": "serve ./test/data --listen 8080",
+		"test": "start-server-and-test start http://localhost:8080 test:vitest",
 		"test:coverage": "npm run test:vitest -- --coverage",
-		"test:snapshots": "npm run update:test-snapshots",
+		"test:snapshots": "start-server-and-test start http://localhost:8080 update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
 	},
