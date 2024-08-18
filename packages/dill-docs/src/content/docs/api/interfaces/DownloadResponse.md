@@ -23,7 +23,7 @@ The raw file data.
 
 ### writtenTo
 
-> **writtenTo**: `string`
+> **writtenTo**: `undefined` \| `string`
 
 The path that the downloaded file(s) were written to.
 
