@@ -27,8 +27,11 @@ If provided, this path must be to a directory that exists.
 
 > `optional` **extract**: `boolean`
 
-If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate). Default value is
-false.
+If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate).
+
+#### Default Value
+
+`false`
 
 #### Defined in
 
@@ -57,6 +60,10 @@ it will use `dill-download.<EXTENSION>`.
 If true, the file will not be saved to the file system. The file contents will be returned by the function call,
 but it will otherwise not be saved.
 
+#### Default Value
+
+`false`
+
 #### Defined in
 
-[api.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L65)
+[api.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L67)

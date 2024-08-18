@@ -1,5 +1,5 @@
 ---
-"dill": minor
+"dill-cli": minor
 ---
 
 Introducing dill, a CLI app to download files and optionally decompress their contents. It also provides a simple programmatic API.
