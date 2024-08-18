@@ -57,7 +57,7 @@
 		"sort-package-json": "sort-package-json",
 		"start": "serve ./test/data --listen 8080",
 		"test": "npm run test:vitest",
-		"test:coverage": "npm run test:vitest -- --coverage",
+		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "npm run update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
