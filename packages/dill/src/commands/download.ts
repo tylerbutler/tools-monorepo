@@ -48,6 +48,8 @@ export default class DownloadCommand extends BaseCommand<
 		const { url } = this.args;
 		const { extract, out, filename } = this.flags;
 
+		this.log("Download command invoked!");
+
 		const options: DillOptions = {
 			extract,
 			downloadDir: out ?? ".",

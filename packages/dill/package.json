@@ -67,8 +67,8 @@
 		"additionalVersionFlags": ["-V"],
 		"bin": "dill",
 		"commands": {
-			"strategy": "single",
-			"target": "./esm/commands/download.js"
+			"strategy": "pattern",
+			"target": "./esm/commands"
 		},
 		"devPlugins": [],
 		"dirname": "dill",
