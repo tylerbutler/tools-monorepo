@@ -1,7 +1,7 @@
 import http from "node:http";
+import path from "node:path";
 import { runCommand } from "@oclif/test";
 import { fs, vol } from "memfs";
-import path from "node:path";
 import handler from "serve-handler";
 import {
 	afterAll,
