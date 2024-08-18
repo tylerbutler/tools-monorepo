@@ -5,13 +5,13 @@ prev: false
 title: "download"
 ---
 
-> **download**(`url`, `options`?): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<`object`\>
+> **download**(`url`, `options`?): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`DownloadResponse`](/api/interfaces/downloadresponse/)\>
 
 Downloads a file from a URL.
 
 ## Parameters
 
-• **url**: `string`
+• **url**: `URL`
 
 The URL to download.
 
@@ -21,14 +21,8 @@ Options to use.
 
 ## Returns
 
-[`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<`object`\>
-
-The file's contents
-
-### data
-
-> **data**: [`Uint8Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
+[`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`DownloadResponse`](/api/interfaces/downloadresponse/)\>
 
 ## Defined in
 
-[api.ts:98](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L98)
+[api.ts:114](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L114)
