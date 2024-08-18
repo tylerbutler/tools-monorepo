@@ -23,7 +23,7 @@
 		"ci:check": "npm run check",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
-		"ci:test": "pnpm -r run test",
+		"ci:test": "npm run test:coverage",
 		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
@@ -38,7 +38,8 @@
 		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
 		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
-		"test": "fluid-build . --task test"
+		"test": "fluid-build . --task test",
+		"test:coverage": "fluid-build . --task test:coverage"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
