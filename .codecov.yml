@@ -1,5 +1,6 @@
 comment:
-  layout: "condensed_header, diff, flags, components"
+  layout: "header, diff, components, files, footer" # remove "new" from "header" and "footer"
+  hide_project_coverage: false # set to false
 
 coverage:
   status:

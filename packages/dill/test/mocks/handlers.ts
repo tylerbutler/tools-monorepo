@@ -19,6 +19,9 @@ export const testHttpHandlers = [
 			case "content-disposition": {
 				return testContentDispositionHeader(file);
 			}
+			case "content-disposition-undefined": {
+				return testContentDispositionHeaderUndefined(file);
+			}
 			default: {
 				throw new Error(`Unknown test case name: ${test}`);
 			}
@@ -33,4 +36,16 @@ function testContentDispositionHeader(file: Buffer): HttpResponse {
 			"Content-Disposition": 'inline; filename="remote-filename.json"',
 		},
 	});
+}
+
+function testContentDispositionHeaderUndefined(file: Buffer): HttpResponse {
+	return new HttpResponse(
+		file,
+		// 	{
+		// 	headers: {
+		// 		"Content-Type": "application/json",
+		// 		"Content-Disposition": 'inline; filename="remote-filename.json"',
+		// 	},
+		// }
+	);
 }
