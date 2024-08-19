@@ -1,6 +1,6 @@
 import http from "node:http";
 import path from "node:path";
-import { readJson, readdir } from "fs-extra";
+import { mkdirp, readJson, readdir } from "fs-extra";
 import handler from "serve-handler";
 import { withDir } from "tmp-promise";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
@@ -152,13 +152,15 @@ describe("with local server", () => {
 			expect(data).toMatchSnapshot();
 		});
 
-		it("zip file with extract throws", () => {
+		it("zip file with extract throws", async () => {
+			const downloadDir = path.join(testDataPath, "_temp");
+			await mkdirp(downloadDir);
 			expect(async () => {
 				await download(testUrls[4], {
-					downloadDir: "./foo",
+					downloadDir,
 					extract: true,
 				});
-			}).rejects.toThrow();
+			}).rejects.toThrow("Can't decompress files of type");
 		});
 	});
 
@@ -186,6 +188,28 @@ describe("with local server", () => {
 				},
 			);
 		});
+	});
+
+	it("throws when file is not a tarball", async () => {
+		const { contents } = await fetchFile(testUrls[0]);
+		expect(async () => {
+			await extractTarball(contents, testDataPath);
+		}).rejects.toThrow("Couldn't identify a file type");
+	});
+
+	it("throws on zip file", async () => {
+		const { contents } = await fetchFile(testUrls[4]);
+		expect(async () => {
+			await extractTarball(contents, testDataPath);
+		}).rejects.toThrow("Unsupported filetype: zip.");
+	});
+
+	it("throws when destination is an existing file", async () => {
+		const testFilePath = path.join(testDataPath, "test0.json");
+		const { contents } = await fetchFile(testUrls[3]);
+		expect(async () => {
+			await extractTarball(contents, testFilePath);
+		}).rejects.toThrow("Destination path is a file that already exists");
 	});
 });
 
@@ -227,5 +251,22 @@ describe("with mock service worker", async () => {
 				unsafeCleanup: true,
 			},
 		);
+	});
+
+	it("throws when mime type can't be found", () => {
+		const filename = "test-dill-dl-1.json";
+		const downloadDir = path.join(testDataPath, "test-dill-dl-1.json");
+		expect(async () => {
+			await download(testUrls[0], {
+				downloadDir,
+				filename,
+			});
+		}).rejects.toThrow();
+	});
+});
+
+describe("canary test", () => {
+	it("passes", () => {
+		expect(1).not.to.equal(2);
 	});
 });

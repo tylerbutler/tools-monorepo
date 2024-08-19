@@ -23,7 +23,7 @@
 		"ci:check": "npm run check",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
-		"ci:test": "npm run test:coverage",
+		"ci:test": "pnpm -r run --aggregate-output test:coverage",
 		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
@@ -49,11 +49,12 @@
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
-		"@tylerbu/repopo": "workspace:^",
+		"changesets-changelog-clean": "^1.3.0",
 		"concurrently": "^8.2.2",
 		"generate-license-file": "^3.5.0",
 		"lefthook": "^1.6.11",
 		"renovate": "^38.18.16",
+		"repopo": "workspace:^",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
 		"syncpack": "^12.3.2",
@@ -84,7 +85,7 @@
 				"script": false
 			},
 			"check:policy": {
-				"dependsOn": ["@tylerbu/repopo#build"],
+				"dependsOn": ["repopo#build"],
 				"script": true
 			},
 			"ci": {

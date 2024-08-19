@@ -3,8 +3,13 @@ import { defineConfig } from "vitest/config";
 const config = defineConfig({
 	test: {
 		reporters: process.env.GITHUB_ACTIONS
-			? ["verbose", "github-actions"]
-			: ["verbose"],
+			? // CI mode
+				["github-actions", "junit"]
+			: // local mode
+				["verbose", "junit"],
+		outputFile: {
+			junit: "./_temp/junit.xml",
+		},
 		coverage: {
 			include: ["src/**"],
 			provider: "v8",
