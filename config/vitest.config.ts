@@ -3,8 +3,8 @@ import { defineConfig } from "vitest/config";
 const config = defineConfig({
 	test: {
 		reporters: process.env.GITHUB_ACTIONS
-			? ["verbose", "github-actions"]
-			: ["verbose"],
+			? ["github-actions", "junit"]
+			: ["verbose", "junit"],
 		coverage: {
 			include: ["src/**"],
 			provider: "v8",
