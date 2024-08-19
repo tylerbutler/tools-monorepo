@@ -65,6 +65,11 @@
 			"matchUpdateTypes": ["major"],
 		},
 		{
+			// Ignore patch updates for all dependencies
+			"matchUpdateTypes": ["patch"],
+			"enabled": false,
+		},
+		{
 			// Group oclif dependencies together
 			"groupName": "oclif",
 			"matchPackagePatterns": ["^oclif", "^@oclif/"],
@@ -74,6 +79,12 @@
 			// Group Fluid Framework dependencies together
 			"groupName": "fluid framework packages",
 			"matchPackagePatterns": ["^@fluid", "^fluid-framework"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
+		},
+		{
+			"groupName": "typedoc",
+			"matchPackagePatterns": ["^typedoc"],
+			"matchUpdateTypes": ["minor"],
 			"matchDepTypes": ["devDependencies", "dependencies"],
 		},
 		{
@@ -87,7 +98,7 @@
 			// Group dependencies except oclif together
 			"groupName": "all other dependencies",
 			"matchDepTypes": ["devDependencies", "dependencies"],
-			"matchUpdateTypes": ["minor", "patch"],
+			"matchUpdateTypes": ["minor"],
 			"excludePackagePatterns": [
 				"^@fluid",
 				"^@oclif/",
