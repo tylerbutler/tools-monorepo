@@ -231,3 +231,9 @@ describe("with mock service worker", async () => {
 		);
 	});
 });
+
+describe("canary test", () => {
+	it("passes", () => {
+		expect(1).not.to.equal(2);
+	});
+});
