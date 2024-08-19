@@ -4,7 +4,7 @@ repopo is a tool to apply policies to the files in your git repo. You can think 
 file in your git repo, with a straightforward way to write your own policies.
 
 <!-- toc -->
-* [@tylerbu/repopo - police the files in your git repo with extensible policies](#tylerburepopo---police-the-files-in-your-git-repo-with-extensible-policies)
+* [repopo - police the files in your git repo with extensible policies](#repopo---police-the-files-in-your-git-repo-with-extensible-policies)
 * [Configuring policies](#configuring-policies)
 * [Included policies](#included-policies)
 * [Usage](#usage)
