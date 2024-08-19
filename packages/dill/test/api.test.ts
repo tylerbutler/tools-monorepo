@@ -203,6 +203,14 @@ describe("with local server", () => {
 			await extractTarball(contents, testDataPath);
 		}).rejects.toThrow("Unsupported filetype: zip.");
 	});
+
+	it("throws when destination is an existing file", async () => {
+		const testFilePath = path.join(testDataPath, "test0.json");
+		const { contents } = await fetchFile(testUrls[3]);
+		expect(async () => {
+			await extractTarball(contents, testFilePath);
+		}).rejects.toThrow("Destination path is a file that already exists");
+	});
 });
 
 describe("with mock service worker", async () => {
