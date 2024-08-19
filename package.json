@@ -66,84 +66,50 @@
 	},
 	"pnpm": {
 		"peerDependencyRules": {
-			"allowAny": [
-				"@aws-sdk/*"
-			],
-			"ignoreMissing": [
-				"@aws-sdk/*"
-			]
+			"allowAny": ["@aws-sdk/*"],
+			"ignoreMissing": ["@aws-sdk/*"]
 		},
 		"updateConfig": {
-			"ignoreDependencies": [
-				"chai",
-				"@types/node"
-			]
+			"ignoreDependencies": ["chai", "@types/node"]
 		},
 		"overrides": {}
 	},
 	"fluidBuild": {
 		"tasks": {
 			"build": {
-				"dependsOn": [
-					"^build"
-				],
+				"dependsOn": ["^build"],
 				"script": false
 			},
 			"check": {
-				"dependsOn": [
-					"^check",
-					"check:all"
-				],
+				"dependsOn": ["^check", "check:all"],
 				"script": false
 			},
 			"check:policy": {
-				"dependsOn": [
-					"repopo#build"
-				],
+				"dependsOn": ["repopo#build"],
 				"script": true
 			},
 			"ci": {
-				"dependsOn": [
-					"ci:check",
-					"ci:build",
-					"ci:lint",
-					"ci:test"
-				],
+				"dependsOn": ["ci:check", "ci:build", "ci:lint", "ci:test"],
 				"script": false
 			},
 			"clean": {
-				"dependsOn": [
-					"^clean",
-					"clean:root"
-				],
+				"dependsOn": ["^clean", "clean:root"],
 				"script": false
 			},
 			"compile": {
-				"dependsOn": [
-					"^build"
-				],
+				"dependsOn": ["^build"],
 				"script": false
 			},
 			"full": {
-				"dependsOn": [
-					"check",
-					"build",
-					"lint",
-					"docs",
-					"generate:packlist"
-				],
+				"dependsOn": ["check", "build", "lint", "docs", "generate:packlist"],
 				"script": false
 			},
 			"generate:packlist": {
-				"dependsOn": [
-					"^build"
-				],
+				"dependsOn": ["^build"],
 				"script": true
 			},
 			"test": {
-				"dependsOn": [
-					"^test"
-				],
+				"dependsOn": ["^test"],
 				"script": false
 			}
 		}
