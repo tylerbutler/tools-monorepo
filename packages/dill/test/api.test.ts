@@ -230,6 +230,17 @@ describe("with mock service worker", async () => {
 			},
 		);
 	});
+
+	it("throws when mime type can't be found", () => {
+		const filename = "test-dill-dl-1.json";
+		const downloadDir = path.join(testDataPath, "test-dill-dl-1.json");
+		expect(async () => {
+			await download(testUrls[0], {
+				downloadDir,
+				filename,
+			});
+		}).rejects.toThrow();
+	});
 });
 
 describe("canary test", () => {
