@@ -73,7 +73,7 @@ importers:
         version: 4.0.12
       '@oclif/plugin-autocomplete':
         specifier: ^3.1.2
-        version: 3.1.6
+        version: 3.2.0
       '@oclif/plugin-commands':
         specifier: ^4.0.2
         version: 4.0.7
@@ -85,7 +85,7 @@ importers:
         version: 3.2.10
       '@oclif/plugin-plugins':
         specifier: ^5.2.4
-        version: 5.3.6
+        version: 5.4.4
       '@oclif/plugin-search':
         specifier: ^1.1.2
         version: 1.2.2
@@ -2201,10 +2201,6 @@ packages:
     resolution: {integrity: sha512-zfdSRip9DVMOklMojWCLZEB4iOzy7LDTABCDzCXqmpZGS+o1e1xts4jGhnte3mi0WV0YthNfYqF16tqk6CWITA==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-autocomplete@3.1.6':
-    resolution: {integrity: sha512-Eo13RHSr7c5I5miatEBGhKVkLEADzN8taUlYOs5vbRWtWlR/FoDnwSZJ72gBvvayvCHEqlBOaNBn/wufxdrDAg==}
-    engines: {node: '>=18.0.0'}
-
   '@oclif/plugin-autocomplete@3.2.0':
     resolution: {integrity: sha512-URNnLAk+FP+k422On8nZhyuJcPgrCWyVolbVE+wKl9ngWR56//MLakrf7AKwfeuto9U2TmrOsXVZhzWzZ2VTMw==}
     engines: {node: '>=18.0.0'}
@@ -2237,8 +2233,8 @@ packages:
     resolution: {integrity: sha512-9yGR1lAg4ItSwRb4WhZ41X+6tO55SJjDYnu+EXW9gPCPj64z5qRIBU1ZWUZGtxJpHNB0vUh9nDLTsQAJOw/lnw==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-plugins@5.3.6':
-    resolution: {integrity: sha512-bUx+tWwjHzBeJj+eP1KBuCTF9tG/nV8VE06fAElCUL317d9sAGfbHJwPQwTPWzVnCUz50H+uUxyK5GgMTxwtgQ==}
+  '@oclif/plugin-plugins@5.4.4':
+    resolution: {integrity: sha512-p30fo3JPtbOqTJOX9A/8qKV/14XWt8xFgG/goVfIkuKBAO+cdY78ag8pYatlpzsYzJhO27X1MFn0WkkPWo36Ww==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-search@1.2.2':
@@ -6031,8 +6027,8 @@ packages:
     resolution: {integrity: sha512-cub8rahkh0Q/bw1+GxP7aeSe29hHHn2V4m29nnDlvCdlgU+3UGxkZp7Z53jLUdpX3jdTO0nJZUDl3xvbWc2Xog==}
     engines: {node: 20 || >=22}
 
-  jake@10.9.1:
-    resolution: {integrity: sha512-61btcOHNnLnsOdtLgA5efqQWjnSi/vow5HbI7HMdKKWqvrKR1bLK3BPlJn9gcSaP2ewuamUSMB5XEy76KUIS2w==}
+  jake@10.9.2:
+    resolution: {integrity: sha512-2P4SQ0HrLQ+fw6llpLnOaGAvN2Zu6778SJMrCUwns4fOoG9ayrTiZk3VV8sCPkVZF8ab0zksVpS8FDY5pRCNBA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -7094,10 +7090,6 @@ packages:
   npm-package-arg@10.1.0:
     resolution: {integrity: sha512-uFyyCEmgBfZTtrKk/5xDfHp6+MdrqGotX/VoOyEEl3mBwiEE5FlBaePanazJSVMPT7vKepcjYBY2ztg9A3yPIA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-
-  npm-package-arg@11.0.2:
-    resolution: {integrity: sha512-IGN0IAwmhDJwy13Wc8k+4PEbTPhpJnMtfR53ZbOyjkvmEcLS4nCwp6mvMWjS5sUjeiW3mpx6cHmuhKEu9XmcQw==}
-    engines: {node: ^16.14.0 || >=18.0.0}
 
   npm-package-arg@11.0.3:
     resolution: {integrity: sha512-sHGJy8sOC1YraBywpzQlIKBE4pBbGbiF95U6Auspzyem956E0+FtDtsx1ZxlOJkQCZ1AFXAY/yuvtFYrOxF+Bw==}
@@ -11755,7 +11747,7 @@ snapshots:
       outdent: 0.5.0
       prettier: 2.8.8
       resolve-from: 5.0.0
-      semver: 7.6.3
+      semver: 7.6.2
 
   '@changesets/assemble-release-plan@6.0.3':
     dependencies:
@@ -11765,7 +11757,7 @@ snapshots:
       '@changesets/should-skip-package': 0.1.0
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
-      semver: 7.6.3
+      semver: 7.6.2
 
   '@changesets/changelog-git@0.2.0':
     dependencies:
@@ -11826,7 +11818,7 @@ snapshots:
       '@manypkg/get-packages': 1.1.3
       chalk: 2.4.2
       fs-extra: 7.0.1
-      semver: 7.6.3
+      semver: 7.6.2
 
   '@changesets/get-github-info@0.6.0(encoding@0.1.13)':
     dependencies:
@@ -12985,18 +12977,9 @@ snapshots:
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
 
-  '@oclif/plugin-autocomplete@3.1.6':
-    dependencies:
-      '@oclif/core': 4.0.12
-      ansis: 3.2.1
-      debug: 4.3.6(supports-color@8.1.1)
-      ejs: 3.1.10
-    transitivePeerDependencies:
-      - supports-color
-
   '@oclif/plugin-autocomplete@3.2.0':
     dependencies:
-      '@oclif/core': 4.0.17
+      '@oclif/core': 4.0.12
       ansis: 3.3.2
       debug: 4.3.6(supports-color@8.1.1)
       ejs: 3.1.10
@@ -13051,16 +13034,16 @@ snapshots:
       ansis: 3.3.2
       fast-levenshtein: 3.0.0
 
-  '@oclif/plugin-plugins@5.3.6':
+  '@oclif/plugin-plugins@5.4.4':
     dependencies:
       '@oclif/core': 4.0.12
-      ansis: 3.2.1
+      ansis: 3.3.2
       debug: 4.3.6(supports-color@8.1.1)
       npm: 10.8.2
-      npm-package-arg: 11.0.2
+      npm-package-arg: 11.0.3
       npm-run-path: 5.3.0
       object-treeify: 4.0.1
-      semver: 7.6.2
+      semver: 7.6.3
       validate-npm-package-name: 5.0.1
       which: 4.0.0
       yarn: 1.22.22
@@ -16157,7 +16140,7 @@ snapshots:
 
   ejs@3.1.10:
     dependencies:
-      jake: 10.9.1
+      jake: 10.9.2
 
   electron-to-chromium@1.5.6: {}
 
@@ -17799,7 +17782,7 @@ snapshots:
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
 
-  jake@10.9.1:
+  jake@10.9.2:
     dependencies:
       async: 3.2.5
       chalk: 4.1.2
@@ -19201,7 +19184,7 @@ snapshots:
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.6.3
+      semver: 7.6.2
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -19267,13 +19250,6 @@ snapshots:
     dependencies:
       hosted-git-info: 6.1.1
       proc-log: 3.0.0
-      semver: 7.6.3
-      validate-npm-package-name: 5.0.1
-
-  npm-package-arg@11.0.2:
-    dependencies:
-      hosted-git-info: 7.0.2
-      proc-log: 4.2.0
       semver: 7.6.3
       validate-npm-package-name: 5.0.1
 
