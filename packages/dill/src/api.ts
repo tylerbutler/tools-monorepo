@@ -267,11 +267,10 @@ export async function extractTarball(
 	if (fileType?.ext !== "tar") {
 		console.warn("Didn't identify the file as a tarball.");
 		if (fileType === undefined) {
-			console.warn("Couldn't identify a file type.");
-		} else {
-			console.warn(
-				`Identified a ${fileType.ext} file, mime-type: ${fileType.mime}.`,
-			);
+			throw new Error("Couldn't identify a file type.");
+		}
+		if (UNSUPPORTED_ARCHIVE_EXTENSIONS.has(fileType.ext)) {
+			throw new Error(`Unsupported filetype: ${fileType.ext}.`);
 		}
 	}
 	const data = untar(fileContent);
