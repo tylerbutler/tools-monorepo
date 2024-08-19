@@ -5,6 +5,9 @@ const config = defineConfig({
 		reporters: process.env.GITHUB_ACTIONS
 			? ["github-actions", "junit"]
 			: ["verbose", "junit"],
+		outputFile: {
+			junit: "./_temp/junit.xml",
+		},
 		coverage: {
 			include: ["src/**"],
 			provider: "v8",
