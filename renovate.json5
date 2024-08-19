@@ -85,9 +85,9 @@
 		},
 		{
 			// Group dependencies except oclif together
-			"groupName": "dependencies",
+			"groupName": "all other dependencies",
 			"matchDepTypes": ["devDependencies", "dependencies"],
-			"matchUpdateTypes": ["minor"],
+			"matchUpdateTypes": ["minor", "patch"],
 			"excludePackagePatterns": [
 				"^@fluid",
 				"^@oclif/",
