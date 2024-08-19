@@ -84,7 +84,7 @@
 				"script": false
 			},
 			"check:policy": {
-				"dependsOn": ["@tylerbu/repopo#build"],
+				"dependsOn": ["repopo#build"],
 				"script": true
 			},
 			"ci": {
