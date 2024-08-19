@@ -189,6 +189,20 @@ describe("with local server", () => {
 			);
 		});
 	});
+
+	it("throws when file is not a tarball", async () => {
+		const { contents } = await fetchFile(testUrls[0]);
+		expect(async () => {
+			await extractTarball(contents, testDataPath);
+		}).rejects.toThrow("Couldn't identify a file type");
+	});
+
+	it("throws on zip file", async () => {
+		const { contents } = await fetchFile(testUrls[4]);
+		expect(async () => {
+			await extractTarball(contents, testDataPath);
+		}).rejects.toThrow("Unsupported filetype: zip.");
+	});
 });
 
 describe("with mock service worker", async () => {
