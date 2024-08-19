@@ -1,6 +1,6 @@
 import http from "node:http";
 import path from "node:path";
-import { readJson, readdir } from "fs-extra";
+import { mkdirp, readJson, readdir } from "fs-extra";
 import handler from "serve-handler";
 import { withDir } from "tmp-promise";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
@@ -152,13 +152,15 @@ describe("with local server", () => {
 			expect(data).toMatchSnapshot();
 		});
 
-		it("zip file with extract throws", () => {
+		it("zip file with extract throws", async () => {
+			const downloadDir = path.join(testDataPath, "_temp");
+			await mkdirp(downloadDir);
 			expect(async () => {
 				await download(testUrls[4], {
-					downloadDir: "./foo",
+					downloadDir,
 					extract: true,
 				});
-			}).rejects.toThrow();
+			}).rejects.toThrow("Can't decompress files of type");
 		});
 	});
 
