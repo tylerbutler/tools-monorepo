@@ -1,5 +1,5 @@
 {
-	"name": "@tylerbu/repopo",
+	"name": "repopo",
 	"version": "0.0.1",
 	"private": true,
 	"description": "Enforce policies on all or some of the files in a git repository.",
