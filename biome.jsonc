@@ -5,7 +5,7 @@
 		"clientKind": "git",
 		"defaultBranch": "main",
 		"useIgnoreFile": true,
-		"root": "."
+		"root": ".",
 	},
 	"files": {
 		"ignore": [
@@ -16,16 +16,16 @@
 			"esm/**",
 
 			// oclif manifest
-			"oclif.manifest.json"
+			"oclif.manifest.json",
 		],
-		"ignoreUnknown": true
+		"ignoreUnknown": true,
 	},
 	"formatter": {
 		"enabled": true,
 		"ignore": ["**/_snapshots/**"],
 		"formatWithErrors": true,
 		"indentStyle": "tab",
-		"lineEnding": "lf"
+		"lineEnding": "lf",
 	},
 	"organizeImports": { "enabled": true },
 	"linter": {
@@ -34,23 +34,23 @@
 		"rules": {
 			"all": true,
 			"correctness": {
-				"noUnusedVariables": "error"
+				"noUnusedVariables": "error",
 			},
 			"performance": {
-				"noBarrelFile": "off"
+				"noBarrelFile": "off",
 			},
 			"style": {
 				"noDefaultExport": "off",
-				"noParameterProperties": "off"
-			}
-		}
+				"noParameterProperties": "off",
+			},
+		},
 	},
 	"javascript": {
 		"formatter": {
 			"jsxQuoteStyle": "double",
 			"trailingCommas": "all",
-			"semicolons": "always"
-		}
+			"semicolons": "always",
+		},
 	},
 	"overrides": [
 		{
@@ -59,15 +59,15 @@
 				"*.json5",
 				"api-extractor*.json",
 				"tsconfig*.json",
-				".vscode/*.json"
+				".vscode/*.json",
 			],
 			"json": {
 				"parser": {
 					"allowComments": true,
-					"allowTrailingCommas": true
+					"allowTrailingCommas": true,
 				},
-				"formatter": { "trailingCommas": "all" }
-			}
+				"formatter": { "trailingCommas": "all" },
+			},
 		},
 		{
 			"include": ["**/src/commands/**/*.ts"],
@@ -75,10 +75,10 @@
 				"rules": {
 					"style": {
 						// oclif commands are required to use default exports.
-						"noDefaultExport": "off"
-					}
-				}
-			}
+						"noDefaultExport": "off",
+					},
+				},
+			},
 		},
 		{
 			// these packages are node-only
@@ -87,15 +87,15 @@
 				"**/cli-api/**/*.ts",
 				"**/dill/**/*.ts",
 				"**/repopo/**/*.ts",
-				"**/sort-tsconfig/**/*.ts"
+				"**/sort-tsconfig/**/*.ts",
 			],
 			"linter": {
 				"rules": {
 					"correctness": {
-						"noNodejsModules": "off"
-					}
-				}
-			}
-		}
-	]
+						"noNodejsModules": "off",
+					},
+				},
+			},
+		},
+	],
 }
