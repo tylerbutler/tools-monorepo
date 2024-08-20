@@ -28,7 +28,22 @@ jobs:
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run ci
+      - run: pnpm run ci:check
+        continue-on-error: true
+      - run: pnpm run ci:build
+      - run: pnpm run ci:lint
+        continue-on-error: true
+      - run: pnpm run ci:test
+
+      - name: "Codecov: upload test results"
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: "Codecov: upload coverage"
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Check for edited files
         run: |

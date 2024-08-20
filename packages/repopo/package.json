@@ -1,6 +1,6 @@
 {
-	"name": "@tylerbu/repopo",
-	"version": "0.0.1",
+	"name": "repopo",
+	"version": "0.1.0",
 	"private": true,
 	"description": "Enforce policies on all or some of the files in a git repository.",
 	"keywords": ["policy", "ci"],
@@ -63,7 +63,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluidframework/build-tools": "^0.41.0",
+		"@fluidframework/build-tools": "^0.43.0",
 		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-help": "^6.2.1",
 		"@tylerbu/cli-api": "workspace:^",
@@ -89,7 +89,7 @@
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"type-fest": "^4.18.2",
-		"typescript": "~5.5.0",
+		"typescript": "~5.5.4",
 		"vitest": "^2.0.0"
 	},
 	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",

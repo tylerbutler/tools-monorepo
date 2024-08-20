@@ -1,0 +1,47 @@
+{
+	"name": "dill-docs",
+	"version": "0.0.1",
+	"private": true,
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"scripts": {
+		"astro": "astro",
+		"build": "astro build",
+		"check": "astro check",
+		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
+		"dev": "astro dev",
+		"preview": "astro preview",
+		"start": "astro dev"
+	},
+	"dependencies": {
+		"@astrojs/check": "^0.9.1",
+		"@astrojs/netlify": "^5.5.0",
+		"@astrojs/starlight": "^0.26.0",
+		"@fontsource/ibm-plex-serif": "^5.0.13",
+		"@fontsource/metropolis": "^5.0.11",
+		"@fontsource/open-sans": "^5.0.28",
+		"astro": "^4.13.1",
+		"dill-cli": "workspace:^",
+		"sharp": "^0.33.4",
+		"starlight-heading-badges": "^0.1.0",
+		"starlight-links-validator": "^0.10.1",
+		"starlight-package-managers": "^0.6.0",
+		"starlight-typedoc": "^0.15.0",
+		"typedoc": "^0.26.5",
+		"typedoc-plugin-frontmatter": "^1.0.0",
+		"typedoc-plugin-markdown": "^4.2.5",
+		"typedoc-plugin-mdn-links": "^3.2.8",
+		"typescript": "~5.5.4"
+	},
+	"devDependencies": {
+		"@fec/remark-a11y-emoji": "^4.0.2",
+		"@hashicorp/remark-plugins": "^4.1.1"
+	},
+	"fluidBuild": {
+		"tasks": {
+			"build": []
+		}
+	}
+}

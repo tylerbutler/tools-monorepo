@@ -15,11 +15,15 @@
 		"check": "fluid-build . --task check",
 		"check:all": "concurrently npm:check:deps npm:check:format npm:check:policy npm:lint",
 		"check:deps": "syncpack lint",
-		"check:format": "biome check . --linter-enabled=false",
+		"check:format": "biome check --linter-enabled=false",
 		"check:policy": "./packages/repopo/bin/dev.js check",
 		"check:renovate-config": "renovate-config-validator",
-		"ci": "fluid-build . --task ci",
+		"ci": "npm run ci:check && npm run ci:build && npm run ci:lint && npm run ci:test",
+		"ci:build": "fluid-build . --task build --task generate:packlist",
+		"ci:check": "npm run check",
+		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
+		"ci:test": "pnpm -r run --aggregate-output test:coverage",
 		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
@@ -27,28 +31,30 @@
 		"format": "npm run sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
-		"generate:packlist": "flub generate packlist -g client",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write",
+		"generate:packlist": "flub generate packlist -g client --no-private",
+		"lint": "biome lint",
+		"lint:fix": "biome lint --write",
 		"prepare": "lefthook install",
 		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
 		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
-		"test": "fluid-build . --task test"
+		"test": "fluid-build . --task test",
+		"test:coverage": "fluid-build . --task test:coverage"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"@changesets/cli": "^2.27.1",
-		"@fluid-tools/build-cli": "^0.41.0",
-		"@fluidframework/build-tools": "^0.41.0",
+		"@fluid-tools/build-cli": "^0.43.0",
+		"@fluidframework/build-tools": "^0.43.0",
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
-		"@tylerbu/repopo": "workspace:^",
+		"changesets-changelog-clean": "^1.3.0",
 		"concurrently": "^8.2.2",
 		"generate-license-file": "^3.5.0",
 		"lefthook": "^1.6.11",
-		"renovate": "^37.431.4",
+		"renovate": "^38.18.16",
+		"repopo": "workspace:^",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
 		"syncpack": "^12.3.2",
@@ -79,11 +85,11 @@
 				"script": false
 			},
 			"check:policy": {
-				"dependsOn": ["@tylerbu/repopo#build"],
+				"dependsOn": ["repopo#build"],
 				"script": true
 			},
 			"ci": {
-				"dependsOn": ["full", "generate:license-file"],
+				"dependsOn": ["ci:check", "ci:build", "ci:lint", "ci:test"],
 				"script": false
 			},
 			"clean": {
@@ -95,12 +101,16 @@
 				"script": false
 			},
 			"full": {
-				"dependsOn": ["check", "^build", "lint", "generate:packlist", "^test"],
+				"dependsOn": ["check", "build", "lint", "docs", "generate:packlist"],
 				"script": false
 			},
 			"generate:packlist": {
 				"dependsOn": ["^build"],
 				"script": true
+			},
+			"test": {
+				"dependsOn": ["^test"],
+				"script": false
 			}
 		}
 	}

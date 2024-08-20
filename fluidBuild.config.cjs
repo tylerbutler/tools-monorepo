@@ -11,14 +11,22 @@ const config = {
 	},
 	tasks: {
 		api: {
-			dependsOn: ["compile"],
+			dependsOn: ["^compile", "compile"],
 		},
 		build: {
-			dependsOn: ["^build", "compile", "api", "docs", "manifest", "readme"],
+			dependsOn: [
+				"^build",
+				"compile",
+				"api",
+				"docs",
+				"generate",
+				"manifest",
+				"readme",
+			],
 			script: false,
 		},
 		docs: {
-			dependsOn: [],
+			dependsOn: ["^compile", "compile", "api"],
 		},
 		clean: {
 			before: ["*"],
@@ -33,7 +41,7 @@ const config = {
 			dependsOn: ["^compile"],
 		},
 		full: {
-			dependsOn: ["check", "build", "lint", "test"],
+			dependsOn: ["check", "build", "api", "docs", "lint", "test"],
 			script: false,
 		},
 		lint: {
@@ -42,7 +50,7 @@ const config = {
 		manifest: ["compile"],
 		readme: ["compile", "manifest"],
 		test: {
-			dependsOn: ["build"],
+			dependsOn: ["compile"],
 		},
 	},
 };

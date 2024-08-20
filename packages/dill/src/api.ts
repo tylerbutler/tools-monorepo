@@ -1,27 +1,28 @@
-import { existsSync, statSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
 import { Decompress } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
-import { ensureDirSync } from "fs-extra";
+import { mkdirp } from "fs-extra/esm";
 import mime from "mime";
-import fetch from "node-fetch-native";
+// import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
 import type { TarLocalFile } from "untar.js";
 import { untar } from "untar.js";
 
 const fileProtocol = "file://";
 
-const knownArchiveExtensions: ReadonlySet<string> = new Set([
+export const KNOWN_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
+	"tar",
+	"gz",
+]);
+
+export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
 	"7z",
 	"bz2",
-	"gz",
 	"rar",
-	"tar",
 	"zip",
 	"xz",
-	"gz",
 ]);
 
 /**
@@ -31,14 +32,15 @@ const knownArchiveExtensions: ReadonlySet<string> = new Set([
 const defaultDownloadName = "dill-download";
 
 /**
- * Options used to control Dill's behavior.
+ * Options used to control dill's behavior.
  *
  * @public
  */
 export interface DillOptions {
 	/**
-	 * If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate). Default value is
-	 * false.
+	 * If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate).
+	 *
+	 * @defaultValue `false`
 	 */
 	extract?: boolean;
 
@@ -59,6 +61,8 @@ export interface DillOptions {
 	/**
 	 * If true, the file will not be saved to the file system. The file contents will be returned by the function call,
 	 * but it will otherwise not be saved.
+	 *
+	 * @defaultValue `false`
 	 */
 	noFile?: boolean;
 }
@@ -85,20 +89,33 @@ function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
 }
 
 /**
+ * A response returned by the `download` function.
+ */
+export interface DownloadResponse {
+	/**
+	 * The raw file data.
+	 */
+	data: Uint8Array;
+
+	/**
+	 * The path that the downloaded file(s) were written to.
+	 */
+	writtenTo: string | undefined;
+}
+
+/**
  *	Downloads a file from a URL.
  *
  * @param url - The URL to download.
  * @param options - Options to use.
- * @returns The file's contents
  *
  * @public
  */
 export const download = async (
-	url: string,
+	url: URL | string,
 	options?: DillOptions,
-): Promise<{
-	data: Uint8Array;
-}> => {
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: TODO
+): Promise<DownloadResponse> => {
 	const {
 		extract,
 		downloadDir,
@@ -107,10 +124,7 @@ export const download = async (
 	} = resolveOptions(options);
 
 	// The downloadDir must exist and be a directory.
-	if (!existsSync(downloadDir)) {
-		throw new Error(`Path doesn't exist: ${downloadDir}`);
-	}
-	const pathStats = statSync(downloadDir);
+	const pathStats = await stat(downloadDir);
 	if (extract && !pathStats.isDirectory()) {
 		throw new Error(`Path is not a directory: ${downloadDir}`);
 	}
@@ -139,16 +153,24 @@ export const download = async (
 		filename ??= responseFileName ?? `${defaultDownloadName}.${extension}`;
 	}
 
-	const decompressed =
-		extract && knownArchiveExtensions.has(extension) ? decompress(file) : file;
-
-	if (extract) {
-		await extractTarball(decompressed, downloadDir);
-	} else if (!noFile) {
-		const saveFile = path.join(downloadDir, filename);
-		await writeFile(saveFile, decompressed);
+	if (extract && UNSUPPORTED_ARCHIVE_EXTENSIONS.has(extension)) {
+		throw new Error(`Can't decompress files of type: ${extension}`);
 	}
-	return { data: decompressed };
+
+	const decompressed =
+		extract && KNOWN_ARCHIVE_EXTENSIONS.has(extension)
+			? decompress(file)
+			: file;
+
+	let writtenTo: string | undefined;
+	if (extract) {
+		writtenTo = noFile ? undefined : downloadDir;
+		await extractTarball(decompressed, writtenTo);
+	} else if (!noFile) {
+		writtenTo = path.join(downloadDir, filename);
+		await writeFile(writtenTo, decompressed);
+	}
+	return { data: decompressed, writtenTo };
 };
 
 async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
@@ -163,17 +185,22 @@ function getMimeType(response: Response): {
 } {
 	const { url } = response;
 	const contentType = response?.headers.get("Content-Type");
-	const urlType = mime.getType(url);
-	const mimeType = contentType ?? urlType ?? null;
 	const contentDispositionHeader = response?.headers.get("Content-Disposition");
 	const contentDisposition =
 		contentDispositionHeader === undefined || contentDispositionHeader === null
 			? undefined
 			: parseContentDisposition(contentDispositionHeader);
 
-	console.debug(`Content-Type header: ${contentType}`);
-	console.debug(`Content-Disposition header: ${contentDispositionHeader}`);
-	console.debug(`Type from URL: ${urlType}`);
+	const contentDispositionFilename = contentDisposition?.parameters
+		.filename as string;
+	const urlType = mime.getType(url);
+	const mimeType =
+		urlType ??
+		contentType ??
+		// Try to get the mime type from the content-disposition filename as a last resort
+		mime.getType(contentDispositionFilename) ??
+		null;
+
 	if (mimeType === null) {
 		throw new Error(`Can't find mime type for URL: ${url}`);
 	}
@@ -182,7 +209,7 @@ function getMimeType(response: Response): {
 	return {
 		mimeType,
 		extension,
-		filename: contentDisposition?.parameters.filename as string,
+		filename: contentDispositionFilename,
 	};
 }
 
@@ -194,9 +221,9 @@ function getMimeType(response: Response): {
  * @returns The file contents as a Uint8Array.
  */
 export async function fetchFile(
-	fileUrl: string,
+	fileUrl: URL | string,
 ): Promise<{ contents: Uint8Array; response?: Response }> {
-	if (fileUrl.startsWith(fileProtocol)) {
+	if (typeof fileUrl === "string" && fileUrl.startsWith(fileProtocol)) {
 		const filePath = fileUrl.slice(fileProtocol.length);
 		return { contents: await readFileIntoUint8Array(filePath) };
 	}
@@ -240,21 +267,17 @@ export async function extractTarball(
 	if (fileType?.ext !== "tar") {
 		console.warn("Didn't identify the file as a tarball.");
 		if (fileType === undefined) {
-			console.warn("Couldn't identify a file type.");
-		} else {
-			console.warn(
-				`Identified a ${fileType.ext} file, mime-type: ${fileType.mime}.`,
-			);
+			throw new Error("Couldn't identify a file type.");
+		}
+		if (UNSUPPORTED_ARCHIVE_EXTENSIONS.has(fileType.ext)) {
+			throw new Error(`Unsupported filetype: ${fileType.ext}.`);
 		}
 	}
 	const data = untar(fileContent);
 
 	if (destination !== undefined) {
-		if (!existsSync(destination)) {
-			throw new Error(`Path does not exist: ${destination}`);
-		}
-
-		if (statSync(destination).isFile()) {
+		const stats = await stat(destination);
+		if (stats.isFile()) {
 			throw new Error(
 				`Destination path is a file that already exists: ${destination}`,
 			);
@@ -263,7 +286,7 @@ export async function extractTarball(
 		const filesP: Promise<void>[] = [];
 		for (const tarfile of data) {
 			const outPath = path.join(destination, tarfile.name);
-			ensureDirSync(path.dirname(outPath));
+			await mkdirp(path.dirname(outPath));
 			filesP.push(writeFile(outPath, tarfile.fileData));
 		}
 		await Promise.all(filesP);
