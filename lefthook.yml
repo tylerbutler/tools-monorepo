@@ -28,7 +28,7 @@ pre-push:
     format:
       # glob: "*.{js,ts,jsx,tsx}"
       files: git diff --name-only origin/main
-      run: "pnpm biome check --linter-enabled=false --no-errors-on-unmatched {files} && git update-index --again"
+      run: "pnpm biome check --linter-enabled=false --no-errors-on-unmatched --write {files} && git update-index --again"
       stage_fixed: true
 # rubocop:
 #       tags: backend style
