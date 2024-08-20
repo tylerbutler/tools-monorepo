@@ -31,7 +31,7 @@ pre-push:
     format:
       # glob: "*.{js,ts,jsx,tsx}"
       files: git diff --name-only origin/main
-      run: "pnpm biome check --linter-enabled=false --no-errors-on-unmatched {files} && git update-index --again"
+      run: "pnpm format"
       fail_text: "Format your code before you push. Run `pnpm format` and commit the results."
 
 # rubocop:
