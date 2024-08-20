@@ -15,6 +15,11 @@ pre-commit:
     # biome:
     #   run: biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --colors=off {staged_files}
     #   stage_fixed: true
+    biome:
+      files: git diff --name-only origin/main
+      run: "pnpm biome check --linter-enabled=false --no-errors-on-unmatched {files}"
+      fail_text: "Format your code before you push. Run `pnpm format` and commit the results."
+
 
 # pre-push:
 #   commands:
@@ -31,7 +36,7 @@ pre-push:
     format:
       # glob: "*.{js,ts,jsx,tsx}"
       files: git diff --name-only origin/main
-      run: "pnpm format"
+      run: "pnpm biome check --linter-enabled=false --no-errors-on-unmatched {files}"
       fail_text: "Format your code before you push. Run `pnpm format` and commit the results."
 
 # rubocop:
