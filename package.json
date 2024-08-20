@@ -43,7 +43,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
-		"@changesets/cli": "^2.27.1",
+		"@changesets/cli": "^2.27.7",
+		"@changesets/config": "^3.0.2",
 		"@fluid-tools/build-cli": "^0.43.0",
 		"@fluidframework/build-tools": "^0.43.0",
 		"@tsconfig/node18": "^18.2.4",
