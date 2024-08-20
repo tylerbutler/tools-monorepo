@@ -1,6 +1,6 @@
 {
 	"name": "dill-cli",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"private": true,
 	"description": "Command-line (CLI) program to download and optionally decompress gzipped files.",
 	"keywords": ["download", "ci"],
