@@ -33,7 +33,9 @@
  * ensuring `i` will always be a valid index in the array. However, this might raise linting warnings
  * or errors depending on your project's configuration.
  */
-export function isSorted<T>( arr: T[],compareFn: (a: T, b: T) => number,
+export function isSorted<T>(
+	arr: T[],
+	compareFn: (a: T, b: T) => number,
 ): boolean {
 	return (
 		arr
