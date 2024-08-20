@@ -1,6 +1,6 @@
 {
 	"name": "repopo",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"private": true,
 	"description": "Enforce policies on all or some of the files in a git repository.",
 	"keywords": ["policy", "ci"],
