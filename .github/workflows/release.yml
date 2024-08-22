@@ -34,13 +34,26 @@ jobs:
 
       - name: Setup .npmrc
         run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
-      - name: Create Version Tracking PR or Publish to npm
+
+      # Despite the name, this step either creates/updates a PR or publishes packages
+      # To improve the experience viewing the results in the Actions UI, subsequent steps log
+      # the action that was actually taken.
+      - name: Process changesets
         id: changesets
         uses: changesets/action@aba318e9165b45b7948c60273e0b72fce0a64eb9 # ratchet:changesets/action@v1
         with:
           version: pnpm ci:version
           commit: "release: Update versions"
-          title: "RELEASE: VERSION UPDATE TRACKING"
+          title: "🚀 release: Update versions"
           publish: pnpm ci:publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CHANGESET_TOKEN }}
+
+      - name: Create Version Tracking PR
+        if: steps.changesets.outputs.published != 'true'
+        run: echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
+
+      - name: Publish to npm
+        if: steps.changesets.outputs.published == 'true'
+        run: echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
+
