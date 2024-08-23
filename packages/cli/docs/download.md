@@ -3,24 +3,23 @@
 
 Downloads a file from a URL and optionally extracts its contents.
 
-* [`tbu download [URL]`](#tbu-download-url)
+* [`tbu download URL`](#tbu-download-url)
 
-## `tbu download [URL]`
+## `tbu download URL`
 
 Downloads a file from a URL and optionally extracts its contents.
 
 ```
 USAGE
-  $ tbu download [URL] [-v | --quiet] [-o <value>] [-s <value> -e] [--filename <value> | ]
+  $ tbu download URL [-v | --quiet] [-o <value>] [--filename <value> | -e]
 
 ARGUMENTS
   URL  URL of the file to download.
 
 FLAGS
-  -e, --extract           Decompress the file and extract its contents.
+  -e, --extract           Decompress the file and, if it's a tarball, extract its contents.
   -o, --out=<value>       Directory in which to place the downloaded files.
-  -s, --strip=<value>     Strip leading paths from file names during extraction.
-      --filename=<value>  Name to use for the downloaded file.
+      --filename=<value>  Name to use for the downloaded file. Cannot be used with --extract.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
@@ -28,13 +27,6 @@ LOGGING FLAGS
 
 DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.
-
-ALIASES
-  $ tbu dl
-  $ tbu dill
-
-EXAMPLES
-  $ tbu download
 ```
 
 _See code: [src/commands/download.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/cli/src/commands/download.ts)_

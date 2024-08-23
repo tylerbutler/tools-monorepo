@@ -1,6 +1,14 @@
-import type { DillOptions } from "./api.js";
-import { download } from "./api.js";
+import type { DillOptions, DownloadResponse } from "./api.js";
+import {
+	// KNOWN_ARCHIVE_EXTENSIONS,
+	// UNSUPPORTED_ARCHIVE_EXTENSIONS,
+	download,
+} from "./api.js";
 
 export { run } from "@oclif/core";
-export { download };
-export type { DillOptions };
+export {
+	// KNOWN_ARCHIVE_EXTENSIONS,
+	// UNSUPPORTED_ARCHIVE_EXTENSIONS,
+	download,
+};
+export type { DillOptions, DownloadResponse };

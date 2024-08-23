@@ -2,7 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "pnpm test cli-api",
+			"name": "cli-api: pnpm test",
 			"request": "launch",
 			"runtimeArgs": ["run-script", "test"],
 			"cwd": "${workspaceFolder}/packages/cli-api",
@@ -11,12 +11,33 @@
 			"type": "node",
 		},
 		{
+			"name": "dill: pnpm test",
+			"request": "launch",
+			"runtimeArgs": ["run-script", "test"],
+			"cwd": "${workspaceFolder}/packages/dill",
+			"runtimeExecutable": "pnpm",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+			"env": {
+				"NODE_ENV": "test",
+				"FORCE_NODE_FETCH": "true",
+			},
+		},
+		{
 			"name": "tbu",
 			"request": "launch",
 			"program": "${workspaceFolder}/packages/cli/bin/dev.js",
 			"args": [],
 			"skipFiles": ["<node_internals>/**"],
 			"type": "node",
+		},
+
+		{
+			"name": "dill: astro dev",
+			"command": "./node_modules/.bin/astro dev",
+			"cwd": "${workspaceFolder}/packages/dill-docs",
+			"request": "launch",
+			"type": "node-terminal",
 		},
 
 		{

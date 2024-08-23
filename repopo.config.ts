@@ -1,4 +1,4 @@
-import type { PolicyConfig } from "@tylerbu/repopo";
+import type { PolicyConfig } from "repopo";
 
 const config: PolicyConfig = {
 	includeDefaultPolicies: true,

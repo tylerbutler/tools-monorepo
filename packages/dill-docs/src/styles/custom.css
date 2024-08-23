@@ -1,0 +1,38 @@
+:root {
+  /* --sl-font: 'Open Sans', sans-serif; */
+  --sl-font: 'Metropolis', sans-serif;
+}
+
+/* main {
+  font-family: 'Metropolis', sans-serif;
+} */
+
+/* Dark mode colors. */
+:root {
+	--sl-color-accent-low: #1a290f;
+	--sl-color-accent: #467a05;
+	--sl-color-accent-high: #bcd0b0;
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #d9fac3;
+	--sl-color-gray-2: #a9d08d;
+	--sl-color-gray-3: #5da100;
+	--sl-color-gray-4: #396600;
+	--sl-color-gray-5: #234200;
+	--sl-color-gray-6: #172e00;
+	--sl-color-black: #0d1d00;
+}
+/* Light mode colors. */
+:root[data-theme='light'] {
+	--sl-color-accent-low: #cedcc4;
+	--sl-color-accent: #487c09;
+	--sl-color-accent-high: #233a0f;
+	--sl-color-white: #0d1d00;
+	--sl-color-gray-1: #172e00;
+	--sl-color-gray-2: #234200;
+	--sl-color-gray-3: #396600;
+	--sl-color-gray-4: #5da100;
+	--sl-color-gray-5: #a9d08d;
+	--sl-color-gray-6: #d9fac3;
+	--sl-color-gray-7: #ecfde1;
+	--sl-color-black: #ffffff;
+}

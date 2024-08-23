@@ -3,19 +3,30 @@
 /** @type {import("@fluidframework/build-tools").IFluidBuildConfig} */
 const config = {
 	repoPackages: {
-		main: {
+		client: {
 			directory: "",
 			ignoredDirs: [],
 			defaultInterdependencyRange: "workspace:^",
 		},
 	},
 	tasks: {
+		api: {
+			dependsOn: ["^compile", "compile"],
+		},
 		build: {
-			dependsOn: ["^build", "compile", "docs", "manifest", "readme"],
+			dependsOn: [
+				"^build",
+				"compile",
+				"api",
+				"docs",
+				"generate",
+				"manifest",
+				"readme",
+			],
 			script: false,
 		},
 		docs: {
-			dependsOn: ["compile"],
+			dependsOn: ["^compile", "compile", "api"],
 		},
 		clean: {
 			before: ["*"],
@@ -30,7 +41,7 @@ const config = {
 			dependsOn: ["^compile"],
 		},
 		full: {
-			dependsOn: ["check", "build", "lint", "test"],
+			dependsOn: ["check", "build", "api", "docs", "lint", "test"],
 			script: false,
 		},
 		lint: {
@@ -39,7 +50,7 @@ const config = {
 		manifest: ["compile"],
 		readme: ["compile"],
 		test: {
-			dependsOn: ["build"],
+			dependsOn: ["compile"],
 		},
 	},
 };

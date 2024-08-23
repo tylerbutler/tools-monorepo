@@ -8,3 +8,13 @@ oclif.manifest.json
 package-lock.json
 yarn.lock
 .require-email.json
+
+
+# fluid-build build files
+*.done.build.log
+
+# netlify cache
+.netlify
+
+# astro generated types
+.astro
