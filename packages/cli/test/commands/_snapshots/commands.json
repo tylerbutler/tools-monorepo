@@ -130,7 +130,8 @@
     },
     {
         "alias": [
-            "sort:tsconfigs"
+            "sort:tsconfigs",
+            "sort-tsconfigs"
         ],
         "command": "sort:tsconfig",
         "flagAliases": [],
@@ -139,8 +140,7 @@
         ],
         "flags": [
             "quiet",
-            "verbose",
-            "write"
+            "verbose"
         ],
         "plugin": "@tylerbu/cli"
     },
