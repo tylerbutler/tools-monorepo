@@ -4,11 +4,15 @@
 
 ```ts
 
+import { run } from '@oclif/core';
+
 // @beta
 export function isSorted(tsconfig: string): boolean;
 
 // @beta
 export type OrderList = string[];
+
+export { run }
 
 // @beta
 export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;

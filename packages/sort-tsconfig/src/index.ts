@@ -4,4 +4,6 @@ export {
 	type OrderList,
 	type SortTsconfigResult,
 	TsConfigSorter,
-} from "./tsconfig.js";
+} from "./api.js";
+
+export { run } from "@oclif/core";

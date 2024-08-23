@@ -1,13 +1,45 @@
 import { existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { Args, type Command, Flags } from "@oclif/core";
-import { BaseCommand } from "@tylerbu/cli-api";
+import { CommandWithConfig } from "@tylerbu/cli-api";
 import { globby } from "globby";
-import { isSorted, sortTsconfigFile } from "../tsconfig.js";
+import { isSorted, sortTsconfigFile } from "../api.js";
+import type { SortTsconfigConfiguration } from "../config.js";
 
-export default class SortTsconfigCommand extends BaseCommand<
-	typeof SortTsconfigCommand
+// type tsconfigArgProps = { startsWith: string; length: number };
+
+// const packageOrReleaseGroupArg = Args.custom({
+// 	name: "package_or_release_group",
+// 	required: true,
+// 	description: "The name of a package or a release group.",
+// });
+
+const tsconfigArg = Args.custom<string[]>({
+	description:
+		"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
+	required: true,
+	parse: async (input): Promise<string[]> => {
+		const patterns: string[] = [];
+		if (existsSync(input)) {
+			const stats = statSync(input);
+			if (stats.isDirectory()) {
+				patterns.push(path.join(input, "tsconfig.json"));
+			}
+		} else {
+			patterns.push(input);
+		}
+
+		const results = await globby(patterns, { gitignore: true });
+		return results ?? [];
+	},
+});
+
+export default class SortTsconfigCommand extends CommandWithConfig<
+	typeof SortTsconfigCommand,
+	SortTsconfigConfiguration
 > {
+	static override readonly aliases = ["sort:tsconfigs", "sort-tsconfigs"];
+
 	static override readonly summary =
 		"Sorts a tsconfig file in place, or check that one is sorted.";
 
@@ -15,25 +47,13 @@ export default class SortTsconfigCommand extends BaseCommand<
 		"By default, the command will only check if a tsconfig is sorted. Use the --write flag to write the sorted contents back to the file.";
 
 	static override readonly args = {
-		tsconfig: Args.custom<string[]>({
-			description:
-				"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
-			required: true,
-			parse: async (input) => {
-				const patterns: string[] = [];
-				if (existsSync(input)) {
-					const stats = statSync(input);
-					if (stats.isDirectory()) {
-						patterns.push(path.join(input, "tsconfig.json"));
-					}
-				} else {
-					patterns.push(input);
-				}
-
-				const results = await globby(patterns, { gitignore: true });
-				return results ?? [];
-			},
-		})(),
+		// tsconfig: Args.string({
+		// 	description:
+		// 		"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
+		// 	required: true,
+		// }),
+		tsconfig: tsconfigArg(),
+		...CommandWithConfig.args,
 	};
 
 	static override readonly flags = {
@@ -42,8 +62,8 @@ export default class SortTsconfigCommand extends BaseCommand<
 				"Write the sorted contents back to the file. Without this flag, the command only checks that the file is sorted.",
 			default: false,
 		}),
-		...BaseCommand.flags,
-	};
+		...CommandWithConfig.flags,
+	} as const;
 
 	static override readonly examples: Command.Example[] = [
 		{
@@ -62,6 +82,21 @@ export default class SortTsconfigCommand extends BaseCommand<
 				"<%= config.bin %> <%= command.id %> 'packages/**/tsconfig.json' --write",
 		},
 	];
+
+	private async parseArg(input: string): Promise<string[]> {
+		const patterns: string[] = [];
+		if (existsSync(input)) {
+			const stats = statSync(input);
+			if (stats.isDirectory()) {
+				patterns.push(path.join(input, "tsconfig.json"));
+			}
+		} else {
+			patterns.push(input);
+		}
+
+		const results = await globby(patterns, { gitignore: true });
+		return results ?? [];
+	}
 
 	// biome-ignore lint/suspicious/useAwait: inherited method
 	async run(): Promise<void> {

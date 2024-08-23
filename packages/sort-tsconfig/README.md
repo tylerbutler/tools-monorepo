@@ -38,6 +38,10 @@ DESCRIPTION
   By default, the command will only check if a tsconfig is sorted. Use the --write flag to write the sorted contents
   back to the file.
 
+ALIASES
+  $ sort-tsconfig sort:tsconfigs
+  $ sort-tsconfig sort-tsconfigs
+
 EXAMPLES
   Check if the tsconfig.json file in the current working directory is sorted.
 
