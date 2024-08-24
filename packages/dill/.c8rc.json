@@ -1,0 +1,14 @@
+{
+	"all": true,
+	"include": ["esm/**", "src/**"],
+	"cache-dir": "_temp/.c8-cache",
+	"temp-directory": "_temp/.c8-temp",
+	"report-dir": "_temp/c8",
+	"exclude": [
+		"**/{test,tests}/**",
+		"**/**.{test,tests}.{js,jsx,ts,tsx}",
+		"**/*test_index.js",
+		"dist/.cache/*",
+		"dist/main.js"
+	]
+}
