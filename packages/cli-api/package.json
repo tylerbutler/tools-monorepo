@@ -55,7 +55,7 @@
 		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.12.7",
 		"@types/semver": "^7.5.8",
-		"chai": "^4.4.1",
+		"chai": "^5.1.1",
 		"concurrently": "^8.2.2",
 		"fs-extra": "^11.2.0",
 		"mocha": "^10.4.0",

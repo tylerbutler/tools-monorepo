@@ -12,7 +12,7 @@ import {
 	it,
 } from "mocha";
 import handler from "serve-handler";
-import { temporaryDirectory, temporaryFile } from "tempy";
+import { temporaryDirectory } from "tempy";
 
 import { testDataPath, testUrls } from "../common.js";
 

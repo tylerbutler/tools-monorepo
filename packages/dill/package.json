@@ -56,8 +56,8 @@
 		"sort-package-json": "sort-package-json",
 		"start": "serve ./test/data --listen 8080",
 		"test": "npm run test:vitest",
-		"test:coverage": "vitest run test --coverage && c8 mocha --forbid-only \"test/**/*.mocha-test.ts\"",
-		"test:mocha": "mocha --forbid-only \"test/**/*.mocha-test.ts\"",
+		"test:coverage": "vitest run test --coverage && c8 mocha --forbid-only \"test/**/*.mochatest.ts\"",
+		"test:mocha": "mocha --forbid-only \"test/**/*.mochatest.ts\"",
 		"test:snapshots": "npm run update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
