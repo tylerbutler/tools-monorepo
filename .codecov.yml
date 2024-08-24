@@ -10,12 +10,12 @@ coverage:
         target: auto
         threshold: 10%
         base: auto 
-      dill:
-        paths:
-          - packages/dill/**
-      fundamentals:
-        paths:
-          - packages/fundamentals/**
+      # dill:
+      #   paths:
+      #     - packages/dill/**
+      # fundamentals:
+      #   paths:
+      #     - packages/fundamentals/**
     patch:
       default:
         informational: true
