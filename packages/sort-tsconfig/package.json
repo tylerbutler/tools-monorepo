@@ -91,6 +91,7 @@
 		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.12.7",
 		"@types/tmp": "^0.2.6",
+		"@vitest/coverage-v8": "^2.0.5",
 		"chai": "^4.4.1",
 		"lefthook": "^1.6.11",
 		"mocha": "^10.4.0",

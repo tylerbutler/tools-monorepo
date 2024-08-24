@@ -629,6 +629,9 @@ importers:
       '@types/tmp':
         specifier: ^0.2.6
         version: 0.2.6
+      '@vitest/coverage-v8':
+        specifier: ^2.0.5
+        version: 2.0.5(vitest@2.0.5(@types/node@20.16.0)(terser@5.19.2))
       chai:
         specifier: ^4.4.1
         version: 4.4.1
