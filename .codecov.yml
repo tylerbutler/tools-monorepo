@@ -11,6 +11,9 @@ coverage:
       fundamentals:
         paths:
           - packages/fundamentals/**
+      sort-tsconfig:
+        paths:
+          - packages/sort-tsconfig/**
 component_management:
   default_rules: # default rules that will be inherited by all components
     statuses:
@@ -27,3 +30,7 @@ component_management:
       name: fundamentals
       paths:
         - packages/fundamentals/**
+    - component_id: sort-tsconfig
+      name: sort-tsconfig
+      paths:
+        - packages/sort-tsconfig/**

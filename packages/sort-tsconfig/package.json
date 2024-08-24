@@ -51,10 +51,15 @@
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
-		"readme": "oclif readme --no-aliases",
+		"readme": "concurrently npm:readme:main",
+		"readme:main": "oclif readme --no-aliases",
 		"sort-package-json": "sort-package-json",
 		"start": "serve ./test/data --listen 8080",
-		"test": "vitest run \"test\""
+		"test": "npm run test:vitest",
+		"test:coverage": "vitest run test --coverage",
+		"test:snapshots": "npm run update:test-snapshots",
+		"test:vitest": "vitest run test",
+		"update:test-snapshots": "vitest run test -u"
 	},
 	"oclif": {
 		"bin": "sort-tsconfig",
