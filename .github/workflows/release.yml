@@ -15,6 +15,10 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # ratchet:actions/checkout@v4
+        with:
+          token: ${{ secrets.CHANGESET_TOKEN }}
+          fetch-depth: 0
+
       - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # ratchet:pnpm/action-setup@v4
       - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # ratchet:actions/setup-node@v4
         with:
