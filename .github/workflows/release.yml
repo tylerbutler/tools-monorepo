@@ -54,12 +54,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CHANGESET_TOKEN }}
 
       - name: Create Version Tracking PR
-        if: steps.changesets.outputs.published != 'true'
+        if: steps.changesets.outputs.published != true
         run: |
+          echo "Published: '${{ steps.changesets.outputs.published }}'"
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
       - name: Publish to npm
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.changesets.outputs.published == true
         run: |
+          echo "Published: '${{ steps.changesets.outputs.published }}'"
           echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
