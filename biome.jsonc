@@ -23,7 +23,7 @@
 	},
 	"formatter": {
 		"enabled": true,
-		"ignore": ["**/_snapshots/**"],
+		"ignore": ["**/__snapshots__/**"],
 		"formatWithErrors": true,
 		"indentStyle": "tab",
 		"lineEnding": "lf",
