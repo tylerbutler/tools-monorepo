@@ -1,7 +1,7 @@
 import type { OrderList } from "./api.js";
 
 /**
- * COnfiguration for the sort-tsconfig command.
+ * Configuration for the sort-tsconfig command.
  */
 export interface SortTsconfigConfiguration {
 	/**
