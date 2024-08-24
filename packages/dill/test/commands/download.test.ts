@@ -5,7 +5,6 @@ import { fs, vol } from "memfs";
 import handler from "serve-handler";
 import {
 	afterAll,
-	afterEach,
 	beforeAll,
 	beforeEach,
 	describe,
@@ -57,7 +56,12 @@ describe("download command", () => {
 			import.meta.url,
 			// "../../../esm",
 		);
-		const { stdout, stderr, error, result } = await runCommand(
+		const {
+			stdout,
+			// stderr,
+			// error,
+			// result
+		} = await runCommand(
 			[
 				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
 				// ".",
