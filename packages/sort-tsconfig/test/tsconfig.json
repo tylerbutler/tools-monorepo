@@ -6,9 +6,10 @@
 		"declarationMap": false,
 		"rootDir": "./",
 		"outDir": "../esm/test",
+		"target": "ES2022",
 		"types": ["node"],
 		"skipLibCheck": true,
-		// "noEmit": true,
+		"noEmit": true,
 	},
 	"references": [
 		{
