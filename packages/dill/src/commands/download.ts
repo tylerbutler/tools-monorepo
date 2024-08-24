@@ -1,6 +1,6 @@
 import { Args, Flags } from "@oclif/core";
 import { BaseCommand } from "@tylerbu/cli-api";
-import { type DillOptions, download } from "../api.js";
+import { type DillOptions, type DownloadResponse, download } from "../api.js";
 
 export default class DownloadCommand extends BaseCommand<
 	typeof DownloadCommand
@@ -43,12 +43,11 @@ export default class DownloadCommand extends BaseCommand<
 
 	// static override readonly examples = ["<%= config.bin %> <%= command.id %>"];
 
-	public async run(): Promise<void> {
+	public async run(): Promise<DownloadResponse> {
 		const { url } = this.args;
 		const { extract, out, filename } = this.flags;
 
-		console.debug("Download command invoked!");
-		this.log("Download command invoked!");
+		this.log(`Downloading ${url}`);
 
 		const options: DillOptions = {
 			extract,
@@ -56,7 +55,7 @@ export default class DownloadCommand extends BaseCommand<
 			filename,
 		};
 
-		await download(url, options);
+		return await download(url, options);
 	}
 }
 

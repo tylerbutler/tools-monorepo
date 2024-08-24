@@ -57,6 +57,7 @@
 		"start": "serve ./test/data --listen 8080",
 		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",
+		"test:mocha": "mocha --forbid-only \"test/**/*.mocha-test.ts\"",
 		"test:snapshots": "npm run update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
@@ -110,7 +111,7 @@
 		"@types/tmp": "^0.2.6",
 		"@types/whatwg-mimetype": "^3.0.2",
 		"@vitest/coverage-v8": "^2.0.5",
-		"chai": "^4.4.1",
+		"chai": "^5.1.1",
 		"lefthook": "^1.6.11",
 		"memfs": "^4.11.1",
 		"mocha": "^10.4.0",

@@ -1,5 +1,5 @@
 import { runCommand } from "@oclif/test";
-import { expect } from "chai";
+import { describe, expect, it } from "vitest";
 
 describe("hello world", () => {
 	it("runs hello world cmd", async () => {

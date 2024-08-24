@@ -21,8 +21,13 @@
 		"lint": "eslint . --ext .ts",
 		"prepack": "oclif manifest && oclif readme",
 		"postpack": "shx rm -f oclif.manifest.json",
-		"test": "mocha --forbid-only \"test/**/*.test.ts\"",
+		"test": "npm run test:vitest",
 		"posttest": "pnpm run lint",
+		"test:coverage": "vitest run test --coverage",
+		"test:mocha": "mocha --forbid-only \"test/**/*.test.ts\"",
+		"test:snapshots": "npm run update:test-snapshots",
+		"test:vitest": "vitest run test",
+		"update:test-snapshots": "vitest run test -u",
 		"version": "oclif readme && git add README.md"
 	},
 	"oclif": {
@@ -57,7 +62,8 @@
 		"oclif": "^4.13.5",
 		"shx": "^0.3.3",
 		"ts-node": "^10.9.2",
-		"typescript": "~5.5.4"
+		"typescript": "~5.5.4",
+		"vitest": "2.0.5"
 	},
 	"engines": {
 		"node": ">=18.0.0"

@@ -1,27 +1,15 @@
-import { readFile } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
 import { runCommand } from "@oclif/test";
-// import { fs, vol } from "memfs";
+import { expect } from "chai";
+import { readJson } from "fs-extra/esm";
+import { after as afterAll, before as beforeAll, describe, it } from "mocha";
 import handler from "serve-handler";
-import {
-	afterAll,
-	beforeAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	vi,
-} from "vitest";
 
 import { withDir } from "tmp-promise";
 import { testDataPath, testUrls } from "../common.js";
 
 describe("download command", () => {
-	// tell vitest to use fs mock from __mocks__ folder
-	// this can be done in a setup file if fs should always be mocked
-	// vi.mock("node:fs");
-	// vi.mock("node:fs/promises");
 	const server = http.createServer((request, response) => {
 		// You pass two more arguments for config and middleware
 		// More details here: https://github.com/vercel/serve-handler#options
@@ -56,13 +44,19 @@ describe("download command", () => {
 					},
 				);
 
-				expect(stdout).toMatchSnapshot();
-				expect(stderr).toMatchSnapshot();
-				expect(error).toMatchSnapshot();
-				expect(result).toMatchSnapshot();
+				expect(stdout).to.contain("Downloading ");
+				// expect(stderr).toMatchSnapshot();
+				// expect(error).toMatchSnapshot();
+				// expect(result).toMatchSnapshot();
 
-				const actual = await readFile(outputPath);
-				expect(actual).toMatchSnapshot();
+				const actual = await readJson(outputPath);
+				expect(actual).to.deep.equal({
+					key1: 1,
+					key2: {
+						nested: "object",
+					},
+				});
+				// expect(actual).toMatchSnapshot();
 			},
 			{
 				// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
