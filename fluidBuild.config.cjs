@@ -17,6 +17,7 @@ const config = {
 			dependsOn: [
 				"^build",
 				"compile",
+				"build:test",
 				"api",
 				"docs",
 				"generate",

@@ -38,6 +38,7 @@
 	"scripts": {
 		"api": "api-extractor run --local",
 		"build": "fluid-build . --task build",
+		"build:test": "tsc --project ./test/tsconfig.json",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/_snapshots/commands.json",
@@ -58,6 +59,7 @@
 		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "npm run update:test-snapshots",
+		"test:mocha": "mocha --recursive \"esm/test/**/*.mocha-test.*js\" --exit",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
 	},
@@ -94,6 +96,7 @@
 		"@vitest/coverage-v8": "^2.0.5",
 		"chai": "^4.4.1",
 		"lefthook": "^1.6.11",
+		"memfs": "^4.11.1",
 		"mocha": "^10.4.0",
 		"oclif": "^4.14.22",
 		"rimraf": "^6.0.0",

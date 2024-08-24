@@ -3,7 +3,7 @@ import path from "node:path";
 import { Args, type Command, Flags } from "@oclif/core";
 import { CommandWithConfig } from "@tylerbu/cli-api";
 import { globby } from "globby";
-import { isSorted, sortTsconfigFile } from "../api.js";
+import { isSorted, sortTsconfigFile } from "sort-tsconfig";
 import type { SortTsconfigConfiguration } from "../config.js";
 
 export default class SortTsconfigCommand extends CommandWithConfig<
@@ -67,21 +67,6 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 				"<%= config.bin %> <%= command.id %> 'packages/**/tsconfig.json' --write",
 		},
 	];
-
-	private async parseArg(input: string): Promise<string[]> {
-		const patterns: string[] = [];
-		if (existsSync(input)) {
-			const stats = statSync(input);
-			if (stats.isDirectory()) {
-				patterns.push(path.join(input, "tsconfig.json"));
-			}
-		} else {
-			patterns.push(input);
-		}
-
-		const results = await globby(patterns, { gitignore: true });
-		return results ?? [];
-	}
 
 	// biome-ignore lint/suspicious/useAwait: inherited method
 	async run(): Promise<void> {
