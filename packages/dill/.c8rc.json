@@ -4,6 +4,7 @@
 	"cache-dir": "_temp/.c8-cache",
 	"temp-directory": "_temp/.c8-temp",
 	"report-dir": ".coverage/c8",
+	"reporter": ["cobertura", "text", "text-summary"],
 	"exclude": [
 		"**/{test,tests}/**",
 		"**/**.{test,tests}.{js,jsx,ts,tsx}",
