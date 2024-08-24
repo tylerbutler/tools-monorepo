@@ -1,6 +1,6 @@
 # dill - download and decompress gzipped tar files with a CLI and API
 
-![An anthropomorphic dill pickle in a doorman's uniform](https://tylerbutlerpublic.blob.core.windows.net/public-storage/dill-logo.jpg)
+![An anthropomorphic dill pickle in a doorman's uniform](https://raw.githubusercontent.com/tylerbutler/tools-monorepo/main/packages/dill-docs/src/assets/dill-logo.svg)
 
 **dill** is a CLI app to download gzipped files and optionally decompress their contents. It also provides a simple programmatic
 API.

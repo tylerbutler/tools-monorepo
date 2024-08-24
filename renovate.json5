@@ -65,24 +65,38 @@
 			"matchUpdateTypes": ["major"],
 		},
 		{
+			// Ignore patch updates for all dependencies
+			"matchUpdateTypes": ["patch"],
+			"enabled": false,
+		},
+		{
 			// Group oclif dependencies together
 			"groupName": "oclif",
 			"matchPackagePatterns": ["^oclif", "^@oclif/"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
 		},
 		{
 			// Group Fluid Framework dependencies together
-			"groupName": "fluid-framework",
+			"groupName": "fluid framework packages",
 			"matchPackagePatterns": ["^@fluid", "^fluid-framework"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
+		},
+		{
+			"groupName": "typedoc",
+			"matchPackagePatterns": ["^typedoc"],
+			"matchUpdateTypes": ["minor"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
 		},
 		{
 			// TypeScript updates should be done separately
 			"groupName": "typescript",
 			"matchPackagePatterns": ["^typescript"],
 			"matchUpdateTypes": ["minor"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
 		},
 		{
 			// Group dependencies except oclif together
-			"groupName": "dependencies",
+			"groupName": "all other dependencies",
 			"matchDepTypes": ["devDependencies", "dependencies"],
 			"matchUpdateTypes": ["minor"],
 			"excludePackagePatterns": [

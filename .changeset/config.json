@@ -1,11 +1,14 @@
 {
 	"$schema": "../node_modules/@changesets/config/schema.json",
-	"changelog": "@changesets/cli/changelog",
+	"changelog": [
+		"changesets-changelog-clean",
+		{ "repo": "tylerbutler/tools-monorepo" }
+	],
 	"commit": false,
 	"fixed": [],
 	"linked": [],
 	"access": "restricted",
 	"baseBranch": "main",
 	"updateInternalDependencies": "minor",
-	"ignore": []
+	"ignore": ["dill-docs"]
 }
