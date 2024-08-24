@@ -1,19 +1,14 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`download command > downloads json 1`] = `
+exports[`download command > downloads json 1`] = `""`;
+
+exports[`download command > downloads json 2`] = `""`;
+
+exports[`download command > downloads json 3`] = `
 {
-  "data": [
-    104,
-    101,
-    108,
-    108,
-    111,
-    32,
-    100,
-    105,
-    114,
-    49,
-  ],
-  "type": "Buffer",
+  "code": "ERR_UNKNOWN_FILE_EXTENSION",
+  "message": "Unknown file extension ".ts" for /Volumes/Code/tools-monorepo/packages/dill/src/commands/download.ts",
 }
 `;
+
+exports[`download command > downloads json 4`] = `undefined`;

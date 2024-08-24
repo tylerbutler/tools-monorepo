@@ -28,15 +28,15 @@ as in CI/CD.
 # Usage
 
 <!-- commands -->
-* [`dill download URL`](#dill-download-url)
+* [`dill URL`](#dill-url)
 
-## `dill download URL`
+## `dill URL`
 
 Downloads a file from a URL and optionally extracts its contents.
 
 ```
 USAGE
-  $ dill download URL [-v | --quiet] [-o <value>] [--filename <value> | -e]
+  $ dill  URL [-v | --quiet] [-o <value>] [--filename <value> | -e]
 
 ARGUMENTS
   URL  URL of the file to download.
@@ -53,6 +53,4 @@ LOGGING FLAGS
 DESCRIPTION
   Downloads a file from a URL and optionally extracts its contents.
 ```
-
-_See code: [src/commands/download.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/commands/download.ts)_
 <!-- commandsstop -->
