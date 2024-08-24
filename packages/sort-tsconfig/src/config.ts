@@ -7,7 +7,7 @@ export interface SortTsconfigConfiguration {
 	/**
 	 * An array of configuration keys in the order that they should be sorted.
 	 *
-	 * @defaultValue
+	 * @defaultValue - {@link defaultSortOrder}
 	 */
 	order: OrderList;
 }

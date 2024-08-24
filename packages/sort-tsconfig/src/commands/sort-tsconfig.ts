@@ -6,34 +6,6 @@ import { globby } from "globby";
 import { isSorted, sortTsconfigFile } from "../api.js";
 import type { SortTsconfigConfiguration } from "../config.js";
 
-// type tsconfigArgProps = { startsWith: string; length: number };
-
-// const packageOrReleaseGroupArg = Args.custom({
-// 	name: "package_or_release_group",
-// 	required: true,
-// 	description: "The name of a package or a release group.",
-// });
-
-const tsconfigArg = Args.custom<string[]>({
-	description:
-		"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
-	required: true,
-	parse: async (input): Promise<string[]> => {
-		const patterns: string[] = [];
-		if (existsSync(input)) {
-			const stats = statSync(input);
-			if (stats.isDirectory()) {
-				patterns.push(path.join(input, "tsconfig.json"));
-			}
-		} else {
-			patterns.push(input);
-		}
-
-		const results = await globby(patterns, { gitignore: true });
-		return results ?? [];
-	},
-});
-
 export default class SortTsconfigCommand extends CommandWithConfig<
 	typeof SortTsconfigCommand,
 	SortTsconfigConfiguration
@@ -47,12 +19,25 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		"By default, the command will only check if a tsconfig is sorted. Use the --write flag to write the sorted contents back to the file.";
 
 	static override readonly args = {
-		// tsconfig: Args.string({
-		// 	description:
-		// 		"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
-		// 	required: true,
-		// }),
-		tsconfig: tsconfigArg(),
+		tsconfig: Args.custom<string[]>({
+			description:
+				"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
+			required: true,
+			parse: async (input): Promise<string[]> => {
+				const patterns: string[] = [];
+				if (existsSync(input)) {
+					const stats = statSync(input);
+					if (stats.isDirectory()) {
+						patterns.push(path.join(input, "tsconfig.json"));
+					}
+				} else {
+					patterns.push(input);
+				}
+
+				const results = await globby(patterns, { gitignore: true });
+				return results ?? [];
+			},
+		})(),
 		...CommandWithConfig.args,
 	};
 

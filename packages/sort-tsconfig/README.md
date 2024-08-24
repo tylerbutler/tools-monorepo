@@ -1,9 +1,9 @@
-# sort-tsconfig - keep your tsconfigs clean and tidy.
+# sort-tsconfig - keep your tsconfigs clean and tidy
 
-sort-tsconfig is a CLI app sort tsconfig files. It also provides a simple programmatic API.
+sort-tsconfig is a CLI app to sort tsconfig files. It also provides a simple programmatic API.
 
 <!-- toc -->
-* [sort-tsconfig - keep your tsconfigs clean and tidy.](#sort-tsconfig---keep-your-tsconfigs-clean-and-tidy)
+* [sort-tsconfig - keep your tsconfigs clean and tidy](#sort-tsconfig---keep-your-tsconfigs-clean-and-tidy)
 * [Usage](#usage)
 * [API](#api)
 <!-- tocstop -->
