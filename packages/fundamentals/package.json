@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/fundamentals",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Fundamental functions and classes that I often need in my projects. Zero dependencies.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -66,7 +66,9 @@
 		"vitest": "^2.0.0"
 	},
 	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
-	"engines": { "node": ">=18.0.0" },
+	"engines": {
+		"node": ">=18.0.0"
+	},
 	"fluidBuild": {
 		"tasks": {
 			"docs:api:git": []

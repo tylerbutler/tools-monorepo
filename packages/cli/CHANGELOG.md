@@ -1,5 +1,24 @@
 # @tylerbu/cli
 
+## 0.3.1
+
+### Patch Changes
+
+- Fix homepage URL _[`#99`](https://github.com/tylerbutler/tools-monorepo/pull/99) [`0654323`](https://github.com/tylerbutler/tools-monorepo/commit/06543231947fa5267863e5467d5837a51cf3d44b) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`0654323`](https://github.com/tylerbutler/tools-monorepo/commit/06543231947fa5267863e5467d5837a51cf3d44b)
+
+</small>
+
+- `@tylerbu/cli-api@0.3.1`
+- `dill-cli@0.1.1`
+
+</details>
+
 ## 0.3.0
 
 ### Minor Changes
