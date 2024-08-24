@@ -134,12 +134,8 @@
         ],
         "command": "sort:tsconfig",
         "flagAliases": [],
-        "flagChars": [
-            "v"
-        ],
+        "flagChars": [],
         "flags": [
-            "quiet",
-            "verbose",
             "write"
         ],
         "plugin": "@tylerbu/cli"
