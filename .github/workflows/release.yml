@@ -59,9 +59,22 @@ jobs:
           echo "Published: '${{ steps.changesets.outputs.published }}'"
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
+
       - name: Publish to npm
         if: steps.changesets.outputs.published == true
         run: |
           echo "Published: '${{ steps.changesets.outputs.published }}'"
           echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create table
+        if: steps.changesets.outputs.published == true
+        id: create-table
+        uses: parkerbxyz/json-to-markdown-table@5f6bf548102e18fcde33fa89f9b5e5d2c40745ee # ratchet:parkerbxyz/json-to-markdown-table@v1
+        with:
+          json: ${{ steps.changesets.outputs.publishedPackages }}
+
+      - name: Add table to report
+        if: steps.changesets.outputs.published == true
+        run: |
+          echo "${{ steps.create-table.outputs.table }}" >> $GITHUB_STEP_SUMMARY
