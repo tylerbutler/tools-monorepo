@@ -11,6 +11,7 @@
 		"ignore": [
 			// build output
 			"_temp/**",
+			".coverage/**",
 			"built/**",
 			"dist/**",
 			"esm/**",
