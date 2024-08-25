@@ -498,6 +498,9 @@ importers:
       sort-package-json:
         specifier: 2.10.0
         version: 2.10.0
+      tempy:
+        specifier: ^3.1.0
+        version: 3.1.0
       typedoc:
         specifier: ^0.26.5
         version: 0.26.5(typescript@5.5.4)
