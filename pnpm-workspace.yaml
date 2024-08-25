@@ -1,3 +1,18 @@
 packages:
   - packages/*
   - config
+
+catalogs:
+  # Can be referenced through "catalog:vitest"
+  vitest:
+    "@vitest/coverage-v8": "^2.0.5"
+    vitest: "^2.0.5"
+
+  # Can be referenced through "catalog:mocha"
+  mocha:
+    "@types/chai": "^4.3.16"
+    "@types/mocha": "^10.0.6"
+    "@types/node": "^20.12.7"
+    "c8": "^10.1.2"
+    "chai": "^5.1.1"
+    "mocha": "^10.4.0"
