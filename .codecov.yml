@@ -1,0 +1,37 @@
+comment:
+  layout: "header, diff, components, files, footer"
+  hide_project_coverage: false
+  require_changes: true
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 10%
+        base: auto 
+      # dill:
+      #   paths:
+      #     - packages/dill/**
+      # fundamentals:
+      #   paths:
+      #     - packages/fundamentals/**
+    patch:
+      default:
+        informational: true
+
+component_management:
+  default_rules: # default rules that will be inherited by all components
+    statuses:
+      - type: project # in this case every component that doesn't have a status defined will have a project type one
+        branches:
+          - "!main"
+  individual_components:
+    - component_id: dill # this is an identifier that should not be changed
+      name: dill # this is a display name, and can be changed freely
+      paths:
+        - packages/dill/**
+    - component_id: fundamentals
+      name: fundamentals
+      paths:
+        - packages/fundamentals/**

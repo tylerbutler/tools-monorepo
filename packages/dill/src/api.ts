@@ -89,7 +89,7 @@ function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
 }
 
 /**
- * A response returned by the {@link download} function.
+ * A response returned by the `download` function.
  */
 export interface DownloadResponse {
 	/**
@@ -100,7 +100,7 @@ export interface DownloadResponse {
 	/**
 	 * The path that the downloaded file(s) were written to.
 	 */
-	writtenTo: string;
+	writtenTo: string | undefined;
 }
 
 /**
@@ -112,7 +112,7 @@ export interface DownloadResponse {
  * @public
  */
 export const download = async (
-	url: URL,
+	url: URL | string,
 	options?: DillOptions,
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: TODO
 ): Promise<DownloadResponse> => {
@@ -162,15 +162,15 @@ export const download = async (
 			? decompress(file)
 			: file;
 
-	const savePath: string = noFile
-		? downloadDir
-		: path.join(downloadDir, filename);
+	let writtenTo: string | undefined;
 	if (extract) {
-		await extractTarball(decompressed, downloadDir);
+		writtenTo = noFile ? undefined : downloadDir;
+		await extractTarball(decompressed, writtenTo);
 	} else if (!noFile) {
-		await writeFile(savePath, decompressed);
+		writtenTo = path.join(downloadDir, filename);
+		await writeFile(writtenTo, decompressed);
 	}
-	return { data: decompressed, writtenTo: savePath };
+	return { data: decompressed, writtenTo };
 };
 
 async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
@@ -267,11 +267,10 @@ export async function extractTarball(
 	if (fileType?.ext !== "tar") {
 		console.warn("Didn't identify the file as a tarball.");
 		if (fileType === undefined) {
-			console.warn("Couldn't identify a file type.");
-		} else {
-			console.warn(
-				`Identified a ${fileType.ext} file, mime-type: ${fileType.mime}.`,
-			);
+			throw new Error("Couldn't identify a file type.");
+		}
+		if (UNSUPPORTED_ARCHIVE_EXTENSIONS.has(fileType.ext)) {
+			throw new Error(`Unsupported filetype: ${fileType.ext}.`);
 		}
 	}
 	const data = untar(fileContent);

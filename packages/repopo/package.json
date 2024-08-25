@@ -1,10 +1,10 @@
 {
-	"name": "@tylerbu/repopo",
-	"version": "0.0.1",
+	"name": "repopo",
+	"version": "0.1.1",
 	"private": true,
 	"description": "Enforce policies on all or some of the files in a git repository.",
 	"keywords": ["policy", "ci"],
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/repopo/",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
@@ -37,7 +37,7 @@
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
-		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/_snapshots/commands.json",
+		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
@@ -63,7 +63,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluidframework/build-tools": "^0.42.0",
+		"@fluidframework/build-tools": "^0.43.0",
 		"@oclif/core": "^4.0.4",
 		"@oclif/plugin-help": "^6.2.1",
 		"@tylerbu/cli-api": "workspace:^",

@@ -1,50 +1,51 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { http, HttpResponse } from "msw";
-import { assert } from "vitest";
 
 import { testDataPath } from "../common";
+
+const fileName = path.join(testDataPath, "test0.json");
+const file = await readFile(fileName);
 
 /**
  * HTTP handlers for tests. These handlers are used in a Mock Service Worker instance to respond to requests.
  */
 export const testHttpHandlers = [
-	http.get("http://localhost/files/:file/:test", async ({ params }) => {
+	http.get("http://localhost/tests/:test", ({ params }) => {
 		// All request path params are provided in the "params"
 		// argument of the response resolver.
-		const { file: fileName, test } = params;
-		assert(typeof fileName === "string");
-		assert(typeof test === "string");
-
-		const file = await readFile(path.join(testDataPath, fileName));
-		if (test === "content-disposition") {
-			// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
-			// When both filename and filename* are present in a single header field value, filename* is preferred over
-			// filename when both are understood. It's recommended to include both for maximum compatibility
-			// response.headers.append(
-			// 	"Content-Disposition",
-			// 	'inline; filename*="remote-filename.json"',
-			// );
-			return new HttpResponse(file, {
-				headers: {
-					"Content-Type": "application/json",
-					"Content-Disposition": 'inline; filename="remote-filename.json"',
-				},
-			});
+		const { test } = params;
+		switch (test) {
+			case "content-disposition": {
+				return testContentDispositionHeader(file);
+			}
+			case "content-disposition-undefined": {
+				return testContentDispositionHeaderUndefined(file);
+			}
+			default: {
+				throw new Error(`Unknown test case name: ${test}`);
+			}
 		}
-
-		// Default response is just the file.
-		const response = new HttpResponse(file);
-		return response;
-	}),
-
-	http.get("http://localhost/files/:file", async ({ params }) => {
-		// All request path params are provided in the "params"
-		// argument of the response resolver.
-		const { file: fileName } = params;
-		assert(typeof fileName === "string");
-
-		const file = await readFile(path.join(testDataPath, fileName));
-		return new HttpResponse(file);
 	}),
 ];
+
+function testContentDispositionHeader(file: Buffer): HttpResponse {
+	return new HttpResponse(file, {
+		headers: {
+			"Content-Type": "application/json",
+			"Content-Disposition": 'inline; filename="remote-filename.json"',
+		},
+	});
+}
+
+function testContentDispositionHeaderUndefined(file: Buffer): HttpResponse {
+	return new HttpResponse(
+		file,
+		// 	{
+		// 	headers: {
+		// 		"Content-Type": "application/json",
+		// 		"Content-Disposition": 'inline; filename="remote-filename.json"',
+		// 	},
+		// }
+	);
+}

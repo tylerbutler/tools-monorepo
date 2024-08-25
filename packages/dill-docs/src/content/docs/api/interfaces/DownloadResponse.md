@@ -5,7 +5,7 @@ prev: false
 title: "DownloadResponse"
 ---
 
-A response returned by the [download](../../../../../../api/functions/download) function.
+A response returned by the `download` function.
 
 ## Properties
 
@@ -23,7 +23,7 @@ The raw file data.
 
 ### writtenTo
 
-> **writtenTo**: `string`
+> **writtenTo**: `undefined` \| `string`
 
 The path that the downloaded file(s) were written to.
 
