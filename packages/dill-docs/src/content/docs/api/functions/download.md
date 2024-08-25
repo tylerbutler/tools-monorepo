@@ -11,7 +11,7 @@ Downloads a file from a URL.
 
 ## Parameters
 
-• **url**: `string` \| `URL`
+• **url**: `string` \| [`URL`](https://developer.mozilla.org/docs/Web/API/URL)
 
 The URL to download.
 
