@@ -14,7 +14,7 @@ const config = defineConfig({
 			include: ["src/**"],
 			provider: "v8",
 			reporter: ["text", "json", "html"],
-			reportsDirectory: "_temp/coverage",
+			reportsDirectory: ".coverage/vitest",
 		},
 	},
 });
