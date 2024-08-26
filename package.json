@@ -72,7 +72,10 @@
 		"updateConfig": {
 			"ignoreDependencies": ["chai", "@types/node"]
 		},
-		"overrides": {}
+		"overrides": {
+			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
+			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
+		}
 	},
 	"fluidBuild": {
 		"tasks": {
