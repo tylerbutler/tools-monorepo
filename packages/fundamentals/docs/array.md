@@ -60,3 +60,47 @@ console.log(isWordsSorted); // true
 #### Defined in
 
 [array.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L36)
+
+***
+
+### numberSort()
+
+> **numberSort**(`a`, `b`): `number`
+
+**`Internal`**
+
+#### Parameters
+
+• **a**: `number`
+
+• **b**: `number`
+
+#### Returns
+
+`number`
+
+#### Defined in
+
+[array.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L60)
+
+***
+
+### wordSort()
+
+> **wordSort**(`a`, `b`): `number`
+
+**`Internal`**
+
+#### Parameters
+
+• **a**: `string`
+
+• **b**: `string`
+
+#### Returns
+
+`number`
+
+#### Defined in
+
+[array.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L65)
