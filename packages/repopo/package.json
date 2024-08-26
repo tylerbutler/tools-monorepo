@@ -63,7 +63,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluidframework/build-tools": "^0.43.0",
+		"@fluidframework/build-tools": "^0.44.0",
 		"@oclif/core": "^4.0.19",
 		"@oclif/plugin-help": "^6.2.10",
 		"@tylerbu/cli-api": "workspace:^",
