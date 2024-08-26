@@ -1,19 +1,19 @@
-import { copyFile, readFile } from "node:fs/promises";
+// import { copyFile, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runCommand } from "@oclif/test";
+import { expect } from "chai";
 // import { fs as memfs, vol } from "memfs";
-import { expect } from "vitest";
-import { describe, it } from "vitest";
+import { describe, it } from "mocha";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const testFiles = {
-	sorted: "data/tsconfig.sorted.json",
-	unsorted: "data/tsconfig.unsorted.json",
-	unsortedUnknownKeys: "data/tsconfig.unsorted.unknown-keys.json",
-};
+// const testFiles = {
+// 	sorted: "data/tsconfig.sorted.json",
+// 	unsorted: "data/tsconfig.unsorted.json",
+// 	unsortedUnknownKeys: "data/tsconfig.unsorted.unknown-keys.json",
+// };
 
 // const json = {
 // 	"./tsconfig.sorted.json": "1",
@@ -28,12 +28,12 @@ const testFiles = {
 
 describe("sort-tsconfig command", () => {
 	it("no files found", async () => {
-		const { stdout, error } = await runCommand(["."], {
+		const { error } = await runCommand([".", "tsconfig.json"], {
 			root: import.meta.url,
 		});
 		console.debug(error);
-		expect(stdout).to.equal("No files found matching arguments");
-		expect(error?.oclif?.exit).to.be.undefined;
+		expect(error?.message).to.equal("No files found matching arguments");
+		expect(error?.oclif?.exit).to.equal(2);
 	});
 
 	// it("detects unsorted", async () => {

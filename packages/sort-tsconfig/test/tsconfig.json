@@ -2,18 +2,10 @@
 	"extends": "../tsconfig.json",
 	"include": ["test/**/*"],
 	"compilerOptions": {
-		"importHelpers": true,
-		"declarationMap": false,
 		"rootDir": "./",
 		"outDir": "../esm/test",
-		"target": "ES2022",
-		"types": ["node"],
-		"skipLibCheck": true,
 		"noEmit": true,
+		// "skipLibCheck": true,
 	},
-	"references": [
-		{
-			"path": "..",
-		},
-	],
+	"references": [{ "path": ".." }],
 }
