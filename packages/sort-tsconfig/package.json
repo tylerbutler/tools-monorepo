@@ -20,8 +20,8 @@
 			"import": "./esm/index.js"
 		},
 		"./command": {
-			"types": "./esm/commands/sort-tsconfig.d.ts",
-			"import": "./esm/commands/sort-tsconfig.js"
+			"types": "./esm/commands/sort/tsconfig.d.ts",
+			"import": "./esm/commands/sort/tsconfig.js"
 		}
 	},
 	"types": "esm/index.d.ts",
