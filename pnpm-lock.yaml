@@ -69,34 +69,34 @@ importers:
   packages/cli:
     dependencies:
       '@oclif/core':
-        specifier: ^4.0.18
+        specifier: ^4.0.19
         version: 4.0.19
       '@oclif/plugin-autocomplete':
-        specifier: ^3.2.0
-        version: 3.2.0
+        specifier: ^3.2.2
+        version: 3.2.2
       '@oclif/plugin-commands':
-        specifier: ^4.0.11
-        version: 4.0.11
+        specifier: ^4.0.13
+        version: 4.0.13
       '@oclif/plugin-help':
-        specifier: ^6.2.8
-        version: 6.2.8
+        specifier: ^6.2.10
+        version: 6.2.10
       '@oclif/plugin-not-found':
-        specifier: ^3.2.16
-        version: 3.2.16
+        specifier: ^3.2.18
+        version: 3.2.18
       '@oclif/plugin-plugins':
-        specifier: ^5.4.4
+        specifier: ^5.4.6
         version: 5.4.6
       '@oclif/plugin-search':
-        specifier: ^1.2.5
+        specifier: ^1.2.7
         version: 1.2.7
       '@oclif/plugin-version':
-        specifier: ^2.2.10
+        specifier: ^2.2.11
         version: 2.2.11
       '@oclif/plugin-warn-if-update-available':
-        specifier: ^3.1.11
-        version: 3.1.11
+        specifier: ^3.1.13
+        version: 3.1.13
       '@oclif/plugin-which':
-        specifier: ^3.2.10
+        specifier: ^3.2.12
         version: 3.2.12
       '@tylerbu/cli-api':
         specifier: workspace:^
@@ -127,10 +127,10 @@ importers:
         specifier: 1.8.3
         version: 1.8.3
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.2.13
+        specifier: ^5.2.14
         version: 5.2.14
       '@oclif/test':
-        specifier: ^4.0.8
+        specifier: ^4.0.9
         version: 4.0.9(@oclif/core@4.0.19)
       '@types/chai':
         specifier: ^4.3.16
@@ -151,8 +151,8 @@ importers:
         specifier: ^10.4.0
         version: 10.7.3
       oclif:
-        specifier: ^4.14.22
-        version: 4.14.22
+        specifier: ^4.14.26
+        version: 4.14.26
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -178,7 +178,7 @@ importers:
   packages/cli-api:
     dependencies:
       '@oclif/core':
-        specifier: ^4.0.18
+        specifier: ^4.0.19
         version: 4.0.19
       chalk:
         specifier: ^5.3.0
@@ -206,7 +206,7 @@ importers:
         specifier: ^7.43.4
         version: 7.47.6(@types/node@20.16.0)
       '@oclif/test':
-        specifier: ^4.0.8
+        specifier: ^4.0.9
         version: 4.0.9(@oclif/core@4.0.19)
       '@types/chai':
         specifier: ^4.3.16
@@ -239,8 +239,8 @@ importers:
         specifier: ^10.4.0
         version: 10.7.3
       oclif:
-        specifier: ^4.14.22
-        version: 4.14.22
+        specifier: ^4.14.26
+        version: 4.14.26
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -269,11 +269,11 @@ importers:
   packages/dill:
     dependencies:
       '@oclif/core':
-        specifier: ^4.0.18
+        specifier: ^4.0.19
         version: 4.0.19
       '@oclif/plugin-help':
-        specifier: ^6.2.8
-        version: 6.2.8
+        specifier: ^6.2.10
+        version: 6.2.10
       '@tinyhttp/content-disposition':
         specifier: ^2.2.0
         version: 2.2.1
@@ -306,10 +306,10 @@ importers:
         specifier: ^7.43.4
         version: 7.47.6(@types/node@20.16.0)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.2.13
+        specifier: ^5.2.14
         version: 5.2.14
       '@oclif/test':
-        specifier: ^4.0.8
+        specifier: ^4.0.9
         version: 4.0.9(@oclif/core@4.0.19)
       '@types/chai':
         specifier: ^4.3.16
@@ -360,8 +360,8 @@ importers:
         specifier: ^2.3.5
         version: 2.3.5(typescript@5.5.4)
       oclif:
-        specifier: ^4.14.22
-        version: 4.14.22
+        specifier: ^4.14.26
+        version: 4.14.26
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -511,11 +511,11 @@ importers:
         specifier: ^0.43.0
         version: 0.43.0
       '@oclif/core':
-        specifier: ^4.0.18
+        specifier: ^4.0.19
         version: 4.0.19
       '@oclif/plugin-help':
-        specifier: ^6.2.8
-        version: 6.2.8
+        specifier: ^6.2.10
+        version: 6.2.10
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
@@ -539,10 +539,10 @@ importers:
         specifier: ^7.43.4
         version: 7.47.6(@types/node@20.16.0)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.2.13
+        specifier: ^5.2.14
         version: 5.2.14
       '@oclif/test':
-        specifier: ^4.0.8
+        specifier: ^4.0.9
         version: 4.0.9(@oclif/core@4.0.19)
       '@types/fs-extra':
         specifier: ^11.0.4
@@ -557,8 +557,8 @@ importers:
         specifier: ^1.6.11
         version: 1.7.12
       oclif:
-        specifier: ^4.14.22
-        version: 4.14.22
+        specifier: ^4.14.26
+        version: 4.14.26
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -590,11 +590,11 @@ importers:
   packages/sort-tsconfig:
     dependencies:
       '@oclif/core':
-        specifier: ^4.0.18
+        specifier: ^4.0.19
         version: 4.0.19
       '@oclif/plugin-help':
-        specifier: ^6.2.8
-        version: 6.2.8
+        specifier: ^6.2.10
+        version: 6.2.10
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
@@ -618,10 +618,10 @@ importers:
         specifier: ^7.43.4
         version: 7.47.6(@types/node@20.16.0)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.2.13
+        specifier: ^5.2.14
         version: 5.2.14
       '@oclif/test':
-        specifier: ^4.0.8
+        specifier: ^4.0.9
         version: 4.0.9(@oclif/core@4.0.19)
       '@types/chai':
         specifier: ^4.3.16
@@ -657,8 +657,8 @@ importers:
         specifier: ^10.4.0
         version: 10.7.3
       oclif:
-        specifier: ^4.14.22
-        version: 4.14.22
+        specifier: ^4.14.26
+        version: 4.14.26
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -2092,24 +2092,24 @@ packages:
     resolution: {integrity: sha512-VXnsYNVfmucXp5BdOA/OcWi8F/h2h8ofW1GxQDdspodnmnUgALEpqrxXBl5NFuA+iEihtAJeXzX260ICHYDaBg==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-autocomplete@3.2.0':
-    resolution: {integrity: sha512-URNnLAk+FP+k422On8nZhyuJcPgrCWyVolbVE+wKl9ngWR56//MLakrf7AKwfeuto9U2TmrOsXVZhzWzZ2VTMw==}
+  '@oclif/plugin-autocomplete@3.2.2':
+    resolution: {integrity: sha512-z4fjUgOiqlp8UFF41lHSJvKArNMyczq18ccvDnvPv7clByS7iy7s/Bj5DqNfGRmJ7IV3T9rbXwEwR+fUdAHnKw==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-command-snapshot@5.2.14':
     resolution: {integrity: sha512-fVGeV/dE6OhiRSL2ZN3Gn3eInGdeK4pQoCq0AB0vgvlU3tv7Ur4Vk1+5qpGazv8mAba9KjEtHySMpagDlb8H0Q==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-commands@4.0.11':
-    resolution: {integrity: sha512-wWiiY+hfdgkdBJVCG18rnNfQwM+QbfiMJhpFeGmEBvW7Ngdh6wE7Ep770QeIT7bAj8xAKjSJJkctUySe89Iusw==}
+  '@oclif/plugin-commands@4.0.13':
+    resolution: {integrity: sha512-fNnKH5D8hkwjC96zvmFR0tZw7aerhdM9eJioOku8Di2u1rcRofrsxk8FybnV0PSKQL1bDBYjhBBlEEbZ9TbqNA==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-help@6.2.8':
-    resolution: {integrity: sha512-QRpFYlBeJffl4cXGBi8e+EfGogDmU7y8do1ZHxmPKZ5eZ0mfeKiqq2WA9dwRMZJriy1qSaGsbkOYgYQWlOYhSg==}
+  '@oclif/plugin-help@6.2.10':
+    resolution: {integrity: sha512-Gm5/l/upTtj34StLIjZzhmO3AngqGx20rsbfOqDQ3SrsEnjfujtKgUm+MxXTjl4XfkkWREUN0CwuqLcuftnsOw==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-not-found@3.2.16':
-    resolution: {integrity: sha512-9yGR1lAg4ItSwRb4WhZ41X+6tO55SJjDYnu+EXW9gPCPj64z5qRIBU1ZWUZGtxJpHNB0vUh9nDLTsQAJOw/lnw==}
+  '@oclif/plugin-not-found@3.2.18':
+    resolution: {integrity: sha512-595+i3eG+K4jM+BjWLAuWzBb2wqrXpKqF9IianroSCxeZEC4Ujg6HWvLSYT//afJzeXWpsNyqGCqeoGF7kXE/w==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-plugins@5.4.6':
@@ -2124,8 +2124,8 @@ packages:
     resolution: {integrity: sha512-xXGFEsUwSGMDYCw3T+b1WuO3PzUDyCGvMzYl1kLTzO2i83bpNMOGfHsx6nt/g6bx7KCskhsyn7wYEVXxY3BzZg==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-warn-if-update-available@3.1.11':
-    resolution: {integrity: sha512-Pv4EFxhpzspq0n2v0cdfqRwIMwYyd3YOIKny/1Ao71D0pKlpxJ63c9OFDNJAJcUjFOUHzODTtXXNwimOpzfbYg==}
+  '@oclif/plugin-warn-if-update-available@3.1.13':
+    resolution: {integrity: sha512-yAdb7kBPfLPxgC20vtFsttEKSHKP4ZL+iA01mEyzxn7IwzIpEHWlcOKjf4fapmMzAG4BHqcZq/g9yi/SZlRqpQ==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-which@3.2.12':
@@ -6979,8 +6979,8 @@ packages:
     resolution: {integrity: sha512-byy+U7gp+FVwmyzKPYhW2h5l3crpmGsxl7X2s8y43IgxvG4g3QZ6CffDtsNQy1WsmZpQbO+ybo0AlW7TY6DcBQ==}
     engines: {node: '>= 0.4'}
 
-  oclif@4.14.22:
-    resolution: {integrity: sha512-6kcjM6MowDIozatGRiN7COMYrTzDVeyNDa1cUO8I1HgmWoQ5eoC8bq1cicLpWZawcyfJwzGi0oz67i1W05W/Og==}
+  oclif@4.14.26:
+    resolution: {integrity: sha512-UOkzTeOvXDCyixgxf+UmM/1fbJpi9rmGFYC4WLUYT36m4oTVSl/9EfYIa5s+YL7BqfKXYD1vsV4WkdWFnsnM3g==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -8071,6 +8071,10 @@ packages:
 
   sort-package-json@2.10.0:
     resolution: {integrity: sha512-MYecfvObMwJjjJskhxYfuOADkXp1ZMMnCFC8yhp+9HDsk7HhR336hd7eiBs96lTXfiqmUNI+WQCeCMRBhl251g==}
+    hasBin: true
+
+  sort-package-json@2.10.1:
+    resolution: {integrity: sha512-d76wfhgUuGypKqY72Unm5LFnMpACbdxXsLPcL27pOsSrmVqH3PztFp1uq+Z22suk15h7vXmTesuh2aEjdCqb5w==}
     hasBin: true
 
   source-map-js@1.2.0:
@@ -11724,10 +11728,10 @@ snapshots:
       '@fluidframework/bundle-size-tools': 0.43.0
       '@microsoft/api-extractor': 7.47.6(@types/node@22.5.0)
       '@oclif/core': 4.0.19
-      '@oclif/plugin-autocomplete': 3.2.0
-      '@oclif/plugin-commands': 4.0.11
-      '@oclif/plugin-help': 6.2.8
-      '@oclif/plugin-not-found': 3.2.16
+      '@oclif/plugin-autocomplete': 3.2.2
+      '@oclif/plugin-commands': 4.0.13
+      '@oclif/plugin-help': 6.2.10
+      '@oclif/plugin-not-found': 3.2.18
       '@octokit/core': 4.2.4(encoding@0.1.13)
       '@rushstack/node-core-library': 3.59.6(@types/node@22.5.0)
       async: 3.2.5
@@ -11750,7 +11754,7 @@ snapshots:
       minimatch: 7.4.6
       node-fetch: 3.3.2
       npm-check-updates: 16.14.20
-      oclif: 4.14.22
+      oclif: 4.14.26
       prettier: 3.2.5
       prompts: 2.4.2
       read-pkg-up: 7.0.1
@@ -11784,10 +11788,10 @@ snapshots:
   '@fluid-tools/version-tools@0.43.0':
     dependencies:
       '@oclif/core': 4.0.19
-      '@oclif/plugin-autocomplete': 3.2.0
-      '@oclif/plugin-commands': 4.0.11
-      '@oclif/plugin-help': 6.2.8
-      '@oclif/plugin-not-found': 3.2.16
+      '@oclif/plugin-autocomplete': 3.2.2
+      '@oclif/plugin-commands': 4.0.13
+      '@oclif/plugin-help': 6.2.10
+      '@oclif/plugin-not-found': 3.2.18
       chalk: 2.4.2
       semver: 7.6.3
       table: 6.8.1
@@ -12458,7 +12462,7 @@ snapshots:
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
 
-  '@oclif/plugin-autocomplete@3.2.0':
+  '@oclif/plugin-autocomplete@3.2.2':
     dependencies:
       '@oclif/core': 4.0.19
       ansis: 3.3.2
@@ -12479,18 +12483,18 @@ snapshots:
       semver: 7.6.3
       ts-json-schema-generator: 1.5.1
 
-  '@oclif/plugin-commands@4.0.11':
+  '@oclif/plugin-commands@4.0.13':
     dependencies:
       '@oclif/core': 4.0.19
       lodash: 4.17.21
       object-treeify: 4.0.1
       tty-table: 4.2.3
 
-  '@oclif/plugin-help@6.2.8':
+  '@oclif/plugin-help@6.2.10':
     dependencies:
       '@oclif/core': 4.0.19
 
-  '@oclif/plugin-not-found@3.2.16':
+  '@oclif/plugin-not-found@3.2.18':
     dependencies:
       '@inquirer/confirm': 3.1.22
       '@oclif/core': 4.0.19
@@ -12524,7 +12528,7 @@ snapshots:
       '@oclif/core': 4.0.19
       ansis: 3.3.2
 
-  '@oclif/plugin-warn-if-update-available@3.1.11':
+  '@oclif/plugin-warn-if-update-available@3.1.13':
     dependencies:
       '@oclif/core': 4.0.19
       ansis: 3.3.2
@@ -18624,7 +18628,7 @@ snapshots:
       has-symbols: 1.0.3
       object-keys: 1.1.1
 
-  oclif@4.14.22:
+  oclif@4.14.26:
     dependencies:
       '@aws-sdk/client-cloudfront': 3.632.0
       '@aws-sdk/client-s3': 3.637.0
@@ -18632,9 +18636,9 @@ snapshots:
       '@inquirer/input': 2.2.9
       '@inquirer/select': 2.3.10
       '@oclif/core': 4.0.19
-      '@oclif/plugin-help': 6.2.8
-      '@oclif/plugin-not-found': 3.2.16
-      '@oclif/plugin-warn-if-update-available': 3.1.11
+      '@oclif/plugin-help': 6.2.10
+      '@oclif/plugin-not-found': 3.2.18
+      '@oclif/plugin-warn-if-update-available': 3.1.13
       async-retry: 1.3.3
       chalk: 4.1.2
       change-case: 4.1.2
@@ -18647,7 +18651,7 @@ snapshots:
       lodash: 4.17.21
       normalize-package-data: 6.0.2
       semver: 7.6.3
-      sort-package-json: 2.10.0
+      sort-package-json: 2.10.1
       tiny-jsonc: 1.0.1
       validate-npm-package-name: 5.0.1
     transitivePeerDependencies:
@@ -20162,6 +20166,17 @@ snapshots:
       globby: 13.2.2
       is-plain-obj: 4.1.0
       semver: 7.6.2
+      sort-object-keys: 1.1.3
+
+  sort-package-json@2.10.1:
+    dependencies:
+      detect-indent: 7.0.1
+      detect-newline: 4.0.0
+      get-stdin: 9.0.0
+      git-hooks-list: 3.1.0
+      globby: 13.2.2
+      is-plain-obj: 4.1.0
+      semver: 7.6.3
       sort-object-keys: 1.1.3
 
   source-map-js@1.2.0: {}
