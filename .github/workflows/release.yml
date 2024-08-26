@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - .changeset/**
+
   workflow_dispatch:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
@@ -15,6 +18,10 @@ jobs:
     permissions: write-all
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # ratchet:actions/checkout@v4
+        with:
+          token: ${{ secrets.CHANGESET_TOKEN }}
+          fetch-depth: 0
+
       - uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # ratchet:pnpm/action-setup@v4
       - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # ratchet:actions/setup-node@v4
         with:
@@ -50,12 +57,27 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CHANGESET_TOKEN }}
 
       - name: Create Version Tracking PR
-        if: steps.changesets.outputs.published != 'true'
+        if: steps.changesets.outputs.published != true
         run: |
+          echo "Published: '${{ steps.changesets.outputs.published }}'"
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
+
       - name: Publish to npm
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.changesets.outputs.published == true
         run: |
+          echo "Published: '${{ steps.changesets.outputs.published }}'"
           echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create table
+        if: steps.changesets.outputs.published == true
+        id: create-table
+        uses: parkerbxyz/json-to-markdown-table@5f6bf548102e18fcde33fa89f9b5e5d2c40745ee # ratchet:parkerbxyz/json-to-markdown-table@v1
+        with:
+          json: ${{ steps.changesets.outputs.publishedPackages }}
+
+      - name: Add table to report
+        if: steps.changesets.outputs.published == true
+        run: |
+          echo "${{ steps.create-table.outputs.table }}" >> $GITHUB_STEP_SUMMARY

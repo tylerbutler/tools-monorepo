@@ -20,7 +20,3 @@ esm/index.d.ts
 esm/index.d.ts.map
 esm/index.js
 esm/index.js.map
-esm/internal.d.ts
-esm/internal.d.ts.map
-esm/internal.js
-esm/internal.js.map

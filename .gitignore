@@ -18,3 +18,6 @@ yarn.lock
 
 # astro generated types
 .astro
+
+# coverage reports
+.coverage

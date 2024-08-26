@@ -77,7 +77,7 @@
 	"fluidBuild": {
 		"tasks": {
 			"build": {
-				"dependsOn": ["^build"],
+				"dependsOn": ["^build", "generate:packlist"],
 				"script": false
 			},
 			"check": {
@@ -101,7 +101,7 @@
 				"script": false
 			},
 			"full": {
-				"dependsOn": ["check", "build", "lint", "docs", "generate:packlist"],
+				"dependsOn": ["check", "build", "lint", "docs", "test"],
 				"script": false
 			},
 			"generate:packlist": {

@@ -1,6 +1,6 @@
 {
 	"name": "repopo",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"description": "Enforce policies on all or some of the files in a git repository.",
 	"keywords": ["policy", "ci"],
@@ -37,7 +37,7 @@
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
-		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/_snapshots/commands.json",
+		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
