@@ -11,7 +11,7 @@ Sorts a tsconfig file in place, or check that one is sorted.
 
 ```
 USAGE
-  $ tbu sort tsconfig TSCONFIG [--write]
+  $ tbu sort tsconfig TSCONFIG [-v | --quiet] [--write]
 
 ARGUMENTS
   TSCONFIG  Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.
@@ -19,6 +19,10 @@ ARGUMENTS
 FLAGS
   --write  Write the sorted contents back to the file. Without this flag, the command only checks that the file is
            sorted.
+
+LOGGING FLAGS
+  -v, --verbose  Enable verbose logging.
+      --quiet    Disable all logging.
 
 DESCRIPTION
   Sorts a tsconfig file in place, or check that one is sorted.
@@ -28,6 +32,7 @@ DESCRIPTION
 
 ALIASES
   $ tbu sort tsconfigs
+  $ tbu sort-tsconfigs
 
 EXAMPLES
   Check if the tsconfig.json file in the current working directory is sorted.
