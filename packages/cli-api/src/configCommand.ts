@@ -43,16 +43,11 @@ export abstract class CommandWithConfig<
 		}
 	}
 
-	// private async loadConfigFromFile(
-	// 	configPath: string,
-	// ): Promise<C | undefined> {
-	// }
-
-	protected get defaultConfig(): C | undefined {
+	public get defaultConfig(): C | undefined {
 		return undefined;
 	}
 
-	protected get commandConfig(): C | undefined {
+	public get commandConfig(): C | undefined {
 		return this._commandConfig;
 	}
 

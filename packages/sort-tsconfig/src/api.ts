@@ -11,19 +11,40 @@ import type { TsConfigJson } from "type-fest";
  */
 export type OrderList = string[];
 
-/**
- * Sorting order for keys in the compilerOptions section of tsconfig. The groups and the order within each group are
- * based on the order at https://www.typescriptlang.org/tsconfig#compiler-options. However, the order of the groups has
- * been adjusted, and a few properties are moved earlier in the order since they're more important to our repo
- * tsconfigs.
- */
-const compilerOptionsOrder: OrderList = [
-	"rootDir", // From the Modules group
-	"outDir", // From the Emit group
-	"module", // From the Modules group
-	"moduleResolution", // From the Modules group
+const TopLevelFieldsOrder: OrderList = [
+	"$schema",
+	"files",
+	"extends",
+	"include",
+	"exclude",
+	"references",
+	"compilerOptions",
+];
 
-	// Emit
+const TypeCheckingOrder: OrderList = [
+	// Type checking
+	"allowUnreachableCode",
+	"allowUnusedLabels",
+	"alwaysStrict",
+	"exactOptionalPropertyTypes",
+	"noFallthroughCasesInSwitch",
+	"noImplicitAny",
+	"noImplicitOverride",
+	"noImplicitReturns",
+	"noImplicitThis",
+	"noPropertyAccessFromIndexSignature",
+	"noUncheckedIndexedAccess",
+	"noUnusedLocals",
+	"noUnusedParameters",
+	"strict",
+	"strictBindCallApply",
+	"strictFunctionTypes",
+	"strictNullChecks",
+	"strictPropertyInitialization",
+	"useUnknownInCatchVariables",
+];
+
+const EmitOrder: OrderList = [
 	"declaration",
 	"declarationDir",
 	"declarationMap",
@@ -46,8 +67,9 @@ const compilerOptionsOrder: OrderList = [
 	"sourceMap",
 	"sourceRoot",
 	"stripInternal",
+];
 
-	// Modules
+const ModulesOrder: OrderList = [
 	"allowArbitraryExtensions",
 	"allowImportingTsExtensions",
 	"allowUmdGlobalAccess",
@@ -58,53 +80,35 @@ const compilerOptionsOrder: OrderList = [
 	"rootDirs",
 	"typeRoots",
 	"types",
+];
 
-	// Type checking
-	"allowUnreachableCode",
-	"allowUnusedLabels",
-	"alwaysStrict",
-	"exactOptionalPropertyTypes",
-	"noFallthroughCasesInSwitch",
-	"noImplicitAny",
-	"noImplicitOverride",
-	"noImplicitReturns",
-	"noImplicitThis",
-	"noPropertyAccessFromIndexSignature",
-	"noUncheckedIndexedAccess",
-	"noUnusedLocals",
-	"noUnusedParameters",
-	"strict",
-	"strictBindCallApply",
-	"strictFunctionTypes",
-	"strictNullChecks",
-	"strictPropertyInitialization",
-	"useUnknownInCatchVariables",
-
-	// JavaScript Support
+const JsSupportOrder: OrderList = [
 	"allowJs",
 	"checkJs",
 	"maxNodeModuleJsDepth",
+];
 
-	// Projects
-	"composite",
-	"disableReferencedProjectLoad",
-	"disableSolutionSearching",
-	"disableSourceOfProjectReferenceRedirect",
-	"incremental",
-	"tsBuildInfoFile",
+const EditorSupportOrder: OrderList = ["disableSizeLimit", "plugins"];
 
-	// Editor Support
-	"disableSizeLimit",
-	"plugins",
-
-	// InteropConstraints
+const InteropConstraintsOrder: OrderList = [
 	"allowSyntheticDefaultImports",
 	"esModuleInterop",
 	"forceConsistentCasingInFileNames",
 	"isolatedModules",
 	"preserveSymlinks",
+];
 
-	// Language and Environment
+const BackCompatOrder: OrderList = [
+	"charset",
+	"keyofStringsOnly",
+	"noImplicitUseStrict",
+	"noStrictGenericChecks",
+	"out",
+	"suppressExcessPropertyErrors",
+	"suppressImplicitAnyIndexErrors",
+];
+
+const LangEnvOrder: OrderList = [
 	"emitDecoratorMetadata",
 	"experimentalDecorators",
 	"jsx",
@@ -116,50 +120,107 @@ const compilerOptionsOrder: OrderList = [
 	"reactNamespace",
 	"target",
 	"useDefineForClassFields",
+];
 
-	// Diagnostics
-	"diagnostics",
-	"explainFiles",
-	"extendedDiagnostics",
-	"generateCpuProfile",
-	"listEmittedFiles",
-	"listFiles",
-	"traceResolution",
+const CompilerDiagnosticsOrder: OrderList = [
+	"emitDecoratorMetadata",
+	"experimentalDecorators",
+	"jsx",
+	"jsxFactory",
+	"jsxFragmentFactory",
+	"jsxImportSource",
+	"lib",
+	"noLib",
+	"reactNamespace",
+	"target",
+	"useDefineForClassFields",
+];
 
-	// Output formatting
+const ProjectsOrder: OrderList = [
+	"composite",
+	"disableReferencedProjectLoad",
+	"disableSolutionSearching",
+	"disableSourceOfProjectReferenceRedirect",
+	"incremental",
+	"tsBuildInfoFile",
+];
+
+const OutputFormattingOrder: OrderList = [
 	"noErrorTruncation",
 	"preserveWatchOutput",
 	"pretty",
+];
 
-	// Completeness
-	"skipDefaultLibCheck",
-	"skipLibCheck",
+const CompletenessOrder: OrderList = ["skipDefaultLibCheck", "skipLibCheck"];
 
-	// Watch Options
-	"assumeChangesOnlyAffectDirectDependencies",
+const CommandLineOrder: OrderList = [];
 
-	// Backwards Compatibility
-	"charset",
-	"keyofStringsOnly",
-	"noImplicitUseStrict",
-	"noStrictGenericChecks",
-	"out",
-	"suppressExcessPropertyErrors",
-	"suppressImplicitAnyIndexErrors",
+const WatchOrder: OrderList = ["assumeChangesOnlyAffectDirectDependencies"];
+
+/**
+ * Sorting order for keys in the compilerOptions section of tsconfig. The groups and the order within each group are
+ * based on the order at https://www.typescriptlang.org/tsconfig#compiler-options. However, the order of the groups has
+ * been adjusted, and a few properties are moved earlier in the order since they're more important to our repo
+ * tsconfigs.
+ */
+const defaultCompilerOptionsOrder: OrderList = [
+	...TypeCheckingOrder,
+	...ModulesOrder,
+	...EmitOrder,
+	...JsSupportOrder,
+	...EditorSupportOrder,
+	...InteropConstraintsOrder,
+	...BackCompatOrder,
+	...LangEnvOrder,
+	...CompilerDiagnosticsOrder,
+	...ProjectsOrder,
+	...OutputFormattingOrder,
+	...CompletenessOrder,
+	...CommandLineOrder,
+	...WatchOrder,
+] as const;
+
+const preferredCompilerOptionsOrder: OrderList = [
+	// These keys will be duplicated but that's ok since the first item in the list is used and the other is ignored.
+	"rootDir", // From the Modules group
+	"outDir", // From the Emit group
+	"module", // From the Modules group
+	"moduleResolution", // From the Modules group
+
+	...EmitOrder,
+	...ModulesOrder,
+	...TypeCheckingOrder,
+	...JsSupportOrder,
+	...ProjectsOrder,
+	...EditorSupportOrder,
+	...InteropConstraintsOrder,
+	...LangEnvOrder,
+	...CompilerDiagnosticsOrder,
+	...OutputFormattingOrder,
+	...CompletenessOrder,
+	...WatchOrder,
+	...BackCompatOrder,
 ] as const;
 
 /**
- * Sorting order for tsconfig files.
+ * Default sort order for tsconfig files. This order is based on the order that fields are documented at
+ * {@link https://www.typescriptlang.org/tsconfig/}.
  */
-const defaultSortOrder: OrderList = [
-	"$schema",
-	"extends",
-	"include",
-	"exclude",
-	"compilerOptions",
-	...compilerOptionsOrder,
-	"references",
-];
+export const defaultSortOrder: OrderList = [
+	...TopLevelFieldsOrder,
+	...defaultCompilerOptionsOrder,
+] as const;
+
+/**
+ * Preferred sort order for tsconfig files. This order is intended to put the most common properties first, and ensure
+ * properties that are often set together are ordered together.
+ *
+ * @beta
+ */
+export const preferredSortOrder: OrderList = [
+	...TopLevelFieldsOrder,
+	...preferredCompilerOptionsOrder,
+] as const;
 
 /**
  * Returns a map of each item in the order list to its sort index.
@@ -167,7 +228,10 @@ const defaultSortOrder: OrderList = [
 function getOrderMap(order: OrderList): Map<string, number> {
 	const orderMap: Map<string, number> = new Map();
 	for (const [index, key] of order.entries()) {
-		orderMap.set(key, index);
+		// Only add the index for the first item - subsequent indices will be ignored.
+		if (!orderMap.has(key)) {
+			orderMap.set(key, index);
+		}
 	}
 	return orderMap;
 }

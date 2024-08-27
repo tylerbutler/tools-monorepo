@@ -57,6 +57,9 @@ importers:
       sort-package-json:
         specifier: 2.10.0
         version: 2.10.0
+      sort-tsconfig:
+        specifier: workspace:^
+        version: link:packages/sort-tsconfig
       syncpack:
         specifier: ^12.3.2
         version: 12.4.0(typescript@5.5.4)

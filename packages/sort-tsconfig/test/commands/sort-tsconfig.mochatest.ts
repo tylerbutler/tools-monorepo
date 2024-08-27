@@ -1,10 +1,7 @@
-// import { copyFile, readFile } from "node:fs/promises";
 import path from "node:path";
 import { runCommand } from "@oclif/test";
 import { expect } from "chai";
 import { describe, it } from "mocha";
-
-// import { testDataPath } from "../common.js";
 
 const testDataPath = "test/data";
 
@@ -21,11 +18,8 @@ const testFiles = {
 };
 
 describe("sort-tsconfig command", () => {
-	// process.chdir(path.dirname(testDataPath));
-	// console.debug(process.cwd());
-
 	it("file not found", async () => {
-		const { error } = await runCommand(["sort", testFiles.noExist], {
+		const { error } = await runCommand([".", testFiles.noExist], {
 			root: import.meta.url,
 		});
 		expect(error?.message).to.equal("No files found matching arguments");
@@ -33,7 +27,7 @@ describe("sort-tsconfig command", () => {
 	});
 
 	it("detects unsorted file", async () => {
-		const { error } = await runCommand(["sort", testFiles.unsorted], {
+		const { error } = await runCommand([".", testFiles.unsorted], {
 			root: import.meta.url,
 		});
 		expect(error?.message).to.equal("Found 1 unsorted files.");
@@ -41,7 +35,7 @@ describe("sort-tsconfig command", () => {
 	});
 
 	it("detects sorted file", async () => {
-		const { error, stdout } = await runCommand(["sort", testFiles.sorted], {
+		const { error, stdout } = await runCommand([".", testFiles.sorted], {
 			root: import.meta.url,
 		});
 		expect(stdout).to.equal("");
@@ -51,7 +45,7 @@ describe("sort-tsconfig command", () => {
 	describe("globs", () => {
 		it("detects unsorted", async () => {
 			const { error, stdout } = await runCommand(
-				["sort", path.join(testFiles.unsortedDir, "**")],
+				[".", "--", path.join(testFiles.unsortedDir, "**")],
 				{
 					root: import.meta.url,
 				},
@@ -63,7 +57,7 @@ describe("sort-tsconfig command", () => {
 
 		it("detects sorted", async () => {
 			const { error, stdout } = await runCommand(
-				["sort", path.join(testFiles.sortedDir, "**")],
+				[".", "--", path.join(testFiles.sortedDir, "**")],
 				{
 					root: import.meta.url,
 				},

@@ -3,7 +3,7 @@ import path from "node:path";
 import { Args, type Command, Flags } from "@oclif/core";
 import { CommandWithConfig } from "@tylerbu/cli-api";
 import { globby } from "globby";
-import { isSorted, sortTsconfigFile } from "sort-tsconfig";
+import { TsConfigSorter, defaultSortOrder, isSorted } from "../api.js";
 import type { SortTsconfigConfiguration } from "../config.js";
 
 export default class SortTsconfigCommand extends CommandWithConfig<
@@ -83,11 +83,15 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 			this.error("No files found matching arguments");
 		}
 
+		const sorter = new TsConfigSorter(
+			this.commandConfig?.order ?? defaultSortOrder,
+		);
+
 		const unsortedFiles: string[] = [];
 
 		for (const tsconfig of tsconfigs) {
 			if (write) {
-				const result = sortTsconfigFile(tsconfig, write);
+				const result = sorter.sortTsconfigFile(tsconfig, write);
 				this.log(
 					result.alreadySorted
 						? `File already sorted: ${tsconfig}`

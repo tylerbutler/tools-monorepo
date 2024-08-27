@@ -63,12 +63,12 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     flags: typeof CommandWithConfig.flags;
 }, C = unknown> extends BaseCommand<T> {
     // (undocumented)
-    protected get commandConfig(): C | undefined;
+    get commandConfig(): C | undefined;
     protected set commandConfig(value: C | undefined);
     // (undocumented)
     protected configPath: string | undefined;
     // (undocumented)
-    protected get defaultConfig(): C | undefined;
+    get defaultConfig(): C | undefined;
     // (undocumented)
     init(): Promise<void>;
     // (undocumented)

@@ -20,8 +20,8 @@
 			"import": "./esm/index.js"
 		},
 		"./command": {
-			"types": "./esm/commands/sort.d.ts",
-			"import": "./esm/commands/sort.js"
+			"types": "./esm/commands/sort-tsconfig.d.ts",
+			"import": "./esm/commands/sort-tsconfig.js"
 		}
 	},
 	"types": "esm/index.d.ts",
@@ -65,7 +65,10 @@
 	},
 	"oclif": {
 		"bin": "sort-tsconfig",
-		"commands": "./esm/commands",
+		"commands": {
+			"strategy": "single",
+			"target": "./esm/commands/sort-tsconfig.js"
+		},
 		"default": "sort",
 		"devPlugins": [],
 		"dirname": "sort-tsconfig",

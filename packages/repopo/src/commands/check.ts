@@ -112,7 +112,7 @@ export class CheckPolicy extends GitCommand<
 	// private policies: RepoPolicy[] | undefined;
 	private commandContext: CheckPolicyCommandContext | undefined;
 
-	protected override get defaultConfig() {
+	public override get defaultConfig() {
 		return DefaultPolicyConfig;
 	}
 
