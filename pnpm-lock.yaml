@@ -120,9 +120,6 @@ importers:
       simple-git:
         specifier: ^3.24.0
         version: 3.25.0
-      sort-tsconfig:
-        specifier: workspace:^
-        version: link:../sort-tsconfig
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0

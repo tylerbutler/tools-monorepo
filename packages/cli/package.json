@@ -100,7 +100,6 @@
 		"debug": "^4.3.4",
 		"dill-cli": "workspace:^",
 		"simple-git": "^3.24.0",
-		"sort-tsconfig": "workspace:^",
 		"strip-ansi": "^7.1.0"
 	},
 	"devDependencies": {

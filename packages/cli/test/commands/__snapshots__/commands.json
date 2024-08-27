@@ -129,23 +129,6 @@
         "plugin": "@oclif/plugin-search"
     },
     {
-        "alias": [
-            "sort:tsconfigs",
-            "sort-tsconfigs"
-        ],
-        "command": "sort:tsconfig",
-        "flagAliases": [],
-        "flagChars": [
-            "v"
-        ],
-        "flags": [
-            "quiet",
-            "verbose",
-            "write"
-        ],
-        "plugin": "@tylerbu/cli"
-    },
-    {
         "alias": [],
         "command": "version",
         "flagAliases": [],
