@@ -4,7 +4,7 @@ import { Args, type Command, Flags } from "@oclif/core";
 import { CommandWithConfig } from "@tylerbu/cli-api";
 import { globby } from "globby";
 import { isSorted, sortTsconfigFile } from "sort-tsconfig";
-import type { SortTsconfigConfiguration } from "../../config.js";
+import type { SortTsconfigConfiguration } from "../config.js";
 
 export default class SortTsconfigCommand extends CommandWithConfig<
 	typeof SortTsconfigCommand,
@@ -29,6 +29,8 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 					const stats = statSync(input);
 					if (stats.isDirectory()) {
 						patterns.push(path.join(input, "tsconfig.json"));
+					} else {
+						patterns.push(input);
 					}
 				} else {
 					patterns.push(input);
