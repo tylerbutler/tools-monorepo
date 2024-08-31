@@ -683,7 +683,7 @@ importers:
         version: 10.9.2(@types/node@20.16.0)(typescript@5.5.4)
       type-fest:
         specifier: ^4.18.2
-        version: 4.25.0
+        version: 4.26.0
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -3109,9 +3109,6 @@ packages:
 
   '@types/node@20.16.0':
     resolution: {integrity: sha512-vDxceJcoZhIVh67S568bm1UGZO0DX0hpplJZxzeXMKwIPLn190ec5RRxQ69BKhX44SUGIxxgMdDY557lGLKprQ==}
-
-  '@types/node@22.5.0':
-    resolution: {integrity: sha512-DkFrJOe+rfdHTqqMg0bSNlGlQ85hSoh2TPzZyhHsXnMtligRWpxUySiyw8FY14ITt24HVCiQPWxS3KO/QlGmWg==}
 
   '@types/node@22.5.1':
     resolution: {integrity: sha512-KkHsxej0j9IW1KKOOAA/XBA0z08UFSrRQHErzEfA3Vgq57eXIMYboIlHJuYIfd+lwCQjtKqUu3UnmKbtUc9yRw==}
@@ -11481,7 +11478,7 @@ snapshots:
       '@inquirer/figures': 1.0.5
       '@inquirer/type': 1.5.2
       '@types/mute-stream': 0.0.4
-      '@types/node': 22.5.0
+      '@types/node': 22.5.1
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
       cli-spinners: 2.9.2
@@ -13219,13 +13216,13 @@ snapshots:
 
   '@types/bunyan@1.8.9':
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 20.16.0
 
   '@types/cacheable-request@6.0.3':
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 22.5.1
+      '@types/node': 20.16.0
       '@types/responselike': 1.0.3
 
   '@types/chai@4.3.16': {}
@@ -13280,7 +13277,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 20.16.0
 
   '@types/mdast@3.0.15':
     dependencies:
@@ -13331,10 +13328,6 @@ snapshots:
     dependencies:
       undici-types: 6.19.6
 
-  '@types/node@22.5.0':
-    dependencies:
-      undici-types: 6.19.8
-
   '@types/node@22.5.1':
     dependencies:
       undici-types: 6.19.8
@@ -13343,7 +13336,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 20.16.0
 
   '@types/sax@1.2.7':
     dependencies:
@@ -15716,7 +15709,7 @@ snapshots:
       dir-glob: 3.0.1
       fast-glob: 3.3.2
       glob: 7.2.3
-      ignore: 5.3.1
+      ignore: 5.3.2
       merge2: 1.4.1
       slash: 3.0.0
 
@@ -16607,7 +16600,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 20.16.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -18708,7 +18701,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.5.1
+      '@types/node': 20.16.0
       long: 5.2.3
 
   protocols@2.0.1: {}
