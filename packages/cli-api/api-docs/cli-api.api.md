@@ -10,6 +10,7 @@ import { CustomOptions } from '@oclif/core/interfaces';
 import { Debugger } from 'debug';
 import { FlagDefinition } from '@oclif/core/interfaces';
 import { Interfaces } from '@oclif/core';
+import { OptionFlag } from '@oclif/core/interfaces';
 import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
@@ -68,7 +69,11 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     // (undocumented)
     protected configPath: string | undefined;
     // (undocumented)
-    get defaultConfig(): C | undefined;
+    protected get defaultConfig(): C | undefined;
+    // (undocumented)
+    static readonly flags: {
+        readonly config: OptionFlag<string | undefined, CustomOptions>;
+    };
     // (undocumented)
     init(): Promise<void>;
     // (undocumented)
@@ -86,15 +91,7 @@ export abstract class CommandWithoutConfig<T extends typeof Command & {
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
 // @beta (undocumented)
-export const ConfigFileFlag: FlagDefinition<string, ConfigFlagConfig, {
-multiple: false;
-requiredOrDefaulted: false;
-}>;
-
-// @beta (undocumented)
-export type ConfigFlagConfig = {
-    exists?: boolean;
-};
+export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;

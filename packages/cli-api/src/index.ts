@@ -3,7 +3,6 @@ export { CommandWithConfig, CommandWithoutConfig } from "./configCommand.js";
 export {
 	RegExpFlag,
 	ConfigFileFlag,
-	type ConfigFlagConfig,
 } from "./flags.js";
 export type { CommitMergeability } from "./git.js";
 export { findGitRoot } from "./git.js";

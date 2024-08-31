@@ -2,6 +2,7 @@ import { stat } from "node:fs/promises";
 import type { Command } from "@oclif/core";
 import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
 import { BaseCommand } from "./baseCommand.js";
+import { ConfigFileFlagHidden } from "./flags.js";
 import { findGitRoot } from "./git.js";
 
 /**
@@ -21,6 +22,11 @@ export abstract class CommandWithConfig<
 > extends BaseCommand<T> {
 	private _commandConfig: C | undefined;
 	protected configPath: string | undefined;
+
+	static override readonly flags = {
+		config: ConfigFileFlagHidden,
+		...BaseCommand.flags,
+	} as const;
 
 	public override async init(): Promise<void> {
 		await super.init();

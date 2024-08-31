@@ -82,13 +82,18 @@
 			},
 		},
 		{
-			// these packages are node-only
+			// node-only rules
 			"include": [
+				// these packages are node-only
 				"**/cli/**/*.ts",
 				"**/cli-api/**/*.ts",
 				"**/dill/**/*.ts",
 				"**/repopo/**/*.ts",
 				"**/sort-tsconfig/**/*.ts",
+
+				// tests are allowed to use node
+				"**/*.test.ts",
+				"**/*.mochatest.ts",
 			],
 			"linter": {
 				"rules": {

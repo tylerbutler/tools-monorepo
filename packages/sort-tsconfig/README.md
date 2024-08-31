@@ -25,13 +25,15 @@ ARGUMENTS
   TSCONFIG  Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.
 
 FLAGS
-  --config=<value>  The path to a configuration file.
-  --write           Write the sorted contents back to the file. Without this flag, the command only checks that the file
-                    is sorted.
+  --write  Write the sorted contents back to the file. Without this flag, the command only checks that the file is
+           sorted.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
       --quiet    Disable all logging.
+
+CONFIGURATION FLAGS
+  --config=<value>  The path to a configuration file.
 
 DESCRIPTION
   Sorts a tsconfig file in place, or check that one is sorted.

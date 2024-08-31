@@ -75,6 +75,7 @@
             "v"
         ],
         "flags": [
+            "config",
             "quiet",
             "verbose"
         ],
@@ -88,6 +89,7 @@
             "v"
         ],
         "flags": [
+            "config",
             "dry-run",
             "quiet",
             "verbose"
