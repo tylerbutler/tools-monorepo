@@ -1,5 +1,8 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
+import equal from "fast-deep-equal";
+import { readJson, writeJson } from "fs-extra/esm";
 import { sortPackageJson } from "sort-package-json";
+import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**
@@ -9,15 +12,16 @@ export const PackageJsonSortedPolicy: RepoPolicy = {
 	name: "PackageJsonSortedPolicy",
 	match: /(^|\/)package\.json/i,
 	handler: async ({ file, resolve }) => {
-		const json = await readFile(file, { encoding: "utf8" });
+		const json: PackageJson = await readJson(file, { encoding: "utf8" });
 		const sorted = sortPackageJson(json);
-		if (json === sorted) {
+
+		if (equal(json, sorted)) {
 			return true;
 		}
 
 		if (resolve) {
 			try {
-				await writeFile(file, sorted, { encoding: "utf8" });
+				await writeJson(file, sorted, { encoding: "utf8", spaces: "\t" });
 				const result: PolicyFixResult = {
 					name: PackageJsonSortedPolicy.name,
 					file,
@@ -29,6 +33,7 @@ export const PackageJsonSortedPolicy: RepoPolicy = {
 					name: PackageJsonSortedPolicy.name,
 					file,
 					resolved: false,
+					autoFixable: true,
 					errorMessage: (error as Error).message,
 				};
 				return result;

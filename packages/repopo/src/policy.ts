@@ -1,6 +1,7 @@
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
+import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
 import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 /**
@@ -130,14 +131,14 @@ export class RepoPolicyClass implements RepoPolicy {
 export interface PolicyFailure {
 	name: PolicyName;
 	file: string;
-	autoFixable: boolean | undefined;
+	autoFixable?: boolean | undefined;
 	errorMessage?: string;
 }
 
 /**
  * @alpha
  */
-export interface PolicyFixResult extends Omit<PolicyFailure, "autoFixable"> {
+export interface PolicyFixResult extends PolicyFailure {
 	resolved: boolean;
 }
 
@@ -165,5 +166,6 @@ export const DefaultPolicies: RepoPolicy[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
+	PackageJsonSortedPolicy,
 	SortTsconfigs,
 ];

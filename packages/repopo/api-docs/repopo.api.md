@@ -41,7 +41,7 @@ export type PolicyConfig = RequireAtLeastOne<OptionalPolicyConfig, "policies" | 
 // @alpha
 export interface PolicyFailure {
     // (undocumented)
-    autoFixable: boolean | undefined;
+    autoFixable?: boolean | undefined;
     // (undocumented)
     errorMessage?: string;
     // (undocumented)
