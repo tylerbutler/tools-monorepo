@@ -1,4 +1,4 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import equal from "fast-deep-equal";
 import { readJson, writeJson } from "fs-extra/esm";
 import { sortPackageJson } from "sort-package-json";
@@ -13,15 +13,18 @@ export const PackageJsonSortedPolicy: RepoPolicy = {
 	match: /(^|\/)package\.json/i,
 	handler: async ({ file, resolve }) => {
 		const json: PackageJson = await readJson(file, { encoding: "utf8" });
-		const sorted = sortPackageJson(json);
+		const jsonString = JSON.stringify(json);
+		const sorted = sortPackageJson(jsonString);
 
-		if (equal(json, sorted)) {
+		if (jsonString === sorted) {
 			return true;
 		}
 
 		if (resolve) {
 			try {
-				await writeJson(file, sorted, { encoding: "utf8", spaces: "\t" });
+				// await writeJson(file, sorted, { encoding: "utf8", spaces: "\t" });
+				const toWrite = JSON.stringify(JSON.parse(jsonString), undefined, "\t");
+				await writeFile(file, toWrite, { encoding: "utf8" });
 				const result: PolicyFixResult = {
 					name: PackageJsonSortedPolicy.name,
 					file,
