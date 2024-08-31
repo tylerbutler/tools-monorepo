@@ -1,6 +1,10 @@
 export { type Args, type Flags, BaseCommand } from "./baseCommand.js";
 export { CommandWithConfig, CommandWithoutConfig } from "./configCommand.js";
-export { RegExpFlag } from "./flags.js";
+export {
+	RegExpFlag,
+	ConfigFileFlag,
+	type ConfigFlagConfig,
+} from "./flags.js";
 export type { CommitMergeability } from "./git.js";
 export { findGitRoot } from "./git.js";
 export { GitCommand } from "./gitCommand.js";
