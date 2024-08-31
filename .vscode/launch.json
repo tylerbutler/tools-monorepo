@@ -37,6 +37,15 @@
 			},
 		},
 		{
+			"name": "sort-tsconfig",
+			"request": "launch",
+			"program": "${workspaceFolder}/packages/sort-tsconfig/bin/run.js",
+			"args": ["tsconfig.json", "-v"],
+			"cwd": "${workspaceFolder}/packages/sort-tsconfig",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+		},
+		{
 			"name": "tbu",
 			"request": "launch",
 			"program": "${workspaceFolder}/packages/cli/bin/dev.js",

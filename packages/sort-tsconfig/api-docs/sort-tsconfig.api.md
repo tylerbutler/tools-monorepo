@@ -7,12 +7,23 @@
 import { run } from '@oclif/core';
 
 // @beta
+export const defaultSortOrder: OrderList;
+
+// @beta
 export function isSorted(tsconfig: string): boolean;
 
 // @beta
 export type OrderList = string[];
 
+// @beta
+export const preferredSortOrder: OrderList;
+
 export { run }
+
+// @beta
+export interface SortTsconfigConfiguration {
+    order: OrderList;
+}
 
 // @beta
 export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;

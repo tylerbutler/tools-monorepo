@@ -3,8 +3,9 @@ import path from "node:path";
 import { Args, type Command, Flags } from "@oclif/core";
 import { CommandWithConfig } from "@tylerbu/cli-api";
 import { globby } from "globby";
-import { TsConfigSorter, defaultSortOrder, isSorted } from "../api.js";
+import { TsConfigSorter } from "../api.js";
 import type { SortTsconfigConfiguration } from "../config.js";
+import { type OrderList, defaultSortOrder } from "../orders.js";
 
 export default class SortTsconfigCommand extends CommandWithConfig<
 	typeof SortTsconfigCommand,
@@ -70,6 +71,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		},
 	];
 
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: refactor when possible
 	// biome-ignore lint/suspicious/useAwait: inherited method
 	async run(): Promise<void> {
 		const { tsconfig: tsconfigs } = this.args;
@@ -83,9 +85,18 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 			this.error("No files found matching arguments");
 		}
 
-		const sorter = new TsConfigSorter(
-			this.commandConfig?.order ?? defaultSortOrder,
-		);
+		let orderToUse: OrderList;
+		if (this.commandConfig === undefined) {
+			this.warning("No config file found; using default sort order.");
+			orderToUse = defaultSortOrder;
+		} else if (this.commandConfig.order === undefined) {
+			this.warning("No order in config; using default sort order.");
+			orderToUse = defaultSortOrder;
+		} else {
+			orderToUse = this.commandConfig.order;
+		}
+
+		const sorter = new TsConfigSorter(orderToUse);
 
 		const unsortedFiles: string[] = [];
 
@@ -98,7 +109,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 						: `Wrote sorted file: ${tsconfig}`,
 				);
 			} else {
-				const sorted = isSorted(tsconfig);
+				const sorted = sorter.isSorted(tsconfig);
 				if (!sorted) {
 					unsortedFiles.push(tsconfig);
 					this.errorLog(`Not sorted! ${tsconfig}`);
@@ -111,5 +122,6 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 				exit: 1,
 			});
 		}
+		this.log("All files sorted.");
 	}
 }
