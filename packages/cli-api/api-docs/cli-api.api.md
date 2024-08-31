@@ -72,7 +72,7 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     // (undocumented)
     init(): Promise<void>;
     // (undocumented)
-    protected loadConfig(): Promise<C | undefined>;
+    protected loadConfig(filePath?: string): Promise<C | undefined>;
 }
 
 // @beta
@@ -84,6 +84,17 @@ export abstract class CommandWithoutConfig<T extends typeof Command & {
 
 // @beta (undocumented)
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
+
+// @beta (undocumented)
+export const ConfigFileFlag: FlagDefinition<string, ConfigFlagConfig, {
+multiple: false;
+requiredOrDefaulted: false;
+}>;
+
+// @beta (undocumented)
+export type ConfigFlagConfig = {
+    exists?: boolean;
+};
 
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
