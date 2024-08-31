@@ -541,6 +541,9 @@ importers:
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
+      sort-package-json:
+        specifier: 2.10.0
+        version: 2.10.0
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.3
@@ -575,9 +578,6 @@ importers:
       serve:
         specifier: ^14.2.3
         version: 14.2.3
-      sort-package-json:
-        specifier: 2.10.0
-        version: 2.10.0
       start-server-and-test:
         specifier: ^2.0.3
         version: 2.0.5
@@ -3006,6 +3006,9 @@ packages:
 
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+
+  '@types/node@18.19.47':
+    resolution: {integrity: sha512-1f7dB3BL/bpd9tnDJrrHb66Y+cVrhxSOTGorRNdHwYTUlTay3HuTDPKo9a/4vX9pMQkhYBcAbL4jQdNlhCFP9A==}
 
   '@types/node@20.15.0':
     resolution: {integrity: sha512-eQf4OkH6gA9v1W0iEpht/neozCsZKMTK+C4cU6/fv7wtJCCL8LEQ4hie2Ln8ZP/0YYM2xGj7//f8xyqItkJ6QA==}
@@ -8635,6 +8638,9 @@ packages:
   underscore@1.13.7:
     resolution: {integrity: sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==}
 
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   undici-types@6.13.0:
     resolution: {integrity: sha512-xtFJHudx8S2DSoujjMd1WeWvn7KKWFRESZTMeL1RptAYERu29D6jphMjjY+vn96jvN3kVPDNxU/E13VTaXj6jg==}
 
@@ -13218,6 +13224,11 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
+  '@types/node@18.19.47':
+    dependencies:
+      undici-types: 5.26.5
+    optional: true
+
   '@types/node@20.15.0':
     dependencies:
       undici-types: 6.13.0
@@ -13274,7 +13285,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 22.5.1
+      '@types/node': 18.19.47
     optional: true
 
   '@ungap/structured-clone@1.2.0': {}
@@ -20331,6 +20342,9 @@ snapshots:
       which-boxed-primitive: 1.0.2
 
   underscore@1.13.7: {}
+
+  undici-types@5.26.5:
+    optional: true
 
   undici-types@6.13.0: {}
 

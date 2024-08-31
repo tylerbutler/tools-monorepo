@@ -137,7 +137,7 @@ export interface PolicyFailure {
 /**
  * @alpha
  */
-export interface PolicyFixResult extends PolicyFailure {
+export interface PolicyFixResult extends Omit<PolicyFailure, "autoFixable"> {
 	resolved: boolean;
 }
 
