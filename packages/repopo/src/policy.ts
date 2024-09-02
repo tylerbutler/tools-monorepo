@@ -87,9 +87,9 @@ export interface RepoPolicy<C = any | undefined> {
 	 */
 	handler: PolicyHandler<C>;
 
-	/**
-	 * True if the handler can resolve policy violations automatically.
-	 */
+	// /**
+	//  * True if the handler can resolve policy violations automatically.
+	//  */
 	// handlerCanResolve: boolean;
 
 	/**
@@ -116,7 +116,6 @@ export class RepoPolicyClass implements RepoPolicy {
 		public readonly name: string,
 		public readonly match: RegExp,
 		public handler: PolicyHandler,
-		// public handlerCanResolve: boolean,
 		public resolver?: PolicyStandaloneResolver,
 	) {
 		// empty
@@ -140,6 +139,14 @@ export interface PolicyFailure {
  */
 export interface PolicyFixResult extends PolicyFailure {
 	resolved: boolean;
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: type guard
+export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
+	if (typeof toCheck !== "object") {
+		return false;
+	}
+	return "resolved" in toCheck;
 }
 
 // export const commonMatchPatterns = {

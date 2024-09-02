@@ -44,7 +44,7 @@
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
 		"dill": "./bin/dev.js",
-		"format": "sort-package-json && biome check . --linter-enabled=false --write",
+		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",

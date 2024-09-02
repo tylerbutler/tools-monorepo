@@ -1,6 +1,5 @@
-import { readFile, writeFile } from "node:fs/promises";
-import equal from "fast-deep-equal";
-import { readJson, writeJson } from "fs-extra/esm";
+import { updatePackageJsonFile } from "@tylerbu/cli-api";
+import { readJson } from "fs-extra/esm";
 import { sortPackageJson } from "sort-package-json";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
@@ -12,19 +11,17 @@ export const PackageJsonSortedPolicy: RepoPolicy = {
 	name: "PackageJsonSortedPolicy",
 	match: /(^|\/)package\.json/i,
 	handler: async ({ file, resolve }) => {
-		const json: PackageJson = await readJson(file, { encoding: "utf8" });
-		const jsonString = JSON.stringify(json);
-		const sorted = sortPackageJson(jsonString);
+		const json: PackageJson = await readJson(file);
+		const sortedJson = sortPackageJson(json);
+		const isSorted = JSON.stringify(sortedJson) === JSON.stringify(json);
 
-		if (jsonString === sorted) {
+		if (isSorted) {
 			return true;
 		}
 
 		if (resolve) {
 			try {
-				// await writeJson(file, sorted, { encoding: "utf8", spaces: "\t" });
-				const toWrite = JSON.stringify(JSON.parse(jsonString), undefined, "\t");
-				await writeFile(file, toWrite, { encoding: "utf8" });
+				await updatePackageJsonFile(file, (json) => json, { sort: true });
 				const result: PolicyFixResult = {
 					name: PackageJsonSortedPolicy.name,
 					file,
@@ -41,14 +38,13 @@ export const PackageJsonSortedPolicy: RepoPolicy = {
 				};
 				return result;
 			}
+		} else {
+			const result: PolicyFailure = {
+				name: PackageJsonSortedPolicy.name,
+				file,
+				autoFixable: true,
+			};
+			return result;
 		}
-
-		const result: PolicyFailure = {
-			name: PackageJsonSortedPolicy.name,
-			file,
-			autoFixable: true,
-			errorMessage: "package.json not sorted.",
-		};
-		return result;
 	},
 };
