@@ -334,9 +334,13 @@ export class CheckPolicy extends GitCommand<
 					const messages = new StringBuilder();
 					if (isPolicyFixResult(result)) {
 						if (result.resolved) {
-							messages.append(`Resolved unsorted package.json: ${result.file}`);
+							messages.append(
+								`Resolved ${policy.name} policy failure for file: ${result.file}`,
+							);
 						} else {
-							messages.append(`Failed to automatically fix ${result.file}`);
+							messages.append(
+								`Error when trying to fix ${policy.name} policy failure in ${result.file}`,
+							);
 							process.exitCode = 1;
 						}
 					} else {
