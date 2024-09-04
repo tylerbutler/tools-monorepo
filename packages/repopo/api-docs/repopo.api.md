@@ -43,7 +43,7 @@ export interface PolicyFailure {
     // (undocumented)
     autoFixable?: boolean | undefined;
     // (undocumented)
-    errorMessage?: string;
+    errorMessage?: string | undefined;
     // (undocumented)
     file: string;
     // (undocumented)
