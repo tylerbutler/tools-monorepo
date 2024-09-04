@@ -87,7 +87,6 @@ export interface RepoPolicy<C = any | undefined> {
 	 */
 	handler: PolicyHandler<C>;
 
-
 	/**
 	 * A resolver function that can be used to automatically address the policy violation.
 	 *
