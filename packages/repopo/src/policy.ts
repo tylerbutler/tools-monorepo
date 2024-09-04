@@ -126,7 +126,7 @@ export interface PolicyFailure {
 	name: PolicyName;
 	file: string;
 	autoFixable?: boolean | undefined;
-	errorMessage?: string;
+	errorMessage?: string | undefined;
 }
 
 /**
