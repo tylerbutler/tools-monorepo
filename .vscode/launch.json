@@ -53,7 +53,22 @@
 			"skipFiles": ["<node_internals>/**"],
 			"type": "node",
 		},
-
+		{
+			"name": "repopo",
+			"request": "launch",
+			"program": "${workspaceFolder}/packages/repopo/bin/dev.js",
+			"args": ["check", "-v"],
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+		},
+		{
+			"name": "repopo fix",
+			"request": "launch",
+			"program": "${workspaceFolder}/packages/repopo/bin/dev.js",
+			"args": ["check", "-v", "--fix"],
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+		},
 		{
 			"name": "dill: astro dev",
 			"command": "./node_modules/.bin/astro dev",

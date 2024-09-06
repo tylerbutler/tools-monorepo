@@ -27,6 +27,10 @@ esm/index.d.ts
 esm/index.d.ts.map
 esm/index.js
 esm/index.js.map
+esm/json.d.ts
+esm/json.d.ts.map
+esm/json.js
+esm/json.js.map
 esm/logger.d.ts
 esm/logger.d.ts.map
 esm/logger.js

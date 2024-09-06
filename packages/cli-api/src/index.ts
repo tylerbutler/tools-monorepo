@@ -14,6 +14,12 @@ export {
 	revList,
 	shortCommit,
 } from "./git.js";
+export {
+	readJsonWithIndent,
+	updatePackageJsonFile,
+	type JsonWriteOptions,
+	type PackageTransformer,
+} from "./json.js";
 export type {
 	ErrorLoggingFunction,
 	LoggingFunction,
