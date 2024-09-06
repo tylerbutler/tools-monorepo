@@ -1,6 +1,7 @@
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
+import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
 import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 /**
@@ -87,11 +88,6 @@ export interface RepoPolicy<C = any | undefined> {
 	handler: PolicyHandler<C>;
 
 	/**
-	 * True if the handler can resolve policy violations automatically.
-	 */
-	// handlerCanResolve: boolean;
-
-	/**
 	 * A resolver function that can be used to automatically address the policy violation.
 	 *
 	 * @param file - Repo-relative path to the file to check.
@@ -115,7 +111,6 @@ export class RepoPolicyClass implements RepoPolicy {
 		public readonly name: string,
 		public readonly match: RegExp,
 		public handler: PolicyHandler,
-		// public handlerCanResolve: boolean,
 		public resolver?: PolicyStandaloneResolver,
 	) {
 		// empty
@@ -130,8 +125,8 @@ export class RepoPolicyClass implements RepoPolicy {
 export interface PolicyFailure {
 	name: PolicyName;
 	file: string;
-	autoFixable: boolean | undefined;
-	errorMessage?: string;
+	autoFixable?: boolean | undefined;
+	errorMessage?: string | undefined;
 }
 
 /**
@@ -139,6 +134,14 @@ export interface PolicyFailure {
  */
 export interface PolicyFixResult extends PolicyFailure {
 	resolved: boolean;
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: type guard
+export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
+	if (typeof toCheck !== "object") {
+		return false;
+	}
+	return "resolved" in toCheck;
 }
 
 // export const commonMatchPatterns = {
@@ -165,5 +168,6 @@ export const DefaultPolicies: RepoPolicy[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
+	PackageJsonSortedPolicy,
 	SortTsconfigs,
 ];
