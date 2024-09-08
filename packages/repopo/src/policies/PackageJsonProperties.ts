@@ -1,6 +1,11 @@
 import { readJson, writeJson } from "fs-extra/esm";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
+import type {
+	PolicyFailure,
+	PolicyFixResult,
+	PolicyHandlerConfig,
+	RepoPolicy,
+} from "../policy.js";
 
 /**
  * @alpha
@@ -12,7 +17,7 @@ export type PackageJsonProperty = string;
  *
  * @alpha
  */
-export interface PackageJsonPropertiesSettings {
+export interface PackageJsonPropertiesSettings extends PolicyHandlerConfig {
 	/**
 	 * Sets a package.json property to the string value provided. The string value will be used verbatim.
 	 */

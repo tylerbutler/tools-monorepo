@@ -19,11 +19,11 @@ export interface OptionalPolicyConfig {
     // (undocumented)
     policies?: RepoPolicy[];
     // (undocumented)
-    policySettings?: PerPolicySettings | undefined;
+    policySettings: PolicyHandlerConfigUnion;
 }
 
 // @alpha
-export interface PackageJsonPropertiesSettings {
+export interface PackageJsonPropertiesSettings extends PolicyHandlerConfig {
     verbatim: Record<PackageJsonProperty, string>;
 }
 
@@ -31,9 +31,7 @@ export interface PackageJsonPropertiesSettings {
 export type PackageJsonProperty = string;
 
 // @alpha (undocumented)
-export type PerPolicySettings = ({
-    PackageJsonProperties: PackageJsonPropertiesSettings;
-} & Record<PolicyName, unknown>) | undefined;
+export type PerPolicySettings = PolicyHandlerConfigUnion;
 
 // @alpha
 export type PolicyConfig = RequireAtLeastOne<OptionalPolicyConfig, "policies" | "includeDefaultPolicies">;
@@ -78,7 +76,7 @@ export type PolicyName = string;
 export type PolicyStandaloneResolver<C = unknown | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
 
 // @alpha
-export interface RepoPolicy<C = any | undefined> {
+export interface RepoPolicy<C extends PolicyHandlerConfig = any> {
     description?: string;
     handler: PolicyHandler<C>;
     match: RegExp;

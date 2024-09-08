@@ -46,6 +46,9 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type PolicyHandlerConfig = any;
+
 /**
  * A RepoPolicy checks and applies policies to files in the repository.
  *
@@ -60,7 +63,7 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
  * @alpha
  */
 
-// biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export interface RepoPolicy<C = any | undefined> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
