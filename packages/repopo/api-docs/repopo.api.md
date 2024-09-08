@@ -4,26 +4,35 @@
 
 ```ts
 
-import type { RequireAtLeastOne } from 'type-fest';
 import { run } from '@oclif/core';
+import type { SetRequired } from 'type-fest';
 
 // @alpha
 export const DefaultPolicies: RepoPolicy[];
+
+// @alpha
+export type HandlerConfigMap = PolicyConfig["policies"] extends (infer U)[] ? U extends RepoPolicy<infer C> ? Record<U["name"], C> : never : never;
+
+// @alpha (undocumented)
+export type HandlerConfigMap2<P extends PolicyConfig["policies"]> = P extends (infer U)[] ? U extends RepoPolicy<infer C> ? Record<U["name"], C> : never : never;
+
+// @public
+export type MergeRecords<T> = T extends Record<string, any> ? {
+    [K in keyof T]: T[K];
+} : never;
 
 // @alpha (undocumented)
 export interface OptionalPolicyConfig {
     excludeFiles?: (string | RegExp)[];
     excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
     // (undocumented)
-    includeDefaultPolicies?: boolean;
-    // (undocumented)
     policies?: RepoPolicy[];
     // (undocumented)
-    policySettings: PolicyHandlerConfigUnion;
+    policySettings?: PerPolicySettings;
 }
 
 // @alpha
-export interface PackageJsonPropertiesSettings extends PolicyHandlerConfig {
+export interface PackageJsonPropertiesSettings {
     verbatim: Record<PackageJsonProperty, string>;
 }
 
@@ -31,10 +40,10 @@ export interface PackageJsonPropertiesSettings extends PolicyHandlerConfig {
 export type PackageJsonProperty = string;
 
 // @alpha (undocumented)
-export type PerPolicySettings = PolicyHandlerConfigUnion;
+export type PerPolicySettings = MergeRecords<HandlerConfigMap>;
 
 // @alpha
-export type PolicyConfig = RequireAtLeastOne<OptionalPolicyConfig, "policies" | "includeDefaultPolicies">;
+export type PolicyConfig = SetRequired<OptionalPolicyConfig, "policies">;
 
 // @alpha
 export interface PolicyFailure {
@@ -55,7 +64,7 @@ export interface PolicyFixResult extends PolicyFailure {
 }
 
 // @alpha (undocumented)
-export interface PolicyFunctionArguments<C = unknown | undefined> {
+export interface PolicyFunctionArguments<C = any | undefined> {
     // (undocumented)
     config?: C;
     // (undocumented)
@@ -67,7 +76,7 @@ export interface PolicyFunctionArguments<C = unknown | undefined> {
 }
 
 // @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PolicyHandler<C = any | undefined> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
 
 // @alpha
 export type PolicyName = string;
@@ -76,7 +85,7 @@ export type PolicyName = string;
 export type PolicyStandaloneResolver<C = unknown | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
 
 // @alpha
-export interface RepoPolicy<C extends PolicyHandlerConfig = any> {
+export interface RepoPolicy<C = any | undefined> {
     description?: string;
     handler: PolicyHandler<C>;
     match: RegExp;

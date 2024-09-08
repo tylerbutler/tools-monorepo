@@ -14,7 +14,9 @@ export type PolicyName = string;
 /**
  * @alpha
  */
-export interface PolicyFunctionArguments<C = unknown | undefined> {
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export interface PolicyFunctionArguments<C = any | undefined> {
 	file: string;
 	root: string;
 	resolve: boolean;
@@ -26,7 +28,9 @@ export interface PolicyFunctionArguments<C = unknown | undefined> {
  *
  * @alpha
  */
-export type PolicyHandler<C = unknown | undefined> = (
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type PolicyHandler<C = any | undefined> = (
 	args: PolicyFunctionArguments<C>,
 ) => Promise<true | PolicyFailure | PolicyFixResult>;
 
@@ -47,7 +51,7 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export type PolicyHandlerConfig = any;
+// export type PolicyHandlerConfig = any;
 
 /**
  * A RepoPolicy checks and applies policies to files in the repository.
@@ -173,4 +177,4 @@ export const DefaultPolicies: RepoPolicy[] = [
 	PackageJsonProperties,
 	PackageJsonSortedPolicy,
 	SortTsconfigs,
-];
+] as const;

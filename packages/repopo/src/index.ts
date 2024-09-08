@@ -14,6 +14,9 @@ export type {
 	PolicyConfig,
 	OptionalPolicyConfig,
 	PerPolicySettings,
+	MergeRecords,
+	HandlerConfigMap,
+	HandlerConfigMap2,
 } from "./config.js";
 export type {
 	PackageJsonPropertiesSettings,

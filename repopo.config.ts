@@ -1,29 +1,42 @@
-import { DefaultPolicies, type PolicyConfig, type RepoPolicy } from "repopo";
+import {
+	DefaultPolicies,
+	type HandlerConfigMap2,
+	type MergeRecords,
+	type PerPolicySettings,
+	type PolicyConfig,
+	type RepoPolicy,
+} from "repopo";
+import { PackageJsonProperties } from "repopo/policies";
 
-const customPolicy2: RepoPolicy<{
+interface customConfig {
 	customBool2: boolean;
 	anotherProp2: number;
 	required: boolean;
-}> = {
-	name: "customHandler",
+}
+
+const customPolicy2: RepoPolicy<customConfig> = {
+	name: "customPolicy",
 	match: /.*/,
 	handler: async ({ file, resolve }) => {
 		return true;
 	},
 };
 
+const policies: RepoPolicy[] = [
+	// ...DefaultPolicies,
+	// customPolicy,
+	PackageJsonProperties,
+	customPolicy2,
+];
+
 const config: PolicyConfig = {
 	// includeDefaultPolicies: true,
 	// policies: [
 	// 	DefaultPolicies["no-js-file-extensions"]
 	// ],
-	policies: [
-		// ...DefaultPolicies,
-		// customPolicy,
-		customPolicy2,
-	],
+	policies,
 	excludePoliciesForFiles: {
-		NoJsFileExtensions: [".*/bin/.*js"],
+		ssd: [".*/bin/.*js"],
 		// PackageJsonProperties: ["package.json"],
 	},
 	policySettings: {

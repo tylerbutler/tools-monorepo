@@ -3,7 +3,7 @@ import type { PackageJson } from "type-fest";
 import type {
 	PolicyFailure,
 	PolicyFixResult,
-	PolicyHandlerConfig,
+	// PolicyHandlerConfig,
 	RepoPolicy,
 } from "../policy.js";
 
@@ -17,7 +17,7 @@ export type PackageJsonProperty = string;
  *
  * @alpha
  */
-export interface PackageJsonPropertiesSettings extends PolicyHandlerConfig {
+export interface PackageJsonPropertiesSettings {
 	/**
 	 * Sets a package.json property to the string value provided. The string value will be used verbatim.
 	 */

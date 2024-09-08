@@ -1,17 +1,12 @@
 import { type Logger, findGitRoot } from "@tylerbu/cli-api";
 import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
-import type { RequireAtLeastOne, SetOptional } from "type-fest";
+import type { RequireAtLeastOne, SetOptional, SetRequired } from "type-fest";
 import {
 	DefaultPolicies,
 	type PolicyHandler,
 	type PolicyName,
 	type RepoPolicy,
 } from "./policy.js";
-
-/**
- * @alpha
- */
-export type PerPolicySettings = PolicyHandlerConfigUnion;
 
 /**
  * @alpha
@@ -30,10 +25,10 @@ export interface OptionalPolicyConfig {
 	 * An object with a policy name as keys that map to an array of strings/regular expressions to
 	 * exclude that rule from being checked.
 	 */
-	excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-	includeDefaultPolicies?: boolean;
+	excludePoliciesForFiles?: Record<PolicyNames, (string | RegExp)[]>;
+	// includeDefaultPolicies?: boolean;
 
-	policySettings: PolicyHandlerConfigUnion;
+	policySettings?: PerPolicySettings;
 }
 
 /**
@@ -41,53 +36,62 @@ export interface OptionalPolicyConfig {
  *
  * @alpha
  */
-export type PolicyConfig = RequireAtLeastOne<
-	OptionalPolicyConfig,
-	"policies" | "includeDefaultPolicies"
->;
+export type PolicyConfig = SetRequired<OptionalPolicyConfig, "policies">;
 
 export const DefaultPolicyConfig: SetOptional<
 	Required<PolicyConfig>,
-	"policies" | "policySettings"
+	"policySettings"
 > = {
+	policies: DefaultPolicies,
 	excludeFiles: [],
 	excludePoliciesForFiles: {},
-	includeDefaultPolicies: true,
+	// includeDefaultPolicies: true,
 };
 
-/**
- * Utility type to stand in for PolicyHandler<C>.
- */
-type PolicyType<C> = PolicyHandler<C>;
-
-type ExtractPolicyTypes<T> = T extends { policies: Array<infer P> } ? P : never;
-
-/**
- * A utility type to extract the union of all Record<PolicyName, C> types
- * from PolicyType<C>
- */
-type ExtractPolicyConfig<T> = T extends PolicyType<infer C>
-	? Record<PolicyName, C>
+// Extract the name property from each RepoPolicy in the policies array
+type PolicyNames = PolicyConfig["policies"] extends (infer U)[]
+	? U extends { name: infer N }
+		? N
+		: never
 	: never;
 
 /**
- * This is the type of elements in the policies array of PolicyConfig.
- * In generic terms, this is the union of all C generic types.
+ * Utility type that maps each RepoPolicy in the PolicyConfig.policies to its C type
+ *
+ * Should be a `Record<RepoPolicyName, C>`
+ *
+ * @alpha
  */
-type AllPolicyTypes = ExtractPolicyTypes<PolicyConfig>;
+export type HandlerConfigMap = PolicyConfig["policies"] extends (infer U)[]
+	? U extends RepoPolicy<infer C>
+		? Record<U["name"], C>
+		: never
+	: never;
 
 /**
- * This is the union of all Record<PolicyName, C> types from AllPolicyTypes.
+ * @alpha
  */
-type PolicyHandlerConfigUnion = ExtractPolicyConfig<AllPolicyTypes>;
+export type HandlerConfigMap2<P extends PolicyConfig["policies"]> =
+	P extends (infer U)[]
+		? U extends RepoPolicy<infer C>
+			? Record<U["name"], C>
+			: never
+		: never;
 
-// type ExtractRecordUnion<T> = T extends Record<infer K, infer V> ? Record<K, V> : never;
+/**
+ * Merges all individual records into a single record type
+ *
+ * @public
+ */
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export type MergeRecords<T> = T extends Record<string, any>
+	? { [K in keyof T]: T[K] }
+	: never;
 
-// type AllPolicyRecordUnion = ExtractRecordUnion<AllPolicyConfigs>;
-
-// const a: AllPolicyRecordUnion = {
-
-// }
+/**
+ * @alpha
+ */
+export type PerPolicySettings = MergeRecords<HandlerConfigMap>;
 
 export async function loadConfig(
 	configName: string,
@@ -108,10 +112,10 @@ export async function loadConfig(
 		log.warning("No config found; using defaults.");
 	}
 	const finalConfig: PolicyConfig = config?.config ?? DefaultPolicies;
-	if (finalConfig.includeDefaultPolicies === true) {
-		finalConfig.policies ??= [];
-		finalConfig.policies.push(...DefaultPolicies);
-	}
+	// if (finalConfig.includeDefaultPolicies === true) {
+	// 	finalConfig.policies ??= [];
+	// 	finalConfig.policies.push(...DefaultPolicies);
+	// }
 
 	return finalConfig;
 }
