@@ -62,10 +62,8 @@ type PolicyNames = PolicyConfig["policies"] extends (infer U)[]
  *
  * @alpha
  */
-export type HandlerConfigMap = PolicyConfig["policies"] extends (infer U)[]
-	? U extends RepoPolicy<infer C>
-		? Record<U["name"], C>
-		: never
+export type HandlerConfigMap = U extends RepoPolicy<infer C>
+	? Record<U["name"], C>
 	: never;
 
 /**
