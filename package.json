@@ -59,10 +59,10 @@
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
 		"sort-tsconfig": "workspace:^",
-		"syncpack": "^12.3.2",
+		"syncpack": "^13.0.0",
 		"ts-node": "^10.9.2"
 	},
-	"packageManager": "pnpm@9.11.0",
+	"packageManager": "pnpm@9.11.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
 	"engines": {
 		"node": ">=18.0.0"
 	},
