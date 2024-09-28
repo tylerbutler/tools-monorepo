@@ -9,7 +9,7 @@ import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
  * A RepoPolicy that checks that the `repository.directory` property in package.json is set correctly. If the repository
  * field is a string instead of an object the package will be ignored.
  */
-export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
+export const PackageJsonRepoDirectoryProperty = {
 	name: "PackageJsonRepoDirectoryProperty",
 	match: /(^|\/)package\.json/i,
 	handler: async ({ file, root, resolve }) => {
@@ -52,4 +52,4 @@ export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
 
 		return true;
 	},
-};
+} as const satisfies RepoPolicy;

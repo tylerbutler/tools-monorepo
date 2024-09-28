@@ -1,19 +1,34 @@
-import { type Logger, findGitRoot } from "@tylerbu/cli-api";
-import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
-import type { RequireAtLeastOne, SetOptional, SetRequired } from "type-fest";
-import {
-	DefaultPolicies,
-	type PolicyHandler,
-	type PolicyName,
-	type RepoPolicy,
-} from "./policy.js";
+import type { RepoPolicy } from "./policy.js";
 
-/**
- * @alpha
- */
-export interface OptionalPolicyConfig {
-	// policies?: RepoPolicy[];
-	policies?: RepoPolicy[];
+// /**
+//  * A type representing policy configuration.
+//  *
+//  * @alpha
+//  */
+// export type PolicyConfig = SetRequired<OptionalPolicyConfig, "policies">;
+
+// export const DefaultPolicyConfig: SetOptional<
+// 	Required<PolicyConfig>,
+// 	"policySettings"
+// > = {
+// 	policies: DefaultPolicies,
+// 	excludeFiles: [],
+// 	excludePoliciesForFiles: {},
+// 	// includeDefaultPolicies: true,
+// };
+
+// Extract the 'name' property from each item in the policies array
+type PolicyName<P> = P extends { name: infer N } ? N : never;
+
+// Define a type that is an array of all the 'name' properties of the items in policies
+type PolicyNames<P extends RepoPolicy[]> = PolicyName<P[number]>;
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export interface PolicyConfig<
+	P extends RepoPolicy<unknown | undefined>[] = [],
+> {
+	// This interface contains an array of RepoPolicies, and each instance may have a different config type C
+	policies: RepoPolicy<unknown | undefined>[];
 
 	/**
 	 * An array of strings/regular expressions. Paths that match any of these expressions will be completely excluded from
@@ -25,102 +40,30 @@ export interface OptionalPolicyConfig {
 	 * An object with a policy name as keys that map to an array of strings/regular expressions to
 	 * exclude that rule from being checked.
 	 */
-	excludePoliciesForFiles?: Record<PolicyNames, (string | RegExp)[]>;
+	excludePoliciesForFiles?: Record<PolicyNames<P>, (string | RegExp)[]>;
 	// includeDefaultPolicies?: boolean;
 
-	policySettings?: PerPolicySettings;
+	// This type of this argument to be a union of all types Record<Name of RepoPolicy, C of RepoPolicy>
+	perPolicyConfig?: InferPerPolicyConfig<P>;
 }
 
-/**
- * A type representing policy configuration.
- *
- * @alpha
- */
-export type PolicyConfig = SetRequired<OptionalPolicyConfig, "policies">;
-
-export const DefaultPolicyConfig: SetOptional<
-	Required<PolicyConfig>,
-	"policySettings"
-> = {
-	policies: DefaultPolicies,
-	excludeFiles: [],
-	excludePoliciesForFiles: {},
-	// includeDefaultPolicies: true,
-};
-
-// Extract the name property from each RepoPolicy in the policies array
-type PolicyNames = PolicyConfig["policies"] extends (infer U)[]
-	? U extends { name: infer N }
-		? N
-		: never
-	: never;
-
-/**
- * Utility type that maps each RepoPolicy in the PolicyConfig.policies to its C type
- *
- * Should be a `Record<RepoPolicyName, C>`
- *
- * @alpha
- */
-export type HandlerConfigMap = U extends RepoPolicy<infer C>
-	? Record<U["name"], C>
-	: never;
-
-/**
- * @alpha
- */
-export type HandlerConfigMap2<P extends PolicyConfig["policies"]> =
-	P extends (infer U)[]
-		? U extends RepoPolicy<infer C>
-			? Record<U["name"], C>
-			: never
-		: never;
-
-/**
- * Merges all individual records into a single record type
- *
- * @public
- */
+// Define a type to extract the name and config type from a Policy
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export type MergeRecords<T> = T extends Record<string, any>
-	? { [K in keyof T]: T[K] }
+type PolicyConfigMap<P extends RepoPolicy<any>> = P extends RepoPolicy<infer C>
+	? Record<P["name"], C>
 	: never;
 
-/**
- * @alpha
- */
-export type PerPolicySettings = MergeRecords<HandlerConfigMap>;
+// Define a type to infer the perPolicyConfig type from an array of policies
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+type InferPerPolicyConfig<P extends RepoPolicy<any>[]> = {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	[K in keyof P]: P[K] extends RepoPolicy<any> ? PolicyConfigMap<P[K]> : never;
+}[number];
 
-export async function loadConfig(
-	configName: string,
-	log: Logger,
-): Promise<PolicyConfig> {
-	const gitRoot = await findGitRoot();
-	// this.configPath ??= this.config.configDir; // path.join(this.config.configDir, "config.ts");
-	const explorer = cosmiconfig(configName, {
-		searchStrategy: "global",
-		stopDir: gitRoot,
-	});
-	log.verbose(`Looking for '${configName}' config at '${gitRoot}'`);
-	const config: CosmiconfigResult = await explorer.search(gitRoot);
-	if (config?.config !== undefined) {
-		log.verbose(`Found config at ${config.filepath}`);
-	}
-	if (config?.config === undefined) {
-		log.warning("No config found; using defaults.");
-	}
-	const finalConfig: PolicyConfig = config?.config ?? DefaultPolicies;
-	// if (finalConfig.includeDefaultPolicies === true) {
-	// 	finalConfig.policies ??= [];
-	// 	finalConfig.policies.push(...DefaultPolicies);
-	// }
-
-	return finalConfig;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function defineConfig<P extends RepoPolicy<any>[]>({
+	policies,
+	perPolicyConfig,
+}: PolicyConfig<P>) {
+	return { policies, perPolicyConfig };
 }
-
-// export function getPolicyConfigFor<H extends PolicyHandler<C>>(
-// 	policy: H,
-// 	config: PolicyConfig,
-// ): C {
-// 	return config.policySettings?.
-// }

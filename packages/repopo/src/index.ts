@@ -10,13 +10,9 @@ export type {
 	RepoPolicy,
 } from "./policy.js";
 export { DefaultPolicies } from "./policy.js";
-export type {
-	PolicyConfig,
-	OptionalPolicyConfig,
-	PerPolicySettings,
-	MergeRecords,
-	HandlerConfigMap,
-	HandlerConfigMap2,
+export {
+	defineConfig,
+	type PolicyConfig,
 } from "./config.js";
 export type {
 	PackageJsonPropertiesSettings,

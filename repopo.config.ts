@@ -1,12 +1,9 @@
+import { type PolicyConfig, type RepoPolicy, defineConfig } from "repopo";
 import {
-	DefaultPolicies,
-	type HandlerConfigMap2,
-	type MergeRecords,
-	type PerPolicySettings,
-	type PolicyConfig,
-	type RepoPolicy,
-} from "repopo";
-import { PackageJsonProperties } from "repopo/policies";
+	PackageJsonProperties,
+	PackageJsonSortedPolicy,
+	SortTsconfigs,
+} from "repopo/policies";
 
 interface customConfig {
 	customBool2: boolean;
@@ -14,32 +11,33 @@ interface customConfig {
 	required: boolean;
 }
 
-const customPolicy2: RepoPolicy<customConfig> = {
-	name: "customPolicy",
+const customPolicy2 = {
+	name: "customPolicy2",
 	match: /.*/,
 	handler: async ({ file, resolve }) => {
 		return true;
 	},
-};
+} as const satisfies RepoPolicy<customConfig | undefined>;
 
-const policies: RepoPolicy[] = [
-	// ...DefaultPolicies,
-	// customPolicy,
-	PackageJsonProperties,
-	customPolicy2,
-];
-
-const config: PolicyConfig = {
+const config = defineConfig({
 	// includeDefaultPolicies: true,
 	// policies: [
 	// 	DefaultPolicies["no-js-file-extensions"]
 	// ],
-	policies,
+	policies: [
+		PackageJsonProperties,
+		customPolicy2,
+		SortTsconfigs,
+		PackageJsonSortedPolicy,
+	],
 	excludePoliciesForFiles: {
-		ssd: [".*/bin/.*js"],
+		PackageJsonProperties: [".*/bin/.*js"],
 		// PackageJsonProperties: ["package.json"],
 	},
-	policySettings: {
+	perPolicyConfig: {
+		customPolicy2: {
+			customBool2: true,
+		},
 		PackageJsonProperties: {
 			verbatim: {
 				license: "MIT",
@@ -47,10 +45,10 @@ const config: PolicyConfig = {
 				bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
 			},
 		},
-		customPolicy2: {
-			anotherProp: "foo",
-		},
+		// customPolicy2: {
+		// 	anotherProp2: 1,
+		// },
 	},
-};
+});
 
 export default config;

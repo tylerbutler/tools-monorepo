@@ -5,8 +5,7 @@ import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
 import chalk from "chalk";
-import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
-import { DefaultPolicyConfig, type PolicyConfig } from "../config.js";
+import type { PolicyConfig } from "../config.js";
 import {
 	type PolicyHandlerPerfStats,
 	logStats,
@@ -14,7 +13,7 @@ import {
 	runWithPerf,
 } from "../perf.js";
 import {
-	DefaultPolicies,
+	// DefaultPolicies,
 	type PolicyName,
 	type RepoPolicy,
 	isPolicyFixResult,

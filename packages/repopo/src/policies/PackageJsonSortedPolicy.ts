@@ -48,4 +48,4 @@ export const PackageJsonSortedPolicy: RepoPolicy = {
 			return result;
 		}
 	},
-};
+} as const satisfies RepoPolicy;

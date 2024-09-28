@@ -7,7 +7,7 @@ import type { PolicyFailure, RepoPolicy } from "../policy.js";
  * by node. Using explicit file extensions reduces ambiguity and ensures a CJS file isn't unexpectedly treated like an
  * ESM file.
  */
-export const NoJsFileExtensions: RepoPolicy = {
+export const NoJsFileExtensions = {
 	name: "NoJsFileExtensions",
 	match: /(^|\/)[^/]+\.js$/i,
 	// biome-ignore lint/suspicious/useAwait: <explanation>
@@ -22,4 +22,4 @@ export const NoJsFileExtensions: RepoPolicy = {
 		};
 		return result;
 	},
-};
+} as const satisfies RepoPolicy;
