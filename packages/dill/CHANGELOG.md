@@ -1,5 +1,21 @@
 # dill-cli
 
+## 0.1.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`cbdec3f`](https://github.com/tylerbutler/tools-monorepo/commit/cbdec3f7b3daa4ec642b44a5de046fff8420f15a) [`d55c982`](https://github.com/tylerbutler/tools-monorepo/commit/d55c982f960b56a79f0e0d35dd9102a25882032f)
+
+</small>
+
+- `@tylerbu/cli-api@0.4.0`
+
+</details>
+
 ## 0.1.1
 
 ### Patch Changes

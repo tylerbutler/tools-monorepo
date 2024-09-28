@@ -1,5 +1,28 @@
 # repopo
 
+## 0.2.0
+
+### Minor Changes
+
+- PackageJsonSortedPolicy keeps package.json files sorted _[`#114`](https://github.com/tylerbutler/tools-monorepo/pull/114) [`0664ac5`](https://github.com/tylerbutler/tools-monorepo/commit/0664ac5731c5dd23bc1c21070fe880335f46489b) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The new `PackageJsonSortedPolicy` policy enforces that package.json files are always sorted according to sort-package-json.
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`cbdec3f`](https://github.com/tylerbutler/tools-monorepo/commit/cbdec3f7b3daa4ec642b44a5de046fff8420f15a) [`d55c982`](https://github.com/tylerbutler/tools-monorepo/commit/d55c982f960b56a79f0e0d35dd9102a25882032f) [`ddcbd48`](https://github.com/tylerbutler/tools-monorepo/commit/ddcbd48a161d8be666ff537316fa018d8c0b7ad8)
+
+</small>
+
+- `@tylerbu/cli-api@0.4.0`
+- `sort-tsconfig@0.1.0`
+
+</details>
+
 ## 0.1.1
 
 ### Patch Changes
