@@ -1,11 +1,17 @@
 import { existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { Args, type Command, Flags } from "@oclif/core";
-import { BaseCommand, isSorted, sortTsconfigFile } from "@tylerbu/cli-api";
+import { CommandWithConfig, ConfigFileFlag } from "@tylerbu/cli-api";
 import { globby } from "globby";
+import { TsConfigSorter } from "../api.js";
+import type { SortTsconfigConfiguration } from "../config.js";
+import { type OrderList, defaultSortOrder } from "../orders.js";
 
-export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
-	static override readonly aliases = ["sort:tsconfigs"];
+export default class SortTsconfigCommand extends CommandWithConfig<
+	typeof SortTsconfigCommand,
+	SortTsconfigConfiguration
+> {
+	static override readonly aliases = ["sort:tsconfigs", "sort-tsconfigs"];
 
 	static override readonly summary =
 		"Sorts a tsconfig file in place, or check that one is sorted.";
@@ -18,12 +24,14 @@ export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 			description:
 				"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
 			required: true,
-			parse: async (input) => {
+			parse: async (input): Promise<string[]> => {
 				const patterns: string[] = [];
 				if (existsSync(input)) {
 					const stats = statSync(input);
 					if (stats.isDirectory()) {
 						patterns.push(path.join(input, "tsconfig.json"));
+					} else {
+						patterns.push(input);
 					}
 				} else {
 					patterns.push(input);
@@ -33,6 +41,7 @@ export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 				return results ?? [];
 			},
 		})(),
+		...CommandWithConfig.args,
 	};
 
 	static override readonly flags = {
@@ -41,8 +50,9 @@ export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 				"Write the sorted contents back to the file. Without this flag, the command only checks that the file is sorted.",
 			default: false,
 		}),
-		...BaseCommand.flags,
-	};
+		...CommandWithConfig.flags,
+		config: ConfigFileFlag,
+	} as const;
 
 	static override readonly examples: Command.Example[] = [
 		{
@@ -62,6 +72,7 @@ export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 		},
 	];
 
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: refactor when possible
 	// biome-ignore lint/suspicious/useAwait: inherited method
 	async run(): Promise<void> {
 		const { tsconfig: tsconfigs } = this.args;
@@ -75,18 +86,31 @@ export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 			this.error("No files found matching arguments");
 		}
 
+		let orderToUse: OrderList;
+		if (this.commandConfig === undefined) {
+			this.warning("No config file found; using default sort order.");
+			orderToUse = defaultSortOrder;
+		} else if (this.commandConfig.order === undefined) {
+			this.warning("No order in config; using default sort order.");
+			orderToUse = defaultSortOrder;
+		} else {
+			orderToUse = this.commandConfig.order;
+		}
+
+		const sorter = new TsConfigSorter(orderToUse);
+
 		const unsortedFiles: string[] = [];
 
 		for (const tsconfig of tsconfigs) {
 			if (write) {
-				const result = sortTsconfigFile(tsconfig, write);
+				const result = sorter.sortTsconfigFile(tsconfig, write);
 				this.log(
 					result.alreadySorted
 						? `File already sorted: ${tsconfig}`
 						: `Wrote sorted file: ${tsconfig}`,
 				);
 			} else {
-				const sorted = isSorted(tsconfig);
+				const sorted = sorter.isSorted(tsconfig);
 				if (!sorted) {
 					unsortedFiles.push(tsconfig);
 					this.errorLog(`Not sorted! ${tsconfig}`);
@@ -99,5 +123,6 @@ export default class SortTsconfig extends BaseCommand<typeof SortTsconfig> {
 				exit: 1,
 			});
 		}
+		this.log("All files sorted.");
 	}
 }

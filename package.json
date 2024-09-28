@@ -37,7 +37,8 @@
 		"prepare": "lefthook install",
 		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
-		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
+		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
+		"syncpack:fix": "pnpm syncpack fix-mismatches && pnpm syncpack set-semver-ranges",
 		"test": "fluid-build . --task test",
 		"test:coverage": "fluid-build . --task test:coverage"
 	},
@@ -57,6 +58,7 @@
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
+		"sort-tsconfig": "workspace:^",
 		"syncpack": "^13.0.0",
 		"ts-node": "^10.9.2"
 	},
@@ -84,7 +86,7 @@
 				"script": false
 			},
 			"check": {
-				"dependsOn": ["^check", "check:all"],
+				"dependsOn": ["sort-tsconfig#build", "^check", "check:all"],
 				"script": false
 			},
 			"check:policy": {
