@@ -11,6 +11,7 @@
 		"ignore": [
 			// build output
 			"_temp/**",
+			".coverage/**",
 			"built/**",
 			"dist/**",
 			"esm/**",
@@ -22,7 +23,7 @@
 	},
 	"formatter": {
 		"enabled": true,
-		"ignore": ["**/_snapshots/**"],
+		"ignore": ["**/__snapshots__/**"],
 		"formatWithErrors": true,
 		"indentStyle": "tab",
 		"lineEnding": "lf",
@@ -81,12 +82,18 @@
 			},
 		},
 		{
-			// these packages are node-only
+			// node-only rules
 			"include": [
+				// these packages are node-only
 				"**/cli/**/*.ts",
 				"**/cli-api/**/*.ts",
 				"**/dill/**/*.ts",
 				"**/repopo/**/*.ts",
+				"**/sort-tsconfig/**/*.ts",
+
+				// tests are allowed to use node
+				"**/*.test.ts",
+				"**/*.mochatest.ts",
 			],
 			"linter": {
 				"rules": {

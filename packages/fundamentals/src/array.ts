@@ -53,3 +53,13 @@ export function isSorted<T>(
 			})
 	);
 }
+
+/**
+ * @internal
+ */
+export const numberSort = (a: number, b: number) => a - b;
+
+/**
+ * @internal
+ */
+export const wordSort = (a: string, b: string) => a.localeCompare(b);

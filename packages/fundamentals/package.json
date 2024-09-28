@@ -1,8 +1,8 @@
 {
 	"name": "@tylerbu/fundamentals",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Fundamental functions and classes that I often need in my projects. Zero dependencies.",
-	"homepage": "https://github.com/tylerbutler/tylerbu-cli",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": "tylerbutler/tylerbu-cli",
 	"license": "MIT",
@@ -43,7 +43,7 @@
 		"docs:api:main": "api-extractor run --local",
 		"docs:api:set": "api-extractor run --local --config api-extractor.set.json",
 		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"format": "sort-package-json && biome check . --linter-enabled=false --write",
+		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
@@ -60,12 +60,13 @@
 		"concurrently": "^8.2.2",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
+		"tempy": "^3.1.0",
 		"typedoc": "^0.26.5",
 		"typedoc-plugin-markdown": "^4.2.5",
 		"typescript": "~5.5.4",
 		"vitest": "^2.0.0"
 	},
-	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
+	"packageManager": "pnpm@9.11.0",
 	"engines": {
 		"node": ">=18.0.0"
 	},

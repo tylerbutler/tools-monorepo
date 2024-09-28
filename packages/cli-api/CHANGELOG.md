@@ -1,5 +1,37 @@
 # @tylerbu/cli-api
 
+## 0.4.0
+
+### Minor Changes
+
+- Functions for processing JSON _[`#116`](https://github.com/tylerbutler/tools-monorepo/pull/116) [`cbdec3f`](https://github.com/tylerbutler/tools-monorepo/commit/cbdec3f7b3daa4ec642b44a5de046fff8420f15a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The following functions are now available to work with JSON files:
+
+  ```ts
+  export function readJsonWithIndent(filePath: PathLike): Promise<{
+    json: unknown;
+    indent: Indent;
+  }>;
+
+  export function updatePackageJsonFile<T extends PackageJson = PackageJson>(
+    packagePath: string,
+    packageTransformer: PackageTransformer,
+    options?: JsonWriteOptions,
+  ): Promise<void>;
+  ```
+
+- Add custom flag for config files _[`#112`](https://github.com/tylerbutler/tools-monorepo/pull/112) [`d55c982`](https://github.com/tylerbutler/tools-monorepo/commit/d55c982f960b56a79f0e0d35dd9102a25882032f) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The `ConfigFileFlag` flag can be used with `CommandWithConfig` subclasses to enable passing a specific path to a config
+  file.
+
+## 0.3.1
+
+### Patch Changes
+
+- Fix homepage URL _[`#99`](https://github.com/tylerbutler/tools-monorepo/pull/99) [`0654323`](https://github.com/tylerbutler/tools-monorepo/commit/06543231947fa5267863e5467d5837a51cf3d44b) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.3.0
 
 ### Minor Changes

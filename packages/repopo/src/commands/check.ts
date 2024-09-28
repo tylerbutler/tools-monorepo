@@ -2,6 +2,7 @@ import fs from "node:fs";
 import { EOL as newline } from "node:os";
 import path from "node:path";
 import { Flags } from "@oclif/core";
+import { StringBuilder } from "@rushstack/node-core-library";
 import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
 import chalk from "chalk";
 import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
@@ -10,6 +11,7 @@ import {
 	DefaultPolicies,
 	type PolicyName,
 	type RepoPolicy,
+	isPolicyFixResult,
 } from "../policy.js";
 
 type PolicyAction = "handle" | "resolve";
@@ -112,7 +114,7 @@ export class CheckPolicy extends GitCommand<
 	// private policies: RepoPolicy[] | undefined;
 	private commandContext: CheckPolicyCommandContext | undefined;
 
-	protected override get defaultConfig() {
+	public override get defaultConfig() {
 		return DefaultPolicyConfig;
 	}
 
@@ -324,14 +326,30 @@ export class CheckPolicy extends GitCommand<
 							config: this.commandConfig?.policySettings?.[policy.name],
 						}),
 					);
-					if (result !== true) {
-						const autoFixable = result.autoFixable
-							? chalk.green(" (autofixable)")
-							: "";
-						let output = `'${policy.name}' policy failure${autoFixable}: ${result.file}${newline}${result.errorMessage}`;
+
+					if (result === true) {
+						return;
+					}
+
+					const messages = new StringBuilder();
+					if (isPolicyFixResult(result)) {
+						if (result.resolved) {
+							messages.append(
+								`Resolved ${policy.name} policy failure for file: ${result.file}`,
+							);
+						} else {
+							messages.append(
+								`Error when trying to fix ${policy.name} policy failure in ${result.file}`,
+							);
+							process.exitCode = 1;
+						}
+					} else {
+						// result must be a PolicyFailureResult; check if there is a standalone resolver.
 						const { resolver } = policy;
+
 						if (this.flags.fix && resolver !== undefined) {
-							output += `${newline}attempting to resolve: ${relPath}`;
+							// Resolve the failure
+							messages.append(`${newline}attempting to resolve: ${relPath}`);
 							const resolveResult = await runWithPerf(
 								policy.name,
 								"resolve",
@@ -342,21 +360,33 @@ export class CheckPolicy extends GitCommand<
 								resolveResult.errorMessage !== undefined &&
 								resolveResult.errorMessage !== ""
 							) {
-								output += newline + resolveResult.errorMessage;
+								messages.append(newline + resolveResult.errorMessage);
 							}
 
 							if (!resolveResult.resolved) {
 								process.exitCode = 1;
 							}
 						} else {
+							// No resolver, or fix is false, so we're in the full failure case.
+							const autoFixable = result.autoFixable
+								? chalk.green(" (autofixable)")
+								: "";
+							messages.append(
+								`'${policy.name}' policy failure${autoFixable}: ${result.file}`,
+							);
+							messages.append(
+								result.errorMessage === undefined
+									? ""
+									: `${newline}${result.errorMessage}`,
+							);
 							process.exitCode = 1;
 						}
+					}
 
-						if (process.exitCode === 1) {
-							this.warning(output);
-						} else {
-							this.info(output);
-						}
+					if ((process.exitCode ?? 0) === 0) {
+						this.info(messages.toString());
+					} else {
+						this.warning(messages.toString());
 					}
 				}),
 		);

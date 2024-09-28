@@ -9,7 +9,11 @@ import type { Config } from '@oclif/core';
 import { CustomOptions } from '@oclif/core/interfaces';
 import { Debugger } from 'debug';
 import { FlagDefinition } from '@oclif/core/interfaces';
+import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
+import { OptionFlag } from '@oclif/core/interfaces';
+import type { PackageJson } from 'type-fest';
+import type { PathLike } from 'node:fs';
 import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
@@ -63,16 +67,20 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     flags: typeof CommandWithConfig.flags;
 }, C = unknown> extends BaseCommand<T> {
     // (undocumented)
-    protected get commandConfig(): C | undefined;
+    get commandConfig(): C | undefined;
     protected set commandConfig(value: C | undefined);
     // (undocumented)
     protected configPath: string | undefined;
     // (undocumented)
     protected get defaultConfig(): C | undefined;
     // (undocumented)
+    static readonly flags: {
+        readonly config: OptionFlag<string | undefined, CustomOptions>;
+    };
+    // (undocumented)
     init(): Promise<void>;
     // (undocumented)
-    protected loadConfig(): Promise<C | undefined>;
+    protected loadConfig(filePath?: string): Promise<C | undefined>;
 }
 
 // @beta
@@ -84,6 +92,9 @@ export abstract class CommandWithoutConfig<T extends typeof Command & {
 
 // @beta (undocumented)
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
+
+// @beta (undocumented)
+export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
@@ -110,7 +121,10 @@ export abstract class GitCommand<T extends typeof Command & {
 }
 
 // @beta
-export function isSorted(tsconfig: string): boolean;
+export interface JsonWriteOptions {
+    indent?: string | Indent | undefined;
+    sort?: true | undefined;
+}
 
 // @public
 export interface Logger {
@@ -125,7 +139,13 @@ export interface Logger {
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
 // @beta
-export type OrderList = string[];
+export type PackageTransformer<T extends PackageJson = PackageJson> = (json: T) => T;
+
+// @beta
+export function readJsonWithIndent(filePath: PathLike): Promise<{
+    json: unknown;
+    indent: Indent;
+}>;
 
 // @beta (undocumented)
 export const RegExpFlag: FlagDefinition<RegExp, CustomOptions, {
@@ -146,20 +166,7 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 export function shortCommit(commit: string): string;
 
 // @beta
-export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-
-// @beta
-export interface SortTsconfigResult {
-    alreadySorted: boolean;
-    tsconfig: string;
-}
-
-// @beta
-export class TsConfigSorter {
-    constructor(order: OrderList);
-    isSorted(tsconfig: string): boolean;
-    sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-}
+export function updatePackageJsonFile<T extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
 
 // (No @packageDocumentation comment for this package)
 

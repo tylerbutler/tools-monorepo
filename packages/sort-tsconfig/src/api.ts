@@ -3,163 +3,7 @@ import detectIndent from "detect-indent";
 import { sortJsonc } from "sort-jsonc";
 import JSONC from "tiny-jsonc";
 import type { TsConfigJson } from "type-fest";
-
-/**
- * A list of keys in desired sort order.
- *
- * @beta
- */
-export type OrderList = string[];
-
-/**
- * Sorting order for keys in the compilerOptions section of tsconfig. The groups and the order within each group are
- * based on the order at https://www.typescriptlang.org/tsconfig#compiler-options. However, the order of the groups has
- * been adjusted, and a few properties are moved earlier in the order since they're more important to our repo
- * tsconfigs.
- */
-const compilerOptionsOrder: OrderList = [
-	"rootDir", // From the Modules group
-	"outDir", // From the Emit group
-	"module", // From the Modules group
-	"moduleResolution", // From the Modules group
-
-	// Emit
-	"declaration",
-	"declarationDir",
-	"declarationMap",
-	"downlevelIteration",
-	"emitBOM",
-	"emitDeclarationOnly",
-	"importHelpers",
-	"importsNotUsedAsValues",
-	"inlineSourceMap",
-	"inlineSources",
-	"mapRoot",
-	"newLine",
-	"noEmit",
-	"noEmitHelpers",
-	"noEmitOnError",
-	"outFile",
-	"preserveConstEnums",
-	"preserveValueImports",
-	"removeComments",
-	"sourceMap",
-	"sourceRoot",
-	"stripInternal",
-
-	// Modules
-	"allowArbitraryExtensions",
-	"allowImportingTsExtensions",
-	"allowUmdGlobalAccess",
-	"baseUrl",
-	"noResolve",
-	"paths",
-	"resolveJsonModule",
-	"rootDirs",
-	"typeRoots",
-	"types",
-
-	// Type checking
-	"allowUnreachableCode",
-	"allowUnusedLabels",
-	"alwaysStrict",
-	"exactOptionalPropertyTypes",
-	"noFallthroughCasesInSwitch",
-	"noImplicitAny",
-	"noImplicitOverride",
-	"noImplicitReturns",
-	"noImplicitThis",
-	"noPropertyAccessFromIndexSignature",
-	"noUncheckedIndexedAccess",
-	"noUnusedLocals",
-	"noUnusedParameters",
-	"strict",
-	"strictBindCallApply",
-	"strictFunctionTypes",
-	"strictNullChecks",
-	"strictPropertyInitialization",
-	"useUnknownInCatchVariables",
-
-	// JavaScript Support
-	"allowJs",
-	"checkJs",
-	"maxNodeModuleJsDepth",
-
-	// Projects
-	"composite",
-	"disableReferencedProjectLoad",
-	"disableSolutionSearching",
-	"disableSourceOfProjectReferenceRedirect",
-	"incremental",
-	"tsBuildInfoFile",
-
-	// Editor Support
-	"disableSizeLimit",
-	"plugins",
-
-	// InteropConstraints
-	"allowSyntheticDefaultImports",
-	"esModuleInterop",
-	"forceConsistentCasingInFileNames",
-	"isolatedModules",
-	"preserveSymlinks",
-
-	// Language and Environment
-	"emitDecoratorMetadata",
-	"experimentalDecorators",
-	"jsx",
-	"jsxFactory",
-	"jsxFragmentFactory",
-	"jsxImportSource",
-	"lib",
-	"noLib",
-	"reactNamespace",
-	"target",
-	"useDefineForClassFields",
-
-	// Diagnostics
-	"diagnostics",
-	"explainFiles",
-	"extendedDiagnostics",
-	"generateCpuProfile",
-	"listEmittedFiles",
-	"listFiles",
-	"traceResolution",
-
-	// Output formatting
-	"noErrorTruncation",
-	"preserveWatchOutput",
-	"pretty",
-
-	// Completeness
-	"skipDefaultLibCheck",
-	"skipLibCheck",
-
-	// Watch Options
-	"assumeChangesOnlyAffectDirectDependencies",
-
-	// Backwards Compatibility
-	"charset",
-	"keyofStringsOnly",
-	"noImplicitUseStrict",
-	"noStrictGenericChecks",
-	"out",
-	"suppressExcessPropertyErrors",
-	"suppressImplicitAnyIndexErrors",
-] as const;
-
-/**
- * Sorting order for tsconfig files.
- */
-const defaultSortOrder: OrderList = [
-	"$schema",
-	"extends",
-	"include",
-	"exclude",
-	"compilerOptions",
-	...compilerOptionsOrder,
-	"references",
-];
+import { type OrderList, defaultSortOrder } from "./orders.js";
 
 /**
  * Returns a map of each item in the order list to its sort index.
@@ -167,7 +11,10 @@ const defaultSortOrder: OrderList = [
 function getOrderMap(order: OrderList): Map<string, number> {
 	const orderMap: Map<string, number> = new Map();
 	for (const [index, key] of order.entries()) {
-		orderMap.set(key, index);
+		// Only add the index for the first item - subsequent indices will be ignored.
+		if (!orderMap.has(key)) {
+			orderMap.set(key, index);
+		}
 	}
 	return orderMap;
 }

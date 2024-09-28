@@ -28,7 +28,7 @@
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
-		"format": "npm run sort-package-json && biome check . --linter-enabled=false --write",
+		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
 		"generate:packlist": "flub generate packlist -g client --no-private",
@@ -37,7 +37,8 @@
 		"prepare": "lefthook install",
 		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
-		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
+		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
+		"syncpack:fix": "pnpm syncpack fix-mismatches && pnpm syncpack set-semver-ranges",
 		"test": "fluid-build . --task test",
 		"test:coverage": "fluid-build . --task test:coverage"
 	},
@@ -45,8 +46,8 @@
 		"@biomejs/biome": "1.8.3",
 		"@changesets/cli": "^2.27.7",
 		"@changesets/config": "^3.0.2",
-		"@fluid-tools/build-cli": "^0.43.0",
-		"@fluidframework/build-tools": "^0.43.0",
+		"@fluid-tools/build-cli": "^0.44.0",
+		"@fluidframework/build-tools": "^0.44.0",
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
@@ -58,10 +59,11 @@
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
-		"syncpack": "^12.3.2",
+		"sort-tsconfig": "workspace:^",
+		"syncpack": "^13.0.0",
 		"ts-node": "^10.9.2"
 	},
-	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
+	"packageManager": "pnpm@9.11.0+sha256.1c0e33f70e5df9eede84a357bdfa0b1f9dba6e58194628d48a1055756f553754",
 	"engines": {
 		"node": ">=18.0.0"
 	},
@@ -73,16 +75,19 @@
 		"updateConfig": {
 			"ignoreDependencies": ["chai", "@types/node"]
 		},
-		"overrides": {}
+		"overrides": {
+			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
+			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
+		}
 	},
 	"fluidBuild": {
 		"tasks": {
 			"build": {
-				"dependsOn": ["^build"],
+				"dependsOn": ["^build", "generate:packlist"],
 				"script": false
 			},
 			"check": {
-				"dependsOn": ["^check", "check:all"],
+				"dependsOn": ["sort-tsconfig#build", "^check", "check:all"],
 				"script": false
 			},
 			"check:policy": {
@@ -102,7 +107,7 @@
 				"script": false
 			},
 			"full": {
-				"dependsOn": ["check", "build", "lint", "docs", "generate:packlist"],
+				"dependsOn": ["check", "build", "lint", "docs", "test"],
 				"script": false
 			},
 			"generate:packlist": {

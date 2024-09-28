@@ -1,7 +1,9 @@
-import { existsSync } from "node:fs";
+import { stat } from "node:fs/promises";
 import type { Command } from "@oclif/core";
 import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
 import { BaseCommand } from "./baseCommand.js";
+import { ConfigFileFlagHidden } from "./flags.js";
+import { findGitRoot } from "./git.js";
 
 /**
  * A base command that loads typed configuration values from a config file.
@@ -21,38 +23,46 @@ export abstract class CommandWithConfig<
 	private _commandConfig: C | undefined;
 	protected configPath: string | undefined;
 
+	static override readonly flags = {
+		config: ConfigFileFlagHidden,
+		...BaseCommand.flags,
+	} as const;
+
 	public override async init(): Promise<void> {
 		await super.init();
-		this.commandConfig = await this.loadConfig();
+		const { config } = this.flags;
+		this.commandConfig = await this.loadConfig(config);
 	}
 
-	protected async loadConfig(): Promise<C | undefined> {
-		const configPath = this.config.configDir; // path.join(this.config.configDir, "config.ts");
-		// const config = await this.loadConfigFromFile(this.config.configDir);
+	protected async loadConfig(filePath?: string): Promise<C | undefined> {
+		const configPath = filePath ?? process.cwd();
 		const moduleName = this.config.bin;
+		const repoRoot = await findGitRoot();
 		const explorer = cosmiconfig(moduleName, {
 			searchStrategy: "global",
+			stopDir: repoRoot,
 		});
+		const pathStats = await stat(configPath);
 		this.verbose(`Looking for '${this.config.bin}' config at '${configPath}'`);
-		if (existsSync(configPath)) {
-			const config: CosmiconfigResult = await explorer.search(configPath);
-			if (config?.config !== undefined) {
-				this.verbose(`Found config at ${config.filepath}`);
-			}
-			return config?.config as C | undefined;
+		let config: CosmiconfigResult;
+		if (pathStats.isDirectory()) {
+			config = await explorer.search(configPath);
+		} else {
+			config = await explorer.load(configPath);
 		}
+		if (config?.config !== undefined) {
+			this.verbose(`Found config at ${config.filepath}`);
+		} else {
+			this.verbose(`No config found; started searching at ${configPath}`);
+		}
+		return config?.config as C | undefined;
 	}
-
-	// private async loadConfigFromFile(
-	// 	configPath: string,
-	// ): Promise<C | undefined> {
-	// }
 
 	protected get defaultConfig(): C | undefined {
 		return undefined;
 	}
 
-	protected get commandConfig(): C | undefined {
+	public get commandConfig(): C | undefined {
 		return this._commandConfig;
 	}
 
