@@ -1,5 +1,11 @@
 # repopo
 
+## 0.2.2
+
+### Patch Changes
+
+- Publish repopo package _[`#125`](https://github.com/tylerbutler/tools-monorepo/pull/125) [`12b3a58`](https://github.com/tylerbutler/tools-monorepo/commit/12b3a58e8946b0988009331bf1830e1fa1cc6567) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.2.1
 
 ### Patch Changes
