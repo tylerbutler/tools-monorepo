@@ -57,6 +57,9 @@ importers:
       sort-package-json:
         specifier: 2.10.0
         version: 2.10.0
+      sort-tsconfig:
+        specifier: workspace:^
+        version: link:packages/sort-tsconfig
       syncpack:
         specifier: ^13.0.0
         version: 13.0.0(typescript@5.5.4)
@@ -117,9 +120,6 @@ importers:
       dill-cli:
         specifier: workspace:^
         version: link:../dill
-      globby:
-        specifier: ^14.0.1
-        version: 14.0.2
       simple-git:
         specifier: ^3.24.0
         version: 3.26.0
@@ -202,15 +202,9 @@ importers:
       simple-git:
         specifier: ^3.24.0
         version: 3.26.0
-      sort-jsonc:
-        specifier: ^1.0.1
-        version: 1.0.1
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
-      tiny-jsonc:
-        specifier: ^1.0.1
-        version: 1.0.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.3
@@ -547,6 +541,9 @@ importers:
       sort-package-json:
         specifier: 2.10.0
         version: 2.10.0
+      sort-tsconfig:
+        specifier: workspace:^
+        version: link:../sort-tsconfig
     devDependencies:
       '@biomejs/biome':
         specifier: 1.8.3
@@ -581,6 +578,106 @@ importers:
       serve:
         specifier: ^14.2.3
         version: 14.2.3
+      start-server-and-test:
+        specifier: ^2.0.3
+        version: 2.0.5
+      tmp-promise:
+        specifier: ^3.0.3
+        version: 3.0.3
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.16.0)(typescript@5.5.4)
+      type-fest:
+        specifier: ^4.18.2
+        version: 4.26.0
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+      vitest:
+        specifier: ^2.0.0
+        version: 2.0.5(@types/node@20.16.0)(terser@5.19.2)
+
+  packages/sort-tsconfig:
+    dependencies:
+      '@oclif/core':
+        specifier: ^4.0.19
+        version: 4.0.19
+      '@oclif/plugin-help':
+        specifier: ^6.2.10
+        version: 6.2.10
+      '@tylerbu/cli-api':
+        specifier: workspace:^
+        version: link:../cli-api
+      '@tylerbu/fundamentals':
+        specifier: workspace:^
+        version: link:../fundamentals
+      detect-indent:
+        specifier: ^7.0.1
+        version: 7.0.1
+      globby:
+        specifier: ^14.0.1
+        version: 14.0.2
+      sort-jsonc:
+        specifier: ^1.0.1
+        version: 1.0.1
+      tiny-jsonc:
+        specifier: ^1.0.1
+        version: 1.0.1
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 1.8.3
+        version: 1.8.3
+      '@microsoft/api-extractor':
+        specifier: ^7.43.4
+        version: 7.47.6(@types/node@20.16.0)
+      '@oclif/plugin-command-snapshot':
+        specifier: ^5.2.14
+        version: 5.2.14
+      '@oclif/test':
+        specifier: ^4.0.9
+        version: 4.0.9(@oclif/core@4.0.19)
+      '@types/chai':
+        specifier: ^4.3.16
+        version: 4.3.16
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/mocha':
+        specifier: ^10.0.6
+        version: 10.0.7
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.16.0
+      '@types/tmp':
+        specifier: ^0.2.6
+        version: 0.2.6
+      '@vitest/coverage-v8':
+        specifier: ^2.0.5
+        version: 2.0.5(vitest@2.0.5(@types/node@20.16.0)(terser@5.19.2))
+      c8:
+        specifier: ^10.1.2
+        version: 10.1.2
+      chai:
+        specifier: ^5.1.1
+        version: 5.1.1
+      lefthook:
+        specifier: ^1.6.11
+        version: 1.7.12
+      memfs:
+        specifier: ^4.11.1
+        version: 4.11.1
+      mocha:
+        specifier: ^10.4.0
+        version: 10.7.3
+      oclif:
+        specifier: ^4.14.26
+        version: 4.14.26
+      rimraf:
+        specifier: ^6.0.0
+        version: 6.0.1
+      sort-package-json:
+        specifier: 2.10.0
+        version: 2.10.0
       start-server-and-test:
         specifier: ^2.0.3
         version: 2.0.5
@@ -2995,9 +3092,6 @@ packages:
 
   '@types/node@20.16.0':
     resolution: {integrity: sha512-vDxceJcoZhIVh67S568bm1UGZO0DX0hpplJZxzeXMKwIPLn190ec5RRxQ69BKhX44SUGIxxgMdDY557lGLKprQ==}
-
-  '@types/node@22.5.0':
-    resolution: {integrity: sha512-DkFrJOe+rfdHTqqMg0bSNlGlQ85hSoh2TPzZyhHsXnMtligRWpxUySiyw8FY14ITt24HVCiQPWxS3KO/QlGmWg==}
 
   '@types/node@22.5.2':
     resolution: {integrity: sha512-acJsPTEqYqulZS/Yp/S3GgeE6GZ0qYODUR8aVr/DkhHQ8l9nd4j5x1/ZJy9/gHrRlFMqkO6i0I3E27Alu4jjPg==}
@@ -6336,10 +6430,6 @@ packages:
 
   micromark@4.0.0:
     resolution: {integrity: sha512-o/sd0nMof8kYff+TqcDx3VSrgBTcZpSvYcAHIfHhv5VAuNmisCxjhx6YmxS8PFEpb9z5WKWKPdzf0jM23ro3RQ==}
-
-  micromatch@4.0.7:
-    resolution: {integrity: sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==}
-    engines: {node: '>=8.6'}
 
   micromatch@4.0.8:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
@@ -11161,7 +11251,7 @@ snapshots:
       '@inquirer/figures': 1.0.5
       '@inquirer/type': 1.5.2
       '@types/mute-stream': 0.0.4
-      '@types/node': 22.5.0
+      '@types/node': 22.5.2
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
       cli-spinners: 2.9.2
@@ -12914,13 +13004,13 @@ snapshots:
 
   '@types/bunyan@1.8.9':
     dependencies:
-      '@types/node': 22.5.2
+      '@types/node': 20.16.0
 
   '@types/cacheable-request@6.0.3':
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 22.5.2
+      '@types/node': 20.16.0
       '@types/responselike': 1.0.3
 
   '@types/chai@4.3.16': {}
@@ -12975,7 +13065,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 22.5.2
+      '@types/node': 20.16.0
 
   '@types/lodash@4.17.7': {}
 
@@ -13030,10 +13120,6 @@ snapshots:
     dependencies:
       undici-types: 6.19.6
 
-  '@types/node@22.5.0':
-    dependencies:
-      undici-types: 6.19.8
-
   '@types/node@22.5.2':
     dependencies:
       undici-types: 6.19.8
@@ -13042,7 +13128,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 22.5.2
+      '@types/node': 20.16.0
 
   '@types/sax@1.2.7':
     dependencies:
@@ -15006,7 +15092,7 @@ snapshots:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.7
+      micromatch: 4.0.8
 
   fast-json-patch@3.1.1: {}
 
@@ -15104,7 +15190,7 @@ snapshots:
 
   find-yarn-workspace-root@2.0.0:
     dependencies:
-      micromatch: 4.0.7
+      micromatch: 4.0.8
 
   flat@5.0.2: {}
 
@@ -15444,7 +15530,7 @@ snapshots:
     dependencies:
       '@sindresorhus/merge-streams': 2.3.0
       fast-glob: 3.3.2
-      ignore: 5.3.1
+      ignore: 5.3.2
       path-type: 5.0.0
       slash: 5.1.0
       unicorn-magic: 0.1.0
@@ -16310,7 +16396,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.5.2
+      '@types/node': 20.16.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -17355,11 +17441,6 @@ snapshots:
       micromark-util-types: 2.0.0
     transitivePeerDependencies:
       - supports-color
-
-  micromatch@4.0.7:
-    dependencies:
-      braces: 3.0.3
-      picomatch: 2.3.1
 
   micromatch@4.0.8:
     dependencies:
@@ -18431,7 +18512,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.5.2
+      '@types/node': 20.16.0
       long: 5.2.3
 
   protocols@2.0.1: {}

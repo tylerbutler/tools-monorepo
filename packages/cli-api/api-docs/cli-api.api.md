@@ -11,6 +11,7 @@ import { Debugger } from 'debug';
 import { FlagDefinition } from '@oclif/core/interfaces';
 import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
+import { OptionFlag } from '@oclif/core/interfaces';
 import type { PackageJson } from 'type-fest';
 import type { PathLike } from 'node:fs';
 import type { PrettyPrintableError } from '@oclif/core/errors';
@@ -66,12 +67,16 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     flags: typeof CommandWithConfig.flags;
 }, C = unknown> extends BaseCommand<T> {
     // (undocumented)
-    protected get commandConfig(): C | undefined;
+    get commandConfig(): C | undefined;
     protected set commandConfig(value: C | undefined);
     // (undocumented)
     protected configPath: string | undefined;
     // (undocumented)
     protected get defaultConfig(): C | undefined;
+    // (undocumented)
+    static readonly flags: {
+        readonly config: OptionFlag<string | undefined, CustomOptions>;
+    };
     // (undocumented)
     init(): Promise<void>;
     // (undocumented)
@@ -89,15 +94,7 @@ export abstract class CommandWithoutConfig<T extends typeof Command & {
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
 // @beta (undocumented)
-export const ConfigFileFlag: FlagDefinition<string, ConfigFlagConfig, {
-multiple: false;
-requiredOrDefaulted: false;
-}>;
-
-// @beta (undocumented)
-export type ConfigFlagConfig = {
-    exists?: boolean;
-};
+export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
@@ -124,9 +121,6 @@ export abstract class GitCommand<T extends typeof Command & {
 }
 
 // @beta
-export function isSorted(tsconfig: string): boolean;
-
-// @beta
 export interface JsonWriteOptions {
     indent?: string | Indent | undefined;
     sort?: true | undefined;
@@ -143,9 +137,6 @@ export interface Logger {
 
 // @public
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
-
-// @beta
-export type OrderList = string[];
 
 // @beta
 export type PackageTransformer<T extends PackageJson = PackageJson> = (json: T) => T;
@@ -173,22 +164,6 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 
 // @public
 export function shortCommit(commit: string): string;
-
-// @beta
-export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-
-// @beta
-export interface SortTsconfigResult {
-    alreadySorted: boolean;
-    tsconfig: string;
-}
-
-// @beta
-export class TsConfigSorter {
-    constructor(order: OrderList);
-    isSorted(tsconfig: string): boolean;
-    sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-}
 
 // @beta
 export function updatePackageJsonFile<T extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
