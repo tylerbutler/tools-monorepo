@@ -1,5 +1,11 @@
 # sort-tsconfig
 
+## 0.1.1
+
+### Patch Changes
+
+- Publish sort-tsconfig package _[`#123`](https://github.com/tylerbutler/tools-monorepo/pull/123) [`61fade5`](https://github.com/tylerbutler/tools-monorepo/commit/61fade577c27a6ad55c79d997eb42ecc0ca9abe9) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.1.0
 
 ### Minor Changes

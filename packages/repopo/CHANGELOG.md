@@ -1,5 +1,21 @@
 # repopo
 
+## 0.2.1
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`61fade5`](https://github.com/tylerbutler/tools-monorepo/commit/61fade577c27a6ad55c79d997eb42ecc0ca9abe9)
+
+</small>
+
+- `sort-tsconfig@0.1.1`
+
+</details>
+
 ## 0.2.0
 
 ### Minor Changes
