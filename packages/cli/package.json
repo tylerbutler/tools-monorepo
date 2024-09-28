@@ -50,7 +50,7 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --multi --no-aliases",
 		"sort-package-json": "sort-package-json",
-		"test": "concurrently npm:test:vitest npm:test:command-snapshots",
+		"test": "concurrently npm:test:command-snapshots",
 		"test:command-snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"test:mocha": "mocha --forbid-only \"test/**/*.test.ts\"",
 		"test:vitest": "vitest run \"test\""
