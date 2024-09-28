@@ -20,10 +20,6 @@ esm/commands/git/squish.d.ts
 esm/commands/git/squish.d.ts.map
 esm/commands/git/squish.js
 esm/commands/git/squish.js.map
-esm/commands/hello/world.d.ts
-esm/commands/hello/world.d.ts.map
-esm/commands/hello/world.js
-esm/commands/hello/world.js.map
 esm/index.d.ts
 esm/index.d.ts.map
 esm/index.js
