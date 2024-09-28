@@ -47,7 +47,7 @@ jobs:
       # the action that was actually taken.
       - name: Process changesets
         id: changesets
-        uses: changesets/action@aba318e9165b45b7948c60273e0b72fce0a64eb9 # ratchet:changesets/action@v1
+        uses: changesets/action@3de3850952bec538fde60aac71731376e57b9b57 # ratchet:changesets/action@v1
         with:
           version: pnpm ci:version
           commit: "release: Update versions"
@@ -60,6 +60,7 @@ jobs:
         if: steps.changesets.outputs.published != true
         run: |
           echo "Published: '${{ steps.changesets.outputs.published }}'"
+          echo "Packages: '${{ steps.changesets.outputs.publishedPackages }}'"
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
 
