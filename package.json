@@ -57,7 +57,7 @@
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
-		"syncpack": "^12.3.2",
+		"syncpack": "^13.0.0",
 		"ts-node": "^10.9.2"
 	},
 	"packageManager": "pnpm@9.11.0",
