@@ -1,5 +1,5 @@
 {
-	"name": "@tylerbu/fundamentals",
+	"name": "@tylerbutler/fundamentals",
 	"version": "0.1.1",
 	"description": "Fundamental functions and classes that I often need in my projects. Zero dependencies.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",

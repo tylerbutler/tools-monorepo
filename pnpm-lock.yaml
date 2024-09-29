@@ -30,7 +30,7 @@ importers:
       '@tsconfig/strictest':
         specifier: ^2.0.5
         version: 2.0.5
-      '@tylerbu/cli':
+      '@tylerbutler/cli':
         specifier: workspace:^
         version: link:packages/cli
       changesets-changelog-clean:
@@ -105,7 +105,7 @@ importers:
       '@oclif/plugin-which':
         specifier: ^3.2.12
         version: 3.2.14
-      '@tylerbu/cli-api':
+      '@tylerbutler/cli-api':
         specifier: workspace:^
         version: link:../cli-api
       chalk:
@@ -284,7 +284,7 @@ importers:
       '@tinyhttp/content-disposition':
         specifier: ^2.2.0
         version: 2.2.2
-      '@tylerbu/cli-api':
+      '@tylerbutler/cli-api':
         specifier: workspace:^
         version: link:../cli-api
       fflate:
@@ -526,7 +526,7 @@ importers:
       '@rushstack/node-core-library':
         specifier: ^5.7.0
         version: 5.9.0(@types/node@20.16.10)
-      '@tylerbu/cli-api':
+      '@tylerbutler/cli-api':
         specifier: workspace:^
         version: link:../cli-api
       chalk:
@@ -605,10 +605,10 @@ importers:
       '@oclif/plugin-help':
         specifier: ^6.2.10
         version: 6.2.12
-      '@tylerbu/cli-api':
+      '@tylerbutler/cli-api':
         specifier: workspace:^
         version: link:../cli-api
-      '@tylerbu/fundamentals':
+      '@tylerbutler/fundamentals':
         specifier: workspace:^
         version: link:../fundamentals
       detect-indent:

@@ -1,5 +1,5 @@
 {
-	"name": "@tylerbu/cli",
+	"name": "@tylerbutler/cli",
 	"version": "0.3.2",
 	"description": "Tyler Butler's personal CLI.",
 	"keywords": ["oclif"],
@@ -94,7 +94,7 @@
 		"@oclif/plugin-version": "^2.2.11",
 		"@oclif/plugin-warn-if-update-available": "^3.1.13",
 		"@oclif/plugin-which": "^3.2.12",
-		"@tylerbu/cli-api": "workspace:^",
+		"@tylerbutler/cli-api": "workspace:^",
 		"chalk": "^5.3.0",
 		"concurrently": "^8.2.2",
 		"debug": "^4.3.4",

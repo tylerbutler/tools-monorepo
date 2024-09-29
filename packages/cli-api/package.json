@@ -1,5 +1,5 @@
 {
-	"name": "@tylerbu/cli-api",
+	"name": "@tylerbutler/cli-api",
 	"version": "0.4.0",
 	"description": "Base classes and other API helpers for oclif-based CLI projects.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli-api#tylerbucli-api",
