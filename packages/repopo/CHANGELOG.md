@@ -1,5 +1,19 @@
 # repopo
 
+## 0.2.3
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+</small>
+
+- `sort-tsconfig@0.1.2`
+
+</details>
+
 ## 0.2.2
 
 ### Patch Changes

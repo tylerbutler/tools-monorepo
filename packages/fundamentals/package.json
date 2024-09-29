@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbutler/fundamentals",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Fundamental functions and classes that I often need in my projects. Zero dependencies.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",

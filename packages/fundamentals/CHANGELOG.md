@@ -1,5 +1,11 @@
 # @tylerbu/fundamentals
 
+## 0.1.2
+
+### Patch Changes
+
+- Example changeset _[`#128`](https://github.com/tylerbutler/tools-monorepo/pull/128) [`9eee0c7`](https://github.com/tylerbutler/tools-monorepo/commit/9eee0c70b9709c01cb33831a8511b4684d2f02d5) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.1.1
 
 ### Patch Changes

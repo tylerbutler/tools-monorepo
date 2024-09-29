@@ -1,5 +1,21 @@
 # sort-tsconfig
 
+## 0.1.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`9eee0c7`](https://github.com/tylerbutler/tools-monorepo/commit/9eee0c70b9709c01cb33831a8511b4684d2f02d5)
+
+</small>
+
+- `@tylerbutler/fundamentals@0.1.2`
+
+</details>
+
 ## 0.1.1
 
 ### Patch Changes
