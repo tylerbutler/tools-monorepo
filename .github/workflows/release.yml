@@ -51,7 +51,7 @@ jobs:
 
       - name: Setup .npmrc for private feed
         if: github.event.inputs.publish_public == 'false'
-        run: echo -e "\n@NAMESPACE:registry=https://npm.pkg.github.com" >> .npmrc
+        run: echo -e "\n@tylerbu:registry=https://npm.pkg.github.com" >> .npmrc
 
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
@@ -76,9 +76,6 @@ jobs:
       - name: Create Version Tracking PR
         if: steps.changesets.outputs.hasChangesets == 'true'
         run: |
-          echo "Published: ${{ steps.changesets.outputs.published }}"
-          echo "Packages: ${{ steps.changesets.outputs.publishedPackages }}"
-          echo "HasChangesets: ${{ steps.changesets.outputs.hasChangesets }}"
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
 
@@ -86,15 +83,12 @@ jobs:
         if: steps.changesets.outputs.hasChangesets == 'false'
         id: publish
         run: |
-          echo "Published: ${{ steps.changesets.outputs.published }}"
-          echo "Packages: ${{ steps.changesets.outputs.publishedPackages }}"
-          echo "HasChangesets: ${{ steps.changesets.outputs.hasChangesets }}"
-
           # Run publish
           pnpm ci:publish
 
           # Output the publish report as an output variable
           contents=$(if [ -f pnpm-publish-summary.json ]; then cat pnpm-publish-summary.json; else echo ""; fi)
+          echo "$contents"
           echo "report=$contents" >> $GITHUB_OUTPUT
 
       - name: Create table
