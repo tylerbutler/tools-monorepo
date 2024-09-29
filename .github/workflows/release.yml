@@ -74,7 +74,7 @@ jobs:
           echo "HasChangesets: ${{ steps.changesets.outputs.hasChangesets }}"
 
       - name: Create Version Tracking PR
-        if: steps.changesets.outputs.hasChangesets == true
+        if: steps.changesets.outputs.hasChangesets == 'true'
         run: |
           echo "Published: ${{ steps.changesets.outputs.published }}"
           echo "Packages: ${{ steps.changesets.outputs.publishedPackages }}"
@@ -83,7 +83,7 @@ jobs:
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
 
       - name: Publish to npm
-        if: steps.changesets.outputs.hasChangesets == false
+        if: steps.changesets.outputs.hasChangesets == 'false'
         id: publish
         run: |
           echo "Published: ${{ steps.changesets.outputs.published }}"
