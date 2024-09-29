@@ -43,8 +43,6 @@ jobs:
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
-      - run: git status -u .
 
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
@@ -71,6 +69,11 @@ jobs:
         run: |
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
+
+      - run: pnpm run build
+        if: steps.changesets.outputs.hasChangesets == 'false'
+      - run: git status -u .
+        if: steps.changesets.outputs.hasChangesets == 'false'
 
       - name: Setup .npmrc for public npm
         if: github.event.inputs.publish_public == 'true' && steps.changesets.outputs.hasChangesets == 'false'
