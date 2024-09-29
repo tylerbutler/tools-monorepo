@@ -45,7 +45,7 @@ jobs:
       - run: pnpm run build
       - run: git status -u .
 
-      - name: Publish to private feed
+      - name: Setup .npmrc for private feed
         if: github.event.inputs.publish_public == false
         run: echo -e "\n@NAMESPACE:registry=https://npm.pkg.github.com
 
@@ -94,11 +94,8 @@ jobs:
           pnpm ci:publish
 
           # Output the publish report as an output variable
-          contents=$(cat pnpm-publish-summary.json)
+          contents=$(if [ -f pnpm-publish-summary.json ]; then cat pnpm-publish-summary.json; else echo ""; fi)
           echo "report=$contents" >> $GITHUB_OUTPUT
-
-          echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
-          echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
 
       - name: Create table
         if: steps.publish.outputs.report != ''
@@ -110,4 +107,6 @@ jobs:
       - name: Add table to report
         if: steps.publish.outputs.report != ''
         run: |
+          echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.create-table.outputs.table }}" >> $GITHUB_STEP_SUMMARY
