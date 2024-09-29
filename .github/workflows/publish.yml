@@ -1,0 +1,48 @@
+name: Publish
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        required: true
+        type: string
+      scope:
+        required: true
+        type: string
+      publish:
+        required: true
+        type: string
+    secrets:
+      NPM_TOKEN:
+        required: true
+    outputs:
+      report:
+        description: The publish report
+        value: ${{ jobs.publish.outputs.report }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    outputs:
+      report: ${{ steps.publish.outputs.report }}
+    steps:
+      - name: Setup .npmrc
+        run: echo -e "\n//${{ inputs.registry }}/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+
+      - name: Add scope
+        if: inputs.scope != ''
+        run: |
+          echo -e "\n${{ inputs.scope }}:registry=https://${{ inputs.registry }}" >> .npmrc
+
+      - name: Publish to npm
+        id: publish
+        run: |
+          # Run publish
+          pnpm run ${{ inputs.publish }}
+
+          # Output the publish report as an output variable
+          contents=$(if [ -f pnpm-publish-summary.json ]; then cat pnpm-publish-summary.json; else echo ""; fi)
+          echo "$contents"
+          echo "report=$contents" >> $GITHUB_OUTPUT
+

@@ -71,28 +71,6 @@ jobs:
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
 
-      - name: Setup .npmrc for public npm
-        if: github.event.inputs.publish_public == 'true' && steps.changesets.outputs.hasChangesets == 'false'
-        run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
-
-      - name: Setup .npmrc for private feed
-        if: github.event.inputs.publish_public == 'false' && steps.changesets.outputs.hasChangesets == 'false'
-        run: |
-          echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
-          echo -e "\n@tylerbu:registry=https://npm.pkg.github.com" >> .npmrc
-
-      - name: Publish to npm
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        id: publish
-        run: |
-          # Run publish
-          pnpm ci:publish
-
-          # Output the publish report as an output variable
-          contents=$(if [ -f pnpm-publish-summary.json ]; then cat pnpm-publish-summary.json; else echo ""; fi)
-          echo "$contents"
-          echo "report=$contents" >> $GITHUB_OUTPUT
-
       - name: Create table
         if: steps.publish.outputs.report != ''
         id: create-table
@@ -106,3 +84,10 @@ jobs:
           echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.create-table.outputs.table }}" >> $GITHUB_STEP_SUMMARY
+  call-workflow-passing-data:
+      uses: tylerbutler/tools-monorepo/.github/workflows/publish.yml@main
+      with:
+        config-path: .github/labeler.yml
+      secrets:
+        NPM_TOKEN: ${{  }}
+      
