@@ -22,6 +22,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     permissions: write-all
+
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # ratchet:actions/checkout@v4
         with:
@@ -84,9 +85,12 @@ jobs:
       - name: Publish to npm
         if: steps.changesets.outputs.hasChangesets == 'false'
         id: publish
+        env:
+          PUBLISH: ${{ github.event.inputs.publish_public == 'true' && 'ci:publish' || 'ci:publish:internal' }}
+
         run: |
           # Run publish
-          pnpm ci:publish
+          pnpm run $PUBLISH
 
           # Output the publish report as an output variable
           contents=$(if [ -f pnpm-publish-summary.json ]; then cat pnpm-publish-summary.json; else echo ""; fi)
