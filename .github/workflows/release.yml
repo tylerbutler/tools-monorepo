@@ -45,16 +45,6 @@ jobs:
       - run: pnpm run build
       - run: git status -u .
 
-      - name: Setup .npmrc for public npm
-        if: github.event.inputs.publish_public == 'true'
-        run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
-
-      - name: Setup .npmrc for private feed
-        if: github.event.inputs.publish_public == 'false'
-        run: |
-          echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
-          echo -e "\n@tylerbu:registry=https://npm.pkg.github.com" >> .npmrc
-
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
       # the action that was actually taken.
@@ -80,6 +70,16 @@ jobs:
         run: |
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
+
+      - name: Setup .npmrc for public npm
+        if: github.event.inputs.publish_public == 'true' && steps.changesets.outputs.hasChangesets == 'false'
+        run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+
+      - name: Setup .npmrc for private feed
+        if: github.event.inputs.publish_public == 'false' && steps.changesets.outputs.hasChangesets == 'false'
+        run: |
+          echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+          echo -e "\n@tylerbu:registry=https://npm.pkg.github.com" >> .npmrc
 
       - name: Publish to npm
         if: steps.changesets.outputs.hasChangesets == 'false'
