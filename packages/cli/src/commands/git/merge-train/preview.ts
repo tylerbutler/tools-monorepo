@@ -6,7 +6,7 @@ import {
 	getMergeBase,
 	revList,
 	shortCommit,
-} from "@tylerbu/cli-api";
+} from "@tylerbutler/cli-api";
 import chalk from "chalk";
 
 interface CleanupBranch {

@@ -1,4 +1,4 @@
-import { updatePackageJsonFile } from "@tylerbu/cli-api";
+import { updatePackageJsonFile } from "@tylerbutler/cli-api";
 import { readJson } from "fs-extra/esm";
 import { sortPackageJson } from "sort-package-json";
 import type { PackageJson } from "type-fest";

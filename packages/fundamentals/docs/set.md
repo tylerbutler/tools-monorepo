@@ -1,8 +1,8 @@
-[**@tylerbu/fundamentals**](README.md) • **Docs**
+[**@tylerbutler/fundamentals**](README.md) • **Docs**
 
 ***
 
-[@tylerbu/fundamentals](README.md) / set
+[@tylerbutler/fundamentals](README.md) / set
 
 # set
 

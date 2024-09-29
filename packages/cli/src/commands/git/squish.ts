@@ -1,5 +1,5 @@
 import { Args, Flags } from "@oclif/core";
-import { CommandWithConfig, GitCommand } from "@tylerbu/cli-api";
+import { CommandWithConfig, GitCommand } from "@tylerbutler/cli-api";
 import chalk from "chalk";
 import stripAnsi from "strip-ansi";
 
