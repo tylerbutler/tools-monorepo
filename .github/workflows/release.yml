@@ -95,13 +95,13 @@ jobs:
           echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
 
       - name: Create table
-        if: steps.publish.outputs.report != ""
+        if: steps.publish.outputs.report != ''
         id: create-table
         uses: parkerbxyz/json-to-markdown-table@5f6bf548102e18fcde33fa89f9b5e5d2c40745ee # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
           json: ${{ steps.publish.outputs.report }}
 
       - name: Add table to report
-        if: steps.publish.outputs.report != ""
+        if: steps.publish.outputs.report != ''
         run: |
           echo "${{ steps.create-table.outputs.table }}" >> $GITHUB_STEP_SUMMARY
