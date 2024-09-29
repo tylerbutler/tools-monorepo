@@ -45,13 +45,13 @@ jobs:
       - run: pnpm run build
       - run: git status -u .
 
-      - name: Setup .npmrc for private feed
-        if: github.event.inputs.publish_public == 'false'
-        run: echo -e "\n@NAMESPACE:registry=https://npm.pkg.github.com
-
       - name: Setup .npmrc for public npm
         if: github.event.inputs.publish_public == 'true'
         run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+
+      - name: Setup .npmrc for private feed
+        if: github.event.inputs.publish_public == 'false'
+        run: echo -e "\n@NAMESPACE:registry=https://npm.pkg.github.com" >> .npmrc
 
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
