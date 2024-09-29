@@ -42,7 +42,18 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup .npmrc for public npm
+        if: github.event.inputs.publish_public == 'true' && steps.changesets.outputs.hasChangesets == 'false'
+        run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+
+      - name: Setup .npmrc for private feed
+        if: github.event.inputs.publish_public == 'false' && steps.changesets.outputs.hasChangesets == 'false'
+        run: |
+          echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_TOKEN }}" >> .npmrc
+          echo -e "\n@tylerbutler:registry=https://npm.pkg.github.com" >> .npmrc
 
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
@@ -74,16 +85,6 @@ jobs:
         if: steps.changesets.outputs.hasChangesets == 'false'
       - run: git status -u .
         if: steps.changesets.outputs.hasChangesets == 'false'
-
-      - name: Setup .npmrc for public npm
-        if: github.event.inputs.publish_public == 'true' && steps.changesets.outputs.hasChangesets == 'false'
-        run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
-
-      - name: Setup .npmrc for private feed
-        if: github.event.inputs.publish_public == 'false' && steps.changesets.outputs.hasChangesets == 'false'
-        run: |
-          echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_TOKEN }}" >> .npmrc
-          echo -e "\n@tylerbu:registry=https://npm.pkg.github.com" >> .npmrc
 
       - name: Publish to npm
         if: steps.changesets.outputs.hasChangesets == 'false'
