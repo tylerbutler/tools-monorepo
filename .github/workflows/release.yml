@@ -51,7 +51,9 @@ jobs:
 
       - name: Setup .npmrc for private feed
         if: github.event.inputs.publish_public == 'false'
-        run: echo -e "\n@tylerbu:registry=https://npm.pkg.github.com" >> .npmrc
+        run: |
+          echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+          echo -e "\n@tylerbu:registry=https://npm.pkg.github.com" >> .npmrc
 
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
