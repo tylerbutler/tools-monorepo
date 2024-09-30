@@ -1,3 +1,4 @@
+import assert from "node:assert/strict";
 import { stat } from "node:fs/promises";
 import type { Command } from "@oclif/core";
 import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
@@ -18,7 +19,7 @@ export abstract class CommandWithConfig<
 		args: typeof CommandWithConfig.args;
 		flags: typeof CommandWithConfig.flags;
 	},
-	C = unknown,
+	C,
 > extends BaseCommand<T> {
 	private _commandConfig: C | undefined;
 	protected configPath: string | undefined;
@@ -31,43 +32,53 @@ export abstract class CommandWithConfig<
 	public override async init(): Promise<void> {
 		await super.init();
 		const { config } = this.flags;
-		this.commandConfig = await this.loadConfig(config);
-	}
-
-	protected async loadConfig(filePath?: string): Promise<C | undefined> {
-		const configPath = filePath ?? process.cwd();
-		const moduleName = this.config.bin;
-		const repoRoot = await findGitRoot();
-		const explorer = cosmiconfig(moduleName, {
-			searchStrategy: "global",
-			stopDir: repoRoot,
-		});
-		const pathStats = await stat(configPath);
-		this.verbose(`Looking for '${this.config.bin}' config at '${configPath}'`);
-		let config: CosmiconfigResult;
-		if (pathStats.isDirectory()) {
-			config = await explorer.search(configPath);
-		} else {
-			config = await explorer.load(configPath);
+		const loaded = await this.loadConfig(config);
+		if (loaded === undefined) {
+			this.error(`Failure to load config: ${config}`, { exit: 1 });
 		}
-		if (config?.config !== undefined) {
-			this.verbose(`Found config at ${config.filepath}`);
-		} else {
-			this.verbose(`No config found; started searching at ${configPath}`);
+	}
+
+	protected async loadConfig(
+		filePath?: string,
+		reload?: boolean,
+	): Promise<C | undefined> {
+		if (this._commandConfig === undefined || reload === true) {
+			const configPath = filePath ?? process.cwd();
+			const moduleName = this.config.bin;
+			const repoRoot = await findGitRoot();
+			const explorer = cosmiconfig(moduleName, {
+				searchStrategy: "global",
+				stopDir: repoRoot,
+			});
+			const pathStats = await stat(configPath);
+			this.verbose(
+				`Looking for '${this.config.bin}' config at '${configPath}'`,
+			);
+			let config: CosmiconfigResult;
+			if (pathStats.isDirectory()) {
+				config = await explorer.search(configPath);
+			} else {
+				config = await explorer.load(configPath);
+			}
+			if (config?.config !== undefined) {
+				this.verbose(`Found config at ${config.filepath}`);
+			} else {
+				this.verbose(`No config found; started searching at ${configPath}`);
+			}
+			this._commandConfig = config?.config as C;
 		}
-		return config?.config as C | undefined;
-	}
-
-	protected get defaultConfig(): C | undefined {
-		return undefined;
-	}
-
-	public get commandConfig(): C | undefined {
 		return this._commandConfig;
 	}
 
-	protected set commandConfig(value: C | undefined) {
-		this._commandConfig = value;
+	// protected abstract get defaultConfig(): C | undefined;
+
+	protected get commandConfig(): C {
+		// TODO: There has to be a better pattern for this.
+		assert(
+			this._commandConfig !== undefined,
+			"commandConfig is undefined; this may happen if loadConfig is not called prior to accessing commandConfig. loadConfig is called from init() - check that code path is called.",
+		);
+		return this._commandConfig;
 	}
 }
 
@@ -75,6 +86,9 @@ export abstract class CommandWithConfig<
  * Base class for commands that do not require any configuration.
  *
  * @beta
+ *
+ * @privateRemarks
+ * This class may be an unneeded wrapper around BaseCommand. There's no clear beenfit to using this vs. BaseCommand directly.
  */
 export abstract class CommandWithoutConfig<
 	T extends typeof Command & {
