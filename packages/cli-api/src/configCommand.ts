@@ -1,4 +1,3 @@
-import assert from "node:assert/strict";
 import { stat } from "node:fs/promises";
 import type { Command } from "@oclif/core";
 import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
