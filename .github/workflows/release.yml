@@ -108,7 +108,7 @@ jobs:
         id: create-table
         uses: parkerbxyz/json-to-markdown-table@2a84c7091c0eda16ceb5edc5a00abb5421236d92 # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
-          json: ${{ steps.publish.outputs.report }}
+          json: '${{ steps.publish.outputs.report }}'
 
       - name: Add table to report
         if: steps.publish.outputs.report != ''
