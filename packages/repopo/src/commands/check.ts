@@ -114,38 +114,39 @@ export class CheckPolicy extends GitCommand<
 	// private policies: RepoPolicy[] | undefined;
 	private commandContext: CheckPolicyCommandContext | undefined;
 
-	public override get defaultConfig() {
+	public get defaultConfig() {
 		return DefaultPolicyConfig;
 	}
 
-	protected override async loadConfig(): Promise<PolicyConfig> {
-		const gitRoot = await findGitRoot();
-		// this.configPath ??= this.config.configDir; // path.join(this.config.configDir, "config.ts");
-		const explorer = cosmiconfig(this.config.bin, {
-			searchStrategy: "global",
-		});
-		this.verbose(`Looking for '${this.config.bin}' config at '${gitRoot}'`);
-		const config: CosmiconfigResult = await explorer.search(gitRoot);
-		if (config?.config !== undefined) {
-			this.verbose(`Found config at ${config.filepath}`);
-		}
-		if (config?.config === undefined) {
-			this.warning("No config found; using defaults.");
-		}
-		const finalConfig: PolicyConfig = config?.config ?? this.defaultConfig;
-		if (finalConfig.includeDefaultPolicies === true) {
-			finalConfig.policies ??= [];
-			finalConfig.policies.push(...DefaultPolicies);
-		}
+	// protected override async loadConfig(): Promise<PolicyConfig> {
+	// 	const gitRoot = await findGitRoot();
+	// 	// this.configPath ??= this.config.configDir; // path.join(this.config.configDir, "config.ts");
+	// 	const explorer = cosmiconfig(this.config.bin, {
+	// 		searchStrategy: "global",
+	// 	});
+	// 	this.verbose(`Looking for '${this.config.bin}' config at '${gitRoot}'`);
+	// 	const config: CosmiconfigResult = await explorer.search(gitRoot);
+	// 	if (config?.config !== undefined) {
+	// 		this.verbose(`Found config at ${config.filepath}`);
+	// 	}
+	// 	if (config?.config === undefined) {
+	// 		this.warning("No config found; using defaults.");
+	// 	}
+	// 	const finalConfig: PolicyConfig = config?.config ?? this.defaultConfig;
+	// 	if (finalConfig.includeDefaultPolicies === true) {
+	// 		finalConfig.policies ??= [];
+	// 		finalConfig.policies.push(...DefaultPolicies);
+	// 	}
 
-		return finalConfig;
-	}
+	// 	return finalConfig;
+	// }
 
 	public override async init(): Promise<void> {
 		await super.init();
 
+		const config = await this.loadConfig();
 		let policies =
-			this.commandConfig?.policies?.filter((h) => {
+			config?.policies?.filter((h) => {
 				if (
 					this.flags.excludePolicy === undefined ||
 					this.flags.excludePolicy.length === 0
@@ -177,10 +178,9 @@ export class CheckPolicy extends GitCommand<
 		}
 
 		const excludeFiles: RegExp[] =
-			this.commandConfig?.excludeFiles?.map((e) => toRegExp(e)) ?? [];
+			config?.excludeFiles?.map((e) => toRegExp(e)) ?? [];
 
-		const excludePoliciesForFilesRaw =
-			this.commandConfig?.excludePoliciesForFiles;
+		const excludePoliciesForFilesRaw = config?.excludePoliciesForFiles;
 
 		const excludePoliciesForFiles: ExcludedPolicyFileMap = new Map();
 		if (excludePoliciesForFilesRaw) {
@@ -211,8 +211,8 @@ export class CheckPolicy extends GitCommand<
 		// 	this.log(`${handlersToRun.length} TOTAL POLICY HANDLERS`);
 		// 	this.exit(0);
 		// }
-
-		const policies = this.commandConfig?.policies ?? [];
+		const config = await this.loadConfig();
+		const policies = config?.policies ?? [];
 		this.verbose(`${policies.length} policies loaded.`);
 		for (const h of policies) {
 			this.verbose(h.name);
@@ -302,6 +302,7 @@ export class CheckPolicy extends GitCommand<
 		// Use the repo-relative path so that regexes that specify string start (^) will match repo paths.
 		// Replace \ in result with / in case OS is Windows.
 		const relPath = path.relative(gitRoot, file).replace(/\\/g, "/");
+		const config = await this.loadConfig();
 
 		await Promise.all(
 			policies
@@ -323,7 +324,7 @@ export class CheckPolicy extends GitCommand<
 							file: relPath,
 							root: gitRoot,
 							resolve: this.flags.fix,
-							config: this.commandConfig?.policySettings?.[policy.name],
+							config: config?.policySettings?.[policy.name],
 						}),
 					);
 

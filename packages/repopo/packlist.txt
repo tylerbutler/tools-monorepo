@@ -8,6 +8,10 @@ bin/dev.cmd
 bin/dev.js
 bin/run.cmd
 bin/run.js
+esm/baseCommand.d.ts
+esm/baseCommand.d.ts.map
+esm/baseCommand.js
+esm/baseCommand.js.map
 esm/commands/check.d.ts
 esm/commands/check.d.ts.map
 esm/commands/check.js

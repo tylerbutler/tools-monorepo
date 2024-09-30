@@ -72,14 +72,15 @@ export abstract class CommandWithConfig<
 
 	// protected abstract get defaultConfig(): C | undefined;
 
-	protected get commandConfig(): C {
-		// TODO: There has to be a better pattern for this.
-		assert(
-			this._commandConfig !== undefined,
-			"commandConfig is undefined; this may happen if loadConfig is not called prior to accessing commandConfig. loadConfig is called from init() - check that code path is called.",
-		);
-		return this._commandConfig;
-	}
+	// protected get commandConfig(): C {
+	// 	// TODO: There has to be a better pattern for this.
+	// 	assert(
+	// 		this._commandConfig !== undefined,
+	// 		"commandConfig is undefined; this may happen if loadConfig is not called prior to accessing commandConfig. loadConfig is called from init() - check that code path is called.",
+	// 	);
+	// 	// this._commandConfig ??= this.loadConfig();
+	// 	return this._commandConfig;
+	// }
 }
 
 /**
