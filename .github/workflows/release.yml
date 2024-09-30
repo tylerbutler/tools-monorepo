@@ -103,12 +103,6 @@ jobs:
           echo "$compact_contents"
           echo "report=$compact_contents" >> $GITHUB_OUTPUT
 
-      - name: No packages published
-        if: steps.publish.outputs.report == '{"publishedPackages":[]}'
-        run: |
-          echo "### No packages to publish" >> $GITHUB_STEP_SUMMARY
-          echo "There were no packages to publish." >> $GITHUB_STEP_SUMMARY
-
       - name: Create table
         if: steps.publish.outputs.report != '{"publishedPackages":[]}'
         id: create-table
@@ -122,3 +116,9 @@ jobs:
           echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.create-table.outputs.table }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: No packages published
+        if: steps.publish.outputs.report == '{"publishedPackages":[]}'
+        run: |
+          echo "### No packages to publish" >> $GITHUB_STEP_SUMMARY
+          echo "There were no packages to publish." >> $GITHUB_STEP_SUMMARY
