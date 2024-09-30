@@ -99,7 +99,7 @@ jobs:
 
           # Output the publish report as an output variable
           contents=$(if [ -f pnpm-publish-summary.json ]; then cat pnpm-publish-summary.json; else echo ""; fi)
-          compact_contents=$(echo "$contents" | jq -c '.')
+          compact_contents=$(echo "$contents" | jq -c '.publishedPackages')
           echo "$compact_contents"
           echo "report=$compact_contents" >> $GITHUB_OUTPUT
 
