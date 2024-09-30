@@ -10,13 +10,4 @@ export abstract class BaseRepopoCommand extends CommandWithConfig<
 		flags: typeof CommandWithConfig.flags;
 	},
 	PolicyConfig
-> {
-	public override async loadConfig(): Promise<PolicyConfig> {
-		const config = await super.loadConfig();
-		if (config === undefined) {
-			this.error("Failed to load config.", { exit: 1 });
-		}
-
-		return config;
-	}
-}
+> {}

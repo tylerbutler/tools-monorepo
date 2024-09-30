@@ -76,6 +76,7 @@ field is a string instead of an object the package will be ignored.
 
 <!-- commands -->
 * [`repopo check`](#repopo-check)
+* [`repopo list`](#repopo-list)
 
 ## `repopo check`
 
@@ -100,4 +101,19 @@ LOGGING FLAGS
 ```
 
 _See code: [src/commands/check.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check.ts)_
+
+## `repopo list`
+
+Lists the policies configured to run.
+
+```
+USAGE
+  $ repopo list [-v | --quiet]
+
+LOGGING FLAGS
+  -v, --verbose  Enable verbose logging.
+      --quiet    Disable all logging.
+```
+
+_See code: [src/commands/list.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/list.ts)_
 <!-- commandsstop -->

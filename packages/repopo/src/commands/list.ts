@@ -12,7 +12,7 @@ export class ListCommand extends BaseRepopoCommand {
 			this.error("Failed to load config.", { exit: 1 });
 		}
 
-		const policies = this.commandConfig?.policies;
+		const policies = config.policies ?? [];
 		// list the handlers then exit
 		for (const h of policies) {
 			this.log(`${h.name}\nresolver: ${h.resolver !== undefined}\n`);
