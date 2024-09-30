@@ -99,8 +99,9 @@ jobs:
 
           # Output the publish report as an output variable
           contents=$(if [ -f pnpm-publish-summary.json ]; then cat pnpm-publish-summary.json; else echo ""; fi)
-          echo "$contents"
-          echo "report=$contents" >> $GITHUB_OUTPUT
+          escaped_contents=$(echo "$contents" | jq -R -s '.')
+          echo "$escaped_contents"
+          echo "report=$escaped_contents" >> $GITHUB_OUTPUT
 
       - name: Create table
         if: steps.publish.outputs.report != ''
