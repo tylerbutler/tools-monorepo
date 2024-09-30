@@ -54,9 +54,7 @@ jobs:
         uses: changesets/action@3de3850952bec538fde60aac71731376e57b9b57 # ratchet:changesets/action@v1
         with:
           version: pnpm ci:version
-          commit: "release: Update versions"
           title: "🚀 release: Update versions"
-          # publish: pnpm ci:publish
         env:
           GITHUB_TOKEN: ${{ secrets.CHANGESET_TOKEN }}
 
