@@ -19,7 +19,7 @@ export abstract class CommandWithConfig<
 		args: typeof CommandWithConfig.args;
 		flags: typeof CommandWithConfig.flags;
 	},
-	C = unknown,
+	C,
 > extends BaseCommand<T> {
 	private _commandConfig: C | undefined;
 	protected configPath: string | undefined;

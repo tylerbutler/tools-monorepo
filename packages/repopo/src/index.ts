@@ -11,8 +11,10 @@ export type {
 } from "./policy.js";
 export { DefaultPolicies } from "./policy.js";
 export {
-	defineConfig,
+	type ExtractPolicyName,
+	type PerPolicySettings,
 	type PolicyConfig,
+	type PolicyNames,
 } from "./config.js";
 export type {
 	PackageJsonPropertiesSettings,

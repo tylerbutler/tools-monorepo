@@ -65,7 +65,7 @@ export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger
 export abstract class CommandWithConfig<T extends typeof Command & {
     args: typeof CommandWithConfig.args;
     flags: typeof CommandWithConfig.flags;
-}, C = unknown> extends BaseCommand<T> {
+}, C> extends BaseCommand<T> {
     // (undocumented)
     protected get commandConfig(): C;
     // (undocumented)

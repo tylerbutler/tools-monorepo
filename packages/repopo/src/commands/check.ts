@@ -292,7 +292,8 @@ export class CheckPolicy extends GitCommand<
 								file: relPath,
 								root: gitRoot,
 								resolve: this.flags.fix,
-								config: this.commandConfig?.policySettings?.[policy.name],
+								config:
+									this.commandConfig?.perPolicyConfig?.[policy.name] ?? {},
 							}),
 					);
 

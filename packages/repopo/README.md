@@ -104,7 +104,7 @@ _See code: [src/commands/check.ts](https://github.com/tylerbutler/tools-monorepo
 
 ## `repopo list`
 
-Checks and applies policies to the files in the repository.
+Lists the policies configured to run.
 
 ```
 USAGE

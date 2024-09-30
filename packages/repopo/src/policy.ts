@@ -15,7 +15,6 @@ export type PolicyName = string;
  * @alpha
  */
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export interface PolicyFunctionArguments<C> {
 	file: string;
 	root: string;
@@ -50,7 +49,6 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 // export type PolicyHandlerConfig = any;
 
 /**
@@ -68,8 +66,8 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
  */
 export interface RepoPolicy<
 	// C extends Record<string, unknown> = {},
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	C extends any | undefined = undefined,
+	// biome-ignore lint/complexity/noBannedTypes: <explanation>
+	C extends {} = {},
 > {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.

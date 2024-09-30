@@ -4,32 +4,32 @@
 
 ```ts
 
+import { PackageJsonPropertiesSettings as PackageJsonPropertiesSettings_2 } from './policies/PackageJsonProperties.js';
 import { run } from '@oclif/core';
-import type { SetRequired } from 'type-fest';
 
 // @alpha
-export const DefaultPolicies: RepoPolicy[];
+export const DefaultPolicies: readonly [{
+    readonly name: "NoJsFileExtensions";
+    readonly match: RegExp;
+    readonly handler: ({ file }: PolicyFunctionArguments<{}>) => Promise<PolicyFailure>;
+}, {
+    readonly name: "PackageJsonRepoDirectoryProperty";
+    readonly match: RegExp;
+    readonly handler: ({ file, root, resolve }: PolicyFunctionArguments<{}>) => Promise<true | PolicyFailure>;
+}, {
+    readonly name: "PackageJsonProperties";
+    readonly match: RegExp;
+    readonly handler: ({ file, config, resolve }: PolicyFunctionArguments<PackageJsonPropertiesSettings_2>) => Promise<true | PolicyFailure>;
+}, RepoPolicy<{}>, {
+    readonly name: "SortTsconfigs";
+    readonly match: RegExp;
+    readonly handler: ({ file, config, resolve }: PolicyFunctionArguments<{}>) => Promise<true | PolicyFailure>;
+}];
 
 // @alpha
-export type HandlerConfigMap = PolicyConfig["policies"] extends (infer U)[] ? U extends RepoPolicy<infer C> ? Record<U["name"], C> : never : never;
-
-// @alpha (undocumented)
-export type HandlerConfigMap2<P extends PolicyConfig["policies"]> = P extends (infer U)[] ? U extends RepoPolicy<infer C> ? Record<U["name"], C> : never : never;
-
-// @public
-export type MergeRecords<T> = T extends Record<string, any> ? {
-    [K in keyof T]: T[K];
-} : never;
-
-// @alpha (undocumented)
-export interface OptionalPolicyConfig {
-    excludeFiles?: (string | RegExp)[];
-    excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-    // (undocumented)
-    policies?: RepoPolicy[];
-    // (undocumented)
-    policySettings?: PerPolicySettings;
-}
+export type ExtractPolicyName<P> = P extends {
+    name: infer N;
+} ? N : never;
 
 // @alpha
 export interface PackageJsonPropertiesSettings {
@@ -40,10 +40,21 @@ export interface PackageJsonPropertiesSettings {
 export type PackageJsonProperty = string;
 
 // @alpha (undocumented)
-export type PerPolicySettings = MergeRecords<HandlerConfigMap>;
+export type PerPolicySettings = ({
+    PackageJsonProperties: PackageJsonPropertiesSettings;
+} & Record<PolicyName, unknown>) | undefined;
 
-// @alpha
-export type PolicyConfig = SetRequired<OptionalPolicyConfig, "policies">;
+// @alpha (undocumented)
+export interface PolicyConfig {
+    excludeFiles?: (string | RegExp)[];
+    excludePoliciesForFiles?: Record<PolicyNames<PolicyConfig["policies"]>, (string | RegExp)[]>;
+    // (undocumented)
+    includeDefaultPolicies?: boolean;
+    // (undocumented)
+    perPolicyConfig?: PerPolicySettings | undefined;
+    // (undocumented)
+    policies: RepoPolicy[];
+}
 
 // @alpha
 export interface PolicyFailure {
@@ -64,7 +75,7 @@ export interface PolicyFixResult extends PolicyFailure {
 }
 
 // @alpha (undocumented)
-export interface PolicyFunctionArguments<C = any | undefined> {
+export interface PolicyFunctionArguments<C> {
     // (undocumented)
     config?: C;
     // (undocumented)
@@ -76,16 +87,19 @@ export interface PolicyFunctionArguments<C = any | undefined> {
 }
 
 // @alpha
-export type PolicyHandler<C = any | undefined> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PolicyHandler<C> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
 
 // @alpha
 export type PolicyName = string;
 
 // @alpha
+export type PolicyNames<P extends RepoPolicy[]> = ExtractPolicyName<P[number]>;
+
+// @alpha
 export type PolicyStandaloneResolver<C = unknown | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
 
 // @alpha
-export interface RepoPolicy<C = any | undefined> {
+export interface RepoPolicy<C extends {} = {}> {
     description?: string;
     handler: PolicyHandler<C>;
     match: RegExp;

@@ -1,6 +1,4 @@
-import { CommandWithConfig } from "@tylerbu/cli-api";
 import { BaseRepopoCommand } from "../baseCommand.js";
-import type { PolicyConfig } from "../config.js";
 
 /**
  * This command lists all the policies configured to run.
