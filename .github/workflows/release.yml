@@ -103,19 +103,18 @@ jobs:
           echo "$compact_contents"
           echo "report=$compact_contents" >> $GITHUB_OUTPUT
 
+      - name: Output report
+        if: steps.publish.outputs.report != '[]'
+        run: |
+          echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
+
       - name: Create table
         if: steps.publish.outputs.report != '[]'
         id: create-table
         uses: parkerbxyz/json-to-markdown-table@2a84c7091c0eda16ceb5edc5a00abb5421236d92 # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
           json: '${{ steps.publish.outputs.report }}'
-
-      - name: Add table to report
-        if: steps.publish.outputs.report != '[]'
-        run: |
-          echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
-          echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.create-table.outputs.table }}" >> $GITHUB_STEP_SUMMARY
 
       - name: No packages published
         if: steps.publish.outputs.report == '[]'
