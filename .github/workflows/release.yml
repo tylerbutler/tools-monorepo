@@ -106,7 +106,7 @@ jobs:
       - name: Create table
         if: steps.publish.outputs.report != ''
         id: create-table
-        uses: parkerbxyz/json-to-markdown-table@5f6bf548102e18fcde33fa89f9b5e5d2c40745ee # ratchet:parkerbxyz/json-to-markdown-table@v1
+        uses: parkerbxyz/json-to-markdown-table@2a84c7091c0eda16ceb5edc5a00abb5421236d92 # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
           json: ${{ steps.publish.outputs.report }}
 
