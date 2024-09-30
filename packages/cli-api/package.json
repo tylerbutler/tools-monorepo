@@ -54,7 +54,7 @@
 		"@types/node": "^20.12.7",
 		"@types/semver": "^7.5.8",
 		"chai": "^5.1.1",
-		"concurrently": "^8.2.2",
+		"concurrently": "^9.0.0",
 		"fs-extra": "^11.2.0",
 		"mocha": "^10.4.0",
 		"oclif": "^4.14.26",

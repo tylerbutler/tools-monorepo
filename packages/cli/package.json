@@ -96,7 +96,7 @@
 		"@oclif/plugin-which": "^3.2.12",
 		"@tylerbu/cli-api": "workspace:^",
 		"chalk": "^5.3.0",
-		"concurrently": "^8.2.2",
+		"concurrently": "^9.0.0",
 		"debug": "^4.3.4",
 		"dill-cli": "workspace:^",
 		"simple-git": "^3.24.0",
