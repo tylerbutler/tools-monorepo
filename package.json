@@ -50,7 +50,7 @@
 		"@fluidframework/build-tools": "^0.44.0",
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
-		"@tylerbutler/cli": "workspace:^",
+		"@tylerbu/cli": "workspace:^",
 		"changesets-changelog-clean": "^1.3.0",
 		"concurrently": "^8.2.2",
 		"generate-license-file": "^3.5.0",

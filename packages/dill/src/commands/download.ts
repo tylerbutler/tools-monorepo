@@ -1,5 +1,5 @@
 import { Args, Flags } from "@oclif/core";
-import { BaseCommand } from "@tylerbutler/cli-api";
+import { BaseCommand } from "@tylerbu/cli-api";
 import { type DillOptions, type DownloadResponse, download } from "../api.js";
 
 export default class DownloadCommand extends BaseCommand<

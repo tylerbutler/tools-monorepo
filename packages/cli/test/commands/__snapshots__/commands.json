@@ -63,7 +63,7 @@
             "quiet",
             "verbose"
         ],
-        "plugin": "@tylerbutler/cli"
+        "plugin": "@tylerbu/cli"
     },
     {
         "alias": [
@@ -79,7 +79,7 @@
             "quiet",
             "verbose"
         ],
-        "plugin": "@tylerbutler/cli"
+        "plugin": "@tylerbu/cli"
     },
     {
         "alias": [],
@@ -94,7 +94,7 @@
             "quiet",
             "verbose"
         ],
-        "plugin": "@tylerbutler/cli"
+        "plugin": "@tylerbu/cli"
     },
     {
         "alias": [],

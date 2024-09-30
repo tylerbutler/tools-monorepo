@@ -1,7 +1,7 @@
 import { existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { Args, type Command, Flags } from "@oclif/core";
-import { CommandWithConfig, ConfigFileFlag } from "@tylerbutler/cli-api";
+import { CommandWithConfig, ConfigFileFlag } from "@tylerbu/cli-api";
 import { globby } from "globby";
 import { TsConfigSorter } from "../api.js";
 import type { SortTsconfigConfiguration } from "../config.js";

@@ -1,4 +1,4 @@
-**@tylerbutler/fundamentals** • **Docs**
+**@tylerbu/fundamentals** • **Docs**
 
 ***
 

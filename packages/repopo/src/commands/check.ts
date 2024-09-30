@@ -3,7 +3,7 @@ import { EOL as newline } from "node:os";
 import path from "node:path";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbutler/cli-api";
+import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
 import chalk from "chalk";
 import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
 import { DefaultPolicyConfig, type PolicyConfig } from "../config.js";

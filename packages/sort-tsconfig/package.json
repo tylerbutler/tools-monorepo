@@ -77,8 +77,8 @@
 	"dependencies": {
 		"@oclif/core": "^4.0.19",
 		"@oclif/plugin-help": "^6.2.10",
-		"@tylerbutler/cli-api": "workspace:^",
-		"@tylerbutler/fundamentals": "workspace:^",
+		"@tylerbu/cli-api": "workspace:^",
+		"@tylerbu/fundamentals": "workspace:^",
 		"detect-indent": "^7.0.1",
 		"globby": "^14.0.1",
 		"sort-jsonc": "^1.0.1",

@@ -1,8 +1,8 @@
-[**@tylerbutler/fundamentals**](README.md) • **Docs**
+[**@tylerbu/fundamentals**](README.md) • **Docs**
 
 ***
 
-[@tylerbutler/fundamentals](README.md) / array
+[@tylerbu/fundamentals](README.md) / array
 
 # array
 

@@ -88,7 +88,7 @@
 		"@oclif/core": "^4.0.19",
 		"@oclif/plugin-help": "^6.2.10",
 		"@tinyhttp/content-disposition": "^2.2.0",
-		"@tylerbutler/cli-api": "workspace:^",
+		"@tylerbu/cli-api": "workspace:^",
 		"fflate": "^0.8.2",
 		"file-type": "^19.0.0",
 		"fs-extra": "^11.2.0",
