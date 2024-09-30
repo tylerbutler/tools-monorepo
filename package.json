@@ -23,6 +23,7 @@
 		"ci:check": "npm run check",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
+		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "pnpm -r run --aggregate-output test:coverage",
 		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
 		"clean": "fluid-build . --task clean",

@@ -8,6 +8,12 @@ on:
       - .changeset/**
 
   workflow_dispatch:
+    inputs:
+      publish_public:
+        # If this is false, the packages will be published to the internal npm feed instead of public npm.
+        description: 'Publish to public npm'
+        type: boolean
+        default: false
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -16,6 +22,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     permissions: write-all
+
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # ratchet:actions/checkout@v4
         with:
@@ -35,12 +42,9 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
-      - run: git status -u .
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Setup .npmrc
-        run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
 
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
@@ -50,35 +54,68 @@ jobs:
         uses: changesets/action@3de3850952bec538fde60aac71731376e57b9b57 # ratchet:changesets/action@v1
         with:
           version: pnpm ci:version
-          commit: "release: Update versions"
           title: "🚀 release: Update versions"
-          publish: pnpm ci:publish
         env:
           GITHUB_TOKEN: ${{ secrets.CHANGESET_TOKEN }}
 
-      - name: Create Version Tracking PR
-        if: steps.changesets.outputs.published != true
+      - name: Debug output
         run: |
-          echo "Published: '${{ steps.changesets.outputs.published }}'"
-          echo "Packages: '${{ steps.changesets.outputs.publishedPackages }}'"
+          echo "Published: ${{ steps.changesets.outputs.published }}"
+          echo "Packages: ${{ steps.changesets.outputs.publishedPackages }}"
+          echo "HasChangesets: ${{ steps.changesets.outputs.hasChangesets }}"
+
+      - name: Setup .npmrc for public npm
+        if: github.event.inputs.publish_public == 'true' && steps.changesets.outputs.hasChangesets != 'true'
+        run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+
+      - name: Setup .npmrc for private feed
+        if: github.event.inputs.publish_public == 'false' && steps.changesets.outputs.hasChangesets != 'true'
+        run: |
+          echo -e "\n//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+          echo -e "\n@tylerbutler:registry=https://npm.pkg.github.com" >> .npmrc
+
+      - name: Create Version Tracking PR
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        run: |
           echo "### PR updated :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "No packages published. See the release PR for details. Merge it to publish packages." >> $GITHUB_STEP_SUMMARY
 
+      - run: pnpm run build
+        if: steps.changesets.outputs.hasChangesets != 'true'
+      - run: git status -u .
+        if: steps.changesets.outputs.hasChangesets != 'true'
+
       - name: Publish to npm
-        if: steps.changesets.outputs.published == true
+        if: steps.changesets.outputs.hasChangesets != 'true'
+        id: publish
+        env:
+          PUBLISH: ${{ github.event.inputs.publish_public == 'true' && 'ci:publish' || 'ci:publish:internal' }}
+
         run: |
-          echo "Published: '${{ steps.changesets.outputs.published }}'"
+          # Run publish
+          pnpm run $PUBLISH
+
+          # Output the publish report as an output variable
+          contents=$(if [ -f pnpm-publish-summary.json ]; then cat pnpm-publish-summary.json; else echo ""; fi)
+          compact_contents=$(echo "$contents" | jq -c '.publishedPackages')
+          echo "$compact_contents"
+          echo "report=$compact_contents" >> $GITHUB_OUTPUT
+
+      - name: Output report
+        if: steps.publish.outputs.report != '[]'
+        run: |
           echo "### Packages published! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "Packages published to npm!" >> $GITHUB_STEP_SUMMARY
 
       - name: Create table
-        if: steps.changesets.outputs.published == true
+        if: steps.publish.outputs.report != '[]'
         id: create-table
-        uses: parkerbxyz/json-to-markdown-table@5f6bf548102e18fcde33fa89f9b5e5d2c40745ee # ratchet:parkerbxyz/json-to-markdown-table@v1
+        uses: parkerbxyz/json-to-markdown-table@2a84c7091c0eda16ceb5edc5a00abb5421236d92 # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
-          json: ${{ steps.changesets.outputs.publishedPackages }}
+          json: '${{ steps.publish.outputs.report }}'
 
-      - name: Add table to report
-        if: steps.changesets.outputs.published == true
+      - name: No packages published
+        if: steps.publish.outputs.report == '[]'
         run: |
-          echo "${{ steps.create-table.outputs.table }}" >> $GITHUB_STEP_SUMMARY
+          echo "### No packages to publish" >> $GITHUB_STEP_SUMMARY
+          echo "There were no packages to publish." >> $GITHUB_STEP_SUMMARY
