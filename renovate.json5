@@ -49,12 +49,17 @@
 	"automergeType": "branch", // or "pr"
 	"automergeSchedule": ["every weekday"],
 
-	"postUpdateOptions": [
-		// "pnpmDedupe"
-	],
+	// postUpgradeTasks do not work on the hosted renovate service
+	// "postUpgradeTasks": {
+	// 	"commands": [
+	// 		"pnpm install --no-frozen-lockfile",
+	// 		"pnpm run ci:build",
+	// 	],
+	// 	"executionMode": "update",
+	// },
 
 	"lockFileMaintenance": {
-		"enabled": true,
+		"enabled": false,
 		"automerge": true,
 	},
 
@@ -74,18 +79,21 @@
 			"groupName": "oclif",
 			"matchPackagePatterns": ["^oclif", "^@oclif/"],
 			"matchDepTypes": ["devDependencies", "dependencies"],
+			"automerge": true,
 		},
 		{
 			// Group Fluid Framework dependencies together
 			"groupName": "fluid framework packages",
 			"matchPackagePatterns": ["^@fluid", "^fluid-framework"],
 			"matchDepTypes": ["devDependencies", "dependencies"],
+			"automerge": true,
 		},
 		{
 			"groupName": "typedoc",
 			"matchPackagePatterns": ["^typedoc"],
 			"matchUpdateTypes": ["minor"],
 			"matchDepTypes": ["devDependencies", "dependencies"],
+			"automerge": true,
 		},
 		{
 			// TypeScript updates should be done separately
@@ -93,10 +101,11 @@
 			"matchPackagePatterns": ["^typescript"],
 			"matchUpdateTypes": ["minor"],
 			"matchDepTypes": ["devDependencies", "dependencies"],
+			"automerge": true,
 		},
 		{
 			// Group dependencies except oclif together
-			"groupName": "all other dependencies",
+			"groupName": "dependencies",
 			"matchDepTypes": ["devDependencies", "dependencies"],
 			"matchUpdateTypes": ["minor"],
 			"excludePackagePatterns": [

@@ -24,6 +24,28 @@
 			},
 		},
 		{
+			"name": "sort-tsconfig: pnpm test",
+			"request": "launch",
+			"runtimeArgs": ["run-script", "test"],
+			"cwd": "${workspaceFolder}/packages/sort-tsconfig",
+			"runtimeExecutable": "pnpm",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+			"env": {
+				"NODE_ENV": "test",
+				"FORCE_NODE_FETCH": "true",
+			},
+		},
+		{
+			"name": "sort-tsconfig",
+			"request": "launch",
+			"program": "${workspaceFolder}/packages/sort-tsconfig/bin/run.js",
+			"args": ["tsconfig.json", "-v"],
+			"cwd": "${workspaceFolder}/packages/sort-tsconfig",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+		},
+		{
 			"name": "tbu",
 			"request": "launch",
 			"program": "${workspaceFolder}/packages/cli/bin/dev.js",

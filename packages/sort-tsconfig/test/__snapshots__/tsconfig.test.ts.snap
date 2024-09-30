@@ -12,17 +12,17 @@ exports[`tsconfig > sortTsconfigFile 1`] = `
 	],
 	// Compiler options below.
 	"compilerOptions": {
-		"rootDir": "src",
-		"outDir": "built",
-		"module": "Node16",
-		"moduleResolution": "Node16", // This is a comment to the right.
+		"strict": true,
 		"declaration": true,
 		"importHelpers": true,
-		"strict": true,
+		"esModuleInterop": true,
+		"target": "es2019",
 		// Composite projects are a way to split a project into smaller pieces that can be built together.
 		"composite": true,
-		"esModuleInterop": true,
-		"target": "es2019"
+		"module": "Node16",
+		"moduleResolution": "Node16", // This is a comment to the right.
+		"outDir": "built",
+		"rootDir": "src"
 	},
 	"bar": "bar",
 	"foo": "foo",
@@ -47,17 +47,17 @@ exports[`tsconfig > sortTsconfigFile with unknown keys 1`] = `
 	],
 	// Compiler options below.
 	"compilerOptions": {
-		"rootDir": "src",
-		"outDir": "built",
-		"module": "Node16",
-		"moduleResolution": "Node16", // This is a comment to the right.
+		"strict": true,
 		"declaration": true,
 		"importHelpers": true,
-		"strict": true,
+		"esModuleInterop": true,
+		"target": "es2019",
 		// Composite projects are a way to split a project into smaller pieces that can be built together.
 		"composite": true,
-		"esModuleInterop": true,
-		"target": "es2019"
+		"module": "Node16",
+		"moduleResolution": "Node16", // This is a comment to the right.
+		"outDir": "built",
+		"rootDir": "src"
 	},
 	"bar": "bar",
 	"foo": "foo",

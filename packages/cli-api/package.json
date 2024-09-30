@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/cli-api",
-	"version": "0.3.1",
+	"version": "0.4.0",
 	"description": "Base classes and other API helpers for oclif-based CLI projects.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli-api#tylerbucli-api",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -30,8 +30,7 @@
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"sort-package-json": "sort-package-json",
-		"test": "vitest run \"test\""
+		"sort-package-json": "sort-package-json"
 	},
 	"dependencies": {
 		"@oclif/core": "^4.0.19",
@@ -41,9 +40,7 @@
 		"detect-indent": "^7.0.1",
 		"fs-extra": "^11.2.0",
 		"simple-git": "^3.24.0",
-		"sort-jsonc": "^1.0.1",
-		"strip-ansi": "^7.1.0",
-		"tiny-jsonc": "^1.0.1"
+		"strip-ansi": "^7.1.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
@@ -57,7 +54,7 @@
 		"@types/node": "^20.12.7",
 		"@types/semver": "^7.5.8",
 		"chai": "^5.1.1",
-		"concurrently": "^8.2.2",
+		"concurrently": "^9.0.0",
 		"fs-extra": "^11.2.0",
 		"mocha": "^10.4.0",
 		"oclif": "^4.14.26",
@@ -70,7 +67,7 @@
 		"typescript": "~5.5.4",
 		"vitest": "^2.0.0"
 	},
-	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
+	"packageManager": "pnpm@9.11.0",
 	"engines": {
 		"node": ">=18.0.0"
 	}

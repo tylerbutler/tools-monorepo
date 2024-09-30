@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/cli",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"description": "Tyler Butler's personal CLI.",
 	"keywords": ["oclif"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli#tylerbucli",
@@ -50,7 +50,7 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --multi --no-aliases",
 		"sort-package-json": "sort-package-json",
-		"test": "concurrently npm:test:vitest npm:test:command-snapshots",
+		"test": "concurrently npm:test:command-snapshots",
 		"test:command-snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"test:mocha": "mocha --forbid-only \"test/**/*.test.ts\"",
 		"test:vitest": "vitest run \"test\""
@@ -96,10 +96,9 @@
 		"@oclif/plugin-which": "^3.2.12",
 		"@tylerbu/cli-api": "workspace:^",
 		"chalk": "^5.3.0",
-		"concurrently": "^8.2.2",
+		"concurrently": "^9.0.0",
 		"debug": "^4.3.4",
 		"dill-cli": "workspace:^",
-		"globby": "^14.0.1",
 		"simple-git": "^3.24.0",
 		"strip-ansi": "^7.1.0"
 	},
@@ -122,7 +121,7 @@
 		"typescript": "~5.5.4",
 		"vitest": "^2.0.0"
 	},
-	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
+	"packageManager": "pnpm@9.11.0",
 	"engines": {
 		"node": ">=18.0.0"
 	}

@@ -1,17 +1,25 @@
-`tbu sort`
-==========
+# sort-tsconfig - keep your tsconfigs clean and tidy
 
-Commands to sort config files like tsconfigs.
+sort-tsconfig is a CLI app to sort tsconfig files. It also provides a simple programmatic API.
 
-* [`tbu sort tsconfig TSCONFIG`](#tbu-sort-tsconfig-tsconfig)
+<!-- toc -->
+* [sort-tsconfig - keep your tsconfigs clean and tidy](#sort-tsconfig---keep-your-tsconfigs-clean-and-tidy)
+* [Usage](#usage)
+* [API](#api)
+<!-- tocstop -->
 
-## `tbu sort tsconfig TSCONFIG`
+# Usage
+
+<!-- commands -->
+* [`sort-tsconfig TSCONFIG`](#sort-tsconfig-tsconfig)
+
+## `sort-tsconfig TSCONFIG`
 
 Sorts a tsconfig file in place, or check that one is sorted.
 
 ```
 USAGE
-  $ tbu sort tsconfig TSCONFIG [-v | --quiet] [--write]
+  $ sort-tsconfig  TSCONFIG [-v | --quiet] [--write] [--config <value>]
 
 ARGUMENTS
   TSCONFIG  Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.
@@ -24,6 +32,9 @@ LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
       --quiet    Disable all logging.
 
+CONFIGURATION FLAGS
+  --config=<value>  The path to a configuration file.
+
 DESCRIPTION
   Sorts a tsconfig file in place, or check that one is sorted.
 
@@ -31,20 +42,24 @@ DESCRIPTION
   back to the file.
 
 ALIASES
-  $ tbu sort tsconfigs
+  $ sort-tsconfig sort:tsconfigs
+  $ sort-tsconfig sort-tsconfigs
 
 EXAMPLES
   Check if the tsconfig.json file in the current working directory is sorted.
 
-    $ tbu sort tsconfig .
+    $ sort-tsconfig  .
 
   Sort the tsconfig.json file in the current working directory.
 
-    $ tbu sort tsconfig . --write
+    $ sort-tsconfig  . --write
 
   Sort all tsconfig.json files under the packages directory.
 
-    $ tbu sort tsconfig 'packages/**/tsconfig.json' --write
+    $ sort-tsconfig  'packages/**/tsconfig.json' --write
 ```
+<!-- commandsstop -->
 
-_See code: [src/commands/sort/tsconfig.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/cli/src/commands/sort/tsconfig.ts)_
+# API
+
+See [sort-tsconfig.api.md](./api-docs/sort-tsconfig.api.md).

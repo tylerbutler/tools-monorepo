@@ -75,6 +75,7 @@
             "v"
         ],
         "flags": [
+            "config",
             "quiet",
             "verbose"
         ],
@@ -88,23 +89,10 @@
             "v"
         ],
         "flags": [
+            "config",
             "dry-run",
             "quiet",
             "verbose"
-        ],
-        "plugin": "@tylerbu/cli"
-    },
-    {
-        "alias": [],
-        "command": "hello:world",
-        "flagAliases": [],
-        "flagChars": [
-            "f",
-            "n"
-        ],
-        "flags": [
-            "force",
-            "name"
         ],
         "plugin": "@tylerbu/cli"
     },
@@ -127,22 +115,6 @@
         "flagChars": [],
         "flags": [],
         "plugin": "@oclif/plugin-search"
-    },
-    {
-        "alias": [
-            "sort:tsconfigs"
-        ],
-        "command": "sort:tsconfig",
-        "flagAliases": [],
-        "flagChars": [
-            "v"
-        ],
-        "flags": [
-            "quiet",
-            "verbose",
-            "write"
-        ],
-        "plugin": "@tylerbu/cli"
     },
     {
         "alias": [],

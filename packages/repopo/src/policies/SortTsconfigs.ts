@@ -1,4 +1,4 @@
-import { isSorted, sortTsconfigFile } from "@tylerbu/cli-api";
+import { isSorted, sortTsconfigFile } from "sort-tsconfig";
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**

@@ -1,6 +1,6 @@
 {
 	"name": "dill-cli",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Command-line (CLI) program to download and optionally decompress gzipped files.",
 	"keywords": ["download", "ci", "tar", "gzip", "decompress"],
 	"homepage": "https://dill.tylerbutler.com/",
@@ -56,7 +56,7 @@
 		"sort-package-json": "sort-package-json",
 		"start": "serve ./test/data --listen 8080",
 		"test": "npm run test:vitest && npm run test:mocha",
-		"test:coverage": "c8 mocha --forbid-only \"test/**/*.mochatest.ts\"",
+		"test:coverage": "vitest run test --coverage && c8 mocha --forbid-only \"test/**/*.mochatest.ts\"",
 		"test:mocha": "mocha --forbid-only \"test/**/*.mochatest.ts\"",
 		"test:snapshots": "npm run update:test-snapshots",
 		"test:vitest": "vitest run test",
@@ -131,7 +131,7 @@
 		"unionfs": "^4.5.4",
 		"vitest": "^2.0.0"
 	},
-	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
+	"packageManager": "pnpm@9.11.0",
 	"engines": {
 		"node": ">=18.0.0"
 	}

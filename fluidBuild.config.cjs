@@ -17,6 +17,7 @@ const config = {
 			dependsOn: [
 				"^build",
 				"compile",
+				"build:test",
 				"api",
 				"docs",
 				"generate",
@@ -48,7 +49,7 @@ const config = {
 			dependsOn: ["compile"],
 		},
 		manifest: ["compile"],
-		readme: ["compile"],
+		readme: ["compile", "manifest"],
 		test: {
 			dependsOn: ["compile"],
 		},

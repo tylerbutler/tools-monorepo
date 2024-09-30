@@ -23,6 +23,7 @@
 		"ci:check": "npm run check",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
+		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "pnpm -r run --aggregate-output test:coverage",
 		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
 		"clean": "fluid-build . --task clean",
@@ -37,7 +38,8 @@
 		"prepare": "lefthook install",
 		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
-		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
+		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
+		"syncpack:fix": "pnpm syncpack fix-mismatches && pnpm syncpack set-semver-ranges",
 		"test": "fluid-build . --task test",
 		"test:coverage": "fluid-build . --task test:coverage"
 	},
@@ -50,17 +52,18 @@
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
 		"changesets-changelog-clean": "^1.3.0",
-		"concurrently": "^8.2.2",
+		"concurrently": "^9.0.0",
 		"generate-license-file": "^3.5.0",
 		"lefthook": "^1.6.11",
 		"renovate": "^38.18.16",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.0",
 		"sort-package-json": "2.10.0",
-		"syncpack": "^12.3.2",
+		"sort-tsconfig": "workspace:^",
+		"syncpack": "^13.0.0",
 		"ts-node": "^10.9.2"
 	},
-	"packageManager": "pnpm@9.6.0+sha256.dae0f7e822c56b20979bb5965e3b73b8bdabb6b8b8ef121da6d857508599ca35",
+	"packageManager": "pnpm@9.11.0+sha256.1c0e33f70e5df9eede84a357bdfa0b1f9dba6e58194628d48a1055756f553754",
 	"engines": {
 		"node": ">=18.0.0"
 	},
@@ -84,7 +87,7 @@
 				"script": false
 			},
 			"check": {
-				"dependsOn": ["^check", "check:all"],
+				"dependsOn": ["sort-tsconfig#build", "^check", "check:all"],
 				"script": false
 			},
 			"check:policy": {
