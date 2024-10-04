@@ -10,10 +10,11 @@ export type {
 	RepoPolicy,
 } from "./policy.js";
 export { DefaultPolicies } from "./policy.js";
-export type {
-	PolicyConfig,
-	OptionalPolicyConfig,
-	PerPolicySettings,
+export {
+	type ExtractPolicyName,
+	type PerPolicySettings,
+	type PolicyConfig,
+	type PolicyNames,
 } from "./config.js";
 export type {
 	PackageJsonPropertiesSettings,

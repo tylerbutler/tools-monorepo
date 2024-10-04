@@ -14,10 +14,12 @@ export type PolicyName = string;
 /**
  * @alpha
  */
-export interface PolicyFunctionArguments<C = unknown | undefined> {
+
+export interface PolicyFunctionArguments<C> {
 	file: string;
 	root: string;
 	resolve: boolean;
+	// Note that the handler function (defined below) receives the config as an argument
 	config?: C;
 }
 
@@ -26,7 +28,8 @@ export interface PolicyFunctionArguments<C = unknown | undefined> {
  *
  * @alpha
  */
-export type PolicyHandler<C = unknown | undefined> = (
+
+export type PolicyHandler<C> = (
 	args: PolicyFunctionArguments<C>,
 ) => Promise<true | PolicyFailure | PolicyFixResult>;
 
@@ -46,6 +49,8 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
+// export type PolicyHandlerConfig = any;
+
 /**
  * A RepoPolicy checks and applies policies to files in the repository.
  *
@@ -59,9 +64,11 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
  *
  * @alpha
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
-export interface RepoPolicy<C = any | undefined> {
+export interface RepoPolicy<
+	// C extends Record<string, unknown> = {},
+	// biome-ignore lint/complexity/noBannedTypes: <explanation>
+	C extends {} = {},
+> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -95,26 +102,6 @@ export interface RepoPolicy<C = any | undefined> {
 	 * @returns true if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
 	resolver?: PolicyStandaloneResolver<C> | undefined;
-}
-
-export class RepoPolicyClass implements RepoPolicy {
-	public static createRepoPolicy(
-		name: string,
-		match: RegExp,
-		handler: PolicyHandler,
-		resolver?: PolicyStandaloneResolver,
-	): RepoPolicyClass {
-		return new RepoPolicyClass(name, match, handler, resolver);
-	}
-
-	public constructor(
-		public readonly name: string,
-		public readonly match: RegExp,
-		public handler: PolicyHandler,
-		public resolver?: PolicyStandaloneResolver,
-	) {
-		// empty
-	}
 }
 
 /**
@@ -164,10 +151,10 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  *
  * @alpha
  */
-export const DefaultPolicies: RepoPolicy[] = [
+export const DefaultPolicies = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
 	PackageJsonSortedPolicy,
 	SortTsconfigs,
-];
+] as const;

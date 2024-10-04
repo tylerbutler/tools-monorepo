@@ -17,6 +17,10 @@
 		".": {
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
+		},
+		"./policies": {
+			"types": "./esm/policies.d.ts",
+			"import": "./esm/policies.js"
 		}
 	},
 	"types": "esm/index.d.ts",

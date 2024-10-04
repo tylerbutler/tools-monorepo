@@ -4,23 +4,32 @@
 
 ```ts
 
-import type { RequireAtLeastOne } from 'type-fest';
+import { PackageJsonPropertiesSettings as PackageJsonPropertiesSettings_2 } from './policies/PackageJsonProperties.js';
 import { run } from '@oclif/core';
 
 // @alpha
-export const DefaultPolicies: RepoPolicy[];
+export const DefaultPolicies: readonly [{
+    readonly name: "NoJsFileExtensions";
+    readonly match: RegExp;
+    readonly handler: ({ file }: PolicyFunctionArguments<{}>) => Promise<PolicyFailure>;
+}, {
+    readonly name: "PackageJsonRepoDirectoryProperty";
+    readonly match: RegExp;
+    readonly handler: ({ file, root, resolve }: PolicyFunctionArguments<{}>) => Promise<true | PolicyFailure>;
+}, {
+    readonly name: "PackageJsonProperties";
+    readonly match: RegExp;
+    readonly handler: ({ file, config, resolve }: PolicyFunctionArguments<PackageJsonPropertiesSettings_2>) => Promise<true | PolicyFailure>;
+}, RepoPolicy<{}>, {
+    readonly name: "SortTsconfigs";
+    readonly match: RegExp;
+    readonly handler: ({ file, config, resolve }: PolicyFunctionArguments<{}>) => Promise<true | PolicyFailure>;
+}];
 
-// @alpha (undocumented)
-export interface OptionalPolicyConfig {
-    excludeFiles?: (string | RegExp)[];
-    excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-    // (undocumented)
-    includeDefaultPolicies?: boolean;
-    // (undocumented)
-    policies?: RepoPolicy[];
-    // (undocumented)
-    policySettings?: PerPolicySettings | undefined;
-}
+// @alpha
+export type ExtractPolicyName<P> = P extends {
+    name: infer N;
+} ? N : never;
 
 // @alpha
 export interface PackageJsonPropertiesSettings {
@@ -35,8 +44,17 @@ export type PerPolicySettings = ({
     PackageJsonProperties: PackageJsonPropertiesSettings;
 } & Record<PolicyName, unknown>) | undefined;
 
-// @alpha
-export type PolicyConfig = RequireAtLeastOne<OptionalPolicyConfig, "policies" | "includeDefaultPolicies">;
+// @alpha (undocumented)
+export interface PolicyConfig {
+    excludeFiles?: (string | RegExp)[];
+    excludePoliciesForFiles?: Record<PolicyNames<PolicyConfig["policies"]>, (string | RegExp)[]>;
+    // (undocumented)
+    includeDefaultPolicies?: boolean;
+    // (undocumented)
+    perPolicyConfig?: PerPolicySettings | undefined;
+    // (undocumented)
+    policies: RepoPolicy[];
+}
 
 // @alpha
 export interface PolicyFailure {
@@ -57,7 +75,7 @@ export interface PolicyFixResult extends PolicyFailure {
 }
 
 // @alpha (undocumented)
-export interface PolicyFunctionArguments<C = unknown | undefined> {
+export interface PolicyFunctionArguments<C> {
     // (undocumented)
     config?: C;
     // (undocumented)
@@ -69,16 +87,19 @@ export interface PolicyFunctionArguments<C = unknown | undefined> {
 }
 
 // @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PolicyHandler<C> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
 
 // @alpha
 export type PolicyName = string;
 
 // @alpha
+export type PolicyNames<P extends RepoPolicy[]> = ExtractPolicyName<P[number]>;
+
+// @alpha
 export type PolicyStandaloneResolver<C = unknown | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
 
 // @alpha
-export interface RepoPolicy<C = any | undefined> {
+export interface RepoPolicy<C extends {} = {}> {
     description?: string;
     handler: PolicyHandler<C>;
     match: RegExp;

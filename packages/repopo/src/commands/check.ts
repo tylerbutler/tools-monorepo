@@ -5,18 +5,21 @@ import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
 import chalk from "chalk";
-import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
-import { DefaultPolicyConfig, type PolicyConfig } from "../config.js";
+import type { PolicyConfig } from "../config.js";
 import {
-	DefaultPolicies,
+	type PolicyHandlerPerfStats,
+	logStats,
+	newPerfStats,
+	runWithPerf,
+} from "../perf.js";
+import {
+	// DefaultPolicies,
 	type PolicyName,
 	type RepoPolicy,
 	isPolicyFixResult,
 } from "../policy.js";
 
-type PolicyAction = "handle" | "resolve";
-
-type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>; // Record<PolicyName, RegExp[]>
+type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
 
 /**
  * A convenience interface used to pass commonly used parameters to functions in this file.
@@ -48,15 +51,10 @@ interface CheckPolicyCommandContext {
 	gitRoot: string;
 
 	/**
-	 * The repo context.
+	 * Performance information for each handler.
 	 */
-	// context: Context;
+	perfStats: PolicyHandlerPerfStats;
 }
-
-/**
- * Stores performance data for each handler. Used to collect and display performance stats.
- */
-const handlerPerformanceData = new Map<PolicyAction, Map<string, number>>();
 
 /**
  * This tool enforces policies across the code base via a series of handler functions. The handler functions are
@@ -114,32 +112,32 @@ export class CheckPolicy extends GitCommand<
 	// private policies: RepoPolicy[] | undefined;
 	private commandContext: CheckPolicyCommandContext | undefined;
 
-	public override get defaultConfig() {
-		return DefaultPolicyConfig;
-	}
+	// public override get defaultConfig() {
+	// 	return DefaultPolicyConfig;
+	// }
 
-	protected override async loadConfig(): Promise<PolicyConfig> {
-		const gitRoot = await findGitRoot();
-		// this.configPath ??= this.config.configDir; // path.join(this.config.configDir, "config.ts");
-		const explorer = cosmiconfig(this.config.bin, {
-			searchStrategy: "global",
-		});
-		this.verbose(`Looking for '${this.config.bin}' config at '${gitRoot}'`);
-		const config: CosmiconfigResult = await explorer.search(gitRoot);
-		if (config?.config !== undefined) {
-			this.verbose(`Found config at ${config.filepath}`);
-		}
-		if (config?.config === undefined) {
-			this.warning("No config found; using defaults.");
-		}
-		const finalConfig: PolicyConfig = config?.config ?? this.defaultConfig;
-		if (finalConfig.includeDefaultPolicies === true) {
-			finalConfig.policies ??= [];
-			finalConfig.policies.push(...DefaultPolicies);
-		}
+	// protected override async loadConfig(): Promise<PolicyConfig> {
+	// 	const gitRoot = await findGitRoot();
+	// 	// this.configPath ??= this.config.configDir; // path.join(this.config.configDir, "config.ts");
+	// 	const explorer = cosmiconfig(this.config.bin, {
+	// 		searchStrategy: "global",
+	// 	});
+	// 	this.verbose(`Looking for '${this.config.bin}' config at '${gitRoot}'`);
+	// 	const config: CosmiconfigResult = await explorer.search(gitRoot);
+	// 	if (config?.config !== undefined) {
+	// 		this.verbose(`Found config at ${config.filepath}`);
+	// 	}
+	// 	if (config?.config === undefined) {
+	// 		this.warning("No config found; using defaults.");
+	// 	}
+	// 	const finalConfig: PolicyConfig = config?.config ?? this.defaultConfig;
+	// 	if (finalConfig.includeDefaultPolicies === true) {
+	// 		finalConfig.policies ??= [];
+	// 		finalConfig.policies.push(...DefaultPolicies);
+	// 	}
 
-		return finalConfig;
-	}
+	// 	return finalConfig;
+	// }
 
 	public override async init(): Promise<void> {
 		await super.init();
@@ -199,18 +197,16 @@ export class CheckPolicy extends GitCommand<
 			policies,
 			excludePoliciesForFiles,
 			gitRoot,
+			perfStats: newPerfStats(),
 		};
 	}
 
 	public override async run(): Promise<void> {
-		// list the handlers then exit
-		// if (this.flags.listHandlers) {
-		// 	for (const h of handlersToRun) {
-		// 		this.log(`${h.name}\nresolver: ${h.resolver !== undefined}\n`);
-		// 	}
-		// 	this.log(`${handlersToRun.length} TOTAL POLICY HANDLERS`);
-		// 	this.exit(0);
-		// }
+		if (this.commandContext === undefined) {
+			this.error("Command context was undefined - fatal error.", {
+				exit: 100,
+			});
+		}
 
 		const policies = this.commandConfig?.policies ?? [];
 		this.verbose(`${policies.length} policies loaded.`);
@@ -218,28 +214,7 @@ export class CheckPolicy extends GitCommand<
 			this.verbose(h.name);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		// const rawExclusions: string[] =
-		// 	this.flags.exclusions === undefined
-		// 		? manifest.policy?.exclusions
-		// 		: await readJson(this.flags.exclusions);
-
-		// const exclusions: RegExp[] = rawExclusions.map((e) => new RegExp(e, "i"));
-
-		// const rawHandlerExclusions = manifest?.policy?.handlerExclusions;
-
-		// const handlerExclusions: ExcludedPolicyFileMap = {};
-		// if (rawHandlerExclusions) {
-		// 	for (const rule of Object.keys(rawHandlerExclusions)) {
-		// 		handlerExclusions[rule] = rawHandlerExclusions[rule].map(
-		// 			(e) => new RegExp(e, "i"),
-		// 		);
-		// 	}
-		// }
-
 		const filePathsToCheck: string[] = [];
-		// const context = await this.getContext();
-		// const gitRoot = context.repo.resolvedRoot;
 
 		if (this.flags.stdin) {
 			const stdInput = await readStdin();
@@ -260,12 +235,6 @@ export class CheckPolicy extends GitCommand<
 			filePathsToCheck.push(...gitFiles.split("\n"));
 		}
 
-		if (this.commandContext === undefined) {
-			this.error("Command context was undefined - fatal error.", {
-				exit: 100,
-			});
-		}
-
 		await this.executePolicy(filePathsToCheck, this.commandContext);
 	}
 
@@ -279,7 +248,7 @@ export class CheckPolicy extends GitCommand<
 				await this.checkOrExcludeFile(pathToCheck, commandContext);
 			}
 		} finally {
-			this.logStats();
+			logStats(commandContext.perfStats, this.verbose);
 		}
 	}
 
@@ -292,12 +261,8 @@ export class CheckPolicy extends GitCommand<
 		file: string,
 		commandContext: CheckPolicyCommandContext,
 	): Promise<void> {
-		const {
-			// context,
-			policies,
-			excludePoliciesForFiles,
-			gitRoot,
-		} = commandContext;
+		const { policies, excludePoliciesForFiles, gitRoot, perfStats } =
+			commandContext;
 
 		// Use the repo-relative path so that regexes that specify string start (^) will match repo paths.
 		// Replace \ in result with / in case OS is Windows.
@@ -318,13 +283,18 @@ export class CheckPolicy extends GitCommand<
 						return;
 					}
 
-					const result = await runWithPerf(policy.name, "handle", async () =>
-						policy.handler({
-							file: relPath,
-							root: gitRoot,
-							resolve: this.flags.fix,
-							config: this.commandConfig?.policySettings?.[policy.name],
-						}),
+					const result = await runWithPerf(
+						policy.name,
+						"handle",
+						perfStats,
+						async () =>
+							policy.handler({
+								file: relPath,
+								root: gitRoot,
+								resolve: this.flags.fix,
+								config:
+									this.commandConfig?.perPolicyConfig?.[policy.name] ?? {},
+							}),
 					);
 
 					if (result === true) {
@@ -353,6 +323,7 @@ export class CheckPolicy extends GitCommand<
 							const resolveResult = await runWithPerf(
 								policy.name,
 								"resolve",
+								perfStats,
 								async () => resolver({ file: relPath, root: gitRoot }),
 							);
 
@@ -392,20 +363,6 @@ export class CheckPolicy extends GitCommand<
 		);
 	}
 
-	private logStats(): void {
-		this.log(
-			`Statistics: ${this.processed} processed, ${
-				this.count - this.processed
-			} excluded, ${this.count} total`,
-		);
-		for (const [action, handlerPerf] of handlerPerformanceData.entries()) {
-			this.log(`Performance for "${action}":`);
-			for (const [handler, dur] of handlerPerf.entries()) {
-				this.log(`\t${handler}: ${dur}ms`);
-			}
-		}
-	}
-
 	/**
 	 * Given a string that represents a path to a file in the repo, determines if the file should be checked, and if so,
 	 * routes the file to the appropriate handlers.
@@ -436,24 +393,6 @@ export class CheckPolicy extends GitCommand<
 
 		this.processed++;
 	}
-}
-
-async function runWithPerf<T>(
-	name: string,
-	action: PolicyAction,
-	run: () => Promise<T>,
-): Promise<T> {
-	const actionMap =
-		handlerPerformanceData.get(action) ?? new Map<string, number>();
-	let dur = actionMap.get(name) ?? 0;
-
-	const start = Date.now();
-	const result = await run();
-	dur += Date.now() - start;
-
-	actionMap.set(name, dur);
-	handlerPerformanceData.set(action, actionMap);
-	return result;
 }
 
 async function readStdin(): Promise<string> {
