@@ -5,10 +5,8 @@ import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
 import chalk from "chalk";
-import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
 import { DefaultPolicyConfig, type PolicyConfig } from "../config.js";
 import {
-	DefaultPolicies,
 	type PolicyName,
 	type RepoPolicy,
 	isPolicyFixResult,
@@ -280,7 +278,7 @@ export class CheckPolicy extends GitCommand<
 							file: relPath,
 							root: gitRoot,
 							resolve: this.flags.fix,
-							config: this.commandConfig?.policySettings?.[policy.name],
+							config: config?.policySettings?.[policy.name],
 						}),
 					);
 
