@@ -233,7 +233,7 @@ export class CheckPolicy extends GitCommand<
 				await this.checkOrExcludeFile(pathToCheck, commandContext);
 			}
 		} finally {
-			logStats(commandContext.perfStats, this.verbose);
+			logStats(commandContext.perfStats, this);
 		}
 	}
 

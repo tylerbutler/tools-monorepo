@@ -1,4 +1,4 @@
-import type { LoggingFunction } from "@tylerbu/cli-api";
+import type { Logger } from "@tylerbu/cli-api";
 import type { PolicyName } from "./policy.js";
 
 export type PolicyAction = "handle" | "resolve";
@@ -40,19 +40,16 @@ export async function runWithPerf<T>(
 	return result;
 }
 
-export function logStats(
-	stats: PolicyHandlerPerfStats,
-	log: LoggingFunction,
-): void {
-	log(
+export function logStats(stats: PolicyHandlerPerfStats, log: Logger): void {
+	log.log(
 		`Statistics: ${stats.processed} processed, ${
 			stats.count - stats.processed
 		} excluded, ${stats.count} total`,
 	);
 	for (const [action, handlerPerf] of handlerPerformanceData.entries()) {
-		log(`Performance for "${action}":`);
+		log.log(`Performance for "${action}":`);
 		for (const [handler, dur] of handlerPerf.entries()) {
-			log(`\t${handler}: ${dur}ms`);
+			log.log(`\t${handler}: ${dur}ms`);
 		}
 	}
 }
