@@ -65,14 +65,9 @@ export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger
 export abstract class CommandWithConfig<T extends typeof Command & {
     args: typeof CommandWithConfig.args;
     flags: typeof CommandWithConfig.flags;
-}, C = unknown> extends BaseCommand<T> {
-    // (undocumented)
-    get commandConfig(): C | undefined;
-    protected set commandConfig(value: C | undefined);
+}, C> extends BaseCommand<T> {
     // (undocumented)
     protected configPath: string | undefined;
-    // (undocumented)
-    protected get defaultConfig(): C | undefined;
     // (undocumented)
     static readonly flags: {
         readonly config: OptionFlag<string | undefined, CustomOptions>;
@@ -80,7 +75,7 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     // (undocumented)
     init(): Promise<void>;
     // (undocumented)
-    protected loadConfig(filePath?: string): Promise<C | undefined>;
+    protected loadConfig(filePath?: string, reload?: boolean): Promise<C | undefined>;
 }
 
 // @beta

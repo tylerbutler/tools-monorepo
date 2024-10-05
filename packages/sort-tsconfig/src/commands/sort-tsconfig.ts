@@ -87,14 +87,15 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		}
 
 		let orderToUse: OrderList;
-		if (this.commandConfig === undefined) {
+		const config = await this.loadConfig();
+		if (config === undefined) {
 			this.warning("No config file found; using default sort order.");
 			orderToUse = defaultSortOrder;
-		} else if (this.commandConfig.order === undefined) {
+		} else if (config.order === undefined) {
 			this.warning("No order in config; using default sort order.");
 			orderToUse = defaultSortOrder;
 		} else {
-			orderToUse = this.commandConfig.order;
+			orderToUse = config.order;
 		}
 
 		const sorter = new TsConfigSorter(orderToUse);
