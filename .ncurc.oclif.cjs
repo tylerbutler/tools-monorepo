@@ -6,7 +6,7 @@ const base = require("./.ncurc.base.cjs");
 const config = {
 	...base,
 	dep: ["prod", "dev", "optional", "peer"],
-	filter: "/.*oclif.*/",
+	filter: ["/.*oclif.*/"],
 };
 
 module.exports = config;
