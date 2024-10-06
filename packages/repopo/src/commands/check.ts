@@ -38,24 +38,6 @@ export class CheckPolicy<
 			required: false,
 			char: "f",
 		}),
-		// policy: RegExpFlag({
-		// 	description:
-		// 		"Filter policies to apply by <regex>. Only policies with a name matching the regex will be applied.",
-		// 	required: false,
-		// 	char: "d",
-		// }),
-		// excludePolicy: Flags.string({
-		// 	char: "D",
-		// 	description:
-		// 		"Exclude policies by name. Can be specified multiple times to exclude multiple policies.",
-		// 	exclusive: ["policy"],
-		// 	multiple: true,
-		// }),
-		// path: RegExpFlag({
-		// 	description: "Filter file paths by <regex>.",
-		// 	required: false,
-		// 	char: "p",
-		// }),
 		stdin: Flags.boolean({
 			description: "Read list of files from stdin.",
 			required: false,
@@ -65,7 +47,7 @@ export class CheckPolicy<
 
 	private processed = 0;
 	private count = 0;
-	// private policies: RepoPolicy[] | undefined;
+
 	public get defaultConfig() {
 		return DefaultPolicyConfig;
 	}
@@ -80,13 +62,6 @@ export class CheckPolicy<
 
 	public override async run(): Promise<void> {
 		// list the handlers then exit
-		// if (this.flags.listHandlers) {
-		// 	for (const h of handlersToRun) {
-		// 		this.log(`${h.name}\nresolver: ${h.resolver !== undefined}\n`);
-		// 	}
-		// 	this.log(`${handlersToRun.length} TOTAL POLICY HANDLERS`);
-		// 	this.exit(0);
-		// }
 		const config = await this.loadConfig();
 		const policies = config?.policies ?? [];
 		this.verbose(`${policies.length} policies loaded.`);
@@ -103,7 +78,6 @@ export class CheckPolicy<
 				filePathsToCheck.push(...stdInput.split("\n"));
 			}
 		} else {
-			// const repo = new Repository({ baseDir: gitRoot });
 			const gitFiles =
 				(await this.git.raw(
 					"ls-files",
