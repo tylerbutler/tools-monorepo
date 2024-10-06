@@ -5,7 +5,8 @@ const base = require("./.ncurc.base.cjs");
 /** @type {import("npm-check-updates").RunOptions} */
 const config = {
 	...base,
-	dep: ["prod"],
+	dep: ["prod", "dev", "optional", "peer"],
+	filter: "/.*oclif.*/",
 };
 
 module.exports = config;
