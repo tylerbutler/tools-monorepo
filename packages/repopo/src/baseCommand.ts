@@ -5,6 +5,8 @@ import type { PolicyConfig } from "./config.js";
 import { type PolicyHandlerPerfStats, newPerfStats } from "./perf.js";
 import { DefaultPolicies, type PolicyName, type RepoPolicy } from "./policy.js";
 
+const DEFAULT_PATH_REGEX = /.?/;
+
 /**
  * A convenience interface used to pass commonly used parameters between functions.
  */
@@ -118,7 +120,7 @@ export abstract class BaseRepopoCommand<
 		}
 		const gitRoot = await findGitRoot();
 
-		const pathRegex = this.flags.path ?? /.?/;
+		const pathRegex = this.flags.path ?? DEFAULT_PATH_REGEX;
 		if (this.flags.path !== undefined) {
 			this.info(`Filtering file paths by regex: ${pathRegex}`);
 		}
