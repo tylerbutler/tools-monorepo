@@ -7,6 +7,7 @@ const config = {
 	...base,
 	dep: ["prod", "dev", "optional", "peer"],
 	filter: [/.*oclif.*/],
+	reject: [],
 };
 
 module.exports = config;
