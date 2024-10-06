@@ -34,10 +34,10 @@ jobs:
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run ci:check
+      - run: pnpm run ci:check || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
         continue-on-error: true
       - run: pnpm run ci:build
-      - run: pnpm run ci:lint
+      - run: pnpm run ci:lint || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
         continue-on-error: true
       - run: pnpm run ci:test
 
@@ -55,3 +55,7 @@ jobs:
         run: |
           git diff
           git diff --quiet || (git status -u . && exit 1)
+
+      - name: Fail workflow if any step failed
+        if: ${{ env.FAIL_WORKFLOW == 'true' }}
+        run: exit 1
