@@ -4,7 +4,7 @@
 const config = {
 	dep: ["dev", "optional", "peer"],
 	target: "minor",
-	reject: ["@types/node", /^.*oclif.*/],
+	reject: ["@types/node", /.*oclif.*/],
 
 	root: true,
 	upgrade: true,
