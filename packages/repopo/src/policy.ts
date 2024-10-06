@@ -123,16 +123,36 @@ export class RepoPolicyClass implements RepoPolicy {
  * @alpha
  */
 export interface PolicyFailure {
+	/**
+	 * Name of the policy that failed.
+	 */
 	name: PolicyName;
+
+	/**
+	 * Path to the file that failed the policy.
+	 */
 	file: string;
+
+	/**
+	 * Set to `true` if the policy can be fixed automatically.
+	 */
 	autoFixable?: boolean | undefined;
+
+	/**
+	 * An optional error message accompanying the failure.
+	 */
 	errorMessage?: string | undefined;
 }
 
 /**
+ * The result of an automatic fix for a failing policy.
+ *
  * @alpha
  */
 export interface PolicyFixResult extends PolicyFailure {
+	/**
+	 * Set to true if the failure was resolved by the automated fixer.
+	 */
 	resolved: boolean;
 }
 
@@ -143,21 +163,6 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
 	}
 	return "resolved" in toCheck;
 }
-
-// export const commonMatchPatterns = {
-// 	"package.json": /(^|\/)package\.json/i,
-// } as const;
-
-// export function createPackageJsonPolicy(
-// 	props: Omit<RepoPolicy, "match">,
-// ): RepoPolicy {
-// 	const newPolicy: RepoPolicy = {
-// 		...props,
-// 		match: commonMatchPatterns["package.json"],
-// 	};
-
-// 	return newPolicy;
-// }
 
 /**
  * Default policies included with repopo.

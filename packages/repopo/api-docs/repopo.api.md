@@ -33,19 +33,15 @@ export interface PolicyConfig {
 
 // @alpha
 export interface PolicyFailure {
-    // (undocumented)
     autoFixable?: boolean | undefined;
-    // (undocumented)
     errorMessage?: string | undefined;
     // (undocumented)
     file: string;
-    // (undocumented)
     name: PolicyName;
 }
 
-// @alpha (undocumented)
+// @alpha
 export interface PolicyFixResult extends PolicyFailure {
-    // (undocumented)
     resolved: boolean;
 }
 
