@@ -84,7 +84,7 @@ Checks and applies policies to the files in the repository.
 
 ```
 USAGE
-  $ repopo check [-v | --quiet] [-f] [-D <value>... | -d <value>] [-p <value>] [--stdin]
+  $ repopo check [-f] [--stdin] [-D <value>... | -d <value>] [-p <value>]
 
 FLAGS
   -D, --excludePolicy=<value>...  Exclude policies by name. Can be specified multiple times to exclude multiple
@@ -94,10 +94,6 @@ FLAGS
   -f, --fix                       Fix errors if possible.
   -p, --path=<value>              Filter file paths by <regex>.
       --stdin                     Read list of files from stdin.
-
-LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
 ```
 
 _See code: [src/commands/check.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check.ts)_
@@ -108,11 +104,14 @@ Lists the policies configured to run.
 
 ```
 USAGE
-  $ repopo list [-v | --quiet]
+  $ repopo list [-D <value>... | -d <value>] [-p <value>]
 
-LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
+FLAGS
+  -D, --excludePolicy=<value>...  Exclude policies by name. Can be specified multiple times to exclude multiple
+                                  policies.
+  -d, --policy=<value>            Filter policies to apply by <regex>. Only policies with a name matching the regex will
+                                  be applied.
+  -p, --path=<value>              Filter file paths by <regex>.
 ```
 
 _See code: [src/commands/list.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/list.ts)_

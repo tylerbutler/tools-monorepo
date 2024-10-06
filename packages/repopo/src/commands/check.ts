@@ -3,57 +3,15 @@ import { EOL as newline } from "node:os";
 import path from "node:path";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
 import chalk from "chalk";
-import { DefaultPolicyConfig, type PolicyConfig } from "../config.js";
+
 import {
-	type PolicyHandlerPerfStats,
-	logStats,
-	newPerfStats,
-	runWithPerf,
-} from "../perf.js";
-import {
-	type PolicyName,
-	type RepoPolicy,
-	isPolicyFixResult,
-} from "../policy.js";
-
-type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
-
-/**
- * A convenience interface used to pass commonly used parameters to functions in this file.
- */
-interface CheckPolicyCommandContext {
-	/**
-	 * A regular expression used to filter selected files.
-	 */
-	pathRegex: RegExp;
-
-	/**
-	 * A list of regular expressions used to exclude files from all handlers.
-	 */
-	excludeFiles: RegExp[];
-
-	/**
-	 * A list of handlers to apply to selected files.
-	 */
-	policies: RepoPolicy[];
-
-	/**
-	 * A per-handler list of regular expressions used to exclude files from specific handlers.
-	 */
-	excludePoliciesForFiles: ExcludedPolicyFileMap;
-
-	/**
-	 * Path to the root of the git repo.
-	 */
-	gitRoot: string;
-
-	/**
-	 * Performance information for each handler.
-	 */
-	perfStats: PolicyHandlerPerfStats;
-}
+	BaseRepopoCommand,
+	type PolicyCommandContext,
+} from "../baseCommand.js";
+import { DefaultPolicyConfig } from "../config.js";
+import { logStats, runWithPerf } from "../perf.js";
+import { isPolicyFixResult } from "../policy.js";
 
 /**
  * This tool enforces policies across the code base via a series of handler functions. The handler functions are
@@ -64,13 +22,12 @@ interface CheckPolicyCommandContext {
  *
  * `git ls-files -co --exclude-standard --full-name | repopo check --stdin --verbose`
  */
-export class CheckPolicy extends GitCommand<
-	typeof CheckPolicy & {
-		args: typeof GitCommand.args;
-		flags: typeof GitCommand.flags;
+export class CheckPolicy<
+	T extends typeof BaseRepopoCommand & {
+		args: typeof CheckPolicy.args;
+		flags: typeof CheckPolicy.flags;
 	},
-	PolicyConfig
-> {
+> extends BaseRepopoCommand<T> {
 	static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
@@ -81,36 +38,34 @@ export class CheckPolicy extends GitCommand<
 			required: false,
 			char: "f",
 		}),
-		policy: RegExpFlag({
-			description:
-				"Filter policies to apply by <regex>. Only policies with a name matching the regex will be applied.",
-			required: false,
-			char: "d",
-		}),
-		excludePolicy: Flags.string({
-			char: "D",
-			description:
-				"Exclude policies by name. Can be specified multiple times to exclude multiple policies.",
-			exclusive: ["policy"],
-			multiple: true,
-		}),
-		path: RegExpFlag({
-			description: "Filter file paths by <regex>.",
-			required: false,
-			char: "p",
-		}),
+		// policy: RegExpFlag({
+		// 	description:
+		// 		"Filter policies to apply by <regex>. Only policies with a name matching the regex will be applied.",
+		// 	required: false,
+		// 	char: "d",
+		// }),
+		// excludePolicy: Flags.string({
+		// 	char: "D",
+		// 	description:
+		// 		"Exclude policies by name. Can be specified multiple times to exclude multiple policies.",
+		// 	exclusive: ["policy"],
+		// 	multiple: true,
+		// }),
+		// path: RegExpFlag({
+		// 	description: "Filter file paths by <regex>.",
+		// 	required: false,
+		// 	char: "p",
+		// }),
 		stdin: Flags.boolean({
 			description: "Read list of files from stdin.",
 			required: false,
 		}),
-		...GitCommand.flags,
+		...BaseRepopoCommand.flags,
 	} as const;
 
 	private processed = 0;
 	private count = 0;
 	// private policies: RepoPolicy[] | undefined;
-	private commandContext: CheckPolicyCommandContext | undefined;
-
 	public get defaultConfig() {
 		return DefaultPolicyConfig;
 	}
@@ -118,63 +73,9 @@ export class CheckPolicy extends GitCommand<
 	public override async init(): Promise<void> {
 		await super.init();
 
-		const config = await this.loadConfig();
-		let policies =
-			config?.policies?.filter((h) => {
-				if (
-					this.flags.excludePolicy === undefined ||
-					this.flags.excludePolicy.length === 0
-				) {
-					return true;
-				}
-				const shouldRun = this.flags.excludePolicy?.includes(h.name) === false;
-				if (!shouldRun) {
-					this.info(`Disabled policy: ${h.name}`);
-				}
-				return shouldRun;
-			}) ?? [];
-
-		// const pathRegex: RegExp =
-		// 	this.flags.path === undefined ? /.?/ : new RegExp(this.flags.path, "i");
-
-		if (this.flags.policy !== undefined) {
-			this.info(`Filtering handlers by regex: ${this.flags.policy}`);
-			policies = policies?.filter((h) => this.flags.policy?.test(h.name));
-		}
-
-		const pathRegex = this.flags.path ?? /.?/;
-		if (this.flags.path !== undefined) {
-			this.info(`Filtering file paths by regex: ${pathRegex}`);
-		}
-
 		if (this.flags.fix) {
 			this.info("Resolving errors if possible.");
 		}
-
-		const excludeFiles: RegExp[] =
-			config?.excludeFiles?.map((e) => toRegExp(e)) ?? [];
-
-		const excludePoliciesForFilesRaw = config?.excludePoliciesForFiles;
-
-		const excludePoliciesForFiles: ExcludedPolicyFileMap = new Map();
-		if (excludePoliciesForFilesRaw) {
-			for (const [policyName, filters] of Object.entries(
-				excludePoliciesForFilesRaw,
-			)) {
-				const regexes = filters.map((e) => toRegExp(e));
-				excludePoliciesForFiles.set(policyName, regexes);
-			}
-		}
-
-		const gitRoot = await findGitRoot();
-		this.commandContext = {
-			pathRegex,
-			excludeFiles,
-			policies,
-			excludePoliciesForFiles,
-			gitRoot,
-			perfStats: newPerfStats(),
-		};
 	}
 
 	public override async run(): Promise<void> {
@@ -214,18 +115,19 @@ export class CheckPolicy extends GitCommand<
 			filePathsToCheck.push(...gitFiles.split("\n"));
 		}
 
-		if (this.commandContext === undefined) {
-			this.error("Command context was undefined - fatal error.", {
+		try {
+			const context = this.getContext();
+			await this.executePolicy(filePathsToCheck, context);
+		} catch (error) {
+			this.error(`Command context was undefined - fatal error: ${error}`, {
 				exit: 100,
 			});
 		}
-
-		await this.executePolicy(filePathsToCheck, this.commandContext);
 	}
 
 	private async executePolicy(
 		pathsToCheck: string[],
-		commandContext: CheckPolicyCommandContext,
+		commandContext: PolicyCommandContext,
 	): Promise<void> {
 		try {
 			for (const pathToCheck of pathsToCheck) {
@@ -244,7 +146,7 @@ export class CheckPolicy extends GitCommand<
 	 */
 	private async routeToHandlers(
 		file: string,
-		commandContext: CheckPolicyCommandContext,
+		commandContext: PolicyCommandContext,
 	): Promise<void> {
 		const { policies, excludePoliciesForFiles, gitRoot, perfStats } =
 			commandContext;
@@ -354,7 +256,7 @@ export class CheckPolicy extends GitCommand<
 	 */
 	private async checkOrExcludeFile(
 		inputPath: string,
-		commandContext: CheckPolicyCommandContext,
+		commandContext: PolicyCommandContext,
 	): Promise<void> {
 		const { excludeFiles: exclusions, gitRoot, pathRegex } = commandContext;
 
@@ -398,11 +300,4 @@ async function readStdin(): Promise<string> {
 			resolve("");
 		}
 	});
-}
-
-function toRegExp(input: string | RegExp): RegExp {
-	if (typeof input === "string") {
-		return new RegExp(input, "i");
-	}
-	return input;
 }
