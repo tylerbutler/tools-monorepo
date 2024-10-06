@@ -75,7 +75,7 @@
 	"pnpm": {
 		"peerDependencyRules": {
 			"allowAny": ["@aws-sdk/*"],
-			"ignoreMissing": ["@aws-sdk/*"]
+			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
 		},
 		"updateConfig": {
 			"ignoreDependencies": ["chai", "@types/node"]
