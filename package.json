@@ -29,6 +29,10 @@
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
+		"deps": "ncu --interactive",
+		"deps:dev": "ncu",
+		"deps:prod": "ncu --configFileName .ncurc.prod.cjs",
+		"deps:oclif": "ncu --configFileName .ncurc.oclif.cjs",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
@@ -55,6 +59,7 @@
 		"concurrently": "^9.0.0",
 		"generate-license-file": "^3.5.0",
 		"lefthook": "^1.6.11",
+		"npm-check-updates": "^17.1.3",
 		"renovate": "^38.18.16",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.0",
@@ -70,7 +75,7 @@
 	"pnpm": {
 		"peerDependencyRules": {
 			"allowAny": ["@aws-sdk/*"],
-			"ignoreMissing": ["@aws-sdk/*"]
+			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
 		},
 		"updateConfig": {
 			"ignoreDependencies": ["chai", "@types/node"]
