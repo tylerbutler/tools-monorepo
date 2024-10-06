@@ -19,11 +19,11 @@ importers:
         specifier: ^2.27.1
         version: 2.27.8
       '@fluid-tools/build-cli':
-        specifier: ^0.44.0
-        version: 0.44.0(@types/node@22.7.4)(encoding@0.1.13)
+        specifier: ^0.47.0
+        version: 0.47.0(@types/node@22.7.4)(encoding@0.1.13)(typescript@5.4.5)
       '@fluidframework/build-tools':
-        specifier: ^0.44.0
-        version: 0.44.0
+        specifier: ^0.47.0
+        version: 0.47.0
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4
@@ -41,10 +41,13 @@ importers:
         version: 9.0.1
       generate-license-file:
         specifier: ^3.5.0
-        version: 3.5.1(typescript@5.5.4)
+        version: 3.5.1(typescript@5.4.5)
       lefthook:
         specifier: ^1.6.11
         version: 1.7.17
+      npm-check-updates:
+        specifier: ^17.1.3
+        version: 17.1.3
       renovate:
         specifier: ^38.18.16
         version: 38.100.0(@aws-sdk/client-sso-oidc@3.637.0(@aws-sdk/client-sts@3.637.0))(encoding@0.1.13)(typanion@3.14.0)
@@ -62,10 +65,10 @@ importers:
         version: link:packages/sort-tsconfig
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.5.4)
+        version: 13.0.0(typescript@5.4.5)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.7.4)(typescript@5.5.4)
+        version: 10.9.2(@types/node@22.7.4)(typescript@5.4.5)
 
   config:
     devDependencies:
@@ -156,7 +159,7 @@ importers:
         version: 10.7.3
       oclif:
         specifier: ^4.14.26
-        version: 4.14.35
+        version: 4.15.1
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -247,7 +250,7 @@ importers:
         version: 10.7.3
       oclif:
         specifier: ^4.14.26
-        version: 4.14.35
+        version: 4.15.1
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -368,7 +371,7 @@ importers:
         version: 2.4.9(typescript@5.5.4)
       oclif:
         specifier: ^4.14.26
-        version: 4.14.35
+        version: 4.15.1
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -515,8 +518,8 @@ importers:
   packages/repopo:
     dependencies:
       '@fluidframework/build-tools':
-        specifier: ^0.44.0
-        version: 0.44.0
+        specifier: ^0.47.0
+        version: 0.47.0
       '@oclif/core':
         specifier: ^4.0.19
         version: 4.0.23
@@ -571,7 +574,7 @@ importers:
         version: 1.7.17
       oclif:
         specifier: ^4.14.26
-        version: 4.14.35
+        version: 4.15.1
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -671,7 +674,7 @@ importers:
         version: 10.7.3
       oclif:
         specifier: ^4.14.26
-        version: 4.14.35
+        version: 4.15.1
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
@@ -705,10 +708,6 @@ packages:
 
   '@andrewbranch/untar.js@1.0.3':
     resolution: {integrity: sha512-Jh15/qVmrLGhkKJBdXlK1+9tY4lZruYjsgkDFj08ZmDiWVBLJcqkok7Z0/R0In+i1rScBpJlSvrTS2Lm41Pbnw==}
-
-  '@apidevtools/json-schema-ref-parser@11.7.0':
-    resolution: {integrity: sha512-pRrmXMCwnmrkS3MLgAIW5dXRzeTv6GLjkjb4HmxNnvAKXN1Nfzp4KmGADBQvlVUcqi+a5D+hfGDLLnd5NnYxog==}
-    engines: {node: '>= 16'}
 
   '@arcanis/slice-ansi@1.1.1':
     resolution: {integrity: sha512-xguP2WR2Dv0gQ7Ykbdb7BNCnPnIPB94uTi0Z2NvkRBEnhbwjOQ7QyQKJXrVQg4qDpiD9hA5l5cCwy/z2OXgc3w==}
@@ -1434,23 +1433,23 @@ packages:
     resolution: {integrity: sha512-Au3jSkt66PRwTKTCYm7KzTGfMzUmn1LYPK+cyrytfzjfOPkHpohrLcGYPLsgxV8nzc4vXxt3Ay7MlBrmeIfFLg==}
     engines: {node: '>=16.0'}
 
-  '@fluid-tools/build-cli@0.44.0':
-    resolution: {integrity: sha512-VQSRxRFtvr3BbWkJ/Lu6uHmIXVrwJalFNrX/OiqokrdrC1KUAprzEVMsvqNLuNvhlvD4e4LWohx9TjRWiaQIlg==}
+  '@fluid-tools/build-cli@0.47.0':
+    resolution: {integrity: sha512-U4QuSfmcHN2uiHm2icp5fb0DFP5PCMczrFb3U3XqcP4f0f+zFsE1ALhPtFGkPKcsjXugnLiw677WZDyJ/b15UA==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluid-tools/version-tools@0.44.0':
-    resolution: {integrity: sha512-Oae0rdx+f2vVyFdPZi+t0ABgJZMaljbLfiMY2ejyL5Bt/T0QSkOEHS6Z5qPsg+Y5N15re53Vwck4S/Ybfjw+jA==}
+  '@fluid-tools/version-tools@0.47.0':
+    resolution: {integrity: sha512-KTyykv2dGj4SppdelJm9e2J8cHPjoEcvCvu0XvvhzxVsLl8493B3USmM2KyXblq5SepEFQMUkOjhVVdZuJWGkA==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/build-tools@0.44.0':
-    resolution: {integrity: sha512-lRldMqbYb4hIjxpnfEdZKTOm9iCuPHUXbp4R3BAVyrJ2+JLs1vLW75FpernwZdWLCVU0jIRqx/MMyRXPXGP03Q==}
+  '@fluidframework/build-tools@0.47.0':
+    resolution: {integrity: sha512-qw+YMx6VklulzJYSmuxU97u8yhBIsIGH36IbEAJSho7rNkbw6lR7t/jT116r3kkT52V+XphyVW3MLGcyg6SOEA==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/bundle-size-tools@0.44.0':
-    resolution: {integrity: sha512-ZbzfHwfMXH61gzm2KC53eC9xPg+rY/ZPv0Xpvt7lIN0WAtd1IIi0/TzOGXwhlkErRntYDuCEqHIHvoVc8aGExw==}
+  '@fluidframework/bundle-size-tools@0.47.0':
+    resolution: {integrity: sha512-ACEAxd1bx/pQstuWArRZaNrItxIdutCjzIUWo8Wt5C94hCzy9tslNRVLrHgMKkRY6Vrz1gyKDATo5Qtq+jDI0Q==}
 
   '@fontsource/ibm-plex-serif@5.1.0':
     resolution: {integrity: sha512-x8/rprq/hc94eYugICIUJCyUVMC1rPpgmL8km5FhhXIl6l2soaYadLcx4bmVP/rvLr/cRtj4GCaV6ZnGg3jaPA==}
@@ -1662,9 +1661,6 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@jsdevtools/ono@7.1.3':
-    resolution: {integrity: sha512-4JQNk+3mVzK3xh2rqd6RB4J46qUR19azEHBneZyTZM+c456qOrbbM/5xcR8huNCCcbVt7+UmizG6GuUvPvKUYg==}
-
   '@jsonjoy.com/base64@1.1.2':
     resolution: {integrity: sha512-q6XAnWQDIMA3+FTiOYajoYqySkO+JSat0ytXGSuRdq9uXE7o92gzuQwQM14xaCRlBLGq3v5miDGC4vkVTn54xA==}
     engines: {node: '>=10.0'}
@@ -1865,6 +1861,10 @@ packages:
     resolution: {integrity: sha512-1v5MkECOH+mkubpk5RgyVK1qEHn3hr2wX1qsx5hawTyssd10WEFIkH258M9CjyiG42M6ZCQhOS3Wo2wteLo/vg==}
     engines: {node: '>=18.0.0'}
 
+  '@oclif/plugin-not-found@3.2.22':
+    resolution: {integrity: sha512-snd/gmYjTYIa8vr5rPLNus0ymKhhITRTFWLlYCJvAZTs2kX+vUMMdpKId9pEPSzoVGmyddNVshWSCJ2FSgR0mg==}
+    engines: {node: '>=18.0.0'}
+
   '@oclif/plugin-plugins@5.4.9':
     resolution: {integrity: sha512-V64IZ5ldyZWJRwYsRHzGvuayWM1KYTsNNI3O58U6+VwEs2Ir16Q0Nwu0Ejnn6mM7na9Qz4RCU9tWhbngRoZt+g==}
     engines: {node: '>=18.0.0'}
@@ -1902,6 +1902,10 @@ packages:
     resolution: {integrity: sha512-tY/msAuJo6ARbK6SPIxZrPBms3xPbfwBrulZe0Wtr/DIY9lje2HeV1uoebShn6mx7SjCHif6EjMvoREj+gZ+SA==}
     engines: {node: '>= 18'}
 
+  '@octokit/auth-token@5.1.1':
+    resolution: {integrity: sha512-rh3G3wDO8J9wSjfI436JUKzHIxq8NaiL0tVeB2aXmG6p/9859aUOAjA9pmSPNGGZxfwmaJ9ozOJImuNVJdpvbA==}
+    engines: {node: '>= 18'}
+
   '@octokit/core@3.6.0':
     resolution: {integrity: sha512-7RKRKuA4xTjMhY+eG3jthb3hlZCsOwg3rztWh75Xc+ShDWOfDDATWbeZpAHBNRpm4Tv9WgBMOy1zEJYXG6NJ7Q==}
 
@@ -1911,6 +1915,14 @@ packages:
 
   '@octokit/core@5.2.0':
     resolution: {integrity: sha512-1LFfa/qnMQvEOAdzlQymH0ulepxbxnCYAKJZfMci/5XJyIHWgEYnDmgnKakbTh7CH2tFQ5O60oYDvns4i9RAIg==}
+    engines: {node: '>= 18'}
+
+  '@octokit/core@6.1.2':
+    resolution: {integrity: sha512-hEb7Ma4cGJGEUNOAVmyfdB/3WirWMg5hDuNFVejGEDFqupeOysLc2sG6HJxY2etBp5YQu5Wtxwi020jS9xlUwg==}
+    engines: {node: '>= 18'}
+
+  '@octokit/endpoint@10.1.1':
+    resolution: {integrity: sha512-JYjh5rMOwXMJyUpj028cu0Gbp7qe/ihxfJMLc8VZBMMqSwLgOxDI1911gV4Enl1QSavAQNJcwmwBF9M0VvLh6Q==}
     engines: {node: '>= 18'}
 
   '@octokit/endpoint@6.0.12':
@@ -1933,6 +1945,10 @@ packages:
 
   '@octokit/graphql@7.1.0':
     resolution: {integrity: sha512-r+oZUH7aMFui1ypZnAvZmn0KSqAUgE1/tUXIWaqUCa1758ts/Jio84GZuzsvUkme98kv0WFY8//n0J1Z+vsIsQ==}
+    engines: {node: '>= 18'}
+
+  '@octokit/graphql@8.1.1':
+    resolution: {integrity: sha512-ukiRmuHTi6ebQx/HFRCXKbDlOh/7xEV6QUXaE7MJEKGNAncGI/STSbOkl12qVXZrfZdpXctx5O9X1AIaebiDBg==}
     engines: {node: '>= 18'}
 
   '@octokit/openapi-types@12.11.0':
@@ -1966,6 +1982,12 @@ packages:
     peerDependencies:
       '@octokit/core': '5'
 
+  '@octokit/plugin-request-log@5.3.1':
+    resolution: {integrity: sha512-n/lNeCtq+9ofhC15xzmJCNKP2BWTv8Ih2TTy+jatNCCq/gQP/V7rK3fjIfuz0pDWDALO/o/4QY4hyOF6TQQFUw==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@octokit/core': '>=6'
+
   '@octokit/plugin-rest-endpoint-methods@13.2.2':
     resolution: {integrity: sha512-EI7kXWidkt3Xlok5uN43suK99VWqc8OaIMktY9d9+RNKl69juoTyxmLoWPIZgJYzi41qj/9zU7G/ljnNOJ5AFA==}
     engines: {node: '>= 18'}
@@ -1988,6 +2010,10 @@ packages:
     resolution: {integrity: sha512-GETXfE05J0+7H2STzekpKObFe765O5dlAKUTLNGeH+x47z7JjXHfsHKo5z21D/o/IOZTUEI6nyWyR+bZVP/n5Q==}
     engines: {node: '>= 18'}
 
+  '@octokit/request-error@6.1.5':
+    resolution: {integrity: sha512-IlBTfGX8Yn/oFPMwSfvugfncK2EwRLjzbrpifNaMY8o/HTEAFqCA1FZxjD9cWvSKBHgrIhc4CSBIzMxiLsbzFQ==}
+    engines: {node: '>= 18'}
+
   '@octokit/request@5.6.3':
     resolution: {integrity: sha512-bFJl0I1KVc9jYTe9tdGGpAMPy32dLBXXo1dS/YwSCTL/2nd9XeHsY616RE3HPXDVk+a+dBuzyz5YdlXwcDTr2A==}
 
@@ -1999,11 +2025,19 @@ packages:
     resolution: {integrity: sha512-9Bb014e+m2TgBeEJGEbdplMVWwPmL1FPtggHQRkV+WVsMggPtEkLKPlcVYm/o8xKLkpJ7B+6N8WfQMtDLX2Dpw==}
     engines: {node: '>= 18'}
 
+  '@octokit/request@9.1.3':
+    resolution: {integrity: sha512-V+TFhu5fdF3K58rs1pGUJIDH5RZLbZm5BI+MNF+6o/ssFNT4vWlCh/tVpF3NxGtP15HUxTTMUbsG5llAuU2CZA==}
+    engines: {node: '>= 18'}
+
   '@octokit/rest@18.12.0':
     resolution: {integrity: sha512-gDPiOHlyGavxr72y0guQEhLsemgVjwRePayJ+FcKc2SJqKUbxbkvf5kAZEWA/MKvsfYlQAMVzNJE3ezQcxMJ2Q==}
 
   '@octokit/rest@20.1.1':
     resolution: {integrity: sha512-MB4AYDsM5jhIHro/dq4ix1iWTLGToIGk6cWF5L6vanFaMble5jTX/UBQyiv05HsWnwUtY8JrfHy2LWfKwihqMw==}
+    engines: {node: '>= 18'}
+
+  '@octokit/rest@21.0.2':
+    resolution: {integrity: sha512-+CiLisCoyWmYicH25y1cDfCrv41kRSvTq6pPWtRroRJzhsCZWZyCqGyI8foJT5LmScADSwRAnr/xo+eewL04wQ==}
     engines: {node: '>= 18'}
 
   '@octokit/types@13.6.0':
@@ -2859,9 +2893,6 @@ packages:
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
 
-  '@types/lodash@4.17.9':
-    resolution: {integrity: sha512-w9iWudx1XWOHW5lQRS9iKpK/XuRhnN+0T7HvdCCd802FYkT1AMTnxndJHGrNJwRoRHkslGr4S29tjm1cT7x/7w==}
-
   '@types/mdast@3.0.15':
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
 
@@ -3400,6 +3431,9 @@ packages:
 
   before-after-hook@2.2.3:
     resolution: {integrity: sha512-NzUnlZexiaH/46WDhANlyR2bXRopNg4F/zuSA3OpZnllCUgRaOF2znDioDWrmbNVsuZk6l9pMquQB38cfBZwkQ==}
+
+  before-after-hook@3.0.2:
+    resolution: {integrity: sha512-Nik3Sc0ncrMK4UUdXQmAnRtzmNQTAAXmXIopizwZ1W1t8QmfJj+zL4OA2I7XPTPW5z5TDqv4hRo/JzouDJnX3A==}
 
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
@@ -5605,11 +5639,6 @@ packages:
   json-parse-helpfulerror@1.0.3:
     resolution: {integrity: sha512-XgP0FGR77+QhUxjXkwOMkC94k3WtqEBfcnjWqhRd82qTat4SWKRE+9kUnynz/shm3I4ea2+qISvTIeGTNU7kJg==}
 
-  json-schema-to-typescript@15.0.2:
-    resolution: {integrity: sha512-+cRBw+bBJ3k783mZroDIgz1pLNPB4hvj6nnbHTWwEVl0dkW8qdZ+M9jWhBb+Y0FAdHvNsXACga3lewGO8lktrw==}
-    engines: {node: '>=16.0.0'}
-    hasBin: true
-
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
 
@@ -6060,6 +6089,9 @@ packages:
   mdast-util-gfm@3.0.0:
     resolution: {integrity: sha512-dgQEX5Amaq+DuUqf26jJqSK9qgixgd6rYDHAv4aTBuA92cTknZlKpPfa86Z/s8Dj8xsAQpFfBmPUHWJBWqS4Bw==}
 
+  mdast-util-heading-range@4.0.0:
+    resolution: {integrity: sha512-9qadnTU+W0MR69yITfUr/52eoVXcqUpFhN1ThjGSn59KGOdxgaOr4Nx4swa60SaXEq8/tjQZcq2sVPp2yJMNCA==}
+
   mdast-util-mdx-expression@2.0.1:
     resolution: {integrity: sha512-J6f+9hUp+ldTZqKRSg7Vw5V6MqjATc+3E4gf3CFNcuZNWD8XdyI6zQ8GqH7f8169MM6P7hMBRDVGnn7oHB9kXQ==}
 
@@ -6095,6 +6127,10 @@ packages:
 
   mdast-util-toc@7.1.0:
     resolution: {integrity: sha512-2TVKotOQzqdY7THOdn2gGzS9d1Sdd66bvxUyw3aNpWfcPXCLYSJCCgfPy30sEtuzkDraJgqF35dzgmz6xlvH/w==}
+
+  mdast@3.0.0:
+    resolution: {integrity: sha512-xySmf8g4fPKMeC07jXGz971EkLbWAJ83s4US2Tj9lEdnZ142UP5grN73H1Xd3HzrdbU5o9GYYP/y8F9ZSwLE9g==}
+    deprecated: '`mdast` was renamed to `remark`'
 
   mdurl@2.0.0:
     resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
@@ -6602,6 +6638,11 @@ packages:
     engines: {node: '>=14.14'}
     hasBin: true
 
+  npm-check-updates@17.1.3:
+    resolution: {integrity: sha512-4uDLBWPuDHT5KLieIJ20FoAB8yqJejmupI42wPyfObgQOBbPAikQSwT73afDwREvhuxYrRDqlRvxTMSfvO+L8A==}
+    engines: {node: ^18.18.0 || >=20.0.0, npm: '>=8.12.1'}
+    hasBin: true
+
   npm-install-checks@6.3.0:
     resolution: {integrity: sha512-W29RiK/xtpCGqn6f3ixfRYGk+zRyr+Ew9F2E20BfXxT5/euLdA/Nm7fO7OeTGuAmTs30cpgInyJ0cYe708YTZw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -6760,8 +6801,8 @@ packages:
     resolution: {integrity: sha512-byy+U7gp+FVwmyzKPYhW2h5l3crpmGsxl7X2s8y43IgxvG4g3QZ6CffDtsNQy1WsmZpQbO+ybo0AlW7TY6DcBQ==}
     engines: {node: '>= 0.4'}
 
-  oclif@4.14.35:
-    resolution: {integrity: sha512-PWiBL6+fQZNiFPkdrorDINFfpOTdI5Je9UZD/RwaeP2LvQdggqpBUXx5qlrtxPcHZXNuTQrn4pFfIbDIOPCjsg==}
+  oclif@4.15.1:
+    resolution: {integrity: sha512-YCElE3iM7MUDIS62UNcjH0kHWJ+VIrujgkJAFeeNQMWmpN+rdSkE0UWdKfsaHHpYKLEYrEJfHMSQm/YrekCOMQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -8606,6 +8647,9 @@ packages:
   universal-user-agent@6.0.1:
     resolution: {integrity: sha512-yCzhz6FN2wU1NiiQRogkTQszlQSlpWaw8SvVegAc+bDxbzHgh1vX8uIe8OYyMH6DwH+sdTJsgMl36+mSMdRJIQ==}
 
+  universal-user-agent@7.0.2:
+    resolution: {integrity: sha512-0JCqzSKnStlRRQfCdowvqy3cy0Dvtlb8xecj/H8JFZuCze4rwjPZQOgvFvn0Ws/usCHQFGpyr+pB9adaGwXn4Q==}
+
   universalify@0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
@@ -9040,6 +9084,14 @@ packages:
     resolution: {integrity: sha512-GCPAHLvrIH13+c0SuacwvRYj2SxJXQ4kaVTT5xgL3kPrz56XxkF21IGhjSE1+W0aw7gpBWRGXLCPnPby6lSpmQ==}
     engines: {node: '>=12'}
 
+  xml2js@0.5.0:
+    resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
+    engines: {node: '>=4.0.0'}
+
+  xmlbuilder@11.0.1:
+    resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
+    engines: {node: '>=4.0'}
+
   xmldoc@1.3.0:
     resolution: {integrity: sha512-y7IRWW6PvEnYQZNZFMRLNJw+p3pezM4nKYPfr15g4OOW9i8VpeydycFuipE2297OvZnh3jSb2pxOt9QpkZUVng==}
 
@@ -9164,12 +9216,6 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
 
   '@andrewbranch/untar.js@1.0.3': {}
-
-  '@apidevtools/json-schema-ref-parser@11.7.0':
-    dependencies:
-      '@jsdevtools/ono': 7.1.3
-      '@types/json-schema': 7.0.15
-      js-yaml: 4.1.0
 
   '@arcanis/slice-ansi@1.1.1':
     dependencies:
@@ -10677,29 +10723,33 @@ snapshots:
       mdast-util-find-and-replace: 1.1.1
       unist-util-visit: 2.0.3
 
-  '@fluid-tools/build-cli@0.44.0(@types/node@22.7.4)(encoding@0.1.13)':
+  '@fluid-tools/build-cli@0.47.0(@types/node@22.7.4)(encoding@0.1.13)(typescript@5.4.5)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
-      '@fluid-tools/version-tools': 0.44.0
-      '@fluidframework/build-tools': 0.44.0
-      '@fluidframework/bundle-size-tools': 0.44.0
+      '@fluid-tools/version-tools': 0.47.0
+      '@fluidframework/build-tools': 0.47.0
+      '@fluidframework/bundle-size-tools': 0.47.0
       '@microsoft/api-extractor': 7.47.9(@types/node@22.7.4)
       '@oclif/core': 4.0.23
       '@oclif/plugin-autocomplete': 3.2.4
       '@oclif/plugin-commands': 4.0.15
       '@oclif/plugin-help': 6.2.12
-      '@oclif/plugin-not-found': 3.2.21
+      '@oclif/plugin-not-found': 3.2.22
       '@octokit/core': 4.2.4(encoding@0.1.13)
+      '@octokit/rest': 21.0.2
       '@rushstack/node-core-library': 3.66.1(@types/node@22.7.4)
       async: 3.2.6
+      azure-devops-node-api: 11.2.0
       chalk: 5.3.0
       change-case: 3.1.0
+      cosmiconfig: 8.3.6(typescript@5.4.5)
       danger: 11.3.1(encoding@0.1.13)
       date-fns: 2.30.0
       debug: 4.3.7(supports-color@8.1.1)
       execa: 5.1.1
       fflate: 0.8.2
       fs-extra: 11.2.0
+      github-slugger: 2.0.0
       globby: 11.1.0
       gray-matter: 4.0.3
       human-id: 4.1.1
@@ -10707,11 +10757,15 @@ snapshots:
       issue-parser: 7.0.1
       json5: 2.2.3
       jssm: 5.98.2
+      jszip: 3.10.1
       latest-version: 5.1.0
+      mdast: 3.0.0
+      mdast-util-heading-range: 4.0.0
+      mdast-util-to-string: 4.0.0
       minimatch: 7.4.6
       node-fetch: 3.3.2
       npm-check-updates: 16.14.20
-      oclif: 4.14.35
+      oclif: 4.15.1
       prettier: 3.2.5
       prompts: 2.4.2
       read-pkg-up: 7.0.1
@@ -10731,6 +10785,8 @@ snapshots:
       table: 6.8.2
       ts-morph: 22.0.0
       type-fest: 2.19.0
+      unist-util-visit: 5.0.0
+      xml2js: 0.5.0
     transitivePeerDependencies:
       - '@swc/core'
       - '@types/node'
@@ -10738,25 +10794,26 @@ snapshots:
       - encoding
       - esbuild
       - supports-color
+      - typescript
       - uglify-js
       - webpack-cli
 
-  '@fluid-tools/version-tools@0.44.0':
+  '@fluid-tools/version-tools@0.47.0':
     dependencies:
       '@oclif/core': 4.0.23
       '@oclif/plugin-autocomplete': 3.2.4
       '@oclif/plugin-commands': 4.0.15
       '@oclif/plugin-help': 6.2.12
-      '@oclif/plugin-not-found': 3.2.21
+      '@oclif/plugin-not-found': 3.2.22
       chalk: 2.4.2
       semver: 7.6.3
       table: 6.8.2
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/build-tools@0.44.0':
+  '@fluidframework/build-tools@0.47.0':
     dependencies:
-      '@fluid-tools/version-tools': 0.44.0
+      '@fluid-tools/version-tools': 0.47.0
       '@manypkg/get-packages': 2.2.2
       async: 3.2.6
       chalk: 2.4.2
@@ -10768,7 +10825,6 @@ snapshots:
       fs-extra: 11.2.0
       glob: 7.2.3
       ignore: 5.3.2
-      json-schema-to-typescript: 15.0.2
       json5: 2.2.3
       lodash: 4.17.21
       lodash.isequal: 4.5.0
@@ -10785,7 +10841,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/bundle-size-tools@0.44.0':
+  '@fluidframework/bundle-size-tools@0.47.0':
     dependencies:
       azure-devops-node-api: 11.2.0
       jszip: 3.10.1
@@ -11025,8 +11081,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
-
-  '@jsdevtools/ono@7.1.3': {}
 
   '@jsonjoy.com/base64@1.1.2(tslib@2.7.0)':
     dependencies:
@@ -11461,6 +11515,13 @@ snapshots:
       ansis: 3.3.2
       fast-levenshtein: 3.0.0
 
+  '@oclif/plugin-not-found@3.2.22':
+    dependencies:
+      '@inquirer/confirm': 3.2.0
+      '@oclif/core': 4.0.23
+      ansis: 3.3.2
+      fast-levenshtein: 3.0.0
+
   '@oclif/plugin-plugins@5.4.9':
     dependencies:
       '@oclif/core': 4.0.23
@@ -11520,6 +11581,8 @@ snapshots:
 
   '@octokit/auth-token@4.0.0': {}
 
+  '@octokit/auth-token@5.1.1': {}
+
   '@octokit/core@3.6.0(encoding@0.1.13)':
     dependencies:
       '@octokit/auth-token': 2.5.0
@@ -11553,6 +11616,21 @@ snapshots:
       '@octokit/types': 13.6.0
       before-after-hook: 2.2.3
       universal-user-agent: 6.0.1
+
+  '@octokit/core@6.1.2':
+    dependencies:
+      '@octokit/auth-token': 5.1.1
+      '@octokit/graphql': 8.1.1
+      '@octokit/request': 9.1.3
+      '@octokit/request-error': 6.1.5
+      '@octokit/types': 13.6.0
+      before-after-hook: 3.0.2
+      universal-user-agent: 7.0.2
+
+  '@octokit/endpoint@10.1.1':
+    dependencies:
+      '@octokit/types': 13.6.0
+      universal-user-agent: 7.0.2
 
   '@octokit/endpoint@6.0.12':
     dependencies:
@@ -11593,6 +11671,12 @@ snapshots:
       '@octokit/types': 13.6.0
       universal-user-agent: 6.0.1
 
+  '@octokit/graphql@8.1.1':
+    dependencies:
+      '@octokit/request': 9.1.3
+      '@octokit/types': 13.6.0
+      universal-user-agent: 7.0.2
+
   '@octokit/openapi-types@12.11.0': {}
 
   '@octokit/openapi-types@18.1.1': {}
@@ -11602,6 +11686,11 @@ snapshots:
   '@octokit/plugin-paginate-rest@11.3.1(@octokit/core@5.2.0)':
     dependencies:
       '@octokit/core': 5.2.0
+      '@octokit/types': 13.6.0
+
+  '@octokit/plugin-paginate-rest@11.3.1(@octokit/core@6.1.2)':
+    dependencies:
+      '@octokit/core': 6.1.2
       '@octokit/types': 13.6.0
 
   '@octokit/plugin-paginate-rest@2.21.3(@octokit/core@3.6.0(encoding@0.1.13))':
@@ -11617,9 +11706,18 @@ snapshots:
     dependencies:
       '@octokit/core': 5.2.0
 
+  '@octokit/plugin-request-log@5.3.1(@octokit/core@6.1.2)':
+    dependencies:
+      '@octokit/core': 6.1.2
+
   '@octokit/plugin-rest-endpoint-methods@13.2.2(@octokit/core@5.2.0)':
     dependencies:
       '@octokit/core': 5.2.0
+      '@octokit/types': 13.6.0
+
+  '@octokit/plugin-rest-endpoint-methods@13.2.2(@octokit/core@6.1.2)':
+    dependencies:
+      '@octokit/core': 6.1.2
       '@octokit/types': 13.6.0
 
   '@octokit/plugin-rest-endpoint-methods@5.16.2(@octokit/core@3.6.0(encoding@0.1.13))':
@@ -11645,6 +11743,10 @@ snapshots:
       '@octokit/types': 13.6.0
       deprecation: 2.3.1
       once: 1.4.0
+
+  '@octokit/request-error@6.1.5':
+    dependencies:
+      '@octokit/types': 13.6.0
 
   '@octokit/request@5.6.3(encoding@0.1.13)':
     dependencies:
@@ -11675,6 +11777,13 @@ snapshots:
       '@octokit/types': 13.6.0
       universal-user-agent: 6.0.1
 
+  '@octokit/request@9.1.3':
+    dependencies:
+      '@octokit/endpoint': 10.1.1
+      '@octokit/request-error': 6.1.5
+      '@octokit/types': 13.6.0
+      universal-user-agent: 7.0.2
+
   '@octokit/rest@18.12.0(encoding@0.1.13)':
     dependencies:
       '@octokit/core': 3.6.0(encoding@0.1.13)
@@ -11690,6 +11799,13 @@ snapshots:
       '@octokit/plugin-paginate-rest': 11.3.1(@octokit/core@5.2.0)
       '@octokit/plugin-request-log': 4.0.1(@octokit/core@5.2.0)
       '@octokit/plugin-rest-endpoint-methods': 13.2.2(@octokit/core@5.2.0)
+
+  '@octokit/rest@21.0.2':
+    dependencies:
+      '@octokit/core': 6.1.2
+      '@octokit/plugin-paginate-rest': 11.3.1(@octokit/core@6.1.2)
+      '@octokit/plugin-request-log': 5.3.1(@octokit/core@6.1.2)
+      '@octokit/plugin-rest-endpoint-methods': 13.2.2(@octokit/core@6.1.2)
 
   '@octokit/types@13.6.0':
     dependencies:
@@ -12749,8 +12865,6 @@ snapshots:
     dependencies:
       '@types/node': 20.16.10
 
-  '@types/lodash@4.17.9': {}
-
   '@types/mdast@3.0.15':
     dependencies:
       '@types/unist': 2.0.11
@@ -12805,7 +12919,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 20.16.10
+      '@types/node': 17.0.45
 
   '@types/semver-utils@1.1.3': {}
 
@@ -13472,6 +13586,8 @@ snapshots:
 
   before-after-hook@2.2.3: {}
 
+  before-after-hook@3.0.2: {}
+
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
@@ -13525,7 +13641,7 @@ snapshots:
     dependencies:
       ansi-align: 3.0.1
       camelcase: 7.0.1
-      chalk: 5.3.0
+      chalk: 5.0.1
       cli-boxes: 3.0.0
       string-width: 5.1.2
       type-fest: 2.19.0
@@ -14087,6 +14203,15 @@ snapshots:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
+    optionalDependencies:
+      typescript: 5.4.5
+
+  cosmiconfig@9.0.0(typescript@5.4.5):
+    dependencies:
+      env-paths: 2.2.1
+      import-fresh: 3.3.0
+      js-yaml: 4.1.0
+      parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.4.5
 
@@ -14954,13 +15079,13 @@ snapshots:
 
   gemoji@6.1.0: {}
 
-  generate-license-file@3.5.1(typescript@5.5.4):
+  generate-license-file@3.5.1(typescript@5.4.5):
     dependencies:
       '@commander-js/extra-typings': 12.1.0(commander@12.1.0)
       '@npmcli/arborist': 7.5.4
       cli-spinners: 2.9.2
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.5.4)
+      cosmiconfig: 9.0.0(typescript@5.4.5)
       enquirer: 2.4.1
       glob: 10.4.5
       json5: 2.2.3
@@ -16080,18 +16205,6 @@ snapshots:
     dependencies:
       jju: 1.4.0
 
-  json-schema-to-typescript@15.0.2:
-    dependencies:
-      '@apidevtools/json-schema-ref-parser': 11.7.0
-      '@types/json-schema': 7.0.15
-      '@types/lodash': 4.17.9
-      glob: 10.4.5
-      is-glob: 4.0.3
-      js-yaml: 4.1.0
-      lodash: 4.17.21
-      minimist: 1.2.8
-      prettier: 3.3.3
-
   json-schema-traverse@0.4.1: {}
 
   json-schema-traverse@1.0.0: {}
@@ -16633,6 +16746,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  mdast-util-heading-range@4.0.0:
+    dependencies:
+      '@types/mdast': 4.0.4
+      '@types/unist': 3.0.3
+      devlop: 1.1.0
+      mdast-util-to-string: 4.0.0
+
   mdast-util-mdx-expression@2.0.1:
     dependencies:
       '@types/estree-jsx': 1.0.5
@@ -16736,6 +16856,8 @@ snapshots:
       mdast-util-to-string: 4.0.0
       unist-util-is: 6.0.0
       unist-util-visit: 5.0.0
+
+  mdast@3.0.0: {}
 
   mdurl@2.0.0: {}
 
@@ -17490,6 +17612,8 @@ snapshots:
       - bluebird
       - supports-color
 
+  npm-check-updates@17.1.3: {}
+
   npm-install-checks@6.3.0:
     dependencies:
       semver: 7.6.3
@@ -17605,7 +17729,7 @@ snapshots:
       has-symbols: 1.0.3
       object-keys: 1.1.1
 
-  oclif@4.14.35:
+  oclif@4.15.1:
     dependencies:
       '@aws-sdk/client-cloudfront': empty-npm-package@1.0.0
       '@aws-sdk/client-s3': empty-npm-package@1.0.0
@@ -18133,7 +18257,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.16.10
+      '@types/node': 22.7.4
       long: 5.2.3
 
   protocols@2.0.1: {}
@@ -19422,13 +19546,13 @@ snapshots:
       lower-case: 1.1.4
       upper-case: 1.1.3
 
-  syncpack@13.0.0(typescript@5.5.4):
+  syncpack@13.0.0(typescript@5.4.5):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.5.4)
+      cosmiconfig: 9.0.0(typescript@5.4.5)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -19665,7 +19789,7 @@ snapshots:
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
-  ts-node@10.9.2(@types/node@22.7.4)(typescript@5.5.4):
+  ts-node@10.9.2(@types/node@22.7.4)(typescript@5.4.5):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -19679,7 +19803,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.5.4
+      typescript: 5.4.5
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
@@ -19984,6 +20108,8 @@ snapshots:
       unist-util-visit-parents: 6.0.1
 
   universal-user-agent@6.0.1: {}
+
+  universal-user-agent@7.0.2: {}
 
   universalify@0.1.2: {}
 
@@ -20528,6 +20654,13 @@ snapshots:
   xcase@2.0.1: {}
 
   xdg-basedir@5.1.0: {}
+
+  xml2js@0.5.0:
+    dependencies:
+      sax: 1.4.1
+      xmlbuilder: 11.0.1
+
+  xmlbuilder@11.0.1: {}
 
   xmldoc@1.3.0:
     dependencies:

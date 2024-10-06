@@ -116,29 +116,6 @@ export class CheckPolicy extends GitCommand<
 		return DefaultPolicyConfig;
 	}
 
-	// protected override async loadConfig(): Promise<PolicyConfig> {
-	// 	const gitRoot = await findGitRoot();
-	// 	// this.configPath ??= this.config.configDir; // path.join(this.config.configDir, "config.ts");
-	// 	const explorer = cosmiconfig(this.config.bin, {
-	// 		searchStrategy: "global",
-	// 	});
-	// 	this.verbose(`Looking for '${this.config.bin}' config at '${gitRoot}'`);
-	// 	const config: CosmiconfigResult = await explorer.search(gitRoot);
-	// 	if (config?.config !== undefined) {
-	// 		this.verbose(`Found config at ${config.filepath}`);
-	// 	}
-	// 	if (config?.config === undefined) {
-	// 		this.warning("No config found; using defaults.");
-	// 	}
-	// 	const finalConfig: PolicyConfig = config?.config ?? this.defaultConfig;
-	// 	if (finalConfig.includeDefaultPolicies === true) {
-	// 		finalConfig.policies ??= [];
-	// 		finalConfig.policies.push(...DefaultPolicies);
-	// 	}
-
-	// 	return finalConfig;
-	// }
-
 	public override async init(): Promise<void> {
 		await super.init();
 
@@ -216,28 +193,7 @@ export class CheckPolicy extends GitCommand<
 			this.verbose(h.name);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		// const rawExclusions: string[] =
-		// 	this.flags.exclusions === undefined
-		// 		? manifest.policy?.exclusions
-		// 		: await readJson(this.flags.exclusions);
-
-		// const exclusions: RegExp[] = rawExclusions.map((e) => new RegExp(e, "i"));
-
-		// const rawHandlerExclusions = manifest?.policy?.handlerExclusions;
-
-		// const handlerExclusions: ExcludedPolicyFileMap = {};
-		// if (rawHandlerExclusions) {
-		// 	for (const rule of Object.keys(rawHandlerExclusions)) {
-		// 		handlerExclusions[rule] = rawHandlerExclusions[rule].map(
-		// 			(e) => new RegExp(e, "i"),
-		// 		);
-		// 	}
-		// }
-
 		const filePathsToCheck: string[] = [];
-		// const context = await this.getContext();
-		// const gitRoot = context.repo.resolvedRoot;
 
 		if (this.flags.stdin) {
 			const stdInput = await readStdin();
