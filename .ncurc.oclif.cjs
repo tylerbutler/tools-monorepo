@@ -1,4 +1,4 @@
-const base = require("./.ncurc.base.cjs");
+const base = require("./.ncurc.cjs");
 
 // @ts-check
 
