@@ -35,7 +35,6 @@ export interface PolicyConfig {
 export interface PolicyFailure {
     autoFixable?: boolean | undefined;
     errorMessage?: string | undefined;
-    // (undocumented)
     file: string;
     name: PolicyName;
 }
