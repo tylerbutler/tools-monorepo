@@ -12,7 +12,6 @@ export type {
 export { DefaultPolicies } from "./policy.js";
 export type {
 	PolicyConfig,
-	OptionalPolicyConfig,
 	PerPolicySettings,
 } from "./config.js";
 export type {
