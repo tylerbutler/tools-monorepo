@@ -4,23 +4,10 @@
 
 ```ts
 
-import type { RequireAtLeastOne } from 'type-fest';
 import { run } from '@oclif/core';
 
 // @alpha
 export const DefaultPolicies: RepoPolicy[];
-
-// @alpha (undocumented)
-export interface OptionalPolicyConfig {
-    excludeFiles?: (string | RegExp)[];
-    excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-    // (undocumented)
-    includeDefaultPolicies?: boolean;
-    // (undocumented)
-    policies?: RepoPolicy[];
-    // (undocumented)
-    policySettings?: PerPolicySettings | undefined;
-}
 
 // @alpha
 export interface PackageJsonPropertiesSettings {
@@ -35,24 +22,25 @@ export type PerPolicySettings = ({
     PackageJsonProperties: PackageJsonPropertiesSettings;
 } & Record<PolicyName, unknown>) | undefined;
 
-// @alpha
-export type PolicyConfig = RequireAtLeastOne<OptionalPolicyConfig, "policies" | "includeDefaultPolicies">;
+// @alpha (undocumented)
+export interface PolicyConfig {
+    excludeFiles?: (string | RegExp)[];
+    excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
+    policies?: RepoPolicy[];
+    // (undocumented)
+    policySettings?: PerPolicySettings | undefined;
+}
 
 // @alpha
 export interface PolicyFailure {
-    // (undocumented)
     autoFixable?: boolean | undefined;
-    // (undocumented)
     errorMessage?: string | undefined;
-    // (undocumented)
     file: string;
-    // (undocumented)
     name: PolicyName;
 }
 
-// @alpha (undocumented)
+// @alpha
 export interface PolicyFixResult extends PolicyFailure {
-    // (undocumented)
     resolved: boolean;
 }
 

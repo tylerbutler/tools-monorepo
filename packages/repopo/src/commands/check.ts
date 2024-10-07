@@ -3,58 +3,15 @@ import { EOL as newline } from "node:os";
 import path from "node:path";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
 import chalk from "chalk";
-import { DefaultPolicyConfig, type PolicyConfig } from "../config.js";
+
 import {
-	type PolicyName,
-	type RepoPolicy,
-	isPolicyFixResult,
-} from "../policy.js";
-
-type PolicyAction = "handle" | "resolve";
-
-type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>; // Record<PolicyName, RegExp[]>
-
-/**
- * A convenience interface used to pass commonly used parameters to functions in this file.
- */
-interface CheckPolicyCommandContext {
-	/**
-	 * A regular expression used to filter selected files.
-	 */
-	pathRegex: RegExp;
-
-	/**
-	 * A list of regular expressions used to exclude files from all handlers.
-	 */
-	excludeFiles: RegExp[];
-
-	/**
-	 * A list of handlers to apply to selected files.
-	 */
-	policies: RepoPolicy[];
-
-	/**
-	 * A per-handler list of regular expressions used to exclude files from specific handlers.
-	 */
-	excludePoliciesForFiles: ExcludedPolicyFileMap;
-
-	/**
-	 * Path to the root of the git repo.
-	 */
-	gitRoot: string;
-
-	/**
-	 * The repo context.
-	 */
-	// context: Context;
-}
-
-/**
- * Stores performance data for each handler. Used to collect and display performance stats.
- */
-const handlerPerformanceData = new Map<PolicyAction, Map<string, number>>();
+	BaseRepopoCommand,
+	type PolicyCommandContext,
+} from "../baseCommand.js";
+import { DefaultPolicyConfig } from "../config.js";
+import { logStats, runWithPerf } from "../perf.js";
+import { isPolicyFixResult } from "../policy.js";
 
 /**
  * This tool enforces policies across the code base via a series of handler functions. The handler functions are
@@ -65,13 +22,12 @@ const handlerPerformanceData = new Map<PolicyAction, Map<string, number>>();
  *
  * `git ls-files -co --exclude-standard --full-name | repopo check --stdin --verbose`
  */
-export class CheckPolicy extends GitCommand<
-	typeof CheckPolicy & {
-		args: typeof GitCommand.args;
-		flags: typeof GitCommand.flags;
+export class CheckPolicy<
+	T extends typeof BaseRepopoCommand & {
+		args: typeof CheckPolicy.args;
+		flags: typeof CheckPolicy.flags;
 	},
-	PolicyConfig
-> {
+> extends BaseRepopoCommand<T> {
 	static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
@@ -82,35 +38,15 @@ export class CheckPolicy extends GitCommand<
 			required: false,
 			char: "f",
 		}),
-		policy: RegExpFlag({
-			description:
-				"Filter policies to apply by <regex>. Only policies with a name matching the regex will be applied.",
-			required: false,
-			char: "d",
-		}),
-		excludePolicy: Flags.string({
-			char: "D",
-			description:
-				"Exclude policies by name. Can be specified multiple times to exclude multiple policies.",
-			exclusive: ["policy"],
-			multiple: true,
-		}),
-		path: RegExpFlag({
-			description: "Filter file paths by <regex>.",
-			required: false,
-			char: "p",
-		}),
 		stdin: Flags.boolean({
 			description: "Read list of files from stdin.",
 			required: false,
 		}),
-		...GitCommand.flags,
+		...BaseRepopoCommand.flags,
 	} as const;
 
 	private processed = 0;
 	private count = 0;
-	// private policies: RepoPolicy[] | undefined;
-	private commandContext: CheckPolicyCommandContext | undefined;
 
 	public get defaultConfig() {
 		return DefaultPolicyConfig;
@@ -119,73 +55,13 @@ export class CheckPolicy extends GitCommand<
 	public override async init(): Promise<void> {
 		await super.init();
 
-		const config = await this.loadConfig();
-		let policies =
-			config?.policies?.filter((h) => {
-				if (
-					this.flags.excludePolicy === undefined ||
-					this.flags.excludePolicy.length === 0
-				) {
-					return true;
-				}
-				const shouldRun = this.flags.excludePolicy?.includes(h.name) === false;
-				if (!shouldRun) {
-					this.info(`Disabled policy: ${h.name}`);
-				}
-				return shouldRun;
-			}) ?? [];
-
-		// const pathRegex: RegExp =
-		// 	this.flags.path === undefined ? /.?/ : new RegExp(this.flags.path, "i");
-
-		if (this.flags.policy !== undefined) {
-			this.info(`Filtering handlers by regex: ${this.flags.policy}`);
-			policies = policies?.filter((h) => this.flags.policy?.test(h.name));
-		}
-
-		const pathRegex = this.flags.path ?? /.?/;
-		if (this.flags.path !== undefined) {
-			this.info(`Filtering file paths by regex: ${pathRegex}`);
-		}
-
 		if (this.flags.fix) {
 			this.info("Resolving errors if possible.");
 		}
-
-		const excludeFiles: RegExp[] =
-			config?.excludeFiles?.map((e) => toRegExp(e)) ?? [];
-
-		const excludePoliciesForFilesRaw = config?.excludePoliciesForFiles;
-
-		const excludePoliciesForFiles: ExcludedPolicyFileMap = new Map();
-		if (excludePoliciesForFilesRaw) {
-			for (const [policyName, filters] of Object.entries(
-				excludePoliciesForFilesRaw,
-			)) {
-				const regexes = filters.map((e) => toRegExp(e));
-				excludePoliciesForFiles.set(policyName, regexes);
-			}
-		}
-
-		const gitRoot = await findGitRoot();
-		this.commandContext = {
-			pathRegex,
-			excludeFiles,
-			policies,
-			excludePoliciesForFiles,
-			gitRoot,
-		};
 	}
 
 	public override async run(): Promise<void> {
 		// list the handlers then exit
-		// if (this.flags.listHandlers) {
-		// 	for (const h of handlersToRun) {
-		// 		this.log(`${h.name}\nresolver: ${h.resolver !== undefined}\n`);
-		// 	}
-		// 	this.log(`${handlersToRun.length} TOTAL POLICY HANDLERS`);
-		// 	this.exit(0);
-		// }
 		const config = await this.loadConfig();
 		const policies = config?.policies ?? [];
 		this.verbose(`${policies.length} policies loaded.`);
@@ -202,7 +78,6 @@ export class CheckPolicy extends GitCommand<
 				filePathsToCheck.push(...stdInput.split("\n"));
 			}
 		} else {
-			// const repo = new Repository({ baseDir: gitRoot });
 			const gitFiles =
 				(await this.git.raw(
 					"ls-files",
@@ -214,18 +89,19 @@ export class CheckPolicy extends GitCommand<
 			filePathsToCheck.push(...gitFiles.split("\n"));
 		}
 
-		if (this.commandContext === undefined) {
-			this.error("Command context was undefined - fatal error.", {
+		try {
+			const context = this.getContext();
+			await this.executePolicy(filePathsToCheck, context);
+		} catch (error) {
+			this.error(`Command context was undefined - fatal error: ${error}`, {
 				exit: 100,
 			});
 		}
-
-		await this.executePolicy(filePathsToCheck, this.commandContext);
 	}
 
 	private async executePolicy(
 		pathsToCheck: string[],
-		commandContext: CheckPolicyCommandContext,
+		commandContext: PolicyCommandContext,
 	): Promise<void> {
 		try {
 			for (const pathToCheck of pathsToCheck) {
@@ -233,7 +109,7 @@ export class CheckPolicy extends GitCommand<
 				await this.checkOrExcludeFile(pathToCheck, commandContext);
 			}
 		} finally {
-			this.logStats();
+			logStats(commandContext.perfStats, this);
 		}
 	}
 
@@ -244,14 +120,10 @@ export class CheckPolicy extends GitCommand<
 	 */
 	private async routeToHandlers(
 		file: string,
-		commandContext: CheckPolicyCommandContext,
+		commandContext: PolicyCommandContext,
 	): Promise<void> {
-		const {
-			// context,
-			policies,
-			excludePoliciesForFiles,
-			gitRoot,
-		} = commandContext;
+		const { policies, excludePoliciesForFiles, gitRoot, perfStats } =
+			commandContext;
 
 		// Use the repo-relative path so that regexes that specify string start (^) will match repo paths.
 		// Replace \ in result with / in case OS is Windows.
@@ -273,13 +145,17 @@ export class CheckPolicy extends GitCommand<
 						return;
 					}
 
-					const result = await runWithPerf(policy.name, "handle", async () =>
-						policy.handler({
-							file: relPath,
-							root: gitRoot,
-							resolve: this.flags.fix,
-							config: config?.policySettings?.[policy.name],
-						}),
+					const result = await runWithPerf(
+						policy.name,
+						"handle",
+						perfStats,
+						async () =>
+							policy.handler({
+								file: relPath,
+								root: gitRoot,
+								resolve: this.flags.fix,
+								config: config?.policySettings?.[policy.name],
+							}),
 					);
 
 					if (result === true) {
@@ -308,6 +184,7 @@ export class CheckPolicy extends GitCommand<
 							const resolveResult = await runWithPerf(
 								policy.name,
 								"resolve",
+								perfStats,
 								async () => resolver({ file: relPath, root: gitRoot }),
 							);
 
@@ -347,27 +224,13 @@ export class CheckPolicy extends GitCommand<
 		);
 	}
 
-	private logStats(): void {
-		this.log(
-			`Statistics: ${this.processed} processed, ${
-				this.count - this.processed
-			} excluded, ${this.count} total`,
-		);
-		for (const [action, handlerPerf] of handlerPerformanceData.entries()) {
-			this.log(`Performance for "${action}":`);
-			for (const [handler, dur] of handlerPerf.entries()) {
-				this.log(`\t${handler}: ${dur}ms`);
-			}
-		}
-	}
-
 	/**
 	 * Given a string that represents a path to a file in the repo, determines if the file should be checked, and if so,
 	 * routes the file to the appropriate handlers.
 	 */
 	private async checkOrExcludeFile(
 		inputPath: string,
-		commandContext: CheckPolicyCommandContext,
+		commandContext: PolicyCommandContext,
 	): Promise<void> {
 		const { excludeFiles: exclusions, gitRoot, pathRegex } = commandContext;
 
@@ -393,24 +256,6 @@ export class CheckPolicy extends GitCommand<
 	}
 }
 
-async function runWithPerf<T>(
-	name: string,
-	action: PolicyAction,
-	run: () => Promise<T>,
-): Promise<T> {
-	const actionMap =
-		handlerPerformanceData.get(action) ?? new Map<string, number>();
-	let dur = actionMap.get(name) ?? 0;
-
-	const start = Date.now();
-	const result = await run();
-	dur += Date.now() - start;
-
-	actionMap.set(name, dur);
-	handlerPerformanceData.set(action, actionMap);
-	return result;
-}
-
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
 		const stdin = process.stdin;
@@ -429,11 +274,4 @@ async function readStdin(): Promise<string> {
 			resolve("");
 		}
 	});
-}
-
-function toRegExp(input: string | RegExp): RegExp {
-	if (typeof input === "string") {
-		return new RegExp(input, "i");
-	}
-	return input;
 }
