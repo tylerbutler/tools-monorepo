@@ -89,7 +89,7 @@ jobs:
         if: steps.changesets.outputs.hasChangesets != 'true'
         id: publish
         env:
-          PUBLISH: ${{ github.event.inputs.publish_public == 'true' && 'ci:publish' || 'ci:publish:internal' }}
+          PUBLISH: ${{ github.event.inputs.publish_public == 'false' && 'ci:publish:internal' || 'ci:publish'  }}
 
         run: |
           # Run publish
