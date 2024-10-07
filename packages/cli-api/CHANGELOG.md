@@ -1,5 +1,14 @@
 # @tylerbu/cli-api
 
+## 0.5.0
+
+### Minor Changes
+
+- Update CommandWithConfig typing _[`#136`](https://github.com/tylerbutler/tools-monorepo/pull/136) [`f803610`](https://github.com/tylerbutler/tools-monorepo/commit/f803610f64936c5d49d862b2f4240ea248fe3f76) [@tylerbutler](https://github.com/tylerbutler)_
+
+  - The `loadConfig` method now takes a reload parameter.
+  - The `defaultConfig` method has been removed.
+
 ## 0.4.0
 
 ### Minor Changes
