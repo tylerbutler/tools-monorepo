@@ -36,6 +36,9 @@
 			"all": true,
 			"correctness": {
 				"noUnusedVariables": "error",
+
+				// seems to have a lot of false positives
+				"noUndeclaredDependencies": "off",
 			},
 			"performance": {
 				"noBarrelFile": "off",

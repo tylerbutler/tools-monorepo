@@ -29,7 +29,7 @@ The type of elements in the set and iterable collection.
 The set to which elements from the iterable will be added. This set
                 will be modified in place and also returned by the function.
 
-• **items**: `Iterable`\<`T`\>
+• **items**: `Iterable`\<`T`, `any`, `any`\>
 
 An iterable collection of elements to be added to the set. This could
                be an array, another set, or any object implementing the Iterable
