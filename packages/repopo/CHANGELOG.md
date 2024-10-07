@@ -1,5 +1,28 @@
 # repopo
 
+## 0.3.0
+
+### Minor Changes
+
+- New command: `list` _[`#132`](https://github.com/tylerbutler/tools-monorepo/pull/132) [`1fa083d`](https://github.com/tylerbutler/tools-monorepo/commit/1fa083dd64499d108411326377a4463ad6acb040) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The `repopo list` command lists the policies that are enabled in the repo.
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`f803610`](https://github.com/tylerbutler/tools-monorepo/commit/f803610f64936c5d49d862b2f4240ea248fe3f76)
+
+</small>
+
+- `@tylerbu/cli-api@0.5.0`
+- `sort-tsconfig@0.1.2`
+
+</details>
+
 ## 0.2.2
 
 ### Patch Changes
