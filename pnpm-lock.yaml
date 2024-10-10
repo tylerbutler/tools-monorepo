@@ -19,11 +19,11 @@ importers:
         specifier: ^2.27.1
         version: 2.27.8
       '@fluid-tools/build-cli':
-        specifier: ^0.47.0
-        version: 0.47.0(@types/node@22.7.5)(encoding@0.1.13)(typescript@5.5.4)
+        specifier: ^0.48.0
+        version: 0.48.0(@types/node@22.7.5)(encoding@0.1.13)(typescript@5.5.4)
       '@fluidframework/build-tools':
-        specifier: ^0.47.0
-        version: 0.47.0
+        specifier: ^0.48.0
+        version: 0.48.0
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4
@@ -518,8 +518,8 @@ importers:
   packages/repopo:
     dependencies:
       '@fluidframework/build-tools':
-        specifier: ^0.47.0
-        version: 0.47.0
+        specifier: ^0.48.0
+        version: 0.48.0
       '@oclif/core':
         specifier: ^4.0.19
         version: 4.0.23
@@ -1433,23 +1433,23 @@ packages:
     resolution: {integrity: sha512-Au3jSkt66PRwTKTCYm7KzTGfMzUmn1LYPK+cyrytfzjfOPkHpohrLcGYPLsgxV8nzc4vXxt3Ay7MlBrmeIfFLg==}
     engines: {node: '>=16.0'}
 
-  '@fluid-tools/build-cli@0.47.0':
-    resolution: {integrity: sha512-U4QuSfmcHN2uiHm2icp5fb0DFP5PCMczrFb3U3XqcP4f0f+zFsE1ALhPtFGkPKcsjXugnLiw677WZDyJ/b15UA==}
+  '@fluid-tools/build-cli@0.48.0':
+    resolution: {integrity: sha512-sasemimYmd8MSwJNUPnExEnDtebfCK9nPDMsnI13rqUDdnxRD9X4wZKLzU9vOVxWIqsgiezvusZTFNQErEzgpw==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluid-tools/version-tools@0.47.0':
-    resolution: {integrity: sha512-KTyykv2dGj4SppdelJm9e2J8cHPjoEcvCvu0XvvhzxVsLl8493B3USmM2KyXblq5SepEFQMUkOjhVVdZuJWGkA==}
+  '@fluid-tools/version-tools@0.48.0':
+    resolution: {integrity: sha512-2nKlQ240J5F85H8u+dwNzoxx/0TpWF729XmFIYV0s6o0Wp9OnK3pKNb119Mf/ne0ldL7+pmAEwsT0sE0FYsogA==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/build-tools@0.47.0':
-    resolution: {integrity: sha512-qw+YMx6VklulzJYSmuxU97u8yhBIsIGH36IbEAJSho7rNkbw6lR7t/jT116r3kkT52V+XphyVW3MLGcyg6SOEA==}
+  '@fluidframework/build-tools@0.48.0':
+    resolution: {integrity: sha512-I6z1/C5JJv0rLyIeYMnf3z6pe12yNA5QFMmZJj/oaMQHru9y8IhpvjKyEmQFISJfIo+dvJwlikGu/h07Pc5Sww==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/bundle-size-tools@0.47.0':
-    resolution: {integrity: sha512-ACEAxd1bx/pQstuWArRZaNrItxIdutCjzIUWo8Wt5C94hCzy9tslNRVLrHgMKkRY6Vrz1gyKDATo5Qtq+jDI0Q==}
+  '@fluidframework/bundle-size-tools@0.48.0':
+    resolution: {integrity: sha512-rSQBgIH7Fw4fTstQj/+3uacm4sLpsGHBYPhndkrY+DAfgHhFNiQF7MEylf6DXXiMnG99W4cPU4ELy+TclnOOEQ==}
 
   '@fontsource/ibm-plex-serif@5.1.0':
     resolution: {integrity: sha512-x8/rprq/hc94eYugICIUJCyUVMC1rPpgmL8km5FhhXIl6l2soaYadLcx4bmVP/rvLr/cRtj4GCaV6ZnGg3jaPA==}
@@ -2039,9 +2039,6 @@ packages:
   '@octokit/rest@21.0.2':
     resolution: {integrity: sha512-+CiLisCoyWmYicH25y1cDfCrv41kRSvTq6pPWtRroRJzhsCZWZyCqGyI8foJT5LmScADSwRAnr/xo+eewL04wQ==}
     engines: {node: '>= 18'}
-
-  '@octokit/types@13.6.0':
-    resolution: {integrity: sha512-CrooV/vKCXqwLa+osmHLIMUb87brpgUqlqkPGc6iE2wCkUvTrHiXFMhAKoDDaAAYJrtKtrFTgSQTg5nObBEaew==}
 
   '@octokit/types@13.6.1':
     resolution: {integrity: sha512-PHZE9Z+kWXb23Ndik8MKPirBPziOc0D2/3KH1P+6jK5nGWe96kadZuE4jev2/Jq7FvIfTlT2Ltg8Fv2x1v0a5g==}
@@ -10731,12 +10728,12 @@ snapshots:
       mdast-util-find-and-replace: 1.1.1
       unist-util-visit: 2.0.3
 
-  '@fluid-tools/build-cli@0.47.0(@types/node@22.7.5)(encoding@0.1.13)(typescript@5.5.4)':
+  '@fluid-tools/build-cli@0.48.0(@types/node@22.7.5)(encoding@0.1.13)(typescript@5.5.4)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
-      '@fluid-tools/version-tools': 0.47.0
-      '@fluidframework/build-tools': 0.47.0
-      '@fluidframework/bundle-size-tools': 0.47.0
+      '@fluid-tools/version-tools': 0.48.0
+      '@fluidframework/build-tools': 0.48.0
+      '@fluidframework/bundle-size-tools': 0.48.0
       '@microsoft/api-extractor': 7.47.9(@types/node@22.7.5)
       '@oclif/core': 4.0.23
       '@oclif/plugin-autocomplete': 3.2.4
@@ -10806,7 +10803,7 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@fluid-tools/version-tools@0.47.0':
+  '@fluid-tools/version-tools@0.48.0':
     dependencies:
       '@oclif/core': 4.0.23
       '@oclif/plugin-autocomplete': 3.2.4
@@ -10819,9 +10816,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/build-tools@0.47.0':
+  '@fluidframework/build-tools@0.48.0':
     dependencies:
-      '@fluid-tools/version-tools': 0.47.0
+      '@fluid-tools/version-tools': 0.48.0
       '@manypkg/get-packages': 2.2.2
       async: 3.2.6
       chalk: 2.4.2
@@ -10832,6 +10829,7 @@ snapshots:
       find-up: 7.0.0
       fs-extra: 11.2.0
       glob: 7.2.3
+      globby: 11.1.0
       ignore: 5.3.2
       json5: 2.2.3
       lodash: 4.17.21
@@ -10849,7 +10847,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/bundle-size-tools@0.47.0':
+  '@fluidframework/bundle-size-tools@0.48.0':
     dependencies:
       azure-devops-node-api: 11.2.0
       jszip: 3.10.1
@@ -11631,13 +11629,13 @@ snapshots:
       '@octokit/graphql': 8.1.1
       '@octokit/request': 9.1.3
       '@octokit/request-error': 6.1.5
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
       before-after-hook: 3.0.2
       universal-user-agent: 7.0.2
 
   '@octokit/endpoint@10.1.1':
     dependencies:
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
       universal-user-agent: 7.0.2
 
   '@octokit/endpoint@6.0.12':
@@ -11682,7 +11680,7 @@ snapshots:
   '@octokit/graphql@8.1.1':
     dependencies:
       '@octokit/request': 9.1.3
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
       universal-user-agent: 7.0.2
 
   '@octokit/openapi-types@12.11.0': {}
@@ -11694,12 +11692,12 @@ snapshots:
   '@octokit/plugin-paginate-rest@11.3.1(@octokit/core@5.2.0)':
     dependencies:
       '@octokit/core': 5.2.0
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
 
   '@octokit/plugin-paginate-rest@11.3.1(@octokit/core@6.1.2)':
     dependencies:
       '@octokit/core': 6.1.2
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
 
   '@octokit/plugin-paginate-rest@2.21.3(@octokit/core@3.6.0(encoding@0.1.13))':
     dependencies:
@@ -11721,12 +11719,12 @@ snapshots:
   '@octokit/plugin-rest-endpoint-methods@13.2.2(@octokit/core@5.2.0)':
     dependencies:
       '@octokit/core': 5.2.0
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
 
   '@octokit/plugin-rest-endpoint-methods@13.2.2(@octokit/core@6.1.2)':
     dependencies:
       '@octokit/core': 6.1.2
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
 
   '@octokit/plugin-rest-endpoint-methods@5.16.2(@octokit/core@3.6.0(encoding@0.1.13))':
     dependencies:
@@ -11754,7 +11752,7 @@ snapshots:
 
   '@octokit/request-error@6.1.5':
     dependencies:
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
 
   '@octokit/request@5.6.3(encoding@0.1.13)':
     dependencies:
@@ -11789,7 +11787,7 @@ snapshots:
     dependencies:
       '@octokit/endpoint': 10.1.1
       '@octokit/request-error': 6.1.5
-      '@octokit/types': 13.6.0
+      '@octokit/types': 13.6.1
       universal-user-agent: 7.0.2
 
   '@octokit/rest@18.12.0(encoding@0.1.13)':
@@ -11814,10 +11812,6 @@ snapshots:
       '@octokit/plugin-paginate-rest': 11.3.1(@octokit/core@6.1.2)
       '@octokit/plugin-request-log': 5.3.1(@octokit/core@6.1.2)
       '@octokit/plugin-rest-endpoint-methods': 13.2.2(@octokit/core@6.1.2)
-
-  '@octokit/types@13.6.0':
-    dependencies:
-      '@octokit/openapi-types': 22.2.0
 
   '@octokit/types@13.6.1':
     dependencies:
@@ -16163,7 +16157,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.7.5
+      '@types/node': 20.16.10
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
