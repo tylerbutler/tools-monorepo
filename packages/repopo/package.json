@@ -62,7 +62,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluidframework/build-tools": "^0.48.0",
+		"@fluidframework/build-tools": "^0.49.0",
 		"@oclif/core": "^4.0.19",
 		"@oclif/plugin-help": "^6.2.10",
 		"@rushstack/node-core-library": "^5.7.0",
