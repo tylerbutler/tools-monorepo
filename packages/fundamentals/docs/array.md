@@ -59,7 +59,7 @@ console.log(isWordsSorted); // true
 
 #### Defined in
 
-[array.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L36)
+[packages/fundamentals/src/array.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L36)
 
 ***
 
@@ -81,7 +81,7 @@ console.log(isWordsSorted); // true
 
 #### Defined in
 
-[array.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L60)
+[packages/fundamentals/src/array.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L60)
 
 ***
 
@@ -103,4 +103,4 @@ console.log(isWordsSorted); // true
 
 #### Defined in
 
-[array.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L65)
+[packages/fundamentals/src/array.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L65)
