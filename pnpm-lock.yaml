@@ -19,11 +19,11 @@ importers:
         specifier: ^2.27.1
         version: 2.27.8
       '@fluid-tools/build-cli':
-        specifier: ^0.50.0
-        version: 0.50.0(@types/node@22.7.5)(encoding@0.1.13)(typescript@5.5.4)
+        specifier: ^0.51.0
+        version: 0.51.0(@types/node@22.7.5)(encoding@0.1.13)(typescript@5.5.4)
       '@fluidframework/build-tools':
-        specifier: ^0.50.0
-        version: 0.50.0(@types/node@22.7.5)
+        specifier: ^0.51.0
+        version: 0.51.0(@types/node@22.7.5)
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4
@@ -518,8 +518,8 @@ importers:
   packages/repopo:
     dependencies:
       '@fluidframework/build-tools':
-        specifier: ^0.50.0
-        version: 0.50.0(@types/node@20.16.10)
+        specifier: ^0.51.0
+        version: 0.51.0(@types/node@20.16.10)
       '@oclif/core':
         specifier: ^4.0.19
         version: 4.0.23
@@ -1465,23 +1465,23 @@ packages:
     resolution: {integrity: sha512-Au3jSkt66PRwTKTCYm7KzTGfMzUmn1LYPK+cyrytfzjfOPkHpohrLcGYPLsgxV8nzc4vXxt3Ay7MlBrmeIfFLg==}
     engines: {node: '>=16.0'}
 
-  '@fluid-tools/build-cli@0.50.0':
-    resolution: {integrity: sha512-vng+x2hQqm74+XERk3ziDaZRPREOipqwDGeBjmhTndll2bcs94XYIJ3ngze2GUcyymJnGXjgQxr9llnw/6WvQA==}
+  '@fluid-tools/build-cli@0.51.0':
+    resolution: {integrity: sha512-ewPTknow38C7noDsAICr6ve4hl2/9vpauhMVQ2Dd/1YWN8q1KIAfPY/NaQI4Dh5ExW6PcFc1RsOzjH86vKxDXg==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluid-tools/version-tools@0.50.0':
-    resolution: {integrity: sha512-i/veL9kQr1QaDZFS+t9umb0EF7x7uwhkAZ1Zz1zN5zMs6HNyL+hnj4q8gj6Yrkwr6zxnSQ+N+hERhvUIAQjbvQ==}
+  '@fluid-tools/version-tools@0.51.0':
+    resolution: {integrity: sha512-fB2LDQDxxZxWwJtaRqL96Vbc791rhu/Qp2Gvj/sGC6lrApO80CytLE8YC/oVnK6KfdjBsEUsYL8PUf8KRrZAnQ==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/build-tools@0.50.0':
-    resolution: {integrity: sha512-j41rBT9xv0LkJ3jbBf8l+G5kYoir6LsaHmPy5R0xumdYU8E4n2EuyXF2wdsZp/kb3yZE8jTMHUDUw1ffEA0JxQ==}
+  '@fluidframework/build-tools@0.51.0':
+    resolution: {integrity: sha512-4PnEMhPxKb/Za5qEwtX+q/PPUIUz4L73XZoTL2HqCBii+cLUDppOlC95D39dV/pxjbTkyg2CB+u7T7zCHG2MaA==}
     engines: {node: '>=18.17.1'}
     hasBin: true
 
-  '@fluidframework/bundle-size-tools@0.50.0':
-    resolution: {integrity: sha512-nZs5ORhLguRUt1eVyZd+VRDyZqWlkYiLrlImbVfF7zASa4WP9F+p//ymnLvpDB221BTNXrJUw2Tpo0MnH4NVVQ==}
+  '@fluidframework/bundle-size-tools@0.51.0':
+    resolution: {integrity: sha512-ZvlP9lfIG1fHP0aagHca4m75RlzTxYs0Av8qQAUI9yOLq6jsta8td6a8rWHaIIgyjpatCrdI98PaGDF160QCBQ==}
 
   '@fontsource/ibm-plex-serif@5.1.0':
     resolution: {integrity: sha512-x8/rprq/hc94eYugICIUJCyUVMC1rPpgmL8km5FhhXIl6l2soaYadLcx4bmVP/rvLr/cRtj4GCaV6ZnGg3jaPA==}
@@ -2606,14 +2606,6 @@ packages:
     resolution: {integrity: sha512-fbMkAF7fufku0N2dE5TBXcNlg0pt0cJue4xBRE2Qc5Vqikxr4VCgKj/ht6SMdFcOacVA9rqF70APJ8RN/4vMJw==}
     cpu: [x64]
     os: [win32]
-
-  '@rushstack/node-core-library@3.66.1':
-    resolution: {integrity: sha512-ker69cVKAoar7MMtDFZC4CzcDxjwqIhFzqEnYI5NRN/8M3om6saWCVx/A7vL2t/jFCJsnzQplRDqA7c78pytng==}
-    peerDependencies:
-      '@types/node': '*'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
 
   '@rushstack/node-core-library@5.9.0':
     resolution: {integrity: sha512-MMsshEWkTbXqxqFxD4gcIUWQOCeBChlGczdZbHfqmNZQFLHB3yWxDFSMHFUdu2/OB9NUk7Awn5qRL+rws4HQNg==}
@@ -4067,10 +4059,6 @@ packages:
   color@4.2.3:
     resolution: {integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==}
     engines: {node: '>=12.5.0'}
-
-  colors@1.2.5:
-    resolution: {integrity: sha512-erNRLao/Y3Fv54qUa0LBB+//Uf3YwMUmdJinN20yMXm9zdKKqH9wt7R9IIVZ+K7ShzfpLV/Zg8+VyrBJYB4lpg==}
-    engines: {node: '>=0.1.90'}
 
   colors@1.4.0:
     resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
@@ -7336,6 +7324,9 @@ packages:
   picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
+  picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
@@ -8946,10 +8937,6 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  validator@13.12.0:
-    resolution: {integrity: sha512-c1Q0mCiPlgdTVVVIJIrBuxNicYE+t/7oKeI9MWLj3fh/uq2Pxh/3eeWbVZ4OcGW1TUf53At0njHw5SMdA3tmMg==}
-    engines: {node: '>= 0.10'}
-
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
@@ -9449,11 +9436,6 @@ packages:
   yoga-wasm-web@0.3.3:
     resolution: {integrity: sha512-N+d4UJSJbt/R3wqY7Coqs5pcV0aUj2j9IaQ3rNj9bVCLld8tTGKRa2USARjnvZJWVx1NDmQev8EknoczaOQDOA==}
 
-  z-schema@5.0.5:
-    resolution: {integrity: sha512-D7eujBWkLa3p2sIpJA0d1pr7es+a7m0vFAnZLlCEKq/Ij2k0MLi9Br2UPxoxdYystm5K1yeBGzub0FlYUEWj2Q==}
-    engines: {node: '>=8.0.0'}
-    hasBin: true
-
   zod-to-json-schema@3.23.3:
     resolution: {integrity: sha512-TYWChTxKQbRJp5ST22o/Irt9KC5nj7CdBKYB/AosCRdj/wxEMvv4NNaj9XVUHDOIp53ZxArGhnw5HMZziPFjog==}
     peerDependencies:
@@ -9674,7 +9656,7 @@ snapshots:
 
   '@astrojs/yaml2ts@0.2.1':
     dependencies:
-      yaml: 2.5.1
+      yaml: 2.6.0
 
   '@aws-crypto/crc32@5.2.0':
     dependencies:
@@ -11045,12 +11027,12 @@ snapshots:
       mdast-util-find-and-replace: 1.1.1
       unist-util-visit: 2.0.3
 
-  '@fluid-tools/build-cli@0.50.0(@types/node@22.7.5)(encoding@0.1.13)(typescript@5.5.4)':
+  '@fluid-tools/build-cli@0.51.0(@types/node@22.7.5)(encoding@0.1.13)(typescript@5.5.4)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
-      '@fluid-tools/version-tools': 0.50.0(@types/node@22.7.5)
-      '@fluidframework/build-tools': 0.50.0(@types/node@22.7.5)
-      '@fluidframework/bundle-size-tools': 0.50.0
+      '@fluid-tools/version-tools': 0.51.0(@types/node@22.7.5)
+      '@fluidframework/build-tools': 0.51.0(@types/node@22.7.5)
+      '@fluidframework/bundle-size-tools': 0.51.0
       '@inquirer/prompts': 7.0.1(@types/node@22.7.5)
       '@microsoft/api-extractor': 7.47.11(@types/node@22.7.5)
       '@oclif/core': 4.0.31
@@ -11060,10 +11042,9 @@ snapshots:
       '@oclif/plugin-not-found': 3.2.25(@types/node@22.7.5)
       '@octokit/core': 5.2.0
       '@octokit/rest': 21.0.2
-      '@rushstack/node-core-library': 3.66.1(@types/node@22.7.5)
+      '@rushstack/node-core-library': 5.9.0(@types/node@22.7.5)
       async: 3.2.6
       azure-devops-node-api: 11.2.0
-      chalk: 5.3.0
       change-case: 3.1.0
       cosmiconfig: 8.3.6(typescript@5.5.4)
       danger: 12.3.3(encoding@0.1.13)
@@ -11087,6 +11068,7 @@ snapshots:
       minimatch: 7.4.6
       npm-check-updates: 16.14.20
       oclif: 4.15.20(@types/node@22.7.5)
+      picocolors: 1.1.1
       prettier: 3.2.5
       prompts: 2.4.2
       read-pkg-up: 7.0.1
@@ -11122,14 +11104,13 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@fluid-tools/version-tools@0.50.0(@types/node@20.16.10)':
+  '@fluid-tools/version-tools@0.51.0(@types/node@20.16.10)':
     dependencies:
       '@oclif/core': 4.0.31
       '@oclif/plugin-autocomplete': 3.2.8
       '@oclif/plugin-commands': 4.1.7
       '@oclif/plugin-help': 6.2.16
       '@oclif/plugin-not-found': 3.2.25(@types/node@20.16.10)
-      chalk: 2.4.2
       semver: 7.6.3
       table: 6.8.2
     transitivePeerDependencies:
@@ -11139,14 +11120,13 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluid-tools/version-tools@0.50.0(@types/node@22.7.5)':
+  '@fluid-tools/version-tools@0.51.0(@types/node@22.7.5)':
     dependencies:
       '@oclif/core': 4.0.31
       '@oclif/plugin-autocomplete': 3.2.8
       '@oclif/plugin-commands': 4.1.7
       '@oclif/plugin-help': 6.2.16
       '@oclif/plugin-not-found': 3.2.25(@types/node@22.7.5)
-      chalk: 2.4.2
       semver: 7.6.3
       table: 6.8.2
     transitivePeerDependencies:
@@ -11156,12 +11136,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/build-tools@0.50.0(@types/node@20.16.10)':
+  '@fluidframework/build-tools@0.51.0(@types/node@20.16.10)':
     dependencies:
-      '@fluid-tools/version-tools': 0.50.0(@types/node@20.16.10)
+      '@fluid-tools/version-tools': 0.51.0(@types/node@20.16.10)
       '@manypkg/get-packages': 2.2.2
       async: 3.2.6
-      chalk: 2.4.2
       cosmiconfig: 8.3.6(typescript@5.4.5)
       date-fns: 2.30.0
       debug: 4.3.7(supports-color@8.1.1)
@@ -11175,6 +11154,7 @@ snapshots:
       lodash: 4.17.21
       lodash.isequal: 4.5.0
       multimatch: 5.0.0
+      picocolors: 1.1.1
       picomatch: 2.3.1
       rimraf: 4.4.1
       semver: 7.6.3
@@ -11191,12 +11171,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/build-tools@0.50.0(@types/node@22.7.5)':
+  '@fluidframework/build-tools@0.51.0(@types/node@22.7.5)':
     dependencies:
-      '@fluid-tools/version-tools': 0.50.0(@types/node@22.7.5)
+      '@fluid-tools/version-tools': 0.51.0(@types/node@22.7.5)
       '@manypkg/get-packages': 2.2.2
       async: 3.2.6
-      chalk: 2.4.2
       cosmiconfig: 8.3.6(typescript@5.4.5)
       date-fns: 2.30.0
       debug: 4.3.7(supports-color@8.1.1)
@@ -11210,6 +11189,7 @@ snapshots:
       lodash: 4.17.21
       lodash.isequal: 4.5.0
       multimatch: 5.0.0
+      picocolors: 1.1.1
       picomatch: 2.3.1
       rimraf: 4.4.1
       semver: 7.6.3
@@ -11226,7 +11206,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/bundle-size-tools@0.50.0':
+  '@fluidframework/bundle-size-tools@0.51.0':
     dependencies:
       azure-devops-node-api: 11.2.0
       jszip: 3.10.1
@@ -12851,18 +12831,6 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.24.0':
     optional: true
-
-  '@rushstack/node-core-library@3.66.1(@types/node@22.7.5)':
-    dependencies:
-      colors: 1.2.5
-      fs-extra: 7.0.1
-      import-lazy: 4.0.0
-      jju: 1.4.0
-      resolve: 1.22.8
-      semver: 7.5.4
-      z-schema: 5.0.5
-    optionalDependencies:
-      '@types/node': 22.7.5
 
   '@rushstack/node-core-library@5.9.0(@types/node@20.16.10)':
     dependencies:
@@ -14799,8 +14767,6 @@ snapshots:
     dependencies:
       color-convert: 2.0.1
       color-string: 1.9.1
-
-  colors@1.2.5: {}
 
   colors@1.4.0: {}
 
@@ -18861,6 +18827,8 @@ snapshots:
 
   picocolors@1.1.0: {}
 
+  picocolors@1.1.1: {}
+
   picomatch@2.3.1: {}
 
   picomatch@4.0.2: {}
@@ -20956,8 +20924,6 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  validator@13.12.0: {}
-
   vary@1.1.2: {}
 
   vfile-location@3.2.0: {}
@@ -21536,14 +21502,6 @@ snapshots:
   yoctocolors-cjs@2.1.2: {}
 
   yoga-wasm-web@0.3.3: {}
-
-  z-schema@5.0.5:
-    dependencies:
-      lodash.get: 4.4.2
-      lodash.isequal: 4.5.0
-      validator: 13.12.0
-    optionalDependencies:
-      commander: 9.5.0
 
   zod-to-json-schema@3.23.3(zod@3.23.8):
     dependencies:
