@@ -1,14 +1,9 @@
-import type { PolicyConfig } from "repopo";
+import { DefaultPolicies, type PolicyConfig } from "repopo";
 
 const config: PolicyConfig = {
-	// includeDefaultPolicies: true,
-	// policies: [
-	// 	DefaultPolicies["no-js-file-extensions"]
-	// ],
-	// policies: [...DefaultPolicies],
+	policies: [...DefaultPolicies],
 	excludePoliciesForFiles: {
 		NoJsFileExtensions: [".*/bin/.*js"],
-		// PackageJsonProperties: ["package.json"],
 	},
 	policySettings: {
 		PackageJsonProperties: {
