@@ -18,3 +18,7 @@ esm/set.d.ts.map
 esm/set.js
 esm/set.js.map
 esm/tsdoc-metadata.json
+esm/writeOnceMap.d.ts
+esm/writeOnceMap.d.ts.map
+esm/writeOnceMap.js
+esm/writeOnceMap.js.map
