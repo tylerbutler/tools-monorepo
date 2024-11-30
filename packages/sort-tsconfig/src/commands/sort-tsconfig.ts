@@ -72,6 +72,10 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		},
 	];
 
+	protected override defaultConfig: SortTsconfigConfiguration | undefined = {
+		order: defaultSortOrder,
+	};
+
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: refactor when possible
 	// biome-ignore lint/suspicious/useAwait: inherited method
 	async run(): Promise<void> {
