@@ -1,9 +1,12 @@
+import { mkdir, readdir } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
-import { mkdirp, readJson, readdir } from "fs-extra";
 import handler from "serve-handler";
 import { withDir } from "tmp-promise";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+
+import jsonfile from "jsonfile";
+const { readFile: readJson } = jsonfile;
 
 import { download, extractTarball, fetchFile } from "../src/api.js";
 import { testDataPath, testUrls } from "./common.js";
@@ -154,7 +157,7 @@ describe("with local server", () => {
 
 		it("zip file with extract throws", async () => {
 			const downloadDir = path.join(testDataPath, "_temp");
-			await mkdirp(downloadDir);
+			await mkdir(downloadDir, { recursive: true });
 			expect(async () => {
 				await download(testUrls[4], {
 					downloadDir,

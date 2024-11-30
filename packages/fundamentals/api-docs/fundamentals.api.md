@@ -13,6 +13,16 @@ export function findGitRootSync(cwd?: string): string;
 // @beta
 export function isSorted<T>(arr: T[], compareFn: (a: T, b: T) => number): boolean;
 
+// @beta
+export class KeyAlreadySet extends Error {
+    constructor(key: string);
+}
+
+// @beta
+export class WriteOnceMap<K, V> extends Map<K, V> {
+    set(key: K, value: V, force?: boolean): this;
+}
+
 // (No @packageDocumentation comment for this package)
 
 ```
