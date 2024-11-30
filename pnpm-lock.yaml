@@ -190,6 +190,9 @@ importers:
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
+      cosmiconfig:
+        specifier: ^9.0.0
+        version: 9.0.0(typescript@5.5.4)
       debug:
         specifier: ^4.3.4
         version: 4.3.7(supports-color@8.1.1)
@@ -199,12 +202,6 @@ importers:
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
-      jiti:
-        specifier: ^2.4.0
-        version: 2.4.1
-      lilconfig:
-        specifier: ^3.1.2
-        version: 3.1.2
       simple-git:
         specifier: ^3.24.0
         version: 3.27.0
@@ -5794,10 +5791,6 @@ packages:
   jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
-
-  jiti@2.4.1:
-    resolution: {integrity: sha512-yPBThwecp1wS9DmoA4x4KR2h3QoslacnDR8ypuFM962kI4/456Iy1oHx2RAgh4jfZNdn0bctsdadceiBUgpU1g==}
-    hasBin: true
 
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
@@ -16831,8 +16824,6 @@ snapshots:
       '@types/node': 20.16.10
       merge-stream: 2.0.0
       supports-color: 8.1.1
-
-  jiti@2.4.1: {}
 
   jju@1.4.0: {}
 
