@@ -48,9 +48,7 @@ export class CheckPolicy<
 	private processed = 0;
 	private count = 0;
 
-	public get defaultConfig() {
-		return DefaultPolicyConfig;
-	}
+	public override defaultConfig = DefaultPolicyConfig;
 
 	public override async init(): Promise<void> {
 		await super.init();
