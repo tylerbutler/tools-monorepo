@@ -3,9 +3,11 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Indent } from "detect-indent";
 import detectIndent from "detect-indent";
-import { writeJsonSync } from "fs-extra/esm";
 import { sortPackageJson } from "sort-package-json";
 import type { PackageJson } from "type-fest";
+
+import jsonfile from "jsonfile";
+const { writeFileSync: writeJsonSync } = jsonfile;
 
 /**
  * Options to use when writing JSON files.
