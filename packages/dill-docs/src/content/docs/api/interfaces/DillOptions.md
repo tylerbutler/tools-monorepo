@@ -19,7 +19,7 @@ If provided, this path must be to a directory that exists.
 
 #### Defined in
 
-[api.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L52)
+[api.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L51)
 
 ***
 
@@ -35,7 +35,7 @@ If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com
 
 #### Defined in
 
-[api.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L45)
+[api.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L44)
 
 ***
 
@@ -49,7 +49,7 @@ it will use `dill-download.<EXTENSION>`.
 
 #### Defined in
 
-[api.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L59)
+[api.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L58)
 
 ***
 
@@ -66,4 +66,4 @@ but it will otherwise not be saved.
 
 #### Defined in
 
-[api.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L67)
+[api.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L66)

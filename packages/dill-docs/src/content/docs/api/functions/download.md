@@ -25,4 +25,4 @@ Options to use.
 
 ## Defined in
 
-[api.ts:114](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L114)
+[api.ts:113](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L113)

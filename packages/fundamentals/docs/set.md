@@ -68,4 +68,4 @@ console.log(stringSet); // Output: Set { 'hello', 'world' }
 
 #### Defined in
 
-[set.ts:41](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/set.ts#L41)
+[packages/fundamentals/src/set.ts:41](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/set.ts#L41)
