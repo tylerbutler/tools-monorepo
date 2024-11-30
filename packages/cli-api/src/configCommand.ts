@@ -28,14 +28,10 @@ export abstract class CommandWithConfig<
 		...BaseCommand.flags,
 	} as const;
 
-	public override async init(): Promise<void> {
-		await super.init();
-		const { config } = this.flags;
-		const loaded = await this.loadConfig(config);
-		if (loaded === undefined) {
-			this.error(`Failure to load config: ${config}`, { exit: 1 });
-		}
-	}
+	/**
+	 * A default config value to use if none is found. If this returns undefined, no default value will be used.
+	 */
+	protected defaultConfig: C | undefined;
 
 	protected async loadConfig(
 		filePath?: string,
@@ -69,17 +65,14 @@ export abstract class CommandWithConfig<
 		return this._commandConfig;
 	}
 
-	// protected abstract get defaultConfig(): C | undefined;
-
-	// protected get commandConfig(): C {
-	// 	// TODO: There has to be a better pattern for this.
-	// 	assert(
-	// 		this._commandConfig !== undefined,
-	// 		"commandConfig is undefined; this may happen if loadConfig is not called prior to accessing commandConfig. loadConfig is called from init() - check that code path is called.",
-	// 	);
-	// 	// this._commandConfig ??= this.loadConfig();
-	// 	return this._commandConfig;
-	// }
+	protected get commandConfig(): C {
+		// TODO: There has to be a better pattern for this.
+		assert(
+			this._commandConfig !== undefined,
+			"commandConfig is undefined; this may happen if loadConfig is not called prior to accessing commandConfig. loadConfig is called from init() - check that code path is called.",
+		);
+		return this._commandConfig;
+	}
 }
 
 /**
@@ -89,6 +82,8 @@ export abstract class CommandWithConfig<
  *
  * @privateRemarks
  * This class may be an unneeded wrapper around BaseCommand. There's no clear beenfit to using this vs. BaseCommand directly.
+ *
+ * @deprecated Use the BaseCommand directly.
  */
 export abstract class CommandWithoutConfig<
 	T extends typeof Command & {
@@ -96,3 +91,12 @@ export abstract class CommandWithoutConfig<
 		flags: typeof CommandWithoutConfig.flags;
 	},
 > extends BaseCommand<T> {}
+
+/**
+ * An interface implemented by commands that use a context object.
+ *
+ * @beta
+ */
+export interface CommandWithContext<CONTEXT> {
+	getContext(): Promise<CONTEXT>;
+}
