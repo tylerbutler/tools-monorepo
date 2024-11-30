@@ -43,6 +43,7 @@
 			"style": {
 				"noDefaultExport": "off",
 				"noParameterProperties": "off",
+				"useNamingConvention": "off",
 			},
 		},
 	},
