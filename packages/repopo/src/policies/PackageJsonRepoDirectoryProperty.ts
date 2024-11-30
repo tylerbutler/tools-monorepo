@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import path from "node:path";
 import { updatePackageJsonFile } from "@fluidframework/build-tools";
-import { readJson } from "fs-extra/esm";
 import type { PackageJson } from "type-fest";
+
+import jsonfile from "jsonfile";
+const { readFile: readJson } = jsonfile;
+
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**
