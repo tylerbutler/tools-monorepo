@@ -6,7 +6,6 @@ import { DefaultPolicies, type PolicyName, type RepoPolicy } from "./policy.js";
  */
 export type PerPolicySettings =
 	| ({
-			// biome-ignore lint/style/useNamingConvention: key needs to match policy name
 			PackageJsonProperties: PackageJsonPropertiesSettings;
 	  } & Record<PolicyName, unknown>)
 	| undefined;
