@@ -76,6 +76,8 @@ export abstract class CommandWithConfig<T extends typeof Command & {
         readonly config: OptionFlag<string | undefined, CustomOptions>;
     };
     // (undocumented)
+    init(): Promise<void>;
+    // (undocumented)
     protected loadConfig(filePath?: string, reload?: boolean): Promise<C | undefined>;
 }
 

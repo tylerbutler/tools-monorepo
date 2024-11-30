@@ -34,6 +34,15 @@ export abstract class CommandWithConfig<
 	 */
 	protected defaultConfig: C | undefined;
 
+	public override async init(): Promise<void> {
+		await super.init();
+		const { config } = this.flags;
+		const loaded = await this.loadConfig(config);
+		if (loaded === undefined) {
+			this.error(`Failure to load config: ${config}`, { exit: 1 });
+		}
+	}
+
 	protected async loadConfig(
 		filePath?: string,
 		reload?: boolean,
