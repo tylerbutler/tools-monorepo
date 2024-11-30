@@ -90,7 +90,6 @@
 		"@oclif/plugin-command-snapshot": "^5.2.14",
 		"@oclif/test": "^4.0.9",
 		"@types/chai": "^4.3.16",
-		"@types/fs-extra": "^11.0.4",
 		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.12.7",
 		"@types/tmp": "^0.2.6",

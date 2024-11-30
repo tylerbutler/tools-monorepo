@@ -2,6 +2,7 @@
 
 /** @type {import("@fluidframework/build-tools").IFluidBuildConfig} */
 const config = {
+	version: 1,
 	repoPackages: {
 		client: {
 			directory: "",
@@ -52,6 +53,25 @@ const config = {
 		readme: ["compile", "manifest"],
 		test: {
 			dependsOn: ["compile"],
+		},
+	},
+	multiCommandExecutables: ["astro", "oclif"],
+	declarativeTasks: {
+		"astro build": {
+			inputGlobs: ["astro.config.mjs", "src/**", "public/**"],
+			outputGlobs: ["dist/**"],
+		},
+		"astro check": {
+			inputGlobs: ["astro.config.mjs", "src/**", "public/**"],
+			outputGlobs: [],
+		},
+		"oclif manifest": {
+			inputGlobs: ["package.json", "src/**"],
+			outputGlobs: ["oclif.manifest.json"],
+		},
+		"oclif readme": {
+			inputGlobs: ["package.json", "src/**"],
+			outputGlobs: ["README.md", "docs/**"],
 		},
 	},
 };

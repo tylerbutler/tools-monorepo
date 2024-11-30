@@ -1,8 +1,8 @@
+import { rm } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
 import { runCommand } from "@oclif/test";
 import { expect } from "chai";
-import { readJson, remove } from "fs-extra/esm";
 import {
 	after as afterAll,
 	afterEach,
@@ -13,6 +13,9 @@ import {
 } from "mocha";
 import handler from "serve-handler";
 import { temporaryDirectory } from "tempy";
+
+import jsonfile from "jsonfile";
+const { readFile: readJson } = jsonfile;
 
 import { testDataPath, testUrls } from "../common.js";
 
@@ -35,7 +38,7 @@ describe("download command", async () => {
 	});
 
 	afterEach(async () => {
-		await remove(downloadDir);
+		await rm(downloadDir, { recursive: true });
 	});
 
 	afterAll(() => {
