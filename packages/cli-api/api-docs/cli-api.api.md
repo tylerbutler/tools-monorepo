@@ -67,18 +67,19 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     flags: typeof CommandWithConfig.flags;
 }, C> extends BaseCommand<T> {
     // (undocumented)
+    protected get commandConfig(): C;
+    // (undocumented)
     protected configPath: string | undefined;
+    protected defaultConfig: C | undefined;
     // (undocumented)
     static readonly flags: {
         readonly config: OptionFlag<string | undefined, CustomOptions>;
     };
     // (undocumented)
-    init(): Promise<void>;
-    // (undocumented)
     protected loadConfig(filePath?: string, reload?: boolean): Promise<C | undefined>;
 }
 
-// @beta
+// @beta @deprecated
 export abstract class CommandWithoutConfig<T extends typeof Command & {
     args: typeof CommandWithoutConfig.args;
     flags: typeof CommandWithoutConfig.flags;
