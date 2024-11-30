@@ -1,7 +1,10 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
-import { readJson } from "fs-extra/esm";
 import { sortPackageJson } from "sort-package-json";
 import type { PackageJson } from "type-fest";
+
+import jsonfile from "jsonfile";
+const { readFile: readJson } = jsonfile;
+
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**

@@ -91,7 +91,6 @@
 		"@tylerbu/cli-api": "workspace:^",
 		"fflate": "^0.8.2",
 		"file-type": "^19.0.0",
-		"fs-extra": "^11.2.0",
 		"mime": "^4.0.3",
 		"untar.js": "npm:@andrewbranch/untar.js@^1.0.3",
 		"whatwg-mimetype": "^4.0.0"
@@ -103,7 +102,6 @@
 		"@oclif/test": "^4.0.9",
 		"@types/chai": "^4.3.16",
 		"@types/debug": "^4.1.12",
-		"@types/fs-extra": "^11.0.4",
 		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.12.7",
 		"@types/semver": "^7.5.8",
