@@ -324,6 +324,9 @@ importers:
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
+      '@types/jsonfile':
+        specifier: ^6.1.4
+        version: 6.1.4
       '@types/mocha':
         specifier: ^10.0.6
         version: 10.0.8
@@ -351,6 +354,9 @@ importers:
       chai:
         specifier: ^5.1.1
         version: 5.1.1
+      jsonfile:
+        specifier: ^6.1.0
+        version: 6.1.0
       lefthook:
         specifier: ^1.6.11
         version: 1.7.17
