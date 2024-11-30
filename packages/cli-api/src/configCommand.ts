@@ -1,26 +1,9 @@
-import assert from "node:assert/strict";
 import { stat } from "node:fs/promises";
 import type { Command } from "@oclif/core";
-import { createJiti } from "jiti";
-import {
-	type LilconfigResult,
-	type Loader,
-	type LoaderResult,
-	lilconfig,
-} from "lilconfig";
+import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
 import { BaseCommand } from "./baseCommand.js";
 import { ConfigFileFlagHidden } from "./flags.js";
 import { findGitRoot } from "./git.js";
-
-// barebones ts-loader
-const jiti = createJiti(import.meta.url);
-const tsLoader: Loader = async (
-	filepath: string,
-	_content: string,
-): Promise<LoaderResult> => {
-	const modDefault = await jiti.import(filepath, { default: true });
-	return modDefault;
-};
 
 /**
  * A base command that loads typed configuration values from a config file.
@@ -45,10 +28,14 @@ export abstract class CommandWithConfig<
 		...BaseCommand.flags,
 	} as const;
 
-	/**
-	 * A default config value to use if none is found. If this returns undefined, no default value will be used.
-	 */
-	protected defaultConfig: C | undefined;
+	public override async init(): Promise<void> {
+		await super.init();
+		const { config } = this.flags;
+		const loaded = await this.loadConfig(config);
+		if (loaded === undefined) {
+			this.error(`Failure to load config: ${config}`, { exit: 1 });
+		}
+	}
 
 	protected async loadConfig(
 		filePath?: string,
@@ -58,47 +45,41 @@ export abstract class CommandWithConfig<
 			const configPath = filePath ?? process.cwd();
 			const moduleName = this.config.bin;
 			const repoRoot = await findGitRoot();
-			const configLoader = lilconfig(moduleName, {
+			const explorer = cosmiconfig(moduleName, {
+				searchStrategy: "global",
 				stopDir: repoRoot,
-				searchPlaces: [
-					`${moduleName}.config.ts`,
-					`${moduleName}.config.mjs`,
-					`${moduleName}.config.cjs`,
-					`${moduleName}.config.js`,
-					"package.json",
-				],
-				loaders: {
-					".ts": tsLoader,
-				},
 			});
 			const pathStats = await stat(configPath);
 			this.verbose(
 				`Looking for '${this.config.bin}' config at '${configPath}'`,
 			);
-			let maybeConfig: LilconfigResult;
+			let config: CosmiconfigResult;
 			if (pathStats.isDirectory()) {
-				maybeConfig = await configLoader.search(configPath);
+				config = await explorer.search(configPath);
 			} else {
-				maybeConfig = await configLoader.load(configPath);
+				config = await explorer.load(configPath);
 			}
-			if (maybeConfig?.config !== undefined) {
-				this.verbose(`Found config at ${maybeConfig?.filepath}`);
+			if (config?.config !== undefined) {
+				this.verbose(`Found config at ${config.filepath}`);
 			} else {
 				this.verbose(`No config found; started searching at ${configPath}`);
 			}
-			this._commandConfig = maybeConfig?.config ?? this.defaultConfig;
+			this._commandConfig = config?.config as C;
 		}
 		return this._commandConfig;
 	}
 
-	protected get commandConfig(): C {
-		// TODO: There has to be a better pattern for this.
-		assert(
-			this._commandConfig !== undefined,
-			"commandConfig is undefined; this may happen if loadConfig is not called prior to accessing commandConfig. loadConfig is called from init() - check that code path is called.",
-		);
-		return this._commandConfig;
-	}
+	// protected abstract get defaultConfig(): C | undefined;
+
+	// protected get commandConfig(): C {
+	// 	// TODO: There has to be a better pattern for this.
+	// 	assert(
+	// 		this._commandConfig !== undefined,
+	// 		"commandConfig is undefined; this may happen if loadConfig is not called prior to accessing commandConfig. loadConfig is called from init() - check that code path is called.",
+	// 	);
+	// 	// this._commandConfig ??= this.loadConfig();
+	// 	return this._commandConfig;
+	// }
 }
 
 /**
@@ -108,8 +89,6 @@ export abstract class CommandWithConfig<
  *
  * @privateRemarks
  * This class may be an unneeded wrapper around BaseCommand. There's no clear beenfit to using this vs. BaseCommand directly.
- *
- * @deprecated Use the BaseCommand directly.
  */
 export abstract class CommandWithoutConfig<
 	T extends typeof Command & {
@@ -117,12 +96,3 @@ export abstract class CommandWithoutConfig<
 		flags: typeof CommandWithoutConfig.flags;
 	},
 > extends BaseCommand<T> {}
-
-/**
- * An interface implemented by commands that use a context object.
- *
- * @beta
- */
-export interface CommandWithContext<CONTEXT> {
-	getContext(): Promise<CONTEXT>;
-}
