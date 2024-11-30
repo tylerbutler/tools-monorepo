@@ -1,5 +1,8 @@
-import { readJson, writeJson } from "fs-extra/esm";
 import type { PackageJson } from "type-fest";
+
+import jsonfile from "jsonfile";
+const { writeFile: writeJson, readFile: readJson } = jsonfile;
+
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**

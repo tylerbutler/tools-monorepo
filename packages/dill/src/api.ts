@@ -1,9 +1,8 @@
-import { readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
 import { Decompress } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
-import { mkdirp } from "fs-extra/esm";
 import mime from "mime";
 // import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
@@ -286,7 +285,7 @@ export async function extractTarball(
 		const filesP: Promise<void>[] = [];
 		for (const tarfile of data) {
 			const outPath = path.join(destination, tarfile.name);
-			await mkdirp(path.dirname(outPath));
+			await mkdir(path.dirname(outPath), { recursive: true });
 			filesP.push(writeFile(outPath, tarfile.fileData));
 		}
 		await Promise.all(filesP);
