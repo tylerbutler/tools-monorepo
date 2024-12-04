@@ -1,0 +1,56 @@
+{
+	"name": "@tylerbu/xkcd2-api",
+	"version": "0.0.1",
+	"description": "TypeScript APIs used in implementations of xkcd2.com.",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": "tylerbutler/tylerbu-cli",
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		}
+	},
+	"types": "./esm/index.d.ts",
+	"files": ["esm"],
+	"scripts": {
+		"api": "npm run docs:api",
+		"build": "fluid-build . --task build",
+		"check": "npm run check:format",
+		"check:format": "biome format .",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"compile": "tsc --project ./tsconfig.json",
+		"docs": "typedoc",
+		"docs:api": "api-extractor run --local",
+		"format": "biome check . --linter-enabled=false --write",
+		"full": "fluid-build . --task full",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --apply",
+		"sort-package-json": "sort-package-json",
+		"test": "vitest run test",
+		"test:coverage": "vitest run test --coverage"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.8.3",
+		"@microsoft/api-documenter": "^7.24.8",
+		"@microsoft/api-extractor": "^7.43.4",
+		"@types/node": "^20.12.7",
+		"@vitest/coverage-v8": "^2.0.5",
+		"concurrently": "^9.0.0",
+		"rimraf": "^6.0.0",
+		"sort-package-json": "2.10.0",
+		"tempy": "^3.1.0",
+		"typedoc": "^0.26.5",
+		"typedoc-plugin-markdown": "^4.2.5",
+		"typescript": "~5.5.4",
+		"vitest": "^2.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}
