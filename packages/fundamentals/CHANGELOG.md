@@ -1,5 +1,13 @@
 # @tylerbu/fundamentals
 
+## 0.2.0
+
+### Minor Changes
+
+- New WriteOnceMap class _[`#148`](https://github.com/tylerbutler/tools-monorepo/pull/148) [`5d688c2`](https://github.com/tylerbutler/tools-monorepo/commit/5d688c20a5f4648ead495ea6d3a4c01430346b2a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The WriteOnceMap has the same API as the JavaScript Map, but throws an exception when a key is set multiple times.
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @tylerbu/cli-api
 
+## 0.6.0
+
+### Minor Changes
+
+- New context and git-related command interfaces _[`#150`](https://github.com/tylerbutler/tools-monorepo/pull/150) [`b894a2d`](https://github.com/tylerbutler/tools-monorepo/commit/b894a2dfd5538247d1a625b423e61b437207f137) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The new `CommandWithContext<CONTEXT>` interface can be implemented by commands that use a context object.
+
+  The `RequiresGit` interface can be implemented by commands that require a Git repository in order to run.
+
+- Deprecated: CommandWithoutConfig _[`#150`](https://github.com/tylerbutler/tools-monorepo/pull/150) [`b894a2d`](https://github.com/tylerbutler/tools-monorepo/commit/b894a2dfd5538247d1a625b423e61b437207f137) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The CommandWithoutConfig class was superfluous and has been deprecated. Use the BaseCommand class directly instead.
+
 ## 0.5.0
 
 ### Minor Changes
