@@ -12,6 +12,6 @@ describe("getComicProps", () => {
 		expect(async () => {
 			const comic = await getComicProps(0);
 			expect(comic).toMatchSnapshot();
-		}).not.toThrowError();
+		}).rejects.toThrowErrorMatchingSnapshot("Status code 404");
 	});
 });

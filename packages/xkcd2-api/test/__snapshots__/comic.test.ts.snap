@@ -25,3 +25,5 @@ Hat Guy: No, Mr. Bond. I expect you to die.
   "previousId": "122",
 }
 `;
+
+exports[`getComicProps > throws error when comic is not found > Status code 404 1`] = `[Error: Status code 404 (Not Found) from https://xkcd.com/0/info.0.json]`;
