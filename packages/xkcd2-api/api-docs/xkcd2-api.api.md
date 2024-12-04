@@ -43,6 +43,9 @@ export interface ComicFrameProps {
 // @public (undocumented)
 export function getComicProps(comicId?: string | number): Promise<ComicFrameProps>;
 
+// @public
+export function getRandomComicId(): Promise<number>;
+
 // (No @packageDocumentation comment for this package)
 
 ```

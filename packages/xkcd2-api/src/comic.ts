@@ -11,7 +11,6 @@ export interface Comic {
 	month?: number;
 	news?: string;
 	num: number;
-	// tslint:disable-next-line: variable-name
 	safe_title?: string;
 	title?: string;
 	transcript?: string;
@@ -35,7 +34,7 @@ function getComicUrl(comicId?: string | number) {
 }
 
 /**
- * @param comicId - The ID of the comic to retrieve.
+ * @param comicId - The ID of the comic to retrieve. If this is not provided, the most recent comic will be returned.
  * @returns The comic metadata.
  *
  * @public
@@ -64,4 +63,18 @@ export async function getComicProps(
 	}
 
 	return { comic, previousId, nextId };
+}
+
+/**
+ * Returns a random comic ID within the bounds of the currently published comics.
+ *
+ * @public
+ */
+export async function getRandomComicId(): Promise<number> {
+	// Get latest comic to get upper bound
+	const { comic } = await getComicProps();
+	// I don't think a cryptographically sound RNG is needed for this
+	const rv = Math.random();
+	const randId = Math.floor(rv * comic.num);
+	return randId;
 }

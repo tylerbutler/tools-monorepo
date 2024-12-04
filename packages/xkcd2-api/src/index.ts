@@ -1,5 +1,6 @@
 export {
 	type Comic,
-	getComicProps,
 	type ComicFrameProps,
+	getComicProps,
+	getRandomComicId,
 } from "./comic.js";
