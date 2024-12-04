@@ -1,6 +1,6 @@
 {
 	"name": "sort-tsconfig",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "Sorts tsconfig files.",
 	"keywords": ["sort", "tsconfig", "typescript"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/sort-tsconfig#sort-tsconfig---keep-your-tsconfigs-clean-and-tidy",
