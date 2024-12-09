@@ -127,7 +127,7 @@
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"type-fest": "^4.18.2",
-		"typescript": "~5.5.4",
+		"typescript": "~5.7.0",
 		"unionfs": "^4.5.4",
 		"vitest": "^2.0.0"
 	},
