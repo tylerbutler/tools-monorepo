@@ -1,6 +1,6 @@
 {
 	"name": "repopo",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"description": "Enforce policies on all or some of the files in a git repository.",
 	"keywords": ["policy", "ci"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies",

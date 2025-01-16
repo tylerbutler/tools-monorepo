@@ -1,5 +1,13 @@
 # @tylerbu/cli-api
 
+## 0.6.1
+
+### Patch Changes
+
+- Add missing sort-package-json dependency _[`#167`](https://github.com/tylerbutler/tools-monorepo/pull/167) [`7406bbf`](https://github.com/tylerbutler/tools-monorepo/commit/7406bbf1131028058178d53f4e64564660c4d495) [@ic4l4s9c](https://github.com/ic4l4s9c)_
+
+  Thanks to [@ic4l4s9c](https://github.com/ic4l4s9c) for this fix!
+
 ## 0.6.0
 
 ### Minor Changes

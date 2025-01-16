@@ -1,5 +1,22 @@
 # @tylerbu/cli
 
+## 0.3.5
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`7406bbf`](https://github.com/tylerbutler/tools-monorepo/commit/7406bbf1131028058178d53f4e64564660c4d495)
+
+</small>
+
+- `@tylerbu/cli-api@0.6.1`
+- `dill-cli@0.1.5`
+
+</details>
+
 ## 0.3.4
 
 ### Patch Changes
