@@ -37,6 +37,11 @@
 			"correctness": {
 				"noUnusedVariables": "error",
 			},
+			"nursery": {
+				"noUndeclaredDependencies": {
+					"level": "error",
+				},
+			},
 			"performance": {
 				"noBarrelFile": "off",
 			},
