@@ -116,9 +116,6 @@ importers:
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
-      chalk:
-        specifier: ^5.3.0
-        version: 5.3.0
       concurrently:
         specifier: ^9.0.0
         version: 9.0.1
@@ -128,6 +125,9 @@ importers:
       dill-cli:
         specifier: workspace:^
         version: link:../dill
+      picocolors:
+        specifier: ^1.1.0
+        version: 1.1.1
       simple-git:
         specifier: ^3.24.0
         version: 3.27.0
@@ -192,9 +192,6 @@ importers:
       '@oclif/core':
         specifier: ^4.0.19
         version: 4.0.23
-      chalk:
-        specifier: ^5.3.0
-        version: 5.3.0
       cosmiconfig:
         specifier: ^9.0.0
         version: 9.0.0(typescript@5.5.4)
@@ -207,6 +204,9 @@ importers:
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
+      picocolors:
+        specifier: ^1.1.0
+        version: 1.1.1
       simple-git:
         specifier: ^3.24.0
         version: 3.27.0
@@ -537,15 +537,15 @@ importers:
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
-      chalk:
-        specifier: ^5.3.0
-        version: 5.3.0
       cosmiconfig:
         specifier: ^9.0.0
         version: 9.0.0(typescript@5.5.4)
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
+      picocolors:
+        specifier: ^1.1.0
+        version: 1.1.1
       sort-package-json:
         specifier: 2.10.0
         version: 2.10.0
@@ -3166,6 +3166,9 @@ packages:
 
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+
+  '@types/node@18.19.71':
+    resolution: {integrity: sha512-evXpcgtZm8FY4jqBSN8+DmOTcVkkvTmAayeo4Wf3m1xAruyVGzGuDh/Fb/WWX2yLItUiho42ozyJjB0dw//Tkw==}
 
   '@types/node@20.16.10':
     resolution: {integrity: sha512-vQUKgWTjEIRFCvK6CyriPH3MZYiYlNy0fKiEYHWbcoWLEgs4opurGGKlebrTLqdSMIbXImH6XExNiIyNUv3WpA==}
@@ -7346,9 +7349,6 @@ packages:
   pgp-utils@0.0.35:
     resolution: {integrity: sha512-gCT6EbSTgljgycVa5qGpfRITaLOLbIKsEVRTdsNRgmLMAJpuJNNdrTn/95r8IWo9rFLlccfmGMJXkG9nVDwmrA==}
 
-  picocolors@1.1.0:
-    resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
-
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -8770,6 +8770,9 @@ packages:
 
   underscore@1.13.7:
     resolution: {integrity: sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==}
+
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
@@ -10459,12 +10462,12 @@ snapshots:
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/code-frame@7.25.7':
     dependencies:
       '@babel/highlight': 7.25.7
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/compat-data@7.25.8': {}
 
@@ -10586,14 +10589,14 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/highlight@7.25.7':
     dependencies:
       '@babel/helper-validator-identifier': 7.25.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/parser@7.25.6':
     dependencies:
@@ -13588,6 +13591,11 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
+  '@types/node@18.19.71':
+    dependencies:
+      undici-types: 5.26.5
+    optional: true
+
   '@types/node@20.16.10':
     dependencies:
       undici-types: 6.19.8
@@ -13643,7 +13651,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.16.10
+      '@types/node': 18.19.71
     optional: true
 
   '@ungap/structured-clone@1.2.0': {}
@@ -16523,7 +16531,7 @@ snapshots:
       '@inquirer/core': 3.1.2
       '@inquirer/type': 1.5.5
       figures: 5.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   install-artifact-from-github@1.3.5:
     optional: true
@@ -18833,8 +18841,6 @@ snapshots:
       iced-error: 0.0.13
       iced-runtime: 1.0.4
 
-  picocolors@1.1.0: {}
-
   picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
@@ -18864,7 +18870,7 @@ snapshots:
   postcss@8.4.47:
     dependencies:
       nanoid: 3.3.7
-      picocolors: 1.1.0
+      picocolors: 1.1.1
       source-map-js: 1.2.1
 
   prebuild-install@7.1.2:
@@ -20691,6 +20697,9 @@ snapshots:
 
   underscore@1.13.7: {}
 
+  undici-types@5.26.5:
+    optional: true
+
   undici-types@6.19.8: {}
 
   unherit@1.1.3:
@@ -20846,7 +20855,7 @@ snapshots:
     dependencies:
       browserslist: 4.24.0
       escalade: 3.2.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   update-check@1.5.4:
     dependencies:
