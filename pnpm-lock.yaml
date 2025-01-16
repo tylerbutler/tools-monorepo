@@ -195,18 +195,24 @@ importers:
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
-      cosmiconfig:
-        specifier: ^9.0.0
-        version: 9.0.0(typescript@5.5.4)
       debug:
         specifier: ^4.3.4
         version: 4.3.7(supports-color@8.1.1)
       detect-indent:
         specifier: ^7.0.1
         version: 7.0.1
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
+      jiti:
+        specifier: ^2.4.0
+        version: 2.4.2
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
+      lilconfig:
+        specifier: ^3.1.2
+        version: 3.1.2
       simple-git:
         specifier: ^3.24.0
         version: 3.27.0
@@ -3207,6 +3213,9 @@ packages:
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
 
+  '@types/node@18.19.71':
+    resolution: {integrity: sha512-evXpcgtZm8FY4jqBSN8+DmOTcVkkvTmAayeo4Wf3m1xAruyVGzGuDh/Fb/WWX2yLItUiho42ozyJjB0dw//Tkw==}
+
   '@types/node@20.16.10':
     resolution: {integrity: sha512-vQUKgWTjEIRFCvK6CyriPH3MZYiYlNy0fKiEYHWbcoWLEgs4opurGGKlebrTLqdSMIbXImH6XExNiIyNUv3WpA==}
 
@@ -5871,6 +5880,10 @@ packages:
   jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
+
+  jiti@2.4.2:
+    resolution: {integrity: sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A==}
+    hasBin: true
 
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
@@ -8853,6 +8866,9 @@ packages:
 
   underscore@1.13.7:
     resolution: {integrity: sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==}
+
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
@@ -13791,6 +13807,11 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
+  '@types/node@18.19.71':
+    dependencies:
+      undici-types: 5.26.5
+    optional: true
+
   '@types/node@20.16.10':
     dependencies:
       undici-types: 6.19.8
@@ -13850,7 +13871,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.16.10
+      '@types/node': 18.19.71
     optional: true
 
   '@ungap/structured-clone@1.2.0': {}
@@ -17025,6 +17046,8 @@ snapshots:
       '@types/node': 20.16.10
       merge-stream: 2.0.0
       supports-color: 8.1.1
+
+  jiti@2.4.2: {}
 
   jju@1.4.0: {}
 
@@ -20923,6 +20946,9 @@ snapshots:
       which-boxed-primitive: 1.0.2
 
   underscore@1.13.7: {}
+
+  undici-types@5.26.5:
+    optional: true
 
   undici-types@6.19.8: {}
 

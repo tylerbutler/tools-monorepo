@@ -35,10 +35,12 @@
 	"dependencies": {
 		"@oclif/core": "^4.0.19",
 		"chalk": "^5.3.0",
-		"cosmiconfig": "^9.0.0",
 		"debug": "^4.3.4",
 		"detect-indent": "^7.0.1",
+		"fs-extra": "^11.2.0",
+		"jiti": "^2.4.0",
 		"jsonfile": "^6.1.0",
+		"lilconfig": "^3.1.2",
 		"simple-git": "^3.24.0",
 		"strip-ansi": "^7.1.0"
 	},
