@@ -1,0 +1,12 @@
+LICENSE
+README.md
+package.json
+esm/comic.d.ts
+esm/comic.d.ts.map
+esm/comic.js
+esm/comic.js.map
+esm/index.d.ts
+esm/index.d.ts.map
+esm/index.js
+esm/index.js.map
+esm/tsdoc-metadata.json

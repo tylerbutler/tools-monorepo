@@ -65,7 +65,7 @@ jobs:
           echo "HasChangesets: ${{ steps.changesets.outputs.hasChangesets }}"
 
       - name: Setup .npmrc for public npm
-        if: github.event.inputs.publish_public == 'true' && steps.changesets.outputs.hasChangesets != 'true'
+        if: github.event.inputs.publish_public != 'false' && steps.changesets.outputs.hasChangesets != 'true'
         run: echo -e "\n//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
 
       - name: Setup .npmrc for private feed

@@ -1,7 +1,7 @@
 {
-	"name": "@tylerbu/fundamentals",
-	"version": "0.2.0",
-	"description": "Fundamental functions and classes that I often need in my projects. Zero dependencies.",
+	"name": "@tylerbu/xkcd2-api",
+	"version": "0.1.0",
+	"description": "TypeScript APIs used in implementations of xkcd2.com.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": "tylerbutler/tylerbu-cli",
@@ -14,35 +14,19 @@
 				"types": "./esm/index.d.ts",
 				"default": "./esm/index.js"
 			}
-		},
-		"./git": {
-			"import": {
-				"types": "./esm/git.d.ts",
-				"default": "./esm/git.js"
-			}
-		},
-		"./set": {
-			"import": {
-				"types": "./esm/set.d.ts",
-				"default": "./esm/set.js"
-			}
 		}
 	},
 	"types": "./esm/index.d.ts",
 	"files": ["esm"],
 	"scripts": {
-		"api": "concurrently npm:docs:api:*",
+		"api": "npm run docs:api",
 		"build": "fluid-build . --task build",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"compile": "tsc --project ./tsconfig.json",
 		"docs": "typedoc",
-		"docs:api:array": "api-extractor run --local --config api-extractor.array.json",
-		"docs:api:git": "api-extractor run --local --config api-extractor.git.json",
-		"docs:api:main": "api-extractor run --local",
-		"docs:api:set": "api-extractor run --local --config api-extractor.set.json",
-		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
+		"docs:api": "api-extractor run --local",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
@@ -66,13 +50,7 @@
 		"typescript": "~5.5.4",
 		"vitest": "^2.0.0"
 	},
-	"packageManager": "pnpm@9.11.0",
 	"engines": {
 		"node": ">=18.0.0"
-	},
-	"fluidBuild": {
-		"tasks": {
-			"docs:api:git": []
-		}
 	}
 }

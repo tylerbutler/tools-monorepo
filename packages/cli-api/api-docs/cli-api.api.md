@@ -76,7 +76,15 @@ export abstract class CommandWithConfig<T extends typeof Command & {
         readonly config: OptionFlag<string | undefined, CustomOptions>;
     };
     // (undocumented)
+    init(): Promise<void>;
+    // (undocumented)
     protected loadConfig(filePath?: string, reload?: boolean): Promise<C | undefined>;
+}
+
+// @beta
+export interface CommandWithContext<CONTEXT> {
+    // (undocumented)
+    getContext(): Promise<CONTEXT>;
 }
 
 // @beta @deprecated
@@ -153,6 +161,12 @@ requiredOrDefaulted: false;
 export class Repository {
     constructor(gitOptions: SetRequired<Partial<SimpleGitOptions>, "baseDir">);
     get gitClient(): SimpleGit;
+}
+
+// @beta
+export interface RequiresGit {
+    // (undocumented)
+    git: SimpleGit;
 }
 
 // @alpha
