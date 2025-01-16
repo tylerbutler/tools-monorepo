@@ -3,7 +3,7 @@ import { EOL as newline } from "node:os";
 import path from "node:path";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import chalk from "chalk";
+import chalk from "picocolors";
 
 import {
 	BaseRepopoCommand,

@@ -1,6 +1,6 @@
 import { Args, Flags } from "@oclif/core";
 import { CommandWithConfig, GitCommand } from "@tylerbu/cli-api";
-import chalk from "chalk";
+import chalk from "picocolors";
 import stripAnsi from "strip-ansi";
 
 export default class SquishCommand extends GitCommand<typeof SquishCommand> {
