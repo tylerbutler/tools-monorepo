@@ -210,6 +210,9 @@ importers:
       simple-git:
         specifier: ^3.24.0
         version: 3.27.0
+      sort-package-json:
+        specifier: 2.10.0
+        version: 2.10.0
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
@@ -259,9 +262,6 @@ importers:
       rimraf:
         specifier: ^6.0.0
         version: 6.0.1
-      sort-package-json:
-        specifier: 2.10.0
-        version: 2.10.0
       tmp-promise:
         specifier: ^3.0.3
         version: 3.0.3
@@ -3206,6 +3206,9 @@ packages:
 
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+
+  '@types/node@18.19.71':
+    resolution: {integrity: sha512-evXpcgtZm8FY4jqBSN8+DmOTcVkkvTmAayeo4Wf3m1xAruyVGzGuDh/Fb/WWX2yLItUiho42ozyJjB0dw//Tkw==}
 
   '@types/node@20.16.10':
     resolution: {integrity: sha512-vQUKgWTjEIRFCvK6CyriPH3MZYiYlNy0fKiEYHWbcoWLEgs4opurGGKlebrTLqdSMIbXImH6XExNiIyNUv3WpA==}
@@ -8854,6 +8857,9 @@ packages:
   underscore@1.13.7:
     resolution: {integrity: sha512-GMXzWtsc57XAtguZgaQViUOzs0KTkk8ojr3/xAxXLITqf/3EMwxC0inyETfDFjH/Krbhuep0HNbbjI9i/q3F3g==}
 
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
@@ -13791,6 +13797,11 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
+  '@types/node@18.19.71':
+    dependencies:
+      undici-types: 5.26.5
+    optional: true
+
   '@types/node@20.16.10':
     dependencies:
       undici-types: 6.19.8
@@ -13850,7 +13861,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.16.10
+      '@types/node': 18.19.71
     optional: true
 
   '@ungap/structured-clone@1.2.0': {}
@@ -20923,6 +20934,9 @@ snapshots:
       which-boxed-primitive: 1.0.2
 
   underscore@1.13.7: {}
+
+  undici-types@5.26.5:
+    optional: true
 
   undici-types@6.19.8: {}
 
