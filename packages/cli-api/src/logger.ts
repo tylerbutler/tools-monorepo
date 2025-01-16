@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from "picocolors";
 
 /**
  * A function that logs an Error or error message.

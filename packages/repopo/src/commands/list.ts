@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepoPolicy } from "../policy.js";
