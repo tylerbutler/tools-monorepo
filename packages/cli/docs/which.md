@@ -37,4 +37,4 @@ EXAMPLES
     $ tbu which "foo bar baz"
 ```
 
-_See code: [@oclif/plugin-which](https://github.com/oclif/plugin-which/blob/v3.2.14/src/commands/which.ts)_
+_See code: [@oclif/plugin-which](https://github.com/oclif/plugin-which/blob/v3.2.25/src/commands/which.ts)_

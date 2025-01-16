@@ -33,7 +33,7 @@
 		"sort-package-json": "sort-package-json"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.0.19",
+		"@oclif/core": "^4.2.3",
 		"cosmiconfig": "^9.0.0",
 		"debug": "^4.3.4",
 		"detect-indent": "^7.0.1",
@@ -47,7 +47,7 @@
 		"@biomejs/biome": "1.8.3",
 		"@microsoft/api-documenter": "^7.24.8",
 		"@microsoft/api-extractor": "^7.43.4",
-		"@oclif/test": "^4.0.9",
+		"@oclif/test": "^4.1.7",
 		"@types/chai": "^4.3.16",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
@@ -57,7 +57,7 @@
 		"chai": "^5.1.1",
 		"concurrently": "^9.0.0",
 		"mocha": "^11.0.0",
-		"oclif": "^4.14.26",
+		"oclif": "^4.17.13",
 		"rimraf": "^6.0.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
