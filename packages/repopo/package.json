@@ -79,7 +79,7 @@
 		"@oclif/plugin-command-snapshot": "^5.2.26",
 		"@oclif/test": "^4.1.7",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.12.7",
+		"@types/node": "^22.0.0",
 		"@types/tmp": "^0.2.6",
 		"lefthook": "^1.10.7",
 		"oclif": "^4.17.13",
