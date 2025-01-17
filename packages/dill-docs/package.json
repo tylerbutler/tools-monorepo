@@ -32,7 +32,7 @@
 		"typedoc": "^0.26.5",
 		"typedoc-plugin-frontmatter": "^1.0.0",
 		"typedoc-plugin-markdown": "^4.2.5",
-		"typedoc-plugin-mdn-links": "^3.2.8",
+		"typedoc-plugin-mdn-links": "^4.0.0",
 		"typescript": "~5.5.4",
 		"zod": "^3.24.1"
 	},
