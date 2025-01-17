@@ -90,7 +90,7 @@
 		"@tinyhttp/content-disposition": "^2.2.0",
 		"@tylerbu/cli-api": "workspace:^",
 		"fflate": "^0.8.2",
-		"file-type": "^19.0.0",
+		"file-type": "^20.0.0",
 		"mime": "^4.0.3",
 		"untar.js": "npm:@andrewbranch/untar.js@^1.0.3",
 		"whatwg-mimetype": "^4.0.0"
