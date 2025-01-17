@@ -38,9 +38,8 @@ export class WriteOnceMap<K, V> extends Map<K, V> {
 			if (!force) {
 				throw new KeyAlreadySet(String(key));
 			}
-			// Setting the key anyway because of force.
-			console.debug(`Force setting key: ${key}`);
 		}
+		// Setting the key anyway because of force.
 		return super.set(key, value);
 	}
 }

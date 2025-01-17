@@ -63,9 +63,9 @@ function writePackageJson(
 	const spaces =
 		typeof indent === "string"
 			? indent
-			: indent?.indent ?? defaultJsonWriteOptions.indent;
+			: (indent?.indent ?? defaultJsonWriteOptions.indent);
 	const jsonValue =
-		sort ?? defaultJsonWriteOptions.sort ? sortPackageJson(pkgJson) : pkgJson;
+		(sort ?? defaultJsonWriteOptions.sort) ? sortPackageJson(pkgJson) : pkgJson;
 	return writeJsonSync(packagePath, jsonValue, { spaces });
 }
 

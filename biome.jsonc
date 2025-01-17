@@ -36,6 +36,8 @@
 			"all": true,
 			"correctness": {
 				"noUnusedVariables": "error",
+				// Lots of false positives, which is a shame
+				"noUndeclaredDependencies": "off",
 			},
 			"performance": {
 				"noBarrelFile": "off",
@@ -44,6 +46,10 @@
 				"noDefaultExport": "off",
 				"noParameterProperties": "off",
 				"useNamingConvention": "off",
+			},
+			"suspicious": {
+				"noConsole": "error",
+				"noDebugger": "error",
 			},
 		},
 	},
@@ -78,6 +84,18 @@
 					"style": {
 						// oclif commands are required to use default exports.
 						"noDefaultExport": "off",
+					},
+				},
+			},
+		},
+		{
+			// Test files
+			"include": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						// Console logging is ok in tests.
+						"noConsole": "off",
 					},
 				},
 			},

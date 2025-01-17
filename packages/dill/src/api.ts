@@ -264,7 +264,6 @@ export async function extractTarball(
 ): Promise<TarLocalFile[]> {
 	const fileType = await fileTypeFromBuffer(fileContent);
 	if (fileType?.ext !== "tar") {
-		console.warn("Didn't identify the file as a tarball.");
 		if (fileType === undefined) {
 			throw new Error("Couldn't identify a file type.");
 		}
