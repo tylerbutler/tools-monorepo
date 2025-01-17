@@ -12,20 +12,20 @@ import { download, extractTarball, fetchFile } from "../src/api.js";
 import { testDataPath, testUrls } from "./common.js";
 
 describe("download serverless tests", () => {
-	it("throws when downloadDir doesn't exist", () => {
+	it("throws when downloadDir doesn't exist", async () => {
 		// const filename = "test-dill-dl-1.json";
 		// The path won't be written to
 		// const downloadPath = path.join(testDataPath, "test-dill-dl-1.json");
 
-		expect(async () => {
+		await expect(async () => {
 			await download(testUrls[0], {
 				downloadDir: "mock-path",
 			});
 		}).rejects.toThrow();
 	});
 
-	it("throws when downloadDir is an existing file, extract === true", () => {
-		expect(async () => {
+	it("throws when downloadDir is an existing file, extract === true", async () => {
+		await expect(async () => {
 			await download(testUrls[0], {
 				extract: true,
 				downloadDir: path.join(testDataPath, "test0.json"),
@@ -33,8 +33,8 @@ describe("download serverless tests", () => {
 		}).rejects.toThrow("Path is not a directory");
 	});
 
-	it("fetch fails when downloadDir is an existing file, extract === false", () => {
-		expect(async () => {
+	it("fetch fails when downloadDir is an existing file, extract === false", async () => {
+		await expect(async () => {
 			await download(testUrls[0], {
 				extract: false,
 				downloadDir: path.join(testDataPath, "test0.json"),
@@ -44,9 +44,9 @@ describe("download serverless tests", () => {
 });
 
 describe("download file: URLs", () => {
-	it("throws when can't find file type from buffer", () => {
+	it("throws when can't find file type from buffer", async () => {
 		const testUrl = `file://${path.join(testDataPath, "test0.json")}`;
-		expect(async () => {
+		await expect(async () => {
 			await download(testUrl, { noFile: true });
 		}).rejects.toThrow("Can't find file type for URL");
 	});
@@ -158,7 +158,7 @@ describe("with local server", () => {
 		it("zip file with extract throws", async () => {
 			const downloadDir = path.join(testDataPath, "_temp");
 			await mkdir(downloadDir, { recursive: true });
-			expect(async () => {
+			await expect(async () => {
 				await download(testUrls[4], {
 					downloadDir,
 					extract: true,
@@ -195,14 +195,14 @@ describe("with local server", () => {
 
 	it("throws when file is not a tarball", async () => {
 		const { contents } = await fetchFile(testUrls[0]);
-		expect(async () => {
+		await expect(async () => {
 			await extractTarball(contents, testDataPath);
 		}).rejects.toThrow("Couldn't identify a file type");
 	});
 
 	it("throws on zip file", async () => {
 		const { contents } = await fetchFile(testUrls[4]);
-		expect(async () => {
+		await expect(async () => {
 			await extractTarball(contents, testDataPath);
 		}).rejects.toThrow("Unsupported filetype: zip.");
 	});
@@ -210,7 +210,7 @@ describe("with local server", () => {
 	it("throws when destination is an existing file", async () => {
 		const testFilePath = path.join(testDataPath, "test0.json");
 		const { contents } = await fetchFile(testUrls[3]);
-		expect(async () => {
+		await expect(async () => {
 			await extractTarball(contents, testFilePath);
 		}).rejects.toThrow("Destination path is a file that already exists");
 	});
@@ -256,10 +256,10 @@ describe("with mock service worker", async () => {
 		);
 	});
 
-	it("throws when mime type can't be found", () => {
+	it("throws when mime type can't be found", async () => {
 		const filename = "test-dill-dl-1.json";
 		const downloadDir = path.join(testDataPath, "test-dill-dl-1.json");
-		expect(async () => {
+		await expect(async () => {
 			await download(testUrls[0], {
 				downloadDir,
 				filename,
