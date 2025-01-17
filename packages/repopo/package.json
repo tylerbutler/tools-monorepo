@@ -70,7 +70,7 @@
 		"cosmiconfig": "^9.0.0",
 		"jsonfile": "^6.1.0",
 		"picocolors": "^1.1.0",
-		"sort-package-json": "2.10.0",
+		"sort-package-json": "2.14.0",
 		"sort-tsconfig": "workspace:^"
 	},
 	"devDependencies": {
@@ -81,16 +81,16 @@
 		"@types/jsonfile": "^6.1.4",
 		"@types/node": "^20.12.7",
 		"@types/tmp": "^0.2.6",
-		"lefthook": "^1.6.11",
+		"lefthook": "^1.10.7",
 		"oclif": "^4.17.13",
-		"rimraf": "^6.0.0",
-		"serve": "^14.2.3",
-		"start-server-and-test": "^2.0.3",
+		"rimraf": "^6.0.1",
+		"serve": "^14.2.4",
+		"start-server-and-test": "^2.0.10",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^4.18.2",
+		"type-fest": "^4.32.0",
 		"typescript": "~5.5.4",
-		"vitest": "^2.0.0"
+		"vitest": "^2.1.8"
 	},
 	"packageManager": "pnpm@9.11.0",
 	"engines": {
