@@ -44,7 +44,7 @@
 		"strip-ansi": "^7.1.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.8.3",
+		"@biomejs/biome": "1.9.4",
 		"@microsoft/api-documenter": "^7.24.8",
 		"@microsoft/api-extractor": "^7.43.4",
 		"@oclif/test": "^4.1.7",

@@ -144,6 +144,8 @@ export async function getShaForBranch(
 	return result;
 }
 
+const newlinePattern = /\r?\n/;
+
 /**
  * Calls `git rev-list` to get all commits between the base and head commits.
  *
@@ -159,7 +161,7 @@ export async function revList(
 	headCommit = "HEAD",
 ): Promise<string[]> {
 	const result = await git.raw("rev-list", `${baseCommit}..${headCommit}`);
-	return result.split(/\r?\n/).filter((value) => value !== "");
+	return result.split(newlinePattern).filter((value) => value !== "");
 }
 
 export async function canMergeWithoutConflicts(

@@ -62,7 +62,7 @@ export class TsConfigSorter {
 		// assuming those items will always be at the bottom
 		return key === undefined
 			? this._orderMap.size + 1
-			: this._orderMap.get(key) ?? this._orderMap.size + 1;
+			: (this._orderMap.get(key) ?? this._orderMap.size + 1);
 	}
 
 	/**
