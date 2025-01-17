@@ -8,8 +8,8 @@ describe("getComicProps", () => {
 		expect(comic).toMatchSnapshot();
 	});
 
-	it("throws error when comic is not found", () => {
-		expect(async () => {
+	it("throws error when comic is not found", async () => {
+		await expect(async () => {
 			const comic = await getComicProps(0);
 			expect(comic).toMatchSnapshot();
 		}).rejects.toThrowErrorMatchingSnapshot("Status code 404");
