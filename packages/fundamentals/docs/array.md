@@ -1,4 +1,4 @@
-[**@tylerbu/fundamentals**](README.md) • **Docs**
+[**@tylerbu/fundamentals**](README.md)
 
 ***
 
@@ -12,6 +12,8 @@
 
 > **isSorted**\<`T`\>(`arr`, `compareFn`): `boolean`
 
+Defined in: [packages/fundamentals/src/array.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L36)
+
 **`Beta`**
 
 Checks if an array is sorted according to a provided comparison function.
@@ -22,11 +24,15 @@ Checks if an array is sorted according to a provided comparison function.
 
 #### Parameters
 
-• **arr**: `T`[]
+##### arr
+
+`T`[]
 
 The array to check if it is sorted.
 
-• **compareFn**
+##### compareFn
+
+(`a`, `b`) => `number`
 
 A comparison function similar to the comparison function used by Array.prototype.sort.
 
@@ -57,31 +63,29 @@ const isWordsSorted = isSorted(words, (a, b) => a.localeCompare(b));
 console.log(isWordsSorted); // true
 ```
 
-#### Defined in
-
-[packages/fundamentals/src/array.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L36)
-
 ***
 
 ### numberSort()
 
 > **numberSort**(`a`, `b`): `number`
 
+Defined in: [packages/fundamentals/src/array.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L60)
+
 **`Internal`**
 
 #### Parameters
 
-• **a**: `number`
+##### a
 
-• **b**: `number`
+`number`
+
+##### b
+
+`number`
 
 #### Returns
 
 `number`
-
-#### Defined in
-
-[packages/fundamentals/src/array.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L60)
 
 ***
 
@@ -89,18 +93,20 @@ console.log(isWordsSorted); // true
 
 > **wordSort**(`a`, `b`): `number`
 
+Defined in: [packages/fundamentals/src/array.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L65)
+
 **`Internal`**
 
 #### Parameters
 
-• **a**: `string`
+##### a
 
-• **b**: `string`
+`string`
+
+##### b
+
+`string`
 
 #### Returns
 
 `number`
-
-#### Defined in
-
-[packages/fundamentals/src/array.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L65)
