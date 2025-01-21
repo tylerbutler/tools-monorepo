@@ -158,4 +158,4 @@ export const DefaultPolicies = [
 	PackageJsonProperties,
 	PackageJsonSortedPolicy,
 	SortTsconfigs,
-] as const;
+] as const satisfies RepoPolicy[];

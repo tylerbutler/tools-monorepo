@@ -1,5 +1,5 @@
 import type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";
-import type { PolicyName, RepoPolicy } from "./policy.js";
+import { DefaultPolicies, type PolicyName, type RepoPolicy } from "./policy.js";
 
 /**
  * @alpha
@@ -41,7 +41,7 @@ export interface RepopoConfig {
  *
  * @alpha
  */
-export const DefaultPolicyConfig: PolicyConfig = {
+export const DefaultPolicyConfig: RepopoConfig = {
 	policies: DefaultPolicies,
 	excludeFiles: [],
 	excludePoliciesForFiles: {},
