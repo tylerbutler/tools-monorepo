@@ -14,10 +14,12 @@ export type PolicyName = string;
 /**
  * @alpha
  */
-export interface PolicyFunctionArguments<C = unknown | undefined> {
+
+export interface PolicyFunctionArguments<C> {
 	file: string;
 	root: string;
 	resolve: boolean;
+	// Note that the handler function (defined below) receives the config as an argument
 	config?: C;
 }
 
@@ -26,7 +28,8 @@ export interface PolicyFunctionArguments<C = unknown | undefined> {
  *
  * @alpha
  */
-export type PolicyHandler<C = unknown | undefined> = (
+
+export type PolicyHandler<C> = (
 	args: PolicyFunctionArguments<C>,
 ) => Promise<true | PolicyFailure | PolicyFixResult>;
 
@@ -97,26 +100,6 @@ export interface RepoPolicy<C = any | undefined> {
 	resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
-export class RepoPolicyClass implements RepoPolicy {
-	public static createRepoPolicy(
-		name: string,
-		match: RegExp,
-		handler: PolicyHandler,
-		resolver?: PolicyStandaloneResolver,
-	): RepoPolicyClass {
-		return new RepoPolicyClass(name, match, handler, resolver);
-	}
-
-	public constructor(
-		public readonly name: string,
-		public readonly match: RegExp,
-		public handler: PolicyHandler,
-		public resolver?: PolicyStandaloneResolver,
-	) {
-		// empty
-	}
-}
-
 /**
  * A policy failure.
  *
@@ -169,10 +152,10 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  *
  * @alpha
  */
-export const DefaultPolicies: RepoPolicy[] = [
+export const DefaultPolicies = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
 	PackageJsonSortedPolicy,
 	SortTsconfigs,
-];
+] as const;

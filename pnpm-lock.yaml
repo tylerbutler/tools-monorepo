@@ -540,15 +540,24 @@ importers:
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
+      '@tylerbu/fundamentals':
+        specifier: workspace:^
+        version: link:../fundamentals
       cosmiconfig:
         specifier: ^9.0.0
         version: 9.0.0(typescript@5.5.4)
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
       picocolors:
         specifier: ^1.1.0
         version: 1.1.1
+      simple-git:
+        specifier: ^3.24.0
+        version: 3.27.0
       sort-package-json:
         specifier: 2.14.0
         version: 2.14.0

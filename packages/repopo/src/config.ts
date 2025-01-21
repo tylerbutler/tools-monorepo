@@ -1,5 +1,5 @@
 import type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";
-import { DefaultPolicies, type PolicyName, type RepoPolicy } from "./policy.js";
+import type { PolicyName, RepoPolicy } from "./policy.js";
 
 /**
  * @alpha
