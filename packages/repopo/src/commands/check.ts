@@ -168,8 +168,10 @@ export class CheckPolicy<
 								file: relPath,
 								root: gitRoot,
 								resolve: this.flags.fix,
-								config:
-									this.commandConfig?.perPolicyConfig?.[policy.name] ?? {},
+								config: this.commandConfig?.perPolicyConfig?.[
+									policy.name
+									// biome-ignore lint/suspicious/noExplicitAny: FIXME
+								] as any,
 							}),
 					);
 
@@ -264,7 +266,9 @@ export class CheckPolicy<
 		try {
 			await this.routeToHandlers(filePath, commandContext);
 		} catch (error: unknown) {
-			throw new Error(`Error routing ${filePath} to handler: ${error}`);
+			throw new Error(
+				`Error routing ${filePath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
+			);
 		}
 
 		this.processed++;

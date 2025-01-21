@@ -20,7 +20,7 @@ export interface PolicyFunctionArguments<C> {
 	root: string;
 	resolve: boolean;
 	// Note that the handler function (defined below) receives the config as an argument
-	config?: C;
+	config?: C | undefined;
 }
 
 /**
@@ -64,7 +64,7 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
-export interface RepoPolicy<C = any | undefined> {
+export interface RepoPolicy<C extends any | undefined = undefined> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -88,6 +88,7 @@ export interface RepoPolicy<C = any | undefined> {
 	 * @param resolve - If true, automated policy fixes will be applied. Not all policies support automated fixes.
 	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
+
 	handler: PolicyHandler<C>;
 
 	/**
