@@ -1,17 +1,16 @@
-import fs from "node:fs";
 import { EOL as newline } from "node:os";
 import path from "node:path";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import chalk from "picocolors";
 
-import {
-	BaseRepopoCommand,
-	type PolicyCommandContext,
-} from "../baseCommand.js";
-import { DefaultPolicyConfig } from "../config.js";
+import { BaseRepopoCommand } from "../baseCommand.js";
+import type { RepopoCommandContext } from "../context.js";
 import { logStats, runWithPerf } from "../perf.js";
-import { isPolicyFixResult } from "../policy.js";
+import {
+	// DefaultPolicies,
+	isPolicyFixResult,
+} from "../policy.js";
 
 /**
  * This tool enforces policies across the code base via a series of handler functions. The handler functions are
@@ -48,20 +47,43 @@ export class CheckPolicy<
 	private processed = 0;
 	private count = 0;
 
-	public override defaultConfig = DefaultPolicyConfig;
+	// public override get defaultConfig() {
+	// 	return DefaultPolicyConfig;
+	// }
 
-	public override async init(): Promise<void> {
-		await super.init();
+	// protected override async loadConfig(): Promise<PolicyConfig> {
+	// 	const gitRoot = await findGitRoot();
+	// 	// this.configPath ??= this.config.configDir; // path.join(this.config.configDir, "config.ts");
+	// 	const explorer = cosmiconfig(this.config.bin, {
+	// 		searchStrategy: "global",
+	// 	});
+	// 	this.verbose(`Looking for '${this.config.bin}' config at '${gitRoot}'`);
+	// 	const config: CosmiconfigResult = await explorer.search(gitRoot);
+	// 	if (config?.config !== undefined) {
+	// 		this.verbose(`Found config at ${config.filepath}`);
+	// 	}
+	// 	if (config?.config === undefined) {
+	// 		this.warning("No config found; using defaults.");
+	// 	}
+	// 	const finalConfig: PolicyConfig = config?.config ?? this.defaultConfig;
+	// 	if (finalConfig.includeDefaultPolicies === true) {
+	// 		finalConfig.policies ??= [];
+	// 		finalConfig.policies.push(...DefaultPolicies);
+	// 	}
 
+	// 	return finalConfig;
+	// }
+
+	// public override async init(): Promise<void> {
+	// 	await super.init();
+	// }
+
+	public override async run(): Promise<void> {
 		if (this.flags.fix) {
 			this.info("Resolving errors if possible.");
 		}
-	}
 
-	public override async run(): Promise<void> {
-		// list the handlers then exit
-		const config = await this.loadConfig();
-		const policies = config?.policies ?? [];
+		const policies = this.commandConfig?.policies ?? [];
 		this.verbose(`${policies.length} policies loaded.`);
 		for (const h of policies) {
 			this.verbose(h.name);
@@ -87,19 +109,12 @@ export class CheckPolicy<
 			filePathsToCheck.push(...gitFiles.split("\n"));
 		}
 
-		try {
-			const context = this.getContext();
-			await this.executePolicy(filePathsToCheck, context);
-		} catch (error) {
-			this.error(`Command context was undefined - fatal error: ${error}`, {
-				exit: 100,
-			});
-		}
+		await this.executePolicy(filePathsToCheck, await this.getContext());
 	}
 
 	private async executePolicy(
 		pathsToCheck: string[],
-		commandContext: PolicyCommandContext,
+		commandContext: RepopoCommandContext,
 	): Promise<void> {
 		try {
 			for (const pathToCheck of pathsToCheck) {
@@ -107,7 +122,9 @@ export class CheckPolicy<
 				await this.checkOrExcludeFile(pathToCheck, commandContext);
 			}
 		} finally {
-			logStats(commandContext.perfStats, this);
+			if (!this.flags.quiet) {
+				logStats(commandContext.perfStats, this);
+			}
 		}
 	}
 
@@ -118,7 +135,7 @@ export class CheckPolicy<
 	 */
 	private async routeToHandlers(
 		file: string,
-		commandContext: PolicyCommandContext,
+		commandContext: RepopoCommandContext,
 	): Promise<void> {
 		const { policies, excludePoliciesForFiles, gitRoot, perfStats } =
 			commandContext;
@@ -126,7 +143,6 @@ export class CheckPolicy<
 		// Use the repo-relative path so that regexes that specify string start (^) will match repo paths.
 		// Replace \ in result with / in case OS is Windows.
 		const relPath = path.relative(gitRoot, file).replace(/\\/g, "/");
-		const config = await this.loadConfig();
 
 		await Promise.all(
 			policies
@@ -152,7 +168,8 @@ export class CheckPolicy<
 								file: relPath,
 								root: gitRoot,
 								resolve: this.flags.fix,
-								config: config?.policySettings?.[policy.name],
+								config:
+									this.commandConfig?.perPolicyConfig?.[policy.name] ?? {},
 							}),
 					);
 
@@ -228,15 +245,15 @@ export class CheckPolicy<
 	 */
 	private async checkOrExcludeFile(
 		inputPath: string,
-		commandContext: PolicyCommandContext,
+		commandContext: RepopoCommandContext,
 	): Promise<void> {
-		const { excludeFiles: exclusions, gitRoot, pathRegex } = commandContext;
+		const { excludeFiles: exclusions, gitRoot } = commandContext;
 
 		const filePath = path.join(gitRoot, inputPath).trim().replace(/\\/g, "/");
 
-		if (!(pathRegex.test(inputPath) && fs.existsSync(filePath))) {
-			return;
-		}
+		// if (!(pathRegex.test(inputPath) && fs.existsSync(filePath))) {
+		// 	return;
+		// }
 
 		this.count++;
 		if (!exclusions.every((value) => !value.test(inputPath))) {
