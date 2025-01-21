@@ -13,11 +13,12 @@ export type PerPolicySettings =
 /**
  * @alpha
  */
-export interface PolicyConfig {
-	/**
-	 * An array of policies that are enabled. If this is `undefined`, then all {@link DefaultPolicies} will be enabled.
-	 */
-	policies?: RepoPolicy[];
+/**
+ * @alpha
+ */
+export interface RepopoConfig {
+	// This interface contains an array of RepoPolicies, and each instance may have a different config type C
+	policies: RepoPolicy[];
 
 	/**
 	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
@@ -31,7 +32,8 @@ export interface PolicyConfig {
 	 */
 	excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
 
-	policySettings?: PerPolicySettings | undefined;
+	// This type of this argument to be a union of all types Record<Name of RepoPolicy, C of RepoPolicy>
+	perPolicyConfig?: PerPolicySettings | undefined;
 }
 
 /**
