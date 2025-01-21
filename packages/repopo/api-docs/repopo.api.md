@@ -63,8 +63,7 @@ export interface RepopoConfig {
     excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
     // (undocumented)
     perPolicyConfig?: PerPolicySettings | undefined;
-    // (undocumented)
-    policies: RepoPolicy[];
+    policies?: RepoPolicy[];
 }
 
 // @alpha

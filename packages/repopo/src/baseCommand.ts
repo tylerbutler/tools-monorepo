@@ -8,6 +8,7 @@ import { type SimpleGit, simpleGit } from "simple-git";
 import type { RepopoConfig } from "./config.js";
 import type { ExcludedPolicyFileMap, RepopoCommandContext } from "./context.js";
 import { newPerfStats } from "./perf.js";
+import { DefaultPolicies } from "./policy.js";
 
 /**
  * This command lists all the policies configured to run.
@@ -57,7 +58,7 @@ export abstract class BaseRepopoCommand<
 		this._context = {
 			// pathRegex: this.commandConfig.,
 			excludeFiles,
-			policies: this.commandConfig.policies,
+			policies: this.commandConfig.policies ?? DefaultPolicies,
 			excludePoliciesForFiles,
 			gitRoot,
 			perfStats: newPerfStats(),

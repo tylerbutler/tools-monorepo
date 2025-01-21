@@ -1,4 +1,5 @@
 import { BaseRepopoCommand } from "../baseCommand.js";
+import { DefaultPolicies } from "../policy.js";
 
 /**
  * This command lists all the policies configured to run.
@@ -13,7 +14,7 @@ export class ListCommand<
 
 	// biome-ignore lint/suspicious/useAwait: overridden method
 	public override async run(): Promise<void> {
-		const policies = this.commandConfig?.policies;
+		const policies = this.commandConfig?.policies ?? DefaultPolicies;
 		// list the handlers then exit
 		for (const h of policies) {
 			this.log(`${h.name}\nresolver: ${h.resolver !== undefined}\n`);
