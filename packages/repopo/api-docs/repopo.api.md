@@ -8,23 +8,7 @@ import { PackageJsonPropertiesSettings as PackageJsonPropertiesSettings_2 } from
 import { run } from '@oclif/core';
 
 // @alpha
-export const DefaultPolicies: [{
-    readonly name: "NoJsFileExtensions";
-    readonly match: RegExp;
-    readonly handler: ({ file }: PolicyFunctionArguments<any>) => Promise<PolicyFailure>;
-}, {
-    readonly name: "PackageJsonRepoDirectoryProperty";
-    readonly match: RegExp;
-    readonly handler: ({ file, root, resolve }: PolicyFunctionArguments<any>) => Promise<true | PolicyFailure>;
-}, {
-    readonly name: "PackageJsonProperties";
-    readonly match: RegExp;
-    readonly handler: ({ root, file: relPath, config, resolve }: PolicyFunctionArguments<PackageJsonPropertiesSettings_2>) => Promise<true | PolicyFailure>;
-}, RepoPolicy<any>, {
-    readonly name: "SortTsconfigs";
-    readonly match: RegExp;
-    readonly handler: ({ file, config, resolve }: PolicyFunctionArguments<any>) => Promise<true | PolicyFailure>;
-}];
+export const DefaultPolicies: [RepoPolicy<any>, RepoPolicy<any>, RepoPolicy<PackageJsonPropertiesSettings_2>, RepoPolicy<any>, RepoPolicy<any>];
 
 // @alpha
 export interface PackageJsonPropertiesSettings {

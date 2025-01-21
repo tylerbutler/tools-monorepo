@@ -8,8 +8,7 @@ const { readFile: readJson } = jsonfile;
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**
- * A repo policy that checks if package.json files in the repo are sorted using sort-package-json. Includes an
- * auto-fixer that will sort the files if needed.
+ * A repo policy that checks if package.json files in the repo are sorted using sort-package-json.
  */
 export const PackageJsonSortedPolicy: RepoPolicy = {
 	name: "PackageJsonSortedPolicy",
@@ -51,4 +50,4 @@ export const PackageJsonSortedPolicy: RepoPolicy = {
 			return result;
 		}
 	},
-} as const satisfies RepoPolicy;
+};

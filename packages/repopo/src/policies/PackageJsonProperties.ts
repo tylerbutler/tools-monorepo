@@ -1,4 +1,3 @@
-import path from "node:path";
 import type { PackageJson } from "type-fest";
 
 import jsonfile from "jsonfile";
@@ -26,55 +25,54 @@ export interface PackageJsonPropertiesSettings {
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  */
-export const PackageJsonProperties = {
-	name: "PackageJsonProperties",
-	match: /(^|\/)package\.json/i,
-	handler: async ({ root, file: relPath, config, resolve }) => {
-		if (config === undefined) {
-			return true;
-		}
-
-		const file = path.join(root, relPath);
-
-		const failResult: PolicyFailure = {
-			name: PackageJsonProperties.name,
-			file,
-			autoFixable: true,
-		};
-
-		const { verbatim } = config;
-		const json = (await readJson(file)) as PackageJson;
-		const messages: string[] = [];
-
-		for (const [propName, value] of Object.entries(verbatim)) {
-			if (json[propName] !== value) {
-				messages.push(
-					`Incorrect package.json field value for '${propName}'. Expected '${value}', got '${json[propName]}'.`,
-				);
+export const PackageJsonProperties: RepoPolicy<PackageJsonPropertiesSettings> =
+	{
+		name: "PackageJsonProperties",
+		match: /(^|\/)package\.json/i,
+		handler: async ({ file, config, resolve }) => {
+			if (config === undefined) {
+				return true;
 			}
-		}
 
-		if (messages.length > 0) {
-			if (resolve) {
-				const fixResult: PolicyFixResult = {
-					...failResult,
-					resolved: false,
-				};
+			const failResult: PolicyFailure = {
+				name: PackageJsonProperties.name,
+				file,
+				autoFixable: true,
+			};
 
-				for (const [propName, value] of Object.entries(verbatim)) {
-					json[propName] = value;
+			const { verbatim } = config;
+			const json = (await readJson(file)) as PackageJson;
+			const messages: string[] = [];
+
+			for (const [propName, value] of Object.entries(verbatim)) {
+				if (json[propName] !== value) {
+					messages.push(
+						`Incorrect package.json field value for '${propName}'. Expected '${value}', got '${json[propName]}'.`,
+					);
 				}
-				await writeJson(file, json, { spaces: "\t" });
-
-				fixResult.resolved = true;
-				return fixResult;
 			}
 
-			// There were errors, and we're not resolving them, so return a fail result
-			failResult.errorMessage = messages.join("\n");
-			return failResult;
-		}
+			if (messages.length > 0) {
+				if (resolve) {
+					const fixResult: PolicyFixResult = {
+						...failResult,
+						resolved: false,
+					};
 
-		return true;
-	},
-} as const satisfies RepoPolicy<PackageJsonPropertiesSettings>;
+					for (const [propName, value] of Object.entries(verbatim)) {
+						json[propName] = value;
+					}
+					await writeJson(file, json, { spaces: "\t" });
+
+					fixResult.resolved = true;
+					return fixResult;
+				}
+
+				// There were errors, and we're not resolving them, so return a fail result
+				failResult.errorMessage = messages.join("\n");
+				return failResult;
+			}
+
+			return true;
+		},
+	};

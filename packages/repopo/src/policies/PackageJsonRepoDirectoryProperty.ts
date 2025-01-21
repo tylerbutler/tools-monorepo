@@ -9,10 +9,10 @@ const { readFile: readJson } = jsonfile;
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**
- * A RepoPolicy that checks that the `repository.directory` property in package.json is set correctly. If the repository
+ * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository
  * field is a string instead of an object the package will be ignored.
  */
-export const PackageJsonRepoDirectoryProperty = {
+export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
 	name: "PackageJsonRepoDirectoryProperty",
 	match: /(^|\/)package\.json/i,
 	handler: async ({ file, root, resolve }) => {
@@ -55,4 +55,4 @@ export const PackageJsonRepoDirectoryProperty = {
 
 		return true;
 	},
-} as const satisfies RepoPolicy;
+};
