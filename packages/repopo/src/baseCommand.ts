@@ -65,15 +65,6 @@ export abstract class BaseRepopoCommand<
 		};
 	}
 
-	public override async loadConfig(): Promise<RepopoConfig> {
-		const config = await super.loadConfig();
-		if (config === undefined) {
-			this.error("Failed to load config.", { exit: 1 });
-		}
-
-		return config;
-	}
-
 	private _context: RepopoCommandContext | undefined;
 
 	// biome-ignore lint/suspicious/useAwait: interface defines this as async
