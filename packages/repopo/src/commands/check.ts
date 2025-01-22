@@ -60,7 +60,7 @@ export class CheckPolicy<
 
 	public override async run(): Promise<void> {
 		// list the handlers then exit
-		const config = await this.loadConfig();
+		const config = this.commandConfig;
 		const policies = config?.policies ?? [];
 		this.verbose(`${policies.length} policies loaded.`);
 		for (const h of policies) {
@@ -126,7 +126,7 @@ export class CheckPolicy<
 		// Use the repo-relative path so that regexes that specify string start (^) will match repo paths.
 		// Replace \ in result with / in case OS is Windows.
 		const relPath = path.relative(gitRoot, file).replace(/\\/g, "/");
-		const config = await this.loadConfig();
+		const config = this.commandConfig;
 
 		await Promise.all(
 			policies
