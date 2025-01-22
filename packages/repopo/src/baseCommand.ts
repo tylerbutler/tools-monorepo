@@ -85,7 +85,7 @@ export abstract class BaseRepopoCommand<
 	public override async init(): Promise<void> {
 		await super.init();
 		const { flags } = this;
-		const config = await this.loadConfig();
+		const config = this.commandConfig;
 		let policies = config?.policies ?? DefaultPolicies;
 		policies =
 			policies.filter((h) => {
