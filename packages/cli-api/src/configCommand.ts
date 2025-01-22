@@ -22,7 +22,7 @@ export abstract class CommandWithConfig<
 	C,
 > extends BaseCommand<T> {
 	private _commandConfig: C | undefined;
-	protected configPath: string | undefined;
+	private _configPath: string | undefined;
 
 	static override readonly flags = {
 		config: ConfigFileFlagHidden,
@@ -36,43 +36,43 @@ export abstract class CommandWithConfig<
 
 	public override async init(): Promise<void> {
 		await super.init();
-		const { config } = this.flags;
-		const loaded = await this.loadConfig(config);
+		const { config: configFlag } = this.flags;
+		const loaded = await this.loadConfig(configFlag);
 		if (loaded === undefined) {
-			this.error(`Failure to load config: ${config}`, { exit: 1 });
+			this.error(`Failure to load config: ${configFlag}`, { exit: 1 });
 		}
+		const { config, path } = loaded;
+		this._commandConfig = config;
+		this._configPath = path;
 	}
 
-	protected async loadConfig(
-		filePath?: string,
+	private async loadConfig(
+		searchPath = process.cwd(),
 		reload?: boolean,
-	): Promise<C | undefined> {
+	): Promise<{ config: C; path: string } | undefined> {
 		if (this._commandConfig === undefined || reload === true) {
-			const configPath = filePath ?? process.cwd();
 			const moduleName = this.config.bin;
 			const repoRoot = await findGitRoot();
 			const explorer = cosmiconfig(moduleName, {
 				searchStrategy: "global",
 				stopDir: repoRoot,
 			});
-			const pathStats = await stat(configPath);
+			const pathStats = await stat(searchPath);
 			this.verbose(
-				`Looking for '${this.config.bin}' config at '${configPath}'`,
+				`Looking for '${this.config.bin}' config at '${searchPath}'`,
 			);
-			let config: CosmiconfigResult;
-			if (pathStats.isDirectory()) {
-				config = await explorer.search(configPath);
-			} else {
-				config = await explorer.load(configPath);
-			}
+			const config: CosmiconfigResult = pathStats.isDirectory()
+				? await explorer.search(searchPath)
+				: await explorer.load(searchPath);
+
 			if (config?.config !== undefined) {
 				this.verbose(`Found config at ${config.filepath}`);
 			} else {
-				this.verbose(`No config found; started searching at ${configPath}`);
+				this.verbose(`No config found; started searching at ${searchPath}`);
+				return undefined;
 			}
-			this._commandConfig = config?.config as C;
+			return { config: config.config as C, path: config.filepath };
 		}
-		return this._commandConfig;
 	}
 
 	protected get commandConfig(): C {
@@ -83,24 +83,11 @@ export abstract class CommandWithConfig<
 		);
 		return this._commandConfig;
 	}
-}
 
-/**
- * Base class for commands that do not require any configuration.
- *
- * @beta
- *
- * @privateRemarks
- * This class may be an unneeded wrapper around BaseCommand. There's no clear beenfit to using this vs. BaseCommand directly.
- *
- * @deprecated Use the BaseCommand directly.
- */
-export abstract class CommandWithoutConfig<
-	T extends typeof Command & {
-		args: typeof CommandWithoutConfig.args;
-		flags: typeof CommandWithoutConfig.flags;
-	},
-> extends BaseCommand<T> {}
+	protected get configPath(): string | undefined {
+		return this._configPath;
+	}
+}
 
 /**
  * An interface implemented by commands that use a context object.

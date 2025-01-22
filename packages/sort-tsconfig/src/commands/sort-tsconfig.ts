@@ -91,7 +91,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		}
 
 		let orderToUse: OrderList;
-		const config = await this.loadConfig();
+		const config = this.commandConfig;
 		if (config === undefined) {
 			this.warning("No config file found; using default sort order.");
 			orderToUse = defaultSortOrder;

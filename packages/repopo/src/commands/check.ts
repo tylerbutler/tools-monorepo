@@ -47,43 +47,13 @@ export class CheckPolicy<
 	private processed = 0;
 	private count = 0;
 
-	// public override get defaultConfig() {
-	// 	return DefaultPolicyConfig;
-	// }
-
-	// protected override async loadConfig(): Promise<PolicyConfig> {
-	// 	const gitRoot = await findGitRoot();
-	// 	// this.configPath ??= this.config.configDir; // path.join(this.config.configDir, "config.ts");
-	// 	const explorer = cosmiconfig(this.config.bin, {
-	// 		searchStrategy: "global",
-	// 	});
-	// 	this.verbose(`Looking for '${this.config.bin}' config at '${gitRoot}'`);
-	// 	const config: CosmiconfigResult = await explorer.search(gitRoot);
-	// 	if (config?.config !== undefined) {
-	// 		this.verbose(`Found config at ${config.filepath}`);
-	// 	}
-	// 	if (config?.config === undefined) {
-	// 		this.warning("No config found; using defaults.");
-	// 	}
-	// 	const finalConfig: PolicyConfig = config?.config ?? this.defaultConfig;
-	// 	if (finalConfig.includeDefaultPolicies === true) {
-	// 		finalConfig.policies ??= [];
-	// 		finalConfig.policies.push(...DefaultPolicies);
-	// 	}
-
-	// 	return finalConfig;
-	// }
-
-	// public override async init(): Promise<void> {
-	// 	await super.init();
-	// }
-
 	public override async run(): Promise<void> {
 		if (this.flags.fix) {
 			this.info("Resolving errors if possible.");
 		}
 
-		const policies = this.commandConfig?.policies ?? [];
+		const config = this.commandConfig;
+		const policies = config?.policies ?? [];
 		this.verbose(`${policies.length} policies loaded.`);
 		for (const h of policies) {
 			this.verbose(h.name);
