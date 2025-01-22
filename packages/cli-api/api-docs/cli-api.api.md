@@ -69,7 +69,7 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     // (undocumented)
     protected get commandConfig(): C;
     // (undocumented)
-    protected configPath: string | undefined;
+    protected get configPath(): string | undefined;
     protected defaultConfig: C | undefined;
     // (undocumented)
     static readonly flags: {
@@ -77,21 +77,12 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     };
     // (undocumented)
     init(): Promise<void>;
-    // (undocumented)
-    protected loadConfig(filePath?: string, reload?: boolean): Promise<C | undefined>;
 }
 
 // @beta
 export interface CommandWithContext<CONTEXT> {
     // (undocumented)
     getContext(): Promise<CONTEXT>;
-}
-
-// @beta @deprecated
-export abstract class CommandWithoutConfig<T extends typeof Command & {
-    args: typeof CommandWithoutConfig.args;
-    flags: typeof CommandWithoutConfig.flags;
-}> extends BaseCommand<T> {
 }
 
 // @beta (undocumented)

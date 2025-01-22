@@ -1,7 +1,6 @@
 export { type Args, type Flags, BaseCommand } from "./baseCommand.js";
 export {
 	CommandWithConfig,
-	CommandWithoutConfig,
 	type CommandWithContext,
 } from "./configCommand.js";
 export {
