@@ -69,7 +69,10 @@ export abstract class CommandWithConfig<
 				this.verbose(`Found config at ${config.filepath}`);
 			} else {
 				this.verbose(`No config found; started searching at ${searchPath}`);
-				return undefined;
+				if (this.defaultConfig === undefined) {
+					return undefined;
+				}
+				return { config: this.defaultConfig, path: "" };
 			}
 			return { config: config.config as C, path: config.filepath };
 		}
