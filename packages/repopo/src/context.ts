@@ -8,11 +8,6 @@ export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
  */
 export interface RepopoCommandContext {
 	/**
-	 * A regular expression used to filter selected files.
-	 */
-	// pathRegex: RegExp;
-
-	/**
 	 * A list of regular expressions used to exclude files from all handlers.
 	 */
 	excludeFiles: RegExp[];

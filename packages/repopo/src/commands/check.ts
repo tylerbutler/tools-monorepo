@@ -8,6 +8,7 @@ import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
 import { logStats, runWithPerf } from "../perf.js";
 import {
+	type RepoPolicy,
 	// DefaultPolicies,
 	isPolicyFixResult,
 } from "../policy.js";
@@ -107,108 +108,121 @@ export class CheckPolicy<
 		file: string,
 		commandContext: RepopoCommandContext,
 	): Promise<void> {
-		const { policies, excludePoliciesForFiles, gitRoot, perfStats } =
-			commandContext;
+		const { policies, gitRoot } = commandContext;
 
 		// Use the repo-relative path so that regexes that specify string start (^) will match repo paths.
 		// Replace \ in result with / in case OS is Windows.
 		const relPath = path.relative(gitRoot, file).replace(/\\/g, "/");
 
-		await Promise.all(
-			policies
-				.filter((handler) => handler.match.test(relPath))
-				// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
-				.map(async (policy): Promise<void> => {
-					// doing exclusion per handler
-					const exclusions = excludePoliciesForFiles.get(policy.name);
-					if (
-						exclusions !== undefined &&
-						!exclusions.every((regex) => !regex.test(relPath))
-					) {
-						this.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
-						return;
-					}
+		const filteredPolicies = policies.filter((handler) =>
+			handler.match.test(relPath),
+		);
 
-					const result = await runWithPerf(
-						policy.name,
-						"handle",
-						perfStats,
-						async () =>
-							policy.handler({
-								file: relPath,
-								root: gitRoot,
-								resolve: this.flags.fix,
-								config: this.commandConfig?.perPolicyConfig?.[
-									policy.name
-									// biome-ignore lint/suspicious/noExplicitAny: FIXME
-								] as any,
-							}),
-					);
+		const resultsP: Promise<void>[] = [];
 
-					if (result === true) {
-						return;
-					}
+		for (const policy of filteredPolicies) {
+			resultsP.push(this.runHandler(relPath, policy));
+		}
 
-					const messages = new StringBuilder();
-					if (isPolicyFixResult(result)) {
-						if (result.resolved) {
-							messages.append(
-								`Resolved ${policy.name} policy failure for file: ${result.file}`,
-							);
-						} else {
-							messages.append(
-								`Error when trying to fix ${policy.name} policy failure in ${result.file}`,
-							);
-							process.exitCode = 1;
-						}
-					} else {
-						// result must be a PolicyFailureResult; check if there is a standalone resolver.
-						const { resolver } = policy;
+		await Promise.all(resultsP);
+	}
 
-						if (this.flags.fix && resolver !== undefined) {
-							// Resolve the failure
-							messages.append(`${newline}attempting to resolve: ${relPath}`);
-							const resolveResult = await runWithPerf(
-								policy.name,
-								"resolve",
-								perfStats,
-								async () => resolver({ file: relPath, root: gitRoot }),
-							);
+	private async runHandler(
+		relPath: string,
+		// policies: RepoPolicy[],
+		policy: RepoPolicy,
+	): Promise<void> {
+		const context = await this.getContext();
+		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
-							if (
-								resolveResult.errorMessage !== undefined &&
-								resolveResult.errorMessage !== ""
-							) {
-								messages.append(newline + resolveResult.errorMessage);
-							}
+		// doing exclusion per handler
+		const exclusions = excludePoliciesForFiles.get(policy.name);
+		if (
+			exclusions !== undefined &&
+			!exclusions.every((regex) => !regex.test(relPath))
+		) {
+			this.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
+			return;
+		}
 
-							if (!resolveResult.resolved) {
-								process.exitCode = 1;
-							}
-						} else {
-							// No resolver, or fix is false, so we're in the full failure case.
-							const autoFixable = result.autoFixable
-								? chalk.green(" (autofixable)")
-								: "";
-							messages.append(
-								`'${policy.name}' policy failure${autoFixable}: ${result.file}`,
-							);
-							messages.append(
-								result.errorMessage === undefined
-									? ""
-									: `${newline}${result.errorMessage}`,
-							);
-							process.exitCode = 1;
-						}
-					}
-
-					if ((process.exitCode ?? 0) === 0) {
-						this.info(messages.toString());
-					} else {
-						this.warning(messages.toString());
-					}
+		const result = await runWithPerf(
+			policy.name,
+			"handle",
+			perfStats,
+			async () =>
+				policy.handler({
+					file: path.join(gitRoot, relPath),
+					root: gitRoot,
+					resolve: this.flags.fix,
+					config: this.commandConfig?.perPolicyConfig?.[
+						policy.name
+						// biome-ignore lint/suspicious/noExplicitAny: FIXME
+					] as any,
 				}),
 		);
+
+		if (result === true) {
+			return;
+		}
+
+		const messages = new StringBuilder();
+		if (isPolicyFixResult(result)) {
+			if (result.resolved) {
+				messages.append(
+					`Resolved ${policy.name} policy failure for file: ${result.file}`,
+				);
+			} else {
+				messages.append(
+					`Error when trying to fix ${policy.name} policy failure in ${result.file}`,
+				);
+				process.exitCode = 1;
+			}
+		} else {
+			// result must be a PolicyFailureResult; check if there is a standalone resolver.
+			const { resolver } = policy;
+
+			if (this.flags.fix && resolver !== undefined) {
+				// Resolve the failure
+				messages.append(`${newline}attempting to resolve: ${relPath}`);
+				const resolveResult = await runWithPerf(
+					policy.name,
+					"resolve",
+					perfStats,
+					async () => resolver({ file: relPath, root: gitRoot }),
+				);
+
+				if (
+					resolveResult.errorMessage !== undefined &&
+					resolveResult.errorMessage !== ""
+				) {
+					messages.append(newline + resolveResult.errorMessage);
+				}
+
+				if (!resolveResult.resolved) {
+					process.exitCode = 1;
+				}
+			} else {
+				// No resolver, or fix is false, so we're in the full failure case.
+				const autoFixable = result.autoFixable
+					? chalk.green(" (autofixable)")
+					: "";
+				messages.append(
+					`'${policy.name}' policy failure${autoFixable}: ${result.file}`,
+				);
+				messages.append(
+					result.errorMessage === undefined
+						? ""
+						: `${newline}${result.errorMessage}`,
+				);
+				process.exitCode = 1;
+			}
+		}
+
+		if ((process.exitCode ?? 0) === 0) {
+			this.info(messages.toString());
+		} else {
+			this.warning(messages.toString());
+		}
 	}
 
 	/**
@@ -222,10 +236,6 @@ export class CheckPolicy<
 		const { excludeFiles: exclusions, gitRoot } = commandContext;
 
 		const filePath = path.join(gitRoot, inputPath).trim().replace(/\\/g, "/");
-
-		// if (!(pathRegex.test(inputPath) && fs.existsSync(filePath))) {
-		// 	return;
-		// }
 
 		this.count++;
 		if (!exclusions.every((value) => !value.test(inputPath))) {

@@ -40,11 +40,8 @@ export interface PolicyFixResult extends PolicyFailure {
 export interface PolicyFunctionArguments<C> {
     // (undocumented)
     config?: C | undefined;
-    // (undocumented)
     file: string;
-    // (undocumented)
     resolve: boolean;
-    // (undocumented)
     root: string;
 }
 

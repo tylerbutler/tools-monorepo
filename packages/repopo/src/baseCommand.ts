@@ -5,7 +5,7 @@ import {
 } from "@tylerbu/cli-api";
 import { findGitRootSync } from "@tylerbu/fundamentals/git";
 import { type SimpleGit, simpleGit } from "simple-git";
-import type { RepopoConfig } from "./config.js";
+import { DefaultPolicyConfig, type RepopoConfig } from "./config.js";
 import type { ExcludedPolicyFileMap, RepopoCommandContext } from "./context.js";
 import { newPerfStats } from "./perf.js";
 import { DefaultPolicies } from "./policy.js";
@@ -22,6 +22,8 @@ export abstract class BaseRepopoCommand<
 	extends CommandWithConfig<T, RepopoConfig>
 	implements CommandWithContext<RepopoCommandContext>, RequiresGit
 {
+	protected override defaultConfig = DefaultPolicyConfig;
+
 	static override readonly flags = {
 		...CommandWithConfig.flags,
 	} as const;

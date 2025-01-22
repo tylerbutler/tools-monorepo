@@ -16,9 +16,21 @@ export type PolicyName = string;
  */
 
 export interface PolicyFunctionArguments<C> {
+	/**
+	 * Absolute path to the file.
+	 */
 	file: string;
+
+	/**
+	 * Path to the root of the repo.
+	 */
 	root: string;
+
+	/**
+	 * If true, the issue should be resolved automatically if possible.
+	 */
 	resolve: boolean;
+
 	// Note that the handler function (defined below) receives the config as an argument
 	config?: C | undefined;
 }

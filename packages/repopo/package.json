@@ -74,9 +74,9 @@
 		"@tylerbu/fundamentals": "workspace:^",
 		"cosmiconfig": "^9.0.0",
 		"fs-extra": "^11.2.0",
-		"simple-git": "^3.24.0",
 		"jsonfile": "^6.1.0",
 		"picocolors": "^1.1.0",
+		"simple-git": "^3.24.0",
 		"sort-package-json": "2.14.0",
 		"sort-tsconfig": "workspace:^"
 	},
