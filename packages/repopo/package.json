@@ -69,6 +69,7 @@
 		"@tylerbu/cli-api": "workspace:^",
 		"cosmiconfig": "^9.0.0",
 		"jsonfile": "^6.1.0",
+		"pathe": "^2.0.2",
 		"picocolors": "^1.1.0",
 		"sort-package-json": "2.14.0",
 		"sort-tsconfig": "workspace:^"

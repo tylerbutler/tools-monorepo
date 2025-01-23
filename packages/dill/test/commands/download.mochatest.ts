@@ -1,6 +1,5 @@
 import { rm } from "node:fs/promises";
 import http from "node:http";
-import path from "node:path";
 import { runCommand } from "@oclif/test";
 import { expect } from "chai";
 import {
@@ -11,6 +10,7 @@ import {
 	describe,
 	it,
 } from "mocha";
+import path from "pathe";
 import handler from "serve-handler";
 import { temporaryDirectory } from "tempy";
 

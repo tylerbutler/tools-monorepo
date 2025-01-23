@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import path from "node:path";
 import { updatePackageJsonFile } from "@fluidframework/build-tools";
+import path from "pathe";
 import type { PackageJson } from "type-fest";
 
 import jsonfile from "jsonfile";

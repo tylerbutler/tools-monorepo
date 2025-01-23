@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import { EOL as newline } from "node:os";
-import path from "node:path";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
+import path from "pathe";
 import chalk from "picocolors";
 
 import {
