@@ -1,8 +1,8 @@
 import type { PathLike } from "node:fs";
 import { readFile } from "node:fs/promises";
-import path from "node:path";
 import type { Indent } from "detect-indent";
 import detectIndent from "detect-indent";
+import path from "pathe";
 import { sortPackageJson } from "sort-package-json";
 import type { PackageJson } from "type-fest";
 
@@ -63,9 +63,9 @@ function writePackageJson(
 	const spaces =
 		typeof indent === "string"
 			? indent
-			: indent?.indent ?? defaultJsonWriteOptions.indent;
+			: (indent?.indent ?? defaultJsonWriteOptions.indent);
 	const jsonValue =
-		sort ?? defaultJsonWriteOptions.sort ? sortPackageJson(pkgJson) : pkgJson;
+		(sort ?? defaultJsonWriteOptions.sort) ? sortPackageJson(pkgJson) : pkgJson;
 	return writeJsonSync(packagePath, jsonValue, { spaces });
 }
 

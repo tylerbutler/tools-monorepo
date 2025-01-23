@@ -7,7 +7,7 @@ import {
 	revList,
 	shortCommit,
 } from "@tylerbu/cli-api";
-import chalk from "chalk";
+import chalk from "picocolors";
 
 interface CleanupBranch {
 	branch: string;

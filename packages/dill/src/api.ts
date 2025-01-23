@@ -1,9 +1,9 @@
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
 import { Decompress } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
 import mime from "mime";
+import path from "pathe";
 // import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
 import type { TarLocalFile } from "untar.js";
@@ -264,7 +264,6 @@ export async function extractTarball(
 ): Promise<TarLocalFile[]> {
 	const fileType = await fileTypeFromBuffer(fileContent);
 	if (fileType?.ext !== "tar") {
-		console.warn("Didn't identify the file as a tarball.");
 		if (fileType === undefined) {
 			throw new Error("Couldn't identify a file type.");
 		}

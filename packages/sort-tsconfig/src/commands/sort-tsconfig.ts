@@ -1,8 +1,8 @@
 import { existsSync, statSync } from "node:fs";
-import path from "node:path";
 import { Args, type Command, Flags } from "@oclif/core";
 import { CommandWithConfig, ConfigFileFlag } from "@tylerbu/cli-api";
 import { globby } from "globby";
+import { join } from "pathe";
 import { TsConfigSorter } from "../api.js";
 import type { SortTsconfigConfiguration } from "../config.js";
 import { type OrderList, defaultSortOrder } from "../orders.js";
@@ -29,7 +29,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 				if (existsSync(input)) {
 					const stats = statSync(input);
 					if (stats.isDirectory()) {
-						patterns.push(path.join(input, "tsconfig.json"));
+						patterns.push(join(input, "tsconfig.json"));
 					} else {
 						patterns.push(input);
 					}
@@ -91,7 +91,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		}
 
 		let orderToUse: OrderList;
-		const config = await this.loadConfig();
+		const config = this.commandConfig;
 		if (config === undefined) {
 			this.warning("No config file found; using default sort order.");
 			orderToUse = defaultSortOrder;

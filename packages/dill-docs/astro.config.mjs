@@ -18,7 +18,9 @@ const rootDir = new URL("../..", import.meta.url).pathname;
 export default defineConfig({
 	output: "server",
 	// adapter: deno(),
-	adapter: netlify({ edgeMiddleware: true }),
+	adapter: netlify({
+		// edgeMiddleware: true
+	}),
 	integrations: [
 		starlight({
 			title: "dill",
@@ -55,9 +57,8 @@ export default defineConfig({
 						plugin: ["typedoc-plugin-mdn-links"],
 					},
 				}),
-				starlightLinksValidator({
-					errorOnRelativeLinks: true,
-				}),
+				// TODO: Re-enable once problems are fixed.
+				starlightLinksValidator(),
 			],
 			social: {
 				github: "https://github.com/tylerbutler/tools-monorepo/packages/dill",

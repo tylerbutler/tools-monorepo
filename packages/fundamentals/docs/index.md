@@ -1,4 +1,4 @@
-[**@tylerbu/fundamentals**](README.md) • **Docs**
+[**@tylerbu/fundamentals**](README.md)
 
 ***
 
@@ -6,23 +6,11 @@
 
 # index
 
-## References
-
-### addAll
-
-Re-exports [addAll](set.md#addall)
-
-### findGitRootSync
-
-Re-exports [findGitRootSync](git.md#findgitrootsync)
-
-### isSorted
-
-Re-exports [isSorted](array.md#issorted)
-
 ## Classes
 
 ### KeyAlreadySet
+
+Defined in: [packages/fundamentals/src/writeOnceMap.ts:6](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L6)
 
 **`Beta`**
 
@@ -38,11 +26,15 @@ An error thrown when trying to update an element in a [WriteOnceMap](index.md#wr
 
 > **new KeyAlreadySet**(`key`): [`KeyAlreadySet`](index.md#keyalreadyset)
 
+Defined in: [packages/fundamentals/src/writeOnceMap.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L12)
+
 **`Beta`**
 
 ###### Parameters
 
-• **key**: `string`
+###### key
+
+`string`
 
 The Map key that was already set.
 
@@ -54,15 +46,13 @@ The Map key that was already set.
 
 `Error.constructor`
 
-###### Defined in
-
-[packages/fundamentals/src/writeOnceMap.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L12)
-
 #### Properties
 
 ##### cause?
 
 > `optional` **cause**: `unknown`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2022.error.d.ts:24
 
 **`Beta`**
 
@@ -70,13 +60,11 @@ The Map key that was already set.
 
 `Error.cause`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2022.error.d.ts:24
-
 ##### message
 
 > **message**: `string`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1077
 
 **`Beta`**
 
@@ -84,13 +72,11 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2022.err
 
 `Error.message`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1077
-
 ##### name
 
 > **name**: `string`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1076
 
 **`Beta`**
 
@@ -98,13 +84,11 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1
 
 `Error.name`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1076
-
 ##### stack?
 
 > `optional` **stack**: `string`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 **`Beta`**
 
@@ -112,21 +96,25 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1
 
 `Error.stack`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1078
-
 ##### prepareStackTrace()?
 
 > `static` `optional` **prepareStackTrace**: (`err`, `stackTraces`) => `any`
+
+Defined in: node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:98
+
+**`Beta`**
 
 Optional override for formatting stack traces
 
 ###### Parameters
 
-• **err**: `Error`
+###### err
 
-• **stackTraces**: `CallSite`[]
+`Error`
+
+###### stackTraces
+
+`CallSite`[]
 
 ###### Returns
 
@@ -140,13 +128,11 @@ https://v8.dev/docs/stack-trace-api#customizing-stack-traces
 
 `Error.prepareStackTrace`
 
-###### Defined in
-
-node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:98
-
 ##### stackTraceLimit
 
 > `static` **stackTraceLimit**: `number`
+
+Defined in: node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:100
 
 **`Beta`**
 
@@ -154,23 +140,25 @@ node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:
 
 `Error.stackTraceLimit`
 
-###### Defined in
-
-node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:100
-
 #### Methods
 
 ##### captureStackTrace()
 
 > `static` **captureStackTrace**(`targetObject`, `constructorOpt`?): `void`
 
+Defined in: node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:91
+
 **`Beta`**
 
 ###### Parameters
 
-• **targetObject**: `object`
+###### targetObject
 
-• **constructorOpt?**: `Function`
+`object`
+
+###### constructorOpt?
+
+`Function`
 
 ###### Returns
 
@@ -180,13 +168,11 @@ node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:
 
 `Error.captureStackTrace`
 
-###### Defined in
-
-node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:91
-
 ***
 
 ### WriteOnceMap\<K, V\>
+
+Defined in: [packages/fundamentals/src/writeOnceMap.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L27)
 
 **`Beta`**
 
@@ -213,11 +199,15 @@ type of the Map value.
 
 > **new WriteOnceMap**\<`K`, `V`\>(`entries`?): [`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
 
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
+
 **`Beta`**
 
 ###### Parameters
 
-• **entries?**: `null` \| readonly readonly [`K`, `V`][]
+###### entries?
+
+`null` | readonly readonly \[`K`, `V`\][]
 
 ###### Returns
 
@@ -226,20 +216,20 @@ type of the Map value.
 ###### Inherited from
 
 `Map<K, V>.constructor`
-
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
 
 ##### new WriteOnceMap()
 
 > **new WriteOnceMap**\<`K`, `V`\>(`iterable`?): [`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
 
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
+
 **`Beta`**
 
 ###### Parameters
 
-• **iterable?**: `null` \| `Iterable`\<readonly [`K`, `V`]\>
+###### iterable?
+
+`null` | `Iterable`\<readonly \[`K`, `V`\]\>
 
 ###### Returns
 
@@ -248,10 +238,6 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.col
 ###### Inherited from
 
 `Map<K, V>.constructor`
-
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
 
 #### Properties
 
@@ -259,33 +245,35 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.col
 
 > `readonly` **\[toStringTag\]**: `string`
 
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:137
+
 **`Beta`**
 
 ###### Inherited from
 
 `Map.[toStringTag]`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:137
-
 ##### size
 
 > `readonly` **size**: `number`
 
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:45
+
 **`Beta`**
+
+###### Returns
+
+the number of elements in the Map.
 
 ###### Inherited from
 
 `Map.size`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:45
-
 ##### \[species\]
 
 > `readonly` `static` **\[species\]**: `MapConstructor`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:319
 
 **`Beta`**
 
@@ -293,33 +281,29 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.col
 
 `Map.[species]`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:319
-
 #### Methods
 
 ##### \[iterator\]()
 
-> **\[iterator\]**(): `IterableIterator`\<[`K`, `V`]\>
+> **\[iterator\]**(): `IterableIterator`\<\[`K`, `V`\]\>
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:119
 
 **`Beta`**
 
 ###### Returns
 
-`IterableIterator`\<[`K`, `V`]\>
+`IterableIterator`\<\[`K`, `V`\]\>
 
 ###### Inherited from
 
 `Map.[iterator]`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:119
-
 ##### clear()
 
 > **clear**(): `void`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:20
 
 **`Beta`**
 
@@ -331,19 +315,19 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.ite
 
 `Map.clear`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:20
-
 ##### delete()
 
 > **delete**(`key`): `boolean`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:24
 
 **`Beta`**
 
 ###### Parameters
 
-• **key**: `K`
+###### key
+
+`K`
 
 ###### Returns
 
@@ -355,39 +339,39 @@ true if an element in the Map existed and has been removed, or false if the elem
 
 `Map.delete`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:24
-
 ##### entries()
 
-> **entries**(): `IterableIterator`\<[`K`, `V`]\>
+> **entries**(): `IterableIterator`\<\[`K`, `V`\]\>
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:124
 
 **`Beta`**
 
 ###### Returns
 
-`IterableIterator`\<[`K`, `V`]\>
+`IterableIterator`\<\[`K`, `V`\]\>
 
 ###### Inherited from
 
 `Map.entries`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:124
-
 ##### forEach()
 
 > **forEach**(`callbackfn`, `thisArg`?): `void`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:28
 
 **`Beta`**
 
 ###### Parameters
 
-• **callbackfn**
+###### callbackfn
 
-• **thisArg?**: `any`
+(`value`, `key`, `map`) => `void`
+
+###### thisArg?
+
+`any`
 
 ###### Returns
 
@@ -397,19 +381,19 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.ite
 
 `Map.forEach`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:28
-
 ##### get()
 
 > **get**(`key`): `undefined` \| `V`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:33
 
 **`Beta`**
 
 ###### Parameters
 
-• **key**: `K`
+###### key
+
+`K`
 
 ###### Returns
 
@@ -421,19 +405,19 @@ Returns the element associated with the specified key. If no element is associat
 
 `Map.get`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:33
-
 ##### has()
 
 > **has**(`key`): `boolean`
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:37
 
 **`Beta`**
 
 ###### Parameters
 
-• **key**: `K`
+###### key
+
+`K`
 
 ###### Returns
 
@@ -445,13 +429,11 @@ boolean indicating whether an element with the specified key exists or not.
 
 `Map.has`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:37
-
 ##### keys()
 
 > **keys**(): `IterableIterator`\<`K`\>
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:129
 
 **`Beta`**
 
@@ -463,27 +445,31 @@ node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.col
 
 `Map.keys`
 
-###### Defined in
-
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:129
-
 ##### set()
 
 > **set**(`key`, `value`, `force`): [`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
+
+Defined in: [packages/fundamentals/src/writeOnceMap.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L36)
 
 **`Beta`**
 
 ###### Parameters
 
-• **key**: `K`
+###### key
+
+`K`
 
 The key to set.
 
-• **value**: `V`
+###### value
+
+`V`
 
 The value to set.
 
-• **force**: `boolean` = `false`
+###### force
+
+`boolean` = `false`
 
 Set to true to force a Map element to be updated whether it has previously been set or not.
 
@@ -495,13 +481,11 @@ Set to true to force a Map element to be updated whether it has previously been 
 
 `Map.set`
 
-###### Defined in
-
-[packages/fundamentals/src/writeOnceMap.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L36)
-
 ##### values()
 
 > **values**(): `IterableIterator`\<`V`\>
+
+Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:134
 
 **`Beta`**
 
@@ -513,6 +497,16 @@ Set to true to force a Map element to be updated whether it has previously been 
 
 `Map.values`
 
-###### Defined in
+## References
 
-node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:134
+### addAll
+
+Re-exports [addAll](set.md#addall)
+
+### findGitRootSync
+
+Re-exports [findGitRootSync](git.md#findgitrootsync)
+
+### isSorted
+
+Re-exports [isSorted](array.md#issorted)
