@@ -60,11 +60,11 @@ export abstract class CommandWithConfig<
 	}
 
 	protected async loadConfig(
-		filePath?: string,
+		searchPath?: string,
 		reload?: boolean,
 	): Promise<C | undefined> {
 		if (this._commandConfig === undefined || reload === true) {
-			const configPath = filePath ?? process.cwd();
+			const configPath = searchPath ?? process.cwd();
 			const moduleName = this.config.bin;
 			const repoRoot = await findGitRoot();
 			const configLoader = lilconfig(moduleName, {
@@ -134,4 +134,36 @@ export abstract class CommandWithoutConfig<
  */
 export interface CommandWithContext<CONTEXT> {
 	getContext(): Promise<CONTEXT>;
+}
+
+export async function loadConfig<C>(
+	moduleName: string,
+	searchPath?: string,
+	// reload?: boolean,
+	defaultConfig?: C,
+): Promise<C | undefined> {
+	const configPath = searchPath ?? process.cwd();
+	const repoRoot = await findGitRoot();
+	const configLoader = lilconfig(moduleName, {
+		stopDir: repoRoot,
+		searchPlaces: [
+			`${moduleName}.config.ts`,
+			`${moduleName}.config.mjs`,
+			`${moduleName}.config.cjs`,
+			`${moduleName}.config.js`,
+			"package.json",
+		],
+		loaders: {
+			".ts": tsLoader,
+		},
+	});
+	const pathStats = await stat(configPath);
+
+	let maybeConfig: LilconfigResult;
+	if (pathStats.isDirectory()) {
+		maybeConfig = await configLoader.search(configPath);
+	} else {
+		maybeConfig = await configLoader.load(configPath);
+	}
+	return maybeConfig?.config ?? defaultConfig;
 }
