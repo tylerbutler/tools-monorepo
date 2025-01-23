@@ -1,6 +1,6 @@
 import { mkdir, readdir } from "node:fs/promises";
 import http from "node:http";
-import path from "node:path";
+import path from "pathe";
 import handler from "serve-handler";
 import { withDir } from "tmp-promise";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";

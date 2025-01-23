@@ -1,4 +1,4 @@
-import path from "node:path";
+import { dirname } from "pathe";
 import {
 	type MergeResult,
 	ResetMode,
@@ -123,7 +123,7 @@ export async function getChangedDirectoriesSinceRef(
 	remote: string,
 ): Promise<string[]> {
 	const files = await getChangedFilesSinceRef(git, reference, remote);
-	const directories = new Set(files.map((f) => path.dirname(f)));
+	const directories = new Set(files.map((f) => dirname(f)));
 	return [...directories];
 }
 
