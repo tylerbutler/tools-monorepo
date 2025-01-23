@@ -1,5 +1,5 @@
-import path from "node:path";
 import { fileURLToPath } from "node:url";
+import path from "pathe";
 
 // const vol = Volume.fromJSON({ "/file.txt": "file.txt" });
 // const ufs1 = new Union();

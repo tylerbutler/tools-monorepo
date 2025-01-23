@@ -38,6 +38,7 @@
 		"debug": "^4.3.4",
 		"detect-indent": "^7.0.1",
 		"jsonfile": "^6.1.0",
+		"pathe": "^2.0.2",
 		"picocolors": "^1.1.0",
 		"simple-git": "^3.24.0",
 		"sort-package-json": "2.14.0",
