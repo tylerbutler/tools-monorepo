@@ -11,7 +11,7 @@ import { newPerfStats } from "./perf.js";
 import { DefaultPolicies } from "./policy.js";
 
 /**
- * This command lists all the policies configured to run.
+ * This class is the base for all repopo commands. It contains common flags and config loading.
  */
 export abstract class BaseRepopoCommand<
 		T extends typeof BaseRepopoCommand & {
@@ -58,7 +58,6 @@ export abstract class BaseRepopoCommand<
 		const gitRoot = findGitRootSync();
 		this._git = simpleGit({ baseDir: gitRoot });
 		this._context = {
-			// pathRegex: this.commandConfig.,
 			excludeFiles,
 			policies: this.commandConfig.policies ?? DefaultPolicies,
 			excludePoliciesForFiles,

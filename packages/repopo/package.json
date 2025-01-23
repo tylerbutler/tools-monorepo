@@ -73,7 +73,6 @@
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"cosmiconfig": "^9.0.0",
-		"fs-extra": "^11.2.0",
 		"jsonfile": "^6.1.0",
 		"pathe": "^2.0.2",
 		"picocolors": "^1.1.0",
