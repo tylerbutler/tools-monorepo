@@ -1,6 +1,6 @@
-import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { dirname, join } from "pathe";
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-export const testDataPath = path.join(__dirname, "data");
+const __dirname = dirname(__filename);
+export const testDataPath = join(__dirname, "data");

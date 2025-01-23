@@ -1,7 +1,7 @@
-import path from "node:path";
 import { runCommand } from "@oclif/test";
 import { expect } from "chai";
 import { describe, it } from "mocha";
+import path from "pathe";
 
 const testDataPath = "test/data";
 

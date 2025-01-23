@@ -1,6 +1,6 @@
 import { copyFile, readFile } from "node:fs/promises";
-import path from "node:path";
 import { fileURLToPath } from "node:url";
+import path from "pathe";
 import { withDir } from "tmp-promise";
 import { describe, expect, it } from "vitest";
 import { isSorted, sortTsconfigFile } from "../src/api.js";

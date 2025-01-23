@@ -1,8 +1,8 @@
 import type { PathLike } from "node:fs";
 import { readFile } from "node:fs/promises";
-import path from "node:path";
 import type { Indent } from "detect-indent";
 import detectIndent from "detect-indent";
+import path from "pathe";
 import { sortPackageJson } from "sort-package-json";
 import type { PackageJson } from "type-fest";
 
