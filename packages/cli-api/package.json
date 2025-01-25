@@ -30,7 +30,10 @@
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"sort-package-json": "sort-package-json"
+		"sort-package-json": "sort-package-json",
+		"test": "npm run test:vitest",
+		"test:coverage": "vitest run test --coverage",
+		"test:vitest": "vitest run test"
 	},
 	"dependencies": {
 		"chalk": "^5.3.0",

@@ -77,11 +77,6 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     };
     // (undocumented)
     init(): Promise<void>;
-<<<<<<< HEAD
-    // (undocumented)
-    protected loadConfig(searchPath?: string, reload?: boolean): Promise<C | undefined>;
-=======
->>>>>>> main
 }
 
 // @beta
