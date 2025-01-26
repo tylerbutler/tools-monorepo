@@ -201,9 +201,6 @@ importers:
       detect-indent:
         specifier: ^7.0.1
         version: 7.0.1
-      fs-extra:
-        specifier: ^11.2.0
-        version: 11.2.0
       jiti:
         specifier: ^2.4.0
         version: 2.4.2
