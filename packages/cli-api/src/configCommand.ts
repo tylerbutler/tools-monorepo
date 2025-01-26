@@ -1,4 +1,3 @@
-import assert from "node:assert/strict";
 import type { Command } from "@oclif/core";
 import { BaseCommand } from "./baseCommand.js";
 import { ConfigFileFlagHidden } from "./flags.js";
@@ -36,38 +35,33 @@ export abstract class CommandWithConfig<
 		await super.init();
 		const { config: configFlag } = this.flags;
 		const searchPath = configFlag ?? process.cwd();
-		const loaded = await this.loadConfig(searchPath);
-		if (loaded === undefined) {
+		const loaded = await loadConfig<C>(this.config.bin, searchPath, undefined);
+
+		if (loaded === undefined && this.defaultConfig === undefined) {
 			this.error(`Failure to load config: ${searchPath}`, { exit: 1 });
 		}
-		const { config, path } = loaded;
+		const { config, location } = loaded ?? {
+			config: this.defaultConfig,
+			location: "DEFAULT",
+		};
 		this._commandConfig = config;
-		this._configPath = path;
+		this._configPath = location;
 	}
 
-	private async loadConfig(searchPath = process.cwd()): Promise<void> {
-		if (this._commandConfig === undefined || this._configPath === undefined) {
-			const result = await loadConfig<C>(
-				this.config.bin,
-				searchPath,
-				undefined,
-				this.defaultConfig,
-			);
-			this._commandConfig = result?.config;
-			this._configPath = result?.filepath;
+	protected get commandConfig(): C | undefined {
+		if (this._commandConfig === undefined && this.defaultConfig !== undefined) {
+			this._commandConfig = this.defaultConfig;
 		}
-	}
 
-	protected get commandConfig(): C {
-		// TODO: There has to be a better pattern for this.
-		assert(
-			this._commandConfig !== undefined,
-			"commandConfig is undefined; this may happen if loadConfig is not called prior to accessing commandConfig. loadConfig is called from init() - check that code path is called.",
-		);
 		return this._commandConfig;
 	}
 
-	protected get configPath(): string | undefined {
+	/**
+	 * The location of the config. If the config was loaded from a file, this will be the path to the file. If no config
+	 * was loaded, and no default config is defined, this will return `undefined`. If the default config was loaded, this
+	 * will return the string "DEFAULT";
+	 */
+	protected get configLocation(): string | "DEFAULT" | undefined {
 		return this._configPath;
 	}
 }

@@ -15,7 +15,7 @@ describe("loadConfig", () => {
 		);
 		expect(result?.config).not.toBeUndefined();
 		expect(result?.config.stringProperty).toEqual("stringValue");
-		expect(result?.filepath).toEqual(
+		expect(result?.location).toEqual(
 			path.join(configPath, "testModule.config.ts"),
 		);
 	});
@@ -30,7 +30,7 @@ describe("loadConfig", () => {
 		);
 		expect(result?.config).not.toBeUndefined();
 		expect(result?.config.stringProperty).toEqual("stringValue");
-		expect(result?.filepath).toEqual(
+		expect(result?.location).toEqual(
 			path.join(configPath, "testModule-cjs.config.cjs"),
 		);
 	});
@@ -45,7 +45,7 @@ describe("loadConfig", () => {
 		);
 		expect(result?.config).not.toBeUndefined();
 		expect(result?.config.stringProperty).toEqual("stringValue");
-		expect(result?.filepath).toEqual(
+		expect(result?.location).toEqual(
 			path.join(configPath, "testModule-esm.config.mjs"),
 		);
 	});

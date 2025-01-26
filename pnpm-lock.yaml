@@ -192,9 +192,6 @@ importers:
       '@oclif/core':
         specifier: ^4.2.3
         version: 4.2.3
-      chalk:
-        specifier: ^5.3.0
-        version: 5.3.0
       cosmiconfig:
         specifier: ^9.0.0
         version: 9.0.0(typescript@5.5.4)

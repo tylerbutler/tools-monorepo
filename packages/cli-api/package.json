@@ -36,7 +36,6 @@
 		"test:vitest": "vitest run test"
 	},
 	"dependencies": {
-		"chalk": "^5.3.0",
 		"@oclif/core": "^4.2.3",
 		"cosmiconfig": "^9.0.0",
 		"debug": "^4.3.4",
