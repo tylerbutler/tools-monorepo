@@ -27,7 +27,7 @@ export abstract class CommandWithConfig<
 	} as const;
 
 	/**
-	 * A default config value to use if none is found. If this returns undefined, no default value will be used.
+	 * A default config value to use if none is found. If this returns `undefined`, no default value will be used.
 	 */
 	protected defaultConfig: C | undefined;
 
