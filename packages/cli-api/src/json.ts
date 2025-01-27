@@ -79,6 +79,15 @@ export type PackageTransformer<T extends PackageJson = PackageJson> = (
 ) => T;
 
 /**
+ * An async function that transforms a PackaageJson and returns the transformed object.
+ *
+ * @beta
+ */
+export type PackageTransformerAsync<T extends PackageJson = PackageJson> = (
+	json: T,
+) => Promise<T>;
+
+/**
  * Reads the contents of package.json, applies a transform function to it, then writes the results back to the source
  * file.
  *

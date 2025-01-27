@@ -18,6 +18,9 @@
 
 			// oclif manifest
 			"oclif.manifest.json",
+
+			// test json
+			"test/data/json/**/*.json",
 		],
 		"ignoreUnknown": true,
 	},
