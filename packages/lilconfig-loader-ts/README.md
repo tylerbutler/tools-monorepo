@@ -1,23 +1,24 @@
-# lilconfig-loader-ts
+# @tylerbu/lilconfig-loader-ts
 
-A TypeScript loader for lilconfig, enabling you to use TypeScript configuration files.
+A TypeScript loader for [lilconfig](https://www.npmjs.com/package/lilconfig), enabling you to load TypeScript
+configuration files in lilconfig.
 
 ## Installation
 
 ```
-npm install lilconfig-loader-ts
+npm install @tylerbu/lilconfig-loader-ts
 ```
 
 ## Usage
 
 ```ts
-import { lilconfig } from 'lilconfig';
-import { TypeScriptLoader } from 'lilconfig-loader-ts';
+import { lilconfig } from "lilconfig";
+import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 
-const moduleName = 'myModuleName';
+const moduleName = "myModuleName";
 const explorer = lilconfig(moduleName, {
   searchPlaces: [
-    'package.json',
+    "package.json",
     `.${moduleName}rc`,
     `.${moduleName}rc.json`,
     `.${moduleName}rc.ts`,
@@ -26,7 +27,7 @@ const explorer = lilconfig(moduleName, {
     `${moduleName}.config.js`,
   ],
   loaders: {
-    '.ts': TypeScriptLoader,
+    ".ts": TypeScriptLoader,
   },
 });
 ```

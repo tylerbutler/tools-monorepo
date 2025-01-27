@@ -1,5 +1,5 @@
 {
-	"name": "lilconfig-ts-loader",
+	"name": "@tylerbu/lilconfig-ts-loader",
 	"version": "0.0.1",
 	"description": "A loader that enables loading TypeScript files in lilconfig.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli-api#tylerbucli-api",
