@@ -93,6 +93,7 @@
 			"include": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
 			"linter": {
 				"rules": {
+					"performance": { "useTopLevelRegex": "off" },
 					"suspicious": {
 						// Console logging is ok in tests.
 						"noConsole": "off",
