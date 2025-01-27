@@ -6,7 +6,6 @@
 		"declarationMap": true,
 		"inlineSources": true,
 		"sourceMap": true,
-		"types": [],
 		// This is enforced in lint instead.
 		"noUnusedLocals": false,
 		"composite": true,
