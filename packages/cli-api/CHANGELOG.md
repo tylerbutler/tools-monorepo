@@ -1,5 +1,16 @@
 # @tylerbu/cli-api
 
+## 0.7.0
+
+### Minor Changes
+
+- Remove deprecated CommandWithoutConfig class _[`#173`](https://github.com/tylerbutler/tools-monorepo/pull/173) [`33b9c01`](https://github.com/tylerbutler/tools-monorepo/commit/33b9c01ed2d5d0c4bdb32262f549531650c48ad0) [@tylerbutler](https://github.com/tylerbutler)_
+- Improve cross-platform path handling _[`#176`](https://github.com/tylerbutler/tools-monorepo/pull/176) [`2d095c7`](https://github.com/tylerbutler/tools-monorepo/commit/2d095c7828037fc58147d0aa487b736dbd345472) [@tylerbutler](https://github.com/tylerbutler)_
+
+### Patch Changes
+
+- Load default config if provided _[`#175`](https://github.com/tylerbutler/tools-monorepo/pull/175) [`a4b7624`](https://github.com/tylerbutler/tools-monorepo/commit/a4b7624cceea2f7246391c2d54329010cbb145ff) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.6.1
 
 ### Patch Changes
