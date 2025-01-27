@@ -68,17 +68,25 @@
 		"syncpack": "^13.0.0",
 		"ts-node": "^10.9.2"
 	},
-	"packageManager": "pnpm@9.11.0+sha256.1c0e33f70e5df9eede84a357bdfa0b1f9dba6e58194628d48a1055756f553754",
+	"packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
 	"engines": {
 		"node": ">=18.0.0"
 	},
 	"pnpm": {
 		"peerDependencyRules": {
-			"allowAny": ["@aws-sdk/*"],
-			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
+			"allowAny": [
+				"@aws-sdk/*"
+			],
+			"ignoreMissing": [
+				"@aws-sdk/*",
+				"@octokit/core"
+			]
 		},
 		"updateConfig": {
-			"ignoreDependencies": ["chai", "@types/node"]
+			"ignoreDependencies": [
+				"chai",
+				"@types/node"
+			]
 		},
 		"overrides": {
 			"cookie@<0.7.0": ">=0.7.0",
@@ -93,39 +101,68 @@
 	"fluidBuild": {
 		"tasks": {
 			"build": {
-				"dependsOn": ["^build", "generate:packlist"],
+				"dependsOn": [
+					"^build",
+					"generate:packlist"
+				],
 				"script": false
 			},
 			"check": {
-				"dependsOn": ["sort-tsconfig#build", "^check", "check:all"],
+				"dependsOn": [
+					"sort-tsconfig#build",
+					"^check",
+					"check:all"
+				],
 				"script": false
 			},
 			"check:policy": {
-				"dependsOn": ["repopo#build"],
+				"dependsOn": [
+					"repopo#build"
+				],
 				"script": true
 			},
 			"ci": {
-				"dependsOn": ["ci:check", "ci:build", "ci:lint", "ci:test"],
+				"dependsOn": [
+					"ci:check",
+					"ci:build",
+					"ci:lint",
+					"ci:test"
+				],
 				"script": false
 			},
 			"clean": {
-				"dependsOn": ["^clean", "clean:root"],
+				"dependsOn": [
+					"^clean",
+					"clean:root"
+				],
 				"script": false
 			},
 			"compile": {
-				"dependsOn": ["^build"],
+				"dependsOn": [
+					"^build"
+				],
 				"script": false
 			},
 			"full": {
-				"dependsOn": ["check", "build", "lint", "docs", "test"],
+				"dependsOn": [
+					"check",
+					"build",
+					"lint",
+					"docs",
+					"test"
+				],
 				"script": false
 			},
 			"generate:packlist": {
-				"dependsOn": ["^build"],
+				"dependsOn": [
+					"^build"
+				],
 				"script": true
 			},
 			"test": {
-				"dependsOn": ["^test"],
+				"dependsOn": [
+					"^test"
+				],
 				"script": false
 			}
 		}
