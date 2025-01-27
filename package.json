@@ -35,7 +35,7 @@
 		"deps:prod": "ncu --configFileName .ncurc.prod.cjs",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
+		"generate:license-file": "pnpm -r run generate:license-file",
 		"generate:packlist": "flub generate packlist -g client --no-private",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
@@ -119,6 +119,10 @@
 			"full": {
 				"dependsOn": ["check", "build", "lint", "docs", "test"],
 				"script": false
+			},
+			"generate:license-file": {
+				"dependsOn": ["^generate:license-file"],
+				"script": true
 			},
 			"generate:packlist": {
 				"dependsOn": ["^build"],

@@ -47,6 +47,8 @@
 		"compile": "tsc",
 		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
+		"generate": "concurrently npm:generate:*",
+		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
