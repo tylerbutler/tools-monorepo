@@ -7,10 +7,6 @@ esm/baseCommand.d.ts
 esm/baseCommand.d.ts.map
 esm/baseCommand.js
 esm/baseCommand.js.map
-esm/commands/configTest.d.ts
-esm/commands/configTest.d.ts.map
-esm/commands/configTest.js
-esm/commands/configTest.js.map
 esm/configCommand.d.ts
 esm/configCommand.d.ts.map
 esm/configCommand.js

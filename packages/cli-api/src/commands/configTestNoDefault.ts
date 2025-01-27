@@ -1,4 +1,3 @@
-import type { TestConfig } from "../testConfig.js";
 import ConfigTestCommand from "./configTest.js";
 
 /**

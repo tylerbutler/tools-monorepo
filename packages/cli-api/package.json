@@ -17,7 +17,13 @@
 		}
 	},
 	"types": "./esm/index.d.ts",
-	"files": ["/CHANGELOG.md", "/esm", "/THIRD-PARTY-LICENSES.txt"],
+	"files": [
+		"/CHANGELOG.md",
+		"/esm",
+		"!/esm/commands",
+		"!/esm/testConfig.*",
+		"/THIRD-PARTY-LICENSES.txt"
+	],
 	"scripts": {
 		"api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
@@ -34,6 +40,11 @@
 		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",
 		"test:vitest": "vitest run test"
+	},
+	"oclif": {
+		"bin": "tylerbu-cli-api",
+		"commands": "./esm/commands",
+		"dirname": "tylerbu-cli-api"
 	},
 	"dependencies": {
 		"@oclif/core": "^4.2.3",
@@ -77,10 +88,5 @@
 	"packageManager": "pnpm@9.11.0",
 	"engines": {
 		"node": ">=18.0.0"
-	},
-	"oclif": {
-		"bin": "tylerbu-cli-api",
-		"commands": "./esm/commands",
-		"dirname": "tylerbu-cli-api"
 	}
 }
