@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest";
 
 import {
 	type PackageTransformer,
-	type PackageTransformerAsync,
 	readJsonWithIndent,
 	updatePackageJsonFile,
 } from "../src/json.js";
@@ -19,15 +18,14 @@ const testTransformer: PackageTransformer = (_: PackageJson): PackageJson => {
 };
 
 /**
- * A transformer function that does nothing.
+ * An async transformer function that does nothing.
  */
-// biome-ignore lint/suspicious/useAwait: <explanation>
-// const testTransformerAsync: PackageTransformerAsync = async (
-// 	_,
-// ): Promise<PackageJson> => {
-// 	// no transformation
-// 	return _;
-// };
+const testTransformerAsync: PackageTransformer = async (
+	_,
+): Promise<PackageJson> => {
+	// no transformation
+	return await Promise.resolve(_);
+};
 
 describe("json.ts", () => {
 	const jsonData = path.join(testDataPath, "json");
@@ -70,6 +68,20 @@ describe("json.ts", () => {
 			await updatePackageJsonFile(tabs, testTransformer);
 			const { indent } = await readJsonWithIndent(tabs);
 			expect(indent.indent).toEqual("\t");
+		});
+
+		describe("async transformers", () => {
+			it("keeps indentation style in file with spaces", async () => {
+				await updatePackageJsonFile(spaces, testTransformerAsync);
+				const { indent } = await readJsonWithIndent(spaces);
+				expect(indent.indent).toEqual("  ");
+			});
+
+			it("keeps indentation style in file with tabs", async () => {
+				await updatePackageJsonFile(tabs, testTransformerAsync);
+				const { indent } = await readJsonWithIndent(tabs);
+				expect(indent.indent).toEqual("\t");
+			});
 		});
 	});
 });
