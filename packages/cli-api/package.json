@@ -53,7 +53,7 @@
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
 		"@types/mocha": "^10.0.10",
-		"@types/node": "^20.12.7",
+		"@types/node": "^22.0.0",
 		"@types/semver": "^7.5.8",
 		"chai": "^5.1.2",
 		"concurrently": "^9.1.2",
