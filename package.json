@@ -19,7 +19,7 @@
 		"check:policy": "./packages/repopo/bin/dev.js check",
 		"check:renovate-config": "renovate-config-validator",
 		"ci": "npm run ci:check && npm run ci:build && npm run ci:lint && npm run ci:test",
-		"ci:build": "fluid-build . --task build --task generate:packlist",
+		"ci:build": "fluid-build . --task build --task generate",
 		"ci:check": "npm run check",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",

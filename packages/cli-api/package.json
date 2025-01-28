@@ -59,6 +59,7 @@
 		"@types/semver": "^7.5.8",
 		"chai": "^5.1.2",
 		"concurrently": "^9.1.2",
+		"generate-license-file": "^3.7.0",
 		"mocha": "^11.1.0",
 		"oclif": "^4.17.13",
 		"rimraf": "^6.0.1",
