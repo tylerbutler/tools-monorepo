@@ -19,7 +19,7 @@
 		"check:policy": "./packages/repopo/bin/dev.js check",
 		"check:renovate-config": "renovate-config-validator",
 		"ci": "npm run ci:check && npm run ci:build && npm run ci:lint && npm run ci:test",
-		"ci:build": "fluid-build . --task build --task generate:packlist",
+		"ci:build": "fluid-build . --task build --task generate",
 		"ci:check": "npm run check",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
@@ -35,7 +35,7 @@
 		"deps:prod": "ncu --configFileName .ncurc.prod.cjs",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate:license-file": "pnpm -r exec -- generate-license-file -c ../../.generatelicensefile.cjs",
+		"generate:license-file": "fluid-build . --task generate:license-file",
 		"generate:packlist": "flub generate packlist -g client --no-private",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
@@ -118,6 +118,10 @@
 			},
 			"full": {
 				"dependsOn": ["check", "build", "lint", "docs", "test"],
+				"script": false
+			},
+			"generate:license-file": {
+				"dependsOn": ["^generate:license-file"],
 				"script": false
 			},
 			"generate:packlist": {

@@ -65,6 +65,10 @@ const config = {
 			inputGlobs: ["astro.config.mjs", "src/**", "public/**"],
 			outputGlobs: [],
 		},
+		"generate-license-file": {
+			inputGlobs: ["package.json", ".generatelicensefile.cjs"],
+			outputGlobs: ["THIRD-PARTY-LICENSES.txt"],
+		},
 		"oclif manifest": {
 			inputGlobs: ["package.json", "src/**"],
 			outputGlobs: ["oclif.manifest.json"],
