@@ -67,9 +67,8 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     flags: typeof CommandWithConfig.flags;
 }, C> extends BaseCommand<T> {
     // (undocumented)
-    protected get commandConfig(): C;
-    // (undocumented)
-    protected get configPath(): string | undefined;
+    protected get commandConfig(): C | undefined;
+    protected get configLocation(): string | "DEFAULT" | undefined;
     protected defaultConfig: C | undefined;
     // (undocumented)
     static readonly flags: {
@@ -134,11 +133,11 @@ export interface Logger {
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
 // @beta
-export type PackageTransformer<T extends PackageJson = PackageJson> = (json: T) => T;
+export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;
 
 // @beta
-export function readJsonWithIndent(filePath: PathLike): Promise<{
-    json: unknown;
+export function readJsonWithIndent<J = unknown>(filePath: PathLike): Promise<{
+    json: J;
     indent: Indent;
 }>;
 
@@ -167,7 +166,7 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 export function shortCommit(commit: string): string;
 
 // @beta
-export function updatePackageJsonFile<T extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
+export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
 
 // (No @packageDocumentation comment for this package)
 

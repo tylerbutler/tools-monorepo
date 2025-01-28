@@ -31,6 +31,10 @@ esm/json.d.ts
 esm/json.d.ts.map
 esm/json.js
 esm/json.js.map
+esm/loadConfig.d.ts
+esm/loadConfig.d.ts.map
+esm/loadConfig.js
+esm/loadConfig.js.map
 esm/logger.d.ts
 esm/logger.d.ts.map
 esm/logger.js

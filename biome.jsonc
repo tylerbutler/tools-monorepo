@@ -18,6 +18,9 @@
 
 			// oclif manifest
 			"oclif.manifest.json",
+
+			// test json
+			"test/data/json/**/*.json",
 		],
 		"ignoreUnknown": true,
 	},
@@ -93,6 +96,7 @@
 			"include": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
 			"linter": {
 				"rules": {
+					"performance": { "useTopLevelRegex": "off" },
 					"suspicious": {
 						// Console logging is ok in tests.
 						"noConsole": "off",
