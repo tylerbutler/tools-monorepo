@@ -4,10 +4,11 @@
 
 ```ts
 
+import { PackageJsonPropertiesSettings as PackageJsonPropertiesSettings_2 } from './policies/PackageJsonProperties.js';
 import { run } from '@oclif/core';
 
 // @alpha
-export const DefaultPolicies: RepoPolicy[];
+export const DefaultPolicies: [RepoPolicy<undefined>, RepoPolicy<undefined>, RepoPolicy<PackageJsonPropertiesSettings_2 | undefined>, RepoPolicy<undefined>, RepoPolicy<undefined>];
 
 // @alpha
 export interface PackageJsonPropertiesSettings {
@@ -21,15 +22,6 @@ export type PackageJsonProperty = string;
 export type PerPolicySettings = ({
     PackageJsonProperties: PackageJsonPropertiesSettings;
 } & Record<PolicyName, unknown>) | undefined;
-
-// @alpha (undocumented)
-export interface PolicyConfig {
-    excludeFiles?: (string | RegExp)[];
-    excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-    policies?: RepoPolicy[];
-    // (undocumented)
-    policySettings?: PerPolicySettings | undefined;
-}
 
 // @alpha
 export interface PolicyFailure {
@@ -45,19 +37,16 @@ export interface PolicyFixResult extends PolicyFailure {
 }
 
 // @alpha (undocumented)
-export interface PolicyFunctionArguments<C = unknown | undefined> {
+export interface PolicyFunctionArguments<C> {
     // (undocumented)
-    config?: C;
-    // (undocumented)
+    config?: C | undefined;
     file: string;
-    // (undocumented)
     resolve: boolean;
-    // (undocumented)
     root: string;
 }
 
 // @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PolicyHandler<C> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
 
 // @alpha
 export type PolicyName = string;
@@ -65,8 +54,17 @@ export type PolicyName = string;
 // @alpha
 export type PolicyStandaloneResolver<C = unknown | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
 
+// @alpha (undocumented)
+export interface RepopoConfig {
+    excludeFiles?: (string | RegExp)[];
+    excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
+    // (undocumented)
+    perPolicyConfig?: PerPolicySettings | undefined;
+    policies?: RepoPolicy[];
+}
+
 // @alpha
-export interface RepoPolicy<C = any | undefined> {
+export interface RepoPolicy<C extends any | undefined = undefined> {
     description?: string;
     handler: PolicyHandler<C>;
     match: RegExp;
