@@ -10,6 +10,7 @@
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"workspaces": ["packages/*"],
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"check": "fluid-build . --task check",
