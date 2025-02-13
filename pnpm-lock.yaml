@@ -677,9 +677,6 @@ importers:
       detect-indent:
         specifier: ^7.0.1
         version: 7.0.1
-      globby:
-        specifier: ^14.0.1
-        version: 14.0.2
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
@@ -689,6 +686,9 @@ importers:
       tiny-jsonc:
         specifier: ^1.0.1
         version: 1.0.1
+      tinyglobby:
+        specifier: ^0.2.1
+        version: 0.2.10
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
