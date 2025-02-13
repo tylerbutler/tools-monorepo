@@ -592,7 +592,7 @@ importers:
 
   packages/repopo:
     dependencies:
-      '@fluidframework/build-tools':
+      '@fluid-tools/build-infrastructure':
         specifier: ^0.52.0
         version: 0.52.0(@types/node@20.16.10)
       '@oclif/core':
@@ -11325,6 +11325,32 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
+  '@fluid-tools/build-infrastructure@0.52.0(@types/node@20.16.10)':
+    dependencies:
+      '@fluid-tools/version-tools': 0.52.0(@types/node@20.16.10)
+      '@manypkg/get-packages': 2.2.2
+      '@oclif/core': 4.2.3
+      cosmiconfig: 8.3.6(typescript@5.4.5)
+      detect-indent: 6.1.0
+      execa: 5.1.1
+      fs-extra: 11.3.0
+      globby: 11.1.0
+      micromatch: 4.0.8
+      oclif: 4.17.13(@types/node@20.16.10)
+      picocolors: 1.1.1
+      read-pkg-up: 7.0.1
+      semver: 7.7.1
+      simple-git: 3.27.0
+      sort-package-json: 1.57.0
+      type-fest: 2.19.0
+      typescript: 5.4.5
+    transitivePeerDependencies:
+      - '@types/node'
+      - bufferutil
+      - react-devtools-core
+      - supports-color
+      - utf-8-validate
+
   '@fluid-tools/build-infrastructure@0.52.0(@types/node@22.10.7)':
     dependencies:
       '@fluid-tools/version-tools': 0.52.0(@types/node@22.10.7)
@@ -11376,42 +11402,6 @@ snapshots:
       '@oclif/plugin-not-found': 3.2.35(@types/node@22.10.7)
       semver: 7.7.1
       table: 6.9.0
-    transitivePeerDependencies:
-      - '@types/node'
-      - bufferutil
-      - react-devtools-core
-      - supports-color
-      - utf-8-validate
-
-  '@fluidframework/build-tools@0.52.0(@types/node@20.16.10)':
-    dependencies:
-      '@fluid-tools/version-tools': 0.52.0(@types/node@20.16.10)
-      '@manypkg/get-packages': 2.2.2
-      async: 3.2.6
-      cosmiconfig: 8.3.6(typescript@5.4.5)
-      date-fns: 2.30.0
-      debug: 4.4.0(supports-color@8.1.1)
-      detect-indent: 6.1.0
-      find-up: 7.0.0
-      fs-extra: 11.3.0
-      glob: 7.2.3
-      globby: 11.1.0
-      ignore: 5.3.2
-      json5: 2.2.3
-      lodash: 4.17.21
-      lodash.isequal: 4.5.0
-      multimatch: 5.0.0
-      picocolors: 1.1.1
-      picomatch: 2.3.1
-      picospinner: 2.0.0
-      rimraf: 4.4.1
-      semver: 7.7.1
-      sort-package-json: 1.57.0
-      ts-deepmerge: 7.0.1
-      ts-morph: 22.0.0
-      type-fest: 2.19.0
-      typescript: 5.4.5
-      yaml: 2.7.0
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
