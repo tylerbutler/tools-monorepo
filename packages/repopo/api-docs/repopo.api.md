@@ -4,7 +4,7 @@
 
 ```ts
 
-import { run as run_2 } from '@oclif/core';
+import { run } from '@oclif/core';
 
 // @alpha
 export const DefaultPolicies: RepoPolicy[];
@@ -74,7 +74,7 @@ export interface RepoPolicy<C = any | undefined> {
     resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
-export { run_2 as run }
+export { run }
 
 // (No @packageDocumentation comment for this package)
 
