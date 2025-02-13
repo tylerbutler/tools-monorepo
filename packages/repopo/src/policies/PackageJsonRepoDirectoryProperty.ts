@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { updatePackageJsonFile } from "@fluidframework/build-tools";
+import { updatePackageJsonFile } from "@fluid-tools/build-infrastructure";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
 
