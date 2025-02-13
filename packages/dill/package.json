@@ -129,7 +129,7 @@
 		"type-fest": "^4.33.0",
 		"typescript": "~5.5.4",
 		"unionfs": "^4.5.4",
-		"vitest": "^3.0.2"
+		"vitest": "^3.0.5"
 	},
 	"packageManager": "pnpm@9.11.0",
 	"engines": {
