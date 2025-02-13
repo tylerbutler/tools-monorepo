@@ -49,7 +49,6 @@
 	"dependencies": {
 		"@oclif/core": "^4.2.3",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
-		"cosmiconfig": "^9.0.0",
 		"debug": "^4.3.4",
 		"detect-indent": "^7.0.1",
 		"jsonfile": "^6.1.0",
