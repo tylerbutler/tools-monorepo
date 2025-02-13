@@ -30,6 +30,7 @@ const defaultJsonWriteOptions = {
 	indent: "\t",
 	sort: true,
 };
+
 /**
  * Reads a JSON file and its indentation.
  *
@@ -38,8 +39,10 @@ const defaultJsonWriteOptions = {
  *
  * @beta
  */
-export async function readJsonWithIndent(filePath: PathLike): Promise<{
-	json: unknown;
+export async function readJsonWithIndent<J = unknown>(
+	filePath: PathLike,
+): Promise<{
+	json: J;
 	indent: Indent;
 }> {
 	const contents: string = await readFile(filePath, {
@@ -55,9 +58,9 @@ export async function readJsonWithIndent(filePath: PathLike): Promise<{
  *
  * @beta
  */
-function writePackageJson(
+function writePackageJson<J extends PackageJson = PackageJson>(
 	packagePath: string,
-	pkgJson: PackageJson,
+	pkgJson: J,
 	{ indent, sort }: JsonWriteOptions,
 ) {
 	const spaces =
@@ -70,27 +73,28 @@ function writePackageJson(
 }
 
 /**
- * A function that transforms a PackaageJson and returns the transformed object.
+ * A function that transforms a PackageJson and returns the transformed object.
  *
  * @beta
  */
-export type PackageTransformer<T extends PackageJson = PackageJson> = (
-	json: T,
-) => T;
+export type PackageTransformer<J extends PackageJson = PackageJson> = (
+	json: J,
+) => J | Promise<J>;
 
 /**
- * Reads the contents of package.json, applies a transform function to it, then writes the results back to the source
- * file.
+ * Reads the contents of package.json, applies a transform function to it, then writes
+ * the results back to the source file.
  *
- * @param packagePath - A path to a package.json file or a folder containing one. If the path is a directory, the
- * package.json from that directory will be used.
- * @param packageTransformer - A function that will be executed on the package.json contents before writing it
- * back to the file.
+ * @param packagePath - A path to a package.json file or a folder containing one. If the
+ * path is a directory, the package.json from that directory will be used.
+ * @param packageTransformer - A function that will be executed on the package.json
+ * contents before writing it back to the file.
+ * @param options - Options that control the output JSON format.
  *
  * @beta
  */
 export async function updatePackageJsonFile<
-	T extends PackageJson = PackageJson,
+	J extends PackageJson = PackageJson,
 >(
 	packagePath: string,
 	packageTransformer: PackageTransformer,
@@ -99,11 +103,11 @@ export async function updatePackageJsonFile<
 	const resolvedPath = packagePath.endsWith("package.json")
 		? packagePath
 		: path.join(packagePath, "package.json");
-	const { json, indent } = await readJsonWithIndent(resolvedPath);
-	const pkgJson = json as T;
+	const { json, indent } = await readJsonWithIndent<J>(resolvedPath);
+	const pkgJson = json;
 
 	// Transform the package.json
-	const transformed = packageTransformer(pkgJson);
+	const transformed = await Promise.resolve(packageTransformer(pkgJson));
 
 	writePackageJson(resolvedPath, transformed, { sort: options?.sort, indent });
 }
