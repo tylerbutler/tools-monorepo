@@ -24,15 +24,15 @@ Sorts a tsconfig file in place or checks that one is sorted.
 
 ```
 USAGE
-  $ sort-tsconfig  TSCONFIG [-v | --quiet] [-w] [--config <value>]
+  $ sort-tsconfig  TSCONFIG [-v | --quiet] [--write] [--config <value>]
 
 ARGUMENTS
   TSCONFIG  A path to the tsconfig file to sort, or a glob pattern to select multiple tsconfigs. The node_modules folder
             is always excluded from glob matches.
 
 FLAGS
-  -w, --write  Write the sorted contents back to the file. Without this flag, the command only checks that the file is
-               sorted.
+  --write  Write the sorted contents back to the file. Without this flag, the command only checks that the file is
+           sorted.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
