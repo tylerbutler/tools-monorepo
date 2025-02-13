@@ -68,14 +68,14 @@
 		"@rushstack/node-core-library": "^5.7.0",
 		"@tylerbu/cli-api": "workspace:^",
 		"jsonfile": "^6.1.0",
-		"pathe": "^2.0.2",
+		"pathe": "^2.0.3",
 		"picocolors": "^1.1.0",
 		"sort-package-json": "2.14.0",
 		"sort-tsconfig": "workspace:^"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-extractor": "^7.49.1",
+		"@microsoft/api-extractor": "^7.50.0",
 		"@oclif/plugin-command-snapshot": "^5.2.26",
 		"@oclif/test": "^4.1.7",
 		"@types/jsonfile": "^6.1.4",
@@ -87,9 +87,9 @@
 		"start-server-and-test": "^2.0.10",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^4.33.0",
+		"type-fest": "^4.34.1",
 		"typescript": "~5.5.4",
-		"vitest": "^3.0.2"
+		"vitest": "^3.0.5"
 	},
 	"packageManager": "pnpm@9.11.0",
 	"engines": {
