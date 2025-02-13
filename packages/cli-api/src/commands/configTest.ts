@@ -17,10 +17,6 @@ export default class ConfigTestCommand extends CommandWithConfig<
 
 	// biome-ignore lint/suspicious/useAwait: inherited method
 	override async run(): Promise<TestConfig | undefined> {
-		// if (this.commandConfig === undefined) {
-		// 	this.error(`Couldn't find a config file.`);
-		// }
-
 		this.log(`Loaded config from: ${this.configLocation}`);
 		return this.commandConfig;
 	}
