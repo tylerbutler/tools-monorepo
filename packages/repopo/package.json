@@ -67,7 +67,6 @@
 		"@oclif/plugin-help": "^6.2.21",
 		"@rushstack/node-core-library": "^5.7.0",
 		"@tylerbu/cli-api": "workspace:^",
-		"cosmiconfig": "^9.0.0",
 		"jsonfile": "^6.1.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.0",
