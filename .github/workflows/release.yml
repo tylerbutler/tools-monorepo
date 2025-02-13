@@ -35,6 +35,7 @@ jobs:
           node-version-file: .nvmrc
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
+      - run: npm i --global corepack@latest
       - run: corepack enable
 
       - name: Get pnpm store directory
