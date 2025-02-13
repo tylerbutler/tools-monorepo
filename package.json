@@ -49,7 +49,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@changesets/cli": "^2.27.11",
+		"@changesets/cli": "^2.27.12",
 		"@fluid-tools/build-cli": "^0.51.0",
 		"@fluidframework/build-tools": "^0.51.0",
 		"@tsconfig/node18": "^18.2.4",
@@ -60,12 +60,12 @@
 		"generate-license-file": "^3.7.0",
 		"lefthook": "^1.10.10",
 		"npm-check-updates": "^17.1.14",
-		"renovate": "^39.124.0",
+		"renovate": "^39.169.2",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "2.14.0",
 		"sort-tsconfig": "workspace:^",
-		"syncpack": "^13.0.0",
+		"syncpack": "^13.0.2",
 		"ts-node": "^10.9.2"
 	},
 	"packageManager": "pnpm@9.11.0+sha256.1c0e33f70e5df9eede84a357bdfa0b1f9dba6e58194628d48a1055756f553754",
