@@ -19,14 +19,14 @@ Sorts a tsconfig file in place, or check that one is sorted.
 
 ```
 USAGE
-  $ sort-tsconfig  TSCONFIG [-v | --quiet] [--write] [--config <value>]
+  $ sort-tsconfig  TSCONFIG [-v | --quiet] [-w] [--config <value>]
 
 ARGUMENTS
   TSCONFIG  Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.
 
 FLAGS
-  --write  Write the sorted contents back to the file. Without this flag, the command only checks that the file is
-           sorted.
+  -w, --write  Write the sorted contents back to the file. Without this flag, the command only checks that the file is
+               sorted.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.

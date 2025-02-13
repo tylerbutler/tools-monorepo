@@ -46,6 +46,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 
 	static override readonly flags = {
 		write: Flags.boolean({
+			char: "w",
 			description:
 				"Write the sorted contents back to the file. Without this flag, the command only checks that the file is sorted.",
 			default: false,
