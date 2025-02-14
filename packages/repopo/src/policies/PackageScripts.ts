@@ -22,13 +22,12 @@ export const PackageScriptsPolicy: RepoPolicy = {
 		};
 
 		const json: PackageJson = await readJson(file);
-
 		const hasScriptsField = Object.prototype.hasOwnProperty.call(
 			json,
 			"scripts",
 		);
-		const missingScripts: string[] = [];
 
+		const missingScripts: string[] = [];
 		if (hasScriptsField) {
 			missingScripts.push(
 				...expectedScripts.filter(
@@ -36,19 +35,10 @@ export const PackageScriptsPolicy: RepoPolicy = {
 						!Object.prototype.hasOwnProperty.call(json.scripts, script),
 				),
 			);
-			// for (const script of expectedScripts) {
-			// 	const hasScript = Object.prototype.hasOwnProperty.call(
-			// 		json.scripts,
-			// 		script,
-			// 	);
-			// 	if (!hasScript) {
-			// 		missingScripts.push(script);
-			// 	}
-			// }
 		}
 
 		if (missingScripts.length > 0) {
-			failResult.errorMessage = `${file} is missing the following scripts: \n\t${missingScripts.join("\n\t")}`;
+			failResult.errorMessage = `missing the following scripts: \n\t${missingScripts.join("\n\t")}`;
 			return failResult;
 		}
 
