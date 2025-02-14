@@ -1,7 +1,5 @@
-import chalk from "picocolors";
-
 import { BaseRepopoCommand } from "../baseCommand.js";
-import type { RepoPolicy } from "../policy.js";
+import { DefaultPolicies } from "../policy.js";
 
 /**
  * This command lists all the policies configured to run.
@@ -14,15 +12,13 @@ export class ListCommand<
 > extends BaseRepopoCommand<T> {
 	static override readonly summary = "Lists the policies configured to run.";
 
-	// biome-ignore lint/suspicious/useAwait: inherited method
-	public override async run(): Promise<RepoPolicy[]> {
-		const { policies } = this.getContext();
-
+	// biome-ignore lint/suspicious/useAwait: overridden method
+	public override async run(): Promise<void> {
+		const policies = this.commandConfig?.policies ?? DefaultPolicies;
 		// list the handlers then exit
-		this.log(`${policies.length} POLICIES ENABLED`);
 		for (const h of policies) {
-			this.log(`${chalk.bold(h.name)} (auto-fix: ${h.resolver !== undefined})`);
+			this.log(`${h.name}\nresolver: ${h.resolver !== undefined}\n`);
 		}
-		return policies;
+		this.log(`${policies.length} TOTAL POLICY HANDLERS`);
 	}
 }
