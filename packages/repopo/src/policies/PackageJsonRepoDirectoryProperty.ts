@@ -7,6 +7,7 @@ import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
+import { PackageJsonRegexMatch as match } from "./constants.js";
 
 /**
  * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository
@@ -14,7 +15,7 @@ import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
  */
 export const PackageJsonRepoDirectoryProperty: RepoPolicy = {
 	name: "PackageJsonRepoDirectoryProperty",
-	match: /(^|\/)package\.json/i,
+	match,
 	handler: async ({ file, resolve }) => {
 		const failResult: PolicyFailure = {
 			name: PackageJsonRepoDirectoryProperty.name,

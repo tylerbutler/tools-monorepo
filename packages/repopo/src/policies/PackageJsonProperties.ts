@@ -4,6 +4,7 @@ import jsonfile from "jsonfile";
 const { writeFile: writeJson, readFile: readJson } = jsonfile;
 
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
+import { PackageJsonRegexMatch as match } from "./constants.js";
 
 /**
  * @alpha
@@ -28,7 +29,7 @@ export interface PackageJsonPropertiesSettings {
 export const PackageJsonProperties: RepoPolicy<PackageJsonPropertiesSettings> =
 	{
 		name: "PackageJsonProperties",
-		match: /(^|\/)package\.json/i,
+		match,
 		handler: async ({ file, config, resolve }) => {
 			if (config === undefined) {
 				return true;

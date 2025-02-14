@@ -2,7 +2,8 @@ import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
-import { SortTsconfigs } from "./policies/SortTsconfigs.js";
+import { PackageScriptsPolicy } from "./policies/PackageScripts.js";
+import { SortTsconfigsPolicy } from "./policies/SortTsconfigs.js";
 
 /**
  * A type representing a policy name.
@@ -174,5 +175,6 @@ export const DefaultPolicies: RepoPolicy[] = [
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
 	PackageJsonSortedPolicy,
-	SortTsconfigs,
+	PackageScriptsPolicy,
+	SortTsconfigsPolicy,
 ];
