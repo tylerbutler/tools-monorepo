@@ -6,13 +6,14 @@ import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
+import { PackageJsonRegexMatch as match } from "./constants.js";
 
 /**
  * A repo policy that checks if package.json files in the repo are sorted using sort-package-json.
  */
 export const PackageJsonSortedPolicy: RepoPolicy = {
 	name: "PackageJsonSortedPolicy",
-	match: /(^|\/)package\.json/i,
+	match,
 	handler: async ({ file, resolve }) => {
 		const json: PackageJson = await readJson(file);
 		const sortedJson = sortPackageJson(json);
