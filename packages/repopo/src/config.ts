@@ -1,13 +1,11 @@
-import type { RequireAtLeastOne, SetOptional } from "type-fest";
 import type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";
-import type { PolicyName, RepoPolicy } from "./policy.js";
+import { DefaultPolicies, type PolicyName, type RepoPolicy } from "./policy.js";
 
 /**
  * @alpha
  */
 export type PerPolicySettings =
 	| ({
-			// biome-ignore lint/style/useNamingConvention: key needs to match policy name
 			PackageJsonProperties: PackageJsonPropertiesSettings;
 	  } & Record<PolicyName, unknown>)
 	| undefined;
@@ -15,12 +13,15 @@ export type PerPolicySettings =
 /**
  * @alpha
  */
-export interface OptionalPolicyConfig {
+export interface PolicyConfig {
+	/**
+	 * An array of policies that are enabled. If this is `undefined`, then all {@link DefaultPolicies} will be enabled.
+	 */
 	policies?: RepoPolicy[];
 
 	/**
-	 * An array of strings/regular expressions. Paths that match any of these expressions will be completely excluded from
-	 * policy.
+	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
+	 * from policy.
 	 */
 	excludeFiles?: (string | RegExp)[];
 
@@ -29,24 +30,17 @@ export interface OptionalPolicyConfig {
 	 * exclude that rule from being checked.
 	 */
 	excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-	includeDefaultPolicies?: boolean;
 
 	policySettings?: PerPolicySettings | undefined;
 }
 
 /**
- * A type representing policy configuration.
+ * The default config applied when no config is found.
  *
  * @alpha
  */
-export type PolicyConfig = RequireAtLeastOne<
-	OptionalPolicyConfig,
-	"policies" | "includeDefaultPolicies"
->;
-
-export const DefaultPolicyConfig: // PolicyConfig
-SetOptional<Required<PolicyConfig>, "policies" | "policySettings"> = {
+export const DefaultPolicyConfig: PolicyConfig = {
+	policies: DefaultPolicies,
 	excludeFiles: [],
 	excludePoliciesForFiles: {},
-	includeDefaultPolicies: true,
 };

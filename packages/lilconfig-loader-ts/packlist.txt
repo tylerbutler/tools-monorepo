@@ -1,0 +1,14 @@
+CHANGELOG.md
+LICENSE
+README.md
+THIRD-PARTY-LICENSES.txt
+package.json
+esm/index.d.ts
+esm/index.d.ts.map
+esm/index.js
+esm/index.js.map
+esm/loader.d.ts
+esm/loader.d.ts.map
+esm/loader.js
+esm/loader.js.map
+esm/tsdoc-metadata.json

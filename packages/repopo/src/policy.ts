@@ -1,6 +1,7 @@
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
+import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
 import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 /**
@@ -87,11 +88,6 @@ export interface RepoPolicy<C = any | undefined> {
 	handler: PolicyHandler<C>;
 
 	/**
-	 * True if the handler can resolve policy violations automatically.
-	 */
-	// handlerCanResolve: boolean;
-
-	/**
 	 * A resolver function that can be used to automatically address the policy violation.
 	 *
 	 * @param file - Repo-relative path to the file to check.
@@ -115,7 +111,6 @@ export class RepoPolicyClass implements RepoPolicy {
 		public readonly name: string,
 		public readonly match: RegExp,
 		public handler: PolicyHandler,
-		// public handlerCanResolve: boolean,
 		public resolver?: PolicyStandaloneResolver,
 	) {
 		// empty
@@ -128,33 +123,46 @@ export class RepoPolicyClass implements RepoPolicy {
  * @alpha
  */
 export interface PolicyFailure {
+	/**
+	 * Name of the policy that failed.
+	 */
 	name: PolicyName;
+
+	/**
+	 * Path to the file that failed the policy.
+	 */
 	file: string;
-	autoFixable: boolean | undefined;
-	errorMessage?: string;
+
+	/**
+	 * Set to `true` if the policy can be fixed automatically.
+	 */
+	autoFixable?: boolean | undefined;
+
+	/**
+	 * An optional error message accompanying the failure.
+	 */
+	errorMessage?: string | undefined;
 }
 
 /**
+ * The result of an automatic fix for a failing policy.
+ *
  * @alpha
  */
 export interface PolicyFixResult extends PolicyFailure {
+	/**
+	 * Set to true if the failure was resolved by the automated fixer.
+	 */
 	resolved: boolean;
 }
 
-// export const commonMatchPatterns = {
-// 	"package.json": /(^|\/)package\.json/i,
-// } as const;
-
-// export function createPackageJsonPolicy(
-// 	props: Omit<RepoPolicy, "match">,
-// ): RepoPolicy {
-// 	const newPolicy: RepoPolicy = {
-// 		...props,
-// 		match: commonMatchPatterns["package.json"],
-// 	};
-
-// 	return newPolicy;
-// }
+// biome-ignore lint/suspicious/noExplicitAny: type guard
+export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
+	if (typeof toCheck !== "object") {
+		return false;
+	}
+	return "resolved" in toCheck;
+}
 
 /**
  * Default policies included with repopo.
@@ -165,5 +173,6 @@ export const DefaultPolicies: RepoPolicy[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
+	PackageJsonSortedPolicy,
 	SortTsconfigs,
 ];

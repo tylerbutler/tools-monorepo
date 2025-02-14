@@ -2,20 +2,33 @@
 
 /** @type {import("@fluidframework/build-tools").IFluidBuildConfig} */
 const config = {
+	version: 1,
 	repoPackages: {
-		main: {
+		client: {
 			directory: "",
 			ignoredDirs: [],
 			defaultInterdependencyRange: "workspace:^",
 		},
 	},
 	tasks: {
+		api: {
+			dependsOn: ["^compile", "compile"],
+		},
 		build: {
-			dependsOn: ["^build", "compile", "docs", "manifest", "readme"],
+			dependsOn: [
+				"^build",
+				"compile",
+				"build:test",
+				"api",
+				"docs",
+				"generate",
+				"manifest",
+				"readme",
+			],
 			script: false,
 		},
 		docs: {
-			dependsOn: ["compile"],
+			dependsOn: ["^compile", "compile", "api"],
 		},
 		clean: {
 			before: ["*"],
@@ -30,16 +43,39 @@ const config = {
 			dependsOn: ["^compile"],
 		},
 		full: {
-			dependsOn: ["check", "build", "lint", "test"],
+			dependsOn: ["check", "build", "api", "docs", "lint", "test"],
 			script: false,
 		},
 		lint: {
 			dependsOn: ["compile"],
 		},
 		manifest: ["compile"],
-		readme: ["compile"],
+		readme: ["compile", "manifest"],
 		test: {
-			dependsOn: ["build"],
+			dependsOn: ["compile"],
+		},
+	},
+	multiCommandExecutables: ["astro", "oclif"],
+	declarativeTasks: {
+		"astro build": {
+			inputGlobs: ["astro.config.mjs", "src/**", "public/**"],
+			outputGlobs: ["dist/**"],
+		},
+		"astro check": {
+			inputGlobs: ["astro.config.mjs", "src/**", "public/**"],
+			outputGlobs: [],
+		},
+		"generate-license-file": {
+			inputGlobs: ["package.json", ".generatelicensefile.cjs"],
+			outputGlobs: ["THIRD-PARTY-LICENSES.txt"],
+		},
+		"oclif manifest": {
+			inputGlobs: ["package.json", "src/**"],
+			outputGlobs: ["oclif.manifest.json"],
+		},
+		"oclif readme": {
+			inputGlobs: ["package.json", "src/**"],
+			outputGlobs: ["README.md", "docs/**"],
 		},
 	},
 };

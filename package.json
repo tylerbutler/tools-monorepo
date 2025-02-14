@@ -15,79 +15,123 @@
 		"check": "fluid-build . --task check",
 		"check:all": "concurrently npm:check:deps npm:check:format npm:check:policy npm:lint",
 		"check:deps": "syncpack lint",
-		"check:format": "biome check . --linter-enabled=false",
+		"check:format": "biome check --linter-enabled=false",
 		"check:policy": "./packages/repopo/bin/dev.js check",
-		"ci": "fluid-build . --task ci",
+		"check:renovate-config": "renovate-config-validator",
+		"ci": "npm run ci:check && npm run ci:build && npm run ci:lint && npm run ci:test",
+		"ci:build": "fluid-build . --task build --task generate",
+		"ci:check": "npm run check",
+		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
-		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format",
+		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
+		"ci:test": "pnpm -r run --aggregate-output test:coverage",
+		"ci:version": "changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
 		"fix:policy": "./packages/repopo/bin/dev.js check --fix",
-		"format": "npm run sort-package-json && biome check . --linter-enabled=false --apply",
+		"deps": "ncu --interactive",
+		"deps:dev": "ncu",
+		"deps:oclif": "ncu --configFileName .ncurc.oclif.cjs",
+		"deps:prod": "ncu --configFileName .ncurc.prod.cjs",
+		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint . --apply",
-		"prepare": "lefthook install",
+		"generate:license-file": "fluid-build . --task generate:license-file",
+		"generate:packlist": "flub generate packlist -g client --no-private",
+		"lint": "biome lint",
+		"lint:fix": "biome lint --write",
+		"prepare:disabled": "lefthook install",
 		"repopo": "repopo",
 		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
-		"sort-tsconfig": "tbu sort tsconfig \"config/tsconfig*.json\" --write && tbu sort tsconfig \"packages/*/tsconfig*.json\" --write",
-		"test": "fluid-build . --task test"
+		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
+		"syncpack:fix": "pnpm syncpack fix-mismatches && pnpm syncpack set-semver-ranges",
+		"test": "fluid-build . --task test",
+		"test:coverage": "fluid-build . --task test:coverage"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.7.3",
-		"@changesets/cli": "^2.27.1",
-		"@fluidframework/build-tools": "^0.38.0",
+		"@biomejs/biome": "1.9.4",
+		"@changesets/cli": "^2.27.12",
+		"@fluid-tools/build-cli": "^0.52.0",
+		"@fluidframework/build-tools": "^0.52.0",
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
-		"@tylerbu/repopo": "workspace:^",
-		"concurrently": "^8.2.2",
-		"lefthook": "^1.6.11",
-		"rimraf": "^5.0.7",
-		"sort-package-json": "2.10.0",
-		"syncpack": "^12.3.2",
+		"changesets-changelog-clean": "^1.3.0",
+		"concurrently": "^9.1.2",
+		"generate-license-file": "^3.7.0",
+		"lefthook": "^1.10.10",
+		"npm-check-updates": "^17.1.14",
+		"renovate": "^39.169.2",
+		"repopo": "workspace:^",
+		"rimraf": "^6.0.1",
+		"sort-package-json": "2.14.0",
+		"sort-tsconfig": "workspace:^",
+		"syncpack": "^13.0.2",
 		"ts-node": "^10.9.2"
 	},
-	"packageManager": "pnpm@9.5.0+sha256.dbdf5961c32909fb030595a9daa1dae720162e658609a8f92f2fa99835510ca5",
+	"packageManager": "pnpm@9.11.0+sha256.1c0e33f70e5df9eede84a357bdfa0b1f9dba6e58194628d48a1055756f553754",
 	"engines": {
 		"node": ">=18.0.0"
 	},
 	"pnpm": {
 		"peerDependencyRules": {
 			"allowAny": ["@aws-sdk/*"],
-			"ignoreMissing": ["@aws-sdk/*"]
+			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
 		},
 		"updateConfig": {
 			"ignoreDependencies": ["chai", "@types/node"]
 		},
-		"overrides": {}
+		"overrides": {
+			"cookie@<0.7.0": ">=0.7.0",
+			"cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5",
+			"cross-spawn@<6.0.6": ">=6.0.6",
+			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
+			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0",
+			"path-to-regexp@>=2.0.0 <3.3.0": ">=3.3.0",
+			"trim@<0.0.3": ">=0.0.3"
+		}
 	},
 	"fluidBuild": {
 		"tasks": {
 			"build": {
-				"dependsOn": ["^build"],
+				"dependsOn": ["^build", "generate:packlist"],
 				"script": false
 			},
 			"check": {
-				"dependsOn": ["^check", "check:all"],
+				"dependsOn": ["sort-tsconfig#build", "^check", "check:all"],
 				"script": false
 			},
+			"check:policy": {
+				"dependsOn": ["repopo#build"],
+				"script": true
+			},
 			"ci": {
-				"dependsOn": ["full"],
+				"dependsOn": ["ci:check", "ci:build", "ci:lint", "ci:test"],
 				"script": false
 			},
 			"clean": {
 				"dependsOn": ["^clean", "clean:root"],
 				"script": false
 			},
-			"full": {
-				"dependsOn": ["check", "^build", "lint", "^test"],
+			"compile": {
+				"dependsOn": ["^build"],
 				"script": false
 			},
-			"check:policy": {
-				"dependsOn": ["@tylerbu/repopo#build"],
+			"full": {
+				"dependsOn": ["check", "build", "lint", "docs", "test"],
+				"script": false
+			},
+			"generate:license-file": {
+				"dependsOn": ["^generate:license-file"],
+				"script": false
+			},
+			"generate:packlist": {
+				"dependsOn": ["^build"],
 				"script": true
+			},
+			"test": {
+				"dependsOn": ["^test"],
+				"script": false
 			}
 		}
 	}

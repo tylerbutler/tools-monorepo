@@ -1,7 +1,7 @@
-import { existsSync } from "node:fs";
 import type { Command } from "@oclif/core";
-import { type CosmiconfigResult, cosmiconfig } from "cosmiconfig";
 import { BaseCommand } from "./baseCommand.js";
+import { ConfigFileFlagHidden } from "./flags.js";
+import { loadConfig } from "./loadConfig.js";
 
 /**
  * A base command that loads typed configuration values from a config file.
@@ -16,59 +16,61 @@ export abstract class CommandWithConfig<
 		args: typeof CommandWithConfig.args;
 		flags: typeof CommandWithConfig.flags;
 	},
-	C = unknown,
+	C,
 > extends BaseCommand<T> {
 	private _commandConfig: C | undefined;
-	protected configPath: string | undefined;
+	private _configPath: string | undefined;
+
+	static override readonly flags = {
+		config: ConfigFileFlagHidden,
+		...BaseCommand.flags,
+	} as const;
+
+	/**
+	 * A default config value to use if none is found. If this returns `undefined`, no default value will be used.
+	 */
+	protected defaultConfig: C | undefined;
 
 	public override async init(): Promise<void> {
 		await super.init();
-		this.commandConfig = await this.loadConfig();
-	}
+		const { config: configFlag } = this.flags;
+		const searchPath = configFlag ?? process.cwd();
+		const loaded = await loadConfig<C>(this.config.bin, searchPath, undefined);
 
-	protected async loadConfig(): Promise<C | undefined> {
-		const configPath = this.config.configDir; // path.join(this.config.configDir, "config.ts");
-		// const config = await this.loadConfigFromFile(this.config.configDir);
-		const moduleName = this.config.bin;
-		const explorer = cosmiconfig(moduleName, {
-			searchStrategy: "global",
-		});
-		this.verbose(`Looking for '${this.config.bin}' config at '${configPath}'`);
-		if (existsSync(configPath)) {
-			const config: CosmiconfigResult = await explorer.search(configPath);
-			if (config?.config !== undefined) {
-				this.verbose(`Found config at ${config.filepath}`);
-			}
-			return config?.config as C | undefined;
+		if (loaded === undefined && this.defaultConfig === undefined) {
+			this.error(`Failure to load config: ${searchPath}`, { exit: 1 });
 		}
-	}
-
-	// private async loadConfigFromFile(
-	// 	configPath: string,
-	// ): Promise<C | undefined> {
-	// }
-
-	protected get defaultConfig(): C | undefined {
-		return undefined;
+		const { config, location } = loaded ?? {
+			config: this.defaultConfig,
+			location: "DEFAULT",
+		};
+		this._commandConfig = config;
+		this._configPath = location;
 	}
 
 	protected get commandConfig(): C | undefined {
+		if (this._commandConfig === undefined && this.defaultConfig !== undefined) {
+			this._commandConfig = this.defaultConfig;
+		}
+
 		return this._commandConfig;
 	}
 
-	protected set commandConfig(value: C | undefined) {
-		this._commandConfig = value;
+	/**
+	 * The location of the config. If the config was loaded from a file, this will be the path to the file. If no config
+	 * was loaded, and no default config is defined, this will return `undefined`. If the default config was loaded, this
+	 * will return the string "DEFAULT";
+	 */
+	protected get configLocation(): string | "DEFAULT" | undefined {
+		return this._configPath;
 	}
 }
 
 /**
- * Base class for commands that do not require any configuration.
+ * An interface implemented by commands that use a context object.
  *
  * @beta
  */
-export abstract class CommandWithoutConfig<
-	T extends typeof Command & {
-		args: typeof CommandWithoutConfig.args;
-		flags: typeof CommandWithoutConfig.flags;
-	},
-> extends BaseCommand<T> {}
+export interface CommandWithContext<CONTEXT> {
+	getContext(): Promise<CONTEXT>;
+}

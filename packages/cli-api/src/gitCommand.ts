@@ -25,3 +25,17 @@ export abstract class GitCommand<
 		this.git = this.repo.gitClient;
 	}
 }
+
+/**
+ * An interface implemented by commands that expect to be used in a Git repository.
+ *
+ * @beta
+ */
+export interface CommandWithGit {
+	git: SimpleGit;
+
+	/**
+	 * The absolute path to the root of the git repository.
+	 */
+	// gitRepoPath: string;
+}

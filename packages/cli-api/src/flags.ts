@@ -12,3 +12,22 @@ export const RegExpFlag = Flags.custom<RegExp>({
 		return policyRegex;
 	},
 });
+
+/**
+ * @beta
+ */
+export const ConfigFileFlag = Flags.file({
+	description: "The path to a configuration file.",
+	helpGroup: "CONFIGURATION",
+	exists: true,
+});
+
+/**
+ * @beta
+ */
+export const ConfigFileFlagHidden = Flags.file({
+	description: "The path to a configuration file.",
+	helpGroup: "CONFIGURATION",
+	exists: true,
+	hidden: true,
+});

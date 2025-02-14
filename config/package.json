@@ -1,0 +1,10 @@
+{
+	"name": "local-config",
+	"private": true,
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"devDependencies": {
+		"vitest": "^3.0.5"
+	}
+}

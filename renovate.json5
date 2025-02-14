@@ -7,62 +7,122 @@
 
 	// Disable the GitHub actions updates
 	"github-actions": {
-		"enabled": false
+		"enabled": false,
 	},
-	
+
 	"timezone": "America/Los_Angeles",
 	"schedule": [
-    // "after 10pm every weekday",
-    // "before 5am every weekday",
-    // "every weekend"
-		"after 9pm on sunday",
-  ],
+		// "after 10pm every weekday",
+		"before 5am every weekday",
+		// "every weekend"
+		// "after 9pm on sunday",
+	],
 
 	"separateMajorMinor": true,
-  "separateMultipleMajor": true,
+	"separateMultipleMajor": true,
+
+	"prBodyDefinitions": {
+		"Package": "{{{depNameLinked}}}",
+		"Type": "{{{depType}}}",
+		"Update": "{{{updateType}}}",
+		"Current value": "{{{currentValue}}}",
+		"New value": "{{{newValue}}}",
+		"Change": "`{{{displayFrom}}}` -> `{{{displayTo}}}`",
+		"Pending": "{{{displayPending}}}",
+		"References": "{{{references}}}",
+		"Package file": "{{{packageFile}}}",
+		"Age": "{{{age}}}",
+		"Adoption": "{{#if newVersion}}[![adoption](https://developer.mend.io/api/mc/badges/adoption/{{datasource}}/{{replace '/' '%2f' depName}}/{{{newVersion}}}?slim=true)](https://docs.renovatebot.com/merge-confidence/){{/if}}",
+		"Passing": "{{#if newVersion}}[![passing](https://developer.mend.io/api/mc/badges/compatibility/{{datasource}}/{{replace '/' '%2f' depName}}/{{{currentVersion}}}/{{{newVersion}}}?slim=true)](https://docs.renovatebot.com/merge-confidence/){{/if}}",
+		"Confidence": "{{#if newVersion}}[![confidence](https://developer.mend.io/api/mc/badges/confidence/{{datasource}}/{{replace '/' '%2f' depName}}/{{{currentVersion}}}/{{{newVersion}}}?slim=true)](https://docs.renovatebot.com/merge-confidence/){{/if}}",
+	},
+
+	"prBodyColumns": ["Package", "Change", "Age", "References"],
+
+	"prBodyNotes": [
+		"{{#if isMajor}}:warning: MAJOR MAJOR MAJOR :warning:{{/if}}",
+	],
 
 	// Automerge settings
 	"platformAutomerge": true,
-	"automergeType": "pr",
-	"automergeSchedule": [
-    "before 4am on Monday"
-  ],
+	"automergeType": "branch", // or "pr"
+	"automergeSchedule": ["every weekday"],
+
+	// postUpgradeTasks do not work on the hosted renovate service
+	// "postUpgradeTasks": {
+	// 	"commands": [
+	// 		"pnpm install --no-frozen-lockfile",
+	// 		"pnpm run ci:build",
+	// 	],
+	// 	"executionMode": "update",
+	// },
 
 	"lockFileMaintenance": {
-    "enabled": true,
-    "automerge": true
-  },
+		"enabled": false,
+		"automerge": true,
+	},
 
 	"packageRules": [
 		{
 			// Require Dependency Dashboard approval for major updates
-      "dependencyDashboardApproval": true,
-      "matchUpdateTypes": [
-        "major"
-      ]
-    },
+			"dependencyDashboardApproval": true,
+			"matchUpdateTypes": ["major"],
+		},
+		{
+			// Ignore patch updates for all dependencies
+			"matchUpdateTypes": ["patch"],
+			"enabled": false,
+		},
 		{
 			// Group oclif dependencies together
-			"matchPackagePatterns": ["^oclif", "^@oclif/"],
 			"groupName": "oclif",
+			"matchPackageNames": ["/^oclif/", "/^@oclif//"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
+			"automerge": true,
+		},
+		{
+			// Group Fluid Framework dependencies together
+			"groupName": "fluid framework packages",
+			"matchPackageNames": ["/^@fluid/", "/^fluid-framework/"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
+			"automerge": true,
+		},
+		{
+			"groupName": "typedoc",
+			"matchPackageNames": ["/^typedoc/"],
+			"matchUpdateTypes": ["minor"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
+			"automerge": true,
 		},
 		{
 			// TypeScript updates should be done separately
-			"matchPackagePatterns": ["typescript"],
-			"groupName": "typescript"
+			"groupName": "typescript",
+			"matchPackageNames": ["/^typescript/"],
+			"matchUpdateTypes": ["minor"],
+			"matchDepTypes": ["devDependencies", "dependencies"],
+			"automerge": true,
 		},
 		{
-			// Group dev dependencies together
-			"matchDepTypes": ["devDependencies"],
-			"matchUpdateTypes": ["patch", "minor"],
-			"groupName": "devDependencies (non-major)"
+			// Group dependencies except oclif together
+			"groupName": "dependencies",
+			"matchDepTypes": ["devDependencies", "dependencies"],
+			"matchUpdateTypes": ["minor"],
+			"matchPackageNames": [
+				"!/^@fluid/",
+				"!/^@oclif//",
+				"!/^fluid-framework/",
+				"!/^oclif/",
+				"!/^typescript/",
+			],
+			"automerge": true,
 		},
-		{
-			// Allow minor and patch updates to be auto-merged, except for oclif updates
-			"matchUpdateTypes": ["patch", "pin", "digest"],
-			"excludePackagePatterns": ["^oclif", "^@oclif/"],
-			"automerge": true
-		},
+		// {
+		// 	// Allow patch updates to be auto-merged, except for oclif
+		// 	"groupName": "dependency patch udpates",
+		// 	"matchUpdateTypes": ["patch", "pin", "digest"],
+		// 	"excludePackagePatterns": ["^oclif", "^@oclif/"],
+		// 	"automerge": true,
+		// },
 	],
 	"ignoreDeps": [
 		// Next major of chai needs testing

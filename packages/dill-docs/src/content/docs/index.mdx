@@ -1,0 +1,34 @@
+---
+title: dill
+description: Download and decompress gzipped tar files with a CLI and API.
+template: splash
+hero:
+  tagline: Download and decompress gzipped tar files with a CLI and API.
+  image:
+    file: ../../assets/dill-logo.svg
+  actions:
+    - text: Get started
+      link: /usage/cli-usage/
+      icon: right-arrow
+      variant: primary
+    - text: What is dill?
+      link: /introduction/
+      # icon: bars
+      variant: secondary
+banner:
+  content: |
+    dill is extremely new and likely has bugs. Use at your own risk!
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Features
+
+<CardGrid>
+	<Card title="Download and decompress .tar.gz files in one step" icon="rocket">
+		It's as easy as `dill <URL>`! [Install dill](/installation/) to get started.
+	</Card>
+	<Card title="Programmatic API" icon="seti:javascript">
+		You can [use dill in your own programs](/usage/api-usage/), or [include dill as a subcommand in your own CLI app](/usage/subcommand/)!
+</Card>
+</CardGrid>
