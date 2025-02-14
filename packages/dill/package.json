@@ -134,7 +134,7 @@
 		"unionfs": "^4.5.4",
 		"vitest": "^3.0.5"
 	},
-	"packageManager": "pnpm@9.11.0",
+	"packageManager": "pnpm@9.15.5",
 	"engines": {
 		"node": ">=18.0.0"
 	}
