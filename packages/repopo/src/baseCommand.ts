@@ -1,146 +1,78 @@
-import { Flags } from "@oclif/core";
-import { GitCommand, RegExpFlag, findGitRoot } from "@tylerbu/cli-api";
-
-import type { PolicyConfig } from "./config.js";
-import { type PolicyHandlerPerfStats, newPerfStats } from "./perf.js";
-import { DefaultPolicies, type PolicyName, type RepoPolicy } from "./policy.js";
-
-const DEFAULT_PATH_REGEX = /.?/;
-
-/**
- * A convenience interface used to pass commonly used parameters between functions.
- */
-export interface PolicyCommandContext {
-	/**
-	 * A regular expression used to filter selected files.
-	 */
-	pathRegex: RegExp;
-
-	/**
-	 * A list of regular expressions used to exclude files from all handlers.
-	 */
-	excludeFiles: RegExp[];
-
-	/**
-	 * A list of handlers to apply to selected files.
-	 */
-	policies: RepoPolicy[];
-
-	/**
-	 * A per-handler list of regular expressions used to exclude files from specific handlers.
-	 */
-	excludePoliciesForFiles: ExcludedPolicyFileMap;
-
-	/**
-	 * Path to the root of the git repo.
-	 */
-	gitRoot: string;
-
-	/**
-	 * Performance information for each handler.
-	 */
-	perfStats: PolicyHandlerPerfStats;
-}
+import {
+	CommandWithConfig,
+	type CommandWithContext,
+	type RequiresGit,
+} from "@tylerbu/cli-api";
+import { findGitRootSync } from "@tylerbu/fundamentals/git";
+import { type SimpleGit, simpleGit } from "simple-git";
+import { DefaultPolicyConfig, type RepopoConfig } from "./config.js";
+import type { ExcludedPolicyFileMap, RepopoCommandContext } from "./context.js";
+import { newPerfStats } from "./perf.js";
+import { DefaultPolicies } from "./policy.js";
 
 /**
- * This command lists all the policies configured to run.
+ * This class is the base for all repopo commands. It contains common flags and config loading.
  */
 export abstract class BaseRepopoCommand<
-	T extends typeof BaseRepopoCommand & {
-		args: typeof GitCommand.args;
-		flags: typeof GitCommand.flags;
-	},
-> extends GitCommand<T, PolicyConfig> {
+		T extends typeof BaseRepopoCommand & {
+			args: typeof CommandWithConfig.args;
+			flags: typeof CommandWithConfig.flags;
+		},
+	>
+	extends CommandWithConfig<T, RepopoConfig>
+	implements CommandWithContext<RepopoCommandContext>, RequiresGit
+{
+	protected override defaultConfig = DefaultPolicyConfig;
+
 	static override readonly flags = {
-		policy: RegExpFlag({
-			description:
-				"Filter policies to apply by <regex>. Only policies with a name matching the regex will be applied.",
-			required: false,
-			char: "d",
-		}),
-		excludePolicy: Flags.string({
-			char: "D",
-			description:
-				"Exclude policies by name. Can be specified multiple times to exclude multiple policies.",
-			exclusive: ["policy"],
-			multiple: true,
-		}),
-		path: RegExpFlag({
-			description: "Filter file paths by <regex>.",
-			required: false,
-			char: "p",
-		}),
-		...GitCommand.flags,
+		...CommandWithConfig.flags,
 	} as const;
 
-	private context: PolicyCommandContext | undefined;
-
-	protected getContext(): PolicyCommandContext {
-		if (this.context === undefined) {
-			throw new Error("context undefined");
+	private _git: SimpleGit | undefined;
+	public get git(): SimpleGit {
+		if (this._git === undefined) {
+			throw new Error("git property is undefined");
 		}
-		return this.context;
+		return this._git;
 	}
 
 	public override async init(): Promise<void> {
 		await super.init();
-		const { flags } = this;
-		const config = this.commandConfig;
-		let policies = config?.policies ?? DefaultPolicies;
-		policies =
-			policies.filter((h) => {
-				if (
-					flags.excludePolicy === undefined ||
-					flags.excludePolicy.length === 0
-				) {
-					return true;
-				}
-				const shouldRun = flags.excludePolicy?.includes(h.name) === false;
-				if (!shouldRun) {
-					this.info(`Disabled policy: ${h.name}`);
-				}
-				return shouldRun;
-			}) ?? [];
-		if (flags.policy !== undefined) {
-			this.info(`Filtering handlers by regex: ${flags.policy}`);
-			policies = policies.filter((h) => flags.policy?.test(h.name));
-		}
 
 		const excludeFiles: RegExp[] =
-			config?.excludeFiles?.map((e) => toRegExp(e)) ?? [];
-		const excludePoliciesForFilesRaw = config?.excludePoliciesForFiles;
+			this.commandConfig?.excludeFiles?.map((e) => new RegExp(e, "i")) ?? [];
+
+		const excludePoliciesForFilesRaw =
+			this.commandConfig?.excludePoliciesForFiles;
+
 		const excludePoliciesForFiles: ExcludedPolicyFileMap = new Map();
 		if (excludePoliciesForFilesRaw) {
 			for (const [policyName, filters] of Object.entries(
 				excludePoliciesForFilesRaw,
 			)) {
-				const regexes = filters.map((e) => toRegExp(e));
+				const regexes = filters.map((e) => new RegExp(e, "i"));
 				excludePoliciesForFiles.set(policyName, regexes);
 			}
 		}
-		const gitRoot = await findGitRoot();
 
-		const pathRegex = this.flags.path ?? DEFAULT_PATH_REGEX;
-		if (this.flags.path !== undefined) {
-			this.info(`Filtering file paths by regex: ${pathRegex}`);
-		}
-
-		this.context = {
-			pathRegex,
+		const gitRoot = findGitRootSync();
+		this._git = simpleGit({ baseDir: gitRoot });
+		this._context = {
 			excludeFiles,
-			policies,
+			policies: this.commandConfig?.policies ?? DefaultPolicies,
 			excludePoliciesForFiles,
 			gitRoot,
 			perfStats: newPerfStats(),
 		};
 	}
-}
 
-export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
+	private _context: RepopoCommandContext | undefined;
 
-function toRegExp(input: string | RegExp): RegExp {
-	if (typeof input === "string") {
-		return new RegExp(input, "i");
+	// biome-ignore lint/suspicious/useAwait: interface defines this as async
+	public async getContext(): Promise<RepopoCommandContext> {
+		if (this._context === undefined) {
+			throw new Error("Context not initialized.");
+		}
+		return this._context;
 	}
-	return input;
 }

@@ -17,6 +17,10 @@
 		".": {
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
+		},
+		"./policies": {
+			"types": "./esm/policies.d.ts",
+			"import": "./esm/policies.js"
 		}
 	},
 	"types": "esm/index.d.ts",
@@ -69,9 +73,11 @@
 		"@oclif/plugin-help": "^6.2.21",
 		"@rushstack/node-core-library": "^5.7.0",
 		"@tylerbu/cli-api": "workspace:^",
+		"@tylerbu/fundamentals": "workspace:^",
 		"jsonfile": "^6.1.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.0",
+		"simple-git": "^3.24.0",
 		"sort-package-json": "2.14.0",
 		"sort-tsconfig": "workspace:^"
 	},
