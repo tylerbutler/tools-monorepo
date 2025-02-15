@@ -165,10 +165,10 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  *
  * @alpha
  */
-export const DefaultPolicies = [
+export const DefaultPolicies: RepoPolicy[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
 	PackageJsonSortedPolicy,
 	SortTsconfigs,
-] as const satisfies RepoPolicy[];
+] as const;

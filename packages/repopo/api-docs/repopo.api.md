@@ -4,11 +4,10 @@
 
 ```ts
 
-import { PackageJsonPropertiesSettings as PackageJsonPropertiesSettings_2 } from './policies/PackageJsonProperties.js';
 import { run } from '@oclif/core';
 
 // @alpha
-export const DefaultPolicies: [RepoPolicy<undefined>, RepoPolicy<undefined>, RepoPolicy<PackageJsonPropertiesSettings_2 | undefined>, RepoPolicy<undefined>, RepoPolicy<undefined>];
+export const DefaultPolicies: RepoPolicy[];
 
 // @alpha
 export interface PackageJsonPropertiesSettings {
