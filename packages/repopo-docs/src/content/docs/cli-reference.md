@@ -3,30 +3,44 @@ title: CLI reference
 ---
 
 <!-- commands -->
-* [`dill [URL]`](#dill-url)
+* [`repopo check`](#repopo-check)
+* [`repopo list`](#repopo-list)
 
-## `dill [URL]`
+## `repopo check`
 
-Downloads a file from a URL and optionally extracts its contents.
+Checks and applies policies to the files in the repository.
 
 ```
 USAGE
-  $ dill  [URL] [-v | --quiet] [-o <value>] [-s <value> -e] [--filename <value> | ]
-
-ARGUMENTS
-  URL  URL of the file to download.
+  $ repopo check [-f] [--stdin] [-D <value>... | -d <value>] [-p <value>]
 
 FLAGS
-  -e, --extract           Decompress the file and, if it's a tarball, extract its contents.
-  -o, --out=<value>       Directory in which to place the downloaded files.
-  -s, --strip=<value>     Strip leading paths from file names during extraction. Only works with --extract.
-      --filename=<value>  Name to use for the downloaded file. Cannot be used with --extract.
-
-LOGGING FLAGS
-  -v, --verbose  Enable verbose logging.
-      --quiet    Disable all logging.
-
-DESCRIPTION
-  Downloads a file from a URL and optionally extracts its contents.
+  -D, --excludePolicy=<value>...  Exclude policies by name. Can be specified multiple times to exclude multiple
+                                  policies.
+  -d, --policy=<value>            Filter policies to apply by <regex>. Only policies with a name matching the regex will
+                                  be applied.
+  -f, --fix                       Fix errors if possible.
+  -p, --path=<value>              Filter file paths by <regex>.
+      --stdin                     Read list of files from stdin.
 ```
+
+_See code: [src/commands/check.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check.ts)_
+
+## `repopo list`
+
+Lists the policies configured to run.
+
+```
+USAGE
+  $ repopo list [-D <value>... | -d <value>] [-p <value>]
+
+FLAGS
+  -D, --excludePolicy=<value>...  Exclude policies by name. Can be specified multiple times to exclude multiple
+                                  policies.
+  -d, --policy=<value>            Filter policies to apply by <regex>. Only policies with a name matching the regex will
+                                  be applied.
+  -p, --path=<value>              Filter file paths by <regex>.
+```
+
+_See code: [src/commands/list.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/list.ts)_
 <!-- commandsstop -->
