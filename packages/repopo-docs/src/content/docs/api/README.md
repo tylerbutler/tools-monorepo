@@ -2,16 +2,28 @@
 editUrl: false
 next: false
 prev: false
-title: "dill-cli"
+title: "repopo"
 ---
 
-# dill API
+# repopo API
 
 ## Interfaces
 
-- [DillOptions](/api/interfaces/dilloptions/)
-- [DownloadResponse](/api/interfaces/downloadresponse/)
+- [PackageJsonPropertiesSettings](/api/interfaces/packagejsonpropertiessettings/)
+- [PolicyConfig](/api/interfaces/policyconfig/)
+- [PolicyFailure](/api/interfaces/policyfailure/)
+- [PolicyFixResult](/api/interfaces/policyfixresult/)
+- [PolicyFunctionArguments](/api/interfaces/policyfunctionarguments/)
+- [RepoPolicy](/api/interfaces/repopolicy/)
 
-## Functions
+## Type Aliases
 
-- [download](/api/functions/download/)
+- [PackageJsonProperty](/api/type-aliases/packagejsonproperty/)
+- [PerPolicySettings](/api/type-aliases/perpolicysettings/)
+- [PolicyHandler](/api/type-aliases/policyhandler/)
+- [PolicyName](/api/type-aliases/policyname/)
+- [PolicyStandaloneResolver](/api/type-aliases/policystandaloneresolver/)
+
+## Variables
+
+- [DefaultPolicies](/api/variables/defaultpolicies/)
