@@ -675,6 +675,73 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.0(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
 
+  packages/repopo-docs:
+    dependencies:
+      '@astrojs/check':
+        specifier: ^0.9.4
+        version: 0.9.4(prettier@3.4.2)(typescript@5.5.4)
+      '@astrojs/netlify':
+        specifier: ^6.1.0
+        version: 6.1.0(@types/node@22.10.7)(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))(encoding@0.1.13)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
+      '@astrojs/starlight':
+        specifier: ^0.31.1
+        version: 0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
+      '@fontsource/ibm-plex-serif':
+        specifier: ^5.1.1
+        version: 5.1.1
+      '@fontsource/metropolis':
+        specifier: ^5.0.11
+        version: 5.1.0
+      '@fontsource/open-sans':
+        specifier: ^5.1.1
+        version: 5.1.1
+      astro:
+        specifier: ^5.1.8
+        version: 5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)
+      repopo:
+        specifier: workspace:^
+        version: link:../repopo
+      sharp:
+        specifier: ^0.33.4
+        version: 0.33.5
+      starlight-heading-badges:
+        specifier: ^0.4.0
+        version: 0.4.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+      starlight-links-validator:
+        specifier: ^0.14.1
+        version: 0.14.1(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+      starlight-package-managers:
+        specifier: ^0.9.0
+        version: 0.9.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+      starlight-typedoc:
+        specifier: ^0.18.0
+        version: 0.18.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4))
+      typedoc:
+        specifier: ^0.27.7
+        version: 0.27.7(typescript@5.5.4)
+      typedoc-plugin-frontmatter:
+        specifier: ^1.1.2
+        version: 1.1.2(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))
+      typedoc-plugin-markdown:
+        specifier: ^4.4.2
+        version: 4.4.2(typedoc@0.27.7(typescript@5.5.4))
+      typedoc-plugin-mdn-links:
+        specifier: ^4.0.9
+        version: 4.0.9(typedoc@0.27.7(typescript@5.5.4))
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
+    devDependencies:
+      '@fec/remark-a11y-emoji':
+        specifier: ^4.0.2
+        version: 4.0.2
+      '@hashicorp/remark-plugins':
+        specifier: ^4.1.1
+        version: 4.1.1
+
   packages/sort-tsconfig:
     dependencies:
       '@oclif/core':
