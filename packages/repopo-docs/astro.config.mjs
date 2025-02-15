@@ -79,12 +79,16 @@ export default defineConfig({
 						// 	label: "Usage",
 						// 	slug: "usage",
 						// },
-						// { label: "Other uses", slug: "other-uses" },
+						// { label: "Configuration", slug: "config" },
 					],
 				},
 				{
 					label: "Guides",
 					autogenerate: { directory: "usage" },
+				},
+				{
+					label: "Policies",
+					autogenerate: { directory: "policies" },
 				},
 				{
 					label: "CLI Reference",
