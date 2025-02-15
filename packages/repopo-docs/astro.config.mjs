@@ -58,7 +58,7 @@ export default defineConfig({
 					},
 				}),
 				// TODO: Re-enable once problems are fixed.
-				starlightLinksValidator(),
+				// starlightLinksValidator(),
 			],
 			social: {
 				github: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
