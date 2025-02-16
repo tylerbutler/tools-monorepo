@@ -7,7 +7,10 @@
 import { run } from '@oclif/core';
 
 // @alpha
-export const DefaultPolicies: RepoPolicy[];
+export const DefaultPolicies: RepoPolicy<any>[];
+
+// @alpha (undocumented)
+export type DefaultPolicyConfigType = object | unknown;
 
 // @alpha
 export interface PackageJsonPropertiesSettings {
@@ -51,7 +54,7 @@ export type PolicyHandler<C> = (args: PolicyFunctionArguments<C>) => Promise<tru
 export type PolicyName = string;
 
 // @alpha
-export type PolicyStandaloneResolver<C = unknown | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
+export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
 
 // @alpha (undocumented)
 export interface RepopoConfig {
@@ -63,7 +66,7 @@ export interface RepopoConfig {
 }
 
 // @alpha
-export interface RepoPolicy<C extends any | undefined = undefined> {
+export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown | undefined> {
     description?: string;
     handler: PolicyHandler<C>;
     match: RegExp;

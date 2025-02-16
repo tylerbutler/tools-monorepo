@@ -7,7 +7,7 @@ title: "PolicyStandaloneResolver"
 
 > **PolicyStandaloneResolver**\<`C`\>: (`args`) => [`PolicyFixResult`](/api/interfaces/policyfixresult/)
 
-Defined in: [policy.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L65)
+Defined in: [policy.ts:71](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L71)
 
 A standalone function that can be called to resolve a policy failure.
 
@@ -17,7 +17,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Type Parameters
 
-• **C** = `unknown` \| `undefined`
+• **C** = [`DefaultPolicyConfigType`](/api/type-aliases/defaultpolicyconfigtype/) \| `undefined`
 
 ## Parameters
 

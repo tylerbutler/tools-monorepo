@@ -1,21 +1,15 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
 import { sortPackageJson } from "sort-package-json";
-import type { PackageJson } from "type-fest";
 
-import jsonfile from "jsonfile";
-const { readFile: readJson } = jsonfile;
-
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
-import { PackageJsonRegexMatch as match } from "./constants.js";
+import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
+import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 
 /**
  * A repo policy that checks if package.json files in the repo are sorted using sort-package-json.
  */
-export const PackageJsonSortedPolicy: RepoPolicy = {
-	name: "PackageJsonSortedPolicy",
-	match,
-	handler: async ({ file, resolve }) => {
-		const json: PackageJson = await readJson(file);
+export const PackageJsonSortedPolicy = definePackagePolicy(
+	"PackageJsonSortedPolicy",
+	async (json, { file, resolve }) => {
 		const sortedJson = sortPackageJson(json);
 		const isSorted = JSON.stringify(sortedJson) === JSON.stringify(json);
 
@@ -51,4 +45,4 @@ export const PackageJsonSortedPolicy: RepoPolicy = {
 			return result;
 		}
 	},
-};
+);

@@ -8,6 +8,10 @@ bin/dev.cmd
 bin/dev.js
 bin/run.cmd
 bin/run.js
+esm/api.d.ts
+esm/api.d.ts.map
+esm/api.js
+esm/api.js.map
 esm/baseCommand.d.ts
 esm/baseCommand.d.ts.map
 esm/baseCommand.js
@@ -32,6 +36,10 @@ esm/index.d.ts
 esm/index.d.ts.map
 esm/index.js
 esm/index.js.map
+esm/packageJsonHandlerAdapter.d.ts
+esm/packageJsonHandlerAdapter.d.ts.map
+esm/packageJsonHandlerAdapter.js
+esm/packageJsonHandlerAdapter.js.map
 esm/perf.d.ts
 esm/perf.d.ts.map
 esm/perf.js
