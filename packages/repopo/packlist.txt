@@ -48,6 +48,10 @@ esm/policies.d.ts
 esm/policies.d.ts.map
 esm/policies.js
 esm/policies.js.map
+esm/policies/FileHeaderPolicy.d.ts
+esm/policies/FileHeaderPolicy.d.ts.map
+esm/policies/FileHeaderPolicy.js
+esm/policies/FileHeaderPolicy.js.map
 esm/policies/NoJsFileExtensions.d.ts
 esm/policies/NoJsFileExtensions.d.ts.map
 esm/policies/NoJsFileExtensions.js
