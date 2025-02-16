@@ -15,7 +15,7 @@ export type PerPolicySettings =
  */
 export interface PolicyConfig {
 	/**
-	 * An array of policies that are enabled. If this is `undefined`, then all {@link DefaultPolicies} will be enabled.
+	 * An array of policies that are enabled. If this is `undefined`, then all `DefaultPolicies` will be enabled.
 	 */
 	policies?: RepoPolicy[];
 
