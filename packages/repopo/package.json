@@ -18,6 +18,10 @@
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
 		},
+		"./api": {
+			"types": "./esm/api.d.ts",
+			"import": "./esm/api.js"
+		},
 		"./policies": {
 			"types": "./esm/policies.d.ts",
 			"import": "./esm/policies.js"

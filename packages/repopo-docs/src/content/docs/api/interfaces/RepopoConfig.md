@@ -57,7 +57,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### policies?
 
-> `optional` **policies**: [`RepoPolicy`](/api/interfaces/repopolicy/)\<`undefined`\>[]
+> `optional` **policies**: [`RepoPolicy`](/api/interfaces/repopolicy/)\<`unknown`\>[]
 
 Defined in: [config.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L25)
 

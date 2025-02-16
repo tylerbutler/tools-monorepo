@@ -117,13 +117,13 @@ export class CheckPolicy<
 		const resultsP: Promise<void>[] = [];
 
 		for (const policy of filteredPolicies) {
-			resultsP.push(this.runHandler(relPath, policy));
+			resultsP.push(this.runPolicy(relPath, policy));
 		}
 
 		await Promise.all(resultsP);
 	}
 
-	private async runHandler(
+	private async runPolicy(
 		relPath: string,
 		// policies: RepoPolicy[],
 		policy: RepoPolicy,
