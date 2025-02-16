@@ -1,8 +1,9 @@
 import type { PackageJson } from "type-fest";
 
 import jsonfile from "jsonfile";
-const { writeFile: writeJson, readFile: readJson } = jsonfile;
+const { writeFile: writeJson } = jsonfile;
 
+import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**
@@ -27,10 +28,9 @@ export interface PackageJsonPropertiesSettings {
  */
 export const PackageJsonProperties: RepoPolicy<
 	PackageJsonPropertiesSettings | undefined
-> = {
-	name: "PackageJsonProperties",
-	match: /(^|\/)package\.json/i,
-	handler: async ({ file, config, resolve }) => {
+> = definePackagePolicy<PackageJson, PackageJsonPropertiesSettings | undefined>(
+	"PackageJsonProperties",
+	async (json, { file, config, resolve }) => {
 		if (config === undefined) {
 			return true;
 		}
@@ -42,7 +42,6 @@ export const PackageJsonProperties: RepoPolicy<
 		};
 
 		const { verbatim } = config;
-		const json = (await readJson(file)) as PackageJson;
 		const messages: string[] = [];
 
 		for (const [propName, value] of Object.entries(verbatim)) {
@@ -76,4 +75,4 @@ export const PackageJsonProperties: RepoPolicy<
 
 		return true;
 	},
-};
+);

@@ -4,8 +4,11 @@ import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDire
 import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
 import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
+/**
+ * @alpha
+ */
 // biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
-export type DefaultPolicyConfigType = any | undefined;
+export type DefaultPolicyConfigType = object | unknown;
 
 /**
  * A type representing a policy name.
@@ -64,9 +67,8 @@ export type PolicyHandler<C> = (
  *
  * @alpha
  */
-export type PolicyStandaloneResolver<C = unknown | undefined> = (
-	args: Omit<PolicyFunctionArguments<C>, "resolve">,
-) => PolicyFixResult;
+export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
+	(args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
@@ -83,7 +85,9 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
  *
  * @alpha
  */
-export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown> {
+export interface RepoPolicy<
+	C extends DefaultPolicyConfigType = unknown | undefined,
+> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -120,18 +124,11 @@ export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown> {
 	resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
-export interface PackagePolicy<J, C extends DefaultPolicyConfigType>
-	extends Omit<RepoPolicy<C>, "handler"> {
-	match: P;
-	handler: PackageJsonHandler<J, C>;
-}
-
 /**
- * A policy handler is a function that is called to check policy against a file.
+ * A policy handler especially for policies that target package.json.
  *
  * @alpha
  */
-
 export type PackageJsonHandler<J, C> = (
 	json: J,
 	args: PolicyFunctionArguments<C>,
@@ -189,10 +186,16 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  *
  * @alpha
  */
-export const DefaultPolicies: RepoPolicy[] = [
+
+// biome-ignore lint/suspicious/noExplicitAny: TODO
+export const DefaultPolicies: RepoPolicy<any>[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
 	PackageJsonSortedPolicy,
 	SortTsconfigs,
 ] as const;
+
+// export function createPolicy<C>(args: RepoPolicy<C>) {
+// 	return args;
+// }

@@ -1,10 +1,8 @@
 import type {
 	PackageJsonHandler,
-	PackagePolicy,
-	PolicyFailure,
-	PolicyFixResult,
 	PolicyFunctionArguments,
 	PolicyHandler,
+	RepoPolicy,
 } from "./policy.js";
 
 import jsonfile from "jsonfile";
@@ -19,14 +17,24 @@ export function createPolicyHandlerForPackage<J, C>(
 	return func;
 }
 
-export function createPackagePolicy<J, C>(
-	handler: PackageJsonHandler<J, C>,
-	args: PolicyFunctionArguments<C>,
-): PackagePolicy<J, C> {
-	const json: J = readJson(args.file);
-	const func = () => handler(json, args);
+export function definePackagePolicy<J, C>(
+	name: string,
+	packagePolicy: PackageJsonHandler<J, C>,
+	// args: PolicyFunctionArguments<C>,
+): RepoPolicy<C> {
+	// const func = () => handler(json, args);
 	return {
+		name,
 		match: /(^|\/)package\.json/i,
-		handler,
+		// biome-ignore lint/suspicious/useAwait: <explanation>
+		handler: async (innerArgs) => {
+			const json: J = readJson(innerArgs.file);
+			// const { config } = innerArgs;
+			// if (config === undefined) {
+			// 	return true;
+			// }
+
+			return packagePolicy(json, innerArgs);
+		},
 	};
 }
