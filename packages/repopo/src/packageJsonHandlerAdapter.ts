@@ -1,3 +1,4 @@
+import type { PackageJson } from "type-fest";
 import type {
 	PackageJsonHandler,
 	PolicyFunctionArguments,
@@ -17,7 +18,10 @@ export function createPolicyHandlerForPackage<J, C>(
 	return func;
 }
 
-export function definePackagePolicy<J, C>(
+/**
+ * Define a repo policy for package.json files.
+ */
+export function definePackagePolicy<J = PackageJson, C = undefined>(
 	name: string,
 	packagePolicy: PackageJsonHandler<J, C>,
 	// args: PolicyFunctionArguments<C>,
@@ -29,11 +33,6 @@ export function definePackagePolicy<J, C>(
 		// biome-ignore lint/suspicious/useAwait: <explanation>
 		handler: async (innerArgs) => {
 			const json: J = readJson(innerArgs.file);
-			// const { config } = innerArgs;
-			// if (config === undefined) {
-			// 	return true;
-			// }
-
 			return packagePolicy(json, innerArgs);
 		},
 	};
