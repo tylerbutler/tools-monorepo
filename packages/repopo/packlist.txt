@@ -68,10 +68,6 @@ esm/policies/PackageJsonSortedPolicy.d.ts
 esm/policies/PackageJsonSortedPolicy.d.ts.map
 esm/policies/PackageJsonSortedPolicy.js
 esm/policies/PackageJsonSortedPolicy.js.map
-esm/policies/PackageScripts.d.ts
-esm/policies/PackageScripts.d.ts.map
-esm/policies/PackageScripts.js
-esm/policies/PackageScripts.js.map
 esm/policies/PackageScriptsPolicy.d.ts
 esm/policies/PackageScriptsPolicy.d.ts.map
 esm/policies/PackageScriptsPolicy.js
