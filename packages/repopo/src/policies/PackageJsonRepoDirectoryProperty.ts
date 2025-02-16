@@ -26,7 +26,8 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 	};
 
 	const pkgDir = path.dirname(file);
-	const relativePkgDir = path.relative(root, pkgDir);
+	const maybeDir = path.relative(root, pkgDir);
+	const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
 
 	if (typeof json.repository === "object") {
 		if (json.repository.directory !== relativePkgDir) {
@@ -34,7 +35,12 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 				try {
 					updatePackageJsonFile(file, (json) => {
 						assert(typeof json.repository === "object");
-						json.repository.directory = relativePkgDir;
+						if (relativePkgDir === undefined) {
+							// biome-ignore lint/performance/noDelete: <explanation>
+							delete json.repository.directory;
+						} else {
+							json.repository.directory = relativePkgDir;
+						}
 					});
 					fixResult.resolved = true;
 				} catch (error: unknown) {
