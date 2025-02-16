@@ -4,6 +4,9 @@ import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDire
 import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
 import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
+// biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
+export type DefaultPolicyConfigType = any | undefined;
+
 /**
  * A type representing a policy name.
  *
@@ -80,9 +83,7 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
  *
  * @alpha
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
-export interface RepoPolicy<C extends any | undefined = undefined> {
+export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -118,6 +119,23 @@ export interface RepoPolicy<C extends any | undefined = undefined> {
 	 */
 	resolver?: PolicyStandaloneResolver<C> | undefined;
 }
+
+export interface PackagePolicy<J, C extends DefaultPolicyConfigType>
+	extends Omit<RepoPolicy<C>, "handler"> {
+	match: P;
+	handler: PackageJsonHandler<J, C>;
+}
+
+/**
+ * A policy handler is a function that is called to check policy against a file.
+ *
+ * @alpha
+ */
+
+export type PackageJsonHandler<J, C> = (
+	json: J,
+	args: PolicyFunctionArguments<C>,
+) => Promise<true | PolicyFailure | PolicyFixResult>;
 
 /**
  * A policy failure.

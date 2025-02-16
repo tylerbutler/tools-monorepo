@@ -18,6 +18,10 @@
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
 		},
+		"./api": {
+			"types": "./esm/api.d.ts",
+			"import": "./esm/api.js"
+		},
 		"./policies": {
 			"types": "./esm/policies.d.ts",
 			"import": "./esm/policies.js"
@@ -70,6 +74,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
+		"@fluid-tools/build-cli": "^0.52.0",
 		"@fluid-tools/build-infrastructure": "^0.52.0",
 		"@oclif/core": "^4.2.3",
 		"@oclif/plugin-help": "^6.2.21",
