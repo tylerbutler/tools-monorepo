@@ -1,6 +1,7 @@
 export { run } from "@oclif/core";
 
 export type {
+	DefaultPolicyConfigType,
 	PolicyFailure,
 	PolicyFixResult,
 	PolicyFunctionArguments,
