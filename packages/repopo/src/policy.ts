@@ -12,6 +12,8 @@ import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 export type PolicyName = string;
 
 /**
+ * Arguments passed to policy functions.
+ *
  * @alpha
  */
 
@@ -31,7 +33,11 @@ export interface PolicyFunctionArguments<C> {
 	 */
 	resolve: boolean;
 
-	// Note that the handler function (defined below) receives the config as an argument
+	/**
+	 * @remarks
+	 *
+	 * Note that the handler function receives the config as an argument.
+	 */
 	config?: C | undefined;
 }
 
