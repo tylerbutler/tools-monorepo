@@ -42,7 +42,7 @@
 	},
 	"fluidBuild": {
 		"tasks": {
-			"build": []
+			"build": ["repopo#build"]
 		}
 	}
 }
