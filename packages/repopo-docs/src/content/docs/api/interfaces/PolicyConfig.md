@@ -49,7 +49,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 Defined in: [config.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L20)
 
-An array of policies that are enabled. If this is `undefined`, then all [DefaultPolicies](../../../../../../api/variables/defaultpolicies) will be enabled.
+An array of policies that are enabled. If this is `undefined`, then all [DefaultPolicies](../../../../../api/variables/defaultpolicies) will be enabled.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
