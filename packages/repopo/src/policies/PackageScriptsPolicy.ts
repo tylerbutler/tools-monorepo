@@ -1,27 +1,20 @@
-import type { PackageJson } from "type-fest";
-
-import jsonfile from "jsonfile";
-const { readFile: readJson } = jsonfile;
-
-import type { PolicyFailure, RepoPolicy } from "../policy.js";
-import { PackageJsonRegexMatch as match } from "./constants.js";
+import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
+import type { PolicyFailure } from "../policy.js";
 
 const expectedScripts = ["build", "clean"] as const;
 
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  */
-export const PackageScriptsPolicy: RepoPolicy = {
-	name: "PackageScriptsPolicy",
-	match,
-	handler: async ({ file }) => {
+export const PackageScriptsPolicy = definePackagePolicy(
+	"PackageScriptsPolicy",
+	async (json, { file }) => {
 		const failResult: PolicyFailure = {
 			name: PackageScriptsPolicy.name,
 			file,
 			autoFixable: false,
 		};
 
-		const json: PackageJson = await readJson(file);
 		const hasScriptsField = Object.prototype.hasOwnProperty.call(
 			json,
 			"scripts",
@@ -44,4 +37,4 @@ export const PackageScriptsPolicy: RepoPolicy = {
 
 		return true;
 	},
-};
+);

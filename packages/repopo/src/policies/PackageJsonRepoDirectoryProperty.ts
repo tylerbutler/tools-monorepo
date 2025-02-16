@@ -13,7 +13,7 @@ import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 	PackageJson,
 	undefined
->("PackageJsonProperties", async (json, { file, root, resolve }) => {
+>("PackageJsonRepoDirectoryProperty", async (json, { file, root, resolve }) => {
 	const failResult: PolicyFailure = {
 		name: PackageJsonRepoDirectoryProperty.name,
 		file,

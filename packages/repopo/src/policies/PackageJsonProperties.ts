@@ -5,7 +5,6 @@ const { writeFile: writeJson } = jsonfile;
 
 import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
-import { PackageJsonRegexMatch as match } from "./constants.js";
 
 /**
  * @alpha
