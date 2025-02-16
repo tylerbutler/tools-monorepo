@@ -41,7 +41,7 @@ Note that the handler function receives the config as an argument.
 
 Defined in: [policy.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L24)
 
-Absolute path to the file.
+Path to the file, relative to the repo root.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -55,7 +55,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 Defined in: [policy.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L34)
 
-If true, the issue should be resolved automatically if possible.
+If true, the handler should resolve any violations automatically if possible.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -69,7 +69,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 Defined in: [policy.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L29)
 
-Path to the root of the repo.
+Absolute path to the root of the repo.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
