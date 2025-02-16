@@ -5,7 +5,7 @@ prev: false
 title: "RepoPolicy"
 ---
 
-Defined in: [policy.ts:85](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L85)
+Defined in: [policy.ts:86](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L86)
 
 A RepoPolicy checks and applies policies to files in the repository.
 
@@ -31,7 +31,7 @@ type of configuration object used by the policy
 
 > `optional` **description**: `string`
 
-Defined in: [policy.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L94)
+Defined in: [policy.ts:95](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L95)
 
 A more detailed description of the policy and its intended function.
 
@@ -45,7 +45,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **handler**: [`PolicyHandler`](/api/type-aliases/policyhandler/)\<`C`\>
 
-Defined in: [policy.ts:110](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L110)
+Defined in: [policy.ts:111](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L111)
 
 A handler function that checks if a file is compliant with the policy.
 
@@ -75,7 +75,7 @@ True if the file passed the policy; otherwise a PolicyFailure object will be ret
 
 > **match**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policy.ts:99](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L99)
+Defined in: [policy.ts:100](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L100)
 
 A regular expression that is used to match files in the repo.
 
@@ -89,7 +89,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policy.ts:89](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L89)
+Defined in: [policy.ts:90](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L90)
 
 The name of the policy; displayed in UI and used in settings.
 
@@ -103,7 +103,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **resolver**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
-Defined in: [policy.ts:119](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L119)
+Defined in: [policy.ts:120](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L120)
 
 A resolver function that can be used to automatically address the policy violation.
 

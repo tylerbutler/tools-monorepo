@@ -147,7 +147,7 @@ export class CheckPolicy<
 			perfStats,
 			async () =>
 				policy.handler({
-					file: path.join(gitRoot, relPath),
+					file: relPath,
 					root: gitRoot,
 					resolve: this.flags.fix,
 					config: this.commandConfig?.perPolicyConfig?.[
