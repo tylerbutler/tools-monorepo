@@ -3,7 +3,7 @@ import { updatePackageJsonFile } from "@fluid-tools/build-infrastructure";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
 
-import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
+import { definePackagePolicy } from "../definePackagePolicy.js";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 
 /**

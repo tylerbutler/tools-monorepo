@@ -1,7 +1,7 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
 import { sortPackageJson } from "sort-package-json";
 
-import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
+import { definePackagePolicy } from "../definePackagePolicy.js";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 
 /**

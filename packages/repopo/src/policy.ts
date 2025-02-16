@@ -8,7 +8,6 @@ import { SortTsconfigsPolicy } from "./policies/SortTsconfigsPolicy.js";
 /**
  * @alpha
  */
-// biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
 export type DefaultPolicyConfigType = object | unknown;
 
 /**

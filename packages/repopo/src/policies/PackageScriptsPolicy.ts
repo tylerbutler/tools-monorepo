@@ -1,4 +1,4 @@
-import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
+import { definePackagePolicy } from "../definePackagePolicy.js";
 import type { PolicyFailure } from "../policy.js";
 
 const expectedScripts = ["build", "clean"] as const;

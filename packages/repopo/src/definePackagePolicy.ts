@@ -7,6 +7,7 @@ import type {
 } from "./policy.js";
 
 import jsonfile from "jsonfile";
+import { PackageJsonRegexMatch } from "./policies/constants.js";
 const { readFileSync: readJson } = jsonfile;
 
 export function createPolicyHandlerForPackage<J, C>(
@@ -29,7 +30,7 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 	// const func = () => handler(json, args);
 	return {
 		name,
-		match: /(^|\/)package\.json/i,
+		match: PackageJsonRegexMatch,
 		// biome-ignore lint/suspicious/useAwait: <explanation>
 		handler: async (innerArgs) => {
 			const json: J = readJson(innerArgs.file);

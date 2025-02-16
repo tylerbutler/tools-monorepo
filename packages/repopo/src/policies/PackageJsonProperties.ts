@@ -3,7 +3,7 @@ import type { PackageJson } from "type-fest";
 import jsonfile from "jsonfile";
 const { writeFile: writeJson } = jsonfile;
 
-import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
+import { definePackagePolicy } from "../definePackagePolicy.js";
 import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**
