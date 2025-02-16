@@ -10,10 +10,10 @@ title: "repopo"
 ## Interfaces
 
 - [PackageJsonPropertiesSettings](/api/interfaces/packagejsonpropertiessettings/)
-- [PolicyConfig](/api/interfaces/policyconfig/)
 - [PolicyFailure](/api/interfaces/policyfailure/)
 - [PolicyFixResult](/api/interfaces/policyfixresult/)
 - [PolicyFunctionArguments](/api/interfaces/policyfunctionarguments/)
+- [RepopoConfig](/api/interfaces/repopoconfig/)
 - [RepoPolicy](/api/interfaces/repopolicy/)
 
 ## Type Aliases

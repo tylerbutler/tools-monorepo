@@ -13,9 +13,14 @@ export type PerPolicySettings =
 /**
  * @alpha
  */
-export interface PolicyConfig {
+/**
+ * @alpha
+ */
+export interface RepopoConfig {
 	/**
-	 * An array of policies that are enabled. If this is `undefined`, then all `DefaultPolicies` will be enabled.
+	 * An array of policies that are enabled.
+	 *
+	 * See `DefaultPolicies` for the policies that will be enabled by default if this is `undefined`.
 	 */
 	policies?: RepoPolicy[];
 
@@ -31,7 +36,8 @@ export interface PolicyConfig {
 	 */
 	excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
 
-	policySettings?: PerPolicySettings | undefined;
+	// TODO: The type of this argument would ideally be a union of all types Record<Name of RepoPolicy, C of RepoPolicy>
+	perPolicyConfig?: PerPolicySettings | undefined;
 }
 
 /**
@@ -39,7 +45,7 @@ export interface PolicyConfig {
  *
  * @alpha
  */
-export const DefaultPolicyConfig: PolicyConfig = {
+export const DefaultPolicyConfig: RepopoConfig = {
 	policies: DefaultPolicies,
 	excludeFiles: [],
 	excludePoliciesForFiles: {},

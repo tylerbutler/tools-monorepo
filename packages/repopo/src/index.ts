@@ -11,8 +11,8 @@ export type {
 } from "./policy.js";
 export { DefaultPolicies } from "./policy.js";
 export type {
-	PolicyConfig,
 	PerPolicySettings,
+	RepopoConfig,
 } from "./config.js";
 export type {
 	PackageJsonPropertiesSettings,
