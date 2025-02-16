@@ -17,6 +17,10 @@
 		".": {
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
+		},
+		"./policies": {
+			"types": "./esm/policies.d.ts",
+			"import": "./esm/policies.js"
 		}
 	},
 	"types": "esm/index.d.ts",
@@ -49,7 +53,9 @@
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
-		"readme": "oclif readme --no-aliases",
+		"readme": "concurrently npm:readme:*",
+		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
+		"readme:main": "oclif readme --no-aliases",
 		"sort-package-json": "sort-package-json"
 	},
 	"oclif": {
@@ -69,9 +75,11 @@
 		"@oclif/plugin-help": "^6.2.21",
 		"@rushstack/node-core-library": "^5.7.0",
 		"@tylerbu/cli-api": "workspace:^",
+		"@tylerbu/fundamentals": "workspace:^",
 		"jsonfile": "^6.1.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.0",
+		"simple-git": "^3.24.0",
 		"sort-package-json": "2.14.0",
 		"sort-tsconfig": "workspace:^"
 	},

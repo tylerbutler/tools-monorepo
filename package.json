@@ -69,7 +69,7 @@
 		"syncpack": "^13.0.2",
 		"ts-node": "^10.9.2"
 	},
-	"packageManager": "pnpm@9.11.0+sha256.1c0e33f70e5df9eede84a357bdfa0b1f9dba6e58194628d48a1055756f553754",
+	"packageManager": "pnpm@10.4.0+sha256.e57e8a544f7a84247cfa77dd6d923eae5199a373474e53eab1f540c796289386",
 	"engines": {
 		"node": ">=18.0.0"
 	},

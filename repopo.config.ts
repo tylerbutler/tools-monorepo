@@ -1,11 +1,11 @@
-import { DefaultPolicies, type PolicyConfig } from "repopo";
+import { DefaultPolicies, type RepopoConfig } from "repopo";
 
-const config: PolicyConfig = {
+const config: RepopoConfig = {
 	policies: [...DefaultPolicies],
 	excludePoliciesForFiles: {
 		NoJsFileExtensions: [".*/bin/.*js"],
 	},
-	policySettings: {
+	perPolicyConfig: {
 		PackageJsonProperties: {
 			verbatim: {
 				license: "MIT",

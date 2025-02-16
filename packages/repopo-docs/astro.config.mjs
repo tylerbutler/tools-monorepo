@@ -23,7 +23,7 @@ export default defineConfig({
 	}),
 	integrations: [
 		starlight({
-			title: "dill",
+			title: "repopo",
 			lastUpdated: true,
 			customCss: [
 				// Fontsource files for to regular and semi-bold font weights.
@@ -36,8 +36,8 @@ export default defineConfig({
 			plugins: [
 				// Generate the documentation.
 				starlightTypeDoc({
-					entryPoints: ["../dill/src/index.ts"],
-					tsconfig: "../dill/tsconfig.json",
+					entryPoints: ["../repopo/src/index.ts"],
+					tsconfig: "../repopo/tsconfig.json",
 					sidebar: {
 						label: "API Reference",
 						collapsed: true,
@@ -45,9 +45,9 @@ export default defineConfig({
 					typeDoc: {
 						excludeExternals: true,
 						// outputFileStrategy: "modules",
-						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill",
+						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo",
 						mergeReadme: true,
-						readme: "../dill/api-docs/README.md",
+						readme: "../repopo/api-docs/README.md",
 						// readme: "none",
 						// entryModule: "index",
 						// entryFileName: "index",
@@ -57,17 +57,18 @@ export default defineConfig({
 						plugin: ["typedoc-plugin-mdn-links"],
 					},
 				}),
+				// TODO: Re-enable once problems are fixed.
 				starlightLinksValidator(),
 			],
 			social: {
-				github: "https://github.com/tylerbutler/tools-monorepo/packages/dill",
+				github: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
 			},
 			sidebar: [
 				{
 					label: "Start Here",
 					items: [
 						{
-							label: "What is dill?",
+							label: "What is repopo?",
 							slug: "introduction",
 						},
 						{
@@ -78,12 +79,16 @@ export default defineConfig({
 						// 	label: "Usage",
 						// 	slug: "usage",
 						// },
-						// { label: "Other uses", slug: "other-uses" },
+						// { label: "Configuration", slug: "config" },
 					],
 				},
 				{
 					label: "Guides",
 					autogenerate: { directory: "usage" },
+				},
+				{
+					label: "Policies",
+					autogenerate: { directory: "policies" },
 				},
 				{
 					label: "CLI Reference",

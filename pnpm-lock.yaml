@@ -444,8 +444,8 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0(@types/node@22.10.7)(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))(encoding@0.1.13)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
       '@astrojs/starlight':
-        specifier: ^0.31.1
-        version: 0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
+        specifier: ^0.32.0
+        version: 0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
       '@fontsource/ibm-plex-serif':
         specifier: ^5.1.1
         version: 5.1.1
@@ -466,16 +466,16 @@ importers:
         version: 0.33.5
       starlight-heading-badges:
         specifier: ^0.4.0
-        version: 0.4.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+        version: 0.4.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
       starlight-links-validator:
         specifier: ^0.14.1
-        version: 0.14.1(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+        version: 0.14.1(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
       starlight-package-managers:
-        specifier: ^0.9.0
-        version: 0.9.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+        specifier: ^0.10.0
+        version: 0.10.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
       starlight-typedoc:
         specifier: ^0.18.0
-        version: 0.18.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4))
+        version: 0.18.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4))
       typedoc:
         specifier: ^0.27.7
         version: 0.27.7(typescript@5.5.4)
@@ -607,6 +607,9 @@ importers:
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
+      '@tylerbu/fundamentals':
+        specifier: workspace:^
+        version: link:../fundamentals
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
@@ -616,6 +619,9 @@ importers:
       picocolors:
         specifier: ^1.1.0
         version: 1.1.1
+      simple-git:
+        specifier: ^3.24.0
+        version: 3.27.0
       sort-package-json:
         specifier: 2.14.0
         version: 2.14.0
@@ -674,6 +680,73 @@ importers:
       vitest:
         specifier: ^3.0.5
         version: 3.0.5(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.0(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
+
+  packages/repopo-docs:
+    dependencies:
+      '@astrojs/check':
+        specifier: ^0.9.4
+        version: 0.9.4(prettier@3.4.2)(typescript@5.5.4)
+      '@astrojs/netlify':
+        specifier: ^6.1.0
+        version: 6.1.0(@types/node@22.10.7)(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))(encoding@0.1.13)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(yaml@2.7.0)
+      '@astrojs/starlight':
+        specifier: ^0.32.0
+        version: 0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
+      '@fontsource/ibm-plex-serif':
+        specifier: ^5.1.1
+        version: 5.1.1
+      '@fontsource/metropolis':
+        specifier: ^5.0.11
+        version: 5.1.0
+      '@fontsource/open-sans':
+        specifier: ^5.1.1
+        version: 5.1.1
+      astro:
+        specifier: ^5.1.8
+        version: 5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)
+      repopo:
+        specifier: workspace:^
+        version: link:../repopo
+      sharp:
+        specifier: ^0.33.4
+        version: 0.33.5
+      starlight-heading-badges:
+        specifier: ^0.4.0
+        version: 0.4.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+      starlight-links-validator:
+        specifier: ^0.14.1
+        version: 0.14.1(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+      starlight-package-managers:
+        specifier: ^0.10.0
+        version: 0.10.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))
+      starlight-typedoc:
+        specifier: ^0.18.0
+        version: 0.18.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4))
+      typedoc:
+        specifier: ^0.27.7
+        version: 0.27.7(typescript@5.5.4)
+      typedoc-plugin-frontmatter:
+        specifier: ^1.1.2
+        version: 1.1.2(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))
+      typedoc-plugin-markdown:
+        specifier: ^4.4.2
+        version: 4.4.2(typedoc@0.27.7(typescript@5.5.4))
+      typedoc-plugin-mdn-links:
+        specifier: ^4.0.9
+        version: 4.0.9(typedoc@0.27.7(typescript@5.5.4))
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
+    devDependencies:
+      '@fec/remark-a11y-emoji':
+        specifier: ^4.0.2
+        version: 4.0.2
+      '@hashicorp/remark-plugins':
+        specifier: ^4.1.1
+        version: 4.1.1
 
   packages/sort-tsconfig:
     dependencies:
@@ -878,8 +951,8 @@ packages:
   '@astrojs/sitemap@3.2.1':
     resolution: {integrity: sha512-uxMfO8f7pALq0ADL6Lk68UV6dNYjJ2xGUzyjjVj60JLBs5a6smtlkBYv3tQ0DzoqwS7c9n4FUx5lgv0yPo/fgA==}
 
-  '@astrojs/starlight@0.31.1':
-    resolution: {integrity: sha512-VIVkHugwgtEqJPiRH8+ouP0UqUfdmpBO9C64R+6QaQ2qmADNkI/BA3/YAJHTBZYlMQQGEEuLJwD9qpaUovi52Q==}
+  '@astrojs/starlight@0.32.0':
+    resolution: {integrity: sha512-RJ+zPeTBlfgZJA3cWl3Nml9RLQhYUupnE0obL3iVxvVKhoCwUJnxmKicPp9EBxSML0TK8X4CUpnEwiC7OtfYwg==}
     peerDependencies:
       astro: ^5.1.5
 
@@ -8436,8 +8509,8 @@ packages:
     peerDependencies:
       '@astrojs/starlight': '>=0.15.0'
 
-  starlight-package-managers@0.9.0:
-    resolution: {integrity: sha512-iDChnj8hCUYH2s5hFMnpEiCYHUAuVivh2jvFgFJvUmViEEOdA24ZXrUhQhA/qg2KULCgn17F2cKWf3vhvIcl0w==}
+  starlight-package-managers@0.10.0:
+    resolution: {integrity: sha512-ndliTHXzaCIQ2FFnq5KIH5Uhs9FCACeS3XQMtx/35aSPXzeGsoGxBNreC1zBif4yzGZRCJN3kXBqjUO82WDtcA==}
     engines: {node: '>=18.17.1'}
     peerDependencies:
       '@astrojs/starlight': '>=0.22.0'
@@ -9849,7 +9922,7 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.24.1
 
-  '@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))':
+  '@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))':
     dependencies:
       '@astrojs/mdx': 4.0.7(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
       '@astrojs/sitemap': 3.2.1
@@ -9866,6 +9939,7 @@ snapshots:
       hastscript: 9.0.0
       i18next: 23.16.8
       js-yaml: 4.1.0
+      klona: 2.0.6
       mdast-util-directive: 3.0.0
       mdast-util-to-markdown: 2.1.2
       mdast-util-to-string: 4.0.0
@@ -20301,18 +20375,18 @@ snapshots:
 
   stackback@0.0.2: {}
 
-  starlight-heading-badges@0.4.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))):
+  starlight-heading-badges@0.4.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))):
     dependencies:
       '@astrojs/markdown-remark': 6.0.2
-      '@astrojs/starlight': 0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
+      '@astrojs/starlight': 0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
       github-slugger: 2.0.0
       unist-util-visit: 5.0.0
     transitivePeerDependencies:
       - supports-color
 
-  starlight-links-validator@0.14.1(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))):
+  starlight-links-validator@0.14.1(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))):
     dependencies:
-      '@astrojs/starlight': 0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
+      '@astrojs/starlight': 0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
       '@types/picomatch': 3.0.2
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.3
@@ -20323,13 +20397,13 @@ snapshots:
       picomatch: 4.0.2
       unist-util-visit: 5.0.0
 
-  starlight-package-managers@0.9.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))):
+  starlight-package-managers@0.10.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))):
     dependencies:
-      '@astrojs/starlight': 0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
+      '@astrojs/starlight': 0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
 
-  starlight-typedoc@0.18.0(@astrojs/starlight@0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4)):
+  starlight-typedoc@0.18.0(@astrojs/starlight@0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4)):
     dependencies:
-      '@astrojs/starlight': 0.31.1(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
+      '@astrojs/starlight': 0.32.0(astro@5.1.8(@types/node@22.10.7)(jiti@2.4.2)(rollup@4.24.0)(terser@5.37.0)(tsx@4.19.2)(typescript@5.5.4)(yaml@2.7.0))
       github-slugger: 2.0.0
       typedoc: 0.27.7(typescript@5.5.4)
       typedoc-plugin-markdown: 4.4.2(typedoc@0.27.7(typescript@5.5.4))
