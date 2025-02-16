@@ -35,7 +35,7 @@ export interface PolicyFixResult extends PolicyFailure {
     resolved: boolean;
 }
 
-// @alpha (undocumented)
+// @alpha
 export interface PolicyFunctionArguments<C> {
     // (undocumented)
     config?: C | undefined;
