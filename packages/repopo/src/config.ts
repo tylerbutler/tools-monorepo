@@ -20,7 +20,7 @@ export interface RepopoConfig {
 	/**
 	 * An array of policies that are enabled.
 	 *
-	 * See {@link DefaultPolicies} for the policies that will be enabled by default if this is undefined.
+	 * See `DefaultPolicies` for the policies that will be enabled by default if this is `undefined`.
 	 */
 	policies?: RepoPolicy[];
 
