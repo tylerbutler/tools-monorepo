@@ -19,17 +19,17 @@ export type PolicyName = string;
 
 export interface PolicyFunctionArguments<C> {
 	/**
-	 * Absolute path to the file.
+	 * Path to the file, relative to the repo root.
 	 */
 	file: string;
 
 	/**
-	 * Path to the root of the repo.
+	 * Absolute path to the root of the repo.
 	 */
 	root: string;
 
 	/**
-	 * If true, the issue should be resolved automatically if possible.
+	 * If true, the handler should resolve any violations automatically if possible.
 	 */
 	resolve: boolean;
 
