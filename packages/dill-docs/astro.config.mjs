@@ -57,7 +57,6 @@ export default defineConfig({
 						plugin: ["typedoc-plugin-mdn-links"],
 					},
 				}),
-				// TODO: Re-enable once problems are fixed.
 				starlightLinksValidator(),
 			],
 			social: {
