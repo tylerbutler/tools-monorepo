@@ -72,6 +72,10 @@ esm/policies/PackageScripts.d.ts
 esm/policies/PackageScripts.d.ts.map
 esm/policies/PackageScripts.js
 esm/policies/PackageScripts.js.map
+esm/policies/PubLint.d.ts
+esm/policies/PubLint.d.ts.map
+esm/policies/PubLint.js
+esm/policies/PubLint.js.map
 esm/policies/SortTsconfigs.d.ts
 esm/policies/SortTsconfigs.d.ts.map
 esm/policies/SortTsconfigs.js

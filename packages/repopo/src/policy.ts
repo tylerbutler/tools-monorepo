@@ -1,3 +1,4 @@
+import { PubLint } from "./policies.js";
 import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
@@ -195,6 +196,7 @@ export const DefaultPolicies: RepoPolicy<any>[] = [
 	PackageJsonProperties,
 	PackageJsonSorted,
 	PackageScripts,
+	PubLint,
 	SortTsconfigs,
 	JsTsFileHeaders,
 ] as const;
