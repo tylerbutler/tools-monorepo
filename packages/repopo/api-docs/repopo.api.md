@@ -48,7 +48,7 @@ export interface PolicyFunctionArguments<C> {
 }
 
 // @alpha
-export type PolicyHandler<C> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
 
 // @alpha
 export type PolicyName = string;
