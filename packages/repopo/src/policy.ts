@@ -1,9 +1,10 @@
+import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
-import { PackageScripts as PackageScripts } from "./policies/PackageScripts.js";
-import { SortTsconfigs as SortTsconfigs } from "./policies/SortTsconfigs.js";
+import { PackageScripts } from "./policies/PackageScripts.js";
+import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 /**
  * @alpha
@@ -195,4 +196,5 @@ export const DefaultPolicies: RepoPolicy<any>[] = [
 	PackageJsonSorted,
 	PackageScripts,
 	SortTsconfigs,
+	JsTsFileHeaders,
 ] as const;

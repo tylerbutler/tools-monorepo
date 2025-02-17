@@ -7,7 +7,7 @@ const expectedScripts = ["build", "clean"] as const;
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  */
 export const PackageScripts = generatePackagePolicy(
-	"PackageScriptsPolicy",
+	"PackageScripts",
 	async (json, { file }) => {
 		const failResult: PolicyFailure = {
 			name: PackageScripts.name,
