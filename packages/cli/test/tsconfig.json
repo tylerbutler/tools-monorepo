@@ -3,7 +3,7 @@
 	"include": ["./**/*"],
 	"compilerOptions": {
 		"noEmit": true,
-		"types": ["node", "mocha"],
+		"types": ["node"],
 	},
 	"references": [{ "path": ".." }],
 }

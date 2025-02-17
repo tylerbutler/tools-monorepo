@@ -59,8 +59,7 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
-		"readme:main": "oclif readme --no-aliases",
-		"sort-package-json": "sort-package-json"
+		"readme:main": "oclif readme --no-aliases"
 	},
 	"oclif": {
 		"additionalHelpFlags": ["-h"],
@@ -76,7 +75,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "^0.52.0",
+		"@fluid-tools/build-infrastructure": "^0.53.0",
 		"@oclif/core": "^4.2.3",
 		"@oclif/plugin-help": "^6.2.21",
 		"@rushstack/node-core-library": "^5.7.0",
