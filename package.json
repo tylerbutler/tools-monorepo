@@ -77,8 +77,9 @@
 			"allowAny": ["@aws-sdk/*"],
 			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
 		},
+		"onlyBuiltDependencies": ["msw"],
 		"updateConfig": {
-			"ignoreDependencies": ["chai", "@types/node"]
+			"ignoreDependencies": ["@types/node"]
 		},
 		"overrides": {
 			"cookie@<0.7.0": ">=0.7.0",
@@ -88,8 +89,7 @@
 			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0",
 			"path-to-regexp@>=2.0.0 <3.3.0": ">=3.3.0",
 			"trim@<0.0.3": ">=0.0.3"
-		},
-		"onlyBuiltDependencies": ["msw"]
+		}
 	},
 	"fluidBuild": {
 		"tasks": {
