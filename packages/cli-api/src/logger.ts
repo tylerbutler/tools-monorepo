@@ -1,4 +1,7 @@
+import type { Command } from "@oclif/core";
 import chalk from "picocolors";
+
+export type OclifCommandLogger = Pick<Command, "log" | "warn" | "error">;
 
 /**
  * A function that logs an Error or error message.
@@ -6,7 +9,7 @@ import chalk from "picocolors";
  * @public
  */
 export type ErrorLoggingFunction = (
-	msg: string | Error | undefined,
+	msg: string | Error,
 	...args: unknown[]
 ) => void;
 
@@ -15,7 +18,7 @@ export type ErrorLoggingFunction = (
  *
  * @public
  */
-export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
+export type LoggingFunction = (message: string, ...args: unknown[]) => void;
 
 /**
  * A general-purpose logger object.
@@ -58,74 +61,15 @@ export interface Logger {
 	 * Logs a verbose message.
 	 */
 	verbose: ErrorLoggingFunction;
+
+	formatError?: ((message: Error | string) => string) | undefined;
 }
 
-/**
- * A {@link Logger} that logs directly to the console.
- */
-export const defaultLogger: Logger = {
-	/**
-	 * {@inheritDoc Logger.log}
-	 */
-	log,
-
-	/**
-	 * {@inheritDoc Logger.info}
-	 */
-	info,
-
-	/**
-	 * {@inheritDoc Logger.warning}
-	 */
-	warning,
-
-	/**
-	 * {@inheritDoc Logger.errorLog}
-	 */
-	errorLog,
-
-	/**
-	 * {@inheritDoc Logger.verbose}
-	 */
-	verbose,
-};
-
-function logWithTime(
-	msg: string | Error | undefined,
-	logFunc: ErrorLoggingFunction,
-) {
-	const date = new Date();
-	let hours = date.getHours().toString();
-	if (hours.length === 1) {
-		hours = `0${hours}`;
-	}
-	let mins = date.getMinutes().toString();
-	if (mins.length === 1) {
-		mins = `0${mins}`;
-	}
-	let secs = date.getSeconds().toString();
-	if (secs.length === 1) {
-		secs = `0${secs}`;
-	}
-	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msg);
-}
-
-function log(msg: string | undefined): void {
-	logWithTime(msg, console.log);
-}
-
-function info(msg: string | Error | undefined) {
-	logWithTime(`INFO: ${msg}`, console.log);
-}
-
-function verbose(msg: string | Error | undefined) {
-	logWithTime(`VERBOSE: ${msg}`, console.log);
-}
-
-function warning(msg: string | Error | undefined) {
-	logWithTime(`${chalk.yellow("WARNING")}: ${msg}`, console.log);
-}
-
-function errorLog(msg: string | Error | undefined) {
-	logWithTime(`${chalk.red("ERROR")}: ${msg}`, console.error);
+export function setCommandLogger(command: Logger, logger: Logger) {
+	command.log = logger.log;
+	command.warning = logger.warning;
+	command.info = logger.info;
+	command.verbose = logger.verbose;
+	command.errorLog = logger.errorLog;
+	command.formatError = logger.formatError;
 }

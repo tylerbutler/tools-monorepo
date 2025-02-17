@@ -24,7 +24,7 @@ export const PackageJsonRepoDirectoryProperty = generatePackagePolicy<
 		resolved: false,
 	};
 
-	const pkgDir = path.dirname(file);
+	const pkgDir = path.dirname(path.resolve(root, file));
 	const maybeDir = path.relative(root, pkgDir);
 	const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
 

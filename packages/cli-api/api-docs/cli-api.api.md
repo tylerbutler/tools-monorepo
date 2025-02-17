@@ -38,21 +38,22 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
         code?: string | undefined;
         exit?: number | undefined;
     } & PrettyPrintableError) | undefined): never;
-    errorLog(message: string | Error | undefined): void;
+    errorLog(message: string | Error): void;
     // (undocumented)
     protected flags: Flags<T>;
-    info(message: string | Error | undefined): void;
+    info(message: string | Error): void;
+    // (undocumented)
     init(): Promise<void>;
-    logHr(): void;
-    logIndent(input: string, indentNumber?: number): void;
+    log(message?: string, ...args: unknown[]): void;
+    protected logger: Logger;
     protected redirectLogToTrace: boolean;
     // (undocumented)
     protected trace: Debugger | undefined;
-    verbose(message: string | Error | undefined): void;
+    verbose(message: string | Error): void;
     // @deprecated
     warn(_input: string | Error): string | Error;
-    warning(message: string | Error | undefined): void;
-    warningWithDebugTrace(message: string | Error): string | Error;
+    warning(message: string | Error): void;
+    warningWithDebugTrace(message: string | Error): void;
 }
 
 // @beta (undocumented)
@@ -91,7 +92,7 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
-export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
+export type ErrorLoggingFunction = (msg: string | Error, ...args: unknown[]) => void;
 
 // @beta (undocumented)
 export function findGitRoot(cwd?: string): Promise<string>;
@@ -123,6 +124,8 @@ export interface JsonWriteOptions {
 // @public
 export interface Logger {
     errorLog: ErrorLoggingFunction;
+    // (undocumented)
+    formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
     log: LoggingFunction;
     verbose: ErrorLoggingFunction;
@@ -130,7 +133,7 @@ export interface Logger {
 }
 
 // @public
-export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
+export type LoggingFunction = (message: string, ...args: unknown[]) => void;
 
 // @beta
 export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;

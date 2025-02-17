@@ -39,4 +39,8 @@ esm/logger.d.ts
 esm/logger.d.ts.map
 esm/logger.js
 esm/logger.js.map
+esm/loggers/consola.d.ts
+esm/loggers/consola.d.ts.map
+esm/loggers/consola.js
+esm/loggers/consola.js.map
 esm/tsdoc-metadata.json

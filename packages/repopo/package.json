@@ -63,6 +63,8 @@
 		"sort-package-json": "sort-package-json"
 	},
 	"oclif": {
+		"additionalHelpFlags": ["-h"],
+		"additionalVersionFlags": ["-V"],
 		"bin": "repopo",
 		"commands": {
 			"strategy": "pattern",

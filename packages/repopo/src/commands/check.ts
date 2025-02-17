@@ -90,7 +90,7 @@ export class CheckPolicy<
 			}
 		} finally {
 			if (!this.flags.quiet) {
-				logStats(commandContext.perfStats, this);
+				logStats(commandContext.perfStats, this.logger);
 			}
 		}
 	}

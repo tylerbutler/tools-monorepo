@@ -198,6 +198,9 @@ importers:
       '@tylerbu/lilconfig-loader-ts':
         specifier: workspace:^
         version: link:../lilconfig-loader-ts
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.0
       debug:
         specifier: ^4.3.4
         version: 4.3.7
