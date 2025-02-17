@@ -29,8 +29,7 @@
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write",
-		"sort-package-json": "sort-package-json"
+		"lint:fix": "biome lint . --write"
 	},
 	"dependencies": {
 		"jiti": "^2.4.2"

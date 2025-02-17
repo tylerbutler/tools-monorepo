@@ -1,7 +1,6 @@
 import { runCommand } from "@oclif/test";
-import { expect } from "chai";
-import { describe, it } from "mocha";
 import path from "pathe";
+import { describe, expect, it } from "vitest";
 
 const testDataPath = "test/data";
 

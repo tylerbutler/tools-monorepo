@@ -31,7 +31,6 @@
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
-		"sort-package-json": "sort-package-json",
 		"test": "vitest run test",
 		"test:coverage": "vitest run test --coverage"
 	},
