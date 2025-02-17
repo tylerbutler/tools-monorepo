@@ -19,9 +19,7 @@ const jsTsReplacer = (
 	prevContent: string,
 	{ headerText }: FileHeaderPolicyConfig,
 ): string => {
-	// const prevContent = readFile(file);
-
-	// prepend copyright header to existing content
+	// prepend header to existing content
 	const separator =
 		prevContent.startsWith("\r") || prevContent.startsWith("\n")
 			? newline
@@ -34,11 +32,10 @@ const jsTsReplacer = (
 };
 
 /**
- * A RepoPolicy that checks that JavaScript and TypeScript source files havve the configured header comment
+ * A RepoPolicy that checks that JavaScript and TypeScript source files have the configured header comment
  */
 export const JsTsFileHeaders = generateFileHeaderPolicy("JsTsFileHeaders", {
 	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
-	type: "JavaScript/TypeScript",
 	headerStart: /(#![^\n]*\r?\n)?\/\*!\r?\n/, // Begins with optional hashbang followed by '/*!'
 	lineStart: / \* /, // Subsequent lines begins with ' * '
 	lineEnd: /\r?\n/, // Subsequent lines end with CRLF or LF

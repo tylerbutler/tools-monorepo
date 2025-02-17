@@ -22,11 +22,6 @@ export interface FileHeaderGeneratorConfig
 	match: RegExp;
 
 	/**
-	 * File type reported in error message (e.g., 'Html')
-	 */
-	type: string;
-
-	/**
 	 * Regex matching header prefix (e.g. '/*!\r?\n')
 	 */
 	headerStart?: RegExp;
