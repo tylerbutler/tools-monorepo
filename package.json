@@ -77,17 +77,13 @@
 			"allowAny": ["@aws-sdk/*"],
 			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
 		},
+		"onlyBuiltDependencies": ["msw"],
 		"updateConfig": {
-			"ignoreDependencies": ["chai", "@types/node"]
+			"ignoreDependencies": ["@types/node"]
 		},
 		"overrides": {
-			"cookie@<0.7.0": ">=0.7.0",
-			"cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5",
-			"cross-spawn@<6.0.6": ">=6.0.6",
 			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
-			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0",
-			"path-to-regexp@>=2.0.0 <3.3.0": ">=3.3.0",
-			"trim@<0.0.3": ">=0.0.3"
+			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
 		}
 	},
 	"fluidBuild": {
