@@ -91,6 +91,9 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 // @beta (undocumented)
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
+// @alpha
+export const ConsolaLogger: Logger;
+
 // @public
 export type ErrorLoggingFunction = (msg: string | Error, ...args: unknown[]) => void;
 

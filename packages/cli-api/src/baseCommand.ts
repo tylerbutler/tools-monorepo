@@ -2,7 +2,7 @@ import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
 import type { PrettyPrintableError } from "@oclif/core/errors";
 import registerDebug, { type Debugger } from "debug";
 import type { Logger } from "./logger.js";
-import { consolaLogger } from "./loggers/consola.js";
+import { BasicLogger } from "./loggers/basic.js";
 
 /**
  * A type representing all the args of the base commands and subclasses.
@@ -63,7 +63,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	 * A Logger instance that the command will use for logging. The class methods like log and warning are redirected to
 	 * the functions in this logger.
 	 */
-	protected logger: Logger = consolaLogger;
+	protected logger: Logger = BasicLogger;
 
 	protected trace: Debugger | undefined;
 	private traceLog: Debugger | undefined;

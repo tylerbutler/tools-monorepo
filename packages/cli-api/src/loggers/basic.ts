@@ -53,7 +53,7 @@ function errorLog(msg: string | Error | undefined) {
 /**
  * A {@link Logger} that logs directly to the console.
  */
-export const basicLogger: Logger = {
+export const BasicLogger: Logger = {
 	/**
 	 * {@inheritDoc Logger.log}
 	 */

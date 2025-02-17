@@ -1,17 +1,19 @@
 import { consola } from "consola";
 import type { Logger } from "../logger.js";
-import { basicLogger } from "./basic.js";
+import { BasicLogger } from "./basic.js";
 
 // const consolaLogger = createConsola({ level: LogLevels.info });
 
 /**
  * A logger that logs using the consola default colorful logger.
+ *
+ * @alpha
  */
-export const consolaLogger: Logger = {
+export const ConsolaLogger: Logger = {
 	log: consola.log,
 	info: consola.info,
 	warning: consola.warn,
 	errorLog: consola.error,
 	verbose: consola.verbose,
-	formatError: basicLogger.formatError,
-};
+	formatError: BasicLogger.formatError,
+} as const;

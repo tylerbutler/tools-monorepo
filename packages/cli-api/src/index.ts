@@ -31,3 +31,4 @@ export type {
 	LoggingFunction,
 	Logger,
 } from "./logger.js";
+export { ConsolaLogger } from "./loggers/consola.js";
