@@ -55,7 +55,6 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "concurrently npm:readme:*",
 		"readme:main": "oclif readme --no-aliases",
-		"sort-package-json": "sort-package-json",
 		"start": "serve ./test/data --listen 8080",
 		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",

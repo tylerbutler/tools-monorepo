@@ -47,7 +47,6 @@
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
-		"sort-package-json": "sort-package-json",
 		"test": "vitest run test",
 		"test:coverage": "vitest run test --coverage"
 	},
@@ -60,7 +59,6 @@
 		"concurrently": "^9.1.2",
 		"pathe": "^2.0.3",
 		"rimraf": "^6.0.1",
-		"sort-package-json": "2.14.0",
 		"tempy": "^3.1.0",
 		"typedoc": "^0.27.7",
 		"typedoc-plugin-markdown": "^4.4.2",
