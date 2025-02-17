@@ -2,15 +2,14 @@ import assert from "node:assert/strict";
 import { updatePackageJsonFile } from "@fluid-tools/build-infrastructure";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
-
-import { definePackagePolicy } from "../definePackagePolicy.js";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
 
 /**
  * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository
  * field is a string instead of an object the package will be ignored.
  */
-export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
+export const PackageJsonRepoDirectoryProperty = generatePackagePolicy<
 	PackageJson,
 	undefined
 >("PackageJsonRepoDirectoryProperty", async (json, { file, root, resolve }) => {

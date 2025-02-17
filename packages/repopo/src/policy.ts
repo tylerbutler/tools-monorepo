@@ -1,9 +1,9 @@
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
-import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
-import { PackageScriptsPolicy } from "./policies/PackageScriptsPolicy.js";
-import { SortTsconfigsPolicy } from "./policies/SortTsconfigsPolicy.js";
+import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
+import { PackageScripts as PackageScripts } from "./policies/PackageScripts.js";
+import { SortTsconfigs as SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 /**
  * @alpha
@@ -187,16 +187,12 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  * @alpha
  */
 
-// biome-ignore lint/suspicious/noExplicitAny: TODO
+// biome-ignore lint/suspicious/noExplicitAny: FIXME
 export const DefaultPolicies: RepoPolicy<any>[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
-	PackageJsonSortedPolicy,
-	PackageScriptsPolicy,
-	SortTsconfigsPolicy,
+	PackageJsonSorted,
+	PackageScripts,
+	SortTsconfigs,
 ] as const;
-
-// export function createPolicy<C>(args: RepoPolicy<C>) {
-// 	return args;
-// }

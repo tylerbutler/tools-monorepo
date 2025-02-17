@@ -123,6 +123,7 @@ export class CheckPolicy<
 		await Promise.all(resultsP);
 	}
 
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: FIXME
 	private async runPolicy(
 		relPath: string,
 		// policies: RepoPolicy[],

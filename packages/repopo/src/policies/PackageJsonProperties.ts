@@ -1,10 +1,9 @@
-import type { PackageJson } from "type-fest";
-
 import jsonfile from "jsonfile";
-const { writeFile: writeJson } = jsonfile;
+import type { PackageJson } from "type-fest";
+import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
 
-import { definePackagePolicy } from "../definePackagePolicy.js";
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
+const { writeFile: writeJson } = jsonfile;
 
 /**
  * @alpha
@@ -26,7 +25,7 @@ export interface PackageJsonPropertiesSettings {
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  */
-export const PackageJsonProperties = definePackagePolicy<
+export const PackageJsonProperties = generatePackagePolicy<
 	PackageJson,
 	PackageJsonPropertiesSettings | undefined
 >("PackageJsonProperties", async (json, { file, config, resolve }) => {

@@ -1,14 +1,13 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
 import { sortPackageJson } from "sort-package-json";
-
-import { definePackagePolicy } from "../definePackagePolicy.js";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
 
 /**
  * A repo policy that checks if package.json files in the repo are sorted using sort-package-json.
  */
-export const PackageJsonSortedPolicy = definePackagePolicy(
-	"PackageJsonSortedPolicy",
+export const PackageJsonSorted = generatePackagePolicy(
+	"PackageJsonSorted",
 	async (json, { file, resolve }) => {
 		const sortedJson = sortPackageJson(json);
 		const isSorted = JSON.stringify(sortedJson) === JSON.stringify(json);
@@ -21,14 +20,14 @@ export const PackageJsonSortedPolicy = definePackagePolicy(
 			try {
 				await updatePackageJsonFile(file, (json) => json, { sort: true });
 				const result: PolicyFixResult = {
-					name: PackageJsonSortedPolicy.name,
+					name: PackageJsonSorted.name,
 					file,
 					resolved: true,
 				};
 				return result;
 			} catch (error: unknown) {
 				const result: PolicyFixResult = {
-					name: PackageJsonSortedPolicy.name,
+					name: PackageJsonSorted.name,
 					file,
 					resolved: false,
 					autoFixable: true,
@@ -38,7 +37,7 @@ export const PackageJsonSortedPolicy = definePackagePolicy(
 			}
 		} else {
 			const result: PolicyFailure = {
-				name: PackageJsonSortedPolicy.name,
+				name: PackageJsonSorted.name,
 				file,
 				autoFixable: true,
 			};
