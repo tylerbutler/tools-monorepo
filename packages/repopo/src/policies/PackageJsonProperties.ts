@@ -1,10 +1,9 @@
-import type { PackageJson } from "type-fest";
-
 import jsonfile from "jsonfile";
-const { writeFile: writeJson } = jsonfile;
+import type { PackageJson } from "type-fest";
+import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
 
-import { definePackagePolicy } from "../packageJsonHandlerAdapter.js";
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
+const { writeFile: writeJson } = jsonfile;
 
 /**
  * @alpha
@@ -26,53 +25,51 @@ export interface PackageJsonPropertiesSettings {
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  */
-export const PackageJsonProperties: RepoPolicy<
+export const PackageJsonProperties = generatePackagePolicy<
+	PackageJson,
 	PackageJsonPropertiesSettings | undefined
-> = definePackagePolicy<PackageJson, PackageJsonPropertiesSettings | undefined>(
-	"PackageJsonProperties",
-	async (json, { file, config, resolve }) => {
-		if (config === undefined) {
-			return true;
-		}
-
-		const failResult: PolicyFailure = {
-			name: PackageJsonProperties.name,
-			file,
-			autoFixable: true,
-		};
-
-		const { verbatim } = config;
-		const messages: string[] = [];
-
-		for (const [propName, value] of Object.entries(verbatim)) {
-			if (json[propName] !== value) {
-				messages.push(
-					`Incorrect package.json field value for '${propName}'. Expected '${value}', got '${json[propName]}'.`,
-				);
-			}
-		}
-
-		if (messages.length > 0) {
-			if (resolve) {
-				const fixResult: PolicyFixResult = {
-					...failResult,
-					resolved: false,
-				};
-
-				for (const [propName, value] of Object.entries(verbatim)) {
-					json[propName] = value;
-				}
-				await writeJson(file, json, { spaces: "\t" });
-
-				fixResult.resolved = true;
-				return fixResult;
-			}
-
-			// There were errors, and we're not resolving them, so return a fail result
-			failResult.errorMessage = messages.join("\n");
-			return failResult;
-		}
-
+>("PackageJsonProperties", async (json, { file, config, resolve }) => {
+	if (config === undefined) {
 		return true;
-	},
-);
+	}
+
+	const failResult: PolicyFailure = {
+		name: PackageJsonProperties.name,
+		file,
+		autoFixable: true,
+	};
+
+	const { verbatim } = config;
+	const messages: string[] = [];
+
+	for (const [propName, value] of Object.entries(verbatim)) {
+		if (json[propName] !== value) {
+			messages.push(
+				`Incorrect package.json field value for '${propName}'. Expected '${value}', got '${json[propName]}'.`,
+			);
+		}
+	}
+
+	if (messages.length > 0) {
+		if (resolve) {
+			const fixResult: PolicyFixResult = {
+				...failResult,
+				resolved: false,
+			};
+
+			for (const [propName, value] of Object.entries(verbatim)) {
+				json[propName] = value;
+			}
+			await writeJson(file, json, { spaces: "\t" });
+
+			fixResult.resolved = true;
+			return fixResult;
+		}
+
+		// There were errors, and we're not resolving them, so return a fail result
+		failResult.errorMessage = messages.join("\n");
+		return failResult;
+	}
+
+	return true;
+});

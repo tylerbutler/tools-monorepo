@@ -32,6 +32,7 @@
 		"deps:dev": "ncu",
 		"deps:oclif": "ncu --configFileName .ncurc.oclif.cjs",
 		"deps:prod": "ncu --configFileName .ncurc.prod.cjs",
+		"fix:policy": "./packages/repopo/bin/dev.js check --fix",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"generate:license-file": "fluid-build . --task generate:license-file",
