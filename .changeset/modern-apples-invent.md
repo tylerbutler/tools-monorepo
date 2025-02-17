@@ -6,3 +6,4 @@ New policies
 
 - JsTsFileHeaders
 - HtmlFileHeaders
+- PackageScripts
