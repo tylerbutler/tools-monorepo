@@ -1,13 +1,14 @@
+import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
-import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
+import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
+import { PackageScripts } from "./policies/PackageScripts.js";
 import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 /**
  * @alpha
  */
-// biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
 export type DefaultPolicyConfigType = object | unknown;
 
 /**
@@ -53,7 +54,7 @@ export interface PolicyFunctionArguments<C> {
  * @alpha
  */
 
-export type PolicyHandler<C> = (
+export type PolicyHandler<C = unknown | undefined> = (
 	args: PolicyFunctionArguments<C>,
 ) => Promise<true | PolicyFailure | PolicyFixResult>;
 
@@ -187,15 +188,13 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  * @alpha
  */
 
-// biome-ignore lint/suspicious/noExplicitAny: TODO
+// biome-ignore lint/suspicious/noExplicitAny: FIXME
 export const DefaultPolicies: RepoPolicy<any>[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
-	PackageJsonSortedPolicy,
+	PackageJsonSorted,
+	PackageScripts,
 	SortTsconfigs,
+	JsTsFileHeaders,
 ] as const;
-
-// export function createPolicy<C>(args: RepoPolicy<C>) {
-// 	return args;
-// }

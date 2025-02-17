@@ -5,8 +5,7 @@
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": ""
+		"url": "https://github.com/tylerbutler/tools-monorepo.git"
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -33,6 +32,7 @@
 		"deps:dev": "ncu",
 		"deps:oclif": "ncu --configFileName .ncurc.oclif.cjs",
 		"deps:prod": "ncu --configFileName .ncurc.prod.cjs",
+		"fix:policy": "./packages/repopo/bin/dev.js check --fix",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"generate:license-file": "fluid-build . --task generate:license-file",
