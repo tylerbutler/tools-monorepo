@@ -164,8 +164,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       type-fest:
-        specifier: ^4.34.1
-        version: 4.34.1
+        specifier: ^4.35.0
+        version: 4.35.0
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -261,8 +261,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       type-fest:
-        specifier: ^4.34.1
-        version: 4.34.1
+        specifier: ^4.35.0
+        version: 4.35.0
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -385,8 +385,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       type-fest:
-        specifier: ^4.34.1
-        version: 4.34.1
+        specifier: ^4.35.0
+        version: 4.35.0
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -540,8 +540,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       type-fest:
-        specifier: ^4.34.1
-        version: 4.34.1
+        specifier: ^4.35.0
+        version: 4.35.0
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -631,8 +631,8 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.16.10)(typescript@5.5.4)
       type-fest:
-        specifier: ^4.34.1
-        version: 4.34.1
+        specifier: ^4.35.0
+        version: 4.35.0
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -783,7 +783,7 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       type-fest:
-        specifier: ^4.34.1
+        specifier: ^4.35.0
         version: 4.35.0
       typescript:
         specifier: ~5.5.4
@@ -8962,10 +8962,6 @@ packages:
   type-fest@2.19.0:
     resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
     engines: {node: '>=12.20'}
-
-  type-fest@4.34.1:
-    resolution: {integrity: sha512-6kSc32kT0rbwxD6QL1CYe8IqdzN/J/ILMrNK+HMQCKH3insCDRY/3ITb0vcBss0a3t72fzh2YSzj8ko1HgwT3g==}
-    engines: {node: '>=16'}
 
   type-fest@4.35.0:
     resolution: {integrity: sha512-2/AwEFQDFEy30iOLjrvHDIH7e4HEWH+f1Yl1bI5XMqzuoCUqwYCdxachgsgv0og/JdVZUhbfjcJAoHj5L1753A==}
@@ -18595,7 +18591,7 @@ snapshots:
       path-to-regexp: 6.3.0
       picocolors: 1.1.1
       strict-event-emitter: 0.5.1
-      type-fest: 4.34.1
+      type-fest: 4.35.0
       yargs: 17.7.2
     optionalDependencies:
       typescript: 5.5.4
@@ -18620,7 +18616,7 @@ snapshots:
       path-to-regexp: 6.3.0
       picocolors: 1.1.1
       strict-event-emitter: 0.5.1
-      type-fest: 4.34.1
+      type-fest: 4.35.0
       yargs: 17.7.2
     optionalDependencies:
       typescript: 5.7.2
@@ -21163,8 +21159,6 @@ snapshots:
   type-fest@1.4.0: {}
 
   type-fest@2.19.0: {}
-
-  type-fest@4.34.1: {}
 
   type-fest@4.35.0: {}
 
