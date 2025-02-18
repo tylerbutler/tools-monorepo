@@ -27,7 +27,7 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 
 The following npm package may be included in this product:
 
- - @rushstack/node-core-library@5.9.0
+ - @rushstack/node-core-library@5.11.0
 
 This package contains the following license:
 
