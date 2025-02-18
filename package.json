@@ -77,7 +77,20 @@
 			"allowAny": ["@aws-sdk/*"],
 			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
 		},
-		"onlyBuiltDependencies": ["msw"],
+		"onlyBuiltDependencies": [
+			"@biomejs/biome",
+			"better-sqlite3",
+			"core-js",
+			"core-js-pure",
+			"dtrace-provider",
+			"esbuild",
+			"lefthook",
+			"msw",
+			"protobufjs",
+			"re2",
+			"sharp",
+			"yarn"
+		],
 		"updateConfig": {
 			"ignoreDependencies": ["@types/node"]
 		},
