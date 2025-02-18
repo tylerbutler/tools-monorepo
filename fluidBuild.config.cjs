@@ -21,6 +21,7 @@ const config = {
 				"build:test",
 				"api",
 				"docs",
+				"generate",
 				"manifest",
 				"readme",
 			],
