@@ -1,5 +1,5 @@
 import chalk from "picocolors";
-import type { ErrorLoggingFunction, Logger } from "../logger.js";
+import type { Logger } from "../logger.js";
 
 function formatError(message: Error | string): string {
 	const formatted =
@@ -10,44 +10,32 @@ function formatError(message: Error | string): string {
 	return formatted;
 }
 
-function logWithTime(
-	msg: string | Error | undefined,
-	logFunc: ErrorLoggingFunction,
-) {
-	const date = new Date();
-	let hours = date.getHours().toString();
-	if (hours.length === 1) {
-		hours = `0${hours}`;
-	}
-	let mins = date.getMinutes().toString();
-	if (mins.length === 1) {
-		mins = `0${mins}`;
-	}
-	let secs = date.getSeconds().toString();
-	if (secs.length === 1) {
-		secs = `0${secs}`;
-	}
-	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msg);
+function log(msg: string): void {
+	// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+	// biome-ignore lint/suspicious/noConsole: <explanation>
+	console.log(msg);
 }
 
-function log(msg: string | undefined): void {
-	logWithTime(msg, console.log);
+function success(msg: string | Error) {
+	log(`${chalk.green("SUCCESS")}: ${formatError(msg)}`);
 }
 
-function info(msg: string | Error | undefined) {
-	logWithTime(`INFO: ${msg}`, console.log);
+function info(msg: string | Error) {
+	log(`INFO: ${formatError(msg)}`);
 }
 
-function verbose(msg: string | Error | undefined) {
-	logWithTime(`VERBOSE: ${msg}`, console.log);
+function verbose(msg: string | Error) {
+	log(`VERBOSE: ${formatError(msg)}`);
 }
 
-function warning(msg: string | Error | undefined) {
-	logWithTime(`${chalk.yellow("WARNING")}: ${msg}`, console.log);
+function warning(msg: string | Error) {
+	log(`${chalk.yellow("WARNING")}: ${formatError(msg)}`);
 }
 
-function errorLog(msg: string | Error | undefined) {
-	logWithTime(`${chalk.red("ERROR")}: ${msg}`, console.error);
+function errorLog(msg: string | Error) {
+	// biome-ignore lint/suspicious/noConsoleLog: <explanation>
+	// biome-ignore lint/suspicious/noConsole: <explanation>
+	console.error(`${chalk.red("ERROR")}: ${formatError(msg)}`);
 }
 
 /**
@@ -80,7 +68,7 @@ export const BasicLogger: Logger = {
 	verbose,
 
 	/**
-	 * {@inheritDoc Logger.formatError}
+	 * {@inheritDoc Logger.success}
 	 */
-	formatError,
+	success,
 };

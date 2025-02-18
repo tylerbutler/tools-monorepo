@@ -37,6 +37,11 @@ export interface Logger {
 	log: LoggingFunction;
 
 	/**
+	 * Logs a success message.
+	 */
+	success: LoggingFunction;
+
+	/**
 	 * Logs an informational message.
 	 */
 	info: ErrorLoggingFunction;
@@ -65,11 +70,22 @@ export interface Logger {
 	formatError?: ((message: Error | string) => string) | undefined;
 }
 
-export function setCommandLogger(command: Logger, logger: Logger) {
-	command.log = logger.log;
-	command.warning = logger.warning;
-	command.info = logger.info;
-	command.verbose = logger.verbose;
-	command.errorLog = logger.errorLog;
-	command.formatError = logger.formatError;
+export function logWithTime(
+	msg: string | Error,
+	logFunc: ErrorLoggingFunction,
+) {
+	const date = new Date();
+	let hours = date.getHours().toString();
+	if (hours.length === 1) {
+		hours = `0${hours}`;
+	}
+	let mins = date.getMinutes().toString();
+	if (mins.length === 1) {
+		mins = `0${mins}`;
+	}
+	let secs = date.getSeconds().toString();
+	if (secs.length === 1) {
+		secs = `0${secs}`;
+	}
+	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msg);
 }

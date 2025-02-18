@@ -1,6 +1,6 @@
 import { consola } from "consola";
 import type { Logger } from "../logger.js";
-import { BasicLogger } from "./basic.js";
+// import { BasicLogger } from "./basic.js";
 
 // const consolaLogger = createConsola({ level: LogLevels.info });
 
@@ -11,9 +11,9 @@ import { BasicLogger } from "./basic.js";
  */
 export const ConsolaLogger: Logger = {
 	log: consola.log,
+	success: consola.success,
 	info: consola.info,
 	warning: consola.warn,
 	errorLog: consola.error,
 	verbose: consola.verbose,
-	formatError: BasicLogger.formatError,
 } as const;

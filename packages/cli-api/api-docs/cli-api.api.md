@@ -47,6 +47,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
     log(message?: string, ...args: unknown[]): void;
     protected logger: Logger;
     protected redirectLogToTrace: boolean;
+    success(message: string): void;
     // (undocumented)
     protected trace: Debugger | undefined;
     verbose(message: string | Error): void;
@@ -131,6 +132,7 @@ export interface Logger {
     formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
     log: LoggingFunction;
+    success: LoggingFunction;
     verbose: ErrorLoggingFunction;
     warning: ErrorLoggingFunction;
 }

@@ -115,6 +115,18 @@ export abstract class BaseCommand<T extends typeof Command>
 	}
 
 	/**
+	 * Logs a success message.
+	 */
+	public success(message: string) {
+		if (!(this.suppressLogging || this.redirectLogToTrace)) {
+			this.logger.success(message);
+		}
+		if (this.redirectLogToTrace) {
+			this.traceInfo?.(message);
+		}
+	}
+
+	/**
 	 * Logs an informational message.
 	 */
 	public info(message: string | Error) {

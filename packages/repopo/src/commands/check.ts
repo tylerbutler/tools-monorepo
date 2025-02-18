@@ -194,7 +194,7 @@ export class CheckPolicy<
 			} else {
 				// No resolver, or fix is false, so we're in the full failure case.
 				const autoFixable = result.autoFixable
-					? chalk.green(" (autofixable)")
+					? ` ${chalk.black(chalk.bgGreen(" autofixable "))}`
 					: "";
 				messages.append(
 					`'${policy.name}' policy failure${autoFixable}: ${result.file}`,
