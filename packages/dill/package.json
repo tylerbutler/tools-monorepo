@@ -125,7 +125,7 @@
 		"ts-node": "^10.9.2",
 		"tsx": "^4.19.2",
 		"type-fest": "^4.35.0",
-		"typescript": "~5.5.4",
+		"typescript": "~5.7.0",
 		"unionfs": "^4.5.4",
 		"vitest": "^3.0.5"
 	},
