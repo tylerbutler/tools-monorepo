@@ -21,7 +21,6 @@ const config = {
 				"build:test",
 				"api",
 				"docs",
-				"generate",
 				"manifest",
 				"readme",
 			],
@@ -51,6 +50,10 @@ const config = {
 		},
 		manifest: ["compile"],
 		readme: ["compile", "manifest"],
+		release: {
+			dependsOn: ["build", "generate:license-file"],
+			script: false,
+		},
 		test: {
 			dependsOn: ["compile"],
 		},
