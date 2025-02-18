@@ -65,8 +65,8 @@ MIT
 
 The following npm packages may be included in this product:
 
- - @oclif/plugin-commands@4.1.16
- - @oclif/plugin-which@3.2.25
+ - @oclif/plugin-commands@4.1.20
+ - @oclif/plugin-which@3.2.30
 
 These packages each contain the following license:
 
@@ -96,13 +96,13 @@ SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @oclif/core@4.2.3
- - @oclif/plugin-autocomplete@3.2.17
- - @oclif/plugin-help@6.2.21
- - @oclif/plugin-not-found@3.2.35
- - @oclif/plugin-plugins@5.4.25
- - @oclif/plugin-version@2.2.20
- - @oclif/plugin-warn-if-update-available@3.1.30
+ - @oclif/core@4.2.7
+ - @oclif/plugin-autocomplete@3.2.22
+ - @oclif/plugin-help@6.2.25
+ - @oclif/plugin-not-found@3.2.42
+ - @oclif/plugin-plugins@5.4.33
+ - @oclif/plugin-version@2.2.24
+ - @oclif/plugin-warn-if-update-available@3.1.33
 
 These packages each contain the following license:
 
@@ -132,7 +132,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @oclif/plugin-search@1.2.18
+ - @oclif/plugin-search@1.2.21
 
 This package contains the following license:
 
