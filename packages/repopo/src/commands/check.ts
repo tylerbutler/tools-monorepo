@@ -41,9 +41,6 @@ export class CheckPolicy<
 		...BaseRepopoCommand.flags,
 	} as const;
 
-	private processed = 0;
-	private count = 0;
-
 	public override async run(): Promise<void> {
 		if (this.flags.fix) {
 			this.info("Resolving errors if possible.");
@@ -90,7 +87,7 @@ export class CheckPolicy<
 			}
 		} finally {
 			if (!this.flags.quiet) {
-				logStats(commandContext.perfStats, this);
+				logStats(commandContext.perfStats, this.logger);
 			}
 		}
 	}
@@ -124,11 +121,7 @@ export class CheckPolicy<
 	}
 
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: FIXME
-	private async runPolicy(
-		relPath: string,
-		// policies: RepoPolicy[],
-		policy: RepoPolicy,
-	): Promise<void> {
+	private async runPolicy(relPath: string, policy: RepoPolicy): Promise<void> {
 		const context = await this.getContext();
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
@@ -144,7 +137,7 @@ export class CheckPolicy<
 
 		const result = await runWithPerf(
 			policy.name,
-			"handle",
+			"check",
 			perfStats,
 			async () =>
 				policy.handler({
@@ -201,7 +194,7 @@ export class CheckPolicy<
 			} else {
 				// No resolver, or fix is false, so we're in the full failure case.
 				const autoFixable = result.autoFixable
-					? chalk.green(" (autofixable)")
+					? ` ${chalk.black(chalk.bgGreen(" autofixable "))}`
 					: "";
 				messages.append(
 					`'${policy.name}' policy failure${autoFixable}: ${result.file}`,
@@ -234,7 +227,7 @@ export class CheckPolicy<
 
 		const filePath = path.join(gitRoot, inputPath).trim().replace(/\\/g, "/");
 
-		this.count++;
+		commandContext.perfStats.count++;
 		if (!exclusions.every((value) => !value.test(inputPath))) {
 			this.verbose(`Excluded all handlers: ${inputPath}`);
 			return;
@@ -248,7 +241,7 @@ export class CheckPolicy<
 			);
 		}
 
-		this.processed++;
+		commandContext.perfStats.processed++;
 	}
 }
 

@@ -181,6 +181,9 @@ importers:
       '@tylerbu/lilconfig-loader-ts':
         specifier: workspace:^
         version: link:../lilconfig-loader-ts
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.0
       debug:
         specifier: ^4.4.0
         version: 4.4.0(supports-color@8.1.1)
@@ -569,6 +572,9 @@ importers:
       '@tylerbu/fundamentals':
         specifier: workspace:^
         version: link:../fundamentals
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.0
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
