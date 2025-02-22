@@ -35,7 +35,7 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "fluid-build . --task build",
+		"build": "sail build . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
@@ -45,7 +45,7 @@
 		"compile": "tsc --project ./tsconfig.json",
 		"dill": "./bin/dev.js",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "fluid-build . --task full",
+		"full": "sail build . --task full",
 		"generate": "concurrently npm:generate:*",
 		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",

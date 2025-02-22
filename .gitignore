@@ -10,7 +10,7 @@ yarn.lock
 .require-email.json
 
 
-# fluid-build build files
+# sail build files
 *.done.build.log
 
 # netlify cache

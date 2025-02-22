@@ -41,7 +41,7 @@
 	"scripts": {
 		"api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"build": "fluid-build . --task build",
+		"build": "sail build . --task build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
@@ -50,7 +50,7 @@
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "fluid-build . --task full",
+		"full": "sail build . --task full",
 		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",

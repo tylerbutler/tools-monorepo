@@ -32,7 +32,7 @@
 	"files": ["esm"],
 	"scripts": {
 		"api": "concurrently npm:docs:api:*",
-		"build": "fluid-build . --task build",
+		"build": "sail build . --task build",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
@@ -44,7 +44,7 @@
 		"docs:api:set": "api-extractor run --local --config api-extractor.set.json",
 		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "fluid-build . --task full",
+		"full": "sail build . --task full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
 		"test": "vitest run test",
