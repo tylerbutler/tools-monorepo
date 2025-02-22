@@ -94,10 +94,10 @@
 		"@oclif/plugin-warn-if-update-available": "^3.1.33",
 		"@oclif/plugin-which": "^3.2.30",
 		"@tylerbu/cli-api": "workspace:^",
-		"debug": "^4.3.4",
+		"debug": "^4.4.0",
 		"dill-cli": "workspace:^",
-		"picocolors": "^1.1.0",
-		"simple-git": "^3.24.0",
+		"picocolors": "^1.1.1",
+		"simple-git": "^3.27.0",
 		"strip-ansi": "^7.1.0"
 	},
 	"devDependencies": {

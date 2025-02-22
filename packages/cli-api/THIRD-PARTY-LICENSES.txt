@@ -27,7 +27,7 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 
 The following npm package may be included in this product:
 
- - debug@4.3.7
+ - debug@4.4.0
 
 This package contains the following license:
 
