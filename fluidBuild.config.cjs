@@ -51,6 +51,10 @@ const config = {
 		},
 		manifest: ["compile"],
 		readme: ["compile", "manifest"],
+		release: {
+			dependsOn: ["build", "generate:license-file"],
+			script: false,
+		},
 		test: {
 			dependsOn: ["compile"],
 		},
