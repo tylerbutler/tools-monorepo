@@ -60,6 +60,7 @@
 		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "npm run update:test-snapshots",
 		"test:vitest": "vitest run test",
+		"tsc": "npm run compile",
 		"update:test-snapshots": "vitest run test -u"
 	},
 	"oclif": {
