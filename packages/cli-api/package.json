@@ -40,7 +40,8 @@
 		"lint:fix": "biome lint . --write",
 		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",
-		"test:vitest": "vitest run test"
+		"test:vitest": "vitest run test",
+		"tsc": "npm run compile"
 	},
 	"oclif": {
 		"bin": "tylerbu-cli-api",
