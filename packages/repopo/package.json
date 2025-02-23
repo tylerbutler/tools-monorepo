@@ -51,7 +51,6 @@
 		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate": "concurrently npm:generate:*",
 		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
@@ -75,7 +74,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "^0.53.0",
+		"@fluid-tools/build-infrastructure": "^0.54.0",
 		"@oclif/core": "^4.2.7",
 		"@oclif/plugin-help": "^6.2.25",
 		"@rushstack/node-core-library": "^5.11.0",
