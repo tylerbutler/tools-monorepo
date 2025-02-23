@@ -1,4 +1,5 @@
 import type { Logger } from "@tylerbu/cli-api";
+import { colors } from "consola/utils";
 import type { PolicyName } from "./policy.js";
 
 export type PolicyAction = "check" | "resolve";
@@ -40,9 +41,8 @@ export async function runWithPerf<T>(
 
 export function logStats(stats: PolicyHandlerPerfStats, log: Logger): void {
 	log.log(
-		`Statistics: ${stats.processed} files processed, ${
-			stats.count - stats.processed
-		} excluded, ${stats.count} total`,
+		`Statistics: ${stats.processed} files processed, ` +
+			`${stats.count - stats.processed} excluded, ${stats.count} total`,
 	);
 	for (const [action, handlerPerf] of stats.data.entries()) {
 		log.log(`Performance for "${action}":`);

@@ -1,8 +1,8 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
+import { colors } from "consola/utils";
 import path from "pathe";
-import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
@@ -194,7 +194,7 @@ export class CheckPolicy<
 			} else {
 				// No resolver, or fix is false, so we're in the full failure case.
 				const autoFixable = result.autoFixable
-					? ` ${chalk.black(chalk.bgGreen(" autofixable "))}`
+					? ` ${colors.black(colors.bgGreen(" AUTOFIXABLE "))}`
 					: "";
 				messages.append(
 					`'${policy.name}' policy failure${autoFixable}: ${result.file}`,

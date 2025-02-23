@@ -1,8 +1,16 @@
-import { consola } from "consola";
+import { LogLevels, createConsola } from "consola";
 import type { Logger } from "../logger.js";
-// import { BasicLogger } from "./basic.js";
 
-// const consolaLogger = createConsola({ level: LogLevels.info });
+const consola = createConsola({
+	level: LogLevels.info,
+	fancy: true,
+	formatOptions: {
+		// columns: 80,
+		colors: true,
+		compact: false,
+		date: false,
+	},
+});
 
 /**
  * A logger that logs using the consola default colorful logger.
