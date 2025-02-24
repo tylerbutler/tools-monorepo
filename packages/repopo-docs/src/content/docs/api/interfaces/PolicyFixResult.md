@@ -5,7 +5,7 @@ prev: false
 title: "PolicyFixResult"
 ---
 
-Defined in: [policy.ts:170](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L170)
+Defined in: [policy.ts:175](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L175)
 
 The result of an automatic fix for a failing policy.
 
@@ -37,9 +37,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ***
 
-### errorMessage?
+### errorMessages
 
-> `optional` **errorMessage**: `string`
+> **errorMessages**: `string`[]
 
 Defined in: [policy.ts:162](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L162)
 
@@ -51,7 +51,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### Inherited from
 
-[`PolicyFailure`](/api/interfaces/policyfailure/).[`errorMessage`](/api/interfaces/policyfailure/#errormessage)
+[`PolicyFailure`](/api/interfaces/policyfailure/).[`errorMessages`](/api/interfaces/policyfailure/#errormessages)
 
 ***
 
@@ -70,6 +70,24 @@ This API should not be used in production and may be trimmed from a public relea
 #### Inherited from
 
 [`PolicyFailure`](/api/interfaces/policyfailure/).[`file`](/api/interfaces/policyfailure/#file)
+
+***
+
+### manualFix?
+
+> `optional` **manualFix**: `string`
+
+Defined in: [policy.ts:167](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L167)
+
+An optional string that tells the user how to fix the failure(s).
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+#### Inherited from
+
+[`PolicyFailure`](/api/interfaces/policyfailure/).[`manualFix`](/api/interfaces/policyfailure/#manualfix)
 
 ***
 
@@ -95,7 +113,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **resolved**: `boolean`
 
-Defined in: [policy.ts:174](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L174)
+Defined in: [policy.ts:179](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L179)
 
 Set to true if the failure was resolved by the automated fixer.
 
