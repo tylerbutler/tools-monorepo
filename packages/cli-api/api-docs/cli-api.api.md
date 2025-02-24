@@ -13,7 +13,6 @@ import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
 import type { PackageJson } from 'type-fest';
-import type { PathLike } from 'node:fs';
 import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
@@ -144,7 +143,7 @@ export type LoggingFunction = (message: string, ...args: unknown[]) => void;
 export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;
 
 // @beta
-export function readJsonWithIndent<J = unknown>(filePath: PathLike): Promise<{
+export function readJsonWithIndent<J = unknown>(filePath: string): Promise<{
     json: J;
     indent: Indent;
 }>;

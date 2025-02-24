@@ -243,7 +243,7 @@ export class CheckPolicy<
 	): Promise<void> {
 		const { excludeFiles: exclusions, gitRoot } = commandContext;
 
-		const filePath = path.join(gitRoot, inputPath).trim().replace(/\\/g, "/");
+		const filePath = path.join(gitRoot, inputPath);
 
 		commandContext.perfStats.count++;
 		if (!exclusions.every((value) => !value.test(inputPath))) {
