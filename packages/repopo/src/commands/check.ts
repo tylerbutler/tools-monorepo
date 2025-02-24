@@ -1,6 +1,5 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
-import { StringBuilder } from "@rushstack/node-core-library";
 import { colors } from "consola/utils";
 import path from "pathe";
 
@@ -33,6 +32,11 @@ export class CheckPolicy<
 			description: "Fix errors if possible.",
 			required: false,
 			char: "f",
+		}),
+		stats: Flags.boolean({
+			default: false,
+			description:
+				"Output performance stats after execution. These stats will also be output when using the --verbose flag.",
 		}),
 		stdin: Flags.boolean({
 			description: "Read list of files from stdin.",
@@ -86,7 +90,7 @@ export class CheckPolicy<
 				await this.checkOrExcludeFile(pathToCheck, commandContext);
 			}
 		} finally {
-			if (!this.flags.quiet) {
+			if (this.flags.verbose || this.flags.stats) {
 				logStats(commandContext.perfStats, this.logger);
 			}
 		}
@@ -155,16 +159,24 @@ export class CheckPolicy<
 			return;
 		}
 
-		const messages = new StringBuilder();
+		type message = { heading: string; messages: string[] };
+		const messages: message[] = [];
 		if (isPolicyFixResult(result)) {
 			if (result.resolved) {
-				messages.append(
-					`Resolved ${policy.name} policy failure for file: ${result.file}`,
-				);
+				messages.push({
+					heading: newline + colors.bold(colors.bgGreen(` ${policy.name} `)),
+					messages: [`Fixed file: ${result.file}`],
+				});
 			} else {
-				messages.append(
-					`Error when trying to fix ${policy.name} policy failure in ${result.file}`,
-				);
+				messages.push({
+					heading:
+						newline +
+						colors.bgRedBright(" FIX FAILED ") +
+						colors.bold(policy.name),
+					messages: [
+						`Error when trying to fix ${policy.name} policy failure in ${result.file}`,
+					],
+				});
 				process.exitCode = 1;
 			}
 		} else {
@@ -173,7 +185,9 @@ export class CheckPolicy<
 
 			if (this.flags.fix && resolver !== undefined) {
 				// Resolve the failure
-				messages.append(`${newline}attempting to resolve: ${relPath}`);
+				this.log(
+					`${colors.bgYellow(` ${policy.name} `)} Attempting to resolve: ${relPath}`,
+				);
 				const resolveResult = await runWithPerf(
 					policy.name,
 					"resolve",
@@ -181,11 +195,11 @@ export class CheckPolicy<
 					async () => resolver({ file: relPath, root: gitRoot }),
 				);
 
-				if (
-					resolveResult.errorMessage !== undefined &&
-					resolveResult.errorMessage !== ""
-				) {
-					messages.append(newline + resolveResult.errorMessage);
+				if (resolveResult.errorMessages.length > 0) {
+					messages.push({
+						heading: colors.bold("Error when applying fixes"),
+						messages: resolveResult.errorMessages,
+					});
 				}
 
 				if (!resolveResult.resolved) {
@@ -193,25 +207,29 @@ export class CheckPolicy<
 				}
 			} else {
 				// No resolver, or fix is false, so we're in the full failure case.
-				const autoFixable = result.autoFixable
-					? ` ${colors.black(colors.bgGreen(" AUTOFIXABLE "))}`
+				const autoFixableText = result.autoFixable
+					? colors.green(" (autofixable)")
 					: "";
-				messages.append(
-					`'${policy.name}' policy failure${autoFixable}: ${result.file}`,
-				);
-				messages.append(
-					result.errorMessage === undefined
-						? ""
-						: `${newline}${result.errorMessage}`,
-				);
+				const localMessage: message = {
+					heading: `\n${colors.bgYellow(` ${policy.name} `) + autoFixableText} `,
+					messages: [
+						`File: ${result.file}`,
+						...result.errorMessages.map((m) => `    ${m}`),
+					],
+				};
+				if (result.manualFix !== undefined && result.manualFix !== "") {
+					localMessage.messages.push(
+						`${colors.bold(colors.bgGreen(" MANUAL FIX "))} ${result.manualFix}`,
+					);
+				}
+				messages.push(localMessage);
 				process.exitCode = 1;
 			}
 		}
 
-		if ((process.exitCode ?? 0) === 0) {
-			this.info(messages.toString());
-		} else {
-			this.warning(messages.toString());
+		for (const msg of messages) {
+			this.log(`${colors.bold(msg.heading)}`);
+			this.log(msg.messages.join(`${newline}`));
 		}
 	}
 

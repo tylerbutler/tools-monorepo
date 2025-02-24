@@ -28,8 +28,9 @@ export type PerPolicySettings = ({
 // @alpha
 export interface PolicyFailure {
     autoFixable?: boolean | undefined;
-    errorMessage?: string | undefined;
+    errorMessages: string[];
     file: string;
+    manualFix?: string;
     name: PolicyName;
 }
 

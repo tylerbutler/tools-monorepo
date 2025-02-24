@@ -17,6 +17,7 @@ export const SortTsconfigs: RepoPolicy = {
 			name: SortTsconfigs.name,
 			file,
 			autoFixable: true,
+			errorMessages: [],
 		};
 
 		if (resolve) {

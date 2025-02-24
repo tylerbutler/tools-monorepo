@@ -563,9 +563,6 @@ importers:
       '@oclif/plugin-help':
         specifier: ^6.2.25
         version: 6.2.25
-      '@rushstack/node-core-library':
-        specifier: ^5.11.0
-        version: 5.11.0(@types/node@20.16.10)
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api

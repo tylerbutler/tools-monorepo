@@ -1,4 +1,5 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
+import { join } from "pathe";
 import { sortPackageJson } from "sort-package-json";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
@@ -8,7 +9,7 @@ import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy
  */
 export const PackageJsonSorted = generatePackagePolicy(
 	"PackageJsonSorted",
-	async (json, { file, resolve }) => {
+	async (json, { file, root, resolve }) => {
 		const sortedJson = sortPackageJson(json);
 		const isSorted = JSON.stringify(sortedJson) === JSON.stringify(json);
 
@@ -18,11 +19,14 @@ export const PackageJsonSorted = generatePackagePolicy(
 
 		if (resolve) {
 			try {
-				await updatePackageJsonFile(file, (json) => json, { sort: true });
+				await updatePackageJsonFile(join(root, file), (json) => json, {
+					sort: true,
+				});
 				const result: PolicyFixResult = {
 					name: PackageJsonSorted.name,
 					file,
 					resolved: true,
+					errorMessages: [],
 				};
 				return result;
 			} catch (error: unknown) {
@@ -31,7 +35,10 @@ export const PackageJsonSorted = generatePackagePolicy(
 					file,
 					resolved: false,
 					autoFixable: true,
-					errorMessage: (error as Error).message,
+					errorMessages: [
+						(error as Error).message,
+						(error as Error).stack ?? "",
+					],
 				};
 				return result;
 			}
@@ -40,6 +47,7 @@ export const PackageJsonSorted = generatePackagePolicy(
 				name: PackageJsonSorted.name,
 				file,
 				autoFixable: true,
+				errorMessages: [],
 			};
 			return result;
 		}

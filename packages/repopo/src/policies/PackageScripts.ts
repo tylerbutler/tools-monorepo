@@ -13,6 +13,7 @@ export const PackageScripts = generatePackagePolicy(
 			name: PackageScripts.name,
 			file,
 			autoFixable: false,
+			errorMessages: [],
 		};
 
 		const hasScriptsField = Object.prototype.hasOwnProperty.call(
@@ -31,7 +32,9 @@ export const PackageScripts = generatePackagePolicy(
 		}
 
 		if (missingScripts.length > 0) {
-			failResult.errorMessage = `missing the following scripts: \n\t${missingScripts.join("\n\t")}`;
+			failResult.errorMessages.push(
+				`missing the following scripts: \n\t${missingScripts.join("\n\t")}`,
+			);
 			return failResult;
 		}
 

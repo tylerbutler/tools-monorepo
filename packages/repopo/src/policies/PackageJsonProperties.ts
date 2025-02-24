@@ -37,6 +37,7 @@ export const PackageJsonProperties = generatePackagePolicy<
 		name: PackageJsonProperties.name,
 		file,
 		autoFixable: true,
+		errorMessages: [],
 	};
 
 	const { verbatim } = config;
@@ -67,7 +68,7 @@ export const PackageJsonProperties = generatePackagePolicy<
 		}
 
 		// There were errors, and we're not resolving them, so return a fail result
-		failResult.errorMessage = messages.join("\n");
+		failResult.errorMessages = messages;
 		return failResult;
 	}
 

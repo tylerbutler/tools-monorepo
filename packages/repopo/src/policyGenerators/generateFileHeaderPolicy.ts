@@ -87,6 +87,7 @@ export function generateFileHeaderPolicy(
 				name,
 				file,
 				autoFixable: true,
+				errorMessages: [],
 			};
 
 			// TODO: Consider reading only the first 512B or so since headers are typically
@@ -95,7 +96,7 @@ export function generateFileHeaderPolicy(
 			const failed = !regex.test(content);
 
 			if (failed) {
-				failResult.errorMessage = `${extname(file)} file missing header`;
+				failResult.errorMessages.push(`${extname(file)} file missing header`);
 			}
 
 			if (failed) {

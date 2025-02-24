@@ -77,7 +77,6 @@
 		"@fluid-tools/build-infrastructure": "^0.54.0",
 		"@oclif/core": "^4.2.7",
 		"@oclif/plugin-help": "^6.2.25",
-		"@rushstack/node-core-library": "^5.11.0",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"consola": "^3.4.0",
