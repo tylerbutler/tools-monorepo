@@ -105,7 +105,7 @@
 		"@oclif/plugin-command-snapshot": "^5.2.35",
 		"@oclif/test": "^4.1.10",
 		"@types/debug": "^4.1.12",
-		"@types/node": "^20.12.7",
+		"@types/node": "^22.0.0",
 		"concurrently": "^9.1.2",
 		"generate-license-file": "^3.7.0",
 		"oclif": "^4.17.30",
