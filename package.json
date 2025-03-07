@@ -67,14 +67,19 @@
 		"syncpack": "^13.0.2",
 		"ts-node": "^10.9.2"
 	},
-	"packageManager": "pnpm@10.4.0+sha256.e57e8a544f7a84247cfa77dd6d923eae5199a373474e53eab1f540c796289386",
+	"packageManager": "pnpm@10.6.1+sha512.40ee09af407fa9fbb5fbfb8e1cb40fbb74c0af0c3e10e9224d7b53c7658528615b2c92450e74cfad91e3a2dcafe3ce4050d80bda71d757756d2ce2b66213e9a3",
 	"engines": {
 		"node": ">=18.0.0"
 	},
 	"pnpm": {
 		"peerDependencyRules": {
-			"allowAny": ["@aws-sdk/*"],
-			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
+			"allowAny": [
+				"@aws-sdk/*"
+			],
+			"ignoreMissing": [
+				"@aws-sdk/*",
+				"@octokit/core"
+			]
 		},
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
@@ -91,7 +96,9 @@
 			"yarn"
 		],
 		"updateConfig": {
-			"ignoreDependencies": ["@types/node"]
+			"ignoreDependencies": [
+				"@types/node"
+			]
 		},
 		"overrides": {
 			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
@@ -101,43 +108,74 @@
 	"fluidBuild": {
 		"tasks": {
 			"build": {
-				"dependsOn": ["^build", "generate:packlist"],
+				"dependsOn": [
+					"^build",
+					"generate:packlist"
+				],
 				"script": false
 			},
 			"check": {
-				"dependsOn": ["sort-tsconfig#build", "^check", "check:all"],
+				"dependsOn": [
+					"sort-tsconfig#build",
+					"^check",
+					"check:all"
+				],
 				"script": false
 			},
 			"check:policy": {
-				"dependsOn": ["repopo#build"],
+				"dependsOn": [
+					"repopo#build"
+				],
 				"script": true
 			},
 			"ci": {
-				"dependsOn": ["ci:check", "ci:build", "ci:lint", "ci:test"],
+				"dependsOn": [
+					"ci:check",
+					"ci:build",
+					"ci:lint",
+					"ci:test"
+				],
 				"script": false
 			},
 			"clean": {
-				"dependsOn": ["^clean", "clean:root"],
+				"dependsOn": [
+					"^clean",
+					"clean:root"
+				],
 				"script": false
 			},
 			"compile": {
-				"dependsOn": ["^build"],
+				"dependsOn": [
+					"^build"
+				],
 				"script": false
 			},
 			"full": {
-				"dependsOn": ["check", "build", "lint", "docs", "test"],
+				"dependsOn": [
+					"check",
+					"build",
+					"lint",
+					"docs",
+					"test"
+				],
 				"script": false
 			},
 			"generate:license-file": {
-				"dependsOn": ["^generate:license-file"],
+				"dependsOn": [
+					"^generate:license-file"
+				],
 				"script": false
 			},
 			"generate:packlist": {
-				"dependsOn": ["^build"],
+				"dependsOn": [
+					"^build"
+				],
 				"script": true
 			},
 			"test": {
-				"dependsOn": ["^test"],
+				"dependsOn": [
+					"^test"
+				],
 				"script": false
 			}
 		}
