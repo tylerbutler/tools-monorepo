@@ -9,23 +9,5 @@
 				"addToApiReportFile": false,
 			},
 		},
-
-		"extractorMessageReporting": {
-			"default": {
-				"logLevel": "error",
-				"addToApiReportFile": false,
-			},
-			"ae-internal-missing-underscore": {
-				"logLevel": "none",
-				"addToApiReportFile": false,
-			},
-		},
-
-		"tsdocMessageReporting": {
-			"default": {
-				"logLevel": "error",
-				"addToApiReportFile": false,
-			},
-		},
 	},
 }
