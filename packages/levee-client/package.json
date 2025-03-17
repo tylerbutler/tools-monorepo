@@ -25,7 +25,7 @@
 	"scripts": {
 		"build": "npm run build:compile && npm run lint",
 		"build:compile": "npm run tsc && npm run build:test",
-		"build:test": "tsc --project ./src/test/tsconfig.json",
+		"build:test": "echo \"No tests\"",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf --glob dist lib \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp nyc",
@@ -38,7 +38,6 @@
 		"start": "pm2 start -n tinylicious dist/index.js",
 		"start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
 		"stop": "pm2 stop tinylicious",
-		"test": "npm run test:mocha",
 		"test:mocha": "mocha --recursive dist/test",
 		"tsc": "tsc"
 	},

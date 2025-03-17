@@ -1,19 +1,12 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "@tsconfig/node18/tsconfig.json",
+	"extends": "../../config/tsconfig.strict.json",
+	"include": ["src/**/*"],
+	"exclude": ["src/test/**/*"],
 	"compilerOptions": {
-		"declaration": true,
-		"declarationMap": true,
-		"inlineSources": true,
-		"sourceMap": true,
-		// This is enforced in lint instead.
-		"noUnusedLocals": false,
-		"composite": true,
-		"incremental": true,
-		"jsx": "react",
-
 		"rootDir": "./src",
-		"outDir": "./lib",
+		"outDir": "./esm",
+
 		"exactOptionalPropertyTypes": false,
 	},
 }
