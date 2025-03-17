@@ -21,6 +21,9 @@ export interface LeveeClientProps {
 	readonly logger?: ITelemetryBaseLogger;
 }
 
+/**
+ * @public
+ */
 export interface LeveeConnectionConfig {
 	readonly port?: number;
 	readonly domain?: string;

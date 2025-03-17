@@ -23,12 +23,13 @@
 	"main": "lib/index.js",
 	"types": "lib/public.d.ts",
 	"scripts": {
-		"build": "npm run build:compile && npm run lint",
-		"build:compile": "npm run tsc && npm run build:test",
+		"api": "api-extractor run --local",
+		"build": "npm run compile && npm run lint",
 		"build:test": "echo \"No tests\"",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
-		"clean": "rimraf --glob dist lib \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp nyc",
+		"clean": "rimraf --glob esm \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp _temp nyc",
+		"compile": "tsc",
 		"eslint": "eslint --format stylish src",
 		"eslint:fix": "eslint --format stylish src --fix --fix-type problem,suggestion,layout",
 		"format": "biome check . --linter-enabled=false --write",
@@ -38,8 +39,7 @@
 		"start": "pm2 start -n tinylicious dist/index.js",
 		"start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
 		"stop": "pm2 stop tinylicious",
-		"test:mocha": "mocha --recursive dist/test",
-		"tsc": "tsc"
+		"test:mocha": "mocha --recursive dist/test"
 	},
 	"dependencies": {
 		"@fluidframework/container-definitions": "^2.23.0",
@@ -79,9 +79,5 @@
 		"start-server-and-test": "^2.0.10",
 		"tinylicious": "^5.0.0",
 		"typescript": "~5.5.4"
-	},
-	"typeValidation": {
-		"broken": {},
-		"entrypoint": "beta"
 	}
 }

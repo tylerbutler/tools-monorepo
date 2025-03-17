@@ -37,9 +37,12 @@ import {
 	createTinyliciousCreateNewRequest,
 } from "@fluidframework/tinylicious-driver/internal";
 
-import { createLeveeAudienceMember } from "./LeveeAudience.js";
+import { createLeveeAudienceMember } from "./audience.js";
 import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.js";
 
+/**
+ * @public
+ */
 export class LeveeClient {
 	private readonly documentServiceFactory: IDocumentServiceFactory;
 	private readonly urlResolver: IUrlResolver;
@@ -162,6 +165,7 @@ export class LeveeClient {
 			schema,
 			compatibilityMode,
 		});
+		// biome-ignore lint/suspicious/useAwait: <explanation>
 		const load = async (): Promise<IFluidModuleWithDetails> => {
 			return {
 				module: { fluidExport: containerRuntimeFactory },
