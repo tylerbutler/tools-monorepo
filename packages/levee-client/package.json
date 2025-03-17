@@ -1,0 +1,85 @@
+{
+	"name": "@tylerbu/levee-client",
+	"version": "0.0.1",
+	"description": "Client for the Levee Fluid Framework service.",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tylerbutler/levee-client.git",
+		"directory": "packages/levee-client"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./lib/public.d.ts",
+				"default": "./lib/index.js"
+			}
+		}
+	},
+	"main": "lib/index.js",
+	"types": "lib/public.d.ts",
+	"scripts": {
+		"build": "npm run build:compile && npm run lint",
+		"build:compile": "npm run tsc && npm run build:test",
+		"build:test": "tsc --project ./src/test/tsconfig.json",
+		"clean": "rimraf --glob dist lib \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp nyc",
+		"eslint": "eslint --format stylish src",
+		"eslint:fix": "eslint --format stylish src --fix --fix-type problem,suggestion,layout",
+		"format": "biome format . --write",
+		"lint": "npm run eslint",
+		"lint:fix": "npm run eslint:fix",
+		"start": "pm2 start -n tinylicious dist/index.js",
+		"start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
+		"stop": "pm2 stop tinylicious",
+		"test": "npm run test:mocha",
+		"test:mocha": "mocha --recursive dist/test",
+		"tsc": "tsc"
+	},
+	"dependencies": {
+		"@fluidframework/container-definitions": "^2.23.0",
+		"@fluidframework/container-loader": "^2.23.0",
+		"@fluidframework/core-interfaces": "^2.23.0",
+		"@fluidframework/core-utils": "^2.23.0",
+		"@fluidframework/driver-definitions": "^2.23.0",
+		"@fluidframework/driver-utils": "^2.23.0",
+		"@fluidframework/fluid-static": "^2.23.0",
+		"@fluidframework/map": "^2.23.0",
+		"@fluidframework/routerlicious-driver": "^2.23.0",
+		"@fluidframework/runtime-utils": "^2.23.0",
+		"@fluidframework/telemetry-utils": "^2.23.0",
+		"@fluidframework/tinylicious-driver": "^2.23.0"
+	},
+	"devDependencies": {
+		"@arethetypeswrong/cli": "^0.17.1",
+		"@biomejs/biome": "1.9.4",
+		"@fluid-tools/build-cli": "^0.54.0",
+		"@fluidframework/aqueduct": "^2.23.0",
+		"@fluidframework/build-common": "^2.0.3",
+		"@fluidframework/build-tools": "^0.54.0",
+		"@fluidframework/container-runtime": "^2.23.0",
+		"@fluidframework/container-runtime-definitions": "^2.23.0",
+		"@fluidframework/eslint-config-fluid": "^5.7.3",
+		"@fluidframework/shared-object-base": "^2.23.0",
+		"@fluidframework/test-utils": "^2.23.0",
+		"@microsoft/api-extractor": "^7.50.0",
+		"@tsconfig/node18": "^18.2.4",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "^20.12.7",
+		"concurrently": "^9.1.2",
+		"copyfiles": "^2.4.1",
+		"eslint": "^8.55.0",
+		"mocha": "^10.8.2",
+		"rimraf": "^6.0.1",
+		"start-server-and-test": "^2.0.10",
+		"tinylicious": "^5.0.0",
+		"typescript": "~5.5.4"
+	},
+	"typeValidation": {
+		"broken": {},
+		"entrypoint": "beta"
+	}
+}
