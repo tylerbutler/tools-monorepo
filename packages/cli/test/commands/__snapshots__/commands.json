@@ -66,6 +66,24 @@
         "plugin": "@tylerbu/cli"
     },
     {
+        "alias": [],
+        "command": "generate:fluid-svelte",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "class",
+            "dry-run",
+            "input",
+            "output",
+            "quiet",
+            "tsconfig",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
         "alias": [
             "mtp"
         ],

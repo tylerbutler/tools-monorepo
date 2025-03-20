@@ -98,7 +98,8 @@
 		"dill-cli": "workspace:^",
 		"picocolors": "^1.1.1",
 		"simple-git": "^3.27.0",
-		"strip-ansi": "^7.1.0"
+		"strip-ansi": "^7.1.0",
+		"ts-morph": "^25.0.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
