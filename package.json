@@ -56,7 +56,7 @@
 		"@tylerbu/cli": "workspace:^",
 		"changesets-changelog-clean": "^1.3.0",
 		"concurrently": "^9.1.2",
-		"generate-license-file": "^3.7.0",
+		"generate-license-file": "^4.0.0",
 		"npm-check-updates": "^17.1.14",
 		"renovate": "^39.172.1",
 		"repopo": "workspace:^",
