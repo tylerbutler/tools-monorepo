@@ -123,9 +123,6 @@ importers:
       strip-ansi:
         specifier: ^7.1.0
         version: 7.1.0
-      ts-morph:
-        specifier: ^25.0.1
-        version: 25.0.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
