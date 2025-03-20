@@ -44,7 +44,7 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "concurrently npm:readme:*",
 		"readme:main": "oclif readme --no-aliases",
-		"test:coverage": "vitest run test --coverage",
+		"test:coverage:disabled": "vitest run test --coverage",
 		"test:disabled": "npm run test:vitest",
 		"test:vitest": "vitest run test"
 	},
