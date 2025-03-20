@@ -110,12 +110,12 @@
 		"generate-license-file": "^3.7.0",
 		"oclif": "^4.17.30",
 		"rimraf": "^6.0.1",
-		"sort-package-json": "2.14.0",
+		"sort-package-json": "3.0.0",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
-		"type-fest": "^4.35.0",
+		"type-fest": "^4.37.0",
 		"typescript": "~5.5.4",
-		"vitest": "^3.0.5"
+		"vitest": "^3.0.9"
 	},
 	"engines": {
 		"node": ">=18.0.0"

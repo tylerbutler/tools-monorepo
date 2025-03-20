@@ -82,12 +82,12 @@
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
 		"simple-git": "^3.27.0",
-		"sort-package-json": "2.14.0",
+		"sort-package-json": "3.0.0",
 		"sort-tsconfig": "workspace:^"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-extractor": "^7.50.0",
+		"@microsoft/api-extractor": "^7.52.1",
 		"@oclif/plugin-command-snapshot": "^5.2.35",
 		"@oclif/test": "^4.1.10",
 		"@types/jsonfile": "^6.1.4",
@@ -97,12 +97,12 @@
 		"oclif": "^4.17.30",
 		"rimraf": "^6.0.1",
 		"serve": "^14.2.4",
-		"start-server-and-test": "^2.0.10",
+		"start-server-and-test": "^2.0.11",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^4.35.0",
+		"type-fest": "^4.37.0",
 		"typescript": "~5.5.4",
-		"vitest": "^3.0.5"
+		"vitest": "^3.0.9"
 	},
 	"engines": {
 		"node": ">=18.0.0"
