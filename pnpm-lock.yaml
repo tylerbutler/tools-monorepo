@@ -334,7 +334,7 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       '@vitest/coverage-v8':
-        specifier: ^3.0.5
+        specifier: ^3.0.9
         version: 3.0.9(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.0(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0))
       generate-license-file:
         specifier: ^4.0.0
@@ -576,7 +576,7 @@ importers:
         specifier: ^2.23.0
         version: 2.23.0(encoding@0.1.13)
       '@microsoft/api-extractor':
-        specifier: ^7.50.0
+        specifier: ^7.52.1
         version: 7.52.1(@types/node@20.16.10)
       '@tsconfig/node18':
         specifier: ^18.2.4
@@ -603,7 +603,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       start-server-and-test:
-        specifier: ^2.0.10
+        specifier: ^2.0.11
         version: 2.0.11
       tinylicious:
         specifier: ^5.0.0
@@ -862,7 +862,7 @@ importers:
         specifier: ^0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: ^3.0.5
+        specifier: ^3.0.9
         version: 3.0.9(vitest@3.0.9(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.0(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0))
       generate-license-file:
         specifier: ^4.0.0
