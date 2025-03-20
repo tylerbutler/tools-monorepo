@@ -4,9 +4,9 @@
 
 ```ts
 
-import { run as run_2 } from '@oclif/core';
+import { run } from '@oclif/core';
 
-export { run_2 as run }
+export { run }
 
 // (No @packageDocumentation comment for this package)
 
