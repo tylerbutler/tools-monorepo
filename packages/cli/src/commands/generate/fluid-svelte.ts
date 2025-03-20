@@ -56,20 +56,15 @@ export default class GenerateFluidSvelte extends BaseCommand<
 		project.addSourceFileAtPath(input);
 		project.resolveSourceFileDependencies();
 		const sourceInput = project.getSourceFileOrThrow(input);
-		const outputSourceFile = project.addSourceFileAtPath(output);
+		const outputSourceFile = project.createSourceFile(output, "", {
+			overwrite: true,
+		});
 		this.generateOutputFile(sourceInput, outputSourceFile, className);
+		outputSourceFile.formatText();
 		await project.save();
 	}
 
-	// private readInputFile(
-	// 	sourceFile: SourceFile,
-	// 	className: string,
-	// ): { name: string; properties: PropertyDeclaration[] } {
-	// 	const inputClass = sourceFile.getClassOrThrow(className);
-	// 	const properties = inputClass.getProperties();
-	// 	const name = inputClass.getName()!;
-	// 	return { name, properties };
-	// }
+	private addedProps = new Set<string>();
 
 	private generateOutputFile(
 		inputSourceFile: SourceFile,
@@ -79,30 +74,55 @@ export default class GenerateFluidSvelte extends BaseCommand<
 		const inputClass = inputSourceFile.getClassOrThrow(className);
 		const properties = inputClass.getInstanceProperties();
 
-		outputSourceFile.addImportDeclaration({
-			moduleSpecifier: "./schemaFactory.js",
-			namedImports: [{ name: "schemaFactory", alias: "sf" }],
-		});
+		for (const d of inputSourceFile.getImportDeclarations()) {
+			const importSource = d.getModuleSpecifierValue();
+			console.log(d.getModuleSpecifierValue());
+			const decl = outputSourceFile.addImportDeclaration({
+				moduleSpecifier: importSource,
+				isTypeOnly: d.isTypeOnly(),
+			});
+			for (const n of d.getNamedImports()) {
+				decl.addNamedImport({ name: n.getName(), isTypeOnly: n.isTypeOnly() });
+			}
+		}
+
+		outputSourceFile.addImportDeclarations([
+			{
+				moduleSpecifier: "fluid-framework",
+				namedImports: [
+					{
+						name: "Tree",
+						//  isTypeOnly: true
+					},
+				],
+			},
+			{
+				moduleSpecifier: "./schemaFactory.js",
+				namedImports: [{ name: "schemaFactory", alias: "sf" }],
+			},
+			{
+				moduleSpecifier: `${outputSourceFile.getRelativePathAsModuleSpecifierTo(inputSourceFile)}`,
+				namedImports: [{ name: className }],
+			},
+		]);
 
 		const newClassName = `Reactive${className}`;
 
 		const newClass = outputSourceFile.addClass({
 			name: newClassName,
 			isExported: true,
-			isAbstract: false,
 			extends: (writer) =>
 				writer
-					.write(`extends sf.object("${newClassName}",`)
+					.write(`sf.object("${newClassName}",`)
 					.block(() => {
-						const addedProps = new Set<string>();
 						for (const prop of properties) {
 							if (
 								prop.isKind(SyntaxKind.GetAccessor) &&
-								!addedProps.has(prop.getName())
+								!this.addedProps.has(prop.getName())
 							) {
-								addedProps.add(prop.getName());
+								this.addedProps.add(prop.getName());
 								writer.writeLine(
-									`_${prop.getName()}: ${getKind(prop.getType())}`,
+									`_${prop.getName()}: ${getKind(prop.getReturnType().getText())},`,
 								);
 							}
 						}
@@ -117,7 +137,7 @@ export default class GenerateFluidSvelte extends BaseCommand<
 				newClass.addProperty({
 					// ...prop.getStructure(),
 					name: `#${prop.getName()}`,
-					initializer: `= $state(this._${prop.getName()};`,
+					initializer: `$state(this._${prop.getName()})`,
 				});
 				newClass
 					.addGetAccessor({
@@ -125,7 +145,9 @@ export default class GenerateFluidSvelte extends BaseCommand<
 					})
 					.addBody()
 					.setBodyText((writer) => {
-						writer.writeLine(`return this.#${prop.getName()};`);
+						writer.writeLine(
+							`return this.#${prop.getName()} as ${prop.getReturnType().getText()};`,
+						);
 					});
 			}
 
@@ -141,19 +163,42 @@ export default class GenerateFluidSvelte extends BaseCommand<
 					});
 			}
 		}
+
+		newClass.addProperty({
+			name: "#wireReactiveProperties",
+			initializer: `(() => {
+        Tree.on(this, "nodeChanged", () => {
+          this.refreshReactiveProperties();
+        });
+      })()`,
+		});
+
+		const refreshMethod = newClass.addMethod({
+			name: "refreshReactiveProperties",
+			returnType: "void",
+		});
+		refreshMethod.setBodyText((writer) => {
+			for (const prop of this.addedProps) {
+				writer.writeLine(`this.#${prop} = this._${prop};`);
+			}
+		});
 	}
 }
 
-function getKind(item: any) {
-	if (typeof item === "string") {
+function getKind(inputType: string) {
+	const itemType = inputType.toLowerCase();
+	const check = (kind = "string") =>
+		itemType === kind || itemType.includes(kind);
+
+	if (check("string")) {
 		return "sf.string";
 	}
 
-	if (typeof item === "number") {
+	if (check("number")) {
 		return "sf.number";
 	}
 
-	if (typeof item === "boolean") {
+	if (check("boolean")) {
 		return "sf.boolean";
 	}
 }
