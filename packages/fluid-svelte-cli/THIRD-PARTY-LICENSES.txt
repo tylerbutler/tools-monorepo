@@ -1,11 +1,13 @@
 This file was generated with the generate-license-file npm package!
 https://www.npmjs.com/package/generate-license-file
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - @oclif/core@4.2.7
+ - @tylerbu/fluid-svelte@0.0.1
+ - ts-morph@25.0.1
 
-This package contains the following license:
+These packages each contain the following license:
 
 MIT
 
