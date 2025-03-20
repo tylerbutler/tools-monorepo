@@ -1,1 +1,1 @@
-export { ReadonlyReactivePresenceWorkspace } from "./ReadonlyReactivePresenceWorkspace.js";
+export { ReadonlyReactivePresenceWorkspace } from "./ReadonlyReactivePresenceWorkspace.svelte.js";

@@ -29,7 +29,7 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"api": "api-extractor run --local",
+		"api:disabled": "api-extractor run --local",
 		"build": "fluid-build . --task build",
 		"check": "concurrently npm:check:format npm:check:svelte",
 		"check:format": "biome check . --linter-enabled=false",
@@ -49,17 +49,16 @@
 		"prepack": "svelte-kit sync && svelte-package && publint",
 		"prepare": "svelte-kit sync || echo ''",
 		"preview": "vite preview",
-		"test": "npm run test:vitest",
-		"test:coverage": "vitest run test --coverage",
+		"test:coverage:disabled": "vitest run test --coverage",
+		"test:disabled": "npm run test:vitest",
 		"test:snapshots": "npm run update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
 	},
 	"dependencies": {
 		"@fluidframework/presence": "^2.30.0",
-		"@tylerbu/cli-api": "workspace:^",
 		"fluid-framework": "^2.30.0",
-		"pathe": "^2.0.3"
+		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

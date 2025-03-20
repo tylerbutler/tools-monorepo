@@ -27,7 +27,9 @@ export class ReadonlyReactivePresenceWorkspace<T extends object> {
 		public readonly valueManager: LatestValueManager<T>,
 	) {
 		// Wire up event listener to update the reactive map when the remote users' data is updated
-		valueManager.events.on("updated", (data) => {
+		// biome-ignore lint/suspicious/noExplicitAny: investigate possible fixes
+		valueManager.events.on("updated", (data: { client: any; value: any }) => {
+			// biome-ignore lint/suspicious/noExplicitAny: investigate possible fixes
 			this.reactiveState.set(data.client, data.value as any);
 		});
 		// valueManager.events.on("localUpdated", (data) => {

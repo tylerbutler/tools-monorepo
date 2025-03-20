@@ -1,14 +1,6 @@
 import { Flags } from "@oclif/core";
 import { BaseCommand } from "@tylerbu/cli-api";
-import chalk from "picocolors";
-import stripAnsi from "strip-ansi";
-import {
-	Project,
-	type PropertyDeclaration,
-	type SourceFile,
-	StructureKind,
-	SyntaxKind,
-} from "ts-morph";
+import { Project, type SourceFile, SyntaxKind } from "ts-morph";
 
 export interface FluidSvelteConfig {
 	classes: {
@@ -76,7 +68,7 @@ export default class GenerateReactiveClass extends BaseCommand<
 
 		for (const d of inputSourceFile.getImportDeclarations()) {
 			const importSource = d.getModuleSpecifierValue();
-			console.log(d.getModuleSpecifierValue());
+			// console.log(d.getModuleSpecifierValue());
 			const decl = outputSourceFile.addImportDeclaration({
 				moduleSpecifier: importSource,
 				isTypeOnly: d.isTypeOnly(),

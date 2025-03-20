@@ -1,15 +1,11 @@
 This file was generated with the generate-license-file npm package!
 https://www.npmjs.com/package/generate-license-file
 
-The following npm packages may be included in this product:
+The following npm package may be included in this product:
 
- - @fluidframework/presence@2.30.0
  - @oclif/core@4.2.7
- - @oclif/plugin-help@6.2.25
- - fluid-framework@2.30.0
- - pathe@2.0.3
 
-These packages each contain the following license:
+This package contains the following license:
 
 MIT
 

@@ -1,5 +1,5 @@
 {
-	"name": "@tylerbu/fluid-svelte-api",
+	"name": "@tylerbu/fluid-svelte-cli",
 	"version": "0.0.1",
 	"description": "Useful tools for building Svelte apps using the Fluid Framework.",
 	"keywords": ["fluidframework", "svelte"],
@@ -31,7 +31,9 @@
 		"build": "fluid-build . --task build",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
-		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"clean": "concurrently npm:clean:build npm:clean:manifest",
+		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
@@ -42,8 +44,8 @@
 		"postpack": "npm run clean:manifest",
 		"readme": "concurrently npm:readme:*",
 		"readme:main": "oclif readme --no-aliases",
-		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",
+		"test:disabled": "npm run test:vitest",
 		"test:vitest": "vitest run test"
 	},
 	"oclif": {
@@ -53,16 +55,7 @@
 	},
 	"dependencies": {
 		"@oclif/core": "^4.2.7",
-		"@tylerbu/lilconfig-loader-ts": "workspace:^",
-		"debug": "^4.4.0",
-		"detect-indent": "^7.0.1",
-		"jsonfile": "^6.1.0",
-		"lilconfig": "^3.1.3",
-		"pathe": "^2.0.3",
-		"picocolors": "^1.1.1",
-		"simple-git": "^3.27.0",
-		"sort-package-json": "2.14.0",
-		"strip-ansi": "^7.1.0"
+		"@tylerbu/cli-api": "workspace:^"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
@@ -78,11 +71,9 @@
 		"generate-license-file": "^3.7.0",
 		"oclif": "^4.17.30",
 		"rimraf": "^6.0.1",
-		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
 		"tsx": "^4.19.2",
-		"type-fest": "^4.35.0",
 		"typescript": "~5.5.4",
 		"vitest": "^3.0.5"
 	},

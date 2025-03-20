@@ -1,15 +1,11 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
+	"extends": "../../config/tsconfig.strict.json",
+	"include": ["src/**/*"],
 	"compilerOptions": {
-		"allowJs": true,
-		"checkJs": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
-		"sourceMap": true,
-		"strict": true,
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext",
+		"rootDir": "src",
+		"outDir": "esm",
+	},
+	"ts-node": {
+		"esm": true,
 	},
 }

@@ -5,7 +5,6 @@ The following npm packages may be included in this product:
 
  - @fluidframework/presence@2.30.0
  - fluid-framework@2.30.0
- - pathe@2.0.3
 
 These packages each contain the following license:
 
