@@ -87,7 +87,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-extractor": "^7.50.0",
+		"@microsoft/api-extractor": "^7.52.1",
 		"@oclif/plugin-command-snapshot": "^5.2.35",
 		"@oclif/test": "^4.1.10",
 		"@types/node": "^20.12.7",

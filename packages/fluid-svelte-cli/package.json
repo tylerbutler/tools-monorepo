@@ -55,12 +55,13 @@
 	},
 	"dependencies": {
 		"@oclif/core": "^4.2.7",
-		"@tylerbu/cli-api": "workspace:^"
+		"@tylerbu/cli-api": "workspace:^",
+		"@tylerbu/fluid-svelte": "workspace:^"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-documenter": "^7.26.8",
-		"@microsoft/api-extractor": "^7.50.0",
+		"@microsoft/api-documenter": "^7.26.17",
+		"@microsoft/api-extractor": "^7.52.1",
 		"@oclif/test": "^4.1.10",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
