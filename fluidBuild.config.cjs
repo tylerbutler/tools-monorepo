@@ -27,9 +27,6 @@ const config = {
 			],
 			script: false,
 		},
-		docs: {
-			dependsOn: ["^compile", "compile", "api"],
-		},
 		clean: {
 			before: ["*"],
 		},
@@ -41,6 +38,9 @@ const config = {
 		},
 		compile: {
 			dependsOn: ["^compile"],
+		},
+		docs: {
+			dependsOn: ["^compile", "compile", "api"],
 		},
 		full: {
 			dependsOn: ["check", "build", "api", "docs", "lint", "test"],

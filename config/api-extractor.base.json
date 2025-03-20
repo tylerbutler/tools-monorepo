@@ -38,6 +38,7 @@
 	 */
 	"tsdocMetadata": {
 		"enabled": true,
+		"tsdocMetadataFilePath": "<projectFolder>/esm/tsdoc-metadata.json",
 	},
 
 	/**
