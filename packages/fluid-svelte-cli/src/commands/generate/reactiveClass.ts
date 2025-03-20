@@ -18,8 +18,8 @@ export interface FluidSvelteConfig {
 	};
 }
 
-export default class GenerateFluidSvelte extends BaseCommand<
-	typeof GenerateFluidSvelte
+export default class GenerateReactiveClass extends BaseCommand<
+	typeof GenerateReactiveClass
 > {
 	static override readonly description = "";
 
