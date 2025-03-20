@@ -1,8 +1,7 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
-import { StringBuilder } from "@rushstack/node-core-library";
+import { colors } from "consola/utils";
 import path from "pathe";
-import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
@@ -34,15 +33,17 @@ export class CheckPolicy<
 			required: false,
 			char: "f",
 		}),
+		stats: Flags.boolean({
+			default: false,
+			description:
+				"Output performance stats after execution. These stats will also be output when using the --verbose flag.",
+		}),
 		stdin: Flags.boolean({
 			description: "Read list of files from stdin.",
 			required: false,
 		}),
 		...BaseRepopoCommand.flags,
 	} as const;
-
-	private processed = 0;
-	private count = 0;
 
 	public override async run(): Promise<void> {
 		if (this.flags.fix) {
@@ -89,8 +90,8 @@ export class CheckPolicy<
 				await this.checkOrExcludeFile(pathToCheck, commandContext);
 			}
 		} finally {
-			if (!this.flags.quiet) {
-				logStats(commandContext.perfStats, this);
+			if (this.flags.verbose || this.flags.stats) {
+				logStats(commandContext.perfStats, this.logger);
 			}
 		}
 	}
@@ -124,11 +125,7 @@ export class CheckPolicy<
 	}
 
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: FIXME
-	private async runPolicy(
-		relPath: string,
-		// policies: RepoPolicy[],
-		policy: RepoPolicy,
-	): Promise<void> {
+	private async runPolicy(relPath: string, policy: RepoPolicy): Promise<void> {
 		const context = await this.getContext();
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
@@ -144,7 +141,7 @@ export class CheckPolicy<
 
 		const result = await runWithPerf(
 			policy.name,
-			"handle",
+			"check",
 			perfStats,
 			async () =>
 				policy.handler({
@@ -162,16 +159,24 @@ export class CheckPolicy<
 			return;
 		}
 
-		const messages = new StringBuilder();
+		type message = { heading: string; messages: string[] };
+		const messages: message[] = [];
 		if (isPolicyFixResult(result)) {
 			if (result.resolved) {
-				messages.append(
-					`Resolved ${policy.name} policy failure for file: ${result.file}`,
-				);
+				messages.push({
+					heading: newline + colors.bold(colors.bgGreen(` ${policy.name} `)),
+					messages: [`Fixed file: ${result.file}`],
+				});
 			} else {
-				messages.append(
-					`Error when trying to fix ${policy.name} policy failure in ${result.file}`,
-				);
+				messages.push({
+					heading:
+						newline +
+						colors.bgRedBright(" FIX FAILED ") +
+						colors.bold(policy.name),
+					messages: [
+						`Error when trying to fix ${policy.name} policy failure in ${result.file}`,
+					],
+				});
 				process.exitCode = 1;
 			}
 		} else {
@@ -180,7 +185,9 @@ export class CheckPolicy<
 
 			if (this.flags.fix && resolver !== undefined) {
 				// Resolve the failure
-				messages.append(`${newline}attempting to resolve: ${relPath}`);
+				this.log(
+					`${colors.bgYellow(` ${policy.name} `)} Attempting to resolve: ${relPath}`,
+				);
 				const resolveResult = await runWithPerf(
 					policy.name,
 					"resolve",
@@ -188,11 +195,11 @@ export class CheckPolicy<
 					async () => resolver({ file: relPath, root: gitRoot }),
 				);
 
-				if (
-					resolveResult.errorMessage !== undefined &&
-					resolveResult.errorMessage !== ""
-				) {
-					messages.append(newline + resolveResult.errorMessage);
+				if (resolveResult.errorMessages.length > 0) {
+					messages.push({
+						heading: colors.bold("Error when applying fixes"),
+						messages: resolveResult.errorMessages,
+					});
 				}
 
 				if (!resolveResult.resolved) {
@@ -200,25 +207,29 @@ export class CheckPolicy<
 				}
 			} else {
 				// No resolver, or fix is false, so we're in the full failure case.
-				const autoFixable = result.autoFixable
-					? chalk.green(" (autofixable)")
+				const autoFixableText = result.autoFixable
+					? colors.green(" (autofixable)")
 					: "";
-				messages.append(
-					`'${policy.name}' policy failure${autoFixable}: ${result.file}`,
-				);
-				messages.append(
-					result.errorMessage === undefined
-						? ""
-						: `${newline}${result.errorMessage}`,
-				);
+				const localMessage: message = {
+					heading: `\n${colors.bgYellow(` ${policy.name} `) + autoFixableText} `,
+					messages: [
+						`File: ${result.file}`,
+						...result.errorMessages.map((m) => `    ${m}`),
+					],
+				};
+				if (result.manualFix !== undefined && result.manualFix !== "") {
+					localMessage.messages.push(
+						`${colors.bold(colors.bgGreen(" MANUAL FIX "))} ${result.manualFix}`,
+					);
+				}
+				messages.push(localMessage);
 				process.exitCode = 1;
 			}
 		}
 
-		if ((process.exitCode ?? 0) === 0) {
-			this.info(messages.toString());
-		} else {
-			this.warning(messages.toString());
+		for (const msg of messages) {
+			this.log(`${colors.bold(msg.heading)}`);
+			this.log(msg.messages.join(`${newline}`));
 		}
 	}
 
@@ -232,9 +243,9 @@ export class CheckPolicy<
 	): Promise<void> {
 		const { excludeFiles: exclusions, gitRoot } = commandContext;
 
-		const filePath = path.join(gitRoot, inputPath).trim().replace(/\\/g, "/");
+		const filePath = path.join(gitRoot, inputPath);
 
-		this.count++;
+		commandContext.perfStats.count++;
 		if (!exclusions.every((value) => !value.test(inputPath))) {
 			this.verbose(`Excluded all handlers: ${inputPath}`);
 			return;
@@ -248,7 +259,7 @@ export class CheckPolicy<
 			);
 		}
 
-		this.processed++;
+		commandContext.perfStats.processed++;
 	}
 }
 
