@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-export { createInsecureTinyliciousTestTokenProvider } from "./insecureTinyliciousTokenProvider.js";
+export { createInsecureTinyliciousTestTokenProvider } from "./insecureTokenProvider.js";
 
 export {
 	createInsecureTinyliciousTestUrlResolver,
 	createTinyliciousTestCreateNewRequest,
-} from "./insecureTinyliciousUrlResolver.js";
+} from "./insecureUrlResolver.js";

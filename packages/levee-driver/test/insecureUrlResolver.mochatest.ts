@@ -3,12 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import { strict as assert } from "node:assert";
+import { strict as assert } from "node:assert/strict";
 
-import { IRequest } from "@fluidframework/core-interfaces";
+import type { IRequest } from "@fluidframework/core-interfaces";
 import { DriverHeader } from "@fluidframework/driver-definitions/internal";
+import { beforeEach, describe, it } from "mocha";
 
-import { InsecureTinyliciousUrlResolver } from "../insecureTinyliciousUrlResolver.js";
+import { InsecureTinyliciousUrlResolver } from "../src/insecureUrlResolver.js";
 
 describe("Insecure Url Resolver Test", () => {
 	const documentId = "fileName";
@@ -29,14 +30,21 @@ describe("Insecure Url Resolver Test", () => {
 		const resolvedUrl = await resolver.resolve(testRequest);
 
 		const expectedResolvedUrl = `${hostUrl}/tinylicious/${documentId}`;
-		assert.strictEqual(resolvedUrl.url, expectedResolvedUrl, "resolved url is wrong");
+		assert.strictEqual(
+			resolvedUrl.url,
+			expectedResolvedUrl,
+			"resolved url is wrong",
+		);
 	});
 
 	it("Should resolve url with custom domain and port", async () => {
 		const customEndpoint = "http://custom-endpoint.io";
 		const customFluidEndpoint = "http://custom-endpoint.io";
 		const customPort = 1234;
-		const customResolver = new InsecureTinyliciousUrlResolver(customPort, customEndpoint);
+		const customResolver = new InsecureTinyliciousUrlResolver(
+			customPort,
+			customEndpoint,
+		);
 		const testRequest: IRequest = {
 			url: `${documentId}`,
 			headers: {},
@@ -45,7 +53,11 @@ describe("Insecure Url Resolver Test", () => {
 		const resolvedUrl = await customResolver.resolve(testRequest);
 
 		const expectedResolvedUrl = `${customFluidEndpoint}:${customPort}/tinylicious/${documentId}`;
-		assert.strictEqual(resolvedUrl.url, expectedResolvedUrl, "resolved url is wrong");
+		assert.strictEqual(
+			resolvedUrl.url,
+			expectedResolvedUrl,
+			"resolved url is wrong",
+		);
 	});
 
 	it("Should resolve url with data object ids", async () => {
@@ -57,7 +69,11 @@ describe("Insecure Url Resolver Test", () => {
 		const resolvedUrl = await resolver.resolve(testRequest);
 
 		const expectedResolvedUrl = `${hostUrl}/tinylicious/${documentId}/${path}`;
-		assert.strictEqual(resolvedUrl.url, expectedResolvedUrl, "resolved url is wrong");
+		assert.strictEqual(
+			resolvedUrl.url,
+			expectedResolvedUrl,
+			"resolved url is wrong",
+		);
 	});
 
 	it("Should resolve url with a slash at the end", async () => {
@@ -68,7 +84,11 @@ describe("Insecure Url Resolver Test", () => {
 		const resolvedUrl = await resolver.resolve(testRequest);
 
 		const expectedResolvedUrl = `${hostUrl}/tinylicious/${documentId}/`;
-		assert.strictEqual(resolvedUrl.url, expectedResolvedUrl, "resolved url is wrong");
+		assert.strictEqual(
+			resolvedUrl.url,
+			expectedResolvedUrl,
+			"resolved url is wrong",
+		);
 	});
 
 	it("Should resolve url with 2 slashes at the end", async () => {
@@ -79,7 +99,11 @@ describe("Insecure Url Resolver Test", () => {
 		const resolvedUrl = await resolver.resolve(testRequest);
 
 		const expectedResolvedUrl = `${hostUrl}/tinylicious/${documentId}//`;
-		assert.strictEqual(resolvedUrl.url, expectedResolvedUrl, "resolved url is wrong");
+		assert.strictEqual(
+			resolvedUrl.url,
+			expectedResolvedUrl,
+			"resolved url is wrong",
+		);
 	});
 
 	it("Should resolve url with special characters", async () => {
@@ -94,7 +118,11 @@ describe("Insecure Url Resolver Test", () => {
 		const expectedResolvedUrl = `${hostUrl}/tinylicious/${encodeURIComponent(
 			testDocumentId,
 		)}/${path}`;
-		assert.strictEqual(resolvedUrl.url, expectedResolvedUrl, "resolved url is wrong");
+		assert.strictEqual(
+			resolvedUrl.url,
+			expectedResolvedUrl,
+			"resolved url is wrong",
+		);
 	});
 
 	it("Should correctly resolve url for a create-new request with a non-empty URL", async () => {

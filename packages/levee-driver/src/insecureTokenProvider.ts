@@ -3,8 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import { ITokenClaims, ScopeType } from "@fluidframework/driver-definitions/internal";
-import { ITokenProvider, ITokenResponse } from "@fluidframework/routerlicious-driver";
+import {
+	type ITokenClaims,
+	ScopeType,
+} from "@fluidframework/driver-definitions/internal";
+import type {
+	ITokenProvider,
+	ITokenResponse,
+} from "@fluidframework/routerlicious-driver";
 import { KJUR as jsrsasign } from "jsrsasign";
 import { v4 as uuid } from "uuid";
 
@@ -26,6 +32,7 @@ export class InsecureTinyliciousTokenProvider implements ITokenProvider {
 		private readonly scopes?: ScopeType[],
 	) {}
 
+	// biome-ignore lint/suspicious/useAwait: interface
 	public async fetchOrdererToken(
 		tenantId: string,
 		documentId?: string,
@@ -36,6 +43,7 @@ export class InsecureTinyliciousTokenProvider implements ITokenProvider {
 		};
 	}
 
+	// biome-ignore lint/suspicious/useAwait: interface
 	public async fetchStorageToken(
 		tenantId: string,
 		documentId: string,
@@ -46,14 +54,16 @@ export class InsecureTinyliciousTokenProvider implements ITokenProvider {
 		};
 	}
 
+	private static readonly userIdRegex = /^([\da-f]{8})-([\da-f]{4})/;
+
 	private getSignedToken(
 		tenantId: string,
 		documentId: string | undefined,
 		lifetime: number = 60 * 60,
-		ver: string = "1.0",
+		ver = "1.0",
 	): string {
 		const userId = uuid();
-		const match = userId.match(/^([\da-f]{8})-([\da-f]{4})/);
+		const match = userId.match(InsecureTinyliciousTokenProvider.userIdRegex);
 		const userName = match === null ? userId : match[0]; // Just use the first two segments of the (fake) userId as a fake name.
 
 		// Current time in seconds
@@ -62,7 +72,11 @@ export class InsecureTinyliciousTokenProvider implements ITokenProvider {
 
 		const claims: ITokenClaims = {
 			documentId: documentId ?? "",
-			scopes: this.scopes ?? [ScopeType.DocRead, ScopeType.DocWrite, ScopeType.SummaryWrite],
+			scopes: this.scopes ?? [
+				ScopeType.DocRead,
+				ScopeType.DocWrite,
+				ScopeType.SummaryWrite,
+			],
 			tenantId,
 			user,
 			iat: now,

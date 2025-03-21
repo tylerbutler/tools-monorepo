@@ -70,6 +70,7 @@
 				"*.json5",
 				"api-extractor*.json",
 				"tsconfig*.json",
+				"tsdoc-metadata.json",
 				".vscode/*.json",
 			],
 			"json": {

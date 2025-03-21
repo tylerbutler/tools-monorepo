@@ -1,11 +1,12 @@
 {
-	"extends": "../../../common/build/build-common/tsconfig.node16.json",
+	"extends": "../../config/tsconfig.strict.json",
 	"include": ["src/**/*"],
-	"exclude": ["src/test/**/*"],
+
 	"compilerOptions": {
 		"rootDir": "./src",
-		"outDir": "./lib",
-		"exactOptionalPropertyTypes": false,
+		"outDir": "./esm",
+		// TODO: Should these settings be disabled in the strict config?
 		"noUncheckedIndexedAccess": false,
+		"noPropertyAccessFromIndexSignature": false,
 	},
 }
