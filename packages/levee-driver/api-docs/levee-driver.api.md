@@ -11,17 +11,17 @@ import type { ITokenResponse } from '@fluidframework/routerlicious-driver';
 import { IUrlResolver } from '@fluidframework/driver-definitions/internal';
 import { ScopeType } from '@fluidframework/driver-definitions/internal';
 
-// @internal
-export const createTinyliciousCreateNewRequest: (documentId?: string) => IRequest;
+// @beta
+export const createCreateNewRequest: (documentId?: string) => IRequest;
+
+// @beta
+export const defaultEndpoint = "http://localhost";
+
+// @beta
+export const defaultPort = 7070;
 
 // @internal
-export const defaultTinyliciousEndpoint = "http://localhost";
-
-// @internal
-export const defaultTinyliciousPort = 7070;
-
-// @internal
-export class InsecureTinyliciousTokenProvider implements ITokenProvider {
+export class InsecureTokenProvider implements ITokenProvider {
     constructor(
     scopes?: ScopeType[] | undefined);
     // (undocumented)
@@ -30,8 +30,8 @@ export class InsecureTinyliciousTokenProvider implements ITokenProvider {
     fetchStorageToken(tenantId: string, documentId: string): Promise<ITokenResponse>;
 }
 
-// @internal
-export class InsecureTinyliciousUrlResolver implements IUrlResolver {
+// @beta
+export class InsecureUrlResolver implements IUrlResolver {
     constructor(port?: number, endpoint?: string);
     // (undocumented)
     getAbsoluteUrl(resolvedUrl: IResolvedUrl, relativeUrl: string): Promise<string>;

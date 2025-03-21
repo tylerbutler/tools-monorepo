@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import {
 	type ITokenClaims,
 	ScopeType,
@@ -19,10 +14,10 @@ import { v4 as uuid } from "uuid";
  * to get up and running.
  * @internal
  */
-export class InsecureTinyliciousTokenProvider implements ITokenProvider {
+export class InsecureTokenProvider implements ITokenProvider {
 	constructor(
 		/**
-		 * Optional. Override of scopes. If a param is not provided, InsecureTinyliciousTokenProvider
+		 * Optional. Override of scopes. If a param is not provided, InsecureTokenProvider
 		 * will use the default scopes which are document read, write and summarizer write.
 		 *
 		 * @param scopes - See {@link @fluidframework/protocol-definitions#ITokenClaims.scopes}
@@ -63,7 +58,7 @@ export class InsecureTinyliciousTokenProvider implements ITokenProvider {
 		ver = "1.0",
 	): string {
 		const userId = uuid();
-		const match = userId.match(InsecureTinyliciousTokenProvider.userIdRegex);
+		const match = userId.match(InsecureTokenProvider.userIdRegex);
 		const userName = match === null ? userId : match[0]; // Just use the first two segments of the (fake) userId as a fake name.
 
 		// Current time in seconds
@@ -97,8 +92,8 @@ export class InsecureTinyliciousTokenProvider implements ITokenProvider {
 }
 
 /**
- * Creates an insecure Tinylicious token provider for testing purposes.
+ * Creates an insecure token provider for testing purposes.
  */
-export function createInsecureTinyliciousTestTokenProvider(): ITokenProvider {
-	return new InsecureTinyliciousTokenProvider();
+export function createInsecureTestTokenProvider(): ITokenProvider {
+	return new InsecureTokenProvider();
 }

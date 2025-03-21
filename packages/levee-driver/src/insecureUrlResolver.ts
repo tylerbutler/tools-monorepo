@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import type { IRequest } from "@fluidframework/core-interfaces";
 import {
 	DriverHeader,
@@ -12,66 +7,59 @@ import {
 
 /**
  * Default endpoint port. Will be used by the service if the consumer does not specify a port.
- * @internal
+ *
+ * @beta
  */
-export const defaultTinyliciousPort = 7070;
+export const defaultPort = 7070;
 
 /**
  * Default endpoint URL base. Will be used by the service if the consumer does not specify an endpoint.
- * @internal
+ *
+ * @beta
  */
-export const defaultTinyliciousEndpoint = "http://localhost";
+export const defaultEndpoint = "http://localhost";
 
 /**
- * InsecureTinyliciousUrlResolver knows how to get the URLs to the service (in this case Tinylicious) to use
+ * InsecureUrlResolver knows how to get the URLs to the service to use
  * for a given request.  This particular implementation has a goal to avoid imposing requirements on the app's
  * URL shape, so it expects the request url to have this format (as opposed to a more traditional URL):
  * documentId/containerRelativePathing
- * @internal
+ *
+ * @beta
  */
-export class InsecureTinyliciousUrlResolver implements IUrlResolver {
-	private readonly tinyliciousEndpoint: string;
-	public constructor(
-		port = defaultTinyliciousPort,
-		endpoint = defaultTinyliciousEndpoint,
-	) {
-		this.tinyliciousEndpoint = `${endpoint}:${port}`;
+export class InsecureUrlResolver implements IUrlResolver {
+	private readonly endpoint: string;
+	public constructor(port = defaultPort, endpoint = defaultEndpoint) {
+		this.endpoint = `${endpoint}:${port}`;
 	}
 
 	// biome-ignore lint/suspicious/useAwait: interface
 	public async resolve(request: IRequest): Promise<IResolvedUrl> {
-		const relativeUrl = request.url.replace(`${this.tinyliciousEndpoint}/`, "");
+		const relativeUrl = request.url.replace(`${this.endpoint}/`, "");
 		const documentIdFromRequest = relativeUrl.split("/")[0];
 
 		let deltaStorageUrl: string;
 		let documentUrl: string;
-		let finalDocumentId: string = documentIdFromRequest;
+		const finalDocumentId: string = documentIdFromRequest;
 
 		// Special handling if the request is to create a new container
 		if (request.headers && request.headers[DriverHeader.createNew] === true) {
-			// Use the document ID passed by the application via the create request;
-			// if none was passed, use the reserved keyword to let the driver generate the ID.
-			// TODO: deprecate this capability for tinylicious as the r11s driver will stop using the document ID
-			// in create requests.
-			if (finalDocumentId === "") {
-				finalDocumentId = "new";
-			}
-			deltaStorageUrl = `${this.tinyliciousEndpoint}/deltas/tinylicious/${finalDocumentId}`;
-			documentUrl = `${this.tinyliciousEndpoint}/tinylicious/${finalDocumentId}`;
+			deltaStorageUrl = `${this.endpoint}/deltas/tinylicious/${finalDocumentId}`;
+			documentUrl = `${this.endpoint}/tinylicious/${finalDocumentId}`;
 		} else {
 			const encodedDocId = encodeURIComponent(finalDocumentId);
 			const documentRelativePath = relativeUrl.slice(
 				documentIdFromRequest.length,
 			);
-			documentUrl = `${this.tinyliciousEndpoint}/tinylicious/${encodedDocId}${documentRelativePath}`;
-			deltaStorageUrl = `${this.tinyliciousEndpoint}/deltas/tinylicious/${encodedDocId}`;
+			documentUrl = `${this.endpoint}/tinylicious/${encodedDocId}${documentRelativePath}`;
+			deltaStorageUrl = `${this.endpoint}/deltas/tinylicious/${encodedDocId}`;
 		}
 
 		return {
 			endpoints: {
 				deltaStorageUrl,
-				ordererUrl: this.tinyliciousEndpoint,
-				storageUrl: `${this.tinyliciousEndpoint}/repos/tinylicious`,
+				ordererUrl: this.endpoint,
+				storageUrl: `${this.endpoint}/repos/tinylicious`,
 			},
 			id: finalDocumentId,
 			tokens: {},
@@ -86,7 +74,7 @@ export class InsecureTinyliciousUrlResolver implements IUrlResolver {
 		relativeUrl: string,
 	): Promise<string> {
 		const documentId = decodeURIComponent(
-			resolvedUrl.url.replace(`${this.tinyliciousEndpoint}/tinylicious/`, ""),
+			resolvedUrl.url.replace(`${this.endpoint}/tinylicious/`, ""),
 		);
 		/*
 		 * The detached container flow will ultimately call getAbsoluteUrl() with the resolved.url produced by
@@ -99,19 +87,20 @@ export class InsecureTinyliciousUrlResolver implements IUrlResolver {
 }
 
 /**
- * Creates an insecure Tinylicious URL resolver for testing purposes with localhost port 7070.
+ * Creates an insecure URL resolver for testing purposes with localhost port 7070.
+ *
+ * @beta
  */
-export function createInsecureTinyliciousTestUrlResolver(): IUrlResolver {
-	return new InsecureTinyliciousUrlResolver();
+export function createInsecureTestUrlResolver(): IUrlResolver {
+	return new InsecureUrlResolver();
 }
 
 /**
- * Creates a Tinylicious {@link @fluidframework/core-interfaces#IRequest}.
- * @internal
+ * Creates a {@link @fluidframework/core-interfaces#IRequest}.
+ *
+ * @beta
  */
-export const createTinyliciousCreateNewRequest = (
-	documentId?: string,
-): IRequest => ({
+export const createCreateNewRequest = (documentId?: string): IRequest => ({
 	url: documentId ?? "",
 	headers: {
 		[DriverHeader.createNew]: true,
@@ -119,7 +108,6 @@ export const createTinyliciousCreateNewRequest = (
 });
 
 /**
- * Creates a Tinylicious {@link @fluidframework/core-interfaces#IRequest} for testing purposes.
+ * Creates a {@link @fluidframework/core-interfaces#IRequest} for testing purposes.
  */
-export const createTinyliciousTestCreateNewRequest =
-	createTinyliciousCreateNewRequest;
+export const createTestCreateNewRequest = createCreateNewRequest;

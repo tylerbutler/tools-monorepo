@@ -9,16 +9,16 @@ import type { IRequest } from "@fluidframework/core-interfaces";
 import { DriverHeader } from "@fluidframework/driver-definitions/internal";
 import { beforeEach, describe, it } from "mocha";
 
-import { InsecureTinyliciousUrlResolver } from "../src/insecureUrlResolver.js";
+import { InsecureUrlResolver } from "../src/insecureUrlResolver.js";
 
 describe("Insecure Url Resolver Test", () => {
 	const documentId = "fileName";
 	const hostUrl = "http://localhost:7070";
 	const tinyliciousEndpoint = "http://localhost:7070";
-	let resolver: InsecureTinyliciousUrlResolver;
+	let resolver: InsecureUrlResolver;
 
 	beforeEach(() => {
-		resolver = new InsecureTinyliciousUrlResolver();
+		resolver = new InsecureUrlResolver();
 	});
 
 	it("Should resolve url with only document id", async () => {
@@ -41,10 +41,7 @@ describe("Insecure Url Resolver Test", () => {
 		const customEndpoint = "http://custom-endpoint.io";
 		const customFluidEndpoint = "http://custom-endpoint.io";
 		const customPort = 1234;
-		const customResolver = new InsecureTinyliciousUrlResolver(
-			customPort,
-			customEndpoint,
-		);
+		const customResolver = new InsecureUrlResolver(customPort, customEndpoint);
 		const testRequest: IRequest = {
 			url: `${documentId}`,
 			headers: {},
