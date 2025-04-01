@@ -178,6 +178,9 @@ importers:
       '@tylerbu/lilconfig-loader-ts':
         specifier: workspace:^
         version: link:../lilconfig-loader-ts
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.0
       debug:
         specifier: ^4.4.0
         version: 4.4.0(supports-color@8.1.1)
@@ -666,24 +669,21 @@ importers:
       '@oclif/plugin-help':
         specifier: ^6.2.25
         version: 6.2.25
-      '@rushstack/node-core-library':
-        specifier: ^5.11.0
-        version: 5.11.0(@types/node@20.16.10)
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
       '@tylerbu/fundamentals':
         specifier: workspace:^
         version: link:../fundamentals
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.0
       jsonfile:
         specifier: ^6.1.0
         version: 6.1.0
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
-      picocolors:
-        specifier: ^1.1.1
-        version: 1.1.1
       simple-git:
         specifier: ^3.27.0
         version: 3.27.0
