@@ -9,13 +9,13 @@
 	"exports": {
 		".": {
 			"import": {
-				"types": "./lib/index.d.ts",
-				"default": "./lib/index.js"
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
 			}
 		}
 	},
-	"main": "lib/index.js",
-	"types": "lib/index.d.ts",
+	"main": "esm/index.js",
+	"types": "esm/index.d.ts",
 	"scripts": {
 		"api": "api-extractor run --local",
 		"build": "fluid-build . --task build",

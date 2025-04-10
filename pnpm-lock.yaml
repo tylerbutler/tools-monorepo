@@ -538,9 +538,9 @@ importers:
       '@fluidframework/telemetry-utils':
         specifier: ^2.23.0
         version: 2.23.0
-      '@fluidframework/tinylicious-driver':
-        specifier: ^2.23.0
-        version: 2.23.0(encoding@0.1.13)
+      '@tylerbu/levee-driver':
+        specifier: workspace:^
+        version: link:../levee-driver
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.17.1
@@ -654,9 +654,6 @@ importers:
       '@fluidframework/eslint-config-fluid':
         specifier: ^5.7.3
         version: 5.7.3(eslint@8.55.0)(typescript@5.4.5)
-      '@fluidframework/tinylicious-driver-previous':
-        specifier: npm:@fluidframework/tinylicious-driver@2.30.0
-        version: '@fluidframework/tinylicious-driver@2.30.0(encoding@0.1.13)'
       '@microsoft/api-extractor':
         specifier: 7.47.8
         version: 7.47.8(@types/node@18.19.80)
@@ -2120,12 +2117,6 @@ packages:
 
   '@fluidframework/test-utils@2.23.0':
     resolution: {integrity: sha512-TaX/hpGNxJFgQ9xWrsaEbsNBmGBU+5rrFDcZbgRv4P6Llo5/kVobF+mWSHEins+owPbss6Ua7KCqY6c42BfM7g==}
-
-  '@fluidframework/tinylicious-driver@2.23.0':
-    resolution: {integrity: sha512-oBJsz0PY8kfqa6e1uYjWRefNQBCN52+rk/H6Y6gYv2jpI/KOtTflToW/TNDaGhRtNG2bFIoOMeWj0Zz5CI6zhg==}
-
-  '@fluidframework/tinylicious-driver@2.30.0':
-    resolution: {integrity: sha512-Lsjc0AwWdWIK8Smkv36Eh3LGIJ9PyRZUg/vlcUia9hv141h0XEEmBOenZwVODb288iZ+5Si/4EoMo8NvVWkhfw==}
 
   '@fontsource/ibm-plex-serif@5.1.1':
     resolution: {integrity: sha512-5EVMKXP2kT5/sufDp2Hw96Zz5C7J6oBq13OWIGn2uhtGAsuE5E+e6hhUl0TJK0+EHYTfCS85ylcY5Vk2Q6ht/Q==}
@@ -14833,36 +14824,6 @@ snapshots:
       uuid: 9.0.1
     transitivePeerDependencies:
       - bufferutil
-      - encoding
-      - supports-color
-      - utf-8-validate
-
-  '@fluidframework/tinylicious-driver@2.23.0(encoding@0.1.13)':
-    dependencies:
-      '@fluidframework/core-interfaces': 2.23.0
-      '@fluidframework/driver-definitions': 2.23.0
-      '@fluidframework/driver-utils': 2.23.0(debug@4.4.0)
-      '@fluidframework/routerlicious-driver': 2.23.0(debug@4.4.0)(encoding@0.1.13)
-      jsrsasign: 11.1.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - encoding
-      - supports-color
-      - utf-8-validate
-
-  '@fluidframework/tinylicious-driver@2.30.0(encoding@0.1.13)':
-    dependencies:
-      '@fluidframework/core-interfaces': 2.30.0
-      '@fluidframework/driver-definitions': 2.30.0
-      '@fluidframework/driver-utils': 2.30.0
-      '@fluidframework/routerlicious-driver': 2.30.0(encoding@0.1.13)
-      jsrsasign: 11.1.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
       - encoding
       - supports-color
       - utf-8-validate

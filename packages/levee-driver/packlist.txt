@@ -4,6 +4,7 @@ README.md
 api-extractor.json
 biome.jsonc
 package.json
+packlist.txt
 tsconfig.json
 _temp/api-extractor/docs.api.json
 _temp/api-extractor/levee-driver.api.md

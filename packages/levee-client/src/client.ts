@@ -32,10 +32,7 @@ import {
 } from "@fluidframework/fluid-static/internal";
 import { RouterliciousDocumentServiceFactory } from "@fluidframework/routerlicious-driver/internal";
 import { wrapConfigProviderWithDefaults } from "@fluidframework/telemetry-utils/internal";
-import {
-	InsecureTinyliciousUrlResolver,
-	createTinyliciousCreateNewRequest,
-} from "@fluidframework/tinylicious-driver/internal";
+import { InsecureUrlResolver, createCreateNewRequest } from "@tylerbu/levee-driver";
 
 import { createLeveeAudienceMember } from "./audience.js";
 import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.js";
@@ -54,7 +51,7 @@ export class LeveeClient {
 	 */
 	public constructor(properties: LeveeClientProps) {
 		this.logger = properties?.logger;
-		this.urlResolver = new InsecureTinyliciousUrlResolver(
+		this.urlResolver = new InsecureUrlResolver(
 			properties.connection.port,
 			properties.connection.domain,
 		);
@@ -100,7 +97,7 @@ export class LeveeClient {
 					"Cannot attach container. Container is not in detached state.",
 				);
 			}
-			const request = createTinyliciousCreateNewRequest();
+			const request = createCreateNewRequest();
 			await container.attach(request);
 			if (container.resolvedUrl === undefined) {
 				throw new Error("Resolved Url not available on attached container");
