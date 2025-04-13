@@ -1,13 +1,18 @@
 import { SchemaFactory } from "fluid-framework";
 import { Reactive } from "./Reactive.js";
+import type { ReactiveInterface } from "./types.js";
 
 const sf = new SchemaFactory("AppSchema");
 
-export class MyDataClass extends sf.object("SchemaKey", {
+const classSchema = sf.object("SchemaKey", {
 	__num: sf.number,
 	__string: sf.string,
 	__bool: sf.boolean,
-}) {
+});
+
+type ReactiveClass = ReactiveInterface<typeof classSchema>;
+
+export class MyDataClass extends classSchema implements ReactiveClass {
 	@Reactive
 	num!: number;
 
@@ -16,6 +21,9 @@ export class MyDataClass extends sf.object("SchemaKey", {
 
 	@Reactive
 	bool!: boolean;
+
+	@Reactive
+	foo!: boolean;
 }
 
 const instance = new MyDataClass({
