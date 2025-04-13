@@ -12,5 +12,6 @@
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
 		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 	},
 }

@@ -7,7 +7,16 @@ const ExampleSchema = sf.object("SchemaKey", {
 	__string: sf.string,
 });
 
-export class MyDataClass extends ExampleSchema {
+type RemovePrefix<T extends string> = T extends `__${infer U}` ? U : T;
+type SchemaToInterface<T> = {
+	[K in keyof T as K extends `__${string}`
+		? RemovePrefix<K & string>
+		: never]: T[K];
+};
+
+export type MyData = SchemaToInterface<typeof ExampleSchema>;
+
+export class MyDataClass extends ExampleSchema implements MyData {
 	#num = $state(this.__num);
 	#string = $state(this.__string);
 
@@ -34,3 +43,10 @@ export class MyDataClass extends ExampleSchema {
 		});
 	})();
 }
+
+const instance = new MyDataClass({
+	__num: 0,
+	__string: "str",
+});
+
+instance.num = 1;
