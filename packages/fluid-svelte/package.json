@@ -1,6 +1,7 @@
 {
 	"name": "@tylerbu/fluid-svelte",
 	"version": "0.0.1",
+	"private": true,
 	"description": "Useful tools for building Svelte apps using the Fluid Framework.",
 	"keywords": ["fluidframework", "svelte"],
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
