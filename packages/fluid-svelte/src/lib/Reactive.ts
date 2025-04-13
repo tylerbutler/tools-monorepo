@@ -1,8 +1,6 @@
 import { Tree } from "fluid-framework";
 
-type PropertyDecorator = (target: object, propertyKey: string | symbol) => void;
-
-export const Reactive: PropertyDecorator = (
+export const ReactiveArray: PropertyDecorator = (
 	target: object,
 	propertyKey: string | symbol,
 ) => {
@@ -28,14 +26,14 @@ export const Reactive: PropertyDecorator = (
 	});
 };
 
-function ReactiveClass(
-	target: new (...args: any[]) => any,
-	context: ClassDecoratorContext,
-) {
-	// target is the class constructor
-	// context contains metadata about the class
-	context.addInitializer(() => {
-		target.name;
-	});
-	return target;
-}
+// function ReactiveClass(
+// 	target: new (...args: any[]) => any,
+// 	context: ClassDecoratorContext,
+// ) {
+// 	// target is the class constructor
+// 	// context contains metadata about the class
+// 	context.addInitializer(() => {
+// 		target.name;
+// 	});
+// 	return target;
+// }
