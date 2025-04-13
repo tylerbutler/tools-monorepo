@@ -12,13 +12,17 @@ export class MyDataClass extends ExampleSchema {
 	#string = $state(this.__string);
 
 	// Clean getters/setters that maintain reactivity
-	get num() { return this.#num; }
-	set num(v: number) { 
+	get num() {
+		return this.#num;
+	}
+	set num(v: number) {
 		this.__num = v;
 	}
 
-	get string() { return this.#string; }
-	set string(v: string) { 
+	get string() {
+		return this.#string;
+	}
+	set string(v: string) {
 		this.__string = v;
 	}
 
