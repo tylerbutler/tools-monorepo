@@ -27,7 +27,7 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 
 The following npm package may be included in this product:
 
- - @rushstack/node-core-library@5.9.0
+ - @rushstack/node-core-library@5.11.0
 
 This package contains the following license:
 
@@ -60,7 +60,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @fluid-tools/build-infrastructure@0.52.0
+ - @fluid-tools/build-infrastructure@0.53.0
 
 This package contains the following license:
 
@@ -154,8 +154,8 @@ SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @oclif/core@4.2.3
- - @oclif/plugin-help@6.2.21
+ - @oclif/core@4.2.7
+ - @oclif/plugin-help@6.2.25
 
 These packages each contain the following license:
 

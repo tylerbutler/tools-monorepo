@@ -124,9 +124,5 @@
 		// 	"automerge": true,
 		// },
 	],
-	"ignoreDeps": [
-		// Next major of chai needs testing
-		"@types/chai",
-		"chai",
-	],
+	"ignoreDeps": [],
 }

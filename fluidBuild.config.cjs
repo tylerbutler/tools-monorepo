@@ -27,9 +27,6 @@ const config = {
 			],
 			script: false,
 		},
-		docs: {
-			dependsOn: ["^compile", "compile", "api"],
-		},
 		clean: {
 			before: ["*"],
 		},
@@ -42,6 +39,9 @@ const config = {
 		compile: {
 			dependsOn: ["^compile"],
 		},
+		docs: {
+			dependsOn: ["^compile", "compile", "api"],
+		},
 		full: {
 			dependsOn: ["check", "build", "api", "docs", "lint", "test"],
 			script: false,
@@ -51,6 +51,10 @@ const config = {
 		},
 		manifest: ["compile"],
 		readme: ["compile", "manifest"],
+		release: {
+			dependsOn: ["build", "generate:license-file"],
+			script: false,
+		},
 		test: {
 			dependsOn: ["compile"],
 		},

@@ -9,7 +9,9 @@ import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
 import { download, extractTarball, fetchFile } from "../src/api.js";
-import { testDataPath, testUrls } from "./common.js";
+import { getTestUrls, testDataPath } from "./common.js";
+
+const testUrls = getTestUrls(8080);
 
 describe("download serverless tests", () => {
 	it("throws when downloadDir doesn't exist", async () => {

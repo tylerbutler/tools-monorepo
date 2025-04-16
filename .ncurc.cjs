@@ -1,19 +1,18 @@
+// const base = require("./.ncurc.base.cjs");
+
 // @ts-check
 
 /** @type {import("npm-check-updates").RunOptions} */
 const config = {
-	dep: ["dev", "optional", "peer"],
-	target: "semver",
+	root: true,
+	workspaces: true,
+
+	// dep: ["dev", "optional", "peer"],
 	reject: [
 		// Upgrade these separately/manually
 		"@types/node",
-		/.*oclif.*/,
 		"typescript",
 	],
-	root: true,
-	upgrade: true,
-	workspaces: true,
-	// minimal: true,
 };
 
 module.exports = config;

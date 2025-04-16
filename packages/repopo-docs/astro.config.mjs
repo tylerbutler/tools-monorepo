@@ -1,7 +1,7 @@
 import netlify from "@astrojs/netlify";
 import starlight from "@astrojs/starlight";
 import a11yEmoji from "@fec/remark-a11y-emoji";
-import { includeMarkdown } from "@hashicorp/remark-plugins";
+import { includeMarkdown } from "@hashicorp/platform-remark-plugins";
 import { defineConfig } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
