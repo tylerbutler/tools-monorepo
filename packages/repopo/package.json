@@ -7,7 +7,7 @@
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tylerbutler/tools-monorepo.git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
 		"directory": "packages/repopo"
 	},
 	"license": "MIT",

@@ -7,7 +7,7 @@ import { DefaultPolicies, type RepopoConfig } from "repopo";
 const config: RepopoConfig = {
 	policies: [...DefaultPolicies],
 	excludePoliciesForFiles: {
-		NoJsFileExtensions: [".*/bin/.*js"],
+		NoJsFileExtensions: [".*/bin/.*js", ".*/svelte.config.js"],
 	},
 	perPolicyConfig: {
 		PackageJsonProperties: {
