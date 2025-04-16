@@ -1,4 +1,4 @@
-import { dirname } from "pathe";
+import { dirname, resolve } from "pathe";
 import { publint } from "publint";
 import { formatMessage } from "publint/utils";
 import type { PolicyFailure, RepoPolicy } from "../policy.js";
@@ -6,9 +6,10 @@ import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy
 
 export const PubLint: RepoPolicy = generatePackagePolicy(
 	"PubLint",
-	async (json, { file }) => {
+	async (json, { file, root }) => {
 		const { messages } = await publint({
-			pkgDir: dirname(file),
+			pkgDir: dirname(resolve(root, file)),
+			pack: "pnpm",
 		});
 
 		if (messages.length === 0) {
