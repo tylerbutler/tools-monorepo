@@ -3,6 +3,11 @@
 	"version": "0.0.1",
 	"private": true,
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/dill-docs"
+	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",

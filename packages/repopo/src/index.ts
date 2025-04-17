@@ -18,4 +18,6 @@ export type {
 export type {
 	PackageJsonPropertiesSettings,
 	PackageJsonProperty,
+	PropertySetter,
+	PropertySetterObject,
 } from "./policies/PackageJsonProperties.js";

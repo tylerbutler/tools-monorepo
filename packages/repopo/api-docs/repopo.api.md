@@ -4,6 +4,8 @@
 
 ```ts
 
+import type { JsonValue } from 'type-fest';
+import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
 
 // @alpha
@@ -14,7 +16,7 @@ export type DefaultPolicyConfigType = object | unknown;
 
 // @alpha
 export interface PackageJsonPropertiesSettings {
-    verbatim: Record<PackageJsonProperty, string>;
+    verbatim: PackageJson;
 }
 
 // @alpha (undocumented)
@@ -55,6 +57,13 @@ export type PolicyName = string;
 
 // @alpha
 export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
+
+// @alpha (undocumented)
+export type PropertySetter = Record<string, ((prop: string, json: PackageJson, file: string, root: string) => JsonValue) | PropertySetterObject>;
+
+// @alpha (undocumented)
+export interface PropertySetterObject extends Record<string, PropertySetter[keyof PropertySetter]> {
+}
 
 // @alpha (undocumented)
 export interface RepopoConfig {

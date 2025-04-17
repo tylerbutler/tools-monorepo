@@ -13,6 +13,7 @@ title: "repopo"
 - [PolicyFailure](/api/interfaces/policyfailure/)
 - [PolicyFixResult](/api/interfaces/policyfixresult/)
 - [PolicyFunctionArguments](/api/interfaces/policyfunctionarguments/)
+- [PropertySetterObject](/api/interfaces/propertysetterobject/)
 - [RepopoConfig](/api/interfaces/repopoconfig/)
 - [RepoPolicy](/api/interfaces/repopolicy/)
 
@@ -24,6 +25,7 @@ title: "repopo"
 - [PolicyHandler](/api/type-aliases/policyhandler/)
 - [PolicyName](/api/type-aliases/policyname/)
 - [PolicyStandaloneResolver](/api/type-aliases/policystandaloneresolver/)
+- [PropertySetter](/api/type-aliases/propertysetter/)
 
 ## Variables
 

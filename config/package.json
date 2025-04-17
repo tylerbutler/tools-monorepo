@@ -2,6 +2,11 @@
 	"name": "local-config",
 	"private": true,
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "config"
+	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"devDependencies": {
