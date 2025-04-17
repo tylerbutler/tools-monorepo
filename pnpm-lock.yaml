@@ -19,11 +19,11 @@ importers:
         specifier: ^2.28.1
         version: 2.28.1
       '@fluid-tools/build-cli':
-        specifier: ^0.55.0
-        version: 0.55.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.4.5)
+        specifier: ^0.56.0
+        version: 0.56.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.4.5)
       '@fluidframework/build-tools':
-        specifier: ^0.55.0
-        version: 0.55.0(@types/node@22.13.17)
+        specifier: ^0.56.0
+        version: 0.56.0(@types/node@22.13.17)
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4
@@ -549,8 +549,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@fluid-tools/build-cli':
-        specifier: ^0.55.0
-        version: 0.55.0(@types/node@20.16.10)(encoding@0.1.13)(typescript@5.5.4)
+        specifier: ^0.56.0
+        version: 0.56.0(@types/node@20.16.10)(encoding@0.1.13)(typescript@5.5.4)
       '@fluidframework/aqueduct':
         specifier: ^2.23.0
         version: 2.30.0
@@ -558,8 +558,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       '@fluidframework/build-tools':
-        specifier: ^0.55.0
-        version: 0.55.0(@types/node@20.16.10)
+        specifier: ^0.56.0
+        version: 0.56.0(@types/node@20.16.10)
       '@fluidframework/container-runtime':
         specifier: ^2.23.0
         version: 2.30.0(debug@4.4.0)
@@ -658,8 +658,8 @@ importers:
   packages/repopo:
     dependencies:
       '@fluid-tools/build-infrastructure':
-        specifier: ^0.55.0
-        version: 0.55.0(@types/node@20.16.10)
+        specifier: ^0.56.0
+        version: 0.56.0(@types/node@20.16.10)
       '@oclif/core':
         specifier: ^4.2.7
         version: 4.2.7
@@ -1793,17 +1793,17 @@ packages:
   '@fluid-internal/test-driver-definitions@2.30.0':
     resolution: {integrity: sha512-QHZq8qOXYYueCO6B9+4sTXMQ139/Z65bfZlYKCseL8uqRjb7I+dX//2jhNOBwCiIv+Eeh/2TR447407/d6fjzg==}
 
-  '@fluid-tools/build-cli@0.55.0':
-    resolution: {integrity: sha512-PnPoJx/7Fzz/jO8/0+QyYARtiJRIsj1NE79DPWbrBGdeSAacok/UgrEJ3JC1Kr68KKgnoIU3Zo7DnLPfBWx1PQ==}
+  '@fluid-tools/build-cli@0.56.0':
+    resolution: {integrity: sha512-wC/JR9DOsg84fbwfHaR5cbhN6Z1MJ84o4nEioqsEbcr9qGFXOjid4eBxW7V4WWYW9sT2y2ZnMYrtOBAqLPriEQ==}
     engines: {node: '>=20.15.1'}
     hasBin: true
 
-  '@fluid-tools/build-infrastructure@0.55.0':
-    resolution: {integrity: sha512-uctF9nN8yQqpizqj4ZEjT7Qet2YFMHzpdDFXrS8Dl4turfLPoiMhD+1sFGhE2tsvdx25QcBYe45u7IAsefCFiA==}
+  '@fluid-tools/build-infrastructure@0.56.0':
+    resolution: {integrity: sha512-6wEiUol3I21ZcYcr9XdsruKNxO2PO57BgPCKsQkOthWS/ZrHsP+NFoMaVwatjjMRuNipzMzk4HPx4pDCf9tbqg==}
     hasBin: true
 
-  '@fluid-tools/version-tools@0.55.0':
-    resolution: {integrity: sha512-sdQq4poJz4/L9TcXZJXw3mNPzp0qZH/Qv4ufNSrPSDtWDHucgYsg1zR/VmSwf6EYRQ086Jij7vnFnkSGsIrKIA==}
+  '@fluid-tools/version-tools@0.56.0':
+    resolution: {integrity: sha512-un3xHww/pvZEznO8InnlVs2dCyK+Qmjq7MFymsRKURK0C/l53325uWBK+ZcNlOTlxB/9ajrw6rRzaDmnTOd+LQ==}
     engines: {node: '>=20.15.1'}
     hasBin: true
 
@@ -1814,13 +1814,13 @@ packages:
     resolution: {integrity: sha512-1LU/2uyCeMxf63z5rhFOFEBvFyBogZ7ZXwzXLxyBhSgq/fGiq8PLjBW7uX++r0LcVCdaWyopf7w060eJpANYdg==}
     hasBin: true
 
-  '@fluidframework/build-tools@0.55.0':
-    resolution: {integrity: sha512-BurYYIeAnVLMBr9UIJPzfN3V1qLJtItwLrxDJqyPqqZTFxqL4MvafilX8caKuSVUJqLuFCf+KS8ABg+6rXywtg==}
+  '@fluidframework/build-tools@0.56.0':
+    resolution: {integrity: sha512-8px5sXBRTW3u2bFVGcOH+bQbA8Kv84iKPGvDfOgwtjT3oC3u9+g8feCeIcEGWsT4U5P/69b31vLXHLXdMpnaYQ==}
     engines: {node: '>=20.15.1'}
     hasBin: true
 
-  '@fluidframework/bundle-size-tools@0.55.0':
-    resolution: {integrity: sha512-1j2p1VDFjgRYFNkJRVQI82xTtyA3G3Q6JEp7ohraQknq116TB0FAfIKCADEcvaFawd9oeXcTsnFif9S3gChU1Q==}
+  '@fluidframework/bundle-size-tools@0.56.0':
+    resolution: {integrity: sha512-rFHMONltOXxErRSndoK/fx6XOsG76y/VsgjK+BD9IHwMZnovAjHRnBexdleq6RDCLWh9Gz3wQghfjsvFsQp9UA==}
 
   '@fluidframework/common-definitions@1.1.0':
     resolution: {integrity: sha512-WQYtG9tkx2j7i1JSXPvwLnQsqCOZAghMj0aGciqjZVNppUly/XBpAjb4V6FEUCEjxCScPKhyE+1rhV1ep52NgA==}
@@ -13161,13 +13161,13 @@ snapshots:
       '@fluidframework/core-interfaces': 2.30.0
       '@fluidframework/driver-definitions': 2.30.0
 
-  '@fluid-tools/build-cli@0.55.0(@types/node@20.16.10)(encoding@0.1.13)(typescript@5.5.4)':
+  '@fluid-tools/build-cli@0.56.0(@types/node@20.16.10)(encoding@0.1.13)(typescript@5.5.4)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
-      '@fluid-tools/build-infrastructure': 0.55.0(@types/node@20.16.10)
-      '@fluid-tools/version-tools': 0.55.0(@types/node@20.16.10)
-      '@fluidframework/build-tools': 0.55.0(@types/node@20.16.10)
-      '@fluidframework/bundle-size-tools': 0.55.0
+      '@fluid-tools/build-infrastructure': 0.56.0(@types/node@20.16.10)
+      '@fluid-tools/version-tools': 0.56.0(@types/node@20.16.10)
+      '@fluidframework/build-tools': 0.56.0(@types/node@20.16.10)
+      '@fluidframework/bundle-size-tools': 0.56.0
       '@inquirer/prompts': 7.3.2(@types/node@20.16.10)
       '@microsoft/api-extractor': 7.52.1(@types/node@20.16.10)
       '@oclif/core': 4.2.7
@@ -13239,13 +13239,13 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@fluid-tools/build-cli@0.55.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.4.5)':
+  '@fluid-tools/build-cli@0.56.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.4.5)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
-      '@fluid-tools/build-infrastructure': 0.55.0(@types/node@22.13.17)
-      '@fluid-tools/version-tools': 0.55.0(@types/node@22.13.17)
-      '@fluidframework/build-tools': 0.55.0(@types/node@22.13.17)
-      '@fluidframework/bundle-size-tools': 0.55.0
+      '@fluid-tools/build-infrastructure': 0.56.0(@types/node@22.13.17)
+      '@fluid-tools/version-tools': 0.56.0(@types/node@22.13.17)
+      '@fluidframework/build-tools': 0.56.0(@types/node@22.13.17)
+      '@fluidframework/bundle-size-tools': 0.56.0
       '@inquirer/prompts': 7.3.2(@types/node@22.13.17)
       '@microsoft/api-extractor': 7.52.1(@types/node@22.13.17)
       '@oclif/core': 4.2.7
@@ -13317,9 +13317,9 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@fluid-tools/build-infrastructure@0.55.0(@types/node@20.16.10)':
+  '@fluid-tools/build-infrastructure@0.56.0(@types/node@20.16.10)':
     dependencies:
-      '@fluid-tools/version-tools': 0.55.0(@types/node@20.16.10)
+      '@fluid-tools/version-tools': 0.56.0(@types/node@20.16.10)
       '@manypkg/get-packages': 2.2.2
       '@oclif/core': 4.2.7
       cosmiconfig: 8.3.6(typescript@5.4.5)
@@ -13343,9 +13343,9 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluid-tools/build-infrastructure@0.55.0(@types/node@22.13.17)':
+  '@fluid-tools/build-infrastructure@0.56.0(@types/node@22.13.17)':
     dependencies:
-      '@fluid-tools/version-tools': 0.55.0(@types/node@22.13.17)
+      '@fluid-tools/version-tools': 0.56.0(@types/node@22.13.17)
       '@manypkg/get-packages': 2.2.2
       '@oclif/core': 4.2.7
       cosmiconfig: 8.3.6(typescript@5.4.5)
@@ -13369,7 +13369,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluid-tools/version-tools@0.55.0(@types/node@20.16.10)':
+  '@fluid-tools/version-tools@0.56.0(@types/node@20.16.10)':
     dependencies:
       '@oclif/core': 4.2.7
       '@oclif/plugin-autocomplete': 3.2.22
@@ -13385,7 +13385,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluid-tools/version-tools@0.55.0(@types/node@22.13.17)':
+  '@fluid-tools/version-tools@0.56.0(@types/node@22.13.17)':
     dependencies:
       '@oclif/core': 4.2.7
       '@oclif/plugin-autocomplete': 3.2.22
@@ -13423,9 +13423,9 @@ snapshots:
 
   '@fluidframework/build-common@2.0.3': {}
 
-  '@fluidframework/build-tools@0.55.0(@types/node@20.16.10)':
+  '@fluidframework/build-tools@0.56.0(@types/node@20.16.10)':
     dependencies:
-      '@fluid-tools/version-tools': 0.55.0(@types/node@20.16.10)
+      '@fluid-tools/version-tools': 0.56.0(@types/node@20.16.10)
       '@manypkg/get-packages': 2.2.2
       async: 3.2.6
       cosmiconfig: 8.3.6(typescript@5.4.5)
@@ -13459,9 +13459,9 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/build-tools@0.55.0(@types/node@22.13.17)':
+  '@fluidframework/build-tools@0.56.0(@types/node@22.13.17)':
     dependencies:
-      '@fluid-tools/version-tools': 0.55.0(@types/node@22.13.17)
+      '@fluid-tools/version-tools': 0.56.0(@types/node@22.13.17)
       '@manypkg/get-packages': 2.2.2
       async: 3.2.6
       cosmiconfig: 8.3.6(typescript@5.4.5)
@@ -13495,7 +13495,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/bundle-size-tools@0.55.0':
+  '@fluidframework/bundle-size-tools@0.56.0':
     dependencies:
       azure-devops-node-api: 11.2.0
       jszip: 3.10.1
