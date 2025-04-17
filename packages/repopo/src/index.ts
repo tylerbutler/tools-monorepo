@@ -15,9 +15,4 @@ export type {
 	PerPolicySettings,
 	RepopoConfig,
 } from "./config.js";
-export type {
-	PackageJsonPropertiesSettings,
-	PackageJsonProperty,
-	PropertySetter,
-	PropertySetterObject,
-} from "./policies/PackageJsonProperties.js";
+export type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";

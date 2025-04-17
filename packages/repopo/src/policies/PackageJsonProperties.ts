@@ -1,31 +1,11 @@
 import { defu } from "defu";
 import jsonfile from "jsonfile";
 import diff from "microdiff";
-import type { JsonValue, PackageJson } from "type-fest";
+import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
 
 const { writeFile: writeJson } = jsonfile;
-
-/**
- * @alpha
- */
-export type PackageJsonProperty = string;
-
-/**
- * @alpha
- */
-export type PropertySetter = Record<
-	string,
-	| ((prop: string, json: PackageJson, file: string, root: string) => JsonValue)
-	| PropertySetterObject
->;
-
-/**
- * @alpha
- */
-export interface PropertySetterObject
-	extends Record<string, PropertySetter[keyof PropertySetter]> {}
 
 /**
  * Policy settings for the PackageJsonProperties repo policy.
@@ -39,12 +19,6 @@ export interface PackageJsonPropertiesSettings {
 	verbatim: PackageJson;
 }
 
-// const templateStrings = {
-// 	$directory$: (file: string) => {
-// 		return dirname(file);
-// 	},
-// };
-
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  */
@@ -55,6 +29,7 @@ export const PackageJsonProperties = generatePackagePolicy<
 	if (config === undefined) {
 		return true;
 	}
+	const { verbatim } = config;
 
 	const failResult: PolicyFailure = {
 		name: PackageJsonProperties.name,
@@ -62,32 +37,10 @@ export const PackageJsonProperties = generatePackagePolicy<
 		autoFixable: true,
 	};
 
-	const { verbatim } = config;
-
-	// function substituteTemplateValues(obj: PackageJson): PackageJson {
-	// 	const result: PackageJson = {};
-	// 	for (const [key, value] of Object.entries(obj)) {
-	// 		if (typeof value === "string") {
-	// 			let replacement = "";
-	// 			for (const [key, func] of Object.entries(templateStrings)) {
-	// 				replacement = value.replaceAll(key, func(file));
-	// 			}
-	// 			result[key] = replacement;
-	// 		} else if (typeof value === "object" && value !== null) {
-	// 			result[key] = substituteTemplateValues(value as PackageJson);
-	// 		} else {
-	// 			result[key] = value;
-	// 		}
-	// 	}
-	// 	return result;
-	// }
-
-	// const verbatimRealized = substituteTemplateValues(verbatim);
-	const messages: string[] = [];
-
 	const merged = defu(json, verbatim);
 	const result = diff(merged, json);
 
+	const messages: string[] = [];
 	for (const diffResult of result) {
 		messages.push(
 			`Incorrect package.json field value for '${diffResult.path}'.`,
