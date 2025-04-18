@@ -12,7 +12,7 @@ file in your git repo, with a straightforward way to write your own policies.
 
 # Configuring policies
 
-Repopo and its policies can be configured in a repopo.config.ts (or .cjs, or .mjs) file in the root of the repo. Using a
+Repopo and its policies can be configured in a `repopo.config.ts` (or `.cjs`, or `.mjs`) file in the root of the repo. Using a
 TypeScript configuration file is recommended.
 
 The policy config must export a default object of the type `PolicyConfig`.

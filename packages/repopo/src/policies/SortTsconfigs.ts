@@ -3,6 +3,8 @@ import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**
  * A repo policy that checks that tsconfig files are sorted according to settings.
+ *
+ * @alpha
  */
 export const SortTsconfigs: RepoPolicy = {
 	name: "SortTsconfigs",
