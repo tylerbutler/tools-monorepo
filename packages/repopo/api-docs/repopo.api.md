@@ -4,6 +4,7 @@
 
 ```ts
 
+import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
 
 // @alpha
@@ -14,11 +15,8 @@ export type DefaultPolicyConfigType = object | unknown;
 
 // @alpha
 export interface PackageJsonPropertiesSettings {
-    verbatim: Record<PackageJsonProperty, string>;
+    verbatim: PackageJson;
 }
-
-// @alpha (undocumented)
-export type PackageJsonProperty = string;
 
 // @alpha (undocumented)
 export type PerPolicySettings = ({

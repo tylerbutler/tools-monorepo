@@ -15,6 +15,10 @@ const config: RepopoConfig = {
 				license: "MIT",
 				author: "Tyler Butler <tyler@tylerbutler.com>",
 				bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
+				repository: {
+					type: "git",
+					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
+				},
 			},
 		},
 	},
