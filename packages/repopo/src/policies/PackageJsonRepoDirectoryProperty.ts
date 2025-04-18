@@ -17,6 +17,7 @@ export const PackageJsonRepoDirectoryProperty = generatePackagePolicy<
 		name: PackageJsonRepoDirectoryProperty.name,
 		file,
 		autoFixable: true,
+		errorMessages: [],
 	};
 
 	const fixResult: PolicyFixResult = {
@@ -24,7 +25,7 @@ export const PackageJsonRepoDirectoryProperty = generatePackagePolicy<
 		resolved: false,
 	};
 
-	const pkgDir = path.dirname(file);
+	const pkgDir = path.dirname(path.resolve(root, file));
 	const maybeDir = path.relative(root, pkgDir);
 	const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
 
@@ -44,13 +45,15 @@ export const PackageJsonRepoDirectoryProperty = generatePackagePolicy<
 					fixResult.resolved = true;
 				} catch (error: unknown) {
 					fixResult.resolved = false;
-					fixResult.errorMessage = `${(error as Error).message}\n${
-						(error as Error).stack
-					}`;
+					fixResult.errorMessages.push(
+						`${(error as Error).message}\n${(error as Error).stack}`,
+					);
 				}
 				return fixResult;
 			}
-			failResult.errorMessage = `repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`;
+			failResult.errorMessages.push(
+				`repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`,
+			);
 			return failResult;
 		}
 	}
