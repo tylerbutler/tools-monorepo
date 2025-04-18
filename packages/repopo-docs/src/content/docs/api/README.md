@@ -19,7 +19,6 @@ title: "repopo"
 ## Type Aliases
 
 - [DefaultPolicyConfigType](/api/type-aliases/defaultpolicyconfigtype/)
-- [PackageJsonProperty](/api/type-aliases/packagejsonproperty/)
 - [PerPolicySettings](/api/type-aliases/perpolicysettings/)
 - [PolicyHandler](/api/type-aliases/policyhandler/)
 - [PolicyName](/api/type-aliases/policyname/)

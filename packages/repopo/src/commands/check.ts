@@ -204,12 +204,12 @@ export class CheckPolicy<
 					? chalk.green(" (autofixable)")
 					: "";
 				messages.append(
-					`'${policy.name}' policy failure${autoFixable}: ${result.file}`,
+					`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
 				);
 				messages.append(
 					result.errorMessage === undefined
 						? ""
-						: `${newline}${result.errorMessage}`,
+						: `${newline}\t${result.errorMessage}`,
 				);
 				process.exitCode = 1;
 			}
