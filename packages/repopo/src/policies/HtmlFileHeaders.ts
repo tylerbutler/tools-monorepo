@@ -6,6 +6,8 @@ import {
 
 /**
  * A RepoPolicy that checks that HTML files have the configured header comment.
+ *
+ * @alpha
  */
 export const HtmlFileHeaders = generateFileHeaderPolicy("HtmlFileHeaders", {
 	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,

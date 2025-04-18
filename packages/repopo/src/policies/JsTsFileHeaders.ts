@@ -33,6 +33,8 @@ const jsTsReplacer = (
 
 /**
  * A RepoPolicy that checks that JavaScript and TypeScript source files have the configured header comment
+ *
+ * @alpha
  */
 export const JsTsFileHeaders = generateFileHeaderPolicy("JsTsFileHeaders", {
 	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,

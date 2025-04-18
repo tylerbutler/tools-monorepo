@@ -69,7 +69,9 @@ export type PolicyHandler<C = unknown | undefined> = (
  * @alpha
  */
 export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
-	(args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
+	(
+		args: Omit<PolicyFunctionArguments<C>, "resolve">,
+	) => Promise<PolicyFixResult>;
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
