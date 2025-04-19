@@ -120,9 +120,6 @@ export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown | undefi
 
 export { run }
 
-// @alpha
-export const SortTsconfigs: RepoPolicy;
-
 // (No @packageDocumentation comment for this package)
 
 ```

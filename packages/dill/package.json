@@ -118,7 +118,7 @@
 		"rimraf": "^6.0.1",
 		"serve": "^14.2.4",
 		"serve-handler": "^6.1.6",
-		"sort-package-json": "3.0.0",
+		"sort-package-json": "*",
 		"start-server-and-test": "^2.0.11",
 		"tempy": "^3.1.0",
 		"tmp-promise": "^3.0.3",

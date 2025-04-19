@@ -55,7 +55,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       sort-tsconfig:
         specifier: workspace:^
@@ -152,7 +152,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       ts-node:
         specifier: ^10.9.2
@@ -200,7 +200,7 @@ importers:
         specifier: ^3.27.0
         version: 3.27.0
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       strip-ansi:
         specifier: ^7.1.0
@@ -364,7 +364,7 @@ importers:
         specifier: ^6.1.6
         version: 6.1.6
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       start-server-and-test:
         specifier: ^2.0.11
@@ -694,11 +694,8 @@ importers:
         specifier: ^3.27.0
         version: 3.27.0
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
-      sort-tsconfig:
-        specifier: workspace:^
-        version: link:../sort-tsconfig
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -839,6 +836,9 @@ importers:
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
+      repopo:
+        specifier: workspace:^
+        version: link:../repopo
       sort-jsonc:
         specifier: ^1.0.2
         version: 1.0.2
@@ -883,7 +883,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       start-server-and-test:
         specifier: ^2.0.11
@@ -928,7 +928,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       tempy:
         specifier: ^3.1.0

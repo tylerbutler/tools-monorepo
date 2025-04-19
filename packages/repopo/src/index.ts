@@ -17,7 +17,6 @@ export { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 export { PackageScripts } from "./policies/PackageScripts.js";
-export { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 export type {
 	PerPolicySettings,

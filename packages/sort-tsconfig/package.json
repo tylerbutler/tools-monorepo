@@ -81,6 +81,7 @@
 		"@tylerbu/fundamentals": "workspace:^",
 		"detect-indent": "^7.0.1",
 		"pathe": "^2.0.3",
+		"repopo": "workspace:^",
 		"sort-jsonc": "^1.0.2",
 		"tiny-jsonc": "^1.0.2",
 		"tinyglobby": "^0.2.11"
@@ -97,7 +98,7 @@
 		"memfs": "^4.17.0",
 		"oclif": "^4.17.30",
 		"rimraf": "^6.0.1",
-		"sort-package-json": "3.0.0",
+		"sort-package-json": "*",
 		"start-server-and-test": "^2.0.11",
 		"tmp-promise": "^3.0.3",
 		"tsx": "^4.19.3",

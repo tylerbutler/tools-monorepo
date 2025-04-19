@@ -2,9 +2,7 @@ import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
-import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 import { PackageScripts } from "./policies/PackageScripts.js";
-import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 /**
  * @alpha
@@ -192,11 +190,10 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
 
 // biome-ignore lint/suspicious/noExplicitAny: FIXME
 export const DefaultPolicies: RepoPolicy<any>[] = [
+	JsTsFileHeaders,
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
-	PackageJsonSorted,
+	// PackageJsonSorted,
 	PackageScripts,
-	SortTsconfigs,
-	JsTsFileHeaders,
 ] as const;

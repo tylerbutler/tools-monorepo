@@ -36,6 +36,14 @@ policy settings as the value.
 
 repopo includes the following policies. All of the included policies are enabled by default.
 
+## JsTsFileHeaders
+
+This policy sets a common file header for JavaScript and TypeScript files.
+
+### Configuration
+
+TODO
+
 ## NoJsFileExtensions
 
 The NoJsFileExtensions policy checks for JavaScript source files that just use the .js file extension. Such files may be
@@ -61,6 +69,10 @@ const config: PolicyConfig = {
 				license: "MIT",
 				author: "Tyler Butler <tyler@tylerbutler.com>",
 				bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
+				repository: {
+					type: "git",
+					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
+				}
 			}
 		}
 	}
