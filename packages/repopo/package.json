@@ -73,9 +73,9 @@
 	},
 	"dependencies": {
 		"@fluid-tools/build-infrastructure": "^0.56.0",
-		"@oclif/core": "^4.2.7",
-		"@oclif/plugin-help": "^6.2.25",
-		"@rushstack/node-core-library": "^5.11.0",
+		"@oclif/core": "^4.2.10",
+		"@oclif/plugin-help": "^6.2.27",
+		"@rushstack/node-core-library": "^5.13.0",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"defu": "^6.1.4",

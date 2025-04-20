@@ -43,18 +43,18 @@
 		"test:mocha": "mocha --recursive dist/test"
 	},
 	"dependencies": {
-		"@fluidframework/container-definitions": "^2.23.0",
-		"@fluidframework/container-loader": "^2.23.0",
-		"@fluidframework/core-interfaces": "^2.23.0",
-		"@fluidframework/core-utils": "^2.23.0",
-		"@fluidframework/driver-definitions": "^2.23.0",
-		"@fluidframework/driver-utils": "^2.23.0",
-		"@fluidframework/fluid-static": "^2.23.0",
-		"@fluidframework/map": "^2.23.0",
-		"@fluidframework/routerlicious-driver": "^2.23.0",
-		"@fluidframework/runtime-utils": "^2.23.0",
-		"@fluidframework/telemetry-utils": "^2.23.0",
-		"@fluidframework/tinylicious-driver": "^2.23.0"
+		"@fluidframework/container-definitions": "^2.32.0",
+		"@fluidframework/container-loader": "^2.32.0",
+		"@fluidframework/core-interfaces": "^2.32.0",
+		"@fluidframework/core-utils": "^2.32.0",
+		"@fluidframework/driver-definitions": "^2.32.0",
+		"@fluidframework/driver-utils": "^2.32.0",
+		"@fluidframework/fluid-static": "^2.32.0",
+		"@fluidframework/map": "^2.32.0",
+		"@fluidframework/routerlicious-driver": "^2.32.0",
+		"@fluidframework/runtime-utils": "^2.32.0",
+		"@fluidframework/telemetry-utils": "^2.32.0",
+		"@fluidframework/tinylicious-driver": "^2.32.0"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.17.4",

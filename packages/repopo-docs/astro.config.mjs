@@ -44,7 +44,7 @@ export default defineConfig({
 					},
 					typeDoc: {
 						excludeExternals: true,
-						// outputFileStrategy: "modules",
+						router: "module",
 						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo",
 						mergeReadme: true,
 						readme: "../repopo/api-docs/README.md",
@@ -60,9 +60,13 @@ export default defineConfig({
 				// TODO: Re-enable once problems are fixed.
 				starlightLinksValidator(),
 			],
-			social: {
-				github: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
-			},
+			social: [
+				{
+					icon: "github",
+					label: "GitHub",
+					href: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
+				},
+			],
 			sidebar: [
 				{
 					label: "Start Here",

@@ -74,15 +74,15 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/sort-tsconfig/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.2.7",
-		"@oclif/plugin-help": "^6.2.25",
+		"@oclif/core": "^4.2.10",
+		"@oclif/plugin-help": "^6.2.27",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"detect-indent": "^7.0.1",
 		"pathe": "^2.0.3",
 		"sort-jsonc": "^1.0.2",
 		"tiny-jsonc": "^1.0.2",
-		"tinyglobby": "^0.2.11"
+		"tinyglobby": "^0.2.13"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
