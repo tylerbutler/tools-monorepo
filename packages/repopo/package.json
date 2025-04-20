@@ -85,17 +85,6 @@
 		"picocolors": "^1.1.1",
 		"simple-git": "^3.27.0"
 	},
-	"peerDependencies": {
-		"sort-package-json": "*"
-	},
-	"peerDependenciesMeta": {
-		"sort-package-json": {
-			"optional": true
-		},
-		"sort-tsconfig": {
-			"optional": true
-		}
-	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@microsoft/api-extractor": "^7.52.1",
@@ -114,6 +103,14 @@
 		"type-fest": "^4.37.0",
 		"typescript": "~5.5.4",
 		"vitest": "^3.0.9"
+	},
+	"peerDependencies": {
+		"sort-package-json": "*"
+	},
+	"peerDependenciesMeta": {
+		"sort-package-json": {
+			"optional": true
+		}
 	},
 	"engines": {
 		"node": ">=18.0.0"

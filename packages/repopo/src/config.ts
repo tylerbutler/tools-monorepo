@@ -22,7 +22,9 @@ export interface RepopoConfig {
 	 *
 	 * See `DefaultPolicies` for the policies that will be enabled by default if this is `undefined`.
 	 */
-	policies?: RepoPolicy[];
+
+	// biome-ignore lint/suspicious/noExplicitAny: FIXME
+	policies?: RepoPolicy<any>[];
 
 	/**
 	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
