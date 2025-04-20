@@ -2,7 +2,13 @@
 	"name": "dill-cli",
 	"version": "0.2.0",
 	"description": "Command-line (CLI) program to download and optionally decompress gzipped files.",
-	"keywords": ["download", "ci", "tar", "gzip", "decompress"],
+	"keywords": [
+		"download",
+		"ci",
+		"tar",
+		"gzip",
+		"decompress"
+	],
 	"homepage": "https://dill.tylerbutler.com/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -46,8 +52,6 @@
 		"dill": "./bin/dev.js",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate": "concurrently npm:generate:*",
-		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
@@ -55,6 +59,7 @@
 		"readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../dill-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",
+		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "serve ./test/data --listen 8080",
 		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",
@@ -63,8 +68,12 @@
 		"update:test-snapshots": "vitest run test -u"
 	},
 	"oclif": {
-		"additionalHelpFlags": ["-h"],
-		"additionalVersionFlags": ["-V"],
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
 		"bin": "dill",
 		"commands": {
 			"strategy": "single",

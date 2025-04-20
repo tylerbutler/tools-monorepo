@@ -2,7 +2,9 @@
 	"name": "@tylerbu/cli",
 	"version": "0.3.6",
 	"description": "Tyler Butler's personal CLI.",
-	"keywords": ["oclif"],
+	"keywords": [
+		"oclif"
+	],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli#tylerbucli",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -44,22 +46,28 @@
 		"full": "fluid-build . --task full",
 		"generate": "concurrently npm:generate:*",
 		"generate:command-snapshots": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
-		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "oclif readme --multi --no-aliases",
+		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "npm run test:command-snapshots",
 		"test:command-snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"test:vitest": "vitest run \"test\""
 	},
 	"oclif": {
-		"additionalHelpFlags": ["-h"],
-		"additionalVersionFlags": ["-V"],
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
 		"bin": "tbu",
 		"commands": "./esm/commands",
-		"devPlugins": ["@oclif/plugin-command-snapshot"],
+		"devPlugins": [
+			"@oclif/plugin-command-snapshot"
+		],
 		"dirname": "tbu",
 		"plugins": [
 			"@oclif/plugin-autocomplete",

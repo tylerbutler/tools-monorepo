@@ -24,7 +24,7 @@
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
 		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "pnpm -r run --aggregate-output test:coverage",
-		"ci:version": "pnpm run generate:license-file && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
+		"ci:version": "pnpm run release:license-file && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
@@ -35,11 +35,11 @@
 		"fix:policy": "./packages/repopo/bin/dev.js check --fix",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate:license-file": "fluid-build . --task generate:license-file",
 		"generate:packlist": "flub generate packlist -g client --no-private",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
 		"prepare:disabled": "lefthook install",
+		"release:license-file": "fluid-build . --task release:license-file",
 		"sort-package-json": "sort-package-json package.json \"config/package.json\" \"packages/*/package.json\"",
 		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
 		"syncpack:fix": "pnpm syncpack fix-mismatches && pnpm syncpack set-semver-ranges",
@@ -72,8 +72,13 @@
 	},
 	"pnpm": {
 		"peerDependencyRules": {
-			"allowAny": ["@aws-sdk/*"],
-			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
+			"allowAny": [
+				"@aws-sdk/*"
+			],
+			"ignoreMissing": [
+				"@aws-sdk/*",
+				"@octokit/core"
+			]
 		},
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
@@ -90,7 +95,9 @@
 			"yarn"
 		],
 		"updateConfig": {
-			"ignoreDependencies": ["@types/node"]
+			"ignoreDependencies": [
+				"@types/node"
+			]
 		},
 		"overrides": {
 			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
@@ -100,43 +107,74 @@
 	"fluidBuild": {
 		"tasks": {
 			"build": {
-				"dependsOn": ["^build", "generate:packlist"],
+				"dependsOn": [
+					"^build",
+					"generate:packlist"
+				],
 				"script": false
 			},
 			"check": {
-				"dependsOn": ["sort-tsconfig#build", "^check", "check:all"],
+				"dependsOn": [
+					"sort-tsconfig#build",
+					"^check",
+					"check:all"
+				],
 				"script": false
 			},
 			"check:policy": {
-				"dependsOn": ["repopo#build"],
+				"dependsOn": [
+					"repopo#build"
+				],
 				"script": true
 			},
 			"ci": {
-				"dependsOn": ["ci:check", "ci:build", "ci:lint", "ci:test"],
+				"dependsOn": [
+					"ci:check",
+					"ci:build",
+					"ci:lint",
+					"ci:test"
+				],
 				"script": false
 			},
 			"clean": {
-				"dependsOn": ["^clean", "clean:root"],
+				"dependsOn": [
+					"^clean",
+					"clean:root"
+				],
 				"script": false
 			},
 			"compile": {
-				"dependsOn": ["^build"],
+				"dependsOn": [
+					"^build"
+				],
 				"script": false
 			},
 			"full": {
-				"dependsOn": ["check", "build", "lint", "docs", "test"],
-				"script": false
-			},
-			"generate:license-file": {
-				"dependsOn": ["^generate:license-file"],
+				"dependsOn": [
+					"check",
+					"build",
+					"lint",
+					"docs",
+					"test"
+				],
 				"script": false
 			},
 			"generate:packlist": {
-				"dependsOn": ["^build"],
+				"dependsOn": [
+					"^build"
+				],
 				"script": true
 			},
+			"release:license-file": {
+				"dependsOn": [
+					"^release:license-file"
+				],
+				"script": false
+			},
 			"test": {
-				"dependsOn": ["^test"],
+				"dependsOn": [
+					"^test"
+				],
 				"script": false
 			}
 		}
