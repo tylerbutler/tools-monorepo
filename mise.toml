@@ -1,0 +1,5 @@
+[env]
+OCLIF_SKIP_NEW_VERSION_CHECK = true
+
+[tools]
+node = "22"
