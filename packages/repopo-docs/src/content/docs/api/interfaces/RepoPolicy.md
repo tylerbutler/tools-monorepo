@@ -21,7 +21,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Type Parameters
 
-• **C** *extends* [`DefaultPolicyConfigType`](/api/type-aliases/defaultpolicyconfigtype/) = `unknown` \| `undefined`
+### C
+
+`C` *extends* [`DefaultPolicyConfigType`](/api/type-aliases/defaultpolicyconfigtype/) = `unknown` \| `undefined`
 
 type of configuration object used by the policy
 

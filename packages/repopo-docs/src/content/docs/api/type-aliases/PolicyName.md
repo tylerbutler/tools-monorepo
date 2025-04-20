@@ -5,7 +5,7 @@ prev: false
 title: "PolicyName"
 ---
 
-> **PolicyName**: `string`
+> **PolicyName** = `string`
 
 Defined in: [policy.ts:18](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L18)
 

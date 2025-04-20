@@ -17,9 +17,13 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Type Parameters
 
-• **J** = `PackageJson`
+### J
 
-• **C** = `undefined`
+`J` = `PackageJson`
+
+### C
+
+`C` = `undefined`
 
 ## Parameters
 
