@@ -1,10 +1,12 @@
+import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "repopo";
 import { isSorted, sortTsconfigFile } from "sort-tsconfig";
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
 
 /**
  * A repo policy that checks that tsconfig files are sorted according to settings.
+ *
+ * @alpha
  */
-export const SortTsconfigs: RepoPolicy = {
+export const SortTsconfigsPolicy: RepoPolicy = {
 	name: "SortTsconfigs",
 	match: /(^|\/)[^/]+tsconfig\..*\.json$/i,
 	// biome-ignore lint/suspicious/useAwait: <explanation>
@@ -14,7 +16,7 @@ export const SortTsconfigs: RepoPolicy = {
 		}
 
 		const failResult: PolicyFailure = {
-			name: SortTsconfigs.name,
+			name: SortTsconfigsPolicy.name,
 			file,
 			autoFixable: true,
 		};

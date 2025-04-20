@@ -61,7 +61,7 @@
 		"renovate": "^39.172.1",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.1",
-		"sort-package-json": "3.0.0",
+		"sort-package-json": "*",
 		"sort-tsconfig": "workspace:^",
 		"syncpack": "^13.0.3",
 		"ts-node": "^10.9.2"

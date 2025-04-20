@@ -3,11 +3,6 @@ import type { PolicyName } from "./policy.js";
 
 export type PolicyAction = "handle" | "resolve";
 
-/**
- * Stores performance data for each handler. Used to collect and display performance stats.
- */
-const handlerPerformanceData = new Map<PolicyAction, Map<PolicyName, number>>();
-
 export interface PolicyHandlerPerfStats {
 	count: number;
 	processed: number;
@@ -46,7 +41,7 @@ export function logStats(stats: PolicyHandlerPerfStats, log: Logger): void {
 			stats.count - stats.processed
 		} excluded, ${stats.count} total`,
 	);
-	for (const [action, handlerPerf] of handlerPerformanceData.entries()) {
+	for (const [action, handlerPerf] of stats.data.entries()) {
 		log.log(`Performance for "${action}":`);
 		for (const [handler, dur] of handlerPerf.entries()) {
 			log.log(`\t${handler}: ${dur}ms`);

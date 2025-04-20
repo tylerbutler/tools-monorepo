@@ -84,6 +84,14 @@
 		"tiny-jsonc": "^1.0.2",
 		"tinyglobby": "^0.2.11"
 	},
+	"peerDependencies": {
+		"repopo": "workspace:^"
+	},
+	"peerDependenciesMeta": {
+		"repopo": {
+			"optional": true
+		}
+	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@microsoft/api-extractor": "^7.52.1",
@@ -96,7 +104,7 @@
 		"memfs": "^4.17.0",
 		"oclif": "^4.17.30",
 		"rimraf": "^6.0.1",
-		"sort-package-json": "3.0.0",
+		"sort-package-json": "*",
 		"start-server-and-test": "^2.0.11",
 		"tmp-promise": "^3.0.3",
 		"tsx": "^4.19.3",

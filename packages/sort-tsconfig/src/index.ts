@@ -10,6 +10,7 @@ export {
 	type OrderList,
 	preferredSortOrder,
 } from "./orders.js";
+export { SortTsconfigsPolicy } from "./policy.js";
 
 // necessary for oclif
 export { run } from "@oclif/core";
