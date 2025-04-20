@@ -110,9 +110,6 @@
 	"peerDependenciesMeta": {
 		"sort-package-json": {
 			"optional": true
-		},
-		"sort-tsconfig": {
-			"optional": true
 		}
 	},
 	"engines": {
