@@ -1,7 +1,7 @@
 import netlify from "@astrojs/netlify";
 import starlight from "@astrojs/starlight";
 import a11yEmoji from "@fec/remark-a11y-emoji";
-import { includeMarkdown } from "@hashicorp/remark-plugins";
+import { includeMarkdown } from "@hashicorp/platform-remark-plugins";
 import { defineConfig } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
@@ -44,7 +44,7 @@ export default defineConfig({
 					},
 					typeDoc: {
 						excludeExternals: true,
-						// outputFileStrategy: "modules",
+						// router: "module",
 						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill",
 						mergeReadme: true,
 						readme: "../dill/api-docs/README.md",
@@ -57,12 +57,15 @@ export default defineConfig({
 						plugin: ["typedoc-plugin-mdn-links"],
 					},
 				}),
-				// TODO: Re-enable once problems are fixed.
 				starlightLinksValidator(),
 			],
-			social: {
-				github: "https://github.com/tylerbutler/tools-monorepo/packages/dill",
-			},
+			social: [
+				{
+					icon: "github",
+					label: "GitHub",
+					href: "https://github.com/tylerbutler/tools-monorepo/packages/dill",
+				},
+			],
 			sidebar: [
 				{
 					label: "Start Here",

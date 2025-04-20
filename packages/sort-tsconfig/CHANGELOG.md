@@ -1,5 +1,53 @@
 # sort-tsconfig
 
+## 0.3.0
+
+### Minor Changes
+
+- New repopo policy _[`#213`](https://github.com/tylerbutler/tools-monorepo/pull/213) [`3fc530b`](https://github.com/tylerbutler/tools-monorepo/commit/3fc530bad66259339547b3d8ec12b9265daea9a5) [@tylerbutler](https://github.com/tylerbutler)_
+
+  sort-tsconfig now provides a policy that can be used with [repopo](https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies). This policy can be used to keep all tsconfig files
+  in your repo sorted.
+
+### Patch Changes
+
+- Update dependencies _[`#217`](https://github.com/tylerbutler/tools-monorepo/pull/217) [`dcec014`](https://github.com/tylerbutler/tools-monorepo/commit/dcec014dfb70e5804a7535b5b8b9a3406f3e623d) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`3fc530b`](https://github.com/tylerbutler/tools-monorepo/commit/3fc530bad66259339547b3d8ec12b9265daea9a5) [`c97a565`](https://github.com/tylerbutler/tools-monorepo/commit/c97a56518d9726667531aa71de9445fed8d56b96) [`1108950`](https://github.com/tylerbutler/tools-monorepo/commit/1108950a7732dcc3ac9b8da10bd014bfec6c45b7) [`dcec014`](https://github.com/tylerbutler/tools-monorepo/commit/dcec014dfb70e5804a7535b5b8b9a3406f3e623d) [`84c4185`](https://github.com/tylerbutler/tools-monorepo/commit/84c4185e76186c3489a4b70e3a3015ba289df139)
+
+</small>
+
+- `repopo@0.5.0`
+- `@tylerbu/fundamentals@0.2.1`
+- `@tylerbu/cli-api@0.7.1`
+
+</details>
+
+## 0.2.0
+
+### Minor Changes
+
+- `-w` can now be used as an alias for `--write`. _[`#187`](https://github.com/tylerbutler/tools-monorepo/pull/187) [`e27ae36`](https://github.com/tylerbutler/tools-monorepo/commit/e27ae3682d093eb61c2cb31de787ec378287db4f) [@tylerbutler](https://github.com/tylerbutler)_
+- Improve cross-platform path handling _[`#176`](https://github.com/tylerbutler/tools-monorepo/pull/176) [`2d095c7`](https://github.com/tylerbutler/tools-monorepo/commit/2d095c7828037fc58147d0aa487b736dbd345472) [@tylerbutler](https://github.com/tylerbutler)_
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a4b7624`](https://github.com/tylerbutler/tools-monorepo/commit/a4b7624cceea2f7246391c2d54329010cbb145ff) [`ede1957`](https://github.com/tylerbutler/tools-monorepo/commit/ede19579ffc630f6e176046c6e11e170849a0d48) [`33b9c01`](https://github.com/tylerbutler/tools-monorepo/commit/33b9c01ed2d5d0c4bdb32262f549531650c48ad0) [`2d095c7`](https://github.com/tylerbutler/tools-monorepo/commit/2d095c7828037fc58147d0aa487b736dbd345472)
+
+</small>
+
+- `@tylerbu/cli-api@0.7.0`
+
+</details>
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,13 +1,13 @@
 {
 	"name": "repopo",
-	"version": "0.3.2",
+	"version": "0.5.0",
 	"description": "Enforce policies on all or some of the files in a git repository.",
 	"keywords": ["policy", "ci"],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/tylerbutler/tools-monorepo.git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
 		"directory": "packages/repopo"
 	},
 	"license": "MIT",
@@ -17,6 +17,14 @@
 		".": {
 			"types": "./esm/index.d.ts",
 			"import": "./esm/index.js"
+		},
+		"./api": {
+			"types": "./esm/api.d.ts",
+			"import": "./esm/api.js"
+		},
+		"./policies": {
+			"types": "./esm/policies.d.ts",
+			"import": "./esm/policies.js"
 		}
 	},
 	"types": "esm/index.d.ts",
@@ -47,8 +55,10 @@
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
-		"readme": "oclif readme --no-aliases",
-		"sort-package-json": "sort-package-json"
+		"readme": "concurrently npm:readme:*",
+		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
+		"readme:main": "oclif readme --no-aliases",
+		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs"
 	},
 	"oclif": {
 		"bin": "repopo",
@@ -62,37 +72,46 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluidframework/build-tools": "^0.51.0",
-		"@oclif/core": "^4.2.3",
-		"@oclif/plugin-help": "^6.2.21",
-		"@rushstack/node-core-library": "^5.7.0",
+		"@fluid-tools/build-infrastructure": "^0.56.0",
+		"@oclif/core": "^4.2.10",
+		"@oclif/plugin-help": "^6.2.27",
+		"@rushstack/node-core-library": "^5.13.0",
 		"@tylerbu/cli-api": "workspace:^",
-		"cosmiconfig": "^9.0.0",
+		"@tylerbu/fundamentals": "workspace:^",
+		"defu": "^6.1.4",
 		"jsonfile": "^6.1.0",
-		"pathe": "^2.0.2",
-		"picocolors": "^1.1.0",
-		"sort-package-json": "2.14.0",
-		"sort-tsconfig": "workspace:^"
+		"microdiff": "^1.5.0",
+		"pathe": "^2.0.3",
+		"picocolors": "^1.1.1",
+		"simple-git": "^3.27.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-extractor": "^7.49.1",
-		"@oclif/plugin-command-snapshot": "^5.2.26",
-		"@oclif/test": "^4.1.7",
+		"@microsoft/api-extractor": "^7.52.4",
+		"@oclif/plugin-command-snapshot": "^5.2.38",
+		"@oclif/test": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
 		"@types/node": "^20.12.7",
 		"@types/tmp": "^0.2.6",
-		"oclif": "^4.17.13",
+		"generate-license-file": "^4.0.0",
+		"oclif": "^4.17.45",
 		"rimraf": "^6.0.1",
 		"serve": "^14.2.4",
-		"start-server-and-test": "^2.0.10",
+		"start-server-and-test": "^2.0.11",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^4.33.0",
+		"type-fest": "^4.40.0",
 		"typescript": "~5.5.4",
-		"vitest": "^3.0.2"
+		"vitest": "^3.1.1"
 	},
-	"packageManager": "pnpm@9.11.0",
+	"peerDependencies": {
+		"sort-package-json": "*"
+	},
+	"peerDependenciesMeta": {
+		"sort-package-json": {
+			"optional": true
+		}
+	},
 	"engines": {
 		"node": ">=18.0.0"
 	}

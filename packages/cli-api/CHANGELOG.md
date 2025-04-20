@@ -1,5 +1,52 @@
 # @tylerbu/cli-api
 
+## 0.7.1
+
+### Patch Changes
+
+- Update dependencies _[`#217`](https://github.com/tylerbutler/tools-monorepo/pull/217) [`dcec014`](https://github.com/tylerbutler/tools-monorepo/commit/dcec014dfb70e5804a7535b5b8b9a3406f3e623d) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`dcec014`](https://github.com/tylerbutler/tools-monorepo/commit/dcec014dfb70e5804a7535b5b8b9a3406f3e623d)
+
+</small>
+
+- `@tylerbu/lilconfig-loader-ts@0.1.1`
+
+</details>
+
+## 0.7.0
+
+### Minor Changes
+
+- API changes _[`#157`](https://github.com/tylerbutler/tools-monorepo/pull/157) [`ede1957`](https://github.com/tylerbutler/tools-monorepo/commit/ede19579ffc630f6e176046c6e11e170849a0d48) [@tylerbutler](https://github.com/tylerbutler)_
+
+  - **Breaking change:** `CommandWithConfig.configPath` is now `CommandWithConfig.configLocation`.
+  - `PackageTransformer`s can now be async.
+  - `readJsonWithIndent` is now generic.
+
+- Remove deprecated CommandWithoutConfig class _[`#173`](https://github.com/tylerbutler/tools-monorepo/pull/173) [`33b9c01`](https://github.com/tylerbutler/tools-monorepo/commit/33b9c01ed2d5d0c4bdb32262f549531650c48ad0) [@tylerbutler](https://github.com/tylerbutler)_
+- Improve cross-platform path handling _[`#176`](https://github.com/tylerbutler/tools-monorepo/pull/176) [`2d095c7`](https://github.com/tylerbutler/tools-monorepo/commit/2d095c7828037fc58147d0aa487b736dbd345472) [@tylerbutler](https://github.com/tylerbutler)_
+
+### Patch Changes
+
+- Load default config if provided _[`#175`](https://github.com/tylerbutler/tools-monorepo/pull/175) [`a4b7624`](https://github.com/tylerbutler/tools-monorepo/commit/a4b7624cceea2f7246391c2d54329010cbb145ff) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`cd3686c`](https://github.com/tylerbutler/tools-monorepo/commit/cd3686c02458d7a9f8f01e8d7e1a615c98f75e1d)
+
+</small>
+
+- `@tylerbu/lilconfig-loader-ts@0.1.0`
+
+</details>
+
 ## 0.6.1
 
 ### Patch Changes

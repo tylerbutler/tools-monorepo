@@ -1,8 +1,14 @@
+import { HtmlFileHeaders } from "./policies.js";
+import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
-import { PackageJsonSortedPolicy } from "./policies/PackageJsonSortedPolicy.js";
-import { SortTsconfigs } from "./policies/SortTsconfigs.js";
+import { PackageScripts } from "./policies/PackageScripts.js";
+
+/**
+ * @alpha
+ */
+export type DefaultPolicyConfigType = object | unknown;
 
 /**
  * A type representing a policy name.
@@ -12,13 +18,33 @@ import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 export type PolicyName = string;
 
 /**
+ * Arguments passed to policy functions.
+ *
  * @alpha
  */
-export interface PolicyFunctionArguments<C = unknown | undefined> {
+
+export interface PolicyFunctionArguments<C> {
+	/**
+	 * Path to the file, relative to the repo root.
+	 */
 	file: string;
+
+	/**
+	 * Absolute path to the root of the repo.
+	 */
 	root: string;
+
+	/**
+	 * If true, the handler should resolve any violations automatically if possible.
+	 */
 	resolve: boolean;
-	config?: C;
+
+	/**
+	 * @remarks
+	 *
+	 * Note that the handler function receives the config as an argument.
+	 */
+	config?: C | undefined;
 }
 
 /**
@@ -26,6 +52,7 @@ export interface PolicyFunctionArguments<C = unknown | undefined> {
  *
  * @alpha
  */
+
 export type PolicyHandler<C = unknown | undefined> = (
 	args: PolicyFunctionArguments<C>,
 ) => Promise<true | PolicyFailure | PolicyFixResult>;
@@ -40,9 +67,10 @@ export type PolicyHandler<C = unknown | undefined> = (
  *
  * @alpha
  */
-export type PolicyStandaloneResolver<C = unknown | undefined> = (
-	args: Omit<PolicyFunctionArguments<C>, "resolve">,
-) => PolicyFixResult;
+export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
+	(
+		args: Omit<PolicyFunctionArguments<C>, "resolve">,
+	) => Promise<PolicyFixResult>;
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
@@ -59,9 +87,9 @@ export type PolicyStandaloneResolver<C = unknown | undefined> = (
  *
  * @alpha
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: TODO - figure out if this can work with unknown or in another typesafe manner
-export interface RepoPolicy<C = any | undefined> {
+export interface RepoPolicy<
+	C extends DefaultPolicyConfigType = unknown | undefined,
+> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -85,6 +113,7 @@ export interface RepoPolicy<C = any | undefined> {
 	 * @param resolve - If true, automated policy fixes will be applied. Not all policies support automated fixes.
 	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
+
 	handler: PolicyHandler<C>;
 
 	/**
@@ -97,25 +126,15 @@ export interface RepoPolicy<C = any | undefined> {
 	resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
-export class RepoPolicyClass implements RepoPolicy {
-	public static createRepoPolicy(
-		name: string,
-		match: RegExp,
-		handler: PolicyHandler,
-		resolver?: PolicyStandaloneResolver,
-	): RepoPolicyClass {
-		return new RepoPolicyClass(name, match, handler, resolver);
-	}
-
-	public constructor(
-		public readonly name: string,
-		public readonly match: RegExp,
-		public handler: PolicyHandler,
-		public resolver?: PolicyStandaloneResolver,
-	) {
-		// empty
-	}
-}
+/**
+ * A policy handler especially for policies that target package.json.
+ *
+ * @alpha
+ */
+export type PackageJsonHandler<J, C> = (
+	json: J,
+	args: PolicyFunctionArguments<C>,
+) => Promise<true | PolicyFailure | PolicyFixResult>;
 
 /**
  * A policy failure.
@@ -169,10 +188,14 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  *
  * @alpha
  */
-export const DefaultPolicies: RepoPolicy[] = [
+
+// biome-ignore lint/suspicious/noExplicitAny: FIXME
+export const DefaultPolicies: RepoPolicy<any>[] = [
+	HtmlFileHeaders,
+	JsTsFileHeaders,
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
-	PackageJsonSortedPolicy,
-	SortTsconfigs,
-];
+	// PackageJsonSorted,
+	PackageScripts,
+] as const;

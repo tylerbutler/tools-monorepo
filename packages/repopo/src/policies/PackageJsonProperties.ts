@@ -1,14 +1,11 @@
-import type { PackageJson } from "type-fest";
-
+import { defu } from "defu";
 import jsonfile from "jsonfile";
-const { writeFile: writeJson, readFile: readJson } = jsonfile;
+import diff from "microdiff";
+import type { PackageJson } from "type-fest";
+import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
 
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
-
-/**
- * @alpha
- */
-export type PackageJsonProperty = string;
+const { writeFile: writeJson } = jsonfile;
 
 /**
  * Policy settings for the PackageJsonProperties repo policy.
@@ -17,62 +14,58 @@ export type PackageJsonProperty = string;
  */
 export interface PackageJsonPropertiesSettings {
 	/**
-	 * Sets a package.json property to the string value provided. The string value will be used verbatim.
+	 * Sets a package.json property to the value provided. The value will be used verbatim.
 	 */
-	verbatim: Record<PackageJsonProperty, string>;
+	verbatim: PackageJson;
 }
 
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
+ *
+ * @alpha
  */
-export const PackageJsonProperties: RepoPolicy<PackageJsonPropertiesSettings> =
-	{
-		name: "PackageJsonProperties",
-		match: /(^|\/)package\.json/i,
-		handler: async ({ file, config, resolve }) => {
-			if (config === undefined) {
-				return true;
-			}
+export const PackageJsonProperties = generatePackagePolicy<
+	PackageJson,
+	PackageJsonPropertiesSettings | undefined
+>("PackageJsonProperties", async (json, { file, config, resolve }) => {
+	if (config === undefined) {
+		return true;
+	}
+	const { verbatim } = config;
 
-			const failResult: PolicyFailure = {
-				name: PackageJsonProperties.name,
-				file,
-				autoFixable: true,
+	const failResult: PolicyFailure = {
+		name: PackageJsonProperties.name,
+		file,
+		autoFixable: true,
+	};
+
+	const merged = defu(verbatim, json);
+	const result = diff(merged, json);
+
+	const messages: string[] = [];
+	for (const diffResult of result) {
+		messages.push(
+			`Incorrect package.json field value for '${diffResult.path}'.`,
+		);
+	}
+
+	if (messages.length > 0) {
+		if (resolve) {
+			const fixResult: PolicyFixResult = {
+				...failResult,
+				resolved: false,
 			};
 
-			const { verbatim } = config;
-			const json = (await readJson(file)) as PackageJson;
-			const messages: string[] = [];
+			await writeJson(file, merged, { spaces: "\t" });
 
-			for (const [propName, value] of Object.entries(verbatim)) {
-				if (json[propName] !== value) {
-					messages.push(
-						`Incorrect package.json field value for '${propName}'. Expected '${value}', got '${json[propName]}'.`,
-					);
-				}
-			}
+			fixResult.resolved = true;
+			return fixResult;
+		}
 
-			if (messages.length > 0) {
-				if (resolve) {
-					const fixResult: PolicyFixResult = {
-						...failResult,
-						resolved: false,
-					};
+		// There were errors, and we're not resolving them, so return a fail result
+		failResult.errorMessage = messages.join("\n");
+		return failResult;
+	}
 
-					for (const [propName, value] of Object.entries(verbatim)) {
-						json[propName] = value;
-					}
-					await writeJson(file, json, { spaces: "\t" });
-
-					fixResult.resolved = true;
-					return fixResult;
-				}
-
-				// There were errors, and we're not resolving them, so return a fail result
-				failResult.errorMessage = messages.join("\n");
-				return failResult;
-			}
-
-			return true;
-		},
-	};
+	return true;
+});

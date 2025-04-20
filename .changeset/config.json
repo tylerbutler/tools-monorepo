@@ -10,5 +10,9 @@
 	"access": "restricted",
 	"baseBranch": "main",
 	"updateInternalDependencies": "minor",
-	"ignore": ["dill-docs"]
+	"ignore": ["dill-docs", "repopo-docs"],
+	"bumpVersionsWithWorkspaceProtocolOnly": true,
+	"___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+		"onlyUpdatePeerDependentsWhenOutOfRange": true
+	}
 }

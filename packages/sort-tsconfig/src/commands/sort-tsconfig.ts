@@ -1,8 +1,8 @@
 import { existsSync, statSync } from "node:fs";
 import { Args, type Command, Flags } from "@oclif/core";
 import { CommandWithConfig, ConfigFileFlag } from "@tylerbu/cli-api";
-import { globby } from "globby";
 import { join } from "pathe";
+import { glob } from "tinyglobby";
 import { TsConfigSorter } from "../api.js";
 import type { SortTsconfigConfiguration } from "../config.js";
 import { type OrderList, defaultSortOrder } from "../orders.js";
@@ -14,15 +14,15 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 	static override readonly aliases = ["sort:tsconfigs", "sort-tsconfigs"];
 
 	static override readonly summary =
-		"Sorts a tsconfig file in place, or check that one is sorted.";
+		"Sorts a tsconfig file in place or checks that one is sorted.";
 
 	static override readonly description =
-		"By default, the command will only check if a tsconfig is sorted. Use the --write flag to write the sorted contents back to the file.";
+		"By default, the command will only check if a tsconfig is sorted. Use the '--write' flag to write the sorted contents back to the file.";
 
 	static override readonly args = {
 		tsconfig: Args.custom<string[]>({
 			description:
-				"Path to the tsconfig file to sort, or a glob path to select multiple tsconfigs.",
+				"A path to the tsconfig file to sort, or a glob pattern to select multiple tsconfigs. The node_modules folder is always excluded from glob matches.",
 			required: true,
 			parse: async (input): Promise<string[]> => {
 				const patterns: string[] = [];
@@ -37,7 +37,9 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 					patterns.push(input);
 				}
 
-				const results = await globby(patterns, { gitignore: true });
+				const results = await glob(patterns, {
+					ignore: ["**/node_modules/**"],
+				});
 				return results ?? [];
 			},
 		})(),
@@ -46,6 +48,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 
 	static override readonly flags = {
 		write: Flags.boolean({
+			char: "w",
 			description:
 				"Write the sorted contents back to the file. Without this flag, the command only checks that the file is sorted.",
 			default: false,
