@@ -5,7 +5,10 @@ import type {
 } from "@fluidframework/presence/alpha";
 import { SvelteMap } from "svelte/reactivity";
 
-export class ReadonlyReactivePresenceWorkspace<T extends object> {
+/**
+ * A 
+ */
+export class ReactiveStateWorkspace<T extends object> {
 	protected readonly reactiveState = $state(new SvelteMap<ISessionClient, T>());
 
 	public readonly unfilteredData = $derived(this.reactiveState);
@@ -32,19 +35,12 @@ export class ReadonlyReactivePresenceWorkspace<T extends object> {
 			// biome-ignore lint/suspicious/noExplicitAny: investigate possible fixes
 			this.reactiveState.set(data.client, data.value as any);
 		});
-		// valueManager.events.on("localUpdated", (data) => {
-		// 	// Update the selection state with the new coordinate
-		// 	this.reactiveState.set(data.client, data.value as any);
-		// });
+		valueManager.events.on("localUpdated", (data) => {
+			// Update the selection state with the new coordinate
+			this.reactiveState.set(data.client, data.value as any);
+		});
 		presence.events.on("attendeeDisconnected", (session: ISessionClient) => {
 			this.reactiveState.delete(session);
 		});
-	}
-
-	public static create<T extends object>(
-		presence: IPresence,
-		valueManager: LatestValueManager<T>,
-	): ReadonlyReactivePresenceWorkspace<T> {
-		return new ReadonlyReactivePresenceWorkspace<T>(presence, valueManager);
 	}
 }
