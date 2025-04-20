@@ -6,7 +6,7 @@ import type {
 import { SvelteMap } from "svelte/reactivity";
 
 /**
- * A 
+ * A
  */
 export class ReactiveStateWorkspace<T extends object> {
 	protected readonly reactiveState = $state(new SvelteMap<ISessionClient, T>());
