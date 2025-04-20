@@ -87,23 +87,23 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-extractor": "^7.52.1",
-		"@oclif/plugin-command-snapshot": "^5.2.35",
-		"@oclif/test": "^4.1.10",
+		"@microsoft/api-extractor": "^7.52.4",
+		"@oclif/plugin-command-snapshot": "^5.2.38",
+		"@oclif/test": "^4.1.12",
 		"@types/node": "^20.12.7",
 		"@types/tmp": "^0.2.6",
-		"@vitest/coverage-v8": "^3.0.9",
+		"@vitest/coverage-v8": "^3.1.1",
 		"generate-license-file": "^4.0.0",
 		"memfs": "^4.17.0",
-		"oclif": "^4.17.30",
+		"oclif": "^4.17.44",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "3.0.0",
 		"start-server-and-test": "^2.0.11",
 		"tmp-promise": "^3.0.3",
 		"tsx": "^4.19.3",
-		"type-fest": "^4.37.0",
+		"type-fest": "^4.40.0",
 		"typescript": "~5.5.4",
-		"vitest": "^3.0.9"
+		"vitest": "^3.1.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"
