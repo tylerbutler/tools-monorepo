@@ -6,6 +6,8 @@ import type { PolicyFailure, RepoPolicy } from "../policy.js";
  * can create unexpected behavior for JS files; changing the package.json nearest to one will change how the JS
  * is processed by node. Using explicit file extensions reduces ambiguity and ensures a CJS file isn't suddenly treated
  * like an ESM file.
+ *
+ * @alpha
  */
 export const NoJsFileExtensions: RepoPolicy = {
 	name: "NoJsFileExtensions",

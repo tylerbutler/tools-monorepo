@@ -41,9 +41,6 @@ export class CheckPolicy<
 		...BaseRepopoCommand.flags,
 	} as const;
 
-	private processed = 0;
-	private count = 0;
-
 	public override async run(): Promise<void> {
 		if (this.flags.fix) {
 			this.info("Resolving errors if possible.");
@@ -76,13 +73,12 @@ export class CheckPolicy<
 			filePathsToCheck.push(...gitFiles.split("\n"));
 		}
 
-		await this.executePolicy(filePathsToCheck, await this.getContext());
+		await this.executeAllPolicies(filePathsToCheck);
 	}
 
-	private async executePolicy(
-		pathsToCheck: string[],
-		commandContext: RepopoCommandContext,
-	): Promise<void> {
+	private async executeAllPolicies(pathsToCheck: string[]): Promise<void> {
+		const commandContext: RepopoCommandContext = await this.getContext();
+
 		try {
 			for (const pathToCheck of pathsToCheck) {
 				// eslint-disable-next-line no-await-in-loop
@@ -117,14 +113,14 @@ export class CheckPolicy<
 		const resultsP: Promise<void>[] = [];
 
 		for (const policy of filteredPolicies) {
-			resultsP.push(this.runPolicy(relPath, policy));
+			resultsP.push(this.runPolicyOnFile(relPath, policy));
 		}
 
 		await Promise.all(resultsP);
 	}
 
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: FIXME
-	private async runPolicy(
+	private async runPolicyOnFile(
 		relPath: string,
 		// policies: RepoPolicy[],
 		policy: RepoPolicy,
@@ -230,11 +226,11 @@ export class CheckPolicy<
 		inputPath: string,
 		commandContext: RepopoCommandContext,
 	): Promise<void> {
-		const { excludeFiles: exclusions, gitRoot } = commandContext;
+		const { excludeFiles: exclusions, gitRoot, perfStats } = commandContext;
 
 		const filePath = path.join(gitRoot, inputPath).trim().replace(/\\/g, "/");
 
-		this.count++;
+		perfStats.count++;
 		if (!exclusions.every((value) => !value.test(inputPath))) {
 			this.verbose(`Excluded all handlers: ${inputPath}`);
 			return;
@@ -248,7 +244,7 @@ export class CheckPolicy<
 			);
 		}
 
-		this.processed++;
+		perfStats.processed++;
 	}
 }
 

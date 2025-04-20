@@ -7,6 +7,8 @@ const { readFile: readJson } = jsonfile;
 
 /**
  * Define a repo policy for package.json files.
+ *
+ * @alpha
  */
 export function generatePackagePolicy<J = PackageJson, C = undefined>(
 	name: string,

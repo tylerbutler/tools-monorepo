@@ -1,10 +1,9 @@
+import { HtmlFileHeaders } from "./policies.js";
 import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
-import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 import { PackageScripts } from "./policies/PackageScripts.js";
-import { SortTsconfigs } from "./policies/SortTsconfigs.js";
 
 /**
  * @alpha
@@ -69,7 +68,9 @@ export type PolicyHandler<C = unknown | undefined> = (
  * @alpha
  */
 export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
-	(args: Omit<PolicyFunctionArguments<C>, "resolve">) => PolicyFixResult;
+	(
+		args: Omit<PolicyFunctionArguments<C>, "resolve">,
+	) => Promise<PolicyFixResult>;
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
@@ -190,11 +191,11 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
 
 // biome-ignore lint/suspicious/noExplicitAny: FIXME
 export const DefaultPolicies: RepoPolicy<any>[] = [
+	HtmlFileHeaders,
+	JsTsFileHeaders,
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
-	PackageJsonSorted,
+	// PackageJsonSorted,
 	PackageScripts,
-	SortTsconfigs,
-	JsTsFileHeaders,
 ] as const;

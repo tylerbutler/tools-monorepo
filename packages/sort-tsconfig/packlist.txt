@@ -28,4 +28,8 @@ esm/orders.d.ts
 esm/orders.d.ts.map
 esm/orders.js
 esm/orders.js.map
+esm/policy.d.ts
+esm/policy.d.ts.map
+esm/policy.js
+esm/policy.js.map
 esm/tsdoc-metadata.json

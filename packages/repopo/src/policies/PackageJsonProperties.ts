@@ -21,6 +21,8 @@ export interface PackageJsonPropertiesSettings {
 
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
+ *
+ * @alpha
  */
 export const PackageJsonProperties = generatePackagePolicy<
 	PackageJson,

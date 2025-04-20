@@ -5,6 +5,8 @@ const expectedScripts = ["build", "clean"] as const;
 
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
+ *
+ * @alpha
  */
 export const PackageScripts = generatePackagePolicy(
 	"PackageScripts",

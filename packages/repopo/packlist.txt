@@ -72,10 +72,6 @@ esm/policies/PackageScripts.d.ts
 esm/policies/PackageScripts.d.ts.map
 esm/policies/PackageScripts.js
 esm/policies/PackageScripts.js.map
-esm/policies/SortTsconfigs.d.ts
-esm/policies/SortTsconfigs.d.ts.map
-esm/policies/SortTsconfigs.js
-esm/policies/SortTsconfigs.js.map
 esm/policies/constants.d.ts
 esm/policies/constants.d.ts.map
 esm/policies/constants.js
