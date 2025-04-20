@@ -4,17 +4,6 @@ import {
 	generateFileHeaderPolicy,
 } from "../policyGenerators/generateFileHeaderPolicy.js";
 
-// const htmlReplacer = (
-// 	content: string,
-// 	{ headerText }: FileHeaderPolicyConfig,
-// ): string => {
-// 	const newContent = `<!-- ${headerText.replace(
-// 		newline,
-// 		` -->${newline}<!-- `,
-// 	)} -->${newline}${newline}${content}`;
-// 	return newContent;
-// };
-
 const jsTsReplacer = (
 	prevContent: string,
 	{ headerText }: FileHeaderPolicyConfig,

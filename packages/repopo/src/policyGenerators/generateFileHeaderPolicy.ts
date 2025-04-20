@@ -51,7 +51,7 @@ export interface FileHeaderGeneratorConfig
 }
 
 /**
- * Given a {@link FileHeaderGeneratorConfig} produces a function that detects correct file headers
+ * Given a `FileHeaderGeneratorConfig`, produces a function that detects correct file headers
  * and returns an error string if the header is missing or incorrect.
  *
  * @alpha
