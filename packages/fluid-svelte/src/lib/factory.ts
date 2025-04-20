@@ -1,6 +1,4 @@
 import {
-	type ImplicitFieldSchema,
-	type RestrictiveStringRecord,
 	SchemaFactory,
 } from "fluid-framework";
 
