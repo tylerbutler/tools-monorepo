@@ -59,7 +59,7 @@
 		"concurrently": "^9.1.2",
 		"generate-license-file": "^4.0.0",
 		"npm-check-updates": "^17.1.18",
-		"renovate": "^39.251.1",
+		"renovate": "^39.252.0",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "*",

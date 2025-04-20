@@ -108,7 +108,7 @@
 		"@types/node": "^20.12.7",
 		"concurrently": "^9.1.2",
 		"generate-license-file": "^4.0.0",
-		"oclif": "^4.17.44",
+		"oclif": "^4.17.45",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "*",
 		"ts-node": "^10.9.2",
