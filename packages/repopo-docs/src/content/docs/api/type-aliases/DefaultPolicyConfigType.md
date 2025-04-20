@@ -5,7 +5,7 @@ prev: false
 title: "DefaultPolicyConfigType"
 ---
 
-> **DefaultPolicyConfigType**: `object` \| `unknown`
+> **DefaultPolicyConfigType** = `object` \| `unknown`
 
 Defined in: [policy.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L11)
 

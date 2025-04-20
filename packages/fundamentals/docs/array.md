@@ -20,7 +20,9 @@ Checks if an array is sorted according to a provided comparison function.
 
 #### Type Parameters
 
-• **T**
+##### T
+
+`T`
 
 #### Parameters
 

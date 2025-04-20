@@ -5,7 +5,7 @@ prev: false
 title: "PolicyHandler"
 ---
 
-> **PolicyHandler**\<`C`\>: (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<`true` \| [`PolicyFailure`](/api/interfaces/policyfailure/) \| [`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
+> **PolicyHandler**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<`true` \| [`PolicyFailure`](/api/interfaces/policyfailure/) \| [`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
 
 Defined in: [policy.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L56)
 
@@ -17,7 +17,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Type Parameters
 
-• **C** = `unknown` \| `undefined`
+### C
+
+`C` = `unknown` \| `undefined`
 
 ## Parameters
 

@@ -5,7 +5,7 @@ prev: false
 title: "PolicyStandaloneResolver"
 ---
 
-> **PolicyStandaloneResolver**\<`C`\>: (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
+> **PolicyStandaloneResolver**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
 
 Defined in: [policy.ts:70](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L70)
 
@@ -17,7 +17,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Type Parameters
 
-• **C** = [`DefaultPolicyConfigType`](/api/type-aliases/defaultpolicyconfigtype/) \| `undefined`
+### C
+
+`C` = [`DefaultPolicyConfigType`](/api/type-aliases/defaultpolicyconfigtype/) \| `undefined`
 
 ## Parameters
 

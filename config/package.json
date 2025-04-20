@@ -10,6 +10,6 @@
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"devDependencies": {
-		"vitest": "^3.0.9"
+		"vitest": "^3.1.1"
 	}
 }

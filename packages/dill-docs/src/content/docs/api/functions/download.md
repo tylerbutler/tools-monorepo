@@ -5,7 +5,7 @@ prev: false
 title: "download"
 ---
 
-> **download**(`url`, `options`?): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`DownloadResponse`](/api/interfaces/downloadresponse/)\>
+> **download**(`url`, `options?`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`DownloadResponse`](/api/interfaces/downloadresponse/)\>
 
 Defined in: [api.ts:113](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L113)
 
