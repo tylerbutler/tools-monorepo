@@ -1,3 +1,4 @@
+import { HtmlFileHeaders } from "./policies.js";
 import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
@@ -190,6 +191,7 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
 
 // biome-ignore lint/suspicious/noExplicitAny: FIXME
 export const DefaultPolicies: RepoPolicy<any>[] = [
+	HtmlFileHeaders,
 	JsTsFileHeaders,
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,

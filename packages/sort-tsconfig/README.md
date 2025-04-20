@@ -5,8 +5,9 @@ sort-tsconfig is a CLI app to sort tsconfig files. It also provides a simple [pr
 <!-- toc -->
 * [sort-tsconfig - keep your tsconfigs clean and tidy](#sort-tsconfig---keep-your-tsconfigs-clean-and-tidy)
 * [Configuration](#configuration)
-* [Usage](#usage)
+* [CLI Usage](#cli-usage)
 * [API](#api)
+* [Repopo Policy](#repopo-policy)
 <!-- tocstop -->
 
 # Configuration

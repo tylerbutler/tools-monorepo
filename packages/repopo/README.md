@@ -7,7 +7,8 @@ file in your git repo, with a straightforward way to write your own policies.
 * [repopo - police the files in your git repo with extensible policies](#repopo---police-the-files-in-your-git-repo-with-extensible-policies)
 * [Configuring policies](#configuring-policies)
 * [Included policies](#included-policies)
-* [Usage](#usage)
+* [Policy generators](#policy-generators)
+* [CLI Usage](#cli-usage)
 <!-- tocstop -->
 
 # Configuring policies
@@ -36,9 +37,9 @@ policy settings as the value.
 
 repopo includes the following policies. All of the included policies are enabled by default.
 
-## JsTsFileHeaders
+## HtmlFileHeaders and JsTsFileHeaders
 
-This policy sets a common file header for JavaScript and TypeScript files.
+These policies set a common file header for JavaScript/TypeScript and HTML files.
 
 ### Configuration
 
@@ -84,7 +85,17 @@ const config: PolicyConfig = {
 A RepoPolicy that checks that the `repository.directory` property in package.json is set correctly. If the repository
 field is a string instead of an object the package will be ignored.
 
-# Usage
+# Policy generators
+
+There are some filetypes that often have policies applied to them, like package.json. You can use the policy generator
+functions to generate policies for those filetypes. Using the generators is not required; they simply reduce the amount
+of boilerplate code you have to write for a policy.
+
+## generatePackagePolicy
+
+Use `generatePackagePolicy` to generate policies for package.json files.
+
+# CLI Usage
 
 <!-- commands -->
 * [`repopo check`](#repopo-check)

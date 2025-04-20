@@ -5,7 +5,7 @@ prev: false
 title: "PolicyFunctionArguments"
 ---
 
-Defined in: [policy.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L25)
+Defined in: [policy.ts:26](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L26)
 
 Arguments passed to policy functions.
 
@@ -23,7 +23,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **config**: `C`
 
-Defined in: [policy.ts:46](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L46)
+Defined in: [policy.ts:47](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L47)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -39,7 +39,7 @@ Note that the handler function receives the config as an argument.
 
 > **file**: `string`
 
-Defined in: [policy.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L29)
+Defined in: [policy.ts:30](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L30)
 
 Path to the file, relative to the repo root.
 
@@ -53,7 +53,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **resolve**: `boolean`
 
-Defined in: [policy.ts:39](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L39)
+Defined in: [policy.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L40)
 
 If true, the handler should resolve any violations automatically if possible.
 
@@ -67,7 +67,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **root**: `string`
 
-Defined in: [policy.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L34)
+Defined in: [policy.ts:35](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L35)
 
 Absolute path to the root of the repo.
 

@@ -81,10 +81,17 @@
 		"@tylerbu/fundamentals": "workspace:^",
 		"detect-indent": "^7.0.1",
 		"pathe": "^2.0.3",
-		"repopo": "workspace:^",
 		"sort-jsonc": "^1.0.2",
 		"tiny-jsonc": "^1.0.2",
 		"tinyglobby": "^0.2.11"
+	},
+	"peerDependencies": {
+		"repopo": "workspace:^"
+	},
+	"peerDependenciesMeta": {
+		"repopo": {
+			"optional": true
+		}
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
