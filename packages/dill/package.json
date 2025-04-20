@@ -2,13 +2,7 @@
 	"name": "dill-cli",
 	"version": "0.2.0",
 	"description": "Command-line (CLI) program to download and optionally decompress gzipped files.",
-	"keywords": [
-		"download",
-		"ci",
-		"tar",
-		"gzip",
-		"decompress"
-	],
+	"keywords": ["download", "ci", "tar", "gzip", "decompress"],
 	"homepage": "https://dill.tylerbutler.com/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -68,12 +62,8 @@
 		"update:test-snapshots": "vitest run test -u"
 	},
 	"oclif": {
-		"additionalHelpFlags": [
-			"-h"
-		],
-		"additionalVersionFlags": [
-			"-V"
-		],
+		"additionalHelpFlags": ["-h"],
+		"additionalVersionFlags": ["-V"],
 		"bin": "dill",
 		"commands": {
 			"strategy": "single",
