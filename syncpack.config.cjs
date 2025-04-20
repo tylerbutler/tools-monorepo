@@ -18,7 +18,8 @@ const config = {
 		"engines",
 		// Disabled for now because it removes the sha from the field.
 		// "packageManager",
-		"peer",
+		// Disabled because of interactions with changeset versioning.
+		// "peer",
 		"prod",
 	],
 	versionGroups: [

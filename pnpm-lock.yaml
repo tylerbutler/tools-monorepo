@@ -18,6 +18,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.29.2
         version: 2.29.2
+      '@changesets/config':
+        specifier: ^3.1.1
+        version: 3.1.1
       '@fluid-tools/build-cli':
         specifier: ^0.56.0
         version: 0.56.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.8.2)
@@ -55,7 +58,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       sort-tsconfig:
         specifier: workspace:^
@@ -152,7 +155,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       ts-node:
         specifier: ^10.9.2
@@ -200,7 +203,7 @@ importers:
         specifier: ^3.27.0
         version: 3.27.0
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       strip-ansi:
         specifier: ^7.1.0
@@ -364,7 +367,7 @@ importers:
         specifier: ^6.1.6
         version: 6.1.6
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       start-server-and-test:
         specifier: ^2.0.11
@@ -434,19 +437,19 @@ importers:
         version: 0.10.0(@astrojs/starlight@0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1)))
       starlight-typedoc:
         specifier: ^0.19.0
-        version: 0.19.0(@astrojs/starlight@0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4))
+        version: 0.19.0(@astrojs/starlight@0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1)))(typedoc-plugin-markdown@4.6.2(typedoc@0.28.3(typescript@5.5.4)))(typedoc@0.28.3(typescript@5.5.4))
       typedoc:
-        specifier: ^0.27.7
-        version: 0.27.7(typescript@5.5.4)
+        specifier: ^0.28.3
+        version: 0.28.3(typescript@5.5.4)
       typedoc-plugin-frontmatter:
         specifier: ^1.2.1
-        version: 1.2.1(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))
+        version: 1.2.1(typedoc-plugin-markdown@4.6.2(typedoc@0.28.3(typescript@5.5.4)))
       typedoc-plugin-markdown:
-        specifier: ^4.4.2
-        version: 4.4.2(typedoc@0.27.7(typescript@5.5.4))
+        specifier: ^4.6.2
+        version: 4.6.2(typedoc@0.28.3(typescript@5.5.4))
       typedoc-plugin-mdn-links:
         specifier: ^5.0.0
-        version: 5.0.1(typedoc@0.27.7(typescript@5.5.4))
+        version: 5.0.1(typedoc@0.28.3(typescript@5.5.4))
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -694,11 +697,8 @@ importers:
         specifier: ^3.27.0
         version: 3.27.0
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
-      sort-tsconfig:
-        specifier: workspace:^
-        version: link:../sort-tsconfig
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -792,19 +792,19 @@ importers:
         version: 0.10.0(@astrojs/starlight@0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1)))
       starlight-typedoc:
         specifier: ^0.19.0
-        version: 0.19.0(@astrojs/starlight@0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4))
+        version: 0.19.0(@astrojs/starlight@0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1)))(typedoc-plugin-markdown@4.6.2(typedoc@0.28.3(typescript@5.5.4)))(typedoc@0.28.3(typescript@5.5.4))
       typedoc:
-        specifier: ^0.27.7
-        version: 0.27.7(typescript@5.5.4)
+        specifier: ^0.28.3
+        version: 0.28.3(typescript@5.5.4)
       typedoc-plugin-frontmatter:
         specifier: ^1.2.1
-        version: 1.2.1(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))
+        version: 1.2.1(typedoc-plugin-markdown@4.6.2(typedoc@0.28.3(typescript@5.5.4)))
       typedoc-plugin-markdown:
-        specifier: ^4.4.2
-        version: 4.4.2(typedoc@0.27.7(typescript@5.5.4))
+        specifier: ^4.6.2
+        version: 4.6.2(typedoc@0.28.3(typescript@5.5.4))
       typedoc-plugin-mdn-links:
         specifier: ^5.0.0
-        version: 5.0.1(typedoc@0.27.7(typescript@5.5.4))
+        version: 5.0.1(typedoc@0.28.3(typescript@5.5.4))
       typescript:
         specifier: ~5.5.4
         version: 5.5.4
@@ -839,6 +839,9 @@ importers:
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
+      repopo:
+        specifier: workspace:^0
+        version: link:../repopo
       sort-jsonc:
         specifier: ^1.0.2
         version: 1.0.2
@@ -883,7 +886,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       start-server-and-test:
         specifier: ^2.0.11
@@ -928,7 +931,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       sort-package-json:
-        specifier: 3.0.0
+        specifier: '*'
         version: 3.0.0
       tempy:
         specifier: ^3.1.0
@@ -2063,9 +2066,6 @@ packages:
 
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
-
-  '@gerrit0/mini-shiki@1.27.2':
-    resolution: {integrity: sha512-GeWyHz8ao2gBiUW4OJnQDxXQnFgZQwwQk05t/CVVgNBN7/rK8XZ7xY6YhLVv9tH3VppWWmr9DCl3MwemB/i+Og==}
 
   '@gerrit0/mini-shiki@3.2.3':
     resolution: {integrity: sha512-yemSYr0Oiqk5NAQRfbD5DKUTlThiZw1MxTMx/YpQTg6m4QRJDtV2JTYSuNevgx1ayy/O7x+uwDjh3IgECGFY/Q==}
@@ -10894,12 +10894,6 @@ packages:
     peerDependencies:
       typedoc-plugin-markdown: '>=4.4.2'
 
-  typedoc-plugin-markdown@4.4.2:
-    resolution: {integrity: sha512-kJVkU2Wd+AXQpyL6DlYXXRrfNrHrEIUgiABWH8Z+2Lz5Sq6an4dQ/hfvP75bbokjNDUskOdFlEEm/0fSVyC7eg==}
-    engines: {node: '>= 18'}
-    peerDependencies:
-      typedoc: 0.27.x
-
   typedoc-plugin-markdown@4.6.2:
     resolution: {integrity: sha512-JVCIoK7FDN3t3PSLkwDyrBFyjtDznqDCJotP9evxhLyb6bEZTqhAGB0tPy1RmgHuY2WoAONMrsWs8LfLsD+A6A==}
     engines: {node: '>= 18'}
@@ -10910,13 +10904,6 @@ packages:
     resolution: {integrity: sha512-eofdcc2nZZpipz/ubjG+7UYMi6Xu95svUwnZ+ClJh6NJdrv7kAOerL9N3iDOpo5kwQeK86GqPWwnv6LUGo5Wrw==}
     peerDependencies:
       typedoc: 0.27.x || 0.28.x
-
-  typedoc@0.27.7:
-    resolution: {integrity: sha512-K/JaUPX18+61W3VXek1cWC5gwmuLvYTOXJzBvD9W7jFvbPnefRnCHQCEPw7MSNrP/Hj7JJrhZtDDLKdcYm6ucg==}
-    engines: {node: '>= 18'}
-    hasBin: true
-    peerDependencies:
-      typescript: 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x || 5.6.x || 5.7.x
 
   typedoc@0.28.3:
     resolution: {integrity: sha512-5svOCTfXvVSh6zbZKSQluZhR8yN2tKpTeHZxlmWpE6N5vc3R8k/jhg9nnD6n5tN9/ObuQTojkONrOxFdUFUG9w==}
@@ -14103,9 +14090,9 @@ snapshots:
       '@typescript-eslint/parser': 6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4)
       eslint-config-biome: 1.9.4
       eslint-config-prettier: 9.0.0(eslint@9.25.0(jiti@2.4.2))
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1)(eslint@9.25.0(jiti@2.4.2))
       eslint-plugin-eslint-comments: 3.2.0(eslint@9.25.0(jiti@2.4.2))
-      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2))
+      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3)(eslint@9.25.0(jiti@2.4.2))
       eslint-plugin-jsdoc: 46.8.2(eslint@9.25.0(jiti@2.4.2))
       eslint-plugin-promise: 6.1.1(eslint@9.25.0(jiti@2.4.2))
       eslint-plugin-react: 7.33.2(eslint@9.25.0(jiti@2.4.2))
@@ -14764,12 +14751,6 @@ snapshots:
   '@fontsource/open-sans@5.1.1': {}
 
   '@gar/promisify@1.1.3': {}
-
-  '@gerrit0/mini-shiki@1.27.2':
-    dependencies:
-      '@shikijs/engine-oniguruma': 1.29.1
-      '@shikijs/types': 1.29.1
-      '@shikijs/vscode-textmate': 10.0.1
 
   '@gerrit0/mini-shiki@3.2.3':
     dependencies:
@@ -19919,33 +19900,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1)(eslint@9.25.0(jiti@2.4.2)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0(supports-color@8.1.1)
       enhanced-resolve: 5.18.1
       eslint: 9.25.0(jiti@2.4.2)
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.25.0(jiti@2.4.2))
       fast-glob: 3.3.3
       get-tsconfig: 4.10.0
       is-bun-module: 1.3.0
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2))
+      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3)(eslint@9.25.0(jiti@2.4.2))
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.25.0(jiti@2.4.2)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4)
       eslint: 9.25.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1)(eslint@9.25.0(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -19955,13 +19936,13 @@ snapshots:
       eslint: 9.25.0(jiti@2.4.2)
       ignore: 5.3.2
 
-  eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)):
+  eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3)(eslint@9.25.0(jiti@2.4.2)):
     dependencies:
       debug: 4.4.0(supports-color@8.1.1)
       doctrine: 3.0.0
       eslint: 9.25.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2)))(eslint@9.25.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@9.25.0(jiti@2.4.2))(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.25.0(jiti@2.4.2))
       get-tsconfig: 4.10.0
       is-glob: 4.0.3
       minimatch: 3.1.2
@@ -26049,12 +26030,12 @@ snapshots:
     dependencies:
       '@astrojs/starlight': 0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1))
 
-  starlight-typedoc@0.19.0(@astrojs/starlight@0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1)))(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)))(typedoc@0.27.7(typescript@5.5.4)):
+  starlight-typedoc@0.19.0(@astrojs/starlight@0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1)))(typedoc-plugin-markdown@4.6.2(typedoc@0.28.3(typescript@5.5.4)))(typedoc@0.28.3(typescript@5.5.4)):
     dependencies:
       '@astrojs/starlight': 0.32.0(astro@5.3.0(@netlify/blobs@8.1.1)(@types/node@22.13.17)(ioredis@5.6.0)(jiti@2.4.2)(rollup@4.34.8)(terser@5.37.0)(tsx@4.19.3)(typescript@5.5.4)(yaml@2.7.1))
       github-slugger: 2.0.0
-      typedoc: 0.27.7(typescript@5.5.4)
-      typedoc-plugin-markdown: 4.4.2(typedoc@0.27.7(typescript@5.5.4))
+      typedoc: 0.28.3(typescript@5.5.4)
+      typedoc-plugin-markdown: 4.6.2(typedoc@0.28.3(typescript@5.5.4))
 
   start-server-and-test@2.0.11:
     dependencies:
@@ -26695,31 +26676,18 @@ snapshots:
     dependencies:
       is-typedarray: 1.0.0
 
-  typedoc-plugin-frontmatter@1.2.1(typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4))):
+  typedoc-plugin-frontmatter@1.2.1(typedoc-plugin-markdown@4.6.2(typedoc@0.28.3(typescript@5.5.4))):
     dependencies:
-      typedoc-plugin-markdown: 4.4.2(typedoc@0.27.7(typescript@5.5.4))
+      typedoc-plugin-markdown: 4.6.2(typedoc@0.28.3(typescript@5.5.4))
       yaml: 2.7.0
-
-  typedoc-plugin-markdown@4.4.2(typedoc@0.27.7(typescript@5.5.4)):
-    dependencies:
-      typedoc: 0.27.7(typescript@5.5.4)
 
   typedoc-plugin-markdown@4.6.2(typedoc@0.28.3(typescript@5.5.4)):
     dependencies:
       typedoc: 0.28.3(typescript@5.5.4)
 
-  typedoc-plugin-mdn-links@5.0.1(typedoc@0.27.7(typescript@5.5.4)):
+  typedoc-plugin-mdn-links@5.0.1(typedoc@0.28.3(typescript@5.5.4)):
     dependencies:
-      typedoc: 0.27.7(typescript@5.5.4)
-
-  typedoc@0.27.7(typescript@5.5.4):
-    dependencies:
-      '@gerrit0/mini-shiki': 1.27.2
-      lunr: 2.3.9
-      markdown-it: 14.1.0
-      minimatch: 9.0.5
-      typescript: 5.5.4
-      yaml: 2.7.0
+      typedoc: 0.28.3(typescript@5.5.4)
 
   typedoc@0.28.3(typescript@5.5.4):
     dependencies:

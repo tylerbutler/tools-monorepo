@@ -4,17 +4,6 @@ import {
 	generateFileHeaderPolicy,
 } from "../policyGenerators/generateFileHeaderPolicy.js";
 
-// const htmlReplacer = (
-// 	content: string,
-// 	{ headerText }: FileHeaderPolicyConfig,
-// ): string => {
-// 	const newContent = `<!-- ${headerText.replace(
-// 		newline,
-// 		` -->${newline}<!-- `,
-// 	)} -->${newline}${newline}${content}`;
-// 	return newContent;
-// };
-
 const jsTsReplacer = (
 	prevContent: string,
 	{ headerText }: FileHeaderPolicyConfig,
@@ -33,6 +22,8 @@ const jsTsReplacer = (
 
 /**
  * A RepoPolicy that checks that JavaScript and TypeScript source files have the configured header comment
+ *
+ * @alpha
  */
 export const JsTsFileHeaders = generateFileHeaderPolicy("JsTsFileHeaders", {
 	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,

@@ -1,6 +1,7 @@
 {
 	"name": "@tylerbu/levee-client",
 	"version": "0.0.1",
+	"private": true,
 	"description": "Client for the Levee Fluid Framework service.",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {

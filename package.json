@@ -24,7 +24,7 @@
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
 		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "pnpm -r run --aggregate-output test:coverage",
-		"ci:version": "pnpm run generate:license-file && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
+		"ci:version": "pnpm run release:license-file && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
@@ -35,11 +35,11 @@
 		"fix:policy": "./packages/repopo/bin/dev.js check --fix",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate:license-file": "fluid-build . --task generate:license-file",
 		"generate:packlist": "flub generate packlist -g client --no-private",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
 		"prepare:disabled": "lefthook install",
+		"release:license-file": "fluid-build . --task release:license-file",
 		"sort-package-json": "sort-package-json package.json \"config/package.json\" \"packages/*/package.json\"",
 		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
 		"syncpack:fix": "pnpm syncpack fix-mismatches && pnpm syncpack set-semver-ranges",
@@ -49,6 +49,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@changesets/cli": "^2.29.2",
+		"@changesets/config": "^3.1.1",
 		"@fluid-tools/build-cli": "^0.56.0",
 		"@fluidframework/build-tools": "^0.56.0",
 		"@tsconfig/node18": "^18.2.4",
@@ -61,7 +62,7 @@
 		"renovate": "^39.251.1",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.1",
-		"sort-package-json": "3.0.0",
+		"sort-package-json": "*",
 		"sort-tsconfig": "workspace:^",
 		"syncpack": "^13.0.3",
 		"ts-node": "^10.9.2"
@@ -127,13 +128,13 @@
 				"dependsOn": ["check", "build", "lint", "docs", "test"],
 				"script": false
 			},
-			"generate:license-file": {
-				"dependsOn": ["^generate:license-file"],
-				"script": false
-			},
 			"generate:packlist": {
 				"dependsOn": ["^build"],
 				"script": true
+			},
+			"release:license-file": {
+				"dependsOn": ["^release:license-file"],
+				"script": false
 			},
 			"test": {
 				"dependsOn": ["^test"],

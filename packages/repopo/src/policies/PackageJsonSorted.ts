@@ -5,6 +5,8 @@ import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy
 
 /**
  * A repo policy that checks if package.json files in the repo are sorted using sort-package-json.
+ *
+ * @alpha
  */
 export const PackageJsonSorted = generatePackagePolicy(
 	"PackageJsonSorted",

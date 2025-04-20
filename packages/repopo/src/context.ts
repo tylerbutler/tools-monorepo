@@ -28,7 +28,7 @@ export interface RepopoCommandContext {
 	gitRoot: string;
 
 	/**
-	 * Performance information for each handler.
+	 * Stores performance data for each handler. Used to collect and display performance stats.
 	 */
 	perfStats: PolicyHandlerPerfStats;
 }

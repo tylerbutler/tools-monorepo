@@ -47,14 +47,13 @@
 		"compile": "tsc",
 		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate": "concurrently npm:generate:*",
-		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "concurrently npm:readme:*",
 		"readme:main": "oclif readme --no-aliases",
+		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "serve ./test/data --listen 8080",
 		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",
@@ -97,13 +96,21 @@
 		"memfs": "^4.17.0",
 		"oclif": "^4.17.44",
 		"rimraf": "^6.0.1",
-		"sort-package-json": "3.0.0",
+		"sort-package-json": "*",
 		"start-server-and-test": "^2.0.11",
 		"tmp-promise": "^3.0.3",
 		"tsx": "^4.19.3",
 		"type-fest": "^4.40.0",
 		"typescript": "~5.5.4",
 		"vitest": "^3.1.1"
+	},
+	"peerDependencies": {
+		"repopo": "workspace:^0"
+	},
+	"peerDependenciesMeta": {
+		"repopo": {
+			"optional": true
+		}
 	},
 	"engines": {
 		"node": ">=18.0.0"

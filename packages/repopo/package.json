@@ -51,14 +51,14 @@
 		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
-		"readme:main": "oclif readme --no-aliases"
+		"readme:main": "oclif readme --no-aliases",
+		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs"
 	},
 	"oclif": {
 		"bin": "repopo",
@@ -83,9 +83,7 @@
 		"microdiff": "^1.5.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
-		"simple-git": "^3.27.0",
-		"sort-package-json": "3.0.0",
-		"sort-tsconfig": "workspace:^"
+		"simple-git": "^3.27.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
@@ -105,6 +103,14 @@
 		"type-fest": "^4.40.0",
 		"typescript": "~5.5.4",
 		"vitest": "^3.1.1"
+	},
+	"peerDependencies": {
+		"sort-package-json": "*"
+	},
+	"peerDependenciesMeta": {
+		"sort-package-json": {
+			"optional": true
+		}
 	},
 	"engines": {
 		"node": ">=18.0.0"
