@@ -5,7 +5,7 @@ prev: false
 title: "NoJsFileExtensions"
 ---
 
-> `const` **NoJsFileExtensions**: [`RepoPolicy`](../interfaces/RepoPolicy.html)
+> `const` **NoJsFileExtensions**: [`RepoPolicy`](/api/interfaces/repopolicy/)
 
 Defined in: [policies/NoJsFileExtensions.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoJsFileExtensions.ts#L12)
 

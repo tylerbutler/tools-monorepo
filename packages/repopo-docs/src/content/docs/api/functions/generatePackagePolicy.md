@@ -5,7 +5,7 @@ prev: false
 title: "generatePackagePolicy"
 ---
 
-> **generatePackagePolicy**\<`J`, `C`\>(`name`, `packagePolicy`): [`RepoPolicy`](../interfaces/RepoPolicy.html)\<`C`\>
+> **generatePackagePolicy**\<`J`, `C`\>(`name`, `packagePolicy`): [`RepoPolicy`](/api/interfaces/repopolicy/)\<`C`\>
 
 Defined in: [policyGenerators/generatePackagePolicy.ts:13](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generatePackagePolicy.ts#L13)
 
@@ -33,8 +33,8 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### packagePolicy
 
-[`PackageJsonHandler`](../types/PackageJsonHandler.html)\<`J`, `C`\>
+[`PackageJsonHandler`](/api/type-aliases/packagejsonhandler/)\<`J`, `C`\>
 
 ## Returns
 
-[`RepoPolicy`](../interfaces/RepoPolicy.html)\<`C`\>
+[`RepoPolicy`](/api/interfaces/repopolicy/)\<`C`\>

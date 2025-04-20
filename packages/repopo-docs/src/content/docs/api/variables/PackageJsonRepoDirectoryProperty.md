@@ -5,7 +5,7 @@ prev: false
 title: "PackageJsonRepoDirectoryProperty"
 ---
 
-> `const` **PackageJsonRepoDirectoryProperty**: [`RepoPolicy`](../interfaces/RepoPolicy.html)\<`undefined`\>
+> `const` **PackageJsonRepoDirectoryProperty**: [`RepoPolicy`](/api/interfaces/repopolicy/)\<`undefined`\>
 
 Defined in: [policies/PackageJsonRepoDirectoryProperty.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageJsonRepoDirectoryProperty.ts#L14)
 

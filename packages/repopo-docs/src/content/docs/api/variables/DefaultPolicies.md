@@ -5,7 +5,7 @@ prev: false
 title: "DefaultPolicies"
 ---
 
-> `const` **DefaultPolicies**: [`RepoPolicy`](../interfaces/RepoPolicy.html)\<`any`\>[]
+> `const` **DefaultPolicies**: [`RepoPolicy`](/api/interfaces/repopolicy/)\<`any`\>[]
 
 Defined in: [policy.ts:193](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L193)
 

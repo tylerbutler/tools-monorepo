@@ -5,7 +5,7 @@ prev: false
 title: "JsTsFileHeaders"
 ---
 
-> `const` **JsTsFileHeaders**: [`RepoPolicy`](../interfaces/RepoPolicy.html)\<[`FileHeaderPolicyConfig`](../interfaces/FileHeaderPolicyConfig.html)\>
+> `const` **JsTsFileHeaders**: [`RepoPolicy`](/api/interfaces/repopolicy/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
 
 Defined in: [policies/JsTsFileHeaders.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/JsTsFileHeaders.ts#L28)
 

@@ -5,7 +5,7 @@ prev: false
 title: "PackageScripts"
 ---
 
-> `const` **PackageScripts**: [`RepoPolicy`](../interfaces/RepoPolicy.html)\<`undefined`\>
+> `const` **PackageScripts**: [`RepoPolicy`](/api/interfaces/repopolicy/)\<`undefined`\>
 
 Defined in: [policies/PackageScripts.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L11)
 

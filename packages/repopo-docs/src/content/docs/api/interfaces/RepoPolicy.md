@@ -23,7 +23,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### C
 
-`C` *extends* [`DefaultPolicyConfigType`](../types/DefaultPolicyConfigType.html) = `unknown` \| `undefined`
+`C` *extends* [`DefaultPolicyConfigType`](/api/type-aliases/defaultpolicyconfigtype/) = `unknown` \| `undefined`
 
 type of configuration object used by the policy
 
@@ -45,7 +45,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### handler
 
-> **handler**: [`PolicyHandler`](../types/PolicyHandler.html)\<`C`\>
+> **handler**: [`PolicyHandler`](/api/type-aliases/policyhandler/)\<`C`\>
 
 Defined in: [policy.ts:117](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L117)
 
@@ -103,7 +103,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### resolver?
 
-> `optional` **resolver**: [`PolicyStandaloneResolver`](../types/PolicyStandaloneResolver.html)\<`C`\>
+> `optional` **resolver**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
 Defined in: [policy.ts:126](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L126)
 

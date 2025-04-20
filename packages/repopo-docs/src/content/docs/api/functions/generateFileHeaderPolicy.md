@@ -5,7 +5,7 @@ prev: false
 title: "generateFileHeaderPolicy"
 ---
 
-> **generateFileHeaderPolicy**(`name`, `config`): [`RepoPolicy`](../interfaces/RepoPolicy.html)\<[`FileHeaderPolicyConfig`](../interfaces/FileHeaderPolicyConfig.html)\>
+> **generateFileHeaderPolicy**(`name`, `config`): [`RepoPolicy`](/api/interfaces/repopolicy/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
 
 Defined in: [policyGenerators/generateFileHeaderPolicy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generateFileHeaderPolicy.ts#L59)
 
@@ -24,8 +24,8 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### config
 
-[`FileHeaderGeneratorConfig`](../interfaces/FileHeaderGeneratorConfig.html)
+[`FileHeaderGeneratorConfig`](/api/interfaces/fileheadergeneratorconfig/)
 
 ## Returns
 
-[`RepoPolicy`](../interfaces/RepoPolicy.html)\<[`FileHeaderPolicyConfig`](../interfaces/FileHeaderPolicyConfig.html)\>
+[`RepoPolicy`](/api/interfaces/repopolicy/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>

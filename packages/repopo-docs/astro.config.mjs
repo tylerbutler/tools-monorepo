@@ -44,7 +44,7 @@ export default defineConfig({
 					},
 					typeDoc: {
 						excludeExternals: true,
-						router: "module",
+						// router: "module",
 						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo",
 						mergeReadme: true,
 						readme: "../repopo/api-docs/README.md",

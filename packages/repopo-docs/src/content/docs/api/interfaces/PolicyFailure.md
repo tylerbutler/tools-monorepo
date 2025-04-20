@@ -2,20 +2,20 @@
 editUrl: false
 next: false
 prev: false
-title: "PolicyFixResult"
+title: "PolicyFailure"
 ---
 
-Defined in: [policy.ts:171](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L171)
+Defined in: [policy.ts:144](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L144)
 
-The result of an automatic fix for a failing policy.
+A policy failure.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
 :::
 
-## Extends
+## Extended by
 
-- [`PolicyFailure`](PolicyFailure.html)
+- [`PolicyFixResult`](/api/interfaces/policyfixresult/)
 
 ## Properties
 
@@ -31,10 +31,6 @@ Set to `true` if the policy can be fixed automatically.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
-#### Inherited from
-
-[`PolicyFailure`](PolicyFailure.html).[`autoFixable`](PolicyFailure.html#autofixable)
-
 ***
 
 ### errorMessage?
@@ -48,10 +44,6 @@ An optional error message accompanying the failure.
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
 :::
-
-#### Inherited from
-
-[`PolicyFailure`](PolicyFailure.html).[`errorMessage`](PolicyFailure.html#errormessage)
 
 ***
 
@@ -67,10 +59,6 @@ Path to the file that failed the policy.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
-#### Inherited from
-
-[`PolicyFailure`](PolicyFailure.html).[`file`](PolicyFailure.html#file)
-
 ***
 
 ### name
@@ -80,24 +68,6 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [policy.ts:148](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L148)
 
 Name of the policy that failed.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
-#### Inherited from
-
-[`PolicyFailure`](PolicyFailure.html).[`name`](PolicyFailure.html#name)
-
-***
-
-### resolved
-
-> **resolved**: `boolean`
-
-Defined in: [policy.ts:175](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L175)
-
-Set to true if the failure was resolved by the automated fixer.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

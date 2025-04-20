@@ -13,7 +13,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Extends
 
-- [`Partial`](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype)\<[`FileHeaderPolicyConfig`](FileHeaderPolicyConfig.html)\>
+- [`Partial`](https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
 
 ## Properties
 
@@ -139,7 +139,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ##### config
 
-[`FileHeaderPolicyConfig`](FileHeaderPolicyConfig.html)
+[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)
 
 #### Returns
 
