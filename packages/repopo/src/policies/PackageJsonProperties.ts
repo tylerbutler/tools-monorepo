@@ -39,7 +39,7 @@ export const PackageJsonProperties = generatePackagePolicy<
 		autoFixable: true,
 	};
 
-	const merged = defu(json, verbatim);
+	const merged = defu(verbatim, json);
 	const result = diff(merged, json);
 
 	const messages: string[] = [];
