@@ -4,7 +4,7 @@ import { SortTsconfigsPolicy } from "sort-tsconfig";
 const config: RepopoConfig = {
 	policies: [...DefaultPolicies, PackageJsonSorted, SortTsconfigsPolicy],
 	excludePoliciesForFiles: {
-		NoJsFileExtensions: [".*/bin/.*js"],
+		NoJsFileExtensions: [".*/bin/.*js", ".*/svelte.config.js"],
 	},
 	perPolicyConfig: {
 		PackageJsonProperties: {

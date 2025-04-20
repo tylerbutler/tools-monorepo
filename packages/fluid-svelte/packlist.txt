@@ -1,0 +1,9 @@
+CHANGELOG.md
+LICENSE
+README.md
+THIRD-PARTY-LICENSES.txt
+package.json
+dist/ReadonlyReactivePresenceWorkspace.svelte.d.ts
+dist/ReadonlyReactivePresenceWorkspace.svelte.js
+dist/index.d.ts
+dist/index.js
