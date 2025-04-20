@@ -51,14 +51,14 @@
 		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
 		"readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
-		"readme:main": "oclif readme --no-aliases"
+		"readme:main": "oclif readme --no-aliases",
+		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs"
 	},
 	"oclif": {
 		"bin": "repopo",

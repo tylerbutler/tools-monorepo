@@ -34,10 +34,9 @@
 		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate": "concurrently npm:generate:*",
-		"generate:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
+		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "npm run test:vitest",
 		"test:coverage": "vitest run test --coverage",
 		"test:vitest": "vitest run test"
