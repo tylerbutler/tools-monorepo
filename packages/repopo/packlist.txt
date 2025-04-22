@@ -56,6 +56,10 @@ esm/policies/NoJsFileExtensions.d.ts
 esm/policies/NoJsFileExtensions.d.ts.map
 esm/policies/NoJsFileExtensions.js
 esm/policies/NoJsFileExtensions.js.map
+esm/policies/PackageFolderName.d.ts
+esm/policies/PackageFolderName.d.ts.map
+esm/policies/PackageFolderName.js
+esm/policies/PackageFolderName.js.map
 esm/policies/PackageJsonProperties.d.ts
 esm/policies/PackageJsonProperties.d.ts.map
 esm/policies/PackageJsonProperties.js

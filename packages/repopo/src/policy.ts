@@ -1,6 +1,7 @@
 import { HtmlFileHeaders } from "./policies/HtmlFileHeaders.js";
 import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
+import { PackageFolderName } from "./policies/PackageFolderName.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageReadmeExists } from "./policies/PackageReadmeExists.js";
@@ -195,6 +196,7 @@ export const DefaultPolicies: RepoPolicy<any>[] = [
 	HtmlFileHeaders,
 	JsTsFileHeaders,
 	NoJsFileExtensions,
+	PackageFolderName,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonProperties,
 	// PackageJsonSorted,
