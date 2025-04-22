@@ -1,5 +1,5 @@
-import path from "pathe";
 import type { PackageJson } from "@fluid-tools/build-infrastructure";
+import path from "pathe";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
 
