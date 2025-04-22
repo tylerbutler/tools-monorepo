@@ -19,6 +19,7 @@ export {
 } from "./policies/PackageJsonProperties.js";
 export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
+export { PackageReadmeExists } from "./policies/PackageReadmeExists.js";
 export { PackageScripts } from "./policies/PackageScripts.js";
 
 export type {

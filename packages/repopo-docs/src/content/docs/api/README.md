@@ -35,6 +35,7 @@ title: "repopo"
 - [PackageJsonProperties](/api/variables/packagejsonproperties/)
 - [PackageJsonRepoDirectoryProperty](/api/variables/packagejsonrepodirectoryproperty/)
 - [PackageJsonSorted](/api/variables/packagejsonsorted/)
+- [PackageReadmeExists](/api/variables/packagereadmeexists/)
 - [PackageScripts](/api/variables/packagescripts/)
 
 ## Functions
