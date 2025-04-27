@@ -8,7 +8,8 @@ import { PackageScripts } from "./policies/PackageScripts.js";
 /**
  * @alpha
  */
-export type DefaultPolicyConfigType = object | unknown;
+// export type DefaultPolicyConfigType = Record<string, unknown> | undefined; // AnyObjectOrEmpty
+export type DefaultPolicyConfigType = undefined; // AnyObjectOrEmpty
 
 /**
  * A type representing a policy name.
@@ -87,9 +88,7 @@ export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
  *
  * @alpha
  */
-export interface RepoPolicy<
-	C extends DefaultPolicyConfigType = unknown | undefined,
-> {
+export interface RepoPolicy<C = undefined> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -188,9 +187,7 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  *
  * @alpha
  */
-
-// biome-ignore lint/suspicious/noExplicitAny: FIXME
-export const DefaultPolicies: Readonly<RepoPolicy<any>[]> = [
+export const DefaultPolicies: RepoPolicy<any>[] = [
 	HtmlFileHeaders,
 	JsTsFileHeaders,
 	NoJsFileExtensions,

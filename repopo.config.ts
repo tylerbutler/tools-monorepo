@@ -1,16 +1,13 @@
-import {
-	PackageJsonProperties,
-	PackageJsonSorted,
-	type RepopoConfig,
-} from "repopo";
+import { PackageJsonProperties, PackageJsonSorted, defineConfig } from "repopo";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
-const config: RepopoConfig = {
-	policies: [
-		// PackageJsonProperties,
-		PackageJsonSorted,
-		SortTsconfigsPolicy,
-	] as const,
+const policies = [
+	PackageJsonProperties,
+	PackageJsonSorted,
+	SortTsconfigsPolicy,
+] as const;
+
+const config = defineConfig<typeof policies>(policies, {
 	excludePoliciesForFiles: {
 		NoJsFileExtensions: [".*/bin/.*js"],
 	},
@@ -30,6 +27,6 @@ const config: RepopoConfig = {
 			order: ["1", "2"],
 		},
 	},
-};
+});
 
 export default config;

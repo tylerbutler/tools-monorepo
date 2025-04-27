@@ -9,10 +9,13 @@ import { RepoPolicy as RepoPolicy_2 } from '../policy.js';
 import { run as run_2 } from '@oclif/core';
 
 // @alpha
-export const DefaultPolicies: Readonly<RepoPolicy<any>[]>;
+export const DefaultPolicies: RepoPolicy<any>[];
 
 // @alpha (undocumented)
-export type DefaultPolicyConfigType = object | unknown;
+export type DefaultPolicyConfigType = undefined;
+
+// @alpha
+export function defineConfig<T extends readonly RepoPolicy<any>[]>(policies: T, config: Omit<RepopoConfig<T>, "policies">): RepopoConfig<T>;
 
 // @alpha (undocumented)
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -65,8 +68,10 @@ export const PackageJsonSorted: RepoPolicy_2<undefined>;
 export const PackageScripts: RepoPolicy_2<undefined>;
 
 // @alpha (undocumented)
-export type PerPolicySettings<T extends readonly RepoPolicy<DefaultPolicyConfigType>[]> = {
-    [K in T[number]["name"]]?: T[number] extends RepoPolicy<infer C> ? C : never;
+export type PerPolicySettings<T extends readonly RepoPolicy<any>[]> = {
+    [K in PolicyNames<T>]?: Extract<T[number], {
+        name: K;
+    }> extends RepoPolicy<infer C> ? C : never;
 } | undefined;
 
 // @alpha
@@ -97,6 +102,11 @@ export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArgume
 // @alpha
 export type PolicyName = string;
 
+// @alpha (undocumented)
+export type PolicyNames<T extends readonly RepoPolicy<DefaultPolicyConfigType>[]> = {
+    [K in keyof T]: T[K] extends RepoPolicy<DefaultPolicyConfigType> ? T[K]["name"] : never;
+}[number];
+
 // @alpha
 export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Promise<PolicyFixResult>;
 
@@ -109,7 +119,7 @@ export interface RepopoConfig<T extends readonly RepoPolicy<DefaultPolicyConfigT
 }
 
 // @alpha
-export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown | undefined> {
+export interface RepoPolicy<C = undefined> {
     description?: string;
     handler: PolicyHandler<C>;
     match: RegExp;

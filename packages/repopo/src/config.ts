@@ -1,19 +1,42 @@
-import type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";
-import { DefaultPolicies, type DefaultPolicyConfigType, type PolicyName, type RepoPolicy } from "./policy.js";
+import {
+	DefaultPolicies,
+	type DefaultPolicyConfigType,
+	type PolicyName,
+	type RepoPolicy,
+} from "./policy.js";
 
 /**
  * @alpha
  */
-export type PerPolicySettings<T extends readonly RepoPolicy<DefaultPolicyConfigType>[]> =
+export type PolicyNames<
+	T extends readonly RepoPolicy<DefaultPolicyConfigType>[],
+> = {
+	[K in keyof T]: T[K] extends RepoPolicy<DefaultPolicyConfigType>
+		? T[K]["name"]
+		: never;
+}[number];
+
+/**
+ * @alpha
+ */
+export type PerPolicySettings<T extends readonly RepoPolicy<any>[]> =
 	| {
-			[K in T[number]["name"]]?: T[number] extends RepoPolicy<infer C> ? C : never;
+			[K in PolicyNames<T>]?: Extract<
+				T[number],
+				{ name: K }
+			> extends RepoPolicy<infer C>
+				? C
+				: never;
 	  }
 	| undefined;
 
 /**
  * @alpha
  */
-export interface RepopoConfig<T extends readonly RepoPolicy<DefaultPolicyConfigType>[] = typeof DefaultPolicies> {
+export interface RepopoConfig<
+	T extends
+		readonly RepoPolicy<DefaultPolicyConfigType>[] = typeof DefaultPolicies,
+> {
 	/**
 	 * An array of policies that are enabled.
 	 *
@@ -38,6 +61,31 @@ export interface RepopoConfig<T extends readonly RepoPolicy<DefaultPolicyConfigT
 	 * specified by that policy's generic parameter.
 	 */
 	perPolicyConfig?: PerPolicySettings<T>;
+}
+
+/**
+ * Creates a type-safe repopo config with the given policies.
+ *
+ * @example
+ * ```ts
+ * const policies = [PackageJsonSorted, SortTsconfigsPolicy] as const;
+ * const config = defineConfig(policies, {
+ *   perPolicyConfig: {
+ *     SortTsconfigsPolicy: { order: ["1", "2"] }
+ *   }
+ * });
+ * ```
+ *
+ * @alpha
+ */
+export function defineConfig<
+	// biome-ignore lint/suspicious/noExplicitAny: FIXME
+	T extends readonly RepoPolicy<any>[],
+>(policies: T, config: Omit<RepopoConfig<T>, "policies">): RepopoConfig<T> {
+	return {
+		policies,
+		...config,
+	};
 }
 
 /**

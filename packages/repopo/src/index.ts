@@ -20,11 +20,12 @@ export {
 export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 export { PackageScripts } from "./policies/PackageScripts.js";
-
 export type {
 	PerPolicySettings,
+	PolicyNames,
 	RepopoConfig,
 } from "./config.js";
+export { defineConfig } from "./config.js";
 export { generatePackagePolicy } from "./policyGenerators/generatePackagePolicy.js";
 export {
 	generateFileHeaderPolicy,

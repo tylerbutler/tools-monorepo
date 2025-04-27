@@ -5,9 +5,9 @@ prev: false
 title: "PerPolicySettings"
 ---
 
-> **PerPolicySettings**\<`T`\> = `{ [K in T[number]["name"]]?: T[number] extends RepoPolicy<infer C> ? C : never }` \| `undefined`
+> **PerPolicySettings**\<`T`\> = `{ [K in PolicyNames<T>]?: Extract<T[number], { name: K }> extends RepoPolicy<infer C> ? C : never }` \| `undefined`
 
-Defined in: [config.ts:7](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L7)
+Defined in: [config.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L22)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -17,4 +17,4 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### T
 
-`T` *extends* readonly [`RepoPolicy`](/api/interfaces/repopolicy/)\<[`DefaultPolicyConfigType`](/api/type-aliases/defaultpolicyconfigtype/)\>[]
+`T` *extends* readonly [`RepoPolicy`](/api/interfaces/repopolicy/)\<`any`\>[]

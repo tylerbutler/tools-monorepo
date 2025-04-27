@@ -5,7 +5,7 @@ prev: false
 title: "RepopoConfig"
 ---
 
-Defined in: [config.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L16)
+Defined in: [config.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L36)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -23,7 +23,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **excludeFiles**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [config.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L28)
+Defined in: [config.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L51)
 
 An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
 from policy.
@@ -38,7 +38,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **excludePoliciesForFiles**: [`Record`](https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type)\<`string`, (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]\>
 
-Defined in: [config.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L34)
+Defined in: [config.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L57)
 
 An object with a policy name as keys that map to an array of strings/regular expressions to
 exclude that rule from being checked.
@@ -53,7 +53,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **perPolicyConfig**: [`PerPolicySettings`](/api/type-aliases/perpolicysettings/)\<`T`\>
 
-Defined in: [config.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L40)
+Defined in: [config.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L63)
 
 Configuration specific to each policy. The keys are policy names and the values are the config type
 specified by that policy's generic parameter.
@@ -68,7 +68,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **policies**: `T`
 
-Defined in: [config.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L22)
+Defined in: [config.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L45)
 
 An array of policies that are enabled.
 

@@ -25,6 +25,7 @@ title: "repopo"
 - [PerPolicySettings](/api/type-aliases/perpolicysettings/)
 - [PolicyHandler](/api/type-aliases/policyhandler/)
 - [PolicyName](/api/type-aliases/policyname/)
+- [PolicyNames](/api/type-aliases/policynames/)
 - [PolicyStandaloneResolver](/api/type-aliases/policystandaloneresolver/)
 
 ## Variables
@@ -39,5 +40,6 @@ title: "repopo"
 
 ## Functions
 
+- [defineConfig](/api/functions/defineconfig/)
 - [generateFileHeaderPolicy](/api/functions/generatefileheaderpolicy/)
 - [generatePackagePolicy](/api/functions/generatepackagepolicy/)

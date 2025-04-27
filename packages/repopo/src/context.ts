@@ -15,7 +15,7 @@ export interface RepopoCommandContext {
 	/**
 	 * A list of handlers to apply to selected files.
 	 */
-	policies: readonly (RepoPolicy<unknown> | RepoPolicy<undefined>)[];
+	policies: readonly RepoPolicy<any>[];
 
 	/**
 	 * A per-handler list of regular expressions used to exclude files from specific handlers.
