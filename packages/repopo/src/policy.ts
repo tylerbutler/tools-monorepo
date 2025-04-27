@@ -190,7 +190,7 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: FIXME
-export const DefaultPolicies: RepoPolicy<any>[] = [
+export const DefaultPolicies: Readonly<RepoPolicy<any>[]> = [
 	HtmlFileHeaders,
 	JsTsFileHeaders,
 	NoJsFileExtensions,

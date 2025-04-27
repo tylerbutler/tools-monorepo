@@ -122,8 +122,7 @@ export class CheckPolicy<
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: FIXME
 	private async runPolicyOnFile(
 		relPath: string,
-		// policies: RepoPolicy[],
-		policy: RepoPolicy,
+		policy: RepoPolicy<unknown> | RepoPolicy<undefined>,
 	): Promise<void> {
 		const context = await this.getContext();
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;

@@ -1,8 +1,16 @@
-import { DefaultPolicies, PackageJsonSorted, type RepopoConfig } from "repopo";
+import {
+	PackageJsonProperties,
+	PackageJsonSorted,
+	type RepopoConfig,
+} from "repopo";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
-	policies: [...DefaultPolicies, PackageJsonSorted, SortTsconfigsPolicy],
+	policies: [
+		// PackageJsonProperties,
+		PackageJsonSorted,
+		SortTsconfigsPolicy,
+	] as const,
 	excludePoliciesForFiles: {
 		NoJsFileExtensions: [".*/bin/.*js"],
 	},
@@ -17,6 +25,9 @@ const config: RepopoConfig = {
 					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
 				},
 			},
+		},
+		SortTsconfigsPolicy: {
+			order: ["1", "2"],
 		},
 	},
 };

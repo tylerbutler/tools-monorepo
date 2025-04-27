@@ -6,10 +6,10 @@
 
 import type { PackageJson } from 'type-fest';
 import { RepoPolicy as RepoPolicy_2 } from '../policy.js';
-import { run } from '@oclif/core';
+import { run as run_2 } from '@oclif/core';
 
 // @alpha
-export const DefaultPolicies: RepoPolicy<any>[];
+export const DefaultPolicies: Readonly<RepoPolicy<any>[]>;
 
 // @alpha (undocumented)
 export type DefaultPolicyConfigType = object | unknown;
@@ -65,9 +65,9 @@ export const PackageJsonSorted: RepoPolicy_2<undefined>;
 export const PackageScripts: RepoPolicy_2<undefined>;
 
 // @alpha (undocumented)
-export type PerPolicySettings = ({
-    PackageJsonProperties: PackageJsonPropertiesSettings;
-} & Record<PolicyName, unknown>) | undefined;
+export type PerPolicySettings<T extends readonly RepoPolicy<DefaultPolicyConfigType>[]> = {
+    [K in T[number]["name"]]?: T[number] extends RepoPolicy<infer C> ? C : never;
+} | undefined;
 
 // @alpha
 export interface PolicyFailure {
@@ -101,12 +101,11 @@ export type PolicyName = string;
 export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Promise<PolicyFixResult>;
 
 // @alpha (undocumented)
-export interface RepopoConfig {
+export interface RepopoConfig<T extends readonly RepoPolicy<DefaultPolicyConfigType>[] = typeof DefaultPolicies> {
     excludeFiles?: (string | RegExp)[];
     excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-    // (undocumented)
-    perPolicyConfig?: PerPolicySettings | undefined;
-    policies?: RepoPolicy<any>[];
+    perPolicyConfig?: PerPolicySettings<T>;
+    policies?: T;
 }
 
 // @alpha
@@ -118,7 +117,7 @@ export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown | undefi
     resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
-export { run }
+export { run_2 as run }
 
 // (No @packageDocumentation comment for this package)
 
