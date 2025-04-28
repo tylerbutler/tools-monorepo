@@ -1,3 +1,4 @@
+import type { PolicyCreator } from "./generators.js";
 import type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";
 import { DefaultPolicies, type PolicyName, type RepoPolicy } from "./policy.js";
 
@@ -13,6 +14,8 @@ export type PerPolicySettings =
 /**
  * @alpha
  */
+export type PolicyList = PolicyCreator[];
+
 /**
  * @alpha
  */

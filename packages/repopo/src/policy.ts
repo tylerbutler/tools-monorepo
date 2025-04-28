@@ -1,4 +1,4 @@
-import { HtmlFileHeaders } from "./policies.js";
+import { HtmlFileHeaders } from "./policies/HtmlFileHeaders.js";
 import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
@@ -87,9 +87,7 @@ export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
  *
  * @alpha
  */
-export interface RepoPolicy<
-	C extends DefaultPolicyConfigType = unknown | undefined,
-> {
+export interface RepoPolicy<C extends DefaultPolicyConfigType = undefined> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -98,7 +96,7 @@ export interface RepoPolicy<
 	/**
 	 * A more detailed description of the policy and its intended function.
 	 */
-	description?: string;
+	description?: string | undefined;
 
 	/**
 	 * A regular expression that is used to match files in the repo.
@@ -124,17 +122,12 @@ export interface RepoPolicy<
 	 * @returns true if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
 	resolver?: PolicyStandaloneResolver<C> | undefined;
-}
 
-/**
- * A policy handler especially for policies that target package.json.
- *
- * @alpha
- */
-export type PackageJsonHandler<J, C> = (
-	json: J,
-	args: PolicyFunctionArguments<C>,
-) => Promise<true | PolicyFailure | PolicyFixResult>;
+	/**
+	 * A default config that will be used if none is provided.
+	 */
+	defaultConfig?: C | undefined;
+}
 
 /**
  * A policy failure.
@@ -199,3 +192,14 @@ export const DefaultPolicies: RepoPolicy<any>[] = [
 	// PackageJsonSorted,
 	PackageScripts,
 ] as const;
+
+export abstract class Policy<C> implements RepoPolicy<C> {
+	public constructor(
+		public readonly name: string,
+		public readonly match: RegExp,
+		public readonly handler: PolicyHandler<C>,
+		public readonly description?: string,
+		public readonly defaultConfig?: C,
+		public readonly resolver?: PolicyStandaloneResolver<C>,
+	) {}
+}

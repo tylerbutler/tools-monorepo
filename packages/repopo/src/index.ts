@@ -23,6 +23,7 @@ export { PackageScripts } from "./policies/PackageScripts.js";
 
 export type {
 	PerPolicySettings,
+	PolicyList,
 	RepopoConfig,
 } from "./config.js";
 export { generatePackagePolicy } from "./policyGenerators/generatePackagePolicy.js";

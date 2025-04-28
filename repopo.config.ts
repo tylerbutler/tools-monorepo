@@ -1,5 +1,9 @@
-import { DefaultPolicies, PackageJsonSorted, type RepopoConfig } from "repopo";
+import { DefaultPolicies, PackageJsonSorted, type RepopoConfig, type PolicyList, NoJsFileExtensions } from "repopo";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
+
+const policies: PolicyList = [
+	NoJsFileExtensions
+]
 
 const config: RepopoConfig = {
 	policies: [...DefaultPolicies, PackageJsonSorted, SortTsconfigsPolicy],
