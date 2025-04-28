@@ -83,7 +83,8 @@
 		"microdiff": "^1.5.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
-		"simple-git": "^3.27.0"
+		"simple-git": "^3.27.0",
+		"true-myth": "^9.0.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
