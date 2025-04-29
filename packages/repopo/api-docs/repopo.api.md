@@ -5,11 +5,7 @@
 ```ts
 
 import type { PackageJson } from 'type-fest';
-import { PolicyDefinition } from '../policy.js';
 import { run as run_2 } from '@oclif/core';
-
-// @alpha
-export const DefaultPolicies: RepoPolicyDefinition<any>[];
 
 // @alpha (undocumented)
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -35,34 +31,11 @@ export function generateFileHeaderPolicy(name: string, config: FileHeaderGenerat
 // @alpha
 export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): RepoPolicyDefinition<C>;
 
-// @alpha
-export const JsTsFileHeaders: PolicyDefinition<FileHeaderPolicyConfig>;
-
 // @alpha (undocumented)
 export function makePolicy<C>(definition: RepoPolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha
-export const NoJsFileExtensions: RepoPolicyDefinition;
-
-// @alpha
 export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
-
-// @alpha
-export const PackageJsonProperties: PolicyDefinition<PackageJsonPropertiesSettings | undefined>;
-
-// @alpha
-export interface PackageJsonPropertiesSettings {
-    verbatim: PackageJson;
-}
-
-// @alpha
-export const PackageJsonRepoDirectoryProperty: PolicyDefinition<undefined>;
-
-// @alpha
-export const PackageJsonSorted: PolicyDefinition<undefined>;
-
-// @alpha
-export const PackageScripts: PolicyDefinition<undefined>;
 
 // @alpha
 export interface PolicyFailure {
