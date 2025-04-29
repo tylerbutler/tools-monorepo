@@ -11,6 +11,7 @@ import {
 	type PolicyFailure,
 	type PolicyFixResult,
 	type PolicyHandlerResult,
+	type PolicyStandaloneResolver,
 	type RepoPolicy,
 	isPolicyFixResult,
 } from "../policy.js";
@@ -231,40 +232,62 @@ export class CheckPolicy<
 		gitRoot: string,
 	): Promise<void> {
 		const messages = new StringBuilder();
-		const { resolver } = policy;
 
-		if (this.flags.fix && resolver) {
-			messages.append(`${newline}Attempting to resolve: ${relPath}`);
-			const resolveResult = await runWithPerf(
-				policy.name,
-				"resolve",
+		if (this.flags.fix && policy.resolver) {
+			await this.attemptResolution(
+				relPath,
+				policy,
+				policy.resolver,
 				perfStats,
-				() => resolver({ file: relPath, root: gitRoot }),
+				gitRoot,
+				messages,
 			);
-
-			if (!resolveResult.resolved) {
-				process.exitCode = 1;
-			}
-
-			if (resolveResult.errorMessage) {
-				messages.append(newline + resolveResult.errorMessage);
-			}
 		} else {
-			const autoFixable = result.autoFixable
-				? chalk.green(" (autofixable)")
-				: "";
-			messages.append(
-				`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
-			);
-			if (result.errorMessage) {
-				messages.append(`${newline}\t${result.errorMessage}`);
-			}
-			process.exitCode = 1;
+			this.logPolicyFailure(result, policy, messages);
 		}
 
 		this.logMessages(messages);
 	}
 
+	private async attemptResolution(
+		relPath: string,
+		policy: RepoPolicy,
+		resolver: PolicyStandaloneResolver,
+		perfStats: PolicyHandlerPerfStats,
+		gitRoot: string,
+		messages: StringBuilder,
+	): Promise<void> {
+		messages.append(`${newline}Attempting to resolve: ${relPath}`);
+		const resolveResult = await runWithPerf(
+			policy.name,
+			"resolve",
+			perfStats,
+			() => resolver({ file: relPath, root: gitRoot }),
+		);
+
+		if (!resolveResult.resolved) {
+			process.exitCode = 1;
+		}
+
+		if (resolveResult.errorMessage) {
+			messages.append(newline + resolveResult.errorMessage);
+		}
+	}
+
+	private logPolicyFailure(
+		result: PolicyFailure,
+		policy: RepoPolicy,
+		messages: StringBuilder,
+	): void {
+		const autoFixable = result.autoFixable ? chalk.green(" (autofixable)") : "";
+		messages.append(
+			`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
+		);
+		if (result.errorMessage) {
+			messages.append(`${newline}\t${result.errorMessage}`);
+		}
+		process.exitCode = 1;
+	}
 	private logMessages(messages: StringBuilder): void {
 		if ((process.exitCode ?? 0) === 0) {
 			this.info(messages.toString());
