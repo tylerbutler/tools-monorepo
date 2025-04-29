@@ -125,29 +125,47 @@ export class CheckPolicy<
 
 		// Run all matching policies
 		await Promise.all(
-			matchingPolicies.map((policy) => this.runPolicyOnFile(relPath, policy)),
+			matchingPolicies.map((policy) =>
+				this.runPolicyOnFile(relPath, policy, commandContext),
+			),
 		);
 	}
 	private async runPolicyOnFile(
 		relPath: string,
 		policy: RepoPolicy,
+		context: RepopoCommandContext, // Pass context as an argument
 	): Promise<void> {
-		const context = await this.getContext();
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
+		// Check if the policy is excluded for the file
 		if (this.isPolicyExcluded(relPath, policy, excludePoliciesForFiles)) {
 			this.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
 			return;
 		}
 
-		const result = await this.executePolicyHandler(
-			relPath,
-			policy,
-			perfStats,
-			gitRoot,
-		);
+		try {
+			// Execute the policy handler
+			const result = await this.executePolicyHandler(
+				relPath,
+				policy,
+				perfStats,
+				gitRoot,
+			);
 
-		await this.handlePolicyResult(result, relPath, policy, perfStats, gitRoot);
+			// Handle the result of the policy execution
+			await this.handlePolicyResult(
+				result,
+				relPath,
+				policy,
+				perfStats,
+				gitRoot,
+			);
+		} catch (error: unknown) {
+			// Log and rethrow the error for higher-level handling
+			this.error(
+				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
+			);
+		}
 	}
 
 	private isPolicyExcluded(
