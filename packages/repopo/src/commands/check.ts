@@ -123,7 +123,6 @@ export class CheckPolicy<
 		await Promise.all(resultsP);
 	}
 
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: FIXME
 	private async runPolicyOnFile(
 		relPath: string,
 		policy: RepoPolicy,
@@ -229,8 +228,9 @@ export class CheckPolicy<
 				messages.append(
 					`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
 				);
-				if (result.errorMessage)
+				if (result.errorMessage) {
 					messages.append(`${newline}\t${result.errorMessage}`);
+				}
 				process.exitCode = 1;
 			}
 		}
