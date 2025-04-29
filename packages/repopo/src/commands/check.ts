@@ -80,37 +80,66 @@ export class CheckPolicy<
 			filePathsToCheck.push(...gitFiles.split("\n"));
 		}
 
-		await this.executeAllPolicies(filePathsToCheck);
+		const context: RepopoCommandContext = await this.getContext();
+		await this.executeAllPolicies(filePathsToCheck, context);
 	}
 
-	private async executeAllPolicies(pathsToCheck: string[]): Promise<void> {
-		const commandContext: RepopoCommandContext = await this.getContext();
-
+	/**
+	 * Executes all policies against the provided paths.
+	 *
+	 * @param pathsToCheck - All paths that should be checked. Paths should be relative to the repository root.
+	 * @param context - The context.
+	 */
+	private async executeAllPolicies(
+		pathsToCheck: string[],
+		context: RepopoCommandContext,
+	): Promise<void> {
 		try {
 			for (const pathToCheck of pathsToCheck) {
 				// eslint-disable-next-line no-await-in-loop
-				await this.checkOrExcludeFile(pathToCheck, commandContext);
+				await this.checkOrExcludeFile(pathToCheck, context);
 			}
 		} finally {
 			if (!this.flags.quiet) {
-				logStats(commandContext.perfStats, this);
+				logStats(context.perfStats, this);
 			}
 		}
 	}
 
 	/**
-	 * Routes files to their handlers and resolvers by regex testing their full paths. If a file fails a policy that has a
-	 * resolver, the resolver will be invoked as well. Synchronizes the output, exit codes, and resolve
-	 * decision for all handlers.
+	 * Given a string that represents a path to a file in the repo, determines if the file should be checked, and if so,
+	 * routes the file to the appropriate handlers.
+	 *
+	 * @param inputPath -
 	 */
-	private async routeToHandlers(
-		file: string,
+	private async checkOrExcludeFile(
+		inputPath: string,
 		commandContext: RepopoCommandContext,
 	): Promise<void> {
-		const { policies, gitRoot, excludeFromAll } = commandContext;
+		const { perfStats } = commandContext;
 
-		// Resolve the repo-relative path
-		const relPath = path.relative(gitRoot, file).replace(/\\/g, "/");
+		// Convert to relative path immediately
+		const relPath = inputPath;
+		// const relPath = path.relative(gitRoot, path.join(gitRoot, inputPath));
+
+		perfStats.count++;
+
+		try {
+			await this.routeToHandlers(relPath, commandContext);
+		} catch (error: unknown) {
+			throw new Error(
+				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
+			);
+		}
+
+		perfStats.processed++;
+	}
+
+	private async routeToHandlers(
+		relPath: string,
+		commandContext: RepopoCommandContext,
+	): Promise<void> {
+		const { policies, excludeFromAll } = commandContext;
 
 		// Check exclusions
 		if (excludeFromAll.some((regex) => regex.test(relPath))) {
@@ -133,7 +162,7 @@ export class CheckPolicy<
 	private async runPolicyOnFile(
 		relPath: string,
 		policy: RepoPolicy,
-		context: RepopoCommandContext, // Pass context as an argument
+		context: RepopoCommandContext,
 	): Promise<void> {
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
@@ -200,31 +229,6 @@ export class CheckPolicy<
 				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
 			);
 		}
-	}
-
-	/**
-	 * Given a string that represents a path to a file in the repo, determines if the file should be checked, and if so,
-	 * routes the file to the appropriate handlers.
-	 */
-	private async checkOrExcludeFile(
-		inputPath: string,
-		commandContext: RepopoCommandContext,
-	): Promise<void> {
-		const { gitRoot, perfStats } = commandContext;
-
-		const filePath = path.join(gitRoot, inputPath).trim();
-
-		perfStats.count++;
-
-		try {
-			await this.routeToHandlers(filePath, commandContext);
-		} catch (error: unknown) {
-			throw new Error(
-				`Error routing ${filePath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
-			);
-		}
-
-		perfStats.processed++;
 	}
 
 	private async handlePolicyResult(
