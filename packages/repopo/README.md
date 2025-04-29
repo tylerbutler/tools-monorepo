@@ -24,14 +24,12 @@ By default, all files in the repo are checked. You can exclude files completely 
 d `excludeFiles` setting. It should be an array of strings/regular expressions. Paths that match any of these
 expressions will be completely excluded from all policies.
 
-You can exclude files from individual policies as well. To do this, set the `excludePoliciesForFiles` setting. It should
-be an object with keys that match policy names. The value is an array of strings/regular expressions. Paths that match
-any of these expressions will be excluded from that policy only.
+You can exclude files from individual policies as well by configuring the `excludeFiles` setting when calling
+`makePolicy`.
 
 ## Configuring individual policies
 
-Individual policies can be configured using the `policySettings` setting. Use the policy name as the key, with the
-policy settings as the value.
+Individual policies can be configured by passing configuration settings to a `PolicyDefinition` in `makePolicy`.
 
 # Included policies
 
