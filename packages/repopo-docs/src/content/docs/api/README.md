@@ -24,6 +24,7 @@ title: "repopo"
 - [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
 - [PerPolicySettings](/api/type-aliases/perpolicysettings/)
 - [PolicyHandler](/api/type-aliases/policyhandler/)
+- [PolicyHandlerResult](/api/type-aliases/policyhandlerresult/)
 - [PolicyName](/api/type-aliases/policyname/)
 - [PolicyStandaloneResolver](/api/type-aliases/policystandaloneresolver/)
 

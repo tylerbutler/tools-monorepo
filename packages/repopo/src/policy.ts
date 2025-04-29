@@ -55,12 +55,12 @@ export interface PolicyFunctionArguments<C> {
 
 export type PolicyHandler<C = unknown | undefined> = (
 	args: PolicyFunctionArguments<C>,
-) => Promise<true | PolicyFailure | PolicyFixResult>;
+) => Promise<PolicyHandlerResult>;
 
 // export type PolicyCheckOnly = (
 // 	file: string,
 // 	root: string,
-// ) => Promise<true | PolicyFailure | PolicyFixResult>;
+// ) => Promise<PolicyHandlerResult>;
 
 /**
  * A standalone function that can be called to resolve a policy failure.
@@ -134,7 +134,7 @@ export interface RepoPolicy<
 export type PackageJsonHandler<J, C> = (
 	json: J,
 	args: PolicyFunctionArguments<C>,
-) => Promise<true | PolicyFailure | PolicyFixResult>;
+) => Promise<PolicyHandlerResult>;
 
 /**
  * A policy failure.
@@ -174,6 +174,11 @@ export interface PolicyFixResult extends PolicyFailure {
 	 */
 	resolved: boolean;
 }
+
+/**
+ * @alpha
+ */
+export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
 
 // biome-ignore lint/suspicious/noExplicitAny: type guard
 export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {

@@ -6,7 +6,7 @@
 
 import type { PackageJson } from 'type-fest';
 import { RepoPolicy as RepoPolicy_2 } from '../policy.js';
-import { run } from '@oclif/core';
+import { run as run_2 } from '@oclif/core';
 
 // @alpha
 export const DefaultPolicies: RepoPolicy<any>[];
@@ -45,7 +45,7 @@ export const JsTsFileHeaders: RepoPolicy_2<FileHeaderPolicyConfig>;
 export const NoJsFileExtensions: RepoPolicy;
 
 // @alpha
-export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
 
 // @alpha
 export const PackageJsonProperties: RepoPolicy_2<PackageJsonPropertiesSettings | undefined>;
@@ -92,7 +92,10 @@ export interface PolicyFunctionArguments<C> {
 }
 
 // @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+
+// @alpha (undocumented)
+export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
 
 // @alpha
 export type PolicyName = string;
@@ -118,7 +121,7 @@ export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown | undefi
     resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
-export { run }
+export { run_2 as run }
 
 // (No @packageDocumentation comment for this package)
 
