@@ -847,7 +847,7 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       repopo:
-        specifier: workspace:^0.5.0
+        specifier: '>=0.5.0'
         version: link:../repopo
       sort-jsonc:
         specifier: ^1.0.2
