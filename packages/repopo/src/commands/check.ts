@@ -8,6 +8,8 @@ import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
 import { type PolicyHandlerPerfStats, logStats, runWithPerf } from "../perf.js";
 import {
+	type PolicyFailure,
+	type PolicyFixResult,
 	type PolicyHandlerResult,
 	type RepoPolicy,
 	isPolicyFixResult,
@@ -182,7 +184,6 @@ export class CheckPolicy<
 		perfStats.processed++;
 	}
 
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: FIXME
 	private async handlePolicyResult(
 		result: PolicyHandlerResult,
 		relPath: string,
@@ -190,57 +191,88 @@ export class CheckPolicy<
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
 	): Promise<void> {
-		const messages = new StringBuilder();
-
 		if (result === true) {
 			return;
 		}
 
 		if (isPolicyFixResult(result)) {
-			if (result.resolved) {
-				messages.append(
-					`Resolved ${policy.name} policy failure for file: ${result.file}`,
-				);
-			} else {
-				messages.append(
-					`Error fixing ${policy.name} policy failure in ${result.file}`,
-				);
-				process.exitCode = 1;
-			}
+			this.handleFixResult(result, policy);
 		} else {
-			const { resolver } = policy;
-			if (this.flags.fix && resolver) {
-				messages.append(`${newline}Attempting to resolve: ${relPath}`);
-				const resolveResult = await runWithPerf(
-					policy.name,
-					"resolve",
-					perfStats,
-					() => resolver({ file: relPath, root: gitRoot }),
-				);
+			await this.handleFailureResult(
+				result,
+				relPath,
+				policy,
+				perfStats,
+				gitRoot,
+			);
+		}
+	}
 
-				if (!resolveResult.resolved) {
-					process.exitCode = 1;
-				}
-				if (resolveResult.errorMessage) {
-					messages.append(newline + resolveResult.errorMessage);
-				}
-			} else {
-				const autoFixable = result.autoFixable
-					? chalk.green(" (autofixable)")
-					: "";
-				messages.append(
-					`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
-				);
-				if (result.errorMessage) {
-					messages.append(`${newline}\t${result.errorMessage}`);
-				}
-				process.exitCode = 1;
-			}
+	private handleFixResult(result: PolicyFixResult, policy: RepoPolicy): void {
+		const messages = new StringBuilder();
+
+		if (result.resolved) {
+			messages.append(
+				`Resolved ${policy.name} policy failure for file: ${result.file}`,
+			);
+		} else {
+			messages.append(
+				`Error fixing ${policy.name} policy failure in ${result.file}`,
+			);
+			process.exitCode = 1;
 		}
 
-		this[(process.exitCode ?? 0) === 0 ? "info" : "warning"](
-			messages.toString(),
-		);
+		this.logMessages(messages);
+	}
+
+	private async handleFailureResult(
+		result: PolicyFailure,
+		relPath: string,
+		policy: RepoPolicy,
+		perfStats: PolicyHandlerPerfStats,
+		gitRoot: string,
+	): Promise<void> {
+		const messages = new StringBuilder();
+		const { resolver } = policy;
+
+		if (this.flags.fix && resolver) {
+			messages.append(`${newline}Attempting to resolve: ${relPath}`);
+			const resolveResult = await runWithPerf(
+				policy.name,
+				"resolve",
+				perfStats,
+				() => resolver({ file: relPath, root: gitRoot }),
+			);
+
+			if (!resolveResult.resolved) {
+				process.exitCode = 1;
+			}
+
+			if (resolveResult.errorMessage) {
+				messages.append(newline + resolveResult.errorMessage);
+			}
+		} else {
+			const autoFixable = result.autoFixable
+				? chalk.green(" (autofixable)")
+				: "";
+			messages.append(
+				`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
+			);
+			if (result.errorMessage) {
+				messages.append(`${newline}\t${result.errorMessage}`);
+			}
+			process.exitCode = 1;
+		}
+
+		this.logMessages(messages);
+	}
+
+	private logMessages(messages: StringBuilder): void {
+		if ((process.exitCode ?? 0) === 0) {
+			this.info(messages.toString());
+		} else {
+			this.warning(messages.toString());
+		}
 	}
 }
 
