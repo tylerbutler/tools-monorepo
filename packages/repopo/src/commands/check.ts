@@ -99,7 +99,7 @@ export class CheckPolicy<
 		}
 
 		const context: RepopoCommandContext = await this.getContext();
-		await this.executeAllPolicies(filePathsToCheck, context);
+		await this.checkAllFiles(filePathsToCheck, context);
 	}
 
 	/**
@@ -108,7 +108,7 @@ export class CheckPolicy<
 	 * @param pathsToCheck - All paths that should be checked. Paths should be relative to the repository root.
 	 * @param context - The context.
 	 */
-	private async executeAllPolicies(
+	private async checkAllFiles(
 		pathsToCheck: string[],
 		context: RepopoCommandContext,
 	): Promise<void> {
@@ -138,7 +138,7 @@ export class CheckPolicy<
 		perfStats.count++;
 
 		try {
-			await this.routeToHandlers(relPath, commandContext);
+			await this.routeToPolicies(relPath, commandContext);
 		} catch (error: unknown) {
 			throw new Error(
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
@@ -148,7 +148,7 @@ export class CheckPolicy<
 		perfStats.processed++;
 	}
 
-	private async routeToHandlers(
+	private async routeToPolicies(
 		relPath: string,
 		commandContext: RepopoCommandContext,
 	): Promise<void> {
