@@ -36,7 +36,7 @@ export interface SortTsconfigResult {
 }
 
 // @alpha
-export const SortTsconfigsPolicy: RepoPolicyDefinition<SortTsconfigConfiguration_2>;
+export const SortTsconfigsPolicy: RepoPolicyDefinition;
 
 // @beta
 export class TsConfigSorter {
