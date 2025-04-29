@@ -82,7 +82,9 @@
 		"defu": "^6.1.4",
 		"jsonfile": "^6.1.0",
 		"microdiff": "^1.5.0",
-		"pathe": "^2.0.3"
+		"pathe": "^2.0.3",
+		"picocolors": "^1.1.1",
+		"simple-git": "^3.27.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
@@ -95,6 +97,8 @@
 		"generate-license-file": "^4.0.0",
 		"oclif": "^4.17.45",
 		"rimraf": "^6.0.1",
+		"serve": "^14.2.4",
+		"start-server-and-test": "^2.0.11",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"type-fest": "^4.40.0",
