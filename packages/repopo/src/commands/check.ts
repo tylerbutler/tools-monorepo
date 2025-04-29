@@ -130,6 +130,7 @@ export class CheckPolicy<
 		const context = await this.getContext();
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
+		// Skip if the file is excluded from this policy
 		if (
 			excludePoliciesForFiles
 				.get(policy.name)
@@ -139,6 +140,7 @@ export class CheckPolicy<
 			return;
 		}
 
+		// Run the policy handler
 		const result = await runWithPerf(policy.name, "handle", perfStats, () =>
 			policy.handler({
 				file: relPath,
@@ -148,6 +150,7 @@ export class CheckPolicy<
 			}),
 		);
 
+		// Handle the result
 		await this.handlePolicyResult(result, relPath, policy, perfStats, gitRoot);
 	}
 	/**
