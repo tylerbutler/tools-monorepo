@@ -106,25 +106,27 @@ export class CheckPolicy<
 		file: string,
 		commandContext: RepopoCommandContext,
 	): Promise<void> {
-		const { policies, gitRoot } = commandContext;
+		const { policies, gitRoot, excludeFromAll } = commandContext;
 
-		// Use the repo-relative path so that regexes that specify string start (^) will match repo paths.
-		// Replace \ in result with / in case OS is Windows.
+		// Resolve the repo-relative path
 		const relPath = path.relative(gitRoot, file).replace(/\\/g, "/");
 
-		const filteredPolicies = policies.filter((handler) =>
-			handler.match.test(relPath),
-		);
-
-		const resultsP: Promise<void>[] = [];
-
-		for (const policy of filteredPolicies) {
-			resultsP.push(this.runPolicyOnFile(relPath, policy));
+		// Check exclusions
+		if (excludeFromAll.some((regex) => regex.test(relPath))) {
+			this.verbose(`Excluded all handlers: ${relPath}`);
+			return; // Early return for excluded files
 		}
 
-		await Promise.all(resultsP);
-	}
+		// Filter policies that match the file
+		const matchingPolicies = policies.filter((policy) =>
+			policy.match.test(relPath),
+		);
 
+		// Run all matching policies
+		await Promise.all(
+			matchingPolicies.map((policy) => this.runPolicyOnFile(relPath, policy)),
+		);
+	}
 	private async runPolicyOnFile(
 		relPath: string,
 		policy: RepoPolicy,
@@ -163,15 +165,11 @@ export class CheckPolicy<
 		inputPath: string,
 		commandContext: RepopoCommandContext,
 	): Promise<void> {
-		const { excludeFiles: exclusions, gitRoot, perfStats } = commandContext;
+		const { gitRoot, perfStats } = commandContext;
 
-		const filePath = path.join(gitRoot, inputPath).trim().replace(/\\/g, "/");
+		const filePath = path.join(gitRoot, inputPath).trim();
 
 		perfStats.count++;
-		if (!exclusions.every((value) => !value.test(inputPath))) {
-			this.verbose(`Excluded all handlers: ${inputPath}`);
-			return;
-		}
 
 		try {
 			await this.routeToHandlers(filePath, commandContext);

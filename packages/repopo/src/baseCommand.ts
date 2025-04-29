@@ -58,7 +58,7 @@ export abstract class BaseRepopoCommand<
 		const gitRoot = findGitRootSync();
 		this._git = simpleGit({ baseDir: gitRoot });
 		this._context = {
-			excludeFiles,
+			excludeFromAll: excludeFiles,
 			policies: this.commandConfig?.policies ?? DefaultPolicies,
 			excludePoliciesForFiles,
 			gitRoot,
