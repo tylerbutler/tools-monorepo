@@ -135,18 +135,40 @@ export class CheckPolicy<
 		const context = await this.getContext();
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
-		// Skip if the file is excluded from this policy
-		if (
-			excludePoliciesForFiles
-				.get(policy.name)
-				?.some((regex) => regex.test(relPath))
-		) {
+		if (this.isPolicyExcluded(relPath, policy, excludePoliciesForFiles)) {
 			this.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
 			return;
 		}
 
-		// Run the policy handler
-		const result = await runWithPerf(policy.name, "handle", perfStats, () =>
+		const result = await this.executePolicyHandler(
+			relPath,
+			policy,
+			perfStats,
+			gitRoot,
+		);
+
+		await this.handlePolicyResult(result, relPath, policy, perfStats, gitRoot);
+	}
+
+	private isPolicyExcluded(
+		relPath: string,
+		policy: RepoPolicy,
+		excludePoliciesForFiles: Map<string, RegExp[]>,
+	): boolean {
+		return (
+			excludePoliciesForFiles
+				.get(policy.name)
+				?.some((regex) => regex.test(relPath)) ?? false
+		);
+	}
+
+	private async executePolicyHandler(
+		relPath: string,
+		policy: RepoPolicy,
+		perfStats: PolicyHandlerPerfStats,
+		gitRoot: string,
+	): Promise<PolicyHandlerResult> {
+		return runWithPerf(policy.name, "handle", perfStats, () =>
 			policy.handler({
 				file: relPath,
 				root: gitRoot,
@@ -154,10 +176,8 @@ export class CheckPolicy<
 				config: this.commandConfig?.perPolicyConfig?.[policy.name],
 			}),
 		);
-
-		// Handle the result
-		await this.handlePolicyResult(result, relPath, policy, perfStats, gitRoot);
 	}
+
 	/**
 	 * Given a string that represents a path to a file in the repo, determines if the file should be checked, and if so,
 	 * routes the file to the appropriate handlers.
