@@ -1,7 +1,6 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import path from "pathe";
 import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
@@ -66,7 +65,15 @@ export class CheckPolicy<
 			const stdInput = await readStdin();
 
 			if (stdInput !== undefined) {
-				filePathsToCheck.push(...stdInput.split("\n"));
+				filePathsToCheck.push(
+					...stdInput
+						.replace(
+							// normalize slashes in case they're windows paths
+							/\\/g,
+							"/",
+						)
+						.split("\n"),
+				);
 			}
 		} else {
 			const gitFiles =
@@ -80,7 +87,15 @@ export class CheckPolicy<
 					"--full-name",
 				)) ?? "";
 
-			filePathsToCheck.push(...gitFiles.split("\n"));
+			filePathsToCheck.push(
+				...gitFiles
+					.replace(
+						// normalize slashes in case they're windows paths
+						/\\/g,
+						"/",
+					)
+					.split("\n"),
+			);
 		}
 
 		const context: RepopoCommandContext = await this.getContext();
