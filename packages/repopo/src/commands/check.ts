@@ -7,7 +7,7 @@ import chalk from "picocolors";
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
 import { type PolicyHandlerPerfStats, logStats, runWithPerf } from "../perf.js";
-import { type RepoPolicy, isPolicyFixResult } from "../policy.js";
+import { type PolicyHandlerResult, type RepoPolicy, isPolicyFixResult } from "../policy.js";
 
 /**
  * This tool enforces policies across the code base via a series of handler functions. The handler functions are
@@ -176,8 +176,9 @@ export class CheckPolicy<
 		perfStats.processed++;
 	}
 
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: FIXME
 	private async handlePolicyResult(
-		result: unknown,
+		result: PolicyHandlerResult,
 		relPath: string,
 		policy: RepoPolicy,
 		perfStats: PolicyHandlerPerfStats,
