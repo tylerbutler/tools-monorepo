@@ -114,7 +114,6 @@ export class CheckPolicy<
 	): Promise<void> {
 		try {
 			for (const pathToCheck of pathsToCheck) {
-				// eslint-disable-next-line no-await-in-loop
 				await this.checkOrExcludeFile(pathToCheck, context);
 			}
 		} finally {
