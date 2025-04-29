@@ -11,7 +11,6 @@ title: "repopo"
 
 - [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
 - [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
-- [PackageJsonPropertiesSettings](/api/interfaces/packagejsonpropertiessettings/)
 - [PolicyFailure](/api/interfaces/policyfailure/)
 - [PolicyFixResult](/api/interfaces/policyfixresult/)
 - [PolicyFunctionArguments](/api/interfaces/policyfunctionarguments/)
@@ -26,16 +25,6 @@ title: "repopo"
 - [PolicyInstance](/api/type-aliases/policyinstance/)
 - [PolicyName](/api/type-aliases/policyname/)
 - [PolicyStandaloneResolver](/api/type-aliases/policystandaloneresolver/)
-
-## Variables
-
-- [DefaultPolicies](/api/variables/defaultpolicies/)
-- [JsTsFileHeaders](/api/variables/jstsfileheaders/)
-- [NoJsFileExtensions](/api/variables/nojsfileextensions/)
-- [PackageJsonProperties](/api/variables/packagejsonproperties/)
-- [PackageJsonRepoDirectoryProperty](/api/variables/packagejsonrepodirectoryproperty/)
-- [PackageJsonSorted](/api/variables/packagejsonsorted/)
-- [PackageScripts](/api/variables/packagescripts/)
 
 ## Functions
 

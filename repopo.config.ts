@@ -1,16 +1,14 @@
+import { type RepopoConfig, makePolicy } from "repopo";
 import {
 	NoJsFileExtensions,
 	PackageJsonProperties,
+	PackageJsonRepoDirectoryProperty,
 	PackageJsonSorted,
-	type RepopoConfig,
-	makePolicy,
-} from "repopo";
+} from "repopo/policies";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
 	policies: [
-		makePolicy(SortTsconfigsPolicy),
-		makePolicy(PackageJsonSorted),
 		makePolicy(NoJsFileExtensions, undefined, {
 			excludeFiles: [".*/bin/.*js"],
 		}),
@@ -25,6 +23,9 @@ const config: RepopoConfig = {
 				},
 			},
 		}),
+		makePolicy(PackageJsonRepoDirectoryProperty),
+		makePolicy(PackageJsonSorted),
+		makePolicy(SortTsconfigsPolicy),
 	],
 	// excludeFiles: [],
 };
