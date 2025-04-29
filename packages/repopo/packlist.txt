@@ -88,4 +88,8 @@ esm/policyGenerators/generatePackagePolicy.d.ts
 esm/policyGenerators/generatePackagePolicy.d.ts.map
 esm/policyGenerators/generatePackagePolicy.js
 esm/policyGenerators/generatePackagePolicy.js.map
+esm/spinner.d.ts
+esm/spinner.d.ts.map
+esm/spinner.js
+esm/spinner.js.map
 esm/tsdoc-metadata.json
