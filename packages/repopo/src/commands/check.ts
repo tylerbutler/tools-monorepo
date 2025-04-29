@@ -118,18 +118,18 @@ export class CheckPolicy<
 			return; // Early return for excluded files
 		}
 
-		// Filter policies that match the file
+		// Run all matching policies
 		const matchingPolicies = policies.filter((policy) =>
 			policy.match.test(relPath),
 		);
 
-		// Run all matching policies
 		await Promise.all(
 			matchingPolicies.map((policy) =>
 				this.runPolicyOnFile(relPath, policy, commandContext),
 			),
 		);
 	}
+
 	private async runPolicyOnFile(
 		relPath: string,
 		policy: RepoPolicy,
@@ -186,14 +186,20 @@ export class CheckPolicy<
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
 	): Promise<PolicyHandlerResult> {
-		return runWithPerf(policy.name, "handle", perfStats, () =>
-			policy.handler({
-				file: relPath,
-				root: gitRoot,
-				resolve: this.flags.fix,
-				config: this.commandConfig?.perPolicyConfig?.[policy.name],
-			}),
-		);
+		try {
+			return await runWithPerf(policy.name, "handle", perfStats, () =>
+				policy.handler({
+					file: relPath,
+					root: gitRoot,
+					resolve: this.flags.fix,
+					config: this.commandConfig?.perPolicyConfig?.[policy.name],
+				}),
+			);
+		} catch (error: unknown) {
+			this.error(
+				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
+			);
+		}
 	}
 
 	/**
