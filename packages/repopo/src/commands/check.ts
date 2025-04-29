@@ -72,8 +72,11 @@ export class CheckPolicy<
 			const gitFiles =
 				(await this.git.raw(
 					"ls-files",
+					// include staged files and untracked files
 					"-co",
+					// exclude gitignored files and other standard ignore rules
 					"--exclude-standard",
+					// Outputs paths relative to the root of the repository, regardless of the current working directory.
 					"--full-name",
 				)) ?? "";
 
@@ -110,18 +113,13 @@ export class CheckPolicy<
 	 * Given a string that represents a path to a file in the repo, determines if the file should be checked, and if so,
 	 * routes the file to the appropriate handlers.
 	 *
-	 * @param inputPath -
+	 * @param inputPath - A git repo-relative path to a file.
 	 */
 	private async checkOrExcludeFile(
-		inputPath: string,
+		relPath: string,
 		commandContext: RepopoCommandContext,
 	): Promise<void> {
 		const { perfStats } = commandContext;
-
-		// Convert to relative path immediately
-		const relPath = inputPath;
-		// const relPath = path.relative(gitRoot, path.join(gitRoot, inputPath));
-
 		perfStats.count++;
 
 		try {
