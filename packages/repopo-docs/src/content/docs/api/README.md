@@ -15,15 +15,15 @@ title: "repopo"
 - [PolicyFailure](/api/interfaces/policyfailure/)
 - [PolicyFixResult](/api/interfaces/policyfixresult/)
 - [PolicyFunctionArguments](/api/interfaces/policyfunctionarguments/)
+- [PolicyInstanceSettings](/api/interfaces/policyinstancesettings/)
 - [RepopoConfig](/api/interfaces/repopoconfig/)
-- [RepoPolicy](/api/interfaces/repopolicy/)
+- [RepoPolicyDefinition](/api/interfaces/repopolicydefinition/)
 
 ## Type Aliases
 
-- [DefaultPolicyConfigType](/api/type-aliases/defaultpolicyconfigtype/)
 - [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
-- [PerPolicySettings](/api/type-aliases/perpolicysettings/)
 - [PolicyHandler](/api/type-aliases/policyhandler/)
+- [PolicyInstance](/api/type-aliases/policyinstance/)
 - [PolicyName](/api/type-aliases/policyname/)
 - [PolicyStandaloneResolver](/api/type-aliases/policystandaloneresolver/)
 
@@ -41,3 +41,4 @@ title: "repopo"
 
 - [generateFileHeaderPolicy](/api/functions/generatefileheaderpolicy/)
 - [generatePackagePolicy](/api/functions/generatepackagepolicy/)
+- [makePolicy](/api/functions/makepolicy/)

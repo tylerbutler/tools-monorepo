@@ -5,7 +5,7 @@ prev: false
 title: "PackageJsonSorted"
 ---
 
-> `const` **PackageJsonSorted**: [`RepoPolicy`](/api/interfaces/repopolicy/)\<`undefined`\>
+> `const` **PackageJsonSorted**: [`RepoPolicyDefinition`](/api/interfaces/repopolicydefinition/)\<`undefined`\>
 
 Defined in: [policies/PackageJsonSorted.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageJsonSorted.ts#L11)
 

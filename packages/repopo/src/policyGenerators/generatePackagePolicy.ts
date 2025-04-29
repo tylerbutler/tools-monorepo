@@ -2,10 +2,10 @@ import jsonfile from "jsonfile";
 import type { PackageJson } from "type-fest";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
+	PolicyDefinition,
 	PolicyFailure,
 	PolicyFixResult,
 	PolicyFunctionArguments,
-	RepoPolicy,
 } from "../policy.js";
 
 const { readFile: readJson } = jsonfile;
@@ -29,7 +29,7 @@ export function generatePackagePolicy<J = PackageJson, C = undefined>(
 	name: string,
 	packagePolicy: PackageJsonHandler<J, C>,
 	// args: PolicyFunctionArguments<C>,
-): RepoPolicy<C> {
+): PolicyDefinition<C> {
 	// const func = () => handler(json, args);
 	return {
 		name,

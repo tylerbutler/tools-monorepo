@@ -1,21 +1,27 @@
-import type { RepoPolicy } from "./policy.js";
+import type { PolicyDefinition } from "./policy.js";
 
 /**
  * The definition of a free function that returns a RepoPolicy.
+ *
+ * @alpha
  */
 export type PolicyCreatorFunction<C = undefined> = (
-	args: RepoPolicy<C>,
-) => RepoPolicy<C>;
+	args: PolicyDefinition<C>,
+) => PolicyDefinition<C>;
 
 /**
  * The definition of a constructor function that returns a RepoPolicy.
+ *
+ * @alpha
  */
 export type PolicyCreatorConstructor<C = undefined> = new (
-	args: RepoPolicy<C>,
-) => RepoPolicy<C>;
+	args: PolicyDefinition<C>,
+) => PolicyDefinition<C>;
 
 /**
- * A PolicyCreator is a function that can be used to generate a {@link RepoPolicy}. The function can be a free function
- * or a constructor that creates a class implementing the {@link RepoPolicy} interface.
+ * A PolicyCreator is a function that can be used to generate a {@link PolicyDefinition}. The function can be a free function
+ * or a constructor that creates a class implementing the {@link PolicyDefinition} interface.
+ *
+ * @alpha
  */
 export type PolicyCreator = PolicyCreatorConstructor | PolicyCreatorFunction;

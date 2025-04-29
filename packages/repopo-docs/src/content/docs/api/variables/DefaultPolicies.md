@@ -5,9 +5,9 @@ prev: false
 title: "DefaultPolicies"
 ---
 
-> `const` **DefaultPolicies**: [`RepoPolicy`](/api/interfaces/repopolicy/)\<`any`\>[]
+> `const` **DefaultPolicies**: [`RepoPolicyDefinition`](/api/interfaces/repopolicydefinition/)\<`any`\>[]
 
-Defined in: [policy.ts:193](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L193)
+Defined in: [policy.ts:202](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L202)
 
 Default policies included with repopo.
 

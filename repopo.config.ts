@@ -1,17 +1,20 @@
-import { DefaultPolicies, PackageJsonSorted, type RepopoConfig, type PolicyList, NoJsFileExtensions } from "repopo";
+import {
+	NoJsFileExtensions,
+	PackageJsonProperties,
+	PackageJsonSorted,
+	type RepopoConfig,
+	makePolicy,
+} from "repopo";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
-const policies: PolicyList = [
-	NoJsFileExtensions
-]
-
 const config: RepopoConfig = {
-	policies: [...DefaultPolicies, PackageJsonSorted, SortTsconfigsPolicy],
-	excludePoliciesForFiles: {
-		NoJsFileExtensions: [".*/bin/.*js"],
-	},
-	perPolicyConfig: {
-		PackageJsonProperties: {
+	policies: [
+		makePolicy(SortTsconfigsPolicy),
+		makePolicy(PackageJsonSorted),
+		makePolicy(NoJsFileExtensions, undefined, {
+			excludeFiles: [".*/bin/.*js"],
+		}),
+		makePolicy(PackageJsonProperties, {
 			verbatim: {
 				license: "MIT",
 				author: "Tyler Butler <tyler@tylerbutler.com>",
@@ -21,8 +24,9 @@ const config: RepopoConfig = {
 					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
 				},
 			},
-		},
-	},
+		}),
+	],
+	// excludeFiles: [],
 };
 
 export default config;

@@ -5,7 +5,7 @@ prev: false
 title: "FileHeaderPolicyConfig"
 ---
 
-Defined in: [policyGenerators/generateFileHeaderPolicy.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generateFileHeaderPolicy.ts#L11)
+Defined in: [policyGenerators/generateFileHeaderPolicy.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generateFileHeaderPolicy.ts#L15)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -17,7 +17,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **autoGenText**: `string`
 
-Defined in: [policyGenerators/generateFileHeaderPolicy.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generateFileHeaderPolicy.ts#L20)
+Defined in: [policyGenerators/generateFileHeaderPolicy.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generateFileHeaderPolicy.ts#L24)
 
 An optional string that will be appended to the headerText.
 
@@ -31,7 +31,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **headerText**: `string`
 
-Defined in: [policyGenerators/generateFileHeaderPolicy.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generateFileHeaderPolicy.ts#L15)
+Defined in: [policyGenerators/generateFileHeaderPolicy.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generateFileHeaderPolicy.ts#L19)
 
 The text to use as the header.
 

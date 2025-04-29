@@ -32,6 +32,10 @@ esm/context.d.ts
 esm/context.d.ts.map
 esm/context.js
 esm/context.js.map
+esm/generators.d.ts
+esm/generators.d.ts.map
+esm/generators.js
+esm/generators.js.map
 esm/index.d.ts
 esm/index.d.ts.map
 esm/index.js
@@ -88,4 +92,8 @@ esm/policyGenerators/generatePackagePolicy.d.ts
 esm/policyGenerators/generatePackagePolicy.d.ts.map
 esm/policyGenerators/generatePackagePolicy.js
 esm/policyGenerators/generatePackagePolicy.js.map
+esm/policyGenerators/generatePolicy.d.ts
+esm/policyGenerators/generatePolicy.d.ts.map
+esm/policyGenerators/generatePolicy.js
+esm/policyGenerators/generatePolicy.js.map
 esm/tsdoc-metadata.json

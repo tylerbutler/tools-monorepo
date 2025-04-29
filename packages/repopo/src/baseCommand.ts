@@ -9,6 +9,7 @@ import { DefaultPolicyConfig, type RepopoConfig } from "./config.js";
 import type { ExcludedPolicyFileMap, RepopoCommandContext } from "./context.js";
 import { newPerfStats } from "./perf.js";
 import { DefaultPolicies } from "./policy.js";
+import { makePolicy } from "./policyGenerators/generatePolicy.js";
 
 /**
  * This class is the base for all repopo commands. It contains common flags and config loading.
@@ -42,24 +43,19 @@ export abstract class BaseRepopoCommand<
 		const excludeFiles: RegExp[] =
 			this.commandConfig?.excludeFiles?.map((e) => new RegExp(e, "i")) ?? [];
 
-		const excludePoliciesForFilesRaw =
-			this.commandConfig?.excludePoliciesForFiles;
-
 		const excludePoliciesForFiles: ExcludedPolicyFileMap = new Map();
-		if (excludePoliciesForFilesRaw) {
-			for (const [policyName, filters] of Object.entries(
-				excludePoliciesForFilesRaw,
-			)) {
-				const regexes = filters.map((e) => new RegExp(e, "i"));
-				excludePoliciesForFiles.set(policyName, regexes);
-			}
+		for (const policy of this.commandConfig?.policies ?? []) {
+			const regexes = policy.excludeFiles?.map((e) => new RegExp(e, "i")) ?? [];
+			excludePoliciesForFiles.set(policy.name, regexes);
 		}
 
 		const gitRoot = findGitRootSync();
 		this._git = simpleGit({ baseDir: gitRoot });
 		this._context = {
 			excludeFiles,
-			policies: this.commandConfig?.policies ?? DefaultPolicies,
+			policies:
+				this.commandConfig?.policies ??
+				DefaultPolicies.map((p) => makePolicy(p)),
 			excludePoliciesForFiles,
 			gitRoot,
 			perfStats: newPerfStats(),

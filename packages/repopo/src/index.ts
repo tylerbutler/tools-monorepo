@@ -1,16 +1,17 @@
 export { run } from "@oclif/core";
 
 export type {
-	DefaultPolicyConfigType,
 	PolicyFailure,
 	PolicyFixResult,
 	PolicyFunctionArguments,
 	PolicyHandler,
+	PolicyInstance,
+	PolicyInstanceSettings,
 	PolicyName,
 	PolicyStandaloneResolver,
-	RepoPolicy,
+	PolicyDefinition as RepoPolicyDefinition,
 } from "./policy.js";
-export { DefaultPolicies, type PackageJsonHandler } from "./policy.js";
+export { DefaultPolicies } from "./policy.js";
 export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 export { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 export {
@@ -22,11 +23,19 @@ export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 export { PackageScripts } from "./policies/PackageScripts.js";
 
 export type {
-	PerPolicySettings,
-	PolicyList,
+	// PolicyList,
 	RepopoConfig,
 } from "./config.js";
-export { generatePackagePolicy } from "./policyGenerators/generatePackagePolicy.js";
+// export type {
+// 	PolicyCreator,
+// 	PolicyCreatorConstructor,
+// 	PolicyCreatorFunction,
+// } from "./generators.js";
+export { makePolicy } from "./policyGenerators/generatePolicy.js";
+export {
+	generatePackagePolicy,
+	type PackageJsonHandler,
+} from "./policyGenerators/generatePackagePolicy.js";
 export {
 	generateFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,

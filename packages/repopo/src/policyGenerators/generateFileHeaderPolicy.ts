@@ -1,7 +1,11 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { EOL as newline } from "node:os";
 import { extname } from "pathe";
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
+import type {
+	PolicyDefinition,
+	PolicyFailure,
+	PolicyFixResult,
+} from "../policy.js";
 
 const trailingSpaces = /\s*\\r\?\\n/;
 
@@ -59,7 +63,7 @@ export interface FileHeaderGeneratorConfig
 export function generateFileHeaderPolicy(
 	name: string,
 	config: FileHeaderGeneratorConfig,
-): RepoPolicy<FileHeaderPolicyConfig> {
+): PolicyDefinition<FileHeaderPolicyConfig> {
 	const pre = config.headerStart?.source ?? "";
 	const start = config.lineStart.source;
 	const end = config.lineEnd.source;

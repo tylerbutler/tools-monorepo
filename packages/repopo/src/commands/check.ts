@@ -7,7 +7,7 @@ import chalk from "picocolors";
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
 import { logStats, runWithPerf } from "../perf.js";
-import { type RepoPolicy, isPolicyFixResult } from "../policy.js";
+import { type PolicyInstance, isPolicyFixResult } from "../policy.js";
 
 /**
  * This tool enforces policies across the code base via a series of handler functions. The handler functions are
@@ -123,7 +123,8 @@ export class CheckPolicy<
 	private async runPolicyOnFile(
 		relPath: string,
 		// policies: RepoPolicy[],
-		policy: RepoPolicy,
+		// policy: RepoPolicyDefinition,
+		policy: PolicyInstance,
 	): Promise<void> {
 		const context = await this.getContext();
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
@@ -147,10 +148,7 @@ export class CheckPolicy<
 					file: relPath,
 					root: gitRoot,
 					resolve: this.flags.fix,
-					config: this.commandConfig?.perPolicyConfig?.[
-						policy.name
-						// biome-ignore lint/suspicious/noExplicitAny: FIXME
-					] as any,
+					config: policy.config,
 				}),
 		);
 

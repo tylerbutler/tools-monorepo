@@ -1,14 +1,7 @@
-import { HtmlFileHeaders } from "./policies/HtmlFileHeaders.js";
-import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
-import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
+import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 import { PackageScripts } from "./policies/PackageScripts.js";
-
-/**
- * @alpha
- */
-export type DefaultPolicyConfigType = object | unknown;
 
 /**
  * A type representing a policy name.
@@ -67,15 +60,14 @@ export type PolicyHandler<C = unknown | undefined> = (
  *
  * @alpha
  */
-export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
-	(
-		args: Omit<PolicyFunctionArguments<C>, "resolve">,
-	) => Promise<PolicyFixResult>;
+export type PolicyStandaloneResolver<C = undefined> = (
+	args: Omit<PolicyFunctionArguments<C>, "resolve">,
+) => Promise<PolicyFixResult>;
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
 /**
- * A RepoPolicy checks and applies policies to files in the repository.
+ * A RepoPolicyDefinition checks and applies policies to files in the repository.
  *
  * Each policy has a name and a match regex for matching which files it should apply to. Every file in th repo is
  * enumerated and if it matches the regex for a policy, that policy is applied.
@@ -87,7 +79,7 @@ export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
  *
  * @alpha
  */
-export interface RepoPolicy<C extends DefaultPolicyConfigType = undefined> {
+export interface PolicyDefinition<C = undefined> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -128,6 +120,30 @@ export interface RepoPolicy<C extends DefaultPolicyConfigType = undefined> {
 	 */
 	defaultConfig?: C | undefined;
 }
+
+/**
+ * @alpha
+ */
+export interface PolicyInstanceSettings<C> {
+	/**
+	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
+	 * from policy.
+	 *
+	 * Paths will be matched relative to the root of the repo.
+	 */
+	excludeFiles?: (string | RegExp)[];
+
+	/**
+	 * The config that is applied to the policy instance.
+	 */
+	config?: C | undefined;
+}
+
+/**
+ * @alpha
+ */
+export type PolicyInstance<C = undefined> = PolicyDefinition<C> &
+	PolicyInstanceSettings<C>;
 
 /**
  * A policy failure.
@@ -183,17 +199,14 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: FIXME
-export const DefaultPolicies: RepoPolicy<any>[] = [
-	HtmlFileHeaders,
-	JsTsFileHeaders,
+export const DefaultPolicies: PolicyDefinition<any>[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
-	PackageJsonProperties,
-	// PackageJsonSorted,
+	PackageJsonSorted,
 	PackageScripts,
 ] as const;
 
-export abstract class Policy<C> implements RepoPolicy<C> {
+export abstract class Policy<C> implements PolicyDefinition<C> {
 	public constructor(
 		public readonly name: string,
 		public readonly match: RegExp,
