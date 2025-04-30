@@ -1,4 +1,5 @@
 import { EOL as newline } from "node:os";
+import * as timers from "node:timers/promises";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import { Spinner } from "@topcli/spinner";
@@ -103,14 +104,19 @@ export class CheckPolicy<
 		const spinners = new Map(
 			policies.map((p) => [
 				p.name,
-				new Spinner({ verbose: !this.flags.quiet }).start("Running...", {
-					withPrefix: `${p.name}: `,
-				}),
+				new Spinner({ verbose: !this.flags.quiet }),
 			]),
 		);
+
+		for (const [policyName, spinner] of spinners) {
+			spinner.start(policyName);
+		}
+
+		await timers.setTimeout(1000);
 		await this.checkAllFiles(filePathsToCheck, context, spinners);
-		for (const spinner of spinners.values()) {
-			spinner.succeed("Done");
+
+		for (const [policyName, spinner] of spinners) {
+			spinner.succeed(policyName);
 		}
 	}
 
