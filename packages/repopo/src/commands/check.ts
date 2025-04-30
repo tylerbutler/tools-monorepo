@@ -2,7 +2,6 @@ import { EOL as newline } from "node:os";
 import * as timers from "node:timers/promises";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { Spinner } from "@topcli/spinner";
 import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
@@ -101,23 +100,7 @@ export class CheckPolicy<
 		}
 
 		const context: RepopoCommandContext = await this.getContext();
-		const spinners = new Map(
-			policies.map((p) => [
-				p.name,
-				new Spinner({ verbose: !this.flags.quiet }),
-			]),
-		);
-
-		for (const [policyName, spinner] of spinners) {
-			spinner.start(policyName);
-		}
-
-		await timers.setTimeout(1000);
-		await this.checkAllFiles(filePathsToCheck, context, spinners);
-
-		for (const [policyName, spinner] of spinners) {
-			spinner.succeed(policyName);
-		}
+		await this.checkAllFiles(filePathsToCheck, context);
 	}
 
 	/**
@@ -129,11 +112,10 @@ export class CheckPolicy<
 	private async checkAllFiles(
 		pathsToCheck: string[],
 		context: RepopoCommandContext,
-		spinners: Map<string, Spinner>,
 	): Promise<void> {
 		try {
 			for (const pathToCheck of pathsToCheck) {
-				await this.checkOrExcludeFile(pathToCheck, context, spinners);
+				await this.checkOrExcludeFile(pathToCheck, context);
 			}
 		} finally {
 			if (!this.flags.quiet) {
@@ -150,14 +132,13 @@ export class CheckPolicy<
 	 */
 	private async checkOrExcludeFile(
 		relPath: string,
-		context: RepopoCommandContext,
-		spinners: Map<string, Spinner>,
+		commandContext: RepopoCommandContext,
 	): Promise<void> {
-		const { perfStats } = context;
+		const { perfStats } = commandContext;
 		perfStats.count++;
 
 		try {
-			await this.routeToPolicies(relPath, context, spinners);
+			await this.routeToPolicies(relPath, commandContext);
 		} catch (error: unknown) {
 			throw new Error(
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
@@ -169,10 +150,9 @@ export class CheckPolicy<
 
 	private async routeToPolicies(
 		relPath: string,
-		context: RepopoCommandContext,
-		spinners: Map<string, Spinner>,
+		commandContext: RepopoCommandContext,
 	): Promise<void> {
-		const { policies, excludeFromAll } = context;
+		const { policies, excludeFromAll } = commandContext;
 
 		// Check exclusions
 		if (excludeFromAll.some((regex) => regex.test(relPath))) {
@@ -186,9 +166,9 @@ export class CheckPolicy<
 		);
 
 		await Promise.all(
-			matchingPolicies.map((policy) => {
-				this.runPolicyOnFile(relPath, policy, context, spinners);
-			}),
+			matchingPolicies.map((policy) =>
+				this.runPolicyOnFile(relPath, policy, commandContext),
+			),
 		);
 	}
 
@@ -196,7 +176,6 @@ export class CheckPolicy<
 		relPath: string,
 		policy: RepoPolicy,
 		context: RepopoCommandContext,
-		spinners: Map<string, Spinner>,
 	): Promise<void> {
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
@@ -207,12 +186,6 @@ export class CheckPolicy<
 		}
 
 		try {
-			const spinner = spinners.get(policy.name);
-			if (spinner === undefined) {
-				throw new Error(`spinner not found for policy '${policy.name}'`);
-			}
-			spinner.text = `Checking ${relPath}`;
-
 			// Execute the policy handler
 			const result = await this.executePolicyHandler(
 				relPath,
