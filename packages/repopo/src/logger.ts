@@ -92,8 +92,8 @@ export class SpinLogger {
 	}
 	debug(data: string | object) {
 		if (this.verbose) {
-      this.log.verbose(typeof data === "string" ? data : JSON.stringify(data));
-    };
+			this.log.verbose(typeof data === "string" ? data : JSON.stringify(data));
+		}
 	}
 	// fatal(data: string | object) {
 	// 	this.log.fatal(data);
