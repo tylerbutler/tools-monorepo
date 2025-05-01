@@ -6,7 +6,7 @@
 
 import type { PackageJson } from 'type-fest';
 import { RepoPolicy as RepoPolicy_2 } from '../policy.js';
-import { run as run_2 } from '@oclif/core';
+import { run } from '@oclif/core';
 
 // @alpha
 export const DefaultPolicies: RepoPolicy<any>[];
@@ -121,7 +121,7 @@ export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown | undefi
     resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
-export { run_2 as run }
+export { run }
 
 // (No @packageDocumentation comment for this package)
 
