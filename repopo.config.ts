@@ -1,13 +1,18 @@
-import { DefaultPolicies, PackageJsonSorted, type RepopoConfig } from "repopo";
+import { type RepopoConfig, generatePackagePolicy, makePolicy } from "repopo";
+import {
+	NoJsFileExtensions,
+	PackageJsonProperties,
+	PackageJsonRepoDirectoryProperty,
+	PackageJsonSorted,
+} from "repopo/policies";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
-	policies: [...DefaultPolicies, PackageJsonSorted, SortTsconfigsPolicy],
-	excludePoliciesForFiles: {
-		NoJsFileExtensions: [".*/bin/.*js", ".*/svelte.config.js"],
-	},
-	perPolicyConfig: {
-		PackageJsonProperties: {
+	policies: [
+		makePolicy(NoJsFileExtensions, undefined, {
+			excludeFiles: [".*/bin/.*js", ".*/svelte.config.js"],
+		}),
+		makePolicy(PackageJsonProperties, {
 			verbatim: {
 				license: "MIT",
 				author: "Tyler Butler <tyler@tylerbutler.com>",
@@ -17,8 +22,17 @@ const config: RepopoConfig = {
 					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
 				},
 			},
-		},
-	},
+		}),
+		makePolicy(PackageJsonRepoDirectoryProperty),
+		makePolicy(PackageJsonSorted),
+		makePolicy(SortTsconfigsPolicy),
+		// makePolicy(
+		// 	generatePackagePolicy("SlowTestPolicy", async () => {
+		// 		await timers.setTimeout(500);
+		// 		return true;
+		// 	}),
+		// ),
+	],
 };
 
 export default config;
