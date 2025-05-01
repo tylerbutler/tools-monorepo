@@ -1,5 +1,5 @@
 import type { PolicyFailure } from "../policy.js";
-import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const expectedScripts = ["build", "clean"] as const;
 
@@ -8,7 +8,7 @@ const expectedScripts = ["build", "clean"] as const;
  *
  * @alpha
  */
-export const PackageScripts = generatePackagePolicy(
+export const PackageScripts = definePackagePolicy(
 	"PackageScripts",
 	async (json, { file }) => {
 		const failResult: PolicyFailure = {
