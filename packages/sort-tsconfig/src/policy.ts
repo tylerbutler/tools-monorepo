@@ -1,8 +1,4 @@
-import type {
-	PolicyFailure,
-	PolicyFixResult,
-	RepoPolicyDefinition,
-} from "repopo";
+import type { PolicyDefinition, PolicyFailure, PolicyFixResult } from "repopo";
 import { isSorted, sortTsconfigFile } from "sort-tsconfig";
 
 /**
@@ -10,7 +6,7 @@ import { isSorted, sortTsconfigFile } from "sort-tsconfig";
  *
  * @alpha
  */
-export const SortTsconfigsPolicy: RepoPolicyDefinition = {
+export const SortTsconfigsPolicy: PolicyDefinition = {
 	name: "SortTsconfigs",
 	match: /.*\.?tsconfig\.json$/i,
 	// biome-ignore lint/suspicious/useAwait: <explanation>

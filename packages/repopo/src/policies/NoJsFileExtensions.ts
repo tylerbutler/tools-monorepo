@@ -1,5 +1,5 @@
 import type { PolicyDefinition, PolicyFailure } from "../policy.js";
-import { generatePolicy } from "../policyGenerators/generatePolicy.js";
+import { makePolicyDefinition } from "../policyGenerators/generatePolicy.js";
 
 /**
  * A repo policy that checks for JavaScript source files that just use the .js file extension. Such files may be
@@ -10,7 +10,7 @@ import { generatePolicy } from "../policyGenerators/generatePolicy.js";
  *
  * @alpha
  */
-export const NoJsFileExtensions: PolicyDefinition = generatePolicy(
+export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 	"NoJsFileExtensions",
 	/(^|\/)[^/]+\.js$/i,
 	// biome-ignore lint/suspicious/useAwait: <explanation>

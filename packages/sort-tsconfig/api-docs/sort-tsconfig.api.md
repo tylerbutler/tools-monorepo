@@ -4,7 +4,7 @@
 
 ```ts
 
-import type { RepoPolicyDefinition } from 'repopo';
+import type { PolicyDefinition } from 'repopo';
 import { run } from '@oclif/core';
 
 // @beta
@@ -36,7 +36,7 @@ export interface SortTsconfigResult {
 }
 
 // @alpha
-export const SortTsconfigsPolicy: RepoPolicyDefinition;
+export const SortTsconfigsPolicy: PolicyDefinition;
 
 // @beta
 export class TsConfigSorter {

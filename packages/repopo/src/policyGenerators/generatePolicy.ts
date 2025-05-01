@@ -7,7 +7,7 @@ import type {
 	PolicyStandaloneResolver,
 } from "../policy.js";
 
-export function generatePolicyFunction(name: PolicyName, description?: string) {
+function generatePolicyFunction(name: PolicyName, description?: string) {
 	return <C>(
 		match: RegExp,
 		handler: PolicyHandler<C>,
@@ -25,14 +25,14 @@ export function generatePolicyFunction(name: PolicyName, description?: string) {
 	};
 }
 
-export function generatePolicy<C = undefined>(
+export function makePolicyDefinition<C = undefined>(
 	name: PolicyName,
 	match: RegExp,
 	handler: PolicyHandler<C>,
 	defaultConfig?: C,
 	description?: string,
 	resolver?: PolicyStandaloneResolver<C>,
-) {
+): PolicyDefinition<C> {
 	return generatePolicyFunction(name, description)(
 		match,
 		handler,
@@ -42,6 +42,8 @@ export function generatePolicy<C = undefined>(
 }
 
 /**
+ * Combine a {@link PolicyDefinition} with a policy-specific config and other settings to produce a {@link PolicyInstance}.
+ *
  * @alpha
  */
 export function makePolicy<C>(
@@ -55,24 +57,3 @@ export function makePolicy<C>(
 		config,
 	} satisfies PolicyInstance<C>;
 }
-
-// export function policyWithExclusions<C>(
-// 	policy: RepoPolicyDefinition<C>,
-// 	config: C,
-// 	settings: { excludeFiles: (string | RegExp)[] },
-// ): RepoPolicyDefinition<C> & { excludeFiles: (string | RegExp)[] } {
-// 	const { name, description, match, handler, defaultConfig, resolver } = policy;
-// 	const pol: RepoPolicyDefinition<C> & { excludeFiles: (string | RegExp)[] } =
-// 		defu(
-// 			generatePolicy(
-// 				name,
-// 				match,
-// 				handler,
-// 				defaultConfig,
-// 				description,
-// 				resolver,
-// 			),
-// 			settings,
-// 		);
-// 	return pol;
-// }

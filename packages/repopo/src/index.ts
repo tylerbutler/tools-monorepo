@@ -10,7 +10,7 @@ export type {
 	PolicyHandlerResult,
 	PolicyName,
 	PolicyStandaloneResolver,
-	PolicyDefinition as RepoPolicyDefinition,
+	PolicyDefinition,
 } from "./policy.js";
 
 export type {

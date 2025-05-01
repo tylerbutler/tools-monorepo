@@ -5,7 +5,7 @@ prev: false
 title: "PolicyInstance"
 ---
 
-> **PolicyInstance**\<`C`\> = [`RepoPolicyDefinition`](/api/interfaces/repopolicydefinition/)\<`C`\> & [`PolicyInstanceSettings`](/api/interfaces/policyinstancesettings/)\<`C`\>
+> **PolicyInstance**\<`C`\> = [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\> & [`PolicyInstanceSettings`](/api/interfaces/policyinstancesettings/)\<`C`\>
 
 Defined in: [policy.ts:145](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L145)
 

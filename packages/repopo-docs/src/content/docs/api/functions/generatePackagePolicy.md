@@ -5,9 +5,9 @@ prev: false
 title: "generatePackagePolicy"
 ---
 
-> **generatePackagePolicy**\<`J`, `C`\>(`name`, `packagePolicy`): [`RepoPolicyDefinition`](/api/interfaces/repopolicydefinition/)\<`C`\>
+> **generatePackagePolicy**\<`J`, `C`\>(`name`, `packagePolicy`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
 
-Defined in: [policyGenerators/generatePackagePolicy.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generatePackagePolicy.ts#L28)
+Defined in: [policyGenerators/generatePackagePolicy.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyGenerators/generatePackagePolicy.ts#L27)
 
 Define a repo policy for package.json files.
 
@@ -37,4 +37,4 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Returns
 
-[`RepoPolicyDefinition`](/api/interfaces/repopolicydefinition/)\<`C`\>
+[`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>

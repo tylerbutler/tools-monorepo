@@ -26,16 +26,26 @@ export interface FileHeaderPolicyConfig {
 }
 
 // @alpha
-export function generateFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): RepoPolicyDefinition<FileHeaderPolicyConfig>;
+export function generateFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
 
 // @alpha
-export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): RepoPolicyDefinition<C>;
+export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
 
-// @alpha (undocumented)
-export function makePolicy<C>(definition: RepoPolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
+// @alpha
+export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha
 export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+
+// @alpha
+export interface PolicyDefinition<C = undefined> {
+    defaultConfig?: C | undefined;
+    description?: string | undefined;
+    handler: PolicyHandler<C>;
+    match: RegExp;
+    name: PolicyName;
+    resolver?: PolicyStandaloneResolver<C> | undefined;
+}
 
 // @alpha
 export interface PolicyFailure {
@@ -66,7 +76,7 @@ export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArgume
 export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
 
 // @alpha (undocumented)
-export type PolicyInstance<C = undefined> = RepoPolicyDefinition<C> & PolicyInstanceSettings<C>;
+export type PolicyInstance<C = undefined> = PolicyDefinition<C> & PolicyInstanceSettings<C>;
 
 // @alpha (undocumented)
 export interface PolicyInstanceSettings<C> {
@@ -84,16 +94,6 @@ export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyFunction
 export interface RepopoConfig {
     excludeFiles?: (string | RegExp)[];
     policies?: PolicyInstance<any>[];
-}
-
-// @alpha
-export interface RepoPolicyDefinition<C = undefined> {
-    defaultConfig?: C | undefined;
-    description?: string | undefined;
-    handler: PolicyHandler<C>;
-    match: RegExp;
-    name: PolicyName;
-    resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
 export { run_2 as run }

@@ -96,4 +96,8 @@ esm/policyGenerators/generatePolicy.d.ts
 esm/policyGenerators/generatePolicy.d.ts.map
 esm/policyGenerators/generatePolicy.js
 esm/policyGenerators/generatePolicy.js.map
+esm/progressBars.d.ts
+esm/progressBars.d.ts.map
+esm/progressBars.js
+esm/progressBars.js.map
 esm/tsdoc-metadata.json

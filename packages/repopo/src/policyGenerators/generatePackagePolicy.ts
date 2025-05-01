@@ -3,8 +3,6 @@ import type { PackageJson } from "type-fest";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
 	PolicyDefinition,
-	PolicyFailure,
-	PolicyFixResult,
 	PolicyFunctionArguments,
 	PolicyHandlerResult,
 } from "../policy.js";
