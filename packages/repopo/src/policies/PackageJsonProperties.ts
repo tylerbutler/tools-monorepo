@@ -3,7 +3,7 @@ import jsonfile from "jsonfile";
 import diff from "microdiff";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
-import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const { writeFile: writeJson } = jsonfile;
 
@@ -24,7 +24,7 @@ export interface PackageJsonPropertiesSettings {
  *
  * @alpha
  */
-export const PackageJsonProperties = generatePackagePolicy<
+export const PackageJsonProperties = definePackagePolicy<
 	PackageJson,
 	PackageJsonPropertiesSettings | undefined
 >("PackageJsonProperties", async (json, { file, config, resolve }) => {

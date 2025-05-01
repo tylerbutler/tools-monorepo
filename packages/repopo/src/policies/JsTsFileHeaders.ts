@@ -1,8 +1,8 @@
 import { EOL as newline } from "node:os";
 import {
 	type FileHeaderPolicyConfig,
-	generateFileHeaderPolicy,
-} from "../policyGenerators/generateFileHeaderPolicy.js";
+	defineFileHeaderPolicy,
+} from "../policyDefiners/defineFileHeaderPolicy.js";
 
 const jsTsReplacer = (
 	prevContent: string,
@@ -25,7 +25,7 @@ const jsTsReplacer = (
  *
  * @alpha
  */
-export const JsTsFileHeaders = generateFileHeaderPolicy("JsTsFileHeaders", {
+export const JsTsFileHeaders = defineFileHeaderPolicy("JsTsFileHeaders", {
 	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
 	headerStart: /(#![^\n]*\r?\n)?\/\*!\r?\n/, // Begins with optional hashbang followed by '/*!'
 	lineStart: / \* /, // Subsequent lines begins with ' * '

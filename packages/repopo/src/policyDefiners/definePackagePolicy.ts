@@ -24,7 +24,7 @@ export type PackageJsonHandler<J, C> = (
  *
  * @alpha
  */
-export function generatePackagePolicy<J = PackageJson, C = undefined>(
+export function definePackagePolicy<J = PackageJson, C = undefined>(
 	name: string,
 	packagePolicy: PackageJsonHandler<J, C>,
 	// args: PolicyFunctionArguments<C>,

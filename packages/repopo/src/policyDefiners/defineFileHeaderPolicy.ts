@@ -55,12 +55,12 @@ export interface FileHeaderGeneratorConfig
 }
 
 /**
- * Given a `FileHeaderGeneratorConfig`, produces a function that detects correct file headers
+ * Given a {@link FileHeaderPolicyConfig}, produces a function that detects correct file headers
  * and returns an error string if the header is missing or incorrect.
  *
  * @alpha
  */
-export function generateFileHeaderPolicy(
+export function defineFileHeaderPolicy(
 	name: string,
 	config: FileHeaderGeneratorConfig,
 ): PolicyDefinition<FileHeaderPolicyConfig> {

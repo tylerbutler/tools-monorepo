@@ -7,9 +7,9 @@ import { findGitRootSync } from "@tylerbu/fundamentals/git";
 import { type SimpleGit, simpleGit } from "simple-git";
 import { DefaultPolicyConfig, type RepopoConfig } from "./config.js";
 import type { ExcludedPolicyFileMap, RepopoCommandContext } from "./context.js";
+import { makePolicy } from "./makePolicy.js";
 import { newPerfStats } from "./perf.js";
 import { DefaultPolicies } from "./policy.js";
-import { makePolicy } from "./policyGenerators/generatePolicy.js";
 
 /**
  * This class is the base for all repopo commands. It contains common flags and config loading.

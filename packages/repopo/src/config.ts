@@ -1,6 +1,6 @@
 import type { PolicyCreator } from "./generators.js";
+import { makePolicy } from "./makePolicy.js";
 import { DefaultPolicies, type PolicyInstance } from "./policy.js";
-import { makePolicy } from "./policyGenerators/generatePolicy.js";
 
 /**
  * @alpha
