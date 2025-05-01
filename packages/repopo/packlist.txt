@@ -88,4 +88,8 @@ esm/policyGenerators/generatePackagePolicy.d.ts
 esm/policyGenerators/generatePackagePolicy.d.ts.map
 esm/policyGenerators/generatePackagePolicy.js
 esm/policyGenerators/generatePackagePolicy.js.map
+esm/progressBars.d.ts
+esm/progressBars.d.ts.map
+esm/progressBars.js
+esm/progressBars.js.map
 esm/tsdoc-metadata.json

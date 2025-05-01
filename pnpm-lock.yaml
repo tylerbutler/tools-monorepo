@@ -694,6 +694,9 @@ importers:
       microdiff:
         specifier: ^1.5.0
         version: 1.5.0
+      multi-progress-bars:
+        specifier: ^5.0.3
+        version: 5.0.3
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
@@ -8373,6 +8376,10 @@ packages:
   muggle-string@0.4.1:
     resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
 
+  multi-progress-bars@5.0.3:
+    resolution: {integrity: sha512-/EzDF3NVeYTFLoLQ33fgvM6933rS2MZlEPWBivsc94Y/lj2xpWOs/DpJrCG+XrPOo4/P6DW+oxZyKnRKw0d/nQ==}
+    engines: {node: '>14.18.0'}
+
   multimatch@5.0.0:
     resolution: {integrity: sha512-ypMKuglUrZUD99Tk2bUQ+xNQj43lPEfAeX2o9cTteAmShXy2VHDJpuwu1o0xqoKCt9jLVAvwyFKdLTPXKAfJyA==}
     engines: {node: '>=10'}
@@ -10379,6 +10386,10 @@ packages:
   strip-ansi@6.0.1:
     resolution: {integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==}
     engines: {node: '>=8'}
+
+  strip-ansi@7.0.1:
+    resolution: {integrity: sha512-cXNxvT8dFNRVfhVME3JAe98mkXDYN2O1l7jmcwMnOslDeESg1rF/OZMtK0nRAhiari1unG5cD4jG3rapUAkLbw==}
+    engines: {node: '>=12'}
 
   strip-ansi@7.1.0:
     resolution: {integrity: sha512-iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==}
@@ -23066,6 +23077,12 @@ snapshots:
 
   muggle-string@0.4.1: {}
 
+  multi-progress-bars@5.0.3:
+    dependencies:
+      chalk: 5.4.1
+      string-width: 5.1.2
+      strip-ansi: 7.0.1
+
   multimatch@5.0.0:
     dependencies:
       '@types/minimatch': 3.0.5
@@ -25744,6 +25761,10 @@ snapshots:
   strip-ansi@6.0.1:
     dependencies:
       ansi-regex: 5.0.1
+
+  strip-ansi@7.0.1:
+    dependencies:
+      ansi-regex: 6.1.0
 
   strip-ansi@7.1.0:
     dependencies:
