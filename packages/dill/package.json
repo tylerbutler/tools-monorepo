@@ -97,7 +97,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-extractor": "^7.52.4",
+		"@microsoft/api-extractor": "^7.52.7",
 		"@oclif/plugin-command-snapshot": "^5.2.38",
 		"@oclif/test": "^4.1.12",
 		"@types/debug": "^4.1.12",
@@ -107,13 +107,13 @@
 		"@types/serve-handler": "^6.1.4",
 		"@types/tmp": "^0.2.6",
 		"@types/whatwg-mimetype": "^3.0.2",
-		"@vitest/coverage-v8": "^3.1.1",
+		"@vitest/coverage-v8": "^3.1.2",
 		"generate-license-file": "^4.0.0",
 		"get-port-please": "^3.1.2",
 		"jsonfile": "^6.1.0",
 		"memfs": "^4.17.0",
 		"msw": "^2.7.5",
-		"oclif": "^4.17.45",
+		"oclif": "^4.17.46",
 		"rimraf": "^6.0.1",
 		"serve": "^14.2.4",
 		"serve-handler": "^6.1.6",
@@ -122,11 +122,11 @@
 		"tempy": "^3.1.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"tsx": "^4.19.3",
-		"type-fest": "^4.40.0",
+		"tsx": "^4.19.4",
+		"type-fest": "^4.40.1",
 		"typescript": "~5.5.4",
 		"unionfs": "^4.5.4",
-		"vitest": "^3.1.1"
+		"vitest": "^3.1.2"
 	},
 	"engines": {
 		"node": ">=18.0.0"
