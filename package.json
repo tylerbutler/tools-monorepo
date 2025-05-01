@@ -73,13 +73,8 @@
 	},
 	"pnpm": {
 		"peerDependencyRules": {
-			"allowAny": [
-				"@aws-sdk/*"
-			],
-			"ignoreMissing": [
-				"@aws-sdk/*",
-				"@octokit/core"
-			]
+			"allowAny": ["@aws-sdk/*"],
+			"ignoreMissing": ["@aws-sdk/*", "@octokit/core"]
 		},
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
@@ -96,9 +91,7 @@
 			"yarn"
 		],
 		"updateConfig": {
-			"ignoreDependencies": [
-				"@types/node"
-			]
+			"ignoreDependencies": ["@types/node"]
 		},
 		"overrides": {
 			"@babel/runtime@<7.26.10": ">=7.26.10",
@@ -115,74 +108,43 @@
 	"fluidBuild": {
 		"tasks": {
 			"build": {
-				"dependsOn": [
-					"^build",
-					"generate:packlist"
-				],
+				"dependsOn": ["^build", "generate:packlist"],
 				"script": false
 			},
 			"check": {
-				"dependsOn": [
-					"sort-tsconfig#build",
-					"^check",
-					"check:all"
-				],
+				"dependsOn": ["sort-tsconfig#build", "^check", "check:all"],
 				"script": false
 			},
 			"check:policy": {
-				"dependsOn": [
-					"repopo#build"
-				],
+				"dependsOn": ["repopo#build"],
 				"script": true
 			},
 			"ci": {
-				"dependsOn": [
-					"ci:check",
-					"ci:build",
-					"ci:lint",
-					"ci:test"
-				],
+				"dependsOn": ["ci:check", "ci:build", "ci:lint", "ci:test"],
 				"script": false
 			},
 			"clean": {
-				"dependsOn": [
-					"^clean",
-					"clean:root"
-				],
+				"dependsOn": ["^clean", "clean:root"],
 				"script": false
 			},
 			"compile": {
-				"dependsOn": [
-					"^build"
-				],
+				"dependsOn": ["^build"],
 				"script": false
 			},
 			"full": {
-				"dependsOn": [
-					"check",
-					"build",
-					"lint",
-					"docs",
-					"test"
-				],
+				"dependsOn": ["check", "build", "lint", "docs", "test"],
 				"script": false
 			},
 			"generate:packlist": {
-				"dependsOn": [
-					"^build"
-				],
+				"dependsOn": ["^build"],
 				"script": true
 			},
 			"release:license-file": {
-				"dependsOn": [
-					"^release:license-file"
-				],
+				"dependsOn": ["^release:license-file"],
 				"script": false
 			},
 			"test": {
-				"dependsOn": [
-					"^test"
-				],
+				"dependsOn": ["^test"],
 				"script": false
 			}
 		}
