@@ -12,10 +12,10 @@ const config: RepopoConfig = {
 		...DefaultPolicies,
 		PackageJsonSorted,
 		SortTsconfigsPolicy,
-		generatePackagePolicy("SlowTestPolicy", async () => {
-			await timers.setTimeout(500);
-			return true;
-		}),
+		// generatePackagePolicy("SlowTestPolicy", async () => {
+		// 	await timers.setTimeout(500);
+		// 	return true;
+		// }),
 	],
 	excludePoliciesForFiles: {
 		NoJsFileExtensions: [".*/bin/.*js"],
