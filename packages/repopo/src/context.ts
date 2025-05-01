@@ -1,6 +1,5 @@
 import type { PolicyHandlerPerfStats } from "./perf.js";
 import type { PolicyName, RepoPolicy } from "./policy.js";
-import type { ProgressBarManager } from "./progressBars.js";
 
 export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
 
@@ -32,9 +31,4 @@ export interface RepopoCommandContext {
 	 * Stores performance data for each handler. Used to collect and display performance stats.
 	 */
 	perfStats: PolicyHandlerPerfStats;
-
-	/**
-	 *
-	 */
-	bars: ProgressBarManager;
 }

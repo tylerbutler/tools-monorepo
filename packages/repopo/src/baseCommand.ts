@@ -9,7 +9,6 @@ import { DefaultPolicyConfig, type RepopoConfig } from "./config.js";
 import type { ExcludedPolicyFileMap, RepopoCommandContext } from "./context.js";
 import { newPerfStats } from "./perf.js";
 import { DefaultPolicies } from "./policy.js";
-import { ProgressBarManager } from "./progressBars.js";
 
 /**
  * This class is the base for all repopo commands. It contains common flags and config loading.
@@ -64,7 +63,6 @@ export abstract class BaseRepopoCommand<
 			excludePoliciesForFiles,
 			gitRoot,
 			perfStats: newPerfStats(),
-			bars: new ProgressBarManager(`${this.config.bin} ${this.argv.join(" ")}`),
 		};
 	}
 

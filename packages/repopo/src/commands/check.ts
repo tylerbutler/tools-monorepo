@@ -101,20 +101,7 @@ export class CheckPolicy<
 
 		const context: RepopoCommandContext = await this.getContext();
 
-		for (const policy of policies) {
-			context.bars.addTask(policy.name, {
-				type: "percentage",
-				message: "Checking",
-			});
-		}
-
 		await this.checkAllFiles(filePathsToCheck, context);
-
-		for (const policy of policies) {
-			context.bars.done(policy.name, {
-				message: `${context.perfStats.data.get("handle")?.get(policy.name) ?? 0}ms`,
-			});
-		}
 	}
 
 	/**
@@ -132,7 +119,7 @@ export class CheckPolicy<
 				await this.checkOrExcludeFile(pathToCheck, context);
 			}
 		} finally {
-			if (this.flags.verbose) {
+			if (!this.flags.quiet) {
 				logStats(context.perfStats, this);
 			}
 		}
@@ -166,7 +153,7 @@ export class CheckPolicy<
 		relPath: string,
 		context: RepopoCommandContext,
 	): Promise<void> {
-		const { policies, excludeFromAll, bars } = context;
+		const { policies, excludeFromAll } = context;
 
 		// Check exclusions
 		if (excludeFromAll.some((regex) => regex.test(relPath))) {
@@ -185,7 +172,6 @@ export class CheckPolicy<
 
 		await Promise.all(
 			matchingPolicies.map(async (policy) => {
-				bars.addFile(policy.name, relPath);
 				return await this.runPolicyOnFile(relPath, policy, context);
 			}),
 		);
@@ -214,7 +200,6 @@ export class CheckPolicy<
 			);
 
 			// Handle the result of the policy execution
-			context.bars.setFileResult(policy.name, relPath, result);
 			await this.handlePolicyResult(
 				result,
 				relPath,
