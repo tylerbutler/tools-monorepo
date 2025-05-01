@@ -5,7 +5,7 @@
 ```ts
 
 import type { PackageJson } from 'type-fest';
-import { run as run_2 } from '@oclif/core';
+import { run } from '@oclif/core';
 
 // @alpha (undocumented)
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -96,7 +96,7 @@ export interface RepopoConfig {
     policies?: PolicyInstance<any>[];
 }
 
-export { run_2 as run }
+export { run }
 
 // (No @packageDocumentation comment for this package)
 
