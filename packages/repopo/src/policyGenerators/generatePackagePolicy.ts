@@ -6,6 +6,7 @@ import type {
 	PolicyFailure,
 	PolicyFixResult,
 	PolicyFunctionArguments,
+	PolicyHandlerResult,
 } from "../policy.js";
 
 const { readFile: readJson } = jsonfile;
@@ -18,7 +19,7 @@ const { readFile: readJson } = jsonfile;
 export type PackageJsonHandler<J, C> = (
 	json: J,
 	args: PolicyFunctionArguments<C>,
-) => Promise<true | PolicyFailure | PolicyFixResult>;
+) => Promise<PolicyHandlerResult>;
 
 /**
  * Define a repo policy for package.json files.

@@ -1,18 +1,17 @@
 import { EOL as newline } from "node:os";
-// import timers from "node:timers/promises";
+import timers from "node:timers/promises";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import chalk from "picocolors";
-import path from "pathe";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
-import { logStats, runWithPerf } from "../perf.js";
-import type { PolicyHandlerPerfStats } from "../perf.js";
+import { type PolicyHandlerPerfStats, logStats, runWithPerf } from "../perf.js";
 import {
 	type PolicyFailure,
 	type PolicyFixResult,
 	type PolicyHandlerResult,
+	type PolicyInstance,
 	type PolicyStandaloneResolver,
 	isPolicyFixResult,
 } from "../policy.js";
@@ -115,40 +114,32 @@ export class CheckPolicy<
 		pathsToCheck: string[],
 		context: RepopoCommandContext,
 	): Promise<void> {
-		const { policies, gitRoot } = context;
-
-		// Use the repo-relative path so that regexes that specify string start (^) will match repo paths.
-		// Replace \ in result with / in case OS is Windows.
-		const relPath = path.relative(gitRoot, file).replace(/\\/g, "/");
-
-		const filteredPolicies = policies.filter((handler) =>
-			handler.match.test(relPath),
-		);
-
-		const resultsP: Promise<void>[] = [];
-
-		for (const policy of filteredPolicies) {
-			resultsP.push(this.runPolicyOnFile(relPath, policy));
+		try {
+			for (const pathToCheck of pathsToCheck) {
+				await this.checkOrExcludeFile(pathToCheck, context);
+			}
+		} finally {
+			if (!this.flags.quiet) {
+				logStats(context.perfStats, this);
+			}
 		}
-
-		await Promise.all(resultsP);
 	}
 
 	/**
 	 * Given a string that represents a path to a file in the repo, determines if the file should be checked, and if so,
 	 * routes the file to the appropriate handlers.
 	 *
-	 * @param inputPath - A git repo-relative path to a file.
+	 * @param relPath - A git repo-relative path to a file.
 	 */
 	private async checkOrExcludeFile(
 		relPath: string,
-		commandContext: RepopoCommandContext,
+		context: RepopoCommandContext,
 	): Promise<void> {
-		const { perfStats } = commandContext;
+		const { perfStats } = context;
 		perfStats.count++;
 
 		try {
-			await this.routeToPolicies(relPath, commandContext);
+			await this.routeToPolicies(relPath, context);
 		} catch (error: unknown) {
 			throw new Error(
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
@@ -188,7 +179,7 @@ export class CheckPolicy<
 
 	private async runPolicyOnFile(
 		relPath: string,
-		policy: Policy,
+		policy: PolicyInstance,
 		context: RepopoCommandContext,
 	): Promise<void> {
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
@@ -226,7 +217,7 @@ export class CheckPolicy<
 
 	private isPolicyExcluded(
 		relPath: string,
-		policy: RepoPolicy,
+		policy: PolicyInstance,
 		excludePoliciesForFiles: Map<string, RegExp[]>,
 	): boolean {
 		return (
@@ -238,7 +229,7 @@ export class CheckPolicy<
 
 	private async executePolicyHandler(
 		relPath: string,
-		policy: RepoPolicy,
+		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
 	): Promise<PolicyHandlerResult> {
@@ -248,7 +239,7 @@ export class CheckPolicy<
 					file: relPath,
 					root: gitRoot,
 					resolve: this.flags.fix,
-					config: this.commandConfig?.perPolicyConfig?.[policy.name],
+					config: policy.config,
 				}),
 			);
 		} catch (error: unknown) {
@@ -261,7 +252,7 @@ export class CheckPolicy<
 	private async handlePolicyResult(
 		result: PolicyHandlerResult,
 		relPath: string,
-		policy: RepoPolicy,
+		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
 	): Promise<void> {
@@ -282,7 +273,10 @@ export class CheckPolicy<
 		}
 	}
 
-	private handleFixResult(result: PolicyFixResult, policy: RepoPolicy): void {
+	private handleFixResult(
+		result: PolicyFixResult,
+		policy: PolicyInstance,
+	): void {
 		const messages = new StringBuilder();
 
 		if (result.resolved) {
@@ -302,7 +296,7 @@ export class CheckPolicy<
 	private async handleFailureResult(
 		result: PolicyFailure,
 		relPath: string,
-		policy: RepoPolicy,
+		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
 	): Promise<void> {
@@ -326,7 +320,7 @@ export class CheckPolicy<
 
 	private async attemptResolution(
 		relPath: string,
-		policy: RepoPolicy,
+		policy: PolicyInstance,
 		resolver: PolicyStandaloneResolver,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
@@ -351,7 +345,7 @@ export class CheckPolicy<
 
 	private logPolicyFailure(
 		result: PolicyFailure,
-		policy: RepoPolicy,
+		policy: PolicyInstance,
 		messages: StringBuilder,
 	): void {
 		const autoFixable = result.autoFixable ? chalk.green(" (autofixable)") : "";
