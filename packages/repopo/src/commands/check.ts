@@ -1,5 +1,5 @@
 import { EOL as newline } from "node:os";
-import * as timers from "node:timers/promises";
+import timers from "node:timers/promises";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import chalk from "picocolors";
@@ -100,7 +100,21 @@ export class CheckPolicy<
 		}
 
 		const context: RepopoCommandContext = await this.getContext();
+
+		for (const policy of policies) {
+			context.bars.addTask(policy.name, {
+				type: "percentage",
+				message: "Checking",
+			});
+		}
+
 		await this.checkAllFiles(filePathsToCheck, context);
+
+		for (const policy of policies) {
+			context.bars.done(policy.name, {
+				message: `${context.perfStats.data.get("handle")?.get(policy.name) ?? 0}ms`,
+			});
+		}
 	}
 
 	/**
@@ -150,9 +164,9 @@ export class CheckPolicy<
 
 	private async routeToPolicies(
 		relPath: string,
-		commandContext: RepopoCommandContext,
+		context: RepopoCommandContext,
 	): Promise<void> {
-		const { policies, excludeFromAll } = commandContext;
+		const { policies, excludeFromAll, bars } = context;
 
 		// Check exclusions
 		if (excludeFromAll.some((regex) => regex.test(relPath))) {
@@ -165,10 +179,15 @@ export class CheckPolicy<
 			policy.match.test(relPath),
 		);
 
+		// for(const policy of matchingPolicies) {
+		// 	bars.addFile(policy.name,
+		// }
+
 		await Promise.all(
-			matchingPolicies.map((policy) =>
-				this.runPolicyOnFile(relPath, policy, commandContext),
-			),
+			matchingPolicies.map(async (policy) => {
+				bars.addFile(policy.name, relPath);
+				return await this.runPolicyOnFile(relPath, policy, context);
+			}),
 		);
 	}
 
@@ -195,6 +214,7 @@ export class CheckPolicy<
 			);
 
 			// Handle the result of the policy execution
+			context.bars.setFileResult(policy.name, relPath, result);
 			await this.handlePolicyResult(
 				result,
 				relPath,
