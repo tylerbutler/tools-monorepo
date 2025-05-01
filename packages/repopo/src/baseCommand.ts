@@ -64,7 +64,7 @@ export abstract class BaseRepopoCommand<
 			excludePoliciesForFiles,
 			gitRoot,
 			perfStats: newPerfStats(),
-			bars: new ProgressBarManager(`${this.config.bin} ${this.config.name}`),
+			bars: new ProgressBarManager(`${this.config.bin} ${this.argv.join(" ")}`),
 		};
 	}
 

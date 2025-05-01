@@ -1,9 +1,9 @@
 import timers from "node:timers/promises";
 import {
 	DefaultPolicies,
-	generatePackagePolicy,
 	PackageJsonSorted,
 	type RepopoConfig,
+	generatePackagePolicy,
 } from "repopo";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 

@@ -8,7 +8,7 @@ import { isSorted, sortTsconfigFile } from "sort-tsconfig";
  */
 export const SortTsconfigsPolicy: RepoPolicy = {
 	name: "SortTsconfigs",
-	match: /(^|\/)[^/]+tsconfig\..*\.json$/i,
+	match: /.*\.?tsconfig\.json$/i,
 	// biome-ignore lint/suspicious/useAwait: <explanation>
 	handler: async ({ file, config, resolve }) => {
 		if (config === undefined) {

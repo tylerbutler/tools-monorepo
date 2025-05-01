@@ -132,7 +132,7 @@ export class CheckPolicy<
 				await this.checkOrExcludeFile(pathToCheck, context);
 			}
 		} finally {
-			if (!this.flags.quiet) {
+			if (this.flags.verbose) {
 				logStats(context.perfStats, this);
 			}
 		}

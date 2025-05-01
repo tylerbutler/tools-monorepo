@@ -36,6 +36,10 @@ esm/index.d.ts
 esm/index.d.ts.map
 esm/index.js
 esm/index.js.map
+esm/logger.d.ts
+esm/logger.d.ts.map
+esm/logger.js
+esm/logger.js.map
 esm/perf.d.ts
 esm/perf.d.ts.map
 esm/perf.js
@@ -88,6 +92,10 @@ esm/policyGenerators/generatePackagePolicy.d.ts
 esm/policyGenerators/generatePackagePolicy.d.ts.map
 esm/policyGenerators/generatePackagePolicy.js
 esm/policyGenerators/generatePackagePolicy.js.map
+esm/progressBars.d.ts
+esm/progressBars.d.ts.map
+esm/progressBars.js
+esm/progressBars.js.map
 esm/spinner.d.ts
 esm/spinner.d.ts.map
 esm/spinner.js
