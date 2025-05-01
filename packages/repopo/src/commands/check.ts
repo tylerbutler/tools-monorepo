@@ -1,5 +1,4 @@
 import { EOL as newline } from "node:os";
-import timers from "node:timers/promises";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import chalk from "picocolors";
