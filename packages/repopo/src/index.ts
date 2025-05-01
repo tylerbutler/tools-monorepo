@@ -2,15 +2,17 @@ export { run } from "@oclif/core";
 
 export type {
 	DefaultPolicyConfigType,
+	PackageJsonHandler,
 	PolicyFailure,
 	PolicyFixResult,
 	PolicyFunctionArguments,
 	PolicyHandler,
+	PolicyHandlerResult,
 	PolicyName,
 	PolicyStandaloneResolver,
 	RepoPolicy,
 } from "./policy.js";
-export { DefaultPolicies, type PackageJsonHandler } from "./policy.js";
+export { DefaultPolicies } from "./policy.js";
 export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 export { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 export {
