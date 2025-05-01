@@ -91,7 +91,7 @@
 		"@oclif/plugin-command-snapshot": "^5.2.38",
 		"@oclif/test": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.12.7",
+		"@types/node": "^22.0.0",
 		"@types/tmp": "^0.2.6",
 		"generate-license-file": "^4.0.0",
 		"oclif": "^4.17.46",
