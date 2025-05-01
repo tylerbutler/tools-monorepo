@@ -1,20 +1,34 @@
 import jsonfile from "jsonfile";
 import type { PackageJson } from "type-fest";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
-import type { PackageJsonHandler, RepoPolicy } from "../policy.js";
+import type {
+	PolicyDefinition,
+	PolicyFunctionArguments,
+	PolicyHandlerResult,
+} from "../policy.js";
 
 const { readFile: readJson } = jsonfile;
+
+/**
+ * A policy handler especially for policies that target package.json.
+ *
+ * @alpha
+ */
+export type PackageJsonHandler<J, C> = (
+	json: J,
+	args: PolicyFunctionArguments<C>,
+) => Promise<PolicyHandlerResult>;
 
 /**
  * Define a repo policy for package.json files.
  *
  * @alpha
  */
-export function generatePackagePolicy<J = PackageJson, C = undefined>(
+export function definePackagePolicy<J = PackageJson, C = undefined>(
 	name: string,
 	packagePolicy: PackageJsonHandler<J, C>,
 	// args: PolicyFunctionArguments<C>,
-): RepoPolicy<C> {
+): PolicyDefinition<C> {
 	// const func = () => handler(json, args);
 	return {
 		name,

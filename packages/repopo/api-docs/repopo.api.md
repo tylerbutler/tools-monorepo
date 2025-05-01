@@ -5,14 +5,7 @@
 ```ts
 
 import type { PackageJson } from 'type-fest';
-import { RepoPolicy as RepoPolicy_2 } from '../policy.js';
 import { run } from '@oclif/core';
-
-// @alpha
-export const DefaultPolicies: RepoPolicy<any>[];
-
-// @alpha (undocumented)
-export type DefaultPolicyConfigType = object | unknown;
 
 // @alpha (undocumented)
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -33,41 +26,26 @@ export interface FileHeaderPolicyConfig {
 }
 
 // @alpha
-export function generateFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): RepoPolicy<FileHeaderPolicyConfig>;
+export function generateFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
 
 // @alpha
-export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): RepoPolicy<C>;
+export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
 
 // @alpha
-export const JsTsFileHeaders: RepoPolicy_2<FileHeaderPolicyConfig>;
-
-// @alpha
-export const NoJsFileExtensions: RepoPolicy;
+export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha
 export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
 
 // @alpha
-export const PackageJsonProperties: RepoPolicy_2<PackageJsonPropertiesSettings | undefined>;
-
-// @alpha
-export interface PackageJsonPropertiesSettings {
-    verbatim: PackageJson;
+export interface PolicyDefinition<C = undefined> {
+    defaultConfig?: C | undefined;
+    description?: string | undefined;
+    handler: PolicyHandler<C>;
+    match: RegExp;
+    name: PolicyName;
+    resolver?: PolicyStandaloneResolver<C> | undefined;
 }
-
-// @alpha
-export const PackageJsonRepoDirectoryProperty: RepoPolicy_2<undefined>;
-
-// @alpha
-export const PackageJsonSorted: RepoPolicy_2<undefined>;
-
-// @alpha
-export const PackageScripts: RepoPolicy_2<undefined>;
-
-// @alpha (undocumented)
-export type PerPolicySettings = ({
-    PackageJsonProperties: PackageJsonPropertiesSettings;
-} & Record<PolicyName, unknown>) | undefined;
 
 // @alpha
 export interface PolicyFailure {
@@ -97,28 +75,25 @@ export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArgume
 // @alpha (undocumented)
 export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
 
+// @alpha (undocumented)
+export type PolicyInstance<C = undefined> = PolicyDefinition<C> & PolicyInstanceSettings<C>;
+
+// @alpha (undocumented)
+export interface PolicyInstanceSettings<C> {
+    config?: C | undefined;
+    excludeFiles?: (string | RegExp)[];
+}
+
 // @alpha
 export type PolicyName = string;
 
 // @alpha
-export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Promise<PolicyFixResult>;
+export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Promise<PolicyFixResult>;
 
 // @alpha (undocumented)
 export interface RepopoConfig {
     excludeFiles?: (string | RegExp)[];
-    excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-    // (undocumented)
-    perPolicyConfig?: PerPolicySettings | undefined;
-    policies?: RepoPolicy<any>[];
-}
-
-// @alpha
-export interface RepoPolicy<C extends DefaultPolicyConfigType = unknown | undefined> {
-    description?: string;
-    handler: PolicyHandler<C>;
-    match: RegExp;
-    name: PolicyName;
-    resolver?: PolicyStandaloneResolver<C> | undefined;
+    policies?: PolicyInstance<any>[];
 }
 
 export { run }
