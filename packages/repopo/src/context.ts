@@ -10,7 +10,7 @@ export interface RepopoCommandContext {
 	/**
 	 * A list of regular expressions used to exclude files from all handlers.
 	 */
-	excludeFiles: RegExp[];
+	excludeFromAll: RegExp[];
 
 	/**
 	 * A list of handlers to apply to selected files.

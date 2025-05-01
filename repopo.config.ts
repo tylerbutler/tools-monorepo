@@ -1,4 +1,4 @@
-import { type RepopoConfig, makePolicy } from "repopo";
+import { type RepopoConfig, generatePackagePolicy, makePolicy } from "repopo";
 import {
 	NoJsFileExtensions,
 	PackageJsonProperties,
@@ -26,8 +26,13 @@ const config: RepopoConfig = {
 		makePolicy(PackageJsonRepoDirectoryProperty),
 		makePolicy(PackageJsonSorted),
 		makePolicy(SortTsconfigsPolicy),
+		// makePolicy(
+		// 	generatePackagePolicy("SlowTestPolicy", async () => {
+		// 		await timers.setTimeout(500);
+		// 		return true;
+		// 	}),
+		// ),
 	],
-	// excludeFiles: [],
 };
 
 export default config;

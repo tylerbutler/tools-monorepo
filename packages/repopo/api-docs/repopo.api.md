@@ -35,7 +35,7 @@ export function generatePackagePolicy<J = PackageJson, C = undefined>(name: stri
 export function makePolicy<C>(definition: RepoPolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha
-export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
 
 // @alpha
 export interface PolicyFailure {
@@ -60,7 +60,10 @@ export interface PolicyFunctionArguments<C> {
 }
 
 // @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<true | PolicyFailure | PolicyFixResult>;
+export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+
+// @alpha (undocumented)
+export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
 
 // @alpha (undocumented)
 export type PolicyInstance<C = undefined> = RepoPolicyDefinition<C> & PolicyInstanceSettings<C>;
