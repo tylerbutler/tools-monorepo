@@ -1,15 +1,15 @@
 import { EOL as newline } from "node:os";
 import {
 	type FileHeaderPolicyConfig,
-	generateFileHeaderPolicy,
-} from "../policyGenerators/generateFileHeaderPolicy.js";
+	defineFileHeaderPolicy,
+} from "../policyDefiners/defineFileHeaderPolicy.js";
 
 /**
  * A RepoPolicy that checks that HTML files have the configured header comment.
  *
  * @alpha
  */
-export const HtmlFileHeaders = generateFileHeaderPolicy("HtmlFileHeaders", {
+export const HtmlFileHeaders = defineFileHeaderPolicy("HtmlFileHeaders", {
 	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
 	lineStart: /<!-- /, // Lines begin with '<!-- '
 	lineEnd: / -->\r?\n/, // Lines end with ' -->' followed by CRLF or LF

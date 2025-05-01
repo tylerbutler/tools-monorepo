@@ -6,7 +6,7 @@ import {
 } from "sort-tsconfig";
 
 const config: SortTsconfigConfiguration = {
-	order: preferredSortOrder,
+	order: defaultSortOrder,
 };
 
 export default config;
