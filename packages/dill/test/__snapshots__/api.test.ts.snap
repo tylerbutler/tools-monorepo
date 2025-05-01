@@ -7075,11 +7075,16 @@ Uint8Array [
 
 exports[`with local server > extractTarball > extracts to directory 1`] = `
 [
-  TarLocalFile {
-    "chksum": "015673",
-    "devmajor": "000000 ",
-    "devminor": "000000 ",
-    "fileData": Uint8Array [
+  {
+    "attrs": {
+      "gid": 24,
+      "group": "staff",
+      "mode": "000644",
+      "mtime": 1712514154,
+      "uid": 765,
+      "user": "tylerbu",
+    },
+    "data": Uint8Array [
       123,
       10,
       9,
@@ -7132,27 +7137,27 @@ exports[`with local server > extractTarball > extracts to directory 1`] = `
       125,
       10,
     ],
-    "filename": "./test/data/test1.json",
-    "gid": "000024 ",
-    "gname": "staff",
-    "isValid": true,
-    "linkname": "",
-    "maybeMagic": "ustar",
-    "mode": "000644 ",
-    "mtime": "14604562152 ",
     "name": "./test/data/test1.json",
-    "prefix": "",
     "size": 51,
-    "typeflag": "0",
-    "uid": "000765 ",
-    "uname": "tylerbu",
-    "version": "00",
+    "text": "{
+	"key1": 1,
+	"key2": {
+		"nested": "object"
+	}
+}
+",
+    "type": "file",
   },
-  TarLocalFile {
-    "chksum": "015674",
-    "devmajor": "000000 ",
-    "devminor": "000000 ",
-    "fileData": Uint8Array [
+  {
+    "attrs": {
+      "gid": 24,
+      "group": "staff",
+      "mode": "000644",
+      "mtime": 1712514154,
+      "uid": 765,
+      "user": "tylerbu",
+    },
+    "data": Uint8Array [
       123,
       10,
       9,
@@ -7205,21 +7210,16 @@ exports[`with local server > extractTarball > extracts to directory 1`] = `
       125,
       10,
     ],
-    "filename": "./test/data/test2.json",
-    "gid": "000024 ",
-    "gname": "staff",
-    "isValid": true,
-    "linkname": "",
-    "maybeMagic": "ustar",
-    "mode": "000644 ",
-    "mtime": "14604562152 ",
     "name": "./test/data/test2.json",
-    "prefix": "",
     "size": 51,
-    "typeflag": "0",
-    "uid": "000765 ",
-    "uname": "tylerbu",
-    "version": "00",
+    "text": "{
+	"key1": 1,
+	"key2": {
+		"nested": "object"
+	}
+}
+",
+    "type": "file",
   },
 ]
 `;
