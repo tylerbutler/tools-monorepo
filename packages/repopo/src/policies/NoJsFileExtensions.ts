@@ -1,4 +1,5 @@
-import type { PolicyFailure, RepoPolicy } from "../policy.js";
+import { makePolicyDefinition } from "../makePolicy.js";
+import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 
 /**
  * A repo policy that checks for JavaScript source files that just use the .js file extension. Such files may be
@@ -9,11 +10,11 @@ import type { PolicyFailure, RepoPolicy } from "../policy.js";
  *
  * @alpha
  */
-export const NoJsFileExtensions: RepoPolicy = {
-	name: "NoJsFileExtensions",
-	match: /(^|\/)[^/]+\.js$/i,
+export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
+	"NoJsFileExtensions",
+	/(^|\/)[^/]+\.js$/i,
 	// biome-ignore lint/suspicious/useAwait: <explanation>
-	handler: async ({ file }) => {
+	async ({ file }) => {
 		// Any match is considered a failure.
 		const result: PolicyFailure = {
 			name: NoJsFileExtensions.name,
@@ -24,4 +25,4 @@ export const NoJsFileExtensions: RepoPolicy = {
 		};
 		return result;
 	},
-};
+);

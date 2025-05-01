@@ -1,27 +1,18 @@
-import timers from "node:timers/promises";
+import { type RepopoConfig, generatePackagePolicy, makePolicy } from "repopo";
 import {
-	DefaultPolicies,
+	NoJsFileExtensions,
+	PackageJsonProperties,
+	PackageJsonRepoDirectoryProperty,
 	PackageJsonSorted,
-	type RepopoConfig,
-	generatePackagePolicy,
-} from "repopo";
+} from "repopo/policies";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
 	policies: [
-		...DefaultPolicies,
-		PackageJsonSorted,
-		SortTsconfigsPolicy,
-		// generatePackagePolicy("SlowTestPolicy", async () => {
-		// 	await timers.setTimeout(500);
-		// 	return true;
-		// }),
-	],
-	excludePoliciesForFiles: {
-		NoJsFileExtensions: [".*/bin/.*js"],
-	},
-	perPolicyConfig: {
-		PackageJsonProperties: {
+		makePolicy(NoJsFileExtensions, undefined, {
+			excludeFiles: [".*/bin/.*js"],
+		}),
+		makePolicy(PackageJsonProperties, {
 			verbatim: {
 				license: "MIT",
 				author: "Tyler Butler <tyler@tylerbutler.com>",
@@ -31,8 +22,17 @@ const config: RepopoConfig = {
 					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
 				},
 			},
-		},
-	},
+		}),
+		makePolicy(PackageJsonRepoDirectoryProperty),
+		makePolicy(PackageJsonSorted),
+		makePolicy(SortTsconfigsPolicy),
+		// makePolicy(
+		// 	generatePackagePolicy("SlowTestPolicy", async () => {
+		// 		await timers.setTimeout(500);
+		// 		return true;
+		// 	}),
+		// ),
+	],
 };
 
 export default config;
