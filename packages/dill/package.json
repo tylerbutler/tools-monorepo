@@ -84,12 +84,12 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.2.10",
+		"@oclif/core": "^4.3.0",
 		"@oclif/plugin-help": "^6.2.27",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
 		"fflate": "^0.8.2",
-		"file-type": "^20.4.1",
+		"file-type": "^20.5.0",
 		"mime": "^4.0.7",
 		"pathe": "^2.0.3",
 		"untar.js": "npm:@andrewbranch/untar.js@^1.0.3",
