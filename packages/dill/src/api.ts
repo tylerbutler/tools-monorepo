@@ -3,11 +3,10 @@ import { parse as parseContentDisposition } from "@tinyhttp/content-disposition"
 import { Decompress } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
 import mime from "mime";
+import { type ParsedTarFileItem, parseTar } from "nanotar";
 import path from "pathe";
 // import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
-import type { TarLocalFile } from "untar.js";
-import { untar } from "untar.js";
 
 const fileProtocol = "file://";
 
@@ -261,7 +260,7 @@ export function decompress(fileContent: Uint8Array): Uint8Array {
 export async function extractTarball(
 	fileContent: Uint8Array,
 	destination?: string,
-): Promise<TarLocalFile[]> {
+): Promise<ParsedTarFileItem[]> {
 	const fileType = await fileTypeFromBuffer(fileContent);
 	if (fileType?.ext !== "tar") {
 		if (fileType === undefined) {
@@ -271,7 +270,7 @@ export async function extractTarball(
 			throw new Error(`Unsupported filetype: ${fileType.ext}.`);
 		}
 	}
-	const data = untar(fileContent);
+	const tarFiles = parseTar(fileContent);
 
 	if (destination !== undefined) {
 		const stats = await stat(destination);
@@ -282,12 +281,15 @@ export async function extractTarball(
 		}
 
 		const filesP: Promise<void>[] = [];
-		for (const tarfile of data) {
+		for (const tarfile of tarFiles) {
+			if (tarfile.data === undefined) {
+				throw new Error("Data undefined in tarfile.");
+			}
 			const outPath = path.join(destination, tarfile.name);
 			await mkdir(path.dirname(outPath), { recursive: true });
-			filesP.push(writeFile(outPath, tarfile.fileData));
+			filesP.push(writeFile(outPath, tarfile.data));
 		}
 		await Promise.all(filesP);
 	}
-	return data;
+	return tarFiles;
 }
