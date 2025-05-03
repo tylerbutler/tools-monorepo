@@ -326,6 +326,9 @@ export async function writeZipFiles(
 
 	const filesP: Promise<void>[] = [];
 	for (const [zipFilePath, data] of Object.entries(zipFiles)) {
+		if(data.length===0) {
+			continue;
+		}
 		const outPath = path.join(destination, zipFilePath);
 		await mkdir(path.dirname(outPath), { recursive: true });
 		filesP.push(writeFile(outPath, data));

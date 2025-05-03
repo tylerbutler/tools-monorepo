@@ -159,23 +159,12 @@ describe("with local server", () => {
 			);
 		});
 
-		it("zip file, no extract (default)", async () => {
-			const { data } = await download(testUrls[4], { noFile: true });
-			expect(data).toMatchSnapshot();
-		});
-
-		// it("zip file, with extract", async () => {
-		// 	const downloadDir = path.join(testDataPath, "_temp");
-		// 	await mkdir(downloadDir, { recursive: true });
-		// 	await expect(async () => {
-		// 		await download(testUrls[4], {
-		// 			downloadDir,
-		// 			extract: true,
-		// 		});
-		// 	}).rejects.toThrow("Can't decompress files of type");
-		// });
-
 		describe("zip file", () => {
+			it("no extract (default)", async () => {
+				const { data } = await download(testUrls[4], { noFile: true });
+				expect(data).toMatchSnapshot();
+			});
+
 			it("with extract", async () => {
 				await withDir(
 					async ({ path: downloadDir }) => {
@@ -185,25 +174,20 @@ describe("with local server", () => {
 						});
 						expect(data).toMatchSnapshot();
 
-						// const files = await readdir(downloadDir, { recursive: true });
-						// expect(files).toMatchSnapshot();
-						// expect(files).toEqual([
-						// 	"test",
-						// 	"test/data",
-						// 	"test/data/test1.json",
-						// 	"test/data/test2.json",
-						// ]);
+						const files = await readdir(downloadDir, { recursive: true });
+						expect(files).toMatchSnapshot();
+						expect(files).toEqual([
+							"test",
+							"test/data",
+							"test/data/test1.json",
+							"test/data/test2.json",
+						]);
 					},
 					{
 						// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
 						unsafeCleanup: true,
 					},
 				);
-			});
-
-			it("no extract (default)", async () => {
-				const { data } = await download(testUrls[4], { noFile: true });
-				expect(data).toMatchSnapshot();
 			});
 		});
 	});
