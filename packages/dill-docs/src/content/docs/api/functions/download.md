@@ -7,7 +7,7 @@ title: "download"
 
 > **download**(`url`, `options?`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`DownloadResponse`](/api/interfaces/downloadresponse/)\>
 
-Defined in: [api.ts:112](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L112)
+Defined in: [api.ts:111](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L111)
 
 Downloads a file from a URL.
 
