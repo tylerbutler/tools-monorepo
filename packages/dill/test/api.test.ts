@@ -129,6 +129,25 @@ describe("with local server", () => {
 			);
 		});
 
+		it("compressed single JSON file, with extract", async () => {
+			await withDir(
+				async ({ path: downloadDir }) => {
+					const { data } = await download(testUrls[5], {
+						downloadDir,
+						extract: true,
+					});
+					expect(data).toMatchSnapshot();
+
+					const files = await readdir(downloadDir, { recursive: true });
+					expect(files).toMatchSnapshot();
+				},
+				{
+					// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+					unsafeCleanup: true,
+				},
+			);
+		});
+
 		it("compressed tarball, no extract (default)", async () => {
 			const { data } = await download(testUrls[2], { noFile: true });
 			expect(data).toMatchSnapshot();

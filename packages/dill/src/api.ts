@@ -165,13 +165,27 @@ export const download = async (
 	}
 
 	// Extraction requested, so file needs to be decompressed.
-	if (extension === "zip") {
+	if (extension === "gz") {
+		// File is gzip, so decompress and check if the resulting file is a tar archive
+		const decompressed = decompress(file);
+		const fileType = await fileTypeFromBuffer(decompressed);
+		if (fileType?.ext === "tar") {
+			const files = await decompressTarball(file);
+			await writeTarFiles(files, downloadDir);
+		} else {
+			await checkDestination(downloadDir);
+			const extension = path.extname(filename);
+			const outputPath = path.join(
+				downloadDir,
+				filename.slice(0, -extension.length),
+			);
+			await writeUint8ArrayToFile(decompressed, outputPath);
+		}
+	} else if (extension === "zip") {
 		const files = await decompressZip(file);
 		await writeZipFiles(files, downloadDir);
-	} else {
-		const files = await decompressTarball(file);
-		await writeTarFiles(files, downloadDir);
 	}
+
 	return { data: file, writtenTo: downloadDir };
 };
 
@@ -259,7 +273,7 @@ function decompress(fileContent: Uint8Array): Uint8Array {
 }
 
 /**
- * Extracts files from a compressed tarball.
+ * Extracts files from a compressed or uncompressed tarball.
  *
  * @param compressed - The contents of the tarball as a Uint8Array. The contents is assumed to not be compressed.
  * @returns Metadata about the tarball contents, including the file contents itself.
@@ -268,9 +282,6 @@ export async function decompressTarball(
 	compressed: Uint8Array,
 ): Promise<ParsedTarFileItem[]> {
 	const compressedFileType = await fileTypeFromBuffer(compressed);
-	// if(compressedFileType?.ext !== "gz") {
-
-	// }
 	const decompressed =
 		compressedFileType?.ext === "gz" ? decompress(compressed) : compressed;
 	const fileType = await fileTypeFromBuffer(decompressed);
@@ -326,7 +337,7 @@ export async function writeZipFiles(
 
 	const filesP: Promise<void>[] = [];
 	for (const [zipFilePath, data] of Object.entries(zipFiles)) {
-		if(data.length===0) {
+		if (data.length === 0) {
 			continue;
 		}
 		const outPath = path.join(destination, zipFilePath);
