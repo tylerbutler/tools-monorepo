@@ -1,4 +1,4 @@
-import { mkdir, readdir } from "node:fs/promises";
+import { readdir } from "node:fs/promises";
 import http from "node:http";
 import path from "pathe";
 import handler from "serve-handler";
@@ -8,14 +8,8 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
-import {
-	decompressTarball,
-	decompressZip,
-	download,
-	fetchFile,
-	writeTarFiles,
-	writeZipFiles,
-} from "../src/api.js";
+import { decompressTarball, writeTarFiles, fetchFile } from "../src/api.js";
+import { download } from "../src/index.js";
 import { getTestUrls, testDataPath } from "./common.js";
 
 const testUrls = getTestUrls(8080);
