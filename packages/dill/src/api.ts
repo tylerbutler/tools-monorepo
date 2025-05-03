@@ -5,7 +5,6 @@ import { fileTypeFromBuffer } from "file-type";
 import mime from "mime";
 import { type ParsedTarFileItem, parseTar } from "nanotar";
 import path from "pathe";
-// import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
 
 const fileProtocol = "file://";
