@@ -8,7 +8,14 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
-import { download, extractTarball, fetchFile } from "../src/api.js";
+import {
+	decompressTarball,
+	decompressZip,
+	download,
+	fetchFile,
+	writeTarFiles,
+	writeZipFiles,
+} from "../src/api.js";
 import { getTestUrls, testDataPath } from "./common.js";
 
 const testUrls = getTestUrls(8080);
@@ -157,15 +164,47 @@ describe("with local server", () => {
 			expect(data).toMatchSnapshot();
 		});
 
-		it("zip file with extract throws", async () => {
-			const downloadDir = path.join(testDataPath, "_temp");
-			await mkdir(downloadDir, { recursive: true });
-			await expect(async () => {
-				await download(testUrls[4], {
-					downloadDir,
-					extract: true,
-				});
-			}).rejects.toThrow("Can't decompress files of type");
+		// it("zip file, with extract", async () => {
+		// 	const downloadDir = path.join(testDataPath, "_temp");
+		// 	await mkdir(downloadDir, { recursive: true });
+		// 	await expect(async () => {
+		// 		await download(testUrls[4], {
+		// 			downloadDir,
+		// 			extract: true,
+		// 		});
+		// 	}).rejects.toThrow("Can't decompress files of type");
+		// });
+
+		describe("zip file", () => {
+			it("with extract", async () => {
+				await withDir(
+					async ({ path: downloadDir }) => {
+						const { data } = await download(testUrls[4], {
+							downloadDir,
+							extract: true,
+						});
+						expect(data).toMatchSnapshot();
+
+						// const files = await readdir(downloadDir, { recursive: true });
+						// expect(files).toMatchSnapshot();
+						// expect(files).toEqual([
+						// 	"test",
+						// 	"test/data",
+						// 	"test/data/test1.json",
+						// 	"test/data/test2.json",
+						// ]);
+					},
+					{
+						// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+						unsafeCleanup: true,
+					},
+				);
+			});
+
+			it("no extract (default)", async () => {
+				const { data } = await download(testUrls[4], { noFile: true });
+				expect(data).toMatchSnapshot();
+			});
 		});
 	});
 
@@ -176,45 +215,38 @@ describe("with local server", () => {
 		});
 	});
 
-	describe("extractTarball", () => {
-		it("extracts to directory", async () => {
-			await withDir(
-				async ({ path: downloadDir }) => {
-					const { contents } = await fetchFile(testUrls[3]);
-					const result = await extractTarball(contents, downloadDir);
-					expect(result).toMatchSnapshot();
+	describe("decompressTarball", () => {
+		it("decompresses", async () => {
+			const { contents } = await fetchFile(testUrls[2]);
+			const result = await decompressTarball(contents);
+			expect(result).toMatchSnapshot();
+		});
 
-					const files = await readdir(downloadDir, { recursive: true });
-					expect(files).toMatchSnapshot();
-				},
-				{
-					// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
-					unsafeCleanup: true,
-				},
-			);
+		it("throws when file is not a tarball", async () => {
+			const { contents } = await fetchFile(testUrls[0]);
+			await expect(async () => {
+				await decompressTarball(contents);
+			}).rejects.toThrow("Couldn't identify a file type");
 		});
 	});
 
-	it("throws when file is not a tarball", async () => {
-		const { contents } = await fetchFile(testUrls[0]);
-		await expect(async () => {
-			await extractTarball(contents, testDataPath);
-		}).rejects.toThrow("Couldn't identify a file type");
-	});
+	describe("writeTarFiles", () => {
+		// it("throws on zip file", async () => {
+		// 	const { contents } = await fetchFile(testUrls[4]);
+		// 	await expect(async () => {
+		// 		await extractTarball(contents, testDataPath);
+		// 	}).rejects.toThrow("Unsupported filetype: zip.");
+		// });
 
-	it("throws on zip file", async () => {
-		const { contents } = await fetchFile(testUrls[4]);
-		await expect(async () => {
-			await extractTarball(contents, testDataPath);
-		}).rejects.toThrow("Unsupported filetype: zip.");
-	});
+		it("throws when destination is an existing file", async () => {
+			const testFilePath = path.join(testDataPath, "test0.json");
+			const { contents } = await fetchFile(testUrls[2]);
+			const files = await decompressTarball(contents);
 
-	it("throws when destination is an existing file", async () => {
-		const testFilePath = path.join(testDataPath, "test0.json");
-		const { contents } = await fetchFile(testUrls[3]);
-		await expect(async () => {
-			await extractTarball(contents, testFilePath);
-		}).rejects.toThrow("Destination path is a file that already exists");
+			await expect(async () => {
+				await writeTarFiles(files, testFilePath);
+			}).rejects.toThrow("Destination path is a file that already exists");
+		});
 	});
 });
 

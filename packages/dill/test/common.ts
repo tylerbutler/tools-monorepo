@@ -16,4 +16,6 @@ export const getTestUrls = (port: number) =>
 		`http://localhost:${port}/tarball2.tar.gz`,
 		`http://localhost:${port}/tarball3.tar`,
 		`http://localhost:${port}/test4.zip`,
+		`http://localhost:${port}/test5.zlib`,
+		`http://localhost:${port}/test6.deflate`,
 	].map((s) => new URL(s));

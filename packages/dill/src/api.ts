@@ -1,11 +1,10 @@
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
-import { Decompress } from "fflate";
+import { Decompress, type Unzipped, unzipSync } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
 import mime from "mime";
 import { type ParsedTarFileItem, parseTar } from "nanotar";
 import path from "pathe";
-// import fetch from "node-fetch-native";
 import type { SetOptional } from "type-fest";
 
 const fileProtocol = "file://";
@@ -13,13 +12,13 @@ const fileProtocol = "file://";
 export const KNOWN_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
 	"tar",
 	"gz",
+	"zip",
 ]);
 
 export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
 	"7z",
 	"bz2",
 	"rar",
-	"zip",
 	"xz",
 ]);
 
@@ -155,20 +154,25 @@ export const download = async (
 		throw new Error(`Can't decompress files of type: ${extension}`);
 	}
 
-	const decompressed =
-		extract && KNOWN_ARCHIVE_EXTENSIONS.has(extension)
-			? decompress(file)
-			: file;
-
-	let writtenTo: string | undefined;
-	if (extract) {
-		writtenTo = noFile ? undefined : downloadDir;
-		await extractTarball(decompressed, writtenTo);
-	} else if (!noFile) {
-		writtenTo = path.join(downloadDir, filename);
-		await writeFile(writtenTo, decompressed);
+	if (!extract) {
+		// we're not extracting, so just save the bytes
+		const outputPath = path.join(downloadDir, filename);
+		if (noFile) {
+			return { data: file, writtenTo: undefined };
+		}
+		await writeUint8ArrayToFile(file, outputPath);
+		return { data: file, writtenTo: outputPath };
 	}
-	return { data: decompressed, writtenTo };
+
+	// Extraction requested, so file needs to be decompressed.
+	if (extension === "zip") {
+		const files = await decompressZip(file);
+		await writeZipFiles(files, downloadDir);
+	} else {
+		const files = await decompressTarball(file);
+		await writeTarFiles(files, downloadDir);
+	}
+	return { data: file, writtenTo: downloadDir };
 };
 
 async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
@@ -234,7 +238,12 @@ export async function fetchFile(
 	return { contents, response };
 }
 
-export function decompress(fileContent: Uint8Array): Uint8Array {
+/**
+ * @privateRemarks
+ *
+ * Decompress does not seem to work with zip streams. Need to investigate.
+ */
+function decompress(fileContent: Uint8Array): Uint8Array {
 	let decompressed: Uint8Array | undefined;
 
 	// biome-ignore lint/suspicious/noAssignInExpressions: TODO verify why this is OK
@@ -250,19 +259,90 @@ export function decompress(fileContent: Uint8Array): Uint8Array {
 }
 
 /**
- * Extracts files from a tarball.
+ * Extracts files from a compressed tarball.
  *
- * @param fileContent - The contents of the tarball as a Uint8Array. The contents is assumed to not be compressed.
- * @param destination - If provided, the contents of the tarball will be extracted to this directory. If this path does
- * not exist an exception will be thrown.
+ * @param compressed - The contents of the tarball as a Uint8Array. The contents is assumed to not be compressed.
  * @returns Metadata about the tarball contents, including the file contents itself.
  */
-export async function extractTarball(
-	fileContent: Uint8Array,
-	destination?: string,
+export async function decompressTarball(
+	compressed: Uint8Array,
 ): Promise<ParsedTarFileItem[]> {
-	const fileType = await fileTypeFromBuffer(fileContent);
-	if (fileType?.ext !== "tar") {
+	const compressedFileType = await fileTypeFromBuffer(compressed);
+	// if(compressedFileType?.ext !== "gz") {
+
+	// }
+	const decompressed =
+		compressedFileType?.ext === "gz" ? decompress(compressed) : compressed;
+	const fileType = await fileTypeFromBuffer(decompressed);
+
+	if (fileType === undefined) {
+		throw new Error("Couldn't identify a file type.");
+	}
+
+	if (
+		fileType?.ext !== "tar" &&
+		UNSUPPORTED_ARCHIVE_EXTENSIONS.has(fileType.ext)
+	) {
+		throw new Error(`Unsupported filetype: ${fileType.ext}.`);
+	}
+
+	const tarFiles = parseTar(decompressed);
+	return tarFiles;
+}
+
+/**
+ *
+ * @param destination - The contents of the tarball will be extracted to this directory. If this path does
+ * not exist an exception will be thrown.
+ */
+export async function writeTarFiles(
+	tarFiles: ParsedTarFileItem[],
+	destination: string,
+): Promise<void> {
+	await checkDestination(destination);
+
+	const filesP: Promise<void>[] = [];
+	for (const tarfile of tarFiles) {
+		if (tarfile.data === undefined) {
+			throw new Error("Data undefined in tarfile.");
+		}
+		const outPath = path.join(destination, tarfile.name);
+		await mkdir(path.dirname(outPath), { recursive: true });
+		filesP.push(writeFile(outPath, tarfile.data));
+	}
+	await Promise.all(filesP);
+}
+
+/**
+ *
+ * @param destination - The contents of the tarball will be extracted to this directory. If this path does
+ * not exist an exception will be thrown.
+ */
+export async function writeZipFiles(
+	zipFiles: Unzipped,
+	destination: string,
+): Promise<void> {
+	await checkDestination(destination);
+
+	const filesP: Promise<void>[] = [];
+	for (const [zipFilePath, data] of Object.entries(zipFiles)) {
+		const outPath = path.join(destination, zipFilePath);
+		await mkdir(path.dirname(outPath), { recursive: true });
+		filesP.push(writeFile(outPath, data));
+	}
+	await Promise.all(filesP);
+}
+
+/**
+ * Extracts files from a compressed zip file.
+ *
+ * @param compressed - The contents of the tarball as a Uint8Array. The contents is assumed to not be compressed.
+ * @returns Metadata about the tarball contents, including the file contents itself.
+ */
+export async function decompressZip(compressed: Uint8Array): Promise<Unzipped> {
+	const fileType = await fileTypeFromBuffer(compressed);
+
+	if (fileType?.ext !== "zip") {
 		if (fileType === undefined) {
 			throw new Error("Couldn't identify a file type.");
 		}
@@ -270,26 +350,25 @@ export async function extractTarball(
 			throw new Error(`Unsupported filetype: ${fileType.ext}.`);
 		}
 	}
-	const tarFiles = parseTar(fileContent);
 
-	if (destination !== undefined) {
-		const stats = await stat(destination);
-		if (stats.isFile()) {
-			throw new Error(
-				`Destination path is a file that already exists: ${destination}`,
-			);
-		}
+	const zipFiles = unzipSync(compressed);
+	return zipFiles;
+}
 
-		const filesP: Promise<void>[] = [];
-		for (const tarfile of tarFiles) {
-			if (tarfile.data === undefined) {
-				throw new Error("Data undefined in tarfile.");
-			}
-			const outPath = path.join(destination, tarfile.name);
-			await mkdir(path.dirname(outPath), { recursive: true });
-			filesP.push(writeFile(outPath, tarfile.data));
-		}
-		await Promise.all(filesP);
+export async function checkDestination(destination: string): Promise<boolean> {
+	const stats = await stat(destination);
+	if (stats.isFile()) {
+		throw new Error(
+			`Destination path is a file that already exists: ${destination}`,
+		);
 	}
-	return tarFiles;
+	return true;
+}
+
+async function writeUint8ArrayToFile(
+	stream: Uint8Array,
+	path: string,
+): Promise<string> {
+	await writeFile(path, stream);
+	return path;
 }
