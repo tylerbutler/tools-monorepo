@@ -1,27 +1,22 @@
+import type { SchemaToInterface } from "$lib/types.js";
 import { SchemaFactory, Tree } from "fluid-framework";
 
 export const sf = new SchemaFactory("AppSchema");
 
-const ExampleSchema = sf.object("SchemaKey", {
+const ExampleTreeLeaf = sf.object("LeafKey", {
 	__num: sf.number,
 	__string: sf.string,
 });
 
-const foo = new ExampleSchema({
-	__num: 0,
-	__string: "str",
+const ExampleTree = sf.object("TreeKey", {
+	__leaf: ExampleTreeLeaf,
 });
 
-type RemovePrefix<T extends string> = T extends `__${infer U}` ? U : T;
-type SchemaToInterface<T> = {
-	[K in keyof T as K extends `__${string}`
-		? RemovePrefix<K & string>
-		: never]: T[K];
-};
+export type LeafData = SchemaToInterface<InstanceType<typeof ExampleTreeLeaf>>;
 
-export type MyData = SchemaToInterface<InstanceType<typeof ExampleSchema>>;
+export type TreeData = SchemaToInterface<InstanceType<typeof ExampleTree>>;
 
-export class MyDataClass extends ExampleSchema implements MyData {
+export class LeafDataClass extends ExampleTreeLeaf implements LeafData {
 	#num = $state(this.__num);
 	#string = $state(this.__string);
 
@@ -49,7 +44,7 @@ export class MyDataClass extends ExampleSchema implements MyData {
 	})();
 }
 
-const instance = new MyDataClass({
+const instance = new LeafDataClass({
 	__num: 0,
 	__string: "str",
 });

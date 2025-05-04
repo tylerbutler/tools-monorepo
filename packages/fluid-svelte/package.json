@@ -56,8 +56,8 @@
 		"update:test-snapshots": "vitest run test -u"
 	},
 	"dependencies": {
-		"@fluidframework/presence": "^2.33.0-0",
-		"fluid-framework": "^2.33.0-0",
+		"@fluidframework/presence": "^2.33.2",
+		"fluid-framework": "^2.33.2",
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
