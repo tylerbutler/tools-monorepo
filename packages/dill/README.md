@@ -5,9 +5,8 @@
 **dill** is a CLI app to download gzipped files and optionally decompress their contents. It also provides a simple programmatic
 API.
 
-Implementation-wise, dill uses the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) via
-[node-fetch-native](https://github.com/unjs/node-fetch-native) to download files, which means it is reasonably
-cross-platform and will use native Fetch implementations where available.
+Implementation-wise, dill uses the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) to download
+files, which means it should be usable anywhere the Fetch API is available.
 
 <!-- toc -->
 * [dill - download and decompress gzipped tar files with a CLI and API](#dill---download-and-decompress-gzipped-tar-files-with-a-cli-and-api)
