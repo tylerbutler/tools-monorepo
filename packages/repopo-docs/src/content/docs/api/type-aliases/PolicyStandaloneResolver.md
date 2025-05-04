@@ -7,7 +7,7 @@ title: "PolicyStandaloneResolver"
 
 > **PolicyStandaloneResolver**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
 
-Defined in: [policy.ts:70](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L70)
+Defined in: [policy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L63)
 
 A standalone function that can be called to resolve a policy failure.
 
@@ -19,7 +19,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### C
 
-`C` = [`DefaultPolicyConfigType`](/api/type-aliases/defaultpolicyconfigtype/) \| `undefined`
+`C` = `undefined`
 
 ## Parameters
 

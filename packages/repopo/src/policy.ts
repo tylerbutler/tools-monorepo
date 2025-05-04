@@ -1,14 +1,7 @@
-import { HtmlFileHeaders } from "./policies.js";
-import { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
-import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
+import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 import { PackageScripts } from "./policies/PackageScripts.js";
-
-/**
- * @alpha
- */
-export type DefaultPolicyConfigType = object | unknown;
 
 /**
  * A type representing a policy name.
@@ -55,27 +48,26 @@ export interface PolicyFunctionArguments<C> {
 
 export type PolicyHandler<C = unknown | undefined> = (
 	args: PolicyFunctionArguments<C>,
-) => Promise<true | PolicyFailure | PolicyFixResult>;
+) => Promise<PolicyHandlerResult>;
 
 // export type PolicyCheckOnly = (
 // 	file: string,
 // 	root: string,
-// ) => Promise<true | PolicyFailure | PolicyFixResult>;
+// ) => Promise<PolicyHandlerResult>;
 
 /**
  * A standalone function that can be called to resolve a policy failure.
  *
  * @alpha
  */
-export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
-	(
-		args: Omit<PolicyFunctionArguments<C>, "resolve">,
-	) => Promise<PolicyFixResult>;
+export type PolicyStandaloneResolver<C = undefined> = (
+	args: Omit<PolicyFunctionArguments<C>, "resolve">,
+) => Promise<PolicyFixResult>;
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
 /**
- * A RepoPolicy checks and applies policies to files in the repository.
+ * A RepoPolicyDefinition checks and applies policies to files in the repository.
  *
  * Each policy has a name and a match regex for matching which files it should apply to. Every file in th repo is
  * enumerated and if it matches the regex for a policy, that policy is applied.
@@ -87,9 +79,7 @@ export type PolicyStandaloneResolver<C = DefaultPolicyConfigType | undefined> =
  *
  * @alpha
  */
-export interface RepoPolicy<
-	C extends DefaultPolicyConfigType = unknown | undefined,
-> {
+export interface PolicyDefinition<C = undefined> {
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -98,7 +88,7 @@ export interface RepoPolicy<
 	/**
 	 * A more detailed description of the policy and its intended function.
 	 */
-	description?: string;
+	description?: string | undefined;
 
 	/**
 	 * A regular expression that is used to match files in the repo.
@@ -124,17 +114,36 @@ export interface RepoPolicy<
 	 * @returns true if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
 	resolver?: PolicyStandaloneResolver<C> | undefined;
+
+	/**
+	 * A default config that will be used if none is provided.
+	 */
+	defaultConfig?: C | undefined;
 }
 
 /**
- * A policy handler especially for policies that target package.json.
- *
  * @alpha
  */
-export type PackageJsonHandler<J, C> = (
-	json: J,
-	args: PolicyFunctionArguments<C>,
-) => Promise<true | PolicyFailure | PolicyFixResult>;
+export interface PolicyInstanceSettings<C> {
+	/**
+	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
+	 * from policy.
+	 *
+	 * Paths will be matched relative to the root of the repo.
+	 */
+	excludeFiles?: (string | RegExp)[];
+
+	/**
+	 * The config that is applied to the policy instance.
+	 */
+	config?: C | undefined;
+}
+
+/**
+ * @alpha
+ */
+export type PolicyInstance<C = undefined> = PolicyDefinition<C> &
+	PolicyInstanceSettings<C>;
 
 /**
  * A policy failure.
@@ -175,6 +184,11 @@ export interface PolicyFixResult extends PolicyFailure {
 	resolved: boolean;
 }
 
+/**
+ * @alpha
+ */
+export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
+
 // biome-ignore lint/suspicious/noExplicitAny: type guard
 export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
 	if (typeof toCheck !== "object") {
@@ -190,12 +204,20 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: FIXME
-export const DefaultPolicies: RepoPolicy<any>[] = [
-	HtmlFileHeaders,
-	JsTsFileHeaders,
+export const DefaultPolicies: PolicyDefinition<any>[] = [
 	NoJsFileExtensions,
 	PackageJsonRepoDirectoryProperty,
-	PackageJsonProperties,
-	// PackageJsonSorted,
+	PackageJsonSorted,
 	PackageScripts,
 ] as const;
+
+export abstract class Policy<C> implements PolicyDefinition<C> {
+	public constructor(
+		public readonly name: string,
+		public readonly match: RegExp,
+		public readonly handler: PolicyHandler<C>,
+		public readonly description?: string,
+		public readonly defaultConfig?: C,
+		public readonly resolver?: PolicyStandaloneResolver<C>,
+	) {}
+}

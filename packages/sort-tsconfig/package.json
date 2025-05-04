@@ -74,7 +74,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/sort-tsconfig/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.2.10",
+		"@oclif/core": "^4.3.0",
 		"@oclif/plugin-help": "^6.2.27",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
@@ -86,26 +86,26 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-extractor": "^7.52.4",
+		"@microsoft/api-extractor": "^7.52.7",
 		"@oclif/plugin-command-snapshot": "^5.2.38",
 		"@oclif/test": "^4.1.12",
 		"@types/node": "^20.12.7",
 		"@types/tmp": "^0.2.6",
-		"@vitest/coverage-v8": "^3.1.1",
+		"@vitest/coverage-v8": "^3.1.2",
 		"generate-license-file": "^4.0.0",
 		"memfs": "^4.17.0",
-		"oclif": "^4.17.45",
+		"oclif": "^4.17.46",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "*",
 		"start-server-and-test": "^2.0.11",
 		"tmp-promise": "^3.0.3",
-		"tsx": "^4.19.3",
-		"type-fest": "^4.40.0",
+		"tsx": "^4.19.4",
+		"type-fest": "^4.40.1",
 		"typescript": "~5.5.4",
-		"vitest": "^3.1.1"
+		"vitest": "^3.1.2"
 	},
 	"peerDependencies": {
-		"repopo": "workspace:^0.5.0"
+		"repopo": ">=0.5.0"
 	},
 	"peerDependenciesMeta": {
 		"repopo": {
