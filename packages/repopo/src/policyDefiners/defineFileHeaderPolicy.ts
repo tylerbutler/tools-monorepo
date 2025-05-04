@@ -1,10 +1,17 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { EOL as newline } from "node:os";
 import { extname } from "pathe";
-import type { PolicyFailure, PolicyFixResult, RepoPolicy } from "../policy.js";
+import type {
+	PolicyDefinition,
+	PolicyFailure,
+	PolicyFixResult,
+} from "../policy.js";
 
 const trailingSpaces = /\s*\\r\?\\n/;
 
+/**
+ * @alpha
+ */
 export interface FileHeaderPolicyConfig {
 	/**
 	 * The text to use as the header.
@@ -17,12 +24,15 @@ export interface FileHeaderPolicyConfig {
 	autoGenText?: string;
 }
 
+/**
+ * @alpha
+ */
 export interface FileHeaderGeneratorConfig
 	extends Partial<FileHeaderPolicyConfig> {
 	match: RegExp;
 
 	/**
-	 * Regex matching header prefix (e.g. '/*!\r?\n')
+	 * Regex matching header prefix (e.g. `/*!\r?\n`)
 	 */
 	headerStart?: RegExp;
 
@@ -32,7 +42,7 @@ export interface FileHeaderGeneratorConfig
 	lineStart: RegExp;
 
 	/**
-	 * Regex matching the end of each line (e.g., '\r?\n')
+	 * Regex matching the end of each line (e.g., `\r?\n`)
 	 */
 	lineEnd: RegExp;
 
@@ -45,13 +55,15 @@ export interface FileHeaderGeneratorConfig
 }
 
 /**
- * Given aFileHeaderConfig produces a function that detects correct file headers
+ * Given a {@link FileHeaderPolicyConfig}, produces a function that detects correct file headers
  * and returns an error string if the header is missing or incorrect.
+ *
+ * @alpha
  */
-export function generateFileHeaderPolicy(
+export function defineFileHeaderPolicy(
 	name: string,
 	config: FileHeaderGeneratorConfig,
-): RepoPolicy<FileHeaderPolicyConfig> {
+): PolicyDefinition<FileHeaderPolicyConfig> {
 	const pre = config.headerStart?.source ?? "";
 	const start = config.lineStart.source;
 	const end = config.lineEnd.source;

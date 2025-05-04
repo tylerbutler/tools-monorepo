@@ -95,7 +95,7 @@ Defined in: [comic.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/mai
 
 ##### comic
 
-> **comic**: [`Comic`](README.md#comic)
+> **comic**: [`Comic`](#comic)
 
 Defined in: [comic.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L24)
 
@@ -115,7 +115,7 @@ Defined in: [comic.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/mai
 
 ### getComicProps()
 
-> **getComicProps**(`comicId`?): `Promise`\<[`ComicFrameProps`](README.md#comicframeprops)\>
+> **getComicProps**(`comicId?`): `Promise`\<[`ComicFrameProps`](#comicframeprops)\>
 
 Defined in: [comic.ts:42](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L42)
 
@@ -129,7 +129,7 @@ The ID of the comic to retrieve. If this is not provided, the most recent comic 
 
 #### Returns
 
-`Promise`\<[`ComicFrameProps`](README.md#comicframeprops)\>
+`Promise`\<[`ComicFrameProps`](#comicframeprops)\>
 
 The comic metadata.
 

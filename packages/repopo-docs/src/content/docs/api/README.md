@@ -9,22 +9,26 @@ title: "repopo"
 
 ## Interfaces
 
-- [PackageJsonPropertiesSettings](/api/interfaces/packagejsonpropertiessettings/)
+- [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
+- [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
+- [PolicyDefinition](/api/interfaces/policydefinition/)
 - [PolicyFailure](/api/interfaces/policyfailure/)
 - [PolicyFixResult](/api/interfaces/policyfixresult/)
 - [PolicyFunctionArguments](/api/interfaces/policyfunctionarguments/)
+- [PolicyInstanceSettings](/api/interfaces/policyinstancesettings/)
 - [RepopoConfig](/api/interfaces/repopoconfig/)
-- [RepoPolicy](/api/interfaces/repopolicy/)
 
 ## Type Aliases
 
-- [DefaultPolicyConfigType](/api/type-aliases/defaultpolicyconfigtype/)
-- [PackageJsonProperty](/api/type-aliases/packagejsonproperty/)
-- [PerPolicySettings](/api/type-aliases/perpolicysettings/)
+- [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
 - [PolicyHandler](/api/type-aliases/policyhandler/)
+- [PolicyHandlerResult](/api/type-aliases/policyhandlerresult/)
+- [PolicyInstance](/api/type-aliases/policyinstance/)
 - [PolicyName](/api/type-aliases/policyname/)
 - [PolicyStandaloneResolver](/api/type-aliases/policystandaloneresolver/)
 
-## Variables
+## Functions
 
-- [DefaultPolicies](/api/variables/defaultpolicies/)
+- [generateFileHeaderPolicy](/api/functions/generatefileheaderpolicy/)
+- [generatePackagePolicy](/api/functions/generatepackagepolicy/)
+- [makePolicy](/api/functions/makepolicy/)

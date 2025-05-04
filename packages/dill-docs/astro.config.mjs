@@ -44,7 +44,7 @@ export default defineConfig({
 					},
 					typeDoc: {
 						excludeExternals: true,
-						// outputFileStrategy: "modules",
+						// router: "module",
 						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill",
 						mergeReadme: true,
 						readme: "../dill/api-docs/README.md",
@@ -59,9 +59,13 @@ export default defineConfig({
 				}),
 				starlightLinksValidator(),
 			],
-			social: {
-				github: "https://github.com/tylerbutler/tools-monorepo/packages/dill",
-			},
+			social: [
+				{
+					icon: "github",
+					label: "GitHub",
+					href: "https://github.com/tylerbutler/tools-monorepo/packages/dill",
+				},
+			],
 			sidebar: [
 				{
 					label: "Start Here",

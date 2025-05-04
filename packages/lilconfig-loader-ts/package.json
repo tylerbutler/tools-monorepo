@@ -1,10 +1,14 @@
 {
 	"name": "@tylerbu/lilconfig-loader-ts",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "A loader that enables loading TypeScript files in lilconfig.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli-api#tylerbucli-api",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-	"repository": "tylerbutler/tylerbu-cli",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/lilconfig-loader-ts"
+	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
@@ -36,16 +40,16 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-documenter": "^7.26.17",
-		"@microsoft/api-extractor": "^7.52.1",
+		"@microsoft/api-documenter": "^7.26.26",
+		"@microsoft/api-extractor": "^7.52.7",
 		"@types/node": "^20.12.7",
 		"concurrently": "^9.1.2",
 		"generate-license-file": "^4.0.0",
 		"rimraf": "^6.0.1",
 		"tslib": "^2.8.1",
-		"type-fest": "^4.37.0",
+		"type-fest": "^4.40.1",
 		"typescript": "~5.5.4",
-		"vitest": "^3.0.9"
+		"vitest": "^3.1.2"
 	},
 	"peerDependencies": {
 		"lilconfig": "^3.1.3"

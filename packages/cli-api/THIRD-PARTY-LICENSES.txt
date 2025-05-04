@@ -119,7 +119,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @oclif/core@4.2.7
+ - @oclif/core@4.2.10
 
 This package contains the following license:
 

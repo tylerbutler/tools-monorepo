@@ -14,7 +14,7 @@ Defined in: [packages/fundamentals/src/writeOnceMap.ts:6](https://github.com/tyl
 
 **`Beta`**
 
-An error thrown when trying to update an element in a [WriteOnceMap](index.md#writeoncemapk-v) that has already been set.
+An error thrown when trying to update an element in a [WriteOnceMap](#writeoncemap) that has already been set.
 
 #### Extends
 
@@ -22,9 +22,9 @@ An error thrown when trying to update an element in a [WriteOnceMap](index.md#wr
 
 #### Constructors
 
-##### new KeyAlreadySet()
+##### Constructor
 
-> **new KeyAlreadySet**(`key`): [`KeyAlreadySet`](index.md#keyalreadyset)
+> **new KeyAlreadySet**(`key`): [`KeyAlreadySet`](#keyalreadyset)
 
 Defined in: [packages/fundamentals/src/writeOnceMap.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L12)
 
@@ -40,7 +40,7 @@ The Map key that was already set.
 
 ###### Returns
 
-[`KeyAlreadySet`](index.md#keyalreadyset)
+[`KeyAlreadySet`](#keyalreadyset)
 
 ###### Overrides
 
@@ -144,7 +144,7 @@ Defined in: node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/g
 
 ##### captureStackTrace()
 
-> `static` **captureStackTrace**(`targetObject`, `constructorOpt`?): `void`
+> `static` **captureStackTrace**(`targetObject`, `constructorOpt?`): `void`
 
 Defined in: node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/globals.d.ts:91
 
@@ -177,7 +177,7 @@ Defined in: [packages/fundamentals/src/writeOnceMap.ts:27](https://github.com/ty
 **`Beta`**
 
 A WriteOnceMap is a Map whose keys can only be written once. Once a key is set, subsequent attempts to update it will
-throw a [KeyAlreadySet](index.md#keyalreadyset) error unless the `force` parameter is used.
+throw a [KeyAlreadySet](#keyalreadyset) error unless the `force` parameter is used.
 
 #### Extends
 
@@ -185,19 +185,23 @@ throw a [KeyAlreadySet](index.md#keyalreadyset) error unless the `force` paramet
 
 #### Type Parameters
 
-• **K**
+##### K
+
+`K`
 
 type of the Map key.
 
-• **V**
+##### V
+
+`V`
 
 type of the Map value.
 
 #### Constructors
 
-##### new WriteOnceMap()
+##### Constructor
 
-> **new WriteOnceMap**\<`K`, `V`\>(`entries`?): [`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
+> **new WriteOnceMap**\<`K`, `V`\>(`entries?`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
 Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
 
@@ -211,15 +215,15 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ###### Returns
 
-[`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
+[`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
 ###### Inherited from
 
 `Map<K, V>.constructor`
 
-##### new WriteOnceMap()
+##### Constructor
 
-> **new WriteOnceMap**\<`K`, `V`\>(`iterable`?): [`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
+> **new WriteOnceMap**\<`K`, `V`\>(`iterable?`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
 Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
 
@@ -233,7 +237,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ###### Returns
 
-[`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
+[`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
 ###### Inherited from
 
@@ -357,7 +361,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ##### forEach()
 
-> **forEach**(`callbackfn`, `thisArg`?): `void`
+> **forEach**(`callbackfn`, `thisArg?`): `void`
 
 Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:28
 
@@ -447,7 +451,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ##### set()
 
-> **set**(`key`, `value`, `force`): [`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
+> **set**(`key`, `value`, `force`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
 Defined in: [packages/fundamentals/src/writeOnceMap.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L36)
 
@@ -475,7 +479,7 @@ Set to true to force a Map element to be updated whether it has previously been 
 
 ###### Returns
 
-[`WriteOnceMap`](index.md#writeoncemapk-v)\<`K`, `V`\>
+[`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
 ###### Overrides
 
@@ -503,9 +507,13 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 Re-exports [addAll](set.md#addall)
 
+***
+
 ### findGitRootSync
 
 Re-exports [findGitRootSync](git.md#findgitrootsync)
+
+***
 
 ### isSorted
 

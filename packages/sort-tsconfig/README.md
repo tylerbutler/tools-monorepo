@@ -5,15 +5,16 @@ sort-tsconfig is a CLI app to sort tsconfig files. It also provides a simple [pr
 <!-- toc -->
 * [sort-tsconfig - keep your tsconfigs clean and tidy](#sort-tsconfig---keep-your-tsconfigs-clean-and-tidy)
 * [Configuration](#configuration)
-* [Usage](#usage)
+* [CLI Usage](#cli-usage)
 * [API](#api)
+* [Repopo Policy](#repopo-policy)
 <!-- tocstop -->
 
 # Configuration
 
 TODO
 
-# Usage
+# CLI Usage
 
 <!-- commands -->
 * [`sort-tsconfig TSCONFIG`](#sort-tsconfig-tsconfig)
@@ -70,4 +71,10 @@ EXAMPLES
 
 See [sort-tsconfig.api.md][API].
 
+# Repopo Policy
+
+sort-tsconfig provides a policy for use with [repopo][].
+
 [API]: ./api-docs/sort-tsconfig.api.md
+[repopo]:
+    https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies

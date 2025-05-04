@@ -20,7 +20,9 @@ Adds all elements from an iterable collection to a specified set.
 
 #### Type Parameters
 
-• **T**
+##### T
+
+`T`
 
 The type of elements in the set and iterable collection.
 

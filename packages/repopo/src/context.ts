@@ -1,5 +1,5 @@
 import type { PolicyHandlerPerfStats } from "./perf.js";
-import type { PolicyName, RepoPolicy } from "./policy.js";
+import type { PolicyInstance, PolicyName } from "./policy.js";
 
 export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
 
@@ -10,12 +10,12 @@ export interface RepopoCommandContext {
 	/**
 	 * A list of regular expressions used to exclude files from all handlers.
 	 */
-	excludeFiles: RegExp[];
+	excludeFromAll: RegExp[];
 
 	/**
 	 * A list of handlers to apply to selected files.
 	 */
-	policies: RepoPolicy[];
+	policies: PolicyInstance[];
 
 	/**
 	 * A per-handler list of regular expressions used to exclude files from specific handlers.
@@ -28,7 +28,7 @@ export interface RepopoCommandContext {
 	gitRoot: string;
 
 	/**
-	 * Performance information for each handler.
+	 * Stores performance data for each handler. Used to collect and display performance stats.
 	 */
 	perfStats: PolicyHandlerPerfStats;
 }

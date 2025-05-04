@@ -24,7 +24,7 @@
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
 		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "pnpm -r run --aggregate-output test:coverage",
-		"ci:version": "pnpm run generate:license-file && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
+		"ci:version": "pnpm run release:license-file && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
 		"clean": "fluid-build . --task clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "fluid-build . --task compile",
@@ -35,12 +35,12 @@
 		"fix:policy": "./packages/repopo/bin/dev.js check --fix",
 		"format": "biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
-		"generate:license-file": "fluid-build . --task generate:license-file",
 		"generate:packlist": "flub generate packlist -g client --no-private",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
 		"prepare:disabled": "lefthook install",
-		"sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
+		"release:license-file": "fluid-build . --task release:license-file",
+		"sort-package-json": "sort-package-json package.json \"config/package.json\" \"packages/*/package.json\"",
 		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
 		"syncpack:fix": "pnpm syncpack fix-mismatches && pnpm syncpack set-semver-ranges",
 		"test": "fluid-build . --task test",
@@ -48,25 +48,26 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@changesets/cli": "^2.28.1",
-		"@fluid-tools/build-cli": "^0.55.0",
-		"@fluidframework/build-tools": "^0.55.0",
+		"@changesets/cli": "^2.29.2",
+		"@changesets/config": "^3.1.1",
+		"@fluid-tools/build-cli": "^0.56.0",
+		"@fluidframework/build-tools": "^0.56.0",
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
 		"changesets-changelog-clean": "^1.3.0",
 		"concurrently": "^9.1.2",
 		"generate-license-file": "^4.0.0",
-		"npm-check-updates": "^17.1.14",
-		"renovate": "^39.172.1",
+		"npm-check-updates": "^18.0.1",
+		"renovate": "^39",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.1",
-		"sort-package-json": "3.0.0",
+		"sort-package-json": "*",
 		"sort-tsconfig": "workspace:^",
-		"syncpack": "^13.0.3",
+		"syncpack": "^13.0.4",
 		"ts-node": "^10.9.2"
 	},
-	"packageManager": "pnpm@10.4.0+sha256.e57e8a544f7a84247cfa77dd6d923eae5199a373474e53eab1f540c796289386",
+	"packageManager": "pnpm@10.10.0",
 	"engines": {
 		"node": ">=18.0.0"
 	},
@@ -93,6 +94,10 @@
 			"ignoreDependencies": ["@types/node"]
 		},
 		"overrides": {
+			"@octokit/plugin-paginate-rest@>=1.0.0 <9.2.2": ">=9.2.2",
+			"@octokit/request@>=1.0.0 <8.4.1": ">=8.4.1",
+			"@octokit/request-error@>=1.0.0 <5.1.1": ">=5.1.1",
+			"esbuild@<=0.24.2": ">=0.25.0",
 			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
 			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
 		}
@@ -127,13 +132,13 @@
 				"dependsOn": ["check", "build", "lint", "docs", "test"],
 				"script": false
 			},
-			"generate:license-file": {
-				"dependsOn": ["^generate:license-file"],
-				"script": false
-			},
 			"generate:packlist": {
 				"dependsOn": ["^build"],
 				"script": true
+			},
+			"release:license-file": {
+				"dependsOn": ["^release:license-file"],
+				"script": false
 			},
 			"test": {
 				"dependsOn": ["^test"],

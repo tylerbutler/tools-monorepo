@@ -4,6 +4,7 @@
 
 ```ts
 
+import type { PolicyDefinition } from 'repopo';
 import { run } from '@oclif/core';
 
 // @beta
@@ -33,6 +34,9 @@ export interface SortTsconfigResult {
     alreadySorted: boolean;
     tsconfig: string;
 }
+
+// @alpha
+export const SortTsconfigsPolicy: PolicyDefinition;
 
 // @beta
 export class TsConfigSorter {

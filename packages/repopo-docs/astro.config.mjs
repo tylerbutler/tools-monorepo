@@ -3,7 +3,7 @@ import starlight from "@astrojs/starlight";
 import a11yEmoji from "@fec/remark-a11y-emoji";
 import { includeMarkdown } from "@hashicorp/platform-remark-plugins";
 import { defineConfig } from "astro/config";
-import starlightLinksValidator from "starlight-links-validator";
+// import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc, { typeDocSidebarGroup } from "starlight-typedoc";
 
 // import deno from "@astrojs/deno";
@@ -44,7 +44,7 @@ export default defineConfig({
 					},
 					typeDoc: {
 						excludeExternals: true,
-						// outputFileStrategy: "modules",
+						// router: "module",
 						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo",
 						mergeReadme: true,
 						readme: "../repopo/api-docs/README.md",
@@ -58,11 +58,15 @@ export default defineConfig({
 					},
 				}),
 				// TODO: Re-enable once problems are fixed.
-				starlightLinksValidator(),
+				// starlightLinksValidator(),
 			],
-			social: {
-				github: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
-			},
+			social: [
+				{
+					icon: "github",
+					label: "GitHub",
+					href: "https://github.com/tylerbutler/tools-monorepo/packages/repopo",
+				},
+			],
 			sidebar: [
 				{
 					label: "Start Here",

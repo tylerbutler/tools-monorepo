@@ -1,12 +1,14 @@
 import type { PolicyFailure } from "../policy.js";
-import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const expectedScripts = ["build", "clean"] as const;
 
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
+ *
+ * @alpha
  */
-export const PackageScripts = generatePackagePolicy(
+export const PackageScripts = definePackagePolicy(
 	"PackageScripts",
 	async (json, { file }) => {
 		const failResult: PolicyFailure = {

@@ -1,10 +1,14 @@
 {
 	"name": "@tylerbu/fundamentals",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Fundamental functions and classes that I often need in my projects. Zero dependencies.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-	"repository": "tylerbutler/tylerbu-cli",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/fundamentals"
+	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
@@ -52,18 +56,18 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-documenter": "^7.26.17",
-		"@microsoft/api-extractor": "^7.52.1",
+		"@microsoft/api-documenter": "^7.26.26",
+		"@microsoft/api-extractor": "^7.52.7",
 		"@types/node": "^20.12.7",
-		"@vitest/coverage-v8": "^3.0.9",
+		"@vitest/coverage-v8": "^3.1.2",
 		"concurrently": "^9.1.2",
 		"pathe": "^2.0.3",
 		"rimraf": "^6.0.1",
 		"tempy": "^3.1.0",
-		"typedoc": "^0.27.7",
-		"typedoc-plugin-markdown": "^4.4.2",
+		"typedoc": "^0.28.3",
+		"typedoc-plugin-markdown": "^4.6.3",
 		"typescript": "~5.5.4",
-		"vitest": "^3.0.9"
+		"vitest": "^3.1.2"
 	},
 	"engines": {
 		"node": ">=18.0.0"

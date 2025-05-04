@@ -3,13 +3,15 @@ import { updatePackageJsonFile } from "@fluid-tools/build-infrastructure";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
-import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
  * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository
  * field is a string instead of an object the package will be ignored.
+ *
+ * @alpha
  */
-export const PackageJsonRepoDirectoryProperty = generatePackagePolicy<
+export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 	PackageJson,
 	undefined
 >("PackageJsonRepoDirectoryProperty", async (json, { file, root, resolve }) => {

@@ -7,12 +7,13 @@ file in your git repo, with a straightforward way to write your own policies.
 * [repopo - police the files in your git repo with extensible policies](#repopo---police-the-files-in-your-git-repo-with-extensible-policies)
 * [Configuring policies](#configuring-policies)
 * [Included policies](#included-policies)
-* [Usage](#usage)
+* [Policy generators](#policy-generators)
+* [CLI Usage](#cli-usage)
 <!-- tocstop -->
 
 # Configuring policies
 
-Repopo and its policies can be configured in a repopo.config.ts (or .cjs, or .mjs) file in the root of the repo. Using a
+Repopo and its policies can be configured in a `repopo.config.ts` (or `.cjs`, or `.mjs`) file in the root of the repo. Using a
 TypeScript configuration file is recommended.
 
 The policy config must export a default object of the type `PolicyConfig`.
@@ -23,18 +24,24 @@ By default, all files in the repo are checked. You can exclude files completely 
 d `excludeFiles` setting. It should be an array of strings/regular expressions. Paths that match any of these
 expressions will be completely excluded from all policies.
 
-You can exclude files from individual policies as well. To do this, set the `excludePoliciesForFiles` setting. It should
-be an object with keys that match policy names. The value is an array of strings/regular expressions. Paths that match
-any of these expressions will be excluded from that policy only.
+You can exclude files from individual policies as well by configuring the `excludeFiles` setting when calling
+`makePolicy`.
 
 ## Configuring individual policies
 
-Individual policies can be configured using the `policySettings` setting. Use the policy name as the key, with the
-policy settings as the value.
+Individual policies can be configured by passing configuration settings to a `PolicyDefinition` in `makePolicy`.
 
 # Included policies
 
 repopo includes the following policies. All of the included policies are enabled by default.
+
+## HtmlFileHeaders and JsTsFileHeaders
+
+These policies set a common file header for JavaScript/TypeScript and HTML files.
+
+### Configuration
+
+TODO
 
 ## NoJsFileExtensions
 
@@ -61,6 +68,10 @@ const config: PolicyConfig = {
 				license: "MIT",
 				author: "Tyler Butler <tyler@tylerbutler.com>",
 				bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
+				repository: {
+					type: "git",
+					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
+				}
 			}
 		}
 	}
@@ -72,7 +83,17 @@ const config: PolicyConfig = {
 A RepoPolicy that checks that the `repository.directory` property in package.json is set correctly. If the repository
 field is a string instead of an object the package will be ignored.
 
-# Usage
+# Policy generators
+
+There are some filetypes that often have policies applied to them, like package.json. You can use the policy generator
+functions to generate policies for those filetypes. Using the generators is not required; they simply reduce the amount
+of boilerplate code you have to write for a policy.
+
+## generatePackagePolicy
+
+Use `generatePackagePolicy` to generate policies for package.json files.
+
+# CLI Usage
 
 <!-- commands -->
 * [`repopo check`](#repopo-check)

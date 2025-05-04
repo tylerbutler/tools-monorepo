@@ -1,12 +1,14 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
 import { sortPackageJson } from "sort-package-json";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
-import { generatePackagePolicy } from "../policyGenerators/generatePackagePolicy.js";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
  * A repo policy that checks if package.json files in the repo are sorted using sort-package-json.
+ *
+ * @alpha
  */
-export const PackageJsonSorted = generatePackagePolicy(
+export const PackageJsonSorted = definePackagePolicy(
 	"PackageJsonSorted",
 	async (json, { file, resolve }) => {
 		const sortedJson = sortPackageJson(json);

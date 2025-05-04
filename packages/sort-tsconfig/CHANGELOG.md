@@ -1,5 +1,32 @@
 # sort-tsconfig
 
+## 0.3.0
+
+### Minor Changes
+
+- New repopo policy _[`#213`](https://github.com/tylerbutler/tools-monorepo/pull/213) [`3fc530b`](https://github.com/tylerbutler/tools-monorepo/commit/3fc530bad66259339547b3d8ec12b9265daea9a5) [@tylerbutler](https://github.com/tylerbutler)_
+
+  sort-tsconfig now provides a policy that can be used with [repopo](https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies). This policy can be used to keep all tsconfig files
+  in your repo sorted.
+
+### Patch Changes
+
+- Update dependencies _[`#217`](https://github.com/tylerbutler/tools-monorepo/pull/217) [`dcec014`](https://github.com/tylerbutler/tools-monorepo/commit/dcec014dfb70e5804a7535b5b8b9a3406f3e623d) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`3fc530b`](https://github.com/tylerbutler/tools-monorepo/commit/3fc530bad66259339547b3d8ec12b9265daea9a5) [`c97a565`](https://github.com/tylerbutler/tools-monorepo/commit/c97a56518d9726667531aa71de9445fed8d56b96) [`1108950`](https://github.com/tylerbutler/tools-monorepo/commit/1108950a7732dcc3ac9b8da10bd014bfec6c45b7) [`dcec014`](https://github.com/tylerbutler/tools-monorepo/commit/dcec014dfb70e5804a7535b5b8b9a3406f3e623d) [`84c4185`](https://github.com/tylerbutler/tools-monorepo/commit/84c4185e76186c3489a4b70e3a3015ba289df139)
+
+</small>
+
+- `repopo@0.5.0`
+- `@tylerbu/fundamentals@0.2.1`
+- `@tylerbu/cli-api@0.7.1`
+
+</details>
+
 ## 0.2.0
 
 ### Minor Changes

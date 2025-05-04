@@ -1,19 +1,8 @@
 import { EOL as newline } from "node:os";
 import {
 	type FileHeaderPolicyConfig,
-	generateFileHeaderPolicy,
-} from "../policyGenerators/generateFileHeaderPolicy.js";
-
-// const htmlReplacer = (
-// 	content: string,
-// 	{ headerText }: FileHeaderPolicyConfig,
-// ): string => {
-// 	const newContent = `<!-- ${headerText.replace(
-// 		newline,
-// 		` -->${newline}<!-- `,
-// 	)} -->${newline}${newline}${content}`;
-// 	return newContent;
-// };
+	defineFileHeaderPolicy,
+} from "../policyDefiners/defineFileHeaderPolicy.js";
 
 const jsTsReplacer = (
 	prevContent: string,
@@ -33,8 +22,10 @@ const jsTsReplacer = (
 
 /**
  * A RepoPolicy that checks that JavaScript and TypeScript source files have the configured header comment
+ *
+ * @alpha
  */
-export const JsTsFileHeaders = generateFileHeaderPolicy("JsTsFileHeaders", {
+export const JsTsFileHeaders = defineFileHeaderPolicy("JsTsFileHeaders", {
 	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
 	headerStart: /(#![^\n]*\r?\n)?\/\*!\r?\n/, // Begins with optional hashbang followed by '/*!'
 	lineStart: / \* /, // Subsequent lines begins with ' * '
