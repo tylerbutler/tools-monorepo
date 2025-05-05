@@ -1,3 +1,4 @@
+import type Maybe from "true-myth/maybe";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
@@ -113,12 +114,12 @@ export interface PolicyDefinition<C = undefined> {
 	 * @param root - Absolute path to the root of the repo.
 	 * @returns true if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
-	resolver?: PolicyStandaloneResolver<C> | undefined;
+	resolver?: Maybe<PolicyStandaloneResolver<C>>;
 
 	/**
 	 * A default config that will be used if none is provided.
 	 */
-	defaultConfig?: C | undefined;
+	defaultConfig?: Maybe<C>;
 }
 
 /**
@@ -216,8 +217,8 @@ export abstract class Policy<C> implements PolicyDefinition<C> {
 		public readonly name: string,
 		public readonly match: RegExp,
 		public readonly handler: PolicyHandler<C>,
-		public readonly description?: string,
-		public readonly defaultConfig?: C,
-		public readonly resolver?: PolicyStandaloneResolver<C>,
+		public readonly description: string,
+		public readonly defaultConfig: Maybe<C>,
+		public readonly resolver: Maybe<PolicyStandaloneResolver<C>>,
 	) {}
 }
