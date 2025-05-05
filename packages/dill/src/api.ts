@@ -262,6 +262,18 @@ export async function decompressZip(compressed: Uint8Array): Promise<Unzipped> {
 	return unzipSync(compressed);
 }
 
+/**
+ *	Downloads a file from a URL. By default, the file will be downloaded to the current directory, and will not be
+ *	decompressed. These options are configurable by passing a {@link DillOptions} object.
+ *
+ * @param url - The URL to download.
+ * @param options - Options to use. See {@link DillOptions}.
+ *
+ * @returns A {@link DownloadResponse} which includes the downloaded data and the file path to the downloaded file, if
+ * the file was saved.
+ *
+ * @public
+ */
 export const download = async (
 	url: URL | string,
 	options?: DillOptions,

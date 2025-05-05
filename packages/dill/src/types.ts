@@ -43,9 +43,13 @@ export type DillOptionsResolved = SetOptional<
 >;
 
 export interface DownloadResponse {
-	/** The raw file data */
+	/** 
+   * The raw file data.
+   */
 	data: Uint8Array;
-	/** The path where the file(s) were written, if any */
+	/**
+   * The path where the file(s) were written, if any.
+   */
 	writtenTo: string | undefined;
 }
 
