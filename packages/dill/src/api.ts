@@ -176,7 +176,7 @@ async function handleExtraction(
  * system path and loaded using `node:fs.readFile`.
  * @returns The file contents as a Uint8Array.
  */
-async function fetchFile(
+export async function fetchFile(
 	fileUrl: URL | string,
 ): Promise<{ contents: Uint8Array; response?: Response }> {
 	if (typeof fileUrl === "string" && fileUrl.startsWith(fileProtocol)) {
