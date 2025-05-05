@@ -1,5 +1,24 @@
 # sort-tsconfig
 
+## 0.3.1
+
+### Patch Changes
+
+- Update package metadata _[`#221`](https://github.com/tylerbutler/tools-monorepo/pull/221) [`9e5225a`](https://github.com/tylerbutler/tools-monorepo/commit/9e5225abfb67af1575af13dff60830d8da28eafd) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`9e5225a`](https://github.com/tylerbutler/tools-monorepo/commit/9e5225abfb67af1575af13dff60830d8da28eafd)
+
+</small>
+
+- `@tylerbu/fundamentals@0.2.2`
+- `@tylerbu/cli-api@0.7.2`
+
+</details>
+
 ## 0.3.0
 
 ### Minor Changes

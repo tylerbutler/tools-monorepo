@@ -1,5 +1,11 @@
 # @tylerbu/lilconfig-loader-ts
 
+## 0.1.2
+
+### Patch Changes
+
+- Update package metadata _[`#221`](https://github.com/tylerbutler/tools-monorepo/pull/221) [`9e5225a`](https://github.com/tylerbutler/tools-monorepo/commit/9e5225abfb67af1575af13dff60830d8da28eafd) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.1.1
 
 ### Patch Changes

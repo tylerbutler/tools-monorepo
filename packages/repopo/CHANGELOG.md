@@ -1,5 +1,40 @@
 # repopo
 
+## 0.6.0
+
+### Minor Changes
+
+- Configuration changes _[`#224`](https://github.com/tylerbutler/tools-monorepo/pull/224) [`2b7db34`](https://github.com/tylerbutler/tools-monorepo/commit/2b7db343d74ab2e518ab2f232f47ea365ca784b8) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The configuration for repopo has changed a lot in this release. The goal is to improve the typing of config and make it
+  easier to configure things in one place.
+
+  Policies are now declared as `PolicyDefinition`, and are then combined with a configuration (if the policy has
+  configuration) using `makePolicy` to form a `PolicyInstance`, which is the primary type used internally.
+
+  Generators now generate `PolicyDefinition`s, and can be used directly inline with `makePolicy`.
+
+- Export policies from /policies entrypoint only _[`#224`](https://github.com/tylerbutler/tools-monorepo/pull/224) [`2b7db34`](https://github.com/tylerbutler/tools-monorepo/commit/2b7db343d74ab2e518ab2f232f47ea365ca784b8) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Policies included with repopo are now exported from `repopo/policies`.
+
+### Patch Changes
+
+- Update package metadata _[`#221`](https://github.com/tylerbutler/tools-monorepo/pull/221) [`9e5225a`](https://github.com/tylerbutler/tools-monorepo/commit/9e5225abfb67af1575af13dff60830d8da28eafd) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`9e5225a`](https://github.com/tylerbutler/tools-monorepo/commit/9e5225abfb67af1575af13dff60830d8da28eafd)
+
+</small>
+
+- `@tylerbu/fundamentals@0.2.2`
+- `@tylerbu/cli-api@0.7.2`
+
+</details>
+
 ## 0.5.0
 
 ### Minor Changes
