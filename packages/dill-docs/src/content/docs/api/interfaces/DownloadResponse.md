@@ -23,6 +23,6 @@ The raw file data.
 
 > **writtenTo**: `undefined` \| `string`
 
-Defined in: [types.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L53)
+Defined in: [types.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L54)
 
 The path where the file(s) were written, if any.
