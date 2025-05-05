@@ -59,6 +59,3 @@ export default class DownloadCommand extends BaseCommand<
 		return await download(url, options);
 	}
 }
-
-export { download };
-export type { DillOptions };
