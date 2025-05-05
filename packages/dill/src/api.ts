@@ -45,6 +45,8 @@ export interface DillOptions {
 	 * The directory to download the file. If this path is undefined, then the current working directory will be used.
 	 *
 	 * If provided, this path must be to a directory that exists.
+	 *
+	 * @defaultValue current working directory
 	 */
 	downloadDir?: string;
 
@@ -57,7 +59,7 @@ export interface DillOptions {
 
 	/**
 	 * If true, the file will not be saved to the file system. The file contents will be returned by the function call,
-	 * but it will otherwise not be saved.
+	 * but it will otherwise not be saved. This is useful for testing or when using dill programatically.
 	 *
 	 * @defaultValue `false`
 	 */
@@ -67,10 +69,10 @@ export interface DillOptions {
 /**
  * Resolved options type. All the options become required when resolved except for filename.
  */
-export interface DillOptionsResolved
-	extends SetOptional<Required<DillOptions>, "filename"> {
-	// fullDownloadPath: string,
-}
+export type DillOptionsResolved = SetOptional<
+	Required<DillOptions>,
+	"filename"
+>;
 
 function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
 	const resolved = {
@@ -101,10 +103,14 @@ export interface DownloadResponse {
 }
 
 /**
- *	Downloads a file from a URL.
+ *	Downloads a file from a URL. By default, the file will be downloaded to the current directory, and will not be
+ *	decompressed. These options are configurable by passing a {@link DillOptions} object.
  *
  * @param url - The URL to download.
- * @param options - Options to use.
+ * @param options - Options to use. See {@link DillOptions}.
+ *
+ * @returns A {@link DownloadResponse} which includes the downloaded data and the file path to the downloaded file, if
+ * the file was saved.
  *
  * @public
  */
