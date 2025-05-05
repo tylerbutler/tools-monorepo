@@ -19,7 +19,9 @@ export default defineConfig({
 	output: "server",
 	// adapter: deno(),
 	adapter: netlify({
-		// edgeMiddleware: true
+		// edgeMiddleware: true,
+		// cacheOnDemandPages: true,
+		imageCDN: false,
 	}),
 	integrations: [
 		starlight({
