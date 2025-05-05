@@ -5,7 +5,7 @@ prev: false
 title: "DillOptions"
 ---
 
-Defined in: [api.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L36)
+Defined in: [types.ts:8](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L8)
 
 Options used to control dill's behavior.
 
@@ -15,11 +15,16 @@ Options used to control dill's behavior.
 
 > `optional` **downloadDir**: `string`
 
-Defined in: [api.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L49)
+Defined in: [types.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L21)
 
-The directory to download the file. If this path is undefined, then the current working directory will be used.
+The directory to download the file. If undefined, uses the current working directory.
+Must be an existing directory if provided.
 
-If provided, this path must be to a directory that exists.
+#### Default Value
+
+```ts
+current working directory
+```
 
 ***
 
@@ -27,7 +32,7 @@ If provided, this path must be to a directory that exists.
 
 > `optional` **extract**: `boolean`
 
-Defined in: [api.ts:42](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L42)
+Defined in: [types.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L14)
 
 If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate).
 
@@ -41,11 +46,10 @@ If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com
 
 > `optional` **filename**: `string`
 
-Defined in: [api.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L56)
+Defined in: [types.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L27)
 
-If provided, the filename to download the file to, including file extensions if applicable. If this is not
-provided, the downloaded file will use the name in the Content-Disposition response header, if available. Otherwise
-it will use `dill-download.<EXTENSION>`.
+The filename to download the file to, including extensions.
+If not provided, uses Content-Disposition header or `dill-download.<EXTENSION>`.
 
 ***
 
@@ -53,10 +57,10 @@ it will use `dill-download.<EXTENSION>`.
 
 > `optional` **noFile**: `boolean`
 
-Defined in: [api.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L64)
+Defined in: [types.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L34)
 
-If true, the file will not be saved to the file system. The file contents will be returned by the function call,
-but it will otherwise not be saved.
+If true, the file will not be saved to the file system.
+Useful for testing or programmatic use.
 
 #### Default Value
 

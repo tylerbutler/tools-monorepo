@@ -23,6 +23,7 @@ export default defineConfig({
 		// cacheOnDemandPages: true,
 		imageCDN: false,
 	}),
+	site: "https://dill.tylerbutler.com",
 	integrations: [
 		starlight({
 			title: "dill",

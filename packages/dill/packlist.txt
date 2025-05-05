@@ -20,3 +20,7 @@ esm/index.d.ts
 esm/index.d.ts.map
 esm/index.js
 esm/index.js.map
+esm/types.d.ts
+esm/types.d.ts.map
+esm/types.js
+esm/types.js.map

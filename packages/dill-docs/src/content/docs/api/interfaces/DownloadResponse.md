@@ -5,9 +5,7 @@ prev: false
 title: "DownloadResponse"
 ---
 
-Defined in: [api.ts:91](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L91)
-
-A response returned by the `download` function.
+Defined in: [types.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L45)
 
 ## Properties
 
@@ -15,7 +13,7 @@ A response returned by the `download` function.
 
 > **data**: [`Uint8Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
 
-Defined in: [api.ts:95](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L95)
+Defined in: [types.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L49)
 
 The raw file data.
 
@@ -25,6 +23,6 @@ The raw file data.
 
 > **writtenTo**: `undefined` \| `string`
 
-Defined in: [api.ts:100](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/api.ts#L100)
+Defined in: [types.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L54)
 
-The path that the downloaded file(s) were written to.
+The path where the file(s) were written, if any.
