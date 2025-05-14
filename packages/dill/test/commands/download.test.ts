@@ -1,10 +1,11 @@
-import { rm } from "node:fs/promises";
+import { readdir, rm } from "node:fs/promises";
 import http from "node:http";
 import { runCommand } from "@oclif/test";
 import { getRandomPort } from "get-port-please";
 import path from "pathe";
 import handler from "serve-handler";
 import { temporaryDirectory } from "tempy";
+import { withDir } from "tmp-promise";
 import {
 	afterAll,
 	afterEach,
@@ -55,9 +56,7 @@ describe("download command", async () => {
 			[
 				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
 				".",
-				// "download",
 				testUrls[0].toString(),
-				// `--filename ${outputPath}`,
 				`--out ${downloadDir}`,
 			],
 			{
@@ -75,5 +74,134 @@ describe("download command", async () => {
 				nested: "object",
 			},
 		});
+	});
+
+	it("filename flag with --out", async () => {
+		// process.chdir(downloadDir);
+		const filename = "filename-flag-test.json";
+		// path.join(downloadDir, "filename-flag-test.json");
+		const { stdout } = await runCommand(
+			[
+				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
+				".",
+				testUrls[0].toString(),
+				`--out ${downloadDir}`,
+				`--filename ${filename}`,
+			],
+			{
+				root: import.meta.url,
+			},
+		);
+
+		expect(stdout).to.contain("Downloading ");
+
+		const outputPath = path.join(downloadDir, "filename-flag-test.json");
+		const actual = await readJson(outputPath);
+		expect(actual).to.deep.equal({
+			key1: 1,
+			key2: {
+				nested: "object",
+			},
+		});
+	});
+
+	it("compressed file with --extract", async () => {
+		const { stdout } = await runCommand(
+			[
+				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
+				".",
+				testUrls[2].toString(),
+				`--out ${downloadDir}`,
+				"--extract",
+			],
+			{
+				root: import.meta.url,
+			},
+		);
+
+		expect(stdout).to.contain("Downloading ");
+
+		const files = await readdir(downloadDir, { recursive: true });
+		expect(files).toMatchSnapshot();
+	});
+
+	describe("using current working directory", () => {
+		// let originalCwd: string;
+
+		// beforeEach(() => {
+		// 	originalCwd = process.cwd();
+		// 	console.log(`original dir: ${originalCwd}`);
+		// 	process.chdir(downloadDir);
+		// 	console.log(`working dir: ${downloadDir}`);
+		// });
+
+		// afterEach(() => {
+		// 	process.chdir(originalCwd);
+		// });
+
+		it.skip("with --filename", async () => {
+			// const startingDir = process.cwd();
+			await withDir(
+				async ({ path: downloadDir }) => {
+					process.chdir(downloadDir);
+					const filename = "filename-flag-test.json";
+					// path.join(downloadDir, "filename-flag-test.json");
+					const { stdout } = await runCommand(
+						[
+							// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
+							".",
+							testUrls[0].toString(),
+							`--filename ${filename}`,
+						],
+						{
+							root: import.meta.url,
+						},
+					);
+
+					expect(stdout).to.contain("Downloading ");
+
+					const outputPath = path.join(downloadDir, "filename-flag-test.json");
+					const actual = await readJson(outputPath);
+					expect(actual).to.deep.equal({
+						key1: 1,
+						key2: {
+							nested: "object",
+						},
+					});
+				},
+				{
+					// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+					unsafeCleanup: true,
+				},
+			);
+		});
+
+		// it("--filename flag", async () => {
+		// 	// process.chdir(downloadDir);
+		// 	const filename = "filename-flag-test.json";
+		// 	// path.join(downloadDir, "filename-flag-test.json");
+		// 	const { stdout } = await runCommand(
+		// 		[
+		// 			// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
+		// 			".",
+		// 			testUrls[0].toString(),
+		// 			`--filename ${filename}`,
+		// 		],
+		// 		{
+		// 			root: import.meta.url,
+		// 		},
+		// 	);
+
+		// 	expect(stdout).to.contain("Downloading ");
+
+		// 	const outputPath = path.join(downloadDir, "filename-flag-test.json");
+		// 	const actual = await readJson(outputPath);
+		// 	expect(actual).to.deep.equal({
+		// 		key1: 1,
+		// 		key2: {
+		// 			nested: "object",
+		// 		},
+		// 	});
+		// });
 	});
 });
