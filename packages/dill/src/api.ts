@@ -43,10 +43,21 @@ export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
 
 // Utility functions
 function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
+	const filename =
+		options?.filename === undefined
+			? undefined
+			: path.basename(options.filename);
+
+	const downloadDir =
+		options?.downloadDir ??
+		(options?.filename !== undefined
+			? path.dirname(options.filename)
+			: process.cwd());
+
 	return {
 		extract: options?.extract ?? false,
-		downloadDir: options?.downloadDir ?? process.cwd(),
-		filename: options?.filename,
+		downloadDir,
+		filename,
 		noFile: options?.noFile ?? false,
 	};
 }
