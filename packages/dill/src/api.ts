@@ -5,22 +5,16 @@ import { fileTypeFromBuffer } from "file-type";
 import mime from "mime";
 import { type ParsedTarFileItem, parseTar } from "nanotar";
 import path from "pathe";
-import type { SetOptional } from "type-fest";
+import type {
+	DillOptions,
+	DillOptionsResolved,
+	DownloadResponse,
+	FileInfo,
+	MimeInfo,
+} from "./types.js";
 
+// Constants
 const fileProtocol = "file://";
-
-export const KNOWN_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
-	"tar",
-	"gz",
-	"zip",
-]);
-
-export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
-	"7z",
-	"bz2",
-	"rar",
-	"xz",
-]);
 
 /**
  * The default name to use for the downloaded file. This is only used if the name is not provided by the caller or
@@ -29,144 +23,144 @@ export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
 const defaultDownloadName = "dill-download";
 
 /**
- * Options used to control dill's behavior.
- *
- * @public
+ * Known file extensions for compressed archives that dill can decompress.
  */
-export interface DillOptions {
-	/**
-	 * If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com/package/fflate).
-	 *
-	 * @defaultValue `false`
-	 */
-	extract?: boolean;
-
-	/**
-	 * The directory to download the file. If this path is undefined, then the current working directory will be used.
-	 *
-	 * If provided, this path must be to a directory that exists.
-	 */
-	downloadDir?: string;
-
-	/**
-	 * If provided, the filename to download the file to, including file extensions if applicable. If this is not
-	 * provided, the downloaded file will use the name in the Content-Disposition response header, if available. Otherwise
-	 * it will use `dill-download.<EXTENSION>`.
-	 */
-	filename?: string | undefined;
-
-	/**
-	 * If true, the file will not be saved to the file system. The file contents will be returned by the function call,
-	 * but it will otherwise not be saved.
-	 *
-	 * @defaultValue `false`
-	 */
-	noFile?: boolean;
-}
+export const KNOWN_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
+	"tar",
+	"gz",
+	"zip",
+]);
 
 /**
- * Resolved options type. All the options become required when resolved except for filename.
+ * Known file extensions for compressed archives that dill does not support.
  */
-export interface DillOptionsResolved
-	extends SetOptional<Required<DillOptions>, "filename"> {
-	// fullDownloadPath: string,
-}
+export const UNSUPPORTED_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
+	"7z",
+	"bz2",
+	"rar",
+	"xz",
+]);
 
+// Utility functions
 function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
-	const resolved = {
+	const filename =
+		options?.filename === undefined
+			? undefined
+			: path.basename(options.filename);
+
+	const downloadDir =
+		options?.downloadDir ??
+		(options?.filename !== undefined
+			? path.dirname(options.filename)
+			: process.cwd());
+
+	return {
 		extract: options?.extract ?? false,
-		downloadDir: options?.downloadDir ?? process.cwd(),
-		filename: options?.filename,
+		downloadDir,
+		filename,
 		noFile: options?.noFile ?? false,
 	};
-
-	// const fullDownloadPath = resolved.filename === undefined ?
-
-	return resolved;
 }
 
-/**
- * A response returned by the `download` function.
- */
-export interface DownloadResponse {
-	/**
-	 * The raw file data.
-	 */
-	data: Uint8Array;
-
-	/**
-	 * The path that the downloaded file(s) were written to.
-	 */
-	writtenTo: string | undefined;
+async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
+	const buffer = await readFile(filePath);
+	return new Uint8Array(buffer.buffer);
 }
 
-/**
- *	Downloads a file from a URL.
- *
- * @param url - The URL to download.
- * @param options - Options to use.
- *
- * @public
- */
-export const download = async (
-	url: URL | string,
-	options?: DillOptions,
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: TODO
-): Promise<DownloadResponse> => {
-	const {
-		extract,
-		downloadDir,
-		filename: providedFilename,
-		noFile,
-	} = resolveOptions(options);
+function getMimeType(response: Response): MimeInfo {
+	const { url } = response;
+	const contentType = response.headers.get("Content-Type");
+	const contentDispositionHeader = response.headers.get("Content-Disposition");
+	const contentDisposition = contentDispositionHeader
+		? parseContentDisposition(contentDispositionHeader)
+		: undefined;
 
-	// The downloadDir must exist and be a directory.
-	const pathStats = await stat(downloadDir);
-	if (extract && !pathStats.isDirectory()) {
-		throw new Error(`Path is not a directory: ${downloadDir}`);
+	const contentDispositionFilename = contentDisposition?.parameters
+		.filename as string;
+	const urlType = mime.getType(url);
+	const mimeType =
+		urlType ?? contentType ?? mime.getType(contentDispositionFilename) ?? null;
+
+	if (mimeType === null) {
+		throw new Error(`Can't find mime type for URL: ${url}`);
 	}
 
-	const { contents: file, response } = await fetchFile(url);
-	let extension: string;
-	let filename = providedFilename;
+	return {
+		mimeType,
+		extension: mime.getExtension(mimeType),
+		filename: contentDispositionFilename,
+	};
+}
 
+function decompress(fileContent: Uint8Array): Uint8Array {
+	let decompressed: Uint8Array | undefined;
+	const decompressor = new Decompress((chunk) => {
+		decompressed = chunk;
+	});
+	decompressor.push(fileContent, true);
+
+	if (decompressed === undefined) {
+		throw new Error("Failed to decompress file.");
+	}
+	return decompressed;
+}
+
+async function checkDestination(destination: string): Promise<boolean> {
+	const stats = await stat(destination);
+	if (stats.isFile()) {
+		throw new Error(
+			`Destination path is a file that already exists: ${destination}`,
+		);
+	}
+	return true;
+}
+
+async function writeUint8ArrayToFile(
+	stream: Uint8Array,
+	path: string,
+): Promise<string> {
+	await writeFile(path, stream);
+	return path;
+}
+
+async function determineFileInfo(
+	file: Uint8Array,
+	response: Response | undefined,
+	url: URL | string,
+	providedFilename?: string,
+): Promise<FileInfo> {
 	if (response === undefined) {
 		const filetype = await fileTypeFromBuffer(file);
 		if (filetype === undefined) {
 			throw new Error(`Can't find file type for URL: ${url}`);
 		}
-		extension = filetype.ext;
-		filename ??= `${defaultDownloadName}.${extension}`;
-	} else {
-		const {
-			mimeType,
-			extension: ext,
-			filename: responseFileName,
-		} = getMimeType(response);
-		if (mimeType === undefined || ext === null) {
-			throw new Error(`Can't find file type for URL: ${url}`);
-		}
-		extension = ext;
-		filename ??= responseFileName ?? `${defaultDownloadName}.${extension}`;
+		return {
+			filename: providedFilename ?? `${defaultDownloadName}.${filetype.ext}`,
+			extension: filetype.ext,
+		};
 	}
 
-	if (extract && UNSUPPORTED_ARCHIVE_EXTENSIONS.has(extension)) {
-		throw new Error(`Can't decompress files of type: ${extension}`);
+	const { extension, filename: responseFileName } = getMimeType(response);
+	if (extension === null) {
+		throw new Error(`Can't find file type for URL: ${url}`);
 	}
 
-	if (!extract) {
-		// we're not extracting, so just save the bytes
-		const outputPath = path.join(downloadDir, filename);
-		if (noFile) {
-			return { data: file, writtenTo: undefined };
-		}
-		await writeUint8ArrayToFile(file, outputPath);
-		return { data: file, writtenTo: outputPath };
-	}
+	return {
+		filename:
+			providedFilename ??
+			responseFileName ??
+			`${defaultDownloadName}.${extension}`,
+		extension,
+	};
+}
 
-	// Extraction requested, so file needs to be decompressed.
+async function handleExtraction(
+	file: Uint8Array,
+	extension: string,
+	downloadDir: string,
+	filename: string,
+): Promise<void> {
 	if (extension === "gz") {
-		// File is gzip, so decompress and check if the resulting file is a tar archive
 		const decompressed = decompress(file);
 		const fileType = await fileTypeFromBuffer(decompressed);
 		if (fileType?.ext === "tar") {
@@ -174,10 +168,9 @@ export const download = async (
 			await writeTarFiles(files, downloadDir);
 		} else {
 			await checkDestination(downloadDir);
-			const extension = path.extname(filename);
 			const outputPath = path.join(
 				downloadDir,
-				filename.slice(0, -extension.length),
+				filename.slice(0, -path.extname(filename).length),
 			);
 			await writeUint8ArrayToFile(decompressed, outputPath);
 		}
@@ -185,48 +178,6 @@ export const download = async (
 		const files = await decompressZip(file);
 		await writeZipFiles(files, downloadDir);
 	}
-
-	return { data: file, writtenTo: downloadDir };
-};
-
-async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
-	const buffer = await readFile(filePath);
-	return new Uint8Array(buffer.buffer);
-}
-
-function getMimeType(response: Response): {
-	mimeType: string;
-	extension: string | null;
-	filename: string | undefined;
-} {
-	const { url } = response;
-	const contentType = response?.headers.get("Content-Type");
-	const contentDispositionHeader = response?.headers.get("Content-Disposition");
-	const contentDisposition =
-		contentDispositionHeader === undefined || contentDispositionHeader === null
-			? undefined
-			: parseContentDisposition(contentDispositionHeader);
-
-	const contentDispositionFilename = contentDisposition?.parameters
-		.filename as string;
-	const urlType = mime.getType(url);
-	const mimeType =
-		urlType ??
-		contentType ??
-		// Try to get the mime type from the content-disposition filename as a last resort
-		mime.getType(contentDispositionFilename) ??
-		null;
-
-	if (mimeType === null) {
-		throw new Error(`Can't find mime type for URL: ${url}`);
-	}
-
-	const extension = mime.getExtension(mimeType);
-	return {
-		mimeType,
-		extension,
-		filename: contentDispositionFilename,
-	};
 }
 
 /**
@@ -245,39 +196,10 @@ export async function fetchFile(
 	}
 
 	const response = await fetch(fileUrl);
-
-	const contents = new Uint8Array(
-		(await response.arrayBuffer()) satisfies ArrayBuffer,
-	);
+	const contents = new Uint8Array(await response.arrayBuffer());
 	return { contents, response };
 }
 
-/**
- * @privateRemarks
- *
- * Decompress does not seem to work with zip streams. Need to investigate.
- */
-function decompress(fileContent: Uint8Array): Uint8Array {
-	let decompressed: Uint8Array | undefined;
-
-	// biome-ignore lint/suspicious/noAssignInExpressions: TODO verify why this is OK
-	new Decompress((chunk) => (decompressed = chunk)).push(
-		fileContent,
-		/* final */ true,
-	);
-
-	if (decompressed === undefined) {
-		throw new Error("Failed to decompress file.");
-	}
-	return decompressed;
-}
-
-/**
- * Extracts files from a compressed or uncompressed tarball.
- *
- * @param compressed - The contents of the tarball as a Uint8Array. The contents is assumed to not be compressed.
- * @returns Metadata about the tarball contents, including the file contents itself.
- */
 export async function decompressTarball(
 	compressed: Uint8Array,
 ): Promise<ParsedTarFileItem[]> {
@@ -291,21 +213,15 @@ export async function decompressTarball(
 	}
 
 	if (
-		fileType?.ext !== "tar" &&
+		fileType.ext !== "tar" &&
 		UNSUPPORTED_ARCHIVE_EXTENSIONS.has(fileType.ext)
 	) {
 		throw new Error(`Unsupported filetype: ${fileType.ext}.`);
 	}
 
-	const tarFiles = parseTar(decompressed);
-	return tarFiles;
+	return parseTar(decompressed);
 }
 
-/**
- *
- * @param destination - The contents of the tarball will be extracted to this directory. If this path does
- * not exist an exception will be thrown.
- */
 export async function writeTarFiles(
 	tarFiles: ParsedTarFileItem[],
 	destination: string,
@@ -324,11 +240,6 @@ export async function writeTarFiles(
 	await Promise.all(filesP);
 }
 
-/**
- *
- * @param destination - The contents of the tarball will be extracted to this directory. If this path does
- * not exist an exception will be thrown.
- */
 export async function writeZipFiles(
 	zipFiles: Unzipped,
 	destination: string,
@@ -347,12 +258,6 @@ export async function writeZipFiles(
 	await Promise.all(filesP);
 }
 
-/**
- * Extracts files from a compressed zip file.
- *
- * @param compressed - The contents of the tarball as a Uint8Array. The contents is assumed to not be compressed.
- * @returns Metadata about the tarball contents, including the file contents itself.
- */
 export async function decompressZip(compressed: Uint8Array): Promise<Unzipped> {
 	const fileType = await fileTypeFromBuffer(compressed);
 
@@ -365,24 +270,65 @@ export async function decompressZip(compressed: Uint8Array): Promise<Unzipped> {
 		}
 	}
 
-	const zipFiles = unzipSync(compressed);
-	return zipFiles;
+	return unzipSync(compressed);
 }
 
-export async function checkDestination(destination: string): Promise<boolean> {
-	const stats = await stat(destination);
-	if (stats.isFile()) {
-		throw new Error(
-			`Destination path is a file that already exists: ${destination}`,
-		);
+/**
+ *	Downloads a file from a URL. By default, the file will be downloaded to the current directory, and will not be
+ *	decompressed. These options are configurable by passing a {@link DillOptions} object.
+ *
+ * @param url - The URL to download.
+ * @param options - Options to use. See {@link DillOptions}.
+ *
+ * @returns A {@link DownloadResponse} which includes the downloaded data and the file path to the downloaded file, if
+ * the file was saved.
+ *
+ * @public
+ */
+export const download = async (
+	url: URL | string,
+	options?: DillOptions,
+): Promise<DownloadResponse> => {
+	const {
+		extract,
+		downloadDir,
+		filename: providedFilename,
+		noFile,
+	} = resolveOptions(options);
+
+	// Validate download directory
+	const pathStats = await stat(downloadDir);
+	if (extract && !pathStats.isDirectory()) {
+		throw new Error(`Path is not a directory: ${downloadDir}`);
 	}
-	return true;
-}
 
-async function writeUint8ArrayToFile(
-	stream: Uint8Array,
-	path: string,
-): Promise<string> {
-	await writeFile(path, stream);
-	return path;
-}
+	// Fetch the file
+	const { contents: file, response } = await fetchFile(url);
+
+	// Determine file information
+	const { filename, extension } = await determineFileInfo(
+		file,
+		response,
+		url,
+		providedFilename,
+	);
+
+	// Validate extraction support
+	if (extract && UNSUPPORTED_ARCHIVE_EXTENSIONS.has(extension)) {
+		throw new Error(`Can't decompress files of type: ${extension}`);
+	}
+
+	// Handle non-extraction case
+	if (!extract) {
+		const outputPath = path.join(downloadDir, filename);
+		if (noFile) {
+			return { data: file, writtenTo: undefined };
+		}
+		await writeUint8ArrayToFile(file, outputPath);
+		return { data: file, writtenTo: outputPath };
+	}
+
+	// Handle extraction
+	await handleExtraction(file, extension, downloadDir, filename);
+	return { data: file, writtenTo: downloadDir };
+};

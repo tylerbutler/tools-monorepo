@@ -1,6 +1,7 @@
 import { Args, Flags } from "@oclif/core";
 import { BaseCommand } from "@tylerbu/cli-api";
-import { type DillOptions, type DownloadResponse, download } from "../api.js";
+import { download } from "../api.js";
+import type { DillOptions, DownloadResponse } from "../types.js";
 
 export default class DownloadCommand extends BaseCommand<
 	typeof DownloadCommand
@@ -25,6 +26,11 @@ export default class DownloadCommand extends BaseCommand<
 			description: "Directory in which to place the downloaded files.",
 			char: "o",
 		}),
+		filename: Flags.file({
+			description:
+				"Name to use for the downloaded file. Cannot be used with --extract.",
+			exclusive: ["extract"],
+		}),
 		// TODO: Add this flag once testing is in better shape.
 		// strip: Flags.integer({
 		// 	description:
@@ -33,11 +39,6 @@ export default class DownloadCommand extends BaseCommand<
 		// 	min: 0,
 		// 	dependsOn: ["extract"],
 		// }),
-		filename: Flags.file({
-			description:
-				"Name to use for the downloaded file. Cannot be used with --extract.",
-			exclusive: ["extract"],
-		}),
 		...BaseCommand.flags,
 	};
 
@@ -47,17 +48,14 @@ export default class DownloadCommand extends BaseCommand<
 		const { url } = this.args;
 		const { extract, out, filename } = this.flags;
 
-		this.log(`Downloading ${url}`);
+		this.log(`Downloading ${url.toString()}`);
 
 		const options: DillOptions = {
 			extract,
-			downloadDir: out ?? ".",
+			downloadDir: out ?? process.cwd(),
 			filename,
 		};
 
 		return await download(url, options);
 	}
 }
-
-export { download };
-export type { DillOptions };
