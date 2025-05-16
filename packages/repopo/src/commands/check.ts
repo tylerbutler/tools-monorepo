@@ -1,7 +1,7 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { run } from "effection";
+import { type Operation, run } from "effection";
 import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
@@ -192,11 +192,8 @@ export class CheckPolicy<
 
 		try {
 			// Execute the policy handler
-			const result = await this.executePolicyHandler(
-				relPath,
-				policy,
-				perfStats,
-				gitRoot,
+			const result = await run(() =>
+				this.executePolicyHandler(relPath, policy, perfStats, gitRoot),
 			);
 
 			// Handle the result of the policy execution
@@ -227,24 +224,24 @@ export class CheckPolicy<
 		);
 	}
 
-	private async executePolicyHandler(
+	private *executePolicyHandler(
 		relPath: string,
 		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
-	): Promise<PolicyHandlerResult> {
+	): Operation<PolicyHandlerResult> {
 		try {
-			const result = await run(
-				runWithPerf(policy.name, "handle", perfStats, () =>
-					policy.handler({
-						file: relPath,
-						root: gitRoot,
-						resolve: this.flags.fix,
-						config: policy.config,
-					}),
-				),
+			const r = runWithPerf(policy.name, "handle", perfStats, () =>
+				policy.handler({
+					file: relPath,
+					root: gitRoot,
+					resolve: this.flags.fix,
+					config: policy.config,
+				}),
 			);
-			return result;
+			return yield* r;
+			// const result = await run(r);
+			// return result;
 		} catch (error: unknown) {
 			this.error(
 				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
@@ -332,7 +329,7 @@ export class CheckPolicy<
 		messages.append(`${newline}Attempting to resolve: ${relPath}`);
 		const resolveResult = await run(() =>
 			runWithPerf(policy.name, "resolve", perfStats, () =>
-				run(resolver({ file: relPath, root: gitRoot })),
+				run(() => resolver({ file: relPath, root: gitRoot })),
 			),
 		);
 
