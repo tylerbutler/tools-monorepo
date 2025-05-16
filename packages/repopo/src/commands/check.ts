@@ -1,6 +1,7 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
+import { run } from "effection";
 import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
@@ -233,14 +234,17 @@ export class CheckPolicy<
 		gitRoot: string,
 	): Promise<PolicyHandlerResult> {
 		try {
-			return await runWithPerf(policy.name, "handle", perfStats, () =>
-				policy.handler({
-					file: relPath,
-					root: gitRoot,
-					resolve: this.flags.fix,
-					config: policy.config,
-				}),
+			const result = await run(
+				runWithPerf(policy.name, "handle", perfStats, () =>
+					policy.handler({
+						file: relPath,
+						root: gitRoot,
+						resolve: this.flags.fix,
+						config: policy.config,
+					}),
+				),
 			);
+			return result;
 		} catch (error: unknown) {
 			this.error(
 				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
@@ -326,11 +330,10 @@ export class CheckPolicy<
 		messages: StringBuilder,
 	): Promise<void> {
 		messages.append(`${newline}Attempting to resolve: ${relPath}`);
-		const resolveResult = await runWithPerf(
-			policy.name,
-			"resolve",
-			perfStats,
-			() => resolver({ file: relPath, root: gitRoot }),
+		const resolveResult = await run(() =>
+			runWithPerf(policy.name, "resolve", perfStats, () =>
+				run(resolver({ file: relPath, root: gitRoot })),
+			),
 		);
 
 		if (!resolveResult.resolved) {

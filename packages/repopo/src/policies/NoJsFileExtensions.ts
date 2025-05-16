@@ -1,3 +1,4 @@
+import { type Operation, call, lift } from "effection";
 import { makePolicyDefinition } from "../makePolicy.js";
 import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 
@@ -13,8 +14,8 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 	"NoJsFileExtensions",
 	/(^|\/)[^/]+\.js$/i,
-	// biome-ignore lint/suspicious/useAwait: <explanation>
-	async ({ file }) => {
+	// biome-ignore lint/correctness/useYield: <explanation>
+	function* ({ file }): Operation<PolicyFailure> {
 		// Any match is considered a failure.
 		const result: PolicyFailure = {
 			name: NoJsFileExtensions.name,

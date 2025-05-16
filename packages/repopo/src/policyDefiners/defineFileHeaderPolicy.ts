@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { EOL as newline } from "node:os";
+import { call } from "effection";
 import { extname } from "pathe";
 import type {
 	PolicyDefinition,
@@ -90,7 +91,7 @@ export function defineFileHeaderPolicy(
 	return {
 		name,
 		match: config.match,
-		handler: async ({ file, resolve, config: policyConfig }) => {
+		handler: function* ({ file, resolve, config: policyConfig }) {
 			if (policyConfig === undefined) {
 				return true;
 			}
@@ -103,7 +104,7 @@ export function defineFileHeaderPolicy(
 
 			// TODO: Consider reading only the first 512B or so since headers are typically
 			// at the beginning of the file.
-			const content = await readFile(file, { encoding: "utf8" });
+			const content = yield* call(() => readFile(file, { encoding: "utf8" }));
 			const failed = !regex.test(content);
 
 			if (failed) {
@@ -113,7 +114,7 @@ export function defineFileHeaderPolicy(
 			if (failed) {
 				if (resolve) {
 					const newContent = config.replacer(content, policyConfig);
-					await writeFile(file, newContent);
+					yield* call(() => writeFile(file, newContent));
 
 					const fixResult: PolicyFixResult = {
 						...failResult,

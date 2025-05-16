@@ -1,4 +1,5 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
+import { call } from "effection";
 import { sortPackageJson } from "sort-package-json";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -10,7 +11,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  */
 export const PackageJsonSorted = definePackagePolicy(
 	"PackageJsonSorted",
-	async (json, { file, resolve }) => {
+	function* (json, { file, resolve }) {
 		const sortedJson = sortPackageJson(json);
 		const isSorted = JSON.stringify(sortedJson) === JSON.stringify(json);
 
@@ -20,7 +21,9 @@ export const PackageJsonSorted = definePackagePolicy(
 
 		if (resolve) {
 			try {
-				await updatePackageJsonFile(file, (json) => json, { sort: true });
+				yield* call(() =>
+					updatePackageJsonFile(file, (json) => json, { sort: true }),
+				);
 				const result: PolicyFixResult = {
 					name: PackageJsonSorted.name,
 					file,

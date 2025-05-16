@@ -79,6 +79,7 @@
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"defu": "^6.1.4",
+		"effection": "^3.5.0",
 		"jsonfile": "^6.1.0",
 		"microdiff": "^1.5.0",
 		"pathe": "^2.0.3",
