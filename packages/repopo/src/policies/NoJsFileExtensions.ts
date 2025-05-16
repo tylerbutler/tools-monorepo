@@ -1,4 +1,4 @@
-import { type Operation, call, lift } from "effection";
+import type { Operation } from "effection";
 import { makePolicyDefinition } from "../makePolicy.js";
 import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 

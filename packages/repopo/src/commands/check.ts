@@ -1,7 +1,7 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { type Operation, run } from "effection";
+import { type Operation, action, all, run } from "effection";
 import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
@@ -63,7 +63,7 @@ export class CheckPolicy<
 		const filePathsToCheck: string[] = [];
 
 		if (this.flags.stdin) {
-			const stdInput = await readStdin();
+			const stdInput = await run(() => readStdin());
 
 			if (stdInput !== undefined) {
 				filePathsToCheck.push(
@@ -101,7 +101,7 @@ export class CheckPolicy<
 
 		const context: RepopoCommandContext = await this.getContext();
 
-		await this.checkAllFiles(filePathsToCheck, context);
+		await run(() => this.checkAllFiles(filePathsToCheck, context));
 	}
 
 	/**
@@ -110,13 +110,13 @@ export class CheckPolicy<
 	 * @param pathsToCheck - All paths that should be checked. Paths should be relative to the repository root.
 	 * @param context - The context.
 	 */
-	private async checkAllFiles(
+	private *checkAllFiles(
 		pathsToCheck: string[],
 		context: RepopoCommandContext,
-	): Promise<void> {
+	): Operation<void> {
 		try {
 			for (const pathToCheck of pathsToCheck) {
-				await this.checkOrExcludeFile(pathToCheck, context);
+				yield* this.checkOrExcludeFile(pathToCheck, context);
 			}
 		} finally {
 			if (!this.flags.quiet) {
@@ -131,15 +131,15 @@ export class CheckPolicy<
 	 *
 	 * @param relPath - A git repo-relative path to a file.
 	 */
-	private async checkOrExcludeFile(
+	private *checkOrExcludeFile(
 		relPath: string,
 		context: RepopoCommandContext,
-	): Promise<void> {
+	): Operation<void> {
 		const { perfStats } = context;
 		perfStats.count++;
 
 		try {
-			await this.routeToPolicies(relPath, context);
+			yield* this.routeToPolicies(relPath, context);
 		} catch (error: unknown) {
 			throw new Error(
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
@@ -149,10 +149,10 @@ export class CheckPolicy<
 		perfStats.processed++;
 	}
 
-	private async routeToPolicies(
+	private *routeToPolicies(
 		relPath: string,
 		context: RepopoCommandContext,
-	): Promise<void> {
+	): Operation<void> {
 		const { policies, excludeFromAll } = context;
 
 		// Check exclusions
@@ -170,18 +170,18 @@ export class CheckPolicy<
 		// 	bars.addFile(policy.name,
 		// }
 
-		await Promise.all(
-			matchingPolicies.map(async (policy) => {
-				return await this.runPolicyOnFile(relPath, policy, context);
+		yield* all(
+			matchingPolicies.map((policy) => {
+				return this.runPolicyOnFile(relPath, policy, context);
 			}),
 		);
 	}
 
-	private async runPolicyOnFile(
+	private *runPolicyOnFile(
 		relPath: string,
 		policy: PolicyInstance,
 		context: RepopoCommandContext,
-	): Promise<void> {
+	): Operation<void> {
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
 		// Check if the policy is excluded for the file
@@ -192,12 +192,15 @@ export class CheckPolicy<
 
 		try {
 			// Execute the policy handler
-			const result = await run(() =>
-				this.executePolicyHandler(relPath, policy, perfStats, gitRoot),
+			const result = yield* this.executePolicyHandler(
+				relPath,
+				policy,
+				perfStats,
+				gitRoot,
 			);
 
 			// Handle the result of the policy execution
-			await this.handlePolicyResult(
+			yield* this.handlePolicyResult(
 				result,
 				relPath,
 				policy,
@@ -231,7 +234,7 @@ export class CheckPolicy<
 		gitRoot: string,
 	): Operation<PolicyHandlerResult> {
 		try {
-			const r = runWithPerf(policy.name, "handle", perfStats, () =>
+			return yield* runWithPerf(policy.name, "handle", perfStats, () =>
 				policy.handler({
 					file: relPath,
 					root: gitRoot,
@@ -239,9 +242,6 @@ export class CheckPolicy<
 					config: policy.config,
 				}),
 			);
-			return yield* r;
-			// const result = await run(r);
-			// return result;
 		} catch (error: unknown) {
 			this.error(
 				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
@@ -249,13 +249,13 @@ export class CheckPolicy<
 		}
 	}
 
-	private async handlePolicyResult(
+	private *handlePolicyResult(
 		result: PolicyHandlerResult,
 		relPath: string,
 		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
-	): Promise<void> {
+	): Operation<void> {
 		if (result === true) {
 			return;
 		}
@@ -263,7 +263,7 @@ export class CheckPolicy<
 		if (isPolicyFixResult(result)) {
 			this.handleFixResult(result, policy);
 		} else {
-			await this.handleFailureResult(
+			yield* this.handleFailureResult(
 				result,
 				relPath,
 				policy,
@@ -293,17 +293,17 @@ export class CheckPolicy<
 		this.logMessages(messages);
 	}
 
-	private async handleFailureResult(
+	private *handleFailureResult(
 		result: PolicyFailure,
 		relPath: string,
 		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
-	): Promise<void> {
+	): Operation<void> {
 		const messages = new StringBuilder();
 
 		if (this.flags.fix && policy.resolver) {
-			await this.attemptResolution(
+			yield* this.attemptResolution(
 				relPath,
 				policy,
 				policy.resolver,
@@ -318,19 +318,20 @@ export class CheckPolicy<
 		this.logMessages(messages);
 	}
 
-	private async attemptResolution(
+	private *attemptResolution(
 		relPath: string,
 		policy: PolicyInstance,
 		resolver: PolicyStandaloneResolver,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
 		messages: StringBuilder,
-	): Promise<void> {
+	): Operation<void> {
 		messages.append(`${newline}Attempting to resolve: ${relPath}`);
-		const resolveResult = await run(() =>
-			runWithPerf(policy.name, "resolve", perfStats, () =>
-				run(() => resolver({ file: relPath, root: gitRoot })),
-			),
+		const resolveResult = yield* runWithPerf(
+			policy.name,
+			"resolve",
+			perfStats,
+			() => run(() => resolver({ file: relPath, root: gitRoot })),
 		);
 
 		if (!resolveResult.resolved) {
@@ -365,8 +366,8 @@ export class CheckPolicy<
 	}
 }
 
-async function readStdin(): Promise<string> {
-	return new Promise((resolve) => {
+function* readStdin(): Operation<string> {
+	return yield* action<string>((resolve, reject) => () => {
 		const stdin = process.stdin;
 		stdin.setEncoding("utf8");
 
@@ -382,5 +383,6 @@ async function readStdin(): Promise<string> {
 		if (stdin.isTTY) {
 			resolve("");
 		}
+		reject(new Error("Rejection in readStdin"));
 	});
 }

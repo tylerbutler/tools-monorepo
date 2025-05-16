@@ -2,11 +2,7 @@ import assert from "node:assert/strict";
 import { updatePackageJsonFile } from "@fluid-tools/build-infrastructure";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
-import type {
-	PolicyFailure,
-	PolicyFixResult,
-	PolicyHandlerResult,
-} from "../policy.js";
+import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
