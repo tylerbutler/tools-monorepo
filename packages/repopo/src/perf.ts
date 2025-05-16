@@ -18,7 +18,7 @@ export function newPerfStats(): PolicyHandlerPerfStats {
 	};
 }
 
-export function* runWithPerf<T extends Operation<T>>(
+export function* runWithPerf<T>(
 	name: string,
 	action: PolicyAction,
 	stats: PolicyHandlerPerfStats,
