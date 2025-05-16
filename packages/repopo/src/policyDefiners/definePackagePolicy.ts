@@ -1,3 +1,4 @@
+import { type Operation, call } from "effection";
 import jsonfile from "jsonfile";
 import type { PackageJson } from "type-fest";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
@@ -17,7 +18,7 @@ const { readFile: readJson } = jsonfile;
 export type PackageJsonHandler<J, C> = (
 	json: J,
 	args: PolicyFunctionArguments<C>,
-) => Promise<PolicyHandlerResult>;
+) => Operation<PolicyHandlerResult>;
 
 /**
  * Define a repo policy for package.json files.
@@ -33,9 +34,9 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 	return {
 		name,
 		match: PackageJsonRegexMatch,
-		handler: async (innerArgs) => {
-			const json: J = await readJson(innerArgs.file);
-			return packagePolicy(json, innerArgs);
+		handler: function* (innerArgs) {
+			const json: J = yield* call(() => readJson(innerArgs.file));
+			return yield* packagePolicy(json, innerArgs);
 		},
 	};
 }
