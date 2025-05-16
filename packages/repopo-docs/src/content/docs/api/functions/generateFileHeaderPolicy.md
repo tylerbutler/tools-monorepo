@@ -7,7 +7,7 @@ title: "generateFileHeaderPolicy"
 
 > **generateFileHeaderPolicy**(`name`, `config`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L63)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L64)
 
 Given a [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/), produces a function that detects correct file headers
 and returns an error string if the header is missing or incorrect.
