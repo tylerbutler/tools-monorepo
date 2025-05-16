@@ -4,6 +4,7 @@
 
 ```ts
 
+import { Operation } from 'effection';
 import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
 
@@ -35,7 +36,7 @@ export function generatePackagePolicy<J = PackageJson, C = undefined>(name: stri
 export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha
-export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult>;
 
 // @alpha
 export interface PolicyDefinition<C = undefined> {
@@ -70,7 +71,7 @@ export interface PolicyFunctionArguments<C> {
 }
 
 // @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult>;
 
 // @alpha (undocumented)
 export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
@@ -88,7 +89,7 @@ export interface PolicyInstanceSettings<C> {
 export type PolicyName = string;
 
 // @alpha
-export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Promise<PolicyFixResult>;
+export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Operation<PolicyFixResult>;
 
 // @alpha (undocumented)
 export interface RepopoConfig {

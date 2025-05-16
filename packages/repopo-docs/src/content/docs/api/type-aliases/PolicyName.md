@@ -7,7 +7,7 @@ title: "PolicyName"
 
 > **PolicyName** = `string`
 
-Defined in: [policy.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L11)
+Defined in: [policy.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L12)
 
 A type representing a policy name.
 

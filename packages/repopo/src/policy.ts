@@ -1,3 +1,4 @@
+import type { Operation } from "effection";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
@@ -48,12 +49,7 @@ export interface PolicyFunctionArguments<C> {
 
 export type PolicyHandler<C = unknown | undefined> = (
 	args: PolicyFunctionArguments<C>,
-) => Promise<PolicyHandlerResult>;
-
-// export type PolicyCheckOnly = (
-// 	file: string,
-// 	root: string,
-// ) => Promise<PolicyHandlerResult>;
+) => Operation<PolicyHandlerResult>;
 
 /**
  * A standalone function that can be called to resolve a policy failure.
@@ -62,7 +58,7 @@ export type PolicyHandler<C = unknown | undefined> = (
  */
 export type PolicyStandaloneResolver<C = undefined> = (
 	args: Omit<PolicyFunctionArguments<C>, "resolve">,
-) => Promise<PolicyFixResult>;
+) => Operation<PolicyFixResult>;
 
 // function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 

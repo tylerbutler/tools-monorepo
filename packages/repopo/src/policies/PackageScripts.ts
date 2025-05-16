@@ -10,7 +10,7 @@ const expectedScripts = ["build", "clean"] as const;
  */
 export const PackageScripts = definePackagePolicy(
 	"PackageScripts",
-	async (json, { file }) => {
+	function* (json, { file }) {
 		const failResult: PolicyFailure = {
 			name: PackageScripts.name,
 			file,
