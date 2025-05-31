@@ -57,7 +57,7 @@
 		"@fluidframework/tinylicious-driver": "^2.33.2"
 	},
 	"devDependencies": {
-		"@arethetypeswrong/cli": "^0.17.4",
+		"@arethetypeswrong/cli": "^0.18.0",
 		"@biomejs/biome": "1.9.4",
 		"@fluid-tools/build-cli": "^0.56.0",
 		"@fluidframework/aqueduct": "^2.33.2",
