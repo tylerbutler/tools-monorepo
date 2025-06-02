@@ -27,7 +27,7 @@ importers:
         version: 3.1.1
       '@fluid-tools/build-cli':
         specifier: ^0.56.0
-        version: 0.56.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.4.5)
+        version: 0.56.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.8.2)
       '@fluidframework/build-tools':
         specifier: ^0.56.0
         version: 0.56.0(@types/node@22.13.17)
@@ -48,7 +48,7 @@ importers:
         version: 9.1.2
       generate-license-file:
         specifier: ^4.0.0
-        version: 4.0.0(typescript@5.4.5)
+        version: 4.0.0(typescript@5.8.2)
       npm-check-updates:
         specifier: ^18.0.1
         version: 18.0.1
@@ -69,10 +69,10 @@ importers:
         version: link:packages/sort-tsconfig
       syncpack:
         specifier: ^13.0.4
-        version: 13.0.4(typescript@5.4.5)
+        version: 13.0.4(typescript@5.8.2)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@22.13.17)(typescript@5.4.5)
+        version: 10.9.2(@types/node@22.13.17)(typescript@5.8.2)
 
   config:
     devDependencies:
@@ -146,6 +146,9 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.16.10
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       concurrently:
         specifier: ^9.1.2
         version: 9.1.2
@@ -237,6 +240,9 @@ importers:
       '@types/semver':
         specifier: ^7.7.0
         version: 7.7.0
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       '@vitest/coverage-v8':
         specifier: ^3.1.2
         version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.5(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.4)(yaml@2.7.1))
@@ -340,6 +346,9 @@ importers:
       '@types/whatwg-mimetype':
         specifier: ^3.0.2
         version: 3.0.2
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       '@vitest/coverage-v8':
         specifier: ^3.1.2
         version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.5(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.4)(yaml@2.7.1))
@@ -467,6 +476,9 @@ importers:
       '@hashicorp/platform-remark-plugins':
         specifier: ^0.2.1
         version: 0.2.1
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
 
   packages/fundamentals:
     devDependencies:
@@ -482,6 +494,9 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.16.10
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       '@vitest/coverage-v8':
         specifier: ^3.1.2
         version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.5(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.4)(yaml@2.7.1))
@@ -594,6 +609,9 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.16.10
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       concurrently:
         specifier: ^9.1.2
         version: 9.1.2
@@ -640,6 +658,9 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.16.10
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       concurrently:
         specifier: ^9.1.2
         version: 9.1.2
@@ -725,6 +746,9 @@ importers:
       '@types/tmp':
         specifier: ^0.2.6
         version: 0.2.6
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       generate-license-file:
         specifier: ^4.0.0
         version: 4.0.0(typescript@5.5.4)
@@ -816,6 +840,9 @@ importers:
       '@hashicorp/platform-remark-plugins':
         specifier: ^0.2.1
         version: 0.2.1
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
 
   packages/sort-tsconfig:
     dependencies:
@@ -868,6 +895,9 @@ importers:
       '@types/tmp':
         specifier: ^0.2.6
         version: 0.2.6
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       '@vitest/coverage-v8':
         specifier: ^3.1.2
         version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.5(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.4)(yaml@2.7.1))
@@ -919,6 +949,9 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.16.10
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250601.1
+        version: 7.0.0-dev.20250601.1
       '@vitest/coverage-v8':
         specifier: ^3.1.2
         version: 3.1.2(vitest@3.1.2(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.7.5(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.19.4)(yaml@2.7.1))
@@ -3925,6 +3958,53 @@ packages:
   '@typescript-eslint/visitor-keys@6.7.5':
     resolution: {integrity: sha512-3MaWdDZtLlsexZzDSdQWsFQ9l9nL8B80Z4fImSpyllFC/KLqWQRdEcB+gGGO+N3Q2uL40EsG66wZLsohPxNXvg==}
     engines: {node: ^16.0.0 || >=18.0.0}
+
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250601.1':
+    resolution: {integrity: sha512-PpggKNUyz55S7e92R6o6HVqQXo3SpEiMaWTCyhqZex7cHcUypXESlgtQKtla5Ij3OU9UwxGBbmbpr/dqByfbnA==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250601.1':
+    resolution: {integrity: sha512-8F9E0EcsZ7CgNYW3Qc9tdVuSZZqPw0W6G3PzEaSYC3w7nJizo4aQRZkbJm2JBpY3fu7i4yAL1v10FfMvaLnPCg==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250601.1':
+    resolution: {integrity: sha512-B0lqJ5pIqjYrL8Zzy0wQeXbsb2yRA+RnGrHb44tNfzALmH0n9wHgQEaOWLvi7L5ZX+OST8UbYjT8MBFRXYLDhQ==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20250601.1':
+    resolution: {integrity: sha512-poR91owummHiSTVEPO4+1cPmLcFuoEffxg4CFNdBXAT4pv6Fr44V10MUdNOnd0rhbGoJ05Hvg0AlCWk40hMC/Q==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm]
+    os: [linux]
+
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20250601.1':
+    resolution: {integrity: sha512-aAuEq2I/2Kb+T6Wz9OlJDLj7MbFOZbe21Lm9MyKV+Y4jJytPFaRhNsl777HcmPxy45ma6WzqpXmId0RdKlQveQ==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [linux]
+
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250601.1':
+    resolution: {integrity: sha512-qRIq5UOTChwbhBHZ9E3PmfNUa6JnQWwZ9PNclnBaJ56PXwan38fxxzatqr27NmQ3eyX4uQHe5DOu0Qplh5v5+A==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20250601.1':
+    resolution: {integrity: sha512-MPTDSuXNYKrT4Jg0RdLdAMdVy3MOeS4PdH1nNScaJxDQaaAAprU0RZffXBYL+49QmuV3o1PPAHCG50XzzRENVQ==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [win32]
+
+  '@typescript/native-preview@7.0.0-dev.20250601.1':
+    resolution: {integrity: sha512-vJRedmga1/bcMtrl8qLg6Etz12rs+XnmWGNrJEI/T2T5Gf1FEo5qVkwVTp3vt8E6qL87bbCYkzCK8Zzf6hSipA==}
+    engines: {node: '>=20.6.0'}
+    hasBin: true
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
@@ -13440,7 +13520,7 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@fluid-tools/build-cli@0.56.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.4.5)':
+  '@fluid-tools/build-cli@0.56.0(@types/node@22.13.17)(encoding@0.1.13)(typescript@5.8.2)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
       '@fluid-tools/build-infrastructure': 0.56.0(@types/node@22.13.17)
@@ -13460,7 +13540,7 @@ snapshots:
       async: 3.2.6
       azure-devops-node-api: 11.2.0
       change-case: 3.1.0
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.8.2)
       danger: 12.3.4(encoding@0.1.13)
       date-fns: 2.30.0
       debug: 4.4.0(supports-color@8.1.1)
@@ -17223,6 +17303,37 @@ snapshots:
       '@typescript-eslint/types': 6.7.5
       eslint-visitor-keys: 3.4.3
 
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250601.1':
+    optional: true
+
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250601.1':
+    optional: true
+
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250601.1':
+    optional: true
+
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20250601.1':
+    optional: true
+
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20250601.1':
+    optional: true
+
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250601.1':
+    optional: true
+
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20250601.1':
+    optional: true
+
+  '@typescript/native-preview@7.0.0-dev.20250601.1':
+    optionalDependencies:
+      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20250601.1
+      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20250601.1
+      '@typescript/native-preview-linux-arm': 7.0.0-dev.20250601.1
+      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20250601.1
+      '@typescript/native-preview-linux-x64': 7.0.0-dev.20250601.1
+      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20250601.1
+      '@typescript/native-preview-win32-x64': 7.0.0-dev.20250601.1
+
   '@ungap/structured-clone@1.3.0': {}
 
   '@vercel/nft@0.27.7(encoding@0.1.13)(rollup@4.40.0)':
@@ -18770,14 +18881,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.4
 
-  cosmiconfig@9.0.0(typescript@5.4.5):
+  cosmiconfig@8.3.6(typescript@5.8.2):
     dependencies:
-      env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
+      path-type: 4.0.0
     optionalDependencies:
-      typescript: 5.4.5
+      typescript: 5.8.2
 
   cosmiconfig@9.0.0(typescript@5.5.4):
     dependencies:
@@ -18787,6 +18898,15 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.5.4
+
+  cosmiconfig@9.0.0(typescript@5.8.2):
+    dependencies:
+      env-paths: 2.2.1
+      import-fresh: 3.3.0
+      js-yaml: 4.1.0
+      parse-json: 5.2.0
+    optionalDependencies:
+      typescript: 5.8.2
 
   cp-file@10.0.0:
     dependencies:
@@ -20158,13 +20278,13 @@ snapshots:
 
   gemoji@6.1.0: {}
 
-  generate-license-file@4.0.0(typescript@5.4.5):
+  generate-license-file@4.0.0(typescript@5.5.4):
     dependencies:
       '@commander-js/extra-typings': 13.1.0(commander@13.1.0)
       '@npmcli/arborist': 9.0.1
       cli-spinners: 2.9.2
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.5.4)
       enquirer: 2.4.1
       glob: 11.0.1
       json5: 2.2.3
@@ -20176,13 +20296,13 @@ snapshots:
       - supports-color
       - typescript
 
-  generate-license-file@4.0.0(typescript@5.5.4):
+  generate-license-file@4.0.0(typescript@5.8.2):
     dependencies:
       '@commander-js/extra-typings': 13.1.0(commander@13.1.0)
       '@npmcli/arborist': 9.0.1
       cli-spinners: 2.9.2
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.5.4)
+      cosmiconfig: 9.0.0(typescript@5.8.2)
       enquirer: 2.4.1
       glob: 11.0.1
       json5: 2.2.3
@@ -25946,12 +26066,12 @@ snapshots:
       lower-case: 1.1.4
       upper-case: 1.1.3
 
-  syncpack@13.0.4(typescript@5.4.5):
+  syncpack@13.0.4(typescript@5.8.2):
     dependencies:
       chalk: 5.4.1
       chalk-template: 1.1.0
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.8.2)
       effect: 3.14.0
       enquirer: 2.4.1
       fast-check: 3.23.2
@@ -26267,7 +26387,7 @@ snapshots:
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
-  ts-node@10.9.2(@types/node@22.13.17)(typescript@5.4.5):
+  ts-node@10.9.2(@types/node@22.13.17)(typescript@5.8.2):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -26281,7 +26401,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.4.5
+      typescript: 5.8.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
