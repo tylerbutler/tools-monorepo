@@ -30,7 +30,7 @@
 		"check": "npm run check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf --glob esm \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp _temp nyc",
-		"compile": "tsc",
+		"compile": "tsgo",
 		"eslint": "eslint --format stylish src",
 		"eslint:fix": "eslint --format stylish src --fix --fix-type problem,suggestion,layout",
 		"format": "biome check . --linter-enabled=false --write",

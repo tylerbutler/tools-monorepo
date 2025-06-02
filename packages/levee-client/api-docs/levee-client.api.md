@@ -29,6 +29,7 @@ export class LeveeClient {
         container: IFluidContainer<TContainerSchema>;
         services: LeveeContainerServices;
     }>;
+    // #region private
 }
 
 // @public @sealed

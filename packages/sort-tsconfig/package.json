@@ -44,7 +44,7 @@
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
-		"compile": "tsc",
+		"compile": "tsgo",
 		"format": "sort-package-json && biome check . --linter-enabled=false --write",
 		"full": "fluid-build . --task full",
 		"lint": "biome lint .",
