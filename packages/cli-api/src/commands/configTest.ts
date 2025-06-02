@@ -1,4 +1,4 @@
-import { CommandWithConfig } from "@tylerbu/cli-api";
+import { CommandWithConfig } from "../configCommand.js";
 
 export interface TestConfig {
 	stringProperty: string;
