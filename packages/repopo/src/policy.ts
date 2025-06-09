@@ -136,7 +136,7 @@ export interface PolicyDefinition<C = undefined> {
 /**
  * @alpha
  */
-export interface PolicyDefinitionAsyncInternal<C = undefined>
+export interface PolicyDefinitionAsync<C = undefined>
 	extends Omit<PolicyDefinition<C>, "handler" | "resolver"> {
 	/**
 	 * A handler function that checks if a file is compliant with the policy.
@@ -147,22 +147,6 @@ export interface PolicyDefinitionAsyncInternal<C = undefined>
 	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
 
-	handlerAsync: PolicyHandlerAsync<C>;
-}
-
-/**
- * @alpha
- */
-export interface PolicyDefinitionAsync<C = undefined>
-	extends PolicyDefinitionAsyncInternal<C> {
-	/**
-	 * A handler function that checks if a file is compliant with the policy.
-	 *
-	 * @param file - Repo-relative path to the file to check.
-	 * @param root - Absolute path to the root of the repo.
-	 * @param resolve - If true, automated policy fixes will be applied. Not all policies support automated fixes.
-	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
-	 */
 	handlerAsync: PolicyHandlerAsync<C>;
 }
 

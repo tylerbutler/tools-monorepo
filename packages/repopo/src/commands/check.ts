@@ -236,31 +236,28 @@ export class CheckPolicy<
 	): Operation<PolicyHandlerResult> {
 		const resolve = this.flags.fix;
 		try {
-			if (isPolicyDefinitionAsync(policy)) {
-				return yield* runWithPerf(
-					policy.name,
-					"handle",
-					perfStats,
-					function* () {
-						return yield* call(() =>
-							policy.handlerAsync({
+			return yield* runWithPerf(
+				policy.name,
+				"handle",
+				perfStats,
+				isPolicyDefinitionAsync(policy)
+					? function* () {
+							return yield* call(() =>
+								policy.handlerAsync({
+									file: relPath,
+									root: gitRoot,
+									resolve,
+									config: policy.config,
+								}),
+							);
+						}
+					: () =>
+							policy.handler({
 								file: relPath,
 								root: gitRoot,
 								resolve,
 								config: policy.config,
 							}),
-						);
-					},
-				);
-			}
-
-			return yield* runWithPerf(policy.name, "handle", perfStats, () =>
-				policy.handler({
-					file: relPath,
-					root: gitRoot,
-					resolve,
-					config: policy.config,
-				}),
 			);
 		} catch (error: unknown) {
 			this.error(

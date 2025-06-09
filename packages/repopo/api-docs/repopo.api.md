@@ -50,7 +50,7 @@ export interface PolicyDefinition<C = undefined> {
 }
 
 // @alpha (undocumented)
-export interface PolicyDefinitionAsync<C = undefined> extends PolicyDefinitionAsyncInternal<C> {
+export interface PolicyDefinitionAsync<C = undefined> extends Omit<PolicyDefinition<C>, "handler" | "resolver"> {
     handlerAsync: PolicyHandlerAsync<C>;
 }
 
