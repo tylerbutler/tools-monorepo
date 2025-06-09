@@ -7,7 +7,7 @@ title: "PolicyHandlerResult"
 
 > **PolicyHandlerResult** = `true` \| [`PolicyFailure`](/api/interfaces/policyfailure/) \| [`PolicyFixResult`](/api/interfaces/policyfixresult/)
 
-Defined in: [policy.ts:186](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L186)
+Defined in: [policy.ts:243](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L243)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

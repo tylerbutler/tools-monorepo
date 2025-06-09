@@ -7,7 +7,7 @@ title: "PolicyHandler"
 
 > **PolicyHandler**\<`C`\> = (`args`) => `Operation`\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>
 
-Defined in: [policy.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L50)
+Defined in: [policy.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L52)
 
 A policy handler is a function that is called to check policy against a file.
 

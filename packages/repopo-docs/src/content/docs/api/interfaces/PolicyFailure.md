@@ -5,7 +5,7 @@ prev: false
 title: "PolicyFailure"
 ---
 
-Defined in: [policy.ts:149](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L149)
+Defined in: [policy.ts:206](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L206)
 
 A policy failure.
 
@@ -23,7 +23,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **autoFixable**: `boolean`
 
-Defined in: [policy.ts:163](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L163)
+Defined in: [policy.ts:220](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L220)
 
 Set to `true` if the policy can be fixed automatically.
 
@@ -37,7 +37,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **errorMessage**: `string`
 
-Defined in: [policy.ts:168](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L168)
+Defined in: [policy.ts:225](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L225)
 
 An optional error message accompanying the failure.
 
@@ -51,7 +51,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **file**: `string`
 
-Defined in: [policy.ts:158](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L158)
+Defined in: [policy.ts:215](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L215)
 
 Path to the file that failed the policy.
 
@@ -65,7 +65,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policy.ts:153](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L153)
+Defined in: [policy.ts:210](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L210)
 
 Name of the policy that failed.
 
