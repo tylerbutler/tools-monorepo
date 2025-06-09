@@ -5,7 +5,14 @@ prev: false
 title: "FileHeaderGeneratorConfig"
 ---
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:31](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L31)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:37](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L37)
+
+Configuration for generating file headers with specific formatting rules.
+
+## Remarks
+
+This interface extends FileHeaderPolicyConfig and adds formatting-specific
+properties to control how headers are inserted into different file types.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -39,7 +46,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **headerEnd**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L53)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L60)
 
 Regex matching the header postfix.
 
@@ -53,7 +60,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **headerStart**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:38](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L38)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L45)
 
 Regex matching header prefix (e.g. `/*!\r?\n`)
 
@@ -85,7 +92,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **lineEnd**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L48)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L55)
 
 Regex matching the end of each line (e.g., `\r?\n`)
 
@@ -99,7 +106,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **lineStart**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:43](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L43)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L50)
 
 Regex matching beginning of each line (e.g. ' * ')
 
@@ -113,7 +120,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **match**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:33](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L33)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L40)
+
+Regular expression that matches files this header generator applies to
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -125,7 +134,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **replacer**: (`content`, `config`) => `string`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L55)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L69)
+
+Function that generates the properly formatted header content for insertion into files.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -137,10 +148,16 @@ This API should not be used in production and may be trimmed from a public relea
 
 `string`
 
+The original file content
+
 ##### config
 
 [`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)
 
+The file header policy configuration
+
 #### Returns
 
 `string`
+
+The formatted header string to insert
