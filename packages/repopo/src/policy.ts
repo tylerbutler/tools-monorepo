@@ -1,4 +1,6 @@
 import type { Operation } from "effection";
+import type { RequireAtLeastOne } from "type-fest";
+import { isGeneratorFunction } from "./generators.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
@@ -52,6 +54,22 @@ export type PolicyHandler<C = unknown | undefined> = (
 ) => Operation<PolicyHandlerResult>;
 
 /**
+ * A policy handler async function that is called to check policy against a file.
+ *
+ * @alpha
+ */
+export type PolicyHandlerAsync<C = unknown | undefined> = (
+	args: PolicyFunctionArguments<C>,
+) => Promise<PolicyHandlerResult>;
+
+export function isPolicyHandlerAsync(
+	// biome-ignore lint/suspicious/noExplicitAny: type guard so the broad type is OK
+	fn: PolicyHandler<any> | PolicyHandlerAsync<any>,
+): fn is PolicyHandlerAsync {
+	return !isGeneratorFunction(fn);
+}
+
+/**
  * A standalone function that can be called to resolve a policy failure.
  *
  * @alpha
@@ -59,8 +77,6 @@ export type PolicyHandler<C = unknown | undefined> = (
 export type PolicyStandaloneResolver<C = undefined> = (
 	args: Omit<PolicyFunctionArguments<C>, "resolve">,
 ) => Operation<PolicyFixResult>;
-
-// function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
 
 /**
  * A RepoPolicyDefinition checks and applies policies to files in the repository.
@@ -120,6 +136,45 @@ export interface PolicyDefinition<C = undefined> {
 /**
  * @alpha
  */
+export interface PolicyDefinitionAsyncInternal<C = undefined>
+	extends Omit<PolicyDefinition<C>, "handler" | "resolver"> {
+	/**
+	 * A handler function that checks if a file is compliant with the policy.
+	 *
+	 * @param file - Repo-relative path to the file to check.
+	 * @param root - Absolute path to the root of the repo.
+	 * @param resolve - If true, automated policy fixes will be applied. Not all policies support automated fixes.
+	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
+	 */
+
+	handlerAsync: PolicyHandlerAsync<C>;
+}
+
+/**
+ * @alpha
+ */
+export interface PolicyDefinitionAsync<C = undefined>
+	extends PolicyDefinitionAsyncInternal<C> {
+	/**
+	 * A handler function that checks if a file is compliant with the policy.
+	 *
+	 * @param file - Repo-relative path to the file to check.
+	 * @param root - Absolute path to the root of the repo.
+	 * @param resolve - If true, automated policy fixes will be applied. Not all policies support automated fixes.
+	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
+	 */
+	handlerAsync: PolicyHandlerAsync<C>;
+}
+
+export function isPolicyDefinitionAsync(
+	def: PolicyDefinition | PolicyDefinitionAsync,
+): def is PolicyDefinitionAsync {
+	return (def as PolicyDefinition).handler === undefined;
+}
+
+/**
+ * @alpha
+ */
 export interface PolicyInstanceSettings<C> {
 	/**
 	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
@@ -138,8 +193,10 @@ export interface PolicyInstanceSettings<C> {
 /**
  * @alpha
  */
-export type PolicyInstance<C = undefined> = PolicyDefinition<C> &
-	PolicyInstanceSettings<C>;
+export type PolicyInstance<C = undefined> = RequireAtLeastOne<
+	PolicyDefinition<C> & PolicyDefinitionAsync<C> & PolicyInstanceSettings<C>,
+	"handler" | "handlerAsync"
+>;
 
 /**
  * A policy failure.

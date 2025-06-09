@@ -1,7 +1,7 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { type Operation, action, all, run } from "effection";
+import { type Operation, action, all, call, run } from "effection";
 import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
@@ -13,6 +13,7 @@ import {
 	type PolicyHandlerResult,
 	type PolicyInstance,
 	type PolicyStandaloneResolver,
+	isPolicyDefinitionAsync,
 	isPolicyFixResult,
 } from "../policy.js";
 
@@ -233,12 +234,31 @@ export class CheckPolicy<
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
 	): Operation<PolicyHandlerResult> {
+		const resolve = this.flags.fix;
 		try {
+			if (isPolicyDefinitionAsync(policy)) {
+				return yield* runWithPerf(
+					policy.name,
+					"handle",
+					perfStats,
+					function* () {
+						return yield* call(() =>
+							policy.handlerAsync({
+								file: relPath,
+								root: gitRoot,
+								resolve,
+								config: policy.config,
+							}),
+						);
+					},
+				);
+			}
+
 			return yield* runWithPerf(policy.name, "handle", perfStats, () =>
 				policy.handler({
 					file: relPath,
 					root: gitRoot,
-					resolve: this.flags.fix,
+					resolve,
 					config: policy.config,
 				}),
 			);

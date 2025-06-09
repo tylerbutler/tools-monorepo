@@ -28,9 +28,7 @@ export type PackageJsonHandler<J, C> = (
 export function definePackagePolicy<J = PackageJson, C = undefined>(
 	name: string,
 	packagePolicy: PackageJsonHandler<J, C>,
-	// args: PolicyFunctionArguments<C>,
 ): PolicyDefinition<C> {
-	// const func = () => handler(json, args);
 	return {
 		name,
 		match: PackageJsonRegexMatch,

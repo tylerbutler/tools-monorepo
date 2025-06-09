@@ -2,10 +2,10 @@
 editUrl: false
 next: false
 prev: false
-title: "generateFileHeaderPolicy"
+title: "defineFileHeaderPolicy"
 ---
 
-> **generateFileHeaderPolicy**(`name`, `config`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
+> **defineFileHeaderPolicy**(`name`, `config`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
 
 Defined in: [policyDefiners/defineFileHeaderPolicy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L64)
 

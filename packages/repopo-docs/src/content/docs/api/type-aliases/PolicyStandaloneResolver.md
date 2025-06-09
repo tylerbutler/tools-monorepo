@@ -7,7 +7,7 @@ title: "PolicyStandaloneResolver"
 
 > **PolicyStandaloneResolver**\<`C`\> = (`args`) => `Operation`\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
 
-Defined in: [policy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L59)
+Defined in: [policy.ts:77](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L77)
 
 A standalone function that can be called to resolve a policy failure.
 

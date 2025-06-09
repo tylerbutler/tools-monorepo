@@ -1,4 +1,8 @@
-import type { PolicyDefinition, PolicyFailure, PolicyFixResult } from "repopo";
+import type {
+	PolicyDefinitionAsync,
+	PolicyFailure,
+	PolicyFixResult,
+} from "repopo";
 import { isSorted, sortTsconfigFile } from "sort-tsconfig";
 
 /**
@@ -6,11 +10,11 @@ import { isSorted, sortTsconfigFile } from "sort-tsconfig";
  *
  * @alpha
  */
-export const SortTsconfigsPolicy: PolicyDefinition = {
+export const SortTsconfigsPolicy: PolicyDefinitionAsync = {
 	name: "SortTsconfigs",
 	match: /.*\.?tsconfig\.json$/i,
-	// biome-ignore lint/correctness/useYield: no yield needed
-	handler: function* ({ file, config, resolve }) {
+	// biome-ignore lint/suspicious/useAwait: async function required
+	handlerAsync: async ({ file, config, resolve }) => {
 		if (config === undefined) {
 			return true;
 		}

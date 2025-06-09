@@ -2,30 +2,24 @@
 editUrl: false
 next: false
 prev: false
-title: "PolicyDefinition"
+title: "PolicyDefinitionAsync"
 ---
 
-Defined in: [policy.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L94)
-
-A RepoPolicyDefinition checks and applies policies to files in the repository.
-
-Each policy has a name and a match regex for matching which files it should apply to. Every file in th repo is
-enumerated and if it matches the regex for a policy, that policy is applied.
-
-Each policy includes a handler function that checks a file against the policy and can optionally resolve any problems
-(automated resolutions depend on the policy implementation).
+Defined in: [policy.ts:156](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L156)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
 :::
+
+## Extends
+
+- `PolicyDefinitionAsyncInternal`\<`C`\>
 
 ## Type Parameters
 
 ### C
 
 `C` = `undefined`
-
-type of configuration object used by the policy
 
 ## Properties
 
@@ -41,6 +35,10 @@ A default config that will be used if none is provided.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
+#### Inherited from
+
+`PolicyDefinitionAsyncInternal.defaultConfig`
+
 ***
 
 ### description?
@@ -55,13 +53,17 @@ A more detailed description of the policy and its intended function.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
+#### Inherited from
+
+`PolicyDefinitionAsyncInternal.description`
+
 ***
 
-### handler
+### handlerAsync
 
-> **handler**: [`PolicyHandler`](/api/type-aliases/policyhandler/)\<`C`\>
+> **handlerAsync**: [`PolicyHandlerAsync`](/api/type-aliases/policyhandlerasync/)\<`C`\>
 
-Defined in: [policy.ts:119](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L119)
+Defined in: [policy.ts:166](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L166)
 
 A handler function that checks if a file is compliant with the policy.
 
@@ -85,6 +87,10 @@ If true, automated policy fixes will be applied. Not all policies support automa
 
 True if the file passed the policy; otherwise a PolicyFailure object will be returned.
 
+#### Overrides
+
+`PolicyDefinitionAsyncInternal.handlerAsync`
+
 ***
 
 ### match
@@ -98,6 +104,10 @@ A regular expression that is used to match files in the repo.
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
 :::
+
+#### Inherited from
+
+`PolicyDefinitionAsyncInternal.match`
 
 ***
 
@@ -113,28 +123,6 @@ The name of the policy; displayed in UI and used in settings.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
-***
+#### Inherited from
 
-### resolver?
-
-> `optional` **resolver**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
-
-Defined in: [policy.ts:128](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L128)
-
-A resolver function that can be used to automatically address the policy violation.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
-#### Param
-
-Repo-relative path to the file to check.
-
-#### Param
-
-Absolute path to the root of the repo.
-
-#### Returns
-
-true if the file passed the policy; otherwise a PolicyFailure object will be returned.
+`PolicyDefinitionAsyncInternal.name`
