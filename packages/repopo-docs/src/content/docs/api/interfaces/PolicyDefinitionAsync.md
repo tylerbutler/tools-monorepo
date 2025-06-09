@@ -5,7 +5,7 @@ prev: false
 title: "PolicyDefinitionAsync"
 ---
 
-Defined in: [policy.ts:156](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L156)
+Defined in: [policy.ts:139](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L139)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -13,7 +13,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Extends
 
-- `PolicyDefinitionAsyncInternal`\<`C`\>
+- [`Omit`](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys)\<[`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>, `"handler"` \| `"resolver"`\>
 
 ## Type Parameters
 
@@ -37,7 +37,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### Inherited from
 
-`PolicyDefinitionAsyncInternal.defaultConfig`
+`Omit.defaultConfig`
 
 ***
 
@@ -55,7 +55,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### Inherited from
 
-`PolicyDefinitionAsyncInternal.description`
+`Omit.description`
 
 ***
 
@@ -63,7 +63,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **handlerAsync**: [`PolicyHandlerAsync`](/api/type-aliases/policyhandlerasync/)\<`C`\>
 
-Defined in: [policy.ts:166](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L166)
+Defined in: [policy.ts:150](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L150)
 
 A handler function that checks if a file is compliant with the policy.
 
@@ -87,10 +87,6 @@ If true, automated policy fixes will be applied. Not all policies support automa
 
 True if the file passed the policy; otherwise a PolicyFailure object will be returned.
 
-#### Overrides
-
-`PolicyDefinitionAsyncInternal.handlerAsync`
-
 ***
 
 ### match
@@ -107,7 +103,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### Inherited from
 
-`PolicyDefinitionAsyncInternal.match`
+`Omit.match`
 
 ***
 
@@ -125,4 +121,4 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### Inherited from
 
-`PolicyDefinitionAsyncInternal.name`
+`Omit.name`
