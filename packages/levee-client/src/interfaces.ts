@@ -22,11 +22,16 @@ export interface LeveeClientProps {
 }
 
 /**
+ * Configuration for connecting to a Levee service instance.
+ *
  * @public
  */
 export interface LeveeConnectionConfig {
+	/** The port number for the Levee service. If not specified, uses the default port. */
 	readonly port?: number;
+	/** The domain name for the Levee service. If not specified, uses the default domain. */
 	readonly domain?: string;
+	/** Token provider for authentication with the Levee service. */
 	readonly tokenProvider: ITokenProvider;
 }
 

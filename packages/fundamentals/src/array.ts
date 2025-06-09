@@ -55,11 +55,23 @@ export function isSorted<T>(
 }
 
 /**
+ * A comparison function for sorting numbers in ascending order.
+ *
+ * @param a - First number to compare
+ * @param b - Second number to compare
+ * @returns Negative if a \< b, positive if a \> b, zero if equal
+ *
  * @internal
  */
 export const numberSort = (a: number, b: number) => a - b;
 
 /**
+ * A comparison function for sorting strings using locale-aware comparison.
+ *
+ * @param a - First string to compare
+ * @param b - Second string to compare
+ * @returns Negative if a < b, positive if a > b, zero if equal
+ *
  * @internal
  */
 export const wordSort = (a: string, b: string) => a.localeCompare(b);

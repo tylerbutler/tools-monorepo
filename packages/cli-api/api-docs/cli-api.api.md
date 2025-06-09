@@ -55,7 +55,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
     warningWithDebugTrace(message: string | Error): string | Error;
 }
 
-// @beta (undocumented)
+// @beta
 export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger): Promise<{
     commit: string;
     mergeability: CommitMergeability;
@@ -84,10 +84,10 @@ export interface CommandWithContext<CONTEXT> {
     getContext(): Promise<CONTEXT>;
 }
 
-// @beta (undocumented)
+// @beta
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
-// @beta (undocumented)
+// @beta
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
@@ -141,7 +141,7 @@ export function readJsonWithIndent<J = unknown>(filePath: PathLike): Promise<{
     indent: Indent;
 }>;
 
-// @beta (undocumented)
+// @beta
 export const RegExpFlag: FlagDefinition<RegExp, CustomOptions, {
 multiple: false;
 requiredOrDefaulted: false;
@@ -167,7 +167,5 @@ export function shortCommit(commit: string): string;
 
 // @beta
 export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
-
-// (No @packageDocumentation comment for this package)
 
 ```

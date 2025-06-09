@@ -45,6 +45,4 @@ export class TsConfigSorter {
     sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
 }
 
-// (No @packageDocumentation comment for this package)
-
 ```

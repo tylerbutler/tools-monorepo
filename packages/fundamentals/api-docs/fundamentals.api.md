@@ -23,6 +23,4 @@ export class WriteOnceMap<K, V> extends Map<K, V> {
     set(key: K, value: V, force?: boolean): this;
 }
 
-// (No @packageDocumentation comment for this package)
-
 ```

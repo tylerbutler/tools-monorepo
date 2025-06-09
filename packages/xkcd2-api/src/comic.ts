@@ -1,28 +1,44 @@
 /**
- * Comic model
+ * Comic model representing an XKCD comic with all its metadata.
  *
  * @public
  */
 export interface Comic {
+	/** The alt text for the comic image */
 	alt?: string;
+	/** The day of the month the comic was published */
 	day?: number;
+	/** The URL of the comic image */
 	img?: string;
+	/** A link related to the comic (if any) */
 	link?: URL;
+	/** The month the comic was published */
 	month?: number;
+	/** News or additional information about the comic */
 	news?: string;
+	/** The comic number/ID (required) */
 	num: number;
+	/** A URL-safe version of the comic title */
 	safe_title?: string;
+	/** The title of the comic */
 	title?: string;
+	/** The transcript text of the comic */
 	transcript?: string;
+	/** The year the comic was published */
 	year?: number;
 }
 
 /**
+ * Properties for rendering a comic frame with navigation information.
+ *
  * @public
  */
 export interface ComicFrameProps {
+	/** The comic data to display */
 	comic: Comic;
+	/** The ID of the previous comic for navigation */
 	previousId: string;
+	/** The ID of the next comic for navigation (if available) */
 	nextId?: string;
 }
 

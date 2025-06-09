@@ -6,6 +6,14 @@
 
 # index
 
+Fundamental, zero-dependency functions and classes for common programming tasks.
+
+## Remarks
+
+This package contains utility functions and classes that are frequently needed
+across projects. All utilities are designed to have zero external dependencies
+and provide foundational functionality for arrays, sets, git operations, and more.
+
 ## Classes
 
 ### KeyAlreadySet

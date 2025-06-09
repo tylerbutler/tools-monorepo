@@ -41,6 +41,25 @@ import { createLeveeAudienceMember } from "./audience.js";
 import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.js";
 
 /**
+ * Client for interacting with Levee service to create and manage Fluid containers.
+ *
+ * @remarks
+ * The LeveeClient provides a simplified interface for creating and accessing Fluid containers
+ * through the Levee service. It handles container lifecycle, authentication, and service configuration.
+ *
+ * @example
+ * ```typescript
+ * const client = new LeveeClient({
+ *   connection: {
+ *     tokenProvider: myTokenProvider,
+ *     domain: "localhost",
+ *     port: 7070
+ *   }
+ * });
+ *
+ * const { container, services } = await client.createContainer(schema, "2");
+ * ```
+ *
  * @public
  */
 export class LeveeClient {
