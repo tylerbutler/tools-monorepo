@@ -140,7 +140,7 @@ describe("download command", async () => {
 		// });
 
 		// biome-ignore lint/suspicious/noSkippedTests: <explanation>
-																						it.skip("with --filename", async () => {
+		it.skip("with --filename", async () => {
 			// const startingDir = process.cwd();
 			await withDir(
 				async ({ path: downloadDir }) => {
