@@ -1,11 +1,11 @@
 /**
  * A tool for enforcing repository policies and standards across codebases.
- * 
+ *
  * @remarks
  * Repopo provides a framework for defining and enforcing policies across repositories,
  * such as file headers, package.json consistency, and other code standards.
  * It can be used as a CLI tool or integrated into CI/CD pipelines.
- * 
+ *
  * @packageDocumentation
  */
 
