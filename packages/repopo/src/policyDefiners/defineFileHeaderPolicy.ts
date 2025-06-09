@@ -27,11 +27,11 @@ export interface FileHeaderPolicyConfig {
 
 /**
  * Configuration for generating file headers with specific formatting rules.
- * 
+ *
  * @remarks
  * This interface extends FileHeaderPolicyConfig and adds formatting-specific
  * properties to control how headers are inserted into different file types.
- * 
+ *
  * @alpha
  */
 export interface FileHeaderGeneratorConfig
@@ -59,9 +59,9 @@ export interface FileHeaderGeneratorConfig
 	 */
 	headerEnd?: RegExp;
 
-	/** 
+	/**
 	 * Function that generates the properly formatted header content for insertion into files.
-	 * 
+	 *
 	 * @param content - The original file content
 	 * @param config - The file header policy configuration
 	 * @returns The formatted header string to insert
