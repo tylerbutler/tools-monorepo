@@ -15,15 +15,13 @@ export function defineFileHeaderPolicy(name: string, config: FileHeaderGenerator
 // @alpha
 export function definePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
 
-// @alpha (undocumented)
+// @alpha
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
     headerEnd?: RegExp;
     headerStart?: RegExp;
     lineEnd: RegExp;
     lineStart: RegExp;
-    // (undocumented)
     match: RegExp;
-    // (undocumented)
     replacer: (content: string, config: FileHeaderPolicyConfig) => string;
 }
 
@@ -107,7 +105,5 @@ export interface RepopoConfig {
 }
 
 export { run }
-
-// (No @packageDocumentation comment for this package)
 
 ```
