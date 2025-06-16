@@ -13,7 +13,6 @@ import {
 	type PolicyHandlerResult,
 	type PolicyInstance,
 	type PolicyStandaloneResolver,
-	isPolicyDefinitionAsync,
 	isPolicyFixResult,
 } from "../policy.js";
 
@@ -236,29 +235,29 @@ export class CheckPolicy<
 	): Operation<PolicyHandlerResult> {
 		const resolve = this.flags.fix;
 		try {
-			return yield* runWithPerf(
+			const result = yield* runWithPerf(
 				policy.name,
 				"handle",
 				perfStats,
-				isPolicyDefinitionAsync(policy)
-					? function* () {
-							return yield* call(() =>
-								policy.handlerAsync({
-									file: relPath,
-									root: gitRoot,
-									resolve,
-									config: policy.config,
-								}),
-							);
-						}
-					: () =>
-							policy.handler({
-								file: relPath,
-								root: gitRoot,
-								resolve,
-								config: policy.config,
-							}),
+				function* () {
+					const handlerResult = policy.handler({
+						file: relPath,
+						root: gitRoot,
+						resolve,
+						config: policy.config,
+					});
+
+					// Handle both Operation and Promise return types
+					if (handlerResult instanceof Promise) {
+						return yield* call(() => handlerResult);
+					}
+					return yield* handlerResult;
+				},
 			);
+			if (result === undefined) {
+				throw new Error("Policy result was undefined.");
+			}
+			return result;
 		} catch (error: unknown) {
 			this.error(
 				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
