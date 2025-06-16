@@ -13,7 +13,6 @@ export { run } from "@oclif/core";
 
 export type {
 	PolicyDefinition,
-	PolicyDefinitionAsync,
 	PolicyFailure,
 	PolicyFixResult,
 	PolicyFunctionArguments,

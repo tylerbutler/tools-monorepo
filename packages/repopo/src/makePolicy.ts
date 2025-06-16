@@ -1,6 +1,5 @@
 import type {
 	PolicyDefinition,
-	PolicyDefinitionAsync,
 	PolicyHandler,
 	PolicyInstance,
 	PolicyInstanceSettings,

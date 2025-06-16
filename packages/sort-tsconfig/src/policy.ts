@@ -1,5 +1,5 @@
 import type {
-	PolicyDefinitionAsync,
+	PolicyDefinition,
 	PolicyFailure,
 	PolicyFixResult,
 } from "repopo";
@@ -10,11 +10,11 @@ import { isSorted, sortTsconfigFile } from "sort-tsconfig";
  *
  * @alpha
  */
-export const SortTsconfigsPolicy: PolicyDefinitionAsync = {
+export const SortTsconfigsPolicy: PolicyDefinition = {
 	name: "SortTsconfigs",
 	match: /.*\.?tsconfig\.json$/i,
 	// biome-ignore lint/suspicious/useAwait: async function required
-	handlerAsync: async ({ file, config, resolve }) => {
+	handler: async ({ file, config, resolve }) => {
 		if (config === undefined) {
 			return true;
 		}
