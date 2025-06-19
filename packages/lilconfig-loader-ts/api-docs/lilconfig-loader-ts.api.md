@@ -9,6 +9,4 @@ import type { Loader } from 'lilconfig';
 // @alpha
 export const TypeScriptLoader: Loader;
 
-// (No @packageDocumentation comment for this package)
-
 ```
