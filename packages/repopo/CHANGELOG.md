@@ -1,5 +1,22 @@
 # repopo
 
+## 0.6.1
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`c0b280f`](https://github.com/tylerbutler/tools-monorepo/commit/c0b280fea16d7e242b7ca587b1d7bf40a7f2fb60)
+
+</small>
+
+- `@tylerbu/fundamentals@0.2.3`
+- `@tylerbu/cli-api@0.7.3`
+
+</details>
+
 ## 0.6.0
 
 ### Minor Changes
