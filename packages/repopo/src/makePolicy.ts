@@ -47,7 +47,7 @@ export function makePolicyDefinition<C = undefined>(
  * @alpha
  */
 export function makePolicy<C>(
-	definition: PolicyDefinition<C>,
+	definition: PolicyDefinition<C> | PolicyDefinitionAsync<C>,
 	config?: C,
 	settings?: PolicyInstanceSettings<C>,
 ): PolicyInstance<C> {

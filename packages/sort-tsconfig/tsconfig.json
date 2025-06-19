@@ -2,11 +2,7 @@
 	"extends": "../../config/tsconfig.strict.json",
 	"include": ["src/**/*"],
 	"compilerOptions": {
-		"noPropertyAccessFromIndexSignature": false,
-		// TODO: Should these settings be disabled in the strict config?
-		"noUncheckedIndexedAccess": false,
 		"types": ["node"],
-		// "lib": ["ES2020", "DOM", "DOM.Iterable"],
 		"outDir": "./esm",
 		"rootDir": "./src",
 	},
