@@ -1,3 +1,14 @@
+/**
+ * Client library for interacting with Levee service to create and manage Fluid containers.
+ *
+ * @remarks
+ * The Levee client provides a simplified interface for working with Microsoft Fluid Framework
+ * containers through the Levee service. It handles container lifecycle, authentication,
+ * and service configuration, making it easier to build collaborative applications.
+ *
+ * @packageDocumentation
+ */
+
 export type {
 	ILeveeAudience,
 	LeveeClientProps,

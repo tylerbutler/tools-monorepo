@@ -18,7 +18,7 @@ export { CompatibilityMode }
 // @public @sealed
 export type ILeveeAudience = IServiceAudience<LeveeMember>;
 
-// @public (undocumented)
+// @public
 export class LeveeClient {
     constructor(properties: LeveeClientProps);
     createContainer<TContainerSchema extends ContainerSchema>(containerSchema: TContainerSchema, compatibilityMode: CompatibilityMode): Promise<{
@@ -37,13 +37,10 @@ export interface LeveeClientProps {
     readonly logger?: ITelemetryBaseLogger;
 }
 
-// @public (undocumented)
+// @public
 export interface LeveeConnectionConfig {
-    // (undocumented)
     readonly domain?: string;
-    // (undocumented)
     readonly port?: number;
-    // (undocumented)
     readonly tokenProvider: ITokenProvider;
 }
 
@@ -61,7 +58,5 @@ export interface LeveeMember extends IMember {
 export interface LeveeUser extends IUser {
     readonly name: string;
 }
-
-// (No @packageDocumentation comment for this package)
 
 ```

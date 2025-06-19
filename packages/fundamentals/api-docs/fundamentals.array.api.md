@@ -7,10 +7,10 @@
 // @beta
 export function isSorted<T>(arr: T[], compareFn: (a: T, b: T) => number): boolean;
 
-// @internal (undocumented)
+// @internal
 export const numberSort: (a: number, b: number) => number;
 
-// @internal (undocumented)
+// @internal
 export const wordSort: (a: string, b: string) => number;
 
 // (No @packageDocumentation comment for this package)
