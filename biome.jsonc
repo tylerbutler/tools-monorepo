@@ -12,6 +12,7 @@
 			// build output
 			"_temp/**",
 			".coverage/**",
+			".svelte-kit/**",
 			"built/**",
 			"dist/**",
 			"esm/**",
@@ -57,6 +58,7 @@
 		},
 	},
 	"javascript": {
+		"globals": ["$state", "$derived"],
 		"formatter": {
 			"jsxQuoteStyle": "double",
 			"trailingCommas": "all",
