@@ -2,6 +2,7 @@ import { readdir, rm } from "node:fs/promises";
 import http from "node:http";
 import { runCommand } from "@oclif/test";
 import { getRandomPort } from "get-port-please";
+import jsonfile from "jsonfile";
 import path from "pathe";
 import handler from "serve-handler";
 import { temporaryDirectory } from "tempy";
@@ -16,7 +17,6 @@ import {
 	it,
 } from "vitest";
 
-import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
 import { getTestUrls, testDataPath } from "../common.js";

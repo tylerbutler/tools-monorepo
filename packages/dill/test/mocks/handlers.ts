@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { http, HttpResponse } from "msw";
+import { HttpResponse, http } from "msw";
 import path from "pathe";
 
 import { testDataPath } from "../common.js";

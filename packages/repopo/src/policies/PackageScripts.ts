@@ -17,17 +17,13 @@ export const PackageScripts = definePackagePolicy(
 			autoFixable: false,
 		};
 
-		const hasScriptsField = Object.prototype.hasOwnProperty.call(
-			json,
-			"scripts",
-		);
+		const hasScriptsField = Object.hasOwn(json, "scripts");
 
 		const missingScripts: string[] = [];
 		if (hasScriptsField) {
 			missingScripts.push(
 				...expectedScripts.filter(
-					(script) =>
-						!Object.prototype.hasOwnProperty.call(json.scripts, script),
+					(script) => !Object.hasOwn(json.scripts, script),
 				),
 			);
 		}

@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { Args } from "@oclif/core";
 import {
-	GitCommand,
 	checkConflicts,
+	GitCommand,
 	getMergeBase,
 	revList,
 	shortCommit,
