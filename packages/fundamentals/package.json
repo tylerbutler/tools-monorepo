@@ -55,7 +55,7 @@
 		"test:coverage": "vitest run test --coverage"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
+		"@biomejs/biome": "2.0.4",
 		"@microsoft/api-documenter": "^7.26.26",
 		"@microsoft/api-extractor": "^7.52.7",
 		"@types/node": "^20.12.7",

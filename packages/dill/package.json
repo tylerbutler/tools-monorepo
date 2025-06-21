@@ -96,7 +96,7 @@
 		"whatwg-mimetype": "^4.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
+		"@biomejs/biome": "2.0.4",
 		"@microsoft/api-extractor": "^7.52.7",
 		"@oclif/plugin-command-snapshot": "^5.2.38",
 		"@oclif/test": "^4.1.12",
