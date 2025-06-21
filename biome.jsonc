@@ -37,6 +37,9 @@
 	"linter": {
 		"enabled": true,
 		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
+		// "domains": {
+    //   "project": "all"
+    // },
 		"rules": {
 			"correctness": {
 				"noUnusedVariables": "error",
@@ -117,27 +120,27 @@
 				}
 			}
 		},
-		{
-			// node-only rules
-			"includes": [
-				// these packages are node-only
-				"**/cli/**/*.ts",
-				"**/cli-api/**/*.ts",
-				"**/dill/**/*.ts",
-				"**/repopo/**/*.ts",
-				"**/sort-tsconfig/**/*.ts",
+		// {
+		// 	// node-only rules
+		// 	"includes": [
+		// 		// these packages are node-only
+		// 		"**/cli/**/*.ts",
+		// 		"**/cli-api/**/*.ts",
+		// 		"**/dill/**/*.ts",
+		// 		"**/repopo/**/*.ts",
+		// 		"**/sort-tsconfig/**/*.ts",
 
-				// tests are allowed to use node
-				"**/*.test.ts",
-				"**/*.mochatest.ts"
-			],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noNodejsModules": "off"
-					}
-				}
-			}
-		}
+		// 		// tests are allowed to use node
+		// 		"**/*.test.ts",
+		// 		"**/*.mochatest.ts"
+		// 	],
+		// 	"linter": {
+		// 		"rules": {
+		// 			"correctness": {
+		// 				"noNodejsModules": "off"
+		// 			}
+		// 		}
+		// 	}
+		// }
 	]
 }
