@@ -5,108 +5,121 @@
 		"clientKind": "git",
 		"defaultBranch": "main",
 		"useIgnoreFile": true,
-		"root": ".",
+		"root": "."
 	},
 	"files": {
-		"ignore": [
+		"includes": [
+			"**",
+
 			// build output
-			"_temp/**",
-			".coverage/**",
-			"built/**",
-			"dist/**",
-			"esm/**",
+			"!**/_temp/**",
+			"!**/.coverage/**",
+			"!**/built/**",
+			"!**/dist/**",
+			"!**/esm/**",
 
 			// oclif manifest
-			"oclif.manifest.json",
+			"!**/oclif.manifest.json",
 
 			// test json
-			"test/data/json/**/*.json",
+			"!**/test/data/json/**/*.json"
 		],
-		"ignoreUnknown": true,
+		"ignoreUnknown": true
 	},
 	"formatter": {
 		"enabled": true,
-		"ignore": ["**/__snapshots__/**"],
+		"includes": ["**", "!**/__snapshots__/**"],
 		"formatWithErrors": true,
 		"indentStyle": "tab",
-		"lineEnding": "lf",
+		"lineEnding": "lf"
 	},
-	"organizeImports": { "enabled": true },
+	"assist": { "actions": { "source": { "organizeImports": "on" } } },
 	"linter": {
 		"enabled": true,
-		"include": ["config/**", "**/docs/**", "**/src/**", "**/test/**"],
+		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
 		"rules": {
-			"all": true,
 			"correctness": {
 				"noUnusedVariables": "error",
 				// Lots of false positives, which is a shame
-				"noUndeclaredDependencies": "off",
+				"noUndeclaredDependencies": "info"
 			},
 			"performance": {
-				"noBarrelFile": "off",
+				"noBarrelFile": "off"
 			},
 			"style": {
 				"noDefaultExport": "off",
 				"noParameterProperties": "off",
 				"useNamingConvention": "off",
+
+				// The below style rules were added by biome migrate
+				"noParameterAssign": "error",
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
+				"useSelfClosingElements": "error",
+				"useSingleVarDeclarator": "error",
+				"noUnusedTemplateLiteral": "error",
+				"useNumberNamespace": "error",
+				"noInferrableTypes": "error",
+				"noUselessElse": "error"
 			},
 			"suspicious": {
 				"noConsole": "error",
-				"noDebugger": "error",
-			},
-		},
+				"noDebugger": "error"
+			}
+		}
 	},
 	"javascript": {
 		"formatter": {
 			"jsxQuoteStyle": "double",
 			"trailingCommas": "all",
-			"semicolons": "always",
-		},
+			"semicolons": "always"
+		}
 	},
 	"overrides": [
 		{
-			"include": [
-				"*.jsonc",
-				"*.json5",
-				"api-extractor*.json",
-				"tsconfig*.json",
-				".vscode/*.json",
+			"includes": [
+				"**/*.jsonc",
+				"**/*.json5",
+				"**/api-extractor*.json",
+				"**/tsconfig*.json",
+				"**/.vscode/**/*.json"
 			],
 			"json": {
 				"parser": {
 					"allowComments": true,
-					"allowTrailingCommas": true,
+					"allowTrailingCommas": true
 				},
-				"formatter": { "trailingCommas": "all" },
-			},
+				"formatter": { "trailingCommas": "all" }
+			}
 		},
 		{
-			"include": ["**/src/commands/**/*.ts"],
+			"includes": ["**/src/commands/**/*.ts"],
 			"linter": {
 				"rules": {
 					"style": {
 						// oclif commands are required to use default exports.
-						"noDefaultExport": "off",
-					},
-				},
-			},
+						"noDefaultExport": "off"
+					}
+				}
+			}
 		},
 		{
 			// Test files
-			"include": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
+			"includes": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
 			"linter": {
 				"rules": {
 					"performance": { "useTopLevelRegex": "off" },
 					"suspicious": {
 						// Console logging is ok in tests.
-						"noConsole": "off",
-					},
-				},
-			},
+						"noConsole": "off"
+					}
+				}
+			}
 		},
 		{
 			// node-only rules
-			"include": [
+			"includes": [
 				// these packages are node-only
 				"**/cli/**/*.ts",
 				"**/cli-api/**/*.ts",
@@ -116,15 +129,15 @@
 
 				// tests are allowed to use node
 				"**/*.test.ts",
-				"**/*.mochatest.ts",
+				"**/*.mochatest.ts"
 			],
 			"linter": {
 				"rules": {
 					"correctness": {
-						"noNodejsModules": "off",
-					},
-				},
-			},
-		},
-	],
+						"noNodejsModules": "off"
+					}
+				}
+			}
+		}
+	]
 }

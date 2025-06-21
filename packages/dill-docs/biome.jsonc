@@ -1,11 +1,11 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"extends": ["../../biome.jsonc"],
+	"extends": "//",
 	"linter": {
 		"rules": {
 			"correctness": {
-				"noNodejsModules": "off",
-			},
-		},
-	},
+				"noNodejsModules": "off"
+			}
+		}
+	}
 }
