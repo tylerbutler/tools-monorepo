@@ -20,7 +20,6 @@
 		"./biome/formatter": "./biome/formatter.jsonc",
 		"./biome/linter": "./biome/linter.jsonc",
 		"./biome/oclif": "./biome/oclif.jsonc",
-		"./biome/strict": "./biome/strict.jsonc",
 		"./biome/test-files": "./biome/test-files.jsonc"
 	}
 }
