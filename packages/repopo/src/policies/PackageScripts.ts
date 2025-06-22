@@ -23,7 +23,8 @@ export const PackageScripts = definePackagePolicy(
 		if (hasScriptsField) {
 			missingScripts.push(
 				...expectedScripts.filter(
-					(script) => !Object.hasOwn(json.scripts, script),
+					// biome-ignore lint/style/noNonNullAssertion: refactor this code at some point
+					(script) => !Object.hasOwn(json.scripts!, script),
 				),
 			);
 		}

@@ -12,7 +12,7 @@
 
 > **findGitRootSync**(`cwd`): `string`
 
-Defined in: [packages/fundamentals/src/git.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/git.ts#L17)
+Defined in: packages/fundamentals/src/git.ts:17
 
 Finds the root directory of a Git repository synchronously.
 

@@ -4,8 +4,8 @@
 	"linter": {
 		"rules": {
 			"correctness": {
-				"noNodejsModules": "off"
-			}
-		}
-	}
+				"noNodejsModules": "off",
+			},
+		},
+	},
 }

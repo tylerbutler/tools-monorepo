@@ -1,4 +1,3 @@
-// biome-ignore lint/correctness/noNodejsModules: the functions in this file are intended for use in node
 import { execFileSync } from "node:child_process";
 
 /**

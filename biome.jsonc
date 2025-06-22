@@ -5,7 +5,7 @@
 		"clientKind": "git",
 		"defaultBranch": "main",
 		"useIgnoreFile": true,
-		"root": "."
+		"root": ".",
 	},
 	"files": {
 		"includes": [
@@ -22,32 +22,32 @@
 			"!**/oclif.manifest.json",
 
 			// test json
-			"!**/test/data/json/**/*.json"
+			"!**/test/data/json/**/*.json",
 		],
-		"ignoreUnknown": true
+		"ignoreUnknown": true,
 	},
 	"formatter": {
 		"enabled": true,
 		"includes": ["**", "!**/__snapshots__/**"],
 		"formatWithErrors": true,
 		"indentStyle": "tab",
-		"lineEnding": "lf"
+		"lineEnding": "lf",
 	},
 	"assist": { "actions": { "source": { "organizeImports": "on" } } },
 	"linter": {
 		"enabled": true,
 		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
 		// "domains": {
-    //   "project": "all"
-    // },
+		//   "project": "all"
+		// },
 		"rules": {
 			"correctness": {
 				"noUnusedVariables": "error",
 				// Lots of false positives, which is a shame
-				"noUndeclaredDependencies": "info"
+				"noUndeclaredDependencies": "info",
 			},
 			"performance": {
-				"noBarrelFile": "off"
+				"noBarrelFile": "off",
 			},
 			"style": {
 				"noDefaultExport": "off",
@@ -64,20 +64,20 @@
 				"noUnusedTemplateLiteral": "error",
 				"useNumberNamespace": "error",
 				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+				"noUselessElse": "error",
 			},
 			"suspicious": {
 				"noConsole": "error",
-				"noDebugger": "error"
-			}
-		}
+				"noDebugger": "error",
+			},
+		},
 	},
 	"javascript": {
 		"formatter": {
 			"jsxQuoteStyle": "double",
 			"trailingCommas": "all",
-			"semicolons": "always"
-		}
+			"semicolons": "always",
+		},
 	},
 	"overrides": [
 		{
@@ -86,15 +86,15 @@
 				"**/*.json5",
 				"**/api-extractor*.json",
 				"**/tsconfig*.json",
-				"**/.vscode/**/*.json"
+				"**/.vscode/**/*.json",
 			],
 			"json": {
 				"parser": {
 					"allowComments": true,
-					"allowTrailingCommas": true
+					"allowTrailingCommas": true,
 				},
-				"formatter": { "trailingCommas": "all" }
-			}
+				"formatter": { "trailingCommas": "all" },
+			},
 		},
 		{
 			"includes": ["**/src/commands/**/*.ts"],
@@ -102,10 +102,10 @@
 				"rules": {
 					"style": {
 						// oclif commands are required to use default exports.
-						"noDefaultExport": "off"
-					}
-				}
-			}
+						"noDefaultExport": "off",
+					},
+				},
+			},
 		},
 		{
 			// Test files
@@ -115,10 +115,10 @@
 					"performance": { "useTopLevelRegex": "off" },
 					"suspicious": {
 						// Console logging is ok in tests.
-						"noConsole": "off"
-					}
-				}
-			}
+						"noConsole": "off",
+					},
+				},
+			},
 		},
 		// {
 		// 	// node-only rules
@@ -142,5 +142,5 @@
 		// 		}
 		// 	}
 		// }
-	]
+	],
 }

@@ -2,7 +2,9 @@
 	"name": "@tylerbu/cli",
 	"version": "0.3.8",
 	"description": "Tyler Butler's personal CLI.",
-	"keywords": ["oclif"],
+	"keywords": [
+		"oclif"
+	],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli#tylerbucli",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -55,11 +57,17 @@
 		"test:vitest": "vitest run \"test\""
 	},
 	"oclif": {
-		"additionalHelpFlags": ["-h"],
-		"additionalVersionFlags": ["-V"],
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
 		"bin": "tbu",
 		"commands": "./esm/commands",
-		"devPlugins": ["@oclif/plugin-command-snapshot"],
+		"devPlugins": [
+			"@oclif/plugin-command-snapshot"
+		],
 		"dirname": "tbu",
 		"plugins": [
 			"@oclif/plugin-autocomplete",

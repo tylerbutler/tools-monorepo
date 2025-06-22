@@ -5,7 +5,7 @@ import { join } from "pathe";
 import { glob } from "tinyglobby";
 import { TsConfigSorter } from "../api.js";
 import type { SortTsconfigConfiguration } from "../config.js";
-import { type OrderList, defaultSortOrder } from "../orders.js";
+import { defaultSortOrder, type OrderList } from "../orders.js";
 
 export default class SortTsconfigCommand extends CommandWithConfig<
 	typeof SortTsconfigCommand,
@@ -79,8 +79,6 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		order: defaultSortOrder,
 	};
 
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: refactor when possible
-	// biome-ignore lint/suspicious/useAwait: inherited method
 	async run(): Promise<void> {
 		const { tsconfig: tsconfigs } = this.args;
 		const { write } = this.flags;

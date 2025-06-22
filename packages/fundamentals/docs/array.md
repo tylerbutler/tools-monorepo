@@ -12,7 +12,7 @@
 
 > **isSorted**\<`T`\>(`arr`, `compareFn`): `boolean`
 
-Defined in: [packages/fundamentals/src/array.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L36)
+Defined in: packages/fundamentals/src/array.ts:36
 
 **`Beta`**
 
@@ -71,7 +71,7 @@ console.log(isWordsSorted); // true
 
 > **numberSort**(`a`, `b`): `number`
 
-Defined in: [packages/fundamentals/src/array.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L60)
+Defined in: packages/fundamentals/src/array.ts:60
 
 **`Internal`**
 
@@ -95,7 +95,7 @@ Defined in: [packages/fundamentals/src/array.ts:60](https://github.com/tylerbutl
 
 > **wordSort**(`a`, `b`): `number`
 
-Defined in: [packages/fundamentals/src/array.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/array.ts#L65)
+Defined in: packages/fundamentals/src/array.ts:65
 
 **`Internal`**
 

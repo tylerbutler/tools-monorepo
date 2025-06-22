@@ -13,7 +13,7 @@ an overview of the API.
 
 ### Comic
 
-Defined in: [comic.ts:6](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L6)
+Defined in: comic.ts:6
 
 Comic model
 
@@ -23,73 +23,73 @@ Comic model
 
 > `optional` **alt**: `string`
 
-Defined in: [comic.ts:7](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L7)
+Defined in: comic.ts:7
 
 ##### day?
 
 > `optional` **day**: `number`
 
-Defined in: [comic.ts:8](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L8)
+Defined in: comic.ts:8
 
 ##### img?
 
 > `optional` **img**: `string`
 
-Defined in: [comic.ts:9](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L9)
+Defined in: comic.ts:9
 
 ##### link?
 
 > `optional` **link**: `URL`
 
-Defined in: [comic.ts:10](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L10)
+Defined in: comic.ts:10
 
 ##### month?
 
 > `optional` **month**: `number`
 
-Defined in: [comic.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L11)
+Defined in: comic.ts:11
 
 ##### news?
 
 > `optional` **news**: `string`
 
-Defined in: [comic.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L12)
+Defined in: comic.ts:12
 
 ##### num
 
 > **num**: `number`
 
-Defined in: [comic.ts:13](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L13)
+Defined in: comic.ts:13
 
 ##### safe\_title?
 
 > `optional` **safe\_title**: `string`
 
-Defined in: [comic.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L14)
+Defined in: comic.ts:14
 
 ##### title?
 
 > `optional` **title**: `string`
 
-Defined in: [comic.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L15)
+Defined in: comic.ts:15
 
 ##### transcript?
 
 > `optional` **transcript**: `string`
 
-Defined in: [comic.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L16)
+Defined in: comic.ts:16
 
 ##### year?
 
 > `optional` **year**: `number`
 
-Defined in: [comic.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L17)
+Defined in: comic.ts:17
 
 ***
 
 ### ComicFrameProps
 
-Defined in: [comic.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L23)
+Defined in: comic.ts:23
 
 #### Properties
 
@@ -97,19 +97,19 @@ Defined in: [comic.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/mai
 
 > **comic**: [`Comic`](#comic)
 
-Defined in: [comic.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L24)
+Defined in: comic.ts:24
 
 ##### nextId?
 
 > `optional` **nextId**: `string`
 
-Defined in: [comic.ts:26](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L26)
+Defined in: comic.ts:26
 
 ##### previousId
 
 > **previousId**: `string`
 
-Defined in: [comic.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L25)
+Defined in: comic.ts:25
 
 ## Functions
 
@@ -117,7 +117,7 @@ Defined in: [comic.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/mai
 
 > **getComicProps**(`comicId?`): `Promise`\<[`ComicFrameProps`](#comicframeprops)\>
 
-Defined in: [comic.ts:42](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L42)
+Defined in: comic.ts:42
 
 #### Parameters
 
@@ -139,7 +139,7 @@ The comic metadata.
 
 > **getRandomComicId**(): `Promise`\<`number`\>
 
-Defined in: [comic.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L73)
+Defined in: comic.ts:73
 
 Returns a random comic ID within the bounds of the currently published comics.
 

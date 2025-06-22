@@ -165,7 +165,6 @@ export class LeveeClient {
 			schema,
 			compatibilityMode,
 		});
-		// biome-ignore lint/suspicious/useAwait: <explanation>
 		const load = async (): Promise<IFluidModuleWithDetails> => {
 			return {
 				module: { fluidExport: containerRuntimeFactory },

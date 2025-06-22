@@ -5,7 +5,7 @@ prev: false
 title: "PolicyFunctionArguments"
 ---
 
-Defined in: [policy.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L19)
+Defined in: policy.ts:19
 
 Arguments passed to policy functions.
 
@@ -25,7 +25,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **config**: `C`
 
-Defined in: [policy.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L40)
+Defined in: policy.ts:40
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -41,7 +41,7 @@ Note that the handler function receives the config as an argument.
 
 > **file**: `string`
 
-Defined in: [policy.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L23)
+Defined in: policy.ts:23
 
 Path to the file, relative to the repo root.
 
@@ -55,7 +55,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **resolve**: `boolean`
 
-Defined in: [policy.ts:33](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L33)
+Defined in: policy.ts:33
 
 If true, the handler should resolve any violations automatically if possible.
 
@@ -69,7 +69,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **root**: `string`
 
-Defined in: [policy.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L28)
+Defined in: policy.ts:28
 
 Absolute path to the root of the repo.
 

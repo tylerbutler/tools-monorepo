@@ -64,7 +64,6 @@ export abstract class BaseRepopoCommand<
 
 	private _context: RepopoCommandContext | undefined;
 
-	// biome-ignore lint/suspicious/useAwait: interface defines this as async
 	public async getContext(): Promise<RepopoCommandContext> {
 		if (this._context === undefined) {
 			throw new Error("Context not initialized.");

@@ -12,7 +12,7 @@
 
 > **addAll**\<`T`\>(`theSet`, `items`): `Set`\<`T`\>
 
-Defined in: [packages/fundamentals/src/set.ts:41](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/set.ts#L41)
+Defined in: packages/fundamentals/src/set.ts:41
 
 **`Beta`**
 

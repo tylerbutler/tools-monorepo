@@ -5,7 +5,7 @@ prev: false
 title: "RepopoConfig"
 ---
 
-Defined in: [config.ts:13](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L13)
+Defined in: config.ts:13
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -17,7 +17,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **excludeFiles**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [config.ts:26](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L26)
+Defined in: config.ts:26
 
 An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
 from policy.
@@ -32,7 +32,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **policies**: [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`any`\>[]
 
-Defined in: [config.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L20)
+Defined in: config.ts:20
 
 An array of policies that are enabled.
 

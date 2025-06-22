@@ -21,7 +21,9 @@
 		}
 	},
 	"types": "./esm/index.d.ts",
-	"files": ["esm"],
+	"files": [
+		"esm"
+	],
 	"scripts": {
 		"api": "npm run docs:api",
 		"build": "fluid-build . --task build",

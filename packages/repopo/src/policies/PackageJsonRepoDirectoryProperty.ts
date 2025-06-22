@@ -37,7 +37,6 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 					updatePackageJsonFile(file, (json) => {
 						assert(typeof json.repository === "object");
 						if (relativePkgDir === undefined) {
-							// biome-ignore lint/performance/noDelete: <explanation>
 							delete json.repository.directory;
 						} else {
 							json.repository.directory = relativePkgDir;
