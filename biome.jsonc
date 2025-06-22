@@ -57,8 +57,7 @@
 		"rules": {
 			"correctness": {
 				"noUnusedVariables": "error",
-				// Lots of false positives, which is a shame
-				"noUndeclaredDependencies": "info",
+				"noUndeclaredDependencies": "error",
 			},
 			"nursery": {
 				"noUnresolvedImports": "off",
@@ -141,27 +140,5 @@
 				},
 			},
 		},
-		// {
-		// 	// node-only rules
-		// 	"includes": [
-		// 		// these packages are node-only
-		// 		"**/cli/**/*.ts",
-		// 		"**/cli-api/**/*.ts",
-		// 		"**/dill/**/*.ts",
-		// 		"**/repopo/**/*.ts",
-		// 		"**/sort-tsconfig/**/*.ts",
-
-		// 		// tests are allowed to use node
-		// 		"**/*.test.ts",
-		// 		"**/*.mochatest.ts"
-		// 	],
-		// 	"linter": {
-		// 		"rules": {
-		// 			"correctness": {
-		// 				"noNodejsModules": "off"
-		// 			}
-		// 		}
-		// 	}
-		// }
 	],
 }
