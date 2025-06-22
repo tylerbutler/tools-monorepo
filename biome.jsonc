@@ -1,11 +1,13 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"root": true,
+	"extends": ["@tylerbu/local-config/biome"],
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
 		"defaultBranch": "main",
 		"useIgnoreFile": true,
-		"root": ".",
+		"root": "."
 	},
 	"files": {
 		"includes": [
@@ -25,120 +27,124 @@
 			"!**/oclif.manifest.json",
 
 			// test json
-			"!**/test/data/json/**/*.json",
+			"!**/test/data/json/**/*.json"
 		],
-		"ignoreUnknown": true,
+		"ignoreUnknown": true
 	},
 	"formatter": {
 		"enabled": true,
-		"includes": ["**", "!**/__snapshots__/**"],
-		"formatWithErrors": true,
-		"indentStyle": "tab",
-		"lineEnding": "lf",
+		"includes": ["**", "!**/__snapshots__/**"]
+		// 	"formatWithErrors": true,
+		// 	"indentStyle": "tab",
+		// 	"lineEnding": "lf",
 	},
-	"assist": {
-		"actions": {
-			"source": {
-				// Organizes imports and exports
-				"organizeImports": "on",
+	// "assist": {
+	// 	"actions": {
+	// 		"source": {
+	// 			// Organizes imports and exports
+	// 			"organizeImports": "on",
 
-				// Only affects CSS, not TS or JSON
-				"useSortedProperties": "on",
-			},
-		},
-	},
+	// 			// Only affects CSS, not TS or JSON
+	// 			"useSortedProperties": "on",
+	// 		},
+	// 	},
+	// },
 	"linter": {
 		"enabled": true,
-		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
-		"domains": {
-			"project": "all",
-			"test": "all",
-		},
-		"rules": {
-			"correctness": {
-				"noUnusedVariables": "error",
-				"noUndeclaredDependencies": "error",
-			},
-			"nursery": {
-				"noUnresolvedImports": "off",
-			},
-			"performance": {
-				"noBarrelFile": "off",
-			},
-			"style": {
-				"noDefaultExport": "off",
-				"noParameterProperties": "off",
-				"useNamingConvention": "off",
+		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"]
+		// 	"domains": {
+		// 		"project": "all",
+		// 		"test": "all",
+		// 	},
+		// 	"rules": {
+		// 		"correctness": {
+		// 			"noUnusedVariables": "error",
+		// 			"noUndeclaredDependencies": "error",
+		// 		},
+		// 		"nursery": {
+		// 			"noUnresolvedImports": "off",
+		// 		},
+		// 		"performance": {
+		// 			"noBarrelFile": "off",
+		// 		},
+		// 		"style": {
+		// 			"noCommonJs": "error",
+		// 			"noDefaultExport": "off",
+		// 			"noEnum": "error",
+		// 			"noParameterProperties": "off",
+		// 			"useNamingConvention": "off",
+		// 			"noNegationElse": "error",
+		// 			"noNamespace": "error",
 
-				// The below style rules were added by biome migrate
-				"noParameterAssign": "error",
-				"useAsConstAssertion": "error",
-				"useDefaultParameterLast": "error",
-				"useEnumInitializers": "error",
-				"useSelfClosingElements": "error",
-				"useSingleVarDeclarator": "error",
-				"noUnusedTemplateLiteral": "error",
-				"useNumberNamespace": "error",
-				"noInferrableTypes": "error",
-				"noUselessElse": "error",
-			},
-			"suspicious": {
-				"noConsole": "error",
-				"noDebugger": "error",
-			},
-		},
-	},
-	"javascript": {
-		"formatter": {
-			"jsxQuoteStyle": "double",
-			"trailingCommas": "all",
-			"semicolons": "always",
-		},
-	},
-	"overrides": [
-		{
-			"includes": [
-				"**/*.jsonc",
-				"**/*.json5",
-				"**/api-extractor*.json",
-				"**/tsconfig*.json",
-				"**/.vscode/**/*.json",
-			],
-			"json": {
-				"parser": {
-					"allowComments": true,
-					"allowTrailingCommas": true,
-				},
-				"formatter": {
-					// Biome 2.x doesn't format JSON with trailing commas, regardless of this setting
-					// See https://github.com/biomejs/biome/discussions/6374
-					"trailingCommas": "all",
-				},
-			},
-		},
-		{
-			"includes": ["**/src/commands/**/*.ts"],
-			"linter": {
-				"rules": {
-					"style": {
-						// oclif commands are required to use default exports.
-						"noDefaultExport": "off",
-					},
-				},
-			},
-		},
-		{
-			// Test files
-			"includes": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
-			"linter": {
-				"rules": {
-					"performance": { "useTopLevelRegex": "off" },
-					"suspicious": {
-						// Console logging is ok in tests.
-						"noConsole": "off",
-					},
-				},
-			},
-		},
-	],
+		// 			// The below style rules were added by biome migrate 2.0
+		// 			"noInferrableTypes": "error",
+		// 			"noParameterAssign": "error",
+		// 			"noUnusedTemplateLiteral": "error",
+		// 			"noUselessElse": "error",
+		// 			"useAsConstAssertion": "error",
+		// 			"useDefaultParameterLast": "error",
+		// 			"useEnumInitializers": "error",
+		// 			"useNumberNamespace": "error",
+		// 			"useSelfClosingElements": "error",
+		// 			"useSingleVarDeclarator": "error",
+		// 		},
+		// 		"suspicious": {
+		// 			"noConsole": "error",
+		// 			"noDebugger": "error",
+		// 		},
+		// 	},
+	}
+	// "javascript": {
+	// 	"formatter": {
+	// 		"jsxQuoteStyle": "double",
+	// 		"trailingCommas": "all",
+	// 		"semicolons": "always",
+	// 	},
+	// },
+	// "overrides": [
+	// 	{
+	// 		"includes": [
+	// 			"**/*.jsonc",
+	// 			"**/*.json5",
+	// 			"**/api-extractor*.json",
+	// 			"**/tsconfig*.json",
+	// 			"**/.vscode/**/*.json",
+	// 		],
+	// 		"json": {
+	// 			"parser": {
+	// 				"allowComments": true,
+	// 				"allowTrailingCommas": true,
+	// 			},
+	// 			"formatter": {
+	// 				// Biome 2.x doesn't format JSON with trailing commas, regardless of this setting
+	// 				// See https://github.com/biomejs/biome/discussions/6374
+	// 				"trailingCommas": "all",
+	// 			},
+	// 		},
+	// 	},
+	// 	{
+	// 		"includes": ["**/src/commands/**/*.ts"],
+	// 		"linter": {
+	// 			"rules": {
+	// 				"style": {
+	// 					// oclif commands are required to use default exports.
+	// 					"noDefaultExport": "off",
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	{
+	// 		// Test files
+	// 		"includes": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
+	// 		"linter": {
+	// 			"rules": {
+	// 				"performance": { "useTopLevelRegex": "off" },
+	// 				"suspicious": {
+	// 					// Console logging is ok in tests.
+	// 					"noConsole": "off",
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// ],
 }

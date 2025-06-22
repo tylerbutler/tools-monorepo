@@ -2,6 +2,7 @@
 	"name": "tools-monorepo",
 	"version": "0.0.0",
 	"private": true,
+	"type": "module",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
@@ -55,6 +56,7 @@
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.5",
 		"@tylerbu/cli": "workspace:^",
+		"@tylerbu/local-config": "workspace:^",
 		"changesets-changelog-clean": "^1.3.0",
 		"concurrently": "^9.1.2",
 		"generate-license-file": "^4.0.0",

@@ -1,6 +1,7 @@
 {
-	"name": "local-config",
+	"name": "@tylerbu/local-config",
 	"private": true,
+	"type": "module",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
@@ -11,5 +12,11 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"devDependencies": {
 		"vitest": "^3.1.2"
+	},
+	"peerDependencies": {
+		"@biomejs/biome": "2.0.4"
+	},
+	"exports": {
+		"./biome": "./biome/base.jsonc"
 	}
 }

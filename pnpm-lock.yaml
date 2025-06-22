@@ -40,6 +40,9 @@ importers:
       '@tylerbu/cli':
         specifier: workspace:^
         version: link:packages/cli
+      '@tylerbu/local-config':
+        specifier: workspace:^
+        version: link:config
       changesets-changelog-clean:
         specifier: ^1.3.0
         version: 1.3.0(encoding@0.1.13)
@@ -75,6 +78,10 @@ importers:
         version: 10.9.2(@types/node@22.13.17)(typescript@5.8.2)
 
   config:
+    dependencies:
+      '@biomejs/biome':
+        specifier: 2.0.4
+        version: 2.0.4
     devDependencies:
       vitest:
         specifier: ^3.1.2
