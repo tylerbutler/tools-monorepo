@@ -29,8 +29,8 @@ export const testHttpHandlers = [
 	}),
 ];
 
-function testContentDispositionHeader(file: Buffer): HttpResponse {
-	return new HttpResponse(file, {
+function testContentDispositionHeader(theFile: Buffer): HttpResponse {
+	return new HttpResponse(theFile, {
 		headers: {
 			"Content-Type": "application/json",
 			"Content-Disposition": 'inline; filename="remote-filename.json"',
@@ -38,9 +38,9 @@ function testContentDispositionHeader(file: Buffer): HttpResponse {
 	});
 }
 
-function testContentDispositionHeaderUndefined(file: Buffer): HttpResponse {
+function testContentDispositionHeaderUndefined(theFile: Buffer): HttpResponse {
 	return new HttpResponse(
-		file,
+		theFile,
 		// 	{
 		// 	headers: {
 		// 		"Content-Type": "application/json",

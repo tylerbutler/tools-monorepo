@@ -118,10 +118,10 @@ async function checkDestination(destination: string): Promise<boolean> {
 
 async function writeUint8ArrayToFile(
 	stream: Uint8Array,
-	path: string,
+	filePath: string,
 ): Promise<string> {
-	await writeFile(path, stream);
-	return path;
+	await writeFile(filePath, stream);
+	return filePath;
 }
 
 async function determineFileInfo(

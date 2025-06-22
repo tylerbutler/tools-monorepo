@@ -143,8 +143,8 @@ describe("download command", async () => {
 		it.skip("with --filename", async () => {
 			// const startingDir = process.cwd();
 			await withDir(
-				async ({ path: downloadDir }) => {
-					process.chdir(downloadDir);
+				async ({ path: dlDir }) => {
+					process.chdir(dlDir);
 					const filename = "filename-flag-test.json";
 					// path.join(downloadDir, "filename-flag-test.json");
 					const { stdout } = await runCommand(
@@ -161,7 +161,7 @@ describe("download command", async () => {
 
 					expect(stdout).to.contain("Downloading ");
 
-					const outputPath = path.join(downloadDir, "filename-flag-test.json");
+					const outputPath = path.join(dlDir, "filename-flag-test.json");
 					const actual = await readJson(outputPath);
 					expect(actual).to.deep.equal({
 						key1: 1,

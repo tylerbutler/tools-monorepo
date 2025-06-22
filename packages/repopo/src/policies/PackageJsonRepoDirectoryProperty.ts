@@ -34,6 +34,7 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 		if (json.repository.directory !== relativePkgDir) {
 			if (resolve) {
 				try {
+					// biome-ignore lint/nursery/noShadow: no need to use shadowed variable
 					updatePackageJsonFile(file, (json) => {
 						assert(typeof json.repository === "object");
 						if (relativePkgDir === undefined) {
