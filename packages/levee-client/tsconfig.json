@@ -7,6 +7,6 @@
 		"rootDir": "./src",
 		"outDir": "./esm",
 
-		"exactOptionalPropertyTypes": false,
-	},
+		"exactOptionalPropertyTypes": false
+	}
 }

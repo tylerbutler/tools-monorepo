@@ -1,3 +1,4 @@
+import process from "node:process";
 import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
 import type { PrettyPrintableError } from "@oclif/core/errors";
 import registerDebug, { type Debugger } from "debug";
@@ -33,7 +34,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * The flags defined on the base class.
 	 */
-	static override baseFlags = {
+	public static override baseFlags = {
 		verbose: OclifFlags.boolean({
 			char: "v",
 			description: "Enable verbose logging.",

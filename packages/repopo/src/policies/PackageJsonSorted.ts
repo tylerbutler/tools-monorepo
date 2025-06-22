@@ -20,6 +20,7 @@ export const PackageJsonSorted = definePackagePolicy(
 
 		if (resolve) {
 			try {
+				// biome-ignore lint/nursery/noShadow: no need to use the shadowed variable
 				await updatePackageJsonFile(file, (json) => json, { sort: true });
 				const result: PolicyFixResult = {
 					name: PackageJsonSorted.name,

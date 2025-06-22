@@ -3,7 +3,7 @@ import detectIndent from "detect-indent";
 import { sortJsonc } from "sort-jsonc";
 import JSONC from "tiny-jsonc";
 import type { TsConfigJson } from "type-fest";
-import { type OrderList, defaultSortOrder } from "./orders.js";
+import { defaultSortOrder, type OrderList } from "./orders.js";
 
 /**
  * Returns a map of each item in the order list to its sort index.
@@ -42,8 +42,8 @@ export interface SortTsconfigResult {
  * @beta
  */
 export class TsConfigSorter {
-	private _order: OrderList;
-	private _orderMap: Map<string, number>;
+	private readonly _order: OrderList;
+	private readonly _orderMap: Map<string, number>;
 
 	public constructor(order: OrderList) {
 		this._order = order;

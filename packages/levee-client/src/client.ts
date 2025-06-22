@@ -4,8 +4,8 @@ import type {
 	IFluidModuleWithDetails,
 } from "@fluidframework/container-definitions/internal";
 import {
-	type ILoaderProps,
 	createDetachedContainer,
+	type ILoaderProps,
 	loadExistingContainer,
 } from "@fluidframework/container-loader/internal";
 import type {
@@ -25,16 +25,16 @@ import type {
 	IFluidContainer,
 } from "@fluidframework/fluid-static";
 import {
-	type IRootDataObject,
 	createDOProviderContainerRuntimeFactory,
 	createFluidContainer,
 	createServiceAudience,
+	type IRootDataObject,
 } from "@fluidframework/fluid-static/internal";
 import { RouterliciousDocumentServiceFactory } from "@fluidframework/routerlicious-driver/internal";
 import { wrapConfigProviderWithDefaults } from "@fluidframework/telemetry-utils/internal";
 import {
-	InsecureTinyliciousUrlResolver,
 	createTinyliciousCreateNewRequest,
+	InsecureTinyliciousUrlResolver,
 } from "@fluidframework/tinylicious-driver/internal";
 
 import { createLeveeAudienceMember } from "./audience.js";
@@ -184,7 +184,6 @@ export class LeveeClient {
 			schema,
 			compatibilityMode,
 		});
-		// biome-ignore lint/suspicious/useAwait: <explanation>
 		const load = async (): Promise<IFluidModuleWithDetails> => {
 			return {
 				module: { fluidExport: containerRuntimeFactory },
@@ -229,7 +228,7 @@ export class LeveeClient {
 			await container.getEntryPoint();
 		assert(
 			rootDataObject.IRootDataObject !== undefined,
-			0x875 /* entryPoint must be of type IRootDataObject */,
+			0x8_75 /* entryPoint must be of type IRootDataObject */,
 		);
 		return rootDataObject.IRootDataObject;
 	}

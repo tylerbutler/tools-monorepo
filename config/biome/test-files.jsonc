@@ -1,0 +1,26 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+	"overrides": [
+		{
+			// Test files
+			"includes": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
+			"linter": {
+				"rules": {
+					"performance": {
+						// inline reggexes are useful in test assertions/expectations.
+						"useTopLevelRegex": "off",
+					},
+					"style": {
+						// Allow default exports in test files.
+						"noDefaultExport": "off",
+					},
+					"suspicious": {
+						// Console logging is ok in tests.
+						"noConsole": "off",
+						"useAwait": "off",
+					},
+				},
+			},
+		},
+	],
+}
