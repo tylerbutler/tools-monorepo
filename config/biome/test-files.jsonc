@@ -6,7 +6,11 @@
 			"includes": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
 			"linter": {
 				"rules": {
-					"performance": { "useTopLevelRegex": "off" },
+					// "performance": { "useTopLevelRegex": "off" },
+					"style": {
+						// Allow default exports in test files.
+						"noDefaultExport": "off",
+					},
 					"suspicious": {
 						// Console logging is ok in tests.
 						"noConsole": "off",

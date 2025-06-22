@@ -8,4 +8,18 @@
 			},
 		},
 	},
+	"overrides": [
+		{
+			// Test files
+			"includes": ["**/test/data/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						// Allow default exports in test files.
+						"noDefaultExport": "off",
+					},
+				},
+			},
+		},
+	],
 }

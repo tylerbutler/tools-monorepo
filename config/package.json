@@ -17,6 +17,9 @@
 		"@biomejs/biome": "2.0.4"
 	},
 	"exports": {
-		"./biome": "./biome/base.jsonc"
+		"./biome/formatter": "./biome/formatter.jsonc",
+		"./biome/linter": "./biome/linter.jsonc",
+		"./biome/oclif": "./biome/oclif.jsonc",
+		"./biome/test-files": "./biome/test-files.jsonc"
 	}
 }
