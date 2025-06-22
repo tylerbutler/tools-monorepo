@@ -11,6 +11,9 @@
 		"includes": [
 			"**",
 
+			// jj vcs folders
+			"!.jj/**",
+
 			// build output
 			"!**/_temp/**",
 			"!**/.coverage/**",
