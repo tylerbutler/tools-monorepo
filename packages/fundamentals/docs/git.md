@@ -12,7 +12,7 @@
 
 > **findGitRootSync**(`cwd`): `string`
 
-Defined in: packages/fundamentals/src/git.ts:17
+Defined in: packages/fundamentals/src/git.ts:16
 
 Finds the root directory of a Git repository synchronously.
 
