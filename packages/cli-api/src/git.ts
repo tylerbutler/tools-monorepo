@@ -1,3 +1,4 @@
+import process from "node:process";
 import { dirname } from "pathe";
 import {
 	type MergeResult,

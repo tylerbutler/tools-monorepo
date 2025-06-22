@@ -1,3 +1,4 @@
+import process from "node:process";
 import type { Command } from "@oclif/core";
 import { BaseCommand } from "./baseCommand.js";
 import { ConfigFileFlagHidden } from "./flags.js";

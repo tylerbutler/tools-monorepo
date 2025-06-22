@@ -1,3 +1,4 @@
+import process from "node:process";
 import { Args, Flags } from "@oclif/core";
 import { BaseCommand } from "@tylerbu/cli-api";
 import { download } from "../api.js";

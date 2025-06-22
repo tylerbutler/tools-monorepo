@@ -1,3 +1,4 @@
+import process from "node:process";
 import { Args, Flags } from "@oclif/core";
 import { CommandWithConfig, GitCommand } from "@tylerbu/cli-api";
 import chalk from "picocolors";

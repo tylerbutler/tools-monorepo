@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import process from "node:process";
 
 /**
  * Finds the root directory of a Git repository synchronously.

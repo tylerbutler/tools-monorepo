@@ -1,3 +1,4 @@
+import process from "node:process";
 import type { Command, Config } from "@oclif/core";
 import type { SimpleGit } from "simple-git";
 import { CommandWithConfig } from "./configCommand.js";

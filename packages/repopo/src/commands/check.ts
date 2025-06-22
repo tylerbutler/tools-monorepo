@@ -1,8 +1,8 @@
 import { EOL as newline } from "node:os";
+import process from "node:process";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import chalk from "picocolors";
-
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
 import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";

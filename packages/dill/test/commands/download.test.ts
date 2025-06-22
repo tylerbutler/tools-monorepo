@@ -19,6 +19,7 @@ import {
 
 const { readFile: readJson } = jsonfile;
 
+import process from "node:process";
 import { getTestUrls, testDataPath } from "../common.js";
 
 describe("download command", async () => {
