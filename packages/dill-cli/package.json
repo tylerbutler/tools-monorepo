@@ -14,7 +14,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/dill"
+		"directory": "packages/dill-cli"
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -67,32 +67,6 @@
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
 	},
-	"oclif": {
-		"additionalHelpFlags": [
-			"-h"
-		],
-		"additionalVersionFlags": [
-			"-V"
-		],
-		"bin": "dill",
-		"commands": {
-			"strategy": "single",
-			"target": "./esm/commands/download.js"
-		},
-		"devPlugins": [],
-		"dirname": "dill",
-		"flexibleTaxonomy": true,
-		"helpOptions": {
-			"hideAliasesFromRoot": true,
-			"hideCommandSummaryInDescription": true,
-			"showFlagNameInTitle": false,
-			"showFlagOptionsInTitle": true,
-			"stripAnsi": true,
-			"usageHeader": "CUSTOM USAGE HEADER"
-		},
-		"plugins": [],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill-cli/<%- commandPath %>"
-	},
 	"dependencies": {
 		"@oclif/core": "^4.3.0",
 		"@oclif/plugin-help": "^6.2.27",
@@ -140,5 +114,31 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"oclif": {
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
+		"bin": "dill",
+		"commands": {
+			"strategy": "single",
+			"target": "./esm/commands/download.js"
+		},
+		"devPlugins": [],
+		"dirname": "dill",
+		"flexibleTaxonomy": true,
+		"helpOptions": {
+			"hideAliasesFromRoot": true,
+			"hideCommandSummaryInDescription": true,
+			"showFlagNameInTitle": false,
+			"showFlagOptionsInTitle": true,
+			"stripAnsi": true,
+			"usageHeader": "CUSTOM USAGE HEADER"
+		},
+		"plugins": [],
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill-cli/<%- commandPath %>"
 	}
 }
