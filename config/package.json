@@ -1,7 +1,6 @@
 {
 	"name": "@tylerbu/local-config",
 	"private": true,
-	"type": "module",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
@@ -10,16 +9,17 @@
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
-	"devDependencies": {
-		"vitest": "^3.1.2"
-	},
-	"peerDependencies": {
-		"@biomejs/biome": "2.0.4"
-	},
+	"type": "module",
 	"exports": {
 		"./biome/formatter": "./biome/formatter.jsonc",
 		"./biome/linter": "./biome/linter.jsonc",
 		"./biome/oclif": "./biome/oclif.jsonc",
 		"./biome/test-files": "./biome/test-files.jsonc"
+	},
+	"devDependencies": {
+		"vitest": "^3.1.2"
+	},
+	"peerDependencies": {
+		"@biomejs/biome": "2.0.4"
 	}
 }

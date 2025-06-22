@@ -18,7 +18,7 @@ and provide foundational functionality for arrays, sets, git operations, and mor
 
 ### KeyAlreadySet
 
-Defined in: packages/fundamentals/src/writeOnceMap.ts:6
+Defined in: [packages/fundamentals/src/writeOnceMap.ts:6](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L6)
 
 **`Beta`**
 
@@ -34,7 +34,7 @@ An error thrown when trying to update an element in a [WriteOnceMap](#writeoncem
 
 > **new KeyAlreadySet**(`key`): [`KeyAlreadySet`](#keyalreadyset)
 
-Defined in: packages/fundamentals/src/writeOnceMap.ts:12
+Defined in: [packages/fundamentals/src/writeOnceMap.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L12)
 
 **`Beta`**
 
@@ -180,7 +180,7 @@ Defined in: node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/g
 
 ### WriteOnceMap\<K, V\>
 
-Defined in: packages/fundamentals/src/writeOnceMap.ts:27
+Defined in: [packages/fundamentals/src/writeOnceMap.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L27)
 
 **`Beta`**
 
@@ -461,7 +461,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > **set**(`key`, `value`, `force`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
-Defined in: packages/fundamentals/src/writeOnceMap.ts:36
+Defined in: [packages/fundamentals/src/writeOnceMap.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L36)
 
 **`Beta`**
 
