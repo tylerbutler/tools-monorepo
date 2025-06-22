@@ -2,6 +2,7 @@ import { readdir, rm } from "node:fs/promises";
 import http from "node:http";
 import { runCommand } from "@oclif/test";
 import { getRandomPort } from "get-port-please";
+import jsonfile from "jsonfile";
 import path from "pathe";
 import handler from "serve-handler";
 import { temporaryDirectory } from "tempy";
@@ -16,9 +17,9 @@ import {
 	it,
 } from "vitest";
 
-import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
+import process from "node:process";
 import { getTestUrls, testDataPath } from "../common.js";
 
 describe("download command", async () => {
@@ -139,12 +140,12 @@ describe("download command", async () => {
 		// 	process.chdir(originalCwd);
 		// });
 
-		// biome-ignore lint/suspicious/noSkippedTests: <explanation>
+		// biome-ignore lint/suspicious/noSkippedTests: feature doesn't work yet
 		it.skip("with --filename", async () => {
 			// const startingDir = process.cwd();
 			await withDir(
-				async ({ path: downloadDir }) => {
-					process.chdir(downloadDir);
+				async ({ path: dlDir }) => {
+					process.chdir(dlDir);
 					const filename = "filename-flag-test.json";
 					// path.join(downloadDir, "filename-flag-test.json");
 					const { stdout } = await runCommand(
@@ -161,7 +162,7 @@ describe("download command", async () => {
 
 					expect(stdout).to.contain("Downloading ");
 
-					const outputPath = path.join(downloadDir, "filename-flag-test.json");
+					const outputPath = path.join(dlDir, "filename-flag-test.json");
 					const actual = await readJson(outputPath);
 					expect(actual).to.deep.equal({
 						key1: 1,

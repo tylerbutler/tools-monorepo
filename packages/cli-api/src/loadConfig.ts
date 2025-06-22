@@ -1,6 +1,6 @@
 import { stat } from "node:fs/promises";
 import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
-import { type LilconfigResult, type Options, lilconfig } from "lilconfig";
+import { type LilconfigResult, lilconfig, type Options } from "lilconfig";
 
 /**
  * Loads a config of the given type from the file system.

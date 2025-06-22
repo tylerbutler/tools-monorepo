@@ -1,3 +1,4 @@
+import process from "node:process";
 import { defineConfig } from "vitest/config";
 
 const config = defineConfig({
@@ -19,4 +20,5 @@ const config = defineConfig({
 	},
 });
 
+// biome-ignore lint/style/noDefaultExport: correct pattern for config files
 export default config;

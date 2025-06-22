@@ -1,8 +1,8 @@
 import {
-	type OrderList,
-	type SortTsconfigConfiguration,
 	defaultSortOrder,
+	type OrderList,
 	preferredSortOrder,
+	type SortTsconfigConfiguration,
 } from "sort-tsconfig";
 
 const config: SortTsconfigConfiguration = {

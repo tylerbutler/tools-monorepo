@@ -1,4 +1,5 @@
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import process from "node:process";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
 import { Decompress, type Unzipped, unzipSync } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
@@ -117,10 +118,10 @@ async function checkDestination(destination: string): Promise<boolean> {
 
 async function writeUint8ArrayToFile(
 	stream: Uint8Array,
-	path: string,
+	filePath: string,
 ): Promise<string> {
-	await writeFile(path, stream);
-	return path;
+	await writeFile(filePath, stream);
+	return filePath;
 }
 
 async function determineFileInfo(

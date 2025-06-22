@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/suspicious/noConsole: this file is a console logger */
+
 import chalk from "picocolors";
 
 /**

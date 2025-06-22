@@ -15,8 +15,7 @@ export default class ConfigTestCommand extends CommandWithConfig<
 		stringProperty: "default",
 	};
 
-	// biome-ignore lint/suspicious/useAwait: inherited method
-	override async run(): Promise<TestConfig | undefined> {
+	public override async run(): Promise<TestConfig | undefined> {
 		this.log(`Loaded config from: ${this.configLocation}`);
 		return this.commandConfig;
 	}

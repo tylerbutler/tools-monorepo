@@ -13,7 +13,6 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 	"NoJsFileExtensions",
 	/(^|\/)[^/]+\.js$/i,
-	// biome-ignore lint/suspicious/useAwait: <explanation>
 	async ({ file }) => {
 		// Any match is considered a failure.
 		const result: PolicyFailure = {

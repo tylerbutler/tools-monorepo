@@ -70,7 +70,7 @@ export const numberSort = (a: number, b: number) => a - b;
  *
  * @param a - First string to compare
  * @param b - Second string to compare
- * @returns Negative if a < b, positive if a > b, zero if equal
+ * @returns Negative if a \< b, positive if a \> b, zero if equal
  *
  * @internal
  */

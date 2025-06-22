@@ -20,7 +20,7 @@ and includes utilities for building comic viewing applications.
 
 ### Comic
 
-Defined in: [comic.ts:6](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L6)
+Defined in: [comic.ts:13](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L13)
 
 Comic model representing an XKCD comic with all its metadata.
 
@@ -30,7 +30,7 @@ Comic model representing an XKCD comic with all its metadata.
 
 > `optional` **alt**: `string`
 
-Defined in: [comic.ts:8](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L8)
+Defined in: [comic.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L15)
 
 The alt text for the comic image
 
@@ -38,7 +38,7 @@ The alt text for the comic image
 
 > `optional` **day**: `number`
 
-Defined in: [comic.ts:10](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L10)
+Defined in: [comic.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L17)
 
 The day of the month the comic was published
 
@@ -46,7 +46,7 @@ The day of the month the comic was published
 
 > `optional` **img**: `string`
 
-Defined in: [comic.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L12)
+Defined in: [comic.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L19)
 
 The URL of the comic image
 
@@ -54,7 +54,7 @@ The URL of the comic image
 
 > `optional` **link**: `URL`
 
-Defined in: [comic.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L14)
+Defined in: [comic.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L21)
 
 A link related to the comic (if any)
 
@@ -62,7 +62,7 @@ A link related to the comic (if any)
 
 > `optional` **month**: `number`
 
-Defined in: [comic.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L16)
+Defined in: [comic.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L23)
 
 The month the comic was published
 
@@ -70,7 +70,7 @@ The month the comic was published
 
 > `optional` **news**: `string`
 
-Defined in: [comic.ts:18](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L18)
+Defined in: [comic.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L25)
 
 News or additional information about the comic
 
@@ -78,7 +78,7 @@ News or additional information about the comic
 
 > **num**: `number`
 
-Defined in: [comic.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L20)
+Defined in: [comic.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L27)
 
 The comic number/ID (required)
 
@@ -86,7 +86,7 @@ The comic number/ID (required)
 
 > `optional` **safe\_title**: `string`
 
-Defined in: [comic.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L22)
+Defined in: [comic.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L29)
 
 A URL-safe version of the comic title
 
@@ -94,7 +94,7 @@ A URL-safe version of the comic title
 
 > `optional` **title**: `string`
 
-Defined in: [comic.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L24)
+Defined in: [comic.ts:31](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L31)
 
 The title of the comic
 
@@ -102,7 +102,7 @@ The title of the comic
 
 > `optional` **transcript**: `string`
 
-Defined in: [comic.ts:26](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L26)
+Defined in: [comic.ts:33](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L33)
 
 The transcript text of the comic
 
@@ -110,7 +110,7 @@ The transcript text of the comic
 
 > `optional` **year**: `number`
 
-Defined in: [comic.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L28)
+Defined in: [comic.ts:35](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L35)
 
 The year the comic was published
 
@@ -118,7 +118,7 @@ The year the comic was published
 
 ### ComicFrameProps
 
-Defined in: [comic.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L36)
+Defined in: [comic.ts:43](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L43)
 
 Properties for rendering a comic frame with navigation information.
 
@@ -128,7 +128,7 @@ Properties for rendering a comic frame with navigation information.
 
 > **comic**: [`Comic`](#comic)
 
-Defined in: [comic.ts:38](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L38)
+Defined in: [comic.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L45)
 
 The comic data to display
 
@@ -136,7 +136,7 @@ The comic data to display
 
 > `optional` **nextId**: `string`
 
-Defined in: [comic.ts:42](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L42)
+Defined in: [comic.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L49)
 
 The ID of the next comic for navigation (if available)
 
@@ -144,7 +144,7 @@ The ID of the next comic for navigation (if available)
 
 > **previousId**: `string`
 
-Defined in: [comic.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L40)
+Defined in: [comic.ts:47](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/xkcd2-api/src/comic.ts#L47)
 
 The ID of the previous comic for navigation
 
