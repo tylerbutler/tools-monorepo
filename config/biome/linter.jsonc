@@ -7,6 +7,12 @@
 			"test": "all",
 		},
 		"rules": {
+			"complexity": {
+				"noExcessiveCognitiveComplexity": "error",
+				"noExcessiveNestedTestSuites": "error",
+				"noForEach": "error",
+				"noUselessStringConcat": "error",
+			},
 			"correctness": {
 				"noUnusedVariables": "error",
 				"noUndeclaredDependencies": "error",

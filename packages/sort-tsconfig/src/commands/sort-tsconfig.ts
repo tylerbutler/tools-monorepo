@@ -79,6 +79,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		order: defaultSortOrder,
 	};
 
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: should clean this up at some point.
 	async run(): Promise<void> {
 		const { tsconfig: tsconfigs } = this.args;
 		const { write } = this.flags;
