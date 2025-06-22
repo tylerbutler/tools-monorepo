@@ -59,6 +59,4 @@ export interface LeveeUser extends IUser {
     readonly name: string;
 }
 
-// (No @packageDocumentation comment for this package)
-
 ```
