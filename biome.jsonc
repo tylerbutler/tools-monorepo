@@ -36,18 +36,32 @@
 		"indentStyle": "tab",
 		"lineEnding": "lf",
 	},
-	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"assist": {
+		"actions": {
+			"source": {
+				// Organizes imports and exports
+				"organizeImports": "on",
+
+				// Only affects CSS, not TS or JSON
+				"useSortedProperties": "on",
+			},
+		},
+	},
 	"linter": {
 		"enabled": true,
 		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
-		// "domains": {
-		//   "project": "all"
-		// },
+		"domains": {
+			"project": "all",
+			"test": "all",
+		},
 		"rules": {
 			"correctness": {
 				"noUnusedVariables": "error",
 				// Lots of false positives, which is a shame
 				"noUndeclaredDependencies": "info",
+			},
+			"nursery": {
+				"noUnresolvedImports": "off",
 			},
 			"performance": {
 				"noBarrelFile": "off",
@@ -96,7 +110,11 @@
 					"allowComments": true,
 					"allowTrailingCommas": true,
 				},
-				"formatter": { "trailingCommas": "all" },
+				"formatter": {
+					// Biome 2.x doesn't format JSON with trailing commas, regardless of this setting
+					// See https://github.com/biomejs/biome/discussions/6374
+					"trailingCommas": "all",
+				},
 			},
 		},
 		{
