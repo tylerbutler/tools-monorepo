@@ -10,7 +10,8 @@ export class ListCommand<
 		flags: typeof ListCommand.flags;
 	},
 > extends BaseRepopoCommand<T> {
-	static override readonly summary = "Lists the policies configured to run.";
+	public static override readonly summary =
+		"Lists the policies configured to run.";
 
 	public override async run(): Promise<void> {
 		const policies = this.commandConfig?.policies ?? DefaultPolicies;

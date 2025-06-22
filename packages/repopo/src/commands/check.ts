@@ -15,6 +15,26 @@ import {
 	type PolicyStandaloneResolver,
 } from "../policy.js";
 
+async function readStdin(): Promise<string> {
+	return new Promise((resolve) => {
+		const stdin = process.stdin;
+		stdin.setEncoding("utf8");
+
+		let data = "";
+		stdin.on("data", (chunk) => {
+			data += chunk;
+		});
+
+		stdin.on("end", () => {
+			resolve(data);
+		});
+
+		if (stdin.isTTY) {
+			resolve("");
+		}
+	});
+}
+
 /**
  * This tool enforces policies across the code base via a series of handler functions. The handler functions are
  * associated with a regular expression, and all files matching that expression are passed to the handler function.
@@ -30,10 +50,10 @@ export class CheckPolicy<
 		flags: typeof CheckPolicy.flags;
 	},
 > extends BaseRepopoCommand<T> {
-	static override readonly summary =
+	public static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -363,24 +383,4 @@ export class CheckPolicy<
 			this.warning(messages.toString());
 		}
 	}
-}
-
-async function readStdin(): Promise<string> {
-	return new Promise((resolve) => {
-		const stdin = process.stdin;
-		stdin.setEncoding("utf8");
-
-		let data = "";
-		stdin.on("data", (chunk) => {
-			data += chunk;
-		});
-
-		stdin.on("end", () => {
-			resolve(data);
-		});
-
-		if (stdin.isTTY) {
-			resolve("");
-		}
-	});
 }

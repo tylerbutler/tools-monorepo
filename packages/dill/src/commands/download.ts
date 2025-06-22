@@ -7,17 +7,17 @@ import type { DillOptions, DownloadResponse } from "../types.js";
 export default class DownloadCommand extends BaseCommand<
 	typeof DownloadCommand
 > {
-	static override readonly description =
+	public static override readonly description =
 		"Downloads a file from a URL and optionally extracts its contents.";
 
-	static override readonly args = {
+	public static override readonly args = {
 		url: Args.url({
 			description: "URL of the file to download.",
 			required: true,
 		}),
 	};
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		extract: Flags.boolean({
 			description:
 				"Decompress the file and, if it's a tarball, extract its contents.",
@@ -43,7 +43,7 @@ export default class DownloadCommand extends BaseCommand<
 		...BaseCommand.flags,
 	};
 
-	// static override readonly examples = ["<%= config.bin %> <%= command.id %>"];
+	// public static override readonly examples = ["<%= config.bin %> <%= command.id %>"];
 
 	public async run(): Promise<DownloadResponse> {
 		const { url } = this.args;

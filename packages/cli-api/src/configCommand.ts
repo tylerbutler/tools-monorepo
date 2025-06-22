@@ -22,7 +22,7 @@ export abstract class CommandWithConfig<
 	private _commandConfig: C | undefined;
 	private _configPath: string | undefined;
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		config: ConfigFileFlagHidden,
 		...BaseCommand.flags,
 	} as const;

@@ -25,7 +25,7 @@ export abstract class BaseRepopoCommand<
 {
 	protected override defaultConfig = DefaultPolicyConfig;
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		...CommandWithConfig.flags,
 	} as const;
 

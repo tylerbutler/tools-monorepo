@@ -228,7 +228,7 @@ export class LeveeClient {
 			await container.getEntryPoint();
 		assert(
 			rootDataObject.IRootDataObject !== undefined,
-			0x875 /* entryPoint must be of type IRootDataObject */,
+			0x8_75 /* entryPoint must be of type IRootDataObject */,
 		);
 		return rootDataObject.IRootDataObject;
 	}

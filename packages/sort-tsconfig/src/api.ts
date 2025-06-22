@@ -42,8 +42,8 @@ export interface SortTsconfigResult {
  * @beta
  */
 export class TsConfigSorter {
-	private _order: OrderList;
-	private _orderMap: Map<string, number>;
+	private readonly _order: OrderList;
+	private readonly _orderMap: Map<string, number>;
 
 	public constructor(order: OrderList) {
 		this._order = order;

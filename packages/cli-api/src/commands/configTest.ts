@@ -15,7 +15,7 @@ export default class ConfigTestCommand extends CommandWithConfig<
 		stringProperty: "default",
 	};
 
-	override async run(): Promise<TestConfig | undefined> {
+	public override async run(): Promise<TestConfig | undefined> {
 		this.log(`Loaded config from: ${this.configLocation}`);
 		return this.commandConfig;
 	}

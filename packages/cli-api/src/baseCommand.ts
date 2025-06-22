@@ -34,7 +34,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * The flags defined on the base class.
 	 */
-	static override baseFlags = {
+	public static override baseFlags = {
 		verbose: OclifFlags.boolean({
 			char: "v",
 			description: "Enable verbose logging.",

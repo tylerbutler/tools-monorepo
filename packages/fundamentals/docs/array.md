@@ -127,4 +127,4 @@ Second string to compare
 
 `number`
 
-Negative if a < b, positive if a > b, zero if equal
+Negative if a \< b, positive if a \> b, zero if equal
