@@ -2,7 +2,6 @@
 	"name": "tools-monorepo",
 	"version": "0.0.0",
 	"private": true,
-	"type": "module",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
@@ -10,6 +9,7 @@
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"check": "fluid-build . --task check",
