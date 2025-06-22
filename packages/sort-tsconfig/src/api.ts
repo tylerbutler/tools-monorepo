@@ -66,7 +66,13 @@ export class TsConfigSorter {
 	}
 
 	/**
-	 * Returns true if an object is sorted.
+	 * Returns true if an object is sorted according to the configured order.
+	 *
+	 * @param obj - The object to check for proper sorting.
+	 * @returns True if the object's properties are in the correct order, false otherwise.
+	 *
+	 * @remarks
+	 * This method recursively checks nested objects to ensure complete sorting validation.
 	 */
 	// biome-ignore lint/suspicious/noExplicitAny: other types are very iconvenient here.
 	private objectIsSorted(obj: Record<string, any>): boolean {

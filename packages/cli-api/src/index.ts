@@ -1,4 +1,15 @@
-export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
+/**
+ * Common infrastructure and APIs for building oclif-based command-line applications.
+ *
+ * @remarks
+ * This package provides base classes, utilities, and helpers for creating robust CLI tools
+ * using the oclif framework. It includes git integration, configuration management,
+ * logging capabilities, and common patterns for CLI development.
+ *
+ * @packageDocumentation
+ */
+
+export { type Args, type Flags, BaseCommand } from "./baseCommand.js";
 export {
 	CommandWithConfig,
 	type CommandWithContext,

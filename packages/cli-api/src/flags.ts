@@ -3,6 +3,18 @@ import { Flags } from "@oclif/core";
 // export const regexFlag = Flags.custom<
 
 /**
+ * A custom oclif flag that parses string input into a RegExp object.
+ * The resulting regex is case-insensitive by default.
+ *
+ * @example
+ * ```typescript
+ * static flags = {
+ *   pattern: RegExpFlag({
+ *     description: "Pattern to match files"
+ *   })
+ * }
+ * ```
+ *
  * @beta
  */
 export const RegExpFlag = Flags.custom<RegExp>({
@@ -13,6 +25,9 @@ export const RegExpFlag = Flags.custom<RegExp>({
 });
 
 /**
+ * A pre-configured oclif flag for configuration file paths.
+ * Validates that the file exists and displays in the CONFIGURATION help group.
+ *
  * @beta
  */
 export const ConfigFileFlag = Flags.file({
@@ -22,6 +37,9 @@ export const ConfigFileFlag = Flags.file({
 });
 
 /**
+ * A pre-configured oclif flag for configuration file paths that is hidden from help output.
+ * Validates that the file exists and displays in the CONFIGURATION help group.
+ *
  * @beta
  */
 export const ConfigFileFlagHidden = Flags.file({

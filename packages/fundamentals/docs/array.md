@@ -71,9 +71,11 @@ console.log(isWordsSorted); // true
 
 > **numberSort**(`a`, `b`): `number`
 
-Defined in: packages/fundamentals/src/array.ts:60
+Defined in: packages/fundamentals/src/array.ts:66
 
 **`Internal`**
+
+A comparison function for sorting numbers in ascending order.
 
 #### Parameters
 
@@ -81,13 +83,19 @@ Defined in: packages/fundamentals/src/array.ts:60
 
 `number`
 
+First number to compare
+
 ##### b
 
 `number`
 
+Second number to compare
+
 #### Returns
 
 `number`
+
+Negative if a \< b, positive if a \> b, zero if equal
 
 ***
 
@@ -95,9 +103,11 @@ Defined in: packages/fundamentals/src/array.ts:60
 
 > **wordSort**(`a`, `b`): `number`
 
-Defined in: packages/fundamentals/src/array.ts:65
+Defined in: packages/fundamentals/src/array.ts:77
 
 **`Internal`**
+
+A comparison function for sorting strings using locale-aware comparison.
 
 #### Parameters
 
@@ -105,10 +115,16 @@ Defined in: packages/fundamentals/src/array.ts:65
 
 `string`
 
+First string to compare
+
 ##### b
 
 `string`
 
+Second string to compare
+
 #### Returns
 
 `number`
+
+Negative if a < b, positive if a > b, zero if equal
