@@ -47,7 +47,9 @@
 	},
 	"fluidBuild": {
 		"tasks": {
-			"build": ["repopo#build"]
+			"build": [
+				"repopo#build"
+			]
 		}
 	}
 }

@@ -2,7 +2,11 @@
 	"name": "sort-tsconfig",
 	"version": "0.3.1",
 	"description": "Sorts tsconfig files.",
-	"keywords": ["sort", "tsconfig", "typescript"],
+	"keywords": [
+		"sort",
+		"tsconfig",
+		"typescript"
+	],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/sort-tsconfig#sort-tsconfig---keep-your-tsconfigs-clean-and-tidy",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -85,7 +89,7 @@
 		"tinyglobby": "^0.2.13"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
+		"@biomejs/biome": "2.0.4",
 		"@microsoft/api-extractor": "^7.52.7",
 		"@oclif/plugin-command-snapshot": "^5.2.38",
 		"@oclif/test": "^4.1.12",

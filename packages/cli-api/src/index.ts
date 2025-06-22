@@ -9,36 +9,36 @@
  * @packageDocumentation
  */
 
-export { type Args, type Flags, BaseCommand } from "./baseCommand.js";
+export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
 export {
 	CommandWithConfig,
 	type CommandWithContext,
 } from "./configCommand.js";
 export {
-	RegExpFlag,
 	ConfigFileFlag,
+	RegExpFlag,
 } from "./flags.js";
 export type { CommitMergeability } from "./git.js";
-export { findGitRoot } from "./git.js";
 export {
-	GitCommand,
-	type CommandWithGit as RequiresGit,
-} from "./gitCommand.js";
-export {
-	Repository,
 	checkConflicts,
+	findGitRoot,
 	getMergeBase,
+	Repository,
 	revList,
 	shortCommit,
 } from "./git.js";
 export {
-	readJsonWithIndent,
-	updatePackageJsonFile,
+	type CommandWithGit as RequiresGit,
+	GitCommand,
+} from "./gitCommand.js";
+export {
 	type JsonWriteOptions,
 	type PackageTransformer,
+	readJsonWithIndent,
+	updatePackageJsonFile,
 } from "./json.js";
 export type {
 	ErrorLoggingFunction,
-	LoggingFunction,
 	Logger,
+	LoggingFunction,
 } from "./logger.js";

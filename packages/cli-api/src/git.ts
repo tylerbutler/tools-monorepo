@@ -1,3 +1,4 @@
+import process from "node:process";
 import { dirname } from "pathe";
 import {
 	type MergeResult,
@@ -33,7 +34,9 @@ export class Repository {
 		return this.git;
 	}
 
-	constructor(gitOptions: SetRequired<Partial<SimpleGitOptions>, "baseDir">) {
+	public constructor(
+		gitOptions: SetRequired<Partial<SimpleGitOptions>, "baseDir">,
+	) {
 		const options: SetRequired<Partial<SimpleGitOptions>, "baseDir"> = {
 			...gitOptions,
 			...defaultGitOptions,

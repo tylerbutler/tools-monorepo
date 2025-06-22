@@ -47,7 +47,9 @@
 	},
 	"fluidBuild": {
 		"tasks": {
-			"build": ["dill-cli#build"]
+			"build": [
+				"dill-cli#build"
+			]
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { type RepopoConfig, generatePackagePolicy, makePolicy } from "repopo";
+import { generatePackagePolicy, makePolicy, type RepopoConfig } from "repopo";
 import {
 	NoJsFileExtensions,
 	PackageJsonProperties,

@@ -1,3 +1,10 @@
+function getComicUrl(comicId?: string | number) {
+	if (comicId === undefined || comicId === "") {
+		return "https://xkcd.com/info.0.json";
+	}
+	return `https://xkcd.com/${comicId}/info.0.json`;
+}
+
 /**
  * Comic model representing an XKCD comic with all its metadata.
  *
@@ -40,13 +47,6 @@ export interface ComicFrameProps {
 	previousId: string;
 	/** The ID of the next comic for navigation (if available) */
 	nextId?: string;
-}
-
-function getComicUrl(comicId?: string | number) {
-	if (comicId === undefined || comicId === "") {
-		return "https://xkcd.com/info.0.json";
-	}
-	return `https://xkcd.com/${comicId}/info.0.json`;
 }
 
 /**

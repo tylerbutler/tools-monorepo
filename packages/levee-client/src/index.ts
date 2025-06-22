@@ -9,6 +9,10 @@
  * @packageDocumentation
  */
 
+// Re-export so developers have access to parameter types for createContainer/getContainer without pulling in fluid-static
+export type { CompatibilityMode } from "@fluidframework/fluid-static";
+export { LeveeClient } from "./client.js";
+
 export type {
 	ILeveeAudience,
 	LeveeClientProps,
@@ -17,7 +21,3 @@ export type {
 	LeveeMember,
 	LeveeUser,
 } from "./interfaces.js";
-export { LeveeClient } from "./client.js";
-
-// Re-export so developers have access to parameter types for createContainer/getContainer without pulling in fluid-static
-export type { CompatibilityMode } from "@fluidframework/fluid-static";

@@ -10,10 +10,12 @@
  * @packageDocumentation
  */
 
+// necessary for oclif
+export { run } from "@oclif/core";
 export {
 	isSorted,
-	sortTsconfigFile,
 	type SortTsconfigResult,
+	sortTsconfigFile,
 	TsConfigSorter,
 } from "./api.js";
 export type { SortTsconfigConfiguration } from "./config.js";
@@ -23,6 +25,3 @@ export {
 	preferredSortOrder,
 } from "./orders.js";
 export { SortTsconfigsPolicy } from "./policy.js";
-
-// necessary for oclif
-export { run } from "@oclif/core";

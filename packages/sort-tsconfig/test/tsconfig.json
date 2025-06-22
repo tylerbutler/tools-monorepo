@@ -4,8 +4,8 @@
 	"compilerOptions": {
 		"rootDir": "./",
 		"outDir": "../esm/test",
-		"noEmit": true,
+		"noEmit": true
 		// "skipLibCheck": true,
 	},
-	"references": [{ "path": ".." }],
+	"references": [{ "path": ".." }]
 }

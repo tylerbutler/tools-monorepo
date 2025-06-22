@@ -1,13 +1,14 @@
 import { readdir } from "node:fs/promises";
 import http from "node:http";
+import jsonfile from "jsonfile";
 import path from "pathe";
 import handler from "serve-handler";
 import { withDir } from "tmp-promise";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
-import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
+import process from "node:process";
 import { decompressTarball, fetchFile, writeTarFiles } from "../src/api.js";
 import { download } from "../src/index.js";
 import { getTestUrls, testDataPath } from "./common.js";
