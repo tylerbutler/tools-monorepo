@@ -91,7 +91,7 @@
 			"usageHeader": "CUSTOM USAGE HEADER"
 		},
 		"plugins": [],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill-cli/<%- commandPath %>"
 	},
 	"dependencies": {
 		"@oclif/core": "^4.3.0",

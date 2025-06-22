@@ -7,7 +7,7 @@ title: "PolicyHandler"
 
 > **PolicyHandler**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>
 
-Defined in: [policy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L49)
+Defined in: [policy.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L51)
 
 A policy handler is a function that is called to check policy against a file.
 

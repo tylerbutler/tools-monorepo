@@ -1,0 +1,16 @@
+---
+editUrl: false
+next: false
+prev: false
+title: "PackageScripts"
+---
+
+> `const` **PackageScripts**: [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`undefined`\>
+
+Defined in: [policies/PackageScripts.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L11)
+
+A RepoPolicy that checks that package.json properties in packages match expected values.
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
