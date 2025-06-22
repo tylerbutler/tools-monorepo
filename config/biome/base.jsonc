@@ -1,9 +1,0 @@
-{
-	"$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
-	"extends": [
-		"./formatter.jsonc",
-		"./linter.jsonc",
-		"./test-files.jsonc",
-		"./oclif.jsonc",
-	],
-}
