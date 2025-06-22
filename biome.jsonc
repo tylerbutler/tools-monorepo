@@ -45,4 +45,23 @@
 		// "enabled": true,
 		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
 	},
+	"overrides": [
+		{
+			// node projects
+			"includes": [
+				"packages/cli/**",
+				"packages/cli-api/**",
+				"packages/dill/**",
+				"packages/repopo/**",
+				"packages/sort-tsconfig/**",
+			],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noNodejsModules": "off",
+					},
+				},
+			},
+		},
+	],
 }
