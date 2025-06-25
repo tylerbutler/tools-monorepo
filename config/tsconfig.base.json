@@ -10,6 +10,6 @@
 		"noUnusedLocals": false,
 		"composite": true,
 		"incremental": true,
-		"jsx": "react",
-	},
+		"jsx": "react"
+	}
 }

@@ -3,7 +3,7 @@
 	"include": ["src/**/*"],
 	"compilerOptions": {
 		"rootDir": "./src",
-		"outDir": "./esm",
+		"outDir": "./esm"
 	},
-	"types": ["node"],
+	"types": ["node"]
 }

@@ -8,8 +8,6 @@ describe("loadConfig", () => {
 	const configPath = path.join(testDataPath, "configs");
 
 	it("returns undefined when no file found", async () => {
-		const configPath = path.join(testDataPath, "configs");
-
 		const result = await loadConfig<TestConfigSchema>(
 			"missing",
 			configPath,

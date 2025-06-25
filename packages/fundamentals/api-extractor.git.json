@@ -4,6 +4,6 @@
 	"mainEntryPointFilePath": "<projectFolder>/esm/git.d.ts",
 	"apiReport": {
 		"enabled": true,
-		"reportFileName": "<unscopedPackageName>.git.api.md",
-	},
+		"reportFileName": "<unscopedPackageName>.git.api.md"
+	}
 }

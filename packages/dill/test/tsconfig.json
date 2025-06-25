@@ -5,11 +5,11 @@
 		"rootDir": "./",
 		"outDir": "../esm/test",
 		"types": ["node"],
-		"noEmit": true,
+		"noEmit": true
 
 		// "importHelpers": true,
 		// "declarationMap": false,
 		// "skipLibCheck": true,
 	},
-	"references": [{ "path": ".." }],
+	"references": [{ "path": ".." }]
 }

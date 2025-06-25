@@ -2,11 +2,11 @@ import type { PathLike } from "node:fs";
 import { readFile } from "node:fs/promises";
 import type { Indent } from "detect-indent";
 import detectIndent from "detect-indent";
+import jsonfile from "jsonfile";
 import path from "pathe";
 import { sortPackageJson } from "sort-package-json";
 import type { PackageJson } from "type-fest";
 
-import jsonfile from "jsonfile";
 const { writeFileSync: writeJsonSync } = jsonfile;
 
 /**

@@ -1,33 +1,44 @@
-export { type Args, type Flags, BaseCommand } from "./baseCommand.js";
+/**
+ * Common infrastructure and APIs for building oclif-based command-line applications.
+ *
+ * @remarks
+ * This package provides base classes, utilities, and helpers for creating robust CLI tools
+ * using the oclif framework. It includes git integration, configuration management,
+ * logging capabilities, and common patterns for CLI development.
+ *
+ * @packageDocumentation
+ */
+
+export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
 export {
 	CommandWithConfig,
 	type CommandWithContext,
 } from "./configCommand.js";
 export {
-	RegExpFlag,
 	ConfigFileFlag,
+	RegExpFlag,
 } from "./flags.js";
 export type { CommitMergeability } from "./git.js";
-export { findGitRoot } from "./git.js";
 export {
-	GitCommand,
-	type CommandWithGit as RequiresGit,
-} from "./gitCommand.js";
-export {
-	Repository,
 	checkConflicts,
+	findGitRoot,
 	getMergeBase,
+	Repository,
 	revList,
 	shortCommit,
 } from "./git.js";
 export {
-	readJsonWithIndent,
-	updatePackageJsonFile,
+	type CommandWithGit as RequiresGit,
+	GitCommand,
+} from "./gitCommand.js";
+export {
 	type JsonWriteOptions,
 	type PackageTransformer,
+	readJsonWithIndent,
+	updatePackageJsonFile,
 } from "./json.js";
 export type {
 	ErrorLoggingFunction,
-	LoggingFunction,
 	Logger,
+	LoggingFunction,
 } from "./logger.js";
