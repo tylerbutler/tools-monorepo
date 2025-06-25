@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { Timer, getResolvedFluidRoot } from "@fluidframework/build-tools";
+import { getResolvedFluidRoot, Timer } from "@fluidframework/build-tools";
 import {
 	type BuildGraph,
 	BuildResult,
@@ -175,8 +175,7 @@ export default class BuildCommand extends CommandWithConfig<
 		const timeInMinutes =
 			timer.getTotalTime() > 60000
 				? ` (${Math.floor(timer.getTotalTime() / 60000)}m ${(
-						(timer.getTotalTime() % 60000) /
-						1000
+						(timer.getTotalTime() % 60000) / 1000
 					).toFixed(3)}s)`
 				: "";
 		this.verbose(

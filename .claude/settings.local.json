@@ -1,8 +1,6 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(git merge:*)"
-    ],
-    "deny": []
-  }
+	"permissions": {
+		"allow": ["Bash(git merge:*)"],
+		"deny": []
+	}
 }

@@ -3,7 +3,9 @@
 	"version": "0.0.1",
 	"private": true,
 	"description": "Come sail away.",
-	"keywords": ["build"],
+	"keywords": [
+		"build"
+	],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/packages/sail/",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -26,7 +28,11 @@
 	"bin": {
 		"sail": "./bin/run.js"
 	},
-	"files": ["/bin", "/esm", "/oclif.manifest.json"],
+	"files": [
+		"/bin",
+		"/esm",
+		"/oclif.manifest.json"
+	],
 	"scripts": {
 		"build": "fluid-build . --task build",
 		"check": "npm run check:format",
@@ -46,8 +52,12 @@
 		"test:mocha": "mocha --forbid-only \"test/**/*.test.ts\""
 	},
 	"oclif": {
-		"additionalHelpFlags": ["-h"],
-		"additionalVersionFlags": ["-V"],
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
 		"bin": "sail",
 		"commands": "./esm/commands",
 		"dirname": "sail-cli",
