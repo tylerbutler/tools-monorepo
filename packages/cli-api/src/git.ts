@@ -1,4 +1,5 @@
-import path from "node:path";
+import process from "node:process";
+import { dirname } from "pathe";
 import {
 	type MergeResult,
 	ResetMode,
@@ -33,7 +34,9 @@ export class Repository {
 		return this.git;
 	}
 
-	constructor(gitOptions: SetRequired<Partial<SimpleGitOptions>, "baseDir">) {
+	public constructor(
+		gitOptions: SetRequired<Partial<SimpleGitOptions>, "baseDir">,
+	) {
 		const options: SetRequired<Partial<SimpleGitOptions>, "baseDir"> = {
 			...gitOptions,
 			...defaultGitOptions,
@@ -102,6 +105,16 @@ export async function getMergeBase(
 	return base;
 }
 
+/**
+ * Gets all files that have changed since a specific reference point.
+ *
+ * @param git - The SimpleGit instance to use for git operations
+ * @param reference - The branch name to compare against
+ * @param remote - The remote name to compare against
+ * @returns A promise that resolves to an array of changed file paths
+ *
+ * @beta
+ */
 export async function getChangedFilesSinceRef(
 	git: SimpleGit,
 	reference: string,
@@ -117,18 +130,35 @@ export async function getChangedFilesSinceRef(
 	return files;
 }
 
+/**
+ * Gets all directories that contain files that have changed since a specific reference point.
+ *
+ * @param git - The SimpleGit instance to use for git operations
+ * @param reference - The branch name to compare against
+ * @param remote - The remote name to compare against
+ * @returns A promise that resolves to an array of changed directory paths
+ *
+ * @beta
+ */
 export async function getChangedDirectoriesSinceRef(
 	git: SimpleGit,
 	reference: string,
 	remote: string,
 ): Promise<string[]> {
 	const files = await getChangedFilesSinceRef(git, reference, remote);
-	const directories = new Set(files.map((f) => path.dirname(f)));
+	const directories = new Set(files.map((f) => dirname(f)));
 	return [...directories];
 }
 
 /**
  * Returns the SHA hash for a branch. If a remote is provided, the SHA for the remote ref is returned.
+ *
+ * @param git - The SimpleGit instance to use for git operations
+ * @param branch - The branch name to get the SHA for
+ * @param remote - Optional remote name. If provided, gets the SHA for the remote branch
+ * @returns A promise that resolves to the SHA hash of the branch
+ *
+ * @beta
  */
 export async function getShaForBranch(
 	git: SimpleGit,
@@ -143,6 +173,8 @@ export async function getShaForBranch(
 
 	return result;
 }
+
+const newlinePattern = /\r?\n/;
 
 /**
  * Calls `git rev-list` to get all commits between the base and head commits.
@@ -159,9 +191,18 @@ export async function revList(
 	headCommit = "HEAD",
 ): Promise<string[]> {
 	const result = await git.raw("rev-list", `${baseCommit}..${headCommit}`);
-	return result.split(/\r?\n/).filter((value) => value !== "");
+	return result.split(newlinePattern).filter((value) => value !== "");
 }
 
+/**
+ * Tests whether a commit can be merged without conflicts.
+ *
+ * @param git - The SimpleGit instance to use for git operations
+ * @param commit - The commit SHA or reference to test merging
+ * @returns A promise that resolves to true if the commit can be merged without conflicts
+ *
+ * @beta
+ */
 export async function canMergeWithoutConflicts(
 	git: SimpleGit,
 	commit: string,
@@ -183,6 +224,15 @@ export async function canMergeWithoutConflicts(
 	return mergeResult.result === "success";
 }
 
+/**
+ * Tests whether a commit can be cherry-picked without conflicts.
+ *
+ * @param git - The SimpleGit instance to use for git operations
+ * @param commit - The commit SHA or reference to test cherry-picking
+ * @returns A promise that resolves to true if the commit can be cherry-picked without conflicts
+ *
+ * @beta
+ */
 export async function canCherryPickWithoutConflicts(
 	git: SimpleGit,
 	commit: string,
@@ -201,11 +251,23 @@ export async function canCherryPickWithoutConflicts(
 }
 
 /**
+ * Describes the mergeability status of a commit.
+ * - "clean": Can be merged without conflicts
+ * - "conflict": Cannot be merged or cherry-picked without conflicts
+ * - "maybeClean": Cannot be merged but can be cherry-picked without conflicts
+ *
  * @beta
  */
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
 /**
+ * Checks multiple commits for merge conflicts and categorizes their mergeability.
+ *
+ * @param git - The SimpleGit instance to use for git operations
+ * @param commitIds - Array of commit SHAs or references to check
+ * @param log - Optional logger for verbose output
+ * @returns A promise that resolves to an array of commit mergeability results
+ *
  * @beta
  */
 export async function checkConflicts(

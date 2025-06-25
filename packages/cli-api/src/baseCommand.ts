@@ -1,7 +1,8 @@
+import process from "node:process";
 import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
 import type { PrettyPrintableError } from "@oclif/core/errors";
-import chalk from "chalk";
 import registerDebug, { type Debugger } from "debug";
+import chalk from "picocolors";
 import type { Logger } from "./logger.js";
 
 /**
@@ -33,7 +34,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * The flags defined on the base class.
 	 */
-	static override baseFlags = {
+	public static override baseFlags = {
 		verbose: OclifFlags.boolean({
 			char: "v",
 			description: "Enable verbose logging.",
@@ -264,7 +265,7 @@ export abstract class BaseCommand<T extends typeof Command>
 			if (this.redirectLogToTrace) {
 				this.traceVerbose?.(msg);
 			} else {
-				const color = typeof message === "string" ? chalk.grey : chalk.red;
+				const color = typeof message === "string" ? chalk.gray : chalk.red;
 				this.log(color(`VERBOSE: ${msg}`));
 			}
 		}

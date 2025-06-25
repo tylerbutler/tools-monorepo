@@ -1,4 +1,6 @@
-import chalk from "chalk";
+/** biome-ignore-all lint/suspicious/noConsole: this file is a console logger */
+
+import chalk from "picocolors";
 
 /**
  * A function that logs an Error or error message.

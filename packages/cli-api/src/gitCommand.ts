@@ -1,3 +1,4 @@
+import process from "node:process";
 import type { Command, Config } from "@oclif/core";
 import type { SimpleGit } from "simple-git";
 import { CommandWithConfig } from "./configCommand.js";
@@ -18,10 +19,24 @@ export abstract class GitCommand<
 	protected git: SimpleGit;
 	protected repo: Repository;
 
-	constructor(argv: string[], config: Config) {
+	public constructor(argv: string[], config: Config) {
 		super(argv, config);
 
 		this.repo = new Repository({ baseDir: process.cwd() });
 		this.git = this.repo.gitClient;
 	}
+}
+
+/**
+ * An interface implemented by commands that expect to be used in a Git repository.
+ *
+ * @beta
+ */
+export interface CommandWithGit {
+	git: SimpleGit;
+
+	/**
+	 * The absolute path to the root of the git repository.
+	 */
+	// gitRepoPath: string;
 }

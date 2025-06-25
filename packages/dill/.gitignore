@@ -1,1 +1,4 @@
 /esm
+
+# Test data files must be forcefully added
+test/data

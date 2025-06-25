@@ -1,0 +1,140 @@
+[
+    {
+        "alias": [],
+        "command": "autocomplete",
+        "flagAliases": [],
+        "flagChars": [
+            "r"
+        ],
+        "flags": [
+            "refresh-cache"
+        ],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "autocomplete:create",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "autocomplete:script",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "commands",
+        "flagAliases": [],
+        "flagChars": [
+            "c",
+            "x"
+        ],
+        "flags": [
+            "columns",
+            "deprecated",
+            "extended",
+            "hidden",
+            "json",
+            "no-truncate",
+            "sort",
+            "tree"
+        ],
+        "plugin": "@oclif/plugin-commands"
+    },
+    {
+        "alias": [],
+        "command": "download",
+        "flagAliases": [],
+        "flagChars": [
+            "e",
+            "o",
+            "v"
+        ],
+        "flags": [
+            "extract",
+            "filename",
+            "out",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [
+            "mtp"
+        ],
+        "command": "git:merge-train:preview",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "git:squish",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "dry-run",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "help",
+        "flagAliases": [],
+        "flagChars": [
+            "n"
+        ],
+        "flags": [
+            "nested-commands"
+        ],
+        "plugin": "@oclif/plugin-help"
+    },
+    {
+        "alias": [],
+        "command": "search",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-search"
+    },
+    {
+        "alias": [],
+        "command": "version",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [
+            "json",
+            "verbose"
+        ],
+        "plugin": "@oclif/plugin-version"
+    },
+    {
+        "alias": [],
+        "command": "which",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [
+            "json"
+        ],
+        "plugin": "@oclif/plugin-which"
+    }
+]

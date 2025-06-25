@@ -1,52 +1,38 @@
-import type { RequireAtLeastOne, SetOptional } from "type-fest";
-import type { PackageJsonPropertiesSettings } from "./policies/PackageJsonProperties.js";
-import type { PolicyName, RepoPolicy } from "./policy.js";
+import type { PolicyCreator } from "./generators.js";
+import { makePolicy } from "./makePolicy.js";
+import { DefaultPolicies, type PolicyInstance } from "./policy.js";
 
 /**
  * @alpha
  */
-export type PerPolicySettings =
-	| ({
-			// biome-ignore lint/style/useNamingConvention: key needs to match policy name
-			PackageJsonProperties: PackageJsonPropertiesSettings;
-	  } & Record<PolicyName, unknown>)
-	| undefined;
+export type PolicyList = PolicyCreator[];
 
 /**
  * @alpha
  */
-export interface OptionalPolicyConfig {
-	policies?: RepoPolicy[];
+export interface RepopoConfig {
+	/**
+	 * An array of policies that are enabled.
+	 *
+	 * See `DefaultPolicies` for the policies that will be enabled by default if this is `undefined`.
+	 */
+	// biome-ignore lint/suspicious/noExplicitAny: FIXME
+	policies?: PolicyInstance<any>[];
 
 	/**
-	 * An array of strings/regular expressions. Paths that match any of these expressions will be completely excluded from
-	 * policy.
+	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
+	 * from policy.
 	 */
 	excludeFiles?: (string | RegExp)[];
-
-	/**
-	 * An object with a policy name as keys that map to an array of strings/regular expressions to
-	 * exclude that rule from being checked.
-	 */
-	excludePoliciesForFiles?: Record<PolicyName, (string | RegExp)[]>;
-	includeDefaultPolicies?: boolean;
-
-	policySettings?: PerPolicySettings | undefined;
 }
 
 /**
- * A type representing policy configuration.
+ * The default config applied when no config is found.
  *
  * @alpha
  */
-export type PolicyConfig = RequireAtLeastOne<
-	OptionalPolicyConfig,
-	"policies" | "includeDefaultPolicies"
->;
-
-export const DefaultPolicyConfig: // PolicyConfig
-SetOptional<Required<PolicyConfig>, "policies" | "policySettings"> = {
+export const DefaultPolicyConfig: RepopoConfig = {
+	policies: DefaultPolicies.map((p) => makePolicy(p)),
 	excludeFiles: [],
-	excludePoliciesForFiles: {},
-	includeDefaultPolicies: true,
+	// excludePoliciesForFiles: {},
 };

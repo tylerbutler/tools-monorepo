@@ -12,6 +12,6 @@
 		"noUncheckedIndexedAccess": true,
 		"checkJs": true,
 		"isolatedModules": true,
-		"skipLibCheck": true,
-	},
+		"skipLibCheck": true
+	}
 }

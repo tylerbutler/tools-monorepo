@@ -4,12 +4,12 @@
 		"outDir": "esm",
 		"rootDir": "src",
 
-		// TODO: Should this setting be disabled in the strict config?
+		// TODO: Should these settings be disabled in the strict config?
 		"noUncheckedIndexedAccess": true,
-		"noPropertyAccessFromIndexSignature": false,
+		"noPropertyAccessFromIndexSignature": false
 	},
 	"include": ["src/**/*"],
 	"ts-node": {
-		"esm": true,
-	},
+		"esm": true
+	}
 }

@@ -13,7 +13,15 @@ const config = {
 			strategy: "name@version",
 		},
 	},
-	dependencyTypes: ["dev", "engines", "packageManager", "peer", "prod"],
+	dependencyTypes: [
+		"dev",
+		"engines",
+		// Disabled for now because it removes the sha from the field.
+		// "packageManager",
+		// Disabled because of interactions with changeset versioning.
+		// "peer",
+		"prod",
+	],
 	versionGroups: [
 		{
 			label: "Use workspace protocol for workspace dependencies",
@@ -23,12 +31,13 @@ const config = {
 		},
 	],
 	semverGroups: [
-		{
-			label: "Use exact ranges for packageManager field",
-			range: "",
-			dependencyTypes: ["packageManager"],
-			packages: ["**"],
-		},
+		// Disabled for now because it removes the sha from the field.
+		// {
+		// 	label: "Use exact ranges for packageManager field",
+		// 	range: "",
+		// 	dependencyTypes: ["packageManager"],
+		// 	packages: ["**"],
+		// },
 		{
 			label: "Use exact ranges for these deps",
 			range: "",

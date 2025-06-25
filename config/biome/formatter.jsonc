@@ -1,0 +1,49 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"indentStyle": "tab",
+		"lineEnding": "lf",
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				// Organizes imports and exports
+				"organizeImports": "on",
+
+				// Only affects CSS, not TS or JSON
+				"useSortedProperties": "on",
+			},
+		},
+	},
+	"javascript": {
+		"formatter": {
+			"jsxQuoteStyle": "double",
+			"trailingCommas": "all",
+			"semicolons": "always",
+		},
+	},
+	"overrides": [
+		{
+			"includes": [
+				"**/*.jsonc",
+				"**/*.json5",
+				"**/api-extractor*.json",
+				"**/tsconfig*.json",
+				"**/.vscode/**/*.json",
+			],
+			"json": {
+				"parser": {
+					"allowComments": true,
+					"allowTrailingCommas": true,
+				},
+				"formatter": {
+					// Biome 2.x doesn't format JSON with trailing commas, regardless of this setting
+					// See https://github.com/biomejs/biome/discussions/6374
+					"trailingCommas": "all",
+				},
+			},
+		},
+	],
+}

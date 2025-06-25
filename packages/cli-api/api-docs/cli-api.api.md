@@ -9,7 +9,11 @@ import type { Config } from '@oclif/core';
 import { CustomOptions } from '@oclif/core/interfaces';
 import { Debugger } from 'debug';
 import { FlagDefinition } from '@oclif/core/interfaces';
+import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
+import { OptionFlag } from '@oclif/core/interfaces';
+import type { PackageJson } from 'type-fest';
+import type { PathLike } from 'node:fs';
 import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
@@ -51,7 +55,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
     warningWithDebugTrace(message: string | Error): string | Error;
 }
 
-// @beta (undocumented)
+// @beta
 export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger): Promise<{
     commit: string;
     mergeability: CommitMergeability;
@@ -61,29 +65,30 @@ export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger
 export abstract class CommandWithConfig<T extends typeof Command & {
     args: typeof CommandWithConfig.args;
     flags: typeof CommandWithConfig.flags;
-}, C = unknown> extends BaseCommand<T> {
+}, C> extends BaseCommand<T> {
     // (undocumented)
     protected get commandConfig(): C | undefined;
-    protected set commandConfig(value: C | undefined);
+    protected get configLocation(): string | "DEFAULT" | undefined;
+    protected defaultConfig: C | undefined;
     // (undocumented)
-    protected configPath: string | undefined;
-    // (undocumented)
-    protected get defaultConfig(): C | undefined;
+    static readonly flags: {
+        readonly config: OptionFlag<string | undefined, CustomOptions>;
+    };
     // (undocumented)
     init(): Promise<void>;
-    // (undocumented)
-    protected loadConfig(): Promise<C | undefined>;
 }
 
 // @beta
-export abstract class CommandWithoutConfig<T extends typeof Command & {
-    args: typeof CommandWithoutConfig.args;
-    flags: typeof CommandWithoutConfig.flags;
-}> extends BaseCommand<T> {
+export interface CommandWithContext<CONTEXT> {
+    // (undocumented)
+    getContext(): Promise<CONTEXT>;
 }
 
-// @beta (undocumented)
+// @beta
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
+
+// @beta
+export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
@@ -110,7 +115,10 @@ export abstract class GitCommand<T extends typeof Command & {
 }
 
 // @beta
-export function isSorted(tsconfig: string): boolean;
+export interface JsonWriteOptions {
+    indent?: string | Indent | undefined;
+    sort?: true | undefined;
+}
 
 // @public
 export interface Logger {
@@ -125,9 +133,15 @@ export interface Logger {
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
 // @beta
-export type OrderList = string[];
+export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;
 
-// @beta (undocumented)
+// @beta
+export function readJsonWithIndent<J = unknown>(filePath: PathLike): Promise<{
+    json: J;
+    indent: Indent;
+}>;
+
+// @beta
 export const RegExpFlag: FlagDefinition<RegExp, CustomOptions, {
 multiple: false;
 requiredOrDefaulted: false;
@@ -139,6 +153,12 @@ export class Repository {
     get gitClient(): SimpleGit;
 }
 
+// @beta
+export interface RequiresGit {
+    // (undocumented)
+    git: SimpleGit;
+}
+
 // @alpha
 export function revList(git: SimpleGit, baseCommit: string, headCommit?: string): Promise<string[]>;
 
@@ -146,21 +166,6 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 export function shortCommit(commit: string): string;
 
 // @beta
-export function sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-
-// @beta
-export interface SortTsconfigResult {
-    alreadySorted: boolean;
-    tsconfig: string;
-}
-
-// @beta
-export class TsConfigSorter {
-    constructor(order: OrderList);
-    isSorted(tsconfig: string): boolean;
-    sortTsconfigFile(tsconfigPath: string, write: boolean): SortTsconfigResult;
-}
-
-// (No @packageDocumentation comment for this package)
+export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
 
 ```

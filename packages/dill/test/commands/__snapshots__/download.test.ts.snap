@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`download command > compressed file with --extract 1`] = `
+[
+  "test",
+  "test/data",
+  "test/data/test1.json",
+  "test/data/test2.json",
+]
+`;

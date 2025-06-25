@@ -1,3 +1,1 @@
-import DownloadCommand from "dill/command";
-
-export default DownloadCommand;
+export { default } from "dill-cli/command";

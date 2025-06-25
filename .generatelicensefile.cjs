@@ -5,6 +5,7 @@ module.exports = {
 	eol: "lf",
 	ci: true,
 	noSpinner: true,
+	exclude: ["@tylerbu/cli-api", "@tylerbu/fundamentals"],
 	replace: {
 		"@andrewbranch/untar.js@1.0.3":
 			"https://raw.githubusercontent.com/antimatter15/untar.js/master/LICENSE",

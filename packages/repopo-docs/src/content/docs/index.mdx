@@ -1,0 +1,34 @@
+---
+title: repopo
+description: Police the files in your git repo with extensible policies.
+template: splash
+hero:
+  tagline: Police the files in your git repo with extensible policies.
+  image:
+    file: ../../assets/repopo-police.jpg
+  actions:
+    - text: Get started
+      link: /usage/cli-usage/
+      icon: right-arrow
+      variant: primary
+    - text: What is repopo?
+      link: /introduction/
+      # icon: bars
+      variant: secondary
+banner:
+  content: |
+    repopo is extremely new and likely has bugs. Use at your own risk!
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Features
+
+<CardGrid>
+	<Card title="Lint-like rules" icon="seti:git">
+		Apply lint-like rules to any file in your git repository.
+	</Card>
+	<Card title="Custom policies" icon="seti:javascript">
+		You can create your own policies as easily as writing a function.
+</Card>
+</CardGrid>
