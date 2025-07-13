@@ -1,4 +1,3 @@
-import process from "node:process";
 import { Args } from "@oclif/core";
 import { glob, type GlobOptions } from "tinyglobby";
 
