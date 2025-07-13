@@ -4,11 +4,13 @@
 
 ```ts
 
+import { ArgDefinition } from '@oclif/core/interfaces';
 import { Command } from '@oclif/core';
 import type { Config } from '@oclif/core';
 import { CustomOptions } from '@oclif/core/interfaces';
 import { Debugger } from 'debug';
 import { FlagDefinition } from '@oclif/core/interfaces';
+import { GlobOptions } from 'tinyglobby';
 import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
@@ -113,6 +115,12 @@ export abstract class GitCommand<T extends typeof Command & {
     // (undocumented)
     protected repo: Repository;
 }
+
+// @beta
+export const GlobArg: ArgDefinition<string[], GlobArgOptions>;
+
+// @beta
+export type GlobArgOptions = Omit<GlobOptions, "patterns">;
 
 // @beta
 export interface JsonWriteOptions {

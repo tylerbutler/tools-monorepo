@@ -61,7 +61,8 @@
 		"picocolors": "^1.1.1",
 		"simple-git": "^3.28.0",
 		"sort-package-json": "*",
-		"strip-ansi": "^7.1.0"
+		"strip-ansi": "^7.1.0",
+		"tinyglobby": "^0.2.14"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.0.4",

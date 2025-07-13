@@ -9,6 +9,7 @@
  * @packageDocumentation
  */
 
+export { GlobArg, type GlobArgOptions } from "./args.js";
 export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
 export {
 	CommandWithConfig,
