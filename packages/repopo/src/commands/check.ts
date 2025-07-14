@@ -212,7 +212,7 @@ export class CheckPolicy<
 		} catch (error: unknown) {
 			// Log and rethrow the error for higher-level handling
 			this.error(
-				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
+				`Policy '${policy.name}' failed for file '${relPath}': ${error}`,
 			);
 		}
 	}
