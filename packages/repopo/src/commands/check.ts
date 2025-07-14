@@ -391,9 +391,14 @@ export class CheckPolicy<
 }
 
 function* readStdin(): Operation<string> {
-	return yield* action<string>((resolve, reject) => () => {
+	return yield* action<string>((resolve) => () => {
 		const stdin = process.stdin;
 		stdin.setEncoding("utf8");
+
+		if (stdin.isTTY) {
+			resolve("");
+			return;
+		}
 
 		let data = "";
 		stdin.on("data", (chunk) => {
@@ -404,9 +409,8 @@ function* readStdin(): Operation<string> {
 			resolve(data);
 		});
 
-		if (stdin.isTTY) {
-			resolve("");
-		}
-		reject(new Error("Rejection in readStdin"));
+		stdin.on("error", (error) => {
+			throw error;
+		});
 	});
 }

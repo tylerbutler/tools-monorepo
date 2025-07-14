@@ -154,10 +154,42 @@ Focus on file-system level concerns that ESLint cannot address:
 - Interface definitions for type safety
 
 ### Quality Assurance Checklist
-- [ ] Run `npm run compile` - no TypeScript errors
-- [ ] Run `npm run lint` - no linting errors  
-- [ ] Run `npx vitest run` - all tests pass
+- [ ] Run `pnpm compile` - no TypeScript errors
+- [ ] Run `pnpm lint` - no linting errors  
+- [ ] Run `pnpm test` - all tests pass
 - [ ] Test file path resolution edge cases
 - [ ] Test auto-fix functionality where applicable
 - [ ] Keep cognitive complexity under 15
 - [ ] Update exports in `src/policies.ts`
+
+## Effection V3 Integration (Current Branch: refactor/repopo/effection)
+
+### Key Effection Concepts
+- **Structured Concurrency**: Operations bound to parent lifecycle - "No Operation Outlives Its Parent"
+- **Generator-Based**: Uses generator functions instead of async/await for better concurrency control
+- **Guaranteed Cleanup**: Try/finally blocks provide guaranteed resource cleanup
+- **Predictable Error Handling**: Can only catch errors from directly yielded operations, not spawned children
+
+### Effection Patterns in Repopo
+- **Policy Handlers**: Support both sync, Promise, and Operation return types
+- **Parallel Execution**: Use `all()` for running multiple policies concurrently
+- **Error Boundaries**: Use `call()` to create error boundaries for background tasks
+- **Resource Management**: Operations automatically cleaned up when parent completes
+
+### Critical Effection Issues
+- **CRITICAL**: `readStdin()` function has unconditional error rejection that violates Effection principles
+- **Location**: `src/commands/check.ts:410` - `reject(new Error("Rejection in readStdin"));`
+- **Fix Required**: Remove unconditional rejection, handle TTY properly
+
+### Effection Best Practices
+1. Use `action()` to wrap async operations, resolve/throw appropriately
+2. Use `call()` to integrate Promise-based code into Effection operations
+3. Use error boundaries with `call()` for handling errors from spawned tasks
+4. Try/finally blocks for guaranteed cleanup regardless of operation exit
+5. `all()` for parallel operations with proper structured concurrency
+
+### Migration Patterns
+- Mixed handler types: `PolicyHandler<T, C>` supports sync, Promise, and Operation returns
+- Type guards needed for runtime distinction between Promise and Operation
+- Performance monitoring integrated with `runWithPerf()` wrapper
+- Async policy support added via `PolicyDefinitionAsync` interface
