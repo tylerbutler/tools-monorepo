@@ -47,7 +47,7 @@ export interface PolicyFunctionArguments<C> {
  *
  * @alpha
  */
-export type PolicyHandler<T, C = unknown | undefined> =
+export type PolicyHandler<T = PolicyHandlerResult, C = unknown | undefined> =
 	| ((args: PolicyFunctionArguments<C>) => PolicyHandlerResult)
 	| ((args: PolicyFunctionArguments<C>) => Operation<T>)
 	| ((args: PolicyFunctionArguments<C>) => Promise<T>);
