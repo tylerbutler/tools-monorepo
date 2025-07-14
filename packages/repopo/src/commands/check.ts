@@ -261,16 +261,23 @@ export class CheckPolicy<
 				},
 			);
 			if (result === undefined || result === null) {
-				throw new Error("Policy result was undefined or null.");
+				throw new Error(
+					`Policy '${policy.name}' returned ${result === undefined ? "undefined" : "null"} for file '${relPath}'. ` +
+					"Policies must return true, PolicyFailure, or PolicyFixResult."
+				);
 			}
 			return result;
 		} catch (error: unknown) {
 			// Return failure result to continue processing other files
+			const errorMessage = error instanceof Error 
+				? `${error.name}: ${error.message}`
+				: `Unknown error: ${String(error)}`;
+			
 			return {
 				name: policy.name,
 				file: relPath,
 				autoFixable: false,
-				errorMessage: `Handler error: ${error}`,
+				errorMessage: `Policy failed: ${errorMessage}`,
 			} satisfies PolicyFailure;
 		}
 	}
