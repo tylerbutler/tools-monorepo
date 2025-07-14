@@ -1,19 +1,19 @@
 import { EOL as newline } from "node:os";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { type Operation, action, all, call, run } from "effection";
+import { action, all, call, type Operation, run } from "effection";
 import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
-import { type PolicyHandlerPerfStats, logStats, runWithPerf } from "../perf.js";
+import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";
 import {
+	isPolicyFixResult,
 	type PolicyFailure,
 	type PolicyFixResult,
 	type PolicyHandlerResult,
 	type PolicyInstance,
 	type PolicyStandaloneResolver,
-	isPolicyFixResult,
 } from "../policy.js";
 
 /**
