@@ -32,7 +32,7 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 	return {
 		name,
 		match: PackageJsonRegexMatch,
-		handler: function* (innerArgs) {
+		*handler(innerArgs: PolicyFunctionArguments<C>) {
 			const json: J = yield* call(() => readJson(innerArgs.file));
 			return yield* packagePolicy(json, innerArgs);
 		},

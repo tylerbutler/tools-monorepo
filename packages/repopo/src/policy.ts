@@ -1,6 +1,5 @@
-import type { Callable, Operation } from "effection";
+import type { Operation } from "effection";
 import type { RequireExactlyOne } from "type-fest";
-import { isGeneratorFunction } from "./generators.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
@@ -50,7 +49,7 @@ export interface PolicyFunctionArguments<C> {
  */
 export type PolicyHandler<T, C = unknown | undefined> =
 	| ((args: PolicyFunctionArguments<C>) => PolicyHandlerResult)
-	// | ((args: PolicyFunctionArguments<C>) => Operation<T>)
+	| ((args: PolicyFunctionArguments<C>) => Operation<T>)
 	| ((args: PolicyFunctionArguments<C>) => Promise<T>);
 
 /**
@@ -109,7 +108,7 @@ export interface PolicyDefinition<C = undefined> {
 	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
 
-	handler: PolicyHandler<C>;
+	handler: PolicyHandler<PolicyHandlerResult, C>;
 
 	/**
 	 * A resolver function that can be used to automatically address the policy violation.
@@ -222,7 +221,7 @@ export abstract class Policy<C> implements PolicyDefinition<C> {
 	public constructor(
 		public readonly name: string,
 		public readonly match: RegExp,
-		public readonly handler: PolicyHandler<C>,
+		public readonly handler: PolicyHandler<PolicyHandlerResult, C>,
 		public readonly description?: string,
 		public readonly defaultConfig?: C,
 		public readonly resolver?: PolicyStandaloneResolver<C>,

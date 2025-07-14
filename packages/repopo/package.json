@@ -61,7 +61,9 @@
 		"readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",
-		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs"
+		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "vitest run",
+		"test:watch": "vitest"
 	},
 	"oclif": {
 		"bin": "repopo",

@@ -105,8 +105,8 @@ export function defineFileHeaderPolicy(
 	return {
 		name,
 		match: config.match,
-		handler: function* ({ file, resolve, config: policyConfig }) {
-			if (policyConfig === undefined) {
+		*handler({ file, resolve, config: policyConfig }) {
+			if (policyConfig === null || policyConfig === undefined) {
 				return true;
 			}
 

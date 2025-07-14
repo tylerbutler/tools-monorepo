@@ -1,6 +1,7 @@
 import type {
 	PolicyDefinition,
 	PolicyHandler,
+	PolicyHandlerResult,
 	PolicyInstance,
 	PolicyInstanceSettings,
 	PolicyName,
@@ -10,7 +11,7 @@ import type {
 function generatePolicyFunction(name: PolicyName, description?: string) {
 	return <C>(
 		match: RegExp,
-		handler: PolicyHandler<C>,
+		handler: PolicyHandler<PolicyHandlerResult, C>,
 		defaultConfig?: C,
 		resolver?: PolicyStandaloneResolver<C>,
 	): PolicyDefinition<C> => {
@@ -28,7 +29,7 @@ function generatePolicyFunction(name: PolicyName, description?: string) {
 export function makePolicyDefinition<C = undefined>(
 	name: PolicyName,
 	match: RegExp,
-	handler: PolicyHandler<C>,
+	handler: PolicyHandler<PolicyHandlerResult, C>,
 	defaultConfig?: C,
 	description?: string,
 	resolver?: PolicyStandaloneResolver<C>,
@@ -47,7 +48,7 @@ export function makePolicyDefinition<C = undefined>(
  * @alpha
  */
 export function makePolicy<C>(
-	definition: PolicyDefinition<C> | PolicyDefinitionAsync<C>,
+	definition: PolicyDefinition<C>,
 	config?: C,
 	settings?: PolicyInstanceSettings<C>,
 ): PolicyInstance<C> {

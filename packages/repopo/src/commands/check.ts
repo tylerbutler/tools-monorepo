@@ -1,4 +1,5 @@
 import { EOL as newline } from "node:os";
+import process from "node:process";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import { action, all, call, type Operation, run } from "effection";
@@ -31,10 +32,10 @@ export class CheckPolicy<
 		flags: typeof CheckPolicy.flags;
 	},
 > extends BaseRepopoCommand<T> {
-	static override readonly summary =
+	public static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -239,7 +240,7 @@ export class CheckPolicy<
 				policy.name,
 				"handle",
 				perfStats,
-				function* () {
+				function* (): Operation<PolicyHandlerResult> {
 					const handlerResult = policy.handler({
 						file: relPath,
 						root: gitRoot,
@@ -251,17 +252,24 @@ export class CheckPolicy<
 					if (handlerResult instanceof Promise) {
 						return yield* call(() => handlerResult);
 					}
-					return yield* handlerResult;
+					if (typeof handlerResult === "object" && handlerResult !== null && Symbol.iterator in handlerResult) {
+						return yield* (handlerResult as Operation<PolicyHandlerResult>);
+					}
+					return handlerResult;
 				},
 			);
-			if (result === undefined) {
-				throw new Error("Policy result was undefined.");
+			if (result === undefined || result === null) {
+				throw new Error("Policy result was undefined or null.");
 			}
 			return result;
 		} catch (error: unknown) {
-			this.error(
-				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
-			);
+			// Return failure result to continue processing other files
+			return {
+				name: policy.name,
+				file: relPath,
+				autoFixable: false,
+				errorMessage: `Handler error: ${error}`,
+			} satisfies PolicyFailure;
 		}
 	}
 
