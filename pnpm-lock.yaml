@@ -127,7 +127,7 @@ importers:
         version: 4.4.1(supports-color@8.1.1)
       dill-cli:
         specifier: workspace:^
-        version: link:../dill
+        version: link:../dill-cli
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -281,7 +281,7 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.16.10)(jiti@2.4.2)(msw@2.10.2(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.0)
 
-  packages/dill:
+  packages/dill-cli:
     dependencies:
       '@oclif/core':
         specifier: ^4.3.0
@@ -433,7 +433,7 @@ importers:
         version: 5.10.0(@netlify/blobs@8.2.0)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.0)
       dill-cli:
         specifier: workspace:^
-        version: link:../dill
+        version: link:../dill-cli
       sharp:
         specifier: ^0.34.2
         version: 0.34.2
