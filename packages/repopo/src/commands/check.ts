@@ -7,6 +7,7 @@ import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
+import { isOperation } from "../effection.js";
 import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";
 import {
 	isPolicyFixResult,
@@ -252,8 +253,9 @@ export class CheckPolicy<
 					if (handlerResult instanceof Promise) {
 						return yield* call(() => handlerResult);
 					}
-					if (typeof handlerResult === "object" && handlerResult !== null && Symbol.iterator in handlerResult) {
-						return yield* (handlerResult as Operation<PolicyHandlerResult>);
+					// Check if it's an Effection Operation (has Symbol.iterator that returns Iterator)
+					if (isOperation(handlerResult)) {
+						return yield* handlerResult;
 					}
 					return handlerResult;
 				},
