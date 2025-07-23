@@ -1,3 +1,5 @@
+import type { Operation } from "effection";
+import type { RequireExactlyOne } from "type-fest";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
@@ -45,15 +47,19 @@ export interface PolicyFunctionArguments<C> {
  *
  * @alpha
  */
+export type PolicyHandler<T = PolicyHandlerResult, C = unknown | undefined> =
+	| ((args: PolicyFunctionArguments<C>) => PolicyHandlerResult)
+	| ((args: PolicyFunctionArguments<C>) => Operation<T>)
+	| ((args: PolicyFunctionArguments<C>) => Promise<T>);
 
-export type PolicyHandler<C = unknown | undefined> = (
+/**
+ * A policy handler async function that is called to check policy against a file.
+ *
+ * @alpha
+ */
+export type PolicyHandlerAsync<C = unknown | undefined> = (
 	args: PolicyFunctionArguments<C>,
 ) => Promise<PolicyHandlerResult>;
-
-// export type PolicyCheckOnly = (
-// 	file: string,
-// 	root: string,
-// ) => Promise<PolicyHandlerResult>;
 
 /**
  * A standalone function that can be called to resolve a policy failure.
@@ -62,9 +68,7 @@ export type PolicyHandler<C = unknown | undefined> = (
  */
 export type PolicyStandaloneResolver<C = undefined> = (
 	args: Omit<PolicyFunctionArguments<C>, "resolve">,
-) => Promise<PolicyFixResult>;
-
-// function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
+) => Operation<PolicyFixResult>;
 
 /**
  * A RepoPolicyDefinition checks and applies policies to files in the repository.
@@ -104,7 +108,7 @@ export interface PolicyDefinition<C = undefined> {
 	 * @returns True if the file passed the policy; otherwise a PolicyFailure object will be returned.
 	 */
 
-	handler: PolicyHandler<C>;
+	handler: PolicyHandler<PolicyHandlerResult, C>;
 
 	/**
 	 * A resolver function that can be used to automatically address the policy violation.
@@ -142,8 +146,10 @@ export interface PolicyInstanceSettings<C> {
 /**
  * @alpha
  */
-export type PolicyInstance<C = undefined> = PolicyDefinition<C> &
-	PolicyInstanceSettings<C>;
+export type PolicyInstance<C = undefined> = RequireExactlyOne<
+	PolicyDefinition<C> & PolicyInstanceSettings<C>,
+	"handler"
+>;
 
 /**
  * A policy failure.
@@ -215,7 +221,7 @@ export abstract class Policy<C> implements PolicyDefinition<C> {
 	public constructor(
 		public readonly name: string,
 		public readonly match: RegExp,
-		public readonly handler: PolicyHandler<C>,
+		public readonly handler: PolicyHandler<PolicyHandlerResult, C>,
 		public readonly description?: string,
 		public readonly defaultConfig?: C,
 		public readonly resolver?: PolicyStandaloneResolver<C>,
