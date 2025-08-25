@@ -48,7 +48,7 @@
 		"test:coverage": "fluid-build . --task test:coverage"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.0.4",
+		"@biomejs/biome": "2.2.2",
 		"@changesets/cli": "^2.29.5",
 		"@changesets/config": "^3.1.1",
 		"@fluid-tools/build-cli": "^0.56.0",
