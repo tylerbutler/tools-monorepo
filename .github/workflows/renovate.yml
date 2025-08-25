@@ -13,3 +13,8 @@ jobs:
         with:
           configurationFile: renovate.json5
           token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER_FILTER: "tylerbutler/tools-monorepo"
+          RENOVATE_ALLOWED_COMMANDS:
+            - "^pnpm .*"
