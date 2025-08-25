@@ -49,13 +49,15 @@
 	"automergeSchedule": ["every weekday"],
 
 	// postUpgradeTasks do not work on the hosted renovate service
-	// "postUpgradeTasks": {
-	// 	"commands": [
-	// 		"pnpm install --no-frozen-lockfile",
-	// 		"pnpm run ci:build",
-	// 	],
-	// 	"executionMode": "update",
-	// },
+	"postUpgradeTasks": {
+		"commands": [
+			"pnpm install --no-frozen-lockfile",
+			"pnpm run ci:build",
+		],
+		"executionMode": "update",
+	},
+
+	"autodiscoverFilter": ["tylerbutler/tools-monorepo"],
 
 	"lockFileMaintenance": {
 		"enabled": false,
