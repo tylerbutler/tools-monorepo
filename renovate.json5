@@ -48,11 +48,6 @@
 	"automergeType": "branch", // or "pr"
 	"automergeSchedule": ["every weekday"],
 
-	"allowedCommands": [
-		"^pnpm install.*",
-		"^pnpm run ci:build$",
-	],
-
 	// postUpgradeTasks do not work on the hosted renovate service
 	"postUpgradeTasks": {
 		"commands": [
@@ -61,9 +56,6 @@
 		],
 		"executionMode": "update",
 	},
-
-	"autodiscover": true,
-	"autodiscoverFilter": ["tylerbutler/tools-monorepo"],
 
 	"lockFileMaintenance": {
 		"enabled": false,
