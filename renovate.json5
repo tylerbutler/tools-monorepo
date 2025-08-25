@@ -57,6 +57,7 @@
 		"executionMode": "update",
 	},
 
+	"autodiscover": true,
 	"autodiscoverFilter": ["tylerbutler/tools-monorepo"],
 
 	"lockFileMaintenance": {
