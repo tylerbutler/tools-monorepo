@@ -16,5 +16,4 @@ jobs:
         env:
           RENOVATE_AUTODISCOVER: true
           RENOVATE_AUTODISCOVER_FILTER: "tylerbutler/tools-monorepo"
-          RENOVATE_ALLOWED_COMMANDS:
-            - "^pnpm .*"
+          RENOVATE_ALLOWED_COMMANDS: "^pnpm .*"
