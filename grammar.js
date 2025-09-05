@@ -5,7 +5,7 @@ module.exports = grammar({
   name: 'ccl',
 
   extras: $ => [
-    /[ \t]/, // Only horizontal whitespace as extras
+    /\r?\n/, // Newlines as extras
   ],
 
   rules: {
@@ -13,41 +13,62 @@ module.exports = grammar({
 
     _item: $ => choice(
       $.entry,
-      $.comment,
-      $._newline
+      $.comment
     ),
 
-    entry: $ => prec.left(seq(
-      optional($.key),
-      $.assignment,
-      optional($.value)
-    )),
+    entry: $ => choice(
+      // key = value (with content on same line)
+      seq(
+        $.single_line_key,
+        $.assignment,
+        $.single_line_value
+      ),
+      // multiline_key = value
+      seq(
+        $.multiline_key,
+        $.assignment,
+        $.single_line_value
+      ),
+      // = value (list syntax)
+      seq(
+        $.assignment,
+        $.single_line_value
+      )
+    ),
 
-    key: $ => /[^\s=\n\/][^\s=\n\/]*/,
+    single_line_key: $ => /[^\s=\n\/][^\n\r=]*/,
+
+    multiline_key: $ => seq(
+      $.single_line_key,
+      $.key_continuation
+    ),
+
+    key_continuation: $ => /[^\n\r=]+/,
 
     assignment: $ => '=',
 
-    value: $ => choice(
-      $.inline_value,
-      $.block_value
+    // Values can be empty (for empty values) or have content (including multiline)
+    single_line_value: $ => choice(
+      $.multiline_value,
+      token(/[^\n\r]*/)
     ),
 
-    inline_value: $ => token(prec(-1, /[^\n\r]+/)),
+    multiline_value: $ => repeat1(seq(
+      $.indent,
+      $.value_line
+    )),
 
-    block_value: $ => seq(
-      $._newline,
-      repeat1(seq(
-        /[ \t]+/,
-        /[^\n\r]*/,
-        optional($._newline)
-      ))
-    ),
+    value_line: $ => /[^\n\r]*/,
+
+    indent: $ => /[ \t]+/,
 
     comment: $ => seq(
-      '/=',
-      /[^\n\r]*/
+      $.marker,
+      optional($.comment_text)
     ),
 
-    _newline: $ => /\r?\n/,
+    marker: $ => '/=',
+
+    comment_text: $ => prec.right(/[ ][^\n\r]*/),
   }
 });

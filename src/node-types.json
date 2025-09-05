@@ -1,11 +1,25 @@
 [
   {
-    "type": "block_value",
+    "type": "comment",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "comment_text",
+          "named": true
+        },
+        {
+          "type": "marker",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "comment",
+    "type": "comment_text",
     "named": true,
     "fields": {}
   },
@@ -41,49 +55,96 @@
           "named": true
         },
         {
-          "type": "key",
+          "type": "multiline_key",
           "named": true
         },
         {
-          "type": "value",
+          "type": "single_line_key",
+          "named": true
+        },
+        {
+          "type": "single_line_value",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "value",
+    "type": "multiline_key",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "key_continuation",
+          "named": true
+        },
+        {
+          "type": "single_line_key",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "multiline_value",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "indent",
+          "named": true
+        },
+        {
+          "type": "value_line",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "single_line_value",
     "named": true,
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
-          "type": "block_value",
-          "named": true
-        },
-        {
-          "type": "inline_value",
+          "type": "multiline_value",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "/=",
-    "named": false
+    "type": "value_line",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "assignment",
     "named": true
   },
   {
-    "type": "inline_value",
+    "type": "indent",
     "named": true
   },
   {
-    "type": "key",
+    "type": "key_continuation",
+    "named": true
+  },
+  {
+    "type": "marker",
+    "named": true
+  },
+  {
+    "type": "single_line_key",
     "named": true
   }
 ]
