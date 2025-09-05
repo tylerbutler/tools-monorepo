@@ -136,7 +136,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "multiline_value"
+              "name": "indented_content"
             }
           ]
         },
@@ -159,7 +159,7 @@
       "type": "PATTERN",
       "value": "[^\\n\\r]*"
     },
-    "multiline_value": {
+    "indented_content": {
       "type": "REPEAT1",
       "content": {
         "type": "SEQ",
@@ -170,7 +170,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "value_line"
+            "name": "content_line"
           },
           {
             "type": "PATTERN",
@@ -179,7 +179,7 @@
         ]
       }
     },
-    "value_line": {
+    "content_line": {
       "type": "PATTERN",
       "value": "[^\\n\\r]*"
     },

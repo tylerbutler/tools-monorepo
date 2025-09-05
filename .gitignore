@@ -1,0 +1,23 @@
+# Build artifacts
+build/
+*.wasm
+*.node
+*.so
+*.dylib
+*.dll
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Generated test files
+highlighted.html
+simple.ccl
+
+# Local development
+.DS_Store
+.vscode/
+.idea/
+
+# Claude Code local settings
+.claude/settings.local.json

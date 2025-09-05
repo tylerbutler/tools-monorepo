@@ -31,11 +31,11 @@ enum {
   sym_multiline_key = 12,
   sym__value = 13,
   sym_single_line_value = 14,
-  sym_multiline_value = 15,
-  sym_value_line = 16,
+  sym_indented_content = 15,
+  sym_content_line = 16,
   sym_comment = 17,
   aux_sym_document_repeat1 = 18,
-  aux_sym_multiline_value_repeat1 = 19,
+  aux_sym_indented_content_repeat1 = 19,
 };
 
 static const char * const ts_symbol_names[] = {
@@ -54,11 +54,11 @@ static const char * const ts_symbol_names[] = {
   [sym_multiline_key] = "multiline_key",
   [sym__value] = "_value",
   [sym_single_line_value] = "single_line_value",
-  [sym_multiline_value] = "multiline_value",
-  [sym_value_line] = "value_line",
+  [sym_indented_content] = "indented_content",
+  [sym_content_line] = "content_line",
   [sym_comment] = "comment",
   [aux_sym_document_repeat1] = "document_repeat1",
-  [aux_sym_multiline_value_repeat1] = "multiline_value_repeat1",
+  [aux_sym_indented_content_repeat1] = "indented_content_repeat1",
 };
 
 static const TSSymbol ts_symbol_map[] = {
@@ -77,11 +77,11 @@ static const TSSymbol ts_symbol_map[] = {
   [sym_multiline_key] = sym_multiline_key,
   [sym__value] = sym__value,
   [sym_single_line_value] = sym_single_line_value,
-  [sym_multiline_value] = sym_multiline_value,
-  [sym_value_line] = sym_value_line,
+  [sym_indented_content] = sym_indented_content,
+  [sym_content_line] = sym_content_line,
   [sym_comment] = sym_comment,
   [aux_sym_document_repeat1] = aux_sym_document_repeat1,
-  [aux_sym_multiline_value_repeat1] = aux_sym_multiline_value_repeat1,
+  [aux_sym_indented_content_repeat1] = aux_sym_indented_content_repeat1,
 };
 
 static const TSSymbolMetadata ts_symbol_metadata[] = {
@@ -145,11 +145,11 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = true,
     .named = true,
   },
-  [sym_multiline_value] = {
+  [sym_indented_content] = {
     .visible = true,
     .named = true,
   },
-  [sym_value_line] = {
+  [sym_content_line] = {
     .visible = true,
     .named = true,
   },
@@ -161,7 +161,7 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .visible = false,
     .named = false,
   },
-  [aux_sym_multiline_value_repeat1] = {
+  [aux_sym_indented_content_repeat1] = {
     .visible = false,
     .named = false,
   },
@@ -410,7 +410,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(33), 1,
       sym_indent,
     STATE(4), 1,
-      aux_sym_multiline_value_repeat1,
+      aux_sym_indented_content_repeat1,
     ACTIONS(31), 5,
       ts_builtin_sym_end,
       aux_sym__item_token1,
@@ -421,7 +421,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(38), 1,
       sym_indent,
     STATE(4), 1,
-      aux_sym_multiline_value_repeat1,
+      aux_sym_indented_content_repeat1,
     ACTIONS(36), 5,
       ts_builtin_sym_end,
       aux_sym__item_token1,
@@ -484,9 +484,9 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(38), 1,
       sym_indent,
     STATE(5), 1,
-      aux_sym_multiline_value_repeat1,
+      aux_sym_indented_content_repeat1,
     STATE(8), 1,
-      sym_multiline_value,
+      sym_indented_content,
   [150] = 2,
     ACTIONS(56), 1,
       aux_sym_single_line_value_token1,
@@ -501,7 +501,7 @@ static const uint16_t ts_small_parse_table[] = {
     ACTIONS(62), 1,
       aux_sym_single_line_value_token1,
     STATE(29), 1,
-      sym_value_line,
+      sym_content_line,
   [171] = 2,
     ACTIONS(64), 1,
       aux_sym__item_token1,
@@ -593,11 +593,11 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [22] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2), SHIFT_REPEAT(15),
   [25] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2), SHIFT_REPEAT(18),
   [28] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_document_repeat1, 2), SHIFT_REPEAT(17),
-  [31] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_multiline_value_repeat1, 2),
-  [33] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_multiline_value_repeat1, 2), SHIFT_REPEAT(16),
-  [36] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_multiline_value, 1),
+  [31] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_indented_content_repeat1, 2),
+  [33] = {.entry = {.count = 2, .reusable = true}}, REDUCE(aux_sym_indented_content_repeat1, 2), SHIFT_REPEAT(16),
+  [36] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_indented_content, 1),
   [38] = {.entry = {.count = 1, .reusable = true}}, SHIFT(16),
-  [40] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_multiline_value_repeat1, 3),
+  [40] = {.entry = {.count = 1, .reusable = true}}, REDUCE(aux_sym_indented_content_repeat1, 3),
   [42] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_entry, 4),
   [44] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym__value, 2),
   [46] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_comment, 3),
@@ -620,7 +620,7 @@ static const TSParseActionEntry ts_parse_actions[] = {
   [80] = {.entry = {.count = 1, .reusable = true}}, SHIFT(20),
   [82] = {.entry = {.count = 1, .reusable = true}}, SHIFT(14),
   [84] = {.entry = {.count = 1, .reusable = true}},  ACCEPT_INPUT(),
-  [86] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_value_line, 1),
+  [86] = {.entry = {.count = 1, .reusable = true}}, REDUCE(sym_content_line, 1),
   [88] = {.entry = {.count = 1, .reusable = true}}, SHIFT(6),
 };
 
