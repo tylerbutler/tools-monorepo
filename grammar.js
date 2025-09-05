@@ -17,7 +17,13 @@ module.exports = grammar({
     ),
 
     entry: $ => choice(
-      // key = value (with content on same line)
+      // key = multiline_value (must come first for precedence)
+      prec(2, seq(
+        $.single_line_key,
+        $.assignment,
+        $.multiline_value
+      )),
+      // key = value (content on same line)
       seq(
         $.single_line_key,
         $.assignment,
@@ -47,11 +53,7 @@ module.exports = grammar({
 
     assignment: $ => '=',
 
-    // Values can be empty (for empty values) or have content (including multiline)
-    single_line_value: $ => choice(
-      $.multiline_value,
-      token(/[^\n\r]*/)
-    ),
+    single_line_value: $ => token(/[^\n\r]*/),
 
     multiline_value: $ => repeat1(seq(
       $.indent,

@@ -25,6 +25,27 @@
       "type": "CHOICE",
       "members": [
         {
+          "type": "PREC",
+          "value": 2,
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "single_line_key"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "assignment"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "multiline_value"
+              }
+            ]
+          }
+        },
+        {
           "type": "SEQ",
           "members": [
             {
@@ -99,20 +120,11 @@
       "value": "="
     },
     "single_line_value": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "multiline_value"
-        },
-        {
-          "type": "TOKEN",
-          "content": {
-            "type": "PATTERN",
-            "value": "[^\\n\\r]*"
-          }
-        }
-      ]
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[^\\n\\r]*"
+      }
     },
     "multiline_value": {
       "type": "REPEAT1",
