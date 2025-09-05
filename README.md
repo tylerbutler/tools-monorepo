@@ -36,11 +36,37 @@ This parser uses a **C++ external scanner** for handling semantic indentation, w
 - **Node.js 14+** with native module build tools
 - **Python 3.x** (for node-gyp)
 
-On different platforms:
+#### Option 1: Using mise for Python (Recommended)
+
+[mise](https://mise.jdx.dev/) can help with Python dependency management:
+
+```bash
+# Install mise (if not already installed)
+curl https://mise.jdx.dev/install.sh | sh
+
+# Install Python and dev tools
+mise install
+
+# Still need to install C++ compiler separately:
+# Ubuntu/Debian
+sudo apt install build-essential
+
+# macOS (install Xcode Command Line Tools)  
+xcode-select --install
+
+# Windows (install Visual Studio Build Tools)
+# Or use: npm install --global windows-build-tools
+```
+
+> **Note**: While mise supports some compilers like `clang`, the available versions are outdated (clang 9.x) and don't support C++20. System package managers provide more recent compiler versions.
+
+#### Option 2: Manual Installation
+
+Install all dependencies manually:
 
 ```bash
 # Ubuntu/Debian
-sudo apt install build-essential
+sudo apt install build-essential python3
 
 # macOS (install Xcode Command Line Tools)
 xcode-select --install
@@ -82,6 +108,16 @@ CXXFLAGS="-std=c++2a" npm install
 3. **Windows MSVC**: Use Developer Command Prompt or ensure VS Build Tools 2019+ installed
 
 4. **Permission errors**: Don't use `sudo` with npm install, fix npm permissions instead
+
+5. **mise setup**: If using mise, ensure it's in your PATH:
+   ```bash
+   # Add to your shell profile (.bashrc, .zshrc, etc.)
+   echo 'eval "$(mise activate)"' >> ~/.bashrc
+   source ~/.bashrc
+   
+   # Verify mise is working
+   mise --version
+   ```
 
 ### Install
 
@@ -218,7 +254,13 @@ This parser uses a C++ external scanner (`src/scanner.cc`) to handle:
 git clone https://github.com/ccl-community/tree-sitter-ccl.git
 cd tree-sitter-ccl
 
-# Install dependencies (will compile C++ scanner)
+# Option 1: Using mise for Python
+mise install              # Install Python and dev tools  
+sudo apt install build-essential  # Install C++ compiler (Linux)
+npm install              # Install Node dependencies and compile
+
+# Option 2: Manual setup
+# Ensure you have Python 3.x, GCC 10+, and Node.js 14+
 npm install
 
 # Generate the parser

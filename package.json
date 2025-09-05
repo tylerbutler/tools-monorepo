@@ -12,6 +12,7 @@
   "author": "CCL Community",
   "license": "MIT",
   "dependencies": {
+    "node-gyp": "^11.0.0",
     "picocolors": "^1.1.1",
     "tree-sitter": "^0.25.0",
     "tree-sitter-cli": "^0.20.8"
@@ -35,6 +36,7 @@
     "pnp": false
   },
   "scripts": {
+    "install": "node-gyp rebuild",
     "build": "tree-sitter generate --no-bindings",
     "test": "tree-sitter test",
     "parse": "tree-sitter parse",
