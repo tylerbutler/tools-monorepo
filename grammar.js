@@ -5,7 +5,7 @@ module.exports = grammar({
   name: 'ccl',
 
   extras: $ => [
-    /\r?\n/, // Newlines as extras
+    // Remove newlines from extras - we need to handle them explicitly
   ],
 
   rules: {
@@ -13,32 +13,33 @@ module.exports = grammar({
 
     _item: $ => choice(
       $.entry,
-      $.comment
+      $.comment,
+      /\r?\n/ // Explicit newline handling
     ),
 
     entry: $ => choice(
-      // key = multiline_value (must come first for precedence)
-      prec(2, seq(
-        $.single_line_key,
-        $.assignment,
-        $.multiline_value
-      )),
-      // key = value (content on same line)
+      // key = value
       seq(
         $.single_line_key,
         $.assignment,
-        $.single_line_value
+        $._value
       ),
       // multiline_key = value
       seq(
         $.multiline_key,
         $.assignment,
-        $.single_line_value
+        seq(
+          $.single_line_value,
+          /\r?\n/
+        )
       ),
       // = value (list syntax)
       seq(
         $.assignment,
-        $.single_line_value
+        seq(
+          $.single_line_value,
+          /\r?\n/
+        )
       )
     ),
 
@@ -46,6 +47,7 @@ module.exports = grammar({
 
     multiline_key: $ => seq(
       $.single_line_key,
+      /\r?\n/,
       $.key_continuation
     ),
 
@@ -53,11 +55,26 @@ module.exports = grammar({
 
     assignment: $ => '=',
 
-    single_line_value: $ => token(/[^\n\r]*/),
+    _value: $ => choice(
+      // Multiline value: newline followed by required indented content
+      seq(
+        /\r?\n/,
+        $.multiline_value
+      ),
+      // Single line value: content (possibly empty) followed by newline  
+      seq(
+        $.single_line_value,
+        /\r?\n/
+      )
+    ),
 
+    single_line_value: $ => /[^\n\r]*/,
+
+    // Multiline value with explicit indentation
     multiline_value: $ => repeat1(seq(
       $.indent,
-      $.value_line
+      $.value_line,
+      /\r?\n/
     )),
 
     value_line: $ => /[^\n\r]*/,
@@ -66,11 +83,12 @@ module.exports = grammar({
 
     comment: $ => seq(
       $.marker,
-      optional($.comment_text)
+      optional($.comment_text),
+      /\r?\n/
     ),
 
     marker: $ => '/=',
 
-    comment_text: $ => prec.right(/[ ][^\n\r]*/),
+    comment_text: $ => /[ ][^\n\r]*/,
   }
 });

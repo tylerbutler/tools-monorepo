@@ -8,7 +8,11 @@
       "Bash(npx tree-sitter:*)",
       "Bash(npm run generate:*)",
       "Bash(npm run parse:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npm run test:*)",
+      "Read(/home/tylerbu/code/ccl_gleam/plans/**)",
+      "WebFetch(domain:chshersh.com)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

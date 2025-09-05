@@ -18,33 +18,16 @@
         {
           "type": "SYMBOL",
           "name": "comment"
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\r?\\n"
         }
       ]
     },
     "entry": {
       "type": "CHOICE",
       "members": [
-        {
-          "type": "PREC",
-          "value": 2,
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "single_line_key"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "assignment"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "multiline_value"
-              }
-            ]
-          }
-        },
         {
           "type": "SEQ",
           "members": [
@@ -58,7 +41,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "single_line_value"
+              "name": "_value"
             }
           ]
         },
@@ -74,8 +57,17 @@
               "name": "assignment"
             },
             {
-              "type": "SYMBOL",
-              "name": "single_line_value"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "single_line_value"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "\\r?\\n"
+                }
+              ]
             }
           ]
         },
@@ -87,8 +79,17 @@
               "name": "assignment"
             },
             {
-              "type": "SYMBOL",
-              "name": "single_line_value"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "single_line_value"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "\\r?\\n"
+                }
+              ]
             }
           ]
         }
@@ -106,6 +107,10 @@
           "name": "single_line_key"
         },
         {
+          "type": "PATTERN",
+          "value": "\\r?\\n"
+        },
+        {
           "type": "SYMBOL",
           "name": "key_continuation"
         }
@@ -119,12 +124,40 @@
       "type": "STRING",
       "value": "="
     },
+    "_value": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "\\r?\\n"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "multiline_value"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "single_line_value"
+            },
+            {
+              "type": "PATTERN",
+              "value": "\\r?\\n"
+            }
+          ]
+        }
+      ]
+    },
     "single_line_value": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "[^\\n\\r]*"
-      }
+      "type": "PATTERN",
+      "value": "[^\\n\\r]*"
     },
     "multiline_value": {
       "type": "REPEAT1",
@@ -138,6 +171,10 @@
           {
             "type": "SYMBOL",
             "name": "value_line"
+          },
+          {
+            "type": "PATTERN",
+            "value": "\\r?\\n"
           }
         ]
       }
@@ -168,6 +205,10 @@
               "type": "BLANK"
             }
           ]
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\r?\\n"
         }
       ]
     },
@@ -176,20 +217,11 @@
       "value": "/="
     },
     "comment_text": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "PATTERN",
-        "value": "[ ][^\\n\\r]*"
-      }
+      "type": "PATTERN",
+      "value": "[ ][^\\n\\r]*"
     }
   },
-  "extras": [
-    {
-      "type": "PATTERN",
-      "value": "\\r?\\n"
-    }
-  ],
+  "extras": [],
   "conflicts": [],
   "precedences": [],
   "externals": [],

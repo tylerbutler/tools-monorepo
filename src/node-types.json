@@ -19,11 +19,6 @@
     }
   },
   {
-    "type": "comment_text",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "document",
     "named": true,
     "fields": {},
@@ -123,6 +118,10 @@
   },
   {
     "type": "assignment",
+    "named": true
+  },
+  {
+    "type": "comment_text",
     "named": true
   },
   {
