@@ -1,0 +1,23 @@
+key = value
+another_key = hello world
+
+multiline key name
+spanning lines = single value
+
+/= This is a comment
+/=
+
+= item1
+= item2
+
+config =
+  host = localhost
+  port = 8080
+  nested =
+    user = admin
+    pass = secret
+
+description =
+  This is a long description
+  that spans multiple lines
+  for documentation purposes

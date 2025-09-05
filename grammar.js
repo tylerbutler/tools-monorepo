@@ -56,10 +56,10 @@ module.exports = grammar({
     assignment: $ => '=',
 
     _value: $ => choice(
-      // Multiline value: newline followed by required indented content
+      // Indented content (treat uniformly for syntax highlighting)
       seq(
         /\r?\n/,
-        $.multiline_value
+        $.indented_content
       ),
       // Single line value: content (possibly empty) followed by newline  
       seq(
@@ -70,14 +70,14 @@ module.exports = grammar({
 
     single_line_value: $ => /[^\n\r]*/,
 
-    // Multiline value with explicit indentation
-    multiline_value: $ => repeat1(seq(
+    // All indented content - uniform treatment for syntax highlighting
+    indented_content: $ => repeat1(seq(
       $.indent,
-      $.value_line,
+      $.content_line,
       /\r?\n/
     )),
 
-    value_line: $ => /[^\n\r]*/,
+    content_line: $ => /[^\n\r]*/,
 
     indent: $ => /[ \t]+/,
 

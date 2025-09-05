@@ -1,7 +1,6 @@
 key = value
-another = test
-
+nested =
+  inner = true
+  list = [1, 2, 3]
 /= This is a comment
-nested_key =
-    indented value
-    another line
+another_key = hello world

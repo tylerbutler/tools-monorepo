@@ -7,7 +7,7 @@
 
 ; Values
 (single_line_value) @string
-(value_line) @string
+(content_line) @string
 
 ; Comments
 (comment
