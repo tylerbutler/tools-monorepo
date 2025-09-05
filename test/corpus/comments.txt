@@ -1,0 +1,79 @@
+================================================================================
+CCL comments
+================================================================================
+
+/= This is a comment
+name = John
+/= Another comment
+age = 30
+
+--------------------------------------------------------------------------------
+
+(document
+  (comment
+    (marker)
+    (comment_text))
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value))
+  (comment
+    (marker)
+    (comment_text))
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value)))
+
+================================================================================
+Comment with empty text
+================================================================================
+
+/=
+empty_comment = true
+
+--------------------------------------------------------------------------------
+
+(document
+  (comment
+    (marker))
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value)))
+
+================================================================================
+Comments in nested sections
+================================================================================
+
+server =
+  /= Production configuration
+  host = prod.example.com
+  /= Default port
+  port = 443
+
+--------------------------------------------------------------------------------
+
+(document
+  (entry
+    (single_line_key)
+    (assignment)
+    (nested_section
+      (indent)
+      (comment
+        (marker)
+        (comment_text))
+      (indent)
+      (entry
+        (single_line_key)
+        (assignment)
+        (single_line_value))
+      (indent)
+      (comment
+        (marker)
+        (comment_text))
+      (indent)
+      (entry
+        (single_line_key)
+        (assignment)
+        (single_line_value)))))

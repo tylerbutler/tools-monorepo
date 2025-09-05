@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(g++:*)",
+      "Bash(CXXFLAGS=\"-std=c++20\" npm install)",
+      "Bash(npx tree-sitter:*)",
+      "Bash(npm run generate:*)",
+      "Bash(npm run parse:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

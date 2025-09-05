@@ -1,0 +1,89 @@
+[
+  {
+    "type": "block_value",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "comment",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "document",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "comment",
+          "named": true
+        },
+        {
+          "type": "entry",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "entry",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "key",
+          "named": true
+        },
+        {
+          "type": "value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "value",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "block_value",
+          "named": true
+        },
+        {
+          "type": "inline_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "/=",
+    "named": false
+  },
+  {
+    "type": "assignment",
+    "named": true
+  },
+  {
+    "type": "inline_value",
+    "named": true
+  },
+  {
+    "type": "key",
+    "named": true
+  }
+]
