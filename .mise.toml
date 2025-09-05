@@ -1,0 +1,4 @@
+[tools]
+ttyd = "latest"
+vhs = "latest"
+zellij = "latest"
