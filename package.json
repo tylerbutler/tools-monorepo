@@ -12,6 +12,8 @@
   "author": "CCL Community",
   "license": "MIT",
   "dependencies": {
+    "picocolors": "^1.1.1",
+    "tree-sitter": "^0.25.0",
     "tree-sitter-cli": "^0.20.8"
   },
   "tree-sitter": [

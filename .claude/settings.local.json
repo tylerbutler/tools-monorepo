@@ -12,7 +12,8 @@
       "Bash(npm run test:*)",
       "Read(/home/tylerbu/code/ccl_gleam/plans/**)",
       "WebFetch(domain:chshersh.com)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []
