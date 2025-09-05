@@ -7,12 +7,10 @@
 
 ; Values
 (single_line_value) @string
-(content_line) @string
+(value_line) @string
 
 ; Comments
-(comment
-  (marker) @comment.line
-  (comment_text)? @comment.line)
+(comment) @comment.line
 
 ; Indentation
 (indent) @punctuation.indent

@@ -22,8 +22,8 @@ module.exports = grammar({
     document: $ => repeat($._item),
 
     _item: $ => choice(
-      $.entry,
-      $.comment,
+      prec(2, $.comment),      // High precedence for comments
+      prec(1, $.entry),
       $.newline
     ),
 
@@ -81,7 +81,8 @@ module.exports = grammar({
     _nested_item: $ => choice(
       prec(2, $.entry),        // Prefer CCL entries over plain text
       prec(2, $.comment),      // CCL comments within nested blocks
-      prec(1, $.value_line)    // Plain text fallback (lower precedence)
+      prec(1, $.value_line),   // Plain text fallback (lower precedence)
+      $.newline                // Allow newlines between nested items
     ),
 
     // Multiline value with plain text lines
@@ -94,13 +95,6 @@ module.exports = grammar({
 
     value_line: $ => /[^\n\r]*/,
 
-    comment: $ => seq(
-      $.marker,
-      optional($.comment_text)
-    ),
-
-    marker: $ => '/=',
-
-    comment_text: $ => /[ ][^\n\r]*/,
+    comment: $ => /\/=[^\n\r]*/,
   }
 });
