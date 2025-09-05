@@ -1,4 +1,5 @@
 [tools]
+graphviz = "latest"
 ttyd = "latest"
 vhs = "latest"
 zellij = "latest"
