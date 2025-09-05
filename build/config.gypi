@@ -510,6 +510,7 @@
     "npm_version": "11.5.1",
     "cache": "/home/tylerbu/.npm",
     "node_gyp": "/home/tylerbu/.local/share/mise/installs/node/24.7.0/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js",
+    "global": "true",
     "globalconfig": "/home/tylerbu/.local/share/mise/installs/node/24.7.0/etc/npmrc",
     "init_module": "/home/tylerbu/.npm-init.js",
     "global_prefix": "/home/tylerbu/.local/share/mise/installs/node/24.7.0"
