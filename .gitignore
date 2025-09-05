@@ -6,18 +6,52 @@ build/
 *.dylib
 *.dll
 
-# Node.js
+# Node.js dependencies
 node_modules/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Tree-sitter generated files
+src/parser.c
+src/node-types.json
+src/grammar.json
+src/tree_sitter/
 
 # Generated test files
 highlighted.html
 simple.ccl
+*.ccl
+!sample.ccl
+!visual_test.ccl
 
-# Local development
+# Editor and IDE
 .DS_Store
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# OS generated files
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+.tmp/

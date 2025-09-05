@@ -21,16 +21,75 @@ This Tree-sitter grammar provides full parsing support for:
 - ✅ **Multiline keys**: Keys that span multiple lines
 - ✅ **CCL comments**: Using `/= comment text` syntax
 - ✅ **Assignment operator highlighting**: The `=` operator is properly highlighted
-- ✅ **Nested configurations**: Hierarchical structures through indentation
+- ✅ **Nested configurations**: Hierarchical structures through **semantic indentation**
+- ✅ **Recursive CCL parsing**: Full support for nested CCL entries within indented blocks
 - ✅ **Empty key lists**: `= item1`, `= item2` syntax
+- ✅ **Mixed content**: Supports both CCL entries and plain text within nested sections
 
 ## Installation
+
+### Requirements
+
+This parser uses a **C++ external scanner** for handling semantic indentation, which requires native compilation:
+
+- **C++20 compatible compiler**: GCC 10+, Clang 12+, or MSVC 2019+
+- **Node.js 14+** with native module build tools
+- **Python 3.x** (for node-gyp)
+
+On different platforms:
+
+```bash
+# Ubuntu/Debian
+sudo apt install build-essential
+
+# macOS (install Xcode Command Line Tools)
+xcode-select --install
+
+# Windows (install Visual Studio Build Tools)
+# Or use: npm install --global windows-build-tools
+```
+
+### Troubleshooting Compilation
+
+**C++20 Standard**: The external scanner uses modern C++ features and requires C++20 support. If compilation fails:
+
+```bash
+# Specify C++20 standard explicitly
+CXXFLAGS="-std=c++20" npm install
+
+# For older GCC versions, try c++2a
+CXXFLAGS="-std=c++2a" npm install
+```
+
+**Common Issues**:
+
+1. **"unrecognized command line option '-std=c++20'"**: Your compiler is too old
+   ```bash
+   # Ubuntu: update to GCC 10+
+   sudo apt install gcc-10 g++-10
+   export CC=gcc-10 CXX=g++-10
+   
+   # macOS: update Xcode Command Line Tools
+   xcode-select --install
+   ```
+
+2. **Node-gyp Python errors**: Ensure Python 3.x is available
+   ```bash
+   # Set Python version for node-gyp
+   npm config set python python3
+   ```
+
+3. **Windows MSVC**: Use Developer Command Prompt or ensure VS Build Tools 2019+ installed
+
+4. **Permission errors**: Don't use `sudo` with npm install, fix npm permissions instead
+
+### Install
 
 ```bash
 npm install tree-sitter-ccl
 ```
 
-> **Note**: This package includes only the Tree-sitter CLI tools and grammar files. Node.js native bindings are not included to avoid compilation issues. For programmatic parsing, use the CLI commands or integrate with editors that support Tree-sitter.
+> **Note**: This package includes a C++ external scanner for proper indentation handling. The first install will compile native modules, which may take a few minutes.
 
 ## Usage
 
@@ -124,17 +183,32 @@ The grammar defines these main constructs:
 
 - `document`: Root node containing entries and sections
 - `entry`: Key-value pair assignment
-- `key`: Single-line or multiline key identifier
-- `value`: Single-line or multiline value content
+- `single_line_key`: Simple key identifier
+- `multiline_key`: Key spanning multiple lines
+- `single_line_value`: Simple value content
+- `nested_section`: Recursive CCL block with semantic indentation
+- `multiline_value`: Plain text block with semantic indentation
 - `assignment`: The `=` operator
 - `comment`: CCL-style comments starting with `/=`
-- `section`: Nested configuration block
+- `indent`/`dedent`: External scanner tokens for semantic indentation
+- `newline`: External scanner token for proper line handling
+
+### External Scanner
+
+This parser uses a C++ external scanner (`src/scanner.cc`) to handle:
+
+- **Semantic indentation**: Context-sensitive INDENT/DEDENT tokens
+- **Newline detection**: Proper handling of `\n` and `\r\n` line endings
+- **State persistence**: Indentation stack management across parse operations
+- **EOF handling**: Automatic DEDENT emission at end of file
 
 ## Development
 
 ### Prerequisites
 
 - Node.js 14+
+- C++ compiler (GCC, Clang, or MSVC)
+- Python 3.x (for node-gyp native compilation)
 - The `tree-sitter-cli` is included as a dependency
 
 ### Building
@@ -144,7 +218,7 @@ The grammar defines these main constructs:
 git clone https://github.com/ccl-community/tree-sitter-ccl.git
 cd tree-sitter-ccl
 
-# Install dependencies
+# Install dependencies (will compile C++ scanner)
 npm install
 
 # Generate the parser
@@ -155,6 +229,21 @@ npm run test
 
 # Parse a specific file
 npm run parse example.ccl
+```
+
+### Debug Build
+
+For debugging the external scanner, compile with debug flags:
+
+```bash
+# Enable comprehensive debug logging (with C++20)
+CXXFLAGS="-std=c++20 -DDEBUG_SCANNER -g -O0" npx tree-sitter generate
+
+# Parse with detailed scanner output
+npx tree-sitter parse --debug file.ccl
+
+# For performance profiling
+CXXFLAGS="-std=c++20 -O3 -DNDEBUG" npx tree-sitter generate
 ```
 
 ### Testing
@@ -189,9 +278,21 @@ Most modern editors with Tree-sitter support (Neovim, Helix, Zed, etc.) can use 
 
 1. Fork the repository
 2. Create a feature branch
-3. Add test cases for new functionality
-4. Run `npm test` to verify
-5. Submit a pull request
+3. Add test cases for new functionality in `test/corpus/`
+4. Run `npm test` to verify all tests pass
+5. Test the external scanner with debug logging if modifying `src/scanner.cc`
+6. Submit a pull request
+
+### Modifying the External Scanner
+
+If modifying the C++ scanner (`src/scanner.cc`):
+
+1. **Use debug build**: `CXXFLAGS="-std=c++20 -DDEBUG_SCANNER -g -O0" npx tree-sitter generate`
+2. **Test incrementally**: Start with simple cases, add complexity
+3. **Validate state**: Check serialization/deserialization works correctly
+4. **Performance test**: Ensure no infinite loops or excessive scanning
+5. **Add test corpus**: Include test cases for edge cases
+6. **C++20 compliance**: Use modern C++ features consistently (ranges, concepts, etc.)
 
 ## License
 
@@ -207,3 +308,28 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - Thanks to Dmitrii Kovanikov for creating the CCL language specification
 - Built with Tree-sitter parsing toolkit
+- External scanner implementation based on Tree-sitter's Python scanner patterns
+
+## Technical Notes
+
+### Why an External Scanner?
+
+CCL uses **semantic indentation** where whitespace determines nested structure. This creates parsing challenges that pure grammar rules cannot handle:
+
+1. **Context-sensitive parsing**: Same content has different meaning based on indentation level
+2. **Recursive ambiguity**: Indented content could be CCL entries or plain text
+3. **Dynamic indentation**: Various indent widths require runtime tracking
+
+The C++ external scanner solves this by:
+- Tracking indentation state across parse operations
+- Emitting INDENT/DEDENT tokens based on context
+- Providing lookahead for grammar disambiguation
+- Handling mixed tab/space indentation gracefully
+
+### Performance
+
+The external scanner is optimized for performance:
+- ⚡ **Fast scanning**: Minimal overhead for basic parsing
+- 🔍 **Debug logging**: Comprehensive logging when compiled with `-DDEBUG_SCANNER`
+- 📊 **Performance monitoring**: Built-in timing and call counting
+- 🛡️ **Error recovery**: Robust handling of malformed indentation

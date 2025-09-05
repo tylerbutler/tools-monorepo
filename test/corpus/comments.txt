@@ -1,79 +1,86 @@
-================================================================================
-CCL comments
-================================================================================
+====
+Basic comment
+====
 
 /= This is a comment
-name = John
-/= Another comment
-age = 30
 
---------------------------------------------------------------------------------
+---
 
 (document
   (comment
     (marker)
-    (comment_text))
-  (entry
-    (single_line_key)
-    (assignment)
-    (single_line_value))
-  (comment
-    (marker)
-    (comment_text))
-  (entry
-    (single_line_key)
-    (assignment)
-    (single_line_value)))
+    (comment_text)
+    (newline)))
 
-================================================================================
-Comment with empty text
-================================================================================
+====
+Comment without text
+====
 
 /=
-empty_comment = true
 
---------------------------------------------------------------------------------
+---
 
 (document
   (comment
-    (marker))
-  (entry
-    (single_line_key)
-    (assignment)
-    (single_line_value)))
+    (marker)
+    (newline)))
 
-================================================================================
-Comments in nested sections
-================================================================================
+====
+Comments with entries
+====
 
-server =
-  /= Production configuration
-  host = prod.example.com
-  /= Default port
-  port = 443
+key = value
+/= This is a comment
+another = value2
 
---------------------------------------------------------------------------------
+---
 
 (document
   (entry
     (single_line_key)
     (assignment)
-    (nested_section
+    (single_line_value)
+    (newline))
+  (comment
+    (marker)
+    (comment_text)
+    (newline))
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value)
+    (newline)))
+
+====
+Comment in nested block
+====
+
+config =
+  /= Database configuration
+  host = localhost
+  port = 5432
+
+---
+
+(document
+  (entry
+    (single_line_key)
+    (assignment)
+    (nested_block
+      (newline)
       (indent)
       (comment
         (marker)
-        (comment_text))
-      (indent)
+        (comment_text)
+        (newline))
       (entry
         (single_line_key)
         (assignment)
-        (single_line_value))
-      (indent)
-      (comment
-        (marker)
-        (comment_text))
-      (indent)
+        (single_line_value)
+        (newline))
       (entry
         (single_line_key)
         (assignment)
-        (single_line_value)))))
+        (single_line_value)
+        (newline))
+      (dedent))))

@@ -4,8 +4,18 @@
 module.exports = grammar({
   name: 'ccl',
 
+  externals: $ => [
+    $.newline,
+    $.indent,
+    $.dedent
+  ],
+
+  conflicts: $ => [
+    [$.nested_section, $.multiline_value]
+  ],
+
   extras: $ => [
-    // Remove newlines from extras - we need to handle them explicitly
+    /[ \t]/,  // Allow spaces and tabs as extras, but not newlines
   ],
 
   rules: {
@@ -14,11 +24,11 @@ module.exports = grammar({
     _item: $ => choice(
       $.entry,
       $.comment,
-      /\r?\n/ // Explicit newline handling
+      $.newline
     ),
 
     entry: $ => choice(
-      // key = value
+      // key = value (single line)
       seq(
         $.single_line_key,
         $.assignment,
@@ -28,18 +38,12 @@ module.exports = grammar({
       seq(
         $.multiline_key,
         $.assignment,
-        seq(
-          $.single_line_value,
-          /\r?\n/
-        )
+        $.single_line_value
       ),
       // = value (list syntax)
       seq(
         $.assignment,
-        seq(
-          $.single_line_value,
-          /\r?\n/
-        )
+        $.single_line_value
       )
     ),
 
@@ -47,7 +51,7 @@ module.exports = grammar({
 
     multiline_key: $ => seq(
       $.single_line_key,
-      /\r?\n/,
+      $.newline,
       $.key_continuation
     ),
 
@@ -56,35 +60,43 @@ module.exports = grammar({
     assignment: $ => '=',
 
     _value: $ => choice(
-      // Indented content (treat uniformly for syntax highlighting)
-      seq(
-        /\r?\n/,
-        $.indented_content
-      ),
-      // Single line value: content (possibly empty) followed by newline  
-      seq(
-        $.single_line_value,
-        /\r?\n/
-      )
+      // Nested section with recursive CCL parsing (higher precedence)
+      prec(2, $.nested_section),
+      // Multiline value with plain text (lower precedence)
+      prec(1, $.multiline_value),
+      // Single line value
+      $.single_line_value
     ),
 
     single_line_value: $ => /[^\n\r]*/,
 
-    // All indented content - uniform treatment for syntax highlighting
-    indented_content: $ => repeat1(seq(
+    // Nested section with recursive CCL parsing
+    nested_section: $ => seq(
+      $.newline,
       $.indent,
-      $.content_line,
-      /\r?\n/
-    )),
+      repeat($._nested_item),
+      $.dedent
+    ),
 
-    content_line: $ => /[^\n\r]*/,
+    _nested_item: $ => choice(
+      prec(2, $.entry),        // Prefer CCL entries over plain text
+      prec(2, $.comment),      // CCL comments within nested blocks
+      prec(1, $.value_line)    // Plain text fallback (lower precedence)
+    ),
 
-    indent: $ => /[ \t]+/,
+    // Multiline value with plain text lines
+    multiline_value: $ => seq(
+      $.newline,
+      $.indent,
+      repeat($.value_line),
+      $.dedent
+    ),
+
+    value_line: $ => /[^\n\r]*/,
 
     comment: $ => seq(
       $.marker,
-      optional($.comment_text),
-      /\r?\n/
+      optional($.comment_text)
     ),
 
     marker: $ => '/=',
