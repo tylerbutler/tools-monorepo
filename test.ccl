@@ -1,6 +1,0 @@
-key = value
-nested =
-  inner = true
-  list = [1, 2, 3]
-/= This is a comment
-another_key = hello world

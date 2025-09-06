@@ -26,9 +26,30 @@ const highlightColors = {
   // Note: dedent and newline tokens are zero-width, so no colors assigned
 };
 
+/**
+ * Regex-based CCL syntax highlighting for nested content
+ * 
+ * This function simulates what tree-sitter injection parsing would do
+ * by applying CCL syntax highlighting using regular expressions.
+ * It's a simplified version that handles common CCL patterns.
+ * 
+ * SUPPORTED PATTERNS:
+ * - Comments: "/= comment text"
+ * - Key-value pairs: "key = value"
+ * - List items: "= value"
+ * - Preserves indentation and spacing
+ * 
+ * LIMITATIONS:
+ * - Uses regex instead of proper parsing
+ * - May not handle all edge cases correctly
+ * - Cannot handle complex multiline constructs
+ * - No error recovery for malformed syntax
+ * 
+ * @param {string} line - The line of text to highlight
+ * @returns {string} - The line with ANSI color codes applied
+ */
 function highlightCCLLine(line) {
-  // Simple regex-based CCL syntax highlighting for nested content
-  // This simulates what would happen with injection parsing
+  // Apply regex-based CCL syntax highlighting to simulate injection parsing
   
   let highlighted = line;
   
