@@ -12,7 +12,8 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$.nested_section, $.multiline_value],
-    [$.nested_content, $.multiline_value]
+    [$.nested_content, $.multiline_value],
+    [$.comment]
   ],
 
   extras: $ => [
@@ -96,9 +97,30 @@ module.exports = grammar({
       $.dedent
     ),
 
-    comment: $ => seq(
-      alias('/=', $.comment_marker),
-      alias(/[^\r\n]*/, $.comment_text)
+    comment: $ => choice(
+      // Multiline comment with indented continuation - only when indent follows immediately
+      prec.dynamic(2, seq(
+        alias('/=', $.comment_marker),
+        alias(/[^\r\n]*/, $.comment_text),
+        $.multiline_comment_content
+      )),
+      // Single line comment - default case
+      seq(
+        alias('/=', $.comment_marker),
+        alias(/[^\r\n]*/, $.comment_text)
+      )
+    ),
+
+    multiline_comment_content: $ => seq(
+      $.newline,
+      $.indent,
+      repeat1($.comment_content_line),
+      $.dedent
+    ),
+
+    comment_content_line: $ => seq(
+      alias(/[^\n\r]*/, $.comment_text),
+      $.newline
     ),
   }
 });
