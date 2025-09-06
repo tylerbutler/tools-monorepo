@@ -36,7 +36,6 @@
     "pnp": false
   },
   "scripts": {
-    "install": "node-gyp rebuild",
     "build": "tree-sitter generate --no-bindings",
     "test": "tree-sitter test",
     "parse": "tree-sitter parse",
