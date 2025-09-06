@@ -14,11 +14,7 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
-# Tree-sitter generated files
-src/parser.c
-src/node-types.json
-src/grammar.json
-src/tree_sitter/
+# Tree-sitter generated files are committed for distribution
 
 # Generated test files
 highlighted.html
