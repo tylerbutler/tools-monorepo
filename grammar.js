@@ -11,7 +11,8 @@ module.exports = grammar({
   ],
 
   conflicts: $ => [
-    [$.nested_section, $.multiline_value]
+    [$.nested_section, $.multiline_value],
+    [$._nested_item, $.multiline_value]
   ],
 
   extras: $ => [
@@ -84,6 +85,7 @@ module.exports = grammar({
       prec(1, $.value_line),   // Plain text fallback (lower precedence)
       $.newline                // Allow newlines between nested items
     ),
+
 
     // Multiline value with plain text lines
     multiline_value: $ => seq(
