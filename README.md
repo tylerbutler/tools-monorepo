@@ -26,6 +26,12 @@ This Tree-sitter grammar provides full parsing support for:
 - ✅ **Empty key lists**: `= item1`, `= item2` syntax
 - ✅ **Mixed content**: Supports both CCL entries and plain text within nested sections
 
+### **Highlighting Levels**
+- 🟡 **Basic**: Works with all tree-sitter tools (nested content as plain text)
+- 🌈 **Enhanced**: Modern editors get full nested CCL syntax highlighting via injections
+
+*See [Syntax Highlighting](#syntax-highlighting) section for detailed comparison.*
+
 ## Installation
 
 ### Requirements
@@ -172,13 +178,67 @@ const highlightsPath = require.resolve('tree-sitter-ccl/queries/highlights.scm')
 
 ### Syntax Highlighting
 
-This grammar includes syntax highlighting queries that work with editors supporting Tree-sitter:
+This grammar provides **two levels of syntax highlighting** depending on the tool's capabilities:
 
-- **Keys**: Highlighted as variables
-- **Values**: Highlighted as strings
-- **Assignment operator** (`=`): Highlighted as operators
-- **Comments** (`/=`): Highlighted as comments
-- **Indentation**: Properly parsed for multiline structures
+#### 🟡 **Basic Highlighting** (All tree-sitter tools)
+
+All tools using this grammar get correct parsing and basic highlighting:
+
+- **Keys**: Highlighted as variables (blue)
+- **Values**: Highlighted as strings (green)
+- **Assignment operator** (`=`): Highlighted as operators (yellow)
+- **Comments** (`/=`): Highlighted as comments (gray)
+- **Nested content**: Highlighted as plain text (green)
+
+**Example output:**
+```
+config =
+  host = localhost    ← All green (treated as string content)
+  port = 8080         ← All green (treated as string content)
+```
+
+#### 🌈 **Enhanced Highlighting** (Injection-aware tools)
+
+Modern editors with tree-sitter injection support get **full CCL syntax highlighting throughout nested structures**:
+
+**Tools with enhanced highlighting:**
+- **Neovim** (nvim-treesitter) ✅
+- **VS Code** (tree-sitter extensions) ✅  
+- **Helix Editor** ✅
+- **Zed Editor** ✅
+- **Modern Emacs** (tree-sitter package) ✅
+- **GitHub** (custom injection-like highlighting) ✅
+
+**Example output:**
+```
+config =
+  host = localhost    ← Blue key, yellow =, green value
+  port = 8080         ← Blue key, yellow =, green value
+  database =          ← Blue key, yellow =
+    user = admin      ← Blue key, yellow =, green value
+```
+
+#### **How It Works**
+
+The grammar uses **tree-sitter language injections** (`queries/injections.scm`) to tell modern tools:
+> "Re-parse nested content as structured CCL syntax"
+
+This provides the best of both worlds:
+- ✅ **Universal compatibility** - works with all tree-sitter tools
+- ✅ **Future-proof** - enhanced highlighting comes automatically as tools modernize
+- ✅ **No performance penalty** - basic tools stay fast, advanced tools get rich highlighting
+
+#### **Testing the Difference**
+
+You can see both highlighting levels with the included scripts:
+
+```bash
+# Basic highlighting (simulates most tools today)
+node show_highlight.js your_file.ccl
+
+# Enhanced highlighting (simulates modern editors)  
+node show_highlight_enhanced.js your_file.ccl
+```
 
 ## Example CCL Syntax
 
@@ -367,6 +427,30 @@ The C++ external scanner solves this by:
 - Emitting INDENT/DEDENT tokens based on context
 - Providing lookahead for grammar disambiguation
 - Handling mixed tab/space indentation gracefully
+
+### Two-Tier Highlighting Architecture
+
+This grammar implements a **dual-level highlighting system** to balance compatibility with enhanced user experience:
+
+#### **Design Choice: Injection over Grammar Complexity**
+
+Rather than making the grammar infinitely recursive (which creates parsing conflicts), we use:
+
+1. **Base Grammar**: Fast, unambiguous parsing of nested content as `content_line` nodes
+2. **Injection Queries**: Modern tools re-parse `content_line` content as structured CCL
+
+**Benefits:**
+- ✅ **Universal compatibility** - all tree-sitter tools work immediately
+- ✅ **No parsing conflicts** - grammar remains deterministic 
+- ✅ **Performance** - basic tools get fast parsing, advanced tools get rich highlighting
+- ✅ **Future-proof** - enhances automatically as editor tooling improves
+
+**Alternative approaches considered:**
+- ❌ **Infinitely recursive grammar** - creates ambiguity and parsing conflicts
+- ❌ **Complex precedence rules** - fragile, hard to maintain, tool-specific behavior
+- ❌ **Single-level highlighting** - poor user experience in modern editors
+
+This architecture follows tree-sitter best practices used by HTML (JavaScript injection), Markdown (code block injection), and other multi-language grammars.
 
 ### Performance
 

@@ -26,10 +26,33 @@ const highlightColors = {
   // Note: dedent and newline tokens are zero-width, so no colors assigned
 };
 
+function highlightCCLLine(line) {
+  // Simple regex-based CCL syntax highlighting for nested content
+  // This simulates what would happen with injection parsing
+  
+  let highlighted = line;
+  
+  // Replace CCL patterns with highlighted versions
+  // Comments: /= comment text
+  highlighted = highlighted.replace(/(\/=.*$)/g, colors.gray + '$1' + colors.reset);
+  
+  // Key = value patterns
+  highlighted = highlighted.replace(/^(\s*)([^=\s][^=]*?)\s*(=)\s*(.*)$/g, 
+    '$1' + colors.blue + '$2' + colors.reset + ' ' + colors.yellow + '$3' + colors.reset + ' ' + colors.green + '$4' + colors.reset
+  );
+  
+  // List items: = value
+  highlighted = highlighted.replace(/^(\s*)(=)\s*(.*)$/g,
+    '$1' + colors.yellow + '$2' + colors.reset + ' ' + colors.green + '$3' + colors.reset
+  );
+  
+  return highlighted;
+}
+
 // Get file path from command line argument
 const filePath = process.argv[2];
 if (!filePath) {
-  console.error('Usage: node show_highlight.js <ccl-file>');
+  console.error('Usage: node show_highlight_enhanced.js <ccl-file>');
   process.exit(1);
 }
 
@@ -84,9 +107,16 @@ try {
       // Add unhighlighted text before this highlight
       highlightedLine += line.slice(pos, highlight.startCol);
       
-      // Add highlighted text
-      const color = highlightColors[highlight.type] || colors.reset;
-      highlightedLine += color + highlight.text + colors.reset;
+      // Special handling for content_line (simulate injection)
+      if (highlight.type === 'string' && highlight.text.includes('=')) {
+        // This looks like CCL content within a content_line - enhance it
+        const enhanced = highlightCCLLine(highlight.text);
+        highlightedLine += enhanced;
+      } else {
+        // Regular highlighting
+        const color = highlightColors[highlight.type] || colors.reset;
+        highlightedLine += color + highlight.text + colors.reset;
+      }
       
       pos = highlight.endCol;
     }
@@ -100,6 +130,7 @@ try {
   console.log(highlightedLines.join('\n'));
   
 } catch (error) {
+  console.error('Query compilation failed:', error.message);
   // Fallback: just output the raw content if highlighting fails
   console.log(code);
 }

@@ -12,7 +12,7 @@ module.exports = grammar({
 
   conflicts: $ => [
     [$.nested_section, $.multiline_value],
-    [$._nested_item, $.multiline_value]
+    [$.nested_content, $.multiline_value]
   ],
 
   extras: $ => [
@@ -61,42 +61,44 @@ module.exports = grammar({
     assignment: $ => '=',
 
     _value: $ => choice(
-      // Nested section with recursive CCL parsing (higher precedence)
-      prec(2, $.nested_section),
-      // Multiline value with plain text (lower precedence)
-      prec(1, $.multiline_value),
-      // Single line value
-      $.single_line_value
+      // Single line value (unambiguous)
+      $.single_line_value,
+      // Nested section with recursive CCL parsing - prefer when content has '='
+      prec.dynamic(2, $.nested_section),
+      // Multiline value with plain text - fallback
+      prec.dynamic(1, $.multiline_value)
     ),
 
     single_line_value: $ => /[^\n\r]*/,
 
-    // Nested section with recursive CCL parsing
+    // Nested section with content for later injection
     nested_section: $ => seq(
       $.newline,
       $.indent,
-      repeat($._nested_item),
+      $.nested_content,
       $.dedent
     ),
 
-    _nested_item: $ => choice(
-      prec(2, $.entry),        // Prefer CCL entries over plain text
-      prec(2, $.comment),      // CCL comments within nested blocks
-      prec(1, $.value_line),   // Plain text fallback (lower precedence)
-      $.newline                // Allow newlines between nested items
-    ),
+    // Raw content that can be injected as CCL
+    nested_content: $ => repeat1(choice(
+      $.content_line,
+      $.newline
+    )),
+    
+    content_line: $ => /[^\n\r]*/,
 
 
     // Multiline value with plain text lines
     multiline_value: $ => seq(
       $.newline,
       $.indent,
-      repeat($.value_line),
+      repeat($.content_line),
       $.dedent
     ),
 
-    value_line: $ => /[^\n\r]*/,
-
-    comment: $ => /\/=[^\n\r]*/,
+    comment: $ => seq(
+      alias('/=', $.comment_marker),
+      alias(/[^\r\n]*/, $.comment_text)
+    ),
   }
 });
