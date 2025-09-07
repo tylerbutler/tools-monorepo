@@ -5,7 +5,14 @@
 ```ts
 
 import type { PackageJson } from 'type-fest';
+import { PolicyDefinition as PolicyDefinition_2 } from '../policy.js';
 import { run } from '@oclif/core';
+
+// @alpha
+export function defineFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
+
+// @alpha
+export function definePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
 
 // @alpha (undocumented)
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -26,16 +33,30 @@ export interface FileHeaderPolicyConfig {
 }
 
 // @alpha
-export function generateFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
-
-// @alpha
-export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
-
-// @alpha
 export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha
 export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+
+// @alpha
+export const PackageJsonProperties: PolicyDefinition_2<PackageJsonPropertiesSettings | undefined>;
+
+// @alpha
+export interface PackageJsonPropertiesSettings {
+    verbatim: PackageJson;
+}
+
+// @alpha
+export const PackageJsonRepoDirectoryProperty: PolicyDefinition_2<undefined>;
+
+// @alpha
+export const PackageJsonSorted: PolicyDefinition_2<undefined>;
+
+// @alpha
+export const PackageReadmeExists: PolicyDefinition;
+
+// @alpha
+export const PackageScripts: PolicyDefinition_2<undefined>;
 
 // @alpha
 export interface PolicyDefinition<C = undefined> {
