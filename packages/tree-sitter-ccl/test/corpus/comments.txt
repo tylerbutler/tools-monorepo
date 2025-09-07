@@ -1,0 +1,86 @@
+====
+Basic comment
+====
+
+/= This is a comment
+
+---
+
+(document
+  (comment
+    (marker)
+    (comment_text)
+    (newline)))
+
+====
+Comment without text
+====
+
+/=
+
+---
+
+(document
+  (comment
+    (marker)
+    (newline)))
+
+====
+Comments with entries
+====
+
+key = value
+/= This is a comment
+another = value2
+
+---
+
+(document
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value)
+    (newline))
+  (comment
+    (marker)
+    (comment_text)
+    (newline))
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value)
+    (newline)))
+
+====
+Comment in nested block
+====
+
+config =
+  /= Database configuration
+  host = localhost
+  port = 5432
+
+---
+
+(document
+  (entry
+    (single_line_key)
+    (assignment)
+    (nested_block
+      (newline)
+      (indent)
+      (comment
+        (marker)
+        (comment_text)
+        (newline))
+      (entry
+        (single_line_key)
+        (assignment)
+        (single_line_value)
+        (newline))
+      (entry
+        (single_line_key)
+        (assignment)
+        (single_line_value)
+        (newline))
+      (dedent))))

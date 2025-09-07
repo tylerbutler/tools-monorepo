@@ -1,0 +1,53 @@
+# Build artifacts
+build/
+*.wasm
+*.node
+*.so
+*.dylib
+*.dll
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Tree-sitter generated files are committed for distribution
+
+# Generated test files
+highlighted.html
+simple.ccl
+*.ccl
+!sample.ccl
+!visual_test.ccl
+
+# Editor and IDE
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# OS generated files
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
