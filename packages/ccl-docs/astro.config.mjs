@@ -1,0 +1,97 @@
+import netlify from "@astrojs/netlify";
+import starlight from "@astrojs/starlight";
+import a11yEmoji from "@fec/remark-a11y-emoji";
+import { includeMarkdown } from "@hashicorp/platform-remark-plugins";
+import { defineConfig } from "astro/config";
+import starlightLinksValidator from "starlight-links-validator";
+
+// Get the current script URL
+const scriptUrl = new URL(import.meta.url);
+
+// Get the directory name from the script URL
+const rootDir = new URL("../..", import.meta.url).pathname;
+
+// https://astro.build/config
+export default defineConfig({
+	output: "server",
+	adapter: netlify({
+		imageCDN: false,
+	}),
+	site: "https://ccl.tylerbutler.com",
+	integrations: [
+		starlight({
+			title: "CCL",
+			description: "CCL (Configuration and Control Language) documentation",
+			lastUpdated: true,
+			customCss: [
+				// Fontsource files for to regular and semi-bold font weights.
+				"@fontsource/ibm-plex-serif/400.css",
+				"@fontsource/ibm-plex-serif/600.css",
+				"@fontsource/metropolis/400.css",
+				"@fontsource/metropolis/600.css",
+				"./src/styles/custom.css",
+			],
+			plugins: [
+				starlightLinksValidator(),
+			],
+			social: [
+				{
+					icon: "github",
+					label: "GitHub",
+					href: "https://github.com/tylerbutler/tools-monorepo",
+				},
+			],
+			sidebar: [
+				{
+					label: "Start Here",
+					items: [
+						{
+							label: "Getting Started",
+							slug: "getting-started",
+						},
+						{
+							label: "Format Comparison",
+							slug: "format-comparison",
+						},
+					],
+				},
+				{
+					label: "Guides",
+					items: [
+						{
+							label: "Implementing CCL",
+							slug: "implementing-ccl",
+						},
+						{
+							label: "Test Architecture",
+							slug: "test-architecture",
+						},
+					],
+				},
+				{
+					label: "Reference",
+					items: [
+						{
+							label: "API Reference",
+							slug: "api-reference",
+						},
+						{
+							label: "Glossary",
+							slug: "glossary",
+						},
+						{
+							label: "FAQ",
+							slug: "ccl-faq",
+						},
+					],
+				},
+			],
+		}),
+	],
+	markdown: {
+		remarkPlugins: [
+			a11yEmoji,
+			[includeMarkdown, { resolveMdx: true, resolveFrom: rootDir }],
+		],
+	},
+});
