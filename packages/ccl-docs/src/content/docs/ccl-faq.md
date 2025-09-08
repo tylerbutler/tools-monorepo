@@ -3,12 +3,6 @@ title: FAQ
 description: Frequently asked questions about CCL (Categorical Configuration Language).
 ---
 
-# CCL (Categorical Configuration Language) FAQ
-
-**Version:** 1.0.0  
-**Date:** 2025-01-02  
-**Status:** Living Document
-
 ## Table of Contents
 
 - [Language Basics](#language-basics)

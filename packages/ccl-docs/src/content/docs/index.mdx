@@ -1,0 +1,36 @@
+---
+title: Categorical Configuration Language
+description: A powerful yet simple configuration language.
+template: splash
+hero:
+  tagline: CCL is a minimal configuration language that uses simple key-value pairs and Category Theory to support surprisingly powerful features
+  actions:
+    - text: Get started
+      link: /getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: What is CCL?
+      link: /ccl-faq/#q-what-is-ccl
+      variant: secondary
+banner:
+  content: |
+    To do.
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Features
+
+<CardGrid>
+	<Card title="Simple human-readable syntax" icon="open-book">
+		CCL is easy to read and write. The syntax is delightfully `"`, `{`, and `}` free! You can use indentation (gasp!) to
+		organize hierarchical data, but you don't have to.
+	</Card>
+	<Card title="Comments!" icon="comment">
+		Unlike JSON, CCL supports comments, including multiline comments. No config belongs in a comment-less format@
+	</Card>
+	<Card title="Build custom formats on the string-centric CCL core" icon="puzzle">
+		The CCL core is focused on string-only key-value pairs, and provides a progressive API that you can use to build
+		your own custom formats or additional features into your config format. (But we suggest keeping it simple!)
+	</Card>
+</CardGrid>

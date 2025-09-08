@@ -1,13 +1,11 @@
 ---
-title: API Reference
+title: CCL API
 description: CCL API Reference (Proposed) - standardized interface for CCL implementations across different languages.
 ---
 
-# CCL API Reference (Proposed)
-
 > **⚠️ Important Note**
 > 
-> This is a **proposed API structure** that has proven useful in reference implementations. **Implementers are not required to follow this exactly** - adapt it to fit your language ecosystem, conventions, and user expectations.
+> This is an **example API structure** that has proven useful in CCL implementations. **Implementers are not required to follow this exactly** - adapt it to fit your language ecosystem, conventions, and user expectations.
 >
 > For example:
 > - Use `camelCase` vs `snake_case` as appropriate for your language
@@ -17,7 +15,7 @@ description: CCL API Reference (Proposed) - standardized interface for CCL imple
 >
 > **The goal is CCL compatibility, not API uniformity.**
 
-## Overview
+## Organization
 
 The CCL API is organized into 4 levels, each building on the previous. You can implement any subset that makes sense for your use case.
 

@@ -21,7 +21,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: "CCL",
-			description: "CCL (Configuration and Control Language) documentation",
+			description: "CCL (Categorical Configuration Language) documentation",
 			lastUpdated: true,
 			customCss: [
 				// Fontsource files for to regular and semi-bold font weights.
@@ -45,44 +45,32 @@ export default defineConfig({
 				{
 					label: "Start Here",
 					items: [
-						{
-							label: "Getting Started",
-							slug: "getting-started",
-						},
-						{
-							label: "Format Comparison",
-							slug: "format-comparison",
-						},
+						{ slug: "getting-started" },
+						{ slug: "syntax-reference" },
+						{ slug: "format-comparison" },
+					],
+				},
+				{
+					label: "Specification",
+					items: [
+						{ slug: "specification-summary" },
+						{ slug: "parsing-algorithm" },
+						{ slug: "theory" },
 					],
 				},
 				{
 					label: "Guides",
 					items: [
-						{
-							label: "Implementing CCL",
-							slug: "implementing-ccl",
-						},
-						{
-							label: "Test Architecture",
-							slug: "test-architecture",
-						},
+						{ slug: "implementing-ccl" },
+						{ slug: "test-architecture" },
 					],
 				},
 				{
 					label: "Reference",
 					items: [
-						{
-							label: "API Reference",
-							slug: "api-reference",
-						},
-						{
-							label: "Glossary",
-							slug: "glossary",
-						},
-						{
-							label: "FAQ",
-							slug: "ccl-faq",
-						},
+						{ slug: "api-reference" },
+						{ slug: "glossary" },
+						{ slug: "ccl-faq" },
 					],
 				},
 			],

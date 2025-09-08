@@ -28,7 +28,6 @@ Each category has specific APIs, test suites, and implementation requirements.
 ## Core Functionality (Required)
 
 ### Essential Parsing
-**Files**: `tests/core/essential-parsing.json` (18 tests)  
 **API:** `parse(text) → Result<Entry[], ParseError>`  
 **Status:** Required for all CCL implementations
 
@@ -70,7 +69,6 @@ function parse(text) {
 ```
 
 ### Comprehensive Parsing  
-**Files**: `tests/core/comprehensive-parsing.json` (30 tests)
 **Purpose:** Production-ready validation with comprehensive edge cases
 **Status:** Recommended for production systems
 
@@ -87,7 +85,6 @@ function parse(text) {
 - **Robustness:** Handles malformed input gracefully
 
 ### Object Construction
-**Files**: `tests/core/object-construction.json` (8 tests)  
 **API:** `make_objects(entries) → CCL`  
 **Status:** Required for hierarchical access
 
@@ -119,7 +116,6 @@ function make_objects(entries) {
 ## Optional Features (Choose Based on Needs)
 
 ### Dotted Key Expansion
-**Files**: `tests/features/dotted-keys.json` (18 tests)  
 **Purpose:** Enable dual access patterns for convenience
 **Status:** Recommended for user-friendly APIs
 
@@ -135,7 +131,6 @@ function make_objects(entries) {
 - Flexible configuration authoring
 
 ### Comment Filtering
-**Files**: `tests/features/comments.json` (3 tests)  
 **API:** `filter(entries)`  
 **Purpose:** Remove documentation keys from configuration
 
@@ -145,7 +140,6 @@ function make_objects(entries) {
 - Preserve structure while removing documentation
 
 ### Entry Processing
-**Files**: `tests/features/processing.json` (21 tests)
 **API:** `compose_entries()`, advanced processing
 **Purpose:** Advanced composition and merging capabilities
 
@@ -156,7 +150,6 @@ function make_objects(entries) {
 - Associative and commutative operations
 
 ### Typed Access
-**Files**: `tests/features/typed-access.json` (17 tests)  
 **API:** `get_string()`, `get_int()`, `get_bool()`, etc.  
 **Purpose:** Type-safe value extraction with validation
 
@@ -195,7 +188,6 @@ function get_bool(ccl_obj, ...path) {
 ## Integration & Validation
 
 ### Error Handling
-**Files**: `tests/integration/errors.json` (5 tests)  
 **Purpose:** Malformed input detection across all functionality
 **Status:** Recommended for robust implementations
 
@@ -311,3 +303,101 @@ try {
 ```
 
 The feature-based architecture provides a systematic approach to building CCL implementations while maintaining simplicity and flexibility for different use cases and requirements.
+
+## Test Suite Format
+
+### JSON Test Structure
+
+All CCL tests are stored in JSON files for language-agnostic implementation. Each test file contains an array of test cases with the following structure:
+
+```json
+{
+  "name": "descriptive_test_name",
+  "input": "ccl input text",
+  "expected": [
+    {"key": "parsed_key", "value": "parsed_value"}
+  ],
+  "meta": {
+    "tags": ["category", "feature"],
+    "level": 1
+  }
+}
+```
+
+### Test File Organization
+
+The test suite is organized into specific JSON files:
+
+- **`ccl-entry-parsing.json`** - Core parsing tests (18 tests)
+- **`ccl-entry-processing.json`** - Comment filtering and composition (10 tests)
+- **`ccl-object-construction.json`** - Nested object building (8 tests)
+- **`ccl-typed-parsing-examples.json`** - Type-safe parsing (12 tests)
+- **`ccl-pretty-printer.json`** - Formatting and round-trip tests (15 tests)
+- **`ccl-errors.json`** - Error handling validation (5 tests)
+
+### Special Test Types
+
+#### Pretty Printer Tests
+
+Pretty printer tests use a special format to test formatting properties:
+
+```json
+{
+  "name": "test_name",
+  "property": "round_trip|canonical_format|deterministic", 
+  "input": "ccl input text",
+  "expected_canonical": "expected pretty printed output",
+  "meta": {
+    "tags": ["pretty-print"],
+    "level": "pretty-print"
+  }
+}
+```
+
+**Property Types:**
+- `round_trip`: Test that `parse(pretty_print(parse(input))) == parse(input)`
+- `canonical_format`: Test that `pretty_print(parse(input)) == expected_canonical`
+- `deterministic`: Test that multiple calls produce identical output
+
+#### Error Tests
+
+Error tests verify that invalid input is properly rejected:
+
+```json
+{
+  "name": "invalid_syntax",
+  "input": "invalid input without equals",
+  "expected_error": true,
+  "error_message": "expected equals sign",
+  "meta": {
+    "tags": ["error", "syntax"],
+    "level": 1
+  }
+}
+```
+
+### Test Metadata
+
+Each test includes metadata for categorization:
+
+- **`level`**: Which CCL implementation level the test targets (1-4, or "pretty-print")
+- **`tags`**: Categories for filtering tests (e.g., ["basic"], ["multiline"], ["edge-case"])
+
+### Implementation Guidelines
+
+When implementing CCL parsers:
+
+1. **Load JSON test files** into your testing framework
+2. **Filter by level** to test only the features you implement
+3. **Use tags** to focus on specific functionality during development
+4. **Validate all expected fields** in your test results
+5. **Report test coverage** by level and feature category
+
+### Cross-Language Compatibility
+
+The JSON format ensures tests can be used across different programming languages:
+
+- Test data is language-agnostic
+- Expected results use simple data structures
+- No language-specific features in test definitions
+- Enables validation of equivalent behavior across implementations

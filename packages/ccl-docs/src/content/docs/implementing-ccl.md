@@ -7,7 +7,7 @@ description: A guide for language authors to implement a CCL parser using the fe
 
 ## Quick Start
 
-1. **Study the specification** - Read the [CCL FAQ](ccl_faq.md) and [Getting Started Guide](getting-started.md)
+1. **Study the specification** - Read the [CCL FAQ](ccl-faq.md) and [Getting Started Guide](getting-started.md)
 2. **Choose your implementation path** - Start with core functionality, add features as needed
 3. **Use the test suite** - Language-agnostic JSON tests validate your implementation
 4. **Follow the reference** - OCaml reference implementation at https://github.com/chshersh/ccl

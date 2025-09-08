@@ -1,9 +1,7 @@
 ---
-title: Format Comparison
+title: Configuration Format Comparison
 description: Comparing CCL with JSON, YAML, TOML, INI, and environment variables to help you choose the right format for your project.
 ---
-
-# Configuration Format Comparison
 
 ## Format Comparison Overview
 

@@ -1,13 +1,22 @@
 ---
-title: Getting Started
-description: A gentle introduction to the Categorical Configuration Language.
+title: Getting Started with CCL
+description: An introduction to the Categorical Configuration Language.
 ---
-
-# Getting Started with CCL
 
 ## What is CCL?
 
-CCL is a minimal configuration format that uses simple key-value pairs with indentation-based nesting:
+CCL is a minimal configuration format that uses simple key-value pairs and Category Theory to support things like:
+
+- Key-value mappings
+- Lists
+- Strings
+- Dates
+- Algebraic Data Types
+- Comments
+- Sections
+- Nested records
+
+Example:
 
 ```ccl
 database =
@@ -18,6 +27,13 @@ server =
     = 8000
     = 8001
 ```
+
+## Where did CCL come from?
+
+CCL was created by [@chshersh](https://github.com/chshersh) and is specified at
+<https://chshersh.com/blog/2025-01-06-the-most-elegant-configuration-language.html>.
+
+There is also a reference OCaml implementation at <https://github.com/chshersh/ccl>.
 
 ## Basic Syntax
 
@@ -214,7 +230,7 @@ CCL implementations follow a feature-based architecture:
 Now that you understand the basics:
 
 1. **Try the examples** - Practice with the syntax patterns above
-2. **Read the [CCL FAQ](ccl_faq.md)** - Common questions and gotchas
+2. **Read the [CCL FAQ](ccl-faq.md)** - Common questions and gotchas
 3. **See [Migration Guide](migration-guide.md)** - Convert from JSON/YAML
 4. **Check language-specific implementations** - Find CCL libraries for your language
 
