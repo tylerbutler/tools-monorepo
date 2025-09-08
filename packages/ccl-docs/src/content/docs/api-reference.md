@@ -92,7 +92,7 @@ filtered = filter(entries)
 filtered = filter(entries, entry => !entry.key.startsWith("debug"))
 ```
 
-#### `compose_entries(left: Entry[], right: Entry[]) → Entry[]`
+#### `compose(left: Entry[], right: Entry[]) → Entry[]`
 Combines two entry arrays, preserving order for duplicate key handling.
 
 **Parameters:**

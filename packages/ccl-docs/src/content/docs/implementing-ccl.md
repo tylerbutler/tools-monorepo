@@ -145,7 +145,7 @@ function filter_by_prefixes(entries: List<Entry>, prefixes: List<string>) {
 
 #### Entry Composition
 ```pseudocode
-function compose_entries(left: List<Entry>, right: List<Entry>) -> List<Entry> {
+function compose(left: List<Entry>, right: List<Entry>) -> List<Entry> {
   // Simple concatenation - merging happens at object level
   return left + right
 }
