@@ -199,7 +199,7 @@ The power of CCL comes from this simple, composable design - everything builds n
 
 ## Related Documentation
 
-- **[Getting Started](getting-started.md)** - Basic CCL syntax and practical examples
-- **[Implementation Levels](implementation-levels.md)** - Detailed guide to choosing your processing level
-- **[CCL FAQ](ccl-faq.md)** - Common questions about CCL concepts and behavior
-- **[Implementing CCL](implementing-ccl.md)** - How to build these concepts into a parser
+- **[Getting Started](/getting-started)** - Basic CCL syntax and practical examples
+- **[Implementation Levels](/implementation-levels)** - Detailed guide to choosing your processing level
+- **[CCL FAQ](/ccl-faq)** - Common questions about CCL concepts and behavior
+- **[Implementing CCL](/implementing-ccl)** - How to build these concepts into a parser

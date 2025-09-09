@@ -7,11 +7,11 @@ description: A guide for language authors to implement a CCL parser using the fe
 
 ## Quick Start
 
-1. **Study the specification** - Read the [Getting Started Guide](getting-started.md) and [Core Concepts](core-concepts.md)
-2. **Choose your implementation path** - See [Implementation Levels](implementation-levels.md) to pick your level  
+1. **Study the specification** - Read the [Getting Started Guide](/getting-started) and [Core Concepts](/core-concepts)
+2. **Choose your implementation path** - See [Implementation Levels](/implementation-levels) to pick your level  
 3. **Use the test suite** - Language-agnostic JSON tests validate your implementation
 4. **Follow the reference** - OCaml reference implementation at https://github.com/chshersh/ccl
-5. **Check the API guide** - See [API Reference](api-reference.md) for recommended patterns
+5. **Check the API guide** - See [API Reference](/api-reference) for recommended patterns
 
 ## Feature-Based Test Architecture
 
@@ -561,9 +561,9 @@ Provide helpful error messages with:
 
 ## Related Documentation
 
-- **[Implementation Levels](implementation-levels.md)** - Detailed comparison of implementation levels
-- **[API Reference](api-reference.md)** - Recommended API patterns and conventions  
-- **[Core Concepts](core-concepts.md)** - Understanding CCL's foundation
-- **[CCL FAQ](ccl-faq.md)** - Common implementation questions and gotchas
+- **[Implementation Levels](/implementation-levels)** - Detailed comparison of implementation levels
+- **[API Reference](/api-reference)** - Recommended API patterns and conventions  
+- **[Core Concepts](/core-concepts)** - Understanding CCL's foundation
+- **[CCL FAQ](/ccl-faq)** - Common implementation questions and gotchas
 
 The CCL specification and test suite provide everything needed to build a robust, compliant implementation in any programming language. Focus on correctness first, then optimize for your language's specific performance characteristics.

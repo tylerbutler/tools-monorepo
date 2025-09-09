@@ -3,7 +3,7 @@ title: FAQ
 description: Frequently asked questions about CCL (Categorical Configuration Language).
 ---
 
-> **New to CCL?** Start with [Getting Started](getting-started.md) for basic syntax and examples, then return here for specific questions.
+> **New to CCL?** Start with [Getting Started](/getting-started) for basic syntax and examples, then return here for specific questions.
 
 ## Language Basics
 
@@ -432,11 +432,11 @@ text = Multi-byte characters work fine: café, naïve, 北京
 
 ## Related Documentation
 
-- **[Getting Started](getting-started.md)** - Basic CCL syntax and examples
-- **[Core Concepts](core-concepts.md)** - Understanding CCL's foundation  
-- **[Implementation Levels](implementation-levels.md)** - Choosing the right level for your needs
-- **[Implementing CCL](implementing-ccl.md)** - Guide for building CCL parsers
-- **[API Reference](api-reference.md)** - Complete API specification
+- **[Getting Started](/getting-started)** - Basic CCL syntax and examples
+- **[Core Concepts](/core-concepts)** - Understanding CCL's foundation  
+- **[Implementation Levels](/implementation-levels)** - Choosing the right level for your needs
+- **[Implementing CCL](/implementing-ccl)** - Guide for building CCL parsers
+- **[API Reference](/api-reference)** - Complete API specification
 
 ---
 

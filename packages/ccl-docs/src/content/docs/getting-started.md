@@ -147,7 +147,7 @@ CCL implementations can choose their level of support based on needs:
 **Level 3: Common Features** - Level 2 + dotted keys + merging  
 **Level 4: Advanced Features** - Level 3 + typed APIs + validation + more
 
-> **For most users**: Level 2 provides everything needed for practical configuration. See [Implementation Levels](implementation-levels.md) for detailed comparison and choosing guidance.
+> **For most users**: Level 2 provides everything needed for practical configuration. See [Implementation Levels](/implementation-levels) for detailed comparison and choosing guidance.
 
 ## Common Patterns
 
@@ -204,13 +204,13 @@ There is also a reference OCaml implementation at <https://github.com/chshersh/c
 
 ### For Configuration Users
 1. **Try the examples** - Practice with the syntax patterns above
-2. **Read the [CCL FAQ](ccl-faq.md)** - Common questions and best practices  
-3. **Explore [Core Concepts](core-concepts.md)** - Understand how CCL works
+2. **Read the [CCL FAQ](/ccl-faq)** - Common questions and best practices  
+3. **Explore [Core Concepts](/core-concepts)** - Understand how CCL works
 
 ### For Developers & Implementers
-1. **Start with [Implementation Levels](implementation-levels.md)** - Choose your approach
-2. **Follow [Implementing CCL](implementing-ccl.md)** - Build your own parser
-3. **Check [API Reference](api-reference.md)** - Complete specification details
+1. **Start with [Implementation Levels](/implementation-levels)** - Choose your approach
+2. **Follow [Implementing CCL](/implementing-ccl)** - Build your own parser
+3. **Check [API Reference](/api-reference)** - Complete specification details
 
 ## Quick Reference
 
