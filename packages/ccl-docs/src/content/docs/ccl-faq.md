@@ -3,20 +3,7 @@ title: FAQ
 description: Frequently asked questions about CCL (Categorical Configuration Language).
 ---
 
-## Table of Contents
-
-- [Language Basics](#language-basics)
-- [Dot Notation and Keys](#dot-notation-and-keys)
-- [Nesting and Structure](#nesting-and-structure)
-- [Indentation and Whitespace](#indentation-and-whitespace)
-- [Values and Types](#values-and-types)
-- [Comments](#comments)
-- [Lists and Arrays](#lists-and-arrays)
-- [Comparison with Other Formats](#comparison-with-other-formats)
-- [Implementation Details](#implementation-details)
-- [Common Gotchas](#common-gotchas)
-
----
+> **New to CCL?** Start with [Getting Started](getting-started.md) for basic syntax and examples, then return here for specific questions.
 
 ## Language Basics
 
@@ -197,12 +184,17 @@ debug = true
 ```
 
 ### Q: Are comments part of the data?
-**A:** Yes! Comments are regular key-value pairs. To filter them out:
+**A:** Yes! Comments are regular key-value entries, not special syntax. The standard marker is `/=`, but CCL APIs provide general-purpose filtering:
 
 ```gleam
-// Remove comment entries
-let no_comments = list.filter(entries, fn(entry) { 
-  !string.starts_with(entry.key, "/") 
+// Use general filter_keys function (not filter_comments)
+let config_entries = filter_keys(entries, fn(key) { 
+  !string.starts_with(key, "/") 
+})
+
+// Can filter any key pattern
+let no_debug = filter_keys(entries, fn(key) {
+  !string.starts_with(key, "debug")
 })
 ```
 
@@ -438,4 +430,14 @@ text = Multi-byte characters work fine: café, naïve, 北京
 
 ---
 
-*This FAQ is maintained alongside the Gleam CCL implementation. Please contribute corrections and additional questions!*
+## Related Documentation
+
+- **[Getting Started](getting-started.md)** - Basic CCL syntax and examples
+- **[Core Concepts](core-concepts.md)** - Understanding CCL's foundation  
+- **[Implementation Levels](implementation-levels.md)** - Choosing the right level for your needs
+- **[Implementing CCL](implementing-ccl.md)** - Guide for building CCL parsers
+- **[API Reference](api-reference.md)** - Complete API specification
+
+---
+
+*This FAQ is maintained alongside the CCL documentation. Please contribute corrections and additional questions!*

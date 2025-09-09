@@ -12,23 +12,6 @@ description: An informal specification summary for CCL, derived from the origina
 
 **This is not an official specification.** For authoritative information, refer to the original sources above.
 
-**Version:** 1.2.0  
-**Date:** 2025-01-02  
-**Status:** Derived Summary
-
-## Table of Contents
-
-- [Quick Start](#quick-start)
-- [Core Philosophy](#core-philosophy)
-- [Syntax Reference](#syntax-reference)
-- [Core Parsing Algorithm](#core-parsing-algorithm)
-- [Data Structure Representation](#data-structure-representation)
-- [Error Handling](#error-handling)
-- [Edge Cases](#edge-cases)
-- [Mathematical Foundation](#mathematical-foundation)
-- [Conformance Requirements](#conformance-requirements)
-- [Future Extensions](#future-extensions)
-
 ## Quick Start
 
 Here's a simple CCL configuration to get you started:
@@ -355,23 +338,6 @@ A full CCL implementation additionally supports:
 3. Comment filtering
 4. Type-safe value access
 
-## Future Extensions
-
-### Under Consideration
-
-1. **Schema Validation:** Type and structure validation
-2. **Include Directives:** File inclusion mechanism
-3. **Variable Interpolation:** Reference other values
-4. **Conditional Sections:** Environment-based configuration
-
-### Design Principles for Extensions
-
-Any extension must:
-- Preserve backward compatibility
-- Maintain mathematical properties
-- Keep syntax minimal
-- Support composition
-
 ## Sources and Attribution
 
 This summary is derived from:
@@ -380,4 +346,5 @@ This summary is derived from:
 2. **[OCaml Reference Implementation](https://github.com/chshersh/ccl)** - The canonical implementation
 3. **Test Suite Analysis** - Behavior derived from test cases
 
-For the official CCL specification and design rationale, please refer to the original blog post and OCaml implementation.
+For the official CCL specification and design rationale, please refer to the original blog post and OCaml
+implementation.

@@ -5,35 +5,36 @@ description: An introduction to the Categorical Configuration Language.
 
 ## What is CCL?
 
-CCL is a minimal configuration format that uses simple key-value pairs and Category Theory to support things like:
+CCL is a minimal configuration format built on a simple foundation: **key-value entries**. Everything in CCL - nesting, lists, comments, typing - builds on top of these basic entries.
 
-- Key-value mappings
-- Lists
-- Strings
-- Dates
-- Algebraic Data Types
-- Comments
-- Sections
-- Nested records
+### Quick Start Example
 
-Example:
+Here's a complete web server configuration to get you started:
 
 ```ccl
+app =
+  name = MyWebApp
+  version = 1.0.0
+
+server =
+  host = 0.0.0.0
+  port = 8080
+  
 database =
   host = localhost
   port = 5432
-server =
-  ports =
-    = 8000
-    = 8001
+  name = myapp_db
+
+allowed_origins =
+  = https://example.com
+  = https://www.example.com
 ```
 
-## Where did CCL come from?
-
-CCL was created by [@chshersh](https://github.com/chshersh) and is specified at
-<https://chshersh.com/blog/2025-01-06-the-most-elegant-configuration-language.html>.
-
-There is also a reference OCaml implementation at <https://github.com/chshersh/ccl>.
+**Key features you'll notice:**
+- **Simple syntax**: Just `key = value` pairs
+- **Nesting**: Use indentation to group related settings
+- **Lists**: Use `= value` for list items
+- **Clean structure**: Easy to read and write
 
 ## Basic Syntax
 
@@ -53,16 +54,6 @@ port = 8080
 - Keys can contain letters, numbers, dots, and underscores
 - Values are strings (applications interpret them as needed)
 - Whitespace around `=` is optional
-
-### Parsing CCL
-
-CCL follows a simple parsing model that any language can implement:
-
-1. **Parse text** → entries (key-value pairs)
-2. **Build objects** → nested structure
-3. **Access values** → typed or string values
-
-Different CCL implementations provide language-specific APIs, but all follow this same pattern.
 
 ## Nested Configuration
 
@@ -123,7 +114,7 @@ Lists in CCL use empty keys (`=`) to represent array items. Each `= value` becom
 
 ## Comments and Documentation
 
-Use comment keys starting with `/` for documentation:
+CCL comments are just regular entries with special keys. The standard marker is `/=`:
 
 ```ccl
 /= Database Configuration
@@ -139,28 +130,24 @@ server =
   debug = true
 ```
 
-## Real-World Example
+**Key insight**: Comments are regular key-value entries, not special syntax. Any Level 1 parser handles them automatically. To use them as documentation:
 
-Here's a complete web server configuration:
-
-```ccl
-app =
-  name = MyWebApp
-  version = 1.0.0
-
-server =
-  host = 0.0.0.0
-  port = 8080
-  
-database =
-  host = localhost
-  port = 5432
-  name = myapp_db
-
-allowed_origins =
-  = https://example.com
-  = https://www.example.com
+```pseudocode
+// Standard pattern - filter keys starting with "/"
+config_entries = filter_keys(all_entries, key => !key.startsWith("/"))
+config = make_objects(config_entries)
 ```
+
+## Understanding CCL Implementation Levels
+
+CCL implementations can choose their level of support based on needs:
+
+**Level 1: Entry Parsing** - Parse text into flat key-value entries  
+**Level 2: Complete Config Language** - Level 1 + comment filtering + object construction  
+**Level 3: Common Features** - Level 2 + dotted keys + merging  
+**Level 4: Advanced Features** - Level 3 + typed APIs + validation + more
+
+> **For most users**: Level 2 provides everything needed for practical configuration. See [Implementation Levels](implementation-levels.md) for detailed comparison and choosing guidance.
 
 ## Common Patterns
 
@@ -206,33 +193,24 @@ description = This is a multiline
   indentation
 ```
 
-## Core Concepts
+## About CCL
 
-### Implementation Architecture
+CCL was created by [@chshersh](https://github.com/chshersh) and is specified at
+<https://chshersh.com/blog/2025-01-06-the-most-elegant-configuration-language.html>.
 
-CCL implementations follow a feature-based architecture:
-
-1. **Essential Parsing** - Parse text into key-value entries
-2. **Object Construction** - Build nested objects from flat entries  
-3. **Optional Features** - Choose dotted keys, comments, typed access, etc.
-
-### Key Features
-
-- **Simple Syntax**: Just key-value pairs with `=`
-- **Nested Structure**: Use indentation for hierarchy
-- **List Support**: Empty keys create arrays
-- **Comments**: Keys starting with `/` for documentation
-- **No Quotes Required**: All values are strings by default
-- **Flexible**: Supports both flat and hierarchical approaches
+There is also a reference OCaml implementation at <https://github.com/chshersh/ccl>.
 
 ## Next Steps
 
-Now that you understand the basics:
-
+### For Configuration Users
 1. **Try the examples** - Practice with the syntax patterns above
-2. **Read the [CCL FAQ](ccl-faq.md)** - Common questions and gotchas
-3. **See [Migration Guide](migration-guide.md)** - Convert from JSON/YAML
-4. **Check language-specific implementations** - Find CCL libraries for your language
+2. **Read the [CCL FAQ](ccl-faq.md)** - Common questions and best practices  
+3. **Explore [Core Concepts](core-concepts.md)** - Understand how CCL works
+
+### For Developers & Implementers
+1. **Start with [Implementation Levels](implementation-levels.md)** - Choose your approach
+2. **Follow [Implementing CCL](implementing-ccl.md)** - Build your own parser
+3. **Check [API Reference](api-reference.md)** - Complete specification details
 
 ## Quick Reference
 
@@ -255,10 +233,10 @@ items =
 ```
 
 ### Core Principles
-- Everything is a string (types handled by applications)
-- Indentation creates nesting
-- Empty keys (`=`) create list items
-- Comment keys (`/=`) provide documentation
-- Duplicate keys merge or accumulate depending on context
+- **Foundation**: Everything builds from key-value entries  
+- **Parsing**: 4 core constructs handle all syntax
+- **Comments**: Regular entries with `/` keys (use `filter_keys()`)
+- **Levels**: Choose your implementation level based on needs
+- **Composable**: Each processing step is independent
 
-That's all you need to get started with CCL! The syntax is simple, but the power comes from how you structure and access your configuration data.
+That's all you need to get started with CCL! The power comes from the simple, composable design.

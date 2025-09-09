@@ -20,10 +20,10 @@ description: CCL API Reference (Proposed) - standardized interface for CCL imple
 The CCL API is organized into 4 levels, each building on the previous. You can implement any subset that makes sense for your use case.
 
 ```
-Level 4: Typed Access       ← get_string(), get_int(), get_bool()
-Level 3: Object Construction ← make_objects(), hierarchical structure  
-Level 2: Entry Processing    ← filter(), composition
-Level 1: Entry Parsing       ← parse(), core key-value extraction
+Level 4: Advanced Features    ← get_string(), get_int(), get_bool()
+Level 3: Common Features      ← make_objects(), dotted keys, merging  
+Level 2: Complete Config      ← filter_keys(), object construction
+Level 1: Entry Parsing        ← parse(), core key-value extraction
 ```
 
 ## Level 1: Entry Parsing (Required)
@@ -64,32 +64,31 @@ entries = parse("database.host = localhost\nserver.port = 8080")
 // ]
 ```
 
-## Level 2: Entry Processing (Optional)
+## Level 2: Complete Config Language (Standard)
 
 ### Functions
 
-#### `filter(entries: Entry[], predicate?) → Entry[]`
-Filters entries based on a predicate. Default behavior removes comment entries (keys starting with `/`).
+#### `filter_keys(entries: Entry[], predicate) → Entry[]`
+General-purpose function to filter entries based on key patterns. CCL APIs provide this flexible function rather than comment-specific filtering.
 
 **Parameters:**
 - `entries` - Array of entries to filter
-- `predicate` - Optional filter function (defaults to comment removal)
+- `predicate` - Function that takes a key string and returns boolean
 
 **Returns:**
 - Filtered entry array
 
 **Example:**
 ```pseudocode
-// Default: remove comments
-entries = [
-  Entry("/", "This is a comment"),
-  Entry("key", "value")
-]
-filtered = filter(entries)
-// Result: [Entry("key", "value")]
+// Standard comment filtering (/ = standard marker)  
+config_entries = filter_keys(entries, key => !key.startsWith("/"))
 
-// Custom predicate  
-filtered = filter(entries, entry => !entry.key.startsWith("debug"))
+// Custom filtering patterns
+no_debug = filter_keys(entries, key => !key.startsWith("debug"))
+clean = filter_keys(entries, key => 
+  !key.startsWith("debug") && !key.startsWith("temp"))
+
+**Note:** Most CCL APIs provide `filter_keys()` rather than `filter_comments()` to keep the API minimal and flexible.
 ```
 
 #### `compose(left: Entry[], right: Entry[]) → Entry[]`
@@ -102,7 +101,7 @@ Combines two entry arrays, preserving order for duplicate key handling.
 **Returns:**
 - Combined entry array (`left + right`)
 
-## Level 3: Object Construction (Required for hierarchy)
+## Level 3: Common Features (Production)
 
 ### Core Types
 
@@ -147,7 +146,7 @@ objects = make_objects(entries)
 // })
 ```
 
-## Level 4: Typed Access (Recommended)
+## Level 4: Advanced Features (Optional)
 
 ### Core Access Pattern
 
@@ -331,6 +330,34 @@ Validate your API against the comprehensive test suite in `/tests/`:
 - **Level 4:** `level-4-typed.json` (17 tests)
 
 Each test provides `input`, `expected` output, and metadata for systematic validation.
+
+## Related Documentation
+
+- **[Implementation Levels](implementation-levels.md)** - Choose which level(s) to implement
+- **[Implementing CCL](implementing-ccl.md)** - Step-by-step implementation guide  
+- **[Core Concepts](core-concepts.md)** - Understanding CCL's design principles
+- **[Getting Started](getting-started.md)** - User-facing syntax and examples
+
+## Quick Reference
+
+### API Functions by Level
+
+| Level | Function | Purpose |
+|-------|----------|---------|
+| **Level 1** | `parse(text)` | Convert text to key-value entries |
+| **Level 2** | `filter_keys(entries, predicate)` | Remove unwanted entries |
+| **Level 2** | `compose_entries(left, right)` | Combine entry arrays |
+| **Level 3** | `make_objects(entries)` | Build hierarchical structure |
+| **Level 4** | `get_string(ccl, ...path)` | Type-safe string access |
+| **Level 4** | `get_int(ccl, ...path)` | Type-safe integer access |
+| **Level 4** | `get_bool(ccl, ...path)` | Type-safe boolean access |
+
+### Implementation Recommendations
+
+- **Start with Level 2**: Covers most use cases
+- **Add Level 3**: For production systems needing dotted keys
+- **Consider Level 4**: For type safety and validation
+- **Adapt naming**: Match your language's conventions
 
 **Note:** Test documentation and examples throughout this repository reference the function names and patterns described in this API reference. While you can adapt the names to your language, the test descriptions assume this structure for consistency.
 

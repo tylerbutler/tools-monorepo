@@ -7,18 +7,22 @@ description: A guide for language authors to implement a CCL parser using the fe
 
 ## Quick Start
 
-1. **Study the specification** - Read the [CCL FAQ](ccl-faq.md) and [Getting Started Guide](getting-started.md)
-2. **Choose your implementation path** - Start with core functionality, add features as needed
+1. **Study the specification** - Read the [Getting Started Guide](getting-started.md) and [Core Concepts](core-concepts.md)
+2. **Choose your implementation path** - See [Implementation Levels](implementation-levels.md) to pick your level  
 3. **Use the test suite** - Language-agnostic JSON tests validate your implementation
 4. **Follow the reference** - OCaml reference implementation at https://github.com/chshersh/ccl
+5. **Check the API guide** - See [API Reference](api-reference.md) for recommended patterns
 
 ## Implementation Roadmap
 
-### Phase 1: Essential Parsing
-**Goal:** Parse CCL text into flat key-value entries  
-**Test Suite:** `tests/core/essential-parsing.json` (18 tests)
+Choose your CCL implementation level based on your needs:
 
-Start here for rapid prototyping - covers 80% of real-world CCL usage.
+### Level 1: Entry Parsing  
+**Goal:** Parse CCL text into flat key-value entries  
+**Test Suite:** `tests/core/essential-parsing.json` (18 tests)  
+**Use case:** Rapid prototyping, simple configurations
+
+Start here - handles the 4 core constructs and covers 80% of real-world CCL usage.
 
 #### Essential Algorithm
 ```pseudocode
@@ -69,11 +73,12 @@ function parse(text: string) -> Result<List<Entry>, ParseError> {
 - Preserve relative indentation in multiline values
 - Handle mixed tabs and spaces (warn in strict mode)
 
-### Phase 2: Object Construction  
-**Goal:** Convert flat entries to nested objects  
-**Test Suite:** `tests/core/object-construction.json` (8 tests)
+### Level 2: Complete Config Language  
+**Goal:** Everything needed for practical configuration  
+**Test Suite:** `tests/core/object-construction.json` (8 tests)  
+**Use case:** Production configurations that need comments and nesting
 
-Required for hierarchical configuration access.
+Level 1 + comment filtering + object construction = complete config language.
 
 #### Fixed-Point Algorithm
 ```pseudocode
@@ -125,21 +130,37 @@ function merge_into_result(result: CCL, key: string, value: any) {
 }
 ```
 
-### Phase 3: Production Readiness
-**Goal:** Comprehensive parsing validation  
-**Test Suite:** `tests/core/comprehensive-parsing.json` (30 tests)
+### Level 3: Common Features  
+**Goal:** Features most implementations want  
+**Test Suite:** `tests/core/comprehensive-parsing.json` (30 tests)  
+**Use case:** Production systems with advanced configuration needs
 
-Handle edge cases and production scenarios robustly.
+Level 2 + dotted keys + merging + edge case handling.
 
-#### Comment Filtering
+#### Key Filtering (Including Comments)
+
+**Important**: CCL APIs provide general `filter_keys()`, not comment-specific functions. `/=` is the standard comment marker, but filtering is flexible:
+
 ```pseudocode
-function filter_comments(entries: List<Entry>) -> List<Entry> {
-  return entries.filter(entry -> !entry.key.starts_with("/"))
+// General-purpose key filtering function
+function filter_keys(entries: List<Entry>, predicate: (key: string) -> bool) -> List<Entry> {
+  return entries.filter(entry -> predicate(entry.key))
 }
 
-// Alternative: filter by custom comment prefixes
-function filter_by_prefixes(entries: List<Entry>, prefixes: List<string>) {
-  return entries.filter(entry -> !any(prefixes, prefix -> entry.key.starts_with(prefix)))
+// Standard comment filtering (/ = standard marker)
+function get_config_entries(entries: List<Entry>) -> List<Entry> {
+  return filter_keys(entries, key -> !key.starts_with("/"))
+}
+
+// Custom comment filtering
+function filter_docs(entries: List<Entry>) -> List<Entry> {
+  return filter_keys(entries, key -> !key.starts_with("doc"))
+}
+
+// Remove debug and temp entries
+function filter_dev_keys(entries: List<Entry>) -> List<Entry> {
+  return filter_keys(entries, key -> 
+    !key.starts_with("debug") && !key.starts_with("temp"))
 }
 ```
 
@@ -151,23 +172,23 @@ function compose(left: List<Entry>, right: List<Entry>) -> List<Entry> {
 }
 ```
 
-### Phase 4: Optional Features
-**Goal:** Choose features based on your needs
+### Level 4: Advanced Features  
+**Goal:** Nice-to-have, implementation-specific features  
+**Use case:** Specialized applications, library features
+
+Level 3 + typed APIs + validation + custom extensions.
 
 #### Dotted Key Support
 **Test Suite:** `tests/features/dotted-keys.json` (18 tests)  
 Enable dual access patterns (`database.host` ↔ hierarchical).
 
-#### Comment Filtering  
-**Test Suite:** `tests/features/comments.json` (3 tests)  
-Remove documentation keys from configuration.
-
-#### Entry Processing
+#### Entry Processing  
 **Test Suite:** `tests/features/processing.json` (21 tests)  
 Advanced composition and merging capabilities.
 
 #### Type-Safe Access
-**Test Suite:** `tests/features/typed-access.json` (17 tests)
+**Test Suite:** `tests/features/typed-access.json` (17 tests)  
+Typed getters with consistent error handling.
 
 #### Type-Safe Accessors
 
@@ -462,8 +483,8 @@ class LazyObject {
 
 ### Consistent Naming
 - `parse()` for Level 1 entry parsing
-- `make_objects()` for Level 3 object construction  
-- `filter_comments()` for Level 2 comment filtering
+- `filter_keys()` for Level 2 general key filtering (not `filter_comments()`)
+- `make_objects()` for Level 2 object construction  
 - `get_string()`, `get_int()`, `get_bool()` for Level 4 typed access
 
 ### Error Messages
@@ -494,5 +515,12 @@ Provide helpful error messages with:
 - **Clear API stability** promises
 - **Examples and tutorials** for common use cases
 - **Contribution guidelines** for community involvement
+
+## Related Documentation
+
+- **[Implementation Levels](implementation-levels.md)** - Detailed comparison of implementation levels
+- **[API Reference](api-reference.md)** - Recommended API patterns and conventions  
+- **[Core Concepts](core-concepts.md)** - Understanding CCL's foundation
+- **[CCL FAQ](ccl-faq.md)** - Common implementation questions and gotchas
 
 The CCL specification and test suite provide everything needed to build a robust, compliant implementation in any programming language. Focus on correctness first, then optimize for your language's specific performance characteristics.
