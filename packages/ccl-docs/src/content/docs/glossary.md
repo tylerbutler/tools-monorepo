@@ -17,7 +17,7 @@ A single key-value pair in CCL before processing. For example, `database.host = 
 The flat list of entries produced by parsing CCL text. All nested structure is represented as dot-separated keys at this level.
 
 ### CCL Object
-The hierarchical data structure created from a flat entry list using the `make_objects()` function. Allows nested access using dot notation.
+The hierarchical data structure created from a flat entry list using the `build_hierarchy()` function. Allows nested access using dot notation.
 
 ### Empty Key
 A key consisting of just `=` used to create lists in CCL. Multiple empty keys under the same parent create a list structure.
@@ -45,7 +45,7 @@ database =
 A key used for documentation, typically starting with `/`, `#`, or `//`. Comment keys are regular entries that applications can filter out.
 
 ### Fixpoint Algorithm
-The algorithm used by `make_objects()` to convert flat entries into nested objects. Processes entries iteratively until a stable nested structure is reached.
+The algorithm used by `build_hierarchy()` to convert flat entries into nested objects. Processes entries iteratively until a stable nested structure is reached.
 
 ## Gleam Implementation Terms
 
@@ -131,7 +131,7 @@ The ability to parse CCL, convert to internal representation, and serialize back
 ## Package-Specific Terms
 
 ### ccl_core
-The minimal CCL parsing package with zero external dependencies. Provides basic parsing and object construction.
+The minimal CCL parsing package with zero external dependencies. Provides basic parsing and hierarchy construction.
 
 ### ccl (full package)
 The enhanced CCL library built on ccl_core with additional usability features, type-safe parsing, and better error handling.
@@ -148,7 +148,7 @@ The main function or API that applications use to start working with CCL. Usuall
 ## Common Patterns
 
 ### Load-Parse-Validate Pattern
-The common sequence of loading configuration text, parsing to entries, object construction, and validating required values.
+The common sequence of loading configuration text, parsing to entries, hierarchy construction, and validating required values.
 
 ### Environment Resolution
 The pattern of selecting configuration based on environment variables or deployment context.

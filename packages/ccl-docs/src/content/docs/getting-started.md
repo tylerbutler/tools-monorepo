@@ -134,8 +134,8 @@ server =
 
 ```pseudocode
 // Standard pattern - filter keys starting with "/"
-config_entries = filter_keys(all_entries, key => !key.startsWith("/"))
-config = make_objects(config_entries)
+config_entries = filter(all_entries, key => !key.startsWith("/"))
+config = build_hierarchy(config_entries)
 ```
 
 ## Understanding CCL Implementation Levels
@@ -143,7 +143,7 @@ config = make_objects(config_entries)
 CCL implementations can choose their level of support based on needs:
 
 **Level 1: Entry Parsing** - Parse text into flat key-value entries  
-**Level 2: Complete Config Language** - Level 1 + comment filtering + object construction  
+**Level 2: Complete Config Language** - Level 1 + comment filtering + hierarchy construction  
 **Level 3: Common Features** - Level 2 + dotted keys + merging  
 **Level 4: Advanced Features** - Level 3 + typed APIs + validation + more
 
@@ -235,7 +235,7 @@ items =
 ### Core Principles
 - **Foundation**: Everything builds from key-value entries  
 - **Parsing**: 4 core constructs handle all syntax
-- **Comments**: Regular entries with `/` keys (use `filter_keys()`)
+- **Comments**: Regular entries with `/` keys (use `filter()`)
 - **Levels**: Choose your implementation level based on needs
 - **Composable**: Each processing step is independent
 

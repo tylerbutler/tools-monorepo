@@ -21,8 +21,8 @@ The CCL API is organized into 4 levels, each building on the previous. You can i
 
 ```
 Level 4: Advanced Features    ← get_string(), get_int(), get_bool()
-Level 3: Common Features      ← make_objects(), dotted keys, merging  
-Level 2: Complete Config      ← filter_keys(), object construction
+Level 3: Common Features      ← build_hierarchy(), dotted keys, merging  
+Level 2: Complete Config      ← filter() (optional), combination
 Level 1: Entry Parsing        ← parse(), core key-value extraction
 ```
 
@@ -68,8 +68,13 @@ entries = parse("database.host = localhost\nserver.port = 8080")
 
 ### Functions
 
-#### `filter_keys(entries: Entry[], predicate) → Entry[]`
-General-purpose function to filter entries based on key patterns. CCL APIs provide this flexible function rather than comment-specific filtering.
+#### `filter(entries: Entry[], predicate) → Entry[]`
+**Optional:** Filter entries based on key patterns. This function provides a standardized filtering interface for CCL implementations.
+
+**Implementation Note:** Many languages have built-in filtering capabilities (JavaScript `Array.filter()`, Python list comprehensions, C# LINQ, etc.). In such cases, you may choose to:
+- Skip implementing `filter()` entirely and document the built-in alternatives
+- Provide `filter()` as a convenience wrapper around the native filtering
+- Include it for API completeness and cross-language consistency
 
 **Parameters:**
 - `entries` - Array of entries to filter
@@ -80,18 +85,16 @@ General-purpose function to filter entries based on key patterns. CCL APIs provi
 
 **Example:**
 ```pseudocode
-// Standard comment filtering (/ = standard marker)  
-config_entries = filter_keys(entries, key => !key.startsWith("/"))
+// Using filter() (if implemented)
+config_entries = filter(entries, key => !key.startsWith("/"))
 
-// Custom filtering patterns
-no_debug = filter_keys(entries, key => !key.startsWith("debug"))
-clean = filter_keys(entries, key => 
-  !key.startsWith("debug") && !key.startsWith("temp"))
-
-**Note:** Most CCL APIs provide `filter_keys()` rather than `filter_comments()` to keep the API minimal and flexible.
+// Language-specific alternatives:
+// JavaScript: entries.filter(entry => !entry.key.startsWith("/"))
+// Python: [e for e in entries if not e.key.startswith("/")]
+// C#: entries.Where(e => !e.Key.StartsWith("/"))
 ```
 
-#### `compose(left: Entry[], right: Entry[]) → Entry[]`
+#### `combine(left: Entry[], right: Entry[]) → Entry[]`
 Combines two entry arrays, preserving order for duplicate key handling.
 
 **Parameters:**
@@ -119,7 +122,7 @@ ObjectError {
 
 ### Functions
 
-#### `make_objects(entries: Entry[]) → Result<CCL, ObjectError>`
+#### `build_hierarchy(entries: Entry[]) → Result<CCL, ObjectError>`
 Converts flat entries into hierarchical nested objects using fixed-point algorithm.
 
 **Parameters:**
@@ -137,7 +140,7 @@ Converts flat entries into hierarchical nested objects using fixed-point algorit
 **Example:**
 ```pseudocode
 entries = [Entry("database", "\n  host = localhost\n  port = 5432")]
-objects = make_objects(entries)
+objects = build_hierarchy(entries)
 // Result: CCLObject({
 //   "database": CCLObject({
 //     "host": CCLString("localhost"),
@@ -322,14 +325,27 @@ var port = ccl.Get("server").AsInt("port");
 
 ## Testing Your Implementation
 
-Validate your API against the comprehensive test suite in `/tests/`:
+Validate your implementation against the official JSON test suite in the [ccl-test-data repository](https://github.com/your-repo/ccl-test-data):
 
-- **Level 1:** `level-1-parsing.json` (48 tests)
-- **Level 2:** `level-2-processing.json` (28 tests)  
-- **Level 3:** `level-3-objects.json` (8 tests)
-- **Level 4:** `level-4-typed.json` (17 tests)
+**Test Suite Overview:**
+- **452 test assertions** across **167 tests** in **10 JSON files**
+- **Feature-based tagging** for progressive implementation (`function:*`, `feature:*`, `behavior:*`)
+- **Language-agnostic format** with counted assertions for verification
 
-Each test provides `input`, `expected` output, and metadata for systematic validation.
+**Key Test Files:**
+- `api-essential-parsing.json` - Core parsing functionality (Level 1)
+- `api-comprehensive-parsing.json` - Thorough parsing with edge cases
+- `api-processing.json` - Entry composition and processing (Level 2)
+- `api-object-construction.json` - Nested object building (Level 3)
+- `api-typed-access.json` - Type-aware value extraction (Level 4)
+
+**Progressive Implementation Strategy:**
+1. Start with `function:parse` tests (Level 1 - basic parsing)
+2. Add `function:make-objects` tests (Level 3 - object construction)
+3. Add typed access function tests (Level 4 - `function:get-string`, `function:get-int`, etc.)
+4. Incrementally add optional features (`feature:comments`, `feature:dotted-keys`)
+
+Each test includes required `count` fields for assertion verification and structured tags for precise test selection.
 
 ## Related Documentation
 
@@ -345,9 +361,9 @@ Each test provides `input`, `expected` output, and metadata for systematic valid
 | Level | Function | Purpose |
 |-------|----------|---------|
 | **Level 1** | `parse(text)` | Convert text to key-value entries |
-| **Level 2** | `filter_keys(entries, predicate)` | Remove unwanted entries |
-| **Level 2** | `compose_entries(left, right)` | Combine entry arrays |
-| **Level 3** | `make_objects(entries)` | Build hierarchical structure |
+| **Level 2** | `filter(entries, predicate)` | Remove unwanted entries (optional) |
+| **Level 2** | `combine(left, right)` | Combine entry arrays |
+| **Level 3** | `build_hierarchy(entries)` | Build hierarchical structure |
 | **Level 4** | `get_string(ccl, ...path)` | Type-safe string access |
 | **Level 4** | `get_int(ccl, ...path)` | Type-safe integer access |
 | **Level 4** | `get_bool(ccl, ...path)` | Type-safe boolean access |
@@ -359,7 +375,7 @@ Each test provides `input`, `expected` output, and metadata for systematic valid
 - **Consider Level 4**: For type safety and validation
 - **Adapt naming**: Match your language's conventions
 
-**Note:** Test documentation and examples throughout this repository reference the function names and patterns described in this API reference. While you can adapt the names to your language, the test descriptions assume this structure for consistency.
+**Note:** The official JSON test suite in ccl-test-data references the function names and patterns described in this API reference. While you can adapt the names to your language, the test tag structure (`function:parse`, `function:get-string`, etc.) assumes this API structure for consistency.
 
 ## Philosophy
 

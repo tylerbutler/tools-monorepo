@@ -17,7 +17,7 @@ CCL implementations can choose their level of support based on their specific ne
 | **Custom processing** | ✅ | ⚠️ | ⚠️ | ❌ |
 | **Production configs** | ❌ | ✅ | ✅ | ✅ |
 | **Comments** | Manual | ✅ | ✅ | ✅ |
-| **Nesting** | Manual | ✅ | ✅ | ✅ |
+| **Hierarchy** | Manual | ✅ | ✅ | ✅ |
 | **Dotted keys** | ❌ | ❌ | ✅ | ✅ |
 | **Config merging** | Manual | Manual | ✅ | ✅ |
 | **Type safety** | ❌ | ❌ | ❌ | ✅ |
@@ -32,7 +32,7 @@ CCL implementations can choose their level of support based on their specific ne
 | If you need... | Choose | Time to implement |
 |----------------|--------|-------------------|
 | Rapid prototyping, minimal footprint | **Level 1** | 1-2 days |
-| Production configs with comments/nesting | **Level 2** | 3-5 days |
+| Production configs with comments/hierarchy | **Level 2** | 3-5 days |
 | Advanced features, config merging | **Level 3** | 1-2 weeks |
 | Type safety, schema validation | **Level 4** | 2-4 weeks |
 
@@ -106,21 +106,21 @@ for entry in config_entries {
 ## Level 2: Complete Config Language
 
 **Goal**: Everything needed for practical configuration  
-**Foundation**: Level 1 + comment filtering + object construction  
+**Foundation**: Level 1 + comment filtering + hierarchy construction  
 **Test Suite**: `tests/core/object-construction.json` (+8 tests)
 
 ### What You Get
 
 ```pseudocode
 entries = parse(text)                           // Level 1
-config_entries = filter_keys(entries, ...)     // Filter unwanted keys  
-objects = make_objects(config_entries)          // Build hierarchy
+config_entries = filter(entries, ...)          // Filter unwanted keys  
+objects = build_hierarchy(config_entries)       // Build hierarchy
 // Result: Nested configuration object
 ```
 
 **Additional features**:
-- **Key filtering**: General-purpose `filter_keys()` function
-- **Object construction**: Convert flat entries to nested objects  
+- **Key filtering**: General-purpose `filter()` function
+- **Hierarchy construction**: Convert flat entries to nested objects  
 - **Comment handling**: Standard `/=` filtering pattern
 - **List construction**: Empty keys become arrays
 
@@ -147,8 +147,8 @@ features =
 `
 
 entries = parse(text)                                    // Level 1
-config = filter_keys(entries, k => !k.startsWith("/"))  // Remove comments
-objects = make_objects(config)                           // Build structure
+config = filter(entries, k => !k.startsWith("/"))      // Remove comments
+objects = build_hierarchy(config)                       // Build structure
 
 // Result: 
 // {
@@ -194,7 +194,7 @@ final = merge(base_config, env_overrides)
 
 ```pseudocode
 // Multiple access patterns work
-config = make_objects(entries)
+config = build_hierarchy(entries)
 
 // Both of these work:
 port = get_string(config, "database", "port")     // Hierarchical  
@@ -285,7 +285,7 @@ interpolated = resolve_variables(config)           // Handle ${var} references
 Most implementations should follow this progression:
 
 1. **Start with Level 1**: Get basic parsing working and tested
-2. **Add Level 2**: Implement `filter_keys()` and `make_objects()`  
+2. **Add Level 2**: Implement `filter()` and `build_hierarchy()`  
 3. **Evaluate needs**: Do you need Level 3/4 features?
 4. **Add features incrementally**: Implement only what you need
 
@@ -317,8 +317,8 @@ entries = ccl.parse(text)
 
 // Level 2 API  
 entries = ccl.parse(text)
-config = ccl.filter_keys(entries, predicate)
-objects = ccl.make_objects(config)
+config = ccl.filter(entries, predicate)
+objects = ccl.build_hierarchy(config)
 
 // Level 3 API
 config = ccl.parse_config(text)                    // parse + filter + build

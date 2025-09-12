@@ -8,19 +8,23 @@ description: CCL implementations use a feature-based test organization that prov
 ## Architecture Overview
 
 ```
-Core Functionality     ← Essential for any CCL implementation
-├── Essential Parsing     (18 tests) - Start here
-├── Comprehensive Parsing (30 tests) - Production ready  
-└── Object Construction   (8 tests) - Hierarchical access
+Official JSON Test Suite: 452 assertions across 167 tests in 10 files
 
-Optional Features      ← Choose based on your needs
-├── Dotted Keys          (18 tests) - Dual access patterns
-├── Comments             (3 tests) - Documentation support
-├── Processing           (21 tests) - Advanced composition  
-└── Typed Access         (17 tests) - Type-safe APIs
+Core API Functions       ← Essential parsing and object construction  
+├── Essential Parsing    - api-essential-parsing.json - Basic Level 1 functionality
+├── Comprehensive Parsing - api-comprehensive-parsing.json - Edge cases and whitespace
+├── Object Construction  - api-object-construction.json - Level 3 nested objects
+└── Processing          - api-processing.json - Level 2 composition and filtering
 
-Integration           ← Validation & edge cases
-└── Error Handling       (5 tests) - Robust error reporting
+Advanced Features       ← Optional language features
+├── Dotted Keys         - api-dotted-keys.json - foo.bar.baz syntax support
+├── Comments            - api-comments.json - /= comment syntax
+├── Typed Access        - api-typed-access.json - Level 4 type-safe APIs
+└── Error Handling      - api-errors.json - Robust error reporting
+
+Validation Properties   ← Mathematical properties and correctness
+├── Round-trip          - property-round-trip.json - parse(pretty_print(x)) = parse(x)
+└── Algebraic           - property-algebraic.json - Mathematical CCL properties
 ```
 
 Each category has specific APIs, test suites, and implementation requirements.
@@ -29,7 +33,8 @@ Each category has specific APIs, test suites, and implementation requirements.
 
 ### Essential Parsing
 **API:** `parse(text) → Result<Entry[], ParseError>`  
-**Status:** Required for all CCL implementations
+**Status:** Required for all CCL implementations  
+**Test File:** `api-essential-parsing.json`
 
 #### Functionality
 - Basic key-value parsing with `=` delimiter
@@ -39,10 +44,17 @@ Each category has specific APIs, test suites, and implementation requirements.
 - Empty keys/values and equals-in-values handling
 - Core error detection and reporting
 
-#### Test Coverage
-- **Focus areas:** Basic parsing, whitespace, multiline values, unicode
-- **Essential tests:** 18 core functionality tests for rapid prototyping
-- Covers 80% of real-world CCL usage scenarios
+#### Feature-Based Test Selection
+Tests use structured tags for precise implementation targeting:
+- **Function Tags:** `function:parse` (required for all tests)
+- **Feature Tags:** `feature:comments`, `feature:dotted-keys` (optional)
+- **Behavior Tags:** `behavior:crlf-normalize` vs `behavior:crlf-preserve` (mutually exclusive)
+
+#### Progressive Implementation Strategy
+1. Start with `function:parse` only (basic Level 1)
+2. Add `feature:comments` for `/=` syntax support
+3. Add `feature:dotted-keys` for `foo.bar.baz` support
+4. Choose behavioral preferences (CRLF, tabs, spacing)
 
 #### Example Implementation
 ```pseudocode
@@ -85,7 +97,7 @@ function parse(text) {
 - **Robustness:** Handles malformed input gracefully
 
 ### Object Construction
-**API:** `make_objects(entries) → CCL`  
+**API:** `build_hierarchy(entries) → CCL`  
 **Status:** Required for hierarchical access
 
 #### Functionality
@@ -96,14 +108,14 @@ function parse(text) {
 
 #### Fixed-Point Algorithm
 ```pseudocode
-function make_objects(entries) {
+function build_hierarchy(entries) {
   objects = {}
   
   for each entry in entries {
     if entry.value contains CCL syntax {
       // Recursively parse nested content
       nested_entries = parse(entry.value)
-      objects[entry.key] = make_objects(nested_entries)
+      objects[entry.key] = build_hierarchy(nested_entries)
     } else {
       objects[entry.key] = entry.value
     }
@@ -140,7 +152,7 @@ function make_objects(entries) {
 - Preserve structure while removing documentation
 
 ### Entry Processing
-**API:** `compose_entries()`, advanced processing
+**API:** `combine()`, advanced processing
 **Purpose:** Advanced composition and merging capabilities
 
 #### Functionality
@@ -273,7 +285,7 @@ get_string(obj, ...path) → string
 ```pseudocode
 // Basic CCL parser with hierarchy
 entries = parse(ccl_text)              // 18 essential parsing tests
-objects = make_objects(entries)        // 8 object construction tests
+objects = build_hierarchy(entries)        // 8 object construction tests
 value = get_string(objects, "database", "host")
 ```
 
@@ -281,7 +293,7 @@ value = get_string(objects, "database", "host")
 ```pseudocode  
 // Convenient CCL parser with dual access
 entries = parse(ccl_text)              // All core tests (56)
-objects = make_objects(entries)
+objects = build_hierarchy(entries)
 host = get_string(objects, "database.host")      // Dotted access
 port = get_int(objects, "database", "port")      // Hierarchical access
 ```
@@ -292,7 +304,7 @@ port = get_int(objects, "database", "port")      // Hierarchical access
 try {
   entries = parse(read_file("config.ccl"))      // Comprehensive parsing
   filtered = filter(entries)                    // Comment filtering  
-  config = make_objects(filtered)               // Object construction
+  config = build_hierarchy(filtered)               // Object construction
   
   validate_required_keys(config)
   return load_typed_config(config)              // Type-safe access

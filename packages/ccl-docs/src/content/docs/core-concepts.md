@@ -18,7 +18,7 @@ Think of CCL like this processing pipeline:
           │ parse()
           ▼
 ┌─────────────────┐    ┌──────────────┐
-│ Flat Key-Value  │───▶│ filter_keys()│
+│ Flat Key-Value  │───▶│ filter()     │
 │    Entries      │    └──────┬───────┘
 └─────────────────┘           │
           │                   ▼
@@ -26,7 +26,7 @@ Think of CCL like this processing pipeline:
           │            │  Filtered   │
           │            │   Entries   │
           │            └──────┬──────┘
-          │                   │ make_objects()
+          │                   │ build_hierarchy()
           │                   ▼
           │            ┌─────────────┐
           │            │ Hierarchical│
@@ -53,14 +53,14 @@ Think of CCL like this processing pipeline:
 ### The Processing Pipeline
 
 1. **Raw Text** → `parse()` → **Flat Entries** *(Level 1)*
-2. **Flat Entries** → `filter_keys()` → **Filtered Entries** *(Level 2)*  
-3. **Filtered Entries** → `make_objects()` → **Nested Config** *(Level 3)*
+2. **Flat Entries** → `filter()` → **Filtered Entries** *(Level 2)*  
+3. **Filtered Entries** → `build_hierarchy()` → **Nested Config** *(Level 3)*
 4. **Nested Config** → `get_typed()` → **Application Values** *(Level 4)*
 
 ### Key Principles
 
 - **Everything is entries**: CCL builds from simple key-value pairs
-- **Comments are entries**: Use `/=` keys, filter with `filter_keys()`  
+- **Comments are entries**: Use `/=` keys, filter with `filter()`  
 - **Processing is optional**: Choose your level based on needs
 - **Each step is testable**: Debug and validate at any stage
 
@@ -147,8 +147,8 @@ entries = parse(text)
 
 ```pseudocode
 entries = parse(text)                           // Level 1
-config_entries = filter_keys(entries, ...)     // Filter unwanted keys  
-objects = make_objects(config_entries)          // Build hierarchy
+config_entries = filter(entries, ...)          // Filter unwanted keys  
+objects = build_hierarchy(config_entries)       // Build hierarchy
 // Result: Nested configuration object
 ```
 
@@ -184,7 +184,7 @@ Comments aren't special syntax - they're regular entries with keys starting with
 Because everything builds on the same entry foundation, each processing step is independent and testable:
 
 ```pseudocode
-entries = parse(text) → filter_keys() → make_objects() → config
+entries = parse(text) → filter() → build_hierarchy() → config
 ```
 
 ### Practical Benefits

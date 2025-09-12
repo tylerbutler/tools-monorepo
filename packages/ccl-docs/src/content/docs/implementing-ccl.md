@@ -13,16 +13,50 @@ description: A guide for language authors to implement a CCL parser using the fe
 4. **Follow the reference** - OCaml reference implementation at https://github.com/chshersh/ccl
 5. **Check the API guide** - See [API Reference](api-reference.md) for recommended patterns
 
+## Feature-Based Test Architecture
+
+The CCL test suite uses **structured tagging** for precise implementation targeting with **452 assertions** across **167 tests**:
+
+### Tag Categories
+
+#### Function Tags (`function:*`) - Required CCL functions:
+- `function:parse` - Basic key-value parsing (Level 1)
+- `function:filter`, `function:combine`, `function:expand-dotted` - Entry processing (Level 2) 
+- `function:build-hierarchy` - Object construction (Level 3)
+- `function:get-string`, `function:get-int`, `function:get-bool`, `function:get-float`, `function:get-list` - Typed access (Level 4)
+- `function:pretty-print` - Formatting (Level 5)
+
+#### Feature Tags (`feature:*`) - Optional language features:
+- `feature:comments` - `/=` comment syntax
+- `feature:dotted-keys` - `foo.bar.baz` key syntax
+- `feature:empty-keys` - `= value` anonymous list items
+- `feature:multiline` - Multi-line value support
+- `feature:unicode` - Unicode content handling
+
+#### Behavior Tags (`behavior:*`) - Implementation choices (mutually exclusive):
+- `behavior:crlf-preserve` vs `behavior:crlf-normalize` - Line ending handling
+- `behavior:tabs-preserve` vs `behavior:tabs-to-spaces` - Tab handling
+- `behavior:strict-spacing` vs `behavior:loose-spacing` - Whitespace sensitivity
+
+### Progressive Implementation Strategy
+
+1. **Start minimal**: `function:parse` only (Level 1)
+2. **Add objects**: `function:build-hierarchy` (Level 3)
+3. **Add typing**: `function:get-string`, `function:get-int`, etc. (Level 4)
+4. **Add features**: `feature:comments`, `feature:dotted-keys` incrementally
+5. **Choose behaviors**: Select one option per behavioral category
+
 ## Implementation Roadmap
 
 Choose your CCL implementation level based on your needs:
 
 ### Level 1: Entry Parsing  
 **Goal:** Parse CCL text into flat key-value entries  
-**Test Suite:** `tests/core/essential-parsing.json` (18 tests)  
+**Test File:** `api-essential-parsing.json` (part of 452 total assertions)  
+**Function Tag:** `function:parse`  
 **Use case:** Rapid prototyping, simple configurations
 
-Start here - handles the 4 core constructs and covers 80% of real-world CCL usage.
+Start here - handles the 4 core constructs and provides the foundation for all higher-level CCL operations.
 
 #### Essential Algorithm
 ```pseudocode
@@ -73,23 +107,31 @@ function parse(text: string) -> Result<List<Entry>, ParseError> {
 - Preserve relative indentation in multiline values
 - Handle mixed tabs and spaces (warn in strict mode)
 
-### Level 2: Complete Config Language  
-**Goal:** Everything needed for practical configuration  
-**Test Suite:** `tests/core/object-construction.json` (8 tests)  
-**Use case:** Production configurations that need comments and nesting
+### Level 2: Entry Processing
+**Goal:** Advanced entry processing and composition  
+**Test Files:** `api-processing.json`, `api-comments.json`  
+**Function Tags:** `function:filter`, `function:combine`, `function:expand-dotted`  
+**Feature Tags:** `feature:comments`, `feature:dotted-keys`  
+**Use case:** Advanced processing workflows and comment support
 
-Level 1 + comment filtering + object construction = complete config language.
+### Level 3: Object Construction  
+**Goal:** Convert flat entries into nested CCL objects  
+**Test File:** `api-object-construction.json`  
+**Function Tag:** `function:make-objects`  
+**Use case:** Hierarchical configuration access
+
+Level 1 + Level 3 = practical configuration language with nested access.
 
 #### Fixed-Point Algorithm
 ```pseudocode
-function make_objects(entries: List<Entry>) -> CCL {
+function build_hierarchy(entries: List<Entry>) -> CCL {
   result = {}
   
   for entry in entries {
     if entry.value.contains_ccl_syntax() {
       // Recursively parse nested content
       nested_entries = parse(entry.value)
-      nested_object = make_objects(nested_entries)
+      nested_object = build_hierarchy(nested_entries)
       result = merge_into_result(result, entry.key, nested_object)
     } else {
       result = merge_into_result(result, entry.key, entry.value)
@@ -130,43 +172,44 @@ function merge_into_result(result: CCL, key: string, value: any) {
 }
 ```
 
-### Level 3: Common Features  
-**Goal:** Features most implementations want  
-**Test Suite:** `tests/core/comprehensive-parsing.json` (30 tests)  
-**Use case:** Production systems with advanced configuration needs
+### Level 4: Typed Access
+**Goal:** Type-safe value extraction with smart inference  
+**Test File:** `api-typed-access.json`  
+**Function Tags:** `function:get-string`, `function:get-int`, `function:get-bool`, `function:get-float`, `function:get-list`  
+**Use case:** Production systems with type safety requirements
 
-Level 2 + dotted keys + merging + edge case handling.
+Provides type-aware access to CCL values with automatic conversion and validation.
 
 #### Key Filtering (Including Comments)
 
-**Important**: CCL APIs provide general `filter_keys()`, not comment-specific functions. `/=` is the standard comment marker, but filtering is flexible:
+**Important**: CCL APIs provide general `filter()`, not comment-specific functions. `/=` is the standard comment marker, but filtering is flexible:
 
 ```pseudocode
 // General-purpose key filtering function
-function filter_keys(entries: List<Entry>, predicate: (key: string) -> bool) -> List<Entry> {
+function filter(entries: List<Entry>, predicate: (key: string) -> bool) -> List<Entry> {
   return entries.filter(entry -> predicate(entry.key))
 }
 
 // Standard comment filtering (/ = standard marker)
 function get_config_entries(entries: List<Entry>) -> List<Entry> {
-  return filter_keys(entries, key -> !key.starts_with("/"))
+  return filter(entries, key -> !key.starts_with("/"))
 }
 
 // Custom comment filtering
 function filter_docs(entries: List<Entry>) -> List<Entry> {
-  return filter_keys(entries, key -> !key.starts_with("doc"))
+  return filter(entries, key -> !key.starts_with("doc"))
 }
 
 // Remove debug and temp entries
 function filter_dev_keys(entries: List<Entry>) -> List<Entry> {
-  return filter_keys(entries, key -> 
+  return filter(entries, key -> 
     !key.starts_with("debug") && !key.starts_with("temp"))
 }
 ```
 
 #### Entry Composition
 ```pseudocode
-function compose(left: List<Entry>, right: List<Entry>) -> List<Entry> {
+function combine(left: List<Entry>, right: List<Entry>) -> List<Entry> {
   // Simple concatenation - merging happens at object level
   return left + right
 }
@@ -393,7 +436,7 @@ function run_test_suite(test_file: string) {
       // Level 3 tests  
       if test.expected_nested exists {
         entries = parse(test.input)
-        objects = make_objects(entries)
+        objects = build_hierarchy(entries)
         assert_equal(objects, test.expected_nested)
       }
       
@@ -463,7 +506,7 @@ class LazyObject {
   
   function get(key: string) {
     if !constructed {
-      constructed = Some(make_objects(entries))
+      constructed = Some(build_hierarchy(entries))
     }
     return constructed.get(key)
   }
@@ -483,8 +526,8 @@ class LazyObject {
 
 ### Consistent Naming
 - `parse()` for Level 1 entry parsing
-- `filter_keys()` for Level 2 general key filtering (not `filter_comments()`)
-- `make_objects()` for Level 2 object construction  
+- `filter()` for Level 2 general key filtering (not `filter_comments()`)
+- `build_hierarchy()` for Level 3 object construction  
 - `get_string()`, `get_int()`, `get_bool()` for Level 4 typed access
 
 ### Error Messages

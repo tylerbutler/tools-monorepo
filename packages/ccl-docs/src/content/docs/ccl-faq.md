@@ -92,7 +92,7 @@ section =
 
 The parser sees:
 1. Key `"section"` with value `"\n  key1 = value1\n  key2 = value2"`
-2. The `make_objects()` function recursively parses that string as more CCL
+2. The `build_hierarchy()` function recursively parses that string as more CCL
 
 ### Q: Can I nest arbitrarily deep?
 **A:** Yes! CCL uses a mathematical "fixed point" algorithm:
@@ -187,13 +187,13 @@ debug = true
 **A:** Yes! Comments are regular key-value entries, not special syntax. The standard marker is `/=`, but CCL APIs provide general-purpose filtering:
 
 ```gleam
-// Use general filter_keys function (not filter_comments)
-let config_entries = filter_keys(entries, fn(key) { 
+// Use general filter function (not filter_comments)
+let config_entries = filter(entries, fn(key) { 
   !string.starts_with(key, "/") 
 })
 
 // Can filter any key pattern
-let no_debug = filter_keys(entries, fn(key) {
+let no_debug = filter(entries, fn(key) {
   !string.starts_with(key, "debug")
 })
 ```

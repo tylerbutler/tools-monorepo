@@ -217,7 +217,7 @@ function parse(text: string) -> Result<List<Entry>, ParseError>:
 The object construction phase uses a fixed-point algorithm to build nested structures:
 
 ```
-function make_objects(entries: List<Entry>) -> CCL:
+function build_hierarchy(entries: List<Entry>) -> CCL:
     result = empty_object()
     
     for entry in entries:

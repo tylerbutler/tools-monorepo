@@ -103,14 +103,14 @@ Objects are merged recursively, applying the same composition rules at each leve
 merge(c1, c2) = {
   ∀ key ∈ keys(c1) ∪ keys(c2):
     if key ∈ keys(c1) ∩ keys(c2):
-      result[key] = compose(c1[key], c2[key])
+      result[key] = combine(c1[key], c2[key])
     else if key ∈ keys(c1):
       result[key] = c1[key]
     else:
       result[key] = c2[key]
 }
 
-where compose(v1, v2) = {
+where combine(v1, v2) = {
   if both v1 and v2 are objects: merge(v1, v2)
   else if both v1 and v2 are lists: concat(v1, v2)
   else: v2  // last value wins
@@ -237,7 +237,7 @@ features = {
 }
 
 # Final configuration
-final = base ⊕ production ⊕ features
+final = combine(combine(base, production), features)
 ```
 
 ### Incremental Updates
@@ -245,7 +245,7 @@ final = base ⊕ production ⊕ features
 Associativity enables incremental configuration building:
 
 ```ccl
-config = ((base ⊕ env_overrides) ⊕ user_settings) ⊕ cli_args
+config = combine(combine(combine(base, env_overrides), user_settings), cli_args)
 ```
 
 ### Configuration Inheritance
@@ -253,7 +253,7 @@ config = ((base ⊕ env_overrides) ⊕ user_settings) ⊕ cli_args
 The mathematical properties support configuration inheritance hierarchies:
 
 ```ccl
-child_config = parent_config ⊕ child_overrides
+child_config = combine(parent_config, child_overrides)
 ```
 
 ## Theoretical Extensions

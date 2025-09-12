@@ -165,7 +165,7 @@ function process_multiline_key(lines: List<string>, start_index: int) -> (string
 ### Algorithm Overview
 
 ```pseudocode
-function make_objects(entries: List<Entry>) -> CCL:
+function build_hierarchy(entries: List<Entry>) -> CCL:
     result = empty_map()
     
     for entry in entries:
