@@ -4,6 +4,7 @@ import a11yEmoji from "@fec/remark-a11y-emoji";
 import { includeMarkdown } from "@hashicorp/platform-remark-plugins";
 import { defineConfig } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
+import starlightLLMsTxt from "starlight-llms-txt";
 
 // Get the current script URL
 const scriptUrl = new URL(import.meta.url);
@@ -33,6 +34,7 @@ export default defineConfig({
 			],
 			plugins: [
 				starlightLinksValidator(),
+				starlightLLMsTxt(),
 			],
 			social: [
 				{
@@ -46,6 +48,7 @@ export default defineConfig({
 					label: "Start Here",
 					items: [
 						{ slug: "getting-started" },
+						{ slug: "core-concepts" },
 						{ slug: "syntax-reference" },
 						{ slug: "format-comparison" },
 					],
@@ -61,6 +64,7 @@ export default defineConfig({
 				{
 					label: "Guides",
 					items: [
+						{ slug: "implementation-levels" },
 						{ slug: "implementing-ccl" },
 						{ slug: "test-architecture" },
 					],

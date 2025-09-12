@@ -1,6 +1,19 @@
 ---
 title: Implementing CCL
 description: A guide for language authors to implement a CCL parser using the feature-based test architecture and comprehensive test suite.
+level: 1
+functions: ["parse", "build-hierarchy", "get-string", "get-int"]
+features: ["comments", "dotted-keys", "unicode"]
+llm_summary: "Comprehensive implementation guide for CCL parsers with progressive 4-level architecture and 452 test assertions"
+related_tests: "api-essential-parsing.json, api-comprehensive-parsing.json, api-processing.json, api-object-construction.json, api-typed-access.json"
+test_repository: "https://github.com/tylerbutler/ccl-test-data"
+implementation_examples:
+  - language: "Gleam"
+    repository: "ccl_gleam" 
+    files: ["packages/ccl/src/ccl.gleam", "test/ccl_gleam_test.gleam"]
+  - language: "Go"
+    repository: "ccl-test-data"
+    files: ["internal/mock/ccl.go", "internal/generator/"]
 ---
 
 # Implementing CCL - A Guide for Language Authors
