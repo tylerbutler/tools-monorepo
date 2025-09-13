@@ -66,7 +66,7 @@ Think of CCL like this processing pipeline:
 
 ## What is Core CCL?
 
-**Core CCL is what you get when you call `parse()`** - a list of key-value entries. Everything else in CCL is built on top of this foundation.
+**Core CCL** combines parsing with hierarchical object construction via the fixpoint algorithm - this is what users expect when they use any CCL implementation.
 
 ```ccl
 name = MyApplication
@@ -131,25 +131,15 @@ Creates: `Entry("description", "First line\nSecond line\nThird line")`
 
 CCL implementations can choose their level of support based on needs:
 
-### Level 1: Entry Parsing
-**Goal**: Parse text into flat key-value entries  
-**What you get**: The 4 core constructs above  
-**Use case**: Rapid prototyping, simple configurations
+### Core CCL: Complete Configuration Language
+**Goal**: Parse text into hierarchical configuration objects
+**What you get**: The universal expectation - structured, hierarchical configuration data
+**Use case**: All practical configuration scenarios
 
 ```pseudocode
-entries = parse(text)
-// Result: List<Entry> with all key-value pairs
-```
-
-### Level 2: Complete Config Language  
-**Goal**: Everything needed for practical configuration  
-**What you get**: Level 1 + comment filtering + object construction
-
-```pseudocode
-entries = parse(text)                           // Level 1
-config_entries = filter(entries, ...)          // Filter unwanted keys  
-objects = build_hierarchy(config_entries)       // Build hierarchy
-// Result: Nested configuration object
+entries = parse(text)                           // Parse into flat entries
+objects = build_hierarchy(entries)              // Build hierarchical structure  
+// Result: Nested configuration object that users expect
 ```
 
 ### Level 3: Common Features

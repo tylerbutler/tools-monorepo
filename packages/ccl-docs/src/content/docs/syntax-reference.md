@@ -61,12 +61,30 @@ app =
     url = postgres://localhost
 ```
 
-### Dotted Keys
+### Dotted Keys 
 ```ccl
-app.server.host = 0.0.0.0
-app.server.port = 8080
-app.database.url = postgres://localhost
+database.host = localhost
+database.port = 5432
 ```
+
+**Important**: In standard CCL, dotted keys are **literal string keys** - `database.host` is just a string containing dots, not nested data.
+
+**Accessing Dotted Keys:**
+```pseudocode
+host = get_string(config, "database.host")  // ✓ Literal string key
+host = get_string(config, "database", "host")  // ❌ No nested structure
+```
+
+**This is different from hierarchical data:**
+```ccl
+database =
+  host = localhost
+  port = 5432
+```
+
+**⚠️ Experimental Feature**: Some implementations provide "dotted representation of hierarchical data" where both access patterns work for hierarchical structures. This is implementation-specific and experimental.
+
+**For a complete explanation of this distinction, see [Dotted Keys Explained](dotted-keys-explained.md).**
 
 ### Mixed Lists and Objects
 ```ccl

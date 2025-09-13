@@ -327,8 +327,14 @@ value = ccl.get(config, "dotted.key.path")
 
 // Level 4 API
 port = ccl.get_int(config, "database.port")
-ccl.validate_schema(config, schema)
 ```
+
+## Implementation Guide
+
+For technical implementation details:
+- [Progressive Implementation Roadmap](https://github.com/ccl-test-data/docs/implementing-ccl.md)
+- [Test Architecture & Validation](https://github.com/ccl-test-data/docs/test-architecture.md)
+- [API Design Patterns](https://github.com/ccl-test-data/docs/API.md)
 
 Each level builds naturally on the previous one, making it easy for users to adopt progressively.
 

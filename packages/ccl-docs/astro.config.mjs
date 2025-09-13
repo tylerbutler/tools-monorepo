@@ -50,6 +50,7 @@ export default defineConfig({
 						{ slug: "getting-started" },
 						{ slug: "core-concepts" },
 						{ slug: "syntax-reference" },
+						{ slug: "dotted-keys-explained" },
 						{ slug: "format-comparison" },
 					],
 				},
@@ -72,6 +73,7 @@ export default defineConfig({
 				{
 					label: "Reference",
 					items: [
+						{ slug: "higher-level-apis" },
 						{ slug: "api-reference" },
 						{ slug: "glossary" },
 						{ slug: "ccl-faq" },
