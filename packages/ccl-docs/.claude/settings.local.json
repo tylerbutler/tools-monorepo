@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm build:*)",
+      "Read(//home/tylerbu/.claude/**)"
     ],
     "deny": [],
     "ask": []
