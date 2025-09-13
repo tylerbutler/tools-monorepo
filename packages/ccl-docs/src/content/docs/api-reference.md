@@ -2,7 +2,7 @@
 title: CCL API
 description: CCL API Reference (Proposed) - standardized interface for CCL implementations across different languages.
 level: 1
-functions: ["parse", "load", "make-objects", "get-string", "get-int", "get-bool", "get-float"]
+functions: ["parse", "load", "build-hierarchy", "get-string", "get-int", "get-bool", "get-float"]
 features: ["comments", "dotted-keys", "unicode"]
 llm_summary: "Complete CCL API specification for cross-language implementations with progressive 4-level architecture"
 related_tests: "api-essential-parsing.json, api-object-construction.json, api-typed-access.json"
