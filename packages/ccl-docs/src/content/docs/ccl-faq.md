@@ -433,8 +433,7 @@ text = Multi-byte characters work fine: café, naïve, 北京
 ## Related Documentation
 
 - **[Getting Started](/getting-started)** - Basic CCL syntax and examples
-- **[Core Concepts](/core-concepts)** - Understanding CCL's foundation  
-- **[Implementation Levels](/implementation-levels)** - Choosing the right level for your needs
+- **[Syntax Reference](/syntax-reference)** - Quick lookup for CCL syntax patterns
 - **[Implementing CCL](/implementing-ccl)** - Guide for building CCL parsers
 - **[API Reference](/api-reference)** - Complete API specification
 

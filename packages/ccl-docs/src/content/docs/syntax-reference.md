@@ -1,9 +1,11 @@
 ---
-title: Syntax Reference
-description: Quick reference guide for CCL syntax and patterns.
+title: CCL Syntax Reference
+description: Complete quick reference for CCL syntax, patterns, and common use cases.
 ---
 
 # CCL Syntax Reference
+
+**Quick lookup guide for all CCL syntax patterns and common configuration scenarios.**
 
 ## Basic Syntax
 
@@ -224,18 +226,40 @@ key = value = with = many = equals
 | Indentation | Nesting/continuation | `  nested = value` |
 | `.` in key | Literal dot character | `file.txt = data` |
 
+## Processing Pipeline
+
+Understanding how CCL text becomes configuration:
+
+```
+Raw CCL Text
+    ↓ parse()
+Flat Key-Value Entries
+    ↓ filter() [optional]
+Filtered Entries
+    ↓ build_hierarchy()
+Nested Configuration Object
+    ↓ get_typed() [optional]
+Application Values
+```
+
 ## Best Practices
 
-1. **Use consistent indentation** - Either spaces or tabs, not mixed
-2. **Group related settings** - Use sections for organization
-3. **Comment complex values** - Explain non-obvious configurations
-4. **Keep keys simple** - Avoid special characters when possible
-5. **Use meaningful names** - Clear, descriptive key names
+### Do:
+- **Use consistent indentation** - Either spaces or tabs, not mixed
+- **Group related settings** - Use sections for logical organization
+- **Comment complex values** - Explain non-obvious configurations
+- **Keep keys simple** - Prefer letters, numbers, underscores, dots
+- **Use meaningful names** - Clear, descriptive key names
 
-## Anti-Patterns
+### Don't:
+- **Mix indentation styles** - Pick spaces or tabs, stick with it
+- **Rely on trailing whitespace** - It's preserved but invisible
+- **Nest too deeply** - Keep hierarchy reasonable (3-4 levels max)
+- **Use dots for nesting** - Use indentation for true nested structure
+- **Put secrets in config files** - Use environment variables instead
 
-1. **Don't mix indentation styles** - Pick spaces or tabs
-2. **Don't rely on trailing whitespace** - It's preserved but invisible
-3. **Don't nest too deeply** - Keep hierarchy reasonable
-4. **Don't use dots for nesting** - Use indentation for true nesting
-5. **Don't put secrets in config** - Use environment variables
+## Related Documentation
+
+- **[Getting Started](/getting-started)** - Learn CCL basics with examples
+- **[CCL FAQ](/ccl-faq)** - Common questions and edge cases
+- **[Implementing CCL](/implementing-ccl)** - Guide for parser implementers

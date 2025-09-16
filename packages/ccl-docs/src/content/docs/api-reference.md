@@ -362,10 +362,10 @@ Each test includes required `count` fields for assertion verification and struct
 
 ## Related Documentation
 
-- **[Implementation Levels](/implementation-levels)** - Choose which level(s) to implement
-- **[Implementing CCL](/implementing-ccl)** - Step-by-step implementation guide  
-- **[Core Concepts](/core-concepts)** - Understanding CCL's design principles
-- **[Getting Started](/getting-started)** - User-facing syntax and examples
+- **[Implementing CCL](/implementing-ccl)** - Step-by-step implementation guide with level details
+- **[Getting Started](/getting-started)** - Understanding CCL's design principles and syntax
+- **[Test Architecture](/test-architecture)** - Using the test suite for validation
+- **[Syntax Reference](/syntax-reference)** - Quick lookup for CCL syntax patterns
 
 ## Quick Reference
 

@@ -20,24 +20,53 @@ implementation_examples:
 
 ## Quick Start
 
-1. **Study the specification** - Read the [Getting Started Guide](/getting-started) and [Core Concepts](/core-concepts)
-2. **Choose your implementation path** - See [Implementation Levels](/implementation-levels) to pick your level  
+1. **Study the specification** - Read the [Getting Started Guide](/getting-started)
+2. **Choose your implementation path** - See the implementation levels section below to pick your level  
 3. **Use the test suite** - Language-agnostic JSON tests validate your implementation
 4. **Follow the reference** - OCaml reference implementation at https://github.com/chshersh/ccl
 5. **Check the API guide** - See [API Reference](/api-reference) for recommended patterns
 
+## CCL Implementation Levels
+
+CCL implementations can choose their level of support based on their specific needs. This section breaks down the different levels and helps you decide which is right for your use case.
+
+### Quick Decision Guide
+
+**Not sure which level you need?** Use this matrix:
+
+| Need | Level 1 | Level 2 | Level 3 | Level 4 |
+|------|---------|---------|---------|---------|
+| **Minimal footprint** | ✅ | ❌ | ❌ | ❌ |
+| **Custom processing** | ✅ | ⚠️ | ⚠️ | ❌ |
+| **Production configs** | ❌ | ✅ | ✅ | ✅ |
+| **Comments** | Manual | ✅ | ✅ | ✅ |
+| **Hierarchy** | Manual | ✅ | ✅ | ✅ |
+| **Dotted keys** | ❌ | ❌ | ✅ | ✅ |
+| **Config merging** | Manual | Manual | ✅ | ✅ |
+| **Type safety** | ❌ | ❌ | ❌ | ✅ |
+
+**Recommendation**: Start with **Level 2** for most applications - it provides everything needed for practical configuration with good balance of features vs complexity.
+
+### When to Choose Each Level
+
+| If you need... | Choose | Time to implement |
+|----------------|--------|-------------------|
+| Rapid prototyping, minimal footprint | **Level 1** | 1-2 days |
+| Production configs with comments/hierarchy | **Level 2** | 3-5 days |
+| Advanced features, config merging | **Level 3** | 1-2 weeks |
+| Type safety, schema validation | **Level 4** | 2-4 weeks |
+
 ## Feature-Based Test Architecture
 
-The CCL test suite uses **structured tagging** for precise implementation targeting with **452 assertions** across **167 tests**:
+The CCL test suite uses **structured tagging** for precise implementation targeting:
 
 ### Tag Categories
 
 #### Function Tags (`function:*`) - Required CCL functions:
 - `function:parse` - Basic key-value parsing (Level 1)
-- `function:filter`, `function:combine`, `function:expand-dotted` - Entry processing (Level 2) 
+- `function:filter`, `function:combine` - Entry processing (Level 2)
 - `function:build-hierarchy` - Object construction (Level 3)
-- `function:get-string`, `function:get-int`, `function:get-bool`, `function:get-float`, `function:get-list` - Typed access (Level 4)
-- `function:pretty-print` - Formatting (Level 5)
+- `function:get-string`, `function:get-int`, `function:get-bool` - Typed access (Level 4)
 
 #### Feature Tags (`feature:*`) - Optional language features:
 - `feature:comments` - `/=` comment syntax
@@ -46,28 +75,32 @@ The CCL test suite uses **structured tagging** for precise implementation target
 - `feature:multiline` - Multi-line value support
 - `feature:unicode` - Unicode content handling
 
-#### Behavior Tags (`behavior:*`) - Implementation choices (mutually exclusive):
-- `behavior:crlf-preserve` vs `behavior:crlf-normalize` - Line ending handling
-- `behavior:tabs-preserve` vs `behavior:tabs-to-spaces` - Tab handling
-- `behavior:strict-spacing` vs `behavior:loose-spacing` - Whitespace sensitivity
-
 ### Progressive Implementation Strategy
 
 1. **Start minimal**: `function:parse` only (Level 1)
-2. **Add objects**: `function:build-hierarchy` (Level 3)
-3. **Add typing**: `function:get-string`, `function:get-int`, etc. (Level 4)
-4. **Add features**: `feature:comments`, `feature:dotted-keys` incrementally
-5. **Choose behaviors**: Select one option per behavioral category
+2. **Add hierarchy**: `function:build-hierarchy` (Level 2)
+3. **Add features**: `feature:comments`, `feature:dotted-keys` incrementally
+4. **Add typing**: `function:get-string`, `function:get-int`, etc. (Level 4)
 
 ## Implementation Roadmap
 
 Choose your CCL implementation level based on your needs:
 
-### Level 1: Entry Parsing  
-**Goal:** Parse CCL text into flat key-value entries  
-**Test File:** `api-essential-parsing.json` (part of 452 total assertions)  
-**Function Tag:** `function:parse`  
-**Use case:** Rapid prototyping, simple configurations
+### Level 1: Entry Parsing
+**Goal:** Parse CCL text into flat key-value entries
+**What you get:** The 4 core constructs (key-value pairs, empty values, empty keys, multiline values)
+**Use case:** Rapid prototyping, simple configurations, custom processing
+
+```pseudocode
+entries = parse(text)
+// Result: List<Entry> with all key-value pairs
+```
+
+**When to use Level 1:**
+- **Rapid prototyping**: Get CCL parsing working quickly
+- **Simple configurations**: Flat or mostly flat config files
+- **Custom processing**: You want to handle object construction yourself
+- **Embedded systems**: Minimal memory/code footprint needed
 
 Start here - handles the 4 core constructs and provides the foundation for all higher-level CCL operations.
 
@@ -120,20 +153,41 @@ function parse(text: string) -> Result<List<Entry>, ParseError> {
 - Preserve relative indentation in multiline values
 - Handle mixed tabs and spaces (warn in strict mode)
 
-### Level 2: Entry Processing
-**Goal:** Advanced entry processing and composition  
-**Test Files:** `api-processing.json`, `api-comments.json`  
-**Function Tags:** `function:filter`, `function:combine`, `function:expand-dotted`  
-**Feature Tags:** `feature:comments`, `feature:dotted-keys`  
-**Use case:** Advanced processing workflows and comment support
+### Level 2: Complete Config Language
+**Goal:** Everything needed for practical configuration
+**What you get:** Level 1 + comment filtering + hierarchy construction
 
-### Level 3: Object Construction  
-**Goal:** Convert flat entries into nested CCL objects  
-**Test File:** `api-object-construction.json`  
-**Function Tag:** `function:make-objects`  
-**Use case:** Hierarchical configuration access
+```pseudocode
+entries = parse(text)                           // Level 1
+config_entries = filter(entries, ...)          // Filter unwanted keys
+objects = build_hierarchy(config_entries)       // Build hierarchy
+// Result: Nested configuration object
+```
 
-Level 1 + Level 3 = practical configuration language with nested access.
+**When to use Level 2:**
+- **Production configurations**: Real applications with nesting and comments
+- **Standard usage**: Covers 95% of configuration use cases
+- **Team adoption**: Good balance of features vs complexity
+- **Migration from other formats**: Provides expected config language features
+
+### Level 3: Common Features
+**Goal:** Features most implementations want
+**What you get:** Level 2 + dotted keys + merging + edge cases
+
+```pseudocode
+// Dotted key access
+host1 = get(config, "database", "host")      // Hierarchical
+host2 = get(config, "database.host")         // Dotted
+
+// Configuration merging
+final = merge(base_config, env_overrides)
+```
+
+**When to use Level 3:**
+- **Production systems**: Complex configurations with multiple sources
+- **Library implementations**: Providing CCL as a dependency
+- **Enterprise applications**: Need robust error handling
+- **Configuration management**: Merging configs from multiple sources
 
 #### Fixed-Point Algorithm
 ```pseudocode
@@ -185,13 +239,24 @@ function merge_into_result(result: CCL, key: string, value: any) {
 }
 ```
 
-### Level 4: Typed Access
-**Goal:** Type-safe value extraction with smart inference  
-**Test File:** `api-typed-access.json`  
-**Function Tags:** `function:get-string`, `function:get-int`, `function:get-bool`, `function:get-float`, `function:get-list`  
-**Use case:** Production systems with type safety requirements
+### Level 4: Advanced Features
+**Goal:** Nice-to-have, implementation-specific features
+**What you get:** Level 3 + typed APIs + validation + extensions
 
-Provides type-aware access to CCL values with automatic conversion and validation.
+```pseudocode
+// Type-safe access with consistent error handling
+port = get_int(config, "database", "port")    // Returns int or error
+debug = get_bool(config, "debug")             // Handles "true"/"false"/"1"/"0"
+
+// Schema validation
+validate_schema(config, schema)               // Ensure structure/types
+```
+
+**When to use Level 4:**
+- **Specialized applications**: Need type safety or validation
+- **Large configurations**: Schema validation prevents errors
+- **Developer experience**: Better IDE support and error messages
+- **Library features**: Providing advanced CCL functionality
 
 #### Key Filtering (Including Comments)
 
@@ -574,9 +639,9 @@ Provide helpful error messages with:
 
 ## Related Documentation
 
-- **[Implementation Levels](/implementation-levels)** - Detailed comparison of implementation levels
-- **[API Reference](/api-reference)** - Recommended API patterns and conventions  
-- **[Core Concepts](/core-concepts)** - Understanding CCL's foundation
+- **[Getting Started](/getting-started)** - Understanding CCL's foundation and basic syntax
+- **[API Reference](/api-reference)** - Recommended API patterns and conventions
+- **[Test Architecture](/test-architecture)** - Using the test suite for validation
 - **[CCL FAQ](/ccl-faq)** - Common implementation questions and gotchas
 
 The CCL specification and test suite provide everything needed to build a robust, compliant implementation in any programming language. Focus on correctness first, then optimize for your language's specific performance characteristics.

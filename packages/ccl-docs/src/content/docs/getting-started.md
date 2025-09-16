@@ -1,11 +1,19 @@
 ---
 title: Getting Started with CCL
-description: An introduction to the Categorical Configuration Language.
+description: A comprehensive introduction to the Categorical Configuration Language - from basic syntax to practical examples.
 ---
+
+# Getting Started with CCL
 
 ## What is CCL?
 
-CCL is a minimal configuration format built on a simple foundation: **key-value entries**. Everything in CCL - nesting, lists, comments, typing - builds on top of these basic entries.
+CCL (Categorical Configuration Language) is a **minimal configuration language** built on simple key-value pairs. Everything in CCL - nesting, lists, comments, typing - builds naturally from this foundation.
+
+**Key design principles:**
+- **Simplicity**: Everything starts with `key = value`
+- **Composability**: Complex structures emerge from simple rules
+- **Human-friendly**: Easy to read, write, and understand
+- **Mathematical foundation**: Based on Category Theory for predictable behavior
 
 ### Quick Start Example
 
@@ -19,7 +27,7 @@ app =
 server =
   host = 0.0.0.0
   port = 8080
-  
+
 database =
   host = localhost
   port = 5432
@@ -35,6 +43,35 @@ allowed_origins =
 - **Nesting**: Use indentation to group related settings
 - **Lists**: Use `= value` for list items
 - **Clean structure**: Easy to read and write
+
+## How CCL Works
+
+Think of CCL like this processing pipeline:
+
+```
+┌─────────────────┐
+│   Raw CCL Text  │
+└─────────┬───────┘
+          │ parse()
+          ▼
+┌─────────────────┐    ┌──────────────┐
+│ Flat Key-Value  │───▶│ filter()     │
+│    Entries      │    └──────┬───────┘
+└─────────────────┘           │
+                              ▼
+                       ┌─────────────┐
+                       │  Filtered   │
+                       │   Entries   │
+                       └──────┬──────┘
+                              │ build_hierarchy()
+                              ▼
+                       ┌─────────────┐
+                       │ Hierarchical│
+                       │    Config   │
+                       └─────────────┘
+```
+
+**Key insight**: Core CCL is the flat key-value entries in the middle. Everything else is optional processing you can choose to apply.
 
 ## Basic Syntax
 
@@ -138,16 +175,39 @@ config_entries = filter(all_entries, key => !key.startsWith("/"))
 config = build_hierarchy(config_entries)
 ```
 
-## Understanding CCL Implementation Levels
+## The Four Core Constructs
 
-CCL implementations can choose their level of support based on needs:
+CCL has exactly **four fundamental constructs** that any parser must handle:
 
-**Level 1: Entry Parsing** - Parse text into flat key-value entries  
-**Level 2: Complete Config Language** - Level 1 + comment filtering + hierarchy construction  
-**Level 3: Common Features** - Level 2 + dotted keys + merging  
-**Level 4: Advanced Features** - Level 3 + typed APIs + validation + more
+### 1. Basic Key-Value Pairs
+```ccl
+key = value
+```
+Creates: `Entry("key", "value")`
 
-> **For most users**: Level 2 provides everything needed for practical configuration. See [Implementation Levels](/implementation-levels) for detailed comparison and choosing guidance.
+### 2. Empty Values (Sections)
+```ccl
+section =
+```
+Creates: `Entry("section", "")`
+Used for: Creating nested objects
+
+### 3. Empty Keys (Lists)
+```ccl
+= item
+```
+Creates: `Entry("", "item")`
+Used for: Creating list items
+
+### 4. Multiline Values
+```ccl
+description = First line
+  Second line
+  Third line
+```
+Creates: `Entry("description", "First line\nSecond line\nThird line")`
+
+**That's the entire core language.** Comments, nesting, typing - everything else is additive.
 
 ## Common Patterns
 
@@ -193,24 +253,24 @@ description = This is a multiline
   indentation
 ```
 
+## Next Steps
+
+### For Configuration Users
+- **[Syntax Reference](/syntax-reference)** - Quick lookup for CCL syntax patterns
+- **[CCL FAQ](/ccl-faq)** - Common questions, edge cases, and gotchas
+- **[Format Comparison](/format-comparison)** - How CCL compares to JSON, YAML, TOML
+
+### For Parser Implementers
+- **[Implementing CCL](/implementing-ccl)** - Complete guide to building CCL parsers
+- **[API Reference](/api-reference)** - Recommended API patterns and conventions
+- **[Test Architecture](/test-architecture)** - Using the test suite to validate your implementation
+
 ## About CCL
 
 CCL was created by [@chshersh](https://github.com/chshersh) and is specified at
 <https://chshersh.com/blog/2025-01-06-the-most-elegant-configuration-language.html>.
 
 There is also a reference OCaml implementation at <https://github.com/chshersh/ccl>.
-
-## Next Steps
-
-### For Configuration Users
-1. **Try the examples** - Practice with the syntax patterns above
-2. **Read the [CCL FAQ](/ccl-faq)** - Common questions and best practices  
-3. **Explore [Core Concepts](/core-concepts)** - Understand how CCL works
-
-### For Developers & Implementers
-1. **Start with [Implementation Levels](/implementation-levels)** - Choose your approach
-2. **Follow [Implementing CCL](/implementing-ccl)** - Build your own parser
-3. **Check [API Reference](/api-reference)** - Complete specification details
 
 ## Quick Reference
 

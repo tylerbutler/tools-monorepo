@@ -6,7 +6,9 @@
       "Bash(git commit:*)",
       "Bash(pnpm dev:*)",
       "Bash(pnpm build:*)",
-      "Read(//home/tylerbu/.claude/**)"
+      "Read(//home/tylerbu/.claude/**)",
+      "Read(//Volumes/Code/claude-workspace/tools-monorepo/**)",
+      "Bash(git rebase:*)"
     ],
     "deny": [],
     "ask": []
