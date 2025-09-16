@@ -48,35 +48,21 @@ export default defineConfig({
 					label: "Start Here",
 					items: [
 						{ slug: "getting-started" },
-						{ slug: "core-concepts" },
 						{ slug: "syntax-reference" },
-						{ slug: "dotted-keys-explained" },
-						{ slug: "format-comparison" },
+						{ slug: "ccl-faq" },
 					],
 				},
 				{
-					label: "Specification",
+					label: "Implementation",
 					items: [
-						{ slug: "specification-summary" },
-						{ slug: "parsing-algorithm" },
-						{ slug: "theory" },
-					],
-				},
-				{
-					label: "Guides",
-					items: [
-						{ slug: "implementation-levels" },
 						{ slug: "implementing-ccl" },
-						{ slug: "test-architecture" },
+						{ slug: "api-reference" },
 					],
 				},
 				{
 					label: "Reference",
 					items: [
-						{ slug: "higher-level-apis" },
-						{ slug: "api-reference" },
-						{ slug: "glossary" },
-						{ slug: "ccl-faq" },
+						{ slug: "theory" },
 					],
 				},
 			],
