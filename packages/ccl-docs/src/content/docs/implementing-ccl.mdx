@@ -1,34 +1,45 @@
 ---
 title: Implementing CCL
 description: A guide for language authors to implement a CCL parser using the feature-based test architecture and comprehensive test suite.
-level: 1
-functions: ["parse", "build-hierarchy", "get-string", "get-int"]
-features: ["comments", "dotted-keys", "unicode"]
-llm_summary: "Comprehensive implementation guide for CCL parsers with progressive 4-level architecture and 452 test assertions"
-related_tests: "api-essential-parsing.json, api-comprehensive-parsing.json, api-processing.json, api-object-construction.json, api-typed-access.json"
-test_repository: "https://github.com/tylerbutler/ccl-test-data"
-implementation_examples:
-  - language: "Gleam"
-    repository: "ccl_gleam" 
-    files: ["packages/ccl/src/ccl.gleam", "test/ccl_gleam_test.gleam"]
-  - language: "Go"
-    repository: "ccl-test-data"
-    files: ["internal/mock/ccl.go", "internal/generator/"]
+sidebar:
+  label: Implementation Guide
 ---
+
+import { Steps } from '@astrojs/starlight/components';
 
 # Implementing CCL - A Guide for Language Authors
 
 ## Quick Start
 
-1. **Study the specification** - Read the [Getting Started Guide](/getting-started)
-2. **Choose your API approach** - Organize around core APIs rather than implementation levels
-3. **Use the test suite** - Language-agnostic JSON tests validate your implementation
-4. **Follow the reference** - OCaml reference implementation at https://github.com/chshersh/ccl
-5. **Check the API guide** - See [API Reference](/api-reference) for recommended patterns
+<Steps>
+
+1. **Study the specification**
+
+   Read the [Getting Started Guide](/getting-started) to understand CCL's core concepts.
+
+2. **Choose your API approach**
+
+   Organize around core APIs rather than implementation levels.
+
+3. **Use the test suite**
+
+   Language-agnostic JSON tests validate your implementation.
+
+4. **Follow the reference**
+
+   OCaml reference implementation at https://github.com/chshersh/ccl
+
+5. **Check the API guide**
+
+   See [API Reference](/api-reference) for recommended patterns.
+
+</Steps>
 
 ## Core CCL APIs
 
+:::important[API-focused approach]
 CCL implementations should organize around core APIs rather than arbitrary levels. This API-focused approach provides clearer implementation targets and better composability.
+:::
 
 ### Essential APIs
 
@@ -50,7 +61,9 @@ CCL implementations should organize around core APIs rather than arbitrary level
 | **Recommended** | `get`, error handling | Production usage | +2-3 days |
 | **Advanced** | Typed accessors, validation | Type safety | +1-2 weeks |
 
+:::tip[Implementation strategy]
 **Recommendation**: Start with essential APIs for a functional CCL implementation, then add recommended APIs for production readiness.
+:::
 
 ## Feature-Based Test Architecture
 
@@ -73,10 +86,12 @@ The CCL test suite uses **structured tagging** for precise implementation target
 
 ### Progressive Implementation Strategy
 
+:::note[Recommended progression]
 1. **Start minimal**: `function:parse` only (Level 1)
 2. **Add hierarchy**: `function:build-hierarchy` (Level 2)
 3. **Add features**: `feature:comments`, `feature:dotted-keys` incrementally
 4. **Add typing**: `function:get-string`, `function:get-int`, etc. (Level 4)
+:::
 
 ## Implementation Roadmap
 
@@ -94,13 +109,16 @@ if (result.ok) {
 }
 ```
 
-**When to use Level 1:**
+:::tip[When to use Level 1]
 - **Rapid prototyping**: Get CCL parsing working quickly
 - **Simple configurations**: Flat or mostly flat config files
 - **Custom processing**: You want to handle object construction yourself
 - **Embedded systems**: Minimal memory/code footprint needed
+:::
 
+:::important[Foundation level]
 Start here - handles the 4 core constructs and provides the foundation for all higher-level CCL operations.
+:::
 
 #### Essential Algorithm
 ```typescript
@@ -131,6 +149,7 @@ function parse(text: string): Result<Entry[], ParseError> {
 
 #### Key Implementation Details
 
+:::danger[Critical parsing requirements]
 **Line Splitting:**
 - Preserve line ending information (for error reporting)
 - Handle Unix (`\n`), Windows (`\r\n`), and legacy Mac (`\r`) line endings
@@ -150,6 +169,7 @@ function parse(text: string): Result<Entry[], ParseError> {
 - Lines with indentation greater than parent continue the value
 - Preserve relative indentation in multiline values
 - Handle mixed tabs and spaces (warn in strict mode)
+:::
 
 ### Level 2: Complete Config Language
 **Goal:** Everything needed for practical configuration
@@ -166,11 +186,12 @@ if (hierarchyResult.ok) {
 }
 ```
 
-**When to use Level 2:**
+:::tip[When to use Level 2]
 - **Production configurations**: Real applications with nesting and comments
 - **Standard usage**: Covers 95% of configuration use cases
 - **Team adoption**: Good balance of features vs complexity
 - **Migration from other formats**: Provides expected config language features
+:::
 
 ### Level 3: Common Features
 **Goal:** Features most implementations want

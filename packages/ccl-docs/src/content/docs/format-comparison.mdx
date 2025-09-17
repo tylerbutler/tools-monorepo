@@ -1,7 +1,11 @@
 ---
 title: Configuration Format Comparison
 description: Comparing CCL with JSON, YAML, TOML, INI, and environment variables to help you choose the right format for your project.
+sidebar:
+  label: Format Comparison
 ---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Format Comparison Overview
 
@@ -19,11 +23,13 @@ description: Comparing CCL with JSON, YAML, TOML, INI, and environment variables
 
 ### Basic Structure
 
-**JSON (config.json):**
-```json
+<Tabs>
+<TabItem label="JSON" icon="seti:json">
+
+```json title="config.json"
 {
   "app": {
-    "name": "MyApplication", 
+    "name": "MyApplication",
     "version": "1.2.3",
     "debug": true
   },
@@ -44,14 +50,16 @@ description: Comparing CCL with JSON, YAML, TOML, INI, and environment variables
 }
 ```
 
-**CCL (config.ccl):**
-```ccl
+</TabItem>
+<TabItem label="CCL" icon="seti:config">
+
+```ccl title="config.ccl"
 /= Application Configuration
 app.name = MyApplication
 app.version = 1.2.3
 app.debug = true
 
-/= Server Configuration  
+/= Server Configuration
 server.host = localhost
 server.port = 8080
 server.ssl.enabled = true
@@ -63,26 +71,33 @@ database.connections =
   = postgres://db2.example.com/myapp
 ```
 
+</TabItem>
+</Tabs>
+
 ### Key Differences
 
+:::tip[JSON vs CCL advantages]
 - **Comments**: JSON has no comment support; CCL uses `/=` for documentation
 - **Quotes**: JSON requires quotes on all strings; CCL treats everything as strings
 - **Readability**: CCL is more readable with less punctuation
 - **Lists**: JSON arrays `["a", "b"]` become CCL lists with `= a` and `= b`
+:::
 
 
 ## YAML vs CCL
 
 ### Basic Structure
 
-**YAML (config.yaml):**
-```yaml
+<Tabs>
+<TabItem label="YAML" icon="seti:yaml">
+
+```yaml title="config.yaml"
 # Application settings
 app:
   name: MyApplication
   version: "1.2.3"
   debug: true
-  
+
 # Server settings
 server:
   host: localhost
@@ -91,19 +106,21 @@ server:
     - cors
     - authentication
     - logging
-    
+
 # Database settings
 database:
   primary:
     host: db1.example.com
     port: 5432
   replica:
-    host: db2.example.com  
+    host: db2.example.com
     port: 5432
 ```
 
-**CCL (config.ccl):**
-```ccl
+</TabItem>
+<TabItem label="CCL" icon="seti:config">
+
+```ccl title="config.ccl"
 /= Application settings
 app.name = MyApplication
 app.version = 1.2.3
@@ -124,12 +141,17 @@ database.replica.host = db2.example.com
 database.replica.port = 5432
 ```
 
+</TabItem>
+</Tabs>
+
 ### Key Differences
 
+:::caution[YAML vs CCL considerations]
 - **Indentation**: YAML relies on precise indentation; CCL uses explicit structure
-- **Lists**: YAML uses `- item`; CCL uses `= item`  
+- **Lists**: YAML uses `- item`; CCL uses `= item`
 - **Quotes**: YAML has complex quoting rules; CCL treats all values as strings
 - **Error-prone**: YAML indentation errors are common; CCL structure is more explicit
+:::
 
 
 ## TOML vs CCL
@@ -290,25 +312,33 @@ database.urls =
 
 ### Arrays and Lists
 
-**From JSON:**
+<Tabs>
+<TabItem label="JSON">
+
 ```json
 {"items": ["a", "b", "c"]}
 ```
 
-**From YAML:**
+</TabItem>
+<TabItem label="YAML">
+
 ```yaml
 items:
   - a
-  - b  
+  - b
   - c
 ```
 
-**From TOML:**
+</TabItem>
+<TabItem label="TOML">
+
 ```toml
 items = ["a", "b", "c"]
 ```
 
-**To CCL:**
+</TabItem>
+<TabItem label="CCL">
+
 ```ccl
 items =
   = a
@@ -316,9 +346,14 @@ items =
   = c
 ```
 
+</TabItem>
+</Tabs>
+
 ### Nested Objects
 
-**From JSON:**
+<Tabs>
+<TabItem label="JSON Source">
+
 ```json
 {
   "database": {
@@ -328,15 +363,19 @@ items =
 }
 ```
 
-**To CCL (Flat):**
+</TabItem>
+<TabItem label="CCL (Flat)">
+
 ```ccl
 database.primary.host = db1
 database.primary.port = 5432
-database.replica.host = db2  
+database.replica.host = db2
 database.replica.port = 5432
 ```
 
-**To CCL (Nested):**
+</TabItem>
+<TabItem label="CCL (Nested)">
+
 ```ccl
 database =
   primary =
@@ -346,6 +385,9 @@ database =
     host = db2
     port = 5432
 ```
+
+</TabItem>
+</Tabs>
 
 ### Comments and Documentation
 

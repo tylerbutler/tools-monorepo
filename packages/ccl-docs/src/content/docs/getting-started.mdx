@@ -1,7 +1,11 @@
 ---
 title: Getting Started with CCL
 description: A comprehensive introduction to the Categorical Configuration Language - from basic syntax to practical examples.
+sidebar:
+  label: Getting Started
 ---
+
+import { Steps } from '@astrojs/starlight/components';
 
 # Getting Started with CCL
 
@@ -9,11 +13,12 @@ description: A comprehensive introduction to the Categorical Configuration Langu
 
 CCL (Categorical Configuration Language) is a minimalist configuration language based on simple key-value pairs. It's designed around mathematical principles from Category Theory, providing elegant composition and recursive structure capabilities.
 
-**Key design principles:**
+:::tip[Key design principles]
 - **Simplicity**: Everything starts with `key = value`
 - **Composability**: Complex structures emerge from simple rules
 - **Human-friendly**: Easy to read, write, and understand
 - **Mathematical foundation**: Based on Category Theory for predictable behavior
+:::
 
 ### Quick Start Example
 
@@ -38,11 +43,12 @@ allowed_origins =
   = https://www.example.com
 ```
 
-**Key features you'll notice:**
+:::note[Key features you'll notice]
 - **Simple syntax**: Just `key = value` pairs
 - **Nesting**: Use indentation to group related settings
 - **Lists**: Use `= value` for list items
 - **Clean structure**: Easy to read and write
+:::
 
 ## How CCL Works
 
@@ -71,7 +77,9 @@ Think of CCL like this processing pipeline:
                        └─────────────┘
 ```
 
-**Key insight**: Core CCL is the flat key-value entries in the middle. Everything else is optional processing you can choose to apply.
+:::important[Key insight]
+Core CCL is the flat key-value entries in the middle. Everything else is optional processing you can choose to apply.
+:::
 
 ## Basic Syntax
 
@@ -86,11 +94,12 @@ debug = true
 port = 8080
 ```
 
-**Key Points:**
+:::note[Key Points]
 - Use `key = value` syntax
 - Keys can contain letters, numbers, dots, and underscores
 - Values are strings (applications interpret them as needed)
 - Whitespace around `=` is optional
+:::
 
 ## Nested Configuration
 
@@ -120,12 +129,15 @@ server.port = 8080
 server.debug = true
 ```
 
-**Important**: These are treated as literal key strings (`"database.host"`, `"database.port"`, etc.) - no hierarchy is provided for dotted keys automatically. See [Dotted Keys FAQ](/ccl-faq#dotted-keys) for details.
+:::caution[Important distinction]
+These are treated as literal key strings (`"database.host"`, `"database.port"`, etc.) - no hierarchy is provided for dotted keys automatically. See [Dotted Keys FAQ](/ccl-faq#dotted-keys) for details.
+:::
 
-**Key Differences:**
+:::tip[Key Differences]
 - **Nested sections**: Create actual hierarchical structure through indentation
 - **Literal dot keys**: Flat key strings that your application must interpret
 - **Mixing notation**: Possible but remember dotted keys remain flat strings
+:::
 
 ## Lists
 
@@ -157,15 +169,17 @@ CCL comments are just regular entries with special keys. The standard and prefer
 database =
   host = localhost
   port = 5432
-  
-/= Server Configuration  
+
+/= Server Configuration
 server =
   port = 8080
   /= Enable debug mode for development
   debug = true
 ```
 
-**Key insight**: Comments are regular key-value entries, not special syntax. Any Level 1 parser handles them automatically. While `/=` is the standard and preferred comment marker, implementations could support other comment keys. To use them as documentation:
+:::important[Key insight]
+Comments are regular key-value entries, not special syntax. Any Level 1 parser handles them automatically. While `/=` is the standard and preferred comment marker, implementations could support other comment keys. To use them as documentation:
+:::
 
 ```typescript
 // TypeScript Result type for clean error handling
@@ -183,7 +197,9 @@ if (configResult.ok) {
 
 ## The Four Core Constructs
 
+:::tip[Foundation of CCL]
 CCL has exactly **four fundamental constructs** that any parser must handle:
+:::
 
 ### 1. Basic Key-Value Pairs
 ```ccl
@@ -213,7 +229,9 @@ description = First line
 ```
 Creates: `Entry("description", "First line\nSecond line\nThird line")`
 
+:::note[Complete language]
 **That's the entire core language.** Comments, nesting, typing - everything else is additive.
+:::
 
 ## Common Patterns
 
@@ -259,26 +277,54 @@ description = This is a multiline
   indentation
 ```
 
-**Important**: Without indentation, each line would be treated as a separate key-value pair.
+:::caution[Important]
+Without indentation, each line would be treated as a separate key-value pair.
+:::
 
 ## Next Steps
 
 ### For Configuration Users
-- **[Syntax Reference](/syntax-reference)** - Quick lookup for CCL syntax patterns
-- **[CCL FAQ](/ccl-faq)** - Common questions, edge cases, and gotchas
-- **[Format Comparison](/format-comparison)** - How CCL compares to JSON, YAML, TOML
+
+<Steps>
+
+1. **Learn the syntax**
+
+   Review the [Syntax Reference](/syntax-reference) for quick lookup of CCL syntax patterns.
+
+2. **Understand edge cases**
+
+   Read the [CCL FAQ](/ccl-faq) for common questions, edge cases, and gotchas.
+
+3. **Compare with other formats**
+
+   Check the [Format Comparison](/format-comparison) to see how CCL compares to JSON, YAML, and TOML.
+
+</Steps>
 
 ### For Parser Implementers
-- **[Implementing CCL](/implementing-ccl)** - Complete guide to building CCL parsers
-- **[API Reference](/api-reference)** - Recommended API patterns and conventions
-- **[Test Architecture](/test-architecture)** - Using the test suite to validate your implementation
+
+<Steps>
+
+1. **Read the implementation guide**
+
+   Start with [Implementing CCL](/implementing-ccl) - a complete guide to building CCL parsers.
+
+2. **Study the API patterns**
+
+   Review [API Reference](/api-reference) for recommended API patterns and conventions.
+
+3. **Validate with tests**
+
+   Use [Test Architecture](/test-architecture) and the test suite to validate your implementation.
+
+</Steps>
 
 ## About CCL
 
-CCL was created by [@chshersh](https://github.com/chshersh) and is specified at
-<https://chshersh.com/blog/2025-01-06-the-most-elegant-configuration-language.html>.
+CCL was created by [\@chshersh](https://github.com/chshersh) and is specified at
+[https://chshersh.com/blog/2025-01-06-the-most-elegant-configuration-language.html](https://chshersh.com/blog/2025-01-06-the-most-elegant-configuration-language.html).
 
-There is also a reference OCaml implementation at <https://github.com/chshersh/ccl>.
+There is also a reference OCaml implementation at [https://github.com/chshersh/ccl](https://github.com/chshersh/ccl).
 
 ## Quick Reference
 
