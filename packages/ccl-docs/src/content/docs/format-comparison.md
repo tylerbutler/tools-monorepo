@@ -70,10 +70,6 @@ database.connections =
 - **Readability**: CCL is more readable with less punctuation
 - **Lists**: JSON arrays `["a", "b"]` become CCL lists with `= a` and `= b`
 
-### When to Choose Each
-
-- **JSON**: API responses, data interchange, when you need strict syntax
-- **CCL**: Human-authored configuration files, when you need comments and documentation
 
 ## YAML vs CCL
 
@@ -135,10 +131,6 @@ database.replica.port = 5432
 - **Quotes**: YAML has complex quoting rules; CCL treats all values as strings
 - **Error-prone**: YAML indentation errors are common; CCL structure is more explicit
 
-### When to Choose Each
-
-- **YAML**: Ansible playbooks, Docker Compose, when indentation feels natural
-- **CCL**: When you want explicit structure without indentation sensitivity
 
 ## TOML vs CCL
 
@@ -196,10 +188,6 @@ database.primary.port = 5432
 - **Types**: TOML has strict typing; CCL treats all values as strings with smart parsing
 - **Verbosity**: CCL is less verbose with fewer brackets and quotes
 
-### When to Choose Each
-
-- **TOML**: Rust projects (Cargo.toml), Python packaging, when you want strict typing
-- **CCL**: When you prefer simpler syntax and don't need strict types
 
 ## INI vs CCL
 
@@ -252,10 +240,6 @@ database.urls =
 - **Comments**: Both support comments, but CCL's `/=` creates structured documentation
 - **Parsing**: INI parsing varies by implementation; CCL has consistent rules
 
-### When to Choose Each
-
-- **INI**: Legacy Windows applications, simple key-value configurations
-- **CCL**: When you need arrays, deep nesting, or consistent parsing
 
 ## Environment Variables vs CCL
 
@@ -301,10 +285,6 @@ database.urls =
 - **Documentation**: Environment variables have no comment support; CCL has rich documentation
 - **Readability**: Environment variables become unwieldy at scale; CCL stays organized
 
-### When to Choose Each
-
-- **Environment Variables**: Deployment secrets, runtime overrides, containerized applications
-- **CCL**: Complex configuration files, when you need structure and documentation
 
 ## Common Conversion Patterns
 
@@ -386,95 +366,3 @@ database =
   port = 5432
 ```
 
-## Format Conversion Tools
-
-### Automated Conversion
-
-Some CCL implementations provide format conversion utilities:
-
-```bash
-# Example conversion commands (implementation-specific)
-ccl-convert --from json config.json config.ccl
-ccl-convert --from yaml config.yaml config.ccl
-ccl-convert --from toml config.toml config.ccl
-```
-
-### Manual Conversion Process
-
-1. **Analysis**
-   - Identify nested objects and arrays
-   - Note existing comment patterns
-   - Check for special characters in keys/values
-
-2. **Conversion**
-   - Remove format-specific syntax (brackets, quotes, etc.)
-   - Convert arrays to CCL list syntax
-   - Update comment format to `/=`
-   - Choose between flat dot notation or nested structure
-
-3. **Validation**
-   - Parse converted CCL files
-   - Verify all values are accessible
-   - Test with your application
-
-## Format Selection Guide
-
-### Use CCL when:
-- Human-authored configuration files
-- You need rich inline documentation  
-- Configuration requires complex nested structures
-- You want merge semantics for duplicate keys
-- Simplicity and readability are priorities
-
-### Keep JSON when:
-- Building REST APIs or web services
-- Exchanging data between systems
-- You need strict syntax validation
-- Working with JavaScript applications
-- Schema validation is critical
-
-### Keep YAML when:
-- Writing Docker Compose files
-- Configuring CI/CD pipelines
-- Creating Ansible playbooks
-- Working with Kubernetes manifests
-
-### Keep TOML when:
-- Configuring Rust projects (Cargo.toml)
-- Python packaging (pyproject.toml)
-- You need strict data types
-- Configuration has clear sectional boundaries
-
-### Keep Environment Variables when:
-- Deploying containerized applications
-- Managing deployment secrets
-- Runtime configuration overrides
-- Following 12-factor app principles
-
-## Best Practices for Format Selection
-
-1. **Consider Your Use Case**: API data vs human-authored configuration
-2. **Evaluate Tooling**: Available parsers, editors, and validation tools
-3. **Think About Maintenance**: Who will be editing these files?
-4. **Plan for Growth**: Will the configuration become more complex over time?
-5. **Consider Standards**: What formats does your ecosystem typically use?
-
-## Common Considerations
-
-### When Converting to CCL
-
-**Advantages:**
-- More readable and maintainable configuration files
-- Better inline documentation capabilities
-- Simpler syntax with fewer special characters
-- Native support for lists and nested structures
-
-**Considerations:**
-- All values are strings (type conversion handled by applications)
-- Smaller ecosystem compared to JSON/YAML
-- May require updating existing tooling
-- Team familiarity with the format
-
-### Format Selection Summary
-
-Choose the format that best matches your project's needs, existing tooling, team expertise, and long-term maintenance requirements. CCL excels for human-authored configuration files where readability and documentation are important.

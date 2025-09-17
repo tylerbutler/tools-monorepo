@@ -5,6 +5,8 @@ description: CCL implementations use a feature-based test organization that prov
 
 # CCL Test Suite Architecture
 
+> **⚠️ Note**: This document needs review in the future - it may be outdated.
+
 ## Architecture Overview
 
 ```

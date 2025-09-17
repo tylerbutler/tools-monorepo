@@ -60,18 +60,18 @@ user =
 This creates actual nested CCL objects that can be navigated hierarchically.
 
 ### Q: Can I mix dot notation and nested structure?
-**A:** Yes, they're completely orthogonal:
+**A:** Yes, they're completely orthogonal. Mixing the notation is possible but remember no hierarchy is provided for the dotted keys - they are just strings:
 
 ```ccl
-# Flat keys with dots
+# Flat keys with dots (literal string keys)
 database.backup.enabled = true
 
-# Nested structure  
+# Nested structure (creates actual hierarchy)
 database =
   host = localhost
   port = 5432
 
-# Both exist as separate entries
+# Both exist as separate entries - dotted keys remain flat strings
 ```
 
 ### Q: Why doesn't CCL parse dots automatically?
@@ -115,10 +115,10 @@ server =
 
 ## Indentation and Whitespace
 
-### Q: Does CCL support both tabs and spaces?
+### Q: Does CCL support both tabs and spaces? *(Open Spec Question)*
 **A:** Yes. **Each tab character counts as 1 indentation unit**, same as 1 space character.
 
-### Q: Can I mix tabs and spaces?
+### Q: Can I mix tabs and spaces? *(Open Spec Question)*
 **A:** Technically yes, but it's not recommended. The specification suggests that **mixed indentation should generate warnings** in strict parsing mode.
 
 ### Q: How does CCL handle trailing whitespace?
@@ -140,15 +140,15 @@ Results in: `"key with spaces"` → `"value with trailing spaces   "`
 **A:** **Everything is a string at the core level.** CCL doesn't have built-in types - all values are stored as strings.
 
 **Type conversion happens at the application level:**
-```gleam
+```typescript
 // All these are strings in CCL:
-port = 5432          // "5432" 
+port = 5432          // "5432"
 enabled = true       // "true"
 rate = 3.14         // "3.14"
 
 // Your application converts:
-let port_int = int.parse(ccl.get_value(obj, "port"))       // Ok(5432)
-let enabled_bool = parse_bool(ccl.get_value(obj, "enabled")) // Ok(True)
+const portResult = getInt(obj, "port")              // { ok: true, value: 5432 }
+const enabledResult = getBool(obj, "enabled")       // { ok: true, value: true }
 ```
 
 ### Q: How should I handle booleans?
@@ -171,36 +171,34 @@ url = https://example.com/path?param=value
 ## Comments
 
 ### Q: How do comments work?
-**A:** Comments use special keys like `/=`, `#=`, or `//=`:
+**A:** Comments use special keys, with `/=` as the standard:
 
 ```ccl
 /= This is a comment
 name = value
 
-#= Another comment style  
+/= Another comment
 debug = true
-
-//= Yet another comment style
 ```
 
 ### Q: Are comments part of the data?
 **A:** Yes! Comments are regular key-value entries, not special syntax. The standard marker is `/=`, but CCL APIs provide general-purpose filtering:
 
-```gleam
+```typescript
 // Use general filter function (not filter_comments)
-let config_entries = filter(entries, fn(key) { 
-  !string.starts_with(key, "/") 
-})
+const configEntries = entries.filter(entry =>
+  !entry.key.startsWith("/")
+)
 
 // Can filter any key pattern
-let no_debug = filter(entries, fn(key) {
-  !string.starts_with(key, "debug")
-})
+const noDebug = entries.filter(entry =>
+  !entry.key.startsWith("debug")
+)
 ```
 
 ### Q: Can I use other comment styles?
 **A:** Any key starting with your chosen prefix works:
-- `/=`, `//=`, `#=` are common
+- `/=` is the standard and recommended
 - You could use `comment =`, `note =`, etc.
 
 ---
@@ -319,15 +317,17 @@ Your application can expand variables before parsing CCL.
 3. **Build objects** using fixed-point recursion to create nested structure
 
 ### Q: How does the "fixed point" algorithm work?
-**A:** It recursively parses string values that contain CCL syntax until no more CCL structure can be extracted:
+**A:** It recursively parses string values that contain CCL syntax until no more CCL structure can be extracted. The fixed point addresses depth by continuing to parse until no further structural transformation is possible:
 
 ```ccl
-config = 
-  nested = 
+config =
+  nested =
     deep = value
 ```
 
 Becomes: `config` → `{ nested: { deep: "value" } }`
+
+The algorithm stops when applying another parse iteration produces the same result, ensuring all nested structure is fully extracted regardless of depth.
 
 ### Q: What about performance?
 **A:** CCL parsing is typically fast since:
@@ -345,13 +345,13 @@ For very large configs, consider streaming parsers.
 **A:** Because `database.host` is a **flat string key**, not a path to nested structure.
 
 **Won't work:**
-```gleam
-ccl.get_nested(obj, "database")  // Looks for key "database", not "database.host"
+```typescript
+getNested(obj, "database")  // Looks for key "database", not "database.host"
 ```
 
 **Will work:**
-```gleam
-ccl.get_value(obj, "database.host")  // Gets the literal key "database.host"
+```typescript
+get(obj, "database.host")  // Gets the literal key "database.host"
 ```
 
 ### Q: My multiline value has weird indentation behavior
@@ -405,12 +405,6 @@ If you need escaping, handle it in your application layer.
 text = Multi-byte characters work fine: café, naïve, 北京
 ```
 
-### Q: What about very large configuration files?
-**A:** For large configs:
-- Consider splitting into multiple CCL files
-- Use flat key notation to avoid deep nesting overhead  
-- Implement streaming parsing if needed
-- Profile your specific use case
 
 ---
 

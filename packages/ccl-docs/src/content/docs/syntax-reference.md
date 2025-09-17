@@ -34,8 +34,6 @@ items =
 ### Comments
 ```ccl
 /= This is a comment
-#= Alternative comment style
-//= Another comment style
 ```
 
 ### Multiline Values
@@ -189,32 +187,6 @@ endpoints =
     logout = /api/v1/auth/logout
 ```
 
-## Edge Cases
-
-### Empty File
-```ccl
-# Empty file is an error
-```
-
-### Whitespace-Only Lines
-```ccl
-key = value
-
-# Blank line above is preserved in multiline context
-```
-
-### No Equals Sign
-```ccl
-this line has no equals
-# Behavior is implementation-specific
-```
-
-### Multiple Equals Signs
-```ccl
-key = value = with = many = equals
-# Everything after first = is the value
-```
-
 ## Quick Reference Table
 
 | Syntax | Purpose | Example |
@@ -225,22 +197,6 @@ key = value = with = many = equals
 | `/= text` | Comment | `/= Note` |
 | Indentation | Nesting/continuation | `  nested = value` |
 | `.` in key | Literal dot character | `file.txt = data` |
-
-## Processing Pipeline
-
-Understanding how CCL text becomes configuration:
-
-```
-Raw CCL Text
-    ↓ parse()
-Flat Key-Value Entries
-    ↓ filter() [optional]
-Filtered Entries
-    ↓ build_hierarchy()
-Nested Configuration Object
-    ↓ get_typed() [optional]
-Application Values
-```
 
 ## Best Practices
 

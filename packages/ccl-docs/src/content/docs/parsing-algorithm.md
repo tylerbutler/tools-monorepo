@@ -5,7 +5,7 @@ description: Language-agnostic algorithm for parsing CCL configuration files.
 
 # CCL Parsing Algorithm
 
-This document describes the core parsing algorithm for CCL implementations. The algorithm is presented in pseudocode to be language-agnostic.
+This document describes the core parsing algorithm for CCL implementations. The algorithm is presented in Rust-style pseudocode for clarity.
 
 ## Two-Stage Parsing
 
@@ -20,16 +20,21 @@ This separation allows implementations to choose their level of CCL support and 
 
 ### Algorithm Overview
 
-```pseudocode
-function parse_entries(text: string) -> Result<List<Entry>, ParseError>:
-    if is_empty_or_whitespace_only(text):
-        return Error("Empty input")
-    
-    entries = []
-    lines = split_into_lines(text)
-    current_index = 0
-    
-    while current_index < length(lines):
+```rust
+// Main entry parsing function - converts raw CCL text into flat key-value entries
+// Returns error for empty input or malformed syntax
+fn parse_entries(text: &str) -> Result<Vec<Entry>, ParseError> {
+    // Reject empty or whitespace-only input as invalid CCL
+    if text.trim().is_empty() {
+        return Err(ParseError::new("Empty input"));
+    }
+
+    let mut entries = Vec::new();
+    let lines: Vec<&str> = text.lines().collect();
+    let mut current_index = 0;
+
+    // Process each line, handling multiline values and keys
+    while current_index < lines.len() {
         line = lines[current_index]
         
         if contains_equals(line):
@@ -62,210 +67,265 @@ function parse_entries(text: string) -> Result<List<Entry>, ParseError>:
 
 ### Key Processing
 
-```pseudocode
-function trim_whitespace(key: string) -> string:
-    return remove_leading_and_trailing_whitespace(key)
+```rust
+// Helper functions for key processing
+fn trim_whitespace(key: &str) -> &str {
+    key.trim() // Remove leading and trailing whitespace
+}
 
-function split_on_first_equals(line: string) -> (string, string):
-    equals_index = find_first_occurrence(line, "=")
-    key = substring(line, 0, equals_index)
-    value = substring(line, equals_index + 1, end)
-    return (key, value)
+// Split line on first equals sign - everything after first = is the value
+fn split_on_first_equals(line: &str) -> (&str, &str) {
+    if let Some(equals_index) = line.find('=') {
+        let key = &line[..equals_index];
+        let value = &line[equals_index + 1..];
+        (key, value)
+    } else {
+        (line, "") // No equals found
+    }
+}
 ```
 
 ### Value Processing
 
-```pseudocode
-function process_initial_value(value: string) -> string:
+```rust
+// Process the initial value part after the equals sign
+fn process_initial_value(value: &str) -> String {
     // Remove leading spaces but preserve trailing whitespace
-    return remove_leading_spaces(value)
+    value.trim_start().to_string()
+}
 
-function process_multiline_value(lines: List<string>, start_index: int, initial_value: string) -> (string, int):
-    result = initial_value
-    lines_consumed = 0
-    base_indentation = calculate_base_indentation(lines, start_index)
-    
-    current_index = start_index + 1
-    while current_index < length(lines):
-        line = lines[current_index]
-        
-        if is_empty_line(line):
-            result += "\n"
-            lines_consumed += 1
-        else if is_continuation_line(line, base_indentation):
-            continuation_content = extract_continuation_content(line, base_indentation)
-            result += "\n" + continuation_content
-            lines_consumed += 1
-        else:
-            break
-        
-        current_index += 1
-    
-    return (result, lines_consumed)
+// Handle multiline value continuation based on indentation
+fn process_multiline_value(lines: &[&str], start_index: usize, initial_value: String) -> (String, usize) {
+    let mut result = initial_value;
+    let mut lines_consumed = 0;
+    let base_indentation = calculate_base_indentation(lines, start_index);
+
+    let mut current_index = start_index + 1;
+    // Process continuation lines based on indentation
+    while current_index < lines.len() {
+        let line = lines[current_index];
+
+        if line.trim().is_empty() {
+            result.push('\n'); // Preserve empty lines in multiline values
+            lines_consumed += 1;
+        } else if is_continuation_line(line, base_indentation) {
+            let continuation_content = extract_continuation_content(line, base_indentation);
+            result.push('\n');
+            result.push_str(&continuation_content);
+            lines_consumed += 1;
+        } else {
+            break; // No more continuation lines
+        }
+
+        current_index += 1;
+    }
+
+    (result, lines_consumed)
 ```
 
 ### Indentation Handling
 
-```pseudocode
-function calculate_base_indentation(lines: List<string>, entry_index: int) -> int:
-    entry_line = lines[entry_index]
-    leading_whitespace = count_leading_whitespace(entry_line)
-    return leading_whitespace
+```rust
+// Calculate the base indentation level for multiline processing
+fn calculate_base_indentation(lines: &[&str], entry_index: usize) -> usize {
+    let entry_line = lines[entry_index];
+    count_leading_whitespace(entry_line)
+}
 
-function is_continuation_line(line: string, base_indentation: int) -> bool:
-    if is_empty_line(line):
-        return true
-    
-    line_indentation = count_leading_whitespace(line)
-    return line_indentation > base_indentation
+// Check if a line continues the previous value based on indentation
+fn is_continuation_line(line: &str, base_indentation: usize) -> bool {
+    if line.trim().is_empty() {
+        return true; // Empty lines are always continuation
+    }
 
-function count_leading_whitespace(line: string) -> int:
-    count = 0
-    for character in line:
-        if character == ' ':
-            count += 1
-        else if character == '\t':
-            count += 1  // Tabs count as 1 indentation unit
-        else:
-            break
-    return count
+    let line_indentation = count_leading_whitespace(line);
+    line_indentation > base_indentation // Must be more indented
+}
+
+// Count leading whitespace characters (spaces and tabs both = 1 unit)
+fn count_leading_whitespace(line: &str) -> usize {
+    let mut count = 0;
+    for character in line.chars() {
+        match character {
+            ' ' | '\t' => count += 1, // Both spaces and tabs count as 1 unit
+            _ => break, // Stop at first non-whitespace character
+        }
+    }
+    count
+}
 ```
 
 ### Multiline Key Support
 
-```pseudocode
-function is_potential_multiline_key(line: string, lines: List<string>, index: int) -> bool:
-    if contains_equals(line):
-        return false
-    
-    if index + 1 >= length(lines):
-        return false
-    
-    next_line = lines[index + 1]
-    return starts_with_equals(next_line)
+```rust
+// Check if a line without equals might be a multiline key
+fn is_potential_multiline_key(line: &str, lines: &[&str], index: usize) -> bool {
+    // Line must not contain equals and next line must start with equals
+    if line.contains('=') {
+        return false;
+    }
 
-function process_multiline_key(lines: List<string>, start_index: int) -> (string, string, int):
-    key_line = lines[start_index]
-    value_line = lines[start_index + 1]
-    
-    key = trim_whitespace(key_line)
-    value = process_initial_value(substring(value_line, 1)) // Skip the leading "="
-    
-    // Process potential multiline value continuation
-    (final_value, additional_lines) = process_multiline_value(
+    if index + 1 >= lines.len() {
+        return false; // No next line available
+    }
+
+    let next_line = lines[index + 1];
+    next_line.trim_start().starts_with('=') // Next line is the value
+}
+
+// Process multiline key where key is on one line, = value on next
+fn process_multiline_key(lines: &[&str], start_index: usize) -> (String, String, usize) {
+    let key_line = lines[start_index];
+    let value_line = lines[start_index + 1];
+
+    let key = key_line.trim().to_string(); // Clean the key
+    // Skip the leading "=" and process the value
+    let value = process_initial_value(&value_line[1..]);
+
+    // Check for multiline value continuation
+    let (final_value, additional_lines) = process_multiline_value(
         lines, start_index + 1, value
-    )
-    
-    total_lines_consumed = 1 + additional_lines
-    return (key, final_value, total_lines_consumed)
+    );
+
+    let total_lines_consumed = 1 + additional_lines;
+    (key, final_value, total_lines_consumed)
+}
 ```
 
 ## Stage 2: Object Construction
 
 ### Algorithm Overview
 
-```pseudocode
-function build_hierarchy(entries: List<Entry>) -> CCL:
-    result = empty_map()
-    
-    for entry in entries:
-        if is_dotted_key(entry.key):
-            set_nested_value_by_path(result, entry.key, entry.value)
-        else:
-            set_direct_value(result, entry.key, entry.value)
-    
-    return convert_to_hierarchical_structure(result)
+```rust
+// Convert flat entries into hierarchical CCL object structure
+fn build_hierarchy(entries: Vec<Entry>) -> CCLObject {
+    let mut result = HashMap::new();
+
+    // Process each entry, handling dotted keys and direct values
+    for entry in entries {
+        if is_dotted_key(&entry.key) {
+            set_nested_value_by_path(&mut result, &entry.key, &entry.value);
+        } else {
+            set_direct_value(&mut result, &entry.key, &entry.value);
+        }
+    }
+
+    convert_to_hierarchical_structure(result)
+}
 ```
 
 ### Dotted Key Processing
 
-```pseudocode
-function is_dotted_key(key: string) -> bool:
-    return contains_character(key, ".")
+```rust
+// Check if a key contains dots (dotted key notation)
+fn is_dotted_key(key: &str) -> bool {
+    key.contains('.') // Simple dot detection
+}
 
-function set_nested_value_by_path(result: Map, dotted_key: string, value: string):
-    path_segments = split_by_character(dotted_key, ".")
-    current_level = result
-    
-    for i in range(0, length(path_segments) - 1):
-        segment = path_segments[i]
-        if not exists(current_level, segment):
-            current_level[segment] = empty_map()
-        current_level = current_level[segment]
-    
-    final_segment = path_segments[length(path_segments) - 1]
-    current_level[final_segment] = value
+// Set a value in nested structure using dot-separated path
+fn set_nested_value_by_path(result: &mut HashMap<String, CCLValue>, dotted_key: &str, value: &str) {
+    let path_segments: Vec<&str> = dotted_key.split('.').collect();
+    let mut current_level = result;
+
+    // Navigate to the target location, creating intermediate maps as needed
+    for i in 0..path_segments.len() - 1 {
+        let segment = path_segments[i];
+        if !current_level.contains_key(segment) {
+            current_level.insert(segment.to_string(), CCLValue::Object(HashMap::new()));
+        }
+        // Navigate deeper into the nested structure
+        if let CCLValue::Object(ref mut nested) = current_level.get_mut(segment).unwrap() {
+            current_level = nested;
+        }
+    }
+
+    // Set the final value
+    let final_segment = path_segments[path_segments.len() - 1];
+    current_level.insert(final_segment.to_string(), CCLValue::String(value.to_string()));
+}
 ```
 
 ### Hierarchical Structure Creation
 
-```pseudocode
-function convert_to_hierarchical_structure(flat_map: Map) -> CCL:
-    result = empty_map()
-    
-    for (key, value) in flat_map:
-        if is_empty_key(key):
-            // Handle list items
-            add_to_list(result, value)
-        else if is_empty_value(value) and has_nested_entries(flat_map, key):
-            // Handle sections
-            result[key] = create_nested_object(flat_map, key)
-        else:
-            // Handle regular values
-            result[key] = value
-    
-    return result
+```rust
+// Convert processed flat map into final hierarchical structure
+fn convert_to_hierarchical_structure(flat_map: HashMap<String, CCLValue>) -> CCLObject {
+    let mut result = HashMap::new();
+
+    // Process each entry to determine its role in the hierarchy
+    for (key, value) in flat_map {
+        if key.is_empty() {
+            // Handle list items (empty keys)
+            add_to_list(&mut result, value);
+        } else if is_empty_value(&value) && has_nested_entries(&flat_map, &key) {
+            // Handle sections (empty values with nested content)
+            result.insert(key, create_nested_object(&flat_map, &key));
+        } else {
+            // Handle regular key-value pairs
+            result.insert(key, value);
+        }
+    }
+
+    result
+}
 ```
 
 ## Error Handling
 
 ### Common Error Conditions
 
-```pseudocode
-function validate_input(text: string) -> Result<void, ParseError>:
-    if length(text) == 0:
-        return Error("Empty input")
-    
-    if is_only_whitespace(text):
-        return Error("Input contains only whitespace")
-    
-    return Ok()
-
-function create_parse_error(message: string, line_number: int, column: int) -> ParseError:
-    return ParseError {
-        message: message,
-        line: line_number,
-        column: column
+```rust
+// Validate input before parsing to catch common issues early
+fn validate_input(text: &str) -> Result<(), ParseError> {
+    if text.is_empty() {
+        return Err(ParseError::new("Empty input"));
     }
+
+    if text.trim().is_empty() {
+        return Err(ParseError::new("Input contains only whitespace"));
+    }
+
+    Ok(()) // Input is valid
+}
+
+// Create structured parse error with location information
+fn create_parse_error(message: &str, line_number: usize, column: usize) -> ParseError {
+    ParseError {
+        message: message.to_string(),
+        line: Some(line_number),
+        column: Some(column),
+    }
+}
 ```
 
 ### Line-by-Line Error Reporting
 
-```pseudocode
-function parse_with_error_context(text: string) -> Result<List<Entry>, ParseError>:
-    lines = split_into_lines_with_numbers(text)
-    
-    for (line_number, line_content) in lines:
-        try:
-            // Process line
-        catch error:
-            return Error(create_parse_error(
-                error.message, 
-                line_number, 
-                calculate_column(line_content, error.position)
-            ))
-    
-    return Ok(entries)
+```rust
+// Parse with comprehensive error context for debugging
+fn parse_with_error_context(text: &str) -> Result<Vec<Entry>, ParseError> {
+    let lines: Vec<(usize, &str)> = text.lines().enumerate().collect();
+    let mut entries = Vec::new();
+
+    // Process each line with error location tracking
+    for (line_number, line_content) in lines {
+        match process_line(line_content) {
+            Ok(entry) => entries.push(entry),
+            Err(error) => {
+                return Err(create_parse_error(
+                    &error.message,
+                    line_number + 1, // Convert to 1-based line numbers
+                    calculate_column(line_content, error.position)
+                ));
+            }
+        }
+    }
+
+    Ok(entries)
+}
 ```
 
 ## Implementation Guidelines
 
-### Performance Considerations
-
-1. **Single Pass**: Process input in a single pass when possible
-2. **Lazy Evaluation**: Consider lazy evaluation for large files
-3. **Memory Efficiency**: Avoid storing unnecessary intermediate representations
-4. **Early Termination**: Stop processing on first error in strict mode
 
 ### Edge Case Handling
 
@@ -285,31 +345,40 @@ function parse_with_error_context(text: string) -> Result<List<Entry>, ParseErro
 
 ### Entry Type
 
-```pseudocode
-Entry {
-    key: string
-    value: string
+```rust
+// Basic key-value entry from parsing stage
+#[derive(Debug, Clone)]
+struct Entry {
+    key: String,
+    value: String,
 }
 ```
 
 ### Parse Error Type
 
-```pseudocode
-ParseError {
-    message: string
-    line: optional<int>
-    column: optional<int>
-    context: optional<string>
+```rust
+// Comprehensive error information for debugging
+#[derive(Debug)]
+struct ParseError {
+    message: String,
+    line: Option<usize>,    // 1-based line number
+    column: Option<usize>,  // 1-based column number
+    context: Option<String>, // Additional context for debugging
 }
 ```
 
 ### CCL Value Types
 
-```pseudocode
-CCLValue = 
-    | String(string)
-    | Object(Map<string, CCLValue>)
-    | List(List<CCLValue>)
+```rust
+// Recursive value types for hierarchical configuration
+#[derive(Debug, Clone)]
+enum CCLValue {
+    String(String),                           // Terminal string value
+    Object(HashMap<String, CCLValue>),        // Nested object
+    List(Vec<CCLValue>),                      // Array of values
+}
+
+type CCLObject = HashMap<String, CCLValue>;
 ```
 
 This algorithm forms the foundation for any CCL implementation and can be adapted to the idioms and patterns of specific programming languages.

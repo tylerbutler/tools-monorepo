@@ -43,17 +43,23 @@ Level 1: Entry Parsing        ← parse(), core key-value extraction
 
 ### Core Types
 
-```pseudocode
-Entry {
+```typescript
+// Core data types
+interface Entry {
   key: string
   value: string
 }
 
-ParseError {
+interface ParseError {
   message: string
   line?: number
   column?: number
 }
+
+// Result type for clean error handling
+type Result<T, E> =
+  | { ok: true; value: T }
+  | { ok: false; error: E }
 ```
 
 ### Functions
@@ -69,12 +75,17 @@ Converts raw CCL text into flat key-value entries.
 - Failure: `ParseError` with descriptive message and position
 
 **Example:**
-```pseudocode
-entries = parse("database.host = localhost\nserver.port = 8080")
-// Result: [
-//   Entry("database.host", "localhost"),
-//   Entry("server.port", "8080")
-// ]
+```typescript
+const result = parse("database.host = localhost\nserver.port = 8080")
+if (result.ok) {
+  // Result: [
+  //   { key: "database.host", value: "localhost" },
+  //   { key: "server.port", value: "8080" }
+  // ]
+  const entries = result.value
+} else {
+  console.error(result.error.message)
+}
 ```
 
 ## Level 2: Complete Config Language (Standard)
@@ -97,14 +108,12 @@ entries = parse("database.host = localhost\nserver.port = 8080")
 - Filtered entry array
 
 **Example:**
-```pseudocode
+```typescript
 // Using filter() (if implemented)
-config_entries = filter(entries, key => !key.startsWith("/"))
+const configEntries = filter(entries, key => !key.startsWith("/"))
 
-// Language-specific alternatives:
-// JavaScript: entries.filter(entry => !entry.key.startsWith("/"))
-// Python: [e for e in entries if not e.key.startswith("/")]
-// C#: entries.Where(e => !e.Key.StartsWith("/"))
+// Or using native TypeScript/JavaScript:
+const configEntries = entries.filter(entry => !entry.key.startsWith("/"))
 ```
 
 #### `combine(left: Entry[], right: Entry[]) → Entry[]`
@@ -121,13 +130,14 @@ Combines two entry arrays, preserving order for duplicate key handling.
 
 ### Core Types
 
-```pseudocode
-CCL = 
-  | CCLString(string)
-  | CCLList(string[])
-  | CCLObject(Map<string, CCL>)
+```typescript
+// Union type for CCL values
+type CCL =
+  | { type: 'string'; value: string }
+  | { type: 'list'; value: string[] }
+  | { type: 'object'; value: Map<string, CCL> }
 
-ObjectError {
+interface ObjectError {
   message: string
   path?: string
 }
@@ -151,15 +161,26 @@ Converts flat entries into hierarchical nested objects using fixed-point algorit
 - Handles empty keys (`= value`) as list items
 
 **Example:**
-```pseudocode
-entries = [Entry("database", "\n  host = localhost\n  port = 5432")]
-objects = build_hierarchy(entries)
-// Result: CCLObject({
-//   "database": CCLObject({
-//     "host": CCLString("localhost"),
-//     "port": CCLString("5432")
-//   })
-// })
+```typescript
+const entries: Entry[] = [
+  { key: "database", value: "\n  host = localhost\n  port = 5432" }
+]
+const result = buildHierarchy(entries)
+if (result.ok) {
+  // Result: {
+  //   type: 'object',
+  //   value: Map({
+  //     "database": {
+  //       type: 'object',
+  //       value: Map({
+  //         "host": { type: 'string', value: "localhost" },
+  //         "port": { type: 'string', value: "5432" }
+  //       })
+  //     }
+  //   })
+  // }
+  const objects = result.value
+}
 ```
 
 ## Level 4: Advanced Features (Optional)
@@ -168,19 +189,19 @@ objects = build_hierarchy(entries)
 
 **Dual Access Support:** All getters support both hierarchical and dotted access patterns:
 
-```pseudocode
+```typescript
 // Both of these work identically:
-get_string(ccl, "database", "host")    // Hierarchical access
-get_string(ccl, "database.host")       // Dotted access
+getString(ccl, "database", "host")    // Hierarchical access
+getString(ccl, "database.host")       // Dotted access
 ```
 
 ### Error Types
 
-```pseudocode
-AccessError {
+```typescript
+interface AccessError {
   message: string
   path: string
-  error_type: "PathNotFound" | "TypeError" | "ValidationError"
+  errorType: "PathNotFound" | "TypeError" | "ValidationError"
 }
 ```
 
@@ -198,10 +219,14 @@ Extracts string value from CCL object.
 - Failure: `AccessError` if path not found
 
 **Example:**
-```pseudocode
+```typescript
 // Both access patterns work:
-host = get_string(ccl, "database", "host")      // ✓
-host = get_string(ccl, "database.host")         // ✓
+const hostResult1 = getString(ccl, "database", "host")      // ✓
+const hostResult2 = getString(ccl, "database.host")         // ✓
+
+if (hostResult1.ok) {
+  const host = hostResult1.value
+}
 ```
 
 #### `get_int(ccl: CCL, ...path) → Result<int, AccessError>`
@@ -249,34 +274,69 @@ Extracts floating-point value with automatic parsing.
 
 ### Recommended Code Reuse Structure
 
-```pseudocode
+```typescript
 // Core reusable functions
-function parse_path(...path_args) → string[] {
-  if path_args.length == 1 and path_args[0].contains(".") {
-    return path_args[0].split(".")  // Dotted access
+function parsePath(...pathArgs: string[]): string[] {
+  if (pathArgs.length === 1 && pathArgs[0].includes(".")) {
+    return pathArgs[0].split(".")  // Dotted access
   } else {
-    return path_args                 // Hierarchical access
+    return pathArgs                 // Hierarchical access
   }
 }
 
-function navigate_path(ccl: CCL, segments: string[]) → Result<CCL, AccessError> {
-  current = ccl
-  for segment in segments {
-    current = current.get(segment) or return Error("Path not found")
+function navigatePath(ccl: CCL, segments: string[]): Result<CCL, AccessError> {
+  let current = ccl
+  for (const segment of segments) {
+    if (current.type !== "object" || !current.value.has(segment)) {
+      return {
+        ok: false,
+        error: {
+          message: "Path not found",
+          path: segments.join("."),
+          errorType: "PathNotFound" as const
+        }
+      }
+    }
+    current = current.value.get(segment)!
   }
-  return Ok(current)
+  return { ok: true, value: current }
 }
 
-function get_raw_value(ccl: CCL, ...path) → Result<string, AccessError> {
-  segments = parse_path(...path)
-  value = navigate_path(ccl, segments)?
-  return value.as_string()
+function getRawValue(ccl: CCL, ...path: string[]): Result<string, AccessError> {
+  const segments = parsePath(...path)
+  const result = navigatePath(ccl, segments)
+  if (!result.ok) return result
+
+  if (result.value.type !== "string") {
+    return {
+      ok: false,
+      error: {
+        message: "Value is not a string",
+        path: segments.join("."),
+        errorType: "TypeError" as const
+      }
+    }
+  }
+  return { ok: true, value: result.value.value }
 }
 
-// All typed getters reuse get_raw_value
-function get_int(ccl: CCL, ...path) → Result<int, AccessError> {
-  raw = get_raw_value(ccl, ...path)?
-  return parse_int(raw) or Error("Invalid integer")
+// All typed getters reuse getRawValue
+function getInt(ccl: CCL, ...path: string[]): Result<number, AccessError> {
+  const rawResult = getRawValue(ccl, ...path)
+  if (!rawResult.ok) return rawResult
+
+  const parsed = parseInt(rawResult.value)
+  if (isNaN(parsed)) {
+    return {
+      ok: false,
+      error: {
+        message: "Invalid integer",
+        path: path.join("."),
+        errorType: "ValidationError" as const
+      }
+    }
+  }
+  return { ok: true, value: parsed }
 }
 ```
 

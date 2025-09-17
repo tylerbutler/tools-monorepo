@@ -21,40 +21,36 @@ implementation_examples:
 ## Quick Start
 
 1. **Study the specification** - Read the [Getting Started Guide](/getting-started)
-2. **Choose your implementation path** - See the implementation levels section below to pick your level  
+2. **Choose your API approach** - Organize around core APIs rather than implementation levels
 3. **Use the test suite** - Language-agnostic JSON tests validate your implementation
 4. **Follow the reference** - OCaml reference implementation at https://github.com/chshersh/ccl
 5. **Check the API guide** - See [API Reference](/api-reference) for recommended patterns
 
-## CCL Implementation Levels
+## Core CCL APIs
 
-CCL implementations can choose their level of support based on their specific needs. This section breaks down the different levels and helps you decide which is right for your use case.
+CCL implementations should organize around core APIs rather than arbitrary levels. This API-focused approach provides clearer implementation targets and better composability.
 
-### Quick Decision Guide
+### Essential APIs
 
-**Not sure which level you need?** Use this matrix:
+**Core Parsing APIs:**
+- `parse(text)` → `List<Entry>` - Convert CCL text to flat key-value entries
+- `filter(entries, predicate)` → `List<Entry>` - Filter entries (e.g., remove comments)
+- `build_hierarchy(entries)` → `Object` - Convert flat entries to nested structure
 
-| Need | Level 1 | Level 2 | Level 3 | Level 4 |
-|------|---------|---------|---------|---------|
-| **Minimal footprint** | ✅ | ❌ | ❌ | ❌ |
-| **Custom processing** | ✅ | ⚠️ | ⚠️ | ❌ |
-| **Production configs** | ❌ | ✅ | ✅ | ✅ |
-| **Comments** | Manual | ✅ | ✅ | ✅ |
-| **Hierarchy** | Manual | ✅ | ✅ | ✅ |
-| **Dotted keys** | ❌ | ❌ | ✅ | ✅ |
-| **Config merging** | Manual | Manual | ✅ | ✅ |
-| **Type safety** | ❌ | ❌ | ❌ | ✅ |
+**Access APIs:**
+- `get(object, path)` → `Value` - Retrieve values by dot-notation path
+- `get_string(object, path)` → `String` - Type-safe string access
+- `get_int(object, path)` → `Integer` - Type-safe integer access with parsing
 
-**Recommendation**: Start with **Level 2** for most applications - it provides everything needed for practical configuration with good balance of features vs complexity.
+### API Implementation Priority
 
-### When to Choose Each Level
+| Priority | APIs | Use Case | Implementation Time |
+|----------|------|----------|-------------------|
+| **Essential** | `parse`, `filter`, `build_hierarchy` | Basic CCL support | 3-5 days |
+| **Recommended** | `get`, error handling | Production usage | +2-3 days |
+| **Advanced** | Typed accessors, validation | Type safety | +1-2 weeks |
 
-| If you need... | Choose | Time to implement |
-|----------------|--------|-------------------|
-| Rapid prototyping, minimal footprint | **Level 1** | 1-2 days |
-| Production configs with comments/hierarchy | **Level 2** | 3-5 days |
-| Advanced features, config merging | **Level 3** | 1-2 weeks |
-| Type safety, schema validation | **Level 4** | 2-4 weeks |
+**Recommendation**: Start with essential APIs for a functional CCL implementation, then add recommended APIs for production readiness.
 
 ## Feature-Based Test Architecture
 
@@ -62,11 +58,11 @@ The CCL test suite uses **structured tagging** for precise implementation target
 
 ### Tag Categories
 
-#### Function Tags (`function:*`) - Required CCL functions:
-- `function:parse` - Basic key-value parsing (Level 1)
-- `function:filter`, `function:combine` - Entry processing (Level 2)
-- `function:build-hierarchy` - Object construction (Level 3)
-- `function:get-string`, `function:get-int`, `function:get-bool` - Typed access (Level 4)
+#### Function Tags (`function:*`) - Core CCL APIs:
+- `function:parse` - Essential: Text to entry parsing
+- `function:filter`, `function:combine` - Essential: Entry processing
+- `function:build-hierarchy` - Essential: Object construction
+- `function:get-string`, `function:get-int`, `function:get-bool` - Advanced: Typed access
 
 #### Feature Tags (`feature:*`) - Optional language features:
 - `feature:comments` - `/=` comment syntax
@@ -91,9 +87,11 @@ Choose your CCL implementation level based on your needs:
 **What you get:** The 4 core constructs (key-value pairs, empty values, empty keys, multiline values)
 **Use case:** Rapid prototyping, simple configurations, custom processing
 
-```pseudocode
-entries = parse(text)
-// Result: List<Entry> with all key-value pairs
+```typescript
+const result = parse(text)
+if (result.ok) {
+  const entries = result.value  // Entry[] with all key-value pairs
+}
 ```
 
 **When to use Level 1:**
@@ -105,20 +103,20 @@ entries = parse(text)
 Start here - handles the 4 core constructs and provides the foundation for all higher-level CCL operations.
 
 #### Essential Algorithm
-```pseudocode
-function parse(text: string) -> Result<List<Entry>, ParseError> {
-  entries = []
-  lines = split_lines_with_positions(text)
+```typescript
+function parse(text: string): Result<Entry[], ParseError> {
+  const entries: Entry[] = []
+  const lines = text.split('\n')
   
-  for line in lines {
-    if line.contains("=") {
-      (key, value) = split_on_first_equals(line)
-      key = trim_key(key)
-      value = extract_initial_value(value)
-      
+  for (const line of lines) {
+    if (line.includes('=')) {
+      const [key, value] = line.split('=', 2)
+      const trimmedKey = key.trim()
+      const initialValue = value.trim()
+
       // Handle multiline continuation
-      while next_line_is_continuation(lines, current_index) {
-        continuation = get_continuation_content(lines, current_index + 1)
+      while (nextLineIsContinuation(lines, currentIndex)) {
+        const continuation = getContinuationContent(lines, currentIndex + 1)
         value += "\n" + continuation
         current_index += 1
       }
@@ -157,11 +155,15 @@ function parse(text: string) -> Result<List<Entry>, ParseError> {
 **Goal:** Everything needed for practical configuration
 **What you get:** Level 1 + comment filtering + hierarchy construction
 
-```pseudocode
-entries = parse(text)                           // Level 1
-config_entries = filter(entries, ...)          // Filter unwanted keys
-objects = build_hierarchy(config_entries)       // Build hierarchy
-// Result: Nested configuration object
+```typescript
+const parseResult = parse(text)                        // Essential API
+if (!parseResult.ok) throw parseResult.error
+
+const configEntries = entries.filter(e => !e.key.startsWith('/'))  // Filter unwanted keys
+const hierarchyResult = buildHierarchy(configEntries)               // Build hierarchy
+if (hierarchyResult.ok) {
+  const objects = hierarchyResult.value  // Nested configuration object
+}
 ```
 
 **When to use Level 2:**
@@ -174,13 +176,13 @@ objects = build_hierarchy(config_entries)       // Build hierarchy
 **Goal:** Features most implementations want
 **What you get:** Level 2 + dotted keys + merging + edge cases
 
-```pseudocode
+```typescript
 // Dotted key access
-host1 = get(config, "database", "host")      // Hierarchical
-host2 = get(config, "database.host")         // Dotted
+const host1Result = get(config, "database", "host")      // Hierarchical
+const host2Result = get(config, "database.host")         // Dotted
 
 // Configuration merging
-final = merge(base_config, env_overrides)
+const final = merge(baseConfig, envOverrides)
 ```
 
 **When to use Level 3:**
@@ -208,11 +210,11 @@ function build_hierarchy(entries: List<Entry>) -> CCL {
   return result
 }
 
-function contains_ccl_syntax(value: string) -> boolean {
+function containsCCLSyntax(value: string): boolean {
   // Check if value looks like CCL (contains "=")
-  lines = split_lines(value)
-  for line in lines {
-    if trim(line).contains("=") {
+  const lines = value.split('\n')
+  for (const line of lines) {
+    if (line.trim().includes('=')) {
       return true
     }
   }
@@ -221,18 +223,18 @@ function contains_ccl_syntax(value: string) -> boolean {
 ```
 
 #### Duplicate Key Handling
-```pseudocode
-function merge_into_result(result: CCL, key: string, value: any) {
-  if key == "" {
+```typescript
+function mergeIntoResult(result: CCL, key: string, value: any): void {
+  if (key === "") {
     // Empty keys create lists
-    if result[""] exists {
-      result[""].append(value)
+    if (result[""] !== undefined) {
+      result[""].push(value)
     } else {
       result[""] = [value]
     }
-  } else if result[key] exists {
+  } else if (result[key] !== undefined) {
     // Merge duplicate keys
-    result[key] = deep_merge(result[key], value)
+    result[key] = deepMerge(result[key], value)
   } else {
     result[key] = value
   }
@@ -243,13 +245,17 @@ function merge_into_result(result: CCL, key: string, value: any) {
 **Goal:** Nice-to-have, implementation-specific features
 **What you get:** Level 3 + typed APIs + validation + extensions
 
-```pseudocode
+```typescript
 // Type-safe access with consistent error handling
-port = get_int(config, "database", "port")    // Returns int or error
-debug = get_bool(config, "debug")             // Handles "true"/"false"/"1"/"0"
+const portResult = getInt(config, "database", "port")    // Returns Result<number, Error>
+const debugResult = getBool(config, "debug")             // Handles "true"/"false"/"1"/"0"
+
+if (portResult.ok) {
+  const port = portResult.value
+}
 
 // Schema validation
-validate_schema(config, schema)               // Ensure structure/types
+validateSchema(config, schema)               // Ensure structure/types
 ```
 
 **When to use Level 4:**
@@ -262,15 +268,15 @@ validate_schema(config, schema)               // Ensure structure/types
 
 **Important**: CCL APIs provide general `filter()`, not comment-specific functions. `/=` is the standard comment marker, but filtering is flexible:
 
-```pseudocode
+```typescript
 // General-purpose key filtering function
-function filter(entries: List<Entry>, predicate: (key: string) -> bool) -> List<Entry> {
-  return entries.filter(entry -> predicate(entry.key))
+function filter(entries: Entry[], predicate: (key: string) => boolean): Entry[] {
+  return entries.filter(entry => predicate(entry.key))
 }
 
-// Standard comment filtering (/ = standard marker)
-function get_config_entries(entries: List<Entry>) -> List<Entry> {
-  return filter(entries, key -> !key.starts_with("/"))
+// Standard comment filtering (/= is standard marker)
+function getConfigEntries(entries: Entry[]): Entry[] {
+  return filter(entries, key => !key.startsWith("/"))
 }
 
 // Custom comment filtering

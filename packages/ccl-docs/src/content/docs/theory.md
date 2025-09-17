@@ -5,6 +5,8 @@ description: Mathematical foundations of CCL for implementers interested in the 
 
 # Mathematical Background
 
+> **⚠️ Note**: This document needs review for accuracy.
+>
 > **Note for Implementers**: This section provides mathematical foundations that some implementers may find useful for understanding CCL's design principles. This is optional background material - you can build a complete CCL implementation without needing this theory.
 
 CCL's design is grounded in mathematical principles from abstract algebra and category theory. This foundation provides elegant composition properties and ensures consistent behavior across different implementations.

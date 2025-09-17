@@ -7,7 +7,7 @@ description: A comprehensive introduction to the Categorical Configuration Langu
 
 ## What is CCL?
 
-CCL (Categorical Configuration Language) is a **minimal configuration language** built on simple key-value pairs. Everything in CCL - nesting, lists, comments, typing - builds naturally from this foundation.
+CCL (Categorical Configuration Language) is a minimalist configuration language based on simple key-value pairs. It's designed around mathematical principles from Category Theory, providing elegant composition and recursive structure capabilities.
 
 **Key design principles:**
 - **Simplicity**: Everything starts with `key = value`
@@ -111,7 +111,7 @@ server =
 
 ### Alternative: Flat Structure with Dot Notation
 
-You can also use literal dot keys (where dots are part of the key name):
+You can also use literal dot keys where dots are part of the key name itself:
 
 ```ccl
 database.host = localhost
@@ -120,14 +120,12 @@ server.port = 8080
 server.debug = true
 ```
 
-**Key Differences:**
-- **Nested sections**: Create actual hierarchical structure
-- **Literal dot keys**: Keys are literal strings like `"database.host"`
-- **Result**: Both approaches produce accessible nested structure
+**Important**: These are treated as literal key strings (`"database.host"`, `"database.port"`, etc.) - no hierarchy is provided for dotted keys automatically. See [Dotted Keys FAQ](/ccl-faq#dotted-keys) for details.
 
-**When to use each:**
-- **Nested sections**: Better readability for complex configurations
-- **Literal dot keys**: Direct parsing, better for flat or simple configurations
+**Key Differences:**
+- **Nested sections**: Create actual hierarchical structure through indentation
+- **Literal dot keys**: Flat key strings that your application must interpret
+- **Mixing notation**: Possible but remember dotted keys remain flat strings
 
 ## Lists
 
@@ -149,9 +147,9 @@ ports =
 
 Lists in CCL use empty keys (`=`) to represent array items. Each `= value` becomes an item in the list.
 
-## Comments and Documentation
+## Comments
 
-CCL comments are just regular entries with special keys. The standard marker is `/=`:
+CCL comments are just regular entries with special keys. The standard and preferred marker is `/=`:
 
 ```ccl
 /= Database Configuration
@@ -167,12 +165,20 @@ server =
   debug = true
 ```
 
-**Key insight**: Comments are regular key-value entries, not special syntax. Any Level 1 parser handles them automatically. To use them as documentation:
+**Key insight**: Comments are regular key-value entries, not special syntax. Any Level 1 parser handles them automatically. While `/=` is the standard and preferred comment marker, implementations could support other comment keys. To use them as documentation:
 
-```pseudocode
+```typescript
+// TypeScript Result type for clean error handling
+type Result<T, E> =
+  | { ok: true; value: T }
+  | { ok: false; error: E }
+
 // Standard pattern - filter keys starting with "/"
-config_entries = filter(all_entries, key => !key.startsWith("/"))
-config = build_hierarchy(config_entries)
+const configEntries = allEntries.filter(entry => !entry.key.startsWith("/"))
+const configResult = buildHierarchy(configEntries)
+if (configResult.ok) {
+  const config = configResult.value
+}
 ```
 
 ## The Four Core Constructs
@@ -244,7 +250,7 @@ database.host = localhost
 
 ### Multiline Values
 
-CCL supports multiline values using indentation:
+CCL supports multiline values using indentation. **Requirement**: Multiline values must be indented to distinguish them from new key-value pairs:
 
 ```ccl
 description = This is a multiline
@@ -252,6 +258,8 @@ description = This is a multiline
   multiple lines with preserved
   indentation
 ```
+
+**Important**: Without indentation, each line would be treated as a separate key-value pair.
 
 ## Next Steps
 
