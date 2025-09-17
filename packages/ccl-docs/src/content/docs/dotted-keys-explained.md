@@ -161,10 +161,10 @@ database.port = 5432  # This creates a separate "database.port" string key!
 
 ## Related Documentation
 
-- **[Syntax Reference](syntax-reference.md#dotted-keys-experimental-feature)** - Current experimental status
-- **[Higher-Level APIs](higher-level-apis.md)** - Implementation compatibility matrix  
-- **[Core Concepts](core-concepts.md)** - Understanding CCL's data model
-- **[Implementation Levels](implementation-levels.md)** - When to add dotted representation support
+- **[Syntax Reference](/syntax-reference)** - Current experimental status
+- **[Higher-Level APIs](/higher-level-apis)** - Implementation compatibility matrix
+- **[CCL FAQ](/ccl-faq)** - Common questions about dotted keys
+- **[Implementing CCL](/implementing-ccl)** - When to add dotted representation support
 
 ---
 

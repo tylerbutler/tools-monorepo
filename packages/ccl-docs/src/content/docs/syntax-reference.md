@@ -84,7 +84,7 @@ database =
 
 **⚠️ Experimental Feature**: Some implementations provide "dotted representation of hierarchical data" where both access patterns work for hierarchical structures. This is implementation-specific and experimental.
 
-**For a complete explanation of this distinction, see [Dotted Keys Explained](dotted-keys-explained.md).**
+**For a complete explanation of this distinction, see [Dotted Keys Explained](/dotted-keys-explained).**
 
 ### Mixed Lists and Objects
 ```ccl

@@ -129,8 +129,8 @@ When implementing these APIs:
 For detailed implementation-specific usage:
 
 - **OCaml**: See [chshersh/ccl](https://github.com/chshersh/ccl) for reference behavior
-- **Go**: See [ccl-go documentation](../ccl-go/docs/) for full API and experimental features
-- **Gleam**: See [ccl_gleam documentation](../ccl_gleam/docs/) for functional patterns
+- **Go**: See [CCL implementations](https://github.com/chshersh/ccl) for full API and experimental features
+- **Gleam**: See [CCL implementations](https://github.com/chshersh/ccl) for functional patterns
 
 ---
 
