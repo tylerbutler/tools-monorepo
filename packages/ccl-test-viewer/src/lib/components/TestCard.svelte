@@ -39,26 +39,35 @@
 </script>
 
 <Card
-	class={`cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] ${getCategoryColor(test)}`}
+	class={`cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${getCategoryColor(test)}`}
 	onclick={onClick}
+	role="button"
+	tabindex="0"
+	aria-label={`View test case: ${test.name}. Functions: ${test.functions.join(', ')}. Expected: ${formatExpected(test.expected)}`}
+	onkeydown={(e) => {
+		if ((e.key === 'Enter' || e.key === ' ') && onClick) {
+			e.preventDefault();
+			onClick();
+		}
+	}}
 >
 	<CardHeader class="pb-3">
 		<div class="flex items-start justify-between gap-2">
 			<CardTitle class="text-sm font-medium leading-5 text-gray-900">
 				{test.name}
 			</CardTitle>
-			<Eye class="h-4 w-4 text-gray-400 shrink-0" />
+			<Eye class="h-4 w-4 text-gray-400 shrink-0" aria-hidden="true" />
 		</div>
 
 		<!-- Function and Feature Badges -->
-		<div class="flex flex-wrap gap-1 mt-2">
+		<div class="flex flex-wrap gap-1 mt-2" role="list" aria-label="Test metadata">
 			{#each test.functions as func}
-				<Badge variant="function" class="text-xs">
+				<Badge variant="function" class="text-xs" role="listitem" aria-label={`Function: ${func}`}>
 					{func}
 				</Badge>
 			{/each}
 			{#each test.features as feature}
-				<Badge variant="feature" class="text-xs">
+				<Badge variant="feature" class="text-xs" role="listitem" aria-label={`Feature: ${feature}`}>
 					{feature}
 				</Badge>
 			{/each}
@@ -69,32 +78,39 @@
 		<!-- Input Preview with Syntax Highlighting -->
 		<div class="mb-3">
 			<div class="flex items-center gap-1 mb-1">
-				<Code class="h-3 w-3 text-gray-500" />
-				<span class="text-xs font-medium text-gray-600">Input</span>
+				<Code class="h-3 w-3 text-gray-500" aria-hidden="true" />
+				<span class="text-xs font-medium text-gray-600" id={`input-label-${test.name}`}>Input</span>
 			</div>
-			<CodeHighlight
-				code={truncateInput(test.input)}
-				language="ccl"
-				class="text-xs"
-			/>
+			<div aria-labelledby={`input-label-${test.name}`} role="code">
+				<CodeHighlight
+					code={truncateInput(test.input)}
+					language="ccl"
+					class="text-xs"
+					aria-label={`CCL input code: ${truncateInput(test.input)}`}
+				/>
+			</div>
 		</div>
 
 		<!-- Expected Output -->
 		<div class="mb-3">
 			<div class="flex items-center gap-1 mb-1">
-				<ArrowRight class="h-3 w-3 text-gray-500" />
-				<span class="text-xs font-medium text-gray-600">Expected</span>
+				<ArrowRight class="h-3 w-3 text-gray-500" aria-hidden="true" />
+				<span class="text-xs font-medium text-gray-600" id={`expected-label-${test.name}`}>Expected</span>
 			</div>
-			<div class="text-xs text-gray-700 bg-white rounded p-2 border">
+			<div
+				class="text-xs text-gray-700 bg-white rounded p-2 border"
+				aria-labelledby={`expected-label-${test.name}`}
+				role="status"
+			>
 				{formatExpected(test.expected)}
 			</div>
 		</div>
 
 		<!-- Test Metadata -->
-		<div class="flex justify-between items-center text-xs text-gray-500">
-			<span>{test.validation}</span>
+		<div class="flex justify-between items-center text-xs text-gray-500" role="group" aria-label="Test metadata">
+			<span aria-label={`Validation type: ${test.validation}`}>{test.validation}</span>
 			{#if test.behaviors.length > 0}
-				<span class="text-purple-600">
+				<span class="text-purple-600" aria-label={`${test.behaviors.length} behavior${test.behaviors.length === 1 ? '' : 's'} defined`}>
 					{test.behaviors.length} behavior{test.behaviors.length === 1 ? '' : 's'}
 				</span>
 			{/if}

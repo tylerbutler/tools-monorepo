@@ -3,23 +3,58 @@
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="description" content="CCL Test Suite Viewer - Interactive test result visualization" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="description" content="CCL Test Suite Viewer - Interactive test result visualization for 366 CCL tests across 12 categories" />
 		<meta name="author" content="Tyler Butler" />
+		<meta name="keywords" content="CCL, test viewer, configuration language, test results, visualization, SvelteKit" />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#ffffff" />
+
+		<!-- Performance optimizations -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+		<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+		<!-- Security headers -->
+		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+		<meta http-equiv="X-Frame-Options" content="DENY" />
+		<meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+		<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="CCL Test Suite Viewer" />
-		<meta property="og:description" content="Interactive test result visualization for CCL implementations" />
+		<meta property="og:description" content="Interactive visualization of 366 CCL tests across 12 categories. Browse, filter, and explore test cases for CCL implementations." />
+		<meta property="og:url" content="https://ccl-test-viewer.tylerbutler.com" />
+		<meta property="og:site_name" content="CCL Test Suite Viewer" />
 
 		<!-- Twitter -->
-		<meta property="twitter:card" content="summary" />
+		<meta property="twitter:card" content="summary_large_image" />
 		<meta property="twitter:title" content="CCL Test Suite Viewer" />
-		<meta property="twitter:description" content="Interactive test result visualization for CCL implementations" />
+		<meta property="twitter:description" content="Interactive visualization of 366 CCL tests across 12 categories" />
+		<meta property="twitter:creator" content="@tylerbutler" />
+
+		<!-- Apple touch icon and manifest -->
+		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
+		<link rel="manifest" href="%sveltekit.assets%/manifest.json" />
 
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover" class="bg-background text-foreground">
 		<div style="display: contents">%sveltekit.body%</div>
+
+		<!-- Service Worker Registration -->
+		<script>
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.register('/service-worker.js')
+						.then((registration) => {
+							console.log('SW registered: ', registration);
+						})
+						.catch((registrationError) => {
+							console.log('SW registration failed: ', registrationError);
+						});
+				});
+			}
+		</script>
 	</body>
 </html>
