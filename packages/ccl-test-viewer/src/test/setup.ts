@@ -1,15 +1,15 @@
-import { vi } from 'vitest';
-import '@testing-library/jest-dom';
+import { vi } from "vitest";
+import "@testing-library/jest-dom";
 
 // Mock SvelteKit modules
-vi.mock('$app/environment', () => ({
+vi.mock("$app/environment", () => ({
 	browser: false,
 	dev: true,
 	building: false,
-	version: 'test'
+	version: "test",
 }));
 
-vi.mock('$app/navigation', () => ({
+vi.mock("$app/navigation", () => ({
 	goto: vi.fn(),
 	invalidate: vi.fn(),
 	invalidateAll: vi.fn(),
@@ -18,25 +18,25 @@ vi.mock('$app/navigation', () => ({
 	beforeNavigate: vi.fn(),
 	afterNavigate: vi.fn(),
 	pushState: vi.fn(),
-	replaceState: vi.fn()
+	replaceState: vi.fn(),
 }));
 
-vi.mock('$app/stores', () => ({
+vi.mock("$app/stores", () => ({
 	page: {
-		subscribe: vi.fn(() => () => {})
+		subscribe: vi.fn(() => () => {}),
 	},
 	navigating: {
-		subscribe: vi.fn(() => () => {})
+		subscribe: vi.fn(() => () => {}),
 	},
 	updated: {
-		subscribe: vi.fn(() => () => {})
-	}
+		subscribe: vi.fn(() => () => {}),
+	},
 }));
 
 // Mock window.matchMedia for responsive design tests
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
 	writable: true,
-	value: vi.fn().mockImplementation(query => ({
+	value: vi.fn().mockImplementation((query) => ({
 		matches: false,
 		media: query,
 		onchange: null,
@@ -63,8 +63,8 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 }));
 
 // Setup global test data
-vi.stubGlobal('testData', {
+vi.stubGlobal("testData", {
 	categories: [],
 	stats: {},
-	searchIndex: []
+	searchIndex: [],
 });

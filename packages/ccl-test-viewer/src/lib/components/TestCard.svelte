@@ -1,41 +1,42 @@
 <script lang="ts">
-	import { Card, CardContent, CardHeader, CardTitle, Badge } from '$lib/components/ui/index.js';
-	import type { GeneratedTest } from '$lib/data/types.js';
-	import { Code, Eye, ArrowRight } from 'lucide-svelte';
-	import CodeHighlight from './CodeHighlight.svelte';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/index.js";
+import type { GeneratedTest } from "$lib/data/types.js";
+import { ArrowRight, Code, Eye } from "lucide-svelte";
+import CodeHighlight from "./CodeHighlight.svelte";
 
-	interface Props {
-		test: GeneratedTest;
-		onClick?: () => void;
-	}
+interface Props {
+	test: GeneratedTest;
+	onClick?: () => void;
+}
 
-	let { test, onClick }: Props = $props();
+let { test, onClick }: Props = $props();
 
-	// Helper to format expected output for display
-	function formatExpected(expected: GeneratedTest['expected']): string {
-		if (expected.error) return 'Error expected';
-		if (expected.entries) return `${expected.count} entries`;
-		if (expected.object) return 'Object result';
-		if (expected.list) return `List (${expected.list.length} items)`;
-		if (expected.value !== undefined) return `Value: ${expected.value}`;
-		return `Count: ${expected.count}`;
-	}
+// Helper to format expected output for display
+function formatExpected(expected: GeneratedTest["expected"]): string {
+	if (expected.error) return "Error expected";
+	if (expected.entries) return `${expected.count} entries`;
+	if (expected.object) return "Object result";
+	if (expected.list) return `List (${expected.list.length} items)`;
+	if (expected.value !== undefined) return `Value: ${expected.value}`;
+	return `Count: ${expected.count}`;
+}
 
-	// Helper to truncate long input
-	function truncateInput(input: string, maxLength = 100): string {
-		if (input.length <= maxLength) return input;
-		return input.substring(0, maxLength) + '...';
-	}
+// Helper to truncate long input
+function truncateInput(input: string, maxLength = 100): string {
+	if (input.length <= maxLength) return input;
+	return input.substring(0, maxLength) + "...";
+}
 
-	// Helper to get test category color
-	function getCategoryColor(test: GeneratedTest): string {
-		// Derive category from common patterns in test names or functions
-		if (test.functions.includes('parse')) return 'bg-blue-50 border-blue-200';
-		if (test.functions.includes('get_string') || test.functions.includes('get_int')) return 'bg-green-50 border-green-200';
-		if (test.functions.includes('build_hierarchy')) return 'bg-purple-50 border-purple-200';
-		if (test.name.includes('error') || test.expected.error) return 'bg-red-50 border-red-200';
-		return 'bg-gray-50 border-gray-200';
-	}
+// Helper to get test category color
+function getCategoryColor(test: GeneratedTest): string {
+	// Derive category from common patterns in test names or functions
+	if (test.functions.includes("parse")) return "bg-blue-50 border-blue-200";
+	if (test.functions.includes("get_string") || test.functions.includes("get_int"))
+		return "bg-green-50 border-green-200";
+	if (test.functions.includes("build_hierarchy")) return "bg-purple-50 border-purple-200";
+	if (test.name.includes("error") || test.expected.error) return "bg-red-50 border-red-200";
+	return "bg-gray-50 border-gray-200";
+}
 </script>
 
 <Card

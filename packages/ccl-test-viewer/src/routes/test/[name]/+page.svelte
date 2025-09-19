@@ -1,59 +1,59 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import { appState, initializeApp } from '$lib/stores.js';
-	import TestDetail from '$lib/components/TestDetail.svelte';
-	import { Button } from '$lib/components/ui/index.js';
-	import type { GeneratedTest } from '$lib/data/types.js';
+import { goto } from "$app/navigation";
+import { page } from "$app/stores";
+import TestDetail from "$lib/components/TestDetail.svelte";
+import { Button } from "$lib/components/ui/index.js";
+import type { GeneratedTest } from "$lib/data/types.js";
+import { appState, initializeApp } from "$lib/stores.js";
+import { onMount } from "svelte";
 
-	// Local state
-	let loading = $state(true);
-	let error = $state<string | null>(null);
-	let currentTest = $state<GeneratedTest | null>(null);
+// Local state
+let loading = $state(true);
+let error = $state<string | null>(null);
+let currentTest = $state<GeneratedTest | null>(null);
 
-	// Get test name from URL params
-	const testName = $derived(decodeURIComponent($page.params.name ?? ''));
+// Get test name from URL params
+const testName = $derived(decodeURIComponent($page.params.name ?? ""));
 
-	// Initialize and find the test
-	onMount(async () => {
-		try {
-			// Load data if not already loaded
-			if (appState.testCategories.length === 0) {
-				const success = await initializeApp();
-				if (!success) {
-					error = 'Failed to load test data';
-					return;
-				}
-			}
-
-			// Find the test by name
-			findTest();
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Unknown error occurred';
-		} finally {
-			loading = false;
-		}
-	});
-
-	function findTest() {
-		// Search through all categories for the test
-		for (const category of appState.testCategories) {
-			const foundTest = category.tests.find(test => test.name === testName);
-			if (foundTest) {
-				currentTest = foundTest;
-				appState.selectTest(foundTest);
+// Initialize and find the test
+onMount(async () => {
+	try {
+		// Load data if not already loaded
+		if (appState.testCategories.length === 0) {
+			const success = await initializeApp();
+			if (!success) {
+				error = "Failed to load test data";
 				return;
 			}
 		}
 
-		// Test not found
-		error = `Test "${testName}" not found`;
+		// Find the test by name
+		findTest();
+	} catch (err) {
+		error = err instanceof Error ? err.message : "Unknown error occurred";
+	} finally {
+		loading = false;
+	}
+});
+
+function findTest() {
+	// Search through all categories for the test
+	for (const category of appState.testCategories) {
+		const foundTest = category.tests.find((test) => test.name === testName);
+		if (foundTest) {
+			currentTest = foundTest;
+			appState.selectTest(foundTest);
+			return;
+		}
 	}
 
-	function handleBack() {
-		goto('/browse');
-	}
+	// Test not found
+	error = `Test "${testName}" not found`;
+}
+
+function handleBack() {
+	goto("/browse");
+}
 </script>
 
 <svelte:head>

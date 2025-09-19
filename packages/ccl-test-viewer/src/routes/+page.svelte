@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { Button } from '$lib/components/ui';
-	import { ArrowRight } from 'lucide-svelte';
-	import { appState, initializeApp } from '$lib/stores.js';
-	import { goto } from '$app/navigation';
-	import StatsDashboard from '$lib/components/StatsDashboard.svelte';
+import { goto } from "$app/navigation";
+import StatsDashboard from "$lib/components/StatsDashboard.svelte";
+import { Button } from "$lib/components/ui";
+import { appState, initializeApp } from "$lib/stores.js";
+import { ArrowRight } from "lucide-svelte";
+import { onMount } from "svelte";
 
-	// Local state
-	let loading = $state(true);
+// Local state
+let loading = $state(true);
 
-	// Initialize data on mount
-	onMount(async () => {
-		await initializeApp();
-		loading = false;
-	});
+// Initialize data on mount
+onMount(async () => {
+	await initializeApp();
+	loading = false;
+});
 
-	// Navigation handlers
-	function viewAllTests() {
-		goto('/browse');
-	}
+// Navigation handlers
+function viewAllTests() {
+	goto("/browse");
+}
 </script>
 
 <svelte:head>

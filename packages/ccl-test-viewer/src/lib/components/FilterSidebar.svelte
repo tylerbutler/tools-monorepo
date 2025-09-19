@@ -1,53 +1,62 @@
 <script lang="ts">
-	import { Card, CardContent, CardHeader, CardTitle, Input, Checkbox, Badge, Button } from '$lib/components/ui/index.js';
-	import { appState, type FilterState } from '$lib/stores.js';
-	import { Search, X, Filter, ChevronDown, ChevronRight } from 'lucide-svelte';
-	import { AVAILABLE_FUNCTIONS, AVAILABLE_FEATURES, AVAILABLE_BEHAVIORS } from '$lib/data/types.js';
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	Checkbox,
+	Input,
+} from "$lib/components/ui/index.js";
+import { AVAILABLE_BEHAVIORS, AVAILABLE_FEATURES, AVAILABLE_FUNCTIONS } from "$lib/data/types.js";
+import { appState, type FilterState } from "$lib/stores.js";
+import { ChevronDown, ChevronRight, Filter, Search, X } from "lucide-svelte";
 
-	// Local state for collapsible sections
-	let functionsExpanded = $state(true);
-	let featuresExpanded = $state(true);
-	let behaviorsExpanded = $state(true);
-	let categoriesExpanded = $state(true);
+// Local state for collapsible sections
+let functionsExpanded = $state(true);
+let featuresExpanded = $state(true);
+let behaviorsExpanded = $state(true);
+let categoriesExpanded = $state(true);
 
-	// Derived stats for badges
-	const functionCounts = $derived.by(() => {
-		if (!appState.testStats) return {};
-		return appState.testStats.functions;
-	});
+// Derived stats for badges
+const functionCounts = $derived.by(() => {
+	if (!appState.testStats) return {};
+	return appState.testStats.functions;
+});
 
-	const featureCounts = $derived.by(() => {
-		if (!appState.testStats) return {};
-		return appState.testStats.features;
-	});
+const featureCounts = $derived.by(() => {
+	if (!appState.testStats) return {};
+	return appState.testStats.features;
+});
 
-	const behaviorCounts = $derived.by(() => {
-		if (!appState.testStats) return {};
-		return appState.testStats.behaviors;
-	});
+const behaviorCounts = $derived.by(() => {
+	if (!appState.testStats) return {};
+	return appState.testStats.behaviors;
+});
 
-	const categoryCounts = $derived.by(() => {
-		if (!appState.testStats) return {};
-		return appState.testStats.categories;
-	});
+const categoryCounts = $derived.by(() => {
+	if (!appState.testStats) return {};
+	return appState.testStats.categories;
+});
 
-	// Helper functions
-	function handleSearchInput(event: Event) {
-		const target = event.target as HTMLInputElement;
-		appState.setSearchQuery(target.value);
-	}
+// Helper functions
+function handleSearchInput(event: Event) {
+	const target = event.target as HTMLInputElement;
+	appState.setSearchQuery(target.value);
+}
 
-	function toggleFilter(type: keyof FilterState, key: string) {
-		appState.toggleFilter(type, key);
-	}
+function toggleFilter(type: keyof FilterState, key: string) {
+	appState.toggleFilter(type, key);
+}
 
-	function clearSearch() {
-		appState.setSearchQuery('');
-	}
+function clearSearch() {
+	appState.setSearchQuery("");
+}
 
-	function getActiveFilterCount(type: keyof FilterState): number {
-		return Object.values(appState.activeFilters[type]).filter(Boolean).length;
-	}
+function getActiveFilterCount(type: keyof FilterState): number {
+	return Object.values(appState.activeFilters[type]).filter(Boolean).length;
+}
 </script>
 
 <aside

@@ -1,37 +1,37 @@
 <script lang="ts">
-	import '../app.css';
-	import { Button } from '$lib/components/ui/index.js';
-	import { Home, Search, FileText } from 'lucide-svelte';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
+import "../app.css";
+import { goto } from "$app/navigation";
+import { page } from "$app/stores";
+import { Button } from "$lib/components/ui/index.js";
+import { FileText, Home, Search } from "lucide-svelte";
 
-	interface Props {
-		children: any;
+interface Props {
+	children: any;
+}
+
+let { children }: Props = $props();
+
+// Navigation state
+const currentPath = $derived($page.url.pathname);
+const isHomePage = $derived(currentPath === "/");
+const isBrowsePage = $derived(currentPath === "/browse");
+
+// Skip link functionality
+function skipToMain() {
+	const mainElement = document.getElementById("main-content");
+	if (mainElement) {
+		mainElement.focus();
+		mainElement.scrollIntoView();
 	}
+}
 
-	let { children }: Props = $props();
-
-	// Navigation state
-	const currentPath = $derived($page.url.pathname);
-	const isHomePage = $derived(currentPath === '/');
-	const isBrowsePage = $derived(currentPath === '/browse');
-
-	// Skip link functionality
-	function skipToMain() {
-		const mainElement = document.getElementById('main-content');
-		if (mainElement) {
-			mainElement.focus();
-			mainElement.scrollIntoView();
-		}
-	}
-
-	// Focus management for route changes
-	$effect(() => {
-		// Announce route changes to screen readers
-		const routeName = isHomePage ? 'Dashboard' : isBrowsePage ? 'Browse Tests' : 'Test Detail';
-		// Update document title for accessibility
-		document.title = `${routeName} - CCL Test Suite Viewer`;
-	});
+// Focus management for route changes
+$effect(() => {
+	// Announce route changes to screen readers
+	const routeName = isHomePage ? "Dashboard" : isBrowsePage ? "Browse Tests" : "Test Detail";
+	// Update document title for accessibility
+	document.title = `${routeName} - CCL Test Suite Viewer`;
+});
 </script>
 
 <div class="min-h-screen bg-background font-sans antialiased">

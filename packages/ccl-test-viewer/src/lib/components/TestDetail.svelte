@@ -1,64 +1,71 @@
 <script lang="ts">
-	import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from '$lib/components/ui/index.js';
-	import type { GeneratedTest } from '$lib/data/types.js';
-	import { ArrowLeft, Code, Play, Copy, ExternalLink } from 'lucide-svelte';
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
+import type { GeneratedTest } from "$lib/data/types.js";
+import { ArrowLeft, Code, Copy, ExternalLink, Play } from "lucide-svelte";
 
-	interface Props {
-		test: GeneratedTest;
-		onBack?: () => void;
-	}
+interface Props {
+	test: GeneratedTest;
+	onBack?: () => void;
+}
 
-	let { test, onBack }: Props = $props();
+let { test, onBack }: Props = $props();
 
-	// Helper to format expected output in detail
-	function formatExpectedDetail(expected: GeneratedTest['expected']): string {
-		if (expected.error) return 'Error is expected to occur';
+// Helper to format expected output in detail
+function formatExpectedDetail(expected: GeneratedTest["expected"]): string {
+	if (expected.error) return "Error is expected to occur";
 
-		let result = `Expected count: ${expected.count}`;
+	let result = `Expected count: ${expected.count}`;
 
-		if (expected.entries) {
-			result += '\n\nExpected entries:';
-			for (const entry of expected.entries) {
-				result += `\n  ${entry.key} = ${entry.value}`;
-			}
-		}
-
-		if (expected.object) {
-			result += '\n\nExpected object:\n' + JSON.stringify(expected.object, null, 2);
-		}
-
-		if (expected.value !== undefined) {
-			result += `\n\nExpected value: ${JSON.stringify(expected.value)}`;
-		}
-
-		if (expected.list) {
-			result += '\n\nExpected list:\n' + JSON.stringify(expected.list, null, 2);
-		}
-
-		return result;
-	}
-
-	// Copy functionality
-	async function copyToClipboard(text: string) {
-		try {
-			await navigator.clipboard.writeText(text);
-			// TODO: Show toast notification
-		} catch (err) {
-			console.error('Failed to copy text: ', err);
+	if (expected.entries) {
+		result += "\n\nExpected entries:";
+		for (const entry of expected.entries) {
+			result += `\n  ${entry.key} = ${entry.value}`;
 		}
 	}
 
-	function copyInput() {
-		copyToClipboard(test.input);
+	if (expected.object) {
+		result += "\n\nExpected object:\n" + JSON.stringify(expected.object, null, 2);
 	}
 
-	function copyExpected() {
-		copyToClipboard(formatExpectedDetail(test.expected));
+	if (expected.value !== undefined) {
+		result += `\n\nExpected value: ${JSON.stringify(expected.value)}`;
 	}
 
-	function copyValidation() {
-		copyToClipboard(test.validation);
+	if (expected.list) {
+		result += "\n\nExpected list:\n" + JSON.stringify(expected.list, null, 2);
 	}
+
+	return result;
+}
+
+// Copy functionality
+async function copyToClipboard(text: string) {
+	try {
+		await navigator.clipboard.writeText(text);
+		// TODO: Show toast notification
+	} catch (err) {
+		console.error("Failed to copy text: ", err);
+	}
+}
+
+function copyInput() {
+	copyToClipboard(test.input);
+}
+
+function copyExpected() {
+	copyToClipboard(formatExpectedDetail(test.expected));
+}
+
+function copyValidation() {
+	copyToClipboard(test.validation);
+}
 </script>
 
 <div class="max-w-4xl mx-auto p-6">

@@ -139,7 +139,10 @@
 	/* Mobile viewport optimization */
 	@media (max-width: 768px) {
 		/* Larger touch targets on mobile */
-		button, a, input, textarea {
+		button,
+		a,
+		input,
+		textarea {
 			min-height: 44px;
 		}
 

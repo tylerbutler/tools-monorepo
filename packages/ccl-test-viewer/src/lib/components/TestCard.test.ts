@@ -1,157 +1,157 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, fireEvent } from '@testing-library/svelte';
-import TestCard from './TestCard.svelte';
-import type { GeneratedTest } from '$lib/data/types.js';
+import type { GeneratedTest } from "$lib/data/types.js";
+import { fireEvent, render } from "@testing-library/svelte";
+import { describe, expect, it, vi } from "vitest";
+import TestCard from "./TestCard.svelte";
 
 const mockTest: GeneratedTest = {
-	name: 'test-basic-parsing',
-	input: 'key = value\nother = data',
+	name: "test-basic-parsing",
+	input: "key = value\nother = data",
 	expected: {
 		entries: true,
-		count: 2
+		count: 2,
 	},
-	functions: ['parse'],
+	functions: ["parse"],
 	features: [],
 	behaviors: [],
-	validation: 'standard'
+	validation: "standard",
 };
 
-describe('TestCard', () => {
-	it('renders test information correctly', () => {
+describe("TestCard", () => {
+	it("renders test information correctly", () => {
 		const { getByText, getByRole } = render(TestCard, {
-			props: { test: mockTest }
+			props: { test: mockTest },
 		});
 
-		expect(getByText('test-basic-parsing')).toBeInTheDocument();
-		expect(getByText('parse')).toBeInTheDocument();
-		expect(getByText('2 entries')).toBeInTheDocument();
-		expect(getByRole('button')).toBeInTheDocument();
+		expect(getByText("test-basic-parsing")).toBeInTheDocument();
+		expect(getByText("parse")).toBeInTheDocument();
+		expect(getByText("2 entries")).toBeInTheDocument();
+		expect(getByRole("button")).toBeInTheDocument();
 	});
 
-	it('calls onClick when clicked', async () => {
+	it("calls onClick when clicked", async () => {
 		const onClick = vi.fn();
 		const { getByRole } = render(TestCard, {
-			props: { test: mockTest, onClick }
+			props: { test: mockTest, onClick },
 		});
 
-		const card = getByRole('button');
+		const card = getByRole("button");
 		await fireEvent.click(card);
 
 		expect(onClick).toHaveBeenCalledTimes(1);
 	});
 
-	it('handles keyboard navigation', async () => {
+	it("handles keyboard navigation", async () => {
 		const onClick = vi.fn();
 		const { getByRole } = render(TestCard, {
-			props: { test: mockTest, onClick }
+			props: { test: mockTest, onClick },
 		});
 
-		const card = getByRole('button');
+		const card = getByRole("button");
 
 		// Test Enter key
-		await fireEvent.keyDown(card, { key: 'Enter' });
+		await fireEvent.keyDown(card, { key: "Enter" });
 		expect(onClick).toHaveBeenCalledTimes(1);
 
 		// Test Space key
-		await fireEvent.keyDown(card, { key: ' ' });
+		await fireEvent.keyDown(card, { key: " " });
 		expect(onClick).toHaveBeenCalledTimes(2);
 
 		// Test other keys (should not trigger)
-		await fireEvent.keyDown(card, { key: 'Tab' });
+		await fireEvent.keyDown(card, { key: "Tab" });
 		expect(onClick).toHaveBeenCalledTimes(2);
 	});
 
-	it('displays function badges correctly', () => {
+	it("displays function badges correctly", () => {
 		const testWithMultipleFunctions: GeneratedTest = {
 			...mockTest,
-			functions: ['parse', 'get_string', 'build_hierarchy']
+			functions: ["parse", "get_string", "build_hierarchy"],
 		};
 
 		const { getByText } = render(TestCard, {
-			props: { test: testWithMultipleFunctions }
+			props: { test: testWithMultipleFunctions },
 		});
 
-		expect(getByText('parse')).toBeInTheDocument();
-		expect(getByText('get_string')).toBeInTheDocument();
-		expect(getByText('build_hierarchy')).toBeInTheDocument();
+		expect(getByText("parse")).toBeInTheDocument();
+		expect(getByText("get_string")).toBeInTheDocument();
+		expect(getByText("build_hierarchy")).toBeInTheDocument();
 	});
 
-	it('displays feature badges when present', () => {
+	it("displays feature badges when present", () => {
 		const testWithFeatures: GeneratedTest = {
 			...mockTest,
-			features: ['comments', 'unicode']
+			features: ["comments", "unicode"],
 		};
 
 		const { getByText } = render(TestCard, {
-			props: { test: testWithFeatures }
+			props: { test: testWithFeatures },
 		});
 
-		expect(getByText('comments')).toBeInTheDocument();
-		expect(getByText('unicode')).toBeInTheDocument();
+		expect(getByText("comments")).toBeInTheDocument();
+		expect(getByText("unicode")).toBeInTheDocument();
 	});
 
-	it('formats expected output correctly for different types', () => {
+	it("formats expected output correctly for different types", () => {
 		// Test error expected
 		const errorTest: GeneratedTest = {
 			...mockTest,
-			expected: { error: true, count: 0 }
+			expected: { error: true, count: 0 },
 		};
 		const { getByText: getByTextError } = render(TestCard, {
-			props: { test: errorTest }
+			props: { test: errorTest },
 		});
-		expect(getByTextError('Error expected')).toBeInTheDocument();
+		expect(getByTextError("Error expected")).toBeInTheDocument();
 
 		// Test object result
 		const objectTest: GeneratedTest = {
 			...mockTest,
-			expected: { object: {}, count: 1 }
+			expected: { object: {}, count: 1 },
 		};
 		const { getByText: getByTextObject } = render(TestCard, {
-			props: { test: objectTest }
+			props: { test: objectTest },
 		});
-		expect(getByTextObject('Object result')).toBeInTheDocument();
+		expect(getByTextObject("Object result")).toBeInTheDocument();
 
 		// Test list result
 		const listTest: GeneratedTest = {
 			...mockTest,
-			expected: { list: ['item1', 'item2'], count: 2 }
+			expected: { list: ["item1", "item2"], count: 2 },
 		};
 		const { getByText: getByTextList } = render(TestCard, {
-			props: { test: listTest }
+			props: { test: listTest },
 		});
-		expect(getByTextList('List (2 items)')).toBeInTheDocument();
+		expect(getByTextList("List (2 items)")).toBeInTheDocument();
 
 		// Test value result
 		const valueTest: GeneratedTest = {
 			...mockTest,
-			expected: { value: 'test-value', count: 1 }
+			expected: { value: "test-value", count: 1 },
 		};
 		const { getByText: getByTextValue } = render(TestCard, {
-			props: { test: valueTest }
+			props: { test: valueTest },
 		});
-		expect(getByTextValue('Value: test-value')).toBeInTheDocument();
+		expect(getByTextValue("Value: test-value")).toBeInTheDocument();
 	});
 
-	it('has proper accessibility attributes', () => {
+	it("has proper accessibility attributes", () => {
 		const { getByRole } = render(TestCard, {
-			props: { test: mockTest }
+			props: { test: mockTest },
 		});
 
-		const card = getByRole('button');
-		expect(card).toHaveAttribute('aria-label');
-		expect(card).toHaveAttribute('tabindex', '0');
-		expect(card.getAttribute('aria-label')).toContain('test-basic-parsing');
-		expect(card.getAttribute('aria-label')).toContain('parse');
+		const card = getByRole("button");
+		expect(card).toHaveAttribute("aria-label");
+		expect(card).toHaveAttribute("tabindex", "0");
+		expect(card.getAttribute("aria-label")).toContain("test-basic-parsing");
+		expect(card.getAttribute("aria-label")).toContain("parse");
 	});
 
-	it('truncates long input correctly', () => {
+	it("truncates long input correctly", () => {
 		const longInputTest: GeneratedTest = {
 			...mockTest,
-			input: 'a'.repeat(150) // Input longer than 100 characters
+			input: "a".repeat(150), // Input longer than 100 characters
 		};
 
 		const { container } = render(TestCard, {
-			props: { test: longInputTest }
+			props: { test: longInputTest },
 		});
 
 		const inputDisplay = container.querySelector('[role="code"]');

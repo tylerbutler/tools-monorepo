@@ -1,54 +1,58 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import Prism from 'prismjs';
+import Prism from "prismjs";
+import { onMount } from "svelte";
 
-	// Import basic components
-	import 'prismjs/components/prism-core';
-	import 'prismjs/components/prism-clike';
+// Import basic components
+import "prismjs/components/prism-core";
+import "prismjs/components/prism-clike";
 
-	// Import Prism themes
-	import 'prismjs/themes/prism.css';
+// Import Prism themes
+import "prismjs/themes/prism.css";
 
-	interface Props {
-		code: string;
-		language?: string;
-		class?: string;
+interface Props {
+	code: string;
+	language?: string;
+	class?: string;
+}
+
+let { code, language = "ccl", class: className = "" }: Props = $props();
+
+let codeElement: HTMLElement;
+
+// Define CCL language for Prism.js
+onMount(() => {
+	// Define CCL language syntax
+	Prism.languages.ccl = {
+		comment: {
+			pattern: /\/=.*/,
+			greedy: true,
+		},
+		string: {
+			pattern: /"(?:[^"\\]|\\.)*"/,
+			greedy: true,
+		},
+		number: /\b\d+(?:\.\d+)?\b/,
+		boolean: /\b(?:true|false)\b/,
+		key: {
+			pattern: /^[^=\n]+(?==)/m,
+			inside: {
+				dotted: /\./,
+				identifier: /[^.\s=]+/,
+			},
+		},
+		operator: /=/,
+		punctuation: /[{}[\],]/,
+	};
+
+	// Highlight the code
+	if (codeElement) {
+		codeElement.innerHTML = Prism.highlight(
+			code,
+			Prism.languages[language] || Prism.languages.ccl,
+			language
+		);
 	}
-
-	let { code, language = 'ccl', class: className = '' }: Props = $props();
-
-	let codeElement: HTMLElement;
-
-	// Define CCL language for Prism.js
-	onMount(() => {
-		// Define CCL language syntax
-		Prism.languages.ccl = {
-			'comment': {
-				pattern: /\/=.*/,
-				greedy: true
-			},
-			'string': {
-				pattern: /"(?:[^"\\]|\\.)*"/,
-				greedy: true
-			},
-			'number': /\b\d+(?:\.\d+)?\b/,
-			'boolean': /\b(?:true|false)\b/,
-			'key': {
-				pattern: /^[^=\n]+(?==)/m,
-				inside: {
-					'dotted': /\./,
-					'identifier': /[^.\s=]+/
-				}
-			},
-			'operator': /=/,
-			'punctuation': /[{}[\],]/
-		};
-
-		// Highlight the code
-		if (codeElement) {
-			codeElement.innerHTML = Prism.highlight(code, Prism.languages[language] || Prism.languages.ccl, language);
-		}
-	});
+});
 </script>
 
 <pre class="overflow-x-auto bg-gray-50 border border-gray-200 rounded-md p-3 text-sm {className}"><code bind:this={codeElement} class="language-{language}">{code}</code></pre>

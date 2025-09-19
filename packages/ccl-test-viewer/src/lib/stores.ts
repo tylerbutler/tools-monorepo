@@ -1,5 +1,5 @@
 // Pure Svelte 5 runes-based state management
-import type { GeneratedTest, TestCategory, TestStats, SearchIndex } from './data/types.js';
+import type { GeneratedTest, SearchIndex, TestCategory, TestStats } from "./data/types.js";
 
 // Filter state interface
 export interface FilterState {
@@ -17,17 +17,17 @@ class AppState {
 	searchIndex = $state<SearchIndex | null>(null);
 
 	// Filter state
-	searchQuery = $state('');
+	searchQuery = $state("");
 	activeFilters = $state<FilterState>({
 		functions: {},
 		features: {},
 		behaviors: {},
-		categories: {}
+		categories: {},
 	});
 
 	// UI state
 	selectedTest = $state<GeneratedTest | null>(null);
-	viewMode = $state<'grid' | 'list'>('grid');
+	viewMode = $state<"grid" | "list">("grid");
 	sidebarOpen = $state(true);
 
 	// Derived computed states
@@ -45,8 +45,8 @@ class AppState {
 			.map(([category, _]) => category);
 
 		if (categoryFilters.length > 0) {
-			allTests = allTests.filter(test => {
-				const testCategory = this.testCategories.find(cat => cat.tests.includes(test))?.name;
+			allTests = allTests.filter((test) => {
+				const testCategory = this.testCategories.find((cat) => cat.tests.includes(test))?.name;
 				return testCategory && categoryFilters.includes(testCategory);
 			});
 		}
@@ -57,8 +57,8 @@ class AppState {
 			.map(([func, _]) => func);
 
 		if (functionFilters.length > 0) {
-			allTests = allTests.filter(test =>
-				functionFilters.some(func => test.functions.includes(func))
+			allTests = allTests.filter((test) =>
+				functionFilters.some((func) => test.functions.includes(func))
 			);
 		}
 
@@ -68,8 +68,8 @@ class AppState {
 			.map(([feature, _]) => feature);
 
 		if (featureFilters.length > 0) {
-			allTests = allTests.filter(test =>
-				featureFilters.some(feature => test.features.includes(feature))
+			allTests = allTests.filter((test) =>
+				featureFilters.some((feature) => test.features.includes(feature))
 			);
 		}
 
@@ -79,19 +79,20 @@ class AppState {
 			.map(([behavior, _]) => behavior);
 
 		if (behaviorFilters.length > 0) {
-			allTests = allTests.filter(test =>
-				behaviorFilters.some(behavior => test.behaviors.includes(behavior))
+			allTests = allTests.filter((test) =>
+				behaviorFilters.some((behavior) => test.behaviors.includes(behavior))
 			);
 		}
 
 		// Apply search query
 		if (this.searchQuery.trim()) {
 			const query = this.searchQuery.toLowerCase();
-			allTests = allTests.filter(test =>
-				test.name.toLowerCase().includes(query) ||
-				test.input.toLowerCase().includes(query) ||
-				test.functions.some(func => func.toLowerCase().includes(query)) ||
-				test.features.some(feature => feature.toLowerCase().includes(query))
+			allTests = allTests.filter(
+				(test) =>
+					test.name.toLowerCase().includes(query) ||
+					test.input.toLowerCase().includes(query) ||
+					test.functions.some((func) => func.toLowerCase().includes(query)) ||
+					test.features.some((feature) => feature.toLowerCase().includes(query))
 			);
 		}
 
@@ -101,11 +102,11 @@ class AppState {
 	// Additional computed states
 	totalFilteredTests = $derived(this.filteredTests.length);
 	hasActiveFilters = $derived(
-		this.searchQuery.trim() !== '' ||
-		Object.values(this.activeFilters.functions).some(Boolean) ||
-		Object.values(this.activeFilters.features).some(Boolean) ||
-		Object.values(this.activeFilters.behaviors).some(Boolean) ||
-		Object.values(this.activeFilters.categories).some(Boolean)
+		this.searchQuery.trim() !== "" ||
+			Object.values(this.activeFilters.functions).some(Boolean) ||
+			Object.values(this.activeFilters.features).some(Boolean) ||
+			Object.values(this.activeFilters.behaviors).some(Boolean) ||
+			Object.values(this.activeFilters.categories).some(Boolean)
 	);
 
 	// Actions/methods
@@ -118,9 +119,9 @@ class AppState {
 			functions: {},
 			features: {},
 			behaviors: {},
-			categories: {}
+			categories: {},
 		};
-		this.searchQuery = '';
+		this.searchQuery = "";
 	}
 
 	clearFilterType(type: keyof FilterState) {
@@ -135,7 +136,7 @@ class AppState {
 		this.selectedTest = test;
 	}
 
-	setViewMode(mode: 'grid' | 'list') {
+	setViewMode(mode: "grid" | "list") {
 		this.viewMode = mode;
 	}
 
@@ -147,23 +148,23 @@ class AppState {
 	async loadData() {
 		try {
 			// Load test categories
-			const categoriesResponse = await fetch('/data/categories.json');
+			const categoriesResponse = await fetch("/data/categories.json");
 			const categoriesData = await categoriesResponse.json();
 			this.testCategories = categoriesData;
 
 			// Load test stats
-			const statsResponse = await fetch('/data/stats.json');
+			const statsResponse = await fetch("/data/stats.json");
 			const statsData = await statsResponse.json();
 			this.testStats = statsData;
 
 			// Load search index
-			const searchResponse = await fetch('/data/search-index.json');
+			const searchResponse = await fetch("/data/search-index.json");
 			const searchData = await searchResponse.json();
 			this.searchIndex = searchData;
 
 			return true;
 		} catch (error) {
-			console.error('Failed to load test data:', error);
+			console.error("Failed to load test data:", error);
 			return false;
 		}
 	}
@@ -176,7 +177,7 @@ export const appState = new AppState();
 export async function initializeApp() {
 	const success = await appState.loadData();
 	if (!success) {
-		console.error('Failed to initialize application data');
+		console.error("Failed to initialize application data");
 	}
 	return success;
 }

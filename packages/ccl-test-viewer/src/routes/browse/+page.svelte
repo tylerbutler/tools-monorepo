@@ -1,39 +1,39 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { appState, initializeApp } from '$lib/stores.js';
-	import FilterSidebar from '$lib/components/FilterSidebar.svelte';
-	import TestCard from '$lib/components/TestCard.svelte';
-	import { Button, Badge } from '$lib/components/ui/index.js';
-	import { Grid, List, Menu, X } from 'lucide-svelte';
-	import { goto } from '$app/navigation';
+import { goto } from "$app/navigation";
+import FilterSidebar from "$lib/components/FilterSidebar.svelte";
+import TestCard from "$lib/components/TestCard.svelte";
+import { Badge, Button } from "$lib/components/ui/index.js";
+import { appState, initializeApp } from "$lib/stores.js";
+import { Grid, List, Menu, X } from "lucide-svelte";
+import { onMount } from "svelte";
 
-	// Local state
-	let loading = $state(true);
-	let error = $state<string | null>(null);
+// Local state
+let loading = $state(true);
+let error = $state<string | null>(null);
 
-	// Initialize data on mount
-	onMount(async () => {
-		try {
-			const success = await initializeApp();
-			if (!success) {
-				error = 'Failed to load test data';
-			}
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Unknown error occurred';
-		} finally {
-			loading = false;
+// Initialize data on mount
+onMount(async () => {
+	try {
+		const success = await initializeApp();
+		if (!success) {
+			error = "Failed to load test data";
 		}
-	});
-
-	// Navigation handlers
-	function handleTestClick(test: any) {
-		appState.selectTest(test);
-		goto(`/test/${encodeURIComponent(test.name)}`);
+	} catch (err) {
+		error = err instanceof Error ? err.message : "Unknown error occurred";
+	} finally {
+		loading = false;
 	}
+});
 
-	function toggleViewMode() {
-		appState.setViewMode(appState.viewMode === 'grid' ? 'list' : 'grid');
-	}
+// Navigation handlers
+function handleTestClick(test: any) {
+	appState.selectTest(test);
+	goto(`/test/${encodeURIComponent(test.name)}`);
+}
+
+function toggleViewMode() {
+	appState.setViewMode(appState.viewMode === "grid" ? "list" : "grid");
+}
 </script>
 
 <svelte:head>

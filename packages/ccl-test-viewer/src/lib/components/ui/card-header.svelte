@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
+import { cn } from "$lib/utils.js";
 
-	interface Props {
-		class?: string;
-		children: any;
-	}
+interface Props {
+	class?: string;
+	children: any;
+}
 
-	let { class: className, children, ...restProps }: Props = $props();
+let { class: className, children, ...restProps }: Props = $props();
 </script>
 
 <div

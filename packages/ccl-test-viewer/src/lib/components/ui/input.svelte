@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
+import { cn } from "$lib/utils.js";
 
-	interface Props {
-		class?: string;
-		type?: "text" | "password" | "email" | "search";
-		placeholder?: string;
-		value?: string;
-		readonly?: boolean;
-		disabled?: boolean;
-		oninput?: (event: Event) => void;
-	}
+interface Props {
+	class?: string;
+	type?: "text" | "password" | "email" | "search";
+	placeholder?: string;
+	value?: string;
+	readonly?: boolean;
+	disabled?: boolean;
+	oninput?: (event: Event) => void;
+}
 
-	let { class: className, type = "text", ...restProps }: Props = $props();
+let { class: className, type = "text", ...restProps }: Props = $props();
 </script>
 
 <input
