@@ -170,7 +170,7 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0(encoding@0.1.13)
       '@playwright/test':
-        specifier: ^1.49.1
+        specifier: ^1.55.0
         version: 1.55.0
       '@sveltejs/adapter-static':
         specifier: ^3.0.6
@@ -205,6 +205,9 @@ importers:
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
+      playwright:
+        specifier: ^1.55.0
+        version: 1.55.0
       postcss:
         specifier: ^8.5.0
         version: 8.5.6
@@ -235,6 +238,9 @@ importers:
       vite:
         specifier: ^6.0.7
         version: 6.3.5(@types/node@20.16.10)(jiti@2.4.2)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1)
+      vite-plugin-devtools-json:
+        specifier: ^1.0.0
+        version: 1.0.0(vite@6.3.5(@types/node@20.16.10)(jiti@2.4.2)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1))
       vitest:
         specifier: ^3.0.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.16.10)(@vitest/ui@3.2.4)(jiti@2.4.2)(jsdom@25.0.1)(msw@2.10.2(@types/node@20.16.10)(typescript@5.5.4))(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1)
@@ -12732,6 +12738,11 @@ packages:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
+
+  vite-plugin-devtools-json@1.0.0:
+    resolution: {integrity: sha512-MobvwqX76Vqt/O4AbnNMNWoXWGrKUqZbphCUle/J2KXH82yKQiunOeKnz/nqEPosPsoWWPP9FtNuPBSYpiiwkw==}
+    peerDependencies:
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0
 
   vite@6.3.4:
     resolution: {integrity: sha512-BiReIiMS2fyFqbqNT/Qqt4CVITDU9M9vE+DKcVAsB+ZV0wvTKd+3hMbkpxz1b+NmEDMegpVbisKiAZOnvO92Sw==}
@@ -30355,6 +30366,11 @@ snapshots:
       - terser
       - tsx
       - yaml
+
+  vite-plugin-devtools-json@1.0.0(vite@6.3.5(@types/node@20.16.10)(jiti@2.4.2)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1)):
+    dependencies:
+      uuid: 11.1.0
+      vite: 6.3.5(@types/node@20.16.10)(jiti@2.4.2)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1)
 
   vite@6.3.4(@types/node@22.13.17)(jiti@2.4.2)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1):
     dependencies:

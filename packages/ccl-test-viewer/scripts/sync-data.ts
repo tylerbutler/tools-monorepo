@@ -13,7 +13,10 @@ import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..");
-const DATA_SOURCE = resolve(PROJECT_ROOT, "../../../ccl-test-data/generated_tests");
+const DATA_SOURCE = resolve(
+	PROJECT_ROOT,
+	"../../../ccl-test-data/generated_tests",
+);
 const DATA_TARGET = resolve(PROJECT_ROOT, "src/lib/data");
 const STATIC_TARGET = resolve(PROJECT_ROOT, "static/data");
 
@@ -67,7 +70,9 @@ async function ensureDir(path: string): Promise<void> {
 	}
 }
 
-async function loadTestFile(filePath: string): Promise<{ tests: GeneratedTest[] }> {
+async function loadTestFile(
+	filePath: string,
+): Promise<{ tests: GeneratedTest[] }> {
 	try {
 		const content = await readFile(filePath, "utf-8");
 		return JSON.parse(content);
@@ -88,7 +93,10 @@ async function getAllTestFiles(): Promise<string[]> {
 	}
 }
 
-function createCategoryFromFilename(filename: string): { name: string; description: string } {
+function createCategoryFromFilename(filename: string): {
+	name: string;
+	description: string;
+} {
 	const base = filename.replace(".json", "").replace("api_", "");
 
 	const categoryMap: Record<string, { name: string; description: string }> = {
@@ -220,7 +228,9 @@ function generateSearchIndex(categories: TestCategory[]): SearchIndex {
 	return index;
 }
 
-async function generateTypeDefinitions(categories: TestCategory[]): Promise<string> {
+async function generateTypeDefinitions(
+	categories: TestCategory[],
+): Promise<string> {
 	const allFunctions = new Set<string>();
 	const allFeatures = new Set<string>();
 	const allBehaviors = new Set<string>();
@@ -318,7 +328,9 @@ async function main(): Promise<void> {
 	console.log(`📁 Found ${testFiles.length} test files`);
 
 	if (testFiles.length === 0) {
-		console.error("❌ No test files found. Make sure ccl-test-data is available.");
+		console.error(
+			"❌ No test files found. Make sure ccl-test-data is available.",
+		);
 		process.exit(1);
 	}
 
@@ -342,32 +354,52 @@ async function main(): Promise<void> {
 
 	// Generate statistics
 	const stats = generateTestStats(categories);
-	console.log(`📈 Generated stats: ${stats.totalTests} tests, ${stats.totalAssertions} assertions`);
+	console.log(
+		`📈 Generated stats: ${stats.totalTests} tests, ${stats.totalAssertions} assertions`,
+	);
 
 	// Generate search index
 	const searchIndex = generateSearchIndex(categories);
 	console.log(
-		`🔍 Generated search index with ${Object.keys(searchIndex.byName).length} name tokens`
+		`🔍 Generated search index with ${Object.keys(searchIndex.byName).length} name tokens`,
 	);
 
 	// Generate TypeScript definitions
 	const types = await generateTypeDefinitions(categories);
 
 	// Write processed data files
-	await writeFile(join(DATA_TARGET, "categories.json"), JSON.stringify(categories, null, 2));
+	await writeFile(
+		join(DATA_TARGET, "categories.json"),
+		JSON.stringify(categories, null, 2),
+	);
 
-	await writeFile(join(DATA_TARGET, "stats.json"), JSON.stringify(stats, null, 2));
+	await writeFile(
+		join(DATA_TARGET, "stats.json"),
+		JSON.stringify(stats, null, 2),
+	);
 
-	await writeFile(join(DATA_TARGET, "search-index.json"), JSON.stringify(searchIndex, null, 2));
+	await writeFile(
+		join(DATA_TARGET, "search-index.json"),
+		JSON.stringify(searchIndex, null, 2),
+	);
 
 	await writeFile(join(DATA_TARGET, "types.ts"), types);
 
 	// Copy key files to static directory for runtime access
-	await writeFile(join(STATIC_TARGET, "categories.json"), JSON.stringify(categories, null, 2));
+	await writeFile(
+		join(STATIC_TARGET, "categories.json"),
+		JSON.stringify(categories, null, 2),
+	);
 
-	await writeFile(join(STATIC_TARGET, "stats.json"), JSON.stringify(stats, null, 2));
+	await writeFile(
+		join(STATIC_TARGET, "stats.json"),
+		JSON.stringify(stats, null, 2),
+	);
 
-	await writeFile(join(STATIC_TARGET, "search-index.json"), JSON.stringify(searchIndex, null, 2));
+	await writeFile(
+		join(STATIC_TARGET, "search-index.json"),
+		JSON.stringify(searchIndex, null, 2),
+	);
 
 	// Create a summary file with metadata
 	const summary = {
@@ -383,13 +415,16 @@ async function main(): Promise<void> {
 		},
 	};
 
-	await writeFile(join(DATA_TARGET, "sync-summary.json"), JSON.stringify(summary, null, 2));
+	await writeFile(
+		join(DATA_TARGET, "sync-summary.json"),
+		JSON.stringify(summary, null, 2),
+	);
 
 	console.log("✅ Data sync completed successfully!");
 	console.log(`📦 Generated files in: ${relative(process.cwd(), DATA_TARGET)}`);
 	console.log(`🌐 Static files in: ${relative(process.cwd(), STATIC_TARGET)}`);
 	console.log(
-		`📊 Summary: ${summary.stats.categories} categories, ${summary.stats.totalTests} tests, ${summary.stats.totalAssertions} assertions`
+		`📊 Summary: ${summary.stats.categories} categories, ${summary.stats.totalTests} tests, ${summary.stats.totalAssertions} assertions`,
 	);
 }
 

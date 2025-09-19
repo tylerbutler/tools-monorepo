@@ -8,7 +8,9 @@ describe("utils", () => {
 		});
 
 		it("handles conditional classes", () => {
-			expect(cn("class1", true && "class2", false && "class3")).toBe("class1 class2");
+			expect(cn("class1", true && "class2", false && "class3")).toBe(
+				"class1 class2",
+			);
 		});
 
 		it("handles empty and undefined values", () => {
@@ -29,7 +31,7 @@ describe("utils", () => {
 					"hidden-class": false,
 				},
 				["array-class-1", "array-class-2"],
-				"final-class"
+				"final-class",
 			);
 
 			expect(result).toContain("base-class");

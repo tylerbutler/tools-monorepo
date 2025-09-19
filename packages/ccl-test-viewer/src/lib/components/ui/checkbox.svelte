@@ -1,8 +1,9 @@
 <script lang="ts">
 import { cn } from "$lib/utils.js";
 import { Check } from "lucide-svelte";
+import type { HTMLAttributes } from "svelte/elements";
 
-interface Props {
+interface Props extends Omit<HTMLAttributes<HTMLButtonElement>, 'class' | 'onclick'> {
 	class?: string;
 	checked?: boolean;
 	disabled?: boolean;

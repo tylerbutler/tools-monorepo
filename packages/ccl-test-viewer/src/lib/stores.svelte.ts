@@ -1,5 +1,10 @@
 // Pure Svelte 5 runes-based state management
-import type { GeneratedTest, SearchIndex, TestCategory, TestStats } from "./data/types.js";
+import type {
+	GeneratedTest,
+	SearchIndex,
+	TestCategory,
+	TestStats,
+} from "./data/types.js";
 
 // Filter state interface
 export interface FilterState {
@@ -46,7 +51,9 @@ class AppState {
 
 		if (categoryFilters.length > 0) {
 			allTests = allTests.filter((test) => {
-				const testCategory = this.testCategories.find((cat) => cat.tests.includes(test))?.name;
+				const testCategory = this.testCategories.find((cat) =>
+					cat.tests.includes(test),
+				)?.name;
 				return testCategory && categoryFilters.includes(testCategory);
 			});
 		}
@@ -58,7 +65,7 @@ class AppState {
 
 		if (functionFilters.length > 0) {
 			allTests = allTests.filter((test) =>
-				functionFilters.some((func) => test.functions.includes(func))
+				functionFilters.some((func) => test.functions.includes(func)),
 			);
 		}
 
@@ -69,7 +76,7 @@ class AppState {
 
 		if (featureFilters.length > 0) {
 			allTests = allTests.filter((test) =>
-				featureFilters.some((feature) => test.features.includes(feature))
+				featureFilters.some((feature) => test.features.includes(feature)),
 			);
 		}
 
@@ -80,7 +87,7 @@ class AppState {
 
 		if (behaviorFilters.length > 0) {
 			allTests = allTests.filter((test) =>
-				behaviorFilters.some((behavior) => test.behaviors.includes(behavior))
+				behaviorFilters.some((behavior) => test.behaviors.includes(behavior)),
 			);
 		}
 
@@ -92,7 +99,9 @@ class AppState {
 					test.name.toLowerCase().includes(query) ||
 					test.input.toLowerCase().includes(query) ||
 					test.functions.some((func) => func.toLowerCase().includes(query)) ||
-					test.features.some((feature) => feature.toLowerCase().includes(query))
+					test.features.some((feature) =>
+						feature.toLowerCase().includes(query),
+					),
 			);
 		}
 
@@ -106,7 +115,7 @@ class AppState {
 			Object.values(this.activeFilters.functions).some(Boolean) ||
 			Object.values(this.activeFilters.features).some(Boolean) ||
 			Object.values(this.activeFilters.behaviors).some(Boolean) ||
-			Object.values(this.activeFilters.categories).some(Boolean)
+			Object.values(this.activeFilters.categories).some(Boolean),
 	);
 
 	// Actions/methods

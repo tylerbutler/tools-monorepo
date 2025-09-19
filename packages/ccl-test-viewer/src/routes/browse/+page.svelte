@@ -1,29 +1,40 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
+import { browser } from "$app/environment";
 import FilterSidebar from "$lib/components/FilterSidebar.svelte";
 import TestCard from "$lib/components/TestCard.svelte";
 import { Badge, Button } from "$lib/components/ui/index.js";
-import { appState, initializeApp } from "$lib/stores.js";
+import { appState, initializeApp } from "$lib/stores.svelte.js";
 import { Grid, List, Menu, X } from "lucide-svelte";
-import { onMount } from "svelte";
+
+// Debug: Check if script is executing at all
+console.log("🟦 Browse page script executed at module level");
 
 // Local state
 let loading = $state(true);
 let error = $state<string | null>(null);
 
-// Initialize data on mount
-onMount(async () => {
-	try {
-		const success = await initializeApp();
+// Auto-initialize immediately if in browser, bypassing onMount issue
+if (typeof window !== 'undefined') {
+	console.log("🟦 Window detected, auto-initializing...");
+	initializeApp().then(success => {
+		console.log("🟦 Auto-init result:", success);
 		if (!success) {
 			error = "Failed to load test data";
 		}
-	} catch (err) {
-		error = err instanceof Error ? err.message : "Unknown error occurred";
-	} finally {
 		loading = false;
-	}
-});
+	}).catch(err => {
+		console.error("🟦 Auto-init error:", err);
+		error = err instanceof Error ? err.message : "Unknown error occurred";
+		loading = false;
+	});
+} else {
+	// For SSR, just set loading false to prevent infinite loading
+	console.log("🟦 SSR mode detected");
+	setTimeout(() => {
+		loading = false;
+	}, 100);
+}
 
 // Navigation handlers
 function handleTestClick(test: any) {
@@ -45,6 +56,7 @@ function toggleViewMode() {
 		<div class="text-center">
 			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
 			<p class="text-muted-foreground">Loading test data...</p>
+			<p class="text-xs text-gray-500 mt-2">Debug: browser={browser}, window={typeof window !== 'undefined'}</p>
 		</div>
 	</div>
 {:else if error}

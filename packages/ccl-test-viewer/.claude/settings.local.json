@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm build:*)",
+      "Bash(mv:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(npx playwright:*)",
+      "Bash(curl:*)",
+      "Bash(node:*)",
+      "Bash(echo:*)",
+      "Bash(npm run build:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm run check:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(pnpm run:*)",
+      "mcp__serena__check_onboarding_performed",
+      "mcp__serena__write_memory",
+      "Bash(npm run check:svelte:*)",
+      "Bash(npm run preview:*)",
+      "Bash(pkill:*)",
+      "Bash(npm ls:*)",
+      "WebSearch",
+      "Bash(npm view:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

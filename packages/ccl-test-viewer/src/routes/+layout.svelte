@@ -28,7 +28,11 @@ function skipToMain() {
 // Focus management for route changes
 $effect(() => {
 	// Announce route changes to screen readers
-	const routeName = isHomePage ? "Dashboard" : isBrowsePage ? "Browse Tests" : "Test Detail";
+	const routeName = isHomePage
+		? "Dashboard"
+		: isBrowsePage
+			? "Browse Tests"
+			: "Test Detail";
 	// Update document title for accessibility
 	document.title = `${routeName} - CCL Test Suite Viewer`;
 });
@@ -47,7 +51,7 @@ $effect(() => {
 	<!-- ARIA live region for route announcements -->
 	<div aria-live="polite" aria-atomic="true" class="sr-only" id="route-announcements"></div>
 
-	<header class="border-b" role="banner">
+	<header class="border-b">
 		<div class="container mx-auto px-4 py-4">
 			<div class="flex items-center justify-between">
 				<div>
@@ -66,7 +70,7 @@ $effect(() => {
 				</div>
 
 				<!-- Primary Navigation -->
-				<nav class="flex items-center gap-2" role="navigation" aria-label="Main navigation">
+				<nav class="flex items-center gap-2" aria-label="Main navigation">
 					<Button
 						variant={isHomePage ? "default" : "outline"}
 						size="sm"
@@ -98,7 +102,6 @@ $effect(() => {
 
 	<main
 		class={isBrowsePage ? '' : 'container mx-auto px-4 py-6'}
-		role="main"
 		id="main-content"
 		tabindex="-1"
 		aria-label="Main content"
@@ -106,7 +109,7 @@ $effect(() => {
 		{@render children()}
 	</main>
 
-	<footer class="border-t mt-12" role="contentinfo">
+	<footer class="border-t mt-12">
 		<div class="container mx-auto px-4 py-6">
 			<p class="text-sm text-muted-foreground text-center">
 				Built with SvelteKit • Part of the CCL tools ecosystem

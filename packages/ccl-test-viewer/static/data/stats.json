@@ -31,8 +31,12 @@
     "canonical_format": 14
   },
   "features": {
-    "comments": 3,
-    "experimental_dotted_keys": 9
+    "empty_keys": 67,
+    "multiline": 15,
+    "comments": 15,
+    "whitespace": 32,
+    "unicode": 10,
+    "experimental_dotted_keys": 39
   },
   "behaviors": {
     "tabs_preserve": 7,

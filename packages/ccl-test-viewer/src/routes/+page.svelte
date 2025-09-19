@@ -2,7 +2,7 @@
 import { goto } from "$app/navigation";
 import StatsDashboard from "$lib/components/StatsDashboard.svelte";
 import { Button } from "$lib/components/ui";
-import { appState, initializeApp } from "$lib/stores.js";
+import { appState, initializeApp } from "$lib/stores.svelte.js";
 import { ArrowRight } from "lucide-svelte";
 import { onMount } from "svelte";
 

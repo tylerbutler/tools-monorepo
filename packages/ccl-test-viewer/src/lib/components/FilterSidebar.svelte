@@ -9,8 +9,12 @@ import {
 	Checkbox,
 	Input,
 } from "$lib/components/ui/index.js";
-import { AVAILABLE_BEHAVIORS, AVAILABLE_FEATURES, AVAILABLE_FUNCTIONS } from "$lib/data/types.js";
-import { appState, type FilterState } from "$lib/stores.js";
+import {
+	AVAILABLE_BEHAVIORS,
+	AVAILABLE_FEATURES,
+	AVAILABLE_FUNCTIONS,
+} from "$lib/data/types.js";
+import { appState, type FilterState } from "$lib/stores.svelte.js";
 import { ChevronDown, ChevronRight, Filter, Search, X } from "lucide-svelte";
 
 // Local state for collapsible sections
@@ -61,7 +65,6 @@ function getActiveFilterCount(type: keyof FilterState): number {
 
 <aside
 	class="w-80 h-full border-r bg-background overflow-y-auto"
-	role="complementary"
 	aria-label="Test filters and search"
 >
 	<!-- Header -->

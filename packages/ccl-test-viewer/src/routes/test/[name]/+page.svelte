@@ -4,7 +4,7 @@ import { page } from "$app/stores";
 import TestDetail from "$lib/components/TestDetail.svelte";
 import { Button } from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
-import { appState, initializeApp } from "$lib/stores.js";
+import { appState, initializeApp } from "$lib/stores.svelte.js";
 import { onMount } from "svelte";
 
 // Local state

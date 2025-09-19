@@ -1,7 +1,8 @@
 <script lang="ts">
 import { cn } from "$lib/utils.js";
+import type { HTMLAttributes } from "svelte/elements";
 
-interface Props {
+interface Props extends Omit<HTMLAttributes<HTMLInputElement>, 'class' | 'oninput'> {
 	class?: string;
 	type?: "text" | "password" | "email" | "search";
 	placeholder?: string;

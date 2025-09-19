@@ -9,13 +9,15 @@ import "prismjs/components/prism-clike";
 // Import Prism themes
 import "prismjs/themes/prism.css";
 
-interface Props {
+import type { HTMLAttributes } from "svelte/elements";
+
+interface Props extends Omit<HTMLAttributes<HTMLElement>, 'class'> {
 	code: string;
 	language?: string;
 	class?: string;
 }
 
-let { code, language = "ccl", class: className = "" }: Props = $props();
+let { code, language = "ccl", class: className = "", ...restProps }: Props = $props();
 
 let codeElement: HTMLElement;
 
@@ -49,10 +51,10 @@ onMount(() => {
 		codeElement.innerHTML = Prism.highlight(
 			code,
 			Prism.languages[language] || Prism.languages.ccl,
-			language
+			language,
 		);
 	}
 });
 </script>
 
-<pre class="overflow-x-auto bg-gray-50 border border-gray-200 rounded-md p-3 text-sm {className}"><code bind:this={codeElement} class="language-{language}">{code}</code></pre>
+<pre class="overflow-x-auto bg-gray-50 border border-gray-200 rounded-md p-3 text-sm {className}" {...restProps}><code bind:this={codeElement} class="language-{language}">{code}</code></pre>

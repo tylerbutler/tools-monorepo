@@ -31,7 +31,8 @@ function formatExpectedDetail(expected: GeneratedTest["expected"]): string {
 	}
 
 	if (expected.object) {
-		result += "\n\nExpected object:\n" + JSON.stringify(expected.object, null, 2);
+		result +=
+			"\n\nExpected object:\n" + JSON.stringify(expected.object, null, 2);
 	}
 
 	if (expected.value !== undefined) {

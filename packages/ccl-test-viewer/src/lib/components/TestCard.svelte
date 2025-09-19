@@ -1,5 +1,11 @@
 <script lang="ts">
-import { Badge, Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/index.js";
+import {
+	Badge,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
 import { ArrowRight, Code, Eye } from "lucide-svelte";
 import CodeHighlight from "./CodeHighlight.svelte";
@@ -31,10 +37,15 @@ function truncateInput(input: string, maxLength = 100): string {
 function getCategoryColor(test: GeneratedTest): string {
 	// Derive category from common patterns in test names or functions
 	if (test.functions.includes("parse")) return "bg-blue-50 border-blue-200";
-	if (test.functions.includes("get_string") || test.functions.includes("get_int"))
+	if (
+		test.functions.includes("get_string") ||
+		test.functions.includes("get_int")
+	)
 		return "bg-green-50 border-green-200";
-	if (test.functions.includes("build_hierarchy")) return "bg-purple-50 border-purple-200";
-	if (test.name.includes("error") || test.expected.error) return "bg-red-50 border-red-200";
+	if (test.functions.includes("build_hierarchy"))
+		return "bg-purple-50 border-purple-200";
+	if (test.name.includes("error") || test.expected.error)
+		return "bg-red-50 border-red-200";
 	return "bg-gray-50 border-gray-200";
 }
 </script>
@@ -43,9 +54,9 @@ function getCategoryColor(test: GeneratedTest): string {
 	class={`cursor-pointer transition-all hover:shadow-md hover:scale-[1.02] focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${getCategoryColor(test)}`}
 	onclick={onClick}
 	role="button"
-	tabindex="0"
+	tabindex={0}
 	aria-label={`View test case: ${test.name}. Functions: ${test.functions.join(', ')}. Expected: ${formatExpected(test.expected)}`}
-	onkeydown={(e) => {
+	onkeydown={(e: KeyboardEvent) => {
 		if ((e.key === 'Enter' || e.key === ' ') && onClick) {
 			e.preventDefault();
 			onClick();
