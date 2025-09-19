@@ -15,14 +15,47 @@
 	const currentPath = $derived($page.url.pathname);
 	const isHomePage = $derived(currentPath === '/');
 	const isBrowsePage = $derived(currentPath === '/browse');
+
+	// Skip link functionality
+	function skipToMain() {
+		const mainElement = document.getElementById('main-content');
+		if (mainElement) {
+			mainElement.focus();
+			mainElement.scrollIntoView();
+		}
+	}
+
+	// Focus management for route changes
+	$effect(() => {
+		// Announce route changes to screen readers
+		const routeName = isHomePage ? 'Dashboard' : isBrowsePage ? 'Browse Tests' : 'Test Detail';
+		// Update document title for accessibility
+		document.title = `${routeName} - CCL Test Suite Viewer`;
+	});
 </script>
 
 <div class="min-h-screen bg-background font-sans antialiased">
-	<header class="border-b">
+	<!-- Skip to main content link for keyboard users -->
+	<a
+		href="#main-content"
+		class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium"
+		onclick={skipToMain}
+	>
+		Skip to main content
+	</a>
+
+	<!-- ARIA live region for route announcements -->
+	<div aria-live="polite" aria-atomic="true" class="sr-only" id="route-announcements"></div>
+
+	<header class="border-b" role="banner">
 		<div class="container mx-auto px-4 py-4">
 			<div class="flex items-center justify-between">
 				<div>
-					<button onclick={() => goto('/')} class="hover:opacity-80 transition-opacity">
+					<button
+						onclick={() => goto('/')}
+						class="hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+						aria-label="Go to homepage"
+					>
 						<h1 class="text-2xl font-bold text-foreground">
 							CCL Test Suite Viewer
 						</h1>
@@ -32,15 +65,17 @@
 					</button>
 				</div>
 
-				<!-- Navigation -->
-				<nav class="flex items-center gap-2">
+				<!-- Primary Navigation -->
+				<nav class="flex items-center gap-2" role="navigation" aria-label="Main navigation">
 					<Button
 						variant={isHomePage ? "default" : "outline"}
 						size="sm"
 						onclick={() => goto('/')}
+						aria-current={isHomePage ? "page" : undefined}
+						aria-label="Go to dashboard homepage"
 					>
 						{#snippet children()}
-							<Home class="h-4 w-4 mr-2" />
+							<Home class="h-4 w-4 mr-2" aria-hidden="true" />
 							Home
 						{/snippet}
 					</Button>
@@ -48,9 +83,11 @@
 						variant={isBrowsePage ? "default" : "outline"}
 						size="sm"
 						onclick={() => goto('/browse')}
+						aria-current={isBrowsePage ? "page" : undefined}
+						aria-label="Browse and filter test cases"
 					>
 						{#snippet children()}
-							<Search class="h-4 w-4 mr-2" />
+							<Search class="h-4 w-4 mr-2" aria-hidden="true" />
 							Browse Tests
 						{/snippet}
 					</Button>
@@ -59,11 +96,17 @@
 		</div>
 	</header>
 
-	<main class={isBrowsePage ? '' : 'container mx-auto px-4 py-6'}>
+	<main
+		class={isBrowsePage ? '' : 'container mx-auto px-4 py-6'}
+		role="main"
+		id="main-content"
+		tabindex="-1"
+		aria-label="Main content"
+	>
 		{@render children()}
 	</main>
 
-	<footer class="border-t mt-12">
+	<footer class="border-t mt-12" role="contentinfo">
 		<div class="container mx-auto px-4 py-6">
 			<p class="text-sm text-muted-foreground text-center">
 				Built with SvelteKit • Part of the CCL tools ecosystem

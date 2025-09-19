@@ -50,35 +50,45 @@
 	}
 </script>
 
-<div class="w-80 h-full border-r bg-background overflow-y-auto">
+<aside
+	class="w-80 h-full border-r bg-background overflow-y-auto"
+	role="complementary"
+	aria-label="Test filters and search"
+>
 	<!-- Header -->
 	<div class="p-4 border-b">
 		<div class="flex items-center gap-2 mb-3">
-			<Filter class="h-5 w-5" />
-			<h2 class="font-semibold">Filters</h2>
+			<Filter class="h-5 w-5" aria-hidden="true" />
+			<h2 class="font-semibold" id="filters-heading">Filters</h2>
 			{#if appState.hasActiveFilters}
-				<Badge variant="secondary" class="ml-auto">
+				<Badge variant="secondary" class="ml-auto" aria-label={`${appState.totalFilteredTests} tests match current filters`}>
 					{appState.totalFilteredTests} tests
 				</Badge>
 			{/if}
 		</div>
 
 		<!-- Search -->
-		<div class="relative">
-			<Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+		<div class="relative" role="search">
+			<Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
 			<Input
 				type="search"
 				placeholder="Search tests..."
 				value={appState.searchQuery}
 				oninput={handleSearchInput}
 				class="pl-9 pr-9"
+				aria-label="Search through test cases"
+				aria-describedby="search-description"
 			/>
+			<div id="search-description" class="sr-only">
+				Search will filter tests by name, function, or content
+			</div>
 			{#if appState.searchQuery}
 				<button
 					onclick={clearSearch}
-					class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground"
+					class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground focus-visible"
+					aria-label="Clear search query"
 				>
-					<X class="h-4 w-4" />
+					<X class="h-4 w-4" aria-hidden="true" />
 				</button>
 			{/if}
 		</div>
@@ -90,6 +100,7 @@
 				size="sm"
 				onclick={() => appState.clearAllFilters()}
 				class="w-full mt-3"
+				aria-label="Remove all active filters and show all tests"
 			>
 				Clear All Filters
 			</Button>
@@ -97,45 +108,50 @@
 	</div>
 
 	<!-- Filter Sections -->
-	<div class="p-4 space-y-4">
+	<div class="p-4 space-y-4" role="group" aria-labelledby="filters-heading">
 		<!-- Categories -->
 		<Card>
 			<CardHeader class="pb-3">
 				<button
 					onclick={() => categoriesExpanded = !categoriesExpanded}
-					class="flex items-center justify-between w-full text-left"
+					class="flex items-center justify-between w-full text-left focus-visible"
+					aria-expanded={categoriesExpanded}
+					aria-controls="categories-content"
+					aria-label={`Toggle categories filter section. ${getActiveFilterCount('categories')} categories currently selected.`}
 				>
-					<CardTitle class="text-sm">
+					<CardTitle class="text-sm" id="categories-title">
 						Categories
 						{#if getActiveFilterCount('categories') > 0}
-							<Badge variant="secondary" class="ml-2">
+							<Badge variant="secondary" class="ml-2" aria-label={`${getActiveFilterCount('categories')} selected`}>
 								{getActiveFilterCount('categories')}
 							</Badge>
 						{/if}
 					</CardTitle>
 					{#if categoriesExpanded}
-						<ChevronDown class="h-4 w-4" />
+						<ChevronDown class="h-4 w-4" aria-hidden="true" />
 					{:else}
-						<ChevronRight class="h-4 w-4" />
+						<ChevronRight class="h-4 w-4" aria-hidden="true" />
 					{/if}
 				</button>
 			</CardHeader>
 			{#if categoriesExpanded}
-				<CardContent class="pt-0">
-					<div class="space-y-2">
+				<CardContent class="pt-0" id="categories-content" aria-labelledby="categories-title">
+					<fieldset class="space-y-2">
+						<legend class="sr-only">Filter by test categories</legend>
 						{#each Object.entries(categoryCounts) as [category, count]}
-							<label class="flex items-center space-x-2 cursor-pointer">
+							<label class="flex items-center space-x-2 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded p-1 focus-within:bg-accent focus-within:text-accent-foreground">
 								<Checkbox
 									checked={appState.activeFilters.categories[category] || false}
 									onCheckedChange={() => toggleFilter('categories', category)}
+									aria-describedby={`category-${category}-count`}
 								/>
 								<span class="text-sm flex-1">{category}</span>
-								<Badge variant="outline" class="text-xs">
+								<Badge variant="outline" class="text-xs" id={`category-${category}-count`} aria-label={`${count} tests in this category`}>
 									{count}
 								</Badge>
 							</label>
 						{/each}
-					</div>
+					</fieldset>
 				</CardContent>
 			{/if}
 		</Card>
@@ -275,4 +291,4 @@
 			{/if}
 		</Card>
 	</div>
-</div>
+</aside>
