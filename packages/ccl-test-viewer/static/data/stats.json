@@ -1,0 +1,47 @@
+{
+  "totalTests": 366,
+  "totalAssertions": 630,
+  "categories": {
+    "Advanced Processing": 19,
+    "Comments": 6,
+    "Hierarchy Building": 12,
+    "Integration": 12,
+    "Core Parsing": 8,
+    "Edge Cases": 35,
+    "Error Handling": 6,
+    "Experimental": 30,
+    "List Operations": 95,
+    "Typed Access": 79,
+    "Property Algebraic": 24,
+    "Property Round Trip": 40
+  },
+  "functions": {
+    "parse": 163,
+    "parse_value": 10,
+    "filter": 3,
+    "build_hierarchy": 77,
+    "get_string": 7,
+    "expand_dotted": 9,
+    "get_list": 33,
+    "get_int": 11,
+    "get_float": 6,
+    "get_bool": 12,
+    "associativity": 9,
+    "round_trip": 12,
+    "canonical_format": 14
+  },
+  "features": {
+    "comments": 3,
+    "experimental_dotted_keys": 9
+  },
+  "behaviors": {
+    "tabs_preserve": 7,
+    "list_coercion_enabled": 15,
+    "list_coercion_disabled": 14,
+    "boolean_strict": 27,
+    "boolean_lenient": 24,
+    "crlf_preserve_literal": 4,
+    "crlf_normalize_to_lf": 4,
+    "strict_spacing": 3
+  }
+}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" %sveltekit.theme%>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="CCL Test Suite Viewer - Interactive test result visualization" />
+		<meta name="author" content="Tyler Butler" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="CCL Test Suite Viewer" />
+		<meta property="og:description" content="Interactive test result visualization for CCL implementations" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary" />
+		<meta property="twitter:title" content="CCL Test Suite Viewer" />
+		<meta property="twitter:description" content="Interactive test result visualization for CCL implementations" />
+
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover" class="bg-background text-foreground">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
