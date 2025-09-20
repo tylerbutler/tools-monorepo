@@ -5,12 +5,11 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "$lib/components/ui/index.js";
-import type { TestStats } from "$lib/data/types.js";
+} from "$lib/components/ui/index.ts";
+import type { TestStats } from "$lib/data/types.ts";
 import { Chart, registerables } from "chart.js";
 import { HugeiconsIcon } from "@hugeicons/svelte";
 import { BarChartIcon, CodeIcon, File01Icon, TextNumberSignIcon } from "@hugeicons/core-free-icons";
-import { onMount } from "svelte";
 
 interface Props {
 	stats: TestStats;
@@ -24,7 +23,7 @@ let categoryChart: Chart;
 let functionChart: Chart;
 
 // Register Chart.js components
-onMount(() => {
+$effect(() => {
 	Chart.register(...registerables);
 
 	// Create category distribution chart

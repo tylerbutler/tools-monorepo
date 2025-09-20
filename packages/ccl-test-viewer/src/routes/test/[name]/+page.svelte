@@ -2,10 +2,9 @@
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
 import TestDetail from "$lib/components/TestDetail.svelte";
-import { Button } from "$lib/components/ui/index.js";
-import type { GeneratedTest } from "$lib/data/types.js";
+import { Button } from "$lib/components/ui/index.ts";
+import type { GeneratedTest } from "$lib/data/types.ts";
 import { appState, initializeApp } from "$lib/stores.svelte.ts";
-import { onMount } from "svelte";
 
 // Local state
 let loading = $state(true);
@@ -16,7 +15,7 @@ let currentTest = $state<GeneratedTest | null>(null);
 const testName = $derived(decodeURIComponent($page.params.name ?? ""));
 
 // Initialize and find the test
-onMount(async () => {
+$effect(async () => {
 	try {
 		// Load data if not already loaded
 		if (appState.testCategories.length === 0) {

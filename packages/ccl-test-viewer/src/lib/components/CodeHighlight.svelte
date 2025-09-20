@@ -1,6 +1,5 @@
 <script lang="ts">
 import Prism from "prismjs";
-import { onMount } from "svelte";
 
 // Import basic components
 import "prismjs/components/prism-core";
@@ -22,7 +21,7 @@ let { code, language = "ccl", class: className = "", ...restProps }: Props = $pr
 let codeElement: HTMLElement;
 
 // Define CCL language for Prism.js
-onMount(() => {
+$effect(() => {
 	// Define CCL language syntax
 	Prism.languages.ccl = {
 		comment: {
