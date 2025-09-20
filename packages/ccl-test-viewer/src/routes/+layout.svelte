@@ -6,7 +6,7 @@ import type { Snippet } from "svelte";
 import type { LayoutData } from "./$types";
 
 interface Props {
-	children: Snippet;
+	children?: Snippet;
 	data: LayoutData;
 }
 
@@ -101,7 +101,11 @@ $effect(() => {
 		tabindex="-1"
 		aria-label="Main content"
 	>
-		{@render children()}
+		{#if children}
+			{@render children()}
+		{:else}
+			<!-- No page content available -->
+		{/if}
 	</main>
 
 	<footer class="border-t mt-12">

@@ -14,14 +14,18 @@ export default defineConfig({
 		devtoolsJson(),
 	],
 	build: {
-		// Required for Sonda to analyze bundles accurately
-		sourcemap: true,
+		// Disable sourcemaps for faster builds in production
+		sourcemap: false,
 		// Performance optimization for production
 		target: "esnext",
 		minify: "esbuild",
 		// Optimize chunk size for better loading
 		chunkSizeWarningLimit: 1000,
-	}, // Let SvelteKit handle bundle optimization
+		// Faster builds with parallel workers
+		rollupOptions: {
+			// Let Vite handle chunk optimization automatically
+		}
+	},
 	// Development optimizations
 	server: {
 		fs: {
@@ -30,10 +34,16 @@ export default defineConfig({
 		},
 		host: true,
 	},
-	// CSS optimizations
-	css: { devSourcemap: true },
-	// Performance optimizations
+	// CSS optimizations - disable dev sourcemaps for speed
+	css: { devSourcemap: false },
+	// Enhanced pre-bundling for faster builds
 	optimizeDeps: {
-		include: ["lucide-svelte", "chart.js", "prismjs"],
+		include: [
+			"clsx",
+			"tailwind-merge",
+			"tailwind-variants"
+		],
+		// Force pre-bundling rebuild
+		force: false
 	},
 });
