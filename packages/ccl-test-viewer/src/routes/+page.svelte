@@ -2,9 +2,8 @@
 import { goto } from "$app/navigation";
 import StatsDashboard from "$lib/components/StatsDashboard.svelte";
 import { Button } from "$lib/components/ui";
-import { appState, initializeApp } from "$lib/stores.svelte.ts";
-import { HugeiconsIcon } from "@hugeicons/svelte";
-import { ArrowRightIcon } from "@hugeicons/core-free-icons";
+import { appState, initializeApp } from "$lib/stores.svelte.js";
+import { ArrowRight } from "lucide-svelte";
 // Local state
 let loading = $state(true);
 

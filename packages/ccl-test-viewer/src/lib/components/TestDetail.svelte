@@ -8,211 +8,265 @@ import {
 	CardTitle,
 } from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
-import { ArrowLeft, Code, Copy, ExternalLink, Play } from "lucide-svelte";
+import Icon from "./Icon.svelte";
+import { ArrowLeft02Icon, CodeIcon, Copy01Icon, File01Icon, PlayIcon } from "@hugeicons/core-free-icons";
+import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
 interface Props {
 	test: GeneratedTest;
-	onBack?: () => void;
+	onBack: () => void;
 }
 
 let { test, onBack }: Props = $props();
 
-// Helper to format expected output in detail
-function formatExpectedDetail(expected: GeneratedTest["expected"]): string {
-	if (expected.error) return "Error is expected to occur";
+// Copy functionality
+async function copyToClipboard(text: string, type: string) {
+	try {
+		await navigator.clipboard.writeText(text);
+		// Could add a toast notification here
+		console.log(`${type} copied to clipboard`);
+	} catch (err) {
+		console.error("Failed to copy:", err);
+	}
+}
 
-	let result = `Expected count: ${expected.count}`;
+// Format expected result for display
+const formattedExpected = $derived.by(() => {
+	const { expected } = test;
+
+	if (expected.error) {
+		return {
+			type: "error",
+			content: expected.error,
+			language: "text",
+		};
+	}
 
 	if (expected.entries) {
-		result += "\n\nExpected entries:";
-		for (const entry of expected.entries) {
-			result += `\n  ${entry.key} = ${entry.value}`;
-		}
+		return {
+			type: "entries",
+			content: JSON.stringify(expected.entries, null, 2),
+			language: "json",
+		};
 	}
 
 	if (expected.object) {
-		result +=
-			"\n\nExpected object:\n" + JSON.stringify(expected.object, null, 2);
+		return {
+			type: "object",
+			content: JSON.stringify(expected.object, null, 2),
+			language: "json",
+		};
 	}
 
 	if (expected.value !== undefined) {
-		result += `\n\nExpected value: ${JSON.stringify(expected.value)}`;
+		return {
+			type: "value",
+			content: String(expected.value),
+			language: "text",
+		};
 	}
 
-	if (expected.list) {
-		result += "\n\nExpected list:\n" + JSON.stringify(expected.list, null, 2);
-	}
+	return {
+		type: "unknown",
+		content: "No expected result defined",
+		language: "text",
+	};
+});
 
-	return result;
-}
-
-// Copy functionality
-async function copyToClipboard(text: string) {
-	try {
-		await navigator.clipboard.writeText(text);
-		// TODO: Show toast notification
-	} catch (err) {
-		console.error("Failed to copy text: ", err);
-	}
-}
-
-function copyInput() {
-	copyToClipboard(test.input);
-}
-
-function copyExpected() {
-	copyToClipboard(formatExpectedDetail(test.expected));
-}
-
-function copyValidation() {
-	copyToClipboard(test.validation);
-}
+// Generate test command
+const testCommand = $derived(
+	`ccl parse ${JSON.stringify(test.input)} | ccl ${test.functions.join(" ")}`,
+);
 </script>
 
-<div class="max-w-4xl mx-auto p-6">
-	<!-- Header -->
-	<div class="flex items-center gap-4 mb-6">
-		{#if onBack}
-			<Button variant="outline" size="sm" onclick={onBack}>
-				<ArrowLeft class="h-4 w-4 mr-2" />
-				Back to Browse
+<div class="space-y-6">
+	<!-- Header with back button -->
+	<div class="flex items-center justify-between">
+		<div class="flex items-center space-x-4">
+			<Button variant="outline" onclick={onBack} aria-label="Go back to test list">
+				<Icon icon={ArrowLeft02Icon} size={16} class="mr-2" />
+				Back
 			</Button>
-		{/if}
-		<div class="flex-1">
-			<h1 class="text-2xl font-bold">{test.name}</h1>
-			<p class="text-muted-foreground">Test Details and Validation</p>
+			<div>
+				<h1 class="text-2xl font-bold">{test.name}</h1>
+				<p class="text-muted-foreground">Test case details and expected behavior</p>
+			</div>
 		</div>
+		<Button
+			variant="secondary"
+			onclick={() => copyToClipboard(testCommand, "Test command")}
+			aria-label="Copy test command"
+		>
+			<Icon icon={Copy01Icon} size={16} class="mr-2" />
+			Copy Command
+		</Button>
 	</div>
 
-	<!-- Test Metadata -->
-	<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+	<!-- Test metadata -->
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+		<!-- Functions -->
 		<Card>
-			<CardHeader>
-				<CardTitle class="text-sm">Functions</CardTitle>
+			<CardHeader class="pb-3">
+				<CardTitle class="text-sm flex items-center">
+					<Icon icon={CodeIcon} size={16} class="mr-2" />
+					Functions ({test.functions.length})
+				</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<div class="flex flex-wrap gap-2">
+				<div class="space-y-1">
 					{#each test.functions as func}
-						<Badge variant="function">{func}</Badge>
+						<Badge variant="secondary" class="text-xs">
+							{func}
+						</Badge>
 					{/each}
 				</div>
 			</CardContent>
 		</Card>
 
+		<!-- Features -->
 		<Card>
-			<CardHeader>
-				<CardTitle class="text-sm">Features</CardTitle>
+			<CardHeader class="pb-3">
+				<CardTitle class="text-sm">Features ({test.features.length})</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<div class="flex flex-wrap gap-2">
-					{#if test.features.length > 0}
-						{#each test.features as feature}
-							<Badge variant="feature">{feature}</Badge>
-						{/each}
-					{:else}
+				<div class="space-y-1">
+					{#each test.features as feature}
+						<Badge variant="outline" class="text-xs">
+							{feature}
+						</Badge>
+					{/each}
+					{#if test.features.length === 0}
 						<span class="text-sm text-muted-foreground">No special features</span>
 					{/if}
 				</div>
 			</CardContent>
 		</Card>
 
+		<!-- Behaviors -->
 		<Card>
-			<CardHeader>
-				<CardTitle class="text-sm">Behaviors</CardTitle>
+			<CardHeader class="pb-3">
+				<CardTitle class="text-sm">Behaviors ({test.behaviors.length})</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<div class="flex flex-wrap gap-2">
-					{#if test.behaviors.length > 0}
-						{#each test.behaviors as behavior}
-							<Badge variant="behavior">{behavior}</Badge>
-						{/each}
-					{:else}
-						<span class="text-sm text-muted-foreground">Standard behavior</span>
+				<div class="space-y-1">
+					{#each test.behaviors as behavior}
+						<Badge variant="outline" class="text-xs">
+							{behavior}
+						</Badge>
+					{/each}
+					{#if test.behaviors.length === 0}
+						<span class="text-sm text-muted-foreground">Default behaviors</span>
 					{/if}
 				</div>
 			</CardContent>
 		</Card>
 	</div>
 
-	<!-- Test Input -->
-	<Card class="mb-6">
-		<CardHeader>
-			<div class="flex items-center justify-between">
-				<CardTitle class="flex items-center gap-2">
-					<Code class="h-5 w-5" />
-					Test Input
-				</CardTitle>
-				<Button variant="outline" size="sm" onclick={copyInput}>
-					<Copy class="h-4 w-4 mr-2" />
-					Copy
-				</Button>
-			</div>
-		</CardHeader>
-		<CardContent>
-			<pre class="bg-muted p-4 rounded-md text-sm font-mono whitespace-pre-wrap overflow-x-auto">{test.input}</pre>
-		</CardContent>
-	</Card>
-
-	<!-- Expected Output -->
-	<Card class="mb-6">
-		<CardHeader>
-			<div class="flex items-center justify-between">
-				<CardTitle class="flex items-center gap-2">
-					<Play class="h-5 w-5" />
-					Expected Output
-				</CardTitle>
-				<Button variant="outline" size="sm" onclick={copyExpected}>
-					<Copy class="h-4 w-4 mr-2" />
-					Copy
-				</Button>
-			</div>
-		</CardHeader>
-		<CardContent>
-			<pre class="bg-muted p-4 rounded-md text-sm font-mono whitespace-pre-wrap overflow-x-auto">{formatExpectedDetail(test.expected)}</pre>
-
-			{#if test.expected.error}
-				<div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-					<p class="text-sm text-red-800 font-medium">⚠️ This test expects an error to occur</p>
+	<!-- Main content -->
+	<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+		<!-- Input -->
+		<Card>
+			<CardHeader class="pb-3">
+				<div class="flex items-center justify-between">
+					<CardTitle class="flex items-center">
+						<Icon icon={File01Icon} size={16} class="mr-2" />
+						Input
+					</CardTitle>
+					<Button
+						variant="ghost"
+						size="sm"
+						onclick={() => copyToClipboard(test.input, "Input")}
+						aria-label="Copy input"
+					>
+						<Icon icon={Copy01Icon} size={14} />
+					</Button>
 				</div>
-			{/if}
-		</CardContent>
-	</Card>
+			</CardHeader>
+			<CardContent>
+				<div class="relative">
+					<WhitespaceCodeHighlight code={test.input} language="ccl" />
+				</div>
+			</CardContent>
+		</Card>
 
-	<!-- Validation Rules -->
-	<Card class="mb-6">
-		<CardHeader>
-			<div class="flex items-center justify-between">
-				<CardTitle>Validation</CardTitle>
-				<Button variant="outline" size="sm" onclick={copyValidation}>
-					<Copy class="h-4 w-4 mr-2" />
-					Copy
-				</Button>
-			</div>
-		</CardHeader>
-		<CardContent>
-			<p class="text-sm bg-muted p-4 rounded-md">{test.validation}</p>
-		</CardContent>
-	</Card>
+		<!-- Expected Result -->
+		<Card>
+			<CardHeader class="pb-3">
+				<div class="flex items-center justify-between">
+					<CardTitle class="flex items-center">
+						<Icon icon={PlayIcon} size={16} class="mr-2" />
+						Expected Result
+					</CardTitle>
+					<Button
+						variant="ghost"
+						size="sm"
+						onclick={() => copyToClipboard(formattedExpected.content, "Expected result")}
+						aria-label="Copy expected result"
+					>
+						<Icon icon={Copy01Icon} size={14} />
+					</Button>
+				</div>
+			</CardHeader>
+			<CardContent>
+				<div class="space-y-3">
+					<!-- Result type indicator -->
+					<div class="flex items-center space-x-2">
+						<Badge variant={formattedExpected.type === "error" ? "destructive" : "default"}>
+							{formattedExpected.type}
+						</Badge>
+						{#if formattedExpected.type === "entries" && Array.isArray(test.expected.entries)}
+							<span class="text-sm text-muted-foreground">
+								{test.expected.entries.length} entries
+							</span>
+						{/if}
+					</div>
 
-	<!-- Source Information -->
+					<!-- Result content -->
+					<div class="relative">
+						<WhitespaceCodeHighlight
+							code={formattedExpected.content}
+							language={formattedExpected.language}
+						/>
+					</div>
+				</div>
+			</CardContent>
+		</Card>
+	</div>
+
+	<!-- Test Command -->
 	<Card>
-		<CardHeader>
-			<CardTitle class="flex items-center gap-2">
-				<ExternalLink class="h-5 w-5" />
-				Source Information
-			</CardTitle>
+		<CardHeader class="pb-3">
+			<div class="flex items-center justify-between">
+				<CardTitle>Test Command</CardTitle>
+				<Button
+					variant="ghost"
+					size="sm"
+					onclick={() => copyToClipboard(testCommand, "Test command")}
+					aria-label="Copy test command"
+				>
+					<Icon icon={Copy01Icon} size={14} />
+				</Button>
+			</div>
 		</CardHeader>
 		<CardContent>
-			<div class="space-y-3">
-				<div>
-					<span class="text-sm font-medium">Source Test:</span>
-					<span class="text-sm text-muted-foreground ml-2">{test.source_test}</span>
-				</div>
-
-				<div class="text-xs text-muted-foreground">
-					<p>This test is part of the CCL test suite designed to validate CCL parsing implementations across different programming languages.</p>
-				</div>
+			<div class="bg-muted/50 rounded-md p-4">
+				<code class="text-sm font-mono">{testCommand}</code>
 			</div>
 		</CardContent>
 	</Card>
+
+	<!-- Test count information -->
+	{#if test.expected.count !== undefined}
+		<Card>
+			<CardHeader class="pb-3">
+				<CardTitle class="text-sm">Assertion Count</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div class="text-2xl font-bold">{test.expected.count}</div>
+				<p class="text-sm text-muted-foreground">
+					This test contains {test.expected.count} assertion{test.expected.count === 1 ? "" : "s"}
+				</p>
+			</CardContent>
+		</Card>
+	{/if}
 </div>

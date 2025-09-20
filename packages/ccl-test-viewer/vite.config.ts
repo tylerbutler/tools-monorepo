@@ -33,6 +33,6 @@ export default defineConfig({
 	css: { devSourcemap: true },
 	// Performance optimizations
 	optimizeDeps: {
-		include: ["lucide-svelte", "chart.js", "prismjs"],
+		include: ["@hugeicons/core-free-icons", "chart.js", "prismjs"],
 	},
 });

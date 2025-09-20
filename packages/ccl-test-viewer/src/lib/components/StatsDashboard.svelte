@@ -5,10 +5,10 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "$lib/components/ui/index.ts";
-import type { TestStats } from "$lib/data/types.ts";
+} from "$lib/components/ui/index.js";
+import type { TestStats } from "$lib/data/types.js";
 import { Chart, registerables } from "chart.js";
-import { HugeiconsIcon } from "@hugeicons/svelte";
+import Icon from "$lib/components/Icon.svelte";
 import { BarChartIcon, CodeIcon, File01Icon, TextNumberSignIcon } from "@hugeicons/core-free-icons";
 
 interface Props {
@@ -175,7 +175,7 @@ const leastTestedCategory = $derived(
 				<CardTitle class="text-sm font-medium">
 					Total Tests
 				</CardTitle>
-				<HugeiconsIcon icon={File01Icon} size={16} class="text-muted-foreground" />
+				<Icon icon={File01Icon} size={16} class="text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{stats.totalTests}</div>
@@ -190,7 +190,7 @@ const leastTestedCategory = $derived(
 				<CardTitle class="text-sm font-medium">
 					Total Assertions
 				</CardTitle>
-				<HugeiconsIcon icon={TextNumberSignIcon} size={16} class="text-muted-foreground" />
+				<Icon icon={TextNumberSignIcon} size={16} class="text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{stats.totalAssertions}</div>
@@ -205,7 +205,7 @@ const leastTestedCategory = $derived(
 				<CardTitle class="text-sm font-medium">
 					Functions Tested
 				</CardTitle>
-				<HugeiconsIcon icon={CodeIcon} size={16} class="text-muted-foreground" />
+				<Icon icon={CodeIcon} size={16} class="text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalFunctions}</div>
@@ -220,7 +220,7 @@ const leastTestedCategory = $derived(
 				<CardTitle class="text-sm font-medium">
 					Coverage
 				</CardTitle>
-				<HugeiconsIcon icon={BarChartIcon} size={16} class="text-muted-foreground" />
+				<Icon icon={BarChartIcon} size={16} class="text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{avgTestsPerCategory}</div>

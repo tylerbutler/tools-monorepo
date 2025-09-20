@@ -3,17 +3,17 @@ import "../app.css";
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
 import { Button } from "$lib/components/ui/index.js";
-import { HugeiconsIcon } from "@hugeicons/svelte";
-import { HomeIcon, SearchIcon } from "@hugeicons/core-free-icons";
+import { Home, Search } from "lucide-svelte";
+import type { Snippet } from "svelte";
 
 interface Props {
-	children: any;
+	children: Snippet;
 }
 
 let { children }: Props = $props();
 
 // Navigation state
-const currentPath = $derived($page.url.pathname);
+const currentPath = $derived($page?.url?.pathname || "/");
 const isHomePage = $derived(currentPath === "/");
 const isBrowsePage = $derived(currentPath === "/browse");
 
@@ -79,7 +79,7 @@ $effect(() => {
 						aria-current={isHomePage ? "page" : undefined}
 						aria-label="Go to dashboard homepage"
 					>
-						<HugeiconsIcon icon={HomeIcon} size={16} class="mr-2" />
+						<Home size={16} class="mr-2" />
 						Home
 					</Button>
 					<Button
@@ -89,7 +89,7 @@ $effect(() => {
 						aria-current={isBrowsePage ? "page" : undefined}
 						aria-label="Browse and filter test cases"
 					>
-						<HugeiconsIcon icon={SearchIcon} size={16} class="mr-2" />
+						<Search size={16} class="mr-2" />
 						Browse Tests
 					</Button>
 				</nav>

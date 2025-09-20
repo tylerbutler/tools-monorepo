@@ -1,88 +1,74 @@
 <script lang="ts">
-import { goto } from "$app/navigation";
 import { page } from "$app/stores";
+import { goto } from "$app/navigation";
+import { browser } from "$app/environment";
 import TestDetail from "$lib/components/TestDetail.svelte";
-import { Button } from "$lib/components/ui/index.ts";
-import type { GeneratedTest } from "$lib/data/types.ts";
-import { appState, initializeApp } from "$lib/stores.svelte.ts";
+import { Button } from "$lib/components/ui/index.js";
+import type { GeneratedTest } from "$lib/data/types.js";
+import { appState, initializeApp } from "$lib/stores.svelte.js";
 
 // Local state
 let loading = $state(true);
+let test = $state<GeneratedTest | null>(null);
 let error = $state<string | null>(null);
-let currentTest = $state<GeneratedTest | null>(null);
+let initialized = $state(false);
 
-// Get test name from URL params
-const testName = $derived(decodeURIComponent($page.params.name ?? ""));
+// Get test name from URL
+const testName = $derived(decodeURIComponent($page.params.name || ""));
 
 // Initialize and find the test
-$effect(async () => {
-	try {
-		// Load data if not already loaded
-		if (appState.testCategories.length === 0) {
-			const success = await initializeApp();
-			if (!success) {
-				error = "Failed to load test data";
-				return;
-			}
-		}
+$effect(() => {
+	if (!initialized && browser && testName) {
+		initialized = true;
+		initializeApp()
+			.then(() => {
+				// Find the test by name
+				const foundTest = appState.testCategories
+					.flatMap((cat) => cat.tests)
+					.find((t) => t.name === testName);
 
-		// Find the test by name
-		findTest();
-	} catch (err) {
-		error = err instanceof Error ? err.message : "Unknown error occurred";
-	} finally {
-		loading = false;
+				if (foundTest) {
+					test = foundTest;
+					appState.selectTest(foundTest);
+				} else {
+					error = `Test "${testName}" not found`;
+				}
+				loading = false;
+			})
+			.catch((err) => {
+				console.error("Failed to load test data:", err);
+				error = "Failed to load test data";
+				loading = false;
+			});
 	}
 });
 
-function findTest() {
-	// Search through all categories for the test
-	for (const category of appState.testCategories) {
-		const foundTest = category.tests.find((test) => test.name === testName);
-		if (foundTest) {
-			currentTest = foundTest;
-			appState.selectTest(foundTest);
-			return;
-		}
-	}
-
-	// Test not found
-	error = `Test "${testName}" not found`;
-}
-
-function handleBack() {
+function goBack() {
 	goto("/browse");
 }
 </script>
 
 <svelte:head>
-	<title>{currentTest ? currentTest.name : 'Test Detail'} - CCL Test Viewer</title>
+	<title>{testName} - CCL Test Suite Viewer</title>
 </svelte:head>
 
 {#if loading}
-	<div class="flex items-center justify-center h-screen">
-		<div class="text-center">
-			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-			<p class="text-muted-foreground">Loading test details...</p>
-		</div>
+	<div class="flex items-center justify-center h-64">
+		<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+		<span class="ml-4 text-muted-foreground">Loading test data...</span>
 	</div>
 {:else if error}
-	<div class="flex items-center justify-center h-screen">
-		<div class="text-center">
-			<p class="text-red-600 mb-4">Error: {error}</p>
-			<div class="space-x-2">
-				<Button onclick={handleBack} variant="outline">Back to Browse</Button>
-				<Button onclick={() => window.location.reload()}>Retry</Button>
-			</div>
-		</div>
+	<div class="text-center py-12">
+		<h1 class="text-2xl font-bold mb-4">Test Not Found</h1>
+		<p class="text-muted-foreground mb-6">{error}</p>
+		<Button onclick={goBack}>Back to Tests</Button>
 	</div>
-{:else if currentTest}
-	<TestDetail test={currentTest} onBack={handleBack} />
+{:else if test}
+	<TestDetail {test} onBack={goBack} />
 {:else}
-	<div class="flex items-center justify-center h-screen">
-		<div class="text-center">
-			<p class="text-muted-foreground mb-4">Test not found</p>
-			<Button onclick={handleBack}>Back to Browse</Button>
-		</div>
+	<div class="text-center py-12">
+		<h1 class="text-2xl font-bold mb-4">Test Not Found</h1>
+		<p class="text-muted-foreground mb-6">The requested test could not be found.</p>
+		<Button onclick={goBack}>Back to Tests</Button>
 	</div>
 {/if}

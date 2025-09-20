@@ -14,9 +14,9 @@ import {
 	AVAILABLE_FEATURES,
 	AVAILABLE_FUNCTIONS,
 } from "$lib/data/types.js";
-import { appState, type FilterState } from "$lib/stores.svelte.ts";
-import { HugeiconsIcon } from "@hugeicons/svelte";
-import { ArrowDownIcon, ArrowRightIcon, FilterIcon, SearchIcon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { appState, type FilterState } from "$lib/stores.svelte.js";
+import Icon from "./Icon.svelte";
+import { ArrowDown01Icon, ArrowRight01Icon, FilterHorizontalIcon, Search01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
 // Local state for collapsible sections
 let functionsExpanded = $state(true);
@@ -51,253 +51,336 @@ function handleSearchInput(event: Event) {
 	appState.setSearchQuery(target.value);
 }
 
-function toggleFilter(type: keyof FilterState, key: string) {
-	appState.toggleFilter(type, key);
-}
-
 function clearSearch() {
 	appState.setSearchQuery("");
 }
 
-function getActiveFilterCount(type: keyof FilterState): number {
-	return Object.values(appState.activeFilters[type]).filter(Boolean).length;
+function handleFilterToggle(type: keyof FilterState, key: string) {
+	appState.toggleFilter(type, key);
 }
+
+function clearFilterSection(type: keyof FilterState) {
+	appState.clearFilterType(type);
+}
+
+// Count active filters per section
+const activeFunctionFilters = $derived(
+	Object.values(appState.activeFilters.functions).filter(Boolean).length,
+);
+const activeFeatureFilters = $derived(
+	Object.values(appState.activeFilters.features).filter(Boolean).length,
+);
+const activeBehaviorFilters = $derived(
+	Object.values(appState.activeFilters.behaviors).filter(Boolean).length,
+);
+const activeCategoryFilters = $derived(
+	Object.values(appState.activeFilters.categories).filter(Boolean).length,
+);
+
+// Available categories from loaded data
+const availableCategories = $derived.by(() => {
+	return appState.testCategories.map((cat) => cat.name);
+});
 </script>
 
-<aside
-	class="w-80 h-full border-r bg-background overflow-y-auto"
-	aria-label="Test filters and search"
->
-	<!-- Header -->
-	<div class="p-4 border-b">
-		<div class="flex items-center gap-2 mb-3">
-			<HugeiconsIcon icon={FilterIcon} size={20} />
-			<h2 class="font-semibold" id="filters-heading">Filters</h2>
+<aside class="w-80 border-r bg-background p-6 overflow-y-auto h-full">
+	<div class="space-y-6">
+		<!-- Header -->
+		<div class="flex items-center justify-between">
+			<h2 class="text-lg font-semibold flex items-center">
+				<Icon icon={FilterHorizontalIcon} size={20} class="mr-2" />
+				Filters
+			</h2>
 			{#if appState.hasActiveFilters}
-				<Badge variant="secondary" class="ml-auto" aria-label={`${appState.totalFilteredTests} tests match current filters`}>
-					{appState.totalFilteredTests} tests
-				</Badge>
+				<Button variant="outline" size="sm" onclick={() => appState.clearAllFilters()}>
+					Clear All
+				</Button>
 			{/if}
 		</div>
 
 		<!-- Search -->
-		<div class="relative" role="search">
-			<HugeiconsIcon icon={SearchIcon} size={16} class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-			<Input
-				type="search"
-				placeholder="Search tests..."
-				value={appState.searchQuery}
-				oninput={handleSearchInput}
-				class="pl-9 pr-9"
-				aria-label="Search through test cases"
-				aria-describedby="search-description"
-			/>
-			<div id="search-description" class="sr-only">
-				Search will filter tests by name, function, or content
-			</div>
-			{#if appState.searchQuery}
-				<button
-					onclick={clearSearch}
-					class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground focus-visible"
-					aria-label="Clear search query"
-				>
-					<HugeiconsIcon icon={Cancel01Icon} size={16} />
-				</button>
-			{/if}
-		</div>
-
-		<!-- Clear All Filters -->
-		{#if appState.hasActiveFilters}
-			<Button
-				variant="outline"
-				size="sm"
-				onclick={() => appState.clearAllFilters()}
-				class="w-full mt-3"
-				aria-label="Remove all active filters and show all tests"
-			>
-				Clear All Filters
-			</Button>
-		{/if}
-	</div>
-
-	<!-- Filter Sections -->
-	<div class="p-4 space-y-4" role="group" aria-labelledby="filters-heading">
-		<!-- Categories -->
 		<Card>
 			<CardHeader class="pb-3">
-				<button
-					onclick={() => categoriesExpanded = !categoriesExpanded}
-					class="flex items-center justify-between w-full text-left focus-visible"
-					aria-expanded={categoriesExpanded}
-					aria-controls="categories-content"
-					aria-label={`Toggle categories filter section. ${getActiveFilterCount('categories')} categories currently selected.`}
-				>
-					<CardTitle class="text-sm" id="categories-title">
-						Categories
-						{#if getActiveFilterCount('categories') > 0}
-							<Badge variant="secondary" class="ml-2" aria-label={`${getActiveFilterCount('categories')} selected`}>
-								{getActiveFilterCount('categories')}
-							</Badge>
-						{/if}
-					</CardTitle>
-					{#if categoriesExpanded}
-						<HugeiconsIcon icon={ArrowDownIcon} size={16} />
-					{:else}
-						<HugeiconsIcon icon={ArrowRightIcon} size={16} />
-					{/if}
-				</button>
+				<CardTitle class="text-sm">Search Tests</CardTitle>
 			</CardHeader>
-			{#if categoriesExpanded}
-				<CardContent class="pt-0" id="categories-content" aria-labelledby="categories-title">
-					<fieldset class="space-y-2">
-						<legend class="sr-only">Filter by test categories</legend>
-						{#each Object.entries(categoryCounts) as [category, count]}
-							<label class="flex items-center space-x-2 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded p-1 focus-within:bg-accent focus-within:text-accent-foreground">
-								<Checkbox
-									checked={appState.activeFilters.categories[category] || false}
-									onCheckedChange={() => toggleFilter('categories', category)}
-									aria-describedby={`category-${category}-count`}
-								/>
-								<span class="text-sm flex-1">{category}</span>
-								<Badge variant="outline" class="text-xs" id={`category-${category}-count`} aria-label={`${count} tests in this category`}>
-									{count}
-								</Badge>
-							</label>
-						{/each}
-					</fieldset>
-				</CardContent>
-			{/if}
+			<CardContent>
+				<div class="relative">
+					<Icon
+						icon={Search01Icon}
+						size={16}
+						class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+					/>
+					<Input
+						type="text"
+						placeholder="Search test names, input, functions..."
+						value={appState.searchQuery}
+						oninput={handleSearchInput}
+						class="pl-10 pr-10"
+					/>
+					{#if appState.searchQuery}
+						<button
+							onclick={clearSearch}
+							class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+							aria-label="Clear search"
+						>
+							<Icon icon={Cancel01Icon} size={16} />
+						</button>
+					{/if}
+				</div>
+			</CardContent>
 		</Card>
 
-		<!-- Functions -->
+		<!-- Results Summary -->
+		<div class="text-sm text-muted-foreground">
+			Showing {appState.totalFilteredTests} of {appState.testStats?.totalTests || 0} tests
+		</div>
+
+		<!-- Function Filters -->
 		<Card>
 			<CardHeader class="pb-3">
-				<button
-					onclick={() => functionsExpanded = !functionsExpanded}
-					class="flex items-center justify-between w-full text-left"
-				>
-					<CardTitle class="text-sm">
-						Functions
-						{#if getActiveFilterCount('functions') > 0}
-							<Badge variant="secondary" class="ml-2">
-								{getActiveFilterCount('functions')}
-							</Badge>
-						{/if}
-					</CardTitle>
-					{#if functionsExpanded}
-						<HugeiconsIcon icon={ArrowDownIcon} size={16} />
-					{:else}
-						<HugeiconsIcon icon={ArrowRightIcon} size={16} />
+				<div class="flex items-center justify-between">
+					<button
+						onclick={() => (functionsExpanded = !functionsExpanded)}
+						class="flex items-center hover:opacity-80 transition-opacity"
+					>
+						<Icon
+							icon={functionsExpanded ? ArrowDown01Icon : ArrowRight01Icon}
+							size={16}
+							class="mr-1"
+						/>
+						<CardTitle class="text-sm">
+							Functions
+							{#if activeFunctionFilters > 0}
+								<Badge variant="secondary" class="ml-2 text-xs">
+									{activeFunctionFilters}
+								</Badge>
+							{/if}
+						</CardTitle>
+					</button>
+					{#if activeFunctionFilters > 0}
+						<Button
+							variant="ghost"
+							size="sm"
+							onclick={() => clearFilterSection("functions")}
+							class="text-xs"
+						>
+							Clear
+						</Button>
 					{/if}
-				</button>
+				</div>
 			</CardHeader>
 			{#if functionsExpanded}
 				<CardContent class="pt-0">
-					<div class="space-y-2">
+					<div class="space-y-2 max-h-60 overflow-y-auto">
 						{#each AVAILABLE_FUNCTIONS as func}
 							{@const count = functionCounts[func] || 0}
-							{#if count > 0}
-								<label class="flex items-center space-x-2 cursor-pointer">
+							{@const isActive = appState.activeFilters.functions[func] || false}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center space-x-2 flex-1">
 									<Checkbox
-										checked={appState.activeFilters.functions[func] || false}
-										onCheckedChange={() => toggleFilter('functions', func)}
+										checked={isActive}
+										onCheckedChange={(checked) => handleFilterToggle("functions", func)}
 									/>
-									<span class="text-sm flex-1 font-mono">{func}</span>
-									<Badge variant="function" class="text-xs">
-										{count}
-									</Badge>
-								</label>
-							{/if}
+									<label
+										class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+										onclick={() => handleFilterToggle("functions", func)}
+									>
+										{func}
+									</label>
+								</div>
+								<Badge variant="outline" class="text-xs">
+									{count}
+								</Badge>
+							</div>
 						{/each}
 					</div>
 				</CardContent>
 			{/if}
 		</Card>
 
-		<!-- Features -->
+		<!-- Feature Filters -->
 		<Card>
 			<CardHeader class="pb-3">
-				<button
-					onclick={() => featuresExpanded = !featuresExpanded}
-					class="flex items-center justify-between w-full text-left"
-				>
-					<CardTitle class="text-sm">
-						Features
-						{#if getActiveFilterCount('features') > 0}
-							<Badge variant="secondary" class="ml-2">
-								{getActiveFilterCount('features')}
-							</Badge>
-						{/if}
-					</CardTitle>
-					{#if featuresExpanded}
-						<HugeiconsIcon icon={ArrowDownIcon} size={16} />
-					{:else}
-						<HugeiconsIcon icon={ArrowRightIcon} size={16} />
+				<div class="flex items-center justify-between">
+					<button
+						onclick={() => (featuresExpanded = !featuresExpanded)}
+						class="flex items-center hover:opacity-80 transition-opacity"
+					>
+						<Icon
+							icon={featuresExpanded ? ArrowDown01Icon : ArrowRight01Icon}
+							size={16}
+							class="mr-1"
+						/>
+						<CardTitle class="text-sm">
+							Features
+							{#if activeFeatureFilters > 0}
+								<Badge variant="secondary" class="ml-2 text-xs">
+									{activeFeatureFilters}
+								</Badge>
+							{/if}
+						</CardTitle>
+					</button>
+					{#if activeFeatureFilters > 0}
+						<Button
+							variant="ghost"
+							size="sm"
+							onclick={() => clearFilterSection("features")}
+							class="text-xs"
+						>
+							Clear
+						</Button>
 					{/if}
-				</button>
+				</div>
 			</CardHeader>
 			{#if featuresExpanded}
 				<CardContent class="pt-0">
-					<div class="space-y-2">
+					<div class="space-y-2 max-h-60 overflow-y-auto">
 						{#each AVAILABLE_FEATURES as feature}
 							{@const count = featureCounts[feature] || 0}
-							{#if count > 0}
-								<label class="flex items-center space-x-2 cursor-pointer">
+							{@const isActive = appState.activeFilters.features[feature] || false}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center space-x-2 flex-1">
 									<Checkbox
-										checked={appState.activeFilters.features[feature] || false}
-										onCheckedChange={() => toggleFilter('features', feature)}
+										checked={isActive}
+										onCheckedChange={(checked) => handleFilterToggle("features", feature)}
 									/>
-									<span class="text-sm flex-1">{feature}</span>
-									<Badge variant="feature" class="text-xs">
-										{count}
-									</Badge>
-								</label>
-							{/if}
+									<label
+										class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+										onclick={() => handleFilterToggle("features", feature)}
+									>
+										{feature}
+									</label>
+								</div>
+								<Badge variant="outline" class="text-xs">
+									{count}
+								</Badge>
+							</div>
 						{/each}
 					</div>
 				</CardContent>
 			{/if}
 		</Card>
 
-		<!-- Behaviors -->
+		<!-- Behavior Filters -->
 		<Card>
 			<CardHeader class="pb-3">
-				<button
-					onclick={() => behaviorsExpanded = !behaviorsExpanded}
-					class="flex items-center justify-between w-full text-left"
-				>
-					<CardTitle class="text-sm">
-						Behaviors
-						{#if getActiveFilterCount('behaviors') > 0}
-							<Badge variant="secondary" class="ml-2">
-								{getActiveFilterCount('behaviors')}
-							</Badge>
-						{/if}
-					</CardTitle>
-					{#if behaviorsExpanded}
-						<HugeiconsIcon icon={ArrowDownIcon} size={16} />
-					{:else}
-						<HugeiconsIcon icon={ArrowRightIcon} size={16} />
+				<div class="flex items-center justify-between">
+					<button
+						onclick={() => (behaviorsExpanded = !behaviorsExpanded)}
+						class="flex items-center hover:opacity-80 transition-opacity"
+					>
+						<Icon
+							icon={behaviorsExpanded ? ArrowDown01Icon : ArrowRight01Icon}
+							size={16}
+							class="mr-1"
+						/>
+						<CardTitle class="text-sm">
+							Behaviors
+							{#if activeBehaviorFilters > 0}
+								<Badge variant="secondary" class="ml-2 text-xs">
+									{activeBehaviorFilters}
+								</Badge>
+							{/if}
+						</CardTitle>
+					</button>
+					{#if activeBehaviorFilters > 0}
+						<Button
+							variant="ghost"
+							size="sm"
+							onclick={() => clearFilterSection("behaviors")}
+							class="text-xs"
+						>
+							Clear
+						</Button>
 					{/if}
-				</button>
+				</div>
 			</CardHeader>
 			{#if behaviorsExpanded}
 				<CardContent class="pt-0">
-					<div class="space-y-2">
+					<div class="space-y-2 max-h-60 overflow-y-auto">
 						{#each AVAILABLE_BEHAVIORS as behavior}
 							{@const count = behaviorCounts[behavior] || 0}
-							{#if count > 0}
-								<label class="flex items-center space-x-2 cursor-pointer">
+							{@const isActive = appState.activeFilters.behaviors[behavior] || false}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center space-x-2 flex-1">
 									<Checkbox
-										checked={appState.activeFilters.behaviors[behavior] || false}
-										onCheckedChange={() => toggleFilter('behaviors', behavior)}
+										checked={isActive}
+										onCheckedChange={(checked) => handleFilterToggle("behaviors", behavior)}
 									/>
-									<span class="text-sm flex-1">{behavior}</span>
-									<Badge variant="behavior" class="text-xs">
-										{count}
-									</Badge>
-								</label>
+									<label
+										class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+										onclick={() => handleFilterToggle("behaviors", behavior)}
+									>
+										{behavior}
+									</label>
+								</div>
+								<Badge variant="outline" class="text-xs">
+									{count}
+								</Badge>
+							</div>
+						{/each}
+					</div>
+				</CardContent>
+			{/if}
+		</Card>
+
+		<!-- Category Filters -->
+		<Card>
+			<CardHeader class="pb-3">
+				<div class="flex items-center justify-between">
+					<button
+						onclick={() => (categoriesExpanded = !categoriesExpanded)}
+						class="flex items-center hover:opacity-80 transition-opacity"
+					>
+						<Icon
+							icon={categoriesExpanded ? ArrowDown01Icon : ArrowRight01Icon}
+							size={16}
+							class="mr-1"
+						/>
+						<CardTitle class="text-sm">
+							Categories
+							{#if activeCategoryFilters > 0}
+								<Badge variant="secondary" class="ml-2 text-xs">
+									{activeCategoryFilters}
+								</Badge>
 							{/if}
+						</CardTitle>
+					</button>
+					{#if activeCategoryFilters > 0}
+						<Button
+							variant="ghost"
+							size="sm"
+							onclick={() => clearFilterSection("categories")}
+							class="text-xs"
+						>
+							Clear
+						</Button>
+					{/if}
+				</div>
+			</CardHeader>
+			{#if categoriesExpanded}
+				<CardContent class="pt-0">
+					<div class="space-y-2 max-h-60 overflow-y-auto">
+						{#each availableCategories as category}
+							{@const count = categoryCounts[category] || 0}
+							{@const isActive = appState.activeFilters.categories[category] || false}
+							<div class="flex items-center justify-between">
+								<div class="flex items-center space-x-2 flex-1">
+									<Checkbox
+										checked={isActive}
+										onCheckedChange={(checked) => handleFilterToggle("categories", category)}
+									/>
+									<label
+										class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+										onclick={() => handleFilterToggle("categories", category)}
+									>
+										{category}
+									</label>
+								</div>
+								<Badge variant="outline" class="text-xs">
+									{count}
+								</Badge>
+							</div>
 						{/each}
 					</div>
 				</CardContent>
