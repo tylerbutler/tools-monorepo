@@ -59,7 +59,6 @@
 		"@tylerbu/local-config": "workspace:^",
 		"changesets-changelog-clean": "^1.3.0",
 		"concurrently": "^9.2.0",
-		"cross-env": "^7.0.3",
 		"generate-license-file": "^4.0.0",
 		"npm-check-updates": "^18.0.1",
 		"renovate": "^41",

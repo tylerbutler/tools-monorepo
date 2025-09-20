@@ -1,8 +1,6 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
 
-// import { Button } from "$lib/components/ui";
-
 // Navigation handlers
 function viewAllTests() {
 	goto("/browse");
