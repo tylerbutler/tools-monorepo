@@ -2,18 +2,27 @@
 import { goto } from "$app/navigation";
 import StatsDashboard from "$lib/components/StatsDashboard.svelte";
 import { Button } from "$lib/components/ui";
-import { appState, initializeApp } from "$lib/stores.svelte.js";
+import { appState, initializeApp } from "$lib/stores.svelte.ts";
 import { HugeiconsIcon } from "@hugeicons/svelte";
 import { ArrowRightIcon } from "@hugeicons/core-free-icons";
-import { onMount } from "svelte";
-
 // Local state
 let loading = $state(true);
 
-// Initialize data on mount
-onMount(async () => {
-	await initializeApp();
-	loading = false;
+// Initialize data using $effect (Svelte 5 approach)
+let initialized = $state(false);
+
+$effect(() => {
+	if (!initialized) {
+		initialized = true;
+		initializeApp()
+			.then(() => {
+				loading = false;
+			})
+			.catch((error) => {
+				console.error('Error during initialization:', error);
+				loading = false; // Set to false even on error to show error state
+			});
+	}
 });
 
 // Navigation handlers

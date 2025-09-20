@@ -4,8 +4,9 @@ import { browser } from "$app/environment";
 import FilterSidebar from "$lib/components/FilterSidebar.svelte";
 import TestCard from "$lib/components/TestCard.svelte";
 import { Badge, Button } from "$lib/components/ui/index.js";
-import { appState, initializeApp } from "$lib/stores.svelte.js";
-import { Grid, List, Menu, X } from "lucide-svelte";
+import { appState, initializeApp } from "$lib/stores.svelte.ts";
+import { HugeiconsIcon } from "@hugeicons/svelte";
+import { GridIcon, ListViewIcon, Menu01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
 // Debug: Check if script is executing at all
 console.log("🟦 Browse page script executed at module level");
@@ -87,9 +88,9 @@ function toggleViewMode() {
 							class="lg:hidden"
 						>
 							{#if appState.sidebarOpen}
-								<X class="h-4 w-4" />
+								<HugeiconsIcon icon={Cancel01Icon} size={16} />
 							{:else}
-								<Menu class="h-4 w-4" />
+								<HugeiconsIcon icon={Menu01Icon} size={16} />
 							{/if}
 						</Button>
 
@@ -116,10 +117,10 @@ function toggleViewMode() {
 							class="hidden lg:inline-flex"
 						>
 							{#if appState.sidebarOpen}
-								<X class="h-4 w-4 mr-2" />
+								<HugeiconsIcon icon={Cancel01Icon} size={16} class="mr-2" />
 								Hide Filters
 							{:else}
-								<Menu class="h-4 w-4 mr-2" />
+								<HugeiconsIcon icon={Menu01Icon} size={16} class="mr-2" />
 								Show Filters
 							{/if}
 						</Button>
@@ -131,10 +132,10 @@ function toggleViewMode() {
 							onclick={toggleViewMode}
 						>
 							{#if appState.viewMode === 'grid'}
-								<List class="h-4 w-4 mr-2" />
+								<HugeiconsIcon icon={ListViewIcon} size={16} class="mr-2" />
 								List View
 							{:else}
-								<Grid class="h-4 w-4 mr-2" />
+								<HugeiconsIcon icon={GridIcon} size={16} class="mr-2" />
 								Grid View
 							{/if}
 						</Button>

@@ -14,8 +14,9 @@ import {
 	AVAILABLE_FEATURES,
 	AVAILABLE_FUNCTIONS,
 } from "$lib/data/types.js";
-import { appState, type FilterState } from "$lib/stores.svelte.js";
-import { ChevronDown, ChevronRight, Filter, Search, X } from "lucide-svelte";
+import { appState, type FilterState } from "$lib/stores.svelte.ts";
+import { HugeiconsIcon } from "@hugeicons/svelte";
+import { ArrowDownIcon, ArrowRightIcon, FilterIcon, SearchIcon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
 // Local state for collapsible sections
 let functionsExpanded = $state(true);
@@ -70,7 +71,7 @@ function getActiveFilterCount(type: keyof FilterState): number {
 	<!-- Header -->
 	<div class="p-4 border-b">
 		<div class="flex items-center gap-2 mb-3">
-			<Filter class="h-5 w-5" aria-hidden="true" />
+			<HugeiconsIcon icon={FilterIcon} size={20} />
 			<h2 class="font-semibold" id="filters-heading">Filters</h2>
 			{#if appState.hasActiveFilters}
 				<Badge variant="secondary" class="ml-auto" aria-label={`${appState.totalFilteredTests} tests match current filters`}>
@@ -81,7 +82,7 @@ function getActiveFilterCount(type: keyof FilterState): number {
 
 		<!-- Search -->
 		<div class="relative" role="search">
-			<Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+			<HugeiconsIcon icon={SearchIcon} size={16} class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
 			<Input
 				type="search"
 				placeholder="Search tests..."
@@ -100,7 +101,7 @@ function getActiveFilterCount(type: keyof FilterState): number {
 					class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground focus-visible"
 					aria-label="Clear search query"
 				>
-					<X class="h-4 w-4" aria-hidden="true" />
+					<HugeiconsIcon icon={Cancel01Icon} size={16} />
 				</button>
 			{/if}
 		</div>
@@ -140,9 +141,9 @@ function getActiveFilterCount(type: keyof FilterState): number {
 						{/if}
 					</CardTitle>
 					{#if categoriesExpanded}
-						<ChevronDown class="h-4 w-4" aria-hidden="true" />
+						<HugeiconsIcon icon={ArrowDownIcon} size={16} />
 					{:else}
-						<ChevronRight class="h-4 w-4" aria-hidden="true" />
+						<HugeiconsIcon icon={ArrowRightIcon} size={16} />
 					{/if}
 				</button>
 			</CardHeader>
@@ -184,9 +185,9 @@ function getActiveFilterCount(type: keyof FilterState): number {
 						{/if}
 					</CardTitle>
 					{#if functionsExpanded}
-						<ChevronDown class="h-4 w-4" />
+						<HugeiconsIcon icon={ArrowDownIcon} size={16} />
 					{:else}
-						<ChevronRight class="h-4 w-4" />
+						<HugeiconsIcon icon={ArrowRightIcon} size={16} />
 					{/if}
 				</button>
 			</CardHeader>
@@ -229,9 +230,9 @@ function getActiveFilterCount(type: keyof FilterState): number {
 						{/if}
 					</CardTitle>
 					{#if featuresExpanded}
-						<ChevronDown class="h-4 w-4" />
+						<HugeiconsIcon icon={ArrowDownIcon} size={16} />
 					{:else}
-						<ChevronRight class="h-4 w-4" />
+						<HugeiconsIcon icon={ArrowRightIcon} size={16} />
 					{/if}
 				</button>
 			</CardHeader>
@@ -274,9 +275,9 @@ function getActiveFilterCount(type: keyof FilterState): number {
 						{/if}
 					</CardTitle>
 					{#if behaviorsExpanded}
-						<ChevronDown class="h-4 w-4" />
+						<HugeiconsIcon icon={ArrowDownIcon} size={16} />
 					{:else}
-						<ChevronRight class="h-4 w-4" />
+						<HugeiconsIcon icon={ArrowRightIcon} size={16} />
 					{/if}
 				</button>
 			</CardHeader>
