@@ -3,7 +3,8 @@ import { goto } from "$app/navigation";
 import StatsDashboard from "$lib/components/StatsDashboard.svelte";
 import { Button } from "$lib/components/ui";
 import { appState, initializeApp } from "$lib/stores.svelte.js";
-import { ArrowRight } from "lucide-svelte";
+import { HugeiconsIcon } from "@hugeicons/svelte";
+import { ArrowRightIcon } from "@hugeicons/core-free-icons";
 import { onMount } from "svelte";
 
 // Local state
@@ -33,25 +34,23 @@ function viewAllTests() {
 		</p>
 	</div>
 
-	{#if loading}
-		<div class="flex items-center justify-center h-64">
-			<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-		</div>
-	{:else if appState.testStats}
-		<StatsDashboard stats={appState.testStats} />
+{#if loading}
+	<div class="flex items-center justify-center h-64">
+		<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+	</div>
+{:else if appState.testStats}
+	<div class="text-center">
+		<h3>Stats loaded successfully!</h3>
+		<p>Total Tests: {appState.testStats.totalTests}</p>
+		<p>Total Assertions: {appState.testStats.totalAssertions}</p>
 
-		<!-- Quick Action -->
-		<div class="text-center">
-			<Button size="lg" onclick={viewAllTests}>
-				{#snippet children()}
-					Explore All Tests
-					<ArrowRight class="h-4 w-4 ml-2" />
-				{/snippet}
-			</Button>
-		</div>
-	{:else}
-		<div class="text-center text-muted-foreground">
-			Failed to load test statistics
-		</div>
-	{/if}
+		<button onclick={viewAllTests} class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+			Explore All Tests
+		</button>
+	</div>
+{:else}
+	<div class="text-center text-muted-foreground">
+		Failed to load test statistics
+	</div>
+{/if}
 </div>

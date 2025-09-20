@@ -4,7 +4,7 @@ import type { HTMLAttributes } from "svelte/elements";
 
 interface Props extends Omit<HTMLAttributes<HTMLHeadingElement>, 'class'> {
 	class?: string;
-	children: any;
+	children: import('svelte').Snippet;
 }
 
 let { class: className, children, ...restProps }: Props = $props();

@@ -37,7 +37,7 @@ interface Props extends Omit<HTMLAttributes<HTMLButtonElement>, 'class' | 'oncli
 	size?: Size;
 	class?: string;
 	onclick?: (event: MouseEvent) => void;
-	children: any;
+	children: import('svelte').Snippet;
 }
 
 let {

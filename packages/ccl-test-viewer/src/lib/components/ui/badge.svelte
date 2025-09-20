@@ -30,7 +30,7 @@ const badgeVariants = tv({
 interface Props extends Omit<HTMLAttributes<HTMLSpanElement>, 'class'> {
 	class?: string;
 	variant?: VariantProps<typeof badgeVariants>["variant"];
-	children: any;
+	children: import('svelte').Snippet;
 }
 
 let { class: className, variant, children, ...restProps }: Props = $props();

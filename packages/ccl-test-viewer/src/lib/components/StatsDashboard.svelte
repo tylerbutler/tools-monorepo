@@ -8,7 +8,8 @@ import {
 } from "$lib/components/ui/index.js";
 import type { TestStats } from "$lib/data/types.js";
 import { Chart, registerables } from "chart.js";
-import { BarChart3, Code, FileText, Hash } from "lucide-svelte";
+import { HugeiconsIcon } from "@hugeicons/svelte";
+import { BarChartIcon, CodeIcon, File01Icon, TextNumberSignIcon } from "@hugeicons/core-free-icons";
 import { onMount } from "svelte";
 
 interface Props {
@@ -171,87 +172,63 @@ const leastTestedCategory = $derived(
 	<!-- Overview Cards -->
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 		<Card>
-			{#snippet children()}
-				<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-					{#snippet children()}
-						<CardTitle class="text-sm font-medium">
-							{#snippet children()}Total Tests{/snippet}
-						</CardTitle>
-						<FileText class="h-4 w-4 text-muted-foreground" />
-					{/snippet}
-				</CardHeader>
-				<CardContent>
-					{#snippet children()}
-						<div class="text-2xl font-bold">{stats.totalTests}</div>
-						<p class="text-xs text-muted-foreground">
-							Across {totalCategories} categories
-						</p>
-					{/snippet}
-				</CardContent>
-			{/snippet}
+			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+				<CardTitle class="text-sm font-medium">
+					Total Tests
+				</CardTitle>
+				<HugeiconsIcon icon={File01Icon} size={16} class="text-muted-foreground" />
+			</CardHeader>
+			<CardContent>
+				<div class="text-2xl font-bold">{stats.totalTests}</div>
+				<p class="text-xs text-muted-foreground">
+					Across {totalCategories} categories
+				</p>
+			</CardContent>
 		</Card>
 
 		<Card>
-			{#snippet children()}
-				<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-					{#snippet children()}
-						<CardTitle class="text-sm font-medium">
-							{#snippet children()}Total Assertions{/snippet}
-						</CardTitle>
-						<Hash class="h-4 w-4 text-muted-foreground" />
-					{/snippet}
-				</CardHeader>
-				<CardContent>
-					{#snippet children()}
-						<div class="text-2xl font-bold">{stats.totalAssertions}</div>
-						<p class="text-xs text-muted-foreground">
-							{avgAssertionsPerTest} per test average
-						</p>
-					{/snippet}
-				</CardContent>
-			{/snippet}
+			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+				<CardTitle class="text-sm font-medium">
+					Total Assertions
+				</CardTitle>
+				<HugeiconsIcon icon={TextNumberSignIcon} size={16} class="text-muted-foreground" />
+			</CardHeader>
+			<CardContent>
+				<div class="text-2xl font-bold">{stats.totalAssertions}</div>
+				<p class="text-xs text-muted-foreground">
+					{avgAssertionsPerTest} per test average
+				</p>
+			</CardContent>
 		</Card>
 
 		<Card>
-			{#snippet children()}
-				<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-					{#snippet children()}
-						<CardTitle class="text-sm font-medium">
-							{#snippet children()}Functions Tested{/snippet}
-						</CardTitle>
-						<Code class="h-4 w-4 text-muted-foreground" />
-					{/snippet}
-				</CardHeader>
-				<CardContent>
-					{#snippet children()}
-						<div class="text-2xl font-bold">{totalFunctions}</div>
-						<p class="text-xs text-muted-foreground">
-							CCL API functions
-						</p>
-					{/snippet}
-				</CardContent>
-			{/snippet}
+			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+				<CardTitle class="text-sm font-medium">
+					Functions Tested
+				</CardTitle>
+				<HugeiconsIcon icon={CodeIcon} size={16} class="text-muted-foreground" />
+			</CardHeader>
+			<CardContent>
+				<div class="text-2xl font-bold">{totalFunctions}</div>
+				<p class="text-xs text-muted-foreground">
+					CCL API functions
+				</p>
+			</CardContent>
 		</Card>
 
 		<Card>
-			{#snippet children()}
-				<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
-					{#snippet children()}
-						<CardTitle class="text-sm font-medium">
-							{#snippet children()}Coverage{/snippet}
-						</CardTitle>
-						<BarChart3 class="h-4 w-4 text-muted-foreground" />
-					{/snippet}
-				</CardHeader>
-				<CardContent>
-					{#snippet children()}
-						<div class="text-2xl font-bold">{avgTestsPerCategory}</div>
-						<p class="text-xs text-muted-foreground">
-							Tests per category average
-						</p>
-					{/snippet}
-				</CardContent>
-			{/snippet}
+			<CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2">
+				<CardTitle class="text-sm font-medium">
+					Coverage
+				</CardTitle>
+				<HugeiconsIcon icon={BarChartIcon} size={16} class="text-muted-foreground" />
+			</CardHeader>
+			<CardContent>
+				<div class="text-2xl font-bold">{avgTestsPerCategory}</div>
+				<p class="text-xs text-muted-foreground">
+					Tests per category average
+				</p>
+			</CardContent>
 		</Card>
 	</div>
 
@@ -259,103 +236,79 @@ const leastTestedCategory = $derived(
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 		<!-- Category Distribution Chart -->
 		<Card>
-			{#snippet children()}
-				<CardHeader>
-					{#snippet children()}
-						<CardTitle>
-							{#snippet children()}Test Distribution by Category{/snippet}
-						</CardTitle>
-						<CardDescription>
-							{#snippet children()}Distribution of {stats.totalTests} tests across {totalCategories} categories{/snippet}
-						</CardDescription>
-					{/snippet}
-				</CardHeader>
-				<CardContent>
-					{#snippet children()}
-						<div class="h-80 relative">
-							<canvas bind:this={categoryChartCanvas}></canvas>
-						</div>
-					{/snippet}
-				</CardContent>
-			{/snippet}
+			<CardHeader>
+				<CardTitle>
+					Test Distribution by Category
+				</CardTitle>
+				<CardDescription>
+					Distribution of {stats.totalTests} tests across {totalCategories} categories
+				</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<div class="h-80 relative">
+					<canvas bind:this={categoryChartCanvas}></canvas>
+				</div>
+			</CardContent>
 		</Card>
 
 		<!-- Function Usage Chart -->
 		<Card>
-			{#snippet children()}
-				<CardHeader>
-					{#snippet children()}
-						<CardTitle>
-							{#snippet children()}Top Functions by Test Count{/snippet}
-						</CardTitle>
-						<CardDescription>
-							{#snippet children()}Most frequently tested CCL functions{/snippet}
-						</CardDescription>
-					{/snippet}
-				</CardHeader>
-				<CardContent>
-					{#snippet children()}
-						<div class="h-80 relative">
-							<canvas bind:this={functionChartCanvas}></canvas>
-						</div>
-					{/snippet}
-				</CardContent>
-			{/snippet}
+			<CardHeader>
+				<CardTitle>
+					Top Functions by Test Count
+				</CardTitle>
+				<CardDescription>
+					Most frequently tested CCL functions
+				</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<div class="h-80 relative">
+					<canvas bind:this={functionChartCanvas}></canvas>
+				</div>
+			</CardContent>
 		</Card>
 	</div>
 
 	<!-- Insights Row -->
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 		<Card>
-			{#snippet children()}
-				<CardHeader>
-					{#snippet children()}
-						<CardTitle>
-							{#snippet children()}Category Insights{/snippet}
-						</CardTitle>
-					{/snippet}
-				</CardHeader>
-				<CardContent class="space-y-4">
-					{#snippet children()}
-						<div>
-							<h4 class="font-medium text-sm text-green-700">Most Tested Category</h4>
-							<p class="text-2xl font-bold text-green-800">{mostTestedCategory[0]}</p>
-							<p class="text-sm text-muted-foreground">{mostTestedCategory[1]} tests</p>
-						</div>
-						<div>
-							<h4 class="font-medium text-sm text-blue-700">Least Tested Category</h4>
-							<p class="text-2xl font-bold text-blue-800">{leastTestedCategory[0]}</p>
-							<p class="text-sm text-muted-foreground">{leastTestedCategory[1]} tests</p>
-						</div>
-					{/snippet}
-				</CardContent>
-			{/snippet}
+			<CardHeader>
+				<CardTitle>
+					Category Insights
+				</CardTitle>
+			</CardHeader>
+			<CardContent class="space-y-4">
+				<div>
+					<h4 class="font-medium text-sm text-green-700">Most Tested Category</h4>
+					<p class="text-2xl font-bold text-green-800">{mostTestedCategory[0]}</p>
+					<p class="text-sm text-muted-foreground">{mostTestedCategory[1]} tests</p>
+				</div>
+				<div>
+					<h4 class="font-medium text-sm text-blue-700">Least Tested Category</h4>
+					<p class="text-2xl font-bold text-blue-800">{leastTestedCategory[0]}</p>
+					<p class="text-sm text-muted-foreground">{leastTestedCategory[1]} tests</p>
+				</div>
+			</CardContent>
 		</Card>
 
 		<Card>
-			{#snippet children()}
-				<CardHeader>
-					{#snippet children()}
-						<CardTitle>
-							{#snippet children()}Quality Metrics{/snippet}
-						</CardTitle>
-					{/snippet}
-				</CardHeader>
-				<CardContent class="space-y-4">
-					{#snippet children()}
-						<div>
-							<h4 class="font-medium text-sm text-purple-700">Test Density</h4>
-							<p class="text-2xl font-bold text-purple-800">{avgAssertionsPerTest}</p>
-							<p class="text-sm text-muted-foreground">Assertions per test</p>
-						</div>
-						<div>
-							<h4 class="font-medium text-sm text-orange-700">API Coverage</h4>
-							<p class="text-2xl font-bold text-orange-800">{totalFunctions}</p>
-							<p class="text-sm text-muted-foreground">Functions tested</p>
-						</div>
-					{/snippet}
-				</CardContent>
-			{/snippet}
+			<CardHeader>
+				<CardTitle>
+					Quality Metrics
+				</CardTitle>
+			</CardHeader>
+			<CardContent class="space-y-4">
+				<div>
+					<h4 class="font-medium text-sm text-purple-700">Test Density</h4>
+					<p class="text-2xl font-bold text-purple-800">{avgAssertionsPerTest}</p>
+					<p class="text-sm text-muted-foreground">Assertions per test</p>
+				</div>
+				<div>
+					<h4 class="font-medium text-sm text-orange-700">API Coverage</h4>
+					<p class="text-2xl font-bold text-orange-800">{totalFunctions}</p>
+					<p class="text-sm text-muted-foreground">Functions tested</p>
+				</div>
+			</CardContent>
 		</Card>
 	</div>
 </div>

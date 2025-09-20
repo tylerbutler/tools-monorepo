@@ -3,7 +3,8 @@ import "../app.css";
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
 import { Button } from "$lib/components/ui/index.js";
-import { FileText, Home, Search } from "lucide-svelte";
+import { HugeiconsIcon } from "@hugeicons/svelte";
+import { HomeIcon, SearchIcon } from "@hugeicons/core-free-icons";
 
 interface Props {
 	children: any;
@@ -78,10 +79,8 @@ $effect(() => {
 						aria-current={isHomePage ? "page" : undefined}
 						aria-label="Go to dashboard homepage"
 					>
-						{#snippet children()}
-							<Home class="h-4 w-4 mr-2" aria-hidden="true" />
-							Home
-						{/snippet}
+						<HugeiconsIcon icon={HomeIcon} size={16} class="mr-2" />
+						Home
 					</Button>
 					<Button
 						variant={isBrowsePage ? "default" : "outline"}
@@ -90,10 +89,8 @@ $effect(() => {
 						aria-current={isBrowsePage ? "page" : undefined}
 						aria-label="Browse and filter test cases"
 					>
-						{#snippet children()}
-							<Search class="h-4 w-4 mr-2" aria-hidden="true" />
-							Browse Tests
-						{/snippet}
+						<HugeiconsIcon icon={SearchIcon} size={16} class="mr-2" />
+						Browse Tests
 					</Button>
 				</nav>
 			</div>
