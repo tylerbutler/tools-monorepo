@@ -29,7 +29,7 @@ importers:
         version: 3.1.1
       '@fluid-tools/build-cli':
         specifier: ^0.56.0
-        version: 0.56.0(@types/node@24.5.2)(encoding@0.1.13)(typescript@5.9.2)
+        version: 0.56.0(@types/node@24.5.2)(encoding@0.1.13)(typescript@5.4.5)
       '@fluidframework/build-tools':
         specifier: ^0.56.0
         version: 0.56.0(@types/node@24.5.2)
@@ -56,7 +56,7 @@ importers:
         version: 7.0.3
       generate-license-file:
         specifier: ^4.0.0
-        version: 4.1.0(typescript@5.9.2)
+        version: 4.1.0(typescript@5.4.5)
       npm-check-updates:
         specifier: ^18.0.1
         version: 18.3.0
@@ -77,10 +77,10 @@ importers:
         version: link:packages/sort-tsconfig
       syncpack:
         specifier: ^13.0.4
-        version: 13.0.4(typescript@5.9.2)
+        version: 13.0.4(typescript@5.4.5)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@24.5.2)(typescript@5.9.2)
+        version: 10.9.2(@types/node@24.5.2)(typescript@5.4.5)
 
   config:
     dependencies:
@@ -146,9 +146,6 @@ importers:
 
   packages/ccl-test-viewer:
     dependencies:
-      '@hugeicons/core-free-icons':
-        specifier: ^1.0.17
-        version: 1.0.17
       '@tailwindcss/typography':
         specifier: ^0.5.18
         version: 0.5.18(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@20.19.17)(typescript@5.5.4)))
@@ -180,9 +177,9 @@ importers:
       '@playwright/test':
         specifier: ^1.55.0
         version: 1.55.0
-      '@sveltejs/adapter-static':
-        specifier: ^3.0.9
-        version: 3.0.9(@sveltejs/kit@2.42.2(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))
+      '@sveltejs/adapter-netlify':
+        specifier: ^5.2.3
+        version: 5.2.3(@sveltejs/kit@2.42.2(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))
       '@sveltejs/kit':
         specifier: ^2.42.2
         version: 2.42.2(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1))
@@ -192,6 +189,9 @@ importers:
       '@tailwindcss/forms':
         specifier: ^0.5.10
         version: 0.5.10(tailwindcss@3.4.17(ts-node@10.9.2(@types/node@20.19.17)(typescript@5.5.4)))
+      '@testing-library/jest-dom':
+        specifier: ^6.8.0
+        version: 6.8.0
       '@testing-library/svelte':
         specifier: ^5.2.8
         version: 5.2.8(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1))(vitest@3.2.4)
@@ -230,7 +230,7 @@ importers:
         version: 5.39.3
       svelte-check:
         specifier: ^4.3.1
-        version: 4.3.1(picomatch@4.0.3)(svelte@5.39.3)(typescript@5.5.4)
+        version: 4.3.1(picomatch@4.0.2)(svelte@5.39.3)(typescript@5.5.4)
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17(ts-node@10.9.2(@types/node@20.19.17)(typescript@5.5.4))
@@ -1121,6 +1121,9 @@ importers:
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@25.0.1)(msw@2.11.2(@types/node@20.19.17)(typescript@5.5.4))(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)
 
 packages:
+
+  '@adobe/css-tools@4.4.4':
+    resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
 
   '@alcalzone/ansi-tokenize@0.1.3':
     resolution: {integrity: sha512-3yWxPTq3UQ/FY9p1ErPxIyfT64elWaMvM9lIHnaqpyft63tkxodF5aUElYHrdisWve5cETkh1+KBw1yJuW0aRw==}
@@ -2493,9 +2496,6 @@ packages:
 
   '@hashicorp/platform-remark-plugins@0.2.1':
     resolution: {integrity: sha512-YDbZGPi8BbyKXEupOgdfKkhjnMzajmk9tW7DroOXDfJzwkwMnpVrPABJTkIRKgicjRxfmzVICnDMNh7wkvM4MA==}
-
-  '@hugeicons/core-free-icons@1.0.17':
-    resolution: {integrity: sha512-+o5GCTJ+JSvYfJtSw7cyQXc9wOkRYa0FywKZAQPsD/lZE0j+3O52fZsAmQLekqViDybI4volujsqLfS+Mi9/SQ==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -4462,10 +4462,10 @@ packages:
     peerDependencies:
       acorn: ^8.9.0
 
-  '@sveltejs/adapter-static@3.0.9':
-    resolution: {integrity: sha512-aytHXcMi7lb9ljsWUzXYQ0p5X1z9oWud2olu/EpmH7aCu4m84h7QLvb5Wp+CFirKcwoNnYvYWhyP/L8Vh1ztdw==}
+  '@sveltejs/adapter-netlify@5.2.3':
+    resolution: {integrity: sha512-xO9qsChQqfncgsrXgQb3phGTpKhlyPn7jusnl/HJwKJqzmEZ/xB/dAa0qFqrp+LNxEA+FPE7rJg36cmBaydXSg==}
     peerDependencies:
-      '@sveltejs/kit': ^2.0.0
+      '@sveltejs/kit': ^2.4.0
 
   '@sveltejs/kit@2.42.2':
     resolution: {integrity: sha512-FcNICFvlSYjPiAgk8BpqTEnXkaUj6I6wDwpQBxKMpsYhUc2Q5STgsVpXOG5LqwFpUAoLAXQ4wdWul7EcAG67JQ==}
@@ -4519,6 +4519,10 @@ packages:
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
     engines: {node: '>=18'}
+
+  '@testing-library/jest-dom@6.8.0':
+    resolution: {integrity: sha512-WgXcWzVM6idy5JaftTVC8Vs83NKRmGJz4Hqs4oyOuO2J4r/y79vvKZsb+CaGyCSEbUPI6OsewfPd0G1A0/TUZQ==}
+    engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
 
   '@testing-library/svelte@5.2.8':
     resolution: {integrity: sha512-ucQOtGsJhtawOEtUmbR4rRh53e6RbM1KUluJIXRmh6D4UzxR847iIqqjRtg9mHNFmGQ8Vkam9yVcR5d1mhIHKA==}
@@ -6443,6 +6447,9 @@ packages:
     resolution: {integrity: sha512-u/O3vwbptzhMs3L1fQE82ZSLHQQfto5gyZzwteVIEyeaY5Fc7R4dapF/BvRoSYFeqfBk4m0V1Vafq5Pjv25wvA==}
     engines: {node: '>= 6'}
 
+  css.escape@1.5.1:
+    resolution: {integrity: sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==}
+
   cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
@@ -6817,6 +6824,9 @@ packages:
 
   dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
+
+  dom-accessibility-api@0.6.3:
+    resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
 
   dom-serializer@2.0.0:
     resolution: {integrity: sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg==}
@@ -13933,6 +13943,8 @@ packages:
 
 snapshots:
 
+  '@adobe/css-tools@4.4.4': {}
+
   '@alcalzone/ansi-tokenize@0.1.3':
     dependencies:
       ansi-styles: 6.2.3
@@ -15835,7 +15847,7 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@fluid-tools/build-cli@0.56.0(@types/node@24.5.2)(encoding@0.1.13)(typescript@5.9.2)':
+  '@fluid-tools/build-cli@0.56.0(@types/node@24.5.2)(encoding@0.1.13)(typescript@5.4.5)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
       '@fluid-tools/build-infrastructure': 0.56.0(@types/node@24.5.2)
@@ -15855,7 +15867,7 @@ snapshots:
       async: 3.2.6
       azure-devops-node-api: 11.2.0
       change-case: 3.1.0
-      cosmiconfig: 8.3.6(typescript@5.9.2)
+      cosmiconfig: 8.3.6(typescript@5.4.5)
       danger: 12.3.4(encoding@0.1.13)
       date-fns: 2.30.0
       debug: 4.4.1(supports-color@8.1.1)
@@ -17185,8 +17197,6 @@ snapshots:
       unist-util-visit: 4.1.2
     transitivePeerDependencies:
       - supports-color
-
-  '@hugeicons/core-free-icons@1.0.17': {}
 
   '@humanfs/core@0.19.1': {}
 
@@ -20206,9 +20216,12 @@ snapshots:
     dependencies:
       acorn: 8.15.0
 
-  '@sveltejs/adapter-static@3.0.9(@sveltejs/kit@2.42.2(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))':
+  '@sveltejs/adapter-netlify@5.2.3(@sveltejs/kit@2.42.2(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))':
     dependencies:
+      '@iarna/toml': 2.2.5
       '@sveltejs/kit': 2.42.2(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1))
+      esbuild: 0.25.9
+      set-cookie-parser: 2.7.1
 
   '@sveltejs/kit@2.42.2(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)))(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
@@ -20285,6 +20298,15 @@ snapshots:
       lz-string: 1.5.0
       picocolors: 1.1.1
       pretty-format: 27.5.1
+
+  '@testing-library/jest-dom@6.8.0':
+    dependencies:
+      '@adobe/css-tools': 4.4.4
+      aria-query: 5.3.2
+      css.escape: 1.5.1
+      dom-accessibility-api: 0.6.3
+      picocolors: 1.1.1
+      redent: 3.0.0
 
   '@testing-library/svelte@5.2.8(svelte@5.39.3)(vite@6.3.6(@types/node@20.19.17)(jiti@2.5.1)(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1))(vitest@3.2.4)':
     dependencies:
@@ -20941,7 +20963,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.5.2)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@25.0.1)(msw@2.11.2(@types/node@24.5.2)(typescript@5.9.2))(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@25.0.1)(msw@2.11.2(@types/node@20.19.17)(typescript@5.5.4))(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -22588,14 +22610,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.4
 
-  cosmiconfig@8.3.6(typescript@5.9.2):
+  cosmiconfig@9.0.0(typescript@5.4.5):
     dependencies:
+      env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
-      path-type: 4.0.0
     optionalDependencies:
-      typescript: 5.9.2
+      typescript: 5.4.5
 
   cosmiconfig@9.0.0(typescript@5.5.4):
     dependencies:
@@ -22605,15 +22627,6 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.5.4
-
-  cosmiconfig@9.0.0(typescript@5.9.2):
-    dependencies:
-      env-paths: 2.2.1
-      import-fresh: 3.3.0
-      js-yaml: 4.1.0
-      parse-json: 5.2.0
-    optionalDependencies:
-      typescript: 5.9.2
 
   crc-32@1.2.0:
     dependencies:
@@ -22702,6 +22715,8 @@ snapshots:
   css-what@6.1.0: {}
 
   css-what@6.2.2: {}
+
+  css.escape@1.5.1: {}
 
   cssesc@3.0.0: {}
 
@@ -23043,6 +23058,8 @@ snapshots:
       esutils: 2.0.3
 
   dom-accessibility-api@0.5.16: {}
+
+  dom-accessibility-api@0.6.3: {}
 
   dom-serializer@2.0.0:
     dependencies:
@@ -23910,10 +23927,6 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.2
 
-  fdir@6.4.4(picomatch@4.0.3):
-    optionalDependencies:
-      picomatch: 4.0.3
-
   fdir@6.5.0(picomatch@4.0.3):
     optionalDependencies:
       picomatch: 4.0.3
@@ -24214,13 +24227,13 @@ snapshots:
 
   gemoji@6.1.0: {}
 
-  generate-license-file@4.1.0(typescript@5.5.4):
+  generate-license-file@4.1.0(typescript@5.4.5):
     dependencies:
       '@commander-js/extra-typings': 13.1.0(commander@13.1.0)
       '@npmcli/arborist': 9.0.1
       cli-spinners: 2.9.2
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.5.4)
+      cosmiconfig: 9.0.0(typescript@5.4.5)
       enquirer: 2.4.1
       glob: 11.0.1
       json5: 2.2.3
@@ -24232,13 +24245,13 @@ snapshots:
       - supports-color
       - typescript
 
-  generate-license-file@4.1.0(typescript@5.9.2):
+  generate-license-file@4.1.0(typescript@5.5.4):
     dependencies:
       '@commander-js/extra-typings': 13.1.0(commander@13.1.0)
       '@npmcli/arborist': 9.0.1
       cli-spinners: 2.9.2
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.9.2)
+      cosmiconfig: 9.0.0(typescript@5.5.4)
       enquirer: 2.4.1
       glob: 11.0.1
       json5: 2.2.3
@@ -30632,11 +30645,11 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.3.1(picomatch@4.0.3)(svelte@5.39.3)(typescript@5.5.4):
+  svelte-check@4.3.1(picomatch@4.0.2)(svelte@5.39.3)(typescript@5.5.4):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 4.0.3
-      fdir: 6.4.4(picomatch@4.0.3)
+      fdir: 6.4.4(picomatch@4.0.2)
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 5.39.3
@@ -30678,12 +30691,12 @@ snapshots:
 
   symbol-tree@3.2.4: {}
 
-  syncpack@13.0.4(typescript@5.9.2):
+  syncpack@13.0.4(typescript@5.4.5):
     dependencies:
       chalk: 5.4.1
       chalk-template: 1.1.0
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.9.2)
+      cosmiconfig: 9.0.0(typescript@5.4.5)
       effect: 3.14.0
       enquirer: 2.4.1
       fast-check: 3.23.2
@@ -31100,7 +31113,7 @@ snapshots:
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
-  ts-node@10.9.2(@types/node@24.5.2)(typescript@5.9.2):
+  ts-node@10.9.2(@types/node@24.5.2)(typescript@5.4.5):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -31114,7 +31127,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.9.2
+      typescript: 5.4.5
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 

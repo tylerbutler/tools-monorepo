@@ -1,7 +1,7 @@
 <script lang="ts">
 import { cn } from "$lib/utils.js";
-import { tv, type VariantProps } from "tailwind-variants";
 import type { HTMLAttributes } from "svelte/elements";
+import { tv, type VariantProps } from "tailwind-variants";
 
 const badgeVariants = tv({
 	base: "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -27,10 +27,10 @@ const badgeVariants = tv({
 	},
 });
 
-interface Props extends Omit<HTMLAttributes<HTMLSpanElement>, 'class'> {
+interface Props extends Omit<HTMLAttributes<HTMLSpanElement>, "class"> {
 	class?: string;
 	variant?: VariantProps<typeof badgeVariants>["variant"];
-	children: import('svelte').Snippet;
+	children: import("svelte").Snippet;
 }
 
 let { class: className, variant, children, ...restProps }: Props = $props();

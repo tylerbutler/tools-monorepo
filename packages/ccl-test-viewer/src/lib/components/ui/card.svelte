@@ -2,10 +2,11 @@
 import { cn } from "$lib/utils.js";
 import type { HTMLAttributes } from "svelte/elements";
 
-interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'class' | 'onclick'> {
+interface Props
+	extends Omit<HTMLAttributes<HTMLDivElement>, "class" | "onclick"> {
 	class?: string;
 	onclick?: (event: MouseEvent) => void;
-	children: import('svelte').Snippet;
+	children: import("svelte").Snippet;
 }
 
 let { class: className, children, ...restProps }: Props = $props();

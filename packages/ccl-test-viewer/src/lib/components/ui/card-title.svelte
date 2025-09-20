@@ -2,9 +2,9 @@
 import { cn } from "$lib/utils.js";
 import type { HTMLAttributes } from "svelte/elements";
 
-interface Props extends Omit<HTMLAttributes<HTMLHeadingElement>, 'class'> {
+interface Props extends Omit<HTMLAttributes<HTMLHeadingElement>, "class"> {
 	class?: string;
-	children: import('svelte').Snippet;
+	children: import("svelte").Snippet;
 }
 
 let { class: className, children, ...restProps }: Props = $props();

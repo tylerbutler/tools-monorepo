@@ -5,14 +5,20 @@ import "prismjs/components/prism-clike";
 import "prismjs/themes/prism.css";
 import type { HTMLAttributes } from "svelte/elements";
 
-interface Props extends Omit<HTMLAttributes<HTMLElement>, 'class'> {
+interface Props extends Omit<HTMLAttributes<HTMLElement>, "class"> {
 	code: string;
 	language?: string;
 	class?: string;
 	showWhitespace?: boolean;
 }
 
-let { code, language = "ccl", class: className = "", showWhitespace = true, ...restProps }: Props = $props();
+let {
+	code,
+	language = "ccl",
+	class: className = "",
+	showWhitespace = true,
+	...restProps
+}: Props = $props();
 
 let codeElement: HTMLElement;
 
@@ -21,10 +27,10 @@ function addWhitespaceIndicators(text: string): string {
 	if (!showWhitespace) return text;
 
 	return text
-		.replace(/\t/g, '➞')  // Tab (arrow indicator)
-		.replace(/ /g, '●')   // Space (bullet)
-		.replace(/\r\n/g, '¶\r\n')  // CRLF (paragraph sign)
-		.replace(/(?<!\r)\n/g, '¶\n');  // LF (paragraph sign)
+		.replace(/\t/g, "➞") // Tab (arrow indicator)
+		.replace(/ /g, "●") // Space (bullet)
+		.replace(/\r\n/g, "¶\r\n") // CRLF (paragraph sign)
+		.replace(/(?<!\r)\n/g, "¶\n"); // LF (paragraph sign)
 }
 
 // Function to add whitespace styling after Prism highlighting
@@ -32,9 +38,18 @@ function addWhitespaceCSS(html: string): string {
 	if (!showWhitespace) return html;
 
 	return html
-		.replace(/➞/g, '<span class="whitespace-indicator tab" title="Tab">➞</span>')
-		.replace(/●/g, '<span class="whitespace-indicator space" title="Space">●</span>')
-		.replace(/¶/g, '<span class="whitespace-indicator newline" title="Newline">¶</span>');
+		.replace(
+			/➞/g,
+			'<span class="whitespace-indicator tab" title="Tab">➞</span>',
+		)
+		.replace(
+			/●/g,
+			'<span class="whitespace-indicator space" title="Space">●</span>',
+		)
+		.replace(
+			/¶/g,
+			'<span class="whitespace-indicator newline" title="Newline">¶</span>',
+		);
 }
 
 // Define CCL language for Prism.js and apply whitespace indicators

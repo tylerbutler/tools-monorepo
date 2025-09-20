@@ -24,6 +24,15 @@
 		--input: 240 5.9% 90%;
 		--ring: 240 5.9% 10%;
 		--radius: 0.5rem;
+
+		/* Terminal-inspired colors */
+		--terminal-primary: 192 100% 50%; /* #00D7FF - cyan */
+		--terminal-success: 155 100% 42%; /* #00D787 - green */
+		--terminal-error: 345 100% 67%; /* #FF5F87 - red/pink */
+		--terminal-warning: 39 100% 50%; /* #FFAF00 - orange */
+		--terminal-subtle: 0 0% 38%; /* #626262 - gray */
+		--terminal-bg: 0 0% 4%; /* #0A0A0A - dark background */
+		--terminal-card: 0 0% 10%; /* #1A1A1A - card background */
 	}
 
 	.dark {
@@ -168,5 +177,58 @@
 		.page-break {
 			page-break-before: always;
 		}
+	}
+
+	/* Terminal-inspired utility classes */
+	.terminal-theme {
+		background-color: hsl(var(--terminal-bg));
+		color: white;
+		font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+	}
+
+	.terminal-primary {
+		color: hsl(var(--terminal-primary));
+	}
+
+	.terminal-success {
+		color: hsl(var(--terminal-success));
+	}
+
+	.terminal-error {
+		color: hsl(var(--terminal-error));
+	}
+
+	.terminal-warning {
+		color: hsl(var(--terminal-warning));
+	}
+
+	.terminal-subtle {
+		color: hsl(var(--terminal-subtle));
+	}
+
+	.terminal-card {
+		background-color: hsl(var(--terminal-card));
+		border: 1px solid hsl(var(--terminal-subtle));
+		border-radius: 0.5rem;
+	}
+
+	.terminal-entry-box {
+		background-color: hsl(var(--terminal-card));
+		border: 1px solid hsl(var(--terminal-subtle));
+		border-radius: 0.5rem;
+		padding: 0.25rem 0.5rem;
+		margin: 0 0 0 1rem;
+		font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+		font-size: 0.875rem;
+		line-height: 1.25;
+	}
+
+	/* Whitespace visualization */
+	.whitespace-visible {
+		white-space: pre-wrap;
+	}
+
+	.whitespace-visible::before {
+		content: attr(data-whitespace);
 	}
 }

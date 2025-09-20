@@ -27,7 +27,6 @@
       "Bash(pnpm ls:*)",
       "Bash(pnpm remove:*)",
       "Bash(pnpm update:*)",
-      "Read(//Volumes/Code/claude-workspace-ccl/tools-monorepo/node_modules/.pnpm/@hugeicons+core-free-icons@1.0.17/node_modules/@hugeicons/core-free-icons/dist/esm/**)",
       "Bash(lsof:*)",
       "Bash(kill:*)",
       "Read(//Volumes/Code/claude-workspace-ccl/tools-monorepo/node_modules/.pnpm/**)",
@@ -60,7 +59,11 @@
       "Bash(cat:*)",
       "Bash(rm:*)",
       "mcp__serena__read_memory",
-      "mcp__serena__search_for_pattern"
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__list_memories",
+      "Bash(npm run check:format:*)",
+      "Bash(npm run format:*)",
+      "Bash(npm run test:*)"
     ],
     "deny": [],
     "ask": []

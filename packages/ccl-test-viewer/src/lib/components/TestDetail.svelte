@@ -7,9 +7,17 @@ import {
 	CardHeader,
 	CardTitle,
 } from "$lib/components/ui/index.js";
-import type { GeneratedTest } from "$lib/data/types.js";
+import type { FunctionSpecificResult } from "$lib/data/function-types.js";
+import { FUNCTION_STATUS } from "$lib/data/function-types.js";
+import type { CCLFunction, GeneratedTest } from "$lib/data/types.js";
+import { ArrowLeft, Code, Copy, File, Play } from "lucide-svelte";
+import EntryDisplay from "./EntryDisplay.svelte";
 import Icon from "./Icon.svelte";
-import { ArrowLeft02Icon, CodeIcon, Copy01Icon, File01Icon, PlayIcon } from "@hugeicons/core-free-icons";
+import ListDisplay from "./ListDisplay.svelte";
+import ObjectDisplay from "./ObjectDisplay.svelte";
+import PlaceholderDisplay from "./PlaceholderDisplay.svelte";
+import TerminalTestDisplay from "./TerminalTestDisplay.svelte";
+import ValueDisplay from "./ValueDisplay.svelte";
 import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
 interface Props {
@@ -18,6 +26,9 @@ interface Props {
 }
 
 let { test, onBack }: Props = $props();
+
+// View mode toggle
+let viewMode = $state<"card" | "terminal">("card");
 
 // Copy functionality
 async function copyToClipboard(text: string, type: string) {
@@ -30,47 +41,99 @@ async function copyToClipboard(text: string, type: string) {
 	}
 }
 
-// Format expected result for display
-const formattedExpected = $derived.by(() => {
+// Function-aware result formatting
+const formattedExpected = $derived.by((): FunctionSpecificResult => {
 	const { expected } = test;
+	const primaryFunction = (test.functions[0] as CCLFunction) || "parse";
+	const isImplemented = FUNCTION_STATUS[primaryFunction] === "implemented";
 
+	// Handle errors first
 	if (expected.error) {
 		return {
 			type: "error",
-			content: expected.error,
+			content:
+				typeof expected.error === "string"
+					? expected.error
+					: "Parse error occurred",
 			language: "text",
+			metadata: {
+				functionType: primaryFunction,
+				isImplemented,
+			},
 		};
 	}
 
-	if (expected.entries) {
-		return {
-			type: "entries",
-			content: JSON.stringify(expected.entries, null, 2),
-			language: "json",
-		};
-	}
+	// Function-specific formatting
+	switch (primaryFunction) {
+		case "parse":
+		case "parse_value":
+		case "filter":
+		case "expand_dotted":
+			return {
+				type: "entries",
+				content: expected.entries || [],
+				language: "ccl",
+				metadata: {
+					functionType: primaryFunction,
+					itemCount: expected.entries?.length || 0,
+					isImplemented: primaryFunction === "parse",
+				},
+			};
 
-	if (expected.object) {
-		return {
-			type: "object",
-			content: JSON.stringify(expected.object, null, 2),
-			language: "json",
-		};
-	}
+		case "build_hierarchy":
+			return {
+				type: "object",
+				content: expected.object || {},
+				language: "json",
+				metadata: {
+					functionType: primaryFunction,
+					keyCount: expected.object ? Object.keys(expected.object).length : 0,
+					isImplemented: false,
+				},
+			};
 
-	if (expected.value !== undefined) {
-		return {
-			type: "value",
-			content: String(expected.value),
-			language: "text",
-		};
-	}
+		case "get_string":
+		case "get_int":
+		case "get_float":
+		case "get_bool":
+			return {
+				type: "value",
+				content: expected.value,
+				language: "text",
+				metadata: {
+					functionType: primaryFunction,
+					valueType: primaryFunction.replace("get_", "") as
+						| "string"
+						| "int"
+						| "float"
+						| "bool",
+					isImplemented: false,
+				},
+			};
 
-	return {
-		type: "unknown",
-		content: "No expected result defined",
-		language: "text",
-	};
+		case "get_list":
+			return {
+				type: "list",
+				content: expected.list || [],
+				language: "json",
+				metadata: {
+					functionType: primaryFunction,
+					itemCount: expected.list?.length || 0,
+					isImplemented: false,
+				},
+			};
+
+		default:
+			return {
+				type: "placeholder",
+				content: expected,
+				language: "json",
+				metadata: {
+					functionType: primaryFunction,
+					isImplemented: false,
+				},
+			};
+	}
 });
 
 // Generate test command
@@ -84,7 +147,7 @@ const testCommand = $derived(
 	<div class="flex items-center justify-between">
 		<div class="flex items-center space-x-4">
 			<Button variant="outline" onclick={onBack} aria-label="Go back to test list">
-				<Icon icon={ArrowLeft02Icon} size={16} class="mr-2" />
+				<Icon icon={ArrowLeft} size={16} class="mr-2" />
 				Back
 			</Button>
 			<div>
@@ -92,23 +155,36 @@ const testCommand = $derived(
 				<p class="text-muted-foreground">Test case details and expected behavior</p>
 			</div>
 		</div>
-		<Button
-			variant="secondary"
-			onclick={() => copyToClipboard(testCommand, "Test command")}
-			aria-label="Copy test command"
-		>
-			<Icon icon={Copy01Icon} size={16} class="mr-2" />
-			Copy Command
-		</Button>
+		<div class="flex items-center gap-2">
+			<Button
+				variant={viewMode === 'terminal' ? 'default' : 'outline'}
+				onclick={() => viewMode = 'terminal'}
+				aria-label="Switch to terminal view"
+			>
+				Terminal View
+			</Button>
+			<Button
+				variant={viewMode === 'card' ? 'default' : 'outline'}
+				onclick={() => viewMode = 'card'}
+				aria-label="Switch to card view"
+			>
+				Card View
+			</Button>
+		</div>
 	</div>
 
-	<!-- Test metadata -->
-	<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+	{#if viewMode === 'terminal'}
+		<!-- Terminal view -->
+		<TerminalTestDisplay {test} />
+	{:else}
+		<!-- Card view (original) -->
+		<!-- Test metadata -->
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 		<!-- Functions -->
 		<Card>
 			<CardHeader class="pb-3">
 				<CardTitle class="text-sm flex items-center">
-					<Icon icon={CodeIcon} size={16} class="mr-2" />
+					<Icon icon={Code} size={16} class="mr-2" />
 					Functions ({test.functions.length})
 				</CardTitle>
 			</CardHeader>
@@ -169,7 +245,7 @@ const testCommand = $derived(
 			<CardHeader class="pb-3">
 				<div class="flex items-center justify-between">
 					<CardTitle class="flex items-center">
-						<Icon icon={File01Icon} size={16} class="mr-2" />
+						<Icon icon={File} size={16} class="mr-2" />
 						Input
 					</CardTitle>
 					<Button
@@ -178,7 +254,7 @@ const testCommand = $derived(
 						onclick={() => copyToClipboard(test.input, "Input")}
 						aria-label="Copy input"
 					>
-						<Icon icon={Copy01Icon} size={14} />
+						<Icon icon={Copy} size={14} />
 					</Button>
 				</div>
 			</CardHeader>
@@ -192,20 +268,10 @@ const testCommand = $derived(
 		<!-- Expected Result -->
 		<Card>
 			<CardHeader class="pb-3">
-				<div class="flex items-center justify-between">
-					<CardTitle class="flex items-center">
-						<Icon icon={PlayIcon} size={16} class="mr-2" />
-						Expected Result
-					</CardTitle>
-					<Button
-						variant="ghost"
-						size="sm"
-						onclick={() => copyToClipboard(formattedExpected.content, "Expected result")}
-						aria-label="Copy expected result"
-					>
-						<Icon icon={Copy01Icon} size={14} />
-					</Button>
-				</div>
+				<CardTitle class="flex items-center">
+					<Icon icon={Play} size={16} class="mr-2" />
+					Expected Result
+				</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="space-y-3">
@@ -214,59 +280,61 @@ const testCommand = $derived(
 						<Badge variant={formattedExpected.type === "error" ? "destructive" : "default"}>
 							{formattedExpected.type}
 						</Badge>
-						{#if formattedExpected.type === "entries" && Array.isArray(test.expected.entries)}
+						{#if formattedExpected.metadata.itemCount !== undefined}
 							<span class="text-sm text-muted-foreground">
-								{test.expected.entries.length} entries
+								{formattedExpected.metadata.itemCount} {formattedExpected.type === 'list' ? 'items' : 'entries'}
+							</span>
+						{:else if formattedExpected.metadata.keyCount !== undefined}
+							<span class="text-sm text-muted-foreground">
+								{formattedExpected.metadata.keyCount} keys
+							</span>
+						{:else if formattedExpected.metadata.valueType}
+							<span class="text-sm text-muted-foreground">
+								{formattedExpected.metadata.valueType} value
 							</span>
 						{/if}
 					</div>
 
-					<!-- Result content -->
-					<div class="relative">
-						<WhitespaceCodeHighlight
-							code={formattedExpected.content}
-							language={formattedExpected.language}
+					<!-- Function-specific result display -->
+					{#if formattedExpected.type === 'entries' && formattedExpected.metadata.isImplemented}
+						<!-- Entries display for parse and similar functions -->
+						<div class="space-y-2">
+							{#each formattedExpected.content as entry}
+								<EntryDisplay {entry} />
+							{/each}
+						</div>
+					{:else if formattedExpected.type === 'object' && formattedExpected.metadata.isImplemented}
+						<!-- Object display for build_hierarchy -->
+						<ObjectDisplay object={formattedExpected.content} />
+					{:else if formattedExpected.type === 'value' && formattedExpected.metadata.isImplemented}
+						<!-- Value display for get_string, get_int, etc. -->
+						<ValueDisplay
+							value={formattedExpected.content}
+							functionType={formattedExpected.metadata.functionType}
 						/>
-					</div>
+					{:else if formattedExpected.type === 'list' && formattedExpected.metadata.isImplemented}
+						<!-- List display for get_list -->
+						<ListDisplay list={formattedExpected.content} />
+					{:else if formattedExpected.type === 'error'}
+						<!-- Error display -->
+						<div class="error-display">
+							<WhitespaceCodeHighlight
+								code={formattedExpected.content}
+								language={formattedExpected.language}
+							/>
+						</div>
+					{:else}
+						<!-- Placeholder display for unimplemented functions -->
+						<PlaceholderDisplay
+							functionName={formattedExpected.metadata.functionType}
+							rawExpected={formattedExpected.content}
+						/>
+					{/if}
 				</div>
 			</CardContent>
 		</Card>
 	</div>
 
-	<!-- Test Command -->
-	<Card>
-		<CardHeader class="pb-3">
-			<div class="flex items-center justify-between">
-				<CardTitle>Test Command</CardTitle>
-				<Button
-					variant="ghost"
-					size="sm"
-					onclick={() => copyToClipboard(testCommand, "Test command")}
-					aria-label="Copy test command"
-				>
-					<Icon icon={Copy01Icon} size={14} />
-				</Button>
-			</div>
-		</CardHeader>
-		<CardContent>
-			<div class="bg-muted/50 rounded-md p-4">
-				<code class="text-sm font-mono">{testCommand}</code>
-			</div>
-		</CardContent>
-	</Card>
-
-	<!-- Test count information -->
-	{#if test.expected.count !== undefined}
-		<Card>
-			<CardHeader class="pb-3">
-				<CardTitle class="text-sm">Assertion Count</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="text-2xl font-bold">{test.expected.count}</div>
-				<p class="text-sm text-muted-foreground">
-					This test contains {test.expected.count} assertion{test.expected.count === 1 ? "" : "s"}
-				</p>
-			</CardContent>
-		</Card>
 	{/if}
 </div>
+

@@ -2,7 +2,7 @@
 import "../app.css";
 import { goto } from "$app/navigation";
 import { page } from "$app/stores";
-import { Button } from "$lib/components/ui/index.js";
+// import { Button } from "$lib/components/ui/index.js";
 import { Home, Search } from "lucide-svelte";
 import type { Snippet } from "svelte";
 
@@ -72,26 +72,24 @@ $effect(() => {
 
 				<!-- Primary Navigation -->
 				<nav class="flex items-center gap-2" aria-label="Main navigation">
-					<Button
-						variant={isHomePage ? "default" : "outline"}
-						size="sm"
+					<button
+						class={`px-3 py-2 rounded text-sm font-medium ${isHomePage ? "bg-primary text-primary-foreground" : "border border-border"}`}
 						onclick={() => goto('/')}
 						aria-current={isHomePage ? "page" : undefined}
 						aria-label="Go to dashboard homepage"
 					>
-						<Home size={16} class="mr-2" />
+						<Home size={16} class="mr-2 inline" />
 						Home
-					</Button>
-					<Button
-						variant={isBrowsePage ? "default" : "outline"}
-						size="sm"
+					</button>
+					<button
+						class={`px-3 py-2 rounded text-sm font-medium ${isBrowsePage ? "bg-primary text-primary-foreground" : "border border-border"}`}
 						onclick={() => goto('/browse')}
 						aria-current={isBrowsePage ? "page" : undefined}
 						aria-label="Browse and filter test cases"
 					>
-						<Search size={16} class="mr-2" />
+						<Search size={16} class="mr-2 inline" />
 						Browse Tests
-					</Button>
+					</button>
 				</nav>
 			</div>
 		</div>

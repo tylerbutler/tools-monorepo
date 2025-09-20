@@ -10,13 +10,18 @@ import "prismjs/themes/prism.css";
 
 import type { HTMLAttributes } from "svelte/elements";
 
-interface Props extends Omit<HTMLAttributes<HTMLElement>, 'class'> {
+interface Props extends Omit<HTMLAttributes<HTMLElement>, "class"> {
 	code: string;
 	language?: string;
 	class?: string;
 }
 
-let { code, language = "ccl", class: className = "", ...restProps }: Props = $props();
+let {
+	code,
+	language = "ccl",
+	class: className = "",
+	...restProps
+}: Props = $props();
 
 let codeElement: HTMLElement;
 

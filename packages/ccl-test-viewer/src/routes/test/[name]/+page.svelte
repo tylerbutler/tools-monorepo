@@ -1,7 +1,7 @@
 <script lang="ts">
-import { page } from "$app/stores";
-import { goto } from "$app/navigation";
 import { browser } from "$app/environment";
+import { goto } from "$app/navigation";
+import { page } from "$app/stores";
 import TestDetail from "$lib/components/TestDetail.svelte";
 import { Button } from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";

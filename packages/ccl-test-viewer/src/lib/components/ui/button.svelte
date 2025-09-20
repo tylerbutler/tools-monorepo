@@ -1,7 +1,7 @@
 <script lang="ts">
 import { cn } from "$lib/utils.js";
-import { tv, type VariantProps } from "tailwind-variants";
 import type { HTMLAttributes } from "svelte/elements";
+import { tv, type VariantProps } from "tailwind-variants";
 
 const buttonVariants = tv({
 	base: "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -32,12 +32,13 @@ const buttonVariants = tv({
 type Variant = VariantProps<typeof buttonVariants>["variant"];
 type Size = VariantProps<typeof buttonVariants>["size"];
 
-interface Props extends Omit<HTMLAttributes<HTMLButtonElement>, 'class' | 'onclick'> {
+interface Props
+	extends Omit<HTMLAttributes<HTMLButtonElement>, "class" | "onclick"> {
 	variant?: Variant;
 	size?: Size;
 	class?: string;
 	onclick?: (event: MouseEvent) => void;
-	children: import('svelte').Snippet;
+	children: import("svelte").Snippet;
 }
 
 let {

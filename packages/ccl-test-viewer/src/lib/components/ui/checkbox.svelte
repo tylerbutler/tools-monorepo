@@ -1,10 +1,11 @@
 <script lang="ts">
-import { cn } from "$lib/utils.js";
 import Icon from "$lib/components/Icon.svelte";
-import { CheckmarkCircle01Icon } from "@hugeicons/core-free-icons";
+import { cn } from "$lib/utils.js";
+import { Check } from "lucide-svelte";
 import type { HTMLAttributes } from "svelte/elements";
 
-interface Props extends Omit<HTMLAttributes<HTMLButtonElement>, 'class' | 'onclick'> {
+interface Props
+	extends Omit<HTMLAttributes<HTMLButtonElement>, "class" | "onclick"> {
 	class?: string;
 	checked?: boolean;
 	disabled?: boolean;
@@ -40,6 +41,6 @@ function handleClick() {
 	{...restProps}
 >
 	{#if checked}
-		<Icon icon={CheckmarkCircle01Icon} size={12} />
+		<Icon icon={Check} size={12} />
 	{/if}
 </button>

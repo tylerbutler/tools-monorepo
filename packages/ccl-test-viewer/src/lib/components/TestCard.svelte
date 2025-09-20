@@ -1,8 +1,15 @@
 <script lang="ts">
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/index.js";
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
+import { ArrowRight, Code, Eye } from "lucide-svelte";
 import Icon from "./Icon.svelte";
-import { ArrowRight01Icon, CodeIcon, EyeIcon } from "@hugeicons/core-free-icons";
 import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
 interface Props {
@@ -37,7 +44,9 @@ const expectedSummary = $derived.by(() => {
 	}
 
 	if (expected.entries) {
-		const count = Array.isArray(expected.entries) ? expected.entries.length : "invalid";
+		const count = Array.isArray(expected.entries)
+			? expected.entries.length
+			: "invalid";
 		return `${count} entries`;
 	}
 
@@ -73,9 +82,9 @@ const expectedSummary = $derived.by(() => {
 				onclick={handleView}
 				aria-label="View test details"
 			>
-				<Icon icon={EyeIcon} size={16} class="mr-1" />
+				<Icon icon={Eye} size={16} class="mr-1" />
 				View
-				<Icon icon={ArrowRight01Icon} size={16} class="ml-1" />
+				<Icon icon={ArrowRight} size={16} class="ml-1" />
 			</Button>
 		</div>
 	</CardHeader>
@@ -104,7 +113,7 @@ const expectedSummary = $derived.by(() => {
 		{#if test.functions.length > 0}
 			<div>
 				<h4 class="text-sm font-medium text-muted-foreground mb-2 flex items-center">
-					<Icon icon={CodeIcon} size={14} class="mr-1" />
+					<Icon icon={Code} size={14} class="mr-1" />
 					Functions
 				</h4>
 				<div class="flex flex-wrap gap-1">

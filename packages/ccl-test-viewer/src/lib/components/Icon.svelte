@@ -12,7 +12,7 @@ const paths = Array.isArray(icon) ? icon : [];
 
 // Add some debugging for problematic icons
 if (!Array.isArray(icon)) {
-	console.warn('Icon data is not an array:', icon);
+	console.warn("Icon data is not an array:", icon);
 }
 </script>
 

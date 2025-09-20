@@ -25,14 +25,15 @@ export default defineConfig({
 	// Development optimizations
 	server: {
 		fs: {
-			// Allow serving files from one level up to access workspace packages
-			allow: [".."],
+			// Allow serving files from workspace root
+			allow: ["../../.."],
 		},
+		host: true,
 	},
 	// CSS optimizations
 	css: { devSourcemap: true },
 	// Performance optimizations
 	optimizeDeps: {
-		include: ["@hugeicons/core-free-icons", "chart.js", "prismjs"],
+		include: ["lucide-svelte", "chart.js", "prismjs"],
 	},
 });

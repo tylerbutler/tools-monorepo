@@ -1,28 +1,7 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
-import StatsDashboard from "$lib/components/StatsDashboard.svelte";
-import { Button } from "$lib/components/ui";
-import { appState, initializeApp } from "$lib/stores.svelte.js";
-import { ArrowRight } from "lucide-svelte";
-// Local state
-let loading = $state(true);
 
-// Initialize data using $effect (Svelte 5 approach)
-let initialized = $state(false);
-
-$effect(() => {
-	if (!initialized) {
-		initialized = true;
-		initializeApp()
-			.then(() => {
-				loading = false;
-			})
-			.catch((error) => {
-				console.error('Error during initialization:', error);
-				loading = false; // Set to false even on error to show error state
-			});
-	}
-});
+// import { Button } from "$lib/components/ui";
 
 // Navigation handlers
 function viewAllTests() {
@@ -42,23 +21,12 @@ function viewAllTests() {
 		</p>
 	</div>
 
-{#if loading}
-	<div class="flex items-center justify-center h-64">
-		<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-	</div>
-{:else if appState.testStats}
 	<div class="text-center">
-		<h3>Stats loaded successfully!</h3>
-		<p>Total Tests: {appState.testStats.totalTests}</p>
-		<p>Total Assertions: {appState.testStats.totalAssertions}</p>
+		<h3>Welcome to CCL Test Suite Viewer</h3>
+		<p>Interactive test result visualization</p>
 
 		<button onclick={viewAllTests} class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-			Explore All Tests
+			Browse All Tests
 		</button>
 	</div>
-{:else}
-	<div class="text-center text-muted-foreground">
-		Failed to load test statistics
-	</div>
-{/if}
 </div>
