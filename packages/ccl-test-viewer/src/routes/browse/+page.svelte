@@ -1,12 +1,12 @@
 <script lang="ts">
-import { goto } from "$app/navigation";
 import { browser } from "$app/environment";
+import { goto } from "$app/navigation";
 import FilterSidebar from "$lib/components/FilterSidebar.svelte";
+import Icon from "$lib/components/Icon.svelte";
 import TestCard from "$lib/components/TestCard.svelte";
 import { Badge, Button } from "$lib/components/ui/index.js";
 import { appState, initializeApp } from "$lib/stores.svelte.js";
-import Icon from "$lib/components/Icon.svelte";
-import { GridIcon, CheckListIcon, Menu01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { CheckSquare, Grid3x3, Menu, X } from "lucide-svelte";
 
 // Debug: Check if script is executing at all
 console.log("🟦 Browse page script executed at module level");
@@ -66,7 +66,7 @@ const showResults = $derived(!loading && appState.testStats);
 				onclick={() => appState.toggleSidebar()}
 				aria-label="Toggle filters"
 			>
-				<Icon icon={appState.sidebarOpen ? Cancel01Icon : Menu01Icon} size={16} />
+				<Icon icon={appState.sidebarOpen ? X : Menu} size={16} />
 			</Button>
 		</div>
 
@@ -81,11 +81,12 @@ const showResults = $derived(!loading && appState.testStats);
 
 		<!-- Overlay for mobile sidebar -->
 		{#if appState.sidebarOpen}
-			<div
-				class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+			<button
+				class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default"
 				onclick={() => appState.toggleSidebar()}
 				aria-label="Close filters"
-			></div>
+				type="button"
+			></button>
 		{/if}
 
 		<!-- Main content area -->
@@ -114,7 +115,7 @@ const showResults = $derived(!loading && appState.testStats);
 								onclick={() => appState.setViewMode("grid")}
 								aria-label="Grid view"
 							>
-								<Icon icon={GridIcon} size={16} />
+								<Icon icon={Grid3x3} size={16} />
 							</Button>
 							<Button
 								variant={appState.viewMode === "list" ? "default" : "outline"}
@@ -122,7 +123,7 @@ const showResults = $derived(!loading && appState.testStats);
 								onclick={() => appState.setViewMode("list")}
 								aria-label="List view"
 							>
-								<Icon icon={CheckListIcon} size={16} />
+								<Icon icon={CheckSquare} size={16} />
 							</Button>
 						</div>
 					</div>
@@ -144,7 +145,7 @@ const showResults = $derived(!loading && appState.testStats);
 						<!-- No results state -->
 						<div class="flex flex-col items-center justify-center h-64 text-center">
 							<div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-								<Icon icon={CheckListIcon} size={24} class="text-muted-foreground" />
+								<Icon icon={CheckSquare} size={24} class="text-muted-foreground" />
 							</div>
 							<h3 class="text-lg font-semibold mb-2">No tests found</h3>
 							<p class="text-muted-foreground mb-4 max-w-md">

@@ -15,8 +15,8 @@ import {
 	AVAILABLE_FUNCTIONS,
 } from "$lib/data/types.js";
 import { appState, type FilterState } from "$lib/stores.svelte.js";
+import { ChevronDown, ChevronRight, Filter, Search, X } from "lucide-svelte";
 import Icon from "./Icon.svelte";
-import { ArrowDown01Icon, ArrowRight01Icon, FilterHorizontalIcon, Search01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 
 // Local state for collapsible sections
 let functionsExpanded = $state(true);
@@ -88,7 +88,7 @@ const availableCategories = $derived.by(() => {
 		<!-- Header -->
 		<div class="flex items-center justify-between">
 			<h2 class="text-lg font-semibold flex items-center">
-				<Icon icon={FilterHorizontalIcon} size={20} class="mr-2" />
+				<Icon icon={Filter} size={20} class="mr-2" />
 				Filters
 			</h2>
 			{#if appState.hasActiveFilters}
@@ -106,7 +106,7 @@ const availableCategories = $derived.by(() => {
 			<CardContent>
 				<div class="relative">
 					<Icon
-						icon={Search01Icon}
+						icon={Search}
 						size={16}
 						class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
 					/>
@@ -123,7 +123,7 @@ const availableCategories = $derived.by(() => {
 							class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
 							aria-label="Clear search"
 						>
-							<Icon icon={Cancel01Icon} size={16} />
+							<Icon icon={X} size={16} />
 						</button>
 					{/if}
 				</div>
@@ -144,7 +144,7 @@ const availableCategories = $derived.by(() => {
 						class="flex items-center hover:opacity-80 transition-opacity"
 					>
 						<Icon
-							icon={functionsExpanded ? ArrowDown01Icon : ArrowRight01Icon}
+							icon={functionsExpanded ? ChevronDown : ChevronRight}
 							size={16}
 							class="mr-1"
 						/>
@@ -178,12 +178,13 @@ const availableCategories = $derived.by(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center space-x-2 flex-1">
 									<Checkbox
+										id={`function-${func}`}
 										checked={isActive}
 										onCheckedChange={(checked) => handleFilterToggle("functions", func)}
 									/>
 									<label
+										for={`function-${func}`}
 										class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-										onclick={() => handleFilterToggle("functions", func)}
 									>
 										{func}
 									</label>
@@ -207,7 +208,7 @@ const availableCategories = $derived.by(() => {
 						class="flex items-center hover:opacity-80 transition-opacity"
 					>
 						<Icon
-							icon={featuresExpanded ? ArrowDown01Icon : ArrowRight01Icon}
+							icon={featuresExpanded ? ChevronDown : ChevronRight}
 							size={16}
 							class="mr-1"
 						/>
@@ -241,12 +242,13 @@ const availableCategories = $derived.by(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center space-x-2 flex-1">
 									<Checkbox
+										id={`feature-${feature}`}
 										checked={isActive}
 										onCheckedChange={(checked) => handleFilterToggle("features", feature)}
 									/>
 									<label
+										for={`feature-${feature}`}
 										class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-										onclick={() => handleFilterToggle("features", feature)}
 									>
 										{feature}
 									</label>
@@ -270,7 +272,7 @@ const availableCategories = $derived.by(() => {
 						class="flex items-center hover:opacity-80 transition-opacity"
 					>
 						<Icon
-							icon={behaviorsExpanded ? ArrowDown01Icon : ArrowRight01Icon}
+							icon={behaviorsExpanded ? ChevronDown : ChevronRight}
 							size={16}
 							class="mr-1"
 						/>
@@ -304,12 +306,13 @@ const availableCategories = $derived.by(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center space-x-2 flex-1">
 									<Checkbox
+										id={`behavior-${behavior}`}
 										checked={isActive}
 										onCheckedChange={(checked) => handleFilterToggle("behaviors", behavior)}
 									/>
 									<label
+										for={`behavior-${behavior}`}
 										class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-										onclick={() => handleFilterToggle("behaviors", behavior)}
 									>
 										{behavior}
 									</label>
@@ -333,7 +336,7 @@ const availableCategories = $derived.by(() => {
 						class="flex items-center hover:opacity-80 transition-opacity"
 					>
 						<Icon
-							icon={categoriesExpanded ? ArrowDown01Icon : ArrowRight01Icon}
+							icon={categoriesExpanded ? ChevronDown : ChevronRight}
 							size={16}
 							class="mr-1"
 						/>
@@ -367,12 +370,13 @@ const availableCategories = $derived.by(() => {
 							<div class="flex items-center justify-between">
 								<div class="flex items-center space-x-2 flex-1">
 									<Checkbox
+										id={`category-${category}`}
 										checked={isActive}
 										onCheckedChange={(checked) => handleFilterToggle("categories", category)}
 									/>
 									<label
+										for={`category-${category}`}
 										class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-										onclick={() => handleFilterToggle("categories", category)}
 									>
 										{category}
 									</label>
