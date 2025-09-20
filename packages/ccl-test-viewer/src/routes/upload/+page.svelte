@@ -6,7 +6,9 @@ import Card from "$lib/components/ui/card.svelte";
 import CardContent from "$lib/components/ui/card-content.svelte";
 import CardHeader from "$lib/components/ui/card-header.svelte";
 import CardTitle from "$lib/components/ui/card-title.svelte";
-import { Upload, FileText, Database } from "lucide-svelte";
+import { Upload, FileText, Database, Layers, ToggleLeft, ToggleRight, Trash2 } from "lucide-svelte";
+import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import { onMount } from "svelte";
 
 interface UploadedFile {
 	file: File;
@@ -16,60 +18,44 @@ interface UploadedFile {
 	preview?: string;
 }
 
-// State for uploaded files and processing
-let uploadedFiles = $state<UploadedFile[]>([]);
-let processedData = $state<any[]>([]);
+// Initialize data source manager on component mount
+onMount(async () => {
+	await dataSourceManager.initialize();
+});
 
-// Handle successful file uploads
-function handleFilesUploaded(files: UploadedFile[]) {
-	uploadedFiles = [...uploadedFiles, ...files];
+// Handle successful file uploads - now using data source manager
+async function handleFilesUploaded(files: UploadedFile[]) {
+	const successfulFiles = files.filter(f => f.status === 'success');
 
-	// Process the data from successful files
-	processUploadedData(files);
-}
+	if (successfulFiles.length > 0) {
+		const fileObjects = successfulFiles.map(f => f.file);
+		const results = await dataSourceManager.processUploadedFiles(fileObjects);
 
-// Process uploaded JSON data
-async function processUploadedData(files: UploadedFile[]) {
-	const allData: any[] = [];
-
-	for (const uploadedFile of files) {
-		if (uploadedFile.status === 'success') {
-			try {
-				const text = await uploadedFile.file.text();
-				const jsonData = JSON.parse(text);
-				allData.push(...jsonData);
-			} catch (error) {
-				console.error('Error processing file:', uploadedFile.file.name, error);
-			}
-		}
+		// Log results for debugging
+		console.log('File processing results:', results);
 	}
-
-	processedData = allData;
 }
 
-// Clear all uploaded data
+// Clear all uploaded data - now clears data sources
 function clearAllData() {
-	uploadedFiles = [];
-	processedData = [];
+	dataSourceManager.clearUploadedSources();
 }
 
-// Get total test count
-const totalTests = $derived(processedData.length);
+// Toggle data source active state
+function toggleDataSource(sourceId: string) {
+	dataSourceManager.toggleSource(sourceId);
+}
 
-// Get total assertion count
-const totalAssertions = $derived(
-	processedData.reduce((sum, test) => sum + (test.expected?.count || 0), 0)
-);
+// Remove a data source
+function removeDataSource(sourceId: string) {
+	dataSourceManager.removeSource(sourceId);
+}
 
-// Get unique functions
-const uniqueFunctions = $derived(
-	new Set(processedData.flatMap(test => test.functions || [])).size
-);
-
-// Get unique features
-const uniqueFeatures = $derived(
-	new Set(processedData.flatMap(test => test.features || [])).size
-);
+// Data source summaries for display
+const sourceSummaries = $derived(dataSourceManager.sourceSummaries);
+const mergedStats = $derived(dataSourceManager.mergedStats);
+const isProcessing = $derived(dataSourceManager.isProcessing);
+const hasUploadedSources = $derived(dataSourceManager.getSourcesByType('uploaded').length > 0);
 </script>
 
 <svelte:head>
@@ -90,94 +76,175 @@ const uniqueFeatures = $derived(
 	<!-- Upload Component -->
 	<MultiFileUpload onFilesUploaded={handleFilesUploaded} maxFiles={10} />
 
-	<!-- Data Summary -->
-	{#if uploadedFiles.length > 0}
+	<!-- Combined Data Summary -->
+	{#if mergedStats.totalSources > 0}
 		<Card>
 			<CardHeader>
 				<CardTitle class="flex items-center gap-2">
 					<Database size={20} />
-					Uploaded Data Summary
+					Combined Data Summary
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 					<div class="text-center">
-						<div class="text-2xl font-bold text-primary">{totalTests}</div>
+						<div class="text-2xl font-bold text-primary">{mergedStats.totalTests}</div>
 						<div class="text-sm text-muted-foreground">Total Tests</div>
 					</div>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-primary">{totalAssertions}</div>
+						<div class="text-2xl font-bold text-primary">{mergedStats.totalAssertions}</div>
 						<div class="text-sm text-muted-foreground">Total Assertions</div>
 					</div>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-primary">{uniqueFunctions}</div>
-						<div class="text-sm text-muted-foreground">Functions</div>
+						<div class="text-2xl font-bold text-primary">{mergedStats.totalCategories}</div>
+						<div class="text-sm text-muted-foreground">Categories</div>
 					</div>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-primary">{uniqueFeatures}</div>
-						<div class="text-sm text-muted-foreground">Features</div>
+						<div class="text-2xl font-bold text-primary">{mergedStats.activeSources}</div>
+						<div class="text-sm text-muted-foreground">Active Sources</div>
 					</div>
 				</div>
 
-				{#if uploadedFiles.length > 0}
-					<div class="mt-6 flex items-center justify-between">
-						<div class="flex items-center gap-2">
-							<FileText size={16} />
-							<span class="text-sm text-muted-foreground">
-								{uploadedFiles.length} file{uploadedFiles.length !== 1 ? 's' : ''} uploaded
-							</span>
-						</div>
-						<Button variant="outline" size="sm" onclick={clearAllData}>
-							Clear All Data
-						</Button>
+				<div class="mt-6 flex items-center justify-between">
+					<div class="flex items-center gap-2">
+						<Layers size={16} />
+						<span class="text-sm text-muted-foreground">
+							{mergedStats.activeSources} of {mergedStats.totalSources} source{mergedStats.totalSources !== 1 ? 's' : ''} active
+						</span>
 					</div>
-				{/if}
+					{#if hasUploadedSources}
+						<Button variant="outline" size="sm" onclick={clearAllData}>
+							Clear Uploaded Data
+						</Button>
+					{/if}
+				</div>
 			</CardContent>
 		</Card>
 	{/if}
 
-	<!-- Next Steps -->
-	{#if processedData.length > 0}
+	<!-- Data Sources Management -->
+	{#if sourceSummaries.length > 1}
 		<Card>
 			<CardHeader>
-				<CardTitle>What's Next?</CardTitle>
+				<CardTitle class="flex items-center gap-2">
+					<Layers size={20} />
+					Data Sources
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div class="space-y-3">
+					{#each sourceSummaries as source (source.id)}
+						<div class="flex items-center justify-between p-3 border rounded-lg">
+							<div class="flex items-center gap-3">
+								<button
+									onclick={() => toggleDataSource(source.id)}
+									class="text-muted-foreground hover:text-foreground transition-colors"
+									aria-label={source.active ? "Deactivate source" : "Activate source"}
+								>
+									{#if source.active}
+										<ToggleRight size={20} class="text-primary" />
+									{:else}
+										<ToggleLeft size={20} />
+									{/if}
+								</button>
+
+								<div class="flex-1">
+									<div class="flex items-center gap-2">
+										<span class="font-medium">{source.name}</span>
+										<Badge variant={source.type === 'static' ? 'default' : 'secondary'}>
+											{source.type}
+										</Badge>
+										{#if !source.active}
+											<Badge variant="outline" class="text-xs">inactive</Badge>
+										{/if}
+									</div>
+									<div class="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+										<span>{source.testCount} tests</span>
+										<span>{source.categoryCount} categories</span>
+										<span>uploaded {source.uploadedAt.toLocaleDateString()}</span>
+									</div>
+								</div>
+							</div>
+
+							{#if source.type !== 'static'}
+								<Button
+									variant="ghost"
+									size="sm"
+									onclick={() => removeDataSource(source.id)}
+									class="text-red-600 hover:text-red-700"
+									aria-label="Remove data source"
+								>
+									<Trash2 size={14} />
+								</Button>
+							{/if}
+						</div>
+					{/each}
+				</div>
+			</CardContent>
+		</Card>
+	{/if}
+
+	<!-- Phase Status -->
+	{#if hasUploadedSources}
+		<Card>
+			<CardHeader>
+				<CardTitle>What's Available Now</CardTitle>
 			</CardHeader>
 			<CardContent class="space-y-4">
 				<p class="text-sm text-muted-foreground">
-					Your test data has been uploaded successfully. Currently, this demonstrates
-					the upload functionality. In Phase 2, you'll be able to:
+					Your test data has been uploaded and integrated! Phase 2 dynamic data management is now active:
 				</p>
 
-				<ul class="text-sm space-y-1 ml-4">
-					<li class="flex items-center gap-2">
-						<div class="w-1 h-1 bg-muted-foreground rounded-full"></div>
-						Browse and filter your uploaded test data
-					</li>
-					<li class="flex items-center gap-2">
-						<div class="w-1 h-1 bg-muted-foreground rounded-full"></div>
-						Combine uploaded data with static test data
-					</li>
-					<li class="flex items-center gap-2">
-						<div class="w-1 h-1 bg-muted-foreground rounded-full"></div>
-						Switch between different data sources
-					</li>
-					<li class="flex items-center gap-2">
-						<div class="w-1 h-1 bg-muted-foreground rounded-full"></div>
-						Load test data directly from GitHub URLs
-					</li>
-				</ul>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<ul class="text-sm space-y-2">
+						<li class="flex items-center gap-2">
+							<div class="w-2 h-2 bg-green-500 rounded-full"></div>
+							Multi-source data management
+						</li>
+						<li class="flex items-center gap-2">
+							<div class="w-2 h-2 bg-green-500 rounded-full"></div>
+							Toggle data sources on/off
+						</li>
+						<li class="flex items-center gap-2">
+							<div class="w-2 h-2 bg-green-500 rounded-full"></div>
+							Combined statistics and metrics
+						</li>
+					</ul>
+					<ul class="text-sm space-y-2">
+						<li class="flex items-center gap-2">
+							<div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+							Smart data validation and merging
+						</li>
+						<li class="flex items-center gap-2">
+							<div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+							Source tracking and metadata
+						</li>
+						<li class="flex items-center gap-2">
+							<div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+							Clean removal and management
+						</li>
+					</ul>
+				</div>
 
-				<div class="pt-4">
-					<Badge variant="secondary" class="text-xs">
-						Phase 1 Complete: Multi-file Upload
+				<div class="pt-4 flex items-center gap-2">
+					<Badge variant="default" class="text-xs">
+						✅ Phase 1 Complete: Multi-file Upload
 					</Badge>
+					<Badge variant="default" class="text-xs">
+						✅ Phase 2 Complete: Dynamic Data Stores
+					</Badge>
+				</div>
+
+				<div class="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg">
+					<p class="font-medium mb-1">Next: Browse your uploaded data</p>
+					<p>Visit the Browse page to see your uploaded tests combined with the built-in test data. Use filters and search to explore your data.</p>
 				</div>
 			</CardContent>
 		</Card>
 	{/if}
 
 	<!-- Getting Started Guide -->
-	{#if uploadedFiles.length === 0}
+	{#if !hasUploadedSources}
 		<Card>
 			<CardHeader>
 				<CardTitle>Getting Started</CardTitle>
