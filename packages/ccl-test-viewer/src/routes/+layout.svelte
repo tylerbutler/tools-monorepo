@@ -1,7 +1,7 @@
 <script lang="ts">
 import "../app.css";
 import { goto } from "$app/navigation";
-import { Home, Search } from "lucide-svelte";
+import { Home, Search, Upload } from "lucide-svelte";
 import type { Snippet } from "svelte";
 import type { LayoutData } from "./$types";
 
@@ -16,6 +16,7 @@ let { children, data }: Props = $props();
 const currentPath = $derived(data.currentPath);
 const isHomePage = $derived(currentPath === "/");
 const isBrowsePage = $derived(currentPath === "/browse");
+const isUploadPage = $derived(currentPath === "/upload");
 
 // Skip link functionality
 function skipToMain() {
@@ -33,7 +34,9 @@ $effect(() => {
 		? "Dashboard"
 		: isBrowsePage
 			? "Browse Tests"
-			: "Test Detail";
+			: isUploadPage
+				? "Upload Test Data"
+				: "Test Detail";
 	// Update document title for accessibility
 	document.title = `${routeName} - CCL Test Suite Viewer`;
 });
@@ -89,6 +92,15 @@ $effect(() => {
 					>
 						<Search size={16} class="mr-2 inline" />
 						Browse Tests
+					</button>
+					<button
+						class={`px-3 py-2 rounded text-sm font-medium ${isUploadPage ? "bg-primary text-primary-foreground" : "border border-border"}`}
+						onclick={() => goto('/upload')}
+						aria-current={isUploadPage ? "page" : undefined}
+						aria-label="Upload JSON test data files"
+					>
+						<Upload size={16} class="mr-2 inline" />
+						Upload
 					</button>
 				</nav>
 			</div>
