@@ -1,5 +1,4 @@
 <script lang="ts">
-import Icon from "$lib/components/Icon.svelte";
 import { cn } from "$lib/utils.js";
 import { Check } from "lucide-svelte";
 import type { HTMLAttributes } from "svelte/elements";
@@ -41,6 +40,6 @@ function handleClick() {
 	{...restProps}
 >
 	{#if checked}
-		<Icon icon={Check} size={12} />
+		<Check size={12} />
 	{/if}
 </button>

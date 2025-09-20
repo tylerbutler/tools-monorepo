@@ -11,12 +11,10 @@ import type { FunctionSpecificResult } from "$lib/data/function-types.js";
 import { FUNCTION_STATUS } from "$lib/data/function-types.js";
 import type { CCLFunction, GeneratedTest } from "$lib/data/types.js";
 import { ArrowLeft, Code, Copy, File, Play } from "lucide-svelte";
+import Inspect from "svelte-inspect-value";
 import EntryDisplay from "./EntryDisplay.svelte";
-import Icon from "./Icon.svelte";
 import ListDisplay from "./ListDisplay.svelte";
-import ObjectDisplay from "./ObjectDisplay.svelte";
 import PlaceholderDisplay from "./PlaceholderDisplay.svelte";
-import TerminalTestDisplay from "./TerminalTestDisplay.svelte";
 import ValueDisplay from "./ValueDisplay.svelte";
 import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
@@ -27,8 +25,6 @@ interface Props {
 
 let { test, onBack }: Props = $props();
 
-// View mode toggle
-let viewMode = $state<"card" | "terminal">("card");
 
 // Copy functionality
 async function copyToClipboard(text: string, type: string) {
@@ -67,6 +63,17 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 	switch (primaryFunction) {
 		case "parse":
 		case "parse_value":
+			return {
+				type: "entries",
+				content: expected.entries || [],
+				language: "ccl",
+				metadata: {
+					functionType: primaryFunction,
+					itemCount: expected.entries?.length || 0,
+					isImplemented: true,
+				},
+			};
+
 		case "filter":
 		case "expand_dotted":
 			return {
@@ -76,19 +83,20 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 				metadata: {
 					functionType: primaryFunction,
 					itemCount: expected.entries?.length || 0,
-					isImplemented: primaryFunction === "parse",
+					isImplemented: false,
 				},
 			};
 
 		case "build_hierarchy":
 			return {
-				type: "object",
+				type: "hierarchy",
 				content: expected.object || {},
 				language: "json",
 				metadata: {
 					functionType: primaryFunction,
 					keyCount: expected.object ? Object.keys(expected.object).length : 0,
-					isImplemented: false,
+					isImplemented: true,
+					count: expected.count,
 				},
 			};
 
@@ -136,10 +144,6 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 	}
 });
 
-// Generate test command
-const testCommand = $derived(
-	`ccl parse ${JSON.stringify(test.input)} | ccl ${test.functions.join(" ")}`,
-);
 </script>
 
 <div class="space-y-6">
@@ -147,7 +151,7 @@ const testCommand = $derived(
 	<div class="flex items-center justify-between">
 		<div class="flex items-center space-x-4">
 			<Button variant="outline" onclick={onBack} aria-label="Go back to test list">
-				<Icon icon={ArrowLeft} size={16} class="mr-2" />
+				<ArrowLeft size={16} class="mr-2" />
 				Back
 			</Button>
 			<div>
@@ -155,36 +159,15 @@ const testCommand = $derived(
 				<p class="text-muted-foreground">Test case details and expected behavior</p>
 			</div>
 		</div>
-		<div class="flex items-center gap-2">
-			<Button
-				variant={viewMode === 'terminal' ? 'default' : 'outline'}
-				onclick={() => viewMode = 'terminal'}
-				aria-label="Switch to terminal view"
-			>
-				Terminal View
-			</Button>
-			<Button
-				variant={viewMode === 'card' ? 'default' : 'outline'}
-				onclick={() => viewMode = 'card'}
-				aria-label="Switch to card view"
-			>
-				Card View
-			</Button>
-		</div>
 	</div>
 
-	{#if viewMode === 'terminal'}
-		<!-- Terminal view -->
-		<TerminalTestDisplay {test} />
-	{:else}
-		<!-- Card view (original) -->
 		<!-- Test metadata -->
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 		<!-- Functions -->
 		<Card>
 			<CardHeader class="pb-3">
 				<CardTitle class="text-sm flex items-center">
-					<Icon icon={Code} size={16} class="mr-2" />
+					<Code size={16} class="mr-2" />
 					Functions ({test.functions.length})
 				</CardTitle>
 			</CardHeader>
@@ -245,7 +228,7 @@ const testCommand = $derived(
 			<CardHeader class="pb-3">
 				<div class="flex items-center justify-between">
 					<CardTitle class="flex items-center">
-						<Icon icon={File} size={16} class="mr-2" />
+						<File size={16} class="mr-2" />
 						Input
 					</CardTitle>
 					<Button
@@ -254,7 +237,7 @@ const testCommand = $derived(
 						onclick={() => copyToClipboard(test.input, "Input")}
 						aria-label="Copy input"
 					>
-						<Icon icon={Copy} size={14} />
+						<Copy size={14} />
 					</Button>
 				</div>
 			</CardHeader>
@@ -269,7 +252,7 @@ const testCommand = $derived(
 		<Card>
 			<CardHeader class="pb-3">
 				<CardTitle class="flex items-center">
-					<Icon icon={Play} size={16} class="mr-2" />
+					<Play size={16} class="mr-2" />
 					Expected Result
 				</CardTitle>
 			</CardHeader>
@@ -303,9 +286,11 @@ const testCommand = $derived(
 								<EntryDisplay {entry} />
 							{/each}
 						</div>
-					{:else if formattedExpected.type === 'object' && formattedExpected.metadata.isImplemented}
-						<!-- Object display for build_hierarchy -->
-						<ObjectDisplay object={formattedExpected.content} />
+					{:else if (formattedExpected.type === 'hierarchy' || formattedExpected.type === 'object') && formattedExpected.metadata.isImplemented}
+						<!-- Object/Hierarchy display using svelte-inspect-value -->
+						<div class="inspect-container">
+							<Inspect value={formattedExpected.content} />
+						</div>
 					{:else if formattedExpected.type === 'value' && formattedExpected.metadata.isImplemented}
 						<!-- Value display for get_string, get_int, etc. -->
 						<ValueDisplay
@@ -334,7 +319,17 @@ const testCommand = $derived(
 			</CardContent>
 		</Card>
 	</div>
-
-	{/if}
 </div>
 
+<style>
+	.inspect-container {
+		font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+		font-size: 0.875rem;
+		background: hsl(var(--muted));
+		border: 1px solid hsl(var(--border));
+		border-radius: 0.5rem;
+		padding: 1rem;
+		max-height: 500px;
+		overflow-y: auto;
+	}
+</style>

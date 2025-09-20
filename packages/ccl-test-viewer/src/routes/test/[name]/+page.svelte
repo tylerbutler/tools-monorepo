@@ -1,11 +1,17 @@
 <script lang="ts">
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
-import { page } from "$app/stores";
 import TestDetail from "$lib/components/TestDetail.svelte";
 import { Button } from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
 import { appState, initializeApp } from "$lib/stores.svelte.js";
+import type { PageData } from "./$types";
+
+interface Props {
+	data: PageData;
+}
+
+let { data }: Props = $props();
 
 // Local state
 let loading = $state(true);
@@ -13,8 +19,8 @@ let test = $state<GeneratedTest | null>(null);
 let error = $state<string | null>(null);
 let initialized = $state(false);
 
-// Get test name from URL
-const testName = $derived(decodeURIComponent($page.params.name || ""));
+// Get test name from URL - using runes with data from load function
+const testName = $derived(data.testName);
 
 // Initialize and find the test
 $effect(() => {

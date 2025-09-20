@@ -4,7 +4,7 @@
 import type { CCLFunction } from "./types.js";
 
 export interface FunctionSpecificResult {
-	type: "entries" | "object" | "value" | "list" | "error" | "placeholder";
+	type: "entries" | "object" | "hierarchy" | "value" | "list" | "error" | "placeholder";
 	content: any;
 	language: string;
 	metadata: {
@@ -12,6 +12,7 @@ export interface FunctionSpecificResult {
 		valueType?: "string" | "int" | "float" | "bool";
 		itemCount?: number;
 		keyCount?: number;
+		count?: number;
 		isImplemented: boolean;
 	};
 }
@@ -24,7 +25,7 @@ export const FUNCTION_STATUS: Record<
 	parse: "implemented",
 	parse_value: "planned",
 	filter: "planned",
-	build_hierarchy: "planned",
+	build_hierarchy: "implemented",
 	get_string: "planned",
 	expand_dotted: "planned",
 	get_list: "planned",

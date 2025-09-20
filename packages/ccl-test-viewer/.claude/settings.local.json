@@ -63,7 +63,10 @@
       "mcp__serena__list_memories",
       "Bash(npm run check:format:*)",
       "Bash(npm run format:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "mcp__serena__think_about_collected_information",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:inspect.eirik.space)"
     ],
     "deny": [],
     "ask": []

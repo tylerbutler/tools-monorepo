@@ -20,11 +20,11 @@ function visualizeWhitespace(s: string): string {
 		); // LF
 }
 
-const displayKey = $derived(visualizeWhitespace(entry.key));
-const displayValue = $derived(visualizeWhitespace(entry.value || "(empty)"));
+const displayKey = $derived(entry.key ? visualizeWhitespace(entry.key) : '<span class="empty-placeholder">(empty)</span>');
+const displayValue = $derived(entry.value ? visualizeWhitespace(entry.value) : '<span class="empty-placeholder">(empty)</span>');
 </script>
 
-<div class="entry-display">
+<div class="entry-display font-mono">
 	<span class="entry-key">{@html displayKey}</span>
 	<span class="entry-separator">=</span>
 	<span class="entry-value">{@html displayValue}</span>
@@ -36,7 +36,6 @@ const displayValue = $derived(visualizeWhitespace(entry.value || "(empty)"));
 		border: 1px solid hsl(var(--border));
 		border-radius: 0.375rem;
 		padding: 0.5rem 0.75rem;
-		font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 		font-size: 0.875rem;
 		line-height: 1.25;
 		display: flex;
@@ -86,6 +85,13 @@ const displayValue = $derived(visualizeWhitespace(entry.value || "(empty)"));
 	:global(.whitespace-indicator.newline) {
 		color: #6b7280;
 		font-weight: bold;
+	}
+
+	/* Empty placeholder styling */
+	:global(.empty-placeholder) {
+		font-style: italic;
+		color: hsl(var(--muted-foreground));
+		opacity: 0.8;
 	}
 
 	/* Dark mode adjustments */

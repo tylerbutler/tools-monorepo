@@ -1,5 +1,4 @@
 <script lang="ts">
-import Icon from "$lib/components/Icon.svelte";
 import {
 	Card,
 	CardContent,
@@ -175,7 +174,7 @@ const leastTestedCategory = $derived(
 				<CardTitle class="text-sm font-medium">
 					Total Tests
 				</CardTitle>
-				<Icon icon={File} size={16} class="text-muted-foreground" />
+				<File size={16} class="text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{stats.totalTests}</div>
@@ -190,7 +189,7 @@ const leastTestedCategory = $derived(
 				<CardTitle class="text-sm font-medium">
 					Total Assertions
 				</CardTitle>
-				<Icon icon={Hash} size={16} class="text-muted-foreground" />
+				<Hash size={16} class="text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{stats.totalAssertions}</div>
@@ -205,7 +204,7 @@ const leastTestedCategory = $derived(
 				<CardTitle class="text-sm font-medium">
 					Functions Tested
 				</CardTitle>
-				<Icon icon={Code} size={16} class="text-muted-foreground" />
+				<Code size={16} class="text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{totalFunctions}</div>
@@ -220,7 +219,7 @@ const leastTestedCategory = $derived(
 				<CardTitle class="text-sm font-medium">
 					Coverage
 				</CardTitle>
-				<Icon icon={BarChart3} size={16} class="text-muted-foreground" />
+				<BarChart3 size={16} class="text-muted-foreground" />
 			</CardHeader>
 			<CardContent>
 				<div class="text-2xl font-bold">{avgTestsPerCategory}</div>

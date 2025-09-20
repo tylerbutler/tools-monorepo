@@ -9,7 +9,6 @@ import {
 } from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
 import { ArrowRight, Code, Eye } from "lucide-svelte";
-import Icon from "./Icon.svelte";
 import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
 interface Props {
@@ -82,9 +81,9 @@ const expectedSummary = $derived.by(() => {
 				onclick={handleView}
 				aria-label="View test details"
 			>
-				<Icon icon={Eye} size={16} class="mr-1" />
+				<Eye size={16} class="mr-1" />
 				View
-				<Icon icon={ArrowRight} size={16} class="ml-1" />
+				<ArrowRight size={16} class="ml-1" />
 			</Button>
 		</div>
 	</CardHeader>
@@ -113,7 +112,7 @@ const expectedSummary = $derived.by(() => {
 		{#if test.functions.length > 0}
 			<div>
 				<h4 class="text-sm font-medium text-muted-foreground mb-2 flex items-center">
-					<Icon icon={Code} size={14} class="mr-1" />
+					<Code size={14} class="mr-1" />
 					Functions
 				</h4>
 				<div class="flex flex-wrap gap-1">

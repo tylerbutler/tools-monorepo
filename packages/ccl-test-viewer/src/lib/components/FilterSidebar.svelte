@@ -16,7 +16,6 @@ import {
 } from "$lib/data/types.js";
 import { appState, type FilterState } from "$lib/stores.svelte.js";
 import { ChevronDown, ChevronRight, Filter, Search, X } from "lucide-svelte";
-import Icon from "./Icon.svelte";
 
 // Local state for collapsible sections
 let functionsExpanded = $state(true);
@@ -88,7 +87,7 @@ const availableCategories = $derived.by(() => {
 		<!-- Header -->
 		<div class="flex items-center justify-between">
 			<h2 class="text-lg font-semibold flex items-center">
-				<Icon icon={Filter} size={20} class="mr-2" />
+				<Filter size={20} class="mr-2" />
 				Filters
 			</h2>
 			{#if appState.hasActiveFilters}
@@ -105,8 +104,7 @@ const availableCategories = $derived.by(() => {
 			</CardHeader>
 			<CardContent>
 				<div class="relative">
-					<Icon
-						icon={Search}
+					<Search
 						size={16}
 						class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
 					/>
@@ -123,7 +121,7 @@ const availableCategories = $derived.by(() => {
 							class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
 							aria-label="Clear search"
 						>
-							<Icon icon={X} size={16} />
+							<X size={16} />
 						</button>
 					{/if}
 				</div>
@@ -143,11 +141,11 @@ const availableCategories = $derived.by(() => {
 						onclick={() => (functionsExpanded = !functionsExpanded)}
 						class="flex items-center hover:opacity-80 transition-opacity"
 					>
-						<Icon
-							icon={functionsExpanded ? ChevronDown : ChevronRight}
-							size={16}
-							class="mr-1"
-						/>
+						{#if functionsExpanded}
+							<ChevronDown size={16} class="mr-1" />
+						{:else}
+							<ChevronRight size={16} class="mr-1" />
+						{/if}
 						<CardTitle class="text-sm">
 							Functions
 							{#if activeFunctionFilters > 0}
@@ -207,11 +205,11 @@ const availableCategories = $derived.by(() => {
 						onclick={() => (featuresExpanded = !featuresExpanded)}
 						class="flex items-center hover:opacity-80 transition-opacity"
 					>
-						<Icon
-							icon={featuresExpanded ? ChevronDown : ChevronRight}
-							size={16}
-							class="mr-1"
-						/>
+						{#if featuresExpanded}
+							<ChevronDown size={16} class="mr-1" />
+						{:else}
+							<ChevronRight size={16} class="mr-1" />
+						{/if}
 						<CardTitle class="text-sm">
 							Features
 							{#if activeFeatureFilters > 0}
@@ -271,11 +269,11 @@ const availableCategories = $derived.by(() => {
 						onclick={() => (behaviorsExpanded = !behaviorsExpanded)}
 						class="flex items-center hover:opacity-80 transition-opacity"
 					>
-						<Icon
-							icon={behaviorsExpanded ? ChevronDown : ChevronRight}
-							size={16}
-							class="mr-1"
-						/>
+						{#if behaviorsExpanded}
+							<ChevronDown size={16} class="mr-1" />
+						{:else}
+							<ChevronRight size={16} class="mr-1" />
+						{/if}
 						<CardTitle class="text-sm">
 							Behaviors
 							{#if activeBehaviorFilters > 0}
@@ -335,11 +333,11 @@ const availableCategories = $derived.by(() => {
 						onclick={() => (categoriesExpanded = !categoriesExpanded)}
 						class="flex items-center hover:opacity-80 transition-opacity"
 					>
-						<Icon
-							icon={categoriesExpanded ? ChevronDown : ChevronRight}
-							size={16}
-							class="mr-1"
-						/>
+						{#if categoriesExpanded}
+							<ChevronDown size={16} class="mr-1" />
+						{:else}
+							<ChevronRight size={16} class="mr-1" />
+						{/if}
 						<CardTitle class="text-sm">
 							Categories
 							{#if activeCategoryFilters > 0}

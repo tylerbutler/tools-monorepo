@@ -161,6 +161,9 @@ importers:
       prismjs:
         specifier: ^1.30.0
         version: 1.30.0
+      svelte-inspect-value:
+        specifier: ^0.9.2
+        version: 0.9.2(svelte@5.39.3)
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.0
@@ -8136,6 +8139,10 @@ packages:
   highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
 
+  highlight.js@11.11.1:
+    resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
+    engines: {node: '>=12.0.0'}
+
   homedir-polyfill@1.0.3:
     resolution: {integrity: sha512-eSmmWE5bZTK2Nou4g0AI3zZ9rswp7GRKoKXS1BLUkvPviOqs4YTN1djQIqrXy9k5gEtdLPy86JjRwsNM9tnDcA==}
     engines: {node: '>=0.10.0'}
@@ -9379,6 +9386,9 @@ packages:
     resolution: {integrity: sha512-QMjGbFTP0blj97EeidG5hk/QhKQ3T4ICckQGLgz38QF7Vgbk6e6FTARN8KhKxyBbWn8R0HU+bnw8aSoFPD4qtQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
+  many-keys-map@2.0.1:
+    resolution: {integrity: sha512-DHnZAD4phTbZ+qnJdjoNEVU1NecYoSdbOOoVmTDH46AuxDkEVh3MxTVpXq10GtcTC6mndN9dkv1rNfpjRcLnOw==}
+
   map-obj@1.0.1:
     resolution: {integrity: sha512-7N/q3lyZ+LVCp7PzuxrJr4KMbBE2hW7BT7YNia330OFxIf4d3r5zVpicP2650l7CPN6RM9zOJRl3NGpqSiw3Eg==}
     engines: {node: '>=0.10.0'}
@@ -9543,6 +9553,10 @@ packages:
   memfs@4.42.0:
     resolution: {integrity: sha512-RG+4HMGyIVp6UWDWbFmZ38yKrSzblPnfJu0PyPt0hw52KW4PPlPp+HdV4qZBG0hLDuYVnf8wfQT4NymKXnlQjA==}
     engines: {node: '>= 4.0.0'}
+
+  memoize@10.1.0:
+    resolution: {integrity: sha512-MMbFhJzh4Jlg/poq1si90XRlTZRDHVqdlz2mPyGJ6kqMpyHUyVpDd5gpFAvVehW64+RA1eKE9Yt8aSLY7w2Kgg==}
+    engines: {node: '>=18'}
 
   meow@7.1.1:
     resolution: {integrity: sha512-GWHvA5QOcS412WCo8vwKDlTelGLsCGBVevQB5Kva961rmNfun0PCbv5+xta2kUMFJyR8/oWnn7ddeKdosbAPbA==}
@@ -12387,6 +12401,11 @@ packages:
     peerDependencies:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
+
+  svelte-inspect-value@0.9.2:
+    resolution: {integrity: sha512-uGUYNuYCGwZmKBpEvMCHfl7pY5AXrCWdVVisLzmwB89ySn5i8hS784c2o2/wfTWRMcUmWg9fKbzkCLgBJtqfKQ==}
+    peerDependencies:
+      svelte: ^5.29.0
 
   svelte@5.39.3:
     resolution: {integrity: sha512-7Jwus6iXviGZAvhqbeYu3NNHA6LGyQ8EbmjdAhJUDade5rrW6g9VnBbRhUuYX4pMZLHozijsFolt88zvKPfsbQ==}
@@ -24961,6 +24980,8 @@ snapshots:
 
   highlight.js@10.7.3: {}
 
+  highlight.js@11.11.1: {}
+
   homedir-polyfill@1.0.3:
     dependencies:
       parse-passwd: 1.0.0
@@ -26364,6 +26385,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  many-keys-map@2.0.1: {}
+
   map-obj@1.0.1: {}
 
   map-obj@4.3.0: {}
@@ -26734,6 +26757,10 @@ snapshots:
       thingies: 2.5.0(tslib@2.8.1)
       tree-dump: 1.1.0(tslib@2.8.1)
       tslib: 2.8.1
+
+  memoize@10.1.0:
+    dependencies:
+      mimic-function: 5.0.1
 
   meow@7.1.1:
     dependencies:
@@ -30656,6 +30683,15 @@ snapshots:
       typescript: 5.5.4
     transitivePeerDependencies:
       - picomatch
+
+  svelte-inspect-value@0.9.2(svelte@5.39.3):
+    dependencies:
+      esm-env: 1.2.2
+      fast-deep-equal: 3.1.3
+      highlight.js: 11.11.1
+      many-keys-map: 2.0.1
+      memoize: 10.1.0
+      svelte: 5.39.3
 
   svelte@5.39.3:
     dependencies:

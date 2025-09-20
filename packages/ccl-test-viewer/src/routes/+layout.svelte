@@ -1,19 +1,19 @@
 <script lang="ts">
 import "../app.css";
 import { goto } from "$app/navigation";
-import { page } from "$app/stores";
-// import { Button } from "$lib/components/ui/index.js";
 import { Home, Search } from "lucide-svelte";
 import type { Snippet } from "svelte";
+import type { LayoutData } from "./$types";
 
 interface Props {
 	children: Snippet;
+	data: LayoutData;
 }
 
-let { children }: Props = $props();
+let { children, data }: Props = $props();
 
-// Navigation state
-const currentPath = $derived($page?.url?.pathname || "/");
+// Navigation state - using runes with data from load function
+const currentPath = $derived(data.currentPath);
 const isHomePage = $derived(currentPath === "/");
 const isBrowsePage = $derived(currentPath === "/browse");
 
@@ -26,7 +26,7 @@ function skipToMain() {
 	}
 }
 
-// Focus management for route changes
+// Focus management for route changes - using $effect for side effects in runes mode
 $effect(() => {
 	// Announce route changes to screen readers
 	const routeName = isHomePage

@@ -2,7 +2,6 @@
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
 import FilterSidebar from "$lib/components/FilterSidebar.svelte";
-import Icon from "$lib/components/Icon.svelte";
 import TestCard from "$lib/components/TestCard.svelte";
 import { Badge, Button } from "$lib/components/ui/index.js";
 import { appState, initializeApp } from "$lib/stores.svelte.js";
@@ -66,7 +65,11 @@ const showResults = $derived(!loading && appState.testStats);
 				onclick={() => appState.toggleSidebar()}
 				aria-label="Toggle filters"
 			>
-				<Icon icon={appState.sidebarOpen ? X : Menu} size={16} />
+				{#if appState.sidebarOpen}
+					<X size={16} />
+				{:else}
+					<Menu size={16} />
+				{/if}
 			</Button>
 		</div>
 
@@ -115,7 +118,7 @@ const showResults = $derived(!loading && appState.testStats);
 								onclick={() => appState.setViewMode("grid")}
 								aria-label="Grid view"
 							>
-								<Icon icon={Grid3x3} size={16} />
+								<Grid3x3 size={16} />
 							</Button>
 							<Button
 								variant={appState.viewMode === "list" ? "default" : "outline"}
@@ -123,7 +126,7 @@ const showResults = $derived(!loading && appState.testStats);
 								onclick={() => appState.setViewMode("list")}
 								aria-label="List view"
 							>
-								<Icon icon={CheckSquare} size={16} />
+								<CheckSquare size={16} />
 							</Button>
 						</div>
 					</div>
@@ -145,7 +148,7 @@ const showResults = $derived(!loading && appState.testStats);
 						<!-- No results state -->
 						<div class="flex flex-col items-center justify-center h-64 text-center">
 							<div class="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-								<Icon icon={CheckSquare} size={24} class="text-muted-foreground" />
+								<CheckSquare size={24} class="text-muted-foreground" />
 							</div>
 							<h3 class="text-lg font-semibold mb-2">No tests found</h3>
 							<p class="text-muted-foreground mb-4 max-w-md">
