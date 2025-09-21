@@ -16,7 +16,7 @@ let { children, data }: Props = $props();
 const currentPath = $derived(data.currentPath);
 const isHomePage = $derived(currentPath === "/");
 const isBrowsePage = $derived(currentPath === "/browse");
-const isUploadPage = $derived(currentPath === "/upload");
+const isDataPage = $derived(currentPath === "/data");
 
 // Skip link functionality
 function skipToMain() {
@@ -34,8 +34,8 @@ $effect(() => {
 		? "Dashboard"
 		: isBrowsePage
 			? "Browse Tests"
-			: isUploadPage
-				? "Upload Test Data"
+			: isDataPage
+				? "Data Management"
 				: "Test Detail";
 	// Update document title for accessibility
 	document.title = `${routeName} - CCL Test Suite Viewer`;
@@ -94,13 +94,13 @@ $effect(() => {
 						Browse Tests
 					</button>
 					<button
-						class={`px-3 py-2 rounded text-sm font-medium ${isUploadPage ? "bg-primary text-primary-foreground" : "border border-border"}`}
-						onclick={() => goto('/upload')}
-						aria-current={isUploadPage ? "page" : undefined}
-						aria-label="Upload JSON test data files"
+						class={`px-3 py-2 rounded text-sm font-medium ${isDataPage ? "bg-primary text-primary-foreground" : "border border-border"}`}
+						onclick={() => goto('/data')}
+						aria-current={isDataPage ? "page" : undefined}
+						aria-label="Manage test data from multiple sources"
 					>
 						<Upload size={16} class="mr-2 inline" />
-						Upload
+						Data
 					</button>
 				</nav>
 			</div>

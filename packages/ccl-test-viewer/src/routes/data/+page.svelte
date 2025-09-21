@@ -129,16 +129,16 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 </script>
 
 <svelte:head>
-	<title>Upload JSON Test Data - CCL Test Suite Viewer</title>
-	<meta name="description" content="Upload and process JSON test data files for CCL test suite visualization" />
+	<title>Data Management - CCL Test Suite Viewer</title>
+	<meta name="description" content="Manage and process test data from multiple sources for CCL test suite visualization" />
 </svelte:head>
 
 <div class="container mx-auto px-4 py-6 space-y-6">
 	<!-- Page Header -->
 	<div class="space-y-2">
-		<h1 class="text-3xl font-bold tracking-tight">Load Test Data</h1>
+		<h1 class="text-3xl font-bold tracking-tight">Data Management</h1>
 		<p class="text-muted-foreground">
-			Upload JSON test files or load data from GitHub repositories to dynamically visualize CCL test data.
+			Manage test data from multiple sources including file uploads and GitHub repositories.
 			This complements the static test data built into the application.
 		</p>
 	</div>
@@ -425,45 +425,4 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 		</Card>
 	{/if}
 
-	<!-- Getting Started Guide -->
-	{#if !hasImportedSources}
-		<Card>
-			<CardHeader>
-				<CardTitle>Getting Started</CardTitle>
-			</CardHeader>
-			<CardContent class="space-y-4">
-				<div class="space-y-3">
-					<div>
-						<h4 class="text-sm font-medium mb-1">Expected JSON Format</h4>
-						<p class="text-sm text-muted-foreground">
-							Upload JSON files containing arrays of test objects with the following structure:
-						</p>
-						<pre class="text-xs bg-muted p-3 rounded mt-2 overflow-x-auto"><code>{JSON.stringify([
-	{
-		name: "test-name",
-		input: "key=value",
-		validation: "function:parse",
-		expected: { count: 1, entries: [{ key: "key", value: "value" }] },
-		functions: ["parse"],
-		features: [],
-		behaviors: [],
-		variants: [],
-		source_test: "original-test.json"
-	}
-], null, 2)}</code></pre>
-					</div>
-
-					<div>
-						<h4 class="text-sm font-medium mb-1">Data Sources</h4>
-						<ul class="text-sm text-muted-foreground space-y-1">
-							<li>• <strong>File Upload:</strong> Upload JSON files directly from your computer</li>
-							<li>• <strong>GitHub URL:</strong> Load data from GitHub repositories, folders, or individual files</li>
-							<li>• <strong>Repository Browser:</strong> Browse popular repositories with CCL test data</li>
-							<li>• Examples: CCL test data repository, custom test suites, generated test data</li>
-						</ul>
-					</div>
-				</div>
-			</CardContent>
-		</Card>
-	{/if}
 </div>
