@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" %sveltekit.theme%>
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
@@ -42,19 +42,6 @@
 	<body data-sveltekit-preload-data="hover" class="bg-background text-foreground">
 		<div style="display: contents">%sveltekit.body%</div>
 
-		<!-- Service Worker Registration -->
-		<script>
-			if ('serviceWorker' in navigator) {
-				window.addEventListener('load', () => {
-					navigator.serviceWorker.register('/service-worker.js')
-						.then((registration) => {
-							console.log('SW registered: ', registration);
-						})
-						.catch((registrationError) => {
-							console.log('SW registration failed: ', registrationError);
-						});
-				});
-			}
-		</script>
+		<!-- Service Worker disabled for development -->
 	</body>
 </html>

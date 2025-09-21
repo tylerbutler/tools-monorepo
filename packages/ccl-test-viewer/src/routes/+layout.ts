@@ -7,6 +7,6 @@ export const load: LayoutLoad = ({ url, params }) => {
 	};
 };
 
-// Disable prerendering and SSR to avoid hydration issues
+// Disable prerendering but enable SSR for proper page rendering
 export const prerender = false;
-export const ssr = false;
+export const ssr = true;
