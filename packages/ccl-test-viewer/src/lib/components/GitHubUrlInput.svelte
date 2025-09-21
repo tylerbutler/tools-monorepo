@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/index.js';
-	import Input from '$lib/components/ui/input.svelte';
-	import Badge from '$lib/components/ui/badge.svelte';
+	import { Badge, Button, Input } from '$lib/components/ui/index.js';
 	import { LoaderCircle, Github, FileText, FolderOpen, AlertCircle, CheckCircle } from 'lucide-svelte';
 	import { githubLoader, type GitHubRepository, GitHubAPIError } from '$lib/services/githubLoader';
 

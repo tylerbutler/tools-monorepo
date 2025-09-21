@@ -1,11 +1,6 @@
 <script lang="ts">
 import { Upload, X, FileText, AlertCircle, CheckCircle2 } from "lucide-svelte";
-import { Button } from "$lib/components/ui/index.js";
-import Badge from "$lib/components/ui/badge.svelte";
-import Card from "$lib/components/ui/card.svelte";
-import CardContent from "$lib/components/ui/card-content.svelte";
-import CardHeader from "$lib/components/ui/card-header.svelte";
-import CardTitle from "$lib/components/ui/card-title.svelte";
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/index.js";
 
 interface UploadedFile {
 	file: File;

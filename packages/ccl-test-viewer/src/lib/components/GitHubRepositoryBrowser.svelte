@@ -1,11 +1,5 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/index.js';
-	import Card from '$lib/components/ui/card.svelte';
-	import CardContent from '$lib/components/ui/card-content.svelte';
-	import CardDescription from '$lib/components/ui/card-description.svelte';
-	import CardHeader from '$lib/components/ui/card-header.svelte';
-	import CardTitle from '$lib/components/ui/card-title.svelte';
-	import Badge from '$lib/components/ui/badge.svelte';
+	import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/index.js';
 	import {
 		Github,
 		FileText,

@@ -2,12 +2,7 @@
 import MultiFileUpload from "$lib/components/MultiFileUpload.svelte";
 import GitHubUrlInput from "$lib/components/GitHubUrlInput.svelte";
 import GitHubRepositoryBrowser from "$lib/components/GitHubRepositoryBrowser.svelte";
-import { Button } from "$lib/components/ui/index.js";
-import Badge from "$lib/components/ui/badge.svelte";
-import Card from "$lib/components/ui/card.svelte";
-import CardContent from "$lib/components/ui/card-content.svelte";
-import CardHeader from "$lib/components/ui/card-header.svelte";
-import CardTitle from "$lib/components/ui/card-title.svelte";
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/index.js";
 import { Upload, FileText, Database, Layers, ToggleLeft, ToggleRight, Trash2, Github, Download, RefreshCw } from "lucide-svelte";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 import type { DataSource } from "$lib/stores/dataSource.js";
