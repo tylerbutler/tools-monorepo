@@ -1,38 +1,38 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
-	import CheckIcon from "@lucide/svelte/icons/check";
+import { cn } from "$lib/utils.js";
+import CheckIcon from "@lucide/svelte/icons/check";
 
-	interface Props {
-		checked?: boolean;
-		onCheckedChange?: (checked: boolean) => void;
-		class?: string;
-		id?: string;
-		disabled?: boolean;
+interface Props {
+	checked?: boolean;
+	onCheckedChange?: (checked: boolean) => void;
+	class?: string;
+	id?: string;
+	disabled?: boolean;
+}
+
+let {
+	checked = $bindable(false),
+	onCheckedChange,
+	class: className,
+	id,
+	disabled = false,
+}: Props = $props();
+
+function handleClick() {
+	if (disabled) return;
+
+	checked = !checked;
+	onCheckedChange?.(checked);
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+	if (disabled) return;
+
+	if (event.key === " " || event.key === "Enter") {
+		event.preventDefault();
+		handleClick();
 	}
-
-	let {
-		checked = $bindable(false),
-		onCheckedChange,
-		class: className,
-		id,
-		disabled = false
-	}: Props = $props();
-
-	function handleClick() {
-		if (disabled) return;
-
-		checked = !checked;
-		onCheckedChange?.(checked);
-	}
-
-	function handleKeyDown(event: KeyboardEvent) {
-		if (disabled) return;
-
-		if (event.key === ' ' || event.key === 'Enter') {
-			event.preventDefault();
-			handleClick();
-		}
-	}
+}
 </script>
 
 <button

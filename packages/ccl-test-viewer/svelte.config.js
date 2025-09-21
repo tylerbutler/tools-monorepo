@@ -12,15 +12,15 @@ const config = {
 		// This eliminates SSR completely and prevents hydration issues
 		adapter: adapter({
 			// Output directory for static files
-			pages: 'build',
-			assets: 'build',
-			fallback: 'index.html', // SPA fallback for client-side routing
+			pages: "build",
+			assets: "build",
+			fallback: "index.html", // SPA fallback for client-side routing
 			precompress: false,
-			strict: true
+			strict: true,
 		}),
 		// Disable service worker completely
 		serviceWorker: {
-			register: false
+			register: false,
 		},
 	},
 };

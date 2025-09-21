@@ -4,8 +4,8 @@ import { goto } from "$app/navigation";
 import TestDetail from "$lib/components/TestDetail.svelte";
 import { Button } from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
-import { appState } from "$lib/stores.svelte.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import { appState } from "$lib/stores.svelte.js";
 import type { PageData } from "./$types";
 
 interface Props {
@@ -27,7 +27,8 @@ const testName = $derived(data.testName);
 $effect(() => {
 	if (!initialized && browser && testName) {
 		initialized = true;
-		dataSourceManager.initializeEmpty()
+		dataSourceManager
+			.initializeEmpty()
 			.then(() => {
 				// Find the test by name from available data sources
 				const foundTest = dataSourceManager.categories

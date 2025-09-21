@@ -4,7 +4,14 @@
 import type { CCLFunction } from "./types.js";
 
 export interface FunctionSpecificResult {
-	type: "entries" | "object" | "hierarchy" | "value" | "list" | "error" | "placeholder";
+	type:
+		| "entries"
+		| "object"
+		| "hierarchy"
+		| "value"
+		| "list"
+		| "error"
+		| "placeholder";
 	content: any;
 	language: string;
 	metadata: {

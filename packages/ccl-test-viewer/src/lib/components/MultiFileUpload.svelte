@@ -1,11 +1,18 @@
 <script lang="ts">
-import { Upload, X, FileText, AlertCircle, CheckCircle2 } from "lucide-svelte";
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/index.js";
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
+import { AlertCircle, CheckCircle2, FileText, Upload, X } from "lucide-svelte";
 
 interface UploadedFile {
 	file: File;
 	id: string;
-	status: 'pending' | 'processing' | 'success' | 'error';
+	status: "pending" | "processing" | "success" | "error";
 	error?: string;
 	preview?: string;
 }
@@ -16,7 +23,11 @@ interface Props {
 	maxSize?: number; // in bytes
 }
 
-let { onFilesUploaded, maxFiles = 10, maxSize = 10 * 1024 * 1024 }: Props = $props(); // 10MB default
+let {
+	onFilesUploaded,
+	maxFiles = 10,
+	maxSize = 10 * 1024 * 1024,
+}: Props = $props(); // 10MB default
 
 // File management state using Svelte 5 runes
 let uploadedFiles = $state<UploadedFile[]>([]);
@@ -27,8 +38,8 @@ let dropZone: HTMLElement;
 
 // File validation
 function validateFile(file: File): string | null {
-	if (!file.name.endsWith('.json')) {
-		return 'Only JSON files are allowed';
+	if (!file.name.endsWith(".json")) {
+		return "Only JSON files are allowed";
 	}
 	if (file.size > maxSize) {
 		return `File size must be less than ${(maxSize / (1024 * 1024)).toFixed(1)}MB`;
@@ -56,15 +67,15 @@ function handleFilesSelect(files: FileList | File[]) {
 			uploadedFiles.push({
 				file,
 				id: generateId(),
-				status: 'error',
-				error: validationError
+				status: "error",
+				error: validationError,
 			});
 		} else {
 			// Add as pending file
 			uploadedFiles.push({
 				file,
 				id: generateId(),
-				status: 'pending'
+				status: "pending",
 			});
 		}
 	}
@@ -84,26 +95,27 @@ function handleFileInputChange(event: Event) {
 // Handle drag and drop with neodrag integration
 function handleDragEnter(event: DragEvent) {
 	event.preventDefault();
-	if (event.dataTransfer?.types.includes('Files')) {
+	if (event.dataTransfer?.types.includes("Files")) {
 		isDragOver = true;
 	}
 }
 
 function handleDragOver(event: DragEvent) {
 	event.preventDefault();
-	event.dataTransfer!.dropEffect = 'copy';
+	event.dataTransfer!.dropEffect = "copy";
 }
 
 function handleDragLeave(event: DragEvent) {
 	event.preventDefault();
 	// Only set to false if we're leaving the actual drop zone
 	const rect = dropZone?.getBoundingClientRect();
-	if (rect && (
-		event.clientX < rect.left ||
-		event.clientX > rect.right ||
-		event.clientY < rect.top ||
-		event.clientY > rect.bottom
-	)) {
+	if (
+		rect &&
+		(event.clientX < rect.left ||
+			event.clientX > rect.right ||
+			event.clientY < rect.top ||
+			event.clientY > rect.bottom)
+	) {
 		isDragOver = false;
 	}
 }
@@ -128,10 +140,10 @@ async function processFiles() {
 
 	isProcessing = true;
 
-	const pendingFiles = uploadedFiles.filter(f => f.status === 'pending');
+	const pendingFiles = uploadedFiles.filter((f) => f.status === "pending");
 
 	for (const uploadedFile of pendingFiles) {
-		uploadedFile.status = 'processing';
+		uploadedFile.status = "processing";
 
 		try {
 			const text = await uploadedFile.file.text();
@@ -140,8 +152,8 @@ async function processFiles() {
 			// Basic validation - just check if it's valid JSON
 			// Detailed validation will be done by the dataSourceManager
 			if (!jsonData) {
-				uploadedFile.status = 'error';
-				uploadedFile.error = 'Invalid JSON content';
+				uploadedFile.status = "error";
+				uploadedFile.error = "Invalid JSON content";
 				continue;
 			}
 
@@ -154,18 +166,18 @@ async function processFiles() {
 				uploadedFile.preview = `JSON file: ${uploadedFile.file.name}`;
 			}
 
-			uploadedFile.status = 'success';
-
+			uploadedFile.status = "success";
 		} catch (error) {
-			uploadedFile.status = 'error';
-			uploadedFile.error = error instanceof Error ? error.message : 'Invalid JSON format';
+			uploadedFile.status = "error";
+			uploadedFile.error =
+				error instanceof Error ? error.message : "Invalid JSON format";
 		}
 	}
 
 	isProcessing = false;
 
 	// Notify parent component of successful uploads
-	const successfulFiles = uploadedFiles.filter(f => f.status === 'success');
+	const successfulFiles = uploadedFiles.filter((f) => f.status === "success");
 	if (successfulFiles.length > 0 && onFilesUploaded) {
 		onFilesUploaded(successfulFiles);
 	}
@@ -173,7 +185,7 @@ async function processFiles() {
 
 // Remove file from queue
 function removeFile(id: string) {
-	uploadedFiles = uploadedFiles.filter(f => f.id !== id);
+	uploadedFiles = uploadedFiles.filter((f) => f.id !== id);
 }
 
 // Clear all files
@@ -182,32 +194,40 @@ function clearAll() {
 }
 
 // Get status icon
-function getStatusIcon(status: UploadedFile['status']) {
+function getStatusIcon(status: UploadedFile["status"]) {
 	switch (status) {
-		case 'success': return CheckCircle2;
-		case 'error': return AlertCircle;
-		case 'processing': return Upload;
-		default: return FileText;
+		case "success":
+			return CheckCircle2;
+		case "error":
+			return AlertCircle;
+		case "processing":
+			return Upload;
+		default:
+			return FileText;
 	}
 }
 
 // Get status color
-function getStatusColor(status: UploadedFile['status']) {
+function getStatusColor(status: UploadedFile["status"]) {
 	switch (status) {
-		case 'success': return 'text-green-600';
-		case 'error': return 'text-red-600';
-		case 'processing': return 'text-blue-600';
-		default: return 'text-gray-600';
+		case "success":
+			return "text-green-600";
+		case "error":
+			return "text-red-600";
+		case "processing":
+			return "text-blue-600";
+		default:
+			return "text-gray-600";
 	}
 }
 
 // Format file size
 function formatFileSize(bytes: number): string {
-	if (bytes === 0) return '0 B';
+	if (bytes === 0) return "0 B";
 	const k = 1024;
-	const sizes = ['B', 'KB', 'MB', 'GB'];
+	const sizes = ["B", "KB", "MB", "GB"];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
 }
 </script>
 

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { writeFileSync, unlinkSync } from "fs";
-import { join } from "path";
+import { unlinkSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
+import { join } from "path";
 
 test.describe("Upload and Data Persistence - Core Functionality", () => {
 	// Simple test data that matches the CCL test format
@@ -14,15 +14,15 @@ test.describe("Upload and Data Persistence - Core Functionality", () => {
 				count: 2,
 				entries: [
 					{ key: "key", value: "value" },
-					{ key: "other", value: "data" }
-				]
+					{ key: "other", value: "data" },
+				],
 			},
 			functions: ["parse"],
 			features: [],
 			behaviors: [],
 			variants: [],
-			source_test: "test-upload.json"
-		}
+			source_test: "test-upload.json",
+		},
 	];
 
 	let testFilePath: string;
@@ -48,33 +48,50 @@ test.describe("Upload and Data Persistence - Core Functionality", () => {
 		}
 	});
 
-	test("core workflow: upload file and verify persistence across pages", async ({ page }) => {
+	test("core workflow: upload file and verify persistence across pages", async ({
+		page,
+	}) => {
 		// Step 1: Go to upload page
 		await page.goto("/upload");
-		await expect(page.getByRole("heading", { name: "Load Test Data" })).toBeVisible();
+		await expect(
+			page.getByRole("heading", { name: "Load Test Data" }),
+		).toBeVisible();
 
 		// Step 2: Upload the JSON file
-		await page.getByRole("button", { name: /upload json files by dragging/i }).click();
+		await page
+			.getByRole("button", { name: /upload json files by dragging/i })
+			.click();
 		await page.setInputFiles('input[type="file"]', testFilePath);
 
 		// Step 3: Wait for upload to complete and verify success
-		await expect(page.getByText("Uploaded Files (1)")).toBeVisible({ timeout: 10000 });
+		await expect(page.getByText("Uploaded Files (1)")).toBeVisible({
+			timeout: 10000,
+		});
 
 		// Look for the success badge specifically
-		const successBadge = page.locator('span').filter({ hasText: 'success' }).first();
+		const successBadge = page
+			.locator("span")
+			.filter({ hasText: "success" })
+			.first();
 		await expect(successBadge).toBeVisible();
 
 		// Step 4: Verify data summary appears
 		await expect(page.getByText("Combined Data Summary")).toBeVisible();
 
 		// Step 5: Navigate to Browse page
-		await page.getByRole("button", { name: /browse and filter test cases/i }).click();
+		await page
+			.getByRole("button", { name: /browse and filter test cases/i })
+			.click();
 
 		// Step 6: Wait for browse page to load and verify data persisted
-		await expect(page.getByRole("heading", { name: "Browse Tests" })).toBeVisible();
+		await expect(
+			page.getByRole("heading", { name: "Browse Tests" }),
+		).toBeVisible();
 
 		// Wait for data to load - check for the test case itself rather than just count
-		await expect(page.getByRole("button", { name: /view test case.*test-basic-parsing/i })).toBeVisible({ timeout: 10000 });
+		await expect(
+			page.getByRole("button", { name: /view test case.*test-basic-parsing/i }),
+		).toBeVisible({ timeout: 10000 });
 
 		// Step 7: Verify the uploaded data badge
 		await expect(page.getByText("Uploaded Data")).toBeVisible();
@@ -86,7 +103,9 @@ test.describe("Upload and Data Persistence - Core Functionality", () => {
 			await overlay.click();
 		}
 
-		await page.getByRole("button", { name: /upload json test data files/i }).click();
+		await page
+			.getByRole("button", { name: /upload json test data files/i })
+			.click();
 		await expect(page.getByText("Combined Data Summary")).toBeVisible();
 	});
 
@@ -97,16 +116,22 @@ test.describe("Upload and Data Persistence - Core Functionality", () => {
 
 		try {
 			await page.goto("/upload");
-			await page.getByRole("button", { name: /upload json files by dragging/i }).click();
+			await page
+				.getByRole("button", { name: /upload json files by dragging/i })
+				.click();
 			await page.setInputFiles('input[type="file"]', invalidFilePath);
 
 			// Should show error status
-			await expect(page.getByText("Uploaded Files (1)")).toBeVisible({ timeout: 10000 });
+			await expect(page.getByText("Uploaded Files (1)")).toBeVisible({
+				timeout: 10000,
+			});
 
 			// Look for error badge
-			const errorBadge = page.locator('span').filter({ hasText: 'error' }).first();
+			const errorBadge = page
+				.locator("span")
+				.filter({ hasText: "error" })
+				.first();
 			await expect(errorBadge).toBeVisible();
-
 		} finally {
 			// Clean up invalid file
 			try {
@@ -120,12 +145,18 @@ test.describe("Upload and Data Persistence - Core Functionality", () => {
 	test("clear data functionality works", async ({ page }) => {
 		// Upload data first
 		await page.goto("/upload");
-		await page.getByRole("button", { name: /upload json files by dragging/i }).click();
+		await page
+			.getByRole("button", { name: /upload json files by dragging/i })
+			.click();
 		await page.setInputFiles('input[type="file"]', testFilePath);
-		await expect(page.getByText("Combined Data Summary")).toBeVisible({ timeout: 10000 });
+		await expect(page.getByText("Combined Data Summary")).toBeVisible({
+			timeout: 10000,
+		});
 
 		// Clear all data
-		await page.getByRole("button", { name: /clear all imported data/i }).click();
+		await page
+			.getByRole("button", { name: /clear all imported data/i })
+			.click();
 
 		// Verify data is cleared
 		await expect(page.getByText("Combined Data Summary")).not.toBeVisible();

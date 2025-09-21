@@ -1,112 +1,125 @@
 <script lang="ts">
-	import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/index.js';
-	import {
-		Github,
-		FileText,
-		FolderOpen,
-		RefreshCw,
-		Clock,
-		AlertCircle,
-		CheckCircle,
-		ExternalLink,
-		Download
-	} from 'lucide-svelte';
-	import { dataSourceManager } from '$lib/stores/dataSourceManager.svelte.js';
-	import type { DataSource } from '$lib/stores/dataSource.js';
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
+import type { DataSource } from "$lib/stores/dataSource.js";
+import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import {
+	AlertCircle,
+	CheckCircle,
+	Clock,
+	Download,
+	ExternalLink,
+	FileText,
+	FolderOpen,
+	Github,
+	RefreshCw,
+} from "lucide-svelte";
 
-	interface Props {
-		onSourceAdded?: (source: DataSource) => void;
-	}
+interface Props {
+	onSourceAdded?: (source: DataSource) => void;
+}
 
-	let { onSourceAdded }: Props = $props();
+let { onSourceAdded }: Props = $props();
 
-	// State management
-	let activeTab = $state('browser');
-	let refreshing = $state(false);
+// State management
+let activeTab = $state("browser");
+let refreshing = $state(false);
 
-	// Get GitHub sources from data source manager
-	let githubSources = $derived(dataSourceManager.getSourcesByType('github'));
+// Get GitHub sources from data source manager
+let githubSources = $derived(dataSourceManager.getSourcesByType("github"));
 
-	// Popular repositories with CCL test data (examples for users)
-	const popularRepositories = [
-		{
-			url: 'https://github.com/tylerbutler/ccl-test-data',
-			name: 'CCL Test Data',
-			description: 'Official CCL test suite',
-			owner: 'tylerbutler',
-			repo: 'ccl-test-data',
-			estimatedFiles: 10
-		},
-		{
-			url: 'https://github.com/example/config-tests',
-			name: 'Example Config Tests',
-			description: 'Example configuration test cases',
-			owner: 'example',
-			repo: 'config-tests',
-			estimatedFiles: 5
+// Popular repositories with CCL test data (examples for users)
+const popularRepositories = [
+	{
+		url: "https://github.com/tylerbutler/ccl-test-data",
+		name: "CCL Test Data",
+		description: "Official CCL test suite",
+		owner: "tylerbutler",
+		repo: "ccl-test-data",
+		estimatedFiles: 10,
+	},
+	{
+		url: "https://github.com/example/config-tests",
+		name: "Example Config Tests",
+		description: "Example configuration test cases",
+		owner: "example",
+		repo: "config-tests",
+		estimatedFiles: 5,
+	},
+];
+
+// Refresh GitHub sources (re-fetch from GitHub)
+async function refreshGitHubSource(source: DataSource) {
+	if (!source.url) return;
+
+	refreshing = true;
+	try {
+		// Re-import from the same URL
+		const { githubLoader } = await import("$lib/services/githubLoader");
+		const repositoryData = await githubLoader.loadRepositoryData(source.url);
+
+		// Remove old source and add updated one
+		dataSourceManager.removeSource(source.id);
+		const result =
+			await dataSourceManager.processGitHubRepository(repositoryData);
+
+		if (result.success && result.dataSource) {
+			onSourceAdded?.(result.dataSource);
 		}
-	];
+	} catch (error) {
+		console.error("Failed to refresh GitHub source:", error);
+	} finally {
+		refreshing = false;
+	}
+}
 
-	// Refresh GitHub sources (re-fetch from GitHub)
-	async function refreshGitHubSource(source: DataSource) {
-		if (!source.url) return;
+// Load popular repository
+async function loadPopularRepository(repo: (typeof popularRepositories)[0]) {
+	try {
+		const { githubLoader } = await import("$lib/services/githubLoader");
+		const repositoryData = await githubLoader.loadRepositoryData(repo.url);
+		const result =
+			await dataSourceManager.processGitHubRepository(repositoryData);
 
-		refreshing = true;
-		try {
-			// Re-import from the same URL
-			const { githubLoader } = await import('$lib/services/githubLoader');
-			const repositoryData = await githubLoader.loadRepositoryData(source.url);
-
-			// Remove old source and add updated one
-			dataSourceManager.removeSource(source.id);
-			const result = await dataSourceManager.processGitHubRepository(repositoryData);
-
-			if (result.success && result.dataSource) {
-				onSourceAdded?.(result.dataSource);
-			}
-		} catch (error) {
-			console.error('Failed to refresh GitHub source:', error);
-		} finally {
-			refreshing = false;
+		if (result.success && result.dataSource) {
+			onSourceAdded?.(result.dataSource);
+			// Switch to loaded sources tab
+			activeTab = "loaded";
 		}
+	} catch (error) {
+		console.error("Failed to load popular repository:", error);
 	}
+}
 
-	// Load popular repository
-	async function loadPopularRepository(repo: typeof popularRepositories[0]) {
-		try {
-			const { githubLoader } = await import('$lib/services/githubLoader');
-			const repositoryData = await githubLoader.loadRepositoryData(repo.url);
-			const result = await dataSourceManager.processGitHubRepository(repositoryData);
+// Format date for display
+function formatDate(date: Date): string {
+	return new Intl.DateTimeFormat("en-US", {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+	}).format(date);
+}
 
-			if (result.success && result.dataSource) {
-				onSourceAdded?.(result.dataSource);
-				// Switch to loaded sources tab
-				activeTab = 'loaded';
-			}
-		} catch (error) {
-			console.error('Failed to load popular repository:', error);
-		}
+// Format repository metadata
+function getRepositoryDisplayName(source: DataSource): string {
+	if (source.metadata?.githubRepo) {
+		const branch =
+			source.metadata.githubBranch !== "main"
+				? `@${source.metadata.githubBranch}`
+				: "";
+		return `${source.metadata.githubRepo}${branch}`;
 	}
-
-	// Format date for display
-	function formatDate(date: Date): string {
-		return new Intl.DateTimeFormat('en-US', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		}).format(date);
-	}
-
-	// Format repository metadata
-	function getRepositoryDisplayName(source: DataSource): string {
-		if (source.metadata?.githubRepo) {
-			const branch = source.metadata.githubBranch !== 'main' ? `@${source.metadata.githubBranch}` : '';
-			return `${source.metadata.githubRepo}${branch}`;
-		}
-		return source.name;
-	}
+	return source.name;
+}
 </script>
 
 <div class="space-y-6">

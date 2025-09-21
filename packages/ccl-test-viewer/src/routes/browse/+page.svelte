@@ -4,9 +4,9 @@ import { goto } from "$app/navigation";
 import FilterSidebar from "$lib/components/FilterSidebar.svelte";
 import TestCard from "$lib/components/TestCard.svelte";
 import { Badge, Button } from "$lib/components/ui/index.js";
-import { appState, initializeApp } from "$lib/stores.svelte.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
-import { CheckSquare, Grid3x3, Menu, X, Database, Layers } from "lucide-svelte";
+import { appState, initializeApp } from "$lib/stores.svelte.js";
+import { CheckSquare, Database, Grid3x3, Layers, Menu, X } from "lucide-svelte";
 
 // Debug: Check if script is executing at all
 console.log("🟦 Browse page script executed at module level");
@@ -18,10 +18,20 @@ let initialized = $state(false); // Track if we've already initialized
 
 // Use $effect for Svelte 5 runes compatibility - runs when browser is available
 $effect(() => {
-	console.log("🟦 $effect called - browser:", browser, "initialized:", initialized);
+	console.log(
+		"🟦 $effect called - browser:",
+		browser,
+		"initialized:",
+		initialized,
+	);
 
 	if (!browser || initialized) {
-		console.log("🟦 Skipping initialization - browser:", browser, "initialized:", initialized);
+		console.log(
+			"🟦 Skipping initialization - browser:",
+			browser,
+			"initialized:",
+			initialized,
+		);
 		return;
 	}
 
@@ -38,14 +48,21 @@ $effect(() => {
 			await dataSourceManager.initializeEmpty();
 
 			// Sync dataSourceManager data with appState for filtering/display
-			appState.updateData(dataSourceManager.categories, dataSourceManager.stats);
+			appState.updateData(
+				dataSourceManager.categories,
+				dataSourceManager.stats,
+			);
 
 			console.log("🟦 Browse page initialized successfully (upload-only mode)");
-			console.log("🟦 Data synced to appState:", dataSourceManager.categories.length, "categories");
+			console.log(
+				"🟦 Data synced to appState:",
+				dataSourceManager.categories.length,
+				"categories",
+			);
 			loading = false;
 		} catch (err) {
 			console.error("🟦 Browse page initialization error:", err);
-			error = err instanceof Error ? err.message : 'Failed to initialize';
+			error = err instanceof Error ? err.message : "Failed to initialize";
 			loading = false;
 			initialized = false; // Reset on error to allow retry
 		}
@@ -66,11 +83,15 @@ function toggleViewMode() {
 const sourceSummaries = $derived(dataSourceManager.sourceSummaries);
 const mergedStats = $derived(dataSourceManager.mergedStats);
 const hasMultipleSources = $derived(dataSourceManager.hasMultipleSources);
-const hasUploadedSources = $derived(dataSourceManager.getSourcesByType('uploaded').length > 0);
+const hasUploadedSources = $derived(
+	dataSourceManager.getSourcesByType("uploaded").length > 0,
+);
 
 // Derived states for the UI
 const hasTests = $derived(appState.filteredTests.length > 0);
-const showResults = $derived(!loading && !error && (appState.testStats || dataSourceManager.isReady));
+const showResults = $derived(
+	!loading && !error && (appState.testStats || dataSourceManager.isReady),
+);
 </script>
 
 <svelte:head>

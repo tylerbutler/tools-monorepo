@@ -10,26 +10,38 @@ test.describe("CCL Test Viewer App", () => {
 		).toBeVisible();
 
 		// Check for navigation links using specific aria-labels
-		await expect(page.getByRole("button", { name: "Go to dashboard homepage" })).toBeVisible();
-		await expect(page.getByRole("button", { name: "Browse and filter test cases" })).toBeVisible();
+		await expect(
+			page.getByRole("button", { name: "Go to dashboard homepage" }),
+		).toBeVisible();
+		await expect(
+			page.getByRole("button", { name: "Browse and filter test cases" }),
+		).toBeVisible();
 	});
 
 	test("navigation works correctly", async ({ page }, testInfo) => {
 		// TODO: Mobile browsers have overlay interference issues that prevent clean navigation testing
 		// The mobile sidebar overlay blocks navigation clicks even with force clicks and escape key handling
 		// This needs investigation for proper mobile testing approach
-		test.skip(testInfo.project.name === "Mobile Chrome" || testInfo.project.name === "Mobile Safari", "Mobile browser overlay interference - needs investigation");
+		test.skip(
+			testInfo.project.name === "Mobile Chrome" ||
+				testInfo.project.name === "Mobile Safari",
+			"Mobile browser overlay interference - needs investigation",
+		);
 
 		await page.goto("/");
 
 		// Navigate to browse page using specific aria-label
-		await page.getByRole("button", { name: "Browse and filter test cases" }).click();
+		await page
+			.getByRole("button", { name: "Browse and filter test cases" })
+			.click();
 		await expect(
 			page.getByRole("heading", { name: "Browse Tests" }),
 		).toBeVisible();
 
 		// Close any open sidebar overlay that might interfere with navigation
-		const closeFiltersButton = page.getByRole("button", { name: "Close filters" });
+		const closeFiltersButton = page.getByRole("button", {
+			name: "Close filters",
+		});
 		if (await closeFiltersButton.isVisible()) {
 			// Use Escape key to close modal overlay
 			await page.keyboard.press("Escape");
@@ -38,7 +50,9 @@ test.describe("CCL Test Viewer App", () => {
 		}
 
 		// Navigate back to home using specific aria-label (force click to bypass overlay issues)
-		await page.getByRole("button", { name: "Go to dashboard homepage" }).click({ force: true });
+		await page
+			.getByRole("button", { name: "Go to dashboard homepage" })
+			.click({ force: true });
 
 		// Verify navigation worked by checking URL
 		await expect(page).toHaveURL("/");

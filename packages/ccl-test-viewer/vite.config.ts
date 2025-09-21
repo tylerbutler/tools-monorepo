@@ -1,8 +1,8 @@
 import { sveltekit } from "@sveltejs/kit/vite";
+import tailwindcss from "@tailwindcss/vite";
 import Sonda from "sonda/vite";
 import { defineConfig } from "vite";
 import devtoolsJson from "vite-plugin-devtools-json";
-import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
 	plugins: [
@@ -26,7 +26,7 @@ export default defineConfig({
 		// Faster builds with parallel workers
 		rollupOptions: {
 			// Let Vite handle chunk optimization automatically
-		}
+		},
 	},
 	// Development optimizations
 	server: {
@@ -40,12 +40,8 @@ export default defineConfig({
 	css: { devSourcemap: false },
 	// Enhanced pre-bundling for faster builds
 	optimizeDeps: {
-		include: [
-			"clsx",
-			"tailwind-merge",
-			"tailwind-variants"
-		],
+		include: ["clsx", "tailwind-merge", "tailwind-variants"],
 		// Force pre-bundling rebuild
-		force: false
+		force: false,
 	},
 });

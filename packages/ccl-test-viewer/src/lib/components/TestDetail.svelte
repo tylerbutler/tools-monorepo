@@ -25,7 +25,6 @@ interface Props {
 
 let { test, onBack }: Props = $props();
 
-
 // Copy functionality
 async function copyToClipboard(text: string, type: string) {
 	try {
@@ -143,7 +142,6 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 			};
 	}
 });
-
 </script>
 
 <div class="space-y-6">

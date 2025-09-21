@@ -1,17 +1,17 @@
-import type { PageLoad } from './$types';
+import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async () => {
 	// Server-side data loading for SSR compatibility
-	if (typeof window === 'undefined') {
+	if (typeof window === "undefined") {
 		// SSR - return minimal data that components can handle
 		return {
-			ssrMode: true
+			ssrMode: true,
 		};
 	}
 
 	// Client-side - return empty data, components will load via effects
 	return {
-		ssrMode: false
+		ssrMode: false,
 	};
 };
 

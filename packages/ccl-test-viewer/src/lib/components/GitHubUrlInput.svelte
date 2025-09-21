@@ -1,101 +1,124 @@
 <script lang="ts">
-	import { Badge, Button, Input } from '$lib/components/ui/index.js';
-	import { LoaderCircle, Github, FileText, FolderOpen, AlertCircle, CheckCircle } from 'lucide-svelte';
-	import { githubLoader, type GitHubRepository, GitHubAPIError } from '$lib/services/githubLoader';
+import { Badge, Button, Input } from "$lib/components/ui/index.js";
+import {
+	GitHubAPIError,
+	type GitHubRepository,
+	githubLoader,
+} from "$lib/services/githubLoader";
+import {
+	AlertCircle,
+	CheckCircle,
+	FileText,
+	FolderOpen,
+	Github,
+	LoaderCircle,
+} from "lucide-svelte";
 
-	interface Props {
-		onLoad?: (data: { files: { name: string; content: any; url: string }[]; repository: GitHubRepository; metadata: any }) => void;
-		disabled?: boolean;
-	}
+interface Props {
+	onLoad?: (data: {
+		files: { name: string; content: any; url: string }[];
+		repository: GitHubRepository;
+		metadata: any;
+	}) => void;
+	disabled?: boolean;
+}
 
-	let { onLoad, disabled = false }: Props = $props();
+let { onLoad, disabled = false }: Props = $props();
 
-	// Component state
-	let url = $state('');
-	let isLoading = $state(false);
-	let error = $state<string | null>(null);
-	let validationResult = $state<{ valid: boolean; error?: string; repository?: GitHubRepository } | null>(null);
-	let repositoryInfo = $state<{ repository: GitHubRepository; fileCount: number; files: any[] } | null>(null);
-	let successMessage = $state<string | null>(null);
+// Component state
+let url = $state("");
+let isLoading = $state(false);
+let error = $state<string | null>(null);
+let validationResult = $state<{
+	valid: boolean;
+	error?: string;
+	repository?: GitHubRepository;
+} | null>(null);
+let repositoryInfo = $state<{
+	repository: GitHubRepository;
+	fileCount: number;
+	files: any[];
+} | null>(null);
+let successMessage = $state<string | null>(null);
 
-	// URL validation - runs on every change
-	let urlValidation = $derived(() => {
-		if (!url.trim()) return null;
-		return githubLoader.validateGitHubUrl(url);
-	});
+// URL validation - runs on every change
+let urlValidation = $derived(() => {
+	if (!url.trim()) return null;
+	return githubLoader.validateGitHubUrl(url);
+});
 
-	// Reset states when URL changes
-	$effect(() => {
-		url; // Track URL changes
-		error = null;
-		repositoryInfo = null;
-		successMessage = null;
-	});
+// Reset states when URL changes
+$effect(() => {
+	url; // Track URL changes
+	error = null;
+	repositoryInfo = null;
+	successMessage = null;
+});
 
-	// Preview repository info
-	async function previewRepository() {
-		if (!urlValidation()?.valid) return;
+// Preview repository info
+async function previewRepository() {
+	if (!urlValidation()?.valid) return;
 
-		isLoading = true;
-		error = null;
-		repositoryInfo = null;
+	isLoading = true;
+	error = null;
+	repositoryInfo = null;
 
-		try {
-			const info = await githubLoader.getRepositoryInfo(url);
-			repositoryInfo = info;
-		} catch (err) {
-			if (err instanceof GitHubAPIError) {
-				error = err.message;
-			} else {
-				error = 'Failed to load repository information';
-			}
-		} finally {
-			isLoading = false;
+	try {
+		const info = await githubLoader.getRepositoryInfo(url);
+		repositoryInfo = info;
+	} catch (err) {
+		if (err instanceof GitHubAPIError) {
+			error = err.message;
+		} else {
+			error = "Failed to load repository information";
 		}
+	} finally {
+		isLoading = false;
 	}
+}
 
-	// Load repository data
-	async function loadRepository() {
-		if (!urlValidation()?.valid || !repositoryInfo) return;
+// Load repository data
+async function loadRepository() {
+	if (!urlValidation()?.valid || !repositoryInfo) return;
 
-		isLoading = true;
-		error = null;
-		successMessage = null;
+	isLoading = true;
+	error = null;
+	successMessage = null;
 
-		try {
-			const result = await githubLoader.loadRepositoryData(url);
+	try {
+		const result = await githubLoader.loadRepositoryData(url);
 
-			if (result.files.length === 0) {
-				error = 'No JSON files found in the repository path';
-				return;
-			}
-
-			successMessage = `Successfully loaded ${result.files.length} JSON files from ${repositoryInfo.repository.owner}/${repositoryInfo.repository.repo}`;
-
-			// Call the callback with loaded data
-			onLoad?.(result);
-
-			// Reset form
-			url = '';
-			repositoryInfo = null;
-		} catch (err) {
-			if (err instanceof GitHubAPIError) {
-				error = err.message;
-			} else {
-				error = 'Failed to load repository data';
-			}
-		} finally {
-			isLoading = false;
+		if (result.files.length === 0) {
+			error = "No JSON files found in the repository path";
+			return;
 		}
-	}
 
-	// Example URLs for user guidance
-	const exampleUrls = [
-		'https://github.com/owner/repo/tree/main/tests',
-		'https://github.com/owner/repo/tree/main/data/tests.json',
-		'https://api.github.com/repos/owner/repo/contents/tests',
-		'https://raw.githubusercontent.com/owner/repo/main/tests/file.json'
-	];
+		successMessage = `Successfully loaded ${result.files.length} JSON files from ${repositoryInfo.repository.owner}/${repositoryInfo.repository.repo}`;
+
+		// Call the callback with loaded data
+		onLoad?.(result);
+
+		// Reset form
+		url = "";
+		repositoryInfo = null;
+	} catch (err) {
+		if (err instanceof GitHubAPIError) {
+			error = err.message;
+		} else {
+			error = "Failed to load repository data";
+		}
+	} finally {
+		isLoading = false;
+	}
+}
+
+// Example URLs for user guidance
+const exampleUrls = [
+	"https://github.com/owner/repo/tree/main/tests",
+	"https://github.com/owner/repo/tree/main/data/tests.json",
+	"https://api.github.com/repos/owner/repo/contents/tests",
+	"https://raw.githubusercontent.com/owner/repo/main/tests/file.json",
+];
 </script>
 
 <div class="space-y-4">

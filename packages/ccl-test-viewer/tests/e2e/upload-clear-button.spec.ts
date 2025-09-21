@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
-import { writeFileSync, unlinkSync } from "fs";
-import { join } from "path";
+import { unlinkSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
+import { join } from "path";
 
 test.describe("Upload UI - Clear All Button Functionality", () => {
 	// Test data that matches the CCL test format
@@ -14,15 +14,15 @@ test.describe("Upload UI - Clear All Button Functionality", () => {
 				count: 2,
 				entries: [
 					{ key: "key1", value: "value1" },
-					{ key: "other1", value: "data1" }
-				]
+					{ key: "other1", value: "data1" },
+				],
 			},
 			functions: ["parse"],
 			features: [],
 			behaviors: [],
 			variants: [],
-			source_test: "test-file-1.json"
-		}
+			source_test: "test-file-1.json",
+		},
 	];
 
 	const testData2 = [
@@ -34,15 +34,15 @@ test.describe("Upload UI - Clear All Button Functionality", () => {
 				count: 2,
 				entries: [
 					{ key: "key2", value: "value2" },
-					{ key: "other2", value: "data2" }
-				]
+					{ key: "other2", value: "data2" },
+				],
 			},
 			functions: ["parse"],
 			features: [],
 			behaviors: [],
 			variants: [],
-			source_test: "test-file-2.json"
-		}
+			source_test: "test-file-2.json",
+		},
 	];
 
 	let testFile1Path: string;
@@ -77,42 +77,76 @@ test.describe("Upload UI - Clear All Button Functionality", () => {
 		}
 	});
 
-	test("clear all button removes all uploaded files from the queue", async ({ page }) => {
+	test("clear all button removes all uploaded files from the queue", async ({
+		page,
+	}) => {
 		// Step 1: Upload multiple files
-		await page.getByRole("button", { name: /upload json files by dragging/i }).click();
-		await page.setInputFiles('input[type="file"]', [testFile1Path, testFile2Path]);
+		await page
+			.getByRole("button", { name: /upload json files by dragging/i })
+			.click();
+		await page.setInputFiles('input[type="file"]', [
+			testFile1Path,
+			testFile2Path,
+		]);
 
 		// Step 2: Wait for both files to be uploaded and processed
-		await expect(page.getByText("Uploaded Files (2)")).toBeVisible({ timeout: 10000 });
+		await expect(page.getByText("Uploaded Files (2)")).toBeVisible({
+			timeout: 10000,
+		});
 
 		// Verify both files are listed (use more specific selectors to avoid collisions)
-		await expect(page.locator('p.text-sm.font-medium.truncate').filter({ hasText: testFile1Path.split('/').pop() || 'test-clear-1' })).toBeVisible();
-		await expect(page.locator('p.text-sm.font-medium.truncate').filter({ hasText: testFile2Path.split('/').pop() || 'test-clear-2' })).toBeVisible();
+		await expect(
+			page
+				.locator("p.text-sm.font-medium.truncate")
+				.filter({ hasText: testFile1Path.split("/").pop() || "test-clear-1" }),
+		).toBeVisible();
+		await expect(
+			page
+				.locator("p.text-sm.font-medium.truncate")
+				.filter({ hasText: testFile2Path.split("/").pop() || "test-clear-2" }),
+		).toBeVisible();
 
 		// Step 3: Click the "Clear All" button in the upload UI
 		await page.getByTestId("upload-clear-all-button").click();
 
 		// Step 4: Verify all files are removed from the upload queue
 		await expect(page.getByText("Uploaded Files")).not.toBeVisible();
-		await expect(page.locator('p.text-sm.font-medium.truncate').filter({ hasText: testFile1Path.split('/').pop() || 'test-clear-1' })).not.toBeVisible();
-		await expect(page.locator('p.text-sm.font-medium.truncate').filter({ hasText: testFile2Path.split('/').pop() || 'test-clear-2' })).not.toBeVisible();
+		await expect(
+			page
+				.locator("p.text-sm.font-medium.truncate")
+				.filter({ hasText: testFile1Path.split("/").pop() || "test-clear-1" }),
+		).not.toBeVisible();
+		await expect(
+			page
+				.locator("p.text-sm.font-medium.truncate")
+				.filter({ hasText: testFile2Path.split("/").pop() || "test-clear-2" }),
+		).not.toBeVisible();
 
 		// Step 5: Verify the upload UI is back to initial state
 		await expect(page.getByText("Drag & drop JSON test files")).toBeVisible();
 		await expect(page.getByText("or click to browse files")).toBeVisible();
 	});
 
-	test("clear all button works with mixed success and error files", async ({ page }) => {
+	test("clear all button works with mixed success and error files", async ({
+		page,
+	}) => {
 		// Step 1: Upload one valid and one invalid file
-		await page.getByRole("button", { name: /upload json files by dragging/i }).click();
-		await page.setInputFiles('input[type="file"]', [testFile1Path, invalidFilePath]);
+		await page
+			.getByRole("button", { name: /upload json files by dragging/i })
+			.click();
+		await page.setInputFiles('input[type="file"]', [
+			testFile1Path,
+			invalidFilePath,
+		]);
 
 		// Step 2: Wait for files to be processed
-		await expect(page.getByText("Uploaded Files (2)")).toBeVisible({ timeout: 10000 });
+		await expect(page.getByText("Uploaded Files (2)")).toBeVisible({
+			timeout: 10000,
+		});
 
 		// Step 3: Verify we have one success and one error
-		const successBadge = page.locator('span').filter({ hasText: 'success' });
-		const errorBadge = page.locator('span').filter({ hasText: 'error' });
+		const successBadge = page.locator("span").filter({ hasText: "success" });
+		const errorBadge = page.locator("span").filter({ hasText: "error" });
 		await expect(successBadge).toBeVisible();
 		await expect(errorBadge).toBeVisible();
 
@@ -125,16 +159,22 @@ test.describe("Upload UI - Clear All Button Functionality", () => {
 		await expect(errorBadge).not.toBeVisible();
 	});
 
-	test("clear all button appears only when files are uploaded", async ({ page }) => {
+	test("clear all button appears only when files are uploaded", async ({
+		page,
+	}) => {
 		// Step 1: Initially, Clear All button should not be visible
 		await expect(page.getByTestId("upload-clear-all-button")).not.toBeVisible();
 
 		// Step 2: Upload a file
-		await page.getByRole("button", { name: /upload json files by dragging/i }).click();
+		await page
+			.getByRole("button", { name: /upload json files by dragging/i })
+			.click();
 		await page.setInputFiles('input[type="file"]', testFile1Path);
 
 		// Step 3: Wait for file to be uploaded
-		await expect(page.getByText("Uploaded Files (1)")).toBeVisible({ timeout: 10000 });
+		await expect(page.getByText("Uploaded Files (1)")).toBeVisible({
+			timeout: 10000,
+		});
 
 		// Step 4: Now Clear All button should be visible
 		await expect(page.getByTestId("upload-clear-all-button")).toBeVisible();
@@ -148,15 +188,26 @@ test.describe("Upload UI - Clear All Button Functionality", () => {
 
 	test("clear all button works after multiple operations", async ({ page }) => {
 		// Step 1: Upload files and clear them
-		await page.getByRole("button", { name: /upload json files by dragging/i }).click();
-		await page.setInputFiles('input[type="file"]', [testFile1Path, testFile2Path]);
-		await expect(page.getByText("Uploaded Files (2)")).toBeVisible({ timeout: 10000 });
+		await page
+			.getByRole("button", { name: /upload json files by dragging/i })
+			.click();
+		await page.setInputFiles('input[type="file"]', [
+			testFile1Path,
+			testFile2Path,
+		]);
+		await expect(page.getByText("Uploaded Files (2)")).toBeVisible({
+			timeout: 10000,
+		});
 		await page.getByTestId("upload-clear-all-button").click();
 
 		// Step 2: Upload files again
-		await page.getByRole("button", { name: /upload json files by dragging/i }).click();
+		await page
+			.getByRole("button", { name: /upload json files by dragging/i })
+			.click();
 		await page.setInputFiles('input[type="file"]', [testFile1Path]);
-		await expect(page.getByText("Uploaded Files (1)")).toBeVisible({ timeout: 10000 });
+		await expect(page.getByText("Uploaded Files (1)")).toBeVisible({
+			timeout: 10000,
+		});
 
 		// Step 3: Clear All should still work after previous operations
 		await page.getByTestId("upload-clear-all-button").click();
@@ -166,11 +217,17 @@ test.describe("Upload UI - Clear All Button Functionality", () => {
 		await expect(page.getByText("Drag & drop JSON test files")).toBeVisible();
 	});
 
-	test("clear all button does not affect data persistence in other parts of app", async ({ page }) => {
+	test("clear all button does not affect data persistence in other parts of app", async ({
+		page,
+	}) => {
 		// Step 1: Upload and process a file to create persistent data
-		await page.getByRole("button", { name: /upload json files by dragging/i }).click();
+		await page
+			.getByRole("button", { name: /upload json files by dragging/i })
+			.click();
 		await page.setInputFiles('input[type="file"]', testFile1Path);
-		await expect(page.getByText("Combined Data Summary")).toBeVisible({ timeout: 10000 });
+		await expect(page.getByText("Combined Data Summary")).toBeVisible({
+			timeout: 10000,
+		});
 
 		// Step 2: Clear the upload queue
 		await page.getByTestId("upload-clear-all-button").click();
@@ -180,8 +237,12 @@ test.describe("Upload UI - Clear All Button Functionality", () => {
 		await expect(page.getByText("Combined Data Summary")).toBeVisible();
 
 		// Step 4: Navigate to browse page to verify data persistence
-		await page.getByRole("button", { name: /browse and filter test cases/i }).click();
-		await expect(page.getByRole("heading", { name: "Browse Tests" })).toBeVisible();
+		await page
+			.getByRole("button", { name: /browse and filter test cases/i })
+			.click();
+		await expect(
+			page.getByRole("heading", { name: "Browse Tests" }),
+		).toBeVisible();
 		await expect(page.getByText("Uploaded Data")).toBeVisible();
 	});
 });

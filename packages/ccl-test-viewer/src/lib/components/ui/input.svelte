@@ -13,7 +13,12 @@ interface Props
 	oninput?: (event: Event) => void;
 }
 
-let { class: className, type = "text", value = $bindable(), ...restProps }: Props = $props();
+let {
+	class: className,
+	type = "text",
+	value = $bindable(),
+	...restProps
+}: Props = $props();
 </script>
 
 <input

@@ -20,8 +20,16 @@ function visualizeWhitespace(s: string): string {
 		); // LF
 }
 
-const displayKey = $derived(entry.key ? visualizeWhitespace(entry.key) : '<span class="empty-placeholder">(empty)</span>');
-const displayValue = $derived(entry.value ? visualizeWhitespace(entry.value) : '<span class="empty-placeholder">(empty)</span>');
+const displayKey = $derived(
+	entry.key
+		? visualizeWhitespace(entry.key)
+		: '<span class="empty-placeholder">(empty)</span>',
+);
+const displayValue = $derived(
+	entry.value
+		? visualizeWhitespace(entry.value)
+		: '<span class="empty-placeholder">(empty)</span>',
+);
 </script>
 
 <div class="entry-display font-mono">

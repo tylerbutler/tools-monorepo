@@ -183,7 +183,13 @@ class AppState {
 		this.testCategories = categories;
 		this.testStats = stats;
 		// Note: searchIndex is not updated as it's not critical for basic functionality
-		console.log("AppState updated with", categories.length, "categories and", stats?.totalTests || 0, "tests");
+		console.log(
+			"AppState updated with",
+			categories.length,
+			"categories and",
+			stats?.totalTests || 0,
+			"tests",
+		);
 	}
 }
 

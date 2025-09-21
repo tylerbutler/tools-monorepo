@@ -1,17 +1,35 @@
 <script lang="ts">
-import MultiFileUpload from "$lib/components/MultiFileUpload.svelte";
-import GitHubUrlInput from "$lib/components/GitHubUrlInput.svelte";
 import GitHubRepositoryBrowser from "$lib/components/GitHubRepositoryBrowser.svelte";
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/index.js";
-import { Upload, FileText, Database, Layers, ToggleLeft, ToggleRight, Trash2, Github, Download, RefreshCw } from "lucide-svelte";
-import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import GitHubUrlInput from "$lib/components/GitHubUrlInput.svelte";
+import MultiFileUpload from "$lib/components/MultiFileUpload.svelte";
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
 import type { DataSource } from "$lib/stores/dataSource.js";
+import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import {
+	Database,
+	Download,
+	FileText,
+	Github,
+	Layers,
+	RefreshCw,
+	ToggleLeft,
+	ToggleRight,
+	Trash2,
+	Upload,
+} from "lucide-svelte";
 import { onMount } from "svelte";
 
 interface UploadedFile {
 	file: File;
 	id: string;
-	status: 'pending' | 'processing' | 'success' | 'error';
+	status: "pending" | "processing" | "success" | "error";
 	error?: string;
 	preview?: string;
 }
@@ -23,14 +41,14 @@ onMount(async () => {
 
 // Handle successful file uploads - now using data source manager
 async function handleFilesUploaded(files: UploadedFile[]) {
-	const successfulFiles = files.filter(f => f.status === 'success');
+	const successfulFiles = files.filter((f) => f.status === "success");
 
 	if (successfulFiles.length > 0) {
-		const fileObjects = successfulFiles.map(f => f.file);
+		const fileObjects = successfulFiles.map((f) => f.file);
 		const results = await dataSourceManager.processUploadedFiles(fileObjects);
 
 		// Log results for debugging
-		console.log('File processing results:', results);
+		console.log("File processing results:", results);
 	}
 }
 
@@ -55,17 +73,18 @@ async function handleGitHubRepositoryLoad(repositoryData: {
 	repository: { owner: string; repo: string; branch?: string; path?: string };
 	metadata: any;
 }) {
-	const result = await dataSourceManager.processGitHubRepository(repositoryData);
-	console.log('GitHub repository processing result:', result);
+	const result =
+		await dataSourceManager.processGitHubRepository(repositoryData);
+	console.log("GitHub repository processing result:", result);
 }
 
 // Handle source added from GitHub browser
 function handleSourceAdded(source: DataSource) {
-	console.log('GitHub source added:', source);
+	console.log("GitHub source added:", source);
 }
 
 // Tab state management
-let activeTab = $state('upload');
+let activeTab = $state("upload");
 
 // Load built-in data state
 let loadMessage = $state<string | null>(null);
@@ -99,8 +118,12 @@ function handleClearAllData() {
 const sourceSummaries = $derived(dataSourceManager.sourceSummaries);
 const mergedStats = $derived(dataSourceManager.mergedStats);
 const isProcessing = $derived(dataSourceManager.isProcessing);
-const hasUploadedSources = $derived(dataSourceManager.getSourcesByType('uploaded').length > 0);
-const hasGitHubSources = $derived(dataSourceManager.getSourcesByType('github').length > 0);
+const hasUploadedSources = $derived(
+	dataSourceManager.getSourcesByType("uploaded").length > 0,
+);
+const hasGitHubSources = $derived(
+	dataSourceManager.getSourcesByType("github").length > 0,
+);
 const hasImportedSources = $derived(hasUploadedSources || hasGitHubSources);
 const hasStaticData = $derived(dataSourceManager.hasStaticData);
 </script>
