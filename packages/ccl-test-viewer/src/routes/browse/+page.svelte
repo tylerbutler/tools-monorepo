@@ -7,30 +7,43 @@ import { Badge, Button } from "$lib/components/ui/index.js";
 import { appState, initializeApp } from "$lib/stores.svelte.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 import { CheckSquare, Grid3x3, Menu, X, Database, Layers } from "lucide-svelte";
-import { onMount } from "svelte";
 
 // Debug: Check if script is executing at all
 console.log("🟦 Browse page script executed at module level");
 
-// Local state
-let loading = $state(true);
-let initialized = $state(false);
+// Local state - initialize to false in case of SSR
+let loading = $state(!browser); // Will be false on client, true on server
+let error = $state<string | null>(null);
 
-// Initialize data on component mount (Svelte 5 approach)
-onMount(async () => {
-	if (!initialized && browser) {
+// Use $effect for Svelte 5 runes compatibility - runs when browser is available
+$effect(() => {
+	console.log("🟦 $effect called - browser:", browser);
+
+	if (!browser) {
+		console.log("🟦 Not in browser, skipping initialization");
+		return;
+	}
+
+	// Only run initialization once when browser becomes available
+	if (loading === false && !error && !appState.testStats && !dataSourceManager.isReady) {
 		console.log("🟦 Starting browse page initialization");
-		initialized = true;
-		try {
-			// Initialize both data source manager and app state
-			await dataSourceManager.initialize();
-			await initializeApp();
-			console.log("🟦 Browse page data loaded successfully");
-			loading = false;
-		} catch (error) {
-			console.error("🟦 Browse page initialization error:", error);
-			loading = false;
-		}
+
+		loading = true;
+		error = null;
+
+		(async () => {
+			try {
+				await dataSourceManager.initialize();
+				await initializeApp();
+
+				console.log("🟦 Browse page data loaded successfully");
+				loading = false;
+			} catch (err) {
+				console.error("🟦 Browse page initialization error:", err);
+				error = err instanceof Error ? err.message : 'Failed to load data';
+				loading = false;
+			}
+		})();
 	}
 });
 
@@ -52,7 +65,7 @@ const hasUploadedSources = $derived(dataSourceManager.getSourcesByType('uploaded
 
 // Derived states for the UI
 const hasTests = $derived(appState.filteredTests.length > 0);
-const showResults = $derived(!loading && (appState.testStats || dataSourceManager.isReady));
+const showResults = $derived(!loading && !error && (appState.testStats || dataSourceManager.isReady));
 </script>
 
 <svelte:head>
@@ -63,6 +76,14 @@ const showResults = $derived(!loading && (appState.testStats || dataSourceManage
 	<div class="flex items-center justify-center h-64">
 		<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
 		<span class="ml-4 text-muted-foreground">Loading test data...</span>
+	</div>
+{:else if error}
+	<div class="flex flex-col items-center justify-center h-64 text-center">
+		<h3 class="text-lg font-semibold mb-2 text-destructive">Failed to load test data</h3>
+		<p class="text-muted-foreground mb-4 max-w-md">
+			{error}
+		</p>
+		<Button onclick={() => location.reload()}>Refresh Page</Button>
 	</div>
 {:else if showResults}
 	<div class="flex h-screen">
@@ -223,9 +244,9 @@ const showResults = $derived(!loading && (appState.testStats || dataSourceManage
 	</div>
 {:else}
 	<div class="flex flex-col items-center justify-center h-64 text-center">
-		<h3 class="text-lg font-semibold mb-2">Failed to load test data</h3>
+		<h3 class="text-lg font-semibold mb-2">No data available</h3>
 		<p class="text-muted-foreground mb-4">
-			There was an error loading the test suite data. Please refresh the page to try again.
+			The application is ready but no test data is available.
 		</p>
 		<Button onclick={() => location.reload()}>Refresh Page</Button>
 	</div>
