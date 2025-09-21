@@ -1,0 +1,232 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e6]:
+    - generic [ref=e8]:
+      - button "Go to homepage" [ref=e10] [cursor=pointer]:
+        - heading "CCL Test Suite Viewer" [level=1] [ref=e11] [cursor=pointer]
+        - paragraph [ref=e12] [cursor=pointer]: Interactive test result visualization for CCL implementations
+      - navigation "Main navigation" [ref=e13]:
+        - button "Go to dashboard homepage" [ref=e14] [cursor=pointer]:
+          - img [ref=e15] [cursor=pointer]
+          - text: Home
+        - button "Browse and filter test cases" [ref=e18] [cursor=pointer]:
+          - img [ref=e19] [cursor=pointer]
+          - text: Browse Tests
+        - button "Upload JSON test data files" [ref=e22] [cursor=pointer]:
+          - img [ref=e23] [cursor=pointer]
+          - text: Upload
+  - main "Main content" [ref=e26]:
+    - generic [ref=e27]:
+      - button "Toggle filters" [ref=e29] [cursor=pointer]:
+        - img [ref=e30] [cursor=pointer]
+      - complementary [ref=e34]:
+        - generic [ref=e35]:
+          - heading "Filters" [level=2] [ref=e37]:
+            - img [ref=e38]
+            - text: Filters
+          - generic [ref=e40]:
+            - heading "Search Tests" [level=3] [ref=e42]
+            - generic [ref=e44]:
+              - img [ref=e45]
+              - textbox "Search test names, input, functions..." [ref=e48]
+          - generic [ref=e49]: Showing 1 of 1 tests
+          - generic [ref=e50]:
+            - button "Functions" [ref=e53] [cursor=pointer]:
+              - img [ref=e54] [cursor=pointer]
+              - heading "Functions" [level=3] [ref=e56] [cursor=pointer]
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - generic [ref=e60]:
+                  - checkbox "parse" [ref=e61] [cursor=pointer]
+                  - generic [ref=e62] [cursor=pointer]: parse
+                - generic [ref=e63]: "1"
+              - generic [ref=e64]:
+                - generic [ref=e65]:
+                  - checkbox "parse_value" [ref=e66] [cursor=pointer]
+                  - generic [ref=e67] [cursor=pointer]: parse_value
+                - generic [ref=e68]: "0"
+              - generic [ref=e69]:
+                - generic [ref=e70]:
+                  - checkbox "filter" [ref=e71] [cursor=pointer]
+                  - generic [ref=e72] [cursor=pointer]: filter
+                - generic [ref=e73]: "0"
+              - generic [ref=e74]:
+                - generic [ref=e75]:
+                  - checkbox "build_hierarchy" [ref=e76] [cursor=pointer]
+                  - generic [ref=e77] [cursor=pointer]: build_hierarchy
+                - generic [ref=e78]: "0"
+              - generic [ref=e79]:
+                - generic [ref=e80]:
+                  - checkbox "get_string" [ref=e81] [cursor=pointer]
+                  - generic [ref=e82] [cursor=pointer]: get_string
+                - generic [ref=e83]: "0"
+              - generic [ref=e84]:
+                - generic [ref=e85]:
+                  - checkbox "expand_dotted" [ref=e86] [cursor=pointer]
+                  - generic [ref=e87] [cursor=pointer]: expand_dotted
+                - generic [ref=e88]: "0"
+              - generic [ref=e89]:
+                - generic [ref=e90]:
+                  - checkbox "get_list" [ref=e91] [cursor=pointer]
+                  - generic [ref=e92] [cursor=pointer]: get_list
+                - generic [ref=e93]: "0"
+              - generic [ref=e94]:
+                - generic [ref=e95]:
+                  - checkbox "get_int" [ref=e96] [cursor=pointer]
+                  - generic [ref=e97] [cursor=pointer]: get_int
+                - generic [ref=e98]: "0"
+              - generic [ref=e99]:
+                - generic [ref=e100]:
+                  - checkbox "get_float" [ref=e101] [cursor=pointer]
+                  - generic [ref=e102] [cursor=pointer]: get_float
+                - generic [ref=e103]: "0"
+              - generic [ref=e104]:
+                - generic [ref=e105]:
+                  - checkbox "get_bool" [ref=e106] [cursor=pointer]
+                  - generic [ref=e107] [cursor=pointer]: get_bool
+                - generic [ref=e108]: "0"
+              - generic [ref=e109]:
+                - generic [ref=e110]:
+                  - checkbox "associativity" [ref=e111] [cursor=pointer]
+                  - generic [ref=e112] [cursor=pointer]: associativity
+                - generic [ref=e113]: "0"
+              - generic [ref=e114]:
+                - generic [ref=e115]:
+                  - checkbox "round_trip" [ref=e116] [cursor=pointer]
+                  - generic [ref=e117] [cursor=pointer]: round_trip
+                - generic [ref=e118]: "0"
+              - generic [ref=e119]:
+                - generic [ref=e120]:
+                  - checkbox "canonical_format" [ref=e121] [cursor=pointer]
+                  - generic [ref=e122] [cursor=pointer]: canonical_format
+                - generic [ref=e123]: "0"
+          - generic [ref=e124]:
+            - button "Features" [ref=e127] [cursor=pointer]:
+              - img [ref=e128] [cursor=pointer]
+              - heading "Features" [level=3] [ref=e130] [cursor=pointer]
+            - generic [ref=e132]:
+              - generic [ref=e133]:
+                - generic [ref=e134]:
+                  - checkbox "empty_keys" [ref=e135] [cursor=pointer]
+                  - generic [ref=e136] [cursor=pointer]: empty_keys
+                - generic [ref=e137]: "0"
+              - generic [ref=e138]:
+                - generic [ref=e139]:
+                  - checkbox "multiline" [ref=e140] [cursor=pointer]
+                  - generic [ref=e141] [cursor=pointer]: multiline
+                - generic [ref=e142]: "0"
+              - generic [ref=e143]:
+                - generic [ref=e144]:
+                  - checkbox "comments" [ref=e145] [cursor=pointer]
+                  - generic [ref=e146] [cursor=pointer]: comments
+                - generic [ref=e147]: "0"
+              - generic [ref=e148]:
+                - generic [ref=e149]:
+                  - checkbox "whitespace" [ref=e150] [cursor=pointer]
+                  - generic [ref=e151] [cursor=pointer]: whitespace
+                - generic [ref=e152]: "0"
+              - generic [ref=e153]:
+                - generic [ref=e154]:
+                  - checkbox "unicode" [ref=e155] [cursor=pointer]
+                  - generic [ref=e156] [cursor=pointer]: unicode
+                - generic [ref=e157]: "0"
+              - generic [ref=e158]:
+                - generic [ref=e159]:
+                  - checkbox "experimental_dotted_keys" [ref=e160] [cursor=pointer]
+                  - generic [ref=e161] [cursor=pointer]: experimental_dotted_keys
+                - generic [ref=e162]: "0"
+          - generic [ref=e163]:
+            - button "Behaviors" [ref=e166] [cursor=pointer]:
+              - img [ref=e167] [cursor=pointer]
+              - heading "Behaviors" [level=3] [ref=e169] [cursor=pointer]
+            - generic [ref=e171]:
+              - generic [ref=e172]:
+                - generic [ref=e173]:
+                  - checkbox "tabs_preserve" [ref=e174] [cursor=pointer]
+                  - generic [ref=e175] [cursor=pointer]: tabs_preserve
+                - generic [ref=e176]: "0"
+              - generic [ref=e177]:
+                - generic [ref=e178]:
+                  - checkbox "list_coercion_enabled" [ref=e179] [cursor=pointer]
+                  - generic [ref=e180] [cursor=pointer]: list_coercion_enabled
+                - generic [ref=e181]: "0"
+              - generic [ref=e182]:
+                - generic [ref=e183]:
+                  - checkbox "list_coercion_disabled" [ref=e184] [cursor=pointer]
+                  - generic [ref=e185] [cursor=pointer]: list_coercion_disabled
+                - generic [ref=e186]: "0"
+              - generic [ref=e187]:
+                - generic [ref=e188]:
+                  - checkbox "boolean_strict" [ref=e189] [cursor=pointer]
+                  - generic [ref=e190] [cursor=pointer]: boolean_strict
+                - generic [ref=e191]: "0"
+              - generic [ref=e192]:
+                - generic [ref=e193]:
+                  - checkbox "boolean_lenient" [ref=e194] [cursor=pointer]
+                  - generic [ref=e195] [cursor=pointer]: boolean_lenient
+                - generic [ref=e196]: "0"
+              - generic [ref=e197]:
+                - generic [ref=e198]:
+                  - checkbox "crlf_preserve_literal" [ref=e199] [cursor=pointer]
+                  - generic [ref=e200] [cursor=pointer]: crlf_preserve_literal
+                - generic [ref=e201]: "0"
+              - generic [ref=e202]:
+                - generic [ref=e203]:
+                  - checkbox "crlf_normalize_to_lf" [ref=e204] [cursor=pointer]
+                  - generic [ref=e205] [cursor=pointer]: crlf_normalize_to_lf
+                - generic [ref=e206]: "0"
+              - generic [ref=e207]:
+                - generic [ref=e208]:
+                  - checkbox "strict_spacing" [ref=e209] [cursor=pointer]
+                  - generic [ref=e210] [cursor=pointer]: strict_spacing
+                - generic [ref=e211]: "0"
+          - generic [ref=e212]:
+            - button "Categories" [ref=e215] [cursor=pointer]:
+              - img [ref=e216] [cursor=pointer]
+              - heading "Categories" [level=3] [ref=e218] [cursor=pointer]
+            - generic [ref=e221]:
+              - generic [ref=e222]:
+                - 'checkbox "test-upload-1758424420916: Test Upload 1758424420916" [ref=e223] [cursor=pointer]'
+                - generic [ref=e224] [cursor=pointer]: "test-upload-1758424420916: Test Upload 1758424420916"
+              - generic [ref=e225]: "1"
+      - button "Close filters" [ref=e226]
+      - generic [ref=e228]:
+        - generic [ref=e230]:
+          - generic [ref=e231]:
+            - generic [ref=e232]:
+              - heading "Browse Tests" [level=1] [ref=e233]
+              - generic [ref=e234]:
+                - img [ref=e235]
+                - text: Uploaded Data
+            - paragraph [ref=e239]: 1 of 1 tests
+          - generic [ref=e240]:
+            - button "Grid view" [ref=e241] [cursor=pointer]:
+              - img [ref=e242] [cursor=pointer]
+            - button "List view" [ref=e244] [cursor=pointer]:
+              - img [ref=e245] [cursor=pointer]
+        - 'button "View test case: test-basic-parsing" [ref=e250] [cursor=pointer]':
+          - generic [ref=e252] [cursor=pointer]:
+            - heading "test-basic-parsing" [level=3] [ref=e253] [cursor=pointer]
+            - button "View test details" [ref=e254] [cursor=pointer]:
+              - img [ref=e255] [cursor=pointer]
+              - text: View
+              - img [ref=e258] [cursor=pointer]
+          - generic [ref=e260] [cursor=pointer]:
+            - generic [ref=e261] [cursor=pointer]:
+              - heading "Input" [level=4] [ref=e262] [cursor=pointer]
+              - code [ref=e265] [cursor=pointer]: key=value\nother=data
+            - generic [ref=e266] [cursor=pointer]:
+              - heading "Expected" [level=4] [ref=e267] [cursor=pointer]
+              - generic [ref=e268] [cursor=pointer]: 2 entries
+            - generic [ref=e269] [cursor=pointer]:
+              - heading "Functions" [level=4] [ref=e270] [cursor=pointer]:
+                - img [ref=e271] [cursor=pointer]
+                - text: Functions
+              - generic [ref=e275] [cursor=pointer]: parse
+  - contentinfo [ref=e276]:
+    - paragraph [ref=e278]: Built with SvelteKit • Part of the CCL tools ecosystem
+```

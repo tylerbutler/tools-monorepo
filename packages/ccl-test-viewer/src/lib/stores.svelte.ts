@@ -177,6 +177,14 @@ class AppState {
 			return false;
 		}
 	}
+
+	// Update data from external source (like dataSourceManager)
+	updateData(categories: TestCategory[], stats: TestStats | null) {
+		this.testCategories = categories;
+		this.testStats = stats;
+		// Note: searchIndex is not updated as it's not critical for basic functionality
+		console.log("AppState updated with", categories.length, "categories and", stats?.totalTests || 0, "tests");
+	}
 }
 
 // Global state instance

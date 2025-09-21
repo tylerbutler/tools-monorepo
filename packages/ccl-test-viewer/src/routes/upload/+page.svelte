@@ -21,9 +21,9 @@ interface UploadedFile {
 	preview?: string;
 }
 
-// Initialize data source manager on component mount
+// Initialize data source manager on component mount (upload-only mode)
 onMount(async () => {
-	await dataSourceManager.initialize();
+	await dataSourceManager.initializeEmpty();
 });
 
 // Handle successful file uploads - now using data source manager

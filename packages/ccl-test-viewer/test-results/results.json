@@ -1,0 +1,735 @@
+{
+  "config": {
+    "configFile": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/playwright.config.ts",
+    "rootDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 6
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/results.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 6
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.55.0",
+    "workers": 6,
+    "webServer": {
+      "command": "npm run build && npm run preview",
+      "port": 4173,
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "upload-persistence-simple.spec.ts",
+      "file": "upload-persistence-simple.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Upload and Data Persistence - Core Functionality",
+          "file": "upload-persistence-simple.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "core workflow: upload file and verify persistence across pages",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 539,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:38.244Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-ee296a7834304ba7bde8",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 51,
+              "column": 2
+            },
+            {
+              "title": "upload validation works correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 321,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:38.229Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-f20189a3d31a688b5658",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 87,
+              "column": 2
+            },
+            {
+              "title": "clear data functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 368,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:38.226Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-b1a3e40e23173720aa7e",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 114,
+              "column": 2
+            },
+            {
+              "title": "core workflow: upload file and verify persistence across pages",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 2920,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:38.228Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-8f06ce744836ebc0b0f3",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 51,
+              "column": 2
+            },
+            {
+              "title": "upload validation works correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3013,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:38.235Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-b3e2e9c576e046cd49f3",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 87,
+              "column": 2
+            },
+            {
+              "title": "clear data functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2733,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:38.234Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-1436b7f1f7ff6f7f6299",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 114,
+              "column": 2
+            },
+            {
+              "title": "core workflow: upload file and verify persistence across pages",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 991,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:39.058Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-f119a12d018266d4e2f7",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 51,
+              "column": 2
+            },
+            {
+              "title": "upload validation works correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1334,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:39.106Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-5818ac37c38936bb07d5",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 87,
+              "column": 2
+            },
+            {
+              "title": "clear data functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1198,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:39.273Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-421d618f38dd60802b52",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 114,
+              "column": 2
+            },
+            {
+              "title": "core workflow: upload file and verify persistence across pages",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 30111,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e/upload-persistence-simple.spec.ts",
+                            "column": 76,
+                            "line": 83
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /upload json test data files/i })\u001b[22m\n\u001b[2m    - locator resolved to <button aria-label=\"Upload JSON test data files\" class=\"px-3 py-2 rounded text-sm font-medium border border-border\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <button type=\"button\" aria-label=\"Close filters\" class=\"fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default\"></button> from <main tabindex=\"-1\" id=\"main-content\" aria-label=\"Main content\">…</main> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <button type=\"button\" aria-label=\"Close filters\" class=\"fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default\"></button> from <main tabindex=\"-1\" id=\"main-content\" aria-label=\"Main content\">…</main> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    56 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <button type=\"button\" aria-label=\"Close filters\" class=\"fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default\"></button> from <main tabindex=\"-1\" id=\"main-content\" aria-label=\"Main content\">…</main> subtree intercepts pointer events\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n  81 |\n  82 | \t\t// Step 8: Navigate back to upload page to verify data is still there\n> 83 | \t\tawait page.getByRole(\"button\", { name: /upload json test data files/i }).click();\n     | \t\t                                                                         ^\n  84 | \t\tawait expect(page.getByText(\"Combined Data Summary\")).toBeVisible();\n  85 | \t});\n  86 |\n    at /Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e/upload-persistence-simple.spec.ts:83:76"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:40.631Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-9222b82cb1971b965536",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 51,
+              "column": 2
+            },
+            {
+              "title": "upload validation works correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1237,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:41.051Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-943128f4710b7403eba0",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 87,
+              "column": 2
+            },
+            {
+              "title": "clear data functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1419,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:41.143Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-920d36e09f8a003ad4cf",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 114,
+              "column": 2
+            },
+            {
+              "title": "core workflow: upload file and verify persistence across pages",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 30097,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e/upload-persistence-simple.spec.ts",
+                            "column": 76,
+                            "line": 83
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /upload json test data files/i })\u001b[22m\n\u001b[2m    - locator resolved to <button aria-label=\"Upload JSON test data files\" class=\"px-3 py-2 rounded text-sm font-medium border border-border\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is not stable\u001b[22m\n\u001b[2m  2 × retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m      - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <button type=\"button\" aria-label=\"Close filters\" class=\"fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default\"></button> from <main tabindex=\"-1\" id=\"main-content\" aria-label=\"Main content\">…</main> subtree intercepts pointer events\u001b[22m\n\u001b[2m  55 × retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m       - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is visible, enabled and stable\u001b[22m\n\u001b[2m       - scrolling into view if needed\u001b[22m\n\u001b[2m       - done scrolling\u001b[22m\n\u001b[2m       - <button type=\"button\" aria-label=\"Close filters\" class=\"fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default\"></button> from <main tabindex=\"-1\" id=\"main-content\" aria-label=\"Main content\">…</main> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\n\n  81 |\n  82 | \t\t// Step 8: Navigate back to upload page to verify data is still there\n> 83 | \t\tawait page.getByRole(\"button\", { name: /upload json test data files/i }).click();\n     | \t\t                                                                         ^\n  84 | \t\tawait expect(page.getByText(\"Combined Data Summary\")).toBeVisible();\n  85 | \t});\n  86 |\n    at /Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e/upload-persistence-simple.spec.ts:83:76"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:14:12.551Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-908b7597005adc0a5741",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 51,
+              "column": 2
+            },
+            {
+              "title": "upload validation works correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 556,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:13:42.877Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-8b78f98f5f3706e7a9e0",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 87,
+              "column": 2
+            },
+            {
+              "title": "clear data functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 567,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-09-21T03:14:12.789Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "be78949c41bcc5d3a15f-64865cd6b2100a201f39",
+              "file": "upload-persistence-simple.spec.ts",
+              "line": 114,
+              "column": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-09-21T03:13:37.777Z",
+    "duration": 65099.255,
+    "expected": 13,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

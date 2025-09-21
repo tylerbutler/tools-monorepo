@@ -73,7 +73,9 @@
       "mcp__playwright__browser_press_key",
       "mcp__serena__find_file",
       "Bash(cp:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "mcp__serena__insert_after_symbol",
+      "mcp__playwright__browser_file_upload"
     ],
     "deny": [],
     "ask": []

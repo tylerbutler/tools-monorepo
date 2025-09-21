@@ -27,6 +27,20 @@ class DataSourceManager {
   processingFiles = $state<string[]>([]);
   lastError = $state<string | null>(null);
 
+  // Track if we should auto-save (avoid saving during initial load)
+  private shouldAutoSave = $state(false);
+
+  constructor() {
+    // Set up reactive auto-save effect using $effect.root for manual control
+    $effect.root(() => {
+      $effect(() => {
+        if (this.shouldAutoSave && this.dataSources.length >= 0) {
+          this.saveToStorage();
+        }
+      });
+    });
+  }
+
   // Merged data state (computed from active sources)
   mergedData = $derived.by(() => {
     const result = mergeDataSources(this.dataSources);
@@ -85,6 +99,37 @@ class DataSourceManager {
   }
 
   /**
+   * Initialize the data source manager without loading any default data
+   * Used when data must be uploaded instead of using static build-time data
+   * Loads from localStorage if available to persist across page navigation
+   */
+  async initializeEmpty() {
+    try {
+      // Only initialize if empty - first try to load from localStorage
+      if (this.dataSources.length === 0) {
+        const saved = this.loadFromStorage();
+        if (saved) {
+          console.log(`DataSourceManager: Loaded ${this.dataSources.length} data sources from localStorage`);
+        } else {
+          this.dataSources = [];
+          console.log('DataSourceManager: Initialized empty state');
+        }
+      } else {
+        console.log(`DataSourceManager: Preserving existing ${this.dataSources.length} data sources`);
+      }
+
+      // Enable auto-save after initialization
+      this.shouldAutoSave = true;
+      this.lastError = null;
+      return true;
+    } catch (error) {
+      this.lastError = error instanceof Error ? error.message : 'Failed to initialize data sources';
+      console.error('DataSourceManager empty initialization failed:', error);
+      return false;
+    }
+  }
+
+  /**
    * Process uploaded files and add them as data sources
    */
   async processUploadedFiles(files: File[]): Promise<FileProcessingResult[]> {
@@ -110,6 +155,8 @@ class DataSourceManager {
     } finally {
       this.isProcessing = false;
       this.processingFiles = [];
+
+      // Auto-save will trigger from the reactive effect
     }
 
     return results;
@@ -160,6 +207,7 @@ class DataSourceManager {
       this.dataSources[sourceIndex].active = !this.dataSources[sourceIndex].active;
       // Force reactivity update
       this.dataSources = [...this.dataSources];
+      // Auto-save will trigger from the reactive effect
     }
   }
 
@@ -173,6 +221,7 @@ class DataSourceManager {
     }
 
     this.dataSources = this.dataSources.filter(s => s.id !== sourceId);
+    // Auto-save will trigger from the reactive effect
   }
 
   /**
@@ -208,6 +257,7 @@ class DataSourceManager {
 
       // Add to data sources
       this.dataSources = [...this.dataSources, dataSource];
+      // Auto-save will trigger from the reactive effect
 
       return {
         success: true,
@@ -232,6 +282,7 @@ class DataSourceManager {
    */
   clearUploadedSources() {
     this.dataSources = this.dataSources.filter(s => s.type === 'static');
+    // Auto-save will trigger from the reactive effect
   }
 
   /**
@@ -239,6 +290,7 @@ class DataSourceManager {
    */
   clearAllImportedSources() {
     this.dataSources = this.dataSources.filter(s => s.type === 'static');
+    // Auto-save will trigger from the reactive effect
   }
 
   /**
@@ -301,6 +353,72 @@ class DataSourceManager {
     const staticSource = this.dataSources.find(s => s.type === 'static');
     this.dataSources = staticSource ? [staticSource] : [];
     this.lastError = null;
+    // Auto-save will trigger from the reactive effect
+  }
+
+  /**
+   * Save data sources to localStorage for persistence across page navigation
+   */
+  private saveToStorage() {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return; // SSR guard
+
+    try {
+      // Use $state.snapshot to convert proxy to plain object for serialization
+      const dataToSave = {
+        dataSources: $state.snapshot(this.dataSources),
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('ccl-test-viewer-data-sources', JSON.stringify(dataToSave));
+      console.log('DataSourceManager: Saved to localStorage');
+    } catch (error) {
+      console.warn('DataSourceManager: Failed to save to localStorage:', error);
+    }
+  }
+
+  /**
+   * Load data sources from localStorage
+   * Returns true if data was loaded, false if no data or error
+   */
+  private loadFromStorage(): boolean {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return false; // SSR guard
+
+    try {
+      const saved = localStorage.getItem('ccl-test-viewer-data-sources');
+      if (!saved) return false;
+
+      const data = JSON.parse(saved);
+      if (data.dataSources && Array.isArray(data.dataSources) && data.dataSources.length > 0) {
+        // Force reactivity by replacing the entire array
+        this.dataSources.length = 0;
+        this.dataSources.push(...data.dataSources);
+        console.log('DataSourceManager: Loaded from localStorage, timestamp:', data.timestamp);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.warn('DataSourceManager: Failed to load from localStorage:', error);
+      // Clear corrupted data
+      try {
+        localStorage.removeItem('ccl-test-viewer-data-sources');
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Clear localStorage data
+   */
+  clearStorage() {
+    if (typeof window === 'undefined') return;
+
+    try {
+      localStorage.removeItem('ccl-test-viewer-data-sources');
+      console.log('DataSourceManager: Cleared localStorage');
+    } catch (error) {
+      console.warn('DataSourceManager: Failed to clear localStorage:', error);
+    }
   }
 }
 

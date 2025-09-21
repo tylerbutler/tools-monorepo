@@ -1,0 +1,168 @@
+<testsuites id="" name="" tests="15" failures="2" skipped="0" errors="0" time="65.099255">
+<testsuite name="upload-persistence-simple.spec.ts" timestamp="2025-09-21T03:13:37.894Z" hostname="chromium" tests="3" failures="0" skipped="0" time="1.228" errors="0">
+<testcase name="Upload and Data Persistence - Core Functionality › core workflow: upload file and verify persistence across pages" classname="upload-persistence-simple.spec.ts" time="0.539">
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › upload validation works correctly" classname="upload-persistence-simple.spec.ts" time="0.321">
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › clear data functionality works" classname="upload-persistence-simple.spec.ts" time="0.368">
+</testcase>
+</testsuite>
+<testsuite name="upload-persistence-simple.spec.ts" timestamp="2025-09-21T03:13:37.894Z" hostname="firefox" tests="3" failures="0" skipped="0" time="8.666" errors="0">
+<testcase name="Upload and Data Persistence - Core Functionality › core workflow: upload file and verify persistence across pages" classname="upload-persistence-simple.spec.ts" time="2.92">
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › upload validation works correctly" classname="upload-persistence-simple.spec.ts" time="3.013">
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › clear data functionality works" classname="upload-persistence-simple.spec.ts" time="2.733">
+</testcase>
+</testsuite>
+<testsuite name="upload-persistence-simple.spec.ts" timestamp="2025-09-21T03:13:37.894Z" hostname="webkit" tests="3" failures="0" skipped="0" time="3.523" errors="0">
+<testcase name="Upload and Data Persistence - Core Functionality › core workflow: upload file and verify persistence across pages" classname="upload-persistence-simple.spec.ts" time="0.991">
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › upload validation works correctly" classname="upload-persistence-simple.spec.ts" time="1.334">
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › clear data functionality works" classname="upload-persistence-simple.spec.ts" time="1.198">
+</testcase>
+</testsuite>
+<testsuite name="upload-persistence-simple.spec.ts" timestamp="2025-09-21T03:13:37.894Z" hostname="Mobile Chrome" tests="3" failures="1" skipped="0" time="32.767" errors="0">
+<testcase name="Upload and Data Persistence - Core Functionality › core workflow: upload file and verify persistence across pages" classname="upload-persistence-simple.spec.ts" time="30.111">
+<failure message="upload-persistence-simple.spec.ts:51:2 core workflow: upload file and verify persistence across pages" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › upload-persistence-simple.spec.ts:51:2 › Upload and Data Persistence - Core Functionality › core workflow: upload file and verify persistence across pages 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /upload json test data files/i })
+        - locator resolved to <button aria-label="Upload JSON test data files" class="px-3 py-2 rounded text-sm font-medium border border-border">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <button type="button" aria-label="Close filters" class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default"></button> from <main tabindex="-1" id="main-content" aria-label="Main content">…</main> subtree intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <button type="button" aria-label="Close filters" class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default"></button> from <main tabindex="-1" id="main-content" aria-label="Main content">…</main> subtree intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        56 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <button type="button" aria-label="Close filters" class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default"></button> from <main tabindex="-1" id="main-content" aria-label="Main content">…</main> subtree intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+
+
+      81 |
+      82 | 		// Step 8: Navigate back to upload page to verify data is still there
+    > 83 | 		await page.getByRole("button", { name: /upload json test data files/i }).click();
+         | 		                                                                         ^
+      84 | 		await expect(page.getByText("Combined Data Summary")).toBeVisible();
+      85 | 	});
+      86 |
+        at /Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e/upload-persistence-simple.spec.ts:83:76
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/test-failed-1.png]]
+
+[[ATTACHMENT|upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/video.webm]]
+
+[[ATTACHMENT|upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Chrome/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › upload validation works correctly" classname="upload-persistence-simple.spec.ts" time="1.237">
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › clear data functionality works" classname="upload-persistence-simple.spec.ts" time="1.419">
+</testcase>
+</testsuite>
+<testsuite name="upload-persistence-simple.spec.ts" timestamp="2025-09-21T03:13:37.894Z" hostname="Mobile Safari" tests="3" failures="1" skipped="0" time="31.22" errors="0">
+<testcase name="Upload and Data Persistence - Core Functionality › core workflow: upload file and verify persistence across pages" classname="upload-persistence-simple.spec.ts" time="30.097">
+<failure message="upload-persistence-simple.spec.ts:51:2 core workflow: upload file and verify persistence across pages" type="FAILURE">
+<![CDATA[  [Mobile Safari] › upload-persistence-simple.spec.ts:51:2 › Upload and Data Persistence - Core Functionality › core workflow: upload file and verify persistence across pages 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /upload json test data files/i })
+        - locator resolved to <button aria-label="Upload JSON test data files" class="px-3 py-2 rounded text-sm font-medium border border-border">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      2 × retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <button type="button" aria-label="Close filters" class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default"></button> from <main tabindex="-1" id="main-content" aria-label="Main content">…</main> subtree intercepts pointer events
+      55 × retrying click action
+           - waiting 500ms
+           - waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <button type="button" aria-label="Close filters" class="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden border-0 p-0 cursor-default"></button> from <main tabindex="-1" id="main-content" aria-label="Main content">…</main> subtree intercepts pointer events
+      - retrying click action
+        - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      81 |
+      82 | 		// Step 8: Navigate back to upload page to verify data is still there
+    > 83 | 		await page.getByRole("button", { name: /upload json test data files/i }).click();
+         | 		                                                                         ^
+      84 | 		await expect(page.getByText("Combined Data Summary")).toBeVisible();
+      85 | 	});
+      86 |
+        at /Volumes/Code/claude-workspace-ccl/tools-monorepo/packages/ccl-test-viewer/tests/e2e/upload-persistence-simple.spec.ts:83:76
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/test-failed-1.png]]
+
+[[ATTACHMENT|upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/video.webm]]
+
+[[ATTACHMENT|upload-persistence-simple--2166f-fy-persistence-across-pages-Mobile-Safari/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › upload validation works correctly" classname="upload-persistence-simple.spec.ts" time="0.556">
+</testcase>
+<testcase name="Upload and Data Persistence - Core Functionality › clear data functionality works" classname="upload-persistence-simple.spec.ts" time="0.567">
+</testcase>
+</testsuite>
+</testsuites>

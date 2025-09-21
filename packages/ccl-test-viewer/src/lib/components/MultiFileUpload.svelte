@@ -142,31 +142,23 @@ async function processFiles() {
 			const text = await uploadedFile.file.text();
 			const jsonData = JSON.parse(text);
 
-			// Validate ccl-test-data format: { tests: [...] }
-			if (!jsonData || typeof jsonData !== 'object' || Array.isArray(jsonData) || !Array.isArray(jsonData.tests)) {
+			// Basic validation - just check if it's valid JSON
+			// Detailed validation will be done by the dataSourceManager
+			if (!jsonData) {
 				uploadedFile.status = 'error';
-				uploadedFile.error = 'JSON must contain { tests: [...] } format';
+				uploadedFile.error = 'Invalid JSON content';
 				continue;
 			}
 
-			// Validate test structure
-			const hasValidTests = jsonData.tests.every(test =>
-				test &&
-				typeof test === 'object' &&
-				typeof test.name === 'string' &&
-				typeof test.input === 'string' &&
-				test.expected &&
-				typeof test.expected.count === 'number'
-			);
-
-			if (!hasValidTests) {
-				uploadedFile.status = 'error';
-				uploadedFile.error = 'Invalid test data structure';
-				continue;
+			// Generate basic preview
+			if (Array.isArray(jsonData)) {
+				uploadedFile.preview = `${jsonData.length} tests, ${uploadedFile.file.name}`;
+			} else if (jsonData.tests && Array.isArray(jsonData.tests)) {
+				uploadedFile.preview = `${jsonData.tests.length} tests, ${uploadedFile.file.name}`;
+			} else {
+				uploadedFile.preview = `JSON file: ${uploadedFile.file.name}`;
 			}
 
-			// Generate preview
-			uploadedFile.preview = `${jsonData.tests.length} tests, ${uploadedFile.file.name}`;
 			uploadedFile.status = 'success';
 
 		} catch (error) {
