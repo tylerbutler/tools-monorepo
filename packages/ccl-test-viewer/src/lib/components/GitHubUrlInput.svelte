@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button.svelte';
+	import { Button } from '$lib/components/ui/index.js';
 	import Input from '$lib/components/ui/input.svelte';
 	import Badge from '$lib/components/ui/badge.svelte';
 	import { LoaderCircle, Github, FileText, FolderOpen, AlertCircle, CheckCircle } from 'lucide-svelte';
@@ -36,7 +36,7 @@
 
 	// Preview repository info
 	async function previewRepository() {
-		if (!urlValidation?.valid) return;
+		if (!urlValidation()?.valid) return;
 
 		isLoading = true;
 		error = null;
@@ -58,7 +58,7 @@
 
 	// Load repository data
 	async function loadRepository() {
-		if (!urlValidation?.valid || !repositoryInfo) return;
+		if (!urlValidation()?.valid || !repositoryInfo) return;
 
 		isLoading = true;
 		error = null;
@@ -118,8 +118,8 @@
 			/>
 
 			<!-- URL Validation Feedback -->
-			{#if url.trim() && urlValidation}
-				{#if urlValidation.valid}
+			{#if url.trim() && urlValidation()}
+				{#if urlValidation().valid}
 					<div class="flex items-center gap-2 text-sm text-green-600">
 						<CheckCircle class="h-4 w-4" />
 						Valid GitHub URL detected
@@ -127,7 +127,7 @@
 				{:else}
 					<div class="flex items-center gap-2 text-sm text-red-600">
 						<AlertCircle class="h-4 w-4" />
-						{urlValidation.error}
+						{urlValidation().error}
 					</div>
 				{/if}
 			{/if}
@@ -139,7 +139,7 @@
 				variant="outline"
 				size="sm"
 				onclick={previewRepository}
-				disabled={!urlValidation?.valid || isLoading || disabled}
+				disabled={!urlValidation()?.valid || isLoading || disabled}
 			>
 				{#if isLoading}
 					<LoaderCircle class="h-4 w-4 animate-spin mr-2" />

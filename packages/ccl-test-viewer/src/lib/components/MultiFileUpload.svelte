@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Upload, X, FileText, AlertCircle, CheckCircle2 } from "lucide-svelte";
-import Button from "$lib/components/ui/button.svelte";
+import { Button } from "$lib/components/ui/index.js";
 import Badge from "$lib/components/ui/badge.svelte";
 import Card from "$lib/components/ui/card.svelte";
 import CardContent from "$lib/components/ui/card-content.svelte";

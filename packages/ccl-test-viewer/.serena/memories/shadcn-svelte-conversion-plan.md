@@ -1,45 +1,99 @@
-# shadcn-svelte Conversion - Executable Task Plan
+# shadcn-svelte Conversion - Updated Executable Task Plan
 
 ## 🎯 Epic Overview
 **Convert ccl-test-viewer from custom UI components to shadcn-svelte**
-- **Total Estimated Effort**: 9-14 hours
-- **Complexity**: Medium
-- **Risk Level**: Low
+- **Total Estimated Effort**: 11-16 hours (updated)
+- **Complexity**: Medium-High
+- **Risk Level**: Medium (updated due to Tailwind v4 upgrade)
 - **Strategy**: Systematic (comprehensive validation at each phase)
 
 ---
 
+## 🚀 Phase 0: Tailwind v4 Upgrade (NEW)
+**Duration**: 2-3 hours | **Dependencies**: None | **Risk**: Medium
+
+### 0.1 Pre-upgrade Assessment
+- [ ] **T0.1.1** - Backup current Tailwind configuration
+  - `cp tailwind.config.js tailwind.config.js.backup`
+  - `cp src/app.css src/app.css.backup`
+  - **Effort**: 5 minutes | **Complexity**: Low
+
+- [ ] **T0.1.2** - Audit current Tailwind usage
+  - Document custom classes and configurations
+  - Check for Tailwind v3-specific features
+  - **Effort**: 30 minutes | **Complexity**: Medium
+
+### 0.2 Tailwind v4 Installation
+- [ ] **T0.2.1** - Install Tailwind v4
+  - `pnpm remove tailwindcss autoprefixer postcss`
+  - `pnpm add -D tailwindcss@next @tailwindcss/vite@next`
+  - **Effort**: 15 minutes | **Complexity**: Medium
+
+- [ ] **T0.2.2** - Update Vite configuration
+  - Modify vite.config.ts for Tailwind v4
+  - Remove PostCSS configuration if needed
+  - **Effort**: 20 minutes | **Complexity**: Medium
+
+- [ ] **T0.2.3** - Update CSS import
+  - Replace Tailwind directives with v4 syntax
+  - Update app.css or global CSS files
+  - **Effort**: 15 minutes | **Complexity**: Medium
+
+### 0.3 Configuration Migration
+- [ ] **T0.3.1** - Convert tailwind.config.js to CSS
+  - Migrate custom theme to CSS custom properties
+  - Convert custom utilities to CSS
+  - **Effort**: 45 minutes | **Complexity**: High
+
+- [ ] **T0.3.2** - Update plugin configurations
+  - Migrate @tailwindcss/typography and @tailwindcss/forms
+  - Update any custom plugin configurations
+  - **Effort**: 30 minutes | **Complexity**: Medium
+
+### 0.4 Build System Integration
+- [ ] **T0.4.1** - Test development build
+  - `pnpm dev` or use build-preview workflow
+  - Verify Tailwind v4 compiles correctly
+  - **Effort**: 15 minutes | **Complexity**: Medium
+
+- [ ] **T0.4.2** - Test production build
+  - `pnpm build` and verify successful compilation
+  - Check for any breaking changes
+  - **Effort**: 15 minutes | **Complexity**: Medium
+
+- [ ] **T0.4.3** - Visual regression testing
+  - Test all pages for visual consistency
+  - Fix any broken styles from v4 migration
+  - **Effort**: 45 minutes | **Complexity**: High
+
+**Phase 0 Checkpoint**: ✅ Tailwind v4 successfully installed and working
+
+---
+
 ## 📦 Phase 1: Preparation & Setup
-**Duration**: 1-2 hours | **Dependencies**: None | **Risk**: Low
+**Duration**: 1-2 hours | **Dependencies**: Phase 0 complete | **Risk**: Low
 
 ### 1.1 Environment Preparation
-- [ ] **T1.1.1** - Create feature branch for conversion
-  - `git checkout -b feat/convert-to-shadcn-svelte`
-  - **Effort**: 5 minutes | **Complexity**: Low
-
-- [ ] **T1.1.2** - Commit current state as baseline
-  - `git add . && git commit -m "baseline: before shadcn-svelte conversion"`
-  - **Effort**: 5 minutes | **Complexity**: Low
+- [ ] **T1.1.1** - ~~Create feature branch for conversion~~ (COMPLETED)
+- [ ] **T1.1.2** - ~~Commit current state as baseline~~ (COMPLETED)
 
 ### 1.2 shadcn-svelte Installation
-- [ ] **T1.2.1** - Install shadcn-svelte CLI globally
-  - `npm install -g shadcn-svelte@latest`
-  - **Effort**: 10 minutes | **Complexity**: Low
+- [ ] **T1.2.1** - ~~Install shadcn-svelte CLI globally~~ (COMPLETED)
 
 - [ ] **T1.2.2** - Initialize shadcn-svelte in project
-  - `npx shadcn-svelte@latest init`
+  - `npx shadcn-svelte@latest init` (now with Tailwind v4 support)
   - Configure components.json with project paths
   - **Effort**: 20 minutes | **Complexity**: Low
 
 - [ ] **T1.2.3** - Install core dependencies
-  - `npm install bits-ui -D`
-  - `npm install tailwindcss-animate -D` (if not present)
+  - `pnpm install bits-ui -D`
+  - Verify all peer dependencies
   - **Effort**: 15 minutes | **Complexity**: Low
 
 ### 1.3 Configuration Validation
 - [ ] **T1.3.1** - Verify components.json configuration
   - Check aliases match project structure
-  - Validate Tailwind CSS integration
+  - Validate Tailwind CSS v4 integration
   - **Effort**: 15 minutes | **Complexity**: Low
 
 - [ ] **T1.3.2** - Test basic shadcn-svelte installation
@@ -152,7 +206,7 @@
 
 ### 3.3 Build System Integration
 - [ ] **T3.3.1** - Test development build
-  - `pnpm dev` and verify no build errors
+  - Use build-preview workflow to verify no build errors
   - **Effort**: 10 minutes | **Complexity**: Low
 
 - [ ] **T3.3.2** - Test production build
@@ -225,7 +279,7 @@
 
 ### 5.3 Git Integration
 - [ ] **T5.3.1** - Commit conversion changes
-  - `git add . && git commit -m "feat: convert to shadcn-svelte components"`
+  - `git add . && git commit -m "feat: convert to shadcn-svelte components with Tailwind v4"`
   - **Effort**: 5 minutes | **Complexity**: Low
 
 **Phase 5 Checkpoint**: ✅ Conversion complete and ready for merge
@@ -234,31 +288,36 @@
 
 ## 🛡️ Risk Mitigation & Rollback Strategy
 
-### Rollback Points
-1. **After Phase 1**: Revert to baseline commit
-2. **After Phase 2**: Restore individual component backups
-3. **After Phase 3**: Git branch reset to Phase 2 completion
-4. **After Phase 4**: Full branch rollback available
+### Updated Rollback Points
+1. **After Phase 0**: Revert to baseline commit (before Tailwind v4)
+2. **After Phase 1**: Rollback Tailwind v4 changes, restore v3
+3. **After Phase 2**: Restore individual component backups
+4. **After Phase 3**: Git branch reset to Phase 2 completion
+5. **After Phase 4**: Full branch rollback available
 
 ### Critical Dependencies
-- Ensure `bits-ui` compatibility with current Svelte version
-- Verify Tailwind CSS configuration compatibility
+- Ensure Tailwind v4 compatibility with existing build system
+- Verify `bits-ui` compatibility with current Svelte version
 - Maintain existing component API contracts where possible
+- Test Tailwind v4 migration thoroughly before shadcn-svelte installation
 
 ### Quality Gates
 - Each phase must pass its checkpoint before proceeding
-- Build must succeed after each component replacement
+- Build must succeed after Tailwind v4 upgrade
 - Visual regression testing at each major milestone
+- Use build-preview workflow for all testing (dev server has issues)
 
-## 📊 Task Summary
-- **Total Tasks**: 46 discrete, actionable tasks
-- **Phases**: 5 sequential phases with clear dependencies
-- **Effort Range**: 9-14 hours total
-- **Complexity Distribution**: 70% Low, 30% Medium
+## 📊 Updated Task Summary
+- **Total Tasks**: 50+ discrete, actionable tasks
+- **Phases**: 6 sequential phases (added Phase 0)
+- **Effort Range**: 11-16 hours total (updated)
+- **Complexity Distribution**: 60% Low, 30% Medium, 10% High
 - **Risk Mitigation**: Multiple rollback points and validation checkpoints
 
 ## 🚀 Execution Notes
 - Execute phases sequentially, completing all tasks in a phase before proceeding
+- Phase 0 (Tailwind v4) is now critical prerequisite for shadcn-svelte latest
 - Use build-preview workflow (`pnpm build && pnpm preview`) instead of dev server for testing
 - Maintain frequent commits for granular rollback capability
 - Validate each checkpoint before proceeding to next phase
+- Pay special attention to Tailwind v4 migration - this is the highest risk phase

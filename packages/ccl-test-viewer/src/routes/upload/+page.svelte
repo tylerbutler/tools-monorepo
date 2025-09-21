@@ -2,7 +2,7 @@
 import MultiFileUpload from "$lib/components/MultiFileUpload.svelte";
 import GitHubUrlInput from "$lib/components/GitHubUrlInput.svelte";
 import GitHubRepositoryBrowser from "$lib/components/GitHubRepositoryBrowser.svelte";
-import Button from "$lib/components/ui/button.svelte";
+import { Button } from "$lib/components/ui/index.js";
 import Badge from "$lib/components/ui/badge.svelte";
 import Card from "$lib/components/ui/card.svelte";
 import CardContent from "$lib/components/ui/card-content.svelte";

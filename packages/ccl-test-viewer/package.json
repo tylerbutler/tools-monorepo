@@ -52,7 +52,9 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.0.4",
+		"@internationalized/date": "^3.9.0",
 		"@lhci/cli": "^0.13.0",
+		"@lucide/svelte": "^0.515.0",
 		"@playwright/test": "^1.55.0",
 		"@sveltejs/adapter-netlify": "^5.2.3",
 		"@sveltejs/adapter-static": "^3.0.9",

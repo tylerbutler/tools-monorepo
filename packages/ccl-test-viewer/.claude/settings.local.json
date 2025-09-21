@@ -77,7 +77,8 @@
       "mcp__serena__insert_after_symbol",
       "mcp__playwright__browser_file_upload",
       "mcp__sequential-thinking__sequentialthinking",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(npx:*)"
     ],
     "deny": [],
     "ask": []
