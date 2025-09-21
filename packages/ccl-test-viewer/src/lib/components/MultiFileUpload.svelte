@@ -295,7 +295,7 @@ function formatFileSize(bytes: number): string {
 					<h3 class="text-sm font-medium">
 						Uploaded Files ({uploadedFiles.length})
 					</h3>
-					<Button variant="outline" size="sm" onclick={clearAll}>
+					<Button variant="outline" size="sm" onclick={clearAll} data-testid="upload-clear-all-button">
 						Clear All
 					</Button>
 				</div>
