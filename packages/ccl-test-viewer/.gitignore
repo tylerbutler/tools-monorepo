@@ -14,3 +14,4 @@ vite.config.ts.timestamp-*
 # Build and analysis artifacts
 .sonda/
 .playwright-mcp/
+test-results/
