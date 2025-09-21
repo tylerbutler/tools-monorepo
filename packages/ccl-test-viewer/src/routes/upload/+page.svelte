@@ -8,7 +8,7 @@ import Card from "$lib/components/ui/card.svelte";
 import CardContent from "$lib/components/ui/card-content.svelte";
 import CardHeader from "$lib/components/ui/card-header.svelte";
 import CardTitle from "$lib/components/ui/card-title.svelte";
-import { Upload, FileText, Database, Layers, ToggleLeft, ToggleRight, Trash2, Github, Download } from "lucide-svelte";
+import { Upload, FileText, Database, Layers, ToggleLeft, ToggleRight, Trash2, Github, Download, RefreshCw } from "lucide-svelte";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 import type { DataSource } from "$lib/stores/dataSource.js";
 import { onMount } from "svelte";
@@ -75,6 +75,9 @@ let activeTab = $state('upload');
 // Load built-in data state
 let loadMessage = $state<string | null>(null);
 
+// Clear tests state
+let clearMessage = $state<string | null>(null);
+
 // Handle loading built-in data
 async function handleLoadBuiltInData() {
 	const result = await dataSourceManager.loadBuiltInData();
@@ -83,6 +86,17 @@ async function handleLoadBuiltInData() {
 	// Clear message after 3 seconds
 	setTimeout(() => {
 		loadMessage = null;
+	}, 3000);
+}
+
+// Handle clearing all test data
+function handleClearAllData() {
+	dataSourceManager.clearAllData();
+	clearMessage = "All test data cleared successfully";
+
+	// Clear message after 3 seconds
+	setTimeout(() => {
+		clearMessage = null;
 	}, 3000);
 }
 
@@ -145,11 +159,16 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 				</Button>
 			</div>
 
-			<!-- Load Built-in Data Button -->
+			<!-- Load Built-in Data and Clear Tests Buttons -->
 			<div class="flex items-center gap-2">
 				{#if loadMessage}
 					<div class="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
 						{loadMessage}
+					</div>
+				{/if}
+				{#if clearMessage}
+					<div class="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+						{clearMessage}
 					</div>
 				{/if}
 				<Button
@@ -162,6 +181,17 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 				>
 					<Download class="h-4 w-4" />
 					Load Built-in Data
+				</Button>
+				<Button
+					variant="outline"
+					size="sm"
+					onclick={handleClearAllData}
+					disabled={isProcessing}
+					class="flex items-center gap-2"
+					title="Clear all test data and reset to empty state"
+				>
+					<RefreshCw class="h-4 w-4" />
+					Clear Tests
 				</Button>
 			</div>
 		</div>

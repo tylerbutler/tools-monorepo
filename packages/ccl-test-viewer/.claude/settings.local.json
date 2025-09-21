@@ -75,7 +75,9 @@
       "Bash(cp:*)",
       "Bash(git restore:*)",
       "mcp__serena__insert_after_symbol",
-      "mcp__playwright__browser_file_upload"
+      "mcp__playwright__browser_file_upload",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

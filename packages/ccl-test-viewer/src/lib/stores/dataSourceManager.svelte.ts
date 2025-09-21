@@ -295,6 +295,18 @@ class DataSourceManager {
   }
 
   /**
+   * Clear all data sources and reset to completely empty state
+   */
+  clearAllData() {
+    this.dataSources = [];
+    this.lastError = null;
+    this.isProcessing = false;
+    this.processingFiles = [];
+    this.clearStorage();
+    console.log('DataSourceManager: Cleared all data and reset to empty state');
+  }
+
+  /**
    * Get a specific data source by ID
    */
   getSource(sourceId: string): DataSource | undefined {
@@ -373,6 +385,10 @@ class DataSourceManager {
         const staticSource = createStaticDataSource(staticCategories, staticStats);
         this.dataSources = [...this.dataSources, staticSource];
 
+        // Ensure auto-save is enabled and trigger save
+        this.shouldAutoSave = true;
+        this.saveToStorage();
+
         return {
           success: true,
           message: `Loaded built-in data: ${staticStats.totalTests} tests across ${staticCategories.length} categories`
@@ -438,9 +454,15 @@ class DataSourceManager {
 
       const data = JSON.parse(saved);
       if (data.dataSources && Array.isArray(data.dataSources) && data.dataSources.length > 0) {
+        // Restore Date objects from serialized strings
+        const restoredDataSources = data.dataSources.map((source: any) => ({
+          ...source,
+          uploadedAt: new Date(source.uploadedAt)
+        }));
+
         // Force reactivity by replacing the entire array
         this.dataSources.length = 0;
-        this.dataSources.push(...data.dataSources);
+        this.dataSources.push(...restoredDataSources);
         console.log('DataSourceManager: Loaded from localStorage, timestamp:', data.timestamp);
         return true;
       }
