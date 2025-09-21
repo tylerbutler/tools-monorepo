@@ -8,7 +8,7 @@ import Card from "$lib/components/ui/card.svelte";
 import CardContent from "$lib/components/ui/card-content.svelte";
 import CardHeader from "$lib/components/ui/card-header.svelte";
 import CardTitle from "$lib/components/ui/card-title.svelte";
-import { Upload, FileText, Database, Layers, ToggleLeft, ToggleRight, Trash2, Github } from "lucide-svelte";
+import { Upload, FileText, Database, Layers, ToggleLeft, ToggleRight, Trash2, Github, Download } from "lucide-svelte";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 import type { DataSource } from "$lib/stores/dataSource.js";
 import { onMount } from "svelte";
@@ -72,6 +72,20 @@ function handleSourceAdded(source: DataSource) {
 // Tab state management
 let activeTab = $state('upload');
 
+// Load built-in data state
+let loadMessage = $state<string | null>(null);
+
+// Handle loading built-in data
+async function handleLoadBuiltInData() {
+	const result = await dataSourceManager.loadBuiltInData();
+	loadMessage = result.message;
+
+	// Clear message after 3 seconds
+	setTimeout(() => {
+		loadMessage = null;
+	}, 3000);
+}
+
 // Data source summaries for display
 const sourceSummaries = $derived(dataSourceManager.sourceSummaries);
 const mergedStats = $derived(dataSourceManager.mergedStats);
@@ -79,6 +93,7 @@ const isProcessing = $derived(dataSourceManager.isProcessing);
 const hasUploadedSources = $derived(dataSourceManager.getSourcesByType('uploaded').length > 0);
 const hasGitHubSources = $derived(dataSourceManager.getSourcesByType('github').length > 0);
 const hasImportedSources = $derived(hasUploadedSources || hasGitHubSources);
+const hasStaticData = $derived(dataSourceManager.hasStaticData);
 </script>
 
 <svelte:head>
@@ -99,34 +114,56 @@ const hasImportedSources = $derived(hasUploadedSources || hasGitHubSources);
 	<!-- Data Loading Options -->
 	<div class="space-y-6">
 		<!-- Tab Navigation -->
-		<div class="flex items-center gap-2 border-b border-border">
-			<Button
-				variant={activeTab === 'upload' ? 'default' : 'ghost'}
-				size="sm"
-				onclick={() => activeTab = 'upload'}
-				class="flex items-center gap-2"
-			>
-				<Upload class="h-4 w-4" />
-				File Upload
-			</Button>
-			<Button
-				variant={activeTab === 'github-url' ? 'default' : 'ghost'}
-				size="sm"
-				onclick={() => activeTab = 'github-url'}
-				class="flex items-center gap-2"
-			>
-				<Github class="h-4 w-4" />
-				GitHub URL
-			</Button>
-			<Button
-				variant={activeTab === 'github-browse' ? 'default' : 'ghost'}
-				size="sm"
-				onclick={() => activeTab = 'github-browse'}
-				class="flex items-center gap-2"
-			>
-				<FileText class="h-4 w-4" />
-				Browse Repositories
-			</Button>
+		<div class="flex items-center justify-between border-b border-border">
+			<div class="flex items-center gap-2">
+				<Button
+					variant={activeTab === 'upload' ? 'default' : 'ghost'}
+					size="sm"
+					onclick={() => activeTab = 'upload'}
+					class="flex items-center gap-2"
+				>
+					<Upload class="h-4 w-4" />
+					File Upload
+				</Button>
+				<Button
+					variant={activeTab === 'github-url' ? 'default' : 'ghost'}
+					size="sm"
+					onclick={() => activeTab = 'github-url'}
+					class="flex items-center gap-2"
+				>
+					<Github class="h-4 w-4" />
+					GitHub URL
+				</Button>
+				<Button
+					variant={activeTab === 'github-browse' ? 'default' : 'ghost'}
+					size="sm"
+					onclick={() => activeTab = 'github-browse'}
+					class="flex items-center gap-2"
+				>
+					<FileText class="h-4 w-4" />
+					Browse Repositories
+				</Button>
+			</div>
+
+			<!-- Load Built-in Data Button -->
+			<div class="flex items-center gap-2">
+				{#if loadMessage}
+					<div class="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+						{loadMessage}
+					</div>
+				{/if}
+				<Button
+					variant="outline"
+					size="sm"
+					onclick={handleLoadBuiltInData}
+					disabled={isProcessing}
+					class="flex items-center gap-2"
+					title={hasStaticData ? "Built-in data is already loaded" : "Load all built-in test data files"}
+				>
+					<Download class="h-4 w-4" />
+					Load Built-in Data
+				</Button>
+			</div>
 		</div>
 
 		<!-- Tab Content -->

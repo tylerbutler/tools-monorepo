@@ -74,6 +74,7 @@ class DataSourceManager {
   hasActiveSources = $derived(this.activeSourceCount > 0);
   hasMultipleSources = $derived(this.totalSourceCount > 1);
   isReady = $derived(this.hasActiveSources && !this.isProcessing);
+  hasStaticData = $derived(this.dataSources.some(s => s.type === 'static'));
 
   /**
    * Initialize the data source manager with static data
@@ -344,6 +345,55 @@ class DataSourceManager {
       mergedStats: this.mergedStats,
       timestamp: new Date().toISOString()
     };
+  }
+
+  /**
+   * Load all built-in data files and add as static data source
+   * If static data is already loaded, this does nothing
+   */
+  async loadBuiltInData(): Promise<{ success: boolean; message: string }> {
+    // Check if static data source already exists
+    const existingStatic = this.dataSources.find(s => s.type === 'static');
+    if (existingStatic) {
+      return {
+        success: true,
+        message: 'Built-in data is already loaded'
+      };
+    }
+
+    this.isProcessing = true;
+    this.lastError = null;
+
+    try {
+      // Load static data (existing build-time data)
+      const staticCategories = await this.loadStaticCategories();
+      const staticStats = await this.loadStaticStats();
+
+      if (staticCategories && staticStats) {
+        const staticSource = createStaticDataSource(staticCategories, staticStats);
+        this.dataSources = [...this.dataSources, staticSource];
+
+        return {
+          success: true,
+          message: `Loaded built-in data: ${staticStats.totalTests} tests across ${staticCategories.length} categories`
+        };
+      } else {
+        return {
+          success: false,
+          message: 'Failed to load built-in data files'
+        };
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load built-in data';
+      this.lastError = errorMessage;
+
+      return {
+        success: false,
+        message: errorMessage
+      };
+    } finally {
+      this.isProcessing = false;
+    }
   }
 
   /**
