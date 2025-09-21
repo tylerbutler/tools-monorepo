@@ -5,7 +5,9 @@ import FilterSidebar from "$lib/components/FilterSidebar.svelte";
 import TestCard from "$lib/components/TestCard.svelte";
 import { Badge, Button } from "$lib/components/ui/index.js";
 import { appState, initializeApp } from "$lib/stores.svelte.js";
-import { CheckSquare, Grid3x3, Menu, X } from "lucide-svelte";
+import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import { CheckSquare, Grid3x3, Menu, X, Database, Layers } from "lucide-svelte";
+import { onMount } from "svelte";
 
 // Debug: Check if script is executing at all
 console.log("🟦 Browse page script executed at module level");
@@ -15,19 +17,20 @@ let loading = $state(true);
 let initialized = $state(false);
 
 // Initialize data on component mount (Svelte 5 approach)
-$effect(() => {
+onMount(async () => {
 	if (!initialized && browser) {
 		console.log("🟦 Starting browse page initialization");
 		initialized = true;
-		initializeApp()
-			.then(() => {
-				console.log("🟦 Browse page data loaded successfully");
-				loading = false;
-			})
-			.catch((error) => {
-				console.error("🟦 Browse page initialization error:", error);
-				loading = false;
-			});
+		try {
+			// Initialize both data source manager and app state
+			await dataSourceManager.initialize();
+			await initializeApp();
+			console.log("🟦 Browse page data loaded successfully");
+			loading = false;
+		} catch (error) {
+			console.error("🟦 Browse page initialization error:", error);
+			loading = false;
+		}
 	}
 });
 
@@ -41,9 +44,15 @@ function toggleViewMode() {
 	appState.setViewMode(appState.viewMode === "grid" ? "list" : "grid");
 }
 
+// Data source integration - derived states
+const sourceSummaries = $derived(dataSourceManager.sourceSummaries);
+const mergedStats = $derived(dataSourceManager.mergedStats);
+const hasMultipleSources = $derived(dataSourceManager.hasMultipleSources);
+const hasUploadedSources = $derived(dataSourceManager.getSourcesByType('uploaded').length > 0);
+
 // Derived states for the UI
 const hasTests = $derived(appState.filteredTests.length > 0);
-const showResults = $derived(!loading && appState.testStats);
+const showResults = $derived(!loading && (appState.testStats || dataSourceManager.isReady));
 </script>
 
 <svelte:head>
@@ -99,13 +108,32 @@ const showResults = $derived(!loading && appState.testStats);
 				<div class="border-b bg-background p-6">
 					<div class="flex items-center justify-between">
 						<div>
-							<h1 class="text-2xl font-bold">Browse Tests</h1>
+							<div class="flex items-center gap-3 mb-2">
+								<h1 class="text-2xl font-bold">Browse Tests</h1>
+								{#if hasMultipleSources}
+									<Badge variant="outline" class="text-xs">
+										<Layers size={12} class="mr-1" />
+										{mergedStats.activeSources} source{mergedStats.activeSources !== 1 ? 's' : ''}
+									</Badge>
+								{/if}
+								{#if hasUploadedSources}
+									<Badge variant="secondary" class="text-xs">
+										<Database size={12} class="mr-1" />
+										Uploaded Data
+									</Badge>
+								{/if}
+							</div>
 							<p class="text-muted-foreground">
-								{appState.totalFilteredTests} of {appState.testStats?.totalTests || 0} tests
+								{appState.totalFilteredTests} of {mergedStats.totalTests || appState.testStats?.totalTests || 0} tests
 								{#if appState.hasActiveFilters}
 									<Badge variant="secondary" class="ml-2">
 										Filtered
 									</Badge>
+								{/if}
+								{#if hasMultipleSources}
+									<span class="ml-2 text-xs">
+										• {mergedStats.totalCategories} categories • {mergedStats.totalAssertions} assertions
+									</span>
 								{/if}
 							</p>
 						</div>
@@ -131,6 +159,30 @@ const showResults = $derived(!loading && appState.testStats);
 						</div>
 					</div>
 				</div>
+
+				<!-- Data Sources Quick Management (if multiple sources) -->
+				{#if hasMultipleSources}
+					<div class="border-b bg-muted/30 px-6 py-3">
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-2 text-sm text-muted-foreground">
+								<Database size={14} />
+								<span>Data Sources:</span>
+								{#each sourceSummaries as source (source.id)}
+									<Badge
+										variant={source.active ? "default" : "outline"}
+										class="text-xs cursor-pointer"
+										onclick={() => dataSourceManager.toggleSource(source.id)}
+									>
+										{source.name} ({source.testCount})
+									</Badge>
+								{/each}
+							</div>
+							<Button variant="ghost" size="sm" onclick={() => goto('/upload')}>
+								Manage Sources
+							</Button>
+						</div>
+					</div>
+				{/if}
 
 				<!-- Test results -->
 				<div class="flex-1 overflow-auto p-6">

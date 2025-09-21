@@ -9,6 +9,7 @@ import type { TestCategory, TestStats, GeneratedTest } from "../data/types.js";
 import {
   validateTestData,
   createDataSourceFromUpload,
+  createDataSourceFromGitHub,
   createStaticDataSource,
   mergeDataSources,
   generateDataSourceId
@@ -175,9 +176,68 @@ class DataSourceManager {
   }
 
   /**
+   * Process GitHub repository data and add as data source
+   */
+  async processGitHubRepository(repositoryData: {
+    files: { name: string; content: any; url: string }[];
+    repository: { owner: string; repo: string; branch?: string; path?: string };
+    metadata: { loadedAt: Date; totalFiles: number; successfulFiles: number; source: 'github' };
+  }): Promise<{ success: boolean; dataSource?: DataSource; error?: string }> {
+    this.isProcessing = true;
+    this.lastError = null;
+
+    try {
+      // Validate that we have files
+      if (repositoryData.files.length === 0) {
+        return {
+          success: false,
+          error: 'No JSON files found in the repository'
+        };
+      }
+
+      // Create data source from GitHub data
+      const dataSource = createDataSourceFromGitHub(repositoryData);
+
+      // Check if we have valid categories
+      if (dataSource.categories.length === 0) {
+        return {
+          success: false,
+          error: 'No valid test data found in the repository files'
+        };
+      }
+
+      // Add to data sources
+      this.dataSources = [...this.dataSources, dataSource];
+
+      return {
+        success: true,
+        dataSource
+      };
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to process GitHub repository';
+      this.lastError = errorMessage;
+
+      return {
+        success: false,
+        error: errorMessage
+      };
+    } finally {
+      this.isProcessing = false;
+    }
+  }
+
+  /**
    * Clear all uploaded data sources (keep static)
    */
   clearUploadedSources() {
+    this.dataSources = this.dataSources.filter(s => s.type === 'static');
+  }
+
+  /**
+   * Clear all non-static data sources (uploaded + GitHub)
+   */
+  clearAllImportedSources() {
     this.dataSources = this.dataSources.filter(s => s.type === 'static');
   }
 

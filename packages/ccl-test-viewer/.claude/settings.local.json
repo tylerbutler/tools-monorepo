@@ -70,7 +70,8 @@
       "Bash(unalias rm mv)",
       "Bash(time pnpm build)",
       "mcp__serena__think_about_whether_you_are_done",
-      "mcp__playwright__browser_press_key"
+      "mcp__playwright__browser_press_key",
+      "mcp__serena__find_file"
     ],
     "deny": [],
     "ask": []

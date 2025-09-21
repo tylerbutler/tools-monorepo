@@ -229,6 +229,58 @@ export function generateDataSourceId(): string {
 }
 
 /**
+ * Creates a data source from GitHub repository data
+ */
+export function createDataSourceFromGitHub(
+  repositoryData: {
+    files: { name: string; content: any; url: string }[];
+    repository: { owner: string; repo: string; branch?: string; path?: string };
+    metadata: { loadedAt: Date; totalFiles: number; successfulFiles: number; source: 'github' };
+  }
+): DataSource {
+  const { files, repository, metadata } = repositoryData;
+
+  // Process all JSON files into categories
+  const categories: TestCategory[] = [];
+  let totalTests = 0;
+  let totalAssertions = 0;
+
+  for (const file of files) {
+    const validationResult = validateTestData(file.content, file.name);
+
+    if (validationResult.isValid && Array.isArray(file.content)) {
+      const category = jsonToTestCategory(file.content, file.name);
+      categories.push(category);
+      totalTests += validationResult.stats.testCount;
+      totalAssertions += file.content.reduce((sum, test) => sum + (test.expected?.count || 0), 0);
+    }
+  }
+
+  const stats = calculateStats(categories);
+  const repoName = `${repository.owner}/${repository.repo}`;
+  const branchPath = repository.branch !== 'main' ? `@${repository.branch}` : '';
+  const pathSuffix = repository.path ? `/${repository.path}` : '';
+  const sourceName = `${repoName}${branchPath}${pathSuffix}`;
+
+  return {
+    id: generateDataSourceId(),
+    name: sourceName,
+    type: 'github',
+    active: true,
+    url: `https://github.com/${repository.owner}/${repository.repo}`,
+    uploadedAt: metadata.loadedAt,
+    categories,
+    stats,
+    metadata: {
+      githubRepo: repoName,
+      githubBranch: repository.branch || 'main',
+      lastFetched: metadata.loadedAt,
+      originalName: `GitHub: ${sourceName}`
+    }
+  };
+}
+
+/**
  * Creates the default static data source entry
  */
 export function createStaticDataSource(
