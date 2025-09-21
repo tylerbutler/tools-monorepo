@@ -7,6 +7,7 @@ export const load: LayoutLoad = ({ url, params }) => {
 	};
 };
 
-// Disable prerendering but enable SSR for proper page rendering
+// Disable both prerendering and SSR for client-side only app
+// This prevents hydration mismatches with Svelte 5 runes
 export const prerender = false;
-export const ssr = true;
+export const ssr = false;
