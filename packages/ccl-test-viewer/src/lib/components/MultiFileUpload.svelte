@@ -142,15 +142,15 @@ async function processFiles() {
 			const text = await uploadedFile.file.text();
 			const jsonData = JSON.parse(text);
 
-			// Basic validation - should be an array of test objects
-			if (!Array.isArray(jsonData)) {
+			// Validate ccl-test-data format: { tests: [...] }
+			if (!jsonData || typeof jsonData !== 'object' || Array.isArray(jsonData) || !Array.isArray(jsonData.tests)) {
 				uploadedFile.status = 'error';
-				uploadedFile.error = 'JSON must contain an array of tests';
+				uploadedFile.error = 'JSON must contain { tests: [...] } format';
 				continue;
 			}
 
 			// Validate test structure
-			const isValidTestArray = jsonData.every(test =>
+			const hasValidTests = jsonData.tests.every(test =>
 				test &&
 				typeof test === 'object' &&
 				typeof test.name === 'string' &&
@@ -159,14 +159,14 @@ async function processFiles() {
 				typeof test.expected.count === 'number'
 			);
 
-			if (!isValidTestArray) {
+			if (!hasValidTests) {
 				uploadedFile.status = 'error';
 				uploadedFile.error = 'Invalid test data structure';
 				continue;
 			}
 
 			// Generate preview
-			uploadedFile.preview = `${jsonData.length} tests, ${uploadedFile.file.name}`;
+			uploadedFile.preview = `${jsonData.tests.length} tests, ${uploadedFile.file.name}`;
 			uploadedFile.status = 'success';
 
 		} catch (error) {
