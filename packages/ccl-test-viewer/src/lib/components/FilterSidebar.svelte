@@ -6,8 +6,8 @@ import {
 	CardContent,
 	CardHeader,
 	CardTitle,
-	Checkbox,
 	Input,
+	SimpleCheckbox,
 } from "$lib/components/ui/index.js";
 import {
 	AVAILABLE_BEHAVIORS,
@@ -175,7 +175,7 @@ const availableCategories = $derived.by(() => {
 							{@const isActive = appState.activeFilters.functions[func] || false}
 							<div class="flex items-center justify-between">
 								<div class="flex items-center space-x-2 flex-1">
-									<Checkbox
+									<SimpleCheckbox
 										id={`function-${func}`}
 										checked={isActive}
 										onCheckedChange={(checked) => handleFilterToggle("functions", func)}
@@ -239,7 +239,7 @@ const availableCategories = $derived.by(() => {
 							{@const isActive = appState.activeFilters.features[feature] || false}
 							<div class="flex items-center justify-between">
 								<div class="flex items-center space-x-2 flex-1">
-									<Checkbox
+									<SimpleCheckbox
 										id={`feature-${feature}`}
 										checked={isActive}
 										onCheckedChange={(checked) => handleFilterToggle("features", feature)}
@@ -303,7 +303,7 @@ const availableCategories = $derived.by(() => {
 							{@const isActive = appState.activeFilters.behaviors[behavior] || false}
 							<div class="flex items-center justify-between">
 								<div class="flex items-center space-x-2 flex-1">
-									<Checkbox
+									<SimpleCheckbox
 										id={`behavior-${behavior}`}
 										checked={isActive}
 										onCheckedChange={(checked) => handleFilterToggle("behaviors", behavior)}
@@ -367,7 +367,7 @@ const availableCategories = $derived.by(() => {
 							{@const isActive = appState.activeFilters.categories[category] || false}
 							<div class="flex items-center justify-between">
 								<div class="flex items-center space-x-2 flex-1">
-									<Checkbox
+									<SimpleCheckbox
 										id={`category-${category}`}
 										checked={isActive}
 										onCheckedChange={(checked) => handleFilterToggle("categories", category)}
