@@ -159,67 +159,7 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 		</div>
 	</div>
 
-		<!-- Test metadata -->
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-		<!-- Functions -->
-		<Card>
-			<CardHeader class="pb-3">
-				<CardTitle class="text-sm flex items-center">
-					<Code size={16} class="mr-2" />
-					Functions ({test.functions.length})
-				</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="space-y-1">
-					{#each test.functions as func}
-						<Badge variant="secondary" class="text-xs">
-							{func}
-						</Badge>
-					{/each}
-				</div>
-			</CardContent>
-		</Card>
-
-		<!-- Features -->
-		<Card>
-			<CardHeader class="pb-3">
-				<CardTitle class="text-sm">Features ({test.features.length})</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="space-y-1">
-					{#each test.features as feature}
-						<Badge variant="outline" class="text-xs">
-							{feature}
-						</Badge>
-					{/each}
-					{#if test.features.length === 0}
-						<span class="text-sm text-muted-foreground">No special features</span>
-					{/if}
-				</div>
-			</CardContent>
-		</Card>
-
-		<!-- Behaviors -->
-		<Card>
-			<CardHeader class="pb-3">
-				<CardTitle class="text-sm">Behaviors ({test.behaviors.length})</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="space-y-1">
-					{#each test.behaviors as behavior}
-						<Badge variant="outline" class="text-xs">
-							{behavior}
-						</Badge>
-					{/each}
-					{#if test.behaviors.length === 0}
-						<span class="text-sm text-muted-foreground">Default behaviors</span>
-					{/if}
-				</div>
-			</CardContent>
-		</Card>
-	</div>
-
-	<!-- Main content -->
+	<!-- Input and Expected Result (moved above metadata) -->
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 		<!-- Input -->
 		<Card>
@@ -312,6 +252,66 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 							functionName={formattedExpected.metadata.functionType}
 							rawExpected={formattedExpected.content}
 						/>
+					{/if}
+				</div>
+			</CardContent>
+		</Card>
+	</div>
+
+	<!-- Test metadata -->
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+		<!-- Functions -->
+		<Card>
+			<CardHeader class="pb-3">
+				<CardTitle class="text-sm flex items-center">
+					<Code size={16} class="mr-2" />
+					Functions ({test.functions.length})
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div class="space-y-1">
+					{#each test.functions as func}
+						<Badge variant="secondary" class="text-xs">
+							{func}
+						</Badge>
+					{/each}
+				</div>
+			</CardContent>
+		</Card>
+
+		<!-- Features -->
+		<Card>
+			<CardHeader class="pb-3">
+				<CardTitle class="text-sm">Features ({test.features.length})</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div class="space-y-1">
+					{#each test.features as feature}
+						<Badge variant="outline" class="text-xs">
+							{feature}
+						</Badge>
+					{/each}
+					{#if test.features.length === 0}
+						<span class="text-sm text-muted-foreground">No special features</span>
+					{/if}
+				</div>
+			</CardContent>
+		</Card>
+
+		<!-- Behaviors -->
+		<Card>
+			<CardHeader class="pb-3">
+				<CardTitle class="text-sm">Behaviors ({test.behaviors.length})</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div class="space-y-1">
+					{#each test.behaviors as behavior}
+						<Badge variant="outline" class="text-xs">
+							{behavior}
+						</Badge>
+					{/each}
+					{#if test.behaviors.length === 0}
+						<span class="text-sm text-muted-foreground">Default behaviors</span>
 					{/if}
 				</div>
 			</CardContent>
