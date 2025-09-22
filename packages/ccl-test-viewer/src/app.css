@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 @theme {
 	--color-border: hsl(var(--border));
@@ -26,108 +27,53 @@
 }
 
 @layer base {
+	/* Base theme colors that map to Base16 variables */
 	:root {
-		/* Modern vibrant light theme */
-		--background: 220 30% 98%;
-		--foreground: 230 25% 12%;
-		--card: 210 40% 95%;
-		--card-foreground: 230 20% 15%;
-		--popover: 200 50% 96%;
-		--popover-foreground: 230 25% 12%;
-		--primary: 260 80% 55%; /* Rich purple */
-		--primary-foreground: 0 0% 98%;
-		--secondary: 190 70% 45%; /* Vibrant teal */
-		--secondary-foreground: 0 0% 98%;
-		--muted: 200 30% 92%;
-		--muted-foreground: 230 15% 45%;
-		--accent: 320 65% 55%; /* Bright magenta */
-		--accent-foreground: 0 0% 98%;
-		--destructive: 0 75% 58%;
-		--destructive-foreground: 0 0% 98%;
-		--border: 220 25% 85%;
-		--input: 220 25% 90%;
-		--ring: 260 80% 55%;
+		/* Base16 Light Theme Mapping */
+		--background: var(--base00-hsl); /* Background */
+		--foreground: var(--base05-hsl); /* Default Foreground */
+		--card: var(--base01-hsl); /* Lighter Background */
+		--card-foreground: var(--base05-hsl); /* Default Foreground */
+		--popover: var(--base00-hsl); /* Background */
+		--popover-foreground: var(--base05-hsl); /* Default Foreground */
+		--primary: var(--base0D-hsl); /* Blue - Functions, Methods */
+		--primary-foreground: var(--base00-hsl); /* Background */
+		--secondary: var(--base0C-hsl); /* Cyan - Support, Regex */
+		--secondary-foreground: var(--base00-hsl); /* Background */
+		--muted: var(--base02-hsl); /* Selection Background */
+		--muted-foreground: var(--base03-hsl); /* Comments */
+		--accent: var(--base0E-hsl); /* Purple - Keywords, Storage */
+		--accent-foreground: var(--base00-hsl); /* Background */
+		--destructive: var(--base08-hsl); /* Red - Variables, XML Tags */
+		--destructive-foreground: var(--base00-hsl); /* Background */
+		--border: var(--base03-hsl); /* Comments */
+		--input: var(--base01-hsl); /* Lighter Background */
+		--ring: var(--base0D-hsl); /* Blue - Functions, Methods */
 		--radius: 0.75rem;
 
-		/* Expanded colorful palette */
-		--success: 145 70% 45%; /* Emerald green */
-		--success-foreground: 0 0% 98%;
-		--warning: 35 85% 58%; /* Vibrant orange */
-		--warning-foreground: 0 0% 98%;
-		--info: 210 75% 55%; /* Bright blue */
-		--info-foreground: 0 0% 98%;
-		--purple: 270 80% 60%; /* Rich purple */
-		--purple-foreground: 0 0% 98%;
-		--pink: 330 75% 65%; /* Hot pink */
-		--pink-foreground: 0 0% 98%;
-		--indigo: 240 70% 60%; /* Deep indigo */
-		--indigo-foreground: 0 0% 98%;
-		--cyan: 185 85% 50%; /* Electric cyan */
-		--cyan-foreground: 0 0% 98%;
-		--lime: 80 75% 55%; /* Bright lime */
-		--lime-foreground: 230 25% 12%;
-		--amber: 45 90% 60%; /* Golden amber */
-		--amber-foreground: 230 25% 12%;
-		--emerald: 155 75% 50%; /* Emerald */
-		--emerald-foreground: 0 0% 98%;
-		--rose: 350 80% 65%; /* Rose */
-		--rose-foreground: 0 0% 98%;
-
-		/* Terminal-inspired colors - enhanced */
-		--terminal-primary: 192 100% 55%; /* Brighter cyan */
-		--terminal-success: 155 85% 48%; /* Richer green */
-		--terminal-error: 345 90% 65%; /* Vibrant red/pink */
-		--terminal-warning: 39 95% 55%; /* Brighter orange */
-		--terminal-subtle: 220 15% 45%; /* Bluer gray */
-		--terminal-bg: 230 35% 8%; /* Rich dark blue */
-		--terminal-card: 225 25% 15%; /* Dark blue-gray */
-	}
-
-	.dark {
-		/* Modern vibrant dark theme */
-		--background: 230 45% 6%;
-		--foreground: 210 30% 92%;
-		--card: 225 40% 10%;
-		--card-foreground: 210 25% 90%;
-		--popover: 230 35% 8%;
-		--popover-foreground: 210 30% 92%;
-		--primary: 270 75% 65%; /* Brighter purple in dark */
-		--primary-foreground: 230 45% 6%;
-		--secondary: 185 80% 55%; /* Vibrant teal */
-		--secondary-foreground: 230 45% 6%;
-		--muted: 225 25% 18%;
-		--muted-foreground: 220 15% 65%;
-		--accent: 320 70% 65%; /* Bright magenta */
-		--accent-foreground: 230 45% 6%;
-		--destructive: 0 80% 65%;
-		--destructive-foreground: 230 45% 6%;
-		--border: 225 20% 22%;
-		--input: 225 25% 18%;
-		--ring: 270 75% 65%;
-
-		/* Enhanced dark mode extended palette */
-		--success: 145 75% 55%;
-		--success-foreground: 230 45% 6%;
-		--warning: 35 90% 65%;
-		--warning-foreground: 230 45% 6%;
-		--info: 210 80% 65%;
-		--info-foreground: 230 45% 6%;
-		--purple: 270 75% 70%;
-		--purple-foreground: 230 45% 6%;
-		--pink: 330 80% 70%;
-		--pink-foreground: 230 45% 6%;
-		--indigo: 240 75% 70%;
-		--indigo-foreground: 230 45% 6%;
-		--cyan: 185 90% 60%;
-		--cyan-foreground: 230 45% 6%;
-		--lime: 80 80% 65%;
-		--lime-foreground: 230 45% 6%;
-		--amber: 45 95% 70%;
-		--amber-foreground: 230 45% 6%;
-		--emerald: 155 80% 60%;
-		--emerald-foreground: 230 45% 6%;
-		--rose: 350 85% 70%;
-		--rose-foreground: 230 45% 6%;
+		/* Extended colorful palette using Base16 colors */
+		--success: var(--base0B-hsl); /* Green - Strings */
+		--success-foreground: var(--base00-hsl); /* Background */
+		--warning: var(--base09-hsl); /* Orange - Integers, Booleans */
+		--warning-foreground: var(--base00-hsl); /* Background */
+		--info: var(--base0D-hsl); /* Blue - Functions, Methods */
+		--info-foreground: var(--base00-hsl); /* Background */
+		--purple: var(--base0E-hsl); /* Purple - Keywords, Storage */
+		--purple-foreground: var(--base00-hsl); /* Background */
+		--pink: var(--base0E-hsl); /* Purple - Keywords, Storage */
+		--pink-foreground: var(--base00-hsl); /* Background */
+		--indigo: var(--base0D-hsl); /* Blue - Functions, Methods */
+		--indigo-foreground: var(--base00-hsl); /* Background */
+		--cyan: var(--base0C-hsl); /* Cyan - Support, Regex */
+		--cyan-foreground: var(--base00-hsl); /* Background */
+		--lime: var(--base0B-hsl); /* Green - Strings */
+		--lime-foreground: var(--base00-hsl); /* Background */
+		--amber: var(--base0A-hsl); /* Yellow - Classes, Markup Bold */
+		--amber-foreground: var(--base00-hsl); /* Background */
+		--emerald: var(--base0B-hsl); /* Green - Strings */
+		--emerald-foreground: var(--base00-hsl); /* Background */
+		--rose: var(--base08-hsl); /* Red - Variables, XML Tags */
+		--rose-foreground: var(--base00-hsl); /* Background */
 	}
 }
 
