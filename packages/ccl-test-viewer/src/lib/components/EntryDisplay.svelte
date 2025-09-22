@@ -11,41 +11,34 @@ let { entry }: Props = $props();
 // Visualize whitespace in keys and values only
 function visualizeWhitespace(s: string): string {
 	return s
-		.replace(/\t/g, '<span class="whitespace-indicator tab">➞</span>') // Tab
-		.replace(/ /g, '<span class="whitespace-indicator space">●</span>') // Space
-		.replace(/\r\n/g, '<span class="whitespace-indicator newline">¶</span>\r\n') // CRLF
-		.replace(
-			/(?<!\r)\n/g,
-			'<span class="whitespace-indicator newline">¶</span>\n',
-		); // LF
+		.replace(/\t/g, '»') // Tab
+		.replace(/ /g, '·') // Space
+		.replace(/\r\n/g, '¶\r\n') // CRLF
+		.replace(/(?<!\r)\n/g, '¶\n'); // LF
 }
 
 const displayKey = $derived(
 	entry.key
 		? visualizeWhitespace(entry.key)
-		: '<span class="empty-placeholder">(empty)</span>',
+		: '(empty)',
 );
 const displayValue = $derived(
 	entry.value
 		? visualizeWhitespace(entry.value)
-		: '<span class="empty-placeholder">(empty)</span>',
+		: '(empty)',
 );
 </script>
 
-<div class="entry-display font-mono">
-	<span class="entry-key">{@html displayKey}</span>
+<div class="entry-display bg-slate-50 border border-slate-300 dark:bg-slate-800 dark:border-slate-600 font-mono text-sm leading-5">
+	<span class="entry-key {entry.key ? '' : 'empty-placeholder'}">{displayKey}</span>
 	<span class="entry-separator">=</span>
-	<span class="entry-value">{@html displayValue}</span>
+	<span class="entry-value {entry.value ? '' : 'empty-placeholder'}">{displayValue}</span>
 </div>
 
 <style>
 	.entry-display {
-		background: hsl(var(--muted));
-		border: 1px solid hsl(var(--border));
 		border-radius: 0.375rem;
 		padding: 0.5rem 0.75rem;
-		font-size: 0.875rem;
-		line-height: 1.25;
 		display: flex;
 		align-items: baseline;
 		gap: 0.25rem;
@@ -72,40 +65,24 @@ const displayValue = $derived(
 		min-width: 0; /* Allow text to wrap */
 	}
 
-	/* Whitespace indicator styling */
-	:global(.whitespace-indicator) {
-		opacity: 0.6;
-		font-size: 0.9em;
-		color: hsl(var(--muted-foreground));
-		user-select: none;
-		pointer-events: none;
+	/* Style the whitespace characters to be visually distinct */
+	.entry-key,
+	.entry-value {
+		/* Make whitespace indicators slightly muted */
+		color: inherit;
 	}
 
-	:global(.whitespace-indicator.space) {
-		color: #6b7280;
-	}
-
-	:global(.whitespace-indicator.tab) {
-		color: #6b7280;
-		font-weight: bold;
-	}
-
-	:global(.whitespace-indicator.newline) {
-		color: #6b7280;
-		font-weight: bold;
+	.entry-key::after,
+	.entry-value::after {
+		/* This ensures proper spacing for whitespace visualization */
+		content: '';
 	}
 
 	/* Empty placeholder styling */
-	:global(.empty-placeholder) {
+	.empty-placeholder {
 		font-style: italic;
 		color: hsl(var(--muted-foreground));
 		opacity: 0.8;
 	}
 
-	/* Dark mode adjustments */
-	@media (prefers-color-scheme: dark) {
-		.entry-display {
-			background: hsl(var(--card));
-		}
-	}
 </style>

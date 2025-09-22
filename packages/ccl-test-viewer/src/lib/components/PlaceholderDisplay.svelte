@@ -107,7 +107,7 @@ const description = $derived(
 		font-size: 1.125rem;
 		font-weight: 600;
 		color: hsl(var(--foreground));
-		font-family: 'JetBrains Mono', 'Fira Code', monospace;
+		font-family: 'IBM Plex Mono', monospace;
 	}
 
 	.function-description {
@@ -167,7 +167,7 @@ const description = $derived(
 	.raw-content {
 		padding: 1rem;
 		margin: 0;
-		font-family: 'JetBrains Mono', 'Fira Code', monospace;
+		font-family: 'IBM Plex Mono', monospace;
 		font-size: 0.75rem;
 		color: hsl(var(--foreground));
 		background: none;

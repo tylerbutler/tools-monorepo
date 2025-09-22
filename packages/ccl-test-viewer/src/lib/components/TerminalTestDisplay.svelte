@@ -81,7 +81,7 @@ const assertionCount = $derived(test.expected.count || 0);
 
 <style>
 	.terminal-test-display {
-		font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+		font-family: 'IBM Plex Mono', monospace;
 		background: #0A0A0A;
 		color: #FFFFFF;
 		padding: 1.5rem;

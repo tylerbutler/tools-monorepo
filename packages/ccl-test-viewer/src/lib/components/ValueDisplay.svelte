@@ -91,7 +91,7 @@ const formattedValue = $derived.by(() => {
 
 <style>
 	.value-display {
-		font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+		font-family: 'IBM Plex Mono', monospace;
 	}
 
 	.value-container {

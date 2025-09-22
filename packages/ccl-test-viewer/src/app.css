@@ -254,7 +254,7 @@
 	.terminal-theme {
 		background-color: hsl(var(--terminal-bg));
 		color: white;
-		font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+		font-family: "IBM Plex Mono", monospace;
 	}
 
 	.terminal-primary {
@@ -289,7 +289,7 @@
 		border-radius: 0.5rem;
 		padding: 0.25rem 0.5rem;
 		margin: 0 0 0 1rem;
-		font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+		font-family: "IBM Plex Mono", monospace;
 		font-size: 0.875rem;
 		line-height: 1.25;
 	}
@@ -301,5 +301,21 @@
 
 	.whitespace-visible::before {
 		content: attr(data-whitespace);
+	}
+
+	/* PrismJS font overrides */
+	pre[class*="language-"],
+	code[class*="language-"],
+	pre,
+	code {
+		font-family: "IBM Plex Mono", monospace !important;
+	}
+
+	/* Ensure all monospace elements use IBM Plex Mono */
+	.font-mono,
+	tt,
+	kbd,
+	samp {
+		font-family: "IBM Plex Mono", monospace !important;
 	}
 }

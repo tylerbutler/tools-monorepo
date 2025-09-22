@@ -45,7 +45,7 @@ const isMultiline = $derived(entry.value.includes("\n"));
 		padding: 0.25rem 0.5rem;
 		margin: 0 0 0 1rem;
 		background: #1A1A1A;
-		font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+		font-family: 'IBM Plex Mono', monospace;
 		font-size: 0.875rem;
 		line-height: 1.25;
 	}

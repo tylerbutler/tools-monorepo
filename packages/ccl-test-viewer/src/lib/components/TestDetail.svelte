@@ -321,7 +321,7 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 
 <style>
 	.inspect-container {
-		font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+		font-family: 'IBM Plex Mono', monospace;
 		font-size: 0.875rem;
 		background: hsl(var(--muted));
 		border: 1px solid hsl(var(--border));

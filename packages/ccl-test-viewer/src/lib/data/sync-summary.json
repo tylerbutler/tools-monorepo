@@ -1,12 +1,12 @@
 {
-	"generatedAt": "2025-09-22T00:28:55.954Z",
-	"source": "../../../ccl-test-data/generated_tests",
-	"stats": {
-		"categories": 12,
-		"totalTests": 366,
-		"totalAssertions": 630,
-		"uniqueFunctions": 13,
-		"uniqueFeatures": 6,
-		"uniqueBehaviors": 8
-	}
+  "generatedAt": "2025-09-22T01:14:58.041Z",
+  "source": "../../../ccl-test-data/generated_tests",
+  "stats": {
+    "categories": 12,
+    "totalTests": 366,
+    "totalAssertions": 630,
+    "uniqueFunctions": 13,
+    "uniqueFeatures": 6,
+    "uniqueBehaviors": 8
+  }
 }

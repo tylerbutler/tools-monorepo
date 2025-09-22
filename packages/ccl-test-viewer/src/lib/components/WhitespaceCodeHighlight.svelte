@@ -27,8 +27,8 @@ function addWhitespaceIndicators(text: string): string {
 	if (!showWhitespace) return text;
 
 	return text
-		.replace(/\t/g, "➞") // Tab (arrow indicator)
-		.replace(/ /g, "●") // Space (bullet)
+		.replace(/\t/g, "»") // Tab (double right-angle)
+		.replace(/ /g, "·") // Space (middle dot)
 		.replace(/\r\n/g, "¶\r\n") // CRLF (paragraph sign)
 		.replace(/(?<!\r)\n/g, "¶\n"); // LF (paragraph sign)
 }
@@ -39,12 +39,12 @@ function addWhitespaceCSS(html: string): string {
 
 	return html
 		.replace(
-			/➞/g,
-			'<span class="whitespace-indicator tab" title="Tab">➞</span>',
+			/»/g,
+			'<span class="whitespace-indicator tab" title="Tab">»</span>',
 		)
 		.replace(
-			/●/g,
-			'<span class="whitespace-indicator space" title="Space">●</span>',
+			/·/g,
+			'<span class="whitespace-indicator space" title="Space">·</span>',
 		)
 		.replace(
 			/¶/g,
@@ -118,12 +118,25 @@ $effect(() => {
 	font-weight: bold;
 	font-size: 1em;
 }
+
+/* Dark mode adjustments for whitespace indicators */
+@media (prefers-color-scheme: dark) {
+	:global(.whitespace-indicator) {
+		color: #94a3b8; /* slate-400 for dark mode */
+	}
+
+	:global(.whitespace-indicator.space),
+	:global(.whitespace-indicator.tab),
+	:global(.whitespace-indicator.newline) {
+		color: #94a3b8; /* slate-400 for dark mode */
+	}
+}
 </style>
 
 <pre
-	class="inline-block overflow-x-auto bg-slate-50 border-2 border-slate-300 rounded-lg p-4 text-sm shadow-sm {className}"
+	class="inline-block overflow-x-auto bg-slate-50 border border-slate-300 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 rounded-md p-3 text-sm leading-5 font-mono {className}"
 	{...restProps}
-	title={showWhitespace ? "Showing whitespace: ● = space, ➞ = tab, ¶ = newline" : ""}
+	title={showWhitespace ? "Showing whitespace: · = space, » = tab, ¶ = newline" : ""}
 ><code
 	bind:this={codeElement}
 	class="language-{language}"

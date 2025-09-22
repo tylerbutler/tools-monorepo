@@ -101,6 +101,7 @@ const config = {
 			},
 			fontFamily: {
 				sans: [...fontFamily.sans],
+				mono: ['"IBM Plex Mono"', ...fontFamily.mono],
 			},
 		},
 	},

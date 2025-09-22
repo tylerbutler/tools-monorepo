@@ -118,7 +118,7 @@ function formatItem(item: any, index: number) {
 
 <style>
 	.list-display {
-		font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+		font-family: 'IBM Plex Mono', monospace;
 		font-size: 0.875rem;
 	}
 
