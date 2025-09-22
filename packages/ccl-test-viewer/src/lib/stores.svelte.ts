@@ -1,4 +1,5 @@
 // Pure Svelte 5 runes-based state management
+import { browser } from "$app/environment";
 import type {
 	GeneratedTest,
 	SearchIndex,
@@ -12,6 +13,61 @@ export interface FilterState {
 	features: Record<string, boolean>;
 	behaviors: Record<string, boolean>;
 	categories: Record<string, boolean>;
+}
+
+// Theme management
+class ThemeStore {
+	// Initialize theme from localStorage or default to light
+	theme = $state<"light" | "dark">(this.getInitialTheme());
+
+	private getInitialTheme(): "light" | "dark" {
+		if (!browser) return "light";
+
+		// Check localStorage first
+		const stored = localStorage.getItem("theme");
+		if (stored === "light" || stored === "dark") {
+			return stored;
+		}
+
+		// Fall back to system preference
+		if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+			return "dark";
+		}
+
+		return "light";
+	}
+
+	toggle() {
+		this.theme = this.theme === "light" ? "dark" : "light";
+		this.applyTheme();
+	}
+
+	setTheme(newTheme: "light" | "dark") {
+		this.theme = newTheme;
+		this.applyTheme();
+	}
+
+	private applyTheme() {
+		if (!browser) return;
+
+		// Apply class to document element
+		const root = document.documentElement;
+		if (this.theme === "dark") {
+			root.classList.add("dark");
+		} else {
+			root.classList.remove("dark");
+		}
+
+		// Save to localStorage
+		localStorage.setItem("theme", this.theme);
+	}
+
+	// Initialize theme on app load
+	initialize() {
+		if (browser) {
+			this.applyTheme();
+		}
+	}
 }
 
 // Global application state using Svelte 5 runes
@@ -193,7 +249,8 @@ class AppState {
 	}
 }
 
-// Global state instance
+// Global state instances
+export const themeStore = new ThemeStore();
 export const appState = new AppState();
 
 // Helper function to initialize app state

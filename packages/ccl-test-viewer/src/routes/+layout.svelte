@@ -1,9 +1,12 @@
 <script lang="ts">
 import "../app.css";
 import { goto } from "$app/navigation";
+import { onMount } from "svelte";
 import { Home, Search, Upload } from "lucide-svelte";
 import type { Snippet } from "svelte";
 import type { LayoutData } from "./$types";
+import { themeStore } from "$lib/stores.svelte.js";
+import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 
 interface Props {
 	children?: Snippet;
@@ -26,6 +29,11 @@ function skipToMain() {
 		mainElement.scrollIntoView();
 	}
 }
+
+// Initialize theme on mount
+onMount(() => {
+	themeStore.initialize();
+});
 
 // Focus management for route changes - using $effect for side effects in runes mode
 $effect(() => {
@@ -73,8 +81,9 @@ $effect(() => {
 					</button>
 				</div>
 
-				<!-- Primary Navigation -->
-				<nav class="flex items-center gap-2" aria-label="Main navigation">
+				<!-- Primary Navigation and Theme Toggle -->
+				<div class="flex items-center gap-4">
+					<nav class="flex items-center gap-2" aria-label="Main navigation">
 					<button
 						class={`px-3 py-2 rounded text-sm font-medium ${isHomePage ? "bg-primary text-primary-foreground" : "border border-border"}`}
 						onclick={() => goto('/')}
@@ -102,7 +111,11 @@ $effect(() => {
 						<Upload size={16} class="mr-2 inline" />
 						Data
 					</button>
-				</nav>
+					</nav>
+
+					<!-- Theme Toggle -->
+					<ThemeToggle />
+				</div>
 			</div>
 		</div>
 	</header>
