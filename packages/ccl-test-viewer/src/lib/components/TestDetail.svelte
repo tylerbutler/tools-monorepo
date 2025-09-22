@@ -11,7 +11,7 @@ import type { FunctionSpecificResult } from "$lib/data/function-types.js";
 import { FUNCTION_STATUS } from "$lib/data/function-types.js";
 import type { CCLFunction, GeneratedTest } from "$lib/data/types.js";
 import { ArrowLeft, Code, Copy, File, Play } from "lucide-svelte";
-import Inspect from "svelte-inspect-value";
+import JsonTreeViewer from "./JsonTreeViewer.svelte";
 import EntryDisplay from "./EntryDisplay.svelte";
 import ListDisplay from "./ListDisplay.svelte";
 import PlaceholderDisplay from "./PlaceholderDisplay.svelte";
@@ -225,10 +225,8 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 							{/each}
 						</div>
 					{:else if (formattedExpected.type === 'hierarchy' || formattedExpected.type === 'object') && formattedExpected.metadata.isImplemented}
-						<!-- Object/Hierarchy display using svelte-inspect-value -->
-						<div class="inspect-container">
-							<Inspect value={formattedExpected.content} />
-						</div>
+						<!-- Object/Hierarchy display using JsonTreeViewer with debugging -->
+						<JsonTreeViewer data={formattedExpected.content} />
 					{:else if formattedExpected.type === 'value' && formattedExpected.metadata.isImplemented}
 						<!-- Value display for get_string, get_int, etc. -->
 						<ValueDisplay
