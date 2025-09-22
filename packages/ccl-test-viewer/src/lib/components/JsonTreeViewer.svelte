@@ -84,7 +84,6 @@ $effect(() => {
 </script>
 
 <!-- Use the andypf-json-viewer web component with railscasts theme -->
-<!-- svelte-ignore a11y-unknown-element -->
 <andypf-json-viewer
 	bind:this={jsonViewerElement}
 	class="json-tree-container"

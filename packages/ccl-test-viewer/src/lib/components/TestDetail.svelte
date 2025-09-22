@@ -317,15 +317,3 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 	</div>
 </div>
 
-<style>
-	.inspect-container {
-		font-family: 'IBM Plex Mono', monospace;
-		font-size: 0.875rem;
-		background: hsl(var(--muted));
-		border: 1px solid hsl(var(--border));
-		border-radius: 0.5rem;
-		padding: 1rem;
-		max-height: 500px;
-		overflow-y: auto;
-	}
-</style>
