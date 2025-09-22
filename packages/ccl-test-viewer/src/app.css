@@ -20,6 +20,9 @@
 	--color-popover-foreground: hsl(var(--popover-foreground));
 	--color-card: hsl(var(--card));
 	--color-card-foreground: hsl(var(--card-foreground));
+
+	/* Font sizes for consistent code components */
+	--font-size-code: 0.875rem; /* text-sm equivalent */
 }
 
 @layer base {
@@ -309,6 +312,13 @@
 	pre,
 	code {
 		font-family: "IBM Plex Mono", monospace !important;
+	}
+
+	/* Ensure code elements match text-sm sizing */
+	pre.text-sm,
+	code.text-sm,
+	pre.text-sm code {
+		font-size: var(--font-size-code) !important;
 	}
 
 	/* Ensure all monospace elements use IBM Plex Mono */

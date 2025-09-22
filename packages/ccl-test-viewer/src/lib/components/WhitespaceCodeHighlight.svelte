@@ -93,10 +93,10 @@ $effect(() => {
 </script>
 
 <style>
-/* Whitespace indicator styles */
+/* Whitespace indicator styles - using Tailwind v4 theme variable */
 :global(.whitespace-indicator) {
 	opacity: 1.0;
-	font-size: 0.9em;
+	font-size: var(--font-size-code);
 	color: #374151;
 	user-select: none;
 	pointer-events: none;
@@ -104,31 +104,32 @@ $effect(() => {
 
 :global(.whitespace-indicator.space) {
 	color: #374151;
-	font-size: 1em;
+	font-size: var(--font-size-code);
 }
 
 :global(.whitespace-indicator.tab) {
 	color: #374151;
 	font-weight: bold;
-	font-size: 1em;
+	font-size: var(--font-size-code);
 }
 
 :global(.whitespace-indicator.newline) {
 	color: #374151;
 	font-weight: bold;
-	font-size: 1em;
+	font-size: var(--font-size-code);
 }
 
 /* Dark mode adjustments for whitespace indicators */
 @media (prefers-color-scheme: dark) {
 	:global(.whitespace-indicator) {
-		color: #94a3b8; /* slate-400 for dark mode */
+		color: #94a3b8;
 	}
 
 	:global(.whitespace-indicator.space),
 	:global(.whitespace-indicator.tab),
 	:global(.whitespace-indicator.newline) {
-		color: #94a3b8; /* slate-400 for dark mode */
+		color: #94a3b8;
+		font-size: var(--font-size-code);
 	}
 }
 </style>
