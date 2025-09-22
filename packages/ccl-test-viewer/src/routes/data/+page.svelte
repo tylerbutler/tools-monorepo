@@ -129,120 +129,153 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 </script>
 
 <svelte:head>
-	<title>Data Management - CCL Test Suite Viewer</title>
-	<meta name="description" content="Manage and process test data from multiple sources for CCL test suite visualization" />
+	<title>Data Source Management - CCL Test Suite Viewer</title>
+	<meta name="description" content="Manage all your CCL test data sources including built-in data, uploaded files, and GitHub repositories. Toggle sources on/off and remove them as needed." />
 </svelte:head>
 
 <div class="container mx-auto px-4 py-6 space-y-6">
 	<!-- Page Header -->
 	<div class="space-y-2">
-		<h1 class="text-3xl font-bold tracking-tight">Data Management</h1>
+		<h1 class="text-3xl font-bold tracking-tight">Data Source Management</h1>
 		<p class="text-muted-foreground">
-			Manage test data from multiple sources including file uploads and GitHub repositories.
-			This complements the static test data built into the application.
+			Manage all your test data sources including built-in data, uploaded files, and GitHub repositories.
+			Each source can be toggled on/off and removed as needed.
 		</p>
 	</div>
 
-	<!-- Data Loading Options -->
-	<div class="space-y-6">
-		<!-- Tab Navigation -->
-		<div class="flex items-center justify-between border-b border-border">
-			<div class="flex items-center gap-2">
-				<Button
-					variant={activeTab === 'upload' ? 'default' : 'ghost'}
-					size="sm"
-					onclick={() => activeTab = 'upload'}
-					class="flex items-center gap-2"
-				>
-					<Upload class="h-4 w-4" />
-					File Upload
-				</Button>
-				<Button
-					variant={activeTab === 'github-url' ? 'default' : 'ghost'}
-					size="sm"
-					onclick={() => activeTab = 'github-url'}
-					class="flex items-center gap-2"
-				>
-					<Github class="h-4 w-4" />
-					GitHub URL
-				</Button>
-				<Button
-					variant={activeTab === 'github-browse' ? 'default' : 'ghost'}
-					size="sm"
-					onclick={() => activeTab = 'github-browse'}
-					class="flex items-center gap-2"
-				>
-					<FileText class="h-4 w-4" />
-					Browse Repositories
-				</Button>
+	<!-- Data Sources Management -->
+	<Card>
+		<CardHeader>
+			<div class="flex items-center justify-between">
+				<CardTitle class="flex items-center gap-2">
+					<Layers size={20} />
+					Current Data Sources
+				</CardTitle>
+				<div class="flex items-center gap-2">
+					{#if loadMessage}
+						<div class="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+							{loadMessage}
+						</div>
+					{/if}
+					{#if clearMessage}
+						<div class="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+							{clearMessage}
+						</div>
+					{/if}
+					<Button
+						variant="outline"
+						size="sm"
+						onclick={handleLoadBuiltInData}
+						disabled={isProcessing}
+						class="flex items-center gap-2"
+						title={hasStaticData ? "Built-in data is already loaded" : "Load all built-in test data files"}
+					>
+						<Download class="h-4 w-4" />
+						Load Built-in Data
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onclick={handleClearAllData}
+						disabled={isProcessing}
+						class="flex items-center gap-2 text-red-600 hover:text-red-700"
+						title="Clear all test data and reset to empty state"
+					>
+						<RefreshCw class="h-4 w-4" />
+						Clear All
+					</Button>
+				</div>
 			</div>
-
-			<!-- Load Built-in Data and Clear Tests Buttons -->
-			<div class="flex items-center gap-2">
-				{#if loadMessage}
-					<div class="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-						{loadMessage}
+		</CardHeader>
+		<CardContent>
+			{#if sourceSummaries.length === 0}
+				<!-- Empty state -->
+				<div class="text-center py-8 space-y-4">
+					<div class="text-muted-foreground">
+						<Database size={48} class="mx-auto mb-4 opacity-50" />
+						<p class="text-lg font-medium">No Data Sources</p>
+						<p class="text-sm">Load built-in data or add new sources to get started</p>
 					</div>
-				{/if}
-				{#if clearMessage}
-					<div class="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-						{clearMessage}
-					</div>
-				{/if}
-				<Button
-					variant="outline"
-					size="sm"
-					onclick={handleLoadBuiltInData}
-					disabled={isProcessing}
-					class="flex items-center gap-2"
-					title={hasStaticData ? "Built-in data is already loaded" : "Load all built-in test data files"}
-				>
-					<Download class="h-4 w-4" />
-					Load Built-in Data
-				</Button>
-				<Button
-					variant="outline"
-					size="sm"
-					onclick={handleClearAllData}
-					disabled={isProcessing}
-					class="flex items-center gap-2"
-					title="Clear all test data and reset to empty state"
-				>
-					<RefreshCw class="h-4 w-4" />
-					Clear Tests
-				</Button>
-			</div>
-		</div>
+				</div>
+			{:else}
+				<!-- Data sources list -->
+				<div class="space-y-3">
+					{#each sourceSummaries as source (source.id)}
+						<div class="flex items-center justify-between p-4 border rounded-lg bg-card">
+							<div class="flex items-center gap-3">
+								<button
+									onclick={() => toggleDataSource(source.id)}
+									class="text-muted-foreground hover:text-foreground transition-colors"
+									aria-label={source.active ? "Deactivate source" : "Activate source"}
+								>
+									{#if source.active}
+										<ToggleRight size={20} class="text-primary" />
+									{:else}
+										<ToggleLeft size={20} />
+									{/if}
+								</button>
 
-		<!-- Tab Content -->
-		{#if activeTab === 'upload'}
-			<Card>
-				<CardHeader>
-					<CardTitle class="flex items-center gap-2">
-						<Upload class="h-5 w-5" />
-						Upload JSON Files
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<MultiFileUpload onFilesUploaded={handleFilesUploaded} maxFiles={10} />
-				</CardContent>
-			</Card>
-		{:else if activeTab === 'github-url'}
-			<Card>
-				<CardHeader>
-					<CardTitle class="flex items-center gap-2">
-						<Github class="h-5 w-5" />
-						Load from GitHub URL
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<GitHubUrlInput onLoad={handleGitHubRepositoryLoad} disabled={isProcessing} />
-				</CardContent>
-			</Card>
-		{:else if activeTab === 'github-browse'}
-			<GitHubRepositoryBrowser onSourceAdded={handleSourceAdded} />
-		{/if}
-	</div>
+								<div class="flex-1 min-w-0">
+									<div class="flex items-center gap-2 mb-1">
+										<span class="font-medium truncate">{source.name}</span>
+										<Badge
+											variant={source.type === 'static' ? 'default' : source.type === 'github' ? 'destructive' : 'secondary'}
+											class="flex-shrink-0"
+										>
+											{source.type === 'static' ? 'Built-in' : source.type === 'github' ? 'GitHub' : 'Uploaded'}
+										</Badge>
+										{#if !source.active}
+											<Badge variant="outline" class="text-xs flex-shrink-0">inactive</Badge>
+										{/if}
+									</div>
+									<div class="flex items-center gap-4 text-xs text-muted-foreground">
+										<span class="flex items-center gap-1">
+											<FileText size={12} />
+											{source.testCount} tests
+										</span>
+										<span class="flex items-center gap-1">
+											<Layers size={12} />
+											{source.categoryCount} categories
+										</span>
+										<span class="flex items-center gap-1">
+											<Database size={12} />
+											{source.type === 'static' ? 'Built-in' : `Added ${source.uploadedAt.toLocaleDateString()}`}
+										</span>
+									</div>
+									{#if source.metadata}
+										<div class="text-xs text-muted-foreground mt-1">
+											{#if source.type === 'github' && source.metadata.repository}
+												<span class="flex items-center gap-1">
+													<Github size={12} />
+													{source.metadata.repository.owner}/{source.metadata.repository.repo}
+													{#if source.metadata.repository.path}
+														/{source.metadata.repository.path}
+													{/if}
+												</span>
+											{/if}
+										</div>
+									{/if}
+								</div>
+							</div>
+
+							{#if source.type !== 'static'}
+								<Button
+									variant="ghost"
+									size="sm"
+									onclick={() => removeDataSource(source.id)}
+									class="text-red-600 hover:text-red-700 hover:bg-red-50 ml-2"
+									aria-label="Remove data source"
+									title="Remove this data source"
+								>
+									<Trash2 size={14} />
+								</Button>
+							{/if}
+						</div>
+					{/each}
+				</div>
+			{/if}
+		</CardContent>
+	</Card>
 
 	<!-- Combined Data Summary -->
 	{#if mergedStats.totalSources > 0}
@@ -281,7 +314,7 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 						</span>
 					</div>
 					{#if hasImportedSources}
-						<Button variant="outline" size="sm" onclick={() => dataSourceManager.clearAllImportedSources()}>
+						<Button variant="outline" size="sm" onclick={() => dataSourceManager.clearAllImportedSources()} class="text-red-600 hover:text-red-700">
 							Clear All Imported Data
 						</Button>
 					{/if}
@@ -290,67 +323,74 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 		</Card>
 	{/if}
 
-	<!-- Data Sources Management -->
-	{#if sourceSummaries.length > 1}
-		<Card>
-			<CardHeader>
-				<CardTitle class="flex items-center gap-2">
-					<Layers size={20} />
-					Data Sources
-				</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="space-y-3">
-					{#each sourceSummaries as source (source.id)}
-						<div class="flex items-center justify-between p-3 border rounded-lg">
-							<div class="flex items-center gap-3">
-								<button
-									onclick={() => toggleDataSource(source.id)}
-									class="text-muted-foreground hover:text-foreground transition-colors"
-									aria-label={source.active ? "Deactivate source" : "Activate source"}
-								>
-									{#if source.active}
-										<ToggleRight size={20} class="text-primary" />
-									{:else}
-										<ToggleLeft size={20} />
-									{/if}
-								</button>
+	<!-- Add New Data Sources -->
+	<div class="space-y-6">
+		<!-- Tab Navigation -->
+		<div class="border-b border-border">
+			<div class="flex items-center gap-2 pb-2">
+				<h2 class="text-lg font-semibold">Add New Data Sources</h2>
+			</div>
+			<div class="flex items-center gap-2 mb-4">
+				<Button
+					variant={activeTab === 'upload' ? 'default' : 'ghost'}
+					size="sm"
+					onclick={() => activeTab = 'upload'}
+					class="flex items-center gap-2"
+				>
+					<Upload class="h-4 w-4" />
+					File Upload
+				</Button>
+				<Button
+					variant={activeTab === 'github-url' ? 'default' : 'ghost'}
+					size="sm"
+					onclick={() => activeTab = 'github-url'}
+					class="flex items-center gap-2"
+				>
+					<Github class="h-4 w-4" />
+					GitHub URL
+				</Button>
+				<Button
+					variant={activeTab === 'github-browse' ? 'default' : 'ghost'}
+					size="sm"
+					onclick={() => activeTab = 'github-browse'}
+					class="flex items-center gap-2"
+				>
+					<FileText class="h-4 w-4" />
+					Browse Repositories
+				</Button>
+			</div>
+		</div>
 
-								<div class="flex-1">
-									<div class="flex items-center gap-2">
-										<span class="font-medium">{source.name}</span>
-										<Badge variant={source.type === 'static' ? 'default' : source.type === 'github' ? 'destructive' : 'secondary'}>
-											{source.type === 'github' ? 'GitHub' : source.type}
-										</Badge>
-										{#if !source.active}
-											<Badge variant="outline" class="text-xs">inactive</Badge>
-										{/if}
-									</div>
-									<div class="flex items-center gap-4 text-xs text-muted-foreground mt-1">
-										<span>{source.testCount} tests</span>
-										<span>{source.categoryCount} categories</span>
-										<span>uploaded {source.uploadedAt.toLocaleDateString()}</span>
-									</div>
-								</div>
-							</div>
+		<!-- Tab Content -->
+		{#if activeTab === 'upload'}
+			<Card>
+				<CardHeader>
+					<CardTitle class="flex items-center gap-2">
+						<Upload class="h-5 w-5" />
+						Upload JSON Files
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<MultiFileUpload onFilesUploaded={handleFilesUploaded} maxFiles={10} />
+				</CardContent>
+			</Card>
+		{:else if activeTab === 'github-url'}
+			<Card>
+				<CardHeader>
+					<CardTitle class="flex items-center gap-2">
+						<Github class="h-5 w-5" />
+						Load from GitHub URL
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<GitHubUrlInput onLoad={handleGitHubRepositoryLoad} disabled={isProcessing} />
+				</CardContent>
+			</Card>
+		{:else if activeTab === 'github-browse'}
+			<GitHubRepositoryBrowser onSourceAdded={handleSourceAdded} />
+		{/if}
+	</div>
 
-							{#if source.type !== 'static'}
-								<Button
-									variant="ghost"
-									size="sm"
-									onclick={() => removeDataSource(source.id)}
-									class="text-red-600 hover:text-red-700"
-									aria-label="Remove data source"
-								>
-									<Trash2 size={14} />
-								</Button>
-							{/if}
-						</div>
-					{/each}
-				</div>
-			</CardContent>
-		</Card>
-	{/if}
 
 	<!-- Phase Status -->
 	{#if hasImportedSources}
