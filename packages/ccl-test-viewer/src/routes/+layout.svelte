@@ -30,23 +30,9 @@ function skipToMain() {
 	}
 }
 
-// Initialize theme on mount
+// Initialize theme on mount - removed $effect DOM manipulation to fix lifecycle issues
 onMount(() => {
 	themeStore.initialize();
-});
-
-// Focus management for route changes - using $effect for side effects in runes mode
-$effect(() => {
-	// Announce route changes to screen readers
-	const routeName = isHomePage
-		? "Dashboard"
-		: isBrowsePage
-			? "Browse Tests"
-			: isDataPage
-				? "Data Management"
-				: "Test Detail";
-	// Update document title for accessibility
-	document.title = `${routeName} - CCL Test Suite Viewer`;
 });
 </script>
 

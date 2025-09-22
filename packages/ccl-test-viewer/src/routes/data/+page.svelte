@@ -244,12 +244,12 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 									</div>
 									{#if source.metadata}
 										<div class="text-xs text-muted-foreground mt-1">
-											{#if source.type === 'github' && source.metadata.repository}
+											{#if source.type === 'github' && source.metadata.githubRepo}
 												<span class="flex items-center gap-1">
 													<Github size={12} />
-													{source.metadata.repository.owner}/{source.metadata.repository.repo}
-													{#if source.metadata.repository.path}
-														/{source.metadata.repository.path}
+													{source.metadata.githubRepo}
+													{#if source.metadata.githubBranch}
+														on {source.metadata.githubBranch}
 													{/if}
 												</span>
 											{/if}

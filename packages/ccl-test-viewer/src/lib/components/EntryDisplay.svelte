@@ -51,6 +51,10 @@ const displayValue = $derived(
 	.entry-key {
 		color: hsl(var(--primary));
 		font-weight: 600;
+		background-color: hsl(var(--primary) / 0.1);
+		border: 1px solid hsl(var(--primary) / 0.2);
+		border-radius: 0.25rem;
+		padding: 0.125rem 0.375rem;
 	}
 
 	.entry-separator {
@@ -63,6 +67,10 @@ const displayValue = $derived(
 		color: hsl(var(--foreground));
 		flex: 1;
 		min-width: 0; /* Allow text to wrap */
+		background-color: hsl(var(--secondary) / 0.3);
+		border: 1px solid hsl(var(--secondary) / 0.5);
+		border-radius: 0.25rem;
+		padding: 0.125rem 0.375rem;
 	}
 
 	/* Style the whitespace characters to be visually distinct */
