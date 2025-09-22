@@ -16,7 +16,7 @@ $effect(() => {
 		hasData: !!data,
 		isReady: isComponentReady,
 		isInitializing: isInitializing,
-		isCustomElementDefined: typeof customElements !== 'undefined' ? !!customElements.get('json-viewer') : false,
+		isCustomElementDefined: typeof customElements !== 'undefined' ? !!customElements.get('andypf-json-viewer') : false,
 		isBrowser: typeof window !== 'undefined'
 	});
 
@@ -28,15 +28,15 @@ $effect(() => {
 		// Initialize the web component
 		(async () => {
 			try {
-				console.log("JsonTreeViewer: Starting import of @alenaksu/json-viewer");
-				await import("@alenaksu/json-viewer");
+				console.log("JsonTreeViewer: Starting import of @andypf/json-viewer");
+				await import("@andypf/json-viewer");
 				console.log("JsonTreeViewer: Web component imported successfully");
 
 				// Wait for custom element to be defined with timeout
-				if (!customElements.get('json-viewer')) {
+				if (!customElements.get('andypf-json-viewer')) {
 					console.log("JsonTreeViewer: Waiting for custom element to be defined");
 					await Promise.race([
-						customElements.whenDefined('json-viewer'),
+						customElements.whenDefined('andypf-json-viewer'),
 						new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
 					]);
 				}
@@ -47,7 +47,7 @@ $effect(() => {
 
 				// Set the data after the component is loaded and defined
 				if (jsonViewerElement && data) {
-					(jsonViewerElement as any).data = data;
+					(jsonViewerElement as any).data = JSON.stringify(data);
 					console.log("JsonTreeViewer: Data set on web component:", data);
 				}
 			} catch (error) {
@@ -66,9 +66,9 @@ $effect(() => {
 
 	// Update data when component is ready or provide fallback
 	if (jsonViewerElement && data) {
-		if (isComponentReady && typeof customElements !== 'undefined' && customElements.get('json-viewer')) {
+		if (isComponentReady && typeof customElements !== 'undefined' && customElements.get('andypf-json-viewer')) {
 			try {
-				(jsonViewerElement as any).data = data;
+				(jsonViewerElement as any).data = JSON.stringify(data);
 				console.log("JsonTreeViewer: Updated data on web component:", data);
 			} catch (error) {
 				console.error("JsonTreeViewer: Failed to update data:", error);
@@ -83,12 +83,17 @@ $effect(() => {
 });
 </script>
 
-<!-- Use the web component directly -->
+<!-- Use the andypf-json-viewer web component with railscasts theme -->
 <!-- svelte-ignore a11y-unknown-element -->
-<json-viewer
+<andypf-json-viewer
 	bind:this={jsonViewerElement}
 	class="json-tree-container"
-></json-viewer>
+	theme="railscasts"
+	expanded="true"
+	show-data-types="false"
+	show-toolbar="false"
+	indent="2"
+></andypf-json-viewer>
 
 <style>
 	.json-tree-container {
@@ -104,16 +109,19 @@ $effect(() => {
 		display: block;
 	}
 
-	/* Style the web component JSON viewer to match our theme */
-	:global(json-viewer) {
-		--json-viewer-background: hsl(var(--muted));
-		--json-viewer-color: hsl(var(--foreground));
-		--json-viewer-string-color: hsl(var(--foreground));
-		--json-viewer-number-color: hsl(var(--primary));
-		--json-viewer-boolean-color: hsl(var(--primary));
-		--json-viewer-null-color: hsl(var(--muted-foreground));
-		--json-viewer-property-color: hsl(var(--primary));
-		--json-viewer-key-color: hsl(var(--primary));
+	/* Style the andypf-json-viewer web component */
+	:global(andypf-json-viewer) {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 0.875rem;
+		width: 100%;
+		display: block;
+	}
+
+	/* Override any default styling to match our theme */
+	:global(andypf-json-viewer::part(container)) {
+		background: transparent;
+		border: none;
+		padding: 0;
 	}
 
 	/* Fallback styling for JSON.stringify */
