@@ -48,14 +48,18 @@ class ThemeStore {
 		// Check localStorage first
 		const stored = localStorage.getItem("theme");
 		if (stored === "light" || stored === "dark") {
+			// Immediately apply theme classes when theme is initialized
+			setTimeout(() => this.applyTheme(), 0);
 			return stored;
 		}
 
 		// Fall back to system preference
 		if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+			setTimeout(() => this.applyTheme(), 0);
 			return "dark";
 		}
 
+		setTimeout(() => this.applyTheme(), 0);
 		return "light";
 	}
 
@@ -108,25 +112,36 @@ class ThemeStore {
 	private applyTheme() {
 		if (!browser) return;
 
+		console.log("🎨 ThemeStore.applyTheme() called");
+		console.log("  Current theme:", this.theme);
+		console.log("  Current base16Theme:", this.base16Theme);
+
 		const root = document.documentElement;
+		console.log("  HTML classes before:", Array.from(root.classList));
 
 		// Remove all existing base16 and theme classes
 		const existingClasses = Array.from(root.classList).filter(
 			cls => cls.startsWith('base16-') || cls === 'dark'
 		);
+		console.log("  Removing classes:", existingClasses);
 		root.classList.remove(...existingClasses);
 
 		// Apply new base16 theme class
+		console.log("  Adding base16 class:", this.base16Theme);
 		root.classList.add(this.base16Theme);
 
 		// Apply dark mode class if needed
 		if (this.theme === "dark") {
+			console.log("  Adding dark class");
 			root.classList.add("dark");
 		}
+
+		console.log("  HTML classes after:", Array.from(root.classList));
 
 		// Save to localStorage
 		localStorage.setItem("theme", this.theme);
 		localStorage.setItem("base16Theme", this.base16Theme);
+		console.log("  Saved to localStorage");
 	}
 
 	// Get available themes for current mode
@@ -151,8 +166,12 @@ class ThemeStore {
 
 	// Initialize theme on app load
 	initialize() {
+		console.log("🚀 ThemeStore.initialize() called, browser:", browser);
 		if (browser) {
+			console.log("  Calling applyTheme()...");
 			this.applyTheme();
+		} else {
+			console.log("  Skipping applyTheme() - not in browser");
 		}
 	}
 }

@@ -43,17 +43,17 @@ const description = $derived(
 	<div class="status-content">
 		{#if status === 'implemented'}
 			<div class="status-message success">
-				<Wrench size={16} class="text-green-600" />
+				<Wrench size={16} class="text-success" />
 				<span>This function is implemented and ready for use.</span>
 			</div>
 		{:else if status === 'planned'}
 			<div class="status-message planned">
-				<Wrench size={16} class="text-yellow-600" />
+				<Wrench size={16} class="text-warning" />
 				<span>This function visualization is planned for implementation.</span>
 			</div>
 		{:else}
 			<div class="status-message experimental">
-				<Wrench size={16} class="text-purple-600" />
+				<Wrench size={16} class="text-purple" />
 				<span>This function is experimental and may have limited support.</span>
 			</div>
 		{/if}

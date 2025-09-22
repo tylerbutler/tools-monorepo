@@ -1,145 +1,9 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
 
 @theme {
-	--color-border: hsl(var(--border));
-	--color-input: hsl(var(--input));
-	--color-ring: hsl(var(--ring));
-	--color-background: hsl(var(--background));
-	--color-foreground: hsl(var(--foreground));
-	--color-primary: hsl(var(--primary));
-	--color-primary-foreground: hsl(var(--primary-foreground));
-	--color-secondary: hsl(var(--secondary));
-	--color-secondary-foreground: hsl(var(--secondary-foreground));
-	--color-destructive: hsl(var(--destructive));
-	--color-destructive-foreground: hsl(var(--destructive-foreground));
-	--color-muted: hsl(var(--muted));
-	--color-muted-foreground: hsl(var(--muted-foreground));
-	--color-accent: hsl(var(--accent));
-	--color-accent-foreground: hsl(var(--accent-foreground));
-	--color-popover: hsl(var(--popover));
-	--color-popover-foreground: hsl(var(--popover-foreground));
-	--color-card: hsl(var(--card));
-	--color-card-foreground: hsl(var(--card-foreground));
-
-	/* Font sizes for consistent code components */
-	--font-size-code: 0.875rem; /* text-sm equivalent */
-}
-
-@layer base {
-	:root {
-		/* Modern vibrant light theme */
-		--background: 220 30% 98%;
-		--foreground: 230 25% 12%;
-		--card: 210 40% 95%;
-		--card-foreground: 230 20% 15%;
-		--popover: 200 50% 96%;
-		--popover-foreground: 230 25% 12%;
-		--primary: 260 80% 55%; /* Rich purple */
-		--primary-foreground: 0 0% 98%;
-		--secondary: 190 70% 45%; /* Vibrant teal */
-		--secondary-foreground: 0 0% 98%;
-		--muted: 200 30% 92%;
-		--muted-foreground: 230 15% 45%;
-		--accent: 320 65% 55%; /* Bright magenta */
-		--accent-foreground: 0 0% 98%;
-		--destructive: 0 75% 58%;
-		--destructive-foreground: 0 0% 98%;
-		--border: 220 25% 85%;
-		--input: 220 25% 90%;
-		--ring: 260 80% 55%;
-		--radius: 0.75rem;
-
-		/* Expanded colorful palette */
-		--success: 145 70% 45%; /* Emerald green */
-		--success-foreground: 0 0% 98%;
-		--warning: 35 85% 58%; /* Vibrant orange */
-		--warning-foreground: 0 0% 98%;
-		--info: 210 75% 55%; /* Bright blue */
-		--info-foreground: 0 0% 98%;
-		--purple: 270 80% 60%; /* Rich purple */
-		--purple-foreground: 0 0% 98%;
-		--pink: 330 75% 65%; /* Hot pink */
-		--pink-foreground: 0 0% 98%;
-		--indigo: 240 70% 60%; /* Deep indigo */
-		--indigo-foreground: 0 0% 98%;
-		--cyan: 185 85% 50%; /* Electric cyan */
-		--cyan-foreground: 0 0% 98%;
-		--lime: 80 75% 55%; /* Bright lime */
-		--lime-foreground: 230 25% 12%;
-		--amber: 45 90% 60%; /* Golden amber */
-		--amber-foreground: 230 25% 12%;
-		--emerald: 155 75% 50%; /* Emerald */
-		--emerald-foreground: 0 0% 98%;
-		--rose: 350 80% 65%; /* Rose */
-		--rose-foreground: 0 0% 98%;
-
-		/* Terminal-inspired colors - enhanced */
-		--terminal-primary: 192 100% 55%; /* Brighter cyan */
-		--terminal-success: 155 85% 48%; /* Richer green */
-		--terminal-error: 345 90% 65%; /* Vibrant red/pink */
-		--terminal-warning: 39 95% 55%; /* Brighter orange */
-		--terminal-subtle: 220 15% 45%; /* Bluer gray */
-		--terminal-bg: 230 35% 8%; /* Rich dark blue */
-		--terminal-card: 225 25% 15%; /* Dark blue-gray */
-	}
-
-	.dark {
-		/* Modern vibrant dark theme */
-		--background: 230 45% 6%;
-		--foreground: 210 30% 92%;
-		--card: 225 40% 10%;
-		--card-foreground: 210 25% 90%;
-		--popover: 230 35% 8%;
-		--popover-foreground: 210 30% 92%;
-		--primary: 270 75% 65%; /* Brighter purple in dark */
-		--primary-foreground: 230 45% 6%;
-		--secondary: 185 80% 55%; /* Vibrant teal */
-		--secondary-foreground: 230 45% 6%;
-		--muted: 225 25% 18%;
-		--muted-foreground: 220 15% 65%;
-		--accent: 320 70% 65%; /* Bright magenta */
-		--accent-foreground: 230 45% 6%;
-		--destructive: 0 80% 65%;
-		--destructive-foreground: 230 45% 6%;
-		--border: 225 20% 22%;
-		--input: 225 25% 18%;
-		--ring: 270 75% 65%;
-
-		/* Enhanced dark mode extended palette */
-		--success: 145 75% 55%;
-		--success-foreground: 230 45% 6%;
-		--warning: 35 90% 65%;
-		--warning-foreground: 230 45% 6%;
-		--info: 210 80% 65%;
-		--info-foreground: 230 45% 6%;
-		--purple: 270 75% 70%;
-		--purple-foreground: 230 45% 6%;
-		--pink: 330 80% 70%;
-		--pink-foreground: 230 45% 6%;
-		--indigo: 240 75% 70%;
-		--indigo-foreground: 230 45% 6%;
-		--cyan: 185 90% 60%;
-		--cyan-foreground: 230 45% 6%;
-		--lime: 80 80% 65%;
-		--lime-foreground: 230 45% 6%;
-		--amber: 45 95% 70%;
-		--amber-foreground: 230 45% 6%;
-		--emerald: 155 80% 60%;
-		--emerald-foreground: 230 45% 6%;
-		--rose: 350 85% 70%;
-		--rose-foreground: 230 45% 6%;
-	}
-}
-
-@layer base {
-	* {
-		border-color: hsl(var(--border));
-	}
-	body {
-		background-color: hsl(var(--background));
-		color: hsl(var(--foreground));
-	}
+  /* Use Tailwind's default color palette - no custom overrides */
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --radius: 0.5rem;
 }
 
 /* Accessibility utilities */
@@ -191,20 +55,6 @@
 		}
 	}
 
-	/* Focus styles for better keyboard navigation */
-	.focus-visible {
-		@apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
-	}
-
-	/* High contrast dark mode support */
-	@media (prefers-color-scheme: dark) and (prefers-contrast: high) {
-		:root {
-			--background: 0 0% 0%;
-			--foreground: 0 0% 100%;
-			--primary: 0 0% 100%;
-			--primary-foreground: 0 0% 0%;
-		}
-	}
 
 	/* Touch-friendly interactions */
 	.touch-friendly {

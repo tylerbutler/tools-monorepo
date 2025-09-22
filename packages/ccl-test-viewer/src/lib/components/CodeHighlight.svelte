@@ -61,4 +61,4 @@ $effect(() => {
 });
 </script>
 
-<pre class="overflow-x-auto bg-gray-50 border border-gray-200 rounded-md p-3 text-sm {className}" {...restProps}><code bind:this={codeElement} class="language-{language}">{code}</code></pre>
+<pre class="overflow-x-auto bg-muted border border-border rounded-md p-3 text-sm {className}" {...restProps}><code bind:this={codeElement} class="language-{language}">{code}</code></pre>

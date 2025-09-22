@@ -178,7 +178,7 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 						size="sm"
 						onclick={handleClearAllData}
 						disabled={isProcessing}
-						class="flex items-center gap-2 text-red-600 hover:text-red-700"
+						class="flex items-center gap-2 text-destructive hover:text-destructive/80"
 						title="Clear all test data and reset to empty state"
 					>
 						<RefreshCw class="h-4 w-4" />
@@ -209,7 +209,7 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 									aria-label={source.active ? "Deactivate source" : "Activate source"}
 								>
 									{#if source.active}
-										<ToggleRight size={20} class="text-primary" />
+										<ToggleRight size={20} class="text-blue-600" />
 									{:else}
 										<ToggleLeft size={20} />
 									{/if}
@@ -263,7 +263,7 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 									variant="ghost"
 									size="sm"
 									onclick={() => removeDataSource(source.id)}
-									class="text-red-600 hover:text-red-700 hover:bg-red-50 ml-2"
+									class="text-destructive hover:text-destructive/80 hover:bg-destructive/10 ml-2"
 									aria-label="Remove data source"
 									title="Remove this data source"
 								>
@@ -289,19 +289,19 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 			<CardContent>
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 					<div class="text-center">
-						<div class="text-2xl font-bold text-primary">{mergedStats.totalTests}</div>
+						<div class="text-2xl font-bold text-blue-600">{mergedStats.totalTests}</div>
 						<div class="text-sm text-muted-foreground">Total Tests</div>
 					</div>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-primary">{mergedStats.totalAssertions}</div>
+						<div class="text-2xl font-bold text-blue-600">{mergedStats.totalAssertions}</div>
 						<div class="text-sm text-muted-foreground">Total Assertions</div>
 					</div>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-primary">{mergedStats.totalCategories}</div>
+						<div class="text-2xl font-bold text-blue-600">{mergedStats.totalCategories}</div>
 						<div class="text-sm text-muted-foreground">Categories</div>
 					</div>
 					<div class="text-center">
-						<div class="text-2xl font-bold text-primary">{mergedStats.activeSources}</div>
+						<div class="text-2xl font-bold text-blue-600">{mergedStats.activeSources}</div>
 						<div class="text-sm text-muted-foreground">Active Sources</div>
 					</div>
 				</div>
@@ -314,7 +314,7 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 						</span>
 					</div>
 					{#if hasImportedSources}
-						<Button variant="outline" size="sm" onclick={() => dataSourceManager.clearAllImportedSources()} class="text-red-600 hover:text-red-700">
+						<Button variant="outline" size="sm" onclick={() => dataSourceManager.clearAllImportedSources()} class="text-destructive hover:text-destructive/80">
 							Clear All Imported Data
 						</Button>
 					{/if}

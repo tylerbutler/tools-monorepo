@@ -211,13 +211,13 @@ function getStatusIcon(status: UploadedFile["status"]) {
 function getStatusColor(status: UploadedFile["status"]) {
 	switch (status) {
 		case "success":
-			return "text-green-600";
+			return "text-success";
 		case "error":
-			return "text-red-600";
+			return "text-destructive";
 		case "processing":
-			return "text-blue-600";
+			return "text-info";
 		default:
-			return "text-gray-600";
+			return "text-muted-foreground";
 	}
 }
 
@@ -343,7 +343,7 @@ function formatFileSize(bytes: number): string {
 								</div>
 
 								{#if uploadedFile.error}
-									<p class="text-xs text-red-600 mt-1">
+									<p class="text-xs text-destructive mt-1">
 										{uploadedFile.error}
 									</p>
 								{/if}
@@ -378,13 +378,13 @@ function formatFileSize(bytes: number): string {
 
 			<div class="flex gap-4 text-sm">
 				{#if successCount > 0}
-					<div class="flex items-center gap-1 text-green-600">
+					<div class="flex items-center gap-1 text-success">
 						<CheckCircle2 size={14} />
 						{successCount} successful
 					</div>
 				{/if}
 				{#if errorCount > 0}
-					<div class="flex items-center gap-1 text-red-600">
+					<div class="flex items-center gap-1 text-destructive">
 						<AlertCircle size={14} />
 						{errorCount} failed
 					</div>

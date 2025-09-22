@@ -100,7 +100,7 @@ const showResults = $derived(
 
 {#if loading}
 	<div class="flex items-center justify-center h-64">
-		<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+		<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
 		<span class="ml-4 text-muted-foreground">Loading test data...</span>
 	</div>
 {:else if error}

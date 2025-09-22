@@ -277,13 +277,13 @@ const leastTestedCategory = $derived(
 			</CardHeader>
 			<CardContent class="space-y-4">
 				<div>
-					<h4 class="font-medium text-sm text-green-700">Most Tested Category</h4>
-					<p class="text-2xl font-bold text-green-800">{mostTestedCategory[0]}</p>
+					<h4 class="font-medium text-sm text-success">Most Tested Category</h4>
+					<p class="text-2xl font-bold text-success">{mostTestedCategory[0]}</p>
 					<p class="text-sm text-muted-foreground">{mostTestedCategory[1]} tests</p>
 				</div>
 				<div>
-					<h4 class="font-medium text-sm text-blue-700">Least Tested Category</h4>
-					<p class="text-2xl font-bold text-blue-800">{leastTestedCategory[0]}</p>
+					<h4 class="font-medium text-sm text-info">Least Tested Category</h4>
+					<p class="text-2xl font-bold text-info">{leastTestedCategory[0]}</p>
 					<p class="text-sm text-muted-foreground">{leastTestedCategory[1]} tests</p>
 				</div>
 			</CardContent>
@@ -297,13 +297,13 @@ const leastTestedCategory = $derived(
 			</CardHeader>
 			<CardContent class="space-y-4">
 				<div>
-					<h4 class="font-medium text-sm text-purple-700">Test Density</h4>
-					<p class="text-2xl font-bold text-purple-800">{avgAssertionsPerTest}</p>
+					<h4 class="font-medium text-sm text-purple">Test Density</h4>
+					<p class="text-2xl font-bold text-purple">{avgAssertionsPerTest}</p>
 					<p class="text-sm text-muted-foreground">Assertions per test</p>
 				</div>
 				<div>
-					<h4 class="font-medium text-sm text-orange-700">API Coverage</h4>
-					<p class="text-2xl font-bold text-orange-800">{totalFunctions}</p>
+					<h4 class="font-medium text-sm text-warning">API Coverage</h4>
+					<p class="text-2xl font-bold text-warning">{totalFunctions}</p>
 					<p class="text-sm text-muted-foreground">Functions tested</p>
 				</div>
 			</CardContent>

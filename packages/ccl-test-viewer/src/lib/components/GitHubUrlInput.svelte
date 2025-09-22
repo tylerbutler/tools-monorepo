@@ -141,12 +141,12 @@ const exampleUrls = [
 			<!-- URL Validation Feedback -->
 			{#if url.trim() && urlValidation()}
 				{#if urlValidation().valid}
-					<div class="flex items-center gap-2 text-sm text-green-600">
+					<div class="flex items-center gap-2 text-sm text-success">
 						<CheckCircle class="h-4 w-4" />
 						Valid GitHub URL detected
 					</div>
 				{:else}
-					<div class="flex items-center gap-2 text-sm text-red-600">
+					<div class="flex items-center gap-2 text-sm text-destructive">
 						<AlertCircle class="h-4 w-4" />
 						{urlValidation().error}
 					</div>
@@ -234,7 +234,7 @@ const exampleUrls = [
 						</div>
 					</div>
 				{:else}
-					<div class="bg-yellow-50 border border-yellow-200 rounded-md p-3 flex items-center gap-2 text-sm text-yellow-700">
+					<div class="bg-warning/10 border border-warning/20 rounded-md p-3 flex items-center gap-2 text-sm text-warning">
 						<AlertCircle class="h-4 w-4" />
 						No JSON files found in this repository path.
 					</div>
@@ -245,7 +245,7 @@ const exampleUrls = [
 
 	<!-- Error Display -->
 	{#if error}
-		<div class="bg-red-50 border border-red-200 rounded-md p-3 flex items-center gap-2 text-sm text-red-700">
+		<div class="bg-destructive/10 border border-destructive/20 rounded-md p-3 flex items-center gap-2 text-sm text-destructive">
 			<AlertCircle class="h-4 w-4" />
 			{error}
 		</div>
@@ -253,7 +253,7 @@ const exampleUrls = [
 
 	<!-- Success Message -->
 	{#if successMessage}
-		<div class="bg-green-50 border border-green-200 rounded-md p-3 flex items-center gap-2 text-sm text-green-700">
+		<div class="bg-success/10 border border-success/20 rounded-md p-3 flex items-center gap-2 text-sm text-success">
 			<CheckCircle class="h-4 w-4" />
 			{successMessage}
 		</div>

@@ -6,8 +6,8 @@ import devtoolsJson from "vite-plugin-devtools-json";
 
 export default defineConfig({
 	plugins: [
-		sveltekit(),
 		tailwindcss(),
+		sveltekit(),
 		Sonda({
 			// Generate bundle analysis report
 			open: false, // Don't auto-open in CI

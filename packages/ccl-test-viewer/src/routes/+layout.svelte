@@ -33,7 +33,41 @@ function skipToMain() {
 
 // Initialize theme on mount - removed $effect DOM manipulation to fix lifecycle issues
 onMount(() => {
-	themeStore.initialize();
+	console.log("📱 Layout onMount() called");
+	console.log("  Theme store state:", { theme: themeStore.theme, base16Theme: themeStore.base16Theme });
+
+	// Force theme application for static sites
+	if (typeof window !== 'undefined') {
+		const root = document.documentElement;
+		console.log("  Current HTML classes:", Array.from(root.classList));
+
+		// Get theme values from localStorage or defaults
+		const storedTheme = localStorage.getItem("theme") || "dark";
+		const storedBase16 = localStorage.getItem("base16Theme") || "base16-tomorrow-night";
+
+		console.log("  Stored values:", { storedTheme, storedBase16 });
+
+		// Remove any existing theme classes
+		const existingClasses = Array.from(root.classList).filter(
+			cls => cls.startsWith('base16-') || cls === 'dark'
+		);
+		if (existingClasses.length > 0) {
+			console.log("  Removing existing classes:", existingClasses);
+			root.classList.remove(...existingClasses);
+		}
+
+		// Apply stored theme classes
+		console.log("  Applying classes:", storedBase16, storedTheme);
+		root.classList.add(storedBase16);
+		if (storedTheme === "dark") {
+			root.classList.add("dark");
+		}
+
+		console.log("  Final HTML classes:", Array.from(root.classList));
+
+		// Also initialize the theme store
+		themeStore.initialize();
+	}
 });
 </script>
 
@@ -41,7 +75,7 @@ onMount(() => {
 	<!-- Skip to main content link for keyboard users -->
 	<a
 		href="#main-content"
-		class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium"
+		class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-blue-600 text-white px-4 py-2 rounded-md font-medium"
 		onclick={skipToMain}
 	>
 		Skip to main content
@@ -56,7 +90,7 @@ onMount(() => {
 				<div>
 					<button
 						onclick={() => goto('/')}
-						class="hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+						class="hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
 						aria-label="Go to homepage"
 					>
 						<h1 class="text-2xl font-bold text-foreground">
@@ -72,7 +106,7 @@ onMount(() => {
 				<div class="flex items-center gap-4">
 					<nav class="flex items-center gap-2" aria-label="Main navigation">
 					<button
-						class={`px-3 py-2 rounded text-sm font-medium ${isHomePage ? "bg-primary text-primary-foreground" : "border border-border"}`}
+						class={`px-3 py-2 rounded text-sm font-medium ${isHomePage ? "bg-blue-600 text-white" : "border border-border"}`}
 						onclick={() => goto('/')}
 						aria-current={isHomePage ? "page" : undefined}
 						aria-label="Go to dashboard homepage"
@@ -81,7 +115,7 @@ onMount(() => {
 						Home
 					</button>
 					<button
-						class={`px-3 py-2 rounded text-sm font-medium ${isBrowsePage ? "bg-primary text-primary-foreground" : "border border-border"}`}
+						class={`px-3 py-2 rounded text-sm font-medium ${isBrowsePage ? "bg-blue-600 text-white" : "border border-border"}`}
 						onclick={() => goto('/browse')}
 						aria-current={isBrowsePage ? "page" : undefined}
 						aria-label="Browse and filter test cases"
@@ -90,7 +124,7 @@ onMount(() => {
 						Browse Tests
 					</button>
 					<button
-						class={`px-3 py-2 rounded text-sm font-medium ${isDataPage ? "bg-primary text-primary-foreground" : "border border-border"}`}
+						class={`px-3 py-2 rounded text-sm font-medium ${isDataPage ? "bg-blue-600 text-white" : "border border-border"}`}
 						onclick={() => goto('/data')}
 						aria-current={isDataPage ? "page" : undefined}
 						aria-label="Manage test data from multiple sources"

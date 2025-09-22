@@ -21,8 +21,8 @@ function formatItem(item: any, index: number) {
 			display: String(item),
 			type: "boolean",
 			color: item
-				? "text-emerald-600 dark:text-emerald-400"
-				: "text-red-600 dark:text-red-400",
+				? "text-emerald"
+				: "text-destructive",
 		};
 	}
 
@@ -30,7 +30,7 @@ function formatItem(item: any, index: number) {
 		return {
 			display: String(item),
 			type: "number",
-			color: "text-blue-600 dark:text-blue-400",
+			color: "text-info",
 		};
 	}
 
@@ -38,7 +38,7 @@ function formatItem(item: any, index: number) {
 		return {
 			display: JSON.stringify(item),
 			type: "string",
-			color: "text-green-600 dark:text-green-400",
+			color: "text-success",
 		};
 	}
 
@@ -46,7 +46,7 @@ function formatItem(item: any, index: number) {
 		return {
 			display: `[Array with ${item.length} items]`,
 			type: "array",
-			color: "text-purple-600 dark:text-purple-400",
+			color: "text-purple",
 		};
 	}
 
@@ -55,7 +55,7 @@ function formatItem(item: any, index: number) {
 		return {
 			display: `{Object with ${keys.length} keys}`,
 			type: "object",
-			color: "text-orange-600 dark:text-orange-400",
+			color: "text-warning",
 		};
 	}
 
