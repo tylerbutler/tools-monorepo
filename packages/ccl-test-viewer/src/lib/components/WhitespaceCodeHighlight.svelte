@@ -1,8 +1,4 @@
 <script lang="ts">
-import Prism from "prismjs";
-import "prismjs/components/prism-core";
-import "prismjs/components/prism-clike";
-import "prismjs/themes/prism.css";
 import type { HTMLAttributes } from "svelte/elements";
 
 interface Props extends Omit<HTMLAttributes<HTMLElement>, "class"> {
@@ -22,114 +18,62 @@ let {
 
 let codeElement: HTMLElement;
 
-// Function to replace whitespace characters with visible indicators in raw text
-function addWhitespaceIndicators(text: string): string {
-	if (!showWhitespace) return text;
+// Function to escape HTML and add whitespace indicators
+function processCodeText(text: string): string {
+	if (!showWhitespace) {
+		// Just escape HTML
+		return text
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;");
+	}
 
-	return text
-		.replace(/\t/g, "»") // Tab (double right-angle)
-		.replace(/ /g, "·") // Space (middle dot)
-		.replace(/\r\n/g, "¶\r\n") // CRLF (paragraph sign)
-		.replace(/(?<!\r)\n/g, "¶\n"); // LF (paragraph sign)
+	// Escape HTML first, then add whitespace indicators
+	const escaped = text
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;");
+
+	return escaped
+		.replace(/\t/g, '<span class="whitespace-indicator tab" title="Tab">»</span>')
+		.replace(/ /g, '<span class="whitespace-indicator space" title="Space">·</span>')
+		.replace(/\r\n/g, '<span class="whitespace-indicator newline" title="Newline">¶</span>\r\n')
+		.replace(/(?<!\r)\n/g, '<span class="whitespace-indicator newline" title="Newline">¶</span>\n');
 }
 
-// Function to add whitespace styling after Prism highlighting
-function addWhitespaceCSS(html: string): string {
-	if (!showWhitespace) return html;
-
-	return html
-		.replace(
-			/»/g,
-			'<span class="whitespace-indicator tab" title="Tab">»</span>',
-		)
-		.replace(
-			/·/g,
-			'<span class="whitespace-indicator space" title="Space">·</span>',
-		)
-		.replace(
-			/¶/g,
-			'<span class="whitespace-indicator newline" title="Newline">¶</span>',
-		);
-}
-
-// Define CCL language for Prism.js and apply whitespace indicators
+// Update the display when code changes
 $effect(() => {
-	// Define CCL language syntax
-	Prism.languages.ccl = {
-		comment: {
-			pattern: /\/=.*/,
-			greedy: true,
-		},
-		string: {
-			pattern: /"(?:[^"\\]|\\.)*"/,
-			greedy: true,
-		},
-		number: /\b\d+(?:\.\d+)?\b/,
-		boolean: /\b(?:true|false)\b/,
-		key: {
-			pattern: /^[^=\n]+(?==)/m,
-			inside: {
-				dotted: /\./,
-				identifier: /[^.\s=]+/,
-			},
-		},
-		operator: /=/,
-		punctuation: /[{}[\],]/,
-	};
-
-	// Apply whitespace indicators first, then highlight
 	if (codeElement) {
-		const textWithWhitespace = addWhitespaceIndicators(code);
-		const highlighted = Prism.highlight(
-			textWithWhitespace,
-			Prism.languages[language] || Prism.languages.ccl,
-			language,
-		);
-
-		// Add CSS classes to the whitespace indicators
-		codeElement.innerHTML = addWhitespaceCSS(highlighted);
+		codeElement.innerHTML = processCodeText(code);
 	}
 });
 </script>
 
 <style>
-/* Whitespace indicator styles - using Tailwind v4 theme variable */
+/* Clean, crisp text rendering */
+pre, code {
+	text-rendering: optimizeLegibility;
+	font-smoothing: antialiased;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Whitespace indicator styles */
 :global(.whitespace-indicator) {
-	opacity: 1.0;
-	font-size: var(--font-size-code);
-	color: #374151;
+	color: #6b7280;
 	user-select: none;
 	pointer-events: none;
 }
 
-:global(.whitespace-indicator.space) {
-	color: #374151;
-	font-size: var(--font-size-code);
-}
-
-:global(.whitespace-indicator.tab) {
-	color: #374151;
-	font-weight: bold;
-	font-size: var(--font-size-code);
-}
-
+:global(.whitespace-indicator.tab),
 :global(.whitespace-indicator.newline) {
-	color: #374151;
-	font-weight: bold;
-	font-size: var(--font-size-code);
+	font-weight: 600;
 }
 
 /* Dark mode adjustments for whitespace indicators */
 @media (prefers-color-scheme: dark) {
 	:global(.whitespace-indicator) {
-		color: #94a3b8;
-	}
-
-	:global(.whitespace-indicator.space),
-	:global(.whitespace-indicator.tab),
-	:global(.whitespace-indicator.newline) {
-		color: #94a3b8;
-		font-size: var(--font-size-code);
+		color: #9ca3af;
 	}
 }
 </style>
@@ -140,6 +84,5 @@ $effect(() => {
 	title={showWhitespace ? "Showing whitespace: · = space, » = tab, ¶ = newline" : ""}
 ><code
 	bind:this={codeElement}
-	class="language-{language}"
 	role="code"
 >{code}</code></pre>
