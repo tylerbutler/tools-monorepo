@@ -1,4 +1,5 @@
 import { fontFamily } from "tailwindcss/defaultTheme";
+import { base16Tailwind } from "@donovanglover/base16-tailwind";
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -105,7 +106,7 @@ const config = {
 			},
 		},
 	},
-	plugins: [],
+	plugins: [base16Tailwind],
 };
 
 export default config;

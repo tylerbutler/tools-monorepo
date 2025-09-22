@@ -44,6 +44,7 @@
 	},
 	"dependencies": {
 		"@andypf/json-viewer": "^2.2.0",
+		"@donovanglover/base16-tailwind": "npm:@jsr/donovanglover__base16-tailwind@^1.0.0",
 		"chart.js": "^4.5.0",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.544.0",

@@ -7,6 +7,7 @@ import type { Snippet } from "svelte";
 import type { LayoutData } from "./$types";
 import { themeStore } from "$lib/stores.svelte.js";
 import ThemeToggle from "$lib/components/ThemeToggle.svelte";
+import Base16ThemeSelector from "$lib/components/Base16ThemeSelector.svelte";
 
 interface Props {
 	children?: Snippet;
@@ -67,7 +68,7 @@ onMount(() => {
 					</button>
 				</div>
 
-				<!-- Primary Navigation and Theme Toggle -->
+				<!-- Primary Navigation and Theme Controls -->
 				<div class="flex items-center gap-4">
 					<nav class="flex items-center gap-2" aria-label="Main navigation">
 					<button
@@ -99,8 +100,14 @@ onMount(() => {
 					</button>
 					</nav>
 
-					<!-- Theme Toggle -->
-					<ThemeToggle />
+					<!-- Theme Controls -->
+					<div class="flex items-center gap-2">
+						<!-- Base16 Theme Selector -->
+						<Base16ThemeSelector showLabel={true} />
+
+						<!-- Traditional Toggle for quick light/dark switching -->
+						<ThemeToggle />
+					</div>
 				</div>
 			</div>
 		</div>

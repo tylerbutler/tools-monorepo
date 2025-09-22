@@ -15,10 +15,32 @@ export interface FilterState {
 	categories: Record<string, boolean>;
 }
 
-// Theme management
+// Base16 theme definitions with popular themes
+export const BASE16_THEMES = {
+	// Light themes
+	"base16-tomorrow": { name: "Tomorrow", variant: "light" },
+	"base16-one-light": { name: "One Light", variant: "light" },
+	"base16-github": { name: "GitHub", variant: "light" },
+	"base16-solarized-light": { name: "Solarized Light", variant: "light" },
+
+	// Dark themes
+	"base16-tomorrow-night": { name: "Tomorrow Night", variant: "dark" },
+	"base16-monokai": { name: "Monokai", variant: "dark" },
+	"base16-dracula": { name: "Dracula", variant: "dark" },
+	"base16-nord": { name: "Nord", variant: "dark" },
+	"base16-gruvbox-dark-hard": { name: "Gruvbox Dark", variant: "dark" },
+	"base16-oceanicnext": { name: "Oceanic Next", variant: "dark" },
+} as const;
+
+export type Base16Theme = keyof typeof BASE16_THEMES;
+
+// Theme management with base16 support
 class ThemeStore {
-	// Initialize theme from localStorage or default to light
+	// Current theme mode (light/dark)
 	theme = $state<"light" | "dark">(this.getInitialTheme());
+
+	// Current base16 theme
+	base16Theme = $state<Base16Theme>(this.getInitialBase16Theme());
 
 	private getInitialTheme(): "light" | "dark" {
 		if (!browser) return "light";
@@ -37,29 +59,94 @@ class ThemeStore {
 		return "light";
 	}
 
+	private getInitialBase16Theme(): Base16Theme {
+		if (!browser) return "base16-tomorrow";
+
+		// Check localStorage for base16 theme
+		const stored = localStorage.getItem("base16Theme") as Base16Theme;
+		if (stored && stored in BASE16_THEMES) {
+			return stored;
+		}
+
+		// Default themes based on current theme mode
+		return this.theme === "dark" ? "base16-tomorrow-night" : "base16-tomorrow";
+	}
+
 	toggle() {
 		this.theme = this.theme === "light" ? "dark" : "light";
+		// Switch to appropriate base16 theme for the new mode
+		this.autoSelectBase16Theme();
 		this.applyTheme();
 	}
 
 	setTheme(newTheme: "light" | "dark") {
 		this.theme = newTheme;
+		this.autoSelectBase16Theme();
 		this.applyTheme();
+	}
+
+	setBase16Theme(newBase16Theme: Base16Theme) {
+		this.base16Theme = newBase16Theme;
+		// Update theme mode to match the base16 theme variant
+		const themeVariant = BASE16_THEMES[newBase16Theme].variant;
+		this.theme = themeVariant;
+		this.applyTheme();
+	}
+
+	private autoSelectBase16Theme() {
+		// Get themes for the current mode
+		const themesForMode = Object.entries(BASE16_THEMES)
+			.filter(([_, config]) => config.variant === this.theme)
+			.map(([theme, _]) => theme as Base16Theme);
+
+		// If current base16 theme doesn't match the mode, switch to a default one
+		if (BASE16_THEMES[this.base16Theme].variant !== this.theme) {
+			this.base16Theme = this.theme === "dark" ? "base16-tomorrow-night" : "base16-tomorrow";
+		}
 	}
 
 	private applyTheme() {
 		if (!browser) return;
 
-		// Apply class to document element
 		const root = document.documentElement;
+
+		// Remove all existing base16 and theme classes
+		const existingClasses = Array.from(root.classList).filter(
+			cls => cls.startsWith('base16-') || cls === 'dark'
+		);
+		root.classList.remove(...existingClasses);
+
+		// Apply new base16 theme class
+		root.classList.add(this.base16Theme);
+
+		// Apply dark mode class if needed
 		if (this.theme === "dark") {
 			root.classList.add("dark");
-		} else {
-			root.classList.remove("dark");
 		}
 
 		// Save to localStorage
 		localStorage.setItem("theme", this.theme);
+		localStorage.setItem("base16Theme", this.base16Theme);
+	}
+
+	// Get available themes for current mode
+	getAvailableThemes() {
+		return Object.entries(BASE16_THEMES)
+			.filter(([_, config]) => config.variant === this.theme)
+			.map(([theme, config]) => ({ id: theme as Base16Theme, name: config.name }));
+	}
+
+	// Get all themes grouped by variant
+	getAllThemes() {
+		const light = Object.entries(BASE16_THEMES)
+			.filter(([_, config]) => config.variant === "light")
+			.map(([theme, config]) => ({ id: theme as Base16Theme, name: config.name }));
+
+		const dark = Object.entries(BASE16_THEMES)
+			.filter(([_, config]) => config.variant === "dark")
+			.map(([theme, config]) => ({ id: theme as Base16Theme, name: config.name }));
+
+		return { light, dark };
 	}
 
 	// Initialize theme on app load

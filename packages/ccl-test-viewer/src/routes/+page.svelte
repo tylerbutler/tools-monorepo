@@ -1,5 +1,6 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
+import Base16ColorDemo from "$lib/components/Base16ColorDemo.svelte";
 
 // Navigation handlers
 function viewAllTests() {
@@ -23,8 +24,13 @@ function viewAllTests() {
 		<h3>Welcome to CCL Test Suite Viewer</h3>
 		<p>Interactive test result visualization</p>
 
-		<button onclick={viewAllTests} class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+		<button onclick={viewAllTests} class="mt-4 px-4 py-2 bg-blue text-base07 rounded hover:opacity-80 transition-opacity">
 			Browse All Tests
 		</button>
+	</div>
+
+	<!-- Base16 Theme Demonstration -->
+	<div class="mt-12">
+		<Base16ColorDemo />
 	</div>
 </div>
