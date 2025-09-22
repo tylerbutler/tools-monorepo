@@ -16,9 +16,11 @@ export function validateTestData(
 	const errors: string[] = [];
 	const warnings: string[] = [];
 
-	// Basic structure validation
-	if (!Array.isArray(jsonData)) {
-		errors.push("JSON must contain an array of test objects");
+	// Only accept CCL schema format
+	if (!jsonData || typeof jsonData !== "object" || Array.isArray(jsonData)) {
+		errors.push(
+			"JSON must be a CCL schema format object with $schema and tests properties",
+		);
 		return {
 			isValid: false,
 			errors,
@@ -33,7 +35,31 @@ export function validateTestData(
 		};
 	}
 
-	if (jsonData.length === 0) {
+	// Validate CCL schema structure
+	if (!jsonData.$schema) {
+		errors.push("Missing required $schema property in CCL format");
+	}
+
+	if (!jsonData.tests || !Array.isArray(jsonData.tests)) {
+		errors.push("Missing or invalid 'tests' array in CCL format");
+		return {
+			isValid: false,
+			errors,
+			warnings,
+			stats: {
+				testCount: 0,
+				categoryCount: 0,
+				functions: [],
+				features: [],
+				behaviors: [],
+			},
+		};
+	}
+
+	// Extract tests array for validation
+	const testsArray = jsonData.tests;
+
+	if (testsArray.length === 0) {
 		warnings.push("File contains no test data");
 	}
 
@@ -43,8 +69,8 @@ export function validateTestData(
 	const features = new Set<string>();
 	const behaviors = new Set<string>();
 
-	for (let i = 0; i < jsonData.length; i++) {
-		const test = jsonData[i];
+	for (let i = 0; i < testsArray.length; i++) {
+		const test = testsArray[i];
 
 		if (!test || typeof test !== "object") {
 			errors.push(`Test at index ${i} is not a valid object`);

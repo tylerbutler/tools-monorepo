@@ -200,10 +200,13 @@ class DataSourceManager {
 				};
 			}
 
+			// Extract tests array from CCL schema format
+			const testsArray = jsonData.tests;
+
 			// Create data source
 			const dataSource = createDataSourceFromUpload(
 				file,
-				jsonData,
+				testsArray,
 				validationResult,
 			);
 
