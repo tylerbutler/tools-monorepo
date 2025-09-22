@@ -119,3 +119,4 @@ This viewer is part of the broader CCL tools ecosystem:
 
 ## JSON Upload Feature Development
 The project is currently implementing dynamic JSON upload capabilities to transform from build-time static site to runtime data loading while maintaining Tauri desktop app compatibility. See project memories for detailed implementation plans and progress tracking.
+- This project uses pure OKLCH everywhere with Tailwind v4's native color system.

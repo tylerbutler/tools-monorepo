@@ -20,9 +20,7 @@ function formatItem(item: any, index: number) {
 		return {
 			display: String(item),
 			type: "boolean",
-			color: item
-				? "text-emerald"
-				: "text-destructive",
+			color: item ? "text-emerald" : "text-destructive",
 		};
 	}
 
@@ -38,7 +36,7 @@ function formatItem(item: any, index: number) {
 		return {
 			display: JSON.stringify(item),
 			type: "string",
-			color: "text-success",
+			color: "text-green-600 dark:text-green-400",
 		};
 	}
 
@@ -55,7 +53,7 @@ function formatItem(item: any, index: number) {
 		return {
 			display: `{Object with ${keys.length} keys}`,
 			type: "object",
-			color: "text-warning",
+			color: "text-amber-600 dark:text-amber-400",
 		};
 	}
 
@@ -123,8 +121,8 @@ function formatItem(item: any, index: number) {
 	}
 
 	.list-content {
-		background: hsl(var(--muted));
-		border: 1px solid hsl(var(--border));
+		background: var(--muted);
+		border: 1px solid var(--border);
 		border-radius: 0.375rem;
 		padding: 0.75rem;
 		max-height: 400px;
@@ -132,8 +130,8 @@ function formatItem(item: any, index: number) {
 	}
 
 	.empty-list {
-		background: hsl(var(--muted));
-		border: 1px solid hsl(var(--border));
+		background: var(--muted);
+		border: 1px solid var(--border);
 		border-radius: 0.375rem;
 		padding: 2rem;
 		text-align: center;
@@ -143,7 +141,7 @@ function formatItem(item: any, index: number) {
 		display: flex;
 		gap: 0.75rem;
 		padding: 0.5rem 0;
-		border-bottom: 1px solid hsl(var(--border));
+		border-bottom: 1px solid var(--border);
 		align-items: center;
 	}
 
@@ -157,7 +155,7 @@ function formatItem(item: any, index: number) {
 	}
 
 	.index-number {
-		color: hsl(var(--chart-2));
+		color: var(--chart-2);
 		font-weight: 600;
 		font-size: 0.8rem;
 	}
@@ -184,14 +182,14 @@ function formatItem(item: any, index: number) {
 	.list-summary {
 		margin-top: 0.75rem;
 		padding: 0.5rem;
-		background: hsl(var(--muted)/50);
+		background: oklch(from var(--muted) l c h / 0.5);
 		border-radius: 0.375rem;
 		text-align: center;
 	}
 
 	/* Zebra striping for better readability */
 	.list-item:nth-child(even) {
-		background: hsl(var(--muted)/30);
+		background: oklch(from var(--muted) l c h / 0.3);
 		border-radius: 0.25rem;
 		margin: 0 -0.25rem;
 		padding-left: 0.75rem;
@@ -202,16 +200,16 @@ function formatItem(item: any, index: number) {
 	@media (prefers-color-scheme: dark) {
 		.list-content,
 		.empty-list {
-			background: hsl(var(--card));
-			border-color: hsl(var(--border));
+			background: var(--card);
+			border-color: var(--border);
 		}
 
 		.list-summary {
-			background: hsl(var(--muted)/20);
+			background: oklch(from var(--muted) l c h / 0.2);
 		}
 
 		.list-item:nth-child(even) {
-			background: hsl(var(--muted)/20);
+			background: oklch(from var(--muted) l c h / 0.2);
 		}
 	}
 </style>

@@ -7,8 +7,8 @@ import {
 	CardTitle,
 } from "$lib/components/ui/index.js";
 import type { TestStats } from "$lib/data/types.js";
-import { Chart, registerables } from "chart.js";
 import { BarChart3, Code, File, Hash } from "@lucide/svelte";
+import { Chart, registerables } from "chart.js";
 
 interface Props {
 	stats: TestStats;
@@ -277,8 +277,8 @@ const leastTestedCategory = $derived(
 			</CardHeader>
 			<CardContent class="space-y-4">
 				<div>
-					<h4 class="font-medium text-sm text-success">Most Tested Category</h4>
-					<p class="text-2xl font-bold text-success">{mostTestedCategory[0]}</p>
+					<h4 class="font-medium text-sm text-green-600 dark:text-green-400">Most Tested Category</h4>
+					<p class="text-2xl font-bold text-green-600 dark:text-green-400">{mostTestedCategory[0]}</p>
 					<p class="text-sm text-muted-foreground">{mostTestedCategory[1]} tests</p>
 				</div>
 				<div>
@@ -302,8 +302,8 @@ const leastTestedCategory = $derived(
 					<p class="text-sm text-muted-foreground">Assertions per test</p>
 				</div>
 				<div>
-					<h4 class="font-medium text-sm text-warning">API Coverage</h4>
-					<p class="text-2xl font-bold text-warning">{totalFunctions}</p>
+					<h4 class="font-medium text-sm text-amber-600 dark:text-amber-400">API Coverage</h4>
+					<p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{totalFunctions}</p>
 					<p class="text-sm text-muted-foreground">Functions tested</p>
 				</div>
 			</CardContent>

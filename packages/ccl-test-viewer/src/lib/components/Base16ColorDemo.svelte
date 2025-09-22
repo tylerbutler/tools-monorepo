@@ -1,32 +1,73 @@
 <script lang="ts">
-	import { themeStore, BASE16_THEMES } from "$lib/stores.svelte.js";
+// Simplified component without complex store dependencies
+// Focus on demonstrating Base16 colors without lifecycle issues
 
-	// Reactive theme state
-	let currentBase16Theme = $derived(themeStore.base16Theme);
-	let currentThemeName = $derived(BASE16_THEMES[currentBase16Theme].name);
+// Base16 color classes using correct base16-tailwind naming
+const base16Colors = [
+	{
+		class: "bg-800 text-100",
+		name: "base00/800",
+		description: "Default Background",
+	},
+	{
+		class: "bg-700 text-100",
+		name: "base01/700",
+		description: "Lighter Background",
+	},
+	{
+		class: "bg-600 text-200",
+		name: "base02/600",
+		description: "Selection Background",
+	},
+	{ class: "bg-500 text-300", name: "base03/500", description: "Comments" },
+	{
+		class: "bg-400 text-800",
+		name: "base04/400",
+		description: "Dark Foreground",
+	},
+	{
+		class: "bg-300 text-800",
+		name: "base05/300",
+		description: "Default Foreground",
+	},
+	{
+		class: "bg-200 text-800",
+		name: "base06/200",
+		description: "Light Foreground",
+	},
+	{
+		class: "bg-100 text-800",
+		name: "base07/100",
+		description: "Light Background",
+	},
+];
 
-	// Base16 color classes using correct base16-tailwind naming
-	const base16Colors = [
-		{ class: "bg-800 text-100", name: "base00/800", description: "Default Background" },
-		{ class: "bg-700 text-100", name: "base01/700", description: "Lighter Background" },
-		{ class: "bg-600 text-200", name: "base02/600", description: "Selection Background" },
-		{ class: "bg-500 text-300", name: "base03/500", description: "Comments" },
-		{ class: "bg-400 text-800", name: "base04/400", description: "Dark Foreground" },
-		{ class: "bg-300 text-800", name: "base05/300", description: "Default Foreground" },
-		{ class: "bg-200 text-800", name: "base06/200", description: "Light Foreground" },
-		{ class: "bg-100 text-800", name: "base07/100", description: "Light Background" },
-	];
-
-	const accentColors = [
-		{ class: "bg-red text-100", name: "red", description: "Variables, XML Tags" },
-		{ class: "bg-orange text-100", name: "orange", description: "Integers, Booleans" },
-		{ class: "bg-yellow text-800", name: "yellow", description: "Classes, Markup Bold" },
-		{ class: "bg-green text-100", name: "green", description: "Strings" },
-		{ class: "bg-cyan text-800", name: "cyan", description: "Support, Regex" },
-		{ class: "bg-blue text-100", name: "blue", description: "Functions, Methods" },
-		{ class: "bg-purple text-100", name: "purple", description: "Keywords, Storage" },
-		{ class: "bg-brown text-100", name: "brown", description: "Deprecated" },
-	];
+const accentColors = [
+	{ class: "bg-red text-100", name: "red", description: "Variables, XML Tags" },
+	{
+		class: "bg-orange text-100",
+		name: "orange",
+		description: "Integers, Booleans",
+	},
+	{
+		class: "bg-yellow text-800",
+		name: "yellow",
+		description: "Classes, Markup Bold",
+	},
+	{ class: "bg-green text-100", name: "green", description: "Strings" },
+	{ class: "bg-cyan text-800", name: "cyan", description: "Support, Regex" },
+	{
+		class: "bg-blue text-100",
+		name: "blue",
+		description: "Functions, Methods",
+	},
+	{
+		class: "bg-purple text-100",
+		name: "purple",
+		description: "Keywords, Storage",
+	},
+	{ class: "bg-brown text-100", name: "brown", description: "Deprecated" },
+];
 </script>
 
 <div class="space-y-6">
@@ -35,7 +76,7 @@
 			Base16 Color Demonstration
 		</h2>
 		<p class="text-muted-foreground">
-			Current theme: <span class="font-semibold text-primary">{currentThemeName}</span>
+			Showing Base16 color palette and usage examples
 		</p>
 	</div>
 

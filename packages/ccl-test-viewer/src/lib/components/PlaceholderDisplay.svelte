@@ -42,18 +42,18 @@ const description = $derived(
 	<!-- Status message -->
 	<div class="status-content">
 		{#if status === 'implemented'}
-			<div class="status-message success">
-				<Wrench size={16} class="text-success" />
+			<div class="flex items-center gap-2 p-3 rounded-md bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800 text-sm">
+				<Wrench size={16} class="text-green-600 dark:text-green-400" />
 				<span>This function is implemented and ready for use.</span>
 			</div>
 		{:else if status === 'planned'}
-			<div class="status-message planned">
-				<Wrench size={16} class="text-warning" />
+			<div class="flex items-center gap-2 p-3 rounded-md bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-sm">
+				<Wrench size={16} class="text-amber-600 dark:text-amber-400" />
 				<span>This function visualization is planned for implementation.</span>
 			</div>
 		{:else}
-			<div class="status-message experimental">
-				<Wrench size={16} class="text-purple" />
+			<div class="flex items-center gap-2 p-3 rounded-md bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800 text-sm">
+				<Wrench size={16} class="text-purple-600 dark:text-purple-400" />
 				<span>This function is experimental and may have limited support.</span>
 			</div>
 		{/if}
@@ -97,8 +97,8 @@ const description = $derived(
 		align-items: center;
 		justify-content: space-between;
 		padding: 1rem;
-		background: hsl(var(--muted));
-		border: 1px solid hsl(var(--border));
+		background: var(--muted);
+		border: 1px solid var(--border);
 		border-radius: 0.375rem;
 		margin-bottom: 1rem;
 	}
@@ -106,13 +106,13 @@ const description = $derived(
 	.function-name {
 		font-size: 1.125rem;
 		font-weight: 600;
-		color: hsl(var(--foreground));
+		color: var(--foreground);
 		font-family: 'IBM Plex Mono', monospace;
 	}
 
 	.function-description {
 		font-size: 0.875rem;
-		color: hsl(var(--muted-foreground));
+		color: var(--muted-foreground);
 		margin-top: 0.25rem;
 	}
 
@@ -120,36 +120,10 @@ const description = $derived(
 		margin-bottom: 1rem;
 	}
 
-	.status-message {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1rem;
-		border-radius: 0.375rem;
-		font-size: 0.875rem;
-	}
-
-	.status-message.success {
-		background: hsl(var(--success-bg, 142 76% 97%));
-		color: hsl(var(--success-text, 142 72% 29%));
-		border: 1px solid hsl(var(--success-border, 142 76% 91%));
-	}
-
-	.status-message.planned {
-		background: hsl(var(--warning-bg, 43 100% 97%));
-		color: hsl(var(--warning-text, 43 89% 30%));
-		border: 1px solid hsl(var(--warning-border, 43 100% 91%));
-	}
-
-	.status-message.experimental {
-		background: hsl(var(--info-bg, 261 83% 97%));
-		color: hsl(var(--info-text, 261 83% 30%));
-		border: 1px solid hsl(var(--info-border, 261 83% 91%));
-	}
 
 	.raw-preview {
-		background: hsl(var(--muted));
-		border: 1px solid hsl(var(--border));
+		background: var(--muted);
+		border: 1px solid var(--border);
 		border-radius: 0.375rem;
 		margin-bottom: 1rem;
 		overflow: hidden;
@@ -160,8 +134,8 @@ const description = $derived(
 		align-items: center;
 		justify-content: space-between;
 		padding: 0.75rem 1rem;
-		border-bottom: 1px solid hsl(var(--border));
-		background: hsl(var(--muted)/50);
+		border-bottom: 1px solid var(--border);
+		background: oklch(from var(--muted) l c h / 0.5);
 	}
 
 	.raw-content {
@@ -169,7 +143,7 @@ const description = $derived(
 		margin: 0;
 		font-family: 'IBM Plex Mono', monospace;
 		font-size: 0.75rem;
-		color: hsl(var(--foreground));
+		color: var(--foreground);
 		background: none;
 		border: none;
 		max-height: 200px;
@@ -178,44 +152,27 @@ const description = $derived(
 
 	.implementation-note {
 		padding: 0.75rem 1rem;
-		background: hsl(var(--muted)/30);
+		background: oklch(from var(--muted) l c h / 0.3);
 		border-radius: 0.375rem;
-		border-left: 3px solid hsl(var(--primary));
+		border-left: 3px solid var(--primary);
 	}
 
 	/* Dark mode adjustments */
 	@media (prefers-color-scheme: dark) {
 		.function-header,
 		.raw-preview {
-			background: hsl(var(--card));
-			border-color: hsl(var(--border));
+			background: var(--card);
+			border-color: var(--border);
 		}
 
 		.preview-header {
-			background: hsl(var(--muted)/20);
-			border-color: hsl(var(--border));
+			background: oklch(from var(--muted) l c h / 0.2);
+			border-color: var(--border);
 		}
 
-		.status-message.success {
-			background: hsl(142 76% 7%);
-			color: hsl(142 76% 85%);
-			border-color: hsl(142 76% 15%);
-		}
-
-		.status-message.planned {
-			background: hsl(43 100% 7%);
-			color: hsl(43 100% 85%);
-			border-color: hsl(43 100% 15%);
-		}
-
-		.status-message.experimental {
-			background: hsl(261 83% 7%);
-			color: hsl(261 83% 85%);
-			border-color: hsl(261 83% 15%);
-		}
 
 		.implementation-note {
-			background: hsl(var(--muted)/15);
+			background: oklch(from var(--muted) l c h / 0.15);
 		}
 	}
 </style>

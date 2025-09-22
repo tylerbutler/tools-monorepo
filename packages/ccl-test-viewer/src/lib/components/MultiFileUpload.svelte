@@ -211,7 +211,7 @@ function getStatusIcon(status: UploadedFile["status"]) {
 function getStatusColor(status: UploadedFile["status"]) {
 	switch (status) {
 		case "success":
-			return "text-success";
+			return "text-green-600 dark:text-green-400";
 		case "error":
 			return "text-destructive";
 		case "processing":
@@ -378,7 +378,7 @@ function formatFileSize(bytes: number): string {
 
 			<div class="flex gap-4 text-sm">
 				{#if successCount > 0}
-					<div class="flex items-center gap-1 text-success">
+					<div class="flex items-center gap-1 text-green-600 dark:text-green-400">
 						<CheckCircle2 size={14} />
 						{successCount} successful
 					</div>

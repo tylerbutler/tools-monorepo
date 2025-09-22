@@ -103,7 +103,7 @@ const expectedSummary = $derived.by(() => {
 		<!-- Expected result -->
 		<div>
 			<h4 class="text-sm font-medium text-muted-foreground mb-2">Expected</h4>
-			<div class="text-sm bg-success/10 text-success border border-success/20 rounded-md px-3 py-2">
+			<div class="text-sm bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800 rounded-md px-3 py-2">
 				{expectedSummary}
 			</div>
 		</div>

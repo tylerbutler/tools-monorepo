@@ -35,10 +35,22 @@ function processCodeText(text: string): string {
 		.replace(/>/g, "&gt;");
 
 	return escaped
-		.replace(/\t/g, '<span class="whitespace-indicator tab" title="Tab">»</span>')
-		.replace(/ /g, '<span class="whitespace-indicator space" title="Space">·</span>')
-		.replace(/\r\n/g, '<span class="whitespace-indicator newline" title="Newline">¶</span>\r\n')
-		.replace(/(?<!\r)\n/g, '<span class="whitespace-indicator newline" title="Newline">¶</span>\n');
+		.replace(
+			/\t/g,
+			'<span class="whitespace-indicator tab" title="Tab">»</span>',
+		)
+		.replace(
+			/ /g,
+			'<span class="whitespace-indicator space" title="Space">·</span>',
+		)
+		.replace(
+			/\r\n/g,
+			'<span class="whitespace-indicator newline" title="Newline">¶</span>\r\n',
+		)
+		.replace(
+			/(?<!\r)\n/g,
+			'<span class="whitespace-indicator newline" title="Newline">¶</span>\n',
+		);
 }
 
 // Update the display when code changes

@@ -1,53 +1,69 @@
 <script lang="ts">
-	import { themeStore, BASE16_THEMES, type Base16Theme } from "$lib/stores.svelte.js";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { ChevronDown, Palette, Check } from "@lucide/svelte";
+import { Button } from "$lib/components/ui/button/index.js";
+import {
+	BASE16_THEMES,
+	type Base16Theme,
+	themeStore,
+} from "$lib/stores.svelte.js";
+import { Check, ChevronDown, Palette } from "@lucide/svelte";
 
-	// Props
-	interface Props {
-		size?: "sm" | "default" | "lg";
-		variant?: "default" | "outline" | "ghost";
-		showLabel?: boolean;
-	}
+// Props
+interface Props {
+	size?: "sm" | "default" | "lg";
+	variant?: "default" | "outline" | "ghost";
+	showLabel?: boolean;
+}
 
-	let { size = "default", variant = "ghost", showLabel = false }: Props = $props();
+let {
+	size = "default",
+	variant = "ghost",
+	showLabel = false,
+}: Props = $props();
 
-	// Reactive theme state
-	let currentTheme = $derived(themeStore.theme);
-	let currentBase16Theme = $derived(themeStore.base16Theme);
-	let availableThemes = $derived(themeStore.getAvailableThemes());
-	let allThemes = $derived(themeStore.getAllThemes());
+// Reactive theme state using $effect for proper lifecycle management
+let currentTheme = $state<"light" | "dark">("light");
+let currentBase16Theme = $state<Base16Theme>("base16-tomorrow");
+let availableThemes = $state<{id: Base16Theme, name: string}[]>([]);
+let allThemes = $state<{light: {id: Base16Theme, name: string}[], dark: {id: Base16Theme, name: string}[]}>({light: [], dark: []});
 
-	// Dropdown state
-	let isOpen = $state(false);
+// Update state when component mounts and when store changes
+$effect(() => {
+	currentTheme = themeStore.theme;
+	currentBase16Theme = themeStore.base16Theme;
+	availableThemes = themeStore.getAvailableThemes();
+	allThemes = themeStore.getAllThemes();
+});
 
-	function toggleDropdown() {
-		isOpen = !isOpen;
-	}
+// Dropdown state
+let isOpen = $state(false);
 
-	function selectTheme(theme: Base16Theme) {
-		themeStore.setBase16Theme(theme);
+function toggleDropdown() {
+	isOpen = !isOpen;
+}
+
+function selectTheme(theme: Base16Theme) {
+	themeStore.setBase16Theme(theme);
+	isOpen = false;
+}
+
+function toggleMode() {
+	themeStore.toggle();
+}
+
+// Close dropdown when clicking outside
+function handleClickOutside(event: MouseEvent) {
+	const target = event.target as Element;
+	if (!target.closest("[data-theme-selector]")) {
 		isOpen = false;
 	}
+}
 
-	function toggleMode() {
-		themeStore.toggle();
+$effect(() => {
+	if (isOpen) {
+		document.addEventListener("click", handleClickOutside);
+		return () => document.removeEventListener("click", handleClickOutside);
 	}
-
-	// Close dropdown when clicking outside
-	function handleClickOutside(event: MouseEvent) {
-		const target = event.target as Element;
-		if (!target.closest('[data-theme-selector]')) {
-			isOpen = false;
-		}
-	}
-
-	$effect(() => {
-		if (isOpen) {
-			document.addEventListener('click', handleClickOutside);
-			return () => document.removeEventListener('click', handleClickOutside);
-		}
-	});
+});
 </script>
 
 <div class="relative" data-theme-selector>

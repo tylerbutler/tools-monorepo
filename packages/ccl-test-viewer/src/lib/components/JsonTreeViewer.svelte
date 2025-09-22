@@ -16,12 +16,20 @@ $effect(() => {
 		hasData: !!data,
 		isReady: isComponentReady,
 		isInitializing: isInitializing,
-		isCustomElementDefined: typeof customElements !== 'undefined' ? !!customElements.get('andypf-json-viewer') : false,
-		isBrowser: typeof window !== 'undefined'
+		isCustomElementDefined:
+			typeof customElements !== "undefined"
+				? !!customElements.get("andypf-json-viewer")
+				: false,
+		isBrowser: typeof window !== "undefined",
 	});
 
 	// Only run in browser context when element is available and not already initializing
-	if (typeof window !== 'undefined' && jsonViewerElement && !isComponentReady && !isInitializing) {
+	if (
+		typeof window !== "undefined" &&
+		jsonViewerElement &&
+		!isComponentReady &&
+		!isInitializing
+	) {
 		isInitializing = true;
 		console.log("JsonTreeViewer: Starting web component initialization");
 
@@ -33,11 +41,15 @@ $effect(() => {
 				console.log("JsonTreeViewer: Web component imported successfully");
 
 				// Wait for custom element to be defined with timeout
-				if (!customElements.get('andypf-json-viewer')) {
-					console.log("JsonTreeViewer: Waiting for custom element to be defined");
+				if (!customElements.get("andypf-json-viewer")) {
+					console.log(
+						"JsonTreeViewer: Waiting for custom element to be defined",
+					);
 					await Promise.race([
-						customElements.whenDefined('andypf-json-viewer'),
-						new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 5000))
+						customElements.whenDefined("andypf-json-viewer"),
+						new Promise((_, reject) =>
+							setTimeout(() => reject(new Error("Timeout")), 5000),
+						),
 					]);
 				}
 				console.log("JsonTreeViewer: Custom element defined successfully");
@@ -66,7 +78,11 @@ $effect(() => {
 
 	// Update data when component is ready or provide fallback
 	if (jsonViewerElement && data) {
-		if (isComponentReady && typeof customElements !== 'undefined' && customElements.get('andypf-json-viewer')) {
+		if (
+			isComponentReady &&
+			typeof customElements !== "undefined" &&
+			customElements.get("andypf-json-viewer")
+		) {
 			try {
 				(jsonViewerElement as any).data = JSON.stringify(data);
 				console.log("JsonTreeViewer: Updated data on web component:", data);
@@ -98,8 +114,8 @@ $effect(() => {
 	.json-tree-container {
 		font-family: 'IBM Plex Mono', monospace;
 		font-size: 0.875rem;
-		background: hsl(var(--muted));
-		border: 1px solid hsl(var(--border));
+		background: var(--muted);
+		border: 1px solid var(--border);
 		border-radius: 0.5rem;
 		padding: 1rem;
 		max-height: 500px;
@@ -127,7 +143,7 @@ $effect(() => {
 	:global(.json-tree-container pre) {
 		font-family: 'IBM Plex Mono', monospace;
 		font-size: 0.875rem;
-		color: hsl(var(--foreground));
+		color: var(--foreground);
 		margin: 0;
 		white-space: pre-wrap;
 		word-break: break-word;

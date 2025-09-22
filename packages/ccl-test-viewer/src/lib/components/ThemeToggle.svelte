@@ -1,22 +1,27 @@
 <script lang="ts">
-	import { themeStore } from "$lib/stores.svelte.js";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Moon, Sun } from "@lucide/svelte";
+import { Button } from "$lib/components/ui/button/index.js";
+import { themeStore } from "$lib/stores.svelte.js";
+import { Moon, Sun } from "@lucide/svelte";
 
-	// Props
-	interface Props {
-		size?: "sm" | "default" | "lg";
-		variant?: "default" | "outline" | "ghost";
-	}
+// Props
+interface Props {
+	size?: "sm" | "default" | "lg";
+	variant?: "default" | "outline" | "ghost";
+}
 
-	let { size = "default", variant = "ghost" }: Props = $props();
+let { size = "default", variant = "ghost" }: Props = $props();
 
-	// Reactive theme state
-	let currentTheme = $derived(themeStore.theme);
+// Reactive theme state using $effect for proper lifecycle management
+let currentTheme = $state<"light" | "dark">("light");
 
-	function toggleTheme() {
-		themeStore.toggle();
-	}
+// Update state when component mounts and when store changes
+$effect(() => {
+	currentTheme = themeStore.theme;
+});
+
+function toggleTheme() {
+	themeStore.toggle();
+}
 </script>
 
 <Button

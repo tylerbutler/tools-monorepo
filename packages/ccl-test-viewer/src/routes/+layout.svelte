@@ -1,13 +1,13 @@
 <script lang="ts">
 import "../app.css";
 import { goto } from "$app/navigation";
-import { onMount } from "svelte";
-import { Home, Search, Upload } from "@lucide/svelte";
-import type { Snippet } from "svelte";
-import type { LayoutData } from "./$types";
-import { themeStore } from "$lib/stores.svelte.js";
-import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 import Base16ThemeSelector from "$lib/components/Base16ThemeSelector.svelte";
+import ThemeToggle from "$lib/components/ThemeToggle.svelte";
+import { themeStore } from "$lib/stores.svelte.js";
+import { Home, Search, Upload, Palette } from "@lucide/svelte";
+import type { Snippet } from "svelte";
+import { onMount } from "svelte";
+import type { LayoutData } from "./$types";
 
 interface Props {
 	children?: Snippet;
@@ -21,6 +21,7 @@ const currentPath = $derived(data.currentPath);
 const isHomePage = $derived(currentPath === "/");
 const isBrowsePage = $derived(currentPath === "/browse");
 const isDataPage = $derived(currentPath === "/data");
+const isStylesPage = $derived(currentPath === "/styles");
 
 // Skip link functionality
 function skipToMain() {
@@ -34,22 +35,26 @@ function skipToMain() {
 // Initialize theme on mount - removed $effect DOM manipulation to fix lifecycle issues
 onMount(() => {
 	console.log("📱 Layout onMount() called");
-	console.log("  Theme store state:", { theme: themeStore.theme, base16Theme: themeStore.base16Theme });
+	console.log("  Theme store state:", {
+		theme: themeStore.theme,
+		base16Theme: themeStore.base16Theme,
+	});
 
 	// Force theme application for static sites
-	if (typeof window !== 'undefined') {
+	if (typeof window !== "undefined") {
 		const root = document.documentElement;
 		console.log("  Current HTML classes:", Array.from(root.classList));
 
 		// Get theme values from localStorage or defaults
 		const storedTheme = localStorage.getItem("theme") || "dark";
-		const storedBase16 = localStorage.getItem("base16Theme") || "base16-tomorrow-night";
+		const storedBase16 =
+			localStorage.getItem("base16Theme") || "base16-tomorrow-night";
 
 		console.log("  Stored values:", { storedTheme, storedBase16 });
 
 		// Remove any existing theme classes
 		const existingClasses = Array.from(root.classList).filter(
-			cls => cls.startsWith('base16-') || cls === 'dark'
+			(cls) => cls.startsWith("base16-") || cls === "dark",
 		);
 		if (existingClasses.length > 0) {
 			console.log("  Removing existing classes:", existingClasses);
@@ -131,6 +136,15 @@ onMount(() => {
 					>
 						<Upload size={16} class="mr-2 inline" />
 						Data
+					</button>
+					<button
+						class={`px-3 py-2 rounded text-sm font-medium ${isStylesPage ? "bg-blue-600 text-white" : "border border-border"}`}
+						onclick={() => goto('/styles')}
+						aria-current={isStylesPage ? "page" : undefined}
+						aria-label="Test color themes and component styles"
+					>
+						<Palette size={16} class="mr-2 inline" />
+						Styles
 					</button>
 					</nav>
 

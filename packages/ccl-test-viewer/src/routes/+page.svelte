@@ -1,10 +1,13 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
-import Base16ColorDemo from "$lib/components/Base16ColorDemo.svelte";
 
 // Navigation handlers
 function viewAllTests() {
 	goto("/browse");
+}
+
+function viewStyleTests() {
+	goto("/styles");
 }
 </script>
 
@@ -20,17 +23,19 @@ function viewAllTests() {
 		</p>
 	</div>
 
-	<div class="text-center">
-		<h3>Welcome to CCL Test Suite Viewer</h3>
-		<p>Interactive test result visualization</p>
+	<div class="text-center space-y-6">
+		<div>
+			<h3 class="text-xl font-semibold">Welcome to CCL Test Suite Viewer</h3>
+			<p class="text-muted-foreground mt-2">Interactive test result visualization</p>
+		</div>
 
-		<button onclick={viewAllTests} class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">
-			Browse All Tests
-		</button>
-	</div>
-
-	<!-- Base16 Theme Demonstration -->
-	<div class="mt-12">
-		<Base16ColorDemo />
+		<div class="flex flex-wrap justify-center gap-4">
+			<button onclick={viewAllTests} class="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all">
+				Browse All Tests
+			</button>
+			<button onclick={viewStyleTests} class="px-6 py-3 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/90 transition-all">
+				Style Testing
+			</button>
+		</div>
 	</div>
 </div>

@@ -105,7 +105,8 @@ class ThemeStore {
 
 		// If current base16 theme doesn't match the mode, switch to a default one
 		if (BASE16_THEMES[this.base16Theme].variant !== this.theme) {
-			this.base16Theme = this.theme === "dark" ? "base16-tomorrow-night" : "base16-tomorrow";
+			this.base16Theme =
+				this.theme === "dark" ? "base16-tomorrow-night" : "base16-tomorrow";
 		}
 	}
 
@@ -121,7 +122,7 @@ class ThemeStore {
 
 		// Remove all existing base16 and theme classes
 		const existingClasses = Array.from(root.classList).filter(
-			cls => cls.startsWith('base16-') || cls === 'dark'
+			(cls) => cls.startsWith("base16-") || cls === "dark",
 		);
 		console.log("  Removing classes:", existingClasses);
 		root.classList.remove(...existingClasses);
@@ -148,18 +149,27 @@ class ThemeStore {
 	getAvailableThemes() {
 		return Object.entries(BASE16_THEMES)
 			.filter(([_, config]) => config.variant === this.theme)
-			.map(([theme, config]) => ({ id: theme as Base16Theme, name: config.name }));
+			.map(([theme, config]) => ({
+				id: theme as Base16Theme,
+				name: config.name,
+			}));
 	}
 
 	// Get all themes grouped by variant
 	getAllThemes() {
 		const light = Object.entries(BASE16_THEMES)
 			.filter(([_, config]) => config.variant === "light")
-			.map(([theme, config]) => ({ id: theme as Base16Theme, name: config.name }));
+			.map(([theme, config]) => ({
+				id: theme as Base16Theme,
+				name: config.name,
+			}));
 
 		const dark = Object.entries(BASE16_THEMES)
 			.filter(([_, config]) => config.variant === "dark")
-			.map(([theme, config]) => ({ id: theme as Base16Theme, name: config.name }));
+			.map(([theme, config]) => ({
+				id: theme as Base16Theme,
+				name: config.name,
+			}));
 
 		return { light, dark };
 	}

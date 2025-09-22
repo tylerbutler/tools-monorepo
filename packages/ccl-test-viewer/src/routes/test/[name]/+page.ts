@@ -12,7 +12,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				testName,
 				test: null,
 				error: `Failed to load categories: ${categoriesResponse.status}`,
-				categories: []
+				categories: [],
 			};
 		}
 
@@ -29,7 +29,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				testName,
 				test: foundTest,
 				error: null,
-				categories
+				categories,
 			};
 		} else {
 			// No test found
@@ -38,15 +38,20 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					testName,
 					test: null,
 					error: `No test data available. Please ensure static data is built.`,
-					categories: []
+					categories: [],
 				};
 			} else {
-				console.log(`Available tests: ${categories.flatMap((cat: any) => cat.tests).map((t: any) => t.name).join(", ")}`);
+				console.log(
+					`Available tests: ${categories
+						.flatMap((cat: any) => cat.tests)
+						.map((t: any) => t.name)
+						.join(", ")}`,
+				);
 				return {
 					testName,
 					test: null,
 					error: `Test "${testName}" not found in the available data.`,
-					categories
+					categories,
 				};
 			}
 		}
@@ -55,8 +60,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		return {
 			testName,
 			test: null,
-			error: "Failed to load test data. Please check if the static data files are available.",
-			categories: []
+			error:
+				"Failed to load test data. Please check if the static data files are available.",
+			categories: [],
 		};
 	}
 };

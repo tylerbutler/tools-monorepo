@@ -11,21 +11,17 @@ let { entry }: Props = $props();
 // Visualize whitespace in keys and values only
 function visualizeWhitespace(s: string): string {
 	return s
-		.replace(/\t/g, '»') // Tab
-		.replace(/ /g, '·') // Space
-		.replace(/\r\n/g, '¶\r\n') // CRLF
-		.replace(/(?<!\r)\n/g, '¶\n'); // LF
+		.replace(/\t/g, "»") // Tab
+		.replace(/ /g, "·") // Space
+		.replace(/\r\n/g, "¶\r\n") // CRLF
+		.replace(/(?<!\r)\n/g, "¶\n"); // LF
 }
 
 const displayKey = $derived(
-	entry.key
-		? visualizeWhitespace(entry.key)
-		: '(empty)',
+	entry.key ? visualizeWhitespace(entry.key) : "(empty)",
 );
 const displayValue = $derived(
-	entry.value
-		? visualizeWhitespace(entry.value)
-		: '(empty)',
+	entry.value ? visualizeWhitespace(entry.value) : "(empty)",
 );
 </script>
 
@@ -49,26 +45,26 @@ const displayValue = $derived(
 	}
 
 	.entry-key {
-		color: hsl(var(--primary));
+		color: var(--primary);
 		font-weight: 600;
-		background-color: hsl(var(--primary) / 0.1);
-		border: 1px solid hsl(var(--primary) / 0.2);
+		background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
 		border-radius: 0.25rem;
 		padding: 0.125rem 0.375rem;
 	}
 
 	.entry-separator {
-		color: hsl(var(--muted-foreground));
+		color: var(--muted-foreground);
 		font-weight: 600;
 		margin: 0 0.25rem;
 	}
 
 	.entry-value {
-		color: hsl(var(--foreground));
+		color: var(--foreground);
 		flex: 1;
 		min-width: 0; /* Allow text to wrap */
-		background-color: hsl(var(--secondary) / 0.3);
-		border: 1px solid hsl(var(--secondary) / 0.5);
+		background-color: color-mix(in srgb, var(--secondary) 30%, transparent);
+		border: 1px solid color-mix(in srgb, var(--secondary) 50%, transparent);
 		border-radius: 0.25rem;
 		padding: 0.125rem 0.375rem;
 	}
@@ -89,7 +85,7 @@ const displayValue = $derived(
 	/* Empty placeholder styling */
 	.empty-placeholder {
 		font-style: italic;
-		color: hsl(var(--muted-foreground));
+		color: var(--muted-foreground);
 		opacity: 0.8;
 	}
 
