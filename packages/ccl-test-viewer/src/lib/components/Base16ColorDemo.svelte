@@ -35,7 +35,7 @@
 			Base16 Color Demonstration
 		</h2>
 		<p class="text-muted-foreground">
-			Current theme: <span class="font-semibold text-blue">{currentThemeName}</span>
+			Current theme: <span class="font-semibold text-primary">{currentThemeName}</span>
 		</p>
 	</div>
 
@@ -108,16 +108,16 @@
 
 			<!-- Button Examples -->
 			<div class="flex flex-wrap gap-3">
-				<button class="px-4 py-2 bg-blue text-100 rounded hover:opacity-80 transition-opacity">
+				<button class="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-all">
 					Primary Button
 				</button>
-				<button class="px-4 py-2 bg-green text-100 rounded hover:opacity-80 transition-opacity">
+				<button class="px-4 py-2 bg-green text-foreground rounded hover:opacity-80 transition-opacity">
 					Success Button
 				</button>
-				<button class="px-4 py-2 bg-red text-100 rounded hover:opacity-80 transition-opacity">
+				<button class="px-4 py-2 bg-red text-foreground rounded hover:opacity-80 transition-opacity">
 					Danger Button
 				</button>
-				<button class="px-4 py-2 bg-purple text-100 rounded hover:opacity-80 transition-opacity">
+				<button class="px-4 py-2 bg-purple text-foreground rounded hover:opacity-80 transition-opacity">
 					Purple Button
 				</button>
 			</div>

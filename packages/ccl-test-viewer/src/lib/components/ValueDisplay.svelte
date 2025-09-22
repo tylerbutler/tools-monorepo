@@ -9,40 +9,36 @@ interface Props {
 
 let { value, functionType }: Props = $props();
 
-// Type-specific formatting and styling
+// Type-specific formatting and styling using theme variables
 const formattedValue = $derived.by(() => {
 	switch (functionType) {
 		case "get_string":
 			return {
 				display: JSON.stringify(value),
 				type: "string",
-				color: "text-green-600 dark:text-green-400",
-				bgColor: "bg-green-50 dark:bg-green-950/30",
+				color: "text-emerald",
+				bgColor: "bg-emerald/10",
 			};
 		case "get_int":
 			return {
 				display: String(value),
 				type: "integer",
-				color: "text-blue-600 dark:text-blue-400",
-				bgColor: "bg-blue-50 dark:bg-blue-950/30",
+				color: "text-info",
+				bgColor: "bg-info/10",
 			};
 		case "get_float":
 			return {
 				display: String(value),
 				type: "float",
-				color: "text-purple-600 dark:text-purple-400",
-				bgColor: "bg-purple-50 dark:bg-purple-950/30",
+				color: "text-purple",
+				bgColor: "bg-purple/10",
 			};
 		case "get_bool":
 			return {
 				display: String(value),
 				type: "boolean",
-				color: value
-					? "text-emerald-600 dark:text-emerald-400"
-					: "text-red-600 dark:text-red-400",
-				bgColor: value
-					? "bg-emerald-50 dark:bg-emerald-950/30"
-					: "bg-red-50 dark:bg-red-950/30",
+				color: value ? "text-success" : "text-destructive",
+				bgColor: value ? "bg-success/10" : "bg-destructive/10",
 			};
 		default:
 			return {

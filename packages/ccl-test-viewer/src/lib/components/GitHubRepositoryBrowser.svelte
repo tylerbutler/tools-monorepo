@@ -213,7 +213,7 @@ function getRepositoryDisplayName(source: DataSource): string {
 				</div>
 
 				{#if dataSourceManager.isProcessing}
-					<div class="bg-blue-50 border border-blue-200 rounded-md p-3 flex items-center gap-2 text-sm text-blue-700">
+					<div class="bg-info/10 border border-info/20 rounded-md p-3 flex items-center gap-2 text-sm text-info">
 						<RefreshCw class="h-4 w-4 animate-spin" />
 						Loading repository data...
 					</div>
