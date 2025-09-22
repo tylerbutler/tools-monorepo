@@ -16,7 +16,11 @@ const config = {
 		"text-100", "text-200", "text-300", "text-400", "text-500", "text-600", "text-700", "text-800",
 		"bg-red", "bg-orange", "bg-yellow", "bg-green", "bg-cyan", "bg-blue", "bg-purple", "bg-brown",
 		"text-red", "text-orange", "text-yellow", "text-green", "text-cyan", "text-blue", "text-purple", "text-brown",
-		"border-red", "border-orange", "border-yellow", "border-green", "border-cyan", "border-blue", "border-purple", "border-brown"
+		"border-100", "border-200", "border-300", "border-400", "border-500", "border-600", "border-700", "border-800",
+		"border-red", "border-orange", "border-yellow", "border-green", "border-cyan", "border-blue", "border-purple", "border-brown",
+		// Hover states
+		"hover:bg-100", "hover:bg-200", "hover:bg-300", "hover:bg-400", "hover:bg-500", "hover:bg-600", "hover:bg-700", "hover:bg-800",
+		"hover:bg-red", "hover:bg-orange", "hover:bg-yellow", "hover:bg-green", "hover:bg-cyan", "hover:bg-blue", "hover:bg-purple", "hover:bg-brown"
 	],
 	theme: {
 		container: {

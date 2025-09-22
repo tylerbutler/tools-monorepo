@@ -1,10 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  /* Use Tailwind's default color palette - no custom overrides */
+  /* Use Tailwind's default color palette - Base16 works through utility classes */
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
   --radius: 0.5rem;
 }
+
+/* Base16 Color Mapping for Tailwind v4 */
+/* Since we can't use @apply or non-existent CSS variables, */
+/* the simplest solution is to add Base16 classes alongside existing classes */
+/* via JavaScript or accept that Base16 works through its own utility classes */
+
+/* For now, components will continue using standard Tailwind classes */
+/* Future enhancement: Create a utility to dynamically add Base16 classes */
 
 /* Accessibility utilities */
 @layer utilities {

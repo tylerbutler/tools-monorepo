@@ -20,7 +20,7 @@ import {
 	FolderOpen,
 	Github,
 	RefreshCw,
-} from "lucide-svelte";
+} from "@lucide/svelte";
 
 interface Props {
 	onSourceAdded?: (source: DataSource) => void;

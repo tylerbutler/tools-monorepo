@@ -15,7 +15,7 @@ import {
 	AVAILABLE_FUNCTIONS,
 } from "$lib/data/types.js";
 import { appState, type FilterState } from "$lib/stores.svelte.js";
-import { ChevronDown, ChevronRight, Filter, Search, X } from "lucide-svelte";
+import { ChevronDown, ChevronRight, Filter, Search, X } from "@lucide/svelte";
 
 // Local state for collapsible sections
 let functionsExpanded = $state(true);

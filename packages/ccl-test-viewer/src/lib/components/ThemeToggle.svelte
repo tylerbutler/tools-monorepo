@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { themeStore } from "$lib/stores.svelte.js";
 	import { Button } from "$lib/components/ui/button/index.js";
-	import { Moon, Sun } from "lucide-svelte";
+	import { Moon, Sun } from "@lucide/svelte";
 
 	// Props
 	interface Props {

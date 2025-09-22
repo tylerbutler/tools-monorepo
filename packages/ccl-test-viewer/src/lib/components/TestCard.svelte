@@ -8,7 +8,7 @@ import {
 	CardTitle,
 } from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
-import { ArrowRight, Code, Eye } from "lucide-svelte";
+import { ArrowRight, Code, Eye } from "@lucide/svelte";
 import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
 interface Props {

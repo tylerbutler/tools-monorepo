@@ -2,7 +2,7 @@
 import "../app.css";
 import { goto } from "$app/navigation";
 import { onMount } from "svelte";
-import { Home, Search, Upload } from "lucide-svelte";
+import { Home, Search, Upload } from "@lucide/svelte";
 import type { Snippet } from "svelte";
 import type { LayoutData } from "./$types";
 import { themeStore } from "$lib/stores.svelte.js";

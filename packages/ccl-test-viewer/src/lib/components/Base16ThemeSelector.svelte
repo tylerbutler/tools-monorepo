@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { themeStore, BASE16_THEMES, type Base16Theme } from "$lib/stores.svelte.js";
 	import { Button } from "$lib/components/ui/button/index.js";
-	import { ChevronDown, Palette, Check } from "lucide-svelte";
+	import { ChevronDown, Palette, Check } from "@lucide/svelte";
 
 	// Props
 	interface Props {

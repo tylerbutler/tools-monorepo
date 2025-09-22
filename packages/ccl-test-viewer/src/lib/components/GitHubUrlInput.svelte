@@ -12,7 +12,7 @@ import {
 	FolderOpen,
 	Github,
 	LoaderCircle,
-} from "lucide-svelte";
+} from "@lucide/svelte";
 
 interface Props {
 	onLoad?: (data: {

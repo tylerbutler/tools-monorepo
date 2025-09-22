@@ -5,7 +5,7 @@ import {
 	FUNCTION_STATUS,
 } from "$lib/data/function-types.js";
 import type { CCLFunction } from "$lib/data/types.js";
-import { Settings, Wrench } from "lucide-svelte";
+import { Settings, Wrench } from "@lucide/svelte";
 
 interface Props {
 	functionName: CCLFunction;

@@ -23,7 +23,7 @@ import {
 	ToggleRight,
 	Trash2,
 	Upload,
-} from "lucide-svelte";
+} from "@lucide/svelte";
 import { onMount } from "svelte";
 
 interface UploadedFile {

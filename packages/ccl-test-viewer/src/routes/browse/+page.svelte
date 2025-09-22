@@ -6,7 +6,7 @@ import TestCard from "$lib/components/TestCard.svelte";
 import { Badge, Button } from "$lib/components/ui/index.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 import { appState, initializeApp } from "$lib/stores.svelte.js";
-import { CheckSquare, Database, Grid3x3, Layers, Menu, X } from "lucide-svelte";
+import { CheckSquare, Database, Grid3x3, Layers, Menu, X } from "@lucide/svelte";
 
 // Debug: Check if script is executing at all
 console.log("🟦 Browse page script executed at module level");

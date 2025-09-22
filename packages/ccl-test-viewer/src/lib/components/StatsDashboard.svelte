@@ -8,7 +8,7 @@ import {
 } from "$lib/components/ui/index.js";
 import type { TestStats } from "$lib/data/types.js";
 import { Chart, registerables } from "chart.js";
-import { BarChart3, Code, File, Hash } from "lucide-svelte";
+import { BarChart3, Code, File, Hash } from "@lucide/svelte";
 
 interface Props {
 	stats: TestStats;

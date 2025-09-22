@@ -8,6 +8,10 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
+		// Path aliases for shadcn-svelte compatibility
+		alias: {
+			"@/*": "./src/lib/*",
+		},
 		// Using static adapter for client-side only app
 		// This eliminates SSR completely and prevents hydration issues
 		adapter: adapter({

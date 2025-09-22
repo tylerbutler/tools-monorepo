@@ -10,7 +10,7 @@ import {
 import type { FunctionSpecificResult } from "$lib/data/function-types.js";
 import { FUNCTION_STATUS } from "$lib/data/function-types.js";
 import type { CCLFunction, GeneratedTest } from "$lib/data/types.js";
-import { ArrowLeft, Code, Copy, File, Play } from "lucide-svelte";
+import { ArrowLeft, Code, Copy, File, Play } from "@lucide/svelte";
 import JsonTreeViewer from "./JsonTreeViewer.svelte";
 import EntryDisplay from "./EntryDisplay.svelte";
 import ListDisplay from "./ListDisplay.svelte";
