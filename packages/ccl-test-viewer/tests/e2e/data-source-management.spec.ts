@@ -9,19 +9,21 @@ test.describe("Data Source Management UI", () => {
 		});
 	});
 
-	test("shows empty state when no data sources are loaded", async ({ page }) => {
+	test("shows empty state when no data sources are loaded", async ({
+		page,
+	}) => {
 		// Navigate to data management page
 		await page.goto("/data");
 
 		// Verify page title and heading
 		await expect(
-			page.getByRole("heading", { name: "Data Source Management" })
+			page.getByRole("heading", { name: "Data Source Management" }),
 		).toBeVisible();
 
 		// Verify empty state is displayed
 		await expect(page.getByText("No Data Sources")).toBeVisible();
 		await expect(
-			page.getByText("Load built-in data or add new sources to get started")
+			page.getByText("Load built-in data or add new sources to get started"),
 		).toBeVisible();
 
 		// Verify empty state icon is visible
@@ -30,7 +32,7 @@ test.describe("Data Source Management UI", () => {
 
 		// Verify load built-in data button is present
 		await expect(
-			page.getByRole("button", { name: "Load Built-in Data" })
+			page.getByRole("button", { name: "Load Built-in Data" }),
 		).toBeVisible();
 
 		// Verify combined data summary is not visible when empty
@@ -51,7 +53,7 @@ test.describe("Data Source Management UI", () => {
 
 		// Wait for success message
 		await expect(
-			page.getByText("Loaded built-in data: 366 tests across 12 categories")
+			page.getByText("Loaded built-in data: 366 tests across 12 categories"),
 		).toBeVisible({ timeout: 5000 });
 
 		// Verify data source appears in the list
@@ -76,10 +78,18 @@ test.describe("Data Source Management UI", () => {
 
 		// Verify combined data summary appears
 		await expect(page.getByText("Combined Data Summary")).toBeVisible();
-		await expect(page.getByText("366").and(page.locator(".text-2xl"))).toBeVisible();
-		await expect(page.getByText("630").and(page.locator(".text-2xl"))).toBeVisible();
-		await expect(page.getByText("12").and(page.locator(".text-2xl"))).toBeVisible();
-		await expect(page.getByText("1").and(page.locator(".text-2xl"))).toBeVisible();
+		await expect(
+			page.getByText("366").and(page.locator(".text-2xl")),
+		).toBeVisible();
+		await expect(
+			page.getByText("630").and(page.locator(".text-2xl")),
+		).toBeVisible();
+		await expect(
+			page.getByText("12").and(page.locator(".text-2xl")),
+		).toBeVisible();
+		await expect(
+			page.getByText("1").and(page.locator(".text-2xl")),
+		).toBeVisible();
 		await expect(page.getByText("1 of 1 source active")).toBeVisible();
 	});
 
@@ -97,7 +107,9 @@ test.describe("Data Source Management UI", () => {
 
 		// Verify combined stats show 1 active source
 		await expect(page.getByText("1 of 1 source active")).toBeVisible();
-		await expect(page.getByText("1").and(page.locator(".text-2xl"))).toBeVisible();
+		await expect(
+			page.getByText("1").and(page.locator(".text-2xl")),
+		).toBeVisible();
 
 		// Toggle source to inactive
 		await toggleButton.click();
@@ -113,17 +125,21 @@ test.describe("Data Source Management UI", () => {
 
 		// Verify combined stats show 0 active sources
 		await expect(page.getByText("0 of 1 source active")).toBeVisible();
-		await expect(page.getByText("0").and(page.locator(".text-2xl"))).toBeVisible();
+		await expect(
+			page.getByText("0").and(page.locator(".text-2xl")),
+		).toBeVisible();
 
 		// Toggle back to active
 		await activateButton.click();
 
 		// Verify source is active again
 		await expect(
-			page.getByRole("button", { name: "Deactivate source" })
+			page.getByRole("button", { name: "Deactivate source" }),
 		).toBeVisible();
 		await expect(page.getByText("1 of 1 source active")).toBeVisible();
-		await expect(page.getByText("1").and(page.locator(".text-2xl"))).toBeVisible();
+		await expect(
+			page.getByText("1").and(page.locator(".text-2xl")),
+		).toBeVisible();
 	});
 
 	test("clear all button works correctly", async ({ page }) => {
@@ -137,12 +153,14 @@ test.describe("Data Source Management UI", () => {
 		await clearAllButton.click();
 
 		// Wait for clear message
-		await expect(page.getByText("All test data cleared successfully")).toBeVisible();
+		await expect(
+			page.getByText("All test data cleared successfully"),
+		).toBeVisible();
 
 		// Verify data source is removed and empty state returns
 		await expect(page.getByText("No Data Sources")).toBeVisible();
 		await expect(
-			page.getByText("Load built-in data or add new sources to get started")
+			page.getByText("Load built-in data or add new sources to get started"),
 		).toBeVisible();
 
 		// Verify combined data summary is hidden
@@ -157,7 +175,7 @@ test.describe("Data Source Management UI", () => {
 
 		// Verify main sections are present in correct order
 		await expect(
-			page.getByRole("heading", { name: "Data Source Management" })
+			page.getByRole("heading", { name: "Data Source Management" }),
 		).toBeVisible();
 
 		// Current Data Sources section (always visible)
@@ -165,18 +183,18 @@ test.describe("Data Source Management UI", () => {
 
 		// Add New Data Sources section
 		await expect(
-			page.getByRole("heading", { name: "Add New Data Sources" })
+			page.getByRole("heading", { name: "Add New Data Sources" }),
 		).toBeVisible();
 
 		// Verify tab navigation for adding sources
 		await expect(
-			page.getByRole("button", { name: "File Upload" })
+			page.getByRole("button", { name: "File Upload" }),
 		).toBeVisible();
 		await expect(
-			page.getByRole("button", { name: "GitHub URL" })
+			page.getByRole("button", { name: "GitHub URL" }),
 		).toBeVisible();
 		await expect(
-			page.getByRole("button", { name: "Browse Repositories" })
+			page.getByRole("button", { name: "Browse Repositories" }),
 		).toBeVisible();
 
 		// Verify upload interface is visible by default
@@ -211,11 +229,17 @@ test.describe("Data Source Management UI", () => {
 		await expect(page.getByText("Built-in Test Data")).toBeVisible();
 
 		// Navigate to browse page
-		await page.getByRole("button", { name: "Browse and filter test cases" }).click();
-		await expect(page.getByRole("heading", { name: "Browse Tests" })).toBeVisible();
+		await page
+			.getByRole("button", { name: "Browse and filter test cases" })
+			.click();
+		await expect(
+			page.getByRole("heading", { name: "Browse Tests" }),
+		).toBeVisible();
 
 		// Navigate back to data management page
-		await page.getByRole("button", { name: "Manage test data from multiple sources" }).click();
+		await page
+			.getByRole("button", { name: "Manage test data from multiple sources" })
+			.click();
 
 		// Verify data source is still present
 		await expect(page.getByText("Built-in Test Data")).toBeVisible();
@@ -245,7 +269,7 @@ test.describe("Data Source Management UI", () => {
 		// Test keyboard activation of toggle
 		await page.keyboard.press("Enter");
 		await expect(
-			page.getByRole("button", { name: "Activate source" })
+			page.getByRole("button", { name: "Activate source" }),
 		).toBeVisible();
 
 		// Verify ARIA labels are present
@@ -276,7 +300,7 @@ test.describe("Data Source Management UI", () => {
 		// Verify toggle button works on mobile
 		await page.getByRole("button", { name: "Deactivate source" }).click();
 		await expect(
-			page.getByRole("button", { name: "Activate source" })
+			page.getByRole("button", { name: "Activate source" }),
 		).toBeVisible();
 
 		// Verify tabs work on mobile

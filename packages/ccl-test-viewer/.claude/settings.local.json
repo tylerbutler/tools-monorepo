@@ -78,7 +78,8 @@
 			"mcp__playwright__browser_file_upload",
 			"mcp__sequential-thinking__sequentialthinking",
 			"Bash(git checkout:*)",
-			"Bash(npx:*)"
+			"Bash(npx:*)",
+			"mcp__playwright__browser_install"
 		],
 		"deny": [],
 		"ask": []
