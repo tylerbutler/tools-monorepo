@@ -24,7 +24,7 @@ function viewAllTests() {
 		<h3>Welcome to CCL Test Suite Viewer</h3>
 		<p>Interactive test result visualization</p>
 
-		<button onclick={viewAllTests} class="mt-4 px-4 py-2 bg-blue text-base07 rounded hover:opacity-80 transition-opacity">
+		<button onclick={viewAllTests} class="mt-4 px-4 py-2 bg-blue text-100 rounded hover:opacity-80 transition-opacity">
 			Browse All Tests
 		</button>
 	</div>
