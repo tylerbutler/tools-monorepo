@@ -363,17 +363,7 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 
 		<!-- Tab Content -->
 		{#if activeTab === 'upload'}
-			<Card>
-				<CardHeader>
-					<CardTitle class="flex items-center gap-2">
-						<Upload class="h-5 w-5" />
-						Upload JSON Files
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<MultiFileUpload onFilesUploaded={handleFilesUploaded} maxFiles={10} />
-				</CardContent>
-			</Card>
+			<MultiFileUpload onFilesUploaded={handleFilesUploaded} maxFiles={10} />
 		{:else if activeTab === 'github-url'}
 			<Card>
 				<CardHeader>
