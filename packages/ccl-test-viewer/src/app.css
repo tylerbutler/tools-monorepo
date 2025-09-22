@@ -24,57 +24,107 @@
 
 @layer base {
 	:root {
-		--background: 0 0% 100%;
-		--foreground: 240 10% 3.9%;
-		--card: 0 0% 100%;
-		--card-foreground: 240 10% 3.9%;
-		--popover: 0 0% 100%;
-		--popover-foreground: 240 10% 3.9%;
-		--primary: 240 5.9% 10%;
+		/* Modern vibrant light theme */
+		--background: 220 30% 98%;
+		--foreground: 230 25% 12%;
+		--card: 210 40% 95%;
+		--card-foreground: 230 20% 15%;
+		--popover: 200 50% 96%;
+		--popover-foreground: 230 25% 12%;
+		--primary: 260 80% 55%; /* Rich purple */
 		--primary-foreground: 0 0% 98%;
-		--secondary: 240 4.8% 95.9%;
-		--secondary-foreground: 240 5.9% 10%;
-		--muted: 240 4.8% 95.9%;
-		--muted-foreground: 240 3.8% 46.1%;
-		--accent: 240 4.8% 95.9%;
-		--accent-foreground: 240 5.9% 10%;
-		--destructive: 0 84.2% 60.2%;
+		--secondary: 190 70% 45%; /* Vibrant teal */
+		--secondary-foreground: 0 0% 98%;
+		--muted: 200 30% 92%;
+		--muted-foreground: 230 15% 45%;
+		--accent: 320 65% 55%; /* Bright magenta */
+		--accent-foreground: 0 0% 98%;
+		--destructive: 0 75% 58%;
 		--destructive-foreground: 0 0% 98%;
-		--border: 240 5.9% 90%;
-		--input: 240 5.9% 90%;
-		--ring: 240 5.9% 10%;
-		--radius: 0.5rem;
+		--border: 220 25% 85%;
+		--input: 220 25% 90%;
+		--ring: 260 80% 55%;
+		--radius: 0.75rem;
 
-		/* Terminal-inspired colors */
-		--terminal-primary: 192 100% 50%; /* #00D7FF - cyan */
-		--terminal-success: 155 100% 42%; /* #00D787 - green */
-		--terminal-error: 345 100% 67%; /* #FF5F87 - red/pink */
-		--terminal-warning: 39 100% 50%; /* #FFAF00 - orange */
-		--terminal-subtle: 0 0% 38%; /* #626262 - gray */
-		--terminal-bg: 0 0% 4%; /* #0A0A0A - dark background */
-		--terminal-card: 0 0% 10%; /* #1A1A1A - card background */
+		/* Expanded colorful palette */
+		--success: 145 70% 45%; /* Emerald green */
+		--success-foreground: 0 0% 98%;
+		--warning: 35 85% 58%; /* Vibrant orange */
+		--warning-foreground: 0 0% 98%;
+		--info: 210 75% 55%; /* Bright blue */
+		--info-foreground: 0 0% 98%;
+		--purple: 270 80% 60%; /* Rich purple */
+		--purple-foreground: 0 0% 98%;
+		--pink: 330 75% 65%; /* Hot pink */
+		--pink-foreground: 0 0% 98%;
+		--indigo: 240 70% 60%; /* Deep indigo */
+		--indigo-foreground: 0 0% 98%;
+		--cyan: 185 85% 50%; /* Electric cyan */
+		--cyan-foreground: 0 0% 98%;
+		--lime: 80 75% 55%; /* Bright lime */
+		--lime-foreground: 230 25% 12%;
+		--amber: 45 90% 60%; /* Golden amber */
+		--amber-foreground: 230 25% 12%;
+		--emerald: 155 75% 50%; /* Emerald */
+		--emerald-foreground: 0 0% 98%;
+		--rose: 350 80% 65%; /* Rose */
+		--rose-foreground: 0 0% 98%;
+
+		/* Terminal-inspired colors - enhanced */
+		--terminal-primary: 192 100% 55%; /* Brighter cyan */
+		--terminal-success: 155 85% 48%; /* Richer green */
+		--terminal-error: 345 90% 65%; /* Vibrant red/pink */
+		--terminal-warning: 39 95% 55%; /* Brighter orange */
+		--terminal-subtle: 220 15% 45%; /* Bluer gray */
+		--terminal-bg: 230 35% 8%; /* Rich dark blue */
+		--terminal-card: 225 25% 15%; /* Dark blue-gray */
 	}
 
 	.dark {
-		--background: 240 10% 3.9%;
-		--foreground: 0 0% 98%;
-		--card: 240 10% 3.9%;
-		--card-foreground: 0 0% 98%;
-		--popover: 240 10% 3.9%;
-		--popover-foreground: 0 0% 98%;
-		--primary: 0 0% 98%;
-		--primary-foreground: 240 5.9% 10%;
-		--secondary: 240 3.7% 15.9%;
-		--secondary-foreground: 0 0% 98%;
-		--muted: 240 3.7% 15.9%;
-		--muted-foreground: 240 5% 64.9%;
-		--accent: 240 3.7% 15.9%;
-		--accent-foreground: 0 0% 98%;
-		--destructive: 0 62.8% 30.6%;
-		--destructive-foreground: 0 0% 98%;
-		--border: 240 3.7% 15.9%;
-		--input: 240 3.7% 15.9%;
-		--ring: 240 4.9% 83.9%;
+		/* Modern vibrant dark theme */
+		--background: 230 45% 6%;
+		--foreground: 210 30% 92%;
+		--card: 225 40% 10%;
+		--card-foreground: 210 25% 90%;
+		--popover: 230 35% 8%;
+		--popover-foreground: 210 30% 92%;
+		--primary: 270 75% 65%; /* Brighter purple in dark */
+		--primary-foreground: 230 45% 6%;
+		--secondary: 185 80% 55%; /* Vibrant teal */
+		--secondary-foreground: 230 45% 6%;
+		--muted: 225 25% 18%;
+		--muted-foreground: 220 15% 65%;
+		--accent: 320 70% 65%; /* Bright magenta */
+		--accent-foreground: 230 45% 6%;
+		--destructive: 0 80% 65%;
+		--destructive-foreground: 230 45% 6%;
+		--border: 225 20% 22%;
+		--input: 225 25% 18%;
+		--ring: 270 75% 65%;
+
+		/* Enhanced dark mode extended palette */
+		--success: 145 75% 55%;
+		--success-foreground: 230 45% 6%;
+		--warning: 35 90% 65%;
+		--warning-foreground: 230 45% 6%;
+		--info: 210 80% 65%;
+		--info-foreground: 230 45% 6%;
+		--purple: 270 75% 70%;
+		--purple-foreground: 230 45% 6%;
+		--pink: 330 80% 70%;
+		--pink-foreground: 230 45% 6%;
+		--indigo: 240 75% 70%;
+		--indigo-foreground: 230 45% 6%;
+		--cyan: 185 90% 60%;
+		--cyan-foreground: 230 45% 6%;
+		--lime: 80 80% 65%;
+		--lime-foreground: 230 45% 6%;
+		--amber: 45 95% 70%;
+		--amber-foreground: 230 45% 6%;
+		--emerald: 155 80% 60%;
+		--emerald-foreground: 230 45% 6%;
+		--rose: 350 85% 70%;
+		--rose-foreground: 230 45% 6%;
 	}
 }
 

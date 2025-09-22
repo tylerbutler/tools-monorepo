@@ -48,6 +48,51 @@ const config = {
 					DEFAULT: "hsl(var(--card) / <alpha-value>)",
 					foreground: "hsl(var(--card-foreground) / <alpha-value>)",
 				},
+				// Extended colorful palette
+				success: {
+					DEFAULT: "hsl(var(--success) / <alpha-value>)",
+					foreground: "hsl(var(--success-foreground) / <alpha-value>)",
+				},
+				warning: {
+					DEFAULT: "hsl(var(--warning) / <alpha-value>)",
+					foreground: "hsl(var(--warning-foreground) / <alpha-value>)",
+				},
+				info: {
+					DEFAULT: "hsl(var(--info) / <alpha-value>)",
+					foreground: "hsl(var(--info-foreground) / <alpha-value>)",
+				},
+				purple: {
+					DEFAULT: "hsl(var(--purple) / <alpha-value>)",
+					foreground: "hsl(var(--purple-foreground) / <alpha-value>)",
+				},
+				pink: {
+					DEFAULT: "hsl(var(--pink) / <alpha-value>)",
+					foreground: "hsl(var(--pink-foreground) / <alpha-value>)",
+				},
+				indigo: {
+					DEFAULT: "hsl(var(--indigo) / <alpha-value>)",
+					foreground: "hsl(var(--indigo-foreground) / <alpha-value>)",
+				},
+				cyan: {
+					DEFAULT: "hsl(var(--cyan) / <alpha-value>)",
+					foreground: "hsl(var(--cyan-foreground) / <alpha-value>)",
+				},
+				lime: {
+					DEFAULT: "hsl(var(--lime) / <alpha-value>)",
+					foreground: "hsl(var(--lime-foreground) / <alpha-value>)",
+				},
+				amber: {
+					DEFAULT: "hsl(var(--amber) / <alpha-value>)",
+					foreground: "hsl(var(--amber-foreground) / <alpha-value>)",
+				},
+				emerald: {
+					DEFAULT: "hsl(var(--emerald) / <alpha-value>)",
+					foreground: "hsl(var(--emerald-foreground) / <alpha-value>)",
+				},
+				rose: {
+					DEFAULT: "hsl(var(--rose) / <alpha-value>)",
+					foreground: "hsl(var(--rose-foreground) / <alpha-value>)",
+				},
 			},
 			borderRadius: {
 				lg: "var(--radius)",
