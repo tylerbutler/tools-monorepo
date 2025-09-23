@@ -1,5 +1,6 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
+import ColorPalette from "$lib/components/ColorPalette.svelte";
 
 // Navigation handlers
 function viewAllTests() {
@@ -30,12 +31,17 @@ function viewStyleTests() {
 		</div>
 
 		<div class="flex flex-wrap justify-center gap-4">
-			<button onclick={viewAllTests} class="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all">
+			<button onclick={viewAllTests} class="px-6 py-3 bg-success text-success-foreground rounded-lg hover:bg-success/90 transition-all">
 				Browse All Tests
 			</button>
-			<button onclick={viewStyleTests} class="px-6 py-3 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/90 transition-all">
+			<button onclick={viewStyleTests} class="px-6 py-3 bg-info text-info-foreground rounded-lg hover:bg-info/90 transition-all">
 				Style Testing
 			</button>
 		</div>
+	</div>
+
+	<!-- Color Palette Demo -->
+	<div class="mt-12">
+		<ColorPalette />
 	</div>
 </div>

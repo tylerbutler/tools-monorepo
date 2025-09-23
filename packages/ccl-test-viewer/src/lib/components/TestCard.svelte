@@ -103,7 +103,7 @@ const expectedSummary = $derived.by(() => {
 		<!-- Expected result -->
 		<div>
 			<h4 class="text-sm font-medium text-muted-foreground mb-2">Expected</h4>
-			<div class="text-sm bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800 rounded-md px-3 py-2">
+			<div class="text-sm bg-success/10 text-success border border-success/20 rounded-md px-3 py-2">
 				{expectedSummary}
 			</div>
 		</div>
@@ -117,7 +117,7 @@ const expectedSummary = $derived.by(() => {
 				</h4>
 				<div class="flex flex-wrap gap-1">
 					{#each test.functions.slice(0, 3) as func}
-						<Badge variant="secondary" class="text-xs">
+						<Badge class="text-xs bg-purple/10 text-purple border border-purple/20 hover:bg-purple/20">
 							{func}
 						</Badge>
 					{/each}
@@ -136,7 +136,7 @@ const expectedSummary = $derived.by(() => {
 				<h4 class="text-sm font-medium text-muted-foreground mb-2">Features</h4>
 				<div class="flex flex-wrap gap-1">
 					{#each test.features.slice(0, 2) as feature}
-						<Badge variant="outline" class="text-xs">
+						<Badge class="text-xs bg-teal/10 text-teal border border-teal/20 hover:bg-teal/20">
 							{feature}
 						</Badge>
 					{/each}

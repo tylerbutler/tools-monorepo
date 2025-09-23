@@ -1,9 +1,9 @@
 <script lang="ts">
 import { Button } from "$lib/components/ui/button/index.js";
 import { Input } from "$lib/components/ui/input/index.js";
-import { Checkbox } from "$lib/components/ui/checkbox/index.js";
 import { Badge } from "$lib/components/ui/badge/index.js";
 import * as Card from "$lib/components/ui/card/index.js";
+import SimpleCheckbox from "$lib/components/ui/simple-checkbox.svelte";
 
 // State for interactive components
 let checkboxValue = $state(false);
@@ -61,7 +61,7 @@ const sampleCards = [
 		</div>
 	</section>
 
-	<!-- Badges -->
+	<!-- Badges - TESTING ENABLED -->
 	<section class="space-y-4">
 		<h4 class="text-lg font-semibold">Badges</h4>
 		<div class="flex flex-wrap gap-3">
@@ -73,7 +73,7 @@ const sampleCards = [
 		</div>
 	</section>
 
-	<!-- Form Elements -->
+	<!-- Form Elements - TESTING INPUT ONLY -->
 	<section class="space-y-4">
 		<h4 class="text-lg font-semibold">Form Elements</h4>
 		<div class="space-y-4 max-w-md">
@@ -88,7 +88,7 @@ const sampleCards = [
 			</div>
 
 			<div class="flex items-center space-x-2">
-				<Checkbox
+				<SimpleCheckbox
 					id="sample-checkbox"
 					bind:checked={checkboxValue}
 				/>
@@ -99,7 +99,7 @@ const sampleCards = [
 		</div>
 	</section>
 
-	<!-- Cards -->
+	<!-- Cards - TESTING ENABLED -->
 	<section class="space-y-4">
 		<h4 class="text-lg font-semibold">Cards</h4>
 		<div class="grid gap-4 md:grid-cols-2">
@@ -196,6 +196,7 @@ const sampleCards = [
 			<div class="p-3 border-2 border-primary rounded focus-within:ring-2 focus-within:ring-ring">
 				<p class="text-sm font-medium">Focus State</p>
 				<Input placeholder="Focus this input to see the ring" class="mt-2" />
+				<p class="text-xs text-muted-foreground">Input component enabled for testing</p>
 			</div>
 		</div>
 	</section>

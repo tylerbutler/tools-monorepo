@@ -13,6 +13,5 @@ export {
 	CardHeader,
 	CardTitle,
 } from "./card/index.js";
-export { Checkbox } from "./checkbox/index.js";
 export { Input } from "./input/index.js";
 export { default as SimpleCheckbox } from "./simple-checkbox.svelte";
