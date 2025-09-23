@@ -40,11 +40,20 @@
 		"test:all": "npm run test && npm run test:e2e",
 		"perf:bundle": "npm run build && open .sonda/index.html",
 		"perf:lighthouse": "npm run build && lhci autorun",
-		"perf:stats": "node scripts/bundle-stats.js"
+		"perf:stats": "node scripts/bundle-stats.js",
+		"tauri": "tauri",
+		"tauri:dev": "tauri dev",
+		"tauri:build": "tauri build",
+		"tauri:build:debug": "tauri build --debug",
+		"build:tauri": "BUILD_TARGET=tauri npm run build && tauri build",
+		"dev:tauri": "BUILD_TARGET=tauri tauri dev"
 	},
 	"dependencies": {
 		"@andypf/json-viewer": "^2.2.0",
 		"@lucide/svelte": "^0.515.0",
+		"@tauri-apps/api": "^2.8.0",
+		"@tauri-apps/plugin-dialog": "^2.4.0",
+		"@tauri-apps/plugin-fs": "^2.4.2",
 		"chart.js": "^4.5.0",
 		"clsx": "^2.1.1",
 		"prismjs": "^1.30.0",

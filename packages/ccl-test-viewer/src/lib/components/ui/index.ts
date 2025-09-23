@@ -1,3 +1,11 @@
+export {
+	Alert,
+	AlertDescription,
+	type AlertProps,
+	type AlertTitleProps,
+	type AlertDescriptionProps,
+	alertVariants,
+} from "./alert/index.js";
 export { Badge, type BadgeVariant, badgeVariants } from "./badge/index.js";
 export {
 	Button,
@@ -14,4 +22,5 @@ export {
 	CardTitle,
 } from "./card/index.js";
 export { Input } from "./input/index.js";
+export { Progress, type ProgressProps } from "./progress/index.js";
 export { default as SimpleCheckbox } from "./simple-checkbox.svelte";

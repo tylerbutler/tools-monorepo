@@ -2,6 +2,8 @@
 import GitHubRepositoryBrowser from "$lib/components/GitHubRepositoryBrowser.svelte";
 import GitHubUrlInput from "$lib/components/GitHubUrlInput.svelte";
 import MultiFileUpload from "$lib/components/MultiFileUpload.svelte";
+import TauriFileUpload from "$lib/components/TauriFileUpload.svelte";
+import DataCollectionManager from "$lib/components/DataCollectionManager.svelte";
 import {
 	Badge,
 	Button,
@@ -12,6 +14,8 @@ import {
 } from "$lib/components/ui/index.js";
 import type { DataSource } from "$lib/stores/dataSource.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import { tauriDataSourceManager } from "$lib/stores/tauriDataSourceManager.svelte.js";
+import { isTauriEnvironment, type TauriFileResult } from "$lib/services/tauriFileService.js";
 import {
 	Database,
 	Download,
@@ -23,6 +27,7 @@ import {
 	ToggleRight,
 	Trash2,
 	Upload,
+	HardDrive,
 } from "@lucide/svelte";
 import { onMount } from "svelte";
 
@@ -37,6 +42,9 @@ interface UploadedFile {
 // Initialize data source manager on component mount (upload-only mode)
 onMount(async () => {
 	await dataSourceManager.initializeEmpty();
+
+	// Detect Tauri environment
+	isDesktopApp = isTauriEnvironment();
 });
 
 // Handle successful file uploads - now using data source manager
@@ -83,8 +91,43 @@ function handleSourceAdded(source: DataSource) {
 	console.log("GitHub source added:", source);
 }
 
+// Handle Tauri file uploads
+async function handleTauriFilesLoaded(files: TauriFileResult[]) {
+	if (files.length === 0) return;
+
+	try {
+		// Create local data source from Tauri files
+		const localSource = await tauriDataSourceManager.createLocalSourceFromFiles(files);
+		console.log("Created local data source:", localSource);
+
+		// Process files through the main data source manager for UI integration
+		const fileObjects = files.map(file => ({
+			name: file.name,
+			type: 'application/json' as const,
+			size: file.size,
+			text: async () => file.content,
+			lastModified: Date.now(),
+			arrayBuffer: async () => new ArrayBuffer(0),
+			stream: () => new ReadableStream(),
+			slice: () => new Blob()
+		}));
+
+		await dataSourceManager.processUploadedFiles(fileObjects, localSource.name);
+	} catch (error) {
+		console.error('Failed to process Tauri files:', error);
+	}
+}
+
+// Handle Tauri file upload errors
+function handleTauriError(error: string) {
+	console.error('Tauri file upload error:', error);
+}
+
 // Tab state management
 let activeTab = $state("upload");
+
+// Tauri environment detection
+let isDesktopApp = $state(false);
 
 // Load built-in data state
 let loadMessage = $state<string | null>(null);
@@ -338,7 +381,7 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 					class="flex items-center gap-2"
 				>
 					<Upload class="h-4 w-4" />
-					File Upload
+					{isDesktopApp ? 'Native File Upload' : 'File Upload'}
 				</Button>
 				<Button
 					variant={activeTab === 'github-url' ? 'default' : 'ghost'}
@@ -358,12 +401,31 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 					<FileText class="h-4 w-4" />
 					Browse Repositories
 				</Button>
+				{#if isDesktopApp}
+					<Button
+						variant={activeTab === 'collections' ? 'default' : 'ghost'}
+						size="sm"
+						onclick={() => activeTab = 'collections'}
+						class="flex items-center gap-2"
+					>
+						<HardDrive class="h-4 w-4" />
+						Collections
+					</Button>
+				{/if}
 			</div>
 		</div>
 
 		<!-- Tab Content -->
 		{#if activeTab === 'upload'}
-			<MultiFileUpload onFilesUploaded={handleFilesUploaded} maxFiles={10} />
+			{#if isDesktopApp}
+				<TauriFileUpload
+					onFilesLoaded={handleTauriFilesLoaded}
+					onError={handleTauriError}
+					maxFiles={10}
+				/>
+			{:else}
+				<MultiFileUpload onFilesUploaded={handleFilesUploaded} maxFiles={10} />
+			{/if}
 		{:else if activeTab === 'github-url'}
 			<Card>
 				<CardHeader>
@@ -378,6 +440,8 @@ const hasStaticData = $derived(dataSourceManager.hasStaticData);
 			</Card>
 		{:else if activeTab === 'github-browse'}
 			<GitHubRepositoryBrowser onSourceAdded={handleSourceAdded} />
+		{:else if activeTab === 'collections' && isDesktopApp}
+			<DataCollectionManager />
 		{/if}
 	</div>
 

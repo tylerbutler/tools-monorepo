@@ -31,6 +31,40 @@ pnpm test:e2e                  # Playwright end-to-end tests
 # Code quality
 pnpm format                    # Format with Biome
 pnpm lint                      # Lint with Biome
+
+# Tauri desktop application (requires setup)
+pnpm tauri:dev                 # Development mode with hot reload
+pnpm tauri:build               # Production desktop build
+```
+
+## Tauri Desktop Application
+
+**📱 The CCL Test Viewer includes full desktop application support via Tauri.**
+
+For complete setup, build, and testing instructions, see **[TAURI-SETUP.md](./TAURI-SETUP.md)**.
+
+### Quick Start (after Tauri setup)
+```bash
+# Install Rust and Tauri CLI (one-time setup)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo install tauri-cli
+
+# Initialize Tauri project (one-time setup)
+cargo tauri init
+
+# Development
+pnpm tauri:dev                 # Desktop development mode
+
+# Production build
+pnpm tauri:build               # Creates native desktop application
+```
+
+### Desktop Features
+- **Native File Dialogs**: Multi-file selection with OS integration
+- **Local Data Persistence**: Cross-session data storage
+- **Offline Mode**: Cached data for offline use
+- **Collection Management**: Import/export data collections
+- **Cross-Platform**: Windows, macOS, and Linux support
 ```
 
 ## Architecture Overview
