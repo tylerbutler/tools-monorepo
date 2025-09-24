@@ -3,12 +3,12 @@
  * Handles caching, offline detection, and data synchronization
  */
 
-import { isTauriEnvironment } from '@/services/tauriFileService';
-import { dataSourceManager } from './dataSourceManager.svelte.js';
+import { isTauriEnvironment } from "@/services/tauriFileService";
+import { dataSourceManager } from "./dataSourceManager.svelte.js";
 
 interface CachedData {
 	id: string;
-	type: 'static' | 'uploaded' | 'github';
+	type: "static" | "uploaded" | "github";
 	data: any;
 	cachedAt: Date;
 	expiresAt: Date;
@@ -71,15 +71,17 @@ class OfflineManager {
 	}
 
 	get stats(): OfflineStats {
-		const totalCacheSize = Array.from(this._cachedData.values())
-			.reduce((sum, cached) => sum + cached.size, 0);
+		const totalCacheSize = Array.from(this._cachedData.values()).reduce(
+			(sum, cached) => sum + cached.size,
+			0,
+		);
 
 		return {
 			isOnline: this._isOnline,
 			cachedDataSources: this._cachedData.size,
 			totalCacheSize,
 			lastSync: this._lastSync,
-			offlineCapable: this.offlineCapable
+			offlineCapable: this.offlineCapable,
 		};
 	}
 
@@ -87,15 +89,15 @@ class OfflineManager {
 	 * Initialize offline detection and event handlers
 	 */
 	private initializeOfflineDetection(): void {
-		if (typeof window === 'undefined') return;
+		if (typeof window === "undefined") return;
 
 		// Listen for online/offline events
-		window.addEventListener('online', () => {
+		window.addEventListener("online", () => {
 			this._isOnline = true;
 			this.handleOnlineStateChange();
 		});
 
-		window.addEventListener('offline', () => {
+		window.addEventListener("offline", () => {
 			this._isOnline = false;
 			this.handleOnlineStateChange();
 		});
@@ -119,7 +121,7 @@ class OfflineManager {
 	 */
 	setOfflineMode(enabled: boolean): void {
 		if (!this.offlineCapable) {
-			throw new Error('Offline mode only available in desktop app');
+			throw new Error("Offline mode only available in desktop app");
 		}
 
 		this._isOfflineMode = enabled;
@@ -151,9 +153,8 @@ class OfflineManager {
 
 			// Clean up expired cache entries
 			await this.cleanupExpiredCache();
-
 		} catch (error) {
-			console.error('Failed to cache current data:', error);
+			console.error("Failed to cache current data:", error);
 		}
 	}
 
@@ -171,16 +172,18 @@ class OfflineManager {
 			data: {
 				source,
 				categories: source.categories,
-				stats: source.stats
+				stats: source.stats,
 			},
 			cachedAt: new Date(),
 			expiresAt,
-			size: JSON.stringify(source).length
+			size: JSON.stringify(source).length,
 		};
 
 		// Check cache size limit
-		const currentCacheSize = Array.from(this._cachedData.values())
-			.reduce((sum, cached) => sum + cached.size, 0);
+		const currentCacheSize = Array.from(this._cachedData.values()).reduce(
+			(sum, cached) => sum + cached.size,
+			0,
+		);
 
 		if (currentCacheSize + cachedData.size > this._cacheLimit) {
 			// Remove oldest cached data to make room
@@ -206,13 +209,12 @@ class OfflineManager {
 		try {
 			// In a real implementation, this would load from Tauri's local storage
 			// For now, we'll use a placeholder
-			console.log('Loading cached data from persistent storage...');
+			console.log("Loading cached data from persistent storage...");
 
 			// Clean up expired entries after loading
 			await this.cleanupExpiredCache();
-
 		} catch (error) {
-			console.error('Failed to load cached data:', error);
+			console.error("Failed to load cached data:", error);
 		}
 	}
 
@@ -226,19 +228,24 @@ class OfflineManager {
 
 		try {
 			// Convert cache map to serializable format
-			const cacheArray = Array.from(this._cachedData.entries()).map(([key, value]) => ({
-				key,
-				...value,
-				cachedAt: value.cachedAt.toISOString(),
-				expiresAt: value.expiresAt.toISOString()
-			}));
+			const cacheArray = Array.from(this._cachedData.entries()).map(
+				([key, value]) => ({
+					key,
+					...value,
+					cachedAt: value.cachedAt.toISOString(),
+					expiresAt: value.expiresAt.toISOString(),
+				}),
+			);
 
 			// In a real implementation, this would use Tauri's file system API
 			// to write the cache data to a local file
-			console.log('Persisting cache to file system...', cacheArray.length, 'entries');
-
+			console.log(
+				"Persisting cache to file system...",
+				cacheArray.length,
+				"entries",
+			);
 		} catch (error) {
-			console.error('Failed to persist cache to file:', error);
+			console.error("Failed to persist cache to file:", error);
 		}
 	}
 
@@ -251,22 +258,22 @@ class OfflineManager {
 		}
 
 		try {
-			console.log('Syncing cached data with remote sources...');
+			console.log("Syncing cached data with remote sources...");
 
 			// Check for updates to GitHub sources
-			const githubSources = Array.from(this._cachedData.values())
-				.filter(cached => cached.type === 'github');
+			const githubSources = Array.from(this._cachedData.values()).filter(
+				(cached) => cached.type === "github",
+			);
 
 			for (const cachedSource of githubSources) {
 				// In a real implementation, this would check for updates
 				// and refresh the cached data if needed
-				console.log('Checking for updates to GitHub source:', cachedSource.id);
+				console.log("Checking for updates to GitHub source:", cachedSource.id);
 			}
 
 			this._lastSync = new Date();
-
 		} catch (error) {
-			console.error('Failed to sync cached data:', error);
+			console.error("Failed to sync cached data:", error);
 		}
 	}
 
@@ -310,7 +317,7 @@ class OfflineManager {
 		if (entries.length > 0) {
 			const [oldestKey] = entries[0];
 			this._cachedData.delete(oldestKey);
-			console.log('Evicted oldest cache entry:', oldestKey);
+			console.log("Evicted oldest cache entry:", oldestKey);
 		}
 	}
 
@@ -325,16 +332,13 @@ class OfflineManager {
 			await this.persistCacheToFile();
 		}
 
-		console.log('Cleared all cached data');
+		console.log("Cleared all cached data");
 	}
 
 	/**
 	 * Set cache configuration
 	 */
-	setCacheConfig(options: {
-		autoCache?: boolean;
-		cacheLimit?: number;
-	}): void {
+	setCacheConfig(options: { autoCache?: boolean; cacheLimit?: number }): void {
 		if (options.autoCache !== undefined) {
 			this._autoCache = options.autoCache;
 		}
@@ -349,8 +353,8 @@ class OfflineManager {
 	 */
 	getOfflineDataSources(): any[] {
 		return Array.from(this._cachedData.values())
-			.map(cached => cached.data.source)
-			.filter(source => source !== null);
+			.map((cached) => cached.data.source)
+			.filter((source) => source !== null);
 	}
 
 	/**
@@ -373,7 +377,7 @@ class OfflineManager {
 	 */
 	async refreshCache(): Promise<void> {
 		if (!this.offlineCapable) {
-			throw new Error('Cache refresh only available in desktop app');
+			throw new Error("Cache refresh only available in desktop app");
 		}
 
 		await this.clearCache();
@@ -396,13 +400,15 @@ class OfflineManager {
 		return {
 			totalSize: entries.reduce((sum, entry) => sum + entry.size, 0),
 			entryCount: entries.length,
-			oldestEntry: entries.length > 0
-				? new Date(Math.min(...entries.map(e => e.cachedAt.getTime())))
-				: null,
-			newestEntry: entries.length > 0
-				? new Date(Math.max(...entries.map(e => e.cachedAt.getTime())))
-				: null,
-			expiredCount: entries.filter(e => e.expiresAt < now).length
+			oldestEntry:
+				entries.length > 0
+					? new Date(Math.min(...entries.map((e) => e.cachedAt.getTime())))
+					: null,
+			newestEntry:
+				entries.length > 0
+					? new Date(Math.max(...entries.map((e) => e.cachedAt.getTime())))
+					: null,
+			expiredCount: entries.filter((e) => e.expiresAt < now).length,
 		};
 	}
 }

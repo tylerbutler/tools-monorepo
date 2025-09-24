@@ -3,17 +3,17 @@
  * Extends the existing data source manager with desktop-specific capabilities
  */
 
-import { dataSourceManager } from './dataSourceManager.svelte.js';
 import {
-	isTauriEnvironment,
-	saveDataSourceToLocal,
-	loadSavedDataSources,
 	exportDataCollection,
 	importDataCollection,
+	isTauriEnvironment,
 	type LocalDataSource,
-	type TauriFileResult
-} from '@/services/tauriFileService';
-import type { DataSource } from '@/types';
+	loadSavedDataSources,
+	saveDataSourceToLocal,
+	type TauriFileResult,
+} from "@/services/tauriFileService";
+import type { DataSource } from "@/types";
+import { dataSourceManager } from "./dataSourceManager.svelte.js";
 
 /**
  * Tauri-enhanced data source manager
@@ -56,27 +56,33 @@ class TauriDataSourceManager {
 	// Combined data sources (existing + local)
 	get allDataSources() {
 		const existingSources = dataSourceManager.dataSources;
-		const localSourcesAsDataSources = this._localSources.map(this.localToDataSource);
+		const localSourcesAsDataSources = this._localSources.map(
+			this.localToDataSource,
+		);
 		return [...existingSources, ...localSourcesAsDataSources];
 	}
 
 	/**
 	 * Convert TauriFileResult array to LocalDataSource
 	 */
-	async createLocalSourceFromFiles(files: TauriFileResult[], name?: string): Promise<LocalDataSource> {
+	async createLocalSourceFromFiles(
+		files: TauriFileResult[],
+		name?: string,
+	): Promise<LocalDataSource> {
 		if (!this._isDesktopApp) {
-			throw new Error('Local sources only available in desktop app');
+			throw new Error("Local sources only available in desktop app");
 		}
 
 		const sourceId = `local-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-		const sourceName = name || `Local Files - ${new Date().toLocaleDateString()}`;
+		const sourceName =
+			name || `Local Files - ${new Date().toLocaleDateString()}`;
 
 		const localSource: LocalDataSource = {
 			id: sourceId,
 			name: sourceName,
 			files,
 			savedAt: new Date(),
-			persistent: true
+			persistent: true,
 		};
 
 		// Add to local sources
@@ -98,14 +104,14 @@ class TauriDataSourceManager {
 	 */
 	async saveLocalSource(source: LocalDataSource): Promise<void> {
 		if (!this._isDesktopApp) {
-			throw new Error('Local persistence only available in desktop app');
+			throw new Error("Local persistence only available in desktop app");
 		}
 
 		try {
 			await saveDataSourceToLocal(source);
 			this._lastSyncTime = new Date();
 		} catch (error) {
-			console.error('Failed to save local source:', error);
+			console.error("Failed to save local source:", error);
 			throw error;
 		}
 	}
@@ -126,7 +132,7 @@ class TauriDataSourceManager {
 			// Sync with main manager
 			await this.syncWithMainManager();
 		} catch (error) {
-			console.error('Failed to load local sources:', error);
+			console.error("Failed to load local sources:", error);
 		}
 	}
 
@@ -134,7 +140,7 @@ class TauriDataSourceManager {
 	 * Remove local data source
 	 */
 	async removeLocalSource(sourceId: string): Promise<void> {
-		const index = this._localSources.findIndex(s => s.id === sourceId);
+		const index = this._localSources.findIndex((s) => s.id === sourceId);
 		if (index === -1) {
 			return;
 		}
@@ -160,13 +166,13 @@ class TauriDataSourceManager {
 	 */
 	async exportAllSources(fileName?: string): Promise<void> {
 		if (!this._isDesktopApp) {
-			throw new Error('Export functionality only available in desktop app');
+			throw new Error("Export functionality only available in desktop app");
 		}
 
 		try {
 			await exportDataCollection(this._localSources, fileName);
 		} catch (error) {
-			console.error('Failed to export data collection:', error);
+			console.error("Failed to export data collection:", error);
 			throw error;
 		}
 	}
@@ -176,7 +182,7 @@ class TauriDataSourceManager {
 	 */
 	async importSourceCollection(): Promise<LocalDataSource[]> {
 		if (!this._isDesktopApp) {
-			throw new Error('Import functionality only available in desktop app');
+			throw new Error("Import functionality only available in desktop app");
 		}
 
 		try {
@@ -197,7 +203,7 @@ class TauriDataSourceManager {
 
 			return importedSources;
 		} catch (error) {
-			console.error('Failed to import data collection:', error);
+			console.error("Failed to import data collection:", error);
 			throw error;
 		}
 	}
@@ -211,22 +217,24 @@ class TauriDataSourceManager {
 			const dataSource = this.localToDataSource(localSource);
 
 			// Check if already exists in main manager
-			const existing = dataSourceManager.dataSources.find(ds => ds.id === dataSource.id);
+			const existing = dataSourceManager.dataSources.find(
+				(ds) => ds.id === dataSource.id,
+			);
 			if (!existing) {
 				// Add to main manager (this will trigger UI updates)
 				dataSourceManager.processUploadedFiles(
-					localSource.files.map(f => ({
+					localSource.files.map((f) => ({
 						name: f.name,
 						content: f.content,
 						size: f.size,
-						type: 'application/json' as const,
+						type: "application/json" as const,
 						lastModified: Date.now(),
 						arrayBuffer: async () => new ArrayBuffer(0),
 						stream: () => new ReadableStream(),
 						text: async () => f.content,
-						slice: () => new Blob()
+						slice: () => new Blob(),
 					})),
-					localSource.name
+					localSource.name,
 				);
 			}
 		}
@@ -253,15 +261,20 @@ class TauriDataSourceManager {
 		// Generate basic stats
 		const stats = {
 			totalTests: allTests.length,
-			totalAssertions: allTests.reduce((sum, test) => sum + (test.expected?.count || 0), 0),
-			categories: [...new Set(allTests.map(test => test.category || 'unknown'))].length,
-			filesCount: localSource.files.length
+			totalAssertions: allTests.reduce(
+				(sum, test) => sum + (test.expected?.count || 0),
+				0,
+			),
+			categories: [
+				...new Set(allTests.map((test) => test.category || "unknown")),
+			].length,
+			filesCount: localSource.files.length,
 		};
 
 		return {
 			id: localSource.id,
 			name: localSource.name,
-			type: 'uploaded',
+			type: "uploaded",
 			uploadedAt: localSource.savedAt,
 			isActive: true,
 			categories: [], // Would need proper category processing
@@ -269,8 +282,8 @@ class TauriDataSourceManager {
 			metadata: {
 				fileCount: localSource.files.length,
 				persistent: localSource.persistent,
-				source: 'tauri-local'
-			}
+				source: "tauri-local",
+			},
 		};
 	}
 
@@ -299,16 +312,21 @@ class TauriDataSourceManager {
 		totalSize: number;
 		lastSync: Date | null;
 	} {
-		const totalFiles = this._localSources.reduce((sum, source) => sum + source.files.length, 0);
-		const totalSize = this._localSources.reduce((sum, source) =>
-			sum + source.files.reduce((fileSum, file) => fileSum + file.size, 0), 0
+		const totalFiles = this._localSources.reduce(
+			(sum, source) => sum + source.files.length,
+			0,
+		);
+		const totalSize = this._localSources.reduce(
+			(sum, source) =>
+				sum + source.files.reduce((fileSum, file) => fileSum + file.size, 0),
+			0,
 		);
 
 		return {
 			sourceCount: this._localSources.length,
 			totalFiles,
 			totalSize,
-			lastSync: this._lastSyncTime
+			lastSync: this._lastSyncTime,
 		};
 	}
 }

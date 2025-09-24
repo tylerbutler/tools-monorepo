@@ -1,15 +1,22 @@
 <script lang="ts">
-import { Button } from "$lib/components/ui/button/index.js";
-import { Input } from "$lib/components/ui/input/index.js";
 import { Badge } from "$lib/components/ui/badge/index.js";
+import { Button } from "$lib/components/ui/button/index.js";
 import * as Card from "$lib/components/ui/card/index.js";
+import { Input } from "$lib/components/ui/input/index.js";
 import SimpleCheckbox from "$lib/components/ui/simple-checkbox.svelte";
 
 // State for interactive components
 let checkboxValue = $state(false);
 let inputValue = $state("Sample text");
 
-const buttonVariants = ["default", "destructive", "outline", "secondary", "ghost", "link"];
+const buttonVariants = [
+	"default",
+	"destructive",
+	"outline",
+	"secondary",
+	"ghost",
+	"link",
+];
 const badgeVariants = ["default", "secondary", "destructive", "outline"];
 
 // Sample data for demonstrations
@@ -17,13 +24,13 @@ const sampleCards = [
 	{
 		title: "Card Example 1",
 		description: "This demonstrates the card component with default styling",
-		content: "Sample content with standard text formatting and layout."
+		content: "Sample content with standard text formatting and layout.",
 	},
 	{
 		title: "Card Example 2",
 		description: "Another card showing consistent styling patterns",
-		content: "More sample content to show how cards work in a grid layout."
-	}
+		content: "More sample content to show how cards work in a grid layout.",
+	},
 ];
 </script>
 

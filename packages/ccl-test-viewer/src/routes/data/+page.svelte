@@ -1,9 +1,9 @@
 <script lang="ts">
+import DataCollectionManager from "$lib/components/DataCollectionManager.svelte";
 import GitHubRepositoryBrowser from "$lib/components/GitHubRepositoryBrowser.svelte";
 import GitHubUrlInput from "$lib/components/GitHubUrlInput.svelte";
 import MultiFileUpload from "$lib/components/MultiFileUpload.svelte";
 import TauriFileUpload from "$lib/components/TauriFileUpload.svelte";
-import DataCollectionManager from "$lib/components/DataCollectionManager.svelte";
 import {
 	Badge,
 	Button,
@@ -12,22 +12,25 @@ import {
 	CardHeader,
 	CardTitle,
 } from "$lib/components/ui/index.js";
+import {
+	isTauriEnvironment,
+	type TauriFileResult,
+} from "$lib/services/tauriFileService.js";
 import type { DataSource } from "$lib/stores/dataSource.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 import { tauriDataSourceManager } from "$lib/stores/tauriDataSourceManager.svelte.js";
-import { isTauriEnvironment, type TauriFileResult } from "$lib/services/tauriFileService.js";
 import {
 	Database,
 	Download,
 	FileText,
 	Github,
+	HardDrive,
 	Layers,
 	RefreshCw,
 	ToggleLeft,
 	ToggleRight,
 	Trash2,
 	Upload,
-	HardDrive,
 } from "@lucide/svelte";
 import { onMount } from "svelte";
 
@@ -97,30 +100,31 @@ async function handleTauriFilesLoaded(files: TauriFileResult[]) {
 
 	try {
 		// Create local data source from Tauri files
-		const localSource = await tauriDataSourceManager.createLocalSourceFromFiles(files);
+		const localSource =
+			await tauriDataSourceManager.createLocalSourceFromFiles(files);
 		console.log("Created local data source:", localSource);
 
 		// Process files through the main data source manager for UI integration
-		const fileObjects = files.map(file => ({
+		const fileObjects = files.map((file) => ({
 			name: file.name,
-			type: 'application/json' as const,
+			type: "application/json" as const,
 			size: file.size,
 			text: async () => file.content,
 			lastModified: Date.now(),
 			arrayBuffer: async () => new ArrayBuffer(0),
 			stream: () => new ReadableStream(),
-			slice: () => new Blob()
+			slice: () => new Blob(),
 		}));
 
 		await dataSourceManager.processUploadedFiles(fileObjects, localSource.name);
 	} catch (error) {
-		console.error('Failed to process Tauri files:', error);
+		console.error("Failed to process Tauri files:", error);
 	}
 }
 
 // Handle Tauri file upload errors
 function handleTauriError(error: string) {
-	console.error('Tauri file upload error:', error);
+	console.error("Tauri file upload error:", error);
 }
 
 // Tab state management

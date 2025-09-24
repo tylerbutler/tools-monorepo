@@ -1,5 +1,5 @@
-import { type VariantProps, tv } from "tailwind-variants";
 import type { HTMLAttributes } from "svelte/elements";
+import { tv, type VariantProps } from "tailwind-variants";
 import Root from "./alert.svelte";
 import AlertDescription from "./alert-description.svelte";
 

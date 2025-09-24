@@ -1,9 +1,9 @@
 export {
 	Alert,
 	AlertDescription,
+	type AlertDescriptionProps,
 	type AlertProps,
 	type AlertTitleProps,
-	type AlertDescriptionProps,
 	alertVariants,
 } from "./alert/index.js";
 export { Badge, type BadgeVariant, badgeVariants } from "./badge/index.js";

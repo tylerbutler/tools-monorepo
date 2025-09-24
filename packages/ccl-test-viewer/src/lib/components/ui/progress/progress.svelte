@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { cn } from "@/utils.js";
-	import type { Props } from "./index.js";
+import { cn } from "@/utils.js";
+import type { Props } from "./index.js";
 
-	type $$Props = Props;
+type $$Props = Props;
 
-	let className: $$Props["class"] = undefined;
-	export let value: $$Props["value"] = 0;
-	export let max: $$Props["max"] = 100;
-	export { className as class };
+let className: $$Props["class"] = undefined;
+export let value: $$Props["value"] = 0;
+export let max: $$Props["max"] = 100;
+export { className as class };
 
-	$: percentage = Math.min(Math.max((value || 0) / max * 100, 0), 100);
+$: percentage = Math.min(Math.max(((value || 0) / max) * 100, 0), 100);
 </script>
 
 <div

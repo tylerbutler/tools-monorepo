@@ -23,8 +23,11 @@ let {
 // Reactive theme state using $effect for proper lifecycle management
 let currentTheme = $state<"light" | "dark">("light");
 let currentBase16Theme = $state<Base16Theme>("base16-tomorrow");
-let availableThemes = $state<{id: Base16Theme, name: string}[]>([]);
-let allThemes = $state<{light: {id: Base16Theme, name: string}[], dark: {id: Base16Theme, name: string}[]}>({light: [], dark: []});
+let availableThemes = $state<{ id: Base16Theme; name: string }[]>([]);
+let allThemes = $state<{
+	light: { id: Base16Theme; name: string }[];
+	dark: { id: Base16Theme; name: string }[];
+}>({ light: [], dark: [] });
 
 // Update state when component mounts and when store changes
 $effect(() => {

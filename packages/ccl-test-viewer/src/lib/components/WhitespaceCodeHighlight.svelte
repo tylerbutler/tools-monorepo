@@ -72,7 +72,7 @@ pre, code {
 
 /* Whitespace indicator styles */
 :global(.whitespace-indicator) {
-	color: #6b7280;
+	color: var(--color-muted-foreground);
 	user-select: none;
 	pointer-events: none;
 }
@@ -82,16 +82,16 @@ pre, code {
 	font-weight: 600;
 }
 
-/* Dark mode adjustments for whitespace indicators */
-@media (prefers-color-scheme: dark) {
-	:global(.whitespace-indicator) {
-		color: #9ca3af;
-	}
+/* Code block styling using theme variables */
+.whitespace-code-block {
+	background-color: var(--color-card);
+	border: 1px solid var(--color-border);
+	color: var(--color-card-foreground);
 }
 </style>
 
 <pre
-	class="inline-block overflow-x-auto bg-slate-50 border border-slate-300 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 rounded-md p-3 text-sm leading-5 font-mono {className}"
+	class="inline-block overflow-x-auto rounded-md p-3 text-sm leading-5 font-mono whitespace-code-block {className}"
 	{...restProps}
 	title={showWhitespace ? "Showing whitespace: · = space, » = tab, ¶ = newline" : ""}
 ><code

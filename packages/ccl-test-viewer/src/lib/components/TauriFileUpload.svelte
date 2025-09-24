@@ -3,154 +3,157 @@
   Provides native file dialogs in desktop app, falls back to web upload
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { Button } from '@/components/ui/button';
-	import { Badge } from '@/components/ui/badge';
-	import { Progress } from '@/components/ui/progress';
-	import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-	import { Alert, AlertDescription } from '@/components/ui/alert';
-	import { Folder, File, X, Upload, Download, HardDrive } from '@lucide/svelte';
-	import {
-		isTauriEnvironment,
-		openMultiFileDialog,
-		checkFileSystemPermissions,
-		type TauriFileResult
-	} from '@/services/tauriFileService';
+import { Download, File, Folder, HardDrive, Upload, X } from "@lucide/svelte";
+import { onMount } from "svelte";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import {
+	checkFileSystemPermissions,
+	isTauriEnvironment,
+	openMultiFileDialog,
+	type TauriFileResult,
+} from "@/services/tauriFileService";
 
-	// Props
-	interface Props {
-		onFilesLoaded?: (files: TauriFileResult[]) => void;
-		onError?: (error: string) => void;
-		maxFiles?: number;
-		maxFileSize?: number;
+// Props
+interface Props {
+	onFilesLoaded?: (files: TauriFileResult[]) => void;
+	onError?: (error: string) => void;
+	maxFiles?: number;
+	maxFileSize?: number;
+}
+
+let {
+	onFilesLoaded = () => {},
+	onError = () => {},
+	maxFiles = 10,
+	maxFileSize = 10 * 1024 * 1024, // 10MB
+}: Props = $props();
+
+// State
+let isDesktopApp = $state(false);
+let hasFileSystemPermissions = $state(false);
+let isLoading = $state(false);
+let loadedFiles = $state<TauriFileResult[]>([]);
+let error = $state<string | null>(null);
+let progress = $state(0);
+
+// Check Tauri environment on mount
+onMount(async () => {
+	isDesktopApp = isTauriEnvironment();
+
+	if (isDesktopApp) {
+		hasFileSystemPermissions = await checkFileSystemPermissions();
+	}
+});
+
+/**
+ * Handle native file dialog selection
+ */
+async function handleNativeFileDialog() {
+	if (!isDesktopApp) {
+		error = "Native file dialogs only available in desktop app";
+		onError(error);
+		return;
 	}
 
-	let {
-		onFilesLoaded = () => {},
-		onError = () => {},
-		maxFiles = 10,
-		maxFileSize = 10 * 1024 * 1024 // 10MB
-	}: Props = $props();
+	isLoading = true;
+	error = null;
+	progress = 0;
 
-	// State
-	let isDesktopApp = $state(false);
-	let hasFileSystemPermissions = $state(false);
-	let isLoading = $state(false);
-	let loadedFiles = $state<TauriFileResult[]>([]);
-	let error = $state<string | null>(null);
-	let progress = $state(0);
+	try {
+		const files = await openMultiFileDialog();
 
-	// Check Tauri environment on mount
-	onMount(async () => {
-		isDesktopApp = isTauriEnvironment();
-
-		if (isDesktopApp) {
-			hasFileSystemPermissions = await checkFileSystemPermissions();
-		}
-	});
-
-	/**
-	 * Handle native file dialog selection
-	 */
-	async function handleNativeFileDialog() {
-		if (!isDesktopApp) {
-			error = 'Native file dialogs only available in desktop app';
-			onError(error);
+		if (files.length === 0) {
+			isLoading = false;
 			return;
 		}
 
-		isLoading = true;
-		error = null;
+		// Validate file count
+		if (files.length > maxFiles) {
+			throw new Error(
+				`Too many files selected. Maximum ${maxFiles} files allowed.`,
+			);
+		}
+
+		// Validate file sizes
+		for (const file of files) {
+			if (file.size > maxFileSize) {
+				throw new Error(
+					`File "${file.name}" is too large. Maximum size: ${formatFileSize(maxFileSize)}`,
+				);
+			}
+		}
+
+		// Process files with progress updates
+		const processedFiles: TauriFileResult[] = [];
+
+		for (let i = 0; i < files.length; i++) {
+			const file = files[i];
+			progress = ((i + 1) / files.length) * 100;
+
+			try {
+				// Validate JSON content
+				JSON.parse(file.content);
+				processedFiles.push(file);
+			} catch (jsonError) {
+				console.warn(`Invalid JSON in file ${file.name}:`, jsonError);
+				throw new Error(`File "${file.name}" contains invalid JSON`);
+			}
+		}
+
+		loadedFiles = processedFiles;
+		onFilesLoaded(processedFiles);
+	} catch (err) {
+		error = err instanceof Error ? err.message : "Failed to load files";
+		onError(error);
+	} finally {
+		isLoading = false;
 		progress = 0;
-
-		try {
-			const files = await openMultiFileDialog();
-
-			if (files.length === 0) {
-				isLoading = false;
-				return;
-			}
-
-			// Validate file count
-			if (files.length > maxFiles) {
-				throw new Error(`Too many files selected. Maximum ${maxFiles} files allowed.`);
-			}
-
-			// Validate file sizes
-			for (const file of files) {
-				if (file.size > maxFileSize) {
-					throw new Error(`File "${file.name}" is too large. Maximum size: ${formatFileSize(maxFileSize)}`);
-				}
-			}
-
-			// Process files with progress updates
-			const processedFiles: TauriFileResult[] = [];
-
-			for (let i = 0; i < files.length; i++) {
-				const file = files[i];
-				progress = ((i + 1) / files.length) * 100;
-
-				try {
-					// Validate JSON content
-					JSON.parse(file.content);
-					processedFiles.push(file);
-				} catch (jsonError) {
-					console.warn(`Invalid JSON in file ${file.name}:`, jsonError);
-					throw new Error(`File "${file.name}" contains invalid JSON`);
-				}
-			}
-
-			loadedFiles = processedFiles;
-			onFilesLoaded(processedFiles);
-
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load files';
-			onError(error);
-		} finally {
-			isLoading = false;
-			progress = 0;
-		}
 	}
+}
 
-	/**
-	 * Remove a loaded file
-	 */
-	function removeFile(index: number) {
-		loadedFiles = loadedFiles.filter((_, i) => i !== index);
-		onFilesLoaded(loadedFiles);
-	}
+/**
+ * Remove a loaded file
+ */
+function removeFile(index: number) {
+	loadedFiles = loadedFiles.filter((_, i) => i !== index);
+	onFilesLoaded(loadedFiles);
+}
 
-	/**
-	 * Clear all loaded files
-	 */
-	function clearFiles() {
-		loadedFiles = [];
-		error = null;
-		onFilesLoaded([]);
-	}
+/**
+ * Clear all loaded files
+ */
+function clearFiles() {
+	loadedFiles = [];
+	error = null;
+	onFilesLoaded([]);
+}
 
-	/**
-	 * Format file size for display
-	 */
-	function formatFileSize(bytes: number): string {
-		if (bytes === 0) return '0 Bytes';
-		const k = 1024;
-		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-		const i = Math.floor(Math.log(bytes) / Math.log(k));
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-	}
+/**
+ * Format file size for display
+ */
+function formatFileSize(bytes: number): string {
+	if (bytes === 0) return "0 Bytes";
+	const k = 1024;
+	const sizes = ["Bytes", "KB", "MB", "GB"];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
 
-	/**
-	 * Get file status badge variant
-	 */
-	function getFileStatusVariant(file: TauriFileResult) {
-		try {
-			JSON.parse(file.content);
-			return 'default';
-		} catch {
-			return 'destructive';
-		}
+/**
+ * Get file status badge variant
+ */
+function getFileStatusVariant(file: TauriFileResult) {
+	try {
+		JSON.parse(file.content);
+		return "default";
+	} catch {
+		return "destructive";
 	}
+}
 </script>
 
 <!-- Desktop App File Upload Interface -->

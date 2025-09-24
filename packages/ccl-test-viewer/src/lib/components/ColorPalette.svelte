@@ -1,25 +1,55 @@
 <script>
-	import { Badge } from '$lib/components/ui/badge';
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { Button } from '$lib/components/ui/button';
+import { Badge } from "$lib/components/ui/badge";
+import { Button } from "$lib/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/card";
 
-	const colors = [
-		{ name: 'Success', class: 'bg-success text-success-foreground', description: 'Positive actions and successful states' },
-		{ name: 'Warning', class: 'bg-warning text-warning-foreground', description: 'Cautionary messages and pending states' },
-		{ name: 'Info', class: 'bg-info text-info-foreground', description: 'Informational content and primary accents' },
-		{ name: 'Purple', class: 'bg-purple text-purple-foreground', description: 'Creative elements and function tags' },
-		{ name: 'Teal', class: 'bg-teal text-teal-foreground', description: 'Calm content and feature highlights' },
-		{ name: 'Pink', class: 'bg-pink text-pink-foreground', description: 'Destructive actions and error states' }
-	];
+const colors = [
+	{
+		name: "Success",
+		class: "bg-success text-success-foreground",
+		description: "Positive actions and successful states",
+	},
+	{
+		name: "Warning",
+		class: "bg-warning text-warning-foreground",
+		description: "Cautionary messages and pending states",
+	},
+	{
+		name: "Info",
+		class: "bg-info text-info-foreground",
+		description: "Informational content and primary accents",
+	},
+	{
+		name: "Purple",
+		class: "bg-purple text-purple-foreground",
+		description: "Creative elements and function tags",
+	},
+	{
+		name: "Teal",
+		class: "bg-teal text-teal-foreground",
+		description: "Calm content and feature highlights",
+	},
+	{
+		name: "Pink",
+		class: "bg-pink text-pink-foreground",
+		description: "Destructive actions and error states",
+	},
+];
 
-	const examples = [
-		{ type: 'success', message: 'Test passed successfully!', icon: '✅' },
-		{ type: 'warning', message: 'Some tests are pending', icon: '⚠️' },
-		{ type: 'info', message: 'Loading test data...', icon: 'ℹ️' },
-		{ type: 'purple', message: 'Advanced feature enabled', icon: '🔮' },
-		{ type: 'teal', message: 'Processing complete', icon: '🌊' },
-		{ type: 'pink', message: 'New feature available', icon: '✨' }
-	];
+const examples = [
+	{ type: "success", message: "Test passed successfully!", icon: "✅" },
+	{ type: "warning", message: "Some tests are pending", icon: "⚠️" },
+	{ type: "info", message: "Loading test data...", icon: "ℹ️" },
+	{ type: "purple", message: "Advanced feature enabled", icon: "🔮" },
+	{ type: "teal", message: "Processing complete", icon: "🌊" },
+	{ type: "pink", message: "New feature available", icon: "✨" },
+];
 </script>
 
 <Card class="w-full">

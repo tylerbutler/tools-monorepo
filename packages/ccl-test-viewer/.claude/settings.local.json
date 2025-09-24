@@ -82,7 +82,13 @@
 			"mcp__playwright__browser_install",
 			"WebFetch(domain:jsr.io)",
 			"WebFetch(domain:donovan.is)",
-			"WebFetch(domain:www.shadcn-svelte.com)"
+			"WebFetch(domain:www.shadcn-svelte.com)",
+			"mcp__serena__replace_symbol_body",
+			"WebFetch(domain:catppuccin.com)",
+			"WebFetch(domain:shadcn-svelte.com)",
+			"WebFetch(domain:tweakcn.com)",
+			"WebFetch(domain:gist.github.com)",
+			"mcp__magic__21st_magic_component_builder"
 		],
 		"deny": [],
 		"ask": []

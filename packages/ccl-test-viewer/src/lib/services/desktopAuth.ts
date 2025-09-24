@@ -3,7 +3,7 @@
  * Placeholder for future OAuth implementation in Tauri desktop app
  */
 
-import { isTauriEnvironment } from './tauriFileService';
+import { isTauriEnvironment } from "./tauriFileService";
 
 export interface AuthConfig {
 	clientId: string;
@@ -67,14 +67,16 @@ class DesktopAuthService {
 	 */
 	async initiateOAuth(config: AuthConfig): Promise<AuthToken> {
 		if (!this.isAvailable) {
-			throw new Error('Desktop OAuth only available in Tauri app');
+			throw new Error("Desktop OAuth only available in Tauri app");
 		}
 
 		// Placeholder implementation
-		console.log('OAuth flow would be initiated here with config:', config);
+		console.log("OAuth flow would be initiated here with config:", config);
 
 		// Simulate OAuth flow for development
-		throw new Error('OAuth implementation not yet available - requires Tauri deep linking setup');
+		throw new Error(
+			"OAuth implementation not yet available - requires Tauri deep linking setup",
+		);
 
 		// Future implementation would look like:
 		/*
@@ -139,10 +141,10 @@ class DesktopAuthService {
 
 		return {
 			headers: {
-				'Authorization': `${this._authToken!.tokenType} ${this._authToken!.accessToken}`,
-				'Accept': 'application/vnd.github.v3+json',
-				'User-Agent': 'CCL-Test-Viewer-Desktop/1.0'
-			}
+				Authorization: `${this._authToken!.tokenType} ${this._authToken!.accessToken}`,
+				Accept: "application/vnd.github.v3+json",
+				"User-Agent": "CCL-Test-Viewer-Desktop/1.0",
+			},
 		};
 	}
 
@@ -160,9 +162,9 @@ class DesktopAuthService {
 			// const authData = JSON.parse(stored);
 
 			// For now, just placeholder
-			console.log('Loading auth state from local storage...');
+			console.log("Loading auth state from local storage...");
 		} catch (error) {
-			console.log('No previous auth state found');
+			console.log("No previous auth state found");
 		}
 	}
 
@@ -181,9 +183,9 @@ class DesktopAuthService {
 				//   baseDir: BaseDirectory.AppLocalData
 				// });
 
-				console.log('Storing auth token to local storage...');
+				console.log("Storing auth token to local storage...");
 			} catch (error) {
-				console.error('Failed to store auth token:', error);
+				console.error("Failed to store auth token:", error);
 			}
 		}
 	}
@@ -196,9 +198,9 @@ class DesktopAuthService {
 			// In real implementation, would remove from Tauri local storage
 			// await removeFile('auth-state.json', { baseDir: BaseDirectory.AppLocalData });
 
-			console.log('Clearing auth state from local storage...');
+			console.log("Clearing auth state from local storage...");
 		} catch (error) {
-			console.error('Failed to clear auth state:', error);
+			console.error("Failed to clear auth state:", error);
 		}
 	}
 
@@ -208,11 +210,11 @@ class DesktopAuthService {
 	private async fetchUserInfo(): Promise<void> {
 		const client = this.getAuthenticatedClient();
 		if (!client) {
-			throw new Error('No valid authentication token');
+			throw new Error("No valid authentication token");
 		}
 
 		try {
-			const response = await fetch('https://api.github.com/user', client);
+			const response = await fetch("https://api.github.com/user", client);
 			if (!response.ok) {
 				throw new Error(`GitHub API error: ${response.status}`);
 			}
@@ -222,12 +224,11 @@ class DesktopAuthService {
 				id: userData.id,
 				login: userData.login,
 				name: userData.name || userData.login,
-				email: userData.email || '',
-				avatarUrl: userData.avatar_url
+				email: userData.email || "",
+				avatarUrl: userData.avatar_url,
 			};
-
 		} catch (error) {
-			console.error('Failed to fetch user info:', error);
+			console.error("Failed to fetch user info:", error);
 			throw error;
 		}
 	}
@@ -240,9 +241,9 @@ export const desktopAuthService = new DesktopAuthService();
  * Configuration for GitHub OAuth in desktop app
  */
 export const GITHUB_OAUTH_CONFIG: AuthConfig = {
-	clientId: 'your-github-app-client-id', // Would be configured for production
-	redirectUri: 'ccl-test-viewer://oauth/callback', // Deep link for Tauri
-	scopes: ['repo', 'user:email'] // Permissions needed for GitHub repositories
+	clientId: "your-github-app-client-id", // Would be configured for production
+	redirectUri: "ccl-test-viewer://oauth/callback", // Deep link for Tauri
+	scopes: ["repo", "user:email"], // Permissions needed for GitHub repositories
 };
 
 /**
@@ -250,13 +251,13 @@ export const GITHUB_OAUTH_CONFIG: AuthConfig = {
  */
 export async function authenticateWithGitHub(): Promise<void> {
 	if (!desktopAuthService.isAvailable) {
-		throw new Error('GitHub authentication only available in desktop app');
+		throw new Error("GitHub authentication only available in desktop app");
 	}
 
 	try {
 		await desktopAuthService.initiateOAuth(GITHUB_OAUTH_CONFIG);
 	} catch (error) {
-		console.error('GitHub authentication failed:', error);
+		console.error("GitHub authentication failed:", error);
 		throw error;
 	}
 }

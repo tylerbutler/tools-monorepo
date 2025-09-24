@@ -25,7 +25,7 @@ const displayValue = $derived(
 );
 </script>
 
-<div class="entry-display bg-slate-50 border border-slate-300 dark:bg-slate-800 dark:border-slate-600 font-mono text-sm leading-5">
+<div class="entry-display font-mono text-sm leading-5">
 	<span class="entry-key {entry.key ? '' : 'empty-placeholder'}">{displayKey}</span>
 	<span class="entry-separator">=</span>
 	<span class="entry-value {entry.value ? '' : 'empty-placeholder'}">{displayValue}</span>
@@ -33,6 +33,8 @@ const displayValue = $derived(
 
 <style>
 	.entry-display {
+		background-color: var(--color-card);
+		border: 1px solid var(--color-border);
 		border-radius: 0.375rem;
 		padding: 0.5rem 0.75rem;
 		display: flex;
@@ -45,26 +47,26 @@ const displayValue = $derived(
 	}
 
 	.entry-key {
-		color: var(--primary);
+		color: var(--color-primary);
 		font-weight: 600;
-		background-color: color-mix(in srgb, var(--primary) 10%, transparent);
-		border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+		background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
 		border-radius: 0.25rem;
 		padding: 0.125rem 0.375rem;
 	}
 
 	.entry-separator {
-		color: var(--muted-foreground);
+		color: var(--color-muted-foreground);
 		font-weight: 600;
 		margin: 0 0.25rem;
 	}
 
 	.entry-value {
-		color: var(--foreground);
+		color: var(--color-foreground);
 		flex: 1;
 		min-width: 0; /* Allow text to wrap */
-		background-color: color-mix(in srgb, var(--secondary) 30%, transparent);
-		border: 1px solid color-mix(in srgb, var(--secondary) 50%, transparent);
+		background-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-secondary) 50%, transparent);
 		border-radius: 0.25rem;
 		padding: 0.125rem 0.375rem;
 	}
@@ -85,7 +87,7 @@ const displayValue = $derived(
 	/* Empty placeholder styling */
 	.empty-placeholder {
 		font-style: italic;
-		color: var(--muted-foreground);
+		color: var(--color-muted-foreground);
 		opacity: 0.8;
 	}
 
