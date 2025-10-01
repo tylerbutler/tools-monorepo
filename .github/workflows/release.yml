@@ -24,7 +24,7 @@ jobs:
     permissions: write-all
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
         with:
           token: ${{ secrets.CHANGESET_TOKEN }}
           fetch-depth: 0
@@ -52,7 +52,7 @@ jobs:
       # the action that was actually taken.
       - name: Process changesets
         id: changesets
-        uses: changesets/action@e0538e686673de0265c8a3e2904b8c76beaa43fd # ratchet:changesets/action@v1
+        uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba # ratchet:changesets/action@v1
         with:
           version: pnpm ci:version
           title: "🚀 release: Update versions"
@@ -111,7 +111,7 @@ jobs:
       - name: Create table
         if: steps.publish.outputs.report != null && steps.publish.outputs.report != '[]'
         id: create-table
-        uses: parkerbxyz/json-to-markdown-table@187d18309f7c7984a6e9147f3f541004b0d1711d # ratchet:parkerbxyz/json-to-markdown-table@v1
+        uses: parkerbxyz/json-to-markdown-table@564b4821b8128f1cd7a0eb6b5616680a818719ab # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
           json: '${{ steps.publish.outputs.report }}'
 
