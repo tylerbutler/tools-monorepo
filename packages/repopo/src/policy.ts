@@ -1,6 +1,8 @@
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
+import { PackageFolderName } from "./policies/PackageFolderName.js";
+import { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
-import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
+import { PackageReadmeExists } from "./policies/PackageReadmeExists.js";
 import { PackageScripts } from "./policies/PackageScripts.js";
 
 /**
@@ -206,8 +208,11 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
 // biome-ignore lint/suspicious/noExplicitAny: FIXME
 export const DefaultPolicies: PolicyDefinition<any>[] = [
 	NoJsFileExtensions,
+	PackageFolderName,
 	PackageJsonRepoDirectoryProperty,
-	PackageJsonSorted,
+	PackageJsonProperties,
+	// PackageJsonSorted,
+	PackageReadmeExists,
 	PackageScripts,
 ] as const;
 

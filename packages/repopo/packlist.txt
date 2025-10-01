@@ -64,6 +64,10 @@ esm/policies/NoJsFileExtensions.d.ts
 esm/policies/NoJsFileExtensions.d.ts.map
 esm/policies/NoJsFileExtensions.js
 esm/policies/NoJsFileExtensions.js.map
+esm/policies/PackageFolderName.d.ts
+esm/policies/PackageFolderName.d.ts.map
+esm/policies/PackageFolderName.js
+esm/policies/PackageFolderName.js.map
 esm/policies/PackageJsonProperties.d.ts
 esm/policies/PackageJsonProperties.d.ts.map
 esm/policies/PackageJsonProperties.js
@@ -76,6 +80,10 @@ esm/policies/PackageJsonSorted.d.ts
 esm/policies/PackageJsonSorted.d.ts.map
 esm/policies/PackageJsonSorted.js
 esm/policies/PackageJsonSorted.js.map
+esm/policies/PackageReadmeExists.d.ts
+esm/policies/PackageReadmeExists.d.ts.map
+esm/policies/PackageReadmeExists.js
+esm/policies/PackageReadmeExists.js.map
 esm/policies/PackageScripts.d.ts
 esm/policies/PackageScripts.d.ts.map
 esm/policies/PackageScripts.js

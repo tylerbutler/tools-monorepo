@@ -156,7 +156,7 @@
   via [node-fetch-native](https://github.com/unjs/node-fetch-native) to download files, which means it is reasonably
   cross-platform and will use native Fetch implementations where available.
 
-  For more information, see the [dill readme](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/README.md).
+  For more information, see the [dill readme](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/README.md).
 
 ### Patch Changes
 
