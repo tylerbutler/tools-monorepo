@@ -59,12 +59,6 @@ export default defineConfig({
 						{ slug: "api-reference" },
 					],
 				},
-				{
-					label: "Reference",
-					items: [
-						{ slug: "theory" },
-					],
-				},
 			],
 		}),
 	],
