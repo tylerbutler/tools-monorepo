@@ -45,10 +45,12 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: "Start Here",
+					label: "Getting Started",
 					items: [
+						{ slug: "documentation-map" },
 						{ slug: "getting-started" },
-						{ slug: "syntax-reference" },
+						{ slug: "ccl-syntax" },
+						{ slug: "ccl-examples" },
 						{ slug: "ccl-faq" },
 					],
 				},
@@ -59,6 +61,13 @@ export default defineConfig({
 						{ slug: "parsing-algorithm" },
 						{ slug: "library-features" },
 						{ slug: "test-suite-guide" },
+					],
+				},
+				{
+					label: "Advanced Topics",
+					items: [
+						{ slug: "dotted-keys-explained" },
+						{ slug: "syntax-reference" },
 					],
 				},
 			],
