@@ -56,7 +56,9 @@ export default defineConfig({
 					label: "Implementation",
 					items: [
 						{ slug: "implementing-ccl" },
-						{ slug: "api-reference" },
+						{ slug: "parsing-algorithm" },
+						{ slug: "library-features" },
+						{ slug: "test-suite-guide" },
 					],
 				},
 			],
