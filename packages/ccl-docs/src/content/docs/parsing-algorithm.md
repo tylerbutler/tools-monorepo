@@ -160,7 +160,7 @@ def recursively_parse(entries):
 - Keys with '=' in them → impossible, first '=' is split point
 - Values with '=' → fine, parse recursively
 - Unicode in keys/values → valid, CCL is UTF-8
-- CRLF vs LF → normalize to LF before parsing
+- CRLF vs LF → CCL treats only LF as a newline, so CRs present are preserved as-is
 
 ## Why This Is Core CCL
 
@@ -168,7 +168,7 @@ From the blog post:
 
 > "The simplest possible config language is just key-value pairs. That's it."
 
-The recursive fixed-point algorithm is HOW those key-value pairs create nested structure. The OCaml type definition makes this explicit:
+The recursive fixed-point algorithm is _how_ those key-value pairs create nested structure. The OCaml type definition makes this explicit:
 
 ```ocaml
 type t = Fix of t Map.Make(String).t
@@ -176,7 +176,7 @@ type t = Fix of t Map.Make(String).t
 
 This says: "A CCL value is a fixed point of a map from strings to CCL values."
 
-The recursion IS the structure. The fixed point IS the termination.
+The recursion _is_ the structure. The fixed point _is_ the termination.
 
 ## What's NOT in This Algorithm
 

@@ -30,12 +30,22 @@ export default defineConfig({
 				"@fontsource/ibm-plex-serif/600.css",
 				"@fontsource/metropolis/400.css",
 				"@fontsource/metropolis/600.css",
+				"@fontsource/ibm-plex-mono/400.css",
+				"@fontsource/ibm-plex-mono/600.css",
 				"./src/styles/custom.css",
 			],
-			plugins: [
-				starlightLinksValidator(),
-				starlightLLMsTxt(),
-			],
+			plugins: [starlightLinksValidator(), starlightLLMsTxt()],
+			expressiveCode: {
+				shiki: {
+					langs: [
+						JSON.parse(fs.readFileSync("./ccl-grammar.json", "utf-8")),
+					],
+				},
+				styleOverrides: {
+					codeFontFamily:
+						"'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+				},
+			},
 			social: [
 				{
 					icon: "github",

@@ -5,12 +5,14 @@ description: Frequently asked questions about CCL
 
 ## Are there types?
 
-No. Values are strings. Your application converts them:
+No. Keys and values are strings. Your application converts them:
 
 ```ccl
-port = 5432      # String "5432"
-enabled = true   # String "true"
+port = 5432
+enabled = true
 ```
+
+The values in this case are `"5432"` and `"true"`.
 
 ## Can I use dots in keys?
 

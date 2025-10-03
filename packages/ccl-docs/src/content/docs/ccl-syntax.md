@@ -3,7 +3,7 @@ title: CCL Syntax
 description: Core CCL syntax rules with edge cases
 ---
 
-CCL uses **key-value pairs** with indentation for nesting. That's the entire format.
+CCL uses **key-value pairs** with indentation for nesting. That's the entire format. All keys and values are `string`s.
 
 ## Core Syntax Rules
 

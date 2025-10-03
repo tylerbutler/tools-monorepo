@@ -100,6 +100,6 @@ See [Test Suite Guide](/test-suite-guide) for complete filtering examples.
 
 **Empty Keys**: Treat `= value` as list item
 
-**Unicode/CRLF**: Normalize line endings, preserve unicode
+**Unicode/CRLF**: Break _only_ on LF; preserve CR, preserve unicode
 
 See [Syntax Reference](/syntax-reference) for edge cases.

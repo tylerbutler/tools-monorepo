@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
 :root {
 	--sl-font: "Metropolis", sans-serif;
 }
@@ -30,4 +32,12 @@
 	--sl-color-gray-6: #fde4ff;
 	--sl-color-gray-7: #fef2ff;
 	--sl-color-black: #ffffff;
+}
+
+.expressive-code code {
+  /* High-level property (preferred) */
+  /* font-variant-ligatures: contextual common-ligatures discretionary-ligatures; */
+
+  /* Or fine-grained control */
+	font-feature-settings: "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "zero", "onum";
 }
