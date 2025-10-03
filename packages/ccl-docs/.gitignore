@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # netlify cache
 .netlify
+
+# AI artifacts
+.claude
+.serena

@@ -30,12 +30,22 @@ export default defineConfig({
 				"@fontsource/ibm-plex-serif/600.css",
 				"@fontsource/metropolis/400.css",
 				"@fontsource/metropolis/600.css",
+				"@fontsource/ibm-plex-mono/400.css",
+				"@fontsource/ibm-plex-mono/600.css",
 				"./src/styles/custom.css",
 			],
-			plugins: [
-				starlightLinksValidator(),
-				starlightLLMsTxt(),
-			],
+			plugins: [starlightLinksValidator(), starlightLLMsTxt()],
+			expressiveCode: {
+				shiki: {
+					langs: [
+						JSON.parse(fs.readFileSync("./ccl-grammar.json", "utf-8")),
+					],
+				},
+				styleOverrides: {
+					codeFontFamily:
+						"'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+				},
+			},
 			social: [
 				{
 					icon: "github",
@@ -45,10 +55,12 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: "Start Here",
+					label: "Getting Started",
 					items: [
+						{ slug: "documentation-map" },
 						{ slug: "getting-started" },
-						{ slug: "syntax-reference" },
+						{ slug: "ccl-syntax" },
+						{ slug: "ccl-examples" },
 						{ slug: "ccl-faq" },
 					],
 				},
@@ -56,13 +68,16 @@ export default defineConfig({
 					label: "Implementation",
 					items: [
 						{ slug: "implementing-ccl" },
-						{ slug: "api-reference" },
+						{ slug: "parsing-algorithm" },
+						{ slug: "library-features" },
+						{ slug: "test-suite-guide" },
 					],
 				},
 				{
-					label: "Reference",
+					label: "Advanced Topics",
 					items: [
-						{ slug: "theory" },
+						{ slug: "dotted-keys-explained" },
+						{ slug: "syntax-reference" },
 					],
 				},
 			],

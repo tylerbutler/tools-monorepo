@@ -29,7 +29,7 @@ importers:
         version: 3.1.1
       '@fluid-tools/build-cli':
         specifier: ^0.56.0
-        version: 0.56.0(@types/node@24.5.2)(encoding@0.1.13)(typescript@5.4.5)
+        version: 0.56.0(@types/node@24.5.2)(encoding@0.1.13)(typescript@5.9.2)
       '@fluidframework/build-tools':
         specifier: ^0.56.0
         version: 0.56.0(@types/node@24.5.2)
@@ -53,7 +53,7 @@ importers:
         version: 9.2.1
       generate-license-file:
         specifier: ^4.0.0
-        version: 4.1.0(typescript@5.4.5)
+        version: 4.1.0(typescript@5.9.2)
       npm-check-updates:
         specifier: ^18.0.1
         version: 18.3.0
@@ -74,10 +74,10 @@ importers:
         version: link:packages/sort-tsconfig
       syncpack:
         specifier: ^13.0.4
-        version: 13.0.4(typescript@5.4.5)
+        version: 13.0.4(typescript@5.9.2)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@24.5.2)(typescript@5.4.5)
+        version: 10.9.2(@types/node@24.5.2)(typescript@5.9.2)
 
   config:
     dependencies:
@@ -100,14 +100,20 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.35.2
         version: 0.35.3(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1))
+      '@fontsource-variable/fira-code':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/ibm-plex-mono':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@fontsource/ibm-plex-serif':
-        specifier: ^5.2.6
+        specifier: ^5.2.7
         version: 5.2.7
       '@fontsource/metropolis':
         specifier: ^5.2.5
         version: 5.2.5
       '@fontsource/open-sans':
-        specifier: ^5.2.6
+        specifier: ^5.2.7
         version: 5.2.7
       astro:
         specifier: ^5.10.0
@@ -119,8 +125,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1)))
       starlight-links-validator:
-        specifier: ^0.17.0
-        version: 0.17.2(@astrojs/starlight@0.35.3(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1)))
+        specifier: ^0.18.0
+        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1)))
       starlight-llms-txt:
         specifier: ^0.6.0
         version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1)))(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1))
@@ -245,7 +251,7 @@ importers:
         version: 5.39.3
       svelte-check:
         specifier: ^4.3.1
-        version: 4.3.1(picomatch@4.0.2)(svelte@5.39.3)(typescript@5.5.4)
+        version: 4.3.1(picomatch@4.0.3)(svelte@5.39.3)(typescript@5.5.4)
       tailwindcss:
         specifier: ^4.1.13
         version: 4.1.13
@@ -2450,6 +2456,12 @@ packages:
 
   '@fluidframework/tree@2.60.0':
     resolution: {integrity: sha512-CKa7FfeqefnLMKzFfWW6ft1m54ErZmuS8RmwRDWqS6WNFAoJFnEvjiFB6sGFVkInQGlq8fTH9uQF+JR/t2KS6w==}
+
+  '@fontsource-variable/fira-code@5.2.7':
+    resolution: {integrity: sha512-J2bxN7fz5rd8WpQYyau4o19WqTzxoTqaNj9jhsv4p21GSu1Rf34tbqsxqjyDCR+wDMHM3SajyFqtq+5uvRUQ7w==}
+
+  '@fontsource/ibm-plex-mono@5.2.7':
+    resolution: {integrity: sha512-MKAb8qV+CaiMQn2B0dIi1OV3565NYzp3WN5b4oT6LTkk+F0jR6j0ZN+5BKJiIhffDC3rtBULsYZE65+0018z9w==}
 
   '@fontsource/ibm-plex-serif@5.2.7':
     resolution: {integrity: sha512-04owmc2OQQ/DAMjXjEMJc+7V4dBVmR01aIFOg4cuqS8pQ4HbvtlYs/u6+O0vCt21EMx5M/azIbgx43iKyisEOA==}
@@ -8120,6 +8132,10 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
+  has-flag@5.0.1:
+    resolution: {integrity: sha512-CsNUt5x9LUdx6hnk/E2SZLsDyvfqANZSUq4+D3D8RzDJ2M+HDTIkF60ibS1vHaK55vzgiZw1bEPFG9yH7l33wA==}
+    engines: {node: '>=12'}
+
   has-own-prop@2.0.0:
     resolution: {integrity: sha512-Pq0h+hvsVm6dDEa8x82GnLSYHOzNDt7f0ddFa3FqcQlgzEiptPqL+XrOJNavjOzSYiYWIrgeVYYgGlLmnxwilQ==}
     engines: {node: '>=8'}
@@ -12326,6 +12342,12 @@ packages:
     peerDependencies:
       '@astrojs/starlight': '>=0.32.0'
 
+  starlight-links-validator@0.18.0:
+    resolution: {integrity: sha512-R0gLdrKWdpAEqux3DL2B3QvNJM8Zpys8CQu1BGLD9hc+66nt/Q6aJDkvvkvoCVky9JKmBEnmL4PhFkyz13lK5g==}
+    engines: {node: '>=18.17.1'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.32.0'
+
   starlight-llms-txt@0.6.0:
     resolution: {integrity: sha512-mKkRPlGZ+kKJlnclXkW3s+RSVF/10Ct2BsQ4dYDaK8j4h/L55WbZCds1PsqQiLYPrDp7wIN6gm7LYsrUlGaBjQ==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
@@ -12504,6 +12526,10 @@ packages:
   style-to-object@1.0.8:
     resolution: {integrity: sha512-xT47I/Eo0rwJmaXC4oilDGDWLohVhR6o/xAQcPQN8q6QBuZVL8qMYL85kLmST5cPjAorwvqIA4qXTRQoYHaL6g==}
 
+  supports-color@10.2.2:
+    resolution: {integrity: sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g==}
+    engines: {node: '>=18'}
+
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
     engines: {node: '>=4'}
@@ -12523,6 +12549,10 @@ packages:
   supports-hyperlinks@3.2.0:
     resolution: {integrity: sha512-zFObLMyZeEwzAoKCyu1B91U79K2t7ApXuQfo8OuxwXLDgcKxuwM+YvcbIhm6QWqz7mHUH1TVytR1PwVVjEuMig==}
     engines: {node: '>=14.18'}
+
+  supports-hyperlinks@4.3.0:
+    resolution: {integrity: sha512-i6sWEzuwadSlcr2mOnb0ktlIl+K5FVxsPXmoPfknDd2gyw4ZBIAZ5coc0NQzYqDdEYXMHy8NaY9rWwa1Q1myiQ==}
+    engines: {node: '>=20'}
 
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
@@ -12629,6 +12659,10 @@ packages:
   term-size@2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
+
+  terminal-link@5.0.0:
+    resolution: {integrity: sha512-qFAy10MTMwjzjU8U16YS4YoZD+NQLHzLssFMNqgravjbvIPNiqkGFR4yjhJfmY9R5OFU7+yHxc6y+uGHkKwLRA==}
+    engines: {node: '>=20'}
 
   terser-webpack-plugin@5.3.11:
     resolution: {integrity: sha512-RVCsMfuD0+cTt3EwX8hSl2Ks56EbFHWmhluwcqoPKtBnfjiT6olaq7PRIRfhyU8nnC2MrnDrBLfrD/RGE+cVXQ==}
@@ -16018,7 +16052,7 @@ snapshots:
       - utf-8-validate
       - webpack-cli
 
-  '@fluid-tools/build-cli@0.56.0(@types/node@24.5.2)(encoding@0.1.13)(typescript@5.4.5)':
+  '@fluid-tools/build-cli@0.56.0(@types/node@24.5.2)(encoding@0.1.13)(typescript@5.9.2)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
       '@fluid-tools/build-infrastructure': 0.56.0(@types/node@24.5.2)
@@ -16038,7 +16072,7 @@ snapshots:
       async: 3.2.6
       azure-devops-node-api: 11.2.0
       change-case: 3.1.0
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.9.2)
       danger: 12.3.4(encoding@0.1.13)
       date-fns: 2.30.0
       debug: 4.4.1(supports-color@8.1.1)
@@ -17278,6 +17312,10 @@ snapshots:
     transitivePeerDependencies:
       - debug
       - supports-color
+
+  '@fontsource-variable/fira-code@5.2.7': {}
+
+  '@fontsource/ibm-plex-mono@5.2.7': {}
 
   '@fontsource/ibm-plex-serif@5.2.7': {}
 
@@ -21219,7 +21257,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.17)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.2(@types/node@20.19.17)(typescript@5.5.4))(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.5.2)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.2(@types/node@24.5.2)(typescript@5.9.2))(terser@5.37.0)(tsx@4.20.5)(yaml@2.8.1)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -22874,14 +22912,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.4
 
-  cosmiconfig@9.0.0(typescript@5.4.5):
+  cosmiconfig@8.3.6(typescript@5.9.2):
     dependencies:
-      env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
+      path-type: 4.0.0
     optionalDependencies:
-      typescript: 5.4.5
+      typescript: 5.9.2
 
   cosmiconfig@9.0.0(typescript@5.5.4):
     dependencies:
@@ -22891,6 +22929,15 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.5.4
+
+  cosmiconfig@9.0.0(typescript@5.9.2):
+    dependencies:
+      env-paths: 2.2.1
+      import-fresh: 3.3.0
+      js-yaml: 4.1.0
+      parse-json: 5.2.0
+    optionalDependencies:
+      typescript: 5.9.2
 
   crc-32@1.2.0:
     dependencies:
@@ -24190,6 +24237,10 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.2
 
+  fdir@6.4.4(picomatch@4.0.3):
+    optionalDependencies:
+      picomatch: 4.0.3
+
   fdir@6.5.0(picomatch@4.0.3):
     optionalDependencies:
       picomatch: 4.0.3
@@ -24488,13 +24539,13 @@ snapshots:
 
   gemoji@6.1.0: {}
 
-  generate-license-file@4.1.0(typescript@5.4.5):
+  generate-license-file@4.1.0(typescript@5.5.4):
     dependencies:
       '@commander-js/extra-typings': 13.1.0(commander@13.1.0)
       '@npmcli/arborist': 9.0.1
       cli-spinners: 2.9.2
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.5.4)
       enquirer: 2.4.1
       glob: 11.0.1
       json5: 2.2.3
@@ -24506,13 +24557,13 @@ snapshots:
       - supports-color
       - typescript
 
-  generate-license-file@4.1.0(typescript@5.5.4):
+  generate-license-file@4.1.0(typescript@5.9.2):
     dependencies:
       '@commander-js/extra-typings': 13.1.0(commander@13.1.0)
       '@npmcli/arborist': 9.0.1
       cli-spinners: 2.9.2
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.5.4)
+      cosmiconfig: 9.0.0(typescript@5.9.2)
       enquirer: 2.4.1
       glob: 11.0.1
       json5: 2.2.3
@@ -24883,6 +24934,8 @@ snapshots:
   has-flag@3.0.0: {}
 
   has-flag@4.0.0: {}
+
+  has-flag@5.0.1: {}
 
   has-own-prop@2.0.0: {}
 
@@ -30662,7 +30715,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-links-validator@0.17.2(@astrojs/starlight@0.35.3(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1))):
+  starlight-links-validator@0.18.0(@astrojs/starlight@0.35.3(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1))):
     dependencies:
       '@astrojs/starlight': 0.35.3(astro@5.13.9(@netlify/blobs@10.0.10)(@types/node@24.5.2)(encoding@0.1.13)(ioredis@5.7.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.5)(typescript@5.5.4)(yaml@2.8.1))
       '@types/picomatch': 3.0.2
@@ -30673,7 +30726,8 @@ snapshots:
       kleur: 4.1.5
       mdast-util-mdx-jsx: 3.1.3
       mdast-util-to-string: 4.0.0
-      picomatch: 4.0.2
+      picomatch: 4.0.3
+      terminal-link: 5.0.0
       unist-util-visit: 5.0.0
     transitivePeerDependencies:
       - supports-color
@@ -30892,6 +30946,8 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.4
 
+  supports-color@10.2.2: {}
+
   supports-color@5.5.0:
     dependencies:
       has-flag: 3.0.0
@@ -30914,13 +30970,18 @@ snapshots:
       has-flag: 4.0.0
       supports-color: 7.2.0
 
+  supports-hyperlinks@4.3.0:
+    dependencies:
+      has-flag: 5.0.1
+      supports-color: 10.2.2
+
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.3.1(picomatch@4.0.2)(svelte@5.39.3)(typescript@5.5.4):
+  svelte-check@4.3.1(picomatch@4.0.3)(svelte@5.39.3)(typescript@5.5.4):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 4.0.3
-      fdir: 6.4.4(picomatch@4.0.2)
+      fdir: 6.4.4(picomatch@4.0.3)
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 5.39.3
@@ -30978,12 +31039,12 @@ snapshots:
 
   symbol-tree@3.2.4: {}
 
-  syncpack@13.0.4(typescript@5.4.5):
+  syncpack@13.0.4(typescript@5.9.2):
     dependencies:
       chalk: 5.4.1
       chalk-template: 1.1.0
       commander: 13.1.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.9.2)
       effect: 3.14.0
       enquirer: 2.4.1
       fast-check: 3.23.2
@@ -31086,6 +31147,11 @@ snapshots:
       unique-string: 3.0.0
 
   term-size@2.2.1: {}
+
+  terminal-link@5.0.0:
+    dependencies:
+      ansi-escapes: 7.1.0
+      supports-hyperlinks: 4.3.0
 
   terser-webpack-plugin@5.3.11(webpack@5.98.0):
     dependencies:
@@ -31377,7 +31443,7 @@ snapshots:
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
-  ts-node@10.9.2(@types/node@24.5.2)(typescript@5.4.5):
+  ts-node@10.9.2(@types/node@24.5.2)(typescript@5.9.2):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -31391,7 +31457,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.4.5
+      typescript: 5.9.2
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
