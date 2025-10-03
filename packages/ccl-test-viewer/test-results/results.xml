@@ -1,0 +1,14 @@
+<testsuites id="" name="" tests="5" failures="0" skipped="0" errors="0" time="1.2166">
+<testsuite name="upload-clear-button.spec.ts" timestamp="2025-09-21T04:40:18.100Z" hostname="chromium" tests="5" failures="0" skipped="0" time="2.456" errors="0">
+<testcase name="Upload UI - Clear All Button Functionality › clear all button removes all uploaded files from the queue" classname="upload-clear-button.spec.ts" time="0.454">
+</testcase>
+<testcase name="Upload UI - Clear All Button Functionality › clear all button works with mixed success and error files" classname="upload-clear-button.spec.ts" time="0.457">
+</testcase>
+<testcase name="Upload UI - Clear All Button Functionality › clear all button appears only when files are uploaded" classname="upload-clear-button.spec.ts" time="0.454">
+</testcase>
+<testcase name="Upload UI - Clear All Button Functionality › clear all button works after multiple operations" classname="upload-clear-button.spec.ts" time="0.56">
+</testcase>
+<testcase name="Upload UI - Clear All Button Functionality › clear all button does not affect data persistence in other parts of app" classname="upload-clear-button.spec.ts" time="0.531">
+</testcase>
+</testsuite>
+</testsuites>

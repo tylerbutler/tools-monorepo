@@ -2,3 +2,9 @@
 
 This is a monorepo containing @tylerbutler's personal tools and CLI.
 
+## Installation
+
+```bash
+pnpm i
+```
+

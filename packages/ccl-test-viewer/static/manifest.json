@@ -1,0 +1,55 @@
+{
+	"name": "CCL Test Suite Viewer",
+	"short_name": "CCL Tests",
+	"description": "Interactive test result visualization for 366 CCL tests across 12 categories",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#ffffff",
+	"orientation": "any",
+	"scope": "/",
+	"lang": "en",
+	"categories": ["development", "productivity", "utilities"],
+	"icons": [
+		{
+			"src": "/favicon.png",
+			"sizes": "32x32",
+			"type": "image/png"
+		},
+		{
+			"src": "/apple-touch-icon.png",
+			"sizes": "180x180",
+			"type": "image/png"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "/screenshot-wide.png",
+			"sizes": "1280x720",
+			"type": "image/png",
+			"form_factor": "wide",
+			"label": "Browse tests with filtering and search"
+		},
+		{
+			"src": "/screenshot-mobile.png",
+			"sizes": "390x844",
+			"type": "image/png",
+			"form_factor": "narrow",
+			"label": "Mobile-optimized test browsing"
+		}
+	],
+	"shortcuts": [
+		{
+			"name": "Browse Tests",
+			"short_name": "Browse",
+			"description": "Browse and filter all test cases",
+			"url": "/browse",
+			"icons": [
+				{
+					"src": "/favicon.png",
+					"sizes": "32x32"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,422 @@
+---
+title: FAQ
+description: Frequently asked questions about CCL (Categorical Configuration Language).
+sidebar:
+  label: FAQ
+---
+
+import { Badge } from '@astrojs/starlight/components';
+
+:::tip[New to CCL?]
+Start with [Getting Started](/getting-started) for basic syntax and examples, then return here for specific questions.
+:::
+
+## Language Basics
+
+### Q: What is CCL?
+**A:** CCL (Categorical Configuration Language) is a minimalist configuration language based on simple key-value pairs. It's designed around mathematical principles from Category Theory, providing elegant composition and recursive structure capabilities.
+
+### Q: What does a basic CCL file look like?
+**A:** 
+```ccl
+name = My Application
+version = 1.0.0
+debug = true
+
+/= This is a comment
+description = A sample application
+  with multiline description
+```
+
+### Q: How is CCL different from JSON/YAML/TOML?
+**A:** CCL is uniquely minimal - everything is just key-value pairs with strings. Complex structures emerge through composition and recursion rather than built-in syntax for objects, arrays, or types.
+
+---
+
+## Dot Notation and Keys
+
+### Q: Does CCL support dot notation like `database.host = localhost`?
+
+:::caution[Important distinction]
+**Yes, but not the way you might think.** CCL treats `database.host` as a **literal string key** - dots are just characters in the key name, not navigation to nested structure.
+:::
+
+**Example:**
+```ccl
+database.host = localhost
+database.port = 5432
+user.name = alice
+```
+
+**Result:** Three separate string keys:
+- `"database.host"` → `"localhost"`
+- `"database.port"` → `"5432"`
+- `"user.name"` → `"alice"`
+
+:::note
+CCL has zero special handling for dots in keys.
+:::
+
+### Q: So how do I create nested structure?
+**A:** Use indentation, not dots:
+
+```ccl
+database =
+  host = localhost
+  port = 5432
+user =
+  name = alice
+```
+
+This creates actual nested CCL objects that can be navigated hierarchically.
+
+### Q: Can I mix dot notation and nested structure?
+
+:::tip[Mixing notations]
+Yes, they're completely orthogonal. Mixing the notation is possible but remember no hierarchy is provided for the dotted keys - they are just strings:
+:::
+
+```ccl
+# Flat keys with dots (literal string keys)
+database.backup.enabled = true
+
+# Nested structure (creates actual hierarchy)
+database =
+  host = localhost
+  port = 5432
+
+# Both exist as separate entries - dotted keys remain flat strings
+```
+
+### Q: Why doesn't CCL parse dots automatically?
+
+:::note[Design philosophy]
+CCL's design philosophy is **maximum simplicity**. Keys are just strings - no special characters, no reserved syntax. The language doesn't impose any interpretation on your key names.
+:::
+
+---
+
+## Nesting and Structure
+
+### Q: How does nesting actually work in CCL?
+**A:** Nesting happens through **indented continuation lines**:
+
+```ccl
+section =
+  key1 = value1
+  key2 = value2
+```
+
+The parser sees:
+1. Key `"section"` with value `"\n  key1 = value1\n  key2 = value2"`
+2. The `build_hierarchy()` function recursively parses that string as more CCL
+
+### Q: Can I nest arbitrarily deep?
+**A:** Yes! CCL uses a mathematical "fixed point" algorithm:
+
+```ccl
+server =
+  database =
+    primary =
+      host = localhost
+      port = 5432
+    backup =
+      host = backup.example.com
+      port = 5433
+```
+
+### Q: What happens to indentation?
+
+:::important[Indentation rules]
+Leading indentation that's **greater than** the parent line's indentation gets preserved in the value. Leading spaces **equal to or less than** the parent are trimmed.
+:::
+
+---
+
+## Indentation and Whitespace
+
+### Q: Does CCL support both tabs and spaces? <Badge text="Open Spec Question" variant="danger" />
+**A:** Yes. **Each tab character counts as 1 indentation unit**, same as 1 space character.
+
+### Q: Can I mix tabs and spaces? <Badge text="Open Spec Question" variant="danger" />
+
+:::caution[Mixed indentation warning]
+Technically yes, but it's not recommended. The specification suggests that **mixed indentation should generate warnings**.
+:::
+
+### Q: How does CCL handle trailing whitespace?
+**A:** 
+- **Keys:** Trailing whitespace is trimmed
+- **Values:** Leading spaces are trimmed, but trailing whitespace is preserved
+
+**Example:**
+```ccl
+  key with spaces   =    value with trailing spaces   
+```
+Results in: `"key with spaces"` → `"value with trailing spaces   "`
+
+---
+
+## Values and Types
+
+### Q: What types does CCL support?
+
+:::note[Everything is a string]
+**Everything is a string at the core level.** CCL doesn't have built-in types - all values are stored as strings.
+:::
+
+**Type conversion happens at the application level:**
+```typescript
+// All these are strings in CCL:
+port = 5432          // "5432"
+enabled = true       // "true"
+rate = 3.14         // "3.14"
+
+// Your application converts:
+const portResult = getInt(obj, "port")              // { ok: true, value: 5432 }
+const enabledResult = getBool(obj, "enabled")       // { ok: true, value: true }
+```
+
+### Q: How should I handle booleans?
+**A:** Common conventions:
+- **True:** `"true"`, `"yes"`, `"on"`, `"1"`  
+- **False:** `"false"`, `"no"`, `"off"`, `"0"`
+
+Case-insensitive parsing is recommended.
+
+### Q: Can values contain equals signs?
+**A:** Yes! Only the **first** `=` on a line is special:
+
+```ccl
+equation = x = y + 5
+url = https://example.com/path?param=value
+```
+
+---
+
+## Comments
+
+### Q: How do comments work?
+**A:** Comments use special keys, with `/=` as the standard:
+
+```ccl
+/= This is a comment
+name = value
+
+/= Another comment
+debug = true
+```
+
+### Q: Are comments part of the data?
+
+:::important[Comments are data]
+Yes! Comments are regular key-value entries, not special syntax. The standard marker is `/=`, but CCL APIs provide general-purpose filtering:
+:::
+
+```typescript
+// Use general filter function (not filter_comments)
+const configEntries = entries.filter(entry =>
+  !entry.key.startsWith("/")
+)
+
+// Can filter any key pattern
+const noDebug = entries.filter(entry =>
+  !entry.key.startsWith("debug")
+)
+```
+
+### Q: Can I use other comment styles?
+**A:** Any key starting with your chosen prefix works:
+- `/=` is the standard and recommended
+- You could use `comment =`, `note =`, etc.
+
+---
+
+## Lists and Arrays
+
+### Q: How do I create lists in CCL?
+**A:** Use empty keys:
+
+```ccl
+items =
+  = first item
+  = second item  
+  = third item
+```
+
+Or numbered keys:
+```ccl
+items =
+  0 = first item
+  1 = second item
+  2 = third item
+```
+
+### Q: Can lists contain different types?
+**A:** Yes, since everything is strings:
+
+```ccl
+mixed =
+  = some text
+  = 42
+  = true
+  = nested value here
+```
+
+Your application handles type conversion per item.
+
+### Q: How does CCL handle duplicate keys?
+
+:::tip[Two-level strategy]
+CCL uses a **two-level strategy** for duplicate keys:
+:::
+
+**Core Parsing Level:** Preserves all duplicate entries in order - no merging occurs.
+
+```ccl
+user =
+  name = alice  
+user =
+  age = 25
+```
+**Flat Result:** Two separate entries: `[("user", "\n  name = alice"), ("user", "\n  age = 25")]`
+
+**Object Construction Level:** Applies deep merge for nested objects and accumulation for lists.
+
+**Nested Result:** Single merged object: `{ user: { name: "alice", age: "25" } }`
+
+**Empty Key Lists:** Empty keys accumulate into lists:
+```ccl
+ports =
+  = 8000
+  = 8001
+```
+**Result:** `{ ports: { "": ["8000", "8001"] } }`
+
+:::note[Why two levels?]
+This preserves CCL's mathematical properties (composition, associativity) at the core level while providing intuitive merging behavior for application use.
+:::
+
+---
+
+## Implementation Details
+
+<Badge text="Needs Review" variant="caution" />
+
+### Q: What's the parsing algorithm?
+**A:**
+1. **Parse lines** into key-value pairs based on first `=`
+2. **Handle indentation** - lines with more indentation continue previous value
+3. **Build objects** using fixed-point recursion to create nested structure
+
+### Q: How does the "fixed point" algorithm work?
+**A:** It recursively parses string values that contain CCL syntax until no more CCL structure can be extracted. The fixed point addresses depth by continuing to parse until no further structural transformation is possible:
+
+```ccl
+config =
+  nested =
+    deep = value
+```
+
+Becomes: `config` → `{ nested: { deep: "value" } }`
+
+The algorithm stops when applying another parse iteration produces the same result, ensuring all nested structure is fully extracted regardless of depth.
+
+### Q: What about performance?
+**A:** CCL parsing is typically fast since:
+- Simple line-by-line parsing
+- No complex tokenization  
+- String operations are well-optimized
+
+For very large configs, consider streaming parsers.
+
+---
+
+## Common Gotchas
+
+### Q: Why doesn't my dotted key work with nesting APIs?
+
+:::caution[Common gotcha]
+Because `database.host` is a **flat string key**, not a path to nested structure.
+:::
+
+**Won't work:**
+```typescript
+getNested(obj, "database")  // Looks for key "database", not "database.host"
+```
+
+**Will work:**
+```typescript
+get(obj, "database.host")  // Gets the literal key "database.host"
+```
+
+### Q: My multiline value has weird indentation behavior
+
+:::important[Indentation rule reminder]
+Remember: indentation **greater than** the parent line continues the value:
+:::
+
+```ccl
+text = First line
+  Second line      // 2 spaces - continues value
+    Third line     // 4 spaces - continues value  
+next = value       // 0 spaces - new key
+```
+
+Result: `text` = `"First line\n  Second line\n    Third line"`
+
+### Q: Empty values vs nested values - what's the difference?
+**A:**
+
+```ccl
+# Empty value
+key =
+
+# Nested value (empty)
+section =
+  = empty item
+
+# Nested value (with content)  
+section =
+  sub = value
+```
+
+The parser distinguishes based on indented continuation lines.
+
+### Q: Can I escape special characters?
+
+:::caution[No built-in escaping]
+**No built-in escaping.** CCL values are literal strings:
+:::
+
+```ccl
+# These are all literal:
+path = C:\Program Files\App
+json = {"key": "value"}  
+equals = a=b=c=d
+```
+
+If you need escaping, handle it in your application layer.
+
+### Q: How do I handle Unicode?
+**A:** CCL works with any valid UTF-8:
+
+```ccl
+名前 = アリス
+émoji = 🚀
+text = Multi-byte characters work fine: café, naïve, 北京
+```
+
+
+---
+
+## Related Documentation
+
+- **[Getting Started](/getting-started)** - Basic CCL syntax and examples
+- **[Syntax Reference](/syntax-reference)** - Quick lookup for CCL syntax patterns
+- **[Implementing CCL](/implementing-ccl)** - Guide for building CCL parsers
+- **[API Reference](/api-reference)** - Complete API specification
+
+---
+
+*This FAQ is maintained alongside the CCL documentation. Please contribute corrections and additional questions!*

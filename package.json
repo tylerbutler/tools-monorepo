@@ -85,6 +85,7 @@
 		},
 		"onlyBuiltDependencies": [
 			"@biomejs/biome",
+			"@parcel/watcher",
 			"better-sqlite3",
 			"core-js",
 			"core-js-pure",

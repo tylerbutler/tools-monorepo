@@ -1,0 +1,94 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="description" content="CCL Test Suite Viewer - Interactive test result visualization for 366 CCL tests across 12 categories" />
+		<meta name="author" content="Tyler Butler" />
+		<meta name="keywords" content="CCL, test viewer, configuration language, test results, visualization, SvelteKit" />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#ffffff" />
+
+		<!-- Performance optimizations -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+		<link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+		<!-- Google Fonts - IBM Plex Mono -->
+		<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+		<!-- Security headers -->
+		<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+		<meta http-equiv="X-Frame-Options" content="DENY" />
+		<meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+		<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="CCL Test Suite Viewer" />
+		<meta property="og:description" content="Interactive visualization of 366 CCL tests across 12 categories. Browse, filter, and explore test cases for CCL implementations." />
+		<meta property="og:url" content="https://ccl-test-viewer.tylerbutler.com" />
+		<meta property="og:site_name" content="CCL Test Suite Viewer" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:title" content="CCL Test Suite Viewer" />
+		<meta property="twitter:description" content="Interactive visualization of 366 CCL tests across 12 categories" />
+		<meta property="twitter:creator" content="@tylerbutler" />
+
+		<!-- Apple touch icon and manifest -->
+		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
+		<link rel="manifest" href="%sveltekit.assets%/manifest.json" />
+
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover" class="bg-background text-foreground">
+		<div style="display: contents">%sveltekit.body%</div>
+
+		<!-- Service Worker disabled - prevent any registration -->
+		<script>
+			// Completely disable service worker support
+			if ('serviceWorker' in navigator) {
+				console.log('🔧 Disabling service worker registration');
+
+				// Override the register function to prevent any registration
+				const originalRegister = navigator.serviceWorker.register;
+				navigator.serviceWorker.register = function() {
+					console.log('🚫 Service worker registration blocked');
+					return Promise.reject(new Error('Service worker registration is disabled'));
+				};
+
+				// Unregister any existing service workers
+				navigator.serviceWorker.getRegistrations()
+					.then(function(registrations) {
+						console.log('🔧 Found', registrations.length, 'service worker registrations to unregister');
+						const unregisterPromises = registrations.map(function(registration) {
+							console.log('🔧 Unregistering service worker:', registration.scope);
+							return registration.unregister();
+						});
+						return Promise.all(unregisterPromises);
+					})
+					.then(function() {
+						console.log('✅ All service workers unregistered');
+						// Clear all caches
+						if ('caches' in window) {
+							return caches.keys().then(function(cacheNames) {
+								console.log('🔧 Found', cacheNames.length, 'caches to clear');
+								return Promise.all(
+									cacheNames.map(function(cacheName) {
+										console.log('🔧 Clearing cache:', cacheName);
+										return caches.delete(cacheName);
+									})
+								);
+							});
+						}
+					})
+					.then(function() {
+						console.log('✅ All caches cleared');
+					})
+					.catch(function(error) {
+						console.error('❌ Error cleaning up service workers and caches:', error);
+					});
+			}
+		</script>
+	</body>
+</html>

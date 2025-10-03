@@ -1,0 +1,99 @@
+{
+	"resourceSizes": [
+		{
+			"resourceType": "script",
+			"budget": 400
+		},
+		{
+			"resourceType": "stylesheet",
+			"budget": 50
+		},
+		{
+			"resourceType": "image",
+			"budget": 100
+		},
+		{
+			"resourceType": "media",
+			"budget": 100
+		},
+		{
+			"resourceType": "font",
+			"budget": 100
+		},
+		{
+			"resourceType": "document",
+			"budget": 50
+		},
+		{
+			"resourceType": "other",
+			"budget": 200
+		},
+		{
+			"resourceType": "total",
+			"budget": 1000
+		}
+	],
+	"resourceCounts": [
+		{
+			"resourceType": "script",
+			"budget": 10
+		},
+		{
+			"resourceType": "stylesheet",
+			"budget": 5
+		},
+		{
+			"resourceType": "image",
+			"budget": 20
+		},
+		{
+			"resourceType": "font",
+			"budget": 4
+		},
+		{
+			"resourceType": "total",
+			"budget": 50
+		}
+	],
+	"timings": [
+		{
+			"metric": "first-contentful-paint",
+			"budget": 2000,
+			"tolerance": 200
+		},
+		{
+			"metric": "largest-contentful-paint",
+			"budget": 2500,
+			"tolerance": 300
+		},
+		{
+			"metric": "cumulative-layout-shift",
+			"budget": 0.1,
+			"tolerance": 0.02
+		},
+		{
+			"metric": "total-blocking-time",
+			"budget": 300,
+			"tolerance": 50
+		},
+		{
+			"metric": "speed-index",
+			"budget": 3000,
+			"tolerance": 400
+		}
+	],
+	"customMetrics": {
+		"dataLoadTime": {
+			"budget": 500,
+			"description": "Time to load static data files (categories + search index)"
+		},
+		"searchInitTime": {
+			"budget": 100,
+			"description": "Time to initialize search functionality"
+		},
+		"testRenderTime": {
+			"budget": 200,
+			"description": "Time to render test results"
+		}
+	}
+}

@@ -1,0 +1,83 @@
+/* ========================================
+   COLOR SCHEME: GITHUB
+   ========================================
+   Generated from Base16 theme
+   To change color schemes:
+   1. Replace this section with another scheme
+   2. Keep the same CSS variable names
+   3. Run `pnpm build` to apply changes
+   ======================================== */
+
+:root {
+	--radius: 0.625rem;
+
+	/* GitHub Base16 Palette */
+	--base00: oklch(1 0 0); /* ffffff - background */
+	--base01: oklch(0.961 0 0); /* f5f5f5 - lighter background */
+	--base02: oklch(0.798 0.098 240); /* c8c8fa - selection background */
+	--base03: oklch(0.594 0.004 120); /* 969896 - comments */
+	--base04: oklch(0.91 0 0); /* e8e8e8 - dark foreground */
+	--base05: oklch(0.2 0 0); /* 333333 - foreground */
+	--base06: oklch(1 0 0); /* ffffff - light foreground */
+	--base07: oklch(1 0 0); /* ffffff - light background */
+	--base08: oklch(0.514 0.333 14); /* ed6a43 - red */
+	--base09: oklch(0.427 0.351 195); /* 0086b3 - orange */
+	--base0A: oklch(0.408 0.137 264); /* 795da3 - yellow */
+	--base0B: oklch(0.213 0.237 225); /* 183691 - green */
+	--base0C: oklch(0.213 0.237 225); /* 183691 - cyan */
+	--base0D: oklch(0.408 0.137 264); /* 795da3 - blue */
+	--base0E: oklch(0.247 0.271 332); /* a71d5d - purple */
+	--base0F: oklch(0.2 0 0); /* 333333 - brown */
+
+	/* Semantic UI Mapping using Base16 colors */
+	--background: var(--base00);
+	--foreground: var(--base05);
+	--card: var(--base01);
+	--card-foreground: var(--base05);
+	--popover: var(--base01);
+	--popover-foreground: var(--base05);
+	--primary: var(--base0D);
+	--primary-foreground: var(--base00);
+	--secondary: var(--base02);
+	--secondary-foreground: var(--base05);
+	--muted: var(--base02);
+	--muted-foreground: var(--base03);
+	--accent: var(--base0C);
+	--accent-foreground: var(--base00);
+	--destructive: var(--base08);
+	--destructive-foreground: var(--base07);
+	--border: var(--base03);
+	--input: var(--base02);
+	--ring: var(--base0D);
+
+	/* Chart colors using Base16 palette */
+	--chart-1: var(--base08); /* red */
+	--chart-2: var(--base09); /* orange */
+	--chart-3: var(--base0A); /* yellow */
+	--chart-4: var(--base0B); /* green */
+	--chart-5: var(--base0E); /* purple */
+
+	/* Semantic accents using Base16 colors */
+	--success: var(--base0B);
+	--success-foreground: var(--base00);
+	--warning: var(--base0A);
+	--warning-foreground: var(--base00);
+	--info: var(--base0C);
+	--info-foreground: var(--base00);
+	--purple: var(--base0E);
+	--purple-foreground: var(--base07);
+	--teal: var(--base0C);
+	--teal-foreground: var(--base00);
+	--pink: var(--base08);
+	--pink-foreground: var(--base07);
+
+	/* Sidebar using Base16 tones */
+	--sidebar: var(--base01);
+	--sidebar-foreground: var(--base05);
+	--sidebar-primary: var(--base0D);
+	--sidebar-primary-foreground: var(--base07);
+	--sidebar-accent: var(--base02);
+	--sidebar-accent-foreground: var(--base05);
+	--sidebar-border: var(--base03);
+	--sidebar-ring: var(--base0C);
+}
