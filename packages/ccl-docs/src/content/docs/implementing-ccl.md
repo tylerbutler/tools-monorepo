@@ -3,10 +3,8 @@ title: Implementing CCL
 description: Language-specific patterns and guidance for building CCL implementations.
 ---
 
-# Implementing CCL
-
 :::tip[Core Philosophy]
-**Adapt CCL to your language's idioms.** There's no required API - make choices that feel natural for your ecosystem.
+**Adapt this API to your language's idioms.** There's no required API - make choices that feel natural for your ecosystem.
 :::
 
 ## Core Requirements
@@ -87,12 +85,12 @@ See [Library Features](/library-features) for details.
 
 Use [CCL Test Suite](https://github.com/ccl-test-data) (452 assertions, 167 tests):
 
-1. Start: `function:parse` tests
-2. Core: `function:make-objects` tests
-3. Optional: `function:get-string`, etc.
-4. Features: `feature:comments`, `feature:dotted-keys`
+1. **Core Parsing**: Filter tests by `functions: ["parse"]`
+2. **Object Construction**: Filter by `functions` containing `build_hierarchy`
+3. **Typed Access**: Filter by `validation` starting with `get_`
+4. **Optional Features**: Filter by `features` arrays (`comments`, `experimental_dotted_keys`, etc.)
 
-See [Test Suite Guide](/test-suite-guide) for roadmap.
+See [Test Suite Guide](/test-suite-guide) for complete filtering examples.
 
 ## Common Challenges
 

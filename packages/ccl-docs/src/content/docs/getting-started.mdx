@@ -7,8 +7,6 @@ sidebar:
 
 import { Steps } from '@astrojs/starlight/components';
 
-# Getting Started with CCL
-
 ## What is CCL?
 
 CCL (Categorical Configuration Language) is a minimalist configuration language based on simple key-value pairs. It's designed around mathematical principles from Category Theory, providing elegant composition and recursive structure capabilities.
@@ -178,7 +176,7 @@ server =
 ```
 
 :::important[Key insight]
-Comments are regular key-value entries, not special syntax. Any Level 1 parser handles them automatically. While `/=` is the standard and preferred comment marker, implementations could support other comment keys. To use them as documentation:
+Comments are regular key-value entries, not special syntax. Any basic `parse()` function handles them automatically. While `/=` is the standard and preferred comment marker, implementations could support other comment keys. To use them as documentation:
 :::
 
 ```typescript
@@ -347,10 +345,10 @@ items =
 ```
 
 ### Core Principles
-- **Foundation**: Everything builds from key-value entries  
+- **Foundation**: Everything builds from key-value entries
 - **Parsing**: 4 core constructs handle all syntax
 - **Comments**: Regular entries with `/` keys (use `filter()`)
-- **Levels**: Choose your implementation level based on needs
+- **Functions**: Implement only the functions your use case requires
 - **Composable**: Each processing step is independent
 
 That's all you need to get started with CCL! The power comes from the simple, composable design.

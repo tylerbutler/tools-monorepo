@@ -3,93 +3,109 @@ title: Test Suite Guide
 description: Using the CCL test suite for progressive implementation validation.
 ---
 
-# Test Suite Guide
-
 The [CCL Test Suite](https://github.com/ccl-test-data) provides 452 assertions across 167 tests for validating CCL implementations.
 
-## Test Suite Stats
+## Test Format
 
-**Total Coverage**: 452 assertions across 167 tests in 10 JSON files
+Implementers use the **flat format** in `generated_tests/` - one test per validation function with typed fields for filtering.
 
-**Test Files**:
-- `api-essential-parsing.json` - Basic parsing (Level 1)
-- `api-comprehensive-parsing.json` - Edge cases
-- `api-object-construction.json` - Nested objects (Level 3)
-- `api-processing.json` - Entry composition (Level 2)
-- `api-typed-access.json` - Type-safe access (Level 4)
-- `api-comments.json` - Comment syntax
-- `api-dotted-keys.json` - Dotted key expansion
-- `api-errors.json` - Error handling
-- `property-round-trip.json` - Round-trip validation
-- `property-algebraic.json` - Algebraic properties
-
-## Progressive Implementation Roadmap
-
-### Phase 1: Core Parsing (Level 1)
-**Tag**: `function:parse`
-
-Implement basic key-value parsing:
-- Split lines on first `=` character
-- Handle whitespace (trim keys, preserve values)
-- Support multiline values via indentation
-
-**Tests**: `api-essential-parsing.json`
-
-### Phase 2: Object Construction (Level 3)
-**Tag**: `function:make-objects`
-
-Build nested structures:
-- Recursive parsing of values containing CCL
-- Fixed-point algorithm termination
-- Empty key handling for lists
-
-**Tests**: `api-object-construction.json`
-
-### Phase 3: Typed Access (Level 4)
-**Tags**: `function:get-string`, `function:get-int`, `function:get-bool`
-
-Add type-safe convenience:
-- String extraction
-- Integer/float parsing with validation
-- Boolean conversion (true/false, yes/no, 1/0)
-
-**Tests**: `api-typed-access.json`
-
-### Phase 4: Optional Features
-**Tags**: `feature:comments`, `feature:dotted-keys`
-
-Add language features:
-- Comment filtering (`/=` syntax)
-- Dotted key expansion (`foo.bar.baz`)
-
-**Tests**: `api-comments.json`, `api-dotted-keys.json`
-
-### Phase 5: Production Hardening
-**Tags**: `feature:error-handling`, `property:round-trip`
-
-Ensure robustness:
-- Comprehensive error handling
-- Round-trip validation (parse → format → parse)
-- Algebraic properties (associativity, commutativity)
-
-**Tests**: `api-errors.json`, `property-*.json`
-
-## Feature-Based Test Selection
-
-Tests use structured tags for precise targeting:
-
-**Function Tags**: `function:parse`, `function:make-objects`, `function:get-string`
-**Feature Tags**: `feature:comments`, `feature:dotted-keys`
-**Behavior Tags**: `behavior:crlf-normalize`, `behavior:boolean-strict`
-
-Filter tests by capability to implement progressively.
-
-## Using the Test Suite
+### Test Structure
 
 Each test includes:
+- `validation`: Function being tested (`parse`, `build_hierarchy`, etc.)
+- `functions`: Array of required CCL functions
+- `features`: Array of optional language features
+- `behaviors`: Array of implementation behavior choices
+- `expected`: Expected result with `count` field for assertion verification
 - `input`: CCL text to parse
-- `expected`: Expected result
-- `count`: Number of assertions (for validation)
-- `tags`: Feature/function/behavior tags
+
+### Test Metadata
+
+**Functions** - CCL functions by category:
+- **Core**: `parse`, `build_hierarchy`
+- **Typed Access**: `get_string`, `get_int`, `get_bool`, `get_float`, `get_list`
+- **Processing**: `filter`, `combine`, `expand_dotted`
+- **Formatting**: `canonical_format`
+
+**Features** - Optional language features:
+- `comments`, `experimental_dotted_keys`, `empty_keys`, `multiline`, `unicode`, `whitespace`
+
+**Behaviors** - Implementation choices (mutually exclusive):
+- `crlf_preserve_literal` vs `crlf_normalize_to_lf`
+- `boolean_strict` vs `boolean_lenient`
+- `list_coercion_enabled` vs `list_coercion_disabled`
+
+## Progressive Implementation
+
+### Phase 1: Core Parsing
+**Validation**: `parse`
+
+Filter tests:
+```javascript
+tests.filter(t => t.validation === 'parse')
+```
+
+### Phase 2: Object Construction
+**Validation**: `build_hierarchy`
+
+Filter tests:
+```javascript
+tests.filter(t => t.validation === 'build_hierarchy')
+```
+
+### Phase 3: Typed Access
+**Validation**: `get_string`, `get_int`, `get_bool`, `get_float`, `get_list`
+
+Filter tests:
+```javascript
+tests.filter(t => t.validation.startsWith('get_'))
+```
+
+### Phase 4: Optional Features
+**Features**: `comments`, `experimental_dotted_keys`
+
+Filter by supported features:
+```javascript
+tests.filter(t => t.features.every(f => supportedFeatures.includes(f)))
+```
+
+## Test Filtering
+
+Filter tests by implementation capabilities:
+
+```javascript
+const supportedTests = tests.filter(test => {
+  // Check functions
+  if (!test.functions.every(f => implementedFunctions.includes(f))) return false;
+
+  // Check features
+  if (!test.features.every(f => supportedFeatures.includes(f))) return false;
+
+  // Check behavior conflicts
+  if (test.conflicts?.behaviors?.some(b => chosenBehaviors.includes(b))) return false;
+
+  return true;
+});
+```
+
+## Example Test
+
+```json
+{
+  "name": "basic_key_value_pairs_parse",
+  "validation": "parse",
+  "input": "name = Alice\nage = 42",
+  "expected": {
+    "count": 2,
+    "entries": [
+      {"key": "name", "value": "Alice"},
+      {"key": "age", "value": "42"}
+    ]
+  },
+  "functions": ["parse"],
+  "features": [],
+  "behaviors": []
+}
+```
 
 See [CCL Test Suite](https://github.com/ccl-test-data) repository for complete test runner and JSON schema.

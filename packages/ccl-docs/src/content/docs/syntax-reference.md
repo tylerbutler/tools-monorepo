@@ -3,8 +3,6 @@ title: CCL Syntax Reference
 description: Quick reference for CCL syntax patterns.
 ---
 
-# CCL Syntax Reference
-
 ## Core Syntax
 
 **Key-Value Pairs:**

@@ -3,8 +3,6 @@ title: Dotted Keys Explained
 description: Understanding dotted keys as literal strings vs hierarchical nesting in CCL.
 ---
 
-# Dotted Keys Explained
-
 In CCL, dotted keys are **literal string keys** containing dots, not shorthand for nested structures.
 
 ## The Core Distinction
