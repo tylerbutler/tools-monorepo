@@ -3,7 +3,9 @@ title: CCL Syntax
 description: Core CCL syntax rules with edge cases
 ---
 
-CCL uses **key-value pairs** with indentation for nesting. That's the entire format. All keys and values are `string`s.
+CCL uses **key-value pairs** with indentation for nesting. **That's the entire format.** All keys and values are
+`string`s. Because everything is a `string`, you don't need to worry about escaping "special" characters, surrounding
+"real strings" in quotes, etc. You'll get a string value matching exactly what you wrote in the config.
 
 ## Core Syntax Rules
 
@@ -15,8 +17,8 @@ another = some text value
 ```
 
 - Split on first `=`
-- Key is trimmed of whitespace
-- Value preserves whitespace (except leading)
+- **Key** is trimmed of whitespace
+- **Value** is trimmed of _leading_
 
 ### 2. Empty Keys (Lists)
 
@@ -37,6 +39,10 @@ key = value  /= Not a comment, value is "value  /= Not a comment"
 ```
 
 Comments use `/=` key syntax. Only at line start.
+
+:::tip
+This comment format is a convention, and is changeable. See [What is a comment?][] for more pedantic details.
+:::
 
 ### 4. Indentation for Nesting
 

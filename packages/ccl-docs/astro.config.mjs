@@ -69,11 +69,9 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: "Getting Started",
+					label: "Learning CCL",
 					items: [
-						{ slug: "documentation-map" },
 						{ slug: "getting-started" },
-						{ slug: "ccl-syntax" },
 						{ slug: "ccl-examples" },
 						{ slug: "ccl-faq" },
 					],
@@ -88,10 +86,10 @@ export default defineConfig({
 					],
 				},
 				{
-					label: "Advanced Topics",
+					label: "Reference",
 					items: [
-						{ slug: "dotted-keys-explained" },
 						{ slug: "syntax-reference" },
+						{ slug: "dotted-keys-explained" },
 					],
 				},
 			],
