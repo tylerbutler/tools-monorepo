@@ -17,7 +17,7 @@ const rootDir = new URL("../..", import.meta.url).pathname;
 
 const cclGrammar = JSON.parse(
 	fs.readFileSync(
-		path.join(path.dirname(scriptUrl.pathname), "ccl-grammar.json"),
+		path.join(path.dirname(scriptUrl.pathname), "ccl.tmLanguage.json"),
 		"utf-8",
 	),
 );
@@ -52,7 +52,8 @@ export default defineConfig({
 						// JSON.parse(fs.readFileSync(path.join(rootDir, "ccl-grammar.json"), "utf-8")),
 					],
 					langAlias: {
-						catcl: "ccl",
+						ccl: "CCL",
+						pseudocode: "python",
 					},
 				},
 				styleOverrides: {
