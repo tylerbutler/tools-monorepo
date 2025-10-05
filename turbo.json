@@ -1,0 +1,108 @@
+{
+	"$schema": "https://turborepo.org/schema.json",
+	"ui": "tui",
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build", "compile", "build:test", "api", "docs", "generate", "manifest", "readme"],
+			"outputs": ["esm/**", "dist/**", ".next/**", "!.next/cache/**", "oclif.manifest.json", "README.md", "docs/**"]
+		},
+		"compile": {
+			"dependsOn": ["^compile"],
+			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"]
+		},
+		"api": {
+			"dependsOn": ["^compile", "compile"],
+			"outputs": ["api/**", ".api/**"]
+		},
+		"docs": {
+			"dependsOn": ["^compile", "compile", "api"],
+			"outputs": ["docs/**", "dist/docs/**"]
+		},
+		"generate": {
+			"dependsOn": ["^compile", "compile"],
+			"outputs": []
+		},
+		"manifest": {
+			"dependsOn": ["compile"],
+			"inputs": ["package.json", "src/**"],
+			"outputs": ["oclif.manifest.json"]
+		},
+		"readme": {
+			"dependsOn": ["compile", "manifest"],
+			"inputs": ["package.json", "src/**"],
+			"outputs": ["README.md", "docs/**"]
+		},
+		"build:test": {
+			"dependsOn": ["compile"],
+			"outputs": []
+		},
+		"test": {
+			"dependsOn": ["compile"],
+			"outputs": ["coverage/**"]
+		},
+		"test:coverage": {
+			"dependsOn": ["compile"],
+			"outputs": ["coverage/**"]
+		},
+		"lint": {
+			"dependsOn": ["compile"],
+			"outputs": []
+		},
+		"check": {
+			"dependsOn": ["^check"],
+			"outputs": []
+		},
+		"check:all": {
+			"outputs": []
+		},
+		"full": {
+			"dependsOn": ["check", "build", "lint", "test"],
+			"outputs": []
+		},
+		"release:license-file": {
+			"dependsOn": ["^release:license-file"],
+			"inputs": ["package.json", ".generatelicensefile.cjs"],
+			"outputs": ["THIRD-PARTY-LICENSES.txt"]
+		},
+		"release": {
+			"dependsOn": ["build", "release:license-file"],
+			"outputs": []
+		},
+		"clean": {
+			"cache": false
+		},
+		"clean:build": {
+			"cache": false
+		},
+		"clean:manifest": {
+			"cache": false
+		},
+		"clean:root": {
+			"cache": false
+		},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"astro build": {
+			"inputs": ["astro.config.mjs", "src/**", "public/**"],
+			"outputs": ["dist/**"]
+		},
+		"astro check": {
+			"inputs": ["astro.config.mjs", "src/**", "public/**"],
+			"outputs": []
+		},
+		"generate-license-file": {
+			"inputs": ["package.json", ".generatelicensefile.cjs"],
+			"outputs": ["THIRD-PARTY-LICENSES.txt"]
+		},
+		"oclif manifest": {
+			"inputs": ["package.json", "src/**"],
+			"outputs": ["oclif.manifest.json"]
+		},
+		"oclif readme": {
+			"inputs": ["package.json", "src/**"],
+			"outputs": ["README.md", "docs/**"]
+		}
+	}
+}
