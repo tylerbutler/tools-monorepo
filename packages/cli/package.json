@@ -35,7 +35,7 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "fluid-build . --task build",
+		"build": "turbo build",
 		"check": "npm run check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
@@ -43,7 +43,7 @@
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "fluid-build . --task full",
+		"full": "turbo full",
 		"generate": "concurrently npm:generate:*",
 		"generate:command-snapshots": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
 		"lint": "biome lint .",
