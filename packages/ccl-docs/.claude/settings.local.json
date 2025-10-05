@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm build:*)",
+      "Read(//home/tylerbu/.claude/**)",
+      "Read(//Volumes/Code/claude-workspace/tools-monorepo/**)",
+      "Bash(git rebase:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
