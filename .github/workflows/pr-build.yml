@@ -46,6 +46,8 @@ jobs:
       - run: pnpm run ci:check || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
         continue-on-error: true
       - run: pnpm run ci:build
+      - run: pnpm run ci:check:typedoc || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
+        continue-on-error: true
       - run: pnpm run ci:lint || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
         continue-on-error: true
       - run: pnpm run ci:test
