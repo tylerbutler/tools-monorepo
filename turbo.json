@@ -3,41 +3,35 @@
 	"ui": "tui",
 	"tasks": {
 		"build": {
-			"dependsOn": [
-				"^build",
-				"compile",
-				"build:test",
-				"api",
-				"docs",
-				"generate",
-				"manifest",
-				"readme"
-			],
+			"dependsOn": ["^build", "compile", "api", "manifest", "readme", "generate"],
 			"outputs": [
 				"esm/**",
 				"dist/**",
 				".next/**",
 				"!.next/cache/**",
 				"oclif.manifest.json",
-				"README.md",
-				"docs/**"
+				"README.md"
 			]
 		},
 		"compile": {
 			"dependsOn": ["^compile"],
+			"inputs": ["src/**", "tsconfig*.json", "$TURBO_DIR/config/tsconfig*.json", "package.json"],
 			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"]
 		},
 		"api": {
 			"dependsOn": ["^compile", "compile"],
+			"inputs": ["esm/**/*.d.ts", "api-extractor*.json", "$TURBO_DIR/config/api-extractor.base.json"],
 			"outputs": ["api-docs/**", "_temp/api-extractor/**", "esm/tsdoc-metadata.json"]
 		},
 		"docs": {
 			"dependsOn": ["^compile", "compile", "api"],
+			"inputs": ["esm/**", "typedoc.json", "_temp/api-extractor/**"],
 			"outputs": ["docs/**", "dist/docs/**"]
 		},
 		"generate": {
 			"dependsOn": ["^compile", "compile"],
-			"outputs": []
+			"inputs": ["esm/**", "test/**"],
+			"outputs": ["test/commands/__snapshots__/**"]
 		},
 		"manifest": {
 			"dependsOn": ["compile"],
@@ -51,25 +45,31 @@
 		},
 		"build:test": {
 			"dependsOn": ["compile"],
-			"outputs": []
+			"inputs": ["test/**/*.ts", "test/tsconfig.json"],
+			"outputs": ["test/**/*.js", "test/**/*.d.ts"]
 		},
 		"test": {
 			"dependsOn": ["compile"],
+			"inputs": ["src/**", "test/**", "esm/**", "vitest.config.ts"],
 			"outputs": ["coverage/**"]
 		},
 		"test:coverage": {
 			"dependsOn": ["compile"],
+			"inputs": ["src/**", "test/**", "esm/**", "vitest.config.ts"],
 			"outputs": ["coverage/**"]
 		},
 		"lint": {
-			"dependsOn": ["compile"],
+			"dependsOn": [],
+			"inputs": ["src/**", "test/**", "$TURBO_DIR/biome.jsonc", "biome.jsonc", ".eslintrc*"],
 			"outputs": []
 		},
 		"check": {
 			"dependsOn": ["^check"],
+			"inputs": ["src/**", "$TURBO_DIR/biome.jsonc", "biome.jsonc", "*.config.*"],
 			"outputs": []
 		},
 		"check:all": {
+			"inputs": ["**"],
 			"outputs": []
 		},
 		"full": {
