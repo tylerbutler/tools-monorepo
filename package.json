@@ -12,7 +12,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "turbo run build",
-		"check": "turbo run check",
+		"check": "turbo run check check:all",
 		"check:all": "concurrently npm:check:deps npm:check:format npm:check:policy npm:lint",
 		"check:deps": "syncpack lint",
 		"check:format": "biome check --linter-enabled=false",
@@ -20,7 +20,7 @@
 		"check:renovate-config": "renovate-config-validator",
 		"ci": "npm run ci:check && npm run ci:build && npm run ci:lint && npm run ci:test",
 		"ci:build": "turbo run build generate",
-		"ci:check": "turbo run check",
+		"ci:check": "npm run check",
 		"ci:check:typedoc": "turbo run check:typedoc",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",

@@ -120,6 +120,19 @@
 			"outputs": []
 		},
 		"check:all": {
+			"dependsOn": ["check:deps", "check:format", "check:policy", "lint"],
+			"inputs": ["**"],
+			"outputs": []
+		},
+		"check:deps": {
+			"inputs": ["**", "$TURBO_ROOT$/*syncpack*"],
+			"outputs": []
+		},
+		"check:format": {
+			"inputs": ["**"],
+			"outputs": []
+		},
+		"check:policy": {
 			"inputs": ["**"],
 			"outputs": []
 		},
