@@ -92,7 +92,7 @@
 				"vitest.config.ts",
 				"test/tsconfig.json"
 			],
-			"outputs": ["coverage/**"]
+			"outputs": [".coverage/**", "_temp/junit.xml"]
 		},
 		"test:coverage": {
 			"dependsOn": ["compile"],
@@ -103,7 +103,7 @@
 				"vitest.config.ts",
 				"test/tsconfig.json"
 			],
-			"outputs": ["coverage/**"]
+			"outputs": [".coverage/**", "_temp/junit.xml"]
 		},
 		"lint": {
 			"dependsOn": [],
