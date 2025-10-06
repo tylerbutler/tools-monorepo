@@ -108,6 +108,11 @@
 			"inputs": ["src/**", "biome.jsonc", "*.config.*"],
 			"outputs": []
 		},
+		"check:typedoc": {
+			"dependsOn": ["^build"],
+			"inputs": ["src/**", "astro.config.mjs", "*.config.*", "typedoc.*"],
+			"outputs": []
+		},
 		"check:all": {
 			"inputs": ["**"],
 			"outputs": []
