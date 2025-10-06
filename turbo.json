@@ -1,6 +1,6 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
-	"ui": "tui",
+	"ui": "stream",
 	"globalDependencies": [
 		"config/tsconfig*.json",
 		"config/api-extractor.base.json",
@@ -18,7 +18,8 @@
 				".astro/**",
 				"oclif.manifest.json",
 				"README.md"
-			]
+			],
+			"outputLogs": "errors-only"
 		},
 		"build-steps:lib": {
 			"dependsOn": ["^build", "compile", "api", "docs"]
