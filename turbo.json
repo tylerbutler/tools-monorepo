@@ -1,6 +1,7 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
 	"ui": "tui",
+	"globalDependencies": ["config/tsconfig*.json", "config/api-extractor.base.json", "biome.jsonc"],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build", "compile", "api", "manifest", "readme", "generate"],
@@ -15,12 +16,12 @@
 		},
 		"compile": {
 			"dependsOn": ["^compile"],
-			"inputs": ["src/**", "tsconfig*.json", "$TURBO_DIR/config/tsconfig*.json", "package.json"],
+			"inputs": ["src/**", "tsconfig*.json", "package.json"],
 			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"]
 		},
 		"api": {
 			"dependsOn": ["^compile", "compile"],
-			"inputs": ["esm/**/*.d.ts", "api-extractor*.json", "$TURBO_DIR/config/api-extractor.base.json"],
+			"inputs": ["esm/**/*.d.ts", "api-extractor*.json", "package.json"],
 			"outputs": ["api-docs/**", "_temp/api-extractor/**", "esm/tsdoc-metadata.json"]
 		},
 		"docs": {
@@ -46,26 +47,26 @@
 		"build:test": {
 			"dependsOn": ["compile"],
 			"inputs": ["test/**/*.ts", "test/tsconfig.json"],
-			"outputs": ["test/**/*.js", "test/**/*.d.ts"]
+			"outputs": []
 		},
 		"test": {
 			"dependsOn": ["compile"],
-			"inputs": ["src/**", "test/**", "esm/**", "vitest.config.ts"],
+			"inputs": ["src/**", "test/**", "esm/**", "vitest.config.ts", "test/tsconfig.json"],
 			"outputs": ["coverage/**"]
 		},
 		"test:coverage": {
 			"dependsOn": ["compile"],
-			"inputs": ["src/**", "test/**", "esm/**", "vitest.config.ts"],
+			"inputs": ["src/**", "test/**", "esm/**", "vitest.config.ts", "test/tsconfig.json"],
 			"outputs": ["coverage/**"]
 		},
 		"lint": {
 			"dependsOn": [],
-			"inputs": ["src/**", "test/**", "$TURBO_DIR/biome.jsonc", "biome.jsonc", ".eslintrc*"],
+			"inputs": ["src/**", "test/**", "biome.jsonc", ".eslintrc*"],
 			"outputs": []
 		},
 		"check": {
 			"dependsOn": ["^check"],
-			"inputs": ["src/**", "$TURBO_DIR/biome.jsonc", "biome.jsonc", "*.config.*"],
+			"inputs": ["src/**", "biome.jsonc", "*.config.*"],
 			"outputs": []
 		},
 		"check:all": {
