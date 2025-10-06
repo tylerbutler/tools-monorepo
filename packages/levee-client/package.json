@@ -25,7 +25,8 @@
 	"types": "lib/public.d.ts",
 	"scripts": {
 		"api": "api-extractor run --local",
-		"build": "npm run compile && npm run lint",
+		"b": "turbo build",
+		"build": "echo 'Build orchestrated by turbo.json'",
 		"build:test": "echo \"No tests\"",
 		"check": "npm run check:format",
 		"check:format": "biome format .",

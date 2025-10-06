@@ -40,7 +40,7 @@
 	],
 	"scripts": {
 		"api": "api-extractor run --local",
-		"build": "turbo build",
+		"b": "turbo build",
 		"build:test": "tsc --project ./test/tsconfig.json",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",

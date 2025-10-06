@@ -35,7 +35,7 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "turbo build",
+		"b": "turbo build",
 		"check": "npm run check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",

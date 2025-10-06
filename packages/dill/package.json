@@ -41,7 +41,7 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "turbo build",
+		"b": "turbo build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",

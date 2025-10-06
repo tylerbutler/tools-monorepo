@@ -13,6 +13,7 @@
 	"type": "module",
 	"scripts": {
 		"astro": "astro",
+		"b": "turbo build",
 		"build": "astro build",
 		"check": "astro check",
 		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",

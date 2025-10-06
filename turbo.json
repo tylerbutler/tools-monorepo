@@ -3,8 +3,25 @@
 	"ui": "tui",
 	"tasks": {
 		"build": {
-			"dependsOn": ["^build", "compile", "build:test", "api", "docs", "generate", "manifest", "readme"],
-			"outputs": ["esm/**", "dist/**", ".next/**", "!.next/cache/**", "oclif.manifest.json", "README.md", "docs/**"]
+			"dependsOn": [
+				"^build",
+				"compile",
+				"build:test",
+				"api",
+				"docs",
+				"generate",
+				"manifest",
+				"readme"
+			],
+			"outputs": [
+				"esm/**",
+				"dist/**",
+				".next/**",
+				"!.next/cache/**",
+				"oclif.manifest.json",
+				"README.md",
+				"docs/**"
+			]
 		},
 		"compile": {
 			"dependsOn": ["^compile"],
