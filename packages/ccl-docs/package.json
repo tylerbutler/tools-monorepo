@@ -13,10 +13,12 @@
 	"type": "module",
 	"scripts": {
 		"astro": "astro",
+		"b": "turbo build",
 		"build": "astro build",
-		"check": "astro check",
+		"check:typedoc": "astro check",
 		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
 		"dev": "astro dev",
+		"docs": "astro build",
 		"preview": "astro preview",
 		"start": "astro dev"
 	},
