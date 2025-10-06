@@ -26,8 +26,7 @@
 	"scripts": {
 		"api": "api-extractor run --local",
 		"b": "turbo build",
-		"build": "echo 'Build orchestrated by turbo.json'",
-		"build:test": "echo \"No tests\"",
+		"build": "turbo run build-steps:lib",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf --glob esm \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp _temp nyc",

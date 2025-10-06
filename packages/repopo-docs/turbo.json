@@ -2,10 +2,8 @@
 	"$schema": "https://turborepo.org/schema.json",
 	"extends": ["//"],
 	"tasks": {
-		"build": {
-			"dependsOn": ["repopo#build"],
-			"inputs": ["astro.config.mjs", "src/**", "public/**"],
-			"outputs": ["dist/**", ".astro/**"]
+		"build-steps:astro": {
+			"dependsOn": ["repopo#build"]
 		}
 	}
 }
