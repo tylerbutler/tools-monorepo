@@ -29,7 +29,7 @@
 		},
 		"api": {
 			"dependsOn": ["^compile", "compile"],
-			"outputs": ["api/**", ".api/**"]
+			"outputs": ["api-docs/**", "_temp/api-extractor/**", "esm/tsdoc-metadata.json"]
 		},
 		"docs": {
 			"dependsOn": ["^compile", "compile", "api"],
