@@ -40,7 +40,8 @@
 	],
 	"scripts": {
 		"api": "api-extractor run --local",
-		"build": "fluid-build . --task build",
+		"b": "turbo build",
+		"build": "turbo run build-steps:cli",
 		"build:test": "tsc --project ./test/tsconfig.json",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
@@ -50,7 +51,7 @@
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"compile": "tsc",
 		"format": "sort-package-json && biome check . --linter-enabled=false --write",
-		"full": "fluid-build . --task full",
+		"full": "turbo full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"manifest": "oclif manifest",

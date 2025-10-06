@@ -26,7 +26,7 @@
 	],
 	"scripts": {
 		"api": "npm run docs:api",
-		"build": "fluid-build . --task build",
+		"b": "turbo build",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
@@ -34,7 +34,7 @@
 		"docs": "typedoc",
 		"docs:api": "api-extractor run --local",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "fluid-build . --task full",
+		"full": "turbo full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
 		"test": "vitest run test",
@@ -50,8 +50,8 @@
 		"rimraf": "^6.0.1",
 		"sort-package-json": "*",
 		"tempy": "^3.1.0",
-		"typedoc": "^0.28.5",
-		"typedoc-plugin-markdown": "^4.7.0",
+		"typedoc": "^0.28.13",
+		"typedoc-plugin-markdown": "^4.9.0",
 		"typescript": "~5.5.4",
 		"vitest": "^3.2.4"
 	},

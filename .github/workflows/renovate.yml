@@ -18,7 +18,7 @@ jobs:
       - run: npm i --global corepack@latest
       - run: corepack enable
 
-      - uses: renovatebot/github-action@b11417b9eaac3145fe9a8544cee66503724e32b6 # ratchet:renovatebot/github-action@v43.0.8
+      - uses: renovatebot/github-action@f9c81dddc9b589e4e6ae0326d1e36f6bc415d230 # ratchet:renovatebot/github-action@v39.2.4
         with:
           configurationFile: renovate.json5
           token: ${{ secrets.GITHUB_TOKEN }}

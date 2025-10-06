@@ -31,7 +31,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### Inherited from
 
-`Partial.autoGenText`
+[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/).[`autoGenText`](/api/interfaces/fileheaderpolicyconfig/#autogentext)
 
 ***
 
@@ -77,7 +77,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### Inherited from
 
-`Partial.headerText`
+[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/).[`headerText`](/api/interfaces/fileheaderpolicyconfig/#headertext)
 
 ***
 

@@ -182,7 +182,7 @@ Create .stack property on a target object
 
 ***
 
-### WriteOnceMap\<K, V\>
+### WriteOnceMap
 
 Defined in: [packages/fundamentals/src/writeOnceMap.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L27)
 
@@ -267,7 +267,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ###### Inherited from
 
-`Map.[toStringTag]`
+[`WriteOnceMap`](#writeoncemap).[`[toStringTag]`](#tostringtag)
 
 ##### size
 
@@ -283,7 +283,7 @@ the number of elements in the Map.
 
 ###### Inherited from
 
-`Map.size`
+[`WriteOnceMap`](#writeoncemap).[`size`](#size)
 
 ##### \[species\]
 
