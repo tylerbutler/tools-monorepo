@@ -53,8 +53,8 @@
 		},
 		"docs": {
 			"dependsOn": ["^compile", "compile", "api"],
-			"inputs": ["esm/**", "typedoc.json", "_temp/api-extractor/**"],
-			"outputs": ["docs/**", "dist/docs/**"]
+			"inputs": ["esm/**", "typedoc.*", "_temp/api-extractor/**", "README.md"],
+			"outputs": ["docs/**", "dist/docs/**", "README.md"]
 		},
 		"generate": {
 			"dependsOn": ["^compile", "compile"],

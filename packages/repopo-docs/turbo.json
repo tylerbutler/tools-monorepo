@@ -4,6 +4,9 @@
 	"tasks": {
 		"build-steps:astro": {
 			"dependsOn": ["repopo#build"]
+		},
+		"check": {
+			"dependsOn": ["^build"]
 		}
 	}
 }
