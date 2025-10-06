@@ -3,7 +3,7 @@
 	"extends": ["//"],
 	"tasks": {
 		"build-steps:astro": {
-			"dependsOn": ["dill-cli#build"]
+			"dependsOn": ["@tylerbu/cli-api#build", "dill-cli#build"]
 		}
 	}
 }
