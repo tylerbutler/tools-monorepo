@@ -4,9 +4,6 @@
 	"tasks": {
 		"build-steps:astro": {
 			"dependsOn": ["^build", "@tylerbu/cli-api#build", "dill-cli#build"]
-		},
-		"check": {
-			"dependsOn": ["^build", "@tylerbu/cli-api#build", "dill-cli#build"]
 		}
 	}
 }
