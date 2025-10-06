@@ -4,7 +4,8 @@
 	"globalDependencies": [
 		"config/tsconfig*.json",
 		"config/api-extractor.base.json",
-		"biome.jsonc"
+		"biome.jsonc",
+		"pnpm-lock.yaml"
 	],
 	"tasks": {
 		"build": {
