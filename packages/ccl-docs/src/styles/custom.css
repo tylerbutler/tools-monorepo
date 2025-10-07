@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap");
+
+:root {
+	--sl-font: "Metropolis", sans-serif;
+}
+
+/* Dark mode colors. */
+:root {
+	--sl-color-accent-low: #271d3d;
+	--sl-color-accent: #774bc1;
+	--sl-color-accent-high: #ccc1eb;
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #fde4ff;
+	--sl-color-gray-2: #eda3f3;
+	--sl-color-gray-3: #f269ff;
+	--sl-color-gray-4: #8d0099;
+	--sl-color-gray-5: #5d0065;
+	--sl-color-gray-6: #420049;
+	--sl-color-black: #2c0031;
+}
+/* Light mode colors. */
+:root[data-theme="light"] {
+	--sl-color-accent-low: #d9d1f1;
+	--sl-color-accent: #6030a5;
+	--sl-color-accent-high: #382659;
+	--sl-color-white: #2c0031;
+	--sl-color-gray-1: #420049;
+	--sl-color-gray-2: #5d0065;
+	--sl-color-gray-3: #8d0099;
+	--sl-color-gray-4: #d430e4;
+	--sl-color-gray-5: #eda3f3;
+	--sl-color-gray-6: #fde4ff;
+	--sl-color-gray-7: #fef2ff;
+	--sl-color-black: #ffffff;
+}
+
+.expressive-code code {
+	/* High-level property (preferred) */
+	/* font-variant-ligatures: contextual common-ligatures discretionary-ligatures; */
+
+	/* Or fine-grained control */
+	font-feature-settings: "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "zero",
+		"onum";
+}

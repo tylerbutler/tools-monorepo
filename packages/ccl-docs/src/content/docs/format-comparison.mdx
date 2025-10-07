@@ -1,0 +1,410 @@
+---
+title: Configuration Format Comparison
+description: Comparing CCL with JSON, YAML, TOML, INI, and environment variables to help you choose the right format for your project.
+sidebar:
+  label: Format Comparison
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Format Comparison Overview
+
+| Feature | JSON | YAML | TOML | INI | Env Vars | CCL |
+|---------|------|------|------|-----|----------|-----|
+| Comments | ❌ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Human Readable | ⚠️ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Hierarchical | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
+| Lists/Arrays | ✅ | ✅ | ✅ | ❌ | ⚠️ | ✅ |
+| String Quoting | Required | Optional | Mixed | Optional | N/A | Optional |
+| Multiline Values | Escaped | Native | Limited | ❌ | ❌ | ✅ |
+| Duplicate Keys | Error | Error | Error | Overwrite | Overwrite | Merge |
+
+## JSON vs CCL
+
+### Basic Structure
+
+<Tabs>
+<TabItem label="JSON" icon="seti:json">
+
+```json title="config.json"
+{
+  "app": {
+    "name": "MyApplication",
+    "version": "1.2.3",
+    "debug": true
+  },
+  "server": {
+    "host": "localhost",
+    "port": 8080,
+    "ssl": {
+      "enabled": true,
+      "cert_file": "/path/to/cert.pem"
+    }
+  },
+  "database": {
+    "connections": [
+      "postgres://db1.example.com/myapp",
+      "postgres://db2.example.com/myapp"
+    ]
+  }
+}
+```
+
+</TabItem>
+<TabItem label="CCL" icon="seti:config">
+
+```ccl title="config.ccl"
+/= Application Configuration
+app.name = MyApplication
+app.version = 1.2.3
+app.debug = true
+
+/= Server Configuration
+server.host = localhost
+server.port = 8080
+server.ssl.enabled = true
+server.ssl.cert_file = /path/to/cert.pem
+
+/= Database Configuration
+database.connections =
+  = postgres://db1.example.com/myapp
+  = postgres://db2.example.com/myapp
+```
+
+</TabItem>
+</Tabs>
+
+### Key Differences
+
+:::tip[JSON vs CCL advantages]
+- **Comments**: JSON has no comment support; CCL uses `/=` for documentation
+- **Quotes**: JSON requires quotes on all strings; CCL treats everything as strings
+- **Readability**: CCL is more readable with less punctuation
+- **Lists**: JSON arrays `["a", "b"]` become CCL lists with `= a` and `= b`
+:::
+
+
+## YAML vs CCL
+
+### Basic Structure
+
+<Tabs>
+<TabItem label="YAML" icon="seti:yaml">
+
+```yaml title="config.yaml"
+# Application settings
+app:
+  name: MyApplication
+  version: "1.2.3"
+  debug: true
+
+# Server settings
+server:
+  host: localhost
+  port: 8080
+  middlewares:
+    - cors
+    - authentication
+    - logging
+
+# Database settings
+database:
+  primary:
+    host: db1.example.com
+    port: 5432
+  replica:
+    host: db2.example.com
+    port: 5432
+```
+
+</TabItem>
+<TabItem label="CCL" icon="seti:config">
+
+```ccl title="config.ccl"
+/= Application settings
+app.name = MyApplication
+app.version = 1.2.3
+app.debug = true
+
+/= Server settings
+server.host = localhost
+server.port = 8080
+server.middlewares =
+  = cors
+  = authentication
+  = logging
+
+/= Database settings
+database.primary.host = db1.example.com
+database.primary.port = 5432
+database.replica.host = db2.example.com
+database.replica.port = 5432
+```
+
+</TabItem>
+</Tabs>
+
+### Key Differences
+
+:::caution[YAML vs CCL considerations]
+- **Indentation**: YAML relies on precise indentation; CCL uses explicit structure
+- **Lists**: YAML uses `- item`; CCL uses `= item`
+- **Quotes**: YAML has complex quoting rules; CCL treats all values as strings
+- **Error-prone**: YAML indentation errors are common; CCL structure is more explicit
+:::
+
+
+## TOML vs CCL
+
+### Basic Structure
+
+**TOML (config.toml):**
+```toml
+[app]
+name = "MyApplication"
+version = "1.2.3"
+debug = true
+
+[server]
+host = "localhost"
+port = 8080
+
+[server.ssl]
+enabled = true
+cert_file = "/path/to/cert.pem"
+
+[database]
+hosts = ["localhost", "replica.example.com"]
+
+[database.primary]
+host = "localhost"
+port = 5432
+```
+
+**CCL (config.ccl):**
+```ccl
+/= Application configuration
+app.name = MyApplication
+app.version = 1.2.3
+app.debug = true
+
+/= Server configuration
+server.host = localhost
+server.port = 8080
+server.ssl.enabled = true
+server.ssl.cert_file = /path/to/cert.pem
+
+/= Database configuration
+database.hosts =
+  = localhost
+  = replica.example.com
+
+database.primary.host = localhost
+database.primary.port = 5432
+```
+
+### Key Differences
+
+- **Sections**: TOML uses `[section]` headers; CCL uses dot notation or nested sections
+- **Arrays**: TOML uses `["a", "b"]`; CCL uses list syntax with `= item`
+- **Types**: TOML has strict typing; CCL treats all values as strings, leaving typed parsing as a higher-level concern
+- **Verbosity**: CCL is less verbose with fewer brackets and quotes
+
+
+## INI vs CCL
+
+### Basic Structure
+
+**INI (config.ini):**
+```ini
+[app]
+name=MyApplication
+version=1.2.3
+debug=true
+
+[server]
+host=localhost
+port=8080
+
+[database]
+host=localhost
+port=5432
+name=myapp_dev
+# No native array support
+url1=postgres://db1:5432/myapp
+url2=postgres://db2:5432/myapp
+```
+
+**CCL (config.ccl):**
+```ccl
+/= Application Configuration
+app.name = MyApplication
+app.version = 1.2.3
+app.debug = true
+
+/= Server Configuration
+server.host = localhost
+server.port = 8080
+
+/= Database Configuration  
+database.host = localhost
+database.port = 5432
+database.name = myapp_dev
+database.urls =
+  = postgres://db1:5432/myapp
+  = postgres://db2:5432/myapp
+```
+
+### Key Differences
+
+- **Arrays**: INI has no native array support; CCL has built-in list syntax
+- **Nesting**: INI supports only one level of sections; CCL supports deep hierarchies
+- **Comments**: Both support comments, but CCL's `/=` creates structured documentation
+- **Parsing**: INI parsing varies by implementation; CCL has consistent rules
+
+
+## Environment Variables vs CCL
+
+### Basic Structure
+
+**Environment Variables (.env):**
+```bash
+APP_NAME=MyApplication
+APP_VERSION=1.2.3  
+APP_DEBUG=true
+SERVER_HOST=localhost
+SERVER_PORT=8080
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_NAME=myapp_dev
+DATABASE_URLS=postgres://db1:5432/myapp,postgres://db2:5432/myapp
+```
+
+**CCL (config.ccl):**
+```ccl
+/= Application Configuration
+app.name = MyApplication
+app.version = 1.2.3
+app.debug = true
+
+/= Server Configuration
+server.host = localhost
+server.port = 8080
+
+/= Database Configuration  
+database.host = localhost
+database.port = 5432
+database.name = myapp_dev
+database.urls =
+  = postgres://db1:5432/myapp
+  = postgres://db2:5432/myapp
+```
+
+### Key Differences
+
+- **Structure**: Environment variables are flat; CCL supports hierarchy
+- **Arrays**: Environment variables use delimited strings; CCL has native lists
+- **Documentation**: Environment variables have no comment support; CCL has rich documentation
+- **Readability**: Environment variables become unwieldy at scale; CCL stays organized
+
+
+## Common Conversion Patterns
+
+### Arrays and Lists
+
+<Tabs>
+<TabItem label="JSON">
+
+```json
+{"items": ["a", "b", "c"]}
+```
+
+</TabItem>
+<TabItem label="YAML">
+
+```yaml
+items:
+  - a
+  - b
+  - c
+```
+
+</TabItem>
+<TabItem label="TOML">
+
+```toml
+items = ["a", "b", "c"]
+```
+
+</TabItem>
+<TabItem label="CCL">
+
+```ccl
+items =
+  = a
+  = b
+  = c
+```
+
+</TabItem>
+</Tabs>
+
+### Nested Objects
+
+<Tabs>
+<TabItem label="JSON Source">
+
+```json
+{
+  "database": {
+    "primary": {"host": "db1", "port": 5432},
+    "replica": {"host": "db2", "port": 5432}
+  }
+}
+```
+
+</TabItem>
+<TabItem label="CCL (Flat)">
+
+```ccl
+database.primary.host = db1
+database.primary.port = 5432
+database.replica.host = db2
+database.replica.port = 5432
+```
+
+</TabItem>
+<TabItem label="CCL (Nested)">
+
+```ccl
+database =
+  primary =
+    host = db1
+    port = 5432
+  replica =
+    host = db2
+    port = 5432
+```
+
+</TabItem>
+</Tabs>
+
+### Comments and Documentation
+
+**From YAML:**
+```yaml
+# Database configuration
+database:
+  host: localhost  # Primary database host
+  port: 5432
+```
+
+**To CCL:**
+```ccl
+/= Database configuration
+database =
+  host = localhost
+  /= Primary database host
+  port = 5432
+```
+

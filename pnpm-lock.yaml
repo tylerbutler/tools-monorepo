@@ -12,6 +12,8 @@ overrides:
   oclif>@aws-sdk/client-cloudfront: npm:empty-npm-package@1.0.0
   oclif>@aws-sdk/client-s3: npm:empty-npm-package@1.0.0
 
+pnpmfileChecksum: sha256-0s6hX8JFdcjaX4/n6c0RoxzjoCbey4apBGYHu6r3r8A=
+
 importers:
 
   .:
@@ -83,6 +85,64 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@22.13.17)(jiti@2.4.2)(msw@2.10.2(@types/node@22.13.17)(typescript@5.8.2))(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1)
+
+  packages/ccl-docs:
+    dependencies:
+      '@astrojs/check':
+        specifier: ^0.9.4
+        version: 0.9.4(prettier@3.6.2)(typescript@5.5.4)
+      '@astrojs/netlify':
+        specifier: ^6.5.11
+        version: 6.5.11(@types/node@22.13.17)(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1)
+      '@astrojs/starlight':
+        specifier: ^0.35.3
+        version: 0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+      '@fontsource-variable/fira-code':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/ibm-plex-mono':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/ibm-plex-serif':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/metropolis':
+        specifier: ^5.2.5
+        version: 5.2.5
+      '@fontsource/open-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
+      astro:
+        specifier: ^5.14.1
+        version: 5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)
+      sharp:
+        specifier: ^0.34.4
+        version: 0.34.4
+      starlight-heading-badges:
+        specifier: ^0.6.0
+        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+      starlight-links-validator:
+        specifier: ^0.18.0
+        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+      starlight-llms-txt:
+        specifier: ^0.6.0
+        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+      starlight-package-managers:
+        specifier: ^0.11.0
+        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
+    devDependencies:
+      '@fec/remark-a11y-emoji':
+        specifier: ^4.0.2
+        version: 4.0.2
+      '@hashicorp/platform-remark-plugins':
+        specifier: ^0.2.1
+        version: 0.2.1
 
   packages/cli:
     dependencies:
@@ -414,8 +474,8 @@ importers:
         specifier: ^6.5.11
         version: 6.5.11(@types/node@22.13.17)(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1)
       '@astrojs/starlight':
-        specifier: ^0.34.8
-        version: 0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+        specifier: ^0.35.3
+        version: 0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
       '@fontsource/ibm-plex-serif':
         specifier: ^5.2.7
         version: 5.2.7
@@ -436,16 +496,16 @@ importers:
         version: 0.34.4
       starlight-heading-badges:
         specifier: ^0.6.0
-        version: 0.6.0(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
       starlight-links-validator:
-        specifier: ^0.17.2
-        version: 0.17.2(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+        specifier: ^0.18.0
+        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
       starlight-package-managers:
         specifier: ^0.11.0
-        version: 0.11.0(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
       starlight-typedoc:
         specifier: ^0.21.3
-        version: 0.21.3(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.13(typescript@5.5.4)))(typedoc@0.28.13(typescript@5.5.4))
+        version: 0.21.3(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.13(typescript@5.5.4)))(typedoc@0.28.13(typescript@5.5.4))
       typedoc:
         specifier: ^0.28.13
         version: 0.28.13(typescript@5.5.4)
@@ -763,8 +823,8 @@ importers:
         specifier: ^6.5.11
         version: 6.5.11(@types/node@22.13.17)(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(yaml@2.8.1)
       '@astrojs/starlight':
-        specifier: ^0.34.8
-        version: 0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+        specifier: ^0.35.3
+        version: 0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
       '@fontsource/ibm-plex-serif':
         specifier: ^5.2.7
         version: 5.2.7
@@ -785,16 +845,16 @@ importers:
         version: 0.34.4
       starlight-heading-badges:
         specifier: ^0.6.0
-        version: 0.6.0(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
       starlight-links-validator:
-        specifier: ^0.17.2
-        version: 0.17.2(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+        specifier: ^0.18.0
+        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
       starlight-package-managers:
         specifier: ^0.11.0
-        version: 0.11.0(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
+        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))
       starlight-typedoc:
         specifier: ^0.21.3
-        version: 0.21.3(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.13(typescript@5.5.4)))(typedoc@0.28.13(typescript@5.5.4))
+        version: 0.21.3(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.13(typescript@5.5.4)))(typedoc@0.28.13(typescript@5.5.4))
       typedoc:
         specifier: ^0.28.13
         version: 0.28.13(typescript@5.5.4)
@@ -1037,8 +1097,8 @@ packages:
   '@astrojs/sitemap@3.3.0':
     resolution: {integrity: sha512-nYE4lKQtk+Kbrw/w0G0TTgT724co0jUsU4tPlHY9au5HmTBKbwiCLwO/15b1/y13aZ4Kr9ZbMeMHlXuwn0ty4Q==}
 
-  '@astrojs/starlight@0.34.8':
-    resolution: {integrity: sha512-XuYz0TfCZhje2u1Q9FNtmTdm7/B9QP91RDI1VkPgYvDhSYlME3k8gwgcBMHnR9ASDo2p9gskrqe7t1Pub/qryg==}
+  '@astrojs/starlight@0.35.3':
+    resolution: {integrity: sha512-z9MbODjZl/STU3PPU18iOTkLObJBw7PA8xMe5s+KPscQGL0LNZyQUYeClG+F1/em/k+2AsokGpVPta+aOTk1sg==}
     peerDependencies:
       astro: ^5.5.0
 
@@ -2291,6 +2351,12 @@ packages:
 
   '@fluidframework/tree@2.42.0':
     resolution: {integrity: sha512-A4scYdxnL9pOlaGTtffO77T3pBaVLLmnKOUtUcRy7OSoZinIPJDQq0RaUDhT3c6VSnVZq2E+ZRYGLd9okwdCnA==}
+
+  '@fontsource-variable/fira-code@5.2.7':
+    resolution: {integrity: sha512-J2bxN7fz5rd8WpQYyau4o19WqTzxoTqaNj9jhsv4p21GSu1Rf34tbqsxqjyDCR+wDMHM3SajyFqtq+5uvRUQ7w==}
+
+  '@fontsource/ibm-plex-mono@5.2.7':
+    resolution: {integrity: sha512-MKAb8qV+CaiMQn2B0dIi1OV3565NYzp3WN5b4oT6LTkk+F0jR6j0ZN+5BKJiIhffDC3rtBULsYZE65+0018z9w==}
 
   '@fontsource/ibm-plex-serif@5.2.7':
     resolution: {integrity: sha512-04owmc2OQQ/DAMjXjEMJc+7V4dBVmR01aIFOg4cuqS8pQ4HbvtlYs/u6+O0vCt21EMx5M/azIbgx43iKyisEOA==}
@@ -4303,6 +4369,9 @@ packages:
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
 
+  '@types/braces@3.0.5':
+    resolution: {integrity: sha512-SQFof9H+LXeWNz8wDe7oN5zu7ket0qwMu5vZubW4GCJ8Kkeh6nBWUz87+KTz/G3Kqsrp0j/W253XJb3KMEeg3w==}
+
   '@types/bunyan@1.8.11':
     resolution: {integrity: sha512-758fRH7umIMk5qt5ELmRMff4mLDlN+xyYzC+dkPTdKwbSkJFvz6xwyScrytPU0QIBbRRwbiE8/BIg8bpajerNQ==}
 
@@ -4391,6 +4460,9 @@ packages:
 
   '@types/mdx@2.0.13':
     resolution: {integrity: sha512-+OWZQfAYyio6YkJb3HLxDrvnx6SWWDbC0zVPfBRzUk0/nqoDyf6dNxQi3eArPe8rJ473nobTMQ/8Zk+LxJ+Yuw==}
+
+  '@types/micromatch@4.0.9':
+    resolution: {integrity: sha512-7V+8ncr22h4UoYRLnLXSpTxjQrNUXtWHGeMPRJt1nULXI57G9bIcpyrHlmrQ7QK24EyyuXvYcSSWAM8GA9nqCg==}
 
   '@types/minimatch@3.0.5':
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
@@ -7370,6 +7442,10 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
+  has-flag@5.0.1:
+    resolution: {integrity: sha512-CsNUt5x9LUdx6hnk/E2SZLsDyvfqANZSUq4+D3D8RzDJ2M+HDTIkF60ibS1vHaK55vzgiZw1bEPFG9yH7l33wA==}
+    engines: {node: '>=12'}
+
   has-own-prop@2.0.0:
     resolution: {integrity: sha512-Pq0h+hvsVm6dDEa8x82GnLSYHOzNDt7f0ddFa3FqcQlgzEiptPqL+XrOJNavjOzSYiYWIrgeVYYgGlLmnxwilQ==}
     engines: {node: '>=8'}
@@ -7448,6 +7524,9 @@ packages:
   hast-util-select@6.0.2:
     resolution: {integrity: sha512-hT/SD/d/Meu+iobvgkffo1QecV8WeKWxwsNMzcTJsKw1cKTQKSR/7ArJeURLNJF9HDjp9nVoORyNNJxrvBye8Q==}
 
+  hast-util-select@6.0.4:
+    resolution: {integrity: sha512-RqGS1ZgI0MwxLaKLDxjprynNzINEkRHY2i8ln4DDjgv9ZhcYVIHN9rlpiYsqtFwrgpYU361SyWDQcGNIBVu3lw==}
+
   hast-util-to-estree@3.1.0:
     resolution: {integrity: sha512-lfX5g6hqVh9kjS/B9E2gSkvHH4SZNiQFiqWS0x9fENzEl+8W12RqdRxX6d/Cwxi30tPQs3bIO+aolQJNp1bIyw==}
 
@@ -7459,6 +7538,9 @@ packages:
 
   hast-util-to-jsx-runtime@2.3.0:
     resolution: {integrity: sha512-H/y0+IWPdsLLS738P8tDnrQ8Z+dj12zQQ6WC11TIM21C8WFVoIxcqWXf2H3hiTVZjF1AWqoimGwrTWecWrnmRQ==}
+
+  hast-util-to-mdast@10.1.2:
+    resolution: {integrity: sha512-FiCRI7NmOvM4y+f5w32jPRzcxDIz+PUqDwEqn1A+1q2cdp3B8Gx7aVrXORdOKjMNDQsD1ogOr896+0jJHW1EFQ==}
 
   hast-util-to-parse5@7.1.0:
     resolution: {integrity: sha512-YNRgAJkH2Jky5ySkIqFXTQiaqcAtJyVE+D5lkN6CdtOqrnkLfGYYrEcKuHOJZlp+MwjSwuD3fZuawI+sic/RBw==}
@@ -10634,6 +10716,9 @@ packages:
   rehype-format@5.0.1:
     resolution: {integrity: sha512-zvmVru9uB0josBVpr946OR8ui7nJEdzZobwLOOqHb/OOD88W0Vk2SqLwoVOj0fM6IPCCO6TaV9CvQvJMWwukFQ==}
 
+  rehype-minify-whitespace@6.0.2:
+    resolution: {integrity: sha512-Zk0pyQ06A3Lyxhe9vGtOtzz3Z0+qZ5+7icZ/PL/2x1SHPbKao5oB/g/rlc6BCTajqBb33JcOe71Ye1oFsuYbnw==}
+
   rehype-parse@9.0.1:
     resolution: {integrity: sha512-ksCzCD0Fgfh7trPDxr2rSylbwq9iYDkSn8TCDmEJ49ljEUBxDVCzCHv7QNzZOfODanX4+bWQ4WZqLCRWYLfhag==}
 
@@ -10642,6 +10727,9 @@ packages:
 
   rehype-recma@1.0.0:
     resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
+
+  rehype-remark@10.0.1:
+    resolution: {integrity: sha512-EmDndlb5NVwXGfUa4c9GPK+lXeItTilLhE6ADSaQuHr4JUlKw9MidzGzx4HpqZrNCt6vnHmEifXQiiA+CEnjYQ==}
 
   rehype-stringify@10.0.1:
     resolution: {integrity: sha512-k9ecfXHmIPuFVI61B9DeLPN0qFHfawM6RsuX48hoqlaKSF61RskNjSm1lI8PhBEM0MRdLxVVm4WmTqJQccH9mA==}
@@ -11300,11 +11388,18 @@ packages:
     peerDependencies:
       '@astrojs/starlight': '>=0.32.0'
 
-  starlight-links-validator@0.17.2:
-    resolution: {integrity: sha512-d2SRWu04HPiUzrzntuv/uzuXnIu4reJwzX1c+7uvcnqOCuzgpv+tmlUC+dp3VYpmfxQy8RX+xcWtfcEkx905VA==}
+  starlight-links-validator@0.18.0:
+    resolution: {integrity: sha512-R0gLdrKWdpAEqux3DL2B3QvNJM8Zpys8CQu1BGLD9hc+66nt/Q6aJDkvvkvoCVky9JKmBEnmL4PhFkyz13lK5g==}
     engines: {node: '>=18.17.1'}
     peerDependencies:
       '@astrojs/starlight': '>=0.32.0'
+
+  starlight-llms-txt@0.6.0:
+    resolution: {integrity: sha512-mKkRPlGZ+kKJlnclXkW3s+RSVF/10Ct2BsQ4dYDaK8j4h/L55WbZCds1PsqQiLYPrDp7wIN6gm7LYsrUlGaBjQ==}
+    engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.31'
+      astro: ^5.1.6
 
   starlight-package-managers@0.11.0:
     resolution: {integrity: sha512-ItOgeF4YYI4lKaeqGBuRBNsmPTXQv16Pc7U+hzkvJoR9HzOxhk2wSNkRzxSnqX5OZmmsAwDy49NYqpFyzkO8Bw==}
@@ -11461,6 +11556,10 @@ packages:
   style-to-object@1.0.8:
     resolution: {integrity: sha512-xT47I/Eo0rwJmaXC4oilDGDWLohVhR6o/xAQcPQN8q6QBuZVL8qMYL85kLmST5cPjAorwvqIA4qXTRQoYHaL6g==}
 
+  supports-color@10.2.2:
+    resolution: {integrity: sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g==}
+    engines: {node: '>=18'}
+
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
     engines: {node: '>=4'}
@@ -11480,6 +11579,10 @@ packages:
   supports-hyperlinks@3.2.0:
     resolution: {integrity: sha512-zFObLMyZeEwzAoKCyu1B91U79K2t7ApXuQfo8OuxwXLDgcKxuwM+YvcbIhm6QWqz7mHUH1TVytR1PwVVjEuMig==}
     engines: {node: '>=14.18'}
+
+  supports-hyperlinks@4.3.0:
+    resolution: {integrity: sha512-i6sWEzuwadSlcr2mOnb0ktlIl+K5FVxsPXmoPfknDd2gyw4ZBIAZ5coc0NQzYqDdEYXMHy8NaY9rWwa1Q1myiQ==}
+    engines: {node: '>=20'}
 
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
@@ -11539,6 +11642,10 @@ packages:
   term-size@2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
+
+  terminal-link@5.0.0:
+    resolution: {integrity: sha512-qFAy10MTMwjzjU8U16YS4YoZD+NQLHzLssFMNqgravjbvIPNiqkGFR4yjhJfmY9R5OFU7+yHxc6y+uGHkKwLRA==}
+    engines: {node: '>=20'}
 
   terser-webpack-plugin@5.3.11:
     resolution: {integrity: sha512-RVCsMfuD0+cTt3EwX8hSl2Ks56EbFHWmhluwcqoPKtBnfjiT6olaq7PRIRfhyU8nnC2MrnDrBLfrD/RGE+cVXQ==}
@@ -11717,6 +11824,9 @@ packages:
   trim-newlines@3.0.1:
     resolution: {integrity: sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==}
     engines: {node: '>=8'}
+
+  trim-trailing-lines@2.1.0:
+    resolution: {integrity: sha512-5UR5Biq4VlVOtzqkm2AZlgvSlDJtME46uV0br0gENbwN4l5+mMKT4b9gJKqWtuL2zAIqajGJGuvbCbcAJUZqBg==}
 
   triple-beam@1.4.1:
     resolution: {integrity: sha512-aZbgViZrg1QNcG+LULa7nhZpJTZSLm/mXnHXnbAbjmN5aSa0y7V+wvv6+4WaBtpISJzThKy+PIPxc1Nq1EJ9mg==}
@@ -12135,6 +12245,9 @@ packages:
 
   unist-util-remove-position@5.0.0:
     resolution: {integrity: sha512-Hp5Kh3wLxv0PHj9m2yZhhLt58KzPtEYKQQ4yxfYFEO7EvHwzyDYnduhHnY1mDxoqr7VUwVuHXk9RXKIiYS1N8Q==}
+
+  unist-util-remove@4.0.0:
+    resolution: {integrity: sha512-b4gokeGId57UVRX/eVKej5gXqGlc9+trkORhFJpu9raqZkZhU0zm8Doi05+HaiBsMEIJowL+2WtQ5ItjsngPXg==}
 
   unist-util-stringify-position@2.0.3:
     resolution: {integrity: sha512-3faScn5I+hy9VleOq/qNbAd6pAx7iH5jYBMS9I1HgQVijz/4mv5Bvw5iw1sC/90CODiKo81G/ps8AJrISn687g==}
@@ -13051,7 +13164,7 @@ snapshots:
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.3
       hast-util-to-text: 4.0.2
-      import-meta-resolve: 4.1.0
+      import-meta-resolve: 4.2.0
       js-yaml: 4.1.0
       mdast-util-definitions: 6.0.0
       rehype-raw: 7.0.0
@@ -13060,8 +13173,8 @@ snapshots:
       remark-parse: 11.0.0
       remark-rehype: 11.1.2
       remark-smartypants: 3.0.2
-      shiki: 3.2.2
-      smol-toml: 1.3.1
+      shiki: 3.13.0
+      smol-toml: 1.4.2
       unified: 11.0.5
       unist-util-remove-position: 5.0.0
       unist-util-visit: 5.0.0
@@ -13202,9 +13315,9 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.25.76
 
-  '@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))':
+  '@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))':
     dependencies:
-      '@astrojs/markdown-remark': 6.3.2
+      '@astrojs/markdown-remark': 6.3.7
       '@astrojs/mdx': 4.2.4(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
       '@astrojs/sitemap': 3.3.0
       '@pagefind/default-ui': 1.3.0
@@ -14672,7 +14785,7 @@ snapshots:
   '@expressive-code/plugin-shiki@0.41.1':
     dependencies:
       '@expressive-code/core': 0.41.1
-      shiki: 3.2.2
+      shiki: 3.13.0
 
   '@expressive-code/plugin-text-markers@0.41.1':
     dependencies:
@@ -16034,6 +16147,10 @@ snapshots:
     transitivePeerDependencies:
       - debug
       - supports-color
+
+  '@fontsource-variable/fira-code@5.2.7': {}
+
+  '@fontsource/ibm-plex-mono@5.2.7': {}
 
   '@fontsource/ibm-plex-serif@5.2.7': {}
 
@@ -17982,7 +18099,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.7
       estree-walker: 2.0.2
-      picomatch: 4.0.2
+      picomatch: 4.0.3
     optionalDependencies:
       rollup: 4.40.0
 
@@ -18706,6 +18823,8 @@ snapshots:
 
   '@types/argparse@1.0.38': {}
 
+  '@types/braces@3.0.5': {}
+
   '@types/bunyan@1.8.11':
     dependencies:
       '@types/node': 20.16.10
@@ -18808,6 +18927,10 @@ snapshots:
       '@types/unist': 3.0.3
 
   '@types/mdx@2.0.13': {}
+
+  '@types/micromatch@4.0.9':
+    dependencies:
+      '@types/braces': 3.0.5
 
   '@types/minimatch@3.0.5': {}
 
@@ -19141,7 +19264,7 @@ snapshots:
       glob: 10.4.5
       graceful-fs: 4.2.11
       node-gyp-build: 4.8.2
-      picomatch: 4.0.2
+      picomatch: 4.0.3
       resolve-from: 5.0.0
     transitivePeerDependencies:
       - encoding
@@ -22251,7 +22374,7 @@ snapshots:
       json5: 2.2.3
       ora: 5.4.1
       tslib: 2.8.1
-      zod: 3.24.3
+      zod: 3.25.76
     transitivePeerDependencies:
       - bluebird
       - supports-color
@@ -22269,7 +22392,7 @@ snapshots:
       json5: 2.2.3
       ora: 5.4.1
       tslib: 2.8.1
-      zod: 3.24.3
+      zod: 3.25.76
     transitivePeerDependencies:
       - bluebird
       - supports-color
@@ -22605,6 +22728,8 @@ snapshots:
 
   has-flag@4.0.0: {}
 
+  has-flag@5.0.1: {}
+
   has-own-prop@2.0.0: {}
 
   has-property-descriptors@1.0.2:
@@ -22763,6 +22888,24 @@ snapshots:
       unist-util-visit: 5.0.0
       zwitch: 2.0.4
 
+  hast-util-select@6.0.4:
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/unist': 3.0.3
+      bcp-47-match: 2.0.3
+      comma-separated-tokens: 2.0.3
+      css-selector-parser: 3.0.5
+      devlop: 1.1.0
+      direction: 2.0.1
+      hast-util-has-property: 3.0.0
+      hast-util-to-string: 3.0.1
+      hast-util-whitespace: 3.0.0
+      nth-check: 2.1.1
+      property-information: 7.0.0
+      space-separated-tokens: 2.0.2
+      unist-util-visit: 5.0.0
+      zwitch: 2.0.4
+
   hast-util-to-estree@3.1.0:
     dependencies:
       '@types/estree': 1.0.7
@@ -22831,6 +22974,23 @@ snapshots:
       vfile-message: 4.0.2
     transitivePeerDependencies:
       - supports-color
+
+  hast-util-to-mdast@10.1.2:
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/mdast': 4.0.4
+      '@ungap/structured-clone': 1.3.0
+      hast-util-phrasing: 3.0.1
+      hast-util-to-html: 9.0.5
+      hast-util-to-text: 4.0.2
+      hast-util-whitespace: 3.0.0
+      mdast-util-phrasing: 4.1.0
+      mdast-util-to-hast: 13.2.0
+      mdast-util-to-string: 4.0.0
+      rehype-minify-whitespace: 6.0.2
+      trim-trailing-lines: 2.1.0
+      unist-util-position: 5.0.0
+      unist-util-visit: 5.0.0
 
   hast-util-to-parse5@7.1.0:
     dependencies:
@@ -26881,6 +27041,11 @@ snapshots:
       '@types/hast': 3.0.4
       hast-util-format: 1.1.0
 
+  rehype-minify-whitespace@6.0.2:
+    dependencies:
+      '@types/hast': 3.0.4
+      hast-util-minify-whitespace: 1.0.1
+
   rehype-parse@9.0.1:
     dependencies:
       '@types/hast': 3.0.4
@@ -26900,6 +27065,14 @@ snapshots:
       hast-util-to-estree: 3.1.0
     transitivePeerDependencies:
       - supports-color
+
+  rehype-remark@10.0.1:
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/mdast': 4.0.4
+      hast-util-to-mdast: 10.1.2
+      unified: 11.0.5
+      vfile: 6.0.3
 
   rehype-stringify@10.0.1:
     dependencies:
@@ -27946,19 +28119,19 @@ snapshots:
 
   standard-as-callback@2.1.0: {}
 
-  starlight-heading-badges@0.6.0(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))):
+  starlight-heading-badges@0.6.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))):
     dependencies:
       '@astrojs/markdown-remark': 6.3.2
-      '@astrojs/starlight': 0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
       github-slugger: 2.0.0
       mdast-util-directive: 3.0.0
       unist-util-visit: 5.0.0
     transitivePeerDependencies:
       - supports-color
 
-  starlight-links-validator@0.17.2(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))):
+  starlight-links-validator@0.18.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))):
     dependencies:
-      '@astrojs/starlight': 0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
       '@types/picomatch': 3.0.2
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.3
@@ -27967,18 +28140,38 @@ snapshots:
       kleur: 4.1.5
       mdast-util-mdx-jsx: 3.1.3
       mdast-util-to-string: 4.0.0
-      picomatch: 4.0.2
+      picomatch: 4.0.3
+      terminal-link: 5.0.0
       unist-util-visit: 5.0.0
     transitivePeerDependencies:
       - supports-color
 
-  starlight-package-managers@0.11.0(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))):
+  starlight-llms-txt@0.6.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)):
     dependencies:
-      '@astrojs/starlight': 0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+      '@astrojs/mdx': 4.2.4(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+      '@types/hast': 3.0.4
+      '@types/micromatch': 4.0.9
+      astro: 5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)
+      github-slugger: 2.0.0
+      hast-util-select: 6.0.4
+      micromatch: 4.0.8
+      rehype-parse: 9.0.1
+      rehype-remark: 10.0.1
+      remark-gfm: 4.0.1
+      remark-stringify: 11.0.0
+      unified: 11.0.5
+      unist-util-remove: 4.0.0
+    transitivePeerDependencies:
+      - supports-color
 
-  starlight-typedoc@0.21.3(@astrojs/starlight@0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.13(typescript@5.5.4)))(typedoc@0.28.13(typescript@5.5.4)):
+  starlight-package-managers@0.11.0(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))):
     dependencies:
-      '@astrojs/starlight': 0.34.8(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
+
+  starlight-typedoc@0.21.3(@astrojs/starlight@0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.13(typescript@5.5.4)))(typedoc@0.28.13(typescript@5.5.4)):
+    dependencies:
+      '@astrojs/starlight': 0.35.3(astro@5.14.1(@netlify/blobs@10.0.11)(@types/node@22.13.17)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.4.2)(rollup@4.40.0)(terser@5.37.0)(tsx@4.20.3)(typescript@5.5.4)(yaml@2.8.1))
       github-slugger: 2.0.0
       typedoc: 0.28.13(typescript@5.5.4)
       typedoc-plugin-markdown: 4.9.0(typedoc@0.28.13(typescript@5.5.4))
@@ -28146,6 +28339,8 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.4
 
+  supports-color@10.2.2: {}
+
   supports-color@5.5.0:
     dependencies:
       has-flag: 3.0.0
@@ -28167,6 +28362,11 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
       supports-color: 7.2.0
+
+  supports-hyperlinks@4.3.0:
+    dependencies:
+      has-flag: 5.0.1
+      supports-color: 10.2.2
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
@@ -28270,6 +28470,11 @@ snapshots:
       unique-string: 3.0.0
 
   term-size@2.2.1: {}
+
+  terminal-link@5.0.0:
+    dependencies:
+      ansi-escapes: 7.0.0
+      supports-hyperlinks: 4.3.0
 
   terser-webpack-plugin@5.3.11(webpack@5.98.0):
     dependencies:
@@ -28465,6 +28670,8 @@ snapshots:
   trim-lines@3.0.1: {}
 
   trim-newlines@3.0.1: {}
+
+  trim-trailing-lines@2.1.0: {}
 
   triple-beam@1.4.1: {}
 
@@ -28913,6 +29120,12 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       unist-util-visit: 5.0.0
+
+  unist-util-remove@4.0.0:
+    dependencies:
+      '@types/unist': 3.0.3
+      unist-util-is: 6.0.0
+      unist-util-visit-parents: 6.0.1
 
   unist-util-stringify-position@2.0.3:
     dependencies:
