@@ -50,6 +50,8 @@ jobs:
         continue-on-error: true
       - run: pnpm run ci:lint || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
         continue-on-error: true
+      - run: pnpm run ci:docs || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
+        continue-on-error: true
       - run: pnpm run ci:test
 
       - name: "Codecov: upload test results"
