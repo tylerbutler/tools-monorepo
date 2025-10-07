@@ -40,7 +40,7 @@
 		"typedoc-plugin-markdown": "^4.9.0",
 		"typedoc-plugin-mdn-links": "^5.0.9",
 		"typescript": "~5.5.4",
-		"zod": "^3.25.76"
+		"zod": "^4.0.0"
 	},
 	"devDependencies": {
 		"@fec/remark-a11y-emoji": "^4.0.2",
