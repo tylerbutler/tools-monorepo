@@ -20,6 +20,6 @@
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {
-		"@biomejs/biome": "2.0.4"
+		"@biomejs/biome": "2.2.5"
 	}
 }
