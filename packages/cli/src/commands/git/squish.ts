@@ -1,20 +1,21 @@
+import process from "node:process";
 import { Args, Flags } from "@oclif/core";
 import { CommandWithConfig, GitCommand } from "@tylerbu/cli-api";
 import chalk from "picocolors";
 import stripAnsi from "strip-ansi";
 
 export default class SquishCommand extends GitCommand<typeof SquishCommand> {
-	static override readonly description =
+	public static override readonly description =
 		"Squash-merge a branch with another branch, and reset the source branch to the squash-merged HEAD. This process results in the branch containing a single commit on top of the target branch.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		"dry-run": Flags.boolean({
 			description: "Don't make any changes.",
 		}),
 		...CommandWithConfig.flags,
 	};
 
-	static override readonly args = {
+	public static override readonly args = {
 		target: Args.string({
 			description: "Branch to rebase on top of.",
 			required: true,
@@ -29,7 +30,7 @@ export default class SquishCommand extends GitCommand<typeof SquishCommand> {
 
 	protected override redirectLogToTrace = true;
 
-	async run(): Promise<void> {
+	public override async run(): Promise<void> {
 		if (this.git === undefined) {
 			this.error(`Not a git repo: ${process.cwd()}`);
 		}

@@ -9,9 +9,9 @@
 		"types": ["node"],
 		// TODO: Should these settings be disabled in the strict config?
 		"noUncheckedIndexedAccess": false,
-		"noPropertyAccessFromIndexSignature": false,
+		"noPropertyAccessFromIndexSignature": false
 	},
 	"ts-node": {
-		"esm": true,
-	},
+		"esm": true
+	}
 }

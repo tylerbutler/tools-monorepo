@@ -5,4 +5,4 @@ sidebar:
   order: 2
 ---
 
-## Coming soon!
+Usage guide is coming soon, but in the meantime, see the [API reference for the download function.](/api/functions/download/)

@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/fundamentals",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Fundamental functions and classes that I often need in my projects. Zero dependencies.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -33,10 +33,13 @@
 		}
 	},
 	"types": "./esm/index.d.ts",
-	"files": ["esm"],
+	"files": [
+		"esm"
+	],
 	"scripts": {
 		"api": "concurrently npm:docs:api:*",
-		"build": "fluid-build . --task build",
+		"b": "turbo build",
+		"build": "turbo run build-steps:lib",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
@@ -48,33 +51,28 @@
 		"docs:api:set": "api-extractor run --local --config api-extractor.set.json",
 		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "fluid-build . --task full",
+		"full": "turbo full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
 		"test": "vitest run test",
 		"test:coverage": "vitest run test --coverage"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@microsoft/api-documenter": "^7.26.26",
-		"@microsoft/api-extractor": "^7.52.7",
+		"@biomejs/biome": "2.0.4",
+		"@microsoft/api-documenter": "^7.26.28",
+		"@microsoft/api-extractor": "^7.52.8",
 		"@types/node": "^20.12.7",
-		"@vitest/coverage-v8": "^3.1.2",
-		"concurrently": "^9.1.2",
+		"@vitest/coverage-v8": "^3.2.4",
+		"concurrently": "^9.2.0",
 		"pathe": "^2.0.3",
 		"rimraf": "^6.0.1",
 		"tempy": "^3.1.0",
-		"typedoc": "^0.28.3",
-		"typedoc-plugin-markdown": "^4.6.3",
+		"typedoc": "^0.28.13",
+		"typedoc-plugin-markdown": "^4.9.0",
 		"typescript": "~5.5.4",
-		"vitest": "^3.1.2"
+		"vitest": "^3.2.4"
 	},
 	"engines": {
 		"node": ">=18.0.0"
-	},
-	"fluidBuild": {
-		"tasks": {
-			"docs:api:git": []
-		}
 	}
 }

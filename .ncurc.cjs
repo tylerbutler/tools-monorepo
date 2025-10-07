@@ -12,6 +12,8 @@ const config = {
 		// Upgrade these separately/manually
 		"@types/node",
 		"typescript",
+		"@fluid*",
+		"*oclif*",
 	],
 };
 

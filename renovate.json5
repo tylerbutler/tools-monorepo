@@ -10,7 +10,8 @@
 		"enabled": false,
 	},
 
-	"timezone": "America/Los_Angeles",
+	// self-hosted always uses UTC
+	// "timezone": "America/Los_Angeles",
 	"schedule": [
 		// "after 10pm every weekday",
 		"before 5am every weekday",
@@ -44,18 +45,18 @@
 	],
 
 	// Automerge settings
-	"platformAutomerge": true,
+	// "platformAutomerge": true,
 	"automergeType": "branch", // or "pr"
 	"automergeSchedule": ["every weekday"],
 
 	// postUpgradeTasks do not work on the hosted renovate service
-	// "postUpgradeTasks": {
-	// 	"commands": [
-	// 		"pnpm install --no-frozen-lockfile",
-	// 		"pnpm run ci:build",
-	// 	],
-	// 	"executionMode": "update",
-	// },
+	"postUpgradeTasks": {
+		"commands": [
+			"pnpm install --no-frozen-lockfile",
+			"pnpm run ci:build",
+		],
+		"executionMode": "update",
+	},
 
 	"lockFileMaintenance": {
 		"enabled": false,

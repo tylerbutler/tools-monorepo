@@ -1,5 +1,31 @@
 # dill-cli
 
+## 0.3.0
+
+### Minor Changes
+
+- Zip archives are now supported _[`#231`](https://github.com/tylerbutler/tools-monorepo/pull/231) [`2ce5817`](https://github.com/tylerbutler/tools-monorepo/commit/2ce5817daa2c7ee27f9ce42833c497155ab6b59a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  dill now supports Zip files and will decompress them when `--extract=true`.
+
+- Dill now uses nanotar _[`#230`](https://github.com/tylerbutler/tools-monorepo/pull/230) [`4746ecc`](https://github.com/tylerbutler/tools-monorepo/commit/4746ecc3ca57dca44f65452fecf227cb242b90e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+### Patch Changes
+
+- Update package metadata _[`#221`](https://github.com/tylerbutler/tools-monorepo/pull/221) [`9e5225a`](https://github.com/tylerbutler/tools-monorepo/commit/9e5225abfb67af1575af13dff60830d8da28eafd) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`9e5225a`](https://github.com/tylerbutler/tools-monorepo/commit/9e5225abfb67af1575af13dff60830d8da28eafd)
+
+</small>
+
+- `@tylerbu/cli-api@0.7.2`
+
+</details>
+
 ## 0.2.1
 
 ### Patch Changes

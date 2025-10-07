@@ -13,33 +13,34 @@
 	"type": "module",
 	"scripts": {
 		"astro": "astro",
-		"build": "astro build",
-		"check": "astro check",
+		"b": "turbo build",
+		"check:typedoc": "astro check",
 		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
 		"dev": "astro dev",
+		"docs": "astro build",
 		"preview": "astro preview",
 		"start": "astro dev"
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.4",
-		"@astrojs/netlify": "^6.3.2",
-		"@astrojs/starlight": "^0.34.2",
-		"@fontsource/ibm-plex-serif": "^5.2.5",
+		"@astrojs/netlify": "^6.5.11",
+		"@astrojs/starlight": "^0.35.3",
+		"@fontsource/ibm-plex-serif": "^5.2.7",
 		"@fontsource/metropolis": "^5.2.5",
-		"@fontsource/open-sans": "^5.2.5",
-		"astro": "^5.7.10",
+		"@fontsource/open-sans": "^5.2.7",
+		"astro": "^5.14.1",
 		"dill-cli": "workspace:^",
-		"sharp": "^0.34.1",
-		"starlight-heading-badges": "^0.5.0",
-		"starlight-links-validator": "^0.16.0",
+		"sharp": "^0.34.4",
+		"starlight-heading-badges": "^0.6.0",
+		"starlight-links-validator": "^0.18.0",
 		"starlight-package-managers": "^0.11.0",
-		"starlight-typedoc": "^0.21.1",
-		"typedoc": "^0.28.3",
+		"starlight-typedoc": "^0.21.3",
+		"typedoc": "^0.28.13",
 		"typedoc-plugin-frontmatter": "^1.3.0",
-		"typedoc-plugin-markdown": "^4.6.3",
-		"typedoc-plugin-mdn-links": "^5.0.1",
+		"typedoc-plugin-markdown": "^4.9.0",
+		"typedoc-plugin-mdn-links": "^5.0.9",
 		"typescript": "~5.5.4",
-		"zod": "^3.24.3"
+		"zod": "^3.25.76"
 	},
 	"devDependencies": {
 		"@fec/remark-a11y-emoji": "^4.0.2",
@@ -47,7 +48,9 @@
 	},
 	"fluidBuild": {
 		"tasks": {
-			"build": ["dill-cli#build"]
+			"build": [
+				"dill-cli#build"
+			]
 		}
 	}
 }

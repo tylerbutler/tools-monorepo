@@ -1,3 +1,4 @@
+import process from "node:process";
 import type { Command } from "@oclif/core";
 import { BaseCommand } from "./baseCommand.js";
 import { ConfigFileFlagHidden } from "./flags.js";
@@ -21,7 +22,7 @@ export abstract class CommandWithConfig<
 	private _commandConfig: C | undefined;
 	private _configPath: string | undefined;
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		config: ConfigFileFlagHidden,
 		...BaseCommand.flags,
 	} as const;

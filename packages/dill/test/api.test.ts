@@ -1,13 +1,14 @@
 import { readdir } from "node:fs/promises";
 import http from "node:http";
+import jsonfile from "jsonfile";
 import path from "pathe";
 import handler from "serve-handler";
 import { withDir } from "tmp-promise";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
-import jsonfile from "jsonfile";
 const { readFile: readJson } = jsonfile;
 
+import process from "node:process";
 import { decompressTarball, fetchFile, writeTarFiles } from "../src/api.js";
 import { download } from "../src/index.js";
 import { getTestUrls, testDataPath } from "./common.js";
@@ -266,14 +267,35 @@ describe("with mock service worker", async () => {
 		mockServer.resetHandlers();
 	});
 
-	it("JSON, downloadPath = file, with Content-Disposition", async () => {
+	it("JSON, downloadPath = file, ignores Content-Disposition", async () => {
 		await withDir(
 			async ({ path: downloadDir }) => {
 				const url = new URL("http://localhost/tests/content-disposition");
 				const filename = "test-dill-dl-1.json";
-				const downloadPath = path.join(downloadDir, "test-dill-dl-1.json");
+				const downloadPath = path.join(downloadDir, filename);
 				const { data } = await download(url, {
-					downloadDir,
+					filename: downloadPath,
+				});
+				expect(data).toMatchSnapshot();
+				const dl = await readJson(downloadPath);
+				expect(dl).toMatchSnapshot();
+			},
+			{
+				// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+				unsafeCleanup: true,
+			},
+		);
+	});
+
+	it("JSON, downloadPath = file, current working dir", async () => {
+		// const startingDir = process.cwd();
+		await withDir(
+			async ({ path: downloadDir }) => {
+				process.chdir(downloadDir);
+				const url = new URL("http://localhost/tests/content-disposition");
+				const filename = "test-dill-dl-1.json";
+				const downloadPath = path.join(downloadDir, filename);
+				const { data } = await download(url, {
 					filename,
 				});
 				expect(data).toMatchSnapshot();
@@ -296,11 +318,5 @@ describe("with mock service worker", async () => {
 				filename,
 			});
 		}).rejects.toThrow();
-	});
-});
-
-describe("canary test", () => {
-	it("passes", () => {
-		expect(1).not.to.equal(2);
 	});
 });

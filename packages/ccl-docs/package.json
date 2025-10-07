@@ -1,0 +1,47 @@
+{
+	"name": "ccl-docs",
+	"version": "0.0.1",
+	"private": true,
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/ccl-docs"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"scripts": {
+		"astro": "astro",
+		"b": "turbo build",
+		"build": "astro build",
+		"check:typedoc": "astro check",
+		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
+		"dev": "astro dev",
+		"docs": "astro build",
+		"preview": "astro preview",
+		"start": "astro dev"
+	},
+	"dependencies": {
+		"@astrojs/check": "^0.9.4",
+		"@astrojs/netlify": "^6.5.11",
+		"@astrojs/starlight": "^0.35.3",
+		"@fontsource-variable/fira-code": "^5.2.7",
+		"@fontsource/ibm-plex-mono": "^5.2.7",
+		"@fontsource/ibm-plex-serif": "^5.2.7",
+		"@fontsource/metropolis": "^5.2.5",
+		"@fontsource/open-sans": "^5.2.7",
+		"astro": "^5.14.1",
+		"sharp": "^0.34.4",
+		"starlight-heading-badges": "^0.6.0",
+		"starlight-links-validator": "^0.18.0",
+		"starlight-llms-txt": "^0.6.0",
+		"starlight-package-managers": "^0.11.0",
+		"typescript": "~5.5.4",
+		"zod": "^3.25.76"
+	},
+	"devDependencies": {
+		"@fec/remark-a11y-emoji": "^4.0.2",
+		"@hashicorp/platform-remark-plugins": "^0.2.1"
+	}
+}

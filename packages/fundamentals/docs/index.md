@@ -6,6 +6,14 @@
 
 # index
 
+Fundamental, zero-dependency functions and classes for common programming tasks.
+
+## Remarks
+
+This package contains utility functions and classes that are frequently needed
+across projects. All utilities are designed to have zero external dependencies
+and provide foundational functionality for arrays, sets, git operations, and more.
+
 ## Classes
 
 ### KeyAlreadySet
@@ -29,6 +37,8 @@ An error thrown when trying to update an element in a [WriteOnceMap](#writeoncem
 Defined in: [packages/fundamentals/src/writeOnceMap.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L12)
 
 **`Beta`**
+
+Create a new KeyAlreadySet error.
 
 ###### Parameters
 
@@ -150,6 +160,8 @@ Defined in: node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/g
 
 **`Beta`**
 
+Create .stack property on a target object
+
 ###### Parameters
 
 ###### targetObject
@@ -170,7 +182,7 @@ Defined in: node\_modules/.pnpm/@types+node@20.16.10/node\_modules/@types/node/g
 
 ***
 
-### WriteOnceMap\<K, V\>
+### WriteOnceMap
 
 Defined in: [packages/fundamentals/src/writeOnceMap.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L27)
 
@@ -255,7 +267,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ###### Inherited from
 
-`Map.[toStringTag]`
+[`WriteOnceMap`](#writeoncemap).[`[toStringTag]`](#tostringtag)
 
 ##### size
 
@@ -271,7 +283,7 @@ the number of elements in the Map.
 
 ###### Inherited from
 
-`Map.size`
+[`WriteOnceMap`](#writeoncemap).[`size`](#size)
 
 ##### \[species\]
 
@@ -294,6 +306,8 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:119
 
 **`Beta`**
+
+Returns an iterable of entries in the map.
 
 ###### Returns
 
@@ -351,6 +365,8 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 **`Beta`**
 
+Returns an iterable of key, value pairs for every entry in the map.
+
 ###### Returns
 
 `IterableIterator`\<\[`K`, `V`\]\>
@@ -366,6 +382,8 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:28
 
 **`Beta`**
+
+Executes a provided function once per each key/value pair in the Map, in insertion order.
 
 ###### Parameters
 
@@ -392,6 +410,8 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:33
 
 **`Beta`**
+
+Returns a specified element from the Map object. If the value that is associated to the provided key is an object, then you will get a reference to that object and any change made to that object will effectively modify it inside the Map.
 
 ###### Parameters
 
@@ -441,6 +461,8 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 **`Beta`**
 
+Returns an iterable of keys in the map
+
 ###### Returns
 
 `IterableIterator`\<`K`\>
@@ -456,6 +478,9 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 Defined in: [packages/fundamentals/src/writeOnceMap.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L36)
 
 **`Beta`**
+
+Adds a new element with a specified key and value to the Map. If an element with the same key already exists, a
+[KeyAlreadySet](#keyalreadyset) error will be thrown.
 
 ###### Parameters
 
@@ -492,6 +517,8 @@ Set to true to force a Map element to be updated whether it has previously been 
 Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:134
 
 **`Beta`**
+
+Returns an iterable of values in the map
 
 ###### Returns
 

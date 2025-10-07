@@ -3,7 +3,7 @@ import detectIndent from "detect-indent";
 import { sortJsonc } from "sort-jsonc";
 import JSONC from "tiny-jsonc";
 import type { TsConfigJson } from "type-fest";
-import { type OrderList, defaultSortOrder } from "./orders.js";
+import { defaultSortOrder, type OrderList } from "./orders.js";
 
 /**
  * Returns a map of each item in the order list to its sort index.
@@ -42,8 +42,8 @@ export interface SortTsconfigResult {
  * @beta
  */
 export class TsConfigSorter {
-	private _order: OrderList;
-	private _orderMap: Map<string, number>;
+	private readonly _order: OrderList;
+	private readonly _orderMap: Map<string, number>;
 
 	public constructor(order: OrderList) {
 		this._order = order;
@@ -66,7 +66,13 @@ export class TsConfigSorter {
 	}
 
 	/**
-	 * Returns true if an object is sorted.
+	 * Returns true if an object is sorted according to the configured order.
+	 *
+	 * @param obj - The object to check for proper sorting.
+	 * @returns True if the object's properties are in the correct order, false otherwise.
+	 *
+	 * @remarks
+	 * This method recursively checks nested objects to ensure complete sorting validation.
 	 */
 	// biome-ignore lint/suspicious/noExplicitAny: other types are very iconvenient here.
 	private objectIsSorted(obj: Record<string, any>): boolean {
