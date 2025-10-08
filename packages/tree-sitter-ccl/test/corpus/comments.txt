@@ -7,10 +7,11 @@ Basic comment
 ---
 
 (document
+  (newline)
   (comment
-    (marker)
-    (comment_text)
-    (newline)))
+    (comment_marker)
+    (comment_text))
+  (newline))
 
 ====
 Comment without text
@@ -21,9 +22,11 @@ Comment without text
 ---
 
 (document
+  (newline)
   (comment
-    (marker)
-    (newline)))
+    (comment_marker)
+    (comment_text))
+  (newline))
 
 ====
 Comments with entries
@@ -36,20 +39,21 @@ another = value2
 ---
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (single_line_value)
-    (newline))
+    (single_line_value))
+  (newline)
   (comment
-    (marker)
-    (comment_text)
-    (newline))
+    (comment_marker)
+    (comment_text))
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (single_line_value)
-    (newline)))
+    (single_line_value))
+  (newline))
 
 ====
 Comment in nested block
@@ -63,24 +67,21 @@ config =
 ---
 
 (document
+  (newline)
   (entry
     (single_line_key)
-    (assignment)
-    (nested_block
+    (assignment))
+  (newline)
+  (comment
+    (comment_marker)
+    (comment_text)
+    (multiline_comment_content
       (newline)
       (indent)
-      (comment
-        (marker)
+      (comment_content_line
         (comment_text)
         (newline))
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value)
-        (newline))
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value)
+      (comment_content_line
+        (comment_text)
         (newline))
       (dedent))))

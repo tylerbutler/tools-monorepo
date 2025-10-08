@@ -8,17 +8,15 @@ key =
 ---
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (nested_block
-      (newline)
+    (newline)
+    (nested_content_block
       (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value)
-        (newline))
+      (content_line)
+      (newline)
       (dedent))))
 
 ====
@@ -32,24 +30,17 @@ outer =
 ---
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (nested_block
-      (newline)
+    (newline)
+    (nested_content_block
       (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (nested_block
-          (newline)
-          (indent)
-          (entry
-            (single_line_key)
-            (assignment)
-            (single_line_value)
-            (newline))
-          (dedent)))
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
       (dedent))))
 
 ====
@@ -63,22 +54,17 @@ key =
 ---
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (nested_block
-      (newline)
+    (newline)
+    (nested_content_block
       (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value)
-        (newline))
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value)
-        (newline))
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
       (dedent))))
 
 ====
@@ -92,12 +78,15 @@ description =
 ---
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (nested_block
-      (newline)
+    (newline)
+    (nested_content_block
       (indent)
-      (plain_line (newline))
-      (plain_line (newline))
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
       (dedent))))

@@ -75,9 +75,12 @@ export default grammar({
    *
    * - [$.comment]: Multiline vs single-line comment disambiguation
    *   Both start with '/=' marker, distinguished by presence of indented continuation
+   * - [$.entry]: Empty value vs newline-prefixed value disambiguation
+   *   "key =\n" could be empty value OR start of nested/multiline value
    */
   conflicts: $ => [
-    [$.comment]
+    [$.comment],
+    [$.entry]
   ],
 
   /**
@@ -126,9 +129,10 @@ export default grammar({
      *
      * Supports three CCL assignment patterns:
      *
-     * 1. Single-line: "key = value"
+     * 1. Single-line: "key = value" or "key =" (empty value)
      *    - Key and value on same line
      *    - Value can be single-line, nested block, or multiline
+     *    - Value is optional to support empty assignments
      *
      * 2. Multiline key: "key\n  continuation = value"
      *    - Key spans multiple lines with indented continuation
@@ -140,22 +144,22 @@ export default grammar({
      *    - Used in array-like configurations
      */
     entry: $ => choice(
-      // Standard key-value assignment: "key = value"
+      // Standard key-value assignment: "key = value" or "key =" (empty)
       seq(
         $.single_line_key,
         $.assignment,
-        $._value
+        optional($._value)
       ),
       // Multiline key assignment: "key\n  continuation = value"
       seq(
         $.multiline_key,
         $.assignment,
-        $.single_line_value
+        optional($.single_line_value)
       ),
       // List item assignment: "= value"
       seq(
         $.assignment,
-        $.single_line_value
+        optional($.single_line_value)
       )
     ),
 
@@ -208,44 +212,47 @@ export default grammar({
     /**
      * Value - internal rule for different value types
      *
-     * Precedence resolves ambiguity between nested blocks and plain text:
+     * Structure ensures single_line_value is tried BEFORE newline-based alternatives:
      *
-     * 1. single_line_value - Unambiguous, always preferred when possible
-     * 2. nested_block - Structured content with key-value pairs
-     *    - Chosen when indented content contains '=' assignments or comments
-     *    - Enables recursive CCL parsing via direct grammar recursion
-     *    - Higher precedence ensures structured content is preferred
-     * 3. multiline_value - Plain text content
-     *    - Fallback for indented content without CCL structure
-     *    - Treats content as literal text lines
-     *    - Lowest precedence makes it the fallback choice
+     * 1. single_line_value - Content on same line (including empty string)
+     *    - Matches everything up to (but not including) newline
+     *    - Empty match is valid for "key =" entries
+     * 2. Indented values - Explicit newline followed by indented content
+     *    - nested_content: Raw text re-parsed via injection
+     *    - multiline_value: Plain text lines
      *
-     * The parser uses GLR to explore both paths and chooses based on
-     * static precedence combined with what actually parses successfully.
+     * This structure prevents the external scanner from consuming the newline
+     * before single_line_value gets a chance to match (even empty).
      */
     _value: $ => choice(
-      // Single line value - unambiguous, no indentation needed
+      // Try single line value first (including empty)
       $.single_line_value,
-      // Nested content - parsed via injection system
-      // Raw text captured first, then re-parsed as CCL via injections.scm
-      $.nested_content,
-      // Multiline value - plain text without indentation structure
-      $.multiline_value
+      // Only if newline is explicitly matched, try indented alternatives
+      seq(
+        $.newline,
+        choice(
+          $.nested_content_block,
+          $.multiline_value_block
+        )
+      )
     ),
 
     /**
      * Single-line value - value content on the same line as assignment
      *
-     * Pattern: Matches any characters except line terminators.
-     * Allows empty values (just '=' with nothing after).
+     * Pattern: Matches one or more characters except line terminators.
+     * Does NOT match empty values - those are handled by optional() in entry rule.
      * Stops at line boundaries to maintain line structure.
+     *
+     * Uses token.immediate() to match right after assignment without
+     * allowing the external scanner to consume newline first.
      */
-    single_line_value: $ => /[^\n\r]*/,
+    single_line_value: $ => token.immediate(/[^\n\r]+/),
 
     /**
      * Nested content - indented block captured as raw text for injection
      *
-     * Structure: "key =\n  raw_text_lines"
+     * Structure: "key =\n  raw_text_lines" (newline handled by parent _value rule)
      *
      * This captures nested content as raw text without attempting to parse
      * it during the first pass. The content is then re-parsed as CCL via
@@ -259,9 +266,10 @@ export default grammar({
      *   server =
      *     host = localhost    # <- content_line (raw text in pass 1)
      *     port = 8080         # <- content_line (parsed as entry in pass 2)
+     *
+     * NOTE: This version doesn't include the leading newline - that's in _value
      */
-    nested_content: $ => seq(
-      $.newline,        // Start new line after assignment
+    nested_content_block: $ => seq(
       $.indent,         // Increase indentation (from external scanner)
       repeat(choice(
         $.content_line,   // Raw text line (will be re-parsed via injection)
@@ -285,7 +293,7 @@ export default grammar({
     /**
      * Multiline value - indented block treated as literal text
      *
-     * Structure: "key =\n  literal_text_lines"
+     * Structure: "key =\n  literal_text_lines" (newline handled by parent _value rule)
      *
      * Unlike nested_block, this treats the indented content as plain text values
      * rather than attempting to parse as CCL structure. Used for:
@@ -293,16 +301,16 @@ export default grammar({
      * - Configuration templates
      * - Any literal multi-line content
      *
-     * Precedence controlled by dynamic precedence in _value choice.
      * Parser tries this when content doesn't contain CCL structure (no '=' or comments).
      *
      * EXAMPLE:
      *   story =
      *     Once upon a time, there was a configuration language
      *     that was simple and elegant.
+     *
+     * NOTE: This version doesn't include the leading newline - that's in _value
      */
-    multiline_value: $ => seq(
-      $.newline,            // Start new line after assignment
+    multiline_value_block: $ => seq(
       $.indent,             // Increase indentation
       repeat1(seq(
         alias(/[^=\/\n\r][^=\n\r]*/, $.value_line),  // Line content (no '=' or '/') as value_line

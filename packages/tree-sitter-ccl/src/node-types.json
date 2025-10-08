@@ -87,11 +87,15 @@
           "named": true
         },
         {
-          "type": "multiline_value",
+          "type": "multiline_value_block",
           "named": true
         },
         {
-          "type": "nested_content",
+          "type": "nested_content_block",
+          "named": true
+        },
+        {
+          "type": "newline",
           "named": true
         },
         {
@@ -156,7 +160,7 @@
     }
   },
   {
-    "type": "multiline_value",
+    "type": "multiline_value_block",
     "named": true,
     "fields": {},
     "children": {
@@ -183,7 +187,7 @@
     }
   },
   {
-    "type": "nested_content",
+    "type": "nested_content_block",
     "named": true,
     "fields": {},
     "children": {
@@ -208,11 +212,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "single_line_value",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "assignment",
@@ -244,6 +243,10 @@
   },
   {
     "type": "single_line_key",
+    "named": true
+  },
+  {
+    "type": "single_line_value",
     "named": true
   },
   {

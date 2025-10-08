@@ -8,12 +8,10 @@
 
 ; Values
 (single_line_value) @string
+(value_line) @string
 
-; Content lines - raw content that can be injected as CCL
-(content_line) @string
-
-; Note: With injection support, content_line will be re-parsed as structured CCL
-; providing proper syntax highlighting within nested sections
+; Content lines (raw text in nested blocks)
+(content_line) @text
 
 ; Comments - separate marker and text
 (comment_marker) @comment.marker

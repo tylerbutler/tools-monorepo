@@ -9,18 +9,22 @@ active = true
 --------------------------------------------------------------------------------
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
     (single_line_value))
+  (newline)
   (entry
     (single_line_key)
     (assignment)
     (single_line_value))
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (single_line_value)))
+    (single_line_value))
+  (newline))
 
 ================================================================================
 Empty key (list syntax)
@@ -33,15 +37,19 @@ Empty key (list syntax)
 --------------------------------------------------------------------------------
 
 (document
+  (newline)
   (entry
     (assignment)
     (single_line_value))
+  (newline)
   (entry
     (assignment)
     (single_line_value))
+  (newline)
   (entry
     (assignment)
-    (single_line_value)))
+    (single_line_value))
+  (newline))
 
 ================================================================================
 Empty value
@@ -52,10 +60,11 @@ empty_key =
 --------------------------------------------------------------------------------
 
 (document
+  (newline)
   (entry
     (single_line_key)
-    (assignment)
-    (single_line_value)))
+    (assignment))
+  (newline))
 
 ================================================================================
 Key and value only
@@ -67,10 +76,12 @@ key_only =
 --------------------------------------------------------------------------------
 
 (document
+  (newline)
   (entry
     (single_line_key)
-    (assignment)
-    (single_line_value))
+    (assignment))
+  (newline)
   (entry
     (assignment)
-    (single_line_value)))
+    (single_line_value))
+  (newline))

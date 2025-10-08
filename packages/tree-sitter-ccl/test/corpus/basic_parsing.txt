@@ -7,11 +7,12 @@ key = value
 ---
 
 (document
-  (entry 
-    (single_line_key) 
-    (assignment) 
-    (single_line_value)
-    (newline)))
+  (newline)
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value))
+  (newline))
 
 ====
 Single line with newline only
@@ -22,11 +23,12 @@ key = value
 ---
 
 (document
-  (entry 
-    (single_line_key) 
-    (assignment) 
-    (single_line_value)
-    (newline)))
+  (newline)
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value))
+  (newline))
 
 ====
 Multiple entries
@@ -38,16 +40,17 @@ second = value2
 ---
 
 (document
-  (entry 
-    (single_line_key) 
-    (assignment) 
-    (single_line_value)
-    (newline))
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (single_line_value)
-    (newline)))
+    (single_line_value))
+  (newline)
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value))
+  (newline))
 
 ====
 Empty line handling
@@ -60,14 +63,15 @@ key2 = value2
 ---
 
 (document
-  (entry 
-    (single_line_key) 
-    (assignment) 
-    (single_line_value)
-    (newline))
   (newline)
   (entry
     (single_line_key)
     (assignment)
-    (single_line_value)
-    (newline)))
+    (single_line_value))
+  (newline)
+  (newline)
+  (entry
+    (single_line_key)
+    (assignment)
+    (single_line_value))
+  (newline))

@@ -1,6 +1,6 @@
 ; CCL Injection System
 ; ====================
-; Re-parse nested_content nodes as CCL in a second pass
+; Re-parse nested_content_block nodes as CCL in a second pass
 ; This solves the ambiguity problem between structured content and plain text
 ;
 ; How it works:
@@ -10,6 +10,6 @@
 ;
 ; See ARCHITECTURE.md for detailed explanation of why injection is necessary
 
-((nested_content) @injection.content
+((nested_content_block) @injection.content
   (#set! injection.language "ccl")
   (#set! injection.include-children))

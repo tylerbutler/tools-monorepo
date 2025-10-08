@@ -10,16 +10,20 @@ story =
 --------------------------------------------------------------------------------
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (multiline_value
+    (newline)
+    (nested_content_block
       (indent)
-      (value_line)
-      (indent)
-      (value_line)
-      (indent)
-      (value_line))))
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (dedent))))
 
 ================================================================================
 Multiline key
@@ -31,12 +35,15 @@ spanning multiple lines = corresponding value
 --------------------------------------------------------------------------------
 
 (document
+  (newline)
   (entry
     (multiline_key
       (single_line_key)
+      (newline)
       (key_continuation))
     (assignment)
-    (single_line_value)))
+    (single_line_value))
+  (newline))
 
 ================================================================================
 Nested section
@@ -52,35 +59,24 @@ database =
 --------------------------------------------------------------------------------
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (nested_section
+    (newline)
+    (nested_content_block
       (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value))
-      (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value))
-      (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (nested_section
-          (indent)
-          (entry
-            (single_line_key)
-            (assignment)
-            (single_line_value))
-          (indent)
-          (entry
-            (single_line_key)
-            (assignment)
-            (single_line_value)))))))
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (dedent))))
 
 ================================================================================
 Mixed multiline and nested
@@ -96,26 +92,21 @@ app_info =
 --------------------------------------------------------------------------------
 
 (document
+  (newline)
   (entry
     (single_line_key)
     (assignment)
-    (nested_section
+    (newline)
+    (nested_content_block
       (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value))
-      (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (multiline_value
-          (indent)
-          (value_line)
-          (indent)
-          (value_line)))
-      (indent)
-      (entry
-        (single_line_key)
-        (assignment)
-        (single_line_value)))))
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (dedent))))
