@@ -3,8 +3,8 @@
  * CCL Test Data Sync Pipeline
  *
  * This script syncs test data from ccl-test-data repository to the viewer application.
- * It processes the JSON test files, generates TypeScript types, creates search indices,
- * and optimizes the data structure for the web application.
+ * It fetches JSON test files from the GitHub repository, generates TypeScript types,
+ * creates search indices, and optimizes the data structure for the web application.
  */
 
 import { mkdir, readdir, readFile, stat, writeFile } from "fs/promises";
@@ -19,6 +19,13 @@ const DATA_SOURCE = resolve(
 );
 const DATA_TARGET = resolve(PROJECT_ROOT, "src/lib/data");
 const STATIC_TARGET = resolve(PROJECT_ROOT, "static/data");
+
+// GitHub repository configuration
+const GITHUB_REPO = "tylerbutler/ccl-test-data";
+const GITHUB_BRANCH = "main";
+const GITHUB_PATH = "generated_tests";
+const GITHUB_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}`;
+const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}`;
 
 interface GeneratedTest {
 	name: string;
@@ -70,6 +77,67 @@ async function ensureDir(path: string): Promise<void> {
 	}
 }
 
+async function getGitHubToken(): Promise<string | undefined> {
+	// Try to get token from environment variable first
+	if (process.env.GITHUB_TOKEN) {
+		return process.env.GITHUB_TOKEN;
+	}
+
+	// Try to get token from gh CLI
+	try {
+		const { execSync } = await import("child_process");
+		const token = execSync("gh auth token", { encoding: "utf-8" }).trim();
+		return token;
+	} catch {
+		return undefined;
+	}
+}
+
+async function fetchFromGitHub(path: string, token?: string): Promise<string> {
+	const url = `${GITHUB_RAW_BASE}/${path}`;
+	try {
+		const headers: Record<string, string> = {};
+		if (token) {
+			headers.Authorization = `token ${token}`;
+		}
+		const response = await fetch(url, { headers });
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+		}
+		return await response.text();
+	} catch (error) {
+		throw new Error(`Failed to fetch ${url}: ${error}`);
+	}
+}
+
+async function listGitHubDirectory(
+	path: string,
+	token?: string,
+): Promise<string[]> {
+	const url = `${GITHUB_API_BASE}/contents/${path}?ref=${GITHUB_BRANCH}`;
+	try {
+		const headers: Record<string, string> = {
+			Accept: "application/vnd.github.v3+json",
+		};
+		if (token) {
+			headers.Authorization = `token ${token}`;
+		}
+		const response = await fetch(url, { headers });
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+		}
+		const data = (await response.json()) as Array<{
+			name: string;
+			type: string;
+		}>;
+		return data
+			.filter((item) => item.type === "file" && item.name.endsWith(".json"))
+			.map((item) => item.name);
+	} catch (error) {
+		throw new Error(`Failed to list GitHub directory ${path}: ${error}`);
+	}
+}
+
 async function loadTestFile(
 	filePath: string,
 ): Promise<{ tests: GeneratedTest[] }> {
@@ -82,6 +150,20 @@ async function loadTestFile(
 	}
 }
 
+async function loadTestFileFromGitHub(
+	filename: string,
+	token?: string,
+): Promise<{ tests: GeneratedTest[] }> {
+	try {
+		const path = `${GITHUB_PATH}/${filename}`;
+		const content = await fetchFromGitHub(path, token);
+		return JSON.parse(content);
+	} catch (error) {
+		console.error(`Failed to load test file ${filename} from GitHub:`, error);
+		return { tests: [] };
+	}
+}
+
 async function getAllTestFiles(): Promise<string[]> {
 	try {
 		const entries = await readdir(DATA_SOURCE);
@@ -89,6 +171,17 @@ async function getAllTestFiles(): Promise<string[]> {
 		return jsonFiles.map((file) => join(DATA_SOURCE, file));
 	} catch (error) {
 		console.error("Failed to read test data directory:", error);
+		return [];
+	}
+}
+
+async function getAllTestFilesFromGitHub(token?: string): Promise<string[]> {
+	try {
+		const files = await listGitHubDirectory(GITHUB_PATH, token);
+		console.log(`📁 Found ${files.length} test files in GitHub repository`);
+		return files;
+	} catch (error) {
+		console.error("Failed to list GitHub repository:", error);
 		return [];
 	}
 }
@@ -350,11 +443,29 @@ async function main(): Promise<void> {
 		}
 	}
 
-	// Load all test files
-	const testFiles = await getAllTestFiles();
-	console.log(`📁 Found ${testFiles.length} test files`);
+	// Determine data source: GitHub or local filesystem
+	const useGitHub = process.env.CCL_USE_GITHUB !== "false"; // Default to GitHub
+	let testFilenames: string[] = [];
+	let githubToken: string | undefined;
 
-	if (testFiles.length === 0) {
+	if (useGitHub) {
+		console.log(`🌐 Fetching test data from GitHub: ${GITHUB_REPO}`);
+		githubToken = await getGitHubToken();
+		if (githubToken) {
+			console.log(`🔑 Using GitHub authentication token`);
+		} else {
+			console.log(`⚠️  No GitHub token found - using unauthenticated access`);
+		}
+		testFilenames = await getAllTestFilesFromGitHub(githubToken);
+	} else {
+		console.log(`📁 Loading test data from local filesystem`);
+		const testFiles = await getAllTestFiles();
+		testFilenames = testFiles.map((path) => relative(DATA_SOURCE, path));
+	}
+
+	console.log(`📁 Found ${testFilenames.length} test files`);
+
+	if (testFilenames.length === 0) {
 		console.error(
 			"❌ No test files found. Make sure ccl-test-data is available.",
 		);
@@ -364,10 +475,11 @@ async function main(): Promise<void> {
 	// Process each test file into categories
 	const categories: TestCategory[] = [];
 
-	for (const filePath of testFiles) {
-		const filename = relative(DATA_SOURCE, filePath);
+	for (const filename of testFilenames) {
 		const { name, description } = createCategoryFromFilename(filename);
-		const { tests } = await loadTestFile(filePath);
+		const { tests } = useGitHub
+			? await loadTestFileFromGitHub(filename, githubToken)
+			: await loadTestFile(join(DATA_SOURCE, filename));
 
 		categories.push({
 			name,
@@ -431,7 +543,9 @@ async function main(): Promise<void> {
 	// Create a summary file with metadata
 	const summary = {
 		generatedAt: new Date().toISOString(),
-		source: relative(PROJECT_ROOT, DATA_SOURCE),
+		source: useGitHub
+			? `GitHub: ${GITHUB_REPO}/${GITHUB_PATH} (${GITHUB_BRANCH})`
+			: relative(PROJECT_ROOT, DATA_SOURCE),
 		stats: {
 			categories: categories.length,
 			totalTests: stats.totalTests,

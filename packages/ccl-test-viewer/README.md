@@ -31,6 +31,27 @@ pnpm test:e2e          # End-to-end tests
 
 > **⚠️ Important**: The dev server (`pnpm dev`) has known rendering issues. Always use the build-preview workflow for testing changes.
 
+### Data Synchronization
+
+The sync-data script fetches test data from GitHub by default:
+
+```bash
+# Fetch from GitHub (default)
+pnpm sync-data
+
+# Use local filesystem instead
+CCL_USE_GITHUB=false pnpm sync-data
+
+# Skip sync if data already exists (useful in CI)
+CCL_SKIP_SYNC_IF_EXISTS=true pnpm sync-data
+```
+
+**Data Source**: `tylerbutler/ccl-test-data` repository (main branch, generated_tests directory)
+
+**Authentication**: The script automatically uses authentication via:
+1. `GITHUB_TOKEN` environment variable (if set)
+2. GitHub CLI (`gh auth token`) for private repository access
+
 ## Architecture
 
 Built with:

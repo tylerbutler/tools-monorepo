@@ -21,4 +21,5 @@ playwright-report/
 .claude/
 .serena/
 
+coverage/
 src/lib/data/sync-summary.json
