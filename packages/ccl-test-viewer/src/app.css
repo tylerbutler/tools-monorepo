@@ -2,34 +2,7 @@
 @import "./tangerine.css";
 @config "../tailwind.config.js";
 
-/* Safelist for Base16 theme classes that need to be generated */
-@source inline("base16-tomorrow base16-one-light base16-github base16-solarized-light");
-@source inline("base16-tomorrow-night base16-monokai base16-dracula base16-nord");
-@source inline("base16-gruvbox-dark-hard base16-oceanicnext");
-@source inline("bg-100 bg-200 bg-300 bg-400 bg-500 bg-600 bg-700 bg-800");
-@source inline("text-100 text-200 text-300 text-400 text-500 text-600 text-700 text-800");
-@source inline("bg-red bg-orange bg-yellow bg-green bg-cyan bg-blue bg-purple bg-brown");
-@source inline("text-red text-orange text-yellow text-green text-cyan text-blue text-purple text-brown");
-@source inline("border-100 border-200 border-300 border-400 border-500 border-600 border-700 border-800");
-@source inline("border-red border-orange border-yellow border-green border-cyan border-blue border-purple border-brown");
-@source inline("hover:bg-100 hover:bg-200 hover:bg-300 hover:bg-400 hover:bg-500 hover:bg-600 hover:bg-700 hover:bg-800");
-@source inline("hover:bg-red hover:bg-orange hover:bg-yellow hover:bg-green hover:bg-cyan hover:bg-blue hover:bg-purple hover:bg-brown");
-
 @custom-variant dark (&:is(.dark *));
-
-/* ========================================
-   THEME CONFIGURATION
-   ========================================
-   Color scheme is imported from theme.css.
-   To change themes:
-   1. Generate new theme: node scripts/base16-converter.js [theme-name] > src/theme.css
-   2. Or copy backup theme: cp src/theme-[name].css src/theme.css
-   3. Run `pnpm build` to apply changes
-
-   Examples:
-   node scripts/base16-converter.js monokai > src/theme.css
-   cp src/theme-gruvbox.css src/theme.css
-   ======================================== */
 
 @layer base {
 	* {
@@ -64,14 +37,6 @@
 	--color-pink: var(--pink);
 	--color-pink-foreground: var(--pink-foreground);
 }
-
-/* Base16 Color Mapping for Tailwind v4 */
-/* Since we can't use @apply or non-existent CSS variables, */
-/* the simplest solution is to add Base16 classes alongside existing classes */
-/* via JavaScript or accept that Base16 works through its own utility classes */
-
-/* For now, components will continue using standard Tailwind classes */
-/* Future enhancement: Create a utility to dynamically add Base16 classes */
 
 /* Accessibility utilities */
 @layer utilities {

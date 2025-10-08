@@ -16,15 +16,20 @@ A SvelteKit-based interactive web application for visualizing CCL (Configuration
 # Install dependencies
 pnpm install
 
-# Start development server
-pnpm dev
-
-# Build for production
+# Build and preview (recommended workflow)
+# Note: Dev server has rendering issues - use build-preview workflow instead
 pnpm build
-
-# Preview production build
 pnpm preview
+
+# Alternative: combined command
+pnpm run build && pnpm preview
+
+# Run tests
+pnpm test              # Unit tests
+pnpm test:e2e          # End-to-end tests
 ```
+
+> **⚠️ Important**: The dev server (`pnpm dev`) has known rendering issues. Always use the build-preview workflow for testing changes.
 
 ## Architecture
 
