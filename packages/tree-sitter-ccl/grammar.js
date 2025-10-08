@@ -144,23 +144,28 @@ export default grammar({
      *    - Used in array-like configurations
      */
     entry: $ => choice(
-      // Standard key-value assignment: "key = value" or "key =" (empty)
+      // Key-value assignment: "key = value" (key can be single or multiline)
       seq(
-        $.single_line_key,
+        $.key,
         $.assignment,
         optional($._value)
-      ),
-      // Multiline key assignment: "key\n  continuation = value"
-      seq(
-        $.multiline_key,
-        $.assignment,
-        optional($.single_line_value)
       ),
       // List item assignment: "= value"
       seq(
         $.assignment,
         optional($.single_line_value)
       )
+    ),
+
+    /**
+     * Key - unified representation for single-line and multiline keys
+     *
+     * Internal rule that abstracts over the two key formats.
+     * AST consumers see "key" regardless of whether it spans multiple lines.
+     */
+    key: $ => choice(
+      $.single_line_key,
+      $.multiline_key
     ),
 
 

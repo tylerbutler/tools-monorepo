@@ -12,7 +12,8 @@ story =
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (newline)
     (nested_content_block
@@ -37,10 +38,11 @@ spanning multiple lines = corresponding value
 (document
   (newline)
   (entry
-    (multiline_key
-      (single_line_key)
-      (newline)
-      (key_continuation))
+    (key
+      (multiline_key
+        (single_line_key)
+        (newline)
+        (key_continuation)))
     (assignment)
     (single_line_value))
   (newline))
@@ -61,7 +63,8 @@ database =
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (newline)
     (nested_content_block
@@ -94,7 +97,8 @@ app_info =
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (newline)
     (nested_content_block

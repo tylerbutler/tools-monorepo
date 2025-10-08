@@ -42,7 +42,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "single_line_key"
+              "name": "key"
             },
             {
               "type": "SYMBOL",
@@ -67,10 +67,6 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "multiline_key"
-            },
-            {
-              "type": "SYMBOL",
               "name": "assignment"
             },
             {
@@ -86,27 +82,19 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    "key": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "single_line_key"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "assignment"
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "single_line_value"
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "multiline_key"
         }
       ]
     },

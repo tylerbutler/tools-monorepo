@@ -83,7 +83,7 @@
           "named": true
         },
         {
-          "type": "multiline_key",
+          "type": "key",
           "named": true
         },
         {
@@ -99,11 +99,26 @@
           "named": true
         },
         {
-          "type": "single_line_key",
+          "type": "single_line_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "key",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "multiline_key",
           "named": true
         },
         {
-          "type": "single_line_value",
+          "type": "single_line_key",
           "named": true
         }
       ]

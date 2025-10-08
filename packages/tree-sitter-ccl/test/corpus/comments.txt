@@ -41,7 +41,8 @@ another = value2
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline)
@@ -50,7 +51,8 @@ another = value2
     (comment_text))
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline))
@@ -69,7 +71,8 @@ config =
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment))
   (newline)
   (comment

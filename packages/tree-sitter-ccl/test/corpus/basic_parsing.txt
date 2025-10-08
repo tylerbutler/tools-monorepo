@@ -9,7 +9,8 @@ key = value
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline))
@@ -25,7 +26,8 @@ key = value
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline))
@@ -42,12 +44,14 @@ second = value2
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline))
@@ -65,13 +69,15 @@ key2 = value2
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline)
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline))

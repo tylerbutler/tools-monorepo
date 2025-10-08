@@ -11,17 +11,20 @@ active = true
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment)
     (single_line_value))
   (newline))
@@ -62,7 +65,8 @@ empty_key =
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment))
   (newline))
 
@@ -78,7 +82,8 @@ key_only =
 (document
   (newline)
   (entry
-    (single_line_key)
+    (key
+        (single_line_key))
     (assignment))
   (newline)
   (entry
