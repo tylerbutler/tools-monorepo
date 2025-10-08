@@ -33,3 +33,14 @@ description =
   This is a long description
   that spans multiple lines
   for documentation purposes
+
+/= 7-level deep nesting test
+level1 =
+  level2 =
+    level3 =
+      level4 =
+        level5 =
+          level6 =
+            level7 =
+              deep_value = reached the bottom
+              another = value at level 7
