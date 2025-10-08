@@ -323,6 +323,29 @@ async function main(): Promise<void> {
 	await ensureDir(DATA_TARGET);
 	await ensureDir(STATIC_TARGET);
 
+	// Detect CI environment - check common CI env vars
+	const isCI =
+		process.env.CI === "true" ||
+		process.env.GITHUB_ACTIONS === "true" ||
+		process.env.NETLIFY === "true" ||
+		process.env.VERCEL === "1";
+
+	const skipIfExists = process.env.CCL_SKIP_SYNC_IF_EXISTS === "true" || isCI;
+
+	if (skipIfExists) {
+		try {
+			// Check if generated data already exists
+			const categoriesPath = join(DATA_TARGET, "categories.json");
+			await stat(categoriesPath);
+			const reason = isCI ? "CI environment detected" : "CCL_SKIP_SYNC_IF_EXISTS=true";
+			console.log(`✅ Generated data already exists, skipping sync (${reason})`);
+			return;
+		} catch {
+			// Data doesn't exist, continue with sync
+			console.log("📦 No existing data found, proceeding with sync...");
+		}
+	}
+
 	// Load all test files
 	const testFiles = await getAllTestFiles();
 	console.log(`📁 Found ${testFiles.length} test files`);
