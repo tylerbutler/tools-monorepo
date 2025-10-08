@@ -47,13 +47,5 @@
 		"test": "tree-sitter test",
 		"parse": "tree-sitter parse",
 		"clean": "rm -rf build prebuilds ~/.cache/tree-sitter/lib/ccl.so /tmp/ccl_parser.o /tmp/ccl_scanner.o"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ccl-community/tree-sitter-ccl.git"
-	},
-	"bugs": {
-		"url": "https://github.com/ccl-community/tree-sitter-ccl/issues"
-	},
-	"homepage": "https://github.com/ccl-community/tree-sitter-ccl#readme"
+	}
 }
