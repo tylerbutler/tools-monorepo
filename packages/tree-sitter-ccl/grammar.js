@@ -1,11 +1,11 @@
 /**
  * Tree-sitter Grammar for CCL (Categorical Configuration Language)
  * ===============================================================
- * 
+ *
  * This grammar defines the parsing rules for CCL, a Python-like indentation-based
  * configuration language that supports nested key-value pairs, multiline values,
  * comments, and list syntax.
- * 
+ *
  * LANGUAGE FEATURES:
  * ==================
  * - Indentation-based block structure (Python-like)
@@ -13,15 +13,15 @@
  * - Multiline keys and values
  * - Single-line and multiline comments with '/=' marker
  * - List syntax using bare '=' assignments
- * - Nested configuration sections with recursive CCL parsing
- * 
+ * - Nested configuration sections with recursive parsing
+ *
  * GRAMMAR ARCHITECTURE:
  * =====================
  * - External scanner handles INDENT/DEDENT/NEWLINE tokens (scanner.cc)
- * - Main grammar handles key-value structure and assignments
- * - Injection system enables nested CCL parsing within sections
+ * - Direct recursive grammar rules for nested structures
+ * - Fallback to plain text for non-CCL content in nested blocks
  * - Conflict resolution with precedence and dynamic precedence
- * 
+ *
  * EXAMPLE CCL SYNTAX:
  * ===================
  *   server =
@@ -33,12 +33,12 @@
  *     config =
  *       debug = true
  *       timeout = 30
- *   
+ *
  *   /= List syntax
  *   dependencies =
  *     = package1
  *     = package2
- * 
+ *
  * AUTHORS: CCL Community
  * LICENSE: MIT
  * VERSION: Compatible with tree-sitter 0.20+
@@ -52,12 +52,12 @@ export default grammar({
 
   /**
    * External tokens handled by the C++ scanner (scanner.cc)
-   * 
+   *
    * These tokens implement Python-like indentation-based block structure:
    * - newline: Line terminators (\n, \r\n) that trigger indentation analysis
    * - indent: Generated when indentation increases (opens new block)
    * - dedent: Generated when indentation decreases (closes block(s))
-   * 
+   *
    * The external scanner maintains an indentation stack and generates
    * these tokens based on whitespace analysis at line boundaries.
    */
@@ -71,31 +71,24 @@ export default grammar({
    * Parsing conflicts and their resolution strategies
    *
    * Tree-sitter uses GLR parsing which can handle some ambiguities,
-   * but these conflicts need explicit resolution:
+   * but these conflicts need explicit resolution through precedence.
    *
-   * 1. [nested_content, multiline_value] - Content vs plain text interpretation
-   *    Resolution: Context and precedence determine parsing path
-   *
-   * 2. [comment] - Comment parsing in different contexts
-   *    Resolution: Precedence rules favor comment recognition
-   *
-   * Note: The [nested_section, multiline_value] conflict is resolved automatically
-   * through dynamic precedence and doesn't require explicit declaration.
+   * - [$.comment]: Multiline vs single-line comment disambiguation
+   *   Both start with '/=' marker, distinguished by presence of indented continuation
    */
   conflicts: $ => [
-    [$.nested_content, $.multiline_value],
     [$.comment]
   ],
 
   /**
    * Whitespace handling configuration
-   * 
+   *
    * Only spaces and tabs are treated as ignorable whitespace.
    * Newlines are NOT included because they're significant for:
    * - Triggering indentation analysis in the external scanner
    * - Determining line boundaries for multiline constructs
    * - Proper comment parsing and continuation
-   * 
+   *
    * This is critical for indentation-based languages!
    */
   extras: $ => [
@@ -105,7 +98,7 @@ export default grammar({
   rules: {
     /**
      * Root document node - sequence of top-level items
-     * 
+     *
      * A CCL document consists of zero or more items (entries, comments, newlines).
      * This allows for flexible document structure including empty files.
      */
@@ -113,12 +106,12 @@ export default grammar({
 
     /**
      * Document item - internal rule for top-level constructs
-     * 
+     *
      * Precedence ordering ensures correct parsing:
      * 1. Comments (prec 2) - Highest priority, '/=' always starts comment
-     * 2. Entries (prec 1) - Key-value pairs and list items  
+     * 2. Entries (prec 1) - Key-value pairs and list items
      * 3. Newlines (prec 0) - Default, structural whitespace
-     * 
+     *
      * The underscore prefix (_item) makes this an internal rule
      * that doesn't appear in the final syntax tree.
      */
@@ -130,17 +123,18 @@ export default grammar({
 
     /**
      * Entry - key-value assignments and list items
-     * 
+     *
      * Supports three CCL assignment patterns:
-     * 
+     *
      * 1. Single-line: "key = value"
      *    - Key and value on same line
-     *    - Value can be single-line, nested section, or multiline
-     * 
+     *    - Value can be single-line, nested block, or multiline
+     *
      * 2. Multiline key: "key\n  continuation = value"
      *    - Key spans multiple lines with indented continuation
      *    - Common for long configuration keys
-     * 
+     *    - Only allowed at top level, not inside nested blocks
+     *
      * 3. List syntax: "= value"
      *    - Bare assignment for list items
      *    - Used in array-like configurations
@@ -165,6 +159,7 @@ export default grammar({
       )
     ),
 
+
     /**
      * Single-line key - identifier for configuration entries
      *
@@ -175,14 +170,14 @@ export default grammar({
      *   ✓ "server"      ✓ "host.name"    ✓ "config_option"
      *   ✗ "=invalid"    ✗ "/= comment"   ✗ "multi\nline"
      */
-    single_line_key: $ => /[^\s=\n\/][^\n\r=]*/, 
+    single_line_key: $ => /[^\s=\n\/][^\n\r=]*/,
 
     /**
      * Multiline key - keys spanning multiple lines with continuation
-     * 
+     *
      * Structure: "initial_part\n  continuation_part = value"
      * Used for long configuration keys that need line breaks for readability.
-     * 
+     *
      * EXAMPLE:
      *   database_connection
      *     timeout_seconds = 30
@@ -195,7 +190,7 @@ export default grammar({
 
     /**
      * Key continuation - second part of multiline keys
-     * 
+     *
      * REGEX: /[^\n\r=]+/
      * - Matches any characters except newlines and '=' (stops at assignment)
      * - Typically contains the descriptive part of compound keys
@@ -204,7 +199,7 @@ export default grammar({
 
     /**
      * Assignment operator - separates keys from values
-     * 
+     *
      * The '=' character is the only assignment operator in CCL,
      * providing clear key-value separation in all contexts.
      */
@@ -212,26 +207,30 @@ export default grammar({
 
     /**
      * Value - internal rule for different value types
-     * 
-     * Dynamic precedence resolves ambiguity between nested sections and plain text:
-     * 
+     *
+     * Precedence resolves ambiguity between nested blocks and plain text:
+     *
      * 1. single_line_value - Unambiguous, always preferred when possible
-     * 2. nested_section (prec 2) - Structured content with key-value pairs
-     *    - Chosen when indented content contains '=' assignments
-     *    - Enables recursive CCL parsing via injection
-     * 3. multiline_value (prec 1) - Plain text content
-     *    - Fallback for indented content without structure
-     *    - Treats content as literal text
-     * 
-     * The parser uses lookahead and context to make the best choice.
+     * 2. nested_block - Structured content with key-value pairs
+     *    - Chosen when indented content contains '=' assignments or comments
+     *    - Enables recursive CCL parsing via direct grammar recursion
+     *    - Higher precedence ensures structured content is preferred
+     * 3. multiline_value - Plain text content
+     *    - Fallback for indented content without CCL structure
+     *    - Treats content as literal text lines
+     *    - Lowest precedence makes it the fallback choice
+     *
+     * The parser uses GLR to explore both paths and chooses based on
+     * static precedence combined with what actually parses successfully.
      */
     _value: $ => choice(
       // Single line value - unambiguous, no indentation needed
       $.single_line_value,
-      // Nested section - structured content with recursive CCL parsing
-      prec.dynamic(2, $.nested_section),
-      // Multiline value - plain text content
-      prec.dynamic(1, $.multiline_value)
+      // Nested content - parsed via injection system
+      // Raw text captured first, then re-parsed as CCL via injections.scm
+      $.nested_content,
+      // Multiline value - plain text without indentation structure
+      $.multiline_value
     ),
 
     /**
@@ -241,88 +240,90 @@ export default grammar({
      * Allows empty values (just '=' with nothing after).
      * Stops at line boundaries to maintain line structure.
      */
-    single_line_value: $ => /[^\n\r]*/, 
+    single_line_value: $ => /[^\n\r]*/,
 
     /**
-     * Nested section - indented block for structured content
-     * 
-     * Structure: "key =\n  indented_content"
-     * 
-     * This creates a block that will be parsed as CCL via injection.
-     * The injection system (injections.scm) recognizes nested_content
-     * and re-parses it as a complete CCL document, enabling recursive
-     * configuration structure.
-     * 
+     * Nested content - indented block captured as raw text for injection
+     *
+     * Structure: "key =\n  raw_text_lines"
+     *
+     * This captures nested content as raw text without attempting to parse
+     * it during the first pass. The content is then re-parsed as CCL via
+     * the injection system (see queries/injections.scm).
+     *
+     * This two-pass approach solves the ambiguity problem:
+     * - Pass 1: Capture all indented lines as raw text
+     * - Pass 2: Injection re-parses as CCL (entries, comments, values)
+     *
      * EXAMPLE:
      *   server =
-     *     host = localhost    # <- This becomes a nested CCL document
-     *     port = 8080
+     *     host = localhost    # <- content_line (raw text in pass 1)
+     *     port = 8080         # <- content_line (parsed as entry in pass 2)
      */
-    nested_section: $ => seq(
-      $.newline,        // Start new line
+    nested_content: $ => seq(
+      $.newline,        // Start new line after assignment
       $.indent,         // Increase indentation (from external scanner)
-      $.nested_content, // Content to be injected as CCL
+      repeat(choice(
+        $.content_line,   // Raw text line (will be re-parsed via injection)
+        $.newline         // Structural newlines
+      )),
       $.dedent          // Decrease indentation (from external scanner)
     ),
 
     /**
-     * Nested content - raw content for CCL injection
-     * 
-     * This captures the raw text inside nested sections, which is later
-     * re-parsed as CCL through the injection system. The content preserves
-     * its original structure (lines and newlines) so the injection can
-     * parse it correctly.
-     * 
-     * Must contain at least one item (repeat1) to ensure non-empty blocks.
-     */
-    nested_content: $ => repeat1(choice(
-      $.content_line,   // Text content lines
-      $.newline        // Structural newlines
-    )),
-    
-    /**
-     * Content line - single line of content within nested blocks
+     * Content line - single line of raw text within nested content
      *
-     * Pattern: Captures any characters except line terminators.
-     * Allows empty lines within content blocks.
-     * Used in both nested_content and multiline_value contexts.
+     * Captures the entire line as text without parsing structure.
+     * The injection system will re-parse this content as CCL in pass 2.
+     *
+     * Pattern matches everything except newlines, allowing the line to
+     * contain any CCL syntax (entries, comments, plain text, etc.)
      */
-    content_line: $ => /[^\n\r]*/, 
+    content_line: $ => /[^\n\r]*/,
 
 
     /**
      * Multiline value - indented block treated as literal text
-     * 
-     * Structure: "key =\n  literal_text_content"
-     * 
-     * Unlike nested_section, this treats the indented content as plain text
-     * rather than structured CCL. Used for:
+     *
+     * Structure: "key =\n  literal_text_lines"
+     *
+     * Unlike nested_block, this treats the indented content as plain text values
+     * rather than attempting to parse as CCL structure. Used for:
      * - Documentation text
-     * - Configuration templates  
+     * - Configuration templates
      * - Any literal multi-line content
-     * 
-     * Uses repeat() (not repeat1()) to allow empty multiline values.
+     *
+     * Precedence controlled by dynamic precedence in _value choice.
+     * Parser tries this when content doesn't contain CCL structure (no '=' or comments).
+     *
+     * EXAMPLE:
+     *   story =
+     *     Once upon a time, there was a configuration language
+     *     that was simple and elegant.
      */
     multiline_value: $ => seq(
-      $.newline,           // Start new line
-      $.indent,           // Increase indentation
-      repeat($.content_line), // Zero or more lines of literal text
-      $.dedent            // Decrease indentation
+      $.newline,            // Start new line after assignment
+      $.indent,             // Increase indentation
+      repeat1(seq(
+        alias(/[^=\/\n\r][^=\n\r]*/, $.value_line),  // Line content (no '=' or '/') as value_line
+        $.newline           // Line terminator
+      )),
+      $.dedent              // Decrease indentation
     ),
 
     /**
      * Comment - single-line or multiline comments with '/=' marker
-     * 
+     *
      * CCL uses '/=' as the comment marker (inspired by mathematical "not equal").
-     * 
+     *
      * Two forms supported:
      * 1. Single-line: "/= comment text"
      * 2. Multiline: "/= comment text\n  indented continuation"
-     * 
+     *
      * Dynamic precedence (prec.dynamic(2)) ensures multiline comments
      * are recognized when indentation follows immediately after the
      * initial comment line.
-     * 
+     *
      * Aliases create distinct node types for syntax highlighting:
      * - comment_marker: The '/=' symbol
      * - comment_text: The actual comment content
@@ -343,12 +344,12 @@ export default grammar({
 
     /**
      * Multiline comment content - indented continuation lines
-     * 
+     *
      * Structure: "initial_line\n  indented_continuation"
-     * 
+     *
      * Each continuation line is parsed as comment_content_line to maintain
      * the line structure while ensuring all content is recognized as comment text.
-     * 
+     *
      * Uses repeat1() to require at least one continuation line,
      * distinguishing multiline comments from single-line ones.
      */
@@ -361,13 +362,13 @@ export default grammar({
 
     /**
      * Comment content line - single line within multiline comments
-     * 
+     *
      * Structure: "text_content\n"
-     * 
+     *
      * Each line consists of:
      * 1. Text content (aliased as comment_text for highlighting)
      * 2. Newline terminator
-     * 
+     *
      * This structure preserves line boundaries while ensuring all
      * content within multiline comments is properly categorized
      * as comment text for syntax highlighting.

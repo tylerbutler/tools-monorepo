@@ -123,20 +123,12 @@
           "name": "single_line_value"
         },
         {
-          "type": "PREC_DYNAMIC",
-          "value": 2,
-          "content": {
-            "type": "SYMBOL",
-            "name": "nested_section"
-          }
+          "type": "SYMBOL",
+          "name": "nested_content"
         },
         {
-          "type": "PREC_DYNAMIC",
-          "value": 1,
-          "content": {
-            "type": "SYMBOL",
-            "name": "multiline_value"
-          }
+          "type": "SYMBOL",
+          "name": "multiline_value"
         }
       ]
     },
@@ -144,7 +136,7 @@
       "type": "PATTERN",
       "value": "[^\\n\\r]*"
     },
-    "nested_section": {
+    "nested_content": {
       "type": "SEQ",
       "members": [
         {
@@ -156,30 +148,26 @@
           "name": "indent"
         },
         {
-          "type": "SYMBOL",
-          "name": "nested_content"
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "content_line"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "newline"
+              }
+            ]
+          }
         },
         {
           "type": "SYMBOL",
           "name": "dedent"
         }
       ]
-    },
-    "nested_content": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "content_line"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "newline"
-          }
-        ]
-      }
     },
     "content_line": {
       "type": "PATTERN",
@@ -197,10 +185,24 @@
           "name": "indent"
         },
         {
-          "type": "REPEAT",
+          "type": "REPEAT1",
           "content": {
-            "type": "SYMBOL",
-            "name": "content_line"
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "PATTERN",
+                  "value": "[^=\\/\\n\\r][^=\\n\\r]*"
+                },
+                "named": true,
+                "value": "value_line"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "newline"
+              }
+            ]
           }
         },
         {
@@ -318,10 +320,6 @@
     }
   ],
   "conflicts": [
-    [
-      "nested_content",
-      "multiline_value"
-    ],
     [
       "comment"
     ]
