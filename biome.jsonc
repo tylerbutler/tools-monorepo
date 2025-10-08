@@ -35,6 +35,10 @@
 
 			// test json
 			"!**/test/data/json/**/*.json",
+
+			// tree-sitter generated files
+			"!**/packages/tree-sitter-ccl/src/grammar.json",
+			"!**/packages/tree-sitter-ccl/src/node-types.json",
 		],
 	},
 	"formatter": {
