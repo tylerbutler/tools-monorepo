@@ -15,3 +15,5 @@ vite.config.ts.timestamp-*
 .sonda/
 .playwright-mcp/
 test-results/
+
+src/lib/data/sync-summary.json
