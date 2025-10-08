@@ -56,7 +56,7 @@ describe("download command", async () => {
 				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
 				".",
 				testUrls[0].toString(),
-				`--out`,
+				"--out",
 				downloadDir,
 			],
 			{
@@ -83,9 +83,9 @@ describe("download command", async () => {
 				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
 				".",
 				testUrls[0].toString(),
-				`--out`,
+				"--out",
 				downloadDir,
-				`--filename`,
+				"--filename",
 				filename,
 			],
 			{
@@ -109,7 +109,7 @@ describe("download command", async () => {
 				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
 				".",
 				testUrls[2].toString(),
-				`--out`,
+				"--out",
 				downloadDir,
 				"--extract",
 			],
