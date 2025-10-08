@@ -20,8 +20,19 @@
         "-std=c++20"
       ],
       "conditions": [
+        ["OS=='mac'", {
+          "xcode_settings": {
+            "CLANG_CXX_LANGUAGE_STANDARD": "c++20",
+            "MACOSX_DEPLOYMENT_TARGET": "10.15",
+            "OTHER_CPLUSPLUSFLAGS": [
+              "-stdlib=libc++",
+              "-isystem /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1"
+            ]
+          }
+        }],
         ["OS!='win'", {
-          "cflags_c": ["-std=c11"]
+          "cflags_c": ["-std=c11"],
+          "cflags_cc": ["-std=c++20", "-stdlib=libc++"]
         }]
       ]
     }
