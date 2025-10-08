@@ -1,6 +1,9 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
 	"ui": "stream",
+	"remoteCache": {
+		"signature": true
+	},
 	"globalDependencies": [
 		"config/tsconfig*.json",
 		"config/api-extractor.base.json",
@@ -10,6 +13,7 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$", "!test/**", "!**/*.test.ts"],
 			"outputs": [
 				"esm/**",
 				"dist/**",
