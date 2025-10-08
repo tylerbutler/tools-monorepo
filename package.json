@@ -18,7 +18,7 @@
 		"check:format": "biome check --linter-enabled=false",
 		"check:policy": "./packages/repopo/bin/dev.js check",
 		"check:renovate-config": "renovate-config-validator",
-		"ci": "npm run ci:check && npm run ci:build && npm run ci:lint && npm run ci:test",
+		"ci": "turbo run check build check:typedoc lint docs test:coverage --continue --output-logs=errors-only",
 		"ci:build": "turbo run build generate",
 		"ci:check": "npm run check",
 		"ci:check:typedoc": "turbo run check:typedoc",
