@@ -1,0 +1,121 @@
+================================================================================
+Multiline value
+================================================================================
+
+story =
+  Once upon a time, there was a configuration language
+  that was simple and elegant.
+  It supported multiline values with proper indentation.
+
+--------------------------------------------------------------------------------
+
+(document
+  (entry
+    (single_line_key)
+    (assignment)
+    (multiline_value
+      (indent)
+      (value_line)
+      (indent)
+      (value_line)
+      (indent)
+      (value_line))))
+
+================================================================================
+Multiline key
+================================================================================
+
+long key name
+spanning multiple lines = corresponding value
+
+--------------------------------------------------------------------------------
+
+(document
+  (entry
+    (multiline_key
+      (single_line_key)
+      (key_continuation))
+    (assignment)
+    (single_line_value)))
+
+================================================================================
+Nested section
+================================================================================
+
+database =
+  host = localhost
+  port = 5432
+  credentials =
+    username = admin
+    password = secret
+
+--------------------------------------------------------------------------------
+
+(document
+  (entry
+    (single_line_key)
+    (assignment)
+    (nested_section
+      (indent)
+      (entry
+        (single_line_key)
+        (assignment)
+        (single_line_value))
+      (indent)
+      (entry
+        (single_line_key)
+        (assignment)
+        (single_line_value))
+      (indent)
+      (entry
+        (single_line_key)
+        (assignment)
+        (nested_section
+          (indent)
+          (entry
+            (single_line_key)
+            (assignment)
+            (single_line_value))
+          (indent)
+          (entry
+            (single_line_key)
+            (assignment)
+            (single_line_value)))))))
+
+================================================================================
+Mixed multiline and nested
+================================================================================
+
+app_info =
+  name = MyApp
+  description =
+    This is a multiline description
+    that spans several lines
+  version = 1.0
+
+--------------------------------------------------------------------------------
+
+(document
+  (entry
+    (single_line_key)
+    (assignment)
+    (nested_section
+      (indent)
+      (entry
+        (single_line_key)
+        (assignment)
+        (single_line_value))
+      (indent)
+      (entry
+        (single_line_key)
+        (assignment)
+        (multiline_value
+          (indent)
+          (value_line)
+          (indent)
+          (value_line)))
+      (indent)
+      (entry
+        (single_line_key)
+        (assignment)
+        (single_line_value)))))

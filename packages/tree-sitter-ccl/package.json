@@ -1,0 +1,56 @@
+{
+	"name": "tree-sitter-ccl",
+	"version": "0.1.0",
+	"private": "true",
+	"description": "Tree-sitter grammar for CCL (Categorical Configuration Language)",
+	"keywords": [
+		"tree-sitter",
+		"parser",
+		"ccl",
+		"configuration",
+		"syntax-highlighting"
+	],
+	"author": "CCL Community",
+	"license": "MIT",
+	"dependencies": {
+		"node-gyp": "^11.0.0",
+		"picocolors": "^1.1.1",
+		"tree-sitter": "^0.25.0",
+		"tree-sitter-cli": "^0.20.8"
+	},
+	"tree-sitter": [
+		{
+			"scope": "source.ccl",
+			"file-types": [
+				"ccl"
+			],
+			"highlights": "queries/highlights.scm",
+			"injections": "queries/injections.scm"
+		}
+	],
+	"files": [
+		"grammar.js",
+		"queries/*",
+		"src/**"
+	],
+	"installConfig": {
+		"pnp": false
+	},
+	"scripts": {
+		"b": "turbo build",
+		"build": "tree-sitter generate --no-bindings",
+		"clean": "rimraf src",
+		"test": "tree-sitter test",
+		"parse": "tree-sitter parse",
+		"generate": "tree-sitter generate"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ccl-community/tree-sitter-ccl.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ccl-community/tree-sitter-ccl/issues"
+	},
+	"homepage": "https://github.com/ccl-community/tree-sitter-ccl#readme",
+	"main": "bindings/node"
+}
