@@ -1,0 +1,26 @@
+_temp/
+*-debug.log
+*-error.log
+*.tsbuildinfo
+**/.DS_Store
+node_modules
+oclif.manifest.json
+package-lock.json
+yarn.lock
+.require-email.json
+
+# turborepo
+.turbo
+
+# netlify cache
+.netlify
+
+# astro generated types
+.astro
+
+# coverage reports
+.coverage
+
+# AI artifacts
+.claude
+.serena
