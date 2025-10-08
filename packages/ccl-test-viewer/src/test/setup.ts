@@ -3,7 +3,7 @@ import "@testing-library/jest-dom";
 
 // Mock SvelteKit modules
 vi.mock("$app/environment", () => ({
-	browser: false,
+	browser: true, // Set to true for client-side component testing
 	dev: true,
 	building: false,
 	version: "test",

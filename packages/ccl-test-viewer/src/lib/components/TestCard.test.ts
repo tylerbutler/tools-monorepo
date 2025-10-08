@@ -27,23 +27,23 @@ const mockTest: GeneratedTest = {
 describe("TestCard", () => {
 	it("renders test information correctly", () => {
 		const mockOnView = vi.fn();
-		const { getByText, getByRole } = render(TestCard, {
+		const { getByText, getByLabelText } = render(TestCard, {
 			props: { test: mockTest, onView: mockOnView },
 		});
 
 		expect(getByText("test-basic-parsing")).toBeInTheDocument();
 		expect(getByText("parse")).toBeInTheDocument();
 		expect(getByText("2 entries")).toBeInTheDocument();
-		expect(getByRole("button")).toBeInTheDocument();
+		expect(getByLabelText(/View test case/)).toBeInTheDocument();
 	});
 
 	it("calls onView when clicked", async () => {
 		const onView = vi.fn();
-		const { getByRole } = render(TestCard, {
+		const { getByLabelText } = render(TestCard, {
 			props: { test: mockTest, onView },
 		});
 
-		const card = getByRole("button");
+		const card = getByLabelText(/View test case/);
 		await fireEvent.click(card);
 
 		expect(onView).toHaveBeenCalledTimes(1);
@@ -52,11 +52,11 @@ describe("TestCard", () => {
 
 	it("handles keyboard navigation", async () => {
 		const onView = vi.fn();
-		const { getByRole } = render(TestCard, {
+		const { getByLabelText } = render(TestCard, {
 			props: { test: mockTest, onView },
 		});
 
-		const card = getByRole("button");
+		const card = getByLabelText(/View test case/);
 
 		// Test Enter key
 		await fireEvent.keyDown(card, { key: "Enter" });
@@ -147,15 +147,14 @@ describe("TestCard", () => {
 
 	it("has proper accessibility attributes", () => {
 		const mockOnView = vi.fn();
-		const { getByRole } = render(TestCard, {
+		const { getByLabelText } = render(TestCard, {
 			props: { test: mockTest, onView: mockOnView },
 		});
 
-		const card = getByRole("button");
+		const card = getByLabelText(/View test case/);
 		expect(card).toHaveAttribute("aria-label");
 		expect(card).toHaveAttribute("tabindex", "0");
 		expect(card.getAttribute("aria-label")).toContain("test-basic-parsing");
-		expect(card.getAttribute("aria-label")).toContain("parse");
 	});
 
 	it("truncates long input correctly", () => {

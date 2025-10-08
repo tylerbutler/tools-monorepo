@@ -1,5 +1,15 @@
 <script lang="ts">
+import { Badge } from "$lib/components/ui/badge/index.js";
+import { Button } from "$lib/components/ui/button/index.js";
+import {
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/card/index.js";
+import WhitespaceCodeHighlight from "$lib/components/WhitespaceCodeHighlight.svelte";
 import type { GeneratedTest } from "$lib/data/types.js";
+import { ArrowRight, Code, Eye } from "@lucide/svelte";
 
 interface Props {
 	test: GeneratedTest;
@@ -8,7 +18,7 @@ interface Props {
 
 const { test, onView }: Props = $props();
 
-function _truncateInput(input: string, maxLength = 100): string {
+function truncateInput(input: string, maxLength = 100): string {
 	if (input.length <= maxLength) {
 		return input;
 	}
@@ -19,7 +29,7 @@ function handleView() {
 	onView(test);
 }
 
-function _handleKeydown(event: KeyboardEvent) {
+function handleKeydown(event: KeyboardEvent) {
 	if (event.key === "Enter" || event.key === " ") {
 		event.preventDefault();
 		handleView();
@@ -27,7 +37,7 @@ function _handleKeydown(event: KeyboardEvent) {
 }
 
 // Generate human-readable expected result summary
-const _expectedSummary = $derived.by(() => {
+const expectedSummary = $derived.by(() => {
 	const { expected } = test;
 
 	if (expected.error) {
@@ -37,6 +47,13 @@ const _expectedSummary = $derived.by(() => {
 	if (expected.entries) {
 		const count = Array.isArray(expected.entries)
 			? expected.entries.length
+			: "invalid";
+		return `${count} entries`;
+	}
+
+	if (expected.list) {
+		const count = Array.isArray(expected.list)
+			? expected.list.length
 			: "invalid";
 		return `${count} entries`;
 	}
