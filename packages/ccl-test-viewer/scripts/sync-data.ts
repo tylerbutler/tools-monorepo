@@ -337,8 +337,12 @@ async function main(): Promise<void> {
 			// Check if generated data already exists
 			const categoriesPath = join(DATA_TARGET, "categories.json");
 			await stat(categoriesPath);
-			const reason = isCI ? "CI environment detected" : "CCL_SKIP_SYNC_IF_EXISTS=true";
-			console.log(`✅ Generated data already exists, skipping sync (${reason})`);
+			const reason = isCI
+				? "CI environment detected"
+				: "CCL_SKIP_SYNC_IF_EXISTS=true";
+			console.log(
+				`✅ Generated data already exists, skipping sync (${reason})`,
+			);
 			return;
 		} catch {
 			// Data doesn't exist, continue with sync
