@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // Helper type for element references
-export type WithElementRef<T = {}> = T & {
+export type WithElementRef<T = Record<string, never>> = T & {
 	ref?: HTMLElement | null | undefined;
 };
 

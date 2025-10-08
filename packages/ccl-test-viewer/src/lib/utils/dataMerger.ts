@@ -6,117 +6,166 @@ import type {
 	UploadValidationResult,
 } from "../stores/dataSource.js";
 
-/**
- * Validates uploaded JSON data to ensure it matches expected test format
- */
-export function validateTestData(
-	jsonData: any,
-	filename: string,
-): UploadValidationResult {
-	const errors: string[] = [];
-	const warnings: string[] = [];
+const EMPTY_STATS = {
+	testCount: 0,
+	categoryCount: 0,
+	functions: [],
+	features: [],
+	behaviors: [],
+} as const;
 
-	// Only accept CCL schema format
+function createErrorResult(
+	errors: string[],
+	warnings: string[] = [],
+): UploadValidationResult {
+	return {
+		isValid: false,
+		errors,
+		warnings,
+		stats: { ...EMPTY_STATS },
+	};
+}
+
+function validateSchemaStructure(jsonData: unknown): {
+	errors: string[];
+	testsArray: unknown[] | null;
+} {
+	const errors: string[] = [];
+
 	if (!jsonData || typeof jsonData !== "object" || Array.isArray(jsonData)) {
 		errors.push(
 			"JSON must be a CCL schema format object with $schema and tests properties",
 		);
-		return {
-			isValid: false,
-			errors,
-			warnings,
-			stats: {
-				testCount: 0,
-				categoryCount: 0,
-				functions: [],
-				features: [],
-				behaviors: [],
-			},
-		};
+		return { errors, testsArray: null };
 	}
 
-	// Validate CCL schema structure
-	if (!jsonData.$schema) {
+	const data = jsonData as Record<string, unknown>;
+
+	if (!data.$schema) {
 		errors.push("Missing required $schema property in CCL format");
 	}
 
-	if (!jsonData.tests || !Array.isArray(jsonData.tests)) {
+	if (!(data.tests && Array.isArray(data.tests))) {
 		errors.push("Missing or invalid 'tests' array in CCL format");
-		return {
-			isValid: false,
-			errors,
-			warnings,
-			stats: {
-				testCount: 0,
-				categoryCount: 0,
-				functions: [],
-				features: [],
-				behaviors: [],
-			},
-		};
+		return { errors, testsArray: null };
 	}
 
-	// Extract tests array for validation
-	const testsArray = jsonData.tests;
+	return { errors, testsArray: data.tests };
+}
+
+function validateTestObject(
+	test: unknown,
+	index: number,
+	errors: string[],
+): boolean {
+	if (!test || typeof test !== "object") {
+		errors.push(`Test at index ${index} is not a valid object`);
+		return false;
+	}
+
+	const testObj = test as Record<string, unknown>;
+
+	if (typeof testObj.name !== "string") {
+		errors.push(`Test at index ${index} missing or invalid 'name' field`);
+	}
+	if (typeof testObj.input !== "string") {
+		errors.push(`Test at index ${index} missing or invalid 'input' field`);
+	}
+	if (
+		!testObj.expected ||
+		typeof (testObj.expected as Record<string, unknown>).count !== "number"
+	) {
+		errors.push(
+			`Test at index ${index} missing or invalid 'expected.count' field`,
+		);
+	}
+
+	return true;
+}
+
+function collectTestArrays(
+	test: Record<string, unknown>,
+	warnings: string[],
+	sets: {
+		functions: Set<string>;
+		features: Set<string>;
+		behaviors: Set<string>;
+	},
+): void {
+	const { functions, features, behaviors } = sets;
+
+	if (test.functions && Array.isArray(test.functions)) {
+		for (const f of test.functions) {
+			functions.add(f as string);
+		}
+	} else if (test.functions) {
+		warnings.push(
+			`Test ${test.name} has invalid 'functions' field - should be array`,
+		);
+	}
+
+	if (test.features && Array.isArray(test.features)) {
+		for (const f of test.features) {
+			features.add(f as string);
+		}
+	} else if (test.features) {
+		warnings.push(
+			`Test ${test.name} has invalid 'features' field - should be array`,
+		);
+	}
+
+	if (test.behaviors && Array.isArray(test.behaviors)) {
+		for (const b of test.behaviors) {
+			behaviors.add(b as string);
+		}
+	} else if (test.behaviors) {
+		warnings.push(
+			`Test ${test.name} has invalid 'behaviors' field - should be array`,
+		);
+	}
+}
+
+/**
+ * Validates uploaded JSON data to ensure it matches expected test format
+ */
+export function validateTestData(
+	jsonData: unknown,
+	_filename: string,
+): UploadValidationResult {
+	const errors: string[] = [];
+	const warnings: string[] = [];
+
+	const { errors: schemaErrors, testsArray } =
+		validateSchemaStructure(jsonData);
+	errors.push(...schemaErrors);
+
+	if (!testsArray) {
+		return createErrorResult(errors, warnings);
+	}
 
 	if (testsArray.length === 0) {
 		warnings.push("File contains no test data");
 	}
 
-	// Validate test structure
 	const validTests: GeneratedTest[] = [];
-	const functions = new Set<string>();
-	const features = new Set<string>();
-	const behaviors = new Set<string>();
+	const sets = {
+		functions: new Set<string>(),
+		features: new Set<string>(),
+		behaviors: new Set<string>(),
+	};
 
 	for (let i = 0; i < testsArray.length; i++) {
 		const test = testsArray[i];
 
-		if (!test || typeof test !== "object") {
-			errors.push(`Test at index ${i} is not a valid object`);
+		if (!validateTestObject(test, i, errors)) {
 			continue;
 		}
 
-		// Required fields validation
-		if (typeof test.name !== "string") {
-			errors.push(`Test at index ${i} missing or invalid 'name' field`);
-		}
-		if (typeof test.input !== "string") {
-			errors.push(`Test at index ${i} missing or invalid 'input' field`);
-		}
-		if (!test.expected || typeof test.expected.count !== "number") {
-			errors.push(
-				`Test at index ${i} missing or invalid 'expected.count' field`,
-			);
-		}
-
-		// Optional arrays validation
-		if (test.functions && Array.isArray(test.functions)) {
-			test.functions.forEach((f: string) => functions.add(f));
-		} else if (test.functions) {
-			warnings.push(
-				`Test ${test.name} has invalid 'functions' field - should be array`,
-			);
-		}
-
-		if (test.features && Array.isArray(test.features)) {
-			test.features.forEach((f: string) => features.add(f));
-		} else if (test.features) {
-			warnings.push(
-				`Test ${test.name} has invalid 'features' field - should be array`,
-			);
-		}
-
-		if (test.behaviors && Array.isArray(test.behaviors)) {
-			test.behaviors.forEach((b: string) => behaviors.add(b));
-		} else if (test.behaviors) {
-			warnings.push(
-				`Test ${test.name} has invalid 'behaviors' field - should be array`,
-			);
-		}
+		const testObj = test as Record<string, unknown>;
+		collectTestArrays(testObj, warnings, sets);
 
 		if (errors.length === 0) {
-			validTests.push(test as GeneratedTest);
+			validTests.push(testObj as GeneratedTest);
 		}
 	}
 
@@ -126,10 +175,10 @@ export function validateTestData(
 		warnings,
 		stats: {
 			testCount: validTests.length,
-			categoryCount: 1, // Each file becomes one category
-			functions: Array.from(functions),
-			features: Array.from(features),
-			behaviors: Array.from(behaviors),
+			categoryCount: 1,
+			functions: Array.from(sets.functions),
+			features: Array.from(sets.features),
+			behaviors: Array.from(sets.behaviors),
 		},
 	};
 }
@@ -137,12 +186,14 @@ export function validateTestData(
 /**
  * Converts JSON data to TestCategory format
  */
+const JSON_EXTENSION_REGEX = /\.json$/i;
+
 export function jsonToTestCategory(
 	jsonData: GeneratedTest[],
 	filename: string,
 ): TestCategory {
 	const categoryName = filename
-		.replace(/\.json$/i, "")
+		.replace(JSON_EXTENSION_REGEX, "")
 		.replace(/[-_]/g, " ")
 		.replace(/\b\w/g, (l) => l.toUpperCase());
 
@@ -152,6 +203,38 @@ export function jsonToTestCategory(
 		tests: jsonData,
 		file: filename,
 	};
+}
+
+function incrementCount(
+	record: Record<string, number>,
+	key: string,
+): void {
+	record[key] = (record[key] || 0) + 1;
+}
+
+function countTestAttributes(
+	test: GeneratedTest,
+	counts: {
+		functionsCount: Record<string, number>;
+		featuresCount: Record<string, number>;
+		behaviorsCount: Record<string, number>;
+	},
+): number {
+	const { functionsCount, featuresCount, behaviorsCount } = counts;
+
+	for (const func of test.functions || []) {
+		incrementCount(functionsCount, func);
+	}
+
+	for (const feature of test.features || []) {
+		incrementCount(featuresCount, feature);
+	}
+
+	for (const behavior of test.behaviors || []) {
+		incrementCount(behaviorsCount, behavior);
+	}
+
+	return test.expected.count || 0;
 }
 
 /**
@@ -171,22 +254,11 @@ export function calculateStats(categories: TestCategory[]): TestStats {
 		totalTests += category.tests.length;
 
 		for (const test of category.tests) {
-			totalAssertions += test.expected.count || 0;
-
-			// Count functions
-			for (const func of test.functions || []) {
-				functionsCount[func] = (functionsCount[func] || 0) + 1;
-			}
-
-			// Count features
-			for (const feature of test.features || []) {
-				featuresCount[feature] = (featuresCount[feature] || 0) + 1;
-			}
-
-			// Count behaviors
-			for (const behavior of test.behaviors || []) {
-				behaviorsCount[behavior] = (behaviorsCount[behavior] || 0) + 1;
-			}
+			totalAssertions += countTestAttributes(test, {
+				functionsCount,
+				featuresCount,
+				behaviorsCount,
+			});
 		}
 	}
 
@@ -259,14 +331,14 @@ export function mergeDataSources(dataSources: DataSource[]): {
 export function createDataSourceFromUpload(
 	file: File,
 	jsonData: GeneratedTest[],
-	validationResult: UploadValidationResult,
+	_validationResult: UploadValidationResult,
 ): DataSource {
 	const category = jsonToTestCategory(jsonData, file.name);
 	const stats = calculateStats([category]);
 
 	return {
 		id: generateDataSourceId(),
-		name: file.name.replace(/\.json$/i, ""),
+		name: file.name.replace(JSON_EXTENSION_REGEX, ""),
 		type: "uploaded",
 		active: true,
 		filename: file.name,
@@ -291,7 +363,7 @@ export function generateDataSourceId(): string {
  * Creates a data source from GitHub repository data
  */
 export function createDataSourceFromGitHub(repositoryData: {
-	files: { name: string; content: any; url: string }[];
+	files: { name: string; content: unknown; url: string }[];
 	repository: { owner: string; repo: string; branch?: string; path?: string };
 	metadata: {
 		loadedAt: Date;
@@ -304,8 +376,8 @@ export function createDataSourceFromGitHub(repositoryData: {
 
 	// Process all JSON files into categories
 	const categories: TestCategory[] = [];
-	let totalTests = 0;
-	let totalAssertions = 0;
+	let _totalTests = 0;
+	let _totalAssertions = 0;
 
 	for (const file of files) {
 		const validationResult = validateTestData(file.content, file.name);
@@ -313,8 +385,8 @@ export function createDataSourceFromGitHub(repositoryData: {
 		if (validationResult.isValid && Array.isArray(file.content)) {
 			const category = jsonToTestCategory(file.content, file.name);
 			categories.push(category);
-			totalTests += validationResult.stats.testCount;
-			totalAssertions += file.content.reduce(
+			_totalTests += validationResult.stats.testCount;
+			_totalAssertions += file.content.reduce(
 				(sum, test) => sum + (test.expected?.count || 0),
 				0,
 			);

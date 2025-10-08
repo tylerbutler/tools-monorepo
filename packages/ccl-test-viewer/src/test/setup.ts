@@ -23,13 +23,19 @@ vi.mock("$app/navigation", () => ({
 
 vi.mock("$app/stores", () => ({
 	page: {
-		subscribe: vi.fn(() => () => {}),
+		subscribe: vi.fn(() => () => {
+			// Intentional empty unsubscribe function
+		}),
 	},
 	navigating: {
-		subscribe: vi.fn(() => () => {}),
+		subscribe: vi.fn(() => () => {
+			// Intentional empty unsubscribe function
+		}),
 	},
 	updated: {
-		subscribe: vi.fn(() => () => {}),
+		subscribe: vi.fn(() => () => {
+			// Intentional empty unsubscribe function
+		}),
 	},
 }));
 

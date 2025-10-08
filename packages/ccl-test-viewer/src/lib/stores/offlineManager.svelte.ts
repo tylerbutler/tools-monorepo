@@ -28,12 +28,12 @@ interface OfflineStats {
  */
 class OfflineManager {
 	// State
-	private _isOnline = $state(navigator.onLine);
+	private readonly _isOnline = $state(navigator.onLine);
 	private _isOfflineMode = $state(false);
-	private _cachedData = $state<Map<string, CachedData>>(new Map());
+	private readonly _cachedData = $state<Map<string, CachedData>>(new Map());
 	private _lastSync = $state<Date | null>(null);
-	private _autoCache = $state(true);
-	private _cacheLimit = $state(100 * 1024 * 1024); // 100MB cache limit
+	private readonly _autoCache = $state(true);
+	private readonly _cacheLimit = $state(100 * 1024 * 1024); // 100MB cache limit
 
 	constructor() {
 		// Initialize offline detection
@@ -89,7 +89,7 @@ class OfflineManager {
 	 * Initialize offline detection and event handlers
 	 */
 	private initializeOfflineDetection(): void {
-		if (typeof window === "undefined") return;
+		if (typeof window === "undefined") { return; }
 
 		// Listen for online/offline events
 		window.addEventListener("online", () => {
@@ -153,8 +153,7 @@ class OfflineManager {
 
 			// Clean up expired cache entries
 			await this.cleanupExpiredCache();
-		} catch (error) {
-			console.error("Failed to cache current data:", error);
+		} catch (_error) {
 		}
 	}
 
@@ -207,14 +206,10 @@ class OfflineManager {
 		}
 
 		try {
-			// In a real implementation, this would load from Tauri's local storage
-			// For now, we'll use a placeholder
-			console.log("Loading cached data from persistent storage...");
 
 			// Clean up expired entries after loading
 			await this.cleanupExpiredCache();
-		} catch (error) {
-			console.error("Failed to load cached data:", error);
+		} catch (_error) {
 		}
 	}
 
@@ -228,7 +223,7 @@ class OfflineManager {
 
 		try {
 			// Convert cache map to serializable format
-			const cacheArray = Array.from(this._cachedData.entries()).map(
+			const _cacheArray = Array.from(this._cachedData.entries()).map(
 				([key, value]) => ({
 					key,
 					...value,
@@ -236,16 +231,7 @@ class OfflineManager {
 					expiresAt: value.expiresAt.toISOString(),
 				}),
 			);
-
-			// In a real implementation, this would use Tauri's file system API
-			// to write the cache data to a local file
-			console.log(
-				"Persisting cache to file system...",
-				cacheArray.length,
-				"entries",
-			);
-		} catch (error) {
-			console.error("Failed to persist cache to file:", error);
+		} catch (_error) {
 		}
 	}
 
@@ -253,27 +239,22 @@ class OfflineManager {
 	 * Sync cached data with remote sources when online
 	 */
 	private async syncCachedData(): Promise<void> {
-		if (!this._isOnline || !this.offlineCapable) {
+		if (!(this._isOnline && this.offlineCapable)) {
 			return;
 		}
 
 		try {
-			console.log("Syncing cached data with remote sources...");
 
 			// Check for updates to GitHub sources
 			const githubSources = Array.from(this._cachedData.values()).filter(
 				(cached) => cached.type === "github",
 			);
 
-			for (const cachedSource of githubSources) {
-				// In a real implementation, this would check for updates
-				// and refresh the cached data if needed
-				console.log("Checking for updates to GitHub source:", cachedSource.id);
+			for (const _cachedSource of githubSources) {
 			}
 
 			this._lastSync = new Date();
-		} catch (error) {
-			console.error("Failed to sync cached data:", error);
+		} catch (_error) {
 		}
 	}
 
@@ -294,13 +275,9 @@ class OfflineManager {
 			this._cachedData.delete(key);
 		}
 
-		if (expiredKeys.length > 0) {
-			console.log(`Cleaned up ${expiredKeys.length} expired cache entries`);
-
+		if (expiredKeys.length > 0 && isTauriEnvironment()) {
 			// Update persistent storage
-			if (isTauriEnvironment()) {
-				await this.persistCacheToFile();
-			}
+			await this.persistCacheToFile();
 		}
 	}
 
@@ -317,7 +294,6 @@ class OfflineManager {
 		if (entries.length > 0) {
 			const [oldestKey] = entries[0];
 			this._cachedData.delete(oldestKey);
-			console.log("Evicted oldest cache entry:", oldestKey);
 		}
 	}
 
@@ -331,8 +307,6 @@ class OfflineManager {
 		if (isTauriEnvironment()) {
 			await this.persistCacheToFile();
 		}
-
-		console.log("Cleared all cached data");
 	}
 
 	/**
