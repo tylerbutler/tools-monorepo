@@ -40,8 +40,8 @@
 			"!**/test/data/json/**/*.json",
 
 			// auto-generated data files
-			"!**/packages/ccl-test-viewer/src/lib/data/*.json",
-			"!**/packages/ccl-test-viewer/static/data/*.json",
+			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
+			"!**/packages/ccl-test-viewer/static/data/*.*",
 		],
 	},
 	"formatter": {
