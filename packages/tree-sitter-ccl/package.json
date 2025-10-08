@@ -26,8 +26,9 @@
 		}
 	},
 	"devDependencies": {
-		"tree-sitter-cli": "^0.25.10",
-		"prebuildify": "^6.0.1"
+		"prebuildify": "^6.0.1",
+		"run-script-os": "^1.1.6",
+		"tree-sitter-cli": "^0.25.10"
 	},
 	"main": "bindings/node",
 	"files": [
@@ -42,7 +43,10 @@
 		"install": "node-gyp-build",
 		"prebuild": "prebuildify --napi --strip",
 		"build": "tree-sitter generate && node-gyp rebuild",
-		"build:cli": "mkdir -p ~/.cache/tree-sitter/lib && gcc -c -fPIC src/parser.c -I./src -o /tmp/ccl_parser.o && g++ -c -fPIC src/scanner.cc -I./src -o /tmp/ccl_scanner.o && g++ -shared -o ~/.cache/tree-sitter/lib/ccl.so /tmp/ccl_parser.o /tmp/ccl_scanner.o && rm -f /tmp/ccl_parser.o /tmp/ccl_scanner.o",
+		"build:cli": "run-script-os",
+		"build:cli:darwin": "mkdir -p ~/.cache/tree-sitter/lib && gcc -c -fPIC src/parser.c -I./src -o /tmp/ccl_parser.o && g++ -c -fPIC -std=c++20 -stdlib=libc++ -isystem /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 src/scanner.cc -I./src -o /tmp/ccl_scanner.o && g++ -shared -o ~/.cache/tree-sitter/lib/ccl.so /tmp/ccl_parser.o /tmp/ccl_scanner.o && rm -f /tmp/ccl_parser.o /tmp/ccl_scanner.o",
+		"build:cli:linux": "mkdir -p ~/.cache/tree-sitter/lib && gcc -c -fPIC src/parser.c -I./src -o /tmp/ccl_parser.o && g++ -c -fPIC -std=c++20 src/scanner.cc -I./src -o /tmp/ccl_scanner.o && g++ -shared -o ~/.cache/tree-sitter/lib/ccl.so /tmp/ccl_parser.o /tmp/ccl_scanner.o && rm -f /tmp/ccl_parser.o /tmp/ccl_scanner.o",
+		"build:cli:win32": "echo \"Windows build not yet implemented\"",
 		"build-wasm": "tree-sitter build --wasm",
 		"test": "tree-sitter test",
 		"parse": "tree-sitter parse",
