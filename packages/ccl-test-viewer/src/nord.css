@@ -1,0 +1,97 @@
+:root {
+	--radius: 0.5rem;
+
+	/* Nord Light Mode */
+	--background: 236 239 244; /* #ECEFF4 - Snow Storm */
+	--foreground: 46 52 64; /* #2E3440 - Polar Night */
+
+	--card: 236 239 244; /* #ECEFF4 */
+	--card-foreground: 46 52 64; /* #2E3440 */
+
+	--popover: 236 239 244; /* #ECEFF4 */
+	--popover-foreground: 46 52 64; /* #2E3440 */
+
+	--primary: 94 129 172; /* #5E81AC - Frost */
+	--primary-foreground: 236 239 244; /* #ECEFF4 */
+
+	--secondary: 216 222 233; /* #D8DEE9 - Snow Storm */
+	--secondary-foreground: 59 66 82; /* #3B4252 */
+
+	--muted: 229 233 240; /* #E5E9F0 - Snow Storm */
+	--muted-foreground: 76 86 106; /* #4C566A */
+
+	--accent: 143 188 187; /* #8FBCBB - Frost */
+	--accent-foreground: 46 52 64; /* #2E3440 */
+
+	--destructive: 191 97 106; /* #BF616A - Aurora Red */
+	--destructive-foreground: 236 239 244; /* #ECEFF4 */
+
+	--border: 216 222 233; /* #D8DEE9 */
+	--input: 216 222 233; /* #D8DEE9 */
+	--ring: 94 129 172; /* #5E81AC */
+
+	/* Chart colors using Nord Aurora palette */
+	--chart-1: 235 203 139; /* #EBCB8B - Aurora Yellow */
+	--chart-2: 163 190 140; /* #A3BE8C - Aurora Green */
+	--chart-3: 208 135 112; /* #D08770 - Aurora Orange */
+	--chart-4: 180 142 173; /* #B48EAD - Aurora Purple */
+	--chart-5: 129 161 193; /* #81A1C1 - Frost */
+
+	/* Sidebar colors */
+	--sidebar: 236 239 244; /* #ECEFF4 */
+	--sidebar-foreground: 46 52 64; /* #2E3440 */
+	--sidebar-primary: 94 129 172; /* #5E81AC */
+	--sidebar-primary-foreground: 236 239 244; /* #ECEFF4 */
+	--sidebar-accent: 216 222 233; /* #D8DEE9 */
+	--sidebar-accent-foreground: 59 66 82; /* #3B4252 */
+	--sidebar-border: 216 222 233; /* #D8DEE9 */
+	--sidebar-ring: 94 129 172; /* #5E81AC */
+}
+
+.dark {
+	/* Nord Dark Mode */
+	--background: 46 52 64; /* #2E3440 - Polar Night */
+	--foreground: 236 239 244; /* #ECEFF4 - Snow Storm */
+
+	--card: 59 66 82; /* #3B4252 - Polar Night */
+	--card-foreground: 236 239 244; /* #ECEFF4 */
+
+	--popover: 59 66 82; /* #3B4252 */
+	--popover-foreground: 236 239 244; /* #ECEFF4 */
+
+	--primary: 129 161 193; /* #81A1C1 - Frost */
+	--primary-foreground: 46 52 64; /* #2E3440 */
+
+	--secondary: 67 76 94; /* #434C5E - Polar Night */
+	--secondary-foreground: 229 233 240; /* #E5E9F0 */
+
+	--muted: 67 76 94; /* #434C5E */
+	--muted-foreground: 216 222 233; /* #D8DEE9 */
+
+	--accent: 136 192 208; /* #88C0D0 - Frost */
+	--accent-foreground: 46 52 64; /* #2E3440 */
+
+	--destructive: 191 97 106; /* #BF616A - Aurora Red */
+	--destructive-foreground: 236 239 244; /* #ECEFF4 */
+
+	--border: 76 86 106; /* #4C566A */
+	--input: 76 86 106; /* #4C566A */
+	--ring: 129 161 193; /* #81A1C1 */
+
+	/* Chart colors for dark mode */
+	--chart-1: 235 203 139; /* #EBCB8B - Aurora Yellow */
+	--chart-2: 163 190 140; /* #A3BE8C - Aurora Green */
+	--chart-3: 208 135 112; /* #D08770 - Aurora Orange */
+	--chart-4: 180 142 173; /* #B48EAD - Aurora Purple */
+	--chart-5: 143 188 187; /* #8FBCBB - Frost */
+
+	/* Sidebar colors for dark mode */
+	--sidebar: 59 66 82; /* #3B4252 */
+	--sidebar-foreground: 236 239 244; /* #ECEFF4 */
+	--sidebar-primary: 129 161 193; /* #81A1C1 */
+	--sidebar-primary-foreground: 46 52 64; /* #2E3440 */
+	--sidebar-accent: 67 76 94; /* #434C5E */
+	--sidebar-accent-foreground: 229 233 240; /* #E5E9F0 */
+	--sidebar-border: 76 86 106; /* #4C566A */
+	--sidebar-ring: 129 161 193; /* #81A1C1 */
+}
