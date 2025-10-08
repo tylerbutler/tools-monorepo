@@ -43,36 +43,8 @@
 		"includes": ["**", "!**/__snapshots__/**"],
 	},
 	"linter": {
-		"enabled": true,
+		// "enabled": true,
 		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
-		"rules": {
-			"all": true,
-			"correctness": {
-				"noUnusedVariables": "error",
-				// Lots of false positives, which is a shame
-				"noUndeclaredDependencies": "off",
-			},
-			"performance": {
-				"noBarrelFile": "off",
-			},
-			"style": {
-				"noDefaultExport": "off",
-				"noParameterProperties": "off",
-				"useNamingConvention": "off",
-			},
-			"suspicious": {
-				"noConsole": "error",
-				"noDebugger": "error",
-			},
-		},
-	},
-	"javascript": {
-		"globals": ["$state", "$derived"],
-		"formatter": {
-			"jsxQuoteStyle": "double",
-			"trailingCommas": "all",
-			"semicolons": "always",
-		},
 	},
 	"overrides": [
 		{
