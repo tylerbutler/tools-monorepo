@@ -1,11 +1,10 @@
 // Data source manager for multi-source data handling with Svelte 5 runes
 
-import type { GeneratedTest, TestCategory, TestStats } from "../data/types.js";
+import type { TestCategory, TestStats } from "../data/types.js";
 import {
 	createDataSourceFromGitHub,
 	createDataSourceFromUpload,
 	createStaticDataSource,
-	generateDataSourceId,
 	mergeDataSources,
 	validateTestData,
 } from "../utils/dataMerger.js";
@@ -13,7 +12,6 @@ import type {
 	DataSource,
 	DataSourceSummary,
 	FileProcessingResult,
-	MergedDataStats,
 } from "./dataSource.js";
 
 /**
@@ -29,7 +27,7 @@ class DataSourceManager {
 	lastError = $state<string | null>(null);
 
 	// Track if we should auto-save (avoid saving during initial load)
-	private shouldAutoSave = $state(false);
+	private readonly shouldAutoSave = $state(false);
 
 	constructor() {
 		// Set up reactive auto-save effect using $effect.root for manual control
@@ -104,7 +102,6 @@ class DataSourceManager {
 				error instanceof Error
 					? error.message
 					: "Failed to initialize data sources";
-			console.error("DataSourceManager initialization failed:", error);
 			return false;
 		}
 	}
@@ -120,17 +117,10 @@ class DataSourceManager {
 			if (this.dataSources.length === 0) {
 				const saved = this.loadFromStorage();
 				if (saved) {
-					console.log(
-						`DataSourceManager: Loaded ${this.dataSources.length} data sources from localStorage`,
-					);
 				} else {
 					this.dataSources = [];
-					console.log("DataSourceManager: Initialized empty state");
 				}
 			} else {
-				console.log(
-					`DataSourceManager: Preserving existing ${this.dataSources.length} data sources`,
-				);
 			}
 
 			// Enable auto-save after initialization
@@ -142,7 +132,6 @@ class DataSourceManager {
 				error instanceof Error
 					? error.message
 					: "Failed to initialize data sources";
-			console.error("DataSourceManager empty initialization failed:", error);
 			return false;
 		}
 	}
@@ -170,7 +159,6 @@ class DataSourceManager {
 		} catch (error) {
 			this.lastError =
 				error instanceof Error ? error.message : "Failed to process files";
-			console.error("File processing failed:", error);
 		} finally {
 			this.isProcessing = false;
 			this.processingFiles = [];
@@ -243,7 +231,6 @@ class DataSourceManager {
 	 */
 	removeSource(sourceId: string) {
 		if (sourceId === "static_default") {
-			console.warn("Cannot remove static data source");
 			return;
 		}
 
@@ -336,7 +323,6 @@ class DataSourceManager {
 		this.isProcessing = false;
 		this.processingFiles = [];
 		this.clearStorage();
-		console.log("DataSourceManager: Cleared all data and reset to empty state");
 	}
 
 	/**
@@ -359,10 +345,11 @@ class DataSourceManager {
 	private async loadStaticCategories(): Promise<TestCategory[] | null> {
 		try {
 			const response = await fetch("/data/categories.json");
-			if (!response.ok) return null;
+			if (!response.ok) {
+				return null;
+			}
 			return await response.json();
-		} catch (error) {
-			console.error("Failed to load static categories:", error);
+		} catch (_error) {
 			return null;
 		}
 	}
@@ -373,10 +360,11 @@ class DataSourceManager {
 	private async loadStaticStats(): Promise<TestStats | null> {
 		try {
 			const response = await fetch("/data/stats.json");
-			if (!response.ok) return null;
+			if (!response.ok) {
+				return null;
+			}
 			return await response.json();
-		} catch (error) {
-			console.error("Failed to load static stats:", error);
+		} catch (_error) {
 			return null;
 		}
 	}
@@ -429,12 +417,11 @@ class DataSourceManager {
 					success: true,
 					message: `Loaded built-in data: ${staticStats.totalTests} tests across ${staticCategories.length} categories`,
 				};
-			} else {
-				return {
-					success: false,
-					message: "Failed to load built-in data files",
-				};
 			}
+			return {
+				success: false,
+				message: "Failed to load built-in data files",
+			};
 		} catch (error) {
 			const errorMessage =
 				error instanceof Error ? error.message : "Failed to load built-in data";
@@ -463,8 +450,9 @@ class DataSourceManager {
 	 * Save data sources to localStorage for persistence across page navigation
 	 */
 	private saveToStorage() {
-		if (typeof window === "undefined" || typeof localStorage === "undefined")
+		if (typeof window === "undefined" || typeof localStorage === "undefined") {
 			return; // SSR guard
+		}
 
 		try {
 			// Use $state.snapshot to convert proxy to plain object for serialization
@@ -476,10 +464,7 @@ class DataSourceManager {
 				"ccl-test-viewer-data-sources",
 				JSON.stringify(dataToSave),
 			);
-			console.log("DataSourceManager: Saved to localStorage");
-		} catch (error) {
-			console.warn("DataSourceManager: Failed to save to localStorage:", error);
-		}
+		} catch (_error) {}
 	}
 
 	/**
@@ -487,12 +472,15 @@ class DataSourceManager {
 	 * Returns true if data was loaded, false if no data or error
 	 */
 	private loadFromStorage(): boolean {
-		if (typeof window === "undefined" || typeof localStorage === "undefined")
+		if (typeof window === "undefined" || typeof localStorage === "undefined") {
 			return false; // SSR guard
+		}
 
 		try {
 			const saved = localStorage.getItem("ccl-test-viewer-data-sources");
-			if (!saved) return false;
+			if (!saved) {
+				return false;
+			}
 
 			const data = JSON.parse(saved);
 			if (
@@ -509,22 +497,14 @@ class DataSourceManager {
 				// Force reactivity by replacing the entire array
 				this.dataSources.length = 0;
 				this.dataSources.push(...restoredDataSources);
-				console.log(
-					"DataSourceManager: Loaded from localStorage, timestamp:",
-					data.timestamp,
-				);
 				return true;
 			}
 			return false;
-		} catch (error) {
-			console.warn(
-				"DataSourceManager: Failed to load from localStorage:",
-				error,
-			);
+		} catch (_error) {
 			// Clear corrupted data
 			try {
 				localStorage.removeItem("ccl-test-viewer-data-sources");
-			} catch (e) {
+			} catch (_e) {
 				// Ignore cleanup errors
 			}
 			return false;
@@ -535,14 +515,13 @@ class DataSourceManager {
 	 * Clear localStorage data
 	 */
 	clearStorage() {
-		if (typeof window === "undefined") return;
+		if (typeof window === "undefined") {
+			return;
+		}
 
 		try {
 			localStorage.removeItem("ccl-test-viewer-data-sources");
-			console.log("DataSourceManager: Cleared localStorage");
-		} catch (error) {
-			console.warn("DataSourceManager: Failed to clear localStorage:", error);
-		}
+		} catch (_error) {}
 	}
 }
 
@@ -553,7 +532,6 @@ export const dataSourceManager = new DataSourceManager();
 export async function initializeDataSources() {
 	const success = await dataSourceManager.initialize();
 	if (!success) {
-		console.error("Failed to initialize data source manager");
 	}
 	return success;
 }

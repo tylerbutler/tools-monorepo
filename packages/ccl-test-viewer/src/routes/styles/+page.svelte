@@ -1,7 +1,5 @@
 <script lang="ts">
-import Base16ColorDemo from "$lib/components/Base16ColorDemo.svelte";
-import ColorPalette from "$lib/components/ColorPalette.svelte";
-import ShadcnDemo from "$lib/components/ShadcnDemo.svelte";
+
 </script>
 
 <svelte:head>

@@ -21,10 +21,10 @@ import { dataSourceManager } from "./dataSourceManager.svelte.js";
  */
 class TauriDataSourceManager {
 	// State
-	private _isDesktopApp = $state(false);
+	private readonly _isDesktopApp = $state(false);
 	private _localSources = $state<LocalDataSource[]>([]);
 	private _autoSave = $state(true);
-	private _lastSyncTime = $state<Date | null>(null);
+	private readonly _lastSyncTime = $state<Date | null>(null);
 
 	constructor() {
 		// Initialize Tauri environment detection
@@ -106,14 +106,8 @@ class TauriDataSourceManager {
 		if (!this._isDesktopApp) {
 			throw new Error("Local persistence only available in desktop app");
 		}
-
-		try {
-			await saveDataSourceToLocal(source);
-			this._lastSyncTime = new Date();
-		} catch (error) {
-			console.error("Failed to save local source:", error);
-			throw error;
-		}
+		await saveDataSourceToLocal(source);
+		this._lastSyncTime = new Date();
 	}
 
 	/**
@@ -131,9 +125,7 @@ class TauriDataSourceManager {
 
 			// Sync with main manager
 			await this.syncWithMainManager();
-		} catch (error) {
-			console.error("Failed to load local sources:", error);
-		}
+		} catch (_error) {}
 	}
 
 	/**
@@ -168,13 +160,7 @@ class TauriDataSourceManager {
 		if (!this._isDesktopApp) {
 			throw new Error("Export functionality only available in desktop app");
 		}
-
-		try {
-			await exportDataCollection(this._localSources, fileName);
-		} catch (error) {
-			console.error("Failed to export data collection:", error);
-			throw error;
-		}
+		await exportDataCollection(this._localSources, fileName);
 	}
 
 	/**
@@ -184,28 +170,22 @@ class TauriDataSourceManager {
 		if (!this._isDesktopApp) {
 			throw new Error("Import functionality only available in desktop app");
 		}
+		const importedSources = await importDataCollection();
 
-		try {
-			const importedSources = await importDataCollection();
+		// Add imported sources to local sources
+		this._localSources.push(...importedSources);
 
-			// Add imported sources to local sources
-			this._localSources.push(...importedSources);
-
-			// Auto-save if enabled
-			if (this._autoSave) {
-				for (const source of importedSources) {
-					await this.saveLocalSource(source);
-				}
+		// Auto-save if enabled
+		if (this._autoSave) {
+			for (const source of importedSources) {
+				await this.saveLocalSource(source);
 			}
-
-			// Sync with main manager
-			await this.syncWithMainManager();
-
-			return importedSources;
-		} catch (error) {
-			console.error("Failed to import data collection:", error);
-			throw error;
 		}
+
+		// Sync with main manager
+		await this.syncWithMainManager();
+
+		return importedSources;
 	}
 
 	/**
@@ -253,9 +233,7 @@ class TauriDataSourceManager {
 				if (Array.isArray(fileData)) {
 					allTests.push(...fileData);
 				}
-			} catch (error) {
-				console.warn(`Failed to parse file ${file.name}:`, error);
-			}
+			} catch (_error) {}
 		}
 
 		// Generate basic stats

@@ -1,33 +1,25 @@
 <script lang="ts">
-import {
-	Badge,
-	Button,
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
-import { ArrowRight, Code, Eye } from "@lucide/svelte";
-import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
 interface Props {
 	test: GeneratedTest;
 	onView: (test: GeneratedTest) => void;
 }
 
-let { test, onView }: Props = $props();
+const { test, onView }: Props = $props();
 
-function truncateInput(input: string, maxLength: number = 100): string {
-	if (input.length <= maxLength) return input;
-	return input.substring(0, maxLength) + "...";
+function _truncateInput(input: string, maxLength = 100): string {
+	if (input.length <= maxLength) {
+		return input;
+	}
+	return `${input.substring(0, maxLength)}...`;
 }
 
 function handleView() {
 	onView(test);
 }
 
-function handleKeydown(event: KeyboardEvent) {
+function _handleKeydown(event: KeyboardEvent) {
 	if (event.key === "Enter" || event.key === " ") {
 		event.preventDefault();
 		handleView();
@@ -35,7 +27,7 @@ function handleKeydown(event: KeyboardEvent) {
 }
 
 // Generate human-readable expected result summary
-const expectedSummary = $derived.by(() => {
+const _expectedSummary = $derived.by(() => {
 	const { expected } = test;
 
 	if (expected.error) {

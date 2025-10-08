@@ -43,7 +43,9 @@ class ThemeStore {
 	base16Theme = $state<Base16Theme>(this.getInitialBase16Theme());
 
 	private getInitialTheme(): "light" | "dark" {
-		if (!browser) return "light";
+		if (!browser) {
+			return "light";
+		}
 
 		// Check localStorage first
 		const stored = localStorage.getItem("theme");
@@ -64,7 +66,9 @@ class ThemeStore {
 	}
 
 	private getInitialBase16Theme(): Base16Theme {
-		if (!browser) return "base16-tomorrow";
+		if (!browser) {
+			return "base16-tomorrow";
+		}
 
 		// Check localStorage for base16 theme
 		const stored = localStorage.getItem("base16Theme") as Base16Theme;
@@ -99,7 +103,7 @@ class ThemeStore {
 
 	private autoSelectBase16Theme() {
 		// Get themes for the current mode
-		const themesForMode = Object.entries(BASE16_THEMES)
+		const _themesForMode = Object.entries(BASE16_THEMES)
 			.filter(([_, config]) => config.variant === this.theme)
 			.map(([theme, _]) => theme as Base16Theme);
 
@@ -111,38 +115,27 @@ class ThemeStore {
 	}
 
 	private applyTheme() {
-		if (!browser) return;
-
-		console.log("🎨 ThemeStore.applyTheme() called");
-		console.log("  Current theme:", this.theme);
-		console.log("  Current base16Theme:", this.base16Theme);
+		if (!browser) {
+			return;
+		}
 
 		const root = document.documentElement;
-		console.log("  HTML classes before:", Array.from(root.classList));
 
 		// Remove all existing base16 and theme classes
 		const existingClasses = Array.from(root.classList).filter(
 			(cls) => cls.startsWith("base16-") || cls === "dark",
 		);
-		console.log("  Removing classes:", existingClasses);
 		root.classList.remove(...existingClasses);
-
-		// Apply new base16 theme class
-		console.log("  Adding base16 class:", this.base16Theme);
 		root.classList.add(this.base16Theme);
 
 		// Apply dark mode class if needed
 		if (this.theme === "dark") {
-			console.log("  Adding dark class");
 			root.classList.add("dark");
 		}
-
-		console.log("  HTML classes after:", Array.from(root.classList));
 
 		// Save to localStorage
 		localStorage.setItem("theme", this.theme);
 		localStorage.setItem("base16Theme", this.base16Theme);
-		console.log("  Saved to localStorage");
 	}
 
 	// Get available themes for current mode
@@ -176,12 +169,9 @@ class ThemeStore {
 
 	// Initialize theme on app load
 	initialize() {
-		console.log("🚀 ThemeStore.initialize() called, browser:", browser);
 		if (browser) {
-			console.log("  Calling applyTheme()...");
 			this.applyTheme();
 		} else {
-			console.log("  Skipping applyTheme() - not in browser");
 		}
 	}
 }
@@ -344,8 +334,7 @@ class AppState {
 			this.searchIndex = searchData;
 
 			return true;
-		} catch (error) {
-			console.error("Failed to load test data:", error);
+		} catch (_error) {
 			return false;
 		}
 	}
@@ -354,14 +343,6 @@ class AppState {
 	updateData(categories: TestCategory[], stats: TestStats | null) {
 		this.testCategories = categories;
 		this.testStats = stats;
-		// Note: searchIndex is not updated as it's not critical for basic functionality
-		console.log(
-			"AppState updated with",
-			categories.length,
-			"categories and",
-			stats?.totalTests || 0,
-			"tests",
-		);
 	}
 }
 
@@ -373,7 +354,6 @@ export const appState = new AppState();
 export async function initializeApp() {
 	const success = await appState.loadData();
 	if (!success) {
-		console.error("Failed to initialize application data");
 	}
 	return success;
 }

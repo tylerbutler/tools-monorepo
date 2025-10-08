@@ -49,7 +49,9 @@ export class GitHubLoader {
 			if (urlObj.hostname === "github.com") {
 				// Repository URL: https://github.com/owner/repo or https://github.com/owner/repo/tree/branch/path
 				const pathParts = urlObj.pathname.split("/").filter(Boolean);
-				if (pathParts.length < 2) return null;
+				if (pathParts.length < 2) {
+					return null;
+				}
 
 				const [owner, repo, ...rest] = pathParts;
 				let branch = "main";
@@ -66,7 +68,9 @@ export class GitHubLoader {
 			if (urlObj.hostname === "api.github.com") {
 				// API URL: https://api.github.com/repos/owner/repo/contents/path?ref=branch
 				const pathParts = urlObj.pathname.split("/").filter(Boolean);
-				if (pathParts.length < 3 || pathParts[0] !== "repos") return null;
+				if (pathParts.length < 3 || pathParts[0] !== "repos") {
+					return null;
+				}
 
 				const [, owner, repo, ...rest] = pathParts;
 				const branch = urlObj.searchParams.get("ref") || "main";
@@ -78,7 +82,9 @@ export class GitHubLoader {
 			if (urlObj.hostname === "raw.githubusercontent.com") {
 				// Raw URL: https://raw.githubusercontent.com/owner/repo/branch/path/file.json
 				const pathParts = urlObj.pathname.split("/").filter(Boolean);
-				if (pathParts.length < 3) return null;
+				if (pathParts.length < 3) {
+					return null;
+				}
 
 				const [owner, repo, branch, ...pathSegments] = pathParts;
 				const path = pathSegments.join("/");
@@ -109,7 +115,7 @@ export class GitHubLoader {
 			return { valid: false, error: "Invalid GitHub URL format" };
 		}
 
-		if (!repository.owner || !repository.repo) {
+		if (!(repository.owner && repository.repo)) {
 			return {
 				valid: false,
 				error: "URL must include owner and repository name",
@@ -239,7 +245,6 @@ export class GitHubLoader {
 			.map((result) => result.reason);
 
 		if (failed.length > 0) {
-			console.warn("Some files failed to download:", failed);
 		}
 
 		return successful;

@@ -12,7 +12,7 @@ export interface FunctionSpecificResult {
 		| "list"
 		| "error"
 		| "placeholder";
-	content: any;
+	content: unknown;
 	language: string;
 	metadata: {
 		functionType: CCLFunction;

@@ -1,22 +1,8 @@
 <script lang="ts">
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
-import FilterSidebar from "$lib/components/FilterSidebar.svelte";
-import TestCard from "$lib/components/TestCard.svelte";
-import { Badge, Button } from "$lib/components/ui/index.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
-import { appState, initializeApp } from "$lib/stores.svelte.js";
-import {
-	CheckSquare,
-	Database,
-	Grid3x3,
-	Layers,
-	Menu,
-	X,
-} from "@lucide/svelte";
-
-// Debug: Check if script is executing at all
-console.log("🟦 Browse page script executed at module level");
+import { appState } from "$lib/stores.svelte.js";
 
 // Local state - initialize to false in case of SSR
 let loading = $state(!browser); // Will be false on client, true on server
@@ -25,25 +11,9 @@ let initialized = $state(false); // Track if we've already initialized
 
 // Use $effect for Svelte 5 runes compatibility - runs when browser is available
 $effect(() => {
-	console.log(
-		"🟦 $effect called - browser:",
-		browser,
-		"initialized:",
-		initialized,
-	);
-
 	if (!browser || initialized) {
-		console.log(
-			"🟦 Skipping initialization - browser:",
-			browser,
-			"initialized:",
-			initialized,
-		);
 		return;
 	}
-
-	// Initialize dataSourceManager in upload-only mode (no static data)
-	console.log("🟦 Starting browse page initialization (upload-only mode)");
 
 	initialized = true; // Set immediately to prevent re-runs
 	loading = true;
@@ -59,16 +29,8 @@ $effect(() => {
 				dataSourceManager.categories,
 				dataSourceManager.stats,
 			);
-
-			console.log("🟦 Browse page initialized successfully (upload-only mode)");
-			console.log(
-				"🟦 Data synced to appState:",
-				dataSourceManager.categories.length,
-				"categories",
-			);
 			loading = false;
 		} catch (err) {
-			console.error("🟦 Browse page initialization error:", err);
 			error = err instanceof Error ? err.message : "Failed to initialize";
 			loading = false;
 			initialized = false; // Reset on error to allow retry
@@ -77,27 +39,27 @@ $effect(() => {
 });
 
 // Navigation functions
-function viewTest(test: any) {
+function _viewTest(test: any) {
 	appState.selectTest(test);
 	goto(`/test/${encodeURIComponent(test.name)}`);
 }
 
-function toggleViewMode() {
+function _toggleViewMode() {
 	appState.setViewMode(appState.viewMode === "grid" ? "list" : "grid");
 }
 
 // Data source integration - derived states
-const sourceSummaries = $derived(dataSourceManager.sourceSummaries);
-const mergedStats = $derived(dataSourceManager.mergedStats);
-const hasMultipleSources = $derived(dataSourceManager.hasMultipleSources);
-const hasUploadedSources = $derived(
+const _sourceSummaries = $derived(dataSourceManager.sourceSummaries);
+const _mergedStats = $derived(dataSourceManager.mergedStats);
+const _hasMultipleSources = $derived(dataSourceManager.hasMultipleSources);
+const _hasUploadedSources = $derived(
 	dataSourceManager.getSourcesByType("uploaded").length > 0,
 );
 
 // Derived states for the UI
-const hasTests = $derived(appState.filteredTests.length > 0);
-const showResults = $derived(
-	!loading && !error && (appState.testStats || dataSourceManager.isReady),
+const _hasTests = $derived(appState.filteredTests.length > 0);
+const _showResults = $derived(
+	!(loading || error) && (appState.testStats || dataSourceManager.isReady),
 );
 </script>
 

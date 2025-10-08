@@ -1,5 +1,4 @@
 <script lang="ts">
-import { Badge } from "$lib/components/ui/index.js";
 import type { CCLFunction } from "$lib/data/types.js";
 
 interface Props {
@@ -7,10 +6,10 @@ interface Props {
 	functionType: CCLFunction;
 }
 
-let { value, functionType }: Props = $props();
+const { value, functionType }: Props = $props();
 
 // Type-specific formatting and styling using theme variables
-const formattedValue = $derived.by(() => {
+const _formattedValue = $derived.by(() => {
 	switch (functionType) {
 		case "get_string":
 			return {

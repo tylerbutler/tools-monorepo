@@ -16,7 +16,7 @@ interface Props extends Omit<HTMLAttributes<HTMLElement>, "class"> {
 	class?: string;
 }
 
-let {
+const {
 	code,
 	language = "ccl",
 	class: className = "",
@@ -25,29 +25,40 @@ let {
 
 let codeElement: HTMLElement;
 
+// Define CCL language regex patterns at top level for performance
+const CCL_COMMENT_PATTERN = /\/=.*/;
+const CCL_STRING_PATTERN = /"(?:[^"\\]|\\.)*"/;
+const CCL_NUMBER_PATTERN = /\b\d+(?:\.\d+)?\b/;
+const CCL_BOOLEAN_PATTERN = /\b(?:true|false)\b/;
+const CCL_KEY_PATTERN = /^[^=\n]+(?==)/m;
+const CCL_DOTTED_PATTERN = /\./;
+const CCL_IDENTIFIER_PATTERN = /[^.\s=]+/;
+const CCL_OPERATOR_PATTERN = /=/;
+const CCL_PUNCTUATION_PATTERN = /[{}[\],]/;
+
 // Define CCL language for Prism.js
 $effect(() => {
-	// Define CCL language syntax
+	// Define CCL language syntax using pre-defined patterns
 	Prism.languages.ccl = {
 		comment: {
-			pattern: /\/=.*/,
+			pattern: CCL_COMMENT_PATTERN,
 			greedy: true,
 		},
 		string: {
-			pattern: /"(?:[^"\\]|\\.)*"/,
+			pattern: CCL_STRING_PATTERN,
 			greedy: true,
 		},
-		number: /\b\d+(?:\.\d+)?\b/,
-		boolean: /\b(?:true|false)\b/,
+		number: CCL_NUMBER_PATTERN,
+		boolean: CCL_BOOLEAN_PATTERN,
 		key: {
-			pattern: /^[^=\n]+(?==)/m,
+			pattern: CCL_KEY_PATTERN,
 			inside: {
-				dotted: /\./,
-				identifier: /[^.\s=]+/,
+				dotted: CCL_DOTTED_PATTERN,
+				identifier: CCL_IDENTIFIER_PATTERN,
 			},
 		},
-		operator: /=/,
-		punctuation: /[{}[\],]/,
+		operator: CCL_OPERATOR_PATTERN,
+		punctuation: CCL_PUNCTUATION_PATTERN,
 	};
 
 	// Highlight the code

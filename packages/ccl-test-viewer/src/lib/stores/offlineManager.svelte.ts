@@ -89,7 +89,9 @@ class OfflineManager {
 	 * Initialize offline detection and event handlers
 	 */
 	private initializeOfflineDetection(): void {
-		if (typeof window === "undefined") { return; }
+		if (typeof window === "undefined") {
+			return;
+		}
 
 		// Listen for online/offline events
 		window.addEventListener("online", () => {
@@ -153,8 +155,7 @@ class OfflineManager {
 
 			// Clean up expired cache entries
 			await this.cleanupExpiredCache();
-		} catch (_error) {
-		}
+		} catch (_error) {}
 	}
 
 	/**
@@ -206,11 +207,9 @@ class OfflineManager {
 		}
 
 		try {
-
 			// Clean up expired entries after loading
 			await this.cleanupExpiredCache();
-		} catch (_error) {
-		}
+		} catch (_error) {}
 	}
 
 	/**
@@ -231,8 +230,7 @@ class OfflineManager {
 					expiresAt: value.expiresAt.toISOString(),
 				}),
 			);
-		} catch (_error) {
-		}
+		} catch (_error) {}
 	}
 
 	/**
@@ -244,7 +242,6 @@ class OfflineManager {
 		}
 
 		try {
-
 			// Check for updates to GitHub sources
 			const githubSources = Array.from(this._cachedData.values()).filter(
 				(cached) => cached.type === "github",
@@ -254,8 +251,7 @@ class OfflineManager {
 			}
 
 			this._lastSync = new Date();
-		} catch (_error) {
-		}
+		} catch (_error) {}
 	}
 
 	/**

@@ -1,43 +1,24 @@
 <script lang="ts">
-import {
-	Badge,
-	Button,
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-} from "$lib/components/ui/index.js";
 import type { FunctionSpecificResult } from "$lib/data/function-types.js";
 import { FUNCTION_STATUS } from "$lib/data/function-types.js";
 import type { CCLFunction, GeneratedTest } from "$lib/data/types.js";
-import { ArrowLeft, Code, Copy, File, Play } from "@lucide/svelte";
-import EntryDisplay from "./EntryDisplay.svelte";
-import JsonTreeViewer from "./JsonTreeViewer.svelte";
-import ListDisplay from "./ListDisplay.svelte";
-import PlaceholderDisplay from "./PlaceholderDisplay.svelte";
-import ValueDisplay from "./ValueDisplay.svelte";
-import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
 interface Props {
 	test: GeneratedTest;
 	onBack: () => void;
 }
 
-let { test, onBack }: Props = $props();
+const { test, onBack }: Props = $props();
 
 // Copy functionality
-async function copyToClipboard(text: string, type: string) {
+async function _copyToClipboard(text: string, _type: string) {
 	try {
 		await navigator.clipboard.writeText(text);
-		// Could add a toast notification here
-		console.log(`${type} copied to clipboard`);
-	} catch (err) {
-		console.error("Failed to copy:", err);
-	}
+	} catch (_err) {}
 }
 
 // Function-aware result formatting
-const formattedExpected = $derived.by((): FunctionSpecificResult => {
+const _formattedExpected = $derived.by((): FunctionSpecificResult => {
 	const { expected } = test;
 	const primaryFunction = (test.functions[0] as CCLFunction) || "parse";
 	const isImplemented = FUNCTION_STATUS[primaryFunction] === "implemented";

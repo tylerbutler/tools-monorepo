@@ -1,29 +1,28 @@
 <script lang="ts">
 import type { GeneratedTest } from "$lib/data/types.js";
-import TerminalEntryBox from "./TerminalEntryBox.svelte";
 
 interface Props {
 	test: GeneratedTest;
 	testNumber?: number;
 }
 
-let { test, testNumber = 1 }: Props = $props();
+const { test, testNumber = 1 }: Props = $props();
 
 // Visualize whitespace in input
-function visualizeWhitespace(s: string): string {
+function _visualizeWhitespace(s: string): string {
 	return s.replace(/ /g, "·").replace(/\t/g, "→");
 }
 
 // Extract entries from expected result
-const entries = $derived.by(() => {
+const _entries = $derived.by(() => {
 	if (test.expected.entries && Array.isArray(test.expected.entries)) {
 		return test.expected.entries;
 	}
 	return [];
 });
 
-const hasError = $derived(test.expected.error !== undefined);
-const assertionCount = $derived(test.expected.count || 0);
+const _hasError = $derived(test.expected.error !== undefined);
+const _assertionCount = $derived(test.expected.count || 0);
 </script>
 
 <div class="terminal-test-display">

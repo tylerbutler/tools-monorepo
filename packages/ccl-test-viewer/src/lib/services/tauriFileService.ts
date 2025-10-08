@@ -82,15 +82,13 @@ export async function openMultiFileDialog(): Promise<TauriFileResult[]> {
 					path,
 					size: content.length,
 				});
-			} catch (error) {
-				console.warn(`Failed to read file ${path}:`, error);
+			} catch (_error) {
 				// Continue with other files even if one fails
 			}
 		}
 
 		return results;
 	} catch (error) {
-		console.error("Failed to open file dialog:", error);
 		throw new Error(
 			`File dialog error: ${error instanceof Error ? error.message : "Unknown error"}`,
 		);
@@ -143,7 +141,6 @@ export async function saveDataSourceToLocal(
 			{ baseDir: BaseDirectory.AppLocalData },
 		);
 	} catch (error) {
-		console.error("Failed to save data source:", error);
 		throw new Error(
 			`Save failed: ${error instanceof Error ? error.message : "Unknown error"}`,
 		);
@@ -171,8 +168,7 @@ export async function loadSavedDataSources(): Promise<LocalDataSource[]> {
 		// This would require directory listing functionality
 		// For now, return empty array - would need to implement directory scanning
 		return [];
-	} catch (error) {
-		console.error("Failed to load saved data sources:", error);
+	} catch (_error) {
 		return [];
 	}
 }
@@ -218,7 +214,6 @@ export async function exportDataCollection(
 			await writeTextFile(savePath, JSON.stringify(exportData, null, 2));
 		}
 	} catch (error) {
-		console.error("Failed to export data collection:", error);
 		throw new Error(
 			`Export failed: ${error instanceof Error ? error.message : "Unknown error"}`,
 		);
@@ -253,13 +248,12 @@ export async function importDataCollection(): Promise<LocalDataSource[]> {
 		const importData = JSON.parse(content);
 
 		// Validate import data structure
-		if (!importData.sources || !Array.isArray(importData.sources)) {
+		if (!(importData.sources && Array.isArray(importData.sources))) {
 			throw new Error("Invalid collection file format");
 		}
 
 		return importData.sources as LocalDataSource[];
 	} catch (error) {
-		console.error("Failed to import data collection:", error);
 		throw new Error(
 			`Import failed: ${error instanceof Error ? error.message : "Unknown error"}`,
 		);
@@ -288,8 +282,7 @@ export async function checkFileSystemPermissions(): Promise<boolean> {
 		});
 
 		return true;
-	} catch (error) {
-		console.warn("File system permissions check failed:", error);
+	} catch (_error) {
 		return false;
 	}
 }
@@ -302,7 +295,7 @@ function simpleHash(str: string): string {
 	for (let i = 0; i < str.length; i++) {
 		const char = str.charCodeAt(i);
 		hash = (hash << 5) - hash + char;
-		hash = hash & hash; // Convert to 32-bit integer
+		hash &= hash; // Convert to 32-bit integer
 	}
 	return hash.toString(36);
 }
@@ -314,10 +307,6 @@ export async function initializeDesktopGitHubAuth(): Promise<void> {
 	if (!isTauriEnvironment()) {
 		throw new Error("Desktop OAuth only available in Tauri app");
 	}
-
-	// Placeholder for OAuth implementation
-	// Would integrate with Tauri's deep linking and OAuth capabilities
-	console.log("Desktop GitHub OAuth not yet implemented");
 	throw new Error("Desktop GitHub OAuth not yet implemented");
 }
 
@@ -344,8 +333,7 @@ export async function getDesktopAppInfo(): Promise<{
 		const platform = (await invoke("platform")) as string;
 
 		return { version, platform };
-	} catch (error) {
-		console.warn("Failed to get desktop app info:", error);
+	} catch (_error) {
 		return null;
 	}
 }

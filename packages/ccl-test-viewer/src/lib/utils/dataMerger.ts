@@ -205,10 +205,7 @@ export function jsonToTestCategory(
 	};
 }
 
-function incrementCount(
-	record: Record<string, number>,
-	key: string,
-): void {
+function incrementCount(record: Record<string, number>, key: string): void {
 	record[key] = (record[key] || 0) + 1;
 }
 

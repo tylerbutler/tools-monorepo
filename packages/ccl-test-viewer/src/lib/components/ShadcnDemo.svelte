@@ -1,15 +1,9 @@
 <script lang="ts">
-import { Badge } from "$lib/components/ui/badge/index.js";
-import { Button } from "$lib/components/ui/button/index.js";
-import * as Card from "$lib/components/ui/card/index.js";
-import { Input } from "$lib/components/ui/input/index.js";
-import SimpleCheckbox from "$lib/components/ui/simple-checkbox.svelte";
-
 // State for interactive components
-let checkboxValue = $state(false);
-let inputValue = $state("Sample text");
+const _checkboxValue = $state(false);
+const _inputValue = $state("Sample text");
 
-const buttonVariants = [
+const _buttonVariants = [
 	"default",
 	"destructive",
 	"outline",
@@ -17,10 +11,10 @@ const buttonVariants = [
 	"ghost",
 	"link",
 ];
-const badgeVariants = ["default", "secondary", "destructive", "outline"];
+const _badgeVariants = ["default", "secondary", "destructive", "outline"];
 
 // Sample data for demonstrations
-const sampleCards = [
+const _sampleCards = [
 	{
 		title: "Card Example 1",
 		description: "This demonstrates the card component with default styling",

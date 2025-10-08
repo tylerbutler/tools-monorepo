@@ -3,36 +3,20 @@
   Handles import/export of data source collections in desktop app
 -->
 <script lang="ts">
-import {
-	AlertCircle,
-	CheckCircle,
-	Clock,
-	Download,
-	FileText,
-	HardDrive,
-	Package,
-	Trash2,
-	Upload,
-} from "@lucide/svelte";
 import { onMount } from "svelte";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { isTauriEnvironment } from "@/services/tauriFileService";
 import { offlineManager } from "@/stores/offlineManager.svelte";
 import { tauriDataSourceManager } from "@/stores/tauriDataSourceManager.svelte";
 
 // State
 let isDesktopApp = $state(false);
-let isImporting = $state(false);
-let isExporting = $state(false);
+let _isImporting = $state(false);
+let _isExporting = $state(false);
 let importProgress = $state(0);
 let exportProgress = $state(0);
-let lastOperation = $state<string | null>(null);
-let operationError = $state<string | null>(null);
-let operationSuccess = $state<string | null>(null);
+let _lastOperation = $state<string | null>(null);
+let _operationError = $state<string | null>(null);
+let _operationSuccess = $state<string | null>(null);
 
 // Check environment on mount
 onMount(() => {
@@ -42,16 +26,16 @@ onMount(() => {
 /**
  * Handle export of all data sources
  */
-async function handleExportCollection() {
+async function _handleExportCollection() {
 	if (!isDesktopApp) {
-		operationError = "Export only available in desktop app";
+		_operationError = "Export only available in desktop app";
 		return;
 	}
 
-	isExporting = true;
+	_isExporting = true;
 	exportProgress = 0;
-	operationError = null;
-	operationSuccess = null;
+	_operationError = null;
+	_operationSuccess = null;
 
 	try {
 		// Simulate progress for user feedback
@@ -70,12 +54,12 @@ async function handleExportCollection() {
 		clearInterval(progressInterval);
 		exportProgress = 100;
 
-		operationSuccess = `Data collection exported successfully to ${filename}`;
-		lastOperation = `Export completed at ${new Date().toLocaleTimeString()}`;
+		_operationSuccess = `Data collection exported successfully to ${filename}`;
+		_lastOperation = `Export completed at ${new Date().toLocaleTimeString()}`;
 	} catch (error) {
-		operationError = error instanceof Error ? error.message : "Export failed";
+		_operationError = error instanceof Error ? error.message : "Export failed";
 	} finally {
-		isExporting = false;
+		_isExporting = false;
 		setTimeout(() => {
 			exportProgress = 0;
 		}, 2000);
@@ -85,16 +69,16 @@ async function handleExportCollection() {
 /**
  * Handle import of data collection
  */
-async function handleImportCollection() {
+async function _handleImportCollection() {
 	if (!isDesktopApp) {
-		operationError = "Import only available in desktop app";
+		_operationError = "Import only available in desktop app";
 		return;
 	}
 
-	isImporting = true;
+	_isImporting = true;
 	importProgress = 0;
-	operationError = null;
-	operationSuccess = null;
+	_operationError = null;
+	_operationSuccess = null;
 
 	try {
 		// Simulate progress for user feedback
@@ -111,20 +95,20 @@ async function handleImportCollection() {
 		importProgress = 100;
 
 		if (importedSources.length > 0) {
-			operationSuccess = `Successfully imported ${importedSources.length} data source${importedSources.length === 1 ? "" : "s"}`;
-			lastOperation = `Import completed at ${new Date().toLocaleTimeString()}`;
+			_operationSuccess = `Successfully imported ${importedSources.length} data source${importedSources.length === 1 ? "" : "s"}`;
+			_lastOperation = `Import completed at ${new Date().toLocaleTimeString()}`;
 
 			// Cache imported data for offline use
 			if (offlineManager.autoCache) {
 				await offlineManager.cacheCurrentData();
 			}
 		} else {
-			operationError = "No data sources found in selected file";
+			_operationError = "No data sources found in selected file";
 		}
 	} catch (error) {
-		operationError = error instanceof Error ? error.message : "Import failed";
+		_operationError = error instanceof Error ? error.message : "Import failed";
 	} finally {
-		isImporting = false;
+		_isImporting = false;
 		setTimeout(() => {
 			importProgress = 0;
 		}, 2000);
@@ -134,18 +118,18 @@ async function handleImportCollection() {
 /**
  * Clear all local data sources
  */
-async function handleClearAllData() {
+async function _handleClearAllData() {
 	if (!isDesktopApp) {
-		operationError = "Clear data only available in desktop app";
+		_operationError = "Clear data only available in desktop app";
 		return;
 	}
 
 	try {
 		await tauriDataSourceManager.clearAllLocalSources();
-		operationSuccess = "All local data sources cleared";
-		lastOperation = `Data cleared at ${new Date().toLocaleTimeString()}`;
+		_operationSuccess = "All local data sources cleared";
+		_lastOperation = `Data cleared at ${new Date().toLocaleTimeString()}`;
 	} catch (error) {
-		operationError =
+		_operationError =
 			error instanceof Error ? error.message : "Failed to clear data";
 	}
 }
@@ -153,25 +137,27 @@ async function handleClearAllData() {
 /**
  * Clear operation messages
  */
-function clearMessages() {
-	operationError = null;
-	operationSuccess = null;
+function _clearMessages() {
+	_operationError = null;
+	_operationSuccess = null;
 }
 
 /**
  * Format file size for display
  */
-function formatFileSize(bytes: number): string {
-	if (bytes === 0) return "0 Bytes";
+function _formatFileSize(bytes: number): string {
+	if (bytes === 0) {
+		return "0 Bytes";
+	}
 	const k = 1024;
 	const sizes = ["Bytes", "KB", "MB", "GB"];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+	return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 }
 
 // Reactive values
-const storageStats = $derived(tauriDataSourceManager.storageStats);
-const offlineStats = $derived(offlineManager.stats);
+const _storageStats = $derived(tauriDataSourceManager.storageStats);
+const _offlineStats = $derived(offlineManager.stats);
 </script>
 
 <!-- Data Collection Manager -->

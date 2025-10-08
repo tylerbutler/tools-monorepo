@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
 @import "./tangerine.css";
+@config "../tailwind.config.js";
 
 /* Safelist for Base16 theme classes that need to be generated */
 @source inline("base16-tomorrow base16-one-light base16-github base16-solarized-light");

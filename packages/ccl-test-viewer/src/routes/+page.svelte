@@ -1,13 +1,12 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
-import ColorPalette from "$lib/components/ColorPalette.svelte";
 
 // Navigation handlers
-function viewAllTests() {
+function _viewAllTests() {
 	goto("/browse");
 }
 
-function viewStyleTests() {
+function _viewStyleTests() {
 	goto("/styles");
 }
 </script>

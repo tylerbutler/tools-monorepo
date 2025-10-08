@@ -6,7 +6,7 @@ interface Props {
 	};
 }
 
-let { entry }: Props = $props();
+const { entry }: Props = $props();
 
 // Visualize whitespace in keys and values only
 function visualizeWhitespace(s: string): string {

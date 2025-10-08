@@ -8,6 +8,9 @@
 		"@tylerbu/local-config/biome/oclif",
 		"@tylerbu/local-config/biome/test-files",
 	],
+	"javascript": {
+		"globals": ["$state", "$derived", "$effect", "$props", "$inspect"],
+	},
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -35,6 +38,10 @@
 
 			// test json
 			"!**/test/data/json/**/*.json",
+
+			// auto-generated data files
+			"!**/packages/ccl-test-viewer/src/lib/data/*.json",
+			"!**/packages/ccl-test-viewer/static/data/*.json",
 		],
 	},
 	"formatter": {
@@ -59,6 +66,92 @@
 				"rules": {
 					"correctness": {
 						"noNodejsModules": "off",
+					},
+				},
+			},
+		},
+		{
+			// Svelte files - official Biome recommended configuration for partial support
+			// https://biomejs.dev/internals/language-support/
+			"includes": ["**/*.svelte"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useConst": "off",
+						"useImportType": "off",
+						"noNonNullAssertion": "off",
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off",
+						"noUndeclaredVariables": "off",
+					},
+					"suspicious": {
+						"noEmptyBlockStatements": "off",
+						"noExplicitAny": "off",
+					},
+					"nursery": {
+						"noShadow": "off",
+					},
+				},
+			},
+		},
+		{
+			// SvelteKit standard files
+			"includes": ["**/app.d.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noNamespace": "off",
+					},
+				},
+			},
+		},
+		{
+			// CSS files with Tailwind custom properties
+			"includes": ["**/app.css"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noInvalidPositionAtImportRule": "off",
+						"noUnknownProperty": "off",
+					},
+				},
+			},
+		},
+		{
+			// Barrel exports (shadcn-svelte and library patterns)
+			"includes": ["**/components/ui/**/index.ts", "**/lib/index.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noExportedImports": "off",
+					},
+					"performance": {
+						"noReExportAll": "off",
+					},
+				},
+			},
+		},
+		{
+			// Service and store files with Svelte runes
+			"includes": ["**/services/*.ts", "**/*.svelte.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noEmptyBlockStatements": "off",
+						"noExplicitAny": "off",
+					},
+					"style": {
+						"useConsistentMemberAccessibility": "off",
+						"noNonNullAssertion": "off",
+					},
+					"complexity": {
+						"noExcessiveCognitiveComplexity": "off",
+						"noBannedTypes": "off",
+					},
+					"performance": {
+						"useTopLevelRegex": "off",
 					},
 				},
 			},

@@ -1,10 +1,6 @@
 <script lang="ts">
 import "../app.css";
-import { goto } from "$app/navigation";
-import Base16ThemeSelector from "$lib/components/Base16ThemeSelector.svelte";
-import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 import { themeStore } from "$lib/stores.svelte.js";
-import { Home, Palette, Search, Upload } from "@lucide/svelte";
 import type { Snippet } from "svelte";
 import { onMount } from "svelte";
 import type { LayoutData } from "./$types";
@@ -14,17 +10,17 @@ interface Props {
 	data: LayoutData;
 }
 
-let { children, data }: Props = $props();
+const { children, data }: Props = $props();
 
 // Navigation state - using runes with data from load function
 const currentPath = $derived(data.currentPath);
-const isHomePage = $derived(currentPath === "/");
-const isBrowsePage = $derived(currentPath === "/browse");
-const isDataPage = $derived(currentPath === "/data");
-const isStylesPage = $derived(currentPath === "/styles");
+const _isHomePage = $derived(currentPath === "/");
+const _isBrowsePage = $derived(currentPath === "/browse");
+const _isDataPage = $derived(currentPath === "/data");
+const _isStylesPage = $derived(currentPath === "/styles");
 
 // Skip link functionality
-function skipToMain() {
+function _skipToMain() {
 	const mainElement = document.getElementById("main-content");
 	if (mainElement) {
 		mainElement.focus();
@@ -34,41 +30,26 @@ function skipToMain() {
 
 // Initialize theme on mount - removed $effect DOM manipulation to fix lifecycle issues
 onMount(() => {
-	console.log("📱 Layout onMount() called");
-	console.log("  Theme store state:", {
-		theme: themeStore.theme,
-		base16Theme: themeStore.base16Theme,
-	});
-
 	// Force theme application for static sites
 	if (typeof window !== "undefined") {
 		const root = document.documentElement;
-		console.log("  Current HTML classes:", Array.from(root.classList));
 
 		// Get theme values from localStorage or defaults
 		const storedTheme = localStorage.getItem("theme") || "dark";
 		const storedBase16 =
 			localStorage.getItem("base16Theme") || "base16-tomorrow-night";
 
-		console.log("  Stored values:", { storedTheme, storedBase16 });
-
 		// Remove any existing theme classes
 		const existingClasses = Array.from(root.classList).filter(
 			(cls) => cls.startsWith("base16-") || cls === "dark",
 		);
 		if (existingClasses.length > 0) {
-			console.log("  Removing existing classes:", existingClasses);
 			root.classList.remove(...existingClasses);
 		}
-
-		// Apply stored theme classes
-		console.log("  Applying classes:", storedBase16, storedTheme);
 		root.classList.add(storedBase16);
 		if (storedTheme === "dark") {
 			root.classList.add("dark");
 		}
-
-		console.log("  Final HTML classes:", Array.from(root.classList));
 
 		// Also initialize the theme store
 		themeStore.initialize();

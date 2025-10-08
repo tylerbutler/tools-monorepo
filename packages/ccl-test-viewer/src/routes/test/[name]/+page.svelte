@@ -1,21 +1,19 @@
 <script lang="ts">
 import { goto } from "$app/navigation";
-import TestDetail from "$lib/components/TestDetail.svelte";
-import { Button } from "$lib/components/ui/index.js";
 import type { PageData } from "./$types";
 
 interface Props {
 	data: PageData;
 }
 
-let { data }: Props = $props();
+const { data }: Props = $props();
 
 // Extract data directly from load function - no lifecycle issues
-const testName = $derived(data.testName);
-const test = $derived(data.test);
-const error = $derived(data.error);
+const _testName = $derived(data.testName);
+const _test = $derived(data.test);
+const _error = $derived(data.error);
 
-function goBack() {
+function _goBack() {
 	goto("/browse");
 }
 </script>

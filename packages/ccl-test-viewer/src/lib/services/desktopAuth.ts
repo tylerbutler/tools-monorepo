@@ -36,25 +36,25 @@ class DesktopAuthService {
 	private _currentUser = $state<AuthUser | null>(null);
 	private _authToken = $state<AuthToken | null>(null);
 
-	constructor() {
+	public constructor() {
 		// Initialize authentication state from local storage
 		this.loadAuthState();
 	}
 
 	// Getters
-	get isAuthenticated() {
+	public get isAuthenticated() {
 		return this._isAuthenticated;
 	}
 
-	get currentUser() {
+	public get currentUser() {
 		return this._currentUser;
 	}
 
-	get authToken() {
+	public get authToken() {
 		return this._authToken;
 	}
 
-	get isAvailable() {
+	public get isAvailable() {
 		return isTauriEnvironment();
 	}
 
@@ -65,13 +65,10 @@ class DesktopAuthService {
 	 * 2. Listen for callback via deep link
 	 * 3. Exchange code for access token
 	 */
-	async initiateOAuth(config: AuthConfig): Promise<AuthToken> {
+	public async initiateOAuth(_config: AuthConfig): Promise<AuthToken> {
 		if (!this.isAvailable) {
 			throw new Error("Desktop OAuth only available in Tauri app");
 		}
-
-		// Placeholder implementation
-		console.log("OAuth flow would be initiated here with config:", config);
 
 		// Simulate OAuth flow for development
 		throw new Error(
@@ -105,7 +102,7 @@ class DesktopAuthService {
 	/**
 	 * Sign out and clear authentication
 	 */
-	async signOut(): Promise<void> {
+	public async signOut(): Promise<void> {
 		this._isAuthenticated = false;
 		this._currentUser = null;
 		this._authToken = null;
@@ -119,7 +116,7 @@ class DesktopAuthService {
 	/**
 	 * Check if current token is valid
 	 */
-	isTokenValid(): boolean {
+	public isTokenValid(): boolean {
 		if (!this._authToken) {
 			return false;
 		}
@@ -134,14 +131,14 @@ class DesktopAuthService {
 	/**
 	 * Get authenticated GitHub API client
 	 */
-	getAuthenticatedClient(): { headers: Record<string, string> } | null {
+	public getAuthenticatedClient(): { headers: Record<string, string> } | null {
 		if (!this.isTokenValid()) {
 			return null;
 		}
 
 		return {
 			headers: {
-				Authorization: `${this._authToken!.tokenType} ${this._authToken!.accessToken}`,
+				Authorization: `${this._authToken?.tokenType} ${this._authToken?.accessToken}`,
 				Accept: "application/vnd.github.v3+json",
 				"User-Agent": "CCL-Test-Viewer-Desktop/1.0",
 			},
@@ -157,15 +154,7 @@ class DesktopAuthService {
 		}
 
 		try {
-			// In real implementation, would load from Tauri local storage
-			// const stored = await readTextFile('auth-state.json', { baseDir: BaseDirectory.AppLocalData });
-			// const authData = JSON.parse(stored);
-
-			// For now, just placeholder
-			console.log("Loading auth state from local storage...");
-		} catch (error) {
-			console.log("No previous auth state found");
-		}
+		} catch (_error) {}
 	}
 
 	/**
@@ -177,16 +166,7 @@ class DesktopAuthService {
 
 		if (this.isAvailable) {
 			try {
-				// In real implementation, would save to Tauri local storage
-				// const authData = { token, user: this._currentUser };
-				// await writeTextFile('auth-state.json', JSON.stringify(authData), {
-				//   baseDir: BaseDirectory.AppLocalData
-				// });
-
-				console.log("Storing auth token to local storage...");
-			} catch (error) {
-				console.error("Failed to store auth token:", error);
-			}
+			} catch (_error) {}
 		}
 	}
 
@@ -195,13 +175,7 @@ class DesktopAuthService {
 	 */
 	private async clearAuthState(): Promise<void> {
 		try {
-			// In real implementation, would remove from Tauri local storage
-			// await removeFile('auth-state.json', { baseDir: BaseDirectory.AppLocalData });
-
-			console.log("Clearing auth state from local storage...");
-		} catch (error) {
-			console.error("Failed to clear auth state:", error);
-		}
+		} catch (_error) {}
 	}
 
 	/**
@@ -212,25 +186,19 @@ class DesktopAuthService {
 		if (!client) {
 			throw new Error("No valid authentication token");
 		}
-
-		try {
-			const response = await fetch("https://api.github.com/user", client);
-			if (!response.ok) {
-				throw new Error(`GitHub API error: ${response.status}`);
-			}
-
-			const userData = await response.json();
-			this._currentUser = {
-				id: userData.id,
-				login: userData.login,
-				name: userData.name || userData.login,
-				email: userData.email || "",
-				avatarUrl: userData.avatar_url,
-			};
-		} catch (error) {
-			console.error("Failed to fetch user info:", error);
-			throw error;
+		const response = await fetch("https://api.github.com/user", client);
+		if (!response.ok) {
+			throw new Error(`GitHub API error: ${response.status}`);
 		}
+
+		const userData = await response.json();
+		this._currentUser = {
+			id: userData.id,
+			login: userData.login,
+			name: userData.name || userData.login,
+			email: userData.email || "",
+			avatarUrl: userData.avatar_url,
+		};
 	}
 }
 
@@ -253,13 +221,7 @@ export async function authenticateWithGitHub(): Promise<void> {
 	if (!desktopAuthService.isAvailable) {
 		throw new Error("GitHub authentication only available in desktop app");
 	}
-
-	try {
-		await desktopAuthService.initiateOAuth(GITHUB_OAUTH_CONFIG);
-	} catch (error) {
-		console.error("GitHub authentication failed:", error);
-		throw error;
-	}
+	await desktopAuthService.initiateOAuth(GITHUB_OAUTH_CONFIG);
 }
 
 /**
