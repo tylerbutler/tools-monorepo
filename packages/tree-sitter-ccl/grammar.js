@@ -168,11 +168,10 @@ export default grammar({
 
     /**
      * Single-line key - identifier for configuration entries
-     * 
-     * REGEX BREAKDOWN: /[^\s=\n\/][^\n\r=]*/
-     * - First char: Cannot be whitespace, '=', newline, or '/' (avoid comment confusion)
-     * - Remaining chars: Anything except newlines and '=' (stops at assignment)
-     * 
+     *
+     * Pattern: First char cannot be whitespace, '=', newline, or '/'.
+     * Remaining chars can be anything except newlines and '=' (stops at assignment).
+     *
      * EXAMPLES:
      *   ✓ "server"      ✓ "host.name"    ✓ "config_option"
      *   ✗ "=invalid"    ✗ "/= comment"   ✗ "multi\nline"
@@ -238,11 +237,10 @@ export default grammar({
 
     /**
      * Single-line value - value content on the same line as assignment
-     * 
-     * REGEX: /[^\n\r]*/
-     * - Matches any characters except line terminators
-     * - Allows empty values (just '=' with nothing after)
-     * - Stops at line boundaries to maintain line structure
+     *
+     * Pattern: Matches any characters except line terminators.
+     * Allows empty values (just '=' with nothing after).
+     * Stops at line boundaries to maintain line structure.
      */
     single_line_value: $ => /[^\n\r]*/, 
 
@@ -285,11 +283,10 @@ export default grammar({
     
     /**
      * Content line - single line of content within nested blocks
-     * 
-     * REGEX: /[^\n\r]*/
-     * - Captures any characters except line terminators
-     * - Allows empty lines within content blocks
-     * - Used in both nested_content and multiline_value contexts
+     *
+     * Pattern: Captures any characters except line terminators.
+     * Allows empty lines within content blocks.
+     * Used in both nested_content and multiline_value contexts.
      */
     content_line: $ => /[^\n\r]*/, 
 

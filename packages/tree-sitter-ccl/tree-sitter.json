@@ -1,0 +1,36 @@
+{
+  "grammars": [
+    {
+      "name": "ccl",
+      "camelcase": "Ccl",
+      "scope": "source.ccl",
+      "path": ".",
+      "file-types": [
+        "ccl"
+      ],
+      "highlights": "queries/highlights.scm",
+      "injections": "queries/injections.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Tree-sitter grammar for CCL (Categorical Configuration Language)",
+    "authors": [
+      {
+        "name": "CCL Community"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/ccl-community/tree-sitter-ccl.git"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true
+  }
+}
