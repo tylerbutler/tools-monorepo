@@ -319,10 +319,6 @@
   ],
   "conflicts": [
     [
-      "nested_section",
-      "multiline_value"
-    ],
-    [
       "nested_content",
       "multiline_value"
     ],

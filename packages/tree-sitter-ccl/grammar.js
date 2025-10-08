@@ -69,21 +69,20 @@ export default grammar({
 
   /**
    * Parsing conflicts and their resolution strategies
-   * 
+   *
    * Tree-sitter uses GLR parsing which can handle some ambiguities,
    * but these conflicts need explicit resolution:
-   * 
-   * 1. [nested_section, multiline_value] - When content contains '='
-   *    Resolution: Dynamic precedence favors nested_section for structured content
-   * 
-   * 2. [nested_content, multiline_value] - Content vs plain text interpretation  
+   *
+   * 1. [nested_content, multiline_value] - Content vs plain text interpretation
    *    Resolution: Context and precedence determine parsing path
-   * 
-   * 3. [comment] - Comment parsing in different contexts
+   *
+   * 2. [comment] - Comment parsing in different contexts
    *    Resolution: Precedence rules favor comment recognition
+   *
+   * Note: The [nested_section, multiline_value] conflict is resolved automatically
+   * through dynamic precedence and doesn't require explicit declaration.
    */
   conflicts: $ => [
-    [$.nested_section, $.multiline_value],
     [$.nested_content, $.multiline_value],
     [$.comment]
   ],
