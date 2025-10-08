@@ -28,11 +28,20 @@
               "-stdlib=libc++",
               "-isystem /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1"
             ]
-          }
-        }],
-        ["OS!='win'", {
+          },
           "cflags_c": ["-std=c11"],
           "cflags_cc": ["-std=c++20", "-stdlib=libc++"]
+        }],
+        ["OS=='linux'", {
+          "cflags_c": ["-std=c11"],
+          "cflags_cc": ["-std=c++20"]
+        }],
+        ["OS=='win'", {
+          "msvs_settings": {
+            "VCCLCompilerTool": {
+              "AdditionalOptions": ["/std:c++20"]
+            }
+          }
         }]
       ]
     }
