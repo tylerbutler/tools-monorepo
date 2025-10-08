@@ -6,13 +6,13 @@ import type {
 	UploadValidationResult,
 } from "../stores/dataSource.js";
 
-const EMPTY_STATS = {
+const EMPTY_STATS: MergedDataStats = {
 	testCount: 0,
 	categoryCount: 0,
 	functions: [],
 	features: [],
 	behaviors: [],
-} as const;
+};
 
 function createErrorResult(
 	errors: string[],
@@ -165,7 +165,7 @@ export function validateTestData(
 		collectTestArrays(testObj, warnings, sets);
 
 		if (errors.length === 0) {
-			validTests.push(testObj as GeneratedTest);
+			validTests.push(testObj as unknown as GeneratedTest);
 		}
 	}
 

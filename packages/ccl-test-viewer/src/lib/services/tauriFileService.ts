@@ -33,7 +33,11 @@ export interface LocalDataSource {
  */
 export function isTauriEnvironment(): boolean {
 	// Check for Tauri-specific globals
-	return typeof window !== "undefined" && window.__TAURI__ !== undefined;
+	return (
+		typeof window !== "undefined" &&
+		"__TAURI__" in window &&
+		(window as any).__TAURI__ !== undefined
+	);
 }
 
 /**
@@ -118,7 +122,6 @@ export async function saveDataSourceToLocal(
 		if (!dirExists) {
 			await create(dirPath, {
 				baseDir: BaseDirectory.AppLocalData,
-				recursive: true,
 			});
 		}
 
@@ -275,7 +278,6 @@ export async function checkFileSystemPermissions(): Promise<boolean> {
 
 		await create(testDir, {
 			baseDir: BaseDirectory.AppLocalData,
-			recursive: true,
 		});
 		await writeTextFile(`${testDir}/${testFile}`, "test", {
 			baseDir: BaseDirectory.AppLocalData,

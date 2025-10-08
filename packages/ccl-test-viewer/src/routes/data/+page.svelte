@@ -1,4 +1,17 @@
 <script lang="ts">
+import DataCollectionManager from "$lib/components/DataCollectionManager.svelte";
+import GitHubRepositoryBrowser from "$lib/components/GitHubRepositoryBrowser.svelte";
+import GitHubUrlInput from "$lib/components/GitHubUrlInput.svelte";
+import MultiFileUpload from "$lib/components/MultiFileUpload.svelte";
+import TauriFileUpload from "$lib/components/TauriFileUpload.svelte";
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
 import {
 	isTauriEnvironment,
 	type TauriFileResult,
@@ -6,6 +19,19 @@ import {
 import type { DataSource } from "$lib/stores/dataSource.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 import { tauriDataSourceManager } from "$lib/stores/tauriDataSourceManager.svelte.js";
+import {
+	Database,
+	Download,
+	FileText,
+	Github,
+	HardDrive,
+	Layers,
+	RefreshCw,
+	ToggleLeft,
+	ToggleRight,
+	Trash2,
+	Upload,
+} from "@lucide/svelte";
 import { onMount } from "svelte";
 
 interface UploadedFile {
@@ -21,57 +47,62 @@ onMount(async () => {
 	await dataSourceManager.initializeEmpty();
 
 	// Detect Tauri environment
-	_isDesktopApp = isTauriEnvironment();
+	isDesktopApp = isTauriEnvironment();
 });
 
 // Handle successful file uploads - now using data source manager
-async function _handleFilesUploaded(files: UploadedFile[]) {
+async function handleFilesUploaded(files: UploadedFile[]) {
 	const successfulFiles = files.filter((f) => f.status === "success");
 
 	if (successfulFiles.length > 0) {
 		const fileObjects = successfulFiles.map((f) => f.file);
-		const _results = await dataSourceManager.processUploadedFiles(fileObjects);
+		const results = await dataSourceManager.processUploadedFiles(fileObjects);
+
+		// Log results for debugging
+		console.log("File processing results:", results);
 	}
 }
 
 // Clear all uploaded data - now clears data sources
-function _clearAllData() {
+function clearAllData() {
 	dataSourceManager.clearUploadedSources();
 }
 
 // Toggle data source active state
-function _toggleDataSource(sourceId: string) {
+function toggleDataSource(sourceId: string) {
 	dataSourceManager.toggleSource(sourceId);
 }
 
 // Remove a data source
-function _removeDataSource(sourceId: string) {
+function removeDataSource(sourceId: string) {
 	dataSourceManager.removeSource(sourceId);
 }
 
 // Handle GitHub repository loading
-async function _handleGitHubRepositoryLoad(repositoryData: {
+async function handleGitHubRepositoryLoad(repositoryData: {
 	files: { name: string; content: any; url: string }[];
 	repository: { owner: string; repo: string; branch?: string; path?: string };
 	metadata: any;
 }) {
-	const _result =
+	const result =
 		await dataSourceManager.processGitHubRepository(repositoryData);
+	console.log("GitHub repository processing result:", result);
 }
 
 // Handle source added from GitHub browser
-function _handleSourceAdded(_source: DataSource) {}
+function handleSourceAdded(source: DataSource) {
+	console.log("GitHub source added:", source);
+}
 
 // Handle Tauri file uploads
-async function _handleTauriFilesLoaded(files: TauriFileResult[]) {
-	if (files.length === 0) {
-		return;
-	}
+async function handleTauriFilesLoaded(files: TauriFileResult[]) {
+	if (files.length === 0) return;
 
 	try {
 		// Create local data source from Tauri files
 		const localSource =
 			await tauriDataSourceManager.createLocalSourceFromFiles(files);
+		console.log("Created local data source:", localSource);
 
 		// Process files through the main data source manager for UI integration
 		const fileObjects = files.map((file) => ({
@@ -86,58 +117,62 @@ async function _handleTauriFilesLoaded(files: TauriFileResult[]) {
 		}));
 
 		await dataSourceManager.processUploadedFiles(fileObjects, localSource.name);
-	} catch (_error) {}
+	} catch (error) {
+		console.error("Failed to process Tauri files:", error);
+	}
 }
 
 // Handle Tauri file upload errors
-function _handleTauriError(_error: string) {}
+function handleTauriError(error: string) {
+	console.error("Tauri file upload error:", error);
+}
 
 // Tab state management
-const _activeTab = $state("upload");
+let activeTab = $state("upload");
 
 // Tauri environment detection
-let _isDesktopApp = $state(false);
+let isDesktopApp = $state(false);
 
 // Load built-in data state
-let _loadMessage = $state<string | null>(null);
+let loadMessage = $state<string | null>(null);
 
 // Clear tests state
-let _clearMessage = $state<string | null>(null);
+let clearMessage = $state<string | null>(null);
 
 // Handle loading built-in data
-async function _handleLoadBuiltInData() {
+async function handleLoadBuiltInData() {
 	const result = await dataSourceManager.loadBuiltInData();
-	_loadMessage = result.message;
+	loadMessage = result.message;
 
 	// Clear message after 3 seconds
 	setTimeout(() => {
-		_loadMessage = null;
+		loadMessage = null;
 	}, 3000);
 }
 
 // Handle clearing all test data
-function _handleClearAllData() {
+function handleClearAllData() {
 	dataSourceManager.clearAllData();
-	_clearMessage = "All test data cleared successfully";
+	clearMessage = "All test data cleared successfully";
 
 	// Clear message after 3 seconds
 	setTimeout(() => {
-		_clearMessage = null;
+		clearMessage = null;
 	}, 3000);
 }
 
 // Data source summaries for display
-const _sourceSummaries = $derived(dataSourceManager.sourceSummaries);
-const _mergedStats = $derived(dataSourceManager.mergedStats);
-const _isProcessing = $derived(dataSourceManager.isProcessing);
+const sourceSummaries = $derived(dataSourceManager.sourceSummaries);
+const mergedStats = $derived(dataSourceManager.mergedStats);
+const isProcessing = $derived(dataSourceManager.isProcessing);
 const hasUploadedSources = $derived(
 	dataSourceManager.getSourcesByType("uploaded").length > 0,
 );
 const hasGitHubSources = $derived(
 	dataSourceManager.getSourcesByType("github").length > 0,
 );
-const _hasImportedSources = $derived(hasUploadedSources || hasGitHubSources);
-const _hasStaticData = $derived(dataSourceManager.hasStaticData);
+const hasImportedSources = $derived(hasUploadedSources || hasGitHubSources);
+const hasStaticData = $derived(dataSourceManager.hasStaticData);
 </script>
 
 <svelte:head>

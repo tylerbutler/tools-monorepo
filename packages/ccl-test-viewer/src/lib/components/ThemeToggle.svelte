@@ -1,5 +1,7 @@
 <script lang="ts">
+import { Button } from "$lib/components/ui/button/index.js";
 import { themeStore } from "$lib/stores.svelte.js";
+import { Moon, Sun } from "@lucide/svelte";
 
 // Props
 interface Props {
@@ -7,17 +9,17 @@ interface Props {
 	variant?: "default" | "outline" | "ghost";
 }
 
-const { size = "default", variant = "ghost" }: Props = $props();
+let { size = "default", variant = "ghost" }: Props = $props();
 
 // Reactive theme state using $effect for proper lifecycle management
-let _currentTheme = $state<"light" | "dark">("light");
+let currentTheme = $state<"light" | "dark">("light");
 
 // Update state when component mounts and when store changes
 $effect(() => {
-	_currentTheme = themeStore.theme;
+	currentTheme = themeStore.theme;
 });
 
-function _toggleTheme() {
+function toggleTheme() {
 	themeStore.toggle();
 }
 </script>

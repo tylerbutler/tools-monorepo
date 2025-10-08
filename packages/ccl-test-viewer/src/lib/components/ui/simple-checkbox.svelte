@@ -1,4 +1,7 @@
 <script lang="ts">
+import { cn } from "$lib/utils.js";
+import CheckIcon from "@lucide/svelte/icons/check";
+
 interface Props {
 	checked?: boolean;
 	onCheckedChange?: (checked: boolean) => void;
@@ -16,18 +19,14 @@ let {
 }: Props = $props();
 
 function handleClick() {
-	if (disabled) {
-		return;
-	}
+	if (disabled) return;
 
 	checked = !checked;
 	onCheckedChange?.(checked);
 }
 
-function _handleKeyDown(event: KeyboardEvent) {
-	if (disabled) {
-		return;
-	}
+function handleKeyDown(event: KeyboardEvent) {
+	if (disabled) return;
 
 	if (event.key === " " || event.key === "Enter") {
 		event.preventDefault();

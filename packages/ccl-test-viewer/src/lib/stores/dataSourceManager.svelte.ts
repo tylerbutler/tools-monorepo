@@ -27,7 +27,7 @@ class DataSourceManager {
 	lastError = $state<string | null>(null);
 
 	// Track if we should auto-save (avoid saving during initial load)
-	private readonly shouldAutoSave = $state(false);
+	private shouldAutoSave = $state(false);
 
 	constructor() {
 		// Set up reactive auto-save effect using $effect.root for manual control

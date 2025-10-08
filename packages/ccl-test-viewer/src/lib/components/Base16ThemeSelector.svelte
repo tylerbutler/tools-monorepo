@@ -14,7 +14,7 @@ interface Props {
 	showLabel?: boolean;
 }
 
-const {
+let {
 	size = "default",
 	variant = "ghost",
 	showLabel = false,

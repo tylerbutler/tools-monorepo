@@ -1,11 +1,13 @@
 <script lang="ts">
+import { Badge } from "$lib/components/ui/index.js";
+
 interface Props {
 	list: any[];
 }
 
-const { list }: Props = $props();
+let { list }: Props = $props();
 
-function _formatItem(item: any, _index: number) {
+function formatItem(item: any, index: number) {
 	if (item === null || item === undefined) {
 		return {
 			display: item === null ? "null" : "undefined",

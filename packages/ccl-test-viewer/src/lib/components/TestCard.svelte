@@ -1,28 +1,26 @@
 <script lang="ts">
-import { Badge } from "$lib/components/ui/badge/index.js";
-import { Button } from "$lib/components/ui/button/index.js";
 import {
+	Badge,
+	Button,
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from "$lib/components/ui/card/index.js";
-import WhitespaceCodeHighlight from "$lib/components/WhitespaceCodeHighlight.svelte";
+} from "$lib/components/ui/index.js";
 import type { GeneratedTest } from "$lib/data/types.js";
 import { ArrowRight, Code, Eye } from "@lucide/svelte";
+import WhitespaceCodeHighlight from "./WhitespaceCodeHighlight.svelte";
 
 interface Props {
 	test: GeneratedTest;
 	onView: (test: GeneratedTest) => void;
 }
 
-const { test, onView }: Props = $props();
+let { test, onView }: Props = $props();
 
-function truncateInput(input: string, maxLength = 100): string {
-	if (input.length <= maxLength) {
-		return input;
-	}
-	return `${input.substring(0, maxLength)}...`;
+function truncateInput(input: string, maxLength: number = 100): string {
+	if (input.length <= maxLength) return input;
+	return input.substring(0, maxLength) + "...";
 }
 
 function handleView() {
@@ -47,13 +45,6 @@ const expectedSummary = $derived.by(() => {
 	if (expected.entries) {
 		const count = Array.isArray(expected.entries)
 			? expected.entries.length
-			: "invalid";
-		return `${count} entries`;
-	}
-
-	if (expected.list) {
-		const count = Array.isArray(expected.list)
-			? expected.list.length
 			: "invalid";
 		return `${count} entries`;
 	}

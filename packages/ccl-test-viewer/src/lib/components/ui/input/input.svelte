@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { WithElementRef } from "$lib/utils";
+import { cn, type WithElementRef } from "$lib/utils";
 import type {
 	HTMLInputAttributes,
 	HTMLInputTypeAttribute,
@@ -15,7 +15,7 @@ type Props = WithElementRef<
 		)
 >;
 
-const {
+let {
 	ref = $bindable(null),
 	value = $bindable(),
 	type,

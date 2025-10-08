@@ -8,7 +8,7 @@ interface Props extends Omit<HTMLAttributes<HTMLElement>, "class"> {
 	showWhitespace?: boolean;
 }
 
-const {
+let {
 	code,
 	language = "ccl",
 	class: className = "",

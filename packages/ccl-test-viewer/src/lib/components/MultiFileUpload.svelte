@@ -1,5 +1,13 @@
 <script lang="ts">
-import { AlertCircle, CheckCircle2, FileText, Upload } from "@lucide/svelte";
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
+import { AlertCircle, CheckCircle2, FileText, Upload, X } from "@lucide/svelte";
 
 interface UploadedFile {
 	file: File;
@@ -15,7 +23,7 @@ interface Props {
 	maxSize?: number; // in bytes
 }
 
-const {
+let {
 	onFilesUploaded,
 	maxFiles = 10,
 	maxSize = 10 * 1024 * 1024,
@@ -23,7 +31,7 @@ const {
 
 // File management state using Svelte 5 runes
 let uploadedFiles = $state<UploadedFile[]>([]);
-let _isDragOver = $state(false);
+let isDragOver = $state(false);
 let isProcessing = $state(false);
 let fileInput: HTMLInputElement;
 let dropZone: HTMLElement;
@@ -77,7 +85,7 @@ function handleFilesSelect(files: FileList | File[]) {
 }
 
 // Handle file input change
-function _handleFileInputChange(event: Event) {
+function handleFileInputChange(event: Event) {
 	const target = event.target as HTMLInputElement;
 	if (target.files) {
 		handleFilesSelect(target.files);
@@ -85,19 +93,19 @@ function _handleFileInputChange(event: Event) {
 }
 
 // Handle drag and drop with neodrag integration
-function _handleDragEnter(event: DragEvent) {
+function handleDragEnter(event: DragEvent) {
 	event.preventDefault();
 	if (event.dataTransfer?.types.includes("Files")) {
-		_isDragOver = true;
+		isDragOver = true;
 	}
 }
 
-function _handleDragOver(event: DragEvent) {
+function handleDragOver(event: DragEvent) {
 	event.preventDefault();
 	event.dataTransfer!.dropEffect = "copy";
 }
 
-function _handleDragLeave(event: DragEvent) {
+function handleDragLeave(event: DragEvent) {
 	event.preventDefault();
 	// Only set to false if we're leaving the actual drop zone
 	const rect = dropZone?.getBoundingClientRect();
@@ -108,13 +116,13 @@ function _handleDragLeave(event: DragEvent) {
 			event.clientY < rect.top ||
 			event.clientY > rect.bottom)
 	) {
-		_isDragOver = false;
+		isDragOver = false;
 	}
 }
 
-function _handleDrop(event: DragEvent) {
+function handleDrop(event: DragEvent) {
 	event.preventDefault();
-	_isDragOver = false;
+	isDragOver = false;
 
 	if (event.dataTransfer?.files) {
 		handleFilesSelect(event.dataTransfer.files);
@@ -122,15 +130,13 @@ function _handleDrop(event: DragEvent) {
 }
 
 // Open file dialog
-function _openFileDialog() {
+function openFileDialog() {
 	fileInput?.click();
 }
 
 // Process uploaded files (validate JSON content)
 async function processFiles() {
-	if (isProcessing) {
-		return;
-	}
+	if (isProcessing) return;
 
 	isProcessing = true;
 
@@ -178,17 +184,17 @@ async function processFiles() {
 }
 
 // Remove file from queue
-function _removeFile(id: string) {
+function removeFile(id: string) {
 	uploadedFiles = uploadedFiles.filter((f) => f.id !== id);
 }
 
 // Clear all files
-function _clearAll() {
+function clearAll() {
 	uploadedFiles = [];
 }
 
 // Get status icon
-function _getStatusIcon(status: UploadedFile["status"]) {
+function getStatusIcon(status: UploadedFile["status"]) {
 	switch (status) {
 		case "success":
 			return CheckCircle2;
@@ -202,7 +208,7 @@ function _getStatusIcon(status: UploadedFile["status"]) {
 }
 
 // Get status color
-function _getStatusColor(status: UploadedFile["status"]) {
+function getStatusColor(status: UploadedFile["status"]) {
 	switch (status) {
 		case "success":
 			return "text-green-600 dark:text-green-400";
@@ -216,14 +222,12 @@ function _getStatusColor(status: UploadedFile["status"]) {
 }
 
 // Format file size
-function _formatFileSize(bytes: number): string {
-	if (bytes === 0) {
-		return "0 B";
-	}
+function formatFileSize(bytes: number): string {
+	if (bytes === 0) return "0 B";
 	const k = 1024;
 	const sizes = ["B", "KB", "MB", "GB"];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return `${Number.parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`;
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
 }
 </script>
 

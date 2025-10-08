@@ -3,7 +3,7 @@ interface Props {
 	data: any;
 }
 
-const { data }: Props = $props();
+let { data }: Props = $props();
 
 let jsonViewerElement: HTMLElement;
 let isComponentReady = $state(false);
@@ -11,6 +11,18 @@ let isInitializing = $state(false);
 
 // Initialize the web component when the element is available
 $effect(() => {
+	console.log("JsonTreeViewer: $effect triggered", {
+		hasElement: !!jsonViewerElement,
+		hasData: !!data,
+		isReady: isComponentReady,
+		isInitializing: isInitializing,
+		isCustomElementDefined:
+			typeof customElements !== "undefined"
+				? !!customElements.get("andypf-json-viewer")
+				: false,
+		isBrowser: typeof window !== "undefined",
+	});
+
 	// Only run in browser context when element is available and not already initializing
 	if (
 		typeof window !== "undefined" &&
@@ -19,14 +31,20 @@ $effect(() => {
 		!isInitializing
 	) {
 		isInitializing = true;
+		console.log("JsonTreeViewer: Starting web component initialization");
 
 		// Initialize the web component
 		(async () => {
 			try {
+				console.log("JsonTreeViewer: Starting import of @andypf/json-viewer");
 				await import("@andypf/json-viewer");
+				console.log("JsonTreeViewer: Web component imported successfully");
 
 				// Wait for custom element to be defined with timeout
 				if (!customElements.get("andypf-json-viewer")) {
+					console.log(
+						"JsonTreeViewer: Waiting for custom element to be defined",
+					);
 					await Promise.race([
 						customElements.whenDefined("andypf-json-viewer"),
 						new Promise((_, reject) =>
@@ -34,6 +52,7 @@ $effect(() => {
 						),
 					]);
 				}
+				console.log("JsonTreeViewer: Custom element defined successfully");
 
 				isComponentReady = true;
 				isInitializing = false;
@@ -41,13 +60,17 @@ $effect(() => {
 				// Set the data after the component is loaded and defined
 				if (jsonViewerElement && data) {
 					(jsonViewerElement as any).data = JSON.stringify(data);
+					console.log("JsonTreeViewer: Data set on web component:", data);
 				}
-			} catch (_error) {
+			} catch (error) {
+				console.error("JsonTreeViewer: Failed to load web component:", error);
+				console.error("JsonTreeViewer: Error details:", error);
 				isInitializing = false;
 
 				// Fallback to JSON.stringify if the web component fails
 				if (jsonViewerElement) {
 					jsonViewerElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+					console.log("JsonTreeViewer: Using fallback JSON.stringify");
 				}
 			}
 		})();
@@ -62,10 +85,14 @@ $effect(() => {
 		) {
 			try {
 				(jsonViewerElement as any).data = JSON.stringify(data);
-			} catch (_error) {
+				console.log("JsonTreeViewer: Updated data on web component:", data);
+			} catch (error) {
+				console.error("JsonTreeViewer: Failed to update data:", error);
 				jsonViewerElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
 			}
 		} else if (!isInitializing) {
+			// Use fallback if component not ready and not initializing
+			console.log("JsonTreeViewer: Component not ready, using fallback");
 			jsonViewerElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
 		}
 	}

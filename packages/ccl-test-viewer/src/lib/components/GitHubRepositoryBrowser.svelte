@@ -1,19 +1,39 @@
 <script lang="ts">
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
 import type { DataSource } from "$lib/stores/dataSource.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import {
+	AlertCircle,
+	CheckCircle,
+	Clock,
+	Download,
+	ExternalLink,
+	FileText,
+	FolderOpen,
+	Github,
+	RefreshCw,
+} from "@lucide/svelte";
 
 interface Props {
 	onSourceAdded?: (source: DataSource) => void;
 }
 
-const { onSourceAdded }: Props = $props();
+let { onSourceAdded }: Props = $props();
 
 // State management
-let _activeTab = $state("browser");
-let _refreshing = $state(false);
+let activeTab = $state("browser");
+let refreshing = $state(false);
 
 // Get GitHub sources from data source manager
-const _githubSources = $derived(dataSourceManager.getSourcesByType("github"));
+let githubSources = $derived(dataSourceManager.getSourcesByType("github"));
 
 // Popular repositories with CCL test data (examples for users)
 const popularRepositories = [
@@ -36,12 +56,10 @@ const popularRepositories = [
 ];
 
 // Refresh GitHub sources (re-fetch from GitHub)
-async function _refreshGitHubSource(source: DataSource) {
-	if (!source.url) {
-		return;
-	}
+async function refreshGitHubSource(source: DataSource) {
+	if (!source.url) return;
 
-	_refreshing = true;
+	refreshing = true;
 	try {
 		// Re-import from the same URL
 		const { githubLoader } = await import("$lib/services/githubLoader");
@@ -55,14 +73,15 @@ async function _refreshGitHubSource(source: DataSource) {
 		if (result.success && result.dataSource) {
 			onSourceAdded?.(result.dataSource);
 		}
-	} catch (_error) {
+	} catch (error) {
+		console.error("Failed to refresh GitHub source:", error);
 	} finally {
-		_refreshing = false;
+		refreshing = false;
 	}
 }
 
 // Load popular repository
-async function _loadPopularRepository(repo: (typeof popularRepositories)[0]) {
+async function loadPopularRepository(repo: (typeof popularRepositories)[0]) {
 	try {
 		const { githubLoader } = await import("$lib/services/githubLoader");
 		const repositoryData = await githubLoader.loadRepositoryData(repo.url);
@@ -72,13 +91,15 @@ async function _loadPopularRepository(repo: (typeof popularRepositories)[0]) {
 		if (result.success && result.dataSource) {
 			onSourceAdded?.(result.dataSource);
 			// Switch to loaded sources tab
-			_activeTab = "loaded";
+			activeTab = "loaded";
 		}
-	} catch (_error) {}
+	} catch (error) {
+		console.error("Failed to load popular repository:", error);
+	}
 }
 
 // Format date for display
-function _formatDate(date: Date): string {
+function formatDate(date: Date): string {
 	return new Intl.DateTimeFormat("en-US", {
 		year: "numeric",
 		month: "short",
@@ -89,7 +110,7 @@ function _formatDate(date: Date): string {
 }
 
 // Format repository metadata
-function _getRepositoryDisplayName(source: DataSource): string {
+function getRepositoryDisplayName(source: DataSource): string {
 	if (source.metadata?.githubRepo) {
 		const branch =
 			source.metadata.githubBranch !== "main"

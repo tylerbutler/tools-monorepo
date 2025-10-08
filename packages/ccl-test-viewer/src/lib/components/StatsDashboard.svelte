@@ -1,12 +1,20 @@
 <script lang="ts">
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
 import type { TestStats } from "$lib/data/types.js";
+import { BarChart3, Code, File, Hash } from "@lucide/svelte";
 import { Chart, registerables } from "chart.js";
 
 interface Props {
 	stats: TestStats;
 }
 
-const { stats }: Props = $props();
+let { stats }: Props = $props();
 
 let categoryChartCanvas: HTMLCanvasElement;
 let functionChartCanvas: HTMLCanvasElement;
@@ -140,11 +148,11 @@ $effect(() => {
 
 // Calculate some derived statistics
 const totalCategories = $derived(Object.keys(stats.categories).length);
-const _totalFunctions = $derived(Object.keys(stats.functions).length);
-const _avgTestsPerCategory = $derived(
+const totalFunctions = $derived(Object.keys(stats.functions).length);
+const avgTestsPerCategory = $derived(
 	Math.round(stats.totalTests / totalCategories),
 );
-const _avgAssertionsPerTest = $derived(
+const avgAssertionsPerTest = $derived(
 	(stats.totalAssertions / stats.totalTests).toFixed(1),
 );
 
@@ -152,8 +160,10 @@ const _avgAssertionsPerTest = $derived(
 const categoryEntries = $derived(
 	Object.entries(stats.categories).sort((a, b) => b[1] - a[1]),
 );
-const _mostTestedCategory = $derived(categoryEntries[0]);
-const _leastTestedCategory = $derived(categoryEntries.at(-1));
+const mostTestedCategory = $derived(categoryEntries[0]);
+const leastTestedCategory = $derived(
+	categoryEntries[categoryEntries.length - 1],
+);
 </script>
 
 <div class="space-y-6">

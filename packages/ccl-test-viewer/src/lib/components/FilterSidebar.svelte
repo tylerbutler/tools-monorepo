@@ -1,75 +1,83 @@
 <script lang="ts">
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	Input,
+	SimpleCheckbox,
+} from "$lib/components/ui/index.js";
+import {
+	AVAILABLE_BEHAVIORS,
+	AVAILABLE_FEATURES,
+	AVAILABLE_FUNCTIONS,
+} from "$lib/data/types.js";
 import { appState, type FilterState } from "$lib/stores.svelte.js";
+import { ChevronDown, ChevronRight, Filter, Search, X } from "@lucide/svelte";
 
 // Local state for collapsible sections
-const _functionsExpanded = $state(true);
-const _featuresExpanded = $state(true);
-const _behaviorsExpanded = $state(true);
-const _categoriesExpanded = $state(true);
+let functionsExpanded = $state(true);
+let featuresExpanded = $state(true);
+let behaviorsExpanded = $state(true);
+let categoriesExpanded = $state(true);
 
 // Derived stats for badges
-const _functionCounts = $derived.by(() => {
-	if (!appState.testStats) {
-		return {};
-	}
+const functionCounts = $derived.by(() => {
+	if (!appState.testStats) return {};
 	return appState.testStats.functions;
 });
 
-const _featureCounts = $derived.by(() => {
-	if (!appState.testStats) {
-		return {};
-	}
+const featureCounts = $derived.by(() => {
+	if (!appState.testStats) return {};
 	return appState.testStats.features;
 });
 
-const _behaviorCounts = $derived.by(() => {
-	if (!appState.testStats) {
-		return {};
-	}
+const behaviorCounts = $derived.by(() => {
+	if (!appState.testStats) return {};
 	return appState.testStats.behaviors;
 });
 
-const _categoryCounts = $derived.by(() => {
-	if (!appState.testStats) {
-		return {};
-	}
+const categoryCounts = $derived.by(() => {
+	if (!appState.testStats) return {};
 	return appState.testStats.categories;
 });
 
 // Helper functions
-function _handleSearchInput(event: Event) {
+function handleSearchInput(event: Event) {
 	const target = event.target as HTMLInputElement;
 	appState.setSearchQuery(target.value);
 }
 
-function _clearSearch() {
+function clearSearch() {
 	appState.setSearchQuery("");
 }
 
-function _handleFilterToggle(type: keyof FilterState, key: string) {
+function handleFilterToggle(type: keyof FilterState, key: string) {
 	appState.toggleFilter(type, key);
 }
 
-function _clearFilterSection(type: keyof FilterState) {
+function clearFilterSection(type: keyof FilterState) {
 	appState.clearFilterType(type);
 }
 
 // Count active filters per section
-const _activeFunctionFilters = $derived(
+const activeFunctionFilters = $derived(
 	Object.values(appState.activeFilters.functions).filter(Boolean).length,
 );
-const _activeFeatureFilters = $derived(
+const activeFeatureFilters = $derived(
 	Object.values(appState.activeFilters.features).filter(Boolean).length,
 );
-const _activeBehaviorFilters = $derived(
+const activeBehaviorFilters = $derived(
 	Object.values(appState.activeFilters.behaviors).filter(Boolean).length,
 );
-const _activeCategoryFilters = $derived(
+const activeCategoryFilters = $derived(
 	Object.values(appState.activeFilters.categories).filter(Boolean).length,
 );
 
 // Available categories from loaded data
-const _availableCategories = $derived.by(() => {
+const availableCategories = $derived.by(() => {
 	return appState.testCategories.map((cat) => cat.name);
 });
 </script>

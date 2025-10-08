@@ -1,19 +1,21 @@
 <script lang="ts">
+import { Badge } from "$lib/components/ui/index.js";
 import {
 	FUNCTION_DESCRIPTIONS,
 	FUNCTION_STATUS,
 } from "$lib/data/function-types.js";
 import type { CCLFunction } from "$lib/data/types.js";
+import { Settings, Wrench } from "@lucide/svelte";
 
 interface Props {
 	functionName: CCLFunction;
 	rawExpected?: any;
 }
 
-const { functionName, rawExpected }: Props = $props();
+let { functionName, rawExpected }: Props = $props();
 
-const _status = $derived(FUNCTION_STATUS[functionName]);
-const _description = $derived(
+const status = $derived(FUNCTION_STATUS[functionName]);
+const description = $derived(
 	FUNCTION_DESCRIPTIONS[functionName] ||
 		"CCL function with specialized behavior",
 );

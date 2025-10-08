@@ -3,7 +3,13 @@
   Provides native file dialogs in desktop app, falls back to web upload
 -->
 <script lang="ts">
+import { Download, File, Folder, HardDrive, Upload, X } from "@lucide/svelte";
 import { onMount } from "svelte";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import {
 	checkFileSystemPermissions,
 	isTauriEnvironment,
@@ -19,7 +25,7 @@ interface Props {
 	maxFileSize?: number;
 }
 
-const {
+let {
 	onFilesLoaded = () => {},
 	onError = () => {},
 	maxFiles = 10,
@@ -28,40 +34,40 @@ const {
 
 // State
 let isDesktopApp = $state(false);
-let _hasFileSystemPermissions = $state(false);
-let _isLoading = $state(false);
+let hasFileSystemPermissions = $state(false);
+let isLoading = $state(false);
 let loadedFiles = $state<TauriFileResult[]>([]);
 let error = $state<string | null>(null);
-let _progress = $state(0);
+let progress = $state(0);
 
 // Check Tauri environment on mount
 onMount(async () => {
 	isDesktopApp = isTauriEnvironment();
 
 	if (isDesktopApp) {
-		_hasFileSystemPermissions = await checkFileSystemPermissions();
+		hasFileSystemPermissions = await checkFileSystemPermissions();
 	}
 });
 
 /**
  * Handle native file dialog selection
  */
-async function _handleNativeFileDialog() {
+async function handleNativeFileDialog() {
 	if (!isDesktopApp) {
 		error = "Native file dialogs only available in desktop app";
 		onError(error);
 		return;
 	}
 
-	_isLoading = true;
+	isLoading = true;
 	error = null;
-	_progress = 0;
+	progress = 0;
 
 	try {
 		const files = await openMultiFileDialog();
 
 		if (files.length === 0) {
-			_isLoading = false;
+			isLoading = false;
 			return;
 		}
 
@@ -86,13 +92,14 @@ async function _handleNativeFileDialog() {
 
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
-			_progress = ((i + 1) / files.length) * 100;
+			progress = ((i + 1) / files.length) * 100;
 
 			try {
 				// Validate JSON content
 				JSON.parse(file.content);
 				processedFiles.push(file);
-			} catch (_jsonError) {
+			} catch (jsonError) {
+				console.warn(`Invalid JSON in file ${file.name}:`, jsonError);
 				throw new Error(`File "${file.name}" contains invalid JSON`);
 			}
 		}
@@ -103,15 +110,15 @@ async function _handleNativeFileDialog() {
 		error = err instanceof Error ? err.message : "Failed to load files";
 		onError(error);
 	} finally {
-		_isLoading = false;
-		_progress = 0;
+		isLoading = false;
+		progress = 0;
 	}
 }
 
 /**
  * Remove a loaded file
  */
-function _removeFile(index: number) {
+function removeFile(index: number) {
 	loadedFiles = loadedFiles.filter((_, i) => i !== index);
 	onFilesLoaded(loadedFiles);
 }
@@ -119,7 +126,7 @@ function _removeFile(index: number) {
 /**
  * Clear all loaded files
  */
-function _clearFiles() {
+function clearFiles() {
 	loadedFiles = [];
 	error = null;
 	onFilesLoaded([]);
@@ -129,19 +136,17 @@ function _clearFiles() {
  * Format file size for display
  */
 function formatFileSize(bytes: number): string {
-	if (bytes === 0) {
-		return "0 Bytes";
-	}
+	if (bytes === 0) return "0 Bytes";
 	const k = 1024;
 	const sizes = ["Bytes", "KB", "MB", "GB"];
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 /**
  * Get file status badge variant
  */
-function _getFileStatusVariant(file: TauriFileResult) {
+function getFileStatusVariant(file: TauriFileResult) {
 	try {
 		JSON.parse(file.content);
 		return "default";

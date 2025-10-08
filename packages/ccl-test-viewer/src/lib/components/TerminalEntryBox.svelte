@@ -6,15 +6,15 @@ interface Props {
 	};
 }
 
-const { entry }: Props = $props();
+let { entry }: Props = $props();
 
 // Visualize whitespace like the terminal version
-function _visualizeWhitespace(s: string): string {
+function visualizeWhitespace(s: string): string {
 	return s.replace(/ /g, "·").replace(/\t/g, "→");
 }
 
 // Check if value contains newlines for multiline display
-const _isMultiline = $derived(entry.value.includes("\n"));
+const isMultiline = $derived(entry.value.includes("\n"));
 </script>
 
 <div class="terminal-entry-box">

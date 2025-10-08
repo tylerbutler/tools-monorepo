@@ -1,9 +1,18 @@
 <script lang="ts">
+import { Badge, Button, Input } from "$lib/components/ui/index.js";
 import {
 	GitHubAPIError,
 	type GitHubRepository,
 	githubLoader,
 } from "$lib/services/githubLoader";
+import {
+	AlertCircle,
+	CheckCircle,
+	FileText,
+	FolderOpen,
+	Github,
+	LoaderCircle,
+} from "@lucide/svelte";
 
 interface Props {
 	onLoad?: (data: {
@@ -14,13 +23,13 @@ interface Props {
 	disabled?: boolean;
 }
 
-const { onLoad, disabled = false }: Props = $props();
+let { onLoad, disabled = false }: Props = $props();
 
 // Component state
 let url = $state("");
-let _isLoading = $state(false);
-let _error = $state<string | null>(null);
-const _validationResult = $state<{
+let isLoading = $state(false);
+let error = $state<string | null>(null);
+let validationResult = $state<{
 	valid: boolean;
 	error?: string;
 	repository?: GitHubRepository;
@@ -30,32 +39,28 @@ let repositoryInfo = $state<{
 	fileCount: number;
 	files: any[];
 } | null>(null);
-let _successMessage = $state<string | null>(null);
+let successMessage = $state<string | null>(null);
 
 // URL validation - runs on every change
-const urlValidation = $derived(() => {
-	if (!url.trim()) {
-		return null;
-	}
+let urlValidation = $derived(() => {
+	if (!url.trim()) return null;
 	return githubLoader.validateGitHubUrl(url);
 });
 
 // Reset states when URL changes
 $effect(() => {
 	url; // Track URL changes
-	_error = null;
+	error = null;
 	repositoryInfo = null;
-	_successMessage = null;
+	successMessage = null;
 });
 
 // Preview repository info
-async function _previewRepository() {
-	if (!urlValidation()?.valid) {
-		return;
-	}
+async function previewRepository() {
+	if (!urlValidation()?.valid) return;
 
-	_isLoading = true;
-	_error = null;
+	isLoading = true;
+	error = null;
 	repositoryInfo = null;
 
 	try {
@@ -63,34 +68,32 @@ async function _previewRepository() {
 		repositoryInfo = info;
 	} catch (err) {
 		if (err instanceof GitHubAPIError) {
-			_error = err.message;
+			error = err.message;
 		} else {
-			_error = "Failed to load repository information";
+			error = "Failed to load repository information";
 		}
 	} finally {
-		_isLoading = false;
+		isLoading = false;
 	}
 }
 
 // Load repository data
-async function _loadRepository() {
-	if (!(urlValidation()?.valid && repositoryInfo)) {
-		return;
-	}
+async function loadRepository() {
+	if (!urlValidation()?.valid || !repositoryInfo) return;
 
-	_isLoading = true;
-	_error = null;
-	_successMessage = null;
+	isLoading = true;
+	error = null;
+	successMessage = null;
 
 	try {
 		const result = await githubLoader.loadRepositoryData(url);
 
 		if (result.files.length === 0) {
-			_error = "No JSON files found in the repository path";
+			error = "No JSON files found in the repository path";
 			return;
 		}
 
-		_successMessage = `Successfully loaded ${result.files.length} JSON files from ${repositoryInfo.repository.owner}/${repositoryInfo.repository.repo}`;
+		successMessage = `Successfully loaded ${result.files.length} JSON files from ${repositoryInfo.repository.owner}/${repositoryInfo.repository.repo}`;
 
 		// Call the callback with loaded data
 		onLoad?.(result);
@@ -100,17 +103,17 @@ async function _loadRepository() {
 		repositoryInfo = null;
 	} catch (err) {
 		if (err instanceof GitHubAPIError) {
-			_error = err.message;
+			error = err.message;
 		} else {
-			_error = "Failed to load repository data";
+			error = "Failed to load repository data";
 		}
 	} finally {
-		_isLoading = false;
+		isLoading = false;
 	}
 }
 
 // Example URLs for user guidance
-const _exampleUrls = [
+const exampleUrls = [
 	"https://github.com/owner/repo/tree/main/tests",
 	"https://github.com/owner/repo/tree/main/data/tests.json",
 	"https://api.github.com/repos/owner/repo/contents/tests",

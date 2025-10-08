@@ -1,10 +1,11 @@
 <script lang="ts">
-import type { Props } from "./index.js";
+import { cn } from "@/utils.js";
+import { alertVariants, type Props } from "./index.js";
 
 type $$Props = Props;
 
-let className: $$Props["class"];
-export const variant: $$Props["variant"] = undefined;
+let className: $$Props["class"] = undefined;
+export let variant: $$Props["variant"] = undefined;
 export { className as class };
 </script>
 
