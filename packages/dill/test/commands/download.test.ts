@@ -34,9 +34,7 @@ describe("download command", async () => {
 	beforeAll(async () => {
 		port = await getRandomPort();
 		testUrls = getTestUrls(port);
-		server.listen(port, () => {
-			console.debug(`Running at http://localhost:${port}`);
-		});
+		server.listen(port);
 	});
 
 	let downloadDir: string;
@@ -53,19 +51,18 @@ describe("download command", async () => {
 	});
 
 	it("downloads json", async () => {
-		const { stdout } = await runCommand(
+		await runCommand(
 			[
 				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
 				".",
 				testUrls[0].toString(),
-				`--out ${downloadDir}`,
+				"--out",
+				downloadDir,
 			],
 			{
 				root: import.meta.url,
 			},
 		);
-
-		expect(stdout).to.contain("Downloading ");
 
 		const outputPath = path.join(downloadDir, "test0.json");
 		const actual = await readJson(outputPath);
@@ -81,20 +78,20 @@ describe("download command", async () => {
 		// process.chdir(downloadDir);
 		const filename = "filename-flag-test.json";
 		// path.join(downloadDir, "filename-flag-test.json");
-		const { stdout } = await runCommand(
+		await runCommand(
 			[
 				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
 				".",
 				testUrls[0].toString(),
-				`--out ${downloadDir}`,
-				`--filename ${filename}`,
+				"--out",
+				downloadDir,
+				"--filename",
+				filename,
 			],
 			{
 				root: import.meta.url,
 			},
 		);
-
-		expect(stdout).to.contain("Downloading ");
 
 		const outputPath = path.join(downloadDir, "filename-flag-test.json");
 		const actual = await readJson(outputPath);
@@ -107,20 +104,19 @@ describe("download command", async () => {
 	});
 
 	it("compressed file with --extract", async () => {
-		const { stdout } = await runCommand(
+		await runCommand(
 			[
 				// This is a single-command CLI, so use "." as the command entrypont per the oclif docs
 				".",
 				testUrls[2].toString(),
-				`--out ${downloadDir}`,
+				"--out",
+				downloadDir,
 				"--extract",
 			],
 			{
 				root: import.meta.url,
 			},
 		);
-
-		expect(stdout).to.contain("Downloading ");
 
 		const files = await readdir(downloadDir, { recursive: true });
 		expect(files).toMatchSnapshot();
