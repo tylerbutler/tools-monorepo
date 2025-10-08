@@ -1,59 +1,59 @@
 {
-  "name": "tree-sitter-ccl",
-  "version": "0.1.0",
-  "type": "module",
-  "private": "true",
-  "description": "Tree-sitter grammar for CCL (Categorical Configuration Language)",
-  "keywords": [
-    "tree-sitter",
-    "parser",
-    "ccl",
-    "configuration",
-    "syntax-highlighting"
-  ],
-  "author": "CCL Community",
-  "license": "MIT",
-  "dependencies": {
-    "node-addon-api": "^8.2.2",
-    "node-gyp-build": "^4.8.2"
-  },
-  "peerDependencies": {
-    "tree-sitter": "^0.25.0"
-  },
-  "peerDependenciesMeta": {
-    "tree-sitter": {
-      "optional": true
-    }
-  },
-  "devDependencies": {
-    "tree-sitter-cli": "^0.25.10",
-    "prebuildify": "^6.0.1"
-  },
-  "main": "bindings/node",
-  "files": [
-    "grammar.js",
-    "queries/*",
-    "src/**"
-  ],
-  "installConfig": {
-    "pnp": false
-  },
-  "scripts": {
-    "install": "node-gyp-build",
-    "prebuild": "prebuildify --napi --strip",
-    "build": "tree-sitter generate && node-gyp rebuild && npm run build:cli",
-    "build:cli": "gcc -c -fPIC src/parser.c -I./src -o /tmp/ccl_parser.o && g++ -c -fPIC src/scanner.cc -I./src -o /tmp/ccl_scanner.o && g++ -shared -o ~/.cache/tree-sitter/lib/ccl.so /tmp/ccl_parser.o /tmp/ccl_scanner.o && rm -f /tmp/ccl_parser.o /tmp/ccl_scanner.o",
-    "build-wasm": "tree-sitter build --wasm",
-    "test": "tree-sitter test",
-    "parse": "tree-sitter parse",
-    "clean": "rm -rf build prebuilds ~/.cache/tree-sitter/lib/ccl.so /tmp/ccl_parser.o /tmp/ccl_scanner.o"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ccl-community/tree-sitter-ccl.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ccl-community/tree-sitter-ccl/issues"
-  },
-  "homepage": "https://github.com/ccl-community/tree-sitter-ccl#readme"
+	"name": "tree-sitter-ccl",
+	"version": "0.1.0",
+	"type": "module",
+	"private": "true",
+	"description": "Tree-sitter grammar for CCL (Categorical Configuration Language)",
+	"keywords": [
+		"tree-sitter",
+		"parser",
+		"ccl",
+		"configuration",
+		"syntax-highlighting"
+	],
+	"author": "CCL Community",
+	"license": "MIT",
+	"dependencies": {
+		"node-addon-api": "^8.2.2",
+		"node-gyp-build": "^4.8.2"
+	},
+	"peerDependencies": {
+		"tree-sitter": "^0.25.0"
+	},
+	"peerDependenciesMeta": {
+		"tree-sitter": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"tree-sitter-cli": "^0.25.10",
+		"prebuildify": "^6.0.1"
+	},
+	"main": "bindings/node",
+	"files": [
+		"grammar.js",
+		"queries/*",
+		"src/**"
+	],
+	"installConfig": {
+		"pnp": false
+	},
+	"scripts": {
+		"install": "node-gyp-build",
+		"prebuild": "prebuildify --napi --strip",
+		"build": "tree-sitter generate && node-gyp rebuild && npm run build:cli",
+		"build:cli": "gcc -c -fPIC src/parser.c -I./src -o /tmp/ccl_parser.o && g++ -c -fPIC src/scanner.cc -I./src -o /tmp/ccl_scanner.o && g++ -shared -o ~/.cache/tree-sitter/lib/ccl.so /tmp/ccl_parser.o /tmp/ccl_scanner.o && rm -f /tmp/ccl_parser.o /tmp/ccl_scanner.o",
+		"build-wasm": "tree-sitter build --wasm",
+		"test": "tree-sitter test",
+		"parse": "tree-sitter parse",
+		"clean": "rm -rf build prebuilds ~/.cache/tree-sitter/lib/ccl.so /tmp/ccl_parser.o /tmp/ccl_scanner.o"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ccl-community/tree-sitter-ccl.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ccl-community/tree-sitter-ccl/issues"
+	},
+	"homepage": "https://github.com/ccl-community/tree-sitter-ccl#readme"
 }
