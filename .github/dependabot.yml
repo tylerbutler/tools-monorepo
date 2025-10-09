@@ -91,8 +91,5 @@ updates:
 
     # Commit message format (conventional commits)
     commit-message:
-      # cause a release for non-dev-deps
-      prefix: "chore(deps)"
-      # no release for dev-deps
-      prefix-development: "chore(deps)"
-      include: "scope"
+      prefix: "build(deps)"
+      prefix-development: "build(devdeps)"
