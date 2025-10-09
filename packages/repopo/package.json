@@ -75,7 +75,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "~0.56.0",
+		"@fluid-tools/build-infrastructure": "~0.58.3",
 		"@oclif/core": "^4.3.0",
 		"@oclif/plugin-help": "^6.2.27",
 		"@rushstack/node-core-library": "^5.13.1",
@@ -89,7 +89,7 @@
 		"simple-git": "^3.28.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.0.4",
+		"@biomejs/biome": "2.2.5",
 		"@microsoft/api-extractor": "^7.52.8",
 		"@oclif/plugin-command-snapshot": "^5.3.2",
 		"@oclif/test": "^4.1.13",
