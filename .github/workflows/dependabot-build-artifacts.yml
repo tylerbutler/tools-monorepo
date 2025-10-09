@@ -1,0 +1,106 @@
+name: Dependabot Build Artifacts
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "package.json"
+      - "packages/*/package.json"
+      - "pnpm-lock.yaml"
+
+jobs:
+  commit-build-artifacts:
+    # Only run on Dependabot PRs
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # STEP 1: Checkout the PR branch with special token
+      - name: Checkout PR branch
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+        with:
+          # Use PR head ref to commit to the right branch
+          ref: ${{ github.head_ref }}
+          # PAT required - GITHUB_TOKEN can't trigger workflows
+          token: ${{ secrets.DEPENDABOT_BUILD_PAT }}
+          # Fetch full history for proper git operations
+          fetch-depth: 0
+
+      # STEP 2: Setup pnpm and Node.js (matching existing pr-build.yml)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # ratchet:pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Enable corepack
+        run: |
+          npm i --global corepack@latest
+          corepack enable
+
+      # STEP 3: Get pnpm store for caching
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      # STEP 4: Cache turbo builds (speeds up builds)
+      - name: Cache turbo build setup
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      # STEP 5: Install dependencies (already updated by Dependabot)
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # STEP 6: Run the build (generates artifacts)
+      - name: Build packages
+        run: pnpm run ci:build
+
+      # STEP 7: Check if build generated any files
+      - name: Check for generated files
+        id: check_changes
+        run: |
+          git add -A
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No build artifacts generated"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Build artifacts detected:"
+            git diff --staged --name-only
+          fi
+
+      # STEP 8: Commit and push build artifacts
+      - name: Commit build artifacts
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: update build artifacts from dependency update"
+          git push
+
+      # STEP 9: Add comment to PR (optional, for transparency)
+      - name: Comment on PR
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # ratchet:actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ Build artifacts updated automatically by GitHub Actions'
+            })
