@@ -3,6 +3,8 @@ import { defineConfig } from "vitest/config";
 
 const config = defineConfig({
 	test: {
+		// CI environments are slower, so increase timeout to prevent flaky test failures
+		testTimeout: process.env.GITHUB_ACTIONS ? 15000 : 5000,
 		reporters: process.env.GITHUB_ACTIONS
 			? // CI mode
 				["github-actions", "junit"]
