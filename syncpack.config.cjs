@@ -58,6 +58,16 @@ const config = {
 			packages: ["**"],
 		},
 		{
+			label: "Use tilde range for Fluid Framework packages",
+			range: "~",
+			dependencies: [
+				"@fluidframework/**",
+				"@fluid-tools/**",
+				"fluid-framework",
+			],
+			packages: ["**"],
+		},
+		{
 			label: "Use caret range by default",
 			range: "^",
 			dependencies: ["**"],
