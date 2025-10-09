@@ -15,6 +15,7 @@
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import semver from 'semver';
 
 // Types
 interface DependencyInfo {
@@ -48,6 +49,41 @@ interface SyncResult {
 }
 
 type PackageManager = 'pnpm' | 'npm' | 'yarn';
+
+// Package manager output types
+interface PnpmProject {
+  name: string;
+  path: string;
+  dependencies?: Record<string, DependencyInfo>;
+  devDependencies?: Record<string, DependencyInfo>;
+}
+
+interface NpmDependency {
+  version: string;
+  path?: string;
+  dependencies?: Record<string, NpmDependency>;
+  devDependencies?: Record<string, NpmDependency>;
+}
+
+interface NpmListOutput {
+  name: string;
+  path?: string;
+  version?: string;
+  dependencies?: Record<string, NpmDependency>;
+  devDependencies?: Record<string, NpmDependency>;
+}
+
+interface YarnTreeNode {
+  name?: string;
+  children?: YarnTreeNode[];
+}
+
+interface YarnListOutput {
+  type?: string;
+  data?: {
+    trees?: YarnTreeNode[];
+  };
+}
 
 // CLI arguments
 const args = process.argv.slice(2);
@@ -89,31 +125,43 @@ function getInstalledVersions(packageManager: PackageManager): ProjectInfo[] {
       break;
   }
 
-  const output = execSync(command, {
-    encoding: 'utf-8',
-    stdio: ['pipe', 'pipe', 'inherit'],
-  });
+  try {
+    const output = execSync(command, {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'inherit'],
+    });
 
-  return parseListOutput(packageManager, output);
+    return parseListOutput(packageManager, output);
+  } catch (error) {
+    console.error(`Failed to get installed versions from ${packageManager}:`);
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
 }
 
 /**
  * Parse package manager list output to unified format
  */
 function parseListOutput(packageManager: PackageManager, output: string): ProjectInfo[] {
-  const parsed = JSON.parse(output);
+  try {
+    const parsed = JSON.parse(output);
 
-  switch (packageManager) {
-    case 'pnpm':
-      return parsePnpmList(parsed);
-    case 'npm':
-      return parseNpmList(parsed);
-    case 'yarn':
-      return parseYarnList(parsed);
+    switch (packageManager) {
+      case 'pnpm':
+        return parsePnpmList(parsed);
+      case 'npm':
+        return parseNpmList(parsed);
+      case 'yarn':
+        return parseYarnList(parsed);
+    }
+  } catch (error) {
+    console.error(`Failed to parse ${packageManager} list output:`);
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
   }
 }
 
-function parsePnpmList(data: any[]): ProjectInfo[] {
+function parsePnpmList(data: PnpmProject[]): ProjectInfo[] {
   return data.map((project) => ({
     name: project.name,
     path: project.path,
@@ -122,13 +170,13 @@ function parsePnpmList(data: any[]): ProjectInfo[] {
   }));
 }
 
-function parseNpmList(data: any): ProjectInfo[] {
+function parseNpmList(data: NpmListOutput): ProjectInfo[] {
   // npm list with workspaces returns nested structure
   const projects: ProjectInfo[] = [];
 
-  function extractProject(pkg: any, pkgPath: string) {
+  function extractProject(pkg: NpmListOutput | NpmDependency, pkgPath: string) {
     projects.push({
-      name: pkg.name,
+      name: 'name' in pkg ? pkg.name : '',
       path: pkgPath,
       dependencies: pkg.dependencies ? convertNpmDeps(pkg.dependencies) : {},
       devDependencies: pkg.devDependencies ? convertNpmDeps(pkg.devDependencies) : {},
@@ -141,8 +189,8 @@ function parseNpmList(data: any): ProjectInfo[] {
   // Workspace projects
   if (data.dependencies) {
     for (const [name, info] of Object.entries(data.dependencies)) {
-      if (typeof info === 'object' && (info as any).version) {
-        extractProject(info, (info as any).path || path.join(process.cwd(), 'node_modules', name));
+      if (typeof info === 'object' && info.version) {
+        extractProject(info, info.path || path.join(process.cwd(), 'node_modules', name));
       }
     }
   }
@@ -150,7 +198,7 @@ function parseNpmList(data: any): ProjectInfo[] {
   return projects;
 }
 
-function convertNpmDeps(deps: Record<string, any>): Record<string, DependencyInfo> {
+function convertNpmDeps(deps: Record<string, NpmDependency>): Record<string, DependencyInfo> {
   const result: Record<string, DependencyInfo> = {};
   for (const [name, info] of Object.entries(deps)) {
     if (typeof info === 'object' && info.version) {
@@ -160,7 +208,7 @@ function convertNpmDeps(deps: Record<string, any>): Record<string, DependencyInf
   return result;
 }
 
-function parseYarnList(data: any): ProjectInfo[] {
+function parseYarnList(data: YarnListOutput | YarnTreeNode[]): ProjectInfo[] {
   // Yarn list output varies by version, implement as needed
   // For now, basic implementation
   const trees = Array.isArray(data) ? data : data.data?.trees || [];
@@ -182,6 +230,21 @@ function parseYarnList(data: any): ProjectInfo[] {
 }
 
 /**
+ * Check if version should be skipped (special protocols)
+ */
+function shouldSkipVersion(version: string): boolean {
+  const SKIP_PROTOCOLS = ['link:', 'file:', 'git:', 'git+', 'http:', 'https:'];
+  return SKIP_PROTOCOLS.some(protocol => version.startsWith(protocol));
+}
+
+/**
+ * Validate if a version string is a valid semver
+ */
+function isValidSemver(version: string): boolean {
+  return semver.valid(version) !== null;
+}
+
+/**
  * Sync a package.json file to lockfile versions
  */
 function syncPackageJson(
@@ -189,14 +252,21 @@ function syncPackageJson(
   installedDeps: Record<string, DependencyInfo>,
   installedDevDeps: Record<string, DependencyInfo>
 ): SyncResult {
-  const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
+  let pkg: PackageJson;
+  try {
+    pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
+  } catch (error) {
+    console.error(`Failed to read or parse ${packageJsonPath}:`);
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
   const changes: SyncResult['changes'] = [];
 
   // Sync dependencies
   if (pkg.dependencies) {
     for (const [dep, currentRange] of Object.entries(pkg.dependencies)) {
       const installed = installedDeps[dep];
-      if (installed && !installed.version.startsWith('link:')) {
+      if (installed && !shouldSkipVersion(installed.version)) {
         const newRange = updateVersionRange(currentRange, installed.version);
         if (newRange !== currentRange) {
           changes.push({
@@ -215,7 +285,7 @@ function syncPackageJson(
   if (pkg.devDependencies) {
     for (const [dep, currentRange] of Object.entries(pkg.devDependencies)) {
       const installed = installedDevDeps[dep];
-      if (installed && !installed.version.startsWith('link:')) {
+      if (installed && !shouldSkipVersion(installed.version)) {
         const newRange = updateVersionRange(currentRange, installed.version);
         if (newRange !== currentRange) {
           changes.push({
@@ -245,6 +315,12 @@ function syncPackageJson(
  * Update version range while preserving the range type
  */
 function updateVersionRange(currentRange: string, installedVersion: string): string {
+  // Validate installed version is valid semver
+  if (!isValidSemver(installedVersion)) {
+    // Skip non-semver versions (e.g., git URLs, special tags)
+    return currentRange;
+  }
+
   // Handle workspace protocol
   if (currentRange.startsWith('workspace:')) {
     return currentRange;
