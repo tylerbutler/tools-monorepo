@@ -22,7 +22,7 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       '@changesets/cli':
-        specifier: ^2.29.5
+        specifier: ^2.29.7
         version: 2.29.7(@types/node@24.7.0)
       '@changesets/config':
         specifier: ^3.1.1
@@ -31,7 +31,7 @@ importers:
         specifier: ^18.2.4
         version: 18.2.4
       '@tsconfig/strictest':
-        specifier: ^2.0.5
+        specifier: ^2.0.6
         version: 2.0.6
       '@tylerbu/cli':
         specifier: workspace:^
@@ -43,16 +43,16 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0(encoding@0.1.13)
       concurrently:
-        specifier: ^9.2.0
+        specifier: ^9.2.1
         version: 9.2.1
       generate-license-file:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.9.3)
       npm-check-updates:
-        specifier: ^18.0.1
+        specifier: ^18.3.1
         version: 18.3.1
       renovate:
-        specifier: ^39
+        specifier: ^39.264.1
         version: 39.264.1(encoding@0.1.13)(typanion@3.14.0)
       repopo:
         specifier: workspace:^
@@ -76,7 +76,7 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@24.7.0)(typescript@5.9.3)
       tsx:
-        specifier: ^4.20.3
+        specifier: ^4.20.6
         version: 4.20.6
       turbo:
         specifier: ^2.5.8
@@ -98,7 +98,7 @@ importers:
         specifier: ^0.9.4
         version: 0.9.4(prettier@3.6.2)(typescript@5.5.4)
       '@astrojs/netlify':
-        specifier: ^6.5.11
+        specifier: ^6.5.12
         version: 6.5.12(@types/node@24.7.0)(astro@5.14.3(@netlify/blobs@10.0.11)(@types/node@24.7.0)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.5.4)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
@@ -119,7 +119,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.14.1
+        specifier: ^5.14.3
         version: 5.14.3(@netlify/blobs@10.0.11)(@types/node@24.7.0)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.5.4)(yaml@2.8.1)
       sharp:
         specifier: ^0.34.4
@@ -153,40 +153,40 @@ importers:
   packages/cli:
     dependencies:
       '@oclif/core':
-        specifier: ^4.3.0
+        specifier: ^4.5.4
         version: 4.5.4
       '@oclif/plugin-autocomplete':
-        specifier: ^3.2.27
+        specifier: ^3.2.35
         version: 3.2.35
       '@oclif/plugin-commands':
-        specifier: ^4.1.24
+        specifier: ^4.1.34
         version: 4.1.34
       '@oclif/plugin-help':
-        specifier: ^6.2.27
+        specifier: ^6.2.33
         version: 6.2.33
       '@oclif/plugin-not-found':
-        specifier: ^3.2.50
+        specifier: ^3.2.68
         version: 3.2.68(@types/node@20.19.19)
       '@oclif/plugin-plugins':
-        specifier: ^5.4.36
+        specifier: ^5.4.49
         version: 5.4.49
       '@oclif/plugin-search':
-        specifier: ^1.2.23
+        specifier: ^1.2.32
         version: 1.2.32
       '@oclif/plugin-version':
-        specifier: ^2.2.27
+        specifier: ^2.2.33
         version: 2.2.33
       '@oclif/plugin-warn-if-update-available':
-        specifier: ^3.1.38
+        specifier: ^3.1.48
         version: 3.1.48
       '@oclif/plugin-which':
-        specifier: ^3.2.34
+        specifier: ^3.2.40
         version: 3.2.40
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
       debug:
-        specifier: ^4.4.1
+        specifier: ^4.4.3
         version: 4.4.3(supports-color@8.1.1)
       dill-cli:
         specifier: workspace:^
@@ -198,32 +198,32 @@ importers:
         specifier: ^3.28.0
         version: 3.28.0
       strip-ansi:
-        specifier: ^7.1.0
+        specifier: ^7.1.2
         version: 7.1.2
     devDependencies:
       '@biomejs/biome':
         specifier: 2.0.4
         version: 2.0.4
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.2
+        specifier: ^5.3.6
         version: 5.3.6
       '@oclif/test':
-        specifier: ^4.1.13
+        specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.4)
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       concurrently:
-        specifier: ^9.2.0
+        specifier: ^9.2.1
         version: 9.2.1
       generate-license-file:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.5.4)
       oclif:
-        specifier: ^4.20.1
+        specifier: ^4.22.29
         version: 4.22.29(@types/node@20.19.19)
       rimraf:
         specifier: ^6.0.1
@@ -250,19 +250,19 @@ importers:
   packages/cli-api:
     dependencies:
       '@oclif/core':
-        specifier: ^4.3.0
+        specifier: ^4.5.4
         version: 4.5.4
       '@tylerbu/lilconfig-loader-ts':
         specifier: workspace:^
         version: link:../lilconfig-loader-ts
       debug:
-        specifier: ^4.4.1
+        specifier: ^4.4.3
         version: 4.4.3(supports-color@8.1.1)
       detect-indent:
-        specifier: ^7.0.1
+        specifier: ^7.0.2
         version: 7.0.2
       jsonfile:
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: 6.2.0
       lilconfig:
         specifier: ^3.1.3
@@ -280,20 +280,20 @@ importers:
         specifier: '*'
         version: 3.4.0
       strip-ansi:
-        specifier: ^7.1.0
+        specifier: ^7.1.2
         version: 7.1.2
     devDependencies:
       '@biomejs/biome':
         specifier: 2.0.4
         version: 2.0.4
       '@microsoft/api-documenter':
-        specifier: ^7.26.28
+        specifier: ^7.27.1
         version: 7.27.1(@types/node@20.19.19)
       '@microsoft/api-extractor':
-        specifier: ^7.52.8
+        specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.19)
       '@oclif/test':
-        specifier: ^4.1.13
+        specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.4)
       '@types/debug':
         specifier: ^4.1.12
@@ -302,22 +302,22 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       '@types/semver':
-        specifier: ^7.7.0
+        specifier: ^7.7.1
         version: 7.7.1
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(jiti@2.6.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       concurrently:
-        specifier: ^9.2.0
+        specifier: ^9.2.1
         version: 9.2.1
       generate-license-file:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.5.4)
       oclif:
-        specifier: ^4.20.1
+        specifier: ^4.22.29
         version: 4.22.29(@types/node@20.19.19)
       rimraf:
         specifier: ^6.0.1
@@ -332,7 +332,7 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       tsx:
-        specifier: ^4.20.3
+        specifier: ^4.20.6
         version: 4.20.6
       type-fest:
         specifier: ^4.41.0
@@ -347,10 +347,10 @@ importers:
   packages/dill:
     dependencies:
       '@oclif/core':
-        specifier: ^4.3.0
+        specifier: ^4.5.4
         version: 4.5.4
       '@oclif/plugin-help':
-        specifier: ^6.2.27
+        specifier: ^6.2.33
         version: 6.2.33
       '@tinyhttp/content-disposition':
         specifier: ^2.2.2
@@ -365,7 +365,7 @@ importers:
         specifier: ^21.0.0
         version: 21.0.0
       mime:
-        specifier: ^4.0.7
+        specifier: ^4.1.0
         version: 4.1.0
       nanotar:
         specifier: ^0.2.0
@@ -381,13 +381,13 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       '@microsoft/api-extractor':
-        specifier: ^7.52.8
+        specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.19)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.2
+        specifier: ^5.3.6
         version: 5.3.6
       '@oclif/test':
-        specifier: ^4.1.13
+        specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.4)
       '@types/debug':
         specifier: ^4.1.12
@@ -396,10 +396,10 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       '@types/semver':
-        specifier: ^7.7.0
+        specifier: ^7.7.1
         version: 7.7.1
       '@types/serve-handler':
         specifier: ^6.1.4
@@ -417,25 +417,25 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.5.4)
       get-port-please:
-        specifier: ^3.1.2
+        specifier: ^3.2.0
         version: 3.2.0
       jsonfile:
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: 6.2.0
       memfs:
-        specifier: ^4.17.2
+        specifier: ^4.49.0
         version: 4.49.0
       msw:
-        specifier: ^2.10.2
+        specifier: ^2.11.5
         version: 2.11.5(@types/node@20.19.19)(typescript@5.5.4)
       oclif:
-        specifier: ^4.20.1
+        specifier: ^4.22.29
         version: 4.22.29(@types/node@20.19.19)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
       serve:
-        specifier: ^14.2.4
+        specifier: ^14.2.5
         version: 14.2.5
       serve-handler:
         specifier: ^6.1.6
@@ -444,7 +444,7 @@ importers:
         specifier: '*'
         version: 3.4.0
       start-server-and-test:
-        specifier: ^2.0.12
+        specifier: ^2.1.2
         version: 2.1.2
       tempy:
         specifier: ^3.1.0
@@ -456,7 +456,7 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.19.19)(typescript@5.5.4)
       tsx:
-        specifier: ^4.20.3
+        specifier: ^4.20.6
         version: 4.20.6
       type-fest:
         specifier: ^4.41.0
@@ -465,7 +465,7 @@ importers:
         specifier: ~5.5.4
         version: 5.5.4
       unionfs:
-        specifier: ^4.5.4
+        specifier: ^4.6.0
         version: 4.6.0
       vitest:
         specifier: ^3.2.4
@@ -477,7 +477,7 @@ importers:
         specifier: ^0.9.4
         version: 0.9.4(prettier@3.6.2)(typescript@5.5.4)
       '@astrojs/netlify':
-        specifier: ^6.5.11
+        specifier: ^6.5.12
         version: 6.5.12(@types/node@24.7.0)(astro@5.14.3(@netlify/blobs@10.0.11)(@types/node@24.7.0)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.5.4)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
@@ -492,7 +492,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.14.1
+        specifier: ^5.14.3
         version: 5.14.3(@netlify/blobs@10.0.11)(@types/node@24.7.0)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.5.4)(yaml@2.8.1)
       dill-cli:
         specifier: workspace:^
@@ -544,19 +544,19 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       '@microsoft/api-documenter':
-        specifier: ^7.26.28
+        specifier: ^7.27.1
         version: 7.27.1(@types/node@20.19.19)
       '@microsoft/api-extractor':
-        specifier: ^7.52.8
+        specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.19)
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(jiti@2.6.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       concurrently:
-        specifier: ^9.2.0
+        specifier: ^9.2.1
         version: 9.2.1
       pathe:
         specifier: ^2.0.3
@@ -599,7 +599,7 @@ importers:
         version: 2.33.2
       '@fluidframework/driver-utils':
         specifier: ~2.33.2
-        version: 2.33.2
+        version: 2.33.2(debug@4.4.3)
       '@fluidframework/fluid-static':
         specifier: ~2.33.2
         version: 2.33.2
@@ -639,7 +639,7 @@ importers:
         version: 0.56.0(@types/node@20.19.19)
       '@fluidframework/container-runtime':
         specifier: ~2.42.0
-        version: 2.42.0
+        version: 2.42.0(debug@4.4.3)
       '@fluidframework/container-runtime-definitions':
         specifier: ~2.42.0
         version: 2.42.0
@@ -648,12 +648,12 @@ importers:
         version: 5.7.4(eslint@9.37.0(jiti@2.6.1))(typescript@5.5.4)
       '@fluidframework/shared-object-base':
         specifier: ~2.42.0
-        version: 2.42.0
+        version: 2.42.0(debug@4.4.3)
       '@fluidframework/test-utils':
         specifier: ~2.42.0
         version: 2.42.0(encoding@0.1.13)
       '@microsoft/api-extractor':
-        specifier: ^7.52.8
+        specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.19)
       '@tsconfig/node18':
         specifier: ^18.2.4
@@ -662,25 +662,25 @@ importers:
         specifier: ^10.0.10
         version: 10.0.10
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       concurrently:
-        specifier: ^9.2.0
+        specifier: ^9.2.1
         version: 9.2.1
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
       eslint:
-        specifier: ^9.29.0
+        specifier: ^9.37.0
         version: 9.37.0(jiti@2.6.1)
       mocha:
-        specifier: ^11.7.0
+        specifier: ^11.7.4
         version: 11.7.4
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
       start-server-and-test:
-        specifier: ^2.0.12
+        specifier: ^2.1.2
         version: 2.1.2
       tinylicious:
         specifier: ^6.0.0
@@ -692,7 +692,7 @@ importers:
   packages/lilconfig-loader-ts:
     dependencies:
       jiti:
-        specifier: ^2.4.2
+        specifier: ^2.6.1
         version: 2.6.1
       lilconfig:
         specifier: ^3.1.3
@@ -702,16 +702,16 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       '@microsoft/api-documenter':
-        specifier: ^7.26.28
+        specifier: ^7.27.1
         version: 7.27.1(@types/node@20.19.19)
       '@microsoft/api-extractor':
-        specifier: ^7.52.8
+        specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.19)
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       concurrently:
-        specifier: ^9.2.0
+        specifier: ^9.2.1
         version: 9.2.1
       generate-license-file:
         specifier: ^4.1.0
@@ -738,13 +738,13 @@ importers:
         specifier: ~0.58.3
         version: 0.58.3(@types/node@20.19.19)
       '@oclif/core':
-        specifier: ^4.3.0
+        specifier: ^4.5.4
         version: 4.5.4
       '@oclif/plugin-help':
-        specifier: ^6.2.27
+        specifier: ^6.2.33
         version: 6.2.33
       '@rushstack/node-core-library':
-        specifier: ^5.13.1
+        specifier: ^5.17.0
         version: 5.17.0(@types/node@20.19.19)
       '@tylerbu/cli-api':
         specifier: workspace:^
@@ -756,7 +756,7 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       jsonfile:
-        specifier: ^6.1.0
+        specifier: ^6.2.0
         version: 6.2.0
       microdiff:
         specifier: ^1.5.0
@@ -778,19 +778,19 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       '@microsoft/api-extractor':
-        specifier: ^7.52.8
+        specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.19)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.2
+        specifier: ^5.3.6
         version: 5.3.6
       '@oclif/test':
-        specifier: ^4.1.13
+        specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.4)
       '@types/jsonfile':
         specifier: ^6.1.4
         version: 6.1.4
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       '@types/tmp':
         specifier: ^0.2.6
@@ -799,7 +799,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.5.4)
       oclif:
-        specifier: ^4.20.1
+        specifier: ^4.22.29
         version: 4.22.29(@types/node@20.19.19)
       rimraf:
         specifier: ^6.0.1
@@ -826,7 +826,7 @@ importers:
         specifier: ^0.9.4
         version: 0.9.4(prettier@3.6.2)(typescript@5.5.4)
       '@astrojs/netlify':
-        specifier: ^6.5.11
+        specifier: ^6.5.12
         version: 6.5.12(@types/node@24.7.0)(astro@5.14.3(@netlify/blobs@10.0.11)(@types/node@24.7.0)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.5.4)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
@@ -841,7 +841,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.14.1
+        specifier: ^5.14.3
         version: 5.14.3(@netlify/blobs@10.0.11)(@types/node@24.7.0)(ioredis@5.6.1)(jiti@2.6.1)(rollup@4.40.0)(terser@5.44.0)(tsx@4.20.6)(typescript@5.5.4)(yaml@2.8.1)
       repopo:
         specifier: workspace:^
@@ -890,10 +890,10 @@ importers:
   packages/sort-tsconfig:
     dependencies:
       '@oclif/core':
-        specifier: ^4.3.0
+        specifier: ^4.5.4
         version: 4.5.4
       '@oclif/plugin-help':
-        specifier: ^6.2.27
+        specifier: ^6.2.33
         version: 6.2.33
       '@tylerbu/cli-api':
         specifier: workspace:^
@@ -902,7 +902,7 @@ importers:
         specifier: workspace:^
         version: link:../fundamentals
       detect-indent:
-        specifier: ^7.0.1
+        specifier: ^7.0.2
         version: 7.0.2
       pathe:
         specifier: ^2.0.3
@@ -917,23 +917,23 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       tinyglobby:
-        specifier: ^0.2.14
+        specifier: ^0.2.15
         version: 0.2.15
     devDependencies:
       '@biomejs/biome':
         specifier: 2.0.4
         version: 2.0.4
       '@microsoft/api-extractor':
-        specifier: ^7.52.8
+        specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.19)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.2
+        specifier: ^5.3.6
         version: 5.3.6
       '@oclif/test':
-        specifier: ^4.1.13
+        specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.4)
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       '@types/tmp':
         specifier: ^0.2.6
@@ -945,10 +945,10 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.5.4)
       memfs:
-        specifier: ^4.17.2
+        specifier: ^4.49.0
         version: 4.49.0
       oclif:
-        specifier: ^4.20.1
+        specifier: ^4.22.29
         version: 4.22.29(@types/node@20.19.19)
       rimraf:
         specifier: ^6.0.1
@@ -957,13 +957,13 @@ importers:
         specifier: '*'
         version: 3.4.0
       start-server-and-test:
-        specifier: ^2.0.12
+        specifier: ^2.1.2
         version: 2.1.2
       tmp-promise:
         specifier: ^3.0.3
         version: 3.0.3
       tsx:
-        specifier: ^4.20.3
+        specifier: ^4.20.6
         version: 4.20.6
       type-fest:
         specifier: ^4.41.0
@@ -981,19 +981,19 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       '@microsoft/api-documenter':
-        specifier: ^7.26.28
+        specifier: ^7.27.1
         version: 7.27.1(@types/node@20.19.19)
       '@microsoft/api-extractor':
-        specifier: ^7.52.8
+        specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.19)
       '@types/node':
-        specifier: ^20.12.7
+        specifier: ^20.19.19
         version: 20.19.19
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(jiti@2.6.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       concurrently:
-        specifier: ^9.2.0
+        specifier: ^9.2.1
         version: 9.2.1
       rimraf:
         specifier: ^6.0.1
@@ -2282,26 +2282,8 @@ packages:
     resolution: {integrity: sha512-oOIwPs0Dvq5220Z8lGL/6LHRTEr9TgLHmiI99Rj1PJ1p1czTys+olrgBqZk4E2qC0YTzeHprxSQmoHioVdJ7Lw==}
     engines: {node: '>=18'}
 
-  '@inquirer/confirm@5.1.12':
-    resolution: {integrity: sha512-dpq+ielV9/bqgXRUbNH//KsY6WEw9DrGPmipkpmgC1Y46cwuBTNx7PXFWTjc3MQ+urcc0QxoVHcMI0FW4Ok0hg==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-
   '@inquirer/confirm@5.1.18':
     resolution: {integrity: sha512-MilmWOzHa3Ks11tzvuAmFoAd/wRuaP3SwlT1IZhyMke31FKLxPiuDWcGXhU+PKveNOpAc4axzAgrgxuIJJRmLw==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-
-  '@inquirer/core@10.1.13':
-    resolution: {integrity: sha512-1viSxebkYN2nJULlzCxES6G9/stgHSepZ9LqqfdIGPHj5OHhiBUXVS0a6R0bEC2A+VL4D9w6QB66ebCr6HGllA==}
     engines: {node: '>=18'}
     peerDependencies:
       '@types/node': '>=18'
@@ -2352,10 +2334,6 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
-
-  '@inquirer/figures@1.0.12':
-    resolution: {integrity: sha512-MJttijd8rMFcKJC8NYmprWr6hD3r9Gd9qUC0XwPNwoEPWSMVJwA2MlXxF+nhZZNMY+HXsWa+o7KY2emWYIn0jQ==}
-    engines: {node: '>=18'}
 
   '@inquirer/figures@1.0.13':
     resolution: {integrity: sha512-lGPVU3yO9ZNqA7vTYz26jny41lE7yoQansmqdMLBEfqaGsmdg7V3W9mK9Pvb5IL4EVZ9GnSDGMO/cJXud5dMaw==}
@@ -2439,15 +2417,6 @@ packages:
   '@inquirer/type@2.0.0':
     resolution: {integrity: sha512-XvJRx+2KR3YXyYtPUUy+qd9i7p+GO9Ko6VIIpWlBrpWwXDv8WLFeHTxz35CfQFUiBMLXlGHhGzys7lqit9gWag==}
     engines: {node: '>=18'}
-
-  '@inquirer/type@3.0.7':
-    resolution: {integrity: sha512-PfunHQcjwnju84L+ycmcMKB/pTPIngjUJvfnRhKY6FKPuYXlM4aQCb/nIdTFR6BEhMjFvngzvng/vBAJMZpLSA==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@types/node': '>=18'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
 
   '@inquirer/type@3.0.8':
     resolution: {integrity: sha512-lg9Whz8onIHRthWaN1Q9EGLa/0LFJjyM8mEUbL1eTi6yMGvBf8gvyDLtxSXztQsxMvhxxNpJYrwa1YHdq+w4Jw==}
@@ -4594,10 +4563,6 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
 
-  agent-base@7.1.3:
-    resolution: {integrity: sha512-jRR5wdylq8CkOe6hei19GGZnxM6rBGwFl3Bg0YItGDimvjGtAvdZk4Pu6Cl4u4Igsws4a1fd1Vq3ezrhn4KmFw==}
-    engines: {node: '>= 14'}
-
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
@@ -4690,10 +4655,6 @@ packages:
   ansi-styles@4.3.0:
     resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
     engines: {node: '>=8'}
-
-  ansi-styles@6.2.1:
-    resolution: {integrity: sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==}
-    engines: {node: '>=12'}
 
   ansi-styles@6.2.3:
     resolution: {integrity: sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==}
@@ -6179,9 +6140,6 @@ packages:
     resolution: {integrity: sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==}
     hasBin: true
 
-  error-ex@1.3.2:
-    resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
-
   error-ex@1.3.4:
     resolution: {integrity: sha512-sqQamAnR14VgCr1A618A3sGrygcpK+HEbenA/HiEAkkUwcZIIB/tgWqHFxWgOyDh4nB4JCRimh79dR5Ywc9MDQ==}
 
@@ -6913,9 +6871,6 @@ packages:
     resolution: {integrity: sha512-w9UMqWwJxHNOvoNzSJ2oPF5wvYcvP7jUvYzhp67yEhTi17ZDBBC1z9pTdGuzjD+EFIqLSYRweZjqfiPzQ06Ebg==}
     engines: {node: '>= 0.4'}
 
-  get-tsconfig@4.10.0:
-    resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
-
   get-tsconfig@4.12.0:
     resolution: {integrity: sha512-LScr2aNr2FbjAjZh2C6X6BxRx1/x+aTDExct/xyq2XKbYOiG5c0aK7pMsSuyc0brz3ibr/lbQiHD9jzt4lccJw==}
 
@@ -7415,10 +7370,6 @@ packages:
 
   immediate@3.0.6:
     resolution: {integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==}
-
-  import-fresh@3.3.0:
-    resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
-    engines: {node: '>=6'}
 
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
@@ -8980,10 +8931,6 @@ packages:
   minizlib@2.1.2:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
-
-  minizlib@3.0.2:
-    resolution: {integrity: sha512-oG62iEk+CYt5Xj2YqI5Xi9xWUeZhDI8jjQmC5oThVH5JGCTgIjr7ciJDzC7MBzYd//WvR1OTmP5Q38Q8ShQtVA==}
-    engines: {node: '>= 18'}
 
   minizlib@3.1.0:
     resolution: {integrity: sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==}
@@ -11267,10 +11214,6 @@ packages:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
 
-  tar@7.4.3:
-    resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
-    engines: {node: '>=18'}
-
   tar@7.5.1:
     resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
     engines: {node: '>=18'}
@@ -12482,10 +12425,6 @@ packages:
     resolution: {integrity: sha512-si7QWI6zUMq56bESFvagtmzMdGOtoxfR+Sez11Mobfc7tm+VkUckk9bW2UeffTGVUbOksxmSw0AA2gs8g71NCQ==}
     engines: {node: '>=12'}
 
-  wrap-ansi@9.0.0:
-    resolution: {integrity: sha512-G8ura3S+3Z2G+mkgNRq8dqaFZAuxfsxpBB8OCTGRTCtp+l/v9nbFNmCUP1BZMts3G1142MsZfn6eeUKrr4PD1Q==}
-    engines: {node: '>=18'}
-
   wrap-ansi@9.0.2:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
@@ -12654,10 +12593,6 @@ packages:
   yocto-spinner@0.2.3:
     resolution: {integrity: sha512-sqBChb33loEnkoXte1bLg45bEBsOP9N1kzQh5JZNKj/0rik4zAPTNSAVPj3uQAdc6slYJ0Ksc403G2XgxsJQFQ==}
     engines: {node: '>=18.19'}
-
-  yoctocolors-cjs@2.1.2:
-    resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
-    engines: {node: '>=18'}
 
   yoctocolors-cjs@2.1.3:
     resolution: {integrity: sha512-U/PBtDf35ff0D8X8D0jfdzHYEPFxAI7jJlxZXwCSez5M3190m+QobIfh+sWDWSHMCWWJN2AWamkegn6vr6YBTw==}
@@ -12974,7 +12909,7 @@ snapshots:
   '@astrojs/telemetry@3.3.0':
     dependencies:
       ci-info: 4.3.1
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       dlv: 1.1.3
       dset: 3.1.4
       is-docker: 3.0.0
@@ -14200,7 +14135,7 @@ snapshots:
       espree: 10.4.0
       globals: 14.0.0
       ignore: 5.3.2
-      import-fresh: 3.3.0
+      import-fresh: 3.3.1
       js-yaml: 4.1.0
       minimatch: 3.1.2
       strip-json-comments: 3.1.1
@@ -14448,17 +14383,17 @@ snapshots:
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/container-runtime': 2.42.0
+      '@fluidframework/container-runtime': 2.42.0(debug@4.4.3)
       '@fluidframework/container-runtime-definitions': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0
+      '@fluidframework/datastore': 2.42.0(debug@4.4.3)
       '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/map': 2.42.0
-      '@fluidframework/request-handler': 2.42.0
+      '@fluidframework/map': 2.42.0(debug@4.4.3)
+      '@fluidframework/request-handler': 2.42.0(debug@4.4.3)
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0
-      '@fluidframework/shared-object-base': 2.42.0
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
       '@fluidframework/synthesize': 2.42.0
       '@fluidframework/telemetry-utils': 2.42.0
       '@fluidframework/tree': 2.42.0
@@ -14475,7 +14410,7 @@ snapshots:
       async: 3.2.6
       cosmiconfig: 8.3.6(typescript@5.4.5)
       date-fns: 2.30.0
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       detect-indent: 6.1.0
       find-up: 7.0.0
       fs-extra: 11.3.1
@@ -14581,11 +14516,11 @@ snapshots:
       '@fluidframework/core-interfaces': 2.33.2
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.1)
+      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.33.2
       '@types/events_pkg': '@types/events@3.0.3'
       '@ungap/structured-clone': 1.3.0
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       double-ended-queue: 2.1.0-0
       events_pkg: events@3.3.0
       uuid: 9.0.1
@@ -14638,7 +14573,7 @@ snapshots:
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/datastore': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2
+      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
       '@fluidframework/id-compressor': 2.33.2
       '@fluidframework/runtime-definitions': 2.33.2
       '@fluidframework/runtime-utils': 2.33.2
@@ -14652,42 +14587,19 @@ snapshots:
       - debug
       - supports-color
 
-  '@fluidframework/container-runtime@2.42.0':
+  '@fluidframework/container-runtime@2.42.0(debug@4.4.3)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/container-definitions': 2.42.0
       '@fluidframework/container-runtime-definitions': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0
+      '@fluidframework/datastore': 2.42.0(debug@4.4.3)
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/id-compressor': 2.42.0
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      '@tylerbu/sorted-btree-es6': 1.8.0
-      double-ended-queue: 2.1.0-0
-      lz4js: 0.2.0
-      semver-ts: 1.0.3
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/container-runtime@2.42.0(debug@4.4.1)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/container-runtime-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0(debug@4.4.1)
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.42.0
       '@tylerbu/sorted-btree-es6': 1.8.0
       double-ended-queue: 2.1.0-0
@@ -14734,7 +14646,7 @@ snapshots:
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/datastore-definitions': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2
+      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
       '@fluidframework/id-compressor': 2.33.2
       '@fluidframework/runtime-definitions': 2.33.2
       '@fluidframework/runtime-utils': 2.33.2
@@ -14744,7 +14656,7 @@ snapshots:
       - debug
       - supports-color
 
-  '@fluidframework/datastore@2.42.0':
+  '@fluidframework/datastore@2.42.0(debug@4.4.3)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/container-definitions': 2.42.0
@@ -14752,28 +14664,10 @@ snapshots:
       '@fluidframework/core-utils': 2.42.0
       '@fluidframework/datastore-definitions': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/id-compressor': 2.42.0
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/datastore@2.42.0(debug@4.4.1)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.42.0
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -14786,19 +14680,19 @@ snapshots:
       '@fluidframework/core-interfaces': 2.33.2
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2
+      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.33.2
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/driver-base@2.42.0(debug@4.4.1)':
+  '@fluidframework/driver-base@2.42.0(debug@4.4.3)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.42.0
     transitivePeerDependencies:
       - debug
@@ -14812,56 +14706,14 @@ snapshots:
     dependencies:
       '@fluidframework/core-interfaces': 2.42.0
 
-  '@fluidframework/driver-utils@2.33.2':
+  '@fluidframework/driver-utils@2.33.2(debug@4.4.3)':
     dependencies:
       '@fluid-internal/client-utils': 2.33.2
       '@fluidframework/core-interfaces': 2.33.2
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
       '@fluidframework/telemetry-utils': 2.33.2
-      axios: 1.8.4
-      lz4js: 0.2.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/driver-utils@2.33.2(debug@4.4.1)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
-      axios: 1.8.4(debug@4.4.1)
-      lz4js: 0.2.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/driver-utils@2.42.0':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      axios: 1.8.4
-      lz4js: 0.2.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/driver-utils@2.42.0(debug@4.4.1)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      axios: 1.8.4(debug@4.4.1)
+      axios: 1.8.4(debug@4.4.3)
       lz4js: 0.2.0
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -14957,16 +14809,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/local-driver@2.42.0(debug@4.4.1)(encoding@0.1.13)':
+  '@fluidframework/local-driver@2.42.0(debug@4.4.3)(encoding@0.1.13)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-base': 2.42.0(debug@4.4.1)
+      '@fluidframework/driver-base': 2.42.0(debug@4.4.3)
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/protocol-base': 5.0.0
-      '@fluidframework/routerlicious-driver': 2.42.0(debug@4.4.1)(encoding@0.1.13)
+      '@fluidframework/routerlicious-driver': 2.42.0(debug@4.4.3)(encoding@0.1.13)
       '@fluidframework/server-local-server': 5.0.0
       '@fluidframework/server-services-client': 5.0.0
       '@fluidframework/server-services-core': 5.0.0
@@ -14988,7 +14840,7 @@ snapshots:
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/datastore-definitions': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2
+      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
       '@fluidframework/merge-tree': 2.33.2
       '@fluidframework/runtime-definitions': 2.33.2
       '@fluidframework/runtime-utils': 2.33.2
@@ -14999,36 +14851,18 @@ snapshots:
       - debug
       - supports-color
 
-  '@fluidframework/map@2.42.0':
+  '@fluidframework/map@2.42.0(debug@4.4.3)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
       '@fluidframework/datastore-definitions': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0
-      '@fluidframework/merge-tree': 2.42.0
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
+      '@fluidframework/merge-tree': 2.42.0(debug@4.4.3)
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0
-      '@fluidframework/shared-object-base': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      path-browserify: 1.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/map@2.42.0(debug@4.4.1)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
-      '@fluidframework/merge-tree': 2.42.0(debug@4.4.1)
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.1)
-      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.1)
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.42.0
       path-browserify: 1.0.1
     transitivePeerDependencies:
@@ -15051,7 +14885,7 @@ snapshots:
       - debug
       - supports-color
 
-  '@fluidframework/merge-tree@2.42.0':
+  '@fluidframework/merge-tree@2.42.0(debug@4.4.3)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/container-definitions': 2.42.0
@@ -15060,36 +14894,20 @@ snapshots:
       '@fluidframework/datastore-definitions': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0
-      '@fluidframework/shared-object-base': 2.42.0
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.42.0
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/merge-tree@2.42.0(debug@4.4.1)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.1)
-      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.1)
-      '@fluidframework/telemetry-utils': 2.42.0
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/odsp-doclib-utils@2.42.0(debug@4.4.1)(encoding@0.1.13)':
+  '@fluidframework/odsp-doclib-utils@2.42.0(debug@4.4.3)(encoding@0.1.13)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/odsp-driver-definitions': 2.42.0
       '@fluidframework/telemetry-utils': 2.42.0
       isomorphic-fetch: 3.0.0(encoding@0.1.13)
@@ -15102,15 +14920,15 @@ snapshots:
     dependencies:
       '@fluidframework/driver-definitions': 2.42.0
 
-  '@fluidframework/odsp-driver@2.42.0(debug@4.4.1)(encoding@0.1.13)':
+  '@fluidframework/odsp-driver@2.42.0(debug@4.4.3)(encoding@0.1.13)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-base': 2.42.0(debug@4.4.1)
+      '@fluidframework/driver-base': 2.42.0(debug@4.4.3)
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
-      '@fluidframework/odsp-doclib-utils': 2.42.0(debug@4.4.1)(encoding@0.1.13)
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
+      '@fluidframework/odsp-doclib-utils': 2.42.0(debug@4.4.3)(encoding@0.1.13)
       '@fluidframework/odsp-driver-definitions': 2.42.0
       '@fluidframework/telemetry-utils': 2.42.0
       socket.io-client: 4.7.5
@@ -15149,24 +14967,13 @@ snapshots:
       - debug
       - supports-color
 
-  '@fluidframework/request-handler@2.42.0':
+  '@fluidframework/request-handler@2.42.0(debug@4.4.3)':
     dependencies:
       '@fluidframework/container-runtime-definitions': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/request-handler@2.42.0(debug@4.4.1)':
-    dependencies:
-      '@fluidframework/container-runtime-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -15178,7 +14985,7 @@ snapshots:
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/driver-base': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2
+      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
       '@fluidframework/server-services-client': 5.0.0
       '@fluidframework/telemetry-utils': 2.33.2
       cross-fetch: 3.2.0(encoding@0.1.13)
@@ -15192,14 +14999,14 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/routerlicious-driver@2.42.0(debug@4.4.1)(encoding@0.1.13)':
+  '@fluidframework/routerlicious-driver@2.42.0(debug@4.4.3)(encoding@0.1.13)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-base': 2.42.0(debug@4.4.1)
+      '@fluidframework/driver-base': 2.42.0(debug@4.4.3)
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/server-services-client': 5.0.0
       '@fluidframework/telemetry-utils': 2.42.0
       cross-fetch: 3.2.0(encoding@0.1.13)
@@ -15242,14 +15049,14 @@ snapshots:
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/datastore-definitions': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2
+      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
       '@fluidframework/runtime-definitions': 2.33.2
       '@fluidframework/telemetry-utils': 2.33.2
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/runtime-utils@2.42.0':
+  '@fluidframework/runtime-utils@2.42.0(debug@4.4.3)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/container-definitions': 2.42.0
@@ -15258,23 +15065,7 @@ snapshots:
       '@fluidframework/core-utils': 2.42.0
       '@fluidframework/datastore-definitions': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/runtime-utils@2.42.0(debug@4.4.1)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/container-runtime-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/runtime-definitions': 2.42.0
       '@fluidframework/telemetry-utils': 2.42.0
     transitivePeerDependencies:
@@ -15334,35 +15125,6 @@ snapshots:
       semver: 7.7.3
       sha.js: 2.4.11
       uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/server-lambdas@6.0.0':
-    dependencies:
-      '@fluidframework/common-utils': 3.1.0
-      '@fluidframework/gitresources': 6.0.0
-      '@fluidframework/protocol-base': 6.0.0
-      '@fluidframework/protocol-definitions': 3.2.0
-      '@fluidframework/server-lambdas-driver': 6.0.0
-      '@fluidframework/server-services-client': 6.0.0
-      '@fluidframework/server-services-core': 6.0.0
-      '@fluidframework/server-services-telemetry': 6.0.0
-      '@types/semver': 7.7.1
-      assert: 2.1.0
-      async: 3.2.6
-      axios: 1.8.4
-      buffer: 6.0.3
-      double-ended-queue: 2.1.0-0
-      events: 3.3.0
-      json-stringify-safe: 5.0.1
-      lodash: 4.17.21
-      nconf: 0.12.1
-      opossum: 8.5.0
-      semver: 7.7.3
-      serialize-error: 8.1.0
-      sha.js: 2.4.11
-      uuid: 11.1.0
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -15681,36 +15443,18 @@ snapshots:
       - debug
       - supports-color
 
-  '@fluidframework/shared-object-base@2.42.0':
+  '@fluidframework/shared-object-base@2.42.0(debug@4.4.3)':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
       '@fluidframework/container-definitions': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0
+      '@fluidframework/datastore': 2.42.0(debug@4.4.3)
       '@fluidframework/datastore-definitions': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
       '@fluidframework/id-compressor': 2.42.0
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/shared-object-base@2.42.0(debug@4.4.1)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0(debug@4.4.1)
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.1)
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.42.0
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -15731,7 +15475,7 @@ snapshots:
       '@fluidframework/core-interfaces': 2.33.2
       '@fluidframework/core-utils': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       uuid: 9.0.1
     transitivePeerDependencies:
       - supports-color
@@ -15752,25 +15496,25 @@ snapshots:
       '@fluid-internal/test-driver-definitions': 2.42.0
       '@fluidframework/container-definitions': 2.42.0
       '@fluidframework/container-loader': 2.42.0
-      '@fluidframework/container-runtime': 2.42.0(debug@4.4.1)
+      '@fluidframework/container-runtime': 2.42.0(debug@4.4.3)
       '@fluidframework/container-runtime-definitions': 2.42.0
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0(debug@4.4.1)
+      '@fluidframework/datastore': 2.42.0(debug@4.4.3)
       '@fluidframework/datastore-definitions': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.1)
-      '@fluidframework/local-driver': 2.42.0(debug@4.4.1)(encoding@0.1.13)
-      '@fluidframework/map': 2.42.0(debug@4.4.1)
-      '@fluidframework/odsp-driver': 2.42.0(debug@4.4.1)(encoding@0.1.13)
-      '@fluidframework/request-handler': 2.42.0(debug@4.4.1)
-      '@fluidframework/routerlicious-driver': 2.42.0(debug@4.4.1)(encoding@0.1.13)
+      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
+      '@fluidframework/local-driver': 2.42.0(debug@4.4.3)(encoding@0.1.13)
+      '@fluidframework/map': 2.42.0(debug@4.4.3)
+      '@fluidframework/odsp-driver': 2.42.0(debug@4.4.3)(encoding@0.1.13)
+      '@fluidframework/request-handler': 2.42.0(debug@4.4.3)
+      '@fluidframework/routerlicious-driver': 2.42.0(debug@4.4.3)(encoding@0.1.13)
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.1)
-      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.1)
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.42.0
       best-random: 1.0.3
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       mocha: 10.8.2
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -15783,7 +15527,7 @@ snapshots:
     dependencies:
       '@fluidframework/core-interfaces': 2.33.2
       '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2
+      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
       '@fluidframework/routerlicious-driver': 2.33.2(encoding@0.1.13)
       jsrsasign: 11.1.0
       uuid: 9.0.1
@@ -15819,15 +15563,15 @@ snapshots:
   '@fluidframework/tree@2.42.0':
     dependencies:
       '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-runtime': 2.42.0
+      '@fluidframework/container-runtime': 2.42.0(debug@4.4.3)
       '@fluidframework/core-interfaces': 2.42.0
       '@fluidframework/core-utils': 2.42.0
       '@fluidframework/datastore-definitions': 2.42.0
       '@fluidframework/driver-definitions': 2.42.0
       '@fluidframework/id-compressor': 2.42.0
       '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0
-      '@fluidframework/shared-object-base': 2.42.0
+      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
       '@fluidframework/telemetry-utils': 2.42.0
       '@sinclair/typebox': 0.34.33
       '@tylerbu/sorted-btree-es6': 1.8.0
@@ -16030,21 +15774,6 @@ snapshots:
       '@inquirer/core': 9.2.1
       '@inquirer/type': 1.5.5
 
-  '@inquirer/confirm@5.1.12(@types/node@20.19.19)':
-    dependencies:
-      '@inquirer/core': 10.1.13(@types/node@20.19.19)
-      '@inquirer/type': 3.0.7(@types/node@20.19.19)
-    optionalDependencies:
-      '@types/node': 20.19.19
-
-  '@inquirer/confirm@5.1.12(@types/node@24.7.0)':
-    dependencies:
-      '@inquirer/core': 10.1.13(@types/node@24.7.0)
-      '@inquirer/type': 3.0.7(@types/node@24.7.0)
-    optionalDependencies:
-      '@types/node': 24.7.0
-    optional: true
-
   '@inquirer/confirm@5.1.18(@types/node@20.19.19)':
     dependencies:
       '@inquirer/core': 10.2.2(@types/node@20.19.19)
@@ -16052,29 +15781,10 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.19.19
 
-  '@inquirer/core@10.1.13(@types/node@20.19.19)':
+  '@inquirer/confirm@5.1.18(@types/node@24.7.0)':
     dependencies:
-      '@inquirer/figures': 1.0.12
-      '@inquirer/type': 3.0.7(@types/node@20.19.19)
-      ansi-escapes: 4.3.2
-      cli-width: 4.1.0
-      mute-stream: 2.0.0
-      signal-exit: 4.1.0
-      wrap-ansi: 6.2.0
-      yoctocolors-cjs: 2.1.2
-    optionalDependencies:
-      '@types/node': 20.19.19
-
-  '@inquirer/core@10.1.13(@types/node@24.7.0)':
-    dependencies:
-      '@inquirer/figures': 1.0.12
-      '@inquirer/type': 3.0.7(@types/node@24.7.0)
-      ansi-escapes: 4.3.2
-      cli-width: 4.1.0
-      mute-stream: 2.0.0
-      signal-exit: 4.1.0
-      wrap-ansi: 6.2.0
-      yoctocolors-cjs: 2.1.2
+      '@inquirer/core': 10.2.2(@types/node@24.7.0)
+      '@inquirer/type': 3.0.8(@types/node@24.7.0)
     optionalDependencies:
       '@types/node': 24.7.0
     optional: true
@@ -16091,6 +15801,20 @@ snapshots:
       yoctocolors-cjs: 2.1.3
     optionalDependencies:
       '@types/node': 20.19.19
+
+  '@inquirer/core@10.2.2(@types/node@24.7.0)':
+    dependencies:
+      '@inquirer/ansi': 1.0.0
+      '@inquirer/figures': 1.0.13
+      '@inquirer/type': 3.0.8(@types/node@24.7.0)
+      cli-width: 4.1.0
+      mute-stream: 2.0.0
+      signal-exit: 4.1.0
+      wrap-ansi: 6.2.0
+      yoctocolors-cjs: 2.1.3
+    optionalDependencies:
+      '@types/node': 24.7.0
+    optional: true
 
   '@inquirer/core@3.1.2':
     dependencies:
@@ -16110,7 +15834,7 @@ snapshots:
 
   '@inquirer/core@9.2.1':
     dependencies:
-      '@inquirer/figures': 1.0.12
+      '@inquirer/figures': 1.0.13
       '@inquirer/type': 2.0.0
       '@types/mute-stream': 0.0.4
       '@types/node': 22.18.8
@@ -16121,7 +15845,7 @@ snapshots:
       signal-exit: 4.1.0
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
-      yoctocolors-cjs: 2.1.2
+      yoctocolors-cjs: 2.1.3
 
   '@inquirer/editor@4.2.20(@types/node@20.19.19)':
     dependencies:
@@ -16152,8 +15876,6 @@ snapshots:
       iconv-lite: 0.7.0
     optionalDependencies:
       '@types/node': 24.7.0
-
-  '@inquirer/figures@1.0.12': {}
 
   '@inquirer/figures@1.0.13': {}
 
@@ -16219,10 +15941,10 @@ snapshots:
   '@inquirer/select@2.5.0':
     dependencies:
       '@inquirer/core': 9.2.1
-      '@inquirer/figures': 1.0.12
+      '@inquirer/figures': 1.0.13
       '@inquirer/type': 1.5.5
       ansi-escapes: 4.3.2
-      yoctocolors-cjs: 2.1.2
+      yoctocolors-cjs: 2.1.3
 
   '@inquirer/select@4.3.4(@types/node@20.19.19)':
     dependencies:
@@ -16242,18 +15964,14 @@ snapshots:
     dependencies:
       mute-stream: 1.0.0
 
-  '@inquirer/type@3.0.7(@types/node@20.19.19)':
-    optionalDependencies:
-      '@types/node': 20.19.19
-
-  '@inquirer/type@3.0.7(@types/node@24.7.0)':
-    optionalDependencies:
-      '@types/node': 24.7.0
-    optional: true
-
   '@inquirer/type@3.0.8(@types/node@20.19.19)':
     optionalDependencies:
       '@types/node': 20.19.19
+
+  '@inquirer/type@3.0.8(@types/node@24.7.0)':
+    optionalDependencies:
+      '@types/node': 24.7.0
+    optional: true
 
   '@ioredis/as-callback@3.0.0': {}
 
@@ -16405,7 +16123,7 @@ snapshots:
       node-fetch: 2.7.0(encoding@0.1.13)
       nopt: 8.1.0
       semver: 7.7.3
-      tar: 7.4.3
+      tar: 7.5.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -17685,7 +17403,7 @@ snapshots:
 
   '@rollup/pluginutils@5.3.0(rollup@4.40.0)':
     dependencies:
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
       estree-walker: 2.0.2
       picomatch: 4.0.3
     optionalDependencies:
@@ -17776,7 +17494,7 @@ snapshots:
       ajv: 8.13.0
       ajv-draft-04: 1.0.0(ajv@8.13.0)
       ajv-formats: 3.0.1(ajv@8.13.0)
-      fs-extra: 11.3.1
+      fs-extra: 11.3.2
       import-lazy: 4.0.0
       jju: 1.4.0
       resolve: 1.22.10
@@ -18373,13 +18091,13 @@ snapshots:
 
   '@types/bunyan@1.8.11':
     dependencies:
-      '@types/node': 24.7.0
+      '@types/node': 20.19.19
 
   '@types/cacheable-request@6.0.3':
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 24.7.0
+      '@types/node': 20.19.19
       '@types/responselike': 1.0.3
 
   '@types/chai@5.2.2':
@@ -18422,7 +18140,7 @@ snapshots:
 
   '@types/fontkit@2.0.8':
     dependencies:
-      '@types/node': 24.7.0
+      '@types/node': 20.19.19
 
   '@types/glob@7.2.0':
     dependencies:
@@ -18453,7 +18171,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 24.7.0
+      '@types/node': 20.19.19
 
   '@types/lodash@4.17.16': {}
 
@@ -18536,13 +18254,13 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 24.7.0
+      '@types/node': 20.19.19
 
   '@types/retry@0.12.2': {}
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 20.19.19
 
   '@types/semver-utils@1.1.3': {}
 
@@ -18580,7 +18298,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.7.0
+      '@types/node': 20.19.19
     optional: true
 
   '@typescript-eslint/eslint-plugin@6.7.5(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.5.4))(eslint@9.37.0(jiti@2.6.1))(typescript@5.5.4)':
@@ -18838,7 +18556,7 @@ snapshots:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
       ast-v8-to-istanbul: 0.3.3
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
@@ -19210,8 +18928,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  agent-base@7.1.3: {}
-
   agent-base@7.1.4: {}
 
   agentkeepalive@4.6.0:
@@ -19301,8 +19017,6 @@ snapshots:
   ansi-styles@4.3.0:
     dependencies:
       color-convert: 2.0.1
-
-  ansi-styles@6.2.1: {}
 
   ansi-styles@6.2.3: {}
 
@@ -19467,7 +19181,7 @@ snapshots:
       common-ancestor-path: 1.0.1
       cookie: 1.0.2
       cssesc: 3.0.0
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       deterministic-object-hash: 2.0.2
       devalue: 5.3.2
       diff: 5.2.0
@@ -19586,22 +19300,6 @@ snapshots:
     dependencies:
       follow-redirects: 1.15.11(debug@4.4.3)
       form-data: 4.0.4
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-
-  axios@1.8.4:
-    dependencies:
-      follow-redirects: 1.15.9(debug@4.4.3)
-      form-data: 4.0.2
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-
-  axios@1.8.4(debug@4.4.1):
-    dependencies:
-      follow-redirects: 1.15.9(debug@4.4.1)
-      form-data: 4.0.2
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
@@ -19742,7 +19440,7 @@ snapshots:
     dependencies:
       ansi-align: 3.0.1
       camelcase: 7.0.1
-      chalk: 5.6.0
+      chalk: 5.6.2
       cli-boxes: 3.0.0
       string-width: 5.1.2
       type-fest: 2.19.0
@@ -19764,12 +19462,12 @@ snapshots:
     dependencies:
       ansi-align: 3.0.1
       camelcase: 8.0.0
-      chalk: 5.6.0
+      chalk: 5.6.2
       cli-boxes: 3.0.0
       string-width: 7.2.0
       type-fest: 4.41.0
       widest-line: 5.0.0
-      wrap-ansi: 9.0.0
+      wrap-ansi: 9.0.2
 
   brace-expansion@1.1.11:
     dependencies:
@@ -19923,7 +19621,7 @@ snapshots:
       minipass-pipeline: 1.2.4
       p-map: 7.0.3
       ssri: 12.0.0
-      tar: 7.4.3
+      tar: 7.5.1
       unique-filename: 4.0.0
 
   cacache@20.0.1:
@@ -20666,11 +20364,9 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  debug@4.4.1(supports-color@8.1.1):
+  debug@4.4.1:
     dependencies:
       ms: 2.1.3
-    optionalDependencies:
-      supports-color: 8.1.1
 
   debug@4.4.3(supports-color@8.1.1):
     dependencies:
@@ -21048,10 +20744,6 @@ snapshots:
     dependencies:
       prr: 1.0.1
 
-  error-ex@1.3.2:
-    dependencies:
-      is-arrayish: 0.2.1
-
   error-ex@1.3.4:
     dependencies:
       is-arrayish: 0.2.1
@@ -21245,7 +20937,7 @@ snapshots:
       eslint: 9.37.0(jiti@2.6.1)
       eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.3)(eslint@9.37.0(jiti@2.6.1))
       fast-glob: 3.3.3
-      get-tsconfig: 4.10.0
+      get-tsconfig: 4.12.0
       is-bun-module: 1.3.0
       is-glob: 4.0.3
     optionalDependencies:
@@ -21403,12 +21095,12 @@ snapshots:
       '@humanfs/node': 0.16.6
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.2
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.6
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       escape-string-regexp: 4.0.0
       eslint-scope: 8.4.0
       eslint-visitor-keys: 4.2.1
@@ -21492,7 +21184,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
 
   esutils@2.0.3: {}
 
@@ -21782,10 +21474,6 @@ snapshots:
     optionalDependencies:
       debug: 4.4.3(supports-color@8.1.1)
 
-  follow-redirects@1.15.9(debug@4.4.1):
-    optionalDependencies:
-      debug: 4.4.1(supports-color@8.1.1)
-
   follow-redirects@1.15.9(debug@4.4.3):
     optionalDependencies:
       debug: 4.4.3(supports-color@8.1.1)
@@ -22031,10 +21719,6 @@ snapshots:
       call-bound: 1.0.4
       es-errors: 1.3.0
       get-intrinsic: 1.3.0
-
-  get-tsconfig@4.10.0:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
 
   get-tsconfig@4.12.0:
     dependencies:
@@ -22734,7 +22418,7 @@ snapshots:
 
   https-proxy-agent@7.0.6:
     dependencies:
-      agent-base: 7.1.3
+      agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
@@ -22803,11 +22487,6 @@ snapshots:
   image-size@2.0.2: {}
 
   immediate@3.0.6: {}
-
-  import-fresh@3.3.0:
-    dependencies:
-      parent-module: 1.0.1
-      resolve-from: 4.0.0
 
   import-fresh@3.3.1:
     dependencies:
@@ -23289,7 +22968,7 @@ snapshots:
   istanbul-lib-source-maps@5.0.6:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -24956,10 +24635,6 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
-  minizlib@3.0.2:
-    dependencies:
-      minipass: 7.1.2
-
   minizlib@3.1.0:
     dependencies:
       minipass: 7.1.2
@@ -25010,7 +24685,7 @@ snapshots:
     dependencies:
       browser-stdout: 1.3.1
       chokidar: 4.0.3
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       diff: 7.0.0
       escape-string-regexp: 4.0.0
       find-up: 5.0.0
@@ -25075,7 +24750,7 @@ snapshots:
 
   msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4):
     dependencies:
-      '@inquirer/confirm': 5.1.12(@types/node@20.19.19)
+      '@inquirer/confirm': 5.1.18(@types/node@20.19.19)
       '@mswjs/interceptors': 0.39.2
       '@open-draft/deferred-promise': 2.2.0
       '@types/statuses': 2.0.5
@@ -25100,7 +24775,7 @@ snapshots:
 
   msw@2.11.5(@types/node@24.7.0)(typescript@5.9.3):
     dependencies:
-      '@inquirer/confirm': 5.1.12(@types/node@24.7.0)
+      '@inquirer/confirm': 5.1.18(@types/node@24.7.0)
       '@mswjs/interceptors': 0.39.2
       '@open-draft/deferred-promise': 2.2.0
       '@types/statuses': 2.0.5
@@ -25917,7 +25592,7 @@ snapshots:
 
   parse-json@4.0.0:
     dependencies:
-      error-ex: 1.3.2
+      error-ex: 1.3.4
       json-parse-better-errors: 1.0.2
 
   parse-json@5.2.0:
@@ -26217,7 +25892,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 24.7.0
+      '@types/node': 20.19.19
       long: 5.3.1
 
   protobufjs@7.5.4:
@@ -26232,7 +25907,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 24.7.0
+      '@types/node': 20.19.19
       long: 5.3.1
 
   protocols@2.0.2: {}
@@ -27978,15 +27653,6 @@ snapshots:
       mkdirp: 1.0.4
       yallist: 4.0.0
 
-  tar@7.4.3:
-    dependencies:
-      '@isaacs/fs-minipass': 4.0.1
-      chownr: 3.0.0
-      minipass: 7.1.2
-      minizlib: 3.0.2
-      mkdirp: 3.0.1
-      yallist: 5.0.0
-
   tar@7.5.1:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
@@ -28089,7 +27755,7 @@ snapshots:
       '@fluidframework/gitresources': 6.0.0
       '@fluidframework/protocol-base': 6.0.0
       '@fluidframework/protocol-definitions': 3.2.0
-      '@fluidframework/server-lambdas': 6.0.0
+      '@fluidframework/server-lambdas': 6.0.0(debug@4.4.3)
       '@fluidframework/server-local-server': 6.0.0
       '@fluidframework/server-memory-orderer': 6.0.0
       '@fluidframework/server-services-client': 6.0.0
@@ -28099,7 +27765,7 @@ snapshots:
       '@fluidframework/server-services-utils': 6.0.0
       '@fluidframework/server-test-utils': 6.0.0
       agentkeepalive: 4.6.0
-      axios: 1.8.4
+      axios: 1.8.4(debug@4.4.3)
       body-parser: 1.20.3
       charwise: 3.0.1
       compression: 1.7.4
@@ -28299,7 +27965,7 @@ snapshots:
   tsx@4.20.6:
     dependencies:
       esbuild: 0.25.10
-      get-tsconfig: 4.10.0
+      get-tsconfig: 4.12.0
     optionalDependencies:
       fsevents: 2.3.3
 
@@ -28893,7 +28559,7 @@ snapshots:
   vite-node@3.2.4(@types/node@20.19.19)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       es-module-lexer: 1.7.0
       pathe: 2.0.3
       vite: 6.3.6(@types/node@20.19.19)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
@@ -28914,7 +28580,7 @@ snapshots:
   vite-node@3.2.4(@types/node@24.7.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.3(supports-color@8.1.1)
       es-module-lexer: 1.7.0
       pathe: 2.0.3
       vite: 6.3.6(@types/node@24.7.0)(jiti@2.6.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
@@ -28979,7 +28645,7 @@ snapshots:
       '@vitest/spy': 3.2.4
       '@vitest/utils': 3.2.4
       chai: 5.2.0
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.1
       expect-type: 1.2.1
       magic-string: 0.30.19
       pathe: 2.0.3
@@ -29021,7 +28687,7 @@ snapshots:
       '@vitest/spy': 3.2.4
       '@vitest/utils': 3.2.4
       chai: 5.2.0
-      debug: 4.4.1(supports-color@8.1.1)
+      debug: 4.4.1
       expect-type: 1.2.1
       magic-string: 0.30.19
       pathe: 2.0.3
@@ -29357,14 +29023,8 @@ snapshots:
 
   wrap-ansi@8.1.0:
     dependencies:
-      ansi-styles: 6.2.1
+      ansi-styles: 6.2.3
       string-width: 5.1.2
-      strip-ansi: 7.1.2
-
-  wrap-ansi@9.0.0:
-    dependencies:
-      ansi-styles: 6.2.1
-      string-width: 7.2.0
       strip-ansi: 7.1.2
 
   wrap-ansi@9.0.2:
@@ -29508,8 +29168,6 @@ snapshots:
   yocto-spinner@0.2.3:
     dependencies:
       yoctocolors: 2.1.1
-
-  yoctocolors-cjs@2.1.2: {}
 
   yoctocolors-cjs@2.1.3: {}
 
