@@ -64,6 +64,9 @@ jobs:
       - name: Sync lockfile versions
         run: pnpm deps:sync --execute
 
+      - name: Update lockfile
+        run: pnpm install --no-frozen-lockfile
+
       - name: Build packages
         run: pnpm run ci:build
 
