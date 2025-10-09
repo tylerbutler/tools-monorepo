@@ -75,7 +75,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "~0.56.0",
+		"@fluid-tools/build-infrastructure": "~0.58.3",
 		"@oclif/core": "^4.3.0",
 		"@oclif/plugin-help": "^6.2.27",
 		"@rushstack/node-core-library": "^5.13.1",
@@ -96,7 +96,7 @@
 		"@types/jsonfile": "^6.1.4",
 		"@types/node": "^20.12.7",
 		"@types/tmp": "^0.2.6",
-		"generate-license-file": "^4.0.0",
+		"generate-license-file": "^4.1.0",
 		"oclif": "^4.20.1",
 		"rimraf": "^6.0.1",
 		"tmp-promise": "^3.0.3",
