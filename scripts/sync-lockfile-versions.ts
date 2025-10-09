@@ -9,7 +9,9 @@
  * Supports multiple package managers: pnpm, npm, yarn
  *
  * Usage:
- *   pnpm tsx scripts/sync-lockfile-versions.ts [--dry-run] [--verbose]
+ *   pnpm tsx scripts/sync-lockfile-versions.ts [--execute] [--verbose]
+ *
+ * By default, runs in dry-run mode. Use --execute to apply changes.
  */
 
 import { execSync } from 'node:child_process';
@@ -87,7 +89,8 @@ interface YarnListOutput {
 
 // CLI arguments
 const args = process.argv.slice(2);
-const dryRun = args.includes('--dry-run');
+const execute = args.includes('--execute');
+const dryRun = !execute; // Dry-run is now the default
 const verbose = args.includes('--verbose') || dryRun;
 
 function log(message: string) {
@@ -407,7 +410,7 @@ function main() {
   }
 
   if (dryRun) {
-    console.log('💡 Run without --dry-run to apply changes');
+    console.log('💡 Run with --execute to apply changes');
     process.exit(0);
   }
 
