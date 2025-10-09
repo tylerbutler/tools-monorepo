@@ -41,15 +41,15 @@
 		"lint:fix": "biome lint . --write"
 	},
 	"dependencies": {
-		"jiti": "^2.4.2"
+		"jiti": "^2.6.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-documenter": "^7.26.28",
-		"@microsoft/api-extractor": "^7.52.8",
-		"@types/node": "^20.12.7",
-		"concurrently": "^9.2.0",
-		"generate-license-file": "^4.0.0",
+		"@microsoft/api-documenter": "^7.27.1",
+		"@microsoft/api-extractor": "^7.53.1",
+		"@types/node": "^20.19.19",
+		"concurrently": "^9.2.1",
+		"generate-license-file": "^4.1.0",
 		"rimraf": "^6.0.1",
 		"tslib": "^2.8.1",
 		"type-fest": "^4.41.0",
