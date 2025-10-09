@@ -72,7 +72,9 @@ updates:
           - "typedoc*"
           - "typescript"
 
-          # Also exclude astro and starlight packages since they need special care
+          # Exclude Astro and Starlight packages from automated updates.
+          # These packages are tightly coupled to project-specific configurations and may introduce breaking changes.
+          # Updates to these dependencies require manual review and testing to ensure compatibility and stability.
           - "@astrojs/*"
           - "astro"
           - "starlight-*"
