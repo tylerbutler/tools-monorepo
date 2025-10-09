@@ -60,7 +60,11 @@ const config = {
 		{
 			label: "Use tilde range for Fluid Framework packages",
 			range: "~",
-			dependencies: ["@fluidframework/**", "@fluid-tools/**", "fluid-framework"],
+			dependencies: [
+				"@fluidframework/**",
+				"@fluid-tools/**",
+				"fluid-framework",
+			],
 			packages: ["**"],
 		},
 		{
