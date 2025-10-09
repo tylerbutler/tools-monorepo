@@ -59,6 +59,13 @@ updates:
         update-types:
           - "minor"
 
+      biome:
+        patterns:
+          - "@biomejs/*"
+          - "biome"
+        update-types:
+          - "minor"
+
       # All other dependencies (not in above groups)
       dependencies:
         patterns:
@@ -71,6 +78,8 @@ updates:
           - "fluid-framework"
           - "typedoc*"
           - "typescript"
+          - "@biomejs/*"
+          - "biome"
 
           # Exclude Astro and Starlight packages from automated updates.
           # These packages are tightly coupled to project-specific configurations and may introduce breaking changes.
