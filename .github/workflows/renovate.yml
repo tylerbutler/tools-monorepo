@@ -1,8 +1,10 @@
-name: Renovate
+# DISABLED: Switched to Dependabot
+# See .github/dependabot.yml and .github/workflows/dependabot-build-artifacts.yml
+name: Renovate (Disabled)
 on:
-  schedule:
-    # Run at 5 AM UTC on weekdays (matches "before 5am every weekday" in renovate.json5)
-    - cron: '0 5 * * 1-5'
+  # schedule:
+  #   # Run at 5 AM UTC on weekdays (matches "before 5am every weekday" in renovate.json5)
+  #   - cron: '0 5 * * 1-5'
   workflow_dispatch:
 jobs:
   renovate:
