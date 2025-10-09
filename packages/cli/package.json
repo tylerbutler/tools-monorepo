@@ -121,7 +121,7 @@
 		"sort-package-json": "*",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
-		"type-fest": "^4.41.0",
+		"type-fest": "^5.0.1",
 		"typescript": "~5.5.4",
 		"vitest": "^3.2.4"
 	},

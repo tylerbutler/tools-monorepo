@@ -133,7 +133,7 @@
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.20.3",
-		"type-fest": "^4.41.0",
+		"type-fest": "^5.0.1",
 		"typescript": "~5.5.4",
 		"unionfs": "^4.5.4",
 		"vitest": "^3.2.4"
