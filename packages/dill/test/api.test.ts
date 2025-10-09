@@ -1,5 +1,6 @@
 import { readdir } from "node:fs/promises";
 import http from "node:http";
+import { getRandomPort } from "get-port-please";
 import jsonfile from "jsonfile";
 import path from "pathe";
 import handler from "serve-handler";
@@ -13,9 +14,14 @@ import { decompressTarball, fetchFile, writeTarFiles } from "../src/api.js";
 import { download } from "../src/index.js";
 import { getTestUrls, testDataPath } from "./common.js";
 
-const testUrls = getTestUrls(8080);
+let testUrls: URL[];
 
 describe("download serverless tests", () => {
+	beforeAll(async () => {
+		const port = await getRandomPort();
+		testUrls = getTestUrls(port);
+	});
+
 	it("throws when downloadDir doesn't exist", async () => {
 		// const filename = "test-dill-dl-1.json";
 		// The path won't be written to
@@ -68,11 +74,12 @@ describe("with local server", () => {
 		// More details here: https://github.com/vercel/serve-handler#options
 		return handler(request, response, { public: testDataPath });
 	});
+	let port: number;
 
-	beforeAll(() => {
-		server.listen(8080, () => {
-			console.debug("Running at http://localhost:8080");
-		});
+	beforeAll(async () => {
+		port = await getRandomPort();
+		testUrls = getTestUrls(port);
+		server.listen(port);
 	});
 
 	afterAll(() => {

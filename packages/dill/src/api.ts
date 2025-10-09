@@ -165,7 +165,7 @@ async function handleExtraction(
 		const decompressed = decompress(file);
 		const fileType = await fileTypeFromBuffer(decompressed);
 		if (fileType?.ext === "tar") {
-			const files = await decompressTarball(file);
+			const files = await decompressTarball(decompressed);
 			await writeTarFiles(files, downloadDir);
 		} else {
 			await checkDestination(downloadDir);
@@ -321,6 +321,9 @@ export const download = async (
 
 	// Handle non-extraction case
 	if (!extract) {
+		if (!pathStats.isDirectory()) {
+			throw new Error("fetch failed: Path is not a directory");
+		}
 		const outputPath = path.join(downloadDir, filename);
 		if (noFile) {
 			return { data: file, writtenTo: undefined };
