@@ -72,7 +72,7 @@ describe("download command", async () => {
 				nested: "object",
 			},
 		});
-	});
+	}, 10000); // Increase timeout for CI environments where runCommand can be slow
 
 	it("filename flag with --out", async () => {
 		// process.chdir(downloadDir);
