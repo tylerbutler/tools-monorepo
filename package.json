@@ -66,6 +66,7 @@
 		"renovate": "^39",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.1",
+		"semver": "^7.7.3",
 		"sort-package-json": "*",
 		"sort-tsconfig": "workspace:^",
 		"syncpack": "^13.0.4",
@@ -116,8 +117,5 @@
 			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
 			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
 		}
-	},
-	"dependencies": {
-		"semver": "^7.7.3"
 	}
 }

@@ -6,10 +6,13 @@
  * update package.json for dependencies with caret ranges (^) that already satisfy
  * the new version. See: https://github.com/dependabot/dependabot-core/issues/9020
  *
- * Supports multiple package managers: pnpm, npm, yarn
+ * Supported package managers: pnpm, npm
+ * Note: Yarn support is not yet implemented - contributions welcome!
  *
  * Usage:
- *   pnpm tsx scripts/sync-lockfile-versions.ts [--execute] [--verbose]
+ *   pnpm deps:sync                      # Preview changes (dry-run, default)
+ *   pnpm deps:sync --execute            # Apply changes
+ *   pnpm deps:sync --verbose            # Show detailed output
  *
  * By default, runs in dry-run mode. Use --execute to apply changes.
  */
@@ -75,17 +78,6 @@ interface NpmListOutput {
   devDependencies?: Record<string, NpmDependency>;
 }
 
-interface YarnTreeNode {
-  name?: string;
-  children?: YarnTreeNode[];
-}
-
-interface YarnListOutput {
-  type?: string;
-  data?: {
-    trees?: YarnTreeNode[];
-  };
-}
 
 // CLI arguments
 const args = process.argv.slice(2);
@@ -104,9 +96,13 @@ function log(message: string) {
  */
 function detectPackageManager(): PackageManager {
   if (fs.existsSync('pnpm-lock.yaml')) return 'pnpm';
-  if (fs.existsSync('yarn.lock')) return 'yarn';
+  if (fs.existsSync('yarn.lock')) {
+    console.error('❌ Yarn is not yet supported by this script.');
+    console.error('   Contributions welcome! See: https://github.com/tylerbutler/tools-monorepo');
+    process.exit(1);
+  }
   if (fs.existsSync('package-lock.json')) return 'npm';
-  throw new Error('No lockfile found. Supported: pnpm-lock.yaml, yarn.lock, package-lock.json');
+  throw new Error('No lockfile found. Supported: pnpm-lock.yaml, package-lock.json');
 }
 
 /**
@@ -115,18 +111,9 @@ function detectPackageManager(): PackageManager {
 function getInstalledVersions(packageManager: PackageManager): ProjectInfo[] {
   log(`Getting installed versions using ${packageManager}...`);
 
-  let command: string;
-  switch (packageManager) {
-    case 'pnpm':
-      command = 'pnpm list --json --depth 0 --recursive';
-      break;
-    case 'npm':
-      command = 'npm list --json --depth 0 --workspaces --all';
-      break;
-    case 'yarn':
-      command = 'yarn list --json --depth 0';
-      break;
-  }
+  const command = packageManager === 'pnpm'
+    ? 'pnpm list --json --depth 0 --recursive'
+    : 'npm list --json --depth 0 --workspaces --all';
 
   try {
     const output = execSync(command, {
@@ -148,15 +135,7 @@ function getInstalledVersions(packageManager: PackageManager): ProjectInfo[] {
 function parseListOutput(packageManager: PackageManager, output: string): ProjectInfo[] {
   try {
     const parsed = JSON.parse(output);
-
-    switch (packageManager) {
-      case 'pnpm':
-        return parsePnpmList(parsed);
-      case 'npm':
-        return parseNpmList(parsed);
-      case 'yarn':
-        return parseYarnList(parsed);
-    }
+    return packageManager === 'pnpm' ? parsePnpmList(parsed) : parseNpmList(parsed);
   } catch (error) {
     console.error(`Failed to parse ${packageManager} list output:`);
     console.error(error instanceof Error ? error.message : String(error));
@@ -209,27 +188,6 @@ function convertNpmDeps(deps: Record<string, NpmDependency>): Record<string, Dep
     }
   }
   return result;
-}
-
-function parseYarnList(data: YarnListOutput | YarnTreeNode[]): ProjectInfo[] {
-  // Yarn list output varies by version, implement as needed
-  // For now, basic implementation
-  const trees = Array.isArray(data) ? data : data.data?.trees || [];
-
-  const rootDeps: Record<string, DependencyInfo> = {};
-  for (const tree of trees) {
-    const match = tree.name?.match(/^(.+)@(.+)$/);
-    if (match) {
-      rootDeps[match[1]] = { version: match[2] };
-    }
-  }
-
-  return [{
-    name: 'root',
-    path: process.cwd(),
-    dependencies: rootDeps,
-    devDependencies: {},
-  }];
 }
 
 /**

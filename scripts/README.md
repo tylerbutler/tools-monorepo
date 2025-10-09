@@ -16,28 +16,32 @@ When Dependabot updates a dependency like `debug` from `^4.4.1` to `4.4.3` in th
 
 ### Features
 
-- ✅ **Multi-package-manager support**: Works with pnpm, npm, and Yarn
+- ✅ **Multi-package-manager support**: Works with pnpm and npm (Yarn support coming soon)
 - ✅ **Monorepo aware**: Automatically syncs all workspace packages
 - ✅ **Range preservation**: Maintains your version range style (`^`, `~`, exact)
-- ✅ **Dry-run mode**: Preview changes before applying
+- ✅ **Safe by default**: Runs in dry-run mode by default
 - ✅ **Workspace protocol safe**: Skips `workspace:` dependencies
 
 ### Usage
 
 ```bash
-# Preview changes (dry-run)
-./node_modules/.bin/tsx scripts/sync-lockfile-versions.ts --dry-run
+# Preview changes (default - dry-run mode)
+pnpm deps:sync
 
-# Apply changes
-./node_modules/.bin/tsx scripts/sync-lockfile-versions.ts
+# Apply changes (requires explicit --execute flag)
+pnpm deps:sync --execute
 
 # Verbose output
-./node_modules/.bin/tsx scripts/sync-lockfile-versions.ts --verbose
+pnpm deps:sync --verbose
+
+# Direct script execution
+./node_modules/.bin/tsx scripts/sync-lockfile-versions.ts
+./node_modules/.bin/tsx scripts/sync-lockfile-versions.ts --execute
 ```
 
 ### How It Works
 
-1. Detects which package manager you're using (pnpm/npm/yarn)
+1. Detects which package manager you're using (pnpm/npm)
 2. Runs `<pm> list --json` to get installed versions from lockfile
 3. Compares installed versions with `package.json` ranges
 4. Updates `package.json` files while preserving range types:
@@ -53,7 +57,7 @@ This script can be run automatically in your Dependabot PR workflow to sync pack
 ```yaml
 # .github/workflows/dependabot-auto-update.yml
 - name: Sync package.json to lockfile versions
-  run: ./node_modules/.bin/tsx scripts/sync-lockfile-versions.ts
+  run: pnpm deps:sync --execute
 
 - name: Commit changes
   run: |
@@ -61,6 +65,12 @@ This script can be run automatically in your Dependabot PR workflow to sync pack
     git diff --staged --quiet || git commit -m "chore: sync package.json to lockfile versions"
     git push
 ```
+
+### Package Manager Support
+
+- ✅ **pnpm**: Fully supported
+- ✅ **npm**: Fully supported
+- ⚠️ **Yarn**: Not yet implemented - contributions welcome!
 
 ### Future Plans
 
