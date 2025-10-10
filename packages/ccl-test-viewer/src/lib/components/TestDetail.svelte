@@ -29,8 +29,7 @@ let { test, onBack }: Props = $props();
 async function copyToClipboard(text: string, _type: string) {
 	try {
 		await navigator.clipboard.writeText(text);
-	} catch (err) {
-	}
+	} catch (err) {}
 }
 
 // Function-aware result formatting

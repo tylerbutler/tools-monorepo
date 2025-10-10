@@ -57,7 +57,9 @@ const popularRepositories = [
 
 // Refresh GitHub sources (re-fetch from GitHub)
 async function refreshGitHubSource(source: DataSource) {
-	if (!source.url) { return; }
+	if (!source.url) {
+		return;
+	}
 
 	refreshing = true;
 	try {

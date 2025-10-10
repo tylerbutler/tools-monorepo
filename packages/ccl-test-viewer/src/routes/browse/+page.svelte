@@ -22,7 +22,6 @@ let initialized = $state(false); // Track if we've already initialized
 
 // Use $effect for Svelte 5 runes compatibility - runs when browser is available
 $effect(() => {
-
 	if (!browser || initialized) {
 		return;
 	}
@@ -71,7 +70,7 @@ const hasUploadedSources = $derived(
 // Derived states for the UI
 const hasTests = $derived(appState.filteredTests.length > 0);
 const showResults = $derived(
-	!(loading || error ) && (appState.testStats || dataSourceManager.isReady),
+	!(loading || error) && (appState.testStats || dataSourceManager.isReady),
 );
 </script>
 

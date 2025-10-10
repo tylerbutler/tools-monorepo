@@ -161,9 +161,7 @@ const categoryEntries = $derived(
 	Object.entries(stats.categories).sort((a, b) => b[1] - a[1]),
 );
 const mostTestedCategory = $derived(categoryEntries[0]);
-const leastTestedCategory = $derived(
-	categoryEntries.at(-1),
-);
+const leastTestedCategory = $derived(categoryEntries.at(-1));
 </script>
 
 <div class="space-y-6">

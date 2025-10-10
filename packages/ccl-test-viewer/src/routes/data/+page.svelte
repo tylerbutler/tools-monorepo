@@ -86,12 +86,13 @@ async function handleGitHubRepositoryLoad(repositoryData: {
 }
 
 // Handle source added from GitHub browser
-function handleSourceAdded(_source: DataSource) {
-}
+function handleSourceAdded(_source: DataSource) {}
 
 // Handle Tauri file uploads
 async function handleTauriFilesLoaded(files: TauriFileResult[]) {
-	if (files.length === 0) { return; }
+	if (files.length === 0) {
+		return;
+	}
 
 	try {
 		// Create local data source from Tauri files
@@ -111,13 +112,11 @@ async function handleTauriFilesLoaded(files: TauriFileResult[]) {
 		}));
 
 		await dataSourceManager.processUploadedFiles(fileObjects, localSource.name);
-	} catch (error) {
-	}
+	} catch (error) {}
 }
 
 // Handle Tauri file upload errors
-function handleTauriError(_error: string) {
-}
+function handleTauriError(_error: string) {}
 
 // Tab state management
 let activeTab = $state("upload");

@@ -34,7 +34,6 @@ function skipToMain() {
 
 // Initialize theme on mount - removed $effect DOM manipulation to fix lifecycle issues
 onMount(() => {
-
 	// Force theme application for static sites
 	if (typeof window !== "undefined") {
 		const root = document.documentElement;

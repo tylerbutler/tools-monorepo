@@ -43,7 +43,9 @@ let successMessage = $state<string | null>(null);
 
 // URL validation - runs on every change
 let urlValidation = $derived(() => {
-	if (!url.trim()) { return null; }
+	if (!url.trim()) {
+		return null;
+	}
 	return githubLoader.validateGitHubUrl(url);
 });
 
@@ -57,7 +59,9 @@ $effect(() => {
 
 // Preview repository info
 async function previewRepository() {
-	if (!urlValidation()?.valid) { return; }
+	if (!urlValidation()?.valid) {
+		return;
+	}
 
 	isLoading = true;
 	error = null;
@@ -79,7 +83,9 @@ async function previewRepository() {
 
 // Load repository data
 async function loadRepository() {
-	if (!(urlValidation()?.valid && repositoryInfo)) { return; }
+	if (!(urlValidation()?.valid && repositoryInfo)) {
+		return;
+	}
 
 	isLoading = true;
 	error = null;

@@ -19,7 +19,9 @@ interface Props {
 let { test, onView }: Props = $props();
 
 function truncateInput(input: string, maxLength = 100): string {
-	if (input.length <= maxLength) { return input; }
+	if (input.length <= maxLength) {
+		return input;
+	}
 	return `${input.substring(0, maxLength)}...`;
 }
 
