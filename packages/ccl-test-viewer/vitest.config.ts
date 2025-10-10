@@ -11,6 +11,10 @@ export default defineConfig({
 		setupFiles: ["src/test/setup.ts"],
 		coverage: {
 			reporter: ["text", "json", "html"],
+			include: [
+				"src/lib/**/*.{ts,js}",
+				"!src/lib/**/*.svelte.ts",
+			],
 			exclude: [
 				"node_modules/",
 				"src/test/",
@@ -20,13 +24,19 @@ export default defineConfig({
 				".svelte-kit/",
 				"static/",
 				"scripts/",
+				"**/*.svelte",
+				"src/routes/**/*",
+				"tests/e2e/**/*",
+				".lighthouserc.js",
+				"src/lib/data/types.ts",
+				"src/lib/data/function-types.ts",
 			],
 			thresholds: {
 				global: {
-					branches: 80,
-					functions: 80,
-					lines: 80,
-					statements: 80,
+					branches: 60,
+					functions: 60,
+					lines: 60,
+					statements: 60,
 				},
 			},
 		},

@@ -34,8 +34,8 @@
 		},
 		"test": {
 			"inputs": [
-				"src/**",
-				"test/**",
+				"src/**/*.{test,spec}.{js,ts}",
+				"src/test/**",
 				"vitest.config.ts",
 				"src/lib/data/**",
 				"static/data/**"
