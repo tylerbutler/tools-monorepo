@@ -7,9 +7,7 @@ describe("GitHubLoader", () => {
 	describe("parseGitHubUrl", () => {
 		describe("github.com URLs", () => {
 			it("parses basic repository URL", () => {
-				const result = loader.parseGitHubUrl(
-					"https://github.com/owner/repo",
-				);
+				const result = loader.parseGitHubUrl("https://github.com/owner/repo");
 
 				expect(result).toEqual({
 					owner: "owner",
@@ -72,9 +70,7 @@ describe("GitHubLoader", () => {
 			});
 
 			it("rejects URL with only owner", () => {
-				const result = loader.parseGitHubUrl(
-					"https://github.com/owner",
-				);
+				const result = loader.parseGitHubUrl("https://github.com/owner");
 				expect(result).toBeNull();
 			});
 
@@ -215,9 +211,7 @@ describe("GitHubLoader", () => {
 
 		describe("invalid URLs", () => {
 			it("rejects non-GitHub URLs", () => {
-				const result = loader.parseGitHubUrl(
-					"https://gitlab.com/owner/repo",
-				);
+				const result = loader.parseGitHubUrl("https://gitlab.com/owner/repo");
 				expect(result).toBeNull();
 			});
 
@@ -232,18 +226,14 @@ describe("GitHubLoader", () => {
 			});
 
 			it("rejects URL with unsupported hostname", () => {
-				const result = loader.parseGitHubUrl(
-					"https://github.io/owner/repo",
-				);
+				const result = loader.parseGitHubUrl("https://github.io/owner/repo");
 				expect(result).toBeNull();
 			});
 		});
 
 		describe("edge cases", () => {
 			it("handles URLs with trailing slashes", () => {
-				const result = loader.parseGitHubUrl(
-					"https://github.com/owner/repo/",
-				);
+				const result = loader.parseGitHubUrl("https://github.com/owner/repo/");
 
 				expect(result).toEqual({
 					owner: "owner",
@@ -296,9 +286,7 @@ describe("GitHubLoader", () => {
 
 	describe("validateGitHubUrl", () => {
 		it("validates correct GitHub URL", () => {
-			const result = loader.validateGitHubUrl(
-				"https://github.com/owner/repo",
-			);
+			const result = loader.validateGitHubUrl("https://github.com/owner/repo");
 
 			expect(result.valid).toBe(true);
 			expect(result.repository).toEqual({
@@ -333,9 +321,7 @@ describe("GitHubLoader", () => {
 		});
 
 		it("rejects non-GitHub URL", () => {
-			const result = loader.validateGitHubUrl(
-				"https://gitlab.com/owner/repo",
-			);
+			const result = loader.validateGitHubUrl("https://gitlab.com/owner/repo");
 
 			expect(result.valid).toBe(false);
 			expect(result.error).toBe("Invalid GitHub URL format");
@@ -415,9 +401,7 @@ describe("GitHubLoader", () => {
 				});
 
 				expect(result.files).toHaveLength(2);
-				expect(result.files.every((f) => f.name.endsWith(".json"))).toBe(
-					true,
-				);
+				expect(result.files.every((f) => f.name.endsWith(".json"))).toBe(true);
 			});
 
 			it("throws GitHubAPIError on 404", async () => {
@@ -588,9 +572,9 @@ describe("GitHubLoader", () => {
 			});
 
 			it("throws error for invalid URL", async () => {
-				await expect(
-					loader.loadRepositoryData("invalid-url"),
-				).rejects.toThrow("Invalid GitHub URL format");
+				await expect(loader.loadRepositoryData("invalid-url")).rejects.toThrow(
+					"Invalid GitHub URL format",
+				);
 			});
 
 			it("throws error for empty URL", async () => {
@@ -647,9 +631,9 @@ describe("GitHubLoader", () => {
 			});
 
 			it("throws error for invalid URL", async () => {
-				await expect(
-					loader.getRepositoryInfo("not-a-url"),
-				).rejects.toThrow("Invalid GitHub URL format");
+				await expect(loader.getRepositoryInfo("not-a-url")).rejects.toThrow(
+					"Invalid GitHub URL format",
+				);
 			});
 
 			it("handles repository not found", async () => {

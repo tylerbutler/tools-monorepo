@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { isTauriEnvironment, isOfflineModeAvailable } from "./tauriFileService.js";
+import {
+	isOfflineModeAvailable,
+	isTauriEnvironment,
+} from "./tauriFileService.js";
 
 describe("tauriFileService", () => {
 	describe("isTauriEnvironment", () => {
@@ -264,9 +267,7 @@ describe("tauriFileService", () => {
 
 		it("validates collection with populated sources", () => {
 			const importData = {
-				sources: [
-					{ id: "1", name: "Test", files: [] },
-				],
+				sources: [{ id: "1", name: "Test", files: [] }],
 			};
 			const isValid = importData.sources && Array.isArray(importData.sources);
 			expect(isValid).toBe(true);

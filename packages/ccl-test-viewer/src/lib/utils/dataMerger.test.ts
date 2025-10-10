@@ -146,10 +146,7 @@ describe("dataMerger", () => {
 				},
 			];
 
-			const result = validateTestData(
-				{ $schema: "1.0", tests },
-				"test.json",
-			);
+			const result = validateTestData({ $schema: "1.0", tests }, "test.json");
 
 			expect(result.isValid).toBe(true);
 			expect(result.stats.testCount).toBe(2);
@@ -189,10 +186,7 @@ describe("dataMerger", () => {
 
 		it("handles filenames with underscores and hyphens", () => {
 			const tests: GeneratedTest[] = [];
-			const category = jsonToTestCategory(
-				tests,
-				"test_multi-word_file.json",
-			);
+			const category = jsonToTestCategory(tests, "test_multi-word_file.json");
 
 			expect(category.name).toBe("Test Multi Word File");
 		});
@@ -494,9 +488,7 @@ describe("dataMerger", () => {
 			expect(dataSource.name).toBe("testowner/testrepo/tests");
 			expect(dataSource.type).toBe("github");
 			expect(dataSource.active).toBe(true);
-			expect(dataSource.url).toBe(
-				"https://github.com/testowner/testrepo",
-			);
+			expect(dataSource.url).toBe("https://github.com/testowner/testrepo");
 			expect(dataSource.metadata?.githubRepo).toBe("testowner/testrepo");
 			expect(dataSource.metadata?.githubBranch).toBe("main");
 		});

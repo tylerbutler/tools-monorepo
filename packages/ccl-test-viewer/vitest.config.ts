@@ -1,7 +1,8 @@
+import process from "node:process";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { svelteTesting } from "@testing-library/svelte/vite";
-import { defineConfig } from "vitest/config";
 import type { Plugin } from "vite";
+import { defineConfig } from "vitest/config";
 
 // Plugin to resolve MSW node imports correctly in test environment
 const mswResolverPlugin = (): Plugin => ({
@@ -29,12 +30,21 @@ export default defineConfig({
 		exclude: ["tests/**/*", "e2e/**/*"],
 		environment: "happy-dom",
 		setupFiles: ["src/test/setup.ts", "src/test/msw.setup.ts"],
+		// CI environments are slower, so increase timeout to prevent flaky test failures
+		testTimeout: process.env.GITHUB_ACTIONS ? 15000 : 5000,
+		reporters: process.env.GITHUB_ACTIONS
+			? // CI mode
+				["github-actions", "junit"]
+			: // local mode
+				["verbose", "junit"],
+		outputFile: {
+			junit: "./_temp/junit.xml",
+		},
 		coverage: {
 			reporter: ["text", "json", "html"],
-			include: [
-				"src/lib/**/*.{ts,js}",
-				"!src/lib/**/*.svelte.ts",
-			],
+			provider: "v8",
+			reportsDirectory: ".coverage/vitest",
+			include: ["src/lib/**/*.{ts,js}", "!src/lib/**/*.svelte.ts"],
 			exclude: [
 				"node_modules/",
 				"src/test/",
