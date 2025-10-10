@@ -572,4 +572,29 @@ describe("dataMerger", () => {
 			expect(dataSource.metadata?.originalName).toBe("ccl-test-data");
 		});
 	});
+
+	describe("edge cases", () => {
+		it("handles validation errors mid-loop with continue statement (lines 161-162)", () => {
+			// This test triggers the continue statement when validation fails mid-loop
+			// Line 161: if (!validateTestObject(test, i, errors)) {
+			// Line 162: continue;
+			const mixedData = {
+				$schema: "1.0",
+				tests: [
+					{ name: "valid1", input: "data", expected: { count: 1 } },
+					{ invalid: "test" }, // This will fail validateTestObject, triggering continue
+					{ name: "valid2", input: "data", expected: { count: 1 } },
+				],
+			};
+
+			const result = validateTestData(mixedData, "test.json");
+
+			// Should have errors from the invalid test object
+			expect(result.isValid).toBe(false);
+			expect(result.errors.length).toBeGreaterThan(0);
+			// validTests array has entries but because errors.length > 0, they're counted in stats
+			// Line 177: testCount: validTests.length shows how many passed validation
+			expect(result.stats.testCount).toBeGreaterThan(0);
+		});
+	});
 });

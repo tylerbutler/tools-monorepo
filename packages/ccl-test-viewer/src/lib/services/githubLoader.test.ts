@@ -383,4 +383,280 @@ describe("GitHubLoader", () => {
 			});
 		});
 	});
+
+	describe("API Methods with MSW", () => {
+		describe("loadRepository", () => {
+			it("loads repository contents successfully", async () => {
+				const result = await loader.loadRepository({
+					owner: "owner",
+					repo: "repo",
+					branch: "main",
+					path: "tests",
+				});
+
+				expect(result.files).toHaveLength(2);
+				expect(result.files[0].name).toBe("test.json");
+				expect(result.files[1].name).toBe("test2.json");
+				expect(result.repository).toEqual({
+					owner: "owner",
+					repo: "repo",
+					branch: "main",
+					path: "tests",
+				});
+				expect(result.loadedAt).toBeInstanceOf(Date);
+			});
+
+			it("filters for JSON files only", async () => {
+				const result = await loader.loadRepository({
+					owner: "owner",
+					repo: "repo",
+					branch: "main",
+					path: "tests",
+				});
+
+				expect(result.files).toHaveLength(2);
+				expect(result.files.every((f) => f.name.endsWith(".json"))).toBe(
+					true,
+				);
+			});
+
+			it("throws GitHubAPIError on 404", async () => {
+				await expect(
+					loader.loadRepository({
+						owner: "notfound",
+						repo: "repo",
+						branch: "main",
+					}),
+				).rejects.toThrow("Repository, branch, or path not found");
+			});
+
+			it("throws GitHubAPIError on 403", async () => {
+				await expect(
+					loader.loadRepository({
+						owner: "private",
+						repo: "repo",
+						branch: "main",
+					}),
+				).rejects.toThrow("Rate limit exceeded or repository is private");
+			});
+
+			it("uses default branch when not specified", async () => {
+				const result = await loader.loadRepository({
+					owner: "owner",
+					repo: "repo",
+				});
+
+				// When branch is not provided, it defaults to undefined in the result
+				// but the API request uses "main" as the default
+				expect(result.files).toHaveLength(2);
+			});
+
+			it("uses custom branch when specified", async () => {
+				const result = await loader.loadRepository({
+					owner: "owner",
+					repo: "repo",
+					branch: "develop",
+				});
+
+				expect(result.repository.branch).toBe("develop");
+			});
+		});
+
+		describe("downloadJsonFiles", () => {
+			it("downloads and parses JSON files", async () => {
+				const files: GitHubFileInfo[] = [
+					{
+						name: "test.json",
+						path: "tests/test.json",
+						type: "file",
+						size: 1234,
+						download_url:
+							"https://raw.githubusercontent.com/owner/repo/main/tests/test.json",
+						sha: "abc123",
+					},
+				];
+
+				const result = await loader.downloadJsonFiles(files);
+
+				expect(result).toHaveLength(1);
+				expect(result[0].name).toBe("test.json");
+				expect(result[0].content).toHaveProperty("$schema");
+				expect(result[0].content).toHaveProperty("tests");
+				expect(result[0].url).toBe(
+					"https://raw.githubusercontent.com/owner/repo/main/tests/test.json",
+				);
+			});
+
+			it("handles multiple files", async () => {
+				const files: GitHubFileInfo[] = [
+					{
+						name: "test1.json",
+						path: "tests/test1.json",
+						type: "file",
+						size: 1234,
+						download_url:
+							"https://raw.githubusercontent.com/owner/repo/main/tests/test1.json",
+						sha: "abc123",
+					},
+					{
+						name: "test2.json",
+						path: "tests/test2.json",
+						type: "file",
+						size: 2345,
+						download_url:
+							"https://raw.githubusercontent.com/owner/repo/main/tests/test2.json",
+						sha: "def456",
+					},
+				];
+
+				const result = await loader.downloadJsonFiles(files);
+
+				expect(result).toHaveLength(2);
+				expect(result[0].name).toBe("test1.json");
+				expect(result[1].name).toBe("test2.json");
+			});
+
+			it("handles invalid JSON gracefully", async () => {
+				const files: GitHubFileInfo[] = [
+					{
+						name: "invalid.json",
+						path: "tests/invalid.json",
+						type: "file",
+						size: 100,
+						download_url:
+							"https://raw.githubusercontent.com/owner/repo/main/tests/invalid.json",
+						sha: "xyz789",
+					},
+				];
+
+				const result = await loader.downloadJsonFiles(files);
+
+				expect(result).toHaveLength(0);
+			});
+
+			it("filters out failed downloads but continues with successful ones", async () => {
+				const files: GitHubFileInfo[] = [
+					{
+						name: "valid.json",
+						path: "tests/valid.json",
+						type: "file",
+						size: 1234,
+						download_url:
+							"https://raw.githubusercontent.com/owner/repo/main/tests/valid.json",
+						sha: "abc123",
+					},
+					{
+						name: "invalid.json",
+						path: "tests/invalid.json",
+						type: "file",
+						size: 100,
+						download_url:
+							"https://raw.githubusercontent.com/owner/repo/main/tests/invalid.json",
+						sha: "xyz789",
+					},
+				];
+
+				const result = await loader.downloadJsonFiles(files);
+
+				expect(result).toHaveLength(1);
+				expect(result[0].name).toBe("valid.json");
+			});
+
+			it("handles empty file list", async () => {
+				const result = await loader.downloadJsonFiles([]);
+				expect(result).toHaveLength(0);
+			});
+		});
+
+		describe("loadRepositoryData", () => {
+			it("completes full workflow successfully", async () => {
+				const result = await loader.loadRepositoryData(
+					"https://github.com/owner/repo/tree/main/tests",
+				);
+
+				expect(result.files).toHaveLength(2);
+				expect(result.repository).toEqual({
+					owner: "owner",
+					repo: "repo",
+					branch: "main",
+					path: "tests",
+				});
+				expect(result.metadata.source).toBe("github");
+				expect(result.metadata.totalFiles).toBe(2);
+				expect(result.metadata.successfulFiles).toBe(2);
+				expect(result.metadata.loadedAt).toBeInstanceOf(Date);
+			});
+
+			it("throws error for invalid URL", async () => {
+				await expect(
+					loader.loadRepositoryData("invalid-url"),
+				).rejects.toThrow("Invalid GitHub URL format");
+			});
+
+			it("throws error for empty URL", async () => {
+				await expect(loader.loadRepositoryData("")).rejects.toThrow(
+					"URL cannot be empty",
+				);
+			});
+
+			it("handles repository not found", async () => {
+				await expect(
+					loader.loadRepositoryData(
+						"https://github.com/notfound/repo/tree/main/tests",
+					),
+				).rejects.toThrow("Repository, branch, or path not found");
+			});
+
+			it("handles private repository or rate limit", async () => {
+				await expect(
+					loader.loadRepositoryData(
+						"https://github.com/private/repo/tree/main/tests",
+					),
+				).rejects.toThrow("Rate limit exceeded or repository is private");
+			});
+
+			it("processes different GitHub URL formats", async () => {
+				const formats = [
+					"https://github.com/owner/repo/tree/main/tests",
+					"https://api.github.com/repos/owner/repo/contents/tests?ref=main",
+				];
+
+				for (const url of formats) {
+					const result = await loader.loadRepositoryData(url);
+					expect(result.files.length).toBeGreaterThan(0);
+					expect(result.repository.owner).toBe("owner");
+					expect(result.repository.repo).toBe("repo");
+				}
+			});
+		});
+
+		describe("getRepositoryInfo", () => {
+			it("gets repository info without downloading files", async () => {
+				const result = await loader.getRepositoryInfo(
+					"https://github.com/owner/repo/tree/main/tests",
+				);
+
+				expect(result.fileCount).toBe(2);
+				expect(result.files).toHaveLength(2);
+				expect(result.repository).toEqual({
+					owner: "owner",
+					repo: "repo",
+					branch: "main",
+					path: "tests",
+				});
+			});
+
+			it("throws error for invalid URL", async () => {
+				await expect(
+					loader.getRepositoryInfo("not-a-url"),
+				).rejects.toThrow("Invalid GitHub URL format");
+			});
+
+			it("handles repository not found", async () => {
+				await expect(
+					loader.getRepositoryInfo("https://github.com/notfound/repo"),
+				).rejects.toThrow("Repository, branch, or path not found");
+			});
+		});
+	});
 });

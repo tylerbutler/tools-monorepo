@@ -90,7 +90,7 @@ importers:
     devDependencies:
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.7.0)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@24.7.0)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.7.0)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@24.7.0)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/ccl-docs:
     dependencies:
@@ -237,9 +237,15 @@ importers:
       bits-ui:
         specifier: ^2.11.0
         version: 2.11.4(@internationalized/date@3.10.0)(svelte@5.39.11)
+      happy-dom:
+        specifier: ^20.0.0
+        version: 20.0.0
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
+      msw:
+        specifier: ^2.11.5
+        version: 2.11.5(@types/node@20.19.19)(typescript@5.5.4)
       playwright:
         specifier: ^1.55.0
         version: 1.56.0
@@ -275,7 +281,7 @@ importers:
         version: 1.0.0(vite@6.3.6(@types/node@20.19.19)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/cli:
     dependencies:
@@ -372,7 +378,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/cli-api:
     dependencies:
@@ -469,7 +475,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/dill:
     dependencies:
@@ -596,7 +602,7 @@ importers:
         version: 4.6.0
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/dill-docs:
     dependencies:
@@ -705,7 +711,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/levee-client:
     dependencies:
@@ -857,7 +863,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/repopo:
     dependencies:
@@ -945,7 +951,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/repopo-docs:
     dependencies:
@@ -1100,7 +1106,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/xkcd2-api:
     devDependencies:
@@ -1142,7 +1148,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
 packages:
 
@@ -7666,6 +7672,10 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
+  happy-dom@20.0.0:
+    resolution: {integrity: sha512-GkWnwIFxVGCf2raNrxImLo397RdGhLapj5cT3R2PT7FwL62Ze1DROhzmYW7+J3p9105DYMVenEejEbnq5wA37w==}
+    engines: {node: '>=20.0.0'}
+
   hard-rejection@2.1.0:
     resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}
     engines: {node: '>=6'}
@@ -13356,6 +13366,10 @@ packages:
 
   whatwg-fetch@3.6.20:
     resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
+
+  whatwg-mimetype@3.0.0:
+    resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
+    engines: {node: '>=12'}
 
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
@@ -19417,7 +19431,7 @@ snapshots:
       svelte: 5.39.11
     optionalDependencies:
       vite: 6.3.6(@types/node@20.19.19)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@thi.ng/api@7.2.0': {}
 
@@ -20000,7 +20014,7 @@ snapshots:
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -20059,7 +20073,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.7.0)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@24.7.0)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -23627,6 +23641,12 @@ snapshots:
       wordwrap: 1.0.0
     optionalDependencies:
       uglify-js: 3.19.3
+
+  happy-dom@20.0.0:
+    dependencies:
+      '@types/node': 20.19.19
+      '@types/whatwg-mimetype': 3.0.2
+      whatwg-mimetype: 3.0.0
 
   hard-rejection@2.1.0: {}
 
@@ -30741,7 +30761,7 @@ snapshots:
     optionalDependencies:
       vite: 6.3.6(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
-  vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
+  vitest@3.2.4(@types/debug@4.1.12)(@types/node@20.19.19)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@20.19.19)(typescript@5.5.4))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -30770,6 +30790,7 @@ snapshots:
       '@types/debug': 4.1.12
       '@types/node': 20.19.19
       '@vitest/ui': 3.2.4(vitest@3.2.4)
+      happy-dom: 20.0.0
       jsdom: 25.0.1
     transitivePeerDependencies:
       - jiti
@@ -30785,7 +30806,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.7.0)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@24.7.0)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
+  vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.7.0)(@vitest/ui@3.2.4)(happy-dom@20.0.0)(jiti@2.6.1)(jsdom@25.0.1)(lightningcss@1.30.1)(msw@2.11.5(@types/node@24.7.0)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -30814,6 +30835,7 @@ snapshots:
       '@types/debug': 4.1.12
       '@types/node': 24.7.0
       '@vitest/ui': 3.2.4(vitest@3.2.4)
+      happy-dom: 20.0.0
       jsdom: 25.0.1
     transitivePeerDependencies:
       - jiti
@@ -31015,6 +31037,8 @@ snapshots:
       iconv-lite: 0.6.3
 
   whatwg-fetch@3.6.20: {}
+
+  whatwg-mimetype@3.0.0: {}
 
   whatwg-mimetype@4.0.0: {}
 
