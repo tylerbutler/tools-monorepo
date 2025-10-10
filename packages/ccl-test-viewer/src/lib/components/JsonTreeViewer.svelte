@@ -15,7 +15,7 @@ $effect(() => {
 		hasElement: !!jsonViewerElement,
 		hasData: !!data,
 		isReady: isComponentReady,
-		isInitializing: isInitializing,
+		isInitializing,
 		isCustomElementDefined:
 			typeof customElements !== "undefined"
 				? !!customElements.get("andypf-json-viewer")

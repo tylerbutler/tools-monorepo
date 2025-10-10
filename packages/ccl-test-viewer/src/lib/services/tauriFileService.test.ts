@@ -197,7 +197,7 @@ describe("tauriFileService", () => {
 		});
 
 		it("handles long strings", () => {
-			const longString = "a".repeat(10000);
+			const longString = "a".repeat(10_000);
 			const hash = simpleHash(longString);
 			expect(hash).toBeTruthy();
 			expect(typeof hash).toBe("string");

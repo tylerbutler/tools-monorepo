@@ -79,7 +79,7 @@ async function previewRepository() {
 
 // Load repository data
 async function loadRepository() {
-	if (!urlValidation()?.valid || !repositoryInfo) return;
+	if (!(urlValidation()?.valid && repositoryInfo)) return;
 
 	isLoading = true;
 	error = null;

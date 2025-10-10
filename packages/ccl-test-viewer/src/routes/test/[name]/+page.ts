@@ -31,16 +31,16 @@ export const load: PageLoad = async ({ params, fetch }) => {
 				error: null,
 				categories,
 			};
-		} else {
+		}
 			// No test found
 			if (categories.length === 0) {
 				return {
 					testName,
 					test: null,
-					error: `No test data available. Please ensure static data is built.`,
+					error: "No test data available. Please ensure static data is built.",
 					categories: [],
 				};
-			} else {
+			}
 				console.log(
 					`Available tests: ${categories
 						.flatMap((cat: any) => cat.tests)
@@ -53,8 +53,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					error: `Test "${testName}" not found in the available data.`,
 					categories,
 				};
-			}
-		}
 	} catch (err) {
 		console.error("Failed to load data in load function:", err);
 		return {

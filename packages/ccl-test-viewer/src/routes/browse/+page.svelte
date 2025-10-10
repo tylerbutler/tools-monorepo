@@ -97,7 +97,7 @@ const hasUploadedSources = $derived(
 // Derived states for the UI
 const hasTests = $derived(appState.filteredTests.length > 0);
 const showResults = $derived(
-	!loading && !error && (appState.testStats || dataSourceManager.isReady),
+	!(loading || error ) && (appState.testStats || dataSourceManager.isReady),
 );
 </script>
 

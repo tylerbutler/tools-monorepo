@@ -4,7 +4,7 @@ import { alertVariants, type Props } from "./index.js";
 
 type $$Props = Props;
 
-let className: $$Props["class"] = undefined;
+let className: $$Props["class"] ;
 export let variant: $$Props["variant"] = undefined;
 export { className as class };
 </script>
