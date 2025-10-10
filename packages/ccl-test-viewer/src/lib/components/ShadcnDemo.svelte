@@ -23,8 +23,13 @@ const buttonVariants = [
 	"secondary",
 	"ghost",
 	"link",
-];
-const badgeVariants = ["default", "secondary", "destructive", "outline"];
+] as const;
+const badgeVariants = [
+	"default",
+	"secondary",
+	"destructive",
+	"outline",
+] as const;
 
 // Sample data for demonstrations
 const sampleCards = [

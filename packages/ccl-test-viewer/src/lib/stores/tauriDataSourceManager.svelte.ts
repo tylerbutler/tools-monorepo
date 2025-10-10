@@ -12,7 +12,7 @@ import {
 	saveDataSourceToLocal,
 	type TauriFileResult,
 } from "@/services/tauriFileService";
-import type { DataSource } from "@/types";
+import type { DataSource } from "./dataSource";
 import { dataSourceManager } from "./dataSourceManager.svelte.js";
 
 /**
@@ -21,10 +21,10 @@ import { dataSourceManager } from "./dataSourceManager.svelte.js";
  */
 class TauriDataSourceManager {
 	// State
-	private readonly _isDesktopApp = $state(false);
+	private _isDesktopApp = $state(false);
 	private _localSources = $state<LocalDataSource[]>([]);
 	private _autoSave = $state(true);
-	private readonly _lastSyncTime = $state<Date | null>(null);
+	private _lastSyncTime = $state<Date | null>(null);
 
 	constructor() {
 		// Initialize Tauri environment detection
@@ -140,7 +140,7 @@ class TauriDataSourceManager {
 		this._localSources.splice(index, 1);
 
 		// Also remove from main data source manager
-		dataSourceManager.removeDataSource(sourceId);
+		dataSourceManager.removeSource(sourceId);
 
 		// Sync changes
 		await this.syncWithMainManager();
@@ -203,18 +203,21 @@ class TauriDataSourceManager {
 			if (!existing) {
 				// Add to main manager (this will trigger UI updates)
 				dataSourceManager.processUploadedFiles(
-					localSource.files.map((f) => ({
-						name: f.name,
-						content: f.content,
-						size: f.size,
-						type: "application/json" as const,
-						lastModified: Date.now(),
-						arrayBuffer: async () => new ArrayBuffer(0),
-						stream: () => new ReadableStream(),
-						text: async () => f.content,
-						slice: () => new Blob(),
-					})),
-					localSource.name,
+					localSource.files.map(
+						(f) =>
+							({
+								name: f.name,
+								content: f.content,
+								size: f.size,
+								type: "application/json" as const,
+								lastModified: Date.now(),
+								webkitRelativePath: "",
+								arrayBuffer: async () => new ArrayBuffer(0),
+								stream: () => new ReadableStream(),
+								text: async () => f.content,
+								slice: () => new Blob(),
+							}) as File,
+					),
 				);
 			}
 		}
@@ -237,30 +240,29 @@ class TauriDataSourceManager {
 		}
 
 		// Generate basic stats
-		const stats = {
+		const stats: import("./dataSource").DataSource["stats"] = {
 			totalTests: allTests.length,
 			totalAssertions: allTests.reduce(
 				(sum, test) => sum + (test.expected?.count || 0),
 				0,
 			),
-			categories: [
-				...new Set(allTests.map((test) => test.category || "unknown")),
-			].length,
-			filesCount: localSource.files.length,
+			categories: {},
+			functions: {},
+			features: {},
+			behaviors: {},
 		};
 
 		return {
 			id: localSource.id,
 			name: localSource.name,
-			type: "uploaded",
+			type: "uploaded" as const,
 			uploadedAt: localSource.savedAt,
-			isActive: true,
+			active: true,
 			categories: [], // Would need proper category processing
 			stats,
 			metadata: {
-				fileCount: localSource.files.length,
-				persistent: localSource.persistent,
-				source: "tauri-local",
+				fileSize: localSource.files.reduce((sum, f) => sum + f.size, 0),
+				originalName: localSource.name,
 			},
 		};
 	}
@@ -271,7 +273,7 @@ class TauriDataSourceManager {
 	async clearAllLocalSources(): Promise<void> {
 		// Remove from main manager first
 		for (const source of this._localSources) {
-			dataSourceManager.removeDataSource(source.id);
+			dataSourceManager.removeSource(source.id);
 		}
 
 		// Clear local array
@@ -284,7 +286,7 @@ class TauriDataSourceManager {
 	/**
 	 * Get storage usage statistics
 	 */
-	getStorageStats(): {
+	get storageStats(): {
 		sourceCount: number;
 		totalFiles: number;
 		totalSize: number;

@@ -282,7 +282,7 @@ describe("tauriFileService", () => {
 		});
 
 		it("formats error with string", () => {
-			const error = "String error";
+			const error: unknown = "String error";
 			const message = `Operation failed: ${error instanceof Error ? error.message : "Unknown error"}`;
 			expect(message).toBe("Operation failed: Unknown error");
 		});

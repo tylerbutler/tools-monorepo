@@ -7,6 +7,15 @@ import type {
 } from "../stores/dataSource.js";
 
 const EMPTY_STATS: MergedDataStats = {
+	totalSources: 0,
+	activeSources: 0,
+	totalTests: 0,
+	totalAssertions: 0,
+	totalCategories: 0,
+	sourceBreakdown: [],
+};
+
+const EMPTY_UPLOAD_STATS: UploadValidationResult["stats"] = {
 	testCount: 0,
 	categoryCount: 0,
 	functions: [],
@@ -22,7 +31,7 @@ function createErrorResult(
 		isValid: false,
 		errors,
 		warnings,
-		stats: { ...EMPTY_STATS },
+		stats: { ...EMPTY_UPLOAD_STATS },
 	};
 }
 

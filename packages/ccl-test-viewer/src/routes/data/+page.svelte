@@ -100,18 +100,22 @@ async function handleTauriFilesLoaded(files: TauriFileResult[]) {
 			await tauriDataSourceManager.createLocalSourceFromFiles(files);
 
 		// Process files through the main data source manager for UI integration
-		const fileObjects = files.map((file) => ({
-			name: file.name,
-			type: "application/json" as const,
-			size: file.size,
-			text: async () => file.content,
-			lastModified: Date.now(),
-			arrayBuffer: async () => new ArrayBuffer(0),
-			stream: () => new ReadableStream(),
-			slice: () => new Blob(),
-		}));
+		const fileObjects = files.map(
+			(file) =>
+				({
+					name: file.name,
+					type: "application/json" as const,
+					size: file.size,
+					text: async () => file.content,
+					lastModified: Date.now(),
+					webkitRelativePath: "",
+					arrayBuffer: async () => new ArrayBuffer(0),
+					stream: () => new ReadableStream(),
+					slice: () => new Blob(),
+				}) as File,
+		);
 
-		await dataSourceManager.processUploadedFiles(fileObjects, localSource.name);
+		await dataSourceManager.processUploadedFiles(fileObjects);
 	} catch (error) {}
 }
 

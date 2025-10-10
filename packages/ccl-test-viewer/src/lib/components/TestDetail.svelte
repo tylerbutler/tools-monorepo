@@ -70,7 +70,6 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 			};
 
 		case "filter":
-		case "expand_dotted":
 			return {
 				type: "entries",
 				content: expected.entries || [],
@@ -216,7 +215,7 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 					{#if formattedExpected.type === 'entries' && formattedExpected.metadata.isImplemented}
 						<!-- Entries display for parse and similar functions -->
 						<div class="space-y-2">
-							{#each formattedExpected.content as entry}
+							{#each (formattedExpected.content as Array<{ key: string; value: string }>) as entry}
 								<EntryDisplay {entry} />
 							{/each}
 						</div>
@@ -231,12 +230,12 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 						/>
 					{:else if formattedExpected.type === 'list' && formattedExpected.metadata.isImplemented}
 						<!-- List display for get_list -->
-						<ListDisplay list={formattedExpected.content} />
+						<ListDisplay list={(formattedExpected.content as any[])} />
 					{:else if formattedExpected.type === 'error'}
 						<!-- Error display -->
 						<div class="error-display">
 							<WhitespaceCodeHighlight
-								code={formattedExpected.content}
+								code={(formattedExpected.content as string)}
 								language={formattedExpected.language}
 							/>
 						</div>

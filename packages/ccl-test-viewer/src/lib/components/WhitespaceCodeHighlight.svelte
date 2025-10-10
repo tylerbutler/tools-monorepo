@@ -65,7 +65,6 @@ $effect(() => {
 /* Clean, crisp text rendering */
 pre, code {
 	text-rendering: optimizeLegibility;
-	font-smoothing: antialiased;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
