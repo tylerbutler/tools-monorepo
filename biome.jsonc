@@ -92,6 +92,7 @@
 					},
 					"nursery": {
 						"noShadow": "off",
+						"useReadonlyClassProperties": "off",
 					},
 				},
 			},
@@ -152,6 +153,23 @@
 					},
 					"performance": {
 						"useTopLevelRegex": "off",
+					},
+					"nursery": {
+						"useReadonlyClassProperties": "off",
+					},
+				},
+			},
+		},
+		{
+			// ccl-test-viewer specific overrides
+			"includes": ["packages/ccl-test-viewer/**"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noUselessUndefinedInitialization": "off",
+					},
+					"nursery": {
+						"noUselessUndefined": "off",
 					},
 				},
 			},

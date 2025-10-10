@@ -6,7 +6,7 @@ import type {
 	UploadValidationResult,
 } from "../stores/dataSource.js";
 
-const EMPTY_STATS: MergedDataStats = {
+const _EMPTY_STATS: MergedDataStats = {
 	totalSources: 0,
 	activeSources: 0,
 	totalTests: 0,
