@@ -26,13 +26,10 @@ interface Props {
 let { test, onBack }: Props = $props();
 
 // Copy functionality
-async function copyToClipboard(text: string, type: string) {
+async function copyToClipboard(text: string, _type: string) {
 	try {
 		await navigator.clipboard.writeText(text);
-		// Could add a toast notification here
-		console.log(`${type} copied to clipboard`);
 	} catch (err) {
-		console.error("Failed to copy:", err);
 	}
 }
 

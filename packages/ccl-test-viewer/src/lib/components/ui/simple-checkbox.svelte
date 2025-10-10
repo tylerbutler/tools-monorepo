@@ -19,14 +19,14 @@ let {
 }: Props = $props();
 
 function handleClick() {
-	if (disabled) return;
+	if (disabled) { return; }
 
 	checked = !checked;
 	onCheckedChange?.(checked);
 }
 
 function handleKeyDown(event: KeyboardEvent) {
-	if (disabled) return;
+	if (disabled) { return; }
 
 	if (event.key === " " || event.key === "Enter") {
 		event.preventDefault();

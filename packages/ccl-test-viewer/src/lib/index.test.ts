@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+// biome-ignore lint/performance/noNamespaceImport: Testing entire module exports
 import * as lib from "./index.js";
 
 describe("lib/index.ts exports", () => {

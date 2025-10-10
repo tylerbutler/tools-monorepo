@@ -162,7 +162,7 @@ const categoryEntries = $derived(
 );
 const mostTestedCategory = $derived(categoryEntries[0]);
 const leastTestedCategory = $derived(
-	categoryEntries[categoryEntries.length - 1],
+	categoryEntries.at(-1),
 );
 </script>
 

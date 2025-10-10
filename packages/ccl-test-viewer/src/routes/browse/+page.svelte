@@ -15,9 +15,6 @@ import {
 	X,
 } from "@lucide/svelte";
 
-// Debug: Check if script is executing at all
-console.log("🟦 Browse page script executed at module level");
-
 // Local state - initialize to false in case of SSR
 let loading = $state(!browser); // Will be false on client, true on server
 let error = $state<string | null>(null);
@@ -25,25 +22,10 @@ let initialized = $state(false); // Track if we've already initialized
 
 // Use $effect for Svelte 5 runes compatibility - runs when browser is available
 $effect(() => {
-	console.log(
-		"🟦 $effect called - browser:",
-		browser,
-		"initialized:",
-		initialized,
-	);
 
 	if (!browser || initialized) {
-		console.log(
-			"🟦 Skipping initialization - browser:",
-			browser,
-			"initialized:",
-			initialized,
-		);
 		return;
 	}
-
-	// Initialize dataSourceManager in upload-only mode (no static data)
-	console.log("🟦 Starting browse page initialization (upload-only mode)");
 
 	initialized = true; // Set immediately to prevent re-runs
 	loading = true;
@@ -59,16 +41,8 @@ $effect(() => {
 				dataSourceManager.categories,
 				dataSourceManager.stats,
 			);
-
-			console.log("🟦 Browse page initialized successfully (upload-only mode)");
-			console.log(
-				"🟦 Data synced to appState:",
-				dataSourceManager.categories.length,
-				"categories",
-			);
 			loading = false;
 		} catch (err) {
-			console.error("🟦 Browse page initialization error:", err);
 			error = err instanceof Error ? err.message : "Failed to initialize";
 			loading = false;
 			initialized = false; // Reset on error to allow retry

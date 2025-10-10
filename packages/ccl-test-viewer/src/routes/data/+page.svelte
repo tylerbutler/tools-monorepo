@@ -57,9 +57,6 @@ async function handleFilesUploaded(files: UploadedFile[]) {
 	if (successfulFiles.length > 0) {
 		const fileObjects = successfulFiles.map((f) => f.file);
 		const results = await dataSourceManager.processUploadedFiles(fileObjects);
-
-		// Log results for debugging
-		console.log("File processing results:", results);
 	}
 }
 
@@ -86,23 +83,20 @@ async function handleGitHubRepositoryLoad(repositoryData: {
 }) {
 	const result =
 		await dataSourceManager.processGitHubRepository(repositoryData);
-	console.log("GitHub repository processing result:", result);
 }
 
 // Handle source added from GitHub browser
-function handleSourceAdded(source: DataSource) {
-	console.log("GitHub source added:", source);
+function handleSourceAdded(_source: DataSource) {
 }
 
 // Handle Tauri file uploads
 async function handleTauriFilesLoaded(files: TauriFileResult[]) {
-	if (files.length === 0) return;
+	if (files.length === 0) { return; }
 
 	try {
 		// Create local data source from Tauri files
 		const localSource =
 			await tauriDataSourceManager.createLocalSourceFromFiles(files);
-		console.log("Created local data source:", localSource);
 
 		// Process files through the main data source manager for UI integration
 		const fileObjects = files.map((file) => ({
@@ -118,13 +112,11 @@ async function handleTauriFilesLoaded(files: TauriFileResult[]) {
 
 		await dataSourceManager.processUploadedFiles(fileObjects, localSource.name);
 	} catch (error) {
-		console.error("Failed to process Tauri files:", error);
 	}
 }
 
 // Handle Tauri file upload errors
-function handleTauriError(error: string) {
-	console.error("Tauri file upload error:", error);
+function handleTauriError(_error: string) {
 }
 
 // Tab state management

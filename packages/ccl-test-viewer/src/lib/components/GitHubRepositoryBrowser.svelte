@@ -57,7 +57,7 @@ const popularRepositories = [
 
 // Refresh GitHub sources (re-fetch from GitHub)
 async function refreshGitHubSource(source: DataSource) {
-	if (!source.url) return;
+	if (!source.url) { return; }
 
 	refreshing = true;
 	try {
@@ -74,7 +74,7 @@ async function refreshGitHubSource(source: DataSource) {
 			onSourceAdded?.(result.dataSource);
 		}
 	} catch (error) {
-		console.error("Failed to refresh GitHub source:", error);
+		// Error handling for GitHub source refresh
 	} finally {
 		refreshing = false;
 	}
@@ -94,7 +94,7 @@ async function loadPopularRepository(repo: (typeof popularRepositories)[0]) {
 			activeTab = "loaded";
 		}
 	} catch (error) {
-		console.error("Failed to load popular repository:", error);
+		// Error handling for popular repository loading
 	}
 }
 

@@ -24,7 +24,7 @@ const mockTest: GeneratedTest = {
 	validation: "standard",
 };
 
-describe.skip("TestCard", () => {
+describe("TestCard", () => {
 	it("renders test information correctly", () => {
 		const mockOnView = vi.fn();
 		const { getByText, getByRole } = render(TestCard, {

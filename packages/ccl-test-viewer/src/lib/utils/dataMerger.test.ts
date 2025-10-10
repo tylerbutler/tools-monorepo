@@ -309,6 +309,7 @@ describe("dataMerger", () => {
 						tests: [],
 					},
 				],
+				// biome-ignore lint/suspicious/noExplicitAny: Simplified test mock data
 				stats: { totalTests: 5, totalAssertions: 10 } as any,
 			},
 			{
@@ -325,6 +326,7 @@ describe("dataMerger", () => {
 						tests: [],
 					},
 				],
+				// biome-ignore lint/suspicious/noExplicitAny: Simplified test mock data
 				stats: { totalTests: 3, totalAssertions: 6 } as any,
 			},
 			{
@@ -334,6 +336,7 @@ describe("dataMerger", () => {
 				active: false,
 				uploadedAt: new Date(),
 				categories: [],
+				// biome-ignore lint/suspicious/noExplicitAny: Simplified test mock data
 				stats: { totalTests: 100, totalAssertions: 200 } as any,
 			},
 		];
@@ -365,6 +368,7 @@ describe("dataMerger", () => {
 						tests: [],
 					},
 				],
+				// biome-ignore lint/suspicious/noExplicitAny: Simplified test mock data
 				stats: { totalTests: 1, totalAssertions: 1 } as any,
 			};
 
@@ -397,7 +401,7 @@ describe("dataMerger", () => {
 		it("uses timestamp prefix", () => {
 			const before = Date.now();
 			const id = generateDataSourceId();
-			const timestamp = Number.parseInt(id.split("_")[1]);
+			const timestamp = Number.parseInt(id.split("_")[1], 10);
 
 			expect(timestamp).toBeGreaterThanOrEqual(before);
 			expect(timestamp).toBeLessThanOrEqual(Date.now());

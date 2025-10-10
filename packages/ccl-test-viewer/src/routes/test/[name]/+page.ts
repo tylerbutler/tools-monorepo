@@ -7,7 +7,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		// Load test data directly in the load function to avoid lifecycle issues
 		const categoriesResponse = await fetch("/data/categories.json");
 		if (!categoriesResponse.ok) {
-			console.error(`Failed to load categories: ${categoriesResponse.status}`);
 			return {
 				testName,
 				test: null,
@@ -20,11 +19,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		// Find the test by name from loaded categories
 		const foundTest = categories
-			.flatMap((cat: any) => cat.tests)
-			.find((t: any) => t.name === testName);
+			.flatMap((cat: { tests: unknown[] }) => cat.tests)
+			.find((t: { name: string }) => t.name === testName);
 
 		if (foundTest) {
-			console.log(`Load function found test: ${foundTest.name}`);
 			return {
 				testName,
 				test: foundTest,
@@ -41,20 +39,13 @@ export const load: PageLoad = async ({ params, fetch }) => {
 					categories: [],
 				};
 			}
-				console.log(
-					`Available tests: ${categories
-						.flatMap((cat: any) => cat.tests)
-						.map((t: any) => t.name)
-						.join(", ")}`,
-				);
 				return {
 					testName,
 					test: null,
 					error: `Test "${testName}" not found in the available data.`,
 					categories,
 				};
-	} catch (err) {
-		console.error("Failed to load data in load function:", err);
+	} catch (_err) {
 		return {
 			testName,
 			test: null,

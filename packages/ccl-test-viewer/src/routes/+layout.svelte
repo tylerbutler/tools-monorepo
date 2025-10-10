@@ -34,41 +34,27 @@ function skipToMain() {
 
 // Initialize theme on mount - removed $effect DOM manipulation to fix lifecycle issues
 onMount(() => {
-	console.log("📱 Layout onMount() called");
-	console.log("  Theme store state:", {
-		theme: themeStore.theme,
-		base16Theme: themeStore.base16Theme,
-	});
 
 	// Force theme application for static sites
 	if (typeof window !== "undefined") {
 		const root = document.documentElement;
-		console.log("  Current HTML classes:", Array.from(root.classList));
 
 		// Get theme values from localStorage or defaults
 		const storedTheme = localStorage.getItem("theme") || "dark";
 		const storedBase16 =
 			localStorage.getItem("base16Theme") || "base16-tomorrow-night";
 
-		console.log("  Stored values:", { storedTheme, storedBase16 });
-
 		// Remove any existing theme classes
 		const existingClasses = Array.from(root.classList).filter(
 			(cls) => cls.startsWith("base16-") || cls === "dark",
 		);
 		if (existingClasses.length > 0) {
-			console.log("  Removing existing classes:", existingClasses);
 			root.classList.remove(...existingClasses);
 		}
-
-		// Apply stored theme classes
-		console.log("  Applying classes:", storedBase16, storedTheme);
 		root.classList.add(storedBase16);
 		if (storedTheme === "dark") {
 			root.classList.add("dark");
 		}
-
-		console.log("  Final HTML classes:", Array.from(root.classList));
 
 		// Also initialize the theme store
 		themeStore.initialize();

@@ -25,22 +25,22 @@ let categoriesExpanded = $state(true);
 
 // Derived stats for badges
 const functionCounts = $derived.by(() => {
-	if (!appState.testStats) return {};
+	if (!appState.testStats) { return {}; }
 	return appState.testStats.functions;
 });
 
 const featureCounts = $derived.by(() => {
-	if (!appState.testStats) return {};
+	if (!appState.testStats) { return {}; }
 	return appState.testStats.features;
 });
 
 const behaviorCounts = $derived.by(() => {
-	if (!appState.testStats) return {};
+	if (!appState.testStats) { return {}; }
 	return appState.testStats.behaviors;
 });
 
 const categoryCounts = $derived.by(() => {
-	if (!appState.testStats) return {};
+	if (!appState.testStats) { return {}; }
 	return appState.testStats.categories;
 });
 

@@ -288,6 +288,7 @@ describe("tauriFileService", () => {
 		});
 
 		it("formats error with null", () => {
+			// biome-ignore lint/suspicious/noEvolvingTypes: Testing null error handling
 			const error = null;
 			const message = `Operation failed: ${error instanceof Error ? error.message : "Unknown error"}`;
 			expect(message).toBe("Operation failed: Unknown error");

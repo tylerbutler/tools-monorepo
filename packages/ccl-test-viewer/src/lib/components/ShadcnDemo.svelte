@@ -1,7 +1,14 @@
 <script lang="ts">
 import { Badge } from "$lib/components/ui/badge/index.js";
 import { Button } from "$lib/components/ui/button/index.js";
-import * as Card from "$lib/components/ui/card/index.js";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/card/index.js";
 import { Input } from "$lib/components/ui/input/index.js";
 import SimpleCheckbox from "$lib/components/ui/simple-checkbox.svelte";
 
@@ -111,19 +118,19 @@ const sampleCards = [
 		<h4 class="text-lg font-semibold">Cards</h4>
 		<div class="grid gap-4 md:grid-cols-2">
 			{#each sampleCards as card}
-				<Card.Root>
-					<Card.Header>
-						<Card.Title>{card.title}</Card.Title>
-						<Card.Description>{card.description}</Card.Description>
-					</Card.Header>
-					<Card.Content>
+				<Card>
+					<CardHeader>
+						<CardTitle>{card.title}</CardTitle>
+						<CardDescription>{card.description}</CardDescription>
+					</CardHeader>
+					<CardContent>
 						<p class="text-sm">{card.content}</p>
-					</Card.Content>
-					<Card.Footer class="flex justify-between">
+					</CardContent>
+					<CardFooter class="flex justify-between">
 						<Button variant="outline" size="sm">Cancel</Button>
 						<Button size="sm">Action</Button>
-					</Card.Footer>
-				</Card.Root>
+					</CardFooter>
+				</Card>
 			{/each}
 		</div>
 	</section>

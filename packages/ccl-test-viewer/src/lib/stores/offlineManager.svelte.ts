@@ -28,12 +28,12 @@ interface OfflineStats {
  */
 class OfflineManager {
 	// State
-	private _isOnline = $state(navigator.onLine);
+	private readonly _isOnline = $state(navigator.onLine);
 	private _isOfflineMode = $state(false);
-	private _cachedData = $state<Map<string, CachedData>>(new Map());
+	private readonly _cachedData = $state<Map<string, CachedData>>(new Map());
 	private _lastSync = $state<Date | null>(null);
-	private _autoCache = $state(true);
-	private _cacheLimit = $state(100 * 1024 * 1024); // 100MB cache limit
+	private readonly _autoCache = $state(true);
+	private readonly _cacheLimit = $state(100 * 1024 * 1024); // 100MB cache limit
 
 	constructor() {
 		// Initialize offline detection

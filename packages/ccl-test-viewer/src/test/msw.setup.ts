@@ -7,7 +7,7 @@ export const handlers = [
 	http.get(
 		"https://api.github.com/repos/:owner/:repo/contents/*",
 		({ params }) => {
-			const { owner, repo } = params;
+			const { owner } = params;
 
 			// Default successful response with test JSON files
 			if (owner !== "notfound" && owner !== "private") {
@@ -77,7 +77,7 @@ export const handlers = [
 	// Raw GitHub content download (successful JSON response)
 	http.get(
 		"https://raw.githubusercontent.com/:owner/:repo/:branch/*",
-		({ params, request }) => {
+		({ request }) => {
 			const url = new URL(request.url);
 			const path = url.pathname;
 

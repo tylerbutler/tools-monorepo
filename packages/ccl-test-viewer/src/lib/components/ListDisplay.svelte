@@ -7,7 +7,7 @@ interface Props {
 
 let { list }: Props = $props();
 
-function formatItem(item: any, index: number) {
+function formatItem(item: any, _index: number) {
 	if (item === null || item === undefined) {
 		return {
 			display: item === null ? "null" : "undefined",
