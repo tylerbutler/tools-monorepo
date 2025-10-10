@@ -110,7 +110,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > `static` **stackTraceLimit**: `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.19/node\_modules/@types/node/globals.d.ts:68
+Defined in: node\_modules/.pnpm/@types+node@20.19.20/node\_modules/@types/node/globals.d.ts:68
 
 **`Beta`**
 
@@ -134,7 +134,7 @@ not capture any frames.
 
 > `static` **captureStackTrace**(`targetObject`, `constructorOpt?`): `void`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.19/node\_modules/@types/node/globals.d.ts:52
+Defined in: node\_modules/.pnpm/@types+node@20.19.20/node\_modules/@types/node/globals.d.ts:52
 
 **`Beta`**
 
@@ -204,7 +204,7 @@ a();
 
 > `static` **prepareStackTrace**(`err`, `stackTraces`): `any`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.19/node\_modules/@types/node/globals.d.ts:56
+Defined in: node\_modules/.pnpm/@types+node@20.19.20/node\_modules/@types/node/globals.d.ts:56
 
 **`Beta`**
 
