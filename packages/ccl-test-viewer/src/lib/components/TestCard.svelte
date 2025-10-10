@@ -51,6 +51,13 @@ const expectedSummary = $derived.by(() => {
 		return `${count} entries`;
 	}
 
+	if (expected.list) {
+		const count = Array.isArray(expected.list)
+			? expected.list.length
+			: "invalid";
+		return `${count} entries`;
+	}
+
 	if (expected.object) {
 		return "Object result";
 	}
