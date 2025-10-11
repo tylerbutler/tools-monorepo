@@ -63,7 +63,7 @@
 		"concurrently": "^9.2.1",
 		"generate-license-file": "^4.1.0",
 		"npm-check-updates": "^18.3.1",
-		"renovate": "^39.264.1",
+		"renovate": "^41.146.0",
 		"repopo": "workspace:^",
 		"rimraf": "^6.0.1",
 		"semver": "^7.7.3",
