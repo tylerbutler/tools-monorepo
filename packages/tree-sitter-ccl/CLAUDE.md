@@ -105,12 +105,13 @@ conflicts: [[comment], [entry]]        // Resolved via precedence
 extras: [/[ \t]/]                      // NOT newlines (significant for indentation)
 
 rules: {
-  document       // Root: sequence of entries/comments
-  entry          // Key-value assignment
-  key            // single_line_key OR multiline_key
-  value          // single_line_value, multiline_value, OR nested_section
-  nested_section // Recursive CCL parsing with INDENT/DEDENT
-  comment        // Single-line OR multiline with `/=` marker
+  document              // Root: sequence of entries/comments
+  entry                 // Key-value assignment
+  key                   // single_line_key OR multiline_key
+  value                 // single_line_value, multiline_value_block, OR nested_content_block
+  nested_content_block  // Nested CCL re-parsed via injection (two-pass parsing)
+  content_line          // Raw text line in nested block (first pass)
+  comment               // Single-line OR multiline with `/=` marker
 }
 ```
 

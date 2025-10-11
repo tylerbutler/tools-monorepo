@@ -45,12 +45,16 @@
 
 **Real-world Impact**: Minimal - most files have trailing newlines and content after comments.
 
-#### Nested CCL Structure Granularity
-**Issue**: Content within nested sections (like `host = localhost` inside `config =`) is parsed as plain text (`value_line`) rather than structured CCL entries.
+#### Nested CCL Structure - Two-Pass Parsing
+**Architecture**: Content within nested blocks uses a **two-pass injection system** for proper syntax highlighting:
 
-**Technical Cause**: Tree-sitter's conflict resolution between `nested_section` and `multiline_value` contexts makes precedence-based disambiguation challenging.
+**First Pass**: Grammar parses nested content as raw text (`content_line` nodes within `nested_content_block`)
 
-**Impact**: Affects only syntax highlighting granularity within nested content. All functionality works correctly.
+**Second Pass**: Injection query (`queries/injections.scm`) re-parses the content as full CCL syntax
+
+**Result**: Modern editors with injection support (Neovim, VSCode, Helix, Zed) get complete syntax highlighting throughout nested structures. Basic tools show nested content as plain text but all parsing works correctly.
+
+**See**: ARCHITECTURE.md for detailed explanation of why this injection-based approach is necessary.
 
 ## Grammar Architecture
 
@@ -79,9 +83,8 @@ comment: $ => choice(
 The grammar declares conflicts for ambiguous parsing contexts:
 ```javascript
 conflicts: $ => [
-  [$.nested_section, $.multiline_value],
-  [$.nested_content, $.multiline_value],
-  [$.comment]  // Added for multiline comment disambiguation
+  [$.comment],  // Multiline vs single-line comment disambiguation
+  [$.entry]     // Empty value vs newline-prefixed value disambiguation
 ]
 ```
 

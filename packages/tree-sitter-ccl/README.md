@@ -282,8 +282,9 @@ The grammar defines these main constructs:
 - `single_line_key`: Simple key identifier
 - `multiline_key`: Key spanning multiple lines
 - `single_line_value`: Simple value content
-- `nested_section`: Recursive CCL block with semantic indentation
-- `multiline_value`: Plain text block with semantic indentation
+- `nested_content_block`: Nested CCL block re-parsed via injection
+- `multiline_value_block`: Plain text block with semantic indentation
+- `content_line`: Raw text lines in nested blocks (re-parsed via injection)
 - `assignment`: The `=` operator
 - `comment`: CCL-style comments starting with `/=`
 - `indent`/`dedent`: External scanner tokens for semantic indentation
@@ -302,7 +303,7 @@ This parser uses a C++ external scanner (`src/scanner.cc`) to handle:
 
 ### Prerequisites
 
-- Node.js 14+
+- Node.js 20+
 - C++ compiler (GCC, Clang, or MSVC)
 - Python 3.x (for node-gyp native compilation)
 - The `tree-sitter-cli` is included as a dependency
@@ -311,7 +312,7 @@ This parser uses a C++ external scanner (`src/scanner.cc`) to handle:
 
 ```bash
 # Clone the repository
-git clone https://github.com/ccl-community/tree-sitter-ccl.git
+git clone https://github.com/tylerbutler/tools-monorepo.git
 cd packages/tree-sitter-ccl
 
 # Option 1: Using mise for Python

@@ -57,13 +57,13 @@ The injection model uses **two-pass parsing**:
 
 **Pass 1**: Parse nested content as raw text
 ```javascript
-nested_content: seq(newline, indent, repeat(content_line), dedent)
+nested_content_block: seq(newline, indent, repeat(content_line), dedent)
 content_line: /[^\n\r]*/  // Just capture lines as text
 ```
 
 **Pass 2**: Re-parse via injection query
 ```scheme
-((nested_content) @injection.content
+((nested_content_block) @injection.content
   (#set! injection.language "ccl"))
 ```
 
@@ -88,16 +88,16 @@ content_line: /[^\n\r]*/  // Just capture lines as text
 - **Editor compatibility**: Works in Neovim, VSCode with extensions, but not all tools
 
 ##### 3. **Syntax Tree Complexity**
-- Tree contains both `nested_content` nodes (raw text) AND the injected parsed structure
+- Tree contains both `nested_content_block` nodes (raw text) AND the injected parsed structure
 - Harder to navigate: need to understand injection boundary points
 - **Example tree structure**:
   ```
   entry
     ├─ single_line_key
     ├─ assignment
-    └─ nested_content        ← Raw text node
-        ├─ content_line      ← Unparsed text
-        └─ (injection)       ← Separate injected parse tree
+    └─ nested_content_block  ← Raw text node
+        ├─ content_line      ← Unparsed text (first pass)
+        └─ (injection)       ← Separate injected parse tree (second pass)
             ├─ entry
             └─ comment
   ```
@@ -158,7 +158,7 @@ content_line: /[^\n\r]*/  // Just capture lines as text
 
 ```scheme
 ; queries/injections.scm
-((nested_content) @injection.content
+((nested_content_block) @injection.content
   (#set! injection.language "ccl")
   (#set! injection.include-children))
 ```
@@ -176,12 +176,12 @@ entry: choice(
 // Value can be nested content (injection target)
 value: choice(
   single_line_value,
-  nested_content,    // ← Injection happens here
-  multiline_value
+  nested_content_block,    // ← Injection happens here
+  multiline_value_block
 )
 
 // Nested content: Raw text, re-parsed via injection
-nested_content: seq(
+nested_content_block: seq(
   newline,
   indent,
   repeat(choice(content_line, newline)),
@@ -203,5 +203,5 @@ If injection performance becomes a problem:
 ## References
 
 - CCL Blog Post: https://chshersh.com/blog/2025-01-06-the-most-elegant-configuration-language.html
-- Tree-sitter Injection Docs: https://tree-sitter.github.io/tree-sitter/syntax-highlighting#language-injection
-- Previous Implementation: See git history for direct recursion attempts (commit range TBD)
+- Tree-sitter Documentation: https://tree-sitter.github.io/tree-sitter/
+- Tree-sitter Syntax Highlighting Guide: https://tree-sitter.github.io/tree-sitter/syntax-highlighting
