@@ -1,6 +1,6 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
-	"ui": "stream",
+	"ui": "tui",
 	"remoteCache": {
 		"signature": true
 	},
@@ -36,7 +36,7 @@
 			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"]
 		},
 		"api": {
-			"dependsOn": ["^compile", "compile"],
+			"dependsOn": ["compile"],
 			"inputs": ["esm/**/*.d.ts", "api-extractor*.json", "package.json"],
 			"outputs": [
 				"api-docs/**",
@@ -45,7 +45,7 @@
 			]
 		},
 		"docs": {
-			"dependsOn": ["^compile", "compile", "api"],
+			"dependsOn": ["compile", "api"],
 			"inputs": [
 				"esm/**",
 				"src/**",
@@ -63,7 +63,7 @@
 			]
 		},
 		"generate": {
-			"dependsOn": ["^compile", "compile"],
+			"dependsOn": ["compile"],
 			"inputs": ["esm/**", "test/**"],
 			"outputs": ["test/commands/__snapshots__/**"]
 		},
@@ -73,7 +73,7 @@
 			"outputs": ["oclif.manifest.json"]
 		},
 		"readme": {
-			"dependsOn": ["compile", "manifest"],
+			"dependsOn": ["manifest"],
 			"inputs": ["package.json", "src/**"],
 			"outputs": ["README.md", "docs/**"]
 		},
@@ -133,6 +133,7 @@
 			"outputs": []
 		},
 		"check:policy": {
+			"dependsOn": ["repopo#compile"],
 			"inputs": ["**"],
 			"outputs": []
 		},
