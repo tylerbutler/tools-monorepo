@@ -18,45 +18,61 @@ let {
 
 let codeElement: HTMLElement;
 
-// Function to escape HTML and add whitespace indicators
-function processCodeText(text: string): string {
+// Function to create whitespace indicators using DOM API (XSS-safe)
+function createWhitespaceIndicator(
+	type: "tab" | "space" | "newline",
+	char: string,
+): HTMLSpanElement {
+	const span = document.createElement("span");
+	span.className = `whitespace-indicator ${type}`;
+	span.title = type.charAt(0).toUpperCase() + type.slice(1);
+	span.textContent = char;
+	return span;
+}
+
+// Process code text using DOM API instead of innerHTML (XSS-safe)
+function processCodeWithDom(text: string, showWhitespace: boolean): void {
+	if (!codeElement) return;
+
+	// Clear existing content
+	codeElement.textContent = "";
+
 	if (!showWhitespace) {
-		// Just escape HTML
-		return text
-			.replace(/&/g, "&amp;")
-			.replace(/</g, "&lt;")
-			.replace(/>/g, "&gt;");
+		// Simple case: just set text content (auto-escapes)
+		codeElement.textContent = text;
+		return;
 	}
 
-	// Escape HTML first, then add whitespace indicators
-	const escaped = text
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;");
+	// Process character by character, adding whitespace indicators
+	let i = 0;
+	while (i < text.length) {
+		const char = text[i];
 
-	return escaped
-		.replace(
-			/\t/g,
-			'<span class="whitespace-indicator tab" title="Tab">»</span>',
-		)
-		.replace(
-			/ /g,
-			'<span class="whitespace-indicator space" title="Space">·</span>',
-		)
-		.replace(
-			/\r\n/g,
-			'<span class="whitespace-indicator newline" title="Newline">¶</span>\r\n',
-		)
-		.replace(
-			/(?<!\r)\n/g,
-			'<span class="whitespace-indicator newline" title="Newline">¶</span>\n',
-		);
+		if (char === "\t") {
+			codeElement.appendChild(createWhitespaceIndicator("tab", "»"));
+		} else if (char === " ") {
+			codeElement.appendChild(createWhitespaceIndicator("space", "·"));
+		} else if (char === "\r" && text[i + 1] === "\n") {
+			// Handle \r\n
+			codeElement.appendChild(createWhitespaceIndicator("newline", "¶"));
+			codeElement.appendChild(document.createTextNode("\r\n"));
+			i++; // Skip the \n
+		} else if (char === "\n") {
+			// Handle standalone \n
+			codeElement.appendChild(createWhitespaceIndicator("newline", "¶"));
+			codeElement.appendChild(document.createTextNode("\n"));
+		} else {
+			// Regular character - append as text node (auto-escapes)
+			codeElement.appendChild(document.createTextNode(char));
+		}
+		i++;
+	}
 }
 
 // Update the display when code changes
 $effect(() => {
 	if (codeElement) {
-		codeElement.innerHTML = processCodeText(code);
+		processCodeWithDom(code, showWhitespace);
 	}
 });
 </script>

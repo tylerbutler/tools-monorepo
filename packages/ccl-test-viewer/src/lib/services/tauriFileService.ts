@@ -86,8 +86,9 @@ export async function openMultiFileDialog(): Promise<TauriFileResult[]> {
 					path,
 					size: content.length,
 				});
-			} catch (_error) {
+			} catch (error) {
 				// Continue with other files even if one fails
+				console.warn(`Failed to read file ${path}:`, error);
 			}
 		}
 
@@ -126,16 +127,20 @@ export async function saveDataSourceToLocal(
 		}
 
 		// Save data source metadata and file references
-		const saveData = {
-			...dataSource,
-			savedAt: new Date(),
-			files: dataSource.files.map((f) => ({
+		const filesWithHashes = await Promise.all(
+			dataSource.files.map(async (f) => ({
 				name: f.name,
 				path: f.path,
 				size: f.size,
 				// Don't save full content to avoid bloat, just reference
-				contentHash: simpleHash(f.content),
+				contentHash: await contentHash(f.content),
 			})),
+		);
+
+		const saveData = {
+			...dataSource,
+			savedAt: new Date(),
+			files: filesWithHashes,
 		};
 
 		await writeTextFile(
@@ -171,7 +176,8 @@ export async function loadSavedDataSources(): Promise<LocalDataSource[]> {
 		// This would require directory listing functionality
 		// For now, return empty array - would need to implement directory scanning
 		return [];
-	} catch (_error) {
+	} catch (error) {
+		console.warn("Failed to load saved data sources:", error);
 		return [];
 	}
 }
@@ -284,15 +290,38 @@ export async function checkFileSystemPermissions(): Promise<boolean> {
 		});
 
 		return true;
-	} catch (_error) {
+	} catch (error) {
+		console.warn("File system permission check failed:", error);
 		return false;
 	}
 }
 
 /**
- * Simple hash function for content verification
+ * Content hash using Web Crypto API (SHA-256) for better collision resistance
+ * Falls back to simple hash if crypto API unavailable
  */
-function simpleHash(str: string): string {
+async function contentHash(str: string): Promise<string> {
+	// Use Web Crypto API for better hash quality
+	if (typeof crypto !== "undefined" && crypto.subtle) {
+		try {
+			const encoder = new TextEncoder();
+			const data = encoder.encode(str);
+			const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+			const hashArray = Array.from(new Uint8Array(hashBuffer));
+			// Return first 16 bytes as hex string (32 chars) for reasonable size
+			return hashArray
+				.slice(0, 16)
+				.map((b) => b.toString(16).padStart(2, "0"))
+				.join("");
+		} catch (error) {
+			console.warn(
+				"Failed to use Web Crypto API, falling back to simple hash:",
+				error,
+			);
+		}
+	}
+
+	// Fallback: Simple hash for older environments
 	let hash = 0;
 	for (let i = 0; i < str.length; i++) {
 		const char = str.charCodeAt(i);
@@ -335,7 +364,8 @@ export async function getDesktopAppInfo(): Promise<{
 		const platform = (await invoke("platform")) as string;
 
 		return { version, platform };
-	} catch (_error) {
+	} catch (error) {
+		console.warn("Failed to get desktop app info:", error);
 		return null;
 	}
 }

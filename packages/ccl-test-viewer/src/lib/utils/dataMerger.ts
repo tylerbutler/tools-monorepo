@@ -6,6 +6,11 @@ import type {
 	UploadValidationResult,
 } from "../stores/dataSource.js";
 
+// Security limits to prevent DoS attacks from malicious/corrupt files
+const MAX_TESTS = 10000;
+const MAX_ARRAY_ITEMS = 100;
+const MAX_CATEGORIES = 1000;
+
 const _EMPTY_STATS: MergedDataStats = {
 	totalSources: 0,
 	activeSources: 0,
@@ -104,8 +109,15 @@ function collectTestArrays(
 	const { functions, features, behaviors } = sets;
 
 	if (test.functions && Array.isArray(test.functions)) {
-		for (const f of test.functions) {
-			functions.add(f as string);
+		// Security: Limit array sizes
+		if (test.functions.length > MAX_ARRAY_ITEMS) {
+			warnings.push(
+				`Test ${test.name} has excessive functions (max ${MAX_ARRAY_ITEMS})`,
+			);
+		} else {
+			for (const f of test.functions) {
+				functions.add(f as string);
+			}
 		}
 	} else if (test.functions) {
 		warnings.push(
@@ -114,8 +126,15 @@ function collectTestArrays(
 	}
 
 	if (test.features && Array.isArray(test.features)) {
-		for (const f of test.features) {
-			features.add(f as string);
+		// Security: Limit array sizes
+		if (test.features.length > MAX_ARRAY_ITEMS) {
+			warnings.push(
+				`Test ${test.name} has excessive features (max ${MAX_ARRAY_ITEMS})`,
+			);
+		} else {
+			for (const f of test.features) {
+				features.add(f as string);
+			}
 		}
 	} else if (test.features) {
 		warnings.push(
@@ -124,8 +143,15 @@ function collectTestArrays(
 	}
 
 	if (test.behaviors && Array.isArray(test.behaviors)) {
-		for (const b of test.behaviors) {
-			behaviors.add(b as string);
+		// Security: Limit array sizes
+		if (test.behaviors.length > MAX_ARRAY_ITEMS) {
+			warnings.push(
+				`Test ${test.name} has excessive behaviors (max ${MAX_ARRAY_ITEMS})`,
+			);
+		} else {
+			for (const b of test.behaviors) {
+				behaviors.add(b as string);
+			}
 		}
 	} else if (test.behaviors) {
 		warnings.push(
@@ -154,6 +180,12 @@ export function validateTestData(
 
 	if (testsArray.length === 0) {
 		warnings.push("File contains no test data");
+	}
+
+	// Security: Check maximum array length to prevent DoS
+	if (testsArray.length > MAX_TESTS) {
+		errors.push(`Test count exceeds maximum allowed (${MAX_TESTS})`);
+		return createErrorResult(errors, warnings);
 	}
 
 	const validTests: GeneratedTest[] = [];
@@ -362,7 +394,7 @@ export function createDataSourceFromUpload(
  * Generates a unique ID for data sources
  */
 export function generateDataSourceId(): string {
-	return `ds_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+	return `ds_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
 
 /**

@@ -45,9 +45,12 @@ $effect(() => {
 			} catch (error) {
 				isInitializing = false;
 
-				// Fallback to JSON.stringify if the web component fails
+				// Fallback to JSON.stringify if the web component fails (XSS-safe)
 				if (jsonViewerElement) {
-					jsonViewerElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+					const pre = document.createElement("pre");
+					pre.textContent = JSON.stringify(data, null, 2);
+					jsonViewerElement.textContent = "";
+					jsonViewerElement.appendChild(pre);
 				}
 			}
 		})();
@@ -63,11 +66,18 @@ $effect(() => {
 			try {
 				(jsonViewerElement as any).data = JSON.stringify(data);
 			} catch (error) {
-				jsonViewerElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+				// Fallback using DOM API (XSS-safe)
+				const pre = document.createElement("pre");
+				pre.textContent = JSON.stringify(data, null, 2);
+				jsonViewerElement.textContent = "";
+				jsonViewerElement.appendChild(pre);
 			}
 		} else if (!isInitializing) {
-			// Use fallback if component not ready and not initializing
-			jsonViewerElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+			// Use fallback if component not ready and not initializing (XSS-safe)
+			const pre = document.createElement("pre");
+			pre.textContent = JSON.stringify(data, null, 2);
+			jsonViewerElement.textContent = "";
+			jsonViewerElement.appendChild(pre);
 		}
 	}
 });

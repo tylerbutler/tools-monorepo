@@ -154,7 +154,10 @@ class DesktopAuthService {
 		}
 
 		try {
-		} catch (_error) {}
+			// TODO: Implement auth state persistence when storage API is available
+		} catch (error) {
+			console.warn("Failed to load auth state:", error);
+		}
 	}
 
 	/**
@@ -166,7 +169,10 @@ class DesktopAuthService {
 
 		if (this.isAvailable) {
 			try {
-			} catch (_error) {}
+				// TODO: Implement auth token persistence when storage API is available
+			} catch (error) {
+				console.warn("Failed to store auth token:", error);
+			}
 		}
 	}
 
@@ -175,7 +181,10 @@ class DesktopAuthService {
 	 */
 	private async clearAuthState(): Promise<void> {
 		try {
-		} catch (_error) {}
+			// TODO: Implement auth state clearing when storage API is available
+		} catch (error) {
+			console.warn("Failed to clear auth state:", error);
+		}
 	}
 
 	/**
@@ -207,12 +216,24 @@ export const desktopAuthService = new DesktopAuthService();
 
 /**
  * Configuration for GitHub OAuth in desktop app
+ * Uses environment variables for security - configure via VITE_GITHUB_CLIENT_ID
  */
 export const GITHUB_OAUTH_CONFIG: AuthConfig = {
-	clientId: "your-github-app-client-id", // Would be configured for production
+	clientId: import.meta.env.VITE_GITHUB_CLIENT_ID || "", // Configure via environment variable
 	redirectUri: "ccl-test-viewer://oauth/callback", // Deep link for Tauri
 	scopes: ["repo", "user:email"], // Permissions needed for GitHub repositories
 };
+
+/**
+ * Validates OAuth configuration before use
+ */
+function validateOAuthConfig(config: AuthConfig): void {
+	if (!config.clientId) {
+		throw new Error(
+			"GitHub OAuth client ID not configured. Set VITE_GITHUB_CLIENT_ID environment variable.",
+		);
+	}
+}
 
 /**
  * Helper function to initiate GitHub OAuth
@@ -221,6 +242,7 @@ export async function authenticateWithGitHub(): Promise<void> {
 	if (!desktopAuthService.isAvailable) {
 		throw new Error("GitHub authentication only available in desktop app");
 	}
+	validateOAuthConfig(GITHUB_OAUTH_CONFIG);
 	await desktopAuthService.initiateOAuth(GITHUB_OAUTH_CONFIG);
 }
 

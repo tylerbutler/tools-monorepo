@@ -98,7 +98,9 @@ async function fetchFromGitHub(path: string, token?: string): Promise<string> {
 	try {
 		const headers: Record<string, string> = {};
 		if (token) {
-			headers.Authorization = `token ${token}`;
+			// Use Bearer token format for OAuth, fallback to 'token' for PAT
+			// GitHub supports both, but Bearer is preferred for OAuth tokens
+			headers.Authorization = `Bearer ${token}`;
 		}
 		const response = await fetch(url, { headers });
 		if (!response.ok) {
@@ -120,7 +122,8 @@ async function listGitHubDirectory(
 			Accept: "application/vnd.github.v3+json",
 		};
 		if (token) {
-			headers.Authorization = `token ${token}`;
+			// Use Bearer token format for OAuth, fallback to 'token' for PAT
+			headers.Authorization = `Bearer ${token}`;
 		}
 		const response = await fetch(url, { headers });
 		if (!response.ok) {

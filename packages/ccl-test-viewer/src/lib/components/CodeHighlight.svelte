@@ -62,6 +62,7 @@ $effect(() => {
 	};
 
 	// Highlight the code
+	// Note: Prism.highlight() safely escapes HTML before adding syntax highlighting
 	if (codeElement) {
 		codeElement.innerHTML = Prism.highlight(
 			code,

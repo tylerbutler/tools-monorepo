@@ -66,7 +66,14 @@
 				"_temp/api-extractor/**",
 				"README.md"
 			],
-			"outputs": ["docs/**", "dist/**", ".astro/**", "README.md"]
+			"outputs": [
+				"docs/**",
+				"dist/**",
+				".astro/**",
+				".svelte-kit/**",
+				"!.svelte-kit/cache/**",
+				"README.md"
+			]
 		},
 		"generate": {
 			"dependsOn": ["^compile", "compile"],

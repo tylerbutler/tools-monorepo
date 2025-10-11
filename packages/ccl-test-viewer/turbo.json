@@ -4,13 +4,7 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build", "sync-data"],
-			"inputs": [
-				"$TURBO_DEFAULT$",
-				"!test/**",
-				"!**/*.test.ts",
-				"src/lib/data/**",
-				"static/data/**"
-			],
+			"inputs": ["$TURBO_DEFAULT$", "!test/**", "!**/*.test.ts"],
 			"outputs": ["build/**", ".svelte-kit/**", "!.svelte-kit/cache/**"]
 		},
 		"sync-data": {
@@ -43,7 +37,7 @@
 		},
 		"test:e2e": {
 			"dependsOn": ["build"],
-			"inputs": ["tests/**", "playwright.config.ts"],
+			"inputs": ["tests/e2e/**", "playwright.config.ts"],
 			"outputs": ["playwright-report/**", "test-results/**"]
 		},
 		"preview": {

@@ -464,7 +464,10 @@ class DataSourceManager {
 				"ccl-test-viewer-data-sources",
 				JSON.stringify(dataToSave),
 			);
-		} catch (_error) {}
+		} catch (error) {
+			// QuotaExceededError or storage access denied
+			console.warn("Failed to save data sources to localStorage:", error);
+		}
 	}
 
 	/**
@@ -500,12 +503,16 @@ class DataSourceManager {
 				return true;
 			}
 			return false;
-		} catch (_error) {
+		} catch (error) {
 			// Clear corrupted data
+			console.warn("Failed to load data sources from localStorage:", error);
 			try {
 				localStorage.removeItem("ccl-test-viewer-data-sources");
-			} catch (_e) {
-				// Ignore cleanup errors
+			} catch (cleanupError) {
+				console.warn(
+					"Failed to clear corrupted localStorage data:",
+					cleanupError,
+				);
 			}
 			return false;
 		}
@@ -521,7 +528,9 @@ class DataSourceManager {
 
 		try {
 			localStorage.removeItem("ccl-test-viewer-data-sources");
-		} catch (_error) {}
+		} catch (error) {
+			console.warn("Failed to clear localStorage:", error);
+		}
 	}
 }
 
