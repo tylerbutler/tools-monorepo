@@ -1,0 +1,213 @@
+@import "tailwindcss";
+@import "./tangerine.css";
+@config "../tailwind.config.js";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+	* {
+		border-color: var(--border);
+	}
+	body {
+		background-color: var(--background);
+		color: var(--foreground);
+		font-feature-settings:
+			"rlig" 1,
+			"calt" 1;
+	}
+}
+
+@theme inline {
+	/* Container configuration migrated from tailwind.config.js */
+	--container-center: true;
+	--container-padding: 2rem;
+	--breakpoint-2xl: 87.5rem; /* 1400px converted to rem */
+
+	/* Custom colorful accents for Tailwind (not in tangerine.css) */
+	--color-success: var(--success);
+	--color-success-foreground: var(--success-foreground);
+	--color-warning: var(--warning);
+	--color-warning-foreground: var(--warning-foreground);
+	--color-info: var(--info);
+	--color-info-foreground: var(--info-foreground);
+	--color-purple: var(--purple);
+	--color-purple-foreground: var(--purple-foreground);
+	--color-teal: var(--teal);
+	--color-teal-foreground: var(--teal-foreground);
+	--color-pink: var(--pink);
+	--color-pink-foreground: var(--pink-foreground);
+}
+
+/* Accessibility utilities */
+@layer utilities {
+	/* Screen reader only content */
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	/* Show screen reader content when focused */
+	.focus\:not-sr-only:focus {
+		position: static;
+		width: auto;
+		height: auto;
+		padding: inherit;
+		margin: inherit;
+		overflow: visible;
+		clip: auto;
+		white-space: normal;
+	}
+
+	/* High contrast mode support */
+	@media (prefers-contrast: high) {
+		.border {
+			border-width: 2px;
+		}
+
+		.focus\:ring-2:focus {
+			ring-width: 3px;
+		}
+	}
+
+	/* Reduced motion preferences */
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+
+	/* Touch-friendly interactions */
+	.touch-friendly {
+		min-height: 44px;
+		min-width: 44px;
+	}
+
+	/* Responsive breakpoints for consistent spacing */
+	@media (max-width: 640px) {
+		.container {
+			padding-left: 1rem;
+			padding-right: 1rem;
+		}
+	}
+
+	/* Mobile viewport optimization */
+	@media (max-width: 768px) {
+		/* Larger touch targets on mobile */
+		button,
+		a,
+		input,
+		textarea {
+			min-height: 44px;
+		}
+
+		/* Reduced motion on mobile for better performance */
+		* {
+			transition-duration: 0.1s;
+		}
+	}
+
+	/* Print styles for documentation */
+	@media print {
+		.no-print {
+			display: none !important;
+		}
+
+		/* Ensure good contrast in print */
+		* {
+			background: white !important;
+			color: black !important;
+		}
+
+		/* Break page before major sections */
+		.page-break {
+			page-break-before: always;
+		}
+	}
+
+	/* Terminal-inspired utility classes */
+	.terminal-theme {
+		background-color: var(--terminal-bg);
+		color: white;
+		font-family: "IBM Plex Mono", monospace;
+	}
+
+	.terminal-primary {
+		color: var(--terminal-primary);
+	}
+
+	.terminal-success {
+		color: var(--terminal-success);
+	}
+
+	.terminal-error {
+		color: var(--terminal-error);
+	}
+
+	.terminal-warning {
+		color: var(--terminal-warning);
+	}
+
+	.terminal-subtle {
+		color: var(--terminal-subtle);
+	}
+
+	.terminal-card {
+		background-color: var(--terminal-card);
+		border: 1px solid var(--terminal-subtle);
+		border-radius: 0.5rem;
+	}
+
+	.terminal-entry-box {
+		background-color: var(--terminal-card);
+		border: 1px solid var(--terminal-subtle);
+		border-radius: 0.5rem;
+		padding: 0.25rem 0.5rem;
+		margin: 0 0 0 1rem;
+		font-family: "IBM Plex Mono", monospace;
+		font-size: 0.875rem;
+		line-height: 1.25;
+	}
+
+	/* Whitespace visualization */
+	.whitespace-visible {
+		white-space: pre-wrap;
+	}
+
+	.whitespace-visible::before {
+		content: attr(data-whitespace);
+	}
+
+	/* PrismJS font overrides */
+	pre[class*="language-"],
+	code[class*="language-"],
+	pre,
+	code {
+		font-family: "IBM Plex Mono", monospace !important;
+	}
+
+	/* Ensure code elements match text-sm sizing */
+	pre.text-sm,
+	code.text-sm,
+	pre.text-sm code {
+		font-size: var(--font-size-code) !important;
+	}
+
+	/* Ensure all monospace elements use IBM Plex Mono */
+	.font-mono,
+	tt,
+	kbd,
+	samp {
+		font-family: "IBM Plex Mono", monospace !important;
+	}
+}

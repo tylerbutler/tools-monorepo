@@ -94,7 +94,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.5.4",
+		"@oclif/core": "^4.5.5",
 		"@oclif/plugin-help": "^6.2.33",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
@@ -106,13 +106,13 @@
 		"whatwg-mimetype": "^4.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
+		"@biomejs/biome": "2.0.4",
 		"@microsoft/api-extractor": "^7.53.1",
 		"@oclif/plugin-command-snapshot": "^5.3.6",
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.20",
+		"@types/node": "^20.19.21",
 		"@types/semver": "^7.7.1",
 		"@types/serve-handler": "^6.1.4",
 		"@types/tmp": "^0.2.6",
