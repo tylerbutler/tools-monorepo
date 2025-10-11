@@ -31,7 +31,7 @@
 		"@fontsource/ibm-plex-serif": "^5.2.7",
 		"@fontsource/metropolis": "^5.2.5",
 		"@fontsource/open-sans": "^5.2.7",
-		"astro": "^5.14.3",
+		"astro": "^5.14.4",
 		"sharp": "^0.34.4",
 		"starlight-heading-badges": "^0.6.0",
 		"starlight-links-validator": "^0.18.0",
