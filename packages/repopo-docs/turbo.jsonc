@@ -2,11 +2,11 @@
 	"$schema": "https://turborepo.org/schema.json",
 	"extends": ["//"],
 	"tasks": {
-		"build-steps:astro": {
-			"dependsOn": ["repopo#build"]
+		"build": {
+			"dependsOn": ["^build", "repopo#build"],
 		},
 		"check": {
-			"dependsOn": ["^build"]
-		}
-	}
+			"dependsOn": ["^build"],
+		},
+	},
 }
