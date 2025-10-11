@@ -98,6 +98,8 @@
 			"protobufjs",
 			"re2",
 			"sharp",
+			"tree-sitter",
+			"tree-sitter-cli",
 			"yarn"
 		],
 		"updateConfig": {

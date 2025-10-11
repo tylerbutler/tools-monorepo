@@ -39,6 +39,10 @@
 			// test json
 			"!**/test/data/json/**/*.json",
 
+			// tree-sitter generated files
+			"!**/packages/tree-sitter-ccl/src/grammar.json",
+			"!**/packages/tree-sitter-ccl/src/node-types.json",
+			
 			// auto-generated data files
 			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
 			"!**/packages/ccl-test-viewer/static/data/*.*",

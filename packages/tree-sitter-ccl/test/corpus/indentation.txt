@@ -1,0 +1,96 @@
+====
+Basic indented block
+====
+
+key =
+  inner = value
+
+---
+
+(document
+  (newline)
+  (entry
+    (key
+        (single_line_key))
+    (assignment)
+    (newline)
+    (nested_content_block
+      (indent)
+      (content_line)
+      (newline)
+      (dedent))))
+
+====
+Two level nesting
+====
+
+outer =
+  middle =
+    inner = value
+
+---
+
+(document
+  (newline)
+  (entry
+    (key
+        (single_line_key))
+    (assignment)
+    (newline)
+    (nested_content_block
+      (indent)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (dedent))))
+
+====
+Multiple entries at same indent level
+====
+
+key =
+  first = value1
+  second = value2
+
+---
+
+(document
+  (newline)
+  (entry
+    (key
+        (single_line_key))
+    (assignment)
+    (newline)
+    (nested_content_block
+      (indent)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (dedent))))
+
+====
+Plain text fallback in nested block
+====
+
+description =
+  This is some plain text
+  that doesn't follow CCL syntax
+
+---
+
+(document
+  (newline)
+  (entry
+    (key
+        (single_line_key))
+    (assignment)
+    (newline)
+    (nested_content_block
+      (indent)
+      (content_line)
+      (newline)
+      (content_line)
+      (newline)
+      (dedent))))
