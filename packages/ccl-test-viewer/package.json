@@ -21,8 +21,9 @@
 	"type": "module",
 	"scripts": {
 		"b": "turbo build",
-		"build": "npm run sync-data && vite build",
+		"build": "vite build",
 		"build:tauri": "BUILD_TARGET=tauri npm run build && tauri build",
+		"build:vite": "vite build",
 		"check": "npm run check:svelte && npm run check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
