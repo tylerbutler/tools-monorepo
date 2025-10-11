@@ -17,12 +17,12 @@ updates:
     # Versioning strategy
     versioning-strategy: "increase"
 
-    # Ignore patch updates globally (matching renovate config)
+    # Ignore patch updates globally
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
 
-    # Package groups matching Renovate configuration
+    # Package groups
     groups:
       oclif:
         patterns:
