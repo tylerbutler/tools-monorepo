@@ -7,6 +7,7 @@
 	"globalDependencies": [
 		"config/tsconfig*.json",
 		"config/api-extractor.base.json",
+		"config/biome/*.jsonc",
 		"biome.jsonc",
 		"pnpm-lock.yaml"
 	],
@@ -65,7 +66,14 @@
 				"_temp/api-extractor/**",
 				"README.md"
 			],
-			"outputs": ["docs/**", "dist/**", ".astro/**", "README.md"]
+			"outputs": [
+				"docs/**",
+				"dist/**",
+				".astro/**",
+				".svelte-kit/**",
+				"!.svelte-kit/cache/**",
+				"README.md"
+			]
 		},
 		"generate": {
 			"dependsOn": ["^compile", "compile"],
@@ -96,7 +104,7 @@
 				"vitest.config.ts",
 				"test/tsconfig.json"
 			],
-			"outputs": [".coverage/**", "_temp/junit.xml"]
+			"outputs": ["_temp/junit.xml", ".sonda/**"]
 		},
 		"test:coverage": {
 			"dependsOn": ["compile"],
@@ -107,7 +115,7 @@
 				"vitest.config.ts",
 				"test/tsconfig.json"
 			],
-			"outputs": [".coverage/**", "_temp/junit.xml"]
+			"outputs": [".coverage/**", ".sonda/**", "_temp/junit.xml"]
 		},
 		"lint": {
 			"dependsOn": [],

@@ -1,0 +1,49 @@
+{
+	"$schema": "https://turborepo.org/schema.json",
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build", "sync-data"],
+			"inputs": ["$TURBO_DEFAULT$", "!test/**", "!**/*.test.ts"],
+			"outputs": ["build/**", ".svelte-kit/**", "!.svelte-kit/cache/**"]
+		},
+		"sync-data": {
+			"inputs": ["scripts/sync-data.ts"],
+			"outputs": ["src/lib/data/**", "static/data/**"]
+		},
+		"generate:types": {
+			"inputs": ["src/routes/**", "svelte.config.js", "tsconfig.json"],
+			"outputs": [".svelte-kit/types/**"]
+		},
+		"check": {
+			"dependsOn": ["^check", "generate:types"],
+			"inputs": [
+				"src/**",
+				"svelte.config.js",
+				"tsconfig.json",
+				"biome.jsonc",
+				"src/lib/data/**",
+				"static/data/**"
+			]
+		},
+		"test": {
+			"inputs": [
+				"src/**/*.{test,spec}.{js,ts}",
+				"src/test/**",
+				"vitest.config.ts",
+				"src/lib/data/**",
+				"static/data/**"
+			]
+		},
+		"test:e2e": {
+			"dependsOn": ["build"],
+			"inputs": ["tests/e2e/**", "playwright.config.ts"],
+			"outputs": ["playwright-report/**", "test-results/**"]
+		},
+		"preview": {
+			"dependsOn": ["build"],
+			"cache": false,
+			"persistent": true
+		}
+	}
+}
