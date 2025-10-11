@@ -2,18 +2,18 @@
 	"$schema": "https://turborepo.org/schema.json",
 	"ui": "tui",
 	"remoteCache": {
-		"signature": true
+		"signature": true,
 	},
 	"concurrency": "100%",
 	"daemon": false,
-	
+
 	"noUpdateNotifier": true,
 	"globalDependencies": [
 		"config/tsconfig*.json",
 		"config/api-extractor.base.json",
 		"config/biome/*.jsonc",
 		"biome.jsonc",
-		"pnpm-lock.yaml"
+		"pnpm-lock.yaml",
 	],
 	"tasks": {
 		"build": {
@@ -26,14 +26,14 @@
 				"!.next/cache/**",
 				".astro/**",
 				"oclif.manifest.json",
-				"README.md"
+				"README.md",
 			],
-			"outputLogs": "errors-only"
+			"outputLogs": "errors-only",
 		},
 		"compile": {
 			"dependsOn": ["^compile"],
 			"inputs": ["src/**", "tsconfig*.json", "package.json"],
-			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"]
+			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"],
 		},
 		"api": {
 			"dependsOn": ["compile"],
@@ -41,8 +41,8 @@
 			"outputs": [
 				"api-docs/**",
 				"_temp/api-extractor/**",
-				"esm/tsdoc-metadata.json"
-			]
+				"esm/tsdoc-metadata.json",
+			],
 		},
 		"docs": {
 			"dependsOn": ["compile", "api"],
@@ -51,7 +51,7 @@
 				"src/**",
 				"typedoc.*",
 				"_temp/api-extractor/**",
-				"README.md"
+				"README.md",
 			],
 			"outputs": [
 				"docs/**",
@@ -59,28 +59,28 @@
 				".astro/**",
 				".svelte-kit/**",
 				"!.svelte-kit/cache/**",
-				"README.md"
-			]
+				"README.md",
+			],
 		},
 		"generate": {
 			"dependsOn": ["compile"],
 			"inputs": ["esm/**", "test/**"],
-			"outputs": ["test/commands/__snapshots__/**"]
+			"outputs": ["test/commands/__snapshots__/**"],
 		},
 		"manifest": {
 			"dependsOn": ["compile"],
 			"inputs": ["package.json", "src/**"],
-			"outputs": ["oclif.manifest.json"]
+			"outputs": ["oclif.manifest.json"],
 		},
 		"readme": {
 			"dependsOn": ["manifest"],
 			"inputs": ["package.json", "src/**"],
-			"outputs": ["README.md", "docs/**"]
+			"outputs": ["README.md", "docs/**"],
 		},
 		"build:test": {
 			"dependsOn": ["compile"],
 			"inputs": ["test/**/*.ts", "test/tsconfig.json"],
-			"outputs": []
+			"outputs": [],
 		},
 		"test": {
 			"dependsOn": ["compile"],
@@ -89,9 +89,9 @@
 				"test/**",
 				"esm/**",
 				"vitest.config.ts",
-				"test/tsconfig.json"
+				"test/tsconfig.json",
 			],
-			"outputs": ["_temp/junit.xml", ".sonda/**"]
+			"outputs": ["_temp/junit.xml", ".sonda/**"],
 		},
 		"test:coverage": {
 			"dependsOn": ["compile"],
@@ -100,91 +100,91 @@
 				"test/**",
 				"esm/**",
 				"vitest.config.ts",
-				"test/tsconfig.json"
+				"test/tsconfig.json",
 			],
-			"outputs": [".coverage/**", ".sonda/**", "_temp/junit.xml"]
+			"outputs": [".coverage/**", ".sonda/**", "_temp/junit.xml"],
 		},
 		"lint": {
 			"dependsOn": [],
 			"inputs": ["src/**", "test/**", "biome.jsonc", ".eslintrc*"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check": {
 			"dependsOn": ["^check"],
 			"inputs": ["src/**", "biome.jsonc", "*.config.*"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:typedoc": {
 			"dependsOn": ["^build"],
 			"inputs": ["src/**", "astro.config.mjs", "*.config.*", "typedoc.*"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:all": {
 			"dependsOn": ["check:deps", "check:format", "check:policy", "lint"],
 			"inputs": ["**"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:deps": {
 			"inputs": ["**", "$TURBO_ROOT$/*syncpack*"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:format": {
 			"inputs": ["**"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:policy": {
 			"dependsOn": ["repopo#compile"],
 			"inputs": ["**"],
-			"outputs": []
+			"outputs": [],
 		},
 		"full": {
 			"dependsOn": ["check", "build", "lint", "test"],
-			"outputs": []
+			"outputs": [],
 		},
 		"release:license-file": {
 			"dependsOn": ["^release:license-file"],
 			"inputs": ["package.json", ".generatelicensefile.cjs"],
-			"outputs": ["THIRD-PARTY-LICENSES.txt"]
+			"outputs": ["THIRD-PARTY-LICENSES.txt"],
 		},
 		"release": {
 			"dependsOn": ["build", "release:license-file"],
-			"outputs": []
+			"outputs": [],
 		},
 		"clean": {
-			"cache": false
+			"cache": false,
 		},
 		"clean:build": {
-			"cache": false
+			"cache": false,
 		},
 		"clean:manifest": {
-			"cache": false
+			"cache": false,
 		},
 		"clean:root": {
-			"cache": false
+			"cache": false,
 		},
 		"dev": {
 			"cache": false,
-			"persistent": true
+			"persistent": true,
 		},
 		"astro build": {
 			"inputs": ["astro.config.mjs", "src/**", "public/**"],
-			"outputs": ["dist/**", ".astro/**"]
+			"outputs": ["dist/**", ".astro/**"],
 		},
 		"astro check": {
 			"inputs": ["astro.config.mjs", "src/**", "public/**"],
-			"outputs": []
+			"outputs": [],
 		},
 		"generate-license-file": {
 			"inputs": ["package.json", ".generatelicensefile.cjs"],
-			"outputs": ["THIRD-PARTY-LICENSES.txt"]
+			"outputs": ["THIRD-PARTY-LICENSES.txt"],
 		},
 		"oclif manifest": {
 			"inputs": ["package.json", "src/**"],
-			"outputs": ["oclif.manifest.json"]
+			"outputs": ["oclif.manifest.json"],
 		},
 		"oclif readme": {
 			"inputs": ["package.json", "src/**"],
-			"outputs": ["README.md", "docs/**"]
-		}
-	}
+			"outputs": ["README.md", "docs/**"],
+		},
+	},
 }

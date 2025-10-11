@@ -3,10 +3,10 @@
 	"extends": ["//"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["^build", "repopo#build"]
+			"dependsOn": ["^build", "repopo#build"],
 		},
 		"check": {
-			"dependsOn": ["^build"]
-		}
-	}
+			"dependsOn": ["^build"],
+		},
+	},
 }

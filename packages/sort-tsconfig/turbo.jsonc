@@ -10,11 +10,11 @@
 				"build:test",
 				"manifest",
 				"readme",
-				"generate"
-			]
+				"generate",
+			],
 		},
 		"compile": {
-			"dependsOn": ["repopo#compile"]
-		}
-	}
+			"dependsOn": ["repopo#compile"],
+		},
+	},
 }
