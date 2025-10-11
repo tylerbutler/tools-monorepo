@@ -23,6 +23,12 @@
 				"noPrivateImports": "error",
 				"noRenderReturnValue": "error",
 				"useHookAtTopLevel": "error",
+				"useImportExtensions": {
+					"level": "error",
+					"options": {
+						"forceJsExtensions": true,
+					},
+				},
 				"useJsxKeyInIterable": "error",
 			},
 			"nursery": {

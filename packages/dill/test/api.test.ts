@@ -256,7 +256,7 @@ describe("with local server", () => {
 });
 
 describe("with mock service worker", async () => {
-	const { mockServer } = await import("./mocks/node.ts");
+	const { mockServer } = await import("./mocks/node.js");
 
 	beforeAll(() => {
 		mockServer.listen({

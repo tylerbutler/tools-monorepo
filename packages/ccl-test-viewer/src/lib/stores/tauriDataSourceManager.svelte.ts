@@ -202,7 +202,7 @@ class TauriDataSourceManager {
 			);
 			if (!existing) {
 				// Add to main manager (this will trigger UI updates)
-				dataSourceManager.processUploadedFiles(
+				await dataSourceManager.processUploadedFiles(
 					localSource.files.map(
 						(f) =>
 							({
