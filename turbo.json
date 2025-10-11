@@ -30,23 +30,6 @@
 			],
 			"outputLogs": "errors-only"
 		},
-		"build-steps:lib": {
-			"dependsOn": ["^build", "compile", "api", "docs"]
-		},
-		"build-steps:cli": {
-			"dependsOn": [
-				"^build",
-				"compile",
-				"api",
-				"build:test",
-				"manifest",
-				"readme",
-				"generate"
-			]
-		},
-		"build-steps:astro": {
-			"dependsOn": ["^build"]
-		},
 		"compile": {
 			"dependsOn": ["^compile"],
 			"inputs": ["src/**", "tsconfig*.json", "package.json"],
