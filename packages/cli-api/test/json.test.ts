@@ -6,8 +6,8 @@ import {
 	type PackageTransformer,
 	readJsonWithIndent,
 	updatePackageJsonFile,
-} from "../src/json.ts";
-import { testDataPath } from "./common.ts";
+} from "../src/json.js";
+import { testDataPath } from "./common.js";
 
 /**
  * A transformer function that does nothing.

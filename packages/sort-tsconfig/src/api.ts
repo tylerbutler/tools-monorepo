@@ -3,7 +3,7 @@ import detectIndent from "detect-indent";
 import { sortJsonc } from "sort-jsonc";
 import JSONC from "tiny-jsonc";
 import type { TsConfigJson } from "type-fest";
-import { defaultSortOrder, type OrderList } from "./orders.ts";
+import { defaultSortOrder, type OrderList } from "./orders.js";
 
 /**
  * Returns a map of each item in the order list to its sort index.

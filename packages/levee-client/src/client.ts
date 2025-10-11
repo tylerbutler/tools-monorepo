@@ -37,8 +37,8 @@ import {
 	InsecureTinyliciousUrlResolver,
 } from "@fluidframework/tinylicious-driver/internal";
 
-import { createLeveeAudienceMember } from "./audience.ts";
-import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.ts";
+import { createLeveeAudienceMember } from "./audience.js";
+import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.js";
 
 /**
  * Client for interacting with Levee service to create and manage Fluid containers.

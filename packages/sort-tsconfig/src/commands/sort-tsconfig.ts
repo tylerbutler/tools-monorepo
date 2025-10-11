@@ -3,9 +3,9 @@ import { Args, type Command, Flags } from "@oclif/core";
 import { CommandWithConfig, ConfigFileFlag } from "@tylerbu/cli-api";
 import { join } from "pathe";
 import { glob } from "tinyglobby";
-import { TsConfigSorter } from "../api.ts";
-import type { SortTsconfigConfiguration } from "../config.ts";
-import { defaultSortOrder, type OrderList } from "../orders.ts";
+import { TsConfigSorter } from "../api.js";
+import type { SortTsconfigConfiguration } from "../config.js";
+import { defaultSortOrder, type OrderList } from "../orders.js";
 
 export default class SortTsconfigCommand extends CommandWithConfig<
 	typeof SortTsconfigCommand,

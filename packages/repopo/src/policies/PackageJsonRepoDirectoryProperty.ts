@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { updatePackageJsonFile } from "@fluid-tools/build-infrastructure";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.ts";
-import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.ts";
+import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
  * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository

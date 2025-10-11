@@ -1,8 +1,8 @@
 import process from "node:process";
 import { Args, Flags } from "@oclif/core";
 import { BaseCommand } from "@tylerbu/cli-api";
-import { download } from "../api.ts";
-import type { DillOptions, DownloadResponse } from "../types.ts";
+import { download } from "../api.js";
+import type { DillOptions, DownloadResponse } from "../types.js";
 
 export default class DownloadCommand extends BaseCommand<
 	typeof DownloadCommand

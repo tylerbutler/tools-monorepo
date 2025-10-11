@@ -12,7 +12,7 @@ import type {
 	DownloadResponse,
 	FileInfo,
 	MimeInfo,
-} from "./types.ts";
+} from "./types.js";
 
 // Constants
 const fileProtocol = "file://";

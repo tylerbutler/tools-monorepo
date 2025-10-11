@@ -12,5 +12,5 @@
 
 // oclif-required export
 export { run } from "@oclif/core";
-export { download } from "./api.ts";
-export type { DillOptions, DownloadResponse } from "./types.ts";
+export { download } from "./api.js";
+export type { DillOptions, DownloadResponse } from "./types.js";

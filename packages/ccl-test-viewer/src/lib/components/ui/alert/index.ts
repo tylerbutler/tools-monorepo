@@ -2,7 +2,7 @@ import type { HTMLAttributes } from "svelte/elements";
 import type { VariantProps } from "tailwind-variants";
 import Root from "./alert.svelte";
 import AlertDescription from "./alert-description.svelte";
-import { alertVariants } from "./variants.ts";
+import { alertVariants } from "./variants.js";
 
 type Variant = VariantProps<typeof alertVariants>["variant"];
 type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";

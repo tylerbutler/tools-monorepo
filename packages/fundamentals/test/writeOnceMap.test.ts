@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { KeyAlreadySet, WriteOnceMap } from "../src/writeOnceMap.ts";
+import { KeyAlreadySet, WriteOnceMap } from "../src/writeOnceMap.js";
 
 describe("writeOnceMap", () => {
 	it("sets unused key with class", () => {

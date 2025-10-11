@@ -3,7 +3,7 @@
  * Placeholder for future OAuth implementation in Tauri desktop app
  */
 
-import { isTauriEnvironment } from "./tauriFileService.ts";
+import { isTauriEnvironment } from "./tauriFileService.js";
 
 export interface AuthConfig {
 	clientId: string;

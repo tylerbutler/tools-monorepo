@@ -1,5 +1,5 @@
-import { makePolicyDefinition } from "../makePolicy.ts";
-import type { PolicyDefinition, PolicyFailure } from "../policy.ts";
+import { makePolicyDefinition } from "../makePolicy.js";
+import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 
 /**
  * A repo policy that checks for JavaScript source files that just use the .js file extension. Such files may be

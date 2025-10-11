@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isSorted, numberSort, wordSort } from "../src/array.ts";
+import { isSorted, numberSort, wordSort } from "../src/array.js";
 
 const unsortedNumbers: number[] = [2, 3, 4, 1, 8, 28, 4, 12];
 const sortedNumbers: number[] = [1, 2, 3, 4, 4, 8, 12, 28];

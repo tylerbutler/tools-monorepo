@@ -10,4 +10,4 @@
  * @packageDocumentation
  */
 
-export { TypeScriptLoader } from "./loader.ts";
+export { TypeScriptLoader } from "./loader.js";

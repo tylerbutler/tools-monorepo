@@ -1,7 +1,7 @@
-import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.ts";
-import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.ts";
-import { PackageJsonSorted } from "./policies/PackageJsonSorted.ts";
-import { PackageScripts } from "./policies/PackageScripts.ts";
+import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
+import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
+import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
+import { PackageScripts } from "./policies/PackageScripts.js";
 
 /**
  * A type representing a policy name.

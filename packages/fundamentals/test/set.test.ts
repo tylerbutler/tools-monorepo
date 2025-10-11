@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { addAll } from "../src/set.ts";
+import { addAll } from "../src/set.js";
 
 describe("set APIs", () => {
 	describe("addAll", () => {

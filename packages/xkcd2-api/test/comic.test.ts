@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getComicProps } from "../src/index.ts";
+import { getComicProps } from "../src/index.js";
 
 describe("getComicProps", () => {
 	it("gets existing comic", async () => {

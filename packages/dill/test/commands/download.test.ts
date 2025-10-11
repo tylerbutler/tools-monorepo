@@ -20,7 +20,7 @@ import {
 const { readFile: readJson } = jsonfile;
 
 import process from "node:process";
-import { getTestUrls, testDataPath } from "../common.ts";
+import { getTestUrls, testDataPath } from "../common.js";
 
 describe("download command", async () => {
 	const server = http.createServer((request, response) => {

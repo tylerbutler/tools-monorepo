@@ -13,4 +13,4 @@ export {
 	type ComicFrameProps,
 	getComicProps,
 	getRandomComicId,
-} from "./comic.ts";
+} from "./comic.js";

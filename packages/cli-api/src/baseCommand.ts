@@ -3,7 +3,7 @@ import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
 import type { PrettyPrintableError } from "@oclif/core/errors";
 import registerDebug, { type Debugger } from "debug";
 import chalk from "picocolors";
-import type { Logger } from "./logger.ts";
+import type { Logger } from "./logger.js";
 
 /**
  * A type representing all the args of the base commands and subclasses.

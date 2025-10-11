@@ -1,4 +1,4 @@
-import type { OrderList } from "./orders.ts";
+import type { OrderList } from "./orders.js";
 
 /**
  * Configuration for the sort-tsconfig command.

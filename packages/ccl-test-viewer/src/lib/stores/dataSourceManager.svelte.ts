@@ -1,18 +1,18 @@
 // Data source manager for multi-source data handling with Svelte 5 runes
 
-import type { TestCategory, TestStats } from "../data/types.ts";
+import type { TestCategory, TestStats } from "../data/types.js";
 import {
 	createDataSourceFromGitHub,
 	createDataSourceFromUpload,
 	createStaticDataSource,
 	mergeDataSources,
 	validateTestData,
-} from "../utils/dataMerger.ts";
+} from "../utils/dataMerger.js";
 import type {
 	DataSource,
 	DataSourceSummary,
 	FileProcessingResult,
-} from "./dataSource.ts";
+} from "./dataSource.js";
 
 /**
  * Data source manager class using Svelte 5 runes for reactive state management

@@ -1,4 +1,4 @@
-import ConfigTestCommand from "./configTest.ts";
+import ConfigTestCommand from "./configTest.js";
 
 /**
  * Tests CommandWithConfig loads default configs.

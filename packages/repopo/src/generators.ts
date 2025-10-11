@@ -1,4 +1,4 @@
-import type { PolicyDefinition } from "./policy.ts";
+import type { PolicyDefinition } from "./policy.js";
 
 /**
  * The definition of a free function that returns a RepoPolicy.

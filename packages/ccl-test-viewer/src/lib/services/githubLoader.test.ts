@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type GitHubFileInfo, GitHubLoader } from "./githubLoader.ts";
+import { type GitHubFileInfo, GitHubLoader } from "./githubLoader.js";
 
 describe("GitHubLoader", () => {
 	const loader = new GitHubLoader();

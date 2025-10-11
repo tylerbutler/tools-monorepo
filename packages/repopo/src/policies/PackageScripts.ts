@@ -1,5 +1,5 @@
-import type { PolicyFailure } from "../policy.ts";
-import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.ts";
+import type { PolicyFailure } from "../policy.js";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const expectedScripts = ["build", "clean"] as const;
 

@@ -4,7 +4,7 @@
  */
 
 import { isTauriEnvironment } from "@/services/tauriFileService";
-import { dataSourceManager } from "./dataSourceManager.svelte.js.ts";
+import { dataSourceManager } from "./dataSourceManager.svelte.js";
 
 interface CachedData {
 	id: string;

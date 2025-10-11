@@ -1,4 +1,4 @@
-import type { TestConfigSchema } from "../../common.ts";
+import type { TestConfigSchema } from "../../common.js";
 
 const config: TestConfigSchema = {
 	stringProperty: "stringValue",

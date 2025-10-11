@@ -2,8 +2,8 @@ import { defu } from "defu";
 import jsonfile from "jsonfile";
 import diff from "microdiff";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.ts";
-import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.ts";
+import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const { writeFile: writeJson } = jsonfile;
 

@@ -5,7 +5,7 @@ import type {
 	SearchIndex,
 	TestCategory,
 	TestStats,
-} from "./data/types.ts";
+} from "./data/types.js";
 
 // Filter state interface
 export interface FilterState {
