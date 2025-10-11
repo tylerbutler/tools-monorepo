@@ -39,7 +39,6 @@
 	"scripts": {
 		"api": "concurrently npm:docs:api:*",
 		"b": "turbo build",
-		"build": "turbo run build-steps:lib",
 		"check": "npm run check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
