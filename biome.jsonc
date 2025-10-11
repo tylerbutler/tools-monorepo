@@ -80,6 +80,7 @@
 						"useConst": "off",
 						"useImportType": "off",
 						"noNonNullAssertion": "off",
+						"useReadonlyClassProperties": "off",
 					},
 					"correctness": {
 						"noUnusedVariables": "off",
@@ -92,7 +93,6 @@
 					},
 					"nursery": {
 						"noShadow": "off",
-						"useReadonlyClassProperties": "off",
 					},
 				},
 			},
@@ -146,6 +146,7 @@
 					"style": {
 						"useConsistentMemberAccessibility": "off",
 						"noNonNullAssertion": "off",
+						"useReadonlyClassProperties": "off",
 					},
 					"complexity": {
 						"noExcessiveCognitiveComplexity": "off",
@@ -154,9 +155,7 @@
 					"performance": {
 						"useTopLevelRegex": "off",
 					},
-					"nursery": {
-						"useReadonlyClassProperties": "off",
-					},
+					"nursery": {},
 				},
 			},
 		},

@@ -2,7 +2,7 @@
 	"extends": "../tsconfig",
 	"compilerOptions": {
 		"noEmit": true,
-		"types": ["node"]
+		"types": ["node"],
 	},
-	"references": [{ "path": ".." }]
+	"references": [{ "path": ".." }],
 }

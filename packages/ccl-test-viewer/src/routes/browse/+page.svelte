@@ -1,11 +1,4 @@
 <script lang="ts">
-import { browser } from "$app/environment";
-import { goto } from "$app/navigation";
-import FilterSidebar from "$lib/components/FilterSidebar.svelte";
-import TestCard from "$lib/components/TestCard.svelte";
-import { Badge, Button } from "$lib/components/ui/index.js";
-import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
-import { appState, initializeApp } from "$lib/stores.svelte.js";
 import {
 	CheckSquare,
 	Database,
@@ -14,6 +7,13 @@ import {
 	Menu,
 	X,
 } from "@lucide/svelte";
+import { browser } from "$app/environment";
+import { goto } from "$app/navigation";
+import FilterSidebar from "$lib/components/FilterSidebar.svelte";
+import TestCard from "$lib/components/TestCard.svelte";
+import { Badge, Button } from "$lib/components/ui/index.js";
+import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
+import { appState, initializeApp } from "$lib/stores.svelte.js";
 
 // Local state - initialize to false in case of SSR
 let loading = $state(!browser); // Will be false on client, true on server

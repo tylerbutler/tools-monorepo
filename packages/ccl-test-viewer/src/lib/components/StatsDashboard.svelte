@@ -1,4 +1,6 @@
 <script lang="ts">
+import { BarChart3, Code, File, Hash } from "@lucide/svelte";
+import { Chart, registerables } from "chart.js";
 import {
 	Card,
 	CardContent,
@@ -7,8 +9,6 @@ import {
 	CardTitle,
 } from "$lib/components/ui/index.js";
 import type { TestStats } from "$lib/data/types.js";
-import { BarChart3, Code, File, Hash } from "@lucide/svelte";
-import { Chart, registerables } from "chart.js";
 
 interface Props {
 	stats: TestStats;

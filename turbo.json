@@ -6,7 +6,7 @@
 	},
 	"concurrency": "100%",
 	"daemon": false,
-	
+
 	"noUpdateNotifier": true,
 	"globalDependencies": [
 		"config/tsconfig*.json",
