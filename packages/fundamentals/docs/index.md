@@ -110,7 +110,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > `static` **stackTraceLimit**: `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.19/node\_modules/@types/node/globals.d.ts:68
+Defined in: node\_modules/.pnpm/@types+node@20.19.21/node\_modules/@types/node/globals.d.ts:68
 
 **`Beta`**
 
@@ -134,7 +134,7 @@ not capture any frames.
 
 > `static` **captureStackTrace**(`targetObject`, `constructorOpt?`): `void`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.19/node\_modules/@types/node/globals.d.ts:52
+Defined in: node\_modules/.pnpm/@types+node@20.19.21/node\_modules/@types/node/globals.d.ts:52
 
 **`Beta`**
 
@@ -204,7 +204,7 @@ a();
 
 > `static` **prepareStackTrace**(`err`, `stackTraces`): `any`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.19/node\_modules/@types/node/globals.d.ts:56
+Defined in: node\_modules/.pnpm/@types+node@20.19.21/node\_modules/@types/node/globals.d.ts:56
 
 **`Beta`**
 
@@ -273,7 +273,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ###### entries?
 
-`null` | readonly readonly \[`K`, `V`\][]
+readonly readonly \[`K`, `V`\][] | `null`
 
 ###### Returns
 
@@ -295,7 +295,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ###### iterable?
 
-`null` | `Iterable`\<readonly \[`K`, `V`\]\>
+`Iterable`\<readonly \[`K`, `V`\]\> | `null`
 
 ###### Returns
 
@@ -455,7 +455,7 @@ Executes a provided function once per each key/value pair in the Map, in inserti
 
 ##### get()
 
-> **get**(`key`): `undefined` \| `V`
+> **get**(`key`): `V` \| `undefined`
 
 Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:33
 
@@ -471,7 +471,7 @@ Returns a specified element from the Map object. If the value that is associated
 
 ###### Returns
 
-`undefined` \| `V`
+`V` \| `undefined`
 
 Returns the element associated with the specified key. If no element is associated with the specified key, undefined is returned.
 
