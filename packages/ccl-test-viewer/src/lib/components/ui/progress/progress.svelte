@@ -1,6 +1,6 @@
 <script lang="ts">
 import { cn } from "@/utils.js";
-import type { Props } from "./index.ts";
+import type { Props } from "./index.js";
 
 type $$Props = Props;
 
