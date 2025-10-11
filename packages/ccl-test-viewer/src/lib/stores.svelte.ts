@@ -102,11 +102,6 @@ class ThemeStore {
 	}
 
 	private autoSelectBase16Theme() {
-		// Get themes for the current mode
-		const _themesForMode = Object.entries(BASE16_THEMES)
-			.filter(([_, config]) => config.variant === this.theme)
-			.map(([theme, _]) => theme as Base16Theme);
-
 		// If current base16 theme doesn't match the mode, switch to a default one
 		if (BASE16_THEMES[this.base16Theme].variant !== this.theme) {
 			this.base16Theme =

@@ -26,7 +26,7 @@ interface Props {
 let { test, onBack }: Props = $props();
 
 // Copy functionality
-async function copyToClipboard(text: string, _type: string) {
+async function copyToClipboard(text: string) {
 	try {
 		await navigator.clipboard.writeText(text);
 	} catch (err) {}
@@ -167,7 +167,7 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 					<Button
 						variant="ghost"
 						size="sm"
-						onclick={() => copyToClipboard(test.input, "Input")}
+						onclick={() => copyToClipboard(test.input)}
 						aria-label="Copy input"
 					>
 						<Copy size={14} />

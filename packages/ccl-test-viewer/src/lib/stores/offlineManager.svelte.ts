@@ -221,15 +221,7 @@ class OfflineManager {
 		}
 
 		try {
-			// Convert cache map to serializable format
-			const _cacheArray = Array.from(this._cachedData.entries()).map(
-				([key, value]) => ({
-					key,
-					...value,
-					cachedAt: value.cachedAt.toISOString(),
-					expiresAt: value.expiresAt.toISOString(),
-				}),
-			);
+			// TODO: Implement cache persistence when storage API is available
 		} catch (_error) {}
 	}
 
@@ -242,14 +234,7 @@ class OfflineManager {
 		}
 
 		try {
-			// Check for updates to GitHub sources
-			const githubSources = Array.from(this._cachedData.values()).filter(
-				(cached) => cached.type === "github",
-			);
-
-			for (const _cachedSource of githubSources) {
-			}
-
+			// TODO: Implement cache sync when remote update detection is available
 			this._lastSync = new Date();
 		} catch (_error) {}
 	}

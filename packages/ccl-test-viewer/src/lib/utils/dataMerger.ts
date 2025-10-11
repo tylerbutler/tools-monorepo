@@ -7,9 +7,8 @@ import type {
 } from "../stores/dataSource.js";
 
 // Security limits to prevent DoS attacks from malicious/corrupt files
-const MAX_TESTS = 10000;
+const MAX_TESTS = 10_000;
 const MAX_ARRAY_ITEMS = 100;
-const MAX_CATEGORIES = 1000;
 
 const _EMPTY_STATS: MergedDataStats = {
 	totalSources: 0,
@@ -97,6 +96,38 @@ function validateTestObject(
 	return true;
 }
 
+// Helper to process a single array field
+function processArrayField(
+	fieldName: string,
+	fieldValue: unknown,
+	targetSet: Set<string>,
+	testName: unknown,
+	warnings: string[],
+): void {
+	if (!fieldValue) {
+		return;
+	}
+
+	if (!Array.isArray(fieldValue)) {
+		warnings.push(
+			`Test ${testName} has invalid '${fieldName}' field - should be array`,
+		);
+		return;
+	}
+
+	// Security: Limit array sizes
+	if (fieldValue.length > MAX_ARRAY_ITEMS) {
+		warnings.push(
+			`Test ${testName} has excessive ${fieldName} (max ${MAX_ARRAY_ITEMS})`,
+		);
+		return;
+	}
+
+	for (const item of fieldValue) {
+		targetSet.add(item as string);
+	}
+}
+
 function collectTestArrays(
 	test: Record<string, unknown>,
 	warnings: string[],
@@ -106,58 +137,27 @@ function collectTestArrays(
 		behaviors: Set<string>;
 	},
 ): void {
-	const { functions, features, behaviors } = sets;
-
-	if (test.functions && Array.isArray(test.functions)) {
-		// Security: Limit array sizes
-		if (test.functions.length > MAX_ARRAY_ITEMS) {
-			warnings.push(
-				`Test ${test.name} has excessive functions (max ${MAX_ARRAY_ITEMS})`,
-			);
-		} else {
-			for (const f of test.functions) {
-				functions.add(f as string);
-			}
-		}
-	} else if (test.functions) {
-		warnings.push(
-			`Test ${test.name} has invalid 'functions' field - should be array`,
-		);
-	}
-
-	if (test.features && Array.isArray(test.features)) {
-		// Security: Limit array sizes
-		if (test.features.length > MAX_ARRAY_ITEMS) {
-			warnings.push(
-				`Test ${test.name} has excessive features (max ${MAX_ARRAY_ITEMS})`,
-			);
-		} else {
-			for (const f of test.features) {
-				features.add(f as string);
-			}
-		}
-	} else if (test.features) {
-		warnings.push(
-			`Test ${test.name} has invalid 'features' field - should be array`,
-		);
-	}
-
-	if (test.behaviors && Array.isArray(test.behaviors)) {
-		// Security: Limit array sizes
-		if (test.behaviors.length > MAX_ARRAY_ITEMS) {
-			warnings.push(
-				`Test ${test.name} has excessive behaviors (max ${MAX_ARRAY_ITEMS})`,
-			);
-		} else {
-			for (const b of test.behaviors) {
-				behaviors.add(b as string);
-			}
-		}
-	} else if (test.behaviors) {
-		warnings.push(
-			`Test ${test.name} has invalid 'behaviors' field - should be array`,
-		);
-	}
+	processArrayField(
+		"functions",
+		test.functions,
+		sets.functions,
+		test.name,
+		warnings,
+	);
+	processArrayField(
+		"features",
+		test.features,
+		sets.features,
+		test.name,
+		warnings,
+	);
+	processArrayField(
+		"behaviors",
+		test.behaviors,
+		sets.behaviors,
+		test.name,
+		warnings,
+	);
 }
 
 /**

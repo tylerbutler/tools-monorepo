@@ -464,9 +464,8 @@ class DataSourceManager {
 				"ccl-test-viewer-data-sources",
 				JSON.stringify(dataToSave),
 			);
-		} catch (error) {
-			// QuotaExceededError or storage access denied
-			console.warn("Failed to save data sources to localStorage:", error);
+		} catch (_error) {
+			// QuotaExceededError or storage access denied - silently fail
 		}
 	}
 
@@ -503,16 +502,12 @@ class DataSourceManager {
 				return true;
 			}
 			return false;
-		} catch (error) {
+		} catch (_error) {
 			// Clear corrupted data
-			console.warn("Failed to load data sources from localStorage:", error);
 			try {
 				localStorage.removeItem("ccl-test-viewer-data-sources");
-			} catch (cleanupError) {
-				console.warn(
-					"Failed to clear corrupted localStorage data:",
-					cleanupError,
-				);
+			} catch (_cleanupError) {
+				// Silently fail on cleanup
 			}
 			return false;
 		}
@@ -528,8 +523,8 @@ class DataSourceManager {
 
 		try {
 			localStorage.removeItem("ccl-test-viewer-data-sources");
-		} catch (error) {
-			console.warn("Failed to clear localStorage:", error);
+		} catch (_error) {
+			// Silently fail
 		}
 	}
 }

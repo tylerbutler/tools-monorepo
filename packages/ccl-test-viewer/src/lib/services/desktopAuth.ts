@@ -153,11 +153,7 @@ class DesktopAuthService {
 			return;
 		}
 
-		try {
-			// TODO: Implement auth state persistence when storage API is available
-		} catch (error) {
-			console.warn("Failed to load auth state:", error);
-		}
+		// TODO: Implement auth state persistence when storage API is available
 	}
 
 	/**
@@ -168,11 +164,7 @@ class DesktopAuthService {
 		this._isAuthenticated = true;
 
 		if (this.isAvailable) {
-			try {
-				// TODO: Implement auth token persistence when storage API is available
-			} catch (error) {
-				console.warn("Failed to store auth token:", error);
-			}
+			// TODO: Implement auth token persistence when storage API is available
 		}
 	}
 
@@ -180,11 +172,7 @@ class DesktopAuthService {
 	 * Clear authentication state from local storage
 	 */
 	private async clearAuthState(): Promise<void> {
-		try {
-			// TODO: Implement auth state clearing when storage API is available
-		} catch (error) {
-			console.warn("Failed to clear auth state:", error);
-		}
+		// TODO: Implement auth state clearing when storage API is available
 	}
 
 	/**

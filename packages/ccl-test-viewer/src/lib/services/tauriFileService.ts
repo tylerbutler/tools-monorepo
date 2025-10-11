@@ -86,9 +86,8 @@ export async function openMultiFileDialog(): Promise<TauriFileResult[]> {
 					path,
 					size: content.length,
 				});
-			} catch (error) {
+			} catch (_error) {
 				// Continue with other files even if one fails
-				console.warn(`Failed to read file ${path}:`, error);
 			}
 		}
 
@@ -176,8 +175,7 @@ export async function loadSavedDataSources(): Promise<LocalDataSource[]> {
 		// This would require directory listing functionality
 		// For now, return empty array - would need to implement directory scanning
 		return [];
-	} catch (error) {
-		console.warn("Failed to load saved data sources:", error);
+	} catch (_error) {
 		return [];
 	}
 }
@@ -290,8 +288,7 @@ export async function checkFileSystemPermissions(): Promise<boolean> {
 		});
 
 		return true;
-	} catch (error) {
-		console.warn("File system permission check failed:", error);
+	} catch (_error) {
 		return false;
 	}
 }
@@ -313,11 +310,8 @@ async function contentHash(str: string): Promise<string> {
 				.slice(0, 16)
 				.map((b) => b.toString(16).padStart(2, "0"))
 				.join("");
-		} catch (error) {
-			console.warn(
-				"Failed to use Web Crypto API, falling back to simple hash:",
-				error,
-			);
+		} catch (_error) {
+			// Fall back to simple hash
 		}
 	}
 
@@ -364,8 +358,7 @@ export async function getDesktopAppInfo(): Promise<{
 		const platform = (await invoke("platform")) as string;
 
 		return { version, platform };
-	} catch (error) {
-		console.warn("Failed to get desktop app info:", error);
+	} catch (_error) {
 		return null;
 	}
 }

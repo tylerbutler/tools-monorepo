@@ -32,7 +32,9 @@ function createWhitespaceIndicator(
 
 // Process code text using DOM API instead of innerHTML (XSS-safe)
 function processCodeWithDom(text: string, showWhitespace: boolean): void {
-	if (!codeElement) return;
+	if (!codeElement) {
+		return;
+	}
 
 	// Clear existing content
 	codeElement.textContent = "";
