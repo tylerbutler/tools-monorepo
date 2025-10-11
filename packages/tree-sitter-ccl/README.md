@@ -312,25 +312,25 @@ This parser uses a C++ external scanner (`src/scanner.cc`) to handle:
 ```bash
 # Clone the repository
 git clone https://github.com/ccl-community/tree-sitter-ccl.git
-cd tree-sitter-ccl
+cd packages/tree-sitter-ccl
 
 # Option 1: Using mise for Python
 mise install              # Install Python and dev tools  
 sudo apt install build-essential  # Install C++ compiler (Linux)
-npm install              # Install Node dependencies and compile
+pnpm install              # Install Node dependencies and compile
 
 # Option 2: Manual setup
 # Ensure you have Python 3.x, GCC 10+, and Node.js 14+
-npm install
+pnpm install
 
 # Generate the parser
-npm run generate
+pnpm run generate
 
 # Run tests
-npm run test
+pnpm run test
 
 # Parse a specific file
-npm run parse example.ccl
+pnpm run parse example.ccl
 ```
 
 ### Debug Build
@@ -342,7 +342,7 @@ For debugging the external scanner, compile with debug flags:
 CXXFLAGS="-std=c++20 -DDEBUG_SCANNER -g -O0" npx tree-sitter generate
 
 # Parse with detailed scanner output
-npx tree-sitter parse --debug file.ccl
+pnpx tree-sitter parse --debug file.ccl
 
 # For performance profiling
 CXXFLAGS="-std=c++20 -O3 -DNDEBUG" npx tree-sitter generate

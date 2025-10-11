@@ -16,11 +16,12 @@
 		"description": "Tree-sitter grammar for CCL (Categorical Configuration Language)",
 		"authors": [
 			{
-				"name": "CCL Community"
+				"name": "Tyler Butler",
+				"email": "tyler@tylerbutler.com"
 			}
 		],
 		"links": {
-			"repository": "https://github.com/ccl-community/tree-sitter-ccl.git"
+			"repository": "https://github.com/tylerbutler/tools-monorepo"
 		}
 	},
 	"bindings": {

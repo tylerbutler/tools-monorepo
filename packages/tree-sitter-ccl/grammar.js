@@ -39,7 +39,7 @@
  *     = package1
  *     = package2
  *
- * AUTHORS: CCL Community
+ * AUTHORS: Tyler Butler <tyler@tylerbutler.com>
  * LICENSE: MIT
  * VERSION: Compatible with tree-sitter 0.20+
  */

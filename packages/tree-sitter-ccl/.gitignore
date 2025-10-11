@@ -1,5 +1,6 @@
 # Build artifacts
 build/
+prebuilds/
 *.wasm
 *.node
 *.so

@@ -11,8 +11,16 @@
 		"configuration",
 		"syntax-highlighting"
 	],
-	"author": "CCL Community",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/tylerbutler/tools-monorepo/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/tree-sitter-ccl"
+	},
 	"dependencies": {
 		"node-addon-api": "^8.2.2",
 		"node-gyp-build": "^4.8.2"
@@ -31,10 +39,13 @@
 		"tree-sitter-cli": "^0.25.10"
 	},
 	"main": "bindings/node",
+	"types": "bindings/node/index.d.ts",
 	"files": [
 		"grammar.js",
 		"queries/*",
-		"src/**"
+		"src/**",
+		"prebuilds/**",
+		"bindings/node/index.d.ts"
 	],
 	"installConfig": {
 		"pnp": false

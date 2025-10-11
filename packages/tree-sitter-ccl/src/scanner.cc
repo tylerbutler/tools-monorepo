@@ -41,8 +41,8 @@
  * - DEDENT tokens are queued and emitted one per scan() call
  * - Lookahead detection handles parser states requiring DEDENT before NEWLINE
  * - EOF processing ensures all blocks are properly closed
- * 
- * AUTHORS: CCL Community
+ *
+ * AUTHORS: Tyler Butler <tyler@tylerbutler.com>
  * LICENSE: MIT
  * VERSION: Compatible with tree-sitter 0.20+
  */
