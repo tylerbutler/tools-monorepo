@@ -2,7 +2,7 @@
 	"name": "tree-sitter-ccl",
 	"version": "0.1.0",
 	"type": "module",
-	"private": "true",
+	"private": true,
 	"description": "Tree-sitter grammar for CCL (Categorical Configuration Language)",
 	"keywords": [
 		"tree-sitter",
