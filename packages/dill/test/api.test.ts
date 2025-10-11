@@ -10,9 +10,9 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 const { readFile: readJson } = jsonfile;
 
 import process from "node:process";
-import { decompressTarball, fetchFile, writeTarFiles } from "../src/api.js";
-import { download } from "../src/index.js";
-import { getTestUrls, testDataPath } from "./common.js";
+import { decompressTarball, fetchFile, writeTarFiles } from "../src/api.ts";
+import { download } from "../src/index.ts";
+import { getTestUrls, testDataPath } from "./common.ts";
 
 let testUrls: URL[];
 
@@ -256,7 +256,7 @@ describe("with local server", () => {
 });
 
 describe("with mock service worker", async () => {
-	const { mockServer } = await import("./mocks/node.js");
+	const { mockServer } = await import("./mocks/node.ts");
 
 	beforeAll(() => {
 		mockServer.listen({

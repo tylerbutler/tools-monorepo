@@ -1,8 +1,8 @@
 import process from "node:process";
 import type { Command } from "@oclif/core";
-import { BaseCommand } from "./baseCommand.js";
-import { ConfigFileFlagHidden } from "./flags.js";
-import { loadConfig } from "./loadConfig.js";
+import { BaseCommand } from "./baseCommand.ts";
+import { ConfigFileFlagHidden } from "./flags.ts";
+import { loadConfig } from "./loadConfig.ts";
 
 /**
  * A base command that loads typed configuration values from a config file.

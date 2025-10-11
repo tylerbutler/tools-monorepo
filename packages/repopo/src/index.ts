@@ -2,8 +2,8 @@ export { run } from "@oclif/core";
 export type {
 	// PolicyList,
 	RepopoConfig,
-} from "./config.js";
-export { makePolicy } from "./makePolicy.js";
+} from "./config.ts";
+export { makePolicy } from "./makePolicy.ts";
 export type {
 	PolicyDefinition,
 	PolicyFailure,
@@ -15,13 +15,13 @@ export type {
 	PolicyInstanceSettings,
 	PolicyName,
 	PolicyStandaloneResolver,
-} from "./policy.js";
+} from "./policy.ts";
 export {
 	defineFileHeaderPolicy as generateFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,
 	type FileHeaderPolicyConfig,
-} from "./policyDefiners/defineFileHeaderPolicy.js";
+} from "./policyDefiners/defineFileHeaderPolicy.ts";
 export {
 	definePackagePolicy as generatePackagePolicy,
 	type PackageJsonHandler,
-} from "./policyDefiners/definePackagePolicy.js";
+} from "./policyDefiners/definePackagePolicy.ts";

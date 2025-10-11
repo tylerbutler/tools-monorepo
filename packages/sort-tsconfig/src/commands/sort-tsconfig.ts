@@ -3,9 +3,9 @@ import { Args, type Command, Flags } from "@oclif/core";
 import { CommandWithConfig, ConfigFileFlag } from "@tylerbu/cli-api";
 import { join } from "pathe";
 import { glob } from "tinyglobby";
-import { TsConfigSorter } from "../api.js";
-import type { SortTsconfigConfiguration } from "../config.js";
-import { defaultSortOrder, type OrderList } from "../orders.js";
+import { TsConfigSorter } from "../api.ts";
+import type { SortTsconfigConfiguration } from "../config.ts";
+import { defaultSortOrder, type OrderList } from "../orders.ts";
 
 export default class SortTsconfigCommand extends CommandWithConfig<
 	typeof SortTsconfigCommand,
@@ -83,7 +83,6 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 	};
 
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: should clean this up at some point.
-	// biome-ignore lint/suspicious/useAwait: signature requires async
 	public override async run(): Promise<void> {
 		const { tsconfig: tsconfigs } = this.args;
 		const { write } = this.flags;

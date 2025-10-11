@@ -1,5 +1,5 @@
 import type { Logger } from "@tylerbu/cli-api";
-import type { PolicyName } from "./policy.js";
+import type { PolicyName } from "./policy.ts";
 
 export type PolicyAction = "handle" | "resolve";
 

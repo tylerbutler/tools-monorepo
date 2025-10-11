@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { HttpResponse, http } from "msw";
 import path from "pathe";
 
-import { testDataPath } from "../common.js";
+import { testDataPath } from "../common.ts";
 
 const fileName = path.join(testDataPath, "test0.json");
 const file = await readFile(fileName);

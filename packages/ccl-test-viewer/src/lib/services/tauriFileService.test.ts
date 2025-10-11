@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	isOfflineModeAvailable,
 	isTauriEnvironment,
-} from "./tauriFileService.js";
+} from "./tauriFileService.ts";
 
 describe("tauriFileService", () => {
 	describe("isTauriEnvironment", () => {

@@ -5,7 +5,7 @@ import type {
 	PolicyInstanceSettings,
 	PolicyName,
 	PolicyStandaloneResolver,
-} from "./policy.js";
+} from "./policy.ts";
 
 function generatePolicyFunction(name: PolicyName, description?: string) {
 	return <C>(

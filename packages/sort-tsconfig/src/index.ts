@@ -17,11 +17,11 @@ export {
 	type SortTsconfigResult,
 	sortTsconfigFile,
 	TsConfigSorter,
-} from "./api.js";
-export type { SortTsconfigConfiguration } from "./config.js";
+} from "./api.ts";
+export type { SortTsconfigConfiguration } from "./config.ts";
 export {
 	defaultSortOrder,
 	type OrderList,
 	preferredSortOrder,
-} from "./orders.js";
-export { SortTsconfigsPolicy } from "./policy.js";
+} from "./orders.ts";
+export { SortTsconfigsPolicy } from "./policy.ts";

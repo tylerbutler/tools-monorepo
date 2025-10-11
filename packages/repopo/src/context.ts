@@ -1,5 +1,5 @@
-import type { PolicyHandlerPerfStats } from "./perf.js";
-import type { PolicyInstance, PolicyName } from "./policy.js";
+import type { PolicyHandlerPerfStats } from "./perf.ts";
+import type { PolicyInstance, PolicyName } from "./policy.ts";
 
 export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
 

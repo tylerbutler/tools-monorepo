@@ -1,10 +1,10 @@
 // Data merging utilities for combining multiple data sources
-import type { GeneratedTest, TestCategory, TestStats } from "../data/types.js";
+import type { GeneratedTest, TestCategory, TestStats } from "../data/types.ts";
 import type {
 	DataSource,
 	MergedDataStats,
 	UploadValidationResult,
-} from "../stores/dataSource.js";
+} from "../stores/dataSource.ts";
 
 // Security limits to prevent DoS attacks from malicious/corrupt files
 const MAX_TESTS = 10_000;

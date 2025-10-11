@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { GeneratedTest, TestCategory } from "../data/types.js";
-import type { DataSource } from "../stores/dataSource.js";
+import type { GeneratedTest, TestCategory } from "../data/types.ts";
+import type { DataSource } from "../stores/dataSource.ts";
 import {
 	calculateStats,
 	createDataSourceFromGitHub,
@@ -10,7 +10,7 @@ import {
 	jsonToTestCategory,
 	mergeDataSources,
 	validateTestData,
-} from "./dataMerger.js";
+} from "./dataMerger.ts";
 
 describe("dataMerger", () => {
 	describe("validateTestData", () => {

@@ -30,7 +30,8 @@ $effect(() => {
 	loading = true;
 	error = null;
 
-	(async () => {
+	// Initialize data asynchronously - intentionally not awaited to allow effect to complete
+	void (async () => {
 		try {
 			// Initialize dataSourceManager without static data (upload-only mode)
 			await dataSourceManager.initializeEmpty();

@@ -1,7 +1,7 @@
 import { assert } from "@fluidframework/core-utils/internal";
 import type { IClient } from "@fluidframework/driver-definitions";
 
-import type { LeveeMember, LeveeUser } from "./interfaces.js";
+import type { LeveeMember, LeveeUser } from "./interfaces.ts";
 
 /**
  * Creates a {@link LeveeMember} for the provided client.

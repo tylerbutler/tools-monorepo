@@ -1,7 +1,7 @@
-export { HtmlFileHeaders } from "./policies/HtmlFileHeaders.js";
-export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
-export { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
-export { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
-export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
-export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
-export { DefaultPolicies } from "./policy.js";
+export { HtmlFileHeaders } from "./policies/HtmlFileHeaders.ts";
+export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.ts";
+export { NoJsFileExtensions } from "./policies/NoJsFileExtensions.ts";
+export { PackageJsonProperties } from "./policies/PackageJsonProperties.ts";
+export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.ts";
+export { PackageJsonSorted } from "./policies/PackageJsonSorted.ts";
+export { DefaultPolicies } from "./policy.ts";

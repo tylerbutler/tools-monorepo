@@ -1,6 +1,6 @@
 <script lang="ts">
 import { cn } from "@/utils.js";
-import type { AlertDescriptionProps } from "./index.js";
+import type { AlertDescriptionProps } from "./index.ts";
 
 type $$Props = AlertDescriptionProps;
 

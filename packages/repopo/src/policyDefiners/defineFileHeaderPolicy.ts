@@ -5,7 +5,7 @@ import type {
 	PolicyDefinition,
 	PolicyFailure,
 	PolicyFixResult,
-} from "../policy.js";
+} from "../policy.ts";
 
 const trailingSpaces = /\s*\\r\?\\n/;
 

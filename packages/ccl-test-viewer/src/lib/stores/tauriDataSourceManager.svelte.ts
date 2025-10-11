@@ -12,8 +12,8 @@ import {
 	saveDataSourceToLocal,
 	type TauriFileResult,
 } from "@/services/tauriFileService";
-import type { DataSource } from "./dataSource";
-import { dataSourceManager } from "./dataSourceManager.svelte.js";
+import type { DataSource } from "./dataSource.ts";
+import { dataSourceManager } from "./dataSourceManager.svelte.js.ts";
 
 /**
  * Tauri-enhanced data source manager
@@ -32,7 +32,7 @@ class TauriDataSourceManager {
 
 		// Load saved sources on initialization
 		if (this._isDesktopApp) {
-			this.loadLocalSources();
+			void this.loadLocalSources();
 		}
 	}
 

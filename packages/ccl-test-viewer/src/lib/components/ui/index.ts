@@ -5,22 +5,22 @@ export {
 	type AlertProps,
 	type AlertTitleProps,
 	alertVariants,
-} from "./alert/index.js";
-export { Badge, type BadgeVariant, badgeVariants } from "./badge/index.js";
+} from "./alert/index.ts";
+export { Badge, type BadgeVariant, badgeVariants } from "./badge/index.ts";
 export {
 	Button,
 	type ButtonProps,
 	type ButtonSize,
 	type ButtonVariant,
 	buttonVariants,
-} from "./button/index.js";
+} from "./button/index.ts";
 export {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "./card/index.js";
-export { Input } from "./input/index.js";
-export { Progress, type ProgressProps } from "./progress/index.js";
+} from "./card/index.ts";
+export { Input } from "./input/index.ts";
+export { Progress, type ProgressProps } from "./progress/index.ts";
 export { default as SimpleCheckbox } from "./simple-checkbox.svelte";

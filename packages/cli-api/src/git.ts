@@ -8,7 +8,7 @@ import {
 	simpleGit,
 } from "simple-git";
 import type { SetRequired } from "type-fest";
-import type { Logger } from "./logger.js";
+import type { Logger } from "./logger.ts";
 
 /**
  * Default options passed to the git client.

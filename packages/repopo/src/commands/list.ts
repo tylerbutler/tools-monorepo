@@ -1,5 +1,5 @@
-import { BaseRepopoCommand } from "../baseCommand.js";
-import { DefaultPolicies } from "../policy.js";
+import { BaseRepopoCommand } from "../baseCommand.ts";
+import { DefaultPolicies } from "../policy.ts";
 
 /**
  * This command lists all the policies configured to run.

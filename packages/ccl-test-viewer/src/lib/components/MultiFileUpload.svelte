@@ -81,7 +81,7 @@ function handleFilesSelect(files: FileList | File[]) {
 	}
 
 	// Process valid files
-	processFiles();
+	void processFiles();
 }
 
 // Handle file input change

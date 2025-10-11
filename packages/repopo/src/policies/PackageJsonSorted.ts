@@ -1,7 +1,7 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
 import { sortPackageJson } from "sort-package-json";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
-import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
+import type { PolicyFailure, PolicyFixResult } from "../policy.ts";
+import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.ts";
 
 /**
  * A repo policy that checks if package.json files in the repo are sorted using sort-package-json.

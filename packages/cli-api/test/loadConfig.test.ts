@@ -1,8 +1,8 @@
 import path from "pathe";
 import { describe, expect, it } from "vitest";
 
-import { loadConfig } from "../src/loadConfig.js";
-import { type TestConfigSchema, testDataPath } from "./common.js";
+import { loadConfig } from "../src/loadConfig.ts";
+import { type TestConfigSchema, testDataPath } from "./common.ts";
 
 describe("loadConfig", () => {
 	const configPath = path.join(testDataPath, "configs");

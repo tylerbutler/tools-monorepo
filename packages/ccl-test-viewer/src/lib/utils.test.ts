@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cn } from "./utils.js";
+import { cn } from "./utils.ts";
 
 describe("utils", () => {
 	describe("cn (className utility)", () => {

@@ -2,7 +2,7 @@ import { EOL as newline } from "node:os";
 import {
 	defineFileHeaderPolicy,
 	type FileHeaderPolicyConfig,
-} from "../policyDefiners/defineFileHeaderPolicy.js";
+} from "../policyDefiners/defineFileHeaderPolicy.ts";
 
 /**
  * A RepoPolicy that checks that HTML files have the configured header comment.

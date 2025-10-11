@@ -24,14 +24,14 @@
 			"**",
 
 			// jj vcs folders
-			"!.jj/**",
+			"!.jj",
 
 			// build output
-			"!**/_temp/**",
-			"!**/.coverage/**",
-			"!**/built/**",
-			"!**/dist/**",
-			"!**/esm/**",
+			"!**/_temp",
+			"!**/.coverage",
+			"!**/built",
+			"!**/dist",
+			"!**/esm",
 
 			// oclif manifest
 			"!**/oclif.manifest.json",
@@ -117,6 +117,12 @@
 						"noInvalidPositionAtImportRule": "off",
 						"noUnknownProperty": "off",
 					},
+					"complexity": {
+						"noImportantStyles": "off",
+					},
+					"suspicious": {
+						"noUnknownAtRules": "off",
+					},
 				},
 			},
 		},
@@ -166,9 +172,13 @@
 				"rules": {
 					"complexity": {
 						"noUselessUndefinedInitialization": "off",
+						"noVoid": "off",
 					},
 					"nursery": {
 						"noUselessUndefined": "off",
+					},
+					"suspicious": {
+						"noUnknownAtRules": "off",
 					},
 				},
 			},

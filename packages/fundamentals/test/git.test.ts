@@ -3,7 +3,7 @@ import path from "pathe";
 import { temporaryDirectory } from "tempy";
 import { describe, expect, it } from "vitest";
 
-import { findGitRootSync } from "../src/git.js";
+import { findGitRootSync } from "../src/git.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

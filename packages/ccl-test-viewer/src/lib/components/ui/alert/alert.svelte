@@ -1,6 +1,7 @@
 <script lang="ts">
 import { cn } from "@/utils.js";
-import { alertVariants, type Props } from "./index.js";
+import type { Props } from "./index.ts";
+import { alertVariants } from "./variants.ts";
 
 type $$Props = Props;
 

@@ -3,9 +3,9 @@ import process from "node:process";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import chalk from "picocolors";
-import { BaseRepopoCommand } from "../baseCommand.js";
-import type { RepopoCommandContext } from "../context.js";
-import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";
+import { BaseRepopoCommand } from "../baseCommand.ts";
+import type { RepopoCommandContext } from "../context.ts";
+import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.ts";
 import {
 	isPolicyFixResult,
 	type PolicyFailure,
@@ -13,7 +13,7 @@ import {
 	type PolicyHandlerResult,
 	type PolicyInstance,
 	type PolicyStandaloneResolver,
-} from "../policy.js";
+} from "../policy.ts";
 
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {

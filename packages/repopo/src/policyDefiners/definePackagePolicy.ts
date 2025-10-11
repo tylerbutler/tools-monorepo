@@ -1,11 +1,11 @@
 import jsonfile from "jsonfile";
 import type { PackageJson } from "type-fest";
-import { PackageJsonRegexMatch } from "../policies/constants.js";
+import { PackageJsonRegexMatch } from "../policies/constants.ts";
 import type {
 	PolicyDefinition,
 	PolicyFunctionArguments,
 	PolicyHandlerResult,
-} from "../policy.js";
+} from "../policy.ts";
 
 const { readFile: readJson } = jsonfile;
 

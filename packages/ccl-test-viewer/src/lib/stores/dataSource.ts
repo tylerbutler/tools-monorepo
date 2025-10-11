@@ -1,5 +1,5 @@
 // Data source management types and interfaces for Phase 2 implementation
-import type { TestCategory, TestStats } from "../data/types.js";
+import type { TestCategory, TestStats } from "../data/types.ts";
 
 export type DataSourceType = "static" | "uploaded" | "github" | "url";
 
