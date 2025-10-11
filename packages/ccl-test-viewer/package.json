@@ -2,6 +2,7 @@
 	"name": "@tylerbu/ccl-test-viewer",
 	"version": "0.1.0",
 	"description": "CCL Test Suite Viewer - Interactive test result visualization",
+	"private": true,
 	"keywords": [
 		"ccl",
 		"test",
@@ -42,7 +43,6 @@
 		"test:all": "npm run test && npm run test:e2e",
 		"perf:bundle": "npm run build && open .sonda/index.html",
 		"perf:lighthouse": "npm run build && lhci autorun",
-		"perf:stats": "node scripts/bundle-stats.js",
 		"tauri": "tauri",
 		"tauri:dev": "tauri dev",
 		"tauri:build": "tauri build",
