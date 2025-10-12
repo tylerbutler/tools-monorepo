@@ -1,6 +1,6 @@
-import type { GeneratedTest } from "$lib/data/types.js";
 import { fireEvent, render } from "@testing-library/svelte";
 import { describe, expect, it, vi } from "vitest";
+import type { GeneratedTest } from "$lib/data/types.js";
 import TestCard from "./TestCard.svelte";
 
 // Skip these tests for now due to Svelte 5 compatibility issues

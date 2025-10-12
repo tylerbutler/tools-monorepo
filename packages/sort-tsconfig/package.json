@@ -41,7 +41,6 @@
 	"scripts": {
 		"api": "api-extractor run --local",
 		"b": "turbo build",
-		"build": "turbo run build-steps:cli",
 		"build:test": "tsc --project ./test/tsconfig.json",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
@@ -90,7 +89,7 @@
 		"tinyglobby": "^0.2.15"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.0.4",
+		"@biomejs/biome": "2.2.5",
 		"@microsoft/api-extractor": "^7.53.1",
 		"@oclif/plugin-command-snapshot": "^5.3.6",
 		"@oclif/test": "^4.1.14",

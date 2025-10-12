@@ -1,16 +1,5 @@
 <script lang="ts">
 import {
-	Badge,
-	Button,
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "$lib/components/ui/index.js";
-import type { DataSource } from "$lib/stores/dataSource.js";
-import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
-import {
 	AlertCircle,
 	CheckCircle,
 	Clock,
@@ -21,6 +10,17 @@ import {
 	Github,
 	RefreshCw,
 } from "@lucide/svelte";
+import {
+	Badge,
+	Button,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "$lib/components/ui/index.js";
+import type { DataSource } from "$lib/stores/dataSource.js";
+import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 
 interface Props {
 	onSourceAdded?: (source: DataSource) => void;

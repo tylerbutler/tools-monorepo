@@ -1,12 +1,12 @@
 <script lang="ts">
 import "../app.css";
+import { Home, Palette, Search, Upload } from "@lucide/svelte";
+import type { Snippet } from "svelte";
+import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import Base16ThemeSelector from "$lib/components/Base16ThemeSelector.svelte";
 import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 import { themeStore } from "$lib/stores.svelte.js";
-import { Home, Palette, Search, Upload } from "@lucide/svelte";
-import type { Snippet } from "svelte";
-import { onMount } from "svelte";
 import type { LayoutData } from "./$types";
 
 interface Props {

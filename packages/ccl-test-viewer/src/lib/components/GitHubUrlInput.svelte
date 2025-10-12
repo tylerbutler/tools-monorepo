@@ -1,10 +1,4 @@
 <script lang="ts">
-import { Badge, Button, Input } from "$lib/components/ui/index.js";
-import {
-	GitHubAPIError,
-	type GitHubRepository,
-	githubLoader,
-} from "$lib/services/githubLoader";
 import {
 	AlertCircle,
 	CheckCircle,
@@ -13,6 +7,12 @@ import {
 	Github,
 	LoaderCircle,
 } from "@lucide/svelte";
+import { Badge, Button, Input } from "$lib/components/ui/index.js";
+import {
+	GitHubAPIError,
+	type GitHubRepository,
+	githubLoader,
+} from "$lib/services/githubLoader";
 
 interface Props {
 	onLoad?: (data: {

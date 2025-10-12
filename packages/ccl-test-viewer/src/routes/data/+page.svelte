@@ -1,4 +1,18 @@
 <script lang="ts">
+import {
+	Database,
+	Download,
+	FileText,
+	Github,
+	HardDrive,
+	Layers,
+	RefreshCw,
+	ToggleLeft,
+	ToggleRight,
+	Trash2,
+	Upload,
+} from "@lucide/svelte";
+import { onMount } from "svelte";
 import DataCollectionManager from "$lib/components/DataCollectionManager.svelte";
 import GitHubRepositoryBrowser from "$lib/components/GitHubRepositoryBrowser.svelte";
 import GitHubUrlInput from "$lib/components/GitHubUrlInput.svelte";
@@ -19,20 +33,6 @@ import {
 import type { DataSource } from "$lib/stores/dataSource.js";
 import { dataSourceManager } from "$lib/stores/dataSourceManager.svelte.js";
 import { tauriDataSourceManager } from "$lib/stores/tauriDataSourceManager.svelte.js";
-import {
-	Database,
-	Download,
-	FileText,
-	Github,
-	HardDrive,
-	Layers,
-	RefreshCw,
-	ToggleLeft,
-	ToggleRight,
-	Trash2,
-	Upload,
-} from "@lucide/svelte";
-import { onMount } from "svelte";
 
 interface UploadedFile {
 	file: File;

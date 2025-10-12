@@ -24,14 +24,14 @@
 			"**",
 
 			// jj vcs folders
-			"!.jj/**",
+			"!.jj",
 
 			// build output
-			"!**/_temp/**",
-			"!**/.coverage/**",
-			"!**/built/**",
-			"!**/dist/**",
-			"!**/esm/**",
+			"!**/_temp",
+			"!**/.coverage",
+			"!**/built",
+			"!**/dist",
+			"!**/esm",
 
 			// oclif manifest
 			"!**/oclif.manifest.json",
@@ -80,6 +80,7 @@
 						"useConst": "off",
 						"useImportType": "off",
 						"noNonNullAssertion": "off",
+						"useReadonlyClassProperties": "off",
 					},
 					"correctness": {
 						"noUnusedVariables": "off",
@@ -92,7 +93,6 @@
 					},
 					"nursery": {
 						"noShadow": "off",
-						"useReadonlyClassProperties": "off",
 					},
 				},
 			},
@@ -116,6 +116,12 @@
 					"correctness": {
 						"noInvalidPositionAtImportRule": "off",
 						"noUnknownProperty": "off",
+					},
+					"complexity": {
+						"noImportantStyles": "off",
+					},
+					"suspicious": {
+						"noUnknownAtRules": "off",
 					},
 				},
 			},
@@ -146,6 +152,7 @@
 					"style": {
 						"useConsistentMemberAccessibility": "off",
 						"noNonNullAssertion": "off",
+						"useReadonlyClassProperties": "off",
 					},
 					"complexity": {
 						"noExcessiveCognitiveComplexity": "off",
@@ -154,9 +161,7 @@
 					"performance": {
 						"useTopLevelRegex": "off",
 					},
-					"nursery": {
-						"useReadonlyClassProperties": "off",
-					},
+					"nursery": {},
 				},
 			},
 		},
@@ -167,9 +172,16 @@
 				"rules": {
 					"complexity": {
 						"noUselessUndefinedInitialization": "off",
+						"noVoid": "off",
+					},
+					"correctness": {
+						"useImportExtensions": "off",
 					},
 					"nursery": {
 						"noUselessUndefined": "off",
+					},
+					"suspicious": {
+						"noUnknownAtRules": "off",
 					},
 				},
 			},
