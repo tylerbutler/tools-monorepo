@@ -7,36 +7,31 @@
 	"concurrency": "100%",
 	"daemon": false,
 	"noUpdateNotifier": true,
-	"globalDependencies": [
-		"config/tsconfig*.json",
-		"config/api-extractor.base.json",
-		"config/biome/*.jsonc",
-		"biome.jsonc",
-		"pnpm-lock.yaml",
-	],
+	"globalDependencies": [],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", "!test/**", "!**/*.test.ts"],
-			"outputs": [
-				"esm/**",
-				"dist/**",
-				".next/**",
-				"!.next/cache/**",
-				".astro/**",
-				"oclif.manifest.json",
-				"README.md",
-			],
-			"outputLogs": "errors-only",
+			"outputs": ["esm/**", "dist/**"],
 		},
 		"compile": {
 			"dependsOn": ["^compile"],
-			"inputs": ["src/**", "tsconfig*.json", "package.json"],
+			"inputs": [
+				"src/**",
+				"tsconfig*.json",
+				"package.json",
+				"$TURBO_ROOT$/config/tsconfig*.json",
+			],
 			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"],
 		},
 		"api": {
 			"dependsOn": ["compile"],
-			"inputs": ["esm/**/*.d.ts", "api-extractor*.json", "package.json"],
+			"inputs": [
+				"esm/**/*.d.ts",
+				"api-extractor*.json",
+				"package.json",
+				"$TURBO_ROOT$/config/api-extractor.base.json",
+			],
 			"outputs": [
 				"api-docs/**",
 				"_temp/api-extractor/**",
@@ -74,7 +69,7 @@
 		"readme": {
 			"dependsOn": ["manifest"],
 			"inputs": ["package.json", "src/**"],
-			"outputs": ["README.md", "docs/**"],
+			"outputs": ["README.md"],
 		},
 		"build:test": {
 			"dependsOn": ["compile"],
@@ -105,7 +100,14 @@
 		},
 		"lint": {
 			"dependsOn": [],
-			"inputs": ["src/**", "test/**", "biome.jsonc", ".eslintrc*"],
+			"inputs": [
+				"src/**",
+				"test/**",
+				"biome.jsonc",
+				".eslintrc*",
+				"$TURBO_ROOT$/config/biome/*.jsonc",
+				"$TURBO_ROOT$/biome.jsonc",
+			],
 			"outputs": [],
 		},
 		"check": {
@@ -128,16 +130,16 @@
 			"outputs": [],
 		},
 		"check:format": {
-			"inputs": ["**"],
+			"inputs": [
+				"**",
+				"$TURBO_ROOT$/config/biome/*.jsonc",
+				"$TURBO_ROOT$/biome.jsonc",
+			],
 			"outputs": [],
 		},
 		"check:policy": {
 			"dependsOn": ["repopo#compile"],
 			"inputs": ["**"],
-			"outputs": [],
-		},
-		"full": {
-			"dependsOn": ["check", "build", "lint", "test"],
 			"outputs": [],
 		},
 		"release:license-file": {

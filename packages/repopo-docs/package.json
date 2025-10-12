@@ -17,7 +17,7 @@
 		"check:typedoc": "astro check",
 		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
 		"dev": "astro dev",
-		"docs": "astro build",
+		"build": "astro build",
 		"preview": "astro preview",
 		"start": "astro dev"
 	},
@@ -39,7 +39,7 @@
 		"typedoc-plugin-frontmatter": "^1.3.0",
 		"typedoc-plugin-markdown": "^4.9.0",
 		"typedoc-plugin-mdn-links": "^5.0.9",
-		"typescript": "~5.8.3",
+		"typescript": "~5.9.3",
 		"zod": "^3.25.76"
 	},
 	"devDependencies": {
