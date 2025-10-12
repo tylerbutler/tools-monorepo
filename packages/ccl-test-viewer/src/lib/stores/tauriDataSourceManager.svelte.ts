@@ -216,6 +216,7 @@ class TauriDataSourceManager {
 								stream: () => new ReadableStream(),
 								text: async () => f.content,
 								slice: () => new Blob(),
+								bytes: async () => new Uint8Array(0),
 							}) as File,
 					),
 				);
