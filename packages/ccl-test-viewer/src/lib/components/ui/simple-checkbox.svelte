@@ -1,6 +1,6 @@
 <script lang="ts">
-import { cn } from "$lib/utils.js";
 import CheckIcon from "@lucide/svelte/icons/check";
+import { cn } from "$lib/utils.js";
 
 interface Props {
 	checked?: boolean;

@@ -21,7 +21,7 @@ $effect(() => {
 		isInitializing = true;
 
 		// Initialize the web component
-		(async () => {
+		void (async () => {
 			try {
 				await import("@andypf/json-viewer");
 

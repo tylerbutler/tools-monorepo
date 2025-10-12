@@ -65,7 +65,7 @@
 		"tailwind-variants": "^1.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.0.4",
+		"@biomejs/biome": "2.2.5",
 		"@internationalized/date": "^3.10.0",
 		"@lhci/cli": "^0.15.1",
 		"@playwright/test": "^1.56.0",

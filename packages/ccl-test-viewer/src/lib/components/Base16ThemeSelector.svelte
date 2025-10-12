@@ -1,11 +1,11 @@
 <script lang="ts">
+import { Check, ChevronDown, Palette } from "@lucide/svelte";
 import { Button } from "$lib/components/ui/button/index.js";
 import {
 	BASE16_THEMES,
 	type Base16Theme,
 	themeStore,
 } from "$lib/stores.svelte.js";
-import { Check, ChevronDown, Palette } from "@lucide/svelte";
 
 // Props
 interface Props {

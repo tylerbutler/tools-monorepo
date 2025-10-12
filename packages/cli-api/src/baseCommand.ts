@@ -61,6 +61,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	private suppressLogging = false;
 
 	protected trace: Debugger | undefined;
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: used for future logging enhancement
 	private traceLog: Debugger | undefined;
 	private traceVerbose: Debugger | undefined;
 	private traceInfo: Debugger | undefined;
