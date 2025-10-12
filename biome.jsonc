@@ -58,7 +58,7 @@
 			"includes": [
 				"packages/cli/**",
 				"packages/cli-api/**",
-				"packages/dill/**",
+				"packages/dill-cli/**",
 				"packages/repopo/**",
 				"packages/sort-tsconfig/**",
 			],

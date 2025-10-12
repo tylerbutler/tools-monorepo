@@ -39,8 +39,8 @@ export default defineConfig({
 			plugins: [
 				// Generate the documentation.
 				starlightTypeDoc({
-					entryPoints: ["../dill/src/index.ts"],
-					tsconfig: "../dill/tsconfig.json",
+					entryPoints: ["../dill-cli/src/index.ts"],
+					tsconfig: "../dill-cli/tsconfig.json",
 					sidebar: {
 						label: "API Reference",
 						collapsed: true,
@@ -48,9 +48,9 @@ export default defineConfig({
 					typeDoc: {
 						excludeExternals: true,
 						// router: "module",
-						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill",
+						// publicPath: "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli",
 						mergeReadme: true,
-						readme: "../dill/api-docs/README.md",
+						readme: "../dill-cli/api-docs/README.md",
 						// readme: "none",
 						// entryModule: "index",
 						// entryFileName: "index",
@@ -66,7 +66,7 @@ export default defineConfig({
 				{
 					icon: "github",
 					label: "GitHub",
-					href: "https://github.com/tylerbutler/tools-monorepo/packages/dill",
+					href: "https://github.com/tylerbutler/tools-monorepo/packages/dill-cli",
 				},
 			],
 			sidebar: [
