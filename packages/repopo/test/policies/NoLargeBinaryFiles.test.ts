@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { NoLargeBinaryFiles } from "../../src/policies/NoLargeBinaryFiles.js";
 
 describe("NoLargeBinaryFiles", () => {
@@ -9,7 +9,10 @@ describe("NoLargeBinaryFiles", () => {
 
 	beforeEach(() => {
 		// Create a unique test directory
-		testDir = join(tmpdir(), `repopo-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+		testDir = join(
+			tmpdir(),
+			`repopo-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+		);
 		mkdirSync(testDir, { recursive: true });
 	});
 
@@ -112,8 +115,11 @@ describe("NoLargeBinaryFiles", () => {
 
 			for (const fileName of textFiles) {
 				const filePath = join(testDir, fileName);
-				mkdirSync(join(testDir, fileName.includes("/") ? fileName.split("/")[0] : ""), { recursive: true });
-				
+				mkdirSync(
+					join(testDir, fileName.includes("/") ? fileName.split("/")[0] : ""),
+					{ recursive: true },
+				);
+
 				// Create a large text file that would normally fail
 				const content = "x".repeat(15 * 1024 * 1024);
 				writeFileSync(filePath, content);
@@ -177,7 +183,7 @@ describe("NoLargeBinaryFiles", () => {
 		it("should use custom exclude patterns", async () => {
 			const file = join(testDir, "assets/large-image.png");
 			mkdirSync(join(testDir, "assets"), { recursive: true });
-			
+
 			// Create a large image file
 			const content = Buffer.alloc(15 * 1024 * 1024, 0);
 			writeFileSync(file, content);
@@ -205,8 +211,10 @@ describe("NoLargeBinaryFiles", () => {
 
 			for (const fileName of files) {
 				const filePath = join(testDir, fileName);
-				mkdirSync(join(testDir, fileName.split("/").slice(0, -1).join("/")), { recursive: true });
-				
+				mkdirSync(join(testDir, fileName.split("/").slice(0, -1).join("/")), {
+					recursive: true,
+				});
+
 				const content = Buffer.alloc(15 * 1024 * 1024, 0);
 				writeFileSync(filePath, content);
 			}

@@ -13,13 +13,13 @@ export interface NoLargeBinaryFilesSettings {
 	 * Maximum file size in bytes. Defaults to 10MB.
 	 */
 	maxSizeBytes?: number;
-	
+
 	/**
 	 * File extensions to exclude from size checking.
 	 * Useful for known large files that should be allowed.
 	 */
 	excludeExtensions?: string[];
-	
+
 	/**
 	 * File patterns to exclude from size checking.
 	 * Uses glob-style patterns.
@@ -36,22 +36,42 @@ const DEFAULT_MAX_SIZE = 10 * 1024 * 1024;
  * Default file extensions that are typically safe to exclude from size limits.
  */
 const DEFAULT_EXCLUDE_EXTENSIONS = [
-	".md", ".txt", ".json", ".js", ".ts", ".jsx", ".tsx", 
-	".css", ".scss", ".sass", ".less", ".html", ".xml", 
-	".yml", ".yaml", ".toml", ".ini", ".conf", ".config",
+	".md",
+	".txt",
+	".json",
+	".js",
+	".ts",
+	".jsx",
+	".tsx",
+	".css",
+	".scss",
+	".sass",
+	".less",
+	".html",
+	".xml",
+	".yml",
+	".yaml",
+	".toml",
+	".ini",
+	".conf",
+	".config",
 ];
 
 /**
  * Check if a file matches any of the exclude patterns.
  */
-function isExcluded(filePath: string, excludePatterns: string[], excludeExtensions: string[]): boolean {
+function isExcluded(
+	filePath: string,
+	excludePatterns: string[],
+	excludeExtensions: string[],
+): boolean {
 	const ext = path.extname(filePath).toLowerCase();
-	
+
 	// Check extensions
 	if (excludeExtensions.includes(ext)) {
 		return true;
 	}
-	
+
 	// Check patterns (simple glob-like matching)
 	for (const pattern of excludePatterns) {
 		if (pattern.includes("*")) {
@@ -63,7 +83,7 @@ function isExcluded(filePath: string, excludePatterns: string[], excludeExtensio
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -87,44 +107,46 @@ function formatBytes(bytes: number): string {
  *
  * @alpha
  */
-export const NoLargeBinaryFiles: PolicyDefinition<NoLargeBinaryFilesSettings> = makePolicyDefinition(
-	"NoLargeBinaryFiles",
-	// Match all files
-	/.*/,
-	async ({ file, root, config }) => {
-		const maxSizeBytes = config?.maxSizeBytes ?? DEFAULT_MAX_SIZE;
-		const excludeExtensions = config?.excludeExtensions ?? DEFAULT_EXCLUDE_EXTENSIONS;
-		const excludePatterns = config?.excludePatterns ?? [];
-		
-		// Skip excluded files
-		if (isExcluded(file, excludePatterns, excludeExtensions)) {
-			return true;
-		}
-		
-		try {
-			const filePath = path.resolve(root, file);
-			const stats = statSync(filePath);
-			
-			// Skip directories
-			if (stats.isDirectory()) {
+export const NoLargeBinaryFiles: PolicyDefinition<NoLargeBinaryFilesSettings> =
+	makePolicyDefinition(
+		"NoLargeBinaryFiles",
+		// Match all files
+		/.*/,
+		async ({ file, root, config }) => {
+			const maxSizeBytes = config?.maxSizeBytes ?? DEFAULT_MAX_SIZE;
+			const excludeExtensions =
+				config?.excludeExtensions ?? DEFAULT_EXCLUDE_EXTENSIONS;
+			const excludePatterns = config?.excludePatterns ?? [];
+
+			// Skip excluded files
+			if (isExcluded(file, excludePatterns, excludeExtensions)) {
 				return true;
 			}
-			
-			if (stats.size > maxSizeBytes) {
-				const result: PolicyFailure = {
-					name: NoLargeBinaryFiles.name,
-					file,
-					autoFixable: false,
-					errorMessage: `File is too large: ${formatBytes(stats.size)} (max: ${formatBytes(maxSizeBytes)}). Consider using Git LFS or removing the file.`,
-				};
-				
-				return result;
+
+			try {
+				const filePath = path.resolve(root, file);
+				const stats = statSync(filePath);
+
+				// Skip directories
+				if (stats.isDirectory()) {
+					return true;
+				}
+
+				if (stats.size > maxSizeBytes) {
+					const result: PolicyFailure = {
+						name: NoLargeBinaryFiles.name,
+						file,
+						autoFixable: false,
+						errorMessage: `File is too large: ${formatBytes(stats.size)} (max: ${formatBytes(maxSizeBytes)}). Consider using Git LFS or removing the file.`,
+					};
+
+					return result;
+				}
+
+				return true;
+			} catch (_error: unknown) {
+				// File doesn't exist or can't be accessed, skip it
+				return true;
 			}
-			
-			return true;
-		} catch (_error: unknown) {
-			// File doesn't exist or can't be accessed, skip it
-			return true;
-		}
-	},
-);
+		},
+	);

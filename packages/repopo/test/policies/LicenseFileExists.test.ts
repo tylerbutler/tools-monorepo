@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { LicenseFileExists } from "../../src/policies/LicenseFileExists.js";
 
 describe("LicenseFileExists", () => {
@@ -9,7 +9,10 @@ describe("LicenseFileExists", () => {
 
 	beforeEach(() => {
 		// Create a unique test directory
-		testDir = join(tmpdir(), `repopo-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+		testDir = join(
+			tmpdir(),
+			`repopo-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+		);
 		mkdirSync(testDir, { recursive: true });
 	});
 

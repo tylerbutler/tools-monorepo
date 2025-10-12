@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { RequiredGitignorePatterns } from "../../src/policies/RequiredGitignorePatterns.js";
 
 describe("RequiredGitignorePatterns", () => {
@@ -10,7 +10,10 @@ describe("RequiredGitignorePatterns", () => {
 
 	beforeEach(() => {
 		// Create a unique test directory
-		testDir = join(tmpdir(), `repopo-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+		testDir = join(
+			tmpdir(),
+			`repopo-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+		);
 		mkdirSync(testDir, { recursive: true });
 		gitignoreFile = join(testDir, ".gitignore");
 	});
@@ -27,14 +30,18 @@ describe("RequiredGitignorePatterns", () => {
 
 		it("should not match other files", () => {
 			expect(RequiredGitignorePatterns.match.test("package.json")).toBe(false);
-			expect(RequiredGitignorePatterns.match.test("src/.gitignore")).toBe(false);
+			expect(RequiredGitignorePatterns.match.test("src/.gitignore")).toBe(
+				false,
+			);
 			expect(RequiredGitignorePatterns.match.test("gitignore")).toBe(false);
 		});
 	});
 
 	describe("existing .gitignore with all required patterns", () => {
 		beforeEach(() => {
-			writeFileSync(gitignoreFile, `# Dependencies
+			writeFileSync(
+				gitignoreFile,
+				`# Dependencies
 node_modules/
 
 # Environment files
@@ -49,7 +56,8 @@ build/
 # System files
 .DS_Store
 Thumbs.db
-`);
+`,
+			);
 		});
 
 		it("should pass when all default patterns are present", async () => {
@@ -65,10 +73,13 @@ Thumbs.db
 
 	describe("existing .gitignore with missing patterns", () => {
 		beforeEach(() => {
-			writeFileSync(gitignoreFile, `# Just a basic gitignore
+			writeFileSync(
+				gitignoreFile,
+				`# Just a basic gitignore
 node_modules/
 .env
-`);
+`,
+			);
 		});
 
 		it("should fail when patterns are missing", async () => {
@@ -82,7 +93,9 @@ node_modules/
 			if (typeof result === "object") {
 				expect(result.name).toBe("RequiredGitignorePatterns");
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("Missing required .gitignore patterns");
+				expect(result.errorMessage).toContain(
+					"Missing required .gitignore patterns",
+				);
 			}
 		});
 
@@ -104,7 +117,9 @@ node_modules/
 			expect(updatedContent).toContain(".env.*");
 			expect(updatedContent).toContain("dist/");
 			expect(updatedContent).toContain(".DS_Store");
-			expect(updatedContent).toContain("repopo RequiredGitignorePatterns policy");
+			expect(updatedContent).toContain(
+				"repopo RequiredGitignorePatterns policy",
+			);
 		});
 	});
 
@@ -151,7 +166,10 @@ node_modules/
 			writeFileSync(gitignoreFile, "node_modules/\n");
 
 			const customConfig = {
-				patterns: ["custom-pattern/", { pattern: "*.log", comment: "Log files" }],
+				patterns: [
+					"custom-pattern/",
+					{ pattern: "*.log", comment: "Log files" },
+				],
 			};
 
 			const result = await RequiredGitignorePatterns.handler({
@@ -199,7 +217,9 @@ node_modules/
 
 	describe("edge cases", () => {
 		it("should handle .gitignore with existing patterns that have comments", async () => {
-			writeFileSync(gitignoreFile, `node_modules/ # npm dependencies
+			writeFileSync(
+				gitignoreFile,
+				`node_modules/ # npm dependencies
 .env # environment variables
 dist/ # build output
 .DS_Store
@@ -207,7 +227,8 @@ Thumbs.db
 .env.*
 !.env.example
 build/
-`);
+`,
+			);
 
 			const result = await RequiredGitignorePatterns.handler({
 				file: ".gitignore",
