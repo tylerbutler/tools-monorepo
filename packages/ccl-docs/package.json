@@ -12,10 +12,10 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
 	"scripts": {
+		"build": "npm run build:site",
 		"astro": "astro",
-		"b": "turbo build",
-		"build": "astro build",
-		"check:typedoc": "astro check",
+		"build:site": "astro build",
+		"check:astro": "astro check",
 		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
 		"dev": "astro dev",
 		"preview": "astro preview",

@@ -105,19 +105,37 @@ The monorepo contains these key packages:
 
 ### Build Pipeline
 
-Turbo orchestrates a complex build pipeline with multiple stages:
+Turbo orchestrates builds using a **hierarchical task structure**:
 
-1. **compile** - TypeScript compilation (src → esm/)
-2. **api** - API Extractor generates API documentation
-3. **docs** - TypeDoc generates documentation
-4. **manifest** (CLI packages) - OCLIF manifest generation
-5. **readme** (CLI packages) - OCLIF readme generation
-6. **generate** (CLI packages) - Command snapshot generation
+**Orchestration Tasks** (top-level, call implementation tasks):
+- `build` - Builds all packages (calls build:compile, build:api, build:docs, etc.)
+- `test` - Runs tests (depends on build:compile)
+- `check` - Runs all quality checks (format, types, deps, policy, lint)
+- `release` - Prepares releases (build + release:license)
 
-**Build Steps by Package Type:**
-- Libraries: compile → api → docs
-- CLI tools: compile → api → build:test → manifest → readme → generate
-- Astro sites: Just `astro build`
+**Implementation Tasks** (package-specific, do actual work):
+- `build:compile` - TypeScript compilation (src → esm/)
+- `build:api` - API Extractor documentation
+- `build:docs` - TypeDoc documentation
+- `build:manifest` - OCLIF manifest generation
+- `build:readme` - OCLIF readme generation
+- `build:generate` - OCLIF command snapshots
+- `build:site` - Astro/Vite site builds
+- `build:vite` / `build:tauri` - Svelte/Tauri builds
+- `test:unit`, `test:coverage`, `test:e2e` - Testing variants
+- `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
+
+**Package-Specific Pipelines:**
+- **Libraries**: build:compile → build:api → build:docs
+- **CLI tools**: build:compile → build:manifest → build:readme → build:generate
+- **Astro sites**: build:site only
+- **Svelte apps**: build:vite (or build:tauri for desktop)
+
+**Key Principles:**
+- Top-level tasks orchestrate, never implement
+- Implementation tasks use `:` separator (e.g., `build:compile`)
+- Turbo runs only tasks that exist in each package
+- All configuration in root `turbo.jsonc` (no package-level configs)
 
 ### TypeScript Configuration
 

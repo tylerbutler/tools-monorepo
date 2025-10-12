@@ -9,13 +9,49 @@
 	"noUpdateNotifier": true,
 	"globalDependencies": [],
 	"tasks": {
+		// ============================================
+		// ORCHESTRATION TASKS
+		// ============================================
+		// These are defined with minimal defaults.
+		// Packages override to specify their build pipeline.
+
 		"build": {
 			"dependsOn": ["^build"],
-			"inputs": ["$TURBO_DEFAULT$", "!test/**", "!**/*.test.ts"],
-			"outputs": ["esm/**", "dist/**"],
+			"outputs": [],
 		},
-		"compile": {
-			"dependsOn": ["^compile"],
+
+		"test": {
+			"outputs": [],
+		},
+
+		"lint": {
+			"outputs": [],
+		},
+
+		"check": {
+			"outputs": [],
+		},
+
+		"clean": {
+			"cache": false,
+		},
+
+		"dev": {
+			"cache": false,
+			"persistent": true,
+		},
+
+		"release": {
+			"dependsOn": ["build", "release:license"],
+			"outputs": [],
+		},
+
+		// ============================================
+		// BUILD IMPLEMENTATION TASKS
+		// ============================================
+
+		"build:compile": {
+			"dependsOn": ["^build:compile"],
 			"inputs": [
 				"src/**",
 				"tsconfig*.json",
@@ -24,81 +60,110 @@
 			],
 			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"],
 		},
-		"api": {
-			"dependsOn": ["compile"],
+
+		"build:api": {
+			"dependsOn": ["build:compile"],
 			"inputs": [
 				"esm/**/*.d.ts",
-				"api-extractor*.json",
+				"api-extractor*.{json,cjs}",
 				"package.json",
 				"$TURBO_ROOT$/config/api-extractor.base.json",
 			],
-			"outputs": [
-				"api-docs/**",
-				"_temp/api-extractor/**",
-				"esm/tsdoc-metadata.json",
-			],
+			"outputs": ["api-docs/**", "_temp/**", "esm/tsdoc-metadata.json"],
 		},
-		"docs": {
-			"dependsOn": ["compile", "api"],
-			"inputs": [
-				"esm/**",
-				"src/**",
-				"typedoc.*",
-				"_temp/api-extractor/**",
-				"README.md",
-			],
-			"outputs": [
-				"docs/**",
-				"dist/**",
-				".astro/**",
-				".svelte-kit/**",
-				"!.svelte-kit/cache/**",
-				"README.md",
-			],
+
+		"build:docs": {
+			"dependsOn": ["build:compile", "build:api"],
+			"inputs": ["esm/**", "src/**", "typedoc.{json,js,cjs}", "README.md"],
+			"outputs": ["docs/**"],
 		},
-		"generate": {
-			"dependsOn": ["compile"],
-			"inputs": ["esm/**", "test/**"],
-			"outputs": ["test/commands/__snapshots__/**"],
-		},
-		"manifest": {
-			"dependsOn": ["compile"],
-			"inputs": ["package.json", "src/**"],
+
+		"build:manifest": {
+			"dependsOn": ["build:compile"],
+			"inputs": ["package.json", "src/**", "esm/**"],
 			"outputs": ["oclif.manifest.json"],
 		},
-		"readme": {
-			"dependsOn": ["manifest"],
-			"inputs": ["package.json", "src/**"],
+
+		"build:readme": {
+			"dependsOn": ["build:manifest"],
+			"inputs": ["package.json", "src/**", "oclif.manifest.json"],
 			"outputs": ["README.md"],
 		},
+
+		"build:generate": {
+			"dependsOn": ["build:compile"],
+			"inputs": ["esm/**"],
+			"outputs": ["test/commands/__snapshots__/**"],
+		},
+
+		"build:site": {
+			"dependsOn": [],
+			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}", "public/**"],
+			"outputs": ["dist/**", ".astro/**"],
+		},
+
+		"build:vite": {
+			"dependsOn": [],
+			"inputs": [
+				"src/**",
+				"*.config.{ts,js,mjs,cjs}",
+				"public/**",
+				"index.html",
+			],
+			"outputs": ["dist/**"],
+		},
+
+		"build:tauri": {
+			"dependsOn": ["build:vite"],
+			"inputs": ["src-tauri/**", "dist/**"],
+			"outputs": ["src-tauri/target/**"],
+		},
+
 		"build:test": {
-			"dependsOn": ["compile"],
+			"dependsOn": ["build:compile"],
 			"inputs": ["test/**/*.ts", "test/tsconfig.json"],
 			"outputs": [],
 		},
-		"test": {
-			"dependsOn": ["compile"],
+
+		// ============================================
+		// TEST IMPLEMENTATION TASKS
+		// ============================================
+
+		"test:unit": {
+			"dependsOn": ["build:compile"],
 			"inputs": [
 				"src/**",
 				"test/**",
 				"esm/**",
-				"vitest.config.ts",
+				"*.config.{ts,js,mjs,cjs}",
 				"test/tsconfig.json",
 			],
-			"outputs": ["_temp/junit.xml", ".sonda/**"],
+			"outputs": ["_temp/**", ".sonda/**"],
 		},
+
 		"test:coverage": {
-			"dependsOn": ["compile"],
+			"dependsOn": ["build:compile"],
 			"inputs": [
 				"src/**",
 				"test/**",
 				"esm/**",
-				"vitest.config.ts",
+				"*.config.{ts,js,mjs,cjs}",
 				"test/tsconfig.json",
 			],
-			"outputs": [".coverage/**", ".sonda/**", "_temp/junit.xml"],
+			"outputs": [".coverage/**", ".sonda/**", "_temp/**"],
 		},
-		"lint": {
+
+		"test:e2e": {
+			"dependsOn": ["build"],
+			"cache": false,
+			"outputs": [],
+		},
+
+		// ============================================
+		// LINT IMPLEMENTATION TASKS
+		// ============================================
+
+		"lint:biome": {
 			"dependsOn": [],
 			"inputs": [
 				"src/**",
@@ -110,25 +175,11 @@
 			],
 			"outputs": [],
 		},
-		"check": {
-			"dependsOn": ["^check"],
-			"inputs": ["src/**", "biome.jsonc", "*.config.*"],
-			"outputs": [],
-		},
-		"check:typedoc": {
-			"dependsOn": ["^build"],
-			"inputs": ["src/**", "astro.config.mjs", "*.config.*", "typedoc.*"],
-			"outputs": [],
-		},
-		"check:all": {
-			"dependsOn": ["check:deps", "check:format", "check:policy", "lint"],
-			"inputs": ["**"],
-			"outputs": [],
-		},
-		"check:deps": {
-			"inputs": ["**", "$TURBO_ROOT$/*syncpack*"],
-			"outputs": [],
-		},
+
+		// ============================================
+		// CHECK IMPLEMENTATION TASKS
+		// ============================================
+
 		"check:format": {
 			"inputs": [
 				"**",
@@ -137,55 +188,58 @@
 			],
 			"outputs": [],
 		},
+
+		"check:types": {
+			"dependsOn": ["^build"],
+			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}", "typedoc.{json,js,cjs}"],
+			"outputs": [],
+		},
+
+		"check:deps": {
+			"inputs": ["**", "$TURBO_ROOT$/*syncpack*"],
+			"outputs": [],
+		},
+
 		"check:policy": {
-			"dependsOn": ["repopo#compile"],
+			"dependsOn": ["repopo#build:compile"],
 			"inputs": ["**"],
 			"outputs": [],
 		},
-		"release:license-file": {
-			"dependsOn": ["^release:license-file"],
-			"inputs": ["package.json", ".generatelicensefile.cjs"],
-			"outputs": ["THIRD-PARTY-LICENSES.txt"],
-		},
-		"release": {
-			"dependsOn": ["build", "release:license-file"],
+
+		"check:astro": {
+			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}"],
 			"outputs": [],
 		},
-		"clean": {
-			"cache": false,
+
+		"check:svelte": {
+			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}"],
+			"outputs": [],
 		},
+
+		// ============================================
+		// RELEASE IMPLEMENTATION TASKS
+		// ============================================
+
+		"release:license": {
+			"dependsOn": ["^release:license"],
+			"inputs": ["package.json", "$TURBO_ROOT$/.generatelicensefile.cjs"],
+			"outputs": ["THIRD-PARTY-LICENSES.txt"],
+		},
+
+		// ============================================
+		// CLEAN IMPLEMENTATION TASKS
+		// ============================================
+
 		"clean:build": {
 			"cache": false,
 		},
+
 		"clean:manifest": {
 			"cache": false,
 		},
+
 		"clean:root": {
 			"cache": false,
-		},
-		"dev": {
-			"cache": false,
-			"persistent": true,
-		},
-		"astro build": {
-			"inputs": ["astro.config.mjs", "src/**", "public/**"],
-			"outputs": ["dist/**", ".astro/**"],
-		},
-		"astro check": {
-			"inputs": ["astro.config.mjs", "src/**", "public/**"],
-			"outputs": [],
-		},
-		"generate-license-file": {
-			"inputs": ["package.json", ".generatelicensefile.cjs"],
-			"outputs": ["THIRD-PARTY-LICENSES.txt"],
-		},
-		"oclif manifest": {
-			"inputs": ["package.json", "src/**"],
-			"outputs": ["oclif.manifest.json"],
-		},
-		"oclif readme": {
-			"inputs": ["package.json", "src/**"],
-			"outputs": ["README.md", "docs/**"],
 		},
 	},
 }
