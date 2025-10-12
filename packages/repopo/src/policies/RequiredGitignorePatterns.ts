@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs";
+import path from "pathe";
 import { makePolicyDefinition } from "../makePolicy.js";
 import type {
 	PolicyDefinition,
@@ -35,11 +36,15 @@ const DEFAULT_PATTERNS = [
 
 /**
  * Check if a pattern exists in gitignore content.
+ * Handles patterns with inline comments (e.g., "node_modules/ # comment").
  */
 function patternExists(lines: string[], pattern: string): boolean {
 	return lines.some((line) => {
 		const trimmed = line.trim();
+		// Remove inline comments (everything after # that's not escaped)
+		const withoutComment = trimmed.split("#")[0]?.trim() ?? "";
 		return (
+			withoutComment === pattern ||
 			trimmed === pattern ||
 			trimmed.startsWith(`${pattern} `) ||
 			trimmed.startsWith(`${pattern}\t`)
@@ -220,7 +225,7 @@ export const RequiredGitignorePatterns: PolicyDefinition<RequiredGitignorePatter
 		/^\.gitignore$/,
 		async ({ file, root, resolve, config }) => {
 			const patterns = config?.patterns ?? DEFAULT_PATTERNS;
-			const filePath = root ? `${root}/${file}` : file;
+			const filePath = path.join(root, file);
 
 			try {
 				return handleExistingGitignore(filePath, patterns, file, resolve);

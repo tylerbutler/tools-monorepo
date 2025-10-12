@@ -58,6 +58,18 @@ const DEFAULT_EXCLUDE_EXTENSIONS = [
 ];
 
 /**
+ * Convert a glob pattern to a regex pattern by escaping special characters
+ * and converting * to .* for wildcard matching.
+ */
+function globToRegex(pattern: string): RegExp {
+	// Escape all regex special characters except *
+	const escaped = pattern.replace(/[.+?^${}()|[\]\\]/g, "\\$&");
+	// Convert * to .* for wildcard matching
+	const regexPattern = escaped.replace(/\*/g, ".*");
+	return new RegExp(`^${regexPattern}$`);
+}
+
+/**
  * Check if a file matches any of the exclude patterns.
  */
 function isExcluded(
@@ -75,7 +87,7 @@ function isExcluded(
 	// Check patterns (simple glob-like matching)
 	for (const pattern of excludePatterns) {
 		if (pattern.includes("*")) {
-			const regex = new RegExp(pattern.replace(/\*/g, ".*"));
+			const regex = globToRegex(pattern);
 			if (regex.test(filePath)) {
 				return true;
 			}
@@ -95,8 +107,11 @@ function formatBytes(bytes: number): string {
 		return "0 B";
 	}
 	const k = 1024;
-	const sizes = ["B", "KB", "MB", "GB"];
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	const sizes = ["B", "KB", "MB", "GB", "TB"];
+	const i = Math.min(
+		Math.floor(Math.log(bytes) / Math.log(k)),
+		sizes.length - 1,
+	);
 	const formatted = (bytes / k ** i).toFixed(1);
 	return `${formatted} ${sizes[i]}`;
 }

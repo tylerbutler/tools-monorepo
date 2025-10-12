@@ -38,10 +38,9 @@ const DEFAULT_LICENSE_NAMES = [
 export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
 	makePolicyDefinition(
 		"LicenseFileExists",
-		// Match files only in the repository root (no subdirectories)
-		/^[^/]+$/,
+		// Only trigger on package.json to check once per repository
+		/^package\.json$/,
 		async ({ file, root, config }) => {
-			// Only process files in the root directory
 			const acceptedNames = config?.acceptedNames ?? DEFAULT_LICENSE_NAMES;
 
 			// Check if any of the accepted license files exist in the root
@@ -53,23 +52,13 @@ export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
 				return true;
 			}
 
-			// Only report the failure once, not for every file in the root
-			// We'll use a specific trigger file to avoid duplicate reports
-			if (
-				file === "package.json" ||
-				(file.includes(".") && file.split(".").pop() === "md")
-			) {
-				const result: PolicyFailure = {
-					name: LicenseFileExists.name,
-					file: ".", // Report against repository root
-					autoFixable: false,
-					errorMessage: `No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
-				};
+			const result: PolicyFailure = {
+				name: LicenseFileExists.name,
+				file: ".", // Report against repository root
+				autoFixable: false,
+				errorMessage: `No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
+			};
 
-				return result;
-			}
-
-			// For other files, don't report (to avoid spam)
-			return true;
+			return result;
 		},
 	);

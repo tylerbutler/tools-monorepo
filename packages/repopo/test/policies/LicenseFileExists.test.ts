@@ -22,13 +22,13 @@ describe("LicenseFileExists", () => {
 	});
 
 	describe("policy matching", () => {
-		it("should match files in root directory", () => {
+		it("should match package.json", () => {
 			expect(LicenseFileExists.match.test("package.json")).toBe(true);
-			expect(LicenseFileExists.match.test("README.md")).toBe(true);
-			expect(LicenseFileExists.match.test("LICENSE")).toBe(true);
 		});
 
-		it("should not match files in subdirectories", () => {
+		it("should not match other files", () => {
+			expect(LicenseFileExists.match.test("README.md")).toBe(false);
+			expect(LicenseFileExists.match.test("LICENSE")).toBe(false);
 			expect(LicenseFileExists.match.test("src/index.ts")).toBe(false);
 			expect(LicenseFileExists.match.test("docs/README.md")).toBe(false);
 			expect(LicenseFileExists.match.test("test/example.test.ts")).toBe(false);
@@ -48,20 +48,6 @@ describe("LicenseFileExists", () => {
 			});
 
 			expect(result).toBe(true);
-		});
-
-		it("should pass for any trigger file when LICENSE exists", async () => {
-			const triggerFiles = ["package.json", "README.md", "index.md"];
-
-			for (const file of triggerFiles) {
-				const result = await LicenseFileExists.handler({
-					file,
-					root: testDir,
-					resolve: false,
-				});
-
-				expect(result).toBe(true);
-			}
 		});
 	});
 
@@ -93,7 +79,7 @@ describe("LicenseFileExists", () => {
 	});
 
 	describe("missing LICENSE file", () => {
-		it("should fail when no LICENSE file exists (package.json trigger)", async () => {
+		it("should fail when no LICENSE file exists", async () => {
 			const result = await LicenseFileExists.handler({
 				file: "package.json",
 				root: testDir,
@@ -107,34 +93,6 @@ describe("LicenseFileExists", () => {
 				expect(result.autoFixable).toBe(false);
 				expect(result.errorMessage).toContain("No LICENSE file found");
 				expect(result.errorMessage).toContain("LICENSE, LICENSE.txt");
-			}
-		});
-
-		it("should fail when no LICENSE file exists (README.md trigger)", async () => {
-			const result = await LicenseFileExists.handler({
-				file: "README.md",
-				root: testDir,
-				resolve: false,
-			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object") {
-				expect(result.name).toBe("LicenseFileExists");
-				expect(result.file).toBe(".");
-			}
-		});
-
-		it("should pass for non-trigger files even when LICENSE missing", async () => {
-			const nonTriggerFiles = ["src.js", "index.ts", "config.json"];
-
-			for (const file of nonTriggerFiles) {
-				const result = await LicenseFileExists.handler({
-					file,
-					root: testDir,
-					resolve: false,
-				});
-
-				expect(result).toBe(true);
 			}
 		});
 	});
