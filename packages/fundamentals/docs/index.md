@@ -62,7 +62,7 @@ The Map key that was already set.
 
 > `optional` **cause**: `unknown`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2022.error.d.ts:26
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2022.error.d.ts:26
 
 **`Beta`**
 
@@ -74,7 +74,7 @@ Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/li
 
 > **message**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es5.d.ts:1077
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es5.d.ts:1077
 
 **`Beta`**
 
@@ -86,7 +86,7 @@ Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/li
 
 > **name**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
 
 **`Beta`**
 
@@ -98,7 +98,7 @@ Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/li
 
 > `optional` **stack**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es5.d.ts:1078
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 **`Beta`**
 
@@ -265,7 +265,7 @@ type of the Map value.
 
 > **new WriteOnceMap**\<`K`, `V`\>(`entries?`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
 
 **`Beta`**
 
@@ -287,7 +287,7 @@ readonly readonly \[`K`, `V`\][] | `null`
 
 > **new WriteOnceMap**\<`K`, `V`\>(`iterable?`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
 
 **`Beta`**
 
@@ -311,7 +311,7 @@ Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/li
 
 > `readonly` **\[toStringTag\]**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:137
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:137
 
 **`Beta`**
 
@@ -323,7 +323,7 @@ Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/li
 
 > `readonly` **size**: `number`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:45
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:45
 
 **`Beta`**
 
@@ -339,7 +339,7 @@ the number of elements in the Map.
 
 > `readonly` `static` **\[species\]**: `MapConstructor`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:319
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:319
 
 **`Beta`**
 
@@ -353,7 +353,7 @@ Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/li
 
 > **\[iterator\]**(): `MapIterator`\<\[`K`, `V`\]\>
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:143
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:143
 
 **`Beta`**
 
@@ -371,7 +371,7 @@ Returns an iterable of entries in the map.
 
 > **clear**(): `void`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:20
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:20
 
 **`Beta`**
 
@@ -387,7 +387,7 @@ Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/li
 
 > **delete**(`key`): `boolean`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:24
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:24
 
 **`Beta`**
 
@@ -411,7 +411,7 @@ true if an element in the Map existed and has been removed, or false if the elem
 
 > **entries**(): `MapIterator`\<\[`K`, `V`\]\>
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:148
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:148
 
 **`Beta`**
 
@@ -429,7 +429,7 @@ Returns an iterable of key, value pairs for every entry in the map.
 
 > **forEach**(`callbackfn`, `thisArg?`): `void`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:28
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:28
 
 **`Beta`**
 
@@ -457,7 +457,7 @@ Executes a provided function once per each key/value pair in the Map, in inserti
 
 > **get**(`key`): `V` \| `undefined`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:33
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:33
 
 **`Beta`**
 
@@ -483,7 +483,7 @@ Returns the element associated with the specified key. If no element is associat
 
 > **has**(`key`): `boolean`
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:37
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:37
 
 **`Beta`**
 
@@ -507,7 +507,7 @@ boolean indicating whether an element with the specified key exists or not.
 
 > **keys**(): `MapIterator`\<`K`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:153
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:153
 
 **`Beta`**
 
@@ -564,7 +564,7 @@ Set to true to force a Map element to be updated whether it has previously been 
 
 > **values**(): `MapIterator`\<`V`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:158
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:158
 
 **`Beta`**
 
