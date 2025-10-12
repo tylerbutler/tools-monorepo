@@ -14,10 +14,10 @@
 	"scripts": {
 		"astro": "astro",
 		"b": "turbo build",
+		"build": "astro build",
 		"check:typedoc": "astro check",
 		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
 		"dev": "astro dev",
-		"build": "astro build",
 		"preview": "astro preview",
 		"start": "astro dev"
 	},
