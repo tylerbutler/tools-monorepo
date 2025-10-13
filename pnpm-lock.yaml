@@ -158,7 +158,7 @@ importers:
         specifier: ^2.4.2
         version: 2.4.2
       chart.js:
-        specifier: ^4.5.0
+        specifier: ^4.5.1
         version: 4.5.1
       clsx:
         specifier: ^2.1.1
@@ -195,7 +195,7 @@ importers:
         specifier: ^3.0.10
         version: 3.0.10(@sveltejs/kit@2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
       '@sveltejs/kit':
-        specifier: ^2.46.4
+        specifier: ^2.46.5
         version: 2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^4.0.4
@@ -279,7 +279,7 @@ importers:
         specifier: ^4.5.5
         version: 4.5.5
       '@oclif/plugin-autocomplete':
-        specifier: ^3.2.35
+        specifier: ^3.2.36
         version: 3.2.36
       '@oclif/plugin-commands':
         specifier: ^4.1.34
@@ -294,16 +294,16 @@ importers:
         specifier: ^5.4.50
         version: 5.4.50
       '@oclif/plugin-search':
-        specifier: ^1.2.32
+        specifier: ^1.2.33
         version: 1.2.33
       '@oclif/plugin-version':
         specifier: ^2.2.33
         version: 2.2.33
       '@oclif/plugin-warn-if-update-available':
-        specifier: ^3.1.48
+        specifier: ^3.1.49
         version: 3.1.49
       '@oclif/plugin-which':
-        specifier: ^3.2.40
+        specifier: ^3.2.41
         version: 3.2.41
       '@tylerbu/cli-api':
         specifier: workspace:^
@@ -328,7 +328,7 @@ importers:
         specifier: 2.2.5
         version: 2.2.5
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.6
+        specifier: ^5.3.7
         version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
@@ -346,7 +346,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.9.3)
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -440,7 +440,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.9.3)
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -507,7 +507,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.6
+        specifier: ^5.3.7
         version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
@@ -552,7 +552,7 @@ importers:
         specifier: ^2.11.5
         version: 2.11.5(@types/node@20.19.21)(typescript@5.9.3)
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -904,7 +904,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.6
+        specifier: ^5.3.7
         version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
@@ -922,7 +922,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.9.3)
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -1050,7 +1050,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.6
+        specifier: ^5.3.7
         version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
@@ -1071,7 +1071,7 @@ importers:
         specifier: ^4.49.0
         version: 4.49.0
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1

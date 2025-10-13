@@ -108,7 +108,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
 		"@microsoft/api-extractor": "^7.53.1",
-		"@oclif/plugin-command-snapshot": "^5.3.6",
+		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
@@ -123,7 +123,7 @@
 		"jsonfile": "^6.2.0",
 		"memfs": "^4.49.0",
 		"msw": "^2.11.5",
-		"oclif": "^4.22.29",
+		"oclif": "^4.22.32",
 		"rimraf": "^6.0.1",
 		"serve": "^14.2.5",
 		"serve-handler": "^6.1.6",
