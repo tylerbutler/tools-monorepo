@@ -89,10 +89,10 @@ importers:
         version: 0.9.4(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
         specifier: ^6.5.12
-        version: 6.5.12(@types/node@24.7.2)(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 6.5.12(@types/node@24.7.2)(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
-        version: 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@fontsource-variable/fira-code':
         specifier: ^5.2.7
         version: 5.2.7
@@ -110,22 +110,22 @@ importers:
         version: 5.2.7
       astro:
         specifier: ^5.14.4
-        version: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       sharp:
         specifier: ^0.34.4
         version: 0.34.4
       starlight-heading-badges:
         specifier: ^0.6.0
-        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-links-validator:
         specifier: ^0.18.0
-        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-llms-txt:
         specifier: ^0.6.0
-        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       starlight-package-managers:
         specifier: ^0.11.0
-        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -159,7 +159,7 @@ importers:
         version: 2.4.2
       chart.js:
         specifier: ^4.5.0
-        version: 4.5.0
+        version: 4.5.1
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -190,13 +190,13 @@ importers:
         version: 1.56.0
       '@sveltejs/adapter-netlify':
         specifier: ^5.2.4
-        version: 5.2.4(@sveltejs/kit@2.46.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
+        version: 5.2.4(@sveltejs/kit@2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
       '@sveltejs/adapter-static':
         specifier: ^3.0.10
-        version: 3.0.10(@sveltejs/kit@2.46.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
+        version: 3.0.10(@sveltejs/kit@2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
       '@sveltejs/kit':
         specifier: ^2.46.4
-        version: 2.46.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^4.0.4
         version: 4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -280,7 +280,7 @@ importers:
         version: 4.5.5
       '@oclif/plugin-autocomplete':
         specifier: ^3.2.35
-        version: 3.2.35
+        version: 3.2.36
       '@oclif/plugin-commands':
         specifier: ^4.1.34
         version: 4.1.34
@@ -295,16 +295,16 @@ importers:
         version: 5.4.50
       '@oclif/plugin-search':
         specifier: ^1.2.32
-        version: 1.2.32
+        version: 1.2.33
       '@oclif/plugin-version':
         specifier: ^2.2.33
         version: 2.2.33
       '@oclif/plugin-warn-if-update-available':
         specifier: ^3.1.48
-        version: 3.1.48
+        version: 3.1.49
       '@oclif/plugin-which':
         specifier: ^3.2.40
-        version: 3.2.40
+        version: 3.2.41
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
@@ -329,7 +329,7 @@ importers:
         version: 2.2.5
       '@oclif/plugin-command-snapshot':
         specifier: ^5.3.6
-        version: 5.3.6
+        version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.5)
@@ -347,7 +347,7 @@ importers:
         version: 4.1.0(typescript@5.9.3)
       oclif:
         specifier: ^4.22.29
-        version: 4.22.29(@types/node@20.19.21)
+        version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -441,7 +441,7 @@ importers:
         version: 4.1.0(typescript@5.9.3)
       oclif:
         specifier: ^4.22.29
-        version: 4.22.29(@types/node@20.19.21)
+        version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -508,7 +508,7 @@ importers:
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
         specifier: ^5.3.6
-        version: 5.3.6
+        version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.5)
@@ -553,7 +553,7 @@ importers:
         version: 2.11.5(@types/node@20.19.21)(typescript@5.9.3)
       oclif:
         specifier: ^4.22.29
-        version: 4.22.29(@types/node@20.19.21)
+        version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -601,10 +601,10 @@ importers:
         version: 0.9.4(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
         specifier: ^6.5.12
-        version: 6.5.12(@types/node@24.7.2)(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 6.5.12(@types/node@24.7.2)(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
-        version: 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@fontsource/ibm-plex-serif':
         specifier: ^5.2.7
         version: 5.2.7
@@ -616,7 +616,7 @@ importers:
         version: 5.2.7
       astro:
         specifier: ^5.14.4
-        version: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       dill-cli:
         specifier: workspace:^
         version: link:../dill
@@ -625,16 +625,16 @@ importers:
         version: 0.34.4
       starlight-heading-badges:
         specifier: ^0.6.0
-        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-links-validator:
         specifier: ^0.18.0
-        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-package-managers:
         specifier: ^0.11.0
-        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-typedoc:
         specifier: ^0.21.3
-        version: 0.21.3(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.14(typescript@5.9.3)))(typedoc@0.28.14(typescript@5.9.3))
+        version: 0.21.3(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.14(typescript@5.9.3)))(typedoc@0.28.14(typescript@5.9.3))
       typedoc:
         specifier: ^0.28.14
         version: 0.28.14(typescript@5.9.3)
@@ -706,41 +706,41 @@ importers:
   packages/levee-client:
     dependencies:
       '@fluidframework/container-definitions':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/container-loader':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/core-interfaces':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/core-utils':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/driver-definitions':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/driver-utils':
-        specifier: ~2.33.2
-        version: 2.33.2(debug@4.4.3)
+        specifier: ~2.62.0
+        version: 2.62.0(debug@4.4.3)
       '@fluidframework/fluid-static':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/map':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0(debug@4.4.3)
       '@fluidframework/routerlicious-driver':
-        specifier: ~2.33.2
-        version: 2.33.2(encoding@0.1.13)
+        specifier: ~2.62.0
+        version: 2.62.0(debug@4.4.3)(encoding@0.1.13)
       '@fluidframework/runtime-utils':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0(debug@4.4.3)
       '@fluidframework/telemetry-utils':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/tinylicious-driver':
-        specifier: ~2.33.2
-        version: 2.33.2(encoding@0.1.13)
+        specifier: ~2.62.0
+        version: 2.62.0(encoding@0.1.13)
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.18.2
@@ -752,29 +752,29 @@ importers:
         specifier: ~0.58.3
         version: 0.58.3(@types/node@20.19.21)(encoding@0.1.13)(typescript@5.9.3)
       '@fluidframework/aqueduct':
-        specifier: ~2.42.0
-        version: 2.42.0
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/build-common':
         specifier: ~2.0.3
         version: 2.0.3
       '@fluidframework/build-tools':
-        specifier: ~0.56.0
-        version: 0.56.0(@types/node@20.19.21)
+        specifier: ~0.58.3
+        version: 0.58.3(@types/node@20.19.21)
       '@fluidframework/container-runtime':
-        specifier: ~2.42.0
-        version: 2.42.0(debug@4.4.3)
+        specifier: ~2.62.0
+        version: 2.62.0(debug@4.4.3)
       '@fluidframework/container-runtime-definitions':
-        specifier: ~2.42.0
-        version: 2.42.0
+        specifier: ~2.62.0
+        version: 2.62.0
       '@fluidframework/eslint-config-fluid':
         specifier: ~5.7.4
         version: 5.7.4(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
       '@fluidframework/shared-object-base':
-        specifier: ~2.42.0
-        version: 2.42.0(debug@4.4.3)
+        specifier: ~2.62.0
+        version: 2.62.0(debug@4.4.3)
       '@fluidframework/test-utils':
-        specifier: ~2.42.0
-        version: 2.42.0(encoding@0.1.13)
+        specifier: ~2.62.0
+        version: 2.62.0(encoding@0.1.13)
       '@microsoft/api-extractor':
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.21)
@@ -905,7 +905,7 @@ importers:
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
         specifier: ^5.3.6
-        version: 5.3.6
+        version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.5)
@@ -923,7 +923,7 @@ importers:
         version: 4.1.0(typescript@5.9.3)
       oclif:
         specifier: ^4.22.29
-        version: 4.22.29(@types/node@20.19.21)
+        version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -950,10 +950,10 @@ importers:
         version: 0.9.4(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
         specifier: ^6.5.12
-        version: 6.5.12(@types/node@24.7.2)(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 6.5.12(@types/node@24.7.2)(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
-        version: 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@fontsource/ibm-plex-serif':
         specifier: ^5.2.7
         version: 5.2.7
@@ -965,7 +965,7 @@ importers:
         version: 5.2.7
       astro:
         specifier: ^5.14.4
-        version: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       repopo:
         specifier: workspace:^
         version: link:../repopo
@@ -974,16 +974,16 @@ importers:
         version: 0.34.4
       starlight-heading-badges:
         specifier: ^0.6.0
-        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-links-validator:
         specifier: ^0.18.0
-        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.18.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-package-managers:
         specifier: ^0.11.0
-        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
+        version: 0.11.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-typedoc:
         specifier: ^0.21.3
-        version: 0.21.3(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.14(typescript@5.9.3)))(typedoc@0.28.14(typescript@5.9.3))
+        version: 0.21.3(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.14(typescript@5.9.3)))(typedoc@0.28.14(typescript@5.9.3))
       typedoc:
         specifier: ^0.28.14
         version: 0.28.14(typescript@5.9.3)
@@ -1051,7 +1051,7 @@ importers:
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
         specifier: ^5.3.6
-        version: 5.3.6
+        version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.5)
@@ -1072,7 +1072,7 @@ importers:
         version: 4.49.0
       oclif:
         specifier: ^4.22.29
-        version: 4.22.29(@types/node@20.19.21)
+        version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -1754,17 +1754,14 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
-  '@fluid-internal/client-utils@2.33.2':
-    resolution: {integrity: sha512-u3TpcyjCfdDSW6G9+YuGHHQjXq1UVOsF8lzuGhZVazEN+TwzFSGE8wlxgW092TEHo04unbSpI0bp3Jz0qidh/g==}
-
-  '@fluid-internal/client-utils@2.42.0':
-    resolution: {integrity: sha512-bFzmCoyDvgtnRHUZElJcITZyNJp6WxbgJH6qJvFTgXGwgAZv3058RKRPNT6fl148Tq9ZJ54wLQIOnMzaM9TSfw==}
+  '@fluid-internal/client-utils@2.62.0':
+    resolution: {integrity: sha512-mIMclOBVTGxpfT2ddoHtYWsOu+WY/GBrqlobknyel/KcfEXXsRQLBx8grgW6ycObUEAGqg3uoay5U/aFL3qB+A==}
 
   '@fluid-internal/eslint-plugin-fluid@0.1.5':
     resolution: {integrity: sha512-p0nVeMiEfLL2deQJQaRUxid08jgV5wEkh9h9WXNosR1BRq9nFCjD8nZpC1K+YhjwQZEvgGDE+s+28VR2lAg61Q==}
 
-  '@fluid-internal/test-driver-definitions@2.42.0':
-    resolution: {integrity: sha512-m3ZiDrZ/kttRKnN5YG7bVKHvZ81pJvgU1q2y8FNAlCL0rrB5ZZeutDL4TpCahrlUPMHP+CKX/VS5qK6o+x92sg==}
+  '@fluid-internal/test-driver-definitions@2.62.0':
+    resolution: {integrity: sha512-eUiwO/WzGqHgk5+3bdc1yoep30zfDVXrZvRMoHbAUngOox6XNsORikqBXYwuKEyB6CQiMczqvj6U21tKPVxJIQ==}
 
   '@fluid-tools/build-cli@0.58.3':
     resolution: {integrity: sha512-B1FcHvM1vYNIO2sUKmejlKp/anLmRLvW3ctVHl9Ocm5UhvxUGUYISi8XmRudec1Kp2ZbKNDMSk2+4ObB9Mltyg==}
@@ -1775,29 +1772,16 @@ packages:
     resolution: {integrity: sha512-WL7R9haO0as6TuNLXVD4bAWUiyuO6n0dbvntZIn3GfMOogoDAVOzNsU/NTRdZvtlGcsUiiW6MrCkmNjncPaeJQ==}
     hasBin: true
 
-  '@fluid-tools/version-tools@0.56.0':
-    resolution: {integrity: sha512-un3xHww/pvZEznO8InnlVs2dCyK+Qmjq7MFymsRKURK0C/l53325uWBK+ZcNlOTlxB/9ajrw6rRzaDmnTOd+LQ==}
-    engines: {node: '>=20.15.1'}
-    hasBin: true
-
   '@fluid-tools/version-tools@0.58.3':
     resolution: {integrity: sha512-qRsjnm6L+7i3wHsWmnR7CaQuD4LIUp7aIM04a9qqjC3uf+sXA36PKOrKS8I0Ty/r1mIiVCEQywT+eMnGP7KzLQ==}
     engines: {node: '>=20.15.1'}
     hasBin: true
 
-  '@fluidframework/aqueduct@2.33.2':
-    resolution: {integrity: sha512-67a4+EymPZ6ofEAw5wKnvG4WFmaUrfs8sPcj5pQUP8lelk8iIo8m5xjz7tdUuWNHqc18vMauSE3vqAMk4m+9wg==}
-
-  '@fluidframework/aqueduct@2.42.0':
-    resolution: {integrity: sha512-KpMC7W3e5faHP3Ac2FTD91qMkXEDwvESnxku88GNzLtMFkljfijmG6d8oLxXryjgIA2qO81SH9GTdC8EJFr3jQ==}
+  '@fluidframework/aqueduct@2.62.0':
+    resolution: {integrity: sha512-LtQgHkq3rjSveduIKNCoTl11fqOCfXGH0a8XmBg+JIej9YFRA97AoSsl9V5UQsSTP44KGohSp7Qve+A3F1GGrA==}
 
   '@fluidframework/build-common@2.0.3':
     resolution: {integrity: sha512-1LU/2uyCeMxf63z5rhFOFEBvFyBogZ7ZXwzXLxyBhSgq/fGiq8PLjBW7uX++r0LcVCdaWyopf7w060eJpANYdg==}
-    hasBin: true
-
-  '@fluidframework/build-tools@0.56.0':
-    resolution: {integrity: sha512-8px5sXBRTW3u2bFVGcOH+bQbA8Kv84iKPGvDfOgwtjT3oC3u9+g8feCeIcEGWsT4U5P/69b31vLXHLXdMpnaYQ==}
-    engines: {node: '>=20.15.1'}
     hasBin: true
 
   '@fluidframework/build-tools@0.58.3':
@@ -1814,230 +1798,161 @@ packages:
   '@fluidframework/common-utils@3.1.0':
     resolution: {integrity: sha512-KpBQqpZKAHCKFMoxtAdrgqL1nIJhT7r2IRGmS3Rm5CMTLsegQ8ifX5lFvd6IbjeWmvLz1qLsY3eS5HBYqy9CVQ==}
 
-  '@fluidframework/container-definitions@2.33.2':
-    resolution: {integrity: sha512-1TkBeikjk3KCqyLR1oseYciUcsN9OlCE/YfjGu/XfdLGTTMe+71/MOBsO9Ob3sS1Q+sIcf32DSMy34oZChafFg==}
+  '@fluidframework/container-definitions@2.62.0':
+    resolution: {integrity: sha512-Nqw9TtxAkTVxgJVia+zpvlVURX6NpekbOGUB91nI84wMHO35RB9r5L+C8dDKrXeFCcYpD3TiAVZgXve5zFJo3Q==}
 
-  '@fluidframework/container-definitions@2.42.0':
-    resolution: {integrity: sha512-HNRZ6Xi4JSEd0vIOhOSj+0oeEsgSsYx/TILM0POo3CE0fDfEW6LEHEoknacrM07dJbo2iIlok5VDLpjpycs43w==}
+  '@fluidframework/container-loader@2.62.0':
+    resolution: {integrity: sha512-PWU3JkpIceKzTq1WzwiwFK4VtoA/786beICS5C2Czohfi9mBWq5ZS1VMlOmwevUGKcBC6dNYkCy1ogdLOhvM3w==}
 
-  '@fluidframework/container-loader@2.33.2':
-    resolution: {integrity: sha512-uTWD11iNoDT+E/e02gpwwEY7kEdnsT+fuch4+2uDunUxKcs/lBmoroYjkA7OJRp0rbdHLGINwkqmMo9LJJwkDg==}
+  '@fluidframework/container-runtime-definitions@2.62.0':
+    resolution: {integrity: sha512-LqnRMX5tE9YttY5pjZslchmJb4eXzA5fNTVx1amtOwqMCEgi2w2qMCuKUQrly6tHZ6i0HD7qPqBnE+rj5XorAA==}
 
-  '@fluidframework/container-loader@2.42.0':
-    resolution: {integrity: sha512-73G3cAztVA7/Rx08tlC8qFkUvvrl2E/AXtfi8KwJFgGNEPNC11rmg23uSXK1889s96LvZvq+ndVTPVFBVzLRWg==}
+  '@fluidframework/container-runtime@2.62.0':
+    resolution: {integrity: sha512-SuV+oi9K2Nd6OrW5iwfHdqk75Ahnpv13RthHIvHUrqKQJBXpwFAgCh2aNYUcg3yuSiN0XgQLiYLscdxyEBY4cA==}
 
-  '@fluidframework/container-runtime-definitions@2.33.2':
-    resolution: {integrity: sha512-ADM3KH+T9PoTsc9f3t0JSFzStKjSg0pCcIPO9SUICFQFKrbv1BgVzj6UE74IjYNFrdFMmQJvAbZ/4/xEtQcCQw==}
+  '@fluidframework/core-interfaces@2.62.0':
+    resolution: {integrity: sha512-JFcu0Cg/51Xw5lzn7XFvF5N+TnZfphacyufjaeapMEJeax79Pv/eRwthPGUPKvMQb9JymZeK09aQX8KWnsUcTQ==}
 
-  '@fluidframework/container-runtime-definitions@2.42.0':
-    resolution: {integrity: sha512-ar+FBKGGp0CZBnETamr0qm7ZzbM4ILzJDkvrJmg/qRYNKNsqati2cXRW2wN/nVvqRooXabJU9Il+gE9DWr6Z8g==}
+  '@fluidframework/core-utils@2.62.0':
+    resolution: {integrity: sha512-2e7/QR5sDN/sBBdC9PUteXnzf+RJNCSScxoWjLsU5Lz6NZ6btmVvIoKLu23CtGxOJ4WtPRCqu1Upxgv+4EuvEQ==}
 
-  '@fluidframework/container-runtime@2.33.2':
-    resolution: {integrity: sha512-K2Z7QdyyEehXROD908zwQ7vtNFiPQWbyfjHcnqundmmKpPcl7J0IibeLltA74rXPkcNEQywaN6QnoNyGRqlt6Q==}
+  '@fluidframework/datastore-definitions@2.62.0':
+    resolution: {integrity: sha512-gDzk/JCSSGOS9MHZsPpnJXjm5I/YDiqJHnvBgGuPjjmKL9VoEZgfxWbbOWq/g6zTSXtrY40zoXlSpdbyLtvuCQ==}
 
-  '@fluidframework/container-runtime@2.42.0':
-    resolution: {integrity: sha512-l5Wg9dmLX/AWv6UB0dL3A/Ez3yZFk97pt1bHsE2YGrXJxdG6q2JtdIo7c9qU7Pat3s9Q9XFe50DpZK8jzX4Ocw==}
+  '@fluidframework/datastore@2.62.0':
+    resolution: {integrity: sha512-uHuByIQy8l8SYB8xWzfcB6a1sD/7deTO8sLAoFVjbdYX1g+f4OEBpaGGXQw9hn6kJOsSkvSN+4e/ML23Fz1Yow==}
 
-  '@fluidframework/core-interfaces@2.33.2':
-    resolution: {integrity: sha512-2LxpUH9pvZVLmttJK7YLr/z1cXIMGrKwRkZBe++mjz04+gATSPYEWaw24eSfPB1g5CQhRUZZm3mBZRNmvi9TIQ==}
+  '@fluidframework/driver-base@2.62.0':
+    resolution: {integrity: sha512-d5JsPXnuUamN/AvQzhm1ZgJJWvqdfNKT6wb5bnHLgeDq05j43mZ7f+V4E62CVu/GaMGq3NKEu9S+dFvo7ERfiA==}
 
-  '@fluidframework/core-interfaces@2.42.0':
-    resolution: {integrity: sha512-VD2CISocDm52E4HGFZiKr1v7iaaz2dgxLzeJjBgH152ye0G9oCRei9wwxgmH3PBzPm62Xfm/c87hVyHuleVZbQ==}
+  '@fluidframework/driver-definitions@2.62.0':
+    resolution: {integrity: sha512-2Nk7QRlv3z3510SN/AQs+l8F7AL2tOFhkl9Jfw9CqnYUzibsTxFgCmgu4je13dFdRkb1SnVOhkmK/SkazcQ35w==}
 
-  '@fluidframework/core-utils@2.33.2':
-    resolution: {integrity: sha512-H5osjGOdutTGumILp9fbVUj6v8cyNCnWJjD9bAWlnVTSvRQkKfqfbXg8XerWgMlPI8EzMq2d2+YUKSFSuJvStw==}
-
-  '@fluidframework/core-utils@2.42.0':
-    resolution: {integrity: sha512-80llo0gsUfAvt9qBtJsGuhJc2OBB+2EeGQwaq8mEQBIFa7An8NvXLRwKNYsoZjhuG48Xqyxe1n5edW4UcU1WhA==}
-
-  '@fluidframework/datastore-definitions@2.33.2':
-    resolution: {integrity: sha512-iY4WqkC2YN4Un3K3mF8ldasp3hN7aS0x6pW90aiJsED91c++ieCdZK3O9r3EZF+YNPYxC9gkwxnHHivkhatMeQ==}
-
-  '@fluidframework/datastore-definitions@2.42.0':
-    resolution: {integrity: sha512-kovQgBR1DEKjLbVa+LdlX5FSZjfxyISg5c3iXWDWBvnzKQ6UzH7UYNgW4dAcWqMNbwKgTj2kAYZSIv1NIG8HGg==}
-
-  '@fluidframework/datastore@2.33.2':
-    resolution: {integrity: sha512-IHNshgPssZtz2CsyjHolee3lC2g5ZDdXgaim/f8JphwU1JFDTtOM8c7FABgMrlcF+W+kKCcuazVKMNy231a9Dg==}
-
-  '@fluidframework/datastore@2.42.0':
-    resolution: {integrity: sha512-JK8/Fl8HCy+Ya2rsiZSj5umEjDMOwNp5H1Dp5Blk2der+zUwK1tv+X7eQNBBEpvty9JuCxPXWSvrG2m+XeiggA==}
-
-  '@fluidframework/driver-base@2.33.2':
-    resolution: {integrity: sha512-GAlT20v8810RGvsuHXShl3mxa0mnGDhfiLMOAunEPjEu/8UDGz7hMOg/XLY2OrsRMlRp6XIF9Op8OYkKsheitw==}
-
-  '@fluidframework/driver-base@2.42.0':
-    resolution: {integrity: sha512-8+C11OAn0k/i5lDzhT/Kb9KBitee+RBaQQ/flzbV9OzNp3wRp/BaCnaYbNvpeC3qhEWIsYTKk0gooW+RNlVXOg==}
-
-  '@fluidframework/driver-definitions@2.33.2':
-    resolution: {integrity: sha512-2/5AWStdvqxojj/QM8xsu0lFZxmunu0fgW2Nrw/MUqrM0G+TeXMLpieyKVjAvbuhJAmqMFGWVoUrjuKQaXsaxg==}
-
-  '@fluidframework/driver-definitions@2.42.0':
-    resolution: {integrity: sha512-8eeA/5u5s09tsinv1PaMZL/CdrT7Pb+vZBJ4rVQjLe9+dxcfh5ty6P5K6UqU6jMnEH/tGU4JmTyoPV6qJqv1bA==}
-
-  '@fluidframework/driver-utils@2.33.2':
-    resolution: {integrity: sha512-8d2rcpzMw2XWUc8IRSUJ/FSbGYOKlBuoNfkji7bSiwm6rhUanzLmFcqRvUZlEltY1YzvCXfpcMoW4naYFfWWsA==}
-
-  '@fluidframework/driver-utils@2.42.0':
-    resolution: {integrity: sha512-9sRkBpT7dWHeVatD0Q/5FpAFsinxeVWxCkDj7sKyGD3Nb2uvkf8iBYA4kpH3KwdtyVngKV2hUBXJls1fAsnODQ==}
+  '@fluidframework/driver-utils@2.62.0':
+    resolution: {integrity: sha512-eSZIrlrrtCw1UKVe6RUNi3xlisylSbaI+0OzYYPLW4iZC+qVRD6JMzqyl7ZgToCEKEnBts1zc5PJ6/acmVxTIg==}
 
   '@fluidframework/eslint-config-fluid@5.7.4':
     resolution: {integrity: sha512-2JD0fKhR0wk8kWkUmjNY6FcavLxs0/oQ413z0gFHUSzd8UTkwTYumFQWpDBEoAvXqQw4nUOTAbicNIqHY25EyQ==}
 
-  '@fluidframework/fluid-static@2.33.2':
-    resolution: {integrity: sha512-lBXJTPLMedENuiHh228HGm6YEbGsKPAbnVOp2PpEZMejVPEZ2Ci+2yk2sPsIYY5hL29gEDFlCB7FlaRUjxaMtQ==}
-
-  '@fluidframework/gitresources@5.0.0':
-    resolution: {integrity: sha512-nfam1KT+EUqFCENHcxrU9VwUfbhUC83UcLuOsdLpn9I7VuClL+w8KMWosoYauZraO9gDhTo2kCErjgQji5GzGA==}
+  '@fluidframework/fluid-static@2.62.0':
+    resolution: {integrity: sha512-eJAKL4A2TTaVEJiPrYbxoLYUDv1mZ2YiAnVj9le4klyE2Xd1iXNDbfY8qVsuFAiP84A5ZE8xpbJB8IRspNcnuw==}
 
   '@fluidframework/gitresources@6.0.0':
     resolution: {integrity: sha512-/GOi0mLrjsrzFCIbMcEK9E8f64e1NBee6eScMrPJMj2oVljF2bAryrQm0SuZzC6x/lG3Ot5OXnBWHu+jSFyQiw==}
 
-  '@fluidframework/id-compressor@2.33.2':
-    resolution: {integrity: sha512-nY7xsr7H05QE13YiNU4VjO/y9DFejXe0h0nEavu0kbFnTi1T+W//mW7BurblW6DwFy7vRfAcWq8UjDajy0kSIA==}
+  '@fluidframework/gitresources@7.0.0':
+    resolution: {integrity: sha512-APAxqCF/+2ljC8th0PoXzdUAo2EJapdTk9KNm6dp7dFD5hxYWoscFqdyu5K+bvMxmhrIpGd0f//nbb7rZq7bog==}
 
-  '@fluidframework/id-compressor@2.42.0':
-    resolution: {integrity: sha512-IyjZp7ocCdjFvdLC1HmAGd2mliPoSazBGkrwbMijHaIp+dDJ6GEIafIddswla6N4z3Pf06KqxD0YPTmCpk8N+A==}
+  '@fluidframework/id-compressor@2.62.0':
+    resolution: {integrity: sha512-eKs3ifCugC0aDIw1Z/OUxzA57PNac3V3zEIUgqpKCOS2ZXJaIih4nIElsjQJW2QIdRpNJ4nGhGDqrwDg6Ao93w==}
 
-  '@fluidframework/local-driver@2.42.0':
-    resolution: {integrity: sha512-QPWJlJm95QBEvKK/8gqq71ZNNaKS5CjHVlXwvdJwZHhb3ohK7yHy6QabQiYxSxLzFJQ91c3SCcli+NSQ+lLziA==}
+  '@fluidframework/local-driver@2.62.0':
+    resolution: {integrity: sha512-2zQj0wQW+qq6up0qZfYYhR3psLlwgFZi3uHrocdCfoQP7PE2SRKbbhubitWKYFiU3hSvGYpn5A2hN3Twg1oWlA==}
 
-  '@fluidframework/map@2.33.2':
-    resolution: {integrity: sha512-OSVVghQ6shi9YNJunSGFiQ+aGNi4SWOw6Isd3Fu7EW0H2WyoD/QB6ipaSJMW38eBpgr5XCWKgt6fsi2Ymuh4zA==}
+  '@fluidframework/map@2.62.0':
+    resolution: {integrity: sha512-UACWsjUsd+eYUl280kj+Plo6I6isls0ayN8jvy8MEi3a7CQYhGph7etzsaCf8W7OnXrKrorJIhVLuCl2pi4YBQ==}
 
-  '@fluidframework/map@2.42.0':
-    resolution: {integrity: sha512-RCzZCORNoPbVSlQTp7x0CuKEGLt8PbDfZoOHMTEojRjG+3NuyKt9oyZtV6gp9p4tFE2hRFaMTPxHdTNVvVPAdw==}
+  '@fluidframework/odsp-doclib-utils@2.62.0':
+    resolution: {integrity: sha512-XIdVfSYdtzY5zOQJ/g1L2bZj8/hQfwH++hnf0Iot0oMA37PuSdELzsNPF8w1L9q2zXIW+YT0VbVfJSwjszJQJg==}
 
-  '@fluidframework/merge-tree@2.33.2':
-    resolution: {integrity: sha512-L3bzJoFtvWX9yOwcwEfesEJVjBymLTnksxyCF85kaO8EnKxbJY2kCQ4eL1Bkj0fYT8wWoLGRz4wpPYGzvc7uqw==}
+  '@fluidframework/odsp-driver-definitions@2.62.0':
+    resolution: {integrity: sha512-Lj68LcOTl+ma0K9giyVUKn3JRhV8q5JyZ7+0Z1ONpLJPNJLdJ4uNhq+FOKPTFPLVOpONnhA9M+deNlEIqPejkg==}
 
-  '@fluidframework/merge-tree@2.42.0':
-    resolution: {integrity: sha512-5Ta6R8Re7HIJCfwHNfrkP9uZmvmH3QRlctQTi6/Bn7lYaOSBd32Ue9uxsXwg5smbF18dXXCzJxr87+WYDoXLJg==}
-
-  '@fluidframework/odsp-doclib-utils@2.42.0':
-    resolution: {integrity: sha512-5BpTd7M46v4WHwjmCxj2zjoC5/JN7/sc7ouolXgoVmTE4h/VKASeXWPk47QvZrCX0uX5Djjx4qGPj68KCi1xqQ==}
-
-  '@fluidframework/odsp-driver-definitions@2.42.0':
-    resolution: {integrity: sha512-6MutzA3I/QQi9nF8l9W4nAvdZmzK43Mmzf5o1WMIfqWExmrR3WLhl41KpMsHAIaH9WUCWjM3U5nARgDIMPWTrA==}
-
-  '@fluidframework/odsp-driver@2.42.0':
-    resolution: {integrity: sha512-qjm7OklzM8TCjXFy76RxrXv2vWAxI9lKfdwHUnP3fkIKRDKURqbF3DPLfLhcov+DWKSV0JUl4TNtbA5Msjsmdw==}
-
-  '@fluidframework/protocol-base@5.0.0':
-    resolution: {integrity: sha512-q5qQt269nUYQERwX5lntfEXVv7jbxFmGAZC1z1I5hZmkvSC6PJGF6GzXAtP43/eq0+hCftxmIT0jus+kLL/K4w==}
+  '@fluidframework/odsp-driver@2.62.0':
+    resolution: {integrity: sha512-3TjXWz+kuTn+Jb8m774kDJYPInJLjL4cVRdAnZiWL45sWoRPqUK7RjRAhhbX8l6ZVh32zgl6cnkFk+wDtw/NvQ==}
 
   '@fluidframework/protocol-base@6.0.0':
     resolution: {integrity: sha512-sRdU9GGh+0nxhEsCkYhXNYxhmZd5DdTdgKnpfClq/R/MWlI9VCnfwMFg5ZiXBZ3NhNx+OP/ohgLq2XtPd2eTIg==}
 
+  '@fluidframework/protocol-base@7.0.0':
+    resolution: {integrity: sha512-LUSTKQBJVnemMLMQUuoszHvl46XBfflI8U9R8kW+12T2W/Vvt+ldML7203MvNg4E/sFScGfqqZS5OzYn0z1TIw==}
+
   '@fluidframework/protocol-definitions@3.2.0':
     resolution: {integrity: sha512-xgcyMN4uF6dAp2/XYFSHvGFITIV7JbVt3itA+T0c71/lZjq/HU/a/ClPIxfl9AEN0RbtuR/1n5LP4FXSV9j0hA==}
 
-  '@fluidframework/request-handler@2.33.2':
-    resolution: {integrity: sha512-Jv1AAXmlbOSu6cep9G1ARkG7zh5ftp2qDkWSchyl63kBIYsYslNqXhKaeEGKi7ZHPMgg4tip3iezTAAPD0R19g==}
+  '@fluidframework/request-handler@2.62.0':
+    resolution: {integrity: sha512-bWad9kBX+H0o/5uJ3Jzmi0E9vWcyFiQd3IieV1NzYTESZ2f4lqPYv1vid/xT9mpqE+/fI+q8X7BEegFAJAfYJQ==}
 
-  '@fluidframework/request-handler@2.42.0':
-    resolution: {integrity: sha512-EoqHL6hr1KbmjIrz4AB8ORGdSge7vxAuGNGE7JyDL24YB/ApLi3f31OgomRMWSi6msUuEGVqcNH3QwKxzxNQpQ==}
+  '@fluidframework/routerlicious-driver@2.62.0':
+    resolution: {integrity: sha512-WwyrquMmqNor9u7jfSA5CQzTTS13zw7kfIC9nTirwTx/QYo5e80HiKkTEHLG5vb7onHfjyJKqiBP2uidUUsG/A==}
 
-  '@fluidframework/routerlicious-driver@2.33.2':
-    resolution: {integrity: sha512-P4pmg9Wolp+HxMQLoI9zHozSowENIce6G8aaNS/P/vDHpOlkfLtT36FBmM4wkirWC3dS0WOtu9wleDgaYbDfAA==}
+  '@fluidframework/runtime-definitions@2.62.0':
+    resolution: {integrity: sha512-vBmSeAGOS8FGe/JXD67484Ruj4frZU6C7cgD7awmbWnCqDdYC7xO55H3mEg/ywZssIutm2UxPSIthYpk+zW0SQ==}
 
-  '@fluidframework/routerlicious-driver@2.42.0':
-    resolution: {integrity: sha512-wYoUuO5hyoKEK9GeyWHJVzlAjw4PyxZZ1zpI/skcR45UnkWO10GVx2nKSIQNPl5TjjCFn2vsNqSuJ2PAEWgoBw==}
-
-  '@fluidframework/runtime-definitions@2.33.2':
-    resolution: {integrity: sha512-hZFTTKg+p8CQ0pdzGteY4Ej/fMbt3ZQ9F+cp+p7QG1EWDoiQMq40pEQ6R0M0WQEoiMfTskq1vA+8I1MjwotKAg==}
-
-  '@fluidframework/runtime-definitions@2.42.0':
-    resolution: {integrity: sha512-1eCdf3mX0dPMu9Bxv2k9HNDCtpVLMbqEA2nVpaL7SRz+ogKkYv9GbWLWEyFZ9EsMOcNrZsIDCahM7TCm3JhmxA==}
-
-  '@fluidframework/runtime-utils@2.33.2':
-    resolution: {integrity: sha512-4k8yIMv6WQ0ZJ1Bq0Z12HBGWi7q0xfe7+AELG33N+6PFOAM9vZXw0QY5RxSTBi+DIUZJfR9CdFO6auP18nU0dg==}
-
-  '@fluidframework/runtime-utils@2.42.0':
-    resolution: {integrity: sha512-RUlltVnkmdBN7qIOGIv1oVMSKDDRkkGfAv2CY3lyqSV4eDmR8eBW3tsTpqnl3Tm6xczkrhur5J1dBYmzJP2yxQ==}
-
-  '@fluidframework/server-lambdas-driver@5.0.0':
-    resolution: {integrity: sha512-tnMxsxKr2zajQ64Ew7zcTKclK2Rkp7cqK4ghiuYkzhdbt7ZxIMVmkSW3B5/DXDSxVoi4VR6q1BA6cMnGJMcwsw==}
+  '@fluidframework/runtime-utils@2.62.0':
+    resolution: {integrity: sha512-9nlKN13a8U9k4T0FAg5JQvypa6W0lOo1rcojjrdh62Dn/HgpSA8ZoqOZPrdKXEiTdciP67oLuCzNmNqTW6nQkw==}
 
   '@fluidframework/server-lambdas-driver@6.0.0':
     resolution: {integrity: sha512-xAHV4S/x88osQ6QYWRM13VKEl7T/vWp9sojAjmRCOl2WmJDhNUvcoXMDqx0dki3AgP7zsqHrE3YZteCyBkvR0Q==}
 
-  '@fluidframework/server-lambdas@5.0.0':
-    resolution: {integrity: sha512-t0ouLtYi2y5DBYbp+WT4mIGXTSYK/1Yz+cb0prOtAUxYqsn+TAG/hr2DE8OyzHdL0RHZp/y2KX7X1jZhPxxGDg==}
+  '@fluidframework/server-lambdas-driver@7.0.0':
+    resolution: {integrity: sha512-HNXeXUWYIR+jjGMAB61gCWsryuwqysA2o7/bwvdZuM4avqfm75dJUheB6N04uG5GfRfvesMHU68452YHIf6FYQ==}
 
   '@fluidframework/server-lambdas@6.0.0':
     resolution: {integrity: sha512-mtHNZ+JNBkKKjzbdzyI3XNoiMBUMC9/uZO6JKH5bv+YVL1mIzi6bkp52hvby+Bjn8cKyssvlX6Bk2poWiT/aZw==}
 
-  '@fluidframework/server-local-server@5.0.0':
-    resolution: {integrity: sha512-v+IBLojcZm1azQhiSEPCt3A2/xByiqDQ7/0gdkFenGrnEvnJ/9r/vv6ON0vAWFqDXov1Nu6kwEGA1bXIZTeHQw==}
+  '@fluidframework/server-lambdas@7.0.0':
+    resolution: {integrity: sha512-D5yzSZWpCojgZR2dfczSHa8lix2V39l1P5mwVrfmrTZE8tL+a3POnXtxcRJPT7QeRImfrMMDBdIBXE5dwFxNjQ==}
 
   '@fluidframework/server-local-server@6.0.0':
     resolution: {integrity: sha512-lMCVqIRILvQDdC7fGeM1MZayX4HW0MMlbLQOrkk03CW/dqRTePMQSPF26nfEROrGEjbcSMEbynj2YBi8AHtYIg==}
 
-  '@fluidframework/server-memory-orderer@5.0.0':
-    resolution: {integrity: sha512-S5G2TwHXlewGkZ3jAtUKr/vpku0LPvhApktOVtAidIGHlKJP0kjLiom/KZihKZT5h2KqIhFBy56JgkXPFYkNeQ==}
+  '@fluidframework/server-local-server@7.0.0':
+    resolution: {integrity: sha512-ygCDPr3pE8HCakMtdYOlv8X6jpyzqval1hbf45v3egBI5LmolA+RDxKGA/nNKo525u13kGglPWvsuC/8tN82qA==}
 
   '@fluidframework/server-memory-orderer@6.0.0':
     resolution: {integrity: sha512-oUDdVcWT54xdxKPtIeb8h3bpP1icZfvAYcwBf4GeQx2WEjmykUQLbUYzVn8bAamEnw7QucR8IhrhHL8Do5XJ9w==}
 
-  '@fluidframework/server-services-client@5.0.0':
-    resolution: {integrity: sha512-Cijcy/WUL4U20XAVmN3tDMCYmjmwAmAl6drXBYzN6QvnwMN4PsNjwgsZdEHN+2D7wEs4o/Wb+g9DNv+Lu5EmLg==}
+  '@fluidframework/server-memory-orderer@7.0.0':
+    resolution: {integrity: sha512-HmimZuGDYabOma6Tdn5jHpk2IRNEtxbUdUuNkR3qqZxPaqewTj3qeCOXRTMMGyEEaUg5Gmw19LrOROeDRcG6pA==}
 
   '@fluidframework/server-services-client@6.0.0':
     resolution: {integrity: sha512-NdrHLgA8LDk7XXEMWAXMWnGYgWAMwZDfHNzn6oIvR9Zp/X/r3FEgi+8XOpDKVyUODJfAsyPLjoQ6SxdLED/pAA==}
 
-  '@fluidframework/server-services-core@5.0.0':
-    resolution: {integrity: sha512-ztrGdRStwlfBFVsm+kChu6VuI764O4TbEEE1RX4gXpLlOsUVZfgYfeUiysdk5Zh7svDKT9n5LdE6VdjLvwb7IA==}
+  '@fluidframework/server-services-client@7.0.0':
+    resolution: {integrity: sha512-gzEvH6wNpRuMsyZhY22JrOHbTFsPGSzjLIlAWmnT7UT0znYGCDaMC39WPbOLLm7O8JSvmUblGe2Vx8N1+gCOgQ==}
 
   '@fluidframework/server-services-core@6.0.0':
     resolution: {integrity: sha512-AIZ8QbT4BZOY21JvDZT9LT6vLdMiGsIXvD39C7EOuIfY4DwZSJ0Fmv083pvIJvBw3MQyUALqspCnrlzEfz2ibw==}
 
+  '@fluidframework/server-services-core@7.0.0':
+    resolution: {integrity: sha512-LdPERvJ/8nyXOxDPJ0VsWBHsGjwaCve7kdOcMTBk26UQhsHKtSl1D4ZuStoremzzQZBnA0FuksoZsA2yDizwAg==}
+
   '@fluidframework/server-services-shared@6.0.0':
     resolution: {integrity: sha512-Y5ihIvW4cyldaYaNnOQIYL2tsR0XEX7SDiNkE9PX66xzXNbKFiCeBC010pIoXLzQ+UxhIyNpXhzSJF2o1EErxg==}
-
-  '@fluidframework/server-services-telemetry@5.0.0':
-    resolution: {integrity: sha512-lWymor6/GVgZpjtBOEUzCmjNJoro/oK2MKoT0MFgg70bhTgWKAOLRAkJZgq8GLGPCHW7ntZ/D+ve763kPu27CQ==}
 
   '@fluidframework/server-services-telemetry@6.0.0':
     resolution: {integrity: sha512-A5DN7CSJmIWnq1Q2Svjj7r2K5IJRfgCocA/JsjWzIyMoSWTRnyKs22Liqr+F5qhQXXrcEbh9TaLSGAANDLCJ/A==}
 
+  '@fluidframework/server-services-telemetry@7.0.0':
+    resolution: {integrity: sha512-C3PNyfBWmWboAkSvExELdwyW8dQ9RBIUPhh1P016pf76NRIk2ZypLloVh7K2WA5fo6Tv+gRYhnT2gThXhNm5IA==}
+
   '@fluidframework/server-services-utils@6.0.0':
     resolution: {integrity: sha512-SPpre6V/umeg506PGjoQsUoVjYYxyHqnrOl6YMim9WyXhLlAp5EcbfRDjfU/meDAy8pYcQ1pfyAvG22PLLx8uQ==}
-
-  '@fluidframework/server-test-utils@5.0.0':
-    resolution: {integrity: sha512-FOZ1Faw6x8VALUZh/nY6zKCfpgbPK/ylpKf/uQ2oOV9sxGNQfo5NXyHlQP1b78wfx2OYyHY5njtvYl7i9tz/zg==}
 
   '@fluidframework/server-test-utils@6.0.0':
     resolution: {integrity: sha512-fbopMKb7t/Sp1YtEoIMFpD/cdy5nan/XCy54ouL27DavRCBLdgLBY9OH+5VBsLiEGCOT+vKCSq5/hqnaP8dpQQ==}
 
-  '@fluidframework/shared-object-base@2.33.2':
-    resolution: {integrity: sha512-KL9Mp9RXr5HtoKACephgtv/IbAKJQgYtPTM/t5Z1dLKUuEVz7TJzLpqFdOZ/NPelrg8LkSTtvjedK8QomUAScQ==}
+  '@fluidframework/server-test-utils@7.0.0':
+    resolution: {integrity: sha512-ACUoJDbL3sckzeDe/1DGUamYI9IIGyYyeP88MfEnunqgz9FoDrdn3Jae2Vl1SSBYLtck8IxG86rSOh0kbXcPHQ==}
 
-  '@fluidframework/shared-object-base@2.42.0':
-    resolution: {integrity: sha512-nd1+TvQSJpz9yNUh8CYVBBPtA/kX3r5++4VhxLm8yuNxgxumGOXbTeO23zw1U79Tbcnm0dEzY/rPMKTp7LjL4Q==}
+  '@fluidframework/shared-object-base@2.62.0':
+    resolution: {integrity: sha512-hNdB8UALJKDrKLNPVHnDjZRy8q72+SmtcQpFlWDfYOUM4TcoJAHVqfJq2vykDv1MqcjmJj/2SY8MVS68iFfgkg==}
 
-  '@fluidframework/synthesize@2.33.2':
-    resolution: {integrity: sha512-eDUpYFG8NfdEWHsz9CCmW0VcTmOseVhEkT4s275u8h6MWJ1HrihV+fMdcBKMwzBxoIQwVLMFLmqY0MMK5nSdMA==}
+  '@fluidframework/synthesize@2.62.0':
+    resolution: {integrity: sha512-Ug54zUKPISGB2m4tc+ynofqZSUbdu4tlx+yZ3K3ZdHNvvVnBlo1GwJQANvC/JTSN5RIXnzoe/NXGZznrWsNyrg==}
 
-  '@fluidframework/synthesize@2.42.0':
-    resolution: {integrity: sha512-+EzHjg3vbWJH7iiNLTeW85jWs4y3AlWgvkZooxH1h9fXgTCqejLfPDzBM+3P5gMlKMs/CXym79BzpJBfcNHhzA==}
+  '@fluidframework/telemetry-utils@2.62.0':
+    resolution: {integrity: sha512-VVlwLmRR/4Qf2f1tiSMQ//Qvbk6Cv4/PVFni82iTK6f6b/K2Fv/TYwonu0GcHfi9o/Y7VLcW200X2MyS1+4eUQ==}
 
-  '@fluidframework/telemetry-utils@2.33.2':
-    resolution: {integrity: sha512-vhUnSg5mBksmdwGQkkC6oIcoyiZsj039sWAKEzmMJWKBpj4t+r9ahomjS0/abTsDbBgmSNxIa3CVUZn3E3nUEw==}
+  '@fluidframework/test-utils@2.62.0':
+    resolution: {integrity: sha512-tkGvvN57CCnR7aEZr3FFFIUsY8YAPejhRYd7C7MM9h33kTFg7jBAtJRq2pWj+VTy+B3O8E/u7j66Lpm1zkNxOQ==}
 
-  '@fluidframework/telemetry-utils@2.42.0':
-    resolution: {integrity: sha512-uQnX3o3aXIIzjzvF1Ej5EIUUZ87Q/fIWzzXE+5fUybuxglfXOBB6Vo37Nps4Afe0R7wLkQwijJ5wop96UYTETw==}
+  '@fluidframework/tinylicious-driver@2.62.0':
+    resolution: {integrity: sha512-Spd/k+z9JPAMoyHWmKevDKQPi4xw1xrL2oqc2+vqS7J8x4HJj2rcqqEAi9+82dqFvMzNMXHPgpkLC1mf46suNw==}
 
-  '@fluidframework/test-utils@2.42.0':
-    resolution: {integrity: sha512-kfjy7X6269k0E58RfJgHQYW027l4vM7lmHhg4eZ0ZW432d5xF6p9pKLbwKjmIfKbJ8kwP4xPszBLys3tp9IuyQ==}
-
-  '@fluidframework/tinylicious-driver@2.33.2':
-    resolution: {integrity: sha512-vO9v6n3YPM6JGaw0XANVT0NFJggbEVLR7xWSMV01YAkEoyA/cyEdjaAfmyAVIoXb4JARAhw1dIctJh+XkhbZrg==}
-
-  '@fluidframework/tree@2.33.2':
-    resolution: {integrity: sha512-CeOGzpQ8EqJ/j3RfwjhgCLhXVokIkSHiOrCw+THnXT321/QL0n7LNIwHAumP2yQVhwRK+MIo8XxYeRSyicOjyw==}
-
-  '@fluidframework/tree@2.42.0':
-    resolution: {integrity: sha512-A4scYdxnL9pOlaGTtffO77T3pBaVLLmnKOUtUcRy7OSoZinIPJDQq0RaUDhT3c6VSnVZq2E+ZRYGLd9okwdCnA==}
+  '@fluidframework/tree@2.62.0':
+    resolution: {integrity: sha512-dgOJV6Kpg+qpjqOGbCOMC9iVs+MFYdyPDv5jG5eVJGHBu3GmB/W0xMxp0rg6I2DCnQxoGSMaWIWqQtQsrUivrg==}
 
   '@fontsource-variable/fira-code@5.2.7':
     resolution: {integrity: sha512-J2bxN7fz5rd8WpQYyau4o19WqTzxoTqaNj9jhsv4p21GSu1Rf34tbqsxqjyDCR+wDMHM3SajyFqtq+5uvRUQ7w==}
@@ -2437,6 +2352,9 @@ packages:
   '@ioredis/commands@1.2.0':
     resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
 
+  '@ioredis/commands@1.4.0':
+    resolution: {integrity: sha512-aFT2yemJJo+TZCmieA7qnYGQooOS7QfNmYrzGtsYd3g9j5iDP8AimYYAesf79ohjbLG12XxC4nG5DyEnC88AsQ==}
+
   '@isaacs/balanced-match@4.0.1':
     resolution: {integrity: sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ==}
     engines: {node: 20 || >=22}
@@ -2813,8 +2731,12 @@ packages:
     resolution: {integrity: sha512-cwvq1+tQnSHNQEQrop82W7AZIFXC5ENUvicXWhBSpVF1KDIUez/ptIth4M4zha/0+DlSPsYcQgzaN6tSWtUoEA==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-command-snapshot@5.3.6':
-    resolution: {integrity: sha512-0uu1KoB5IvS79l7Ao92vUmVHh9eWqP5uWv4oD7aeNFmUnCQrTB8nhdclP2E6MqMoatB6C0Xv+TXWC/ISLqBu3A==}
+  '@oclif/plugin-autocomplete@3.2.36':
+    resolution: {integrity: sha512-q2jNU2ze6YSSKxjj/ZI+JZXBVXS4l45eR1waUB8z8P4H9C5I+TxXVwn5T3g8O0YWvfkDHVODAUEU6qCOQYDTXQ==}
+    engines: {node: '>=18.0.0'}
+
+  '@oclif/plugin-command-snapshot@5.3.7':
+    resolution: {integrity: sha512-tkM6ixt0pga2cgBKcbotLfH/Owvr/4s5dRSx7zMfpZ3Zj6EIQ1odFN1KxEIlASrFGe8mYj8jjF3sZjJjCTSwLg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -2834,8 +2756,8 @@ packages:
     resolution: {integrity: sha512-HNhmmgxH0xoFsYKubtWWhgSasbDEyoT+o/q5QDljiytNvqWP3wWiP6cqqWvGpKG2El7+g17crdWpv4jzrf3Lyg==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-search@1.2.32':
-    resolution: {integrity: sha512-vavEWV8/MLe1pFIhg3ug8n8uRwz6kYclDGweTQs/RYjtm0FXBNXtuzVRfJcKkCe3ursm6KcPWhOBI5kkZbzMtg==}
+  '@oclif/plugin-search@1.2.33':
+    resolution: {integrity: sha512-IVTlrRKiB4bmolAHI/zGu/08ID0iwh6Nw4eFhmB3vKcasopFH8O6+AVL6ci0b1Z/dBXlhVO4xeat2D6FghUOoQ==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-version@2.2.33':
@@ -2846,8 +2768,12 @@ packages:
     resolution: {integrity: sha512-jZESAAHqJuGcvnyLX0/2WAVDu/WAk1iMth5/o8oviDPzS3a4Ajsd5slxwFb/tg4hbswY9aFoob9wYP4tnP6d8w==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-which@3.2.40':
-    resolution: {integrity: sha512-0ULCGfN9iH4yT4TmK1Cf+TB8Lm2CwEBw1DhJZxkIJJPmSZvlqpHU1fClMQ/eEjnhfSU0kpKA8JFPHJeaqqjy/g==}
+  '@oclif/plugin-warn-if-update-available@3.1.49':
+    resolution: {integrity: sha512-QIA+Jgb6AiJTeRmblm4YmcVH8cqTjTDcTt3GhRnpi+CeEPhWPdnuN3xrqbmWXvG9e0EnT2OegRNZRg3CSwt2vA==}
+    engines: {node: '>=18.0.0'}
+
+  '@oclif/plugin-which@3.2.41':
+    resolution: {integrity: sha512-4324zD2eWhZaNg/tWjjJXLttpQTwfp/eplbO72zpGIdhYY4YDE5rxhGg/RYz0LF/d6REkNruvljHQJAtiAlfTA==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/table@0.4.14':
@@ -3378,8 +3304,8 @@ packages:
     resolution: {integrity: sha512-moXtHH33AobOhTZF8xcX1MpOFqdvfCk7v6+teJL8zymBiDXwEsQH6XG9HGx2VIxnJZNm4cNSzflTLDnQLmIdmw==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  '@sinclair/typebox@0.34.33':
-    resolution: {integrity: sha512-5HAV9exOMcXRUxo+9iYB5n09XxzCXnfy4VTNW4xnDv+FgjzAGY989C28BIdljKqmF+ZltUwujE3aossvcVtq6g==}
+  '@sinclair/typebox@0.34.41':
+    resolution: {integrity: sha512-6gS8pZzSXdyRHTIqoqSVknxolr1kzfy4/CeDnrzsVz8TTIWUbOBr6gnzOmTYJ3eXQNh4IYHIGi5aIL7sOZ2G/g==}
 
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
@@ -3423,8 +3349,8 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^2.0.0
 
-  '@sveltejs/kit@2.46.4':
-    resolution: {integrity: sha512-J1fd80WokLzIm6EAV7z7C2+/C02qVAX645LZomARARTRJkbbJSY1Jln3wtBZYibUB8c9/5Z6xqLAV39VdbtWCQ==}
+  '@sveltejs/kit@2.46.5':
+    resolution: {integrity: sha512-7TSvMrCdmig5TMyYDW876C5FljhA0wlGixtvASCiqUqtLfmyEEpaysXjC7GhR5mWcGRrCGF+L2Bl1eEaW1wTCA==}
     engines: {node: '>=18.13'}
     hasBin: true
     peerDependencies:
@@ -3712,6 +3638,9 @@ packages:
 
   '@types/lodash@4.17.16':
     resolution: {integrity: sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==}
+
+  '@types/lodash@4.17.20':
+    resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
 
   '@types/mdast@3.0.15':
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
@@ -4857,8 +4786,8 @@ packages:
   chardet@2.1.0:
     resolution: {integrity: sha512-bNFETTG/pM5ryzQ9Ad0lJOTa6HWD/YsScAR3EnCPZRPlQh77JocYktSHOUHelyhm8IARL+o4c4F1bP5KVOjiRA==}
 
-  chart.js@4.5.0:
-    resolution: {integrity: sha512-aYeC/jDgSEx8SHWZvANYMioYMZ2KX02W6f6uVfyteuCGcadDLcYVHdfdygsTQkQ4TKn5lghoojAsPj5pu0SnvQ==}
+  chart.js@4.5.1:
+    resolution: {integrity: sha512-GIjfiT9dbmHRiYi6Nl2yFCq7kkwdkp1W/lp2J99rX0yo9tgJGn3lKQATztIjb5tVtevcBtIdICNWqlq5+E8/Pw==}
     engines: {pnpm: '>=8'}
 
   charwise@3.0.1:
@@ -6986,6 +6915,13 @@ packages:
   intl-messageformat@10.7.18:
     resolution: {integrity: sha512-m3Ofv/X/tV8Y3tHXLohcuVuhWKo7BBq62cqY15etqmLxg2DZ34AGGgQDeR+SCta2+zICb1NX83af0GJmbQ1++g==}
 
+  ioredis-mock@8.13.0:
+    resolution: {integrity: sha512-oO6s5xeL3A+EmcmyoEAMxJnwsnXaBfo5IYD2cctsqxLbX9d6dZm67k5nDXAUWMtkIVJJeEbDa4LuFpDowJbvaw==}
+    engines: {node: '>=12.22'}
+    peerDependencies:
+      '@types/ioredis-mock': ^8
+      ioredis: ^5
+
   ioredis-mock@8.9.0:
     resolution: {integrity: sha512-yIglcCkI1lvhwJVoMsR51fotZVsPsSk07ecTCgRTRlicG0Vq3lke6aAaHklyjmRNRsdYAgswqC2A0bPtQK4LSw==}
     engines: {node: '>=12.22'}
@@ -6995,6 +6931,10 @@ packages:
 
   ioredis@5.6.1:
     resolution: {integrity: sha512-UxC0Yv1Y4WRJiGQxQkP0hfdL0/5/6YvdfOOClRgJ0qppSarkhneSa6UvkMkms0AkdGimSH3Ikqm+6mkMmX7vGA==}
+    engines: {node: '>=12.22.0'}
+
+  ioredis@5.8.1:
+    resolution: {integrity: sha512-Qho8TgIamqEPdgiMadJwzRMW3TudIg6vpg4YONokGDudy4eqRIJtDbVX72pfLBcWxvbn3qm/40TyGUObdW4tLQ==}
     engines: {node: '>=12.22.0'}
 
   ip-address@10.0.1:
@@ -8943,6 +8883,11 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
+  oclif@4.22.32:
+    resolution: {integrity: sha512-zeM5Ezgh2Eo+dw5gPByyPmpoHBH6i0Lv0I8QrWwyphAHsR1PtSqIOwm24I8jzE0iiZuqKOlhMivLruMrLWfhXg==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+
   ofetch@1.4.1:
     resolution: {integrity: sha512-QZj2DfGplQAr2oj9KzceK9Hwz6Whxazmn85yYeVuS3u9XTMOGMRx0kO95MQ+vLsj/S/NwBDMMLU5hpxvI6Tklw==}
 
@@ -10157,6 +10102,11 @@ packages:
     resolution: {integrity: sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==}
     hasBin: true
 
+  sha.js@2.4.12:
+    resolution: {integrity: sha512-8LzC5+bvI45BjpfXU8V5fdU2mfeKiQe1D1gIMn7XUlF3OTUrpdJpPPH4EMAnF0DsHHdSZqCdSss5qCmJKuiO3w==}
+    engines: {node: '>= 0.10'}
+    hasBin: true
+
   sharp@0.34.4:
     resolution: {integrity: sha512-FUH39xp3SBPnxWvd5iib1X8XY7J0K0X7d93sie9CJg2PO8/7gmg89Nve6OjItK53/MlAushNNxteBYfM6DEuoA==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
@@ -10863,6 +10813,10 @@ packages:
     resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
     engines: {node: '>=14.14'}
 
+  to-buffer@1.2.2:
+    resolution: {integrity: sha512-db0E3UJjcFhpDhAF4tLo03oli3pwl3dbnzXOUIlRKrp+ldk/VUxzpWYZENsw2SZiuBjHAk7DfB0VU7NKdpb6sw==}
+    engines: {node: '>= 0.4'}
+
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
@@ -11493,10 +11447,6 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
 
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    hasBin: true
-
   uvu@0.5.6:
     resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}
     engines: {node: '>=8'}
@@ -12120,6 +12070,10 @@ packages:
     resolution: {integrity: sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==}
     engines: {node: '>=12.20'}
 
+  yocto-queue@1.2.1:
+    resolution: {integrity: sha512-AyeEbWOu/TAXdxlV9wmGcR0+yh2j3vYPGOECcIj2S7MkrLyC7ne+oye2BKTItt0ii2PHk4cDy+95+LshzbXnGg==}
+    engines: {node: '>=12.20'}
+
   yocto-spinner@0.2.3:
     resolution: {integrity: sha512-sqBChb33loEnkoXte1bLg45bEBsOP9N1kzQh5JZNKj/0rik4zAPTNSAVPj3uQAdc6slYJ0Ksc403G2XgxsJQFQ==}
     engines: {node: '>=18.19'}
@@ -12300,12 +12254,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.2.4(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
+  '@astrojs/mdx@4.2.4(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.1
       '@mdx-js/mdx': 3.1.0(acorn@8.15.0)
       acorn: 8.15.0
-      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -12319,15 +12273,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/netlify@6.5.12(@types/node@24.7.2)(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)':
+  '@astrojs/netlify@6.5.12(@types/node@24.7.2)(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)':
     dependencies:
       '@astrojs/internal-helpers': 0.7.4
       '@astrojs/underscore-redirects': 1.0.0
       '@netlify/blobs': 10.0.11
       '@netlify/functions': 4.2.7(encoding@0.1.13)(rollup@4.52.4)
-      '@netlify/vite-plugin': 2.6.1(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.52.4)(vite@6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+      '@netlify/vite-plugin': 2.6.1(encoding@0.1.13)(ioredis@5.8.1)(rollup@4.52.4)(vite@6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       '@vercel/nft': 0.30.2(encoding@0.1.13)(rollup@4.52.4)
-      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       esbuild: 0.25.10
       tinyglobby: 0.2.15
       vite: 6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
@@ -12381,17 +12335,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.25.76
 
-  '@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
+  '@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.8
-      '@astrojs/mdx': 4.2.4(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@astrojs/mdx': 4.2.4(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@astrojs/sitemap': 3.3.0
       '@pagefind/default-ui': 1.3.0
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
-      astro-expressive-code: 0.41.1(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro-expressive-code: 0.41.1(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -12938,25 +12892,15 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@fluid-internal/client-utils@2.33.2':
+  '@fluid-internal/client-utils@2.62.0':
     dependencies:
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
       '@types/events_pkg': '@types/events@3.0.3'
       base64-js: 1.5.1
       buffer: 6.0.3
       events_pkg: events@3.3.0
-      sha.js: 2.4.11
-
-  '@fluid-internal/client-utils@2.42.0':
-    dependencies:
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@types/events_pkg': '@types/events@3.0.3'
-      base64-js: 1.5.1
-      buffer: 6.0.3
-      events_pkg: events@3.3.0
-      sha.js: 2.4.11
+      sha.js: 2.4.12
 
   '@fluid-internal/eslint-plugin-fluid@0.1.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
@@ -12968,10 +12912,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@fluid-internal/test-driver-definitions@2.42.0':
+  '@fluid-internal/test-driver-definitions@2.62.0':
     dependencies:
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
 
   '@fluid-tools/build-cli@0.58.3(@types/node@20.19.21)(encoding@0.1.13)(typescript@5.9.3)':
     dependencies:
@@ -13061,7 +13005,7 @@ snapshots:
       fs-extra: 11.3.2
       globby: 11.1.0
       micromatch: 4.0.8
-      oclif: 4.22.29(@types/node@20.19.21)
+      oclif: 4.22.32(@types/node@20.19.21)
       picocolors: 1.1.1
       read-pkg-up: 7.0.1
       semver: 7.7.3
@@ -13076,26 +13020,10 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluid-tools/version-tools@0.56.0(@types/node@20.19.21)':
-    dependencies:
-      '@oclif/core': 4.5.5
-      '@oclif/plugin-autocomplete': 3.2.35
-      '@oclif/plugin-commands': 4.1.34
-      '@oclif/plugin-help': 6.2.33
-      '@oclif/plugin-not-found': 3.2.68(@types/node@20.19.21)
-      semver: 7.7.3
-      table: 6.9.0
-    transitivePeerDependencies:
-      - '@types/node'
-      - bufferutil
-      - react-devtools-core
-      - supports-color
-      - utf-8-validate
-
   '@fluid-tools/version-tools@0.58.3(@types/node@20.19.21)':
     dependencies:
       '@oclif/core': 4.5.5
-      '@oclif/plugin-autocomplete': 3.2.35
+      '@oclif/plugin-autocomplete': 3.2.36
       '@oclif/plugin-commands': 4.1.34
       '@oclif/plugin-help': 6.2.33
       '@oclif/plugin-not-found': 3.2.68(@types/node@20.19.21)
@@ -13108,87 +13036,29 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/aqueduct@2.33.2':
+  '@fluidframework/aqueduct@2.62.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/container-runtime': 2.33.2
-      '@fluidframework/container-runtime-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/datastore': 2.33.2
-      '@fluidframework/datastore-definitions': 2.33.2
-      '@fluidframework/map': 2.33.2
-      '@fluidframework/request-handler': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-      '@fluidframework/shared-object-base': 2.33.2
-      '@fluidframework/synthesize': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
-      '@fluidframework/tree': 2.33.2
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/aqueduct@2.42.0':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/container-runtime': 2.42.0(debug@4.4.3)
-      '@fluidframework/container-runtime-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0(debug@4.4.3)
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/map': 2.42.0(debug@4.4.3)
-      '@fluidframework/request-handler': 2.42.0(debug@4.4.3)
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
-      '@fluidframework/synthesize': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      '@fluidframework/tree': 2.42.0
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/container-runtime': 2.62.0(debug@4.4.3)
+      '@fluidframework/container-runtime-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore': 2.62.0(debug@4.4.3)
+      '@fluidframework/datastore-definitions': 2.62.0
+      '@fluidframework/map': 2.62.0(debug@4.4.3)
+      '@fluidframework/request-handler': 2.62.0(debug@4.4.3)
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.62.0(debug@4.4.3)
+      '@fluidframework/synthesize': 2.62.0
+      '@fluidframework/telemetry-utils': 2.62.0
+      '@fluidframework/tree': 2.62.0
     transitivePeerDependencies:
       - debug
       - supports-color
 
   '@fluidframework/build-common@2.0.3': {}
-
-  '@fluidframework/build-tools@0.56.0(@types/node@20.19.21)':
-    dependencies:
-      '@fluid-tools/version-tools': 0.56.0(@types/node@20.19.21)
-      '@manypkg/get-packages': 2.2.2
-      async: 3.2.6
-      cosmiconfig: 8.3.6(typescript@5.4.5)
-      date-fns: 2.30.0
-      debug: 4.4.3(supports-color@8.1.1)
-      detect-indent: 6.1.0
-      find-up: 7.0.0
-      fs-extra: 11.3.2
-      glob: 7.2.3
-      globby: 11.1.0
-      ignore: 5.3.2
-      json5: 2.2.3
-      lodash: 4.17.21
-      lodash.isequal: 4.5.0
-      multimatch: 5.0.0
-      picocolors: 1.1.1
-      picomatch: 2.3.1
-      picospinner: 2.1.0
-      rimraf: 4.4.1
-      semver: 7.7.3
-      sort-package-json: 1.57.0
-      ts-deepmerge: 7.0.3
-      ts-morph: 22.0.0
-      type-fest: 2.19.0
-      typescript: 5.4.5
-      yaml: 2.8.1
-    transitivePeerDependencies:
-      - '@types/node'
-      - bufferutil
-      - react-devtools-core
-      - supports-color
-      - utf-8-validate
 
   '@fluidframework/build-tools@0.58.3(@types/node@20.19.21)':
     dependencies:
@@ -13250,237 +13120,120 @@ snapshots:
       lodash: 4.17.21
       sha.js: 2.4.11
 
-  '@fluidframework/container-definitions@2.33.2':
+  '@fluidframework/container-definitions@2.62.0':
     dependencies:
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
 
-  '@fluidframework/container-definitions@2.42.0':
+  '@fluidframework/container-loader@2.62.0':
     dependencies:
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-
-  '@fluidframework/container-loader@2.33.2':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.33.2
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
       '@types/events_pkg': '@types/events@3.0.3'
       '@ungap/structured-clone': 1.3.0
       debug: 4.4.3(supports-color@8.1.1)
       double-ended-queue: 2.1.0-0
       events_pkg: events@3.3.0
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/container-loader@2.42.0':
+  '@fluidframework/container-runtime-definitions@2.62.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
-      '@types/events_pkg': '@types/events@3.0.3'
-      '@ungap/structured-clone': 1.3.0
-      debug: 4.4.3(supports-color@8.1.1)
-      double-ended-queue: 2.1.0-0
-      events_pkg: events@3.3.0
-      uuid: 9.0.1
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/runtime-definitions': 2.62.0
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/container-runtime-definitions@2.33.2':
+  '@fluidframework/container-runtime@2.62.0(debug@4.4.3)':
     dependencies:
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@fluidframework/container-runtime-definitions@2.42.0':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@fluidframework/container-runtime@2.33.2':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/container-runtime-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/datastore': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/id-compressor': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/container-runtime-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore': 2.62.0(debug@4.4.3)
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/id-compressor': 2.62.0
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
       '@tylerbu/sorted-btree-es6': 1.8.0
       double-ended-queue: 2.1.0-0
       lz4js: 0.2.0
       semver-ts: 1.0.3
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/container-runtime@2.42.0(debug@4.4.3)':
+  '@fluidframework/core-interfaces@2.62.0': {}
+
+  '@fluidframework/core-utils@2.62.0': {}
+
+  '@fluidframework/datastore-definitions@2.62.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/container-runtime-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0(debug@4.4.3)
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
-      '@tylerbu/sorted-btree-es6': 1.8.0
-      double-ended-queue: 2.1.0-0
-      lz4js: 0.2.0
-      semver-ts: 1.0.3
-      uuid: 9.0.1
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/id-compressor': 2.62.0
+      '@fluidframework/runtime-definitions': 2.62.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@fluidframework/datastore@2.62.0(debug@4.4.3)':
+    dependencies:
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore-definitions': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/id-compressor': 2.62.0
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
+      uuid: 11.1.0
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/core-interfaces@2.33.2': {}
-
-  '@fluidframework/core-interfaces@2.42.0': {}
-
-  '@fluidframework/core-utils@2.33.2': {}
-
-  '@fluidframework/core-utils@2.42.0': {}
-
-  '@fluidframework/datastore-definitions@2.33.2':
+  '@fluidframework/driver-base@2.62.0(debug@4.4.3)':
     dependencies:
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/id-compressor': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@fluidframework/datastore-definitions@2.42.0':
-    dependencies:
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@fluidframework/datastore@2.33.2':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/datastore-definitions': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/id-compressor': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
-      uuid: 9.0.1
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/datastore@2.42.0(debug@4.4.3)':
+  '@fluidframework/driver-definitions@2.62.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
+      '@fluidframework/core-interfaces': 2.62.0
 
-  '@fluidframework/driver-base@2.33.2':
+  '@fluidframework/driver-utils@2.62.0(debug@4.4.3)':
     dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.33.2
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/driver-base@2.42.0(debug@4.4.3)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/driver-definitions@2.33.2':
-    dependencies:
-      '@fluidframework/core-interfaces': 2.33.2
-
-  '@fluidframework/driver-definitions@2.42.0':
-    dependencies:
-      '@fluidframework/core-interfaces': 2.42.0
-
-  '@fluidframework/driver-utils@2.33.2(debug@4.4.3)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/telemetry-utils': 2.62.0
       axios: 1.12.2(debug@4.4.3)
       lz4js: 0.2.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/driver-utils@2.42.0(debug@4.4.3)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      axios: 1.12.2(debug@4.4.3)
-      lz4js: 0.2.0
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -13514,69 +13267,60 @@ snapshots:
       - supports-color
       - typescript
 
-  '@fluidframework/fluid-static@2.33.2':
+  '@fluidframework/fluid-static@2.62.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/aqueduct': 2.33.2
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/container-loader': 2.33.2
-      '@fluidframework/container-runtime': 2.33.2
-      '@fluidframework/container-runtime-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/datastore-definitions': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/request-handler': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-      '@fluidframework/shared-object-base': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/aqueduct': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/container-loader': 2.62.0
+      '@fluidframework/container-runtime': 2.62.0(debug@4.4.3)
+      '@fluidframework/container-runtime-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore-definitions': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/request-handler': 2.62.0(debug@4.4.3)
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
+      '@fluidframework/tree': 2.62.0
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/gitresources@5.0.0': {}
-
   '@fluidframework/gitresources@6.0.0': {}
 
-  '@fluidframework/id-compressor@2.33.2':
+  '@fluidframework/gitresources@7.0.0': {}
+
+  '@fluidframework/id-compressor@2.62.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/telemetry-utils': 2.62.0
       '@tylerbu/sorted-btree-es6': 1.8.0
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/id-compressor@2.42.0':
+  '@fluidframework/local-driver@2.62.0(debug@4.4.3)(encoding@0.1.13)':
     dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      '@tylerbu/sorted-btree-es6': 1.8.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@fluidframework/local-driver@2.42.0(debug@4.4.3)(encoding@0.1.13)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-base': 2.42.0(debug@4.4.3)
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/protocol-base': 5.0.0
-      '@fluidframework/routerlicious-driver': 2.42.0(debug@4.4.3)(encoding@0.1.13)
-      '@fluidframework/server-local-server': 5.0.0
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/server-services-core': 5.0.0
-      '@fluidframework/server-test-utils': 5.0.0
-      '@fluidframework/telemetry-utils': 2.42.0
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/driver-base': 2.62.0(debug@4.4.3)
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/protocol-base': 7.0.0
+      '@fluidframework/routerlicious-driver': 2.62.0(debug@4.4.3)(encoding@0.1.13)
+      '@fluidframework/server-local-server': 7.0.0
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/server-services-core': 7.0.0
+      '@fluidframework/server-test-utils': 7.0.0
+      '@fluidframework/telemetry-utils': 2.62.0
       jsrsasign: 11.1.0
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -13584,119 +13328,61 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/map@2.33.2':
+  '@fluidframework/map@2.62.0(debug@4.4.3)':
     dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/datastore-definitions': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/merge-tree': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-      '@fluidframework/shared-object-base': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore-definitions': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
       path-browserify: 1.0.1
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/map@2.42.0(debug@4.4.3)':
+  '@fluidframework/odsp-doclib-utils@2.62.0(debug@4.4.3)(encoding@0.1.13)':
     dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/merge-tree': 2.42.0(debug@4.4.3)
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
-      path-browserify: 1.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/merge-tree@2.33.2':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/datastore-definitions': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-      '@fluidframework/shared-object-base': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/merge-tree@2.42.0(debug@4.4.3)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/odsp-doclib-utils@2.42.0(debug@4.4.3)(encoding@0.1.13)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/odsp-driver-definitions': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/odsp-driver-definitions': 2.62.0
+      '@fluidframework/telemetry-utils': 2.62.0
       isomorphic-fetch: 3.0.0(encoding@0.1.13)
     transitivePeerDependencies:
       - debug
       - encoding
       - supports-color
 
-  '@fluidframework/odsp-driver-definitions@2.42.0':
+  '@fluidframework/odsp-driver-definitions@2.62.0':
     dependencies:
-      '@fluidframework/driver-definitions': 2.42.0
+      '@fluidframework/driver-definitions': 2.62.0
 
-  '@fluidframework/odsp-driver@2.42.0(debug@4.4.3)(encoding@0.1.13)':
+  '@fluidframework/odsp-driver@2.62.0(debug@4.4.3)(encoding@0.1.13)':
     dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-base': 2.42.0(debug@4.4.3)
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/odsp-doclib-utils': 2.42.0(debug@4.4.3)(encoding@0.1.13)
-      '@fluidframework/odsp-driver-definitions': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/driver-base': 2.62.0(debug@4.4.3)
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/odsp-doclib-utils': 2.62.0(debug@4.4.3)(encoding@0.1.13)
+      '@fluidframework/odsp-driver-definitions': 2.62.0
+      '@fluidframework/telemetry-utils': 2.62.0
       socket.io-client: 4.7.5
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - bufferutil
       - debug
       - encoding
       - supports-color
       - utf-8-validate
-
-  '@fluidframework/protocol-base@5.0.0':
-    dependencies:
-      '@fluidframework/common-utils': 3.1.0
-      '@fluidframework/gitresources': 5.0.0
-      '@fluidframework/protocol-definitions': 3.2.0
-      events_pkg: events@3.3.0
 
   '@fluidframework/protocol-base@6.0.0':
     dependencies:
@@ -13705,137 +13391,72 @@ snapshots:
       '@fluidframework/protocol-definitions': 3.2.0
       events_pkg: events@3.3.0
 
-  '@fluidframework/protocol-definitions@3.2.0': {}
-
-  '@fluidframework/request-handler@2.33.2':
-    dependencies:
-      '@fluidframework/container-runtime-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/request-handler@2.42.0(debug@4.4.3)':
-    dependencies:
-      '@fluidframework/container-runtime-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/routerlicious-driver@2.33.2(encoding@0.1.13)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/driver-base': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/telemetry-utils': 2.33.2
-      cross-fetch: 3.2.0(encoding@0.1.13)
-      json-stringify-safe: 5.0.1
-      socket.io-client: 4.7.5
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - encoding
-      - supports-color
-      - utf-8-validate
-
-  '@fluidframework/routerlicious-driver@2.42.0(debug@4.4.3)(encoding@0.1.13)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-base': 2.42.0(debug@4.4.3)
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/telemetry-utils': 2.42.0
-      cross-fetch: 3.2.0(encoding@0.1.13)
-      json-stringify-safe: 5.0.1
-      socket.io-client: 4.7.5
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - encoding
-      - supports-color
-      - utf-8-validate
-
-  '@fluidframework/runtime-definitions@2.33.2':
-    dependencies:
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/id-compressor': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
-    transitivePeerDependencies:
-      - supports-color
-
-  '@fluidframework/runtime-definitions@2.42.0':
-    dependencies:
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@fluidframework/runtime-utils@2.33.2':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/container-runtime-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/datastore-definitions': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/runtime-utils@2.42.0(debug@4.4.3)':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/container-runtime-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/telemetry-utils': 2.42.0
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/server-lambdas-driver@5.0.0':
+  '@fluidframework/protocol-base@7.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/server-services-core': 5.0.0
-      '@fluidframework/server-services-telemetry': 5.0.0
-      assert: 2.1.0
-      async: 3.2.6
-      events: 3.3.0
-      lodash: 4.17.21
-      nconf: 0.12.1
-      serialize-error: 8.1.0
+      '@fluidframework/gitresources': 7.0.0
+      '@fluidframework/protocol-definitions': 3.2.0
+      events_pkg: events@3.3.0
+
+  '@fluidframework/protocol-definitions@3.2.0': {}
+
+  '@fluidframework/request-handler@2.62.0(debug@4.4.3)':
+    dependencies:
+      '@fluidframework/container-runtime-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
     transitivePeerDependencies:
+      - debug
+      - supports-color
+
+  '@fluidframework/routerlicious-driver@2.62.0(debug@4.4.3)(encoding@0.1.13)':
+    dependencies:
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/driver-base': 2.62.0(debug@4.4.3)
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/telemetry-utils': 2.62.0
+      cross-fetch: 3.2.0(encoding@0.1.13)
+      json-stringify-safe: 5.0.1
+      socket.io-client: 4.7.5
+      uuid: 11.1.0
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - encoding
+      - supports-color
+      - utf-8-validate
+
+  '@fluidframework/runtime-definitions@2.62.0':
+    dependencies:
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/id-compressor': 2.62.0
+      '@fluidframework/telemetry-utils': 2.62.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@fluidframework/runtime-utils@2.62.0(debug@4.4.3)':
+    dependencies:
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/container-runtime-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore-definitions': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/telemetry-utils': 2.62.0
+      semver-ts: 1.0.3
+    transitivePeerDependencies:
+      - debug
       - supports-color
 
   '@fluidframework/server-lambdas-driver@6.0.0':
@@ -13853,31 +13474,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/server-lambdas@5.0.0(debug@4.4.3)':
+  '@fluidframework/server-lambdas-driver@7.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
-      '@fluidframework/gitresources': 5.0.0
-      '@fluidframework/protocol-base': 5.0.0
-      '@fluidframework/protocol-definitions': 3.2.0
-      '@fluidframework/server-lambdas-driver': 5.0.0
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/server-services-core': 5.0.0
-      '@fluidframework/server-services-telemetry': 5.0.0
-      '@types/semver': 7.7.1
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/server-services-core': 7.0.0
+      '@fluidframework/server-services-telemetry': 7.0.0
       assert: 2.1.0
       async: 3.2.6
-      axios: 1.12.2(debug@4.4.3)
-      buffer: 6.0.3
-      double-ended-queue: 2.1.0-0
       events: 3.3.0
-      json-stringify-safe: 5.0.1
       lodash: 4.17.21
       nconf: 0.12.1
-      semver: 7.7.3
-      sha.js: 2.4.11
-      uuid: 9.0.1
+      serialize-error: 8.1.0
     transitivePeerDependencies:
-      - debug
       - supports-color
 
   '@fluidframework/server-lambdas@6.0.0(debug@4.4.3)':
@@ -13909,24 +13518,34 @@ snapshots:
       - debug
       - supports-color
 
-  '@fluidframework/server-local-server@5.0.0':
+  '@fluidframework/server-lambdas@7.0.0(debug@4.4.3)':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
+      '@fluidframework/gitresources': 7.0.0
+      '@fluidframework/protocol-base': 7.0.0
       '@fluidframework/protocol-definitions': 3.2.0
-      '@fluidframework/server-lambdas': 5.0.0(debug@4.4.3)
-      '@fluidframework/server-memory-orderer': 5.0.0
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/server-services-core': 5.0.0
-      '@fluidframework/server-services-telemetry': 5.0.0
-      '@fluidframework/server-test-utils': 5.0.0
-      debug: 4.4.3(supports-color@8.1.1)
-      events_pkg: events@3.3.0
-      jsrsasign: 11.1.0
-      uuid: 9.0.1
+      '@fluidframework/server-lambdas-driver': 7.0.0
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/server-services-core': 7.0.0
+      '@fluidframework/server-services-telemetry': 7.0.0
+      '@types/semver': 7.7.1
+      assert: 2.1.0
+      async: 3.2.6
+      axios: 1.12.2(debug@4.4.3)
+      buffer: 6.0.3
+      double-ended-queue: 2.1.0-0
+      events: 3.3.0
+      json-stringify-safe: 5.0.1
+      lodash: 4.17.21
+      nconf: 0.12.1
+      opossum: 8.5.0
+      semver: 7.7.3
+      serialize-error: 8.1.0
+      sha.js: 2.4.12
+      uuid: 11.1.0
     transitivePeerDependencies:
-      - bufferutil
+      - debug
       - supports-color
-      - utf-8-validate
 
   '@fluidframework/server-local-server@6.0.0':
     dependencies:
@@ -13947,28 +13566,20 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/server-memory-orderer@5.0.0':
+  '@fluidframework/server-local-server@7.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
-      '@fluidframework/protocol-base': 5.0.0
       '@fluidframework/protocol-definitions': 3.2.0
-      '@fluidframework/server-lambdas': 5.0.0(debug@4.4.3)
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/server-services-core': 5.0.0
-      '@fluidframework/server-services-telemetry': 5.0.0
-      '@types/debug': 4.1.12
-      '@types/double-ended-queue': 2.1.7
-      '@types/lodash': 4.17.16
-      '@types/node': 18.19.130
-      '@types/ws': 6.0.4
-      assert: 2.1.0
+      '@fluidframework/server-lambdas': 7.0.0(debug@4.4.3)
+      '@fluidframework/server-memory-orderer': 7.0.0
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/server-services-core': 7.0.0
+      '@fluidframework/server-services-telemetry': 7.0.0
+      '@fluidframework/server-test-utils': 7.0.0
       debug: 4.4.3(supports-color@8.1.1)
-      double-ended-queue: 2.1.0-0
-      events: 3.3.0
-      lodash: 4.17.21
-      sillyname: 0.1.0
-      uuid: 9.0.1
-      ws: 7.5.10
+      events_pkg: events@3.3.0
+      jsrsasign: 11.1.0
+      uuid: 11.1.0
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -14001,22 +13612,32 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/server-services-client@5.0.0':
+  '@fluidframework/server-memory-orderer@7.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
-      '@fluidframework/gitresources': 5.0.0
-      '@fluidframework/protocol-base': 5.0.0
+      '@fluidframework/protocol-base': 7.0.0
       '@fluidframework/protocol-definitions': 3.2.0
-      axios: 1.12.2(debug@4.4.3)
-      crc-32: 1.2.0
+      '@fluidframework/server-lambdas': 7.0.0(debug@4.4.3)
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/server-services-core': 7.0.0
+      '@fluidframework/server-services-telemetry': 7.0.0
+      '@types/debug': 4.1.12
+      '@types/double-ended-queue': 2.1.7
+      '@types/lodash': 4.17.20
+      '@types/node': 18.19.130
+      '@types/ws': 6.0.4
+      assert: 2.1.0
       debug: 4.4.3(supports-color@8.1.1)
-      json-stringify-safe: 5.0.1
-      jsrsasign: 11.1.0
-      jwt-decode: 4.0.0
+      double-ended-queue: 2.1.0-0
+      events: 3.3.0
+      lodash: 4.17.21
       sillyname: 0.1.0
-      uuid: 9.0.1
+      uuid: 11.1.0
+      ws: 7.5.10
     transitivePeerDependencies:
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@fluidframework/server-services-client@6.0.0':
     dependencies:
@@ -14035,18 +13656,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/server-services-core@5.0.0':
+  '@fluidframework/server-services-client@7.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
-      '@fluidframework/gitresources': 5.0.0
+      '@fluidframework/gitresources': 7.0.0
+      '@fluidframework/protocol-base': 7.0.0
       '@fluidframework/protocol-definitions': 3.2.0
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/server-services-telemetry': 5.0.0
-      '@types/nconf': 0.10.7
-      '@types/node': 18.19.130
+      axios: 1.12.2(debug@4.4.3)
+      crc-32: 1.2.0
       debug: 4.4.3(supports-color@8.1.1)
-      events: 3.3.0
-      nconf: 0.12.1
+      json-stringify-safe: 5.0.1
+      jsrsasign: 11.1.0
+      jwt-decode: 4.0.0
+      sillyname: 0.1.0
+      uuid: 11.1.0
     transitivePeerDependencies:
       - supports-color
 
@@ -14057,6 +13680,21 @@ snapshots:
       '@fluidframework/protocol-definitions': 3.2.0
       '@fluidframework/server-services-client': 6.0.0
       '@fluidframework/server-services-telemetry': 6.0.0
+      '@types/nconf': 0.10.7
+      '@types/node': 18.19.130
+      debug: 4.4.3(supports-color@8.1.1)
+      events: 3.3.0
+      nconf: 0.12.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@fluidframework/server-services-core@7.0.0':
+    dependencies:
+      '@fluidframework/common-utils': 3.1.0
+      '@fluidframework/gitresources': 7.0.0
+      '@fluidframework/protocol-definitions': 3.2.0
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/server-services-telemetry': 7.0.0
       '@types/nconf': 0.10.7
       '@types/node': 18.19.130
       debug: 4.4.3(supports-color@8.1.1)
@@ -14097,15 +13735,15 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/server-services-telemetry@5.0.0':
+  '@fluidframework/server-services-telemetry@6.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
       json-stringify-safe: 5.0.1
       path-browserify: 1.0.1
       serialize-error: 8.1.0
-      uuid: 9.0.1
+      uuid: 11.1.0
 
-  '@fluidframework/server-services-telemetry@6.0.0':
+  '@fluidframework/server-services-telemetry@7.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
       json-stringify-safe: 5.0.1
@@ -14135,27 +13773,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/server-test-utils@5.0.0':
-    dependencies:
-      '@fluidframework/common-utils': 3.1.0
-      '@fluidframework/gitresources': 5.0.0
-      '@fluidframework/protocol-base': 5.0.0
-      '@fluidframework/protocol-definitions': 3.2.0
-      '@fluidframework/server-services-client': 5.0.0
-      '@fluidframework/server-services-core': 5.0.0
-      '@fluidframework/server-services-telemetry': 5.0.0
-      '@types/ioredis-mock': 8.2.6(ioredis@5.6.1)
-      assert: 2.1.0
-      debug: 4.4.3(supports-color@8.1.1)
-      events: 3.3.0
-      ioredis: 5.6.1
-      ioredis-mock: 8.9.0(@types/ioredis-mock@8.2.6(ioredis@5.6.1))(ioredis@5.6.1)
-      lodash: 4.17.21
-      string-hash: 1.1.3
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - supports-color
-
   '@fluidframework/server-test-utils@6.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
@@ -14177,111 +13794,100 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/shared-object-base@2.33.2':
+  '@fluidframework/server-test-utils@7.0.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/container-definitions': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/datastore': 2.33.2
-      '@fluidframework/datastore-definitions': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
-      uuid: 9.0.1
+      '@fluidframework/common-utils': 3.1.0
+      '@fluidframework/gitresources': 7.0.0
+      '@fluidframework/protocol-base': 7.0.0
+      '@fluidframework/protocol-definitions': 3.2.0
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/server-services-core': 7.0.0
+      '@fluidframework/server-services-telemetry': 7.0.0
+      '@types/ioredis-mock': 8.2.6(ioredis@5.8.1)
+      assert: 2.1.0
+      debug: 4.4.3(supports-color@8.1.1)
+      events: 3.3.0
+      ioredis: 5.8.1
+      ioredis-mock: 8.13.0(@types/ioredis-mock@8.2.6(ioredis@5.6.1))(ioredis@5.8.1)
+      lodash: 4.17.21
+      string-hash: 1.1.3
+      uuid: 11.1.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@fluidframework/shared-object-base@2.62.0(debug@4.4.3)':
+    dependencies:
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore': 2.62.0(debug@4.4.3)
+      '@fluidframework/datastore-definitions': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/id-compressor': 2.62.0
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
+      uuid: 11.1.0
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@fluidframework/shared-object-base@2.42.0(debug@4.4.3)':
+  '@fluidframework/synthesize@2.62.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0(debug@4.4.3)
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
+      '@fluidframework/core-utils': 2.62.0
 
-  '@fluidframework/synthesize@2.33.2':
+  '@fluidframework/telemetry-utils@2.62.0':
     dependencies:
-      '@fluidframework/core-utils': 2.33.2
-
-  '@fluidframework/synthesize@2.42.0':
-    dependencies:
-      '@fluidframework/core-utils': 2.42.0
-
-  '@fluidframework/telemetry-utils@2.33.2':
-    dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
       debug: 4.4.3(supports-color@8.1.1)
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - supports-color
 
-  '@fluidframework/telemetry-utils@2.42.0':
+  '@fluidframework/test-utils@2.62.0(encoding@0.1.13)':
     dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      debug: 4.4.3(supports-color@8.1.1)
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - supports-color
-
-  '@fluidframework/test-utils@2.42.0(encoding@0.1.13)':
-    dependencies:
-      '@fluid-internal/test-driver-definitions': 2.42.0
-      '@fluidframework/container-definitions': 2.42.0
-      '@fluidframework/container-loader': 2.42.0
-      '@fluidframework/container-runtime': 2.42.0(debug@4.4.3)
-      '@fluidframework/container-runtime-definitions': 2.42.0
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore': 2.42.0(debug@4.4.3)
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/local-driver': 2.42.0(debug@4.4.3)(encoding@0.1.13)
-      '@fluidframework/map': 2.42.0(debug@4.4.3)
-      '@fluidframework/odsp-driver': 2.42.0(debug@4.4.3)(encoding@0.1.13)
-      '@fluidframework/request-handler': 2.42.0(debug@4.4.3)
-      '@fluidframework/routerlicious-driver': 2.42.0(debug@4.4.3)(encoding@0.1.13)
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
+      '@fluid-internal/test-driver-definitions': 2.62.0
+      '@fluidframework/container-definitions': 2.62.0
+      '@fluidframework/container-loader': 2.62.0
+      '@fluidframework/container-runtime': 2.62.0(debug@4.4.3)
+      '@fluidframework/container-runtime-definitions': 2.62.0
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore': 2.62.0(debug@4.4.3)
+      '@fluidframework/datastore-definitions': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/local-driver': 2.62.0(debug@4.4.3)(encoding@0.1.13)
+      '@fluidframework/map': 2.62.0(debug@4.4.3)
+      '@fluidframework/odsp-driver': 2.62.0(debug@4.4.3)(encoding@0.1.13)
+      '@fluidframework/request-handler': 2.62.0(debug@4.4.3)
+      '@fluidframework/routerlicious-driver': 2.62.0(debug@4.4.3)(encoding@0.1.13)
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
       best-random: 1.0.3
       debug: 4.4.3(supports-color@8.1.1)
       mocha: 10.8.2
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/tinylicious-driver@2.33.2(encoding@0.1.13)':
+  '@fluidframework/tinylicious-driver@2.62.0(encoding@0.1.13)':
     dependencies:
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/routerlicious-driver': 2.33.2(encoding@0.1.13)
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/driver-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/routerlicious-driver': 2.62.0(debug@4.4.3)(encoding@0.1.13)
       jsrsasign: 11.1.0
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -14289,46 +13895,24 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@fluidframework/tree@2.33.2':
+  '@fluidframework/tree@2.62.0':
     dependencies:
-      '@fluid-internal/client-utils': 2.33.2
-      '@fluidframework/container-runtime': 2.33.2
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/core-utils': 2.33.2
-      '@fluidframework/datastore-definitions': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/id-compressor': 2.33.2
-      '@fluidframework/runtime-definitions': 2.33.2
-      '@fluidframework/runtime-utils': 2.33.2
-      '@fluidframework/shared-object-base': 2.33.2
-      '@fluidframework/telemetry-utils': 2.33.2
-      '@sinclair/typebox': 0.34.33
+      '@fluid-internal/client-utils': 2.62.0
+      '@fluidframework/container-runtime': 2.62.0(debug@4.4.3)
+      '@fluidframework/core-interfaces': 2.62.0
+      '@fluidframework/core-utils': 2.62.0
+      '@fluidframework/datastore-definitions': 2.62.0
+      '@fluidframework/driver-definitions': 2.62.0
+      '@fluidframework/id-compressor': 2.62.0
+      '@fluidframework/runtime-definitions': 2.62.0
+      '@fluidframework/runtime-utils': 2.62.0(debug@4.4.3)
+      '@fluidframework/shared-object-base': 2.62.0(debug@4.4.3)
+      '@fluidframework/telemetry-utils': 2.62.0
+      '@sinclair/typebox': 0.34.41
       '@tylerbu/sorted-btree-es6': 1.8.0
       '@types/ungap__structured-clone': 1.2.0
       '@ungap/structured-clone': 1.3.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-
-  '@fluidframework/tree@2.42.0':
-    dependencies:
-      '@fluid-internal/client-utils': 2.42.0
-      '@fluidframework/container-runtime': 2.42.0(debug@4.4.3)
-      '@fluidframework/core-interfaces': 2.42.0
-      '@fluidframework/core-utils': 2.42.0
-      '@fluidframework/datastore-definitions': 2.42.0
-      '@fluidframework/driver-definitions': 2.42.0
-      '@fluidframework/id-compressor': 2.42.0
-      '@fluidframework/runtime-definitions': 2.42.0
-      '@fluidframework/runtime-utils': 2.42.0(debug@4.4.3)
-      '@fluidframework/shared-object-base': 2.42.0(debug@4.4.3)
-      '@fluidframework/telemetry-utils': 2.42.0
-      '@sinclair/typebox': 0.34.33
-      '@tylerbu/sorted-btree-es6': 1.8.0
-      '@types/ungap__structured-clone': 1.2.0
-      '@ungap/structured-clone': 1.3.0
-      uuid: 9.0.1
+      uuid: 11.1.0
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -14756,6 +14340,8 @@ snapshots:
 
   '@ioredis/commands@1.2.0': {}
 
+  '@ioredis/commands@1.4.0': {}
+
   '@isaacs/balanced-match@4.0.1': {}
 
   '@isaacs/brace-expansion@5.0.0':
@@ -15103,7 +14689,7 @@ snapshots:
       uuid: 11.1.0
       write-file-atomic: 5.0.1
 
-  '@netlify/dev@4.5.12(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.52.4)':
+  '@netlify/dev@4.5.12(encoding@0.1.13)(ioredis@5.8.1)(rollup@4.52.4)':
     dependencies:
       '@netlify/blobs': 10.0.11
       '@netlify/config': 23.2.0
@@ -15111,7 +14697,7 @@ snapshots:
       '@netlify/edge-functions': 2.18.2
       '@netlify/functions': 4.2.7(encoding@0.1.13)(rollup@4.52.4)
       '@netlify/headers': 2.0.12
-      '@netlify/images': 1.2.8(@netlify/blobs@10.0.11)(ioredis@5.6.1)
+      '@netlify/images': 1.2.8(@netlify/blobs@10.0.11)(ioredis@5.8.1)
       '@netlify/redirects': 3.0.13
       '@netlify/runtime': 4.0.16
       '@netlify/static': 3.0.11
@@ -15207,9 +14793,9 @@ snapshots:
     dependencies:
       '@netlify/headers-parser': 9.0.2
 
-  '@netlify/images@1.2.8(@netlify/blobs@10.0.11)(ioredis@5.6.1)':
+  '@netlify/images@1.2.8(@netlify/blobs@10.0.11)(ioredis@5.8.1)':
     dependencies:
-      ipx: 3.1.1(@netlify/blobs@10.0.11)(ioredis@5.6.1)
+      ipx: 3.1.1(@netlify/blobs@10.0.11)(ioredis@5.8.1)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -15265,9 +14851,9 @@ snapshots:
 
   '@netlify/types@2.0.3': {}
 
-  '@netlify/vite-plugin@2.6.1(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.52.4)(vite@6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
+  '@netlify/vite-plugin@2.6.1(encoding@0.1.13)(ioredis@5.8.1)(rollup@4.52.4)(vite@6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
-      '@netlify/dev': 4.5.12(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.52.4)
+      '@netlify/dev': 4.5.12(encoding@0.1.13)(ioredis@5.8.1)(rollup@4.52.4)
       '@netlify/dev-utils': 4.2.0
       dedent: 1.7.0
       vite: 6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
@@ -15559,7 +15145,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@oclif/plugin-command-snapshot@5.3.6':
+  '@oclif/plugin-autocomplete@3.2.36':
+    dependencies:
+      '@oclif/core': 4.5.5
+      ansis: 3.17.0
+      debug: 4.4.3(supports-color@8.1.1)
+      ejs: 3.1.10
+    transitivePeerDependencies:
+      - supports-color
+
+  '@oclif/plugin-command-snapshot@5.3.7':
     dependencies:
       '@oclif/core': 4.5.5
       ansis: 3.17.0
@@ -15611,7 +15206,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@oclif/plugin-search@1.2.32':
+  '@oclif/plugin-search@1.2.33':
     dependencies:
       '@oclif/core': 4.5.5
       ansi-escapes: 7.1.1
@@ -15633,7 +15228,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@oclif/plugin-which@3.2.40':
+  '@oclif/plugin-warn-if-update-available@3.1.49':
+    dependencies:
+      '@oclif/core': 4.5.5
+      ansis: 3.17.0
+      debug: 4.4.3(supports-color@8.1.1)
+      http-call: 5.3.0
+      lodash: 4.17.21
+      registry-auth-token: 5.1.0
+    transitivePeerDependencies:
+      - supports-color
+
+  '@oclif/plugin-which@3.2.41':
     dependencies:
       '@oclif/core': 4.5.5
       ansis: 3.17.0
@@ -16176,7 +15782,7 @@ snapshots:
       '@sigstore/core': 3.0.0
       '@sigstore/protobuf-specs': 0.5.0
 
-  '@sinclair/typebox@0.34.33': {}
+  '@sinclair/typebox@0.34.41': {}
 
   '@sindresorhus/is@4.6.0': {}
 
@@ -16203,18 +15809,18 @@ snapshots:
     dependencies:
       acorn: 8.15.0
 
-  '@sveltejs/adapter-netlify@5.2.4(@sveltejs/kit@2.46.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))':
+  '@sveltejs/adapter-netlify@5.2.4(@sveltejs/kit@2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))':
     dependencies:
       '@iarna/toml': 2.2.5
-      '@sveltejs/kit': 2.46.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+      '@sveltejs/kit': 2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       esbuild: 0.25.10
       set-cookie-parser: 2.7.1
 
-  '@sveltejs/adapter-static@3.0.10(@sveltejs/kit@2.46.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))':
+  '@sveltejs/adapter-static@3.0.10(@sveltejs/kit@2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))':
     dependencies:
-      '@sveltejs/kit': 2.46.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+      '@sveltejs/kit': 2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
 
-  '@sveltejs/kit@2.46.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
+  '@sveltejs/kit@2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.39.11)(vite@7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@standard-schema/spec': 1.0.0
       '@sveltejs/acorn-typescript': 1.0.6(acorn@8.15.0)
@@ -16494,6 +16100,10 @@ snapshots:
     dependencies:
       ioredis: 5.6.1
 
+  '@types/ioredis-mock@8.2.6(ioredis@5.8.1)':
+    dependencies:
+      ioredis: 5.8.1
+
   '@types/js-yaml@4.0.9': {}
 
   '@types/json-schema@7.0.15': {}
@@ -16503,6 +16113,8 @@ snapshots:
       '@types/node': 20.19.21
 
   '@types/lodash@4.17.16': {}
+
+  '@types/lodash@4.17.20': {}
 
   '@types/mdast@3.0.15':
     dependencies:
@@ -17434,12 +17046,12 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.41.1(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)):
+  astro-expressive-code@0.41.1(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)):
     dependencies:
-      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       rehype-expressive-code: 0.41.1
 
-  astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1):
+  astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1):
     dependencies:
       '@astrojs/compiler': 2.12.2
       '@astrojs/internal-helpers': 0.7.4
@@ -17493,7 +17105,7 @@ snapshots:
       ultrahtml: 1.6.0
       unifont: 0.6.0
       unist-util-visit: 5.0.0
-      unstorage: 1.17.1(@netlify/blobs@10.0.11)(ioredis@5.6.1)
+      unstorage: 1.17.1(@netlify/blobs@10.0.11)(ioredis@5.8.1)
       vfile: 6.0.3
       vite: 6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vitefu: 1.1.1(vite@6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
@@ -18055,7 +17667,7 @@ snapshots:
 
   chardet@2.1.0: {}
 
-  chart.js@4.5.0:
+  chart.js@4.5.1:
     dependencies:
       '@kurkle/color': 0.3.4
 
@@ -20666,6 +20278,16 @@ snapshots:
       '@formatjs/icu-messageformat-parser': 2.11.4
       tslib: 2.8.1
 
+  ioredis-mock@8.13.0(@types/ioredis-mock@8.2.6(ioredis@5.6.1))(ioredis@5.8.1):
+    dependencies:
+      '@ioredis/as-callback': 3.0.0
+      '@ioredis/commands': 1.4.0
+      '@types/ioredis-mock': 8.2.6(ioredis@5.6.1)
+      fengari: 0.1.4
+      fengari-interop: 0.1.3(fengari@0.1.4)
+      ioredis: 5.8.1
+      semver: 7.7.3
+
   ioredis-mock@8.9.0(@types/ioredis-mock@8.2.6(ioredis@5.6.1))(ioredis@5.6.1):
     dependencies:
       '@ioredis/as-callback': 3.0.0
@@ -20690,11 +20312,25 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  ioredis@5.8.1:
+    dependencies:
+      '@ioredis/commands': 1.4.0
+      cluster-key-slot: 1.1.2
+      debug: 4.4.3(supports-color@8.1.1)
+      denque: 2.1.0
+      lodash.defaults: 4.2.0
+      lodash.isarguments: 3.1.0
+      redis-errors: 1.2.0
+      redis-parser: 3.0.0
+      standard-as-callback: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
+
   ip-address@10.0.1: {}
 
   ipaddr.js@1.9.1: {}
 
-  ipx@3.1.1(@netlify/blobs@10.0.11)(ioredis@5.6.1):
+  ipx@3.1.1(@netlify/blobs@10.0.11)(ioredis@5.8.1):
     dependencies:
       '@fastify/accept-negotiator': 2.0.1
       citty: 0.1.6
@@ -20710,7 +20346,7 @@ snapshots:
       sharp: 0.34.4
       svgo: 4.0.0
       ufo: 1.6.1
-      unstorage: 1.17.1(@netlify/blobs@10.0.11)(ioredis@5.6.1)
+      unstorage: 1.17.1(@netlify/blobs@10.0.11)(ioredis@5.8.1)
       xss: 1.0.15
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -23269,6 +22905,36 @@ snapshots:
       '@oclif/core': 4.5.5
       '@oclif/plugin-help': 6.2.33
       '@oclif/plugin-not-found': 3.2.68(@types/node@20.19.21)
+      '@oclif/plugin-warn-if-update-available': 3.1.49
+      ansis: 3.17.0
+      async-retry: 1.3.3
+      change-case: 4.1.2
+      debug: 4.4.3(supports-color@8.1.1)
+      ejs: 3.1.10
+      find-yarn-workspace-root: 2.0.0
+      fs-extra: 8.1.0
+      github-slugger: 2.0.0
+      got: 13.0.0
+      lodash: 4.17.21
+      normalize-package-data: 6.0.2
+      semver: 7.7.3
+      sort-package-json: 2.15.1
+      tiny-jsonc: 1.0.2
+      validate-npm-package-name: 5.0.1
+    transitivePeerDependencies:
+      - '@types/node'
+      - supports-color
+
+  oclif@4.22.32(@types/node@20.19.21):
+    dependencies:
+      '@aws-sdk/client-cloudfront': empty-npm-package@1.0.0
+      '@aws-sdk/client-s3': empty-npm-package@1.0.0
+      '@inquirer/confirm': 3.2.0
+      '@inquirer/input': 2.3.0
+      '@inquirer/select': 2.5.0
+      '@oclif/core': 4.5.5
+      '@oclif/plugin-help': 6.2.33
+      '@oclif/plugin-not-found': 3.2.68(@types/node@20.19.21)
       '@oclif/plugin-warn-if-update-available': 3.1.48
       ansis: 3.17.0
       async-retry: 1.3.3
@@ -23430,7 +23096,7 @@ snapshots:
 
   p-limit@4.0.0:
     dependencies:
-      yocto-queue: 1.1.1
+      yocto-queue: 1.2.1
 
   p-limit@6.2.0:
     dependencies:
@@ -24777,6 +24443,12 @@ snapshots:
       inherits: 2.0.4
       safe-buffer: 5.2.1
 
+  sha.js@2.4.12:
+    dependencies:
+      inherits: 2.0.4
+      safe-buffer: 5.2.1
+      to-buffer: 1.2.2
+
   sharp@0.34.4:
     dependencies:
       '@img/colour': 1.0.0
@@ -25143,19 +24815,19 @@ snapshots:
 
   standard-as-callback@2.1.0: {}
 
-  starlight-heading-badges@0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))):
+  starlight-heading-badges@0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))):
     dependencies:
       '@astrojs/markdown-remark': 6.3.8
-      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       github-slugger: 2.0.0
       mdast-util-directive: 3.0.0
       unist-util-visit: 5.0.0
     transitivePeerDependencies:
       - supports-color
 
-  starlight-links-validator@0.18.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))):
+  starlight-links-validator@0.18.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))):
     dependencies:
-      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@types/picomatch': 3.0.2
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.3
@@ -25170,13 +24842,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-llms-txt@0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)):
+  starlight-llms-txt@0.6.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)):
     dependencies:
-      '@astrojs/mdx': 4.2.4(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
-      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@astrojs/mdx': 4.2.4(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@types/hast': 3.0.4
       '@types/micromatch': 4.0.9
-      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       github-slugger: 2.0.0
       hast-util-select: 6.0.4
       micromatch: 4.0.8
@@ -25189,13 +24861,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-package-managers@0.11.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))):
+  starlight-package-managers@0.11.0(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))):
     dependencies:
-      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
 
-  starlight-typedoc@0.21.3(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.14(typescript@5.9.3)))(typedoc@0.28.14(typescript@5.9.3)):
+  starlight-typedoc@0.21.3(@astrojs/starlight@0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.14(typescript@5.9.3)))(typedoc@0.28.14(typescript@5.9.3)):
     dependencies:
-      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@astrojs/starlight': 0.35.3(astro@5.14.4(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.8.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       github-slugger: 2.0.0
       typedoc: 0.28.14(typescript@5.9.3)
       typedoc-plugin-markdown: 4.9.0(typedoc@0.28.14(typescript@5.9.3))
@@ -25716,6 +25388,12 @@ snapshots:
       rimraf: 2.7.1
 
   tmp@0.2.3: {}
+
+  to-buffer@1.2.2:
+    dependencies:
+      isarray: 2.0.5
+      safe-buffer: 5.2.1
+      typed-array-buffer: 1.0.3
 
   to-regex-range@5.0.1:
     dependencies:
@@ -26245,7 +25923,7 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unstorage@1.17.1(@netlify/blobs@10.0.11)(ioredis@5.6.1):
+  unstorage@1.17.1(@netlify/blobs@10.0.11)(ioredis@5.8.1):
     dependencies:
       anymatch: 3.1.3
       chokidar: 4.0.3
@@ -26257,7 +25935,7 @@ snapshots:
       ufo: 1.6.1
     optionalDependencies:
       '@netlify/blobs': 10.0.11
-      ioredis: 5.6.1
+      ioredis: 5.8.1
 
   until-async@3.0.2: {}
 
@@ -26336,8 +26014,6 @@ snapshots:
   uuid@11.1.0: {}
 
   uuid@8.3.2: {}
-
-  uuid@9.0.1: {}
 
   uvu@0.5.6:
     dependencies:
@@ -27072,6 +26748,8 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yocto-queue@1.1.1: {}
+
+  yocto-queue@1.2.1: {}
 
   yocto-spinner@0.2.3:
     dependencies:
