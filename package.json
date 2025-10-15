@@ -17,7 +17,7 @@
 		"check:deps": "syncpack lint",
 		"check:format": "biome check --linter-enabled=false",
 		"check:policy": "repopo check",
-		"ci": "turbo run check build check:typedoc lint docs test:coverage --continue --output-logs=errors-only",
+		"ci": "turbo run check build check:typedoc lint docs test:coverage --continue",
 		"ci:build": "turbo run build generate --output-logs=full",
 		"ci:check": "npm run check",
 		"ci:check:typedoc": "turbo run check:typedoc --output-logs=full",
