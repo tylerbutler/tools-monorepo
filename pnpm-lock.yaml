@@ -88,7 +88,7 @@ importers:
         specifier: ^0.9.4
         version: 0.9.4(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
-        specifier: ^6.5.12
+        specifier: ^6.5.13
         version: 6.5.13(@types/node@24.7.2)(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
@@ -109,7 +109,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.14.4
+        specifier: ^5.14.5
         version: 5.14.5(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       sharp:
         specifier: ^0.34.4
@@ -158,7 +158,7 @@ importers:
         specifier: ^2.4.2
         version: 2.4.2
       chart.js:
-        specifier: ^4.5.0
+        specifier: ^4.5.1
         version: 4.5.1
       clsx:
         specifier: ^2.1.1
@@ -195,7 +195,7 @@ importers:
         specifier: ^3.0.10
         version: 3.0.10(@sveltejs/kit@2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.40.0)(vite@7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.40.0)(vite@7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
       '@sveltejs/kit':
-        specifier: ^2.46.4
+        specifier: ^2.46.5
         version: 2.46.5(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.40.0)(vite@7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.40.0)(vite@7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^4.0.4
@@ -228,7 +228,7 @@ importers:
         specifier: ^2.11.5
         version: 2.11.5(@internationalized/date@3.10.0)(svelte@5.40.0)
       happy-dom:
-        specifier: ^20.0.0
+        specifier: ^20.0.1
         version: 20.0.1
       jsdom:
         specifier: ^25.0.1
@@ -264,7 +264,7 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^7.1.9
+        specifier: ^7.1.10
         version: 7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vite-plugin-devtools-json:
         specifier: ^1.0.0
@@ -279,7 +279,7 @@ importers:
         specifier: ^4.5.5
         version: 4.5.5
       '@oclif/plugin-autocomplete':
-        specifier: ^3.2.35
+        specifier: ^3.2.36
         version: 3.2.36
       '@oclif/plugin-commands':
         specifier: ^4.1.34
@@ -294,16 +294,16 @@ importers:
         specifier: ^5.4.50
         version: 5.4.50
       '@oclif/plugin-search':
-        specifier: ^1.2.32
+        specifier: ^1.2.33
         version: 1.2.33
       '@oclif/plugin-version':
         specifier: ^2.2.33
         version: 2.2.33
       '@oclif/plugin-warn-if-update-available':
-        specifier: ^3.1.48
+        specifier: ^3.1.49
         version: 3.1.49
       '@oclif/plugin-which':
-        specifier: ^3.2.40
+        specifier: ^3.2.41
         version: 3.2.41
       '@tylerbu/cli-api':
         specifier: workspace:^
@@ -328,7 +328,7 @@ importers:
         specifier: 2.2.5
         version: 2.2.5
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.6
+        specifier: ^5.3.7
         version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
@@ -346,7 +346,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.9.3)
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -440,7 +440,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.9.3)
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -507,7 +507,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.6
+        specifier: ^5.3.7
         version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
@@ -552,7 +552,7 @@ importers:
         specifier: ^2.11.5
         version: 2.11.5(@types/node@20.19.21)(typescript@5.9.3)
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -600,7 +600,7 @@ importers:
         specifier: ^0.9.4
         version: 0.9.4(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
-        specifier: ^6.5.12
+        specifier: ^6.5.13
         version: 6.5.13(@types/node@24.7.2)(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
@@ -615,7 +615,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.14.4
+        specifier: ^5.14.5
         version: 5.14.5(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       dill-cli:
         specifier: workspace:^
@@ -904,7 +904,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.6
+        specifier: ^5.3.7
         version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
@@ -922,7 +922,7 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.9.3)
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -949,7 +949,7 @@ importers:
         specifier: ^0.9.4
         version: 0.9.4(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
-        specifier: ^6.5.12
+        specifier: ^6.5.13
         version: 6.5.13(@types/node@24.7.2)(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       '@astrojs/starlight':
         specifier: ^0.35.3
@@ -964,7 +964,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.14.4
+        specifier: ^5.14.5
         version: 5.14.5(@netlify/blobs@10.0.11)(@types/node@24.7.2)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       repopo:
         specifier: workspace:^
@@ -1050,7 +1050,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.21)
       '@oclif/plugin-command-snapshot':
-        specifier: ^5.3.6
+        specifier: ^5.3.7
         version: 5.3.7
       '@oclif/test':
         specifier: ^4.1.14
@@ -1071,7 +1071,7 @@ importers:
         specifier: ^4.49.0
         version: 4.49.0
       oclif:
-        specifier: ^4.22.29
+        specifier: ^4.22.32
         version: 4.22.32(@types/node@20.19.21)
       rimraf:
         specifier: ^6.0.1
@@ -2809,10 +2809,6 @@ packages:
     resolution: {integrity: sha512-iQzlaJQgPeUXrtrX71OzDwxPikQ7c2FhNd8U8rBB7BCtj2XYfmzBT/Hmbc+g9OKDIG/JkbJT0fXaWMMBrhi+1A==}
     engines: {node: '>=18.0.0'}
 
-  '@oclif/plugin-autocomplete@3.2.35':
-    resolution: {integrity: sha512-cwvq1+tQnSHNQEQrop82W7AZIFXC5ENUvicXWhBSpVF1KDIUez/ptIth4M4zha/0+DlSPsYcQgzaN6tSWtUoEA==}
-    engines: {node: '>=18.0.0'}
-
   '@oclif/plugin-autocomplete@3.2.36':
     resolution: {integrity: sha512-q2jNU2ze6YSSKxjj/ZI+JZXBVXS4l45eR1waUB8z8P4H9C5I+TxXVwn5T3g8O0YWvfkDHVODAUEU6qCOQYDTXQ==}
     engines: {node: '>=18.0.0'}
@@ -2844,10 +2840,6 @@ packages:
 
   '@oclif/plugin-version@2.2.33':
     resolution: {integrity: sha512-Yh535aui8wOyInAEqKH9qOdYY81LcI+Uq7YWfkTbEXeR3XfaZ094xw5WubDntvlC17nJA1kYrSsdadsT6jMdtw==}
-    engines: {node: '>=18.0.0'}
-
-  '@oclif/plugin-warn-if-update-available@3.1.48':
-    resolution: {integrity: sha512-jZESAAHqJuGcvnyLX0/2WAVDu/WAk1iMth5/o8oviDPzS3a4Ajsd5slxwFb/tg4hbswY9aFoob9wYP4tnP6d8w==}
     engines: {node: '>=18.0.0'}
 
   '@oclif/plugin-warn-if-update-available@3.1.49':
@@ -8946,11 +8938,6 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
-  oclif@4.22.29:
-    resolution: {integrity: sha512-vflirEWfbH0idQNKpsc5TNMx4Tnlc9J6sVixF5apTADItrxMvb8L9AvathR0u+cIqVH3AymP8oZ+N2dBl//Qpw==}
-    engines: {node: '>=18.0.0'}
-    hasBin: true
-
   oclif@4.22.32:
     resolution: {integrity: sha512-zeM5Ezgh2Eo+dw5gPByyPmpoHBH6i0Lv0I8QrWwyphAHsR1PtSqIOwm24I8jzE0iiZuqKOlhMivLruMrLWfhXg==}
     engines: {node: '>=18.0.0'}
@@ -13036,7 +13023,7 @@ snapshots:
       '@inquirer/prompts': 7.8.6(@types/node@20.19.21)
       '@microsoft/api-extractor': 7.53.1(@types/node@20.19.21)
       '@oclif/core': 4.5.5
-      '@oclif/plugin-autocomplete': 3.2.35
+      '@oclif/plugin-autocomplete': 3.2.36
       '@oclif/plugin-commands': 4.1.34
       '@oclif/plugin-help': 6.2.33
       '@oclif/plugin-not-found': 3.2.68(@types/node@20.19.21)
@@ -13067,7 +13054,7 @@ snapshots:
       mdast-util-to-string: 4.0.0
       minimatch: 7.4.6
       npm-check-updates: 16.14.20
-      oclif: 4.22.29(@types/node@20.19.21)
+      oclif: 4.22.32(@types/node@20.19.21)
       picocolors: 1.1.1
       prettier: 3.2.5
       prompts: 2.4.2
@@ -13148,7 +13135,7 @@ snapshots:
   '@fluid-tools/version-tools@0.58.3(@types/node@20.19.21)':
     dependencies:
       '@oclif/core': 4.5.5
-      '@oclif/plugin-autocomplete': 3.2.35
+      '@oclif/plugin-autocomplete': 3.2.36
       '@oclif/plugin-commands': 4.1.34
       '@oclif/plugin-help': 6.2.33
       '@oclif/plugin-not-found': 3.2.68(@types/node@20.19.21)
@@ -13549,9 +13536,9 @@ snapshots:
       '@typescript-eslint/parser': 6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
       eslint-config-biome: 1.9.4
       eslint-config-prettier: 9.0.0(eslint@9.37.0(jiti@2.6.1))
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.37.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
       eslint-plugin-eslint-comments: 3.2.0(eslint@9.37.0(jiti@2.6.1))
-      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.6.3)(eslint@9.37.0(jiti@2.6.1))
+      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
       eslint-plugin-jsdoc: 46.8.2(eslint@9.37.0(jiti@2.6.1))
       eslint-plugin-promise: 6.1.1(eslint@9.37.0(jiti@2.6.1))
       eslint-plugin-react: 7.33.2(eslint@9.37.0(jiti@2.6.1))
@@ -15603,15 +15590,6 @@ snapshots:
       wordwrap: 1.0.0
       wrap-ansi: 7.0.0
 
-  '@oclif/plugin-autocomplete@3.2.35':
-    dependencies:
-      '@oclif/core': 4.5.5
-      ansis: 3.17.0
-      debug: 4.4.3(supports-color@8.1.1)
-      ejs: 3.1.10
-    transitivePeerDependencies:
-      - supports-color
-
   '@oclif/plugin-autocomplete@3.2.36':
     dependencies:
       '@oclif/core': 4.5.5
@@ -15683,17 +15661,6 @@ snapshots:
     dependencies:
       '@oclif/core': 4.5.5
       ansis: 3.17.0
-
-  '@oclif/plugin-warn-if-update-available@3.1.48':
-    dependencies:
-      '@oclif/core': 4.5.5
-      ansis: 3.17.0
-      debug: 4.4.3(supports-color@8.1.1)
-      http-call: 5.3.0
-      lodash: 4.17.21
-      registry-auth-token: 5.1.0
-    transitivePeerDependencies:
-      - supports-color
 
   '@oclif/plugin-warn-if-update-available@3.1.49':
     dependencies:
@@ -19249,33 +19216,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.37.0(jiti@2.6.1)):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3(supports-color@8.1.1)
       enhanced-resolve: 5.18.3
       eslint: 9.37.0(jiti@2.6.1)
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.37.0(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
       fast-glob: 3.3.3
       get-tsconfig: 4.12.0
       is-bun-module: 1.3.0
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.6.3)(eslint@9.37.0(jiti@2.6.1))
+      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.37.0(jiti@2.6.1)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.37.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.37.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -19285,13 +19252,13 @@ snapshots:
       eslint: 9.37.0(jiti@2.6.1)
       ignore: 5.3.2
 
-  eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.6.3)(eslint@9.37.0(jiti@2.6.1)):
+  eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       doctrine: 3.0.0
       eslint: 9.37.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.37.0(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1)))(eslint@9.37.0(jiti@2.6.1))
       get-tsconfig: 4.12.0
       is-glob: 4.0.3
       minimatch: 3.1.2
@@ -23332,36 +23299,6 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
-  oclif@4.22.29(@types/node@20.19.21):
-    dependencies:
-      '@aws-sdk/client-cloudfront': empty-npm-package@1.0.0
-      '@aws-sdk/client-s3': empty-npm-package@1.0.0
-      '@inquirer/confirm': 3.2.0
-      '@inquirer/input': 2.3.0
-      '@inquirer/select': 2.5.0
-      '@oclif/core': 4.5.5
-      '@oclif/plugin-help': 6.2.33
-      '@oclif/plugin-not-found': 3.2.68(@types/node@20.19.21)
-      '@oclif/plugin-warn-if-update-available': 3.1.49
-      ansis: 3.17.0
-      async-retry: 1.3.3
-      change-case: 4.1.2
-      debug: 4.4.3(supports-color@8.1.1)
-      ejs: 3.1.10
-      find-yarn-workspace-root: 2.0.0
-      fs-extra: 8.1.0
-      github-slugger: 2.0.0
-      got: 13.0.0
-      lodash: 4.17.21
-      normalize-package-data: 6.0.2
-      semver: 7.7.3
-      sort-package-json: 2.15.1
-      tiny-jsonc: 1.0.2
-      validate-npm-package-name: 5.0.1
-    transitivePeerDependencies:
-      - '@types/node'
-      - supports-color
-
   oclif@4.22.32(@types/node@20.19.21):
     dependencies:
       '@aws-sdk/client-cloudfront': empty-npm-package@1.0.0
@@ -23372,7 +23309,7 @@ snapshots:
       '@oclif/core': 4.5.5
       '@oclif/plugin-help': 6.2.33
       '@oclif/plugin-not-found': 3.2.68(@types/node@20.19.21)
-      '@oclif/plugin-warn-if-update-available': 3.1.48
+      '@oclif/plugin-warn-if-update-available': 3.1.49
       ansis: 3.17.0
       async-retry: 1.3.3
       change-case: 4.1.2
@@ -26500,7 +26437,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       es-module-lexer: 1.7.0
       pathe: 2.0.3
-      vite: 7.1.9(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vite: 7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -26521,7 +26458,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       es-module-lexer: 1.7.0
       pathe: 2.0.3
-      vite: 7.1.9(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vite: 7.1.10(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -26568,6 +26505,23 @@ snapshots:
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 20.19.21
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      lightningcss: 1.30.1
+      terser: 5.44.0
+      tsx: 4.20.6
+      yaml: 2.8.1
+
+  vite@7.1.10(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
+    dependencies:
+      esbuild: 0.25.10
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.52.4
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 24.7.2
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.1
