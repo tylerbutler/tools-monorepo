@@ -195,7 +195,7 @@ importers:
         specifier: ^3.0.10
         version: 3.0.10(@sveltejs/kit@2.47.0(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.40.1)(vite@7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.40.1)(vite@7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))
       '@sveltejs/kit':
-        specifier: ^2.46.5
+        specifier: ^2.47.0
         version: 2.47.0(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.40.1)(vite@7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.40.1)(vite@7.1.10(@types/node@20.19.21)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^4.0.4
@@ -225,7 +225,7 @@ importers:
         specifier: github:donovanglover/base16-tailwind
         version: https://codeload.github.com/donovanglover/base16-tailwind/tar.gz/3695359c3057b12955c4951a66f89e6a264887e1(@types/slug@5.0.9)(tailwindcss@4.1.14)
       bits-ui:
-        specifier: ^2.11.5
+        specifier: ^2.11.6
         version: 2.11.6(@internationalized/date@3.10.0)(svelte@5.40.1)
       happy-dom:
         specifier: ^20.0.2
@@ -246,7 +246,7 @@ importers:
         specifier: '*'
         version: 3.4.0
       svelte:
-        specifier: ^5.40.0
+        specifier: ^5.40.1
         version: 5.40.1
       svelte-check:
         specifier: ^4.3.3
@@ -276,7 +276,7 @@ importers:
   packages/cli:
     dependencies:
       '@oclif/core':
-        specifier: ^4.5.5
+        specifier: ^4.5.6
         version: 4.5.6
       '@oclif/plugin-autocomplete':
         specifier: ^3.2.36
@@ -373,7 +373,7 @@ importers:
   packages/cli-api:
     dependencies:
       '@oclif/core':
-        specifier: ^4.5.5
+        specifier: ^4.5.6
         version: 4.5.6
       '@tylerbu/lilconfig-loader-ts':
         specifier: workspace:^
@@ -470,7 +470,7 @@ importers:
   packages/dill:
     dependencies:
       '@oclif/core':
-        specifier: ^4.5.5
+        specifier: ^4.5.6
         version: 4.5.6
       '@oclif/plugin-help':
         specifier: ^6.2.33
@@ -861,7 +861,7 @@ importers:
         specifier: ~0.58.3
         version: 0.58.3(@types/node@20.19.21)
       '@oclif/core':
-        specifier: ^4.5.5
+        specifier: ^4.5.6
         version: 4.5.6
       '@oclif/plugin-help':
         specifier: ^6.2.33
@@ -1013,7 +1013,7 @@ importers:
   packages/sort-tsconfig:
     dependencies:
       '@oclif/core':
-        specifier: ^4.5.5
+        specifier: ^4.5.6
         version: 4.5.6
       '@oclif/plugin-help':
         specifier: ^6.2.33
