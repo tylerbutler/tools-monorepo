@@ -1,5 +1,30 @@
 # @tylerbu/cli-api
 
+## 0.7.3
+
+### Patch Changes
+
+- Fix git squish command configuration loading _[`#320`](https://github.com/tylerbutler/tools-monorepo/pull/320) [`0028315`](https://github.com/tylerbutler/tools-monorepo/commit/002831523cc6483c79c217dc3e8026ccf2def98e) [@tylerbutler](https://github.com/tylerbutler)_
+
+  - **cli-api**: Add `requiresConfig` property to `CommandWithConfig` to allow commands to skip config loading
+  - **cli-api**: Set `GitCommand.requiresConfig = false` by default since git commands typically don't need config files
+
+  This fixes the "Failure to load config" error that occurred when running git commands in directories without a config file.
+
+- Update documentation _[`39f8132`](https://github.com/tylerbutler/tools-monorepo/commit/39f81320a5245759b9a797105ac5ffe3caf996f9) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`39f8132`](https://github.com/tylerbutler/tools-monorepo/commit/39f81320a5245759b9a797105ac5ffe3caf996f9)
+
+</small>
+
+- `@tylerbu/lilconfig-loader-ts@0.1.3`
+
+</details>
+
 ## 0.7.2
 
 ### Patch Changes

@@ -3,8 +3,8 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm packages may be included in this product:
 
- - @oclif/core@4.3.0
- - @oclif/plugin-help@6.2.27
+ - @oclif/core@4.5.6
+ - @oclif/plugin-help@6.2.33
 
 These packages each contain the following license:
 
@@ -64,7 +64,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - tinyglobby@0.2.13
+ - tinyglobby@0.2.15
 
 This package contains the following license:
 
@@ -173,7 +173,7 @@ DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - detect-indent@7.0.1
+ - detect-indent@7.0.2
 
 This package contains the following license:
 
