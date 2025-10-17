@@ -97,7 +97,7 @@
 		},
 
 		"build:site": {
-			"dependsOn": [],
+			"dependsOn": ["^build:compile"],
 			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}", "public/**"],
 			"outputs": ["dist/**", ".astro/**"],
 		},
@@ -207,6 +207,7 @@
 		},
 
 		"check:astro": {
+			"dependsOn": ["^build:compile"],
 			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}"],
 			"outputs": [],
 		},
