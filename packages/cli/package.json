@@ -36,7 +36,8 @@
 	],
 	"scripts": {
 		"build": "npm run build:compile && npm run build:manifest && npm run build:readme && npm run build:generate",
-		"build:compile": "tsc --project ./tsconfig.json",
+		"build:compile": "tsc --project ./tsconfig.json && npm run build:copy-templates",
+		"build:copy-templates": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
 		"build:generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
 		"build:manifest": "oclif manifest",
 		"build:readme": "oclif readme --multi --no-aliases",
@@ -105,9 +106,9 @@
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
 		"picocolors": "^1.1.1",
-		"tinyglobby": "^0.2.15",
 		"simple-git": "^3.28.0",
-		"strip-ansi": "^7.1.2"
+		"strip-ansi": "^7.1.2",
+		"tinyglobby": "^0.2.15"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
@@ -116,6 +117,7 @@
 		"@types/debug": "^4.1.12",
 		"@types/node": "^20.19.21",
 		"concurrently": "^9.2.1",
+		"copyfiles": "^2.4.1",
 		"generate-license-file": "^4.1.0",
 		"oclif": "^4.22.32",
 		"rimraf": "^6.0.1",
