@@ -11,7 +11,7 @@ Apply overlay configurations to the FluidFramework repository
 
 ```
 USAGE
-  $ tbu fluid repo-overlay TYPE [--repo-dir <value>] [--dry-run]
+  $ tbu fluid repo-overlay TYPE [-v | --quiet] [--repo-dir <value>] [--dry-run]
 
 ARGUMENTS
   TYPE  (nx|turbo) Type of overlay to apply
@@ -19,6 +19,10 @@ ARGUMENTS
 FLAGS
   --dry-run           Show what would be changed without making changes
   --repo-dir=<value>  Path to the repository directory (defaults to current working directory)
+
+LOGGING FLAGS
+  -v, --verbose  Enable verbose logging.
+      --quiet    Disable all logging.
 
 DESCRIPTION
   Apply overlay configurations to the FluidFramework repository

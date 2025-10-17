@@ -11,7 +11,8 @@
 
 import { resolve } from "node:path";
 import process from "node:process";
-import { Args, Command, Flags } from "@oclif/core";
+import { Args, Flags } from "@oclif/core";
+import { BaseCommand } from "@tylerbu/cli-api";
 import {
 	copyNxConfigFiles,
 	isNxConfigured,
@@ -42,7 +43,9 @@ import {
 const VALID_OVERLAY_TYPES = ["nx", "turbo"] as const;
 type OverlayType = (typeof VALID_OVERLAY_TYPES)[number];
 
-export default class RepoOverlayCommand extends Command {
+export default class RepoOverlayCommand extends BaseCommand<
+	typeof RepoOverlayCommand
+> {
 	public static override readonly description =
 		"Apply overlay configurations to the FluidFramework repository";
 

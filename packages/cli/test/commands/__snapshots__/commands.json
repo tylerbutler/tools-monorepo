@@ -69,10 +69,14 @@
         "alias": [],
         "command": "fluid:repo-overlay",
         "flagAliases": [],
-        "flagChars": [],
+        "flagChars": [
+            "v"
+        ],
         "flags": [
             "dry-run",
-            "repo-dir"
+            "quiet",
+            "repo-dir",
+            "verbose"
         ],
         "plugin": "@tylerbu/cli"
     },

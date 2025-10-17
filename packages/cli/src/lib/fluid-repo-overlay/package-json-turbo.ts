@@ -123,10 +123,12 @@ export async function updateRootPackageJsonForTurbo(
 		packageJson.devDependencies = {};
 	}
 
-	if (packageJson.devDependencies.turbo) {
+	// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
+	if (packageJson.devDependencies["turbo"]) {
 		logger.log("  ℹ️  turbo already in devDependencies");
 	} else {
-		packageJson.devDependencies.turbo = "^2.3.3";
+		// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
+		packageJson.devDependencies["turbo"] = "^2.3.3";
 		modified = true;
 		logger.log("  ✅ Added turbo dependency");
 	}
@@ -281,7 +283,8 @@ export async function needsPackageJsonUpdatesForTurbo(
 		const packageJson: PackageJson = JSON.parse(content);
 
 		// Check if turbo is in devDependencies
-		if (!packageJson.devDependencies?.turbo) {
+		// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
+		if (!packageJson.devDependencies?.["turbo"]) {
 			return true;
 		}
 
