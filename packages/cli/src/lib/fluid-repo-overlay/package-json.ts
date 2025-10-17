@@ -122,7 +122,9 @@ export async function updateRootPackageJson(repoRoot: string): Promise<void> {
 				modified = true;
 				console.log(`  ✅ Updated script: ${scriptName}`);
 			} else {
-				console.log(`  ⚠️  Script "${scriptName}" exists but differs from expected`);
+				console.log(
+					`  ⚠️  Script "${scriptName}" exists but differs from expected`,
+				);
 				console.log(`     Current:  ${packageJson.scripts[scriptName]}`);
 				console.log(`     Expected: ${scriptCommand}`);
 			}

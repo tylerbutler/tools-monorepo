@@ -13,7 +13,10 @@
 			"!{projectRoot}/test/**/*",
 			"!{projectRoot}/tests/**/*"
 		],
-		"sharedGlobals": ["{workspaceRoot}/pnpm-lock.yaml", "{workspaceRoot}/package.json"]
+		"sharedGlobals": [
+			"{workspaceRoot}/pnpm-lock.yaml",
+			"{workspaceRoot}/package.json"
+		]
 	},
 	"tasksRunnerOptions": {
 		"default": {
@@ -192,7 +195,10 @@
 				"{projectRoot}/api-extractor/**/*.json",
 				"{projectRoot}/tsconfig.json"
 			],
-			"outputs": ["{projectRoot}/_api-extractor-temp/**", "{projectRoot}/*.api.json"],
+			"outputs": [
+				"{projectRoot}/_api-extractor-temp/**",
+				"{projectRoot}/*.api.json"
+			],
 			"cache": true
 		},
 		"api-extract-esm": {
@@ -226,13 +232,19 @@
 		},
 		"test-build-cjs": {
 			"dependsOn": ["typetest-gen", "tsc"],
-			"inputs": ["{projectRoot}/src/test/**/*.ts", "{projectRoot}/tsconfig.json"],
+			"inputs": [
+				"{projectRoot}/src/test/**/*.ts",
+				"{projectRoot}/tsconfig.json"
+			],
 			"outputs": ["{projectRoot}/dist/test/**", "{projectRoot}/*.tsbuildinfo"],
 			"cache": true
 		},
 		"test-build-esm": {
 			"dependsOn": ["typetest-gen", "esnext"],
-			"inputs": ["{projectRoot}/src/test/**/*.ts", "{projectRoot}/tsconfig.json"],
+			"inputs": [
+				"{projectRoot}/src/test/**/*.ts",
+				"{projectRoot}/tsconfig.json"
+			],
 			"outputs": ["{projectRoot}/lib/test/**", "{projectRoot}/*.tsbuildinfo"],
 			"cache": true
 		},
@@ -352,7 +364,13 @@
 			"cache": true
 		},
 		"check:are-the-types-wrong": {
-			"dependsOn": ["^build:compile", "tsc", "esnext", "api-extract-cjs", "api-extract-esm"],
+			"dependsOn": [
+				"^build:compile",
+				"tsc",
+				"esnext",
+				"api-extract-cjs",
+				"api-extract-esm"
+			],
 			"outputs": [],
 			"cache": true
 		},

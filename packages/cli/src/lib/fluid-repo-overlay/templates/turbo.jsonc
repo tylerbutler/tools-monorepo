@@ -11,7 +11,7 @@
 		"TERM", // Terminal capabilities for interactive tools
 		"FORCE_COLOR", // Force color output in CI/terminals
 		"NO_COLOR", // Disable color output
-		"DEBUG" // Debug logging for troubleshooting
+		"DEBUG", // Debug logging for troubleshooting
 	],
 	"ui": "tui",
 	"tasks": {
@@ -25,13 +25,13 @@
 				"ci:build:api-reports",
 				"ci:build:docs",
 				"build:manifest",
-				"build:readme"
+				"build:readme",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"full": {
 			"dependsOn": ["build", "webpack"],
-			"outputs": []
+			"outputs": [],
 		},
 		"build": {
 			"dependsOn": [
@@ -41,33 +41,39 @@
 				"build:api-reports",
 				"build:docs",
 				"build:manifest",
-				"build:readme"
+				"build:readme",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"build:full": {
 			"dependsOn": ["full"],
-			"outputs": []
+			"outputs": [],
 		},
 
 		// ============================================================
 		// Compilation Tasks
 		// ============================================================
 		"compile": {
-			"dependsOn": ["commonjs", "build:esnext", "api", "build:test", "build:copy"],
-			"outputs": ["dist/**", "lib/**", "*.tsbuildinfo"]
+			"dependsOn": [
+				"commonjs",
+				"build:esnext",
+				"api",
+				"build:test",
+				"build:copy",
+			],
+			"outputs": ["dist/**", "lib/**", "*.tsbuildinfo"],
 		},
 		"build:compile": {
 			"dependsOn": ["compile"],
-			"outputs": []
+			"outputs": [],
 		},
 		"commonjs": {
 			"dependsOn": ["tsc", "build:test"],
-			"outputs": ["dist/**", "*.tsbuildinfo"]
+			"outputs": ["dist/**", "*.tsbuildinfo"],
 		},
 		"build:commonjs": {
 			"dependsOn": ["commonjs"],
-			"outputs": []
+			"outputs": [],
 		},
 		"tsc": {
 			"dependsOn": ["^tsc", "build:genver", "ts2esm"],
@@ -77,9 +83,9 @@
 				"!**/*.test.ts",
 				"!**/*.spec.ts",
 				"!**/test/**",
-				"!**/tests/**"
+				"!**/tests/**",
 			],
-			"outputs": ["dist/**", "*.tsbuildinfo"]
+			"outputs": ["dist/**", "*.tsbuildinfo"],
 		},
 		"build:esnext": {
 			"dependsOn": ["^build:esnext", "build:genver", "ts2esm"],
@@ -89,29 +95,34 @@
 				"!**/*.test.ts",
 				"!**/*.spec.ts",
 				"!**/test/**",
-				"!**/tests/**"
+				"!**/tests/**",
 			],
-			"outputs": ["lib/**", "*.tsbuildinfo"]
+			"outputs": ["lib/**", "*.tsbuildinfo"],
 		},
 
 		// ============================================================
 		// Build Support Tasks
 		// ============================================================
 		"build:copy": {
-			"inputs": ["src/**/*.json", "src/**/*.txt", "src/**/*.css", "!src/**/*.test.*"],
-			"outputs": ["dist/**", "lib/**"]
+			"inputs": [
+				"src/**/*.json",
+				"src/**/*.txt",
+				"src/**/*.css",
+				"!src/**/*.test.*",
+			],
+			"outputs": ["dist/**", "lib/**"],
 		},
 		"build:genver": {
 			"inputs": ["package.json", "../../package.json"],
-			"outputs": ["src/packageVersion.ts"]
+			"outputs": ["src/packageVersion.ts"],
 		},
 		"ts2esm": {
 			"inputs": ["dist/**/*.js", "tsconfig.json"],
-			"outputs": ["lib/**"]
+			"outputs": ["lib/**"],
 		},
 		"typetests:gen": {
 			"inputs": ["package.json"],
-			"outputs": ["**/types/**/*.generated.ts"]
+			"outputs": ["**/types/**/*.generated.ts"],
 		},
 
 		// ============================================================
@@ -119,7 +130,7 @@
 		// ============================================================
 		"api": {
 			"dependsOn": ["api-extractor:commonjs", "api-extractor:esnext"],
-			"outputs": []
+			"outputs": [],
 		},
 		"api-extractor:commonjs": {
 			"dependsOn": ["tsc"],
@@ -127,9 +138,9 @@
 				"dist/**/*.d.ts",
 				"api-extractor.json",
 				"api-extractor/**/*.json",
-				"tsconfig.json"
+				"tsconfig.json",
 			],
-			"outputs": ["_api-extractor-temp/**", "*.api.json"]
+			"outputs": ["_api-extractor-temp/**", "*.api.json"],
 		},
 		"api-extractor:esnext": {
 			"dependsOn": ["build:esnext"],
@@ -137,9 +148,9 @@
 				"lib/**/*.d.ts",
 				"api-extractor.json",
 				"api-extractor/**/*.json",
-				"tsconfig.json"
+				"tsconfig.json",
 			],
-			"outputs": ["_api-extractor-temp/**", "*.api.json"]
+			"outputs": ["_api-extractor-temp/**", "*.api.json"],
 		},
 
 		// ============================================================
@@ -147,43 +158,46 @@
 		// ============================================================
 		"build:api-reports": {
 			"dependsOn": ["build:api-reports:current", "build:api-reports:legacy"],
-			"outputs": []
+			"outputs": [],
 		},
 		"build:api-reports:current": {
 			"dependsOn": ["api-extractor:esnext"],
-			"outputs": ["*.api.md"]
+			"outputs": ["*.api.md"],
 		},
 		"build:api-reports:legacy": {
 			"dependsOn": ["api-extractor:esnext"],
-			"outputs": ["*.api.md"]
+			"outputs": ["*.api.md"],
 		},
 		"ci:build:api-reports": {
-			"dependsOn": ["ci:build:api-reports:current", "ci:build:api-reports:legacy"],
-			"outputs": []
+			"dependsOn": [
+				"ci:build:api-reports:current",
+				"ci:build:api-reports:legacy",
+			],
+			"outputs": [],
 		},
 		"ci:build:api-reports:current": {
 			"dependsOn": ["api-extractor:esnext"],
-			"outputs": ["*.api.md"]
+			"outputs": ["*.api.md"],
 		},
 		"ci:build:api-reports:legacy": {
 			"dependsOn": ["api-extractor:esnext"],
-			"outputs": ["*.api.md"]
+			"outputs": ["*.api.md"],
 		},
 		"build:docs": {
 			"dependsOn": ["build:esnext"],
-			"outputs": ["_api-extractor-temp/**"]
+			"outputs": ["_api-extractor-temp/**"],
 		},
 		"ci:build:docs": {
 			"dependsOn": ["build:esnext"],
-			"outputs": ["_api-extractor-temp/**"]
+			"outputs": ["_api-extractor-temp/**"],
 		},
 		"build:readme": {
 			"dependsOn": ["compile"],
-			"outputs": ["README.md"]
+			"outputs": ["README.md"],
 		},
 		"build:manifest": {
 			"dependsOn": ["compile"],
-			"outputs": ["oclif.manifest.json"]
+			"outputs": ["oclif.manifest.json"],
 		},
 
 		// ============================================================
@@ -191,15 +205,15 @@
 		// ============================================================
 		"build:test": {
 			"dependsOn": ["typetests:gen", "tsc", "build:esnext"],
-			"outputs": ["dist/**", "lib/**", "*.tsbuildinfo"]
+			"outputs": ["dist/**", "lib/**", "*.tsbuildinfo"],
 		},
 		"build:test:cjs": {
 			"dependsOn": ["typetests:gen", "tsc"],
-			"outputs": ["dist/**", "*.tsbuildinfo"]
+			"outputs": ["dist/**", "*.tsbuildinfo"],
 		},
 		"build:test:esm": {
 			"dependsOn": ["typetests:gen", "build:esnext"],
-			"outputs": ["lib/**", "*.tsbuildinfo"]
+			"outputs": ["lib/**", "*.tsbuildinfo"],
 		},
 
 		// ============================================================
@@ -207,23 +221,23 @@
 		// ============================================================
 		"test:unit": {
 			"dependsOn": ["test:mocha", "test:jest"],
-			"outputs": []
+			"outputs": [],
 		},
 		"test:unit:cjs": {
 			"dependsOn": ["test:mocha:cjs"],
-			"outputs": []
+			"outputs": [],
 		},
 		"test:unit:esm": {
 			"dependsOn": ["test:mocha:esm"],
-			"outputs": []
+			"outputs": [],
 		},
 		"test:cjs": {
 			"dependsOn": ["test:unit:cjs"],
-			"outputs": []
+			"outputs": [],
 		},
 		"test:esm": {
 			"dependsOn": ["test:unit:esm"],
-			"outputs": []
+			"outputs": [],
 		},
 		"test:jest": {
 			"dependsOn": ["build:compile"],
@@ -234,10 +248,10 @@
 				"**/*.test.tsx",
 				"**/*.spec.ts",
 				"jest.config.*",
-				"!**/*.md"
+				"!**/*.md",
 			],
 			"outputs": ["nyc/**"],
-			"cache": true
+			"cache": true,
 		},
 		"test:mocha": {
 			"dependsOn": ["build:test"],
@@ -248,10 +262,10 @@
 				"lib/test/**",
 				".mocharc.cjs",
 				".mocharc.js",
-				"!**/*.md"
+				"!**/*.md",
 			],
 			"outputs": ["nyc/**"],
-			"cache": true
+			"cache": true,
 		},
 		"test:mocha:cjs": {
 			"dependsOn": ["build:test:cjs"],
@@ -261,10 +275,10 @@
 				"dist/test/**",
 				".mocharc.cjs",
 				".mocharc.js",
-				"!**/*.md"
+				"!**/*.md",
 			],
 			"outputs": ["nyc/**"],
-			"cache": true
+			"cache": true,
 		},
 		"test:mocha:esm": {
 			"dependsOn": ["build:test:esm"],
@@ -274,20 +288,20 @@
 				"lib/test/**",
 				".mocharc.cjs",
 				".mocharc.mjs",
-				"!**/*.md"
+				"!**/*.md",
 			],
 			"outputs": ["nyc/**"],
-			"cache": true
+			"cache": true,
 		},
 
 		// Integration/E2E tests - never cache
 		"test:realsvc": {
 			"dependsOn": ["build:test"],
-			"cache": false
+			"cache": false,
 		},
 		"test:stress": {
 			"dependsOn": ["build:test"],
-			"cache": false
+			"cache": false,
 		},
 
 		// ============================================================
@@ -299,9 +313,9 @@
 				"good-fences",
 				"depcruise",
 				"check:exports",
-				"check:release-tags"
+				"check:release-tags",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"eslint": {
 			"dependsOn": ["^tsc"],
@@ -314,35 +328,35 @@
 				".eslintrc.cjs",
 				".eslintrc.js",
 				".eslintrc.json",
-				"!**/*.md"
+				"!**/*.md",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"good-fences": {
 			"inputs": ["src/**/*.ts", "src/**/*.tsx", "package.json", "fence.json"],
-			"outputs": []
+			"outputs": [],
 		},
 		"depcruise": {
 			"inputs": [
 				"src/**/*.ts",
 				"src/**/*.tsx",
-".dependency-cruiser.js",
+				".dependency-cruiser.js",
 				".dependency-cruiser.cjs",
-				"package.json"
+				"package.json",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:exports": {
 			"dependsOn": ["^build:compile", "api"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:release-tags": {
 			"dependsOn": ["^build:compile", "tsc", "build:esnext"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:are-the-types-wrong": {
 			"dependsOn": ["^build:compile", "tsc", "build:esnext", "api"],
-			"outputs": []
+			"outputs": [],
 		},
 
 		// ============================================================
@@ -350,11 +364,11 @@
 		// ============================================================
 		"checks": {
 			"dependsOn": ["check:format"],
-			"outputs": []
+			"outputs": [],
 		},
 		"checks:fix": {
 			"inputs": ["src/**", "biome.jsonc", "$TURBO_ROOT$/biome.jsonc"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:format": {
 			"inputs": [
@@ -362,9 +376,9 @@
 				"biome.jsonc",
 				".prettierrc*",
 				"$TURBO_ROOT$/biome.jsonc",
-				"$TURBO_ROOT$/.prettierrc*"
+				"$TURBO_ROOT$/.prettierrc*",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"format": {
 			"inputs": [
@@ -372,13 +386,13 @@
 				"biome.jsonc",
 				".prettierrc*",
 				"$TURBO_ROOT$/biome.jsonc",
-				"$TURBO_ROOT$/.prettierrc*"
+				"$TURBO_ROOT$/.prettierrc*",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:biome": {
 			"inputs": ["src/**", "biome.jsonc", "$TURBO_ROOT$/biome.jsonc"],
-			"outputs": []
+			"outputs": [],
 		},
 		"check:prettier": {
 			"inputs": [
@@ -386,13 +400,13 @@
 				".prettierrc*",
 				".prettierignore",
 				"$TURBO_ROOT$/.prettierrc*",
-				"$TURBO_ROOT$/.prettierignore"
+				"$TURBO_ROOT$/.prettierignore",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"format:biome": {
 			"inputs": ["src/**", "biome.jsonc", "$TURBO_ROOT$/biome.jsonc"],
-			"outputs": []
+			"outputs": [],
 		},
 		"format:prettier": {
 			"inputs": [
@@ -400,17 +414,17 @@
 				".prettierrc*",
 				".prettierignore",
 				"$TURBO_ROOT$/.prettierrc*",
-				"$TURBO_ROOT$/.prettierignore"
+				"$TURBO_ROOT$/.prettierignore",
 			],
-			"outputs": []
+			"outputs": [],
 		},
 		"prettier": {
 			"inputs": ["src/**", ".prettierrc*", "$TURBO_ROOT$/.prettierrc*"],
-			"outputs": []
+			"outputs": [],
 		},
 		"prettier:fix": {
 			"inputs": ["src/**", ".prettierrc*", "$TURBO_ROOT$/.prettierrc*"],
-			"outputs": []
+			"outputs": [],
 		},
 
 		// ============================================================
@@ -428,22 +442,30 @@
 				"webpack.config.*.js",
 				"!**/*.md",
 				"!**/*.test.*",
-				"!**/test/**"
+				"!**/test/**",
 			],
-			"outputs": ["dist/**/*.bundle.js", "dist/**/*.bundle.js.map", "!dist/test/**"],
-			"env": ["NODE_ENV", "WEBPACK_BUNDLE_ANALYZER"]
+			"outputs": [
+				"dist/**/*.bundle.js",
+				"dist/**/*.bundle.js.map",
+				"!dist/test/**",
+			],
+			"env": ["NODE_ENV", "WEBPACK_BUNDLE_ANALYZER"],
 		},
 		"webpack:profile": {
 			"dependsOn": ["^tsc", "^build:esnext"],
 			"inputs": ["$TURBO_DEFAULT$", "src/**", "webpack.config.js", "!**/*.md"],
-			"outputs": ["dist/**/*.bundle.js", "dist/**/*.bundle.js.map", "webpack-stats.json"]
+			"outputs": [
+				"dist/**/*.bundle.js",
+				"dist/**/*.bundle.js.map",
+				"webpack-stats.json",
+			],
 		},
 
 		// ============================================================
 		// Clean Task (no cache, runs before everything)
 		// ============================================================
 		"clean": {
-			"cache": false
+			"cache": false,
 		},
 
 		// ============================================================
@@ -455,29 +477,29 @@
 				"{azure,examples,experimental,packages}/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
-				"tools/markdown-magic/package.json"
+				"tools/markdown-magic/package.json",
 			],
-			"outputs": ["package.json"]
+			"outputs": ["package.json"],
 		},
 		"jssm-viz": {
 			"inputs": ["src/**/*.fsl"],
-			"outputs": ["src/**/*.fsl.svg"]
+			"outputs": ["src/**/*.fsl.svg"],
 		},
 		"markdown-magic": {
 			"outputs": [
 				"{azure,examples,experimental,packages}/*/*/*.md",
 				"{azure,examples,experimental,packages}/*/*/*/*.md",
 				"{azure,examples,experimental,packages}/*/*/*/*/*.md",
-				"tools/markdown-magic/**/*.md"
-			]
+				"tools/markdown-magic/**/*.md",
+			],
 		},
 		"oclif manifest": {
 			"inputs": ["package.json", "src/**"],
-			"outputs": ["oclif.manifest.json"]
+			"outputs": ["oclif.manifest.json"],
 		},
 		"oclif readme": {
 			"inputs": ["package.json", "src/**"],
-			"outputs": ["README.md", "docs/**"]
+			"outputs": ["README.md", "docs/**"],
 		},
 		"syncpack lint-semver-ranges": {
 			"inputs": [
@@ -486,15 +508,15 @@
 				"{azure,examples,experimental,packages}/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
-				"tools/markdown-magic/package.json"
+				"tools/markdown-magic/package.json",
 			],
 			"outputs": [
 				"package.json",
 				"{azure,examples,experimental,packages}/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
-				"tools/markdown-magic/package.json"
-			]
+				"tools/markdown-magic/package.json",
+			],
 		},
 		"syncpack list-mismatches": {
 			"inputs": [
@@ -503,15 +525,15 @@
 				"{azure,examples,experimental,packages}/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
-				"tools/markdown-magic/package.json"
+				"tools/markdown-magic/package.json",
 			],
 			"outputs": [
 				"package.json",
 				"{azure,examples,experimental,packages}/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/package.json",
 				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
-				"tools/markdown-magic/package.json"
-			]
-		}
-	}
+				"tools/markdown-magic/package.json",
+			],
+		},
+	},
 }

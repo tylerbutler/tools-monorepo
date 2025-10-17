@@ -5,10 +5,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-const TURBO_GITIGNORE_ENTRIES = [
-	"",
-	".turbo",
-];
+const TURBO_GITIGNORE_ENTRIES = ["", ".turbo"];
 
 /**
  * Update .gitignore with turbo-related entries
@@ -46,7 +43,9 @@ export async function updateGitignoreForTurbo(repoRoot: string): Promise<void> {
 /**
  * Check if .gitignore needs turbo updates
  */
-export async function needsGitignoreUpdateForTurbo(repoRoot: string): Promise<boolean> {
+export async function needsGitignoreUpdateForTurbo(
+	repoRoot: string,
+): Promise<boolean> {
 	const gitignorePath = path.join(repoRoot, ".gitignore");
 
 	try {

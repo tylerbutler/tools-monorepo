@@ -17,27 +17,27 @@ import {
 	isNxConfigured,
 } from "../../lib/fluid-repo-overlay/config-files.js";
 import {
-	needsPackageJsonUpdates,
-	updatePackageJsonFiles,
-	updateRootPackageJson,
-} from "../../lib/fluid-repo-overlay/package-json.js";
+	copyTurboConfigFiles,
+	isTurboConfigured,
+} from "../../lib/fluid-repo-overlay/config-files-turbo.js";
 import {
 	needsGitignoreUpdate,
 	updateGitignore,
 } from "../../lib/fluid-repo-overlay/gitignore.js";
 import {
-	copyTurboConfigFiles,
-	isTurboConfigured,
-} from "../../lib/fluid-repo-overlay/config-files-turbo.js";
+	needsGitignoreUpdateForTurbo,
+	updateGitignoreForTurbo,
+} from "../../lib/fluid-repo-overlay/gitignore-turbo.js";
+import {
+	needsPackageJsonUpdates,
+	updatePackageJsonFiles,
+	updateRootPackageJson,
+} from "../../lib/fluid-repo-overlay/package-json.js";
 import {
 	needsPackageJsonUpdatesForTurbo,
 	updatePackageJsonFilesForTurbo,
 	updateRootPackageJsonForTurbo,
 } from "../../lib/fluid-repo-overlay/package-json-turbo.js";
-import {
-	needsGitignoreUpdateForTurbo,
-	updateGitignoreForTurbo,
-} from "../../lib/fluid-repo-overlay/gitignore-turbo.js";
 
 const VALID_OVERLAY_TYPES = ["nx", "turbo"] as const;
 type OverlayType = (typeof VALID_OVERLAY_TYPES)[number];

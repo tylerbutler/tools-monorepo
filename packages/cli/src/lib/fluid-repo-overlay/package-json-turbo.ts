@@ -14,13 +14,11 @@ interface PackageJson {
 }
 
 // Scripts to remove from individual packages (replaced by direct task invocation)
-const FLUID_BUILD_SCRIPT_PATTERNS = [
-	"fluid-build",
-];
+const FLUID_BUILD_SCRIPT_PATTERNS = ["fluid-build"];
 
 // Root package.json turbo scripts based on actual turbo.jsonc task names
 const ROOT_TURBO_SCRIPTS: Record<string, string> = {
-	"build": "turbo run build",
+	build: "turbo run build",
 	"build:legacy": "fluid-build --task build",
 	"build-and-test": "turbo run test:unit test:mocha test:jest",
 	"build-and-test:legacy": "fluid-build --task test --worker",
@@ -33,9 +31,11 @@ const ROOT_TURBO_SCRIPTS: Record<string, string> = {
 	"build-and-test:mocha": "turbo run test:mocha",
 	"build-and-test:mocha:legacy": "fluid-build --task test:mocha --worker",
 	"build-and-test:mocha:cjs": "turbo run test:mocha:cjs",
-	"build-and-test:mocha:cjs:legacy": "fluid-build --task test:mocha:cjs --worker",
+	"build-and-test:mocha:cjs:legacy":
+		"fluid-build --task test:mocha:cjs --worker",
 	"build-and-test:mocha:esm": "turbo run test:mocha:esm",
-	"build-and-test:mocha:esm:legacy": "fluid-build --task test:mocha:esm --worker",
+	"build-and-test:mocha:esm:legacy":
+		"fluid-build --task test:mocha:esm --worker",
 	"build-and-test:unit": "turbo run test:unit",
 	"build-and-test:unit:legacy": "fluid-build --task test:unit --worker",
 	"build-and-test:unit:cjs": "turbo run test:unit:cjs",
@@ -59,8 +59,9 @@ const ROOT_TURBO_SCRIPTS: Record<string, string> = {
 	"build:gendocs:client": "turbo run build:gendocs:client",
 	"build:gendocs:client:legacy": "fluid-build --task build:gendocs:client",
 	"check:are-the-types-wrong": "turbo run check:are-the-types-wrong",
-	"check:are-the-types-wrong:legacy": "fluid-build --task check:are-the-types-wrong",
-	"checks": "turbo run checks",
+	"check:are-the-types-wrong:legacy":
+		"fluid-build --task check:are-the-types-wrong",
+	checks: "turbo run checks",
 	"checks:legacy": "fluid-build --task checks",
 	"checks:fix": "turbo run checks:fix",
 	"checks:fix:legacy": "fluid-build --task checks:fix",
@@ -68,29 +69,29 @@ const ROOT_TURBO_SCRIPTS: Record<string, string> = {
 	"ci:build:legacy": "fluid-build --task ci:build",
 	"ci:build:docs": "turbo run ci:build:docs",
 	"ci:build:docs:legacy": "fluid-build --task ci:build:docs",
-	"clean": "turbo run clean",
+	clean: "turbo run clean",
 	"clean:legacy": "fluid-build --task clean",
-	"eslint": "turbo run eslint",
+	eslint: "turbo run eslint",
 	"eslint:legacy": "fluid-build --task eslint",
 	"eslint:fix": "turbo run eslint:fix",
 	"eslint:fix:legacy": "fluid-build --task eslint:fix",
-	"format": "turbo run format",
+	format: "turbo run format",
 	"format:legacy": "fluid-build --task format",
 	"format:biome": "turbo run format:biome",
 	"format:biome:legacy": "fluid-build --task format:biome",
 	"generate:packageList": "turbo run generate:packageList",
 	"generate:packageList:legacy": "fluid-build --task generate:packageList",
-	"lint": "turbo run lint",
+	lint: "turbo run lint",
 	"lint:legacy": "fluid-build --task lint",
 	"lint:fix": "turbo run lint:fix",
 	"lint:fix:legacy": "fluid-build --task lint:fix",
-	"tsc": "turbo run tsc",
+	tsc: "turbo run tsc",
 	"tsc:legacy": "fluid-build --task tsc",
 	"tsc:fast": "turbo run tsc",
 	"tsc:fast:legacy": "fluid-build --task tsc --worker",
 	"typetests:gen": "turbo run typetests:gen",
 	"typetests:gen:legacy": "fluid-build --task typetests:gen",
-	"webpack": "turbo run webpack",
+	webpack: "turbo run webpack",
 	"webpack:legacy": "fluid-build --task webpack",
 	"webpack:profile": "turbo run webpack:profile",
 	"webpack:profile:legacy": "fluid-build --task webpack:profile",
@@ -102,7 +103,9 @@ const OVERRIDE_EXISTING_SCRIPTS = false;
 /**
  * Update root package.json with turbo dependencies
  */
-export async function updateRootPackageJsonForTurbo(repoRoot: string): Promise<void> {
+export async function updateRootPackageJsonForTurbo(
+	repoRoot: string,
+): Promise<void> {
 	const packageJsonPath = path.join(repoRoot, "package.json");
 
 	console.log("📦 Updating root package.json...");
@@ -130,7 +133,9 @@ export async function updateRootPackageJsonForTurbo(repoRoot: string): Promise<v
 		packageJson.scripts = {};
 	}
 
-	for (const [scriptName, scriptCommand] of Object.entries(ROOT_TURBO_SCRIPTS)) {
+	for (const [scriptName, scriptCommand] of Object.entries(
+		ROOT_TURBO_SCRIPTS,
+	)) {
 		if (!packageJson.scripts[scriptName]) {
 			packageJson.scripts[scriptName] = scriptCommand;
 			modified = true;
@@ -141,7 +146,9 @@ export async function updateRootPackageJsonForTurbo(repoRoot: string): Promise<v
 				modified = true;
 				console.log(`  ✅ Updated script: ${scriptName}`);
 			} else {
-				console.log(`  ⚠️  Script "${scriptName}" exists but differs from expected`);
+				console.log(
+					`  ⚠️  Script "${scriptName}" exists but differs from expected`,
+				);
 				console.log(`     Current:  ${packageJson.scripts[scriptName]}`);
 				console.log(`     Expected: ${scriptCommand}`);
 			}
@@ -166,7 +173,9 @@ export async function updateRootPackageJsonForTurbo(repoRoot: string): Promise<v
  * Update individual package package.json files by removing fluidBuild sections
  * and fluid-build script references
  */
-export async function updatePackageJsonFilesForTurbo(repoRoot: string): Promise<void> {
+export async function updatePackageJsonFilesForTurbo(
+	repoRoot: string,
+): Promise<void> {
 	console.log("📦 Updating package.json files in packages...");
 
 	// Find all package.json files in azure, examples, experimental, packages directories
@@ -205,7 +214,9 @@ export async function updatePackageJsonFilesForTurbo(repoRoot: string): Promise<
 /**
  * Update a single package.json file for turbo
  */
-async function updateSinglePackageJsonForTurbo(filePath: string): Promise<boolean> {
+async function updateSinglePackageJsonForTurbo(
+	filePath: string,
+): Promise<boolean> {
 	const content = await fs.readFile(filePath, "utf-8");
 	const packageJson: PackageJson = JSON.parse(content);
 
@@ -223,7 +234,9 @@ async function updateSinglePackageJsonForTurbo(filePath: string): Promise<boolea
 	}
 
 	// Remove fluid-build script references
-	for (const [scriptName, scriptCommand] of Object.entries(packageJson.scripts)) {
+	for (const [scriptName, scriptCommand] of Object.entries(
+		packageJson.scripts,
+	)) {
 		if (typeof scriptCommand === "string") {
 			// Check if script uses fluid-build
 			for (const pattern of FLUID_BUILD_SCRIPT_PATTERNS) {
