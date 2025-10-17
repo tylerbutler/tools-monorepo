@@ -1,0 +1,570 @@
+{
+	"$schema": "./node_modules/nx/schemas/nx-schema.json",
+	"extends": "nx/presets/npm.json",
+	"affected": {
+		"defaultBase": "main"
+	},
+	"namedInputs": {
+		"default": ["{projectRoot}/**/*", "sharedGlobals"],
+		"production": [
+			"default",
+			"!{projectRoot}/**/*.spec.ts",
+			"!{projectRoot}/**/*.test.ts",
+			"!{projectRoot}/test/**/*",
+			"!{projectRoot}/tests/**/*"
+		],
+		"sharedGlobals": [
+			"{workspaceRoot}/pnpm-lock.yaml",
+			"{workspaceRoot}/package.json"
+		]
+	},
+	"tasksRunnerOptions": {
+		"default": {
+			"runner": "nx/tasks-runners/default",
+			"options": {
+				"parallel": 8,
+				"cacheableOperations": [
+					"build",
+					"build:compile",
+					"build:lint",
+					"build:api",
+					"build:api:current",
+					"build:api:legacy",
+					"build:docs",
+					"tsc",
+					"esnext",
+					"copy-files",
+					"genver",
+					"ts2esm",
+					"typetest-gen",
+					"test-build",
+					"test-build-cjs",
+					"test-build-esm",
+					"api-extract-cjs",
+					"api-extract-esm",
+					"lint",
+					"eslint",
+					"good-fences",
+					"depcruise",
+					"check:exports",
+					"check:release-tags",
+					"check:are-the-types-wrong",
+					"check:format",
+					"check:biome",
+					"check:prettier",
+					"format",
+					"format:biome",
+					"format:prettier",
+					"prettier",
+					"test:unit",
+					"test:unit:cjs",
+					"test:unit:esm",
+					"mocha",
+					"mocha-cjs",
+					"mocha-esm",
+					"jest",
+					"webpack"
+				]
+			}
+		}
+	},
+	"targetDefaults": {
+		"ci:build": {
+			"dependsOn": [
+				"build:compile",
+				"build:lint",
+				"build:api",
+				"build:docs",
+				"build:manifest",
+				"build:readme"
+			],
+			"outputs": []
+		},
+		"full": {
+			"dependsOn": ["build", "webpack"],
+			"outputs": []
+		},
+		"build": {
+			"dependsOn": [
+				"^build",
+				"check:format",
+				"build:compile",
+				"build:lint",
+				"build:api",
+				"build:docs",
+				"build:manifest",
+				"build:readme"
+			],
+			"outputs": [],
+			"cache": true
+		},
+		"build:compile": {
+			"dependsOn": ["tsc", "esnext", "copy-files"],
+			"outputs": []
+		},
+		"build:lint": {
+			"dependsOn": [
+				"eslint",
+				"good-fences",
+				"depcruise",
+				"check:exports",
+				"check:release-tags"
+			],
+			"outputs": []
+		},
+		"build:api": {
+			"dependsOn": ["build:api:current", "build:api:legacy"],
+			"outputs": []
+		},
+		"build:api:current": {
+			"dependsOn": ["api-extract-esm"],
+			"outputs": []
+		},
+		"build:api:legacy": {
+			"dependsOn": ["api-extract-esm"],
+			"outputs": []
+		},
+		"build:docs": {
+			"dependsOn": ["docs-extract"],
+			"outputs": []
+		},
+		"build:readme": {
+			"dependsOn": ["build:compile"],
+			"outputs": ["{projectRoot}/README.md"]
+		},
+		"build:manifest": {
+			"dependsOn": ["build:compile"],
+			"outputs": ["{projectRoot}/oclif.manifest.json"]
+		},
+		"tsc": {
+			"dependsOn": ["^tsc", "genver", "ts2esm"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"!{projectRoot}/**/*.md",
+				"!{projectRoot}/**/*.test.ts",
+				"!{projectRoot}/**/*.spec.ts",
+				"!{projectRoot}/test/**",
+				"!{projectRoot}/tests/**"
+			],
+			"outputs": ["{projectRoot}/dist/**", "{projectRoot}/*.tsbuildinfo"],
+			"cache": true
+		},
+		"esnext": {
+			"dependsOn": ["^esnext", "genver", "ts2esm"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"!{projectRoot}/**/*.md",
+				"!{projectRoot}/**/*.test.ts",
+				"!{projectRoot}/**/*.spec.ts",
+				"!{projectRoot}/test/**",
+				"!{projectRoot}/tests/**"
+			],
+			"outputs": ["{projectRoot}/lib/**", "{projectRoot}/*.tsbuildinfo"],
+			"cache": true
+		},
+		"copy-files": {
+			"inputs": [
+				"{projectRoot}/src/**/*.json",
+				"{projectRoot}/src/**/*.txt",
+				"{projectRoot}/src/**/*.css",
+				"!{projectRoot}/src/**/*.test.*"
+			],
+			"outputs": ["{projectRoot}/dist/**", "{projectRoot}/lib/**"],
+			"cache": true
+		},
+		"genver": {
+			"inputs": ["{projectRoot}/package.json", "{workspaceRoot}/package.json"],
+			"outputs": ["{projectRoot}/src/packageVersion.ts"],
+			"cache": true
+		},
+		"ts2esm": {
+			"inputs": ["{projectRoot}/dist/**/*.js", "{projectRoot}/tsconfig.json"],
+			"outputs": ["{projectRoot}/lib/**"],
+			"cache": true
+		},
+		"typetest-gen": {
+			"inputs": ["{projectRoot}/package.json"],
+			"outputs": ["{projectRoot}/**/types/**/*.generated.ts"],
+			"cache": true
+		},
+		"api-extract-cjs": {
+			"dependsOn": ["tsc"],
+			"inputs": [
+				"{projectRoot}/dist/**/*.d.ts",
+				"{projectRoot}/api-extractor.json",
+				"{projectRoot}/api-extractor/**/*.json",
+				"{projectRoot}/tsconfig.json"
+			],
+			"outputs": [
+				"{projectRoot}/_api-extractor-temp/**",
+				"{projectRoot}/*.api.json"
+			],
+			"cache": true
+		},
+		"api-extract-esm": {
+			"dependsOn": ["esnext"],
+			"inputs": [
+				"{projectRoot}/lib/**/*.d.ts",
+				"{projectRoot}/api-extractor.json",
+				"{projectRoot}/api-extractor/**/*.json",
+				"{projectRoot}/tsconfig.json"
+			],
+			"outputs": [
+				"{projectRoot}/_api-extractor-temp/**",
+				"{projectRoot}/*.api.json",
+				"{projectRoot}/*.api.md"
+			],
+			"cache": true
+		},
+		"docs-extract": {
+			"dependsOn": ["esnext"],
+			"inputs": [
+				"{projectRoot}/lib/**/*.d.ts",
+				"{projectRoot}/api-extractor.json",
+				"{projectRoot}/tsconfig.json"
+			],
+			"outputs": ["{projectRoot}/_api-extractor-temp/**"],
+			"cache": true
+		},
+		"test-build": {
+			"dependsOn": ["typetest-gen", "test-build-cjs", "test-build-esm"],
+			"outputs": []
+		},
+		"test-build-cjs": {
+			"dependsOn": ["typetest-gen", "tsc"],
+			"inputs": [
+				"{projectRoot}/src/test/**/*.ts",
+				"{projectRoot}/tsconfig.json"
+			],
+			"outputs": ["{projectRoot}/dist/test/**", "{projectRoot}/*.tsbuildinfo"],
+			"cache": true
+		},
+		"test-build-esm": {
+			"dependsOn": ["typetest-gen", "esnext"],
+			"inputs": [
+				"{projectRoot}/src/test/**/*.ts",
+				"{projectRoot}/tsconfig.json"
+			],
+			"outputs": ["{projectRoot}/lib/test/**", "{projectRoot}/*.tsbuildinfo"],
+			"cache": true
+		},
+		"test:unit": {
+			"dependsOn": ["test:unit:cjs", "test:unit:esm"],
+			"outputs": []
+		},
+		"test:unit:cjs": {
+			"dependsOn": ["mocha-cjs", "jest"],
+			"outputs": []
+		},
+		"test:unit:esm": {
+			"dependsOn": ["mocha-esm"],
+			"outputs": []
+		},
+		"jest": {
+			"dependsOn": ["build:compile"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"{projectRoot}/src/test/**",
+				"{projectRoot}/**/*.test.ts",
+				"{projectRoot}/**/*.test.tsx",
+				"{projectRoot}/**/*.spec.ts",
+				"{projectRoot}/jest.config.*",
+				"!{projectRoot}/**/*.md"
+			],
+			"outputs": ["{projectRoot}/nyc/**"],
+			"cache": true
+		},
+		"mocha": {
+			"dependsOn": ["mocha-cjs", "mocha-esm"],
+			"outputs": []
+		},
+		"mocha-cjs": {
+			"dependsOn": ["test-build-cjs"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"{projectRoot}/src/test/**",
+				"{projectRoot}/dist/test/**",
+				"{projectRoot}/.mocharc.cjs",
+				"{projectRoot}/.mocharc.js",
+				"!{projectRoot}/**/*.md"
+			],
+			"outputs": ["{projectRoot}/nyc/**"],
+			"cache": true
+		},
+		"mocha-esm": {
+			"dependsOn": ["test-build-esm"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"{projectRoot}/src/test/**",
+				"{projectRoot}/lib/test/**",
+				"{projectRoot}/.mocharc.cjs",
+				"{projectRoot}/.mocharc.mjs",
+				"!{projectRoot}/**/*.md"
+			],
+			"outputs": ["{projectRoot}/nyc/**"],
+			"cache": true
+		},
+		"test:realsvc": {
+			"dependsOn": ["test-build"],
+			"cache": false
+		},
+		"test:stress": {
+			"dependsOn": ["test-build"],
+			"cache": false
+		},
+		"lint": {
+			"dependsOn": ["build:lint"],
+			"outputs": []
+		},
+		"eslint": {
+			"dependsOn": ["^tsc"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"{projectRoot}/src/**/*.ts",
+				"{projectRoot}/src/**/*.tsx",
+				"{projectRoot}/src/**/*.js",
+				"{projectRoot}/src/**/*.jsx",
+				"{projectRoot}/.eslintrc.cjs",
+				"{projectRoot}/.eslintrc.js",
+				"{projectRoot}/.eslintrc.json",
+				"!{projectRoot}/**/*.md"
+			],
+			"outputs": [],
+			"cache": true
+		},
+		"good-fences": {
+			"inputs": [
+				"{projectRoot}/src/**/*.ts",
+				"{projectRoot}/src/**/*.tsx",
+				"{projectRoot}/package.json",
+				"{projectRoot}/fence.json"
+			],
+			"outputs": [],
+			"cache": true
+		},
+		"depcruise": {
+			"inputs": [
+				"{projectRoot}/src/**/*.ts",
+				"{projectRoot}/src/**/*.tsx",
+				"{projectRoot}/.dependency-cruiser.js",
+				"{projectRoot}/.dependency-cruiser.cjs",
+				"{projectRoot}/package.json"
+			],
+			"outputs": [],
+			"cache": true
+		},
+		"check:exports": {
+			"dependsOn": ["^build:compile", "api-extract-cjs", "api-extract-esm"],
+			"outputs": [],
+			"cache": true
+		},
+		"check:release-tags": {
+			"dependsOn": ["^build:compile", "tsc", "esnext"],
+			"outputs": [],
+			"cache": true
+		},
+		"check:are-the-types-wrong": {
+			"dependsOn": [
+				"^build:compile",
+				"tsc",
+				"esnext",
+				"api-extract-cjs",
+				"api-extract-esm"
+			],
+			"outputs": [],
+			"cache": true
+		},
+		"checks": {
+			"dependsOn": ["check:format"],
+			"outputs": []
+		},
+		"checks:fix": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/biome.jsonc",
+				"{workspaceRoot}/biome.jsonc"
+			],
+			"outputs": []
+		},
+		"check:format": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/biome.jsonc",
+				"{projectRoot}/.prettierrc*",
+				"{workspaceRoot}/biome.jsonc",
+				"{workspaceRoot}/.prettierrc*"
+			],
+			"outputs": [],
+			"cache": true
+		},
+		"format": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/biome.jsonc",
+				"{projectRoot}/.prettierrc*",
+				"{workspaceRoot}/biome.jsonc",
+				"{workspaceRoot}/.prettierrc*"
+			],
+			"outputs": []
+		},
+		"check:biome": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/biome.jsonc",
+				"{workspaceRoot}/biome.jsonc"
+			],
+			"outputs": [],
+			"cache": true
+		},
+		"check:prettier": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/.prettierrc*",
+				"{projectRoot}/.prettierignore",
+				"{workspaceRoot}/.prettierrc*",
+				"{workspaceRoot}/.prettierignore"
+			],
+			"outputs": [],
+			"cache": true
+		},
+		"format:biome": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/biome.jsonc",
+				"{workspaceRoot}/biome.jsonc"
+			],
+			"outputs": []
+		},
+		"format:prettier": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/.prettierrc*",
+				"{projectRoot}/.prettierignore",
+				"{workspaceRoot}/.prettierrc*",
+				"{workspaceRoot}/.prettierignore"
+			],
+			"outputs": []
+		},
+		"prettier": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/.prettierrc*",
+				"{workspaceRoot}/.prettierrc*"
+			],
+			"outputs": []
+		},
+		"prettier:fix": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/.prettierrc*",
+				"{workspaceRoot}/.prettierrc*"
+			],
+			"outputs": []
+		},
+		"webpack": {
+			"dependsOn": ["^tsc", "^esnext"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"{projectRoot}/src/**/*.ts",
+				"{projectRoot}/src/**/*.tsx",
+				"{projectRoot}/src/**/*.js",
+				"{projectRoot}/src/**/*.jsx",
+				"{projectRoot}/webpack.config.js",
+				"{projectRoot}/webpack.config.*.js",
+				"!{projectRoot}/**/*.md",
+				"!{projectRoot}/**/*.test.*",
+				"!{projectRoot}/test/**",
+				{ "env": "NODE_ENV" },
+				{ "env": "WEBPACK_BUNDLE_ANALYZER" }
+			],
+			"outputs": [
+				"{projectRoot}/dist/**/*.bundle.js",
+				"{projectRoot}/dist/**/*.bundle.js.map",
+				"!{projectRoot}/dist/test/**"
+			],
+			"cache": true
+		},
+		"webpack:profile": {
+			"dependsOn": ["^tsc", "^esnext"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"{projectRoot}/src/**",
+				"{projectRoot}/webpack.config.js",
+				"!{projectRoot}/**/*.md"
+			],
+			"outputs": [
+				"{projectRoot}/dist/**/*.bundle.js",
+				"{projectRoot}/dist/**/*.bundle.js.map",
+				"{projectRoot}/webpack-stats.json"
+			],
+			"cache": true
+		},
+		"clean": {
+			"cache": false
+		},
+		"flub check buildversion": {
+			"inputs": [
+				"{workspaceRoot}/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"{workspaceRoot}/tools/markdown-magic/package.json"
+			],
+			"outputs": ["{workspaceRoot}/package.json"]
+		},
+		"jssm-viz": {
+			"inputs": ["{projectRoot}/src/**/*.fsl"],
+			"outputs": ["{projectRoot}/src/**/*.fsl.svg"]
+		},
+		"markdown-magic": {
+			"outputs": [
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*.md",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/*.md",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/*/*.md",
+				"{workspaceRoot}/tools/markdown-magic/**/*.md"
+			]
+		},
+		"oclif manifest": {
+			"inputs": ["{projectRoot}/package.json", "{projectRoot}/src/**"],
+			"outputs": ["{projectRoot}/oclif.manifest.json"]
+		},
+		"oclif readme": {
+			"inputs": ["{projectRoot}/package.json", "{projectRoot}/src/**"],
+			"outputs": ["{projectRoot}/README.md", "{projectRoot}/docs/**"]
+		},
+		"syncpack lint-semver-ranges": {
+			"inputs": [
+				"{workspaceRoot}/syncpack.config.cjs",
+				"{workspaceRoot}/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"{workspaceRoot}/tools/markdown-magic/package.json"
+			],
+			"outputs": [
+				"{workspaceRoot}/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"{workspaceRoot}/tools/markdown-magic/package.json"
+			]
+		},
+		"syncpack list-mismatches": {
+			"inputs": [
+				"{workspaceRoot}/syncpack.config.cjs",
+				"{workspaceRoot}/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"{workspaceRoot}/tools/markdown-magic/package.json"
+			],
+			"outputs": [
+				"{workspaceRoot}/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{workspaceRoot}/{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"{workspaceRoot}/tools/markdown-magic/package.json"
+			]
+		}
+	}
+}
