@@ -3,18 +3,7 @@
 	"extends": ["//"],
 	"tasks": {
 		"build": {
-			"dependsOn": [
-				"^build",
-				"compile",
-				"api",
-				"build:test",
-				"manifest",
-				"readme",
-				"generate",
-			],
-		},
-		"compile": {
-			"dependsOn": ["repopo#compile"],
+			"dependsOn": ["^build", "build:compile"],
 		},
 	},
 }

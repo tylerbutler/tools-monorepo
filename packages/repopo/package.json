@@ -42,7 +42,8 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"api": "api-extractor run --local",
+		"build": "npm run build:compile && npm run build:api && npm run build:manifest && npm run build:readme",
+		"build:api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"b": "turbo build",
 		"check": "concurrently npm:check:format",
@@ -51,17 +52,16 @@
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
-		"compile": "tsc --project ./tsconfig.json",
+		"build:compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "turbo full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"manifest": "oclif manifest",
+		"build:manifest": "oclif manifest",
 		"postpack": "npm run clean:manifest",
-		"readme": "concurrently npm:readme:*",
+		"build:readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",
-		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs"
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs"
 	},
 	"oclif": {
 		"bin": "repopo",

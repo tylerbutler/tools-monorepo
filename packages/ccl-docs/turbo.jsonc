@@ -3,7 +3,10 @@
 	"extends": ["//"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["build:site"],
+		},
+		"check": {
+			"dependsOn": ["check:astro"],
 		},
 	},
 }

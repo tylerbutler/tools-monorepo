@@ -20,9 +20,8 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
 	"scripts": {
-		"b": "turbo build",
-		"build": "vite build",
-		"build:tauri": "BUILD_TARGET=tauri npm run build && tauri build",
+		"build": "npm run sync-data && npm run build:vite",
+		"build:tauri": "BUILD_TARGET=tauri npm run build:vite && tauri build",
 		"build:vite": "vite build",
 		"check": "npm run check:svelte && npm run check:format",
 		"check:format": "biome check . --linter-enabled=false",

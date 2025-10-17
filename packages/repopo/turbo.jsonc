@@ -3,7 +3,13 @@
 	"extends": ["//"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["^build", "compile", "api", "manifest", "readme"],
+			"dependsOn": [
+				"^build",
+				"build:compile",
+				"build:api",
+				"build:manifest",
+				"build:readme",
+			],
 		},
 	},
 }
