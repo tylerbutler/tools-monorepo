@@ -76,6 +76,7 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     };
     // (undocumented)
     init(): Promise<void>;
+    protected requiresConfig: boolean;
 }
 
 // @beta
@@ -112,6 +113,7 @@ export abstract class GitCommand<T extends typeof Command & {
     protected git: SimpleGit;
     // (undocumented)
     protected repo: Repository;
+    protected requiresConfig: boolean;
 }
 
 // @beta
