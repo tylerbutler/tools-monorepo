@@ -103,8 +103,7 @@
 		"dill-cli": "workspace:^",
 		"picocolors": "^1.1.1",
 		"simple-git": "^3.28.0",
-		"strip-ansi": "^7.1.2",
-		"tinyglobby": "^0.2.15"
+		"strip-ansi": "^7.1.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
