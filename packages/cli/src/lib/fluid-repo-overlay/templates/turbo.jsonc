@@ -1,0 +1,517 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	// ============================================================
+	// Global Configuration
+	// ============================================================
+	"globalDependencies": ["pnpm-lockfile.yaml", "package.json"],
+	// Environment variables that affect cache keys
+	"globalEnv": ["CI", "NODE_ENV"],
+	// Pass-through variables (don't affect cache, but needed for tools)
+	"globalPassThroughEnv": [
+		"TERM", // Terminal capabilities for interactive tools
+		"FORCE_COLOR", // Force color output in CI/terminals
+		"NO_COLOR", // Disable color output
+		"DEBUG" // Debug logging for troubleshooting
+	],
+	"ui": "tui",
+	"tasks": {
+		// ============================================================
+		// Top-level Orchestration Tasks
+		// ============================================================
+		"ci:build": {
+			"dependsOn": [
+				"compile",
+				"lint",
+				"ci:build:api-reports",
+				"ci:build:docs",
+				"build:manifest",
+				"build:readme"
+			],
+			"outputs": []
+		},
+		"full": {
+			"dependsOn": ["build", "webpack"],
+			"outputs": []
+		},
+		"build": {
+			"dependsOn": [
+				"check:format",
+				"compile",
+				"lint",
+				"build:api-reports",
+				"build:docs",
+				"build:manifest",
+				"build:readme"
+			],
+			"outputs": []
+		},
+		"build:full": {
+			"dependsOn": ["full"],
+			"outputs": []
+		},
+
+		// ============================================================
+		// Compilation Tasks
+		// ============================================================
+		"compile": {
+			"dependsOn": ["commonjs", "build:esnext", "api", "build:test", "build:copy"],
+			"outputs": ["dist/**", "lib/**", "*.tsbuildinfo"]
+		},
+		"build:compile": {
+			"dependsOn": ["compile"],
+			"outputs": []
+		},
+		"commonjs": {
+			"dependsOn": ["tsc", "build:test"],
+			"outputs": ["dist/**", "*.tsbuildinfo"]
+		},
+		"build:commonjs": {
+			"dependsOn": ["commonjs"],
+			"outputs": []
+		},
+		"tsc": {
+			"dependsOn": ["^tsc", "build:genver", "ts2esm"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"!**/*.md",
+				"!**/*.test.ts",
+				"!**/*.spec.ts",
+				"!**/test/**",
+				"!**/tests/**"
+			],
+			"outputs": ["dist/**", "*.tsbuildinfo"]
+		},
+		"build:esnext": {
+			"dependsOn": ["^build:esnext", "build:genver", "ts2esm"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"!**/*.md",
+				"!**/*.test.ts",
+				"!**/*.spec.ts",
+				"!**/test/**",
+				"!**/tests/**"
+			],
+			"outputs": ["lib/**", "*.tsbuildinfo"]
+		},
+
+		// ============================================================
+		// Build Support Tasks
+		// ============================================================
+		"build:copy": {
+			"inputs": ["src/**/*.json", "src/**/*.txt", "src/**/*.css", "!src/**/*.test.*"],
+			"outputs": ["dist/**", "lib/**"]
+		},
+		"build:genver": {
+			"inputs": ["package.json", "../../package.json"],
+			"outputs": ["src/packageVersion.ts"]
+		},
+		"ts2esm": {
+			"inputs": ["dist/**/*.js", "tsconfig.json"],
+			"outputs": ["lib/**"]
+		},
+		"typetests:gen": {
+			"inputs": ["package.json"],
+			"outputs": ["**/types/**/*.generated.ts"]
+		},
+
+		// ============================================================
+		// API Extraction Tasks
+		// ============================================================
+		"api": {
+			"dependsOn": ["api-extractor:commonjs", "api-extractor:esnext"],
+			"outputs": []
+		},
+		"api-extractor:commonjs": {
+			"dependsOn": ["tsc"],
+			"inputs": [
+				"dist/**/*.d.ts",
+				"api-extractor.json",
+				"api-extractor/**/*.json",
+				"tsconfig.json"
+			],
+			"outputs": ["_api-extractor-temp/**", "*.api.json"]
+		},
+		"api-extractor:esnext": {
+			"dependsOn": ["build:esnext"],
+			"inputs": [
+				"lib/**/*.d.ts",
+				"api-extractor.json",
+				"api-extractor/**/*.json",
+				"tsconfig.json"
+			],
+			"outputs": ["_api-extractor-temp/**", "*.api.json"]
+		},
+
+		// ============================================================
+		// API Reports & Documentation
+		// ============================================================
+		"build:api-reports": {
+			"dependsOn": ["build:api-reports:current", "build:api-reports:legacy"],
+			"outputs": []
+		},
+		"build:api-reports:current": {
+			"dependsOn": ["api-extractor:esnext"],
+			"outputs": ["*.api.md"]
+		},
+		"build:api-reports:legacy": {
+			"dependsOn": ["api-extractor:esnext"],
+			"outputs": ["*.api.md"]
+		},
+		"ci:build:api-reports": {
+			"dependsOn": ["ci:build:api-reports:current", "ci:build:api-reports:legacy"],
+			"outputs": []
+		},
+		"ci:build:api-reports:current": {
+			"dependsOn": ["api-extractor:esnext"],
+			"outputs": ["*.api.md"]
+		},
+		"ci:build:api-reports:legacy": {
+			"dependsOn": ["api-extractor:esnext"],
+			"outputs": ["*.api.md"]
+		},
+		"build:docs": {
+			"dependsOn": ["build:esnext"],
+			"outputs": ["_api-extractor-temp/**"]
+		},
+		"ci:build:docs": {
+			"dependsOn": ["build:esnext"],
+			"outputs": ["_api-extractor-temp/**"]
+		},
+		"build:readme": {
+			"dependsOn": ["compile"],
+			"outputs": ["README.md"]
+		},
+		"build:manifest": {
+			"dependsOn": ["compile"],
+			"outputs": ["oclif.manifest.json"]
+		},
+
+		// ============================================================
+		// Test Build Tasks
+		// ============================================================
+		"build:test": {
+			"dependsOn": ["typetests:gen", "tsc", "build:esnext"],
+			"outputs": ["dist/**", "lib/**", "*.tsbuildinfo"]
+		},
+		"build:test:cjs": {
+			"dependsOn": ["typetests:gen", "tsc"],
+			"outputs": ["dist/**", "*.tsbuildinfo"]
+		},
+		"build:test:esm": {
+			"dependsOn": ["typetests:gen", "build:esnext"],
+			"outputs": ["lib/**", "*.tsbuildinfo"]
+		},
+
+		// ============================================================
+		// Test Execution Tasks (cache unit tests, not integration)
+		// ============================================================
+		"test:unit": {
+			"dependsOn": ["test:mocha", "test:jest"],
+			"outputs": []
+		},
+		"test:unit:cjs": {
+			"dependsOn": ["test:mocha:cjs"],
+			"outputs": []
+		},
+		"test:unit:esm": {
+			"dependsOn": ["test:mocha:esm"],
+			"outputs": []
+		},
+		"test:cjs": {
+			"dependsOn": ["test:unit:cjs"],
+			"outputs": []
+		},
+		"test:esm": {
+			"dependsOn": ["test:unit:esm"],
+			"outputs": []
+		},
+		"test:jest": {
+			"dependsOn": ["build:compile"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"src/test/**",
+				"**/*.test.ts",
+				"**/*.test.tsx",
+				"**/*.spec.ts",
+				"jest.config.*",
+				"!**/*.md"
+			],
+			"outputs": ["nyc/**"],
+			"cache": true
+		},
+		"test:mocha": {
+			"dependsOn": ["build:test"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"src/test/**",
+				"dist/test/**",
+				"lib/test/**",
+				".mocharc.cjs",
+				".mocharc.js",
+				"!**/*.md"
+			],
+			"outputs": ["nyc/**"],
+			"cache": true
+		},
+		"test:mocha:cjs": {
+			"dependsOn": ["build:test:cjs"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"src/test/**",
+				"dist/test/**",
+				".mocharc.cjs",
+				".mocharc.js",
+				"!**/*.md"
+			],
+			"outputs": ["nyc/**"],
+			"cache": true
+		},
+		"test:mocha:esm": {
+			"dependsOn": ["build:test:esm"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"src/test/**",
+				"lib/test/**",
+				".mocharc.cjs",
+				".mocharc.mjs",
+				"!**/*.md"
+			],
+			"outputs": ["nyc/**"],
+			"cache": true
+		},
+
+		// Integration/E2E tests - never cache
+		"test:realsvc": {
+			"dependsOn": ["build:test"],
+			"cache": false
+		},
+		"test:stress": {
+			"dependsOn": ["build:test"],
+			"cache": false
+		},
+
+		// ============================================================
+		// Linting & Validation Tasks
+		// ============================================================
+		"lint": {
+			"dependsOn": [
+				"eslint",
+				"good-fences",
+				"depcruise",
+				"check:exports",
+				"check:release-tags"
+			],
+			"outputs": []
+		},
+		"eslint": {
+			"dependsOn": ["^tsc"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"src/**/*.ts",
+				"src/**/*.tsx",
+				"src/**/*.js",
+				"src/**/*.jsx",
+				".eslintrc.cjs",
+				".eslintrc.js",
+				".eslintrc.json",
+				"!**/*.md"
+			],
+			"outputs": []
+		},
+		"good-fences": {
+			"inputs": ["src/**/*.ts", "src/**/*.tsx", "package.json", "fence.json"],
+			"outputs": []
+		},
+		"depcruise": {
+			"inputs": [
+				"src/**/*.ts",
+				"src/**/*.tsx",
+".dependency-cruiser.js",
+				".dependency-cruiser.cjs",
+				"package.json"
+			],
+			"outputs": []
+		},
+		"check:exports": {
+			"dependsOn": ["^build:compile", "api"],
+			"outputs": []
+		},
+		"check:release-tags": {
+			"dependsOn": ["^build:compile", "tsc", "build:esnext"],
+			"outputs": []
+		},
+		"check:are-the-types-wrong": {
+			"dependsOn": ["^build:compile", "tsc", "build:esnext", "api"],
+			"outputs": []
+		},
+
+		// ============================================================
+		// Format/Style Checking Tasks
+		// ============================================================
+		"checks": {
+			"dependsOn": ["check:format"],
+			"outputs": []
+		},
+		"checks:fix": {
+			"inputs": ["src/**", "biome.jsonc", "$TURBO_ROOT$/biome.jsonc"],
+			"outputs": []
+		},
+		"check:format": {
+			"inputs": [
+				"src/**",
+				"biome.jsonc",
+				".prettierrc*",
+				"$TURBO_ROOT$/biome.jsonc",
+				"$TURBO_ROOT$/.prettierrc*"
+			],
+			"outputs": []
+		},
+		"format": {
+			"inputs": [
+				"src/**",
+				"biome.jsonc",
+				".prettierrc*",
+				"$TURBO_ROOT$/biome.jsonc",
+				"$TURBO_ROOT$/.prettierrc*"
+			],
+			"outputs": []
+		},
+		"check:biome": {
+			"inputs": ["src/**", "biome.jsonc", "$TURBO_ROOT$/biome.jsonc"],
+			"outputs": []
+		},
+		"check:prettier": {
+			"inputs": [
+				"src/**",
+				".prettierrc*",
+				".prettierignore",
+				"$TURBO_ROOT$/.prettierrc*",
+				"$TURBO_ROOT$/.prettierignore"
+			],
+			"outputs": []
+		},
+		"format:biome": {
+			"inputs": ["src/**", "biome.jsonc", "$TURBO_ROOT$/biome.jsonc"],
+			"outputs": []
+		},
+		"format:prettier": {
+			"inputs": [
+				"src/**",
+				".prettierrc*",
+				".prettierignore",
+				"$TURBO_ROOT$/.prettierrc*",
+				"$TURBO_ROOT$/.prettierignore"
+			],
+			"outputs": []
+		},
+		"prettier": {
+			"inputs": ["src/**", ".prettierrc*", "$TURBO_ROOT$/.prettierrc*"],
+			"outputs": []
+		},
+		"prettier:fix": {
+			"inputs": ["src/**", ".prettierrc*", "$TURBO_ROOT$/.prettierrc*"],
+			"outputs": []
+		},
+
+		// ============================================================
+		// Bundling Tasks
+		// ============================================================
+		"webpack": {
+			"dependsOn": ["^tsc", "^build:esnext"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"src/**/*.ts",
+				"src/**/*.tsx",
+				"src/**/*.js",
+				"src/**/*.jsx",
+				"webpack.config.js",
+				"webpack.config.*.js",
+				"!**/*.md",
+				"!**/*.test.*",
+				"!**/test/**"
+			],
+			"outputs": ["dist/**/*.bundle.js", "dist/**/*.bundle.js.map", "!dist/test/**"],
+			"env": ["NODE_ENV", "WEBPACK_BUNDLE_ANALYZER"]
+		},
+		"webpack:profile": {
+			"dependsOn": ["^tsc", "^build:esnext"],
+			"inputs": ["$TURBO_DEFAULT$", "src/**", "webpack.config.js", "!**/*.md"],
+			"outputs": ["dist/**/*.bundle.js", "dist/**/*.bundle.js.map", "webpack-stats.json"]
+		},
+
+		// ============================================================
+		// Clean Task (no cache, runs before everything)
+		// ============================================================
+		"clean": {
+			"cache": false
+		},
+
+		// ============================================================
+		// Declarative Tasks (flub, syncpack, oclif, etc)
+		// ============================================================
+		"flub check buildversion": {
+			"inputs": [
+				"package.json",
+				"{azure,examples,experimental,packages}/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"tools/markdown-magic/package.json"
+			],
+			"outputs": ["package.json"]
+		},
+		"jssm-viz": {
+			"inputs": ["src/**/*.fsl"],
+			"outputs": ["src/**/*.fsl.svg"]
+		},
+		"markdown-magic": {
+			"outputs": [
+				"{azure,examples,experimental,packages}/*/*/*.md",
+				"{azure,examples,experimental,packages}/*/*/*/*.md",
+				"{azure,examples,experimental,packages}/*/*/*/*/*.md",
+				"tools/markdown-magic/**/*.md"
+			]
+		},
+		"oclif manifest": {
+			"inputs": ["package.json", "src/**"],
+			"outputs": ["oclif.manifest.json"]
+		},
+		"oclif readme": {
+			"inputs": ["package.json", "src/**"],
+			"outputs": ["README.md", "docs/**"]
+		},
+		"syncpack lint-semver-ranges": {
+			"inputs": [
+				"syncpack.config.cjs",
+				"package.json",
+				"{azure,examples,experimental,packages}/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"tools/markdown-magic/package.json"
+			],
+			"outputs": [
+				"package.json",
+				"{azure,examples,experimental,packages}/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"tools/markdown-magic/package.json"
+			]
+		},
+		"syncpack list-mismatches": {
+			"inputs": [
+				"syncpack.config.cjs",
+				"package.json",
+				"{azure,examples,experimental,packages}/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"tools/markdown-magic/package.json"
+			],
+			"outputs": [
+				"package.json",
+				"{azure,examples,experimental,packages}/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/package.json",
+				"{azure,examples,experimental,packages}/*/*/*/*/package.json",
+				"tools/markdown-magic/package.json"
+			]
+		}
+	}
+}
