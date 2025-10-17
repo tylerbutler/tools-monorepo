@@ -19,6 +19,11 @@ export abstract class GitCommand<
 	protected git: SimpleGit;
 	protected repo: Repository;
 
+	/**
+	 * GitCommand doesn't require config by default. Subclasses that need config should set this to `true`.
+	 */
+	protected override requiresConfig = false;
+
 	public constructor(argv: string[], config: Config) {
 		super(argv, config);
 
