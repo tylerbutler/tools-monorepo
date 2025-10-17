@@ -115,16 +115,16 @@ importers:
         specifier: ^0.34.4
         version: 0.34.4
       starlight-heading-badges:
-        specifier: ^0.6.0
+        specifier: ^0.6.1
         version: 0.6.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-links-validator:
-        specifier: ^0.18.0
+        specifier: ^0.18.1
         version: 0.18.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-llms-txt:
         specifier: ^0.6.0
         version: 0.6.0(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       starlight-package-managers:
-        specifier: ^0.11.0
+        specifier: ^0.11.1
         version: 0.11.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       typescript:
         specifier: ~5.9.3
@@ -186,7 +186,7 @@ importers:
         specifier: ^0.15.1
         version: 0.15.1(encoding@0.1.13)
       '@playwright/test':
-        specifier: ^1.56.0
+        specifier: ^1.56.1
         version: 1.56.1
       '@sveltejs/adapter-netlify':
         specifier: ^5.2.4
@@ -210,7 +210,7 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8(svelte@5.40.2)(vite@7.1.10(@types/node@20.19.22)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vitest@3.2.4)
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       '@types/prismjs':
         specifier: ^1.26.5
@@ -225,10 +225,10 @@ importers:
         specifier: github:donovanglover/base16-tailwind
         version: https://codeload.github.com/donovanglover/base16-tailwind/tar.gz/3695359c3057b12955c4951a66f89e6a264887e1(@types/slug@5.0.9)(tailwindcss@4.1.14)
       bits-ui:
-        specifier: ^2.11.7
+        specifier: ^2.11.8
         version: 2.11.8(@internationalized/date@3.10.0)(@sveltejs/kit@2.47.0(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.40.2)(vite@7.1.10(@types/node@20.19.22)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.40.2)(vite@7.1.10(@types/node@20.19.22)(jiti@2.6.1)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.40.2)
       happy-dom:
-        specifier: ^20.0.2
+        specifier: ^20.0.4
         version: 20.0.4
       jsdom:
         specifier: ^25.0.1
@@ -237,7 +237,7 @@ importers:
         specifier: ^2.11.5
         version: 2.11.5(@types/node@20.19.22)(typescript@5.9.3)
       playwright:
-        specifier: ^1.56.0
+        specifier: ^1.56.1
         version: 1.56.1
       sonda:
         specifier: ^0.9.0
@@ -246,7 +246,7 @@ importers:
         specifier: '*'
         version: 3.4.0
       svelte:
-        specifier: ^5.40.1
+        specifier: ^5.40.2
         version: 5.40.2
       svelte-check:
         specifier: ^4.3.3
@@ -337,7 +337,7 @@ importers:
         specifier: ^4.1.12
         version: 4.1.12
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       concurrently:
         specifier: ^9.2.1
@@ -425,7 +425,7 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       '@types/semver':
         specifier: ^7.7.1
@@ -519,7 +519,7 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       '@types/semver':
         specifier: ^7.7.1
@@ -624,16 +624,16 @@ importers:
         specifier: ^0.34.4
         version: 0.34.4
       starlight-heading-badges:
-        specifier: ^0.6.0
+        specifier: ^0.6.1
         version: 0.6.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-links-validator:
-        specifier: ^0.18.0
+        specifier: ^0.18.1
         version: 0.18.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-package-managers:
-        specifier: ^0.11.0
+        specifier: ^0.11.1
         version: 0.11.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-typedoc:
-        specifier: ^0.21.3
+        specifier: ^0.21.4
         version: 0.21.4(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.14(typescript@5.9.3)))(typedoc@0.28.14(typescript@5.9.3))
       typedoc:
         specifier: ^0.28.14
@@ -673,7 +673,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.22)
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       '@vitest/coverage-v8':
         specifier: ^3.2.4
@@ -785,7 +785,7 @@ importers:
         specifier: ^10.0.10
         version: 10.0.10
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       concurrently:
         specifier: ^9.2.1
@@ -831,7 +831,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.22)
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       concurrently:
         specifier: ^9.2.1
@@ -913,7 +913,7 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       '@types/tmp':
         specifier: ^0.2.6
@@ -973,16 +973,16 @@ importers:
         specifier: ^0.34.4
         version: 0.34.4
       starlight-heading-badges:
-        specifier: ^0.6.0
+        specifier: ^0.6.1
         version: 0.6.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-links-validator:
-        specifier: ^0.18.0
+        specifier: ^0.18.1
         version: 0.18.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-package-managers:
-        specifier: ^0.11.0
+        specifier: ^0.11.1
         version: 0.11.1(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))
       starlight-typedoc:
-        specifier: ^0.21.3
+        specifier: ^0.21.4
         version: 0.21.4(@astrojs/starlight@0.35.3(astro@5.14.5(@netlify/blobs@10.0.11)(@types/node@24.8.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.14(typescript@5.9.3)))(typedoc@0.28.14(typescript@5.9.3))
       typedoc:
         specifier: ^0.28.14
@@ -1053,7 +1053,7 @@ importers:
         specifier: ^4.1.14
         version: 4.1.14(@oclif/core@4.5.6)
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       '@types/tmp':
         specifier: ^0.2.6
@@ -1110,7 +1110,7 @@ importers:
         specifier: ^7.53.1
         version: 7.53.1(@types/node@20.19.22)
       '@types/node':
-        specifier: ^20.19.21
+        specifier: ^20.19.22
         version: 20.19.22
       '@vitest/coverage-v8':
         specifier: ^3.2.4
@@ -16573,7 +16573,7 @@ snapshots:
 
   '@types/fontkit@2.0.8':
     dependencies:
-      '@types/node': 24.8.1
+      '@types/node': 20.19.22
 
   '@types/glob@7.2.0':
     dependencies:
@@ -16681,7 +16681,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 20.19.22
 
   '@types/semver-utils@1.1.3': {}
 
@@ -16715,7 +16715,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.8.1
+      '@types/node': 20.19.22
     optional: true
 
   '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)':
