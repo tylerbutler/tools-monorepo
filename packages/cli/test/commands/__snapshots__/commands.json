@@ -66,6 +66,17 @@
         "plugin": "@tylerbu/cli"
     },
     {
+        "alias": [],
+        "command": "fluid:repo-overlay",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [
+            "dry-run",
+            "repo-dir"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
         "alias": [
             "mtp"
         ],
