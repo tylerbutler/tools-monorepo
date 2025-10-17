@@ -51,7 +51,7 @@
 		"dirname": "tylerbu-cli-api"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.5.5",
+		"@oclif/core": "^4.5.6",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"debug": "^4.4.3",
 		"detect-indent": "^7.0.2",
@@ -75,7 +75,7 @@
 		"@vitest/coverage-v8": "^3.2.4",
 		"concurrently": "^9.2.1",
 		"generate-license-file": "^4.1.0",
-		"oclif": "^4.22.29",
+		"oclif": "^4.22.32",
 		"rimraf": "^6.0.1",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
