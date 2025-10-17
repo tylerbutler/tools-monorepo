@@ -2,15 +2,16 @@
  * Module for updating package.json files for turbo
  */
 
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
+import { readFile, writeFile } from "node:fs/promises";
+import { join, relative } from "node:path";
+import type { Logger } from "@tylerbu/cli-api";
 import { glob } from "tinyglobby";
 
 interface PackageJson {
-	[key: string]: any;
+	[key: string]: unknown;
 	scripts?: Record<string, string>;
 	devDependencies?: Record<string, string>;
-	fluidBuild?: any;
+	fluidBuild?: Record<string, unknown>;
 }
 
 // Scripts to remove from individual packages (replaced by direct task invocation)
@@ -103,14 +104,16 @@ const OVERRIDE_EXISTING_SCRIPTS = false;
 /**
  * Update root package.json with turbo dependencies
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Script iteration logic is inherently complex
 export async function updateRootPackageJsonForTurbo(
 	repoRoot: string,
+	logger: Logger,
 ): Promise<void> {
-	const packageJsonPath = path.join(repoRoot, "package.json");
+	const packageJsonPath = join(repoRoot, "package.json");
 
-	console.log("📦 Updating root package.json...");
+	logger.log("📦 Updating root package.json...");
 
-	const content = await fs.readFile(packageJsonPath, "utf-8");
+	const content = await readFile(packageJsonPath, "utf-8");
 	const packageJson: PackageJson = JSON.parse(content);
 
 	let modified = false;
@@ -120,12 +123,12 @@ export async function updateRootPackageJsonForTurbo(
 		packageJson.devDependencies = {};
 	}
 
-	if (!packageJson.devDependencies["turbo"]) {
-		packageJson.devDependencies["turbo"] = "^2.3.3";
-		modified = true;
-		console.log("  ✅ Added turbo dependency");
+	if (packageJson.devDependencies.turbo) {
+		logger.log("  ℹ️  turbo already in devDependencies");
 	} else {
-		console.log("  ℹ️  turbo already in devDependencies");
+		packageJson.devDependencies.turbo = "^2.3.3";
+		modified = true;
+		logger.log("  ✅ Added turbo dependency");
 	}
 
 	// Add turbo scripts to root package.json if not present
@@ -139,33 +142,33 @@ export async function updateRootPackageJsonForTurbo(
 		if (!packageJson.scripts[scriptName]) {
 			packageJson.scripts[scriptName] = scriptCommand;
 			modified = true;
-			console.log(`  ✅ Added script: ${scriptName}`);
+			logger.log(`  ✅ Added script: ${scriptName}`);
 		} else if (packageJson.scripts[scriptName] !== scriptCommand) {
 			if (OVERRIDE_EXISTING_SCRIPTS) {
 				packageJson.scripts[scriptName] = scriptCommand;
 				modified = true;
-				console.log(`  ✅ Updated script: ${scriptName}`);
+				logger.log(`  ✅ Updated script: ${scriptName}`);
 			} else {
-				console.log(
+				logger.warning(
 					`  ⚠️  Script "${scriptName}" exists but differs from expected`,
 				);
-				console.log(`     Current:  ${packageJson.scripts[scriptName]}`);
-				console.log(`     Expected: ${scriptCommand}`);
+				logger.log(`     Current:  ${packageJson.scripts[scriptName]}`);
+				logger.log(`     Expected: ${scriptCommand}`);
 			}
 		} else {
-			console.log(`  ℹ️  Script "${scriptName}" already correct`);
+			logger.log(`  ℹ️  Script "${scriptName}" already correct`);
 		}
 	}
 
 	if (modified) {
-		await fs.writeFile(
+		await writeFile(
 			packageJsonPath,
-			JSON.stringify(packageJson, null, 2) + "\n",
+			`${JSON.stringify(packageJson, null, 2)}\n`,
 			"utf-8",
 		);
-		console.log("  ✅ Root package.json updated");
+		logger.log("  ✅ Root package.json updated");
 	} else {
-		console.log("  ℹ️  No changes needed to root package.json");
+		logger.log("  ℹ️  No changes needed to root package.json");
 	}
 }
 
@@ -175,8 +178,9 @@ export async function updateRootPackageJsonForTurbo(
  */
 export async function updatePackageJsonFilesForTurbo(
 	repoRoot: string,
+	logger: Logger,
 ): Promise<void> {
-	console.log("📦 Updating package.json files in packages...");
+	logger.log("📦 Updating package.json files in packages...");
 
 	// Find all package.json files in azure, examples, experimental, packages directories
 	const patterns = [
@@ -199,7 +203,7 @@ export async function updatePackageJsonFilesForTurbo(
 		});
 
 		for (const filePath of files) {
-			const result = await updateSinglePackageJsonForTurbo(filePath);
+			const result = await updateSinglePackageJsonForTurbo(filePath, logger);
 			totalProcessed++;
 			if (result) {
 				totalModified++;
@@ -207,8 +211,8 @@ export async function updatePackageJsonFilesForTurbo(
 		}
 	}
 
-	console.log(`  ✅ Processed ${totalProcessed} package.json files`);
-	console.log(`  ✅ Modified ${totalModified} package.json files`);
+	logger.log(`  ✅ Processed ${totalProcessed} package.json files`);
+	logger.log(`  ✅ Modified ${totalModified} package.json files`);
 }
 
 /**
@@ -216,8 +220,9 @@ export async function updatePackageJsonFilesForTurbo(
  */
 async function updateSinglePackageJsonForTurbo(
 	filePath: string,
+	logger: Logger,
 ): Promise<boolean> {
-	const content = await fs.readFile(filePath, "utf-8");
+	const content = await readFile(filePath, "utf-8");
 	const packageJson: PackageJson = JSON.parse(content);
 
 	let modified = false;
@@ -251,13 +256,13 @@ async function updateSinglePackageJsonForTurbo(
 	}
 
 	if (modified) {
-		await fs.writeFile(
+		await writeFile(
 			filePath,
-			JSON.stringify(packageJson, null, 2) + "\n",
+			`${JSON.stringify(packageJson, null, 2)}\n`,
 			"utf-8",
 		);
-		const relativePath = path.relative(process.cwd(), filePath);
-		console.log(`  ✏️  Modified: ${relativePath}`);
+		const relativePath = relative(process.cwd(), filePath);
+		logger.log(`  ✏️  Modified: ${relativePath}`);
 	}
 
 	return modified;
@@ -269,14 +274,14 @@ async function updateSinglePackageJsonForTurbo(
 export async function needsPackageJsonUpdatesForTurbo(
 	repoRoot: string,
 ): Promise<boolean> {
-	const packageJsonPath = path.join(repoRoot, "package.json");
+	const packageJsonPath = join(repoRoot, "package.json");
 
 	try {
-		const content = await fs.readFile(packageJsonPath, "utf-8");
+		const content = await readFile(packageJsonPath, "utf-8");
 		const packageJson: PackageJson = JSON.parse(content);
 
 		// Check if turbo is in devDependencies
-		if (!packageJson.devDependencies?.["turbo"]) {
+		if (!packageJson.devDependencies?.turbo) {
 			return true;
 		}
 

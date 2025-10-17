@@ -9,7 +9,7 @@
  *   tbu fluid repo-overlay nx [options]
  */
 
-import * as path from "node:path";
+import { resolve } from "node:path";
 import process from "node:process";
 import { Args, Command, Flags } from "@oclif/core";
 import {
@@ -72,7 +72,7 @@ export default class RepoOverlayCommand extends Command {
 
 		// Use provided repo directory or default to current working directory
 		const repoRoot = flags["repo-dir"]
-			? path.resolve(flags["repo-dir"])
+			? resolve(flags["repo-dir"])
 			: process.cwd();
 
 		// Route to the appropriate overlay handler
@@ -163,19 +163,19 @@ export default class RepoOverlayCommand extends Command {
 
 		try {
 			// Step 1: Copy nx configuration files
-			await copyNxConfigFiles(repoRoot);
+			await copyNxConfigFiles(repoRoot, this);
 			this.log("");
 
 			// Step 2: Update root package.json
-			await updateRootPackageJson(repoRoot);
+			await updateRootPackageJson(repoRoot, this);
 			this.log("");
 
 			// Step 3: Update .gitignore
-			await updateGitignore(repoRoot);
+			await updateGitignore(repoRoot, this);
 			this.log("");
 
 			// Step 4: Update package.json files
-			await updatePackageJsonFiles(repoRoot);
+			await updatePackageJsonFiles(repoRoot, this);
 			this.log("");
 
 			this.log("✅ Nx overlay applied successfully!");
@@ -263,19 +263,19 @@ export default class RepoOverlayCommand extends Command {
 
 		try {
 			// Step 1: Copy turbo configuration files
-			await copyTurboConfigFiles(repoRoot);
+			await copyTurboConfigFiles(repoRoot, this);
 			this.log("");
 
 			// Step 2: Update root package.json
-			await updateRootPackageJsonForTurbo(repoRoot);
+			await updateRootPackageJsonForTurbo(repoRoot, this);
 			this.log("");
 
 			// Step 3: Update .gitignore
-			await updateGitignoreForTurbo(repoRoot);
+			await updateGitignoreForTurbo(repoRoot, this);
 			this.log("");
 
 			// Step 4: Update package.json files
-			await updatePackageJsonFilesForTurbo(repoRoot);
+			await updatePackageJsonFilesForTurbo(repoRoot, this);
 			this.log("");
 
 			this.log("✅ Turbo overlay applied successfully!");

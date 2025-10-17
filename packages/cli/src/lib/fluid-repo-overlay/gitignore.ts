@@ -2,8 +2,9 @@
  * Module for updating .gitignore for nx
  */
 
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
+import { readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import type { Logger } from "@tylerbu/cli-api";
 
 const NX_GITIGNORE_ENTRIES = [
 	"",
@@ -16,16 +17,19 @@ const NX_GITIGNORE_ENTRIES = [
 /**
  * Update .gitignore with nx-related entries
  */
-export async function updateGitignore(repoRoot: string): Promise<void> {
-	const gitignorePath = path.join(repoRoot, ".gitignore");
+export async function updateGitignore(
+	repoRoot: string,
+	logger: Logger,
+): Promise<void> {
+	const gitignorePath = join(repoRoot, ".gitignore");
 
-	console.log("📝 Updating .gitignore...");
+	logger.verbose("📝 Updating .gitignore...");
 
 	let content: string;
 	try {
-		content = await fs.readFile(gitignorePath, "utf-8");
+		content = await readFile(gitignorePath, "utf-8");
 	} catch {
-		console.log("  ⚠️  .gitignore not found");
+		logger.verbose("  ⚠️  .gitignore not found");
 		return;
 	}
 
@@ -33,27 +37,26 @@ export async function updateGitignore(repoRoot: string): Promise<void> {
 
 	// Check if nx entries already exist
 	if (lines.some((line) => line.trim() === ".nx/cache")) {
-		console.log("  ℹ️  nx entries already in .gitignore");
+		logger.verbose("  ℹ️  nx entries already in .gitignore");
 		return;
 	}
 
 	// Add nx entries
-	const updatedContent =
-		content.trimEnd() + "\n" + NX_GITIGNORE_ENTRIES.join("\n") + "\n";
+	const updatedContent = `${content.trimEnd()}\n${NX_GITIGNORE_ENTRIES.join("\n")}\n`;
 
-	await fs.writeFile(gitignorePath, updatedContent, "utf-8");
+	await writeFile(gitignorePath, updatedContent, "utf-8");
 
-	console.log("  ✅ .gitignore updated with nx entries");
+	logger.verbose("  ✅ .gitignore updated with nx entries");
 }
 
 /**
  * Check if .gitignore needs nx updates
  */
 export async function needsGitignoreUpdate(repoRoot: string): Promise<boolean> {
-	const gitignorePath = path.join(repoRoot, ".gitignore");
+	const gitignorePath = join(repoRoot, ".gitignore");
 
 	try {
-		const content = await fs.readFile(gitignorePath, "utf-8");
+		const content = await readFile(gitignorePath, "utf-8");
 		const lines = content.split("\n");
 
 		// Check if any nx entry exists

@@ -2,18 +2,19 @@
  * Module for updating package.json files for nx
  */
 
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
+import { readFile, writeFile } from "node:fs/promises";
+import { join, relative } from "node:path";
+import type { Logger } from "@tylerbu/cli-api";
 import { glob } from "tinyglobby";
 
 interface PackageJson {
-	[key: string]: any;
+	[key: string]: unknown;
 	scripts?: Record<string, string>;
 	devDependencies?: Record<string, string>;
-	fluidBuild?: any;
+	fluidBuild?: Record<string, unknown>;
 	pnpm?: {
 		onlyBuiltDependencies?: string[];
-		[key: string]: any;
+		[key: string]: unknown;
 	};
 }
 
@@ -69,12 +70,16 @@ const OVERRIDE_EXISTING_SCRIPTS = false;
 /**
  * Update root package.json with nx dependencies
  */
-export async function updateRootPackageJson(repoRoot: string): Promise<void> {
-	const packageJsonPath = path.join(repoRoot, "package.json");
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Script iteration logic is inherently complex
+export async function updateRootPackageJson(
+	repoRoot: string,
+	logger: Logger,
+): Promise<void> {
+	const packageJsonPath = join(repoRoot, "package.json");
 
-	console.log("📦 Updating root package.json...");
+	logger.log("📦 Updating root package.json...");
 
-	const content = await fs.readFile(packageJsonPath, "utf-8");
+	const content = await readFile(packageJsonPath, "utf-8");
 	const packageJson: PackageJson = JSON.parse(content);
 
 	let modified = false;
@@ -84,25 +89,25 @@ export async function updateRootPackageJson(repoRoot: string): Promise<void> {
 		packageJson.devDependencies = {};
 	}
 
-	if (!packageJson.devDependencies["nx"]) {
-		packageJson.devDependencies["nx"] = "21.6.5";
+	if (packageJson.devDependencies.nx) {
+		logger.log("  ℹ️  nx already in devDependencies");
+	} else {
+		packageJson.devDependencies.nx = "21.6.5";
 		packageJson.devDependencies["@nx/workspace"] = "^21.6.5";
 		modified = true;
-		console.log("  ✅ Added nx dependencies");
-	} else {
-		console.log("  ℹ️  nx already in devDependencies");
+		logger.log("  ✅ Added nx dependencies");
 	}
 
 	// Add nx to pnpm.onlyBuiltDependencies if not present
 	if (packageJson.pnpm?.onlyBuiltDependencies) {
-		if (!packageJson.pnpm.onlyBuiltDependencies.includes("nx")) {
+		if (packageJson.pnpm.onlyBuiltDependencies.includes("nx")) {
+			logger.log("  ℹ️  nx already in onlyBuiltDependencies");
+		} else {
 			packageJson.pnpm.onlyBuiltDependencies.push("nx");
 			// Sort for consistency
 			packageJson.pnpm.onlyBuiltDependencies.sort();
 			modified = true;
-			console.log("  ✅ Added nx to onlyBuiltDependencies");
-		} else {
-			console.log("  ℹ️  nx already in onlyBuiltDependencies");
+			logger.log("  ✅ Added nx to onlyBuiltDependencies");
 		}
 	}
 
@@ -115,33 +120,33 @@ export async function updateRootPackageJson(repoRoot: string): Promise<void> {
 		if (!packageJson.scripts[scriptName]) {
 			packageJson.scripts[scriptName] = scriptCommand;
 			modified = true;
-			console.log(`  ✅ Added script: ${scriptName}`);
+			logger.log(`  ✅ Added script: ${scriptName}`);
 		} else if (packageJson.scripts[scriptName] !== scriptCommand) {
 			if (OVERRIDE_EXISTING_SCRIPTS) {
 				packageJson.scripts[scriptName] = scriptCommand;
 				modified = true;
-				console.log(`  ✅ Updated script: ${scriptName}`);
+				logger.log(`  ✅ Updated script: ${scriptName}`);
 			} else {
-				console.log(
+				logger.warning(
 					`  ⚠️  Script "${scriptName}" exists but differs from expected`,
 				);
-				console.log(`     Current:  ${packageJson.scripts[scriptName]}`);
-				console.log(`     Expected: ${scriptCommand}`);
+				logger.log(`     Current:  ${packageJson.scripts[scriptName]}`);
+				logger.log(`     Expected: ${scriptCommand}`);
 			}
 		} else {
-			console.log(`  ℹ️  Script "${scriptName}" already correct`);
+			logger.log(`  ℹ️  Script "${scriptName}" already correct`);
 		}
 	}
 
 	if (modified) {
-		await fs.writeFile(
+		await writeFile(
 			packageJsonPath,
-			JSON.stringify(packageJson, null, 2) + "\n",
+			`${JSON.stringify(packageJson, null, 2)}\n`,
 			"utf-8",
 		);
-		console.log("  ✅ Root package.json updated");
+		logger.log("  ✅ Root package.json updated");
 	} else {
-		console.log("  ℹ️  No changes needed to root package.json");
+		logger.log("  ℹ️  No changes needed to root package.json");
 	}
 }
 
@@ -149,8 +154,11 @@ export async function updateRootPackageJson(repoRoot: string): Promise<void> {
  * Update individual package package.json files by removing fluidBuild sections
  * and fluid-build script references
  */
-export async function updatePackageJsonFiles(repoRoot: string): Promise<void> {
-	console.log("📦 Updating package.json files in packages...");
+export async function updatePackageJsonFiles(
+	repoRoot: string,
+	logger: Logger,
+): Promise<void> {
+	logger.log("📦 Updating package.json files in packages...");
 
 	// Find all package.json files in azure, examples, experimental, packages directories
 	const patterns = [
@@ -173,7 +181,7 @@ export async function updatePackageJsonFiles(repoRoot: string): Promise<void> {
 		});
 
 		for (const filePath of files) {
-			const result = await updateSinglePackageJson(filePath);
+			const result = await updateSinglePackageJson(filePath, logger);
 			totalProcessed++;
 			if (result) {
 				totalModified++;
@@ -181,15 +189,18 @@ export async function updatePackageJsonFiles(repoRoot: string): Promise<void> {
 		}
 	}
 
-	console.log(`  ✅ Processed ${totalProcessed} package.json files`);
-	console.log(`  ✅ Modified ${totalModified} package.json files`);
+	logger.log(`  ✅ Processed ${totalProcessed} package.json files`);
+	logger.log(`  ✅ Modified ${totalModified} package.json files`);
 }
 
 /**
  * Update a single package.json file
  */
-async function updateSinglePackageJson(filePath: string): Promise<boolean> {
-	const content = await fs.readFile(filePath, "utf-8");
+async function updateSinglePackageJson(
+	filePath: string,
+	logger: Logger,
+): Promise<boolean> {
+	const content = await readFile(filePath, "utf-8");
 	const packageJson: PackageJson = JSON.parse(content);
 
 	let modified = false;
@@ -231,13 +242,13 @@ async function updateSinglePackageJson(filePath: string): Promise<boolean> {
 	}
 
 	if (modified) {
-		await fs.writeFile(
+		await writeFile(
 			filePath,
-			JSON.stringify(packageJson, null, 2) + "\n",
+			`${JSON.stringify(packageJson, null, 2)}\n`,
 			"utf-8",
 		);
-		const relativePath = path.relative(process.cwd(), filePath);
-		console.log(`  ✏️  Modified: ${relativePath}`);
+		const relativePath = relative(process.cwd(), filePath);
+		logger.log(`  ✏️  Modified: ${relativePath}`);
 	}
 
 	return modified;
@@ -249,14 +260,14 @@ async function updateSinglePackageJson(filePath: string): Promise<boolean> {
 export async function needsPackageJsonUpdates(
 	repoRoot: string,
 ): Promise<boolean> {
-	const packageJsonPath = path.join(repoRoot, "package.json");
+	const packageJsonPath = join(repoRoot, "package.json");
 
 	try {
-		const content = await fs.readFile(packageJsonPath, "utf-8");
+		const content = await readFile(packageJsonPath, "utf-8");
 		const packageJson: PackageJson = JSON.parse(content);
 
 		// Check if nx is in devDependencies
-		if (!packageJson.devDependencies?.["nx"]) {
+		if (!packageJson.devDependencies?.nx) {
 			return true;
 		}
 
