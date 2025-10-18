@@ -125,6 +125,12 @@
 			"outputs": [],
 		},
 
+		"build:copy-templates": {
+			"dependsOn": ["build:compile"],
+			"inputs": ["src/**/templates/**"],
+			"outputs": ["esm/**/templates/**"],
+		},
+
 		// ============================================
 		// TEST IMPLEMENTATION TASKS
 		// ============================================
