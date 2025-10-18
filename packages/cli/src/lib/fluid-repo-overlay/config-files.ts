@@ -40,7 +40,7 @@ export async function copyNxConfigFiles(
 		const message = error instanceof Error ? error.message : String(error);
 		throw new Error(
 			`Failed to read nx.json template at ${nxJsonSource}. ` +
-				`This may indicate the package was not built correctly. ` +
+				"This may indicate the package was not built correctly. " +
 				`Original error: ${message}`,
 		);
 	}

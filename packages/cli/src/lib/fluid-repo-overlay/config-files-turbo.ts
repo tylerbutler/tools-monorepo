@@ -40,7 +40,7 @@ export async function copyTurboConfigFiles(
 		const message = error instanceof Error ? error.message : String(error);
 		throw new Error(
 			`Failed to read turbo.jsonc template at ${turboJsonSource}. ` +
-				`This may indicate the package was not built correctly. ` +
+				"This may indicate the package was not built correctly. " +
 				`Original error: ${message}`,
 		);
 	}
