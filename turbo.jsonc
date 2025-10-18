@@ -92,7 +92,7 @@
 
 		"build:generate": {
 			"dependsOn": ["build:compile"],
-			"inputs": ["esm/**"],
+			"inputs": ["src/**", "esm/**"],
 			"outputs": ["test/commands/__snapshots__/**"],
 		},
 
