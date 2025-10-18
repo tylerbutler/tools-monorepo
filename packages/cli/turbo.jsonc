@@ -6,6 +6,7 @@
 			"dependsOn": [
 				"^build",
 				"build:compile",
+				"build:copy-templates",
 				"build:manifest",
 				"build:readme",
 				"build:generate",

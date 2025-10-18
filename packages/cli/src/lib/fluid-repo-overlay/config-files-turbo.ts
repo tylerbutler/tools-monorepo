@@ -4,6 +4,7 @@
 
 import { access, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Logger } from "@tylerbu/cli-api";
 
 /**
@@ -15,7 +16,7 @@ export async function copyTurboConfigFiles(
 ): Promise<void> {
 	// Templates are embedded in the compiled output
 	const templatesDir = join(
-		dirname(new URL(import.meta.url).pathname),
+		dirname(fileURLToPath(import.meta.url)),
 		"templates",
 	);
 	const turboJsonSource = join(templatesDir, "turbo.jsonc");
@@ -33,7 +34,18 @@ export async function copyTurboConfigFiles(
 	}
 
 	// Copy turbo.jsonc
-	const content = await readFile(turboJsonSource, "utf-8");
+	let content: string;
+	try {
+		content = await readFile(turboJsonSource, "utf-8");
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		throw new Error(
+			`Failed to read turbo.jsonc template at ${turboJsonSource}. ` +
+				"This may indicate the package was not built correctly. " +
+				`Original error: ${message}`,
+		);
+	}
+
 	await writeFile(turboJsonDest, content, "utf-8");
 
 	logger.verbose("  ✅ turbo.jsonc created");

@@ -35,12 +35,13 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:manifest && npm run build:readme && npm run build:generate",
-		"build:compile": "tsc --project ./tsconfig.json",
+		"build": "pnpm build:compile && pnpm build:manifest && pnpm build:readme && pnpm build:generate",
+		"build:compile": "tsc --project ./tsconfig.json && pnpm build:copy-templates",
+		"build:copy-templates": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
 		"build:generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
 		"build:manifest": "oclif manifest",
 		"build:readme": "oclif readme --multi --no-aliases",
-		"check": "npm run check:format",
+		"check": "pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
@@ -48,10 +49,11 @@
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"postpack": "npm run clean:manifest",
+		"postpack": "pnpm clean:manifest",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
+		"test": "pnpm test:unit && pnpm test:snapshots",
+		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
+		"test:unit": "vitest run"
 	},
 	"oclif": {
 		"additionalHelpFlags": [
@@ -105,9 +107,9 @@
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
 		"picocolors": "^1.1.1",
-		"tinyglobby": "^0.2.15",
 		"simple-git": "^3.28.0",
-		"strip-ansi": "^7.1.2"
+		"strip-ansi": "^7.1.2",
+		"tinyglobby": "^0.2.15"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
@@ -116,10 +118,12 @@
 		"@types/debug": "^4.1.12",
 		"@types/node": "^20.19.21",
 		"concurrently": "^9.2.1",
+		"copyfiles": "^2.4.1",
 		"generate-license-file": "^4.1.0",
 		"oclif": "^4.22.32",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "*",
+		"tempy": "^3.1.0",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
 		"type-fest": "^4.41.0",

@@ -345,6 +345,9 @@ importers:
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
       generate-license-file:
         specifier: ^4.1.0
         version: 4.1.0(typescript@5.9.3)
@@ -357,6 +360,9 @@ importers:
       sort-package-json:
         specifier: '*'
         version: 3.4.0
+      tempy:
+        specifier: ^3.1.0
+        version: 3.1.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.19.21)(typescript@5.9.3)
