@@ -99,7 +99,7 @@ const ROOT_TURBO_SCRIPTS: Record<string, string> = {
 };
 
 // Override mode - set to true to replace existing scripts that differ
-const OVERRIDE_EXISTING_SCRIPTS = false;
+const OVERRIDE_EXISTING_SCRIPTS = true;
 
 /**
  * Update root package.json with turbo dependencies

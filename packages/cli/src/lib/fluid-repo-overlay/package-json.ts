@@ -51,21 +51,19 @@ const NX_WRAPPER_SCRIPTS: Record<string, string> = {
 // Root package.json nx scripts based on actual nx.json task names
 // Note: These use the actual target names from nx.json, not the old fluid-build task names
 const ROOT_NX_SCRIPTS: Record<string, string> = {
-	"build-and-test:nx": "nx run-many -t test:unit",
-	"build:compile:nx": "nx run-many -t build:compile",
-	"build:nx":
-		"nx run-many -t check:format build:compile build:lint build:api build:docs build:manifest build:readme",
-	"ci:build:nx":
-		"nx run-many -t build:compile build:lint build:api build:docs build:manifest build:readme",
-	"compile:nx": "nx run-many -t tsc esnext copy-files",
-	"full:nx":
-		"nx run-many -t check:format build:compile build:lint build:api build:docs build:manifest build:readme webpack",
-	"lint:nx": "nx run-many -t lint",
-	"tsc:nx": "nx run-many -t tsc",
+	// Main nx scripts (replace fluid-build commands)
+	"build": "nx run-many -t check:format build:compile build:lint build:api build:docs build:manifest build:readme",
+	"build-and-test": "nx run-many -t test:unit",
+	"build:compile": "nx run-many -t build:compile",
+	"build:full": "nx run-many -t check:format build:compile build:lint build:api build:docs build:manifest build:readme webpack",
+	"ci:build": "nx run-many -t build:compile build:lint build:api build:docs build:manifest build:readme",
+	"compile": "nx run-many -t tsc esnext copy-files",
+	"lint": "nx run-many -t lint",
+	"tsc": "nx run-many -t tsc",
 };
 
 // Override mode - set to true to replace existing scripts that differ
-const OVERRIDE_EXISTING_SCRIPTS = false;
+const OVERRIDE_EXISTING_SCRIPTS = true;
 
 /**
  * Update root package.json with nx dependencies
