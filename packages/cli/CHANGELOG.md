@@ -1,5 +1,11 @@
 # @tylerbu/cli
 
+## 0.4.1
+
+### Patch Changes
+
+- Add missing template files to package _[`#324`](https://github.com/tylerbutler/tools-monorepo/pull/324) [`cc72e15`](https://github.com/tylerbutler/tools-monorepo/commit/cc72e156f12de4f502c05a57eeee44d05195ff17) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.4.0
 
 ### Minor Changes
