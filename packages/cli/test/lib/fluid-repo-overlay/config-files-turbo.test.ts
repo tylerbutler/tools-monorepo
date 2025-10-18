@@ -61,22 +61,6 @@ describe("config-files-turbo", () => {
 				expect.stringContaining("already exists"),
 			);
 		});
-
-		it("throws helpful error if template is missing", async () => {
-			// This test validates our improved error handling
-			// In a real scenario, this would only happen if the package wasn't built correctly
-			const tmpDir = temporaryDirectory();
-			const mockLogger = {
-				verbose: vi.fn(),
-			};
-
-			// We can't easily trigger the missing template error without mocking,
-			// but we've verified the error handling exists in the code
-			// This test documents the expected behavior
-			await expect(
-				copyTurboConfigFiles(tmpDir, mockLogger),
-			).resolves.not.toThrow();
-		});
 	});
 
 	describe("isTurboConfigured", () => {
