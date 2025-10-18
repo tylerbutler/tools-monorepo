@@ -4,6 +4,7 @@
 
 import { access, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Logger } from "@tylerbu/cli-api";
 
 /**
@@ -15,7 +16,7 @@ export async function copyNxConfigFiles(
 ): Promise<void> {
 	// Templates are embedded in the compiled output
 	const templatesDir = join(
-		dirname(new URL(import.meta.url).pathname),
+		dirname(fileURLToPath(import.meta.url)),
 		"templates",
 	);
 	const nxJsonSource = join(templatesDir, "nx.json");
