@@ -67,6 +67,52 @@
     },
     {
         "alias": [],
+        "command": "fluid:repo-overlay",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "dry-run",
+            "quiet",
+            "repo-dir",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [
+            "mtp"
+        ],
+        "command": "git:merge-train:preview",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "git:squish",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "dry-run",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
         "command": "help",
         "flagAliases": [],
         "flagChars": [

@@ -51,8 +51,9 @@
 		"lint:fix": "biome lint . --write",
 		"postpack": "npm run clean:manifest",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
+		"test": "npm run test:unit && npm run test:snapshots",
+		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
+		"test:unit": "vitest run"
 	},
 	"oclif": {
 		"additionalHelpFlags": [
@@ -122,6 +123,7 @@
 		"oclif": "^4.22.32",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "*",
+		"tempy": "^3.1.0",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
 		"type-fest": "^4.41.0",

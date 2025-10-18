@@ -33,7 +33,18 @@ export async function copyNxConfigFiles(
 	}
 
 	// Copy nx.json
-	const content = await readFile(nxJsonSource, "utf-8");
+	let content: string;
+	try {
+		content = await readFile(nxJsonSource, "utf-8");
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		throw new Error(
+			`Failed to read nx.json template at ${nxJsonSource}. ` +
+				`This may indicate the package was not built correctly. ` +
+				`Original error: ${message}`,
+		);
+	}
+
 	await writeFile(nxJsonDest, content, "utf-8");
 
 	logger.verbose("  ✅ nx.json created");

@@ -33,7 +33,18 @@ export async function copyTurboConfigFiles(
 	}
 
 	// Copy turbo.jsonc
-	const content = await readFile(turboJsonSource, "utf-8");
+	let content: string;
+	try {
+		content = await readFile(turboJsonSource, "utf-8");
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		throw new Error(
+			`Failed to read turbo.jsonc template at ${turboJsonSource}. ` +
+				`This may indicate the package was not built correctly. ` +
+				`Original error: ${message}`,
+		);
+	}
+
 	await writeFile(turboJsonDest, content, "utf-8");
 
 	logger.verbose("  ✅ turbo.jsonc created");
