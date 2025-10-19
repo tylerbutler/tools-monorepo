@@ -71,6 +71,10 @@ interface PackageJson {
 	[key: string]: unknown;
 	name?: string;
 	scripts?: Record<string, string>;
+	fluidBuild?: {
+		tasks?: Record<string, unknown>;
+		[key: string]: unknown;
+	};
 }
 
 // ============================================================================
@@ -392,9 +396,55 @@ export async function applyTaskRenames(
 			}
 		}
 
+		// Third pass: handle fluidBuild.tasks if present
+		if (pkg.fluidBuild?.tasks && Object.keys(pkg.fluidBuild.tasks).length > 0) {
+			const newTasks: Record<string, unknown> = {};
+
+			for (const [taskName, taskDeps] of Object.entries(pkg.fluidBuild.tasks)) {
+				let newTaskName = taskName;
+
+				// Check if this task name should be renamed
+				for (const rule of RENAME_RULES) {
+					const matches =
+						typeof rule.pattern === "string"
+							? rule.pattern === taskName
+							: rule.pattern.test(taskName);
+
+					if (matches) {
+						newTaskName = rule.replacement;
+						modified = true;
+						break;
+					}
+				}
+
+				// Update task dependencies if not skipped
+				if (!options.skipCrossRefs && Array.isArray(taskDeps)) {
+					const updatedDeps = taskDeps.map((dep) => {
+						if (typeof dep === "string") {
+							const updatedDep = updateFluidBuildReference(dep, renameMap);
+							if (updatedDep !== dep) {
+								crossRefsUpdated++;
+								modified = true;
+							}
+							return updatedDep;
+						}
+						return dep;
+					});
+					newTasks[newTaskName] = updatedDeps;
+				} else {
+					newTasks[newTaskName] = taskDeps;
+				}
+			}
+
+			// Only update if we actually have the fluidBuild.tasks property originally
+			pkg.fluidBuild.tasks = newTasks;
+		}
+
 		// Write back if modified
 		if (modified) {
 			pkg.scripts = newScripts;
+
+			// Only write back the package.json as-is, don't add fields that weren't there
 			await writeFile(
 				packagePath,
 				`${JSON.stringify(pkg, null, 2)}\n`,
@@ -633,25 +683,101 @@ function updateScriptReferences(
 ): string {
 	let updated = scriptContent;
 
-	for (const [oldName, newName] of renameMap.entries()) {
+	// Sort rename entries by old name length (longest first) to handle nested names correctly
+	// e.g., "build:test:esm:no-exactOptionalPropertyTypes" before "build:test:esm"
+	const sortedEntries = Array.from(renameMap.entries()).sort(
+		(a, b) => b[0].length - a[0].length,
+	);
+
+	// Build pattern prefix map for concurrently wildcard updates
+	// e.g., if "build:api-reports:current" → "api-reports-current"
+	//       and "build:api-reports:legacy" → "api-reports-legacy"
+	//       then "npm:build:api-reports:*" should become "npm:api-reports-*"
+	const prefixMap = new Map<string, string>();
+	for (const [oldName, newName] of sortedEntries) {
+		// Extract common prefix patterns (everything before the last segment)
+		const oldParts = oldName.split(":");
+		const newParts = newName.split("-");
+
+		if (oldParts.length > 1) {
+			// For multi-part names, map the prefix
+			const oldPrefix = oldParts.slice(0, -1).join(":");
+			const newPrefix = newParts.slice(0, -1).join("-");
+
+			// Only add if we haven't seen this prefix or if it's consistent
+			if (!prefixMap.has(oldPrefix) || prefixMap.get(oldPrefix) === newPrefix) {
+				prefixMap.set(oldPrefix, newPrefix);
+			}
+		}
+	}
+
+	// Update concurrently wildcard patterns first
+	for (const [oldPrefix, newPrefix] of prefixMap.entries()) {
+		const escapedOldPrefix = oldPrefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+		// Update patterns like "npm:build:api-reports:*" → "npm:api-reports-*"
+		updated = updated.replace(
+			new RegExp(`npm:${escapedOldPrefix}:[*]`, "g"),
+			`npm:${newPrefix}-*`,
+		);
+	}
+
+	// Then update exact script name references
+	for (const [oldName, newName] of sortedEntries) {
+		// Escape special regex characters in oldName
+		const escapedOldName = oldName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 		// Replace npm run references
 		updated = updated.replace(
-			new RegExp(`npm run ${oldName}\\b`, "g"),
+			new RegExp(`npm run ${escapedOldName}\\b`, "g"),
 			`npm run ${newName}`,
 		);
 
 		// Replace pnpm references
 		updated = updated.replace(
-			new RegExp(`pnpm ${oldName}\\b`, "g"),
+			new RegExp(`pnpm ${escapedOldName}\\b`, "g"),
 			`pnpm ${newName}`,
 		);
 
 		// Replace yarn references
 		updated = updated.replace(
-			new RegExp(`yarn ${oldName}\\b`, "g"),
+			new RegExp(`yarn ${escapedOldName}\\b`, "g"),
 			`yarn ${newName}`,
+		);
+
+		// Replace npm: references in concurrently calls (exact match)
+		updated = updated.replace(
+			new RegExp(`npm:${escapedOldName}\\b`, "g"),
+			`npm:${newName}`,
 		);
 	}
 
 	return updated;
+}
+
+/**
+ * Update fluidBuild task references in format @package-name#task-name or simple task-name
+ */
+function updateFluidBuildReference(
+	ref: string,
+	renameMap: Map<string, string>,
+): string {
+	// Handle @package#task-name format (cross-package reference)
+	const match = ref.match(/^(@[^#]+)#(.+)$/);
+	if (match && match[1] && match[2]) {
+		const packageName = match[1];
+		const taskName = match[2];
+		const newTaskName = renameMap.get(taskName) ?? taskName;
+		return `${packageName}#${newTaskName}`;
+	}
+
+	// Handle simple task-name format (local reference)
+	// But don't modify special prefixes like ^, ~, etc.
+	if (ref.startsWith("^") || ref.startsWith("~") || ref.startsWith("#")) {
+		return ref;
+	}
+
+	// Simple task name - check if it needs to be renamed
+	const newTaskName = renameMap.get(ref) ?? ref;
+	return newTaskName;
 }
