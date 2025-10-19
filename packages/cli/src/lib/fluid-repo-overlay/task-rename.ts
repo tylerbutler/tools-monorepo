@@ -195,6 +195,12 @@ const RENAME_RULES: RenameRule[] = [
 	// ========================================================================
 	// Note: build:test:cjs and build:test:esm compile test files (not run tests)
 	{
+		pattern: "test:jest:verbose",
+		replacement: "jest:verbose",
+		tier: 3,
+		reason: "Executor: Jest test runner with verbose output (Pattern C tool variant)",
+	},
+	{
 		pattern: "build:test",
 		replacement: "tsc-test",
 		tier: 3,

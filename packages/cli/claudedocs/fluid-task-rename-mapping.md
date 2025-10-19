@@ -1,15 +1,15 @@
-# FluidFramework Task Rename - Complete Mapping (All 48 Rules)
+# FluidFramework Task Rename - Complete Mapping (All 50 Rules)
 
 ## Summary Statistics
 
 | Metric | Count |
 |--------|-------|
-| **Total Rename Rules** | **48** |
+| **Total Rename Rules** | **50** |
 | Total Packages in Repository | 165 |
 | Estimated Packages Affected | ~160 (97%) |
 | Estimated Cross-Reference Updates | ~250+ scripts |
 
-**Documentation Status**: ✅ All 48 rules documented (100% coverage)
+**Documentation Status**: ✅ All 50 rules documented (100% coverage)
 **Last Updated**: 2025-10-19
 
 ---
@@ -301,7 +301,7 @@ File copying and version generation executors.
 
 ---
 
-## Category C: Test Infrastructure (8 rules)
+## Category C: Test Infrastructure (9 rules)
 
 TypeScript compilation for test files and test runners.
 
@@ -444,11 +444,30 @@ TypeScript compilation for test files and test runners.
 
 ---
 
+#### Rule 24: `test:jest:verbose` → `jest:verbose`
+- **Tier**: 3 (Executor)
+- **Reason**: Jest test runner with verbose output (Pattern C tool variant)
+- **Pattern**: Exact match `"test:jest:verbose"`
+- **Estimated Packages**: ~31
+
+**Example**:
+```json
+// Before
+"test:jest:verbose": "jest --verbose"
+
+// After
+"jest:verbose": "jest --verbose"
+```
+
+**Why This Rename**: Removes redundant `test:` prefix and follows Pattern C (tool:mode format) to match `tsc:watch` pattern. Part of the Jest pattern family: `jest` (direct tool) and `jest:verbose` (tool variant).
+
+---
+
 ## Category D: Export Generation (2 rules)
 
 Entry point generation executors using flub tool.
 
-#### Rule 24: `build:exports:browser` → `generate-exports-browser`
+#### Rule 25: `build:exports:browser` → `generate-exports-browser`
 - **Tier**: 3 (Executor)
 - **Reason**: Generates browser entry points using flub
 - **Pattern**: Exact match `"build:exports:browser"`
@@ -465,7 +484,7 @@ Entry point generation executors using flub tool.
 
 ---
 
-#### Rule 25: `build:exports:node` → `generate-exports-node`
+#### Rule 26: `build:exports:node` → `generate-exports-node`
 - **Tier**: 3 (Executor)
 - **Reason**: Generates node entry points using flub
 - **Pattern**: Exact match `"build:exports:node"`
@@ -486,7 +505,7 @@ Entry point generation executors using flub tool.
 
 TypeScript entry point file generation using flub.
 
-#### Rule 26: `api-extractor:commonjs` → `generate-entrypoints-commonjs`
+#### Rule 27: `api-extractor:commonjs` → `generate-entrypoints-commonjs`
 - **Tier**: 3 (Executor)
 - **Reason**: Generates TypeScript entry point files for CommonJS using flub
 - **Pattern**: Exact match `"api-extractor:commonjs"`
@@ -503,7 +522,7 @@ TypeScript entry point file generation using flub.
 
 ---
 
-#### Rule 27: `api-extractor:esnext` → `generate-entrypoints-esnext`
+#### Rule 29: `api-extractor:esnext` → `generate-entrypoints-esnext`
 - **Tier**: 3 (Executor)
 - **Reason**: Generates TypeScript entry point files for ESNext using flub
 - **Pattern**: Exact match `"api-extractor:esnext"`
@@ -524,7 +543,7 @@ TypeScript entry point file generation using flub.
 
 Validation and checking executors.
 
-#### Rule 28: `check:biome` → `biome-check`
+#### Rule 29: `check:biome` → `biome-check`
 - **Tier**: 3 (Executor)
 - **Reason**: biome formatting/linting checker
 - **Pattern**: Exact match `"check:biome"`
@@ -541,7 +560,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 29: `check:are-the-types-wrong` → `attw`
+#### Rule 30: `check:are-the-types-wrong` → `attw`
 - **Tier**: 3 (Executor)
 - **Reason**: are-the-types-wrong package validation tool
 - **Pattern**: Exact match `"check:are-the-types-wrong"`
@@ -558,7 +577,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 30: `check:exports:bundle-release-tags` → `api-extractor-exports-bundle-release-tags`
+#### Rule 31: `check:exports:bundle-release-tags` → `api-extractor-exports-bundle-release-tags`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for bundle release tag validation
 - **Pattern**: Exact match `"check:exports:bundle-release-tags"`
@@ -575,7 +594,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 31: `check:exports:cjs:public` → `api-extractor-exports-cjs-public`
+#### Rule 32: `check:exports:cjs:public` → `api-extractor-exports-cjs-public`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CJS public exports validation
 - **Pattern**: Exact match `"check:exports:cjs:public"`
@@ -592,7 +611,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 32: `check:exports:esm:public` → `api-extractor-exports-esm-public`
+#### Rule 33: `check:exports:esm:public` → `api-extractor-exports-esm-public`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for ESM public exports validation
 - **Pattern**: Exact match `"check:exports:esm:public"`
@@ -609,7 +628,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 33: `check:exports:cjs:legacy` → `api-extractor-exports-cjs-legacy`
+#### Rule 34: `check:exports:cjs:legacy` → `api-extractor-exports-cjs-legacy`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CJS legacy exports validation
 - **Pattern**: Exact match `"check:exports:cjs:legacy"`
@@ -626,7 +645,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 34: `check:exports:esm:legacy` → `api-extractor-exports-esm-legacy`
+#### Rule 35: `check:exports:esm:legacy` → `api-extractor-exports-esm-legacy`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for ESM legacy exports validation
 - **Pattern**: Exact match `"check:exports:esm:legacy"`
@@ -643,7 +662,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 35: `check:exports:cjs:index` → `api-extractor-exports-cjs-index`
+#### Rule 36: `check:exports:cjs:index` → `api-extractor-exports-cjs-index`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CJS index exports validation
 - **Pattern**: Exact match `"check:exports:cjs:index"`
@@ -660,7 +679,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 36: `check:exports:esm:index` → `api-extractor-exports-esm-index`
+#### Rule 37: `check:exports:esm:index` → `api-extractor-exports-esm-index`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for ESM index exports validation
 - **Pattern**: Exact match `"check:exports:esm:index"`
@@ -677,7 +696,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 37: `check:exports:cjs:alpha` → `api-extractor-exports-cjs-alpha`
+#### Rule 38: `check:exports:cjs:alpha` → `api-extractor-exports-cjs-alpha`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CJS alpha exports validation
 - **Pattern**: Exact match `"check:exports:cjs:alpha"`
@@ -694,7 +713,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 38: `check:exports:esm:alpha` → `api-extractor-exports-esm-alpha`
+#### Rule 39: `check:exports:esm:alpha` → `api-extractor-exports-esm-alpha`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for ESM alpha exports validation
 - **Pattern**: Exact match `"check:exports:esm:alpha"`
@@ -711,7 +730,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 39: `check:exports:cjs:beta` → `api-extractor-exports-cjs-beta`
+#### Rule 40: `check:exports:cjs:beta` → `api-extractor-exports-cjs-beta`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CJS beta exports validation
 - **Pattern**: Exact match `"check:exports:cjs:beta"`
@@ -728,7 +747,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 40: `check:exports:esm:beta` → `api-extractor-exports-esm-beta`
+#### Rule 41: `check:exports:esm:beta` → `api-extractor-exports-esm-beta`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for ESM beta exports validation
 - **Pattern**: Exact match `"check:exports:esm:beta"`
@@ -745,7 +764,7 @@ Validation and checking executors.
 
 ---
 
-#### Rule 41: `check:release-tags` → `api-extractor-release-tags`
+#### Rule 42: `check:release-tags` → `api-extractor-release-tags`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for release tag validation
 - **Pattern**: Exact match `"check:release-tags"`
@@ -766,7 +785,7 @@ Validation and checking executors.
 
 CI-specific API documentation generation executors.
 
-#### Rule 42: `ci:build:docs` → `api-extractor-ci-docs`
+#### Rule 43: `ci:build:docs` → `api-extractor-ci-docs`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CI documentation generation
 - **Pattern**: Exact match `"ci:build:docs"`
@@ -783,7 +802,7 @@ CI-specific API documentation generation executors.
 
 ---
 
-#### Rule 43: `ci:build:api-reports:current` → `api-extractor-ci-api-reports-current`
+#### Rule 44: `ci:build:api-reports:current` → `api-extractor-ci-api-reports-current`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CI API reports (current)
 - **Pattern**: Exact match `"ci:build:api-reports:current"`
@@ -800,7 +819,7 @@ CI-specific API documentation generation executors.
 
 ---
 
-#### Rule 44: `ci:build:api-reports:legacy` → `api-extractor-ci-api-reports-legacy`
+#### Rule 45: `ci:build:api-reports:legacy` → `api-extractor-ci-api-reports-legacy`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CI API reports (legacy)
 - **Pattern**: Exact match `"ci:build:api-reports:legacy"`
@@ -817,7 +836,7 @@ CI-specific API documentation generation executors.
 
 ---
 
-#### Rule 45: `ci:build:api-reports:browser:current` → `api-extractor-ci-api-reports-browser-current`
+#### Rule 46: `ci:build:api-reports:browser:current` → `api-extractor-ci-api-reports-browser-current`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CI browser variant (current)
 - **Pattern**: Exact match `"ci:build:api-reports:browser:current"`
@@ -834,7 +853,7 @@ CI-specific API documentation generation executors.
 
 ---
 
-#### Rule 46: `ci:build:api-reports:browser:legacy` → `api-extractor-ci-api-reports-browser-legacy`
+#### Rule 47: `ci:build:api-reports:browser:legacy` → `api-extractor-ci-api-reports-browser-legacy`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CI browser variant (legacy)
 - **Pattern**: Exact match `"ci:build:api-reports:browser:legacy"`
@@ -851,7 +870,7 @@ CI-specific API documentation generation executors.
 
 ---
 
-#### Rule 47: `ci:build:api-reports:node:current` → `api-extractor-ci-api-reports-node-current`
+#### Rule 48: `ci:build:api-reports:node:current` → `api-extractor-ci-api-reports-node-current`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CI node variant (current)
 - **Pattern**: Exact match `"ci:build:api-reports:node:current"`
@@ -868,7 +887,7 @@ CI-specific API documentation generation executors.
 
 ---
 
-#### Rule 48: `ci:build:api-reports:node:legacy` → `api-extractor-ci-api-reports-node-legacy`
+#### Rule 49: `ci:build:api-reports:node:legacy` → `api-extractor-ci-api-reports-node-legacy`
 - **Tier**: 3 (Executor)
 - **Reason**: api-extractor for CI node variant (legacy)
 - **Pattern**: Exact match `"ci:build:api-reports:node:legacy"`
@@ -889,7 +908,7 @@ CI-specific API documentation generation executors.
 
 Formatting executors.
 
-#### Rule 49: `format:biome` → `biome-format`
+#### Rule 50: `format:biome` → `biome-format`
 - **Tier**: 3 (Executor)
 - **Reason**: biome formatting with write mode
 - **Pattern**: Exact match `"format:biome"`
