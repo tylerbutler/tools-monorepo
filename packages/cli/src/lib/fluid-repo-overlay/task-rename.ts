@@ -721,7 +721,7 @@ export async function updateFluidBuildConfig(
 }
 
 /**
- * Update the fluidBuild.config.cjs to disable fluid-build-tasks-* policies
+ * Update the fluidBuild.config.cjs to disable fluid-build-tasks-* and npm-package-exports-apis-linted policies
  * These policies will try to re-add tasks with incorrect names after renaming
  */
 export async function disableFluidBuildTasksPolicies(
@@ -742,11 +742,12 @@ export async function disableFluidBuildTasksPolicies(
 	let content = await readFile(configPath, "utf-8");
 	const originalContent = content;
 
-	// Find the handlerExclusions section and the fluid-build-tasks-eslint entry
+	// Find the handlerExclusions section and disable relevant policies
 	// We want to replace the array contents with [".*"] to exclude all packages
 	const policyHandlers = [
 		"fluid-build-tasks-eslint",
 		"fluid-build-tasks-tsc",
+		"npm-package-exports-apis-linted",
 	];
 
 	for (const handler of policyHandlers) {
@@ -770,7 +771,7 @@ export async function disableFluidBuildTasksPolicies(
 	// Write back if modified
 	if (content !== originalContent) {
 		await writeFile(configPath, content, "utf-8");
-		logger.log("  ✏️  Disabled fluid-build-tasks-* policies in fluidBuild.config.cjs");
+		logger.log("  ✏️  Disabled fluid-build-tasks-* and npm-package-exports-apis-linted policies in fluidBuild.config.cjs");
 	}
 }
 
