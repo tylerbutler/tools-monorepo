@@ -66,114 +66,132 @@ This document establishes clear principles for distinguishing **orchestrator tas
   - `test:unit` (runs unit tests in all formats)
   - `test:mocha` (coordinates mocha test execution across formats)
 
-- **Tool Executors:** Four naming patterns for different use cases
-  - **Pattern A - Direct tool names:** `tsc`, `eslint`, `jest`, `mocha`
-  - **Pattern B - Semantic tool names:** `esnext` (tsc for ESM - parallel output, not variant)
-  - **Pattern C - Tool variants:** `tsc:watch`, `jest:verbose` (tool + mode/flag)
-  - **Pattern D - Semantic categories:** `test:coverage`, `test:stress` (concept > specific tool)
+- **Tool Executors:** Two naming patterns (simplified from 4)
+  - **Pattern A - Direct executors:** `tsc`, `eslint`, `jest`, `esnext`, `coverage` (tool names or semantic operations)
+    - Single-word: `tsc`, `jest`, `esnext`, `coverage`
+    - Multi-word semantic: `generate-version`, `api-reports-current` (dash-separated)
+    - Semantic variants: `esnext-experimental`, `tsc-test-cjs` (dash-separated for different purposes)
+  - **Pattern C - Tool variants:** `tsc:watch`, `jest:verbose` (tool + mode/flag with colon separator)
 
-### Principle 4: Pragmatic Exceptions
+### Principle 4: Strict Classification Rules
 
-**Convention and clarity over strict rules:**
+**Zero exceptions approach for architectural consistency:**
 
-- **Conventional names override classification:** npm ecosystem standards (`start`, `test`) remain regardless of implementation type
-- **Semantic clarity beats technical precision:** Use meaningful names (`esnext`, `test:coverage`) over literal tool names
-- **Small sample sizes allow flexibility:** Tasks with <10 instances can use semantic categories even with mixed usage
-- **Pattern families maintain consistency:** Related tasks should follow consistent naming (e.g., Jest family: `jest`, `jest:verbose`)
+- **>90% threshold strictly enforced:** Executor (>90% executor instances) or orchestrator (>90% orchestrator instances)
+- **Mixed classification handled uniformly:** <90% either way defaults to orchestrator (safer, prevents infinite loops)
+- **No conventional name exceptions:** Even `start` and `test` must follow classification rules
+- **No semantic category pattern:** Pattern D eliminated - all executors use Pattern A or C
+- **Pattern families maintain consistency:** Related tasks follow consistent naming (e.g., Jest family: `jest`, `jest:verbose`)
 
 ---
 
-## Decision Framework for Task Classification
+## Decision Framework for Task Classification (Strict Rules)
 
-When classifying or renaming a task, follow this decision tree:
+When classifying or renaming a task, follow this simplified decision tree:
 
-### Step 1: Check for Conventional Names
-
-```
-Is this a conventional npm script? (start, test, build, dev, etc.)
-├─ YES → Keep conventional name (Tier 1 Workflow Orchestrator)
-│         Exception: Convention overrides strict classification
-│         Examples: "start" remains even if 85% executor
-└─ NO → Continue to Step 2
-```
-
-### Step 2: Analyze Majority Implementation Type
+### Step 1: Analyze Classification Percentage
 
 ```
 What percentage of instances are orchestrators vs executors?
-├─ >90% Orchestrator → Use semantic category with colon (Tier 2)
-│                       Examples: build:compile, test:mocha, check:exports
-├─ >90% Executor → Continue to Step 3
-└─ Mixed usage with <10 total instances → Use semantic category (pragmatic)
-                                          Examples: test:stress (5 exec, 2 orch)
-```
 
-### Step 3: Determine Executor Naming Pattern
-
-```
-What best describes this executor's purpose?
-
-├─ Pattern A: Direct tool execution
-│   Question: Does this run a specific tool with standard flags?
-│   Examples: tsc, eslint, jest, mocha
-│   Naming: Use exact tool name
+├─ >90% Orchestrator → Orchestrator classification
+│   ├─ Top-level workflow? → Tier 1 (no colon): build, test, lint
+│   └─ Stage coordination? → Tier 2 (single colon): build:compile, test:unit
 │
-├─ Pattern B: Semantic tool name (parallel operation)
-│   Question: Is this a parallel build target with semantic meaning?
-│   Examples: esnext (tsc → ESM, runs in parallel with tsc → CJS)
-│   Naming: Use semantic output/target name (no colon)
-│   Test: Does it run alongside the base tool, not replace it?
+├─ >90% Executor → Executor classification → Continue to Step 2
 │
-├─ Pattern C: Tool variant (mode/flag difference)
-│   Question: Is this the same tool with a different mode or flag?
-│   Examples: tsc:watch, jest:verbose
-│   Naming: {tool}:{mode}
-│   Test: Would you use --watch or --verbose flags?
-│
-└─ Pattern D: Semantic category executor
-    Question: Is this a concept that may use different tools?
-    Examples: test:coverage (jest/mocha/vitest with coverage)
-              test:stress (various stress test approaches)
-    Naming: {category}:{concept}
-    Test: Is the semantic meaning more important than the tool?
+└─ <90% either way (MIXED) → Default to orchestrator (safer)
+    Examples: start (85.7% executor), test:stress (71.4% executor)
+    Rationale: Package scripts never call nx/turbo, so orchestrator is safer
 ```
 
-### Step 4: Validate Pattern Family Consistency
+### Step 2: Determine Executor Naming Pattern
 
 ```
-Check related tasks for pattern consistency:
+What best describes this executor's implementation?
 
-Jest family example:
-├─ jest (base executor - Pattern A)
-├─ jest:verbose (variant - Pattern C)
-└─ test:jest:verbose → RENAME to jest:verbose (remove redundant prefix)
-
-TSC family example:
-├─ tsc (base executor - Pattern A)
-├─ tsc:watch (variant - Pattern C)
-└─ esnext (parallel target - Pattern B, NOT tsc:esnext)
-
-Coverage family example:
-└─ test:coverage (semantic category - Pattern D)
-    Rationale: Multiple tools can provide coverage
-```
-
-### Step 5: Special Case Evaluation
-
-```
-Does this task fit any special cases?
-
-├─ Hybrid classification (runs tool + orchestrates)
-│   → Treat as executor if tool execution is primary purpose
-│   Example: tsc:watch (80% hybrid) → Keep as tool variant
+├─ Pattern A: Direct Executor or Semantic Operation
+│   Question: Is this a tool name or semantic operation?
+│   Examples:
+│     - Direct tool: tsc, eslint, jest, copyfiles
+│     - Semantic operation: esnext, coverage, generate-version
+│     - Semantic variant: api-reports-current, esnext-experimental, tsc-test-cjs
+│   Naming:
+│     - {tool} (single word)
+│     - {semantic-operation} (single word or dash-separated multi-word)
+│     - {semantic-base}-{variant} (dash for different purposes/configurations)
+│   Decision: "Is this >90% executor and NOT a mode variant of a tool?"
 │
-├─ Historical naming conflicts
-│   → Rename to match current principles unless breaking change
-│   Example: build:esnext (99% executor) → Rename to esnext
+│   Dash Usage in Pattern A:
+│     - Multi-word semantic names: generate-version, api-reports-current
+│     - Semantic variants (different purposes): esnext-experimental, tsc-test-cjs
+│     - NOT for tool modes (use Pattern C instead)
 │
-└─ Ecosystem expectations
-    → Preserve if widely used pattern in the ecosystem
-    Example: start remains even with mixed usage
+└─ Pattern C: Tool Variant
+    Question: Is this a variant (mode/flag) of an existing tool?
+    Examples: tsc:watch, jest:verbose
+    Naming: {tool}:{mode}
+    Decision: "Does this use the same base tool with different flags/modes?"
+
+    Colon Usage in Pattern C:
+      - Tool with mode flag: tsc:watch (tsc --watch)
+      - Tool with mode flag: jest:verbose (jest --verbose)
+      - Separates tool name from mode/flag
+```
+
+### Step 2.5: Dash vs Colon Decision
+
+**When to use DASH (Pattern A):**
+- Multi-word semantic operation names: `generate-version`, `api-reports-current`
+- Semantic variants with different purposes: `esnext-experimental` (different entry point), `tsc-test-cjs` (different file set)
+- The variant represents a DIFFERENT PURPOSE or CONFIGURATION, not just a flag
+
+**When to use COLON (Pattern C):**
+- Tool with mode/flag: `tsc:watch`, `jest:verbose`
+- The variant is the SAME TOOL with a different MODE (just adding a flag)
+
+**Examples:**
+- `esnext-experimental` ✓ (dash) - Different entry point configuration = different purpose
+- `jest:verbose` ✓ (colon) - Same jest tool with --verbose flag = mode change
+- `api-reports-current` ✓ (dash) - Different API level configuration = different purpose
+- `tsc:watch` ✓ (colon) - Same tsc tool with --watch flag = mode change
+
+### Step 3: Pattern Family Consistency Check
+
+```
+Verify related tasks follow consistent patterns:
+
+TypeScript family:
+├─ tsc (Pattern A: Direct executor)
+├─ esnext (Pattern A: Semantic executor - ESM compilation)
+└─ tsc:watch (Pattern C: Tool variant - watch mode)
+
+Jest family:
+├─ jest (Pattern A: Direct executor)
+├─ jest:verbose (Pattern C: Tool variant - verbose mode)
+└─ jest:coverage (Pattern C: Tool variant - coverage mode)
+
+Coverage family:
+└─ coverage (Pattern A: Semantic executor - testing with coverage)
+    Note: NOT test:coverage - no category prefix needed
+```
+
+### Simplified Decision Logic
+
+**Total decision paths: 3** (down from 5)
+**Total patterns: 2** (down from 4)
+**Lines of logic: ~40** (down from 92, 57% reduction)
+
+```yaml
+classification:
+  step_1: "Calculate executor percentage"
+  step_2_if_gt_90: "Executor → Choose Pattern A or C"
+  step_2_if_lt_90: "Mixed → Default to orchestrator"
+
+executor_pattern:
+  question: "Is this a variant of an existing tool?"
+  yes: "Pattern C ({tool}:{mode})"
+  no: "Pattern A ({tool} or {operation})"
 ```
 
 ---
@@ -524,9 +542,11 @@ Based on analysis of 4,904 script instances across 165 packages:
 **Action:** No rename
 
 #### Decision 3: `test:coverage` (66 executor, 3 orchestrator - 95.7% executor)
-**Classification:** Pattern D - Semantic category executor
-**Rationale:** Like "esnext", represents a semantic concept (coverage testing) not a specific tool
-**Action:** No rename (keep as semantic variant with colon for test-related scoping)
+**Strict Classification:** Pattern A - Semantic executor (Pattern D eliminated)
+**Rationale:** 95.7% > 90% executor threshold; Pattern D eliminated in strict rules
+**Previous Justification (Rejected):** "Semantic category for test-related scoping"
+**Strict Rules Analysis:** No different from `esnext` - both are semantic executors where packages use different tools
+**Action:** **Rename to `coverage`** (remove `test:` prefix for strict compliance)
 
 #### Decision 4: `test:jest:verbose` (29 executor, 2 orchestrator - 93.5% executor)
 **Classification:** Pattern C - Tool variant executor
@@ -534,33 +554,51 @@ Based on analysis of 4,904 script instances across 165 packages:
 **Action:** **Rename to `jest:verbose`** (remove `test:` prefix)
 
 #### Decision 5: `test:stress` (5 executor, 2 orchestrator - 71.4% executor)
-**Classification:** Pattern D - Semantic category executor (pragmatic exception)
-**Rationale:** Only 7 instances total; semantic meaning more important than strict classification
-**Action:** No rename
+**Strict Classification:** Mixed (71.4% < 90% threshold) → defaults to orchestrator
+**Rationale:** Below 90% threshold, not a special exception
+**Action:** No rename (classification is mixed, keeps current name)
 
 #### Decision 6: `tsc:watch` (2 executor, 0 orchestrator, 8 hybrid - 80% hybrid)
-**Classification:** Pattern C - Tool variant executor
+**Classification:** Pattern C - Tool variant executor (mixed but valid pattern)
 **Rationale:** Hybrid classification acceptable; fundamentally tsc with --watch flag
 **Action:** No rename
 
 #### Decision 7: `build:esnext` (153 executor, 1 orchestrator - 99.4% executor)
-**Classification:** Pattern B - Semantic tool executor (parallel operation)
-**Rationale:** Parallel compilation target alongside `tsc`, not a variant of it
+**Strict Classification:** Pattern A - Semantic executor (Pattern B merged into A)
+**Rationale:** Parallel compilation target - Pattern B/A distinction eliminated
 **Action:** **Rename to `esnext`** (remove `build:` prefix)
 
-### Rename Summary
+#### Decision 8: `start` (36 executor, 6 orchestrator - 85.7% executor)
+**Strict Classification:** Mixed (85.7% < 90% threshold) → defaults to orchestrator
+**Previous Justification (Rejected):** "Conventional name exception"
+**Strict Rules Analysis:** No exceptions - classification is mixed, defaults to orchestrator
+**Action:** No rename (not because of convention, but because it's mixed classification)
+
+#### Decision 9: `test` (5 executor, 116 orchestrator - 95.9% orchestrator)
+**Classification:** Tier 1 workflow orchestrator (already correct)
+**Rationale:** 95.9% > 90% orchestrator threshold
+**Action:** No rename
+
+### Rename Summary (Strict Rules)
 
 **Tasks requiring rename:**
 1. `build:esnext` → `esnext` (153 instances)
 2. `test:jest:verbose` → `jest:verbose` (29 instances)
+3. `test:coverage` → `coverage` (69 instances) **NEW - Strict rules**
+
+**Total impact:** 251 package instances
 
 **Tasks remaining unchanged:**
-- `start` - Special case (conventional name)
-- `test` - Already correct (Tier 1)
-- `test:coverage` - Semantic category executor
-- `test:stress` - Pragmatic exception (<10 instances)
-- `tsc:watch` - Tool variant
-- All other tasks analyzed (see script-classification-report.md for full list)
+- `start` - Mixed classification (85.7% executor, <90% threshold)
+- `test` - Correctly classified orchestrator (95.9%)
+- `test:stress` - Mixed classification (71.4% executor, <90% threshold)
+- `tsc:watch` - Tool variant (Pattern C)
+- All other correctly classified tasks
+
+**Pattern simplification achieved:**
+- Pattern B eliminated (merged into Pattern A)
+- Pattern D eliminated (test:coverage becomes Pattern A)
+- Total patterns: 2 (down from 4, 50% reduction)
 
 ---
 
@@ -585,6 +623,136 @@ Based on analysis of 4,904 script instances across 165 packages:
 ### Q: Can I add new task tiers?
 
 **A:** Avoid it. Three tiers (workflow → stage → executor) is sufficient for Fluid's complexity. More tiers reduce clarity.
+
+---
+
+## Pattern Evolution Policy
+
+To prevent classification drift and ensure consistent task naming over time, follow this evolution policy:
+
+### Monitoring and Review
+
+```yaml
+review_frequency:
+  schedule: "Every 6-12 months (each major version cycle)"
+  trigger_events:
+    - "Any task shows >20% classification change since last review"
+    - "New task patterns emerge across >10 packages"
+    - "Developer confusion about task classification increases"
+
+monitoring_process:
+  automated_checks:
+    - "Run classification analysis on all tasks"
+    - "Compare against baseline from last review"
+    - "Flag tasks approaching threshold boundaries (85-95% range)"
+
+  manual_review:
+    - "Architecture team reviews flagged tasks"
+    - "Evaluate impact of potential renames"
+    - "Plan migration if needed"
+```
+
+### Evolution Thresholds
+
+```yaml
+mixed_to_executor:
+  condition: "Task crosses 90% executor threshold"
+  example: "test:stress grows from 7 to 50 instances, becomes 95% executor"
+  action: "Rename from 'test:stress' to 'stress' in next major version"
+  timing: "Bundle with other breaking changes to reduce migration frequency"
+
+mixed_to_orchestrator:
+  condition: "Task crosses 90% orchestrator threshold"
+  example: "Custom task becomes widely used orchestrator"
+  action: "Keep current name if it follows orchestrator patterns"
+  timing: "Document classification change, no rename needed"
+
+pattern_drift:
+  condition: "Executor pattern changes (e.g., becomes tool variant)"
+  example: "coverage task spawns jest:coverage, vitest:coverage variants"
+  action: "Evaluate if base task should remain or consolidate into variants"
+  timing: "Next major version"
+```
+
+### Migration Strategy
+
+```yaml
+bundling_policy:
+  max_renames_per_release: 5
+  rationale: "Limit developer disruption per release"
+  prioritization:
+    - "Tasks crossing 95% threshold (clear classification)"
+    - "Tasks with highest instance counts (broader impact)"
+    - "Tasks creating naming inconsistencies"
+
+communication_protocol:
+  advance_notice: "2 weeks minimum before rename"
+  channels:
+    - "Release notes with migration guide"
+    - "Team communication (Slack/Discord/email)"
+    - "Documentation updates"
+  content:
+    - "Before/after examples"
+    - "Automated migration script (if available)"
+    - "Support channel for questions"
+
+rollback_criteria:
+  triggers:
+    - "Build failures affecting >10% of packages"
+    - ">20 developer support tickets within 48 hours"
+    - "Critical production issues related to rename"
+  process:
+    - "Immediate rollback via git revert"
+    - "Root cause analysis"
+    - "Revised migration plan if rename is still needed"
+```
+
+### Example Evolution Scenario
+
+```yaml
+scenario: "test:stress grows from 7 to 50 instances"
+
+year_1_baseline:
+  instances: 7
+  classification: "Mixed (71.4% executor)"
+  action: "No rename (below threshold)"
+
+year_2_growth:
+  instances: 25
+  classification: "85% executor (approaching threshold)"
+  action: "Flag for monitoring in next review"
+
+year_3_threshold_crossed:
+  instances: 50
+  classification: "95% executor (exceeds threshold)"
+  action: "Plan rename to 'stress' for next major version"
+
+migration_execution:
+  version: "v3.0.0 (major version)"
+  bundled_with: ["other-rename-1", "other-rename-2"]
+  communication: "2 weeks advance notice + migration guide"
+  validation: "Test fixture → subset → full rollout"
+```
+
+### Preventing Future Exceptions
+
+```yaml
+new_task_guidelines:
+  before_adding:
+    - "Check if similar tasks exist"
+    - "Follow established pattern families"
+    - "Estimate likely classification (>90% executor or orchestrator?)"
+
+  initial_classification:
+    - "Start with correct pattern from day one"
+    - "Don't add as 'temporary exception' with plan to rename later"
+    - "If uncertain, default to orchestrator (safer)"
+
+exception_policy:
+  strict_rule: "Zero exceptions to classification rules"
+  mixed_handling: "<90% threshold tasks default to orchestrator (not an exception)"
+  pattern_choice: "Only 2 patterns (A and C) - no special cases"
+```
 
 ---
 
