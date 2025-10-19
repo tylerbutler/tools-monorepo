@@ -2,7 +2,7 @@
  * Core logic for renaming package.json scripts to follow three-tier naming principles
  */
 
-import { readFile, writeFile } from "node:fs/promises";
+import { access, readFile, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import type { Logger } from "@tylerbu/cli-api";
 import { glob } from "tinyglobby";
@@ -161,6 +161,18 @@ const RENAME_RULES: RenameRule[] = [
 		tier: 3,
 		reason: "Executor: semantic name with dash-separated variant",
 	},
+	{
+		pattern: "build:api-reports:browser:current",
+		replacement: "api-reports-browser-current",
+		tier: 3,
+		reason: "Executor: api-extractor for browser variant with current API level",
+	},
+	{
+		pattern: "build:api-reports:browser:legacy",
+		replacement: "api-reports-browser-legacy",
+		tier: 3,
+		reason: "Executor: api-extractor for browser variant with legacy API level",
+	},
 
 	// ========================================================================
 	// Category B: File Operations
@@ -171,11 +183,25 @@ const RENAME_RULES: RenameRule[] = [
 		tier: 3,
 		reason: "Executor: tool name (called directly by L1 build)",
 	},
+	{
+		pattern: "build:genver",
+		replacement: "generate-version",
+		tier: 3,
+		reason: "Executor: generates version file using gen-version tool",
+	},
 
 	// ========================================================================
 	// Category C: Test Infrastructure
 	// ========================================================================
 	// Note: build:test:cjs and build:test:esm compile test files (not run tests)
+	{
+		pattern: "build:test",
+		replacement: "tsc-test",
+		tier: 3,
+		reason: "Executor: TypeScript compiler for test files in test-only packages",
+		condition: (content: string) =>
+			content.includes("tsc") && !content.includes("npm run") && !content.includes("&&"),
+	},
 	{
 		pattern: "build:test:cjs",
 		replacement: "tsc-test-cjs",
@@ -233,6 +259,166 @@ const RENAME_RULES: RenameRule[] = [
 		replacement: "generate-exports-node",
 		tier: 3,
 		reason: "Executor: generates node entry points using flub",
+	},
+
+	// ========================================================================
+	// Category E: Entrypoint Generation
+	// ========================================================================
+	{
+		pattern: "api-extractor:commonjs",
+		replacement: "generate-entrypoints-commonjs",
+		tier: 3,
+		reason: "Executor: generates TypeScript entry point files for CommonJS using flub",
+	},
+	{
+		pattern: "api-extractor:esnext",
+		replacement: "generate-entrypoints-esnext",
+		tier: 3,
+		reason: "Executor: generates TypeScript entry point files for ESNext using flub",
+	},
+
+	// ========================================================================
+	// Category F: check: Prefix Executors
+	// ========================================================================
+	{
+		pattern: "check:biome",
+		replacement: "biome-check",
+		tier: 3,
+		reason: "Executor: biome formatting/linting checker",
+	},
+	{
+		pattern: "check:are-the-types-wrong",
+		replacement: "attw",
+		tier: 3,
+		reason: "Executor: are-the-types-wrong package validation tool",
+	},
+	{
+		pattern: "check:exports:bundle-release-tags",
+		replacement: "api-extractor-exports-bundle-release-tags",
+		tier: 3,
+		reason: "Executor: api-extractor for bundle release tag validation",
+	},
+	{
+		pattern: "check:exports:cjs:public",
+		replacement: "api-extractor-exports-cjs-public",
+		tier: 3,
+		reason: "Executor: api-extractor for CJS public exports validation",
+	},
+	{
+		pattern: "check:exports:esm:public",
+		replacement: "api-extractor-exports-esm-public",
+		tier: 3,
+		reason: "Executor: api-extractor for ESM public exports validation",
+	},
+	{
+		pattern: "check:exports:cjs:legacy",
+		replacement: "api-extractor-exports-cjs-legacy",
+		tier: 3,
+		reason: "Executor: api-extractor for CJS legacy exports validation",
+	},
+	{
+		pattern: "check:exports:esm:legacy",
+		replacement: "api-extractor-exports-esm-legacy",
+		tier: 3,
+		reason: "Executor: api-extractor for ESM legacy exports validation",
+	},
+	{
+		pattern: "check:exports:cjs:index",
+		replacement: "api-extractor-exports-cjs-index",
+		tier: 3,
+		reason: "Executor: api-extractor for CJS index exports validation",
+	},
+	{
+		pattern: "check:exports:esm:index",
+		replacement: "api-extractor-exports-esm-index",
+		tier: 3,
+		reason: "Executor: api-extractor for ESM index exports validation",
+	},
+	{
+		pattern: "check:exports:cjs:alpha",
+		replacement: "api-extractor-exports-cjs-alpha",
+		tier: 3,
+		reason: "Executor: api-extractor for CJS alpha exports validation",
+	},
+	{
+		pattern: "check:exports:esm:alpha",
+		replacement: "api-extractor-exports-esm-alpha",
+		tier: 3,
+		reason: "Executor: api-extractor for ESM alpha exports validation",
+	},
+	{
+		pattern: "check:exports:cjs:beta",
+		replacement: "api-extractor-exports-cjs-beta",
+		tier: 3,
+		reason: "Executor: api-extractor for CJS beta exports validation",
+	},
+	{
+		pattern: "check:exports:esm:beta",
+		replacement: "api-extractor-exports-esm-beta",
+		tier: 3,
+		reason: "Executor: api-extractor for ESM beta exports validation",
+	},
+	{
+		pattern: "check:release-tags",
+		replacement: "api-extractor-release-tags",
+		tier: 3,
+		reason: "Executor: api-extractor for release tag validation",
+	},
+
+	// ========================================================================
+	// Category G: ci: Prefix Executors
+	// ========================================================================
+	{
+		pattern: "ci:build:docs",
+		replacement: "api-extractor-ci-docs",
+		tier: 3,
+		reason: "Executor: api-extractor for CI documentation generation",
+	},
+	{
+		pattern: "ci:build:api-reports:current",
+		replacement: "api-extractor-ci-api-reports-current",
+		tier: 3,
+		reason: "Executor: api-extractor for CI API reports (current)",
+	},
+	{
+		pattern: "ci:build:api-reports:legacy",
+		replacement: "api-extractor-ci-api-reports-legacy",
+		tier: 3,
+		reason: "Executor: api-extractor for CI API reports (legacy)",
+	},
+	{
+		pattern: "ci:build:api-reports:browser:current",
+		replacement: "api-extractor-ci-api-reports-browser-current",
+		tier: 3,
+		reason: "Executor: api-extractor for CI browser variant (current)",
+	},
+	{
+		pattern: "ci:build:api-reports:browser:legacy",
+		replacement: "api-extractor-ci-api-reports-browser-legacy",
+		tier: 3,
+		reason: "Executor: api-extractor for CI browser variant (legacy)",
+	},
+	{
+		pattern: "ci:build:api-reports:node:current",
+		replacement: "api-extractor-ci-api-reports-node-current",
+		tier: 3,
+		reason: "Executor: api-extractor for CI node variant (current)",
+	},
+	{
+		pattern: "ci:build:api-reports:node:legacy",
+		replacement: "api-extractor-ci-api-reports-node-legacy",
+		tier: 3,
+		reason: "Executor: api-extractor for CI node variant (legacy)",
+	},
+
+	// ========================================================================
+	// Category H: format: Prefix Executors
+	// ========================================================================
+	{
+		pattern: "format:biome",
+		replacement: "biome-format",
+		tier: 3,
+		reason: "Executor: biome formatting with write mode",
 	},
 ];
 
@@ -340,11 +526,15 @@ export async function applyTaskRenames(
 	let scriptsRenamed = 0;
 	let crossRefsUpdated = 0;
 
-	// Build rename map for efficient lookup
-	const renameMap = new Map<string, string>();
+	// Build rename maps for efficient lookup
+	const renameMap = new Map<string, string>(); // All renames (including conditional)
+	const unconditionalRenameMap = new Map<string, string>(); // Only unconditional renames
 	for (const rule of RENAME_RULES) {
 		if (typeof rule.pattern === "string") {
 			renameMap.set(rule.pattern, rule.replacement);
+			if (!rule.condition) {
+				unconditionalRenameMap.set(rule.pattern, rule.replacement);
+			}
 		}
 	}
 
@@ -403,17 +593,34 @@ export async function applyTaskRenames(
 			for (const [taskName, taskDeps] of Object.entries(pkg.fluidBuild.tasks)) {
 				let newTaskName = taskName;
 
-				// Check if this task name should be renamed
-				for (const rule of RENAME_RULES) {
-					const matches =
-						typeof rule.pattern === "string"
-							? rule.pattern === taskName
-							: rule.pattern.test(taskName);
+				// Only rename fluidBuild.tasks keys if the corresponding script was renamed
+				// Check if this taskName existed as a script and was renamed
+				if (pkg.scripts?.[taskName]) {
+					// Find the new name in newScripts
+					const wasRenamed = !newScripts[taskName]; // If old name doesn't exist in newScripts, it was renamed
+					if (wasRenamed) {
+						// Find what it was renamed to
+						for (const [scriptName] of Object.entries(newScripts)) {
+							// Check if this script was the renamed version of our taskName
+							for (const rule of RENAME_RULES) {
+								const matches =
+									typeof rule.pattern === "string"
+										? rule.pattern === taskName
+										: rule.pattern.test(taskName);
 
-					if (matches) {
-						newTaskName = rule.replacement;
-						modified = true;
-						break;
+								if (
+									matches &&
+									scriptName === rule.replacement &&
+									(!rule.condition ||
+										rule.condition(pkg.scripts[taskName] as string))
+								) {
+									newTaskName = rule.replacement;
+									modified = true;
+									break;
+								}
+							}
+							if (newTaskName !== taskName) break;
+						}
 					}
 				}
 
@@ -421,7 +628,11 @@ export async function applyTaskRenames(
 				if (!options.skipCrossRefs && Array.isArray(taskDeps)) {
 					const updatedDeps = taskDeps.map((dep) => {
 						if (typeof dep === "string") {
-							const updatedDep = updateFluidBuildReference(dep, renameMap);
+							const updatedDep = updateFluidBuildReference(
+								dep,
+								renameMap,
+								unconditionalRenameMap,
+							);
 							if (updatedDep !== dep) {
 								crossRefsUpdated++;
 								modified = true;
@@ -463,6 +674,104 @@ export async function applyTaskRenames(
 		crossRefsUpdated,
 		filesModified: packagesModified,
 	};
+}
+
+/**
+ * Update the root-level fluidBuild.config.cjs file with renamed task names
+ */
+export async function updateFluidBuildConfig(
+	repoDir: string,
+	renameMap: Map<string, string>,
+	logger: Logger,
+): Promise<void> {
+	const configPath = join(repoDir, "fluidBuild.config.cjs");
+
+	// Check if file exists
+	try {
+		await access(configPath);
+	} catch {
+		logger.log("  ℹ️  No fluidBuild.config.cjs found - skipping");
+		return;
+	}
+
+	// Read the file
+	let content = await readFile(configPath, "utf-8");
+	const originalContent = content;
+
+	// Update tscDependsOn constant
+	for (const [oldName, newName] of renameMap.entries()) {
+		// Match in the tscDependsOn array: ["^tsc", "^api", "build:genver", "ts2esm"]
+		const constPattern = new RegExp(`(\\[.*?)"${oldName}"(.*?\\])`, "g");
+		content = content.replace(constPattern, `$1"${newName}"$2`);
+
+		// Match as task definition key: "build:genver": []
+		const taskKeyPattern = new RegExp(`^(\\s*)"${oldName}"(\\s*:)`, "gm");
+		content = content.replace(taskKeyPattern, `$1"${newName}"$2`);
+
+		// Match in dependsOn arrays: ["typetests:gen", "tsc", "build:genver"]
+		const depPattern = new RegExp(`"${oldName}"`, "g");
+		content = content.replace(depPattern, `"${newName}"`);
+	}
+
+	// Write back if modified
+	if (content !== originalContent) {
+		await writeFile(configPath, content, "utf-8");
+		logger.log("  ✏️  Modified: fluidBuild.config.cjs");
+	}
+}
+
+/**
+ * Update the fluidBuild.config.cjs to disable fluid-build-tasks-* policies
+ * These policies will try to re-add tasks with incorrect names after renaming
+ */
+export async function disableFluidBuildTasksPolicies(
+	repoDir: string,
+	logger: Logger,
+): Promise<void> {
+	const configPath = join(repoDir, "fluidBuild.config.cjs");
+
+	// Check if file exists
+	try {
+		await access(configPath);
+	} catch {
+		logger.log("  ℹ️  No fluidBuild.config.cjs found - skipping policy updates");
+		return;
+	}
+
+	// Read the file
+	let content = await readFile(configPath, "utf-8");
+	const originalContent = content;
+
+	// Find the handlerExclusions section and the fluid-build-tasks-eslint entry
+	// We want to replace the array contents with [".*"] to exclude all packages
+	const policyHandlers = [
+		"fluid-build-tasks-eslint",
+		"fluid-build-tasks-tsc",
+	];
+
+	for (const handler of policyHandlers) {
+		// Pattern to match: "fluid-build-tasks-eslint": [ ... ],
+		// We'll replace the array contents with [".*"]
+		const handlerPattern = new RegExp(
+			`("${handler}"\\s*:\\s*\\[)([^\\]]*)(\\])`,
+			"s"
+		);
+
+		const match = content.match(handlerPattern);
+		if (match) {
+			// Replace the array contents with [".*"] to exclude all packages
+			content = content.replace(
+				handlerPattern,
+				`$1\n\t\t\t\t// Disabled by task-rename: policies will add tasks with incorrect names\n\t\t\t\t".*",\n\t\t\t$3`
+			);
+		}
+	}
+
+	// Write back if modified
+	if (content !== originalContent) {
+		await writeFile(configPath, content, "utf-8");
+		logger.log("  ✏️  Disabled fluid-build-tasks-* policies in fluidBuild.config.cjs");
+	}
 }
 
 /**
@@ -761,20 +1070,27 @@ function updateScriptReferences(
 function updateFluidBuildReference(
 	ref: string,
 	renameMap: Map<string, string>,
+	unconditionalRenameMap: Map<string, string>,
 ): string {
 	// Handle @package#task-name format (cross-package reference)
+	// Only use unconditional renames for cross-package refs since we can't
+	// evaluate conditions for tasks in other packages
 	const match = ref.match(/^(@[^#]+)#(.+)$/);
 	if (match && match[1] && match[2]) {
 		const packageName = match[1];
 		const taskName = match[2];
-		const newTaskName = renameMap.get(taskName) ?? taskName;
+		const newTaskName = unconditionalRenameMap.get(taskName) ?? taskName;
 		return `${packageName}#${newTaskName}`;
 	}
 
-	// Handle simple task-name format (local reference)
-	// But don't modify special prefixes like ^, ~, etc.
-	if (ref.startsWith("^") || ref.startsWith("~") || ref.startsWith("#")) {
-		return ref;
+	// Handle references with special prefixes (^, ~, #)
+	// These prefixes need to be preserved while the task name is renamed
+	const prefixMatch = ref.match(/^([~^#])(.+)$/);
+	if (prefixMatch && prefixMatch[1] && prefixMatch[2]) {
+		const prefix = prefixMatch[1]; // e.g., "^" or "~"
+		const taskName = prefixMatch[2]; // e.g., "build:esnext"
+		const newTaskName = renameMap.get(taskName) ?? taskName;
+		return `${prefix}${newTaskName}`;
 	}
 
 	// Simple task name - check if it needs to be renamed

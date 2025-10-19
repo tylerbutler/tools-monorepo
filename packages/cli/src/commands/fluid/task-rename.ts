@@ -8,6 +8,8 @@ import { GitCommand } from "@tylerbu/cli-api";
 import {
 	analyzeTaskNaming,
 	applyTaskRenames,
+	disableFluidBuildTasksPolicies,
+	updateFluidBuildConfig,
 	validateTaskRenames,
 	type TaskRenameOptions,
 	type TaskRenameResult,
@@ -135,6 +137,17 @@ export default class FluidTaskRename extends GitCommand<typeof FluidTaskRename> 
 		if (result.crossRefsUpdated > 0) {
 			this.info(`  ✓ Updated ${result.crossRefsUpdated} cross-references`);
 		}
+
+		// Disable fluid-build-tasks-* policies to prevent re-adding incorrect task names
+		this.info("\n🔧 Disabling fluid-build-tasks-* policies...");
+		await disableFluidBuildTasksPolicies(flags["repo-dir"], this);
+
+		// Update root fluidBuild.config.cjs
+		const renameMap = new Map<string, string>();
+		for (const rename of analysis.renames) {
+			renameMap.set(rename.from, rename.to);
+		}
+		await updateFluidBuildConfig(flags["repo-dir"], renameMap, this);
 
 		// Validate changes
 		this.info("\n✅ Validation:");
