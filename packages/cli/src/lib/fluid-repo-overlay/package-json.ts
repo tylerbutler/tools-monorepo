@@ -18,6 +18,7 @@ interface PackageJson {
 	};
 }
 
+// Scripts that should be removed from individual packages (orchestrators)
 const FLUID_BUILD_SCRIPTS = [
 	"build",
 	"build:commonjs",
@@ -30,23 +31,6 @@ const FLUID_BUILD_SCRIPTS = [
 	"test",
 	"test:unit",
 ];
-
-// Nx wrapper scripts to add to individual packages for developer ease
-const NX_WRAPPER_SCRIPTS: Record<string, string> = {
-	build: "nx build",
-	compile: "nx compile",
-	"build:compile": "nx build:compile",
-	"build:lint": "nx build:lint",
-	"build:api": "nx build:api",
-	"build:docs": "nx build:docs",
-	lint: "nx lint",
-	"lint:fix": "nx lint:fix",
-	test: "nx test",
-	"test:unit": "nx test:unit",
-	"test:mocha": "nx test:mocha",
-	"test:jest": "nx test:jest",
-	clean: "nx clean",
-};
 
 // Root package.json nx scripts based on actual nx.json task names
 // Note: These use the actual target names from nx.json, not the old fluid-build task names
@@ -216,28 +200,17 @@ async function updateSinglePackageJson(
 		packageJson.scripts = {};
 	}
 
-	// Replace fluid-build script references with nx wrappers
+	// Remove orchestrator scripts - they should only be in root package.json
+	// These are scripts that coordinate builds (like "build", "test", "lint")
+	// Individual packages should only have implementation tasks (executors)
 	for (const scriptName of FLUID_BUILD_SCRIPTS) {
-		if (packageJson.scripts[scriptName]?.includes("fluid-build")) {
-			// Replace with nx wrapper if we have one defined
-			if (NX_WRAPPER_SCRIPTS[scriptName]) {
-				packageJson.scripts[scriptName] = NX_WRAPPER_SCRIPTS[scriptName];
-				modified = true;
-			} else {
-				// Delete if no wrapper defined
+		if (packageJson.scripts[scriptName]) {
+			const scriptContent = packageJson.scripts[scriptName];
+			// Remove if it calls fluid-build or nx (orchestrators)
+			if (scriptContent.includes("fluid-build") || scriptContent.includes("nx ")) {
 				delete packageJson.scripts[scriptName];
 				modified = true;
 			}
-		}
-	}
-
-	// Add nx wrapper scripts for common tasks (if not already present)
-	for (const [scriptName, scriptCommand] of Object.entries(
-		NX_WRAPPER_SCRIPTS,
-	)) {
-		if (!packageJson.scripts[scriptName]) {
-			packageJson.scripts[scriptName] = scriptCommand;
-			modified = true;
 		}
 	}
 
