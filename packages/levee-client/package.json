@@ -26,17 +26,19 @@
   "scripts": {
     "api-extractor": "api-extractor run --local",
     "b": "turbo build",
-    "check": "pnpm turbo check --filter={.}...",
+    "check": "pnpm turbo check:all --filter={.}...",
     "biome-format": "biome format .",
-    "clean": "pnpm turbo clean --filter={.}",
+    "clean": "pnpm turbo clean:all --filter={.}",
     "tsc": "tsc",
     "format": "biome check . --linter-enabled=false --write",
-    "lint": "pnpm turbo lint --filter={.}...",
+    "lint": "pnpm turbo lint:all --filter={.}...",
     "lint:fix": "biome lint --write",
     "start": "pm2 start -n tinylicious dist/index.js",
     "start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
     "stop": "pm2 stop tinylicious",
-    "test:mocha": "mocha --recursive dist/test"
+    "test:mocha": "mocha --recursive dist/test",
+    "build": "pnpm turbo build:all --filter={.}...",
+    "test": "pnpm turbo test:all --filter={.}..."
   },
   "dependencies": {
     "@fluidframework/container-definitions": "~2.33.2",

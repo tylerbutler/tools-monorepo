@@ -35,23 +35,25 @@
     "/THIRD-PARTY-LICENSES.txt"
   ],
   "scripts": {
-    "tsc": "tsc --project ./tsconfig.json && pnpm build:copy-templates",
+    "tsc": "tsc --project ./tsconfig.json && pnpm copyfiles",
     "copyfiles": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
     "oclif-generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
     "oclif-manifest": "oclif manifest",
     "oclif-readme": "oclif readme --multi --no-aliases",
-    "check": "pnpm turbo check --filter={.}...",
+    "check": "pnpm turbo check:all --filter={.}...",
     "biome-format": "biome check . --linter-enabled=false",
-    "clean": "pnpm turbo clean --filter={.}",
+    "clean": "pnpm turbo clean:all --filter={.}",
     "clean-build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
     "clean-manifest": "rimraf oclif.manifest.json",
     "format": "biome check . --linter-enabled=false --write",
-    "lint": "pnpm turbo lint --filter={.}...",
+    "lint": "pnpm turbo lint:all --filter={.}...",
     "lint:fix": "biome lint . --write",
     "postpack": "pnpm clean:manifest",
     "generate-license": "generate-license-file -c ../../.generatelicensefile.cjs",
     "test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-    "vitest": "vitest run"
+    "vitest": "vitest run",
+    "build": "pnpm turbo build:all --filter={.}...",
+    "test": "pnpm turbo test:all --filter={.}..."
   },
   "oclif": {
     "additionalHelpFlags": [

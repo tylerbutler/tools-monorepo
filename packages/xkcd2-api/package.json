@@ -25,19 +25,19 @@
     "esm"
   ],
   "scripts": {
-    "build": "pnpm turbo build --filter={.}...",
     "api-extractor": "api-extractor run --local",
     "b": "turbo build",
-    "check": "pnpm turbo check --filter={.}...",
+    "check": "pnpm turbo check:all --filter={.}...",
     "biome-format": "biome format .",
-    "clean": "pnpm turbo clean --filter={.}",
+    "clean": "pnpm turbo clean:all --filter={.}",
     "tsc": "tsc --project ./tsconfig.json",
     "typedoc": "typedoc",
     "format": "biome check . --linter-enabled=false --write",
-    "lint": "pnpm turbo lint --filter={.}...",
+    "lint": "pnpm turbo lint:all --filter={.}...",
     "lint:fix": "biome lint . --apply",
-    "test": "pnpm turbo test --filter={.}...",
-    "vitest-coverage": "vitest run test --coverage"
+    "test": "pnpm turbo test:all --filter={.}...",
+    "vitest-coverage": "vitest run test --coverage",
+    "build": "pnpm turbo build:all --filter={.}..."
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",

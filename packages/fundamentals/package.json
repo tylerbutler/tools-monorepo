@@ -39,9 +39,9 @@
   "scripts": {
     "api-extractor": "concurrently npm:docs:api:*",
     "b": "turbo build",
-    "check": "pnpm turbo check --filter={.}...",
+    "check": "pnpm turbo check:all --filter={.}...",
     "biome-format": "biome format .",
-    "clean": "pnpm turbo clean --filter={.}",
+    "clean": "pnpm turbo clean:all --filter={.}",
     "tsc": "tsc --project ./tsconfig.json",
     "typedoc": "typedoc",
     "docs:api:array": "api-extractor run --local --config api-extractor.array.json",
@@ -50,11 +50,11 @@
     "docs:api:set": "api-extractor run --local --config api-extractor.set.json",
     "docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
     "format": "biome check . --linter-enabled=false --write",
-    "lint": "pnpm turbo lint --filter={.}...",
+    "lint": "pnpm turbo lint:all --filter={.}...",
     "lint:fix": "biome lint . --apply",
-    "test": "pnpm turbo test --filter={.}...",
+    "test": "pnpm turbo test:all --filter={.}...",
     "vitest-coverage": "vitest run test --coverage",
-    "build": "pnpm turbo build --filter={.}..."
+    "build": "pnpm turbo build:all --filter={.}..."
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",

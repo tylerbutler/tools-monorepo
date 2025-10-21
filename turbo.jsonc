@@ -14,25 +14,29 @@
 		// ============================================
 		// These are defined with minimal defaults.
 		// Packages override to specify their build pipeline.
+		// Named with :all suffix to avoid collision with package-level scripts.
 
-		"build": {
-			"dependsOn": ["^build"],
+		"build:all": {
+			"dependsOn": ["^build:all", "tsc", "api-extractor", "typedoc", "oclif-manifest", "oclif-readme", "astro", "vite", "copyfiles"],
 			"outputs": [],
 		},
 
-		"test": {
+		"test:all": {
+			"dependsOn": ["tsc", "vitest", "vitest-coverage"],
 			"outputs": [],
 		},
 
-		"lint": {
+		"lint:all": {
+			"dependsOn": ["biome-lint"],
 			"outputs": [],
 		},
 
-		"check": {
+		"check:all": {
+			"dependsOn": ["biome-format", "tsc-check", "astro-check", "svelte-check"],
 			"outputs": [],
 		},
 
-		"clean": {
+		"clean:all": {
 			"cache": false,
 		},
 
@@ -42,7 +46,7 @@
 		},
 
 		"release": {
-			"dependsOn": ["build", "generate-license"],
+			"dependsOn": ["build:all", "generate-license"],
 			"outputs": [],
 		},
 
@@ -160,7 +164,7 @@
 		},
 
 		"playwright": {
-			"dependsOn": ["build"],
+			"dependsOn": ["build:all"],
 			"cache": false,
 			"outputs": [],
 		},
@@ -196,7 +200,7 @@
 		},
 
 		"tsc-check": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["^build:all"],
 			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}", "typedoc.{json,js,cjs}"],
 			"outputs": [],
 		},

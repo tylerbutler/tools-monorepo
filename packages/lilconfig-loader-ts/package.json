@@ -30,13 +30,15 @@
     "api-extractor": "api-extractor run --local",
     "api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
     "b": "turbo build",
-    "check": "pnpm turbo check --filter={.}...",
+    "check": "pnpm turbo check:all --filter={.}...",
     "biome-format": "biome format .",
-    "clean": "pnpm turbo clean --filter={.}",
+    "clean": "pnpm turbo clean:all --filter={.}",
     "tsc": "tsc --project ./tsconfig.json",
     "format": "biome check . --linter-enabled=false --write",
-    "lint": "pnpm turbo lint --filter={.}...",
-    "lint:fix": "biome lint . --write"
+    "lint": "pnpm turbo lint:all --filter={.}...",
+    "lint:fix": "biome lint . --write",
+    "build": "pnpm turbo build:all --filter={.}...",
+    "test": "pnpm turbo test:all --filter={.}..."
   },
   "dependencies": {
     "jiti": "^2.6.1"

@@ -42,16 +42,16 @@
   ],
   "scripts": {
     "b": "turbo build",
-    "check": "pnpm turbo check --filter={.}...",
+    "check": "pnpm turbo check:all --filter={.}...",
     "biome-format": "biome check . --linter-enabled=false",
     "check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-    "clean": "pnpm turbo clean --filter={.}",
+    "clean": "pnpm turbo clean:all --filter={.}",
     "clean-build": "rimraf esm *.tsbuildinfo *.done.build.log",
     "clean-manifest": "rimraf oclif.manifest.json",
     "tsc": "tsc --project ./tsconfig.json",
     "dill": "./bin/dev.js",
     "format": "biome check . --linter-enabled=false --write",
-    "lint": "pnpm turbo lint --filter={.}...",
+    "lint": "pnpm turbo lint:all --filter={.}...",
     "lint:fix": "biome lint . --write",
     "oclif-manifest": "oclif manifest",
     "postpack": "npm run clean:manifest",
@@ -60,11 +60,12 @@
     "readme:main": "oclif readme --no-aliases",
     "generate-license": "generate-license-file -c ../../.generatelicensefile.cjs",
     "start": "serve ./test/data --listen 8080",
-    "test": "pnpm turbo test --filter={.}...",
+    "test": "pnpm turbo test:all --filter={.}...",
     "vitest-coverage": "vitest run test --coverage",
     "test:snapshots": "npm run update:test-snapshots",
     "test:vitest": "vitest run test",
-    "update:test-snapshots": "vitest run test -u"
+    "update:test-snapshots": "vitest run test -u",
+    "build": "pnpm turbo build:all --filter={.}..."
   },
   "oclif": {
     "additionalHelpFlags": [
