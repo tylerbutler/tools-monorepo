@@ -78,6 +78,7 @@ export async function updateRootPackageJson(
 		// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
 		packageJson.devDependencies["nx"] = "21.6.5";
 		packageJson.devDependencies["@nx/workspace"] = "^21.6.5";
+		packageJson.devDependencies["@nx/azure-cache"] = "^4.0.0";
 		modified = true;
 		logger.log("  ✅ Added nx dependencies");
 	}

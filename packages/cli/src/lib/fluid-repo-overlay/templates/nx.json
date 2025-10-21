@@ -566,5 +566,10 @@
 				"{workspaceRoot}/tools/markdown-magic/package.json"
 			]
 		}
+	},
+	"azure": {
+		"container": "build-cache-nx",
+		"localMode": "read-write",
+		"accountName": "bc-fluid-proto"
 	}
 }
