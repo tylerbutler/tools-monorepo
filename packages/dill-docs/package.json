@@ -1,50 +1,49 @@
 {
-	"name": "dill-docs",
-	"version": "0.0.1",
-	"private": true,
-	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/dill-docs"
-	},
-	"license": "MIT",
-	"author": "Tyler Butler <tyler@tylerbutler.com>",
-	"type": "module",
-	"scripts": {
-		"astro": "astro",
-		"b": "turbo build",
-		"build": "astro build",
-		"build:site": "astro build",
-		"check:astro": "astro check",
-		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
-		"dev": "astro dev",
-		"preview": "astro preview",
-		"start": "astro dev"
-	},
-	"dependencies": {
-		"@astrojs/check": "^0.9.5",
-		"@astrojs/netlify": "^6.5.13",
-		"@astrojs/starlight": "^0.35.3",
-		"@fontsource/ibm-plex-serif": "^5.2.7",
-		"@fontsource/metropolis": "^5.2.5",
-		"@fontsource/open-sans": "^5.2.7",
-		"astro": "^5.14.6",
-		"dill-cli": "workspace:^",
-		"sharp": "^0.34.4",
-		"starlight-heading-badges": "^0.6.1",
-		"starlight-links-validator": "^0.18.1",
-		"starlight-package-managers": "^0.11.1",
-		"starlight-typedoc": "^0.21.4",
-		"typedoc": "^0.28.14",
-		"typedoc-plugin-frontmatter": "^1.3.0",
-		"typedoc-plugin-markdown": "^4.9.0",
-		"typedoc-plugin-mdn-links": "^5.0.10",
-		"typescript": "~5.9.3",
-		"zod": "^3.25.76"
-	},
-	"devDependencies": {
-		"@fec/remark-a11y-emoji": "^4.0.2",
-		"@hashicorp/platform-remark-plugins": "^0.2.1"
-	}
+  "name": "dill-docs",
+  "version": "0.0.1",
+  "private": true,
+  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+    "directory": "packages/dill-docs"
+  },
+  "license": "MIT",
+  "author": "Tyler Butler <tyler@tylerbutler.com>",
+  "type": "module",
+  "scripts": {
+    "astro": "astro build",
+    "b": "turbo build",
+    "build": "pnpm turbo build --filter={.}...",
+    "astro-check": "astro check",
+    "clean": "pnpm turbo clean --filter={.}",
+    "dev": "pnpm turbo dev --filter={.}...",
+    "preview": "astro preview",
+    "start": "astro dev"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.5",
+    "@astrojs/netlify": "^6.5.13",
+    "@astrojs/starlight": "^0.35.3",
+    "@fontsource/ibm-plex-serif": "^5.2.7",
+    "@fontsource/metropolis": "^5.2.5",
+    "@fontsource/open-sans": "^5.2.7",
+    "astro": "^5.14.6",
+    "dill-cli": "workspace:^",
+    "sharp": "^0.34.4",
+    "starlight-heading-badges": "^0.6.1",
+    "starlight-links-validator": "^0.18.1",
+    "starlight-package-managers": "^0.11.1",
+    "starlight-typedoc": "^0.21.4",
+    "typedoc": "^0.28.14",
+    "typedoc-plugin-frontmatter": "^1.3.0",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typedoc-plugin-mdn-links": "^5.0.10",
+    "typescript": "~5.9.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@fec/remark-a11y-emoji": "^4.0.2",
+    "@hashicorp/platform-remark-plugins": "^0.2.1"
+  }
 }

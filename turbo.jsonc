@@ -42,16 +42,16 @@
 		},
 
 		"release": {
-			"dependsOn": ["build", "release:license"],
+			"dependsOn": ["build", "generate-license"],
 			"outputs": [],
 		},
 
 		// ============================================
-		// BUILD IMPLEMENTATION TASKS
+		// TOOL EXECUTOR TASKS
 		// ============================================
 
-		"build:compile": {
-			"dependsOn": ["^build:compile"],
+		"tsc": {
+			"dependsOn": ["^tsc"],
 			"inputs": [
 				"src/**",
 				"tsconfig*.json",
@@ -61,8 +61,8 @@
 			"outputs": ["esm/**", "dist/**", "*.tsbuildinfo"],
 		},
 
-		"build:api": {
-			"dependsOn": ["build:compile"],
+		"api-extractor": {
+			"dependsOn": ["tsc"],
 			"inputs": [
 				"esm/**/*.d.ts",
 				"api-extractor*.{json,cjs}",
@@ -72,37 +72,37 @@
 			"outputs": ["api-docs/**", "_temp/**", "esm/tsdoc-metadata.json"],
 		},
 
-		"build:docs": {
-			"dependsOn": ["build:compile", "build:api"],
+		"typedoc": {
+			"dependsOn": ["tsc", "api-extractor"],
 			"inputs": ["esm/**", "src/**", "typedoc.{json,js,cjs}", "README.md"],
 			"outputs": ["docs/**"],
 		},
 
-		"build:manifest": {
-			"dependsOn": ["build:compile"],
+		"oclif-manifest": {
+			"dependsOn": ["tsc"],
 			"inputs": ["package.json", "src/**", "esm/**"],
 			"outputs": ["oclif.manifest.json"],
 		},
 
-		"build:readme": {
-			"dependsOn": ["build:manifest"],
+		"oclif-readme": {
+			"dependsOn": ["oclif-manifest"],
 			"inputs": ["package.json", "src/**", "oclif.manifest.json"],
 			"outputs": ["README.md"],
 		},
 
-		"build:generate": {
-			"dependsOn": ["build:compile"],
+		"oclif-generate": {
+			"dependsOn": ["tsc"],
 			"inputs": ["src/**", "esm/**"],
 			"outputs": ["test/commands/__snapshots__/**"],
 		},
 
-		"build:site": {
-			"dependsOn": ["^build:compile"],
+		"astro": {
+			"dependsOn": ["^tsc"],
 			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}", "public/**"],
 			"outputs": ["dist/**", ".astro/**"],
 		},
 
-		"build:vite": {
+		"vite": {
 			"dependsOn": [],
 			"inputs": [
 				"src/**",
@@ -113,30 +113,30 @@
 			"outputs": ["dist/**"],
 		},
 
-		"build:tauri": {
-			"dependsOn": ["build:vite"],
+		"tauri": {
+			"dependsOn": ["vite"],
 			"inputs": ["src-tauri/**", "dist/**"],
 			"outputs": ["src-tauri/target/**"],
 		},
 
-		"build:test": {
-			"dependsOn": ["build:compile"],
+		"tsc-test": {
+			"dependsOn": ["tsc"],
 			"inputs": ["test/**/*.ts", "test/tsconfig.json"],
 			"outputs": [],
 		},
 
-		"build:copy-templates": {
-			"dependsOn": ["build:compile"],
+		"copyfiles": {
+			"dependsOn": ["tsc"],
 			"inputs": ["src/**/templates/**"],
 			"outputs": ["esm/**/templates/**"],
 		},
 
 		// ============================================
-		// TEST IMPLEMENTATION TASKS
+		// TEST EXECUTOR TASKS
 		// ============================================
 
-		"test:unit": {
-			"dependsOn": ["build:compile"],
+		"vitest": {
+			"dependsOn": ["tsc"],
 			"inputs": [
 				"src/**",
 				"test/**",
@@ -147,8 +147,8 @@
 			"outputs": ["_temp/**", ".sonda/**"],
 		},
 
-		"test:coverage": {
-			"dependsOn": ["build:compile"],
+		"vitest-coverage": {
+			"dependsOn": ["tsc"],
 			"inputs": [
 				"src/**",
 				"test/**",
@@ -159,17 +159,17 @@
 			"outputs": [".coverage/**", ".sonda/**", "_temp/**"],
 		},
 
-		"test:e2e": {
+		"playwright": {
 			"dependsOn": ["build"],
 			"cache": false,
 			"outputs": [],
 		},
 
 		// ============================================
-		// LINT IMPLEMENTATION TASKS
+		// LINT EXECUTOR TASKS
 		// ============================================
 
-		"lint:biome": {
+		"biome-lint": {
 			"dependsOn": [],
 			"inputs": [
 				"src/**",
@@ -183,10 +183,10 @@
 		},
 
 		// ============================================
-		// CHECK IMPLEMENTATION TASKS
+		// CHECK EXECUTOR TASKS
 		// ============================================
 
-		"check:format": {
+		"biome-format": {
 			"inputs": [
 				"**",
 				"$TURBO_ROOT$/config/biome/*.jsonc",
@@ -195,57 +195,57 @@
 			"outputs": [],
 		},
 
-		"check:types": {
+		"tsc-check": {
 			"dependsOn": ["^build"],
 			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}", "typedoc.{json,js,cjs}"],
 			"outputs": [],
 		},
 
-		"check:deps": {
+		"syncpack": {
 			"inputs": ["**", "$TURBO_ROOT$/*syncpack*"],
 			"outputs": [],
 		},
 
-		"check:policy": {
-			"dependsOn": ["repopo#build:compile"],
+		"repopo": {
+			"dependsOn": ["repopo#tsc"],
 			"inputs": ["**"],
 			"outputs": [],
 		},
 
-		"check:astro": {
-			"dependsOn": ["^build:compile"],
+		"astro-check": {
+			"dependsOn": ["^tsc"],
 			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}"],
 			"outputs": [],
 		},
 
-		"check:svelte": {
+		"svelte-check": {
 			"inputs": ["src/**", "*.config.{ts,js,mjs,cjs}"],
 			"outputs": [],
 		},
 
 		// ============================================
-		// RELEASE IMPLEMENTATION TASKS
+		// RELEASE EXECUTOR TASKS
 		// ============================================
 
-		"release:license": {
-			"dependsOn": ["^release:license"],
+		"generate-license": {
+			"dependsOn": ["^generate-license"],
 			"inputs": ["package.json", "$TURBO_ROOT$/.generatelicensefile.cjs"],
 			"outputs": ["THIRD-PARTY-LICENSES.txt"],
 		},
 
 		// ============================================
-		// CLEAN IMPLEMENTATION TASKS
+		// CLEAN EXECUTOR TASKS
 		// ============================================
 
-		"clean:build": {
+		"clean-build": {
 			"cache": false,
 		},
 
-		"clean:manifest": {
+		"clean-manifest": {
 			"cache": false,
 		},
 
-		"clean:root": {
+		"clean-root": {
 			"cache": false,
 		},
 	},

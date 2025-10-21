@@ -1,134 +1,134 @@
 {
-	"name": "@tylerbu/cli",
-	"version": "0.4.1",
-	"description": "Tyler Butler's personal CLI.",
-	"keywords": [
-		"oclif"
-	],
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli#tylerbucli",
-	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/cli"
-	},
-	"license": "MIT",
-	"author": "Tyler Butler <tyler@tylerbutler.com>",
-	"type": "module",
-	"exports": {
-		".": {
-			"import": {
-				"types": "./esm/index.d.ts",
-				"default": "./esm/index.js"
-			}
-		}
-	},
-	"types": "esm/index.d.ts",
-	"bin": {
-		"tbu": "./bin/run.js"
-	},
-	"files": [
-		"/bin",
-		"/CHANGELOG.md",
-		"/esm",
-		"/oclif.manifest.json",
-		"/THIRD-PARTY-LICENSES.txt"
-	],
-	"scripts": {
-		"build:compile": "tsc --project ./tsconfig.json && pnpm build:copy-templates",
-		"build:copy-templates": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
-		"build:generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
-		"build:manifest": "oclif manifest",
-		"build:readme": "oclif readme --multi --no-aliases",
-		"check": "pnpm check:format",
-		"check:format": "biome check . --linter-enabled=false",
-		"clean": "concurrently npm:clean:build npm:clean:manifest",
-		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
-		"clean:manifest": "rimraf oclif.manifest.json",
-		"format": "biome check . --linter-enabled=false --write",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write",
-		"postpack": "pnpm clean:manifest",
-		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-		"test:unit": "vitest run"
-	},
-	"oclif": {
-		"additionalHelpFlags": [
-			"-h"
-		],
-		"additionalVersionFlags": [
-			"-V"
-		],
-		"bin": "tbu",
-		"commands": "./esm/commands",
-		"devPlugins": [
-			"@oclif/plugin-command-snapshot"
-		],
-		"dirname": "tbu",
-		"plugins": [
-			"@oclif/plugin-autocomplete",
-			"@oclif/plugin-commands",
-			"@oclif/plugin-help",
-			"@oclif/plugin-not-found",
-			"@oclif/plugin-search",
-			"@oclif/plugin-version",
-			"@oclif/plugin-warn-if-update-available",
-			"@oclif/plugin-which"
-		],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/cli/<%- commandPath %>",
-		"topicSeparator": " ",
-		"topics": {
-			"fluid": {
-				"description": "FluidFramework repository tools."
-			},
-			"git": {
-				"description": "Git-related commands."
-			},
-			"sort": {
-				"description": "Commands to sort config files like tsconfigs."
-			}
-		}
-	},
-	"dependencies": {
-		"@oclif/core": "^4.5.6",
-		"@oclif/plugin-autocomplete": "^3.2.37",
-		"@oclif/plugin-commands": "^4.1.35",
-		"@oclif/plugin-help": "^6.2.33",
-		"@oclif/plugin-not-found": "^3.2.70",
-		"@oclif/plugin-plugins": "^5.4.50",
-		"@oclif/plugin-search": "^1.2.33",
-		"@oclif/plugin-version": "^2.2.34",
-		"@oclif/plugin-warn-if-update-available": "^3.1.50",
-		"@oclif/plugin-which": "^3.2.41",
-		"@tylerbu/cli-api": "workspace:^",
-		"debug": "^4.4.3",
-		"dill-cli": "workspace:^",
-		"picocolors": "^1.1.1",
-		"simple-git": "^3.28.0",
-		"strip-ansi": "^7.1.2",
-		"tinyglobby": "^0.2.15"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
-		"@oclif/plugin-command-snapshot": "^5.3.7",
-		"@oclif/test": "^4.1.14",
-		"@types/debug": "^4.1.12",
-		"@types/node": "^20.19.22",
-		"concurrently": "^9.2.1",
-		"copyfiles": "^2.4.1",
-		"generate-license-file": "^4.1.0",
-		"oclif": "^4.22.32",
-		"rimraf": "^6.0.1",
-		"sort-package-json": "*",
-		"tempy": "^3.1.0",
-		"ts-node": "^10.9.2",
-		"tslib": "^2.8.1",
-		"type-fest": "^4.41.0",
-		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
-	},
-	"engines": {
-		"node": ">=18.0.0"
-	}
+  "name": "@tylerbu/cli",
+  "version": "0.4.1",
+  "description": "Tyler Butler's personal CLI.",
+  "keywords": [
+    "oclif"
+  ],
+  "homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli#tylerbucli",
+  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+    "directory": "packages/cli"
+  },
+  "license": "MIT",
+  "author": "Tyler Butler <tyler@tylerbutler.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./esm/index.d.ts",
+        "default": "./esm/index.js"
+      }
+    }
+  },
+  "types": "esm/index.d.ts",
+  "bin": {
+    "tbu": "./bin/run.js"
+  },
+  "files": [
+    "/bin",
+    "/CHANGELOG.md",
+    "/esm",
+    "/oclif.manifest.json",
+    "/THIRD-PARTY-LICENSES.txt"
+  ],
+  "scripts": {
+    "tsc": "tsc --project ./tsconfig.json && pnpm build:copy-templates",
+    "copyfiles": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
+    "oclif-generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
+    "oclif-manifest": "oclif manifest",
+    "oclif-readme": "oclif readme --multi --no-aliases",
+    "check": "pnpm turbo check --filter={.}...",
+    "biome-format": "biome check . --linter-enabled=false",
+    "clean": "pnpm turbo clean --filter={.}",
+    "clean-build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+    "clean-manifest": "rimraf oclif.manifest.json",
+    "format": "biome check . --linter-enabled=false --write",
+    "lint": "pnpm turbo lint --filter={.}...",
+    "lint:fix": "biome lint . --write",
+    "postpack": "pnpm clean:manifest",
+    "generate-license": "generate-license-file -c ../../.generatelicensefile.cjs",
+    "test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
+    "vitest": "vitest run"
+  },
+  "oclif": {
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-V"
+    ],
+    "bin": "tbu",
+    "commands": "./esm/commands",
+    "devPlugins": [
+      "@oclif/plugin-command-snapshot"
+    ],
+    "dirname": "tbu",
+    "plugins": [
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-commands",
+      "@oclif/plugin-help",
+      "@oclif/plugin-not-found",
+      "@oclif/plugin-search",
+      "@oclif/plugin-version",
+      "@oclif/plugin-warn-if-update-available",
+      "@oclif/plugin-which"
+    ],
+    "repositoryPrefix": "<%- repo %>/blob/main/packages/cli/<%- commandPath %>",
+    "topicSeparator": " ",
+    "topics": {
+      "fluid": {
+        "description": "FluidFramework repository tools."
+      },
+      "git": {
+        "description": "Git-related commands."
+      },
+      "sort": {
+        "description": "Commands to sort config files like tsconfigs."
+      }
+    }
+  },
+  "dependencies": {
+    "@oclif/core": "^4.5.6",
+    "@oclif/plugin-autocomplete": "^3.2.37",
+    "@oclif/plugin-commands": "^4.1.35",
+    "@oclif/plugin-help": "^6.2.33",
+    "@oclif/plugin-not-found": "^3.2.70",
+    "@oclif/plugin-plugins": "^5.4.50",
+    "@oclif/plugin-search": "^1.2.33",
+    "@oclif/plugin-version": "^2.2.34",
+    "@oclif/plugin-warn-if-update-available": "^3.1.50",
+    "@oclif/plugin-which": "^3.2.41",
+    "@tylerbu/cli-api": "workspace:^",
+    "debug": "^4.4.3",
+    "dill-cli": "workspace:^",
+    "picocolors": "^1.1.1",
+    "simple-git": "^3.28.0",
+    "strip-ansi": "^7.1.2",
+    "tinyglobby": "^0.2.15"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.5",
+    "@oclif/plugin-command-snapshot": "^5.3.7",
+    "@oclif/test": "^4.1.14",
+    "@types/debug": "^4.1.12",
+    "@types/node": "^20.19.22",
+    "concurrently": "^9.2.1",
+    "copyfiles": "^2.4.1",
+    "generate-license-file": "^4.1.0",
+    "oclif": "^4.22.32",
+    "rimraf": "^6.0.1",
+    "sort-package-json": "*",
+    "tempy": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "type-fest": "^4.41.0",
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
