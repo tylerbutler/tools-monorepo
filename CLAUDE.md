@@ -16,16 +16,18 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 
 ## Essential Commands
 
+**Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`), which internally call Turbo orchestration tasks (`:all` suffix) that coordinate executor tasks (tool names like `tsc`, `typedoc`). See Architecture Patterns section for details.
+
 ### Root-Level Development
 
 ```bash
 # Install dependencies (always use pnpm, never npm/yarn)
 pnpm install
 
-# Build all packages
+# Build all packages (runs turbo build:all)
 pnpm build
 
-# Run all tests
+# Run all tests (runs turbo test:all)
 pnpm test
 
 # Run all checks (format, lint, policy)
@@ -105,35 +107,47 @@ The monorepo contains these key packages:
 
 ### Build Pipeline
 
-Turbo orchestrates builds using a **hierarchical task structure**:
+Turbo orchestrates builds using a **two-tier task structure**:
 
-**Orchestration Tasks** (top-level, call implementation tasks):
-- `build` - Builds all packages (calls build:compile, build:api, build:docs, etc.)
-- `test` - Runs tests (depends on build:compile)
-- `check` - Runs all quality checks (format, types, deps, policy, lint)
-- `release` - Prepares releases (build + release:license)
+**Orchestration Tasks** (top-level with `:all` suffix, coordinate execution):
+- `build:all` - Builds all packages (orchestrates all executor tasks)
+- `test:all` - Runs tests (depends on tsc, vitest, vitest-coverage)
+- `lint:all` - Linting (orchestrates biome-lint)
+- `check:all` - Runs all quality checks (orchestrates format, type, astro, svelte checks)
+- `clean:all` - Clean build artifacts
+- `release` - Prepares releases (build:all + generate-license)
 
-**Implementation Tasks** (package-specific, do actual work):
-- `build:compile` - TypeScript compilation (src → esm/)
-- `build:api` - API Extractor documentation
-- `build:docs` - TypeDoc documentation
-- `build:manifest` - OCLIF manifest generation
-- `build:readme` - OCLIF readme generation
-- `build:generate` - OCLIF command snapshots
-- `build:site` - Astro/Vite site builds
-- `build:vite` / `build:tauri` - Svelte/Tauri builds
-- `test:unit`, `test:coverage`, `test:e2e` - Testing variants
-- `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
+**Executor Tasks** (package-specific, do actual work):
+- `tsc` - TypeScript compilation (src → esm/)
+- `api-extractor` - API Extractor documentation
+- `typedoc` - TypeDoc documentation generation
+- `oclif-manifest` - OCLIF manifest generation
+- `oclif-readme` - OCLIF readme generation
+- `oclif-generate` - OCLIF command snapshots
+- `astro` - Astro site builds
+- `vite` / `tauri` - Svelte/Tauri builds
+- `copyfiles` - Copy template files to esm/
+- `vitest` - Run unit tests
+- `vitest-coverage` - Run tests with coverage
+- `biome-lint` - Biome linting
+- `biome-format` - Biome format checking
+- `tsc-check` - TypeScript type checking (no emit)
+- `astro-check` - Astro project validation
+- `svelte-check` - Svelte project validation
+- `syncpack` - Dependency version sync checking
+- `repopo` - Repository policy checking
+- `generate-license` - Third-party license generation
 
 **Package-Specific Pipelines:**
-- **Libraries**: build:compile → build:api → build:docs
-- **CLI tools**: build:compile → build:manifest → build:readme → build:generate
-- **Astro sites**: build:site only
-- **Svelte apps**: build:vite (or build:tauri for desktop)
+- **Libraries**: tsc → api-extractor → typedoc
+- **CLI tools**: tsc → oclif-manifest → oclif-readme → oclif-generate
+- **Astro sites**: astro only
+- **Svelte apps**: vite (or vite → tauri for desktop)
 
 **Key Principles:**
-- Top-level tasks orchestrate, never implement
-- Implementation tasks use `:` separator (e.g., `build:compile`)
+- Orchestration tasks use `:all` suffix and coordinate executor tasks
+- Executor tasks use direct tool names (e.g., `tsc`, `typedoc`, not `build:compile`, `build:docs`)
+- Root package.json scripts reference executor tasks directly (e.g., `turbo run typedoc`, not `build:docs`)
 - Turbo runs only tasks that exist in each package
 - All configuration in root `turbo.jsonc` (no package-level configs)
 
@@ -216,7 +230,7 @@ pnpm test:coverage
 3. Add to `pnpm-workspace.yaml` (already includes `packages/*`)
 4. Extend base tsconfig: `{ "extends": "../../config/tsconfig.strict.json" }`
 5. Run `pnpm install` from root
-6. Run `pnpm run check:policy` to verify compliance
+6. Run `pnpm run repopo` to verify compliance (or `pnpm run fix:policy` to auto-fix)
 
 ### Working with OCLIF Commands
 
@@ -227,11 +241,14 @@ pnpm test:coverage
 # Production mode (uses compiled JavaScript)
 ./bin/run.js <command>
 
-# Update README after command changes
+# Update README after command changes (runs oclif-readme task)
 pnpm readme
 
-# Update manifest
+# Update manifest (runs oclif-manifest task)
 pnpm manifest
+
+# Generate command snapshots (runs oclif-generate task)
+pnpm generate
 ```
 
 ### Running Individual Package Scripts
@@ -314,12 +331,12 @@ tools-monorepo/
 - Reinstall: `rm -rf node_modules && pnpm install`
 
 **Policy violations:**
-- Auto-fix: `pnpm run fix:policy`
+- Auto-fix: `pnpm run fix:policy` (runs `repopo check --fix`)
 - Check specific package: `./packages/repopo/bin/dev.js check --path packages/<name>`
 
 **Version mismatches:**
 - Sync dependencies: `pnpm syncpack:fix`
-- Check for mismatches: `pnpm run check:deps`
+- Check for mismatches: `turbo run syncpack`
 
 **TypeScript errors:**
 - Ensure you're extending the correct base config
