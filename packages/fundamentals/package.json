@@ -37,7 +37,6 @@
 		"esm"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:api",
 		"build:api": "concurrently npm:docs:api:*",
 		"b": "turbo build",
 		"check": "npm run check:format",

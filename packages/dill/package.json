@@ -41,7 +41,6 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:manifest && npm run build:readme",
 		"b": "turbo build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
