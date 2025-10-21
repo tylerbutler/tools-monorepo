@@ -94,7 +94,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.5.6",
+		"@oclif/core": "^4.6.0",
 		"@oclif/plugin-help": "^6.2.33",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
@@ -112,7 +112,7 @@
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.22",
+		"@types/node": "^20.19.23",
 		"@types/semver": "^7.7.1",
 		"@types/serve-handler": "^6.1.4",
 		"@types/tmp": "^0.2.6",
