@@ -116,7 +116,7 @@
 		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
-		"@types/node": "^20.19.22",
+		"@types/node": "^20.19.23",
 		"concurrently": "^9.2.1",
 		"copyfiles": "^2.4.1",
 		"generate-license-file": "^4.1.0",
