@@ -17,7 +17,17 @@
 		// Named with :all suffix to avoid collision with package-level scripts.
 
 		"build:all": {
-			"dependsOn": ["^build:all", "tsc", "api-extractor", "typedoc", "oclif-manifest", "oclif-readme", "astro", "vite", "copyfiles"],
+			"dependsOn": [
+				"^build:all",
+				"tsc",
+				"api-extractor",
+				"typedoc",
+				"oclif-manifest",
+				"oclif-readme",
+				"astro",
+				"vite",
+				"copyfiles",
+			],
 			"outputs": [],
 		},
 

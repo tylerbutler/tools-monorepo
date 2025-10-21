@@ -4,12 +4,7 @@
 	"tags": ["cli-tool"],
 	"tasks": {
 		"build": {
-			"dependsOn": [
-				"^build",
-				"tsc",
-				"oclif-manifest",
-				"oclif-readme",
-			],
+			"dependsOn": ["^build", "tsc", "oclif-manifest", "oclif-readme"],
 		},
 	},
 }

@@ -1,60 +1,60 @@
 {
-  "name": "@tylerbu/xkcd2-api",
-  "version": "0.1.2",
-  "description": "TypeScript APIs used in implementations of xkcd2.com.",
-  "homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
-  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-    "directory": "packages/xkcd2-api"
-  },
-  "license": "MIT",
-  "author": "Tyler Butler <tyler@tylerbutler.com>",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./esm/index.d.ts",
-        "default": "./esm/index.js"
-      }
-    }
-  },
-  "types": "./esm/index.d.ts",
-  "files": [
-    "esm"
-  ],
-  "scripts": {
-    "api-extractor": "api-extractor run --local",
-    "b": "turbo build",
-    "check": "pnpm turbo check:all --filter={.}...",
-    "biome-format": "biome format .",
-    "clean": "pnpm turbo clean:all --filter={.}",
-    "tsc": "tsc --project ./tsconfig.json",
-    "typedoc": "typedoc",
-    "format": "biome check . --linter-enabled=false --write",
-    "lint": "pnpm turbo lint:all --filter={.}...",
-    "lint:fix": "biome lint . --apply",
-    "test": "pnpm turbo test:all --filter={.}...",
-    "vitest-coverage": "vitest run test --coverage",
-    "build": "pnpm turbo build:all --filter={.}..."
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.2.5",
-    "@microsoft/api-documenter": "^7.27.1",
-    "@microsoft/api-extractor": "^7.53.1",
-    "@types/node": "^20.19.22",
-    "@vitest/coverage-v8": "^3.2.4",
-    "concurrently": "^9.2.1",
-    "rimraf": "^6.0.1",
-    "sort-package-json": "*",
-    "tempy": "^3.1.0",
-    "typedoc": "^0.28.14",
-    "typedoc-plugin-markdown": "^4.9.0",
-    "typescript": "~5.9.3",
-    "vitest": "^3.2.4"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
+	"name": "@tylerbu/xkcd2-api",
+	"version": "0.1.2",
+	"description": "TypeScript APIs used in implementations of xkcd2.com.",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/xkcd2-api"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		}
+	},
+	"types": "./esm/index.d.ts",
+	"files": [
+		"esm"
+	],
+	"scripts": {
+		"api-extractor": "api-extractor run --local",
+		"b": "turbo build",
+		"check": "pnpm turbo check:all --filter={.}...",
+		"biome-format": "biome format .",
+		"clean": "pnpm turbo clean:all --filter={.}",
+		"tsc": "tsc --project ./tsconfig.json",
+		"typedoc": "typedoc",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "pnpm turbo lint:all --filter={.}...",
+		"lint:fix": "biome lint . --apply",
+		"test": "pnpm turbo test:all --filter={.}...",
+		"vitest-coverage": "vitest run test --coverage",
+		"build": "pnpm turbo build:all --filter={.}..."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.5",
+		"@microsoft/api-documenter": "^7.27.1",
+		"@microsoft/api-extractor": "^7.53.1",
+		"@types/node": "^20.19.22",
+		"@vitest/coverage-v8": "^3.2.4",
+		"concurrently": "^9.2.1",
+		"rimraf": "^6.0.1",
+		"sort-package-json": "*",
+		"tempy": "^3.1.0",
+		"typedoc": "^0.28.14",
+		"typedoc-plugin-markdown": "^4.9.0",
+		"typescript": "~5.9.3",
+		"vitest": "^3.2.4"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
 }
