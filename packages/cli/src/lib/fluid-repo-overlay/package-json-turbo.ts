@@ -15,7 +15,8 @@ interface PackageJson {
 }
 
 // Scripts to remove from individual packages (replaced by direct task invocation)
-const FLUID_BUILD_SCRIPT_PATTERNS = ["fluid-build"];
+// These are orchestration-level scripts that should only exist at root level
+const ORCHESTRATION_SCRIPT_PATTERNS = ["fluid-build", "turbo run", "turbo ", "nx run", "nx "];
 
 // Root package.json turbo scripts based on actual turbo.jsonc task names
 const ROOT_TURBO_SCRIPTS: Record<string, string> = {
@@ -47,8 +48,8 @@ const ROOT_TURBO_SCRIPTS: Record<string, string> = {
 	"build:api:legacy": "fluid-build --task build:api",
 	"build:compile": "turbo run compile",
 	"build:compile:legacy": "fluid-build --task compile",
-	"build:docs": "turbo run build:docs",
-	"build:docs:legacy": "fluid-build --task build:docs",
+	"build:docs": "turbo run api-extractor",
+	"build:docs:legacy": "fluid-build --task api-extractor",
 	"build:eslint": "turbo run eslint",
 	"build:eslint:legacy": "fluid-build --task eslint",
 	"build:fast": "turbo run build",
@@ -59,17 +60,17 @@ const ROOT_TURBO_SCRIPTS: Record<string, string> = {
 	"build:full:compile:legacy": "fluid-build --task compile --task webpack",
 	"build:gendocs:client": "turbo run build:gendocs:client",
 	"build:gendocs:client:legacy": "fluid-build --task build:gendocs:client",
-	"check:are-the-types-wrong": "turbo run check:are-the-types-wrong",
+	"check:are-the-types-wrong": "turbo run attw",
 	"check:are-the-types-wrong:legacy":
-		"fluid-build --task check:are-the-types-wrong",
+		"fluid-build --task attw",
 	checks: "turbo run checks",
 	"checks:legacy": "fluid-build --task checks",
 	"checks:fix": "turbo run checks:fix",
 	"checks:fix:legacy": "fluid-build --task checks:fix",
 	"ci:build": "turbo run ci:build",
 	"ci:build:legacy": "fluid-build --task ci:build",
-	"ci:build:docs": "turbo run ci:build:docs",
-	"ci:build:docs:legacy": "fluid-build --task ci:build:docs",
+	"ci:build:docs": "turbo run api-extractor-ci-docs",
+	"ci:build:docs:legacy": "fluid-build --task api-extractor-ci-docs",
 	clean: "turbo run clean",
 	"clean:legacy": "fluid-build --task clean",
 	eslint: "turbo run eslint",
@@ -240,13 +241,14 @@ async function updateSinglePackageJsonForTurbo(
 		packageJson.scripts = {};
 	}
 
-	// Remove fluid-build script references
+	// Remove orchestration-level script references (fluid-build, turbo, nx)
+	// Individual packages should only contain executor-level (tier 3) scripts
 	for (const [scriptName, scriptCommand] of Object.entries(
 		packageJson.scripts,
 	)) {
 		if (typeof scriptCommand === "string") {
-			// Check if script uses fluid-build
-			for (const pattern of FLUID_BUILD_SCRIPT_PATTERNS) {
+			// Check if script uses orchestration tools
+			for (const pattern of ORCHESTRATION_SCRIPT_PATTERNS) {
 				if (scriptCommand.includes(pattern)) {
 					// Remove the script entirely
 					delete packageJson.scripts[scriptName];

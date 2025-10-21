@@ -712,17 +712,21 @@ export async function updateFluidBuildConfig(
 
 	// Update tscDependsOn constant
 	for (const [oldName, newName] of renameMap.entries()) {
+		// Escape special regex characters in oldName
+		const escapedOldName = oldName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 		// Match in the tscDependsOn array: ["^tsc", "^api", "build:genver", "ts2esm"]
-		const constPattern = new RegExp(`(\\[.*?)"${oldName}"(.*?\\])`, "g");
+		const constPattern = new RegExp(`(\\[.*?)"${escapedOldName}"(.*?\\])`, "g");
 		content = content.replace(constPattern, `$1"${newName}"$2`);
 
 		// Match as task definition key: "build:genver": []
-		const taskKeyPattern = new RegExp(`^(\\s*)"${oldName}"(\\s*:)`, "gm");
+		const taskKeyPattern = new RegExp(`^(\\s*)"${escapedOldName}"(\\s*:)`, "gm");
 		content = content.replace(taskKeyPattern, `$1"${newName}"$2`);
 
 		// Match in dependsOn arrays: ["typetests:gen", "tsc", "build:genver"]
-		const depPattern = new RegExp(`"${oldName}"`, "g");
-		content = content.replace(depPattern, `"${newName}"`);
+		// Also match with optional ^ or ~ or # prefix: ["^build:esnext", "~tsc"]
+		const depPattern = new RegExp(`"([~^#])?${escapedOldName}"`, "g");
+		content = content.replace(depPattern, `"$1${newName}"`);
 	}
 
 	// Write back if modified

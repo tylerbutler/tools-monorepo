@@ -18,29 +18,19 @@ interface PackageJson {
 	};
 }
 
-// Scripts that should be removed from individual packages (orchestrators)
-const FLUID_BUILD_SCRIPTS = [
-	"build",
-	"build:commonjs",
-	"build:compile",
-	"build:lint",
-	"build:api",
-	"build:docs",
-	"lint",
-	"lint:fix",
-	"test",
-	"test:unit",
-];
+// Scripts to remove from individual packages (replaced by direct task invocation)
+// These are orchestration-level scripts that should only exist at root level
+const ORCHESTRATION_SCRIPT_PATTERNS = ["fluid-build", "turbo run", "turbo ", "nx run", "nx "];
 
 // Root package.json nx scripts based on actual nx.json task names
 // Note: These use the actual target names from nx.json, not the old fluid-build task names
 const ROOT_NX_SCRIPTS: Record<string, string> = {
 	// Main nx scripts (replace fluid-build commands)
-	"build": "nx run-many -t check:format build:compile build:lint build:api build:docs build:manifest build:readme",
+	"build": "nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme",
 	"build-and-test": "nx run-many -t test:unit",
 	"build:compile": "nx run-many -t build:compile",
-	"build:full": "nx run-many -t check:format build:compile build:lint build:api build:docs build:manifest build:readme webpack",
-	"ci:build": "nx run-many -t build:compile build:lint build:api build:docs build:manifest build:readme",
+	"build:full": "nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme webpack",
+	"ci:build": "nx run-many -t build:compile build:lint build:api api-extractor build:manifest build:readme",
 	"compile": "nx run-many -t tsc esnext copy-files",
 	"lint": "nx run-many -t lint",
 	"tsc": "nx run-many -t tsc",
@@ -201,16 +191,20 @@ async function updateSinglePackageJson(
 		packageJson.scripts = {};
 	}
 
-	// Remove orchestrator scripts - they should only be in root package.json
-	// These are scripts that coordinate builds (like "build", "test", "lint")
-	// Individual packages should only have implementation tasks (executors)
-	for (const scriptName of FLUID_BUILD_SCRIPTS) {
-		if (packageJson.scripts[scriptName]) {
-			const scriptContent = packageJson.scripts[scriptName];
-			// Remove if it calls fluid-build or nx (orchestrators)
-			if (scriptContent.includes("fluid-build") || scriptContent.includes("nx ")) {
-				delete packageJson.scripts[scriptName];
-				modified = true;
+	// Remove orchestration-level script references (fluid-build, turbo, nx)
+	// Individual packages should only contain executor-level (tier 3) scripts
+	for (const [scriptName, scriptCommand] of Object.entries(
+		packageJson.scripts,
+	)) {
+		if (typeof scriptCommand === "string") {
+			// Check if script uses orchestration tools
+			for (const pattern of ORCHESTRATION_SCRIPT_PATTERNS) {
+				if (scriptCommand.includes(pattern)) {
+					// Remove the script entirely
+					delete packageJson.scripts[scriptName];
+					modified = true;
+					break;
+				}
 			}
 		}
 	}
