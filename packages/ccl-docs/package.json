@@ -14,14 +14,14 @@
 	"scripts": {
 		"astro": "astro build",
 		"astro-check": "astro check",
+		"build": "pnpm turbo build:all --filter={.}...",
+		"check": "pnpm turbo check:all --filter={.}...",
 		"clean": "pnpm turbo clean:all --filter={.}",
 		"dev": "pnpm turbo dev --filter={.}...",
+		"lint": "pnpm turbo lint:all --filter={.}...",
 		"preview": "astro preview",
 		"start": "astro dev",
-		"build": "pnpm turbo build:all --filter={.}...",
-		"test": "pnpm turbo test:all --filter={.}...",
-		"lint": "pnpm turbo lint:all --filter={.}...",
-		"check": "pnpm turbo check:all --filter={.}..."
+		"test": "pnpm turbo test:all --filter={.}..."
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.5",
