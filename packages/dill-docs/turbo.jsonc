@@ -1,12 +1,13 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
 	"extends": ["//"],
+	"tags": ["docs-site", "web"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["build:site"],
+			"dependsOn": ["astro"],
 		},
 		"check": {
-			"dependsOn": ["check:astro"],
+			"dependsOn": ["astro-check"],
 		},
 	},
 }

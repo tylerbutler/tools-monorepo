@@ -1,15 +1,16 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
 	"extends": ["//"],
+	"tags": ["webapp", "web"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["build:vite"],
+			"dependsOn": ["vite"],
 		},
-		"build:vite": {
+		"vite": {
 			"outputs": ["build/**"],
 		},
 		"check": {
-			"dependsOn": ["check:svelte"],
+			"dependsOn": ["svelte-check"],
 		},
 	},
 }

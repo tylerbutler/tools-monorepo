@@ -29,21 +29,21 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:api",
-		"build:api": "api-extractor run --local",
+		"api-extractor": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"b": "turbo build",
-		"check": "npm run check:format",
-		"check:format": "biome format .",
-		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
-		"build:compile": "tsc --project ./tsconfig.json",
+		"biome-format": "biome format .",
+		"build": "pnpm turbo build:all --filter={.}...",
+		"check": "pnpm turbo check:all --filter={.}...",
+		"clean": "pnpm turbo clean:all --filter={.}",
 		"format": "biome check . --linter-enabled=false --write",
-		"lint": "biome lint .",
+		"generate-license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"lint": "pnpm turbo lint:all --filter={.}...",
 		"lint:fix": "biome lint . --write",
-		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "npm run test:vitest",
-		"test:coverage": "vitest run test --coverage",
-		"test:vitest": "vitest run test"
+		"test": "pnpm turbo test:all --filter={.}...",
+		"test:vitest": "vitest run test",
+		"tsc": "tsc --project ./tsconfig.json",
+		"vitest-coverage": "vitest run test --coverage"
 	},
 	"oclif": {
 		"bin": "tylerbu-cli-api",

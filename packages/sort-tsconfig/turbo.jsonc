@@ -1,9 +1,10 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
 	"extends": ["//"],
+	"tags": ["cli-tool"],
 	"tasks": {
 		"build": {
-			"dependsOn": ["^build", "build:compile"],
+			"dependsOn": ["^build", "tsc"],
 		},
 	},
 }
