@@ -76,7 +76,7 @@
 	},
 	"dependencies": {
 		"@fluid-tools/build-infrastructure": "~0.58.3",
-		"@oclif/core": "^4.5.6",
+		"@oclif/core": "^4.6.0",
 		"@oclif/plugin-help": "^6.2.33",
 		"@rushstack/node-core-library": "^5.17.0",
 		"@tylerbu/cli-api": "workspace:^",
@@ -94,7 +94,7 @@
 		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.22",
+		"@types/node": "^20.19.23",
 		"@types/tmp": "^0.2.6",
 		"generate-license-file": "^4.1.0",
 		"oclif": "^4.22.32",
