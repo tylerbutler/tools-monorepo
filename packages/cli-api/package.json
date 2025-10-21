@@ -51,7 +51,7 @@
 		"dirname": "tylerbu-cli-api"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.5.6",
+		"@oclif/core": "^4.6.0",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"debug": "^4.4.3",
 		"detect-indent": "^7.0.2",
