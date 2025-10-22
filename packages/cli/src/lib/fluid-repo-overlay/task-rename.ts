@@ -491,15 +491,24 @@ const IGNORE_SCRIPTS = [
 ];
 
 // ============================================================================
+// Regular Expressions (defined at top level for performance)
+// ============================================================================
+
+const BUILD_PREFIX_REGEX = /^build:/;
+const PACKAGE_TASK_REGEX = /^(@[^#]+)#(.+)$/;
+const PREFIX_TASK_REGEX = /^([~^#])(.+)$/;
+
+// ============================================================================
 // Analysis Functions
 // ============================================================================
 
 /**
  * Analyze repository for task naming issues and rename opportunities
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Complex pattern matching across multiple rename rules
 export async function analyzeTaskNaming(
 	repoDir: string,
-	logger: Logger,
+	_logger: Logger,
 ): Promise<TaskAnalysis> {
 	const packages = await findPackages(repoDir);
 	const renames: RenameEntry[] = [];
@@ -558,7 +567,7 @@ export async function analyzeTaskNaming(
 				scriptName.startsWith("build:") &&
 				looksLikeExecutor(scriptContent as string)
 			) {
-				const suggested = scriptName.replace(/^build:/, "");
+				const suggested = scriptName.replace(BUILD_PREFIX_REGEX, "");
 				if (!renames.some((r) => r.from === scriptName)) {
 					issues.push(
 						`${pkg.name}: "${scriptName}" appears to be executor but has build: prefix (suggest: "${suggested}")`,
@@ -580,6 +589,7 @@ export async function analyzeTaskNaming(
 /**
  * Apply task renames to repository
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Multi-pass transformation with cross-reference updates
 export async function applyTaskRenames(
 	options: TaskRenameOptions,
 	logger: Logger,
@@ -682,7 +692,9 @@ export async function applyTaskRenames(
 									break;
 								}
 							}
-							if (newTaskName !== taskName) break;
+							if (newTaskName !== taskName) {
+								break;
+							}
 						}
 					}
 				}
@@ -850,9 +862,10 @@ export async function disableFluidBuildTasksPolicies(
 /**
  * Validate that renames were applied correctly
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Comprehensive validation across multiple check types
 export async function validateTaskRenames(
 	repoDir: string,
-	logger: Logger,
+	_logger: Logger,
 ): Promise<TaskValidation> {
 	const checks: ValidationCheck[] = [];
 	const packages = await findPackages(repoDir);
@@ -871,7 +884,7 @@ export async function validateTaskRenames(
 		for (const scriptContent of Object.values(pkg.scripts)) {
 			const references = extractScriptReferences(scriptContent as string);
 			for (const ref of references) {
-				if (!scriptNames.includes(ref) && !IGNORE_SCRIPTS.includes(ref)) {
+				if (!(scriptNames.includes(ref) || IGNORE_SCRIPTS.includes(ref))) {
 					orphanedRefs++;
 				}
 			}
@@ -900,8 +913,7 @@ export async function validateTaskRenames(
 		for (const [scriptName, scriptContent] of Object.entries(pkg.scripts)) {
 			// Executors (no colon, tool names) shouldn't call npm run
 			if (
-				!scriptName.includes(":") &&
-				!IGNORE_SCRIPTS.includes(scriptName) &&
+				!(scriptName.includes(":") || IGNORE_SCRIPTS.includes(scriptName)) &&
 				(scriptContent as string).includes("npm run")
 			) {
 				tierViolations++;
@@ -1150,8 +1162,8 @@ function updateFluidBuildReference(
 	// Handle @package#task-name format (cross-package reference)
 	// Only use unconditional renames for cross-package refs since we can't
 	// evaluate conditions for tasks in other packages
-	const match = ref.match(/^(@[^#]+)#(.+)$/);
-	if (match && match[1] && match[2]) {
+	const match = ref.match(PACKAGE_TASK_REGEX);
+	if (match?.[1] && match[2]) {
 		const packageName = match[1];
 		const taskName = match[2];
 		const newTaskName = unconditionalRenameMap.get(taskName) ?? taskName;
@@ -1160,8 +1172,8 @@ function updateFluidBuildReference(
 
 	// Handle references with special prefixes (^, ~, #)
 	// These prefixes need to be preserved while the task name is renamed
-	const prefixMatch = ref.match(/^([~^#])(.+)$/);
-	if (prefixMatch && prefixMatch[1] && prefixMatch[2]) {
+	const prefixMatch = ref.match(PREFIX_TASK_REGEX);
+	if (prefixMatch?.[1] && prefixMatch[2]) {
 		const prefix = prefixMatch[1]; // e.g., "^" or "~"
 		const taskName = prefixMatch[2]; // e.g., "build:esnext"
 		const newTaskName = renameMap.get(taskName) ?? taskName;

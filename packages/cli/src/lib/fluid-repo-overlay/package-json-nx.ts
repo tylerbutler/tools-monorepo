@@ -145,6 +145,7 @@ export async function updatePackageJsonFilesForNx(
 /**
  * Update a single package.json file for Nx
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Multi-field update with conditional logic
 async function updateSinglePackageJsonForNx(
 	filePath: string,
 	repoRoot: string,
@@ -181,13 +182,11 @@ async function updateSinglePackageJsonForNx(
 				packageJson.nx?.targets?.[dep] !== undefined,
 		);
 
-		if (hasDependency) {
-			// Only add if not already defined
-			if (!packageJson.nx.targets[taskName]) {
-				// Empty object - configuration comes from nx.json targetDefaults
-				packageJson.nx.targets[taskName] = {};
-				modified = true;
-			}
+		// Only add if not already defined and has at least one dependency
+		if (hasDependency && !packageJson.nx.targets[taskName]) {
+			// Empty object - configuration comes from nx.json targetDefaults
+			packageJson.nx.targets[taskName] = {};
+			modified = true;
 		}
 	}
 

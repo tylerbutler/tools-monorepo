@@ -3,7 +3,7 @@
  * Prepares FluidFramework repository for Nx/Turbo migration (Phase 1)
  */
 
-import { Args, Flags } from "@oclif/core";
+import { Flags } from "@oclif/core";
 import { GitCommand } from "@tylerbu/cli-api";
 import {
 	analyzeTaskNaming,
@@ -59,6 +59,7 @@ export default class FluidTaskRename extends GitCommand<
 		}),
 	};
 
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Complex orchestration logic for rename workflow
 	public override async run(): Promise<void> {
 		const { flags } = this;
 
@@ -120,11 +121,12 @@ export default class FluidTaskRename extends GitCommand<
 		}
 
 		// Confirm if not in CI
+		// biome-ignore lint/style/noProcessEnv: CI detection requires process.env
 		if (!process.env["CI"]) {
 			this.warning(
 				"\n⚠️  This will modify package.json files in the repository",
 			);
-			// Note: In real implementation, add confirmation prompt
+			// TODO: In real implementation, add confirmation prompt
 			// For now, proceeding with changes
 		}
 
