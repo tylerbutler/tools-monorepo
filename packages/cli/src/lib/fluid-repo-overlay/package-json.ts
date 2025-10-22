@@ -32,6 +32,7 @@ const ROOT_NX_SCRIPTS: Record<string, string> = {
 	"build:full": "nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme webpack",
 	"ci:build": "nx run-many -t build:compile build:lint build:api api-extractor build:manifest build:readme",
 	"compile": "nx run-many -t tsc esnext copy-files",
+	"format": "biome format . --write",
 	"lint": "nx run-many -t lint",
 	"tsc": "nx run-many -t tsc",
 };
