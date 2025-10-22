@@ -89,7 +89,7 @@ const TIER2_AGGREGATION_TASKS: Record<string, Tier2Task> = {
 	full: {
 		dependencies: ["build", "webpack"],
 	},
-};;
+};
 
 // OCLIF-specific Tier 2 aggregation tasks (only for packages with oclif config)
 // These tasks generate OCLIF manifests and readmes
