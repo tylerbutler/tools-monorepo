@@ -122,10 +122,18 @@ const RENAME_RULES: RenameRule[] = [
 	},
 
 	// ========================================================================
-	// Reverse Renames (Corrections from Phase 1)
+	// Namespace Corrections
 	// ========================================================================
+	// These rules fix script names with incorrect namespaces.
+	//
+	// Design pattern: Two-stage transformation
+	// Stage 1: Fix namespace (test:* → build:* for build-related tasks)
+	// Stage 2: Apply tier-specific naming (build:test → tsc-test if executor)
+	//
 	// The build L1 orchestrator should build everything (source + tests).
 	// The test L1 orchestrator should run tests (assumes already built).
+	// Therefore test:build is semantically wrong - it builds, so it belongs
+	// under the build namespace.
 	{
 		pattern: "test:build",
 		replacement: "build:test",
@@ -219,6 +227,9 @@ const RENAME_RULES: RenameRule[] = [
 		reason:
 			"Executor: Semantic executor for testing with coverage (Pattern A, strict rules)",
 	},
+	// Stage 2 of test:build transformation (Stage 1 is namespace correction above)
+	// Scripts that start as test:build first become build:test (namespace fix),
+	// then this conditional rule applies tier-specific naming if it's an executor
 	{
 		pattern: "build:test",
 		replacement: "tsc-test",
