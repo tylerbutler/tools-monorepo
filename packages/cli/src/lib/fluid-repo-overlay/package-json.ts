@@ -69,6 +69,7 @@ export async function updateRootPackageJson(
 		packageJson.devDependencies["nx"] = "21.6.5";
 		packageJson.devDependencies["@nx/workspace"] = "^21.6.5";
 		packageJson.devDependencies["@nx/azure-cache"] = "^4.0.0";
+		packageJson.devDependencies["@nx/s3-cache"] = "^4.0.0";
 		modified = true;
 		logger.log("  ✅ Added nx dependencies");
 	}

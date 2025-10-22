@@ -567,9 +567,11 @@
 			]
 		}
 	},
-	"azure": {
-		"container": "build-cache-nx",
-		"localMode": "read-write",
-		"accountName": "fluidbuildcacheprototype"
+	"s3": {
+		"region": "us-east-1",
+		"bucket": "nx-cache",
+		"endpoint": "https://storage.btlr.org",
+		"forcePathStyle": true,
+		"localMode": "read-write"
 	}
 }
