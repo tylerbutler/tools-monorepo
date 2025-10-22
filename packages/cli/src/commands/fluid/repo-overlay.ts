@@ -31,9 +31,9 @@ import {
 } from "../../lib/fluid-repo-overlay/gitignore-turbo.js";
 import {
 	needsPackageJsonUpdates,
-	updatePackageJsonFiles,
 	updateRootPackageJson,
 } from "../../lib/fluid-repo-overlay/package-json.js";
+import { updatePackageJsonFilesForNx } from "../../lib/fluid-repo-overlay/package-json-nx.js";
 import {
 	needsPackageJsonUpdatesForTurbo,
 	updatePackageJsonFilesForTurbo,
@@ -178,7 +178,7 @@ export default class RepoOverlayCommand extends BaseCommand<
 			this.log("");
 
 			// Step 4: Update package.json files
-			await updatePackageJsonFiles(repoRoot, this);
+			await updatePackageJsonFilesForNx(repoRoot, this);
 			this.log("");
 
 			this.log("✅ Nx overlay applied successfully!");

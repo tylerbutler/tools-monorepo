@@ -1,6 +1,7 @@
 {
 	"$schema": "./node_modules/nx/schemas/nx-schema.json",
 	"extends": "nx/presets/npm.json",
+	"parallel": 8,
 	"affected": {
 		"defaultBase": "main"
 	},
@@ -186,6 +187,10 @@
 			"inputs": ["{projectRoot}/package.json"],
 			"outputs": ["{projectRoot}/**/types/**/*.generated.ts"],
 			"cache": true
+		},
+		"api-extractor": {
+			"dependsOn": ["tsc", "esnext"],
+			"outputs": []
 		},
 		"api-extract-cjs": {
 			"dependsOn": ["tsc"],
@@ -566,5 +571,12 @@
 				"{workspaceRoot}/tools/markdown-magic/package.json"
 			]
 		}
+	},
+	"s3": {
+		"region": "us-east-1",
+		"bucket": "nx-cache",
+		"endpoint": "https://storage.btlr.org",
+		"forcePathStyle": true,
+		"localMode": "read-write"
 	}
 }
