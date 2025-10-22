@@ -1,0 +1,345 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+
+  // Maximum parallel tasks - equivalent to Turbo's concurrency: "100%"
+  "parallel": 15,
+
+  "cacheDirectory": ".nx/cache",
+  "defaultBase": "main",
+
+  // Enable daemon for faster task execution
+  "useDaemonProcess": true,
+
+  // ============================================
+  // NAMED INPUTS
+  // ============================================
+  // Reusable file pattern definitions for caching
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+
+    "production": [
+      "default",
+      "!{projectRoot}/**/*.spec.ts",
+      "!{projectRoot}/**/*.test.ts",
+      "!{projectRoot}/test/**/*"
+    ],
+
+    // Shared config files that affect all packages
+    "sharedGlobals": [
+      "{workspaceRoot}/config/tsconfig*.json",
+      "{workspaceRoot}/config/biome/*.jsonc",
+      "{workspaceRoot}/biome.jsonc",
+      "{workspaceRoot}/pnpm-workspace.yaml",
+      "{workspaceRoot}/repopo.config.ts",
+      "{workspaceRoot}/.generatelicensefile.cjs"
+    ]
+  },
+
+  // ============================================
+  // TARGET DEFAULTS
+  // ============================================
+  // Equivalent to Turbo's task configuration
+  "targetDefaults": {
+    // ============================================
+    // ORCHESTRATION TARGETS
+    // ============================================
+    "build": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+
+    "test": {
+      "cache": true
+    },
+
+    "lint": {
+      "cache": true
+    },
+
+    "check": {
+      "cache": true
+    },
+
+    "clean": {
+      "cache": false
+    },
+
+    "dev": {
+      "cache": false
+    },
+
+    "release": {
+      "dependsOn": ["build", "release:license"],
+      "cache": true
+    },
+
+    // ============================================
+    // BUILD IMPLEMENTATION TARGETS
+    // ============================================
+    "build:compile": {
+      "dependsOn": ["^build:compile"],
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/tsconfig*.json",
+        "{projectRoot}/package.json",
+        "sharedGlobals"
+      ],
+      "outputs": [
+        "{projectRoot}/esm/**",
+        "{projectRoot}/dist/**",
+        "{projectRoot}/*.tsbuildinfo"
+      ],
+      "cache": true
+    },
+
+    "build:api": {
+      "dependsOn": ["build:compile"],
+      "inputs": [
+        "{projectRoot}/esm/**/*.d.ts",
+        "{projectRoot}/api-extractor*.{json,cjs}",
+        "{projectRoot}/package.json",
+        "{workspaceRoot}/config/api-extractor.base.json"
+      ],
+      "outputs": [
+        "{projectRoot}/api-docs/**",
+        "{projectRoot}/_temp/**",
+        "{projectRoot}/esm/tsdoc-metadata.json"
+      ],
+      "cache": true
+    },
+
+    "build:docs": {
+      "dependsOn": ["build:compile", "build:api"],
+      "inputs": [
+        "{projectRoot}/esm/**",
+        "{projectRoot}/src/**",
+        "{projectRoot}/typedoc.{json,js,cjs}",
+        "{projectRoot}/README.md"
+      ],
+      "outputs": ["{projectRoot}/docs/**"],
+      "cache": true
+    },
+
+    "build:manifest": {
+      "dependsOn": ["build:compile"],
+      "inputs": [
+        "{projectRoot}/package.json",
+        "{projectRoot}/src/**",
+        "{projectRoot}/esm/**"
+      ],
+      "outputs": ["{projectRoot}/oclif.manifest.json"],
+      "cache": true
+    },
+
+    "build:readme": {
+      "dependsOn": ["build:manifest"],
+      "inputs": [
+        "{projectRoot}/package.json",
+        "{projectRoot}/src/**",
+        "{projectRoot}/oclif.manifest.json"
+      ],
+      "outputs": ["{projectRoot}/README.md"],
+      "cache": true
+    },
+
+    "build:generate": {
+      "dependsOn": ["build:compile", "build:manifest"],
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/esm/**",
+        "{projectRoot}/package.json",
+        "{projectRoot}/oclif.manifest.json"
+      ],
+      "outputs": ["{projectRoot}/test/commands/__snapshots__/**"],
+      "cache": true
+    },
+
+    "build:site": {
+      "dependsOn": ["^build:compile"],
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}",
+        "{projectRoot}/public/**"
+      ],
+      "outputs": [
+        "{projectRoot}/dist/**",
+        "{projectRoot}/.astro/**"
+      ],
+      "cache": true
+    },
+
+    "build:vite": {
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}",
+        "{projectRoot}/public/**",
+        "{projectRoot}/index.html"
+      ],
+      "outputs": ["{projectRoot}/dist/**"],
+      "cache": true
+    },
+
+    "build:tauri": {
+      "dependsOn": ["build:vite"],
+      "inputs": [
+        "{projectRoot}/src-tauri/**",
+        "{projectRoot}/dist/**"
+      ],
+      "outputs": ["{projectRoot}/src-tauri/target/**"],
+      "cache": true
+    },
+
+    "build:test": {
+      "dependsOn": ["build:compile"],
+      "inputs": [
+        "{projectRoot}/test/**/*.ts",
+        "{projectRoot}/test/tsconfig.json"
+      ],
+      "cache": true
+    },
+
+    "build:copy-templates": {
+      "dependsOn": ["build:compile"],
+      "inputs": ["{projectRoot}/src/**/templates/**"],
+      "outputs": ["{projectRoot}/esm/**/templates/**"],
+      "cache": true
+    },
+
+    // ============================================
+    // TEST IMPLEMENTATION TARGETS
+    // ============================================
+    "test:unit": {
+      "dependsOn": ["build:compile"],
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/test/**",
+        "{projectRoot}/esm/**",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}",
+        "{projectRoot}/test/tsconfig.json"
+      ],
+      "outputs": [
+        "{projectRoot}/_temp/**",
+        "{projectRoot}/.sonda/**"
+      ],
+      "cache": true
+    },
+
+    "test:coverage": {
+      "dependsOn": ["build:compile"],
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/test/**",
+        "{projectRoot}/esm/**",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}",
+        "{projectRoot}/test/tsconfig.json"
+      ],
+      "outputs": [
+        "{projectRoot}/.coverage/**",
+        "{projectRoot}/.sonda/**",
+        "{projectRoot}/_temp/**"
+      ],
+      "cache": true
+    },
+
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
+
+    // ============================================
+    // LINT IMPLEMENTATION TARGETS
+    // ============================================
+    "lint:biome": {
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/test/**",
+        "{projectRoot}/biome.jsonc",
+        "{projectRoot}/.eslintrc*",
+        "{workspaceRoot}/config/biome/*.jsonc",
+        "{workspaceRoot}/biome.jsonc"
+      ],
+      "cache": true
+    },
+
+    // ============================================
+    // CHECK IMPLEMENTATION TARGETS
+    // ============================================
+    "check:format": {
+      "inputs": [
+        "{projectRoot}/**/*",
+        "{workspaceRoot}/config/biome/*.jsonc",
+        "{workspaceRoot}/biome.jsonc"
+      ],
+      "cache": true
+    },
+
+    "check:types": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}",
+        "{projectRoot}/typedoc.{json,js,cjs}"
+      ],
+      "cache": true
+    },
+
+    "check:deps": {
+      "inputs": [
+        "{projectRoot}/**/*",
+        "{workspaceRoot}/*syncpack*"
+      ],
+      "cache": true
+    },
+
+    "check:policy": {
+      "dependsOn": ["repopo:build:compile"],
+      "inputs": ["{projectRoot}/**/*"],
+      "cache": true
+    },
+
+    "check:astro": {
+      "dependsOn": ["^build:compile"],
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}"
+      ],
+      "cache": true
+    },
+
+    "check:svelte": {
+      "inputs": [
+        "{projectRoot}/src/**",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}"
+      ],
+      "cache": true
+    },
+
+    // ============================================
+    // RELEASE IMPLEMENTATION TARGETS
+    // ============================================
+    "release:license": {
+      "dependsOn": ["^release:license"],
+      "inputs": [
+        "{projectRoot}/package.json",
+        "{workspaceRoot}/.generatelicensefile.cjs"
+      ],
+      "outputs": ["{projectRoot}/THIRD-PARTY-LICENSES.txt"],
+      "cache": true
+    },
+
+    // ============================================
+    // CLEAN IMPLEMENTATION TARGETS
+    // ============================================
+    "clean:build": {
+      "cache": false
+    },
+
+    "clean:manifest": {
+      "cache": false
+    },
+
+    "clean:root": {
+      "cache": false
+    }
+  }
+}

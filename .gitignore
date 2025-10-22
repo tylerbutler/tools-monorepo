@@ -9,8 +9,8 @@ package-lock.json
 yarn.lock
 .require-email.json
 
-# turborepo
-.turbo
+# nx
+.nx
 
 # netlify cache
 .netlify
