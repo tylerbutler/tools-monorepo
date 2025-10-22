@@ -1,5 +1,22 @@
 # @tylerbu/cli
 
+## 0.5.0
+
+### Minor Changes
+
+- Add `fluid task-rename` command for FluidFramework repository _[`#326`](https://github.com/tylerbutler/tools-monorepo/pull/326) [`bcbee7d`](https://github.com/tylerbutler/tools-monorepo/commit/bcbee7da2d54616abc1cb1b3d16b0ded6edb632d) [@tylerbutler](https://github.com/tylerbutler)_
+
+  **New Command:**
+
+  - `tbu fluid task-rename` - Rename package.json scripts to follow three-tier naming principles
+
+  **Features:**
+
+  - Analyze and validate script naming across all packages
+  - Apply systematic renames with cross-reference updates
+  - Dry-run mode to preview changes before applying
+  - Validation-only mode to check for naming issues
+
 ## 0.4.1
 
 ### Patch Changes
