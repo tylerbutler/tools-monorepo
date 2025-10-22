@@ -14,35 +14,100 @@ interface PackageJson {
 	fluidBuild?: Record<string, unknown>;
 }
 
-// Tier 2 aggregation tasks that need to exist as NO-OP scripts for Nx to run them
-// These are defined in nx.json targetDefaults with dependsOn arrays
-// The actual work is done by their dependencies (Tier 3 executor tasks)
-const TIER2_AGGREGATION_TASKS: Record<string, string> = {
+// Tier 2 aggregation tasks and their Tier 3 dependencies
+// Based on nx.json targetDefaults
+// We only add a Tier 2 task if at least one of its dependencies exists in the package
+interface Tier2Task {
+	script: string;
+	dependencies: string[]; // Tier 3 executor tasks or other Tier 2 tasks
+}
+
+const TIER2_AGGREGATION_TASKS: Record<string, Tier2Task> = {
 	// Build aggregation tasks
-	"build:compile": "exit 0",
-	"build:lint": "exit 0",
-	"build:api": "exit 0",
-	"build:api:current": "exit 0",
-	"build:api:legacy": "exit 0",
-	"build:docs": "exit 0",
-	"build:readme": "exit 0",
-	"build:manifest": "exit 0",
+	"build:compile": {
+		script: "exit 0",
+		dependencies: ["tsc", "esnext", "copy-files"],
+	},
+	"build:lint": {
+		script: "exit 0",
+		dependencies: [
+			"eslint",
+			"good-fences",
+			"depcruise",
+			"check:exports",
+			"check:release-tags",
+		],
+	},
+	"build:api": {
+		script: "exit 0",
+		dependencies: ["build:api:current", "build:api:legacy"],
+	},
+	"build:api:current": {
+		script: "exit 0",
+		dependencies: ["api-extract-esm"],
+	},
+	"build:api:legacy": {
+		script: "exit 0",
+		dependencies: ["api-extract-esm"],
+	},
+	"build:docs": {
+		script: "exit 0",
+		dependencies: ["docs-extract"],
+	},
+	"build:readme": {
+		script: "exit 0",
+		dependencies: ["build:compile"],
+	},
+	"build:manifest": {
+		script: "exit 0",
+		dependencies: ["build:compile"],
+	},
 
 	// Test aggregation tasks
-	"test-build": "exit 0",
-	"test-build-cjs": "exit 0",
-	"test-build-esm": "exit 0",
-	"test:unit": "exit 0",
-	"test:unit:cjs": "exit 0",
-	"test:unit:esm": "exit 0",
+	"test-build": {
+		script: "exit 0",
+		dependencies: ["test-build-cjs", "test-build-esm"],
+	},
+	"test-build-cjs": {
+		script: "exit 0",
+		dependencies: ["tsc"],
+	},
+	"test-build-esm": {
+		script: "exit 0",
+		dependencies: ["esnext"],
+	},
+	"test:unit": {
+		script: "exit 0",
+		dependencies: ["test:unit:cjs", "test:unit:esm"],
+	},
+	"test:unit:cjs": {
+		script: "exit 0",
+		dependencies: ["mocha-cjs", "jest"],
+	},
+	"test:unit:esm": {
+		script: "exit 0",
+		dependencies: ["mocha-esm"],
+	},
 
-	// Lint aggregation task (primary one that was being skipped)
-	lint: "exit 0",
+	// Lint aggregation task
+	lint: {
+		script: "exit 0",
+		dependencies: ["build:lint"],
+	},
 
 	// Other aggregation tasks
-	mocha: "exit 0",
-	checks: "exit 0",
-	full: "exit 0",
+	mocha: {
+		script: "exit 0",
+		dependencies: ["mocha-cjs", "mocha-esm"],
+	},
+	checks: {
+		script: "exit 0",
+		dependencies: ["check:format"],
+	},
+	full: {
+		script: "exit 0",
+		dependencies: ["build", "webpack"],
+	},
 };
 
 // Tier 3 executor tasks that call actual tools
@@ -151,23 +216,38 @@ async function updateSinglePackageJsonForNx(
 	}
 
 	// Add/update Tier 2 aggregation tasks as NO-OP scripts
+	// Only add if at least one dependency exists in the package
 	// Replace any existing scripts that reference fluid-build
-	for (const [taskName, taskScript] of Object.entries(
+	for (const [taskName, taskConfig] of Object.entries(
 		TIER2_AGGREGATION_TASKS,
 	)) {
 		const existingScript = packageJson.scripts[taskName];
 
-		if (!existingScript) {
-			// Add if doesn't exist
-			packageJson.scripts[taskName] = taskScript;
-			modified = true;
-		} else if (
-			typeof existingScript === "string" &&
-			existingScript.includes("fluid-build")
-		) {
-			// Replace if it references fluid-build
-			packageJson.scripts[taskName] = taskScript;
-			modified = true;
+		// Check if at least one dependency exists
+		const hasDependency = taskConfig.dependencies.some(
+			(dep) => packageJson.scripts?.[dep] !== undefined,
+		);
+
+		// Determine if we should add/update this task
+		const shouldUpdate =
+			hasDependency &&
+			(!existingScript ||
+				(typeof existingScript === "string" &&
+					existingScript.includes("fluid-build")));
+
+		if (shouldUpdate) {
+			if (!existingScript) {
+				// Add if doesn't exist and has dependencies
+				packageJson.scripts[taskName] = taskConfig.script;
+				modified = true;
+			} else if (
+				typeof existingScript === "string" &&
+				existingScript.includes("fluid-build")
+			) {
+				// Replace if it references fluid-build
+				packageJson.scripts[taskName] = taskConfig.script;
+				modified = true;
+			}
 		}
 	}
 
