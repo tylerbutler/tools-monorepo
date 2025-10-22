@@ -187,6 +187,10 @@
 			"outputs": ["{projectRoot}/**/types/**/*.generated.ts"],
 			"cache": true
 		},
+		"api-extractor": {
+			"dependsOn": ["tsc", "esnext"],
+			"outputs": []
+		},
 		"api-extract-cjs": {
 			"dependsOn": ["tsc"],
 			"inputs": [
