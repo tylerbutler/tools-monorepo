@@ -12,6 +12,7 @@ interface PackageJson {
 	scripts?: Record<string, string>;
 	devDependencies?: Record<string, string>;
 	fluidBuild?: Record<string, unknown>;
+	oclif?: Record<string, unknown>;
 	nx?: {
 		targets?: Record<string, Record<string, unknown>>;
 		[key: string]: unknown;
@@ -52,12 +53,6 @@ const TIER2_AGGREGATION_TASKS: Record<string, Tier2Task> = {
 	"build:docs": {
 		dependencies: ["docs-extract"],
 	},
-	"build:readme": {
-		dependencies: ["build:compile"],
-	},
-	"build:manifest": {
-		dependencies: ["build:compile"],
-	},
 
 	// Test aggregation tasks
 	"test-build": {
@@ -93,6 +88,17 @@ const TIER2_AGGREGATION_TASKS: Record<string, Tier2Task> = {
 	},
 	full: {
 		dependencies: ["build", "webpack"],
+	},
+};;
+
+// OCLIF-specific Tier 2 aggregation tasks (only for packages with oclif config)
+// These tasks generate OCLIF manifests and readmes
+const OCLIF_TIER2_TASKS: Record<string, Tier2Task> = {
+	"build:readme": {
+		dependencies: ["build:compile"],
+	},
+	"build:manifest": {
+		dependencies: ["build:compile"],
 	},
 };
 
@@ -190,8 +196,32 @@ async function updateSinglePackageJsonForNx(
 		}
 	}
 
+	// Add OCLIF-specific tasks only for packages with oclif configuration
+	const isOclifPackage = packageJson.oclif !== undefined;
+	if (isOclifPackage) {
+		for (const [taskName, taskConfig] of Object.entries(OCLIF_TIER2_TASKS)) {
+			// Check if at least one dependency exists
+			const hasDependency = taskConfig.dependencies.some(
+				(dep) =>
+					packageJson.scripts?.[dep] !== undefined ||
+					packageJson.nx?.targets?.[dep] !== undefined,
+			);
+
+			// Only add if not already defined and has at least one dependency
+			if (hasDependency && !packageJson.nx.targets[taskName]) {
+				// Empty object - configuration comes from nx.json targetDefaults
+				packageJson.nx.targets[taskName] = {};
+				modified = true;
+			}
+		}
+	}
+
 	// Remove any fluid-build script references for tasks we're managing
-	for (const taskName of Object.keys(TIER2_AGGREGATION_TASKS)) {
+	const allManagedTasks = {
+		...TIER2_AGGREGATION_TASKS,
+		...(isOclifPackage ? OCLIF_TIER2_TASKS : {}),
+	};
+	for (const taskName of Object.keys(allManagedTasks)) {
 		const existingScript = packageJson.scripts?.[taskName];
 		if (
 			existingScript &&
