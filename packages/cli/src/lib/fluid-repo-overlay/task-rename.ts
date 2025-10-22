@@ -89,31 +89,36 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "build:esnext:experimental",
 		replacement: "esnext-experimental",
 		tier: 3,
-		reason: "Executor: Semantic executor for experimental ESM compilation (Pattern A with dash-separated variant)",
+		reason:
+			"Executor: Semantic executor for experimental ESM compilation (Pattern A with dash-separated variant)",
 	},
 	{
 		pattern: "build:esnext:main",
 		replacement: "esnext-main",
 		tier: 3,
-		reason: "Executor: Semantic executor for main entry point ESM compilation (Pattern A with dash-separated variant)",
+		reason:
+			"Executor: Semantic executor for main entry point ESM compilation (Pattern A with dash-separated variant)",
 	},
 	{
 		pattern: "build:esnext",
 		replacement: "esnext",
 		tier: 3,
-		reason: "Executor: Semantic executor for ESM compilation (Pattern A, strict rules - 99.4% executor)",
+		reason:
+			"Executor: Semantic executor for ESM compilation (Pattern A, strict rules - 99.4% executor)",
 	},
 	{
 		pattern: "format-and-build",
 		replacement: "build:format-first",
 		tier: 2,
-		reason: "Orchestrator: Tier 2 stage orchestrator coordinating format then build (single colon for stage)",
+		reason:
+			"Orchestrator: Tier 2 stage orchestrator coordinating format then build (single colon for stage)",
 	},
 	{
 		pattern: "format-and-compile",
 		replacement: "compile:format-first",
 		tier: 2,
-		reason: "Orchestrator: Tier 2 stage orchestrator coordinating format then compile (single colon for stage)",
+		reason:
+			"Orchestrator: Tier 2 stage orchestrator coordinating format then compile (single colon for stage)",
 	},
 
 	// ========================================================================
@@ -125,7 +130,8 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "test:build",
 		replacement: "build:test",
 		tier: 2,
-		reason: "Orchestrator: Tier 2 stage orchestrator for test building, called by build workflow (not test workflow)",
+		reason:
+			"Orchestrator: Tier 2 stage orchestrator for test building, called by build workflow (not test workflow)",
 	},
 	{
 		pattern: "test:build:cjs",
@@ -153,25 +159,29 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "build:api-reports:current",
 		replacement: "api-reports-current",
 		tier: 3,
-		reason: "Executor: Semantic executor for API reports generation (Pattern A with dash-separated variant for current API level)",
+		reason:
+			"Executor: Semantic executor for API reports generation (Pattern A with dash-separated variant for current API level)",
 	},
 	{
 		pattern: "build:api-reports:legacy",
 		replacement: "api-reports-legacy",
 		tier: 3,
-		reason: "Executor: Semantic executor for API reports generation (Pattern A with dash-separated variant for legacy API level)",
+		reason:
+			"Executor: Semantic executor for API reports generation (Pattern A with dash-separated variant for legacy API level)",
 	},
 	{
 		pattern: "build:api-reports:browser:current",
 		replacement: "api-reports-browser-current",
 		tier: 3,
-		reason: "Executor: Semantic executor for browser API reports (Pattern A with dash-separated variant for browser/current)",
+		reason:
+			"Executor: Semantic executor for browser API reports (Pattern A with dash-separated variant for browser/current)",
 	},
 	{
 		pattern: "build:api-reports:browser:legacy",
 		replacement: "api-reports-browser-legacy",
 		tier: 3,
-		reason: "Executor: Semantic executor for browser API reports (Pattern A with dash-separated variant for browser/legacy)",
+		reason:
+			"Executor: Semantic executor for browser API reports (Pattern A with dash-separated variant for browser/legacy)",
 	},
 
 	// ========================================================================
@@ -187,7 +197,8 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "build:genver",
 		replacement: "generate-version",
 		tier: 3,
-		reason: "Executor: Semantic executor for version generation using gen-version tool (Pattern A)",
+		reason:
+			"Executor: Semantic executor for version generation using gen-version tool (Pattern A)",
 	},
 
 	// ========================================================================
@@ -198,57 +209,68 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "test:jest:verbose",
 		replacement: "jest:verbose",
 		tier: 3,
-		reason: "Executor: Jest test runner with verbose output (Pattern C tool variant)",
+		reason:
+			"Executor: Jest test runner with verbose output (Pattern C tool variant)",
 	},
 	{
 		pattern: "test:coverage",
 		replacement: "coverage",
 		tier: 3,
-		reason: "Executor: Semantic executor for testing with coverage (Pattern A, strict rules)",
+		reason:
+			"Executor: Semantic executor for testing with coverage (Pattern A, strict rules)",
 	},
 	{
 		pattern: "build:test",
 		replacement: "tsc-test",
 		tier: 3,
-		reason: "Executor: Semantic executor for TypeScript test compilation (Pattern A with conditional classification)",
+		reason:
+			"Executor: Semantic executor for TypeScript test compilation (Pattern A with conditional classification)",
 		condition: (content: string) =>
-			content.includes("tsc") && !content.includes("npm run") && !content.includes("&&"),
+			content.includes("tsc") &&
+			!content.includes("npm run") &&
+			!content.includes("&&"),
 	},
 	{
 		pattern: "build:test:cjs",
 		replacement: "tsc-test-cjs",
 		tier: 3,
-		reason: "Executor: Semantic executor for CJS test compilation (Pattern A with dash-separated variant)",
+		reason:
+			"Executor: Semantic executor for CJS test compilation (Pattern A with dash-separated variant)",
 	},
 	{
 		pattern: "build:test:esm",
 		replacement: "tsc-test-esm",
 		tier: 3,
-		reason: "Executor: Semantic executor for ESM test compilation (Pattern A with dash-separated variant)",
+		reason:
+			"Executor: Semantic executor for ESM test compilation (Pattern A with dash-separated variant)",
 	},
 	{
 		pattern: "build:test:esm:no-exactOptionalPropertyTypes",
 		replacement: "tsc-test-esm-no-exactOptionalPropertyTypes",
 		tier: 3,
-		reason: "Executor: Semantic executor for ESM test compilation without exactOptionalPropertyTypes (Pattern A)",
+		reason:
+			"Executor: Semantic executor for ESM test compilation without exactOptionalPropertyTypes (Pattern A)",
 	},
 	{
 		pattern: "build:test:types",
 		replacement: "tsc-test-types",
 		tier: 3,
-		reason: "Executor: Semantic executor for test type definition compilation (Pattern A with dash-separated variant)",
+		reason:
+			"Executor: Semantic executor for test type definition compilation (Pattern A with dash-separated variant)",
 	},
 	{
 		pattern: "build:test:mocha:cjs",
 		replacement: "tsc-test-mocha-cjs",
 		tier: 3,
-		reason: "Executor: Semantic executor for CJS mocha test compilation (Pattern A with dash-separated variant)",
+		reason:
+			"Executor: Semantic executor for CJS mocha test compilation (Pattern A with dash-separated variant)",
 	},
 	{
 		pattern: "build:test:mocha:esm",
 		replacement: "tsc-test-mocha-esm",
 		tier: 3,
-		reason: "Executor: Semantic executor for ESM mocha test compilation (Pattern A with dash-separated variant)",
+		reason:
+			"Executor: Semantic executor for ESM mocha test compilation (Pattern A with dash-separated variant)",
 	},
 	{
 		pattern: "build:test:jest",
@@ -264,13 +286,15 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "build:exports:browser",
 		replacement: "generate-exports-browser",
 		tier: 3,
-		reason: "Executor: Semantic executor for browser export generation using flub (Pattern A with dash-separated multi-word name)",
+		reason:
+			"Executor: Semantic executor for browser export generation using flub (Pattern A with dash-separated multi-word name)",
 	},
 	{
 		pattern: "build:exports:node",
 		replacement: "generate-exports-node",
 		tier: 3,
-		reason: "Executor: Semantic executor for Node.js export generation using flub (Pattern A with dash-separated multi-word name)",
+		reason:
+			"Executor: Semantic executor for Node.js export generation using flub (Pattern A with dash-separated multi-word name)",
 	},
 
 	// ========================================================================
@@ -280,13 +304,15 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "api-extractor:commonjs",
 		replacement: "generate-entrypoints-commonjs",
 		tier: 3,
-		reason: "Executor: Semantic executor for CommonJS entrypoint generation using flub (Pattern A with dash-separated multi-word name)",
+		reason:
+			"Executor: Semantic executor for CommonJS entrypoint generation using flub (Pattern A with dash-separated multi-word name)",
 	},
 	{
 		pattern: "api-extractor:esnext",
 		replacement: "generate-entrypoints-esnext",
 		tier: 3,
-		reason: "Executor: Semantic executor for ESNext entrypoint generation using flub (Pattern A with dash-separated multi-word name)",
+		reason:
+			"Executor: Semantic executor for ESNext entrypoint generation using flub (Pattern A with dash-separated multi-word name)",
 	},
 
 	// ========================================================================
@@ -296,85 +322,99 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "check:biome",
 		replacement: "biome-check",
 		tier: 3,
-		reason: "Executor: Semantic executor for Biome formatting/linting check (Pattern A with dash-separated multi-word name)",
+		reason:
+			"Executor: Semantic executor for Biome formatting/linting check (Pattern A with dash-separated multi-word name)",
 	},
 	{
 		pattern: "check:are-the-types-wrong",
 		replacement: "attw",
 		tier: 3,
-		reason: "Executor: Direct tool executor running are-the-types-wrong (Pattern A with abbreviated tool name)",
+		reason:
+			"Executor: Direct tool executor running are-the-types-wrong (Pattern A with abbreviated tool name)",
 	},
 	{
 		pattern: "check:exports:bundle-release-tags",
 		replacement: "api-extractor-exports-bundle-release-tags",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for bundle release tag validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for bundle release tag validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:cjs:public",
 		replacement: "api-extractor-exports-cjs-public",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CJS public exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CJS public exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:esm:public",
 		replacement: "api-extractor-exports-esm-public",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for ESM public exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for ESM public exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:cjs:legacy",
 		replacement: "api-extractor-exports-cjs-legacy",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CJS legacy exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CJS legacy exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:esm:legacy",
 		replacement: "api-extractor-exports-esm-legacy",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for ESM legacy exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for ESM legacy exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:cjs:index",
 		replacement: "api-extractor-exports-cjs-index",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CJS index exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CJS index exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:esm:index",
 		replacement: "api-extractor-exports-esm-index",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for ESM index exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for ESM index exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:cjs:alpha",
 		replacement: "api-extractor-exports-cjs-alpha",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CJS alpha exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CJS alpha exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:esm:alpha",
 		replacement: "api-extractor-exports-esm-alpha",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for ESM alpha exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for ESM alpha exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:cjs:beta",
 		replacement: "api-extractor-exports-cjs-beta",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CJS beta exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CJS beta exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:exports:esm:beta",
 		replacement: "api-extractor-exports-esm-beta",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for ESM beta exports validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for ESM beta exports validation (Pattern A)",
 	},
 	{
 		pattern: "check:release-tags",
 		replacement: "api-extractor-release-tags",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for release tag validation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for release tag validation (Pattern A)",
 	},
 
 	// ========================================================================
@@ -384,43 +424,50 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "ci:build:docs",
 		replacement: "api-extractor-ci-docs",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CI documentation generation (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CI documentation generation (Pattern A)",
 	},
 	{
 		pattern: "ci:build:api-reports:current",
 		replacement: "api-extractor-ci-api-reports-current",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CI API reports current level (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CI API reports current level (Pattern A)",
 	},
 	{
 		pattern: "ci:build:api-reports:legacy",
 		replacement: "api-extractor-ci-api-reports-legacy",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CI API reports legacy level (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CI API reports legacy level (Pattern A)",
 	},
 	{
 		pattern: "ci:build:api-reports:browser:current",
 		replacement: "api-extractor-ci-api-reports-browser-current",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CI browser variant current level (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CI browser variant current level (Pattern A)",
 	},
 	{
 		pattern: "ci:build:api-reports:browser:legacy",
 		replacement: "api-extractor-ci-api-reports-browser-legacy",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CI browser variant legacy level (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CI browser variant legacy level (Pattern A)",
 	},
 	{
 		pattern: "ci:build:api-reports:node:current",
 		replacement: "api-extractor-ci-api-reports-node-current",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CI Node.js variant current level (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CI Node.js variant current level (Pattern A)",
 	},
 	{
 		pattern: "ci:build:api-reports:node:legacy",
 		replacement: "api-extractor-ci-api-reports-node-legacy",
 		tier: 3,
-		reason: "Executor: Semantic executor running api-extractor for CI Node.js variant legacy level (Pattern A)",
+		reason:
+			"Executor: Semantic executor running api-extractor for CI Node.js variant legacy level (Pattern A)",
 	},
 
 	// ========================================================================
@@ -430,7 +477,8 @@ const RENAME_RULES: RenameRule[] = [
 		pattern: "format:biome",
 		replacement: "biome-format",
 		tier: 3,
-		reason: "Executor: Semantic executor for Biome formatting with write mode (Pattern A with dash-separated multi-word name)",
+		reason:
+			"Executor: Semantic executor for Biome formatting with write mode (Pattern A with dash-separated multi-word name)",
 	},
 ];
 
@@ -506,7 +554,10 @@ export async function analyzeTaskNaming(
 			}
 
 			// Check for naming issues (executors with build: prefix)
-			if (scriptName.startsWith("build:") && looksLikeExecutor(scriptContent as string)) {
+			if (
+				scriptName.startsWith("build:") &&
+				looksLikeExecutor(scriptContent as string)
+			) {
 				const suggested = scriptName.replace(/^build:/, "");
 				if (!renames.some((r) => r.from === scriptName)) {
 					issues.push(
@@ -720,7 +771,10 @@ export async function updateFluidBuildConfig(
 		content = content.replace(constPattern, `$1"${newName}"$2`);
 
 		// Match as task definition key: "build:genver": []
-		const taskKeyPattern = new RegExp(`^(\\s*)"${escapedOldName}"(\\s*:)`, "gm");
+		const taskKeyPattern = new RegExp(
+			`^(\\s*)"${escapedOldName}"(\\s*:)`,
+			"gm",
+		);
 		content = content.replace(taskKeyPattern, `$1"${newName}"$2`);
 
 		// Match in dependsOn arrays: ["typetests:gen", "tsc", "build:genver"]
@@ -771,7 +825,7 @@ export async function disableFluidBuildTasksPolicies(
 		// We'll replace the array contents with [".*"]
 		const handlerPattern = new RegExp(
 			`("${handler}"\\s*:\\s*\\[)([^\\]]*)(\\])`,
-			"s"
+			"s",
 		);
 
 		const match = content.match(handlerPattern);
@@ -779,7 +833,7 @@ export async function disableFluidBuildTasksPolicies(
 			// Replace the array contents with [".*"] to exclude all packages
 			content = content.replace(
 				handlerPattern,
-				`$1\n\t\t\t\t// Disabled by task-rename: policies will add tasks with incorrect names\n\t\t\t\t".*",\n\t\t\t$3`
+				`$1\n\t\t\t\t// Disabled by task-rename: policies will add tasks with incorrect names\n\t\t\t\t".*",\n\t\t\t$3`,
 			);
 		}
 	}
@@ -787,7 +841,9 @@ export async function disableFluidBuildTasksPolicies(
 	// Write back if modified
 	if (content !== originalContent) {
 		await writeFile(configPath, content, "utf-8");
-		logger.log("  ✏️  Disabled fluid-build-tasks-* and npm-package-exports-apis-linted policies in fluidBuild.config.cjs");
+		logger.log(
+			"  ✏️  Disabled fluid-build-tasks-* and npm-package-exports-apis-linted policies in fluidBuild.config.cjs",
+		);
 	}
 }
 
@@ -967,9 +1023,11 @@ function findScriptReferences(
 	const references: string[] = [];
 
 	for (const [scriptName, scriptContent] of Object.entries(scripts)) {
-		if (scriptContent.includes(`npm run ${targetScript}`) ||
-				scriptContent.includes(`pnpm ${targetScript}`) ||
-				scriptContent.includes(`yarn ${targetScript}`)) {
+		if (
+			scriptContent.includes(`npm run ${targetScript}`) ||
+			scriptContent.includes(`pnpm ${targetScript}`) ||
+			scriptContent.includes(`yarn ${targetScript}`)
+		) {
 			references.push(scriptName);
 		}
 	}

@@ -9,13 +9,15 @@ import {
 	analyzeTaskNaming,
 	applyTaskRenames,
 	disableFluidBuildTasksPolicies,
-	updateFluidBuildConfig,
-	validateTaskRenames,
 	type TaskRenameOptions,
 	type TaskRenameResult,
+	updateFluidBuildConfig,
+	validateTaskRenames,
 } from "../../lib/fluid-repo-overlay/task-rename.js";
 
-export default class FluidTaskRename extends GitCommand<typeof FluidTaskRename> {
+export default class FluidTaskRename extends GitCommand<
+	typeof FluidTaskRename
+> {
 	public static override readonly description =
 		"Rename package.json scripts to follow three-tier naming principles (Phase 1 of Nx/Turbo migration)";
 
@@ -87,7 +89,9 @@ export default class FluidTaskRename extends GitCommand<typeof FluidTaskRename> 
 
 		// Show rename plan
 		if (analysis.renames.length === 0) {
-			this.info("\n✅ No renames needed - all scripts already follow principles");
+			this.info(
+				"\n✅ No renames needed - all scripts already follow principles",
+			);
 			return;
 		}
 
@@ -117,7 +121,9 @@ export default class FluidTaskRename extends GitCommand<typeof FluidTaskRename> 
 
 		// Confirm if not in CI
 		if (!process.env["CI"]) {
-			this.warning("\n⚠️  This will modify package.json files in the repository");
+			this.warning(
+				"\n⚠️  This will modify package.json files in the repository",
+			);
 			// Note: In real implementation, add confirmation prompt
 			// For now, proceeding with changes
 		}
@@ -163,7 +169,9 @@ export default class FluidTaskRename extends GitCommand<typeof FluidTaskRename> 
 
 		// Summary
 		this.info("\n📊 Summary:");
-		this.info(`  Renamed: ${result.scriptsRenamed} scripts across ${result.packagesModified} packages`);
+		this.info(
+			`  Renamed: ${result.scriptsRenamed} scripts across ${result.packagesModified} packages`,
+		);
 		if (result.crossRefsUpdated > 0) {
 			this.info(`  Updated cross-refs: ${result.crossRefsUpdated} scripts`);
 		}
@@ -178,7 +186,9 @@ export default class FluidTaskRename extends GitCommand<typeof FluidTaskRename> 
 		this.info("5. After merge, run Phase 2 (nx/turbo overlay)");
 
 		if (!validation.allPassed) {
-			this.warning("\n⚠️  Some validation checks failed - review before proceeding");
+			this.warning(
+				"\n⚠️  Some validation checks failed - review before proceeding",
+			);
 			this.exit(1);
 		}
 	}

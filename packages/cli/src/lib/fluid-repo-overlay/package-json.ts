@@ -20,21 +20,30 @@ interface PackageJson {
 
 // Scripts to remove from individual packages (replaced by direct task invocation)
 // These are orchestration-level scripts that should only exist at root level
-const ORCHESTRATION_SCRIPT_PATTERNS = ["fluid-build", "turbo run", "turbo ", "nx run", "nx "];
+const ORCHESTRATION_SCRIPT_PATTERNS = [
+	"fluid-build",
+	"turbo run",
+	"turbo ",
+	"nx run",
+	"nx ",
+];
 
 // Root package.json nx scripts based on actual nx.json task names
 // Note: These use the actual target names from nx.json, not the old fluid-build task names
 const ROOT_NX_SCRIPTS: Record<string, string> = {
 	// Main nx scripts (replace fluid-build commands)
-	"build": "nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme",
+	build:
+		"nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme",
 	"build-and-test": "nx run-many -t test:unit",
 	"build:compile": "nx run-many -t build:compile",
-	"build:full": "nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme webpack",
-	"ci:build": "nx run-many -t build:compile build:lint build:api api-extractor build:manifest build:readme",
-	"compile": "nx run-many -t tsc esnext copy-files",
-	"format": "biome format . --write",
-	"lint": "nx run-many -t lint",
-	"tsc": "nx run-many -t tsc",
+	"build:full":
+		"nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme webpack",
+	"ci:build":
+		"nx run-many -t build:compile build:lint build:api api-extractor build:manifest build:readme",
+	compile: "nx run-many -t tsc esnext copy-files",
+	format: "biome format . --write",
+	lint: "nx run-many -t lint",
+	tsc: "nx run-many -t tsc",
 };
 
 // Override mode - set to true to replace existing scripts that differ

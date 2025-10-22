@@ -16,7 +16,13 @@ interface PackageJson {
 
 // Scripts to remove from individual packages (replaced by direct task invocation)
 // These are orchestration-level scripts that should only exist at root level
-const ORCHESTRATION_SCRIPT_PATTERNS = ["fluid-build", "turbo run", "turbo ", "nx run", "nx "];
+const ORCHESTRATION_SCRIPT_PATTERNS = [
+	"fluid-build",
+	"turbo run",
+	"turbo ",
+	"nx run",
+	"nx ",
+];
 
 // Root package.json turbo scripts based on actual turbo.jsonc task names
 const ROOT_TURBO_SCRIPTS: Record<string, string> = {
@@ -61,8 +67,7 @@ const ROOT_TURBO_SCRIPTS: Record<string, string> = {
 	"build:gendocs:client": "turbo run build:gendocs:client",
 	"build:gendocs:client:legacy": "fluid-build --task build:gendocs:client",
 	"check:are-the-types-wrong": "turbo run attw",
-	"check:are-the-types-wrong:legacy":
-		"fluid-build --task attw",
+	"check:are-the-types-wrong:legacy": "fluid-build --task attw",
 	checks: "turbo run checks",
 	"checks:legacy": "fluid-build --task checks",
 	"checks:fix": "turbo run checks:fix",
