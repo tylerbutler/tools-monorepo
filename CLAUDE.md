@@ -8,7 +8,7 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 
 **Key Technologies:**
 - **Package Manager**: pnpm 10.10.0 (required - do not use npm or yarn)
-- **Build Orchestration**: Turbo (task caching and parallel execution)
+- **Build Orchestration**: Nx (task caching, parallel execution, and plugin-based inference)
 - **Testing**: Vitest with coverage support
 - **Formatting/Linting**: Biome (unified toolchain replacing ESLint/Prettier)
 - **CLI Framework**: OCLIF for command-line tools
@@ -105,7 +105,7 @@ The monorepo contains these key packages:
 
 ### Build Pipeline
 
-Turbo orchestrates builds using a **hierarchical task structure**:
+Nx orchestrates builds using a **hierarchical task structure** with **plugin-based auto-inference**:
 
 **Orchestration Tasks** (top-level, call implementation tasks):
 - `build` - Builds all packages (calls build:compile, build:api, build:docs, etc.)
@@ -125,6 +125,9 @@ Turbo orchestrates builds using a **hierarchical task structure**:
 - `test:unit`, `test:coverage`, `test:e2e` - Testing variants
 - `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
 
+**Plugin-Inferred Tasks** (auto-detected by Nx plugins):
+- `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vite plugin)
+
 **Package-Specific Pipelines:**
 - **Libraries**: build:compile → build:api → build:docs
 - **CLI tools**: build:compile → build:manifest → build:readme → build:generate
@@ -134,8 +137,8 @@ Turbo orchestrates builds using a **hierarchical task structure**:
 **Key Principles:**
 - Top-level tasks orchestrate, never implement
 - Implementation tasks use `:` separator (e.g., `build:compile`)
-- Turbo runs only tasks that exist in each package
-- All configuration in root `turbo.jsonc` (no package-level configs)
+- Nx plugins auto-infer tasks from config files (vitest.config.ts, etc.)
+- All configuration in root `nx.json` (no package-level project.json files)
 
 ### TypeScript Configuration
 
@@ -147,6 +150,32 @@ All packages extend base tsconfig files from `config/`:
 - `tsconfig.node.json` - Node-specific settings
 
 **Important:** This monorepo uses **explicit .mjs/.cjs extensions** - no ambiguous .js files allowed. This is enforced via the `NoJsFileExtensions` policy in repopo.
+
+### Nx Plugin Configuration
+
+Nx uses plugins to automatically infer tasks from configuration files, reducing manual configuration:
+
+**Active Plugins:**
+- `@nx/vite/plugin` - Auto-infers test tasks from `vitest.config.ts` files
+
+**Plugin Exclusions** (projects with non-standard configurations):
+- `packages/ccl-test-viewer/**` - Svelte app with custom Vite setup
+- `packages/ccl-docs/**` - Astro site (uses Vite internally but different structure)
+- `packages/dill-docs/**` - Astro site
+- `packages/repopo-docs/**` - Astro site
+
+**Inferred Targets:**
+- `test:vitest` - Automatically created for packages with `vitest.config.ts`
+  - Uses same caching and configuration as manually defined tasks
+  - Available on: fundamentals, cli-api, cli, repopo, sort-tsconfig, xkcd2-api, dill
+
+**Why Use Plugins?**
+- Automatic task discovery when adding new packages
+- Less manual configuration in `nx.json`
+- Consistent task naming across projects
+- Better IDE/Nx Console integration
+
+**Configuration Location:** See `nx.json` → `plugins` array
 
 ### OCLIF CLI Structure
 

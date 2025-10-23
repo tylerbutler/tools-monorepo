@@ -13,9 +13,21 @@
   // ============================================
   // PLUGINS - Auto-infer tasks from config files
   // ============================================
-  // Note: Plugins commented out for Phase 1 to ensure compatibility
-  // Enable incrementally in Phase 2 with per-project excludes
-  // "plugins": [],
+  "plugins": [
+    {
+      "plugin": "@nx/vite/plugin",
+      "exclude": [
+        "packages/ccl-test-viewer/**",  // Svelte app with custom Vite setup
+        "packages/ccl-docs/**",         // Astro site (uses Vite internally but different config)
+        "packages/dill-docs/**",        // Astro site
+        "packages/repopo-docs/**"       // Astro site
+      ],
+      "options": {
+        "testTargetName": "test:vitest",  // Avoid conflicts with existing test:unit
+        "serveTargetName": "serve:vite"    // Avoid conflicts with existing dev targets
+      }
+    }
+  ],
 
   // ============================================
   // NAMED INPUTS
