@@ -17,10 +17,14 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # ratchet:actions/checkout@v4
-      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # ratchet:pnpm/action-setup@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -34,20 +38,29 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run ci:check || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
-        continue-on-error: true
-      - run: pnpm run ci:build
-      - run: pnpm run ci:lint || echo "FAIL_WORKFLOW=true" >> $GITHUB_ENV
-        continue-on-error: true
-      - run: pnpm run ci:test
+      - name: Cache turbo build setup
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}-
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run CI checks, builds, and tests
+        run: pnpm run ci
 
       - name: "Codecov: upload test results"
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@f2dba722c67b86c6caa034178c6e4d35335f6706 # ratchet:codecov/test-results-action@v1
+        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # ratchet:codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: "Codecov: upload coverage"
+        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # ratchet:codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -56,7 +69,3 @@ jobs:
         run: |
           git diff
           git diff --quiet || (git status -u . && exit 1)
-
-      - name: Fail workflow if any step failed
-        if: ${{ env.FAIL_WORKFLOW == 'true' }}
-        run: exit 1

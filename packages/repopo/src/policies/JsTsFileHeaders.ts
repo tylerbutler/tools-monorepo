@@ -1,7 +1,7 @@
 import { EOL as newline } from "node:os";
 import {
-	type FileHeaderPolicyConfig,
 	defineFileHeaderPolicy,
+	type FileHeaderPolicyConfig,
 } from "../policyDefiners/defineFileHeaderPolicy.js";
 
 const jsTsReplacer = (

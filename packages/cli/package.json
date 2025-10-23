@@ -1,8 +1,10 @@
 {
 	"name": "@tylerbu/cli",
-	"version": "0.3.8",
+	"version": "0.5.0",
 	"description": "Tyler Butler's personal CLI.",
-	"keywords": ["oclif"],
+	"keywords": [
+		"oclif"
+	],
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli#tylerbucli",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
@@ -33,33 +35,38 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "fluid-build . --task build",
-		"check": "npm run check:format",
+		"build": "pnpm build:compile && pnpm build:manifest && pnpm build:readme && pnpm build:generate",
+		"build:compile": "tsc --project ./tsconfig.json && pnpm build:copy-templates",
+		"build:copy-templates": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
+		"build:generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
+		"build:manifest": "oclif manifest",
+		"build:readme": "oclif readme --multi --no-aliases",
+		"check": "pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
-		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "fluid-build . --task full",
-		"generate": "concurrently npm:generate:*",
-		"generate:command-snapshots": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"manifest": "oclif manifest",
-		"postpack": "npm run clean:manifest",
-		"readme": "oclif readme --multi --no-aliases",
-		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "npm run test:command-snapshots",
-		"test:command-snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-		"test:vitest": "vitest run \"test\""
+		"postpack": "pnpm clean:manifest",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "pnpm test:unit && pnpm test:snapshots",
+		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
+		"test:unit": "vitest run"
 	},
 	"oclif": {
-		"additionalHelpFlags": ["-h"],
-		"additionalVersionFlags": ["-V"],
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
 		"bin": "tbu",
 		"commands": "./esm/commands",
-		"devPlugins": ["@oclif/plugin-command-snapshot"],
+		"devPlugins": [
+			"@oclif/plugin-command-snapshot"
+		],
 		"dirname": "tbu",
 		"plugins": [
 			"@oclif/plugin-autocomplete",
@@ -74,6 +81,9 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/cli/<%- commandPath %>",
 		"topicSeparator": " ",
 		"topics": {
+			"fluid": {
+				"description": "FluidFramework repository tools."
+			},
 			"git": {
 				"description": "Git-related commands."
 			},
@@ -83,39 +93,42 @@
 		}
 	},
 	"dependencies": {
-		"@oclif/core": "^4.3.0",
-		"@oclif/plugin-autocomplete": "^3.2.27",
-		"@oclif/plugin-commands": "^4.1.24",
-		"@oclif/plugin-help": "^6.2.27",
-		"@oclif/plugin-not-found": "^3.2.50",
-		"@oclif/plugin-plugins": "^5.4.36",
-		"@oclif/plugin-search": "^1.2.23",
-		"@oclif/plugin-version": "^2.2.27",
-		"@oclif/plugin-warn-if-update-available": "^3.1.38",
-		"@oclif/plugin-which": "^3.2.34",
+		"@oclif/core": "^4.6.0",
+		"@oclif/plugin-autocomplete": "^3.2.37",
+		"@oclif/plugin-commands": "^4.1.35",
+		"@oclif/plugin-help": "^6.2.33",
+		"@oclif/plugin-not-found": "^3.2.70",
+		"@oclif/plugin-plugins": "^5.4.50",
+		"@oclif/plugin-search": "^1.2.33",
+		"@oclif/plugin-version": "^2.2.34",
+		"@oclif/plugin-warn-if-update-available": "^3.1.50",
+		"@oclif/plugin-which": "^3.2.41",
 		"@tylerbu/cli-api": "workspace:^",
-		"debug": "^4.4.0",
+		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
 		"picocolors": "^1.1.1",
-		"simple-git": "^3.27.0",
-		"strip-ansi": "^7.1.0"
+		"simple-git": "^3.28.0",
+		"strip-ansi": "^7.1.2",
+		"tinyglobby": "^0.2.15"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@oclif/plugin-command-snapshot": "^5.2.38",
-		"@oclif/test": "^4.1.12",
+		"@biomejs/biome": "2.2.5",
+		"@oclif/plugin-command-snapshot": "^5.3.7",
+		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
-		"@types/node": "^20.12.7",
-		"concurrently": "^9.1.2",
-		"generate-license-file": "^4.0.0",
-		"oclif": "^4.17.46",
+		"@types/node": "^20.19.23",
+		"concurrently": "^9.2.1",
+		"copyfiles": "^2.4.1",
+		"generate-license-file": "^4.1.0",
+		"oclif": "^4.22.32",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "*",
+		"tempy": "^3.1.0",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
-		"type-fest": "^4.40.1",
-		"typescript": "~5.5.4",
-		"vitest": "^3.1.2"
+		"type-fest": "^4.41.0",
+		"typescript": "~5.9.3",
+		"vitest": "^3.2.4"
 	},
 	"engines": {
 		"node": ">=18.0.0"

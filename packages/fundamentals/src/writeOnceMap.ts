@@ -9,7 +9,7 @@ export class KeyAlreadySet extends Error {
 	 *
 	 * @param key - The Map key that was already set.
 	 */
-	constructor(key: string) {
+	public constructor(key: string) {
 		super(`Key "${key}" is already set and cannot be modified.`);
 		this.name = "KeyAlreadySet";
 	}
@@ -34,10 +34,8 @@ export class WriteOnceMap<K, V> extends Map<K, V> {
 	 * @param force - Set to true to force a Map element to be updated whether it has previously been set or not.
 	 */
 	public override set(key: K, value: V, force = false) {
-		if (this.has(key)) {
-			if (!force) {
-				throw new KeyAlreadySet(String(key));
-			}
+		if (this.has(key) && !force) {
+			throw new KeyAlreadySet(String(key));
 		}
 		// Setting the key anyway because of force.
 		return super.set(key, value);

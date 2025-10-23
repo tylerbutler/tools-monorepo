@@ -6,37 +6,23 @@
 
 // @public
 export interface Comic {
-    // (undocumented)
     alt?: string;
-    // (undocumented)
     day?: number;
-    // (undocumented)
     img?: string;
-    // (undocumented)
     link?: URL;
-    // (undocumented)
     month?: number;
-    // (undocumented)
     news?: string;
-    // (undocumented)
     num: number;
-    // (undocumented)
     safe_title?: string;
-    // (undocumented)
     title?: string;
-    // (undocumented)
     transcript?: string;
-    // (undocumented)
     year?: number;
 }
 
-// @public (undocumented)
+// @public
 export interface ComicFrameProps {
-    // (undocumented)
     comic: Comic;
-    // (undocumented)
     nextId?: string;
-    // (undocumented)
     previousId: string;
 }
 
@@ -45,7 +31,5 @@ export function getComicProps(comicId?: string | number): Promise<ComicFrameProp
 
 // @public
 export function getRandomComicId(): Promise<number>;
-
-// (No @packageDocumentation comment for this package)
 
 ```

@@ -1,0 +1,15 @@
+{
+	"$schema": "https://turborepo.org/schema.json",
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"dependsOn": ["build:vite"],
+		},
+		"build:vite": {
+			"outputs": ["build/**"],
+		},
+		"check": {
+			"dependsOn": ["check:svelte"],
+		},
+	},
+}

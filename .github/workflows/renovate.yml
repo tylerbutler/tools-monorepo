@@ -1,0 +1,31 @@
+# DISABLED: Switched to Dependabot
+# See .github/dependabot.yml and .github/workflows/dependabot-build-artifacts.yml
+name: Renovate (Disabled)
+on:
+  # schedule:
+  #   # Run at 5 AM UTC on weekdays (matches "before 5am every weekday" in renovate.json5)
+  #   - cron: '0 5 * * 1-5'
+  workflow_dispatch:
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+      - run: npm i --global corepack@latest
+      - run: corepack enable
+
+      - uses: renovatebot/github-action@f9c81dddc9b589e4e6ae0326d1e36f6bc415d230 # ratchet:renovatebot/github-action@v39.2.4
+        with:
+          configurationFile: renovate.json5
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          RENOVATE_AUTODISCOVER: true
+          RENOVATE_AUTODISCOVER_FILTER: "tylerbutler/tools-monorepo"
+          RENOVATE_ALLOWED_COMMANDS: '["^pnpm .*"]'
+          RENOVATE_ALLOW_SCRIPTS: true

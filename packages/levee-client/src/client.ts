@@ -4,8 +4,8 @@ import type {
 	IFluidModuleWithDetails,
 } from "@fluidframework/container-definitions/internal";
 import {
-	type ILoaderProps,
 	createDetachedContainer,
+	type ILoaderProps,
 	loadExistingContainer,
 } from "@fluidframework/container-loader/internal";
 import type {
@@ -25,22 +25,41 @@ import type {
 	IFluidContainer,
 } from "@fluidframework/fluid-static";
 import {
-	type IRootDataObject,
 	createDOProviderContainerRuntimeFactory,
 	createFluidContainer,
 	createServiceAudience,
+	type IRootDataObject,
 } from "@fluidframework/fluid-static/internal";
 import { RouterliciousDocumentServiceFactory } from "@fluidframework/routerlicious-driver/internal";
 import { wrapConfigProviderWithDefaults } from "@fluidframework/telemetry-utils/internal";
 import {
-	InsecureTinyliciousUrlResolver,
 	createTinyliciousCreateNewRequest,
+	InsecureTinyliciousUrlResolver,
 } from "@fluidframework/tinylicious-driver/internal";
 
 import { createLeveeAudienceMember } from "./audience.js";
 import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.js";
 
 /**
+ * Client for interacting with Levee service to create and manage Fluid containers.
+ *
+ * @remarks
+ * The LeveeClient provides a simplified interface for creating and accessing Fluid containers
+ * through the Levee service. It handles container lifecycle, authentication, and service configuration.
+ *
+ * @example
+ * ```typescript
+ * const client = new LeveeClient({
+ *   connection: {
+ *     tokenProvider: myTokenProvider,
+ *     domain: "localhost",
+ *     port: 7070
+ *   }
+ * });
+ *
+ * const { container, services } = await client.createContainer(schema, "2");
+ * ```
+ *
  * @public
  */
 export class LeveeClient {
@@ -165,7 +184,6 @@ export class LeveeClient {
 			schema,
 			compatibilityMode,
 		});
-		// biome-ignore lint/suspicious/useAwait: <explanation>
 		const load = async (): Promise<IFluidModuleWithDetails> => {
 			return {
 				module: { fluidExport: containerRuntimeFactory },
@@ -210,7 +228,7 @@ export class LeveeClient {
 			await container.getEntryPoint();
 		assert(
 			rootDataObject.IRootDataObject !== undefined,
-			0x875 /* entryPoint must be of type IRootDataObject */,
+			0x8_75 /* entryPoint must be of type IRootDataObject */,
 		);
 		return rootDataObject.IRootDataObject;
 	}

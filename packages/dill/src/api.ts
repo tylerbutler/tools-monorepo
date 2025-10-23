@@ -1,4 +1,5 @@
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import process from "node:process";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
 import { Decompress, type Unzipped, unzipSync } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
@@ -117,10 +118,10 @@ async function checkDestination(destination: string): Promise<boolean> {
 
 async function writeUint8ArrayToFile(
 	stream: Uint8Array,
-	path: string,
+	filePath: string,
 ): Promise<string> {
-	await writeFile(path, stream);
-	return path;
+	await writeFile(filePath, stream);
+	return filePath;
 }
 
 async function determineFileInfo(
@@ -164,7 +165,7 @@ async function handleExtraction(
 		const decompressed = decompress(file);
 		const fileType = await fileTypeFromBuffer(decompressed);
 		if (fileType?.ext === "tar") {
-			const files = await decompressTarball(file);
+			const files = await decompressTarball(decompressed);
 			await writeTarFiles(files, downloadDir);
 		} else {
 			await checkDestination(downloadDir);
@@ -320,6 +321,9 @@ export const download = async (
 
 	// Handle non-extraction case
 	if (!extract) {
+		if (!pathStats.isDirectory()) {
+			throw new Error("fetch failed: Path is not a directory");
+		}
 		const outputPath = path.join(downloadDir, filename);
 		if (noFile) {
 			return { data: file, writtenTo: undefined };

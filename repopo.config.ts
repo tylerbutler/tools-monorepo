@@ -1,4 +1,4 @@
-import { type RepopoConfig, generatePackagePolicy, makePolicy } from "repopo";
+import { generatePackagePolicy, makePolicy, type RepopoConfig } from "repopo";
 import {
 	NoJsFileExtensions,
 	PackageJsonProperties,
@@ -10,7 +10,12 @@ import { SortTsconfigsPolicy } from "sort-tsconfig";
 const config: RepopoConfig = {
 	policies: [
 		makePolicy(NoJsFileExtensions, undefined, {
-			excludeFiles: [".*/bin/.*js"],
+			excludeFiles: [
+				".*/bin/.*js",
+				".lighthouserc.js",
+				"svelte.config.js",
+				"tailwind.config.js",
+			],
 		}),
 		makePolicy(PackageJsonProperties, {
 			verbatim: {

@@ -1,127 +1,187 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"root": true,
+	"extends": [
+		// "@tylerbu/local-config/biome",
+		"@tylerbu/local-config/biome/formatter",
+		"@tylerbu/local-config/biome/linter",
+		"@tylerbu/local-config/biome/oclif",
+		"@tylerbu/local-config/biome/test-files",
+	],
+	"javascript": {
+		"globals": ["$state", "$derived", "$effect", "$props", "$inspect"],
+	},
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
 		"defaultBranch": "main",
-		"useIgnoreFile": true,
 		"root": ".",
+		"useIgnoreFile": true,
 	},
 	"files": {
-		"ignore": [
+		"ignoreUnknown": true,
+		"includes": [
+			"**",
+
+			// jj vcs folders
+			"!.jj",
+
 			// build output
-			"_temp/**",
-			".coverage/**",
-			"built/**",
-			"dist/**",
-			"esm/**",
+			"!**/_temp",
+			"!**/.coverage",
+			"!**/built",
+			"!**/dist",
+			"!**/esm",
 
 			// oclif manifest
-			"oclif.manifest.json",
+			"!**/oclif.manifest.json",
 
 			// test json
-			"test/data/json/**/*.json",
+			"!**/test/data/json/**/*.json",
+
+			// auto-generated data files
+			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
+			"!**/packages/ccl-test-viewer/static/data/*.*",
 		],
-		"ignoreUnknown": true,
 	},
 	"formatter": {
-		"enabled": true,
-		"ignore": ["**/__snapshots__/**"],
-		"formatWithErrors": true,
-		"indentStyle": "tab",
-		"lineEnding": "lf",
+		// "enabled": true,
+		"includes": ["**", "!**/__snapshots__/**"],
 	},
-	"organizeImports": { "enabled": true },
 	"linter": {
-		"enabled": true,
-		"include": ["config/**", "**/docs/**", "**/src/**", "**/test/**"],
-		"rules": {
-			"all": true,
-			"correctness": {
-				"noUnusedVariables": "error",
-				// Lots of false positives, which is a shame
-				"noUndeclaredDependencies": "off",
-			},
-			"performance": {
-				"noBarrelFile": "off",
-			},
-			"style": {
-				"noDefaultExport": "off",
-				"noParameterProperties": "off",
-				"useNamingConvention": "off",
-			},
-			"suspicious": {
-				"noConsole": "error",
-				"noDebugger": "error",
-			},
-		},
-	},
-	"javascript": {
-		"formatter": {
-			"jsxQuoteStyle": "double",
-			"trailingCommas": "all",
-			"semicolons": "always",
-		},
+		// "enabled": true,
+		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
 	},
 	"overrides": [
 		{
-			"include": [
-				"*.jsonc",
-				"*.json5",
-				"api-extractor*.json",
-				"tsconfig*.json",
-				".vscode/*.json",
-			],
-			"json": {
-				"parser": {
-					"allowComments": true,
-					"allowTrailingCommas": true,
-				},
-				"formatter": { "trailingCommas": "all" },
-			},
-		},
-		{
-			"include": ["**/src/commands/**/*.ts"],
-			"linter": {
-				"rules": {
-					"style": {
-						// oclif commands are required to use default exports.
-						"noDefaultExport": "off",
-					},
-				},
-			},
-		},
-		{
-			// Test files
-			"include": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
-			"linter": {
-				"rules": {
-					"performance": { "useTopLevelRegex": "off" },
-					"suspicious": {
-						// Console logging is ok in tests.
-						"noConsole": "off",
-					},
-				},
-			},
-		},
-		{
-			// node-only rules
-			"include": [
-				// these packages are node-only
-				"**/cli/**/*.ts",
-				"**/cli-api/**/*.ts",
-				"**/dill/**/*.ts",
-				"**/repopo/**/*.ts",
-				"**/sort-tsconfig/**/*.ts",
-
-				// tests are allowed to use node
-				"**/*.test.ts",
-				"**/*.mochatest.ts",
+			// node projects
+			"includes": [
+				"packages/cli/**",
+				"packages/cli-api/**",
+				"packages/dill/**",
+				"packages/repopo/**",
+				"packages/sort-tsconfig/**",
 			],
 			"linter": {
 				"rules": {
 					"correctness": {
 						"noNodejsModules": "off",
+					},
+				},
+			},
+		},
+		{
+			// Svelte files - official Biome recommended configuration for partial support
+			// https://biomejs.dev/internals/language-support/
+			"includes": ["**/*.svelte"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useConst": "off",
+						"useImportType": "off",
+						"noNonNullAssertion": "off",
+						"useReadonlyClassProperties": "off",
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off",
+						"noUndeclaredVariables": "off",
+					},
+					"suspicious": {
+						"noEmptyBlockStatements": "off",
+						"noExplicitAny": "off",
+					},
+					"nursery": {
+						"noShadow": "off",
+					},
+				},
+			},
+		},
+		{
+			// SvelteKit standard files
+			"includes": ["**/app.d.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noNamespace": "off",
+					},
+				},
+			},
+		},
+		{
+			// CSS files with Tailwind custom properties
+			"includes": ["**/app.css"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noInvalidPositionAtImportRule": "off",
+						"noUnknownProperty": "off",
+					},
+					"complexity": {
+						"noImportantStyles": "off",
+					},
+					"suspicious": {
+						"noUnknownAtRules": "off",
+					},
+				},
+			},
+		},
+		{
+			// Barrel exports (shadcn-svelte and library patterns)
+			"includes": ["**/components/ui/**/index.ts", "**/lib/index.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noExportedImports": "off",
+					},
+					"performance": {
+						"noReExportAll": "off",
+					},
+				},
+			},
+		},
+		{
+			// Service and store files with Svelte runes
+			"includes": ["**/services/*.ts", "**/*.svelte.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noEmptyBlockStatements": "off",
+						"noExplicitAny": "off",
+					},
+					"style": {
+						"useConsistentMemberAccessibility": "off",
+						"noNonNullAssertion": "off",
+						"useReadonlyClassProperties": "off",
+					},
+					"complexity": {
+						"noExcessiveCognitiveComplexity": "off",
+						"noBannedTypes": "off",
+					},
+					"performance": {
+						"useTopLevelRegex": "off",
+					},
+					"nursery": {},
+				},
+			},
+		},
+		{
+			// ccl-test-viewer specific overrides
+			"includes": ["packages/ccl-test-viewer/**"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						"noUselessUndefinedInitialization": "off",
+						"noVoid": "off",
+					},
+					"correctness": {
+						"useImportExtensions": "off",
+					},
+					"nursery": {
+						"noUselessUndefined": "off",
+					},
+					"suspicious": {
+						"noUnknownAtRules": "off",
 					},
 				},
 			},

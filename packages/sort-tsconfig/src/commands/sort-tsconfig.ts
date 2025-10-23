@@ -5,21 +5,24 @@ import { join } from "pathe";
 import { glob } from "tinyglobby";
 import { TsConfigSorter } from "../api.js";
 import type { SortTsconfigConfiguration } from "../config.js";
-import { type OrderList, defaultSortOrder } from "../orders.js";
+import { defaultSortOrder, type OrderList } from "../orders.js";
 
 export default class SortTsconfigCommand extends CommandWithConfig<
 	typeof SortTsconfigCommand,
 	SortTsconfigConfiguration
 > {
-	static override readonly aliases = ["sort:tsconfigs", "sort-tsconfigs"];
+	public static override readonly aliases = [
+		"sort:tsconfigs",
+		"sort-tsconfigs",
+	];
 
-	static override readonly summary =
+	public static override readonly summary =
 		"Sorts a tsconfig file in place or checks that one is sorted.";
 
-	static override readonly description =
+	public static override readonly description =
 		"By default, the command will only check if a tsconfig is sorted. Use the '--write' flag to write the sorted contents back to the file.";
 
-	static override readonly args = {
+	public static override readonly args = {
 		tsconfig: Args.custom<string[]>({
 			description:
 				"A path to the tsconfig file to sort, or a glob pattern to select multiple tsconfigs. The node_modules folder is always excluded from glob matches.",
@@ -46,7 +49,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		...CommandWithConfig.args,
 	};
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		write: Flags.boolean({
 			char: "w",
 			description:
@@ -57,7 +60,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		config: ConfigFileFlag,
 	} as const;
 
-	static override readonly examples: Command.Example[] = [
+	public static override readonly examples: Command.Example[] = [
 		{
 			description:
 				"Check if the tsconfig.json file in the current working directory is sorted.",
@@ -79,9 +82,8 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 		order: defaultSortOrder,
 	};
 
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: refactor when possible
-	// biome-ignore lint/suspicious/useAwait: inherited method
-	async run(): Promise<void> {
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: should clean this up at some point.
+	public override async run(): Promise<void> {
 		const { tsconfig: tsconfigs } = this.args;
 		const { write } = this.flags;
 

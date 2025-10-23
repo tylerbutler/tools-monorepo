@@ -9,4 +9,15 @@
 	"ts-node": {
 		"esm": true,
 	},
+	"references": [
+		{
+			"path": "../cli-api",
+		},
+		{
+			"path": "../fundamentals",
+		},
+		{
+			"path": "../repopo",
+		},
+	],
 }

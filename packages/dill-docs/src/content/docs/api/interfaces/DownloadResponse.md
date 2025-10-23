@@ -21,7 +21,7 @@ The raw file data.
 
 ### writtenTo
 
-> **writtenTo**: `undefined` \| `string`
+> **writtenTo**: `string` \| `undefined`
 
 Defined in: [types.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/src/types.ts#L54)
 

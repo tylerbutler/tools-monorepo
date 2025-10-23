@@ -207,7 +207,7 @@ export const WatchOrder: OrderList = [
  * been adjusted, and a few properties are moved earlier in the order since they're more important to our repo
  * tsconfigs.
  */
-const defaultCompilerOptionsOrder: OrderList = [
+export const defaultCompilerOptionsOrder: OrderList = [
 	...TypeCheckingOrder,
 	...ModulesOrder,
 	...EmitOrder,
@@ -224,7 +224,7 @@ const defaultCompilerOptionsOrder: OrderList = [
 	...WatchOrder,
 ] as const;
 
-const preferredCompilerOptionsOrder: OrderList = [
+export const preferredCompilerOptionsOrder: OrderList = [
 	"rootDir", // From the Modules group
 	"outDir", // From the Emit group
 	"composite", // From the Projects group

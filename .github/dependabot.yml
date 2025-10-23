@@ -1,22 +1,104 @@
 version: 2
 updates:
-  - package-ecosystem: 'npm'
-    # Disable; use renovate instead
-    open-pull-requests-limit: 0
-    directory: '/'
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
-      interval: 'weekly'
-      day: 'saturday'
-    versioning-strategy: 'increase'
-    labels:
-      - 'dependencies'
-    pull-request-branch-name:
-      separator: '-'
-    commit-message:
-      # cause a release for non-dev-deps
-      prefix: fix(deps)
-      # no release for dev-deps
-      prefix-development: chore(dev-deps)
+      interval: "daily"
+      # day: "monday"
+      time: "05:00"
+      timezone: "America/Los_Angeles"
+
+    # Open PR limit to prevent noise
+    open-pull-requests-limit: 10
+
+    # Rebase strategy for clean history
+    rebase-strategy: "auto"
+
+    # Versioning strategy
+    versioning-strategy: "increase"
+
+    # Ignore patch updates globally
     ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-major']
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+
+    # Package groups
+    groups:
+      oclif:
+        patterns:
+          - "oclif"
+          - "oclif*"
+          - "@oclif/*"
+        update-types:
+          - "minor"
+
+      fluid-framework:
+        patterns:
+          - "@fluidframework/*"
+          - "fluid-framework"
+        update-types:
+          - "minor"
+
+      typedoc:
+        patterns:
+          - "typedoc"
+          - "typedoc*"
+        update-types:
+          - "minor"
+
+      typescript:
+        patterns:
+          - "typescript"
+        update-types:
+          - "minor"
+
+      svelte:
+        patterns:
+          - "svelte"
+          - "svelte-kit"
+        update-types:
+          - "minor"
+
+      biome:
+        patterns:
+          - "@biomejs/*"
+          - "biome"
+        update-types:
+          - "minor"
+
+      # All other dependencies (not in above groups)
+      dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "oclif"
+          - "oclif*"
+          - "@oclif/*"
+          - "@fluidframework/*"
+          - "fluid-framework"
+          - "typedoc*"
+          - "typescript"
+          - "@biomejs/*"
+          - "biome"
+
+          # Exclude Astro and Starlight packages from automated updates.
+          # These packages are tightly coupled to project-specific configurations and may introduce breaking changes.
+          # Updates to these dependencies require manual review and testing to ensure compatibility and stability.
+          - "@astrojs/*"
+          - "astro"
+          - "starlight-*"
+        update-types:
+          - "minor"
+
+    # Labels for PRs
+    # labels:
+    #   - "dependencies"
+
+    # Pull request branch naming
+    pull-request-branch-name:
+      separator: "-"
+
+    # Commit message format (conventional commits)
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "build(devdeps)"

@@ -1,3 +1,4 @@
+import process from "node:process";
 import type { Command, Config } from "@oclif/core";
 import type { SimpleGit } from "simple-git";
 import { CommandWithConfig } from "./configCommand.js";
@@ -18,7 +19,12 @@ export abstract class GitCommand<
 	protected git: SimpleGit;
 	protected repo: Repository;
 
-	constructor(argv: string[], config: Config) {
+	/**
+	 * GitCommand doesn't require config by default. Subclasses that need config should set this to `true`.
+	 */
+	protected override requiresConfig = false;
+
+	public constructor(argv: string[], config: Config) {
 		super(argv, config);
 
 		this.repo = new Repository({ baseDir: process.cwd() });

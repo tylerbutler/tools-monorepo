@@ -66,6 +66,39 @@
         "plugin": "@tylerbu/cli"
     },
     {
+        "alias": [],
+        "command": "fluid:repo-overlay",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "dry-run",
+            "quiet",
+            "repo-dir",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "fluid:task-rename",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "dry-run",
+            "quiet",
+            "repo-dir",
+            "skip-cross-refs",
+            "validate-only",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
         "alias": [
             "mtp"
         ],

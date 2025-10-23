@@ -1,0 +1,16 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
+	"overrides": [
+		{
+			"includes": ["**/src/commands/**/*.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						// oclif commands are required to use default exports.
+						"noDefaultExport": "off",
+					},
+				},
+			},
+		},
+	],
+}

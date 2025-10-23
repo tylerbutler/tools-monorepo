@@ -1,3 +1,4 @@
+import process from "node:process";
 import type { Command } from "@oclif/core";
 import { BaseCommand } from "./baseCommand.js";
 import { ConfigFileFlagHidden } from "./flags.js";
@@ -21,7 +22,7 @@ export abstract class CommandWithConfig<
 	private _commandConfig: C | undefined;
 	private _configPath: string | undefined;
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		config: ConfigFileFlagHidden,
 		...BaseCommand.flags,
 	} as const;
@@ -31,8 +32,20 @@ export abstract class CommandWithConfig<
 	 */
 	protected defaultConfig: C | undefined;
 
+	/**
+	 * Whether this command requires a config file. If set to `false`, config loading will be skipped.
+	 * Defaults to `true` for backwards compatibility.
+	 */
+	protected requiresConfig = true;
+
 	public override async init(): Promise<void> {
 		await super.init();
+
+		// Skip config loading if not required
+		if (!this.requiresConfig) {
+			return;
+		}
+
 		const { config: configFlag } = this.flags;
 		const searchPath = configFlag ?? process.cwd();
 		const loaded = await loadConfig<C>(this.config.bin, searchPath, undefined);

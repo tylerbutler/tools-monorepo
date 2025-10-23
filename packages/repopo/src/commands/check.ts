@@ -1,20 +1,40 @@
 import { EOL as newline } from "node:os";
+import process from "node:process";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
 import { type Operation, action, all, call, run } from "effection";
 import chalk from "picocolors";
-
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
-import { type PolicyHandlerPerfStats, logStats, runWithPerf } from "../perf.js";
+import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";
 import {
+	isPolicyFixResult,
 	type PolicyFailure,
 	type PolicyFixResult,
 	type PolicyHandlerResult,
 	type PolicyInstance,
 	type PolicyStandaloneResolver,
-	isPolicyFixResult,
 } from "../policy.js";
+
+async function readStdin(): Promise<string> {
+	return new Promise((resolve) => {
+		const stdin = process.stdin;
+		stdin.setEncoding("utf8");
+
+		let data = "";
+		stdin.on("data", (chunk) => {
+			data += chunk;
+		});
+
+		stdin.on("end", () => {
+			resolve(data);
+		});
+
+		if (stdin.isTTY) {
+			resolve("");
+		}
+	});
+}
 
 /**
  * This tool enforces policies across the code base via a series of handler functions. The handler functions are
@@ -31,10 +51,10 @@ export class CheckPolicy<
 		flags: typeof CheckPolicy.flags;
 	},
 > extends BaseRepopoCommand<T> {
-	static override readonly summary =
+	public static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -380,25 +400,4 @@ export class CheckPolicy<
 			this.warning(messages.toString());
 		}
 	}
-}
-
-function* readStdin(): Operation<string> {
-	return yield* action<string>((resolve, reject) => () => {
-		const stdin = process.stdin;
-		stdin.setEncoding("utf8");
-
-		let data = "";
-		stdin.on("data", (chunk) => {
-			data += chunk;
-		});
-
-		stdin.on("end", () => {
-			resolve(data);
-		});
-
-		if (stdin.isTTY) {
-			resolve("");
-		}
-		reject(new Error("Rejection in readStdin"));
-	});
 }

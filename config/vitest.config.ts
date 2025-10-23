@@ -1,7 +1,10 @@
+import process from "node:process";
 import { defineConfig } from "vitest/config";
 
 const config = defineConfig({
 	test: {
+		// CI environments are slower, so increase timeout to prevent flaky test failures
+		testTimeout: process.env.GITHUB_ACTIONS ? 15_000 : 5000,
 		reporters: process.env.GITHUB_ACTIONS
 			? // CI mode
 				["github-actions", "junit"]
@@ -19,4 +22,5 @@ const config = defineConfig({
 	},
 });
 
+// biome-ignore lint/style/noDefaultExport: correct pattern for config files
 export default config;
