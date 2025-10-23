@@ -1,11 +1,18 @@
 {
-	"extends": "../../config/tsconfig.strict.json",
-	"include": ["src/**/*"],
-	"compilerOptions": {
-		"rootDir": "./src",
-		"outDir": "./esm",
-	},
-	"ts-node": {
-		"esm": true,
-	},
+  "extends": "../../config/tsconfig.strict.json",
+  "include": [
+    "src/**/*"
+  ],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./esm"
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "references": [
+    {
+      "path": "../lilconfig-loader-ts"
+    }
+  ]
 }
