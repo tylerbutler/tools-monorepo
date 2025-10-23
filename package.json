@@ -99,6 +99,7 @@
 			"dtrace-provider",
 			"esbuild",
 			"msw",
+			"nx",
 			"protobufjs",
 			"re2",
 			"sharp",
