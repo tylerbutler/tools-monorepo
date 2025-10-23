@@ -1,45 +1,45 @@
 {
 	"extends": "./config/tsconfig.base.json",
 	"compilerOptions": {
-		"composite": false
+		"composite": false,
 	},
 	"files": [],
 	"references": [
 		{
-			"path": "./packages/ccl-docs"
+			"path": "./packages/ccl-docs",
 		},
 		{
-			"path": "./packages/cli"
+			"path": "./packages/cli",
 		},
 		{
-			"path": "./packages/cli-api"
+			"path": "./packages/cli-api",
 		},
 		{
-			"path": "./packages/dill"
+			"path": "./packages/dill",
 		},
 		{
-			"path": "./packages/dill-docs"
+			"path": "./packages/dill-docs",
 		},
 		{
-			"path": "./packages/fundamentals"
+			"path": "./packages/fundamentals",
 		},
 		{
-			"path": "./packages/levee-client"
+			"path": "./packages/levee-client",
 		},
 		{
-			"path": "./packages/lilconfig-loader-ts"
+			"path": "./packages/lilconfig-loader-ts",
 		},
 		{
-			"path": "./packages/repopo"
+			"path": "./packages/repopo",
 		},
 		{
-			"path": "./packages/repopo-docs"
+			"path": "./packages/repopo-docs",
 		},
 		{
-			"path": "./packages/sort-tsconfig"
+			"path": "./packages/sort-tsconfig",
 		},
 		{
-			"path": "./packages/xkcd2-api"
-		}
-	]
+			"path": "./packages/xkcd2-api",
+		},
+	],
 }

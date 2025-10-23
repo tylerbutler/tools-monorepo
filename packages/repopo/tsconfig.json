@@ -1,24 +1,22 @@
 {
-  "extends": "../../config/tsconfig.strict.json",
-  "compilerOptions": {
-    "outDir": "esm",
-    "rootDir": "src",
-    // TODO: Should these settings be disabled in the strict config?
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": false
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "ts-node": {
-    "esm": true
-  },
-  "references": [
-    {
-      "path": "../cli-api"
-    },
-    {
-      "path": "../fundamentals"
-    }
-  ]
+	"extends": "../../config/tsconfig.strict.json",
+	"compilerOptions": {
+		"outDir": "esm",
+		"rootDir": "src",
+		// TODO: Should these settings be disabled in the strict config?
+		"noUncheckedIndexedAccess": true,
+		"noPropertyAccessFromIndexSignature": false,
+	},
+	"include": ["src/**/*"],
+	"ts-node": {
+		"esm": true,
+	},
+	"references": [
+		{
+			"path": "../cli-api",
+		},
+		{
+			"path": "../fundamentals",
+		},
+	],
 }
