@@ -12,6 +12,9 @@ yarn.lock
 # nx
 .nx
 
+# turbo cache
+.turbo
+
 # netlify cache
 .netlify
 
