@@ -2,7 +2,7 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
 
   // Maximum parallel tasks - optimized for modern hardware
-  "parallel": 25,
+  // "parallel": 25,
 
   "cacheDirectory": ".nx/cache",
   "defaultBase": "main",
