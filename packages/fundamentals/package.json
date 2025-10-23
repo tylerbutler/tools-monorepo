@@ -37,9 +37,7 @@
 		"esm"
 	],
 	"scripts": {
-		"build": "pnpm build:compile && pnpm build:api",
 		"build:api": "concurrently npm:docs:api:*",
-		"b": "nx build",
 		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
@@ -73,5 +71,12 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			}
+		}
 	}
 }

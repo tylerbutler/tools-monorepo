@@ -64,12 +64,27 @@
     // ORCHESTRATION TARGETS
     // ============================================
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build",           // Inter-package dependencies
+        "build:compile",    // Intra-package: TypeScript compilation
+        "build:api",        // Intra-package: API documentation
+        "build:docs",       // Intra-package: TypeDoc documentation
+        "build:manifest",   // Intra-package: OCLIF manifest
+        "build:readme",     // Intra-package: OCLIF readme
+        "build:generate",   // Intra-package: OCLIF snapshots
+        "build:site",       // Intra-package: Astro/Vite sites
+        "build:vite"        // Intra-package: Vite builds
+      ],
       "cache": true
     },
 
     "test": {
-      "dependsOn": ["build:compile"],
+      "dependsOn": [
+        "build:compile",  // Need compiled code before testing
+        "test:unit",      // Intra-package: Unit tests
+        "test:vitest",    // Intra-package: Vitest tests
+        "test:snapshots"  // Intra-package: Snapshot tests (OCLIF)
+      ],
       "cache": true
     },
 

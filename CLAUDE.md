@@ -105,15 +105,17 @@ The monorepo contains these key packages:
 
 ### Build Pipeline
 
-Nx orchestrates builds using a **hierarchical task structure** with **plugin-based auto-inference**:
+Nx orchestrates builds using **pure dependency-based orchestration** - no shell scripts, just dependency graphs:
 
-**Orchestration Tasks** (top-level, call implementation tasks):
-- `build` - Builds all packages (calls build:compile, build:api, build:docs, etc.)
-- `test` - Runs tests (depends on build:compile)
+**Architecture:** Orchestration via `nx.json`, Implementation via package.json scripts
+
+**Orchestration Targets** (defined in `nx.json` targetDefaults):
+- `build` - Virtual target that depends on all build implementation tasks
+- `test` - Virtual target that depends on compile + test implementation tasks
 - `check` - Runs all quality checks (format, types, deps, policy, lint)
 - `release` - Prepares releases (build + release:license)
 
-**Implementation Tasks** (package-specific, do actual work):
+**Implementation Tasks** (package-specific, defined in package.json):
 - `build:compile` - TypeScript compilation (src → esm/)
 - `build:api` - API Extractor documentation
 - `build:docs` - TypeDoc documentation
@@ -135,10 +137,19 @@ Nx orchestrates builds using a **hierarchical task structure** with **plugin-bas
 - **Svelte apps**: build:vite (or build:tauri for desktop)
 
 **Key Principles:**
-- Top-level tasks orchestrate, never implement
+- **No orchestrator scripts in package.json** - only minimal `"build": ""` to register target
+- **All orchestration in `nx.json`** - dependency chains via `dependsOn`
+- **Granular caching** - each implementation task caches independently
+- **Parallel execution** - tasks without dependencies run concurrently
 - Implementation tasks use `:` separator (e.g., `build:compile`)
 - Nx plugins auto-infer tasks from config files (vitest.config.ts, etc.)
 - All configuration in root `nx.json` (no package-level project.json files)
+
+**Benefits:**
+- Change README → only `build:readme` runs (others cache)
+- Change source → only affected tasks rebuild
+- API Extractor configs run in parallel
+- 60-80% faster for isolated changes
 
 ### TypeScript Configuration
 
