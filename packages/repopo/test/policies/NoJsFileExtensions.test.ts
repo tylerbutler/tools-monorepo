@@ -111,14 +111,14 @@ describe("NoJsFileExtensions Policy", () => {
 		});
 
 		it("should fail with descriptive error message", async () => {
-			const result = await run(() =>
+			const result = (await run(() =>
 				NoJsFileExtensions.handler({
 					file: "script.js",
 					root: "/test/root",
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.errorMessage).toBeDefined();
 			expect(result.errorMessage).toContain("JavaScript files");
@@ -128,14 +128,14 @@ describe("NoJsFileExtensions Policy", () => {
 		});
 
 		it("should mark as not auto-fixable", async () => {
-			const result = await run(() =>
+			const result = (await run(() =>
 				NoJsFileExtensions.handler({
 					file: "app.js",
 					root: "/test/root",
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.autoFixable).toBe(false);
 		});
@@ -164,37 +164,37 @@ describe("NoJsFileExtensions Policy", () => {
 		});
 
 		it("should work with different root paths", async () => {
-			const result1 = await run(() =>
+			const result1 = (await run(() =>
 				NoJsFileExtensions.handler({
 					file: "index.js",
 					root: "/path/to/project",
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
-			const result2 = await run(() =>
+			const result2 = (await run(() =>
 				NoJsFileExtensions.handler({
 					file: "index.js",
 					root: "/different/root",
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result1.file).toBe(result2.file);
 			expect(result1.errorMessage).toBe(result2.errorMessage);
 		});
 
 		it("should handle uppercase .JS extension", async () => {
-			const result = await run(() =>
+			const result = (await run(() =>
 				NoJsFileExtensions.handler({
 					file: "SCRIPT.JS",
 					root: "/test/root",
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.file).toBe("SCRIPT.JS");
 			expect(result.autoFixable).toBe(false);
@@ -205,14 +205,14 @@ describe("NoJsFileExtensions Policy", () => {
 		it("should detect problematic .js file in ESM project", async () => {
 			// In an ESM project (type: "module"), a .js file would be treated as ESM
 			// which could cause issues if it's actually CommonJS code
-			const result = await run(() =>
+			const result = (await run(() =>
 				NoJsFileExtensions.handler({
 					file: "src/legacy-commonjs.js",
 					root: "/esm-project",
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).toHaveProperty("autoFixable", false);
 			expect(result.errorMessage).toContain("module format");
@@ -222,27 +222,27 @@ describe("NoJsFileExtensions Policy", () => {
 			// In a CommonJS project (type: "commonjs" or no type field),
 			// a .js file would be treated as CommonJS, which could cause issues
 			// if it's actually ESM code
-			const result = await run(() =>
+			const result = (await run(() =>
 				NoJsFileExtensions.handler({
 					file: "src/modern-esm.js",
 					root: "/cjs-project",
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).toHaveProperty("autoFixable", false);
 		});
 
 		it("should encourage explicit module type declaration", async () => {
-			const result = await run(() =>
+			const result = (await run(() =>
 				NoJsFileExtensions.handler({
 					file: "utils.js",
 					root: "/project",
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			// The error message should guide users to use explicit extensions
 			expect(result.errorMessage).toContain(".cjs or .mjs");

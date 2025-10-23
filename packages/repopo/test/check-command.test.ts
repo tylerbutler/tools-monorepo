@@ -3,7 +3,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { simpleGit } from "simple-git";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { PolicyDefinition, PolicyFailure, PolicyFixResult } from "../src/policy.js";
+import type {
+	PolicyDefinition,
+	PolicyFailure,
+	PolicyFixResult,
+} from "../src/policy.js";
 
 describe("Check Command - Effection Integration", () => {
 	let testRepoDir: string;

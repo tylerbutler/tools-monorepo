@@ -1,7 +1,7 @@
-import { run } from "effection";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { run } from "effection";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PackageJsonSorted } from "../../src/policies/PackageJsonSorted.js";
@@ -56,7 +56,10 @@ describe("PackageJsonSorted Policy", () => {
 				},
 			};
 
-			await writeFile(packageJsonPath, JSON.stringify(sortedPackageJson, null, 2));
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify(sortedPackageJson, null, 2),
+			);
 
 			const result = await run(() =>
 				PackageJsonSorted.handler({
@@ -84,16 +87,19 @@ describe("PackageJsonSorted Policy", () => {
 				},
 			};
 
-			await writeFile(packageJsonPath, JSON.stringify(unsortedPackageJson, null, 2));
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify(unsortedPackageJson, null, 2),
+			);
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonSorted.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result).toHaveProperty("autoFixable", true);
@@ -112,14 +118,14 @@ describe("PackageJsonSorted Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonSorted.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 		});
@@ -137,14 +143,14 @@ describe("PackageJsonSorted Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonSorted.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 		});
@@ -157,16 +163,19 @@ describe("PackageJsonSorted Policy", () => {
 				name: "test-package",
 			};
 
-			await writeFile(packageJsonPath, JSON.stringify(unsortedPackageJson, null, 2));
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify(unsortedPackageJson, null, 2),
+			);
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonSorted.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.autoFixable).toBe(true);
 		});
@@ -181,16 +190,19 @@ describe("PackageJsonSorted Policy", () => {
 				},
 			};
 
-			await writeFile(packageJsonPath, JSON.stringify(unsortedPackageJson, null, 2));
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify(unsortedPackageJson, null, 2),
+			);
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonSorted.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: true,
 					config: undefined,
 				}),
-			) as PolicyFixResult;
+			)) as PolicyFixResult;
 
 			expect(result.resolved).toBe(true);
 
@@ -264,16 +276,19 @@ describe("PackageJsonSorted Policy", () => {
 				name: "minimal",
 			};
 
-			await writeFile(packageJsonPath, JSON.stringify(minimalPackageJson, null, 2));
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify(minimalPackageJson, null, 2),
+			);
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonSorted.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: true,
 					config: undefined,
 				}),
-			) as PolicyFixResult;
+			)) as PolicyFixResult;
 
 			expect(result.resolved).toBe(true);
 
@@ -384,16 +399,19 @@ describe("PackageJsonSorted Policy", () => {
 				name: "test-package",
 			};
 
-			await writeFile(packageJsonPath, JSON.stringify(unsortedPackageJson, null, 2));
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify(unsortedPackageJson, null, 2),
+			);
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonSorted.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.file).toBe(packageJsonPath);
 		});
@@ -404,16 +422,19 @@ describe("PackageJsonSorted Policy", () => {
 				name: "test-package",
 			};
 
-			await writeFile(packageJsonPath, JSON.stringify(unsortedPackageJson, null, 2));
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify(unsortedPackageJson, null, 2),
+			);
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonSorted.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.name).toBe("PackageJsonSorted");
 		});

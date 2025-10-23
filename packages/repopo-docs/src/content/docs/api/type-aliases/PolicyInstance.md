@@ -5,9 +5,9 @@ prev: false
 title: "PolicyInstance"
 ---
 
-> **PolicyInstance**\<`C`\> = `RequireAtLeastOne`\<[`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\> & [`PolicyDefinitionAsync`](/api/interfaces/policydefinitionasync/)\<`C`\> & [`PolicyInstanceSettings`](/api/interfaces/policyinstancesettings/)\<`C`\>, `"handler"` \| `"handlerAsync"`\>
+> **PolicyInstance**\<`C`\> = `RequireExactlyOne`\<[`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\> & [`PolicyInstanceSettings`](/api/interfaces/policyinstancesettings/)\<`C`\>, `"handler"`\>
 
-Defined in: [policy.ts:180](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L180)
+Defined in: [policy.ts:154](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L154)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

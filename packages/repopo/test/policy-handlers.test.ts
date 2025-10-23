@@ -1,7 +1,7 @@
-import { run } from "effection";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { run } from "effection";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type {
 	PolicyFailure,
@@ -147,12 +147,14 @@ describe("Policy Handlers - Dual Mode Support", () => {
 				return true;
 			};
 
-			const result = await run(() => handler({
-				file: testFile,
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}));
+			const result = await run(() =>
+				handler({
+					file: testFile,
+					root: testDir,
+					resolve: false,
+					config: undefined,
+				}),
+			);
 
 			expect(result).toBe(true);
 		});
@@ -168,12 +170,14 @@ describe("Policy Handlers - Dual Mode Support", () => {
 				return failure;
 			};
 
-			const result = await run(() => handler({
-				file: testFile,
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}));
+			const result = await run(() =>
+				handler({
+					file: testFile,
+					root: testDir,
+					resolve: false,
+					config: undefined,
+				}),
+			);
 
 			expect(result).toMatchObject({
 				name: "TestPolicy",
@@ -205,12 +209,14 @@ describe("Policy Handlers - Dual Mode Support", () => {
 			};
 
 			// Test without resolve
-			const failureResult = await run(() => handler({
-				file: testFile,
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}));
+			const failureResult = await run(() =>
+				handler({
+					file: testFile,
+					root: testDir,
+					resolve: false,
+					config: undefined,
+				}),
+			);
 
 			expect(failureResult).toMatchObject({
 				name: "TestPolicy",
@@ -219,12 +225,14 @@ describe("Policy Handlers - Dual Mode Support", () => {
 			});
 
 			// Test with resolve
-			const fixResult = await run(() => handler({
-				file: testFile,
-				root: testDir,
-				resolve: true,
-				config: undefined,
-			}));
+			const fixResult = await run(() =>
+				handler({
+					file: testFile,
+					root: testDir,
+					resolve: true,
+					config: undefined,
+				}),
+			);
 
 			expect(fixResult).toMatchObject({
 				name: "TestPolicy",
@@ -243,12 +251,14 @@ describe("Policy Handlers - Dual Mode Support", () => {
 				return true;
 			};
 
-			const result = await run(() => handler({
-				file: testFile,
-				root: testDir,
-				resolve: false,
-				config: { maxSize: 1000 },
-			}));
+			const result = await run(() =>
+				handler({
+					file: testFile,
+					root: testDir,
+					resolve: false,
+					config: { maxSize: 1000 },
+				}),
+			);
 
 			expect(result).toBe(true);
 		});
@@ -273,12 +283,14 @@ describe("Policy Handlers - Dual Mode Support", () => {
 				return failure;
 			};
 
-			const result = await run(() => handler({
-				file: testFile,
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}));
+			const result = await run(() =>
+				handler({
+					file: testFile,
+					root: testDir,
+					resolve: false,
+					config: undefined,
+				}),
+			);
 
 			expect(result).toBe(true);
 		});
@@ -301,12 +313,14 @@ describe("Policy Handlers - Dual Mode Support", () => {
 				config: undefined,
 			});
 
-			const operationResult = await run(() => operationHandler({
-				file: testFile,
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}));
+			const operationResult = await run(() =>
+				operationHandler({
+					file: testFile,
+					root: testDir,
+					resolve: false,
+					config: undefined,
+				}),
+			);
 
 			expect(promiseResult).toBe(true);
 			expect(operationResult).toBe(true);
@@ -386,11 +400,13 @@ describe("Policy Resolvers - Dual Mode Support", () => {
 				return result;
 			};
 
-			const result = await run(() => resolver({
-				file: testFile,
-				root: testDir,
-				config: undefined,
-			}));
+			const result = await run(() =>
+				resolver({
+					file: testFile,
+					root: testDir,
+					config: undefined,
+				}),
+			);
 
 			expect(result).toMatchObject({
 				name: "TestPolicy",
@@ -416,11 +432,13 @@ describe("Policy Resolvers - Dual Mode Support", () => {
 				return result;
 			};
 
-			const result = await run(() => resolver({
-				file: testFile,
-				root: testDir,
-				config: undefined,
-			}));
+			const result = await run(() =>
+				resolver({
+					file: testFile,
+					root: testDir,
+					config: undefined,
+				}),
+			);
 
 			expect(result).toMatchObject({
 				resolved: true,

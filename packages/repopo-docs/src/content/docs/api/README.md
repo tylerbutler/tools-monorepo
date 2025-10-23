@@ -20,7 +20,6 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 - [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
 - [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
 - [PolicyDefinition](/api/interfaces/policydefinition/)
-- [PolicyDefinitionAsync](/api/interfaces/policydefinitionasync/)
 - [PolicyFailure](/api/interfaces/policyfailure/)
 - [PolicyFixResult](/api/interfaces/policyfixresult/)
 - [PolicyFunctionArguments](/api/interfaces/policyfunctionarguments/)
@@ -31,7 +30,6 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 
 - [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
 - [PolicyHandler](/api/type-aliases/policyhandler/)
-- [PolicyHandlerAsync](/api/type-aliases/policyhandlerasync/)
 - [PolicyHandlerResult](/api/type-aliases/policyhandlerresult/)
 - [PolicyInstance](/api/type-aliases/policyinstance/)
 - [PolicyName](/api/type-aliases/policyname/)
@@ -40,5 +38,5 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 ## Functions
 
 - [defineFileHeaderPolicy](/api/functions/definefileheaderpolicy/)
-- [definePackagePolicy](/api/functions/definepackagepolicy/)
+- [generatePackagePolicy](/api/functions/generatepackagepolicy/)
 - [makePolicy](/api/functions/makepolicy/)

@@ -31,11 +31,15 @@ describe("makePolicyDefinition", () => {
 	});
 
 	it("should create PolicyDefinition with all optional parameters", () => {
-		const handler: PolicyHandler<{ threshold: number }> = async ({ config }) => {
+		const handler: PolicyHandler<{ threshold: number }> = async ({
+			config,
+		}) => {
 			return config!.threshold > 0;
 		};
 
-		const resolver: PolicyStandaloneResolver<{ threshold: number }> = async ({ file }) => ({
+		const resolver: PolicyStandaloneResolver<{ threshold: number }> = async ({
+			file,
+		}) => ({
 			name: "TestPolicy",
 			file,
 			resolved: true,
@@ -187,7 +191,9 @@ describe("makePolicy", () => {
 	let baseDefinition: PolicyDefinition<{ threshold: number }>;
 
 	beforeEach(() => {
-		const handler: PolicyHandler<{ threshold: number }> = async ({ config }) => {
+		const handler: PolicyHandler<{ threshold: number }> = async ({
+			config,
+		}) => {
 			return config!.threshold > 0;
 		};
 
@@ -243,7 +249,9 @@ describe("makePolicy", () => {
 	});
 
 	it("should preserve all definition properties", () => {
-		const resolver: PolicyStandaloneResolver<{ threshold: number }> = async ({ file }) => ({
+		const resolver: PolicyStandaloneResolver<{ threshold: number }> = async ({
+			file,
+		}) => ({
 			name: "TestPolicy",
 			file,
 			resolved: true,
@@ -296,14 +304,18 @@ describe("makePolicy", () => {
 	});
 
 	it("should override definition properties with settings", () => {
-		const originalResolver: PolicyStandaloneResolver<{ threshold: number }> = async ({ file }) => ({
+		const originalResolver: PolicyStandaloneResolver<{
+			threshold: number;
+		}> = async ({ file }) => ({
 			name: "TestPolicy",
 			file,
 			resolved: true,
 			errorMessage: "Original resolver",
 		});
 
-		const newResolver: PolicyStandaloneResolver<{ threshold: number }> = async ({ file }) => ({
+		const newResolver: PolicyStandaloneResolver<{
+			threshold: number;
+		}> = async ({ file }) => ({
 			name: "TestPolicy",
 			file,
 			resolved: true,
@@ -354,13 +366,7 @@ describe("makePolicy", () => {
 
 	it("should support complex excludeFiles patterns", () => {
 		const settings: PolicyInstanceSettings = {
-			excludeFiles: [
-				/node_modules/,
-				/\.git/,
-				/dist/,
-				/build/,
-				/coverage/,
-			],
+			excludeFiles: [/node_modules/, /\.git/, /dist/, /build/, /coverage/],
 		};
 
 		const instance = makePolicy(baseDefinition, undefined, settings);

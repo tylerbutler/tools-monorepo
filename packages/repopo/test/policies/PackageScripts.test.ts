@@ -1,7 +1,7 @@
-import { run } from "effection";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { run } from "effection";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PackageScripts } from "../../src/policies/PackageScripts.js";
@@ -79,14 +79,14 @@ describe("PackageScripts Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageScripts.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result).toHaveProperty("name", "PackageScripts");
@@ -106,14 +106,14 @@ describe("PackageScripts Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageScripts.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result.errorMessage).toContain("clean");
@@ -131,14 +131,14 @@ describe("PackageScripts Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageScripts.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result.errorMessage).toContain("build");
@@ -177,14 +177,14 @@ describe("PackageScripts Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageScripts.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result.errorMessage).toContain("missing the following scripts");
@@ -203,14 +203,14 @@ describe("PackageScripts Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageScripts.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.errorMessage).toBeDefined();
 			expect(result.errorMessage).toContain("missing the following scripts");
@@ -229,14 +229,14 @@ describe("PackageScripts Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageScripts.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.errorMessage).toContain("build");
 			expect(result.errorMessage).toContain("clean");
@@ -252,14 +252,14 @@ describe("PackageScripts Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageScripts.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.file).toBe(packageJsonPath);
 		});
@@ -353,14 +353,14 @@ describe("PackageScripts Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageScripts.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: true,
 					config: undefined,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.autoFixable).toBe(false);
 		});

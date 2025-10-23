@@ -1,12 +1,12 @@
-import { run } from "effection";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { run } from "effection";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { definePackagePolicy } from "../src/policyDefiners/definePackagePolicy.js";
-import type { PackageJsonHandler } from "../src/policyDefiners/definePackagePolicy.js";
 import type { PolicyFailure } from "../src/policy.js";
+import type { PackageJsonHandler } from "../src/policyDefiners/definePackagePolicy.js";
+import { definePackagePolicy } from "../src/policyDefiners/definePackagePolicy.js";
 
 describe("definePackagePolicy", () => {
 	let testDir: string;
@@ -35,7 +35,9 @@ describe("definePackagePolicy", () => {
 
 		let receivedJson: PackageJson | null = null;
 
-		const handler: PackageJsonHandler<PackageJson, undefined> = function* (json) {
+		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
+			json,
+		) {
 			receivedJson = json;
 			return true;
 		};
@@ -98,7 +100,9 @@ describe("definePackagePolicy", () => {
 
 		let receivedJson: PackageJson | null = null;
 
-		const handler: PackageJsonHandler<PackageJson, undefined> = function* (json) {
+		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
+			json,
+		) {
 			receivedJson = json;
 			return true;
 		};
@@ -130,7 +134,10 @@ describe("definePackagePolicy", () => {
 			JSON.stringify(packageJson, null, 2),
 		);
 
-		const handler: PackageJsonHandler<PackageJson, undefined> = function* (json, { file }) {
+		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
+			json,
+			{ file },
+		) {
 			const failure: PolicyFailure = {
 				name: "TestPackagePolicy",
 				file,
@@ -176,12 +183,16 @@ describe("definePackagePolicy", () => {
 
 		let receivedCustomField: string | undefined;
 
-		const handler: PackageJsonHandler<CustomPackageJson, undefined> = function* (json) {
-			receivedCustomField = json.customField;
-			return true;
-		};
+		const handler: PackageJsonHandler<CustomPackageJson, undefined> =
+			function* (json) {
+				receivedCustomField = json.customField;
+				return true;
+			};
 
-		const policy = definePackagePolicy<CustomPackageJson>("CustomPackagePolicy", handler);
+		const policy = definePackagePolicy<CustomPackageJson>(
+			"CustomPackagePolicy",
+			handler,
+		);
 
 		await run(() =>
 			policy.handler({
@@ -212,7 +223,10 @@ describe("definePackagePolicy", () => {
 
 		let receivedConfig: TestConfig | undefined;
 
-		const handler: PackageJsonHandler<PackageJson, TestConfig> = function* (json, { config }) {
+		const handler: PackageJsonHandler<PackageJson, TestConfig> = function* (
+			json,
+			{ config },
+		) {
 			receivedConfig = config;
 			return config?.requiredVersion === json.version;
 		};
@@ -246,7 +260,9 @@ describe("definePackagePolicy", () => {
 			JSON.stringify(minimalPackageJson, null, 2),
 		);
 
-		const handler: PackageJsonHandler<PackageJson, undefined> = function* (json) {
+		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
+			json,
+		) {
 			return json.name === "minimal" && json.version === "0.0.1";
 		};
 
@@ -330,7 +346,9 @@ describe("definePackagePolicy", () => {
 		let receivedExports: PackageJson["exports"];
 		let receivedWorkspaces: PackageJson["workspaces"];
 
-		const handler: PackageJsonHandler<PackageJson, undefined> = function* (json) {
+		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
+			json,
+		) {
 			receivedExports = json.exports;
 			receivedWorkspaces = json.workspaces;
 			return true;

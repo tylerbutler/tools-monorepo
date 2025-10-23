@@ -12,18 +12,13 @@ describe("Performance Utilities", () => {
 			};
 
 			const result = await run(() =>
-				runWithPerf(
-					"TestPolicy",
-					"handle",
-					stats,
-					function* () {
-						// Simulate some work
-						yield* (function* () {
-							// Small delay simulation
-						})();
-						return "test-result";
-					},
-				),
+				runWithPerf("TestPolicy", "handle", stats, function* () {
+					// Simulate some work
+					yield* (function* () {
+						// Small delay simulation
+					})();
+					return "test-result";
+				}),
 			);
 
 			expect(result).toBe("test-result");
@@ -44,14 +39,9 @@ describe("Performance Utilities", () => {
 			};
 
 			const result = await run(() =>
-				runWithPerf(
-					"TestPolicy",
-					"resolve",
-					stats,
-					function* () {
-						return "resolved";
-					},
-				),
+				runWithPerf("TestPolicy", "resolve", stats, function* () {
+					return "resolved";
+				}),
 			);
 
 			expect(result).toBe("resolved");
@@ -70,14 +60,9 @@ describe("Performance Utilities", () => {
 
 			// First invocation
 			await run(() =>
-				runWithPerf(
-					"TestPolicy",
-					"handle",
-					stats,
-					function* () {
-						return "result1";
-					},
-				),
+				runWithPerf("TestPolicy", "handle", stats, function* () {
+					return "result1";
+				}),
 			);
 
 			const firstDuration = stats.data.get("handle")?.get("TestPolicy") ?? 0;
@@ -85,14 +70,9 @@ describe("Performance Utilities", () => {
 
 			// Second invocation
 			await run(() =>
-				runWithPerf(
-					"TestPolicy",
-					"handle",
-					stats,
-					function* () {
-						return "result2";
-					},
-				),
+				runWithPerf("TestPolicy", "handle", stats, function* () {
+					return "result2";
+				}),
 			);
 
 			const secondDuration = stats.data.get("handle")?.get("TestPolicy") ?? 0;
@@ -107,25 +87,15 @@ describe("Performance Utilities", () => {
 			};
 
 			await run(() =>
-				runWithPerf(
-					"Policy1",
-					"handle",
-					stats,
-					function* () {
-						return "result1";
-					},
-				),
+				runWithPerf("Policy1", "handle", stats, function* () {
+					return "result1";
+				}),
 			);
 
 			await run(() =>
-				runWithPerf(
-					"Policy2",
-					"handle",
-					stats,
-					function* () {
-						return "result2";
-					},
-				),
+				runWithPerf("Policy2", "handle", stats, function* () {
+					return "result2";
+				}),
 			);
 
 			const handleMap = stats.data.get("handle");
@@ -143,25 +113,15 @@ describe("Performance Utilities", () => {
 			};
 
 			await run(() =>
-				runWithPerf(
-					"TestPolicy",
-					"handle",
-					stats,
-					function* () {
-						return "handled";
-					},
-				),
+				runWithPerf("TestPolicy", "handle", stats, function* () {
+					return "handled";
+				}),
 			);
 
 			await run(() =>
-				runWithPerf(
-					"TestPolicy",
-					"resolve",
-					stats,
-					function* () {
-						return "resolved";
-					},
-				),
+				runWithPerf("TestPolicy", "resolve", stats, function* () {
+					return "resolved";
+				}),
 			);
 
 			expect(stats.data.has("handle")).toBe(true);
@@ -183,14 +143,9 @@ describe("Performance Utilities", () => {
 
 			await expect(
 				run(() =>
-					runWithPerf(
-						"TestPolicy",
-						"handle",
-						stats,
-						function* () {
-							throw new Error("Test error");
-						},
-					),
+					runWithPerf("TestPolicy", "handle", stats, function* () {
+						throw new Error("Test error");
+					}),
 				),
 			).rejects.toThrow("Test error");
 
@@ -214,14 +169,9 @@ describe("Performance Utilities", () => {
 			};
 
 			const result = await run(() =>
-				runWithPerf(
-					"TestPolicy",
-					"handle",
-					stats,
-					function* () {
-						return complexResult;
-					},
-				),
+				runWithPerf("TestPolicy", "handle", stats, function* () {
+					return complexResult;
+				}),
 			);
 
 			expect(result).toEqual(complexResult);
@@ -235,22 +185,17 @@ describe("Performance Utilities", () => {
 			};
 
 			const result = await run(() =>
-				runWithPerf(
-					"TestPolicy",
-					"handle",
-					stats,
-					function* () {
-						const intermediate = yield* (function* () {
-							return "intermediate";
-						})();
+				runWithPerf("TestPolicy", "handle", stats, function* () {
+					const intermediate = yield* (function* () {
+						return "intermediate";
+					})();
 
-						const final = yield* (function* () {
-							return `${intermediate}-final`;
-						})();
+					const final = yield* (function* () {
+						return `${intermediate}-final`;
+					})();
 
-						return final;
-					},
-				),
+					return final;
+				}),
 			);
 
 			expect(result).toBe("intermediate-final");

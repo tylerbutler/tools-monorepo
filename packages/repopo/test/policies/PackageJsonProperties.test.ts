@@ -1,7 +1,7 @@
-import { run } from "effection";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { run } from "effection";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
@@ -79,14 +79,14 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result.autoFixable).toBe(true);
@@ -108,14 +108,14 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result.errorMessage).toContain("license");
@@ -140,14 +140,14 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result.errorMessage).toContain("author");
@@ -191,14 +191,14 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.autoFixable).toBe(true);
 		});
@@ -218,19 +218,21 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: true,
 					config,
 				}),
-			) as PolicyFixResult;
+			)) as PolicyFixResult;
 
 			expect(result.resolved).toBe(true);
 
 			// Verify file was updated
-			const updatedContent = JSON.parse(await readFile(packageJsonPath, "utf-8"));
+			const updatedContent = JSON.parse(
+				await readFile(packageJsonPath, "utf-8"),
+			);
 			expect(updatedContent.license).toBe("MIT");
 			expect(updatedContent.author).toBe("Test Author <test@example.com>");
 			expect(updatedContent.name).toBe("test-package");
@@ -261,7 +263,9 @@ describe("PackageJsonProperties Policy", () => {
 				}),
 			);
 
-			const updatedContent = JSON.parse(await readFile(packageJsonPath, "utf-8"));
+			const updatedContent = JSON.parse(
+				await readFile(packageJsonPath, "utf-8"),
+			);
 			expect(updatedContent.license).toBe("MIT");
 		});
 
@@ -290,7 +294,9 @@ describe("PackageJsonProperties Policy", () => {
 				}),
 			);
 
-			const updatedContent = JSON.parse(await readFile(packageJsonPath, "utf-8"));
+			const updatedContent = JSON.parse(
+				await readFile(packageJsonPath, "utf-8"),
+			);
 			expect(updatedContent.name).toBe("test-package");
 			expect(updatedContent.version).toBe("1.0.0");
 			expect(updatedContent.description).toBe("A test package");
@@ -376,14 +382,14 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result.errorMessage).toContain("repository");
@@ -404,14 +410,14 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 		});
@@ -441,7 +447,9 @@ describe("PackageJsonProperties Policy", () => {
 				}),
 			);
 
-			const updatedContent = JSON.parse(await readFile(packageJsonPath, "utf-8"));
+			const updatedContent = JSON.parse(
+				await readFile(packageJsonPath, "utf-8"),
+			);
 			expect(updatedContent.bugs).toEqual({
 				url: "https://github.com/test/repo/issues",
 			});
@@ -464,14 +472,14 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			expect(result.errorMessage).toBeDefined();
 			expect(result.errorMessage).toContain("license");
@@ -494,14 +502,14 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
+			const result = (await run(() =>
 				PackageJsonProperties.handler({
 					file: packageJsonPath,
 					root: testDir,
 					resolve: false,
 					config,
 				}),
-			) as PolicyFailure;
+			)) as PolicyFailure;
 
 			const errorLines = result.errorMessage.split("\n");
 			expect(errorLines.length).toBeGreaterThan(1);
