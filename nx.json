@@ -11,6 +11,13 @@
   "useDaemonProcess": true,
 
   // ============================================
+  // PLUGINS - Auto-infer tasks from config files
+  // ============================================
+  // Note: Plugins commented out for Phase 1 to ensure compatibility
+  // Enable incrementally in Phase 2 with per-project excludes
+  // "plugins": [],
+
+  // ============================================
   // NAMED INPUTS
   // ============================================
   // Reusable file pattern definitions for caching
@@ -21,7 +28,8 @@
       "default",
       "!{projectRoot}/**/*.spec.ts",
       "!{projectRoot}/**/*.test.ts",
-      "!{projectRoot}/test/**/*"
+      "!{projectRoot}/test/**/*",
+      "!{projectRoot}/**/*.md"
     ],
 
     // Shared config files that affect all packages
@@ -38,7 +46,6 @@
   // ============================================
   // TARGET DEFAULTS
   // ============================================
-  // Equivalent to Turbo's task configuration
   "targetDefaults": {
     // ============================================
     // ORCHESTRATION TARGETS
@@ -76,14 +83,10 @@
     // ============================================
     // BUILD IMPLEMENTATION TARGETS
     // ============================================
+    // TypeScript compilation - optimized with production inputs
     "build:compile": {
       "dependsOn": ["^build:compile"],
-      "inputs": [
-        "{projectRoot}/src/**",
-        "{projectRoot}/tsconfig*.json",
-        "{projectRoot}/package.json",
-        "sharedGlobals"
-      ],
+      "inputs": ["production", "^production", "sharedGlobals"],
       "outputs": [
         "{projectRoot}/esm/**",
         "{projectRoot}/dist/**",
@@ -120,40 +123,29 @@
       "cache": true
     },
 
+    // OCLIF-specific build targets (no plugin available)
     "build:manifest": {
       "dependsOn": ["build:compile"],
-      "inputs": [
-        "{projectRoot}/package.json",
-        "{projectRoot}/src/**",
-        "{projectRoot}/esm/**"
-      ],
+      "inputs": ["production", "^production"],
       "outputs": ["{projectRoot}/oclif.manifest.json"],
       "cache": true
     },
 
     "build:readme": {
       "dependsOn": ["build:manifest"],
-      "inputs": [
-        "{projectRoot}/package.json",
-        "{projectRoot}/src/**",
-        "{projectRoot}/oclif.manifest.json"
-      ],
+      "inputs": ["production", "{projectRoot}/oclif.manifest.json"],
       "outputs": ["{projectRoot}/README.md"],
       "cache": true
     },
 
     "build:generate": {
       "dependsOn": ["build:compile", "build:manifest"],
-      "inputs": [
-        "{projectRoot}/src/**",
-        "{projectRoot}/esm/**",
-        "{projectRoot}/package.json",
-        "{projectRoot}/oclif.manifest.json"
-      ],
+      "inputs": ["production", "{projectRoot}/oclif.manifest.json"],
       "outputs": ["{projectRoot}/test/commands/__snapshots__/**"],
       "cache": true
     },
 
+    // Vite/Astro builds - plugins will infer these, but we provide defaults
     "build:site": {
       "dependsOn": ["^build:compile"],
       "inputs": [
@@ -189,15 +181,6 @@
       "cache": true
     },
 
-    "build:test": {
-      "dependsOn": ["build:compile"],
-      "inputs": [
-        "{projectRoot}/test/**/*.ts",
-        "{projectRoot}/test/tsconfig.json"
-      ],
-      "cache": true
-    },
-
     "build:copy-templates": {
       "dependsOn": ["build:compile"],
       "inputs": ["{projectRoot}/src/**/templates/**"],
@@ -211,11 +194,9 @@
     "test:unit": {
       "dependsOn": ["build:compile"],
       "inputs": [
-        "{projectRoot}/src/**",
-        "{projectRoot}/test/**",
-        "{projectRoot}/esm/**",
-        "{projectRoot}/*.config.{ts,js,mjs,cjs}",
-        "{projectRoot}/test/tsconfig.json"
+        "default",
+        "^production",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}"
       ],
       "outputs": [
         "{projectRoot}/_temp/**",
@@ -227,11 +208,9 @@
     "test:coverage": {
       "dependsOn": ["build:compile"],
       "inputs": [
-        "{projectRoot}/src/**",
-        "{projectRoot}/test/**",
-        "{projectRoot}/esm/**",
-        "{projectRoot}/*.config.{ts,js,mjs,cjs}",
-        "{projectRoot}/test/tsconfig.json"
+        "default",
+        "^production",
+        "{projectRoot}/*.config.{ts,js,mjs,cjs}"
       ],
       "outputs": [
         "{projectRoot}/.coverage/**",
@@ -254,7 +233,6 @@
         "{projectRoot}/src/**",
         "{projectRoot}/test/**",
         "{projectRoot}/biome.jsonc",
-        "{projectRoot}/.eslintrc*",
         "{workspaceRoot}/config/biome/*.jsonc",
         "{workspaceRoot}/biome.jsonc"
       ],
@@ -266,7 +244,9 @@
     // ============================================
     "check:format": {
       "inputs": [
-        "{projectRoot}/**/*",
+        "{projectRoot}/src/**",
+        "{projectRoot}/test/**",
+        "{projectRoot}/*.{json,jsonc,md,ts,js,mjs,cjs}",
         "{workspaceRoot}/config/biome/*.jsonc",
         "{workspaceRoot}/biome.jsonc"
       ],
@@ -276,7 +256,7 @@
     "check:types": {
       "dependsOn": ["^build"],
       "inputs": [
-        "{projectRoot}/src/**",
+        "production",
         "{projectRoot}/*.config.{ts,js,mjs,cjs}",
         "{projectRoot}/typedoc.{json,js,cjs}"
       ],
@@ -285,7 +265,8 @@
 
     "check:deps": {
       "inputs": [
-        "{projectRoot}/**/*",
+        "{projectRoot}/package.json",
+        "{workspaceRoot}/package.json",
         "{workspaceRoot}/*syncpack*"
       ],
       "cache": true

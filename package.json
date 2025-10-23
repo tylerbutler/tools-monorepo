@@ -54,6 +54,7 @@
 		"@changesets/cli": "^2.29.7",
 		"@changesets/config": "^3.1.1",
 		"@nx/js": "^22.0.0",
+		"@nx/vite": "^22.0.1",
 		"@tsconfig/node18": "^18.2.4",
 		"@tsconfig/strictest": "^2.0.6",
 		"@tylerbu/cli": "workspace:^",
