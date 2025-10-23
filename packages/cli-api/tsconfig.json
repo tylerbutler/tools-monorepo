@@ -8,4 +8,9 @@
 	"ts-node": {
 		"esm": true,
 	},
+	"references": [
+		{
+			"path": "../lilconfig-loader-ts",
+		},
+	],
 }
