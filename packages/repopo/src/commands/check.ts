@@ -2,8 +2,21 @@ import { EOL as newline } from "node:os";
 import process from "node:process";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
-import { type Operation, action, all, call, run } from "effection";
+import { action, all, call, type Operation, run } from "effection";
 import chalk from "picocolors";
+
+/**
+ * Type guard to check if a value is an Effection Operation (generator).
+ */
+function isOperation<T>(value: unknown): value is Operation<T> {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"next" in value &&
+		typeof (value as { next: unknown }).next === "function"
+	);
+}
+
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
 import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";
@@ -83,9 +96,11 @@ export class CheckPolicy<
 		const filePathsToCheck: string[] = [];
 
 		if (this.flags.stdin) {
-			const stdInput = await run(() => readStdin());
+			const stdInput = await run(function* () {
+				return yield* call(() => readStdin());
+			});
 
-			if (stdInput !== undefined) {
+			if (stdInput !== undefined && stdInput !== null) {
 				filePathsToCheck.push(
 					...stdInput
 						.replace(
@@ -267,11 +282,18 @@ export class CheckPolicy<
 						config: policy.config,
 					});
 
-					// Handle both Operation and Promise return types
+					// Handle both Operation (generator) and Promise return types
 					if (handlerResult instanceof Promise) {
 						return yield* call(() => handlerResult);
 					}
-					return yield* handlerResult;
+					// Check if it's an Effection Operation (generator)
+					if (isOperation<PolicyHandlerResult>(handlerResult)) {
+						return yield* handlerResult;
+					}
+					// This should never happen with proper handler typing
+					throw new Error(
+						`Unexpected handler result type: ${typeof handlerResult}`,
+					);
 				},
 			);
 			if (result === undefined) {
@@ -367,7 +389,20 @@ export class CheckPolicy<
 			policy.name,
 			"resolve",
 			perfStats,
-			() => run(() => resolver({ file: relPath, root: gitRoot })),
+			function* () {
+				const result = resolver({ file: relPath, root: gitRoot });
+
+				// Handle both Operation (generator) and Promise return types
+				if (result instanceof Promise) {
+					return yield* call(() => result);
+				}
+				// Check if it's an Effection Operation (generator)
+				if (isOperation<PolicyFixResult>(result)) {
+					return yield* result;
+				}
+				// This should never happen with proper resolver typing
+				throw new Error(`Unexpected resolver result type: ${typeof result}`);
+			},
 		);
 
 		if (!resolveResult.resolved) {

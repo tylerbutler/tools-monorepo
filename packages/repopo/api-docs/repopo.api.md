@@ -6,14 +6,11 @@
 
 import { Operation } from 'effection';
 import type { PackageJson } from 'type-fest';
-import type { RequireAtLeastOne } from 'type-fest';
+import type { RequireExactlyOne } from 'type-fest';
 import { run } from '@oclif/core';
 
 // @alpha
 export function defineFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
-
-// @alpha
-export function definePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
 
 // @alpha
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -32,7 +29,10 @@ export interface FileHeaderPolicyConfig {
 }
 
 // @alpha
-export function makePolicy<C>(definition: PolicyDefinition<C> | PolicyDefinitionAsync<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
+export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
+
+// @alpha
+export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha
 export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult>;
@@ -45,11 +45,6 @@ export interface PolicyDefinition<C = undefined> {
     match: RegExp;
     name: PolicyName;
     resolver?: PolicyStandaloneResolver<C> | undefined;
-}
-
-// @alpha (undocumented)
-export interface PolicyDefinitionAsync<C = undefined> extends Omit<PolicyDefinition<C>, "handler" | "resolver"> {
-    handlerAsync: PolicyHandlerAsync<C>;
 }
 
 // @alpha
@@ -75,16 +70,13 @@ export interface PolicyFunctionArguments<C> {
 }
 
 // @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult>;
-
-// @alpha
-export type PolicyHandlerAsync<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+export type PolicyHandler<C = unknown | undefined> = ((args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>) | ((args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult>);
 
 // @alpha (undocumented)
 export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
 
 // @alpha (undocumented)
-export type PolicyInstance<C = undefined> = RequireAtLeastOne<PolicyDefinition<C> & PolicyDefinitionAsync<C> & PolicyInstanceSettings<C>, "handler" | "handlerAsync">;
+export type PolicyInstance<C = undefined> = RequireExactlyOne<PolicyDefinition<C> & PolicyInstanceSettings<C>, "handler">;
 
 // @alpha (undocumented)
 export interface PolicyInstanceSettings<C> {
@@ -96,7 +88,7 @@ export interface PolicyInstanceSettings<C> {
 export type PolicyName = string;
 
 // @alpha
-export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Operation<PolicyFixResult>;
+export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Promise<PolicyFixResult> | Operation<PolicyFixResult>;
 
 // @alpha (undocumented)
 export interface RepopoConfig {

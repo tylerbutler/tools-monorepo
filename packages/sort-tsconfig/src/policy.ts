@@ -1,8 +1,4 @@
-import type {
-	PolicyDefinition,
-	PolicyFailure,
-	PolicyFixResult,
-} from "repopo";
+import type { PolicyDefinition, PolicyFailure, PolicyFixResult } from "repopo";
 import { isSorted, sortTsconfigFile } from "sort-tsconfig";
 
 /**

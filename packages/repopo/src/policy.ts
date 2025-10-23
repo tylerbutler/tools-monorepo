@@ -44,32 +44,36 @@ export interface PolicyFunctionArguments<C> {
 }
 
 /**
- * A policy handler is a function that is called to check policy against a file.
+ * A policy handler function that is called to check policy against a file.
+ *
+ * @remarks
+ * Policy handlers can be implemented in two ways:
+ * - As an async function returning a Promise
+ * - As an Effection generator function returning an Operation
+ *
+ * Both styles are supported to allow gradual migration and flexibility.
  *
  * @alpha
  */
-export type PolicyHandler<T, C = unknown | undefined> =
-	| ((args: PolicyFunctionArguments<C>) => PolicyHandlerResult)
-	// | ((args: PolicyFunctionArguments<C>) => Operation<T>)
-	| ((args: PolicyFunctionArguments<C>) => Promise<T>);
-
-/**
- * A policy handler async function that is called to check policy against a file.
- *
- * @alpha
- */
-export type PolicyHandlerAsync<C = unknown | undefined> = (
-	args: PolicyFunctionArguments<C>,
-) => Promise<PolicyHandlerResult>;
+export type PolicyHandler<C = unknown | undefined> =
+	| ((args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>)
+	| ((args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult>);
 
 /**
  * A standalone function that can be called to resolve a policy failure.
+ *
+ * @remarks
+ * Resolvers can be implemented in two ways:
+ * - As an async function returning a Promise
+ * - As an Effection generator function returning an Operation
+ *
+ * Both styles are supported to allow gradual migration and flexibility.
  *
  * @alpha
  */
 export type PolicyStandaloneResolver<C = undefined> = (
 	args: Omit<PolicyFunctionArguments<C>, "resolve">,
-) => Operation<PolicyFixResult>;
+) => Promise<PolicyFixResult> | Operation<PolicyFixResult>;
 
 /**
  * A RepoPolicyDefinition checks and applies policies to files in the repository.
