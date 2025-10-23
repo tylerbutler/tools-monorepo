@@ -40,6 +40,9 @@ describe("Performance Utilities", () => {
 
 			const result = await run(() =>
 				runWithPerf("TestPolicy", "resolve", stats, function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return "resolved";
 				}),
 			);
@@ -61,6 +64,9 @@ describe("Performance Utilities", () => {
 			// First invocation
 			await run(() =>
 				runWithPerf("TestPolicy", "handle", stats, function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return "result1";
 				}),
 			);
@@ -71,6 +77,9 @@ describe("Performance Utilities", () => {
 			// Second invocation
 			await run(() =>
 				runWithPerf("TestPolicy", "handle", stats, function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return "result2";
 				}),
 			);
@@ -88,12 +97,18 @@ describe("Performance Utilities", () => {
 
 			await run(() =>
 				runWithPerf("Policy1", "handle", stats, function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return "result1";
 				}),
 			);
 
 			await run(() =>
 				runWithPerf("Policy2", "handle", stats, function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return "result2";
 				}),
 			);
@@ -114,12 +129,18 @@ describe("Performance Utilities", () => {
 
 			await run(() =>
 				runWithPerf("TestPolicy", "handle", stats, function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return "handled";
 				}),
 			);
 
 			await run(() =>
 				runWithPerf("TestPolicy", "resolve", stats, function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return "resolved";
 				}),
 			);
@@ -144,6 +165,9 @@ describe("Performance Utilities", () => {
 			await expect(
 				run(() =>
 					runWithPerf("TestPolicy", "handle", stats, function* () {
+						yield* (function* () {
+							// Minimal yield to satisfy generator requirements
+						})();
 						throw new Error("Test error");
 					}),
 				),
@@ -170,6 +194,9 @@ describe("Performance Utilities", () => {
 
 			const result = await run(() =>
 				runWithPerf("TestPolicy", "handle", stats, function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return complexResult;
 				}),
 			);
@@ -187,10 +214,16 @@ describe("Performance Utilities", () => {
 			const result = await run(() =>
 				runWithPerf("TestPolicy", "handle", stats, function* () {
 					const intermediate = yield* (function* () {
+						yield* (function* () {
+							// Minimal yield to satisfy generator requirements
+						})();
 						return "intermediate";
 					})();
 
 					const final = yield* (function* () {
+						yield* (function* () {
+							// Minimal yield to satisfy generator requirements
+						})();
 						return `${intermediate}-final`;
 					})();
 

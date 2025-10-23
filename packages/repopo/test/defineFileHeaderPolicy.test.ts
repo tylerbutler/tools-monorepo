@@ -7,7 +7,6 @@ import type { PolicyFailure, PolicyFixResult } from "../src/policy.js";
 import {
 	defineFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,
-	type FileHeaderPolicyConfig,
 } from "../src/policyDefiners/defineFileHeaderPolicy.js";
 
 describe("defineFileHeaderPolicy", () => {
@@ -27,7 +26,8 @@ describe("defineFileHeaderPolicy", () => {
 				match: /\.ts$/,
 				lineStart: /\/\/ /,
 				lineEnd: /\r?\n/,
-				replacer: (content, cfg) => `// ${cfg.headerText}${EOL}${content}`,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
 			const policy = defineFileHeaderPolicy("TestHeaderPolicy", config);
@@ -64,7 +64,8 @@ describe("defineFileHeaderPolicy", () => {
 				match: /\.ts$/,
 				lineStart: /\/\/ /,
 				lineEnd: /\r?\n/,
-				replacer: (content, cfg) => `// ${cfg.headerText}${EOL}${content}`,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
@@ -118,7 +119,8 @@ describe("defineFileHeaderPolicy", () => {
 				match: /\.ts$/,
 				lineStart: /\/\/ /,
 				lineEnd: /\r?\n/,
-				replacer: (content, cfg) => `// ${cfg.headerText}${EOL}${content}`,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
@@ -145,7 +147,8 @@ describe("defineFileHeaderPolicy", () => {
 				match: /\.ts$/,
 				lineStart: /\/\/ /,
 				lineEnd: /\r?\n/,
-				replacer: (content, cfg) => `// ${cfg.headerText}${EOL}${content}`,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
@@ -177,7 +180,8 @@ describe("defineFileHeaderPolicy", () => {
 				match: /\.ts$/,
 				lineStart: /\/\/ /,
 				lineEnd: /\r?\n/,
-				replacer: (content, cfg) => `// ${cfg.headerText}${EOL}${content}`,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
@@ -206,7 +210,8 @@ describe("defineFileHeaderPolicy", () => {
 				match: /\.ts$/,
 				lineStart: /\/\/ /,
 				lineEnd: /\r?\n/,
-				replacer: (content, cfg) => `// ${cfg.headerText}${EOL}${content}`,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
@@ -235,7 +240,8 @@ describe("defineFileHeaderPolicy", () => {
 				match: /\.ts$/,
 				lineStart: /\/\/ /,
 				lineEnd: /\r?\n/,
-				replacer: (content, cfg) => `// ${cfg.headerText}${EOL}${content}`,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
@@ -261,7 +267,8 @@ describe("defineFileHeaderPolicy", () => {
 				match: /\.ts$/,
 				lineStart: /\/\/ /,
 				lineEnd: /\r?\n/,
-				replacer: (content, cfg) => `// ${cfg.headerText}${EOL}${content}`,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
 			const policy = defineFileHeaderPolicy("CustomHeaderPolicy", config);

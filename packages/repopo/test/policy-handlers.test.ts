@@ -6,9 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type {
 	PolicyFailure,
 	PolicyFixResult,
-	PolicyFunctionArguments,
 	PolicyHandler,
-	PolicyHandlerResult,
 	PolicyStandaloneResolver,
 } from "../src/policy.js";
 
@@ -143,6 +141,9 @@ describe("Policy Handlers - Dual Mode Support", () => {
 	describe("Effection Operation-based handlers", () => {
 		it("should support Operation-based handler returning true", async () => {
 			const handler: PolicyHandler = function* ({ file }) {
+				yield* (function* () {
+					// Minimal yield to satisfy generator requirements
+				})();
 				expect(file).toBe(testFile);
 				return true;
 			};
@@ -161,6 +162,9 @@ describe("Policy Handlers - Dual Mode Support", () => {
 
 		it("should support Operation-based handler returning PolicyFailure", async () => {
 			const handler: PolicyHandler = function* ({ file }) {
+				yield* (function* () {
+					// Minimal yield to satisfy generator requirements
+				})();
 				const failure: PolicyFailure = {
 					name: "TestPolicy",
 					file,
@@ -189,6 +193,9 @@ describe("Policy Handlers - Dual Mode Support", () => {
 
 		it("should support Operation-based handler with resolve flag", async () => {
 			const handler: PolicyHandler = function* ({ file, resolve }) {
+				yield* (function* () {
+					// Minimal yield to satisfy generator requirements
+				})();
 				if (resolve) {
 					const fixResult: PolicyFixResult = {
 						name: "TestPolicy",
@@ -247,6 +254,9 @@ describe("Policy Handlers - Dual Mode Support", () => {
 			}
 
 			const handler: PolicyHandler<TestConfig> = function* ({ config }) {
+				yield* (function* () {
+					// Minimal yield to satisfy generator requirements
+				})();
 				expect(config?.maxSize).toBe(1000);
 				return true;
 			};
@@ -267,6 +277,9 @@ describe("Policy Handlers - Dual Mode Support", () => {
 			const handler: PolicyHandler = function* ({ file }) {
 				// Simulate async work with yield
 				const result = yield* (function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return file.length > 0;
 				})();
 
@@ -298,11 +311,14 @@ describe("Policy Handlers - Dual Mode Support", () => {
 
 	describe("Hybrid usage scenarios", () => {
 		it("should work with both handler types in the same codebase", async () => {
-			const promiseHandler: PolicyHandler = async ({ file }) => {
+			const promiseHandler: PolicyHandler = async () => {
 				return true;
 			};
 
-			const operationHandler: PolicyHandler = function* ({ file }) {
+			const operationHandler: PolicyHandler = function* () {
+				yield* (function* () {
+					// Minimal yield to satisfy generator requirements
+				})();
 				return true;
 			};
 
@@ -391,6 +407,9 @@ describe("Policy Resolvers - Dual Mode Support", () => {
 	describe("Effection Operation-based resolvers", () => {
 		it("should support Operation-based resolver", async () => {
 			const resolver: PolicyStandaloneResolver = function* ({ file }) {
+				yield* (function* () {
+					// Minimal yield to satisfy generator requirements
+				})();
 				const result: PolicyFixResult = {
 					name: "TestPolicy",
 					file,
@@ -417,9 +436,12 @@ describe("Policy Resolvers - Dual Mode Support", () => {
 		});
 
 		it("should support Operation-based resolver with yielding", async () => {
-			const resolver: PolicyStandaloneResolver = function* ({ file, root }) {
+			const resolver: PolicyStandaloneResolver = function* ({ file }) {
 				// Simulate complex async work
 				const canFix = yield* (function* () {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					return true;
 				})();
 

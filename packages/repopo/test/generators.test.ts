@@ -44,16 +44,14 @@ describe("isGeneratorFunction", () => {
 	});
 
 	it("should return false for class constructors", () => {
-		class TestClass {
-			constructor() {}
-		}
+		class TestClass {}
 
 		expect(isGeneratorFunction(TestClass)).toBe(false);
 	});
 
 	it("should return false for class methods", () => {
 		class TestClass {
-			method() {
+			public method() {
 				return 1;
 			}
 		}
@@ -64,7 +62,7 @@ describe("isGeneratorFunction", () => {
 
 	it("should return true for generator class methods", () => {
 		class TestClass {
-			*generatorMethod() {
+			public *generatorMethod() {
 				yield 1;
 			}
 		}

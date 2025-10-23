@@ -22,7 +22,7 @@ export const PackageJsonSorted = definePackagePolicy(
 		if (resolve) {
 			try {
 				yield* call(() =>
-					updatePackageJsonFile(file, (json) => json, { sort: true }),
+					updatePackageJsonFile(file, (pkgJson) => pkgJson, { sort: true }),
 				);
 				const result: PolicyFixResult = {
 					name: PackageJsonSorted.name,

@@ -47,6 +47,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Test policy using Effection operations",
 				match: /\.txt$/,
 				handler: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					executionCount++;
 					expect(file).toMatch(/test\d\.txt/);
 					return true;
@@ -81,6 +84,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Test policy that fails",
 				match: /\.txt$/,
 				handler: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					const failure: PolicyFailure = {
 						name: "FailingOperationPolicy",
 						file,
@@ -100,6 +106,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Test policy with resolver",
 				match: /\.txt$/,
 				handler: function* ({ file, resolve }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					if (resolve) {
 						const fixResult: PolicyFixResult = {
 							name: "PolicyWithResolver",
@@ -119,6 +128,9 @@ describe("Check Command - Effection Integration", () => {
 					return failure;
 				},
 				resolver: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					const result: PolicyFixResult = {
 						name: "PolicyWithResolver",
 						file,
@@ -143,6 +155,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Test parallel execution",
 				match: /\.txt$/,
 				handler: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					executionOrder.push(file);
 					// Simulate some async work
 					yield* (function* () {
@@ -163,6 +178,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Test execution isolation",
 				match: /\.txt$/,
 				handler: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					// Each execution should be independent
 					const isProcessed = results.has(file);
 					expect(isProcessed).toBe(false);
@@ -181,6 +199,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Test error handling in parallel execution",
 				match: /\.txt$/,
 				handler: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					if (file === "test2.txt") {
 						throw new Error("Simulated error for test2.txt");
 					}
@@ -209,6 +230,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Operation-based policy",
 				match: /test2\.txt$/,
 				handler: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					expect(file).toBe("test2.txt");
 					return true;
 				},
@@ -248,6 +272,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Operation-based policy with resolver",
 				match: /test2\.txt$/,
 				handler: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					const failure: PolicyFailure = {
 						name: "OperationPolicyWithResolver",
 						file,
@@ -257,6 +284,9 @@ describe("Check Command - Effection Integration", () => {
 					return failure;
 				},
 				resolver: function* ({ file }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					const result: PolicyFixResult = {
 						name: "OperationPolicyWithResolver",
 						file,
@@ -286,6 +316,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Test configuration handling",
 				match: /\.txt$/,
 				handler: function* ({ config }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					expect(config).toBeDefined();
 					expect(config?.maxLength).toBe(100);
 					expect(config?.pattern).toBe("test-pattern");
@@ -310,6 +343,9 @@ describe("Check Command - Effection Integration", () => {
 				description: "Test no configuration",
 				match: /\.txt$/,
 				handler: function* ({ config }) {
+					yield* (function* () {
+						// Minimal yield to satisfy generator requirements
+					})();
 					expect(config).toBeUndefined();
 					return true;
 				},

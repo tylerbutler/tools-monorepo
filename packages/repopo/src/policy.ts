@@ -1,6 +1,5 @@
-import type { Callable, Operation } from "effection";
+import type { Operation } from "effection";
 import type { RequireExactlyOne } from "type-fest";
-import { isGeneratorFunction } from "./generators.js";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";

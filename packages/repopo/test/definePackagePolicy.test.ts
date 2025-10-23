@@ -38,6 +38,9 @@ describe("definePackagePolicy", () => {
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
 			json,
 		) {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			receivedJson = json;
 			return true;
 		};
@@ -61,6 +64,9 @@ describe("definePackagePolicy", () => {
 
 	it("should match package.json files with regex", () => {
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* () {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			return true;
 		};
 
@@ -103,6 +109,9 @@ describe("definePackagePolicy", () => {
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
 			json,
 		) {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			receivedJson = json;
 			return true;
 		};
@@ -138,6 +147,9 @@ describe("definePackagePolicy", () => {
 			json,
 			{ file },
 		) {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			const failure: PolicyFailure = {
 				name: "TestPackagePolicy",
 				file,
@@ -185,6 +197,9 @@ describe("definePackagePolicy", () => {
 
 		const handler: PackageJsonHandler<CustomPackageJson, undefined> =
 			function* (json) {
+				yield* (function* () {
+					// Minimal yield to satisfy generator requirements
+				})();
 				receivedCustomField = json.customField;
 				return true;
 			};
@@ -227,6 +242,9 @@ describe("definePackagePolicy", () => {
 			json,
 			{ config },
 		) {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			receivedConfig = config;
 			return config?.requiredVersion === json.version;
 		};
@@ -263,6 +281,9 @@ describe("definePackagePolicy", () => {
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
 			json,
 		) {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			return json.name === "minimal" && json.version === "0.0.1";
 		};
 
@@ -296,9 +317,12 @@ describe("definePackagePolicy", () => {
 		let receivedResolve: boolean | undefined;
 
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
-			json,
+			_json,
 			{ file, root, resolve },
 		) {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			receivedFile = file;
 			receivedRoot = root;
 			receivedResolve = resolve;
@@ -349,6 +373,9 @@ describe("definePackagePolicy", () => {
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
 			json,
 		) {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			receivedExports = json.exports;
 			receivedWorkspaces = json.workspaces;
 			return true;
@@ -371,6 +398,9 @@ describe("definePackagePolicy", () => {
 
 	it("should set correct policy name", () => {
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* () {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			return true;
 		};
 

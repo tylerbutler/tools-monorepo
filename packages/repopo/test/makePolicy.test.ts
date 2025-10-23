@@ -2,17 +2,15 @@ import { describe, expect, it } from "vitest";
 import { makePolicy, makePolicyDefinition } from "../src/makePolicy.js";
 import type {
 	PolicyDefinition,
-	PolicyFailure,
 	PolicyFixResult,
 	PolicyHandler,
-	PolicyInstance,
 	PolicyInstanceSettings,
 	PolicyStandaloneResolver,
 } from "../src/policy.js";
 
 describe("makePolicyDefinition", () => {
 	it("should create a valid PolicyDefinition with required parameters", () => {
-		const handler: PolicyHandler = async ({ file }) => true;
+		const handler: PolicyHandler = async () => true;
 
 		const definition = makePolicyDefinition(
 			"TestPolicy",
@@ -34,7 +32,7 @@ describe("makePolicyDefinition", () => {
 		const handler: PolicyHandler<{ threshold: number }> = async ({
 			config,
 		}) => {
-			return config!.threshold > 0;
+			return config?.threshold > 0;
 		};
 
 		const resolver: PolicyStandaloneResolver<{ threshold: number }> = async ({
@@ -86,7 +84,7 @@ describe("makePolicyDefinition", () => {
 		}
 
 		const handler: PolicyHandler<TestConfig> = async ({ config }) => {
-			return config!.maxSize < 1000;
+			return config?.maxSize < 1000;
 		};
 
 		const definition = makePolicyDefinition(
@@ -131,7 +129,10 @@ describe("makePolicyDefinition", () => {
 	});
 
 	it("should work with Effection generator handlers", () => {
-		const handler: PolicyHandler = function* ({ file }) {
+		const handler: PolicyHandler = function* () {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			return true;
 		};
 
@@ -149,6 +150,9 @@ describe("makePolicyDefinition", () => {
 		const handler: PolicyHandler = async () => true;
 
 		const resolver: PolicyStandaloneResolver = function* ({ file }) {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			const result: PolicyFixResult = {
 				name: "GeneratorResolverPolicy",
 				file,
@@ -194,7 +198,7 @@ describe("makePolicy", () => {
 		const handler: PolicyHandler<{ threshold: number }> = async ({
 			config,
 		}) => {
-			return config!.threshold > 0;
+			return config?.threshold > 0;
 		};
 
 		baseDefinition = {
@@ -338,7 +342,10 @@ describe("makePolicy", () => {
 	});
 
 	it("should work with Effection-based definitions", () => {
-		const generatorHandler: PolicyHandler = function* ({ file }) {
+		const generatorHandler: PolicyHandler = function* () {
+			yield* (function* () {
+				// Minimal yield to satisfy generator requirements
+			})();
 			return true;
 		};
 
