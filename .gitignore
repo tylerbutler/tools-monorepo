@@ -18,6 +18,9 @@ yarn.lock
 # astro generated types
 .astro
 
+# svelte build artifacts
+.svelte-kit
+
 # coverage reports
 .coverage
 
