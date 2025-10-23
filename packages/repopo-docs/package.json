@@ -13,7 +13,7 @@
 	"type": "module",
 	"scripts": {
 		"astro": "astro",
-		"b": "turbo build",
+		"b": "nx build",
 		"build": "astro build",
 		"build:site": "astro build",
 		"check:astro": "astro check",

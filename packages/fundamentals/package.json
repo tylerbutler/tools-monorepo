@@ -37,10 +37,10 @@
 		"esm"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:api",
+		"build": "pnpm build:compile && pnpm build:api",
 		"build:api": "concurrently npm:docs:api:*",
-		"b": "turbo build",
-		"check": "npm run check:format",
+		"b": "nx build",
+		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"build:compile": "tsc --project ./tsconfig.json",

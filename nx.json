@@ -1,8 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
 
-  // Maximum parallel tasks - equivalent to Turbo's concurrency: "100%"
-  "parallel": 15,
+  // Maximum parallel tasks - optimized for modern hardware
+  "parallel": 25,
 
   "cacheDirectory": ".nx/cache",
   "defaultBase": "main",
@@ -41,7 +41,8 @@
       "!{projectRoot}/**/*.spec.ts",
       "!{projectRoot}/**/*.test.ts",
       "!{projectRoot}/test/**/*",
-      "!{projectRoot}/**/*.md"
+      "!{projectRoot}/**/*.md",
+      "!{projectRoot}/vitest.config.*"
     ],
 
     // Shared config files that affect all packages
@@ -68,6 +69,7 @@
     },
 
     "test": {
+      "dependsOn": ["build:compile"],
       "cache": true
     },
 

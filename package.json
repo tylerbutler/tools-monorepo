@@ -12,7 +12,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "nx run-many -t build",
-		"check": "nx run-many -t check && npm run check:all",
+		"check": "nx run-many -t check && pnpm check:all",
 		"check:all": "concurrently npm:check:deps npm:check:format npm:check:policy npm:check:references npm:lint",
 		"check:deps": "syncpack lint",
 		"check:format": "biome check --linter-enabled=false",
@@ -20,7 +20,7 @@
 		"check:references": "workspaces-to-typescript-project-references --check",
 		"ci": "nx run-many -t check build lint build:docs test:coverage --continue",
 		"ci:build": "nx run-many -t build build:generate",
-		"ci:check": "npm run check",
+		"ci:check": "pnpm check",
 		"ci:check:astro": "nx run-many -t check:astro",
 		"ci:check:svelte": "nx run-many -t check:svelte",
 		"ci:docs": "nx run-many -t build:docs",

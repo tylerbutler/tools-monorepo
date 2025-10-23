@@ -12,7 +12,7 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
 	"scripts": {
-		"build": "npm run build:site",
+		"build": "pnpm build:site",
 		"astro": "astro",
 		"build:site": "astro build",
 		"check:astro": "astro check",
