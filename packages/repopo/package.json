@@ -74,9 +74,9 @@
 	},
 	"dependencies": {
 		"@fluid-tools/build-infrastructure": "~0.58.3",
-		"@oclif/core": "^4.6.0",
+		"@oclif/core": "^4.7.2",
 		"@oclif/plugin-help": "^6.2.33",
-		"@rushstack/node-core-library": "^5.17.0",
+		"@rushstack/node-core-library": "^5.17.1",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"defu": "^6.1.4",
@@ -88,7 +88,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-extractor": "^7.53.1",
+		"@microsoft/api-extractor": "^7.53.2",
 		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/jsonfile": "^6.1.4",
