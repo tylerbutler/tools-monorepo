@@ -42,10 +42,8 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:api && npm run build:manifest && npm run build:readme",
-		"build:api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"b": "turbo build",
+		"build:api": "api-extractor run --local",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
@@ -57,7 +55,7 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"build:manifest": "oclif manifest",
-		"postpack": "npm run clean:manifest",
+		"postpack": "pnpm clean:manifest",
 		"build:readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",
@@ -115,5 +113,12 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			}
+		}
 	}
 }

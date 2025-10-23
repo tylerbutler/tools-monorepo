@@ -24,10 +24,10 @@
 	"main": "lib/index.js",
 	"types": "lib/public.d.ts",
 	"scripts": {
-		"build": "npm run build:compile && npm run build:api",
+		"build": "pnpm build:compile && pnpm build:api",
 		"build:api": "api-extractor run --local",
-		"b": "turbo build",
-		"check": "npm run check:format",
+		"b": "nx build",
+		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf --glob esm \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp _temp nyc",
 		"build:compile": "tsc",
