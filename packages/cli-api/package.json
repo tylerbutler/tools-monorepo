@@ -29,11 +29,11 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:api",
+		"build": "pnpm build:compile && pnpm build:api",
 		"build:api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"b": "turbo build",
-		"check": "npm run check:format",
+		"b": "nx build",
+		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"build:compile": "tsc --project ./tsconfig.json",
@@ -41,7 +41,7 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "npm run test:vitest",
+		"test": "pnpm test:vitest",
 		"test:coverage": "vitest run test --coverage",
 		"test:vitest": "vitest run test"
 	},
@@ -51,7 +51,7 @@
 		"dirname": "tylerbu-cli-api"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.6.0",
+		"@oclif/core": "^4.7.2",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"debug": "^4.4.3",
 		"detect-indent": "^7.0.2",
@@ -65,8 +65,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-documenter": "^7.27.1",
-		"@microsoft/api-extractor": "^7.53.1",
+		"@microsoft/api-documenter": "^7.27.2",
+		"@microsoft/api-extractor": "^7.53.2",
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",

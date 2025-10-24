@@ -35,7 +35,6 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "pnpm build:compile && pnpm build:manifest && pnpm build:readme && pnpm build:generate",
 		"build:compile": "tsc --project ./tsconfig.json && pnpm build:copy-templates",
 		"build:copy-templates": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
 		"build:generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
@@ -51,7 +50,6 @@
 		"lint:fix": "biome lint . --write",
 		"postpack": "pnpm clean:manifest",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "pnpm test:unit && pnpm test:snapshots",
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"test:unit": "vitest run"
 	},
@@ -93,7 +91,7 @@
 		}
 	},
 	"dependencies": {
-		"@oclif/core": "^4.6.0",
+		"@oclif/core": "^4.7.2",
 		"@oclif/plugin-autocomplete": "^3.2.37",
 		"@oclif/plugin-commands": "^4.1.35",
 		"@oclif/plugin-help": "^6.2.33",
@@ -132,5 +130,12 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			}
+		}
 	}
 }

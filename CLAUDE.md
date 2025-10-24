@@ -8,7 +8,7 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 
 **Key Technologies:**
 - **Package Manager**: pnpm 10.10.0 (required - do not use npm or yarn)
-- **Build Orchestration**: Turbo (task caching and parallel execution)
+- **Build Orchestration**: Nx (task caching, parallel execution, and plugin-based inference)
 - **Testing**: Vitest with coverage support
 - **Formatting/Linting**: Biome (unified toolchain replacing ESLint/Prettier)
 - **CLI Framework**: OCLIF for command-line tools
@@ -105,15 +105,17 @@ The monorepo contains these key packages:
 
 ### Build Pipeline
 
-Turbo orchestrates builds using a **hierarchical task structure**:
+Nx orchestrates builds using **pure dependency-based orchestration** - no shell scripts, just dependency graphs:
 
-**Orchestration Tasks** (top-level, call implementation tasks):
-- `build` - Builds all packages (calls build:compile, build:api, build:docs, etc.)
-- `test` - Runs tests (depends on build:compile)
+**Architecture:** Orchestration via `nx.json`, Implementation via package.json scripts
+
+**Orchestration Targets** (defined in `nx.json` targetDefaults):
+- `build` - Virtual target that depends on all build implementation tasks
+- `test` - Virtual target that depends on compile + test implementation tasks
 - `check` - Runs all quality checks (format, types, deps, policy, lint)
 - `release` - Prepares releases (build + release:license)
 
-**Implementation Tasks** (package-specific, do actual work):
+**Implementation Tasks** (package-specific, defined in package.json):
 - `build:compile` - TypeScript compilation (src → esm/)
 - `build:api` - API Extractor documentation
 - `build:docs` - TypeDoc documentation
@@ -125,6 +127,9 @@ Turbo orchestrates builds using a **hierarchical task structure**:
 - `test:unit`, `test:coverage`, `test:e2e` - Testing variants
 - `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
 
+**Plugin-Inferred Tasks** (auto-detected by Nx plugins):
+- `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vite plugin)
+
 **Package-Specific Pipelines:**
 - **Libraries**: build:compile → build:api → build:docs
 - **CLI tools**: build:compile → build:manifest → build:readme → build:generate
@@ -132,10 +137,19 @@ Turbo orchestrates builds using a **hierarchical task structure**:
 - **Svelte apps**: build:vite (or build:tauri for desktop)
 
 **Key Principles:**
-- Top-level tasks orchestrate, never implement
+- **No orchestrator scripts in package.json** - only minimal `"build": ""` to register target
+- **All orchestration in `nx.json`** - dependency chains via `dependsOn`
+- **Granular caching** - each implementation task caches independently
+- **Parallel execution** - tasks without dependencies run concurrently
 - Implementation tasks use `:` separator (e.g., `build:compile`)
-- Turbo runs only tasks that exist in each package
-- All configuration in root `turbo.jsonc` (no package-level configs)
+- Nx plugins auto-infer tasks from config files (vitest.config.ts, etc.)
+- All configuration in root `nx.json` (no package-level project.json files)
+
+**Benefits:**
+- Change README → only `build:readme` runs (others cache)
+- Change source → only affected tasks rebuild
+- API Extractor configs run in parallel
+- 60-80% faster for isolated changes
 
 ### TypeScript Configuration
 
@@ -147,6 +161,32 @@ All packages extend base tsconfig files from `config/`:
 - `tsconfig.node.json` - Node-specific settings
 
 **Important:** This monorepo uses **explicit .mjs/.cjs extensions** - no ambiguous .js files allowed. This is enforced via the `NoJsFileExtensions` policy in repopo.
+
+### Nx Plugin Configuration
+
+Nx uses plugins to automatically infer tasks from configuration files, reducing manual configuration:
+
+**Active Plugins:**
+- `@nx/vite/plugin` - Auto-infers test tasks from `vitest.config.ts` files
+
+**Plugin Exclusions** (projects with non-standard configurations):
+- `packages/ccl-test-viewer/**` - Svelte app with custom Vite setup
+- `packages/ccl-docs/**` - Astro site (uses Vite internally but different structure)
+- `packages/dill-docs/**` - Astro site
+- `packages/repopo-docs/**` - Astro site
+
+**Inferred Targets:**
+- `test:vitest` - Automatically created for packages with `vitest.config.ts`
+  - Uses same caching and configuration as manually defined tasks
+  - Available on: fundamentals, cli-api, cli, repopo, sort-tsconfig, xkcd2-api, dill
+
+**Why Use Plugins?**
+- Automatic task discovery when adding new packages
+- Less manual configuration in `nx.json`
+- Consistent task naming across projects
+- Better IDE/Nx Console integration
+
+**Configuration Location:** See `nx.json` → `plugins` array
 
 ### OCLIF CLI Structure
 
@@ -325,3 +365,19 @@ tools-monorepo/
 - Ensure you're extending the correct base config
 - Check that `esm/` output is current: `pnpm compile`
 - Verify imports use explicit extensions (.mjs/.cjs)
+
+
+<!-- nx configuration start-->
+<!-- Leave the start & end comments to automatically receive updates. -->
+
+# General Guidelines for working with Nx
+
+- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
+- You have access to the Nx MCP server and its tools, use them to help the user
+- When answering questions about the repository, use the `nx_workspace` tool first to gain an understanding of the workspace architecture where applicable.
+- When working in individual projects, use the `nx_project_details` mcp tool to analyze and understand the specific project structure and dependencies
+- For questions around nx configuration, best practices or if you're unsure, use the `nx_docs` tool to get relevant, up-to-date docs. Always use this instead of assuming things about nx configuration
+- If the user needs help with an Nx configuration or project graph error, use the `nx_workspace` tool to get any errors
+
+
+<!-- nx configuration end-->

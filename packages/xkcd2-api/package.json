@@ -25,10 +25,10 @@
 		"esm"
 	],
 	"scripts": {
-		"build": "npm run build:compile",
+		"build": "pnpm build:compile",
 		"build:api": "api-extractor run --local",
-		"b": "turbo build",
-		"check": "npm run check:format",
+		"b": "nx build",
+		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"build:compile": "tsc --project ./tsconfig.json",
@@ -41,8 +41,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-documenter": "^7.27.1",
-		"@microsoft/api-extractor": "^7.53.1",
+		"@microsoft/api-documenter": "^7.27.2",
+		"@microsoft/api-extractor": "^7.53.2",
 		"@types/node": "^20.19.23",
 		"@vitest/coverage-v8": "^3.2.4",
 		"concurrently": "^9.2.1",

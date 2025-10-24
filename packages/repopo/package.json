@@ -42,10 +42,8 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:api && npm run build:manifest && npm run build:readme",
-		"build:api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"b": "turbo build",
+		"build:api": "api-extractor run --local",
 		"check": "concurrently npm:check:format",
 		"test": "vitest run",
 		"test:watch": "vitest",
@@ -60,7 +58,7 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"build:manifest": "oclif manifest",
-		"postpack": "npm run clean:manifest",
+		"postpack": "pnpm clean:manifest",
 		"build:readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",
@@ -79,9 +77,9 @@
 	},
 	"dependencies": {
 		"@fluid-tools/build-infrastructure": "~0.58.3",
-		"@oclif/core": "^4.6.0",
+		"@oclif/core": "^4.7.2",
 		"@oclif/plugin-help": "^6.2.33",
-		"@rushstack/node-core-library": "^5.17.0",
+		"@rushstack/node-core-library": "^5.17.1",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"defu": "^6.1.4",
@@ -94,7 +92,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-extractor": "^7.53.1",
+		"@microsoft/api-extractor": "^7.53.2",
 		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/jsonfile": "^6.1.4",
@@ -120,5 +118,12 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			}
+		}
 	}
 }

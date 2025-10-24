@@ -41,8 +41,6 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"build": "npm run build:compile && npm run build:manifest && npm run build:readme",
-		"b": "turbo build",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
@@ -55,15 +53,15 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"build:manifest": "oclif manifest",
-		"postpack": "npm run clean:manifest",
+		"postpack": "pnpm clean:manifest",
 		"build:readme": "concurrently npm:readme:*",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../dill-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "serve ./test/data --listen 8080",
-		"test": "npm run test:vitest",
+		"test": "pnpm test:vitest",
 		"test:coverage": "vitest run test --coverage",
-		"test:snapshots": "npm run update:test-snapshots",
+		"test:snapshots": "pnpm update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
 	},
@@ -94,7 +92,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.6.0",
+		"@oclif/core": "^4.7.2",
 		"@oclif/plugin-help": "^6.2.33",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
@@ -107,7 +105,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-extractor": "^7.53.1",
+		"@microsoft/api-extractor": "^7.53.2",
 		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
@@ -140,5 +138,12 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			}
+		}
 	}
 }
