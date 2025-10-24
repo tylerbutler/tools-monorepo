@@ -4,7 +4,7 @@
 
 ```ts
 
-import type { PolicyDefinitionAsync } from 'repopo';
+import type { PolicyDefinition } from 'repopo';
 import { run } from '@oclif/core';
 
 // @beta
@@ -36,7 +36,7 @@ export interface SortTsconfigResult {
 }
 
 // @alpha
-export const SortTsconfigsPolicy: PolicyDefinitionAsync;
+export const SortTsconfigsPolicy: PolicyDefinition;
 
 // @beta
 export class TsConfigSorter {
