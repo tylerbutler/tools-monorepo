@@ -698,7 +698,7 @@ describe("deps sync", () => {
 				await DepsSync.run(["--cwd", tmpDir, "--lockfile", customLockfile]);
 			});
 
-			expect(error?.message).toMatch(/Lockfile not found/);
+			expect(error?.message).toMatch(/No file found/);
 			expect(error?.message).toContain(customLockfile);
 		});
 
