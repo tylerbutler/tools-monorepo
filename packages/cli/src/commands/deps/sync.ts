@@ -25,6 +25,8 @@ interface ProjectInfo {
 	path: string;
 	dependencies?: Record<string, DependencyInfo>;
 	devDependencies?: Record<string, DependencyInfo>;
+	peerDependencies?: Record<string, DependencyInfo>;
+	optionalDependencies?: Record<string, DependencyInfo>;
 }
 
 interface PackageJson {
@@ -32,6 +34,8 @@ interface PackageJson {
 	version?: string;
 	dependencies?: Record<string, string>;
 	devDependencies?: Record<string, string>;
+	peerDependencies?: Record<string, string>;
+	optionalDependencies?: Record<string, string>;
 	[key: string]: unknown;
 }
 
@@ -39,7 +43,11 @@ interface SyncResult {
 	packagePath: string;
 	changes: Array<{
 		dep: string;
-		type: "dependencies" | "devDependencies";
+		type:
+			| "dependencies"
+			| "devDependencies"
+			| "peerDependencies"
+			| "optionalDependencies";
 		from: string;
 		to: string;
 	}>;
@@ -51,13 +59,18 @@ interface PnpmProject {
 	path: string;
 	dependencies?: Record<string, DependencyInfo>;
 	devDependencies?: Record<string, DependencyInfo>;
+	peerDependencies?: Record<string, DependencyInfo>;
+	optionalDependencies?: Record<string, DependencyInfo>;
 }
 
 interface NpmDependency {
 	version: string;
+	resolved?: string;
 	path?: string;
 	dependencies?: Record<string, NpmDependency>;
 	devDependencies?: Record<string, NpmDependency>;
+	peerDependencies?: Record<string, NpmDependency>;
+	optionalDependencies?: Record<string, NpmDependency>;
 }
 
 interface NpmListOutput {
@@ -66,6 +79,8 @@ interface NpmListOutput {
 	version?: string;
 	dependencies?: Record<string, NpmDependency>;
 	devDependencies?: Record<string, NpmDependency>;
+	peerDependencies?: Record<string, NpmDependency>;
+	optionalDependencies?: Record<string, NpmDependency>;
 }
 
 export default class DepsSync extends CommandWithConfig<
@@ -78,7 +93,11 @@ export default class DepsSync extends CommandWithConfig<
 		"This addresses a Dependabot bug where versioning-strategy: increase doesn't update " +
 		"package.json for dependencies with caret ranges (^) that already satisfy the new version. " +
 		"Supports npm, pnpm, yarn (partial), and bun (partial). " +
-		"See: https://github.com/dependabot/dependabot-core/issues/9020";
+		"\n\nLIMITATIONS:\n" +
+		"- Complex ranges (>=, <=, >, <) are preserved as-is (too risky to auto-update)\n" +
+		'- Hyphen ranges (e.g., "1.0.0 - 2.0.0") are preserved as-is\n' +
+		"- These limitations are logged as warnings when encountered\n" +
+		"\nSee: https://github.com/dependabot/dependabot-core/issues/9020";
 
 	public static override readonly examples = [
 		{
@@ -119,10 +138,6 @@ export default class DepsSync extends CommandWithConfig<
 			description: "Apply changes to package.json files (default: dry-run)",
 			default: false,
 		}),
-		quiet: Flags.boolean({
-			description: "Minimal output (only show changes and errors)",
-			default: false,
-		}),
 		json: Flags.boolean({
 			description: "Output results in JSON format",
 			default: false,
@@ -145,7 +160,6 @@ export default class DepsSync extends CommandWithConfig<
 	};
 
 	private isDryRun = true;
-	private isVerboseMode = false;
 	private workingDir = "";
 
 	public override async run(): Promise<void> {
@@ -154,65 +168,31 @@ export default class DepsSync extends CommandWithConfig<
 			? path.resolve(this.flags.cwd)
 			: process.cwd();
 
-		// Change to working directory
-		const originalCwd = process.cwd();
+		this.isDryRun = !this.flags.execute;
+
+		if (!this.flags.json) {
+			this.log(chalk.blue("🔄 Syncing package.json versions to lockfile...\n"));
+		}
+
 		try {
-			process.chdir(this.workingDir);
-
-			this.isDryRun = !this.flags.execute;
-			// Use verbose flag from base class, or auto-enable in dry-run mode
-			this.isVerboseMode =
-				this.isDryRun && !this.flags.quiet && !this.flags.json;
-
-			if (!this.flags.json) {
-				this.log(
-					chalk.blue("🔄 Syncing package.json versions to lockfile...\n"),
-				);
-			}
-
 			const packageManager = this.detectPackageManagerFromFlags();
-			this.verboseLog(`Detected package manager: ${packageManager}`);
+			this.verbose(`Detected package manager: ${packageManager}`);
 
-			const projects = this.getInstalledVersions(packageManager);
-			this.verboseLog(`Found ${projects.length} project(s)\n`);
+			const projects = await this.getInstalledVersions(packageManager);
+			this.verbose(`Found ${projects.length} project(s)\n`);
 
-			const results: SyncResult[] = [];
-
-			for (const project of projects) {
-				const packageJsonPath = path.join(project.path, "package.json");
-
-				if (!fs.existsSync(packageJsonPath)) {
-					this.verboseLog(
-						`⚠️  Skipping ${project.name}: package.json not found`,
-					);
-					continue;
-				}
-
-				const result = this.syncPackageJson(
-					packageJsonPath,
-					project.dependencies || {},
-					project.devDependencies || {},
-				);
-
-				if (result.changes.length > 0) {
-					results.push(result);
-				}
-			}
-
-			// Output results
+			// Sync all packages
+			const results = this.syncAllPackagesSync(projects);
 			if (this.flags.json) {
 				this.log(JSON.stringify(results, null, 2));
 			} else {
 				this.reportResults(results);
 			}
-		} finally {
-			process.chdir(originalCwd);
-		}
-	}
-
-	private verboseLog(message: string): void {
-		if (this.isVerboseMode) {
-			this.log(message);
+		} catch (error) {
+			if (error instanceof Error) {
+				this.error(error.message);
+			}
+			throw error;
 		}
 	}
 
@@ -264,8 +244,10 @@ export default class DepsSync extends CommandWithConfig<
 		return detected;
 	}
 
-	private getInstalledVersions(packageManager: PackageManager): ProjectInfo[] {
-		this.verboseLog(`Getting installed versions using ${packageManager}...`);
+	private async getInstalledVersions(
+		packageManager: PackageManager,
+	): Promise<ProjectInfo[]> {
+		this.verbose(`Getting installed versions using ${packageManager}...`);
 
 		const pmInfo = getPackageManagerInfo(packageManager);
 		const command = pmInfo.listCommand;
@@ -273,14 +255,28 @@ export default class DepsSync extends CommandWithConfig<
 		try {
 			const output = execSync(command, {
 				encoding: "utf-8",
-				stdio: ["pipe", "pipe", "inherit"],
+				stdio: ["pipe", "pipe", "pipe"],
+				cwd: this.workingDir,
 			});
 
 			return this.parseListOutput(packageManager, output);
 		} catch (error) {
-			this.error(
-				`Failed to get installed versions from ${packageManager}:\n${error instanceof Error ? error.message : String(error)}`,
-			);
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
+			const stderr =
+				typeof error === "object" &&
+				error !== null &&
+				"stderr" in error &&
+				typeof error.stderr === "string"
+					? error.stderr
+					: "";
+
+			let message = `Failed to get installed versions from ${packageManager}:\n${errorMessage}`;
+			if (stderr) {
+				message += `\n\nCommand stderr:\n${stderr}`;
+			}
+
+			this.error(message);
 		}
 	}
 
@@ -301,44 +297,93 @@ export default class DepsSync extends CommandWithConfig<
 	}
 
 	private parsePnpmList(data: PnpmProject[]): ProjectInfo[] {
-		return data.map((project) => ({
-			name: project.name,
-			path: project.path,
-			dependencies: project.dependencies || {},
-			devDependencies: project.devDependencies || {},
-		}));
+		const projects: ProjectInfo[] = [];
+
+		for (const project of data) {
+			// Filter out workspace dependencies based on version format
+			const filterWorkspaceDeps = (
+				deps: Record<string, DependencyInfo> | undefined,
+			): Record<string, DependencyInfo> => {
+				if (!deps) {
+					return {};
+				}
+				const filtered: Record<string, DependencyInfo> = {};
+				for (const [name, info] of Object.entries(deps)) {
+					// Skip workspace packages (version starts with "link:")
+					if (!info.version.startsWith("link:")) {
+						filtered[name] = info;
+					}
+				}
+				return filtered;
+			};
+
+			projects.push({
+				name: project.name,
+				path: project.path,
+				dependencies: filterWorkspaceDeps(project.dependencies),
+				devDependencies: filterWorkspaceDeps(project.devDependencies),
+				peerDependencies: filterWorkspaceDeps(project.peerDependencies),
+				optionalDependencies: filterWorkspaceDeps(project.optionalDependencies),
+			});
+		}
+
+		return projects;
 	}
 
 	private parseNpmList(data: NpmListOutput): ProjectInfo[] {
 		const projects: ProjectInfo[] = [];
 
-		const extractProject = (
-			pkg: NpmListOutput | NpmDependency,
-			pkgPath: string,
-		) => {
-			projects.push({
-				name: "name" in pkg ? pkg.name : "",
-				path: pkgPath,
-				dependencies: pkg.dependencies
-					? this.convertNpmDeps(pkg.dependencies)
-					: {},
-				devDependencies: pkg.devDependencies
-					? this.convertNpmDeps(pkg.devDependencies)
-					: {},
-			});
+		// Helper to check if a dependency is a workspace package
+		const isWorkspaceDep = (dep: NpmDependency): boolean => {
+			// Workspace packages have resolved pointing to local file paths
+			// Regular packages point to .pnpm or registry URLs
+			if (!dep.resolved) {
+				return false;
+			}
+			return (
+				dep.resolved.startsWith("file:") &&
+				!dep.resolved.includes("node_modules/.pnpm")
+			);
+		};
+
+		// Helper to convert npm deps, excluding workspace packages
+		const convertNpmDeps = (
+			deps: Record<string, NpmDependency> | undefined,
+		): Record<string, DependencyInfo> => {
+			if (!deps) {
+				return {};
+			}
+			const result: Record<string, DependencyInfo> = {};
+			for (const [name, info] of Object.entries(deps)) {
+				if (typeof info === "object" && info.version && !isWorkspaceDep(info)) {
+					result[name] = { version: info.version };
+				}
+			}
+			return result;
 		};
 
 		// Root project
-		extractProject(data, data.path || this.workingDir);
+		projects.push({
+			name: data.name,
+			path: data.path || this.workingDir,
+			dependencies: convertNpmDeps(data.dependencies),
+			devDependencies: convertNpmDeps(data.devDependencies),
+			peerDependencies: convertNpmDeps(data.peerDependencies),
+			optionalDependencies: convertNpmDeps(data.optionalDependencies),
+		});
 
-		// Workspace projects
+		// Extract workspace projects from dependencies
 		if (data.dependencies) {
-			for (const [name, info] of Object.entries(data.dependencies)) {
-				if (typeof info === "object" && info.version) {
-					extractProject(
-						info,
-						info.path || path.join(this.workingDir, "node_modules", name),
-					);
+			for (const [, info] of Object.entries(data.dependencies)) {
+				if (typeof info === "object" && info.version && isWorkspaceDep(info)) {
+					projects.push({
+						name: "", // npm doesn't provide name in nested structure
+						path: info.path || this.workingDir,
+						dependencies: convertNpmDeps(info.dependencies),
+						devDependencies: convertNpmDeps(info.devDependencies),
+						peerDependencies: convertNpmDeps(info.peerDependencies),
+						optionalDependencies: convertNpmDeps(info.optionalDependencies),
+					});
 				}
 			}
 		}
@@ -346,16 +391,30 @@ export default class DepsSync extends CommandWithConfig<
 		return projects;
 	}
 
-	private convertNpmDeps(
-		deps: Record<string, NpmDependency>,
-	): Record<string, DependencyInfo> {
-		const result: Record<string, DependencyInfo> = {};
-		for (const [name, info] of Object.entries(deps)) {
-			if (typeof info === "object" && info.version) {
-				result[name] = { version: info.version };
-			}
-		}
-		return result;
+	private syncAllPackagesSync(projects: ProjectInfo[]): SyncResult[] {
+		// Filter projects that have package.json and sync them all
+		const results = projects
+			.filter((project) => {
+				const packageJsonPath = path.join(project.path, "package.json");
+				if (!fs.existsSync(packageJsonPath)) {
+					this.verbose(`⚠️  Skipping ${project.name}: package.json not found`);
+					return false;
+				}
+				return true;
+			})
+			.map((project) => {
+				const packageJsonPath = path.join(project.path, "package.json");
+				return this.syncPackageJsonSync(
+					packageJsonPath,
+					project.dependencies || {},
+					project.devDependencies || {},
+					project.peerDependencies || {},
+					project.optionalDependencies || {},
+				);
+			});
+
+		// Filter out results with no changes and return
+		return results.filter((r) => r.changes.length > 0);
 	}
 
 	private shouldSkipVersion(version: string): boolean {
@@ -366,6 +425,7 @@ export default class DepsSync extends CommandWithConfig<
 			"git+",
 			"http:",
 			"https:",
+			"workspace:",
 		];
 		return SKIP_PROTOCOLS.some((protocol) => version.startsWith(protocol));
 	}
@@ -377,16 +437,28 @@ export default class DepsSync extends CommandWithConfig<
 	private syncDependencyGroup(
 		dependencies: Record<string, string>,
 		installed: Record<string, DependencyInfo>,
-		type: "dependencies" | "devDependencies",
+		type:
+			| "dependencies"
+			| "devDependencies"
+			| "peerDependencies"
+			| "optionalDependencies",
 	): Array<{
 		dep: string;
-		type: "dependencies" | "devDependencies";
+		type:
+			| "dependencies"
+			| "devDependencies"
+			| "peerDependencies"
+			| "optionalDependencies";
 		from: string;
 		to: string;
 	}> {
 		const changes: Array<{
 			dep: string;
-			type: "dependencies" | "devDependencies";
+			type:
+				| "dependencies"
+				| "devDependencies"
+				| "peerDependencies"
+				| "optionalDependencies";
 			from: string;
 			to: string;
 		}> = [];
@@ -397,6 +469,7 @@ export default class DepsSync extends CommandWithConfig<
 				const newRange = this.updateVersionRange(
 					currentRange,
 					installedInfo.version,
+					dep,
 				);
 				if (newRange !== currentRange) {
 					changes.push({
@@ -413,10 +486,12 @@ export default class DepsSync extends CommandWithConfig<
 		return changes;
 	}
 
-	private syncPackageJson(
+	private syncPackageJsonSync(
 		packageJsonPath: string,
 		installedDeps: Record<string, DependencyInfo>,
 		installedDevDeps: Record<string, DependencyInfo>,
+		installedPeerDeps: Record<string, DependencyInfo>,
+		installedOptionalDeps: Record<string, DependencyInfo>,
 	): SyncResult {
 		let pkg: PackageJson;
 		try {
@@ -429,13 +504,18 @@ export default class DepsSync extends CommandWithConfig<
 			);
 		}
 
+		// Create a working copy to avoid mutating original in dry-run
+		const workingPkg = this.isDryRun
+			? (JSON.parse(JSON.stringify(pkg)) as PackageJson)
+			: pkg;
+
 		const changes: SyncResult["changes"] = [];
 
 		// Sync dependencies
-		if (pkg.dependencies) {
+		if (workingPkg.dependencies) {
 			changes.push(
 				...this.syncDependencyGroup(
-					pkg.dependencies,
+					workingPkg.dependencies,
 					installedDeps,
 					"dependencies",
 				),
@@ -443,19 +523,44 @@ export default class DepsSync extends CommandWithConfig<
 		}
 
 		// Sync devDependencies
-		if (pkg.devDependencies) {
+		if (workingPkg.devDependencies) {
 			changes.push(
 				...this.syncDependencyGroup(
-					pkg.devDependencies,
+					workingPkg.devDependencies,
 					installedDevDeps,
 					"devDependencies",
 				),
 			);
 		}
 
+		// Sync peerDependencies
+		if (workingPkg.peerDependencies) {
+			changes.push(
+				...this.syncDependencyGroup(
+					workingPkg.peerDependencies,
+					installedPeerDeps,
+					"peerDependencies",
+				),
+			);
+		}
+
+		// Sync optionalDependencies
+		if (workingPkg.optionalDependencies) {
+			changes.push(
+				...this.syncDependencyGroup(
+					workingPkg.optionalDependencies,
+					installedOptionalDeps,
+					"optionalDependencies",
+				),
+			);
+		}
+
 		// Write back if changes and not dry run
 		if (changes.length > 0 && !this.isDryRun) {
-			fs.writeFileSync(packageJsonPath, `${JSON.stringify(pkg, null, "\t")}\n`);
+			fs.writeFileSync(
+				packageJsonPath,
+				`${JSON.stringify(workingPkg, null, "\t")}\n`,
+			);
 		}
 
 		return {
@@ -467,10 +572,13 @@ export default class DepsSync extends CommandWithConfig<
 	private updateVersionRange(
 		currentRange: string,
 		installedVersion: string,
+		depName: string,
 	): string {
 		// Validate installed version is valid semver
 		if (!this.isValidSemver(installedVersion)) {
-			// Skip non-semver versions (e.g., git URLs, special tags)
+			this.verbose(
+				`⚠️  Skipping ${depName}: installed version ${installedVersion} is not valid semver`,
+			);
 			return currentRange;
 		}
 
@@ -481,6 +589,14 @@ export default class DepsSync extends CommandWithConfig<
 
 		// Handle npm/catalog/other protocols
 		if (currentRange.includes(":")) {
+			return currentRange;
+		}
+
+		// Handle hyphen ranges (e.g., "1.0.0 - 2.0.0")
+		if (currentRange.includes(" - ")) {
+			this.warning(
+				`⚠️  Hyphen range detected for ${depName}: "${currentRange}". Keeping as-is. See README for limitations.`,
+			);
 			return currentRange;
 		}
 
@@ -498,6 +614,9 @@ export default class DepsSync extends CommandWithConfig<
 			currentRange.startsWith("<")
 		) {
 			// Keep complex ranges as-is (too risky to auto-update)
+			this.warning(
+				`⚠️  Complex range detected for ${depName}: "${currentRange}". Keeping as-is. See README for limitations.`,
+			);
 			return currentRange;
 		}
 		if (currentRange === "*" || currentRange === "latest") {
@@ -517,6 +636,11 @@ export default class DepsSync extends CommandWithConfig<
 			return;
 		}
 
+		this.reportUpdatedPackages(results);
+		this.reportSummary(results);
+	}
+
+	private reportUpdatedPackages(results: SyncResult[]): void {
 		const prefix = this.isDryRun
 			? chalk.cyan("🔍 DRY RUN:")
 			: chalk.green("✅");
@@ -525,17 +649,34 @@ export default class DepsSync extends CommandWithConfig<
 		for (const result of results) {
 			const relativePath = path.relative(this.workingDir, result.packagePath);
 			this.log(chalk.blue(`📦 ${relativePath}`));
-
-			for (const change of result.changes) {
-				const typePrefix =
-					change.type === "devDependencies" ? chalk.gray("dev") : "   ";
-				this.log(
-					`   ${typePrefix} ${change.dep}: ${chalk.red(change.from)} ${chalk.gray("→")} ${chalk.green(change.to)}`,
-				);
-			}
+			this.reportChanges(result.changes);
 			this.log();
 		}
+	}
 
+	private reportChanges(changes: SyncResult["changes"]): void {
+		for (const change of changes) {
+			const typePrefix = this.getTypePrefix(change.type);
+			this.log(
+				`   ${typePrefix} ${change.dep}: ${chalk.red(change.from)} ${chalk.gray("→")} ${chalk.green(change.to)}`,
+			);
+		}
+	}
+
+	private getTypePrefix(type: SyncResult["changes"][number]["type"]): string {
+		switch (type) {
+			case "devDependencies":
+				return chalk.gray("dev");
+			case "peerDependencies":
+				return chalk.yellow("peer");
+			case "optionalDependencies":
+				return chalk.cyan("opt");
+			default:
+				return "   ";
+		}
+	}
+
+	private reportSummary(results: SyncResult[]): void {
 		if (this.isDryRun) {
 			this.log(chalk.yellow("💡 Run with --execute to apply changes"));
 		} else {

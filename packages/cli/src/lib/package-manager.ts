@@ -47,21 +47,45 @@ export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo> = {
 const DETECTION_ORDER: PackageManager[] = ["bun", "pnpm", "yarn", "npm"];
 
 /**
+ * Detects all package managers from lockfiles in the given directory
+ *
+ * @param directory - Directory to search for lockfiles (defaults to process.cwd())
+ * @returns Array of detected package managers
+ */
+export function detectAllPackageManagers(
+	directory: string = process.cwd(),
+): PackageManager[] {
+	const found: PackageManager[] = [];
+	for (const pm of DETECTION_ORDER) {
+		const lockfilePath = path.join(directory, PACKAGE_MANAGERS[pm].lockfile);
+		if (fs.existsSync(lockfilePath)) {
+			found.push(pm);
+		}
+	}
+	return found;
+}
+
+/**
  * Detects the package manager from a lockfile in the given directory
  *
  * @param directory - Directory to search for lockfiles (defaults to process.cwd())
  * @returns Package manager name or null if no lockfile found
+ * @throws Error if multiple lockfiles are detected
  */
 export function detectPackageManager(
 	directory: string = process.cwd(),
 ): PackageManager | null {
-	for (const pm of DETECTION_ORDER) {
-		const lockfilePath = path.join(directory, PACKAGE_MANAGERS[pm].lockfile);
-		if (fs.existsSync(lockfilePath)) {
-			return pm;
-		}
+	const found = detectAllPackageManagers(directory);
+	if (found.length === 0) {
+		return null;
 	}
-	return null;
+	if (found.length > 1) {
+		throw new Error(
+			`Multiple lockfiles detected: ${found.map((pm) => PACKAGE_MANAGERS[pm].lockfile).join(", ")}. ` +
+				"Please use the --lockfile flag to specify which one to use.",
+		);
+	}
+	return found[0] || null;
 }
 
 /**

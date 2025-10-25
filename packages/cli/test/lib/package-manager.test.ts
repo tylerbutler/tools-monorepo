@@ -47,29 +47,32 @@ describe("package-manager", () => {
 			expect(detectPackageManager(tmpDir)).toBeNull();
 		});
 
-		it("prioritizes bun over other package managers", async () => {
+		it("throws error when multiple lockfiles are detected", async () => {
 			// Create multiple lockfiles
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+			await writeFile(join(tmpDir, "package-lock.json"), "{}");
+
+			expect(() => detectPackageManager(tmpDir)).toThrow(
+				/Multiple lockfiles detected/,
+			);
+			expect(() => detectPackageManager(tmpDir)).toThrow(
+				/Please use the --lockfile flag/,
+			);
+		});
+
+		it("throws error for bun + other package managers", async () => {
 			await writeFile(join(tmpDir, "bun.lockb"), Buffer.from([0x01]));
 			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
-			await writeFile(join(tmpDir, "package-lock.json"), "{}");
-			await writeFile(join(tmpDir, "yarn.lock"), "# yarn lockfile v1");
 
-			expect(detectPackageManager(tmpDir)).toBe("bun");
+			expect(() => detectPackageManager(tmpDir)).toThrow(
+				/Multiple lockfiles detected/,
+			);
 		});
 
-		it("prioritizes pnpm over yarn and npm", async () => {
+		it("detects single lockfile when only one exists", async () => {
 			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
-			await writeFile(join(tmpDir, "package-lock.json"), "{}");
-			await writeFile(join(tmpDir, "yarn.lock"), "# yarn lockfile v1");
 
 			expect(detectPackageManager(tmpDir)).toBe("pnpm");
-		});
-
-		it("prioritizes yarn over npm", async () => {
-			await writeFile(join(tmpDir, "yarn.lock"), "# yarn lockfile v1");
-			await writeFile(join(tmpDir, "package-lock.json"), "{}");
-
-			expect(detectPackageManager(tmpDir)).toBe("yarn");
 		});
 	});
 

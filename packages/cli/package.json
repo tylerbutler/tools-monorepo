@@ -50,6 +50,7 @@
 		"lint:fix": "biome lint . --write",
 		"postpack": "pnpm clean:manifest",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"test:unit": "vitest run"
 	},
@@ -120,6 +121,7 @@
 		"@types/debug": "^4.1.12",
 		"@types/node": "^20.19.23",
 		"@types/semver": "^7.7.1",
+		"@vitest/coverage-v8": "^3.2.4",
 		"concurrently": "^9.2.1",
 		"copyfiles": "^2.4.1",
 		"generate-license-file": "^4.1.0",
