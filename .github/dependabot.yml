@@ -31,6 +31,7 @@ updates:
           - "@oclif/*"
         update-types:
           - "minor"
+          - "major"
 
       fluid-framework:
         patterns:
@@ -45,6 +46,7 @@ updates:
           - "typedoc*"
         update-types:
           - "minor"
+          - "major"
 
       typescript:
         patterns:
