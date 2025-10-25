@@ -66,6 +66,27 @@ updates:
         update-types:
           - "minor"
 
+      vite-vitest:
+        patterns:
+          - "vite"
+          - "vite*"
+          - "@vitejs/*"
+          - "vitest"
+          - "vitest*"
+          - "@vitest/*"
+        update-types:
+          - "minor"
+          - "major"
+
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "tailwind*"
+          - "@tailwindcss/*"
+        update-types:
+          - "minor"
+          - "major"
+
       # All other dependencies (not in above groups)
       dependencies:
         patterns:
@@ -80,6 +101,15 @@ updates:
           - "typescript"
           - "@biomejs/*"
           - "biome"
+          - "vite"
+          - "vite*"
+          - "@vitejs/*"
+          - "vitest"
+          - "vitest*"
+          - "@vitest/*"
+          - "tailwindcss"
+          - "tailwind*"
+          - "@tailwindcss/*"
 
           # Exclude Astro and Starlight packages from automated updates.
           # These packages are tightly coupled to project-specific configurations and may introduce breaking changes.
