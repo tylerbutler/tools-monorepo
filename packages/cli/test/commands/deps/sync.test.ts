@@ -662,5 +662,409 @@ describe("deps sync", () => {
 			expect(stdout).not.toContain("Detected package manager");
 			expect(stdout).not.toContain("Found");
 		});
+
+		it("errors for unrecognized lockfile via --lockfile flag", async () => {
+			const customLockfile = join(tmpDir, "unknown.lock");
+			await writeFile(customLockfile, "unknown lockfile");
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify({
+					name: "test-package",
+					version: "1.0.0",
+					dependencies: {},
+				}),
+			);
+
+			const { error } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--lockfile", customLockfile]);
+			});
+
+			expect(error?.message).toMatch(/Unrecognized lockfile: unknown.lock/);
+			expect(error?.message).toMatch(/pnpm-lock.yaml/);
+		});
+
+		it("errors for missing lockfile via --lockfile flag", async () => {
+			const customLockfile = join(tmpDir, "nonexistent.lock");
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify({
+					name: "test-package",
+					version: "1.0.0",
+					dependencies: {},
+				}),
+			);
+
+			const { error } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--lockfile", customLockfile]);
+			});
+
+			expect(error?.message).toMatch(/Lockfile not found/);
+			expect(error?.message).toContain(customLockfile);
+		});
+
+		it("errors for unsupported package manager via --lockfile flag", async () => {
+			const yarnLockfile = join(tmpDir, "yarn.lock");
+			await writeFile(yarnLockfile, "# yarn lockfile v1");
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify({
+					name: "test-package",
+					version: "1.0.0",
+					dependencies: {},
+				}),
+			);
+
+			const { error } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--lockfile", yarnLockfile]);
+			});
+
+			expect(error?.message).toMatch(/yarn is not yet fully supported/);
+			expect(error?.message).toMatch(/Currently supported: npm, pnpm/);
+		});
+	});
+
+	describe("error handling", () => {
+		it("handles execSync errors with stderr", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify({
+					name: "test-package",
+					version: "1.0.0",
+					dependencies: {},
+				}),
+			);
+
+			// Mock execSync to throw error with stderr
+			const mockError = new Error("Command failed") as Error & {
+				stderr: string;
+			};
+			mockError.stderr = "pnpm: command not found";
+			vi.mocked(execSync).mockImplementation(() => {
+				throw mockError;
+			});
+
+			const { error } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir]);
+			});
+
+			expect(error?.message).toMatch(/Failed to get installed versions/);
+			expect(error?.message).toMatch(/Command stderr:/);
+			expect(error?.message).toMatch(/pnpm: command not found/);
+		});
+
+		it("handles missing package.json in workspace project", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+
+			// Create main package.json
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify({
+					name: "test-package",
+					version: "1.0.0",
+					dependencies: {},
+				}),
+			);
+
+			// Mock pnpm list to return a workspace project without package.json
+			const workspaceDir = join(tmpDir, "packages", "missing");
+			vi.mocked(execSync).mockReturnValue(
+				JSON.stringify([
+					{
+						name: "test-package",
+						path: tmpDir,
+						dependencies: {},
+					},
+					{
+						name: "missing-package",
+						path: workspaceDir, // This directory doesn't exist
+						dependencies: {},
+					},
+				]),
+			);
+
+			const { stdout } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--verbose"]);
+			});
+
+			expect(stdout).toMatch(
+				/Skipping missing-package: package.json not found/,
+			);
+		});
+	});
+
+	describe("version edge cases", () => {
+		it("warns and skips invalid semver versions", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+
+			const packageJson = {
+				name: "test-package",
+				version: "1.0.0",
+				dependencies: {
+					debug: "^4.4.1",
+				},
+			};
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify(packageJson, null, "\t"),
+			);
+
+			vi.mocked(execSync).mockReturnValue(
+				JSON.stringify([
+					{
+						name: "test-package",
+						path: tmpDir,
+						dependencies: {
+							debug: { version: "invalid-version" },
+						},
+					},
+				]),
+			);
+
+			const { stdout } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--verbose"]);
+			});
+
+			expect(stdout).toMatch(
+				/Skipping debug: installed version invalid-version is not valid semver/,
+			);
+		});
+
+		it("preserves complex version ranges", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+
+			const packageJson = {
+				name: "test-package",
+				version: "1.0.0",
+				dependencies: {
+					debug: ">=4.0.0 <5.0.0",
+				},
+			};
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify(packageJson, null, "\t"),
+			);
+
+			vi.mocked(execSync).mockReturnValue(
+				JSON.stringify([
+					{
+						name: "test-package",
+						path: tmpDir,
+						dependencies: {
+							debug: { version: "4.4.3" },
+						},
+					},
+				]),
+			);
+
+			const { stdout } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--execute"]);
+			});
+
+			// Complex ranges are always kept as-is
+			expect(stdout).toContain(
+				"✅ All package.json files are already in sync with lockfile",
+			);
+
+			// package.json should remain unchanged
+			const updatedContent = await readFile(
+				join(tmpDir, "package.json"),
+				"utf-8",
+			);
+			const updated = JSON.parse(updatedContent);
+			expect(updated.dependencies.debug).toBe(">=4.0.0 <5.0.0");
+		});
+
+		it("preserves hyphen ranges", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+
+			const packageJson = {
+				name: "test-package",
+				version: "1.0.0",
+				dependencies: {
+					debug: "1.0.0 - 2.0.0",
+				},
+			};
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify(packageJson, null, "\t"),
+			);
+
+			vi.mocked(execSync).mockReturnValue(
+				JSON.stringify([
+					{
+						name: "test-package",
+						path: tmpDir,
+						dependencies: {
+							debug: { version: "1.5.0" },
+						},
+					},
+				]),
+			);
+
+			const { stdout } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--execute"]);
+			});
+
+			// Hyphen ranges are always preserved
+			expect(stdout).toContain(
+				"✅ All package.json files are already in sync with lockfile",
+			);
+
+			// package.json should remain unchanged
+			const updatedContent = await readFile(
+				join(tmpDir, "package.json"),
+				"utf-8",
+			);
+			const updated = JSON.parse(updatedContent);
+			expect(updated.dependencies.debug).toBe("1.0.0 - 2.0.0");
+		});
+
+		it("preserves wildcard version (*)", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+
+			const packageJson = {
+				name: "test-package",
+				version: "1.0.0",
+				dependencies: {
+					debug: "*",
+				},
+			};
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify(packageJson, null, "\t"),
+			);
+
+			vi.mocked(execSync).mockReturnValue(
+				JSON.stringify([
+					{
+						name: "test-package",
+						path: tmpDir,
+						dependencies: {
+							debug: { version: "4.4.3" },
+						},
+					},
+				]),
+			);
+
+			const { stdout } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--execute"]);
+			});
+
+			expect(stdout).toContain(
+				"✅ All package.json files are already in sync with lockfile",
+			);
+
+			const updatedContent = await readFile(
+				join(tmpDir, "package.json"),
+				"utf-8",
+			);
+			const updated = JSON.parse(updatedContent);
+			expect(updated.dependencies.debug).toBe("*");
+		});
+
+		it("preserves 'latest' version", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+
+			const packageJson = {
+				name: "test-package",
+				version: "1.0.0",
+				dependencies: {
+					debug: "latest",
+				},
+			};
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify(packageJson, null, "\t"),
+			);
+
+			vi.mocked(execSync).mockReturnValue(
+				JSON.stringify([
+					{
+						name: "test-package",
+						path: tmpDir,
+						dependencies: {
+							debug: { version: "4.4.3" },
+						},
+					},
+				]),
+			);
+
+			const { stdout } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--execute"]);
+			});
+
+			expect(stdout).toContain(
+				"✅ All package.json files are already in sync with lockfile",
+			);
+
+			const updatedContent = await readFile(
+				join(tmpDir, "package.json"),
+				"utf-8",
+			);
+			const updated = JSON.parse(updatedContent);
+			expect(updated.dependencies.debug).toBe("latest");
+		});
+	});
+
+	describe("npm workspace parsing", () => {
+		it("parses npm workspace dependencies correctly", async () => {
+			await writeFile(
+				join(tmpDir, "package-lock.json"),
+				JSON.stringify({ lockfileVersion: 3 }),
+			);
+
+			const packageJson = {
+				name: "test-package",
+				version: "1.0.0",
+				dependencies: {
+					debug: "^4.4.1",
+				},
+			};
+			await writeFile(
+				join(tmpDir, "package.json"),
+				JSON.stringify(packageJson, null, "\t"),
+			);
+
+			// Mock npm list output with workspace structure
+			vi.mocked(execSync).mockReturnValue(
+				JSON.stringify({
+					name: "test-package",
+					path: tmpDir,
+					dependencies: {
+						debug: {
+							version: "4.4.3",
+							resolved: "https://registry.npmjs.org/debug/-/debug-4.4.3.tgz",
+						},
+						"workspace-pkg": {
+							version: "1.0.0",
+							resolved: "file:packages/workspace-pkg",
+							path: join(tmpDir, "packages", "workspace-pkg"),
+							dependencies: {
+								semver: {
+									version: "7.7.3",
+								},
+							},
+						},
+					},
+					devDependencies: {},
+				}),
+			);
+
+			const { stdout } = await captureOutput(async () => {
+				await DepsSync.run(["--cwd", tmpDir, "--execute"]);
+			});
+
+			expect(stdout).toContain("debug");
+			expect(stdout).toContain("^4.4.1");
+			expect(stdout).toContain("^4.4.3");
+
+			const updatedContent = await readFile(
+				join(tmpDir, "package.json"),
+				"utf-8",
+			);
+			const updated = JSON.parse(updatedContent);
+			expect(updated.dependencies.debug).toBe("^4.4.3");
+		});
 	});
 });
