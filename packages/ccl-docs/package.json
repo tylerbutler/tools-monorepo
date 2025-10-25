@@ -42,5 +42,10 @@
 	"devDependencies": {
 		"@fec/remark-a11y-emoji": "^4.0.2",
 		"@hashicorp/platform-remark-plugins": "^0.2.1"
+	},
+	"nx": {
+		"targets": {
+			"ci": {}
+		}
 	}
 }

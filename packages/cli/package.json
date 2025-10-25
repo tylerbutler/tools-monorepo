@@ -133,6 +133,7 @@
 	},
 	"nx": {
 		"targets": {
+			"ci": {},
 			"build": {
 				"executor": "nx:noop"
 			}
