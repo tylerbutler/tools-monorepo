@@ -118,7 +118,8 @@
 		"targets": {
 			"build": {
 				"executor": "nx:noop"
-			}
+			},
+			"ci": {}
 		}
 	}
 }
