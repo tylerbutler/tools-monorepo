@@ -1,8 +1,15 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import type { Config } from "@oclif/core/interfaces";
 import { temporaryDirectory } from "tempy";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DepsSync from "../../../src/commands/deps/sync.js";
+
+// Mock config for OCLIF commands
+const mockConfig = {
+	bin: "tbu",
+	cwd: process.cwd(),
+} as unknown as Config;
 
 describe("deps sync", () => {
 	let tmpDir: string;
@@ -28,7 +35,7 @@ describe("deps sync", () => {
 				}),
 			);
 
-			const command = new DepsSync(["--cwd", tmpDir], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir], mockConfig);
 
 			// Mock execSync to return empty project list
 			const mockExecSync = vi.fn().mockReturnValue(JSON.stringify([]));
@@ -54,7 +61,7 @@ describe("deps sync", () => {
 				}),
 			);
 
-			const command = new DepsSync(["--cwd", tmpDir], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir], mockConfig);
 
 			// Mock execSync to return empty project list
 			const mockExecSync = vi.fn().mockReturnValue(
@@ -81,7 +88,7 @@ describe("deps sync", () => {
 				}),
 			);
 
-			const command = new DepsSync(["--cwd", tmpDir], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir], mockConfig);
 
 			await expect(command.run()).rejects.toThrow(
 				"No lockfile found. Supported: pnpm-lock.yaml, package-lock.json",
@@ -99,7 +106,7 @@ describe("deps sync", () => {
 				}),
 			);
 
-			const command = new DepsSync(["--cwd", tmpDir], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir], mockConfig);
 
 			await expect(command.run()).rejects.toThrow("Yarn is not yet supported");
 		});
@@ -139,7 +146,7 @@ describe("deps sync", () => {
 				execSync: mockExecSync,
 			}));
 
-			const command = new DepsSync(["--cwd", tmpDir, "--execute"], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir, "--execute"], mockConfig);
 			await command.run();
 
 			// Read updated package.json
@@ -183,7 +190,7 @@ describe("deps sync", () => {
 				execSync: mockExecSync,
 			}));
 
-			const command = new DepsSync(["--cwd", tmpDir, "--execute"], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir, "--execute"], mockConfig);
 			await command.run();
 
 			const updatedContent = await readFile(
@@ -225,7 +232,7 @@ describe("deps sync", () => {
 				execSync: mockExecSync,
 			}));
 
-			const command = new DepsSync(["--cwd", tmpDir, "--execute"], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir, "--execute"], mockConfig);
 			await command.run();
 
 			const updatedContent = await readFile(
@@ -267,7 +274,7 @@ describe("deps sync", () => {
 				execSync: mockExecSync,
 			}));
 
-			const command = new DepsSync(["--cwd", tmpDir, "--execute"], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir, "--execute"], mockConfig);
 			await command.run();
 
 			const updatedContent = await readFile(
@@ -314,7 +321,7 @@ describe("deps sync", () => {
 				execSync: mockExecSync,
 			}));
 
-			const command = new DepsSync(["--cwd", tmpDir, "--execute"], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir, "--execute"], mockConfig);
 			await command.run();
 
 			const updatedContent = await readFile(
@@ -361,7 +368,7 @@ describe("deps sync", () => {
 			}));
 
 			// Run without --execute flag (dry-run by default)
-			const command = new DepsSync(["--cwd", tmpDir], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir], mockConfig);
 			await command.run();
 
 			// package.json should remain unchanged
@@ -407,7 +414,7 @@ describe("deps sync", () => {
 				execSync: mockExecSync,
 			}));
 
-			const command = new DepsSync(["--cwd", tmpDir, "--execute"], {} as any);
+			const command = new DepsSync(["--cwd", tmpDir, "--execute"], mockConfig);
 			await command.run();
 
 			const updatedContent = await readFile(
@@ -441,7 +448,7 @@ describe("deps sync", () => {
 
 			const command = new DepsSync(
 				["--cwd", tmpDir, "--lockfile", customLockfile],
-				{} as any,
+				mockConfig,
 			);
 
 			await expect(command.run()).resolves.toBeUndefined();
@@ -465,7 +472,7 @@ describe("deps sync", () => {
 
 			const command = new DepsSync(
 				["--cwd", tmpDir, "--package-manager", "pnpm"],
-				{} as any,
+				mockConfig,
 			);
 
 			await expect(command.run()).resolves.toBeUndefined();

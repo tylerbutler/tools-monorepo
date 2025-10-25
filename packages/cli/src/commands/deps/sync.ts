@@ -6,12 +6,12 @@ import { CommandWithConfig } from "@tylerbu/cli-api";
 import chalk from "picocolors";
 import semver from "semver";
 import {
-	type PackageManager,
 	detectFromLockfilePath,
 	detectPackageManager,
 	getAllLockfiles,
 	getPackageManagerInfo,
 	isSyncSupported,
+	type PackageManager,
 } from "../../lib/package-manager.js";
 
 // Types
@@ -44,7 +44,6 @@ interface SyncResult {
 		to: string;
 	}>;
 }
-
 
 // Package manager output types
 interface PnpmProject {
@@ -375,6 +374,45 @@ export default class DepsSync extends CommandWithConfig<
 		return semver.valid(version) !== null;
 	}
 
+	private syncDependencyGroup(
+		dependencies: Record<string, string>,
+		installed: Record<string, DependencyInfo>,
+		type: "dependencies" | "devDependencies",
+	): Array<{
+		dep: string;
+		type: "dependencies" | "devDependencies";
+		from: string;
+		to: string;
+	}> {
+		const changes: Array<{
+			dep: string;
+			type: "dependencies" | "devDependencies";
+			from: string;
+			to: string;
+		}> = [];
+
+		for (const [dep, currentRange] of Object.entries(dependencies)) {
+			const installedInfo = installed[dep];
+			if (installedInfo && !this.shouldSkipVersion(installedInfo.version)) {
+				const newRange = this.updateVersionRange(
+					currentRange,
+					installedInfo.version,
+				);
+				if (newRange !== currentRange) {
+					changes.push({
+						dep,
+						type,
+						from: currentRange,
+						to: newRange,
+					});
+					dependencies[dep] = newRange;
+				}
+			}
+		}
+
+		return changes;
+	}
+
 	private syncPackageJson(
 		packageJsonPath: string,
 		installedDeps: Record<string, DependencyInfo>,
@@ -395,46 +433,24 @@ export default class DepsSync extends CommandWithConfig<
 
 		// Sync dependencies
 		if (pkg.dependencies) {
-			for (const [dep, currentRange] of Object.entries(pkg.dependencies)) {
-				const installed = installedDeps[dep];
-				if (installed && !this.shouldSkipVersion(installed.version)) {
-					const newRange = this.updateVersionRange(
-						currentRange,
-						installed.version,
-					);
-					if (newRange !== currentRange) {
-						changes.push({
-							dep,
-							type: "dependencies",
-							from: currentRange,
-							to: newRange,
-						});
-						pkg.dependencies[dep] = newRange;
-					}
-				}
-			}
+			changes.push(
+				...this.syncDependencyGroup(
+					pkg.dependencies,
+					installedDeps,
+					"dependencies",
+				),
+			);
 		}
 
 		// Sync devDependencies
 		if (pkg.devDependencies) {
-			for (const [dep, currentRange] of Object.entries(pkg.devDependencies)) {
-				const installed = installedDevDeps[dep];
-				if (installed && !this.shouldSkipVersion(installed.version)) {
-					const newRange = this.updateVersionRange(
-						currentRange,
-						installed.version,
-					);
-					if (newRange !== currentRange) {
-						changes.push({
-							dep,
-							type: "devDependencies",
-							from: currentRange,
-							to: newRange,
-						});
-						pkg.devDependencies[dep] = newRange;
-					}
-				}
-			}
+			changes.push(
+				...this.syncDependencyGroup(
+					pkg.devDependencies,
+					installedDevDeps,
+					"devDependencies",
+				),
+			);
 		}
 
 		// Write back if changes and not dry run

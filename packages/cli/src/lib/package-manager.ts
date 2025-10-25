@@ -88,9 +88,7 @@ export function detectFromLockfilePath(
  * @param pm - Package manager name
  * @returns Package manager info
  */
-export function getPackageManagerInfo(
-	pm: PackageManager,
-): PackageManagerInfo {
+export function getPackageManagerInfo(pm: PackageManager): PackageManagerInfo {
 	return PACKAGE_MANAGERS[pm];
 }
 

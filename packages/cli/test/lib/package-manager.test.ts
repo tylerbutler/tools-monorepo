@@ -3,13 +3,13 @@ import { join } from "node:path";
 import { temporaryDirectory } from "tempy";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
-	PACKAGE_MANAGERS,
-	type PackageManager,
 	detectFromLockfilePath,
 	detectPackageManager,
 	getAllLockfiles,
 	getPackageManagerInfo,
 	isSyncSupported,
+	PACKAGE_MANAGERS,
+	type PackageManager,
 } from "../../src/lib/package-manager.js";
 
 describe("package-manager", () => {
