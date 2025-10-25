@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a TypeScript monorepo containing personal tools and CLI utilities, managed with pnpm workspaces and Turbo for build orchestration.
+This is a TypeScript monorepo containing personal tools and CLI utilities, managed with pnpm workspaces and Nx for build orchestration.
 
 **Key Technologies:**
 - **Package Manager**: pnpm 10.10.0 (required - do not use npm or yarn)
-- **Build Orchestration**: Nx (task caching, parallel execution, and plugin-based inference)
+- **Build Orchestration**: Nx (task caching, parallel execution, affected detection, and plugin-based inference)
 - **Testing**: Vitest with coverage support
 - **Formatting/Linting**: Biome (unified toolchain replacing ESLint/Prettier)
 - **CLI Framework**: OCLIF for command-line tools
@@ -38,8 +38,41 @@ pnpm format
 pnpm lint
 pnpm lint:fix  # Auto-fix issues
 
-# CI pipeline (comprehensive checks)
-pnpm ci
+# CI pipeline (runs on affected projects only)
+pnpm run ci
+
+# CI pipeline on ALL projects (useful for verification)
+pnpm run ci:all
+
+# CI pipeline on local changes only (since last commit)
+pnpm run ci:local
+```
+
+**Note**: The CI task list (check, build, lint, test:coverage) is centralized in `nx.json` targetDefaults. To update which tasks run in CI, modify the `ci` target's `dependsOn` array in `nx.json` - all projects will automatically use the updated configuration.
+
+### Nx-Specific Commands
+
+The monorepo uses Nx for intelligent task orchestration:
+
+```bash
+# Run affected tasks (compares to main branch)
+nx affected -t build
+nx affected -t test
+nx affected -t ci
+
+# Run tasks on all projects
+nx run-many -t build
+nx run-many -t test
+
+# Run task on specific project
+nx run cli:build
+nx run cli:test
+
+# View project details and task configuration
+nx show project cli --web
+
+# Visualize project graph
+nx graph
 ```
 
 ### Package-Level Development
@@ -110,6 +143,10 @@ Nx orchestrates builds using **pure dependency-based orchestration** - no shell 
 **Architecture:** Orchestration via `nx.json`, Implementation via package.json scripts
 
 **Orchestration Targets** (defined in `nx.json` targetDefaults):
+- `ci` - Full CI pipeline (**centralized task list**: check, build, lint, test:coverage)
+  - Configured once in `nx.json` targetDefaults
+  - Each package enables via `nx.targets.ci` in package.json
+  - Update task list in ONE place (nx.json)
 - `build` - Virtual target that depends on all build implementation tasks
 - `test` - Virtual target that depends on compile + test implementation tasks
 - `check` - Runs all quality checks (format, types, deps, policy, lint)
@@ -389,4 +426,5 @@ If the user wants help with fixing an error in their CI pipeline, use the follow
 
 
 <!-- nx configuration end-->
+
 - This project uses tabs primarily for indentation. Not spaces.
