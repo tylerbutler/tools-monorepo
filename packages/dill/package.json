@@ -93,7 +93,7 @@
 	},
 	"dependencies": {
 		"@oclif/core": "^4.7.2",
-		"@oclif/plugin-help": "^6.2.33",
+		"@oclif/plugin-help": "^6.2.34",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
 		"fflate": "^0.8.2",
@@ -105,8 +105,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-extractor": "^7.53.2",
-		"@oclif/plugin-command-snapshot": "^5.3.7",
+		"@microsoft/api-extractor": "^7.53.3",
+		"@oclif/plugin-command-snapshot": "^5.3.8",
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
