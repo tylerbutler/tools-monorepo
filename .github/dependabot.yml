@@ -58,6 +58,7 @@ updates:
           - "svelte-kit"
         update-types:
           - "minor"
+          - "major"
 
       biome:
         patterns:
