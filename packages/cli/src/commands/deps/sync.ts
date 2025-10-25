@@ -132,30 +132,32 @@ export default class DepsSync extends CommandWithConfig<
 		},
 	];
 
+	public static override readonly enableJsonFlag = true;
+
 	public static override readonly flags = {
 		execute: Flags.boolean({
 			char: "x",
 			description: "Apply changes to package.json files (default: dry-run)",
 			default: false,
 		}),
-		json: Flags.boolean({
-			description: "Output results in JSON format",
-			default: false,
-		}),
-		lockfile: Flags.string({
+		lockfile: Flags.file({
 			char: "l",
 			description: `Path to lockfile (auto-detects ${getAllLockfiles().join(", ")} if not provided)`,
 			required: false,
+			exists: true,
+			exclusive: ["package-manager"],
 		}),
-		cwd: Flags.string({
+		cwd: Flags.directory({
 			description: "Working directory (default: current directory)",
 			required: false,
+			exists: true,
 		}),
-		"package-manager": Flags.string({
+		"package-manager": Flags.custom<PackageManager>({
 			description: "Force specific package manager",
-			options: ["npm", "pnpm", "yarn", "bun"],
+			options: ["npm", "pnpm", "yarn", "bun"] as const,
 			required: false,
-		}),
+			exclusive: ["lockfile"],
+		})(),
 		...CommandWithConfig.flags,
 	};
 
@@ -170,7 +172,7 @@ export default class DepsSync extends CommandWithConfig<
 
 		this.isDryRun = !this.flags.execute;
 
-		if (!this.flags.json) {
+		if (!this.jsonEnabled()) {
 			this.log(chalk.blue("🔄 Syncing package.json versions to lockfile...\n"));
 		}
 
@@ -183,7 +185,7 @@ export default class DepsSync extends CommandWithConfig<
 
 			// Sync all packages
 			const results = this.syncAllPackagesSync(projects);
-			if (this.flags.json) {
+			if (this.jsonEnabled()) {
 				this.log(JSON.stringify(results, null, 2));
 			} else {
 				this.reportResults(results);
@@ -205,9 +207,6 @@ export default class DepsSync extends CommandWithConfig<
 		// Check for explicit lockfile path
 		if (this.flags.lockfile) {
 			const lockfilePath = path.resolve(this.flags.lockfile);
-			if (!fs.existsSync(lockfilePath)) {
-				this.error(`Lockfile not found: ${lockfilePath}`);
-			}
 
 			const detected = detectFromLockfilePath(lockfilePath);
 			if (!detected) {

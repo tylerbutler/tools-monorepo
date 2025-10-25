@@ -11,21 +11,23 @@ Sync package.json dependency versions to match what's installed in the lockfile.
 
 ```
 USAGE
-  $ tbu deps sync [-v | --quiet] [-x] [--json] [-l <value>] [--cwd <value>] [--package-manager
-    npm|pnpm|yarn|bun]
+  $ tbu deps sync [--json] [-v | --quiet] [-x] [-l <value> | --package-manager npm|pnpm|yarn|bun] [--cwd
+    <value>]
 
 FLAGS
   -l, --lockfile=<value>          Path to lockfile (auto-detects package-lock.json, pnpm-lock.yaml, yarn.lock, bun.lockb
                                   if not provided)
   -x, --execute                   Apply changes to package.json files (default: dry-run)
       --cwd=<value>               Working directory (default: current directory)
-      --json                      Output results in JSON format
       --package-manager=<option>  Force specific package manager
                                   <options: npm|pnpm|yarn|bun>
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
       --quiet    Disable all logging.
+
+GLOBAL FLAGS
+  --json  Format output as json.
 
 DESCRIPTION
   Sync package.json dependency versions to match what's installed in the lockfile. This addresses a Dependabot bug where
