@@ -1,21 +1,59 @@
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { temporaryDirectory } from "tempy";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
+	detectAllPackageManagers,
 	detectFromLockfilePath,
 	detectPackageManager,
 	getAllLockfiles,
 	getPackageManagerInfo,
 	PACKAGE_MANAGERS,
 	type PackageManager,
-} from "@tylerbu/cli-api";
-import { temporaryDirectory } from "tempy";
-import { beforeEach, describe, expect, it } from "vitest";
+} from "../src/package-manager.js";
 
 describe("package-manager", () => {
 	let tmpDir: string;
 
 	beforeEach(() => {
 		tmpDir = temporaryDirectory();
+	});
+
+	describe("detectAllPackageManagers", () => {
+		it("detects single pnpm lockfile", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+			expect(detectAllPackageManagers(tmpDir)).toEqual(["pnpm"]);
+		});
+
+		it("detects multiple lockfiles in order", async () => {
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+			await writeFile(join(tmpDir, "package-lock.json"), "{}");
+			await writeFile(join(tmpDir, "yarn.lock"), "# yarn lockfile v1");
+
+			// Should return in detection order: bun, pnpm, yarn, npm
+			const result = detectAllPackageManagers(tmpDir);
+			expect(result).toEqual(["pnpm", "yarn", "npm"]);
+		});
+
+		it("detects all four package managers", async () => {
+			await writeFile(join(tmpDir, "bun.lockb"), Buffer.from([0x01]));
+			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
+			await writeFile(join(tmpDir, "package-lock.json"), "{}");
+			await writeFile(join(tmpDir, "yarn.lock"), "# yarn lockfile v1");
+
+			const result = detectAllPackageManagers(tmpDir);
+			expect(result).toEqual(["bun", "pnpm", "yarn", "npm"]);
+		});
+
+		it("returns empty array when no lockfiles found", () => {
+			expect(detectAllPackageManagers(tmpDir)).toEqual([]);
+		});
+
+		it("uses process.cwd() when no directory provided", () => {
+			// Should not throw and should return an array
+			const result = detectAllPackageManagers();
+			expect(Array.isArray(result)).toBe(true);
+		});
 	});
 
 	describe("detectPackageManager", () => {
