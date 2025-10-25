@@ -89,8 +89,8 @@
 		"tinyglobby": "^0.2.15"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-extractor": "^7.53.2",
+		"@biomejs/biome": "2.3.0",
+		"@microsoft/api-extractor": "^7.53.3",
 		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/node": "^20.19.23",
