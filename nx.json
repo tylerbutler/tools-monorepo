@@ -68,12 +68,7 @@
 		// Projects inherit this automatically if they have a "ci" script
 		"ci": {
 			"executor": "nx:noop",
-			"dependsOn": [
-				"check",
-				"build",
-				"lint",
-				"test:coverage"
-			],
+			"dependsOn": ["check", "build", "lint", "test:coverage"],
 			"cache": true
 		},
 
