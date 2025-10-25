@@ -88,7 +88,7 @@ updates:
           - "minor"
           - "major"
 
-      # All other dependencies (not in above groups)
+      # Catch-all group for dependencies not bundled above (minor updates only)
       dependencies:
         patterns:
           - "*"
