@@ -7,7 +7,7 @@ Dependency management commands.
 
 ## `tbu deps sync`
 
-Sync package.json dependency versions to match what's installed in the lockfile. This addresses a Dependabot bug where versioning-strategy: increase doesn't update package.json for dependencies with caret ranges (^) that already satisfy the new version. Supports npm, pnpm, yarn (partial), and bun (partial). See: https://github.com/dependabot/dependabot-core/issues/9020
+Sync package.json dependency versions to match what's installed in the lockfile. This addresses a Dependabot bug where versioning-strategy: increase doesn't update package.json for dependencies with caret ranges (^) that already satisfy the new version. Supports npm, pnpm, yarn (partial), and bun (partial). 
 
 ```
 USAGE
@@ -22,16 +22,22 @@ FLAGS
       --json                      Output results in JSON format
       --package-manager=<option>  Force specific package manager
                                   <options: npm|pnpm|yarn|bun>
-      --quiet                     Minimal output (only show changes and errors)
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
+      --quiet    Disable all logging.
 
 DESCRIPTION
   Sync package.json dependency versions to match what's installed in the lockfile. This addresses a Dependabot bug where
   versioning-strategy: increase doesn't update package.json for dependencies with caret ranges (^) that already satisfy
-  the new version. Supports npm, pnpm, yarn (partial), and bun (partial). See:
-  https://github.com/dependabot/dependabot-core/issues/9020
+  the new version. Supports npm, pnpm, yarn (partial), and bun (partial).
+
+  LIMITATIONS:
+  - Complex ranges (>=, <=, >, <) are preserved as-is (too risky to auto-update)
+  - Hyphen ranges (e.g., "1.0.0 - 2.0.0") are preserved as-is
+  - These limitations are logged as warnings when encountered
+
+  See: https://github.com/dependabot/dependabot-core/issues/9020
 
 EXAMPLES
   Preview changes (dry-run mode, default)

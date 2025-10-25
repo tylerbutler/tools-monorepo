@@ -163,7 +163,7 @@
 		"build:readme": {
 			"dependsOn": ["build:manifest"],
 			"inputs": ["production", "{projectRoot}/oclif.manifest.json"],
-			"outputs": ["{projectRoot}/README.md"],
+			"outputs": ["{projectRoot}/README.md", "{projectRoot}/docs/**"],
 			"cache": true
 		},
 
