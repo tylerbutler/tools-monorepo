@@ -78,7 +78,7 @@ export function detectAllPackageManagers(
  *
  * @param directory - Directory to search for lockfiles (defaults to process.cwd())
  * @returns Package manager name or undefined if no lockfile found
- * @throws Error if multiple lockfiles are detected
+ * @throws {Error} When multiple lockfiles are detected in the same directory
  *
  * @beta
  */
