@@ -3,11 +3,15 @@ import path from "node:path";
 
 /**
  * Supported package managers
+ *
+ * @beta
  */
 export type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
 
 /**
  * Package manager metadata
+ *
+ * @beta
  */
 export interface PackageManagerInfo {
 	name: PackageManager;
@@ -17,6 +21,8 @@ export interface PackageManagerInfo {
 
 /**
  * Package manager configurations
+ *
+ * @beta
  */
 export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo> = {
 	npm: {
@@ -51,6 +57,8 @@ const DETECTION_ORDER: PackageManager[] = ["bun", "pnpm", "yarn", "npm"];
  *
  * @param directory - Directory to search for lockfiles (defaults to process.cwd())
  * @returns Array of detected package managers
+ *
+ * @beta
  */
 export function detectAllPackageManagers(
 	directory: string = process.cwd(),
@@ -69,15 +77,17 @@ export function detectAllPackageManagers(
  * Detects the package manager from a lockfile in the given directory
  *
  * @param directory - Directory to search for lockfiles (defaults to process.cwd())
- * @returns Package manager name or null if no lockfile found
+ * @returns Package manager name or undefined if no lockfile found
  * @throws Error if multiple lockfiles are detected
+ *
+ * @beta
  */
 export function detectPackageManager(
 	directory: string = process.cwd(),
-): PackageManager | null {
+): PackageManager | undefined {
 	const found = detectAllPackageManagers(directory);
 	if (found.length === 0) {
-		return null;
+		return;
 	}
 	if (found.length > 1) {
 		throw new Error(
@@ -85,7 +95,7 @@ export function detectPackageManager(
 				"Please use the --lockfile flag to specify which one to use.",
 		);
 	}
-	return found[0] || null;
+	return found[0];
 }
 
 /**
@@ -93,6 +103,8 @@ export function detectPackageManager(
  *
  * @param lockfilePath - Absolute path to lockfile
  * @returns Package manager name or null if unrecognized
+ *
+ * @beta
  */
 export function detectFromLockfilePath(
 	lockfilePath: string,
@@ -111,26 +123,19 @@ export function detectFromLockfilePath(
  *
  * @param pm - Package manager name
  * @returns Package manager info
+ *
+ * @beta
  */
 export function getPackageManagerInfo(pm: PackageManager): PackageManagerInfo {
 	return PACKAGE_MANAGERS[pm];
 }
 
 /**
- * Checks if a package manager is supported for sync operations
- *
- * @param pm - Package manager name
- * @returns True if supported, false otherwise
- */
-export function isSyncSupported(pm: PackageManager): boolean {
-	// Currently Yarn and Bun are not fully supported for sync
-	return pm === "npm" || pm === "pnpm";
-}
-
-/**
  * Gets all supported lockfile names
  *
  * @returns Array of lockfile names
+ *
+ * @beta
  */
 export function getAllLockfiles(): string[] {
 	return Object.values(PACKAGE_MANAGERS).map((pm) => pm.lockfile);

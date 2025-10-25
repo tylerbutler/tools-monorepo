@@ -42,3 +42,13 @@ export type {
 	Logger,
 	LoggingFunction,
 } from "./logger.js";
+export {
+	detectAllPackageManagers,
+	detectFromLockfilePath,
+	detectPackageManager,
+	getAllLockfiles,
+	getPackageManagerInfo,
+	PACKAGE_MANAGERS,
+	type PackageManager,
+	type PackageManagerInfo,
+} from "./package-manager.js";

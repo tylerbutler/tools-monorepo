@@ -1,16 +1,15 @@
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { temporaryDirectory } from "tempy";
-import { beforeEach, describe, expect, it } from "vitest";
 import {
 	detectFromLockfilePath,
 	detectPackageManager,
 	getAllLockfiles,
 	getPackageManagerInfo,
-	isSyncSupported,
 	PACKAGE_MANAGERS,
 	type PackageManager,
-} from "../../src/lib/package-manager.js";
+} from "@tylerbu/cli-api";
+import { temporaryDirectory } from "tempy";
+import { beforeEach, describe, expect, it } from "vitest";
 
 describe("package-manager", () => {
 	let tmpDir: string;
@@ -43,8 +42,8 @@ describe("package-manager", () => {
 			expect(detectPackageManager(tmpDir)).toBe("bun");
 		});
 
-		it("returns null when no lockfile is found", () => {
-			expect(detectPackageManager(tmpDir)).toBeNull();
+		it("returns undefined when no lockfile is found", () => {
+			expect(detectPackageManager(tmpDir)).toBeUndefined();
 		});
 
 		it("throws error when multiple lockfiles are detected", async () => {
@@ -129,24 +128,6 @@ describe("package-manager", () => {
 			expect(info.name).toBe("bun");
 			expect(info.lockfile).toBe("bun.lockb");
 			expect(info.listCommand).toContain("bun pm ls");
-		});
-	});
-
-	describe("isSyncSupported", () => {
-		it("returns true for npm", () => {
-			expect(isSyncSupported("npm")).toBe(true);
-		});
-
-		it("returns true for pnpm", () => {
-			expect(isSyncSupported("pnpm")).toBe(true);
-		});
-
-		it("returns false for yarn", () => {
-			expect(isSyncSupported("yarn")).toBe(false);
-		});
-
-		it("returns false for bun", () => {
-			expect(isSyncSupported("bun")).toBe(false);
 		});
 	});
 

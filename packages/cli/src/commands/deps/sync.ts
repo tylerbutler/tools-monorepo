@@ -2,17 +2,16 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { Flags } from "@oclif/core";
-import { CommandWithConfig } from "@tylerbu/cli-api";
-import chalk from "picocolors";
-import semver from "semver";
 import {
+	CommandWithConfig,
 	detectFromLockfilePath,
 	detectPackageManager,
 	getAllLockfiles,
 	getPackageManagerInfo,
-	isSyncSupported,
 	type PackageManager,
-} from "../../lib/package-manager.js";
+} from "@tylerbu/cli-api";
+import chalk from "picocolors";
+import semver from "semver";
 
 // Types
 interface DependencyInfo {
@@ -690,4 +689,15 @@ export default class DepsSync extends CommandWithConfig<
 			);
 		}
 	}
+}
+
+/**
+ * Checks if a package manager is supported for sync operations
+ *
+ * @param pm - Package manager name
+ * @returns True if supported, false otherwise
+ */
+export function isSyncSupported(pm: PackageManager): boolean {
+	// Currently Yarn and Bun are not fully supported for sync
+	return pm === "npm" || pm === "pnpm";
 }
