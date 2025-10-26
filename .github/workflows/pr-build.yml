@@ -39,9 +39,6 @@ jobs:
 
       - name: Run affected CI checks, builds, and tests
         run: pnpm run ci
-        env:
-          NX_REJECT_UNKNOWN_LOCAL_CACHE: 0
-          NX_SKIP_NX_CACHE: true
 
       - name: "Codecov: upload test results"
         if: ${{ !cancelled() }}
