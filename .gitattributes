@@ -5,3 +5,8 @@ tsconfig*.json                 linguist-language=JSON-with-Comments
 
 # Hide docs from GitHub's language detection
 **/docs/**                     linguist-documentation
+
+# Normalize line endings for generated documentation
+# API Extractor and TypeDoc generate these files, ensure they use LF
+**/api-docs/*.md               text eol=lf
+**/docs/*.md                   text eol=lf
