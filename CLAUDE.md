@@ -16,16 +16,18 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 
 ## Essential Commands
 
+**Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`) which run Nx targets across packages (e.g., `nx run-many -t build`). Individual packages define implementation tasks like `build:compile`, `build:api`, etc. See Architecture Patterns section for details.
+
 ### Root-Level Development
 
 ```bash
 # Install dependencies (always use pnpm, never npm/yarn)
 pnpm install
 
-# Build all packages
+# Build all packages (runs nx run-many -t build)
 pnpm build
 
-# Run all tests
+# Run all tests (runs nx run-many -t test)
 pnpm test
 
 # Run all checks (format, lint, policy)
@@ -56,23 +58,23 @@ The monorepo uses Nx for intelligent task orchestration:
 
 ```bash
 # Run affected tasks (compares to main branch)
-nx affected -t build
-nx affected -t test
-nx affected -t ci
+pnpm nx affected -t build
+pnpm nx affected -t test
+pnpm nx affected -t ci
 
 # Run tasks on all projects
-nx run-many -t build
-nx run-many -t test
+pnpm nx run-many -t build
+pnpm nx run-many -t test
 
 # Run task on specific project
-nx run cli:build
-nx run cli:test
+pnpm nx run cli:build
+pnpm nx run cli:test
 
 # View project details and task configuration
-nx show project cli --web
+pnpm nx show project cli --web
 
 # Visualize project graph
-nx graph
+pnpm nx graph
 ```
 
 ### Package-Level Development
@@ -171,7 +173,7 @@ Nx orchestrates builds using **pure dependency-based orchestration** - no shell 
 - **Libraries**: build:compile → build:api → build:docs
 - **CLI tools**: build:compile → build:manifest → build:readme → build:generate
 - **Astro sites**: build:site only
-- **Svelte apps**: build:vite (or build:tauri for desktop)
+- **Svelte apps**: build:vite (or build:vite → build:tauri for desktop)
 
 **Key Principles:**
 - **No orchestrator scripts in package.json** - only minimal `"build": ""` to register target
@@ -293,7 +295,7 @@ pnpm test:coverage
 3. Add to `pnpm-workspace.yaml` (already includes `packages/*`)
 4. Extend base tsconfig: `{ "extends": "../../config/tsconfig.strict.json" }`
 5. Run `pnpm install` from root
-6. Run `pnpm run check:policy` to verify compliance
+6. Run `pnpm run repopo` to verify compliance (or `pnpm run fix:policy` to auto-fix)
 
 ### Working with OCLIF Commands
 
@@ -304,26 +306,29 @@ pnpm test:coverage
 # Production mode (uses compiled JavaScript)
 ./bin/run.js <command>
 
-# Update README after command changes
-pnpm readme
+# Update README after command changes (runs build:readme task)
+pnpm nx run cli:build:readme
 
-# Update manifest
-pnpm manifest
+# Update manifest (runs build:manifest task)
+pnpm nx run cli:build:manifest
+
+# Generate command snapshots (runs build:generate task)
+pnpm nx run cli:build:generate
 ```
 
 ### Running Individual Package Scripts
 
-Turbo caches based on inputs/outputs, so repeated builds are fast:
+Nx caches based on inputs/outputs, so repeated builds are fast:
 
 ```bash
 # Build with cache
 pnpm build
 
 # Force rebuild without cache
-pnpm build --force
+pnpm nx reset && pnpm build
 
 # See what would be built
-pnpm build --dry-run
+pnpm nx run-many -t build --dry-run
 ```
 
 ### Formatting and Linting
@@ -377,7 +382,7 @@ tools-monorepo/
 │   ├── tsconfig*.json # Base TypeScript configs
 │   ├── vitest.config.ts
 │   └── api-extractor.base.json
-├── turbo.json         # Turbo task configuration
+├── nx.json            # Nx task configuration
 ├── biome.jsonc        # Biome configuration
 ├── repopo.config.ts   # Repository policies
 └── syncpack.config.cjs # Dependency version sync
@@ -386,17 +391,17 @@ tools-monorepo/
 ## Troubleshooting
 
 **Build failures:**
-- Clear Turbo cache: `rm -rf .turbo`
+- Clear Nx cache: `pnpm nx reset`
 - Clear package builds: `pnpm clean`
 - Reinstall: `rm -rf node_modules && pnpm install`
 
 **Policy violations:**
-- Auto-fix: `pnpm run fix:policy`
+- Auto-fix: `pnpm run fix:policy` (runs `repopo check --fix`)
 - Check specific package: `./packages/repopo/bin/dev.js check --path packages/<name>`
 
 **Version mismatches:**
 - Sync dependencies: `pnpm syncpack:fix`
-- Check for mismatches: `pnpm run check:deps`
+- Check for mismatches: `pnpm nx run-many -t syncpack`
 
 **TypeScript errors:**
 - Ensure you're extending the correct base config
@@ -409,7 +414,7 @@ tools-monorepo/
 
 # General Guidelines for working with Nx
 
-- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
+- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `pnpm nx run`, `pnpm nx run-many`, `pnpm nx affected`) instead of using the underlying tooling directly
 - You have access to the Nx MCP server and its tools, use them to help the user
 - When answering questions about the repository, use the `nx_workspace` tool first to gain an understanding of the workspace architecture where applicable.
 - When working in individual projects, use the `nx_project_details` mcp tool to analyze and understand the specific project structure and dependencies

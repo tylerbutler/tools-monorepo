@@ -1,9 +1,9 @@
 # Copilot Instructions for tools-monorepo
 
 ## Overview
-**pnpm workspace monorepo** with TypeScript, Turbo build system, Biome linting/formatting, and Vitest testing. Contains 13 workspace packages including CLI tools (@tylerbu/cli, dill-cli, repopo, sort-tsconfig) and libraries.
+**pnpm workspace monorepo** with TypeScript, Nx build system, Biome linting/formatting, and Vitest testing. Contains 13 workspace packages including CLI tools (@tylerbu/cli, dill-cli, repopo, sort-tsconfig) and libraries.
 
-**Tech Stack:** pnpm 10.10.0 (via corepack) | Node 20+ | Turbo 2.5+ | Biome 2.0.4 | Vitest 3.2+ | TypeScript 5.5
+**Tech Stack:** pnpm 10.10.0 (via corepack) | Node 20+ | Nx 21+ | Biome 2.0.4 | Vitest 3.2+ | TypeScript 5.5
 
 ## Setup & Build (CRITICAL)
 
@@ -14,7 +14,7 @@ corepack enable
 # 2. Install dependencies (use --ignore-scripts for speed, native deps like re2 are slow)
 pnpm install --ignore-scripts
 
-# 3. Build all packages (uses Turbo cache, ~200ms when cached, ~20-30s clean)
+# 3. Build all packages (uses Nx cache, ~200ms when cached, ~20-30s clean)
 pnpm run build
 
 # 4. Run checks before committing
@@ -33,7 +33,7 @@ pnpm run test        # run tests (@tylerbu/xkcd2-api has pre-existing failures -
 
 ## Project Layout
 
-**Root:** pnpm-workspace.yaml (workspace def) | turbo.json (build config) | biome.jsonc (lint/format) | repopo.config.ts (policies) | syncpack.config.cjs (dep sync)
+**Root:** pnpm-workspace.yaml (workspace def) | nx.json (build config) | biome.jsonc (lint/format) | repopo.config.ts (policies) | syncpack.config.cjs (dep sync)
 
 **Packages (packages/*):**
 - CLI: @tylerbu/cli, dill-cli, repopo, sort-tsconfig
@@ -59,7 +59,7 @@ Order: `pnpm install --frozen-lockfile` → `ci:check` (format/deps/policies/lin
 
 **pnpm not found:** Run `corepack enable` first
 **Native dep failures (re2, sharp):** Use `pnpm install --ignore-scripts` (faster, deps not required)
-**Stale Turbo cache:** `pnpm run clean && rm -rf .turbo && pnpm run build`
+**Stale Nx cache:** `pnpm nx reset && pnpm run build`
 **xkcd2-api test failures:** Pre-existing, ignore unless modifying that package
 **Format/lint errors:** `pnpm format && pnpm run lint:fix && pnpm run fix:policy`
 **Uncommitted files after build:** Some commands generate files (manifests, READMEs). Commit if expected.
@@ -69,4 +69,4 @@ Order: `pnpm install --frozen-lockfile` → `ci:check` (format/deps/policies/lin
 **DO:** (1) `corepack enable` before `pnpm install` (2) Use `pnpm install --ignore-scripts` (3) Run `pnpm run build` after changes (4) Run `pnpm run ci:check` before committing (5) Run `pnpm run test` (6) Trust these instructions
 **DON'T:** (1) Use npm (2) Manually edit pnpm-lock.yaml (3) Add deps without `workspace:^` (4) Skip CI validation (5) Fix unrelated xkcd2-api failures
 
-**For more info:** Check package README.md, .github/workflows/pr-build.yml, turbo.json, or package.json scripts.
+**For more info:** Check package README.md, .github/workflows/pr-build.yml, nx.json, or package.json scripts.
