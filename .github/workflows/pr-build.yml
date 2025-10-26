@@ -55,6 +55,9 @@ jobs:
       - name: Run affected CI checks, builds, and tests
         run: pnpm run ci
 
+      - run: npx nx fix-ci
+        if: always()
+
       - name: "Codecov: upload test results"
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # ratchet:codecov/test-results-action@v1
@@ -71,6 +74,3 @@ jobs:
         run: |
           git diff
           git diff --quiet || (git status -u . && exit 1)
-
-      - run: npx nx fix-ci
-        if: always()
