@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { Flags } from "@oclif/core";
@@ -169,6 +169,17 @@ export default class DepsSync extends CommandWithConfig<
 			? path.resolve(this.flags.cwd)
 			: process.cwd();
 
+		// Validate that the working directory exists and is safe
+		if (!fs.existsSync(this.workingDir)) {
+			this.error(`Working directory does not exist: ${this.workingDir}`);
+		}
+
+		// Verify it's actually a directory
+		const stats = fs.statSync(this.workingDir);
+		if (!stats.isDirectory()) {
+			this.error(`Path is not a directory: ${this.workingDir}`);
+		}
+
 		this.isDryRun = !this.flags.execute;
 
 		if (!this.jsonEnabled()) {
@@ -248,10 +259,18 @@ export default class DepsSync extends CommandWithConfig<
 		this.verbose(`Getting installed versions using ${packageManager}...`);
 
 		const pmInfo = getPackageManagerInfo(packageManager);
-		const command = pmInfo.listCommand;
+		// Split command into executable and arguments to avoid shell interpretation
+		const commandParts = pmInfo.listCommand.split(" ");
+		const executable = commandParts[0];
+		if (!executable) {
+			throw new Error(
+				`Invalid list command for ${packageManager}: ${pmInfo.listCommand}`,
+			);
+		}
+		const args = commandParts.slice(1);
 
 		try {
-			const output = execSync(command, {
+			const output = execFileSync(executable, args, {
 				encoding: "utf-8",
 				stdio: ["pipe", "pipe", "pipe"],
 				cwd: this.workingDir,
@@ -502,55 +521,58 @@ export default class DepsSync extends CommandWithConfig<
 			);
 		}
 
-		// Create a working copy to avoid mutating original in dry-run
+		// In dry-run mode, work on a copy to avoid mutations
+		// Note: JSON parse/stringify is acceptable here as PackageJson is a plain object
 		const workingPkg = this.isDryRun
 			? (JSON.parse(JSON.stringify(pkg)) as PackageJson)
 			: pkg;
 
 		const changes: SyncResult["changes"] = [];
 
-		// Sync dependencies
-		if (workingPkg.dependencies) {
-			changes.push(
-				...this.syncDependencyGroup(
-					workingPkg.dependencies,
-					installedDeps,
-					"dependencies",
-				),
-			);
-		}
+		// Define dependency types to sync
+		const depTypes: Array<{
+			key: keyof PackageJson;
+			installed: Record<string, DependencyInfo>;
+			type:
+				| "dependencies"
+				| "devDependencies"
+				| "peerDependencies"
+				| "optionalDependencies";
+		}> = [
+			{
+				key: "dependencies",
+				installed: installedDeps,
+				type: "dependencies",
+			},
+			{
+				key: "devDependencies",
+				installed: installedDevDeps,
+				type: "devDependencies",
+			},
+			{
+				key: "peerDependencies",
+				installed: installedPeerDeps,
+				type: "peerDependencies",
+			},
+			{
+				key: "optionalDependencies",
+				installed: installedOptionalDeps,
+				type: "optionalDependencies",
+			},
+		];
 
-		// Sync devDependencies
-		if (workingPkg.devDependencies) {
-			changes.push(
-				...this.syncDependencyGroup(
-					workingPkg.devDependencies,
-					installedDevDeps,
-					"devDependencies",
-				),
-			);
-		}
-
-		// Sync peerDependencies
-		if (workingPkg.peerDependencies) {
-			changes.push(
-				...this.syncDependencyGroup(
-					workingPkg.peerDependencies,
-					installedPeerDeps,
-					"peerDependencies",
-				),
-			);
-		}
-
-		// Sync optionalDependencies
-		if (workingPkg.optionalDependencies) {
-			changes.push(
-				...this.syncDependencyGroup(
-					workingPkg.optionalDependencies,
-					installedOptionalDeps,
-					"optionalDependencies",
-				),
-			);
+		// Sync all dependency types
+		for (const { key, installed, type } of depTypes) {
+			const deps = workingPkg[key];
+			if (deps && typeof deps === "object") {
+				changes.push(
+					...this.syncDependencyGroup(
+						deps as Record<string, string>,
+						installed,
+						type,
+					),
+				);
+			}
 		}
 
 		// Write back if changes and not dry run

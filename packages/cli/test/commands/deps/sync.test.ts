@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { captureOutput } from "@oclif/test";
@@ -6,9 +6,9 @@ import { temporaryDirectory } from "tempy";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DepsSync from "../../../src/commands/deps/sync.js";
 
-// Mock execSync at the top level
+// Mock execFileSync at the top level
 vi.mock("node:child_process", () => ({
-	execSync: vi.fn(),
+	execFileSync: vi.fn(),
 }));
 
 describe("deps sync", () => {
@@ -37,7 +37,7 @@ describe("deps sync", () => {
 			);
 
 			// Mock execSync to return project with no dependencies
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -73,7 +73,7 @@ describe("deps sync", () => {
 			);
 
 			// Mock execSync to return empty project list
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify({
 					name: "test-package",
 					dependencies: {},
@@ -170,7 +170,7 @@ describe("deps sync", () => {
 			);
 
 			// Mock pnpm list output
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -220,7 +220,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -264,7 +264,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -308,7 +308,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -355,7 +355,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -405,7 +405,7 @@ describe("deps sync", () => {
 			const originalContent = JSON.stringify(packageJson, null, "\t");
 			await writeFile(join(tmpDir, "package.json"), originalContent);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -451,7 +451,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -501,7 +501,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -544,7 +544,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -586,7 +586,7 @@ describe("deps sync", () => {
 				}),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -614,7 +614,7 @@ describe("deps sync", () => {
 				}),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -642,7 +642,7 @@ describe("deps sync", () => {
 				}),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -740,7 +740,7 @@ describe("deps sync", () => {
 				stderr: string;
 			};
 			mockError.stderr = "pnpm: command not found";
-			vi.mocked(execSync).mockImplementation(() => {
+			vi.mocked(execFileSync).mockImplementation(() => {
 				throw mockError;
 			});
 
@@ -768,7 +768,7 @@ describe("deps sync", () => {
 
 			// Mock pnpm list to return a workspace project without package.json
 			const workspaceDir = join(tmpDir, "packages", "missing");
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -809,7 +809,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -845,7 +845,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -890,7 +890,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -935,7 +935,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -978,7 +978,7 @@ describe("deps sync", () => {
 				JSON.stringify(packageJson, null, "\t"),
 			);
 
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify([
 					{
 						name: "test-package",
@@ -1027,7 +1027,7 @@ describe("deps sync", () => {
 			);
 
 			// Mock npm list output with workspace structure
-			vi.mocked(execSync).mockReturnValue(
+			vi.mocked(execFileSync).mockReturnValue(
 				JSON.stringify({
 					name: "test-package",
 					path: tmpDir,
