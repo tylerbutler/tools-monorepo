@@ -43,14 +43,7 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      # No caching for the release build
-      # - name: Cache turbo build setup
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: .turbo
-      #     key: ${{ runner.os }}-turbo-${{ github.sha }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-turbo-
+      # No caching for the release build (Nx handles caching internally)
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -1,12 +1,12 @@
 # Notes for developers
 
-## Turborepo Task Organization
+## Nx Task Organization
 
 This monorepo uses a **hierarchical task structure** where top-level tasks orchestrate and implementation tasks do the actual work.
 
 ### Task Hierarchy
 
-**Orchestration Tasks** (defined in root `turbo.jsonc`):
+**Orchestration Targets** (defined in root `nx.json` targetDefaults):
 - `build` - Orchestrates all build steps across packages
 - `test` - Runs tests (depends on `build:compile`)
 - `check` - Runs all quality checks
@@ -51,28 +51,28 @@ build:vite (or build:tauri for desktop)
 
 ### Key Principles
 
-1. **Top-level tasks orchestrate, never implement** - The `build` task in `turbo.jsonc` calls implementation tasks
+1. **Top-level tasks orchestrate, never implement** - The `build` target in `nx.json` calls implementation tasks
 2. **Implementation tasks use `:` separator** - e.g., `build:compile`, `test:coverage`
-3. **Turbo runs only what exists** - If a package doesn't define `build:api`, it won't run
-4. **All config in root** - No package-level `turbo.jsonc` files
+3. **Nx runs only what exists** - If a package doesn't define `build:api`, it won't run
+4. **All config in root** - No package-level `project.json` files (all in root `nx.json`)
 5. **Package scripts define implementations** - Each package's `package.json` defines its specific build steps
 
 ### Adding New Tasks
 
 When adding a new task type:
 
-1. **Add to root `turbo.jsonc`** with appropriate `dependsOn`, `inputs`, `outputs`
+1. **Add to root `nx.json`** with appropriate `dependsOn`, `inputs`, `outputs`
 2. **Add to package `package.json`** scripts for packages that need it
 3. **Follow naming convention**: Use `:` separator for implementation tasks
 4. **Define dependencies**: Use `dependsOn` to ensure proper task ordering
 
 Example:
 ```jsonc
-// turbo.jsonc
+// nx.json targetDefaults
 "build:lint": {
   "dependsOn": ["build:compile"],
-  "inputs": ["src/**", "biome.jsonc"],
-  "outputs": []
+  "inputs": ["default", "{projectRoot}/biome.jsonc"],
+  "cache": true
 }
 
 // packages/my-package/package.json

@@ -15,9 +15,6 @@ yarn.lock
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
-# turbo cache
-.turbo
-
 # netlify cache
 .netlify
 

@@ -16,7 +16,7 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 
 ## Essential Commands
 
-**Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`), which internally call Turbo orchestration tasks (`:all` suffix) that coordinate executor tasks (tool names like `tsc`, `typedoc`). See Architecture Patterns section for details.
+**Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`), which internally call Nx orchestration tasks (`:all` suffix) that coordinate executor tasks (tool names like `tsc`, `typedoc`). See Architecture Patterns section for details.
 
 ### Root-Level Development
 
@@ -24,10 +24,10 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 # Install dependencies (always use pnpm, never npm/yarn)
 pnpm install
 
-# Build all packages (runs turbo build:all)
+# Build all packages (runs nx build:all)
 pnpm build
 
-# Run all tests (runs turbo test:all)
+# Run all tests (runs nx test:all)
 pnpm test
 
 # Run all checks (format, lint, policy)
@@ -318,17 +318,17 @@ pnpm generate
 
 ### Running Individual Package Scripts
 
-Turbo caches based on inputs/outputs, so repeated builds are fast:
+Nx caches based on inputs/outputs, so repeated builds are fast:
 
 ```bash
 # Build with cache
 pnpm build
 
 # Force rebuild without cache
-pnpm build --force
+nx reset && pnpm build
 
 # See what would be built
-pnpm build --dry-run
+nx run-many -t build --dry-run
 ```
 
 ### Formatting and Linting
@@ -382,7 +382,7 @@ tools-monorepo/
 │   ├── tsconfig*.json # Base TypeScript configs
 │   ├── vitest.config.ts
 │   └── api-extractor.base.json
-├── turbo.json         # Turbo task configuration
+├── nx.json            # Nx task configuration
 ├── biome.jsonc        # Biome configuration
 ├── repopo.config.ts   # Repository policies
 └── syncpack.config.cjs # Dependency version sync
@@ -391,7 +391,7 @@ tools-monorepo/
 ## Troubleshooting
 
 **Build failures:**
-- Clear Turbo cache: `rm -rf .turbo`
+- Clear Nx cache: `nx reset`
 - Clear package builds: `pnpm clean`
 - Reinstall: `rm -rf node_modules && pnpm install`
 
@@ -401,7 +401,7 @@ tools-monorepo/
 
 **Version mismatches:**
 - Sync dependencies: `pnpm syncpack:fix`
-- Check for mismatches: `turbo run syncpack`
+- Check for mismatches: `nx run-many -t syncpack`
 
 **TypeScript errors:**
 - Ensure you're extending the correct base config
