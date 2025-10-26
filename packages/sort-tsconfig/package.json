@@ -39,31 +39,31 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"api-extractor": "api-extractor run --local",
-		"b": "turbo build",
-		"biome-format": "biome check . --linter-enabled=false",
-		"build": "pnpm turbo build:all --filter={.}...",
-		"check": "pnpm turbo check:all --filter={.}...",
+		"build": "pnpm build:compile",
+		"build:api": "api-extractor run --local",
+		"b": "nx build",
+		"build:test": "tsc --project ./test/tsconfig.json",
+		"check": "concurrently npm:check:format",
+		"check:format": "biome check . --linter-enabled=false",
 		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/_snapshots/commands.json",
-		"clean": "pnpm turbo clean:all --filter={.}",
-		"clean-build": "rimraf esm *.tsbuildinfo *.done.build.log",
-		"clean-manifest": "rimraf oclif.manifest.json",
+		"clean": "concurrently npm:clean:build npm:clean:manifest",
+		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
+		"clean:manifest": "rimraf oclif.manifest.json",
+		"build:compile": "tsc",
 		"format": "sort-package-json && biome check . --linter-enabled=false --write",
-		"generate-license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"lint": "pnpm turbo lint:all --filter={.}...",
+		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"oclif-manifest": "oclif manifest",
-		"oclif-readme": "concurrently npm:readme:*",
-		"postpack": "npm run clean:manifest",
+		"build:manifest": "oclif manifest",
+		"postpack": "pnpm clean:manifest",
+		"build:readme": "concurrently npm:readme:*",
 		"readme:main": "oclif readme --no-aliases",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "serve ./test/data --listen 8080",
-		"test": "pnpm turbo test:all --filter={.}...",
-		"test:snapshots": "npm run update:test-snapshots",
+		"test": "pnpm test:vitest",
+		"test:coverage": "vitest run test --coverage",
+		"test:snapshots": "pnpm update:test-snapshots",
 		"test:vitest": "vitest run test",
-		"tsc": "tsc",
-		"tsc-test": "tsc --project ./test/tsconfig.json",
-		"update:test-snapshots": "vitest run test -u",
-		"vitest-coverage": "vitest run test --coverage"
+		"update:test-snapshots": "vitest run test -u"
 	},
 	"oclif": {
 		"bin": "sort-tsconfig",
@@ -78,7 +78,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/sort-tsconfig/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.6.0",
+		"@oclif/core": "^4.7.2",
 		"@oclif/plugin-help": "^6.2.33",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
@@ -90,16 +90,16 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-extractor": "^7.53.1",
+		"@microsoft/api-extractor": "^7.53.2",
 		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/node": "^20.19.23",
+		"repopo": "workspace:^",
 		"@types/tmp": "^0.2.6",
 		"@vitest/coverage-v8": "^3.2.4",
 		"generate-license-file": "^4.1.0",
 		"memfs": "^4.49.0",
 		"oclif": "^4.22.32",
-		"repopo": "workspace:^",
 		"rimraf": "^6.0.1",
 		"sort-package-json": "*",
 		"start-server-and-test": "^2.1.2",
@@ -119,5 +119,10 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"ci": {}
+		}
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/cli",
-	"version": "0.4.1",
+	"version": "0.5.0",
 	"description": "Tyler Butler's personal CLI.",
 	"keywords": [
 		"oclif"
@@ -35,25 +35,24 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"biome-format": "biome check . --linter-enabled=false",
-		"build": "pnpm turbo build:all --filter={.}...",
-		"check": "pnpm turbo check:all --filter={.}...",
-		"clean": "pnpm turbo clean:all --filter={.}",
-		"clean-build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
-		"clean-manifest": "rimraf oclif.manifest.json",
-		"copyfiles": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
+		"build:compile": "tsc --project ./tsconfig.json && pnpm build:copy-templates",
+		"build:copy-templates": "copyfiles -u 4 \"src/lib/fluid-repo-overlay/templates/**/*\" esm/lib/fluid-repo-overlay/templates/",
+		"build:generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
+		"build:manifest": "oclif manifest",
+		"build:readme": "oclif readme --multi --no-aliases",
+		"check": "pnpm check:format",
+		"check:format": "biome check . --linter-enabled=false",
+		"clean": "concurrently npm:clean:build npm:clean:manifest",
+		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"clean:manifest": "rimraf oclif.manifest.json",
 		"format": "biome check . --linter-enabled=false --write",
-		"generate-license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"lint": "pnpm turbo lint:all --filter={.}...",
+		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"oclif-generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
-		"oclif-manifest": "oclif manifest",
-		"oclif-readme": "oclif readme --multi --no-aliases",
 		"postpack": "pnpm clean:manifest",
-		"test": "pnpm turbo test:all --filter={.}...",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-		"tsc": "tsc --project ./tsconfig.json && pnpm copyfiles",
-		"vitest": "vitest run"
+		"test:unit": "vitest run"
 	},
 	"oclif": {
 		"additionalHelpFlags": [
@@ -81,6 +80,9 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/cli/<%- commandPath %>",
 		"topicSeparator": " ",
 		"topics": {
+			"deps": {
+				"description": "Dependency management commands."
+			},
 			"fluid": {
 				"description": "FluidFramework repository tools."
 			},
@@ -93,7 +95,7 @@
 		}
 	},
 	"dependencies": {
-		"@oclif/core": "^4.6.0",
+		"@oclif/core": "^4.7.2",
 		"@oclif/plugin-autocomplete": "^3.2.37",
 		"@oclif/plugin-commands": "^4.1.35",
 		"@oclif/plugin-help": "^6.2.33",
@@ -107,6 +109,7 @@
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
 		"picocolors": "^1.1.1",
+		"semver": "^7.7.3",
 		"simple-git": "^3.28.0",
 		"strip-ansi": "^7.1.2",
 		"tinyglobby": "^0.2.15"
@@ -117,6 +120,8 @@
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
 		"@types/node": "^20.19.23",
+		"@types/semver": "^7.7.1",
+		"@vitest/coverage-v8": "^3.2.4",
 		"concurrently": "^9.2.1",
 		"copyfiles": "^2.4.1",
 		"generate-license-file": "^4.1.0",
@@ -132,5 +137,13 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"ci": {},
+			"build": {
+				"executor": "nx:noop"
+			}
+		}
 	}
 }

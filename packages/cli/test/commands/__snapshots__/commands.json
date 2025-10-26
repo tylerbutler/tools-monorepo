@@ -49,6 +49,27 @@
     },
     {
         "alias": [],
+        "command": "deps:sync",
+        "flagAliases": [],
+        "flagChars": [
+            "l",
+            "v",
+            "x"
+        ],
+        "flags": [
+            "config",
+            "cwd",
+            "execute",
+            "json",
+            "lockfile",
+            "package-manager",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
         "command": "download",
         "flagAliases": [],
         "flagChars": [
@@ -76,6 +97,24 @@
             "dry-run",
             "quiet",
             "repo-dir",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "fluid:task-rename",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "dry-run",
+            "quiet",
+            "repo-dir",
+            "skip-cross-refs",
+            "validate-only",
             "verbose"
         ],
         "plugin": "@tylerbu/cli"

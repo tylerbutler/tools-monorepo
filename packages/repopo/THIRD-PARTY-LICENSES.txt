@@ -124,7 +124,7 @@ MIT
 
 The following npm packages may be included in this product:
 
- - @oclif/core@4.5.6
+ - @oclif/core@4.6.0
  - @oclif/plugin-help@6.2.33
 
 These packages each contain the following license:

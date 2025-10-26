@@ -29,21 +29,21 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"api-extractor": "api-extractor run --local",
+		"build": "pnpm build:compile && pnpm build:api",
+		"build:api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"b": "turbo build",
-		"biome-format": "biome format .",
-		"build": "pnpm turbo build:all --filter={.}...",
-		"check": "pnpm turbo check:all --filter={.}...",
-		"clean": "pnpm turbo clean:all --filter={.}",
+		"b": "nx build",
+		"check": "pnpm check:format",
+		"check:format": "biome format .",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"build:compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
-		"generate-license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"lint": "pnpm turbo lint:all --filter={.}...",
+		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"test": "pnpm turbo test:all --filter={.}...",
-		"test:vitest": "vitest run test",
-		"tsc": "tsc --project ./tsconfig.json",
-		"vitest-coverage": "vitest run test --coverage"
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "pnpm test:vitest",
+		"test:coverage": "vitest run test --coverage",
+		"test:vitest": "vitest run test"
 	},
 	"oclif": {
 		"bin": "tylerbu-cli-api",
@@ -51,7 +51,7 @@
 		"dirname": "tylerbu-cli-api"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.6.0",
+		"@oclif/core": "^4.7.2",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"debug": "^4.4.3",
 		"detect-indent": "^7.0.2",
@@ -65,8 +65,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-documenter": "^7.27.1",
-		"@microsoft/api-extractor": "^7.53.1",
+		"@microsoft/api-documenter": "^7.27.2",
+		"@microsoft/api-extractor": "^7.53.2",
 		"@oclif/test": "^4.1.14",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
@@ -77,6 +77,7 @@
 		"generate-license-file": "^4.1.0",
 		"oclif": "^4.22.32",
 		"rimraf": "^6.0.1",
+		"tempy": "^3.1.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
@@ -87,5 +88,10 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"ci": {}
+		}
 	}
 }

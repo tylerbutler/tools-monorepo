@@ -18,54 +18,36 @@ interface PackageJson {
 	};
 }
 
-const FLUID_BUILD_SCRIPTS = [
-	"build",
-	"build:commonjs",
-	"build:compile",
-	"build:lint",
-	"build:api",
-	"build:docs",
-	"lint",
-	"lint:fix",
-	"test",
-	"test:unit",
+// Scripts to remove from individual packages (replaced by direct task invocation)
+// These are orchestration-level scripts that should only exist at root level
+const ORCHESTRATION_SCRIPT_PATTERNS = [
+	"fluid-build",
+	"turbo run",
+	"turbo ",
+	"nx run",
+	"nx ",
 ];
-
-// Nx wrapper scripts to add to individual packages for developer ease
-const NX_WRAPPER_SCRIPTS: Record<string, string> = {
-	build: "nx build",
-	compile: "nx compile",
-	"build:compile": "nx build:compile",
-	"build:lint": "nx build:lint",
-	"build:api": "nx build:api",
-	"build:docs": "nx build:docs",
-	lint: "nx lint",
-	"lint:fix": "nx lint:fix",
-	test: "nx test",
-	"test:unit": "nx test:unit",
-	"test:mocha": "nx test:mocha",
-	"test:jest": "nx test:jest",
-	clean: "nx clean",
-};
 
 // Root package.json nx scripts based on actual nx.json task names
 // Note: These use the actual target names from nx.json, not the old fluid-build task names
 const ROOT_NX_SCRIPTS: Record<string, string> = {
-	"build-and-test:nx": "nx run-many -t test:unit",
-	"build:compile:nx": "nx run-many -t build:compile",
-	"build:nx":
-		"nx run-many -t check:format build:compile build:lint build:api build:docs build:manifest build:readme",
-	"ci:build:nx":
-		"nx run-many -t build:compile build:lint build:api build:docs build:manifest build:readme",
-	"compile:nx": "nx run-many -t tsc esnext copy-files",
-	"full:nx":
-		"nx run-many -t check:format build:compile build:lint build:api build:docs build:manifest build:readme webpack",
-	"lint:nx": "nx run-many -t lint",
-	"tsc:nx": "nx run-many -t tsc",
+	// Main nx scripts (replace fluid-build commands)
+	build:
+		"nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme",
+	"build-and-test": "nx run-many -t test:unit",
+	"build:compile": "nx run-many -t build:compile",
+	"build:full":
+		"nx run-many -t check:format build:compile build:lint build:api api-extractor build:manifest build:readme webpack",
+	"ci:build":
+		"nx run-many -t build:compile build:lint build:api api-extractor build:manifest build:readme",
+	compile: "nx run-many -t tsc esnext copy-files",
+	format: "biome format . --write",
+	lint: "nx run-many -t lint",
+	tsc: "nx run-many -t tsc",
 };
 
 // Override mode - set to true to replace existing scripts that differ
-const OVERRIDE_EXISTING_SCRIPTS = false;
+const OVERRIDE_EXISTING_SCRIPTS = true;
 
 /**
  * Update root package.json with nx dependencies
@@ -96,6 +78,8 @@ export async function updateRootPackageJson(
 		// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
 		packageJson.devDependencies["nx"] = "21.6.5";
 		packageJson.devDependencies["@nx/workspace"] = "^21.6.5";
+		packageJson.devDependencies["@nx/azure-cache"] = "^4.0.0";
+		packageJson.devDependencies["@nx/s3-cache"] = "^4.0.0";
 		modified = true;
 		logger.log("  ✅ Added nx dependencies");
 	}
@@ -218,28 +202,21 @@ async function updateSinglePackageJson(
 		packageJson.scripts = {};
 	}
 
-	// Replace fluid-build script references with nx wrappers
-	for (const scriptName of FLUID_BUILD_SCRIPTS) {
-		if (packageJson.scripts[scriptName]?.includes("fluid-build")) {
-			// Replace with nx wrapper if we have one defined
-			if (NX_WRAPPER_SCRIPTS[scriptName]) {
-				packageJson.scripts[scriptName] = NX_WRAPPER_SCRIPTS[scriptName];
-				modified = true;
-			} else {
-				// Delete if no wrapper defined
-				delete packageJson.scripts[scriptName];
-				modified = true;
-			}
-		}
-	}
-
-	// Add nx wrapper scripts for common tasks (if not already present)
+	// Remove orchestration-level script references (fluid-build, turbo, nx)
+	// Individual packages should only contain executor-level (tier 3) scripts
 	for (const [scriptName, scriptCommand] of Object.entries(
-		NX_WRAPPER_SCRIPTS,
+		packageJson.scripts,
 	)) {
-		if (!packageJson.scripts[scriptName]) {
-			packageJson.scripts[scriptName] = scriptCommand;
-			modified = true;
+		if (typeof scriptCommand === "string") {
+			// Check if script uses orchestration tools
+			for (const pattern of ORCHESTRATION_SCRIPT_PATTERNS) {
+				if (scriptCommand.includes(pattern)) {
+					// Remove the script entirely
+					delete packageJson.scripts[scriptName];
+					modified = true;
+					break;
+				}
+			}
 		}
 	}
 

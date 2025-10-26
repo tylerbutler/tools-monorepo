@@ -45,6 +45,7 @@
 
 			// test fixtures
 			"!**/test-fixtures",
+			"!**/FluidFramework",
 		],
 	},
 	"formatter": {

@@ -2,10 +2,30 @@ comment:
   layout: "header, diff, components, files, footer"
   hide_project_coverage: false
   require_changes: true
+  require_base: false
+  require_head: true
+  behavior: default
 
 ignore:
   - "**/index.ts"
   - "**/index.js"
+  - "**/index.mjs"
+  - "**/index.cjs"
+  - "**/*.test.ts"
+  - "**/*.test.js"
+  - "**/test/**"
+  - "**/tests/**"
+  - "**/__tests__/**"
+  - "**/bin/**"
+  - "**/*.config.ts"
+  - "**/*.config.js"
+  - "**/*.config.mjs"
+  - "**/*.config.cjs"
+  - "**/docs/**"
+  - "**/.astro/**"
+  - "**/dist/**"
+  - "**/esm/**"
+  - "**/build/**"
 
 coverage:
   status:
@@ -13,13 +33,7 @@ coverage:
       default:
         target: auto
         threshold: 10%
-        base: auto 
-      # dill:
-      #   paths:
-      #     - packages/dill/**
-      # fundamentals:
-      #   paths:
-      #     - packages/fundamentals/**
+        base: auto
     patch:
       default:
         informational: true
@@ -43,3 +57,19 @@ component_management:
       name: sort-tsconfig
       paths:
         - packages/sort-tsconfig/**
+    - component_id: cli
+      name: cli
+      paths:
+        - packages/cli/**
+    - component_id: cli-api
+      name: cli-api
+      paths:
+        - packages/cli-api/**
+    - component_id: xkcd2-api
+      name: xkcd2-api
+      paths:
+        - packages/xkcd2-api/**
+    - component_id: ccl-test-viewer
+      name: ccl-test-viewer
+      paths:
+        - packages/ccl-test-viewer/**

@@ -3,7 +3,8 @@ import baseConfig from "../../config/vitest.config.js";
 
 const config = mergeConfig(baseConfig, {
 	test: {
-		// Additional package-specific configuration if needed
+		// Required for @oclif/test to capture stdout/stderr correctly
+		disableConsoleIntercept: true,
 	},
 });
 
