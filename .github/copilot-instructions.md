@@ -59,7 +59,7 @@ Order: `pnpm install --frozen-lockfile` → `ci:check` (format/deps/policies/lin
 
 **pnpm not found:** Run `corepack enable` first
 **Native dep failures (re2, sharp):** Use `pnpm install --ignore-scripts` (faster, deps not required)
-**Stale Nx cache:** `nx reset && pnpm run build`
+**Stale Nx cache:** `pnpm nx reset && pnpm run build`
 **xkcd2-api test failures:** Pre-existing, ignore unless modifying that package
 **Format/lint errors:** `pnpm format && pnpm run lint:fix && pnpm run fix:policy`
 **Uncommitted files after build:** Some commands generate files (manifests, READMEs). Commit if expected.

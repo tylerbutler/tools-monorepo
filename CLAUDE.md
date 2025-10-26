@@ -16,7 +16,7 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 
 ## Essential Commands
 
-**Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`), which internally call Nx orchestration tasks (`:all` suffix) that coordinate executor tasks (tool names like `tsc`, `typedoc`). See Architecture Patterns section for details.
+**Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`) which run Nx targets across packages (e.g., `nx run-many -t build`). Individual packages define implementation tasks like `build:compile`, `build:api`, etc. See Architecture Patterns section for details.
 
 ### Root-Level Development
 
@@ -24,10 +24,10 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 # Install dependencies (always use pnpm, never npm/yarn)
 pnpm install
 
-# Build all packages (runs nx build:all)
+# Build all packages (runs nx run-many -t build)
 pnpm build
 
-# Run all tests (runs nx test:all)
+# Run all tests (runs nx run-many -t test)
 pnpm test
 
 # Run all checks (format, lint, policy)
@@ -58,23 +58,23 @@ The monorepo uses Nx for intelligent task orchestration:
 
 ```bash
 # Run affected tasks (compares to main branch)
-nx affected -t build
-nx affected -t test
-nx affected -t ci
+pnpm nx affected -t build
+pnpm nx affected -t test
+pnpm nx affected -t ci
 
 # Run tasks on all projects
-nx run-many -t build
-nx run-many -t test
+pnpm nx run-many -t build
+pnpm nx run-many -t test
 
 # Run task on specific project
-nx run cli:build
-nx run cli:test
+pnpm nx run cli:build
+pnpm nx run cli:test
 
 # View project details and task configuration
-nx show project cli --web
+pnpm nx show project cli --web
 
 # Visualize project graph
-nx graph
+pnpm nx graph
 ```
 
 ### Package-Level Development
@@ -170,10 +170,10 @@ Nx orchestrates builds using **pure dependency-based orchestration** - no shell 
 - `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vite plugin)
 
 **Package-Specific Pipelines:**
-- **Libraries**: tsc → api-extractor → typedoc
-- **CLI tools**: tsc → oclif-manifest → oclif-readme → oclif-generate
-- **Astro sites**: astro only
-- **Svelte apps**: vite (or vite → tauri for desktop)
+- **Libraries**: build:compile → build:api → build:docs
+- **CLI tools**: build:compile → build:manifest → build:readme → build:generate
+- **Astro sites**: build:site only
+- **Svelte apps**: build:vite (or build:vite → build:tauri for desktop)
 
 **Key Principles:**
 - **No orchestrator scripts in package.json** - only minimal `"build": ""` to register target
@@ -306,14 +306,14 @@ pnpm test:coverage
 # Production mode (uses compiled JavaScript)
 ./bin/run.js <command>
 
-# Update README after command changes (runs oclif-readme task)
-pnpm readme
+# Update README after command changes (runs build:readme task)
+pnpm nx run cli:build:readme
 
-# Update manifest (runs oclif-manifest task)
-pnpm manifest
+# Update manifest (runs build:manifest task)
+pnpm nx run cli:build:manifest
 
-# Generate command snapshots (runs oclif-generate task)
-pnpm generate
+# Generate command snapshots (runs build:generate task)
+pnpm nx run cli:build:generate
 ```
 
 ### Running Individual Package Scripts
@@ -325,10 +325,10 @@ Nx caches based on inputs/outputs, so repeated builds are fast:
 pnpm build
 
 # Force rebuild without cache
-nx reset && pnpm build
+pnpm nx reset && pnpm build
 
 # See what would be built
-nx run-many -t build --dry-run
+pnpm nx run-many -t build --dry-run
 ```
 
 ### Formatting and Linting
@@ -391,7 +391,7 @@ tools-monorepo/
 ## Troubleshooting
 
 **Build failures:**
-- Clear Nx cache: `nx reset`
+- Clear Nx cache: `pnpm nx reset`
 - Clear package builds: `pnpm clean`
 - Reinstall: `rm -rf node_modules && pnpm install`
 
@@ -401,7 +401,7 @@ tools-monorepo/
 
 **Version mismatches:**
 - Sync dependencies: `pnpm syncpack:fix`
-- Check for mismatches: `nx run-many -t syncpack`
+- Check for mismatches: `pnpm nx run-many -t syncpack`
 
 **TypeScript errors:**
 - Ensure you're extending the correct base config
@@ -414,7 +414,7 @@ tools-monorepo/
 
 # General Guidelines for working with Nx
 
-- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
+- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `pnpm nx run`, `pnpm nx run-many`, `pnpm nx affected`) instead of using the underlying tooling directly
 - You have access to the Nx MCP server and its tools, use them to help the user
 - When answering questions about the repository, use the `nx_workspace` tool first to gain an understanding of the workspace architecture where applicable.
 - When working in individual projects, use the `nx_project_details` mcp tool to analyze and understand the specific project structure and dependencies
