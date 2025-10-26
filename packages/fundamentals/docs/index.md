@@ -584,7 +584,7 @@ Returns an iterable of values in the map
 
 > **exists**(`path`): `Promise`\<`boolean`\>
 
-Defined in: packages/fundamentals/src/fs.ts:22
+Defined in: [packages/fundamentals/src/fs.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/fs.ts#L22)
 
 Check if a file or directory exists.
 
