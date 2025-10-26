@@ -8,6 +8,9 @@
 export function addAll<T>(theSet: Set<T>, items: Iterable<T>): Set<T>;
 
 // @public
+export function exists(path: string): Promise<boolean>;
+
+// @public
 export function findGitRootSync(cwd?: string): string;
 
 // @beta

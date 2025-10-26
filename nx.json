@@ -136,6 +136,7 @@
 		"build:api": {
 			"dependsOn": ["build:compile"],
 			"inputs": [
+				"{projectRoot}/src/**/*.ts", // Source files to ensure cache invalidates on code changes
 				"{projectRoot}/esm/**/*.d.ts",
 				"{projectRoot}/api-extractor*.{json,cjs}",
 				"{projectRoot}/package.json",

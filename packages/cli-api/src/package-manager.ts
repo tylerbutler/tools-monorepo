@@ -1,5 +1,5 @@
-import fs from "node:fs";
 import path from "node:path";
+import { exists } from "@tylerbu/fundamentals";
 
 /**
  * Supported package managers
@@ -60,13 +60,13 @@ const DETECTION_ORDER: PackageManager[] = ["bun", "pnpm", "yarn", "npm"];
  *
  * @beta
  */
-export function detectAllPackageManagers(
+export async function detectAllPackageManagers(
 	directory: string = process.cwd(),
-): PackageManager[] {
+): Promise<PackageManager[]> {
 	const found: PackageManager[] = [];
 	for (const pm of DETECTION_ORDER) {
 		const lockfilePath = path.join(directory, PACKAGE_MANAGERS[pm].lockfile);
-		if (fs.existsSync(lockfilePath)) {
+		if (await exists(lockfilePath)) {
 			found.push(pm);
 		}
 	}
@@ -82,10 +82,10 @@ export function detectAllPackageManagers(
  *
  * @beta
  */
-export function detectPackageManager(
+export async function detectPackageManager(
 	directory: string = process.cwd(),
-): PackageManager | undefined {
-	const found = detectAllPackageManagers(directory);
+): Promise<PackageManager | undefined> {
+	const found = await detectAllPackageManagers(directory);
 	if (found.length === 0) {
 		return;
 	}

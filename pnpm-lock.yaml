@@ -317,6 +317,9 @@ importers:
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
+      '@tylerbu/fundamentals':
+        specifier: workspace:^
+        version: link:../fundamentals
       debug:
         specifier: ^4.4.3
         version: 4.4.3(supports-color@8.1.1)
@@ -402,6 +405,9 @@ importers:
       '@oclif/core':
         specifier: ^4.7.2
         version: 4.7.2
+      '@tylerbu/fundamentals':
+        specifier: workspace:^
+        version: link:../fundamentals
       '@tylerbu/lilconfig-loader-ts':
         specifier: workspace:^
         version: link:../lilconfig-loader-ts
@@ -18988,7 +18994,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.23)(@vitest/ui@3.2.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.11.6(@types/node@20.19.23)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.11.6(@types/node@24.9.1)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/utils@3.2.4':
     dependencies:

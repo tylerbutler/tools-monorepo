@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import fs from "node:fs";
+import { readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { Flags } from "@oclif/core";
 import {
@@ -10,6 +10,7 @@ import {
 	getPackageManagerInfo,
 	type PackageManager,
 } from "@tylerbu/cli-api";
+import { exists } from "@tylerbu/fundamentals";
 import chalk from "picocolors";
 import semver from "semver";
 
@@ -170,12 +171,12 @@ export default class DepsSync extends CommandWithConfig<
 			: process.cwd();
 
 		// Validate that the working directory exists and is safe
-		if (!fs.existsSync(this.workingDir)) {
+		if (!(await exists(this.workingDir))) {
 			this.error(`Working directory does not exist: ${this.workingDir}`);
 		}
 
 		// Verify it's actually a directory
-		const stats = fs.statSync(this.workingDir);
+		const stats = await stat(this.workingDir);
 		if (!stats.isDirectory()) {
 			this.error(`Path is not a directory: ${this.workingDir}`);
 		}
@@ -187,14 +188,14 @@ export default class DepsSync extends CommandWithConfig<
 		}
 
 		try {
-			const packageManager = this.detectPackageManagerFromFlags();
+			const packageManager = await this.detectPackageManagerFromFlags();
 			this.verbose(`Detected package manager: ${packageManager}`);
 
 			const projects = await this.getInstalledVersions(packageManager);
 			this.verbose(`Found ${projects.length} project(s)\n`);
 
 			// Sync all packages
-			const results = this.syncAllPackagesSync(projects);
+			const results = await this.syncAllPackages(projects);
 			if (this.jsonEnabled()) {
 				this.log(JSON.stringify(results, null, 2));
 			} else {
@@ -208,7 +209,7 @@ export default class DepsSync extends CommandWithConfig<
 		}
 	}
 
-	private detectPackageManagerFromFlags(): PackageManager {
+	private async detectPackageManagerFromFlags(): Promise<PackageManager> {
 		// Check for explicit flag
 		if (this.flags["package-manager"]) {
 			return this.flags["package-manager"] as PackageManager;
@@ -236,7 +237,7 @@ export default class DepsSync extends CommandWithConfig<
 		}
 
 		// Auto-detect from current directory
-		const detected = detectPackageManager(this.workingDir);
+		const detected = await detectPackageManager(this.workingDir);
 		if (!detected) {
 			this.error(
 				`No lockfile found in ${this.workingDir}\nSupported: ${getAllLockfiles().join(", ")}`,
@@ -408,27 +409,33 @@ export default class DepsSync extends CommandWithConfig<
 		return projects;
 	}
 
-	private syncAllPackagesSync(projects: ProjectInfo[]): SyncResult[] {
-		// Filter projects that have package.json and sync them all
-		const results = projects
-			.filter((project) => {
+	private async syncAllPackages(
+		projects: ProjectInfo[],
+	): Promise<SyncResult[]> {
+		// Filter projects that have package.json
+		const projectsWithPackageJson: ProjectInfo[] = [];
+		for (const project of projects) {
+			const packageJsonPath = path.join(project.path, "package.json");
+			if (!(await exists(packageJsonPath))) {
+				this.verbose(`⚠️  Skipping ${project.name}: package.json not found`);
+				continue;
+			}
+			projectsWithPackageJson.push(project);
+		}
+
+		// Sync all packages
+		const results = await Promise.all(
+			projectsWithPackageJson.map(async (project) => {
 				const packageJsonPath = path.join(project.path, "package.json");
-				if (!fs.existsSync(packageJsonPath)) {
-					this.verbose(`⚠️  Skipping ${project.name}: package.json not found`);
-					return false;
-				}
-				return true;
-			})
-			.map((project) => {
-				const packageJsonPath = path.join(project.path, "package.json");
-				return this.syncPackageJsonSync(
+				return this.syncPackageJson(
 					packageJsonPath,
 					project.dependencies || {},
 					project.devDependencies || {},
 					project.peerDependencies || {},
 					project.optionalDependencies || {},
 				);
-			});
+			}),
+		);
 
 		// Filter out results with no changes and return
 		return results.filter((r) => r.changes.length > 0);
@@ -503,18 +510,16 @@ export default class DepsSync extends CommandWithConfig<
 		return changes;
 	}
 
-	private syncPackageJsonSync(
+	private async syncPackageJson(
 		packageJsonPath: string,
 		installedDeps: Record<string, DependencyInfo>,
 		installedDevDeps: Record<string, DependencyInfo>,
 		installedPeerDeps: Record<string, DependencyInfo>,
 		installedOptionalDeps: Record<string, DependencyInfo>,
-	): SyncResult {
+	): Promise<SyncResult> {
 		let pkg: PackageJson;
 		try {
-			pkg = JSON.parse(
-				fs.readFileSync(packageJsonPath, "utf-8"),
-			) as PackageJson;
+			pkg = JSON.parse(await readFile(packageJsonPath, "utf-8")) as PackageJson;
 		} catch (error) {
 			this.error(
 				`Failed to read or parse ${packageJsonPath}:\n${error instanceof Error ? error.message : String(error)}`,
@@ -577,7 +582,7 @@ export default class DepsSync extends CommandWithConfig<
 
 		// Write back if changes and not dry run
 		if (changes.length > 0 && !this.isDryRun) {
-			fs.writeFileSync(
+			await writeFile(
 				packageJsonPath,
 				`${JSON.stringify(workingPkg, null, "\t")}\n`,
 			);

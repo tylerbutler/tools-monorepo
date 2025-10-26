@@ -106,6 +106,7 @@
 		"@oclif/plugin-warn-if-update-available": "^3.1.50",
 		"@oclif/plugin-which": "^3.2.41",
 		"@tylerbu/cli-api": "workspace:^",
+		"@tylerbu/fundamentals": "workspace:^",
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
 		"picocolors": "^1.1.1",
