@@ -39,6 +39,9 @@ jobs:
 
       - name: Run affected CI checks, builds, and tests
         run: pnpm run ci
+        env:
+          # Temporarily skip cache to regenerate API docs with correct content
+          NX_SKIP_NX_CACHE: true
 
       - name: "Codecov: upload test results"
         if: ${{ !cancelled() }}
