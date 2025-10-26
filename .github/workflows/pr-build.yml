@@ -14,6 +14,10 @@ on:
     workflows: [Release]
     types: [completed]
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -21,21 +25,33 @@ jobs:
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
         with:
+          filter: tree:0
           fetch-depth: 0 # Required for nx affected to compare against base branch
 
-      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # Sets NX_BASE and NX_HEAD for accurate affected detection ratchet:nrwl/nx-set-shas@v4
-
       - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      # This enables task distribution via Nx Cloud
+      # Run this command as early as possible, before dependencies are installed
+      # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
+      # Uncomment this line to enable task distribution
+      # - run: pnpm dlx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
+
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
+
       - run: npm i --global corepack@latest
       - run: corepack enable
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # Sets NX_BASE and NX_HEAD for accurate affected detection ratchet:nrwl/nx-set-shas@v4
 
       - name: Run affected CI checks, builds, and tests
         run: pnpm run ci
