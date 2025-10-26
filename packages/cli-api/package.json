@@ -52,6 +52,7 @@
 	},
 	"dependencies": {
 		"@oclif/core": "^4.7.2",
+		"@tylerbu/fundamentals": "workspace:^",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"debug": "^4.4.3",
 		"detect-indent": "^7.0.2",

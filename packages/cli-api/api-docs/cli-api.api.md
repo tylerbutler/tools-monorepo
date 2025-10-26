@@ -92,13 +92,13 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @beta
-export function detectAllPackageManagers(directory?: string): PackageManager[];
+export function detectAllPackageManagers(directory?: string): Promise<PackageManager[]>;
 
 // @beta
 export function detectFromLockfilePath(lockfilePath: string): PackageManager | null;
 
 // @beta
-export function detectPackageManager(directory?: string): PackageManager | undefined;
+export function detectPackageManager(directory?: string): Promise<PackageManager | undefined>;
 
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;

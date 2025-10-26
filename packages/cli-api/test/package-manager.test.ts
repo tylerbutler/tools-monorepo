@@ -22,7 +22,7 @@ describe("package-manager", () => {
 	describe("detectAllPackageManagers", () => {
 		it("detects single pnpm lockfile", async () => {
 			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
-			expect(detectAllPackageManagers(tmpDir)).toEqual(["pnpm"]);
+			expect(await detectAllPackageManagers(tmpDir)).toEqual(["pnpm"]);
 		});
 
 		it("detects multiple lockfiles in order", async () => {
@@ -31,7 +31,7 @@ describe("package-manager", () => {
 			await writeFile(join(tmpDir, "yarn.lock"), "# yarn lockfile v1");
 
 			// Should return in detection order: bun, pnpm, yarn, npm
-			const result = detectAllPackageManagers(tmpDir);
+			const result = await detectAllPackageManagers(tmpDir);
 			expect(result).toEqual(["pnpm", "yarn", "npm"]);
 		});
 
@@ -41,17 +41,17 @@ describe("package-manager", () => {
 			await writeFile(join(tmpDir, "package-lock.json"), "{}");
 			await writeFile(join(tmpDir, "yarn.lock"), "# yarn lockfile v1");
 
-			const result = detectAllPackageManagers(tmpDir);
+			const result = await detectAllPackageManagers(tmpDir);
 			expect(result).toEqual(["bun", "pnpm", "yarn", "npm"]);
 		});
 
-		it("returns empty array when no lockfiles found", () => {
-			expect(detectAllPackageManagers(tmpDir)).toEqual([]);
+		it("returns empty array when no lockfiles found", async () => {
+			expect(await detectAllPackageManagers(tmpDir)).toEqual([]);
 		});
 
-		it("uses process.cwd() when no directory provided", () => {
+		it("uses process.cwd() when no directory provided", async () => {
 			// Should not throw and should return an array
-			const result = detectAllPackageManagers();
+			const result = await detectAllPackageManagers();
 			expect(Array.isArray(result)).toBe(true);
 		});
 	});
@@ -59,7 +59,7 @@ describe("package-manager", () => {
 	describe("detectPackageManager", () => {
 		it("detects pnpm from pnpm-lock.yaml", async () => {
 			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
-			expect(detectPackageManager(tmpDir)).toBe("pnpm");
+			expect(await detectPackageManager(tmpDir)).toBe("pnpm");
 		});
 
 		it("detects npm from package-lock.json", async () => {
@@ -67,21 +67,21 @@ describe("package-manager", () => {
 				join(tmpDir, "package-lock.json"),
 				JSON.stringify({ lockfileVersion: 3 }),
 			);
-			expect(detectPackageManager(tmpDir)).toBe("npm");
+			expect(await detectPackageManager(tmpDir)).toBe("npm");
 		});
 
 		it("detects yarn from yarn.lock", async () => {
 			await writeFile(join(tmpDir, "yarn.lock"), "# yarn lockfile v1");
-			expect(detectPackageManager(tmpDir)).toBe("yarn");
+			expect(await detectPackageManager(tmpDir)).toBe("yarn");
 		});
 
 		it("detects bun from bun.lockb", async () => {
 			await writeFile(join(tmpDir, "bun.lockb"), Buffer.from([0x01, 0x02]));
-			expect(detectPackageManager(tmpDir)).toBe("bun");
+			expect(await detectPackageManager(tmpDir)).toBe("bun");
 		});
 
-		it("returns undefined when no lockfile is found", () => {
-			expect(detectPackageManager(tmpDir)).toBeUndefined();
+		it("returns undefined when no lockfile is found", async () => {
+			expect(await detectPackageManager(tmpDir)).toBeUndefined();
 		});
 
 		it("throws error when multiple lockfiles are detected", async () => {
@@ -89,10 +89,10 @@ describe("package-manager", () => {
 			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
 			await writeFile(join(tmpDir, "package-lock.json"), "{}");
 
-			expect(() => detectPackageManager(tmpDir)).toThrow(
+			await expect(() => detectPackageManager(tmpDir)).rejects.toThrow(
 				/Multiple lockfiles detected/,
 			);
-			expect(() => detectPackageManager(tmpDir)).toThrow(
+			await expect(() => detectPackageManager(tmpDir)).rejects.toThrow(
 				/Please use the --lockfile flag/,
 			);
 		});
@@ -101,7 +101,7 @@ describe("package-manager", () => {
 			await writeFile(join(tmpDir, "bun.lockb"), Buffer.from([0x01]));
 			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
 
-			expect(() => detectPackageManager(tmpDir)).toThrow(
+			await expect(() => detectPackageManager(tmpDir)).rejects.toThrow(
 				/Multiple lockfiles detected/,
 			);
 		});
@@ -109,7 +109,7 @@ describe("package-manager", () => {
 		it("detects single lockfile when only one exists", async () => {
 			await writeFile(join(tmpDir, "pnpm-lock.yaml"), "lockfileVersion: '9.0'");
 
-			expect(detectPackageManager(tmpDir)).toBe("pnpm");
+			expect(await detectPackageManager(tmpDir)).toBe("pnpm");
 		});
 	});
 
