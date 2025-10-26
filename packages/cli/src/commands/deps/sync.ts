@@ -262,6 +262,11 @@ export default class DepsSync extends CommandWithConfig<
 		// Split command into executable and arguments to avoid shell interpretation
 		const commandParts = pmInfo.listCommand.split(" ");
 		const executable = commandParts[0];
+		if (!executable) {
+			throw new Error(
+				`Invalid list command for ${packageManager}: ${pmInfo.listCommand}`,
+			);
+		}
 		const args = commandParts.slice(1);
 
 		try {
