@@ -43,8 +43,6 @@
 			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
 			"!**/packages/ccl-test-viewer/static/data/*.*",
 
-			// test fixtures
-			"!**/test-fixtures",
 			"!**/FluidFramework",
 		],
 	},
