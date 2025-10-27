@@ -34,8 +34,7 @@
 	// ============================================
 	// Reusable file pattern definitions for caching
 	"namedInputs": {
-		"default": ["{projectRoot}/**/*"],
-
+		"default": ["{projectRoot}/**/*", "sharedGlobals"],
 		"production": [
 			"default",
 			"!{projectRoot}/**/*.spec.ts",
