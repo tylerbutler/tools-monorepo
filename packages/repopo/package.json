@@ -99,7 +99,7 @@
 		"rimraf": "^6.0.1",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^4.41.0",
+		"type-fest": "^5.1.0",
 		"typescript": "~5.9.3",
 		"vitest": "^3.2.4"
 	},
