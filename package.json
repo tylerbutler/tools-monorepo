@@ -10,78 +10,6 @@
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
-	"nx": {
-		"targets": {
-			"ci": {
-				"dependsOn": [
-					"check:all",
-					"lint"
-				],
-				"cache": true
-			},
-			"check:all": {
-				"dependsOn": [
-					"check:deps",
-					"check:format",
-					"check:policy",
-					"check:references",
-					"lint"
-				],
-				"cache": true
-			},
-			"check:format": {
-				"inputs": [
-					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts,json,jsonc,md}",
-					"!{workspaceRoot}/**/node_modules/**",
-					"!{workspaceRoot}/**/dist/**",
-					"!{workspaceRoot}/**/esm/**",
-					"{workspaceRoot}/biome.jsonc",
-					"{workspaceRoot}/config/biome/*.jsonc"
-				],
-				"cache": true
-			},
-			"lint": {
-				"inputs": [
-					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}",
-					"!{workspaceRoot}/**/node_modules/**",
-					"!{workspaceRoot}/**/dist/**",
-					"!{workspaceRoot}/**/esm/**",
-					"{workspaceRoot}/biome.jsonc",
-					"{workspaceRoot}/config/biome/*.jsonc"
-				],
-				"cache": true
-			},
-			"check:deps": {
-				"inputs": [
-					"{workspaceRoot}/package.json",
-					"{workspaceRoot}/packages/*/package.json",
-					"{workspaceRoot}/syncpack.config.cjs",
-					"{workspaceRoot}/pnpm-lock.yaml"
-				],
-				"cache": true
-			},
-			"check:policy": {
-				"inputs": [
-					"{workspaceRoot}/**/*",
-					"!{workspaceRoot}/**/node_modules/**",
-					"!{workspaceRoot}/**/dist/**",
-					"!{workspaceRoot}/**/esm/**",
-					"{workspaceRoot}/repopo.config.ts"
-				],
-				"cache": true
-			},
-			"check:references": {
-				"inputs": [
-					"{workspaceRoot}/package.json",
-					"{workspaceRoot}/packages/*/package.json",
-					"{workspaceRoot}/packages/*/tsconfig*.json",
-					"{workspaceRoot}/config/tsconfig*.json",
-					"{workspaceRoot}/pnpm-workspace.yaml"
-				],
-				"cache": true
-			}
-		}
-	},
 	"scripts": {
 		"build": "nx run-many -t build",
 		"build:affected": "nx affected -t build",
@@ -189,6 +117,78 @@
 		"overrides": {
 			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
 			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
+		}
+	},
+	"nx": {
+		"targets": {
+			"ci": {
+				"dependsOn": [
+					"check:all",
+					"lint"
+				],
+				"cache": true
+			},
+			"check:all": {
+				"dependsOn": [
+					"check:deps",
+					"check:format",
+					"check:policy",
+					"check:references",
+					"lint"
+				],
+				"cache": true
+			},
+			"check:format": {
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts,json,jsonc,md}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/biome.jsonc",
+					"{workspaceRoot}/config/biome/*.jsonc"
+				],
+				"cache": true
+			},
+			"lint": {
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/biome.jsonc",
+					"{workspaceRoot}/config/biome/*.jsonc"
+				],
+				"cache": true
+			},
+			"check:deps": {
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/syncpack.config.cjs",
+					"{workspaceRoot}/pnpm-lock.yaml"
+				],
+				"cache": true
+			},
+			"check:policy": {
+				"inputs": [
+					"{workspaceRoot}/**/*",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/repopo.config.ts"
+				],
+				"cache": true
+			},
+			"check:references": {
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/packages/*/tsconfig*.json",
+					"{workspaceRoot}/config/tsconfig*.json",
+					"{workspaceRoot}/pnpm-workspace.yaml"
+				],
+				"cache": true
+			}
 		}
 	}
 }
