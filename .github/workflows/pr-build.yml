@@ -35,9 +35,8 @@ jobs:
 
       # This enables task distribution via Nx Cloud
       # Run this command as early as possible, before dependencies are installed
-      - run: pnpm dlx nx start-ci-run  --auto-apply-fixes="*format*,*lint*" --distribute-on="3 linux-medium-js" --stop-agents-after="check,build,lint,test:coverage"
+      - run: pnpm dlx nx start-ci-run  --auto-apply-fixes="*format*,*lint*" --distribute-on="3 linux-medium-js"
       
-
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -50,7 +49,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # Sets NX_BASE and NX_HEAD for accurate affected detection ratchet:nrwl/nx-set-shas@v4
+      # Sets NX_BASE and NX_HEAD for accurate affected detection
+      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 ratchet:nrwl/nx-set-shas@v4
 
       - name: Run affected CI checks, builds, and tests
         run: pnpm run ci
