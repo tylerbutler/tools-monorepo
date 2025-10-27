@@ -10,28 +10,93 @@
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
+	"nx": {
+		"targets": {
+			"check:all": {
+				"dependsOn": [
+					"check:deps",
+					"check:format",
+					"check:policy",
+					"check:references",
+					"lint"
+				],
+				"cache": true
+			},
+			"check:format": {
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts,json,jsonc,md}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/biome.jsonc",
+					"{workspaceRoot}/config/biome/*.jsonc"
+				],
+				"cache": true
+			},
+			"lint": {
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/biome.jsonc",
+					"{workspaceRoot}/config/biome/*.jsonc"
+				],
+				"cache": true
+			},
+			"check:deps": {
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/syncpack.config.cjs",
+					"{workspaceRoot}/pnpm-lock.yaml"
+				],
+				"cache": true
+			},
+			"check:policy": {
+				"inputs": [
+					"{workspaceRoot}/**/*",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/repopo.config.ts"
+				],
+				"cache": true
+			},
+			"check:references": {
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/packages/*/tsconfig*.json",
+					"{workspaceRoot}/config/tsconfig*.json",
+					"{workspaceRoot}/pnpm-workspace.yaml"
+				],
+				"cache": true
+			}
+		}
+	},
 	"scripts": {
 		"build": "nx run-many -t build",
 		"build:affected": "nx affected -t build",
-		"check": "nx run-many -t check && pnpm check:all",
-		"check:all": "concurrently npm:check:deps npm:check:format npm:check:policy npm:check:references npm:lint",
-		"check:deps": "syncpack lint",
-		"check:format": "biome check --linter-enabled=false",
-		"check:policy": "repopo check",
-		"check:references": "workspaces-to-typescript-project-references --check",
-	"ci": "nx affected -t ci",
-	"ci:all": "nx run-many -t ci",
-	"ci:local": "nx affected -t ci --base=HEAD~1",
-	"ci:build": "nx run-many -t build build:generate",
-	"ci:check": "pnpm check",
-	"ci:check:astro": "nx run-many -t check:astro",
-	"ci:check:svelte": "nx run-many -t check:svelte",
-	"ci:docs": "nx run-many -t build:docs",
-	"ci:lint": "biome ci --reporter=github",
-	"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
-	"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
-	"ci:test": "nx run-many -t test:coverage",
-	"ci:version": "pnpm run release:license && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
+		"check": "nx run-many -t check && nx check:all",
+		"check:all": "nx run tools-monorepo:check:all",
+		"check:deps": "nx exec -- syncpack lint",
+		"check:format": "nx exec -- biome check --linter-enabled=false",
+		"check:policy": "nx exec -- repopo check",
+		"check:references": "nx exec -- workspaces-to-typescript-project-references --check",
+		"ci": "nx affected -t ci",
+		"ci:all": "nx run-many -t ci",
+		"ci:build": "nx run-many -t build build:generate",
+		"ci:check": "pnpm check",
+		"ci:check:astro": "nx run-many -t check:astro",
+		"ci:check:svelte": "nx run-many -t check:svelte",
+		"ci:docs": "nx run-many -t build:docs",
+		"ci:lint": "biome ci --reporter=github",
+		"ci:local": "nx affected -t ci --base=HEAD~1",
+		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
+		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
+		"ci:test": "nx run-many -t test:coverage",
+		"ci:version": "pnpm run release:license && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
 		"clean": "nx run-many -t clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "nx run-many -t build:compile",
@@ -45,7 +110,7 @@
 		"fix:references": "workspaces-to-typescript-project-references",
 		"format": "biome check . --linter-enabled=false --write",
 		"generate:packlist": "flub generate packlist -g client --no-private",
-		"lint": "biome lint",
+		"lint": "nx exec -- biome lint",
 		"lint:fix": "biome lint --write",
 		"release:license": "nx run-many -t release:license",
 		"sort-package-json": "sort-package-json package.json \"config/package.json\" \"packages/*/package.json\"",
