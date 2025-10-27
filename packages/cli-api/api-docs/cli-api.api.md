@@ -76,6 +76,7 @@ export abstract class CommandWithConfig<T extends typeof Command & {
     };
     // (undocumented)
     init(): Promise<void>;
+    protected requiresConfig: boolean;
 }
 
 // @beta
@@ -90,6 +91,15 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 // @beta
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
+// @beta
+export function detectAllPackageManagers(directory?: string): Promise<PackageManager[]>;
+
+// @beta
+export function detectFromLockfilePath(lockfilePath: string): PackageManager | null;
+
+// @beta
+export function detectPackageManager(directory?: string): Promise<PackageManager | undefined>;
+
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
 
@@ -99,8 +109,14 @@ export function findGitRoot(cwd?: string): Promise<string>;
 // @public
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<(typeof BaseCommand)["baseFlags"] & T["flags"]>;
 
+// @beta
+export function getAllLockfiles(): string[];
+
 // @beta (undocumented)
 export function getMergeBase(git: SimpleGit, reference1: string, reference2: string): Promise<string>;
+
+// @beta
+export function getPackageManagerInfo(pm: PackageManager): PackageManagerInfo;
 
 // @beta
 export abstract class GitCommand<T extends typeof Command & {
@@ -112,6 +128,7 @@ export abstract class GitCommand<T extends typeof Command & {
     protected git: SimpleGit;
     // (undocumented)
     protected repo: Repository;
+    protected requiresConfig: boolean;
 }
 
 // @beta
@@ -131,6 +148,22 @@ export interface Logger {
 
 // @public
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
+
+// @beta
+export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo>;
+
+// @beta
+export type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
+
+// @beta
+export interface PackageManagerInfo {
+    // (undocumented)
+    listCommand: string;
+    // (undocumented)
+    lockfile: string;
+    // (undocumented)
+    name: PackageManager;
+}
 
 // @beta
 export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;

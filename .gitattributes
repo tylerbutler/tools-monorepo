@@ -1,7 +1,18 @@
 # Set the language for these files to json5 to ensure GitHub doesn't show the comments as errors
 **/.vscode/*.json              linguist-language=JSON-with-Comments
 api-extractor*.json            linguist-language=JSON-with-Comments
+nx.json                        linguist-language=JSON-with-Comments
 tsconfig*.json                 linguist-language=JSON-with-Comments
 
+*     text !filter !merge !diff
+*     text=auto eol=lf
+*.txt text=auto !eol
+
+*.png -text
+*.jpg -text
+*.gif -text
+*.pdf -text
+
 # Hide docs from GitHub's language detection
+**/api-docs/**                     linguist-documentation
 **/docs/**                     linguist-documentation

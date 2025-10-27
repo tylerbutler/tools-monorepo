@@ -1,0 +1,356 @@
+{
+	"$schema": "./node_modules/nx/schemas/nx-schema.json",
+
+	// Maximum parallel tasks - optimized for modern hardware
+	// "parallel": 25,
+
+	"cacheDirectory": ".nx/cache",
+	"defaultBase": "main",
+
+	// Enable daemon for faster task execution
+	"useDaemonProcess": true,
+
+	// ============================================
+	// PLUGINS - Auto-infer tasks from config files
+	// ============================================
+	"plugins": [
+		{
+			"plugin": "@nx/vite/plugin",
+			"exclude": [
+				"packages/ccl-test-viewer/**", // Svelte app with custom Vite setup
+				"packages/ccl-docs/**", // Astro site (uses Vite internally but different config)
+				"packages/dill-docs/**", // Astro site
+				"packages/repopo-docs/**" // Astro site
+			],
+			"options": {
+				"testTargetName": "test:vitest", // Avoid conflicts with existing test:unit
+				"serveTargetName": "serve:vite" // Avoid conflicts with existing dev targets
+			}
+		}
+	],
+
+	// ============================================
+	// NAMED INPUTS
+	// ============================================
+	// Reusable file pattern definitions for caching
+	"namedInputs": {
+		"default": ["{projectRoot}/**/*", "sharedGlobals"],
+		"production": [
+			"default",
+			"!{projectRoot}/**/*.spec.ts",
+			"!{projectRoot}/**/*.test.ts",
+			"!{projectRoot}/test/**/*",
+			"!{projectRoot}/**/*.md",
+			"!{projectRoot}/vitest.config.*"
+		],
+
+		// Shared config files that affect all packages
+		"sharedGlobals": [
+			"{workspaceRoot}/config/tsconfig*.json",
+			"{workspaceRoot}/config/biome/*.jsonc",
+			"{workspaceRoot}/biome.jsonc",
+			"{workspaceRoot}/pnpm-workspace.yaml",
+			"{workspaceRoot}/repopo.config.ts",
+			"{workspaceRoot}/.generatelicensefile.cjs"
+		]
+	},
+
+	// ============================================
+	// TARGET DEFAULTS
+	// ============================================
+	"targetDefaults": {
+		// ============================================
+		// ORCHESTRATION TARGETS
+		// ============================================
+		// CI target - centralizes task list for CI pipeline
+		// Dependencies: check, build, lint, test:coverage
+		// Projects inherit this automatically if they have a "ci" script
+		"ci": {
+			"executor": "nx:noop",
+			"dependsOn": ["check", "build", "lint", "test:coverage"],
+			"cache": true
+		},
+
+		"build": {
+			"dependsOn": [
+				"^build", // Inter-package dependencies
+				"build:compile", // Intra-package: TypeScript compilation
+				"build:api", // Intra-package: API documentation
+				"build:docs", // Intra-package: TypeDoc documentation
+				"build:manifest", // Intra-package: OCLIF manifest
+				"build:readme", // Intra-package: OCLIF readme
+				"build:generate", // Intra-package: OCLIF snapshots
+				"build:site", // Intra-package: Astro/Vite sites
+				"build:vite" // Intra-package: Vite builds
+			],
+			"cache": true
+		},
+
+		"test": {
+			"dependsOn": [
+				"build:compile", // Need compiled code before testing
+				"test:unit", // Intra-package: Unit tests
+				"test:vitest", // Intra-package: Vitest tests
+				"test:snapshots" // Intra-package: Snapshot tests (OCLIF)
+			],
+			"cache": true
+		},
+
+		"lint": {
+			"cache": true
+		},
+
+		"check": {
+			"cache": true
+		},
+
+		"clean": {
+			"cache": false
+		},
+
+		"dev": {
+			"cache": false
+		},
+
+		"release": {
+			"dependsOn": ["build", "release:license"],
+			"cache": true
+		},
+
+		// ============================================
+		// BUILD IMPLEMENTATION TARGETS
+		// ============================================
+		// TypeScript compilation - optimized with production inputs
+		"build:compile": {
+			"dependsOn": ["^build:compile"],
+			"inputs": ["production", "^production", "sharedGlobals"],
+			"outputs": [
+				"{projectRoot}/esm/**",
+				"{projectRoot}/dist/**",
+				"{projectRoot}/*.tsbuildinfo"
+			],
+			"cache": true
+		},
+
+		"build:api": {
+			"dependsOn": ["build:compile"],
+			"inputs": [
+				"{projectRoot}/src/**/*.ts", // Source files to ensure cache invalidates on code changes
+				"{projectRoot}/esm/**/*.d.ts",
+				"{projectRoot}/api-extractor*.{json,cjs}",
+				"{projectRoot}/package.json",
+				"{workspaceRoot}/config/api-extractor.base.json"
+			],
+			"outputs": [
+				"{projectRoot}/api-docs/**",
+				"{projectRoot}/_temp/**",
+				"{projectRoot}/esm/tsdoc-metadata.json"
+			],
+			"cache": true
+		},
+
+		"build:docs": {
+			"dependsOn": ["build:compile", "build:api"],
+			"inputs": [
+				"{projectRoot}/esm/**",
+				"{projectRoot}/src/**",
+				"{projectRoot}/typedoc.{json,js,cjs}",
+				"{projectRoot}/README.md"
+			],
+			"outputs": ["{projectRoot}/docs/**"],
+			"cache": true
+		},
+
+		// OCLIF-specific build targets (no plugin available)
+		"build:manifest": {
+			"dependsOn": ["build:compile"],
+			"inputs": ["production", "^production"],
+			"outputs": ["{projectRoot}/oclif.manifest.json"],
+			"cache": true
+		},
+
+		"build:readme": {
+			"dependsOn": ["build:manifest"],
+			"inputs": ["production", "{projectRoot}/oclif.manifest.json"],
+			"outputs": ["{projectRoot}/README.md", "{projectRoot}/docs/**"],
+			"cache": true
+		},
+
+		"build:generate": {
+			"dependsOn": ["build:compile", "build:manifest"],
+			"inputs": ["production", "{projectRoot}/oclif.manifest.json"],
+			"outputs": ["{projectRoot}/test/commands/__snapshots__/**"],
+			"cache": true
+		},
+
+		// Vite/Astro builds - plugins will infer these, but we provide defaults
+		"build:site": {
+			"dependsOn": ["^build:compile"],
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
+				"{projectRoot}/public/**"
+			],
+			"outputs": ["{projectRoot}/dist/**", "{projectRoot}/.astro/**"],
+			"cache": true
+		},
+
+		"build:vite": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
+				"{projectRoot}/public/**",
+				"{projectRoot}/index.html"
+			],
+			"outputs": ["{projectRoot}/dist/**"],
+			"cache": true
+		},
+
+		"build:tauri": {
+			"dependsOn": ["build:vite"],
+			"inputs": ["{projectRoot}/src-tauri/**", "{projectRoot}/dist/**"],
+			"outputs": ["{projectRoot}/src-tauri/target/**"],
+			"cache": true
+		},
+
+		"build:copy-templates": {
+			"dependsOn": ["build:compile"],
+			"inputs": ["{projectRoot}/src/**/templates/**"],
+			"outputs": ["{projectRoot}/esm/**/templates/**"],
+			"cache": true
+		},
+
+		// ============================================
+		// TEST IMPLEMENTATION TARGETS
+		// ============================================
+		"test:unit": {
+			"dependsOn": ["build:compile"],
+			"inputs": [
+				"default",
+				"^production",
+				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
+			],
+			"outputs": ["{projectRoot}/_temp/**", "{projectRoot}/.sonda/**"],
+			"cache": true
+		},
+
+		"test:coverage": {
+			"dependsOn": ["build:compile"],
+			"inputs": [
+				"default",
+				"^production",
+				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
+			],
+			"outputs": [
+				"{projectRoot}/.coverage/**",
+				"{projectRoot}/.sonda/**",
+				"{projectRoot}/_temp/**"
+			],
+			"cache": true
+		},
+
+		"test:e2e": {
+			"dependsOn": ["build"],
+			"cache": false
+		},
+
+		// ============================================
+		// LINT IMPLEMENTATION TARGETS
+		// ============================================
+		"lint:biome": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/test/**",
+				"{projectRoot}/biome.jsonc",
+				"{workspaceRoot}/config/biome/*.jsonc",
+				"{workspaceRoot}/biome.jsonc"
+			],
+			"cache": true
+		},
+
+		// ============================================
+		// CHECK IMPLEMENTATION TARGETS
+		// ============================================
+		"check:format": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/test/**",
+				"{projectRoot}/*.{json,jsonc,md,ts,js,mjs,cjs}",
+				"{workspaceRoot}/config/biome/*.jsonc",
+				"{workspaceRoot}/biome.jsonc"
+			],
+			"cache": true
+		},
+
+		"check:types": {
+			"dependsOn": ["^build"],
+			"inputs": [
+				"production",
+				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
+				"{projectRoot}/typedoc.{json,js,cjs}"
+			],
+			"cache": true
+		},
+
+		"check:deps": {
+			"inputs": [
+				"{projectRoot}/package.json",
+				"{workspaceRoot}/package.json",
+				"{workspaceRoot}/*syncpack*"
+			],
+			"cache": true
+		},
+
+		"check:policy": {
+			"dependsOn": ["repopo:build:compile"],
+			"inputs": ["{projectRoot}/**/*"],
+			"cache": true
+		},
+
+		"check:astro": {
+			"dependsOn": ["^build:compile"],
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
+			],
+			"cache": true
+		},
+
+		"check:svelte": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
+			],
+			"cache": true
+		},
+
+		// ============================================
+		// RELEASE IMPLEMENTATION TARGETS
+		// ============================================
+		"release:license": {
+			"dependsOn": ["^release:license"],
+			"inputs": [
+				"{projectRoot}/package.json",
+				"{workspaceRoot}/.generatelicensefile.cjs"
+			],
+			"outputs": ["{projectRoot}/THIRD-PARTY-LICENSES.txt"],
+			"cache": true
+		},
+
+		// ============================================
+		// CLEAN IMPLEMENTATION TARGETS
+		// ============================================
+		"clean:build": {
+			"cache": false
+		},
+
+		"clean:manifest": {
+			"cache": false
+		},
+
+		"clean:root": {
+			"cache": false
+		}
+	},
+	"nxCloudId": "68fa4834e4d66c5b22e74804"
+}

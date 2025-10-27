@@ -49,6 +49,27 @@
     },
     {
         "alias": [],
+        "command": "deps:sync",
+        "flagAliases": [],
+        "flagChars": [
+            "l",
+            "v",
+            "x"
+        ],
+        "flags": [
+            "config",
+            "cwd",
+            "execute",
+            "json",
+            "lockfile",
+            "package-manager",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
         "command": "download",
         "flagAliases": [],
         "flagChars": [
@@ -60,6 +81,70 @@
             "extract",
             "filename",
             "out",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "fluid:repo-overlay",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "dry-run",
+            "quiet",
+            "repo-dir",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "fluid:task-rename",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "dry-run",
+            "quiet",
+            "repo-dir",
+            "skip-cross-refs",
+            "validate-only",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [
+            "mtp"
+        ],
+        "command": "git:merge-train:preview",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "git:squish",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "dry-run",
             "quiet",
             "verbose"
         ],
