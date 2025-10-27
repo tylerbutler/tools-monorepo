@@ -55,8 +55,13 @@ jobs:
       # Sets NX_BASE and NX_HEAD for accurate affected detection
       - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4
 
-      - name: Run affected CI checks, builds, and tests
-        run: pnpm run ci
+      - name: Run CI checks, builds, and tests
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            pnpm run ci:all
+          else
+            pnpm run ci
+          fi
 
       - run: npx nx fix-ci
         if: always()
