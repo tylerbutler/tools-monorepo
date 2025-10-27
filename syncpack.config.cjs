@@ -39,6 +39,12 @@ const config = {
 		// 	packages: ["**"],
 		// },
 		{
+			label: "Ignore GitHub URL dependencies",
+			isIgnored: true,
+			dependencies: ["base16-tailwind"],
+			packages: ["**"],
+		},
+		{
 			label: "Use exact ranges for these deps",
 			range: "",
 			dependencies: ["@biomejs/biome", "nx", "sort-package-json"],
