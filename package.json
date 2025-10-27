@@ -12,6 +12,13 @@
 	"type": "module",
 	"nx": {
 		"targets": {
+			"ci": {
+				"dependsOn": [
+					"check:all",
+					"lint"
+				],
+				"cache": true
+			},
 			"check:all": {
 				"dependsOn": [
 					"check:deps",
@@ -84,7 +91,8 @@
 		"check:format": "nx exec -- biome check --linter-enabled=false",
 		"check:policy": "nx exec -- repopo check",
 		"check:references": "nx exec -- workspaces-to-typescript-project-references --check",
-		"ci": "nx affected -t ci",
+		"ci": "nx run tools-monorepo:ci",
+		"ci:affected": "nx affected -t ci",
 		"ci:all": "nx run-many -t ci",
 		"ci:build": "nx run-many -t build build:generate",
 		"ci:check": "pnpm check",
