@@ -142,7 +142,7 @@ describe("BuildGraph - Circular Dependencies and Complex Scenarios", () => {
 					mockLogger,
 					{ matchedOnly: false, worker: false },
 				);
-			}).toThrow(/Circular Reference detected/);
+			}).toThrow(/Circular package dependency detected/);
 		});
 
 		it("should not throw on valid DAG of dependencies", () => {
