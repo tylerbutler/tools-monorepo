@@ -6,7 +6,7 @@
 
 # Interface: IReleaseGroup
 
-Defined in: packages/sail-infrastructure/src/types.ts:235
+Defined in: [packages/sail-infrastructure/src/types.ts:235](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L235)
 
 A release group is a collection of packages that are versioned and released together. All packages within a release
 group will have the same version, and all packages will be released at the same time.
@@ -27,7 +27,7 @@ information.
 readonly optional adoPipelineUrl: string;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:271
+Defined in: [packages/sail-infrastructure/src/types.ts:271](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L271)
 
 An optional ADO pipeline URL for the CI pipeline that builds the release group.
 
@@ -39,7 +39,7 @@ An optional ADO pipeline URL for the CI pipeline that builds the release group.
 readonly name: ReleaseGroupName;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:239
+Defined in: [packages/sail-infrastructure/src/types.ts:239](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L239)
 
 The name of the release group. All release groups must have unique names.
 
@@ -51,7 +51,7 @@ The name of the release group. All release groups must have unique names.
 readonly packages: IPackage<PackageJson>[];
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:254
+Defined in: [packages/sail-infrastructure/src/types.ts:254](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L254)
 
 An array of all packages in the release group.
 
@@ -63,7 +63,7 @@ An array of all packages in the release group.
 readonly releaseGroupDependencies: IReleaseGroup[];
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:266
+Defined in: [packages/sail-infrastructure/src/types.ts:266](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L266)
 
 An array of all the release groups that the release group depends on. If any package in a release group has any
 dependency on a package in another release group within the same workspace, then the first release group depends
@@ -77,7 +77,7 @@ on the second.
 readonly optional rootPackage: IPackage<PackageJson>;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:249
+Defined in: [packages/sail-infrastructure/src/types.ts:249](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L249)
 
 The package that is the release group root, if one exists.
 
@@ -89,7 +89,7 @@ The package that is the release group root, if one exists.
 readonly version: string;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:244
+Defined in: [packages/sail-infrastructure/src/types.ts:244](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L244)
 
 The version of the release group.
 
@@ -101,7 +101,7 @@ The version of the release group.
 readonly workspace: IWorkspace;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:259
+Defined in: [packages/sail-infrastructure/src/types.ts:259](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L259)
 
 The workspace that the release group belongs to.
 
@@ -113,7 +113,7 @@ The workspace that the release group belongs to.
 reload(): void;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:152
+Defined in: [packages/sail-infrastructure/src/types.ts:152](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L152)
 
 Synchronously reload.
 
@@ -133,7 +133,7 @@ Synchronously reload.
 toString(): string;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:273
+Defined in: [packages/sail-infrastructure/src/types.ts:273](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L273)
 
 Returns a string representation of an object.
 

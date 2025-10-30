@@ -10,7 +10,7 @@
 type LoggingFunction = (message?, ...args) => void;
 ```
 
-Defined in: packages/sail-infrastructure/src/logging.ts:16
+Defined in: [packages/sail-infrastructure/src/logging.ts:16](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/logging.ts#L16)
 
 A function that logs an error message.
 

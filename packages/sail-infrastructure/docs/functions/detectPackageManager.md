@@ -10,7 +10,7 @@
 function detectPackageManager(cwd): IPackageManager;
 ```
 
-Defined in: packages/sail-infrastructure/src/packageManagers.ts:63
+Defined in: [packages/sail-infrastructure/src/packageManagers.ts:63](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/packageManagers.ts#L63)
 
 Create a new package manager instance.
 

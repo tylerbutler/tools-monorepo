@@ -6,7 +6,7 @@
 
 # ~~Interface: IFluidBuildDirs~~
 
-Defined in: packages/sail-infrastructure/src/config.ts:159
+Defined in: [packages/sail-infrastructure/src/config.ts:159](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L159)
 
 ## Deprecated
 

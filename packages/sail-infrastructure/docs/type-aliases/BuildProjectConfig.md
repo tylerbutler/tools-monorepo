@@ -12,4 +12,4 @@ type BuildProjectConfig =
   | BuildProjectConfigV2;
 ```
 
-Defined in: packages/sail-infrastructure/src/config.ts:21
+Defined in: [packages/sail-infrastructure/src/config.ts:21](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L21)

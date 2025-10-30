@@ -10,7 +10,7 @@
 function updatePackageJsonFileAsync<J>(packagePath, packageTransformer): Promise<void>;
 ```
 
-Defined in: packages/sail-infrastructure/src/packageJsonUtils.ts:82
+Defined in: [packages/sail-infrastructure/src/packageJsonUtils.ts:82](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/packageJsonUtils.ts#L82)
 
 Reads the contents of package.json, applies a transform function to it, then writes
 the results back to the source file.

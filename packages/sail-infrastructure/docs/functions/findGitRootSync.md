@@ -10,7 +10,7 @@
 function findGitRootSync(cwd): string;
 ```
 
-Defined in: packages/sail-infrastructure/src/git.ts:33
+Defined in: [packages/sail-infrastructure/src/git.ts:33](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/git.ts#L33)
 
 Returns the absolute path to the nearest Git repository root found starting at `cwd`.
 

@@ -6,7 +6,7 @@
 
 # Interface: PackageFilterOptions
 
-Defined in: packages/sail-infrastructure/src/filter.ts:103
+Defined in: [packages/sail-infrastructure/src/filter.ts:103](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L103)
 
 The criteria that should be used for filtering package-like objects from a collection.
 
@@ -18,7 +18,7 @@ The criteria that should be used for filtering package-like objects from a colle
 private: boolean | undefined;
 ```
 
-Defined in: packages/sail-infrastructure/src/filter.ts:117
+Defined in: [packages/sail-infrastructure/src/filter.ts:117](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L117)
 
 If set, filters private packages in/out.
 
@@ -30,7 +30,7 @@ If set, filters private packages in/out.
 optional scope: string[];
 ```
 
-Defined in: packages/sail-infrastructure/src/filter.ts:107
+Defined in: [packages/sail-infrastructure/src/filter.ts:107](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L107)
 
 If set, filters IN packages whose scope matches the strings provided.
 
@@ -42,6 +42,6 @@ If set, filters IN packages whose scope matches the strings provided.
 optional skipScope: string[];
 ```
 
-Defined in: packages/sail-infrastructure/src/filter.ts:112
+Defined in: [packages/sail-infrastructure/src/filter.ts:112](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L112)
 
 If set, filters OUT packages whose scope matches the strings provided.

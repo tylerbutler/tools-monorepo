@@ -6,7 +6,7 @@
 
 # Interface: IPackageManager
 
-Defined in: packages/sail-infrastructure/src/types.ts:312
+Defined in: [packages/sail-infrastructure/src/types.ts:312](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L312)
 
 A package manager, such as "npm" or "pnpm".
 
@@ -18,7 +18,7 @@ A package manager, such as "npm" or "pnpm".
 readonly lockfileNames: string[];
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:321
+Defined in: [packages/sail-infrastructure/src/types.ts:321](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L321)
 
 The name of the lockfile(s) used by the package manager.
 
@@ -30,7 +30,7 @@ The name of the lockfile(s) used by the package manager.
 readonly name: AgentName;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:316
+Defined in: [packages/sail-infrastructure/src/types.ts:316](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L316)
 
 The name of the package manager.
 
@@ -42,7 +42,7 @@ The name of the package manager.
 getInstallCommandWithArgs(updateLockfile): string[];
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:337
+Defined in: [packages/sail-infrastructure/src/types.ts:337](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L337)
 
 Returns an array of arguments, including the name of the command, e.g. "install", that can be used to install
 dependencies using this package manager.

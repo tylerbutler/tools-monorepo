@@ -6,7 +6,7 @@
 
 # Interface: IBuildProject\<P\>
 
-Defined in: packages/sail-infrastructure/src/types.ts:64
+Defined in: [packages/sail-infrastructure/src/types.ts:64](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L64)
 
 A BuildProject organizes a collection of npm packages into workspaces and release groups. A BuildProject can contain
 multiple workspaces, and a workspace can in turn contain multiple release groups. Both workspaces and release groups
@@ -34,7 +34,7 @@ The type of [IPackage](IPackage.md) the repo uses. This can be any type that imp
 configuration: BuildProjectConfig;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:94
+Defined in: [packages/sail-infrastructure/src/types.ts:94](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L94)
 
 The configuration for the build project.
 
@@ -46,7 +46,7 @@ The configuration for the build project.
 configurationSource: string;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:100
+Defined in: [packages/sail-infrastructure/src/types.ts:100](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L100)
 
 The source for the configuration. If the configuration is loaded from a file, this will be the path to the file. If
 the configuration is inferred, this will be the string "INFERRED".
@@ -59,7 +59,7 @@ the configuration is inferred, this will be the string "INFERRED".
 packages: ReadonlyMap<PackageName, P>;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:83
+Defined in: [packages/sail-infrastructure/src/types.ts:83](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L83)
 
 A map of all packages in the BuildProject.
 
@@ -71,7 +71,7 @@ A map of all packages in the BuildProject.
 releaseGroups: ReadonlyMap<ReleaseGroupName, IReleaseGroup>;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:78
+Defined in: [packages/sail-infrastructure/src/types.ts:78](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L78)
 
 A map of all release groups in the BuildProject.
 
@@ -83,7 +83,7 @@ A map of all release groups in the BuildProject.
 root: string;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:68
+Defined in: [packages/sail-infrastructure/src/types.ts:68](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L68)
 
 The absolute path to the root of the IBuildProject. This is the path where the config file is located.
 
@@ -95,7 +95,7 @@ The absolute path to the root of the IBuildProject. This is the path where the c
 optional upstreamRemotePartialUrl: string;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:89
+Defined in: [packages/sail-infrastructure/src/types.ts:89](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L89)
 
 A partial URL to the upstream (remote) repo. This can be set to the name of the repo on GitHub. For example,
 "microsoft/FluidFramework".
@@ -108,7 +108,7 @@ A partial URL to the upstream (remote) repo. This can be set to the name of the 
 workspaces: ReadonlyMap<WorkspaceName, IWorkspace>;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:73
+Defined in: [packages/sail-infrastructure/src/types.ts:73](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L73)
 
 A map of all workspaces in the BuildProject.
 
@@ -120,7 +120,7 @@ A map of all workspaces in the BuildProject.
 getGitRepository(): Promise<Readonly<SimpleGit>>;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:117
+Defined in: [packages/sail-infrastructure/src/types.ts:117](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L117)
 
 If the BuildProject is within a Git repository, this function will return a SimpleGit instance rooted at the root
 of the Git repository. If the BuildProject is _not_ within a Git repository, this function will throw a
@@ -142,7 +142,7 @@ A [NotInGitRepository](../classes/NotInGitRepository.md) error if the path is no
 getPackageReleaseGroup(pkg): Readonly<IReleaseGroup>;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:122
+Defined in: [packages/sail-infrastructure/src/types.ts:122](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L122)
 
 Returns the [IReleaseGroup](IReleaseGroup.md) associated with a package.
 
@@ -164,7 +164,7 @@ Returns the [IReleaseGroup](IReleaseGroup.md) associated with a package.
 relativeToRepo(p): string;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:108
+Defined in: [packages/sail-infrastructure/src/types.ts:108](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L108)
 
 Transforms an absolute path to a path relative to the IBuildProject root.
 
@@ -190,7 +190,7 @@ The path relative to the IBuildProject root.
 reload(): void;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:152
+Defined in: [packages/sail-infrastructure/src/types.ts:152](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L152)
 
 Synchronously reload.
 

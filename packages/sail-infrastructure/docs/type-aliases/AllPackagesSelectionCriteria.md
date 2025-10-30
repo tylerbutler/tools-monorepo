@@ -10,6 +10,6 @@
 type AllPackagesSelectionCriteria = PackageSelectionCriteria;
 ```
 
-Defined in: packages/sail-infrastructure/src/filter.ts:79
+Defined in: [packages/sail-infrastructure/src/filter.ts:79](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L79)
 
 A pre-defined [PackageSelectionCriteria](../interfaces/PackageSelectionCriteria.md) that selects all packages.

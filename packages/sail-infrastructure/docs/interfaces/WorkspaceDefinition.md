@@ -6,7 +6,7 @@
 
 # Interface: WorkspaceDefinition
 
-Defined in: packages/sail-infrastructure/src/config.ts:103
+Defined in: [packages/sail-infrastructure/src/config.ts:103](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L103)
 
 The definition of a workspace in configuration.
 
@@ -18,7 +18,7 @@ The definition of a workspace in configuration.
 directory: string;
 ```
 
-Defined in: packages/sail-infrastructure/src/config.ts:107
+Defined in: [packages/sail-infrastructure/src/config.ts:107](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L107)
 
 The root directory of the workspace. This folder should contain a workspace config file (e.g. pnpm-workspace.yaml).
 
@@ -30,7 +30,7 @@ The root directory of the workspace. This folder should contain a workspace conf
 releaseGroups: object;
 ```
 
-Defined in: packages/sail-infrastructure/src/config.ts:112
+Defined in: [packages/sail-infrastructure/src/config.ts:112](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L112)
 
 Definitions of the release groups within the workspace.
 

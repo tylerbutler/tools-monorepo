@@ -10,7 +10,7 @@
 function setVersion<J>(packages, version): Promise<void>;
 ```
 
-Defined in: packages/sail-infrastructure/src/versions.ts:18
+Defined in: [packages/sail-infrastructure/src/versions.ts:18](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/versions.ts#L18)
 
 Sets the version of a group of packages, writing the new version in package.json. After the update, the packages are
 reloaded so the in-memory data reflects the version changes.

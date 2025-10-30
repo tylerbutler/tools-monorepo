@@ -10,6 +10,6 @@
 type ReleaseGroupName = Opaque<string, "IReleaseGroup">;
 ```
 
-Defined in: packages/sail-infrastructure/src/types.ts:225
+Defined in: [packages/sail-infrastructure/src/types.ts:225](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L225)
 
 A tagged type representing release group names.

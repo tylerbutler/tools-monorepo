@@ -10,7 +10,7 @@
 function filterPackages<T>(packages, filters): Promise<T[]>;
 ```
 
-Defined in: packages/sail-infrastructure/src/filter.ts:249
+Defined in: [packages/sail-infrastructure/src/filter.ts:249](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L249)
 
 Filters a list of packages by the filter criteria.
 

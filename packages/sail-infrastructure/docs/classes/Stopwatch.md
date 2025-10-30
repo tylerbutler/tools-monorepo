@@ -6,7 +6,7 @@
 
 # Class: Stopwatch
 
-Defined in: packages/sail-infrastructure/src/stopwatch.ts:12
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:12](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L12)
 
 A stopwatch used for outputting messages to the terminal along with timestamp information.
 The stopwatch is started upon creation, and each call to `log` will include the recorded time.
@@ -19,7 +19,7 @@ The stopwatch is started upon creation, and each call to `log` will include the 
 new Stopwatch(enabled, logFunc): Stopwatch;
 ```
 
-Defined in: packages/sail-infrastructure/src/stopwatch.ts:16
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:16](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L16)
 
 #### Parameters
 
@@ -43,7 +43,7 @@ Defined in: packages/sail-infrastructure/src/stopwatch.ts:16
 protected logFunc: LoggingFunction = defaultLogger.log;
 ```
 
-Defined in: packages/sail-infrastructure/src/stopwatch.ts:18
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:18](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L18)
 
 ## Methods
 
@@ -53,7 +53,7 @@ Defined in: packages/sail-infrastructure/src/stopwatch.ts:18
 getTotalTime(): number;
 ```
 
-Defined in: packages/sail-infrastructure/src/stopwatch.ts:41
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:41](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L41)
 
 #### Returns
 
@@ -67,7 +67,7 @@ Defined in: packages/sail-infrastructure/src/stopwatch.ts:41
 log(msg?, print?): number;
 ```
 
-Defined in: packages/sail-infrastructure/src/stopwatch.ts:21
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:21](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L21)
 
 #### Parameters
 
