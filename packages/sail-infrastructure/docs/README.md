@@ -1,3 +1,7 @@
+**@tylerbu/sail-infrastructure**
+
+***
+
 # sail-infrastructure
 
 This package contains types and helper functions for organizing npm packages into workspaces and release groups within monorepos.
@@ -44,7 +48,6 @@ repo that is not configured as part of a workspace is invisible to tools using t
 While workspaces manage dependencies and physical layout of packages, release groups are focused on groups of packages
 that are _versioned and released together_. Release groups are always a subset of a workspace, and must contain at least
 one package. **Release groups cannot span multiple workspaces.**
-
 
 > [!IMPORTANT]
 > A workspace _must_ have at least one release group, and all packages must be a part of a release group.
@@ -232,3 +235,80 @@ That should be much easier now.
 ## Known gaps
 
 - Inadequate testing of git-related APIs - can we mock git somehow?
+
+This is the main entrypoint to the build-infrastructure API.
+
+The primary purpose of this package is to provide a common way to organize npm packages into groups called release
+groups, and leverages workspaces functionality provided by package managers like npm, yarn, and pnpm to manage
+interdependencies between packages across a BuildProject. It then provides APIs to select, filter, and work with
+those package groups.
+
+## Classes
+
+- [BuildProject](classes/BuildProject.md)
+- [NotInGitRepository](classes/NotInGitRepository.md)
+- [PackageBase](classes/PackageBase.md)
+- [Stopwatch](classes/Stopwatch.md)
+
+## Interfaces
+
+- [BuildProjectConfigV1](interfaces/BuildProjectConfigV1.md)
+- [FilterablePackage](interfaces/FilterablePackage.md)
+- [IBuildProject](interfaces/IBuildProject.md)
+- [~~IFluidBuildDir~~](interfaces/IFluidBuildDir.md)
+- [~~IFluidBuildDirs~~](interfaces/IFluidBuildDirs.md)
+- [Installable](interfaces/Installable.md)
+- [IPackage](interfaces/IPackage.md)
+- [IPackageManager](interfaces/IPackageManager.md)
+- [IReleaseGroup](interfaces/IReleaseGroup.md)
+- [IWorkspace](interfaces/IWorkspace.md)
+- [Logger](interfaces/Logger.md)
+- [PackageDependency](interfaces/PackageDependency.md)
+- [PackageFilterOptions](interfaces/PackageFilterOptions.md)
+- [PackageSelectionCriteria](interfaces/PackageSelectionCriteria.md)
+- [PnpmPackageJsonFields](interfaces/PnpmPackageJsonFields.md)
+- [ReleaseGroupDefinition](interfaces/ReleaseGroupDefinition.md)
+- [Reloadable](interfaces/Reloadable.md)
+- [WorkspaceDefinition](interfaces/WorkspaceDefinition.md)
+
+## Type Aliases
+
+- [AdditionalPackageProps](type-aliases/AdditionalPackageProps.md)
+- [AllPackagesSelectionCriteria](type-aliases/AllPackagesSelectionCriteria.md)
+- [BuildProjectConfig](type-aliases/BuildProjectConfig.md)
+- [BuildProjectConfigV2](type-aliases/BuildProjectConfigV2.md)
+- [EmptySelectionCriteria](type-aliases/EmptySelectionCriteria.md)
+- [ErrorLoggingFunction](type-aliases/ErrorLoggingFunction.md)
+- [GlobString](type-aliases/GlobString.md)
+- [~~IFluidBuildDirEntry~~](type-aliases/IFluidBuildDirEntry.md)
+- [LoggingFunction](type-aliases/LoggingFunction.md)
+- [PackageJson](type-aliases/PackageJson.md)
+- [PackageManagerName](type-aliases/PackageManagerName.md)
+- [PackageName](type-aliases/PackageName.md)
+- [ReleaseGroupName](type-aliases/ReleaseGroupName.md)
+- [WorkspaceName](type-aliases/WorkspaceName.md)
+
+## Variables
+
+- [BUILDPROJECT\_CONFIG\_MIN\_VERSION](variables/BUILDPROJECT_CONFIG_MIN_VERSION.md)
+
+## Functions
+
+- [detectPackageManager](functions/detectPackageManager.md)
+- [filterPackages](functions/filterPackages.md)
+- [findGitRootSync](functions/findGitRootSync.md)
+- [generateBuildProjectConfig](functions/generateBuildProjectConfig.md)
+- [getAllDependencies](functions/getAllDependencies.md)
+- [getBuildProjectConfig](functions/getBuildProjectConfig.md)
+- [getChangedSinceRef](functions/getChangedSinceRef.md)
+- [getFiles](functions/getFiles.md)
+- [getMergeBaseRemote](functions/getMergeBaseRemote.md)
+- [getRemote](functions/getRemote.md)
+- [isIPackage](functions/isIPackage.md)
+- [isIReleaseGroup](functions/isIReleaseGroup.md)
+- [isV1Config](functions/isV1Config.md)
+- [loadBuildProject](functions/loadBuildProject.md)
+- [selectAndFilterPackages](functions/selectAndFilterPackages.md)
+- [setVersion](functions/setVersion.md)
+- [updatePackageJsonFile](functions/updatePackageJsonFile.md)
+- [updatePackageJsonFileAsync](functions/updatePackageJsonFileAsync.md)

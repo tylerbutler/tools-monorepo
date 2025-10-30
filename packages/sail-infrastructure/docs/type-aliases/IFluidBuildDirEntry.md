@@ -13,7 +13,7 @@ type IFluidBuildDirEntry =
   | (string | IFluidBuildDir)[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:166](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L166)
+Defined in: [packages/sail-infrastructure/src/config.ts:161](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L161)
 
 ## Deprecated
 

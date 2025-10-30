@@ -10,7 +10,7 @@
 function generateBuildProjectConfig(searchPath): _RequireExactlyOne;
 ```
 
-Defined in: [packages/sail-infrastructure/src/buildProject.ts:239](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/buildProject.ts#L239)
+Defined in: [packages/sail-infrastructure/src/buildProject.ts:234](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/buildProject.ts#L234)
 
 Generates a BuildProjectConfig by searching searchPath and below for workspaces. If any workspaces are found, they're
 automatically added to the config, and a single release group is created within the workspace. Both the workspace and

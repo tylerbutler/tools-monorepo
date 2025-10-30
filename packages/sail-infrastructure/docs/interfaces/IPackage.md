@@ -6,7 +6,7 @@
 
 # Interface: IPackage\<J\>
 
-Defined in: [packages/sail-infrastructure/src/types.ts:377](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L377)
+Defined in: [packages/sail-infrastructure/src/types.ts:372](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L372)
 
 A common type representing an npm package. A custom type can be used for the package.json schema, which is useful
 when the package.json has custom keys/values.
@@ -32,7 +32,7 @@ package.
 combinedDependencies: Generator<PackageDependency, void>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:454](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L454)
+Defined in: [packages/sail-infrastructure/src/types.ts:449](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L449)
 
 A generator that returns each dependency and the kind of dependency (dev, peer, etc.) for all of the package's
 dependencies. This is useful to iterate overall all dependencies of the package.
@@ -45,7 +45,7 @@ dependencies. This is useful to iterate overall all dependencies of the package.
 readonly directory: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:395](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L395)
+Defined in: [packages/sail-infrastructure/src/types.ts:390](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L390)
 
 The absolute path to the directory containing the package (that is, the directory that contains the package.json
 for the package).
@@ -58,7 +58,7 @@ for the package).
 isReleaseGroupRoot: boolean;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:432](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L432)
+Defined in: [packages/sail-infrastructure/src/types.ts:427](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L427)
 
 Whether the package is a release group root package or not. A release group may not have a root package, but if it
 does, it will only have one.
@@ -71,7 +71,7 @@ does, it will only have one.
 readonly isWorkspaceRoot: boolean;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:421](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L421)
+Defined in: [packages/sail-infrastructure/src/types.ts:416](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L416)
 
 Whether the package is a workspace root package or not. A workspace will only have one root package.
 
@@ -83,7 +83,7 @@ Whether the package is a workspace root package or not. A workspace will only ha
 readonly name: PackageName;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:383](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L383)
+Defined in: [packages/sail-infrastructure/src/types.ts:378](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L378)
 
 The name of the package including the scope.
 
@@ -95,7 +95,7 @@ The name of the package including the scope.
 readonly nameColored: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:389](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L389)
+Defined in: [packages/sail-infrastructure/src/types.ts:384](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L384)
 
 The name of the package color-coded with ANSI color codes for terminal output. The package name will always have
 the same color.
@@ -108,7 +108,7 @@ the same color.
 packageJson: J;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:400](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L400)
+Defined in: [packages/sail-infrastructure/src/types.ts:395](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L395)
 
 The package.json contents of the package.
 
@@ -120,7 +120,7 @@ The package.json contents of the package.
 readonly packageJsonFilePath: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:437](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L437)
+Defined in: [packages/sail-infrastructure/src/types.ts:432](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L432)
 
 The absolute path to the package.json file for this package.
 
@@ -132,7 +132,7 @@ The absolute path to the package.json file for this package.
 readonly private: boolean;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:411](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L411)
+Defined in: [packages/sail-infrastructure/src/types.ts:406](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L406)
 
 `true` if the package is private; `false` otherwise. This is similar to the field in package.json, but always
 returns a boolean value. If the package.json is missing the `private` field, this will return false.
@@ -145,7 +145,7 @@ returns a boolean value. If the package.json is missing the `private` field, thi
 releaseGroup: ReleaseGroupName;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:426](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L426)
+Defined in: [packages/sail-infrastructure/src/types.ts:421](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L421)
 
 The name of the release group that this package belongs to.
 
@@ -157,7 +157,7 @@ The name of the release group that this package belongs to.
 readonly version: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:405](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L405)
+Defined in: [packages/sail-infrastructure/src/types.ts:400](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L400)
 
 The version of the package. This is the same as `packageJson.version`.
 
@@ -169,7 +169,7 @@ The version of the package. This is the same as `packageJson.version`.
 readonly workspace: IWorkspace;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:416](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L416)
+Defined in: [packages/sail-infrastructure/src/types.ts:411](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L411)
 
 The workspace that this package belongs to.
 
@@ -181,7 +181,7 @@ The workspace that this package belongs to.
 checkInstall(): Promise<true | string[]>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:132](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L132)
+Defined in: [packages/sail-infrastructure/src/types.ts:127](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L127)
 
 Returns `true` if the item is installed. If the item is not installed, an array of error strings will be returned.
 
@@ -201,7 +201,7 @@ Returns `true` if the item is installed. If the item is not installed, an array 
 getScript(name): string | undefined;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:443](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L443)
+Defined in: [packages/sail-infrastructure/src/types.ts:438](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L438)
 
 Returns the value of a script in the package's package.json, or undefined if a script with the provided key is not
 found.
@@ -224,7 +224,7 @@ found.
 install(updateLockfile): Promise<boolean>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:142](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L142)
+Defined in: [packages/sail-infrastructure/src/types.ts:137](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L137)
 
 Installs the item.
 
@@ -257,7 +257,7 @@ An error if `updateLockfile` is false and the lockfile is outdated.
 reload(): void;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:152](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L152)
+Defined in: [packages/sail-infrastructure/src/types.ts:147](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L147)
 
 Synchronously reload.
 
@@ -277,7 +277,7 @@ Synchronously reload.
 savePackageJson(): Promise<void>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:448](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L448)
+Defined in: [packages/sail-infrastructure/src/types.ts:443](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L443)
 
 Saves any changes to the packageJson property to the package.json file on disk.
 
@@ -293,7 +293,7 @@ Saves any changes to the packageJson property to the package.json file on disk.
 toString(): string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:455](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L455)
+Defined in: [packages/sail-infrastructure/src/types.ts:450](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L450)
 
 Returns a string representation of an object.
 

@@ -10,6 +10,7 @@ import type { Logger } from "@tylerbu/cli-api";
 import type { BuildPackage } from "../common/npmPackage.js";
 import type { BuildContext } from "./buildContext.js";
 import { PersistentFileHashCache } from "./cache/PersistentFileHashCache.js";
+import type { SharedCacheManager } from "./sharedCache/index.js";
 import {
 	type DependencyNode,
 	DependencyResolver,
@@ -77,6 +78,7 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
 	public readonly gitRepo: SimpleGit;
 	public readonly gitRoot: string;
 	public readonly buildProfiler: BuildProfiler;
+	public readonly sharedCache?: SharedCacheManager;
 
 	public readonly log: Logger;
 
@@ -91,6 +93,7 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
 		this.gitRepo = buildContext.gitRepo;
 		this.gitRoot = buildContext.gitRoot;
 		this.log = buildContext.log;
+		this.sharedCache = buildContext.sharedCache;
 
 		// Use persistent cache for better performance
 		this.fileHashCache = new PersistentFileHashCache();

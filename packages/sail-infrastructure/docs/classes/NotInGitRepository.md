@@ -6,7 +6,7 @@
 
 # Class: NotInGitRepository
 
-Defined in: [packages/sail-infrastructure/src/errors.ts:9](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/errors.ts#L9)
+Defined in: [packages/sail-infrastructure/src/errors.ts:4](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/errors.ts#L4)
 
 An error thrown when a path is not within a Git repository.
 
@@ -22,7 +22,7 @@ An error thrown when a path is not within a Git repository.
 new NotInGitRepository(path): NotInGitRepository;
 ```
 
-Defined in: [packages/sail-infrastructure/src/errors.ts:10](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/errors.ts#L10)
+Defined in: [packages/sail-infrastructure/src/errors.ts:5](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/errors.ts#L5)
 
 #### Parameters
 
@@ -98,7 +98,7 @@ Error.name
 readonly path: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/errors.ts:14](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/errors.ts#L14)
+Defined in: [packages/sail-infrastructure/src/errors.ts:9](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/errors.ts#L9)
 
 The path that was checked and found to be outside a Git repository.
 

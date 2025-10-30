@@ -6,7 +6,7 @@
 
 # Interface: PackageSelectionCriteria
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:23](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L23)
+Defined in: [packages/sail-infrastructure/src/filter.ts:18](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L18)
 
 The criteria that should be used for selecting package-like objects from a collection.
 
@@ -18,7 +18,7 @@ The criteria that should be used for selecting package-like objects from a colle
 optional changedSinceBranch: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:73](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L73)
+Defined in: [packages/sail-infrastructure/src/filter.ts:68](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L68)
 
 If set, only selects packages that have changes when compared with the branch of this name.
 
@@ -30,7 +30,7 @@ If set, only selects packages that have changes when compared with the branch of
 optional directory: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:68](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L68)
+Defined in: [packages/sail-infrastructure/src/filter.ts:63](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L63)
 
 If set, only selects the single package in this directory.
 
@@ -42,7 +42,7 @@ If set, only selects the single package in this directory.
 releaseGroupRoots: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:63](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L63)
+Defined in: [packages/sail-infrastructure/src/filter.ts:58](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L58)
 
 An array of release groups whose root packages are selected. Only the roots of each release group will be included.
 Rootless release groups will never be selected with this criteria.
@@ -58,7 +58,7 @@ expected to be the only item in the selection array.
 releaseGroups: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:54](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L54)
+Defined in: [packages/sail-infrastructure/src/filter.ts:49](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L49)
 
 An array of release groups whose packages are selected. All packages in the release group _except_ the root package
 will be selected. To include release group roots, use the `releaseGroupRoots` property.
@@ -76,7 +76,7 @@ Workspace names will be compared against all globs - if any match, the workspace
 workspaceRoots: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:43](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L43)
+Defined in: [packages/sail-infrastructure/src/filter.ts:38](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L38)
 
 An array of workspaces whose root packages are selected. Only the roots of each workspace will be included.
 
@@ -93,7 +93,7 @@ Workspace names will be compared against all globs - if any match, the workspace
 workspaces: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:33](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L33)
+Defined in: [packages/sail-infrastructure/src/filter.ts:28](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L28)
 
 An array of workspaces whose packages are selected. All packages in the workspace _except_ the root package
 will be selected. To include workspace roots, use the `workspaceRoots` property.

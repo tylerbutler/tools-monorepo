@@ -11,6 +11,11 @@ import {
 	execAsync,
 	getExecutableFromCommand,
 } from "../../../common/utils.js";
+import {
+	type CacheKeyInputs,
+	type TaskOutputs,
+	computeCacheKey,
+} from "../../sharedCache/index.js";
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
 import { DependencyError } from "../../errors/index.js";
@@ -208,6 +213,13 @@ export abstract class LeafTask extends Task {
 		}
 
 		await this.markExecDone();
+
+		// Store in shared cache after successful execution
+		const executionTimeMs = Date.now() - startTime;
+		if (this.node.context.sharedCache && this.canUseCache) {
+			await this.storeInCache(executionTimeMs);
+		}
+
 		return this.execDone(startTime, BuildResult.Success, ret.worker);
 	}
 
@@ -358,6 +370,16 @@ export abstract class LeafTask extends Task {
 			return false;
 		}
 
+		// Try shared cache first (if enabled and task supports it)
+		if (this.node.context.sharedCache && this.canUseCache) {
+			const cacheHit = await this.tryRestoreFromCache();
+			if (cacheHit) {
+				this.node.context.taskStats.leafUpToDateCount++;
+				this.traceExec("Skipping Leaf Task (cache hit)");
+				return true;
+			}
+		}
+
 		const start = Date.now();
 		const leafIsUpToDate = await this.checkLeafIsUpToDate();
 		traceTaskCheck(
@@ -413,6 +435,152 @@ export abstract class LeafTask extends Task {
 			return filePath;
 		}
 		return path.join(this.node.pkg.directory, filePath);
+	}
+
+	/**
+	 * Whether this task type supports shared caching.
+	 * Override to return false for tasks that shouldn't be cached.
+	 */
+	protected get canUseCache(): boolean {
+		return true; // Most tasks can be cached
+	}
+
+	/**
+	 * Get input files for cache key computation.
+	 * Defaults to empty array - subclasses should override if they support caching.
+	 */
+	protected async getCacheInputFiles(): Promise<string[]> {
+		return [];
+	}
+
+	/**
+	 * Get output files for cache storage/verification.
+	 * Defaults to empty array - subclasses should override if they support caching.
+	 */
+	protected async getCacheOutputFiles(): Promise<string[]> {
+		return [];
+	}
+
+	/**
+	 * Try to restore task outputs from shared cache.
+	 * Returns true if cache hit, false if cache miss.
+	 */
+	private async tryRestoreFromCache(): Promise<boolean> {
+		const cache = this.node.context.sharedCache;
+		if (!cache) {
+			return false;
+		}
+
+		try {
+			// Get input files for cache key
+			const inputFiles = await this.getCacheInputFiles();
+			if (inputFiles.length === 0) {
+				// Task doesn't support caching yet
+				return false;
+			}
+
+			// Compute cache key
+			const inputHashes = await Promise.all(
+				inputFiles.map(async (file) => ({
+					path: path.relative(this.node.pkg.directory, file),
+					hash: await this.node.context.fileHashCache.getFileHash(file),
+				})),
+			);
+
+			const cacheKeyInputs: CacheKeyInputs = {
+				packageName: this.node.pkg.name,
+				taskName: this.taskName ?? this.command,
+				executable: this.executable,
+				command: this.command,
+				inputHashes,
+				...cache.options.globalKeyComponents,
+			};
+
+			// Lookup cache entry
+			const entry = await cache.lookup(cacheKeyInputs);
+			if (!entry) {
+				return false; // Cache miss
+			}
+
+			// Restore from cache
+			const result = await cache.restore(entry, this.node.pkg.directory);
+
+			if (result.success) {
+				// Replay stdout/stderr for consistent UX
+				if (result.stdout) {
+					this.log.log(result.stdout);
+				}
+				if (result.stderr && result.stderr.trim()) {
+					this.log.warning(result.stderr);
+				}
+
+				this.traceTrigger(`restored from cache (${result.filesRestored} files, ${(result.bytesRestored / 1024).toFixed(1)} KB)`);
+				return true;
+			}
+
+			return false;
+		} catch (error) {
+			// Don't fail the build if cache restore fails
+			this.traceError(`Failed to restore from cache: ${error}`);
+			return false;
+		}
+	}
+
+	/**
+	 * Store task outputs in shared cache after successful execution.
+	 */
+	private async storeInCache(executionTimeMs: number): Promise<void> {
+		const cache = this.node.context.sharedCache;
+		if (!cache || cache.options.skipCacheWrite) {
+			return;
+		}
+
+		try {
+			// Get input and output files
+			const inputFiles = await this.getCacheInputFiles();
+			const outputFiles = await this.getCacheOutputFiles();
+
+			if (inputFiles.length === 0 || outputFiles.length === 0) {
+				// Task doesn't support caching yet
+				return;
+			}
+
+			// Compute input hashes
+			const inputHashes = await Promise.all(
+				inputFiles.map(async (file) => ({
+					path: path.relative(this.node.pkg.directory, file),
+					hash: await this.node.context.fileHashCache.getFileHash(file),
+				})),
+			);
+
+			// Compute cache key inputs
+			const cacheKeyInputs: CacheKeyInputs = {
+				packageName: this.node.pkg.name,
+				taskName: this.taskName ?? this.command,
+				executable: this.executable,
+				command: this.command,
+				inputHashes,
+				...cache.options.globalKeyComponents,
+			};
+
+			// Prepare task outputs
+			const taskOutputs: TaskOutputs = {
+				files: outputFiles.map((file) => ({
+					sourcePath: file,
+					relativePath: path.relative(this.node.pkg.directory, file),
+				})),
+				stdout: "", // TODO: Capture during execution
+				stderr: "",
+				exitCode: 0,
+				executionTimeMs,
+			};
+
+			// Store in cache
+			await cache.store(cacheKeyInputs, taskOutputs, this.node.pkg.directory);
+		} catch (error) {
+			// Don't fail the build if cache storage fails
+			this.traceError(`Failed to store in cache: ${error}`);
+		}
 	}
 
 	/**

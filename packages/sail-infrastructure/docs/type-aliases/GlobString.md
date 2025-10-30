@@ -10,6 +10,6 @@
 type GlobString = string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:18](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L18)
+Defined in: [packages/sail-infrastructure/src/filter.ts:13](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L13)
 
 A convenience type representing a glob string.

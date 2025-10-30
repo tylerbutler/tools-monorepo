@@ -2,6 +2,7 @@ import type { BuildProjectConfig } from '@tylerbu/sail-infrastructure';
 import type { SimpleGit } from "simple-git";
 
 import type { Logger } from "@tylerbu/cli-api";
+import type { SharedCacheManager } from "./sharedCache/index.js";
 import type { ISailConfig } from "./sailConfig.js";
 
 /**
@@ -34,4 +35,10 @@ export interface BuildContext {
 	readonly gitRoot: string;
 
 	readonly log: Logger;
+
+	/**
+	 * Shared cache manager for storing and retrieving task outputs.
+	 * Undefined if caching is disabled.
+	 */
+	readonly sharedCache?: SharedCacheManager;
 }

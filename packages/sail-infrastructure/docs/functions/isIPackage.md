@@ -10,7 +10,7 @@
 function isIPackage(pkg): pkg is IPackage<PackageJson>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:462](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L462)
+Defined in: [packages/sail-infrastructure/src/types.ts:457](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L457)
 
 A type guard that returns `true` if the item is an [IPackage](../interfaces/IPackage.md).
 

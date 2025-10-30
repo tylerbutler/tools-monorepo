@@ -10,7 +10,7 @@
 function getAllDependencies(repo, packages): object;
 ```
 
-Defined in: [packages/sail-infrastructure/src/buildProject.ts:326](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/buildProject.ts#L326)
+Defined in: [packages/sail-infrastructure/src/buildProject.ts:321](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/buildProject.ts#L321)
 
 Returns an object containing all the packages, release groups, and workspaces that a given set of packages depends
 on. This function only considers packages in the BuildProject repo.

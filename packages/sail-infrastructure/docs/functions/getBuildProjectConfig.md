@@ -10,7 +10,7 @@
 function getBuildProjectConfig(searchPath, noCache): object;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:268](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L268)
+Defined in: [packages/sail-infrastructure/src/config.ts:263](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L263)
 
 Search a path for a build project config file, and return the parsed config and the path to the config file.
 

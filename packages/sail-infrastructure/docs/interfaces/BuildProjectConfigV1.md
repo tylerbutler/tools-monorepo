@@ -6,7 +6,7 @@
 
 # Interface: BuildProjectConfigV1
 
-Defined in: [packages/sail-infrastructure/src/config.ts:45](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L45)
+Defined in: [packages/sail-infrastructure/src/config.ts:40](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L40)
 
 ## Extends
 
@@ -20,7 +20,7 @@ Defined in: [packages/sail-infrastructure/src/config.ts:45](https://github.com/m
 optional buildProject: object;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:35](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L35)
+Defined in: [packages/sail-infrastructure/src/config.ts:30](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L30)
 
 The layout of the build project into workspaces and release groups.
 
@@ -52,7 +52,7 @@ BuildProjectConfigBase.buildProject
 optional repoPackages: IFluidBuildDirs;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:58](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L58)
+Defined in: [packages/sail-infrastructure/src/config.ts:53](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L53)
 
 **BACK-COMPAT ONLY**
 
@@ -70,7 +70,7 @@ Use the buildProject property instead.
 version: 1;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:49](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L49)
+Defined in: [packages/sail-infrastructure/src/config.ts:44](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L44)
 
 The version of the config.
 

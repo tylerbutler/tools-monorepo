@@ -6,7 +6,7 @@
 
 # Interface: ReleaseGroupDefinition
 
-Defined in: [packages/sail-infrastructure/src/config.ts:123](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L123)
+Defined in: [packages/sail-infrastructure/src/config.ts:118](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L118)
 
 The definition of a release group ih configuration.
 
@@ -18,7 +18,7 @@ The definition of a release group ih configuration.
 optional adoPipelineUrl: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:153](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L153)
+Defined in: [packages/sail-infrastructure/src/config.ts:148](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L148)
 
 A URL to the ADO CI pipeline that builds the release group.
 
@@ -30,7 +30,7 @@ A URL to the ADO CI pipeline that builds the release group.
 optional exclude: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:136](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L136)
+Defined in: [packages/sail-infrastructure/src/config.ts:131](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L131)
 
 An array of scopes or package names that should be excluded. Exclusions are applied AFTER inclusions, so
 this can be used to exclude specific packages in a certain scope.
@@ -43,7 +43,7 @@ this can be used to exclude specific packages in a certain scope.
 include: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:130](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L130)
+Defined in: [packages/sail-infrastructure/src/config.ts:125](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L125)
 
 An array of scopes or package names that should be included in the release group. Each package must
 belong to a single release group.
@@ -58,7 +58,7 @@ To include all packages, set this value to a single element: `["*"]`.
 optional rootPackageName: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:148](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L148)
+Defined in: [packages/sail-infrastructure/src/config.ts:143](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L143)
 
 The name of the package that should be considered the root package for the release group. If not provided, the
 release group is considered "rootless."

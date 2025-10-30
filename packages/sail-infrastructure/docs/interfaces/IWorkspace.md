@@ -6,7 +6,7 @@
 
 # Interface: IWorkspace
 
-Defined in: [packages/sail-infrastructure/src/types.ts:182](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L182)
+Defined in: [packages/sail-infrastructure/src/types.ts:177](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L177)
 
 A workspace is a collection of packages, including a root package, that is managed using a package manager's
 "workspaces" functionality. A BuildProject can contain multiple workspaces. Workspaces are defined and managed using
@@ -41,7 +41,7 @@ more information.
 buildProject: IBuildProject;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:206](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L206)
+Defined in: [packages/sail-infrastructure/src/types.ts:201](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L201)
 
 The build project that the workspace belongs to.
 
@@ -53,7 +53,7 @@ The build project that the workspace belongs to.
 directory: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:191](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L191)
+Defined in: [packages/sail-infrastructure/src/types.ts:186](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L186)
 
 The absolute path to the root directory of the workspace. This directory will contain the workspace root package.
 
@@ -65,7 +65,7 @@ The absolute path to the root directory of the workspace. This directory will co
 name: WorkspaceName;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:186](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L186)
+Defined in: [packages/sail-infrastructure/src/types.ts:181](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L181)
 
 The name of the workspace.
 
@@ -77,7 +77,7 @@ The name of the workspace.
 packageManager: IPackageManager;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:217](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L217)
+Defined in: [packages/sail-infrastructure/src/types.ts:212](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L212)
 
 The package manager used to manage this workspace.
 
@@ -89,7 +89,7 @@ The package manager used to manage this workspace.
 packages: IPackage<PackageJson>[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:212](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L212)
+Defined in: [packages/sail-infrastructure/src/types.ts:207](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L207)
 
 An array of all the packages in the workspace. This includes the workspace root and any release group roots and
 constituent packages as well.
@@ -102,7 +102,7 @@ constituent packages as well.
 releaseGroups: Map<ReleaseGroupName, IReleaseGroup>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:201](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L201)
+Defined in: [packages/sail-infrastructure/src/types.ts:196](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L196)
 
 A map of all the release groups in the workspace.
 
@@ -114,7 +114,7 @@ A map of all the release groups in the workspace.
 rootPackage: IPackage;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:196](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L196)
+Defined in: [packages/sail-infrastructure/src/types.ts:191](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L191)
 
 The root package of the workspace.
 
@@ -126,7 +126,7 @@ The root package of the workspace.
 checkInstall(): Promise<true | string[]>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:132](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L132)
+Defined in: [packages/sail-infrastructure/src/types.ts:127](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L127)
 
 Returns `true` if the item is installed. If the item is not installed, an array of error strings will be returned.
 
@@ -146,7 +146,7 @@ Returns `true` if the item is installed. If the item is not installed, an array 
 install(updateLockfile): Promise<boolean>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:142](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L142)
+Defined in: [packages/sail-infrastructure/src/types.ts:137](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L137)
 
 Installs the item.
 
@@ -179,7 +179,7 @@ An error if `updateLockfile` is false and the lockfile is outdated.
 reload(): void;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:152](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L152)
+Defined in: [packages/sail-infrastructure/src/types.ts:147](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L147)
 
 Synchronously reload.
 
@@ -199,7 +199,7 @@ Synchronously reload.
 toString(): string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:219](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L219)
+Defined in: [packages/sail-infrastructure/src/types.ts:214](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L214)
 
 Returns a string representation of an object.
 

@@ -32,3 +32,41 @@ export const selectionFlags = {
 	releaseGroup: ReleaseGroupNameFlag(),
 	workspace: WorkspaceNameFlag(),
 };
+
+/**
+ * Shared cache flags for build commands.
+ */
+export const cacheFlags = {
+	cacheDir: Flags.string({
+		description: "Path to shared cache directory.",
+		env: "SAIL_CACHE_DIR",
+	}),
+	skipCacheWrite: Flags.boolean({
+		description: "Read from cache but don't write to it (read-only mode).",
+		default: false,
+	}),
+	verifyCacheIntegrity: Flags.boolean({
+		description: "Verify file hashes when restoring from cache (adds overhead).",
+		default: false,
+	}),
+	cacheStats: Flags.boolean({
+		description: "Display cache statistics after build.",
+		default: false,
+	}),
+	cacheClean: Flags.boolean({
+		description: "Remove all cache entries.",
+		default: false,
+	}),
+	cachePrune: Flags.boolean({
+		description: "Prune old cache entries based on age and size limits.",
+		default: false,
+	}),
+	cacheVerify: Flags.boolean({
+		description: "Verify cache integrity (check for corruption).",
+		default: false,
+	}),
+	cacheVerifyFix: Flags.boolean({
+		description: "Fix corrupted cache entries.",
+		default: false,
+	}),
+};

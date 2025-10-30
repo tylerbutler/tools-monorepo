@@ -22,8 +22,10 @@ Build stuff.
 
 ```
 USAGE
-  $ sail build [PARTIAL_NAME] [-v | --quiet] [--all | -g <value> | -w <value>] [-t <value>...] [-c | -r]
-    [--force] [--vscode] [--workerMemoryLimitMB <value> --worker] [--concurrency <value>]
+  $ sail build [PARTIAL_NAME] [-v | --quiet] [--all | -g <value> | -w <value>] [--cacheDir <value>]
+    [--skipCacheWrite] [--verifyCacheIntegrity] [--cacheStats] [--cacheClean] [--cachePrune] [--cacheVerify]
+    [--cacheVerifyFix] [-t <value>...] [-c | -r] [--force] [--vscode] [--workerMemoryLimitMB <value> --worker]
+    [--concurrency <value>]
 
 ARGUMENTS
   [PARTIAL_NAME]  [default: .] Regular expression or string to filter packages by name.
@@ -33,7 +35,15 @@ FLAGS
   -t, --task=<value>...       [default: build] The task to execute. Multiple tasks can be provided.
   -w, --workspace=<value>     The name of a release group.
       --all                   Run tasks for all packages.
+      --cacheClean            Remove all cache entries.
+      --cacheDir=<value>      Path to shared cache directory.
+      --cachePrune            Prune old cache entries based on age and size limits.
+      --cacheStats            Display cache statistics after build.
+      --cacheVerify           Verify cache integrity (check for corruption).
+      --cacheVerifyFix        Fix corrupted cache entries.
       --force                 Force the tasks to run, ignoring dependencies.
+      --skipCacheWrite        Read from cache but don't write to it (read-only mode).
+      --verifyCacheIntegrity  Verify file hashes when restoring from cache (adds overhead).
       --vscode                Output error messages to work with the default problem matcher in VS Code.
 
 OTHER TASK FLAGS

@@ -6,7 +6,7 @@
 
 # Class: Stopwatch
 
-Defined in: [packages/sail-infrastructure/src/stopwatch.ts:12](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L12)
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:7](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L7)
 
 A stopwatch used for outputting messages to the terminal along with timestamp information.
 The stopwatch is started upon creation, and each call to `log` will include the recorded time.
@@ -19,7 +19,7 @@ The stopwatch is started upon creation, and each call to `log` will include the 
 new Stopwatch(enabled, logFunc): Stopwatch;
 ```
 
-Defined in: [packages/sail-infrastructure/src/stopwatch.ts:16](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L16)
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:11](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L11)
 
 #### Parameters
 
@@ -43,7 +43,7 @@ Defined in: [packages/sail-infrastructure/src/stopwatch.ts:16](https://github.co
 protected logFunc: LoggingFunction = defaultLogger.log;
 ```
 
-Defined in: [packages/sail-infrastructure/src/stopwatch.ts:18](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L18)
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:13](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L13)
 
 ## Methods
 
@@ -53,7 +53,7 @@ Defined in: [packages/sail-infrastructure/src/stopwatch.ts:18](https://github.co
 getTotalTime(): number;
 ```
 
-Defined in: [packages/sail-infrastructure/src/stopwatch.ts:41](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L41)
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:36](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L36)
 
 #### Returns
 
@@ -67,7 +67,7 @@ Defined in: [packages/sail-infrastructure/src/stopwatch.ts:41](https://github.co
 log(msg?, print?): number;
 ```
 
-Defined in: [packages/sail-infrastructure/src/stopwatch.ts:21](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L21)
+Defined in: [packages/sail-infrastructure/src/stopwatch.ts:16](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/stopwatch.ts#L16)
 
 #### Parameters
 
