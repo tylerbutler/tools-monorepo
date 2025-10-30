@@ -1,0 +1,15 @@
+{
+	"extends": "../../config/tsconfig.base.json",
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"rootDir": "./src",
+		"outDir": "./lib",
+		"types": ["node"],
+
+		"module": "Node16",
+		"moduleResolution": "node16",
+
+		"exactOptionalPropertyTypes": false,
+		"noUnusedLocals": false, // Checked in lint instead so unused variables do not block compilation
+	},
+}

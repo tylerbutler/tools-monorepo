@@ -1,0 +1,17 @@
+{
+	"extends": "../../config/tsconfig.base.json",
+	"include": ["src/**/*"],
+	"exclude": ["src/test/**/*"],
+
+	"compilerOptions": {
+		"rootDir": "./src",
+		"outDir": "./esm",
+		// "lib": ["ES2020", "DOM", "DOM.Iterable"],
+		// TODO: Should these settings be disabled in the strict config?
+		"noUncheckedIndexedAccess": false,
+		"noPropertyAccessFromIndexSignature": false,
+	},
+	"ts-node": {
+		"esm": true,
+	},
+}

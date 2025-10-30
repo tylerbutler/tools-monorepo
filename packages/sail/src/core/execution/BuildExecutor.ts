@@ -1,0 +1,238 @@
+import type { Stopwatch } from '@tylerbu/sail-infrastructure';
+import type { AsyncPriorityQueue } from "async";
+import chalk from "picocolors";
+import { Spinner } from "picospinner";
+
+import type { Logger } from "@tylerbu/cli-api";
+import { BuildPackage } from "../../common/npmPackage.js";
+import {
+	BuildError,
+	ErrorHandler,
+	ErrorHandlingStrategy,
+} from "../errors/index.js";
+import type {
+	IBuildExecutionContext,
+	IBuildExecutor,
+	IBuildResult,
+	IBuildablePackage,
+} from "../interfaces/index.js";
+import { ParallelProcessor } from "../optimization/ParallelProcessor.js";
+import { Task, type TaskExec } from "../tasks/task.js";
+
+// Re-export for backward compatibility
+export enum BuildResult {
+	Success = "Success",
+	UpToDate = "UpToDate",
+	Failed = "Failed",
+}
+
+export function summarizeBuildResult(results: BuildResult[]): BuildResult {
+	let retResult = BuildResult.UpToDate;
+	for (const result of results) {
+		if (result === BuildResult.Failed) {
+			return BuildResult.Failed;
+		}
+
+		if (result === BuildResult.Success) {
+			retResult = BuildResult.Success;
+		}
+	}
+	return retResult;
+}
+
+// Re-export interfaces for backward compatibility
+export type BuildablePackage = IBuildablePackage;
+export type BuildExecutionContext = IBuildExecutionContext;
+
+export class BuildExecutor implements IBuildExecutor {
+	private readonly errorHandler: ErrorHandler;
+
+	constructor(
+		private readonly log: Logger,
+		private readonly context: BuildExecutionContext,
+	) {
+		this.errorHandler = new ErrorHandler(log);
+	}
+
+	public async executeBuild(
+		buildablePackages: ReadonlyMap<BuildPackage, IBuildablePackage>,
+		buildTaskNames: string[],
+		matchedPackages: number,
+		timer?: Stopwatch,
+	): Promise<IBuildResult> {
+		// Start performance monitoring
+		if (this.context.buildProfiler) {
+			this.context.buildProfiler.startBuild();
+		}
+
+		// Check up-to-date state at the beginning of the build
+		const spinner = new Spinner("Checking incremental build task status...");
+		spinner.start();
+
+		const isUpToDate = await this.profileOperation(
+			"up-to-date-check",
+			() => this.checkUpToDateStatus(buildablePackages),
+			{ packageCount: buildablePackages.size },
+		);
+
+		timer?.log("Check up to date completed");
+		spinner.succeed("Tasks loaded.");
+
+		this.logBuildStart(buildTaskNames, matchedPackages, buildablePackages.size);
+
+		if (isUpToDate) {
+			return BuildResult.UpToDate;
+		}
+
+		if (this.numSkippedTasks) {
+			this.log.log(`Skipping ${this.numSkippedTasks} up to date tasks.`);
+		}
+
+		const result = await this.profileOperation(
+			"build-execution",
+			() => this.runBuildExecution(buildablePackages),
+			{ packageCount: buildablePackages.size, taskNames: buildTaskNames },
+		);
+
+		// Generate and log performance report
+		if (this.context.buildProfiler) {
+			const report = this.context.buildProfiler.endBuild();
+			this.context.buildProfiler.logReport(report);
+
+			// Save persistent cache after build completion
+			if (
+				this.context.fileHashCache instanceof Object &&
+				"saveCache" in this.context.fileHashCache
+			) {
+				await (this.context.fileHashCache as any).saveCache();
+			}
+		}
+
+		return result;
+	}
+
+	public async checkInstall(
+		buildablePackages: ReadonlyMap<BuildPackage, IBuildablePackage>,
+	): Promise<boolean> {
+		let succeeded = true;
+		for (const [buildPackage] of buildablePackages) {
+			if (!(await buildPackage.checkInstall())) {
+				succeeded = false;
+			}
+		}
+		return succeeded;
+	}
+
+	public get numSkippedTasks(): number {
+		return this.context.taskStats.leafUpToDateCount;
+	}
+
+	public get totalElapsedTime(): number {
+		return this.context.taskStats.leafExecTimeTotal;
+	}
+
+	public get totalQueueWaitTime(): number {
+		return this.context.taskStats.leafQueueWaitTimeTotal;
+	}
+
+	public get taskFailureSummary(): string {
+		if (this.context.failedTaskLines.length === 0) {
+			return "";
+		}
+		const summaryLines = this.context.failedTaskLines;
+		const notRunCount =
+			this.context.taskStats.leafTotalCount -
+			this.context.taskStats.leafUpToDateCount -
+			this.context.taskStats.leafBuiltCount;
+		summaryLines.unshift(chalk.redBright("Failed Tasks:"));
+		summaryLines.push(
+			chalk.yellow(`Did not run ${notRunCount} tasks due to prior failures.`),
+		);
+		return summaryLines.join("\n");
+	}
+
+	private async checkUpToDateStatus(
+		buildablePackages: ReadonlyMap<BuildPackage, IBuildablePackage>,
+	): Promise<boolean> {
+		const result = await this.errorHandler.handleAsync(
+			async () => {
+				const packages = Array.from(buildablePackages.values());
+
+				// Use parallel processing with early termination for better performance
+				return ParallelProcessor.processWithEarlyTermination(
+					packages,
+					async (buildablePackage) => buildablePackage.isUpToDate(),
+					8, // Reasonable concurrency for file I/O operations
+				);
+			},
+			{ command: "up-to-date-check" },
+		);
+		return result ?? false; // If checking the up-to-date state fails, we assume that the build is not up to date.
+	}
+
+	private logBuildStart(
+		buildTaskNames: string[],
+		matchedPackages: number,
+		totalPackages: number,
+	): void {
+		this.log.log(
+			`Start tasks '${chalk.cyanBright(buildTaskNames.join("', '"))}' in ${
+				matchedPackages
+			} matched packages (${this.context.taskStats.leafTotalCount} total tasks in ${
+				totalPackages
+			} packages)`,
+		);
+	}
+
+	private async runBuildExecution(
+		buildablePackages: ReadonlyMap<BuildPackage, IBuildablePackage>,
+	): Promise<IBuildResult> {
+		this.context.fileHashCache.clear();
+		const q = Task.createTaskQueue();
+		const p: Promise<IBuildResult>[] = [];
+		let hasError = false;
+
+		q.error((err, task) => {
+			this.log.errorLog(
+				`${task.task.nameColored}: Internal uncaught exception: ${err}\n${err.stack}`,
+			);
+			hasError = true;
+		});
+
+		try {
+			for (const [, buildablePackage] of buildablePackages) {
+				p.push(buildablePackage.build(q));
+			}
+			await q.drain();
+			if (hasError) {
+				return BuildResult.Failed;
+			}
+			return summarizeBuildResult((await Promise.all(p)) as BuildResult[]);
+		} finally {
+			this.context.workerPool?.reset();
+		}
+	}
+
+	/**
+	 * Profile an operation with the build profiler if available
+	 */
+	private async profileOperation<T>(
+		name: string,
+		operation: () => Promise<T>,
+		metadata?: Record<string, any>,
+	): Promise<T> {
+		if (this.context.buildProfiler) {
+			const performanceMonitor =
+				this.context.buildProfiler["performanceMonitor"];
+			if (performanceMonitor) {
+				const { result } = await performanceMonitor.timeAsync(
+					name,
+					operation,
+					metadata,
+				);
+				return result;
+			}
+		}
+		return operation();
+	}
+}

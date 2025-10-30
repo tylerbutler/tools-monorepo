@@ -1,0 +1,19 @@
+{
+	"name": "yarn-release-group-root",
+	"version": "2.0.0",
+	"description": "Test package",
+	"homepage": "https://fluidframework.com",
+	"private": true,
+	"workspaces":["packages/**"],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/microsoft/FluidFramework.git",
+		"directory": "build-tools/packages/build-infrastructure/src/test/data/testRepo/second"
+	},
+	"license": "MIT",
+	"author": "Microsoft and contributors",
+	"dependencies": {
+		"@fluid-tools/build-infrastructure": "link:../../../../../../build-infrastructure"
+	},
+	"packageManager": "yarn@1.22.22"
+}
