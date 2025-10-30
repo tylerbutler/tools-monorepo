@@ -1,0 +1,15 @@
+{
+	"extends": "../../config/tsconfig.strict.json",
+	"include": ["src/**/*"],
+	"exclude": ["src/test/**/*"],
+	"compilerOptions": {
+		"outDir": "./esm",
+		"rootDir": "./src",
+		"exactOptionalPropertyTypes": false,
+		"noPropertyAccessFromIndexSignature": false,
+		"noUncheckedIndexedAccess": false
+	},
+	"ts-node": {
+		"esm": true
+	}
+}

@@ -230,7 +230,7 @@ describe("selectAndFilterPackages", () => {
 			const { filtered } = await selectAndFilterPackages(fluidRepo, selectionOptions, filters);
 			const names = filtered.map((p) => p.name);
 
-			expect(names).toEqual(expect.arrayContaining(["@private/pkg-c"]);
+			expect(names).toEqual(expect.arrayContaining(["@private/pkg-c"]));
 		});
 
 		it("filter non-private", async () => {
@@ -354,7 +354,7 @@ describe("selectAndFilterPackages", () => {
 			const { filtered } = await selectAndFilterPackages(fluidRepo, selectionOptions, filters);
 			const names = filtered.map((p) => p.name);
 
-			expect(names).toEqual(expect.arrayContaining(["@private/pkg-c"]);
+			expect(names).toEqual(expect.arrayContaining(["@private/pkg-c"]));
 		});
 
 		it("filter non-private", async () => {

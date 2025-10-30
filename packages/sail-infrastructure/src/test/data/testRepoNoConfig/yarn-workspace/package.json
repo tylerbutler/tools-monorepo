@@ -1,0 +1,22 @@
+{
+	"name": "yarn-release-group-root",
+	"version": "2.0.0",
+	"private": true,
+	"description": "Test package",
+	"homepage": "https://fluidframework.com",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "build-tools/packages/build-infrastructure/src/test/data/testRepo/second"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"workspaces": [
+		"packages/**"
+	],
+	"dependencies": {
+		"@fluid-tools/build-infrastructure": "link:../../../../../../build-infrastructure"
+	},
+	"packageManager": "yarn@1.22.22"
+}

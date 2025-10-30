@@ -1,0 +1,1 @@
+{"version":3,"file":"workspaceCompat.d.ts","sourceRoot":"","sources":["../src/workspaceCompat.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAOH,OAAO,KAAK,EAIX,eAAe,EAGf,MAAM,aAAa,CAAC;AACrB,OAAO,KAAK,EAAE,aAAa,EAAE,UAAU,EAAE,aAAa,EAAE,MAAM,YAAY,CAAC;AAI3E;;;;;;;GAOG;AACH,wBAAgB,8BAA8B,CAE7C,MAAM,EAAE,eAAe,EACvB,YAAY,EAAE,aAAa,GACzB,GAAG,CAAC,aAAa,EAAE,UAAU,CAAC,CAqBhC"}

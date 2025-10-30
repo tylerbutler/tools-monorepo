@@ -12,8 +12,8 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
 	"scripts": {
-		"build": "pnpm build:site",
 		"astro": "astro",
+		"build": "pnpm build:site",
 		"build:site": "astro build",
 		"check:astro": "astro check",
 		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",

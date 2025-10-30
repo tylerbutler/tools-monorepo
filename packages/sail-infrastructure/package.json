@@ -1,0 +1,87 @@
+{
+	"name": "@tylerbu/sail-infrastructure",
+	"version": "0.1.0",
+	"description": "Sail build infrastructure",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/sail-infrastructure#tylerbusail-infrastructure",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/sail-infrastructure"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		}
+	},
+	"types": "./esm/index.d.ts",
+	"files": [
+		"/esm",
+		"!esm/test"
+	],
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:docs": "typedoc",
+		"check": "pnpm check:format",
+		"check:format": "biome check . --linter-enabled=false",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --write",
+		"test": "vitest run test",
+		"test:coverage": "vitest run test --coverage"
+	},
+	"dependencies": {
+		"@manypkg/get-packages": "^2.2.2",
+		"@oclif/core": "^4.7.2",
+		"cosmiconfig": "^8.3.6",
+		"detect-indent": "^6.1.0",
+		"execa": "^5.1.1",
+		"fs-extra": "^11.2.0",
+		"micromatch": "^4.0.8",
+		"oclif": "^4.22.32",
+		"package-manager-detector": "^0.2.8",
+		"picocolors": "^1.1.1",
+		"read-pkg-up": "^7.0.1",
+		"resolve-workspace-root": "^2.0.0",
+		"semver": "^7.7.3",
+		"simple-git": "^3.28.0",
+		"sort-package-json": "2.14.0",
+		"tinyglobby": "^0.2.15",
+		"type-fest": "^5.1.0",
+		"typescript": "~5.9.3"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.5",
+		"@microsoft/api-extractor": "^7.53.2",
+		"@types/fs-extra": "^11.0.4",
+		"@types/micromatch": "^4.0.9",
+		"@types/node": "^20.19.23",
+		"@types/semver": "^7.7.1",
+		"@vitest/coverage-v8": "^3.2.4",
+		"concurrently": "^9.2.1",
+		"memfs": "^4.17.0",
+		"rimraf": "^6.0.1",
+		"ts-node": "^10.9.2",
+		"typedoc": "^0.28.14",
+		"typedoc-plugin-markdown": "^4.9.0",
+		"vitest": "^3.2.4"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {}
+		}
+	}
+}
