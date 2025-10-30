@@ -52,7 +52,9 @@ describe("loadBuildProject", () => {
 		});
 	});
 
-	describe("FluidFramework repo - tests backCompat config loading", () => {
+	describe.skip("FluidFramework repo - tests backCompat config loading", () => {
+		// These tests require running in the FluidFramework repository
+		// Skip them in other environments (like tools-monorepo)
 		it("loads correctly", () => {
 			// Load the root config
 			const repo = loadBuildProject(findGitRootSync());
