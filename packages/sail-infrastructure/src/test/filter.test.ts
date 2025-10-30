@@ -457,7 +457,7 @@ describe("selectAndFilterPackages", () => {
 		);
 		const names = filtered.map((p) => p.name).sort();
 
-		expect(names).to.be.equalTo(
+		expect(names).toEqual(
 			[
 				"@group2/pkg-d",
 				"@group2/pkg-e",

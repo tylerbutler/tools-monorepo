@@ -6,7 +6,7 @@
 import { strict as assert } from "node:assert";
 import * as path from "node:path";
 
-import { describe, it } from "mocha";
+import { describe, it } from "vitest";
 
 import {
 	readPackageJsonAndIndent,
