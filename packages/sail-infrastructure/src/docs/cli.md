@@ -33,5 +33,5 @@ DESCRIPTION
   List objects in the build project, like release groups, workspaces, and packages. USED FOR TESTING ONLY.
 ```
 
-_See code: [src/commands/list.ts](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/commands/list.ts)_
+_See code: [src/commands/list.ts](src/commands/list.ts)_
 <!-- commandsstop -->

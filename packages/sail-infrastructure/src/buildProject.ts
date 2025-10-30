@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import * as path from "node:path";
 
 import { type SimpleGit, simpleGit } from "simple-git";

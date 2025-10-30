@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 /**
  * This is the main entrypoint to the build-infrastructure API.
  *

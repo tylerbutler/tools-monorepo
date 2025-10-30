@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import type { Agent, AgentName } from "package-manager-detector";
 import { SimpleGit } from "simple-git";
 import type { Opaque, SetRequired, PackageJson as StandardPackageJson } from "type-fest";

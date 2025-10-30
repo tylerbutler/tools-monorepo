@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 /**
  * An error thrown when a path is not within a Git repository.
  */

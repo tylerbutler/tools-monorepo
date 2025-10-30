@@ -1,7 +1,6 @@
 # sail-infrastructure
 
-This package contains types and helper functions that are used across multiple build-tools packages, including
-`@fluidframework/build-tools` and `@fluid-tools/build-cli`.
+This package contains types and helper functions for organizing npm packages into workspaces and release groups within monorepos.
 
 The primary purpose of this package is to provide a common way to organize npm packages into groups called release
 groups, and leverages workspaces functionality provided by package managers like npm, yarn, and pnpm to manage
@@ -100,7 +99,7 @@ documentation](./docs/cli.md) for more information.
 
 ### Loading old config formats
 
-The `repoPackages` configuration currently used by fluid-build will be loaded if the newer `buildProject` config can't be
+The `repoPackages` configuration format will be loaded if the newer `buildProject` config can't be
 found. This is for back-compat only and will not be maintained indefinitely. Users should convert to `buildProject` when
 possible.
 
@@ -131,16 +130,13 @@ buildProject: {
           // a scope is provided, all packages with that scope will be a part of
           // the release group.
           include: [
-            // Include all the Fluid Framework scopes and packages except for
-            // @fluid-example.
-            "@fluidframework",
-            "@fluid-experimental",
-            "@fluid-internal",
-            "@fluid-private",
-            "@fluid-tools",
+            // Include all scopes and packages except examples
+            "@myorg/core",
+            "@myorg/utils",
+            "@myorg/internal",
             // This private package is part of the client release group
             "@types/jest-environment-puppeteer"
-            "fluid-framework",
+            "myorg-framework",
           ],
           // A release group can have an OPTIONAL root package. This package
           // is typically private and is similar to the root package for a workspace.
@@ -148,14 +144,14 @@ buildProject: {
           // configuration that only applies on the release group,
           rootPackageName: "client-release-group-root",
 
-          // A release group may have an ADO pipeline URL associated with it. This
+          // A release group may have a pipeline URL associated with it. This
           // URL is used to provide direct links to the pipeline when running releases.
           adoPipelineUrl:
-            "https://dev.azure.com/fluidframework/internal/_build?definitionId=12",
+            "https://dev.azure.com/myorg/project/_build?definitionId=12",
         },
         examples: {
-          // This release group contains only the @fluid-example packages.
-          include: ["@fluid-example"],
+          // This release group contains only the example packages.
+          include: ["@myorg/examples"],
           // Release group root packages are optional but can be useful to store scripts that are tuned to
           // apply to only that release group.
           rootPackageName: "examples-release-group-root",
@@ -173,19 +169,18 @@ buildProject: {
         // must be unique regardless of the workspace they belong to.
         "build-tools": {
           include: [
-            // Include all Fluid Framework scopes. Only packages contained in the workspace
+            // Include all scopes. Only packages contained in the workspace
             // will be included, so it is safe to use the same scopes in multiple release
             // group definitions as long as they're in different workspaces.
-            "@fluidframework",
-            "@fluid-example",
-            "@fluid-experimental",
-            "@fluid-internal",
-            "@fluid-private",
-            "@fluid-tools",
+            "@myorg/core",
+            "@myorg/examples",
+            "@myorg/utils",
+            "@myorg/internal",
+            "@myorg/tools",
           ],
           rootPackageName: "build-tools-release-group-root",
           adoPipelineUrl:
-            "https://dev.azure.com/fluidframework/internal/_build?definitionId=14",
+            "https://dev.azure.com/myorg/project/_build?definitionId=14",
         },
       },
     },

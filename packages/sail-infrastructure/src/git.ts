@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import * as path from "node:path";
 
 import execa from "execa";
@@ -155,8 +150,8 @@ export async function getChangedSinceRef<P extends IPackage>(
 			(filePath) => path.join(gitRoot, filePath),
 		)
 		.filter((filePath) => {
-			// filter out changed paths that are not under the Fluid repo
-			// since only paths under the repo should be included
+			// filter out changed paths that are not under the build project
+			// since only paths under the build project should be included
 			return isPathUnder(buildProject.root, filePath);
 		})
 		.map((filePath) => buildProject.relativeToRepo(filePath));

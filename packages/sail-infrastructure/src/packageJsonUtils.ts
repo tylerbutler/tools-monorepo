@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import * as path from "node:path";

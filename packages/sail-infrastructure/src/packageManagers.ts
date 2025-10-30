@@ -1,8 +1,3 @@
-/*!
- * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
- * Licensed under the MIT License.
- */
-
 import { detectSync } from "package-manager-detector";
 // eslint-disable-next-line import/no-internal-modules
 import { resolveCommand } from "package-manager-detector/commands";

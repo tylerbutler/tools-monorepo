@@ -1,11 +1,6 @@
-**@tylerbu/sail-infrastructure**
-
-***
-
 # sail-infrastructure
 
-This package contains types and helper functions that are used across multiple build-tools packages, including
-`@fluidframework/build-tools` and `@fluid-tools/build-cli`.
+This package contains types and helper functions for organizing npm packages into workspaces and release groups within monorepos.
 
 The primary purpose of this package is to provide a common way to organize npm packages into groups called release
 groups, and leverages workspaces functionality provided by package managers like npm, yarn, and pnpm to manage
@@ -49,6 +44,7 @@ repo that is not configured as part of a workspace is invisible to tools using t
 While workspaces manage dependencies and physical layout of packages, release groups are focused on groups of packages
 that are _versioned and released together_. Release groups are always a subset of a workspace, and must contain at least
 one package. **Release groups cannot span multiple workspaces.**
+
 
 > [!IMPORTANT]
 > A workspace _must_ have at least one release group, and all packages must be a part of a release group.
@@ -103,7 +99,7 @@ documentation](./docs/cli.md) for more information.
 
 ### Loading old config formats
 
-The `repoPackages` configuration currently used by fluid-build will be loaded if the newer `buildProject` config can't be
+The `repoPackages` configuration format will be loaded if the newer `buildProject` config can't be
 found. This is for back-compat only and will not be maintained indefinitely. Users should convert to `buildProject` when
 possible.
 
@@ -134,16 +130,13 @@ buildProject: {
           // a scope is provided, all packages with that scope will be a part of
           // the release group.
           include: [
-            // Include all the Fluid Framework scopes and packages except for
-            // @fluid-example.
-            "@fluidframework",
-            "@fluid-experimental",
-            "@fluid-internal",
-            "@fluid-private",
-            "@fluid-tools",
+            // Include all scopes and packages except examples
+            "@myorg/core",
+            "@myorg/utils",
+            "@myorg/internal",
             // This private package is part of the client release group
             "@types/jest-environment-puppeteer"
-            "fluid-framework",
+            "myorg-framework",
           ],
           // A release group can have an OPTIONAL root package. This package
           // is typically private and is similar to the root package for a workspace.
@@ -151,14 +144,14 @@ buildProject: {
           // configuration that only applies on the release group,
           rootPackageName: "client-release-group-root",
 
-          // A release group may have an ADO pipeline URL associated with it. This
+          // A release group may have a pipeline URL associated with it. This
           // URL is used to provide direct links to the pipeline when running releases.
           adoPipelineUrl:
-            "https://dev.azure.com/fluidframework/internal/_build?definitionId=12",
+            "https://dev.azure.com/myorg/project/_build?definitionId=12",
         },
         examples: {
-          // This release group contains only the @fluid-example packages.
-          include: ["@fluid-example"],
+          // This release group contains only the example packages.
+          include: ["@myorg/examples"],
           // Release group root packages are optional but can be useful to store scripts that are tuned to
           // apply to only that release group.
           rootPackageName: "examples-release-group-root",
@@ -176,19 +169,18 @@ buildProject: {
         // must be unique regardless of the workspace they belong to.
         "build-tools": {
           include: [
-            // Include all Fluid Framework scopes. Only packages contained in the workspace
+            // Include all scopes. Only packages contained in the workspace
             // will be included, so it is safe to use the same scopes in multiple release
             // group definitions as long as they're in different workspaces.
-            "@fluidframework",
-            "@fluid-example",
-            "@fluid-experimental",
-            "@fluid-internal",
-            "@fluid-private",
-            "@fluid-tools",
+            "@myorg/core",
+            "@myorg/examples",
+            "@myorg/utils",
+            "@myorg/internal",
+            "@myorg/tools",
           ],
           rootPackageName: "build-tools-release-group-root",
           adoPipelineUrl:
-            "https://dev.azure.com/fluidframework/internal/_build?definitionId=14",
+            "https://dev.azure.com/myorg/project/_build?definitionId=14",
         },
       },
     },
@@ -240,80 +232,3 @@ That should be much easier now.
 ## Known gaps
 
 - Inadequate testing of git-related APIs - can we mock git somehow?
-
-This is the main entrypoint to the build-infrastructure API.
-
-The primary purpose of this package is to provide a common way to organize npm packages into groups called release
-groups, and leverages workspaces functionality provided by package managers like npm, yarn, and pnpm to manage
-interdependencies between packages across a BuildProject. It then provides APIs to select, filter, and work with
-those package groups.
-
-## Classes
-
-- [BuildProject](classes/BuildProject.md)
-- [NotInGitRepository](classes/NotInGitRepository.md)
-- [PackageBase](classes/PackageBase.md)
-- [Stopwatch](classes/Stopwatch.md)
-
-## Interfaces
-
-- [BuildProjectConfigV1](interfaces/BuildProjectConfigV1.md)
-- [FilterablePackage](interfaces/FilterablePackage.md)
-- [IBuildProject](interfaces/IBuildProject.md)
-- [~~IFluidBuildDir~~](interfaces/IFluidBuildDir.md)
-- [~~IFluidBuildDirs~~](interfaces/IFluidBuildDirs.md)
-- [Installable](interfaces/Installable.md)
-- [IPackage](interfaces/IPackage.md)
-- [IPackageManager](interfaces/IPackageManager.md)
-- [IReleaseGroup](interfaces/IReleaseGroup.md)
-- [IWorkspace](interfaces/IWorkspace.md)
-- [Logger](interfaces/Logger.md)
-- [PackageDependency](interfaces/PackageDependency.md)
-- [PackageFilterOptions](interfaces/PackageFilterOptions.md)
-- [PackageSelectionCriteria](interfaces/PackageSelectionCriteria.md)
-- [PnpmPackageJsonFields](interfaces/PnpmPackageJsonFields.md)
-- [ReleaseGroupDefinition](interfaces/ReleaseGroupDefinition.md)
-- [Reloadable](interfaces/Reloadable.md)
-- [WorkspaceDefinition](interfaces/WorkspaceDefinition.md)
-
-## Type Aliases
-
-- [AdditionalPackageProps](type-aliases/AdditionalPackageProps.md)
-- [AllPackagesSelectionCriteria](type-aliases/AllPackagesSelectionCriteria.md)
-- [BuildProjectConfig](type-aliases/BuildProjectConfig.md)
-- [BuildProjectConfigV2](type-aliases/BuildProjectConfigV2.md)
-- [EmptySelectionCriteria](type-aliases/EmptySelectionCriteria.md)
-- [ErrorLoggingFunction](type-aliases/ErrorLoggingFunction.md)
-- [GlobString](type-aliases/GlobString.md)
-- [~~IFluidBuildDirEntry~~](type-aliases/IFluidBuildDirEntry.md)
-- [LoggingFunction](type-aliases/LoggingFunction.md)
-- [PackageJson](type-aliases/PackageJson.md)
-- [PackageManagerName](type-aliases/PackageManagerName.md)
-- [PackageName](type-aliases/PackageName.md)
-- [ReleaseGroupName](type-aliases/ReleaseGroupName.md)
-- [WorkspaceName](type-aliases/WorkspaceName.md)
-
-## Variables
-
-- [BUILDPROJECT\_CONFIG\_MIN\_VERSION](variables/BUILDPROJECT_CONFIG_MIN_VERSION.md)
-
-## Functions
-
-- [detectPackageManager](functions/detectPackageManager.md)
-- [filterPackages](functions/filterPackages.md)
-- [findGitRootSync](functions/findGitRootSync.md)
-- [generateBuildProjectConfig](functions/generateBuildProjectConfig.md)
-- [getAllDependencies](functions/getAllDependencies.md)
-- [getBuildProjectConfig](functions/getBuildProjectConfig.md)
-- [getChangedSinceRef](functions/getChangedSinceRef.md)
-- [getFiles](functions/getFiles.md)
-- [getMergeBaseRemote](functions/getMergeBaseRemote.md)
-- [getRemote](functions/getRemote.md)
-- [isIPackage](functions/isIPackage.md)
-- [isIReleaseGroup](functions/isIReleaseGroup.md)
-- [isV1Config](functions/isV1Config.md)
-- [loadBuildProject](functions/loadBuildProject.md)
-- [selectAndFilterPackages](functions/selectAndFilterPackages.md)
-- [setVersion](functions/setVersion.md)
-- [updatePackageJsonFile](functions/updatePackageJsonFile.md)
-- [updatePackageJsonFileAsync](functions/updatePackageJsonFileAsync.md)
