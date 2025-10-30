@@ -1,3 +1,4 @@
+import process from "node:process";
 import { type Command, Flags } from "@oclif/core";
 import { CommandWithConfig } from "@tylerbu/cli-api";
 import { getSailConfig } from "./core/config.js";
@@ -19,21 +20,18 @@ export abstract class BaseSailCommand<
 		...CommandWithConfig.flags,
 	};
 
-	// protected override async init(): Promise<void> {
-	// 	await super.init();
-	// 	const {buildProject: bpjConfig} = this.commandConfig;
-	// 	const buildProject = loadBuildProject<BuildPackage>(, false);
-	// }
-	protected override async loadConfig(
-		filePath: string,
-		reload?: boolean,
-	): Promise<ISailConfig | undefined> {
-		const { config, configFilePath } = getSailConfig(filePath, reload ?? false);
-		this.configPath = configFilePath;
-		return config;
-	}
+	public override async init(): Promise<void> {
+		// Skip the parent's config loading - we have custom logic
+		this.requiresConfig = false;
+		await super.init();
 
-	// protected get defaultConfig(): ISailConfig {
-	// 	return
-	// }
+		// Custom config loading
+		const { config: configFlag } = this.flags;
+		const searchPath = configFlag ?? process.cwd();
+		const { config, configFilePath } = getSailConfig(searchPath, false);
+
+		// Set the config via protected properties
+		(this as any)._commandConfig = config;
+		(this as any)._configPath = configFilePath;
+	}
 }

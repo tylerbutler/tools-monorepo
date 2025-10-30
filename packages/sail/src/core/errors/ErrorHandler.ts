@@ -1,6 +1,6 @@
 import type { Logger } from "@tylerbu/cli-api";
 import {
-	ErrorCategory,
+	type ErrorCategory,
 	type ErrorContext,
 	SailError,
 	isSailError,

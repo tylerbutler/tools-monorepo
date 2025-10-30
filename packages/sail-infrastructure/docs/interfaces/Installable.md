@@ -1,10 +1,12 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / Installable
+[@tylerbu/sail-infrastructure](../README.md) / Installable
 
 # Interface: Installable
+
+Defined in: packages/sail-infrastructure/src/types.ts:128
 
 A common interface for installable things, like packages, release groups, and workspaces.
 
@@ -18,41 +20,42 @@ A common interface for installable things, like packages, release groups, and wo
 ### checkInstall()
 
 ```ts
-checkInstall(): Promise<boolean>
+checkInstall(): Promise<true | string[]>;
 ```
 
-Returns `true` if the item is installed. If this returns `false`, then the `install` function can be called to
-install.
+Defined in: packages/sail-infrastructure/src/types.ts:132
+
+Returns `true` if the item is installed. If the item is not installed, an array of error strings will be returned.
 
 #### Returns
 
-`Promise`\<`boolean`\>
-
-#### Defined in
-
-[packages/build-infrastructure/src/types.ts:120](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L120)
+`Promise`\<`true` \| `string`[]\>
 
 ***
 
 ### install()
 
 ```ts
-install(updateLockfile): Promise<boolean>
+install(updateLockfile): Promise<boolean>;
 ```
+
+Defined in: packages/sail-infrastructure/src/types.ts:142
 
 Installs the item.
 
 #### Parameters
 
-• **updateLockfile**: `boolean`
+##### updateLockfile
+
+`boolean`
 
 If true, the lockfile will be updated. Otherwise, the lockfile will not be updated. This
-may cause the installation to fail.
+may cause the installation to fail and this function to throw an error.
 
 #### Returns
 
 `Promise`\<`boolean`\>
 
-#### Defined in
+#### Throws
 
-[packages/build-infrastructure/src/types.ts:128](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L128)
+An error if `updateLockfile` is false and the lockfile is outdated.

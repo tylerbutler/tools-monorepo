@@ -59,6 +59,8 @@ EXAMPLES
   $ sail build
 ```
 
+_See code: [src/commands/build.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail/src/commands/build.ts)_
+
 ## `sail scan [SCAN_DIR]`
 
 Scan a path to see it the way Sail sees it.
@@ -80,4 +82,6 @@ LOGGING FLAGS
 DESCRIPTION
   Scan a path to see it the way Sail sees it.
 ```
+
+_See code: [src/commands/scan.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail/src/commands/scan.ts)_
 <!-- commandsstop -->

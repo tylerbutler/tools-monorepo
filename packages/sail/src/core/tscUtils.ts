@@ -138,7 +138,7 @@ function toLowerCase(x: string) {
 	return x.toLowerCase();
 }
 // eslint-disable-next-line no-useless-escape
-const fileNameLowerCaseRegExp = /[^\u0130\u0131\u00DFa-z0-9\\/:\-_\. ]+/g;
+const fileNameLowerCaseRegExp = /[^\u0130\u0131\u00DFa-z0-9\\/:\-_. ]+/g;
 
 function createGetCanonicalFileName(tsLib: typeof ts) {
 	return tsLib.sys.useCaseSensitiveFileNames

@@ -36,7 +36,7 @@ export class GroupTask extends Task {
 		}
 	}
 
-	public addDependentTasks(dependentTasks: Task[], isDefault: boolean): void {
+	public override addDependentTasks(dependentTasks: Task[], isDefault: boolean): void {
 		if (isDefault) {
 			// Propagate to unnamed subtasks only if it's a default dependency
 			for (const task of this.subTasks) {
@@ -68,7 +68,7 @@ export class GroupTask extends Task {
 	}
 
 	protected async checkIsUpToDate(): Promise<boolean> {
-		const taskUpToDateP = new Array<Promise<boolean>>();
+		const taskUpToDateP: Promise<boolean>[] = [];
 		for (const task of this.subTasks) {
 			taskUpToDateP.push(task.isUpToDate());
 		}
@@ -85,7 +85,7 @@ export class GroupTask extends Task {
 		q: AsyncPriorityQueue<TaskExec>,
 	): Promise<BuildResult> {
 		this.traceExec("Begin Group Task");
-		const taskP = new Array<Promise<BuildResult>>();
+		const taskP: Promise<BuildResult>[] = [];
 		for (const task of this.subTasks) {
 			taskP.push(task.run(q));
 		}

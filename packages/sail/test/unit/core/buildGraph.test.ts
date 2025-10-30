@@ -12,7 +12,7 @@ import {
 	BuildResult,
 	summarizeBuildResult,
 } from "../../../src/core/execution/BuildExecutor.js";
-import { BuildPackage } from "../../../src/common/npmPackage.js";
+import type { BuildPackage } from "../../../src/common/npmPackage.js";
 import type { BuildContext } from "../../../src/core/buildContext.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
 

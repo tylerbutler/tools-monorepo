@@ -1,64 +1,70 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / IPackageManager
+[@tylerbu/sail-infrastructure](../README.md) / IPackageManager
 
 # Interface: IPackageManager
+
+Defined in: packages/sail-infrastructure/src/types.ts:312
 
 A package manager, such as "npm" or "pnpm".
 
 ## Properties
 
-### lockfileName
+### lockfileNames
 
 ```ts
-readonly lockfileName: string;
+readonly lockfileNames: string[];
 ```
 
-The name of the lockfile used by the package manager.
+Defined in: packages/sail-infrastructure/src/types.ts:321
 
-#### Defined in
-
-[packages/build-infrastructure/src/types.ts:285](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L285)
+The name of the lockfile(s) used by the package manager.
 
 ***
 
 ### name
 
 ```ts
-readonly name: PackageManagerName;
+readonly name: AgentName;
 ```
+
+Defined in: packages/sail-infrastructure/src/types.ts:316
 
 The name of the package manager.
 
-#### Defined in
-
-[packages/build-infrastructure/src/types.ts:280](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L280)
-
 ## Methods
 
-### installCommand()
+### getInstallCommandWithArgs()
 
 ```ts
-installCommand(updateLockfile): string
+getInstallCommandWithArgs(updateLockfile): string[];
 ```
 
-Returns an install command that can be used to install dependencies using this package manager.
+Defined in: packages/sail-infrastructure/src/types.ts:337
+
+Returns an array of arguments, including the name of the command, e.g. "install", that can be used to install
+dependencies using this package manager.
 
 #### Parameters
 
-• **updateLockfile**: `boolean`
+##### updateLockfile
+
+`boolean`
 
 If `true`, then the returned command will include flags or arguments necessary to update
 the lockfile during install. If `false`, such flags or arguments should be omitted. Note that the command will
-_not_ include the package manager name istself. For example, the `npm` package manager will return the string
-`"install"`, not `"npm install"`.
+_not_ include the package manager name istself. For example, the `npm` package manager will return `["install"]`,
+not `["npm", "install"]`.
 
 #### Returns
 
-`string`
+`string`[]
 
-#### Defined in
+#### Example
 
-[packages/build-infrastructure/src/types.ts:295](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L295)
+```ts
+For the pnpm package manager, calling `getInstallCommandWithArgs(true)` would return
+`["install", "--no-frozen-lockfile"]`.
+```

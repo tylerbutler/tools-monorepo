@@ -4,7 +4,7 @@ import chalk from "picocolors";
 import { Spinner } from "picospinner";
 
 import type { Logger } from "@tylerbu/cli-api";
-import { BuildPackage } from "../../common/npmPackage.js";
+import type { BuildPackage } from "../../common/npmPackage.js";
 import {
 	BuildError,
 	ErrorHandler,

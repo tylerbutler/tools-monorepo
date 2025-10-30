@@ -1,18 +1,24 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / PackageJson
+[@tylerbu/sail-infrastructure](../README.md) / PackageJson
 
 # Type Alias: PackageJson
 
 ```ts
-type PackageJson: SetRequired<StandardPackageJson & FluidPackageJsonFields, "name" | "scripts" | "version">;
+type PackageJson = SetRequired<Pick<StandardPackageJson, 
+  | "name"
+  | "scripts"
+  | "version"
+  | "dependencies"
+  | "devDependencies"
+  | "peerDependencies"
+  | "private"
+  | "type">, "name" | "scripts" | "version"> & PnpmPackageJsonFields;
 ```
+
+Defined in: packages/sail-infrastructure/src/types.ts:34
 
 All known package.json fields including those that are specific to build-infrastructure.
 The `name`, `scripts`, and `version` fields are required, unlike standard package.json.
-
-## Defined in
-
-[packages/build-infrastructure/src/types.ts:33](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L33)

@@ -6,10 +6,9 @@
 import { strict as assert } from "node:assert";
 import * as path from "node:path";
 
-import { expect } from "chai";
-import { afterEach, describe, it } from "mocha";
 import * as semver from "semver";
 import { simpleGit } from "simple-git";
+import { afterEach, describe, expect, it } from "vitest";
 
 import { loadBuildProject } from "../buildProject.js";
 import type { ReleaseGroupName, WorkspaceName } from "../types.js";
@@ -46,8 +45,8 @@ describe("setVersion", () => {
 		await setVersion(main.packages, semver.parse("1.2.1")!);
 
 		const allCorrect = main.packages.every((pkg) => pkg.version === "1.2.1");
-		expect(main.version).to.equal("1.2.1");
-		expect(allCorrect).to.be.true;
+		expect(main.version).toBe("1.2.1");
+		expect(allCorrect).toBe(true);
 	});
 
 	it("workspace", async () => {
@@ -55,7 +54,7 @@ describe("setVersion", () => {
 		await setVersion(secondWorkspace.packages, semver.parse("2.2.1")!);
 
 		const allCorrect = secondWorkspace.packages.every((pkg) => pkg.version === "2.2.1");
-		expect(allCorrect).to.be.true;
+		expect(allCorrect).toBe(true);
 	});
 
 	it("repo", async () => {
@@ -64,6 +63,6 @@ describe("setVersion", () => {
 		await setVersion(packages, semver.parse("1.2.1")!);
 
 		const allCorrect = packages.every((pkg) => pkg.version === "1.2.1");
-		expect(allCorrect).to.be.true;
+		expect(allCorrect).toBe(true);
 	});
 });

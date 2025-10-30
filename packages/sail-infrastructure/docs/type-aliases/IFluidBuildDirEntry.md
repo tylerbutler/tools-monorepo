@@ -1,19 +1,20 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / IFluidBuildDirEntry
+[@tylerbu/sail-infrastructure](../README.md) / IFluidBuildDirEntry
 
-# Type Alias: ~~IFluidBuildDirEntry~~
+# ~~Type Alias: IFluidBuildDirEntry~~
 
 ```ts
-type IFluidBuildDirEntry: string | IFluidBuildDir | (string | IFluidBuildDir)[];
+type IFluidBuildDirEntry = 
+  | string
+  | IFluidBuildDir
+  | (string | IFluidBuildDir)[];
 ```
+
+Defined in: packages/sail-infrastructure/src/config.ts:166
 
 ## Deprecated
 
-Use repoLayout and associated types instead.
-
-## Defined in
-
-[packages/build-infrastructure/src/config.ts:117](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/config.ts#L117)
+Use buildProject and associated types instead.

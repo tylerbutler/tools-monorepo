@@ -11,10 +11,10 @@ interface DoneFileContent {
 	sources: { [srcFile: string]: string };
 }
 export class WebpackTask extends LeafWithDoneFileTask {
-	protected get taskWeight() {
+	protected override get taskWeight() {
 		return 5; // generally expensive relative to other tasks
 	}
-	protected async getDoneFileContent() {
+	protected override async getDoneFileContent() {
 		// We don't know all the input dependencies of webpack, Make sure recheckLeafIsUpToDate is false
 		// so we will always execute if any of the dependencies not up-to-date at the beginning of the build
 		// where their output might change the webpack's input.

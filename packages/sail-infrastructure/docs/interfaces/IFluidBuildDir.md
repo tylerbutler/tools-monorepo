@@ -1,16 +1,18 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / IFluidBuildDir
+[@tylerbu/sail-infrastructure](../README.md) / IFluidBuildDir
 
-# Interface: ~~IFluidBuildDir~~
+# ~~Interface: IFluidBuildDir~~
+
+Defined in: packages/sail-infrastructure/src/config.ts:173
 
 Configures a package or release group
 
 ## Deprecated
 
-Use repoLayout and associated types instead.
+Use buildProject and associated types instead.
 
 ## Properties
 
@@ -20,11 +22,9 @@ Use repoLayout and associated types instead.
 directory: string;
 ```
 
+Defined in: packages/sail-infrastructure/src/config.ts:177
+
 The path to the package. For release groups this should be the path to the root of the release group.
-
-#### Defined in
-
-[packages/build-infrastructure/src/config.ts:128](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/config.ts#L128)
 
 ***
 
@@ -34,12 +34,10 @@ The path to the package. For release groups this should be the path to the root 
 optional ignoredDirs: string[];
 ```
 
+Defined in: packages/sail-infrastructure/src/config.ts:184
+
 An array of paths under `directory` that should be ignored.
 
 #### Deprecated
 
 This field is unused in all known configs and is ignored by the back-compat loading code.
-
-#### Defined in
-
-[packages/build-infrastructure/src/config.ts:135](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/config.ts#L135)

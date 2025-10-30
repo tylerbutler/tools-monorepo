@@ -35,11 +35,13 @@ export {
 } from "./config.js";
 export { NotInGitRepository } from "./errors.js";
 export {
-	type PackageFilterOptions,
-	type PackageSelectionCriteria,
 	filterPackages,
-	FilterablePackage,
 	selectAndFilterPackages,
+} from "./filter.js";
+export type {
+	PackageFilterOptions,
+	PackageSelectionCriteria,
+	FilterablePackage,
 	EmptySelectionCriteria,
 	AllPackagesSelectionCriteria,
 	GlobString,
@@ -51,7 +53,7 @@ export {
 	getRemote,
 	getChangedSinceRef,
 } from "./git.js";
-export { type Logger, type LoggingFunction, type ErrorLoggingFunction } from "./logging.js";
+export type { Logger, LoggingFunction, ErrorLoggingFunction } from "./logging.js";
 export { PackageBase } from "./package.js";
 export { updatePackageJsonFile, updatePackageJsonFileAsync } from "./packageJsonUtils.js";
 export { detectPackageManager } from "./packageManagers.js";

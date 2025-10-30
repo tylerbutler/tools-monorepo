@@ -5,18 +5,13 @@
 
 import { strict as assert } from "node:assert";
 
-import { expect } from "chai";
-import * as chai from "chai";
-import assertArrays from "chai-arrays";
-import { describe, it } from "mocha";
+import { describe, expect, it } from "vitest";
 
 import { loadBuildProject } from "../buildProject.js";
 import { findGitRootSync } from "../git.js";
 import type { ReleaseGroupName, WorkspaceName } from "../types.js";
 
 import { testRepoRoot } from "./init.js";
-
-chai.use(assertArrays);
 
 describe("loadBuildProject", () => {
 	describe("testRepo", () => {
@@ -29,33 +24,20 @@ describe("loadBuildProject", () => {
 			);
 
 			const main = repo.workspaces.get("main" as WorkspaceName);
-			expect(main).to.not.be.undefined;
-			expect(main?.packages.length).to.equal(
-				9,
-				"main workspace has the wrong number of packages",
-			);
-			expect(main?.releaseGroups.size).to.equal(
-				3,
-				"main workspace has the wrong number of release groups",
-			);
+			expect(main).toBeDefined();
+			expect(main?.packages.length).toBe(9);
+
+			expect(main?.releaseGroups.size).toBe(3);
 
 			const mainReleaseGroup = repo.releaseGroups.get("main" as ReleaseGroupName);
-			expect(mainReleaseGroup).to.not.be.undefined;
-			expect(mainReleaseGroup?.packages.length).to.equal(
-				5,
-				"main release group has the wrong number of packages",
-			);
+			expect(mainReleaseGroup).toBeDefined();
+			expect(mainReleaseGroup?.packages.length).toBe(5);
 
 			const second = repo.workspaces.get("second" as WorkspaceName);
-			expect(second).to.not.be.undefined;
-			expect(second?.packages.length).to.equal(
-				3,
-				"second workspace has the wrong number of packages",
-			);
-			expect(second?.releaseGroups.size).to.equal(
-				1,
-				"second workspace has the wrong number of release groups",
-			);
+			expect(second).toBeDefined();
+			expect(second?.packages.length).toBe(3);
+
+			expect(second?.releaseGroups.size).toBe(1);
 		});
 
 		it("releaseGroupDependencies", async () => {
@@ -65,32 +47,29 @@ describe("loadBuildProject", () => {
 			const actualDependencies = mainReleaseGroup!.releaseGroupDependencies;
 			const names = actualDependencies.map((r) => r.name as string);
 
-			expect(actualDependencies).to.not.be.undefined;
-			expect(names).to.be.containingAllOf(["group2"]);
+			expect(actualDependencies).toBeDefined();
+			expect(names).toEqual(expect.arrayContaining(["group2"]));
 		});
 	});
 
-	describe("FluidFramework repo - tests backCompat config loading", () => {
+	describe.skip("FluidFramework repo - tests backCompat config loading", () => {
+		// These tests require running in the FluidFramework repository
+		// Skip them in other environments (like tools-monorepo)
 		it("loads correctly", () => {
 			// Load the root config
 			const repo = loadBuildProject(findGitRootSync());
-			expect(repo.workspaces.size).to.be.greaterThan(1);
+			expect(repo.workspaces.size).toBeGreaterThan(1);
 
 			const client = repo.workspaces.get("client" as WorkspaceName);
-			expect(client).to.not.be.undefined;
-			expect(client?.packages.length).to.be.greaterThan(1);
-			expect(client?.releaseGroups.size).to.be.greaterThan(0);
+			expect(client).toBeDefined();
+			expect(client?.packages.length).toBeGreaterThan(1);
+			expect(client?.releaseGroups.size).toBeGreaterThan(0);
 
 			const buildTools = repo.workspaces.get("build-tools" as WorkspaceName);
-			expect(buildTools).to.not.be.undefined;
-			expect(buildTools?.packages.length).to.equal(
-				6,
-				"build-tools workspace has the wrong number of packages",
-			);
-			expect(buildTools?.releaseGroups.size).to.equal(
-				1,
-				"build-tools workspace has the wrong number of release groups",
-			);
+			expect(buildTools).toBeDefined();
+			expect(buildTools?.packages.length).toBe(6);
+
+			expect(buildTools?.releaseGroups.size).toBe(1);
 		});
 
 		it("releaseGroupDependencies", async () => {
@@ -98,17 +77,17 @@ describe("loadBuildProject", () => {
 			const clientReleaseGroup = repo.releaseGroups.get("client" as ReleaseGroupName);
 			assert(clientReleaseGroup !== undefined);
 
-			expect(() => clientReleaseGroup.releaseGroupDependencies).not.to.throw(
+			expect(() => clientReleaseGroup.releaseGroupDependencies).not.toThrow(
 				/Key.*? is already set and cannot be modified/,
 			);
 
 			try {
 				const actualDependencies = clientReleaseGroup.releaseGroupDependencies;
 
-				expect(actualDependencies).to.not.be.undefined;
-				expect(actualDependencies).to.not.be.empty;
+				expect(actualDependencies).toBeDefined();
+				expect(actualDependencies.length).toBeGreaterThan(0);
 			} catch (error) {
-				expect(error).to.match(/111/);
+				expect(error).toMatch(/111/);
 			}
 		});
 	});

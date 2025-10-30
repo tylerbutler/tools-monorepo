@@ -51,11 +51,7 @@ export async function execAsync(
 ): Promise<ExecAsyncResult> {
 	return new Promise((resolve) => {
 		const p = child_process.exec(command, options, (error, stdout, stderr) => {
-			resolve({
-				error,
-				stdout: stdout.toString(),
-				stderr: stderr.toString()
-			});
+			resolve({ error, stdout: stdout.toString(), stderr: stderr.toString() });
 		});
 
 		if (pipeStdIn && p.stdin) {

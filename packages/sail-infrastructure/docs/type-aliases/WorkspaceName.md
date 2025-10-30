@@ -1,17 +1,15 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / WorkspaceName
+[@tylerbu/sail-infrastructure](../README.md) / WorkspaceName
 
 # Type Alias: WorkspaceName
 
 ```ts
-type WorkspaceName: Opaque<string, "WorkspaceName">;
+type WorkspaceName = Opaque<string, "WorkspaceName">;
 ```
 
+Defined in: packages/sail-infrastructure/src/types.ts:158
+
 A tagged type representing workspace names.
-
-## Defined in
-
-[packages/build-infrastructure/src/types.ts:141](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L141)

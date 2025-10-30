@@ -1,16 +1,18 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / Reloadable
+[@tylerbu/sail-infrastructure](../README.md) / Reloadable
 
 # Interface: Reloadable
+
+Defined in: packages/sail-infrastructure/src/types.ts:148
 
 An interface for things that can be reloaded,
 
 ## Extended by
 
-- [`IFluidRepo`](IFluidRepo.md)
+- [`IBuildProject`](IBuildProject.md)
 - [`IPackage`](IPackage.md)
 - [`IReleaseGroup`](IReleaseGroup.md)
 - [`IWorkspace`](IWorkspace.md)
@@ -20,13 +22,13 @@ An interface for things that can be reloaded,
 ### reload()
 
 ```ts
-reload(): void
+reload(): void;
 ```
+
+Defined in: packages/sail-infrastructure/src/types.ts:152
+
+Synchronously reload.
 
 #### Returns
 
 `void`
-
-#### Defined in
-
-[packages/build-infrastructure/src/types.ts:135](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L135)

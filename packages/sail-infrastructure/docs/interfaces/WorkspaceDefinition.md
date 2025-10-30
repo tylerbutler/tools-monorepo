@@ -1,12 +1,14 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / WorkspaceDefinition
+[@tylerbu/sail-infrastructure](../README.md) / WorkspaceDefinition
 
 # Interface: WorkspaceDefinition
 
-The definition of a workspace ih configuration.
+Defined in: packages/sail-infrastructure/src/config.ts:103
+
+The definition of a workspace in configuration.
 
 ## Properties
 
@@ -16,11 +18,9 @@ The definition of a workspace ih configuration.
 directory: string;
 ```
 
+Defined in: packages/sail-infrastructure/src/config.ts:107
+
 The root directory of the workspace. This folder should contain a workspace config file (e.g. pnpm-workspace.yaml).
-
-#### Defined in
-
-[packages/build-infrastructure/src/config.ts:58](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/config.ts#L58)
 
 ***
 
@@ -30,12 +30,14 @@ The root directory of the workspace. This folder should contain a workspace conf
 releaseGroups: object;
 ```
 
+Defined in: packages/sail-infrastructure/src/config.ts:112
+
 Definitions of the release groups within the workspace.
 
 #### Index Signature
 
- \[`name`: `string`\]: [`ReleaseGroupDefinition`](ReleaseGroupDefinition.md)
+```ts
+[name: string]: ReleaseGroupDefinition
+```
 
-#### Defined in
-
-[packages/build-infrastructure/src/config.ts:63](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/config.ts#L63)
+A mapping of release group name to a definition for the release group.

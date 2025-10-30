@@ -1,10 +1,12 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / PackageDependency
+[@tylerbu/sail-infrastructure](../README.md) / PackageDependency
 
 # Interface: PackageDependency
+
+Defined in: packages/sail-infrastructure/src/types.ts:344
 
 Information about a package dependency. That is, en extry in the "dependencies", "devDependencies", or
 "peerDependencies" fields in package.json.
@@ -17,15 +19,13 @@ Information about a package dependency. That is, en extry in the "dependencies",
 depKind: "prod" | "dev" | "peer";
 ```
 
+Defined in: packages/sail-infrastructure/src/types.ts:362
+
 The kind of dependency, based on the field that the dependency comes from.
 
 - prod corresponds to the dependencies field.
 - dev corresponds to the devDependencies field.
 - peer corresponds to the peerDependencies field.
-
-#### Defined in
-
-[packages/build-infrastructure/src/types.ts:320](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L320)
 
 ***
 
@@ -35,11 +35,9 @@ The kind of dependency, based on the field that the dependency comes from.
 name: PackageName;
 ```
 
+Defined in: packages/sail-infrastructure/src/types.ts:348
+
 The name of the dependency.
-
-#### Defined in
-
-[packages/build-infrastructure/src/types.ts:306](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L306)
 
 ***
 
@@ -49,8 +47,6 @@ The name of the dependency.
 version: string;
 ```
 
+Defined in: packages/sail-infrastructure/src/types.ts:353
+
 The version or version range of the dependency.
-
-#### Defined in
-
-[packages/build-infrastructure/src/types.ts:311](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L311)

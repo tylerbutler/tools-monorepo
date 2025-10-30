@@ -87,7 +87,7 @@ export class ParallelProcessor {
 		mapper: (item: T, index: number) => Promise<R>,
 		concurrency: number = 10,
 	): Promise<R[]> {
-		return this.processInParallel(
+		return ParallelProcessor.processInParallel(
 			items.map((item, index) => ({ item, index })),
 			async ({ item, index }) => mapper(item, index),
 			concurrency,
@@ -102,7 +102,7 @@ export class ParallelProcessor {
 		predicate: (item: T) => Promise<boolean>,
 		concurrency: number = 10,
 	): Promise<T[]> {
-		const results = await this.mapParallel(
+		const results = await ParallelProcessor.mapParallel(
 			items,
 			async (item) => ({ item, keep: await predicate(item) }),
 			concurrency,

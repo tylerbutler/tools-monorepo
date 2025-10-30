@@ -115,7 +115,7 @@ export class TaskFactory {
 		taskName?: string,
 	) {
 		// Split the "&&" first
-		const subTasks = new Array<Task>();
+		const subTasks: Task[] = [];
 		const steps = command.split("&&");
 		if (steps.length > 1) {
 			for (const step of steps) {
@@ -130,7 +130,7 @@ export class TaskFactory {
 		// Parse concurrently
 		const concurrently = command.startsWith("concurrently ");
 		if (concurrently) {
-			const subTasks = new Array<Task>();
+			const subTasks: Task[] = [];
 			const steps = command.substring("concurrently ".length).split(/ +/);
 			for (const step of steps) {
 				const npmMatch = regexNpmConcurrentlySpec.exec(step);

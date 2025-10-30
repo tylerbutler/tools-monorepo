@@ -15,13 +15,13 @@ function unquote(str: string) {
 }
 
 export class EchoTask extends LeafTask {
-	protected get isIncremental() {
+	protected override get isIncremental() {
 		return true;
 	}
-	protected get taskWeight() {
+	protected override get taskWeight() {
 		return 0; // generally cheap relative to other tasks
 	}
-	protected async checkLeafIsUpToDate() {
+	protected override async checkLeafIsUpToDate() {
 		return true;
 	}
 }
@@ -108,13 +108,13 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 	private _srcFiles: string[] | undefined;
 	private _dstFiles: string[] | undefined;
 
-	protected get recheckLeafIsUpToDate(): boolean {
+	protected override get recheckLeafIsUpToDate(): boolean {
 		// The task knows all the input, so we can check if this task needs to execute
 		// even dependent tasks are out of date.
 		return true;
 	}
 
-	protected get taskWeight() {
+	protected override get taskWeight() {
 		return 0; // generally cheap relative to other tasks
 	}
 	protected async getInputFiles() {
@@ -169,13 +169,13 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 }
 
 export class GenVerTask extends LeafTask {
-	protected get isIncremental() {
+	protected override get isIncremental() {
 		return true;
 	}
-	protected get taskWeight() {
+	protected override get taskWeight() {
 		return 0; // generally cheap relative to other tasks
 	}
-	protected async checkLeafIsUpToDate() {
+	protected override async checkLeafIsUpToDate() {
 		const file = path.join(this.node.pkg.directory, "src/packageVersion.ts");
 		try {
 			const content = await readFile(file, "utf8");
@@ -205,7 +205,7 @@ export class GenVerTask extends LeafTask {
 }
 
 export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
-	protected get taskWeight() {
+	protected override get taskWeight() {
 		return 0; // generally cheap relative to other tasks
 	}
 	private inputFiles: string[] | undefined;
@@ -227,7 +227,7 @@ export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
 				});
 			});
 
-			this.inputFiles = new Array(...tsFileSet.keys());
+			this.inputFiles = [...tsFileSet.keys()];
 		}
 		return this.inputFiles;
 	}

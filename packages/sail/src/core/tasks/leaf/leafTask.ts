@@ -394,7 +394,7 @@ export abstract class LeafTask extends Task {
 	private async buildDependentTask(
 		q: AsyncPriorityQueue<TaskExec>,
 	): Promise<BuildResult> {
-		const p = new Array<Promise<BuildResult>>();
+		const p: Promise<BuildResult>[] = [];
 		for (const dependentLeafTask of this.getDependentLeafTasks()) {
 			p.push(dependentLeafTask.run(q));
 		}
@@ -471,7 +471,7 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 		return this.getPackageFileFullPath(this.doneFile);
 	}
 
-	protected async checkIsUpToDate(): Promise<boolean> {
+	protected override async checkIsUpToDate(): Promise<boolean> {
 		const leafIsUpToDate = await super.checkIsUpToDate();
 		// biome-ignore lint/complexity/useSimplifiedLogicExpression: <explanation>
 		if (!leafIsUpToDate && !this.recheckLeafIsUpToDate) {
@@ -492,7 +492,7 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 		return leafIsUpToDate;
 	}
 
-	protected async markExecDone() {
+	protected override async markExecDone() {
 		const doneFileFullPath = this.doneFileFullPath;
 		try {
 			// TODO: checkLeafIsUpToDate already called this. Consider reusing its results to save recomputation of them.

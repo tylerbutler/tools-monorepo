@@ -24,7 +24,7 @@ class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
 	/**
 	 * Use hashes instead of modified times in donefile.
 	 */
-	protected get useHashes(): boolean {
+	protected override get useHashes(): boolean {
 		return true;
 	}
 

@@ -1,15 +1,19 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / IFluidBuildDirs
+[@tylerbu/sail-infrastructure](../README.md) / IFluidBuildDirs
 
-# Interface: ~~IFluidBuildDirs~~
+# ~~Interface: IFluidBuildDirs~~
+
+Defined in: packages/sail-infrastructure/src/config.ts:159
 
 ## Deprecated
 
-Use repoLayout and associated types instead.
+Use buildProject and associated types instead.
 
 ## Indexable
 
- \[`name`: `string`\]: [`IFluidBuildDirEntry`](../type-aliases/IFluidBuildDirEntry.md)
+```ts
+[name: string]: IFluidBuildDirEntry
+```

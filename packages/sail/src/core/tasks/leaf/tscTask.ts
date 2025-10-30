@@ -39,7 +39,7 @@ export class TscTask extends LeafTask {
 		return this._tscUtils;
 	}
 
-	protected get executionCommand() {
+	protected override get executionCommand() {
 		const parsedCommandLine = this.parsedCommandLine;
 		if (parsedCommandLine?.options.build) {
 			// https://github.com/microsoft/TypeScript/issues/57780
@@ -335,7 +335,7 @@ export class TscTask extends LeafTask {
 
 		return this._tsConfig;
 	}
-	protected get recheckLeafIsUpToDate() {
+	protected override get recheckLeafIsUpToDate() {
 		return true;
 	}
 
@@ -434,7 +434,7 @@ export class TscTask extends LeafTask {
 		return this._tsBuildInfoFullPath;
 	}
 
-	protected getVsCodeErrorMessages(errorMessages: string) {
+	protected override getVsCodeErrorMessages(errorMessages: string) {
 		const lines = errorMessages.split("\n");
 		for (let i = 0; i < lines.length; i++) {
 			const line = lines[i];
@@ -472,12 +472,12 @@ export class TscTask extends LeafTask {
 		return this._tsBuildInfo;
 	}
 
-	protected async markExecDone() {
+	protected override async markExecDone() {
 		// force reload
 		this._tsBuildInfo = undefined;
 	}
 
-	protected get useWorker() {
+	protected override get useWorker() {
 		// TODO: Worker doesn't implement all mode.  This is not comprehensive filtering yet.
 		const parsed = this.parsedCommandLine;
 		return (
@@ -490,11 +490,11 @@ export class TscTask extends LeafTask {
 
 // Base class for tasks that are dependent on a tsc compile
 export abstract class TscDependentTask extends LeafWithDoneFileTask {
-	protected get recheckLeafIsUpToDate() {
+	protected override get recheckLeafIsUpToDate() {
 		return true;
 	}
 
-	protected async getDoneFileContent() {
+	protected override async getDoneFileContent() {
 		try {
 			const tsBuildInfoFiles: ITsBuildInfo[] = [];
 			const tscTasks = [...this.getDependentLeafTasks()].filter(

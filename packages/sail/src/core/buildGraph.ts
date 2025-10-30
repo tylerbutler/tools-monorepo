@@ -7,7 +7,7 @@ import registerDebug from "debug";
 import type { SimpleGit } from "simple-git";
 
 import type { Logger } from "@tylerbu/cli-api";
-import { BuildPackage } from "../common/npmPackage.js";
+import type { BuildPackage } from "../common/npmPackage.js";
 import type { BuildContext } from "./buildContext.js";
 import { PersistentFileHashCache } from "./cache/PersistentFileHashCache.js";
 import {
@@ -26,7 +26,7 @@ import {
 	type BuildablePackage,
 	summarizeBuildResult,
 } from "./execution/BuildExecutor.js";
-import { FileHashCache } from "./fileHashCache.js";
+import type { FileHashCache } from "./fileHashCache.js";
 import type { IBuildResult, IBuildablePackage } from "./interfaces/index.js";
 import type { BuildOptions } from "./options.js";
 import { BuildProfiler } from "./performance/BuildProfiler.js";
@@ -40,7 +40,7 @@ import {
 	normalizeGlobalTaskDefinitions,
 } from "./taskDefinitions.js";
 import { TaskManager } from "./tasks/TaskManager.js";
-import { Task, type TaskExec } from "./tasks/task.js";
+import type { Task, TaskExec } from "./tasks/task.js";
 import { WorkerPool } from "./tasks/workers/workerPool.js";
 
 const traceTaskDef = registerDebug("sail:task:definition");
@@ -111,7 +111,7 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
  * specialized functionality to dedicated classes.
  */
 export class BuildGraphPackage implements DependencyNode, BuildablePackage {
-	public readonly dependentPackages = new Array<BuildGraphPackage>();
+	public readonly dependentPackages = [] as BuildGraphPackage[];
 	public level = -1;
 	private buildP?: Promise<IBuildResult>;
 
@@ -246,7 +246,7 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 		if (this.taskManager.taskCount === 0) {
 			return true;
 		}
-		const isUpToDateP = new Array<Promise<boolean>>();
+		const isUpToDateP: Promise<boolean>[] = [];
 		for (const task of this.taskManager.tasksMap.values()) {
 			isUpToDateP.push(task.isUpToDate());
 		}

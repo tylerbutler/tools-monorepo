@@ -1,15 +1,12 @@
 {
-	"extends": "../../config/tsconfig.base.json",
+	"extends": "../../config/tsconfig.strict.json",
 	"include": ["src/**/*"],
+	"exclude": ["src/test/**/*"],
 	"compilerOptions": {
+		"outDir": "./esm",
 		"rootDir": "./src",
-		"outDir": "./lib",
 		"types": ["node"],
-
-		"module": "Node16",
-		"moduleResolution": "node16",
-
 		"exactOptionalPropertyTypes": false,
-		"noUnusedLocals": false, // Checked in lint instead so unused variables do not block compilation
-	},
+		"noUnusedLocals": false
+	}
 }

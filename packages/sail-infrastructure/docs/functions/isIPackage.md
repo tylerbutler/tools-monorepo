@@ -1,25 +1,25 @@
-[**@fluid-tools/build-infrastructure**](../README.md) • **Docs**
+[**@tylerbu/sail-infrastructure**](../README.md)
 
 ***
 
-[@fluid-tools/build-infrastructure](../README.md) / isIPackage
+[@tylerbu/sail-infrastructure](../README.md) / isIPackage
 
 # Function: isIPackage()
 
 ```ts
-function isIPackage(pkg): pkg is IPackage<Object>
+function isIPackage(pkg): pkg is IPackage<PackageJson>;
 ```
+
+Defined in: packages/sail-infrastructure/src/types.ts:462
 
 A type guard that returns `true` if the item is an [IPackage](../interfaces/IPackage.md).
 
 ## Parameters
 
-• **pkg**: `any`
+### pkg
+
+`any`
 
 ## Returns
 
-`pkg is IPackage<Object>`
-
-## Defined in
-
-[packages/build-infrastructure/src/types.ts:430](https://github.com/microsoft/FluidFramework/blob/main/build-tools/packages/build-infrastructure/src/types.ts#L430)
+`pkg is IPackage<PackageJson>`

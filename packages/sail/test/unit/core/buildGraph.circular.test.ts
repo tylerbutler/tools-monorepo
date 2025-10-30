@@ -3,7 +3,7 @@ import type { BuildProjectConfig } from '@tylerbu/sail-infrastructure';
 import type { SimpleGit } from "simple-git";
 import type { Logger } from "@tylerbu/cli-api";
 import { BuildGraph } from "../../../src/core/buildGraph.js";
-import { BuildPackage } from "../../../src/common/npmPackage.js";
+import type { BuildPackage } from "../../../src/common/npmPackage.js";
 import type { BuildContext } from "../../../src/core/buildContext.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
 
