@@ -113,9 +113,6 @@ export interface TaskDefinitionsOnDisk {
 	readonly [name: TaskName]: TaskConfigOnDisk;
 }
 
-// Re-export getFullTaskConfig from utilities module
-export { getFullTaskConfig } from "./config/taskDefinitionUtils.js";
-
 // Known task names
 export const defaultBuildTaskName = "build";
 export const defaultCleanTaskName = "clean";
