@@ -98,7 +98,7 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 			return;
 		}
 
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: array length is checked above before pop
 		this.copyDstArg = input.pop()!;
 		this.copySrcArg = input;
 
@@ -219,9 +219,9 @@ export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
 				return globFn(path.join(dir, "**/*.ts"));
 			});
 			const fencedTsFiles = await Promise.all(fencedTsFilesP);
-			// biome-ignore lint/complexity/noForEach: <explanation>
+			// biome-ignore lint/complexity/noForEach: forEach is more concise for nested iterations
 			fencedTsFiles.forEach((tsFiles) => {
-				// biome-ignore lint/complexity/noForEach: <explanation>
+				// biome-ignore lint/complexity/noForEach: forEach is more concise for Set operations
 				tsFiles.forEach((file) => {
 					tsFileSet.add(file);
 				});
@@ -238,7 +238,7 @@ export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
 
 export class DepCruiseTask extends LeafWithFileStatDoneFileTask {
 	private inputFiles: string[] | undefined;
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex file dependency analysis logic
 	protected async getInputFiles(): Promise<string[]> {
 		if (this.inputFiles === undefined) {
 			const argv = this.command.split(" ");

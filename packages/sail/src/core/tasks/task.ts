@@ -75,7 +75,7 @@ export abstract class Task {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		this.dependentTasks = this.node.getDependsOnTasks(
 			this,
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: taskName is set in constructor before this call
 			this.taskName!,
 			pendingInitDep,
 		);
@@ -84,7 +84,7 @@ export abstract class Task {
 	// Add dependent task. For group tasks, propagate to unnamed subtask only if it's a default dependency
 	public addDependentTasks(dependentTasks: Task[], isDefault?: boolean) {
 		if (traceTaskDepTask.enabled) {
-			// biome-ignore lint/complexity/noForEach: <explanation>
+			// biome-ignore lint/complexity/noForEach: forEach is more readable for side-effect iteration
 			dependentTasks.forEach((dependentTask) => {
 				traceTaskDepTask(
 					`${this.nameColored} -> ${dependentTask.nameColored}${
@@ -93,7 +93,7 @@ export abstract class Task {
 				);
 			});
 		}
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: dependentTasks is initialized in constructor
 		this.dependentTasks!.push(...dependentTasks);
 	}
 
@@ -104,14 +104,14 @@ export abstract class Task {
 		}
 		try {
 			if (this._transitiveDependentLeafTasks === undefined) {
-				// biome-ignore lint/style/noNonNullAssertion: <explanation>
+				// biome-ignore lint/style/noNonNullAssertion: dependentTasks is initialized in constructor
 				const dependentTasks = this.dependentTasks!;
 				assert.notStrictEqual(dependentTasks, undefined);
 				this._transitiveDependentLeafTasks = null;
 
 				const s = new Set<LeafTask>();
 				for (const dependentTask of dependentTasks) {
-					// biome-ignore lint/complexity/noForEach: <explanation>
+					// biome-ignore lint/complexity/noForEach: forEach is more concise for Set operations
 					dependentTask.transitiveDependentLeafTask.forEach((t) => s.add(t));
 					dependentTask.collectLeafTasks(s);
 				}

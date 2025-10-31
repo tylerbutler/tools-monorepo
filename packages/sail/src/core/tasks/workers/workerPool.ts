@@ -140,19 +140,19 @@ export class WorkerPool {
 			}
 			return res;
 		} finally {
-			// biome-ignore lint/complexity/noForEach: <explanation>
+			// biome-ignore lint/complexity/noForEach: forEach is more readable for cleanup operations
 			cleanup.forEach((value) => value());
 		}
 	}
 
 	public reset() {
-		// biome-ignore lint/complexity/noForEach: <explanation>
+		// biome-ignore lint/complexity/noForEach: forEach is more readable for cleanup operations
 		this.threadWorkerPool.forEach((worker) => {
 			worker.terminate();
 		});
 		this.threadWorkerPool.length = 0;
 
-		// biome-ignore lint/complexity/noForEach: <explanation>
+		// biome-ignore lint/complexity/noForEach: forEach is more readable for cleanup operations
 		this.processWorkerPool.forEach((worker) => {
 			worker.kill();
 		});

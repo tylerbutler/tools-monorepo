@@ -234,7 +234,7 @@ export class BiomeConfigReader {
 		);
 		// The closest config is the last one in the list of configs, because they're sorted in the order they're applied.
 		// We previously asserted that there is at least one element in the array
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: array length is asserted above
 		return this.allConfigs.at(-1)!;
 	}
 

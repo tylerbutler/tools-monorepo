@@ -94,7 +94,7 @@ export class TscTask extends LeafTask {
 		return true;
 	}
 
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex TypeScript project dependency checking logic
 	private async checkTscIsUpToDate(checkedProjects?: Set<string>) {
 		const config = this.readTsConfig();
 		if (!config) {

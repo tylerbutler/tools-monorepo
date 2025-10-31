@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { PackageJson } from "@tylerbu/sail-infrastructure";
-// biome-ignore lint/style/noNamespaceImport: <explanation>
+// biome-ignore lint(style/noNamespaceImport): glob library requires namespace import
 import * as glob from "glob";
 
 import { lookUpDirSync } from "../../common/utils.js";
@@ -51,7 +51,7 @@ export async function getInstalledPackageVersion(
 export async function getRecursiveFiles(pathName: string) {
 	const files = await readdir(pathName, { withFileTypes: true });
 	const result: string[] = [];
-	// biome-ignore lint/style/useForOf: <explanation>
+	// biome-ignore lint/style/useForOf: index-based iteration needed for array access pattern
 	for (let i = 0; i < files.length; i++) {
 		const dirent = files[i];
 		const subPathName = path.join(pathName, dirent.name);

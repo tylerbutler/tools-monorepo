@@ -36,7 +36,7 @@ export function tsCompile(
 	options: TsCompileOptions,
 	allowWatch: "allow-watch",
 ): number | undefined;
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex TypeScript compilation logic with multiple code paths
 export function tsCompile(
 	{ command, cwd, packageJsonTypeOverride }: TsCompileOptions,
 	allowWatch?: "allow-watch",

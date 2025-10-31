@@ -118,10 +118,10 @@ export abstract class LeafTask extends Task {
 			if (this._parentLeafTasks === undefined) {
 				const parentLeafTasks = new Set<LeafTask>(this.directParentLeafTasks);
 				this._parentLeafTasks = null;
-				// biome-ignore lint/complexity/noForEach: <explanation>
+				// biome-ignore lint/complexity/noForEach: forEach is more concise for nested iterations
 				this.directParentLeafTasks
 					.map((task) => task.parentLeafTasks)
-					// biome-ignore lint/complexity/noForEach: <explanation>
+					// biome-ignore lint/complexity/noForEach: forEach is more concise for Set operations
 					.forEach((p) => p.forEach((t) => parentLeafTasks.add(t)));
 				this._parentLeafTasks = parentLeafTasks;
 			}
@@ -223,7 +223,7 @@ export abstract class LeafTask extends Task {
 		return this.execDone(startTime, BuildResult.Success, ret.worker);
 	}
 
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex task execution logic with multiple code paths
 	private async execCore(): Promise<TaskExecResult> {
 		const workerPool = this.node.context.workerPool;
 		if (workerPool && this.useWorker) {
@@ -278,7 +278,7 @@ export abstract class LeafTask extends Task {
 			env: {
 				...process.env,
 				PATH: `${path.join(this.node.pkg.directory, "node_modules", ".bin")}${path.delimiter}${
-					// biome-ignore lint/complexity/useLiteralKeys: <explanation>
+					// biome-ignore lint/complexity/useLiteralKeys: PATH may not be defined as a property
 					process.env["PATH"]
 				}`,
 			},
@@ -306,7 +306,7 @@ export abstract class LeafTask extends Task {
 	private execDone(startTime: number, status: BuildResult, worker?: boolean) {
 		if (!defaultOptions.showExec) {
 			let statusCharacter = " ";
-			// biome-ignore lint/style/useDefaultSwitchClause: <explanation>
+			// biome-ignore lint/style/useDefaultSwitchClause: all BuildResult values are explicitly handled
 			switch (status) {
 				case BuildResult.Success:
 					statusCharacter = chalk.greenBright("\u2713");
@@ -409,7 +409,7 @@ export abstract class LeafTask extends Task {
 	protected getDependentLeafTasks() {
 		this.dependentLeafTasks ??= new Set();
 		assert.notStrictEqual(this.dependentLeafTasks, undefined);
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		// biome-ignore lint/style/noNonNullAssertion: null-coalescing assignment ensures non-null value
 		return this.dependentLeafTasks!.values();
 	}
 
@@ -607,7 +607,7 @@ export abstract class LeafTask extends Task {
 	}
 
 	// For called when the task has successfully executed
-	// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
+	// biome-ignore lint/suspicious/noEmptyBlockStatements: hook method intended for subclass override
 	protected async markExecDone(): Promise<void> {}
 
 	protected getVsCodeErrorMessages(errorMessages: string) {
@@ -643,7 +643,7 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 
 	protected override async checkIsUpToDate(): Promise<boolean> {
 		const leafIsUpToDate = await super.checkIsUpToDate();
-		// biome-ignore lint/complexity/useSimplifiedLogicExpression: <explanation>
+		// biome-ignore lint/complexity/useSimplifiedLogicExpression: condition logic is intentionally explicit for clarity
 		if (!leafIsUpToDate && !this.recheckLeafIsUpToDate) {
 			// Delete the done file so that even if we get interrupted, we will rebuild the next time.
 			// Unless recheck is enable, which means the task has the ability to determine whether it

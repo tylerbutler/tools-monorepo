@@ -104,9 +104,9 @@ function getTaskForExecutable(
 const regexNpmConcurrentlySpec =
 	/^(?<quote>"?)npm:(?<script>[^*]+?)(?<wildcard>\*?)\k<quote>$/;
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+// biome-ignore lint/complexity/noStaticOnlyClass: factory class with static methods only
 export class TaskFactory {
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <explanation>
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex task creation logic with multiple task type branches
 	public static Create(
 		node: BuildGraphPackage,
 		command: string,

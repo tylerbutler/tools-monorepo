@@ -432,7 +432,7 @@ export interface JavascriptLinter {
 	 */
 	enabled?: boolean | null;
 }
-// biome-ignore lint/suspicious/noEmptyInterface: <explanation>
+// biome-ignore lint/suspicious/noEmptyInterface: placeholder for future configuration options
 export interface JavascriptOrganizeImports {}
 /**
  * Options that changes how the JavaScript parser behaves
@@ -1101,7 +1101,7 @@ export interface RuleWithDeprecatedHooksOptions {
  * Options for the `useHookAtTopLevel` rule have been deprecated, since we now use the React hook naming convention to determine whether a function is a hook.
  */
 
-// biome-ignore lint/suspicious/noEmptyInterface: <explanation>
+// biome-ignore lint/suspicious/noEmptyInterface: type definition for deprecated options
 export interface DeprecatedHooksOptions {}
 /**
  * A list of rules that belong to this group

@@ -22,8 +22,8 @@ export async function lint(message: WorkerMessage): Promise<WorkerExecResult> {
 		// assume "eslint --format stylish src"
 		const engine = new eslint.ESLint();
 		const results = await engine.lintFiles("src");
-		// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
-		// biome-ignore lint/suspicious/noEvolvingTypes: <explanation>
+		// biome-ignore lint/suspicious/noImplicitAnyLet: formatter type is dynamically loaded
+		// biome-ignore lint/suspicious/noEvolvingTypes: formatter type changes after loadFormatter call
 		let formatter;
 		try {
 			formatter = await engine.loadFormatter("stylish");

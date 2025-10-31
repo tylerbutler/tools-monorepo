@@ -77,7 +77,7 @@ async function rimrafAsync(deletePath: string) {
 	return execAsync(`rimraf "${deletePath}"`, {
 		env: {
 			PATH: `${
-				// biome-ignore lint/complexity/useLiteralKeys: <explanation>
+				// biome-ignore lint/complexity/useLiteralKeys: PATH may not be defined as a property
 				process.env["PATH"]
 			}${path.delimiter}${path.join(
 				__dirname,

@@ -66,7 +66,7 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 					cwd: pkg.directory,
 					env: {
 						PATH: `${
-							// biome-ignore lint/complexity/useLiteralKeys: <explanation>
+							// biome-ignore lint/complexity/useLiteralKeys: PATH may not be defined as a property
 							process.env["PATH"]
 						}${path.delimiter}${path.join(
 							pkg.directory,

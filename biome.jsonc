@@ -39,6 +39,9 @@
 			// test json
 			"!**/test/data/json/**/*.json",
 
+			// test data files used for testing (sail-infrastructure)
+			"!**/packages/sail-infrastructure/src/test/data/**",
+
 			// auto-generated data files
 			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
 			"!**/packages/ccl-test-viewer/static/data/*.*",

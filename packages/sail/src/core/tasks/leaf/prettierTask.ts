@@ -91,7 +91,7 @@ export class PrettierTask extends LeafWithDoneFileTask {
 		const ignoreObject = ignore().add(ignoreEntries);
 		let files: string[] = [];
 		try {
-			// biome-ignore lint/style/useForOf: <explanation>
+			// biome-ignore lint/style/useForOf: index-based iteration needed for array access pattern
 			for (let i = 0; i < this.entries.length; i++) {
 				const entry = this.entries[i];
 				const fullPath = this.getPackageFileFullPath(entry);

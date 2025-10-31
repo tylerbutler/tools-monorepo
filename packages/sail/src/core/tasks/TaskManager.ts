@@ -64,7 +64,7 @@ export class TaskManager {
 			.filter((task) => task !== undefined);
 
 		while (pendingInitDep.length > 0) {
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint/style/noNonNullAssertion: loop condition ensures array is non-empty
 			const task = pendingInitDep.pop()!;
 			task.initializeDependentTasks(pendingInitDep);
 		}
