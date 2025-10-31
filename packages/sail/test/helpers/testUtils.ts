@@ -107,6 +107,17 @@ export class TestDataBuilder {
 			buildArtifacts: [],
 		};
 
+		// Create a mock task handler registry
+		const mockTaskHandlerRegistry = {
+			register: () => {},
+			get: () => undefined,
+			has: () => false,
+			loadPlugin: async () => {},
+			loadPlugins: async () => [],
+			getRegisteredExecutables: () => [],
+			clear: () => {},
+		};
+
 		return {
 			sailConfig: mockSailConfig,
 			buildProjectConfig: mockBuildProjectConfig,
@@ -114,6 +125,7 @@ export class TestDataBuilder {
 			gitRepo: mockGitRepo,
 			gitRoot: "/test/repo",
 			log: mockLogger,
+			taskHandlerRegistry: mockTaskHandlerRegistry,
 			...overrides,
 		};
 	}

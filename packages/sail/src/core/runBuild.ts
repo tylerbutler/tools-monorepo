@@ -31,7 +31,7 @@ export async function runBuild(
 
 		let buildGraph: BuildGraph;
 		try {
-			buildGraph = repo.createBuildGraph(options);
+			buildGraph = await repo.createBuildGraph(options);
 		} catch (error: unknown) {
 			spinner.stop();
 			throw error;

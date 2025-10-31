@@ -23,6 +23,8 @@ import type { BuildContext } from "./buildContext.js";
 import { BuildGraph } from "./buildGraph.js";
 import { getSailConfig } from "./config.js";
 import type { BuildOptions } from "./options.js";
+import type { TaskHandlerPlugin } from "./sailConfig.js";
+import { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
 
 // const traceInit = registerDebug("sail:init");
 
@@ -35,6 +37,7 @@ export interface IPackageMatchedOptions {
 
 export class SailBuildRepo extends BuildProject<BuildPackage> {
 	protected context: BuildContext;
+	private handlersLoadedPromise?: Promise<void>;
 
 	public constructor(
 		searchPath: string,
@@ -45,6 +48,10 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		const { config: buildProjectConfig } = getBuildProjectConfig(searchPath);
 
 		const gitRoot = findGitRootSync(searchPath);
+
+		// Initialize the task handler registry
+		const taskHandlerRegistry = new TaskHandlerRegistry();
+
 		this.context = {
 			sailConfig,
 			buildProjectConfig,
@@ -52,7 +59,39 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 			gitRepo: simpleGit(gitRoot),
 			gitRoot,
 			log: this.log,
+			taskHandlerRegistry,
 		};
+
+		// Start loading plugins if specified
+		if (sailConfig.plugins && sailConfig.plugins.length > 0) {
+			this.handlersLoadedPromise = this.loadPlugins(sailConfig.plugins, taskHandlerRegistry);
+		}
+	}
+
+	/**
+	 * Load task handler plugins from configuration.
+	 */
+	private async loadPlugins(
+		plugins: TaskHandlerPlugin[],
+		registry: TaskHandlerRegistry,
+	): Promise<void> {
+		const errors = await registry.loadPlugins(plugins, this.root);
+		if (errors.length > 0) {
+			for (const error of errors) {
+				this.log.errorLog(`Failed to load plugin: ${error.message}`);
+			}
+			// Don't fail the build, just log the errors
+		}
+	}
+
+	/**
+	 * Ensure all custom handlers are loaded before proceeding.
+	 * This should be called before creating the build graph.
+	 */
+	private async ensureHandlersLoaded(): Promise<void> {
+		if (this.handlersLoadedPromise) {
+			await this.handlersLoadedPromise;
+		}
 	}
 
 	public async clean(packages: IPackage[], status: boolean) {
@@ -157,7 +196,10 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		return true;
 	}
 
-	public createBuildGraph(options: BuildOptions) {
+	public async createBuildGraph(options: BuildOptions) {
+		// Ensure all custom handlers are loaded before creating the build graph
+		await this.ensureHandlersLoaded();
+
 		const buildTargetNames = options.buildTaskNames;
 		const { config } = getSailConfig(this.root);
 		return new BuildGraph(

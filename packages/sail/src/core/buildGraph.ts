@@ -39,6 +39,7 @@ import {
 	type TaskDefinitions,
 	type TaskDefinitionsOnDisk,
 } from "./taskDefinitions.js";
+import { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
 import { TaskManager } from "./tasks/TaskManager.js";
 import type { Task, TaskExec } from "./tasks/task.js";
 import { WorkerPool } from "./tasks/workers/workerPool.js";
@@ -78,6 +79,7 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
 	public readonly gitRoot: string;
 	public readonly buildProfiler: BuildProfiler;
 	public readonly sharedCache?: SharedCacheManager;
+	public readonly taskHandlerRegistry: TaskHandlerRegistry;
 
 	public readonly log: Logger;
 
@@ -93,6 +95,7 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
 		this.gitRoot = buildContext.gitRoot;
 		this.log = buildContext.log;
 		this.sharedCache = buildContext.sharedCache;
+		this.taskHandlerRegistry = buildContext.taskHandlerRegistry;
 
 		// Use persistent cache for better performance
 		this.fileHashCache = new PersistentFileHashCache();

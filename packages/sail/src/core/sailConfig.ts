@@ -2,6 +2,44 @@ import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
 import type { TaskDefinitionsOnDisk } from "./taskDefinitions.js";
 
 /**
+ * Configuration for loading a Sail task handler plugin.
+ *
+ * @remarks
+ * Plugins are self-contained modules that register their own task handlers,
+ * eliminating the need for users to manually map executables to handlers.
+ */
+export type TaskHandlerPlugin = string | TaskHandlerPluginConfig;
+
+/**
+ * Detailed configuration for a task handler plugin.
+ */
+export interface TaskHandlerPluginConfig {
+	/**
+	 * The path to the plugin module.
+	 * Can be:
+	 * - A relative path starting with './' or '../' (e.g., './plugins/vite.js')
+	 * - An absolute path
+	 * - A package name (e.g., '@company/sail-vite-plugin')
+	 */
+	module: string;
+
+	/**
+	 * Optional export name to use from the module.
+	 * If not provided, the default export will be used.
+	 *
+	 * @example
+	 * ```typescript
+	 * // Default export
+	 * { module: '@company/sail-vite-plugin' }
+	 *
+	 * // Named export
+	 * { module: './plugins.js', exportName: 'vitePlugin' }
+	 * ```
+	 */
+	exportName?: string;
+}
+
+/**
  * The version of the Sail configuration currently used.
  *
  * @remarks
@@ -31,6 +69,25 @@ export interface ISailConfig {
 	 * commands that don't support it.
 	 */
 	declarativeTasks?: DeclarativeTasks;
+
+	/**
+	 * Plugins to load for custom task handlers.
+	 *
+	 * Plugins are self-contained modules that register task handlers for specific tools/executables.
+	 * Users only need to specify the plugin module; the plugin itself declares which executables it supports.
+	 *
+	 * @example
+	 * ```typescript
+	 * {
+	 *   plugins: [
+	 *     '@company/sail-vite-plugin',  // Simple string
+	 *     { module: './plugins/custom.js' },  // Local file
+	 *     { module: './plugins.js', exportName: 'esbuildPlugin' }  // Named export
+	 *   ]
+	 * }
+	 * ```
+	 */
+	plugins?: TaskHandlerPlugin[];
 
 	/**
 	 * An array of commands that are known to have subcommands and should be parsed as such.

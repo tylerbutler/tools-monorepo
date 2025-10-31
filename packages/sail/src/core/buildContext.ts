@@ -3,6 +3,7 @@ import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
 import type { SimpleGit } from "simple-git";
 import type { ISailConfig } from "./sailConfig.js";
 import type { SharedCacheManager } from "./sharedCache/index.js";
+import type { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
 
 /**
  * A context object that is passed to Sail tasks. It is used to provide easy access to commonly-needed metadata
@@ -40,4 +41,10 @@ export interface BuildContext {
 	 * Undefined if caching is disabled.
 	 */
 	readonly sharedCache?: SharedCacheManager;
+
+	/**
+	 * Registry for custom task handlers.
+	 * This registry contains handlers loaded from configuration and any programmatically registered handlers.
+	 */
+	readonly taskHandlerRegistry: TaskHandlerRegistry;
 }

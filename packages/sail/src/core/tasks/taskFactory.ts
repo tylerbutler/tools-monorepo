@@ -64,8 +64,12 @@ const executableToLeafTask: {
  * Given a command executable, attempts to find a matching `TaskHandler` that will handle the task. If one is found, it
  * is returned; otherwise, it returns `UnknownLeafTask` as the default handler.
  *
- * Any DeclarativeTasks that are defined in the Sail config are checked first, followed by the built-in
- * executableToLeafTask constant.
+ * Handler resolution follows this priority order:
+ * 1. DeclarativeTasks defined in package.json (sail.declarativeTasks or fluidBuild.declarativeTasks)
+ * 2. DeclarativeTasks defined in Sail config
+ * 3. Custom handlers from the TaskHandlerRegistry (loaded from config or registered programmatically)
+ * 4. Built-in handlers (executableToLeafTask constant)
+ * 5. UnknownLeafTask (fallback for unsupported executables)
  *
  * @param executable The command executable to find a matching task handler for.
  * @returns A `TaskHandler` for the task, if found. Otherwise `UnknownLeafTask` as the default handler.
@@ -77,6 +81,8 @@ function getTaskForExecutable(
 ): TaskHandler {
 	const config = context.sailConfig;
 	const declarativeTasks = config?.declarativeTasks;
+
+	// 1. Check for declarative tasks first (highest priority)
 	const taskMatch =
 		packageJson.sail?.declarativeTasks?.[executable] ??
 		packageJson.fluidBuild?.declarativeTasks?.[executable] ??
@@ -86,11 +92,17 @@ function getTaskForExecutable(
 		return createDeclarativeTaskHandler(taskMatch);
 	}
 
-	// No declarative task found matching the executable, so look it up in the built-in list.
+	// 2. Check custom handlers registry (from config or programmatic registration)
+	const customHandler = context.taskHandlerRegistry.get(executable);
+	if (customHandler !== undefined) {
+		return customHandler;
+	}
+
+	// 3. Check built-in handlers
 	const builtInHandler: TaskHandler | undefined =
 		executableToLeafTask[executable];
 
-	// If no handler is found, return the UnknownLeafTask as the default handler. The task won't support incremental
+	// 4. If no handler is found, return the UnknownLeafTask as the default handler. The task won't support incremental
 	// builds.
 	return builtInHandler ?? UnknownLeafTask;
 }
