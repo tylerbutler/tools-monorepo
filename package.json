@@ -106,6 +106,7 @@
 			"protobufjs",
 			"re2",
 			"sharp",
+			"unrs-resolver",
 			"yarn"
 		],
 		"updateConfig": {
