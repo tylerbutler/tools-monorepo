@@ -64,7 +64,10 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 
 		// Start loading plugins if specified
 		if (sailConfig.plugins && sailConfig.plugins.length > 0) {
-			this.handlersLoadedPromise = this.loadPlugins(sailConfig.plugins, taskHandlerRegistry);
+			this.handlersLoadedPromise = this.loadPlugins(
+				sailConfig.plugins,
+				taskHandlerRegistry,
+			);
 		}
 	}
 

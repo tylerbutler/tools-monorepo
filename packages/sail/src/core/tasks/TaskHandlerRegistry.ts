@@ -1,4 +1,7 @@
-import type { TaskHandlerPlugin, TaskHandlerPluginConfig } from "../sailConfig.js";
+import type {
+	TaskHandlerPlugin,
+	TaskHandlerPluginConfig,
+} from "../sailConfig.js";
 import type { TaskHandler } from "./taskHandlers.js";
 
 /**
@@ -104,6 +107,101 @@ export class TaskHandlerRegistry {
 		return this.handlers.has(executable.toLowerCase());
 	}
 
+	/**
+	 * Load a single handler from a module.
+	 *
+	 * @param executable - The executable name to register the handler for
+	 * @param config - Configuration specifying the module path and optional export name
+	 * @param baseDir - Base directory for resolving relative module paths
+	 * @throws Error if the module cannot be loaded or doesn't export a valid handler
+	 *
+	 * @example
+	 * ```typescript
+	 * // Load default export
+	 * await registry.loadHandler('vite', {
+	 *   modulePath: './handlers/ViteTask.js'
+	 * });
+	 *
+	 * // Load named export
+	 * await registry.loadHandler('vite', {
+	 *   modulePath: './handlers/index.js',
+	 *   exportName: 'ViteTask'
+	 * });
+	 * ```
+	 */
+	public async loadHandler(
+		executable: string,
+		config: TaskHandlerPluginConfig,
+		baseDir?: string,
+	): Promise<void> {
+		const { module: modulePath, exportName } = config;
+
+		// Resolve the module path
+		const resolvedPath = this.resolveModulePath(modulePath, baseDir);
+
+		// Check if we've already loaded this module
+		let module = this.loadedModules.get(resolvedPath);
+		if (module === undefined) {
+			try {
+				module = await import(resolvedPath);
+				this.loadedModules.set(resolvedPath, module);
+			} catch (error) {
+				throw new Error(
+					`Failed to load handler from '${resolvedPath}': ${
+						error instanceof Error ? error.message : String(error)
+					}`,
+				);
+			}
+		}
+
+		// Extract the handler from the module
+		const handler = this.extractHandler(module, exportName, modulePath);
+
+		// Register the handler
+		this.register(executable, handler);
+	}
+
+	/**
+	 * Load multiple handlers from their module configurations.
+	 *
+	 * @param handlers - Map of executable names to their module configurations
+	 * @param baseDir - Base directory for resolving relative module paths
+	 * @returns Array of any errors that occurred during loading (empty if all succeeded)
+	 *
+	 * @example
+	 * ```typescript
+	 * const errors = await registry.loadHandlers({
+	 *   'vite': { modulePath: './handlers/ViteTask.js' },
+	 *   'webpack': { modulePath: './handlers/WebpackTask.js' }
+	 * });
+	 *
+	 * if (errors.length > 0) {
+	 *   console.error('Failed to load some handlers:', errors);
+	 * }
+	 * ```
+	 */
+	public async loadHandlers(
+		handlers: Record<string, TaskHandlerPluginConfig>,
+		baseDir?: string,
+	): Promise<Error[]> {
+		const errors: Error[] = [];
+
+		for (const [executable, config] of Object.entries(handlers)) {
+			try {
+				await this.loadHandler(executable, config, baseDir);
+			} catch (error) {
+				errors.push(
+					error instanceof Error
+						? error
+						: new Error(
+								`Failed to load handler for '${executable}': ${String(error)}`,
+							),
+				);
+			}
+		}
+
+		return errors;
+	}
 
 	/**
 	 * Load a plugin and register all its handlers.
@@ -127,7 +225,10 @@ export class TaskHandlerRegistry {
 	 * });
 	 * ```
 	 */
-	public async loadPlugin(plugin: TaskHandlerPlugin, baseDir?: string): Promise<void> {
+	public async loadPlugin(
+		plugin: TaskHandlerPlugin,
+		baseDir?: string,
+	): Promise<void> {
 		// Normalize plugin config
 		const config: TaskHandlerPluginConfig =
 			typeof plugin === "string" ? { module: plugin } : plugin;
@@ -177,7 +278,9 @@ export class TaskHandlerRegistry {
 		}
 
 		// Register all handlers from the plugin
-		for (const [executable, handler] of Object.entries(pluginInstance.handlers)) {
+		for (const [executable, handler] of Object.entries(
+			pluginInstance.handlers,
+		)) {
 			this.register(executable, handler);
 		}
 	}
@@ -211,7 +314,9 @@ export class TaskHandlerRegistry {
 				errors.push(
 					error instanceof Error
 						? error
-						: new Error(`Failed to load plugin '${modulePath}': ${String(error)}`),
+						: new Error(
+								`Failed to load plugin '${modulePath}': ${String(error)}`,
+							),
 				);
 			}
 		}

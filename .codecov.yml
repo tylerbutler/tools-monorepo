@@ -73,3 +73,11 @@ component_management:
       name: ccl-test-viewer
       paths:
         - packages/ccl-test-viewer/**
+    - component_id: sail
+      name: sail
+      paths:
+        - packages/sail/**
+    - component_id: sail-infrastructure
+      name: sail-infrastructure
+      paths:
+        - packages/sail-infrastructure/**

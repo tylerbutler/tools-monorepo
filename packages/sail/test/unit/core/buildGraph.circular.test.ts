@@ -6,6 +6,7 @@ import type { BuildPackage } from "../../../src/common/npmPackage.js";
 import type { BuildContext } from "../../../src/core/buildContext.js";
 import { BuildGraph } from "../../../src/core/buildGraph.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
+import { TaskHandlerRegistry } from "../../../src/core/tasks/TaskHandlerRegistry.js";
 
 /**
  * Mock logger for testing
@@ -45,6 +46,7 @@ function createMockBuildContext(overrides?: Partial<BuildContext>): any {
 		},
 		failedTaskLines: [],
 		repoPackageMap: new Map(),
+		taskHandlerRegistry: new TaskHandlerRegistry(),
 		...overrides,
 	};
 }

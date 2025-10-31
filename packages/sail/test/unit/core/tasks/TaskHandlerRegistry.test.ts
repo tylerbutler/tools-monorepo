@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { TaskHandlerRegistry } from "../../../../src/core/tasks/TaskHandlerRegistry.js";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { LeafTask } from "../../../../src/core/tasks/leaf/leafTask.js";
+import { TaskHandlerRegistry } from "../../../../src/core/tasks/TaskHandlerRegistry.js";
 import type {
 	TaskHandler,
 	TaskHandlerConstructor,
@@ -17,7 +17,8 @@ describe("TaskHandlerRegistry", () => {
 
 	describe("register", () => {
 		it("should register a task handler", () => {
-			const handler = class TestHandler extends LeafTask {} as TaskHandlerConstructor;
+			const handler =
+				class TestHandler extends LeafTask {} as TaskHandlerConstructor;
 			registry.register("test", handler);
 
 			expect(registry.has("test")).toBe(true);
@@ -25,7 +26,8 @@ describe("TaskHandlerRegistry", () => {
 		});
 
 		it("should register handlers case-insensitively", () => {
-			const handler = class TestHandler extends LeafTask {} as TaskHandlerConstructor;
+			const handler =
+				class TestHandler extends LeafTask {} as TaskHandlerConstructor;
 			registry.register("TEST", handler);
 
 			expect(registry.has("test")).toBe(true);
@@ -34,8 +36,10 @@ describe("TaskHandlerRegistry", () => {
 		});
 
 		it("should allow overriding handlers", () => {
-			const handler1 = class Handler1 extends LeafTask {} as TaskHandlerConstructor;
-			const handler2 = class Handler2 extends LeafTask {} as TaskHandlerConstructor;
+			const handler1 =
+				class Handler1 extends LeafTask {} as TaskHandlerConstructor;
+			const handler2 =
+				class Handler2 extends LeafTask {} as TaskHandlerConstructor;
 
 			registry.register("test", handler1);
 			registry.register("test", handler2);
@@ -51,7 +55,8 @@ describe("TaskHandlerRegistry", () => {
 		});
 
 		it("should return the registered handler", () => {
-			const handler = class TestHandler extends LeafTask {} as TaskHandlerConstructor;
+			const handler =
+				class TestHandler extends LeafTask {} as TaskHandlerConstructor;
 			registry.register("test", handler);
 
 			expect(registry.get("test")).toBe(handler);
@@ -64,8 +69,10 @@ describe("TaskHandlerRegistry", () => {
 		});
 
 		it("should return all registered executable names", () => {
-			const handler1 = class Handler1 extends LeafTask {} as TaskHandlerConstructor;
-			const handler2 = class Handler2 extends LeafTask {} as TaskHandlerConstructor;
+			const handler1 =
+				class Handler1 extends LeafTask {} as TaskHandlerConstructor;
+			const handler2 =
+				class Handler2 extends LeafTask {} as TaskHandlerConstructor;
 
 			registry.register("test1", handler1);
 			registry.register("test2", handler2);
@@ -79,7 +86,8 @@ describe("TaskHandlerRegistry", () => {
 
 	describe("clear", () => {
 		it("should remove all registered handlers", () => {
-			const handler = class TestHandler extends LeafTask {} as TaskHandlerConstructor;
+			const handler =
+				class TestHandler extends LeafTask {} as TaskHandlerConstructor;
 			registry.register("test1", handler);
 			registry.register("test2", handler);
 
@@ -123,7 +131,7 @@ export default class TestHandler {
 			);
 
 			await registry.loadHandler("test", {
-				modulePath: handlerPath,
+				module: handlerPath,
 			});
 
 			expect(registry.has("test")).toBe(true);
@@ -146,7 +154,7 @@ export class NamedHandler {
 			await registry.loadHandler(
 				"test",
 				{
-					modulePath: handlerPath,
+					module: handlerPath,
 					exportName: "NamedHandler",
 				},
 				testDir,
@@ -158,7 +166,7 @@ export class NamedHandler {
 		it("should throw error for non-existent module", async () => {
 			await expect(
 				registry.loadHandler("test", {
-					modulePath: "./nonexistent.js",
+					module: "./nonexistent.js",
 				}),
 			).rejects.toThrow();
 		});
@@ -174,7 +182,7 @@ export class SomeHandler {}
 
 			await expect(
 				registry.loadHandler("test", {
-					modulePath: handlerPath,
+					module: handlerPath,
 					exportName: "NonExistent",
 				}),
 			).rejects.toThrow(/does not export/);
@@ -191,14 +199,20 @@ export default { notAFunction: true };
 
 			await expect(
 				registry.loadHandler("test", {
-					modulePath: handlerPath,
+					module: handlerPath,
 				}),
 			).rejects.toThrow(/must be a function/);
 		});
 	});
 
 	describe("loadHandlers", () => {
-		const testDir = join(__dirname, "..", "..", "..", "temp-test-handlers-multi");
+		const testDir = join(
+			__dirname,
+			"..",
+			"..",
+			"..",
+			"temp-test-handlers-multi",
+		);
 
 		beforeEach(() => {
 			if (!existsSync(testDir)) {
@@ -231,8 +245,8 @@ export default class Handler2 {}
 
 			const errors = await registry.loadHandlers(
 				{
-					test1: { modulePath: handler1Path },
-					test2: { modulePath: handler2Path },
+					test1: { module: handler1Path },
+					test2: { module: handler2Path },
 				},
 				testDir,
 			);
@@ -253,8 +267,8 @@ export default class ValidHandler {}
 
 			const errors = await registry.loadHandlers(
 				{
-					valid: { modulePath: validPath },
-					invalid: { modulePath: "./nonexistent.js" },
+					valid: { module: validPath },
+					invalid: { module: "./nonexistent.js" },
 				},
 				testDir,
 			);

@@ -15,6 +15,7 @@ import {
 	summarizeBuildResult,
 } from "../../../src/core/execution/BuildExecutor.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
+import { TaskHandlerRegistry } from "../../../src/core/tasks/TaskHandlerRegistry.js";
 
 /**
  * Mock logger for testing
@@ -54,6 +55,7 @@ function createMockBuildContext(overrides?: Partial<BuildContext>): any {
 		},
 		failedTaskLines: [],
 		repoPackageMap: new Map(),
+		taskHandlerRegistry: new TaskHandlerRegistry(),
 		...overrides,
 	};
 }
