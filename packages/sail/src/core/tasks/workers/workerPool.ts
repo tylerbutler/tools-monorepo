@@ -94,6 +94,7 @@ export class WorkerPool {
 		try {
 			if (this.useWorkerThreads) {
 				const worker = this.getThreadWorker();
+				// biome-ignore lint/nursery/noShadow: res parameter is standard Promise constructor naming
 				const res = await new Promise<WorkerExecResultWithOutput>((res) => {
 					setupWorker(worker, res);
 					worker.postMessage(workerMessage);
@@ -103,6 +104,7 @@ export class WorkerPool {
 			}
 
 			const worker = this.getProcessWorker();
+			// biome-ignore lint/nursery/noShadow: res parameter is standard Promise constructor naming
 			const res = await new Promise<WorkerExecResultWithOutput>((res, rej) => {
 				const setupErrorListener = (event: string) => {
 					installTemporaryListener(worker, event, () => {
@@ -146,6 +148,7 @@ export class WorkerPool {
 			return res;
 		} finally {
 			// biome-ignore lint/complexity/noForEach: forEach is more readable for cleanup operations
+			// biome-ignore lint/suspicious/useIterableCallbackReturn: cleanup functions return void
 			cleanup.forEach((value) => value());
 		}
 	}

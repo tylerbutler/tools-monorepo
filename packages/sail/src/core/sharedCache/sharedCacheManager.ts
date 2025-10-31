@@ -722,7 +722,6 @@ export class SharedCacheManager {
 				const outputsDir = path.join(entryPath, "outputs");
 
 				// Read manifest to get access time
-				const { readManifest } = await import("./manifest.js");
 				const manifest = await readManifest(entryPath);
 
 				if (!manifest) {
@@ -777,9 +776,6 @@ export class SharedCacheManager {
 				await rm(entryPath, { recursive: true, force: true });
 				pruned++;
 				currentSize -= entry.size;
-
-				if (shouldPruneAge) {
-				}
 			}
 
 			// Stop if we're under the size limit
@@ -835,7 +831,6 @@ export class SharedCacheManager {
 
 			try {
 				// Read manifest
-				const { readManifest } = await import("./manifest.js");
 				const manifest = await readManifest(entryPath);
 
 				if (!manifest) {

@@ -58,6 +58,7 @@ if (parentPort) {
 		messageHandler(message)
 			.then(parentPort?.postMessage.bind(parentPort))
 			.catch((error) => {
+				// biome-ignore lint/suspicious/noConsole: Worker error handler needs to log before exit
 				console.error("Worker message handler failed:", error);
 				process.exit(1);
 			});
@@ -69,6 +70,7 @@ if (parentPort) {
 		messageHandler(message)
 			.then(process.send?.bind(process))
 			.catch((error) => {
+				// biome-ignore lint/suspicious/noConsole: Worker error handler needs to log before exit
 				console.error("Worker message handler failed:", error);
 				process.exit(1);
 			});

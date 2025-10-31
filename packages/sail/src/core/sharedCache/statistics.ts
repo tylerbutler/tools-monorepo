@@ -82,7 +82,9 @@ export async function saveStatistics(
 
 	try {
 		await atomicWriteJson(statsPath, stats, true);
-	} catch (_error) {}
+	} catch (_error) {
+		// TODO: Review error handling - should write failures be logged or propagated?
+	}
 }
 
 /**
@@ -126,7 +128,9 @@ export async function updateCacheSizeStats(
 		// Update statistics
 		stats.totalEntries = totalEntries;
 		stats.totalSize = totalSize;
-	} catch (_error) {}
+	} catch (_error) {
+		// TODO: Review error handling - should scan failures be logged or leave stats unchanged?
+	}
 }
 
 /**

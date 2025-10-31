@@ -10,7 +10,6 @@ import {
 export class BuildProfiler {
 	public readonly performanceMonitor = new PerformanceMonitor();
 	private packageMetrics = new Map<string, PackageMetrics>();
-	private buildStartTime = 0;
 
 	public constructor(private readonly logger: Logger) {}
 
@@ -18,7 +17,6 @@ export class BuildProfiler {
 	 * Start profiling a build
 	 */
 	public startBuild(): void {
-		this.buildStartTime = performance.now();
 		this.performanceMonitor.reset();
 		this.packageMetrics.clear();
 		this.performanceMonitor.startTimer("total-build");

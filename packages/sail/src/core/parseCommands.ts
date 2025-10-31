@@ -16,6 +16,11 @@ const regexNpmConcurrentlySpec =
 	/^(?<quote>"?)npm:(?<script>[^*]+?)(?<wildcard>\*?)\k<quote>$/;
 
 /**
+ * Regular expression to split concurrently command steps by spaces
+ */
+const regexSpaceSplit = / +/;
+
+/**
  * Parses a `concurrently` command and calls callbacks for the sub-commands.
  * @param onNpmCommand - callback for each npm script specified in the command
  * @param onDirectCommand - callback for each direct command (not npm script) specified in the command
@@ -24,9 +29,10 @@ export function parseConcurrentlyCommand(
 	command: ConcurrentlyCommand,
 	scriptNames: string[],
 	onNpmCommand: (scriptName: string) => void,
+	// biome-ignore lint/nursery/noShadow: callback parameter name matches outer scope for semantic clarity - represents the command being processed
 	onDirectCommand: (command: string) => void,
 ): void {
-	const steps = command.substring("concurrently ".length).split(/ +/);
+	const steps = command.substring("concurrently ".length).split(regexSpaceSplit);
 	for (const step of steps) {
 		const npmMatch = regexNpmConcurrentlySpec.exec(step);
 		if (npmMatch?.groups !== undefined) {

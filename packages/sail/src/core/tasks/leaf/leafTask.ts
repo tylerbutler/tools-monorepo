@@ -119,6 +119,7 @@ export abstract class LeafTask extends Task {
 				this.directParentLeafTasks
 					.map((task) => task.parentLeafTasks)
 					// biome-ignore lint/complexity/noForEach: forEach is more concise for Set operations
+					// biome-ignore lint/suspicious/useIterableCallbackReturn: Set.add returns the set but we don't need it
 					.forEach((p) => p.forEach((t) => parentLeafTasks.add(t)));
 				this._parentLeafTasks = parentLeafTasks;
 			}
@@ -145,6 +146,7 @@ export abstract class LeafTask extends Task {
 	}
 
 	public get weight() {
+		// biome-ignore lint/suspicious/noMisplacedAssertion: Runtime invariant check, not a test assertion
 		assert.notStrictEqual(this.parentWeight, -1);
 		return this.parentWeight;
 	}
@@ -234,7 +236,6 @@ export abstract class LeafTask extends Task {
 		);
 	}
 
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex task execution logic with multiple code paths
 	private async execCore(): Promise<TaskExecResult> {
 		const workerPool = this.node.context.workerPool;
 		if (workerPool && this.useWorker) {
@@ -389,6 +390,7 @@ export abstract class LeafTask extends Task {
 		// Queue this task
 		return new Promise((resolve) => {
 			traceTaskQueue(`${this.nameColored}: queued with weight ${this.weight}`);
+			// biome-ignore lint/nursery/noFloatingPromises: push is synchronous despite returning a promise-like interface
 			q.push({ task: this, resolve, queueTime: Date.now() }, -this.weight);
 		});
 	}
@@ -442,6 +444,7 @@ export abstract class LeafTask extends Task {
 
 	protected getDependentLeafTasks() {
 		this.dependentLeafTasks ??= new Set();
+		// biome-ignore lint/suspicious/noMisplacedAssertion: Runtime invariant check, not a test assertion
 		assert.notStrictEqual(this.dependentLeafTasks, undefined);
 		// biome-ignore lint/style/noNonNullAssertion: null-coalescing assignment ensures non-null value
 		return this.dependentLeafTasks!.values();

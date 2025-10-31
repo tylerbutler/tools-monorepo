@@ -1,9 +1,8 @@
 import { readFile } from "node:fs/promises";
-
-import { sha256 } from "./hash.js";
+import { sha256 as sha256Fn } from "./hash.js";
 
 export type hashFn = (buffer: Buffer) => string;
-export { sha256 };
+export { sha256 } from "./hash.js";
 export class FileHashCache {
 	protected fileHashCaches = new Map<hashFn, Map<string, Promise<string>>>();
 
@@ -15,7 +14,7 @@ export class FileHashCache {
 		}
 		return fileHashCache;
 	}
-	public async getFileHash(path: string, hash: hashFn = sha256) {
+	public async getFileHash(path: string, hash: hashFn = sha256Fn) {
 		const fileHashCache = this.getFileHashCache(hash);
 		const cachedHashP = fileHashCache.get(path);
 		if (cachedHashP) {

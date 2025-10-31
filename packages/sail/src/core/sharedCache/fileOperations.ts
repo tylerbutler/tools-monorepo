@@ -48,7 +48,9 @@ export async function copyFiles(
 
 			await copyFileWithDirs(sourcePath, destPath);
 			copiedCount++;
-		} catch (_error) {}
+		} catch (_error) {
+			// TODO: Review error handling - should failures be logged or propagated?
+		}
 	}
 
 	return copiedCount;
@@ -225,7 +227,9 @@ export async function calculateTotalSize(
 		try {
 			const stats = await getFileStats(filePath);
 			totalSize += stats.size;
-		} catch {}
+		} catch {
+			// TODO: Review error handling - should missing files be logged or skipped silently?
+		}
 	}
 
 	return totalSize;

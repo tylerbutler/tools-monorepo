@@ -36,7 +36,6 @@ export function tsCompile(
 	options: TsCompileOptions,
 	allowWatch: "allow-watch",
 ): number | undefined;
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex TypeScript compilation logic with multiple code paths
 export function tsCompile(
 	{ command, cwd, packageJsonTypeOverride }: TsCompileOptions,
 	allowWatch?: "allow-watch",
@@ -73,12 +72,13 @@ export function tsCompile(
 	if (commandLine && diagnostics.length === 0) {
 		// When specified, overrides current directory's package.json type field so tsc may cleanly
 		// transpile .ts files to CommonJS or ESM using compilerOptions.module Node16 or NodeNext.
-		let packageJsonTypeOverrideUsage = "not read" as
+		let _packageJsonTypeOverrideUsage = "not read" as
 			| "not read"
 			| "already present"
 			| "used";
 		const applyPackageJsonTypeOverride = packageJsonTypeOverride
 			? (
+					// biome-ignore lint/nursery/noShadow: host parameter is standard TypeScript API naming convention
 					host:
 						| tsTypes.CompilerHost
 						| tsTypes.WatchCompilerHostOfConfigFile<tsTypes.EmitAndSemanticDiagnosticsBuilderProgram>,
@@ -92,7 +92,7 @@ export function tsCompile(
 						if (fileName === packageJsonPath && rawFile !== undefined) {
 							// Reading local package.json: override type field
 							const packageJson = JSON.parse(rawFile);
-							packageJsonTypeOverrideUsage =
+							_packageJsonTypeOverrideUsage =
 								(packageJson.type ?? "commonjs") !== packageJsonTypeOverride
 									? "used"
 									: "already present";
@@ -161,8 +161,7 @@ export function tsCompile(
 		const emitResult = program.emit();
 		diagnostics.push(...emitResult.diagnostics);
 
-		if (packageJsonTypeOverride && packageJsonTypeOverrideUsage !== "used") {
-		}
+		// TODO: Add validation for unused packageJsonTypeOverride
 
 		if (emitResult.emitSkipped && diagnostics.length > 0) {
 			code = ts.ExitStatus.DiagnosticsPresent_OutputsSkipped;
@@ -183,10 +182,7 @@ export function tsCompile(
 			getNewLine: () => ts.sys.newLine,
 		};
 
-		// TODO: tsc has more complicated summary than this
-		if (commandLine?.options?.pretty !== false) {
-		} else {
-		}
+		// TODO: tsc has more complicated summary than this (implement pretty vs non-pretty print)
 	}
 	return code;
 }

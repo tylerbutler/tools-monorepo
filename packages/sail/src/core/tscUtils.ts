@@ -101,6 +101,7 @@ function filterIncrementalOptions(options: Record<string, unknown>) {
 function convertOptionPaths(
 	options: ts.CompilerOptions,
 	base: string,
+	// biome-ignore lint/nursery/noShadow: path parameter is standard TypeScript API naming convention
 	convert: (base: string, path: string) => string,
 ): ts.CompilerOptions {
 	// Shallow clone 'CompilerOptions' before modifying.
@@ -126,6 +127,7 @@ function convertOptionPaths(
 		const value = result[key] as string[];
 		if (value !== undefined) {
 			// Note that this also shallow clones the array.
+			// biome-ignore lint/nursery/noShadow: value parameter in map shadows outer value variable, but is standard map pattern
 			result[key] = value.map((value) => convert(base, value));
 		}
 	}
@@ -242,6 +244,7 @@ function createTscUtil(tsLib: typeof ts) {
 			return tsConfigFullPath;
 		},
 
+		// biome-ignore lint/nursery/noShadow: path parameter is standard TypeScript API naming convention
 		readConfigFile: (path: string) => {
 			const configFile = tsLib.readConfigFile(path, tsLib.sys.readFile);
 			if (configFile.error) {
@@ -261,6 +264,7 @@ export type TscUtil = ReturnType<typeof createTscUtil>;
 const tscUtilPathCache = new Map<string, TscUtil>();
 const tscUtilLibPathCache = new Map<string, TscUtil>();
 
+// biome-ignore lint/nursery/noShadow: path parameter is standard naming for file path utilities
 export function getTscUtils(path: string): TscUtil {
 	const tscUtilFromPath = tscUtilPathCache.get(path);
 	if (tscUtilFromPath) {
@@ -275,7 +279,6 @@ export function getTscUtils(path: string): TscUtil {
 			return tscUtilFromLibPath;
 		}
 
-		// biome-ignore lint/style/noCommonJs: Dynamic require needed to load the project's typescript version
 		const tsLib: typeof ts = require(tsPath);
 		const tscUtil = createTscUtil(tsLib);
 		tscUtilPathCache.set(path, tscUtil);
@@ -290,6 +293,7 @@ export function getTscUtils(path: string): TscUtil {
 
 // Any paths given by typescript will be normalized to forward slashes.
 // Local paths should be normalized to make any comparisons.
+// biome-ignore lint/nursery/noShadow: path parameter is standard naming for file path utilities
 export function normalizeSlashes(path: string): string {
 	return path.replace(/\\/g, "/");
 }

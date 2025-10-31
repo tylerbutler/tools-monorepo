@@ -12,6 +12,11 @@ import {
 } from "../taskUtils.js";
 import { LeafWithDoneFileTask } from "./leafTask.js";
 
+/**
+ * Regular expression to split lines by newline (supports both Unix and Windows line endings)
+ */
+const regexNewlineSplit = /\r?\n/;
+
 export class PrettierTask extends LeafWithDoneFileTask {
 	private parsed = false;
 	private entries: string[] = [];
@@ -68,7 +73,7 @@ export class PrettierTask extends LeafWithDoneFileTask {
 		try {
 			if (existsSync(ignoreFile)) {
 				const ignoreFileContent = await readFile(ignoreFile, "utf8");
-				ignoreEntries = ignoreFileContent.split(/\r?\n/);
+				ignoreEntries = ignoreFileContent.split(regexNewlineSplit);
 				ignoreEntries = ignoreEntries.filter(
 					(value) => value && !value.startsWith("#"),
 				);
