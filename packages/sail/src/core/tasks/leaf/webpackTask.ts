@@ -1,4 +1,3 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -18,7 +17,9 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		// We don't know all the input dependencies of webpack, Make sure recheckLeafIsUpToDate is false
 		// so we will always execute if any of the dependencies not up-to-date at the beginning of the build
 		// where their output might change the webpack's input.
-		assert.strictEqual(this.recheckLeafIsUpToDate, false);
+		if (this.recheckLeafIsUpToDate !== false) {
+			throw new Error("WebpackTask requires recheckLeafIsUpToDate to be false");
+		}
 		try {
 			const config = await loadModule(
 				this.configFileFullPath,

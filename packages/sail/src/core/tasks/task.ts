@@ -1,4 +1,3 @@
-import assert from "node:assert/strict";
 import { type AsyncPriorityQueue, priorityQueue } from "async";
 import registerDebug from "debug";
 import type { BuildContext } from "../buildContext.js";
@@ -69,9 +68,13 @@ export abstract class Task {
 	// See `BuildPackage.createTasks`
 	public initializeDependentTasks(pendingInitDep: Task[]) {
 		// This function should only be called once
-		assert.strictEqual(this.dependentTasks, undefined);
+		if (this.dependentTasks !== undefined) {
+			throw new Error("initializeDependentTasks should only be called once");
+		}
 		// This function should only be called by task with task names
-		assert.notStrictEqual(this.taskName, undefined);
+		if (this.taskName === undefined) {
+			throw new Error("initializeDependentTasks requires a taskName");
+		}
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		this.dependentTasks = this.node.getDependsOnTasks(
 			this,
@@ -106,7 +109,9 @@ export abstract class Task {
 			if (this._transitiveDependentLeafTasks === undefined) {
 				// biome-ignore lint/style/noNonNullAssertion: dependentTasks is initialized in constructor
 				const dependentTasks = this.dependentTasks!;
-				assert.notStrictEqual(dependentTasks, undefined);
+				if (dependentTasks === undefined) {
+					throw new Error("dependentTasks must be initialized before accessing transitiveDependentLeafTask");
+				}
 				this._transitiveDependentLeafTasks = null;
 
 				const s = new Set<LeafTask>();

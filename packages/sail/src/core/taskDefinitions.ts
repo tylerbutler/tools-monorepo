@@ -214,7 +214,7 @@ export function normalizeGlobalTaskDefinitions(
 	// Normalize all on disk config to full config and validate
 	const taskDefinitions: MutableTaskDefinitions = {};
 	if (globalTaskDefinitionsOnDisk) {
-		for (const name in globalTaskDefinitionsOnDisk) {
+		for (const name of Object.keys(globalTaskDefinitionsOnDisk)) {
 			const full = getFullTaskConfig(globalTaskDefinitionsOnDisk[name]);
 			if (!full.script && (full.before.length > 0 || full.after.length > 0)) {
 				throw new Error(
@@ -284,7 +284,9 @@ function _getDirectlyCalledScripts(
 				(scriptName: string) => {
 					directlyCalledScripts.push(scriptName);
 				},
-				() => {},
+				() => {
+					// TODO: Review if direct command callback needs implementation
+				},
 			);
 		} else if (commandLine.startsWith("npm run ")) {
 			const scriptName = commandLine.substring("npm run ".length);
