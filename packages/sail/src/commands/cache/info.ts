@@ -1,7 +1,10 @@
 import { existsSync } from "node:fs";
 import { Flags } from "@oclif/core";
 import { BaseSailCommand } from "../../baseCommand.js";
-import { displayCacheStatistics, initializeCacheOrFail } from "./utils.js";
+import {
+	displayCacheStatistics,
+	initializeCacheOrFail,
+} from "../../common/cacheUtils.js";
 
 export default class CacheInfoCommand extends BaseSailCommand<
 	typeof CacheInfoCommand

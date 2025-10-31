@@ -1,6 +1,9 @@
 import { Flags } from "@oclif/core";
 import { BaseSailCommand } from "../../baseCommand.js";
-import { initializeCacheOrFail, validateCacheDir } from "./utils.js";
+import {
+	initializeCacheOrFail,
+	validateCacheDir,
+} from "../../common/cacheUtils.js";
 
 export default class CacheVerifyCommand extends BaseSailCommand<
 	typeof CacheVerifyCommand

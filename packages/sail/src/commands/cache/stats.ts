@@ -4,7 +4,7 @@ import {
 	displayCacheStatistics,
 	initializeCacheOrFail,
 	validateCacheDir,
-} from "./utils.js";
+} from "../../common/cacheUtils.js";
 
 export default class CacheStatsCommand extends BaseSailCommand<
 	typeof CacheStatsCommand

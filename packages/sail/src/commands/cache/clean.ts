@@ -4,7 +4,7 @@ import {
 	displayMinimalCacheStatistics,
 	initializeCacheOrFail,
 	validateCacheDir,
-} from "./utils.js";
+} from "../../common/cacheUtils.js";
 
 export default class CacheCleanCommand extends BaseSailCommand<
 	typeof CacheCleanCommand

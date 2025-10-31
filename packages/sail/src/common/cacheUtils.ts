@@ -1,5 +1,5 @@
-import type { BaseSailCommand } from "../../baseCommand.js";
-import type { SharedCacheManager } from "../../core/sharedCache/index.js";
+import type { BaseSailCommand } from "../baseCommand.js";
+import type { SharedCacheManager } from "../core/sharedCache/index.js";
 
 /**
  * Display cache statistics in a formatted way.
@@ -86,7 +86,7 @@ export async function initializeCacheOrFail(
 	verifyCacheIntegrity = false,
 ): Promise<SharedCacheManager> {
 	const { initializeSharedCache } = await import(
-		"../../core/sharedCache/index.js"
+		"../core/sharedCache/index.js"
 	);
 
 	const sharedCache = await initializeSharedCache(
