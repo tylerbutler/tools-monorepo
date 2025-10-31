@@ -2,7 +2,7 @@
  * An error thrown when a path is not within a Git repository.
  */
 export class NotInGitRepository extends Error {
-	constructor(
+	public constructor(
 		/**
 		 * The path that was checked and found to be outside a Git repository.
 		 */

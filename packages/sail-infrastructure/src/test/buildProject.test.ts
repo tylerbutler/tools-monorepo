@@ -1,4 +1,4 @@
-import { strict as assert } from "node:assert";
+import { strict as assert } from "node:assert/strict";
 
 import { describe, expect, it } from "vitest";
 
@@ -42,8 +42,11 @@ describe("loadBuildProject", () => {
 			const mainReleaseGroup = repo.releaseGroups.get(
 				"main" as ReleaseGroupName,
 			);
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- test data (validated by another test) guarantees this has a value
-			const actualDependencies = mainReleaseGroup!.releaseGroupDependencies;
+			// Test data (validated by another test) guarantees this has a value
+			if (!mainReleaseGroup) {
+				throw new Error("mainReleaseGroup is undefined");
+			}
+			const actualDependencies = mainReleaseGroup.releaseGroupDependencies;
 			const names = actualDependencies.map((r) => r.name as string);
 
 			expect(actualDependencies).toBeDefined();
@@ -51,6 +54,7 @@ describe("loadBuildProject", () => {
 		});
 	});
 
+	// biome-ignore lint/suspicious/noSkippedTests: Tests require running in FluidFramework repository, not tools-monorepo
 	describe.skip("FluidFramework repo - tests backCompat config loading", () => {
 		// These tests require running in the FluidFramework repository
 		// Skip them in other environments (like tools-monorepo)

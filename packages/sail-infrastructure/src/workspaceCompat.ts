@@ -80,6 +80,7 @@ function loadWorkspacesFromLegacyConfigEntry(
 	const rgName = name ?? path.basename(directory);
 	const workspaceName = rgName;
 	const releaseGroupDefinitions: {
+		// biome-ignore lint/nursery/noShadow: Index signature name doesn't shadow parameter, it's a type definition
 		[name: string]: ReleaseGroupDefinition;
 	} = {};
 	releaseGroupDefinitions[rgName] = {

@@ -6,9 +6,9 @@ import { defaultLogger } from "./logging.js";
  */
 export class Stopwatch {
 	private lastTime: number = Date.now();
-	private totalTime: number = 0;
+	private totalTime = 0;
 
-	constructor(
+	public constructor(
 		private readonly enabled: boolean,
 		protected logFunc = defaultLogger.log,
 	) {}

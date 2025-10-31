@@ -6,7 +6,7 @@
 
 # Abstract Class: PackageBase\<J, TAddProps\>
 
-Defined in: [packages/sail-infrastructure/src/package.ts:30](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L30)
+Defined in: [packages/sail-infrastructure/src/package.ts:38](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L38)
 
 A base class for npm packages. A custom type can be used for the package.json schema, which is useful
 when the package.json has custom keys/values.
@@ -44,7 +44,7 @@ new PackageBase<J, TAddProps>(
 additionalProperties?): PackageBase<J, TAddProps>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:74](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L74)
+Defined in: [packages/sail-infrastructure/src/package.ts:86](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L86)
 
 Create a new package from a package.json file. **Prefer the .load method to calling the contructor directly.**
 
@@ -100,7 +100,7 @@ useful to augment the package class with additional properties.
 isReleaseGroupRoot: boolean;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:103](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L103)
+Defined in: [packages/sail-infrastructure/src/package.ts:115](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L115)
 
 Whether the package is a release group root package or not. A release group may not have a root package, but if it
 does, it will only have one.
@@ -117,7 +117,7 @@ does, it will only have one.
 readonly isWorkspaceRoot: boolean;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:93](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L93)
+Defined in: [packages/sail-infrastructure/src/package.ts:105](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L105)
 
 Whether the package is a workspace root package or not. A workspace will only have one root package.
 
@@ -133,7 +133,7 @@ Whether the package is a workspace root package or not. A workspace will only ha
 readonly packageJsonFilePath: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:78](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L78)
+Defined in: [packages/sail-infrastructure/src/package.ts:90](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L90)
 
 The absolute path to the package.json file for this package.
 
@@ -149,7 +149,7 @@ The absolute path to the package.json file for this package.
 readonly releaseGroup: ReleaseGroupName;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:98](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L98)
+Defined in: [packages/sail-infrastructure/src/package.ts:110](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L110)
 
 The name of the release group that this package belongs to.
 
@@ -165,7 +165,7 @@ The name of the release group that this package belongs to.
 readonly workspace: IWorkspace;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:88](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L88)
+Defined in: [packages/sail-infrastructure/src/package.ts:100](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L100)
 
 The workspace that this package belongs to.
 
@@ -183,7 +183,7 @@ The workspace that this package belongs to.
 get combinedDependencies(): Generator<PackageDependency, void>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:115](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L115)
+Defined in: [packages/sail-infrastructure/src/package.ts:128](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L128)
 
 A generator that returns each dependency and the kind of dependency (dev, peer, etc.) for all of the package's
 dependencies. This is useful to iterate overall all dependencies of the package.
@@ -209,7 +209,7 @@ dependencies. This is useful to iterate overall all dependencies of the package.
 get directory(): string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:122](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L122)
+Defined in: [packages/sail-infrastructure/src/package.ts:135](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L135)
 
 The absolute path to the directory containing the package (that is, the directory that contains the package.json
 for the package).
@@ -235,7 +235,7 @@ for the package).
 get name(): PackageName;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:129](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L129)
+Defined in: [packages/sail-infrastructure/src/package.ts:142](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L142)
 
 The name of the package including the scope.
 
@@ -259,7 +259,7 @@ The name of the package including the scope.
 get nameColored(): string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:136](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L136)
+Defined in: [packages/sail-infrastructure/src/package.ts:149](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L149)
 
 The name of the package color-coded with ANSI color codes for terminal output. The package name will always have
 the same color.
@@ -285,7 +285,7 @@ the same color.
 get packageJson(): J;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:143](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L143)
+Defined in: [packages/sail-infrastructure/src/package.ts:156](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L156)
 
 The package.json contents of the package.
 
@@ -309,7 +309,7 @@ The package.json contents of the package.
 get private(): boolean;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:150](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L150)
+Defined in: [packages/sail-infrastructure/src/package.ts:163](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L163)
 
 `true` if the package is private; `false` otherwise. This is similar to the field in package.json, but always
 returns a boolean value. If the package.json is missing the `private` field, this will return false.
@@ -335,7 +335,7 @@ returns a boolean value. If the package.json is missing the `private` field, thi
 get version(): string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:157](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L157)
+Defined in: [packages/sail-infrastructure/src/package.ts:170](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L170)
 
 The version of the package. This is the same as `packageJson.version`.
 
@@ -357,7 +357,7 @@ The version of the package. This is the same as `packageJson.version`.
 checkInstall(): Promise<true | string[]>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:189](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L189)
+Defined in: [packages/sail-infrastructure/src/package.ts:204](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L204)
 
 Returns `true` if the item is installed. If the item is not installed, an array of error strings will be returned.
 
@@ -377,7 +377,7 @@ Returns `true` if the item is installed. If the item is not installed, an array 
 getScript(name): string | undefined;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:182](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L182)
+Defined in: [packages/sail-infrastructure/src/package.ts:195](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L195)
 
 Returns the value of a script in the package's package.json, or undefined if a script with the provided key is not
 found.
@@ -404,7 +404,7 @@ found.
 install(updateLockfile): Promise<boolean>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:213](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L213)
+Defined in: [packages/sail-infrastructure/src/package.ts:230](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L230)
 
 Installs the dependencies for all packages in this package's workspace.
 
@@ -430,7 +430,7 @@ Installs the dependencies for all packages in this package's workspace.
 reload(): void;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:171](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L171)
+Defined in: [packages/sail-infrastructure/src/package.ts:184](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L184)
 
 Reload the package from the on-disk package.json.
 
@@ -450,7 +450,7 @@ Reload the package from the on-disk package.json.
 savePackageJson(): Promise<void>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:164](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L164)
+Defined in: [packages/sail-infrastructure/src/package.ts:177](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L177)
 
 Saves any changes to the packageJson property to the package.json file on disk.
 
@@ -470,7 +470,7 @@ Saves any changes to the packageJson property to the package.json file on disk.
 toString(): string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/package.ts:175](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/package.ts#L175)
+Defined in: [packages/sail-infrastructure/src/package.ts:188](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L188)
 
 Returns a string representation of an object.
 

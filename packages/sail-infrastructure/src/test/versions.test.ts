@@ -1,4 +1,4 @@
-import { strict as assert } from "node:assert";
+import { strict as assert } from "node:assert/strict";
 import * as path from "node:path";
 
 import * as semver from "semver";
@@ -36,8 +36,11 @@ describe("setVersion", () => {
 	});
 
 	it("release group", async () => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		await setVersion(main.packages, semver.parse("1.2.1")!);
+		const version = semver.parse("1.2.1");
+		if (!version) {
+			throw new Error("Failed to parse version");
+		}
+		await setVersion(main.packages, version);
 
 		const allCorrect = main.packages.every((pkg) => pkg.version === "1.2.1");
 		expect(main.version).toBe("1.2.1");
@@ -45,8 +48,11 @@ describe("setVersion", () => {
 	});
 
 	it("workspace", async () => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		await setVersion(secondWorkspace.packages, semver.parse("2.2.1")!);
+		const version = semver.parse("2.2.1");
+		if (!version) {
+			throw new Error("Failed to parse version");
+		}
+		await setVersion(secondWorkspace.packages, version);
 
 		const allCorrect = secondWorkspace.packages.every(
 			(pkg) => pkg.version === "2.2.1",
@@ -56,8 +62,11 @@ describe("setVersion", () => {
 
 	it("repo", async () => {
 		const packages = [...repo.packages.values()];
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		await setVersion(packages, semver.parse("1.2.1")!);
+		const version = semver.parse("1.2.1");
+		if (!version) {
+			throw new Error("Failed to parse version");
+		}
+		await setVersion(packages, version);
 
 		const allCorrect = packages.every((pkg) => pkg.version === "1.2.1");
 		expect(allCorrect).toBe(true);

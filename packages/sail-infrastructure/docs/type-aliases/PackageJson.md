@@ -18,7 +18,7 @@ type PackageJson = SetRequired<Pick<StandardPackageJson,
   | "type">, "name" | "scripts" | "version"> & PnpmPackageJsonFields;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:29](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L29)
+Defined in: [packages/sail-infrastructure/src/types.ts:33](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L33)
 
 All known package.json fields including those that are specific to build-infrastructure.
 The `name`, `scripts`, and `version` fields are required, unlike standard package.json.

@@ -10,6 +10,6 @@
 type PackageManagerName = AgentName;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:294](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L294)
+Defined in: [packages/sail-infrastructure/src/types.ts:299](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L299)
 
 Known package managers supported by build-infrastructure.

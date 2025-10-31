@@ -1,4 +1,4 @@
-import { strict as assert } from "node:assert";
+import { strict as assert } from "node:assert/strict";
 
 import { describe, expect, it } from "vitest";
 
@@ -182,8 +182,10 @@ describe("selectAndFilterPackages", () => {
 		expect(selected).toHaveLength(1);
 		expect(filtered).toHaveLength(1);
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const pkg = filtered[0]!;
+		const pkg = filtered[0];
+		if (!pkg) {
+			throw new Error("Expected package not found");
+		}
 
 		expect(pkg.name).toBe("other-pkg-a");
 		expect(buildProject.relativeToRepo(pkg.directory)).toBe(

@@ -1,4 +1,4 @@
-import { strict as assert } from "node:assert";
+import { strict as assert } from "node:assert/strict";
 import * as path from "node:path";
 
 import { describe, it } from "vitest";

@@ -8,10 +8,10 @@ import type { IBuildProject } from "../types.js";
  * This command is intended for testing and debugging use only.
  */
 export class ListCommand extends Command {
-	static override description =
+	public static override description =
 		"List objects in the build project, like release groups, workspaces, and packages. USED FOR TESTING ONLY.";
 
-	static override flags = {
+	public static override flags = {
 		path: Flags.directory({
 			description:
 				"Path to start searching for the Build project configuration.",
@@ -22,7 +22,7 @@ export class ListCommand extends Command {
 		}),
 	} as const;
 
-	async run(): Promise<void> {
+	public async run(): Promise<void> {
 		const { flags } = await this.parse(ListCommand);
 		const { path: searchPath, full } = flags;
 
@@ -85,7 +85,7 @@ export class ListCommand extends Command {
 		}
 	}
 
-	private logIndent(message: string, indent: number = 0): void {
+	private logIndent(message: string, indent = 0): void {
 		const spaces = " ".repeat(2 * indent);
 		this.log(`${spaces}${message}`);
 	}

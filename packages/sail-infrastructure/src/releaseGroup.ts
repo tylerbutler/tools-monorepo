@@ -73,8 +73,11 @@ export class ReleaseGroup implements IReleaseGroup {
 	 * {@inheritDoc IReleaseGroup.version}
 	 */
 	public get version(): string {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return this.packages[0]!.version;
+		const firstPackage = this.packages[0];
+		if (!firstPackage) {
+			throw new Error("Release group has no packages");
+		}
+		return firstPackage.version;
 	}
 
 	/**

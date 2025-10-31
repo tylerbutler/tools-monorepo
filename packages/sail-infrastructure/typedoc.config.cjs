@@ -13,7 +13,7 @@ module.exports = {
 	plugin: ["typedoc-plugin-markdown"],
 	gitRevision: "main",
 	sourceLinkTemplate:
-		"https://github.com/microsoft/FluidFramework/blob/{gitRevision}/{path}#L{line}",
+		"https://github.com/tylerbutler/tools-monorepo/blob/{gitRevision}/{path}#L{line}",
 	outputFileStrategy: "members",
 	out: "docs",
 	readme: "./README.md",

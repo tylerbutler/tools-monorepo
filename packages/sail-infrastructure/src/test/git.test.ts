@@ -1,4 +1,5 @@
-import { strict as assert } from "node:assert";
+import { strict as assert } from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { unlink } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -17,7 +18,7 @@ import {
 } from "../git.js";
 import type { PackageJson } from "../types.js";
 
-import { packageRootPath, testRepoRoot } from "./init.js";
+import { testRepoRoot } from "./init.js";
 
 describe("findGitRootSync", () => {
 	it("finds root", () => {
@@ -31,7 +32,7 @@ describe("findGitRootSync", () => {
 
 		// Verify .git directory exists at the found root
 		const gitDir = path.join(actual, ".git");
-		expect(require("fs").existsSync(gitDir)).toBe(true);
+		expect(existsSync(gitDir)).toBe(true);
 	});
 
 	it("throws outside git repo", () => {

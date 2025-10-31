@@ -6,7 +6,7 @@
 
 # Interface: Reloadable
 
-Defined in: [packages/sail-infrastructure/src/types.ts:143](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L143)
+Defined in: [packages/sail-infrastructure/src/types.ts:148](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L148)
 
 An interface for things that can be reloaded,
 
@@ -25,7 +25,7 @@ An interface for things that can be reloaded,
 reload(): void;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:147](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L147)
+Defined in: [packages/sail-infrastructure/src/types.ts:152](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L152)
 
 Synchronously reload.
 

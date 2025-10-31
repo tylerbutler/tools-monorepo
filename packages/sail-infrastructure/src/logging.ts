@@ -5,12 +5,14 @@ import chalk from "picocolors";
  */
 export type ErrorLoggingFunction = (
 	msg: string | Error | undefined,
+	// biome-ignore lint/suspicious/noExplicitAny: Required for flexible logging function signature
 	...args: any[]
 ) => void;
 
 /**
  * A function that logs an error message.
  */
+// biome-ignore lint/suspicious/noExplicitAny: Required for flexible logging function signature
 export type LoggingFunction = (message?: string, ...args: any[]) => void;
 
 /**
@@ -106,21 +108,26 @@ function logWithTime(
 }
 
 function log(msg: string | undefined): void {
+	// biome-ignore lint/suspicious/noConsole: This is a logging utility
 	logWithTime(msg, console.log);
 }
 
 function info(msg: string | Error | undefined): void {
+	// biome-ignore lint/suspicious/noConsole: This is a logging utility
 	logWithTime(`INFO: ${msg}`, console.log);
 }
 
 function verbose(msg: string | Error | undefined): void {
+	// biome-ignore lint/suspicious/noConsole: This is a logging utility
 	logWithTime(`VERBOSE: ${msg}`, console.log);
 }
 
 function warning(msg: string | Error | undefined): void {
-	logWithTime(`${chalk.yellow(`WARNING`)}: ${msg}`, console.log);
+	// biome-ignore lint/suspicious/noConsole: This is a logging utility
+	logWithTime(`${chalk.yellow("WARNING")}: ${msg}`, console.log);
 }
 
 function errorLog(msg: string | Error | undefined): void {
-	logWithTime(`${chalk.red(`ERROR`)}: ${msg}`, console.error);
+	// biome-ignore lint/suspicious/noConsole: This is a logging utility
+	logWithTime(`${chalk.red("ERROR")}: ${msg}`, console.error);
 }

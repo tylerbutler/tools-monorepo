@@ -46,6 +46,7 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 	/**
 	 * The absolute path to the config file.
 	 */
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Used for future debugging/logging
 	private readonly configFilePath: string;
 
 	/**
@@ -121,8 +122,9 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 			isV1Config(this.configuration) &&
 			this.configuration.repoPackages !== undefined
 		) {
+			// biome-ignore lint/suspicious/noConsole: Intentional deprecation warning for users
 			console.warn(
-				`The repoPackages setting is deprecated and will no longer be read in a future version. Use buildProject instead.`,
+				"The repoPackages setting is deprecated and will no longer be read in a future version. Use buildProject instead.",
 			);
 			this._workspaces = loadWorkspacesFromLegacyConfig(
 				this.configuration.repoPackages,

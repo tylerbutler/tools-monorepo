@@ -6,7 +6,7 @@
 
 # Interface: Installable
 
-Defined in: [packages/sail-infrastructure/src/types.ts:123](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L123)
+Defined in: [packages/sail-infrastructure/src/types.ts:128](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L128)
 
 A common interface for installable things, like packages, release groups, and workspaces.
 
@@ -23,7 +23,7 @@ A common interface for installable things, like packages, release groups, and wo
 checkInstall(): Promise<true | string[]>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:127](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L127)
+Defined in: [packages/sail-infrastructure/src/types.ts:132](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L132)
 
 Returns `true` if the item is installed. If the item is not installed, an array of error strings will be returned.
 
@@ -39,7 +39,7 @@ Returns `true` if the item is installed. If the item is not installed, an array 
 install(updateLockfile): Promise<boolean>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:137](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L137)
+Defined in: [packages/sail-infrastructure/src/types.ts:142](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L142)
 
 Installs the item.
 

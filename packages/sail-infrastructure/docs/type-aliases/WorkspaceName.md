@@ -10,6 +10,6 @@
 type WorkspaceName = Opaque<string, "WorkspaceName">;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:153](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L153)
+Defined in: [packages/sail-infrastructure/src/types.ts:158](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L158)
 
 A tagged type representing workspace names.

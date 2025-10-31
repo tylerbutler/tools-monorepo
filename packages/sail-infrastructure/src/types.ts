@@ -1,5 +1,5 @@
 import type { Agent, AgentName } from "package-manager-detector";
-import { SimpleGit } from "simple-git";
+import type { SimpleGit } from "simple-git";
 import type {
 	Opaque,
 	SetRequired,
@@ -277,7 +277,7 @@ export interface IReleaseGroup extends Reloadable {
  * A type guard that returns `true` if the checked item is an {@link IReleaseGroup}.
  */
 export function isIReleaseGroup(
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: Type guard needs to accept any type for runtime checking
 	toCheck: Exclude<any, string | number | ReleaseGroupName | PackageName>,
 ): toCheck is IReleaseGroup {
 	if (!("name" in toCheck)) {
@@ -458,7 +458,7 @@ export interface IPackage<J extends PackageJson = PackageJson>
 /**
  * A type guard that returns `true` if the item is an {@link IPackage}.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types -- this is a type guard
+// biome-ignore lint/suspicious/noExplicitAny: Type guard needs to accept any type for runtime checking
 export function isIPackage(pkg: any): pkg is IPackage {
 	if (typeof pkg === "object") {
 		return "getScript" in pkg;

@@ -61,7 +61,7 @@ export function writePackageJson<J extends PackageJson = PackageJson>(
 	pkgJson: J,
 	indent: string,
 ): void {
-	return writeJsonSync(packagePath, sortPackageJson(pkgJson), {
+	writeJsonSync(packagePath, sortPackageJson(pkgJson), {
 		spaces: indent,
 	});
 }

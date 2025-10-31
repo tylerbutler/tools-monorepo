@@ -10,7 +10,7 @@
 function getFiles(git, directory): Promise<string[]>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/git.ts:218](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/git.ts#L218)
+Defined in: [packages/sail-infrastructure/src/git.ts:224](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L224)
 
 Returns an array containing repo repo-relative paths to all the files in the provided directory.
 A given path will only be included once in the array; that is, there will be no duplicate paths.

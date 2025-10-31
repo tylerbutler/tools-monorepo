@@ -74,6 +74,20 @@
 			},
 		},
 		{
+			// sail infrastructure packages - allow namespace imports and complexity
+			"includes": ["packages/sail/**", "packages/sail-infrastructure/**"],
+			"linter": {
+				"rules": {
+					"performance": {
+						"noNamespaceImport": "off",
+					},
+					"complexity": {
+						"noExcessiveCognitiveComplexity": "off",
+					},
+				},
+			},
+		},
+		{
 			// Svelte files - official Biome recommended configuration for partial support
 			// https://biomejs.dev/internals/language-support/
 			"includes": ["**/*.svelte"],

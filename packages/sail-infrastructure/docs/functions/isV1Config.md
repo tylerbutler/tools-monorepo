@@ -10,7 +10,7 @@
 function isV1Config(input): input is BuildProjectConfigV1;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:76](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/config.ts#L76)
+Defined in: [packages/sail-infrastructure/src/config.ts:75](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L75)
 
 Type guard to check if the input is a BuildProjectConfigV1.
 

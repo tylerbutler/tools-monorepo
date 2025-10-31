@@ -6,7 +6,7 @@
 
 # Interface: FilterablePackage
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:231](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L231)
+Defined in: [packages/sail-infrastructure/src/filter.ts:241](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L241)
 
 Convenience type that contains only the properties of a package that are needed for filtering.
 
@@ -18,7 +18,7 @@ Convenience type that contains only the properties of a package that are needed 
 name: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:232](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L232)
+Defined in: [packages/sail-infrastructure/src/filter.ts:242](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L242)
 
 ***
 
@@ -28,4 +28,4 @@ Defined in: [packages/sail-infrastructure/src/filter.ts:232](https://github.com/
 optional private: boolean;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:233](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/filter.ts#L233)
+Defined in: [packages/sail-infrastructure/src/filter.ts:243](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L243)

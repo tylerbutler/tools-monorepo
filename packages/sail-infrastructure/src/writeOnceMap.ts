@@ -9,7 +9,7 @@ export class KeyAlreadySet extends Error {
 	 *
 	 * @param key - The Map key that was already set.
 	 */
-	constructor(key: string) {
+	public constructor(key: string) {
 		super(`Key "${key}" is already set and cannot be modified.`);
 		this.name = "KeyAlreadySet";
 	}

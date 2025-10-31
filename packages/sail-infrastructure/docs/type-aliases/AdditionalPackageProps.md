@@ -10,6 +10,6 @@
 type AdditionalPackageProps = Record<string, string> | undefined;
 ```
 
-Defined in: [packages/sail-infrastructure/src/types.ts:48](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/types.ts#L48)
+Defined in: [packages/sail-infrastructure/src/types.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L52)
 
 Additional properties that can be added to an [IPackage](../interfaces/IPackage.md).

@@ -41,7 +41,7 @@ export abstract class PackageBase<
 > implements IPackage<J>
 {
 	// eslint-disable-next-line @typescript-eslint/prefer-readonly -- false positive; this value is changed
-	private static packageCount: number = 0;
+	private static packageCount = 0;
 	private static readonly colorFunction = [
 		colors.red,
 		colors.green,
@@ -66,10 +66,12 @@ export abstract class PackageBase<
 
 	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 	private get color() {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return Package.colorFunction[
-			this.packageId % Package.colorFunction.length
-		]!;
+		const index = this.packageId % Package.colorFunction.length;
+		const colorFn = Package.colorFunction[index];
+		if (!colorFn) {
+			throw new Error("Color function array is unexpectedly empty");
+		}
+		return colorFn;
 	}
 
 	/**
@@ -254,18 +256,19 @@ class Package<
 	 */
 	public static loadFromWorkspaceDefinition<
 		T extends typeof Package,
-		J extends PackageJson = PackageJson,
-		TAddProps extends AdditionalPackageProps = undefined,
+		TPackageJson extends PackageJson = PackageJson,
+		TAdditionalProps extends AdditionalPackageProps = undefined,
 	>(
 		this: T,
 		packageJsonFilePath: string,
 		isWorkspaceRoot: boolean,
 		workspaceDefinition: WorkspaceDefinition,
 		workspace: IWorkspace,
-		additionalProperties?: TAddProps,
+		additionalProperties?: TAdditionalProps,
 	): IPackage {
-		const packageName: PackageName = (readJsonSync(packageJsonFilePath) as J)
-			.name as PackageName;
+		const packageName: PackageName = (
+			readJsonSync(packageJsonFilePath) as TPackageJson
+		).name as PackageName;
 		const releaseGroupName = findReleaseGroupForPackage(
 			packageName,
 			workspaceDefinition.releaseGroups,
@@ -288,7 +291,7 @@ class Package<
 		const isReleaseGroupRoot =
 			rootPackageName === undefined ? false : packageName === rootPackageName;
 
-		const pkg = new this(
+		const pkg = new Package(
 			packageJsonFilePath,
 			// packageManager,
 			workspace,

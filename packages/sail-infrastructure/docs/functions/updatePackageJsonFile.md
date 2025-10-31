@@ -10,7 +10,7 @@
 function updatePackageJsonFile<J>(packagePath, packageTransformer): void;
 ```
 
-Defined in: [packages/sail-infrastructure/src/packageJsonUtils.ts:26](https://github.com/microsoft/FluidFramework/blob/main/packages/sail-infrastructure/src/packageJsonUtils.ts#L26)
+Defined in: [packages/sail-infrastructure/src/packageJsonUtils.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/packageJsonUtils.ts#L28)
 
 Reads the contents of package.json, applies a transform function to it, then writes the results back to the source
 file.

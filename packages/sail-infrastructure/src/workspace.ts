@@ -81,7 +81,8 @@ export class Workspace implements IWorkspace {
 			throw new Error(
 				`Could not find a workspace root. Started looking at '${this.directory}'.`,
 			);
-		} else if (foundWorkspaceRootPath !== this.directory) {
+		}
+		if (foundWorkspaceRootPath !== this.directory) {
 			// This is a sanity check. directory is the path passed in when creating the Workspace object, while rootDir is
 			// the dir that `getPackagesSync` found. They should be the same.
 			throw new Error(
