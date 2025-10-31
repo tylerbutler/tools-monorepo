@@ -10,7 +10,7 @@ export class TaskDefinitionCache {
 	private readonly accessTimes = new Map<string, number>();
 	private readonly maxCacheSize: number;
 
-	constructor(maxCacheSize: number = 500) {
+	public constructor(maxCacheSize = 500) {
 		this.maxCacheSize = maxCacheSize;
 	}
 
@@ -168,7 +168,7 @@ export class ConfigurationCache {
 	private readonly accessTimes = new Map<string, number>();
 	private readonly maxCacheSize: number;
 
-	constructor(maxCacheSize: number = 1000) {
+	public constructor(maxCacheSize = 1000) {
 		this.maxCacheSize = maxCacheSize;
 	}
 

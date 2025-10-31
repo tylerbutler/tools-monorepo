@@ -9,10 +9,10 @@ import {
 export default class CacheCleanCommand extends BaseSailCommand<
 	typeof CacheCleanCommand
 > {
-	static override readonly description =
+	public static override readonly description =
 		"Remove all cache entries. Use --force to confirm.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		cacheDir: Flags.string({
 			description: "Path to shared cache directory.",
 			env: "SAIL_CACHE_DIR",
@@ -26,7 +26,7 @@ export default class CacheCleanCommand extends BaseSailCommand<
 		...BaseSailCommand.flags,
 	} as const;
 
-	static override readonly examples = [
+	public static override readonly examples = [
 		"<%= config.bin %> <%= command.id %> --force",
 		"<%= config.bin %> <%= command.id %> --force --cache-dir /path/to/cache",
 	];

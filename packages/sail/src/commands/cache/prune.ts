@@ -9,10 +9,10 @@ import {
 export default class CachePruneCommand extends BaseSailCommand<
 	typeof CachePruneCommand
 > {
-	static override readonly description =
+	public static override readonly description =
 		"Prune old cache entries based on age and size limits.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		cacheDir: Flags.string({
 			description: "Path to shared cache directory.",
 			env: "SAIL_CACHE_DIR",
@@ -20,7 +20,7 @@ export default class CachePruneCommand extends BaseSailCommand<
 		...BaseSailCommand.flags,
 	} as const;
 
-	static override readonly examples = [
+	public static override readonly examples = [
 		"<%= config.bin %> <%= command.id %>",
 		"<%= config.bin %> <%= command.id %> --cache-dir /path/to/cache",
 	];

@@ -46,7 +46,7 @@ export class BuildPackage extends PackageBase<SailPackageJson> {
 	 * @param additionalProperties - An object with additional properties that should be added to the class. This is
 	 * useful to augment the package class with additional properties.
 	 */
-	constructor(packageInput: IPackage) {
+	public constructor(packageInput: IPackage) {
 		const {
 			packageJsonFilePath,
 			// packageManager,
@@ -146,19 +146,19 @@ export class MonoRepo implements IWorkspace {
 		return this.workspace.buildProject;
 	}
 
-	toString(): string {
+	public toString(): string {
 		return this.workspace.toString();
 	}
 
-	checkInstall(): Promise<true | string[]> {
+	public checkInstall(): Promise<true | string[]> {
 		return this.workspace.checkInstall();
 	}
 
-	install(updateLockfile: boolean): Promise<boolean> {
+	public install(updateLockfile: boolean): Promise<boolean> {
 		return this.workspace.install(updateLockfile);
 	}
 
-	reload(): void {
+	public reload(): void {
 		this.workspace.reload();
 	}
 

@@ -180,7 +180,7 @@ export class TestHelpers {
 	 */
 	static createTempDir(): string {
 		// For now, return a mock path - in real implementation would create actual temp dir
-		return "/tmp/test-" + Math.random().toString(36).substring(7);
+		return `/tmp/test-${Math.random().toString(36).substring(7)}`;
 	}
 
 	/**

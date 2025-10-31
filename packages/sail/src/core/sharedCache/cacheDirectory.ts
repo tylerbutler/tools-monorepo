@@ -143,7 +143,7 @@ async function initializeIndexMetadata(indexPath: string): Promise<void> {
 			const existing: CacheIndexMetadata = JSON.parse(existingData);
 			existing.lastAccessedAt = now;
 			await writeFile(indexPath, JSON.stringify(existing, null, 2), "utf8");
-		} catch (error) {
+		} catch (_error) {
 			// If we can't read/parse existing index, create a new one
 			await createNewIndexMetadata(indexPath, now);
 		}

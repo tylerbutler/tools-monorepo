@@ -12,7 +12,7 @@ export class FileSystemError extends SailError {
 	public readonly operation?: string;
 	public readonly errno?: number;
 
-	constructor(
+	public constructor(
 		message: string,
 		context: ErrorContext = {},
 		options: FileSystemErrorOptions = {},
@@ -25,7 +25,7 @@ export class FileSystemError extends SailError {
 	/**
 	 * Creates a FileSystemError for missing files
 	 */
-	static fileNotFound(
+	public static fileNotFound(
 		filePath: string,
 		operation?: string,
 		context: ErrorContext = {},
@@ -43,7 +43,7 @@ export class FileSystemError extends SailError {
 	/**
 	 * Creates a FileSystemError for permission issues
 	 */
-	static permissionDenied(
+	public static permissionDenied(
 		filePath: string,
 		operation?: string,
 		context: ErrorContext = {},
@@ -61,7 +61,7 @@ export class FileSystemError extends SailError {
 	/**
 	 * Creates a FileSystemError for lock file issues
 	 */
-	static lockFileNotFound(
+	public static lockFileNotFound(
 		packageName: string,
 		context: ErrorContext = {},
 	): FileSystemError {
@@ -78,7 +78,7 @@ export class FileSystemError extends SailError {
 	/**
 	 * Creates a FileSystemError for directory operations
 	 */
-	static directoryNotFound(
+	public static directoryNotFound(
 		dirPath: string,
 		operation?: string,
 		context: ErrorContext = {},
@@ -96,7 +96,7 @@ export class FileSystemError extends SailError {
 	/**
 	 * Creates a FileSystemError for read/write operations
 	 */
-	static ioError(
+	public static ioError(
 		filePath: string,
 		operation: string,
 		originalError: Error,
@@ -116,7 +116,7 @@ export class FileSystemError extends SailError {
 	/**
 	 * Creates a FileSystemError for file deletion failures
 	 */
-	static deleteFailed(
+	public static deleteFailed(
 		filePath: string,
 		reason?: string,
 		context: ErrorContext = {},

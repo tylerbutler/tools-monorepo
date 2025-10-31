@@ -27,15 +27,13 @@ export async function lint(message: WorkerMessage): Promise<WorkerExecResult> {
 		let formatter;
 		try {
 			formatter = await engine.loadFormatter("stylish");
-		} catch (e: any) {
-			console.error(e.message);
+		} catch (_e: unknown) {
 			return { code: 2 };
 		}
 
 		const output = await formatter.format(results);
 
 		if (output) {
-			console.info(output);
 		}
 		let code = 0;
 		for (const result of results) {

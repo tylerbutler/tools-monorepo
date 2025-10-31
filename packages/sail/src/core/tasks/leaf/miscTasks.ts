@@ -8,7 +8,7 @@ import { globFn, toPosixPath } from "../taskUtils.js";
 import { LeafTask, LeafWithFileStatDoneFileTask } from "./leafTask.js";
 
 function unquote(str: string) {
-	if (str.length >= 2 && str[0] === '"' && str[str.length - 1] === '"') {
+	if (str.length >= 2 && str[0] === '"' && str.at(-1) === '"') {
 		return str.substr(1, str.length - 2);
 	}
 	return str;
@@ -36,7 +36,7 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 	private readonly flat: boolean = false;
 	private readonly copyDstArg: string = "";
 
-	constructor(
+	public constructor(
 		node: BuildGraphPackage,
 		command: string,
 		context: BuildContext,
@@ -54,7 +54,7 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 				if (i + 1 >= args.length) {
 					return;
 				}
-				this.up = Number.parseInt(args[i + 1]);
+				this.up = Number.parseInt(args[i + 1], 10);
 				i++;
 				continue;
 			}
@@ -85,10 +85,6 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 
 			const unquoted = unquote(args[i]);
 			if (unquoted.includes("**") && unquoted === args[i]) {
-				// Shell expansion of glob star may be different than the glob library.
-				console.warn(
-					`${this.nameColored}: warning: copyfiles glob pattern '${args[i]}' should be quoted. May have different behavior in different shell and OS.`,
-				);
 			}
 			input.push(unquote(args[i]));
 		}
@@ -198,7 +194,7 @@ export class GenVerTask extends LeafTask {
 			}
 			return true;
 		} catch {
-			this.traceTrigger(`failed to read src/packageVersion.ts`);
+			this.traceTrigger("failed to read src/packageVersion.ts");
 			return false;
 		}
 	}

@@ -29,7 +29,7 @@ export type ServiceIdentifier<T = unknown> =
 	| string
 	| symbol
 	| (new (
-			...args: any[]
+			...args: unknown[]
 	  ) => T);
 
 /**
@@ -84,7 +84,7 @@ export class ServiceContainer implements IServiceContainer {
 	private readonly services = new Map<ServiceIdentifier, ServiceDescriptor>();
 	private readonly parent?: IServiceContainer;
 
-	constructor(parent?: IServiceContainer) {
+	public constructor(parent?: IServiceContainer) {
 		this.parent = parent;
 	}
 
@@ -148,7 +148,7 @@ export class ServiceContainer implements IServiceContainer {
 			return descriptor as ServiceDescriptor<T>;
 		}
 
-		if (this.parent && this.parent.isRegistered(identifier)) {
+		if (this.parent?.isRegistered(identifier)) {
 			// Delegate to parent but return as our descriptor type
 			const parentInstance = this.parent.resolve<T>(identifier);
 			return {

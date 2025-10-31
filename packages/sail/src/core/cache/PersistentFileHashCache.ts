@@ -13,7 +13,7 @@ export class PersistentFileHashCache extends FileHashCache {
 	private cacheLoaded = false;
 	private cacheDirty = false;
 
-	constructor(cacheDir?: string) {
+	public constructor(cacheDir?: string) {
 		super();
 		this.cacheDir = cacheDir ?? path.join(process.cwd(), ".sail", "cache");
 		this.cacheFile = path.join(this.cacheDir, "file-hashes.json");
@@ -152,9 +152,8 @@ export class PersistentFileHashCache extends FileHashCache {
 
 			await writeFile(this.cacheFile, JSON.stringify(cacheData, null, 2));
 			this.cacheDirty = false;
-		} catch (error) {
-			// Don't fail the build if cache save fails
-			console.warn(`Failed to save file hash cache: ${error}`);
+		} catch (_error) {
+			// Silently ignore cache write errors
 		}
 	}
 
@@ -180,9 +179,7 @@ export class PersistentFileHashCache extends FileHashCache {
 					this.persistentCache.clear();
 				}
 			}
-		} catch (error) {
-			// Don't fail if cache load fails, just start with empty cache
-			console.warn(`Failed to load file hash cache: ${error}`);
+		} catch (_error) {
 			this.persistentCache.clear();
 		}
 
@@ -250,7 +247,7 @@ export class PersistentFileHashCache extends FileHashCache {
 	private getLastSavedTime(): number | undefined {
 		try {
 			if (existsSync(this.cacheFile)) {
-				const stats = require("fs").statSync(this.cacheFile);
+				const stats = require("node:fs").statSync(this.cacheFile);
 				return stats.mtimeMs;
 			}
 		} catch {

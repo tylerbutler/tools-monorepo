@@ -10,9 +10,9 @@ import { initializeSharedCache } from "../core/sharedCache/index.js";
 import { cacheFlags, selectionFlags } from "../flags.js";
 
 export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
-	static override readonly description = "Build stuff.";
+	public static override readonly description = "Build stuff.";
 
-	static override readonly args = {
+	public static override readonly args = {
 		partial_name: Args.string({
 			description: "Regular expression or string to filter packages by name.",
 			default: ".",
@@ -20,7 +20,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		}),
 	};
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		...selectionFlags,
 		...cacheFlags,
 		task: Flags.string({
@@ -75,9 +75,11 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		}),
 	} as const;
 
-	static override readonly examples = ["<%= config.bin %> <%= command.id %>"];
+	public static override readonly examples = [
+		"<%= config.bin %> <%= command.id %>",
+	];
 
-	static override aliases: string[] = ["b"];
+	public static override aliases: string[] = ["b"];
 
 	public async run(): Promise<void> {
 		const { flags, args } = this;
@@ -114,6 +116,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 
 		if (sharedCache) {
 			// Add cache to build context
+			// biome-ignore lint/suspicious/noExplicitAny: Accessing internal context property
 			(buildRepo as any).context.sharedCache = sharedCache;
 		}
 

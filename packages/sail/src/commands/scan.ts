@@ -9,10 +9,10 @@ import { BaseSailCommand } from "../baseCommand.js";
 import type { BuildPackage } from "../common/npmPackage.js";
 
 export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
-	static override readonly description =
+	public static override readonly description =
 		"Scan a path to see it the way Sail sees it.";
 
-	static override readonly args = {
+	public static override readonly args = {
 		scan_dir: Args.directory({
 			description: "Directory to scan.",
 			default: ".",
@@ -20,7 +20,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		}),
 	};
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		infer: Flags.boolean({
 			allowNo: false,
 			default: false,

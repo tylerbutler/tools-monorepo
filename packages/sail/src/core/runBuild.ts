@@ -57,7 +57,20 @@ export async function runBuild(
 				3,
 			)}, Queue Wait time: ${buildGraph.totalQueueWaitTime.toFixed(3)}s`,
 		);
+
+		// Display cache statistics if cache is enabled
+		const cacheStats = buildGraph.getCacheStatistics();
+		if (cacheStats) {
+			log.log(cacheStats);
+		}
+
 		log.log(`Build ${buildStatus} - ${elapsedTime.toFixed(3)}s`);
+
+		// Display status symbol legend if tasks were built
+		const taskStats = buildGraph.taskStats;
+		if (taskStats.leafBuiltCount > 0) {
+			displayStatusSymbolLegend(log);
+		}
 
 		failureSummary = buildGraph.taskFailureSummary;
 		exitCode = buildResult === BuildResult.Failed ? -1 : 0;
@@ -91,4 +104,17 @@ function buildResultString(buildResult: BuildResult) {
 		default:
 			return chalk.redBright("unexpected");
 	}
+}
+
+function displayStatusSymbolLegend(log: Logger) {
+	log.log("\nStatus symbols:");
+	log.log(
+		`  ${chalk.yellowBright("\u2713")} Success (executed)              ${chalk.blueBright("\u21E9")} Remote cache hit (downloaded)`,
+	);
+	log.log(
+		`  ${chalk.cyanBright("\u25CB")} Up-to-date (skipped)            ${chalk.greenBright("\u21E7")} Cache write (uploaded)`,
+	);
+	log.log(
+		`  ${chalk.redBright("x")} Failed                          ${chalk.greenBright("\u25A0")} Local cache hit (donefile)`,
+	);
 }

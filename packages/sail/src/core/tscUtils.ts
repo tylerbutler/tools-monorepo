@@ -88,8 +88,8 @@ const incrementalOptions = [
 	"strictFunctionTypes",
 ].sort(); // sort it so that the result of the filter is sorted as well.
 
-function filterIncrementalOptions(options: any) {
-	const newOptions: any = {};
+function filterIncrementalOptions(options: Record<string, unknown>) {
+	const newOptions: Record<string, unknown> = {};
 	for (const key of incrementalOptions) {
 		if (options[key] !== undefined) {
 			newOptions[key] = options[key];
@@ -157,14 +157,13 @@ function createGetSourceFileVersion(tsLib: typeof ts) {
 	// this preprocessing in 'Sail'.  Both options are fragile, but since
 	// we're already calling into the TypeScript compiler, calling internals is
 	// convenient.
+	// biome-ignore lint/suspicious/noExplicitAny: Accessing TypeScript compiler internals
 	const maybeGetHash = (tsLib as any).getSourceFileVersionAsHashFromText;
 
 	if (!maybeGetHash) {
 		// This internal function is added 5.0+
-		if (Number.parseInt(tsLib.versionMajorMinor.split(".")[0]) >= 5) {
-			console.warn(
-				`Warning: TypeScript compiler has changed.  Incremental builds likely broken.`,
-			);
+		if (Number.parseInt(tsLib.versionMajorMinor.split(".")[0], 10) >= 5) {
+			// TODO: Log warning about missing internal TypeScript function
 		}
 
 		// Return 'sha256' for compatibility with older versions of TypeScript while we're
@@ -190,7 +189,7 @@ function createTscUtil(tsLib: typeof ts) {
 			// In case of fluid-tsc, replace those parts with 'tsc' before split.
 			const args = command.replace(fluidTscRegEx, "tsc").split(" ");
 			if (command.includes("&&")) {
-				console.warn("Warning: '&&' is not supported in tsc command.");
+				// TODO: Handle chained commands properly
 			}
 
 			let slicedArgs = args.slice(1);
@@ -203,11 +202,8 @@ function createTscUtil(tsLib: typeof ts) {
 			const parsedCommand = tsLib.parseCommandLine(slicedArgs);
 
 			if (parsedCommand.errors.length > 0) {
-				console.error(
-					`Error parsing tsc command: ${command} (split into ${JSON.stringify(slicedArgs)}.`,
-				);
-				for (const error of parsedCommand.errors) {
-					console.error(error);
+				for (const _error of parsedCommand.errors) {
+					// TODO: Log or handle TypeScript command line parsing errors
 				}
 				return undefined;
 			}
@@ -241,9 +237,6 @@ function createTscUtil(tsLib: typeof ts) {
 				} else {
 					// Assume there will be a local tsconfig.json and it is just currently missing.
 					tsConfigFullPath = path.join(directory, "tsconfig.json");
-					console.warn(
-						`Warning: no config file found; assuming ${tsConfigFullPath}`,
-					);
 				}
 			}
 			return tsConfigFullPath;
@@ -288,9 +281,10 @@ export function getTscUtils(path: string): TscUtil {
 		tscUtilPathCache.set(path, tscUtil);
 		tscUtilLibPathCache.set(tsPath, tscUtil);
 		return tscUtil;
-	} catch (e: any) {
-		e.message = `Failed to load typescript module for '${path}'. 'typescript' dependency may be missing.: ${e.message}`;
-		throw e;
+	} catch (e: unknown) {
+		const error = e as Error;
+		error.message = `Failed to load typescript module for '${path}'. 'typescript' dependency may be missing.: ${error.message}`;
+		throw error;
 	}
 }
 

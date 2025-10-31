@@ -201,7 +201,7 @@ describe("TestHelpers", () => {
 			expect(thrownError.message).toBe("Test error message");
 		});
 
-		it.skip("should throw if function does not throw", async () => {
+		it("should throw if function does not throw", async () => {
 			// TODO: Fix this test - the assertThrows function behavior needs clarification
 			try {
 				await TestHelpers.assertThrows(() => {

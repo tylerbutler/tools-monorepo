@@ -3,10 +3,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { LeafTask } from "../../../../src/core/tasks/leaf/leafTask.js";
 import { TaskHandlerRegistry } from "../../../../src/core/tasks/TaskHandlerRegistry.js";
-import type {
-	TaskHandler,
-	TaskHandlerConstructor,
-} from "../../../../src/core/tasks/taskHandlers.js";
+import type { TaskHandlerConstructor } from "../../../../src/core/tasks/taskHandlers.js";
 
 describe("TaskHandlerRegistry", () => {
 	let registry: TaskHandlerRegistry;

@@ -2,7 +2,6 @@ import type { Logger } from "@tylerbu/cli-api";
 import {
 	type ErrorCategory,
 	type ErrorContext,
-	isSailError,
 	SailError,
 	toSailError,
 } from "./index.js";
@@ -15,7 +14,7 @@ export class ErrorHandler {
 	private readonly errorCounts = new Map<ErrorCategory, number>();
 	private readonly collectedErrors: SailError[] = [];
 
-	constructor(logger: Logger) {
+	public constructor(logger: Logger) {
 		this.logger = logger;
 	}
 
@@ -202,9 +201,8 @@ export class ErrorHandler {
 		if (error.isRetryable) {
 			this.logger.warning(`Retryable error: ${error.getUserMessage()}`);
 			return { error, shouldThrow: false };
-		} else {
-			return this.logError(error);
 		}
+		return this.logError(error);
 	}
 }
 
@@ -212,7 +210,7 @@ export class ErrorHandler {
  * Contextual error handler that automatically applies base context
  */
 export class ContextualErrorHandler {
-	constructor(
+	public constructor(
 		private readonly errorHandler: ErrorHandler,
 		private readonly baseContext: ErrorContext,
 	) {}

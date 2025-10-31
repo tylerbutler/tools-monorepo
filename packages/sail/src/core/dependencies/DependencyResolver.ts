@@ -170,7 +170,7 @@ export class DependencyResolver implements IDependencyResolver {
 
 	private getOrCreateDependencyNode(
 		pkg: BuildPackage,
-		globalTaskDefinitions: TaskDefinitions,
+		_globalTaskDefinitions: TaskDefinitions,
 		pendingInitDep?: DependencyNode[],
 	): DependencyNode {
 		let node = this.buildPackages.get(pkg);

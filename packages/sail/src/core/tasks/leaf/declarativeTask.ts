@@ -11,7 +11,7 @@ import type { TaskHandlerFunction } from "../taskHandlers.js";
 import { type LeafTask, LeafWithFileStatDoneFileTask } from "./leafTask.js";
 
 class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
-	constructor(
+	public constructor(
 		node: BuildGraphPackage,
 		command: string,
 		context: BuildContext,

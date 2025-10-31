@@ -13,11 +13,11 @@ interface ITsBuildInfo {
 	program: {
 		fileNames: string[];
 		fileInfos: (string | { version: string; affectsGlobalScope: true })[];
-		affectedFilesPendingEmit?: any[];
-		emitDiagnosticsPerFile?: any[];
-		semanticDiagnosticsPerFile?: any[];
+		affectedFilesPendingEmit?: unknown[];
+		emitDiagnosticsPerFile?: unknown[];
+		semanticDiagnosticsPerFile?: unknown[];
 		changeFileSet?: number[];
-		options: any;
+		options: unknown;
 	};
 	version: string;
 }
@@ -198,9 +198,10 @@ export class TscTask extends LeafTask {
 				configFileNames.delete(
 					tscUtils.getCanonicalFileName(path.normalize(fullPath)),
 				);
-			} catch (e: any) {
+			} catch (e: unknown) {
+				const error = e as Error;
 				this.traceTrigger(
-					`exception generating hash for ${fileName}\n\t${e.stack}`,
+					`exception generating hash for ${fileName}\n\t${error.stack}`,
 				);
 				return false;
 			}

@@ -1,4 +1,3 @@
-import path from "node:path";
 import type { Logger } from "@tylerbu/cli-api";
 import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
 import type { SimpleGit } from "simple-git";
@@ -81,7 +80,7 @@ function createMockBuildPackage(
 		combinedDependencies: [],
 		getScript: vi.fn(() => undefined),
 		workspace: {
-			directory: `/test/repo`,
+			directory: "/test/repo",
 			packageManager: {
 				lockfileNames: ["pnpm-lock.yaml"],
 			},

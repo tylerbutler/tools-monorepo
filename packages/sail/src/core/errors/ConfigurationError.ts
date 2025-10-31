@@ -9,7 +9,7 @@ import {
  * Error thrown when there are issues with task or build configuration
  */
 export class ConfigurationError extends SailError {
-	constructor(
+	public constructor(
 		message: string,
 		context: ErrorContext = {},
 		options: SailErrorOptions = {},
@@ -20,7 +20,7 @@ export class ConfigurationError extends SailError {
 	/**
 	 * Creates a ConfigurationError for missing script
 	 */
-	static missingScript(
+	public static missingScript(
 		scriptName: string,
 		packageName?: string,
 	): ConfigurationError {
@@ -36,7 +36,7 @@ export class ConfigurationError extends SailError {
 	/**
 	 * Creates a ConfigurationError for invalid task definition
 	 */
-	static invalidTaskDefinition(
+	public static invalidTaskDefinition(
 		taskName: string,
 		reason: string,
 		packageName?: string,
@@ -53,7 +53,7 @@ export class ConfigurationError extends SailError {
 	/**
 	 * Creates a ConfigurationError for invalid dependency specifications
 	 */
-	static invalidDependency(
+	public static invalidDependency(
 		dependencyName: string,
 		taskName: string,
 		reason: string,
@@ -71,7 +71,7 @@ export class ConfigurationError extends SailError {
 	/**
 	 * Creates a ConfigurationError for missing tasks
 	 */
-	static noTasksFound(taskNames: string[]): ConfigurationError {
+	public static noTasksFound(taskNames: string[]): ConfigurationError {
 		return new ConfigurationError(
 			`No task(s) found for '${taskNames.join(", ")}'`,
 			{},

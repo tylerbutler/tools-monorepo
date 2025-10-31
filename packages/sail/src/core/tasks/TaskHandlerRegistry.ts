@@ -347,7 +347,7 @@ export class TaskHandlerRegistry {
 	 */
 	private resolveModulePath(modulePath: string, baseDir?: string): string {
 		// If it's a package name (doesn't start with . or /), return as-is for Node resolution
-		if (!modulePath.startsWith(".") && !modulePath.startsWith("/")) {
+		if (!(modulePath.startsWith(".") || modulePath.startsWith("/"))) {
 			return modulePath;
 		}
 

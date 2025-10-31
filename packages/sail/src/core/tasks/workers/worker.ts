@@ -35,13 +35,14 @@ async function messageHandler(msg: WorkerMessage): Promise<WorkerExecResult> {
 		} else {
 			throw new Error(`Invalid workerName ${msg.workerName}`);
 		}
-	} catch (e: any) {
+	} catch (e: unknown) {
 		// any unhandled exception thrown is going to rerun on main thread.
+		const error = e as Error;
 		res = {
 			error: {
-				name: e.name,
-				message: e.message,
-				stack: e.stack,
+				name: error.name,
+				message: error.message,
+				stack: error.stack,
 			},
 			code: -1,
 		};
@@ -62,18 +63,13 @@ if (parentPort) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		messageHandler(message).then(process.send?.bind(process));
 	});
-	process.on("uncaughtException", (error) => {
-		console.error(
-			`ERROR: Uncaught exception. ${error.message}\n${error.stack}`,
-		);
+	process.on("uncaughtException", (_error) => {
 		process.exit(-1);
 	});
-	process.on("unhandledRejection", (reason) => {
-		console.error(`ERROR: Unhandled promise rejection. ${reason}`);
+	process.on("unhandledRejection", (_reason) => {
 		process.exit(-1);
 	});
 	process.on("beforeExit", () => {
-		console.error("ERROR: Process exited");
 		process.exit(-1);
 	});
 } else {

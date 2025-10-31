@@ -7,7 +7,13 @@ import type { TaskExec } from "../tasks/task.js";
 /**
  * Build result type (using the same values as the concrete BuildResult enum)
  */
-export type IBuildResult = "Success" | "UpToDate" | "Failed";
+export type IBuildResult =
+	| "Success"
+	| "UpToDate"
+	| "Failed"
+	| "CachedSuccess"
+	| "LocalCacheHit"
+	| "SuccessWithCacheWrite";
 
 /**
  * Buildable package interface

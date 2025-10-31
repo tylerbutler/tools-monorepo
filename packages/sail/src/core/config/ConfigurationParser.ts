@@ -86,8 +86,7 @@ export class ConfigurationParser implements IConfigurationParser {
 		}
 
 		const invalidDependOn = (value: string): boolean =>
-			!value.includes("#") &&
-			!value.startsWith("^") &&
+			!(value.includes("#") || value.startsWith("^")) &&
 			taskDefinitions[value] === undefined &&
 			packageScripts[value] === undefined;
 
@@ -106,7 +105,7 @@ export class ConfigurationParser implements IConfigurationParser {
 
 	private validateScriptTask(
 		name: string,
-		config: TaskConfig,
+		_config: TaskConfig,
 		packageScripts: Record<string, string | undefined>,
 	): void {
 		const script = packageScripts[name];

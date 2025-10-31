@@ -12,7 +12,7 @@ export class BuildError extends SailError {
 	public readonly taskName?: string;
 	public readonly phase?: BuildPhase;
 
-	constructor(
+	public constructor(
 		message: string,
 		context: ErrorContext = {},
 		options: BuildErrorOptions = {},
@@ -25,7 +25,7 @@ export class BuildError extends SailError {
 	/**
 	 * Creates a BuildError for task failures
 	 */
-	static taskFailed(
+	public static taskFailed(
 		taskName: string,
 		reason?: string,
 		context: ErrorContext = {},
@@ -47,7 +47,7 @@ export class BuildError extends SailError {
 	/**
 	 * Creates a BuildError for compilation failures
 	 */
-	static compilationFailed(
+	public static compilationFailed(
 		packageName: string,
 		taskName: string,
 		errors: string[],
@@ -69,7 +69,7 @@ export class BuildError extends SailError {
 	/**
 	 * Creates a BuildError for dependency build failures
 	 */
-	static dependencyBuildFailed(
+	public static dependencyBuildFailed(
 		dependencyName: string,
 		taskName: string,
 		context: ErrorContext = {},
@@ -87,7 +87,7 @@ export class BuildError extends SailError {
 	/**
 	 * Creates a BuildError for build timeouts
 	 */
-	static buildTimeout(
+	public static buildTimeout(
 		timeoutMs: number,
 		taskName?: string,
 		context: ErrorContext = {},
@@ -106,7 +106,7 @@ export class BuildError extends SailError {
 	/**
 	 * Creates a BuildError for failed package loading
 	 */
-	static packageLoadFailed(
+	public static packageLoadFailed(
 		packageName: string,
 		directory: string,
 		originalError: Error,
@@ -125,7 +125,7 @@ export class BuildError extends SailError {
 	/**
 	 * Creates a BuildError for up-to-date check failures
 	 */
-	static upToDateCheckFailed(
+	public static upToDateCheckFailed(
 		packageName: string,
 		context: ErrorContext = {},
 	): BuildError {
@@ -143,7 +143,7 @@ export class BuildError extends SailError {
 	/**
 	 * Creates a BuildError for missing build targets
 	 */
-	static noBuildTargets(
+	public static noBuildTargets(
 		taskNames: string[],
 		context: ErrorContext = {},
 	): BuildError {

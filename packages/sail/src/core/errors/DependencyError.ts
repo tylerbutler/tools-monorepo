@@ -9,7 +9,7 @@ import {
  * Error thrown when there are issues with package or task dependencies
  */
 export class DependencyError extends SailError {
-	constructor(
+	public constructor(
 		message: string,
 		context: ErrorContext = {},
 		options: SailErrorOptions = {},
@@ -20,7 +20,7 @@ export class DependencyError extends SailError {
 	/**
 	 * Creates a DependencyError for circular package dependencies
 	 */
-	static circularPackageDependency(
+	public static circularPackageDependency(
 		packageChain: string[],
 		currentPackage?: string,
 	): DependencyError {
@@ -40,7 +40,7 @@ export class DependencyError extends SailError {
 	/**
 	 * Creates a DependencyError for circular task dependencies
 	 */
-	static circularTaskDependency(
+	public static circularTaskDependency(
 		taskChain: string[],
 		packageName?: string,
 	): DependencyError {
@@ -60,7 +60,7 @@ export class DependencyError extends SailError {
 	/**
 	 * Creates a DependencyError for missing package dependencies
 	 */
-	static missingPackageDependency(
+	public static missingPackageDependency(
 		dependencyName: string,
 		packageName?: string,
 	): DependencyError {
@@ -76,7 +76,7 @@ export class DependencyError extends SailError {
 	/**
 	 * Creates a DependencyError for version mismatches
 	 */
-	static versionMismatch(
+	public static versionMismatch(
 		dependencyName: string,
 		expectedVersion: string,
 		actualVersion: string,
@@ -94,7 +94,7 @@ export class DependencyError extends SailError {
 	/**
 	 * Creates a DependencyError for unresolved task dependencies
 	 */
-	static unresolvedTaskDependency(
+	public static unresolvedTaskDependency(
 		taskName: string,
 		dependencyName: string,
 		packageName?: string,

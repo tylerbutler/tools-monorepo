@@ -19,10 +19,10 @@ import {
 	summarizeBuildResult,
 } from "../../execution/BuildExecutor.js";
 import { defaultOptions } from "../../options.js";
-import {
-	type CacheKeyInputs,
-	computeCacheKey,
-	type TaskOutputs,
+import type {
+	CacheKeyInputs,
+	StoreResult,
+	TaskOutputs,
 } from "../../sharedCache/index.js";
 import { Task, type TaskExec } from "../task.js";
 
@@ -51,7 +51,7 @@ export abstract class LeafTask extends Task {
 		return this.command;
 	}
 
-	constructor(
+	public constructor(
 		node: BuildGraphPackage,
 		command: string,
 		context: BuildContext,
@@ -216,11 +216,25 @@ export abstract class LeafTask extends Task {
 
 		// Store in shared cache after successful execution
 		const executionTimeMs = Date.now() - startTime;
+		let cacheWriteResult: StoreResult | undefined;
 		if (this.node.context.sharedCache && this.canUseCache) {
-			await this.storeInCache(executionTimeMs);
+			cacheWriteResult = await this.storeInCache(executionTimeMs);
 		}
 
-		return this.execDone(startTime, BuildResult.Success, ret.worker);
+		// Determine final build result based on cache write status
+		const buildResult =
+			cacheWriteResult?.success === true
+				? BuildResult.SuccessWithCacheWrite
+				: BuildResult.Success;
+		const cacheSkipReason = cacheWriteResult?.reason;
+
+		return this.execDone(
+			startTime,
+			buildResult,
+			ret.worker,
+			undefined,
+			cacheSkipReason,
+		);
 	}
 
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex task execution logic with multiple code paths
@@ -276,9 +290,11 @@ export abstract class LeafTask extends Task {
 		return execAsync(this.executionCommand, {
 			cwd: this.node.pkg.directory,
 			env: {
+				// biome-ignore lint/style/noProcessEnv: Need to pass parent environment to child process
 				...process.env,
 				PATH: `${path.join(this.node.pkg.directory, "node_modules", ".bin")}${path.delimiter}${
 					// biome-ignore lint/complexity/useLiteralKeys: PATH may not be defined as a property
+					// biome-ignore lint/style/noProcessEnv: Need to preserve PATH for child process
 					process.env["PATH"]
 				}`,
 			},
@@ -303,19 +319,34 @@ export abstract class LeafTask extends Task {
 		return errorMessages;
 	}
 
-	private execDone(startTime: number, status: BuildResult, worker?: boolean) {
+	private execDone(
+		startTime: number,
+		status: BuildResult,
+		worker?: boolean,
+		_originalExecutionTimeMs?: number,
+		cacheSkipReason?: string,
+	) {
 		if (!defaultOptions.showExec) {
 			let statusCharacter = " ";
 			// biome-ignore lint/style/useDefaultSwitchClause: all BuildResult values are explicitly handled
 			switch (status) {
 				case BuildResult.Success:
-					statusCharacter = chalk.greenBright("\u2713");
+					statusCharacter = chalk.yellowBright("\u2713");
 					break;
 				case BuildResult.UpToDate:
-					statusCharacter = chalk.cyanBright("-");
+					statusCharacter = chalk.cyanBright("\u25CB"); // ○ (empty circle)
 					break;
 				case BuildResult.Failed:
 					statusCharacter = chalk.redBright("x");
+					break;
+				case BuildResult.CachedSuccess:
+					statusCharacter = chalk.blueBright("\u21E9"); // ⇩ (downward white arrow)
+					break;
+				case BuildResult.SuccessWithCacheWrite:
+					statusCharacter = chalk.greenBright("\u21E7"); // ⇧ (upward white arrow)
+					break;
+				case BuildResult.LocalCacheHit:
+					statusCharacter = chalk.greenBright("\u25A0"); // ■ (filled square)
 					break;
 			}
 
@@ -329,9 +360,15 @@ export abstract class LeafTask extends Task {
 			const elapsedTime = (Date.now() - startTime) / 1000;
 			const workerMsg = worker ? "[worker] " : "";
 			const suffix = this.isIncremental ? "" : " (non-incremental)";
+
+			// Add cache skip reason if present
+			const cacheMsg = cacheSkipReason
+				? ` (cache not uploaded: ${cacheSkipReason})`
+				: "";
+
 			const statusString = `[${taskNum}/${totalTask}] ${statusCharacter} ${
 				this.node.pkg.nameColored
-			}: ${workerMsg}${this.command} - ${elapsedTime.toFixed(3)}s${suffix}`;
+			}: ${workerMsg}${this.command} - ${elapsedTime.toFixed(3)}s${suffix}${cacheMsg}`;
 			this.log.log(statusString);
 			if (status === BuildResult.Failed) {
 				this.node.context.failedTaskLines.push(statusString);
@@ -510,7 +547,7 @@ export abstract class LeafTask extends Task {
 				if (result.stdout) {
 					this.log.log(result.stdout);
 				}
-				if (result.stderr && result.stderr.trim()) {
+				if (result.stderr?.trim()) {
 					this.log.warning(result.stderr);
 				}
 
@@ -531,10 +568,13 @@ export abstract class LeafTask extends Task {
 	/**
 	 * Store task outputs in shared cache after successful execution.
 	 */
-	private async storeInCache(executionTimeMs: number): Promise<void> {
+	private async storeInCache(executionTimeMs: number): Promise<StoreResult> {
 		const cache = this.node.context.sharedCache;
-		if (!cache || cache.options.skipCacheWrite) {
-			return;
+		if (!cache) {
+			return { success: false, reason: "cache not initialized" };
+		}
+		if (cache.options.skipCacheWrite) {
+			return { success: false, reason: "--skip-cache-write enabled" };
 		}
 
 		try {
@@ -544,7 +584,7 @@ export abstract class LeafTask extends Task {
 
 			if (inputFiles.length === 0 || outputFiles.length === 0) {
 				// Task doesn't support caching yet
-				return;
+				return { success: false, reason: "task does not support caching" };
 			}
 
 			// Compute input hashes
@@ -578,10 +618,18 @@ export abstract class LeafTask extends Task {
 			};
 
 			// Store in cache
-			await cache.store(cacheKeyInputs, taskOutputs, this.node.pkg.directory);
+			return await cache.store(
+				cacheKeyInputs,
+				taskOutputs,
+				this.node.pkg.directory,
+			);
 		} catch (error) {
 			// Don't fail the build if cache storage fails
 			this.traceError(`Failed to store in cache: ${error}`);
+			return {
+				success: false,
+				reason: error instanceof Error ? error.message : String(error),
+			};
 		}
 	}
 

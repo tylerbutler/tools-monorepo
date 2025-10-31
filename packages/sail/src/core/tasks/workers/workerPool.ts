@@ -14,7 +14,7 @@ export interface WorkerExecResultWithOutput extends WorkerExecResult {
 export class WorkerPool {
 	private readonly threadWorkerPool: Worker[] = [];
 	private readonly processWorkerPool: ChildProcess[] = [];
-	constructor(
+	public constructor(
 		public readonly useWorkerThreads: boolean,
 		private readonly memoryUsageLimit: number,
 	) {}
@@ -54,7 +54,7 @@ export class WorkerPool {
 		const installTemporaryListener = (
 			object: EventEmitter | Readable,
 			event: string,
-			handler: any,
+			handler: (...args: unknown[]) => void,
 		) => {
 			object.on(event, handler);
 			cleanup.push(() => object.off(event, handler));
@@ -67,14 +67,22 @@ export class WorkerPool {
 			let stderr = "";
 
 			if (worker.stdout) {
-				installTemporaryListener(worker.stdout, "data", (chunk: any) => {
-					stdout += chunk;
-				});
+				installTemporaryListener(
+					worker.stdout,
+					"data",
+					(chunk: Buffer | string) => {
+						stdout += chunk;
+					},
+				);
 			}
 			if (worker.stderr) {
-				installTemporaryListener(worker.stderr, "data", (chunk: any) => {
-					stderr += chunk;
-				});
+				installTemporaryListener(
+					worker.stderr,
+					"data",
+					(chunk: Buffer | string) => {
+						stderr += chunk;
+					},
+				);
 			}
 
 			worker.once("message", (result: WorkerExecResult) => {
@@ -129,11 +137,6 @@ export class WorkerPool {
 				// kill the worker if there is less than 4 GB of memory free.
 				freeMemory < 4 * bytesPerGiB
 			) {
-				// This typically happens around 21 times in a full clean build of client, and much less if any in an incremental build,
-				// so it should not be too verbose to log.
-				console.info(
-					`Freeing worker ${worker.pid} due to memory pressure. Free memory: ${freeMemory / bytesPerGiB} GiB, rss: ${res.memoryUsage?.rss ? res.memoryUsage?.rss / bytesPerGiB : undefined} GiB, memoryUsageLimit: ${this.memoryUsageLimit / bytesPerGiB} GiB, currentMemoryLimit: ${currentMemoryLimit / bytesPerGiB} GiB`,
-				);
 				worker.kill();
 			} else {
 				this.processWorkerPool.push(worker);

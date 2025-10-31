@@ -1,12 +1,16 @@
 import type { SailPackageJson } from "../../common/npmPackage.js";
-import type { TaskConfig, TaskDefinitions } from "../taskDefinitions.js";
-
 /**
  * Package configuration extracted from package.json
  */
+import type {
+	TaskConfig,
+	TaskDefinitions,
+	TaskDefinitionsOnDisk,
+} from "../taskDefinitions.js";
+
 export interface IPackageConfiguration {
 	scripts: Record<string, string | undefined>;
-	taskDefinitions?: any; // Allow any type for taskDefinitions to handle the JSON structure
+	taskDefinitions?: TaskDefinitionsOnDisk;
 }
 
 /**

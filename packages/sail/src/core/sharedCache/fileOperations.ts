@@ -36,7 +36,7 @@ export async function copyFileWithDirs(
  */
 export async function copyFiles(
 	files: ReadonlyArray<{ sourcePath: string; relativePath: string }>,
-	sourceRoot: string,
+	_sourceRoot: string,
 	destRoot: string,
 ): Promise<number> {
 	let copiedCount = 0;
@@ -48,12 +48,7 @@ export async function copyFiles(
 
 			await copyFileWithDirs(sourcePath, destPath);
 			copiedCount++;
-		} catch (error) {
-			// Log error but continue with other files
-			console.warn(
-				`Warning: Failed to copy file ${file.relativePath}: ${error}`,
-			);
-		}
+		} catch (_error) {}
 	}
 
 	return copiedCount;
@@ -230,10 +225,7 @@ export async function calculateTotalSize(
 		try {
 			const stats = await getFileStats(filePath);
 			totalSize += stats.size;
-		} catch {
-			// Skip files that don't exist or can't be read
-			continue;
-		}
+		} catch {}
 	}
 
 	return totalSize;

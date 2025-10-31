@@ -8,7 +8,7 @@ export class SailError extends Error {
 	public readonly isRetryable: boolean;
 	public readonly userMessage?: string;
 
-	constructor(
+	public constructor(
 		message: string,
 		category: ErrorCategory,
 		context: ErrorContext = {},

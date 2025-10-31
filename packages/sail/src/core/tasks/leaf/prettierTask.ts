@@ -16,7 +16,7 @@ export class PrettierTask extends LeafWithDoneFileTask {
 	private parsed = false;
 	private entries: string[] = [];
 	private ignorePath: string | undefined;
-	constructor(
+	public constructor(
 		node: BuildGraphPackage,
 		command: string,
 		context: BuildContext,
@@ -57,7 +57,7 @@ export class PrettierTask extends LeafWithDoneFileTask {
 	protected async getDoneFileContent() {
 		if (!this.parsed) {
 			this.traceError(
-				`error generating done file content, unable to understand command line`,
+				"error generating done file content, unable to understand command line",
 			);
 			return undefined;
 		}

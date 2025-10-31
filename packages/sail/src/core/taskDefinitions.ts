@@ -1,6 +1,5 @@
 import type { SailPackageJson } from "../common/npmPackage.js";
 import { ScriptAnalyzer } from "./analysis/ScriptAnalyzer.js";
-import { isKnownMainExecutable } from "./buildGraph.js";
 import { TaskDefinitionCache } from "./cache/TaskDefinitionCache.js";
 import { ConfigurationMerger } from "./config/ConfigurationMerger.js";
 import { ConfigurationParser } from "./config/ConfigurationParser.js";
@@ -217,12 +216,10 @@ export function normalizeGlobalTaskDefinitions(
 	if (globalTaskDefinitionsOnDisk) {
 		for (const name in globalTaskDefinitionsOnDisk) {
 			const full = getFullTaskConfig(globalTaskDefinitionsOnDisk[name]);
-			if (!full.script) {
-				if (full.before.length > 0 || full.after.length > 0) {
-					throw new Error(
-						`Non-script global task definition '${name}' cannot have 'before' or 'after'`,
-					);
-				}
+			if (!full.script && (full.before.length > 0 || full.after.length > 0)) {
+				throw new Error(
+					`Non-script global task definition '${name}' cannot have 'before' or 'after'`,
+				);
 			}
 			detectInvalid(
 				full.dependsOn,
@@ -255,7 +252,7 @@ export function normalizeGlobalTaskDefinitions(
 	return taskDefinitions;
 }
 
-function expandDotDotDot(
+function _expandDotDotDot(
 	config: readonly string[],
 	inherited: readonly string[],
 ) {
@@ -272,7 +269,7 @@ function expandDotDotDot(
  * @param allScriptNames - all the script names in the package.json
  * @returns elements of script that are other scripts
  */
-function getDirectlyCalledScripts(
+function _getDirectlyCalledScripts(
 	script: string,
 	allScriptNames: string[],
 ): string[] {

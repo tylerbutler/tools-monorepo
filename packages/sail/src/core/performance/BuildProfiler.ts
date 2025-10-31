@@ -9,10 +9,9 @@ import {
  */
 export class BuildProfiler {
 	private readonly performanceMonitor = new PerformanceMonitor();
-	private buildStartTime?: number;
 	private packageMetrics = new Map<string, PackageMetrics>();
 
-	constructor(private readonly logger: Logger) {}
+	public constructor(private readonly logger: Logger) {}
 
 	/**
 	 * Start profiling a build
@@ -89,7 +88,7 @@ export class BuildProfiler {
 		taskName: string,
 	): Promise<T> {
 		const { result, metric } = await this.performanceMonitor.timeAsync(
-			`task-execution`,
+			"task-execution",
 			operation,
 			{ packageName, taskName },
 		);

@@ -56,14 +56,14 @@ const traceError = registerDebug("sail:cache:error");
 export class SharedCacheManager {
 	public readonly options: SharedCacheOptions;
 	private readonly statistics: CacheStatistics;
-	private initialized: boolean = false;
+	private initialized = false;
 
 	/**
 	 * Create a new SharedCacheManager.
 	 *
 	 * @param options - Configuration options for the cache
 	 */
-	constructor(options: SharedCacheOptions) {
+	public constructor(options: SharedCacheOptions) {
 		this.options = options;
 		// Statistics will be loaded from disk during initialization
 		this.statistics = {
@@ -96,7 +96,7 @@ export class SharedCacheManager {
 
 		try {
 			await initializeCacheDirectory(this.options.cacheDir);
-			traceInit(`Cache directory structure initialized`);
+			traceInit("Cache directory structure initialized");
 
 			// Load persisted statistics
 			const persistedStats = await loadStatistics(this.options.cacheDir);
@@ -117,9 +117,6 @@ export class SharedCacheManager {
 		} catch (error) {
 			// Graceful degradation: log error but don't fail the build
 			traceError(`Failed to initialize cache: ${error}`);
-			console.warn(
-				`Warning: Failed to initialize cache directory: ${error instanceof Error ? error.message : String(error)}`,
-			);
 			throw error;
 		}
 	}
@@ -302,11 +299,6 @@ export class SharedCacheManager {
 			// Graceful degradation: treat lookup errors as cache misses
 			const elapsed = Date.now() - startTime;
 			traceError(`Cache lookup error: ${error} (${elapsed}ms)`);
-			// Only warn on unexpected errors (I/O errors, etc.), not normal cache misses
-			// Note: Normal misses are handled above and return early - we only get here on exceptions
-			console.warn(
-				`Warning: Cache lookup failed due to unexpected error: ${error instanceof Error ? error.message : String(error)}`,
-			);
 			this.statistics.missCount++;
 			return undefined;
 		}
@@ -327,8 +319,8 @@ export class SharedCacheManager {
 	async store(
 		inputs: CacheKeyInputs,
 		outputs: TaskOutputs,
-		packageRoot: string, // eslint-disable-line @typescript-eslint/no-unused-vars
-		lookupWasPerformed: boolean = true,
+		_packageRoot: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+		lookupWasPerformed = true,
 	): Promise<StoreResult> {
 		// If no lookup was performed, count this as a miss
 		// (task executed but we didn't check cache first)
@@ -342,8 +334,7 @@ export class SharedCacheManager {
 		// Skip if cache writes are disabled
 		if (this.options.skipCacheWrite) {
 			const reason = "--skip-cache-write enabled";
-			traceStore(`Skipping cache write (disabled by --skip-cache-write)`);
-			console.warn(`${inputs.packageName}: cache write skipped (${reason})`);
+			traceStore("Skipping cache write (disabled by --skip-cache-write)");
 			return { success: false, reason };
 		}
 
@@ -488,7 +479,6 @@ export class SharedCacheManager {
 			}
 
 			traceError(`Failed to store cache entry: ${error}`);
-			console.warn(`${inputs.packageName}: cache write failed - ${reason}`);
 			return { success: false, reason };
 		}
 	}
@@ -646,7 +636,7 @@ export class SharedCacheManager {
 	async displayStatistics(): Promise<void> {
 		await this.initialize();
 
-		const hitRate =
+		const _hitRate =
 			this.statistics.hitCount + this.statistics.missCount > 0
 				? (
 						(this.statistics.hitCount /
@@ -655,28 +645,9 @@ export class SharedCacheManager {
 					).toFixed(1)
 				: "0.0";
 
-		console.log("\nCache Statistics:");
-		console.log(`  Total Entries: ${this.statistics.totalEntries}`);
-		console.log(
-			`  Total Size: ${(this.statistics.totalSize / 1024 / 1024).toFixed(2)} MB`,
-		);
-		console.log(
-			`  Hit Count: ${this.statistics.hitCount} (${hitRate}% hit rate)`,
-		);
-		console.log(`  Miss Count: ${this.statistics.missCount}`);
-		console.log(
-			`  Average Restore Time: ${this.statistics.avgRestoreTime.toFixed(1)}ms`,
-		);
-		console.log(
-			`  Average Store Time: ${this.statistics.avgStoreTime.toFixed(1)}ms`,
-		);
-
 		if (this.statistics.lastPruned) {
-			const prunedDate = new Date(this.statistics.lastPruned).toLocaleString();
-			console.log(`  Last Pruned: ${prunedDate}`);
+			const _prunedDate = new Date(this.statistics.lastPruned).toLocaleString();
 		}
-
-		console.log("");
 	}
 
 	/**
@@ -694,32 +665,19 @@ export class SharedCacheManager {
 		const { getCacheEntriesDirectory } = await import("./cacheDirectory.js");
 
 		const entriesDir = getCacheEntriesDirectory(this.options.cacheDir);
+		// Remove all entries
+		await rm(entriesDir, { recursive: true, force: true });
 
-		console.log("\nCleaning cache...");
-		console.log(`  Removing all entries from: ${entriesDir}`);
+		// Recreate entries directory
+		const { mkdir } = await import("node:fs/promises");
+		await mkdir(entriesDir, { recursive: true });
 
-		try {
-			// Remove all entries
-			await rm(entriesDir, { recursive: true, force: true });
+		// Reset statistics
+		this.statistics.totalEntries = 0;
+		this.statistics.totalSize = 0;
 
-			// Recreate entries directory
-			const { mkdir } = await import("node:fs/promises");
-			await mkdir(entriesDir, { recursive: true });
-
-			// Reset statistics
-			this.statistics.totalEntries = 0;
-			this.statistics.totalSize = 0;
-
-			// Save updated statistics
-			await this.persistStatistics();
-
-			console.log("  ✓ Cache cleaned successfully");
-		} catch (error) {
-			console.error(
-				`Error cleaning cache: ${error instanceof Error ? error.message : String(error)}`,
-			);
-			throw error;
-		}
+		// Save updated statistics
+		await this.persistStatistics();
 	}
 
 	/**
@@ -732,10 +690,7 @@ export class SharedCacheManager {
 	 * @param maxAgeDays - Maximum age of entries in days (default: 30 days)
 	 * @returns Number of entries pruned
 	 */
-	async pruneCache(
-		maxSizeMB: number = 5000,
-		maxAgeDays: number = 30,
-	): Promise<number> {
+	async pruneCache(maxSizeMB = 5000, maxAgeDays = 30): Promise<number> {
 		await this.initialize();
 
 		const { readdir, stat, rm } = await import("node:fs/promises");
@@ -746,115 +701,99 @@ export class SharedCacheManager {
 		const maxSizeBytes = maxSizeMB * 1024 * 1024;
 		const maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000;
 		const now = Date.now();
+		// Get all cache entries with their access times
+		const entries = await readdir(entriesDir, { withFileTypes: true });
+		const entryInfos: Array<{
+			name: string;
+			accessTime: number;
+			size: number;
+		}> = [];
 
-		console.log("\nPruning cache...");
-		console.log(`  Max size: ${maxSizeMB} MB`);
-		console.log(`  Max age: ${maxAgeDays} days`);
+		for (const entry of entries) {
+			if (!entry.isDirectory()) {
+				continue;
+			}
 
-		try {
-			// Get all cache entries with their access times
-			const entries = await readdir(entriesDir, { withFileTypes: true });
-			const entryInfos: Array<{
-				name: string;
-				accessTime: number;
-				size: number;
-			}> = [];
+			const entryPath = path.join(entriesDir, entry.name);
+			const manifestPath = path.join(entryPath, "manifest.json");
 
-			for (const entry of entries) {
-				if (!entry.isDirectory()) continue;
+			try {
+				await stat(manifestPath);
+				const outputsDir = path.join(entryPath, "outputs");
 
-				const entryPath = path.join(entriesDir, entry.name);
-				const manifestPath = path.join(entryPath, "manifest.json");
+				// Read manifest to get access time
+				const { readManifest } = await import("./manifest.js");
+				const manifest = await readManifest(entryPath);
 
+				if (!manifest) {
+					continue;
+				}
+
+				// Calculate entry size
+				let entrySize = 0;
 				try {
-					await stat(manifestPath);
-					const outputsDir = path.join(entryPath, "outputs");
-
-					// Read manifest to get access time
-					const { readManifest } = await import("./manifest.js");
-					const manifest = await readManifest(entryPath);
-
-					if (!manifest) continue;
-
-					// Calculate entry size
-					let entrySize = 0;
-					try {
-						const outputEntries = await readdir(outputsDir, {
-							recursive: true,
-						});
-						for (const outputFile of outputEntries) {
-							const filePath = path.join(outputsDir, outputFile);
-							try {
-								const fileStat = await stat(filePath);
-								if (fileStat.isFile()) {
-									entrySize += fileStat.size;
-								}
-							} catch {
-								// Skip files that can't be accessed
-							}
-						}
-					} catch {
-						// Skip if outputs directory doesn't exist
-					}
-
-					entryInfos.push({
-						name: entry.name,
-						accessTime: new Date(manifest.lastAccessedAt).getTime(),
-						size: entrySize,
+					const outputEntries = await readdir(outputsDir, {
+						recursive: true,
 					});
-				} catch {
-					// Skip entries with missing or invalid manifests
-				}
-			}
-
-			// Sort by access time (oldest first)
-			entryInfos.sort((a, b) => a.accessTime - b.accessTime);
-
-			let pruned = 0;
-			let currentSize = entryInfos.reduce((sum, e) => sum + e.size, 0);
-
-			// Prune entries that are too old or exceed size limit
-			for (const entry of entryInfos) {
-				const age = now - entry.accessTime;
-				const shouldPruneAge = age > maxAgeMs;
-				const shouldPruneSize = currentSize > maxSizeBytes;
-
-				if (shouldPruneAge || shouldPruneSize) {
-					const entryPath = path.join(entriesDir, entry.name);
-					await rm(entryPath, { recursive: true, force: true });
-					pruned++;
-					currentSize -= entry.size;
-
-					if (shouldPruneAge) {
-						console.log(
-							`  Pruned old entry: ${entry.name.substring(0, 12)}... (${(age / 1000 / 60 / 60 / 24).toFixed(1)} days old)`,
-						);
+					for (const outputFile of outputEntries) {
+						const filePath = path.join(outputsDir, outputFile);
+						try {
+							const fileStat = await stat(filePath);
+							if (fileStat.isFile()) {
+								entrySize += fileStat.size;
+							}
+						} catch {
+							// Skip files that can't be accessed
+						}
 					}
+				} catch {
+					// Skip if outputs directory doesn't exist
 				}
 
-				// Stop if we're under the size limit
-				if (currentSize <= maxSizeBytes) {
-					break;
+				entryInfos.push({
+					name: entry.name,
+					accessTime: new Date(manifest.lastAccessedAt).getTime(),
+					size: entrySize,
+				});
+			} catch {
+				// Skip entries with missing or invalid manifests
+			}
+		}
+
+		// Sort by access time (oldest first)
+		entryInfos.sort((a, b) => a.accessTime - b.accessTime);
+
+		let pruned = 0;
+		let currentSize = entryInfos.reduce((sum, e) => sum + e.size, 0);
+
+		// Prune entries that are too old or exceed size limit
+		for (const entry of entryInfos) {
+			const age = now - entry.accessTime;
+			const shouldPruneAge = age > maxAgeMs;
+			const shouldPruneSize = currentSize > maxSizeBytes;
+
+			if (shouldPruneAge || shouldPruneSize) {
+				const entryPath = path.join(entriesDir, entry.name);
+				await rm(entryPath, { recursive: true, force: true });
+				pruned++;
+				currentSize -= entry.size;
+
+				if (shouldPruneAge) {
 				}
 			}
 
-			// Update statistics
-			await updateCacheSizeStats(this.options.cacheDir, this.statistics);
-			this.statistics.lastPruned = new Date().toISOString();
-			await this.persistStatistics();
-
-			console.log(`  ✓ Pruned ${pruned} entries`);
-			console.log(
-				`  ✓ Cache size after pruning: ${(this.statistics.totalSize / 1024 / 1024).toFixed(2)} MB`,
-			);
-
-			return pruned;
-		} catch (error) {
-			console.error(
-				`Error pruning cache: ${error instanceof Error ? error.message : String(error)}`,
-			);
-			throw error;
+			// Stop if we're under the size limit
+			if (currentSize <= maxSizeBytes) {
+				break;
+			}
 		}
+
+		// Update statistics
+		await updateCacheSizeStats(this.options.cacheDir, this.statistics);
+		this.statistics.lastPruned = new Date().toISOString();
+		await this.persistStatistics();
+
+		return pruned;
 	}
 
 	/**
@@ -866,7 +805,7 @@ export class SharedCacheManager {
 	 * @param fix - If true, remove corrupted entries (default: false)
 	 * @returns Object containing verification results
 	 */
-	async verifyCache(fix: boolean = false): Promise<{
+	async verifyCache(fix = false): Promise<{
 		total: number;
 		valid: number;
 		corrupted: number;
@@ -880,91 +819,70 @@ export class SharedCacheManager {
 
 		const entriesDir = getCacheEntriesDirectory(this.options.cacheDir);
 
-		console.log("\nVerifying cache integrity...");
-
 		let total = 0;
 		let valid = 0;
 		let corrupted = 0;
 		let fixed = 0;
+		const entries = await readdir(entriesDir, { withFileTypes: true });
 
-		try {
-			const entries = await readdir(entriesDir, { withFileTypes: true });
+		for (const entry of entries) {
+			if (!entry.isDirectory()) {
+				continue;
+			}
 
-			for (const entry of entries) {
-				if (!entry.isDirectory()) continue;
+			total++;
+			const entryPath = path.join(entriesDir, entry.name);
 
-				total++;
-				const entryPath = path.join(entriesDir, entry.name);
+			try {
+				// Read manifest
+				const { readManifest } = await import("./manifest.js");
+				const manifest = await readManifest(entryPath);
 
-				try {
-					// Read manifest
-					const { readManifest } = await import("./manifest.js");
-					const manifest = await readManifest(entryPath);
-
-					if (!manifest) {
-						console.log(
-							`  ✗ ${entry.name.substring(0, 12)}... - Invalid manifest`,
-						);
-						corrupted++;
-						if (fix) {
-							await rm(entryPath, { recursive: true, force: true });
-							fixed++;
-						}
-						continue;
-					}
-
-					// Verify all output files
-					const filesToVerify = manifest.outputFiles.map((output) => ({
-						path: path.join(entryPath, "outputs", output.path),
-						hash: output.hash,
-					}));
-
-					const verification = await verifyFilesIntegrity(filesToVerify);
-
-					if (verification.success) {
-						valid++;
-					} else {
-						console.log(
-							`  ✗ ${entry.name.substring(0, 12)}... - ${verification.failedFiles.length} file(s) corrupted`,
-						);
-						corrupted++;
-						if (fix) {
-							await rm(entryPath, { recursive: true, force: true });
-							fixed++;
-						}
-					}
-				} catch (error) {
-					console.log(
-						`  ✗ ${entry.name.substring(0, 12)}... - Error: ${error instanceof Error ? error.message : String(error)}`,
-					);
+				if (!manifest) {
 					corrupted++;
 					if (fix) {
-						try {
-							await rm(entryPath, { recursive: true, force: true });
-							fixed++;
-						} catch {
-							// Ignore errors when removing corrupted entries
-						}
+						await rm(entryPath, { recursive: true, force: true });
+						fixed++;
+					}
+					continue;
+				}
+
+				// Verify all output files
+				const filesToVerify = manifest.outputFiles.map((output) => ({
+					path: path.join(entryPath, "outputs", output.path),
+					hash: output.hash,
+				}));
+
+				const verification = await verifyFilesIntegrity(filesToVerify);
+
+				if (verification.success) {
+					valid++;
+				} else {
+					corrupted++;
+					if (fix) {
+						await rm(entryPath, { recursive: true, force: true });
+						fixed++;
+					}
+				}
+			} catch (_error) {
+				corrupted++;
+				if (fix) {
+					try {
+						await rm(entryPath, { recursive: true, force: true });
+						fixed++;
+					} catch {
+						// Ignore errors when removing corrupted entries
 					}
 				}
 			}
-
-			// Update statistics if we fixed entries
-			if (fix && fixed > 0) {
-				await updateCacheSizeStats(this.options.cacheDir, this.statistics);
-				await this.persistStatistics();
-			}
-
-			console.log(
-				`\nVerification complete: ${valid}/${total} entries valid, ${corrupted} corrupted${fix ? `, ${fixed} fixed` : ""}`,
-			);
-
-			return { total, valid, corrupted, fixed };
-		} catch (error) {
-			console.error(
-				`Error verifying cache: ${error instanceof Error ? error.message : String(error)}`,
-			);
-			throw error;
 		}
+
+		// Update statistics if we fixed entries
+		if (fix && fixed > 0) {
+			await updateCacheSizeStats(this.options.cacheDir, this.statistics);
+			await this.persistStatistics();
+		}
+
+		return { total, valid, corrupted, fixed };
 	}
 }

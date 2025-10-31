@@ -7,7 +7,7 @@ import { LeafWithDoneFileTask } from "./leafTask.js";
 
 interface DoneFileContent {
 	version: string;
-	config: any;
+	config: unknown;
 	sources: { [srcFile: string]: string };
 }
 export class WebpackTask extends LeafWithDoneFileTask {
@@ -83,12 +83,12 @@ export class WebpackTask extends LeafWithDoneFileTask {
 	private getEnvArguments() {
 		// TODO: parse the command line for real, split space for now.
 		const args = this.command.split(" ");
-		const env = {};
+		const env: Record<string, string | boolean> = {};
 		// Ignore trailing --env
 		for (let i = 1; i < args.length - 1; i++) {
 			if (args[i] === "--env") {
 				const value = args[++i].split("=");
-				(env as any)[value[0]] = value.length === 1 ? true : value[1];
+				env[value[0]] = value.length === 1 ? true : value[1];
 			}
 		}
 	}

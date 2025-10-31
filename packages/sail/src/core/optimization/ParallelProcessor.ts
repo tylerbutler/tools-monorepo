@@ -8,7 +8,7 @@ export class ParallelProcessor {
 	public static async processInParallel<T, R>(
 		items: T[],
 		processor: (item: T) => Promise<R>,
-		concurrency: number = 10,
+		concurrency = 10,
 	): Promise<R[]> {
 		const results: R[] = [];
 		const semaphore = new Semaphore(concurrency);
@@ -34,7 +34,7 @@ export class ParallelProcessor {
 	public static async processInBatches<T, R>(
 		items: T[],
 		processor: (batch: T[]) => Promise<R[]>,
-		batchSize: number = 50,
+		batchSize = 50,
 	): Promise<R[]> {
 		const results: R[] = [];
 
@@ -53,17 +53,21 @@ export class ParallelProcessor {
 	public static async processWithEarlyTermination<T>(
 		items: T[],
 		processor: (item: T) => Promise<boolean>,
-		concurrency: number = 10,
+		concurrency = 10,
 	): Promise<boolean> {
 		const semaphore = new Semaphore(concurrency);
 		let shouldStop = false;
 
 		const promises = items.map(async (item) => {
-			if (shouldStop) return true;
+			if (shouldStop) {
+				return true;
+			}
 
 			await semaphore.acquire();
 			try {
-				if (shouldStop) return true;
+				if (shouldStop) {
+					return true;
+				}
 
 				const result = await processor(item);
 				if (!result) {
@@ -85,7 +89,7 @@ export class ParallelProcessor {
 	public static async mapParallel<T, R>(
 		items: T[],
 		mapper: (item: T, index: number) => Promise<R>,
-		concurrency: number = 10,
+		concurrency = 10,
 	): Promise<R[]> {
 		return ParallelProcessor.processInParallel(
 			items.map((item, index) => ({ item, index })),
@@ -100,7 +104,7 @@ export class ParallelProcessor {
 	public static async filterParallel<T>(
 		items: T[],
 		predicate: (item: T) => Promise<boolean>,
-		concurrency: number = 10,
+		concurrency = 10,
 	): Promise<T[]> {
 		const results = await ParallelProcessor.mapParallel(
 			items,
@@ -118,7 +122,9 @@ export class ParallelProcessor {
 		items: T[],
 		targetPartitions: number,
 	): T[][] {
-		if (items.length === 0) return [];
+		if (items.length === 0) {
+			return [];
+		}
 
 		const partitionSize = Math.ceil(items.length / targetPartitions);
 		const partitions: T[][] = [];
@@ -138,7 +144,7 @@ class Semaphore {
 	private available: number;
 	private waiters: Array<() => void> = [];
 
-	constructor(capacity: number) {
+	public constructor(capacity: number) {
 		this.available = capacity;
 	}
 
@@ -174,7 +180,7 @@ export class MemoryOptimizer {
 		items: T[],
 		processor: (item: T) => Promise<R>,
 		onResult: (result: R, index: number) => void,
-		batchSize: number = 100,
+		batchSize = 100,
 	): Promise<void> {
 		for (let i = 0; i < items.length; i += batchSize) {
 			const batch = items.slice(i, i + batchSize);
@@ -206,7 +212,7 @@ export class MemoryOptimizer {
 	public static chunkProcess<T, R>(
 		items: T[],
 		processor: (chunk: T[]) => R[],
-		chunkSize: number = 1000,
+		chunkSize = 1000,
 	): R[] {
 		const results: R[] = [];
 
@@ -228,7 +234,7 @@ class LRUMap<K, V> {
 	private accessOrder: K[] = [];
 	private maxSize: number;
 
-	constructor(maxSize: number) {
+	public constructor(maxSize: number) {
 		this.maxSize = maxSize;
 	}
 

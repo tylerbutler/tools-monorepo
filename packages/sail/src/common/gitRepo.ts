@@ -4,10 +4,10 @@ import { exec } from "./utils.js";
  * @deprecated Should not be used outside the build-tools package.
  */
 export class GitRepo {
-	constructor(public readonly resolvedRoot: string) {}
+	public constructor(public readonly resolvedRoot: string) {}
 
 	public async getCurrentSha() {
-		const result = await this.exec(`rev-parse HEAD`, `get current sha`);
+		const result = await this.exec("rev-parse HEAD", "get current sha");
 		return result.split(/\r?\n/)[0];
 	}
 
@@ -15,7 +15,7 @@ export class GitRepo {
 	 * Returns a set containing repo root-relative paths to files that are deleted in the working tree.
 	 */
 	public async getDeletedFiles(): Promise<Set<string>> {
-		const results = await this.exec(`status --porcelain`, `get deleted files`);
+		const results = await this.exec("status --porcelain", "get deleted files");
 		const allStatus = results.split("\n");
 		// Deleted files are marked with D in the first (staged) or second (unstaged) column.
 		// If a file is deleted in staged and then revived in unstaged, it will have two entries.
@@ -56,7 +56,7 @@ export class GitRepo {
 		 */
 		const command = `ls-files --cached --others --exclude-standard --full-name ${directory}`;
 		const [fileResults, deletedFiles] = await Promise.all([
-			this.exec(command, `get files`),
+			this.exec(command, "get files"),
 			this.getDeletedFiles(),
 		]);
 

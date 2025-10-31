@@ -9,10 +9,10 @@ import {
 export default class CacheInfoCommand extends BaseSailCommand<
 	typeof CacheInfoCommand
 > {
-	static override readonly description =
+	public static override readonly description =
 		"Display cache configuration and location information.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		cacheDir: Flags.string({
 			description: "Path to shared cache directory.",
 			env: "SAIL_CACHE_DIR",
@@ -20,7 +20,7 @@ export default class CacheInfoCommand extends BaseSailCommand<
 		...BaseSailCommand.flags,
 	} as const;
 
-	static override readonly examples = [
+	public static override readonly examples = [
 		"<%= config.bin %> <%= command.id %>",
 		"<%= config.bin %> <%= command.id %> --cache-dir /path/to/cache",
 	];
@@ -35,8 +35,9 @@ export default class CacheInfoCommand extends BaseSailCommand<
 		if (cacheDir) {
 			this.log(`Cache Directory: ${cacheDir}`);
 			this.log(`Directory Exists: ${existsSync(cacheDir) ? "Yes" : "No"}`);
+			// Note: The flag may come from either env var or CLI flag
 			this.log(
-				`Source: ${process.env.SAIL_CACHE_DIR ? "SAIL_CACHE_DIR environment variable" : "--cache-dir flag"}`,
+				"Source: --cache-dir flag or SAIL_CACHE_DIR environment variable",
 			);
 		} else {
 			this.log("Cache Directory: Not configured");

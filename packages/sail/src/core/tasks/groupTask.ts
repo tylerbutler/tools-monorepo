@@ -7,7 +7,7 @@ import type { LeafTask } from "./leaf/leafTask.js";
 import { Task, type TaskExec } from "./task.js";
 
 export class GroupTask extends Task {
-	constructor(
+	public constructor(
 		node: BuildGraphPackage,
 		command: string,
 		context: BuildContext,

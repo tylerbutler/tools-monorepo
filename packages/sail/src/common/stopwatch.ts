@@ -8,7 +8,7 @@ export class Stopwatch {
 	private lastTime: number = Date.now();
 	private totalTime = 0;
 
-	constructor(
+	public constructor(
 		private readonly enabled: boolean,
 		protected logFunc: LoggingFunction,
 	) {}

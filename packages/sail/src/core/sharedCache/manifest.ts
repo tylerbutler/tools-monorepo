@@ -44,7 +44,7 @@ export async function readManifest(
 		validateManifest(manifest);
 
 		return manifest;
-	} catch (error) {
+	} catch (_error) {
 		// File doesn't exist, is not valid JSON, or failed validation
 		return undefined;
 	}
@@ -143,13 +143,13 @@ function validateManifest(manifest: CacheManifest): void {
 
 	// Validate file entries
 	for (const file of manifest.inputFiles) {
-		if (!file.path || !file.hash) {
+		if (!(file.path && file.hash)) {
 			throw new Error("Invalid input file entry: missing path or hash");
 		}
 	}
 
 	for (const file of manifest.outputFiles) {
-		if (!file.path || !file.hash) {
+		if (!(file.path && file.hash)) {
 			throw new Error("Invalid output file entry: missing path or hash");
 		}
 		if (typeof file.size !== "number" || file.size < 0) {

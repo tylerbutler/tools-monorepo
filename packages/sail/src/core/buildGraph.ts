@@ -5,6 +5,7 @@ import type {
 } from "@tylerbu/sail-infrastructure";
 import type { AsyncPriorityQueue } from "async";
 import registerDebug from "debug";
+import chalk from "picocolors";
 import type { SimpleGit } from "simple-git";
 import type { BuildPackage } from "../common/npmPackage.js";
 import type { BuildContext } from "./buildContext.js";
@@ -39,13 +40,13 @@ import {
 	type TaskDefinitions,
 	type TaskDefinitionsOnDisk,
 } from "./taskDefinitions.js";
-import { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
+import type { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
 import { TaskManager } from "./tasks/TaskManager.js";
 import type { Task, TaskExec } from "./tasks/task.js";
 import { WorkerPool } from "./tasks/workers/workerPool.js";
 
 const traceTaskDef = registerDebug("sail:task:definition");
-const traceTaskDepTask = registerDebug("sail:task:init:dep:task");
+const _traceTaskDepTask = registerDebug("sail:task:init:dep:task");
 const traceGraph = registerDebug("sail:graph");
 
 const knownMainExecutableNames = new Set([
@@ -83,7 +84,7 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
 
 	public readonly log: Logger;
 
-	constructor(
+	public constructor(
 		public readonly repoPackageMap: ReadonlyMap<string, BuildPackage>,
 		readonly buildContext: BuildContext,
 		public readonly workerPool?: WorkerPool,
@@ -126,7 +127,7 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 	// Task management is delegated to TaskManager
 	public readonly taskManager: TaskManager;
 
-	constructor(
+	public constructor(
 		public readonly context: BuildGraphContext,
 		public readonly pkg: BuildPackage,
 		globalTaskDefinitions: TaskDefinitions,
@@ -383,6 +384,37 @@ export class BuildGraph {
 
 	public get taskFailureSummary(): string {
 		return this.buildExecutor.taskFailureSummary;
+	}
+
+	public get taskStats(): TaskStats {
+		return this.context.taskStats;
+	}
+
+	/**
+	 * Get cache statistics if caching is enabled.
+	 * Returns formatted string with cache hit rate, size, and time saved.
+	 */
+	public getCacheStatistics(): string | undefined {
+		const cache = this.context.sharedCache;
+		if (!cache) {
+			return undefined;
+		}
+
+		const stats = cache.getStatistics();
+		const totalLookups = stats.hitCount + stats.missCount;
+
+		if (totalLookups === 0) {
+			// No cache operations performed
+			return undefined;
+		}
+
+		const hitRate = ((stats.hitCount / totalLookups) * 100).toFixed(1);
+		const cacheSizeMB = (stats.totalSize / 1024 / 1024).toFixed(2);
+		const timeSavedSeconds = (stats.timeSavedMs / 1000).toFixed(1);
+
+		return chalk.magentaBright(
+			`Cache: ${stats.hitCount} hits, ${stats.missCount} misses (${hitRate}% hit rate) | ${stats.totalEntries} entries, ${cacheSizeMB} MB | ${timeSavedSeconds}s saved`,
+		);
 	}
 
 	private initializePackages(

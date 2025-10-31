@@ -55,11 +55,7 @@ export async function loadStatistics(
 		}
 
 		return stats;
-	} catch (error) {
-		// Return default statistics if file is corrupted
-		console.warn(
-			`Warning: Failed to load cache statistics: ${error instanceof Error ? error.message : String(error)}`,
-		);
+	} catch (_error) {
 		return {
 			totalEntries: 0,
 			totalSize: 0,
@@ -86,12 +82,7 @@ export async function saveStatistics(
 
 	try {
 		await atomicWriteJson(statsPath, stats, true);
-	} catch (error) {
-		// Graceful degradation: log warning but don't fail
-		console.warn(
-			`Warning: Failed to save cache statistics: ${error instanceof Error ? error.message : String(error)}`,
-		);
-	}
+	} catch (_error) {}
 }
 
 /**
@@ -135,12 +126,7 @@ export async function updateCacheSizeStats(
 		// Update statistics
 		stats.totalEntries = totalEntries;
 		stats.totalSize = totalSize;
-	} catch (error) {
-		// Graceful degradation
-		console.warn(
-			`Warning: Failed to update cache size statistics: ${error instanceof Error ? error.message : String(error)}`,
-		);
-	}
+	} catch (_error) {}
 }
 
 /**

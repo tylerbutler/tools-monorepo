@@ -162,9 +162,6 @@ export function tsCompile(
 		diagnostics.push(...emitResult.diagnostics);
 
 		if (packageJsonTypeOverride && packageJsonTypeOverrideUsage !== "used") {
-			console.warn(
-				`package.json type override set to ${packageJsonTypeOverride} but ${packageJsonTypeOverrideUsage}.`,
-			);
 		}
 
 		if (emitResult.emitSkipped && diagnostics.length > 0) {
@@ -178,9 +175,9 @@ export function tsCompile(
 	}
 
 	if (diagnostics.length > 0) {
-		const sortedDiagnostics = ts.sortAndDeduplicateDiagnostics(diagnostics);
+		const _sortedDiagnostics = ts.sortAndDeduplicateDiagnostics(diagnostics);
 
-		const formatDiagnosticsHost: tsTypes.FormatDiagnosticsHost = {
+		const _formatDiagnosticsHost: tsTypes.FormatDiagnosticsHost = {
 			getCurrentDirectory: () => ts.sys.getCurrentDirectory(),
 			getCanonicalFileName: tscUtils.getCanonicalFileName,
 			getNewLine: () => ts.sys.newLine,
@@ -188,21 +185,7 @@ export function tsCompile(
 
 		// TODO: tsc has more complicated summary than this
 		if (commandLine?.options?.pretty !== false) {
-			console.log(
-				ts.formatDiagnosticsWithColorAndContext(
-					sortedDiagnostics,
-					formatDiagnosticsHost,
-				),
-			);
-			console.log(
-				`${ts.sys.newLine}Found ${sortedDiagnostics.length} error${
-					sortedDiagnostics.length > 1 ? "s" : ""
-				}.`,
-			);
 		} else {
-			console.log(
-				ts.formatDiagnostics(sortedDiagnostics, formatDiagnosticsHost),
-			);
 		}
 	}
 	return code;

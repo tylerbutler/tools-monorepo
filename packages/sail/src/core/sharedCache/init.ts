@@ -71,8 +71,10 @@ async function computeGlobalCacheKeyComponents(
 
 	// Collect cache bust environment variables
 	const cacheBustVars: Record<string, string> = {};
+	// biome-ignore lint/style/noProcessEnv: Need to read environment variables for cache busting
 	for (const key of Object.keys(process.env)) {
 		if (key.startsWith("SAIL_CACHE_BUST")) {
+			// biome-ignore lint/style/noProcessEnv: Reading cache bust environment variable
 			const value = process.env[key];
 			if (value !== undefined) {
 				cacheBustVars[key] = value;
@@ -86,6 +88,7 @@ async function computeGlobalCacheKeyComponents(
 		arch: process.arch,
 		platform: process.platform,
 		lockfileHash,
+		// biome-ignore lint/style/noProcessEnv: Reading NODE_ENV for cache key
 		nodeEnv: process.env.NODE_ENV,
 		cacheBustVars:
 			Object.keys(cacheBustVars).length > 0 ? cacheBustVars : undefined,

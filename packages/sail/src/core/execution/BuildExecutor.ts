@@ -1,14 +1,9 @@
 import type { Logger } from "@tylerbu/cli-api";
 import type { Stopwatch } from "@tylerbu/sail-infrastructure";
-import type { AsyncPriorityQueue } from "async";
 import chalk from "picocolors";
 import { Spinner } from "picospinner";
 import type { BuildPackage } from "../../common/npmPackage.js";
-import {
-	BuildError,
-	ErrorHandler,
-	ErrorHandlingStrategy,
-} from "../errors/index.js";
+import { ErrorHandler } from "../errors/index.js";
 import type {
 	IBuildablePackage,
 	IBuildExecutionContext,
@@ -16,13 +11,19 @@ import type {
 	IBuildResult,
 } from "../interfaces/index.js";
 import { ParallelProcessor } from "../optimization/ParallelProcessor.js";
-import { Task, type TaskExec } from "../tasks/task.js";
+import { Task } from "../tasks/task.js";
 
 // Re-export for backward compatibility
 export enum BuildResult {
 	Success = "Success",
 	UpToDate = "UpToDate",
 	Failed = "Failed",
+	/** Remote cache hit - task output restored from shared cache */
+	CachedSuccess = "CachedSuccess",
+	/** Local cache hit - task skipped via donefile */
+	LocalCacheHit = "LocalCacheHit",
+	/** Task succeeded and output was written to cache */
+	SuccessWithCacheWrite = "SuccessWithCacheWrite",
 }
 
 export function summarizeBuildResult(results: BuildResult[]): BuildResult {
@@ -46,7 +47,7 @@ export type BuildExecutionContext = IBuildExecutionContext;
 export class BuildExecutor implements IBuildExecutor {
 	private readonly errorHandler: ErrorHandler;
 
-	constructor(
+	public constructor(
 		private readonly log: Logger,
 		private readonly context: BuildExecutionContext,
 	) {
@@ -221,8 +222,7 @@ export class BuildExecutor implements IBuildExecutor {
 		metadata?: Record<string, any>,
 	): Promise<T> {
 		if (this.context.buildProfiler) {
-			const performanceMonitor =
-				this.context.buildProfiler["performanceMonitor"];
+			const performanceMonitor = this.context.buildProfiler.performanceMonitor;
 			if (performanceMonitor) {
 				const { result } = await performanceMonitor.timeAsync(
 					name,

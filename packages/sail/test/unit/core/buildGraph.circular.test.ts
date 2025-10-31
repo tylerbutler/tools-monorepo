@@ -72,7 +72,7 @@ function createMockBuildPackage(
 		combinedDependencies: [],
 		getScript: vi.fn(() => undefined),
 		workspace: {
-			directory: `/test/repo`,
+			directory: "/test/repo",
 			packageManager: {
 				lockfileNames: ["pnpm-lock.yaml"],
 			},
@@ -354,7 +354,7 @@ describe("BuildGraph - Circular Dependencies and Complex Scenarios", () => {
 			]);
 
 			// Filter to only include pkg2
-			const depFilter = (pkg: BuildPackage) => (dep: BuildPackage) =>
+			const depFilter = (_pkg: BuildPackage) => (dep: BuildPackage) =>
 				dep.name === "pkg2";
 
 			const graph = new BuildGraph(

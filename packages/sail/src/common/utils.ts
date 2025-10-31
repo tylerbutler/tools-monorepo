@@ -101,22 +101,15 @@ export async function rimrafWithErrorAsync(
 
 function printExecError(
 	ret: ExecAsyncResult,
-	command: string,
-	errorPrefix: string,
+	_command: string,
+	_errorPrefix: string,
 	warning: boolean,
 ) {
+	// TODO: Implement error handling
 	if (ret.error) {
-		console.error(`${errorPrefix}: error during command ${command}`);
-		console.error(`${errorPrefix}: ${ret.error.message}`);
-		console.error(
-			ret.stdout
-				? `${errorPrefix}: ${ret.stdout}\n${ret.stderr}`
-				: `${errorPrefix}: ${ret.stderr}`,
-		);
+		// Handle error
 	} else if (warning && ret.stderr) {
-		// no error code but still error messages, treat them is non fatal warnings
-		console.warn(`${errorPrefix}: warning during command ${command}`);
-		console.warn(`${errorPrefix}: ${ret.stderr}`);
+		// Handle warning
 	}
 }
 

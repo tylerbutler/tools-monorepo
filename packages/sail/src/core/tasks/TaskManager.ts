@@ -18,13 +18,13 @@ export class TaskManager {
 	// track a script task without the lifecycle (pre/post) tasks
 	private readonly scriptTasks = new Map<string, Task>();
 
-	constructor(
+	public constructor(
 		private readonly pkg: BuildPackage,
 		private readonly context: BuildContext,
 		private readonly getTaskDefinition: (
 			taskName: string,
 		) => TaskDefinition | undefined,
-		private readonly dependentPackages: Array<BuildGraphPackage>,
+		private readonly dependentPackages: BuildGraphPackage[],
 		private readonly buildGraphPackage: BuildGraphPackage,
 	) {}
 
@@ -221,7 +221,7 @@ export class TaskManager {
 	 * Gets tasks that this task depends on
 	 */
 	public getDependsOnTasks(
-		task: Task,
+		_task: Task,
 		taskName: string,
 		pendingInitDep: Task[],
 	): Task[] {

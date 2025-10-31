@@ -11,7 +11,7 @@ export class PerformanceMonitor {
 	 */
 	public startTimer(
 		name: string,
-		metadata?: Record<string, any>,
+		metadata?: Record<string, unknown>,
 	): PerformanceTimer {
 		const timer = new PerformanceTimer(name, metadata);
 		this.timers.set(name, timer);
@@ -39,7 +39,7 @@ export class PerformanceMonitor {
 	public async timeAsync<T>(
 		name: string,
 		operation: () => Promise<T>,
-		metadata?: Record<string, any>,
+		metadata?: Record<string, unknown>,
 	): Promise<{ result: T; metric: PerformanceMetric }> {
 		const timer = this.startTimer(name, metadata);
 		try {
@@ -59,7 +59,7 @@ export class PerformanceMonitor {
 	public timeSync<T>(
 		name: string,
 		operation: () => T,
-		metadata?: Record<string, any>,
+		metadata?: Record<string, unknown>,
 	): { result: T; metric: PerformanceMetric } {
 		const timer = this.startTimer(name, metadata);
 		try {
@@ -196,9 +196,9 @@ export class PerformanceTimer {
 	private startTime: number;
 	private startMemory?: NodeJS.MemoryUsage;
 
-	constructor(
+	public constructor(
 		public readonly name: string,
-		public readonly metadata: Record<string, any> = {},
+		public readonly metadata: Record<string, unknown> = {},
 	) {
 		this.startTime = performance.now();
 		this.startMemory = process.memoryUsage();
@@ -253,7 +253,7 @@ export interface PerformanceMetric {
 	minDuration: number;
 	maxDuration: number;
 	count: number;
-	metadata?: Record<string, any>;
+	metadata?: Record<string, unknown>;
 	memoryDelta?: MemoryDelta;
 }
 

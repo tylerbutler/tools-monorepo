@@ -13,7 +13,7 @@ export class ExecutionError extends SailError {
 	public readonly stdout?: string;
 	public readonly stderr?: string;
 
-	constructor(
+	public constructor(
 		message: string,
 		context: ErrorContext = {},
 		options: ExecutionErrorOptions = {},
@@ -27,7 +27,7 @@ export class ExecutionError extends SailError {
 	/**
 	 * Creates an ExecutionError for command execution failures
 	 */
-	static commandFailed(
+	public static commandFailed(
 		command: string,
 		exitCode?: number,
 		stderr?: string,
@@ -53,7 +53,7 @@ export class ExecutionError extends SailError {
 	/**
 	 * Creates an ExecutionError for timeout situations
 	 */
-	static timeout(
+	public static timeout(
 		command: string,
 		timeoutMs: number,
 		context: ErrorContext = {},
@@ -71,7 +71,7 @@ export class ExecutionError extends SailError {
 	/**
 	 * Creates an ExecutionError for invalid commands
 	 */
-	static invalidCommand(
+	public static invalidCommand(
 		command: string,
 		reason: string,
 		context: ErrorContext = {},
@@ -88,7 +88,7 @@ export class ExecutionError extends SailError {
 	/**
 	 * Creates an ExecutionError for worker execution failures
 	 */
-	static workerFailed(
+	public static workerFailed(
 		workerName: string,
 		error: Error,
 		context: ErrorContext = {},

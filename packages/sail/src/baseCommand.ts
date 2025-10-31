@@ -7,7 +7,7 @@ import type { ISailConfig } from "./core/sailConfig.js";
 export abstract class BaseSailCommand<
 	T extends typeof Command & { flags: typeof BaseSailCommand.flags },
 > extends CommandWithConfig<T, ISailConfig> {
-	static override readonly flags = {
+	public static override readonly flags = {
 		// Hidden flags
 		defaultRoot: Flags.directory({
 			env: "SAIL_DEFAULT_ROOT",
@@ -30,8 +30,17 @@ export abstract class BaseSailCommand<
 		const searchPath = configFlag ?? process.cwd();
 		const { config, configFilePath } = getSailConfig(searchPath, false);
 
-		// Set the config via protected properties
+		// Set the config via protected setters
+		this.setConfig(config, configFilePath);
+	}
+
+	/**
+	 * Set the configuration for this command.
+	 */
+	protected setConfig(config: ISailConfig, configPath: string): void {
+		// biome-ignore lint/suspicious/noExplicitAny: Need to access protected properties from parent class
 		(this as any)._commandConfig = config;
-		(this as any)._configPath = configFilePath;
+		// biome-ignore lint/suspicious/noExplicitAny: Need to access protected properties from parent class
+		(this as any)._configPath = configPath;
 	}
 }

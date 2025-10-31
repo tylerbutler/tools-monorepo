@@ -9,9 +9,9 @@ import {
 export default class CacheStatsCommand extends BaseSailCommand<
 	typeof CacheStatsCommand
 > {
-	static override readonly description = "Display cache statistics.";
+	public static override readonly description = "Display cache statistics.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		cacheDir: Flags.string({
 			description: "Path to shared cache directory.",
 			env: "SAIL_CACHE_DIR",
@@ -19,7 +19,7 @@ export default class CacheStatsCommand extends BaseSailCommand<
 		...BaseSailCommand.flags,
 	} as const;
 
-	static override readonly examples = [
+	public static override readonly examples = [
 		"<%= config.bin %> <%= command.id %>",
 		"<%= config.bin %> <%= command.id %> --cache-dir /path/to/cache",
 	];

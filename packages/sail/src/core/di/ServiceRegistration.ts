@@ -46,7 +46,7 @@ export function registerCoreServices(
 	// We'll register a factory method instead
 	container.register<IBuildExecutor>(
 		SERVICE_IDENTIFIERS.BuildExecutor,
-		(serviceContainer) => {
+		(_serviceContainer) => {
 			// BuildExecutor requires logger and context which are context-specific
 			// This factory will be used by the consumers who have the context
 			throw new Error(
