@@ -122,7 +122,7 @@
 		"memfs": "^4.49.0",
 		"msw": "^2.11.6",
 		"oclif": "^4.22.32",
-		"rimraf": "^6.0.1",
+		"rimraf": "^6.1.0",
 		"serve": "^14.2.5",
 		"serve-handler": "^6.1.6",
 		"sort-package-json": "*",
