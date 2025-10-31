@@ -1,5 +1,8 @@
 import { exec } from "./utils.js";
 
+const LINE_BREAK_REGEX = /\r?\n/;
+const DELETED_FILE_REGEX = /^.?D /;
+
 /**
  * @deprecated Should not be used outside the build-tools package.
  */
@@ -8,7 +11,7 @@ export class GitRepo {
 
 	public async getCurrentSha() {
 		const result = await this.exec("rev-parse HEAD", "get current sha");
-		return result.split(/\r?\n/)[0];
+		return result.split(LINE_BREAK_REGEX)[0];
 	}
 
 	/**
@@ -22,7 +25,7 @@ export class GitRepo {
 		// The first entry will be "D " and the second entry will be "??". Look for unstaged
 		// files and remove them from deleted set.
 		const deletedFiles = new Set(
-			allStatus.filter((t) => t.match(/^.?D /)).map((t) => t.substring(3)),
+			allStatus.filter((t) => t.match(DELETED_FILE_REGEX)).map((t) => t.substring(3)),
 		);
 		const untrackedFiles = allStatus
 			.filter((t) => t.startsWith("??"))

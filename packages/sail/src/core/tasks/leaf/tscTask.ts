@@ -274,7 +274,7 @@ export class TscTask extends LeafTask {
 			),
 		);
 		const tsBuildInfoOptions = tscUtils.convertOptionPaths(
-			tsBuildInfo.program.options,
+			tsBuildInfo.program.options as tsTypes.CompilerOptions,
 			tsBuildInfoFileDirectory,
 			path.resolve,
 		);

@@ -243,13 +243,19 @@ export class ContextualErrorHandler {
 /**
  * Strategy for handling different types of errors
  */
-export enum ErrorHandlingStrategy {
-	Log = "Log", // Log error and continue
-	Warn = "Warn", // Log as warning and continue
-	Collect = "Collect", // Collect error for later reporting
-	Fatal = "Fatal", // Log error and throw
-	Retry = "Retry", // Handle based on retryable flag
-}
+export const ErrorHandlingStrategy = {
+	Log: "Log", // Log error and continue
+	Warn: "Warn", // Log as warning and continue
+	Collect: "Collect", // Collect error for later reporting
+	Fatal: "Fatal", // Log error and throw
+	Retry: "Retry", // Handle based on retryable flag
+} as const;
+
+/**
+ * Error handling strategy type
+ */
+export type ErrorHandlingStrategy =
+	(typeof ErrorHandlingStrategy)[keyof typeof ErrorHandlingStrategy];
 
 /**
  * Result of error handling operation

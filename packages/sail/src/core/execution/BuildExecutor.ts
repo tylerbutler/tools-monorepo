@@ -72,9 +72,10 @@ export class BuildExecutor implements IBuildExecutor {
 			// Save persistent cache after build completion
 			if (
 				this.context.fileHashCache instanceof Object &&
-				"saveCache" in this.context.fileHashCache
+				"saveCache" in this.context.fileHashCache &&
+				typeof this.context.fileHashCache.saveCache === "function"
 			) {
-				await (this.context.fileHashCache as any).saveCache();
+				await this.context.fileHashCache.saveCache();
 			}
 		}
 
@@ -189,7 +190,7 @@ export class BuildExecutor implements IBuildExecutor {
 	private async profileOperation<T>(
 		name: string,
 		operation: () => Promise<T>,
-		metadata?: Record<string, any>,
+		metadata?: Record<string, unknown>,
 	): Promise<T> {
 		if (this.context.buildProfiler) {
 			const performanceMonitor = this.context.buildProfiler.performanceMonitor;

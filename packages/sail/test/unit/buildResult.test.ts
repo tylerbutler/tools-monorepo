@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-// Simple enum for testing - mirrors the one in buildGraph.ts
-enum BuildResult {
-	Success = "Success",
-	UpToDate = "UpToDate",
-	Failed = "Failed",
-}
+// Simple const object for testing - mirrors the one in buildGraph.ts
+const BuildResult = {
+	Success: "Success",
+	UpToDate: "UpToDate",
+	Failed: "Failed",
+} as const;
+
+type BuildResult = (typeof BuildResult)[keyof typeof BuildResult];
 
 function summarizeBuildResult(results: BuildResult[]) {
 	let retResult = BuildResult.UpToDate;

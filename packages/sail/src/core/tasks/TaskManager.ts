@@ -352,17 +352,14 @@ export class TaskManager {
 				const matchedTasks = this.getMatchedTasks(before);
 				const dependentTask = [task];
 				for (const matchedTask of matchedTasks) {
-					matchedTask.addDependentTasks(
-						dependentTask,
-						(taskConfig as any).isDefault,
-					);
+					matchedTask.addDependentTasks(dependentTask, taskConfig.isDefault);
 				}
 			}
 
 			if (taskConfig.after.length > 0) {
 				const after = expandStar(taskConfig.after, getAfterStarTaskNames);
 				const matchedTasks = this.getMatchedTasks(after);
-				task.addDependentTasks(matchedTasks, (taskConfig as any).isDefault);
+				task.addDependentTasks(matchedTasks, taskConfig.isDefault);
 			}
 		};
 

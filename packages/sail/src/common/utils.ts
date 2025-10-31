@@ -74,12 +74,11 @@ export async function execWithErrorAsync(
 }
 
 async function rimrafAsync(deletePath: string) {
+	// biome-ignore lint/style/noProcessEnv: Need to access PATH for rimraf execution
+	const pathEnv = process.env.PATH;
 	return execAsync(`rimraf "${deletePath}"`, {
 		env: {
-			PATH: `${
-				// biome-ignore lint/complexity/useLiteralKeys: PATH may not be defined as a property
-				process.env["PATH"]
-			}${path.delimiter}${path.join(
+			PATH: `${pathEnv}${path.delimiter}${path.join(
 				__dirname,
 				"..",
 				"..",

@@ -1,9 +1,11 @@
+import type { Logger } from "@tylerbu/cli-api";
 import { ScriptAnalyzer } from "../analysis/ScriptAnalyzer.js";
 import { ConfigurationMerger } from "../config/ConfigurationMerger.js";
 import { ConfigurationParser } from "../config/ConfigurationParser.js";
 import { DependencyResolver } from "../dependencies/DependencyResolver.js";
 import { BuildExecutor } from "../execution/BuildExecutor.js";
 import type {
+	IBuildExecutionContext,
 	IBuildExecutor,
 	IConfigurationMerger,
 	IConfigurationParser,
@@ -62,23 +64,18 @@ export function registerCoreServices(
 /**
  * Creates a configured service container with all core services registered
  */
-export function createServiceContainer(): IServiceContainer {
-	const { ServiceContainer } = require("./ServiceContainer.js");
+export async function createServiceContainer(): Promise<IServiceContainer> {
+	const { ServiceContainer } = await import("./ServiceContainer.js");
 	const container = new ServiceContainer();
 	return registerCoreServices(container);
 }
 
 /**
- * Service factory functions for context-dependent services
+ * Creates a BuildExecutor with the provided logger and context
  */
-export class ServiceFactory {
-	/**
-	 * Creates a BuildExecutor with the provided logger and context
-	 */
-	static createBuildExecutor(
-		logger: any, // Logger type
-		context: any, // BuildExecutionContext type
-	): IBuildExecutor {
-		return new BuildExecutor(logger, context);
-	}
+export function createBuildExecutor(
+	logger: unknown, // Logger type
+	context: unknown, // BuildExecutionContext type
+): IBuildExecutor {
+	return new BuildExecutor(logger as Logger, context as IBuildExecutionContext);
 }

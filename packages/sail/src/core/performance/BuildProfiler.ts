@@ -8,8 +8,9 @@ import {
  * Specialized profiler for build operations with domain-specific metrics
  */
 export class BuildProfiler {
-	private readonly performanceMonitor = new PerformanceMonitor();
+	public readonly performanceMonitor = new PerformanceMonitor();
 	private packageMetrics = new Map<string, PackageMetrics>();
+	private buildStartTime = 0;
 
 	public constructor(private readonly logger: Logger) {}
 
@@ -309,19 +310,30 @@ export interface BuildPerformanceReport extends PerformanceReport {
 /**
  * Types of file operations to profile
  */
-export enum FileOperationType {
-	Read = "read",
-	Write = "write",
-	Stat = "stat",
-	Hash = "hash",
-	Glob = "glob",
-}
+export const FileOperationType = {
+	Read: "read",
+	Write: "write",
+	Stat: "stat",
+	Hash: "hash",
+	Glob: "glob",
+} as const;
+
+/**
+ * File operation type
+ */
+export type FileOperationType =
+	(typeof FileOperationType)[keyof typeof FileOperationType];
 
 /**
  * Types of cache events
  */
-export enum CacheEventType {
-	FileHash = "file-hash",
-	TaskResult = "task-result",
-	Configuration = "configuration",
-}
+export const CacheEventType = {
+	FileHash: "file-hash",
+	TaskResult: "task-result",
+	Configuration: "configuration",
+} as const;
+
+/**
+ * Cache event type
+ */
+export type CacheEventType = (typeof CacheEventType)[keyof typeof CacheEventType];

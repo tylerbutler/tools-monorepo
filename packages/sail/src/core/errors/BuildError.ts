@@ -171,15 +171,17 @@ export class BuildError extends SailError {
 /**
  * Phases of the build process where errors can occur
  */
-export enum BuildPhase {
-	Initialization = "Initialization",
-	Planning = "Planning",
-	Analysis = "Analysis",
-	Dependencies = "Dependencies",
-	Compilation = "Compilation",
-	Execution = "Execution",
-	Finalization = "Finalization",
-}
+export const BuildPhase = {
+	Initialization: "Initialization",
+	Planning: "Planning",
+	Analysis: "Analysis",
+	Dependencies: "Dependencies",
+	Compilation: "Compilation",
+	Execution: "Execution",
+	Finalization: "Finalization",
+} as const;
+
+export type BuildPhase = (typeof BuildPhase)[keyof typeof BuildPhase];
 
 /**
  * Options specific to BuildError

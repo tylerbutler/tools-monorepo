@@ -70,18 +70,20 @@ export class WorkerPool {
 				installTemporaryListener(
 					worker.stdout,
 					"data",
-					(chunk: Buffer | string) => {
+					((...args: unknown[]) => {
+						const chunk = args[0] as Buffer | string;
 						stdout += chunk;
-					},
+					}) as (...args: unknown[]) => void,
 				);
 			}
 			if (worker.stderr) {
 				installTemporaryListener(
 					worker.stderr,
 					"data",
-					(chunk: Buffer | string) => {
+					((...args: unknown[]) => {
+						const chunk = args[0] as Buffer | string;
 						stderr += chunk;
-					},
+					}) as (...args: unknown[]) => void,
 				);
 			}
 

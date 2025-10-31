@@ -6,7 +6,9 @@ import type {
 import type {
 	TaskDefinitions,
 	TaskDefinitionsOnDisk,
+	// biome-ignore lint/nursery/noImportCycles: Circular dependency between ConfigurationMerger and taskDefinitions requires larger refactoring to extract shared types
 } from "../taskDefinitions.js";
+// biome-ignore lint/nursery/noImportCycles: Circular dependency between ConfigurationMerger and taskDefinitions requires larger refactoring to extract shared types
 import { getFullTaskConfig } from "../taskDefinitions.js";
 
 /**
@@ -71,6 +73,9 @@ export class ConfigurationMerger implements IConfigurationMerger {
 		filters: IDependencyFilters,
 	): void {
 		for (const name in globalTaskDefinitions) {
+			if (!Object.hasOwn(globalTaskDefinitions, name)) {
+				continue;
+			}
 			const globalTaskDefinition = globalTaskDefinitions[name];
 
 			// Skip script tasks if the package doesn't have the script
@@ -98,6 +103,9 @@ export class ConfigurationMerger implements IConfigurationMerger {
 		packageTaskDefinitions: TaskDefinitionsOnDisk,
 	): void {
 		for (const name in packageTaskDefinitions) {
+			if (!Object.hasOwn(packageTaskDefinitions, name)) {
+				continue;
+			}
 			const packageTaskDefinition = packageTaskDefinitions[name];
 			const full = getFullTaskConfig(packageTaskDefinition);
 			const currentTaskConfig = taskDefinitions[name];

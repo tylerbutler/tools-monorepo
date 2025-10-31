@@ -102,7 +102,7 @@ function convertOptionPaths(
 	options: ts.CompilerOptions,
 	base: string,
 	convert: (base: string, path: string) => string,
-) {
+): ts.CompilerOptions {
 	// Shallow clone 'CompilerOptions' before modifying.
 	const result = { ...options };
 
@@ -275,7 +275,7 @@ export function getTscUtils(path: string): TscUtil {
 			return tscUtilFromLibPath;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		// biome-ignore lint/style/noCommonJs: Dynamic require needed to load the project's typescript version
 		const tsLib: typeof ts = require(tsPath);
 		const tscUtil = createTscUtil(tsLib);
 		tscUtilPathCache.set(path, tscUtil);

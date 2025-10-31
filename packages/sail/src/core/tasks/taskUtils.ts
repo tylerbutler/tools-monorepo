@@ -107,5 +107,6 @@ export async function loadModule(modulePath: string, moduleType?: string) {
 	if (esm) {
 		return await import(pathToFileURL(modulePath).toString());
 	}
+	// biome-ignore lint/style/noCommonJs: Dynamic require needed for CommonJS module loading at runtime
 	return require(modulePath);
 }

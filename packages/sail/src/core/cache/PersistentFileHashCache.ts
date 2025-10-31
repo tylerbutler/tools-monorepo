@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { FileHashCache, type hashFn, sha256 } from "../fileHashCache.js";
@@ -247,7 +247,7 @@ export class PersistentFileHashCache extends FileHashCache {
 	private getLastSavedTime(): number | undefined {
 		try {
 			if (existsSync(this.cacheFile)) {
-				const stats = require("node:fs").statSync(this.cacheFile);
+				const stats = statSync(this.cacheFile);
 				return stats.mtimeMs;
 			}
 		} catch {

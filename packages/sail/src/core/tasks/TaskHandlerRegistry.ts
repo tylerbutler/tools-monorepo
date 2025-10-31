@@ -1,3 +1,4 @@
+import { resolve as pathResolve } from "node:path";
 import type {
 	TaskHandlerPlugin,
 	TaskHandlerPluginConfig,
@@ -352,9 +353,8 @@ export class TaskHandlerRegistry {
 		}
 
 		// For relative/absolute paths, we need to resolve them
-		const { resolve } = require("node:path");
 		const base = baseDir ?? process.cwd();
-		return resolve(base, modulePath);
+		return pathResolve(base, modulePath);
 	}
 
 	/**

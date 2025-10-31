@@ -44,7 +44,10 @@ export class PerformanceMonitor {
 		const timer = this.startTimer(name, metadata);
 		try {
 			const result = await operation();
-			const metric = this.endTimer(name)!;
+			const metric = this.endTimer(name);
+			if (!metric) {
+				throw new Error(`Timer '${name}' not found`);
+			}
 			return { result, metric };
 		} catch (error) {
 			timer.cancel();
@@ -64,7 +67,10 @@ export class PerformanceMonitor {
 		const timer = this.startTimer(name, metadata);
 		try {
 			const result = operation();
-			const metric = this.endTimer(name)!;
+			const metric = this.endTimer(name);
+			if (!metric) {
+				throw new Error(`Timer '${name}' not found`);
+			}
 			return { result, metric };
 		} catch (error) {
 			timer.cancel();

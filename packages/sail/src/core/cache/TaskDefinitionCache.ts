@@ -27,7 +27,10 @@ export class TaskDefinitionCache {
 
 		if (this.cache.has(cacheKey)) {
 			this.accessTimes.set(cacheKey, Date.now());
-			return this.cache.get(cacheKey)!;
+			const cached = this.cache.get(cacheKey);
+			if (cached !== undefined) {
+				return cached;
+			}
 		}
 
 		// Compute new result
@@ -164,7 +167,7 @@ export class TaskDefinitionCache {
  * Configuration cache for parsed package configurations
  */
 export class ConfigurationCache {
-	private readonly cache = new Map<string, any>();
+	private readonly cache = new Map<string, unknown>();
 	private readonly accessTimes = new Map<string, number>();
 	private readonly maxCacheSize: number;
 
@@ -220,7 +223,7 @@ export class ConfigurationCache {
 		return this.cache.size;
 	}
 
-	private addToCache(key: string, value: any): void {
+	private addToCache(key: string, value: unknown): void {
 		if (this.cache.size >= this.maxCacheSize) {
 			this.evictLeastRecentlyUsed();
 		}

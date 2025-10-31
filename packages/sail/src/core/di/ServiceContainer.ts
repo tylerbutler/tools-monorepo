@@ -1,12 +1,17 @@
 /**
  * Service lifecycle types for dependency injection
  */
-export enum ServiceLifetime {
+export const ServiceLifetime = {
 	/** New instance created every time the service is requested */
-	Transient = "transient",
+	Transient: "transient",
 	/** Single instance shared across all requests */
-	Singleton = "singleton",
-}
+	Singleton: "singleton",
+} as const;
+
+/**
+ * Service lifetime type
+ */
+export type ServiceLifetime = (typeof ServiceLifetime)[keyof typeof ServiceLifetime];
 
 /**
  * Service factory function type

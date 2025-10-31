@@ -95,7 +95,7 @@ export class GroupTask extends Task {
 		const results = await Promise.all(taskP);
 		this.traceExec("End Group Task");
 
-		let retResult = BuildResult.UpToDate;
+		let retResult: BuildResult = BuildResult.UpToDate;
 		for (const result of results) {
 			if (result === BuildResult.Failed) {
 				return BuildResult.Failed;

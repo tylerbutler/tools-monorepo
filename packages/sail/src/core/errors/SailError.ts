@@ -70,17 +70,22 @@ export class SailError extends Error {
 /**
  * Categories of errors that can occur in Sail
  */
-export enum ErrorCategory {
-	Configuration = "Configuration",
-	Dependency = "Dependency",
-	FileSystem = "FileSystem",
-	Execution = "Execution",
-	Build = "Build",
-	Worker = "Worker",
-	Validation = "Validation",
-	Network = "Network",
-	Internal = "Internal",
-}
+export const ErrorCategory = {
+	Configuration: "Configuration",
+	Dependency: "Dependency",
+	FileSystem: "FileSystem",
+	Execution: "Execution",
+	Build: "Build",
+	Worker: "Worker",
+	Validation: "Validation",
+	Network: "Network",
+	Internal: "Internal",
+} as const;
+
+/**
+ * Error category type
+ */
+export type ErrorCategory = (typeof ErrorCategory)[keyof typeof ErrorCategory];
 
 /**
  * Context information that provides additional details about where/when the error occurred
