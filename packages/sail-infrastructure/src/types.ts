@@ -1,6 +1,10 @@
 import type { Agent, AgentName } from "package-manager-detector";
 import { SimpleGit } from "simple-git";
-import type { Opaque, SetRequired, PackageJson as StandardPackageJson } from "type-fest";
+import type {
+	Opaque,
+	SetRequired,
+	PackageJson as StandardPackageJson,
+} from "type-fest";
 
 import type { BuildProjectConfig } from "./config.js";
 
@@ -56,7 +60,8 @@ export type AdditionalPackageProps = Record<string, string> | undefined;
  *
  * @typeParam P - The type of {@link IPackage} the repo uses. This can be any type that implements {@link IPackage}.
  */
-export interface IBuildProject<P extends IPackage = IPackage> extends Reloadable {
+export interface IBuildProject<P extends IPackage = IPackage>
+	extends Reloadable {
 	/**
 	 * The absolute path to the root of the IBuildProject. This is the path where the config file is located.
 	 */

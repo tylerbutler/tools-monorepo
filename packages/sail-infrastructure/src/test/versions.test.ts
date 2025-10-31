@@ -48,7 +48,9 @@ describe("setVersion", () => {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		await setVersion(secondWorkspace.packages, semver.parse("2.2.1")!);
 
-		const allCorrect = secondWorkspace.packages.every((pkg) => pkg.version === "2.2.1");
+		const allCorrect = secondWorkspace.packages.every(
+			(pkg) => pkg.version === "2.2.1",
+		);
 		expect(allCorrect).toBe(true);
 	});
 

@@ -20,7 +20,9 @@ const STATISTICS_FILE = "statistics.json";
  * @param cacheDir - Path to the cache directory
  * @returns The persisted statistics, or default statistics if none exist
  */
-export async function loadStatistics(cacheDir: string): Promise<CacheStatistics> {
+export async function loadStatistics(
+	cacheDir: string,
+): Promise<CacheStatistics> {
 	const statsPath = path.join(cacheDir, STATISTICS_FILE);
 
 	// Return default statistics if file doesn't exist
@@ -76,7 +78,10 @@ export async function loadStatistics(cacheDir: string): Promise<CacheStatistics>
  * @param cacheDir - Path to the cache directory
  * @param stats - The statistics to save
  */
-export async function saveStatistics(cacheDir: string, stats: CacheStatistics): Promise<void> {
+export async function saveStatistics(
+	cacheDir: string,
+	stats: CacheStatistics,
+): Promise<void> {
 	const statsPath = path.join(cacheDir, STATISTICS_FILE);
 
 	try {

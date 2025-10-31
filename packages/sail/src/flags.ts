@@ -1,8 +1,8 @@
+import { Flags } from "@oclif/core";
 import type {
 	ReleaseGroupName,
 	WorkspaceName,
-} from '@tylerbu/sail-infrastructure';
-import { Flags } from "@oclif/core";
+} from "@tylerbu/sail-infrastructure";
 
 export const ReleaseGroupNameFlag = Flags.custom<ReleaseGroupName>({
 	required: false,
@@ -35,6 +35,7 @@ export const selectionFlags = {
 
 /**
  * Shared cache flags for build commands.
+ * Management operations (stats, clean, prune, verify) have been moved to the `cache` subcommand.
  */
 export const cacheFlags = {
 	cacheDir: Flags.string({
@@ -46,27 +47,8 @@ export const cacheFlags = {
 		default: false,
 	}),
 	verifyCacheIntegrity: Flags.boolean({
-		description: "Verify file hashes when restoring from cache (adds overhead).",
-		default: false,
-	}),
-	cacheStats: Flags.boolean({
-		description: "Display cache statistics after build.",
-		default: false,
-	}),
-	cacheClean: Flags.boolean({
-		description: "Remove all cache entries.",
-		default: false,
-	}),
-	cachePrune: Flags.boolean({
-		description: "Prune old cache entries based on age and size limits.",
-		default: false,
-	}),
-	cacheVerify: Flags.boolean({
-		description: "Verify cache integrity (check for corruption).",
-		default: false,
-	}),
-	cacheVerifyFix: Flags.boolean({
-		description: "Fix corrupted cache entries.",
+		description:
+			"Verify file hashes when restoring from cache (adds overhead).",
 		default: false,
 	}),
 };

@@ -57,7 +57,10 @@ describe("workspaces", () => {
 	describe("not installed", () => {
 		beforeEach(async () => {
 			try {
-				await rm(path.join(repo.root, "node_modules"), { recursive: true, force: true });
+				await rm(path.join(repo.root, "node_modules"), {
+					recursive: true,
+					force: true,
+				});
 			} catch {
 				// nothing
 			}
@@ -66,7 +69,9 @@ describe("workspaces", () => {
 		it("checkInstall returns errors when node_modules is missing", async () => {
 			const actual = await workspace?.checkInstall();
 			expect(actual).not.toBe(true);
-			expect((actual as string[])[0]).toContain(": node_modules not installed in");
+			expect((actual as string[])[0]).toContain(
+				": node_modules not installed in",
+			);
 		});
 
 		it("install succeeds", async () => {

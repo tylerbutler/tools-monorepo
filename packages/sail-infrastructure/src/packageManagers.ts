@@ -64,7 +64,9 @@ export function detectPackageManager(cwd = process.cwd()): IPackageManager {
 	});
 
 	if (result === null) {
-		throw new Error(`Package manager could not be detected. Started looking at '${cwd}'.`);
+		throw new Error(
+			`Package manager could not be detected. Started looking at '${cwd}'.`,
+		);
 	}
 
 	return new PackageManager(result.name, result.agent);

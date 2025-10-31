@@ -11,11 +11,6 @@ import {
 	execAsync,
 	getExecutableFromCommand,
 } from "../../../common/utils.js";
-import {
-	type CacheKeyInputs,
-	type TaskOutputs,
-	computeCacheKey,
-} from "../../sharedCache/index.js";
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
 import { DependencyError } from "../../errors/index.js";
@@ -24,6 +19,11 @@ import {
 	summarizeBuildResult,
 } from "../../execution/BuildExecutor.js";
 import { defaultOptions } from "../../options.js";
+import {
+	type CacheKeyInputs,
+	computeCacheKey,
+	type TaskOutputs,
+} from "../../sharedCache/index.js";
 import { Task, type TaskExec } from "../task.js";
 
 const traceTaskTrigger = registerDebug("sail:task:trigger");
@@ -514,7 +514,9 @@ export abstract class LeafTask extends Task {
 					this.log.warning(result.stderr);
 				}
 
-				this.traceTrigger(`restored from cache (${result.filesRestored} files, ${(result.bytesRestored / 1024).toFixed(1)} KB)`);
+				this.traceTrigger(
+					`restored from cache (${result.filesRestored} files, ${(result.bytesRestored / 1024).toFixed(1)} KB)`,
+				);
 				return true;
 			}
 

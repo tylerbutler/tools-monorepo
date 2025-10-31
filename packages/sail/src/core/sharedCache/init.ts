@@ -5,8 +5,8 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import type { GlobalCacheKeyComponents } from "./types.js";
 import { SharedCacheManager } from "./sharedCacheManager.js";
+import type { GlobalCacheKeyComponents } from "./types.js";
 
 /**
  * Cache schema version for forward/backward compatibility.
@@ -63,9 +63,7 @@ async function computeGlobalCacheKeyComponents(
 	let lockfileHash = "";
 	try {
 		const lockfileContent = await readFile(lockfilePath, "utf8");
-		lockfileHash = createHash("sha256")
-			.update(lockfileContent)
-			.digest("hex");
+		lockfileHash = createHash("sha256").update(lockfileContent).digest("hex");
 	} catch {
 		// Lockfile doesn't exist or can't be read, use empty string
 		// This means cache won't be shared with environments that have lockfile
@@ -89,6 +87,7 @@ async function computeGlobalCacheKeyComponents(
 		platform: process.platform,
 		lockfileHash,
 		nodeEnv: process.env.NODE_ENV,
-		cacheBustVars: Object.keys(cacheBustVars).length > 0 ? cacheBustVars : undefined,
+		cacheBustVars:
+			Object.keys(cacheBustVars).length > 0 ? cacheBustVars : undefined,
 	};
 }

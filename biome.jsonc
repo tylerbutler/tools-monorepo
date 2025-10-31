@@ -62,6 +62,7 @@
 				"packages/cli-api/**",
 				"packages/dill/**",
 				"packages/repopo/**",
+				"packages/sail/**",
 				"packages/sort-tsconfig/**",
 			],
 			"linter": {

@@ -1,8 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import path from "node:path";
-import type { BuildProjectConfig } from '@tylerbu/sail-infrastructure';
-import type { SimpleGit } from "simple-git";
 import type { Logger } from "@tylerbu/cli-api";
+import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
+import type { SimpleGit } from "simple-git";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { BuildPackage } from "../../../src/common/npmPackage.js";
+import type { BuildContext } from "../../../src/core/buildContext.js";
 import {
 	BuildGraph,
 	BuildGraphPackage,
@@ -12,8 +14,6 @@ import {
 	BuildResult,
 	summarizeBuildResult,
 } from "../../../src/core/execution/BuildExecutor.js";
-import type { BuildPackage } from "../../../src/common/npmPackage.js";
-import type { BuildContext } from "../../../src/core/buildContext.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
 
 /**
@@ -33,9 +33,7 @@ function createMockLogger(): Logger {
  * Create a minimal mock BuildContext for testing
  * This creates a BuildGraphContext-like object with taskStats
  */
-function createMockBuildContext(
-	overrides?: Partial<BuildContext>,
-): any {
+function createMockBuildContext(overrides?: Partial<BuildContext>): any {
 	return {
 		sailConfig: {} as ISailConfig,
 		buildProjectConfig: {} as BuildProjectConfig,
@@ -151,9 +149,9 @@ describe("buildGraph", () => {
 		});
 
 		it("should prioritize Failed over Success", () => {
-			expect(summarizeBuildResult([BuildResult.Failed, BuildResult.Success])).toBe(
-				BuildResult.Failed,
-			);
+			expect(
+				summarizeBuildResult([BuildResult.Failed, BuildResult.Success]),
+			).toBe(BuildResult.Failed);
 		});
 
 		it("should prioritize Success over UpToDate", () => {

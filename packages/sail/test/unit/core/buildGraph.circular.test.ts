@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import type { BuildProjectConfig } from '@tylerbu/sail-infrastructure';
-import type { SimpleGit } from "simple-git";
 import type { Logger } from "@tylerbu/cli-api";
-import { BuildGraph } from "../../../src/core/buildGraph.js";
+import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
+import type { SimpleGit } from "simple-git";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { BuildPackage } from "../../../src/common/npmPackage.js";
 import type { BuildContext } from "../../../src/core/buildContext.js";
+import { BuildGraph } from "../../../src/core/buildGraph.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
 
 /**
@@ -24,9 +24,7 @@ function createMockLogger(): Logger {
  * Create a minimal mock BuildContext for testing
  * This creates a BuildGraphContext-like object with taskStats
  */
-function createMockBuildContext(
-	overrides?: Partial<BuildContext>,
-): any {
+function createMockBuildContext(overrides?: Partial<BuildContext>): any {
 	return {
 		sailConfig: {} as ISailConfig,
 		buildProjectConfig: {} as BuildProjectConfig,

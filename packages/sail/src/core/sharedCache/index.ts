@@ -2,33 +2,28 @@
  * Shared cache exports for Sail build system.
  */
 
-// Main cache manager
-export { SharedCacheManager } from "./sharedCacheManager.js";
-
-// Initialization
-export { initializeSharedCache } from "./init.js";
-
-// Core types
-export type {
-	CacheKeyInputs,
-	CacheManifest,
-	CacheEntry,
-	TaskOutputs,
-	RestoreResult,
-	StoreResult,
-	CacheStatistics,
-	GlobalCacheKeyComponents,
-	SharedCacheOptions,
-} from "./types.js";
-
+export { getCacheEntryPath } from "./cacheDirectory.js";
 // Utilities
 export {
 	computeCacheKey,
 	hashContent,
-	verifyCacheKey,
 	shortCacheKey,
+	verifyCacheKey,
 } from "./cacheKey.js";
-
-export { readManifest, writeManifest, createManifest } from "./manifest.js";
-
-export { getCacheEntryPath } from "./cacheDirectory.js";
+// Initialization
+export { initializeSharedCache } from "./init.js";
+export { createManifest, readManifest, writeManifest } from "./manifest.js";
+// Main cache manager
+export { SharedCacheManager } from "./sharedCacheManager.js";
+// Core types
+export type {
+	CacheEntry,
+	CacheKeyInputs,
+	CacheManifest,
+	CacheStatistics,
+	GlobalCacheKeyComponents,
+	RestoreResult,
+	SharedCacheOptions,
+	StoreResult,
+	TaskOutputs,
+} from "./types.js";

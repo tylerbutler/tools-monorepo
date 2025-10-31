@@ -6,10 +6,10 @@ import { globSync } from "tinyglobby";
 import {
 	type BuildProjectConfig,
 	type BuildProjectConfigV2,
-	type ReleaseGroupDefinition,
 	getBuildProjectConfig,
 	isV1Config,
 	isV2Config,
+	type ReleaseGroupDefinition,
 } from "./config.js";
 import { NotInGitRepository } from "./errors.js";
 import { findGitRootSync } from "./git.js";
@@ -84,7 +84,10 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 			}
 		}
 
-		if (isV2Config(this.configuration) && this.configuration.excludeGlobs !== undefined) {
+		if (
+			isV2Config(this.configuration) &&
+			this.configuration.excludeGlobs !== undefined
+		) {
 			// TODO: refactor and consolidate all this logic. Maybe a single function that take a BuildProjectConfig and
 			// returns all the class properties that are set in these blocks. Then we can just set it once and move the logic
 			// to a function.
@@ -93,7 +96,8 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 			this.configurationSource = "INFERRED";
 			this.root = searchPath;
 		} else if (
-			(this.configuration.buildProject ?? this.configuration.repoPackages) === undefined
+			(this.configuration.buildProject ?? this.configuration.repoPackages) ===
+			undefined
 		) {
 			this.configuration = generateBuildProjectConfig(searchPath);
 			this.configFilePath = searchPath;
@@ -104,12 +108,14 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 		// This will load both v1 and v2 configs with the buildProject setting.
 		if (this.configuration.buildProject !== undefined) {
 			this._workspaces = new WriteOnceMap<WorkspaceName, IWorkspace>(
-				Object.entries(this.configuration.buildProject.workspaces).map((entry) => {
-					const name = entry[0] as WorkspaceName;
-					const definition = entry[1];
-					const ws = Workspace.load(name, definition, this.root, this);
-					return [name, ws];
-				}),
+				Object.entries(this.configuration.buildProject.workspaces).map(
+					(entry) => {
+						const name = entry[0] as WorkspaceName;
+						const definition = entry[1];
+						const ws = Workspace.load(name, definition, this.root, this);
+						return [name, ws];
+					},
+				),
 			);
 		} else if (
 			isV1Config(this.configuration) &&
@@ -118,7 +124,10 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 			console.warn(
 				`The repoPackages setting is deprecated and will no longer be read in a future version. Use buildProject instead.`,
 			);
-			this._workspaces = loadWorkspacesFromLegacyConfig(this.configuration.repoPackages, this);
+			this._workspaces = loadWorkspacesFromLegacyConfig(
+				this.configuration.repoPackages,
+				this,
+			);
 		} else {
 			// this._workspaces = this.configuration.buildProject.workspaces;
 			throw new Error("Error loading/generating configuration.");
@@ -160,7 +169,7 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 	 * {@inheritDoc IBuildProject.packages}
 	 */
 	public get packages(): ReadonlyMap<PackageName, P> {
-		if(this._packages.size === 0) {
+		if (this._packages.size === 0) {
 			for (const ws of this.workspaces.values()) {
 				for (const pkg of ws.packages) {
 					this._packages.set(pkg.name, pkg as P);
@@ -231,7 +240,9 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
  *
  * Generated configs use the latest config version.
  */
-export function generateBuildProjectConfig(searchPath: string): BuildProjectConfigV2 {
+export function generateBuildProjectConfig(
+	searchPath: string,
+): BuildProjectConfigV2 {
 	const toReturn: BuildProjectConfigV2 = {
 		version: 2,
 		buildProject: {
@@ -321,7 +332,11 @@ export function loadBuildProject<P extends IPackage>(
 export function getAllDependencies(
 	repo: IBuildProject,
 	packages: IPackage[],
-): { packages: IPackage[]; releaseGroups: IReleaseGroup[]; workspaces: IWorkspace[] } {
+): {
+	packages: IPackage[];
+	releaseGroups: IReleaseGroup[];
+	workspaces: IWorkspace[];
+} {
 	const dependencyPackages: Set<IPackage> = new Set();
 	const releaseGroups: Set<IReleaseGroup> = new Set();
 	const workspaces: Set<IWorkspace> = new Set();

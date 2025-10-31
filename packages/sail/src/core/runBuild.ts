@@ -1,5 +1,5 @@
-import type { Stopwatch } from '@tylerbu/sail-infrastructure';
 import type { Logger } from "@tylerbu/cli-api";
+import type { Stopwatch } from "@tylerbu/sail-infrastructure";
 import chalk from "picocolors";
 import { Spinner } from "picospinner";
 import type { BuildGraph } from "./buildGraph.js";

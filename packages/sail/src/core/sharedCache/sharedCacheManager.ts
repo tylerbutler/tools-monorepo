@@ -17,7 +17,11 @@ import {
 	hashFilesWithSize,
 	verifyFilesIntegrity,
 } from "./fileOperations.js";
-import { createManifest, readManifest, updateManifestAccessTime } from "./manifest.js";
+import {
+	createManifest,
+	readManifest,
+	updateManifestAccessTime,
+} from "./manifest.js";
 import { loadStatistics, saveStatistics } from "./statistics.js";
 import type {
 	CacheEntry,
@@ -148,7 +152,9 @@ export class SharedCacheManager {
 			// Compute cache key from inputs
 			const cacheKey = computeCacheKey(inputs);
 			const shortKey = cacheKey.substring(0, 12);
-			traceLookup(`Looking up cache entry for key ${shortKey}... (task: ${inputs.taskName})`);
+			traceLookup(
+				`Looking up cache entry for key ${shortKey}... (task: ${inputs.taskName})`,
+			);
 
 			// Check if entry exists
 			const entryPath = getCacheEntryPath(this.options.cacheDir, cacheKey);
@@ -180,7 +186,8 @@ export class SharedCacheManager {
 			// Verify global cache key components match
 			// We only restore caches when all global components are identical
 			if (
-				manifest.cacheSchemaVersion !== this.options.globalKeyComponents.cacheSchemaVersion
+				manifest.cacheSchemaVersion !==
+				this.options.globalKeyComponents.cacheSchemaVersion
 			) {
 				const elapsed = Date.now() - startTime;
 				traceLookup(
@@ -193,7 +200,9 @@ export class SharedCacheManager {
 				return undefined;
 			}
 
-			if (manifest.nodeVersion !== this.options.globalKeyComponents.nodeVersion) {
+			if (
+				manifest.nodeVersion !== this.options.globalKeyComponents.nodeVersion
+			) {
 				const elapsed = Date.now() - startTime;
 				traceLookup(
 					`MISS: Node version mismatch for ${shortKey} (cached: ${manifest.nodeVersion}, current: ${this.options.globalKeyComponents.nodeVersion}) (${elapsed}ms)`,
@@ -229,7 +238,9 @@ export class SharedCacheManager {
 				return undefined;
 			}
 
-			if (manifest.lockfileHash !== this.options.globalKeyComponents.lockfileHash) {
+			if (
+				manifest.lockfileHash !== this.options.globalKeyComponents.lockfileHash
+			) {
 				const elapsed = Date.now() - startTime;
 				traceLookup(
 					`MISS: Lockfile hash mismatch for ${shortKey} (dependencies changed) (${elapsed}ms)`,
@@ -258,7 +269,9 @@ export class SharedCacheManager {
 				JSON.stringify(this.options.globalKeyComponents.cacheBustVars)
 			) {
 				const elapsed = Date.now() - startTime;
-				traceLookup(`MISS: Cache bust variables mismatch for ${shortKey} (${elapsed}ms)`);
+				traceLookup(
+					`MISS: Cache bust variables mismatch for ${shortKey} (${elapsed}ms)`,
+				);
 				this.statistics.missCount++;
 				traceStats(
 					`Cache stats: ${this.statistics.hitCount} hits, ${this.statistics.missCount} misses`,
@@ -337,7 +350,9 @@ export class SharedCacheManager {
 		// Only cache successful executions
 		if (outputs.exitCode !== 0) {
 			const reason = `task failed (exit code ${outputs.exitCode})`;
-			traceStore(`Skipping cache write for failed task (exit code ${outputs.exitCode})`);
+			traceStore(
+				`Skipping cache write for failed task (exit code ${outputs.exitCode})`,
+			);
 			return { success: false, reason };
 		}
 
@@ -369,7 +384,9 @@ export class SharedCacheManager {
 				outputs.files.map((f) => f.sourcePath),
 			);
 			const hashTime = Date.now() - hashStartTime;
-			traceStore(`Hashed ${outputs.files.length} output files in ${hashTime}ms`);
+			traceStore(
+				`Hashed ${outputs.files.length} output files in ${hashTime}ms`,
+			);
 
 			// Create manifest
 			const manifest = createManifest({
@@ -408,7 +425,9 @@ export class SharedCacheManager {
 				await copyFileWithDirs(sourcePath, destPath);
 			}
 			const copyTime = Date.now() - copyStartTime;
-			traceStore(`Copied ${outputs.files.length} files to cache in ${copyTime}ms`);
+			traceStore(
+				`Copied ${outputs.files.length} files to cache in ${copyTime}ms`,
+			);
 
 			// Write manifest (atomically)
 			const { writeManifest } = await import("./manifest.js");
@@ -417,7 +436,10 @@ export class SharedCacheManager {
 
 			// Update statistics
 			const storeTime = Date.now() - storeStartTime;
-			const entrySize = outputFilesWithHashes.reduce((sum, f) => sum + f.size, 0);
+			const entrySize = outputFilesWithHashes.reduce(
+				(sum, f) => sum + f.size,
+				0,
+			);
 
 			this.statistics.totalEntries++;
 			this.statistics.totalSize += entrySize;
@@ -449,7 +471,8 @@ export class SharedCacheManager {
 			};
 		} catch (error) {
 			// Graceful degradation: log error but don't fail the build
-			const errorMessage = error instanceof Error ? error.message : String(error);
+			const errorMessage =
+				error instanceof Error ? error.message : String(error);
 			const errorCode = (error as NodeJS.ErrnoException).code;
 
 			// Provide more specific error messages
@@ -480,7 +503,10 @@ export class SharedCacheManager {
 	 * @param packageRoot - Absolute path to the package root
 	 * @returns Result of the restoration operation
 	 */
-	async restore(entry: CacheEntry, packageRoot: string): Promise<RestoreResult> {
+	async restore(
+		entry: CacheEntry,
+		packageRoot: string,
+	): Promise<RestoreResult> {
 		const restoreStartTime = Date.now();
 		const shortKey = entry.cacheKey.substring(0, 12);
 
@@ -529,21 +555,29 @@ export class SharedCacheManager {
 				await copyFileWithDirs(sourcePath, destPath);
 			}
 			const copyTime = Date.now() - copyStartTime;
-			traceRestore(`Copied ${entry.manifest.outputFiles.length} files in ${copyTime}ms`);
+			traceRestore(
+				`Copied ${entry.manifest.outputFiles.length} files in ${copyTime}ms`,
+			);
 
 			// Calculate statistics
-			const totalBytes = entry.manifest.outputFiles.reduce((sum, f) => sum + f.size, 0);
+			const totalBytes = entry.manifest.outputFiles.reduce(
+				(sum, f) => sum + f.size,
+				0,
+			);
 			const restoreTime = Date.now() - restoreStartTime;
 
 			// Update average restore time
 			this.statistics.avgRestoreTime =
-				(this.statistics.avgRestoreTime * (this.statistics.hitCount - 1) + restoreTime) /
+				(this.statistics.avgRestoreTime * (this.statistics.hitCount - 1) +
+					restoreTime) /
 				this.statistics.hitCount;
 
 			traceRestore(
 				`Successfully restored cache entry ${shortKey} (${(totalBytes / 1024).toFixed(2)} KB, ${restoreTime}ms total)`,
 			);
-			traceStats(`Avg restore time: ${this.statistics.avgRestoreTime.toFixed(1)}ms`);
+			traceStats(
+				`Avg restore time: ${this.statistics.avgRestoreTime.toFixed(1)}ms`,
+			);
 
 			return {
 				success: true,
@@ -623,11 +657,19 @@ export class SharedCacheManager {
 
 		console.log("\nCache Statistics:");
 		console.log(`  Total Entries: ${this.statistics.totalEntries}`);
-		console.log(`  Total Size: ${(this.statistics.totalSize / 1024 / 1024).toFixed(2)} MB`);
-		console.log(`  Hit Count: ${this.statistics.hitCount} (${hitRate}% hit rate)`);
+		console.log(
+			`  Total Size: ${(this.statistics.totalSize / 1024 / 1024).toFixed(2)} MB`,
+		);
+		console.log(
+			`  Hit Count: ${this.statistics.hitCount} (${hitRate}% hit rate)`,
+		);
 		console.log(`  Miss Count: ${this.statistics.missCount}`);
-		console.log(`  Average Restore Time: ${this.statistics.avgRestoreTime.toFixed(1)}ms`);
-		console.log(`  Average Store Time: ${this.statistics.avgStoreTime.toFixed(1)}ms`);
+		console.log(
+			`  Average Restore Time: ${this.statistics.avgRestoreTime.toFixed(1)}ms`,
+		);
+		console.log(
+			`  Average Store Time: ${this.statistics.avgStoreTime.toFixed(1)}ms`,
+		);
 
 		if (this.statistics.lastPruned) {
 			const prunedDate = new Date(this.statistics.lastPruned).toLocaleString();
@@ -690,7 +732,10 @@ export class SharedCacheManager {
 	 * @param maxAgeDays - Maximum age of entries in days (default: 30 days)
 	 * @returns Number of entries pruned
 	 */
-	async pruneCache(maxSizeMB: number = 5000, maxAgeDays: number = 30): Promise<number> {
+	async pruneCache(
+		maxSizeMB: number = 5000,
+		maxAgeDays: number = 30,
+	): Promise<number> {
 		await this.initialize();
 
 		const { readdir, stat, rm } = await import("node:fs/promises");
@@ -709,7 +754,11 @@ export class SharedCacheManager {
 		try {
 			// Get all cache entries with their access times
 			const entries = await readdir(entriesDir, { withFileTypes: true });
-			const entryInfos: Array<{ name: string; accessTime: number; size: number }> = [];
+			const entryInfos: Array<{
+				name: string;
+				accessTime: number;
+				size: number;
+			}> = [];
 
 			for (const entry of entries) {
 				if (!entry.isDirectory()) continue;
@@ -730,7 +779,9 @@ export class SharedCacheManager {
 					// Calculate entry size
 					let entrySize = 0;
 					try {
-						const outputEntries = await readdir(outputsDir, { recursive: true });
+						const outputEntries = await readdir(outputsDir, {
+							recursive: true,
+						});
 						for (const outputFile of outputEntries) {
 							const filePath = path.join(outputsDir, outputFile);
 							try {
@@ -851,7 +902,9 @@ export class SharedCacheManager {
 					const manifest = await readManifest(entryPath);
 
 					if (!manifest) {
-						console.log(`  ✗ ${entry.name.substring(0, 12)}... - Invalid manifest`);
+						console.log(
+							`  ✗ ${entry.name.substring(0, 12)}... - Invalid manifest`,
+						);
 						corrupted++;
 						if (fix) {
 							await rm(entryPath, { recursive: true, force: true });

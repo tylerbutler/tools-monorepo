@@ -1,9 +1,8 @@
-import type { BuildProjectConfig } from '@tylerbu/sail-infrastructure';
-import type { SimpleGit } from "simple-git";
-
 import type { Logger } from "@tylerbu/cli-api";
-import type { SharedCacheManager } from "./sharedCache/index.js";
+import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
+import type { SimpleGit } from "simple-git";
 import type { ISailConfig } from "./sailConfig.js";
+import type { SharedCacheManager } from "./sharedCache/index.js";
 
 /**
  * A context object that is passed to Sail tasks. It is used to provide easy access to commonly-needed metadata

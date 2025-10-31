@@ -24,7 +24,9 @@ describe("loadBuildProject", () => {
 
 			expect(main?.releaseGroups.size).toBe(3);
 
-			const mainReleaseGroup = repo.releaseGroups.get("main" as ReleaseGroupName);
+			const mainReleaseGroup = repo.releaseGroups.get(
+				"main" as ReleaseGroupName,
+			);
 			expect(mainReleaseGroup).toBeDefined();
 			expect(mainReleaseGroup?.packages.length).toBe(5);
 
@@ -37,7 +39,9 @@ describe("loadBuildProject", () => {
 
 		it("releaseGroupDependencies", async () => {
 			const repo = loadBuildProject(testRepoRoot);
-			const mainReleaseGroup = repo.releaseGroups.get("main" as ReleaseGroupName);
+			const mainReleaseGroup = repo.releaseGroups.get(
+				"main" as ReleaseGroupName,
+			);
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- test data (validated by another test) guarantees this has a value
 			const actualDependencies = mainReleaseGroup!.releaseGroupDependencies;
 			const names = actualDependencies.map((r) => r.name as string);
@@ -69,7 +73,9 @@ describe("loadBuildProject", () => {
 
 		it("releaseGroupDependencies", async () => {
 			const repo = loadBuildProject(findGitRootSync());
-			const clientReleaseGroup = repo.releaseGroups.get("client" as ReleaseGroupName);
+			const clientReleaseGroup = repo.releaseGroups.get(
+				"client" as ReleaseGroupName,
+			);
 			assert(clientReleaseGroup !== undefined);
 
 			expect(() => clientReleaseGroup.releaseGroupDependencies).not.toThrow(

@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
-import { type BigIntStats, type Stats, existsSync, lstatSync } from "node:fs";
+import { type BigIntStats, existsSync, lstatSync, type Stats } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import isEqual from "lodash.isequal";
 import type tsTypes from "typescript";
 
-import { type TscUtil, getTscUtils } from "../../tscUtils.js";
+import { getTscUtils, type TscUtil } from "../../tscUtils.js";
 import { getInstalledPackageVersion } from "../taskUtils.js";
 import { LeafTask, LeafWithDoneFileTask } from "./leafTask.js";
 

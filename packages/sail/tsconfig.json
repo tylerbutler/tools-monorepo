@@ -7,9 +7,9 @@
 		"rootDir": "./src",
 		"exactOptionalPropertyTypes": false,
 		"noPropertyAccessFromIndexSignature": false,
-		"noUncheckedIndexedAccess": false
+		"noUncheckedIndexedAccess": false,
 	},
 	"ts-node": {
-		"esm": true
-	}
+		"esm": true,
+	},
 }

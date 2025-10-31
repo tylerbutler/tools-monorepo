@@ -16,59 +16,66 @@ export {
 	loadBuildProject,
 } from "./buildProject.js";
 export {
-	type ReleaseGroupDefinition,
-	type WorkspaceDefinition,
-	type IFluidBuildDir,
-	type IFluidBuildDirs,
-	type IFluidBuildDirEntry,
+	BUILDPROJECT_CONFIG_MIN_VERSION,
 	type BuildProjectConfig,
 	type BuildProjectConfigV1,
 	type BuildProjectConfigV2,
-	BUILDPROJECT_CONFIG_MIN_VERSION,
 	getBuildProjectConfig,
+	type IFluidBuildDir,
+	type IFluidBuildDirEntry,
+	type IFluidBuildDirs,
 	isV1Config,
+	type ReleaseGroupDefinition,
+	type WorkspaceDefinition,
 } from "./config.js";
 export { NotInGitRepository } from "./errors.js";
+export type {
+	AllPackagesSelectionCriteria,
+	EmptySelectionCriteria,
+	FilterablePackage,
+	GlobString,
+	PackageFilterOptions,
+	PackageSelectionCriteria,
+} from "./filter.js";
 export {
 	filterPackages,
 	selectAndFilterPackages,
 } from "./filter.js";
-export type {
-	PackageFilterOptions,
-	PackageSelectionCriteria,
-	FilterablePackage,
-	EmptySelectionCriteria,
-	AllPackagesSelectionCriteria,
-	GlobString,
-} from "./filter.js";
 export {
-	getFiles,
 	findGitRootSync,
+	getChangedSinceRef,
+	getFiles,
 	getMergeBaseRemote,
 	getRemote,
-	getChangedSinceRef,
 } from "./git.js";
-export type { Logger, LoggingFunction, ErrorLoggingFunction } from "./logging.js";
+export type {
+	ErrorLoggingFunction,
+	Logger,
+	LoggingFunction,
+} from "./logging.js";
 export { PackageBase } from "./package.js";
-export { updatePackageJsonFile, updatePackageJsonFileAsync } from "./packageJsonUtils.js";
+export {
+	updatePackageJsonFile,
+	updatePackageJsonFileAsync,
+} from "./packageJsonUtils.js";
 export { detectPackageManager } from "./packageManagers.js";
 export { Stopwatch } from "./stopwatch.js";
 export type {
 	AdditionalPackageProps,
-	Installable,
 	IBuildProject,
+	Installable,
 	IPackage,
+	IPackageManager,
 	IReleaseGroup,
 	IWorkspace,
+	PackageDependency,
 	PackageJson,
 	PackageManagerName,
 	PackageName,
+	PnpmPackageJsonFields,
 	ReleaseGroupName,
 	Reloadable,
 	WorkspaceName,
-	PnpmPackageJsonFields,
-	PackageDependency,
-	IPackageManager,
 } from "./types.js";
 export { isIPackage, isIReleaseGroup } from "./types.js";
 export { setVersion } from "./versions.js";

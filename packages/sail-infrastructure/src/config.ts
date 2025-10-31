@@ -1,12 +1,11 @@
 import { cosmiconfigSync } from "cosmiconfig";
-
+import type { RequireExactlyOne } from "type-fest";
 import {
 	type IPackage,
+	isIPackage,
 	type PackageName,
 	type ReleaseGroupName,
-	isIPackage,
 } from "./types.js";
-import type { RequireExactlyOne } from "type-fest";
 
 /**
  * The minimum version of the BuildProject configuration currently supported.
@@ -73,7 +72,9 @@ interface BuildProjectConfigV2Base extends Partial<BuildProjectConfigBase> {
  * @param input - The input to check.
  * @returns `true` if the input is a BuildProjectConfigV1; `false` otherwise.
  */
-export function isV1Config(input: BuildProjectConfig): input is BuildProjectConfigV1 {
+export function isV1Config(
+	input: BuildProjectConfig,
+): input is BuildProjectConfigV1 {
 	return input.version === 1;
 }
 
@@ -88,7 +89,9 @@ export type BuildProjectConfigV2 = RequireExactlyOne<
  * @param input - The input to check.
  * @returns `true` if the input is a BuildProjectConfigV2; `false` otherwise.
  */
-export function isV2Config(input: BuildProjectConfig): input is BuildProjectConfigV2 {
+export function isV2Config(
+	input: BuildProjectConfig,
+): input is BuildProjectConfigV2 {
 	return input.version === 2;
 }
 
@@ -158,7 +161,10 @@ export interface IFluidBuildDirs {
 /**
  * @deprecated Use buildProject and associated types instead.
  */
-export type IFluidBuildDirEntry = string | IFluidBuildDir | (string | IFluidBuildDir)[];
+export type IFluidBuildDirEntry =
+	| string
+	| IFluidBuildDir
+	| (string | IFluidBuildDir)[];
 
 /**
  * Configures a package or release group

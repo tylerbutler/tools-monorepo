@@ -35,12 +35,18 @@ export function loadWorkspacesFromLegacyConfig(
 		const loadedWorkspaces: IWorkspace[] = [];
 		if (Array.isArray(entry)) {
 			for (const item of entry) {
-				loadedWorkspaces.push(...loadWorkspacesFromLegacyConfigEntry(item, buildProject));
+				loadedWorkspaces.push(
+					...loadWorkspacesFromLegacyConfigEntry(item, buildProject),
+				);
 			}
 		} else if (typeof entry === "object") {
-			loadedWorkspaces.push(...loadWorkspacesFromLegacyConfigEntry(entry, buildProject, name));
+			loadedWorkspaces.push(
+				...loadWorkspacesFromLegacyConfigEntry(entry, buildProject, name),
+			);
 		} else {
-			loadedWorkspaces.push(...loadWorkspacesFromLegacyConfigEntry(entry, buildProject));
+			loadedWorkspaces.push(
+				...loadWorkspacesFromLegacyConfigEntry(entry, buildProject),
+			);
 		}
 		for (const ws of loadedWorkspaces) {
 			workspaces.set(ws.name, ws);
@@ -91,7 +97,12 @@ function loadWorkspacesFromLegacyConfigEntry(
 		};
 
 		return [
-			Workspace.load(workspaceName, workspaceDefinition, buildProject.root, buildProject),
+			Workspace.load(
+				workspaceName,
+				workspaceDefinition,
+				buildProject.root,
+				buildProject,
+			),
 		];
 	}
 

@@ -141,7 +141,9 @@ export class Workspace implements IWorkspace {
 		);
 
 		if (this.rootPackage === undefined) {
-			throw new Error(`No root package found for workspace in '${foundWorkspaceRootPath}'`);
+			throw new Error(
+				`No root package found for workspace in '${foundWorkspaceRootPath}'`,
+			);
 		}
 
 		// Prepend the root package to the package list.
@@ -217,11 +219,16 @@ export class Workspace implements IWorkspace {
 	 * {@inheritDoc Installable.install}
 	 */
 	public async install(updateLockfile: boolean): Promise<boolean> {
-		const commandArgs = this.packageManager.getInstallCommandWithArgs(updateLockfile);
+		const commandArgs =
+			this.packageManager.getInstallCommandWithArgs(updateLockfile);
 
-		const output = await execa(this.packageManager.name.toString(), commandArgs, {
-			cwd: this.directory,
-		});
+		const output = await execa(
+			this.packageManager.name.toString(),
+			commandArgs,
+			{
+				cwd: this.directory,
+			},
+		);
 
 		if (output.exitCode !== 0) {
 			return false;

@@ -9,7 +9,12 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { loadBuildProject } from "../buildProject.js";
 import { NotInGitRepository } from "../errors.js";
-import { findGitRootSync, getChangedSinceRef, getFiles, getRemote } from "../git.js";
+import {
+	findGitRootSync,
+	getChangedSinceRef,
+	getFiles,
+	getRemote,
+} from "../git.js";
 import type { PackageJson } from "../types.js";
 
 import { packageRootPath, testRepoRoot } from "./init.js";
@@ -47,7 +52,9 @@ describe("getRemote", () => {
 			// Extract owner/repo from the first remote URL
 			const firstRemote = remotes[0];
 			if (firstRemote?.refs?.fetch) {
-				const match = firstRemote.refs.fetch.match(/github\.com[:/]([^/]+\/[^/.]+)/);
+				const match = firstRemote.refs.fetch.match(
+					/github\.com[:/]([^/]+\/[^/.]+)/,
+				);
 				if (match?.[1]) {
 					const actual = await getRemote(git, match[1]);
 					expect(actual).toBeDefined();
@@ -76,10 +83,15 @@ describe("getChangedSinceRef: local", () => {
 		await git.add(newFile);
 
 		// delete a file
-		await unlink(path.join(testRepoRoot, "packages/group3/pkg-f/src/index.mjs"));
+		await unlink(
+			path.join(testRepoRoot, "packages/group3/pkg-f/src/index.mjs"),
+		);
 
 		// edit a file
-		const pkgJson = path.join(testRepoRoot, "packages/group3/pkg-f/package.json");
+		const pkgJson = path.join(
+			testRepoRoot,
+			"packages/group3/pkg-f/package.json",
+		);
 		const json = (await readJson(pkgJson)) as PackageJson & { author?: string };
 		json.author = "edited field";
 		await writeJson(pkgJson, json);
@@ -95,10 +107,12 @@ describe("getChangedSinceRef: local", () => {
 		const { files } = await getChangedSinceRef(repo, "HEAD");
 
 		// Should detect changes in pkg-f (deleted file and edited package.json)
-		expect(files).toEqual(expect.arrayContaining([
-			"packages/group3/pkg-f/package.json",
-			"packages/group3/pkg-f/src/index.mjs",
-		]));
+		expect(files).toEqual(
+			expect.arrayContaining([
+				"packages/group3/pkg-f/package.json",
+				"packages/group3/pkg-f/src/index.mjs",
+			]),
+		);
 		// Note: second/newFile.json is staged but getChangedSinceRef may only detect
 		// committed or unstaged changes, not staged-only changes
 		expect(files.length).toBeGreaterThanOrEqual(2);
@@ -108,10 +122,12 @@ describe("getChangedSinceRef: local", () => {
 		const { dirs } = await getChangedSinceRef(repo, "HEAD");
 
 		// Should detect changes in pkg-f directory
-		expect(dirs).toEqual(expect.arrayContaining([
-			"packages/group3/pkg-f",
-			"packages/group3/pkg-f/src",
-		]));
+		expect(dirs).toEqual(
+			expect.arrayContaining([
+				"packages/group3/pkg-f",
+				"packages/group3/pkg-f/src",
+			]),
+		);
 		expect(dirs.length).toBeGreaterThanOrEqual(2);
 	});
 
@@ -119,9 +135,9 @@ describe("getChangedSinceRef: local", () => {
 		const { packages } = await getChangedSinceRef(repo, "HEAD");
 
 		// Should detect at least pkg-f as changed
-		expect(packages.map((p) => p.name)).toEqual(expect.arrayContaining([
-			"@group3/pkg-f",
-		]));
+		expect(packages.map((p) => p.name)).toEqual(
+			expect.arrayContaining(["@group3/pkg-f"]),
+		);
 		expect(packages.length).toBeGreaterThanOrEqual(1);
 	});
 
@@ -129,9 +145,9 @@ describe("getChangedSinceRef: local", () => {
 		const { releaseGroups } = await getChangedSinceRef(repo, "HEAD");
 
 		// Should detect at least group3 as changed (contains pkg-f)
-		expect(releaseGroups.map((p) => p.name)).toEqual(expect.arrayContaining([
-			"group3",
-		]));
+		expect(releaseGroups.map((p) => p.name)).toEqual(
+			expect.arrayContaining(["group3"]),
+		);
 		expect(releaseGroups.length).toBeGreaterThanOrEqual(1);
 	});
 
@@ -139,7 +155,9 @@ describe("getChangedSinceRef: local", () => {
 		const { workspaces } = await getChangedSinceRef(repo, "HEAD");
 
 		// Should detect at least main workspace as changed (contains pkg-f)
-		expect(workspaces.map((p) => p.name)).toEqual(expect.arrayContaining(["main"]));
+		expect(workspaces.map((p) => p.name)).toEqual(
+			expect.arrayContaining(["main"]),
+		);
 		expect(workspaces.length).toBeGreaterThanOrEqual(1);
 	});
 });
@@ -151,30 +169,32 @@ describe("getFiles", () => {
 	it("correct files with clean working directory", async () => {
 		const actual = await getFiles(git, testRepoRoot);
 
-		expect(actual).toEqual(expect.arrayContaining(
-			[
-				`${testRepoRoot}/.changeset/README.md`,
-				`${testRepoRoot}/.changeset/bump-main-group-minor.md`,
-				`${testRepoRoot}/.changeset/config.json`,
-				`${testRepoRoot}/fluidBuild.config.cjs`,
-				`${testRepoRoot}/package.json`,
-				`${testRepoRoot}/packages/group2/pkg-d/package.json`,
-				`${testRepoRoot}/packages/group2/pkg-e/package.json`,
-				`${testRepoRoot}/packages/group3/pkg-f/package.json`,
-				`${testRepoRoot}/packages/group3/pkg-f/src/index.mjs`,
-				`${testRepoRoot}/packages/group3/pkg-g/package.json`,
-				`${testRepoRoot}/packages/pkg-a/package.json`,
-				`${testRepoRoot}/packages/pkg-b/package.json`,
-				`${testRepoRoot}/packages/pkg-c/package.json`,
-				`${testRepoRoot}/packages/shared/package.json`,
-				`${testRepoRoot}/pnpm-lock.yaml`,
-				`${testRepoRoot}/pnpm-workspace.yaml`,
-				`${testRepoRoot}/second/package.json`,
-				`${testRepoRoot}/second/packages/other-pkg-a/package.json`,
-				`${testRepoRoot}/second/packages/other-pkg-b/package.json`,
-				`${testRepoRoot}/second/pnpm-lock.yaml`,
-				`${testRepoRoot}/second/pnpm-workspace.yaml`,
-			].map((p) => path.relative(gitRoot, p)),
-		));
+		expect(actual).toEqual(
+			expect.arrayContaining(
+				[
+					`${testRepoRoot}/.changeset/README.md`,
+					`${testRepoRoot}/.changeset/bump-main-group-minor.md`,
+					`${testRepoRoot}/.changeset/config.json`,
+					`${testRepoRoot}/fluidBuild.config.cjs`,
+					`${testRepoRoot}/package.json`,
+					`${testRepoRoot}/packages/group2/pkg-d/package.json`,
+					`${testRepoRoot}/packages/group2/pkg-e/package.json`,
+					`${testRepoRoot}/packages/group3/pkg-f/package.json`,
+					`${testRepoRoot}/packages/group3/pkg-f/src/index.mjs`,
+					`${testRepoRoot}/packages/group3/pkg-g/package.json`,
+					`${testRepoRoot}/packages/pkg-a/package.json`,
+					`${testRepoRoot}/packages/pkg-b/package.json`,
+					`${testRepoRoot}/packages/pkg-c/package.json`,
+					`${testRepoRoot}/packages/shared/package.json`,
+					`${testRepoRoot}/pnpm-lock.yaml`,
+					`${testRepoRoot}/pnpm-workspace.yaml`,
+					`${testRepoRoot}/second/package.json`,
+					`${testRepoRoot}/second/packages/other-pkg-a/package.json`,
+					`${testRepoRoot}/second/packages/other-pkg-b/package.json`,
+					`${testRepoRoot}/second/pnpm-lock.yaml`,
+					`${testRepoRoot}/second/pnpm-workspace.yaml`,
+				].map((p) => path.relative(gitRoot, p)),
+			),
+		);
 	});
 });

@@ -3,7 +3,10 @@ import chalk from "picocolors";
 /**
  * A function that logs an Error or error message.
  */
-export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: any[]) => void;
+export type ErrorLoggingFunction = (
+	msg: string | Error | undefined,
+	...args: any[]
+) => void;
 
 /**
  * A function that logs an error message.
@@ -81,7 +84,10 @@ export const defaultLogger: Logger = {
 	verbose,
 };
 
-function logWithTime(msg: string | Error | undefined, logFunc: ErrorLoggingFunction): void {
+function logWithTime(
+	msg: string | Error | undefined,
+	logFunc: ErrorLoggingFunction,
+): void {
 	const date = new Date();
 	let hours = date.getHours().toString();
 	if (hours.length === 1) {

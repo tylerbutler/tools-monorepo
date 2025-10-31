@@ -1,9 +1,8 @@
-import type { Stopwatch } from '@tylerbu/sail-infrastructure';
+import type { Logger } from "@tylerbu/cli-api";
+import type { Stopwatch } from "@tylerbu/sail-infrastructure";
 import type { AsyncPriorityQueue } from "async";
 import chalk from "picocolors";
 import { Spinner } from "picospinner";
-
-import type { Logger } from "@tylerbu/cli-api";
 import type { BuildPackage } from "../../common/npmPackage.js";
 import {
 	BuildError,
@@ -11,10 +10,10 @@ import {
 	ErrorHandlingStrategy,
 } from "../errors/index.js";
 import type {
+	IBuildablePackage,
 	IBuildExecutionContext,
 	IBuildExecutor,
 	IBuildResult,
-	IBuildablePackage,
 } from "../interfaces/index.js";
 import { ParallelProcessor } from "../optimization/ParallelProcessor.js";
 import { Task, type TaskExec } from "../tasks/task.js";

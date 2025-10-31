@@ -25,7 +25,7 @@ import { PrettierTask } from "./leaf/prettierTask.js";
 import { TscTask } from "./leaf/tscTask.js";
 import { WebpackTask } from "./leaf/webpackTask.js";
 import type { Task } from "./task.js";
-import { type TaskHandler, isConstructorFunction } from "./taskHandlers.js";
+import { isConstructorFunction, type TaskHandler } from "./taskHandlers.js";
 
 // Map of executable name to LeafTasks
 const executableToLeafTask: {

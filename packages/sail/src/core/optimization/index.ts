@@ -1,2 +1,2 @@
 // Export all optimization utilities
-export { ParallelProcessor, MemoryOptimizer } from "./ParallelProcessor.js";
+export { MemoryOptimizer, ParallelProcessor } from "./ParallelProcessor.js";

@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { Stopwatch } from '@tylerbu/sail-infrastructure';
 import { Args, Flags } from "@oclif/core";
+import { Stopwatch } from "@tylerbu/sail-infrastructure";
 import { BaseSailCommand } from "../baseCommand.js";
 import { SailBuildRepo } from "../core/buildRepo.js";
 import { type BuildOptions, defaultOptions } from "../core/options.js";
@@ -153,11 +153,6 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		try {
 			const buildResult = await runBuild(buildRepo, options, timer, this);
 
-			// Display cache statistics if requested
-			if (flags.cacheStats && sharedCache) {
-				await this.displayCacheStatistics(sharedCache);
-			}
-
 			if (buildResult !== 0) {
 				this.error(`Build result was ${buildResult}.`, { exit: buildResult });
 			}
@@ -165,42 +160,5 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			// this.warning(error as Error);
 			this.error(error as Error, { exit: 100 });
 		}
-	}
-
-	private async displayCacheStatistics(
-		sharedCache: Awaited<ReturnType<typeof initializeSharedCache>>,
-	): Promise<void> {
-		if (!sharedCache) {
-			return;
-		}
-
-		const stats = await sharedCache.getStatistics();
-
-		this.log("\n=== Cache Statistics ===");
-		this.log(`Total Entries: ${stats.totalEntries}`);
-		this.log(`Total Size: ${(stats.totalSize / 1024 / 1024).toFixed(2)} MB`);
-		this.log(`Cache Hits: ${stats.hitCount}`);
-		this.log(`Cache Misses: ${stats.missCount}`);
-
-		if (stats.hitCount > 0 || stats.missCount > 0) {
-			const total = stats.hitCount + stats.missCount;
-			const hitRate = ((stats.hitCount / total) * 100).toFixed(1);
-			this.log(`Hit Rate: ${hitRate}%`);
-		}
-
-		if (stats.hitCount > 0) {
-			this.log(`Avg Restore Time: ${stats.avgRestoreTime.toFixed(1)}ms`);
-
-			const timeSavedSec = stats.timeSavedMs / 1000;
-			if (timeSavedSec > 60) {
-				const minutes = Math.floor(timeSavedSec / 60);
-				const seconds = (timeSavedSec % 60).toFixed(1);
-				this.log(`Time Saved: ${minutes}m ${seconds}s`);
-			} else {
-				this.log(`Time Saved: ${timeSavedSec.toFixed(1)}s`);
-			}
-		}
-
-		this.log("========================\n");
 	}
 }

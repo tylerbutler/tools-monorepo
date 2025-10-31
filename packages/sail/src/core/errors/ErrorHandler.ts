@@ -2,8 +2,8 @@ import type { Logger } from "@tylerbu/cli-api";
 import {
 	type ErrorCategory,
 	type ErrorContext,
-	SailError,
 	isSailError,
+	SailError,
 	toSailError,
 } from "./index.js";
 

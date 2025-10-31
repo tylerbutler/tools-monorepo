@@ -1,9 +1,9 @@
-import {
-	type IBuildProject,
-	getAllDependencies,
-	loadBuildProject,
-} from '@tylerbu/sail-infrastructure';
 import { Args, Flags } from "@oclif/core";
+import {
+	getAllDependencies,
+	type IBuildProject,
+	loadBuildProject,
+} from "@tylerbu/sail-infrastructure";
 import colors from "picocolors";
 import { BaseSailCommand } from "../baseCommand.js";
 import type { BuildPackage } from "../common/npmPackage.js";

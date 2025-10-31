@@ -1,5 +1,5 @@
-import { generateBuildProjectConfig } from '@tylerbu/sail-infrastructure';
 import type { Logger } from "@tylerbu/cli-api";
+import { generateBuildProjectConfig } from "@tylerbu/sail-infrastructure";
 import { cosmiconfigSync } from "cosmiconfig";
 import { CONFIG_VERSION, type ISailConfig } from "./sailConfig.js";
 

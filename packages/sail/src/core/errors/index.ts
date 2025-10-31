@@ -1,16 +1,30 @@
 // Export all error classes and types
 export {
-	SailError,
 	ErrorCategory,
 	type ErrorContext,
-	type SailErrorOptions,
+	SailError,
 	type SailErrorJSON,
+	type SailErrorOptions,
 } from "./SailError.js";
 
 // Import for use in functions
 import { ErrorCategory, SailError } from "./SailError.js";
+
+export {
+	BuildError,
+	type BuildErrorOptions,
+	BuildPhase,
+} from "./BuildError.js";
 export { ConfigurationError } from "./ConfigurationError.js";
 export { DependencyError } from "./DependencyError.js";
+// Export error handler
+export {
+	ContextualErrorHandler,
+	ErrorHandler,
+	type ErrorHandlingResult,
+	ErrorHandlingStrategy,
+	type ErrorStatistics,
+} from "./ErrorHandler.js";
 export {
 	ExecutionError,
 	type ExecutionErrorOptions,
@@ -19,20 +33,6 @@ export {
 	FileSystemError,
 	type FileSystemErrorOptions,
 } from "./FileSystemError.js";
-export {
-	BuildError,
-	BuildPhase,
-	type BuildErrorOptions,
-} from "./BuildError.js";
-
-// Export error handler
-export {
-	ErrorHandler,
-	ContextualErrorHandler,
-	ErrorHandlingStrategy,
-	type ErrorHandlingResult,
-	type ErrorStatistics,
-} from "./ErrorHandler.js";
 
 // Utility function to check if an error is a SailError
 export function isSailError(error: unknown): error is SailError {

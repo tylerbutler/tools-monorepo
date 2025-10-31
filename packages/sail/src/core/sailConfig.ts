@@ -1,4 +1,4 @@
-import type { BuildProjectConfig } from '@tylerbu/sail-infrastructure';
+import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
 import type { TaskDefinitionsOnDisk } from "./taskDefinitions.js";
 
 /**

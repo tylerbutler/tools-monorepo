@@ -2,13 +2,13 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import {
 	BuildProject,
+	findGitRootSync,
+	getBuildProjectConfig,
 	type IPackage,
 	type IWorkspace,
 	type Logger,
 	type ReleaseGroupName,
-	findGitRootSync,
-	getBuildProjectConfig,
-} from '@tylerbu/sail-infrastructure';
+} from "@tylerbu/sail-infrastructure";
 import chalk from "picocolors";
 import { simpleGit } from "simple-git";
 

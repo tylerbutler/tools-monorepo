@@ -1,64 +1,44 @@
 [
-    {
-        "alias": [
-            "b"
-        ],
-        "command": "build",
-        "flagAliases": [
-            "tasks"
-        ],
-        "flagChars": [
-            "c",
-            "g",
-            "r",
-            "t",
-            "v",
-            "w"
-        ],
-        "flags": [
-            "all",
-            "cacheClean",
-            "cacheDir",
-            "cachePrune",
-            "cacheStats",
-            "cacheVerify",
-            "cacheVerifyFix",
-            "clean",
-            "concurrency",
-            "config",
-            "defaultRoot",
-            "force",
-            "quiet",
-            "rebuild",
-            "releaseGroup",
-            "root",
-            "showExec",
-            "skipCacheWrite",
-            "task",
-            "verbose",
-            "verifyCacheIntegrity",
-            "vscode",
-            "worker",
-            "workerMemoryLimitMB",
-            "workspace"
-        ],
-        "plugin": "@tylerbu/sail"
-    },
-    {
-        "alias": [],
-        "command": "scan",
-        "flagAliases": [],
-        "flagChars": [
-            "v"
-        ],
-        "flags": [
-            "config",
-            "defaultRoot",
-            "infer",
-            "quiet",
-            "root",
-            "verbose"
-        ],
-        "plugin": "@tylerbu/sail"
-    }
+	{
+		"alias": ["b"],
+		"command": "build",
+		"flagAliases": ["tasks"],
+		"flagChars": ["c", "g", "r", "t", "v", "w"],
+		"flags": [
+			"all",
+			"cacheClean",
+			"cacheDir",
+			"cachePrune",
+			"cacheStats",
+			"cacheVerify",
+			"cacheVerifyFix",
+			"clean",
+			"concurrency",
+			"config",
+			"defaultRoot",
+			"force",
+			"quiet",
+			"rebuild",
+			"releaseGroup",
+			"root",
+			"showExec",
+			"skipCacheWrite",
+			"task",
+			"verbose",
+			"verifyCacheIntegrity",
+			"vscode",
+			"worker",
+			"workerMemoryLimitMB",
+			"workspace"
+		],
+		"plugin": "@tylerbu/sail"
+	},
+	{
+		"alias": [],
+		"command": "scan",
+		"flagAliases": [],
+		"flagChars": ["v"],
+		"flags": ["config", "defaultRoot", "infer", "quiet", "root", "verbose"],
+		"plugin": "@tylerbu/sail"
+	}
 ]

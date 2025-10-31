@@ -9,7 +9,7 @@ import {
 	type IWorkspace,
 	PackageBase,
 	type ReleaseGroupName,
-} from '@tylerbu/sail-infrastructure';
+} from "@tylerbu/sail-infrastructure";
 import registerDebug from "debug";
 
 import type { ISailConfig } from "../core/sailConfig.js";

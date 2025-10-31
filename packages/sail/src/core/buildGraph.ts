@@ -1,16 +1,14 @@
+import type { Logger } from "@tylerbu/cli-api";
 import type {
 	BuildProjectConfig,
 	Stopwatch,
-} from '@tylerbu/sail-infrastructure';
+} from "@tylerbu/sail-infrastructure";
 import type { AsyncPriorityQueue } from "async";
 import registerDebug from "debug";
 import type { SimpleGit } from "simple-git";
-
-import type { Logger } from "@tylerbu/cli-api";
 import type { BuildPackage } from "../common/npmPackage.js";
 import type { BuildContext } from "./buildContext.js";
 import { PersistentFileHashCache } from "./cache/PersistentFileHashCache.js";
-import type { SharedCacheManager } from "./sharedCache/index.js";
 import {
 	type DependencyNode,
 	DependencyResolver,
@@ -21,24 +19,25 @@ import {
 	FileSystemError,
 } from "./errors/index.js";
 import {
+	type BuildablePackage,
 	type BuildExecutionContext,
 	BuildExecutor,
 	BuildResult,
-	type BuildablePackage,
 	summarizeBuildResult,
 } from "./execution/BuildExecutor.js";
 import type { FileHashCache } from "./fileHashCache.js";
-import type { IBuildResult, IBuildablePackage } from "./interfaces/index.js";
+import type { IBuildablePackage, IBuildResult } from "./interfaces/index.js";
 import type { BuildOptions } from "./options.js";
 import { BuildProfiler } from "./performance/BuildProfiler.js";
 import type { ISailConfig } from "./sailConfig.js";
+import type { SharedCacheManager } from "./sharedCache/index.js";
 import {
-	type TaskDefinition,
-	type TaskDefinitions,
-	type TaskDefinitionsOnDisk,
 	getDefaultTaskDefinition,
 	getTaskDefinitions,
 	normalizeGlobalTaskDefinitions,
+	type TaskDefinition,
+	type TaskDefinitions,
+	type TaskDefinitionsOnDisk,
 } from "./taskDefinitions.js";
 import { TaskManager } from "./tasks/TaskManager.js";
 import type { Task, TaskExec } from "./tasks/task.js";

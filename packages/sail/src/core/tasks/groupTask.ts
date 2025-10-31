@@ -36,7 +36,10 @@ export class GroupTask extends Task {
 		}
 	}
 
-	public override addDependentTasks(dependentTasks: Task[], isDefault: boolean): void {
+	public override addDependentTasks(
+		dependentTasks: Task[],
+		isDefault: boolean,
+	): void {
 		if (isDefault) {
 			// Propagate to unnamed subtasks only if it's a default dependency
 			for (const task of this.subTasks) {

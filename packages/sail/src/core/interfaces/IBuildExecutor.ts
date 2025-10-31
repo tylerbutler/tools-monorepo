@@ -1,4 +1,4 @@
-import type { Stopwatch } from '@tylerbu/sail-infrastructure';
+import type { Stopwatch } from "@tylerbu/sail-infrastructure";
 import type { AsyncPriorityQueue } from "async";
 import type { BuildPackage } from "../../common/npmPackage.js";
 import type { BuildProfiler } from "../performance/BuildProfiler.js";

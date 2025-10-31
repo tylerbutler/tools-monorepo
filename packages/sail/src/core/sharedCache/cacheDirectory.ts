@@ -69,7 +69,9 @@ interface CacheVersionMetadata {
  * @param cacheRoot - Root directory for the cache
  * @returns Path to the cache entries directory
  */
-export async function initializeCacheDirectory(cacheRoot: string): Promise<string> {
+export async function initializeCacheDirectory(
+	cacheRoot: string,
+): Promise<string> {
 	// Create root directory
 	await mkdir(cacheRoot, { recursive: true });
 
@@ -157,7 +159,10 @@ async function initializeIndexMetadata(indexPath: string): Promise<void> {
  * @param indexPath - Path to index.json
  * @param timestamp - Current timestamp
  */
-async function createNewIndexMetadata(indexPath: string, timestamp: string): Promise<void> {
+async function createNewIndexMetadata(
+	indexPath: string,
+	timestamp: string,
+): Promise<void> {
 	const metadata: CacheIndexMetadata = {
 		version: CACHE_VERSION,
 		createdAt: timestamp,
@@ -219,7 +224,9 @@ export function getCacheEntryPaths(
  * @param cacheRoot - Root directory for the cache
  * @returns True if the cache structure is valid, false otherwise
  */
-export async function validateCacheStructure(cacheRoot: string): Promise<boolean> {
+export async function validateCacheStructure(
+	cacheRoot: string,
+): Promise<boolean> {
 	try {
 		// Check root directory exists
 		if (!existsSync(cacheRoot)) {

@@ -1,9 +1,9 @@
 import { existsSync } from "node:fs";
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import type { PackageJson } from '@tylerbu/sail-infrastructure';
+import type { PackageJson } from "@tylerbu/sail-infrastructure";
 // biome-ignore lint/style/noNamespaceImport: <explanation>
 import * as glob from "glob";
 

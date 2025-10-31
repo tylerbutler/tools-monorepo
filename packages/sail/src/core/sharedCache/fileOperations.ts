@@ -14,7 +14,10 @@ import { dirname, join } from "node:path";
  * @param sourcePath - Absolute path to the source file
  * @param destPath - Absolute path to the destination file
  */
-export async function copyFileWithDirs(sourcePath: string, destPath: string): Promise<void> {
+export async function copyFileWithDirs(
+	sourcePath: string,
+	destPath: string,
+): Promise<void> {
 	// Create parent directory if it doesn't exist
 	const destDir = dirname(destPath);
 	await mkdir(destDir, { recursive: true });
@@ -47,7 +50,9 @@ export async function copyFiles(
 			copiedCount++;
 		} catch (error) {
 			// Log error but continue with other files
-			console.warn(`Warning: Failed to copy file ${file.relativePath}: ${error}`);
+			console.warn(
+				`Warning: Failed to copy file ${file.relativePath}: ${error}`,
+			);
 		}
 	}
 
@@ -134,7 +139,10 @@ export async function hashFilesWithSize(
 ): Promise<Array<{ path: string; hash: string; size: number }>> {
 	const hashPromises = filePaths.map(async (path) => {
 		try {
-			const [hash, stats] = await Promise.all([hashFile(path), getFileStats(path)]);
+			const [hash, stats] = await Promise.all([
+				hashFile(path),
+				getFileStats(path),
+			]);
 			return { path, hash, size: stats.size };
 		} catch (error) {
 			throw new Error(`Failed to hash file ${path}: ${error}`);
@@ -213,7 +221,9 @@ export async function getFileStats(filePath: string): Promise<{
  * @param filePaths - Array of absolute file paths
  * @returns Total size in bytes
  */
-export async function calculateTotalSize(filePaths: readonly string[]): Promise<number> {
+export async function calculateTotalSize(
+	filePaths: readonly string[],
+): Promise<number> {
 	let totalSize = 0;
 
 	for (const filePath of filePaths) {
