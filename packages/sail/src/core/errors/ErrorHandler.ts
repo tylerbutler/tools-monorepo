@@ -1,10 +1,7 @@
 import type { Logger } from "@tylerbu/cli-api";
-import {
-	type ErrorCategory,
-	type ErrorContext,
-	SailError,
-	toSailError,
-} from "./index.js";
+import type { ErrorCategory, ErrorContext } from "./SailError.js";
+import { SailError } from "./SailError.js";
+import { toSailError } from "./errorUtils.js";
 
 /**
  * Centralized error handling strategy for Sail build system

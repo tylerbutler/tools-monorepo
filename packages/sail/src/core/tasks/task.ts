@@ -3,7 +3,7 @@ import { type AsyncPriorityQueue, priorityQueue } from "async";
 import registerDebug from "debug";
 import type { BuildContext } from "../buildContext.js";
 import type { BuildGraphPackage } from "../buildGraph.js";
-import { BuildResult } from "../execution/BuildExecutor.js";
+import { BuildResult } from "../execution/BuildResult.js";
 import { defaultOptions } from "../options.js";
 import type { LeafTask } from "./leaf/leafTask.js";
 

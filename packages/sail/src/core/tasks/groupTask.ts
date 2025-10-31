@@ -2,7 +2,7 @@ import type { AsyncPriorityQueue } from "async";
 
 import type { BuildContext } from "../buildContext.js";
 import type { BuildGraphPackage } from "../buildGraph.js";
-import { BuildResult } from "../execution/BuildExecutor.js";
+import { BuildResult } from "../execution/BuildResult.js";
 import type { LeafTask } from "./leaf/leafTask.js";
 import { Task, type TaskExec } from "./task.js";
 

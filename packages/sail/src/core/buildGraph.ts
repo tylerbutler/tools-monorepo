@@ -14,20 +14,19 @@ import {
 	type DependencyNode,
 	DependencyResolver,
 } from "./dependencies/DependencyResolver.js";
-import {
-	BuildError,
-	ConfigurationError,
-	FileSystemError,
-} from "./errors/index.js";
-import {
-	type BuildablePackage,
-	type BuildExecutionContext,
-	BuildExecutor,
-	BuildResult,
-	summarizeBuildResult,
-} from "./execution/BuildExecutor.js";
+import { BuildError } from "./errors/BuildError.js";
+import { ConfigurationError } from "./errors/ConfigurationError.js";
+import { FileSystemError } from "./errors/FileSystemError.js";
+import { BuildExecutor } from "./execution/BuildExecutor.js";
+import { BuildResult, summarizeBuildResult } from "./execution/BuildResult.js";
+import { isKnownMainExecutable } from "./executables.js";
 import type { FileHashCache } from "./fileHashCache.js";
-import type { IBuildablePackage, IBuildResult } from "./interfaces/index.js";
+import type {
+	IBuildablePackage,
+	IBuildablePackage as BuildablePackage,
+	IBuildExecutionContext as BuildExecutionContext,
+	IBuildResult,
+} from "./interfaces/index.js";
 import type { BuildOptions } from "./options.js";
 import { BuildProfiler } from "./performance/BuildProfiler.js";
 import type { ISailConfig } from "./sailConfig.js";
@@ -48,18 +47,6 @@ import { WorkerPool } from "./tasks/workers/workerPool.js";
 const traceTaskDef = registerDebug("sail:task:definition");
 const _traceTaskDepTask = registerDebug("sail:task:init:dep:task");
 const traceGraph = registerDebug("sail:graph");
-
-const knownMainExecutableNames = new Set([
-	"sail build",
-	"sail b",
-	"fluid-build",
-]);
-
-export function isKnownMainExecutable(script: string): boolean {
-	return [...knownMainExecutableNames].some((name) =>
-		script.startsWith(`${name} `),
-	);
-}
 
 class TaskStats {
 	public leafTotalCount = 0;
@@ -86,7 +73,7 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
 
 	public constructor(
 		public readonly repoPackageMap: ReadonlyMap<string, BuildPackage>,
-		readonly buildContext: BuildContext,
+		public readonly buildContext: BuildContext,
 		public readonly workerPool?: WorkerPool,
 	) {
 		this.sailConfig = buildContext.sailConfig;

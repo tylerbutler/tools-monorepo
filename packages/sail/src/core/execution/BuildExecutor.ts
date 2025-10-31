@@ -3,7 +3,7 @@ import type { Stopwatch } from "@tylerbu/sail-infrastructure";
 import chalk from "picocolors";
 import { Spinner } from "picospinner";
 import type { BuildPackage } from "../../common/npmPackage.js";
-import { ErrorHandler } from "../errors/index.js";
+import { ErrorHandler } from "../errors/ErrorHandler.js";
 import type {
 	IBuildablePackage,
 	IBuildExecutionContext,
@@ -12,44 +12,14 @@ import type {
 } from "../interfaces/index.js";
 import { ParallelProcessor } from "../optimization/ParallelProcessor.js";
 import { Task } from "../tasks/task.js";
-
-// Re-export for backward compatibility
-export enum BuildResult {
-	Success = "Success",
-	UpToDate = "UpToDate",
-	Failed = "Failed",
-	/** Remote cache hit - task output restored from shared cache */
-	CachedSuccess = "CachedSuccess",
-	/** Local cache hit - task skipped via donefile */
-	LocalCacheHit = "LocalCacheHit",
-	/** Task succeeded and output was written to cache */
-	SuccessWithCacheWrite = "SuccessWithCacheWrite",
-}
-
-export function summarizeBuildResult(results: BuildResult[]): BuildResult {
-	let retResult = BuildResult.UpToDate;
-	for (const result of results) {
-		if (result === BuildResult.Failed) {
-			return BuildResult.Failed;
-		}
-
-		if (result === BuildResult.Success) {
-			retResult = BuildResult.Success;
-		}
-	}
-	return retResult;
-}
-
-// Re-export interfaces for backward compatibility
-export type BuildablePackage = IBuildablePackage;
-export type BuildExecutionContext = IBuildExecutionContext;
+import { BuildResult, summarizeBuildResult } from "./BuildResult.js";
 
 export class BuildExecutor implements IBuildExecutor {
 	private readonly errorHandler: ErrorHandler;
 
 	public constructor(
 		private readonly log: Logger,
-		private readonly context: BuildExecutionContext,
+		private readonly context: IBuildExecutionContext,
 	) {
 		this.errorHandler = new ErrorHandler(log);
 	}

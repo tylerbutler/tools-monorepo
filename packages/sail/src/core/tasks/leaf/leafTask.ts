@@ -13,11 +13,8 @@ import {
 } from "../../../common/utils.js";
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
-import { DependencyError } from "../../errors/index.js";
-import {
-	BuildResult,
-	summarizeBuildResult,
-} from "../../execution/BuildExecutor.js";
+import { DependencyError } from "../../errors/DependencyError.js";
+import { BuildResult, summarizeBuildResult } from "../../execution/BuildResult.js";
 import { defaultOptions } from "../../options.js";
 import type {
 	CacheKeyInputs,

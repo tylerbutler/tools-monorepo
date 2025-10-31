@@ -4,7 +4,7 @@ import chalk from "picocolors";
 import { Spinner } from "picospinner";
 import type { BuildGraph } from "./buildGraph.js";
 import type { SailBuildRepo } from "./buildRepo.js";
-import { BuildResult } from "./execution/BuildExecutor.js";
+import { BuildResult } from "./execution/BuildResult.js";
 import type { BuildOptions } from "./options.js";
 
 /**

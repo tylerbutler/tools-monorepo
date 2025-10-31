@@ -2,7 +2,7 @@ import registerDebug from "debug";
 import semver from "semver";
 
 import { BuildPackage } from "../../common/npmPackage.js";
-import { DependencyError } from "../errors/index.js";
+import { DependencyError } from "../errors/DependencyError.js";
 import type {
 	IDependencyNode,
 	IDependencyResolver,
