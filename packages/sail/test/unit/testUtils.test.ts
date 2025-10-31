@@ -202,15 +202,11 @@ describe("TestHelpers", () => {
 		});
 
 		it("should throw if function does not throw", async () => {
-			// TODO: Fix this test - the assertThrows function behavior needs clarification
-			try {
+			await expect(async () => {
 				await TestHelpers.assertThrows(() => {
 					// Function that doesn't throw
 				});
-				throw new Error("Should not reach this point");
-			} catch (error) {
-				expect(error.message).toBe("Expected function to throw, but it didn't");
-			}
+			}).rejects.toThrow("Expected function to throw, but it didn't");
 		});
 
 		it("should throw if error message doesn't match", async () => {

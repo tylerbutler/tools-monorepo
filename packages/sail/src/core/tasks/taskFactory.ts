@@ -149,7 +149,9 @@ export class TaskFactory {
 			// biome-ignore lint/nursery/noShadow: local subTasks variable intentionally shadows outer scope for concurrent command parsing
 			const subTasks: Task[] = [];
 			// biome-ignore lint/nursery/noShadow: local steps variable intentionally shadows outer scope for concurrent command parsing
-			const steps = command.substring("concurrently ".length).split(regexSpaceSplit);
+			const steps = command
+				.substring("concurrently ".length)
+				.split(regexSpaceSplit);
 			for (const step of steps) {
 				const npmMatch = regexNpmConcurrentlySpec.exec(step);
 				if (npmMatch?.groups !== undefined) {

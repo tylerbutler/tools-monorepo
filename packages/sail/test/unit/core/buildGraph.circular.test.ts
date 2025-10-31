@@ -25,7 +25,9 @@ function createMockLogger(): Logger {
  * Create a minimal mock BuildContext for testing
  * This creates a BuildGraphContext-like object with taskStats
  */
-function createMockBuildContext(overrides?: Partial<BuildContext>): BuildContext {
+function createMockBuildContext(
+	overrides?: Partial<BuildContext>,
+): BuildContext {
 	return {
 		sailConfig: {} as ISailConfig,
 		buildProjectConfig: {} as BuildProjectConfig,

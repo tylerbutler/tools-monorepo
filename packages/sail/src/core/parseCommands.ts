@@ -32,7 +32,9 @@ export function parseConcurrentlyCommand(
 	// biome-ignore lint/nursery/noShadow: callback parameter name matches outer scope for semantic clarity - represents the command being processed
 	onDirectCommand: (command: string) => void,
 ): void {
-	const steps = command.substring("concurrently ".length).split(regexSpaceSplit);
+	const steps = command
+		.substring("concurrently ".length)
+		.split(regexSpaceSplit);
 	for (const step of steps) {
 		const npmMatch = regexNpmConcurrentlySpec.exec(step);
 		if (npmMatch?.groups !== undefined) {

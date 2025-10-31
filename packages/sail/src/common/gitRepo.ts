@@ -25,7 +25,9 @@ export class GitRepo {
 		// The first entry will be "D " and the second entry will be "??". Look for unstaged
 		// files and remove them from deleted set.
 		const deletedFiles = new Set(
-			allStatus.filter((t) => t.match(DELETED_FILE_REGEX)).map((t) => t.substring(3)),
+			allStatus
+				.filter((t) => t.match(DELETED_FILE_REGEX))
+				.map((t) => t.substring(3)),
 		);
 		const untrackedFiles = allStatus
 			.filter((t) => t.startsWith("??"))

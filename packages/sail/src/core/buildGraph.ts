@@ -17,14 +17,14 @@ import {
 import { BuildError } from "./errors/BuildError.js";
 import { ConfigurationError } from "./errors/ConfigurationError.js";
 import { FileSystemError } from "./errors/FileSystemError.js";
+import { isKnownMainExecutable } from "./executables.js";
 import { BuildExecutor } from "./execution/BuildExecutor.js";
 import { BuildResult, summarizeBuildResult } from "./execution/BuildResult.js";
-import { isKnownMainExecutable } from "./executables.js";
 import type { FileHashCache } from "./fileHashCache.js";
 import type {
-	IBuildablePackage,
 	IBuildablePackage as BuildablePackage,
 	IBuildExecutionContext as BuildExecutionContext,
+	IBuildablePackage,
 	IBuildResult,
 } from "./interfaces/index.js";
 import type { BuildOptions } from "./options.js";

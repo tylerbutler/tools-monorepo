@@ -110,7 +110,9 @@ export abstract class Task {
 				// biome-ignore lint/style/noNonNullAssertion: dependentTasks is initialized in constructor
 				const dependentTasks = this.dependentTasks!;
 				if (dependentTasks === undefined) {
-					throw new Error("dependentTasks must be initialized before accessing transitiveDependentLeafTask");
+					throw new Error(
+						"dependentTasks must be initialized before accessing transitiveDependentLeafTask",
+					);
 				}
 				this._transitiveDependentLeafTasks = null;
 

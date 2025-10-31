@@ -14,7 +14,10 @@ import {
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
 import { DependencyError } from "../../errors/DependencyError.js";
-import { BuildResult, summarizeBuildResult } from "../../execution/BuildResult.js";
+import {
+	BuildResult,
+	summarizeBuildResult,
+} from "../../execution/BuildResult.js";
 import { defaultOptions } from "../../options.js";
 import type {
 	CacheKeyInputs,

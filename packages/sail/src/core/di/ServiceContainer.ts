@@ -11,7 +11,8 @@ export const ServiceLifetime = {
 /**
  * Service lifetime type
  */
-export type ServiceLifetime = (typeof ServiceLifetime)[keyof typeof ServiceLifetime];
+export type ServiceLifetime =
+	(typeof ServiceLifetime)[keyof typeof ServiceLifetime];
 
 /**
  * Service factory function type

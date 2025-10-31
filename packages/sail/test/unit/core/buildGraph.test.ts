@@ -4,18 +4,15 @@ import type { SimpleGit } from "simple-git";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { BuildPackage } from "../../../src/common/npmPackage.js";
 import type { BuildContext } from "../../../src/core/buildContext.js";
-import {
-	BuildGraph,
-	BuildGraphPackage,
-	isKnownMainExecutable,
-} from "../../../src/core/buildGraph.js";
+import { BuildGraph, BuildGraphPackage } from "../../../src/core/buildGraph.js";
+import { isKnownMainExecutable } from "../../../src/core/executables.js";
 import {
 	BuildResult,
 	summarizeBuildResult,
-} from "../../../src/core/execution/BuildExecutor.js";
+} from "../../../src/core/execution/BuildResult.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
-import type { Task } from "../../../src/core/tasks/task.js";
 import { TaskHandlerRegistry } from "../../../src/core/tasks/TaskHandlerRegistry.js";
+import type { Task } from "../../../src/core/tasks/task.js";
 
 /**
  * Mock logger for testing

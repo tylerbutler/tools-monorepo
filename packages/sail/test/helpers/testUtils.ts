@@ -1,6 +1,9 @@
 import type { Logger } from "@tylerbu/cli-api";
 import type { SimpleGit } from "simple-git";
-import type { TaskConfigOnDisk, TaskDefinitionsOnDisk } from "../../src/core/taskDefinitions.js";
+import type {
+	TaskConfigOnDisk,
+	TaskDefinitionsOnDisk,
+} from "../../src/core/taskDefinitions.js";
 
 /**
  * Simple package.json interface for testing
@@ -73,8 +76,7 @@ export function createMockBuildPackage(
 		packagePath: overrides.packagePath ?? "/test/package",
 		packageJson: { ...defaultPackageJson, ...overrides.packageJson },
 		isReleaseGroupRoot: overrides.isReleaseGroupRoot ?? false,
-		getScript: (scriptName: string) =>
-			defaultPackageJson.scripts?.[scriptName],
+		getScript: (scriptName: string) => defaultPackageJson.scripts?.[scriptName],
 	};
 
 	return mockPackage;
@@ -190,17 +192,24 @@ export async function assertThrows(
 	fn: () => Promise<void> | void,
 	expectedMessage?: string,
 ): Promise<Error> {
+	let caughtError: Error | undefined;
 	try {
 		await fn();
-		throw new Error("Expected function to throw, but it didn't");
 	} catch (error) {
-		if (expectedMessage && !error.message.includes(expectedMessage)) {
-			throw new Error(
-				`Expected error message to contain "${expectedMessage}", but got: ${error.message}`,
-			);
-		}
-		return error as Error;
+		caughtError = error as Error;
 	}
+
+	if (!caughtError) {
+		throw new Error("Expected function to throw, but it didn't");
+	}
+
+	if (expectedMessage && !caughtError.message.includes(expectedMessage)) {
+		throw new Error(
+			`Expected error message to contain "${expectedMessage}", but got: ${caughtError.message}`,
+		);
+	}
+
+	return caughtError;
 }
 
 /**
@@ -220,3 +229,22 @@ export async function waitFor(
 	}
 	throw new Error("Condition was not met within timeout");
 }
+
+/**
+ * TestDataBuilder provides factory methods for creating test data
+ */
+export const TestDataBuilder = {
+	createMockBuildPackage,
+	createMockBuildContext,
+	createPackageJson,
+	createTaskDefinitions,
+};
+
+/**
+ * TestHelpers provides utility functions for testing
+ */
+export const TestHelpers = {
+	createTempDir,
+	assertThrows,
+	waitFor,
+};

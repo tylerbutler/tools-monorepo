@@ -67,24 +67,20 @@ export class WorkerPool {
 			let stderr = "";
 
 			if (worker.stdout) {
-				installTemporaryListener(
-					worker.stdout,
-					"data",
-					((...args: unknown[]) => {
-						const chunk = args[0] as Buffer | string;
-						stdout += chunk;
-					}) as (...args: unknown[]) => void,
-				);
+				installTemporaryListener(worker.stdout, "data", ((
+					...args: unknown[]
+				) => {
+					const chunk = args[0] as Buffer | string;
+					stdout += chunk;
+				}) as (...args: unknown[]) => void);
 			}
 			if (worker.stderr) {
-				installTemporaryListener(
-					worker.stderr,
-					"data",
-					((...args: unknown[]) => {
-						const chunk = args[0] as Buffer | string;
-						stderr += chunk;
-					}) as (...args: unknown[]) => void,
-				);
+				installTemporaryListener(worker.stderr, "data", ((
+					...args: unknown[]
+				) => {
+					const chunk = args[0] as Buffer | string;
+					stderr += chunk;
+				}) as (...args: unknown[]) => void);
 			}
 
 			worker.once("message", (result: WorkerExecResult) => {

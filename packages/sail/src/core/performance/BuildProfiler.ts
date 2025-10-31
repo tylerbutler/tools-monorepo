@@ -334,4 +334,5 @@ export const CacheEventType = {
 /**
  * Cache event type
  */
-export type CacheEventType = (typeof CacheEventType)[keyof typeof CacheEventType];
+export type CacheEventType =
+	(typeof CacheEventType)[keyof typeof CacheEventType];

@@ -1,6 +1,6 @@
 import type { SailPackageJson } from "../../common/npmPackage.js";
-import { isKnownMainExecutable } from "../executables.js";
 import { ConfigurationError } from "../errors/ConfigurationError.js";
+import { isKnownMainExecutable } from "../executables.js";
 import type {
 	IConfigurationParser,
 	IDependencyFilters,
