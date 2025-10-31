@@ -4,7 +4,6 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { PackageJson } from "@tylerbu/sail-infrastructure";
-// biome-ignore lint/performance/noNamespaceImport: glob library requires namespace import
 import * as glob from "glob";
 
 import { lookUpDirSync } from "../../common/utils.js";
@@ -112,6 +111,5 @@ export async function loadModule(modulePath: string, moduleType?: string) {
 	if (esm) {
 		return await import(pathToFileURL(modulePath).toString());
 	}
-	// biome-ignore lint/style/noCommonJs: Dynamic require needed for CommonJS module loading at runtime
 	return require(modulePath);
 }
