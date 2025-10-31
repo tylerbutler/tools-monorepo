@@ -116,9 +116,13 @@ function getTaskForExecutable(
 const regexNpmConcurrentlySpec =
 	/^(?<quote>"?)npm:(?<script>[^*]+?)(?<wildcard>\*?)\k<quote>$/;
 
+/**
+ * Regular expression to split concurrently command steps by spaces
+ */
+const regexSpaceSplit = / +/;
+
 // biome-ignore lint/complexity/noStaticOnlyClass: factory class with static methods only
 export class TaskFactory {
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex task creation logic with multiple task type branches
 	public static Create(
 		node: BuildGraphPackage,
 		command: string,
@@ -142,8 +146,10 @@ export class TaskFactory {
 		// Parse concurrently
 		const concurrently = command.startsWith("concurrently ");
 		if (concurrently) {
+			// biome-ignore lint/nursery/noShadow: local subTasks variable intentionally shadows outer scope for concurrent command parsing
 			const subTasks: Task[] = [];
-			const steps = command.substring("concurrently ".length).split(/ +/);
+			// biome-ignore lint/nursery/noShadow: local steps variable intentionally shadows outer scope for concurrent command parsing
+			const steps = command.substring("concurrently ".length).split(regexSpaceSplit);
 			for (const step of steps) {
 				const npmMatch = regexNpmConcurrentlySpec.exec(step);
 				if (npmMatch?.groups !== undefined) {

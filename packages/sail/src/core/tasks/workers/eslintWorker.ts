@@ -7,7 +7,7 @@ export async function lint(message: WorkerMessage): Promise<WorkerExecResult> {
 	try {
 		// Load the eslint version that is in the cwd scope
 		const eslintPath = require.resolve("eslint", { paths: [message.cwd] });
-		// biome-ignore lint/style/noCommonJs: Dynamic require needed to load the project's eslint version
+		// biome-ignore lint/suspicious/noCommonJs: Dynamic require needed to load the project's eslint version
 		const eslint = require(eslintPath);
 
 		// TODO: better parsing, assume split delimited for now.
@@ -34,6 +34,7 @@ export async function lint(message: WorkerMessage): Promise<WorkerExecResult> {
 		const output = await formatter.format(results);
 
 		if (output) {
+			// TODO: Review if formatted output needs to be logged or returned
 		}
 		let code = 0;
 		for (const result of results) {

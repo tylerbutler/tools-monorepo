@@ -4,12 +4,17 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { PackageJson } from "@tylerbu/sail-infrastructure";
-// biome-ignore lint(style/noNamespaceImport): glob library requires namespace import
+// biome-ignore lint/style/noNamespaceImport: glob library requires namespace import
 import * as glob from "glob";
 
 import { lookUpDirSync } from "../../common/utils.js";
 
 export const require = createRequire(import.meta.url);
+
+/**
+ * Regular expression to split command line arguments by whitespace
+ */
+const regexWhitespaceSplit = /\s+/;
 
 export function getEsLintConfigFilePath(dir: string) {
 	// TODO: we currently don't support .yaml and .yml, or config in package.json
@@ -72,7 +77,7 @@ export async function getRecursiveFiles(pathName: string) {
  * @param commandLine - api-extractor command line
  */
 export function getApiExtractorConfigFilePath(commandLine: string): string {
-	const commandArgs = commandLine.split(/\s+/);
+	const commandArgs = commandLine.split(regexWhitespaceSplit);
 	const configFileArg =
 		commandArgs.findIndex((arg) => arg === "--config" || arg === "-c") + 1;
 	if (configFileArg > 0 && commandArgs.length > configFileArg) {
@@ -107,6 +112,6 @@ export async function loadModule(modulePath: string, moduleType?: string) {
 	if (esm) {
 		return await import(pathToFileURL(modulePath).toString());
 	}
-	// biome-ignore lint/style/noCommonJs: Dynamic require needed for CommonJS module loading at runtime
+	// biome-ignore lint/suspicious/noCommonJs: Dynamic require needed for CommonJS module loading at runtime
 	return require(modulePath);
 }

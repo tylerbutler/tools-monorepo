@@ -111,8 +111,9 @@ export abstract class Task {
 
 				const s = new Set<LeafTask>();
 				for (const dependentTask of dependentTasks) {
-					// biome-ignore lint/complexity/noForEach: forEach is more concise for Set operations
-					dependentTask.transitiveDependentLeafTask.forEach((t) => s.add(t));
+					for (const t of dependentTask.transitiveDependentLeafTask) {
+						s.add(t);
+					}
 					dependentTask.collectLeafTasks(s);
 				}
 				this._transitiveDependentLeafTasks = [...s.values()];

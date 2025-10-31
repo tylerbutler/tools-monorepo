@@ -7,6 +7,12 @@ import type { BuildGraphPackage } from "../../buildGraph.js";
 import { globFn, toPosixPath } from "../taskUtils.js";
 import { LeafTask, LeafWithFileStatDoneFileTask } from "./leafTask.js";
 
+/**
+ * Regular expression to extract package name and version from generated version file
+ */
+const regexVersionExtract =
+	/.*\nexport const pkgName = "(.*)";[\n\r]*export const pkgVersion = "([0-9A-Za-z.+-]+)";.*/m;
+
 function unquote(str: string) {
 	if (str.length >= 2 && str[0] === '"' && str.at(-1) === '"') {
 		return str.substr(1, str.length - 2);
@@ -85,6 +91,7 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 
 			const unquoted = unquote(args[i]);
 			if (unquoted.includes("**") && unquoted === args[i]) {
+				// TODO: Review if glob pattern handling needs implementation
 			}
 			input.push(unquote(args[i]));
 		}
@@ -175,9 +182,7 @@ export class GenVerTask extends LeafTask {
 		const file = path.join(this.node.pkg.directory, "src/packageVersion.ts");
 		try {
 			const content = await readFile(file, "utf8");
-			const match = content.match(
-				/.*\nexport const pkgName = "(.*)";[\n\r]*export const pkgVersion = "([0-9A-Za-z.+-]+)";.*/m,
-			);
+			const match = content.match(regexVersionExtract);
 			if (match === null) {
 				this.traceTrigger("src/packageVersion.ts content not matched");
 				return false;
@@ -234,7 +239,6 @@ export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
 
 export class DepCruiseTask extends LeafWithFileStatDoneFileTask {
 	private inputFiles: string[] | undefined;
-	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: complex file dependency analysis logic
 	protected async getInputFiles(): Promise<string[]> {
 		if (this.inputFiles === undefined) {
 			const argv = this.command.split(" ");
@@ -257,7 +261,9 @@ export class DepCruiseTask extends LeafWithFileStatDoneFileTask {
 					const files = await readdir(fullPath, { recursive: true });
 					inputFiles.push(
 						...files
+							// biome-ignore lint/nursery/noShadow: standard array method callback parameter shadows outer file variable intentionally
 							.filter((file) => match(file))
+							// biome-ignore lint/nursery/noShadow: standard array method callback parameter shadows outer file variable intentionally
 							.map((file) => path.join(fullPath, file)),
 					);
 				} else {
@@ -265,6 +271,7 @@ export class DepCruiseTask extends LeafWithFileStatDoneFileTask {
 					const info = await stat(fullPath);
 					if (info.isDirectory()) {
 						const files = await readdir(fullPath, { recursive: true });
+						// biome-ignore lint/nursery/noShadow: standard array method callback parameter shadows outer file variable intentionally
 						inputFiles.push(...files.map((file) => path.join(fullPath, file)));
 					} else {
 						inputFiles.push(fullPath);
