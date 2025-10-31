@@ -3,6 +3,7 @@ import { ScriptAnalyzer } from "./analysis/ScriptAnalyzer.js";
 import { TaskDefinitionCache } from "./cache/TaskDefinitionCache.js";
 import { ConfigurationMerger } from "./config/ConfigurationMerger.js";
 import { ConfigurationParser } from "./config/ConfigurationParser.js";
+import { getFullTaskConfig } from "./config/taskDefinitionUtils.js";
 import {
 	isConcurrentlyCommand,
 	parseConcurrentlyCommand,
@@ -102,7 +103,7 @@ export interface TaskConfig {
  */
 type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 
-type MutableTaskConfig = Mutable<TaskConfig>;
+export type MutableTaskConfig = Mutable<TaskConfig>;
 
 // On file versions that allow fields to be omitted
 export type TaskConfigOnDisk =
@@ -112,39 +113,8 @@ export interface TaskDefinitionsOnDisk {
 	readonly [name: TaskName]: TaskConfigOnDisk;
 }
 
-const isTaskDependencies = (
-	value: TaskConfigOnDisk,
-): value is TaskDependencies => {
-	return Array.isArray(value);
-};
-
-const makeClonedOrEmptyArray = <T>(value: readonly T[] | undefined): T[] =>
-	value ? [...value] : [];
-
-/**
- * Convert and fill out default values from TaskConfigOnDisk to TaskConfig in memory
- * @param config TaskConfig info loaded from a file
- * @returns TaskConfig filled out with default values
- */
-export function getFullTaskConfig(config: TaskConfigOnDisk): MutableTaskConfig {
-	if (isTaskDependencies(config)) {
-		return {
-			dependsOn: [...config],
-			script: true,
-			before: [],
-			children: [],
-			after: [],
-		};
-	}
-
-	return {
-		dependsOn: makeClonedOrEmptyArray(config.dependsOn),
-		script: config.script ?? true,
-		before: makeClonedOrEmptyArray(config.before),
-		children: [],
-		after: makeClonedOrEmptyArray(config.after),
-	};
-}
+// Re-export getFullTaskConfig from utilities module
+export { getFullTaskConfig } from "./config/taskDefinitionUtils.js";
 
 // Known task names
 export const defaultBuildTaskName = "build";

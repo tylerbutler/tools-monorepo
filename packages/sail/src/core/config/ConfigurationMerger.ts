@@ -6,10 +6,8 @@ import type {
 import type {
 	TaskDefinitions,
 	TaskDefinitionsOnDisk,
-	// biome-ignore lint/nursery/noImportCycles: Circular dependency between ConfigurationMerger and taskDefinitions requires larger refactoring to extract shared types
 } from "../taskDefinitions.js";
-// biome-ignore lint/nursery/noImportCycles: Circular dependency between ConfigurationMerger and taskDefinitions requires larger refactoring to extract shared types
-import { getFullTaskConfig } from "../taskDefinitions.js";
+import { getFullTaskConfig } from "./taskDefinitionUtils.js";
 
 /**
  * Expands "..." in configuration arrays to include inherited dependencies
