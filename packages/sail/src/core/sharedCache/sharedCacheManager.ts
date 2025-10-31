@@ -128,7 +128,7 @@ export class SharedCacheManager {
 	 *
 	 * @returns The global cache key components
 	 */
-	getGlobalKeyComponents(): GlobalCacheKeyComponents {
+	public getGlobalKeyComponents(): GlobalCacheKeyComponents {
 		return this.options.globalKeyComponents;
 	}
 
@@ -141,7 +141,7 @@ export class SharedCacheManager {
 	 * @param inputs - The task inputs to look up
 	 * @returns The cache entry if found and valid, undefined otherwise
 	 */
-	async lookup(inputs: CacheKeyInputs): Promise<CacheEntry | undefined> {
+	public async lookup(inputs: CacheKeyInputs): Promise<CacheEntry | undefined> {
 		const startTime = Date.now();
 		try {
 			await this.initialize();
@@ -316,7 +316,7 @@ export class SharedCacheManager {
 	 * @param lookupWasPerformed - Whether a cache lookup was performed before this store (default: true)
 	 * @returns Promise that resolves with the result of the storage operation
 	 */
-	async store(
+	public async store(
 		inputs: CacheKeyInputs,
 		outputs: TaskOutputs,
 		_packageRoot: string, // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -493,7 +493,7 @@ export class SharedCacheManager {
 	 * @param packageRoot - Absolute path to the package root
 	 * @returns Result of the restoration operation
 	 */
-	async restore(
+	public async restore(
 		entry: CacheEntry,
 		packageRoot: string,
 	): Promise<RestoreResult> {
@@ -595,7 +595,7 @@ export class SharedCacheManager {
 	 *
 	 * @returns Current statistics snapshot
 	 */
-	getStatistics(): Readonly<CacheStatistics> {
+	public getStatistics(): Readonly<CacheStatistics> {
 		return { ...this.statistics };
 	}
 
@@ -604,7 +604,7 @@ export class SharedCacheManager {
 	 *
 	 * Useful for measuring cache performance over specific build runs.
 	 */
-	resetStatistics(): void {
+	public resetStatistics(): void {
 		this.statistics.hitCount = 0;
 		this.statistics.missCount = 0;
 		this.statistics.avgRestoreTime = 0;
@@ -619,7 +619,7 @@ export class SharedCacheManager {
 	 *
 	 * @returns Promise that resolves when save is complete
 	 */
-	async persistStatistics(): Promise<void> {
+	public async persistStatistics(): Promise<void> {
 		if (!this.initialized) {
 			return;
 		}
@@ -633,7 +633,7 @@ export class SharedCacheManager {
 	 * Shows current statistics including hit/miss counts, cache size,
 	 * and average operation times.
 	 */
-	async displayStatistics(): Promise<void> {
+	public async displayStatistics(): Promise<void> {
 		await this.initialize();
 
 		const _hitRate =
@@ -658,7 +658,7 @@ export class SharedCacheManager {
 	 *
 	 * @returns Promise that resolves when cleaning is complete
 	 */
-	async cleanCache(): Promise<void> {
+	public async cleanCache(): Promise<void> {
 		await this.initialize();
 
 		const { rm } = await import("node:fs/promises");
@@ -690,7 +690,7 @@ export class SharedCacheManager {
 	 * @param maxAgeDays - Maximum age of entries in days (default: 30 days)
 	 * @returns Number of entries pruned
 	 */
-	async pruneCache(maxSizeMB = 5000, maxAgeDays = 30): Promise<number> {
+	public async pruneCache(maxSizeMB = 5000, maxAgeDays = 30): Promise<number> {
 		await this.initialize();
 
 		const { readdir, stat, rm } = await import("node:fs/promises");
@@ -805,7 +805,7 @@ export class SharedCacheManager {
 	 * @param fix - If true, remove corrupted entries (default: false)
 	 * @returns Object containing verification results
 	 */
-	async verifyCache(fix = false): Promise<{
+	public async verifyCache(fix = false): Promise<{
 		total: number;
 		valid: number;
 		corrupted: number;

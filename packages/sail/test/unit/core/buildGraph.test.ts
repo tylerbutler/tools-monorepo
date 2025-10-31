@@ -14,6 +14,7 @@ import {
 	summarizeBuildResult,
 } from "../../../src/core/execution/BuildExecutor.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
+import type { Task } from "../../../src/core/tasks/task.js";
 import { TaskHandlerRegistry } from "../../../src/core/tasks/TaskHandlerRegistry.js";
 
 /**
@@ -33,7 +34,9 @@ function createMockLogger(): Logger {
  * Create a minimal mock BuildContext for testing
  * This creates a BuildGraphContext-like object with taskStats
  */
-function createMockBuildContext(overrides?: Partial<BuildContext>): any {
+function createMockBuildContext(
+	overrides?: Partial<BuildContext>,
+): Partial<BuildContext> {
 	return {
 		sailConfig: {} as ISailConfig,
 		buildProjectConfig: {} as BuildProjectConfig,
@@ -174,7 +177,7 @@ describe("buildGraph", () => {
 		describe("constructor", () => {
 			it("should create a BuildGraphPackage with correct properties", () => {
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					mockPackage,
 					{},
 				);
@@ -206,7 +209,7 @@ describe("buildGraph", () => {
 				});
 
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					packageWithTasks,
 					{},
 				);
@@ -219,7 +222,7 @@ describe("buildGraph", () => {
 		describe("createTasks", () => {
 			it("should return undefined for empty task names", () => {
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					mockPackage,
 					{},
 				);
@@ -244,7 +247,7 @@ describe("buildGraph", () => {
 				});
 
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					packageWithScript,
 					{},
 				);
@@ -287,7 +290,7 @@ describe("buildGraph", () => {
 				});
 
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					packageWithDeps,
 					{},
 				);
@@ -302,14 +305,14 @@ describe("buildGraph", () => {
 		describe("getDependsOnTasks", () => {
 			it("should return empty array when task config not found", () => {
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					mockPackage,
 					{},
 				);
 
-				const mockTask = {
+				const mockTask: Partial<Task> = {
 					nameColored: "test-task",
-				} as any;
+				};
 
 				const result = graphPackage.getDependsOnTasks(
 					mockTask,
@@ -352,7 +355,7 @@ describe("buildGraph", () => {
 				});
 
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					packageWithDeps,
 					{},
 				);
@@ -369,7 +372,7 @@ describe("buildGraph", () => {
 		describe("level property", () => {
 			it("should start with level -1", () => {
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					mockPackage,
 					{},
 				);
@@ -379,7 +382,7 @@ describe("buildGraph", () => {
 
 			it("should allow level to be set", () => {
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					mockPackage,
 					{},
 				);
@@ -393,7 +396,7 @@ describe("buildGraph", () => {
 		describe("dependentPackages", () => {
 			it("should start with empty dependentPackages array", () => {
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					mockPackage,
 					{},
 				);
@@ -404,14 +407,14 @@ describe("buildGraph", () => {
 
 			it("should allow dependent packages to be added", () => {
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					mockPackage,
 					{},
 				);
 
 				const depPackage = createMockBuildPackage("dep-package");
 				const depGraphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					depPackage,
 					{},
 				);
@@ -440,7 +443,7 @@ describe("buildGraph", () => {
 				});
 
 				const graphPackage = new BuildGraphPackage(
-					mockContext as any,
+					mockContext,
 					releaseGroupRoot,
 					{},
 				);
