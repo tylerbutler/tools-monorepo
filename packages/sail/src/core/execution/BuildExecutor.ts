@@ -129,11 +129,14 @@ export class BuildExecutor implements IBuildExecutor {
 			async () => {
 				const packages = Array.from(buildablePackages.values());
 
-				// Use parallel processing with early termination for better performance
-				return ParallelProcessor.processWithEarlyTermination(
+				// Use memory-aware batched processing to reduce peak memory usage
+				// Process packages in batches with controlled concurrency
+				// This allows GC between batches and prevents memory exhaustion in large monorepos
+				return ParallelProcessor.processWithEarlyTerminationBatched(
 					packages,
 					async (buildablePackage) => buildablePackage.isUpToDate(),
-					8, // Reasonable concurrency for file I/O operations
+					8, // Concurrency within each batch for file I/O operations
+					20, // Batch size to allow periodic GC
 				);
 			},
 			{ command: "up-to-date-check" },

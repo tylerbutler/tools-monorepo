@@ -9,7 +9,6 @@ import chalk from "picocolors";
 import type { SimpleGit } from "simple-git";
 import type { BuildPackage } from "../common/npmPackage.js";
 import type { BuildContext } from "./buildContext.js";
-import { PersistentFileHashCache } from "./cache/PersistentFileHashCache.js";
 import {
 	type DependencyNode,
 	DependencyResolver,
@@ -20,7 +19,7 @@ import { FileSystemError } from "./errors/FileSystemError.js";
 import { isKnownMainExecutable } from "./executables.js";
 import { BuildExecutor } from "./execution/BuildExecutor.js";
 import { BuildResult, summarizeBuildResult } from "./execution/BuildResult.js";
-import type { FileHashCache } from "./fileHashCache.js";
+import { FileHashCache } from "./fileHashCache.js";
 import type {
 	IBuildablePackage as BuildablePackage,
 	IBuildExecutionContext as BuildExecutionContext,
@@ -85,8 +84,9 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
 		this.sharedCache = buildContext.sharedCache;
 		this.taskHandlerRegistry = buildContext.taskHandlerRegistry;
 
-		// Use persistent cache for better performance
-		this.fileHashCache = new PersistentFileHashCache();
+		// Use simple in-memory cache like fluid-build to avoid memory exhaustion
+		// PersistentFileHashCache loads entire cache file into memory which causes OOM
+		this.fileHashCache = new FileHashCache();
 		this.buildProfiler = new BuildProfiler(buildContext.log);
 	}
 }

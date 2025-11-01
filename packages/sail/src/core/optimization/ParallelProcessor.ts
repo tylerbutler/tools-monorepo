@@ -80,6 +80,66 @@ async function processWithEarlyTermination<T>(
 }
 
 /**
+ * Process items with early termination using memory-aware batching.
+ * This reduces peak memory usage by processing items in smaller batches,
+ * allowing garbage collection between batches.
+ */
+async function processWithEarlyTerminationBatched<T>(
+	items: T[],
+	processor: (item: T) => Promise<boolean>,
+	concurrency = 10,
+	batchSize = 20,
+): Promise<boolean> {
+	let shouldStop = false;
+
+	for (let i = 0; i < items.length; i += batchSize) {
+		if (shouldStop) {
+			break;
+		}
+
+		const batch = items.slice(i, i + batchSize);
+		const semaphore = new Semaphore(concurrency);
+
+		const batchPromises = batch.map(async (item) => {
+			if (shouldStop) {
+				return true;
+			}
+
+			await semaphore.acquire();
+			try {
+				if (shouldStop) {
+					return true;
+				}
+
+				const result = await processor(item);
+				if (!result) {
+					shouldStop = true;
+				}
+				return result;
+			} finally {
+				semaphore.release();
+			}
+		});
+
+		const batchResults = await Promise.all(batchPromises);
+
+		if (!batchResults.every((result) => result)) {
+			return false;
+		}
+
+		// Force GC between batches if available to free memory immediately
+		if (global.gc) {
+			global.gc();
+		}
+
+		// Allow GC between batches by yielding to event loop
+		await new Promise((resolve) => setImmediate(resolve));
+	}
+
+	return true;
+}
+
+/**
  * Map operation with parallel processing
  */
 async function mapParallel<T, R>(
@@ -139,6 +199,7 @@ export const ParallelProcessor = {
 	processInParallel,
 	processInBatches,
 	processWithEarlyTermination,
+	processWithEarlyTerminationBatched,
 	mapParallel,
 	filterParallel,
 	partitionForProcessing,
