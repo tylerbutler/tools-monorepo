@@ -18,8 +18,9 @@
  */
 
 import { execSync } from "node:child_process";
-import fs from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { exists } from "@tylerbu/fundamentals";
 import semver from "semver";
 
 // Types
@@ -93,16 +94,16 @@ function log(message: string) {
 /**
  * Detect which package manager is being used
  */
-function detectPackageManager(): PackageManager {
-	if (fs.existsSync("pnpm-lock.yaml")) return "pnpm";
-	if (fs.existsSync("yarn.lock")) {
+async function detectPackageManager(): Promise<PackageManager> {
+	if (await exists("pnpm-lock.yaml")) return "pnpm";
+	if (await exists("yarn.lock")) {
 		console.error("❌ Yarn is not yet supported by this script.");
 		console.error(
 			"   Contributions welcome! See: https://github.com/tylerbutler/tools-monorepo",
 		);
 		process.exit(1);
 	}
-	if (fs.existsSync("package-lock.json")) return "npm";
+	if (await exists("package-lock.json")) return "npm";
 	throw new Error(
 		"No lockfile found. Supported: pnpm-lock.yaml, package-lock.json",
 	);
@@ -224,14 +225,14 @@ function isValidSemver(version: string): boolean {
 /**
  * Sync a package.json file to lockfile versions
  */
-function syncPackageJson(
+async function syncPackageJson(
 	packageJsonPath: string,
 	installedDeps: Record<string, DependencyInfo>,
 	installedDevDeps: Record<string, DependencyInfo>,
-): SyncResult {
+): Promise<SyncResult> {
 	let pkg: PackageJson;
 	try {
-		pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8")) as PackageJson;
+		pkg = JSON.parse(await readFile(packageJsonPath, "utf-8")) as PackageJson;
 	} catch (error) {
 		console.error(`Failed to read or parse ${packageJsonPath}:`);
 		console.error(error instanceof Error ? error.message : String(error));
@@ -279,7 +280,7 @@ function syncPackageJson(
 
 	// Write back if changes and not dry run
 	if (changes.length > 0 && !dryRun) {
-		fs.writeFileSync(packageJsonPath, JSON.stringify(pkg, null, "\t") + "\n");
+		await writeFile(packageJsonPath, JSON.stringify(pkg, null, "\t") + "\n");
 	}
 
 	return {
@@ -335,10 +336,10 @@ function updateVersionRange(
 /**
  * Main execution
  */
-function main() {
+async function main() {
 	console.log("🔄 Syncing package.json versions to lockfile...\n");
 
-	const packageManager = detectPackageManager();
+	const packageManager = await detectPackageManager();
 	log(`Detected package manager: ${packageManager}`);
 
 	const projects = getInstalledVersions(packageManager);
@@ -349,12 +350,12 @@ function main() {
 	for (const project of projects) {
 		const packageJsonPath = path.join(project.path, "package.json");
 
-		if (!fs.existsSync(packageJsonPath)) {
+		if (!(await exists(packageJsonPath))) {
 			log(`⚠️  Skipping ${project.name}: package.json not found`);
 			continue;
 		}
 
-		const result = syncPackageJson(
+		const result = await syncPackageJson(
 			packageJsonPath,
 			project.dependencies || {},
 			project.devDependencies || {},
@@ -397,4 +398,4 @@ function main() {
 	);
 }
 
-main();
+await main();

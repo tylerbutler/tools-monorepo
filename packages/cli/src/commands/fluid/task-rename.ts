@@ -122,6 +122,7 @@ export default class FluidTaskRename extends GitCommand<
 
 		// Confirm if not in CI
 		// biome-ignore lint/style/noProcessEnv: CI detection requires process.env
+		// biome-ignore lint/complexity/useLiteralKeys: CI is a valid environment variable name
 		if (!process.env["CI"]) {
 			this.warning(
 				"\n⚠️  This will modify package.json files in the repository",

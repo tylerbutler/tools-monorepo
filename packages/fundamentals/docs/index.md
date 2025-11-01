@@ -578,6 +578,43 @@ Returns an iterable of values in the map
 
 `Map.values`
 
+## Functions
+
+### exists()
+
+> **exists**(`path`): `Promise`\<`boolean`\>
+
+Defined in: [packages/fundamentals/src/fs.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/fs.ts#L22)
+
+Check if a file or directory exists.
+
+#### Parameters
+
+##### path
+
+`string`
+
+The path to check for existence
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+A promise that resolves to `true` if the path exists, `false` otherwise
+
+#### Remarks
+
+This is an async replacement for the deprecated `fs.exists()` and synchronous `fs.existsSync()`.
+It uses `fs.promises.access()` internally to check file accessibility.
+
+#### Example
+
+```typescript
+if (await exists('./myfile.txt')) {
+  console.log('File exists');
+}
+```
+
 ## References
 
 ### addAll
