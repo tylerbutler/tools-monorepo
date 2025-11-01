@@ -99,4 +99,38 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		// For now we just use the big hammer of the monorepo lock file as are guard against version change
 		return this.node.getLockFileHash();
 	}
+
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		// Get done file from parent class
+		const inputs = await super.getCacheInputFiles();
+
+		// Include the webpack config file
+		const configPath = this.configFileFullPath;
+		if (configPath) {
+			inputs.push(configPath);
+		}
+
+		// Include all source files in src directory
+		const srcGlob = `${toPosixPath(this.node.pkg.directory)}/src/**/*.*`;
+		try {
+			const srcFiles = await globFn(srcGlob);
+			inputs.push(...srcFiles);
+		} catch (error) {
+			this.traceError(`Failed to glob source files for webpack: ${error}`);
+		}
+
+		return inputs;
+	}
+
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		// Get done file from parent class
+		const outputs = await super.getCacheOutputFiles();
+
+		// Webpack outputs depend on output configuration in webpack config
+		// To get accurate outputs, we would need to parse the webpack config
+		// For now, rely on the done file mechanism
+		// Future enhancement: parse config to get output.path and output.filename
+
+		return outputs;
+	}
 }

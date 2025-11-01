@@ -9,6 +9,9 @@ import { getTscUtils, type TscUtil } from "../../tscUtils.js";
 import { getInstalledPackageVersion } from "../taskUtils.js";
 import { LeafTask, LeafWithDoneFileTask } from "./leafTask.js";
 
+// Regex pattern for matching TypeScript file extensions (.ts or .tsx)
+const tsExtensionPattern = /\.tsx?$/;
+
 interface ITsBuildInfo {
 	program: {
 		fileNames: string[];
@@ -486,6 +489,91 @@ export class TscTask extends LeafTask {
 			(parsed.fileNames.length === 0 || parsed.options.project === undefined) &&
 			!parsed.watchOptions
 		);
+	}
+
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		// Get done file from parent class
+		const files = await super.getCacheInputFiles();
+
+		const config = this.readTsConfig();
+		if (!config) {
+			return files;
+		}
+
+		// Include all source files from TypeScript config
+		files.push(...config.fileNames);
+
+		// Include tsconfig.json itself as an input
+		const configPath = this.configFileFullPath;
+		if (configPath) {
+			files.push(configPath);
+		}
+
+		// Include tsBuildInfo if it exists (for incremental builds)
+		const tsBuildInfoPath = this.tsBuildInfoFileFullPath;
+		if (tsBuildInfoPath && existsSync(tsBuildInfoPath)) {
+			files.push(tsBuildInfoPath);
+		}
+
+		return files;
+	}
+
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		// Get done file from parent class
+		const outputs = await super.getCacheOutputFiles();
+
+		const config = this.readTsConfig();
+		if (!config) {
+			return outputs;
+		}
+
+		// For each source file, determine its outputs
+		for (const sourceFile of config.fileNames) {
+			const ext = path.extname(sourceFile);
+			if (ext === ".ts" || ext === ".tsx") {
+				// Determine output file path based on TypeScript options
+				const outDir = config.options.outDir;
+				const rootDir = config.options.rootDir ?? path.dirname(this.configFileFullPath ?? "");
+
+				if (outDir) {
+					// Calculate relative path from rootDir to source file
+					const relativePath = path.relative(rootDir, sourceFile);
+					const outputBase = path.join(outDir, relativePath);
+
+					// Add .js file if emitting
+					if (!config.options.noEmit) {
+						const jsFile = outputBase.replace(tsExtensionPattern, config.options.jsx ? ".jsx" : ".js");
+						outputs.push(jsFile);
+					}
+
+					// Add .d.ts file if declaration is enabled
+					if (config.options.declaration) {
+						const dtsFile = outputBase.replace(tsExtensionPattern, ".d.ts");
+						outputs.push(dtsFile);
+					}
+
+					// Add .d.ts.map if declarationMap is enabled
+					if (config.options.declarationMap && config.options.declaration) {
+						const dtsMapFile = outputBase.replace(tsExtensionPattern, ".d.ts.map");
+						outputs.push(dtsMapFile);
+					}
+
+					// Add .js.map if sourceMap is enabled
+					if (config.options.sourceMap && !config.options.noEmit) {
+						const mapFile = outputBase.replace(tsExtensionPattern, `${config.options.jsx ? ".jsx" : ".js"}.map`);
+						outputs.push(mapFile);
+					}
+				}
+			}
+		}
+
+		// Include tsBuildInfo file if incremental is enabled
+		const tsBuildInfoPath = this.tsBuildInfoFileFullPath;
+		if (tsBuildInfoPath && config.options.incremental) {
+			outputs.push(tsBuildInfoPath);
+		}
+
+		return outputs;
 	}
 }
 

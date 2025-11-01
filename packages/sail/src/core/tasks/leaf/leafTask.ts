@@ -220,7 +220,11 @@ export abstract class LeafTask extends Task {
 		const executionTimeMs = Date.now() - startTime;
 		let cacheWriteResult: StoreResult | undefined;
 		if (this.node.context.sharedCache && this.canUseCache) {
-			cacheWriteResult = await this.storeInCache(executionTimeMs);
+			cacheWriteResult = await this.storeInCache(
+				executionTimeMs,
+				ret.stdout ?? "",
+				ret.stderr ?? "",
+			);
 		}
 
 		// Determine final build result based on cache write status
@@ -571,7 +575,11 @@ export abstract class LeafTask extends Task {
 	/**
 	 * Store task outputs in shared cache after successful execution.
 	 */
-	private async storeInCache(executionTimeMs: number): Promise<StoreResult> {
+	private async storeInCache(
+		executionTimeMs: number,
+		stdout: string,
+		stderr: string,
+	): Promise<StoreResult> {
 		const cache = this.node.context.sharedCache;
 		if (!cache) {
 			return { success: false, reason: "cache not initialized" };
@@ -614,8 +622,8 @@ export abstract class LeafTask extends Task {
 					sourcePath: file,
 					relativePath: path.relative(this.node.pkg.directory, file),
 				})),
-				stdout: "", // TODO: Capture during execution
-				stderr: "",
+				stdout,
+				stderr,
 				exitCode: 0,
 				executionTimeMs,
 			};
@@ -758,6 +766,29 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 			this.traceTrigger(`unable to read compare file: ${doneFileFullPath}`);
 		}
 		return false;
+	}
+
+	/**
+	 * Override to include the done file in cache inputs (if it exists).
+	 * Subclasses should call super.getCacheInputFiles() and add their own inputs.
+	 */
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		const inputs = await super.getCacheInputFiles();
+		const doneFileFullPath = this.doneFileFullPath;
+		if (existsSync(doneFileFullPath)) {
+			inputs.push(doneFileFullPath);
+		}
+		return inputs;
+	}
+
+	/**
+	 * Override to include the done file in cache outputs.
+	 * Subclasses should call super.getCacheOutputFiles() and add their own outputs.
+	 */
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		const outputs = await super.getCacheOutputFiles();
+		outputs.push(this.doneFileFullPath);
+		return outputs;
 	}
 
 	/**

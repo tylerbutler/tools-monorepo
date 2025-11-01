@@ -13,4 +13,14 @@ export class GenerateEntrypointsTask extends TscDependentTask {
 			this.node.pkg.directory,
 		);
 	}
+
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		// Get done file and TypeScript inputs from parent class
+		return super.getCacheInputFiles();
+	}
+
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		// Get done file and TypeScript outputs from parent class
+		return super.getCacheOutputFiles();
+	}
 }

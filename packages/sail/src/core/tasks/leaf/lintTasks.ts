@@ -31,4 +31,36 @@ export class EsLintTask extends TscDependentTask {
 	protected async getToolVersion() {
 		return getInstalledPackageVersion("eslint", this.node.pkg.directory);
 	}
+
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		// Get done file and TypeScript inputs from parent class
+		const inputs = await super.getCacheInputFiles();
+
+		// Include the ESLint config file
+		inputs.push(...this.configFileFullPaths);
+
+		// ESLint lints source files in src directory
+		// Include all source files
+		const { globFn, toPosixPath } = await import("../taskUtils.js");
+		const srcGlob = `${toPosixPath(this.node.pkg.directory)}/src/**/*.*`;
+		try {
+			const srcFiles = await globFn(srcGlob);
+			inputs.push(...srcFiles);
+		} catch (error) {
+			this.traceError(`Failed to glob source files for eslint: ${error}`);
+		}
+
+		return inputs;
+	}
+
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		// Get done file and TypeScript outputs from parent class
+		const outputs = await super.getCacheOutputFiles();
+
+		// ESLint doesn't produce output files in the traditional sense
+		// It produces reports/logs, but these are typically not cached
+		// Rely on exit code and done file mechanism
+
+		return outputs;
+	}
 }

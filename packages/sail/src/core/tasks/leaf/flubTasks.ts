@@ -37,6 +37,17 @@ export class FlubListTask extends LeafWithDoneFileTask {
 		}
 		return JSON.stringify(packages.map((pkg) => [pkg.name, pkg.packageJson]));
 	}
+
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		// FlubListTask doesn't have specific input files to track
+		// Return empty to rely on done file mechanism
+		return [];
+	}
+
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		// FlubListTask doesn't produce output files, just console output
+		return [];
+	}
 }
 
 export class FlubCheckLayerTask extends LeafWithDoneFileTask {
@@ -65,6 +76,14 @@ export class FlubCheckLayerTask extends LeafWithDoneFileTask {
 				})
 			: undefined;
 	}
+
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		return [];
+	}
+
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		return [];
+	}
 }
 
 export class FlubCheckPolicyTask extends LeafWithDoneFileTask {
@@ -80,6 +99,14 @@ export class FlubCheckPolicyTask extends LeafWithDoneFileTask {
 			commit: await gitRepo.getCurrentSha(),
 			modifications: modificationHash,
 		});
+	}
+
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		return [];
+	}
+
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		return [];
 	}
 }
 
@@ -113,5 +140,21 @@ export class FlubGenerateChangesetConfigTask extends LeafWithFileStatDoneFileTas
 		const configDir = path.dirname(configFilePath);
 		const configPath = path.resolve(configDir, changesetConfigPath);
 		return [configPath];
+	}
+
+	protected override async getCacheInputFiles(): Promise<string[]> {
+		// Get done file from parent class
+		const inputs = await super.getCacheInputFiles();
+		// Add task-specific input files
+		inputs.push(...(await this.getInputFiles()));
+		return inputs;
+	}
+
+	protected override async getCacheOutputFiles(): Promise<string[]> {
+		// Get done file from parent class
+		const outputs = await super.getCacheOutputFiles();
+		// Add task-specific output files
+		outputs.push(...(await this.getOutputFiles()));
+		return outputs;
 	}
 }
