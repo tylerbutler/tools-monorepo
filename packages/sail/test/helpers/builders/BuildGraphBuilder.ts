@@ -159,6 +159,7 @@ export class BuildGraphBuilder {
 			info: () => {},
 			warn: () => {},
 			error: () => {},
+			errorLog: () => {},
 			verbose: () => {},
 			debug: () => {},
 		} as Logger;
