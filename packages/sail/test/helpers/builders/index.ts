@@ -7,10 +7,10 @@
  * @module test/helpers/builders
  */
 
-export { PackageBuilder } from "./PackageBuilder.js";
-export {
-	TaskDefinitionBuilder,
-	createTaskDefinitionMap,
-} from "./TaskDefinitionBuilder.js";
 export { BuildContextBuilder } from "./BuildContextBuilder.js";
 export { BuildGraphBuilder } from "./BuildGraphBuilder.js";
+export { PackageBuilder } from "./PackageBuilder.js";
+export {
+	createTaskDefinitionMap,
+	TaskDefinitionBuilder,
+} from "./TaskDefinitionBuilder.js";

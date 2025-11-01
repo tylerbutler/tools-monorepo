@@ -1,0 +1,271 @@
+import { Stopwatch } from "@tylerbu/sail-infrastructure";
+import type { BuildGraph } from "../../../src/core/buildGraph.js";
+import { SailBuildRepo } from "../../../src/core/buildRepo.js";
+import type { BuildOptions } from "../../../src/core/options.js";
+
+/**
+ * Helper for creating and executing BuildGraph in integration tests.
+ */
+
+/**
+ * Logger implementation for integration tests.
+ * Captures output for assertions and debugging.
+ */
+export class TestLogger {
+	public logs: string[] = [];
+
+	public log(message: string): void {
+		this.logs.push(message);
+	}
+
+	public error(message: string): void {
+		this.logs.push(`ERROR: ${message}`);
+	}
+
+	public errorLog(message: string): void {
+		this.logs.push(`ERROR_LOG: ${message}`);
+	}
+
+	public warn(message: string): void {
+		this.logs.push(`WARN: ${message}`);
+	}
+
+	public debug(message: string): void {
+		this.logs.push(`DEBUG: ${message}`);
+	}
+
+	public verbose(message: string): void {
+		this.logs.push(`VERBOSE: ${message}`);
+	}
+
+	/**
+	 * Get all captured logs as a single string.
+	 */
+	public getOutput(): string {
+		return this.logs.join("\n");
+	}
+
+	/**
+	 * Clear all captured logs.
+	 */
+	public clear(): void {
+		this.logs = [];
+	}
+
+	/**
+	 * Check if logs contain a specific message.
+	 */
+	public contains(message: string): boolean {
+		return this.logs.some((log) => log.includes(message));
+	}
+}
+
+/**
+ * Integration test context for BuildGraph execution.
+ */
+export interface BuildGraphTestContext {
+	/**
+	 * The BuildRepo instance for the test monorepo.
+	 */
+	repo: SailBuildRepo;
+
+	/**
+	 * Test logger for capturing build output.
+	 */
+	logger: TestLogger;
+
+	/**
+	 * Stopwatch for timing measurements.
+	 */
+	timer: Stopwatch;
+
+	/**
+	 * Executes a build with the specified task names.
+	 *
+	 * @param taskNames - Names of tasks to build (default: ["build"])
+	 * @param options - Additional build options
+	 * @returns The BuildGraph instance after build completion
+	 */
+	executeBuild: (
+		taskNames?: string[],
+		options?: Partial<BuildOptions>,
+	) => Promise<BuildGraph>;
+
+	/**
+	 * Creates a BuildGraph without executing it.
+	 *
+	 * @param options - Build options
+	 * @returns The BuildGraph instance ready for execution
+	 */
+	createBuildGraph: (options?: Partial<BuildOptions>) => Promise<BuildGraph>;
+
+	/**
+	 * Installs dependencies for all packages in the monorepo.
+	 *
+	 * @returns Promise that resolves to true if install succeeded
+	 */
+	installDependencies: () => Promise<boolean>;
+}
+
+/**
+ * Creates a BuildGraph integration test context from a test directory.
+ *
+ * @param testDir - Absolute path to the test monorepo directory
+ * @param packageFilter - Optional package name filter (regex pattern)
+ * @returns Integration test context with repo, logger, and execution helpers
+ *
+ * @example
+ * ```typescript
+ * const ctx = await createBuildGraphTestContext("/tmp/test-monorepo");
+ * const buildGraph = await ctx.executeBuild(["build"]);
+ * expect(ctx.logger.contains("Build completed")).toBe(true);
+ * ```
+ */
+export async function createBuildGraphTestContext(
+	testDir: string,
+	packageFilter?: string,
+): Promise<BuildGraphTestContext> {
+	const logger = new TestLogger();
+	const repo = new SailBuildRepo(testDir, logger);
+
+	// Load plugins if configured
+	await repo.ensureHandlersLoaded();
+
+	const timer = new Stopwatch(true); // Enable stopwatch
+
+	return {
+		createBuildGraph: async (options?: Partial<BuildOptions>) => {
+			const buildOptions: BuildOptions = {
+				build: true,
+				buildTaskNames: ["build"],
+				dirs: [testDir], // Use testDir as the target directory
+				match: [],
+				releaseGroups: [],
+				verbose: false,
+				workspaces: [],
+				...options,
+				packageFilter: packageFilter ?? options?.packageFilter,
+			};
+
+			// Set matched packages
+			const matched = repo.setMatched(buildOptions);
+			if (!matched) {
+				throw new Error("No packages matched the filter");
+			}
+
+			// Create the build graph
+			return await repo.createBuildGraph(buildOptions);
+		},
+
+		executeBuild: async (
+			taskNames?: string[],
+			options?: Partial<BuildOptions>,
+		) => {
+			const buildOptions: BuildOptions = {
+				build: true,
+				buildTaskNames: taskNames ?? ["build"],
+				dirs: [testDir], // Use testDir as the target directory
+				match: [],
+				releaseGroups: [],
+				verbose: false,
+				workspaces: [],
+				...options,
+				packageFilter: packageFilter ?? options?.packageFilter,
+			};
+
+			// Set matched packages
+			const matched = repo.setMatched(buildOptions);
+			if (!matched) {
+				throw new Error("No packages matched the filter");
+			}
+
+			// Create the build graph
+			const buildGraph = await repo.createBuildGraph(buildOptions);
+
+			// Check install
+			const installed = await buildGraph.checkInstall();
+			if (!installed) {
+				throw new Error("Dependencies not installed");
+			}
+
+			// Execute the build
+			await buildGraph.build();
+
+			return buildGraph;
+		},
+
+		installDependencies: async () => {
+			// Use the built-in ensureInstalled method from SailBuildRepo
+			return await SailBuildRepo.ensureInstalled(repo.packages);
+		},
+
+		logger,
+		repo,
+		timer,
+	};
+}
+
+/**
+ * Build execution result helper for making assertions.
+ */
+export interface BuildExecutionResult {
+	/**
+	 * The BuildGraph instance after execution.
+	 */
+	buildGraph: BuildGraph;
+
+	/**
+	 * Test logger with captured output.
+	 */
+	logger: TestLogger;
+
+	/**
+	 * Total elapsed time for the build.
+	 */
+	elapsedTime: number;
+
+	/**
+	 * Cache statistics (if cache was enabled).
+	 */
+	cacheStats?: string;
+}
+
+/**
+ * Executes a build and returns results for assertions.
+ *
+ * @param testDir - Absolute path to the test monorepo
+ * @param taskNames - Task names to build
+ * @param options - Build options
+ * @returns Build execution result with graph, logger, and timing
+ *
+ * @example
+ * ```typescript
+ * const result = await executeBuildAndGetResult("/tmp/test-monorepo", ["build"]);
+ * expect(result.buildGraph.taskStats.leafBuiltCount).toBeGreaterThan(0);
+ * expect(result.logger.contains("completed")).toBe(true);
+ * ```
+ */
+export async function executeBuildAndGetResult(
+	testDir: string,
+	taskNames: string[] = ["build"],
+	options?: Partial<BuildOptions>,
+): Promise<BuildExecutionResult> {
+	const ctx = await createBuildGraphTestContext(testDir);
+
+	// Install dependencies before building
+	await ctx.installDependencies();
+
+	const timer = new Stopwatch(true); // Enable stopwatch
+
+	const buildGraph = await ctx.executeBuild(taskNames, options);
+	const elapsedTime = timer.getTotalTime() / 1000; // Convert to seconds
+
+	const cacheStats = buildGraph.getCacheStatistics();
+
+	return {
+		buildGraph,
+		cacheStats,
+		elapsedTime,
+		logger: ctx.logger,
+	};
+}

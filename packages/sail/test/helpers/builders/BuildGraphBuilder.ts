@@ -144,9 +144,7 @@ export class BuildGraphBuilder {
 	/**
 	 * Use the context builder directly for advanced configuration
 	 */
-	configureContext(
-		configure: (builder: BuildContextBuilder) => void,
-	): this {
+	configureContext(configure: (builder: BuildContextBuilder) => void): this {
 		configure(this.contextBuilder);
 		return this;
 	}
@@ -197,9 +195,7 @@ export class BuildGraphBuilder {
 	/**
 	 * Default dependency filter (includes all dependencies)
 	 */
-	private defaultDepFilter(
-		_pkg: BuildPackage,
-	): (dep: BuildPackage) => boolean {
+	private defaultDepFilter(_pkg: BuildPackage): (dep: BuildPackage) => boolean {
 		return (_dep: BuildPackage) => true;
 	}
 

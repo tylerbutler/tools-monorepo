@@ -197,9 +197,7 @@ describe("BuildGraph - Initialization", () => {
 		it("should handle missing task definitions gracefully", () => {
 			// Build a package without explicit task definitions
 			// Tasks should be auto-detected from package.json scripts
-			const graph = new BuildGraphBuilder()
-				.withPackages(["pkg1"])
-				.build();
+			const graph = new BuildGraphBuilder().withPackages(["pkg1"]).build();
 
 			expect(graph).toBeDefined();
 		});

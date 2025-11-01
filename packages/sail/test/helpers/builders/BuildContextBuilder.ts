@@ -7,8 +7,8 @@ import type {
 import type { SimpleGit } from "simple-git";
 import type { BuildContext } from "../../../src/core/buildContext.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
-import type { TaskHandlerRegistry } from "../../../src/core/tasks/TaskHandlerRegistry.js";
 import type { TaskConfig } from "../../../src/core/taskDefinitions.js";
+import type { TaskHandlerRegistry } from "../../../src/core/tasks/TaskHandlerRegistry.js";
 import type { WorkerPool } from "../../../src/core/tasks/workers/workerPool.js";
 
 /**

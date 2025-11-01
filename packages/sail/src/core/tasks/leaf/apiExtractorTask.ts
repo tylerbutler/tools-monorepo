@@ -35,7 +35,9 @@ export class ApiExtractorTask extends TscDependentTask {
 			const srcFiles = await globFn(srcGlob);
 			inputs.push(...srcFiles);
 		} catch (error) {
-			this.traceError(`Failed to glob source files for api-extractor: ${error}`);
+			this.traceError(
+				`Failed to glob source files for api-extractor: ${error}`,
+			);
 		}
 
 		return inputs;

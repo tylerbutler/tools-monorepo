@@ -533,7 +533,8 @@ export class TscTask extends LeafTask {
 			if (ext === ".ts" || ext === ".tsx") {
 				// Determine output file path based on TypeScript options
 				const outDir = config.options.outDir;
-				const rootDir = config.options.rootDir ?? path.dirname(this.configFileFullPath ?? "");
+				const rootDir =
+					config.options.rootDir ?? path.dirname(this.configFileFullPath ?? "");
 
 				if (outDir) {
 					// Calculate relative path from rootDir to source file
@@ -542,7 +543,10 @@ export class TscTask extends LeafTask {
 
 					// Add .js file if emitting
 					if (!config.options.noEmit) {
-						const jsFile = outputBase.replace(tsExtensionPattern, config.options.jsx ? ".jsx" : ".js");
+						const jsFile = outputBase.replace(
+							tsExtensionPattern,
+							config.options.jsx ? ".jsx" : ".js",
+						);
 						outputs.push(jsFile);
 					}
 
@@ -554,13 +558,19 @@ export class TscTask extends LeafTask {
 
 					// Add .d.ts.map if declarationMap is enabled
 					if (config.options.declarationMap && config.options.declaration) {
-						const dtsMapFile = outputBase.replace(tsExtensionPattern, ".d.ts.map");
+						const dtsMapFile = outputBase.replace(
+							tsExtensionPattern,
+							".d.ts.map",
+						);
 						outputs.push(dtsMapFile);
 					}
 
 					// Add .js.map if sourceMap is enabled
 					if (config.options.sourceMap && !config.options.noEmit) {
-						const mapFile = outputBase.replace(tsExtensionPattern, `${config.options.jsx ? ".jsx" : ".js"}.map`);
+						const mapFile = outputBase.replace(
+							tsExtensionPattern,
+							`${config.options.jsx ? ".jsx" : ".js"}.map`,
+						);
 						outputs.push(mapFile);
 					}
 				}

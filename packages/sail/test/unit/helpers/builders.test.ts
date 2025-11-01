@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
 	BuildContextBuilder,
 	BuildGraphBuilder,
+	createTaskDefinitionMap,
 	PackageBuilder,
 	TaskDefinitionBuilder,
-	createTaskDefinitionMap,
 } from "../../helpers/builders/index.js";
 
 describe("Test Builders", () => {
@@ -70,7 +70,9 @@ describe("Test Builders", () => {
 		});
 
 		it("should set custom path", () => {
-			const pkg = new PackageBuilder().atPath("/workspace/packages/app").build();
+			const pkg = new PackageBuilder()
+				.atPath("/workspace/packages/app")
+				.build();
 
 			expect(pkg.packagePath).toBe("/workspace/packages/app");
 		});

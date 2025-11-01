@@ -1,7 +1,7 @@
 import type { Logger } from "@tylerbu/cli-api";
 import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
 import type { SimpleGit } from "simple-git";
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { BuildPackage } from "../../../src/common/npmPackage.js";
 import type { BuildContext } from "../../../src/core/buildContext.js";
 import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
@@ -479,7 +479,9 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 							build: "echo 'building'",
 						},
 					},
-					getScript: vi.fn((name) => (name === "build" ? "echo 'building'" : undefined)),
+					getScript: vi.fn((name) =>
+						name === "build" ? "echo 'building'" : undefined,
+					),
 				});
 
 				const graphPackage = new BuildGraphPackage(
