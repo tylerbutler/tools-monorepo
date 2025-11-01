@@ -220,16 +220,19 @@ export class Workspace implements IWorkspace {
 	 * {@inheritDoc Installable.install}
 	 */
 	public async install(updateLockfile: boolean): Promise<boolean> {
-		const commandArgs =
+		const commandWithArgs =
 			this.packageManager.getInstallCommandWithArgs(updateLockfile);
 
-		const output = await execa(
-			this.packageManager.name.toString(),
-			commandArgs,
-			{
-				cwd: this.directory,
-			},
-		);
+		// commandWithArgs is [command, ...args], e.g., ['npm', 'ci']
+		const [command, ...args] = commandWithArgs;
+
+		if (!command) {
+			throw new Error("Package manager install command is empty");
+		}
+
+		const output = await execa(command, args, {
+			cwd: this.directory,
+		});
 
 		if (output.exitCode !== 0) {
 			return false;

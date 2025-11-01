@@ -306,7 +306,7 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
  */
 export class BuildGraph {
 	private matchedPackages = 0;
-	private readonly buildPackages = new Map<BuildPackage, BuildGraphPackage>();
+	private readonly _buildPackages = new Map<BuildPackage, BuildGraphPackage>();
 	private readonly context: BuildGraphContext;
 	private readonly dependencyResolver = new DependencyResolver();
 	private readonly buildExecutor: BuildExecutor;
@@ -343,13 +343,13 @@ export class BuildGraph {
 
 	public async checkInstall() {
 		return this.buildExecutor.checkInstall(
-			this.buildPackages as ReadonlyMap<BuildPackage, IBuildablePackage>,
+			this._buildPackages as ReadonlyMap<BuildPackage, IBuildablePackage>,
 		);
 	}
 
 	public async build(timer?: Stopwatch): Promise<BuildResult> {
 		const result = await this.buildExecutor.executeBuild(
-			this.buildPackages as ReadonlyMap<BuildPackage, IBuildablePackage>,
+			this._buildPackages as ReadonlyMap<BuildPackage, IBuildablePackage>,
 			this.buildTaskNames,
 			this.matchedPackages,
 			timer,
@@ -375,6 +375,14 @@ export class BuildGraph {
 
 	public get taskStats(): TaskStats {
 		return this.context.taskStats;
+	}
+
+	/**
+	 * Get all build packages as an array.
+	 * Useful for iteration and finding specific packages.
+	 */
+	public get buildPackages(): BuildGraphPackage[] {
+		return Array.from(this._buildPackages.values());
 	}
 
 	/**
@@ -440,10 +448,10 @@ export class BuildGraph {
 
 		// Second pass: establish dependency relationships
 		for (const [pkg, depNode] of dependencyNodes) {
-			const buildGraphPackage = this.buildPackages.get(pkg);
+			const buildGraphPackage = this._buildPackages.get(pkg);
 			if (buildGraphPackage) {
 				for (const depPkg of depNode.dependentPackages) {
-					const depBuildGraphPackage = this.buildPackages.get(depPkg.pkg);
+					const depBuildGraphPackage = this._buildPackages.get(depPkg.pkg);
 					if (depBuildGraphPackage) {
 						buildGraphPackage.dependentPackages.push(depBuildGraphPackage);
 					}
@@ -456,7 +464,7 @@ export class BuildGraph {
 		pkg: BuildPackage,
 		globalTaskDefinitionsOnDisk: TaskDefinitionsOnDisk | undefined,
 	): BuildGraphPackage {
-		let buildPackage = this.buildPackages.get(pkg);
+		let buildPackage = this._buildPackages.get(pkg);
 		if (buildPackage === undefined) {
 			try {
 				const globalTaskDefinitions = normalizeGlobalTaskDefinitions(
@@ -467,7 +475,7 @@ export class BuildGraph {
 					pkg,
 					globalTaskDefinitions,
 				);
-				this.buildPackages.set(pkg, buildPackage);
+				this._buildPackages.set(pkg, buildPackage);
 			} catch (e: unknown) {
 				throw BuildError.packageLoadFailed(
 					pkg.nameColored,
@@ -485,7 +493,7 @@ export class BuildGraph {
 		{ matchedOnly }: Pick<BuildOptions, "matchedOnly">,
 	) {
 		let hasTask = false;
-		for (const node of this.buildPackages.values()) {
+		for (const node of this._buildPackages.values()) {
 			if (matchedOnly && !node.pkg.matched) {
 				// Don't initialize task on package that wasn't matched in matchedOnly mode
 				return;
@@ -506,21 +514,21 @@ export class BuildGraph {
 		traceGraph("package task initialized");
 
 		// All the transitive task has been created, finalize "soft" dependent edges and before/after tasks
-		for (const node of this.buildPackages.values()) {
+		for (const node of this._buildPackages.values()) {
 			node.finalizeDependentTasks();
 		}
 
 		traceGraph("dependent task initialized");
 
 		// All the tasks and dependency has been initialized, now initialize the leaf graph (which is used in build)
-		for (const node of this.buildPackages.values()) {
+		for (const node of this._buildPackages.values()) {
 			node.initializeDependentLeafTasks();
 		}
 
 		traceGraph("dependent leaf task initialized");
 
 		// Leaf graph is completed. Compute the weight
-		for (const node of this.buildPackages.values()) {
+		for (const node of this._buildPackages.values()) {
 			node.initializeWeight();
 		}
 

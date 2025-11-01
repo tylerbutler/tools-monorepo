@@ -141,13 +141,16 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		return !results.some((result) => result.error);
 	}
 
-	public static async ensureInstalled(packages: IPackage[]) {
+	public static async ensureInstalled(
+		packages: IPackage[],
+		updateLockfile: boolean = false,
+	) {
 		const installedWorkspaces = new Set<IWorkspace>();
 		const installPromises: Promise<boolean>[] = [];
 		for (const pkg of packages) {
 			if (!installedWorkspaces.has(pkg.workspace)) {
 				installedWorkspaces.add(pkg.workspace);
-				installPromises.push(pkg.workspace.install(false));
+				installPromises.push(pkg.workspace.install(updateLockfile));
 			}
 		}
 		const rets = await Promise.all(installPromises);

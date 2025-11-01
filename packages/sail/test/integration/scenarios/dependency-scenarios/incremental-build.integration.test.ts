@@ -43,7 +43,7 @@ describe("BuildGraph: Incremental Builds and Cache", () => {
 
 			// Verify tasks were executed (not skipped)
 			expect(result1.buildGraph.taskStats.leafBuiltCount).toBeGreaterThan(0);
-			expect(result1.buildGraph.taskStats.leafSkippedCount).toBe(0);
+			expect(result1.buildGraph.taskStats.leafUpToDateCount).toBe(0);
 
 			// Verify build artifacts exist
 			await assertFileExists(
@@ -67,7 +67,7 @@ describe("BuildGraph: Incremental Builds and Cache", () => {
 
 			// Verify tasks were skipped (cache hits)
 			expect(result2.buildGraph.taskStats.leafBuiltCount).toBe(0);
-			expect(result2.buildGraph.taskStats.leafSkippedCount).toBeGreaterThan(0);
+			expect(result2.buildGraph.taskStats.leafUpToDateCount).toBeGreaterThan(0);
 
 			// Verify cache stats show hits
 			expect(result2.cacheStats).toBeDefined();
@@ -128,7 +128,7 @@ export const VERSION = "1.0.1";
 			// Second build - all should be cached
 			const result2 = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 			expect(result2.buildGraph.taskStats.leafBuiltCount).toBe(0);
-			expect(result2.buildGraph.taskStats.leafSkippedCount).toBe(4);
+			expect(result2.buildGraph.taskStats.leafUpToDateCount).toBe(4);
 
 			// Modify base package (affects all downstream)
 			const baseSource = join(
@@ -232,7 +232,7 @@ export const LEFT_VERSION = "1.0.1";
 
 			// All tasks should be executed (not skipped)
 			expect(result.buildGraph.taskStats.leafBuiltCount).toBeGreaterThan(0);
-			expect(result.buildGraph.taskStats.leafSkippedCount).toBe(0);
+			expect(result.buildGraph.taskStats.leafUpToDateCount).toBe(0);
 		}, 180_000);
 	});
 });

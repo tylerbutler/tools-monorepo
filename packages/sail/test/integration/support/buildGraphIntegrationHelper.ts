@@ -196,7 +196,12 @@ export async function createBuildGraphTestContext(
 
 		installDependencies: async () => {
 			// Use the built-in ensureInstalled method from SailBuildRepo
-			return await SailBuildRepo.ensureInstalled(repo.packages);
+			// Convert Map to array of package values
+			// Allow lockfile updates for integration tests to handle version mismatches
+			return await SailBuildRepo.ensureInstalled(
+				Array.from(repo.packages.values()),
+				true, // updateLockfile
+			);
 		},
 
 		logger,
