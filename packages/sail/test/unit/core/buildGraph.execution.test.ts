@@ -69,7 +69,7 @@ describe("BuildGraph - Build Execution", () => {
 			expect(graph.matchedPackages).toBe(3);
 		});
 
-		// Note: Actual build() execution tests would require:
+		// TODO: Actual build() execution tests would require:
 		// 1. Scripts defined in package.json for each package
 		// 2. Real file system operations
 		// 3. Complex mocking of BuildExecutor internals
@@ -99,7 +99,7 @@ describe("BuildGraph - Build Execution", () => {
 			expect(stats).toBeUndefined();
 		});
 
-		// Note: Testing with actual cache would require more complex setup
+		// TODO: Testing with actual cache would require more complex setup
 		// with SharedCacheManager integration. The method is simple:
 		// 1. Check if cache exists
 		// 2. Get statistics from cache
