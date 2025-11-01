@@ -10,7 +10,13 @@ yarn.lock
 .require-email.json
 
 # nx
-.nx
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
+
+# turbo cache
+.turbo
 
 # netlify cache
 .netlify
