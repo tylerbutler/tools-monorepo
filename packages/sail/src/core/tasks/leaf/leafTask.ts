@@ -54,6 +54,9 @@ export abstract class LeafTask extends Task {
 	private _parentLeafTasks: Set<LeafTask> | undefined | null;
 	private parentWeight = -1;
 
+	// Store promises of dependent tasks to wait for them in exec()
+	protected dependentTaskPromises?: Promise<BuildResult>[];
+
 	// For task that needs to override the actual command to execute
 	protected get executionCommand() {
 		return this.command;
@@ -186,6 +189,21 @@ export abstract class LeafTask extends Task {
 		if (this.isDisabled) {
 			return BuildResult.UpToDate;
 		}
+
+		// Wait for dependent tasks to complete before executing
+		if (this.dependentTaskPromises && this.dependentTaskPromises.length > 0) {
+			console.log(`[LEAF EXEC] ${this.nameColored}: waiting for ${this.dependentTaskPromises.length} dependent tasks`);
+			const results = await Promise.all(this.dependentTaskPromises);
+			// Check if any dependency failed
+			for (const result of results) {
+				if (result === BuildResult.Failed) {
+					console.log(`[LEAF EXEC] ${this.nameColored}: dependency failed, skipping execution`);
+					return BuildResult.Failed;
+				}
+			}
+			console.log(`[LEAF EXEC] ${this.nameColored}: dependencies complete, proceeding with execution`);
+		}
+
 		if (defaultOptions.showExec) {
 			this.node.context.taskStats.leafBuiltCount++;
 			const totalTask =
@@ -398,14 +416,20 @@ export abstract class LeafTask extends Task {
 		q: AsyncPriorityQueue<TaskExec>,
 	): Promise<BuildResult> {
 		this.traceExec("Begin Leaf Task");
+		console.log(`[LEAF TASK] ${this.nameColored}: runTask started`);
 
-		// Build all the dependent tasks first
-		const result = await this.buildDependentTask(q);
-		if (result === BuildResult.Failed) {
-			return BuildResult.Failed;
+		// Start all dependent tasks (but don't wait for them to complete)
+		// They will be queued and run in parallel
+		const dependentPromises: Promise<BuildResult>[] = [];
+		for (const dependentLeafTask of this.getDependentLeafTasks()) {
+			dependentPromises.push(dependentLeafTask.run(q));
 		}
 
-		// Queue this task
+		// Store the dependent task promises so we can wait for them in exec()
+		this.dependentTaskPromises = dependentPromises;
+
+		// Queue this task immediately - it will wait for dependencies when executed
+		console.log(`[LEAF TASK] ${this.nameColored}: creating promise and queueing`);
 		return new Promise((resolve) => {
 			traceTaskQueue(`${this.nameColored}: queued with weight ${this.weight}`);
 			// biome-ignore lint/nursery/noFloatingPromises: push is synchronous despite returning a promise-like interface

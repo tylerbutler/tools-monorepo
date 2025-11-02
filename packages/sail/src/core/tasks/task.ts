@@ -145,7 +145,9 @@ export abstract class Task {
 	}
 
 	public async run(q: AsyncPriorityQueue<TaskExec>): Promise<BuildResult> {
-		if (await this.isUpToDate()) {
+		const upToDate = await this.isUpToDate();
+		console.log(`[TASK RUN] ${this.nameColored}: isUpToDate=${upToDate}`);
+		if (upToDate) {
 			return BuildResult.UpToDate;
 		}
 		if (!this.runP) {
