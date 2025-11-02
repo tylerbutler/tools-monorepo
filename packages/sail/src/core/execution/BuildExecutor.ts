@@ -174,14 +174,25 @@ export class BuildExecutor implements IBuildExecutor {
 		});
 
 		try {
+			// Start building all packages (this queues tasks asynchronously)
 			for (const [, buildablePackage] of buildablePackages) {
 				p.push(buildablePackage.build(q));
 			}
+
+			console.log(`[BUILD DEBUG] Awaiting ${p.length} build promises...`);
+			// Wait for all build promises to complete - this ensures tasks have finished executing
+			// The build promises resolve when their tasks complete, not just when they're queued
+			const results = await Promise.all(p);
+			console.log(`[BUILD DEBUG] All build promises resolved. Draining queue...`);
+
+			// The queue should be empty now, but ensure it's drained just in case
 			await q.drain();
+			console.log(`[BUILD DEBUG] Queue drained. Build complete.`);
+
 			if (hasError) {
 				return BuildResult.Failed;
 			}
-			return summarizeBuildResult((await Promise.all(p)) as BuildResult[]);
+			return summarizeBuildResult(results as BuildResult[]);
 		} finally {
 			this.context.workerPool?.reset();
 		}

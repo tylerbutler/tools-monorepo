@@ -32,12 +32,20 @@ const traceTaskInitDep = registerDebug("sail:task:init:dep");
 const traceTaskInitWeight = registerDebug("sail:task:init:weight");
 const traceTaskQueue = registerDebug("sail:task:exec:queue");
 const traceError = registerDebug("sail:task:error");
+const traceCacheKey = registerDebug("sail:cache:key");
+const traceUpToDate = registerDebug("sail:task:uptodate");
+
+// Global counter for task instance tracking
+let taskInstanceCounter = 0;
 
 interface TaskExecResult extends ExecAsyncResult {
 	worker?: boolean;
 }
 
 export abstract class LeafTask extends Task {
+	// Unique instance ID for debugging
+	private readonly instanceId: number = ++taskInstanceCounter;
+
 	// initialize during initializeDependentLeafTasks
 	private dependentLeafTasks?: Set<LeafTask>;
 
@@ -59,6 +67,9 @@ export abstract class LeafTask extends Task {
 		private readonly isTemp: boolean = false, // indicate if the task is for temporary and not for execution.
 	) {
 		super(node, command, context, taskName);
+		traceUpToDate(
+			`Created task #${this.instanceId}: ${this.nameColored} (pkg: ${node.pkg.nameColored})`,
+		);
 		if (!this.isDisabled) {
 			this.node.context.taskStats.leafTotalCount++;
 		}
@@ -403,6 +414,8 @@ export abstract class LeafTask extends Task {
 	}
 
 	protected async checkIsUpToDate(): Promise<boolean> {
+		traceUpToDate(`${this.nameColored}: checkIsUpToDate called`);
+
 		if (this.isDisabled) {
 			// disabled task are not included in the leafTotalCount
 			// so we don't need to update the leafUpToDateCount as well. Just return.
@@ -410,17 +423,23 @@ export abstract class LeafTask extends Task {
 		}
 
 		if (!(await this.checkDependentLeafTasksIsUpToDate())) {
+			traceUpToDate(`${this.nameColored}: dependent tasks not up to date`);
 			return false;
 		}
 
 		// Try shared cache first (if enabled and task supports it)
 		if (this.node.context.sharedCache && this.canUseCache) {
+			traceUpToDate(`${this.nameColored}: checking cache (sharedCache=${!!this.node.context.sharedCache}, canUseCache=${this.canUseCache})`);
 			const cacheHit = await this.tryRestoreFromCache();
 			if (cacheHit) {
 				this.node.context.taskStats.leafUpToDateCount++;
 				this.traceExec("Skipping Leaf Task (cache hit)");
+				traceUpToDate(`${this.nameColored}: cache HIT`);
 				return true;
 			}
+			traceUpToDate(`${this.nameColored}: cache MISS`);
+		} else {
+			traceUpToDate(`${this.nameColored}: cache check skipped (sharedCache=${!!this.node.context.sharedCache}, canUseCache=${this.canUseCache})`);
 		}
 
 		const start = Date.now();
@@ -432,6 +451,7 @@ export abstract class LeafTask extends Task {
 			this.node.context.taskStats.leafUpToDateCount++;
 			this.traceExec("Skipping Leaf Task");
 		}
+		traceUpToDate(`${this.nameColored}: leafIsUpToDate=${leafIsUpToDate}`);
 
 		return leafIsUpToDate;
 	}
@@ -539,6 +559,11 @@ export abstract class LeafTask extends Task {
 				inputHashes,
 				...cache.options.globalKeyComponents,
 			};
+
+			// Log cache key inputs for debugging
+			traceCacheKey(`${this.node.pkg.name}#${this.taskName ?? this.command} cache key inputs:`);
+			traceCacheKey(`  inputFiles: ${inputFiles.map(f => path.relative(this.node.pkg.directory, f)).join(', ')}`);
+			traceCacheKey(`  inputHashes: ${inputHashes.map(h => `${h.path}:${h.hash.substring(0, 8)}`).join(', ')}`);
 
 			// Lookup cache entry
 			const entry = await cache.lookup(cacheKeyInputs);

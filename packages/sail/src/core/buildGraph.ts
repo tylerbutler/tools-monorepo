@@ -73,6 +73,8 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
 	public constructor(
 		public readonly repoPackageMap: ReadonlyMap<string, BuildPackage>,
 		public readonly buildContext: BuildContext,
+		public readonly force: boolean,
+		public readonly matchedOnly: boolean,
 		public readonly workerPool?: WorkerPool,
 	) {
 		this.sailConfig = buildContext.sailConfig;
@@ -321,12 +323,14 @@ export class BuildGraph {
 		private log: Logger,
 		options: Pick<
 			BuildOptions,
-			"matchedOnly" | "worker" | "workerMemoryLimit" | "workerThreads"
+			"matchedOnly" | "worker" | "workerMemoryLimit" | "workerThreads" | "force"
 		>,
 	) {
 		this.context = new BuildGraphContext(
 			packages,
 			buildContext,
+			options.force,
+			options.matchedOnly,
 			options.worker
 				? new WorkerPool(options.workerThreads, options.workerMemoryLimit)
 				: undefined,

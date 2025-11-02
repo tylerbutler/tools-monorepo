@@ -292,8 +292,14 @@ export class SharedCacheManager {
 				return undefined;
 			}
 
-			// Update access time for LRU tracking
-			await updateManifestAccessTime(manifestPath);
+			// Update access time for LRU tracking (non-blocking, errors ignored)
+			// This is done asynchronously to avoid blocking the lookup and to prevent
+			// race conditions where concurrent lookups might try to update the same file
+			updateManifestAccessTime(manifestPath).catch((error) => {
+				// Silently ignore access time update failures - they're not critical
+				// The manifest will still be valid, just with a slightly stale access time
+				traceError(`Failed to update manifest access time for ${shortKey}: ${error}`);
+			});
 
 			// Cache hit!
 			const elapsed = Date.now() - startTime;

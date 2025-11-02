@@ -12,5 +12,13 @@
 	},
 	"devDependencies": {
 		"typescript": "~5.5.4"
+	},
+	"sail": {
+		"tasks": {
+			"build": {
+				"dependsOn": ["^build"],
+				"script": true
+			}
+		}
 	}
 }

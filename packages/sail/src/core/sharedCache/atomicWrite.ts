@@ -45,7 +45,22 @@ export async function atomicWrite(
 		}
 
 		// Atomically rename temp file to target
+		// DEBUG: Log before rename
+		const targetBasename = path.basename(targetPath);
+		if (targetBasename === "manifest.json") {
+			const { existsSync } = await import("node:fs");
+			const beforeExists = existsSync(targetPath);
+			console.log(`[ATOMIC WRITE] BEFORE rename: ${targetPath} exists=${beforeExists}`);
+		}
+
 		await rename(tempPath, targetPath);
+
+		// DEBUG: Log after rename
+		if (targetBasename === "manifest.json") {
+			const { existsSync } = await import("node:fs");
+			const afterExists = existsSync(targetPath);
+			console.log(`[ATOMIC WRITE] AFTER rename: ${targetPath} exists=${afterExists}`);
+		}
 	} catch (error) {
 		// Clean up temp file if write failed
 		try {

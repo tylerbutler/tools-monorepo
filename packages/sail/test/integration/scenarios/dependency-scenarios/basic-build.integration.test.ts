@@ -110,6 +110,22 @@ describe("BuildGraph: Basic Build Execution", () => {
 			// Level 0 = no dependencies, Level 1 = depends on Level 0
 			expect(libPkg!.level).toBe(0);
 			expect(appPkg!.level).toBe(1);
+
+			// Verify task dependencies created from dependsOn: ["^build"]
+			const appBuildTask = appPkg!.getTask("build");
+			const libBuildTask = libPkg!.getTask("build");
+
+			expect(appBuildTask).toBeDefined();
+			expect(libBuildTask).toBeDefined();
+
+			// app#build should depend on lib#build because of ^build syntax
+			// Note: dependentLeafTasks is a Set, not an array
+			expect(appBuildTask!.dependentLeafTasks).toBeDefined();
+			expect(appBuildTask!.dependentLeafTasks.size).toBeGreaterThan(0);
+
+			// Convert Set to array and check if lib#build task is in the dependencies
+			const dependentTasks = Array.from(appBuildTask!.dependentLeafTasks);
+			expect(dependentTasks).toContainEqual(libBuildTask);
 		}, 180_000);
 	});
 

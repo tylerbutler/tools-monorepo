@@ -9,5 +9,12 @@
 	},
 	"devDependencies": {
 		"typescript": "~5.5.4"
+	},
+	"sail": {
+		"tasks": {
+			"build": {
+				"script": true
+			}
+		}
 	}
 }

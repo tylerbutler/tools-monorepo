@@ -182,6 +182,41 @@ export class PackageBuilder {
 		const packageJson = this.buildPackageJson();
 		const scripts = packageJson.scripts || {};
 
+		// Capture dependencies in closure for generator
+		const dependencies = this.dependencies;
+		const devDependencies = this.devDependencies;
+		const peerDependencies = this.peerDependencies;
+
+		// Create generator function that will be called via getter
+		function* createDependenciesGenerator() {
+			// Yield production dependencies
+			for (const [name, version] of Object.entries(dependencies)) {
+				yield {
+					name,
+					version,
+					depKind: "prod" as const,
+				};
+			}
+
+			// Yield dev dependencies
+			for (const [name, version] of Object.entries(devDependencies)) {
+				yield {
+					name,
+					version,
+					depKind: "dev" as const,
+				};
+			}
+
+			// Yield peer dependencies
+			for (const [name, version] of Object.entries(peerDependencies)) {
+				yield {
+					name,
+					version,
+					depKind: "peer" as const,
+				};
+			}
+		}
+
 		return {
 			name: this.name,
 			nameColored: this.name,
@@ -191,7 +226,13 @@ export class PackageBuilder {
 			packageJson,
 			matched: true, // Set to true by default for test packages
 			isReleaseGroupRoot: false,
-			combinedDependencies: [],
+			/**
+			 * Generator that yields all dependencies (prod, dev, peer)
+			 * Mimics the behavior of PackageBase.combinedDependencies
+			 */
+			get combinedDependencies() {
+				return createDependenciesGenerator();
+			},
 			workspace: {
 				directory: "/test/repo",
 				packageManager: {

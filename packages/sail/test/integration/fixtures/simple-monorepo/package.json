@@ -2,6 +2,7 @@
 	"name": "simple-monorepo-fixture",
 	"version": "1.0.0",
 	"private": true,
+	"packageManager": "pnpm@10.10.0",
 	"workspaces": [
 		"packages/*"
 	]

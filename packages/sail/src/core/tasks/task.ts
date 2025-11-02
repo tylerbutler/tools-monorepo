@@ -10,6 +10,7 @@ const traceTaskInit = registerDebug("sail:task:init");
 const traceTaskExec = registerDebug("sail:task:exec");
 const traceTaskExecWait = registerDebug("sail:task:exec:wait");
 const traceTaskDepTask = registerDebug("sail:task:init:dep:task");
+const traceUpToDate = registerDebug("sail:task:uptodate");
 
 export interface TaskExec {
 	task: LeafTask;
@@ -156,10 +157,14 @@ export abstract class Task {
 	public async isUpToDate(): Promise<boolean> {
 		// Always not up to date if forced
 		if (this.forced) {
+			traceUpToDate(`${this.nameColored}: forced=true, returning false`);
 			return false;
 		}
 		if (this.isUpToDateP === undefined) {
+			traceUpToDate(`${this.nameColored}: isUpToDateP is undefined, calling checkIsUpToDate()`);
 			this.isUpToDateP = this.checkIsUpToDate();
+		} else {
+			traceUpToDate(`${this.nameColored}: isUpToDateP already set, returning cached promise`);
 		}
 		return this.isUpToDateP;
 	}
@@ -182,8 +187,8 @@ export abstract class Task {
 
 	public get forced() {
 		return (
-			defaultOptions.force &&
-			(defaultOptions.matchedOnly !== true || this.package.matched)
+			this.node.context.force &&
+			(this.node.context.matchedOnly !== true || this.package.matched)
 		);
 	}
 
