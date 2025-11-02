@@ -30,6 +30,16 @@ export class BuildExecutor implements IBuildExecutor {
 		matchedPackages: number,
 		timer?: Stopwatch,
 	): Promise<IBuildResult> {
+		// Reset all packages to clear cached state (necessary when reusing package instances)
+		for (const [, buildablePackage] of buildablePackages) {
+			if (
+				"reset" in buildablePackage &&
+				typeof buildablePackage.reset === "function"
+			) {
+				buildablePackage.reset();
+			}
+		}
+
 		// Start performance monitoring
 		if (this.context.buildProfiler) {
 			this.context.buildProfiler.startBuild();
@@ -179,17 +189,12 @@ export class BuildExecutor implements IBuildExecutor {
 				p.push(buildablePackage.build(q));
 			}
 
-			console.log(`[BUILD DEBUG] Awaiting ${p.length} build promises...`);
 			// Wait for all build promises to complete - this ensures tasks have finished executing
 			// The build promises resolve when their tasks complete, not just when they're queued
 			const results = await Promise.all(p);
-			console.log(
-				`[BUILD DEBUG] All build promises resolved. Draining queue...`,
-			);
 
 			// The queue should be empty now, but ensure it's drained just in case
 			await q.drain();
-			console.log(`[BUILD DEBUG] Queue drained. Build complete.`);
 
 			if (hasError) {
 				return BuildResult.Failed;

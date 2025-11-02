@@ -24,15 +24,22 @@ export class TaskDefinitionCache {
 		computeFn: () => TaskDefinitions,
 	): TaskDefinitions {
 		const cacheKey = this.createCacheKey(json, globalTaskDefinitions, options);
-		console.log(`[TASK DEF CACHE] ${json.name}: Looking up cache with key=${cacheKey}`);
+		console.log(
+			`[TASK DEF CACHE] ${json.name}: Looking up cache with key=${cacheKey}`,
+		);
 		console.log(`[TASK DEF CACHE] ${json.name}: json.scripts=`, json.scripts);
-		console.log(`[TASK DEF CACHE] ${json.name}: Cache has key? ${this.cache.has(cacheKey)}`);
+		console.log(
+			`[TASK DEF CACHE] ${json.name}: Cache has key? ${this.cache.has(cacheKey)}`,
+		);
 
 		if (this.cache.has(cacheKey)) {
 			this.accessTimes.set(cacheKey, Date.now());
 			const cached = this.cache.get(cacheKey);
 			if (cached !== undefined) {
-				console.log(`[TASK DEF CACHE] ${json.name}: CACHE HIT - returning`, cached);
+				console.log(
+					`[TASK DEF CACHE] ${json.name}: CACHE HIT - returning`,
+					cached,
+				);
 				return cached;
 			}
 		}

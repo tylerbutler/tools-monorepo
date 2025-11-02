@@ -36,6 +36,22 @@ export class TaskManager {
 	}
 
 	/**
+	 * Resets all tasks, clearing cached execution state.
+	 * Call this before each build to ensure fresh task evaluation.
+	 *
+	 * Note: Primarily intended for use in tests where task instances are reused.
+	 * In production, each build creates new task instances, so reset is not needed.
+	 */
+	public resetAllTasks(): void {
+		for (const task of this.tasks.values()) {
+			task.reset();
+		}
+		for (const task of this.scriptTasks.values()) {
+			task.reset();
+		}
+	}
+
+	/**
 	 * Gets read-only access to the tasks map
 	 */
 	public get tasksMap(): ReadonlyMap<string, Task> {

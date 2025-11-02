@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { ConfigurationMerger } from "../../../../src/core/config/ConfigurationMerger.js";
+import type { IDependencyFilters } from "../../../../src/core/interfaces/index.js";
 import type {
 	TaskDefinitions,
 	TaskDefinitionsOnDisk,
 } from "../../../../src/core/taskDefinitions.js";
-import type { IDependencyFilters } from "../../../../src/core/interfaces/index.js";
 
 describe("ConfigurationMerger", () => {
 	const merger = new ConfigurationMerger();

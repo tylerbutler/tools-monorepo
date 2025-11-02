@@ -186,6 +186,7 @@ export abstract class LeafTask extends Task {
 		return false;
 	}
 	public async exec(): Promise<BuildResult> {
+		console.log(`[LEAF EXEC] ${this.nameColored}: exec() called`);
 		if (this.isDisabled) {
 			return BuildResult.UpToDate;
 		}
@@ -228,11 +229,21 @@ export abstract class LeafTask extends Task {
 			!this.forced &&
 			(await this.checkLeafIsUpToDate())
 		) {
+			console.log(
+				`[LEAF EXEC] ${this.nameColored}: recheckLeafIsUpToDate returned true, returning UpToDate without executing`,
+			);
 			return this.execDone(startTime, BuildResult.UpToDate);
 		}
+		console.log(`[LEAF EXEC] ${this.nameColored}: executing execCore()`);
 		const ret = await this.execCore();
+		console.log(
+			`[LEAF EXEC] ${this.nameColored}: execCore() completed, hasError=${!!ret.error}`,
+		);
 
 		if (ret.error) {
+			console.log(
+				`[LEAF EXEC] ${this.nameColored}: error detected, returning Failed`,
+			);
 			const codeStr =
 				ret.error.code !== undefined ? ` (exit code ${ret.error.code})` : "";
 			this.log.errorLog(
@@ -255,10 +266,16 @@ export abstract class LeafTask extends Task {
 		const executionTimeMs = Date.now() - startTime;
 		let cacheWriteResult: StoreResult | undefined;
 		if (this.node.context.sharedCache && this.canUseCache) {
+			console.log(
+				`[LEAF EXEC] ${this.nameColored}: starting cache store at ${Date.now()}`,
+			);
 			cacheWriteResult = await this.storeInCache(
 				executionTimeMs,
 				ret.stdout ?? "",
 				ret.stderr ?? "",
+			);
+			console.log(
+				`[LEAF EXEC] ${this.nameColored}: cache store completed at ${Date.now()}, success=${cacheWriteResult.success}`,
 			);
 		}
 
@@ -422,22 +439,25 @@ export abstract class LeafTask extends Task {
 		q: AsyncPriorityQueue<TaskExec>,
 	): Promise<BuildResult> {
 		this.traceExec("Begin Leaf Task");
-		console.log(`[LEAF TASK] ${this.nameColored}: runTask started`);
 
 		// Start all dependent tasks (but don't wait for them to complete)
 		// They will be queued and run in parallel
 		const dependentPromises: Promise<BuildResult>[] = [];
-		for (const dependentLeafTask of this.getDependentLeafTasks()) {
+		const deps = Array.from(this.getDependentLeafTasks());
+		console.log(
+			`[LEAF TASK] ${this.nameColored}: has ${deps.length} dependent tasks: ${deps.map((t) => t.nameColored).join(", ")}`,
+		);
+		for (const dependentLeafTask of deps) {
 			dependentPromises.push(dependentLeafTask.run(q));
 		}
 
 		// Store the dependent task promises so we can wait for them in exec()
 		this.dependentTaskPromises = dependentPromises;
+		console.log(
+			`[LEAF TASK] ${this.nameColored}: stored ${this.dependentTaskPromises.length} dependent promises`,
+		);
 
 		// Queue this task immediately - it will wait for dependencies when executed
-		console.log(
-			`[LEAF TASK] ${this.nameColored}: creating promise and queueing`,
-		);
 		return new Promise((resolve) => {
 			traceTaskQueue(`${this.nameColored}: queued with weight ${this.weight}`);
 			// biome-ignore lint/nursery/noFloatingPromises: push is synchronous despite returning a promise-like interface
@@ -649,9 +669,13 @@ export abstract class LeafTask extends Task {
 	): Promise<StoreResult> {
 		const cache = this.node.context.sharedCache;
 		if (!cache) {
+			console.log(`[CACHE STORE] ${this.nameColored}: cache not initialized`);
 			return { success: false, reason: "cache not initialized" };
 		}
 		if (cache.options.skipCacheWrite) {
+			console.log(
+				`[CACHE STORE] ${this.nameColored}: skip-cache-write enabled`,
+			);
 			return { success: false, reason: "--skip-cache-write enabled" };
 		}
 
@@ -660,8 +684,14 @@ export abstract class LeafTask extends Task {
 			const inputFiles = await this.getCacheInputFiles();
 			const outputFiles = await this.getCacheOutputFiles();
 
+			console.log(
+				`[CACHE STORE] ${this.nameColored}: inputFiles=${inputFiles.length}, outputFiles=${outputFiles.length}`,
+			);
 			if (inputFiles.length === 0 || outputFiles.length === 0) {
 				// Task doesn't support caching yet
+				console.log(
+					`[CACHE STORE] ${this.nameColored}: task does not support caching (inputs=${inputFiles.length}, outputs=${outputFiles.length})`,
+				);
 				return { success: false, reason: "task does not support caching" };
 			}
 
@@ -696,14 +726,21 @@ export abstract class LeafTask extends Task {
 			};
 
 			// Store in cache
-			return await cache.store(
+			const result = await cache.store(
 				cacheKeyInputs,
 				taskOutputs,
 				this.node.pkg.directory,
 			);
+			console.log(
+				`[CACHE STORE] ${this.nameColored}: store result: success=${result.success}, reason=${result.reason ?? "none"}`,
+			);
+			return result;
 		} catch (error) {
 			// Don't fail the build if cache storage fails
 			this.traceError(`Failed to store in cache: ${error}`);
+			console.log(
+				`[CACHE STORE] ${this.nameColored}: EXCEPTION during store: ${error}`,
+			);
 			return {
 				success: false,
 				reason: error instanceof Error ? error.message : String(error),

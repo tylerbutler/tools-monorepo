@@ -146,7 +146,6 @@ export abstract class Task {
 
 	public async run(q: AsyncPriorityQueue<TaskExec>): Promise<BuildResult> {
 		const upToDate = await this.isUpToDate();
-		console.log(`[TASK RUN] ${this.nameColored}: isUpToDate=${upToDate}`);
 		if (upToDate) {
 			return BuildResult.UpToDate;
 		}
@@ -173,6 +172,18 @@ export abstract class Task {
 			);
 		}
 		return this.isUpToDateP;
+	}
+
+	/**
+	 * Resets cached execution state, allowing the task to be re-evaluated.
+	 * This is necessary when reusing task instances across multiple builds.
+	 *
+	 * Note: Primarily intended for use in tests where task instances are reused.
+	 * In production, each build creates new task instances, so reset is not needed.
+	 */
+	public reset(): void {
+		this.runP = undefined;
+		this.isUpToDateP = undefined;
 	}
 
 	public toString() {

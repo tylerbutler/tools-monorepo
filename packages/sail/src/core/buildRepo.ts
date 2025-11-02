@@ -203,18 +203,29 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		return true;
 	}
 
+	private static buildCounter = 0;
+
 	public async createBuildGraph(options: BuildOptions) {
 		// Ensure all custom handlers are loaded before creating the build graph
 		await this.ensureHandlersLoaded();
 
+		const buildNum = ++SailBuildRepo.buildCounter;
+		console.log(`\n========== BUILD #${buildNum} ==========`);
+
 		const buildTargetNames = options.buildTaskNames;
 		const { config } = getSailConfig(this.root);
+		const taskDefs = config.tasks;
+		console.log(`[BUILD ${buildNum}] taskDefs:`, taskDefs);
+		console.log(
+			`[BUILD ${buildNum}] taskDefs keys:`,
+			Object.keys(taskDefs ?? {}),
+		);
 		return new BuildGraph(
 			this.packages,
 			[...this.packages.values()],
 			this.context,
 			buildTargetNames,
-			config.tasks,
+			taskDefs,
 			(pkg: BuildPackage) => {
 				return (dep: BuildPackage) => {
 					return pkg.releaseGroup === dep.releaseGroup;

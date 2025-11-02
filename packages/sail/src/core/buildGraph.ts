@@ -130,6 +130,22 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 	private initializeTaskDefinitions(
 		globalTaskDefinitions: TaskDefinitions,
 	): TaskDefinitions {
+		console.log(
+			`[TASK DEF] ${this.pkg.name}: globalTaskDefinitions=`,
+			JSON.stringify(globalTaskDefinitions, null, 2),
+		);
+		console.log(
+			`[TASK DEF] ${this.pkg.name}: packageJson.name=`,
+			this.pkg.packageJson.name,
+		);
+		console.log(
+			`[TASK DEF] ${this.pkg.name}: packageJson.scripts=`,
+			this.pkg.packageJson.scripts,
+		);
+		console.log(
+			`[TASK DEF] ${this.pkg.name}: has scripts property=`,
+			"scripts" in this.pkg.packageJson,
+		);
 		const taskDefinitions = getTaskDefinitions(
 			this.pkg.packageJson,
 			globalTaskDefinitions,
@@ -138,6 +154,10 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 			},
 		);
 
+		console.log(
+			`[TASK DEF] ${this.pkg.name}: taskDefinitions=`,
+			JSON.stringify(taskDefinitions, null, 2),
+		);
 		traceTaskDef(
 			`${this.pkg.nameColored}: Task def: ${JSON.stringify(taskDefinitions, undefined, 2)}`,
 		);
@@ -270,6 +290,16 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 		return this.buildP;
 	}
 
+	/**
+	 * Resets cached build state, allowing the package to be rebuilt.
+	 * Note: Primarily intended for use in tests where package instances are reused.
+	 * In production, each build creates new package instances, so reset is not needed.
+	 */
+	public reset(): void {
+		this.buildP = undefined;
+		this.taskManager.resetAllTasks();
+	}
+
 	// Package utility methods
 	public async getLockFileHash(): Promise<string> {
 		const lockfile = this.pkg.getLockFilePath();
@@ -326,6 +356,14 @@ export class BuildGraph {
 			"matchedOnly" | "worker" | "workerMemoryLimit" | "workerThreads" | "force"
 		>,
 	) {
+		console.log(
+			`[BUILD GRAPH CONSTRUCTOR] globalTaskDefinitions:`,
+			globalTaskDefinitions,
+		);
+		console.log(
+			`[BUILD GRAPH CONSTRUCTOR] keys:`,
+			Object.keys(globalTaskDefinitions ?? {}),
+		);
 		this.context = new BuildGraphContext(
 			packages,
 			buildContext,
@@ -422,6 +460,14 @@ export class BuildGraph {
 		globalTaskDefinitionsOnDisk: TaskDefinitionsOnDisk | undefined,
 		getDepFilter: (pkg: BuildPackage) => (dep: BuildPackage) => boolean,
 	) {
+		console.log(
+			`[INIT PACKAGES] globalTaskDefinitionsOnDisk:`,
+			globalTaskDefinitionsOnDisk,
+		);
+		console.log(
+			`[INIT PACKAGES] keys:`,
+			Object.keys(globalTaskDefinitionsOnDisk ?? {}),
+		);
 		// Use DependencyResolver to resolve package dependencies
 		const dependencyNodes = this.dependencyResolver.resolvePackageDependencies(
 			packages,
@@ -430,6 +476,10 @@ export class BuildGraph {
 			getDepFilter,
 		);
 
+		console.log(
+			`[INIT PACKAGES] before convert, globalTaskDefinitionsOnDisk:`,
+			globalTaskDefinitionsOnDisk,
+		);
 		// Convert DependencyNodes to BuildGraphPackages
 		this.convertDependencyNodesToBuildGraphPackages(
 			dependencyNodes,
@@ -441,8 +491,20 @@ export class BuildGraph {
 		dependencyNodes: Map<BuildPackage, DependencyNode>,
 		globalTaskDefinitionsOnDisk: TaskDefinitionsOnDisk | undefined,
 	) {
+		console.log(
+			`[CONVERT] START: globalTaskDefinitionsOnDisk=`,
+			globalTaskDefinitionsOnDisk,
+		);
+		console.log(
+			`[CONVERT] keys:`,
+			Object.keys(globalTaskDefinitionsOnDisk ?? {}),
+		);
 		// First pass: create all BuildGraphPackages
 		for (const [pkg, depNode] of dependencyNodes) {
+			console.log(
+				`[CONVERT] About to create ${pkg.name}, globalTaskDefinitionsOnDisk=`,
+				globalTaskDefinitionsOnDisk,
+			);
 			const buildGraphPackage = this.createBuildGraphPackage(
 				pkg,
 				globalTaskDefinitionsOnDisk,
@@ -468,11 +530,40 @@ export class BuildGraph {
 		pkg: BuildPackage,
 		globalTaskDefinitionsOnDisk: TaskDefinitionsOnDisk | undefined,
 	): BuildGraphPackage {
+		console.log(
+			`[CREATE PKG ENTRY] ${pkg.name}: arg globalTaskDefinitionsOnDisk=`,
+			globalTaskDefinitionsOnDisk,
+		);
+		console.log(
+			`[CREATE PKG ENTRY] ${pkg.name}: arg type=`,
+			typeof globalTaskDefinitionsOnDisk,
+		);
+		console.log(
+			`[CREATE PKG ENTRY] ${pkg.name}: arg keys=`,
+			Object.keys(globalTaskDefinitionsOnDisk ?? {}),
+		);
+
 		let buildPackage = this._buildPackages.get(pkg);
 		if (buildPackage === undefined) {
 			try {
+				console.log(
+					`[CREATE PKG] ${pkg.name}: BEFORE normalize, globalTaskDefinitionsOnDisk=`,
+					globalTaskDefinitionsOnDisk,
+				);
+				console.log(
+					`[CREATE PKG] ${pkg.name}: BEFORE normalize, keys=`,
+					Object.keys(globalTaskDefinitionsOnDisk ?? {}),
+				);
 				const globalTaskDefinitions = normalizeGlobalTaskDefinitions(
 					globalTaskDefinitionsOnDisk,
+				);
+				console.log(
+					`[CREATE PKG] ${pkg.name}: AFTER normalize, globalTaskDefinitions=`,
+					globalTaskDefinitions,
+				);
+				console.log(
+					`[CREATE PKG] ${pkg.name}: AFTER normalize, keys=`,
+					Object.keys(globalTaskDefinitions),
 				);
 				buildPackage = new BuildGraphPackage(
 					this.context,

@@ -1,6 +1,6 @@
-import { describe, expect, it, beforeEach } from "vitest";
-import { TaskDefinitionCache } from "../../../../src/core/cache/TaskDefinitionCache.js";
+import { beforeEach, describe, expect, it } from "vitest";
 import type { SailPackageJson } from "../../../../src/common/npmPackage.js";
+import { TaskDefinitionCache } from "../../../../src/core/cache/TaskDefinitionCache.js";
 import type { TaskDefinitions } from "../../../../src/core/taskDefinitions.js";
 
 describe("TaskDefinitionCache", () => {
@@ -173,10 +173,15 @@ describe("TaskDefinitionCache", () => {
 			const options = { isReleaseGroupRoot: false };
 			let callCount = 0;
 
-			localCache.getTaskDefinitions(pkgWithBuild, globalTaskDefs, options, () => {
-				callCount++;
-				return {};
-			});
+			localCache.getTaskDefinitions(
+				pkgWithBuild,
+				globalTaskDefs,
+				options,
+				() => {
+					callCount++;
+					return {};
+				},
+			);
 
 			localCache.getTaskDefinitions(
 				pkgWithBuildAndTest,
@@ -228,12 +233,28 @@ describe("TaskDefinitionCache", () => {
 
 			localCache.getTaskDefinitions(pkg, globalTaskDefs1, options, () => {
 				call1 = true;
-				return { build: { dependsOn: ["^build"], script: true, before: [], children: [], after: [] } };
+				return {
+					build: {
+						dependsOn: ["^build"],
+						script: true,
+						before: [],
+						children: [],
+						after: [],
+					},
+				};
 			});
 
 			localCache.getTaskDefinitions(pkg, globalTaskDefs2, options, () => {
 				call2 = true;
-				return { build: { dependsOn: [], script: true, before: [], children: [], after: [] } };
+				return {
+					build: {
+						dependsOn: [],
+						script: true,
+						before: [],
+						children: [],
+						after: [],
+					},
+				};
 			});
 
 			// Both should be cache misses (different global task defs)
