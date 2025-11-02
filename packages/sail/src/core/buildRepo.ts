@@ -9,6 +9,7 @@ import {
 	type Logger,
 	type ReleaseGroupName,
 } from "@tylerbu/sail-infrastructure";
+import registerDebug from "debug";
 import chalk from "picocolors";
 import { simpleGit } from "simple-git";
 
@@ -26,7 +27,7 @@ import type { BuildOptions } from "./options.js";
 import type { TaskHandlerPlugin } from "./sailConfig.js";
 import { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
 
-// const traceInit = registerDebug("sail:init");
+const traceBuild = registerDebug("sail:build");
 
 export interface IPackageMatchedOptions {
 	match: string[];
@@ -143,7 +144,7 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 
 	public static async ensureInstalled(
 		packages: IPackage[],
-		updateLockfile: boolean = false,
+		updateLockfile = false,
 	) {
 		const installedWorkspaces = new Set<IWorkspace>();
 		const installPromises: Promise<boolean>[] = [];
@@ -210,14 +211,14 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		await this.ensureHandlersLoaded();
 
 		const buildNum = ++SailBuildRepo.buildCounter;
-		console.log(`\n========== BUILD #${buildNum} ==========`);
+		traceBuild(`\n========== BUILD #${buildNum} ==========`);
 
 		const buildTargetNames = options.buildTaskNames;
 		const { config } = getSailConfig(this.root);
 		const taskDefs = config.tasks;
-		console.log(`[BUILD ${buildNum}] taskDefs:`, taskDefs);
-		console.log(
-			`[BUILD ${buildNum}] taskDefs keys:`,
+		traceBuild(`BUILD #${buildNum}: taskDefs=%O`, taskDefs);
+		traceBuild(
+			`BUILD #${buildNum}: taskDefs keys=%O`,
 			Object.keys(taskDefs ?? {}),
 		);
 		return new BuildGraph(

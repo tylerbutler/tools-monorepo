@@ -89,15 +89,10 @@ export function createMockBuildContext(
 	overrides: Partial<MockBuildContext> = {},
 ): MockBuildContext {
 	const mockLogger: Logger = {
-		// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock logger intentionally does nothing
 		info: () => {},
-		// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock logger intentionally does nothing
 		warn: () => {},
-		// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock logger intentionally does nothing
 		error: () => {},
-		// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock logger intentionally does nothing
 		verbose: () => {},
-		// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock logger intentionally does nothing
 		debug: () => {},
 	} as Logger;
 
@@ -113,15 +108,12 @@ export function createMockBuildContext(
 
 	// Create a mock task handler registry
 	const mockTaskHandlerRegistry = {
-		// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock registry method intentionally does nothing
 		register: () => {},
 		get: () => undefined,
 		has: () => false,
-		// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock registry method intentionally does nothing
 		loadPlugin: async () => {},
 		loadPlugins: async () => [],
 		getRegisteredExecutables: () => [],
-		// biome-ignore lint/suspicious/noEmptyBlockStatements: Mock registry method intentionally does nothing
 		clear: () => {},
 	};
 

@@ -25,6 +25,7 @@ describe("TaskDefinitionCache", () => {
 			const pkgWithUndefinedScripts: SailPackageJson = {
 				name: "pkg-no-scripts",
 				version: "1.0.0",
+				// biome-ignore lint/suspicious/noExplicitAny: Testing edge case with undefined scripts
 				scripts: undefined as any,
 			};
 
@@ -387,6 +388,7 @@ describe("TaskDefinitionCache", () => {
 			const pkgWithUndefinedScripts: SailPackageJson = {
 				name: "pkg-undefined",
 				version: "1.0.0",
+				// biome-ignore lint/suspicious/noExplicitAny: Testing edge case with undefined scripts
 				scripts: undefined as any,
 			};
 
@@ -615,6 +617,7 @@ describe("TaskDefinitionCache", () => {
 			const workspaceRoot: SailPackageJson = {
 				name: "workspace-root",
 				version: "1.0.0",
+				// biome-ignore lint/suspicious/noExplicitAny: Testing edge case with undefined scripts
 				scripts: undefined as any,
 			};
 

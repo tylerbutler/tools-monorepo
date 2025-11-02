@@ -10,4 +10,4 @@ export function main(): void {
 	console.log(`2 + 2 = ${add(2, 2)}`);
 }
 
-export { add, greet };
+export { add, greet } from "@test/lib";

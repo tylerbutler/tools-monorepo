@@ -98,13 +98,15 @@ export async function assertDirectoryExists(
 export async function assertFileContains(
 	filePath: string,
 	expectedContent: string,
-	partial: boolean = true,
+	partial = true,
 ): Promise<void> {
 	const content = await readFile(filePath, "utf-8");
 
 	if (partial) {
+		// biome-ignore lint/suspicious/noMisplacedAssertion: Helper function designed to be called from tests
 		expect(content).toContain(expectedContent);
 	} else {
+		// biome-ignore lint/suspicious/noMisplacedAssertion: Helper function designed to be called from tests
 		expect(content).toBe(expectedContent);
 	}
 }
@@ -200,24 +202,29 @@ export function createBuildAssertions(buildResult: {
 			const executedTasks =
 				buildResult.tasks?.filter((t) => !t.skipped).map((t) => t.name) ?? [];
 			for (const taskName of taskNames) {
+				// biome-ignore lint/suspicious/noMisplacedAssertion: Helper function designed to be called from tests
 				expect(executedTasks).toContain(taskName);
 			}
 		},
 
 		failed(): void {
+			// biome-ignore lint/suspicious/noMisplacedAssertion: Helper function designed to be called from tests
 			expect(buildResult.failures).toBeDefined();
-			expect(buildResult.failures!.length).toBeGreaterThan(0);
+			// biome-ignore lint/suspicious/noMisplacedAssertion: Helper function designed to be called from tests
+			expect(buildResult.failures?.length).toBeGreaterThan(0);
 		},
 
 		skippedTasks(taskNames: string[]): void {
 			const skippedTasks =
 				buildResult.tasks?.filter((t) => t.skipped).map((t) => t.name) ?? [];
 			for (const taskName of taskNames) {
+				// biome-ignore lint/suspicious/noMisplacedAssertion: Helper function designed to be called from tests
 				expect(skippedTasks).toContain(taskName);
 			}
 		},
 
 		succeeded(): void {
+			// biome-ignore lint/suspicious/noMisplacedAssertion: Helper function designed to be called from tests
 			expect(buildResult.failures).toBeUndefined();
 		},
 	};

@@ -1,3 +1,4 @@
+import registerDebug from "debug";
 import type { SailPackageJson } from "../common/npmPackage.js";
 import { ScriptAnalyzer } from "./analysis/ScriptAnalyzer.js";
 import { TaskDefinitionCache } from "./cache/TaskDefinitionCache.js";
@@ -8,6 +9,8 @@ import {
 	isConcurrentlyCommand,
 	parseConcurrentlyCommand,
 } from "./parseCommands.js";
+
+const traceTaskDef = registerDebug("sail:task:definition");
 
 /**
  * Task definitions (type `TaskDefinitions`) is an object describing build tasks for Sail.
@@ -315,10 +318,10 @@ function computeTaskDefinitions(
 	const scriptAnalyzer = new ScriptAnalyzer();
 
 	// Parse package configuration
-	console.log(`[COMPUTE] json.name:`, json.name);
-	console.log(`[COMPUTE] json.scripts:`, json.scripts);
+	traceTaskDef("compute: json.name=%s", json.name);
+	traceTaskDef("compute: json.scripts=%O", json.scripts);
 	const packageConfig = parser.parsePackageConfiguration(json);
-	console.log(`[COMPUTE] packageConfig.scripts:`, packageConfig.scripts);
+	traceTaskDef("compute: packageConfig.scripts=%O", packageConfig.scripts);
 
 	// Create dependency filters
 	const filters = parser.createDependencyFilters(
@@ -327,26 +330,20 @@ function computeTaskDefinitions(
 	);
 
 	// Merge global and package task definitions
-	console.log(
-		`[COMPUTE TASK DEFS] globalTaskDefinitions:`,
-		globalTaskDefinitions,
-	);
-	console.log(
-		`[COMPUTE TASK DEFS] packageConfig.taskDefinitions:`,
+	traceTaskDef("compute: globalTaskDefinitions=%O", globalTaskDefinitions);
+	traceTaskDef(
+		"compute: packageConfig.taskDefinitions=%O",
 		packageConfig.taskDefinitions,
 	);
-	console.log(
-		`[COMPUTE TASK DEFS] packageConfig.scripts:`,
-		packageConfig.scripts,
-	);
+	traceTaskDef("compute: packageConfig.scripts=%O", packageConfig.scripts);
 	const taskDefinitions = merger.mergeTaskDefinitions(
 		globalTaskDefinitions,
 		packageConfig.taskDefinitions,
 		packageConfig.scripts,
 		filters,
 	);
-	console.log(`[COMPUTE TASK DEFS] RESULT taskDefinitions:`, taskDefinitions);
-	console.log(`[COMPUTE TASK DEFS] RESULT keys:`, Object.keys(taskDefinitions));
+	traceTaskDef("compute: RESULT taskDefinitions=%O", taskDefinitions);
+	traceTaskDef("compute: RESULT keys=%O", Object.keys(taskDefinitions));
 
 	// Validate only package-specific task configurations (not global ones)
 	// This preserves the original behavior where global tasks can invoke fluid-build

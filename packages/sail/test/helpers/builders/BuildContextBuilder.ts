@@ -2,14 +2,12 @@ import type { Logger } from "@tylerbu/cli-api";
 import type {
 	BuildPackage,
 	BuildProjectConfig,
-	PackageName,
 } from "@tylerbu/sail-infrastructure";
 import type { SimpleGit } from "simple-git";
 import type { BuildContext } from "../../../src/core/buildContext.js";
 import type { ISailConfig } from "../../../src/core/sailConfig.js";
 import type { TaskConfig } from "../../../src/core/taskDefinitions.js";
 import type { TaskHandlerRegistry } from "../../../src/core/tasks/TaskHandlerRegistry.js";
-import type { WorkerPool } from "../../../src/core/tasks/workers/workerPool.js";
 
 /**
  * Fluent builder for creating BuildGraphContext objects for testing.
@@ -26,21 +24,20 @@ import type { WorkerPool } from "../../../src/core/tasks/workers/workerPool.js";
  * ```
  */
 export class BuildContextBuilder {
-	private repoRoot: string = "/test/repo";
-	private gitRoot: string = "/test/repo";
+	private repoRoot = "/test/repo";
+	private gitRoot = "/test/repo";
 	private taskDefinitions: Record<string, TaskConfig> = {};
 	private declarativeTasks: Record<string, unknown> = {};
 	private packages: Map<string, BuildPackage> = new Map();
 	private buildProjectConfig: Partial<BuildProjectConfig> = {};
 	private logger?: Logger;
 	private gitRepo?: SimpleGit;
-	private workerPool?: WorkerPool;
 	private taskHandlerRegistry?: TaskHandlerRegistry;
 
 	/**
 	 * Set the repository root path
 	 */
-	withRepoRoot(path: string): this {
+	public withRepoRoot(path: string): this {
 		this.repoRoot = path;
 		return this;
 	}
@@ -48,7 +45,7 @@ export class BuildContextBuilder {
 	/**
 	 * Set the git root path (defaults to repoRoot if not set)
 	 */
-	withGitRoot(path: string): this {
+	public withGitRoot(path: string): this {
 		this.gitRoot = path;
 		return this;
 	}
@@ -56,7 +53,7 @@ export class BuildContextBuilder {
 	/**
 	 * Add a package to the repo package map
 	 */
-	withPackage(pkg: BuildPackage): this {
+	public withPackage(pkg: BuildPackage): this {
 		this.packages.set(pkg.name, pkg);
 		return this;
 	}
@@ -64,7 +61,7 @@ export class BuildContextBuilder {
 	/**
 	 * Add multiple packages to the repo package map
 	 */
-	withPackages(packages: BuildPackage[]): this {
+	public withPackages(packages: BuildPackage[]): this {
 		for (const pkg of packages) {
 			this.packages.set(pkg.name, pkg);
 		}
@@ -74,7 +71,7 @@ export class BuildContextBuilder {
 	/**
 	 * Add a task definition to the Sail config
 	 */
-	withTaskDefinition(name: string, config: TaskConfig): this {
+	public withTaskDefinition(name: string, config: TaskConfig): this {
 		this.taskDefinitions[name] = config;
 		return this;
 	}
@@ -82,7 +79,7 @@ export class BuildContextBuilder {
 	/**
 	 * Add multiple task definitions
 	 */
-	withTaskDefinitions(definitions: Record<string, TaskConfig>): this {
+	public withTaskDefinitions(definitions: Record<string, TaskConfig>): this {
 		Object.assign(this.taskDefinitions, definitions);
 		return this;
 	}
@@ -90,7 +87,7 @@ export class BuildContextBuilder {
 	/**
 	 * Add a declarative task configuration
 	 */
-	withDeclarativeTask(name: string, config: unknown): this {
+	public withDeclarativeTask(name: string, config: unknown): this {
 		this.declarativeTasks[name] = config;
 		return this;
 	}
@@ -98,7 +95,7 @@ export class BuildContextBuilder {
 	/**
 	 * Set the build project config
 	 */
-	withBuildProjectConfig(config: Partial<BuildProjectConfig>): this {
+	public withBuildProjectConfig(config: Partial<BuildProjectConfig>): this {
 		this.buildProjectConfig = config;
 		return this;
 	}
@@ -106,7 +103,7 @@ export class BuildContextBuilder {
 	/**
 	 * Set a custom logger
 	 */
-	withLogger(logger: Logger): this {
+	public withLogger(logger: Logger): this {
 		this.logger = logger;
 		return this;
 	}
@@ -114,23 +111,15 @@ export class BuildContextBuilder {
 	/**
 	 * Set a custom git repo instance
 	 */
-	withGitRepo(gitRepo: SimpleGit): this {
+	public withGitRepo(gitRepo: SimpleGit): this {
 		this.gitRepo = gitRepo;
-		return this;
-	}
-
-	/**
-	 * Set a worker pool
-	 */
-	withWorkerPool(pool: WorkerPool): this {
-		this.workerPool = pool;
 		return this;
 	}
 
 	/**
 	 * Set a task handler registry
 	 */
-	withTaskHandlerRegistry(registry: TaskHandlerRegistry): this {
+	public withTaskHandlerRegistry(registry: TaskHandlerRegistry): this {
 		this.taskHandlerRegistry = registry;
 		return this;
 	}

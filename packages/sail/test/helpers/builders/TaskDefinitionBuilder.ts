@@ -19,12 +19,12 @@ import type {
  * ```
  */
 export class TaskDefinitionBuilder {
-	private taskName: string = "test-task";
+	private taskName = "test-task";
 	private dependsOn: string[] = [];
 	private before: string[] = [];
 	private after: string[] = [];
 	private children: string[] = [];
-	private isScript: boolean = true;
+	private isScript = true;
 
 	/**
 	 * Set the task name (for reference only, not included in TaskConfig)
@@ -65,7 +65,7 @@ export class TaskDefinitionBuilder {
 	 * Add child tasks that are included in this task
 	 * @param tasks - Child task names
 	 */
-	withChildren(...tasks: string[]): this {
+	public withChildren(...tasks: string[]): this {
 		this.children.push(...tasks);
 		return this;
 	}
@@ -73,7 +73,7 @@ export class TaskDefinitionBuilder {
 	/**
 	 * Set whether this is a script task (looks for package.json script)
 	 */
-	withScript(isScript: boolean): this {
+	public withScript(isScript: boolean): this {
 		this.isScript = isScript;
 		return this;
 	}

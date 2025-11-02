@@ -78,7 +78,9 @@ export class BuildGraphBuilder {
 		for (const part of parts) {
 			if (part.includes("→")) {
 				const [dependent, dependencies] = part.split("→").map((s) => s.trim());
-				if (!dependent || !dependencies) continue;
+				if (!(dependent && dependencies)) {
+					continue;
+				}
 
 				const deps = dependencies.split(/\s+/).filter(Boolean);
 				const existing = this.dependencies.get(dependent) ?? [];
@@ -217,7 +219,7 @@ export class BuildGraphBuilder {
 		// If script is true or undefined, omit it to allow auto-detection from package.json
 		const globalTaskDefinitions: TaskDefinitionsOnDisk = {};
 		for (const [name, config] of Object.entries(this.taskDefinitions)) {
-			const taskDef: any = {
+			const taskDef: Partial<TaskConfig> = {
 				dependsOn: config.dependsOn,
 				before: config.before,
 				after: config.after,

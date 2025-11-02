@@ -108,23 +108,23 @@ describe("BuildGraph: Basic Build Execution", () => {
 			expect(appPkg).toBeDefined();
 
 			// Level 0 = no dependencies, Level 1 = depends on Level 0
-			expect(libPkg!.level).toBe(0);
-			expect(appPkg!.level).toBe(1);
+			expect(libPkg?.level).toBe(0);
+			expect(appPkg?.level).toBe(1);
 
 			// Verify task dependencies created from dependsOn: ["^build"]
-			const appBuildTask = appPkg!.getTask("build");
-			const libBuildTask = libPkg!.getTask("build");
+			const appBuildTask = appPkg?.getTask("build");
+			const libBuildTask = libPkg?.getTask("build");
 
 			expect(appBuildTask).toBeDefined();
 			expect(libBuildTask).toBeDefined();
 
 			// app#build should depend on lib#build because of ^build syntax
 			// Note: dependentLeafTasks is a Set, not an array
-			expect(appBuildTask!.dependentLeafTasks).toBeDefined();
-			expect(appBuildTask!.dependentLeafTasks.size).toBeGreaterThan(0);
+			expect(appBuildTask?.dependentLeafTasks).toBeDefined();
+			expect(appBuildTask?.dependentLeafTasks.size).toBeGreaterThan(0);
 
 			// Convert Set to array and check if lib#build task is in the dependencies
-			const dependentTasks = Array.from(appBuildTask!.dependentLeafTasks);
+			const dependentTasks = Array.from(appBuildTask?.dependentLeafTasks);
 			expect(dependentTasks).toContainEqual(libBuildTask);
 		}, 180_000);
 	});
@@ -148,10 +148,10 @@ describe("BuildGraph: Basic Build Execution", () => {
 			const right = packages.find((p) => p.pkg.name === "@test/right");
 			const top = packages.find((p) => p.pkg.name === "@test/top");
 
-			expect(base!.level).toBe(0); // Base has no dependencies
-			expect(left!.level).toBe(1); // Left depends on base
-			expect(right!.level).toBe(1); // Right depends on base
-			expect(top!.level).toBe(2); // Top depends on left and right
+			expect(base?.level).toBe(0); // Base has no dependencies
+			expect(left?.level).toBe(1); // Left depends on base
+			expect(right?.level).toBe(1); // Right depends on base
+			expect(top?.level).toBe(2); // Top depends on left and right
 		}, 180_000);
 
 		it("should execute left and right builds at the same level", async () => {
@@ -173,7 +173,7 @@ describe("BuildGraph: Basic Build Execution", () => {
 			const left = packages.find((p) => p.pkg.name === "@test/left");
 			const right = packages.find((p) => p.pkg.name === "@test/right");
 
-			expect(left!.level).toBe(right!.level);
+			expect(left?.level).toBe(right?.level);
 		}, 180_000);
 
 		it("should produce correct build artifacts for all packages", async () => {

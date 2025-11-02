@@ -7,6 +7,9 @@
 import { randomBytes } from "node:crypto";
 import { mkdir, rename, unlink, writeFile } from "node:fs/promises";
 import * as path from "node:path";
+import registerDebug from "debug";
+
+const traceAtomicWrite = registerDebug("sail:cache:atomicwrite");
 
 /**
  * Atomically write data to a file using temp-file-and-rename pattern.
@@ -50,9 +53,7 @@ export async function atomicWrite(
 		if (targetBasename === "manifest.json") {
 			const { existsSync } = await import("node:fs");
 			const beforeExists = existsSync(targetPath);
-			console.log(
-				`[ATOMIC WRITE] BEFORE rename: ${targetPath} exists=${beforeExists}`,
-			);
+			traceAtomicWrite(`BEFORE rename: ${targetPath} exists=%s`, beforeExists);
 		}
 
 		await rename(tempPath, targetPath);
@@ -61,9 +62,7 @@ export async function atomicWrite(
 		if (targetBasename === "manifest.json") {
 			const { existsSync } = await import("node:fs");
 			const afterExists = existsSync(targetPath);
-			console.log(
-				`[ATOMIC WRITE] AFTER rename: ${targetPath} exists=${afterExists}`,
-			);
+			traceAtomicWrite(`AFTER rename: ${targetPath} exists=%s`, afterExists);
 		}
 	} catch (error) {
 		// Clean up temp file if write failed

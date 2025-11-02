@@ -130,20 +130,20 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 	private initializeTaskDefinitions(
 		globalTaskDefinitions: TaskDefinitions,
 	): TaskDefinitions {
-		console.log(
-			`[TASK DEF] ${this.pkg.name}: globalTaskDefinitions=`,
-			JSON.stringify(globalTaskDefinitions, null, 2),
+		traceTaskDef(
+			`${this.pkg.name}: globalTaskDefinitions=%O`,
+			globalTaskDefinitions,
 		);
-		console.log(
-			`[TASK DEF] ${this.pkg.name}: packageJson.name=`,
+		traceTaskDef(
+			`${this.pkg.name}: packageJson.name=%s`,
 			this.pkg.packageJson.name,
 		);
-		console.log(
-			`[TASK DEF] ${this.pkg.name}: packageJson.scripts=`,
+		traceTaskDef(
+			`${this.pkg.name}: packageJson.scripts=%O`,
 			this.pkg.packageJson.scripts,
 		);
-		console.log(
-			`[TASK DEF] ${this.pkg.name}: has scripts property=`,
+		traceTaskDef(
+			`${this.pkg.name}: has scripts property=%s`,
 			"scripts" in this.pkg.packageJson,
 		);
 		const taskDefinitions = getTaskDefinitions(
@@ -154,10 +154,6 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 			},
 		);
 
-		console.log(
-			`[TASK DEF] ${this.pkg.name}: taskDefinitions=`,
-			JSON.stringify(taskDefinitions, null, 2),
-		);
 		traceTaskDef(
 			`${this.pkg.nameColored}: Task def: ${JSON.stringify(taskDefinitions, undefined, 2)}`,
 		);
@@ -356,12 +352,9 @@ export class BuildGraph {
 			"matchedOnly" | "worker" | "workerMemoryLimit" | "workerThreads" | "force"
 		>,
 	) {
-		console.log(
-			`[BUILD GRAPH CONSTRUCTOR] globalTaskDefinitions:`,
-			globalTaskDefinitions,
-		);
-		console.log(
-			`[BUILD GRAPH CONSTRUCTOR] keys:`,
+		traceGraph("globalTaskDefinitions=%O", globalTaskDefinitions);
+		traceGraph(
+			"globalTaskDefinitions keys=%O",
 			Object.keys(globalTaskDefinitions ?? {}),
 		);
 		this.context = new BuildGraphContext(
@@ -460,12 +453,12 @@ export class BuildGraph {
 		globalTaskDefinitionsOnDisk: TaskDefinitionsOnDisk | undefined,
 		getDepFilter: (pkg: BuildPackage) => (dep: BuildPackage) => boolean,
 	) {
-		console.log(
-			`[INIT PACKAGES] globalTaskDefinitionsOnDisk:`,
+		traceGraph(
+			"initPackages: globalTaskDefinitionsOnDisk=%O",
 			globalTaskDefinitionsOnDisk,
 		);
-		console.log(
-			`[INIT PACKAGES] keys:`,
+		traceGraph(
+			"initPackages: globalTaskDefinitionsOnDisk keys=%O",
 			Object.keys(globalTaskDefinitionsOnDisk ?? {}),
 		);
 		// Use DependencyResolver to resolve package dependencies
@@ -476,8 +469,8 @@ export class BuildGraph {
 			getDepFilter,
 		);
 
-		console.log(
-			`[INIT PACKAGES] before convert, globalTaskDefinitionsOnDisk:`,
+		traceGraph(
+			"initPackages: before convert, globalTaskDefinitionsOnDisk=%O",
 			globalTaskDefinitionsOnDisk,
 		);
 		// Convert DependencyNodes to BuildGraphPackages
@@ -491,18 +484,18 @@ export class BuildGraph {
 		dependencyNodes: Map<BuildPackage, DependencyNode>,
 		globalTaskDefinitionsOnDisk: TaskDefinitionsOnDisk | undefined,
 	) {
-		console.log(
-			`[CONVERT] START: globalTaskDefinitionsOnDisk=`,
+		traceGraph(
+			"convertDependencyNodes: START globalTaskDefinitionsOnDisk=%O",
 			globalTaskDefinitionsOnDisk,
 		);
-		console.log(
-			`[CONVERT] keys:`,
+		traceGraph(
+			"convertDependencyNodes: keys=%O",
 			Object.keys(globalTaskDefinitionsOnDisk ?? {}),
 		);
 		// First pass: create all BuildGraphPackages
 		for (const [pkg, depNode] of dependencyNodes) {
-			console.log(
-				`[CONVERT] About to create ${pkg.name}, globalTaskDefinitionsOnDisk=`,
+			traceGraph(
+				`convertDependencyNodes: About to create ${pkg.name}, globalTaskDefinitionsOnDisk=%O`,
 				globalTaskDefinitionsOnDisk,
 			);
 			const buildGraphPackage = this.createBuildGraphPackage(
@@ -530,39 +523,39 @@ export class BuildGraph {
 		pkg: BuildPackage,
 		globalTaskDefinitionsOnDisk: TaskDefinitionsOnDisk | undefined,
 	): BuildGraphPackage {
-		console.log(
-			`[CREATE PKG ENTRY] ${pkg.name}: arg globalTaskDefinitionsOnDisk=`,
+		traceGraph(
+			`createBuildGraphPackage: ${pkg.name} arg globalTaskDefinitionsOnDisk=%O`,
 			globalTaskDefinitionsOnDisk,
 		);
-		console.log(
-			`[CREATE PKG ENTRY] ${pkg.name}: arg type=`,
+		traceGraph(
+			`createBuildGraphPackage: ${pkg.name} arg type=%s`,
 			typeof globalTaskDefinitionsOnDisk,
 		);
-		console.log(
-			`[CREATE PKG ENTRY] ${pkg.name}: arg keys=`,
+		traceGraph(
+			`createBuildGraphPackage: ${pkg.name} arg keys=%O`,
 			Object.keys(globalTaskDefinitionsOnDisk ?? {}),
 		);
 
 		let buildPackage = this._buildPackages.get(pkg);
 		if (buildPackage === undefined) {
 			try {
-				console.log(
-					`[CREATE PKG] ${pkg.name}: BEFORE normalize, globalTaskDefinitionsOnDisk=`,
+				traceGraph(
+					`createBuildGraphPackage: ${pkg.name} BEFORE normalize, globalTaskDefinitionsOnDisk=%O`,
 					globalTaskDefinitionsOnDisk,
 				);
-				console.log(
-					`[CREATE PKG] ${pkg.name}: BEFORE normalize, keys=`,
+				traceGraph(
+					`createBuildGraphPackage: ${pkg.name} BEFORE normalize, keys=%O`,
 					Object.keys(globalTaskDefinitionsOnDisk ?? {}),
 				);
 				const globalTaskDefinitions = normalizeGlobalTaskDefinitions(
 					globalTaskDefinitionsOnDisk,
 				);
-				console.log(
-					`[CREATE PKG] ${pkg.name}: AFTER normalize, globalTaskDefinitions=`,
+				traceGraph(
+					`createBuildGraphPackage: ${pkg.name} AFTER normalize, globalTaskDefinitions=%O`,
 					globalTaskDefinitions,
 				);
-				console.log(
-					`[CREATE PKG] ${pkg.name}: AFTER normalize, keys=`,
+				traceGraph(
+					`createBuildGraphPackage: ${pkg.name} AFTER normalize, keys=%O`,
 					Object.keys(globalTaskDefinitions),
 				);
 				buildPackage = new BuildGraphPackage(

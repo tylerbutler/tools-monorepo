@@ -127,6 +127,7 @@ describe("BuildGraph - Initialization", () => {
 				.build();
 
 			const graph = new BuildGraphBuilder()
+				// biome-ignore lint/suspicious/noExplicitAny: Testing with incomplete package mock
 				.withPackage(pkg as any)
 				.withTaskDefinition("compile", {
 					dependsOn: [],
@@ -165,6 +166,7 @@ describe("BuildGraph - Initialization", () => {
 				.build();
 
 			const graph = new BuildGraphBuilder()
+				// biome-ignore lint/suspicious/noExplicitAny: Testing with incomplete package mock
 				.withPackage(pkg as any)
 				.withTaskDefinition("lint", {
 					dependsOn: [],
@@ -211,6 +213,7 @@ describe("BuildGraph - Initialization", () => {
 				.build();
 
 			const graph = new BuildGraphBuilder()
+				// biome-ignore lint/suspicious/noExplicitAny: Testing with incomplete package mock
 				.withPackage(pkg as any)
 				.withBuildTasks(["build", "test", "lint"])
 				.build();
@@ -265,6 +268,7 @@ describe("BuildGraph - Initialization", () => {
 
 			expect(() => {
 				new BuildGraphBuilder()
+					// biome-ignore lint/suspicious/noExplicitAny: Testing with incomplete package mock
 					.withPackage(pkg as any)
 					.withBuildTasks(["nonexistent-task"])
 					.build();
@@ -297,6 +301,7 @@ describe("BuildGraph - Initialization", () => {
 				.build();
 
 			const graph = new BuildGraphBuilder()
+				// biome-ignore lint/suspicious/noExplicitAny: Testing with incomplete package mock
 				.withPackage({ ...pkg1, matched: true } as any)
 				.withBuildOptions({ matchedOnly: true })
 				.build();
@@ -339,6 +344,7 @@ describe("BuildGraph - Initialization", () => {
 				.build();
 
 			const graph = new BuildGraphBuilder()
+				// biome-ignore lint/suspicious/noExplicitAny: Testing with incomplete package mock
 				.withPackage(pkg as any)
 				.withTaskDefinition("build", {
 					dependsOn: ["^build"], // Global dependency

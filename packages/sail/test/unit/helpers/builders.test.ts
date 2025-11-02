@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { BuildPackage } from "../../../src/common/npmPackage.js";
 import {
 	BuildContextBuilder,
 	BuildGraphBuilder,
@@ -304,7 +305,8 @@ describe("Test Builders", () => {
 				.build();
 
 			const graph = new BuildGraphBuilder()
-				.withPackage(pkg as any)
+				// PackageBuilder returns a mock object, not a real BuildPackage instance
+				.withPackage(pkg as unknown as BuildPackage)
 				.withBuildTasks(["build", "test"])
 				.withTaskDefinition("build", {
 					dependsOn: [],
@@ -333,7 +335,8 @@ describe("Test Builders", () => {
 				.build();
 
 			const graph = new BuildGraphBuilder()
-				.withPackage(pkg as any)
+				// PackageBuilder returns a mock object, not a real BuildPackage instance
+				.withPackage(pkg as unknown as BuildPackage)
 				.withBuildTasks(["custom-task"])
 				.configureContext((ctx) => {
 					ctx.withRepoRoot("/custom/repo").withTaskDefinition("custom-task", {

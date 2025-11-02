@@ -23,8 +23,8 @@ import { join } from "node:path";
  * ```
  */
 export async function createTempDirectory(
-	prefix: string = "sail-test-",
-	initGit: boolean = true,
+	prefix = "sail-test-",
+	initGit = true,
 ): Promise<string> {
 	const tempPath = join(tmpdir(), prefix);
 	const dir = await mkdtemp(tempPath);
@@ -89,7 +89,7 @@ export async function cleanupTempDirectory(directory: string): Promise<void> {
  * ```
  */
 export async function setupTestContext(
-	prefix: string = "sail-test-",
+	prefix = "sail-test-",
 ): Promise<TestContext> {
 	const testDir = await createTempDirectory(prefix);
 
@@ -136,7 +136,7 @@ export interface TestContext {
  */
 export async function withTempDirectory(
 	testFn: (testDir: string) => Promise<void>,
-	prefix: string = "sail-test-",
+	prefix = "sail-test-",
 ): Promise<void> {
 	const testDir = await createTempDirectory(prefix);
 	try {

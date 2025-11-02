@@ -1,6 +1,9 @@
 import crypto from "node:crypto";
+import registerDebug from "debug";
 import type { SailPackageJson } from "../../common/npmPackage.js";
 import type { TaskDefinitions } from "../taskDefinitions.js";
+
+const traceCache = registerDebug("sail:cache:taskdef");
 
 /**
  * Cache for task definitions to avoid repeated computation
@@ -24,30 +27,23 @@ export class TaskDefinitionCache {
 		computeFn: () => TaskDefinitions,
 	): TaskDefinitions {
 		const cacheKey = this.createCacheKey(json, globalTaskDefinitions, options);
-		console.log(
-			`[TASK DEF CACHE] ${json.name}: Looking up cache with key=${cacheKey}`,
-		);
-		console.log(`[TASK DEF CACHE] ${json.name}: json.scripts=`, json.scripts);
-		console.log(
-			`[TASK DEF CACHE] ${json.name}: Cache has key? ${this.cache.has(cacheKey)}`,
-		);
+		traceCache(`${json.name}: Looking up cache with key=%s`, cacheKey);
+		traceCache(`${json.name}: json.scripts=%O`, json.scripts);
+		traceCache(`${json.name}: Cache has key=%s`, this.cache.has(cacheKey));
 
 		if (this.cache.has(cacheKey)) {
 			this.accessTimes.set(cacheKey, Date.now());
 			const cached = this.cache.get(cacheKey);
 			if (cached !== undefined) {
-				console.log(
-					`[TASK DEF CACHE] ${json.name}: CACHE HIT - returning`,
-					cached,
-				);
+				traceCache(`${json.name}: CACHE HIT - returning %O`, cached);
 				return cached;
 			}
 		}
 
 		// Compute new result
-		console.log(`[TASK DEF CACHE] ${json.name}: CACHE MISS - computing`);
+		traceCache(`${json.name}: CACHE MISS - computing`);
 		const result = computeFn();
-		console.log(`[TASK DEF CACHE] ${json.name}: Computed result=`, result);
+		traceCache(`${json.name}: Computed result=%O`, result);
 
 		// Add to cache with eviction if needed
 		this.addToCache(cacheKey, result);

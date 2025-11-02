@@ -1,4 +1,4 @@
-import { BaseConfig, createConfig } from "@test/base";
+import { type BaseConfig, createConfig } from "@test/base";
 
 export function createLeftConfig(): BaseConfig {
 	return createConfig("left");

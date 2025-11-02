@@ -22,13 +22,13 @@ import type {
  * ```
  */
 export class PackageBuilder {
-	private name: string = "test-package";
-	private version: string = "1.0.0";
+	private name = "test-package";
+	private version = "1.0.0";
 	private scripts: Record<string, string> = {};
 	private dependencies: Record<string, string> = {};
 	private devDependencies: Record<string, string> = {};
 	private peerDependencies: Record<string, string> = {};
-	private packagePath: string = "/test/package";
+	private packagePath = "/test/package";
 	private isPrivate?: boolean;
 	private sailTasks?: TaskDefinitionsOnDisk;
 	private sailDeclarativeTasks?: Record<string, unknown>;

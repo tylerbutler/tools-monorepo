@@ -1,6 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
-import type { BuildResult } from "../../../src/core/execution/BuildResult.js";
-import type { Stopwatch } from "../../../src/core/index.js";
+import { describe, expect, it } from "vitest";
 import { BuildGraphBuilder } from "../../helpers/builders/index.js";
 
 /**
@@ -218,8 +216,8 @@ describe("BuildGraph - Build Execution", () => {
 
 		it("should skip unmatched packages in matchedOnly mode", () => {
 			// Create packages with some unmatched
-			const pkg1 = { name: "matched-pkg", matched: true };
-			const pkg2 = { name: "unmatched-pkg", matched: false };
+			const _pkg1 = { name: "matched-pkg", matched: true };
+			const _pkg2 = { name: "unmatched-pkg", matched: false };
 
 			// This test reveals the bug at line 488: uses 'return' instead of 'continue'
 			// When matchedOnly is true and a package is not matched, the code does:
