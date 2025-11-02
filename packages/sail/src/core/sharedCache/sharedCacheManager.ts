@@ -57,6 +57,7 @@ export class SharedCacheManager {
 	public readonly options: SharedCacheOptions;
 	private readonly statistics: CacheStatistics;
 	private initialized = false;
+	private initializationPromise: Promise<void> | undefined;
 
 	/**
 	 * Create a new SharedCacheManager.
@@ -83,42 +84,57 @@ export class SharedCacheManager {
 	 * This is called lazily on first use to avoid overhead if cache is not accessed.
 	 * Also loads persisted statistics from disk.
 	 *
+	 * IMPORTANT: This method is safe to call concurrently. If multiple tasks call it
+	 * simultaneously, only one will perform the initialization while others wait.
+	 *
 	 * @returns Promise that resolves when initialization is complete
 	 * @throws Error if cache directory cannot be initialized
 	 */
 	public async initialize(): Promise<void> {
+		// If already initialized, return immediately
 		if (this.initialized) {
 			return;
 		}
 
-		traceInit(`Initializing cache at ${this.options.cacheDir}`);
-		const startTime = Date.now();
-
-		try {
-			await initializeCacheDirectory(this.options.cacheDir);
-			traceInit("Cache directory structure initialized");
-
-			// Load persisted statistics
-			const persistedStats = await loadStatistics(this.options.cacheDir);
-			// Merge with current in-memory stats (preserving session-specific counts)
-			this.statistics.totalEntries = persistedStats.totalEntries;
-			this.statistics.totalSize = persistedStats.totalSize;
-			this.statistics.lastPruned = persistedStats.lastPruned;
-
-			const elapsed = Date.now() - startTime;
-			traceInit(
-				`Cache initialized in ${elapsed}ms (${this.statistics.totalEntries} entries, ${(this.statistics.totalSize / 1024 / 1024).toFixed(2)} MB)`,
-			);
-			traceStats(
-				`Stats: ${this.statistics.totalEntries} entries, ${(this.statistics.totalSize / 1024 / 1024).toFixed(2)} MB`,
-			);
-
-			this.initialized = true;
-		} catch (error) {
-			// Graceful degradation: log error but don't fail the build
-			traceError(`Failed to initialize cache: ${error}`);
-			throw error;
+		// If initialization is in progress, wait for it to complete
+		if (this.initializationPromise) {
+			return this.initializationPromise;
 		}
+
+		// Create the initialization promise to prevent concurrent initialization
+		this.initializationPromise = (async () => {
+			traceInit(`Initializing cache at ${this.options.cacheDir}`);
+			const startTime = Date.now();
+
+			try {
+				await initializeCacheDirectory(this.options.cacheDir);
+				traceInit("Cache directory structure initialized");
+
+				// Load persisted statistics
+				const persistedStats = await loadStatistics(this.options.cacheDir);
+				// Merge with current in-memory stats (preserving session-specific counts)
+				this.statistics.totalEntries = persistedStats.totalEntries;
+				this.statistics.totalSize = persistedStats.totalSize;
+				this.statistics.lastPruned = persistedStats.lastPruned;
+
+				const elapsed = Date.now() - startTime;
+				traceInit(
+					`Cache initialized in ${elapsed}ms (${this.statistics.totalEntries} entries, ${(this.statistics.totalSize / 1024 / 1024).toFixed(2)} MB)`,
+				);
+				traceStats(
+					`Stats: ${this.statistics.totalEntries} entries, ${(this.statistics.totalSize / 1024 / 1024).toFixed(2)} MB`,
+				);
+
+				this.initialized = true;
+			} catch (error) {
+				// Graceful degradation: log error but don't fail the build
+				traceError(`Failed to initialize cache: ${error}`);
+				throw error;
+			}
+		})();
+
+		// Wait for initialization to complete
+		await this.initializationPromise;
 	}
 
 	/**
@@ -362,8 +378,12 @@ export class SharedCacheManager {
 			// Get cache entry path
 			const entryPath = getCacheEntryPath(this.options.cacheDir, cacheKey);
 
-			// Check if entry already exists (avoid redundant work)
-			if (existsSync(entryPath)) {
+			// Check if manifest already exists (avoid redundant work)
+			// IMPORTANT: Check for manifest.json specifically, not just the directory,
+			// to avoid race conditions where parallel tasks might create the directory
+			// but not yet write the manifest
+			const manifestPath = path.join(entryPath, "manifest.json");
+			if (existsSync(manifestPath)) {
 				const reason = "cache entry already exists";
 				traceStore(`Cache entry ${shortKey} already exists, skipping store`);
 				return { success: false, reason };
@@ -422,8 +442,18 @@ export class SharedCacheManager {
 
 			// Write manifest (atomically)
 			const { writeManifest } = await import("./manifest.js");
-			const manifestPath = path.join(entryPath, "manifest.json");
 			await writeManifest(manifestPath, manifest);
+
+			// VERIFY: Manifest file exists immediately after write
+			const manifestExists = existsSync(manifestPath);
+			traceStore(
+				`POST-WRITE VERIFY: ${shortKey} manifest at ${manifestPath} - ${manifestExists ? "EXISTS ✓" : "NOT FOUND ✗"}`,
+			);
+			if (!manifestExists) {
+				traceStore(
+					`WARNING: Manifest ${shortKey} was written but does not exist on disk!`,
+				);
+			}
 
 			// Update statistics
 			const storeTime = Date.now() - storeStartTime;

@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import { Stopwatch } from "@tylerbu/sail-infrastructure";
 import type { BuildGraph } from "../../../src/core/buildGraph.js";
 import { SailBuildRepo } from "../../../src/core/buildRepo.js";
@@ -131,6 +132,28 @@ export async function createBuildGraphTestContext(
 	// Load plugins if configured
 	await repo.ensureHandlersLoaded();
 
+	// Initialize shared cache for integration tests
+	// Use a temp cache directory for each test to avoid interference
+	const { initializeSharedCache } = await import(
+		"../../../src/core/sharedCache/index.js"
+	);
+	const cacheDir = join(testDir, ".sail-cache");
+	console.log(
+		`[CACHE DEBUG] createBuildGraphTestContext: testDir=${testDir}, cacheDir=${cacheDir}`,
+	);
+	const sharedCache = await initializeSharedCache(
+		cacheDir,
+		testDir, // repoRoot
+		false, // skipCacheWrite
+		false, // verifyIntegrity
+	);
+
+	if (sharedCache) {
+		// Add cache to build context (same as build.ts:120)
+		// biome-ignore lint/suspicious/noExplicitAny: Accessing internal context property
+		(repo as any).context.sharedCache = sharedCache;
+	}
+
 	const timer = new Stopwatch(true); // Enable stopwatch
 
 	return {
@@ -250,15 +273,42 @@ export interface BuildExecutionResult {
  * expect(result.logger.contains("completed")).toBe(true);
  * ```
  */
+/**
+ * Track which directories have had dependencies installed to avoid redundant installs.
+ * Key insight: pnpm install with updateLockfile=true changes pnpm-lock.yaml,
+ * which changes the lockfileHash in the cache key, invalidating all cached entries!
+ */
+const installedDirs = new Set<string>();
+
+/**
+ * Track BuildGraphTestContext instances per test directory to reuse cache.
+ * Key insight: Each call to createBuildGraphTestContext creates a NEW cache instance,
+ * so multiple builds in the same test wouldn't see each other's cached entries!
+ */
+const testContexts = new Map<string, BuildGraphTestContext>();
+
 export async function executeBuildAndGetResult(
 	testDir: string,
 	taskNames: string[] = ["build"],
 	options?: Partial<BuildOptions>,
 ): Promise<BuildExecutionResult> {
-	const ctx = await createBuildGraphTestContext(testDir);
+	// Reuse existing context (and cache!) or create new one
+	const contextExists = testContexts.has(testDir);
+	console.log(
+		`[CACHE DEBUG] executeBuildAndGetResult: testDir=${testDir}, contextExists=${contextExists}`,
+	);
+	let ctx = testContexts.get(testDir);
+	if (!ctx) {
+		ctx = await createBuildGraphTestContext(testDir);
+		testContexts.set(testDir, ctx);
+	}
 
-	// Install dependencies before building
-	await ctx.installDependencies();
+	// Install dependencies ONCE per test directory to avoid lockfile changes
+	// that would invalidate the shared cache
+	if (!installedDirs.has(testDir)) {
+		await ctx.installDependencies();
+		installedDirs.add(testDir);
+	}
 
 	const timer = new Stopwatch(true); // Enable stopwatch
 
@@ -266,6 +316,27 @@ export async function executeBuildAndGetResult(
 	const elapsedTime = timer.getTotalTime() / 1000; // Convert to seconds
 
 	const cacheStats = buildGraph.getCacheStatistics();
+
+	// DEBUG: Check which manifests exist at the END of this build
+	const { readdir } = await import("node:fs/promises");
+	const { join: joinPath } = await import("node:path");
+	const { existsSync: checkExists } = await import("node:fs");
+	try {
+		const entriesDir = joinPath(testDir, ".sail-cache/v1/entries");
+		if (checkExists(entriesDir)) {
+			const entries = await readdir(entriesDir);
+			const manifestStatus = entries.map((entry) => {
+				const manifestPath = joinPath(entriesDir, entry, "manifest.json");
+				const exists = checkExists(manifestPath);
+				return `${entry.substring(0, 12)}:${exists ? "✓" : "✗"}`;
+			});
+			console.log(
+				`[CACHE DEBUG] End of build - manifests: [${manifestStatus.join(", ")}]`,
+			);
+		}
+	} catch (e) {
+		console.log(`[CACHE DEBUG] Error checking manifests: ${e}`);
+	}
 
 	return {
 		buildGraph,

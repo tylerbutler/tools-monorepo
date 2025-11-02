@@ -6,6 +6,9 @@
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import createDebug from "debug";
+
+const traceLookup = createDebug("sail:cache:lookup");
 
 /**
  * Current cache format version.
@@ -125,7 +128,12 @@ export function getCacheEntriesDirectory(cacheRoot: string): string {
 export function cacheEntryExists(cacheRoot: string, cacheKey: string): boolean {
 	const entryPath = getCacheEntryPath(cacheRoot, cacheKey);
 	const manifestPath = join(entryPath, "manifest.json");
-	return existsSync(manifestPath);
+	const exists = existsSync(manifestPath);
+	const shortKey = cacheKey.substring(0, 12);
+	traceLookup(
+		`cacheEntryExists check: ${shortKey} at ${manifestPath} - ${exists ? "EXISTS" : "NOT FOUND"}`,
+	);
+	return exists;
 }
 
 /**
