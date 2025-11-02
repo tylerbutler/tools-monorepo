@@ -163,10 +163,14 @@ export abstract class Task {
 			return false;
 		}
 		if (this.isUpToDateP === undefined) {
-			traceUpToDate(`${this.nameColored}: isUpToDateP is undefined, calling checkIsUpToDate()`);
+			traceUpToDate(
+				`${this.nameColored}: isUpToDateP is undefined, calling checkIsUpToDate()`,
+			);
 			this.isUpToDateP = this.checkIsUpToDate();
 		} else {
-			traceUpToDate(`${this.nameColored}: isUpToDateP already set, returning cached promise`);
+			traceUpToDate(
+				`${this.nameColored}: isUpToDateP already set, returning cached promise`,
+			);
 		}
 		return this.isUpToDateP;
 	}

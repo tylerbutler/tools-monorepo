@@ -192,16 +192,22 @@ export abstract class LeafTask extends Task {
 
 		// Wait for dependent tasks to complete before executing
 		if (this.dependentTaskPromises && this.dependentTaskPromises.length > 0) {
-			console.log(`[LEAF EXEC] ${this.nameColored}: waiting for ${this.dependentTaskPromises.length} dependent tasks`);
+			console.log(
+				`[LEAF EXEC] ${this.nameColored}: waiting for ${this.dependentTaskPromises.length} dependent tasks`,
+			);
 			const results = await Promise.all(this.dependentTaskPromises);
 			// Check if any dependency failed
 			for (const result of results) {
 				if (result === BuildResult.Failed) {
-					console.log(`[LEAF EXEC] ${this.nameColored}: dependency failed, skipping execution`);
+					console.log(
+						`[LEAF EXEC] ${this.nameColored}: dependency failed, skipping execution`,
+					);
 					return BuildResult.Failed;
 				}
 			}
-			console.log(`[LEAF EXEC] ${this.nameColored}: dependencies complete, proceeding with execution`);
+			console.log(
+				`[LEAF EXEC] ${this.nameColored}: dependencies complete, proceeding with execution`,
+			);
 		}
 
 		if (defaultOptions.showExec) {
@@ -429,7 +435,9 @@ export abstract class LeafTask extends Task {
 		this.dependentTaskPromises = dependentPromises;
 
 		// Queue this task immediately - it will wait for dependencies when executed
-		console.log(`[LEAF TASK] ${this.nameColored}: creating promise and queueing`);
+		console.log(
+			`[LEAF TASK] ${this.nameColored}: creating promise and queueing`,
+		);
 		return new Promise((resolve) => {
 			traceTaskQueue(`${this.nameColored}: queued with weight ${this.weight}`);
 			// biome-ignore lint/nursery/noFloatingPromises: push is synchronous despite returning a promise-like interface
@@ -453,7 +461,9 @@ export abstract class LeafTask extends Task {
 
 		// Try shared cache first (if enabled and task supports it)
 		if (this.node.context.sharedCache && this.canUseCache) {
-			traceUpToDate(`${this.nameColored}: checking cache (sharedCache=${!!this.node.context.sharedCache}, canUseCache=${this.canUseCache})`);
+			traceUpToDate(
+				`${this.nameColored}: checking cache (sharedCache=${!!this.node.context.sharedCache}, canUseCache=${this.canUseCache})`,
+			);
 			const cacheHit = await this.tryRestoreFromCache();
 			if (cacheHit) {
 				this.node.context.taskStats.leafUpToDateCount++;
@@ -463,7 +473,9 @@ export abstract class LeafTask extends Task {
 			}
 			traceUpToDate(`${this.nameColored}: cache MISS`);
 		} else {
-			traceUpToDate(`${this.nameColored}: cache check skipped (sharedCache=${!!this.node.context.sharedCache}, canUseCache=${this.canUseCache})`);
+			traceUpToDate(
+				`${this.nameColored}: cache check skipped (sharedCache=${!!this.node.context.sharedCache}, canUseCache=${this.canUseCache})`,
+			);
 		}
 
 		const start = Date.now();
@@ -585,9 +597,15 @@ export abstract class LeafTask extends Task {
 			};
 
 			// Log cache key inputs for debugging
-			traceCacheKey(`${this.node.pkg.name}#${this.taskName ?? this.command} cache key inputs:`);
-			traceCacheKey(`  inputFiles: ${inputFiles.map(f => path.relative(this.node.pkg.directory, f)).join(', ')}`);
-			traceCacheKey(`  inputHashes: ${inputHashes.map(h => `${h.path}:${h.hash.substring(0, 8)}`).join(', ')}`);
+			traceCacheKey(
+				`${this.node.pkg.name}#${this.taskName ?? this.command} cache key inputs:`,
+			);
+			traceCacheKey(
+				`  inputFiles: ${inputFiles.map((f) => path.relative(this.node.pkg.directory, f)).join(", ")}`,
+			);
+			traceCacheKey(
+				`  inputHashes: ${inputHashes.map((h) => `${h.path}:${h.hash.substring(0, 8)}`).join(", ")}`,
+			);
 
 			// Lookup cache entry
 			const entry = await cache.lookup(cacheKeyInputs);

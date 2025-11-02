@@ -298,7 +298,9 @@ export class SharedCacheManager {
 			updateManifestAccessTime(manifestPath).catch((error) => {
 				// Silently ignore access time update failures - they're not critical
 				// The manifest will still be valid, just with a slightly stale access time
-				traceError(`Failed to update manifest access time for ${shortKey}: ${error}`);
+				traceError(
+					`Failed to update manifest access time for ${shortKey}: ${error}`,
+				);
 			});
 
 			// Cache hit!

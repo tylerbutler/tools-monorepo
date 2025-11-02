@@ -16,7 +16,9 @@
 	"sail": {
 		"tasks": {
 			"build": {
-				"dependsOn": ["^build"],
+				"dependsOn": [
+					"^build"
+				],
 				"script": true
 			}
 		}

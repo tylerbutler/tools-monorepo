@@ -183,7 +183,9 @@ export class BuildExecutor implements IBuildExecutor {
 			// Wait for all build promises to complete - this ensures tasks have finished executing
 			// The build promises resolve when their tasks complete, not just when they're queued
 			const results = await Promise.all(p);
-			console.log(`[BUILD DEBUG] All build promises resolved. Draining queue...`);
+			console.log(
+				`[BUILD DEBUG] All build promises resolved. Draining queue...`,
+			);
 
 			// The queue should be empty now, but ensure it's drained just in case
 			await q.drain();

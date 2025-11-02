@@ -203,7 +203,9 @@ export async function createBuildGraphTestContext(
 			}
 
 			// Create the build graph
-			console.log(`[CACHE DEBUG] executeBuild: Creating new build graph at ${Date.now()}`);
+			console.log(
+				`[CACHE DEBUG] executeBuild: Creating new build graph at ${Date.now()}`,
+			);
 			const buildGraph = await repo.createBuildGraph(buildOptions);
 
 			// Check install
