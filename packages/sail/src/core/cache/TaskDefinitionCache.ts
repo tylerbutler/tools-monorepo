@@ -24,17 +24,23 @@ export class TaskDefinitionCache {
 		computeFn: () => TaskDefinitions,
 	): TaskDefinitions {
 		const cacheKey = this.createCacheKey(json, globalTaskDefinitions, options);
+		console.log(`[TASK DEF CACHE] ${json.name}: Looking up cache with key=${cacheKey}`);
+		console.log(`[TASK DEF CACHE] ${json.name}: json.scripts=`, json.scripts);
+		console.log(`[TASK DEF CACHE] ${json.name}: Cache has key? ${this.cache.has(cacheKey)}`);
 
 		if (this.cache.has(cacheKey)) {
 			this.accessTimes.set(cacheKey, Date.now());
 			const cached = this.cache.get(cacheKey);
 			if (cached !== undefined) {
+				console.log(`[TASK DEF CACHE] ${json.name}: CACHE HIT - returning`, cached);
 				return cached;
 			}
 		}
 
 		// Compute new result
+		console.log(`[TASK DEF CACHE] ${json.name}: CACHE MISS - computing`);
 		const result = computeFn();
+		console.log(`[TASK DEF CACHE] ${json.name}: Computed result=`, result);
 
 		// Add to cache with eviction if needed
 		this.addToCache(cacheKey, result);
@@ -97,8 +103,10 @@ export class TaskDefinitionCache {
 		options: { isReleaseGroupRoot: boolean },
 	): string {
 		// Create a stable hash of the inputs
+		// IMPORTANT: Don't use ?? operator here - we need to distinguish between
+		// undefined scripts and empty scripts object for correct cache key generation
 		const hashInput = {
-			scripts: json.scripts ?? {},
+			scripts: json.scripts,
 			sailTasks: json.sail?.tasks,
 			fluidBuildTasks: json.fluidBuild?.tasks,
 			globalTasks: this.simplifyGlobalTasks(globalTaskDefinitions),
