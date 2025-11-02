@@ -113,7 +113,10 @@ export class TaskDefinitionCache {
 			isReleaseGroupRoot: options.isReleaseGroupRoot,
 		};
 
-		const hashString = JSON.stringify(hashInput, Object.keys(hashInput).sort());
+		// Use JSON.stringify without replacer to include all nested properties
+		// Object property order in JavaScript is deterministic (insertion order for string keys)
+		// so this produces stable hashes for equivalent objects
+		const hashString = JSON.stringify(hashInput);
 		return crypto
 			.createHash("sha256")
 			.update(hashString)
