@@ -33,13 +33,22 @@ export class TscTask extends LeafTask {
 	private _projectReference: TscTask | undefined;
 	private _sourceStats: (Stats | BigIntStats)[] | undefined;
 	private _tscUtils: TscUtil | undefined;
+	private _tscUtilsError: Error | undefined;
 
-	private getTscUtils() {
+	private getTscUtils(): TscUtil {
 		if (this._tscUtils) {
 			return this._tscUtils;
 		}
-		this._tscUtils = getTscUtils(this.node.pkg.directory);
-		return this._tscUtils;
+		if (this._tscUtilsError) {
+			throw this._tscUtilsError;
+		}
+		try {
+			this._tscUtils = getTscUtils(this.node.pkg.directory);
+			return this._tscUtils;
+		} catch (error) {
+			this._tscUtilsError = error as Error;
+			throw this._tscUtilsError;
+		}
 	}
 
 	protected override get executionCommand() {
@@ -60,17 +69,27 @@ export class TscTask extends LeafTask {
 	}
 
 	protected async checkLeafIsUpToDate() {
-		const parsedCommandLine = this.parsedCommandLine;
-		if (parsedCommandLine?.options.build) {
-			return this.checkReferencesIsUpToDate(
-				parsedCommandLine.fileNames.length === 0
-					? ["."]
-					: parsedCommandLine.fileNames,
-				new Set(),
+		try {
+			const parsedCommandLine = this.parsedCommandLine;
+			if (parsedCommandLine?.options.build) {
+				return this.checkReferencesIsUpToDate(
+					parsedCommandLine.fileNames.length === 0
+						? ["."]
+						: parsedCommandLine.fileNames,
+					new Set(),
+				);
+			}
+			// Check is Up to date without project references
+			return this.checkTscIsUpToDate();
+		} catch (error) {
+			// If we can't load TypeScript utils (e.g., typescript not installed),
+			// assume the task is not up to date and needs to be executed.
+			// The actual execution will fail with a clearer error message.
+			this.traceError(
+				`Failed to check if up to date: ${(error as Error).message}`,
 			);
+			return false;
 		}
-		// Check is Up to date without project references
-		return this.checkTscIsUpToDate();
 	}
 
 	private async checkReferencesIsUpToDate(

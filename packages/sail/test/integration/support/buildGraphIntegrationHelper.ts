@@ -1,8 +1,11 @@
 import { join } from "node:path";
 import { Stopwatch } from "@tylerbu/sail-infrastructure";
+import registerDebug from "debug";
 import type { BuildGraph } from "../../../src/core/buildGraph.js";
 import { SailBuildRepo } from "../../../src/core/buildRepo.js";
 import type { BuildOptions } from "../../../src/core/options.js";
+
+const traceCache = registerDebug("sail:test:cache");
 
 /**
  * Helper for creating and executing BuildGraph in integration tests.
@@ -138,8 +141,8 @@ export async function createBuildGraphTestContext(
 		"../../../src/core/sharedCache/index.js"
 	);
 	const cacheDir = join(testDir, ".sail-cache");
-	console.log(
-		`[CACHE DEBUG] createBuildGraphTestContext: testDir=${testDir}, cacheDir=${cacheDir}`,
+	traceCache(
+		`createBuildGraphTestContext: testDir=${testDir}, cacheDir=${cacheDir}`,
 	);
 	const sharedCache = await initializeSharedCache(
 		cacheDir,
@@ -203,9 +206,7 @@ export async function createBuildGraphTestContext(
 			}
 
 			// Create the build graph
-			console.log(
-				`[CACHE DEBUG] executeBuild: Creating new build graph at ${Date.now()}`,
-			);
+			traceCache(`executeBuild: Creating new build graph at ${Date.now()}`);
 			const buildGraph = await repo.createBuildGraph(buildOptions);
 
 			// Check install
@@ -297,8 +298,8 @@ export async function executeBuildAndGetResult(
 ): Promise<BuildExecutionResult> {
 	// Reuse existing context (and cache!) or create new one
 	const contextExists = testContexts.has(testDir);
-	console.log(
-		`[CACHE DEBUG] executeBuildAndGetResult: testDir=${testDir}, contextExists=${contextExists}`,
+	traceCache(
+		`executeBuildAndGetResult: testDir=${testDir}, contextExists=${contextExists}`,
 	);
 	let ctx = testContexts.get(testDir);
 	if (!ctx) {
@@ -333,12 +334,10 @@ export async function executeBuildAndGetResult(
 				const exists = checkExists(manifestPath);
 				return `${entry.substring(0, 12)}:${exists ? "✓" : "✗"}`;
 			});
-			console.log(
-				`[CACHE DEBUG] End of build - manifests: [${manifestStatus.join(", ")}]`,
-			);
+			traceCache(`End of build - manifests: [${manifestStatus.join(", ")}]`);
 		}
 	} catch (e) {
-		console.log(`[CACHE DEBUG] Error checking manifests: ${e}`);
+		traceCache(`Error checking manifests: ${e}`);
 	}
 
 	return {
