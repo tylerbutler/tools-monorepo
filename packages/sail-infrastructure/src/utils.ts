@@ -42,5 +42,7 @@ export function isPathUnder(parent: string, maybeChild: string): boolean {
 	const resolvedPathA = path.resolve(parent);
 	const resolvedPathB = path.resolve(maybeChild);
 
-	return resolvedPathB.startsWith(resolvedPathA + path.sep);
+	// Handle root directory specially - root with separator is still root on Unix
+	const separator = resolvedPathA === path.sep ? "" : path.sep;
+	return resolvedPathB.startsWith(resolvedPathA + separator);
 }

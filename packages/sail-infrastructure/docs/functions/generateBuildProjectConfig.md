@@ -10,7 +10,7 @@
 function generateBuildProjectConfig(searchPath): _RequireExactlyOne;
 ```
 
-Defined in: [packages/sail-infrastructure/src/buildProject.ts:245](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L245)
+Defined in: [packages/sail-infrastructure/src/buildProject.ts:243](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L243)
 
 Generates a BuildProjectConfig by searching searchPath and below for workspaces. If any workspaces are found, they're
 automatically added to the config, and a single release group is created within the workspace. Both the workspace and

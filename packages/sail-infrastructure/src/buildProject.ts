@@ -1,8 +1,7 @@
 import * as path from "node:path";
-
+import { WriteOnceMap } from "@tylerbu/fundamentals";
 import { type SimpleGit, simpleGit } from "simple-git";
 import { globSync } from "tinyglobby";
-
 import {
 	type BuildProjectConfig,
 	type BuildProjectConfigV2,
@@ -24,7 +23,6 @@ import type {
 } from "./types.js";
 import { Workspace } from "./workspace.js";
 import { loadWorkspacesFromLegacyConfig } from "./workspaceCompat.js";
-import { WriteOnceMap } from "./writeOnceMap.js";
 
 /**
  * {@inheritDoc IBuildProject}

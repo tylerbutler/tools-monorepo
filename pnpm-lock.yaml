@@ -1220,6 +1220,9 @@ importers:
       '@oclif/core':
         specifier: ^4.7.2
         version: 4.7.2
+      '@tylerbu/fundamentals':
+        specifier: workspace:^
+        version: link:../fundamentals
       cosmiconfig:
         specifier: ^8.3.6
         version: 8.3.6(typescript@5.9.3)
@@ -1275,6 +1278,9 @@ importers:
       '@microsoft/api-extractor':
         specifier: ^7.53.2
         version: 7.53.2(@types/node@20.19.23)
+      '@oclif/test':
+        specifier: ^4.1.14
+        version: 4.1.14(@oclif/core@4.7.2)
       '@types/fs-extra':
         specifier: ^11.0.4
         version: 11.0.4

@@ -280,17 +280,17 @@ export function isIReleaseGroup(
 	// biome-ignore lint/suspicious/noExplicitAny: Type guard needs to accept any type for runtime checking
 	toCheck: Exclude<any, string | number | ReleaseGroupName | PackageName>,
 ): toCheck is IReleaseGroup {
+	if (typeof toCheck !== "object" || toCheck === null) {
+		return false;
+	}
+
 	if (!("name" in toCheck)) {
 		return false;
 	}
 
-	if (typeof toCheck === "object") {
-		// TODO: is there a better way to implement a type guard than unique names of properties? Maybe something with the
-		// opaque types?
-		return "workspace" in toCheck && "packages" in toCheck;
-	}
-
-	return false;
+	// TODO: is there a better way to implement a type guard than unique names of properties? Maybe something with the
+	// opaque types?
+	return "workspace" in toCheck && "packages" in toCheck;
 }
 
 /**
@@ -460,8 +460,8 @@ export interface IPackage<J extends PackageJson = PackageJson>
  */
 // biome-ignore lint/suspicious/noExplicitAny: Type guard needs to accept any type for runtime checking
 export function isIPackage(pkg: any): pkg is IPackage {
-	if (typeof pkg === "object") {
-		return "getScript" in pkg;
+	if (typeof pkg === "object" && pkg !== null) {
+		return "packageJson" in pkg && "getScript" in pkg;
 	}
 	return false;
 }

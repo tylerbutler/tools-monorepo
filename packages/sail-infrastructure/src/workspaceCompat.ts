@@ -1,8 +1,5 @@
-import { existsSync } from "node:fs";
 import * as path from "node:path";
-
-import { globSync } from "tinyglobby";
-
+import { WriteOnceMap } from "@tylerbu/fundamentals";
 import type {
 	// eslint-disable-next-line import/no-deprecated -- back-compat code
 	IFluidBuildDir,
@@ -13,20 +10,23 @@ import type {
 } from "./config.js";
 import type { IBuildProject, IWorkspace, WorkspaceName } from "./types.js";
 import { Workspace } from "./workspace.js";
-import { WriteOnceMap } from "./writeOnceMap.js";
+import type { WorkspaceCompatDeps } from "./workspaceCompatDeps.js";
+import { createDefaultWorkspaceCompatDeps } from "./workspaceCompatDeps.js";
 
 /**
  * Loads workspaces based on the "legacy" config -- the former repoPackages section of the fluid-build config.
  *
  * **ONLY INTENDED FOR BACK-COMPAT.**
  *
- * @param entry - The config entry.
+ * @param config - The config entry.
  * @param buildProject - The BuildProject the workspace belongs to.
+ * @param deps - Optional dependencies for filesystem and glob operations. Defaults to real implementations.
  */
 export function loadWorkspacesFromLegacyConfig(
 	// eslint-disable-next-line import/no-deprecated -- back-compat code
 	config: IFluidBuildDirs,
 	buildProject: IBuildProject,
+	deps: WorkspaceCompatDeps = createDefaultWorkspaceCompatDeps(),
 ): Map<WorkspaceName, IWorkspace> {
 	const workspaces: Map<WorkspaceName, IWorkspace> = new WriteOnceMap();
 
@@ -36,16 +36,16 @@ export function loadWorkspacesFromLegacyConfig(
 		if (Array.isArray(entry)) {
 			for (const item of entry) {
 				loadedWorkspaces.push(
-					...loadWorkspacesFromLegacyConfigEntry(item, buildProject),
+					...loadWorkspacesFromLegacyConfigEntry(item, buildProject, deps),
 				);
 			}
 		} else if (typeof entry === "object") {
 			loadedWorkspaces.push(
-				...loadWorkspacesFromLegacyConfigEntry(entry, buildProject, name),
+				...loadWorkspacesFromLegacyConfigEntry(entry, buildProject, deps, name),
 			);
 		} else {
 			loadedWorkspaces.push(
-				...loadWorkspacesFromLegacyConfigEntry(entry, buildProject),
+				...loadWorkspacesFromLegacyConfigEntry(entry, buildProject, deps),
 			);
 		}
 		for (const ws of loadedWorkspaces) {
@@ -67,6 +67,7 @@ export function loadWorkspacesFromLegacyConfig(
  *
  * @param entry - The config entry.
  * @param buildProject - The path to the root of the BuildProject.
+ * @param deps - Dependencies for filesystem and glob operations.
  * @param name - If provided, this name will be used for the workspace. If it is not provided, the name will be derived
  * from the directory name.
  */
@@ -74,6 +75,7 @@ function loadWorkspacesFromLegacyConfigEntry(
 	// eslint-disable-next-line import/no-deprecated -- back-compat code
 	entry: string | IFluidBuildDir,
 	buildProject: IBuildProject,
+	deps: WorkspaceCompatDeps,
 	name?: string,
 ): IWorkspace[] {
 	const directory = typeof entry === "string" ? entry : entry.directory;
@@ -91,7 +93,7 @@ function loadWorkspacesFromLegacyConfigEntry(
 	// directory will be treated as a workspace root -- or it does not, in which case all package.json files under the
 	// path will be treated as workspace roots.
 	const packagePath = path.join(buildProject.root, directory, "package.json");
-	if (existsSync(packagePath)) {
+	if (deps.fileExists(packagePath)) {
 		const workspaceDefinition: WorkspaceDefinition = {
 			directory,
 			releaseGroups: releaseGroupDefinitions,
@@ -107,21 +109,23 @@ function loadWorkspacesFromLegacyConfigEntry(
 		];
 	}
 
-	const packageJsonPaths = globSync(["**/package.json"], {
-		cwd: path.dirname(packagePath),
-		ignore: ["**/node_modules/**"],
-		onlyFiles: true,
-		absolute: true,
-		// BACK-COMPAT HACK - only search two levels below entries for package.jsons. This avoids finding some test
-		// files and treating them as packages. This is only needed when loading old configs.
-		deep: 2,
-	}).map(
-		// Make the paths relative to the repo root
-		(filePath) => path.relative(buildProject.root, filePath),
-	);
+	const packageJsonPaths = deps
+		.findFiles(["**/package.json"], {
+			cwd: path.dirname(packagePath),
+			ignore: ["**/node_modules/**"],
+			onlyFiles: true,
+			absolute: true,
+			// BACK-COMPAT HACK - only search two levels below entries for package.jsons. This avoids finding some test
+			// files and treating them as packages. This is only needed when loading old configs.
+			deep: 2,
+		})
+		.map(
+			// Make the paths relative to the repo root
+			(filePath) => path.relative(buildProject.root, filePath),
+		);
 	const workspaces = packageJsonPaths.flatMap((pkgPath) => {
 		const dir = path.dirname(pkgPath);
-		return loadWorkspacesFromLegacyConfigEntry(dir, buildProject);
+		return loadWorkspacesFromLegacyConfigEntry(dir, buildProject, deps);
 	});
 	return workspaces;
 }

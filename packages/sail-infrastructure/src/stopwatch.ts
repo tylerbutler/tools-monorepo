@@ -20,7 +20,7 @@ export class Stopwatch {
 		const diffTimeInSeconds = diffTime / 1000;
 		if (msg !== undefined) {
 			if (this.enabled) {
-				if (diffTime > 100) {
+				if (diffTime >= 100) {
 					this.logFunc(`${msg} - ${diffTimeInSeconds.toFixed(3)}s`);
 				} else {
 					this.logFunc(`${msg} - ${diffTime}ms`);
