@@ -88,7 +88,13 @@
 			"@oclif/plugin-version",
 			"@oclif/plugin-warn-if-update-available"
 		],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/sail/<%- commandPath %>"
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/sail/<%- commandPath %>",
+		"topicSeparator": " ",
+		"topics": {
+			"cache": {
+				"description": "Cache management commands for build artifacts and file hashes."
+			}
+		}
 	},
 	"dependencies": {
 		"@manypkg/get-packages": "^2.2.2",
