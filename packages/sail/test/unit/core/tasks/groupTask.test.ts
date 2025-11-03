@@ -3,7 +3,6 @@ import { BuildResult } from "../../../../src/core/execution/BuildResult.js";
 import { GroupTask } from "../../../../src/core/tasks/groupTask.js";
 import type { LeafTask } from "../../../../src/core/tasks/leaf/leafTask.js";
 import { Task } from "../../../../src/core/tasks/task.js";
-import { BuildGraphBuilder } from "../../../helpers/builders/BuildGraphBuilder.js";
 import { GroupTaskBuilder } from "../../../helpers/builders/GroupTaskBuilder.js";
 import { LeafTaskBuilder } from "../../../helpers/builders/LeafTaskBuilder.js";
 
@@ -228,7 +227,7 @@ describe("GroupTask - Comprehensive Tests", () => {
 				.build();
 
 			// Spy on collectLeafTasks to verify no sequential chaining
-			const spy1 = vi.spyOn(task1, "collectLeafTasks");
+			const _spy1 = vi.spyOn(task1, "collectLeafTasks");
 
 			groupTask.initializeDependentLeafTasks();
 

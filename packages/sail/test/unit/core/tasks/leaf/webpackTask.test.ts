@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 /**
  * TODO: Implement WebpackTask tests
@@ -34,7 +34,7 @@ import { describe, expect, it } from "vitest";
  * - src/core/tasks/leaf/leafTask.ts (base class)
  */
 
-describe.skip("WebpackTask", () => {
+describe("WebpackTask", () => {
 	describe("Construction", () => {
 		it.todo("should create WebpackTask with package context");
 		it.todo("should initialize with webpack command");

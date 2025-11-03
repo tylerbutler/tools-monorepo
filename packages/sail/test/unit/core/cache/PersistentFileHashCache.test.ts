@@ -24,7 +24,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-	type CacheStats,
 	PersistentFileHashCache,
 } from "../../../../src/core/cache/PersistentFileHashCache.js";
 
@@ -128,7 +127,7 @@ describe("PersistentFileHashCache", () => {
 		// NOTE: This test is flaky due to filesystem timing - the cache correctly
 		// uses mtime+size for invalidation, but writeFileSync may not change mtime
 		// in the same test run. Skip for now since implementation is not yet used.
-		it.skip("should detect file changes by content modification", async () => {
+		it("should detect file changes by content modification", async () => {
 			// Arrange
 			const hash1 = await cache.getFileHash(testFile1);
 
@@ -148,7 +147,7 @@ describe("PersistentFileHashCache", () => {
 
 		it("should detect file changes by mtime", async () => {
 			// Arrange
-			const hash1 = await cache.getFileHash(testFile1);
+			const _hash1 = await cache.getFileHash(testFile1);
 
 			// Wait a bit and touch the file (change mtime)
 			await new Promise((resolve) => setTimeout(resolve, 10));
@@ -280,7 +279,7 @@ describe("PersistentFileHashCache", () => {
 
 		it("should handle missing cache directory gracefully", async () => {
 			// Arrange
-			const hash = await cache.getFileHash(testFile1);
+			const _hash = await cache.getFileHash(testFile1);
 
 			// Remove cache directory
 			if (existsSync(cacheDir)) {
@@ -403,7 +402,7 @@ describe("PersistentFileHashCache", () => {
 		// NOTE: This test is timing-dependent - cleanup uses Date.now() for staleness
 		// which is hard to test reliably without mocking time. Skip for now since
 		// implementation is not yet used in production.
-		it.skip("should mark cache as dirty after cleanup", async () => {
+		it("should mark cache as dirty after cleanup", async () => {
 			// Arrange
 			await cache.getFileHash(testFile1);
 			await cache.saveCache();

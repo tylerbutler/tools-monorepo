@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 /**
  * TODO: Implement tscWorker tests
@@ -30,7 +30,7 @@ import { describe, expect, it } from "vitest";
  * - src/core/tscUtils.ts (fluidTscRegEx)
  */
 
-describe.skip("tscWorker", () => {
+describe("tscWorker", () => {
 	describe("compile function", () => {
 		it.todo("should call tsCompile with message");
 		it.todo("should return WorkerExecResult with code");

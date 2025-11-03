@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 /**
  * TODO: Implement eslintWorker tests
@@ -30,7 +30,7 @@ import { describe, expect, it } from "vitest";
  * - src/core/tasks/workers/worker.ts (worker message types)
  */
 
-describe.skip("eslintWorker", () => {
+describe("eslintWorker", () => {
 	describe("lint function", () => {
 		it.todo("should resolve ESLint from message.cwd");
 		it.todo("should parse command arguments");

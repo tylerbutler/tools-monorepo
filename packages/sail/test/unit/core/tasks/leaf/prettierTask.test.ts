@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 /**
  * TODO: Implement PrettierTask tests
@@ -33,7 +33,7 @@ import { describe, expect, it } from "vitest";
  * - src/core/tasks/leaf/leafTask.ts (base class)
  */
 
-describe.skip("PrettierTask", () => {
+describe("PrettierTask", () => {
 	describe("Construction", () => {
 		it.todo("should create PrettierTask with package context");
 		it.todo("should initialize with prettier command");

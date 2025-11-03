@@ -3,9 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	ContextualErrorHandler,
 	ErrorHandler,
-	type ErrorHandlingResult,
 	ErrorHandlingStrategy,
-	type ErrorStatistics,
 } from "../../../../src/core/errors/ErrorHandler.js";
 import {
 	ErrorCategory,

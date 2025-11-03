@@ -3,7 +3,6 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
 	createBuildGraphTestContext,
-	executeBuildAndGetResult,
 } from "../support/buildGraphIntegrationHelper.js";
 import {
 	setupTestContext,
@@ -666,7 +665,7 @@ importers:
 				(p) => p.pkg.name === "@test/lib",
 			);
 
-			const cleanTask = libPkg?.taskManager.tasksMap.get("clean");
+			const _cleanTask = libPkg?.taskManager.tasksMap.get("clean");
 			const generateTask = libPkg?.taskManager.tasksMap.get("generate");
 			const compileTask = libPkg?.taskManager.tasksMap.get("compile");
 			const buildTask = libPkg?.taskManager.tasksMap.get("build");

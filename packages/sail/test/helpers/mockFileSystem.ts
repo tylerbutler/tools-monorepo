@@ -136,7 +136,7 @@ export class MockFileSystem {
 		const mtime1 = this.getMtime(path1);
 		const mtime2 = this.getMtime(path2);
 
-		if (!mtime1 || !mtime2) {
+		if (!(mtime1 && mtime2)) {
 			return false;
 		}
 

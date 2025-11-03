@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
 
 /**
  * TODO: Implement WorkerPool tests
@@ -30,7 +30,7 @@ import { describe, expect, it } from "vitest";
  * - src/core/tasks/workers/worker.ts (worker thread implementation)
  */
 
-describe.skip("WorkerPool", () => {
+describe("WorkerPool", () => {
 	describe("Construction and Initialization", () => {
 		it.todo("should create a worker pool with default configuration");
 		it.todo("should create a worker pool with custom worker count");

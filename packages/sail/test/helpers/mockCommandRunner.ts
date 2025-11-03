@@ -117,7 +117,7 @@ export class MockCommandRunner {
 			if (this.strict) {
 				throw new Error(
 					`Unexpected command executed: "${command}"\n` +
-						`No expectations remaining. Did you forget to call expectCommand()?`,
+						"No expectations remaining. Did you forget to call expectCommand()?",
 				);
 			}
 			// Non-strict mode: return success for unexpected commands
@@ -130,7 +130,7 @@ export class MockCommandRunner {
 
 		if (this.strict && expectation.command !== command) {
 			throw new Error(
-				`Command mismatch!\n` +
+				"Command mismatch!\n" +
 					`  Expected: "${expectation.command}"\n` +
 					`  Received: "${command}"`,
 			);
@@ -158,7 +158,7 @@ export class MockCommandRunner {
 		if (this.expectations.length > 0) {
 			const remaining = this.expectations.map((e) => e.command).join(", ");
 			throw new Error(
-				`Not all expected commands were executed.\n` +
+				"Not all expected commands were executed.\n" +
 					`Remaining expectations: [${remaining}]`,
 			);
 		}
