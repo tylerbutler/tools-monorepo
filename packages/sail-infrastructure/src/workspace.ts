@@ -6,6 +6,7 @@ import { globSync } from "tinyglobby";
 
 const { getWorkspaceGlobs, resolveWorkspaceRoot } = resolveWorkspacePkg;
 
+import { WriteOnceMap } from "@tylerbu/fundamentals";
 import type { ReleaseGroupDefinition, WorkspaceDefinition } from "./config.js";
 import { loadPackageFromWorkspaceDefinition } from "./package.js";
 import { detectPackageManager } from "./packageManagers.js";
@@ -19,7 +20,6 @@ import type {
 	ReleaseGroupName,
 	WorkspaceName,
 } from "./types.js";
-import { WriteOnceMap } from "./writeOnceMap.js";
 
 /**
  * {@inheritDoc IWorkspace}

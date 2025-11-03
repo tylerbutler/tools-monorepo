@@ -10,7 +10,7 @@
 function getRemote(git, partialUrl): Promise<string | undefined>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/git.ts:198](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L198)
+Defined in: [packages/sail-infrastructure/src/git.ts:203](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L203)
 
 Get a matching git remote name based on a partial URL to the remote repo. It will match the first remote that
 contains the partialUrl case insensitively.

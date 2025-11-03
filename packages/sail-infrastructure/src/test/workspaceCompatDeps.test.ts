@@ -4,8 +4,8 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
-	type WorkspaceCompatDeps,
 	createDefaultWorkspaceCompatDeps,
+	type WorkspaceCompatDeps,
 } from "../workspaceCompatDeps.js";
 
 describe("workspaceCompatDeps", () => {
@@ -39,9 +39,9 @@ describe("workspaceCompatDeps", () => {
 		it("should return false for non-existent files", () => {
 			const deps = createDefaultWorkspaceCompatDeps();
 
-			expect(
-				deps.fileExists("/this/path/absolutely/does/not/exist.ts"),
-			).toBe(false);
+			expect(deps.fileExists("/this/path/absolutely/does/not/exist.ts")).toBe(
+				false,
+			);
 		});
 
 		it("should delegate to existsSync", () => {

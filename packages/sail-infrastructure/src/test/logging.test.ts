@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { ErrorLoggingFunction, Logger, LoggingFunction } from "../logging.js";
+import type {
+	ErrorLoggingFunction,
+	Logger,
+	LoggingFunction,
+} from "../logging.js";
 import { defaultLogger } from "../logging.js";
 
 describe("logging", () => {

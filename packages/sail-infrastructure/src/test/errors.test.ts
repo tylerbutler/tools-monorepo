@@ -8,7 +8,9 @@ describe("errors", () => {
 			const testPath = "/home/user/project";
 			const error = new NotInGitRepository(testPath);
 
-			expect(error.message).toBe(`Path is not in a Git repository: ${testPath}`);
+			expect(error.message).toBe(
+				`Path is not in a Git repository: ${testPath}`,
+			);
 		});
 
 		it("should store the path property", () => {
