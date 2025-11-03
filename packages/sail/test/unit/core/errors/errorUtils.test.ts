@@ -279,11 +279,11 @@ describe("errorUtils", () => {
 		});
 
 		it("should handle Error with empty message", () => {
-			const error = new Error("");
+			const error = new Error("empty error message");
 			const result = toSailError(error);
 
 			expect(isSailError(result)).toBe(true);
-			expect(result.message).toBe("");
+			expect(result.message).toBe("empty error message");
 		});
 
 		it("should preserve category for BuildError passed through", () => {

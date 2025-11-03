@@ -162,7 +162,7 @@ export class LeafTaskBuilder {
 		// Create BuildGraphPackage with BuildGraphContext
 		// Constructor: (context, pkg, globalTaskDefinitions)
 		const buildGraphPkg = new BuildGraphPackage(
-			buildGraphContext as any,
+			buildGraphContext as unknown as BuildGraphContext,
 			pkg,
 			{},
 		);

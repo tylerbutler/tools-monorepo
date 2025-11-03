@@ -220,7 +220,7 @@ importers:
 			for (const pkg of packages) {
 				const buildTask = pkg.taskManager.tasksMap.get("build");
 				expect(buildTask).toBeDefined();
-				expect(buildTask?.name).toBe("build");
+				expect(buildTask?.taskName).toBe("build");
 			}
 		}, 180_000);
 
@@ -481,7 +481,7 @@ importers:
 			const bundleTask = libPkg?.taskManager.tasksMap.get("bundle");
 
 			expect(bundleTask).toBeDefined();
-			expect(bundleTask?.name).toBe("bundle");
+			expect(bundleTask?.taskName).toBe("bundle");
 
 			// Verify declarative task configuration was applied
 			// (Task should track input/output files for incremental builds)

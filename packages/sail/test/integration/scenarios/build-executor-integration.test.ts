@@ -191,13 +191,16 @@ describe("BuildExecutor Integration", () => {
 			const result1 = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 			const initialBuiltCount = result1.buildGraph.taskStats.leafBuiltCount;
 
-			// Modify a file
-			const libSource = join(ctx.testDir, "packages", "lib", "src", "index.ts");
+			// Modify a file in app (leaf package with no dependents)
+			// This ensures lib stays up-to-date while app rebuilds
+			const appSource = join(ctx.testDir, "packages", "app", "src", "index.ts");
 			await writeFile(
-				libSource,
+				appSource,
 				`
-export function greet(name: string): string {
-	return \`Hello, \${name}! MODIFIED!\`;
+import { greet } from '@test/lib';
+
+export function main(): void {
+	console.log(greet('World')); // MODIFIED!
 }
 `,
 			);

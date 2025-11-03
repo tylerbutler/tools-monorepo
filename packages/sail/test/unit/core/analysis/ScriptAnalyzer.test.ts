@@ -440,6 +440,7 @@ describe("ScriptAnalyzer", () => {
 
 			expect(() => {
 				analyzer.validateScriptReferences(
+					// biome-ignore lint/style/noNonNullAssertion: test code requires accessing the build property
 					packageScripts.build!,
 					Object.keys(packageScripts),
 				);

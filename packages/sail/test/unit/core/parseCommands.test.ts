@@ -43,7 +43,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				"concurrently npm:build" as any,
+				"concurrently npm:build" as unknown as string,
 				["build", "test"],
 				onNpmCommand,
 				onDirectCommand,
@@ -58,7 +58,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				"concurrently npm:build npm:test" as any,
+				"concurrently npm:build npm:test" as unknown as string,
 				["build", "test"],
 				onNpmCommand,
 				onDirectCommand,
@@ -74,7 +74,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				'concurrently "npm:build" "npm:test"' as any,
+				'concurrently "npm:build" "npm:test"' as unknown as string,
 				["build", "test"],
 				onNpmCommand,
 				onDirectCommand,
@@ -89,7 +89,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				"concurrently tsc webpack" as any,
+				"concurrently tsc webpack" as unknown as string,
 				[],
 				onNpmCommand,
 				onDirectCommand,
@@ -105,7 +105,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				"concurrently npm:build tsc" as any,
+				"concurrently npm:build tsc" as unknown as string,
 				["build"],
 				onNpmCommand,
 				onDirectCommand,
@@ -120,7 +120,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				'concurrently "npm:test*"' as any,
+				'concurrently "npm:test*"' as unknown as string,
 				["test:unit", "test:e2e", "test:integration"],
 				onNpmCommand,
 				onDirectCommand,
@@ -136,7 +136,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				'concurrently "npm:build*"' as any,
+				'concurrently "npm:build*"' as unknown as string,
 				["build:dev", "build:prod", "test:unit"],
 				onNpmCommand,
 				onDirectCommand,
@@ -152,7 +152,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				'concurrently "npm:nonexistent*"' as any,
+				'concurrently "npm:nonexistent*"' as unknown as string,
 				["build", "test"],
 				onNpmCommand,
 				onDirectCommand,
@@ -166,7 +166,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				"concurrently   npm:build    npm:test" as any,
+				"concurrently   npm:build    npm:test" as unknown as string,
 				["build", "test"],
 				onNpmCommand,
 				onDirectCommand,
@@ -181,7 +181,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				"concurrently npm:test*" as any,
+				"concurrently npm:test*" as unknown as string,
 				["test:unit", "test:e2e"],
 				onNpmCommand,
 				onDirectCommand,
@@ -196,7 +196,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				'concurrently "npm:b*"' as any,
+				'concurrently "npm:b*"' as unknown as string,
 				["build", "bundle", "test", "lint"],
 				onNpmCommand,
 				onDirectCommand,
@@ -213,7 +213,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				'concurrently npm:build "npm:test"' as any,
+				'concurrently npm:build "npm:test"' as unknown as string,
 				["build", "test"],
 				onNpmCommand,
 				onDirectCommand,
@@ -228,7 +228,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				'concurrently npm:build "npm:test*" tsc --watch' as any,
+				'concurrently npm:build "npm:test*" tsc --watch' as unknown as string,
 				["build", "test:unit", "test:e2e"],
 				onNpmCommand,
 				onDirectCommand,
@@ -246,7 +246,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				"concurrently npm:test*" as any,
+				"concurrently npm:test*" as unknown as string,
 				[],
 				onNpmCommand,
 				onDirectCommand,
@@ -261,7 +261,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				'concurrently "npm:build:prod"' as any,
+				'concurrently "npm:build:prod"' as unknown as string,
 				["build:prod", "build:dev"],
 				onNpmCommand,
 				onDirectCommand,
@@ -275,7 +275,7 @@ describe("parseCommands", () => {
 			const onDirectCommand = vi.fn();
 
 			parseConcurrentlyCommand(
-				"concurrently npm:valid invalid npm:another" as any,
+				"concurrently npm:valid invalid npm:another" as unknown as string,
 				["valid", "another"],
 				onNpmCommand,
 				onDirectCommand,

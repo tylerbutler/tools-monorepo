@@ -541,7 +541,10 @@ describe("PersistentFileHashCache", () => {
 
 		it("should only load cache once", async () => {
 			// Arrange
-			const loadSpy = vi.spyOn(cache as any, "loadCache");
+			const loadSpy = vi.spyOn(
+				cache as unknown as { loadCache: () => void },
+				"loadCache",
+			);
 
 			// Act
 			await cache.getFileHash(testFile1);

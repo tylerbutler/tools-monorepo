@@ -493,7 +493,7 @@ describe("ErrorHandler", () => {
 			const operation = vi.fn().mockImplementation(() => {
 				throw error;
 			});
-			const fallback = null;
+			const fallback: null = null;
 
 			// Act
 			errorHandler.safeExecute(operation, fallback);

@@ -80,14 +80,18 @@ describe("BiomeTask - Comprehensive Tests", () => {
 			const task = new LeafTaskBuilder().buildBiomeTask();
 
 			// getInputFiles is protected, but getCacheInputFiles calls it
-			expect(typeof (task as any).getInputFiles).toBe("function");
+			expect(
+				typeof (task as unknown as { getInputFiles: unknown }).getInputFiles,
+			).toBe("function");
 		});
 
 		it("should return output files from BiomeConfigReader", async () => {
 			const task = new LeafTaskBuilder().buildBiomeTask();
 
 			// getOutputFiles is protected
-			expect(typeof (task as any).getOutputFiles).toBe("function");
+			expect(
+				typeof (task as unknown as { getOutputFiles: unknown }).getOutputFiles,
+			).toBe("function");
 		});
 	});
 
@@ -115,14 +119,20 @@ describe("BiomeTask - Comprehensive Tests", () => {
 				const task = new LeafTaskBuilder().buildBiomeTask();
 
 				// getCacheInputFiles is public in LeafTask hierarchy
-				expect(typeof (task as any).getCacheInputFiles).toBe("function");
+				expect(
+					typeof (task as unknown as { getCacheInputFiles: unknown })
+						.getCacheInputFiles,
+				).toBe("function");
 			});
 
 			it("should have cache output files method", async () => {
 				const task = new LeafTaskBuilder().buildBiomeTask();
 
 				// getCacheOutputFiles is public in LeafTask hierarchy
-				expect(typeof (task as any).getCacheOutputFiles).toBe("function");
+				expect(
+					typeof (task as unknown as { getCacheOutputFiles: unknown })
+						.getCacheOutputFiles,
+				).toBe("function");
 			});
 
 			it("should include done file in cache inputs from parent class", async () => {
@@ -293,9 +303,17 @@ describe("BiomeTask - Comprehensive Tests", () => {
 				const task = new LeafTaskBuilder().buildBiomeTask();
 
 				// Verify key BiomeTask methods exist
-				expect(typeof (task as any).getBiomeConfigReader).toBe("function");
-				expect(typeof (task as any).getInputFiles).toBe("function");
-				expect(typeof (task as any).getOutputFiles).toBe("function");
+				expect(
+					typeof (task as unknown as { getBiomeConfigReader: unknown })
+						.getBiomeConfigReader,
+				).toBe("function");
+				expect(
+					typeof (task as unknown as { getInputFiles: unknown }).getInputFiles,
+				).toBe("function");
+				expect(
+					typeof (task as unknown as { getOutputFiles: unknown })
+						.getOutputFiles,
+				).toBe("function");
 			});
 		});
 	});

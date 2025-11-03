@@ -102,14 +102,20 @@ describe("TscTask - Comprehensive Tests", () => {
 			const task = new LeafTaskBuilder().buildTscTask();
 
 			// getCacheInputFiles is protected in LeafTask hierarchy
-			expect(typeof (task as any).getCacheInputFiles).toBe("function");
+			expect(
+				typeof (task as unknown as { getCacheInputFiles: unknown })
+					.getCacheInputFiles,
+			).toBe("function");
 		});
 
 		it("should have cache output files method", async () => {
 			const task = new LeafTaskBuilder().buildTscTask();
 
 			// getCacheOutputFiles is protected in LeafTask hierarchy
-			expect(typeof (task as any).getCacheOutputFiles).toBe("function");
+			expect(
+				typeof (task as unknown as { getCacheOutputFiles: unknown })
+					.getCacheOutputFiles,
+			).toBe("function");
 		});
 	});
 
@@ -275,9 +281,16 @@ describe("TscTask - Comprehensive Tests", () => {
 			const task = new LeafTaskBuilder().buildTscTask();
 
 			// Verify key TscTask methods exist (protected/private methods)
-			expect(typeof (task as any).getTscUtils).toBe("function");
-			expect(typeof (task as any).readTsConfig).toBe("function");
-			expect(typeof (task as any).checkLeafIsUpToDate).toBe("function");
+			expect(
+				typeof (task as unknown as { getTscUtils: unknown }).getTscUtils,
+			).toBe("function");
+			expect(
+				typeof (task as unknown as { readTsConfig: unknown }).readTsConfig,
+			).toBe("function");
+			expect(
+				typeof (task as unknown as { checkLeafIsUpToDate: unknown })
+					.checkLeafIsUpToDate,
+			).toBe("function");
 		});
 	});
 
