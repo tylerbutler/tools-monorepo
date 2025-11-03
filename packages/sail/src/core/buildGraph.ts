@@ -584,7 +584,7 @@ export class BuildGraph {
 		for (const node of this._buildPackages.values()) {
 			if (matchedOnly && !node.pkg.matched) {
 				// Don't initialize task on package that wasn't matched in matchedOnly mode
-				return;
+				continue;
 			}
 
 			this.matchedPackages++;
