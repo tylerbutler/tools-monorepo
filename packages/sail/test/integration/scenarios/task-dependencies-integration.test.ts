@@ -39,7 +39,7 @@ describe("Task Dependencies Integration", () => {
 			// Build and verify ^build resolution
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"]);
+			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
 
 			// Find packages
 			const libPkg = buildGraph.buildPackages.find(
@@ -174,7 +174,7 @@ importers:
 			// Build and verify cross-package dependency
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"]);
+			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
 
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
@@ -283,7 +283,7 @@ importers:
 			// Build with build task - clean should also run
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"]);
+			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
 
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
@@ -385,7 +385,7 @@ importers:
 			// Build with build task - verify should also run
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"]);
+			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
 
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
@@ -490,7 +490,7 @@ importers:
 			// Execute test task only - clean should NOT run
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["test"]);
+			const buildGraph = await buildCtx.executeBuild(["test"], { force: true });
 
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
@@ -513,7 +513,7 @@ importers:
 			// Execute build and verify dependency chain
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"]);
+			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
 
 			// Verify all packages built (4 total in diamond)
 			expect(buildGraph.taskStats.leafBuiltCount).toBe(4);
@@ -654,7 +654,7 @@ importers:
 			// Execute build - should run: clean, generate, compile, build
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"]);
+			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
 
 			// Verify all 4 tasks executed
 			expect(buildGraph.taskStats.leafBuiltCount).toBe(4);
@@ -769,7 +769,7 @@ importers:
 
 			// Should either throw or handle gracefully
 			try {
-				await buildCtx.executeBuild(["build"]);
+				await buildCtx.executeBuild(["build"], { force: true });
 				// If no error thrown, verify build completed (circular handled)
 			} catch (error) {
 				// Expected: circular dependency detected
@@ -856,20 +856,14 @@ importers:
 				),
 			);
 
-			// Should handle missing task gracefully
+			// Should provide clear error for missing task reference
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
 
-			// Build should succeed or provide clear error
-			const buildGraph = await buildCtx.executeBuild(["build"]);
-			expect(buildGraph).toBeDefined();
-
-			// Build task should still exist
-			const libPkg = buildGraph.buildPackages.find(
-				(p) => p.pkg.name === "@test/lib",
-			);
-			const buildTask = libPkg?.taskManager.tasksMap.get("build");
-			expect(buildTask).toBeDefined();
+			// Build should throw clear error about invalid dependency
+			await expect(
+				buildCtx.executeBuild(["build"], { force: true }),
+			).rejects.toThrow(/nonexistent/);
 		}, 180_000);
 	});
 
@@ -1008,7 +1002,7 @@ importers:
 			// Execute build and verify order via levels
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"]);
+			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
 
 			const basePkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/base",

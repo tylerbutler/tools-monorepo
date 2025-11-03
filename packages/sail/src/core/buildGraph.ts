@@ -168,7 +168,18 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 			(taskName: string) => this.getTaskDefinition(taskName),
 			this.dependentPackages,
 			this,
+			() => this.getAllDefinedTaskNames(),
 		);
+	}
+
+	/**
+	 * Gets all task names that have explicit task definitions or are scripts
+	 */
+	private getAllDefinedTaskNames(): string[] {
+		const definedNames = Object.keys(this._taskDefinitions);
+		const scriptNames = Object.keys(this.pkg.packageJson.scripts ?? {});
+		// Combine and deduplicate
+		return [...new Set([...definedNames, ...scriptNames])];
 	}
 
 	// Task management delegation methods

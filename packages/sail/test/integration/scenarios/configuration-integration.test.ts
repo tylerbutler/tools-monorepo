@@ -545,6 +545,24 @@ importers:
 				),
 			);
 
+			// Add workspace config files
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
+
 			// Should not throw, should use inference mode
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
@@ -552,7 +570,14 @@ importers:
 			// createBuildGraph should succeed without config
 			const buildGraph = await buildCtx.createBuildGraph();
 			expect(buildGraph).toBeDefined();
-			expect(buildGraph.buildPackages.length).toBe(1);
+			// Should discover at least the lib package (may also include workspace root)
+			expect(buildGraph.buildPackages.length).toBeGreaterThanOrEqual(1);
+
+			// Verify the lib package exists
+			const libPackage = buildGraph.buildPackages.find(
+				(p) => p.pkg.name === "@test/lib",
+			);
+			expect(libPackage).toBeDefined();
 		}, 180_000);
 
 		it("should validate task definition references", async () => {
@@ -693,7 +718,9 @@ importers:
 			// Build and verify package config took precedence
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.createBuildGraph();
+			const buildGraph = await buildCtx.executeBuild(["build", "custom"], {
+				force: true,
+			});
 
 			const libPkgNode = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",

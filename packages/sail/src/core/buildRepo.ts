@@ -244,8 +244,8 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		traceBuild(`\n========== BUILD #${buildNum} ==========`);
 
 		const buildTargetNames = options.buildTaskNames;
-		const { config } = getSailConfig(this.root);
-		const taskDefs = config.tasks ?? {};
+		// Use the config that was already loaded in the constructor
+		const taskDefs = this.context.sailConfig.tasks ?? {};
 		traceBuild(`BUILD #${buildNum}: taskDefs=%O`, taskDefs);
 		traceBuild(
 			`BUILD #${buildNum}: taskDefs keys=%O`,
