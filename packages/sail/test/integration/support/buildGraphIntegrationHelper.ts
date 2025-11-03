@@ -1,5 +1,4 @@
 import { join } from "node:path";
-import { Stopwatch } from "@tylerbu/sail-infrastructure";
 import registerDebug from "debug";
 import type { BuildGraph } from "../../../src/core/buildGraph.js";
 import { SailBuildRepo } from "../../../src/core/buildRepo.js";
@@ -79,11 +78,6 @@ export interface BuildGraphTestContext {
 	logger: TestLogger;
 
 	/**
-	 * Stopwatch for timing measurements.
-	 */
-	timer: Stopwatch;
-
-	/**
 	 * Executes a build with the specified task names.
 	 *
 	 * @param taskNames - Names of tasks to build (default: ["build"])
@@ -130,6 +124,15 @@ export async function createBuildGraphTestContext(
 	packageFilter?: string,
 ): Promise<BuildGraphTestContext> {
 	const logger = new TestLogger();
+
+	// Clear config cache to ensure fresh config loading for each test
+	const { getSailConfig } = await import("../../../src/core/config.js");
+	try {
+		getSailConfig(testDir, true); // noCache = true clears the cache
+	} catch {
+		// Ignore errors - config might not exist yet for some tests
+	}
+
 	const repo = new SailBuildRepo(testDir, logger);
 
 	// Load plugins if configured
@@ -156,8 +159,6 @@ export async function createBuildGraphTestContext(
 		// biome-ignore lint/suspicious/noExplicitAny: Accessing internal context property
 		(repo as any).context.sharedCache = sharedCache;
 	}
-
-	const timer = new Stopwatch(true); // Enable stopwatch
 
 	return {
 		createBuildGraph: async (options?: Partial<BuildOptions>) => {
@@ -233,7 +234,6 @@ export async function createBuildGraphTestContext(
 
 		logger,
 		repo,
-		timer,
 	};
 }
 
@@ -314,10 +314,8 @@ export async function executeBuildAndGetResult(
 		installedDirs.add(testDir);
 	}
 
-	const timer = new Stopwatch(true); // Enable stopwatch
-
 	const buildGraph = await ctx.executeBuild(taskNames, options);
-	const elapsedTime = timer.getTotalTime() / 1000; // Convert to seconds
+	const elapsedTime = buildGraph.totalElapsedTime; // Get elapsed time from BuildGraph (getter, not method)
 
 	const cacheStats = buildGraph.getCacheStatistics();
 
