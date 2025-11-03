@@ -19,7 +19,7 @@ export class ApiExtractorTask extends TscDependentTask {
 		);
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file and TypeScript inputs from parent class
 		const inputs = await super.getCacheInputFiles();
 
@@ -43,7 +43,7 @@ export class ApiExtractorTask extends TscDependentTask {
 		return inputs;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file and TypeScript outputs from parent class
 		const outputs = await super.getCacheOutputFiles();
 

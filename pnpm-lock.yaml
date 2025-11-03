@@ -1060,9 +1060,24 @@ importers:
       '@oclif/core':
         specifier: ^4.7.2
         version: 4.7.2
+      '@oclif/plugin-autocomplete':
+        specifier: ^3.2.37
+        version: 3.2.37
+      '@oclif/plugin-commands':
+        specifier: ^4.1.35
+        version: 4.1.35
       '@oclif/plugin-help':
         specifier: ^6.2.33
         version: 6.2.33
+      '@oclif/plugin-not-found':
+        specifier: ^3.2.70
+        version: 3.2.70(@types/node@20.19.23)
+      '@oclif/plugin-version':
+        specifier: ^2.2.34
+        version: 2.2.34
+      '@oclif/plugin-warn-if-update-available':
+        specifier: ^3.1.50
+        version: 3.1.50
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api

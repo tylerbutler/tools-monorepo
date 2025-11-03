@@ -47,7 +47,10 @@ const traceTaskDef = registerDebug("sail:task:definition");
 const _traceTaskDepTask = registerDebug("sail:task:init:dep:task");
 const traceGraph = registerDebug("sail:graph");
 
-class TaskStats {
+/**
+ * @internal
+ */
+export class TaskStats {
 	public leafTotalCount = 0;
 	public leafUpToDateCount = 0;
 	public leafBuiltCount = 0;
@@ -55,7 +58,10 @@ class TaskStats {
 	public leafQueueWaitTimeTotal = 0;
 }
 
-class BuildGraphContext implements BuildContext, BuildExecutionContext {
+/**
+ * @internal
+ */
+export class BuildGraphContext implements BuildContext, BuildExecutionContext {
 	public readonly fileHashCache: FileHashCache;
 	public readonly taskStats = new TaskStats();
 	public readonly failedTaskLines: string[] = [];
@@ -104,9 +110,13 @@ class BuildGraphContext implements BuildContext, BuildExecutionContext {
  *
  * After refactoring, this class focuses on graph structure and delegates
  * specialized functionality to dedicated classes.
+ *
+ * @beta
  */
 export class BuildGraphPackage implements DependencyNode, BuildablePackage {
+	/** @internal */
 	public readonly dependentPackages = [] as BuildGraphPackage[];
+	/** @internal */
 	public level = -1;
 	private buildP?: Promise<IBuildResult>;
 
@@ -116,15 +126,70 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 	// Task management is delegated to TaskManager
 	public readonly taskManager: TaskManager;
 
+	private readonly context: BuildGraphContext;
+
+	/** @internal */
 	public constructor(
-		public readonly context: BuildGraphContext,
+		context: BuildGraphContext,
 		public readonly pkg: BuildPackage,
 		globalTaskDefinitions: TaskDefinitions,
 	) {
+		this.context = context;
 		this._taskDefinitions = this.initializeTaskDefinitions(
 			globalTaskDefinitions,
 		);
 		this.taskManager = this.initializeTaskManager();
+	}
+
+	// Public accessors for context properties needed by tasks
+	/** @internal */
+	public get taskStats() {
+		return this.context.taskStats;
+	}
+
+	/** @internal */
+	public get force() {
+		return this.context.force;
+	}
+
+	/** @internal */
+	public get matchedOnly() {
+		return this.context.matchedOnly;
+	}
+
+	/** @internal */
+	public get log() {
+		return this.context.log;
+	}
+
+	/** @internal */
+	public get workerPool() {
+		return this.context.workerPool;
+	}
+
+	/** @internal */
+	public get repoPackageMap() {
+		return this.context.repoPackageMap;
+	}
+
+	/** @internal */
+	public get fileHashCache() {
+		return this.context.fileHashCache;
+	}
+
+	/** @internal */
+	public get sharedCache() {
+		return this.context.sharedCache;
+	}
+
+	/** @internal */
+	public get failedTaskLines() {
+		return this.context.failedTaskLines;
+	}
+
+	/** @internal */
+	public get sailConfig() {
+		return this.context.sailConfig;
 	}
 
 	private initializeTaskDefinitions(

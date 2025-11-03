@@ -11,10 +11,12 @@
  *
  * The cache key is a SHA-256 hash of all these inputs, ensuring that
  * identical inputs always produce the same cache key.
+ *
+ * @beta
  */
 export interface CacheKeyInputs {
 	/**
-	 * Package name (e.g., "@myorg/mypackage")
+	 * Package name (e.g., "\@myorg/mypackage")
 	 */
 	packageName: string;
 
@@ -89,6 +91,8 @@ export interface CacheKeyInputs {
 
 /**
  * Metadata stored in a cache entry's manifest.json file.
+ *
+ * @beta
  */
 export interface CacheManifest {
 	/**
@@ -206,6 +210,8 @@ export interface CacheManifest {
 
 /**
  * A cache entry represents a stored task execution with all its metadata.
+ *
+ * @beta
  */
 export interface CacheEntry {
 	/**
@@ -231,6 +237,8 @@ export interface CacheEntry {
 
 /**
  * Output files and metadata from a task execution.
+ *
+ * @beta
  */
 export interface TaskOutputs {
 	/**
@@ -265,6 +273,8 @@ export interface TaskOutputs {
 
 /**
  * Result of restoring a cache entry to the workspace.
+ *
+ * @beta
  */
 export interface RestoreResult {
 	/**
@@ -310,6 +320,8 @@ export interface RestoreResult {
 
 /**
  * Result of storing a cache entry.
+ *
+ * @beta
  */
 export interface StoreResult {
 	/**
@@ -335,6 +347,8 @@ export interface StoreResult {
 
 /**
  * Statistics about cache usage and performance.
+ *
+ * @beta
  */
 export interface CacheStatistics {
 	/**
@@ -380,6 +394,8 @@ export interface CacheStatistics {
 
 /**
  * Global cache key components that apply to all tasks.
+ *
+ * @beta
  */
 export interface GlobalCacheKeyComponents {
 	/**
@@ -420,6 +436,8 @@ export interface GlobalCacheKeyComponents {
 
 /**
  * Options for configuring the shared cache.
+ *
+ * @beta
  */
 export interface SharedCacheOptions {
 	/**

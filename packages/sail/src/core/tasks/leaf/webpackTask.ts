@@ -39,7 +39,7 @@ export class WebpackTask extends LeafWithDoneFileTask {
 			const srcFiles = await globFn(srcGlob);
 			for (const srcFile of srcFiles) {
 				content.sources[srcFile] =
-					await this.node.context.fileHashCache.getFileHash(srcFile);
+					await this.node.fileHashCache.getFileHash(srcFile);
 			}
 
 			return JSON.stringify(content);
@@ -100,7 +100,7 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		return this.node.getLockFileHash();
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const inputs = await super.getCacheInputFiles();
 
@@ -122,7 +122,7 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		return inputs;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const outputs = await super.getCacheOutputFiles();
 

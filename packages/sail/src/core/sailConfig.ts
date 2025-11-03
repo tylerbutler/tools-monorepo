@@ -7,11 +7,15 @@ import type { TaskDefinitionsOnDisk } from "./taskDefinitions.js";
  * @remarks
  * Plugins are self-contained modules that register their own task handlers,
  * eliminating the need for users to manually map executables to handlers.
+ *
+ * @beta
  */
 export type TaskHandlerPlugin = string | TaskHandlerPluginConfig;
 
 /**
  * Detailed configuration for a task handler plugin.
+ *
+ * @beta
  */
 export interface TaskHandlerPluginConfig {
 	/**
@@ -19,7 +23,7 @@ export interface TaskHandlerPluginConfig {
 	 * Can be:
 	 * - A relative path starting with './' or '../' (e.g., './plugins/vite.js')
 	 * - An absolute path
-	 * - A package name (e.g., '@company/sail-vite-plugin')
+	 * - A package name (e.g., '\@company/sail-vite-plugin')
 	 */
 	module: string;
 
@@ -30,7 +34,7 @@ export interface TaskHandlerPluginConfig {
 	 * @example
 	 * ```typescript
 	 * // Default export
-	 * { module: '@company/sail-vite-plugin' }
+	 * { module: '\@company/sail-vite-plugin' }
 	 *
 	 * // Named export
 	 * { module: './plugins.js', exportName: 'vitePlugin' }
@@ -50,6 +54,8 @@ export const CONFIG_VERSION = 1;
 
 /**
  * Top-most configuration for repo build settings.
+ *
+ * @beta
  */
 export interface ISailConfig {
 	/**
@@ -80,7 +86,7 @@ export interface ISailConfig {
 	 * ```typescript
 	 * {
 	 *   plugins: [
-	 *     '@company/sail-vite-plugin',  // Simple string
+	 *     '\@company/sail-vite-plugin',  // Simple string
 	 *     { module: './plugins/custom.js' },  // Local file
 	 *     { module: './plugins.js', exportName: 'esbuildPlugin' }  // Named export
 	 *   ]
@@ -109,6 +115,8 @@ export interface ISailConfig {
  *
  * Note that by default, gitignored files are treated differently for input globs vs. output globs. This can be
  * changed using the `gitignore` property on the task. See the documentation for that property for details.
+ *
+ * @beta
  */
 export interface DeclarativeTask {
 	/**
@@ -142,6 +150,9 @@ export interface DeclarativeTask {
 	gitignore?: GitIgnoreSetting;
 }
 
+/**
+ * @beta
+ */
 export type GitIgnoreSetting = ("input" | "output")[];
 
 /**
@@ -158,6 +169,8 @@ export const gitignoreDefaultValue: GitIgnoreSetting = ["input"];
  * This mapping of executable/command name to DeclarativeTask is used to connect the task to the correct executable(s).
  * Note that multi-command executables must also be included in the multiCommandExecutables setting. If they are not,
  * the commands will not be parsed correctly and may not match the task as expected.
+ *
+ * @beta
  */
 export interface DeclarativeTasks {
 	[executable: string]: DeclarativeTask;

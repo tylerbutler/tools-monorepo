@@ -11,6 +11,8 @@ const traceTaskDepTask = registerDebug("sail:task:init:dep:task");
 /**
  * TaskManager handles task creation, lifecycle management, and dependency resolution
  * for a single package in the build graph.
+ *
+ * @beta
  */
 export class TaskManager {
 	private readonly tasks = new Map<string, Task>();
@@ -26,7 +28,7 @@ export class TaskManager {
 		) => TaskDefinition | undefined,
 		private readonly dependentPackages: BuildGraphPackage[],
 		private readonly buildGraphPackage: BuildGraphPackage,
-		private readonly getAllDefinedTaskNames?: () => string[],
+		protected readonly _getAllDefinedTaskNames?: () => string[],
 	) {}
 
 	/**
@@ -81,48 +83,9 @@ export class TaskManager {
 			.map((value) => this.getTask(value, pendingInitDep))
 			.filter((task) => task !== undefined);
 
-		// Proactively create tasks with before/after relationships to the created tasks
-		if (this.getAllDefinedTaskNames) {
-			const allDefinedNames = this.getAllDefinedTaskNames();
-			const createdTaskNames = new Set(this.tasks.keys());
-
-			for (const candidateName of allDefinedNames) {
-				// Skip if task already created
-				if (createdTaskNames.has(candidateName)) {
-					continue;
-				}
-
-				const definition = this.getTaskDefinition(candidateName);
-				if (!definition) {
-					continue;
-				}
-
-				// Check if this task has before/after relationships with any created task
-				const hasBeforeRelationship = definition.before.some((targetName) => {
-					// Handle wildcard "*" - refers to all created tasks
-					if (targetName === "*") {
-						return createdTaskNames.size > 0;
-					}
-					// Only check local task names (no ^ or # prefixes for before/after)
-					return createdTaskNames.has(targetName);
-				});
-
-				const hasAfterRelationship = definition.after.some((targetName) => {
-					if (targetName === "*") {
-						return createdTaskNames.size > 0;
-					}
-					return createdTaskNames.has(targetName);
-				});
-
-				// If this task references any created task, create it
-				if (hasBeforeRelationship || hasAfterRelationship) {
-					const task = this.getTask(candidateName, pendingInitDep);
-					if (task) {
-						createdTaskNames.add(candidateName);
-					}
-				}
-			}
-		}
+		// NOTE: before/after are "weak dependencies" - they only affect ORDERING
+		// They should NOT cause tasks to be automatically created/scheduled
+		// The before/after relationships are handled during task initialization in initializeDependentTasks()
 
 		while (pendingInitDep.length > 0) {
 			// biome-ignore lint/style/noNonNullAssertion: loop condition ensures array is non-empty

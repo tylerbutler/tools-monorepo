@@ -23,7 +23,7 @@ export class EsLintTask extends TscDependentTask {
 	protected override get useWorker() {
 		if (this.command === "eslint --format stylish src") {
 			// eslint can't use worker thread as it needs to change the current working directory
-			return this.node.context.workerPool?.useWorkerThreads === false;
+			return this.node.workerPool?.useWorkerThreads === false;
 		}
 		return false;
 	}
@@ -32,7 +32,7 @@ export class EsLintTask extends TscDependentTask {
 		return getInstalledPackageVersion("eslint", this.node.pkg.directory);
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file and TypeScript inputs from parent class
 		const inputs = await super.getCacheInputFiles();
 
@@ -53,7 +53,7 @@ export class EsLintTask extends TscDependentTask {
 		return inputs;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file and TypeScript outputs from parent class
 		const outputs = await super.getCacheOutputFiles();
 

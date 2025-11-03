@@ -12,12 +12,18 @@ const traceTaskExecWait = registerDebug("sail:task:exec:wait");
 const traceTaskDepTask = registerDebug("sail:task:init:dep:task");
 const traceUpToDate = registerDebug("sail:task:uptodate");
 
+/**
+ * @beta
+ */
 export interface TaskExec {
 	task: LeafTask;
 	resolve: (value: BuildResult) => void;
 	queueTime: number;
 }
 
+/**
+ * @beta
+ */
 export abstract class Task {
 	private dependentTasks?: Task[];
 	private _transitiveDependentLeafTasks: LeafTask[] | undefined | null;
@@ -25,7 +31,7 @@ export abstract class Task {
 		return priorityQueue(async (taskExec: TaskExec) => {
 			const waitTime = (Date.now() - taskExec.queueTime) / 1000;
 			const task = taskExec.task;
-			task.node.context.taskStats.leafQueueWaitTimeTotal += waitTime;
+			task.node.taskStats.leafQueueWaitTimeTotal += waitTime;
 			traceTaskExecWait(`${task.nameColored}: waited in queue ${waitTime}s`);
 			taskExec.resolve(await task.exec());
 			// wait one more turn so that we can queue up dependents we just freed up
@@ -204,8 +210,8 @@ export abstract class Task {
 
 	public get forced() {
 		return (
-			this.node.context.force &&
-			(this.node.context.matchedOnly !== true || this.package.matched)
+			this.node.force &&
+			(this.node.matchedOnly !== true || this.package.matched)
 		);
 	}
 

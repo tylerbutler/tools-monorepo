@@ -202,7 +202,7 @@ export class TscTask extends LeafTask {
 				if (this._projectReference) {
 					fullPath = this._projectReference.remapSrcDeclFile(fullPath, config);
 				}
-				const hash = await this.node.context.fileHashCache.getFileHash(
+				const hash = await this.node.fileHashCache.getFileHash(
 					fullPath,
 					tscUtils.getSourceFileVersion,
 				);
@@ -510,7 +510,7 @@ export class TscTask extends LeafTask {
 		);
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const files = await super.getCacheInputFiles();
 
@@ -537,7 +537,7 @@ export class TscTask extends LeafTask {
 		return files;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const outputs = await super.getCacheOutputFiles();
 

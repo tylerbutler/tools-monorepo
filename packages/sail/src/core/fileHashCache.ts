@@ -1,8 +1,14 @@
 import { readFile } from "node:fs/promises";
 import { sha256 as sha256Fn } from "./hash.js";
 
+/**
+ * @internal
+ */
 export type hashFn = (buffer: Buffer) => string;
 export { sha256 } from "./hash.js";
+/**
+ * @internal
+ */
 export class FileHashCache {
 	protected fileHashCaches = new Map<hashFn, Map<string, Promise<string>>>();
 

@@ -15,6 +15,7 @@ import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
 import { DependencyError } from "../../errors/DependencyError.js";
 import { BuildResult } from "../../execution/BuildResult.js";
+import type { ICacheableTask } from "../../interfaces/ICacheableTask.js";
 import { defaultOptions } from "../../options.js";
 import type {
 	CacheKeyInputs,
@@ -41,7 +42,10 @@ interface TaskExecResult extends ExecAsyncResult {
 	worker?: boolean;
 }
 
-export abstract class LeafTask extends Task {
+/**
+ * @beta
+ */
+export abstract class LeafTask extends Task implements ICacheableTask {
 	// Unique instance ID for debugging
 	private readonly instanceId: number = ++taskInstanceCounter;
 
@@ -73,7 +77,7 @@ export abstract class LeafTask extends Task {
 			`Created task #${this.instanceId}: ${this.nameColored} (pkg: ${node.pkg.nameColored})`,
 		);
 		if (!this.isDisabled) {
-			this.node.context.taskStats.leafTotalCount++;
+			this.node.taskStats.leafTotalCount++;
 		}
 	}
 
@@ -201,11 +205,11 @@ export abstract class LeafTask extends Task {
 		}
 
 		if (defaultOptions.showExec) {
-			this.node.context.taskStats.leafBuiltCount++;
+			this.node.taskStats.leafBuiltCount++;
 			const totalTask =
-				this.node.context.taskStats.leafTotalCount -
-				this.node.context.taskStats.leafUpToDateCount;
-			const taskNum = this.node.context.taskStats.leafBuiltCount
+				this.node.taskStats.leafTotalCount -
+				this.node.taskStats.leafUpToDateCount;
+			const taskNum = this.node.taskStats.leafBuiltCount
 				.toString()
 				.padStart(totalTask.toString().length, " ");
 			this.log.log(
@@ -244,7 +248,7 @@ export abstract class LeafTask extends Task {
 		// Store in shared cache after successful execution
 		const executionTimeMs = Date.now() - startTime;
 		let cacheWriteResult: StoreResult | undefined;
-		if (this.node.context.sharedCache && this.canUseCache) {
+		if (this.node.sharedCache && this.canUseCache) {
 			cacheWriteResult = await this.storeInCache(
 				executionTimeMs,
 				ret.stdout ?? "",
@@ -269,7 +273,7 @@ export abstract class LeafTask extends Task {
 	}
 
 	private async execCore(): Promise<TaskExecResult> {
-		const workerPool = this.node.context.workerPool;
+		const workerPool = this.node.workerPool;
 		if (workerPool && this.useWorker) {
 			const workerResult = await workerPool.runOnWorker(
 				this.executable,
@@ -380,11 +384,11 @@ export abstract class LeafTask extends Task {
 					break;
 			}
 
-			this.node.context.taskStats.leafBuiltCount++;
+			this.node.taskStats.leafBuiltCount++;
 			const totalTask =
-				this.node.context.taskStats.leafTotalCount -
-				this.node.context.taskStats.leafUpToDateCount;
-			const taskNum = this.node.context.taskStats.leafBuiltCount
+				this.node.taskStats.leafTotalCount -
+				this.node.taskStats.leafUpToDateCount;
+			const taskNum = this.node.taskStats.leafBuiltCount
 				.toString()
 				.padStart(totalTask.toString().length, " ");
 			const elapsedTime = (Date.now() - startTime) / 1000;
@@ -401,9 +405,9 @@ export abstract class LeafTask extends Task {
 			}: ${workerMsg}${this.command} - ${elapsedTime.toFixed(3)}s${suffix}${cacheMsg}`;
 			this.log.log(statusString);
 			if (status === BuildResult.Failed) {
-				this.node.context.failedTaskLines.push(statusString);
+				this.node.failedTaskLines.push(statusString);
 			}
-			this.node.context.taskStats.leafExecTimeTotal += elapsedTime;
+			this.node.taskStats.leafExecTimeTotal += elapsedTime;
 		}
 		return status;
 	}
@@ -447,13 +451,13 @@ export abstract class LeafTask extends Task {
 		}
 
 		// Try shared cache first (if enabled and task supports it)
-		if (this.node.context.sharedCache && this.canUseCache) {
+		if (this.node.sharedCache && this.canUseCache) {
 			traceUpToDate(
-				`${this.nameColored}: checking cache (sharedCache=${!!this.node.context.sharedCache}, canUseCache=${this.canUseCache})`,
+				`${this.nameColored}: checking cache (sharedCache=${!!this.node.sharedCache}, canUseCache=${this.canUseCache})`,
 			);
 			const cacheHit = await this.tryRestoreFromCache();
 			if (cacheHit) {
-				this.node.context.taskStats.leafUpToDateCount++;
+				this.node.taskStats.leafUpToDateCount++;
 				this.traceExec("Skipping Leaf Task (cache hit)");
 				traceUpToDate(`${this.nameColored}: cache HIT`);
 				return true;
@@ -461,7 +465,7 @@ export abstract class LeafTask extends Task {
 			traceUpToDate(`${this.nameColored}: cache MISS`);
 		} else {
 			traceUpToDate(
-				`${this.nameColored}: cache check skipped (sharedCache=${!!this.node.context.sharedCache}, canUseCache=${this.canUseCache})`,
+				`${this.nameColored}: cache check skipped (sharedCache=${!!this.node.sharedCache}, canUseCache=${this.canUseCache})`,
 			);
 		}
 
@@ -471,7 +475,7 @@ export abstract class LeafTask extends Task {
 			`${this.nameColored}: checkLeafIsUpToDate: ${Date.now() - start}ms`,
 		);
 		if (leafIsUpToDate) {
-			this.node.context.taskStats.leafUpToDateCount++;
+			this.node.taskStats.leafUpToDateCount++;
 			this.traceExec("Skipping Leaf Task");
 		}
 		traceUpToDate(`${this.nameColored}: leafIsUpToDate=${leafIsUpToDate}`);
@@ -517,7 +521,7 @@ export abstract class LeafTask extends Task {
 	 * Whether this task type supports shared caching.
 	 * Override to return false for tasks that shouldn't be cached.
 	 */
-	protected get canUseCache(): boolean {
+	public get canUseCache(): boolean {
 		return true; // Most tasks can be cached
 	}
 
@@ -525,7 +529,7 @@ export abstract class LeafTask extends Task {
 	 * Get input files for cache key computation.
 	 * Defaults to empty array - subclasses should override if they support caching.
 	 */
-	protected async getCacheInputFiles(): Promise<string[]> {
+	public async getCacheInputFiles(): Promise<string[]> {
 		return [];
 	}
 
@@ -533,7 +537,7 @@ export abstract class LeafTask extends Task {
 	 * Get output files for cache storage/verification.
 	 * Defaults to empty array - subclasses should override if they support caching.
 	 */
-	protected async getCacheOutputFiles(): Promise<string[]> {
+	public async getCacheOutputFiles(): Promise<string[]> {
 		return [];
 	}
 
@@ -542,7 +546,7 @@ export abstract class LeafTask extends Task {
 	 * Returns true if cache hit, false if cache miss.
 	 */
 	private async tryRestoreFromCache(): Promise<boolean> {
-		const cache = this.node.context.sharedCache;
+		const cache = this.node.sharedCache;
 		if (!cache) {
 			return false;
 		}
@@ -559,7 +563,7 @@ export abstract class LeafTask extends Task {
 			const inputHashes = await Promise.all(
 				inputFiles.map(async (file) => ({
 					path: path.relative(this.node.pkg.directory, file),
-					hash: await this.node.context.fileHashCache.getFileHash(file),
+					hash: await this.node.fileHashCache.getFileHash(file),
 				})),
 			);
 
@@ -623,7 +627,7 @@ export abstract class LeafTask extends Task {
 		stdout: string,
 		stderr: string,
 	): Promise<StoreResult> {
-		const cache = this.node.context.sharedCache;
+		const cache = this.node.sharedCache;
 		if (!cache) {
 			return { success: false, reason: "cache not initialized" };
 		}
@@ -643,7 +647,7 @@ export abstract class LeafTask extends Task {
 			const inputHashes = await Promise.all(
 				inputFiles.map(async (file) => ({
 					path: path.relative(this.node.pkg.directory, file),
-					hash: await this.node.context.fileHashCache.getFileHash(file),
+					hash: await this.node.fileHashCache.getFileHash(file),
 				})),
 			);
 
@@ -814,7 +818,7 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	 * Override to include the done file in cache inputs (if it exists).
 	 * Subclasses should call super.getCacheInputFiles() and add their own inputs.
 	 */
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		const inputs = await super.getCacheInputFiles();
 		const doneFileFullPath = this.doneFileFullPath;
 		if (existsSync(doneFileFullPath)) {
@@ -827,7 +831,7 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	 * Override to include the done file in cache outputs.
 	 * Subclasses should call super.getCacheOutputFiles() and add their own outputs.
 	 */
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		const outputs = await super.getCacheOutputFiles();
 		outputs.push(this.doneFileFullPath);
 		return outputs;
@@ -939,7 +943,7 @@ export abstract class LeafWithFileStatDoneFileTask extends LeafWithDoneFileTask 
 
 	private async getHashDoneFileContent(): Promise<string | undefined> {
 		const mapHash = async (name: string) => {
-			const hash = await this.node.context.fileHashCache.getFileHash(
+			const hash = await this.node.fileHashCache.getFileHash(
 				this.getPackageFileFullPath(name),
 			);
 			return { name, hash };

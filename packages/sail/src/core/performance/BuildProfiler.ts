@@ -6,6 +6,7 @@ import {
 
 /**
  * Specialized profiler for build operations with domain-specific metrics
+ * @internal
  */
 export class BuildProfiler {
 	public readonly performanceMonitor = new PerformanceMonitor();
@@ -287,6 +288,7 @@ export class BuildProfiler {
 
 /**
  * Package-specific performance metrics
+ * @internal
  */
 export interface PackageMetrics {
 	packageName: string;
@@ -298,6 +300,7 @@ export interface PackageMetrics {
 
 /**
  * Extended performance report for builds
+ * @internal
  */
 export interface BuildPerformanceReport extends PerformanceReport {
 	buildDuration: number;
@@ -307,6 +310,7 @@ export interface BuildPerformanceReport extends PerformanceReport {
 
 /**
  * Types of file operations to profile
+ * @internal
  */
 export const FileOperationType = {
 	Read: "read",
@@ -318,12 +322,14 @@ export const FileOperationType = {
 
 /**
  * File operation type
+ * @internal
  */
 export type FileOperationType =
 	(typeof FileOperationType)[keyof typeof FileOperationType];
 
 /**
  * Types of cache events
+ * @internal
  */
 export const CacheEventType = {
 	FileHash: "file-hash",
@@ -333,6 +339,7 @@ export const CacheEventType = {
 
 /**
  * Cache event type
+ * @internal
  */
 export type CacheEventType =
 	(typeof CacheEventType)[keyof typeof CacheEventType];

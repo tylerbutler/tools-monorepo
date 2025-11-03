@@ -1,5 +1,7 @@
 /**
  * Result status of a build task execution
+ *
+ * @beta
  */
 export const BuildResult = {
 	Success: "Success",
@@ -15,6 +17,8 @@ export const BuildResult = {
 
 /**
  * Build result type
+ *
+ * @beta
  */
 export type BuildResult = (typeof BuildResult)[keyof typeof BuildResult];
 

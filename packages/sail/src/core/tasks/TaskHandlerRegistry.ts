@@ -29,6 +29,8 @@ import type { TaskHandler } from "./taskHandlers.js";
  *   }
  * } satisfies SailPlugin;
  * ```
+ *
+ * @beta
  */
 export interface SailPlugin {
 	/**
@@ -67,6 +69,8 @@ export interface SailPlugin {
  *   modulePath: './handlers/ViteTask.js'
  * });
  * ```
+ *
+ * @beta
  */
 export class TaskHandlerRegistry {
 	private readonly handlers = new Map<string, TaskHandler>();
