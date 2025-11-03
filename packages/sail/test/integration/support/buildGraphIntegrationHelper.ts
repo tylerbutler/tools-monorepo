@@ -165,12 +165,15 @@ export async function createBuildGraphTestContext(
 			const buildOptions: BuildOptions = {
 				build: true,
 				buildTaskNames: ["build"],
-				dirs: [testDir], // Use testDir as the target directory
+				dirs: [],
 				match: [],
 				releaseGroups: [],
 				verbose: false,
 				workspaces: [],
 				...options,
+				// These must come AFTER ...options to ensure they're not overridden
+				all: options?.all ?? true, // Match all packages by default
+				matchedOnly: options?.matchedOnly ?? false, // Don't filter by matched status by default
 				packageFilter: packageFilter ?? options?.packageFilter,
 			};
 
@@ -191,12 +194,15 @@ export async function createBuildGraphTestContext(
 			const buildOptions: BuildOptions = {
 				build: true,
 				buildTaskNames: taskNames ?? ["build"],
-				dirs: [testDir], // Use testDir as the target directory
+				dirs: [],
 				match: [],
 				releaseGroups: [],
 				verbose: false,
 				workspaces: [],
 				...options,
+				// These must come AFTER ...options to ensure they're not overridden
+				all: options?.all ?? true, // Match all packages by default
+				matchedOnly: options?.matchedOnly ?? false, // Don't filter by matched status by default
 				packageFilter: packageFilter ?? options?.packageFilter,
 			};
 

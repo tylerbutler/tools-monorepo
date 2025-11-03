@@ -159,6 +159,12 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 	}
 
 	public setMatched(options: IPackageMatchedOptions) {
+		// Reset all package matched states before setting new ones
+		// This allows setMatched to be called multiple times (e.g., in tests)
+		for (const pkg of this.packages.values()) {
+			pkg.matched = false;
+		}
+
 		const hasMatchArgs =
 			options.match.length > 0 ||
 			options.dirs.length > 0 ||
