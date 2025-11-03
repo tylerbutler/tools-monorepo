@@ -93,6 +93,39 @@ module.exports = {
 `,
 			);
 
+			// Add required workspace files
+			await writeFile(
+				join(ctx.testDir, "buildProject.config.cjs"),
+				`module.exports = {
+	version: 2,
+	buildProject: {
+		workspaces: {
+			default: {
+				directory: ".",
+				releaseGroups: { test: { include: ["*"] } },
+			},
+		},
+	},
+};
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
+
 			// Base package (uses global config)
 			await writeFile(
 				join(packagesDir, "base", "package.json"),
@@ -231,6 +264,39 @@ module.exports = {
 `,
 			);
 
+			// Add required workspace files
+			await writeFile(
+				join(ctx.testDir, "buildProject.config.cjs"),
+				`module.exports = {
+	version: 2,
+	buildProject: {
+		workspaces: {
+			default: {
+				directory: ".",
+				releaseGroups: { test: { include: ["*"] } },
+			},
+		},
+	},
+};
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
+
 			// Standard package (uses global clean)
 			await writeFile(
 				join(packagesDir, "standard", "package.json"),
@@ -352,6 +418,39 @@ module.exports = {
 `,
 			);
 
+			// Add required workspace files
+			await writeFile(
+				join(ctx.testDir, "buildProject.config.cjs"),
+				`module.exports = {
+	version: 2,
+	buildProject: {
+		workspaces: {
+			default: {
+				directory: ".",
+				releaseGroups: { test: { include: ["*"] } },
+			},
+		},
+	},
+};
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
+
 			// Package with bundle script
 			await writeFile(
 				join(packagesDir, "lib", "package.json"),
@@ -468,6 +567,39 @@ module.exports = {
 		}
 	}
 };
+`,
+			);
+
+			// Add required workspace files
+			await writeFile(
+				join(ctx.testDir, "buildProject.config.cjs"),
+				`module.exports = {
+	version: 2,
+	buildProject: {
+		workspaces: {
+			default: {
+				directory: ".",
+				releaseGroups: { test: { include: ["*"] } },
+			},
+		},
+	},
+};
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
 `,
 			);
 

@@ -107,6 +107,22 @@ describe("Task Dependencies Integration", () => {
 };
 `,
 			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
 
 			// Lib package with test task
 			await writeFile(
@@ -222,6 +238,22 @@ describe("Task Dependencies Integration", () => {
 };
 `,
 			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
 
 			// Package with before relationship: clean runs before build
 			await writeFile(
@@ -308,6 +340,22 @@ describe("Task Dependencies Integration", () => {
 };
 `,
 			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
 
 			// Package with after relationship: verify runs after build
 			await writeFile(
@@ -392,6 +440,22 @@ describe("Task Dependencies Integration", () => {
 		},
 	},
 };
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
 `,
 			);
 
@@ -536,6 +600,22 @@ describe("Task Dependencies Integration", () => {
 };
 `,
 			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
 
 			await writeFile(
 				join(packagesDir, "lib", "package.json"),
@@ -640,6 +720,22 @@ describe("Task Dependencies Integration", () => {
 };
 `,
 			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
 
 			// Package with circular task dependency: build -> test -> build
 			await writeFile(
@@ -723,6 +819,22 @@ describe("Task Dependencies Integration", () => {
 };
 `,
 			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
 
 			await writeFile(
 				join(packagesDir, "lib", "package.json"),
@@ -804,6 +916,22 @@ describe("Task Dependencies Integration", () => {
 		},
 	},
 };
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
 `,
 			);
 

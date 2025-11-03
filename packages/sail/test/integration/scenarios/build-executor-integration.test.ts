@@ -250,6 +250,39 @@ export function greet(name: string): string {
 `,
 			);
 
+			// Add required workspace files
+			await writeFile(
+				join(ctx.testDir, "buildProject.config.cjs"),
+				`module.exports = {
+	version: 2,
+	buildProject: {
+		workspaces: {
+			default: {
+				directory: ".",
+				releaseGroups: { test: { include: ["*"] } },
+			},
+		},
+	},
+};
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
+`,
+			);
+
 			// Package with failing build script
 			await writeFile(
 				join(packagesDir, "lib", "package.json"),
@@ -310,6 +343,39 @@ export function greet(name: string): string {
 		}
 	}
 };
+`,
+			);
+
+			// Add required workspace files
+			await writeFile(
+				join(ctx.testDir, "buildProject.config.cjs"),
+				`module.exports = {
+	version: 2,
+	buildProject: {
+		workspaces: {
+			default: {
+				directory: ".",
+				releaseGroups: { test: { include: ["*"] } },
+			},
+		},
+	},
+};
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
 `,
 			);
 
@@ -398,6 +464,39 @@ export function greet(name: string): string {
 		}
 	}
 };
+`,
+			);
+
+			// Add required workspace files
+			await writeFile(
+				join(ctx.testDir, "buildProject.config.cjs"),
+				`module.exports = {
+	version: 2,
+	buildProject: {
+		workspaces: {
+			default: {
+				directory: ".",
+				releaseGroups: { test: { include: ["*"] } },
+			},
+		},
+	},
+};
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-workspace.yaml"),
+				`packages:
+  - 'packages/*'
+`,
+			);
+			await writeFile(
+				join(ctx.testDir, "pnpm-lock.yaml"),
+				`lockfileVersion: '9.0'
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+importers:
+  .: {}
 `,
 			);
 
