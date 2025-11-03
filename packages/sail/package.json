@@ -37,10 +37,11 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
+		"build:api": "api-extractor run --local",
 		"build:compile": "tsc --project ./tsconfig.json",
 		"build:generate": "./bin/dev.js snapshot:generate --filepath test/commands/__snapshots__/commands.json",
 		"build:manifest": "oclif manifest",
-		"build:readme": "oclif readme --no-aliases",
+		"build:readme": "oclif readme --multi --no-aliases",
 		"check": "pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
@@ -79,13 +80,20 @@
 			"showFlagOptionsInTitle": true,
 			"stripAnsi": true
 		},
-		"plugins": [],
+		"plugins": [
+			"@oclif/plugin-not-found",
+			"@oclif/plugin-version",
+			"@oclif/plugin-warn-if-update-available"
+		],
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/sail/<%- commandPath %>"
 	},
 	"dependencies": {
 		"@manypkg/get-packages": "^2.2.2",
 		"@oclif/core": "^4.7.2",
 		"@oclif/plugin-help": "^6.2.33",
+		"@oclif/plugin-not-found": "^3.2.70",
+		"@oclif/plugin-version": "^2.2.34",
+		"@oclif/plugin-warn-if-update-available": "^3.1.50",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/sail-infrastructure": "workspace:^",
 		"async": "^3.2.6",

@@ -145,5 +145,16 @@
             "verbose"
         ],
         "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "version",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [
+            "json",
+            "verbose"
+        ],
+        "plugin": "@oclif/plugin-version"
     }
 ]
