@@ -9,6 +9,8 @@
 
 export { BuildContextBuilder } from "./BuildContextBuilder.js";
 export { BuildGraphBuilder } from "./BuildGraphBuilder.js";
+export { GroupTaskBuilder } from "./GroupTaskBuilder.js";
+export { LeafTaskBuilder } from "./LeafTaskBuilder.js";
 export { PackageBuilder } from "./PackageBuilder.js";
 export {
 	createTaskDefinitionMap,

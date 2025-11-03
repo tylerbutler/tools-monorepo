@@ -162,7 +162,12 @@ export async function getChangedSinceRef<P extends IPackage>(
 	const changedPackageNames = dirs
 		.map((dir) => {
 			const cwd = path.resolve(buildProject.root, dir);
-			return readPkgUp.sync({ cwd })?.packageJson.name;
+			try {
+				return readPkgUp.sync({ cwd })?.packageJson.name;
+			} catch {
+				// Skip directories that don't have valid package.json files
+				return undefined;
+			}
 		})
 		.filter((name): name is string => name !== undefined);
 

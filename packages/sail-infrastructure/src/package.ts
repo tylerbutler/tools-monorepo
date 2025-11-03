@@ -8,6 +8,30 @@ const { readJsonSync } = fsePkg;
 
 import colors from "picocolors";
 
+/**
+ * Safely reads and parses a JSON file with enhanced error reporting.
+ * @param filePath - The path to the JSON file to read.
+ * @returns The parsed JSON content.
+ * @throws {Error} If the file cannot be read or parsed.
+ */
+function safeReadJsonSync<T>(filePath: string): T {
+	try {
+		const content = readJsonSync(filePath) as T;
+		if (content === null || content === undefined) {
+			throw new Error(`Empty or null JSON content in file: ${filePath}`);
+		}
+		if (typeof content === "object" && Object.keys(content).length === 0) {
+			throw new Error(`Empty JSON object in file: ${filePath}`);
+		}
+		return content;
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new Error(`Failed to parse JSON at ${filePath}: ${error.message}`);
+		}
+		throw new Error(`Failed to parse JSON at ${filePath}: ${String(error)}`);
+	}
+}
+
 import {
 	findReleaseGroupForPackage,
 	type WorkspaceDefinition,
@@ -182,7 +206,7 @@ export abstract class PackageBase<
 	 * Reload the package from the on-disk package.json.
 	 */
 	public reload(): void {
-		this._packageJson = readJsonSync(this.packageJsonFilePath) as J;
+		this._packageJson = safeReadJsonSync<J>(this.packageJsonFilePath);
 	}
 
 	public toString(): string {
@@ -266,8 +290,8 @@ class Package<
 		workspace: IWorkspace,
 		additionalProperties?: TAdditionalProps,
 	): IPackage {
-		const packageName: PackageName = (
-			readJsonSync(packageJsonFilePath) as TPackageJson
+		const packageName: PackageName = safeReadJsonSync<TPackageJson>(
+			packageJsonFilePath,
 		).name as PackageName;
 		const releaseGroupName = findReleaseGroupForPackage(
 			packageName,
