@@ -56,8 +56,8 @@ describe("Task Dependencies Integration", () => {
 			expect(appPkg).toBeDefined();
 
 			// app depends on lib, so app#build should depend on lib#build (^build)
-			const appBuildTask = appPkg?.getTask("build");
-			const libBuildTask = libPkg?.getTask("build");
+			const appBuildTask = appPkg?.taskManager.tasksMap.get("build");
+			const libBuildTask = libPkg?.taskManager.tasksMap.get("build");
 
 			expect(appBuildTask).toBeDefined();
 			expect(libBuildTask).toBeDefined();
@@ -186,8 +186,8 @@ importers:
 				(p) => p.pkg.name === "@test/app",
 			);
 
-			const libTestTask = libPkg?.getTask("test");
-			const appBuildTask = appPkg?.getTask("build");
+			const libTestTask = libPkg?.taskManager.tasksMap.get("test");
+			const appBuildTask = appPkg?.taskManager.tasksMap.get("build");
 
 			expect(libTestTask).toBeDefined();
 			expect(appBuildTask).toBeDefined();
@@ -291,8 +291,8 @@ importers:
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
 			);
-			const cleanTask = libPkg?.getTask("clean");
-			const buildTask = libPkg?.getTask("build");
+			const cleanTask = libPkg?.taskManager.tasksMap.get("clean");
+			const buildTask = libPkg?.taskManager.tasksMap.get("build");
 
 			expect(cleanTask).toBeDefined();
 			expect(buildTask).toBeDefined();
@@ -393,8 +393,8 @@ importers:
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
 			);
-			const buildTask = libPkg?.getTask("build");
-			const verifyTask = libPkg?.getTask("verify");
+			const buildTask = libPkg?.taskManager.tasksMap.get("build");
+			const verifyTask = libPkg?.taskManager.tasksMap.get("verify");
 
 			expect(buildTask).toBeDefined();
 			expect(verifyTask).toBeDefined();
@@ -498,7 +498,7 @@ importers:
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
 			);
-			const testTask = libPkg?.getTask("test");
+			const testTask = libPkg?.taskManager.tasksMap.get("test");
 
 			expect(testTask).toBeDefined();
 
@@ -537,10 +537,10 @@ importers:
 
 			// Verify dependency structure
 			// top depends on left and right, both depend on base
-			const topBuildTask = top?.getTask("build");
-			const leftBuildTask = left?.getTask("build");
-			const rightBuildTask = right?.getTask("build");
-			const baseBuildTask = base?.getTask("build");
+			const topBuildTask = top?.taskManager.tasksMap.get("build");
+			const leftBuildTask = left?.taskManager.tasksMap.get("build");
+			const rightBuildTask = right?.taskManager.tasksMap.get("build");
+			const baseBuildTask = base?.taskManager.tasksMap.get("build");
 
 			expect(topBuildTask).toBeDefined();
 			expect(leftBuildTask).toBeDefined();
@@ -666,10 +666,10 @@ importers:
 				(p) => p.pkg.name === "@test/lib",
 			);
 
-			const cleanTask = libPkg?.getTask("clean");
-			const generateTask = libPkg?.getTask("generate");
-			const compileTask = libPkg?.getTask("compile");
-			const buildTask = libPkg?.getTask("build");
+			const cleanTask = libPkg?.taskManager.tasksMap.get("clean");
+			const generateTask = libPkg?.taskManager.tasksMap.get("generate");
+			const compileTask = libPkg?.taskManager.tasksMap.get("compile");
+			const buildTask = libPkg?.taskManager.tasksMap.get("build");
 
 			// Verify strong dependencies
 			const compileDeps = Array.from(compileTask?.dependentLeafTasks ?? []);
@@ -871,7 +871,7 @@ importers:
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
 			);
-			const buildTask = libPkg?.getTask("build");
+			const buildTask = libPkg?.taskManager.tasksMap.get("build");
 			expect(buildTask).toBeDefined();
 		}, 180_000);
 	});

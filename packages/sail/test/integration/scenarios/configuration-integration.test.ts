@@ -52,7 +52,7 @@ describe("Configuration System Integration", () => {
 
 			// Verify each package has a build task from config
 			for (const pkg of packages) {
-				const buildTask = pkg.getTask("build");
+				const buildTask = pkg.taskManager.tasksMap.get("build");
 				expect(buildTask).toBeDefined();
 			}
 		}, 180_000);
@@ -190,12 +190,12 @@ importers:
 			expect(overridePkg).toBeDefined();
 
 			// Base package should have build task only
-			const baseBuildTask = basePkg?.getTask("build");
+			const baseBuildTask = basePkg?.taskManager.tasksMap.get("build");
 			expect(baseBuildTask).toBeDefined();
 
 			// Override package should have both build and test tasks
-			const overrideBuildTask = overridePkg?.getTask("build");
-			const overrideTestTask = overridePkg?.getTask("test");
+			const overrideBuildTask = overridePkg?.taskManager.tasksMap.get("build");
+			const overrideTestTask = overridePkg?.taskManager.tasksMap.get("test");
 
 			expect(overrideBuildTask).toBeDefined();
 			expect(overrideTestTask).toBeDefined();
@@ -223,7 +223,7 @@ importers:
 			// Verify all packages have build task from global config
 			const packages = buildGraph.buildPackages;
 			for (const pkg of packages) {
-				const buildTask = pkg.getTask("build");
+				const buildTask = pkg.taskManager.tasksMap.get("build");
 				expect(buildTask).toBeDefined();
 				expect(buildTask?.name).toBe("build");
 			}
@@ -360,12 +360,12 @@ importers:
 			);
 
 			// Standard package should have simple clean task
-			const standardClean = standardPkg?.getTask("clean");
+			const standardClean = standardPkg?.taskManager.tasksMap.get("clean");
 			expect(standardClean).toBeDefined();
 
 			// Custom package should have clean task that depends on prepare
-			const customClean = customPkg?.getTask("clean");
-			const customPrepare = customPkg?.getTask("prepare");
+			const customClean = customPkg?.taskManager.tasksMap.get("clean");
+			const customPrepare = customPkg?.taskManager.tasksMap.get("prepare");
 
 			expect(customClean).toBeDefined();
 			expect(customPrepare).toBeDefined();
@@ -483,7 +483,7 @@ importers:
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
 			);
-			const bundleTask = libPkg?.getTask("bundle");
+			const bundleTask = libPkg?.taskManager.tasksMap.get("bundle");
 
 			expect(bundleTask).toBeDefined();
 			expect(bundleTask?.name).toBe("bundle");
@@ -631,7 +631,7 @@ importers:
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
 			);
-			const buildTask = libPkg?.getTask("build");
+			const buildTask = libPkg?.taskManager.tasksMap.get("build");
 			expect(buildTask).toBeDefined();
 		}, 180_000);
 	});
@@ -682,11 +682,11 @@ importers:
 			);
 
 			// Should have custom task (from package config)
-			const customTask = libPkgNode?.getTask("custom");
+			const customTask = libPkgNode?.taskManager.tasksMap.get("custom");
 			expect(customTask).toBeDefined();
 
 			// Build task should exist
-			const buildTask = libPkgNode?.getTask("build");
+			const buildTask = libPkgNode?.taskManager.tasksMap.get("build");
 			expect(buildTask).toBeDefined();
 		}, 180_000);
 	});
