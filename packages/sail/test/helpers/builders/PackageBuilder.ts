@@ -32,6 +32,7 @@ export class PackageBuilder {
 	private isPrivate?: boolean;
 	private sailTasks?: TaskDefinitionsOnDisk;
 	private sailDeclarativeTasks?: Record<string, unknown>;
+	private matched = true; // Default to true for test packages
 
 	/**
 	 * Set the package name
@@ -102,6 +103,14 @@ export class PackageBuilder {
 	 */
 	asPrivate(isPrivate = true): this {
 		this.isPrivate = isPrivate;
+		return this;
+	}
+
+	/**
+	 * Set the matched status (whether package is matched by filters)
+	 */
+	withMatched(matched: boolean): this {
+		this.matched = matched;
 		return this;
 	}
 
@@ -224,7 +233,7 @@ export class PackageBuilder {
 			directory: this.packagePath, // Add directory property
 			version: this.version,
 			packageJson,
-			matched: true, // Set to true by default for test packages
+			matched: this.matched,
 			isReleaseGroupRoot: false,
 			/**
 			 * Generator that yields all dependencies (prod, dev, peer)
