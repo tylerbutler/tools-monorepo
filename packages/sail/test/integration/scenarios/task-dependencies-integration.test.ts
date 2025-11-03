@@ -284,10 +284,12 @@ importers:
 				),
 			);
 
-			// Build with build task - clean should also run
+			// Build with BOTH clean and build tasks explicitly
+			// Note: before/after are "weak dependencies" - they don't auto-create tasks
+			// We must explicitly request both tasks for the ordering to apply
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], {
+			const buildGraph = await buildCtx.executeBuild(["clean", "build"], {
 				force: true,
 			});
 
@@ -388,10 +390,11 @@ importers:
 				),
 			);
 
-			// Build with build task - verify should also run
+			// Build with BOTH build and verify tasks explicitly
+			// Note: after is a "weak dependency" - doesn't auto-create tasks
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], {
+			const buildGraph = await buildCtx.executeBuild(["build", "verify"], {
 				force: true,
 			});
 
@@ -661,15 +664,17 @@ importers:
 				),
 			);
 
-			// Execute build - should run: clean, generate, compile, build
+			// Execute build - should run: generate, compile, build (3 tasks)
+			// Note: clean has before: ["build"] but that's a weak dependency
+			// It won't auto-create, so only the strong dependencies run
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
 			const buildGraph = await buildCtx.executeBuild(["build"], {
 				force: true,
 			});
 
-			// Verify all 4 tasks executed
-			expect(buildGraph.taskStats.leafBuiltCount).toBe(4);
+			// Verify 3 tasks executed (NOT 4 - clean is not auto-created)
+			expect(buildGraph.taskStats.leafBuiltCount).toBe(3);
 
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
