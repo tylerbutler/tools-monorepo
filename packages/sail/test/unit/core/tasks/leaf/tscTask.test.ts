@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TscTask } from "../../../../../src/core/tasks/leaf/tscTask.js";
+import { BuildContextBuilder } from "../../../../helpers/builders/BuildContextBuilder.js";
 import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
 import { PackageBuilder } from "../../../../helpers/builders/PackageBuilder.js";
-import { BuildContextBuilder } from "../../../../helpers/builders/BuildContextBuilder.js";
 
 /**
  * Comprehensive TscTask Tests
@@ -126,9 +126,7 @@ describe("TscTask - Comprehensive Tests", () => {
 		});
 
 		it("should determine worker eligibility based on command", () => {
-			const task = new LeafTaskBuilder()
-				.withCommand("tsc")
-				.buildTscTask();
+			const task = new LeafTaskBuilder().withCommand("tsc").buildTscTask();
 
 			// Worker support depends on parsed command line
 			// This requires TypeScript to be available at the package path
@@ -219,9 +217,7 @@ describe("TscTask - Comprehensive Tests", () => {
 		});
 
 		it("should handle tsc build mode (-b flag)", () => {
-			const task = new LeafTaskBuilder()
-				.withCommand("tsc -b")
-				.buildTscTask();
+			const task = new LeafTaskBuilder().withCommand("tsc -b").buildTscTask();
 
 			expect(task.command).toBe("tsc -b");
 		});
@@ -305,9 +301,7 @@ describe("TscTask - Comprehensive Tests", () => {
 
 	describe("Execution Command", () => {
 		it("should support standard tsc command", () => {
-			const task = new LeafTaskBuilder()
-				.withCommand("tsc")
-				.buildTscTask();
+			const task = new LeafTaskBuilder().withCommand("tsc").buildTscTask();
 
 			expect(task.command).toBe("tsc");
 		});

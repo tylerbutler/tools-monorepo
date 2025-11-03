@@ -1,14 +1,13 @@
 import type { BuildContext } from "../../../src/core/buildContext.js";
 import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
+// Import dependencies needed for BuildGraphContext
+import { FileHashCache } from "../../../src/core/fileHashCache.js";
+import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 import { GroupTask } from "../../../src/core/tasks/groupTask.js";
 import type { Task } from "../../../src/core/tasks/task.js";
 import { BuildContextBuilder } from "./BuildContextBuilder.js";
 import { LeafTaskBuilder } from "./LeafTaskBuilder.js";
 import { PackageBuilder } from "./PackageBuilder.js";
-
-// Import dependencies needed for BuildGraphContext
-import { FileHashCache } from "../../../src/core/fileHashCache.js";
-import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 
 /**
  * Fluent builder for creating GroupTask instances for testing.
@@ -190,7 +189,11 @@ export class GroupTaskBuilder {
 
 		// Create BuildGraphPackage with BuildGraphContext
 		// Constructor: (context, pkg, globalTaskDefinitions)
-		const buildGraphPkg = new BuildGraphPackage(buildGraphContext as any, pkg, {});
+		const buildGraphPkg = new BuildGraphPackage(
+			buildGraphContext as any,
+			pkg,
+			{},
+		);
 
 		return buildGraphPkg;
 	}

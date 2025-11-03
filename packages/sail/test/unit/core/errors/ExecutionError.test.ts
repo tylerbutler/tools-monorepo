@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ExecutionError } from "../../../../src/core/errors/ExecutionError.js";
 import { ErrorCategory } from "../../../../src/core/errors/SailError.js";
 
@@ -18,11 +18,15 @@ describe("ExecutionError", () => {
 		});
 
 		it("should handle execution-specific options", () => {
-			const error = new ExecutionError("Command failed", {}, {
-				exitCode: 1,
-				stdout: "output text",
-				stderr: "error text",
-			});
+			const error = new ExecutionError(
+				"Command failed",
+				{},
+				{
+					exitCode: 1,
+					stdout: "output text",
+					stderr: "error text",
+				},
+			);
 
 			expect(error.exitCode).toBe(1);
 			expect(error.stdout).toBe("output text");
@@ -184,7 +188,9 @@ describe("ExecutionError", () => {
 					packageName: "my-package",
 				});
 
-				expect(error.message).toBe("Worker 'tsc-worker' failed: Worker crashed");
+				expect(error.message).toBe(
+					"Worker 'tsc-worker' failed: Worker crashed",
+				);
 				expect(error.context.workerId).toBe("tsc-worker");
 				expect(error.context.packageName).toBe("my-package");
 				expect(error.isRetryable).toBe(true);

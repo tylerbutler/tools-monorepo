@@ -1,16 +1,19 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { ServiceContainer, SERVICE_IDENTIFIERS } from "../../../../src/core/di/ServiceContainer.js";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-	registerCoreServices,
-	createServiceContainer,
+	SERVICE_IDENTIFIERS,
+	ServiceContainer,
+} from "../../../../src/core/di/ServiceContainer.js";
+import {
 	createBuildExecutor,
+	createServiceContainer,
+	registerCoreServices,
 } from "../../../../src/core/di/ServiceRegistration.js";
 import type {
-	IConfigurationParser,
-	IConfigurationMerger,
-	IScriptAnalyzer,
-	IDependencyResolver,
 	IBuildExecutor,
+	IConfigurationMerger,
+	IConfigurationParser,
+	IDependencyResolver,
+	IScriptAnalyzer,
 } from "../../../../src/core/interfaces/index.js";
 
 describe("ServiceRegistration", () => {
@@ -24,11 +27,21 @@ describe("ServiceRegistration", () => {
 		it("should register all core services", () => {
 			registerCoreServices(container);
 
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.ConfigurationParser)).toBe(true);
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.ConfigurationMerger)).toBe(true);
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.ScriptAnalyzer)).toBe(true);
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.DependencyResolver)).toBe(true);
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.BuildExecutor)).toBe(true);
+			expect(
+				container.isRegistered(SERVICE_IDENTIFIERS.ConfigurationParser),
+			).toBe(true);
+			expect(
+				container.isRegistered(SERVICE_IDENTIFIERS.ConfigurationMerger),
+			).toBe(true);
+			expect(container.isRegistered(SERVICE_IDENTIFIERS.ScriptAnalyzer)).toBe(
+				true,
+			);
+			expect(
+				container.isRegistered(SERVICE_IDENTIFIERS.DependencyResolver),
+			).toBe(true);
+			expect(container.isRegistered(SERVICE_IDENTIFIERS.BuildExecutor)).toBe(
+				true,
+			);
 		});
 
 		it("should return the same container", () => {
@@ -94,7 +107,9 @@ describe("ServiceRegistration", () => {
 
 			expect(() => {
 				container.resolve<IBuildExecutor>(SERVICE_IDENTIFIERS.BuildExecutor);
-			}).toThrow("BuildExecutor must be created with context-specific parameters");
+			}).toThrow(
+				"BuildExecutor must be created with context-specific parameters",
+			);
 		});
 
 		it("should create working service instances", () => {
@@ -142,11 +157,21 @@ describe("ServiceRegistration", () => {
 		it("should create container with all core services registered", async () => {
 			const container = await createServiceContainer();
 
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.ConfigurationParser)).toBe(true);
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.ConfigurationMerger)).toBe(true);
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.ScriptAnalyzer)).toBe(true);
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.DependencyResolver)).toBe(true);
-			expect(container.isRegistered(SERVICE_IDENTIFIERS.BuildExecutor)).toBe(true);
+			expect(
+				container.isRegistered(SERVICE_IDENTIFIERS.ConfigurationParser),
+			).toBe(true);
+			expect(
+				container.isRegistered(SERVICE_IDENTIFIERS.ConfigurationMerger),
+			).toBe(true);
+			expect(container.isRegistered(SERVICE_IDENTIFIERS.ScriptAnalyzer)).toBe(
+				true,
+			);
+			expect(
+				container.isRegistered(SERVICE_IDENTIFIERS.DependencyResolver),
+			).toBe(true);
+			expect(container.isRegistered(SERVICE_IDENTIFIERS.BuildExecutor)).toBe(
+				true,
+			);
 		});
 
 		it("should create container with resolvable services", async () => {
@@ -294,7 +319,9 @@ describe("ServiceRegistration", () => {
 
 			expect(() => {
 				container.resolve<IBuildExecutor>(SERVICE_IDENTIFIERS.BuildExecutor);
-			}).toThrow(/BuildExecutor must be created with context-specific parameters/);
+			}).toThrow(
+				/BuildExecutor must be created with context-specific parameters/,
+			);
 		});
 
 		it("should include usage guidance in BuildExecutor error", async () => {

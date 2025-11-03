@@ -1,16 +1,18 @@
 import { describe, expect, it } from "vitest";
-import {
-	isSailError,
-	getErrorCategory,
-	toSailError,
-} from "../../../../src/core/errors/errorUtils.js";
-import { SailError } from "../../../../src/core/errors/SailError.js";
-import { ErrorCategory } from "../../../../src/core/errors/SailError.js";
 import { BuildError } from "../../../../src/core/errors/BuildError.js";
 import { ConfigurationError } from "../../../../src/core/errors/ConfigurationError.js";
 import { DependencyError } from "../../../../src/core/errors/DependencyError.js";
 import { ExecutionError } from "../../../../src/core/errors/ExecutionError.js";
+import {
+	getErrorCategory,
+	isSailError,
+	toSailError,
+} from "../../../../src/core/errors/errorUtils.js";
 import { FileSystemError } from "../../../../src/core/errors/FileSystemError.js";
+import {
+	ErrorCategory,
+	SailError,
+} from "../../../../src/core/errors/SailError.js";
 
 describe("errorUtils", () => {
 	describe("isSailError", () => {
@@ -54,11 +56,9 @@ describe("errorUtils", () => {
 		});
 
 		it("should return true for FileSystemError (subclass of SailError)", () => {
-			const error = FileSystemError.fileNotFound(
-				"/path/to/file",
-				"reading",
-				{ packageName: "test" },
-			);
+			const error = FileSystemError.fileNotFound("/path/to/file", "reading", {
+				packageName: "test",
+			});
 			const result = isSailError(error);
 			expect(result).toBe(true);
 		});
@@ -287,11 +287,7 @@ describe("errorUtils", () => {
 		});
 
 		it("should preserve category for BuildError passed through", () => {
-			const error = BuildError.compilationFailed(
-				"pkg",
-				"compile",
-				["error 1"],
-			);
+			const error = BuildError.compilationFailed("pkg", "compile", ["error 1"]);
 			const result = toSailError(error);
 
 			expect(result).toBe(error);
@@ -309,10 +305,9 @@ describe("errorUtils", () => {
 		});
 
 		it("should handle DependencyError", () => {
-			const error = DependencyError.missingPackageDependency(
-				"missing-pkg",
-				{ packageName: "pkg" },
-			);
+			const error = DependencyError.missingPackageDependency("missing-pkg", {
+				packageName: "pkg",
+			});
 			const result = toSailError(error);
 
 			expect(result).toBe(error);

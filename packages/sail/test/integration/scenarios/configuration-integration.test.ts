@@ -202,9 +202,7 @@ importers:
 
 			// Override build task should depend on test task
 			// This verifies package-specific config merged correctly
-			const buildDeps = Array.from(
-				overrideBuildTask?.dependentLeafTasks ?? [],
-			);
+			const buildDeps = Array.from(overrideBuildTask?.dependentLeafTasks ?? []);
 			expect(buildDeps).toContain(overrideTestTask);
 		}, 180_000);
 	});

@@ -1,18 +1,16 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-	SailError,
 	ErrorCategory,
 	type ErrorContext,
+	SailError,
 } from "../../../../src/core/errors/SailError.js";
 
 describe("SailError", () => {
 	describe("Construction", () => {
 		it("should create a SailError with message, category, and context", () => {
-			const error = new SailError(
-				"Test error",
-				ErrorCategory.Build,
-				{ packageName: "test-package" },
-			);
+			const error = new SailError("Test error", ErrorCategory.Build, {
+				packageName: "test-package",
+			});
 
 			expect(error).toBeInstanceOf(SailError);
 			expect(error).toBeInstanceOf(Error);
@@ -72,31 +70,25 @@ describe("SailError", () => {
 
 	describe("Error Context", () => {
 		it("should store package name in context", () => {
-			const error = new SailError(
-				"Error",
-				ErrorCategory.Build,
-				{ packageName: "my-package" },
-			);
+			const error = new SailError("Error", ErrorCategory.Build, {
+				packageName: "my-package",
+			});
 
 			expect(error.context.packageName).toBe("my-package");
 		});
 
 		it("should store task name in context", () => {
-			const error = new SailError(
-				"Error",
-				ErrorCategory.Build,
-				{ taskName: "build" },
-			);
+			const error = new SailError("Error", ErrorCategory.Build, {
+				taskName: "build",
+			});
 
 			expect(error.context.taskName).toBe("build");
 		});
 
 		it("should store file path in context", () => {
-			const error = new SailError(
-				"Error",
-				ErrorCategory.FileSystem,
-				{ filePath: "/path/to/file" },
-			);
+			const error = new SailError("Error", ErrorCategory.FileSystem, {
+				filePath: "/path/to/file",
+			});
 
 			expect(error.context.filePath).toBe("/path/to/file");
 		});
@@ -113,11 +105,9 @@ describe("SailError", () => {
 		});
 
 		it("should store custom context fields", () => {
-			const error = new SailError(
-				"Error",
-				ErrorCategory.Build,
-				{ customField: "value" },
-			);
+			const error = new SailError("Error", ErrorCategory.Build, {
+				customField: "value",
+			});
 
 			expect(error.context.customField).toBe("value");
 		});
@@ -131,11 +121,9 @@ describe("SailError", () => {
 		});
 
 		it("should prepend package name when present", () => {
-			const error = new SailError(
-				"Build failed",
-				ErrorCategory.Build,
-				{ packageName: "my-package" },
-			);
+			const error = new SailError("Build failed", ErrorCategory.Build, {
+				packageName: "my-package",
+			});
 
 			expect(error.getFormattedMessage()).toBe("my-package: Build failed");
 		});
@@ -160,11 +148,9 @@ describe("SailError", () => {
 		});
 
 		it("should not include file path in formatted message", () => {
-			const error = new SailError(
-				"Error",
-				ErrorCategory.FileSystem,
-				{ filePath: "/path" },
-			);
+			const error = new SailError("Error", ErrorCategory.FileSystem, {
+				filePath: "/path",
+			});
 
 			expect(error.getFormattedMessage()).toBe("Error");
 		});

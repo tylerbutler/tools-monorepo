@@ -12,14 +12,20 @@
  * - Automatic cleanup of stale entries
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { mkdirSync, rmSync, writeFileSync, existsSync, readFileSync } from "node:fs";
-import { utimesSync } from "node:fs";
-import path from "node:path";
-import os from "node:os";
 import {
-	PersistentFileHashCache,
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	rmSync,
+	utimesSync,
+	writeFileSync,
+} from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
 	type CacheStats,
+	PersistentFileHashCache,
 } from "../../../../src/core/cache/PersistentFileHashCache.js";
 
 describe("PersistentFileHashCache", () => {

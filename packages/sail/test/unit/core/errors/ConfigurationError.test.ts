@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ConfigurationError } from "../../../../src/core/errors/ConfigurationError.js";
 import { ErrorCategory } from "../../../../src/core/errors/SailError.js";
 
@@ -138,7 +138,11 @@ describe("ConfigurationError", () => {
 			});
 
 			it("should create error for no tasks found with multiple tasks", () => {
-				const error = ConfigurationError.noTasksFound(["build", "test", "lint"]);
+				const error = ConfigurationError.noTasksFound([
+					"build",
+					"test",
+					"lint",
+				]);
 
 				expect(error.message).toBe("No task(s) found for 'build, test, lint'");
 				expect(error.userMessage).toContain("build, test, lint");

@@ -8,17 +8,15 @@
 
 // Export builders
 export * from "./builders/index.js";
-
-// Export mock utilities
-export { MockCommandRunner } from "./mockCommandRunner.js";
 export type {
 	CommandCall,
 	CommandExpectation,
 	CommandResult,
 } from "./mockCommandRunner.js";
-
-export { MockFileSystem } from "./mockFileSystem.js";
+// Export mock utilities
+export { MockCommandRunner } from "./mockCommandRunner.js";
 export type { MockFileMetadata } from "./mockFileSystem.js";
+export { MockFileSystem } from "./mockFileSystem.js";
 
 // Export test utilities
 export * from "./testUtils.js";

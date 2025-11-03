@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { FileSystemError } from "../../../../src/core/errors/FileSystemError.js";
 import { ErrorCategory } from "../../../../src/core/errors/SailError.js";
 
@@ -18,10 +18,14 @@ describe("FileSystemError", () => {
 		});
 
 		it("should handle file system-specific options", () => {
-			const error = new FileSystemError("Error", {}, {
-				operation: "read",
-				errno: -2,
-			});
+			const error = new FileSystemError(
+				"Error",
+				{},
+				{
+					operation: "read",
+					errno: -2,
+				},
+			);
 
 			expect(error.operation).toBe("read");
 			expect(error.errno).toBe(-2);
@@ -57,11 +61,9 @@ describe("FileSystemError", () => {
 	describe("Static Factory Methods", () => {
 		describe("fileNotFound", () => {
 			it("should create error for missing file with operation", () => {
-				const error = FileSystemError.fileNotFound(
-					"/path/to/file.ts",
-					"read",
-					{ packageName: "my-package" },
-				);
+				const error = FileSystemError.fileNotFound("/path/to/file.ts", "read", {
+					packageName: "my-package",
+				});
 
 				expect(error.message).toBe("File not found: /path/to/file.ts");
 				expect(error.context.filePath).toBe("/path/to/file.ts");
@@ -88,11 +90,9 @@ describe("FileSystemError", () => {
 
 		describe("permissionDenied", () => {
 			it("should create error for permission denied with operation", () => {
-				const error = FileSystemError.permissionDenied(
-					"/root/file",
-					"write",
-					{ packageName: "pkg" },
-				);
+				const error = FileSystemError.permissionDenied("/root/file", "write", {
+					packageName: "pkg",
+				});
 
 				expect(error.message).toBe("Permission denied: /root/file");
 				expect(error.context.filePath).toBe("/root/file");
@@ -116,7 +116,9 @@ describe("FileSystemError", () => {
 					filePath: "/path/to/package",
 				});
 
-				expect(error.message).toBe("Lock file not found for package my-package");
+				expect(error.message).toBe(
+					"Lock file not found for package my-package",
+				);
 				expect(error.context.packageName).toBe("my-package");
 				expect(error.context.filePath).toBe("/path/to/package");
 				expect(error.operation).toBe("lockfile");
@@ -165,7 +167,9 @@ describe("FileSystemError", () => {
 					{ packageName: "pkg" },
 				);
 
-				expect(error.message).toBe("I/O error during read of /file.txt: ENOENT");
+				expect(error.message).toBe(
+					"I/O error during read of /file.txt: ENOENT",
+				);
 				expect(error.context.filePath).toBe("/file.txt");
 				expect(error.context.packageName).toBe("pkg");
 				expect(error.operation).toBe("read");
@@ -177,11 +181,7 @@ describe("FileSystemError", () => {
 
 			it("should mark as retryable", () => {
 				const originalError = new Error("Temporary failure");
-				const error = FileSystemError.ioError(
-					"/path",
-					"write",
-					originalError,
-				);
+				const error = FileSystemError.ioError("/path", "write", originalError);
 
 				expect(error.isRetryable).toBe(true);
 			});
@@ -202,7 +202,9 @@ describe("FileSystemError", () => {
 					{ packageName: "pkg" },
 				);
 
-				expect(error.message).toBe("Failed to delete /file.txt: File is in use");
+				expect(error.message).toBe(
+					"Failed to delete /file.txt: File is in use",
+				);
 				expect(error.context.filePath).toBe("/file.txt");
 				expect(error.context.packageName).toBe("pkg");
 				expect(error.operation).toBe("delete");
@@ -216,7 +218,9 @@ describe("FileSystemError", () => {
 
 				expect(error.message).toBe("Failed to delete /file");
 				expect(error.userMessage).not.toContain("Reason:");
-				expect(error.userMessage).toContain("Please check if the file is in use");
+				expect(error.userMessage).toContain(
+					"Please check if the file is in use",
+				);
 			});
 
 			it("should handle empty context", () => {

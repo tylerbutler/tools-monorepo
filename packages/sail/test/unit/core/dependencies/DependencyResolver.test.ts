@@ -109,19 +109,19 @@ describe("DependencyResolver", () => {
 			const pkgA = new PackageBuilder()
 				.withName("@test/a")
 				.withDependency("@test/c", "1.0.0") // circular
-				
+
 				.build();
 
 			const pkgB = new PackageBuilder()
 				.withName("@test/b")
 				.withDependency("@test/a", "1.0.0")
-				
+
 				.build();
 
 			const pkgC = new PackageBuilder()
 				.withName("@test/c")
 				.withDependency("@test/b", "1.0.0")
-				
+
 				.build();
 
 			const packages = new Map<string, BuildPackage>([
@@ -135,7 +135,12 @@ describe("DependencyResolver", () => {
 
 			// Act & Assert
 			expect(() =>
-				resolver.resolvePackageDependencies(packages, [], undefined, getDepFilter),
+				resolver.resolvePackageDependencies(
+					packages,
+					[],
+					undefined,
+					getDepFilter,
+				),
 			).toThrow(DependencyError);
 		});
 
@@ -211,13 +216,13 @@ describe("DependencyResolver", () => {
 			// Arrange
 			const libPkg = new PackageBuilder()
 				.withName("@test/lib")
-				
+
 				.build();
 
 			const appPkg = new PackageBuilder()
 				.withName("@test/app")
 				.withDependency("@test/lib", "1.0.0")
-				
+
 				.build();
 
 			const packages = new Map<string, BuildPackage>([
@@ -249,7 +254,7 @@ describe("DependencyResolver", () => {
 
 			const releaseGroupPkg = new PackageBuilder()
 				.withName("@test/release-group")
-				
+
 				.build();
 
 			const packages = new Map<string, BuildPackage>([[pkg.name, pkg]]);
@@ -278,13 +283,13 @@ describe("DependencyResolver", () => {
 			const libPkg = new PackageBuilder()
 				.withName("@test/lib")
 				.withVersion("1.5.2")
-				
+
 				.build();
 
 			const appPkg = new PackageBuilder()
 				.withName("@test/app")
 				.withDependency("@test/lib", "^1.0.0") // satisfied by 1.5.2
-				
+
 				.build();
 
 			const packages = new Map<string, BuildPackage>([
@@ -297,7 +302,12 @@ describe("DependencyResolver", () => {
 
 			// Act & Assert - should not throw
 			expect(() =>
-				resolver.resolvePackageDependencies(packages, [], undefined, getDepFilter),
+				resolver.resolvePackageDependencies(
+					packages,
+					[],
+					undefined,
+					getDepFilter,
+				),
 			).not.toThrow();
 		});
 
@@ -327,7 +337,12 @@ describe("DependencyResolver", () => {
 
 			// Act & Assert
 			expect(() =>
-				resolver.resolvePackageDependencies(packages, [], undefined, getDepFilter),
+				resolver.resolvePackageDependencies(
+					packages,
+					[],
+					undefined,
+					getDepFilter,
+				),
 			).toThrow(DependencyError);
 		});
 
@@ -336,13 +351,13 @@ describe("DependencyResolver", () => {
 			const libPkg = new PackageBuilder()
 				.withName("@test/lib")
 				.withVersion("1.0.0")
-				
+
 				.build();
 
 			const appPkg = new PackageBuilder()
 				.withName("@test/app")
 				.withDependency("@test/lib", "workspace:*") // workspace protocol
-				
+
 				.build();
 
 			const packages = new Map<string, BuildPackage>([
@@ -355,7 +370,12 @@ describe("DependencyResolver", () => {
 
 			// Act & Assert - should not throw
 			expect(() =>
-				resolver.resolvePackageDependencies(packages, [], undefined, getDepFilter),
+				resolver.resolvePackageDependencies(
+					packages,
+					[],
+					undefined,
+					getDepFilter,
+				),
 			).not.toThrow();
 		});
 	});
@@ -365,25 +385,25 @@ describe("DependencyResolver", () => {
 			// Arrange - a -> b -> c -> d (4 levels)
 			const pkgD = new PackageBuilder()
 				.withName("@test/d")
-				
+
 				.build();
 
 			const pkgC = new PackageBuilder()
 				.withName("@test/c")
 				.withDependency("@test/d", "1.0.0")
-				
+
 				.build();
 
 			const pkgB = new PackageBuilder()
 				.withName("@test/b")
 				.withDependency("@test/c", "1.0.0")
-				
+
 				.build();
 
 			const pkgA = new PackageBuilder()
 				.withName("@test/a")
 				.withDependency("@test/b", "1.0.0")
-				
+
 				.build();
 
 			const packages = new Map<string, BuildPackage>([
@@ -415,19 +435,19 @@ describe("DependencyResolver", () => {
 			// Arrange
 			const utilsPkg = new PackageBuilder()
 				.withName("@test/utils")
-				
+
 				.build();
 
 			const loggerPkg = new PackageBuilder()
 				.withName("@test/logger")
-				
+
 				.build();
 
 			const appPkg = new PackageBuilder()
 				.withName("@test/app")
 				.withDependency("@test/utils", "1.0.0")
 				.withDependency("@test/logger", "1.0.0")
-				
+
 				.build();
 
 			const packages = new Map<string, BuildPackage>([
@@ -476,7 +496,7 @@ describe("DependencyResolver", () => {
 			// Arrange
 			const pkg = new PackageBuilder()
 				.withName("@test/standalone")
-				
+
 				.build();
 
 			const packages = new Map<string, BuildPackage>([[pkg.name, pkg]]);

@@ -33,12 +33,7 @@ export class MockFileSystem {
 	/**
 	 * Add a file to the mock file system
 	 */
-	addFile(
-		path: string,
-		mtime: Date,
-		content?: string,
-		size?: number,
-	): this {
+	addFile(path: string, mtime: Date, content?: string, size?: number): this {
 		this.files.set(path, {
 			path,
 			mtime,
@@ -64,7 +59,9 @@ export class MockFileSystem {
 	/**
 	 * Add multiple files at once
 	 */
-	addFiles(files: Array<{ path: string; mtime: Date; content?: string }>): this {
+	addFiles(
+		files: Array<{ path: string; mtime: Date; content?: string }>,
+	): this {
 		for (const file of files) {
 			this.addFile(file.path, file.mtime, file.content);
 		}

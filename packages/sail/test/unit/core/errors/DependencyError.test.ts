@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { DependencyError } from "../../../../src/core/errors/DependencyError.js";
 import { ErrorCategory } from "../../../../src/core/errors/SailError.js";
 
@@ -42,10 +42,7 @@ describe("DependencyError", () => {
 		describe("circularPackageDependency", () => {
 			it("should create error for circular package dependency with current package", () => {
 				const chain = ["pkg-a", "pkg-b", "pkg-c", "pkg-a"];
-				const error = DependencyError.circularPackageDependency(
-					chain,
-					"pkg-a",
-				);
+				const error = DependencyError.circularPackageDependency(chain, "pkg-a");
 
 				expect(error.message).toBe(
 					"Circular package dependency detected: pkg-a -> pkg-b -> pkg-c -> pkg-a",

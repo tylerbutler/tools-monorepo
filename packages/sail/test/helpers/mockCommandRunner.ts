@@ -138,9 +138,7 @@ export class MockCommandRunner {
 
 		// Simulate execution duration if specified
 		if (expectation.duration) {
-			await new Promise((resolve) =>
-				setTimeout(resolve, expectation.duration),
-			);
+			await new Promise((resolve) => setTimeout(resolve, expectation.duration));
 		}
 
 		return {

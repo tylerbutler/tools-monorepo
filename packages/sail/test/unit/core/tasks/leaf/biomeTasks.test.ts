@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BiomeTask } from "../../../../../src/core/tasks/leaf/biomeTasks.js";
-import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
-import { PackageBuilder } from "../../../../helpers/builders/PackageBuilder.js";
 import { BuildContextBuilder } from "../../../../helpers/builders/BuildContextBuilder.js";
 import { BuildGraphBuilder } from "../../../../helpers/builders/BuildGraphBuilder.js";
+import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
+import { PackageBuilder } from "../../../../helpers/builders/PackageBuilder.js";
 
 /**
  * Comprehensive BiomeTask Tests
@@ -56,7 +56,7 @@ describe("BiomeTask - Comprehensive Tests", () => {
 				.buildBiomeTask();
 
 			// Task names include package prefix in format: "package#taskname"
-		expect(task.name).toBe("test-package#biome-check-task");
+			expect(task.name).toBe("test-package#biome-check-task");
 		});
 
 		it("should inherit from LeafWithFileStatDoneFileTask", () => {
@@ -102,199 +102,203 @@ describe("BiomeTask - Comprehensive Tests", () => {
 			expect(task.command).toBe("biome check --apply");
 		});
 
-	it("should have package context from BuildGraphPackage", () => {
-		const task = new LeafTaskBuilder()
-			.withPackageName("my-package")
-			.withPackagePath("/workspace/my-package")
-			.buildBiomeTask();
-
-		expect(task.node.pkg.name).toBe("my-package");
-		expect(task.context.repoRoot).toBe("/test/repo");
-	});
-
-	describe("Cache Integration", () => {
-		it("should have cache input files method", async () => {
-			const task = new LeafTaskBuilder().buildBiomeTask();
-
-			// getCacheInputFiles is public in LeafTask hierarchy
-			expect(typeof (task as any).getCacheInputFiles).toBe("function");
-		});
-
-		it("should have cache output files method", async () => {
-			const task = new LeafTaskBuilder().buildBiomeTask();
-
-			// getCacheOutputFiles is public in LeafTask hierarchy
-			expect(typeof (task as any).getCacheOutputFiles).toBe("function");
-		});
-
-		it("should include done file in cache inputs from parent class", async () => {
+		it("should have package context from BuildGraphPackage", () => {
 			const task = new LeafTaskBuilder()
-				.withPackagePath("/test/package")
+				.withPackageName("my-package")
+				.withPackagePath("/workspace/my-package")
 				.buildBiomeTask();
 
-			// The parent class LeafWithFileStatDoneFileTask provides done file logic
-			expect(task).toBeDefined();
-		});
-	});
-
-	describe("BiomeConfigReader Integration", () => {
-		it("should create BiomeConfigReader with correct directory", async () => {
-			const task = new LeafTaskBuilder()
-				.withPackagePath("/workspace/app")
-				.buildBiomeTask();
-
-			expect(task.node.pkg.directory).toBe("/workspace/app");
-		});
-
-		it("should create BiomeConfigReader with git root", async () => {
-			const context = new BuildContextBuilder()
-				.withGitRoot("/workspace")
-				.build();
-
-			const task = new LeafTaskBuilder().withContext(context).buildBiomeTask();
-
-			expect(task.context.gitRoot).toBe("/workspace");
-		});
-
-		it("should lazy-load BiomeConfigReader", () => {
-			// BiomeConfigReader is created on first use, not at construction
-			const task = new LeafTaskBuilder().buildBiomeTask();
-
-			// Verify task is created without error (lazy loading)
-			expect(task).toBeDefined();
-		});
-	});
-
-	describe("Task Execution Context", () => {
-		it("should have access to BuildGraphPackage node", () => {
-			const task = new LeafTaskBuilder()
-				.withPackageName("test-package")
-				.buildBiomeTask();
-
-			expect(task.node).toBeDefined();
-			expect(task.node.pkg.name).toBe("test-package");
-		});
-
-		it("should have access to BuildContext", () => {
-			const context = new BuildContextBuilder()
-				.withRepoRoot("/test/repo")
-				.build();
-
-			const task = new LeafTaskBuilder().withContext(context).buildBiomeTask();
-
-			// Context is wrapped in BuildGraphContext, check properties instead
+			expect(task.node.pkg.name).toBe("my-package");
 			expect(task.context.repoRoot).toBe("/test/repo");
 		});
 
-		it("should work with package scripts", () => {
-			const task = new LeafTaskBuilder()
-				.withScript("format", "biome format --write")
-				.withCommand("pnpm run format")
-				.buildBiomeTask();
+		describe("Cache Integration", () => {
+			it("should have cache input files method", async () => {
+				const task = new LeafTaskBuilder().buildBiomeTask();
 
-			expect(task.node.pkg.packageJson.scripts?.format).toBe(
-				"biome format --write",
-			);
-		});
-	});
+				// getCacheInputFiles is public in LeafTask hierarchy
+				expect(typeof (task as any).getCacheInputFiles).toBe("function");
+			});
 
-	describe("Task Lifecycle", () => {
-		it("should be created in non-disabled state by default", () => {
-			const task = new LeafTaskBuilder().buildBiomeTask();
+			it("should have cache output files method", async () => {
+				const task = new LeafTaskBuilder().buildBiomeTask();
 
-			// LeafTask increments stats counter for non-disabled tasks
-			expect(task).toBeDefined();
-		});
+				// getCacheOutputFiles is public in LeafTask hierarchy
+				expect(typeof (task as any).getCacheOutputFiles).toBe("function");
+			});
 
-		it("should have correct task name", () => {
-			const task1 = new LeafTaskBuilder()
-				.withTaskName("custom-biome")
-				.buildBiomeTask();
+			it("should include done file in cache inputs from parent class", async () => {
+				const task = new LeafTaskBuilder()
+					.withPackagePath("/test/package")
+					.buildBiomeTask();
 
-			expect(task1.name).toBe("test-package#custom-biome");
-
-			const task2 = new LeafTaskBuilder()
-				.withCommand("biome check")
-				.buildBiomeTask();
-
-			// Task name defaults to command if not specified
-			expect(task2.command).toBe("biome check");
-		});
-	});
-
-	describe("Edge Cases", () => {
-		it("should handle package without biome config", () => {
-			const task = new LeafTaskBuilder()
-				.withPackageName("no-biome-config")
-				.buildBiomeTask();
-
-			// Should create task successfully even without config
-			expect(task).toBeDefined();
+				// The parent class LeafWithFileStatDoneFileTask provides done file logic
+				expect(task).toBeDefined();
+			});
 		});
 
-		it("should handle different package paths", () => {
-			const task1 = new LeafTaskBuilder()
-				.withPackagePath("/workspace/packages/app")
-				.buildBiomeTask();
+		describe("BiomeConfigReader Integration", () => {
+			it("should create BiomeConfigReader with correct directory", async () => {
+				const task = new LeafTaskBuilder()
+					.withPackagePath("/workspace/app")
+					.buildBiomeTask();
 
-			const task2 = new LeafTaskBuilder()
-				.withPackagePath("/different/path")
-				.buildBiomeTask();
+				expect(task.node.pkg.directory).toBe("/workspace/app");
+			});
 
-			expect(task1.node.pkg.directory).toBe("/workspace/packages/app");
-			expect(task2.node.pkg.directory).toBe("/different/path");
+			it("should create BiomeConfigReader with git root", async () => {
+				const context = new BuildContextBuilder()
+					.withGitRoot("/workspace")
+					.build();
+
+				const task = new LeafTaskBuilder()
+					.withContext(context)
+					.buildBiomeTask();
+
+				expect(task.context.gitRoot).toBe("/workspace");
+			});
+
+			it("should lazy-load BiomeConfigReader", () => {
+				// BiomeConfigReader is created on first use, not at construction
+				const task = new LeafTaskBuilder().buildBiomeTask();
+
+				// Verify task is created without error (lazy loading)
+				expect(task).toBeDefined();
+			});
 		});
 
-		it("should handle commands with flags", () => {
-			const task = new LeafTaskBuilder()
-				.withCommand("biome check --apply --unsafe")
-				.buildBiomeTask();
+		describe("Task Execution Context", () => {
+			it("should have access to BuildGraphPackage node", () => {
+				const task = new LeafTaskBuilder()
+					.withPackageName("test-package")
+					.buildBiomeTask();
 
-			expect(task.command).toBe("biome check --apply --unsafe");
-		});
-	});
+				expect(task.node).toBeDefined();
+				expect(task.node.pkg.name).toBe("test-package");
+			});
 
-	describe("Builder Pattern Validation", () => {
-		it("should create task with fluent builder API", () => {
-			const task = new LeafTaskBuilder()
-				.withPackageName("my-app")
-				.withPackagePath("/workspace/my-app")
-				.withCommand("biome check")
-				.withTaskName("biome-check")
-				.buildBiomeTask();
+			it("should have access to BuildContext", () => {
+				const context = new BuildContextBuilder()
+					.withRepoRoot("/test/repo")
+					.build();
 
-			expect(task.name).toBe("my-app#biome-check");
-			expect(task.command).toBe("biome check");
-			expect(task.node.pkg.name).toBe("my-app");
-		});
+				const task = new LeafTaskBuilder()
+					.withContext(context)
+					.buildBiomeTask();
 
-		it("should allow method chaining", () => {
-			const builder = new LeafTaskBuilder();
+				// Context is wrapped in BuildGraphContext, check properties instead
+				expect(task.context.repoRoot).toBe("/test/repo");
+			});
 
-			const result = builder
-				.withPackageName("test")
-				.withCommand("biome check")
-				.withTaskName("check");
+			it("should work with package scripts", () => {
+				const task = new LeafTaskBuilder()
+					.withScript("format", "biome format --write")
+					.withCommand("pnpm run format")
+					.buildBiomeTask();
 
-			expect(result).toBe(builder); // Verify chaining returns this
-		});
-	});
-
-	describe("Type Safety", () => {
-		it("should create BiomeTask with correct type", () => {
-			const task = new LeafTaskBuilder().buildBiomeTask();
-
-			expect(task).toBeInstanceOf(BiomeTask);
+				expect(task.node.pkg.packageJson.scripts?.format).toBe(
+					"biome format --write",
+				);
+			});
 		});
 
-		it("should have all BiomeTask methods", () => {
-			const task = new LeafTaskBuilder().buildBiomeTask();
+		describe("Task Lifecycle", () => {
+			it("should be created in non-disabled state by default", () => {
+				const task = new LeafTaskBuilder().buildBiomeTask();
 
-			// Verify key BiomeTask methods exist
-			expect(typeof (task as any).getBiomeConfigReader).toBe("function");
-			expect(typeof (task as any).getInputFiles).toBe("function");
-			expect(typeof (task as any).getOutputFiles).toBe("function");
+				// LeafTask increments stats counter for non-disabled tasks
+				expect(task).toBeDefined();
+			});
+
+			it("should have correct task name", () => {
+				const task1 = new LeafTaskBuilder()
+					.withTaskName("custom-biome")
+					.buildBiomeTask();
+
+				expect(task1.name).toBe("test-package#custom-biome");
+
+				const task2 = new LeafTaskBuilder()
+					.withCommand("biome check")
+					.buildBiomeTask();
+
+				// Task name defaults to command if not specified
+				expect(task2.command).toBe("biome check");
+			});
+		});
+
+		describe("Edge Cases", () => {
+			it("should handle package without biome config", () => {
+				const task = new LeafTaskBuilder()
+					.withPackageName("no-biome-config")
+					.buildBiomeTask();
+
+				// Should create task successfully even without config
+				expect(task).toBeDefined();
+			});
+
+			it("should handle different package paths", () => {
+				const task1 = new LeafTaskBuilder()
+					.withPackagePath("/workspace/packages/app")
+					.buildBiomeTask();
+
+				const task2 = new LeafTaskBuilder()
+					.withPackagePath("/different/path")
+					.buildBiomeTask();
+
+				expect(task1.node.pkg.directory).toBe("/workspace/packages/app");
+				expect(task2.node.pkg.directory).toBe("/different/path");
+			});
+
+			it("should handle commands with flags", () => {
+				const task = new LeafTaskBuilder()
+					.withCommand("biome check --apply --unsafe")
+					.buildBiomeTask();
+
+				expect(task.command).toBe("biome check --apply --unsafe");
+			});
+		});
+
+		describe("Builder Pattern Validation", () => {
+			it("should create task with fluent builder API", () => {
+				const task = new LeafTaskBuilder()
+					.withPackageName("my-app")
+					.withPackagePath("/workspace/my-app")
+					.withCommand("biome check")
+					.withTaskName("biome-check")
+					.buildBiomeTask();
+
+				expect(task.name).toBe("my-app#biome-check");
+				expect(task.command).toBe("biome check");
+				expect(task.node.pkg.name).toBe("my-app");
+			});
+
+			it("should allow method chaining", () => {
+				const builder = new LeafTaskBuilder();
+
+				const result = builder
+					.withPackageName("test")
+					.withCommand("biome check")
+					.withTaskName("check");
+
+				expect(result).toBe(builder); // Verify chaining returns this
+			});
+		});
+
+		describe("Type Safety", () => {
+			it("should create BiomeTask with correct type", () => {
+				const task = new LeafTaskBuilder().buildBiomeTask();
+
+				expect(task).toBeInstanceOf(BiomeTask);
+			});
+
+			it("should have all BiomeTask methods", () => {
+				const task = new LeafTaskBuilder().buildBiomeTask();
+
+				// Verify key BiomeTask methods exist
+				expect(typeof (task as any).getBiomeConfigReader).toBe("function");
+				expect(typeof (task as any).getInputFiles).toBe("function");
+				expect(typeof (task as any).getOutputFiles).toBe("function");
+			});
 		});
 	});
 });
-	});

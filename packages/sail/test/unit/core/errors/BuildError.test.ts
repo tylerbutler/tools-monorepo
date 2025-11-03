@@ -1,6 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { BuildError } from "../../../../src/core/errors/BuildError.js";
-import { BuildPhase } from "../../../../src/core/errors/BuildError.js";
+import { describe, expect, it } from "vitest";
+import {
+	BuildError,
+	BuildPhase,
+} from "../../../../src/core/errors/BuildError.js";
 import { ErrorCategory } from "../../../../src/core/errors/SailError.js";
 
 describe("BuildError", () => {
@@ -67,7 +69,9 @@ describe("BuildError", () => {
 
 				expect(error.message).toBe("Task 'build' failed");
 				expect(error.context.taskName).toBe("build");
-				expect(error.userMessage).toContain("Check the task output for details");
+				expect(error.userMessage).toContain(
+					"Check the task output for details",
+				);
 			});
 
 			it("should handle empty context", () => {
@@ -111,12 +115,9 @@ describe("BuildError", () => {
 			});
 
 			it("should handle context parameter", () => {
-				const error = BuildError.compilationFailed(
-					"pkg",
-					"build",
-					["error"],
-					{ filePath: "/path/to/file" },
-				);
+				const error = BuildError.compilationFailed("pkg", "build", ["error"], {
+					filePath: "/path/to/file",
+				});
 
 				expect(error.context.filePath).toBe("/path/to/file");
 				expect(error.context.packageName).toBe("pkg");
@@ -125,11 +126,9 @@ describe("BuildError", () => {
 
 		describe("dependencyBuildFailed", () => {
 			it("should create error for dependency build failure", () => {
-				const error = BuildError.dependencyBuildFailed(
-					"dep-package",
-					"build",
-					{ packageName: "my-package" },
-				);
+				const error = BuildError.dependencyBuildFailed("dep-package", "build", {
+					packageName: "my-package",
+				});
 
 				expect(error.message).toBe("Dependency 'dep-package' failed to build");
 				expect(error.context.taskName).toBe("build");

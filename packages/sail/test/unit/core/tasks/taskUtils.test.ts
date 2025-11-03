@@ -1,10 +1,10 @@
-import { describe, expect, it, vi } from "vitest";
 import * as path from "node:path";
+import { describe, expect, it, vi } from "vitest";
 import {
-	getEsLintConfigFilePath,
 	getApiExtractorConfigFilePath,
-	toPosixPath,
+	getEsLintConfigFilePath,
 	require,
+	toPosixPath,
 } from "../../../../src/core/tasks/taskUtils.js";
 
 describe("taskUtils", () => {

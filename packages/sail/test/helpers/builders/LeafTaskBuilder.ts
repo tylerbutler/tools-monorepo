@@ -1,14 +1,13 @@
 import type { BuildContext } from "../../../src/core/buildContext.js";
 import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
+// Import dependencies needed for BuildGraphContext
+import { FileHashCache } from "../../../src/core/fileHashCache.js";
+import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 import { BiomeTask } from "../../../src/core/tasks/leaf/biomeTasks.js";
 import { TscTask } from "../../../src/core/tasks/leaf/tscTask.js";
 import { WebpackTask } from "../../../src/core/tasks/leaf/webpackTask.js";
 import { BuildContextBuilder } from "./BuildContextBuilder.js";
 import { PackageBuilder } from "./PackageBuilder.js";
-
-// Import dependencies needed for BuildGraphContext
-import { FileHashCache } from "../../../src/core/fileHashCache.js";
-import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 
 /**
  * Fluent builder for creating LeafTask instances for testing.
@@ -162,7 +161,11 @@ export class LeafTaskBuilder {
 
 		// Create BuildGraphPackage with BuildGraphContext
 		// Constructor: (context, pkg, globalTaskDefinitions)
-		const buildGraphPkg = new BuildGraphPackage(buildGraphContext as any, pkg, {});
+		const buildGraphPkg = new BuildGraphPackage(
+			buildGraphContext as any,
+			pkg,
+			{},
+		);
 
 		return buildGraphPkg;
 	}

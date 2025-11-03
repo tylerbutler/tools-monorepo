@@ -1,13 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
 import type { Logger } from "@tylerbu/cli-api";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-	ErrorHandler,
-	ErrorHandlingStrategy,
 	ContextualErrorHandler,
+	ErrorHandler,
 	type ErrorHandlingResult,
+	ErrorHandlingStrategy,
 	type ErrorStatistics,
 } from "../../../../src/core/errors/ErrorHandler.js";
-import { SailError, ErrorCategory } from "../../../../src/core/errors/SailError.js";
+import {
+	ErrorCategory,
+	SailError,
+} from "../../../../src/core/errors/SailError.js";
 
 describe("ErrorHandler", () => {
 	let mockLogger: Logger;
@@ -53,7 +56,11 @@ describe("ErrorHandler", () => {
 			const error = new SailError("Test error", ErrorCategory.Build);
 
 			// Act
-			const result = errorHandler.handleError(error, {}, ErrorHandlingStrategy.Log);
+			const result = errorHandler.handleError(
+				error,
+				{},
+				ErrorHandlingStrategy.Log,
+			);
 
 			// Assert
 			expect(result.shouldThrow).toBe(false);
@@ -94,7 +101,11 @@ describe("ErrorHandler", () => {
 			const plainError = new Error("Plain error");
 
 			// Act
-			const result = errorHandler.handleError(plainError, {}, ErrorHandlingStrategy.Log);
+			const result = errorHandler.handleError(
+				plainError,
+				{},
+				ErrorHandlingStrategy.Log,
+			);
 
 			// Assert
 			expect(result.error).toBeInstanceOf(SailError);
@@ -108,7 +119,11 @@ describe("ErrorHandler", () => {
 			const error = new SailError("Test warning", ErrorCategory.Configuration);
 
 			// Act
-			const result = errorHandler.handleError(error, {}, ErrorHandlingStrategy.Warn);
+			const result = errorHandler.handleError(
+				error,
+				{},
+				ErrorHandlingStrategy.Warn,
+			);
 
 			// Assert
 			expect(result.shouldThrow).toBe(false);
@@ -138,7 +153,11 @@ describe("ErrorHandler", () => {
 			const error = new SailError("Collected error", ErrorCategory.Dependency);
 
 			// Act
-			const result = errorHandler.handleError(error, {}, ErrorHandlingStrategy.Collect);
+			const result = errorHandler.handleError(
+				error,
+				{},
+				ErrorHandlingStrategy.Collect,
+			);
 
 			// Assert
 			expect(result.shouldThrow).toBe(false);
@@ -183,7 +202,11 @@ describe("ErrorHandler", () => {
 			const error = new SailError("Fatal error", ErrorCategory.FileSystem);
 
 			// Act
-			const result = errorHandler.handleError(error, {}, ErrorHandlingStrategy.Fatal);
+			const result = errorHandler.handleError(
+				error,
+				{},
+				ErrorHandlingStrategy.Fatal,
+			);
 
 			// Assert
 			expect(result.shouldThrow).toBe(true);
@@ -211,12 +234,21 @@ describe("ErrorHandler", () => {
 	describe("handleError - ErrorHandlingStrategy.Retry", () => {
 		it("should log retryable error as warning when error is retryable", () => {
 			// Arrange
-			const error = new SailError("Retryable error", ErrorCategory.Execution, {}, {
-				isRetryable: true,
-			});
+			const error = new SailError(
+				"Retryable error",
+				ErrorCategory.Execution,
+				{},
+				{
+					isRetryable: true,
+				},
+			);
 
 			// Act
-			const result = errorHandler.handleError(error, {}, ErrorHandlingStrategy.Retry);
+			const result = errorHandler.handleError(
+				error,
+				{},
+				ErrorHandlingStrategy.Retry,
+			);
 
 			// Assert
 			expect(result.shouldThrow).toBe(false);
@@ -227,12 +259,21 @@ describe("ErrorHandler", () => {
 
 		it("should log non-retryable error normally", () => {
 			// Arrange
-			const error = new SailError("Non-retryable error", ErrorCategory.Execution, {}, {
-				isRetryable: false,
-			});
+			const error = new SailError(
+				"Non-retryable error",
+				ErrorCategory.Execution,
+				{},
+				{
+					isRetryable: false,
+				},
+			);
 
 			// Act
-			const result = errorHandler.handleError(error, {}, ErrorHandlingStrategy.Retry);
+			const result = errorHandler.handleError(
+				error,
+				{},
+				ErrorHandlingStrategy.Retry,
+			);
 
 			// Assert
 			expect(result.shouldThrow).toBe(false);
@@ -283,10 +324,16 @@ describe("ErrorHandler", () => {
 
 		it("should not modify error when context is empty", () => {
 			// Arrange
-			const error = new SailError("Error", ErrorCategory.Build, { key: "value" });
+			const error = new SailError("Error", ErrorCategory.Build, {
+				key: "value",
+			});
 
 			// Act
-			const result = errorHandler.handleError(error, {}, ErrorHandlingStrategy.Log);
+			const result = errorHandler.handleError(
+				error,
+				{},
+				ErrorHandlingStrategy.Log,
+			);
 
 			// Assert
 			expect(result.error).toBe(error);
@@ -298,7 +345,10 @@ describe("ErrorHandler", () => {
 			// Arrange
 			const buildError1 = new SailError("Build error 1", ErrorCategory.Build);
 			const buildError2 = new SailError("Build error 2", ErrorCategory.Build);
-			const configError = new SailError("Config error", ErrorCategory.Configuration);
+			const configError = new SailError(
+				"Config error",
+				ErrorCategory.Configuration,
+			);
 
 			// Act
 			errorHandler.handleError(buildError1, {}, ErrorHandlingStrategy.Log);
@@ -397,7 +447,11 @@ describe("ErrorHandler", () => {
 			const context = { asyncOperation: "test" };
 
 			// Act
-			await errorHandler.handleAsync(operation, context, ErrorHandlingStrategy.Log);
+			await errorHandler.handleAsync(
+				operation,
+				context,
+				ErrorHandlingStrategy.Log,
+			);
 
 			// Assert
 			const stats = errorHandler.getErrorStatistics();
@@ -494,7 +548,10 @@ describe("ErrorHandler", () => {
 		it("should include category counts in summary", () => {
 			// Arrange
 			const buildError = new SailError("Build error", ErrorCategory.Build);
-			const configError = new SailError("Config error", ErrorCategory.Configuration);
+			const configError = new SailError(
+				"Config error",
+				ErrorCategory.Configuration,
+			);
 			errorHandler.handleError(buildError, {}, ErrorHandlingStrategy.Collect);
 			errorHandler.handleError(configError, {}, ErrorHandlingStrategy.Collect);
 
@@ -584,7 +641,8 @@ describe("ErrorHandler", () => {
 			const baseContext = { package: "test-package", task: "build" };
 
 			// Act
-			const contextualHandler = errorHandler.createContextualHandler(baseContext);
+			const contextualHandler =
+				errorHandler.createContextualHandler(baseContext);
 			const error = new SailError("Test error", ErrorCategory.Build);
 			const result = contextualHandler.handleError(error);
 

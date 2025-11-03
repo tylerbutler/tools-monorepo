@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
+import type { SailPackageJson } from "../../../../src/common/npmPackage.js";
 import { ConfigurationParser } from "../../../../src/core/config/ConfigurationParser.js";
 import { ConfigurationError } from "../../../../src/core/errors/ConfigurationError.js";
-import type { SailPackageJson } from "../../../../src/common/npmPackage.js";
 import type {
 	TaskConfig,
 	TaskDefinitions,
@@ -376,7 +376,9 @@ describe("ConfigurationParser", () => {
 						isReleaseGroupRoot,
 					);
 
-					expect(validators.invalidDependOn("@myorg/package#build")).toBe(false);
+					expect(validators.invalidDependOn("@myorg/package#build")).toBe(
+						false,
+					);
 					expect(validators.invalidDependOn("other-pkg#test")).toBe(false);
 				});
 

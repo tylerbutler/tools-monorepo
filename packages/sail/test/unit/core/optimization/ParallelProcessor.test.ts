@@ -244,13 +244,12 @@ describe("ParallelProcessor", () => {
 			const items = [1, 2, 3, 4, 5, 6, 7, 8];
 			const processor = vi.fn(async (_item: number) => true);
 
-			const result =
-				await ParallelProcessor.processWithEarlyTerminationBatched(
-					items,
-					processor,
-					2,
-					3,
-				);
+			const result = await ParallelProcessor.processWithEarlyTerminationBatched(
+				items,
+				processor,
+				2,
+				3,
+			);
 
 			expect(result).toBe(true);
 			expect(processor).toHaveBeenCalledTimes(8);
@@ -264,13 +263,12 @@ describe("ParallelProcessor", () => {
 				return item < 4; // Fail on item 4
 			};
 
-			const result =
-				await ParallelProcessor.processWithEarlyTerminationBatched(
-					items,
-					processor,
-					2,
-					3,
-				);
+			const result = await ParallelProcessor.processWithEarlyTerminationBatched(
+				items,
+				processor,
+				2,
+				3,
+			);
 
 			expect(result).toBe(false);
 			// Should process first batch and possibly part of second
@@ -282,11 +280,10 @@ describe("ParallelProcessor", () => {
 			const items: number[] = [];
 			const processor = vi.fn(async (_item: number) => true);
 
-			const result =
-				await ParallelProcessor.processWithEarlyTerminationBatched(
-					items,
-					processor,
-				);
+			const result = await ParallelProcessor.processWithEarlyTerminationBatched(
+				items,
+				processor,
+			);
 
 			expect(result).toBe(true);
 			expect(processor).not.toHaveBeenCalled();
@@ -340,8 +337,7 @@ describe("ParallelProcessor", () => {
 	describe("mapParallel", () => {
 		it("should map all items with index", async () => {
 			const items = ["a", "b", "c"];
-			const mapper = async (item: string, index: number) =>
-				`${item}-${index}`;
+			const mapper = async (item: string, index: number) => `${item}-${index}`;
 
 			const results = await ParallelProcessor.mapParallel(items, mapper);
 

@@ -10,7 +10,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "npm run build";
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual(["build"]);
 			});
@@ -19,7 +22,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "npm run build --watch";
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				// Commands with args are excluded as "direct" calls
 				expect(result).toEqual([]);
@@ -38,7 +44,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "npm run clean && npm run build";
 				const allScriptNames = ["clean", "build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual(["clean", "build"]);
 			});
@@ -49,7 +58,10 @@ describe("ScriptAnalyzer", () => {
 				const script = 'concurrently "npm:build" "npm:test"';
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual(["build", "test"]);
 			});
@@ -58,7 +70,10 @@ describe("ScriptAnalyzer", () => {
 				const script = 'concurrently "npm:build*"';
 				const allScriptNames = ["build", "build:prod", "build:dev", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual(["build", "build:prod", "build:dev"]);
 			});
@@ -67,7 +82,10 @@ describe("ScriptAnalyzer", () => {
 				const script = 'concurrently "npm:build" "echo done"';
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				// Only npm:build should be extracted, direct command ignored
 				expect(result).toEqual(["build"]);
@@ -77,7 +95,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "concurrently";
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual([]);
 			});
@@ -88,7 +109,10 @@ describe("ScriptAnalyzer", () => {
 				const script = 'npm run clean && concurrently "npm:build" "npm:test"';
 				const allScriptNames = ["clean", "build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual(["clean", "build", "test"]);
 			});
@@ -97,7 +121,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "echo hello && npm run build && ls";
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual(["build"]);
 			});
@@ -107,7 +134,10 @@ describe("ScriptAnalyzer", () => {
 					"npm run clean && npm run build && npm run test && npm run deploy";
 				const allScriptNames = ["clean", "build", "test", "deploy"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual(["clean", "build", "test", "deploy"]);
 			});
@@ -118,7 +148,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "";
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual([]);
 			});
@@ -127,7 +160,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "   ";
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual([]);
 			});
@@ -145,7 +181,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "  npm run build  &&  npm run test  ";
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				expect(result).toEqual(["build", "test"]);
 			});
@@ -154,7 +193,10 @@ describe("ScriptAnalyzer", () => {
 				const script = "npm run build && npm run build";
 				const allScriptNames = ["build", "test"];
 
-				const result = analyzer.getDirectlyCalledScripts(script, allScriptNames);
+				const result = analyzer.getDirectlyCalledScripts(
+					script,
+					allScriptNames,
+				);
 
 				// Both instances should be included
 				expect(result).toEqual(["build", "build"]);

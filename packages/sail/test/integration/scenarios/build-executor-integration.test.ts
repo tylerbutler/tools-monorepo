@@ -613,9 +613,9 @@ export function greet(name: string): string {
 
 			// Some tasks rebuilt, some cached
 			expect(result2.buildGraph.taskStats.leafBuiltCount).toBeGreaterThan(0);
-			expect(result2.buildGraph.taskStats.leafUpToDateCount).toBeGreaterThanOrEqual(
-				0,
-			);
+			expect(
+				result2.buildGraph.taskStats.leafUpToDateCount,
+			).toBeGreaterThanOrEqual(0);
 
 			// Total tasks = built + up-to-date
 			const totalTasks =

@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import {
-	ServiceContainer,
-	ServiceLifetime,
 	type IServiceContainer,
+	ServiceContainer,
 	type ServiceIdentifier,
+	ServiceLifetime,
 } from "../../../../src/core/di/ServiceContainer.js";
 
 describe("ServiceContainer", () => {
@@ -448,12 +448,16 @@ describe("ServiceContainer", () => {
 				child.registerSingleton(identifier, () => ({ level: "child" }));
 
 				const grandchild = child.createScope();
-				grandchild.registerSingleton(identifier, () => ({ level: "grandchild" }));
+				grandchild.registerSingleton(identifier, () => ({
+					level: "grandchild",
+				}));
 
 				// Act
 				const rootResolved = container.resolve<{ level: string }>(identifier);
 				const childResolved = child.resolve<{ level: string }>(identifier);
-				const grandchildResolved = grandchild.resolve<{ level: string }>(identifier);
+				const grandchildResolved = grandchild.resolve<{ level: string }>(
+					identifier,
+				);
 
 				// Assert
 				expect(rootResolved.level).toBe("root");
@@ -470,7 +474,9 @@ describe("ServiceContainer", () => {
 				const grandchild = child.createScope();
 
 				// Act
-				const grandchildResolved = grandchild.resolve<{ value: string }>(identifier);
+				const grandchildResolved = grandchild.resolve<{ value: string }>(
+					identifier,
+				);
 
 				// Assert
 				expect(grandchildResolved.value).toBe("root");

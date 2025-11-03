@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { GroupTask } from "../../../../src/core/tasks/groupTask.js";
 import { BuildResult } from "../../../../src/core/execution/BuildResult.js";
+import { GroupTask } from "../../../../src/core/tasks/groupTask.js";
 import type { LeafTask } from "../../../../src/core/tasks/leaf/leafTask.js";
+import { Task } from "../../../../src/core/tasks/task.js";
+import { BuildGraphBuilder } from "../../../helpers/builders/BuildGraphBuilder.js";
 import { GroupTaskBuilder } from "../../../helpers/builders/GroupTaskBuilder.js";
 import { LeafTaskBuilder } from "../../../helpers/builders/LeafTaskBuilder.js";
-import { BuildGraphBuilder } from "../../../helpers/builders/BuildGraphBuilder.js";
-import { Task } from "../../../../src/core/tasks/task.js";
 
 /**
  * Comprehensive GroupTask Tests
@@ -729,8 +729,12 @@ describe("GroupTask - Comprehensive Tests", () => {
 				.withCommand("task2")
 				.buildBiomeTask();
 
-			const spy1 = vi.spyOn(task1, "run").mockResolvedValue(BuildResult.Success);
-			const spy2 = vi.spyOn(task2, "run").mockResolvedValue(BuildResult.Success);
+			const spy1 = vi
+				.spyOn(task1, "run")
+				.mockResolvedValue(BuildResult.Success);
+			const spy2 = vi
+				.spyOn(task2, "run")
+				.mockResolvedValue(BuildResult.Success);
 
 			const groupTask = builder
 				.withBuildGraphPackage(node)
