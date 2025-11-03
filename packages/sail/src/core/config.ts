@@ -21,6 +21,8 @@ const configExplorer = cosmiconfigSync(configName, {
  * @param rootDir - The path to the root package.json to load.
  * @param noCache - If true, the config cache will be cleared and the config will be reloaded.
  * @returns The sail section of the package.json, or undefined if not found
+ *
+ * @beta
  */
 export function getSailConfig(
 	rootDir: string,

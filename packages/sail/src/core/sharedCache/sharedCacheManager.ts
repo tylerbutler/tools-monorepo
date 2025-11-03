@@ -52,6 +52,8 @@ const traceError = registerDebug("sail:cache:error");
  *
  * It handles all the complexity of cache keys, manifests, file operations,
  * and error recovery, providing a simple interface for the build system.
+ *
+ * @beta
  */
 export class SharedCacheManager {
 	public readonly options: SharedCacheOptions;

@@ -15,6 +15,9 @@ import { normalizeGlobalTaskDefinitions } from "../taskDefinitions.js";
 
 const traceGraph = registerDebug("sail:graph");
 
+/**
+ * @beta
+ */
 export interface DependencyNode extends IDependencyNode {
 	pkg: BuildPackage;
 	dependentPackages: DependencyNode[];

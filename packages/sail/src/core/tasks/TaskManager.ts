@@ -11,6 +11,8 @@ const traceTaskDepTask = registerDebug("sail:task:init:dep:task");
 /**
  * TaskManager handles task creation, lifecycle management, and dependency resolution
  * for a single package in the build graph.
+ *
+ * @beta
  */
 export class TaskManager {
 	private readonly tasks = new Map<string, Task>();

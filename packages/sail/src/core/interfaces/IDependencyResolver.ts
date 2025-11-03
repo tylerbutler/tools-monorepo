@@ -3,12 +3,14 @@ import type { TaskDefinitionsOnDisk } from "../taskDefinitions.js";
 
 /**
  * Dependency node interface representing a package in the dependency graph
+ *
+ * @beta
  */
-export interface IDependencyNode {
+export type IDependencyNode = {
 	pkg: BuildPackage;
 	dependentPackages: IDependencyNode[];
 	level: number;
-}
+};
 
 /**
  * Dependency resolver interface for resolving package dependencies and building the dependency graph

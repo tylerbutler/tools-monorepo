@@ -38,6 +38,9 @@ export function getExecutableFromCommand(
 	return toReturn;
 }
 
+/**
+ * @beta
+ */
 export interface ExecAsyncResult {
 	error: child_process.ExecException | null;
 	stdout: string;

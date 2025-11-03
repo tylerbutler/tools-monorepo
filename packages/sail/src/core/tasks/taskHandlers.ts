@@ -4,6 +4,8 @@ import type { LeafTask } from "./leaf/leafTask.js";
 
 /**
  * The definition of a free function that returns a LeafTask subclass.
+ *
+ * @beta
  */
 export type TaskHandlerFunction = (
 	node: BuildGraphPackage,
@@ -14,6 +16,8 @@ export type TaskHandlerFunction = (
 
 /**
  * The definition of a constructor function that returns a LeafTask subclass.
+ *
+ * @beta
  */
 export type TaskHandlerConstructor = new (
 	node: BuildGraphPackage,
@@ -26,6 +30,8 @@ export type TaskHandlerConstructor = new (
  * A TaskHandler is a function that can be used to generate a `LeafTask` that will handle a particular Sail task.
  * The function can either be a constructor for a `LeafTask` subclass, or it can be a free function that returns a
  * `LeafTask`.
+ *
+ * @beta
  */
 export type TaskHandler = TaskHandlerConstructor | TaskHandlerFunction;
 

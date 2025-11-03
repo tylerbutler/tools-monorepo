@@ -17,6 +17,8 @@ const traceTaskDef = registerDebug("sail:task:definition");
  * Task names are represented as property name on the object and the value the task configuration
  * (type `TaskConfig`). Task configuration can a plain array of string, presenting the task's
  * dependencies or a full description (type `TaskConfigFull`).
+ *
+ * @beta
  */
 export interface TaskDefinitions {
 	readonly [name: string]: TaskConfig;
@@ -24,12 +26,20 @@ export interface TaskDefinitions {
 
 /**
  * Task Name is a simple string that is normally a script name in the package.json.
+ *
+ * @beta
  */
-type TaskName = string;
+export type TaskName = string;
 
-type AnyTaskName = "*";
+/**
+ * @beta
+ */
+export type AnyTaskName = "*";
 
-type PackageName = string;
+/**
+ * @beta
+ */
+export type PackageName = string;
 
 /**
  * Task Dependencies Expansion:
@@ -43,19 +53,30 @@ type PackageName = string;
  * - "<package>#<name>": specific dependent package's task
  * - "...": expand to the dependencies in global fluidBuild config (default is override)
  */
-type TaskDependency =
+/**
+ * @beta
+ */
+export type TaskDependency =
 	| TaskName
 	| AnyTaskName
 	| `^${TaskName | AnyTaskName}`
 	| `${PackageName}#${TaskName | AnyTaskName}`
 	| "...";
 
+/**
+ * @beta
+ */
 export type TaskDependencies = readonly TaskDependency[];
 
+/**
+ * @beta
+ */
 export interface TaskConfig {
 	/**
 	 * Task dependencies as a plain string array. Matched task will be scheduled to run before the current task.
 	 * The strings specify dependencies for the task. See Task Dependencies Expansion above for details.
+	 *
+	 * @internal
 	 */
 	readonly dependsOn: TaskDependencies;
 
@@ -66,6 +87,8 @@ export interface TaskConfig {
 	 *
 	 * Notes 'before' is disallowed for non-script tasks since it has no effect on non-script tasks as they has no
 	 * action to perform.
+	 *
+	 * @internal
 	 */
 	readonly before: TaskDependencies;
 
@@ -75,6 +98,8 @@ export interface TaskConfig {
 	 * satisfy a requirement of dependency on the children tasks.
 	 *
 	 * This should not be custom specified but derived from definition.
+	 *
+	 * @internal
 	 */
 	readonly children: readonly TaskName[];
 
@@ -85,6 +110,8 @@ export interface TaskConfig {
 	 *
 	 * Notes 'after' is disallowed for non-script tasks since it has no effect on non-script tasks as they has no
 	 * action to perform.
+	 *
+	 * @internal
 	 */
 	readonly after: TaskDependencies;
 
@@ -109,9 +136,16 @@ type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 export type MutableTaskConfig = Mutable<TaskConfig>;
 
 // On file versions that allow fields to be omitted
+/**
+ * @beta
+ */
 export type TaskConfigOnDisk =
 	| TaskDependencies
 	| Omit<Partial<TaskConfig>, "children">;
+
+/**
+ * @beta
+ */
 export interface TaskDefinitionsOnDisk {
 	readonly [name: TaskName]: TaskConfigOnDisk;
 }
@@ -132,6 +166,9 @@ export const defaultCleanTaskName = "clean";
 //   subtasks that has no name inherit the dependency. (where as normally, all subtask does)
 //	 (i.e. isDefault: true)
 
+/**
+ * @beta
+ */
 export type TaskDefinition = TaskConfig & { readonly isDefault?: boolean };
 
 /**

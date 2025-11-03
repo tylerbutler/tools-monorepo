@@ -8,6 +8,8 @@ import type { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
 /**
  * A context object that is passed to Sail tasks. It is used to provide easy access to commonly-needed metadata
  * or tools.
+ *
+ * @beta
  */
 export interface BuildContext {
 	/**

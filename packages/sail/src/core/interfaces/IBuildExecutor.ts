@@ -6,6 +6,8 @@ import type { TaskExec } from "../tasks/task.js";
 
 /**
  * Build result type (using the same values as the concrete BuildResult enum)
+ *
+ * @beta
  */
 export type IBuildResult =
 	| "Success"
@@ -17,6 +19,8 @@ export type IBuildResult =
 
 /**
  * Buildable package interface
+ *
+ * @beta
  */
 export interface IBuildablePackage {
 	build(q: AsyncPriorityQueue<TaskExec>): Promise<IBuildResult>;
@@ -25,6 +29,7 @@ export interface IBuildablePackage {
 
 /**
  * Build statistics interface
+ * @internal
  */
 export interface IBuildStats {
 	leafTotalCount: number;
@@ -36,6 +41,7 @@ export interface IBuildStats {
 
 /**
  * Build execution context interface
+ * @internal
  */
 export interface IBuildExecutionContext {
 	readonly taskStats: IBuildStats;

@@ -6,11 +6,17 @@ import { Worker } from "node:worker_threads";
 
 import type { WorkerExecResult, WorkerMessage } from "./worker.js";
 
+/**
+ * @internal
+ */
 export interface WorkerExecResultWithOutput extends WorkerExecResult {
 	stdout: string;
 	stderr: string;
 }
 
+/**
+ * @internal
+ */
 export class WorkerPool {
 	private readonly threadWorkerPool: Worker[] = [];
 	private readonly processWorkerPool: ChildProcess[] = [];

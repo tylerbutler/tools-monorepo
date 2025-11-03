@@ -19,6 +19,8 @@ const traceInit = registerDebug("sail:init");
 
 /**
  * A type representing Sail-specific config that may be in package.json.
+ *
+ * @beta
  */
 export type SailPackageJson = BasePackageJson & {
 	/**
@@ -34,6 +36,9 @@ export type SailPackageJson = BasePackageJson & {
 	fluidBuild?: ISailConfig;
 };
 
+/**
+ * @beta
+ */
 export class BuildPackage extends PackageBase<SailPackageJson> {
 	private _matched = false;
 
@@ -104,6 +109,7 @@ export class BuildPackage extends PackageBase<SailPackageJson> {
 		);
 	}
 
+	/** @internal */
 	private _monoRepo: MonoRepo | undefined;
 
 	private set monoRepo(value: MonoRepo | undefined) {
@@ -112,12 +118,16 @@ export class BuildPackage extends PackageBase<SailPackageJson> {
 
 	/**
 	 * @deprecated Replace usage as soon as possible.
+	 * @internal
 	 */
 	public get monoRepo(): MonoRepo | undefined {
 		return this._monoRepo;
 	}
 }
 
+/**
+ * @beta
+ */
 export class MonoRepo implements IWorkspace {
 	public constructor(
 		public readonly kind: string,

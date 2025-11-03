@@ -29,9 +29,9 @@ export class FlubListTask extends LeafWithDoneFileTask {
 		if (resourceGroup === undefined) {
 			return undefined;
 		}
-		const packages = Array.from(
-			this.node.context.repoPackageMap.values(),
-		).filter((pkg) => pkg.releaseGroup === resourceGroup);
+		const packages = Array.from(this.node.repoPackageMap.values()).filter(
+			(pkg) => pkg.releaseGroup === resourceGroup,
+		);
 		if (packages.length === 0) {
 			return undefined;
 		}
@@ -70,9 +70,9 @@ export class FlubCheckLayerTask extends LeafWithDoneFileTask {
 		return layerInfoFile
 			? JSON.stringify({
 					layerInfo: layerInfoFile,
-					packageJson: Array.from(
-						this.node.context.repoPackageMap.values(),
-					).map((pkg) => pkg.packageJson),
+					packageJson: Array.from(this.node.repoPackageMap.values()).map(
+						(pkg) => pkg.packageJson,
+					),
 				})
 			: undefined;
 	}

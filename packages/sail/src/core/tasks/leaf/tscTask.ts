@@ -202,7 +202,7 @@ export class TscTask extends LeafTask {
 				if (this._projectReference) {
 					fullPath = this._projectReference.remapSrcDeclFile(fullPath, config);
 				}
-				const hash = await this.node.context.fileHashCache.getFileHash(
+				const hash = await this.node.fileHashCache.getFileHash(
 					fullPath,
 					tscUtils.getSourceFileVersion,
 				);

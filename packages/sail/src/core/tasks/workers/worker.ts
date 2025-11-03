@@ -9,6 +9,9 @@ export interface WorkerMessage {
 	cwd: string;
 }
 
+/**
+ * @internal
+ */
 export interface WorkerExecResult {
 	code: number;
 	error?: Error; // unhandled exception, main thread should rerun it.

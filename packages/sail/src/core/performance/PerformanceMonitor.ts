@@ -1,6 +1,7 @@
 /**
  * Performance monitoring utilities for Sail build system.
  * Tracks timing, memory usage, and other performance metrics.
+ * @internal
  */
 export class PerformanceMonitor {
 	private readonly metrics = new Map<string, PerformanceMetric>();
@@ -197,6 +198,7 @@ export class PerformanceMonitor {
 
 /**
  * Timer for measuring operation duration
+ * @internal
  */
 export class PerformanceTimer {
 	private startTime: number;
@@ -249,6 +251,7 @@ export class PerformanceTimer {
 
 /**
  * Performance metric data
+ * @internal
  */
 export interface PerformanceMetric {
 	name: string;
@@ -265,6 +268,7 @@ export interface PerformanceMetric {
 
 /**
  * Memory usage metric
+ * @internal
  */
 export interface MemoryMetric {
 	label: string;
@@ -277,6 +281,7 @@ export interface MemoryMetric {
 
 /**
  * Memory usage delta
+ * @internal
  */
 export interface MemoryDelta {
 	heapUsed: number;
@@ -287,6 +292,7 @@ export interface MemoryDelta {
 
 /**
  * Complete performance report
+ * @internal
  */
 export interface PerformanceReport {
 	totalOperations: number;
