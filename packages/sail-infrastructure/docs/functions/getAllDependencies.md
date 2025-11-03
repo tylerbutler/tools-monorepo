@@ -10,7 +10,7 @@
 function getAllDependencies(repo, packages): object;
 ```
 
-Defined in: [packages/sail-infrastructure/src/buildProject.ts:334](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L334)
+Defined in: [packages/sail-infrastructure/src/buildProject.ts:332](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L332)
 
 Returns an object containing all the packages, release groups, and workspaces that a given set of packages depends
 on. This function only considers packages in the BuildProject repo.
