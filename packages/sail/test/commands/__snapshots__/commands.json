@@ -1,5 +1,33 @@
 [
     {
+        "alias": [],
+        "command": "autocomplete",
+        "flagAliases": [],
+        "flagChars": [
+            "r"
+        ],
+        "flags": [
+            "refresh-cache"
+        ],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "autocomplete:create",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "autocomplete:script",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
         "alias": [
             "b"
         ],
@@ -128,6 +156,38 @@
             "verbose"
         ],
         "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "commands",
+        "flagAliases": [],
+        "flagChars": [
+            "c",
+            "x"
+        ],
+        "flags": [
+            "columns",
+            "deprecated",
+            "extended",
+            "hidden",
+            "json",
+            "no-truncate",
+            "sort",
+            "tree"
+        ],
+        "plugin": "@oclif/plugin-commands"
+    },
+    {
+        "alias": [],
+        "command": "help",
+        "flagAliases": [],
+        "flagChars": [
+            "n"
+        ],
+        "flags": [
+            "nested-commands"
+        ],
+        "plugin": "@oclif/plugin-help"
     },
     {
         "alias": [],
