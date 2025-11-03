@@ -39,7 +39,9 @@ describe("Task Dependencies Integration", () => {
 			// Build and verify ^build resolution
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
+			const buildGraph = await buildCtx.executeBuild(["build"], {
+				force: true,
+			});
 
 			// Find packages
 			const libPkg = buildGraph.buildPackages.find(
@@ -174,7 +176,9 @@ importers:
 			// Build and verify cross-package dependency
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
+			const buildGraph = await buildCtx.executeBuild(["build"], {
+				force: true,
+			});
 
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
@@ -283,7 +287,9 @@ importers:
 			// Build with build task - clean should also run
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
+			const buildGraph = await buildCtx.executeBuild(["build"], {
+				force: true,
+			});
 
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
@@ -385,7 +391,9 @@ importers:
 			// Build with build task - verify should also run
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
+			const buildGraph = await buildCtx.executeBuild(["build"], {
+				force: true,
+			});
 
 			const libPkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/lib",
@@ -513,7 +521,9 @@ importers:
 			// Execute build and verify dependency chain
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
+			const buildGraph = await buildCtx.executeBuild(["build"], {
+				force: true,
+			});
 
 			// Verify all packages built (4 total in diamond)
 			expect(buildGraph.taskStats.leafBuiltCount).toBe(4);
@@ -654,7 +664,9 @@ importers:
 			// Execute build - should run: clean, generate, compile, build
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
+			const buildGraph = await buildCtx.executeBuild(["build"], {
+				force: true,
+			});
 
 			// Verify all 4 tasks executed
 			expect(buildGraph.taskStats.leafBuiltCount).toBe(4);
@@ -1002,7 +1014,9 @@ importers:
 			// Execute build and verify order via levels
 			const buildCtx = await createBuildGraphTestContext(ctx.testDir);
 			await buildCtx.installDependencies();
-			const buildGraph = await buildCtx.executeBuild(["build"], { force: true });
+			const buildGraph = await buildCtx.executeBuild(["build"], {
+				force: true,
+			});
 
 			const basePkg = buildGraph.buildPackages.find(
 				(p) => p.pkg.name === "@test/base",

@@ -176,8 +176,12 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 						},
 					},
 					getScript: vi.fn((name) => {
-						if (name === "test") return "vitest";
-						if (name === "build") return "tsc";
+						if (name === "test") {
+							return "vitest";
+						}
+						if (name === "build") {
+							return "tsc";
+						}
 						return undefined;
 					}),
 				});
