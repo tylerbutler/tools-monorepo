@@ -18,8 +18,8 @@ export type {
 	IBuildExecutionContext,
 	IBuildStats,
 } from "./core/interfaces/IBuildExecutor.js";
-export type { IDependencyNode } from "./core/interfaces/IDependencyResolver.js";
 export type { ICacheableTask } from "./core/interfaces/ICacheableTask.js";
+export type { IDependencyNode } from "./core/interfaces/IDependencyResolver.js";
 export type {
 	IBuildablePackage,
 	IBuildResult,
