@@ -199,7 +199,7 @@ export class PrettierTask extends LeafWithDoneFileTask {
 		}
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const files = await super.getCacheInputFiles();
 
@@ -221,7 +221,7 @@ export class PrettierTask extends LeafWithDoneFileTask {
 		return files;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const outputs = await super.getCacheOutputFiles();
 

@@ -19,6 +19,7 @@ export type {
 	IBuildStats,
 } from "./core/interfaces/IBuildExecutor.js";
 export type { IDependencyNode } from "./core/interfaces/IDependencyResolver.js";
+export type { ICacheableTask } from "./core/interfaces/ICacheableTask.js";
 export type {
 	IBuildablePackage,
 	IBuildResult,
@@ -82,7 +83,7 @@ export type {
 	TaskHandlerConstructor,
 	TaskHandlerFunction,
 } from "./core/tasks/taskHandlers.js";
-export { type WorkerExecResult } from "./core/tasks/workers/worker.js";
+export type { WorkerExecResult } from "./core/tasks/workers/worker.js";
 export {
 	type WorkerExecResultWithOutput,
 	WorkerPool,

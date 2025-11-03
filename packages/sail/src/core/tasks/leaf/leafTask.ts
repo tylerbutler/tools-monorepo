@@ -15,6 +15,7 @@ import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
 import { DependencyError } from "../../errors/DependencyError.js";
 import { BuildResult } from "../../execution/BuildResult.js";
+import type { ICacheableTask } from "../../interfaces/ICacheableTask.js";
 import { defaultOptions } from "../../options.js";
 import type {
 	CacheKeyInputs,
@@ -44,7 +45,7 @@ interface TaskExecResult extends ExecAsyncResult {
 /**
  * @beta
  */
-export abstract class LeafTask extends Task {
+export abstract class LeafTask extends Task implements ICacheableTask {
 	// Unique instance ID for debugging
 	private readonly instanceId: number = ++taskInstanceCounter;
 
@@ -520,7 +521,7 @@ export abstract class LeafTask extends Task {
 	 * Whether this task type supports shared caching.
 	 * Override to return false for tasks that shouldn't be cached.
 	 */
-	protected get canUseCache(): boolean {
+	public get canUseCache(): boolean {
 		return true; // Most tasks can be cached
 	}
 
@@ -528,7 +529,7 @@ export abstract class LeafTask extends Task {
 	 * Get input files for cache key computation.
 	 * Defaults to empty array - subclasses should override if they support caching.
 	 */
-	protected async getCacheInputFiles(): Promise<string[]> {
+	public async getCacheInputFiles(): Promise<string[]> {
 		return [];
 	}
 
@@ -536,7 +537,7 @@ export abstract class LeafTask extends Task {
 	 * Get output files for cache storage/verification.
 	 * Defaults to empty array - subclasses should override if they support caching.
 	 */
-	protected async getCacheOutputFiles(): Promise<string[]> {
+	public async getCacheOutputFiles(): Promise<string[]> {
 		return [];
 	}
 
@@ -817,7 +818,7 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	 * Override to include the done file in cache inputs (if it exists).
 	 * Subclasses should call super.getCacheInputFiles() and add their own inputs.
 	 */
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		const inputs = await super.getCacheInputFiles();
 		const doneFileFullPath = this.doneFileFullPath;
 		if (existsSync(doneFileFullPath)) {
@@ -830,7 +831,7 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	 * Override to include the done file in cache outputs.
 	 * Subclasses should call super.getCacheOutputFiles() and add their own outputs.
 	 */
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		const outputs = await super.getCacheOutputFiles();
 		outputs.push(this.doneFileFullPath);
 		return outputs;

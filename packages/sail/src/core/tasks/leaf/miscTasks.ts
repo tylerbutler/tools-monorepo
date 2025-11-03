@@ -31,12 +31,12 @@ export class EchoTask extends LeafTask {
 		return true;
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Echo task has no real inputs
 		return [];
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Echo task produces no output files
 		return [];
 	}
@@ -180,7 +180,7 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 		return this._dstFiles;
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const inputs = await super.getCacheInputFiles();
 		// Add task-specific input files
@@ -188,7 +188,7 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 		return inputs;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const outputs = await super.getCacheOutputFiles();
 		// Add task-specific output files
@@ -230,12 +230,12 @@ export class GenVerTask extends LeafTask {
 		}
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// GenVerTask reads package.json
 		return [this.getPackageFileFullPath("package.json")];
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// GenVerTask produces no output files (console output only)
 		return [];
 	}
@@ -272,7 +272,7 @@ export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
 		return [];
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const inputs = await super.getCacheInputFiles();
 		// Add task-specific input files
@@ -280,7 +280,7 @@ export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
 		return inputs;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const outputs = await super.getCacheOutputFiles();
 		// Add task-specific output files (GoodFence produces no output files)
@@ -343,7 +343,7 @@ export class DepCruiseTask extends LeafWithFileStatDoneFileTask {
 		return [];
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const inputs = await super.getCacheInputFiles();
 		// Add task-specific input files
@@ -351,7 +351,7 @@ export class DepCruiseTask extends LeafWithFileStatDoneFileTask {
 		return inputs;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const outputs = await super.getCacheOutputFiles();
 		// Add task-specific output files (DepCruise produces no output files)

@@ -62,7 +62,7 @@ class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
 		return this.getFiles("output");
 	}
 
-	protected override async getCacheInputFiles(): Promise<string[]> {
+	public override async getCacheInputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const inputs = await super.getCacheInputFiles();
 		// Add task-specific input files
@@ -70,7 +70,7 @@ class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
 		return inputs;
 	}
 
-	protected override async getCacheOutputFiles(): Promise<string[]> {
+	public override async getCacheOutputFiles(): Promise<string[]> {
 		// Get done file from parent class
 		const outputs = await super.getCacheOutputFiles();
 		// Add task-specific output files

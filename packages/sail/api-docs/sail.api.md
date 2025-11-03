@@ -390,6 +390,13 @@ export interface IBuildStats {
     leafUpToDateCount: number;
 }
 
+// @public
+export interface ICacheableTask {
+    readonly canUseCache: boolean;
+    getCacheInputFiles(): Promise<string[]>;
+    getCacheOutputFiles(): Promise<string[]>;
+}
+
 // @beta
 export type IDependencyNode = {
     pkg: BuildPackage;
@@ -408,11 +415,11 @@ export interface ISailConfig {
 }
 
 // @beta (undocumented)
-export abstract class LeafTask extends Task {
+export abstract class LeafTask extends Task implements ICacheableTask {
     constructor(node: BuildGraphPackage, command: string, context: BuildContext, taskName: string | undefined, isTemp?: boolean);
     // (undocumented)
     addDependentLeafTasks(dependentLeafTasks: Iterable<LeafTask>): void;
-    protected get canUseCache(): boolean;
+    get canUseCache(): boolean;
     // (undocumented)
     protected checkIsUpToDate(): Promise<boolean>;
     // (undocumented)
@@ -427,8 +434,8 @@ export abstract class LeafTask extends Task {
     get executable(): string;
     // (undocumented)
     protected get executionCommand(): string;
-    protected getCacheInputFiles(): Promise<string[]>;
-    protected getCacheOutputFiles(): Promise<string[]>;
+    getCacheInputFiles(): Promise<string[]>;
+    getCacheOutputFiles(): Promise<string[]>;
     // (undocumented)
     protected getDependentLeafTasks(): SetIterator<LeafTask>;
     protected getPackageFileFullPath(filePath: string): string;
@@ -817,9 +824,11 @@ export class TaskHandlerRegistry {
 
 // @beta
 export class TaskManager {
-    constructor(pkg: BuildPackage, context: BuildContext, getTaskDefinition: (taskName: string) => TaskDefinition | undefined, dependentPackages: BuildGraphPackage[], buildGraphPackage: BuildGraphPackage, getAllDefinedTaskNames?: (() => string[]) | undefined);
+    constructor(pkg: BuildPackage, context: BuildContext, getTaskDefinition: (taskName: string) => TaskDefinition | undefined, dependentPackages: BuildGraphPackage[], buildGraphPackage: BuildGraphPackage, _getAllDefinedTaskNames?: (() => string[]) | undefined);
     createTasks(buildTaskNames: string[]): boolean | undefined;
     finalizeDependentTasks(): void;
+    // (undocumented)
+    protected readonly _getAllDefinedTaskNames?: (() => string[]) | undefined;
     getDependsOnTasks(_task: Task, taskName: string, pendingInitDep: Task[]): Task[];
     getMatchedTasks(deps: readonly string[], pendingInitDep?: Task[]): Task[];
     getScriptTask(taskName: string, pendingInitDep: Task[]): Task | undefined;

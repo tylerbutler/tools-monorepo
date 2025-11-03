@@ -28,7 +28,7 @@ export class TaskManager {
 		) => TaskDefinition | undefined,
 		private readonly dependentPackages: BuildGraphPackage[],
 		private readonly buildGraphPackage: BuildGraphPackage,
-		private readonly getAllDefinedTaskNames?: () => string[],
+		protected readonly _getAllDefinedTaskNames?: () => string[],
 	) {}
 
 	/**

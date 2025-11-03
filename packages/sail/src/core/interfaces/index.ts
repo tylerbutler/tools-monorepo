@@ -5,7 +5,7 @@ export type {
 	IBuildResult,
 	IBuildStats,
 } from "./IBuildExecutor.js";
-
+export type { ICacheableTask } from "./ICacheableTask.js";
 export type {
 	IConfigurationMerger,
 	IMutableTaskConfig,
@@ -17,7 +17,6 @@ export type {
 	IDependencyValidators,
 	IPackageConfiguration,
 } from "./IConfigurationParser.js";
-
 export type {
 	IDependencyNode,
 	IDependencyResolver,
@@ -26,5 +25,4 @@ export type {
 	IScriptAnalyzer,
 	IScriptDependency,
 } from "./IScriptAnalyzer.js";
-
 export type { ITaskManager } from "./ITaskManager.js";
