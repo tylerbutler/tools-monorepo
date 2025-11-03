@@ -23,9 +23,7 @@ import {
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-	PersistentFileHashCache,
-} from "../../../../src/core/cache/PersistentFileHashCache.js";
+import { PersistentFileHashCache } from "../../../../src/core/cache/PersistentFileHashCache.js";
 
 describe("PersistentFileHashCache", () => {
 	let tempDir: string;

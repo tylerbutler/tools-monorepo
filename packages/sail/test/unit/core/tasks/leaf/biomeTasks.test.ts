@@ -1,4 +1,4 @@
-import { describe, expect, it, } from "vitest";
+import { describe, expect, it } from "vitest";
 import { BiomeTask } from "../../../../../src/core/tasks/leaf/biomeTasks.js";
 import { BuildContextBuilder } from "../../../../helpers/builders/BuildContextBuilder.js";
 import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
