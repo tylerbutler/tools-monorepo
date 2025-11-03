@@ -2,7 +2,9 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import {
 	BuildProject,
+	type BuildProjectConfig,
 	findGitRootSync,
+	generateBuildProjectConfig,
 	getBuildProjectConfig,
 	type IPackage,
 	type IWorkspace,
@@ -24,7 +26,7 @@ import type { BuildContext } from "./buildContext.js";
 import { BuildGraph } from "./buildGraph.js";
 import { getSailConfig } from "./config.js";
 import type { BuildOptions } from "./options.js";
-import type { TaskHandlerPlugin } from "./sailConfig.js";
+import type { ISailConfig, TaskHandlerPlugin } from "./sailConfig.js";
 import { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
 
 const traceBuild = registerDebug("sail:build");
@@ -44,9 +46,31 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		searchPath: string,
 		private log: Logger,
 	) {
-		super(searchPath);
-		const { config: sailConfig } = getSailConfig(searchPath);
-		const { config: buildProjectConfig } = getBuildProjectConfig(searchPath);
+		super(searchPath, true); // Enable infer mode for workspace discovery
+
+		// Try to load sail config, use empty config if not found
+		let sailConfig: ISailConfig;
+		try {
+			const result = getSailConfig(searchPath);
+			sailConfig = result.config;
+		} catch {
+			// No config found, use empty config (inference mode)
+			sailConfig = {
+				version: 1,
+				tasks: {},
+				buildProject: generateBuildProjectConfig(searchPath),
+			};
+		}
+
+		// Try to load build project config, use generated config if not found
+		let buildProjectConfig: BuildProjectConfig;
+		try {
+			const result = getBuildProjectConfig(searchPath);
+			buildProjectConfig = result.config;
+		} catch {
+			// No config found, generate one (inference mode)
+			buildProjectConfig = generateBuildProjectConfig(searchPath);
+		}
 
 		const gitRoot = findGitRootSync(searchPath);
 

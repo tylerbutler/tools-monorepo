@@ -1,11 +1,32 @@
 import { cp, mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import type { BuildGraphPackage } from "../../../src/core/buildGraph.js";
 import { createBuildGraphTestContext } from "../support/buildGraphIntegrationHelper.js";
 import {
 	setupTestContext,
 	type TestContext,
 } from "../support/integrationTestHelpers.js";
+
+/**
+ * Filter packages to only include those that should have tasks.
+ * Workspace root packages without scripts typically don't get tasks created.
+ */
+function getPackagesWithScripts(
+	packages: BuildGraphPackage[],
+): BuildGraphPackage[] {
+	return packages.filter((pkg) => {
+		// Exclude workspace root packages without scripts
+		if (pkg.pkg.isWorkspaceRoot) {
+			const hasScripts =
+				pkg.pkg.packageJson.scripts &&
+				Object.keys(pkg.pkg.packageJson.scripts).length > 0;
+			return hasScripts;
+		}
+		// Include all non-root packages
+		return true;
+	});
+}
 
 /**
  * Integration tests for configuration system end-to-end.
@@ -44,7 +65,8 @@ describe("Configuration System Integration", () => {
 
 			// Verify configuration was loaded and applied
 			// Check that tasks exist (defined in sail.config.cjs)
-			const packages = buildGraph.buildPackages;
+			// Filter to packages that should have scripts/tasks
+			const packages = getPackagesWithScripts(buildGraph.buildPackages);
 			expect(packages.length).toBeGreaterThan(0);
 
 			// Verify each package has a build task from config
@@ -216,7 +238,8 @@ importers:
 			const buildGraph = await buildCtx.executeBuild(["build"]);
 
 			// Verify all packages have build task from global config
-			const packages = buildGraph.buildPackages;
+			// Filter to packages that should have scripts/tasks
+			const packages = getPackagesWithScripts(buildGraph.buildPackages);
 			for (const pkg of packages) {
 				const buildTask = pkg.taskManager.tasksMap.get("build");
 				expect(buildTask).toBeDefined();
