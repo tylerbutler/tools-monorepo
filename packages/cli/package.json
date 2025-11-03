@@ -50,6 +50,7 @@
 		"lint:fix": "biome lint . --write",
 		"postpack": "pnpm clean:manifest",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "vitest run",
 		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"test:unit": "vitest run"

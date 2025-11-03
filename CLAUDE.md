@@ -433,3 +433,4 @@ If the user wants help with fixing an error in their CI pipeline, use the follow
 <!-- nx configuration end-->
 
 - This project uses tabs primarily for indentation. Not spaces.
+- We do not use re-export patterns. Always import from the module directly.
