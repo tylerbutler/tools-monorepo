@@ -37,6 +37,7 @@ describe("workspaceCompat", () => {
 
 			const mockBuildProject = {
 				root: mockRoot,
+				// biome-ignore lint/suspicious/noExplicitAny: Partial mock for testing
 			} as any;
 
 			const config = {
@@ -62,7 +63,7 @@ describe("workspaceCompat", () => {
 			let findFilesCalled = false;
 			const mockDeps: WorkspaceCompatDeps = {
 				fileExists: () => false, // No package.json in root directory
-				findFiles: (patterns, options) => {
+				findFiles: (patterns, _options) => {
 					findFilesCalled = true;
 					expect(patterns).toContain("**/package.json");
 					return [
@@ -74,6 +75,7 @@ describe("workspaceCompat", () => {
 
 			const mockBuildProject = {
 				root: mockRoot,
+				// biome-ignore lint/suspicious/noExplicitAny: Partial mock for testing
 			} as any;
 
 			const config = {
@@ -110,7 +112,7 @@ describe("workspaceCompat", () => {
 				"main" as WorkspaceName,
 			);
 			expect(mainWorkspace).toBeDefined();
-			expect(mainWorkspace!.releaseGroups.size).toBeGreaterThan(0);
+			expect(mainWorkspace?.releaseGroups.size).toBeGreaterThan(0);
 		});
 	});
 });

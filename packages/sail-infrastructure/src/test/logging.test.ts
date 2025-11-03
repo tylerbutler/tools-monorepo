@@ -182,7 +182,7 @@ describe("logging", () => {
 
 	describe("type definitions", () => {
 		it("ErrorLoggingFunction should accept string, Error, or undefined", () => {
-			const func: ErrorLoggingFunction = (msg, ...args) => {
+			const func: ErrorLoggingFunction = (msg, ..._args) => {
 				// Type check - should compile
 				const _str: string | Error | undefined = msg;
 			};
@@ -190,7 +190,7 @@ describe("logging", () => {
 		});
 
 		it("LoggingFunction should accept optional string", () => {
-			const func: LoggingFunction = (message, ...args) => {
+			const func: LoggingFunction = (message, ..._args) => {
 				// Type check - should compile
 				const _str: string | undefined = message;
 			};

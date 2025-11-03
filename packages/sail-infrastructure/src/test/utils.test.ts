@@ -65,7 +65,7 @@ describe("utils", () => {
 			expect(visitedDirs).toContain("/a/b/c");
 			expect(visitedDirs).toContain("/a/b");
 			expect(visitedDirs).toContain("/a");
-			expect(visitedDirs[visitedDirs.length - 1]).toBe("/");
+			expect(visitedDirs.at(-1)).toBe("/");
 		});
 	});
 

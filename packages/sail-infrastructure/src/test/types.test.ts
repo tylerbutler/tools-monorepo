@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import { loadBuildProject } from "../buildProject.js";
 import type {
 	IPackage,
-	IReleaseGroup,
 	IWorkspace,
 	ReleaseGroupName,
 	WorkspaceName,
@@ -20,7 +19,7 @@ describe("types", () => {
 				const main = repo.workspaces.get("main" as WorkspaceName);
 				expect(main).toBeDefined();
 
-				const pkg = main!.packages[0];
+				const pkg = main?.packages[0];
 				expect(isIPackage(pkg)).toBe(true);
 			});
 
@@ -52,50 +51,6 @@ describe("types", () => {
 					getScript: () => undefined,
 				};
 				expect(isIPackage(mockPackage)).toBe(true);
-			});
-		});
-
-		describe.skip("isIWorkspace", () => {
-			it("should return true for valid IWorkspace objects", () => {
-				const repo = loadBuildProject(testRepoRoot);
-				const workspace = repo.workspaces.get("main" as WorkspaceName);
-
-				expect(workspace).toBeDefined();
-				expect(isIWorkspace(workspace)).toBe(true);
-			});
-
-			it("should return false for objects without name property", () => {
-				const notWorkspace = { packages: [] };
-				expect(isIWorkspace(notWorkspace)).toBe(false);
-			});
-
-			it("should return false for objects without packages property", () => {
-				const notWorkspace = { name: "test-workspace" };
-				expect(isIWorkspace(notWorkspace)).toBe(false);
-			});
-
-			it("should return false for objects without releaseGroups property", () => {
-				const notWorkspace = {
-					name: "test-workspace",
-					packages: [],
-				};
-				expect(isIWorkspace(notWorkspace)).toBe(false);
-			});
-
-			it("should return false for non-objects", () => {
-				expect(isIWorkspace("string")).toBe(false);
-				expect(isIWorkspace(123)).toBe(false);
-				expect(isIWorkspace(null)).toBe(false);
-				expect(isIWorkspace(undefined)).toBe(false);
-			});
-
-			it("should return true for object with all required properties", () => {
-				const mockWorkspace = {
-					name: "test-workspace",
-					packages: [],
-					releaseGroups: new Map(),
-				};
-				expect(isIWorkspace(mockWorkspace)).toBe(true);
 			});
 		});
 
@@ -247,7 +202,7 @@ describe("types", () => {
 			const main = repo.workspaces.get("main" as WorkspaceName);
 			expect(main).toBeDefined();
 
-			const pkg = main!.packages[0] as IPackage;
+			const pkg = main?.packages[0] as IPackage;
 
 			expect(pkg.workspace).toBeDefined();
 			expect(pkg.releaseGroup).toBeDefined();
@@ -259,8 +214,8 @@ describe("types", () => {
 			const releaseGroup = repo.releaseGroups.get("main" as ReleaseGroupName);
 
 			expect(releaseGroup).toBeDefined();
-			expect(releaseGroup!.workspace).toBeDefined();
-			expect(releaseGroup!.workspace.name).toBeDefined();
+			expect(releaseGroup?.workspace).toBeDefined();
+			expect(releaseGroup?.workspace.name).toBeDefined();
 		});
 
 		it("IWorkspace should contain packages and release groups", () => {
@@ -268,16 +223,20 @@ describe("types", () => {
 			const workspace = repo.workspaces.get("main" as WorkspaceName);
 
 			expect(workspace).toBeDefined();
-			expect(workspace!.packages.length).toBeGreaterThan(0);
-			expect(workspace!.releaseGroups.size).toBeGreaterThan(0);
+			if (!workspace) {
+				return;
+			}
+
+			expect(workspace.packages.length).toBeGreaterThan(0);
+			expect(workspace.releaseGroups.size).toBeGreaterThan(0);
 
 			// All packages should be valid
-			for (const pkg of workspace!.packages) {
+			for (const pkg of workspace.packages) {
 				expect(isIPackage(pkg)).toBe(true);
 			}
 
 			// All release groups should be valid
-			for (const rg of workspace!.releaseGroups.values()) {
+			for (const rg of workspace.releaseGroups.values()) {
 				expect(isIReleaseGroup(rg)).toBe(true);
 			}
 		});

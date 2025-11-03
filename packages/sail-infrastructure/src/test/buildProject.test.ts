@@ -7,7 +7,6 @@ import {
 	getAllDependencies,
 	loadBuildProject,
 } from "../buildProject.js";
-import { NotInGitRepository } from "../errors.js";
 import { findGitRootSync } from "../git.js";
 import type { ReleaseGroupName, WorkspaceName } from "../types.js";
 
@@ -96,7 +95,7 @@ describe("loadBuildProject", () => {
 			const main = repo.workspaces.get("main" as WorkspaceName);
 			expect(main).toBeDefined();
 
-			const pkg = main!.packages[0];
+			const pkg = main?.packages[0];
 			const releaseGroup = repo.getPackageReleaseGroup(pkg);
 
 			expect(releaseGroup).toBeDefined();
@@ -108,7 +107,7 @@ describe("loadBuildProject", () => {
 			const main = repo.workspaces.get("main" as WorkspaceName);
 			expect(main).toBeDefined();
 
-			const pkg = main!.packages[0];
+			const pkg = main?.packages[0];
 			// Create a mock package with invalid release group
 			const invalidPkg = {
 				...pkg,
@@ -129,7 +128,7 @@ describe("loadBuildProject", () => {
 			);
 			expect(mainReleaseGroup).toBeDefined();
 
-			const dependencies = getAllDependencies(repo, mainReleaseGroup!.packages);
+			const dependencies = getAllDependencies(repo, mainReleaseGroup?.packages);
 
 			expect(dependencies).toBeDefined();
 			expect(dependencies.releaseGroups).toBeDefined();
@@ -158,7 +157,7 @@ describe("loadBuildProject", () => {
 			const config = generateBuildProjectConfig(testRepoRoot);
 
 			// Each workspace should have at least one release group
-			for (const [wsName, wsDef] of Object.entries(
+			for (const [_wsName, wsDef] of Object.entries(
 				config.buildProject?.workspaces ?? {},
 			)) {
 				expect(wsDef.releaseGroups).toBeDefined();

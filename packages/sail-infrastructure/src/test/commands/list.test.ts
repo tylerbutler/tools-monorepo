@@ -1,6 +1,3 @@
-import * as path from "node:path";
-
-import { runCommand } from "@oclif/test";
 import { describe, expect, it } from "vitest";
 
 import { testRepoRoot } from "../init.js";
@@ -37,32 +34,38 @@ describe("ListCommand", () => {
 	describe("command functionality", () => {
 		it("should have run method", async () => {
 			const { ListCommand } = await import("../../commands/list.js");
+			// biome-ignore lint/suspicious/noExplicitAny: Mock config object for testing
 			const command = new ListCommand([], {} as any);
 			expect(typeof command.run).toBe("function");
 		});
 
 		it("should have logFullReport method", async () => {
 			const { ListCommand } = await import("../../commands/list.js");
+			// biome-ignore lint/suspicious/noExplicitAny: Mock config object for testing
 			const command = new ListCommand([], {} as any);
+			// biome-ignore lint/suspicious/noExplicitAny: Accessing private method for testing
 			expect(typeof (command as any).logFullReport).toBe("function");
 		});
 
 		it("should have logCompactReport method", async () => {
 			const { ListCommand } = await import("../../commands/list.js");
+			// biome-ignore lint/suspicious/noExplicitAny: Mock config object for testing
 			const command = new ListCommand([], {} as any);
+			// biome-ignore lint/suspicious/noExplicitAny: Accessing private method for testing
 			expect(typeof (command as any).logCompactReport).toBe("function");
 		});
 
 		it("should have logIndent method", async () => {
 			const { ListCommand } = await import("../../commands/list.js");
+			// biome-ignore lint/suspicious/noExplicitAny: Mock config object for testing
 			const command = new ListCommand([], {} as any);
+			// biome-ignore lint/suspicious/noExplicitAny: Accessing private method for testing
 			expect(typeof (command as any).logIndent).toBe("function");
 		});
 	});
 
 	describe("command execution", () => {
 		it("should execute and load build project", async () => {
-			const { ListCommand } = await import("../../commands/list.js");
 			const { loadBuildProject } = await import("../../buildProject.js");
 
 			// Should be able to load the build project without error
