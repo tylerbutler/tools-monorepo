@@ -190,6 +190,9 @@ describe("buildGraph", () => {
 					packageJson: {
 						name: "test-package",
 						version: "1.0.0",
+						scripts: {
+							compile: "tsc",
+						},
 						sail: {
 							tasks: {
 								build: {
@@ -203,6 +206,7 @@ describe("buildGraph", () => {
 							},
 						},
 					},
+					getScript: vi.fn((name) => (name === "compile" ? "tsc" : undefined)),
 				});
 
 				const graphPackage = new BuildGraphPackage(
@@ -262,6 +266,7 @@ describe("buildGraph", () => {
 						version: "1.0.0",
 						scripts: {
 							build: "tsc",
+							compile: "tsc",
 							test: "vitest",
 						},
 						sail: {

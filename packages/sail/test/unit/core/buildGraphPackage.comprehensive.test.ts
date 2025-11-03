@@ -110,6 +110,9 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 					packageJson: {
 						name: "pkg",
 						version: "1.0.0",
+						scripts: {
+							compile: "tsc",
+						},
 						sail: {
 							tasks: {
 								build: {
@@ -123,6 +126,7 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 							},
 						},
 					},
+					getScript: vi.fn((name) => (name === "compile" ? "tsc" : undefined)),
 				});
 
 				const graphPackage = new BuildGraphPackage(
@@ -158,6 +162,10 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 					packageJson: {
 						name: "pkg",
 						version: "1.0.0",
+						scripts: {
+							test: "vitest",
+							build: "tsc",
+						},
 						sail: {
 							tasks: {
 								test: {
@@ -167,6 +175,11 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 							},
 						},
 					},
+					getScript: vi.fn((name) => {
+						if (name === "test") return "vitest";
+						if (name === "build") return "tsc";
+						return undefined;
+					}),
 				});
 
 				const globalTaskDefs = {
@@ -207,6 +220,9 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 					packageJson: {
 						name: "pkg",
 						version: "1.0.0",
+						scripts: {
+							build: "tsc",
+						},
 						sail: {
 							tasks: {
 								build: {
@@ -404,7 +420,7 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 						sail: {
 							tasks: {
 								build: {
-									dependsOn: ["compile"],
+									dependsOn: [],
 									script: false,
 								},
 							},
@@ -437,6 +453,10 @@ describe("BuildGraphPackage - Comprehensive Tests", () => {
 					packageJson: {
 						name: "pkg",
 						version: "1.0.0",
+						scripts: {
+							build: "tsc",
+							clean: "rm -rf dist",
+						},
 						sail: {
 							tasks: {
 								build: {

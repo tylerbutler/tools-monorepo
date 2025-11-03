@@ -338,8 +338,13 @@ describe("BuildGraph - Initialization", () => {
 			const pkg = new PackageBuilder()
 				.withName("pkg1")
 				.withScript("build", "tsc")
+				.withScript("clean", "rm -rf dist")
 				.withSailTask("build", {
 					dependsOn: ["clean"], // Package-specific dependency
+				})
+				.withSailTask("clean", {
+					dependsOn: [],
+					script: true,
 				})
 				.build();
 
