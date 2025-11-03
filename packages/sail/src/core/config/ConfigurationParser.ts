@@ -27,7 +27,8 @@ export class ConfigurationParser implements IConfigurationParser {
 	): IPackageConfiguration {
 		return {
 			scripts: json.scripts ?? {},
-			taskDefinitions: json.fluidBuild?.tasks,
+			// Check both sail.tasks (preferred) and fluidBuild.tasks (legacy)
+			taskDefinitions: json.sail?.tasks ?? json.fluidBuild?.tasks,
 		};
 	}
 
