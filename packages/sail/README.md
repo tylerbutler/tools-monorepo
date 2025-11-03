@@ -54,7 +54,7 @@ LOGGING FLAGS
       --quiet    Disable all logging.
 
 RUN FLAGS
-  --concurrency=<value>          [default: 12] How many tasks can execute at a time. Defaults to 'os.cpus().length'.
+  --concurrency=<value>          How many tasks can execute at a time. Defaults to 'os.cpus().length'.
   --worker                       Reuse worker threads for some tasks, increasing memory use but lowering overhead.
   --workerMemoryLimitMB=<value>  Memory limit for worker threads in MB. Only works with '--worker'.
 

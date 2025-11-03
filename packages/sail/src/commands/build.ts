@@ -64,7 +64,6 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			description:
 				"How many tasks can execute at a time. Defaults to 'os.cpus().length'.",
 			min: 1,
-			default: defaultOptions.concurrency,
 			helpGroup: "RUN",
 		}),
 		...BaseSailCommand.flags,
@@ -135,7 +134,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			build: tasks.has("build"),
 			buildTaskNames: [...tasks],
 			clean: tasks.has("clean"),
-			concurrency,
+			concurrency: concurrency ?? defaultOptions.concurrency,
 			force: force || tasks.has("clean"),
 			releaseGroups:
 				releaseGroup === undefined

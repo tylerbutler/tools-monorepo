@@ -24,6 +24,14 @@ export interface BuildOptions
 	workerThreads: boolean;
 }
 
+/**
+ * Get the default concurrency value based on CPU count.
+ * Exported as a function to avoid issues with README generation picking up machine-specific values.
+ */
+export function getDefaultConcurrency(): number {
+	return os.cpus().length;
+}
+
 export const defaultOptions: BuildOptions = {
 	showExec: false,
 	clean: false,
@@ -34,7 +42,7 @@ export const defaultOptions: BuildOptions = {
 	buildTaskNames: [],
 	vscode: false,
 	force: false,
-	concurrency: os.cpus().length,
+	concurrency: getDefaultConcurrency(),
 	all: false,
 	worker: false,
 	workerThreads: false,
