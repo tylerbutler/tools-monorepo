@@ -178,12 +178,24 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		try {
 			const buildResult = await runBuild(buildRepo, options, timer, this);
 
+			// Wait for all pending cache operations to complete before exit
+			// This prevents "unsettled top-level await" warnings when background
+			// operations (like access time updates) are still pending
+			if (sharedCache) {
+				await sharedCache.waitForPendingOperations();
+			}
+
 			if (buildResult !== 0) {
 				this.error(`Build result was ${buildResult}.`, { exit: buildResult });
 			}
 		} catch (error) {
 			// this.warning(error as Error);
 			this.error(error as Error, { exit: 100 });
+		} finally {
+			// Ensure pending operations complete even on error
+			if (sharedCache) {
+				await sharedCache.waitForPendingOperations();
+			}
 		}
 	}
 }

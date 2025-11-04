@@ -60,6 +60,7 @@ export class SharedCacheManager {
 	private readonly statistics: CacheStatistics;
 	private initialized = false;
 	private initializationPromise: Promise<void> | undefined;
+	private pendingAccessTimeUpdates = new Set<Promise<void>>();
 
 	/**
 	 * Create a new SharedCacheManager.
@@ -301,13 +302,21 @@ export class SharedCacheManager {
 			// Update access time for LRU tracking (non-blocking, errors ignored)
 			// This is done asynchronously to avoid blocking the lookup and to prevent
 			// race conditions where concurrent lookups might try to update the same file
-			updateManifestAccessTime(manifestPath).catch((error) => {
-				// Silently ignore access time update failures - they're not critical
-				// The manifest will still be valid, just with a slightly stale access time
-				traceError(
-					`Failed to update manifest access time for ${shortKey}: ${error}`,
-				);
-			});
+			// Track the promise to ensure it completes before process exit
+			const updatePromise = updateManifestAccessTime(manifestPath)
+				.catch((error) => {
+					// Silently ignore access time update failures - they're not critical
+					// The manifest will still be valid, just with a slightly stale access time
+					traceError(
+						`Failed to update manifest access time for ${shortKey}: ${error}`,
+					);
+				})
+				.finally(() => {
+					// Remove from tracking set when complete
+					this.pendingAccessTimeUpdates.delete(updatePromise);
+				});
+
+			this.pendingAccessTimeUpdates.add(updatePromise);
 
 			// Cache hit!
 			const elapsed = Date.now() - startTime;
@@ -681,6 +690,20 @@ export class SharedCacheManager {
 		this.statistics.missCount = 0;
 		this.statistics.avgRestoreTime = 0;
 		this.statistics.avgStoreTime = 0;
+	}
+
+	/**
+	 * Wait for all pending background operations to complete.
+	 *
+	 * This should be called before process exit to ensure all
+	 * async operations (like access time updates) complete properly.
+	 *
+	 * @returns Promise that resolves when all pending operations complete
+	 */
+	public async waitForPendingOperations(): Promise<void> {
+		if (this.pendingAccessTimeUpdates.size > 0) {
+			await Promise.all(this.pendingAccessTimeUpdates);
+		}
 	}
 
 	/**
