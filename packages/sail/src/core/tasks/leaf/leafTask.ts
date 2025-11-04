@@ -204,6 +204,26 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			}
 		}
 
+		const startTime = Date.now();
+
+		// Try to restore from shared cache AFTER dependencies complete
+		// This ensures dependency outputs exist for getDoneFileContent() to work,
+		// enabling proper cascading cache invalidation based on dependency hashes.
+		if (this.node.sharedCache && this.canUseCache) {
+			traceUpToDate(
+				`${this.nameColored}: trying cache restore after deps complete`,
+			);
+			const cacheHit = await this.tryRestoreFromCache();
+			if (cacheHit) {
+				this.traceExec("Skipping Leaf Task (cache hit)");
+				traceUpToDate(`${this.nameColored}: cache HIT (restored)`);
+				// Don't increment leafUpToDateCount here - execDone will increment leafBuiltCount
+				// Cache-restored tasks are counted as "built" (just very quickly)
+				return this.execDone(startTime, BuildResult.CachedSuccess);
+			}
+			traceUpToDate(`${this.nameColored}: cache MISS (will execute)`);
+		}
+
 		if (defaultOptions.showExec) {
 			this.node.taskStats.leafBuiltCount++;
 			const totalTask =
@@ -216,7 +236,6 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				`[${taskNum}/${totalTask}] ${this.node.pkg.nameColored}: ${this.command}`,
 			);
 		}
-		const startTime = Date.now();
 		if (
 			this.recheckLeafIsUpToDate &&
 			!this.forced &&
@@ -450,24 +469,9 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			return false;
 		}
 
-		// Try shared cache first (if enabled and task supports it)
-		if (this.node.sharedCache && this.canUseCache) {
-			traceUpToDate(
-				`${this.nameColored}: checking cache (sharedCache=${!!this.node.sharedCache}, canUseCache=${this.canUseCache})`,
-			);
-			const cacheHit = await this.tryRestoreFromCache();
-			if (cacheHit) {
-				this.node.taskStats.leafUpToDateCount++;
-				this.traceExec("Skipping Leaf Task (cache hit)");
-				traceUpToDate(`${this.nameColored}: cache HIT`);
-				return true;
-			}
-			traceUpToDate(`${this.nameColored}: cache MISS`);
-		} else {
-			traceUpToDate(
-				`${this.nameColored}: cache check skipped (sharedCache=${!!this.node.sharedCache}, canUseCache=${this.canUseCache})`,
-			);
-		}
+		// NOTE: Cache check moved to exec() to ensure dependencies have completed
+		// and their output files exist for getDoneFileContent() to work correctly.
+		// This enables proper cascading cache invalidation based on dependency hashes.
 
 		const start = Date.now();
 		const leafIsUpToDate = await this.checkLeafIsUpToDate();
@@ -542,6 +546,46 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 	}
 
 	/**
+	 * Compute hashes from dependent tasks' donefile content.
+	 * This enables cascading cache invalidation: when a dependency's outputs change,
+	 * its donefile content changes, which changes these hashes, which invalidates
+	 * this task's cache key.
+	 *
+	 * Must be called AFTER dependencies have completed (either restored from cache
+	 * or executed), so their output files exist for getDoneFileContent() to work.
+	 */
+	protected async getDependencyHashes(): Promise<
+		Array<{ name: string; hash: string }>
+	> {
+		const hashes: Array<{ name: string; hash: string }> = [];
+		const dependentTasks = Array.from(this.getDependentLeafTasks());
+
+		for (const depTask of dependentTasks) {
+			// Only tasks with donefiles can provide content
+			if (depTask instanceof LeafWithDoneFileTask) {
+				try {
+					// Compute donefile content hash from dep's donefile
+					const donefileHash = await depTask.computeDonefileHash();
+					if (donefileHash) {
+						hashes.push({
+							name: depTask.name,
+							hash: donefileHash,
+						});
+					}
+				} catch (error) {
+					// If we can't get dep's donefile content, skip it
+					// This can happen if dep's outputs are missing (corrupt cache)
+					this.traceError(
+						`Failed to get dependency hash for ${depTask.name}: ${error}`,
+					);
+				}
+			}
+		}
+
+		return hashes;
+	}
+
+	/**
 	 * Try to restore task outputs from shared cache.
 	 * Returns true if cache hit, false if cache miss.
 	 */
@@ -567,12 +611,17 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				})),
 			);
 
+			// Get dependency hashes for cascading cache invalidation
+			const dependencyHashes = await this.getDependencyHashes();
+
 			const cacheKeyInputs: CacheKeyInputs = {
 				packageName: this.node.pkg.name,
 				taskName: this.taskName ?? this.command,
 				executable: this.executable,
 				command: this.command,
 				inputHashes,
+				dependencyHashes:
+					dependencyHashes.length > 0 ? dependencyHashes : undefined,
 				...cache.options.globalKeyComponents,
 			};
 
@@ -586,6 +635,11 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			traceCacheKey(
 				`  inputHashes: ${inputHashes.map((h) => `${h.path}:${h.hash.substring(0, 8)}`).join(", ")}`,
 			);
+			if (dependencyHashes.length > 0) {
+				traceCacheKey(
+					`  dependencyHashes: ${dependencyHashes.map((h) => `${h.name}:${h.hash.substring(0, 8)}`).join(", ")}`,
+				);
+			}
 
 			// Lookup cache entry
 			const entry = await cache.lookup(cacheKeyInputs);
@@ -653,6 +707,9 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				})),
 			);
 
+			// Get dependency hashes for cascading cache invalidation
+			const dependencyHashes = await this.getDependencyHashes();
+
 			// Compute cache key inputs
 			const cacheKeyInputs: CacheKeyInputs = {
 				packageName: this.node.pkg.name,
@@ -660,6 +717,8 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				executable: this.executable,
 				command: this.command,
 				inputHashes,
+				dependencyHashes:
+					dependencyHashes.length > 0 ? dependencyHashes : undefined,
 				...cache.options.globalKeyComponents,
 			};
 
@@ -755,6 +814,23 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	 */
 	protected get configFileFullPaths(): string[] {
 		return [];
+	}
+
+	/**
+	 * Compute a hash of the donefile content.
+	 * This is a public method that can be called by dependent tasks to include
+	 * in their cache keys for cascading invalidation.
+	 *
+	 * Returns undefined if donefile content cannot be computed (e.g., missing outputs).
+	 */
+	public async computeDonefileHash(): Promise<string | undefined> {
+		const donefileContent = await this.getDoneFileContent();
+		if (!donefileContent) {
+			return undefined;
+		}
+		// Import sha256 at the top of the file
+		const { sha256 } = await import("../../hash.js");
+		return sha256(Buffer.from(donefileContent, "utf8"));
 	}
 
 	protected override async checkIsUpToDate(): Promise<boolean> {

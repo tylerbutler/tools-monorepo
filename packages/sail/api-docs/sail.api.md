@@ -215,6 +215,10 @@ export interface CacheKeyInputs {
     cacheSchemaVersion: number;
     command: string;
     configHashes?: Record<string, string>;
+    dependencyHashes?: ReadonlyArray<{
+        readonly name: string;
+        readonly hash: string;
+    }>;
     executable: string;
     inputHashes: ReadonlyArray<{
         readonly path: string;
@@ -440,6 +444,10 @@ export abstract class LeafTask extends Task implements ICacheableTask {
     protected get executionCommand(): string;
     getCacheInputFiles(): Promise<string[]>;
     getCacheOutputFiles(): Promise<string[]>;
+    protected getDependencyHashes(): Promise<Array<{
+        name: string;
+        hash: string;
+    }>>;
     // (undocumented)
     protected getDependentLeafTasks(): SetIterator<LeafTask>;
     protected getPackageFileFullPath(filePath: string): string;

@@ -46,6 +46,16 @@ export interface CacheKeyInputs {
 	}>;
 
 	/**
+	 * Hashes of dependent task donefile content for cascading cache invalidation.
+	 * When a dependency's outputs change, its donefile content changes, which
+	 * invalidates this task's cache key.
+	 */
+	dependencyHashes?: ReadonlyArray<{
+		readonly name: string; // Task name
+		readonly hash: string; // Hash of donefile content
+	}>;
+
+	/**
 	 * Cache schema version for forward/backward compatibility
 	 */
 	cacheSchemaVersion: number;
