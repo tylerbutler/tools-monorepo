@@ -50,7 +50,9 @@ export class OclifReadmeTask extends LeafWithFileStatDoneFileTask {
 		const outputs = [path.join(pkgDir, "README.md")];
 
 		// Include docs directory if it exists
-		const docsFiles = await globFn(path.join(pkgDir, "docs/**"), { nodir: true });
+		const docsFiles = await globFn(path.join(pkgDir, "docs/**"), {
+			nodir: true,
+		});
 		outputs.push(...docsFiles);
 
 		return outputs;

@@ -173,7 +173,11 @@ export class SharedCacheManager {
 
 			// Check if entry exists
 			const entryPath = getCacheEntryPath(this.options.cacheDir, cacheKey);
-			if (!(await cacheEntryExists(this.options.cacheDir, cacheKey))) {
+			const exists = await cacheEntryExists(this.options.cacheDir, cacheKey);
+			traceLookup(
+				`Cache lookup for ${inputs.packageName}#${inputs.taskName} (key: ${shortKey}): ${exists ? "FOUND" : "MISS"}`,
+			);
+			if (!exists) {
 				const elapsed = Date.now() - startTime;
 				traceLookup(`MISS: Entry not found for ${shortKey} (${elapsed}ms)`);
 				this.statistics.missCount++;
@@ -394,19 +398,34 @@ export class SharedCacheManager {
 			// but not yet write the manifest
 			const manifestPath = path.join(entryPath, "manifest.json");
 			if (existsSync(manifestPath)) {
-				const reason = "cache entry already exists";
-				traceStore(`Cache entry ${shortKey} already exists, skipping store`);
-				return { success: false, reason };
+				if (!this.options.overwriteCache) {
+					const reason = "cache entry already exists";
+					console.warn(
+						`${inputs.packageName}#${inputs.taskName}: Cache entry ${shortKey} already exists when trying to store. ` +
+							`This indicates the task executed despite cache hit, or a race condition between parallel tasks. ` +
+							`Manifest path: ${manifestPath}`,
+					);
+					traceStore(`Cache entry ${shortKey} already exists, skipping store`);
+					return { success: false, reason };
+				}
+				// --overwrite-cache enabled: delete existing entry and proceed with store
+				traceStore(
+					`Cache entry ${shortKey} already exists, but --overwrite-cache is enabled. Removing existing entry.`,
+				);
+				const { rm } = await import("node:fs/promises");
+				await rm(entryPath, { recursive: true, force: true });
 			}
 
 			// Hash all output files for integrity verification
+			// NOTE: hashFilesWithSize now throws if any file doesn't exist or is a directory
+			// This ensures tasks accurately declare their outputs
 			const hashStartTime = Date.now();
 			const outputFilesWithHashes = await hashFilesWithSize(
 				outputs.files.map((f) => f.sourcePath),
 			);
 			const hashTime = Date.now() - hashStartTime;
 
-			// Filter out null entries (files that don't exist) and create a parallel array
+			// Create parallel array with file metadata and hashes
 			const existingFiles: Array<{
 				file: { sourcePath: string; relativePath: string; hash?: string };
 				hash: string;
@@ -414,25 +433,16 @@ export class SharedCacheManager {
 			}> = [];
 			for (let i = 0; i < outputFilesWithHashes.length; i++) {
 				const hashResult = outputFilesWithHashes[i];
-				if (hashResult !== null) {
-					existingFiles.push({
-						file: outputs.files[i],
-						hash: hashResult.hash,
-						size: hashResult.size,
-					});
-				}
+				existingFiles.push({
+					file: outputs.files[i],
+					hash: hashResult.hash,
+					size: hashResult.size,
+				});
 			}
 
-			const skippedCount = outputs.files.length - existingFiles.length;
-			if (skippedCount > 0) {
-				traceStore(
-					`Hashed ${existingFiles.length} output files in ${hashTime}ms (skipped ${skippedCount} non-existent files)`,
-				);
-			} else {
-				traceStore(
-					`Hashed ${existingFiles.length} output files in ${hashTime}ms`,
-				);
-			}
+			traceStore(
+				`Hashed ${existingFiles.length} output files in ${hashTime}ms`,
+			);
 
 			// Create manifest
 			const manifest = createManifest({

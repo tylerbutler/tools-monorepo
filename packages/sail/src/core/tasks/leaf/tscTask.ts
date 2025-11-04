@@ -562,10 +562,12 @@ export class TscTask extends LeafTask {
 
 					// Add .js file if emitting
 					if (!config.options.noEmit) {
-						const jsFile = outputBase.replace(
-							tsExtensionPattern,
-							config.options.jsx ? ".jsx" : ".js",
-						);
+						// TypeScript only outputs .jsx when jsx="preserve" (JsxEmit.Preserve = 1)
+						// All other modes (react, react-jsx, react-native) output .js
+						// Source: https://www.typescriptlang.org/docs/handbook/jsx.html
+						const outputExt =
+							config.options.jsx === 1 /* JsxEmit.Preserve */ ? ".jsx" : ".js";
+						const jsFile = outputBase.replace(tsExtensionPattern, outputExt);
 						outputs.push(jsFile);
 					}
 
@@ -586,9 +588,12 @@ export class TscTask extends LeafTask {
 
 					// Add .js.map if sourceMap is enabled
 					if (config.options.sourceMap && !config.options.noEmit) {
+						// Source map extension matches the output file extension
+						const outputExt =
+							config.options.jsx === 1 /* JsxEmit.Preserve */ ? ".jsx" : ".js";
 						const mapFile = outputBase.replace(
 							tsExtensionPattern,
-							`${config.options.jsx ? ".jsx" : ".js"}.map`,
+							`${outputExt}.map`,
 						);
 						outputs.push(mapFile);
 					}

@@ -128,24 +128,27 @@ export async function hashFiles(
 /**
  * Hash multiple files in parallel, including their sizes.
  *
- * Skips files that don't exist (returns null for those entries).
- * Skips directories (directories themselves cannot be hashed, but see expandDirectoriesToFiles).
+ * STRICT MODE: All files must exist and be regular files (not directories).
+ * If any file doesn't exist or is a directory, this function throws an error.
+ * This ensures tasks accurately declare their outputs and helps catch misconfigurations.
  *
  * @param filePaths - Array of absolute file paths
- * @returns Array of objects containing path, hash, and size (null entries for non-existent files or directories)
+ * @returns Array of objects containing path, hash, and size
+ * @throws Error if any file doesn't exist or is a directory
  */
 export async function hashFilesWithSize(
 	filePaths: readonly string[],
-): Promise<Array<{ path: string; hash: string; size: number } | null>> {
+): Promise<Array<{ path: string; hash: string; size: number }>> {
 	const hashPromises = filePaths.map(async (path) => {
 		try {
-			// Check if path is a directory first (skip directories)
+			// Check if path is a directory first
 			const statResult = await stat(path);
 			if (statResult.isDirectory()) {
-				// Skip directories - they can't be hashed or cached as files
-				// The caller should use expandDirectoriesToFiles first if they want
-				// to cache directory contents
-				return null;
+				throw new Error(
+					`Invalid cache output: "${path}" is a directory. ` +
+						`Task's getCacheOutputFiles() should return individual files, not directories. ` +
+						`If you need to cache directory contents, list the files explicitly.`,
+				);
 			}
 
 			const [hash, stats] = await Promise.all([
@@ -154,16 +157,22 @@ export async function hashFilesWithSize(
 			]);
 			return { path, hash, size: stats.size };
 		} catch (error) {
-			// If file doesn't exist (ENOENT), return null instead of throwing
-			// This happens when output globs match files that weren't actually produced
+			// If file doesn't exist, this is a configuration error
 			if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-				return null;
+				throw new Error(
+					`Cache output file not found: "${path}". ` +
+						`Task declared this as an output but didn't produce it. ` +
+						`Check the task's getCacheOutputFiles() implementation.`,
+				);
 			}
-			// If path is a directory (EISDIR), return null instead of throwing
-			// This happens when output globs or paths accidentally include directories
+			// If path is a directory (EISDIR on some operations)
 			if ((error as NodeJS.ErrnoException).code === "EISDIR") {
-				return null;
+				throw new Error(
+					`Invalid cache output: "${path}" is a directory. ` +
+						`Task's getCacheOutputFiles() should return individual files, not directories.`,
+				);
 			}
+			// Re-throw with context
 			throw new Error(`Failed to hash file ${path}: ${error}`);
 		}
 	});

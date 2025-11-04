@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
+import readline from "node:readline/promises";
 import { Args, Flags } from "@oclif/core";
 import { Stopwatch } from "@tylerbu/sail-infrastructure";
 import { BaseSailCommand } from "../baseCommand.js";
@@ -88,6 +89,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			cacheDir,
 			skipCacheWrite,
 			verifyCacheIntegrity,
+			overwriteCache,
 			clean,
 			concurrency,
 			force,
@@ -106,12 +108,31 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 
 		const buildRepo = new SailBuildRepo(process.cwd(), this);
 
+		// Confirm overwrite-cache option if enabled
+		if (overwriteCache) {
+			const rl = readline.createInterface({
+				input: process.stdin,
+				output: process.stdout,
+			});
+
+			const response = await rl.question(
+				"--overwrite-cache is enabled. This will delete existing cache entries on conflict. Continue? (y/n): ",
+			);
+			rl.close();
+
+			if (response.toLowerCase() !== "y" && response.toLowerCase() !== "yes") {
+				this.log("Aborted by user.");
+				return;
+			}
+		}
+
 		// Initialize shared cache if enabled
 		const sharedCache = await initializeSharedCache(
 			cacheDir,
 			buildRepo.root,
 			skipCacheWrite,
 			verifyCacheIntegrity,
+			overwriteCache,
 		);
 
 		if (sharedCache) {

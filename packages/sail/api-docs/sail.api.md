@@ -681,6 +681,8 @@ export class SharedCacheManager {
 export interface SharedCacheOptions {
     cacheDir: string;
     globalKeyComponents: GlobalCacheKeyComponents;
+    // @internal
+    overwriteCache?: boolean;
     repoRoot: string;
     skipCacheWrite?: boolean;
     verifyIntegrity?: boolean;

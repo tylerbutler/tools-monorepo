@@ -464,4 +464,12 @@ export interface SharedCacheOptions {
 	 * Whether to skip writing to cache (read-only mode)
 	 */
 	skipCacheWrite?: boolean;
+
+	/**
+	 * Whether to overwrite existing cache entries on conflict.
+	 * Useful for parallel execution scenarios where multiple tasks
+	 * with identical inputs race to store the same cache entry.
+	 * @internal - Hidden flag for advanced use cases
+	 */
+	overwriteCache?: boolean;
 }
