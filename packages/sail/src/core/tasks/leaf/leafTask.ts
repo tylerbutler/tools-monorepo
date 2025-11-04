@@ -836,10 +836,19 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	/**
 	 * Override to include the done file in cache outputs.
 	 * Subclasses should call super.getCacheOutputFiles() and add their own outputs.
+	 *
+	 * NOTE: Only includes done file if it exists. The done file may not exist if:
+	 * - getDoneFileContent() returned undefined (e.g., missing tsBuildInfo)
+	 * - Writing the done file failed (caught and logged as warning in markExecDone)
+	 * Since done files are optional markers, not required outputs, we check existence
+	 * to avoid ENOENT errors during cache store operations.
 	 */
 	public override async getCacheOutputFiles(): Promise<string[]> {
 		const outputs = await super.getCacheOutputFiles();
-		outputs.push(this.doneFileFullPath);
+		// Only include done file if it actually exists
+		if (existsSync(this.doneFileFullPath)) {
+			outputs.push(this.doneFileFullPath);
+		}
 		return outputs;
 	}
 
