@@ -405,9 +405,34 @@ export class SharedCacheManager {
 				outputs.files.map((f) => f.sourcePath),
 			);
 			const hashTime = Date.now() - hashStartTime;
-			traceStore(
-				`Hashed ${outputs.files.length} output files in ${hashTime}ms`,
-			);
+
+			// Filter out null entries (files that don't exist) and create a parallel array
+			const existingFiles: Array<{
+				file: { sourcePath: string; relativePath: string; hash?: string };
+				hash: string;
+				size: number;
+			}> = [];
+			for (let i = 0; i < outputFilesWithHashes.length; i++) {
+				const hashResult = outputFilesWithHashes[i];
+				if (hashResult !== null) {
+					existingFiles.push({
+						file: outputs.files[i],
+						hash: hashResult.hash,
+						size: hashResult.size,
+					});
+				}
+			}
+
+			const skippedCount = outputs.files.length - existingFiles.length;
+			if (skippedCount > 0) {
+				traceStore(
+					`Hashed ${existingFiles.length} output files in ${hashTime}ms (skipped ${skippedCount} non-existent files)`,
+				);
+			} else {
+				traceStore(
+					`Hashed ${existingFiles.length} output files in ${hashTime}ms`,
+				);
+			}
 
 			// Create manifest
 			const manifest = createManifest({
@@ -429,25 +454,25 @@ export class SharedCacheManager {
 					path: input.path,
 					hash: input.hash,
 				})),
-				outputFiles: outputFilesWithHashes.map((output, index) => ({
-					path: outputs.files[index].relativePath,
-					hash: output.hash,
-					size: output.size,
+				outputFiles: existingFiles.map((f) => ({
+					path: f.file.relativePath,
+					hash: f.hash,
+					size: f.size,
 				})),
 				stdout: outputs.stdout,
 				stderr: outputs.stderr,
 			});
 
-			// Copy output files to cache directory
+			// Copy output files to cache directory (only existing files)
 			const copyStartTime = Date.now();
-			for (const file of outputs.files) {
+			for (const { file } of existingFiles) {
 				const sourcePath = file.sourcePath;
 				const destPath = path.join(entryPath, "outputs", file.relativePath);
 				await copyFileWithDirs(sourcePath, destPath);
 			}
 			const copyTime = Date.now() - copyStartTime;
 			traceStore(
-				`Copied ${outputs.files.length} files to cache in ${copyTime}ms`,
+				`Copied ${existingFiles.length} files to cache in ${copyTime}ms`,
 			);
 
 			// Write manifest (atomically)
@@ -467,10 +492,7 @@ export class SharedCacheManager {
 
 			// Update statistics
 			const storeTime = Date.now() - storeStartTime;
-			const entrySize = outputFilesWithHashes.reduce(
-				(sum, f) => sum + f.size,
-				0,
-			);
+			const entrySize = existingFiles.reduce((sum, f) => sum + f.size, 0);
 
 			this.statistics.totalEntries++;
 			this.statistics.totalSize += entrySize;
@@ -497,7 +519,7 @@ export class SharedCacheManager {
 
 			return {
 				success: true,
-				filesStored: outputs.files.length,
+				filesStored: existingFiles.length,
 				bytesStored: entrySize,
 			};
 		} catch (error) {

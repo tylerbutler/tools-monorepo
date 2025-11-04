@@ -128,12 +128,14 @@ export async function hashFiles(
 /**
  * Hash multiple files in parallel, including their sizes.
  *
+ * Skips files that don't exist (returns null for those entries).
+ *
  * @param filePaths - Array of absolute file paths
- * @returns Array of objects containing path, hash, and size
+ * @returns Array of objects containing path, hash, and size (null entries for non-existent files)
  */
 export async function hashFilesWithSize(
 	filePaths: readonly string[],
-): Promise<Array<{ path: string; hash: string; size: number }>> {
+): Promise<Array<{ path: string; hash: string; size: number } | null>> {
 	const hashPromises = filePaths.map(async (path) => {
 		try {
 			const [hash, stats] = await Promise.all([
@@ -142,6 +144,11 @@ export async function hashFilesWithSize(
 			]);
 			return { path, hash, size: stats.size };
 		} catch (error) {
+			// If file doesn't exist (ENOENT), return null instead of throwing
+			// This happens when output globs match files that weren't actually produced
+			if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+				return null;
+			}
 			throw new Error(`Failed to hash file ${path}: ${error}`);
 		}
 	});
