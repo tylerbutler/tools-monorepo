@@ -822,10 +822,14 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	 */
 	public override async getCacheInputFiles(): Promise<string[]> {
 		const inputs = await super.getCacheInputFiles();
-		const doneFileFullPath = this.doneFileFullPath;
-		if (existsSync(doneFileFullPath)) {
-			inputs.push(doneFileFullPath);
-		}
+		// NOTE: Done file is NOT included in cache inputs because:
+		// 1. It's an OUTPUT of the task (created by markExecDone after execution)
+		// 2. It's already included in getCacheOutputFiles()
+		// 3. Including it causes cache key instability:
+		//    - At lookup time: done file doesn't exist yet → not in inputs → key A
+		//    - At store time: done file exists (just created) → would be in inputs → key B
+		// The done file content is based on the actual input files (via getDoneFileContent),
+		// so changes to inputs will already invalidate the cache through input file hashes.
 		return inputs;
 	}
 
