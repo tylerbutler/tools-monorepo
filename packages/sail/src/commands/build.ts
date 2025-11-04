@@ -135,7 +135,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			{
 				log: (message?: string) => this.log(message ?? ""),
 				info: (msg?: string | Error) => this.log(String(msg ?? "")),
-				warning: (msg?: string | Error) => this.warn(String(msg ?? "")),
+				warning: (msg?: string | Error) => this.warning(String(msg ?? "")),
 				errorLog: (msg?: string | Error) => this.log(String(msg ?? "")),
 				verbose: (msg?: string | Error) => this.log(String(msg ?? "")),
 			},
