@@ -675,12 +675,14 @@ export class SharedCacheManager {
         corrupted: number;
         fixed: number;
     }>;
+    waitForPendingOperations(): Promise<void>;
 }
 
 // @beta
 export interface SharedCacheOptions {
     cacheDir: string;
     globalKeyComponents: GlobalCacheKeyComponents;
+    logger: Logger;
     // @internal
     overwriteCache?: boolean;
     repoRoot: string;

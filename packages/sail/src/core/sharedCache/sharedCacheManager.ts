@@ -412,7 +412,7 @@ export class SharedCacheManager {
 			if (existsSync(manifestPath)) {
 				if (!this.options.overwriteCache) {
 					const reason = "cache entry already exists";
-					this.logger.warn(
+					this.logger.warning(
 						`${inputs.packageName}#${inputs.taskName}: Cache entry ${shortKey} already exists when trying to store. ` +
 							"This indicates the task executed despite cache hit, or a race condition between parallel tasks. " +
 							`Manifest path: ${manifestPath}`,

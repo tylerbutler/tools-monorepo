@@ -663,6 +663,6 @@ export abstract class TscDependentTask extends LeafWithDoneFileTask {
 			return undefined;
 		}
 	}
-	protected abstract get configFileFullPaths(): string[];
+	protected abstract override get configFileFullPaths(): string[];
 	protected abstract getToolVersion(): Promise<string>;
 }

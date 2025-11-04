@@ -133,11 +133,11 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			skipCacheWrite,
 			verifyCacheIntegrity,
 			{
-				log: this.log.bind(this),
-				info: this.log.bind(this),
-				warning: this.warn.bind(this),
-				errorLog: (msg) => this.log(String(msg)),
-				verbose: this.log.bind(this),
+				log: (message?: string) => this.log(message ?? ""),
+				info: (msg?: string | Error) => this.log(String(msg ?? "")),
+				warning: (msg?: string | Error) => this.warn(String(msg ?? "")),
+				errorLog: (msg?: string | Error) => this.log(String(msg ?? "")),
+				verbose: (msg?: string | Error) => this.log(String(msg ?? "")),
 			},
 			overwriteCache,
 		);

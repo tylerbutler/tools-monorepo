@@ -41,7 +41,7 @@ const config = {
 			dependencies: ["**"],
 			packages: ["**"],
 			preferVersion: "lowestSemver",
-		}
+		},
 	],
 	semverGroups: [
 		// Disabled for now because it removes the sha from the field.
