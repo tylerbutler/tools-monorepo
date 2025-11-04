@@ -49,7 +49,6 @@
 		"build:readme": "concurrently npm:readme:*",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
-		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
@@ -59,7 +58,9 @@
 		"postpack": "pnpm clean:manifest",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",
-		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs"
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "vitest run",
+		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
 	},
 	"oclif": {
 		"bin": "repopo",
@@ -99,7 +100,7 @@
 		"rimraf": "^6.0.1",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^4.41.0",
+		"type-fest": "^5.1.0",
 		"typescript": "~5.9.3",
 		"vitest": "^3.2.4"
 	},

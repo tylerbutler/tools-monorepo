@@ -1,0 +1,18 @@
+{
+	"name": "@group3/pkg-f",
+	"version": "1.2.1",
+	"description": "Test package",
+	"homepage": "https://fluidframework.com",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "build-tools/packages/build-infrastructure/src/test/data/testRepo/packages/group3/pkg-f"
+	},
+	"license": "MIT",
+	"author": "edited field",
+	"dependencies": {
+		"@group2/pkg-e": "workspace:~",
+		"@group3/pkg-g": "workspace:~"
+	}
+}

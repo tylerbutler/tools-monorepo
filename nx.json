@@ -96,6 +96,16 @@
 			"cache": true
 		},
 
+		"test:unit": {
+			"dependsOn": ["build:compile"],
+			"cache": true
+		},
+
+		"test:integration": {
+			"dependsOn": ["build:compile"],
+			"cache": false // Integration tests interact with filesystem and should not be cached
+		},
+
 		"lint": {
 			"cache": true
 		},

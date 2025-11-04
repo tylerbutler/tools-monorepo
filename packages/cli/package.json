@@ -50,6 +50,7 @@
 		"lint:fix": "biome lint . --write",
 		"postpack": "pnpm clean:manifest",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "vitest run",
 		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"test:unit": "vitest run"
@@ -132,7 +133,7 @@
 		"tempy": "^3.1.0",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
-		"type-fest": "^4.41.0",
+		"type-fest": "^5.1.0",
 		"typescript": "~5.9.3",
 		"vitest": "^3.2.4"
 	},

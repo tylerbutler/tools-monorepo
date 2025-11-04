@@ -1,0 +1,467 @@
+/*!
+ * Shared cache type definitions for Sail build system.
+ *
+ * Ported from FluidFramework build-tools shared cache implementation.
+ * The shared cache enables multiple build invocations to share build artifacts,
+ * dramatically reducing build times for repeated builds with identical inputs.
+ */
+
+/**
+ * Inputs used to compute a unique cache key for a task execution.
+ *
+ * The cache key is a SHA-256 hash of all these inputs, ensuring that
+ * identical inputs always produce the same cache key.
+ *
+ * @beta
+ */
+export interface CacheKeyInputs {
+	/**
+	 * Package name (e.g., "\@myorg/mypackage")
+	 */
+	packageName: string;
+
+	/**
+	 * Task name (e.g., "compile", "build", "lint")
+	 */
+	taskName: string;
+
+	/**
+	 * Executable name (e.g., "tsc", "biome", "webpack")
+	 */
+	executable: string;
+
+	/**
+	 * Full command line string
+	 */
+	command: string;
+
+	/**
+	 * Hashes of all input files that affect the task output
+	 */
+	inputHashes: ReadonlyArray<{
+		readonly path: string; // Relative to package root
+		readonly hash: string; // SHA-256 hash of file contents
+	}>;
+
+	/**
+	 * Cache schema version for forward/backward compatibility
+	 */
+	cacheSchemaVersion: number;
+
+	/**
+	 * Node.js version (from process.version, e.g., "v20.15.1")
+	 */
+	nodeVersion: string;
+
+	/**
+	 * CPU architecture (from process.arch, e.g., "x64", "arm64")
+	 */
+	arch: string;
+
+	/**
+	 * Platform identifier (from process.platform, e.g., "linux", "darwin", "win32")
+	 */
+	platform: string;
+
+	/**
+	 * Hash of the lockfile (pnpm-lock.yaml)
+	 */
+	lockfileHash: string;
+
+	/**
+	 * NODE_ENV environment variable (if set)
+	 */
+	nodeEnv?: string;
+
+	/**
+	 * Cache bust variables (SAIL_CACHE_BUST*)
+	 */
+	cacheBustVars?: Record<string, string>;
+
+	/**
+	 * Tool version (e.g., TypeScript version for tsc tasks)
+	 */
+	toolVersion?: string;
+
+	/**
+	 * Hashes of configuration files (e.g., tsconfig.json, biome.jsonc)
+	 */
+	configHashes?: Record<string, string>;
+}
+
+/**
+ * Metadata stored in a cache entry's manifest.json file.
+ *
+ * @beta
+ */
+export interface CacheManifest {
+	/**
+	 * Schema version for forward/backward compatibility
+	 */
+	version: 1;
+
+	/**
+	 * The cache key that identifies this entry
+	 */
+	cacheKey: string;
+
+	/**
+	 * Package name
+	 */
+	packageName: string;
+
+	/**
+	 * Task name
+	 */
+	taskName: string;
+
+	/**
+	 * Executable that was run
+	 */
+	executable: string;
+
+	/**
+	 * Full command that was executed
+	 */
+	command: string;
+
+	/**
+	 * Exit code (only 0 is cached - failures are not cached)
+	 */
+	exitCode: 0;
+
+	/**
+	 * Execution time in milliseconds
+	 */
+	executionTimeMs: number;
+
+	/**
+	 * Cache schema version used for this execution
+	 */
+	cacheSchemaVersion: number;
+
+	/**
+	 * Node.js version used for this execution
+	 */
+	nodeVersion: string;
+
+	/**
+	 * CPU architecture used for this execution
+	 */
+	arch: string;
+
+	/**
+	 * Platform where this was executed
+	 */
+	platform: string;
+
+	/**
+	 * Lockfile hash at time of execution
+	 */
+	lockfileHash: string;
+
+	/**
+	 * NODE_ENV at time of execution (if set)
+	 */
+	nodeEnv?: string;
+
+	/**
+	 * Cache bust variables at time of execution (if any)
+	 */
+	cacheBustVars?: Record<string, string>;
+
+	/**
+	 * Input files that were used
+	 */
+	inputFiles: ReadonlyArray<{
+		readonly path: string; // Relative to package root
+		readonly hash: string; // SHA-256
+	}>;
+
+	/**
+	 * Output files that were produced
+	 */
+	outputFiles: ReadonlyArray<{
+		readonly path: string; // Relative to package root
+		readonly hash: string; // SHA-256 for integrity verification
+		readonly size: number; // File size in bytes
+	}>;
+
+	/**
+	 * Standard output captured during execution
+	 */
+	stdout: string;
+
+	/**
+	 * Standard error captured during execution
+	 */
+	stderr: string;
+
+	/**
+	 * When this cache entry was created
+	 */
+	createdAt: string; // ISO-8601 timestamp
+
+	/**
+	 * When this cache entry was last accessed
+	 */
+	lastAccessedAt: string; // ISO-8601 timestamp
+}
+
+/**
+ * A cache entry represents a stored task execution with all its metadata.
+ *
+ * @beta
+ */
+export interface CacheEntry {
+	/**
+	 * The cache key
+	 */
+	cacheKey: string;
+
+	/**
+	 * Path to the cache entry directory
+	 */
+	entryPath: string;
+
+	/**
+	 * The manifest metadata
+	 */
+	manifest: CacheManifest;
+
+	/**
+	 * Whether the lookup encountered an unexpected error
+	 */
+	isUnexpectedError?: boolean;
+}
+
+/**
+ * Output files and metadata from a task execution.
+ *
+ * @beta
+ */
+export interface TaskOutputs {
+	/**
+	 * Output files produced by the task
+	 */
+	files: ReadonlyArray<{
+		readonly sourcePath: string; // Absolute path to the file in workspace
+		readonly relativePath: string; // Relative to package root
+		readonly hash?: string; // Optional hash for verification
+	}>;
+
+	/**
+	 * Standard output captured during execution
+	 */
+	stdout: string;
+
+	/**
+	 * Standard error captured during execution
+	 */
+	stderr: string;
+
+	/**
+	 * Exit code
+	 */
+	exitCode: number;
+
+	/**
+	 * Execution time in milliseconds
+	 */
+	executionTimeMs: number;
+}
+
+/**
+ * Result of restoring a cache entry to the workspace.
+ *
+ * @beta
+ */
+export interface RestoreResult {
+	/**
+	 * Whether restoration was successful
+	 */
+	success: boolean;
+
+	/**
+	 * Number of files restored
+	 */
+	filesRestored: number;
+
+	/**
+	 * Total size of restored files in bytes
+	 */
+	bytesRestored: number;
+
+	/**
+	 * Time taken to restore in milliseconds
+	 */
+	restoreTimeMs: number;
+
+	/**
+	 * Standard output from the original task execution (for replay)
+	 */
+	stdout?: string;
+
+	/**
+	 * Standard error from the original task execution (for replay)
+	 */
+	stderr?: string;
+
+	/**
+	 * Error message if restoration failed
+	 */
+	error?: string;
+
+	/**
+	 * Whether the failure was unexpected
+	 */
+	isUnexpectedFailure?: boolean;
+}
+
+/**
+ * Result of storing a cache entry.
+ *
+ * @beta
+ */
+export interface StoreResult {
+	/**
+	 * Whether storage was successful
+	 */
+	success: boolean;
+
+	/**
+	 * Reason why storage was skipped or failed
+	 */
+	reason?: string;
+
+	/**
+	 * Number of files stored
+	 */
+	filesStored?: number;
+
+	/**
+	 * Total size of stored files in bytes
+	 */
+	bytesStored?: number;
+}
+
+/**
+ * Statistics about cache usage and performance.
+ *
+ * @beta
+ */
+export interface CacheStatistics {
+	/**
+	 * Total number of cache entries
+	 */
+	totalEntries: number;
+
+	/**
+	 * Total size of all cached data in bytes
+	 */
+	totalSize: number;
+
+	/**
+	 * Number of cache hits during this session
+	 */
+	hitCount: number;
+
+	/**
+	 * Number of cache misses during this session
+	 */
+	missCount: number;
+
+	/**
+	 * Average time to restore from cache in milliseconds
+	 */
+	avgRestoreTime: number;
+
+	/**
+	 * Average time to store to cache in milliseconds
+	 */
+	avgStoreTime: number;
+
+	/**
+	 * Total time saved by cache hits in milliseconds
+	 */
+	timeSavedMs: number;
+
+	/**
+	 * When the cache was last pruned (if ever)
+	 */
+	lastPruned?: string; // ISO-8601 timestamp
+}
+
+/**
+ * Global cache key components that apply to all tasks.
+ *
+ * @beta
+ */
+export interface GlobalCacheKeyComponents {
+	/**
+	 * Cache schema version
+	 */
+	cacheSchemaVersion: number;
+
+	/**
+	 * Node.js version
+	 */
+	nodeVersion: string;
+
+	/**
+	 * CPU architecture
+	 */
+	arch: string;
+
+	/**
+	 * Platform identifier
+	 */
+	platform: string;
+
+	/**
+	 * Hash of the lockfile
+	 */
+	lockfileHash: string;
+
+	/**
+	 * NODE_ENV environment variable
+	 */
+	nodeEnv?: string;
+
+	/**
+	 * Cache bust variables
+	 */
+	cacheBustVars?: Record<string, string>;
+}
+
+/**
+ * Options for configuring the shared cache.
+ *
+ * @beta
+ */
+export interface SharedCacheOptions {
+	/**
+	 * Path to the cache directory
+	 */
+	cacheDir: string;
+
+	/**
+	 * Repository root directory
+	 */
+	repoRoot: string;
+
+	/**
+	 * Global cache key components
+	 */
+	globalKeyComponents: GlobalCacheKeyComponents;
+
+	/**
+	 * Whether to verify file integrity when restoring
+	 */
+	verifyIntegrity?: boolean;
+
+	/**
+	 * Whether to skip writing to cache (read-only mode)
+	 */
+	skipCacheWrite?: boolean;
+}

@@ -391,8 +391,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       type-fest:
-        specifier: ^4.41.0
-        version: 4.41.0
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -494,8 +494,8 @@ importers:
         specifier: ^4.20.6
         version: 4.20.6
       type-fest:
-        specifier: ^4.41.0
-        version: 4.41.0
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -618,8 +618,8 @@ importers:
         specifier: ^4.20.6
         version: 4.20.6
       type-fest:
-        specifier: ^4.41.0
-        version: 4.41.0
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -888,8 +888,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       type-fest:
-        specifier: ^4.41.0
-        version: 4.41.0
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -976,8 +976,8 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.19.23)(typescript@5.9.3)
       type-fest:
-        specifier: ^4.41.0
-        version: 4.41.0
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -1051,6 +1051,287 @@ importers:
       '@hashicorp/platform-remark-plugins':
         specifier: ^0.2.1
         version: 0.2.1
+
+  packages/sail:
+    dependencies:
+      '@manypkg/get-packages':
+        specifier: ^2.2.2
+        version: 2.2.2
+      '@oclif/core':
+        specifier: ^4.7.2
+        version: 4.7.2
+      '@oclif/plugin-autocomplete':
+        specifier: ^3.2.37
+        version: 3.2.37
+      '@oclif/plugin-commands':
+        specifier: ^4.1.35
+        version: 4.1.35
+      '@oclif/plugin-help':
+        specifier: ^6.2.33
+        version: 6.2.33
+      '@oclif/plugin-not-found':
+        specifier: ^3.2.70
+        version: 3.2.70(@types/node@20.19.23)
+      '@oclif/plugin-version':
+        specifier: ^2.2.34
+        version: 2.2.34
+      '@oclif/plugin-warn-if-update-available':
+        specifier: ^3.1.50
+        version: 3.1.50
+      '@tylerbu/cli-api':
+        specifier: workspace:^
+        version: link:../cli-api
+      '@tylerbu/sail-infrastructure':
+        specifier: workspace:^
+        version: link:../sail-infrastructure
+      async:
+        specifier: ^3.2.6
+        version: 3.2.6
+      cosmiconfig:
+        specifier: ^8.3.6
+        version: 8.3.6(typescript@5.9.3)
+      date-fns:
+        specifier: ^2.30.0
+        version: 2.30.0
+      debug:
+        specifier: ^4.4.3
+        version: 4.4.3(supports-color@8.1.1)
+      detect-indent:
+        specifier: ^6.1.0
+        version: 6.1.0
+      find-up:
+        specifier: ^7.0.0
+        version: 7.0.0
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.3.2
+      glob:
+        specifier: ^7.2.3
+        version: 7.2.3
+      globby:
+        specifier: ^11.1.0
+        version: 11.1.0
+      ignore:
+        specifier: ^7.0.3
+        version: 7.0.5
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
+      lodash.isequal:
+        specifier: ^4.5.0
+        version: 4.5.0
+      multimatch:
+        specifier: ^5.0.0
+        version: 5.0.0
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+      picomatch:
+        specifier: ^2.3.1
+        version: 2.3.1
+      picospinner:
+        specifier: ^2.0.0
+        version: 2.1.0
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      semver:
+        specifier: ^7.7.3
+        version: 7.7.3
+      simple-git:
+        specifier: ^3.28.0
+        version: 3.28.0
+      sort-package-json:
+        specifier: 2.14.0
+        version: 2.14.0
+      ts-deepmerge:
+        specifier: ^7.0.1
+        version: 7.0.3
+      ts-morph:
+        specifier: ^22.0.0
+        version: 22.0.0
+      type-fest:
+        specifier: ^5.1.0
+        version: 5.1.0
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      uncrypto:
+        specifier: ^0.1.3
+        version: 0.1.3
+      yaml:
+        specifier: ^2.6.0
+        version: 2.8.1
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 2.2.5
+        version: 2.2.5
+      '@microsoft/api-extractor':
+        specifier: ^7.53.2
+        version: 7.53.2(@types/node@20.19.23)
+      '@oclif/plugin-command-snapshot':
+        specifier: ^5.3.7
+        version: 5.3.7
+      '@oclif/test':
+        specifier: ^4.1.14
+        version: 4.1.14(@oclif/core@4.7.2)
+      '@types/async':
+        specifier: ^3.2.24
+        version: 3.2.25
+      '@types/debug':
+        specifier: ^4.1.12
+        version: 4.1.12
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/glob':
+        specifier: ^8.1.0
+        version: 8.1.0
+      '@types/jsonfile':
+        specifier: ^6.1.4
+        version: 6.1.4
+      '@types/lodash.isequal':
+        specifier: ^4.5.8
+        version: 4.5.8
+      '@types/node':
+        specifier: ^20.19.23
+        version: 20.19.23
+      '@types/picomatch':
+        specifier: ^3.0.2
+        version: 3.0.2
+      '@types/semver':
+        specifier: ^7.7.1
+        version: 7.7.1
+      '@vitest/coverage-v8':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4)
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
+      generate-license-file:
+        specifier: ^4.1.0
+        version: 4.1.0(typescript@5.9.3)
+      oclif:
+        specifier: ^4.22.32
+        version: 4.22.32(@types/node@20.19.23)
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.19.23)(typescript@5.9.3)
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.23)(@vitest/ui@3.2.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.11.6(@types/node@20.19.23)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+
+  packages/sail-infrastructure:
+    dependencies:
+      '@manypkg/get-packages':
+        specifier: ^2.2.2
+        version: 2.2.2
+      '@oclif/core':
+        specifier: ^4.7.2
+        version: 4.7.2
+      '@tylerbu/fundamentals':
+        specifier: workspace:^
+        version: link:../fundamentals
+      cosmiconfig:
+        specifier: ^8.3.6
+        version: 8.3.6(typescript@5.9.3)
+      detect-indent:
+        specifier: ^6.1.0
+        version: 6.1.0
+      execa:
+        specifier: ^5.1.1
+        version: 5.1.1
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.3.2
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+      oclif:
+        specifier: ^4.22.32
+        version: 4.22.32(@types/node@20.19.23)
+      package-manager-detector:
+        specifier: ^0.2.8
+        version: 0.2.8
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+      read-pkg-up:
+        specifier: ^7.0.1
+        version: 7.0.1
+      resolve-workspace-root:
+        specifier: ^2.0.0
+        version: 2.0.0
+      semver:
+        specifier: ^7.7.3
+        version: 7.7.3
+      simple-git:
+        specifier: ^3.28.0
+        version: 3.28.0
+      sort-package-json:
+        specifier: 2.14.0
+        version: 2.14.0
+      tinyglobby:
+        specifier: ^0.2.15
+        version: 0.2.15
+      type-fest:
+        specifier: ^5.1.0
+        version: 5.1.0
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 2.2.5
+        version: 2.2.5
+      '@microsoft/api-extractor':
+        specifier: ^7.53.2
+        version: 7.53.2(@types/node@20.19.23)
+      '@oclif/test':
+        specifier: ^4.1.14
+        version: 4.1.14(@oclif/core@4.7.2)
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/micromatch':
+        specifier: ^4.0.9
+        version: 4.0.9
+      '@types/node':
+        specifier: ^20.19.23
+        version: 20.19.23
+      '@types/semver':
+        specifier: ^7.7.1
+        version: 7.7.1
+      '@vitest/coverage-v8':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4)
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
+      memfs:
+        specifier: ^4.17.0
+        version: 4.49.0
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.0.1
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.19.23)(typescript@5.9.3)
+      typedoc:
+        specifier: ^0.28.14
+        version: 0.28.14(typescript@5.9.3)
+      typedoc-plugin-markdown:
+        specifier: ^4.9.0
+        version: 4.9.0(typedoc@0.28.14(typescript@5.9.3))
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.23)(@vitest/ui@3.2.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.11.6(@types/node@20.19.23)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/sort-tsconfig:
     dependencies:
@@ -1131,8 +1412,8 @@ importers:
         specifier: ^4.20.6
         version: 4.20.6
       type-fest:
-        specifier: ^4.41.0
-        version: 4.41.0
+        specifier: ^5.1.0
+        version: 5.1.0
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -4445,6 +4726,9 @@ packages:
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
 
+  '@types/async@3.2.25':
+    resolution: {integrity: sha512-O6Th/DI18XjrL9TX8LO9F/g26qAz5vynmQqlXt/qLGrskvzCKXKc5/tATz3G2N6lM8eOf3M8/StB14FncAmocg==}
+
   '@types/braces@3.0.5':
     resolution: {integrity: sha512-SQFof9H+LXeWNz8wDe7oN5zu7ket0qwMu5vZubW4GCJ8Kkeh6nBWUz87+KTz/G3Kqsrp0j/W253XJb3KMEeg3w==}
 
@@ -4484,8 +4768,14 @@ packages:
   '@types/fontkit@2.0.8':
     resolution: {integrity: sha512-wN+8bYxIpJf+5oZdrdtaX04qUuWHcKxcDEgRS9Qm9ZClSHjzEn13SxUC+5eRM+4yXIeTYk8mTzLAWGF64847ew==}
 
+  '@types/fs-extra@11.0.4':
+    resolution: {integrity: sha512-yTbItCNreRooED33qjunPthRcSjERP1r4MqCZc7wv0u2sUkzTFp45tgUfS5+r7FrZPdmCCNflLhVSP/o+SemsQ==}
+
   '@types/glob@7.2.0':
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
+
+  '@types/glob@8.1.0':
+    resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
 
   '@types/hast@2.3.10':
     resolution: {integrity: sha512-McWspRw8xx8J9HurkVBfYj0xKoE25tOFlHGdx4MJ5xORQrMGZNqJhVQWaIbm6Oyla5kYOXtDiopzKRJzEOkwJw==}
@@ -4510,6 +4800,9 @@ packages:
   '@types/jsonfile@6.1.4':
     resolution: {integrity: sha512-D5qGUYwjvnNNextdU59/+fI+spnwtTFmyQP0h+PfIOSkNfpU6AOICUOkm4i0OnSk+NyjdPJrxCDro0sJsWlRpQ==}
 
+  '@types/lodash.isequal@4.5.8':
+    resolution: {integrity: sha512-uput6pg4E/tj2LGxCZo9+y27JNyB2OZuuI/T5F+ylVDYuqICLG2/ktjxx0v6GvVntAf8TvEzeQLcV0ffRirXuA==}
+
   '@types/lodash@4.17.16':
     resolution: {integrity: sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==}
 
@@ -4527,6 +4820,9 @@ packages:
 
   '@types/minimatch@3.0.5':
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
+
+  '@types/minimatch@5.1.2':
+    resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
   '@types/minimatch@6.0.0':
     resolution: {integrity: sha512-zmPitbQ8+6zNutpwgcQuLcsEpn/Cj54Kbn7L5pX0Os5kdWplB7xPgEh/g+SWOB/qmows2gpuCaPyduq8ZZRnxA==}
@@ -5664,6 +5960,10 @@ packages:
   chai@5.2.0:
     resolution: {integrity: sha512-mCuXncKXk5iCLhfhwTc0izo0gtEmpz5CtG2y8GiOINBlMVS6v8TMRc5TaLWKS6692m9+dVVfzgeVxR5UxWHTYw==}
     engines: {node: '>=12'}
+
+  chai@5.3.3:
+    resolution: {integrity: sha512-4zNhdJD/iOjSH0A05ea+Ke6MU5mmpQcbQsSOkgdaUMJ9zTlDTD/GYlwohmIE2u0gaxHYiVHEn1Fw9mZ/ktJWgw==}
+    engines: {node: '>=18'}
 
   chalk-template@0.4.0:
     resolution: {integrity: sha512-/ghrgmhfY8RaSdeo43hNXxpoHAtxdbskUHjPpfqUWGttFgycUhYPGx3YZBCnUCvOa7Doivn1IZec3DEGFoMgLg==}
@@ -10919,6 +11219,9 @@ packages:
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
 
+  resolve-workspace-root@2.0.0:
+    resolution: {integrity: sha512-IsaBUZETJD5WsI11Wt8PKHwaIe45or6pwNc8yflvLJ4DWtImK9kuLoH5kUva/2Mmx/RdIyr4aONNSa2v9LTJsw==}
+
   resolve.exports@2.0.3:
     resolution: {integrity: sha512-OcXjMsGdhL4XnbShKpAcSqPMzQoYkYyhbEaeSko47MjRP9NfEQMhZkXL1DoFlt9LWQn4YttrdnV6X2OiyzBi+A==}
     engines: {node: '>=10'}
@@ -11365,6 +11668,10 @@ packages:
     resolution: {integrity: sha512-FYsjYn2dHTRb41wqnv+uEqCUvBpK3jZcTp9rbz2qDTmel7Pmdtf+i2rLaaPMRZeSVM60V3Se31GyWFpmKs4Q5Q==}
     hasBin: true
 
+  sort-package-json@2.14.0:
+    resolution: {integrity: sha512-xBRdmMjFB/KW3l51mP31dhlaiFmqkHLfWTfZAno8prb/wbDxwBPWFpxB16GZbiPbYr3wL41H8Kx22QIDWRe8WQ==}
+    hasBin: true
+
   sort-package-json@2.15.1:
     resolution: {integrity: sha512-9x9+o8krTT2saA9liI4BljNjwAbvUnWf11Wq+i/iZt8nl2UGYnf3TH5uBydE7VALmP7AGwlfszuEeL8BDyb0YA==}
     hasBin: true
@@ -11720,6 +12027,10 @@ packages:
   table@6.9.0:
     resolution: {integrity: sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==}
     engines: {node: '>=10.0.0'}
+
+  tagged-tag@1.0.0:
+    resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
+    engines: {node: '>=20'}
 
   tailwind-merge@2.6.0:
     resolution: {integrity: sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==}
@@ -12097,6 +12408,10 @@ packages:
   type-fest@4.41.0:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
+
+  type-fest@5.1.0:
+    resolution: {integrity: sha512-wQ531tuWvB6oK+pchHIu5lHe5f5wpSCqB8Kf4dWQRbOYc9HTge7JL0G4Qd44bh6QuJCccIzL3bugb8GI0MwHrg==}
+    engines: {node: '>=20'}
 
   type-is@1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
@@ -15221,7 +15536,7 @@ snapshots:
       '@typescript-eslint/parser': 6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       eslint-config-biome: 1.9.4
       eslint-config-prettier: 9.0.0(eslint@9.38.0(jiti@2.6.1))
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.38.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1))
       eslint-plugin-eslint-comments: 3.2.0(eslint@9.38.0(jiti@2.6.1))
       eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.6.3)(eslint@9.38.0(jiti@2.6.1))
       eslint-plugin-jsdoc: 46.8.2(eslint@9.38.0(jiti@2.6.1))
@@ -18481,6 +18796,8 @@ snapshots:
 
   '@types/aria-query@5.0.4': {}
 
+  '@types/async@3.2.25': {}
+
   '@types/braces@3.0.5': {}
 
   '@types/chai@5.2.2':
@@ -18523,9 +18840,19 @@ snapshots:
     dependencies:
       '@types/node': 20.19.23
 
+  '@types/fs-extra@11.0.4':
+    dependencies:
+      '@types/jsonfile': 6.1.4
+      '@types/node': 20.19.23
+
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 6.0.0
+      '@types/node': 20.19.23
+
+  '@types/glob@8.1.0':
+    dependencies:
+      '@types/minimatch': 5.1.2
       '@types/node': 20.19.23
 
   '@types/hast@2.3.10':
@@ -18550,6 +18877,10 @@ snapshots:
     dependencies:
       '@types/node': 20.19.23
 
+  '@types/lodash.isequal@4.5.8':
+    dependencies:
+      '@types/lodash': 4.17.16
+
   '@types/lodash@4.17.16': {}
 
   '@types/mdast@3.0.15':
@@ -18567,6 +18898,8 @@ snapshots:
       '@types/braces': 3.0.5
 
   '@types/minimatch@3.0.5': {}
+
+  '@types/minimatch@5.1.2': {}
 
   '@types/minimatch@6.0.0':
     dependencies:
@@ -18944,7 +19277,7 @@ snapshots:
       '@types/chai': 5.2.2
       '@vitest/spy': 3.2.4
       '@vitest/utils': 3.2.4
-      chai: 5.2.0
+      chai: 5.3.3
       tinyrainbow: 2.0.0
 
   '@vitest/mocker@3.2.4(msw@2.11.6(@types/node@20.19.23)(typescript@5.9.3))(vite@7.1.12(@types/node@20.19.23)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
@@ -20092,6 +20425,14 @@ snapshots:
   ccount@2.0.1: {}
 
   chai@5.2.0:
+    dependencies:
+      assertion-error: 2.0.1
+      check-error: 2.1.1
+      deep-eql: 5.0.2
+      loupe: 3.1.4
+      pathval: 2.0.0
+
+  chai@5.3.3:
     dependencies:
       assertion-error: 2.0.1
       check-error: 2.1.1
@@ -21352,13 +21693,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.38.0(jiti@2.6.1)):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3(supports-color@8.1.1)
       enhanced-resolve: 5.18.3
       eslint: 9.38.0(jiti@2.6.1)
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.38.0(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1))
       fast-glob: 3.3.3
       get-tsconfig: 4.13.0
       is-bun-module: 1.3.0
@@ -21371,14 +21712,14 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.38.0(jiti@2.6.1)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.38.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.38.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -21394,7 +21735,7 @@ snapshots:
       doctrine: 3.0.0
       eslint: 9.38.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.38.0(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1))
       get-tsconfig: 4.13.0
       is-glob: 4.0.3
       minimatch: 3.1.2
@@ -26791,6 +27132,8 @@ snapshots:
 
   resolve-pkg-maps@1.0.0: {}
 
+  resolve-workspace-root@2.0.0: {}
+
   resolve.exports@2.0.3: {}
 
   resolve@1.19.0:
@@ -27403,6 +27746,17 @@ snapshots:
       is-plain-obj: 2.1.0
       sort-object-keys: 1.1.3
 
+  sort-package-json@2.14.0:
+    dependencies:
+      detect-indent: 7.0.2
+      detect-newline: 4.0.1
+      get-stdin: 9.0.0
+      git-hooks-list: 3.2.0
+      is-plain-obj: 4.1.0
+      semver: 7.7.3
+      sort-object-keys: 1.1.3
+      tinyglobby: 0.2.15
+
   sort-package-json@2.15.1:
     dependencies:
       detect-indent: 7.0.2
@@ -27867,6 +28221,8 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
+  tagged-tag@1.0.0: {}
+
   tailwind-merge@2.6.0: {}
 
   tailwind-merge@3.0.2: {}
@@ -28280,6 +28636,10 @@ snapshots:
   type-fest@2.19.0: {}
 
   type-fest@4.41.0: {}
+
+  type-fest@5.1.0:
+    dependencies:
+      tagged-tag: 1.0.0
 
   type-is@1.6.18:
     dependencies:
