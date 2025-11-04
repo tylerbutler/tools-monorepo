@@ -47,20 +47,4 @@ export class BiomeTask extends LeafWithFileStatDoneFileTask {
 		const biomeConfig = await this.getBiomeConfigReader();
 		return biomeConfig.formattedFiles;
 	}
-
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const inputs = await super.getCacheInputFiles();
-		// Add task-specific input files
-		inputs.push(...(await this.getInputFiles()));
-		return inputs;
-	}
-
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-		// Add task-specific output files
-		outputs.push(...(await this.getOutputFiles()));
-		return outputs;
-	}
 }

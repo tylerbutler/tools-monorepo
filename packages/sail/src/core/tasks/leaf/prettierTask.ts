@@ -54,9 +54,9 @@ export class PrettierTask extends LeafWithDoneFileTask {
 		}
 		this.parsed = this.entries.length > 0;
 	}
-	protected get configFileFullPath() {
+	protected override get configFileFullPaths() {
 		// Currently there's no package-level config file, so just use tsconfig.json
-		return this.getPackageFileFullPath(".prettierrc.json");
+		return [this.getPackageFileFullPath(".prettierrc.json")];
 	}
 
 	protected async getDoneFileContent() {
@@ -200,18 +200,14 @@ export class PrettierTask extends LeafWithDoneFileTask {
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
+		// Get done file and config files from parent class
+		// (config files are now automatically included via configFileFullPaths property)
 		const files = await super.getCacheInputFiles();
 
 		// Add prettier files
 		files.push(...(await this.getPrettierFiles()));
 
-		// Include prettier config files
-		const configPath = this.configFileFullPath;
-		if (configPath && existsSync(configPath)) {
-			files.push(configPath);
-		}
-
+		// Include prettier ignore file
 		const ignorePath = this.ignorePath ?? ".prettierignore";
 		const ignoreFile = this.getPackageFileFullPath(ignorePath);
 		if (existsSync(ignoreFile)) {

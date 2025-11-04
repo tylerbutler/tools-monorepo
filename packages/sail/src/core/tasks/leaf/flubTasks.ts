@@ -163,18 +163,6 @@ export class FlubGenerateTypeTestsTask extends LeafWithFileStatDoneFileTask {
 		// Use nodir: true to exclude directories from results
 		return globFn(outputGlob, { nodir: true });
 	}
-
-	public override async getCacheInputFiles(): Promise<string[]> {
-		const inputs = await super.getCacheInputFiles();
-		inputs.push(...(await this.getInputFiles()));
-		return inputs;
-	}
-
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		const outputs = await super.getCacheOutputFiles();
-		outputs.push(...(await this.getOutputFiles()));
-		return outputs;
-	}
 }
 
 export class FlubGenerateChangesetConfigTask extends LeafWithFileStatDoneFileTask {
@@ -205,21 +193,5 @@ export class FlubGenerateChangesetConfigTask extends LeafWithFileStatDoneFileTas
 		const configDir = path.dirname(configFilePath);
 		const configPath = path.resolve(configDir, changesetConfigPath);
 		return [configPath];
-	}
-
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const inputs = await super.getCacheInputFiles();
-		// Add task-specific input files
-		inputs.push(...(await this.getInputFiles()));
-		return inputs;
-	}
-
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-		// Add task-specific output files
-		outputs.push(...(await this.getOutputFiles()));
-		return outputs;
 	}
 }

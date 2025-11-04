@@ -748,6 +748,15 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 		return this.getPackageFileFullPath(this.doneFile);
 	}
 
+	/**
+	 * Subclasses can optionally override to provide config file paths that should be included in cache inputs.
+	 * Examples: tsconfig.json, webpack.config.js, .eslintrc, etc.
+	 * These files will be automatically included in getCacheInputFiles() if they exist.
+	 */
+	protected get configFileFullPaths(): string[] {
+		return [];
+	}
+
 	protected override async checkIsUpToDate(): Promise<boolean> {
 		const leafIsUpToDate = await super.checkIsUpToDate();
 		// biome-ignore lint/complexity/useSimplifiedLogicExpression: condition logic is intentionally explicit for clarity
@@ -820,6 +829,10 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	 * Override to include the done file in cache inputs (if it exists).
 	 * Subclasses should call super.getCacheInputFiles() and add their own inputs.
 	 */
+	/**
+	 * Override to automatically include config files in cache inputs (if they exist).
+	 * Subclasses should call super.getCacheInputFiles() and add their own inputs.
+	 */
 	public override async getCacheInputFiles(): Promise<string[]> {
 		const inputs = await super.getCacheInputFiles();
 		// NOTE: Done file is NOT included in cache inputs because:
@@ -830,6 +843,14 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 		//    - At store time: done file exists (just created) → would be in inputs → key B
 		// The done file content is based on the actual input files (via getDoneFileContent),
 		// so changes to inputs will already invalidate the cache through input file hashes.
+
+		// Automatically include config files if they exist
+		for (const configPath of this.configFileFullPaths) {
+			if (existsSync(configPath)) {
+				inputs.push(configPath);
+			}
+		}
+
 		return inputs;
 	}
 
@@ -917,6 +938,26 @@ export abstract class LeafWithFileStatDoneFileTask extends LeafWithDoneFileTask 
 	 */
 	protected get useHashes(): boolean {
 		return false;
+	}
+
+	/**
+	 * Automatically includes input files from getInputFiles() for caching.
+	 * Subclasses rarely need to override this - just implement getInputFiles() instead.
+	 */
+	public override async getCacheInputFiles(): Promise<string[]> {
+		const inputs = await super.getCacheInputFiles();
+		inputs.push(...(await this.getInputFiles()));
+		return inputs;
+	}
+
+	/**
+	 * Automatically includes output files from getOutputFiles() for caching.
+	 * Subclasses rarely need to override this - just implement getOutputFiles() instead.
+	 */
+	public override async getCacheOutputFiles(): Promise<string[]> {
+		const outputs = await super.getCacheOutputFiles();
+		outputs.push(...(await this.getOutputFiles()));
+		return outputs;
 	}
 
 	protected async getDoneFileContent(): Promise<string | undefined> {

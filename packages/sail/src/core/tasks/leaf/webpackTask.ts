@@ -22,7 +22,7 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		}
 		try {
 			const config = await loadModule(
-				this.configFileFullPath,
+				this.configFileFullPaths[0],
 				this.package.packageJson.type,
 			);
 			const content: DoneFileContent = {
@@ -49,16 +49,16 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		}
 	}
 
-	private get configFileFullPath() {
+	protected override get configFileFullPaths() {
 		// TODO: parse the command line for real, split space for now.
 		const args = this.command.split(" ");
 		for (let i = 1; i < args.length; i++) {
 			if (args[i] === "--config" && i + 1 < args.length) {
-				return path.join(this.package.directory, args[i + 1]);
+				return [path.join(this.package.directory, args[i + 1])];
 			}
 		}
 
-		return this.getDefaultConfigFile();
+		return [this.getDefaultConfigFile()];
 	}
 
 	private getDefaultConfigFile() {
@@ -101,14 +101,9 @@ export class WebpackTask extends LeafWithDoneFileTask {
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
+		// Get done file and config files from parent class
+		// (config files are now automatically included via configFileFullPaths property)
 		const inputs = await super.getCacheInputFiles();
-
-		// Include the webpack config file
-		const configPath = this.configFileFullPath;
-		if (configPath) {
-			inputs.push(configPath);
-		}
 
 		// Include all source files in src directory
 		const srcGlob = `${toPosixPath(this.node.pkg.directory)}/src/**/*.*`;
@@ -122,15 +117,4 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		return inputs;
 	}
 
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-
-		// Webpack outputs depend on output configuration in webpack config
-		// To get accurate outputs, we would need to parse the webpack config
-		// For now, rely on the done file mechanism
-		// Future enhancement: parse config to get output.path and output.filename
-
-		return outputs;
-	}
 }
