@@ -95,6 +95,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			releaseGroup,
 			showExec,
 			task,
+			verbose,
 			vscode,
 		} = flags;
 
@@ -141,6 +142,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 					? defaultOptions.releaseGroups
 					: [releaseGroup],
 			showExec,
+			verbose,
 			vscode,
 		};
 

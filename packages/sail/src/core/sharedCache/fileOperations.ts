@@ -129,15 +129,25 @@ export async function hashFiles(
  * Hash multiple files in parallel, including their sizes.
  *
  * Skips files that don't exist (returns null for those entries).
+ * Skips directories (directories themselves cannot be hashed, but see expandDirectoriesToFiles).
  *
  * @param filePaths - Array of absolute file paths
- * @returns Array of objects containing path, hash, and size (null entries for non-existent files)
+ * @returns Array of objects containing path, hash, and size (null entries for non-existent files or directories)
  */
 export async function hashFilesWithSize(
 	filePaths: readonly string[],
 ): Promise<Array<{ path: string; hash: string; size: number } | null>> {
 	const hashPromises = filePaths.map(async (path) => {
 		try {
+			// Check if path is a directory first (skip directories)
+			const statResult = await stat(path);
+			if (statResult.isDirectory()) {
+				// Skip directories - they can't be hashed or cached as files
+				// The caller should use expandDirectoriesToFiles first if they want
+				// to cache directory contents
+				return null;
+			}
+
 			const [hash, stats] = await Promise.all([
 				hashFile(path),
 				getFileStats(path),
@@ -147,6 +157,11 @@ export async function hashFilesWithSize(
 			// If file doesn't exist (ENOENT), return null instead of throwing
 			// This happens when output globs match files that weren't actually produced
 			if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+				return null;
+			}
+			// If path is a directory (EISDIR), return null instead of throwing
+			// This happens when output globs or paths accidentally include directories
+			if ((error as NodeJS.ErrnoException).code === "EISDIR") {
 				return null;
 			}
 			throw new Error(`Failed to hash file ${path}: ${error}`);

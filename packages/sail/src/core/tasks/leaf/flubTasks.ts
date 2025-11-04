@@ -5,6 +5,7 @@ import path from "node:path";
 import { GitRepo } from "../../../common/gitRepo.js";
 import { getSailConfig } from "../../../core/config.js";
 import { sha256 } from "../../hash.js";
+import { globFn } from "../taskUtils.js";
 import {
 	LeafWithDoneFileTask,
 	LeafWithFileStatDoneFileTask,
@@ -149,17 +150,18 @@ export class FlubGenerateTypeTestsTask extends LeafWithFileStatDoneFileTask {
 
 	protected async getInputFiles(): Promise<string[]> {
 		const pkgDir = this.node.pkg.directory;
-		return [
-			path.join(pkgDir, "package.json"),
-			path.join(pkgDir, "src"), // Watch entire src directory for type changes
-		];
+		// Only track package.json as input - this matches the FluidFramework implementation
+		// The actual TypeScript source files are tracked indirectly through package.json changes
+		return [path.join(pkgDir, "package.json")];
 	}
 
 	protected async getOutputFiles(): Promise<string[]> {
 		const pkgDir = this.node.pkg.directory;
 		const { outDir, outFile } = this.getOutputInfo();
-		const outputPath = path.join(pkgDir, outDir, outFile);
-		return [outputPath];
+		// Use glob to find actual output files (outFile may contain wildcards like validate*Previous.generated.ts)
+		const outputGlob = path.join(pkgDir, outDir, outFile);
+		// Use nodir: true to exclude directories from results
+		return globFn(outputGlob, { nodir: true });
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {

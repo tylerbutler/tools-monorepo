@@ -597,12 +597,14 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			const result = await cache.restore(entry, this.node.pkg.directory);
 
 			if (result.success) {
-				// Replay stdout/stderr for consistent UX
-				if (result.stdout) {
-					this.log.log(result.stdout);
-				}
-				if (result.stderr?.trim()) {
-					this.log.warning(result.stderr);
+				// Replay stdout/stderr for consistent UX (only when verbose flag is set)
+				if (this.node.verbose) {
+					if (result.stdout) {
+						this.log.log(result.stdout);
+					}
+					if (result.stderr?.trim()) {
+						this.log.warning(result.stderr);
+					}
 				}
 
 				this.traceTrigger(

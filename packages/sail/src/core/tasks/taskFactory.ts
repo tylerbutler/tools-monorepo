@@ -4,6 +4,14 @@ import type { BuildGraphPackage } from "../buildGraph.js";
 import { GroupTask } from "./groupTask.js";
 import { ApiExtractorTask } from "./leaf/apiExtractorTask.js";
 import { BiomeTask } from "./leaf/biomeTasks.js";
+import {
+	JssmVizTask,
+	MarkdownMagicTask,
+	OclifManifestTask,
+	OclifReadmeTask,
+	SyncpackLintSemverRangesTask,
+	SyncpackListMismatchesTask,
+} from "./leaf/commonDeclarativeTasks.js";
 import { createDeclarativeTaskHandler } from "./leaf/declarativeTask.js";
 import {
 	FlubCheckLayerTask,
@@ -60,6 +68,14 @@ const executableToLeafTask: {
 	"flub list server": FlubListTask,
 	"flub list gitrest": FlubListTask,
 	"flub list historian": FlubListTask,
+
+	// Common declarative tasks (based on FluidFramework patterns)
+	"oclif manifest": OclifManifestTask,
+	"oclif readme": OclifReadmeTask,
+	"syncpack lint-semver-ranges": SyncpackLintSemverRangesTask,
+	"syncpack list-mismatches": SyncpackListMismatchesTask,
+	"markdown-magic": MarkdownMagicTask,
+	"jssm-viz": JssmVizTask,
 } as const;
 
 /**
