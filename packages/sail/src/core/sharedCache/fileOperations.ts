@@ -147,7 +147,7 @@ export async function hashFilesWithSize(
 				throw new Error(
 					`Invalid cache output: "${path}" is a directory. ` +
 						`Task's getCacheOutputFiles() should return individual files, not directories. ` +
-						`If you need to cache directory contents, list the files explicitly.`,
+						"If you need to cache directory contents, list the files explicitly.",
 				);
 			}
 

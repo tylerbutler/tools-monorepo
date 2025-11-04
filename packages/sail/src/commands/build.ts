@@ -132,6 +132,13 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			buildRepo.root,
 			skipCacheWrite,
 			verifyCacheIntegrity,
+			{
+				log: this.log.bind(this),
+				info: this.log.bind(this),
+				warning: this.warn.bind(this),
+				errorLog: (msg) => this.log(String(msg)),
+				verbose: this.log.bind(this),
+			},
 			overwriteCache,
 		);
 

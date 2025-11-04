@@ -6,6 +6,8 @@
  * dramatically reducing build times for repeated builds with identical inputs.
  */
 
+import type { Logger } from "@tylerbu/cli-api";
+
 /**
  * Inputs used to compute a unique cache key for a task execution.
  *
@@ -472,4 +474,9 @@ export interface SharedCacheOptions {
 	 * @internal - Hidden flag for advanced use cases
 	 */
 	overwriteCache?: boolean;
+
+	/**
+	 * Logger for cache operations
+	 */
+	logger: Logger;
 }

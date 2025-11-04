@@ -5,6 +5,7 @@
 
 import { existsSync } from "node:fs";
 import * as path from "node:path";
+import type { Logger } from "@tylerbu/cli-api";
 import registerDebug from "debug";
 import {
 	cacheEntryExists,
@@ -57,6 +58,7 @@ const traceError = registerDebug("sail:cache:error");
  */
 export class SharedCacheManager {
 	public readonly options: SharedCacheOptions;
+	private readonly logger: Logger;
 	private readonly statistics: CacheStatistics;
 	private initialized = false;
 	private initializationPromise: Promise<void> | undefined;
@@ -69,6 +71,7 @@ export class SharedCacheManager {
 	 */
 	public constructor(options: SharedCacheOptions) {
 		this.options = options;
+		this.logger = options.logger;
 		// Statistics will be loaded from disk during initialization
 		this.statistics = {
 			totalEntries: 0,
@@ -409,9 +412,9 @@ export class SharedCacheManager {
 			if (existsSync(manifestPath)) {
 				if (!this.options.overwriteCache) {
 					const reason = "cache entry already exists";
-					console.warn(
+					this.logger.warn(
 						`${inputs.packageName}#${inputs.taskName}: Cache entry ${shortKey} already exists when trying to store. ` +
-							`This indicates the task executed despite cache hit, or a race condition between parallel tasks. ` +
+							"This indicates the task executed despite cache hit, or a race condition between parallel tasks. " +
 							`Manifest path: ${manifestPath}`,
 					);
 					traceStore(`Cache entry ${shortKey} already exists, skipping store`);

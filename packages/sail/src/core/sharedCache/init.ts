@@ -5,6 +5,7 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import type { Logger } from "@tylerbu/cli-api";
 import { SharedCacheManager } from "./sharedCacheManager.js";
 import type { GlobalCacheKeyComponents } from "./types.js";
 
@@ -22,6 +23,7 @@ const CACHE_SCHEMA_VERSION = 1;
  * @param skipCacheWrite - Read-only mode
  * @param verifyIntegrity - Verify hashes on restore
  * @param overwriteCache - Overwrite existing cache entries on conflict
+ * @param logger - Logger for cache operations
  * @returns Initialized cache manager, or undefined if disabled
  */
 export async function initializeSharedCache(
@@ -29,6 +31,7 @@ export async function initializeSharedCache(
 	repoRoot: string,
 	skipCacheWrite: boolean,
 	verifyIntegrity: boolean,
+	logger: Logger,
 	overwriteCache = false,
 ): Promise<SharedCacheManager | undefined> {
 	if (!cacheDir) {
@@ -45,6 +48,7 @@ export async function initializeSharedCache(
 		verifyIntegrity,
 		skipCacheWrite,
 		overwriteCache,
+		logger,
 	});
 
 	await cacheManager.initialize();

@@ -102,6 +102,7 @@ export async function initializeCacheOrFail(
 		process.cwd(),
 		skipCacheWrite,
 		verifyCacheIntegrity,
+		logger,
 		overwriteCache,
 	);
 

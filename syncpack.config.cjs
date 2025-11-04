@@ -29,6 +29,19 @@ const config = {
 			dependencyTypes: ["dev", "prod"],
 			pinVersion: "workspace:^",
 		},
+		{
+			label: "Use * dep for deps on sort-package-json",
+			dependencies: ["sort-package-json"],
+			dependencyTypes: ["dev", "prod"],
+			pinVersion: "*",
+			packages: ["**"],
+		},
+		{
+			label: "Prefer lowest version when there's a mismatch",
+			dependencies: ["**"],
+			packages: ["**"],
+			preferVersion: "lowestSemver",
+		}
 	],
 	semverGroups: [
 		// Disabled for now because it removes the sha from the field.
