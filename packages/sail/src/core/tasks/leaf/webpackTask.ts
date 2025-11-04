@@ -116,5 +116,4 @@ export class WebpackTask extends LeafWithDoneFileTask {
 
 		return inputs;
 	}
-
 }

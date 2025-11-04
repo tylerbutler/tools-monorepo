@@ -1,5 +1,9 @@
 import path from "node:path";
-import { getInstalledPackageVersion, globFn, toPosixPath } from "../taskUtils.js";
+import {
+	getInstalledPackageVersion,
+	globFn,
+	toPosixPath,
+} from "../taskUtils.js";
 import { TscDependentTask } from "./tscTask.js";
 
 export class GenerateEntrypointsTask extends TscDependentTask {

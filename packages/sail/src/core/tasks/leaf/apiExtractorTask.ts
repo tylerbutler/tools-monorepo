@@ -39,5 +39,4 @@ export class ApiExtractorTask extends TscDependentTask {
 
 		return inputs;
 	}
-
 }
