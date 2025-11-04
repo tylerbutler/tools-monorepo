@@ -9,6 +9,7 @@ import {
 	FlubCheckLayerTask,
 	FlubCheckPolicyTask,
 	FlubGenerateChangesetConfigTask,
+	FlubGenerateTypeTestsTask,
 	FlubListTask,
 } from "./leaf/flubTasks.js";
 import { GenerateEntrypointsTask } from "./leaf/generateEntrypointsTask.js";
@@ -46,6 +47,7 @@ const executableToLeafTask: {
 	"flub check policy": FlubCheckPolicyTask,
 	"flub generate changeset-config": FlubGenerateChangesetConfigTask,
 	"flub generate entrypoints": GenerateEntrypointsTask,
+	"flub generate typetests": FlubGenerateTypeTestsTask,
 	depcruise: DepCruiseTask,
 	"biome check": BiomeTask,
 	"biome format": BiomeTask,
