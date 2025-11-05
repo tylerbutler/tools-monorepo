@@ -709,6 +709,7 @@ export abstract class Task {
     addDependentTasks(dependentTasks: Task[], isDefault?: boolean): void;
     // (undocumented)
     protected abstract checkIsUpToDate(): Promise<boolean>;
+    protected clearUpToDateCache(): void;
     // (undocumented)
     abstract collectLeafTasks(leafTasks: Set<LeafTask>): void;
     // (undocumented)
