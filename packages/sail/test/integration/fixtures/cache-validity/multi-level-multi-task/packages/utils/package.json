@@ -1,0 +1,14 @@
+{
+  "name": "@cache-test/utils",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo 'Test passed' && mkdir -p .coverage && echo 'coverage' > .coverage/result.txt",
+    "lint": "echo 'Lint passed' > .lint-output"
+  },
+  "devDependencies": {
+    "typescript": "~5.5.4"
+  }
+}
