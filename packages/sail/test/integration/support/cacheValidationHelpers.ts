@@ -222,11 +222,17 @@ export async function waitForFilesystemSync(): Promise<void> {
 
 /**
  * Clean all donefiles and output directories to force shared cache usage.
- * This removes both donefiles and dist/ directories from all packages.
+ * This removes donefiles, dist/ directories, AND tsbuildinfo files from all packages.
+ * 
+ * NOTE: We must remove tsbuildinfo files because they contain TypeScript's incremental
+ * compilation state which includes timestamps. If tsbuildinfo exists when outputs are
+ * restored with new timestamps, TypeScript sees the outputs as "newer" and triggers
+ * rebuild of dependent tasks (e.g., test compilation that references main compilation).
  */
 export async function cleanDonefilesAndOutputs(
 	testDir: string,
 	packageNames: string[],
+	options?: { keepTsBuildInfo?: boolean },
 ): Promise<void> {
 	const packagesDir = join(testDir, "packages");
 	
@@ -255,6 +261,21 @@ export async function cleanDonefilesAndOutputs(
 		for (const pattern of donefilePatterns) {
 			const donefilePath = join(pkgDir, pattern);
 			await rm(donefilePath, { force: true }).catch(() => {});
+		}
+		
+		// Remove tsbuildinfo files unless explicitly kept
+		// These contain TypeScript incremental state with timestamps
+		if (!options?.keepTsBuildInfo) {
+			try {
+				const { readdir } = await import("node:fs/promises");
+				const files = await readdir(pkgDir);
+				const tsbuildInfoFiles = files.filter(f => f.endsWith(".tsbuildinfo"));
+				for (const file of tsbuildInfoFiles) {
+					await rm(join(pkgDir, file), { force: true }).catch(() => {});
+				}
+			} catch {
+				// Ignore errors if directory doesn't exist
+			}
 		}
 	}
 }
