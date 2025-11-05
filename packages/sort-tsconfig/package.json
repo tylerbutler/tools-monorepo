@@ -100,7 +100,7 @@
 		"memfs": "^4.49.0",
 		"oclif": "^4.22.32",
 		"repopo": "workspace:^",
-		"rimraf": "^6.0.1",
+		"rimraf": "^6.1.0",
 		"sort-package-json": "*",
 		"start-server-and-test": "^2.1.2",
 		"tmp-promise": "^3.0.3",
