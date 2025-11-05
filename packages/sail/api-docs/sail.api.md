@@ -390,6 +390,7 @@ export interface IBuildStats {
     leafBuiltCount: number;
     // (undocumented)
     leafExecTimeTotal: number;
+    leafInitialUpToDateCount: number;
     // (undocumented)
     leafQueueWaitTimeTotal: number;
     // (undocumented)
@@ -878,6 +879,7 @@ export class TaskStats {
     leafBuiltCount: number;
     // (undocumented)
     leafExecTimeTotal: number;
+    leafInitialUpToDateCount: number;
     // (undocumented)
     leafQueueWaitTimeTotal: number;
     // (undocumented)

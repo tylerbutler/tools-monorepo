@@ -56,6 +56,9 @@ export class TaskStats {
 	public leafBuiltCount = 0;
 	public leafExecTimeTotal = 0;
 	public leafQueueWaitTimeTotal = 0;
+	/** Snapshot of leafUpToDateCount after initial donefile checks, before execution starts.
+	 * Used for stable task counter denominators. */
+	public leafInitialUpToDateCount = 0;
 }
 
 /**

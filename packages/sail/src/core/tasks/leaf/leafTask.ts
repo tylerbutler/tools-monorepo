@@ -273,7 +273,7 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			this.node.taskStats.leafBuiltCount++;
 			const totalTask =
 				this.node.taskStats.leafTotalCount -
-				this.node.taskStats.leafUpToDateCount;
+				this.node.taskStats.leafInitialUpToDateCount;
 			const taskNum = this.node.taskStats.leafBuiltCount
 				.toString()
 				.padStart(totalTask.toString().length, " ");
@@ -460,8 +460,14 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 
 			const totalTask =
 				this.node.taskStats.leafTotalCount -
-				this.node.taskStats.leafUpToDateCount;
-			const taskNum = this.node.taskStats.leafBuiltCount
+				this.node.taskStats.leafInitialUpToDateCount;
+			// Task number = built tasks + tasks skipped during execution (cache/recheck)
+			// leafUpToDateCount includes initial skips + execution-time skips
+			// So subtract initial skips to get only execution-time skips
+			const executionTimeSkips =
+				this.node.taskStats.leafUpToDateCount -
+				this.node.taskStats.leafInitialUpToDateCount;
+			const taskNum = (this.node.taskStats.leafBuiltCount + executionTimeSkips)
 				.toString()
 				.padStart(totalTask.toString().length, " ");
 			const elapsedTime = (Date.now() - startTime) / 1000;

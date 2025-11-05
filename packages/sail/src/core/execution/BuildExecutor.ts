@@ -68,6 +68,11 @@ export class BuildExecutor implements IBuildExecutor {
 			this.log.log(`Skipping ${this.numSkippedTasks} up to date tasks.`);
 		}
 
+		// Snapshot the up-to-date count before execution starts
+		// This provides a stable denominator for task counters (won't change as tasks complete)
+		this.context.taskStats.leafInitialUpToDateCount =
+			this.context.taskStats.leafUpToDateCount;
+
 		const result = await this.profileOperation(
 			"build-execution",
 			() => this.runBuildExecution(buildablePackages),
@@ -121,10 +126,14 @@ export class BuildExecutor implements IBuildExecutor {
 			return "";
 		}
 		const summaryLines = this.context.failedTaskLines;
+		// Calculate tasks that were not run due to failures
+		// Use leafInitialUpToDateCount (stable) instead of leafUpToDateCount (dynamic)
 		const notRunCount =
 			this.context.taskStats.leafTotalCount -
-			this.context.taskStats.leafUpToDateCount -
-			this.context.taskStats.leafBuiltCount;
+			this.context.taskStats.leafInitialUpToDateCount -
+			this.context.taskStats.leafBuiltCount -
+			(this.context.taskStats.leafUpToDateCount -
+				this.context.taskStats.leafInitialUpToDateCount);
 		summaryLines.unshift(chalk.redBright("Failed Tasks:"));
 		summaryLines.push(
 			chalk.yellow(`Did not run ${notRunCount} tasks due to prior failures.`),
