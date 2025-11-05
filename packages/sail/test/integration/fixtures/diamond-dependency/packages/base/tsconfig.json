@@ -7,7 +7,7 @@
 		"rootDir": "./src",
 		"strict": true,
 		"incremental": true,
-		"tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
+		"tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
 	},
-	"include": ["src/**/*"]
+	"include": ["src/**/*"],
 }
