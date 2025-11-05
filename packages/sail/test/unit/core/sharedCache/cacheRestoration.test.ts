@@ -44,27 +44,16 @@ describe("Cache Restoration After Clean", () => {
 		await mkdir(packageADir, { recursive: true });
 		await mkdir(packageBDir, { recursive: true });
 
-		// Create minimal TypeScript files
-		await writeFile(join(packageADir, "index.ts"), "export const a = 1;");
-		await writeFile(
-			join(packageADir, "tsconfig.json"),
-			JSON.stringify({
-				compilerOptions: { outDir: "dist", declaration: true },
-				include: ["index.ts"],
-			}),
-		);
+		// Create minimal source files for copyfiles task
+		const srcDirA = join(packageADir, "src");
+		const srcDirB = join(packageBDir, "src");
+		await mkdir(srcDirA, { recursive: true });
+		await mkdir(srcDirB, { recursive: true });
 
-		await writeFile(
-			join(packageBDir, "index.ts"),
-			'import { a } from "../packageA"; export const b = a + 1;',
-		);
-		await writeFile(
-			join(packageBDir, "tsconfig.json"),
-			JSON.stringify({
-				compilerOptions: { outDir: "dist", declaration: true },
-				include: ["index.ts"],
-			}),
-		);
+		await writeFile(join(srcDirA, "file1.txt"), "content A1");
+		await writeFile(join(srcDirA, "file2.txt"), "content A2");
+		await writeFile(join(srcDirB, "file1.txt"), "content B1");
+		await writeFile(join(srcDirB, "file2.txt"), "content B2");
 	});
 
 	afterEach(async () => {
@@ -80,17 +69,17 @@ describe("Cache Restoration After Clean", () => {
 			.withContext(contextA)
 			.withPackageName("packageA")
 			.withPackagePath(packageADir)
-			.withCommand("tsc")
-			.buildTscTask();
+			.withCommand("copyfiles src/**/*.txt dist")
+			.buildCopyfilesTask();
 
 		// Simulate execution - create output files
 		const outputDirA = join(packageADir, "dist");
 		await mkdir(outputDirA, { recursive: true });
-		await writeFile(join(outputDirA, "index.js"), "export const a = 1;");
-		await writeFile(join(outputDirA, "index.d.ts"), "export const a: number;");
+		await writeFile(join(outputDirA, "file1.txt"), "content A1");
+		await writeFile(join(outputDirA, "file2.txt"), "content A2");
 
 		// Create donefile for task A
-		const donefileA = join(packageADir, ".sail-donefile");
+		const donefileA = join(packageADir, "copyfiles-12345678.done.build.log");
 		await writeFile(donefileA, "task-a-done-content-hash-123");
 
 		// Get cache input files (should NOT include outputs)
@@ -137,15 +126,16 @@ describe("Cache Restoration After Clean", () => {
 			.withContext(contextA)
 			.withPackageName("packageA")
 			.withPackagePath(packageADir)
-			.withCommand("tsc")
+			.withCommand("copyfiles src/**/*.txt dist")
 			.withTaskName("build")
-			.buildTscTask();
+			.buildCopyfilesTask();
 
 		// Create task A outputs and donefile
 		const outputDirA = join(packageADir, "dist");
 		await mkdir(outputDirA, { recursive: true });
-		await writeFile(join(outputDirA, "index.js"), "export const a = 1;");
-		const donefileA = join(packageADir, ".sail-donefile");
+		await writeFile(join(outputDirA, "file1.txt"), "content A1");
+		await writeFile(join(outputDirA, "file2.txt"), "content A2");
+		const donefileA = join(packageADir, "copyfiles-12345678.done.build.log");
 		await writeFile(donefileA, "task-a-done-hash-OLD");
 
 		// STEP 2: Build task B (depends on task A)
@@ -155,9 +145,9 @@ describe("Cache Restoration After Clean", () => {
 			.withContext(contextB)
 			.withPackageName("packageB")
 			.withPackagePath(packageBDir)
-			.withCommand("tsc")
+			.withCommand("copyfiles src/**/*.txt dist")
 			.withTaskName("build")
-			.buildTscTask();
+			.buildCopyfilesTask();
 
 		// Add dependency: B depends on A
 		// TODO: Wire up dependency properly using Task.addDependentLeafTasks
@@ -170,7 +160,7 @@ describe("Cache Restoration After Clean", () => {
 		// With the donefile fix, B's cache inputs should include A's donefile
 		// THIS IS THE BUG: A's donefile changes between builds!
 		const includesADonefile = cacheInputsB1.some((f) =>
-			f.includes("packageA/.sail-donefile"),
+			f.includes("packageA/copyfiles-"),
 		);
 
 		if (includesADonefile) {

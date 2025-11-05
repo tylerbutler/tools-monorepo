@@ -4,6 +4,7 @@ import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
 import { FileHashCache } from "../../../src/core/fileHashCache.js";
 import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 import { BiomeTask } from "../../../src/core/tasks/leaf/biomeTasks.js";
+import { CopyfilesTask } from "../../../src/core/tasks/leaf/miscTasks.js";
 import { TscTask } from "../../../src/core/tasks/leaf/tscTask.js";
 import { WebpackTask } from "../../../src/core/tasks/leaf/webpackTask.js";
 import { BuildContextBuilder } from "./BuildContextBuilder.js";
@@ -198,5 +199,15 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "webpack";
 
 		return new WebpackTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a CopyfilesTask instance
+	 */
+	buildCopyfilesTask(): CopyfilesTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "copyfiles src/**/*.txt dist";
+
+		return new CopyfilesTask(node, cmd, node.context, this.taskName);
 	}
 }
