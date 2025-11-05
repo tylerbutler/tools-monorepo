@@ -41,6 +41,46 @@ interface TaskExecResult extends ExecAsyncResult {
 }
 
 /**
+ * Interface for tasks that can provide a hash representing their execution state.
+ * This hash is used by dependent tasks to detect when dependencies have changed.
+ *
+ * @remarks
+ * Different task types may use different artifacts to provide this hash:
+ * - LeafWithDoneFileTask uses the sail donefile (.sail-done-<task>)
+ * - TscTask uses TypeScript's tsBuildInfo file
+ * - Other tasks may use their own state representation
+ *
+ * @beta
+ */
+export interface IDependencyHashProvider {
+	/**
+	 * Returns a hash representing this task's current execution state.
+	 * Used by dependent tasks to determine if this dependency has changed.
+	 *
+	 * @returns A hash string if the state can be determined, or undefined if unavailable
+	 * (e.g., task hasn't executed yet, state file doesn't exist)
+	 */
+	getDependencyHash(): Promise<string | undefined>;
+}
+
+/**
+ * Type guard to check if a task implements IDependencyHashProvider.
+ *
+ * @param task - The task to check
+ * @returns true if the task implements getDependencyHash(), false otherwise
+ */
+function isDependencyHashProvider(
+	task: unknown,
+): task is IDependencyHashProvider {
+	return (
+		typeof task === "object" &&
+		task !== null &&
+		"getDependencyHash" in task &&
+		typeof (task as Record<string, unknown>).getDependencyHash === "function"
+	);
+}
+
+/**
  * @beta
  */
 export abstract class LeafTask extends Task implements ICacheableTask {
@@ -209,6 +249,11 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 		// enabling proper cascading cache invalidation based on dependency hashes.
 		// Skip cache when forced flag is set
 		if (this.node.sharedCache && this.canUseCache && !this.forced) {
+			// Clear cached up-to-date status from graph construction phase
+			// Dependencies may have executed and updated their outputs/hashes,
+			// so we need fresh dependency hashes for accurate cache key computation
+			this.clearUpToDateCache();
+
 			traceUpToDate(
 				`${this.nameColored}: trying cache restore after deps complete`,
 			);
@@ -555,39 +600,58 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 	}
 
 	/**
-	 * Compute hashes from dependent tasks' donefile content.
+	 * Compute hashes from dependent tasks' execution state.
 	 * This enables cascading cache invalidation: when a dependency's outputs change,
-	 * its donefile content changes, which changes these hashes, which invalidates
-	 * this task's cache key.
+	 * its state representation (donefile, tsBuildInfo, etc.) changes, which changes
+	 * these hashes, which invalidates this task's cache key.
+	 *
+	 * Tasks that implement IDependencyHashProvider can participate in dependency tracking:
+	 * - LeafWithDoneFileTask provides hash of its donefile
+	 * - TscTask provides hash of its tsBuildInfo file
+	 * - Other task types can implement custom state hashing
 	 *
 	 * Must be called AFTER dependencies have completed (either restored from cache
-	 * or executed), so their output files exist for getDoneFileContent() to work.
+	 * or executed), so their state files exist for getDependencyHash() to work.
 	 */
 	protected async getDependencyHashes(): Promise<
 		Array<{ name: string; hash: string }>
 	> {
 		const hashes: Array<{ name: string; hash: string }> = [];
 		const dependentTasks = Array.from(this.getDependentLeafTasks());
+		traceCacheKey(
+			`${this.nameColored}: getDependencyHashes found ${dependentTasks.length} dependent tasks`,
+		);
 
 		for (const depTask of dependentTasks) {
-			// Only tasks with donefiles can provide content
-			if (depTask instanceof LeafWithDoneFileTask) {
-				try {
-					// Compute donefile content hash from dep's donefile
-					const donefileHash = await depTask.computeDonefileHash();
-					if (donefileHash) {
-						hashes.push({
-							name: depTask.name,
-							hash: donefileHash,
-						});
-					}
-				} catch (error) {
-					// If we can't get dep's donefile content, skip it
-					// This can happen if dep's outputs are missing (corrupt cache)
-					this.traceError(
-						`Failed to get dependency hash for ${depTask.name}: ${error}`,
+			try {
+				let hash: string | undefined;
+
+				// Check if task implements IDependencyHashProvider interface
+				if (isDependencyHashProvider(depTask)) {
+					hash = await depTask.getDependencyHash();
+					traceCacheKey(
+						`  ${depTask.name}: dependency hash=${hash?.substring(0, 8) ?? "undefined"}`,
+					);
+				} else {
+					// Task doesn't implement dependency hash provider
+					// Skip these tasks - they won't participate in cascading invalidation
+					traceCacheKey(
+						`  ${depTask.name}: skipping (no IDependencyHashProvider implementation)`,
 					);
 				}
+
+				if (hash) {
+					hashes.push({
+						name: depTask.name,
+						hash,
+					});
+				}
+			} catch (error) {
+				// If we can't get dep's hash, skip it
+				// This can happen if dep's outputs are missing (corrupt cache)
+				this.traceError(
+					`Failed to get dependency hash for ${depTask.name}: ${error}`,
+				);
 			}
 		}
 
@@ -793,7 +857,10 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 /**
  * A LeafTask with a "done file" which represents the work this task needs to do.
  */
-export abstract class LeafWithDoneFileTask extends LeafTask {
+export abstract class LeafWithDoneFileTask
+	extends LeafTask
+	implements IDependencyHashProvider
+{
 	private _isIncremental = true;
 	private _cachedDoneFileContent?: string;
 
@@ -828,6 +895,14 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 		// Import sha256 at the top of the file
 		const { sha256 } = await import("../../hash.js");
 		return sha256(Buffer.from(donefileContent, "utf8"));
+	}
+
+	/**
+	 * Implementation of IDependencyHashProvider.
+	 * Delegates to computeDonefileHash() to provide the hash of this task's done file.
+	 */
+	public async getDependencyHash(): Promise<string | undefined> {
+		return this.computeDonefileHash();
 	}
 
 	protected override async checkIsUpToDate(): Promise<boolean> {

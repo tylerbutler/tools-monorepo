@@ -194,6 +194,14 @@ export abstract class Task {
 		this.isUpToDateP = undefined;
 	}
 
+	/**
+	 * Clears the cached up-to-date status, forcing re-evaluation on next check.
+	 * Used when dependency state changes and cached result may be stale.
+	 */
+	protected clearUpToDateCache(): void {
+		this.isUpToDateP = undefined;
+	}
+
 	public toString() {
 		return `"${this.command}" in ${this.node.pkg.nameColored}`;
 	}

@@ -7,7 +7,11 @@ import type tsTypes from "typescript";
 
 import { getTscUtils, type TscUtil } from "../../tscUtils.js";
 import { getInstalledPackageVersion } from "../taskUtils.js";
-import { LeafTask, LeafWithDoneFileTask } from "./leafTask.js";
+import {
+	type IDependencyHashProvider,
+	LeafTask,
+	LeafWithDoneFileTask,
+} from "./leafTask.js";
 
 // Regex pattern for matching TypeScript file extensions (.ts or .tsx)
 const tsExtensionPattern = /\.tsx?$/;
@@ -25,7 +29,7 @@ interface ITsBuildInfo {
 	version: string;
 }
 
-export class TscTask extends LeafTask {
+export class TscTask extends LeafTask implements IDependencyHashProvider {
 	private _tsBuildInfoFullPath: string | undefined;
 	private _tsBuildInfo: ITsBuildInfo | undefined;
 	private _tsConfig: tsTypes.ParsedCommandLine | undefined;
@@ -404,6 +408,11 @@ export class TscTask extends LeafTask {
 			return undefined;
 		}
 
+		// Check explicit tsBuildInfoFile option first
+		if (options.options.tsBuildInfoFile) {
+			return options.options.tsBuildInfoFile;
+		}
+
 		const outFile = options.options.out
 			? options.options.out
 			: options.options.outFile;
@@ -493,6 +502,38 @@ export class TscTask extends LeafTask {
 			}
 		}
 		return this._tsBuildInfo;
+	}
+
+	/**
+	 * Implementation of IDependencyHashProvider.
+	 * Returns a hash of the tsBuildInfo file to track TypeScript compilation state.
+	 * This allows dependent tasks to detect when this task's outputs have changed.
+	 *
+	 * Only hashes the stable parts of tsBuildInfo (file names and file infos)
+	 * to avoid cache invalidation from metadata changes.
+	 */
+	public async getDependencyHash(): Promise<string | undefined> {
+		const tsBuildInfo = await this.readTsBuildInfo();
+		if (!tsBuildInfo) {
+			return undefined;
+		}
+
+		// Only hash the stable parts of tsBuildInfo:
+		// - program.fileNames: list of files in the program
+		// - program.fileInfos: version/hash info for each file
+		// - version: TypeScript version
+		// Exclude: semanticDiagnosticsPerFile, emitDiagnosticsPerFile, affectedFilesPendingEmit
+		// These change with each build even if sources haven't changed
+		const stableContent = {
+			version: tsBuildInfo.version,
+			fileNames: tsBuildInfo.program.fileNames,
+			fileInfos: tsBuildInfo.program.fileInfos,
+			options: tsBuildInfo.program.options,
+		};
+
+		const contentJson = JSON.stringify(stableContent);
+		const { sha256 } = await import("../../hash.js");
+		return sha256(Buffer.from(contentJson, "utf8"));
 	}
 
 	protected override async markExecDone() {
