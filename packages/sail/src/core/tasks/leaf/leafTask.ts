@@ -207,7 +207,8 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 		// Try to restore from shared cache AFTER dependencies complete
 		// This ensures dependency outputs exist for getDoneFileContent() to work,
 		// enabling proper cascading cache invalidation based on dependency hashes.
-		if (this.node.sharedCache && this.canUseCache) {
+		// Skip cache when forced flag is set
+		if (this.node.sharedCache && this.canUseCache && !this.forced) {
 			traceUpToDate(
 				`${this.nameColored}: trying cache restore after deps complete`,
 			);
@@ -215,8 +216,9 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			if (cacheHit) {
 				this.traceExec("Skipping Leaf Task (cache hit)");
 				traceUpToDate(`${this.nameColored}: cache HIT (restored)`);
-				// Don't increment leafUpToDateCount here - execDone will increment leafBuiltCount
-				// Cache-restored tasks are counted as "built" (just very quickly)
+				// Increment leafUpToDateCount before execDone (matches checkLeafIsUpToDate pattern)
+				// Cache-restored tasks are counted as "up-to-date", not "built"
+				this.node.taskStats.leafUpToDateCount++;
 				return this.execDone(startTime, BuildResult.CachedSuccess);
 			}
 			traceUpToDate(`${this.nameColored}: cache MISS (will execute)`);
@@ -239,6 +241,8 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			!this.forced &&
 			(await this.checkLeafIsUpToDate())
 		) {
+			// Increment leafUpToDateCount before execDone (matches checkIsUpToDate pattern)
+			this.node.taskStats.leafUpToDateCount++;
 			return this.execDone(startTime, BuildResult.UpToDate);
 		}
 		const ret = await this.execCore();
@@ -401,7 +405,14 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 					break;
 			}
 
-			this.node.taskStats.leafBuiltCount++;
+			// Only increment leafBuiltCount for tasks that actually executed
+			// UpToDate and CachedSuccess tasks already incremented leafUpToDateCount
+			const shouldCountAsBuilt =
+				status !== BuildResult.UpToDate && status !== BuildResult.CachedSuccess;
+			if (shouldCountAsBuilt) {
+				this.node.taskStats.leafBuiltCount++;
+			}
+
 			const totalTask =
 				this.node.taskStats.leafTotalCount -
 				this.node.taskStats.leafUpToDateCount;
