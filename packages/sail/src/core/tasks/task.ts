@@ -11,6 +11,8 @@ const traceTaskExec = registerDebug("sail:task:exec");
 const traceTaskExecWait = registerDebug("sail:task:exec:wait");
 const traceTaskDepTask = registerDebug("sail:task:init:dep:task");
 const traceUpToDate = registerDebug("sail:task:uptodate");
+const traceTaskTrigger = registerDebug("sail:task:trigger");
+const traceError = registerDebug("sail:task:error");
 
 /**
  * @beta
@@ -217,5 +219,18 @@ export abstract class Task {
 
 	protected traceExec(msg: string) {
 		traceTaskExec(`${this.nameColored}: ${msg}`);
+	}
+
+	protected traceTrigger(reason: string) {
+		const msg = `${this.nameColored}: [${reason}]`;
+		traceTaskTrigger(msg);
+	}
+
+	protected traceNotUpToDate() {
+		this.traceTrigger("not up to date");
+	}
+
+	protected traceError(msg: string) {
+		traceError(`${this.nameColored}: ${msg}`);
 	}
 }

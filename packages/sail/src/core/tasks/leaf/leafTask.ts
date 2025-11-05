@@ -24,14 +24,12 @@ import type {
 } from "../../sharedCache/index.js";
 import { Task, type TaskExec } from "../task.js";
 
-const traceTaskTrigger = registerDebug("sail:task:trigger");
 const traceTaskCheck = registerDebug("sail:task:check");
 const traceTaskInitDep = registerDebug("sail:task:init:dep");
 const traceTaskInitWeight = registerDebug("sail:task:init:weight");
 const _traceTaskExec = registerDebug("sail:task:exec");
 const _traceTaskCache = registerDebug("sail:task:cache");
 const traceTaskQueue = registerDebug("sail:task:exec:queue");
-const traceError = registerDebug("sail:task:error");
 const traceCacheKey = registerDebug("sail:cache:key");
 const traceUpToDate = registerDebug("sail:task:uptodate");
 
@@ -778,19 +776,6 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 
 	protected getVsCodeErrorMessages(errorMessages: string) {
 		return errorMessages;
-	}
-
-	protected traceNotUpToDate() {
-		this.traceTrigger("not up to date");
-	}
-
-	protected traceTrigger(reason: string) {
-		const msg = `${this.nameColored}: [${reason}]`;
-		traceTaskTrigger(msg);
-	}
-
-	protected traceError(msg: string) {
-		traceError(`${this.nameColored}: ${msg}`);
 	}
 }
 
