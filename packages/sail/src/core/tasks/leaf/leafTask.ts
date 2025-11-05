@@ -784,6 +784,7 @@ export abstract class LeafTask extends Task implements ICacheableTask {
  */
 export abstract class LeafWithDoneFileTask extends LeafTask {
 	private _isIncremental = true;
+	private _cachedDoneFileContent?: string;
 
 	protected get isIncremental() {
 		return this._isIncremental;
@@ -842,8 +843,9 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	protected override async markExecDone() {
 		const doneFileFullPath = this.doneFileFullPath;
 		try {
-			// TODO: checkLeafIsUpToDate already called this. Consider reusing its results to save recomputation of them.
-			const content = await this.getDoneFileContent();
+			// Use cached content from checkLeafIsUpToDate, or compute if not cached
+			const content =
+				this._cachedDoneFileContent ?? (await this.getDoneFileContent());
 			if (content !== undefined) {
 				await writeFile(doneFileFullPath, content);
 			} else {
@@ -864,6 +866,9 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 		const doneFileFullPath = this.doneFileFullPath;
 		try {
 			const doneFileExpectedContent = await this.getDoneFileContent();
+			// Cache the content for reuse in markExecDone
+			this._cachedDoneFileContent = doneFileExpectedContent;
+
 			if (doneFileExpectedContent !== undefined) {
 				const doneFileContent = await readFile(doneFileFullPath, "utf8");
 				if (doneFileContent === doneFileExpectedContent) {
@@ -932,6 +937,12 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 			outputs.push(this.doneFileFullPath);
 		}
 		return outputs;
+	}
+
+	public override reset(): void {
+		super.reset();
+		// Clear cached done file content to ensure fresh computation on next build
+		this._cachedDoneFileContent = undefined;
 	}
 
 	/**
