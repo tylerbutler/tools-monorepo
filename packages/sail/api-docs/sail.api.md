@@ -468,12 +468,6 @@ export abstract class LeafTask extends Task implements ICacheableTask {
     // (undocumented)
     protected get taskWeight(): number;
     // (undocumented)
-    protected traceError(msg: string): void;
-    // (undocumented)
-    protected traceNotUpToDate(): void;
-    // (undocumented)
-    protected traceTrigger(reason: string): void;
-    // (undocumented)
     protected get useWorker(): boolean;
     // (undocumented)
     get weight(): number;
@@ -753,7 +747,13 @@ export abstract class Task {
     // (undocumented)
     toString(): string;
     // (undocumented)
+    protected traceError(msg: string): void;
+    // (undocumented)
     protected traceExec(msg: string): void;
+    // (undocumented)
+    protected traceNotUpToDate(): void;
+    // (undocumented)
+    protected traceTrigger(reason: string): void;
     // (undocumented)
     protected get transitiveDependentLeafTask(): LeafTask[];
 }
