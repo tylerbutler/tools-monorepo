@@ -1,2 +1,3 @@
-import { appDesktopFunction } from '../src/index';
-console.log('Testing appDesktopFunction:', appDesktopFunction());
+import { appDesktopFunction } from "../src/index";
+
+console.log("Testing appDesktopFunction:", appDesktopFunction());

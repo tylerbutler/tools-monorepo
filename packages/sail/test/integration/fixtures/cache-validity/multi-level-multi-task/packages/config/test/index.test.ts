@@ -1,3 +1,3 @@
-import { configFunction } from '../src/index';
+import { configFunction } from "../src/index";
 
-console.log('Testing configFunction:', configFunction());
+console.log("Testing configFunction:", configFunction());

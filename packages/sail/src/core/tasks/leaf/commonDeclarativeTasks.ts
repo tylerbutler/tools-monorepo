@@ -5,13 +5,13 @@
 
 import path from "node:path";
 import { globFn } from "../taskUtils.js";
-import { LeafWithFileStatDoneFileTask } from "./leafTask.js";
+import { LeafWithDoneFileTask } from "./leafTask.js";
 
 /**
  * Task for `oclif manifest` command.
  * Generates oclif manifest file from package.json and source files.
  */
-export class OclifManifestTask extends LeafWithFileStatDoneFileTask {
+export class OclifManifestTask extends LeafWithDoneFileTask {
 	protected async getInputFiles(): Promise<string[]> {
 		const pkgDir = this.node.pkg.directory;
 		const inputs = [path.join(pkgDir, "package.json")];
@@ -33,7 +33,7 @@ export class OclifManifestTask extends LeafWithFileStatDoneFileTask {
  * Task for `oclif readme` command.
  * Generates README and docs from package.json and source files.
  */
-export class OclifReadmeTask extends LeafWithFileStatDoneFileTask {
+export class OclifReadmeTask extends LeafWithDoneFileTask {
 	protected async getInputFiles(): Promise<string[]> {
 		const pkgDir = this.node.pkg.directory;
 		const inputs = [path.join(pkgDir, "package.json")];
@@ -63,7 +63,7 @@ export class OclifReadmeTask extends LeafWithFileStatDoneFileTask {
  * Task for `syncpack lint-semver-ranges` command.
  * Checks package.json files for consistent semver ranges.
  */
-export class SyncpackLintSemverRangesTask extends LeafWithFileStatDoneFileTask {
+export class SyncpackLintSemverRangesTask extends LeafWithDoneFileTask {
 	protected async getInputFiles(): Promise<string[]> {
 		const pkgDir = this.node.pkg.directory;
 		const inputs: string[] = [];
@@ -113,7 +113,7 @@ export class SyncpackLintSemverRangesTask extends LeafWithFileStatDoneFileTask {
  * Task for `syncpack list-mismatches` command.
  * Lists dependency version mismatches across workspace.
  */
-export class SyncpackListMismatchesTask extends LeafWithFileStatDoneFileTask {
+export class SyncpackListMismatchesTask extends LeafWithDoneFileTask {
 	protected async getInputFiles(): Promise<string[]> {
 		const pkgDir = this.node.pkg.directory;
 		const inputs: string[] = [];
@@ -153,7 +153,7 @@ export class SyncpackListMismatchesTask extends LeafWithFileStatDoneFileTask {
  * Task for `markdown-magic` command.
  * Processes markdown files with dynamic content injection.
  */
-export class MarkdownMagicTask extends LeafWithFileStatDoneFileTask {
+export class MarkdownMagicTask extends LeafWithDoneFileTask {
 	protected async getInputFiles(): Promise<string[]> {
 		// Markdown-magic typically has no input files (or they're in config)
 		// The tool finds markdown files to process
@@ -175,7 +175,7 @@ export class MarkdownMagicTask extends LeafWithFileStatDoneFileTask {
  * Task for `jssm-viz` command.
  * Generates SVG visualizations from .fsl state machine files.
  */
-export class JssmVizTask extends LeafWithFileStatDoneFileTask {
+export class JssmVizTask extends LeafWithDoneFileTask {
 	protected async getInputFiles(): Promise<string[]> {
 		const pkgDir = this.node.pkg.directory;
 		const fslFiles = await globFn(path.join(pkgDir, "src/**/*.fsl"), {

@@ -1,2 +1,3 @@
-import { serverFunction } from '../src/index';
-console.log('Testing serverFunction:', serverFunction());
+import { serverFunction } from "../src/index";
+
+console.log("Testing serverFunction:", serverFunction());

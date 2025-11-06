@@ -1,6 +1,6 @@
-import { utilsFunction } from '@cache-test/utils';
-import { configFunction } from '@cache-test/config';
+import { configFunction } from "@cache-test/config";
+import { utilsFunction } from "@cache-test/utils";
 
 export function formatterFunction(): string {
-  return `formatter-${utilsFunction()}-${configFunction()}`;
+	return `formatter-${utilsFunction()}-${configFunction()}`;
 }

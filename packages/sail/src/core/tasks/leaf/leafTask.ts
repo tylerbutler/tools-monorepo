@@ -862,6 +862,11 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 
 /**
  * A LeafTask with a "done file" which represents the work this task needs to do.
+ * Tracks inputs and outputs using file content hashes for deterministic incremental builds.
+ *
+ * Subclasses must implement:
+ * - getInputFiles(): return absolute paths to input files
+ * - getOutputFiles(): return absolute paths to output files
  */
 export abstract class LeafWithDoneFileTask
 	extends LeafTask
@@ -885,6 +890,16 @@ export abstract class LeafWithDoneFileTask
 	protected get configFileFullPaths(): string[] {
 		return [];
 	}
+
+	/**
+	 * @returns the list of absolute paths to files that this task depends on.
+	 */
+	protected abstract getInputFiles(): Promise<string[]>;
+
+	/**
+	 * @returns the list of absolute paths to files that this task generates.
+	 */
+	protected abstract getOutputFiles(): Promise<string[]>;
 
 	/**
 	 * Compute a hash of the donefile content.
@@ -988,8 +1003,8 @@ export abstract class LeafWithDoneFileTask
 	 * Subclasses should call super.getCacheInputFiles() and add their own inputs.
 	 */
 	/**
-	 * Override to automatically include config files in cache inputs (if they exist).
-	 * Subclasses should call super.getCacheInputFiles() and add their own inputs.
+	 * Automatically includes input files from getInputFiles() and config files for caching.
+	 * Subclasses rarely need to override this - just implement getInputFiles() instead.
 	 */
 	public override async getCacheInputFiles(): Promise<string[]> {
 		const inputs = await super.getCacheInputFiles();
@@ -1009,12 +1024,15 @@ export abstract class LeafWithDoneFileTask
 			}
 		}
 
+		// Include input files from subclass
+		inputs.push(...(await this.getInputFiles()));
+
 		return inputs;
 	}
 
 	/**
-	 * Override to include the done file in cache outputs.
-	 * Subclasses should call super.getCacheOutputFiles() and add their own outputs.
+	 * Automatically includes output files from getOutputFiles() and the done file for caching.
+	 * Subclasses rarely need to override this - just implement getOutputFiles() instead.
 	 *
 	 * NOTE: Only includes done file if it exists. The done file may not exist if:
 	 * - getDoneFileContent() returned undefined (e.g., missing tsBuildInfo)
@@ -1028,6 +1046,10 @@ export abstract class LeafWithDoneFileTask
 		if (existsSync(this.doneFileFullPath)) {
 			outputs.push(this.doneFileFullPath);
 		}
+
+		// Include output files from subclass
+		outputs.push(...(await this.getOutputFiles()));
+
 		return outputs;
 	}
 
@@ -1049,76 +1071,6 @@ export abstract class LeafWithDoneFileTask
 			.digest("hex")
 			.substring(0, 8);
 		return `${name}-${hash}.done.build.log`;
-	}
-
-	/**
-	 * Subclass should override these to configure the leaf with done file task
-	 */
-
-	/**
-	 * The content to be written in the "done file".
-	 * @remarks
-	 * This file must have different content if the work needed to be done by this task changes.
-	 * This is typically done by listing and/or hashing the inputs and outputs to this task.
-	 * This is invoked before the task is run to check if an existing done file from a previous run matches: if so, the task can be skipped.
-	 * If not, the task is run, after which this is invoked a second time to produce the contents to write to disk.
-	 */
-	protected abstract getDoneFileContent(): Promise<string | undefined>;
-}
-
-export class UnknownLeafTask extends LeafTask {
-	protected get isIncremental() {
-		return this.command === "";
-	}
-
-	protected async checkLeafIsUpToDate() {
-		if (this.command === "") {
-			// Empty command is always up to date.
-			return true;
-		}
-		// Because we don't know, it is always out of date and need to rebuild
-		this.traceTrigger("Unknown task");
-		return false;
-	}
-}
-
-/**
- * Base class for tasks that track inputs and outputs using file content hashes.
- * This ensures tasks remain deterministic across cache restores and git operations.
- * 
- * Subclasses must implement:
- * - getInputFiles(): return absolute paths to input files
- * - getOutputFiles(): return absolute paths to output files
- */
-export abstract class LeafWithFileStatDoneFileTask extends LeafWithDoneFileTask {
-	/**
-	 * @returns the list of absolute paths to files that this task depends on.
-	 */
-	protected abstract getInputFiles(): Promise<string[]>;
-
-	/**
-	 * @returns the list of absolute paths to files that this task generates.
-	 */
-	protected abstract getOutputFiles(): Promise<string[]>;
-
-	/**
-	 * Automatically includes input files from getInputFiles() for caching.
-	 * Subclasses rarely need to override this - just implement getInputFiles() instead.
-	 */
-	public override async getCacheInputFiles(): Promise<string[]> {
-		const inputs = await super.getCacheInputFiles();
-		inputs.push(...(await this.getInputFiles()));
-		return inputs;
-	}
-
-	/**
-	 * Automatically includes output files from getOutputFiles() for caching.
-	 * Subclasses rarely need to override this - just implement getOutputFiles() instead.
-	 */
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		const outputs = await super.getCacheOutputFiles();
-		outputs.push(...(await this.getOutputFiles()));
-		return outputs;
 	}
 
 	/**
@@ -1172,4 +1124,20 @@ function sortByName(a: { name: string }, b: { name: string }): number {
 		return 1;
 	}
 	return 0;
+}
+
+export class UnknownLeafTask extends LeafTask {
+	protected get isIncremental() {
+		return this.command === "";
+	}
+
+	protected async checkLeafIsUpToDate() {
+		if (this.command === "") {
+			// Empty command is always up to date.
+			return true;
+		}
+		// Because we don't know, it is always out of date and need to rebuild
+		this.traceTrigger("Unknown task");
+		return false;
+	}
 }

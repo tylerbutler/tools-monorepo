@@ -1,3 +1,3 @@
-import { typesFunction } from '../src/index';
+import { typesFunction } from "../src/index";
 
-console.log('Testing typesFunction:', typesFunction());
+console.log("Testing typesFunction:", typesFunction());

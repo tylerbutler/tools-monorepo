@@ -1,3 +1,3 @@
-import { utilsFunction } from '../src/index';
+import { utilsFunction } from "../src/index";
 
-console.log('Testing utilsFunction:', utilsFunction());
+console.log("Testing utilsFunction:", utilsFunction());

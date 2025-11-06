@@ -187,7 +187,9 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 
 			// Verify that at least some packages were affected by the change
 			// (types package and its dependents should have been rebuilt)
-			expect(result.buildGraph.taskStats.leafBuiltCount).toBeGreaterThanOrEqual(3);
+			expect(result.buildGraph.taskStats.leafBuiltCount).toBeGreaterThanOrEqual(
+				3,
+			);
 		}, 300_000);
 	});
 
@@ -203,7 +205,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 
 			const cacheDir = join(ctx.testDir, ".sail-cache");
 			const initialStats = await getCacheStatistics(cacheDir);
-			
+
 			// Corrupt a cache entry by removing manifest.json
 			if (initialStats.validEntries.length > 0) {
 				const entryToCorrupt = initialStats.validEntries[0];
@@ -213,7 +215,9 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 				const result = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 
 				// Should have some cache hits (valid entries) and some builds (corrupted entry)
-				expect(result.buildGraph.taskStats.leafUpToDateCount).toBeGreaterThan(0);
+				expect(result.buildGraph.taskStats.leafUpToDateCount).toBeGreaterThan(
+					0,
+				);
 				expect(result.buildGraph.taskStats.leafBuiltCount).toBeGreaterThan(0);
 			}
 		}, 300_000);
@@ -239,7 +243,9 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 				const result = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 
 				// Build should succeed despite corruption
-				expect(result.buildGraph.taskStats.leafBuiltCount).toBeGreaterThanOrEqual(0);
+				expect(
+					result.buildGraph.taskStats.leafBuiltCount,
+				).toBeGreaterThanOrEqual(0);
 			}
 		}, 300_000);
 	});
@@ -273,7 +279,9 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 				{ concurrency: 16 },
 			);
 
-			expect(secondResult.buildGraph.taskStats.leafUpToDateCount).toBeGreaterThan(0);
+			expect(
+				secondResult.buildGraph.taskStats.leafUpToDateCount,
+			).toBeGreaterThan(0);
 		}, 300_000);
 	});
 
@@ -308,14 +316,22 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			await cp(fixtureSource, ctx.testDir, { recursive: true });
 
 			// First build - all misses
-			const firstResult = await executeBuildAndGetResult(ctx.testDir, ["build"]);
-			expect(firstResult.buildGraph.taskStats.leafBuiltCount).toBeGreaterThan(0);
+			const firstResult = await executeBuildAndGetResult(ctx.testDir, [
+				"build",
+			]);
+			expect(firstResult.buildGraph.taskStats.leafBuiltCount).toBeGreaterThan(
+				0,
+			);
 
 			await waitForFilesystemSync();
 
 			// Second build - should have hits
-			const secondResult = await executeBuildAndGetResult(ctx.testDir, ["build"]);
-			expect(secondResult.buildGraph.taskStats.leafUpToDateCount).toBeGreaterThan(0);
+			const secondResult = await executeBuildAndGetResult(ctx.testDir, [
+				"build",
+			]);
+			expect(
+				secondResult.buildGraph.taskStats.leafUpToDateCount,
+			).toBeGreaterThan(0);
 
 			// Cache hit count should be positive
 			const upToDateCount = secondResult.buildGraph.taskStats.leafUpToDateCount;
@@ -328,9 +344,18 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 
 	describe("Multi-Build Correctness & Cache Hit Rate Analysis", () => {
 		const allPackages = [
-			"utils", "types", "config", "core", "validation",
-			"parser", "formatter", "cli", "server", "client",
-			"app-web", "app-desktop",
+			"utils",
+			"types",
+			"config",
+			"core",
+			"validation",
+			"parser",
+			"formatter",
+			"cli",
+			"server",
+			"client",
+			"app-web",
+			"app-desktop",
 		];
 
 		it("should achieve 100% shared cache hit rate on repeated builds (no donefiles)", async () => {
@@ -341,7 +366,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			// Build 1: Initial build (populates shared cache)
 			const build1 = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 			const breakdown1 = getCacheHitBreakdown(build1);
-			
+
 			// Build 1: Should build all 12 packages
 			expect(breakdown1.totalTasks).toBe(12);
 			expect(breakdown1.tasksBuilt).toBe(12);
@@ -362,7 +387,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			expect(breakdown2.tasksBuilt).toBe(0);
 			expect(breakdown2.totalCacheHits).toBe(12);
 			expect(breakdown2.overallHitRate).toBe(100);
-			
+
 			// With no donefiles, hits should come from shared cache
 			expect(breakdown2.sharedCacheHits).toBeGreaterThanOrEqual(6); // At least half from shared cache
 			expect(breakdown2.sharedCacheHitRate).toBeGreaterThan(40);
@@ -390,7 +415,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			// Build 1: Initial build (populates shared cache)
 			const build1 = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 			const breakdown1 = getCacheHitBreakdown(build1);
-			
+
 			// Build 1: Should build all 12 packages
 			expect(breakdown1.totalTasks).toBe(12);
 			expect(breakdown1.tasksBuilt).toBe(12);
@@ -410,7 +435,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			expect(breakdown2.tasksBuilt).toBe(0);
 			expect(breakdown2.totalCacheHits).toBe(12);
 			expect(breakdown2.overallHitRate).toBe(100);
-			
+
 			// With no local state, hits should come from shared cache
 			expect(breakdown2.sharedCacheHits).toBeGreaterThanOrEqual(6);
 			expect(breakdown2.sharedCacheHitRate).toBeGreaterThan(40);
@@ -432,7 +457,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			for (let i = 2; i <= 5; i++) {
 				// Clean all local state before each build
 				await cleanDonefilesAndOutputs(ctx.testDir, allPackages);
-				
+
 				const result = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 				breakdowns.push(getCacheHitBreakdown(result));
 			}
@@ -447,13 +472,28 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			for (let i = 1; i < 5; i++) {
 				const breakdown = breakdowns[i];
 				expect(breakdown.totalTasks, `Build ${i + 1} total tasks`).toBe(12);
-				expect(breakdown.tasksBuilt, `Build ${i + 1} should not build any tasks`).toBe(0);
-				expect(breakdown.totalCacheHits, `Build ${i + 1} should have full cache hits`).toBe(12);
-				expect(breakdown.overallHitRate, `Build ${i + 1} should have 100% hit rate`).toBe(100);
-				
+				expect(
+					breakdown.tasksBuilt,
+					`Build ${i + 1} should not build any tasks`,
+				).toBe(0);
+				expect(
+					breakdown.totalCacheHits,
+					`Build ${i + 1} should have full cache hits`,
+				).toBe(12);
+				expect(
+					breakdown.overallHitRate,
+					`Build ${i + 1} should have 100% hit rate`,
+				).toBe(100);
+
 				// Should use shared cache (at least half of hits)
-				expect(breakdown.sharedCacheHits, `Build ${i + 1} should use shared cache`).toBeGreaterThanOrEqual(6);
-				expect(breakdown.sharedCacheHitRate, `Build ${i + 1} should have good shared cache hit rate`).toBeGreaterThan(40);
+				expect(
+					breakdown.sharedCacheHits,
+					`Build ${i + 1} should use shared cache`,
+				).toBeGreaterThanOrEqual(6);
+				expect(
+					breakdown.sharedCacheHitRate,
+					`Build ${i + 1} should have good shared cache hit rate`,
+				).toBeGreaterThan(40);
 			}
 		}, 600_000);
 
@@ -465,10 +505,10 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			// Build 1: Initial build (populates shared cache)
 			const build1 = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 			const breakdown1 = getCacheHitBreakdown(build1);
-			
+
 			expect(breakdown1.totalTasks).toBe(12);
 			expect(breakdown1.tasksBuilt).toBe(12);
-			
+
 			await waitForFilesystemSync();
 
 			// Clean only 3 packages (Level 0) to test partial restore
@@ -483,7 +523,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			expect(breakdown2.totalTasks).toBe(12);
 			expect(breakdown2.tasksBuilt).toBe(0);
 			expect(breakdown2.totalCacheHits).toBe(12);
-			
+
 			// Should have at least 3 shared cache hits from cleaned packages
 			expect(breakdown2.sharedCacheHits).toBeGreaterThanOrEqual(3);
 
@@ -498,9 +538,11 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			expect(breakdown3.totalTasks).toBe(12);
 			expect(breakdown3.tasksBuilt).toBe(0);
 			expect(breakdown3.totalCacheHits).toBe(12);
-			
+
 			// Should have more shared cache hits than Build 2 (all 12 cleaned vs 3)
-			expect(breakdown3.sharedCacheHits).toBeGreaterThanOrEqual(breakdown2.sharedCacheHits);
+			expect(breakdown3.sharedCacheHits).toBeGreaterThanOrEqual(
+				breakdown2.sharedCacheHits,
+			);
 			expect(breakdown3.sharedCacheHits).toBeGreaterThanOrEqual(6);
 		}, 600_000);
 
@@ -539,7 +581,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			expect(breakdown2.totalTasks).toBe(breakdown1.totalTasks);
 			expect(breakdown2.tasksBuilt).toBeLessThanOrEqual(breakdown1.tasksBuilt);
 			expect(breakdown2.totalCacheHits).toBeGreaterThan(0);
-			
+
 			// Should use shared cache
 			expect(breakdown2.sharedCacheHits).toBeGreaterThanOrEqual(12); // At least build tasks
 
@@ -571,7 +613,7 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			expect(breakdown1.totalTasks).toBe(12);
 			expect(breakdown1.tasksBuilt).toBe(12);
 			expect(breakdown1.totalCacheHits).toBe(0);
-			
+
 			const cacheDir = join(ctx.testDir, ".sail-cache");
 			const stats1 = await getCacheStatistics(cacheDir);
 
@@ -594,11 +636,11 @@ describe("Cache Validity: Multi-Level Multi-Task Monorepo", () => {
 			expect(breakdown2.tasksBuilt).toBe(0);
 			expect(breakdown2.totalCacheHits).toBe(12);
 			expect(breakdown2.overallHitRate).toBe(100);
-			
+
 			// Should use shared cache (at least half)
 			expect(breakdown2.sharedCacheHits).toBeGreaterThanOrEqual(6);
 			expect(breakdown2.sharedCacheHitRate).toBeGreaterThan(40);
-			
+
 			// Cache entries should remain stable at 12
 			expect(stats2.entriesCount).toBe(12);
 			expect(stats2.corruptedCount).toBe(0);

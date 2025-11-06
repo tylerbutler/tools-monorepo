@@ -1,18 +1,18 @@
 {
-  "name": "@cache-test/validation",
-  "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "test": "echo 'Test passed' && mkdir -p .coverage && echo 'coverage' > .coverage/result.txt",
-    "lint": "echo 'Lint passed' > .lint-output"
-  },
-  "dependencies": {
-    "@cache-test/types": "workspace:*",
-    "@cache-test/config": "workspace:*"
-  },
-  "devDependencies": {
-    "typescript": "~5.5.4"
-  }
+	"name": "@cache-test/validation",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"test": "echo 'Test passed' && mkdir -p .coverage && echo 'coverage' > .coverage/result.txt",
+		"lint": "echo 'Lint passed' > .lint-output"
+	},
+	"dependencies": {
+		"@cache-test/types": "workspace:*",
+		"@cache-test/config": "workspace:*"
+	},
+	"devDependencies": {
+		"typescript": "~5.5.4"
+	}
 }

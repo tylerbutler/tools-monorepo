@@ -59,7 +59,7 @@ export class PrettierTask extends LeafWithDoneFileTask {
 		return [this.getPackageFileFullPath(".prettierrc.json")];
 	}
 
-	protected async getDoneFileContent() {
+	protected override async getDoneFileContent() {
 		if (!this.parsed) {
 			this.traceError(
 				"error generating done file content, unable to understand command line",
@@ -67,72 +67,24 @@ export class PrettierTask extends LeafWithDoneFileTask {
 			return undefined;
 		}
 
-		let ignoreEntries: string[] = [];
-		const ignorePath = this.ignorePath ?? ".prettierignore";
-		const ignoreFile = this.getPackageFileFullPath(ignorePath);
 		try {
-			if (existsSync(ignoreFile)) {
-				const ignoreFileContent = await readFile(ignoreFile, "utf8");
-				ignoreEntries = ignoreFileContent.split(regexNewlineSplit);
-				ignoreEntries = ignoreEntries.filter(
-					(value) => value && !value.startsWith("#"),
-				);
-			} else if (this.ignorePath) {
-				this.traceError(
-					`error generating done file content, unable to find ${ignoreFile}`,
-				);
+			// Include prettier version in done file for tool version tracking
+			const prettierVersion = await getInstalledPackageVersion(
+				"prettier",
+				this.node.pkg.directory,
+			);
+
+			// Get base done file content (includes file hashes)
+			const baseDoneFile = await super.getDoneFileContent();
+			if (!baseDoneFile) {
 				return undefined;
 			}
-		} catch {
-			this.traceError(
-				`error generating done file content, unable to read ${ignoreFile} file`,
-			);
-			return undefined;
-		}
 
-		// filter some of the extension the prettier doesn't care about as well
-		ignoreEntries.push("**/*.log", "**/*.tsbuildinfo");
-
-		const ignoreObject = ignore().add(ignoreEntries);
-		let files: string[] = [];
-		try {
-			// biome-ignore lint/style/useForOf: index-based iteration needed for array access pattern
-			for (let i = 0; i < this.entries.length; i++) {
-				const entry = this.entries[i];
-				const fullPath = this.getPackageFileFullPath(entry);
-				if (existsSync(fullPath)) {
-					if ((await stat(fullPath)).isDirectory()) {
-						// TODO: This includes files that prettier might not check
-						const recursiveFiles = await getRecursiveFiles(fullPath);
-						files.push(
-							...recursiveFiles.map((file) =>
-								path.relative(this.node.pkg.directory, file),
-							),
-						);
-					} else {
-						files.push(entry);
-					}
-				} else {
-					const globFiles = await globFn(entry, {
-						cwd: this.node.pkg.directory,
-					});
-					files.push(...globFiles);
-				}
-			}
-			files = ignoreObject.filter(files);
-			const hashesP = files.map(async (name) => {
-				const hash = await this.node.fileHashCache.getFileHash(
-					this.getPackageFileFullPath(name),
-				);
-				return { name, hash };
-			});
-			const hashes = await Promise.all(hashesP);
+			// Parse and augment with version info
+			const baseContent = JSON.parse(baseDoneFile);
 			return JSON.stringify({
-				version: await getInstalledPackageVersion(
-					"prettier",
-					this.node.pkg.directory,
-				),
-				hashes,
+				version: prettierVersion,
+				...baseContent,
 			});
 		} catch (e) {
 			this.traceError(`error generating done file content. ${e}`);
@@ -199,31 +151,22 @@ export class PrettierTask extends LeafWithDoneFileTask {
 		}
 	}
 
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file and config files from parent class
-		// (config files are now automatically included via configFileFullPaths property)
-		const files = await super.getCacheInputFiles();
+	protected async getInputFiles(): Promise<string[]> {
+		// Return prettier files - base class will hash them automatically
+		const prettierFiles = await this.getPrettierFiles();
 
-		// Add prettier files
-		files.push(...(await this.getPrettierFiles()));
-
-		// Include prettier ignore file
+		// Include prettier ignore file if it exists
 		const ignorePath = this.ignorePath ?? ".prettierignore";
 		const ignoreFile = this.getPackageFileFullPath(ignorePath);
 		if (existsSync(ignoreFile)) {
-			files.push(ignoreFile);
+			prettierFiles.push(ignoreFile);
 		}
 
-		return files;
+		return prettierFiles;
 	}
 
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-
+	protected async getOutputFiles(): Promise<string[]> {
 		// Prettier modifies files in place, so outputs are the same as inputs
-		outputs.push(...(await this.getPrettierFiles()));
-
-		return outputs;
+		return this.getPrettierFiles();
 	}
 }

@@ -1,22 +1,22 @@
 /*!
  * Integration test for cache restoration with task dependencies.
- * 
+ *
  * This test reproduces the bug where tasks with dependencies on restored outputs
  * don't properly restore from cache on subsequent builds.
  */
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { cp } from "node:fs/promises";
 import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { executeBuildAndGetResult } from "../support/buildGraphIntegrationHelper.js";
-import {
-	setupTestContext,
-	type TestContext,
-} from "../support/integrationTestHelpers.js";
 import {
 	cleanDonefilesAndOutputs,
 	waitForFilesystemSync,
 } from "../support/cacheValidationHelpers.js";
+import {
+	setupTestContext,
+	type TestContext,
+} from "../support/integrationTestHelpers.js";
 
 /**
  * Helper to get detailed cache hit breakdown
@@ -31,14 +31,16 @@ interface CacheHitBreakdown {
 	overallHitRate: number;
 }
 
-function getCacheHitBreakdown(result: Awaited<ReturnType<typeof executeBuildAndGetResult>>): CacheHitBreakdown {
+function getCacheHitBreakdown(
+	result: Awaited<ReturnType<typeof executeBuildAndGetResult>>,
+): CacheHitBreakdown {
 	const taskStats = result.buildGraph.taskStats;
 	const sharedCache = result.buildGraph.context?.sharedCache;
 	const sharedCacheStats = sharedCache?.getStatistics() || {
 		hitCount: 0,
 		missCount: 0,
 	};
-	
+
 	const totalCacheHits = taskStats.leafUpToDateCount || 0;
 	const sharedCacheHits = sharedCacheStats.hitCount || 0;
 	const donefileHits = totalCacheHits - sharedCacheHits;
@@ -98,9 +100,18 @@ describe("Cache Restoration with Task Dependencies", () => {
 
 		// Clean all outputs and donefiles to force shared cache usage
 		const allPackages = [
-			"utils", "types", "config", "core", "validation",
-			"parser", "formatter", "cli", "server", "client",
-			"app-web", "app-desktop",
+			"utils",
+			"types",
+			"config",
+			"core",
+			"validation",
+			"parser",
+			"formatter",
+			"cli",
+			"server",
+			"client",
+			"app-web",
+			"app-desktop",
 		];
 		await cleanDonefilesAndOutputs(ctx.testDir, allPackages);
 
@@ -113,7 +124,9 @@ describe("Cache Restoration with Task Dependencies", () => {
 		console.log(`  Tasks built: ${breakdown2.tasksBuilt}`);
 		console.log(`  Cache hits: ${breakdown2.totalCacheHits}`);
 		console.log(`  Shared cache hits: ${breakdown2.sharedCacheHits}`);
-		console.log(`  Shared cache hit rate: ${breakdown2.sharedCacheHitRate.toFixed(1)}%`);
+		console.log(
+			`  Shared cache hit rate: ${breakdown2.sharedCacheHitRate.toFixed(1)}%`,
+		);
 
 		// EXPECTATION: All tasks should restore from cache
 		expect(breakdown2.totalTasks).toBe(12);
@@ -122,13 +135,17 @@ describe("Cache Restoration with Task Dependencies", () => {
 
 		// BUG: If this fails, some tasks didn't restore from cache despite having cache entries
 		if (breakdown2.tasksBuilt > 0) {
-			console.error("\n❌ BUG DETECTED: Some tasks were rebuilt despite cache existing");
+			console.error(
+				"\n❌ BUG DETECTED: Some tasks were rebuilt despite cache existing",
+			);
 			console.error(`   Tasks rebuilt: ${breakdown2.tasksBuilt}`);
 			console.error(`   Expected: 0 (all from cache)`);
 		}
 
 		// This assertion will fail if the bug exists
-		expect(breakdown2.tasksBuilt, "All tasks should restore from cache").toBe(0);
+		expect(breakdown2.tasksBuilt, "All tasks should restore from cache").toBe(
+			0,
+		);
 	}, 300_000);
 
 	it("should maintain cache key consistency across builds", async () => {
@@ -141,7 +158,7 @@ describe("Cache Restoration with Task Dependencies", () => {
 		// Build 1: Create cache
 		const build1 = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 		const sharedCache1 = build1.buildGraph.context?.sharedCache;
-		
+
 		// Get cache stats before cleaning
 		const stats1 = sharedCache1?.getStatistics();
 		const cacheEntriesBefore = stats1?.totalEntries ?? 0;
@@ -151,7 +168,7 @@ describe("Cache Restoration with Task Dependencies", () => {
 		// Build 2: Repeat without cleaning (should use donefiles)
 		const build2 = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 		const breakdown2 = getCacheHitBreakdown(build2);
-		
+
 		// Should be 100% cached via donefiles
 		expect(breakdown2.overallHitRate).toBe(100);
 		expect(breakdown2.tasksBuilt).toBe(0);
@@ -163,7 +180,7 @@ describe("Cache Restoration with Task Dependencies", () => {
 		const breakdown3 = getCacheHitBreakdown(build3);
 		const sharedCache3 = build3.buildGraph.context?.sharedCache;
 		const stats3 = sharedCache3?.getStatistics();
-		
+
 		console.log("\nCache Statistics:");
 		console.log(`  Entries before: ${cacheEntriesBefore}`);
 		console.log(`  Entries after: ${stats3?.totalEntries}`);
@@ -182,14 +199,23 @@ describe("Cache Restoration with Task Dependencies", () => {
 		// This test demonstrates the bug: when tsbuildinfo files are kept but outputs
 		// are cleaned, restored outputs have new timestamps which cause TypeScript to
 		// rebuild dependent tasks even though their cache entries exist.
-		
+
 		const fixtureSource = join(fixturesDir, fixtureName);
 		await cp(fixtureSource, ctx.testDir, { recursive: true });
 
 		const allPackages = [
-			"utils", "types", "config", "core", "validation",
-			"parser", "formatter", "cli", "server", "client",
-			"app-web", "app-desktop",
+			"utils",
+			"types",
+			"config",
+			"core",
+			"validation",
+			"parser",
+			"formatter",
+			"cli",
+			"server",
+			"client",
+			"app-web",
+			"app-desktop",
 		];
 
 		// Build 1: Create cache entries
@@ -202,7 +228,9 @@ describe("Cache Restoration with Task Dependencies", () => {
 		await waitForFilesystemSync();
 
 		// Clean outputs but KEEP tsbuildinfo files
-		await cleanDonefilesAndOutputs(ctx.testDir, allPackages, { keepTsBuildInfo: true });
+		await cleanDonefilesAndOutputs(ctx.testDir, allPackages, {
+			keepTsBuildInfo: true,
+		});
 
 		// Build 2: This should restore from cache but may fail due to tsbuildinfo
 		const build2 = await executeBuildAndGetResult(ctx.testDir, ["build"]);
@@ -219,28 +247,41 @@ describe("Cache Restoration with Task Dependencies", () => {
 		// 1. Updating timestamps when restoring from cache
 		// 2. Always cleaning tsbuildinfo when cleaning outputs
 		// 3. Making cache key computation ignore tsbuildinfo content
-		
+
 		// For now, we expect this to potentially fail (tasks rebuilt)
 		// Uncomment when bug is fixed:
 		// expect(breakdown2.tasksBuilt).toBe(0);
 		// expect(breakdown2.totalCacheHits).toBe(12);
-		
+
 		// Document actual behavior
-		console.log("\n⚠️  BUG: Tasks may be rebuilt even though cache entries exist");
+		console.log(
+			"\n⚠️  BUG: Tasks may be rebuilt even though cache entries exist",
+		);
 		console.log(`   Expected: 0 tasks built, 12 from cache`);
-		console.log(`   Actual: ${breakdown2.tasksBuilt} tasks built, ${breakdown2.totalCacheHits} from cache`);
+		console.log(
+			`   Actual: ${breakdown2.tasksBuilt} tasks built, ${breakdown2.totalCacheHits} from cache`,
+		);
 	}, 300_000);
 
 	it("WORKAROUND: cleaning tsbuildinfo files prevents cache misses", async () => {
 		// This test shows the workaround: always clean tsbuildinfo files along with outputs
-		
+
 		const fixtureSource = join(fixturesDir, fixtureName);
 		await cp(fixtureSource, ctx.testDir, { recursive: true });
 
 		const allPackages = [
-			"utils", "types", "config", "core", "validation",
-			"parser", "formatter", "cli", "server", "client",
-			"app-web", "app-desktop",
+			"utils",
+			"types",
+			"config",
+			"core",
+			"validation",
+			"parser",
+			"formatter",
+			"cli",
+			"server",
+			"client",
+			"app-web",
+			"app-desktop",
 		];
 
 		// Build 1: Create cache entries

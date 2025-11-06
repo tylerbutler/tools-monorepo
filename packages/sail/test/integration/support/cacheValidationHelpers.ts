@@ -1,4 +1,4 @@
-import { readdir, readFile, rm, writeFile, unlink } from "node:fs/promises";
+import { readdir, readFile, rm, unlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { expect } from "vitest";
 
@@ -27,7 +27,9 @@ export interface CacheEntryValidation {
 /**
  * Get statistics about cache entries in a cache directory.
  */
-export async function getCacheStatistics(cacheDir: string): Promise<CacheStats> {
+export async function getCacheStatistics(
+	cacheDir: string,
+): Promise<CacheStats> {
 	const stats: CacheStats = {
 		storeCount: 0,
 		hitCount: 0,
@@ -40,20 +42,20 @@ export async function getCacheStatistics(cacheDir: string): Promise<CacheStats> 
 
 	try {
 		// Cache entries are stored in v1/entries/ subdirectory
-		const entriesDir = join(cacheDir, 'v1', 'entries');
+		const entriesDir = join(cacheDir, "v1", "entries");
 		const entries = await readdir(entriesDir, { withFileTypes: true });
-		
+
 		for (const entry of entries) {
 			if (entry.isDirectory()) {
 				// Skip hidden directories
-				if (entry.name.startsWith('.')) {
+				if (entry.name.startsWith(".")) {
 					continue;
 				}
-				
+
 				const validation = await verifyCacheEntry(entriesDir, entry.name);
-				
+
 				stats.entriesCount++;
-				
+
 				if (validation.valid) {
 					stats.validEntries.push(entry.name);
 				} else {
@@ -134,7 +136,7 @@ export async function corruptCacheEntry(
 	taskId: string,
 	corruptionType: "missing-manifest" | "invalid-json" | "missing-outputs",
 ): Promise<void> {
-	const entriesDir = join(cacheDir, 'v1', 'entries');
+	const entriesDir = join(cacheDir, "v1", "entries");
 	const entryPath = join(entriesDir, taskId);
 	const manifestPath = join(entryPath, "manifest.json");
 
@@ -172,11 +174,16 @@ export async function assertAllTasksCached(
 	cacheDir: string,
 	taskIds: string[],
 ): Promise<void> {
-	const entriesDir = join(cacheDir, 'v1', 'entries');
+	const entriesDir = join(cacheDir, "v1", "entries");
 	for (const taskId of taskIds) {
 		const validation = await verifyCacheEntry(entriesDir, taskId);
-		expect(validation.exists, `Cache entry should exist for ${taskId}`).toBe(true);
-		expect(validation.valid, `Cache entry should be valid for ${taskId}: ${validation.reason}`).toBe(true);
+		expect(validation.exists, `Cache entry should exist for ${taskId}`).toBe(
+			true,
+		);
+		expect(
+			validation.valid,
+			`Cache entry should be valid for ${taskId}: ${validation.reason}`,
+		).toBe(true);
 	}
 }
 
@@ -187,10 +194,13 @@ export async function assertCacheEntryValid(
 	cacheDir: string,
 	taskId: string,
 ): Promise<void> {
-	const entriesDir = join(cacheDir, 'v1', 'entries');
+	const entriesDir = join(cacheDir, "v1", "entries");
 	const entry = await verifyCacheEntry(entriesDir, taskId);
 	expect(entry.exists, `Cache entry should exist: ${taskId}`).toBe(true);
-	expect(entry.valid, `Cache entry should be valid: ${taskId} - ${entry.reason}`).toBe(true);
+	expect(
+		entry.valid,
+		`Cache entry should be valid: ${taskId} - ${entry.reason}`,
+	).toBe(true);
 }
 
 /**
@@ -198,7 +208,10 @@ export async function assertCacheEntryValid(
  */
 export async function assertNoCacheCorruption(cacheDir: string): Promise<void> {
 	const stats = await getCacheStatistics(cacheDir);
-	expect(stats.corruptedCount, `Found ${stats.corruptedCount} corrupted entries: ${stats.corruptedEntries.join(", ")}`).toBe(0);
+	expect(
+		stats.corruptedCount,
+		`Found ${stats.corruptedCount} corrupted entries: ${stats.corruptedEntries.join(", ")}`,
+	).toBe(0);
 }
 
 /**
@@ -223,7 +236,7 @@ export async function waitForFilesystemSync(): Promise<void> {
 /**
  * Clean all donefiles and output directories to force shared cache usage.
  * This removes donefiles, dist/ directories, AND tsbuildinfo files from all packages.
- * 
+ *
  * NOTE: We must remove tsbuildinfo files because they contain TypeScript's incremental
  * compilation state which includes timestamps. If tsbuildinfo exists when outputs are
  * restored with new timestamps, TypeScript sees the outputs as "newer" and triggers
@@ -235,41 +248,39 @@ export async function cleanDonefilesAndOutputs(
 	options?: { keepTsBuildInfo?: boolean },
 ): Promise<void> {
 	const packagesDir = join(testDir, "packages");
-	
+
 	for (const pkg of packageNames) {
 		const pkgDir = join(packagesDir, pkg);
-		
+
 		// Remove dist directory
 		const distDir = join(pkgDir, "dist");
 		await rm(distDir, { recursive: true, force: true });
-		
+
 		// Remove coverage directory
 		const coverageDir = join(pkgDir, ".coverage");
 		await rm(coverageDir, { recursive: true, force: true });
-		
+
 		// Remove lint output
 		const lintOutput = join(pkgDir, ".lint-output");
 		await rm(lintOutput, { force: true }).catch(() => {});
-		
+
 		// Remove donefile markers (various possible names)
-		const donefilePatterns = [
-			".donefile",
-			"donefile",
-			".buildcomplete",
-		];
-		
+		const donefilePatterns = [".donefile", "donefile", ".buildcomplete"];
+
 		for (const pattern of donefilePatterns) {
 			const donefilePath = join(pkgDir, pattern);
 			await rm(donefilePath, { force: true }).catch(() => {});
 		}
-		
+
 		// Remove tsbuildinfo files unless explicitly kept
 		// These contain TypeScript incremental state with timestamps
 		if (!options?.keepTsBuildInfo) {
 			try {
 				const { readdir } = await import("node:fs/promises");
 				const files = await readdir(pkgDir);
-				const tsbuildInfoFiles = files.filter(f => f.endsWith(".tsbuildinfo"));
+				const tsbuildInfoFiles = files.filter((f) =>
+					f.endsWith(".tsbuildinfo"),
+				);
 				for (const file of tsbuildInfoFiles) {
 					await rm(join(pkgDir, file), { force: true }).catch(() => {});
 				}

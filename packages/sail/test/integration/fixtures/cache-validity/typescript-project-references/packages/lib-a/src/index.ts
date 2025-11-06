@@ -1,13 +1,13 @@
 export function greet(name: string): string {
-  return `Hello, ${name}!`;
+	return `Hello, ${name}!`;
 }
 
 export class Calculator {
-  add(a: number, b: number): number {
-    return a + b;
-  }
-  
-  multiply(a: number, b: number): number {
-    return a * b;
-  }
+	add(a: number, b: number): number {
+		return a + b;
+	}
+
+	multiply(a: number, b: number): number {
+		return a * b;
+	}
 }

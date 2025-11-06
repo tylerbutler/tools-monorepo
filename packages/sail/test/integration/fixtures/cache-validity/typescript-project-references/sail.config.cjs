@@ -6,7 +6,12 @@ module.exports = {
 			dependsOn: ["^build", "build:gen"],
 			script: true,
 			cache: {
-				inputs: ["src/**/*.ts", "!src/test/**", "tsconfig.json", "package.json"],
+				inputs: [
+					"src/**/*.ts",
+					"!src/test/**",
+					"tsconfig.json",
+					"package.json",
+				],
 				outputs: ["dist/*.js", "dist/*.d.ts", "dist/*.map", "*.tsbuildinfo"],
 			},
 		},
@@ -38,7 +43,10 @@ module.exports = {
 			dependsOn: ["build"],
 			script: true,
 			cache: {
-				inputs: ["src/test/**/*.ts", "src/test/tsconfig.no-exactOptionalPropertyTypes.json"],
+				inputs: [
+					"src/test/**/*.ts",
+					"src/test/tsconfig.no-exactOptionalPropertyTypes.json",
+				],
 				outputs: ["dist/test-no-exact/**", "src/test/*.tsbuildinfo"],
 			},
 		},

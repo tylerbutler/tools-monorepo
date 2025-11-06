@@ -8,9 +8,9 @@ import {
 	gitignoreDefaultValue,
 } from "../../sailConfig.js";
 import type { TaskHandlerFunction } from "../taskHandlers.js";
-import { type LeafTask, LeafWithFileStatDoneFileTask } from "./leafTask.js";
+import { type LeafTask, LeafWithDoneFileTask } from "./leafTask.js";
 
-class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
+class DeclarativeTaskHandler extends LeafWithDoneFileTask {
 	public constructor(
 		node: BuildGraphPackage,
 		command: string,

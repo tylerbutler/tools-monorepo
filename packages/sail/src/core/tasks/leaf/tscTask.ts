@@ -706,6 +706,17 @@ export abstract class TscDependentTask extends LeafWithDoneFileTask {
 			return undefined;
 		}
 	}
+
+	protected async getInputFiles(): Promise<string[]> {
+		// TscDependentTask uses tsBuildInfo-based tracking
+		return [];
+	}
+
+	protected async getOutputFiles(): Promise<string[]> {
+		// TscDependentTask doesn't track output files separately
+		return [];
+	}
+
 	protected abstract override get configFileFullPaths(): string[];
 	protected abstract getToolVersion(): Promise<string>;
 }

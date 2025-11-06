@@ -4,11 +4,6 @@ import path from "node:path";
 import { globFn, loadModule, toPosixPath } from "../taskUtils.js";
 import { LeafWithDoneFileTask } from "./leafTask.js";
 
-interface DoneFileContent {
-	version: string;
-	config: unknown;
-	sources: { [srcFile: string]: string };
-}
 export class WebpackTask extends LeafWithDoneFileTask {
 	protected override get taskWeight() {
 		return 5; // generally expensive relative to other tasks
@@ -25,24 +20,23 @@ export class WebpackTask extends LeafWithDoneFileTask {
 				this.configFileFullPaths[0],
 				this.package.packageJson.type,
 			);
-			const content: DoneFileContent = {
+
+			// Get base done file content (includes file hashes)
+			const baseDoneFile = await super.getDoneFileContent();
+			if (!baseDoneFile) {
+				return undefined;
+			}
+
+			// Parse and augment with webpack-specific metadata
+			const baseContent = JSON.parse(baseDoneFile);
+			return JSON.stringify({
 				version: await this.getVersion(),
 				config:
 					typeof config === "function"
 						? config(this.getEnvArguments())
 						: config,
-				sources: {},
-			};
-
-			// TODO: this is specific to the microsoft/FluidFramework repo set up.
-			const srcGlob = `${toPosixPath(this.node.pkg.directory)}/src/**/*.*`;
-			const srcFiles = await globFn(srcGlob);
-			for (const srcFile of srcFiles) {
-				content.sources[srcFile] =
-					await this.node.fileHashCache.getFileHash(srcFile);
-			}
-
-			return JSON.stringify(content);
+				...baseContent,
+			});
 		} catch (e) {
 			this.traceError(`error generating done file content ${e}`);
 			return undefined;
@@ -100,20 +94,20 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		return this.node.getLockFileHash();
 	}
 
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file and config files from parent class
-		// (config files are now automatically included via configFileFullPaths property)
-		const inputs = await super.getCacheInputFiles();
-
+	protected async getInputFiles(): Promise<string[]> {
 		// Include all source files in src directory
+		// TODO: this is specific to the microsoft/FluidFramework repo set up.
 		const srcGlob = `${toPosixPath(this.node.pkg.directory)}/src/**/*.*`;
 		try {
-			const srcFiles = await globFn(srcGlob);
-			inputs.push(...srcFiles);
+			return await globFn(srcGlob);
 		} catch (error) {
 			this.traceError(`Failed to glob source files for webpack: ${error}`);
+			return [];
 		}
+	}
 
-		return inputs;
+	protected async getOutputFiles(): Promise<string[]> {
+		// WebpackTask doesn't track output files separately (outputs vary by config)
+		return [];
 	}
 }

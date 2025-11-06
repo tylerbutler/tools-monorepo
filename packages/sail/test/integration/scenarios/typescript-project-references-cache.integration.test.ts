@@ -1,35 +1,37 @@
 /*!
  * Integration test to reproduce cache restoration bug with TypeScript project references.
- * 
+ *
  * This test reproduces the FluidFramework issue where test compilation tasks
  * that have TypeScript project references to main compilation don't properly
  * restore from cache after outputs are cleaned.
  */
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { cp } from "node:fs/promises";
 import { join } from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { executeBuildAndGetResult } from "../support/buildGraphIntegrationHelper.js";
-import {
-	setupTestContext,
-	type TestContext,
-} from "../support/integrationTestHelpers.js";
 import {
 	cleanDonefilesAndOutputs,
 	waitForFilesystemSync,
 } from "../support/cacheValidationHelpers.js";
+import {
+	setupTestContext,
+	type TestContext,
+} from "../support/integrationTestHelpers.js";
 
 /**
  * Helper to get cache statistics
  */
-function getCacheStats(result: Awaited<ReturnType<typeof executeBuildAndGetResult>>) {
+function getCacheStats(
+	result: Awaited<ReturnType<typeof executeBuildAndGetResult>>,
+) {
 	const taskStats = result.buildGraph.taskStats;
 	const sharedCache = result.buildGraph.context?.sharedCache;
 	const sharedCacheStats = sharedCache?.getStatistics() || {
 		hitCount: 0,
 		missCount: 0,
 	};
-	
+
 	const totalCacheHits = taskStats.leafUpToDateCount || 0;
 	const sharedCacheHits = sharedCacheStats.hitCount || 0;
 	const tasksBuilt = taskStats.leafBuiltCount || 0;
@@ -64,13 +66,21 @@ describe("TypeScript Project References Cache Bug", () => {
 
 		// Build 1: Initial build - creates cache entries
 		console.log("\n=== Build 1: Initial build ===");
-		const build1 = await executeBuildAndGetResult(ctx.testDir, ["build", "build:test:esm", "build:test:cjs", "build:test:no-exact"]);
+		const build1 = await executeBuildAndGetResult(ctx.testDir, [
+			"build",
+			"build:test:esm",
+			"build:test:cjs",
+			"build:test:no-exact",
+		]);
 		const stats1 = getCacheStats(build1);
 
 		console.log(`  Total tasks: ${stats1.totalTasks}`);
 		console.log(`  Tasks built: ${stats1.tasksBuilt}`);
 		console.log(`  Cache hits: ${stats1.totalCacheHits}`);
-		console.log(`  Shared cache stats:`, build1.buildGraph.context?.sharedCache?.getStatistics());
+		console.log(
+			`  Shared cache stats:`,
+			build1.buildGraph.context?.sharedCache?.getStatistics(),
+		);
 
 		// Verify initial build executed tasks
 		expect(stats1.tasksBuilt).toBeGreaterThan(0);
@@ -82,8 +92,15 @@ describe("TypeScript Project References Cache Bug", () => {
 		await cleanDonefilesAndOutputs(ctx.testDir, ["lib-a"]);
 
 		// Build 2: After cleaning - should restore ALL from cache
-		console.log("\n=== Build 2: After cleaning (should restore from cache) ===");
-		const build2 = await executeBuildAndGetResult(ctx.testDir, ["build", "build:test:esm", "build:test:cjs", "build:test:no-exact"]);
+		console.log(
+			"\n=== Build 2: After cleaning (should restore from cache) ===",
+		);
+		const build2 = await executeBuildAndGetResult(ctx.testDir, [
+			"build",
+			"build:test:esm",
+			"build:test:cjs",
+			"build:test:no-exact",
+		]);
 		const stats2 = getCacheStats(build2);
 
 		console.log(`  Total tasks: ${stats2.totalTasks}`);
@@ -93,13 +110,17 @@ describe("TypeScript Project References Cache Bug", () => {
 		console.log(`  Shared cache misses: ${stats2.sharedCacheMisses}`);
 
 		// EXPECTATION: All tasks should restore from cache
-		// BUG: Test compilation tasks (build:test:esm, build:test:cjs, build:test:no-exact) 
+		// BUG: Test compilation tasks (build:test:esm, build:test:cjs, build:test:no-exact)
 		// rebuild because they see main compilation outputs with new timestamps via project reference
-		
+
 		console.log("\n=== Analysis ===");
 		if (stats2.tasksBuilt > 0) {
-			console.log("❌ BUG DETECTED: Test tasks were rebuilt despite cache existing");
-			console.log(`   This happens because TypeScript project references cause`);
+			console.log(
+				"❌ BUG DETECTED: Test tasks were rebuilt despite cache existing",
+			);
+			console.log(
+				`   This happens because TypeScript project references cause`,
+			);
 			console.log(`   the test tasks to see main outputs with new timestamps.`);
 		} else {
 			console.log("✅ All tasks restored from cache");

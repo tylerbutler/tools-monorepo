@@ -1,3 +1,3 @@
 export function utilsFunction(): string {
-  return "utils";
+	return "utils";
 }

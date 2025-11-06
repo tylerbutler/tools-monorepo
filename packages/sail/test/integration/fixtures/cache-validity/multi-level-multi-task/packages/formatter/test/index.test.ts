@@ -1,2 +1,3 @@
-import { formatterFunction } from '../src/index';
-console.log('Testing formatterFunction:', formatterFunction());
+import { formatterFunction } from "../src/index";
+
+console.log("Testing formatterFunction:", formatterFunction());

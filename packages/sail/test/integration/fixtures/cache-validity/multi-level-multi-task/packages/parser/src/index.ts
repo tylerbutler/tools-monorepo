@@ -1,6 +1,6 @@
-import { utilsFunction } from '@cache-test/utils';
-import { typesFunction } from '@cache-test/types';
+import { typesFunction } from "@cache-test/types";
+import { utilsFunction } from "@cache-test/utils";
 
 export function parserFunction(): string {
-  return `parser-${utilsFunction()}-${typesFunction()}`;
+	return `parser-${utilsFunction()}-${typesFunction()}`;
 }

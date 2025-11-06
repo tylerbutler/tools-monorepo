@@ -1,2 +1,3 @@
-import { appWebFunction } from '../src/index';
-console.log('Testing appWebFunction:', appWebFunction());
+import { appWebFunction } from "../src/index";
+
+console.log("Testing appWebFunction:", appWebFunction());

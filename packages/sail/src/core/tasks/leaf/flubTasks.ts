@@ -6,10 +6,7 @@ import { GitRepo } from "../../../common/gitRepo.js";
 import { getSailConfig } from "../../../core/config.js";
 import { sha256 } from "../../hash.js";
 import { globFn } from "../taskUtils.js";
-import {
-	LeafWithDoneFileTask,
-	LeafWithFileStatDoneFileTask,
-} from "./leafTask.js";
+import { LeafWithDoneFileTask } from "./leafTask.js";
 
 export class FlubListTask extends LeafWithDoneFileTask {
 	private getReleaseGroup() {
@@ -25,7 +22,7 @@ export class FlubListTask extends LeafWithDoneFileTask {
 		return split.length < 3 || split[2].startsWith("-") ? undefined : split[2];
 	}
 
-	protected async getDoneFileContent(): Promise<string | undefined> {
+	protected override async getDoneFileContent(): Promise<string | undefined> {
 		const resourceGroup = this.getReleaseGroup();
 		if (resourceGroup === undefined) {
 			return undefined;
@@ -37,6 +34,16 @@ export class FlubListTask extends LeafWithDoneFileTask {
 			return undefined;
 		}
 		return JSON.stringify(packages.map((pkg) => [pkg.name, pkg.packageJson]));
+	}
+
+	protected async getInputFiles(): Promise<string[]> {
+		// FlubListTask doesn't use file-based tracking
+		return [];
+	}
+
+	protected async getOutputFiles(): Promise<string[]> {
+		// FlubListTask doesn't produce output files
+		return [];
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {
@@ -66,7 +73,7 @@ export class FlubCheckLayerTask extends LeafWithDoneFileTask {
 		return existsSync(infoFilePath) ? readFile(infoFilePath) : undefined;
 	}
 
-	protected async getDoneFileContent(): Promise<string | undefined> {
+	protected override async getDoneFileContent(): Promise<string | undefined> {
 		const layerInfoFile = await this.getLayerInfoFile();
 		return layerInfoFile
 			? JSON.stringify({
@@ -76,6 +83,16 @@ export class FlubCheckLayerTask extends LeafWithDoneFileTask {
 					),
 				})
 			: undefined;
+	}
+
+	protected async getInputFiles(): Promise<string[]> {
+		// FlubCheckLayerTask doesn't use file-based tracking
+		return [];
+	}
+
+	protected async getOutputFiles(): Promise<string[]> {
+		// FlubCheckLayerTask doesn't produce output files
+		return [];
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {
@@ -88,7 +105,7 @@ export class FlubCheckLayerTask extends LeafWithDoneFileTask {
 }
 
 export class FlubCheckPolicyTask extends LeafWithDoneFileTask {
-	protected async getDoneFileContent(): Promise<string | undefined> {
+	protected override async getDoneFileContent(): Promise<string | undefined> {
 		// We are using the "commit" (for HEAD) as a summary of the state of unchanged files to speed this up.
 		const gitRepo = new GitRepo(this.node.pkg.directory);
 
@@ -100,6 +117,16 @@ export class FlubCheckPolicyTask extends LeafWithDoneFileTask {
 			commit: await gitRepo.getCurrentSha(),
 			modifications: modificationHash,
 		});
+	}
+
+	protected async getInputFiles(): Promise<string[]> {
+		// FlubCheckPolicyTask uses git-based tracking
+		return [];
+	}
+
+	protected async getOutputFiles(): Promise<string[]> {
+		// FlubCheckPolicyTask doesn't produce output files
+		return [];
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {
@@ -124,7 +151,7 @@ const changesetConfigPath = ".changeset/config.json";
  * Outputs:
  * - src/test/types/validate*Previous.generated.ts (default output location)
  */
-export class FlubGenerateTypeTestsTask extends LeafWithFileStatDoneFileTask {
+export class FlubGenerateTypeTestsTask extends LeafWithDoneFileTask {
 	/**
 	 * Parse command line arguments to extract output directory and file pattern.
 	 * Defaults match the flub command defaults:
@@ -165,7 +192,7 @@ export class FlubGenerateTypeTestsTask extends LeafWithFileStatDoneFileTask {
 	}
 }
 
-export class FlubGenerateChangesetConfigTask extends LeafWithFileStatDoneFileTask {
+export class FlubGenerateChangesetConfigTask extends LeafWithDoneFileTask {
 	/**
 	 * All of these paths are assumed to be relative to the Sail root - the directory in which the Sail config
 	 * file is found.

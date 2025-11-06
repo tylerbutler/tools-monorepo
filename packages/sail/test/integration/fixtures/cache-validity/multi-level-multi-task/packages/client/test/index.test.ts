@@ -1,2 +1,3 @@
-import { clientFunction } from '../src/index';
-console.log('Testing clientFunction:', clientFunction());
+import { clientFunction } from "../src/index";
+
+console.log("Testing clientFunction:", clientFunction());

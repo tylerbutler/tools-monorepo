@@ -1,10 +1,10 @@
 {
-  "name": "typescript-project-references-fixture",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "devDependencies": {
-    "typescript": "^5.9.3"
-  }
+	"name": "typescript-project-references-fixture",
+	"private": true,
+	"workspaces": [
+		"packages/*"
+	],
+	"devDependencies": {
+		"typescript": "^5.9.3"
+	}
 }
