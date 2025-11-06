@@ -22,13 +22,6 @@ class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
 	}
 
 	/**
-	 * Use hashes instead of modified times in donefile.
-	 */
-	protected override get useHashes(): boolean {
-		return true;
-	}
-
-	/**
 	 * Gets all the input or output files for the task based on the globs configured for that task.
 	 *
 	 * @param mode - Whether to use the input or output globs.

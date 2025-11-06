@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "../../dist/test-cjs",
+    "rootDir": "./",
+    "composite": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "incremental": true
+  },
+  "include": ["./**/*"],
+  "references": [
+    {
+      "path": "../.."
+    }
+  ]
+}

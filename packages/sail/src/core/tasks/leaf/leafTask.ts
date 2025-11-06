@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import { existsSync } from "node:fs";
-import { readFile, stat, unlink, writeFile } from "node:fs/promises";
+import { readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { AsyncPriorityQueue } from "async";
 import registerDebug from "debug";
@@ -1082,6 +1082,14 @@ export class UnknownLeafTask extends LeafTask {
 	}
 }
 
+/**
+ * Base class for tasks that track inputs and outputs using file content hashes.
+ * This ensures tasks remain deterministic across cache restores and git operations.
+ * 
+ * Subclasses must implement:
+ * - getInputFiles(): return absolute paths to input files
+ * - getOutputFiles(): return absolute paths to output files
+ */
 export abstract class LeafWithFileStatDoneFileTask extends LeafWithDoneFileTask {
 	/**
 	 * @returns the list of absolute paths to files that this task depends on.
@@ -1092,17 +1100,6 @@ export abstract class LeafWithFileStatDoneFileTask extends LeafWithDoneFileTask 
 	 * @returns the list of absolute paths to files that this task generates.
 	 */
 	protected abstract getOutputFiles(): Promise<string[]>;
-
-	/**
-	 * If this returns true, then the donefile will use the hash of the file contents instead of the last modified time
-	 * and other file stats.
-	 *
-	 * Hashing is roughly 20% slower than the stats-based approach, but is less susceptible to getting invalidated by
-	 * other processes like git touching files but not ultimately changing their contents.
-	 */
-	protected get useHashes(): boolean {
-		return false;
-	}
 
 	/**
 	 * Automatically includes input files from getInputFiles() for caching.
@@ -1124,44 +1121,12 @@ export abstract class LeafWithFileStatDoneFileTask extends LeafWithDoneFileTask 
 		return outputs;
 	}
 
+	/**
+	 * Generates donefile content based on file content hashes.
+	 * Using hashes instead of file stats ensures consistency across cache restores
+	 * and avoids invalidation when files are touched but not changed.
+	 */
 	protected async getDoneFileContent(): Promise<string | undefined> {
-		if (this.useHashes) {
-			return this.getHashDoneFileContent();
-		}
-
-		// Gather the file information
-		try {
-			const srcFiles = await this.getInputFiles();
-			const dstFiles = await this.getOutputFiles();
-			const srcTimesP = Promise.all(
-				srcFiles
-					.map((match) => this.getPackageFileFullPath(match))
-					.map((match) => stat(match)),
-			);
-			const dstTimesP = Promise.all(
-				dstFiles
-					.map((match) => this.getPackageFileFullPath(match))
-					.map((match) => stat(match)),
-			);
-			const [srcTimes, dstTimes] = await Promise.all([srcTimesP, dstTimesP]);
-
-			const srcInfo = srcTimes.map((srcTime) => {
-				return { mtimeMs: srcTime.mtimeMs, size: srcTime.size };
-			});
-			const dstInfo = dstTimes.map((dstTime) => {
-				return { mtimeMs: dstTime.mtimeMs, size: dstTime.size };
-			});
-			return JSON.stringify({ srcFiles, dstFiles, srcInfo, dstInfo });
-		} catch (error) {
-			this.traceError(
-				`error comparing file times: ${(error as Error).message}`,
-			);
-			this.traceTrigger("failed to get file stats");
-			return undefined;
-		}
-	}
-
-	private async getHashDoneFileContent(): Promise<string | undefined> {
 		const mapHash = async (name: string) => {
 			const hash = await this.node.fileHashCache.getFileHash(
 				this.getPackageFileFullPath(name),

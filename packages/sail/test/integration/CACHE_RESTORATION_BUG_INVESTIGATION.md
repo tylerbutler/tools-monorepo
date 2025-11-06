@@ -184,3 +184,47 @@ await rm("*.tsbuildinfo", { force: true });
 - `test/integration/support/cacheValidationHelpers.ts`: Added tsbuildinfo cleaning
 - `test/integration/scenarios/cache-restoration-dependencies.integration.test.ts`: Added bug reproduction tests
 - `test/integration/CACHE_RESTORATION_BUG_INVESTIGATION.md`: This document
+
+## UPDATE: November 5, 2024
+
+### New Fixture Created: typescript-project-references
+
+Created a fixture that mimics FluidFramework's structure:
+- Main TypeScript compilation with `composite: true`  
+- Test compilation in `src/test/tsconfig.json` with project reference: `"references": [{ "path": "../.." }]`
+- Two separate sail tasks: `build` and `build:test`
+
+### Test Results
+
+**UNEXPECTED: Bug NOT reproduced!**
+
+```
+Build 1 (initial):
+  Tasks built: 2
+  Cache entries created: 2
+
+Build 2 (after cleaning outputs):
+  Tasks built: 0
+  Cache hits: 2
+  ✅ 100% cache hit rate
+```
+
+### Analysis
+
+The TypeScript project references alone are **NOT** sufficient to reproduce the bug. Both tasks restored perfectly from cache after cleaning outputs.
+
+###Next Steps to Reproduce
+
+The bug in FluidFramework (57% cache hit rate) must require additional conditions:
+1. **More complex dependency chains**: FluidFramework has multi-level package dependencies
+2. **Different TypeScript configurations**: FluidFramework may have specific tsconfig settings
+3. **Different cache inputs**: The cache key computation may differ
+4. **Already fixed**: The issue may have been resolved in recent changes
+
+### Recommendation
+
+Test directly with FluidFramework to:
+1. Confirm the bug still exists
+2. Identify what specific conditions trigger it
+3. Compare cache keys between builds to see what's changing
+

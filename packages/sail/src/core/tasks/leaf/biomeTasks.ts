@@ -13,13 +13,6 @@ import { LeafWithFileStatDoneFileTask } from "./leafTask.js";
  * Internally the task uses git itself to enumerate files, and files that aren't enumerated are not considered.
  */
 export class BiomeTask extends LeafWithFileStatDoneFileTask {
-	/**
-	 * Use hashes instead of modified times in donefile.
-	 */
-	protected override get useHashes(): boolean {
-		return true;
-	}
-
 	private _configReader: BiomeConfigReader | undefined;
 
 	private async getBiomeConfigReader(): Promise<BiomeConfigReader> {
