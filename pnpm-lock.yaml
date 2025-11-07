@@ -67,7 +67,7 @@ importers:
         version: 7.7.3
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       sort-tsconfig:
         specifier: workspace:^
         version: link:packages/sort-tsconfig
@@ -253,7 +253,7 @@ importers:
         version: 0.9.0
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       svelte:
         specifier: ^5.41.2
         version: 5.41.2
@@ -380,7 +380,7 @@ importers:
         version: 6.0.1
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       tempy:
         specifier: ^3.1.0
         version: 3.1.0
@@ -434,7 +434,7 @@ importers:
         version: 3.28.0
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       strip-ansi:
         specifier: ^7.1.2
         version: 7.1.2
@@ -601,7 +601,7 @@ importers:
         version: 6.1.6
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       start-server-and-test:
         specifier: ^2.1.2
         version: 2.1.2
@@ -937,7 +937,7 @@ importers:
         version: 3.28.0
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.5
@@ -1123,6 +1123,9 @@ importers:
       lodash.isequal:
         specifier: ^4.5.0
         version: 4.5.0
+      log-update:
+        specifier: ^7.0.1
+        version: 7.0.1
       multimatch:
         specifier: ^5.0.0
         version: 5.0.0
@@ -1147,6 +1150,9 @@ importers:
       sort-package-json:
         specifier: 2.14.0
         version: 2.14.0
+      std-env:
+        specifier: ^3.10.0
+        version: 3.10.0
       ts-deepmerge:
         specifier: ^7.0.1
         version: 7.0.3
@@ -1401,7 +1407,7 @@ importers:
         version: 6.0.1
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       start-server-and-test:
         specifier: ^2.1.2
         version: 2.1.2
@@ -1446,7 +1452,7 @@ importers:
         version: 6.0.1
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       tempy:
         specifier: ^3.1.0
         version: 3.1.0
@@ -7700,9 +7706,6 @@ packages:
   git-hooks-list@3.2.0:
     resolution: {integrity: sha512-ZHG9a1gEhUMX1TvGrLdyWb9kDopCBbTnI8z4JgRMYxsijWipgjSEYoPWqBuIB0DnRnvqlQSEeVmzpeuPm7NdFQ==}
 
-  git-hooks-list@4.1.1:
-    resolution: {integrity: sha512-cmP497iLq54AZnv4YRAEMnEyQ1eIn4tGKbmswqwmFV4GBnAqE8NLtWxxdXa++AalfgL5EBH4IxTPyquEuGY/jA==}
-
   github-slugger@2.0.0:
     resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
 
@@ -9094,6 +9097,10 @@ packages:
   log-symbols@6.0.0:
     resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
     engines: {node: '>=18'}
+
+  log-update@7.0.1:
+    resolution: {integrity: sha512-yEfdCegcxi/DrzkaAb82dMYvZpMOHAOYxUB45US+VrWQB2GnxyIucxG1otp3T1d6KzXXeB6TOHOF06viksSuug==}
+    engines: {node: '>=20'}
 
   logform@2.7.0:
     resolution: {integrity: sha512-TFYA4jnP7PVbmlBIfhlSe+WKxs9dklXMTEGcBCIvLhE/Tn3H6Gk1norupVW7m5Cnd4bLcr08AytbyV/xj7f/kQ==}
@@ -11674,11 +11681,6 @@ packages:
 
   sort-package-json@2.15.1:
     resolution: {integrity: sha512-9x9+o8krTT2saA9liI4BljNjwAbvUnWf11Wq+i/iZt8nl2UGYnf3TH5uBydE7VALmP7AGwlfszuEeL8BDyb0YA==}
-    hasBin: true
-
-  sort-package-json@3.4.0:
-    resolution: {integrity: sha512-97oFRRMM2/Js4oEA9LJhjyMlde+2ewpZQf53pgue27UkbEXfHJnDzHlUxQ/DWUkzqmp7DFwJp8D+wi/TYeQhpA==}
-    engines: {node: '>=20'}
     hasBin: true
 
   source-map-js@1.2.1:
@@ -15536,7 +15538,7 @@ snapshots:
       '@typescript-eslint/parser': 6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       eslint-config-biome: 1.9.4
       eslint-config-prettier: 9.0.0(eslint@9.38.0(jiti@2.6.1))
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.38.0(jiti@2.6.1))
       eslint-plugin-eslint-comments: 3.2.0(eslint@9.38.0(jiti@2.6.1))
       eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.6.3)(eslint@9.38.0(jiti@2.6.1))
       eslint-plugin-jsdoc: 46.8.2(eslint@9.38.0(jiti@2.6.1))
@@ -19327,7 +19329,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.9.1)(@vitest/ui@3.2.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.11.6(@types/node@24.9.1)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.23)(@vitest/ui@3.2.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.11.6(@types/node@20.19.23)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -21693,13 +21695,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.38.0(jiti@2.6.1)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3(supports-color@8.1.1)
       enhanced-resolve: 5.18.3
       eslint: 9.38.0(jiti@2.6.1)
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.38.0(jiti@2.6.1))
       fast-glob: 3.3.3
       get-tsconfig: 4.13.0
       is-bun-module: 1.3.0
@@ -21712,14 +21714,14 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.38.0(jiti@2.6.1)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.38.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1)(eslint@9.38.0(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -21735,7 +21737,7 @@ snapshots:
       doctrine: 3.0.0
       eslint: 9.38.0(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1)))(eslint@9.38.0(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@6.7.5(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@9.38.0(jiti@2.6.1))
       get-tsconfig: 4.13.0
       is-glob: 4.0.3
       minimatch: 3.1.2
@@ -22435,8 +22437,6 @@ snapshots:
   git-hooks-list@1.0.3: {}
 
   git-hooks-list@3.2.0: {}
-
-  git-hooks-list@4.1.1: {}
 
   github-slugger@2.0.0: {}
 
@@ -24106,6 +24106,14 @@ snapshots:
     dependencies:
       chalk: 5.6.2
       is-unicode-supported: 1.3.0
+
+  log-update@7.0.1:
+    dependencies:
+      ansi-escapes: 7.1.1
+      cli-cursor: 5.0.0
+      slice-ansi: 7.1.2
+      strip-ansi: 7.1.2
+      wrap-ansi: 9.0.2
 
   logform@2.7.0:
     dependencies:
@@ -27763,16 +27771,6 @@ snapshots:
       detect-newline: 4.0.1
       get-stdin: 9.0.0
       git-hooks-list: 3.2.0
-      is-plain-obj: 4.1.0
-      semver: 7.7.3
-      sort-object-keys: 1.1.3
-      tinyglobby: 0.2.15
-
-  sort-package-json@3.4.0:
-    dependencies:
-      detect-indent: 7.0.2
-      detect-newline: 4.0.1
-      git-hooks-list: 4.1.1
       is-plain-obj: 4.1.0
       semver: 7.7.3
       sort-object-keys: 1.1.3
