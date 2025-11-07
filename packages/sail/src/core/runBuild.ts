@@ -71,10 +71,26 @@ export async function runBuild(
 			log.log(cacheStats);
 		}
 
+		// Display local and remote cache hit rates
+		const taskStats = buildGraph.taskStats;
+		const totalTasks = taskStats.leafTotalCount;
+		if (totalTasks > 0) {
+			const localHitRate = (
+				(taskStats.leafLocalCacheHitCount / totalTasks) *
+				100
+			).toFixed(1);
+			const remoteHitRate = (
+				(taskStats.leafRemoteCacheHitCount / totalTasks) *
+				100
+			).toFixed(1);
+			log.log(
+				`Local cache: ${taskStats.leafLocalCacheHitCount}/${totalTasks} (${localHitRate}% hit rate) | Remote cache: ${taskStats.leafRemoteCacheHitCount}/${totalTasks} (${remoteHitRate}% hit rate)`,
+			);
+		}
+
 		log.log(`Build ${buildStatus} - ${elapsedTime.toFixed(3)}s`);
 
 		// Display status symbol legend if tasks were built
-		const taskStats = buildGraph.taskStats;
 		if (taskStats.leafBuiltCount > 0) {
 			displayStatusSymbolLegend(log);
 		}

@@ -264,6 +264,7 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				// Increment leafUpToDateCount before execDone (matches checkLeafIsUpToDate pattern)
 				// Cache-restored tasks are counted as "up-to-date", not "built"
 				this.node.taskStats.leafUpToDateCount++;
+				this.node.taskStats.leafRemoteCacheHitCount++;
 				return this.execDone(startTime, BuildResult.CachedSuccess);
 			}
 			traceUpToDate(`${this.nameColored}: cache MISS (will execute)`);
@@ -288,6 +289,7 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 		) {
 			// Increment leafUpToDateCount before execDone (matches checkIsUpToDate pattern)
 			this.node.taskStats.leafUpToDateCount++;
+			this.node.taskStats.leafLocalCacheHitCount++;
 			return this.execDone(startTime, BuildResult.UpToDate);
 		}
 		const ret = await this.execCore();
@@ -540,6 +542,7 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 		);
 		if (leafIsUpToDate) {
 			this.node.taskStats.leafUpToDateCount++;
+			this.node.taskStats.leafLocalCacheHitCount++;
 			this.traceExec("Skipping Leaf Task");
 		}
 		traceUpToDate(`${this.nameColored}: leafIsUpToDate=${leafIsUpToDate}`);

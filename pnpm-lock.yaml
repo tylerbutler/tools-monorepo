@@ -1135,6 +1135,9 @@ importers:
       picospinner:
         specifier: ^2.0.0
         version: 2.1.0
+      progress:
+        specifier: ^2.0.3
+        version: 2.0.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -1205,6 +1208,9 @@ importers:
       '@types/picomatch':
         specifier: ^3.0.2
         version: 3.0.2
+      '@types/progress':
+        specifier: ^2.0.7
+        version: 2.0.7
       '@types/semver':
         specifier: ^7.7.1
         version: 7.7.1
@@ -4884,6 +4890,9 @@ packages:
 
   '@types/prismjs@1.26.5':
     resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
+
+  '@types/progress@2.0.7':
+    resolution: {integrity: sha512-iadjw02vte8qWx7U0YM++EybBha2CQLPGu9iJ97whVgJUT5Zq9MjAPYUnbfRI2Kpehimf1QjFJYxD0t8nqzu5w==}
 
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
@@ -18949,6 +18958,10 @@ snapshots:
   '@types/picomatch@3.0.2': {}
 
   '@types/prismjs@1.26.5': {}
+
+  '@types/progress@2.0.7':
+    dependencies:
+      '@types/node': 20.19.23
 
   '@types/prop-types@15.7.15': {}
 

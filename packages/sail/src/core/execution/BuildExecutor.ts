@@ -2,6 +2,7 @@ import type { Logger } from "@tylerbu/cli-api";
 import type { Stopwatch } from "@tylerbu/sail-infrastructure";
 import chalk from "picocolors";
 import { Spinner } from "picospinner";
+import ProgressBar from "progress";
 import { hasTTY, isTest } from "std-env";
 import type { BuildPackage } from "../../common/npmPackage.js";
 import { ErrorHandler } from "../errors/ErrorHandler.js";
@@ -192,6 +193,26 @@ export class BuildExecutor implements IBuildExecutor {
 		const p: Promise<IBuildResult>[] = [];
 		let hasError = false;
 
+		// Calculate total tasks that need to run (excluding up-to-date tasks)
+		const totalTasks =
+			this.context.taskStats.leafTotalCount -
+			this.context.taskStats.leafInitialUpToDateCount;
+
+		// Create progress bar only in TTY mode and when not testing
+		const shouldShowProgress = hasTTY && !isTest && totalTasks > 0;
+		const progressBar = shouldShowProgress
+			? new ProgressBar(
+					"  Building [:bar] :percent :current/:total tasks | :etas remaining",
+					{
+						total: totalTasks,
+						width: 40,
+						complete: "=",
+						incomplete: " ",
+						renderThrottle: 100, // Update at most every 100ms
+					},
+				)
+			: undefined;
+
 		q.error((err, task) => {
 			this.log.errorLog(
 				`${task.task.nameColored}: Internal uncaught exception: ${err}\n${err.stack}`,
@@ -203,6 +224,40 @@ export class BuildExecutor implements IBuildExecutor {
 			// Start building all packages (this queues tasks asynchronously)
 			for (const [, buildablePackage] of buildablePackages) {
 				p.push(buildablePackage.build(q));
+			}
+
+			// Set up progress tracking by monitoring task completion
+			if (progressBar) {
+				const checkProgress = () => {
+					const completedTasks = this.context.taskStats.leafBuiltCount;
+					const tickAmount = completedTasks - (progressBar.curr || 0);
+					if (tickAmount > 0) {
+						progressBar.tick(tickAmount);
+					}
+				};
+
+				// Poll for progress updates
+				const progressInterval = setInterval(checkProgress, 100);
+
+				// Wait for all build promises to complete
+				const results = await Promise.all(p);
+
+				// Clear the interval and ensure final update
+				clearInterval(progressInterval);
+				checkProgress();
+
+				// The queue should be empty now, but ensure it's drained just in case
+				await q.drain();
+
+				// Ensure progress bar reaches 100%
+				if (!progressBar.complete) {
+					progressBar.update(1);
+				}
+
+				if (hasError) {
+					return BuildResult.Failed;
+				}
+				return summarizeBuildResult(results as BuildResult[]);
 			}
 
 			// Wait for all build promises to complete - this ensures tasks have finished executing

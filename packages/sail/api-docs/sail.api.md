@@ -881,8 +881,10 @@ export class TaskStats {
     // (undocumented)
     leafExecTimeTotal: number;
     leafInitialUpToDateCount: number;
+    leafLocalCacheHitCount: number;
     // (undocumented)
     leafQueueWaitTimeTotal: number;
+    leafRemoteCacheHitCount: number;
     // (undocumented)
     leafTotalCount: number;
     // (undocumented)

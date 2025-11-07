@@ -59,6 +59,10 @@ export class TaskStats {
 	/** Snapshot of leafUpToDateCount after initial donefile checks, before execution starts.
 	 * Used for stable task counter denominators. */
 	public leafInitialUpToDateCount = 0;
+	/** Count of tasks that were up-to-date via local donefile check */
+	public leafLocalCacheHitCount = 0;
+	/** Count of tasks that were up-to-date via remote cache restoration */
+	public leafRemoteCacheHitCount = 0;
 }
 
 /**
