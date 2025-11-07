@@ -139,7 +139,7 @@ describe("Cache Restoration with Task Dependencies", () => {
 				"\n❌ BUG DETECTED: Some tasks were rebuilt despite cache existing",
 			);
 			console.error(`   Tasks rebuilt: ${breakdown2.tasksBuilt}`);
-			console.error(`   Expected: 0 (all from cache)`);
+			console.error("   Expected: 0 (all from cache)");
 		}
 
 		// This assertion will fail if the bug exists
@@ -257,7 +257,7 @@ describe("Cache Restoration with Task Dependencies", () => {
 		console.log(
 			"\n⚠️  BUG: Tasks may be rebuilt even though cache entries exist",
 		);
-		console.log(`   Expected: 0 tasks built, 12 from cache`);
+		console.log("   Expected: 0 tasks built, 12 from cache");
 		console.log(
 			`   Actual: ${breakdown2.tasksBuilt} tasks built, ${breakdown2.totalCacheHits} from cache`,
 		);

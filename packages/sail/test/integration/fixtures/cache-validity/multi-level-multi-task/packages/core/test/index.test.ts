@@ -1,3 +1,3 @@
-import { coreFunction } from "../src/index";
+import { coreFunction } from "../src/index.js";
 
 console.log("Testing coreFunction:", coreFunction());

@@ -78,7 +78,7 @@ describe("TypeScript Project References Cache Bug", () => {
 		console.log(`  Tasks built: ${stats1.tasksBuilt}`);
 		console.log(`  Cache hits: ${stats1.totalCacheHits}`);
 		console.log(
-			`  Shared cache stats:`,
+			"  Shared cache stats:",
 			build1.buildGraph.context?.sharedCache?.getStatistics(),
 		);
 
@@ -119,9 +119,9 @@ describe("TypeScript Project References Cache Bug", () => {
 				"❌ BUG DETECTED: Test tasks were rebuilt despite cache existing",
 			);
 			console.log(
-				`   This happens because TypeScript project references cause`,
+				"   This happens because TypeScript project references cause",
 			);
-			console.log(`   the test tasks to see main outputs with new timestamps.`);
+			console.log("   the test tasks to see main outputs with new timestamps.");
 		} else {
 			console.log("✅ All tasks restored from cache");
 		}

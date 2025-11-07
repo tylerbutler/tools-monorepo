@@ -1,4 +1,4 @@
-import { Calculator, greet } from "../index";
+import { Calculator, greet } from "../index.js";
 
 // Simple test file that imports from main compilation
 export function runTests() {

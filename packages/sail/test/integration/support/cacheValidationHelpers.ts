@@ -164,6 +164,9 @@ export async function corruptCacheEntry(
 			}
 			break;
 		}
+
+		default:
+			throw new Error(`Unknown corruption type: ${corruptionType}`);
 	}
 }
 
@@ -177,9 +180,11 @@ export async function assertAllTasksCached(
 	const entriesDir = join(cacheDir, "v1", "entries");
 	for (const taskId of taskIds) {
 		const validation = await verifyCacheEntry(entriesDir, taskId);
+		// biome-ignore lint/suspicious/noMisplacedAssertion: This helper function is called from within test contexts
 		expect(validation.exists, `Cache entry should exist for ${taskId}`).toBe(
 			true,
 		);
+		// biome-ignore lint/suspicious/noMisplacedAssertion: This helper function is called from within test contexts
 		expect(
 			validation.valid,
 			`Cache entry should be valid for ${taskId}: ${validation.reason}`,
@@ -196,7 +201,9 @@ export async function assertCacheEntryValid(
 ): Promise<void> {
 	const entriesDir = join(cacheDir, "v1", "entries");
 	const entry = await verifyCacheEntry(entriesDir, taskId);
+	// biome-ignore lint/suspicious/noMisplacedAssertion: This helper function is called from within test contexts
 	expect(entry.exists, `Cache entry should exist: ${taskId}`).toBe(true);
+	// biome-ignore lint/suspicious/noMisplacedAssertion: This helper function is called from within test contexts
 	expect(
 		entry.valid,
 		`Cache entry should be valid: ${taskId} - ${entry.reason}`,
@@ -208,6 +215,7 @@ export async function assertCacheEntryValid(
  */
 export async function assertNoCacheCorruption(cacheDir: string): Promise<void> {
 	const stats = await getCacheStatistics(cacheDir);
+	// biome-ignore lint/suspicious/noMisplacedAssertion: This helper function is called from within test contexts
 	expect(
 		stats.corruptedCount,
 		`Found ${stats.corruptedCount} corrupted entries: ${stats.corruptedEntries.join(", ")}`,
@@ -222,6 +230,7 @@ export async function assertCacheEntryCount(
 	expectedCount: number,
 ): Promise<void> {
 	const stats = await getCacheStatistics(cacheDir);
+	// biome-ignore lint/suspicious/noMisplacedAssertion: This helper function is called from within test contexts
 	expect(stats.entriesCount).toBe(expectedCount);
 }
 
@@ -276,8 +285,8 @@ export async function cleanDonefilesAndOutputs(
 		// These contain TypeScript incremental state with timestamps
 		if (!options?.keepTsBuildInfo) {
 			try {
-				const { readdir } = await import("node:fs/promises");
-				const files = await readdir(pkgDir);
+				const { readdir: readdirFn } = await import("node:fs/promises");
+				const files = await readdirFn(pkgDir);
 				const tsbuildInfoFiles = files.filter((f) =>
 					f.endsWith(".tsbuildinfo"),
 				);

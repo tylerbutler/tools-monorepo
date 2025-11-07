@@ -1,7 +1,10 @@
-import { cp, rm, writeFile } from "node:fs/promises";
+import { cp, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { executeBuildAndGetResult } from "../support/buildGraphIntegrationHelper.js";
+import {
+	type BuildExecutionResult,
+	executeBuildAndGetResult,
+} from "../support/buildGraphIntegrationHelper.js";
 import {
 	assertCacheEntryValid,
 	assertNoCacheCorruption,
@@ -28,7 +31,7 @@ interface CacheHitBreakdown {
 	overallHitRate: number; // percentage
 }
 
-function getCacheHitBreakdown(result: any): CacheHitBreakdown {
+function getCacheHitBreakdown(result: BuildExecutionResult): CacheHitBreakdown {
 	const stats = result.buildGraph.taskStats;
 	const sharedCache = result.buildGraph.context?.sharedCache;
 	const sharedCacheStats = sharedCache?.getStatistics() || {
