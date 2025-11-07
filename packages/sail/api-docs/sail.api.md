@@ -256,6 +256,7 @@ export interface CacheManifest {
         readonly path: string;
         readonly hash: string;
         readonly size: number;
+        readonly mtime: number;
     }>;
     packageName: string;
     platform: string;

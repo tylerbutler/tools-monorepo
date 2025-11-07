@@ -1,7 +1,6 @@
-import { stat } from "node:fs/promises";
-import { mkdir, mkdtemp, rm, writeFile, utimes } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, stat, utimes, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
 	copyFileWithMtime,
@@ -191,8 +190,12 @@ describe("File Metadata Restoration", () => {
 			expect(stats3.modifiedTime.getTime()).toBe(mtime3.getTime());
 
 			// Verify they're different from each other
-			expect(stats1.modifiedTime.getTime()).not.toBe(stats2.modifiedTime.getTime());
-			expect(stats2.modifiedTime.getTime()).not.toBe(stats3.modifiedTime.getTime());
+			expect(stats1.modifiedTime.getTime()).not.toBe(
+				stats2.modifiedTime.getTime(),
+			);
+			expect(stats2.modifiedTime.getTime()).not.toBe(
+				stats3.modifiedTime.getTime(),
+			);
 		});
 	});
 
@@ -213,7 +216,9 @@ describe("File Metadata Restoration", () => {
 
 			// Step 1: Get metadata (simulating cache store)
 			const statsBeforeCache = await getFileStats(originalFile);
-			expect(statsBeforeCache.modifiedTime.getTime()).toBe(originalMtime.getTime());
+			expect(statsBeforeCache.modifiedTime.getTime()).toBe(
+				originalMtime.getTime(),
+			);
 
 			// Simulate cache storage by copying to cache directory
 			const cacheFile = join(destDir, "cache", "original.txt");
@@ -232,7 +237,11 @@ describe("File Metadata Restoration", () => {
 
 			// Step 4: Restore from cache (simulating cache restore)
 			const restoredFile = join(sourceDir, "restored.txt");
-			await copyFileWithMtime(cacheFile, restoredFile, cacheStats.mtime.getTime());
+			await copyFileWithMtime(
+				cacheFile,
+				restoredFile,
+				cacheStats.mtime.getTime(),
+			);
 
 			// Assert: Restored file should have original mtime
 			const restoredStats = await stat(restoredFile);
@@ -242,9 +251,21 @@ describe("File Metadata Restoration", () => {
 		it("should handle cache restoration of multiple files with different mtimes", async () => {
 			// Arrange: Create multiple files with different mtimes (like a TypeScript build)
 			const files = [
-				{ name: "index.js", content: "export const main = 1;", mtime: new Date("2024-01-10T10:00:00Z") },
-				{ name: "utils.js", content: "export const util = 2;", mtime: new Date("2024-01-15T11:00:00Z") },
-				{ name: "types.js", content: "export const types = 3;", mtime: new Date("2024-01-20T12:00:00Z") },
+				{
+					name: "index.js",
+					content: "export const main = 1;",
+					mtime: new Date("2024-01-10T10:00:00Z"),
+				},
+				{
+					name: "utils.js",
+					content: "export const util = 2;",
+					mtime: new Date("2024-01-15T11:00:00Z"),
+				},
+				{
+					name: "types.js",
+					content: "export const types = 3;",
+					mtime: new Date("2024-01-20T12:00:00Z"),
+				},
 			];
 
 			// Create original files
@@ -259,7 +280,7 @@ describe("File Metadata Restoration", () => {
 			// Simulate cache storage
 			const cacheFiles: Array<{ path: string; mtime: number }> = [];
 			for (const original of originalFiles) {
-				const cacheFile = join(destDir, "cache", original.path.split("/").pop()!);
+				const cacheFile = join(destDir, "cache", basename(original.path));
 				await copyFileWithMtime(original.path, cacheFile, original.mtime);
 				cacheFiles.push({ path: cacheFile, mtime: original.mtime });
 			}
@@ -305,13 +326,21 @@ describe("File Metadata Restoration", () => {
 
 			// Build 1: Store in cache
 			const build1Cache = join(destDir, "build1", "unchanged.js");
-			await copyFileWithMtime(unchangedFile, build1Cache, originalMtime.getTime());
+			await copyFileWithMtime(
+				unchangedFile,
+				build1Cache,
+				originalMtime.getTime(),
+			);
 
 			// Clean workspace
 			await rm(unchangedFile);
 
 			// Build 2: Restore from cache
-			await copyFileWithMtime(build1Cache, unchangedFile, originalMtime.getTime());
+			await copyFileWithMtime(
+				build1Cache,
+				unchangedFile,
+				originalMtime.getTime(),
+			);
 
 			// Verify mtime is still original
 			const build2Stats = await stat(unchangedFile);
@@ -319,7 +348,11 @@ describe("File Metadata Restoration", () => {
 
 			// Build 3: Store again (file unchanged)
 			const build3Cache = join(destDir, "build3", "unchanged.js");
-			await copyFileWithMtime(unchangedFile, build3Cache, build2Stats.mtime.getTime());
+			await copyFileWithMtime(
+				unchangedFile,
+				build3Cache,
+				build2Stats.mtime.getTime(),
+			);
 
 			// Verify mtime is STILL the original
 			const build3Stats = await stat(build3Cache);
