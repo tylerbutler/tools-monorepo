@@ -197,6 +197,7 @@ export interface CacheManifest {
 		readonly path: string; // Relative to package root
 		readonly hash: string; // SHA-256 for integrity verification
 		readonly size: number; // File size in bytes
+		readonly mtime: number; // Modification time (ms since epoch) to preserve timestamps
 	}>;
 
 	/**

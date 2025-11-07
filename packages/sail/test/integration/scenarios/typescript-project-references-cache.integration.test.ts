@@ -109,6 +109,13 @@ describe("TypeScript Project References Cache Bug", () => {
 		console.log(`  Shared cache hits: ${stats2.sharedCacheHits}`);
 		console.log(`  Shared cache misses: ${stats2.sharedCacheMisses}`);
 
+		// Access internal task stats to find which task rebuilt
+		console.log("\n  Which task rebuilt?");
+		const taskStats = build2.buildGraph.context.taskStats;
+		console.log(`    Total leaf tasks: ${taskStats.leafTotalCount}`);
+		console.log(`    Leaf tasks built: ${taskStats.leafBuiltCount}`);
+		console.log(`    Leaf tasks up-to-date: ${taskStats.leafUpToDateCount}`);
+
 		// EXPECTATION: All tasks should restore from cache
 		// BUG: Test compilation tasks (build:test:esm, build:test:cjs, build:test:no-exact)
 		// rebuild because they see main compilation outputs with new timestamps via project reference

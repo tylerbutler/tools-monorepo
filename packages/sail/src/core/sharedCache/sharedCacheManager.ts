@@ -14,7 +14,7 @@ import {
 } from "./cacheDirectory.js";
 import { computeCacheKey } from "./cacheKey.js";
 import {
-	copyFileWithDirs,
+	copyFileWithMtime,
 	hashFilesWithSize,
 	verifyFilesIntegrity,
 } from "./fileOperations.js";
@@ -442,6 +442,7 @@ export class SharedCacheManager {
 				file: { sourcePath: string; relativePath: string; hash?: string };
 				hash: string;
 				size: number;
+				mtime: number;
 			}> = [];
 			for (let i = 0; i < outputFilesWithHashes.length; i++) {
 				const hashResult = outputFilesWithHashes[i];
@@ -449,6 +450,7 @@ export class SharedCacheManager {
 					file: outputs.files[i],
 					hash: hashResult.hash,
 					size: hashResult.size,
+					mtime: hashResult.mtime,
 				});
 			}
 
@@ -480,21 +482,22 @@ export class SharedCacheManager {
 					path: f.file.relativePath,
 					hash: f.hash,
 					size: f.size,
+					mtime: f.mtime,
 				})),
 				stdout: outputs.stdout,
 				stderr: outputs.stderr,
 			});
 
-			// Copy output files to cache directory (only existing files)
+			// Copy output files to cache directory with preserved modification times
 			const copyStartTime = Date.now();
-			for (const { file } of existingFiles) {
+			for (const { file, mtime } of existingFiles) {
 				const sourcePath = file.sourcePath;
 				const destPath = path.join(entryPath, "outputs", file.relativePath);
-				await copyFileWithDirs(sourcePath, destPath);
+				await copyFileWithMtime(sourcePath, destPath, mtime);
 			}
 			const copyTime = Date.now() - copyStartTime;
 			traceStore(
-				`Copied ${existingFiles.length} files to cache in ${copyTime}ms`,
+				`Copied ${existingFiles.length} files to cache with preserved timestamps in ${copyTime}ms`,
 			);
 
 			// Write manifest (atomically)
@@ -621,16 +624,16 @@ export class SharedCacheManager {
 				);
 			}
 
-			// Copy files from cache to workspace
+			// Copy files from cache to workspace with preserved modification times
 			const copyStartTime = Date.now();
 			for (const output of entry.manifest.outputFiles) {
 				const sourcePath = path.join(entry.entryPath, "outputs", output.path);
 				const destPath = path.join(packageRoot, output.path);
-				await copyFileWithDirs(sourcePath, destPath);
+				await copyFileWithMtime(sourcePath, destPath, output.mtime);
 			}
 			const copyTime = Date.now() - copyStartTime;
 			traceRestore(
-				`Copied ${entry.manifest.outputFiles.length} files in ${copyTime}ms`,
+				`Copied ${entry.manifest.outputFiles.length} files with preserved timestamps in ${copyTime}ms`,
 			);
 
 			// Calculate statistics
