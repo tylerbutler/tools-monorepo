@@ -39,7 +39,7 @@ export interface BuildContext {
 
 // @internal (undocumented)
 export class BuildGraphContext implements BuildContext, IBuildExecutionContext {
-    constructor(repoPackageMap: ReadonlyMap<string, BuildPackage>, buildContext: BuildContext, force: boolean, matchedOnly: boolean, workerPool?: WorkerPool | undefined);
+    constructor(repoPackageMap: ReadonlyMap<string, BuildPackage>, buildContext: BuildContext, force: boolean, matchedOnly: boolean, quiet: boolean, workerPool?: WorkerPool | undefined);
     // (undocumented)
     readonly buildContext: BuildContext;
     // (undocumented)
@@ -60,6 +60,8 @@ export class BuildGraphContext implements BuildContext, IBuildExecutionContext {
     readonly log: Logger;
     // (undocumented)
     readonly matchedOnly: boolean;
+    // (undocumented)
+    readonly quiet: boolean;
     // (undocumented)
     readonly repoPackageMap: ReadonlyMap<string, BuildPackage>;
     // (undocumented)
@@ -365,6 +367,8 @@ export interface IBuildExecutionContext {
     readonly fileHashCache: {
         clear(): void;
     };
+    // (undocumented)
+    readonly quiet: boolean;
     // (undocumented)
     readonly taskStats: IBuildStats;
     // (undocumented)

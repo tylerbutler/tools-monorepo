@@ -2,6 +2,7 @@ import type { Logger } from "@tylerbu/cli-api";
 import type { Stopwatch } from "@tylerbu/sail-infrastructure";
 import chalk from "picocolors";
 import { Spinner } from "picospinner";
+import { hasTTY, isTest } from "std-env";
 import type { BuildPackage } from "../../common/npmPackage.js";
 import { ErrorHandler } from "../errors/ErrorHandler.js";
 import type {
@@ -13,6 +14,7 @@ import type {
 import { ParallelProcessor } from "../optimization/ParallelProcessor.js";
 import { Task } from "../tasks/task.js";
 import { BuildResult, summarizeBuildResult } from "./BuildResult.js";
+import { ProgressBarManager } from "./ProgressBarManager.js";
 
 export class BuildExecutor implements IBuildExecutor {
 	private readonly errorHandler: ErrorHandler;
@@ -176,6 +178,18 @@ export class BuildExecutor implements IBuildExecutor {
 		const p: Promise<IBuildResult>[] = [];
 		let hasError = false;
 
+		// Calculate total tasks that need to run (excluding up-to-date tasks)
+		const totalTasks =
+			this.context.taskStats.leafTotalCount -
+			this.context.taskStats.leafUpToDateCount;
+
+		// Create progress display only in TTY mode, not in quiet mode, and when not testing
+		const shouldShowProgress =
+			hasTTY && !isTest && !this.context.quiet && totalTasks > 0;
+
+		// Create progress bar manager if we're showing progress
+		const progressBar = shouldShowProgress ? new ProgressBarManager() : undefined;
+
 		q.error((err, task) => {
 			this.log.errorLog(
 				`${task.task.nameColored}: Internal uncaught exception: ${err}\n${err.stack}`,
@@ -187,6 +201,75 @@ export class BuildExecutor implements IBuildExecutor {
 			// Start building all packages (this queues tasks asynchronously)
 			for (const [, buildablePackage] of buildablePackages) {
 				p.push(buildablePackage.build(q));
+			}
+
+			// Set up progress tracking by monitoring task completion
+			if (shouldShowProgress && progressBar) {
+				// Start the progress bar and patch console methods
+				progressBar.start();
+
+				// Store start time for ETA calculation
+				const startTime = Date.now();
+
+				const updateProgress = () => {
+					const completedTasks = this.context.taskStats.leafBuiltCount;
+					const percent = Math.floor((completedTasks / totalTasks) * 100);
+					const barWidth = 40;
+					const filled = Math.floor((completedTasks / totalTasks) * barWidth);
+					const bar = "=".repeat(filled).padEnd(barWidth, " ");
+					
+					// Calculate ETA in seconds
+					const etaSeconds =
+						completedTasks > 0
+							? Math.ceil(
+									((Date.now() - startTime) / completedTasks) *
+										(totalTasks - completedTasks) /
+										1000,
+								)
+							: 0;
+
+					// Format ETA as minutes and seconds
+					let etaDisplay: string;
+					if (etaSeconds >= 60) {
+						const minutes = Math.floor(etaSeconds / 60);
+						const seconds = etaSeconds % 60;
+						etaDisplay = `${minutes}m ${seconds}s`;
+					} else {
+						etaDisplay = `${etaSeconds}s`;
+					}
+
+					progressBar.update(
+						`  Building [${bar}] ${percent}% ${completedTasks}/${totalTasks} tasks | ETA: ${etaDisplay}`,
+					);
+				};
+
+				// Poll for progress updates
+				const progressInterval = setInterval(updateProgress, 100);
+
+				try {
+					// Wait for all build promises to complete
+					const results = await Promise.all(p);
+
+					// Clear the interval and ensure final update
+					clearInterval(progressInterval);
+					updateProgress();
+
+					// The queue should be empty now, but ensure it's drained just in case
+					await q.drain();
+
+					// Finalize the progress bar and persist it
+					progressBar.done();
+
+					if (hasError) {
+						return BuildResult.Failed;
+					}
+					return summarizeBuildResult(results as BuildResult[]);
+				} catch (error) {
+					// Ensure progress bar is cleared on error
+					clearInterval(progressInterval);
+					progressBar.clear();
+					throw error;
+				}
 			}
 
 			// Wait for all build promises to complete - this ensures tasks have finished executing
@@ -201,6 +284,10 @@ export class BuildExecutor implements IBuildExecutor {
 			}
 			return summarizeBuildResult(results as BuildResult[]);
 		} finally {
+			// Clear the progress display if it was shown
+			if (progressBar) {
+				progressBar.clear();
+			}
 			this.context.workerPool?.reset();
 		}
 	}
