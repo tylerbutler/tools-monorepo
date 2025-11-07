@@ -56,6 +56,7 @@ export interface IBuildExecutionContext {
 		reset(): void;
 	};
 	readonly buildProfiler?: BuildProfiler;
+	readonly quiet: boolean;
 }
 
 /**

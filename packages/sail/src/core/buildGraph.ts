@@ -88,7 +88,7 @@ export class BuildGraphContext implements BuildContext, BuildExecutionContext {
 		public readonly buildContext: BuildContext,
 		public readonly force: boolean,
 		public readonly matchedOnly: boolean,
-		public readonly verbose: boolean,
+		public readonly quiet: boolean,
 		public readonly workerPool?: WorkerPool,
 	) {
 		this.sailConfig = buildContext.sailConfig;
@@ -166,8 +166,8 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 	}
 
 	/** @internal */
-	public get verbose() {
-		return this.context.verbose;
+	public get quiet() {
+		return this.context.quiet;
 	}
 
 	/** @internal */
@@ -443,7 +443,7 @@ export class BuildGraph {
 			| "workerMemoryLimit"
 			| "workerThreads"
 			| "force"
-			| "verbose"
+			| "quiet"
 		>,
 	) {
 		traceGraph("globalTaskDefinitions=%O", globalTaskDefinitions);
@@ -456,7 +456,7 @@ export class BuildGraph {
 			buildContext,
 			options.force,
 			options.matchedOnly,
-			options.verbose,
+			options.quiet,
 			options.worker
 				? new WorkerPool(options.workerThreads, options.workerMemoryLimit)
 				: undefined,

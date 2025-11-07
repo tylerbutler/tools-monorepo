@@ -67,7 +67,7 @@ importers:
         version: 7.7.3
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       sort-tsconfig:
         specifier: workspace:^
         version: link:packages/sort-tsconfig
@@ -253,7 +253,7 @@ importers:
         version: 0.9.0
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       svelte:
         specifier: ^5.41.2
         version: 5.41.2
@@ -380,7 +380,7 @@ importers:
         version: 6.0.1
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       tempy:
         specifier: ^3.1.0
         version: 3.1.0
@@ -434,7 +434,7 @@ importers:
         version: 3.28.0
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       strip-ansi:
         specifier: ^7.1.2
         version: 7.1.2
@@ -601,7 +601,7 @@ importers:
         version: 6.1.6
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       start-server-and-test:
         specifier: ^2.1.2
         version: 2.1.2
@@ -937,7 +937,7 @@ importers:
         version: 3.28.0
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.5
@@ -1097,8 +1097,8 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3(supports-color@8.1.1)
       detect-indent:
-        specifier: ^7.0.2
-        version: 7.0.2
+        specifier: ^6.1.0
+        version: 6.1.0
       find-up:
         specifier: ^7.0.0
         version: 7.0.0
@@ -1123,6 +1123,9 @@ importers:
       lodash.isequal:
         specifier: ^4.5.0
         version: 4.5.0
+      log-update:
+        specifier: ^7.0.1
+        version: 7.0.1
       multimatch:
         specifier: ^5.0.0
         version: 5.0.0
@@ -1135,9 +1138,6 @@ importers:
       picospinner:
         specifier: ^2.0.0
         version: 2.1.0
-      progress:
-        specifier: ^2.0.3
-        version: 2.0.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -1148,8 +1148,8 @@ importers:
         specifier: ^3.28.0
         version: 3.28.0
       sort-package-json:
-        specifier: '*'
-        version: 3.4.0
+        specifier: 2.14.0
+        version: 2.14.0
       std-env:
         specifier: ^3.10.0
         version: 3.10.0
@@ -1208,9 +1208,6 @@ importers:
       '@types/picomatch':
         specifier: ^3.0.2
         version: 3.0.2
-      '@types/progress':
-        specifier: ^2.0.7
-        version: 2.0.7
       '@types/semver':
         specifier: ^7.7.1
         version: 7.7.1
@@ -1251,8 +1248,8 @@ importers:
         specifier: ^8.3.6
         version: 8.3.6(typescript@5.9.3)
       detect-indent:
-        specifier: ^7.0.2
-        version: 7.0.2
+        specifier: ^6.1.0
+        version: 6.1.0
       execa:
         specifier: ^5.1.1
         version: 5.1.1
@@ -1284,8 +1281,8 @@ importers:
         specifier: ^3.28.0
         version: 3.28.0
       sort-package-json:
-        specifier: '*'
-        version: 3.4.0
+        specifier: 2.14.0
+        version: 2.14.0
       tinyglobby:
         specifier: ^0.2.15
         version: 0.2.15
@@ -1324,7 +1321,7 @@ importers:
         specifier: ^9.2.1
         version: 9.2.1
       memfs:
-        specifier: ^4.49.0
+        specifier: ^4.17.0
         version: 4.49.0
       rimraf:
         specifier: ^6.0.1
@@ -1410,7 +1407,7 @@ importers:
         version: 6.0.1
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       start-server-and-test:
         specifier: ^2.1.2
         version: 2.1.2
@@ -1455,7 +1452,7 @@ importers:
         version: 6.0.1
       sort-package-json:
         specifier: '*'
-        version: 3.4.0
+        version: 2.14.0
       tempy:
         specifier: ^3.1.0
         version: 3.1.0
@@ -4891,9 +4888,6 @@ packages:
   '@types/prismjs@1.26.5':
     resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
 
-  '@types/progress@2.0.7':
-    resolution: {integrity: sha512-iadjw02vte8qWx7U0YM++EybBha2CQLPGu9iJ97whVgJUT5Zq9MjAPYUnbfRI2Kpehimf1QjFJYxD0t8nqzu5w==}
-
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
 
@@ -5968,6 +5962,10 @@ packages:
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
+
+  chai@5.2.0:
+    resolution: {integrity: sha512-mCuXncKXk5iCLhfhwTc0izo0gtEmpz5CtG2y8GiOINBlMVS6v8TMRc5TaLWKS6692m9+dVVfzgeVxR5UxWHTYw==}
+    engines: {node: '>=12'}
 
   chai@5.3.3:
     resolution: {integrity: sha512-4zNhdJD/iOjSH0A05ea+Ke6MU5mmpQcbQsSOkgdaUMJ9zTlDTD/GYlwohmIE2u0gaxHYiVHEn1Fw9mZ/ktJWgw==}
@@ -7708,9 +7706,6 @@ packages:
   git-hooks-list@3.2.0:
     resolution: {integrity: sha512-ZHG9a1gEhUMX1TvGrLdyWb9kDopCBbTnI8z4JgRMYxsijWipgjSEYoPWqBuIB0DnRnvqlQSEeVmzpeuPm7NdFQ==}
 
-  git-hooks-list@4.1.1:
-    resolution: {integrity: sha512-cmP497iLq54AZnv4YRAEMnEyQ1eIn4tGKbmswqwmFV4GBnAqE8NLtWxxdXa++AalfgL5EBH4IxTPyquEuGY/jA==}
-
   github-slugger@2.0.0:
     resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
 
@@ -9102,6 +9097,10 @@ packages:
   log-symbols@6.0.0:
     resolution: {integrity: sha512-i24m8rpwhmPIS4zscNzK6MSEhk0DUWa/8iYQWxhffV8jkI4Phvs3F+quL5xvS0gdQR0FyTCMMH33Y78dDTzzIw==}
     engines: {node: '>=18'}
+
+  log-update@7.0.1:
+    resolution: {integrity: sha512-yEfdCegcxi/DrzkaAb82dMYvZpMOHAOYxUB45US+VrWQB2GnxyIucxG1otp3T1d6KzXXeB6TOHOF06viksSuug==}
+    engines: {node: '>=20'}
 
   logform@2.7.0:
     resolution: {integrity: sha512-TFYA4jnP7PVbmlBIfhlSe+WKxs9dklXMTEGcBCIvLhE/Tn3H6Gk1norupVW7m5Cnd4bLcr08AytbyV/xj7f/kQ==}
@@ -11676,13 +11675,12 @@ packages:
     resolution: {integrity: sha512-FYsjYn2dHTRb41wqnv+uEqCUvBpK3jZcTp9rbz2qDTmel7Pmdtf+i2rLaaPMRZeSVM60V3Se31GyWFpmKs4Q5Q==}
     hasBin: true
 
-  sort-package-json@2.15.1:
-    resolution: {integrity: sha512-9x9+o8krTT2saA9liI4BljNjwAbvUnWf11Wq+i/iZt8nl2UGYnf3TH5uBydE7VALmP7AGwlfszuEeL8BDyb0YA==}
+  sort-package-json@2.14.0:
+    resolution: {integrity: sha512-xBRdmMjFB/KW3l51mP31dhlaiFmqkHLfWTfZAno8prb/wbDxwBPWFpxB16GZbiPbYr3wL41H8Kx22QIDWRe8WQ==}
     hasBin: true
 
-  sort-package-json@3.4.0:
-    resolution: {integrity: sha512-97oFRRMM2/Js4oEA9LJhjyMlde+2ewpZQf53pgue27UkbEXfHJnDzHlUxQ/DWUkzqmp7DFwJp8D+wi/TYeQhpA==}
-    engines: {node: '>=20'}
+  sort-package-json@2.15.1:
+    resolution: {integrity: sha512-9x9+o8krTT2saA9liI4BljNjwAbvUnWf11Wq+i/iZt8nl2UGYnf3TH5uBydE7VALmP7AGwlfszuEeL8BDyb0YA==}
     hasBin: true
 
   source-map-js@1.2.1:
@@ -18959,10 +18957,6 @@ snapshots:
 
   '@types/prismjs@1.26.5': {}
 
-  '@types/progress@2.0.7':
-    dependencies:
-      '@types/node': 20.19.23
-
   '@types/prop-types@15.7.15': {}
 
   '@types/react@18.3.26':
@@ -20431,6 +20425,14 @@ snapshots:
   catering@2.1.1: {}
 
   ccount@2.0.1: {}
+
+  chai@5.2.0:
+    dependencies:
+      assertion-error: 2.0.1
+      check-error: 2.1.1
+      deep-eql: 5.0.2
+      loupe: 3.1.4
+      pathval: 2.0.0
 
   chai@5.3.3:
     dependencies:
@@ -22436,8 +22438,6 @@ snapshots:
 
   git-hooks-list@3.2.0: {}
 
-  git-hooks-list@4.1.1: {}
-
   github-slugger@2.0.0: {}
 
   glob-parent@5.1.2:
@@ -24106,6 +24106,14 @@ snapshots:
     dependencies:
       chalk: 5.6.2
       is-unicode-supported: 1.3.0
+
+  log-update@7.0.1:
+    dependencies:
+      ansi-escapes: 7.1.1
+      cli-cursor: 5.0.0
+      slice-ansi: 7.1.2
+      strip-ansi: 7.1.2
+      wrap-ansi: 9.0.2
 
   logform@2.7.0:
     dependencies:
@@ -27746,7 +27754,7 @@ snapshots:
       is-plain-obj: 2.1.0
       sort-object-keys: 1.1.3
 
-  sort-package-json@2.15.1:
+  sort-package-json@2.14.0:
     dependencies:
       detect-indent: 7.0.2
       detect-newline: 4.0.1
@@ -27757,11 +27765,12 @@ snapshots:
       sort-object-keys: 1.1.3
       tinyglobby: 0.2.15
 
-  sort-package-json@3.4.0:
+  sort-package-json@2.15.1:
     dependencies:
       detect-indent: 7.0.2
       detect-newline: 4.0.1
-      git-hooks-list: 4.1.1
+      get-stdin: 9.0.0
+      git-hooks-list: 3.2.0
       is-plain-obj: 4.1.0
       semver: 7.7.3
       sort-object-keys: 1.1.3
@@ -29227,7 +29236,7 @@ snapshots:
       '@vitest/snapshot': 3.2.4
       '@vitest/spy': 3.2.4
       '@vitest/utils': 3.2.4
-      chai: 5.3.3
+      chai: 5.2.0
       debug: 4.4.3(supports-color@8.1.1)
       expect-type: 1.2.1
       magic-string: 0.30.19
@@ -29272,7 +29281,7 @@ snapshots:
       '@vitest/snapshot': 3.2.4
       '@vitest/spy': 3.2.4
       '@vitest/utils': 3.2.4
-      chai: 5.3.3
+      chai: 5.2.0
       debug: 4.4.3(supports-color@8.1.1)
       expect-type: 1.2.1
       magic-string: 0.30.19
