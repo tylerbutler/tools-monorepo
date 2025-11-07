@@ -70,7 +70,9 @@ export class ProgressBarManager {
 	 */
 	private patchConsoleMethods(): void {
 		// Save original methods
+		// biome-ignore lint/suspicious/noConsole: intentionally patching console for progress coordination
 		this.originalConsoleLog = console.log;
+		// biome-ignore lint/suspicious/noConsole: intentionally patching console for progress coordination
 		this.originalConsoleError = console.error;
 
 		// Wrap console.log

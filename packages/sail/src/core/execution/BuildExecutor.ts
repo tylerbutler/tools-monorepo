@@ -188,7 +188,9 @@ export class BuildExecutor implements IBuildExecutor {
 			hasTTY && !isTest && !this.context.quiet && totalTasks > 0;
 
 		// Create progress bar manager if we're showing progress
-		const progressBar = shouldShowProgress ? new ProgressBarManager() : undefined;
+		const progressBar = shouldShowProgress
+			? new ProgressBarManager()
+			: undefined;
 
 		q.error((err, task) => {
 			this.log.errorLog(
@@ -217,13 +219,13 @@ export class BuildExecutor implements IBuildExecutor {
 					const barWidth = 40;
 					const filled = Math.floor((completedTasks / totalTasks) * barWidth);
 					const bar = "=".repeat(filled).padEnd(barWidth, " ");
-					
+
 					// Calculate ETA in seconds
 					const etaSeconds =
 						completedTasks > 0
 							? Math.ceil(
-									((Date.now() - startTime) / completedTasks) *
-										(totalTasks - completedTasks) /
+									(((Date.now() - startTime) / completedTasks) *
+										(totalTasks - completedTasks)) /
 										1000,
 								)
 							: 0;
