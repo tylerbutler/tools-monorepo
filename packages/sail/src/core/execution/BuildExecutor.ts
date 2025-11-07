@@ -2,6 +2,7 @@ import type { Logger } from "@tylerbu/cli-api";
 import type { Stopwatch } from "@tylerbu/sail-infrastructure";
 import chalk from "picocolors";
 import { Spinner } from "picospinner";
+import { hasTTY, isTest } from "std-env";
 import type { BuildPackage } from "../../common/npmPackage.js";
 import { ErrorHandler } from "../errors/ErrorHandler.js";
 import type {
@@ -46,8 +47,12 @@ export class BuildExecutor implements IBuildExecutor {
 		}
 
 		// Check up-to-date state at the beginning of the build
-		const spinner = new Spinner("Checking incremental build task status...");
-		spinner.start();
+		// Only show spinner when running in TTY and not in test mode
+		const shouldShowSpinner = hasTTY && !isTest;
+		const spinner = shouldShowSpinner
+			? new Spinner("Checking incremental build task status...")
+			: undefined;
+		spinner?.start();
 
 		const isUpToDate = await this.profileOperation(
 			"up-to-date-check",
@@ -56,7 +61,9 @@ export class BuildExecutor implements IBuildExecutor {
 		);
 
 		timer?.log("Check up to date completed");
-		spinner.succeed("Tasks loaded.");
+		if (spinner) {
+			spinner.succeed("Tasks loaded.");
+		}
 
 		this.logBuildStart(buildTaskNames, matchedPackages, buildablePackages.size);
 

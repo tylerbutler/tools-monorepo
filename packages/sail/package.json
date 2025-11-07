@@ -128,6 +128,7 @@
 		"semver": "^7.7.3",
 		"simple-git": "^3.28.0",
 		"sort-package-json": "*",
+		"std-env": "^3.10.0",
 		"ts-deepmerge": "^7.0.1",
 		"ts-morph": "^22.0.0",
 		"type-fest": "^5.1.0",
