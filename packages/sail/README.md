@@ -20,7 +20,6 @@ Coming soon.
 * [`sail build`](docs/build.md) - Build stuff.
 * [`sail cache`](docs/cache.md) - Cache management commands for build artifacts and file hashes.
 * [`sail commands`](docs/commands.md) - List all sail commands.
-* [`sail demo-animation`](docs/demo-animation.md) - Demo the sailing animation. Press Ctrl+C to exit.
 * [`sail help`](docs/help.md) - Display help for sail.
 * [`sail scan`](docs/scan.md) - Scan a path to see it the way Sail sees it.
 * [`sail version`](docs/version.md)
