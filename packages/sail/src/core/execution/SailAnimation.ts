@@ -21,53 +21,54 @@ export class SailAnimation {
 	 * Each frame slightly shifts the boat position and animates the waves.
 	 */
 	private createFrames(): string[] {
-		// Sailing boat using Unicode block elements
+		// More detailed sailing boat using Unicode block elements
 		// ░ = light shade, ▒ = medium shade, ▓ = dark shade, █ = full block
 		// ▀ = upper half, ▄ = lower half, ▌ = left half, ▐ = right half
+		// ┃ = vertical line, ─ = horizontal line
 		const boat = [
-			"              ▓",
-			"             ▓█▓",
-			"    ▓       ▓███▓",
-			"   ▓█▓     ▓█████▓",
-			"  ▓███▓   ▓███│███▓",
-			" ▓█████▓ ▓████│████▓",
-			"▓███████▓█████│█████▓",
-			"▓████████████ │ █████▓",
-			" ▓███████████ │ ████▓",
-			"  ▓█████████  │  ███▓",
-			"   ▓███████   │   ██▓",
-			"    ▓█████    │    █▓",
-			"     ▀███▀▀▀▀▀│▀▀▀▀▀",
-			"      ▀██████████████▀",
+			"                 ▒",
+			"                ▒█▒",
+			"               ▒███▒",
+			"      ▒       ▒█████▒",
+			"     ▒█▒     ▒███████▒",
+			"    ▒███▒   ▒█████████▒",
+			"   ▒█████▒ ▒███████████▒",
+			"  ▒███████▒█████┃███████▒",
+			" ▒█████████████ ┃ ████████▒",
+			"▒███████████████┃█████████▒",
+			"▒████████████████┃██████████▒",
+			" ▒███████████████┃█████████▒",
+			"  ▒█████████████ ┃ ████████▒",
+			"   ▒███████████  ┃  ███████▒",
+			"    ▒█████████   ┃   ██████▒",
+			"     ▒███████    ┃    █████▒",
+			"      ▒█████     ┃     ████▒",
+			"       ▀▀▀▀▀▀▀▀▀▀┃▀▀▀▀▀▀▀▀▀",
+			"        ▀▀▀██████████████▀▀▀",
 		];
 
-		// Create 12 frames with boat moving right and waves animating
+		// Create 16 frames with boat moving right and waves animating
 		const frames: string[] = [];
-		const totalFrames = 12;
-		const maxOffset = 15;
+		const totalFrames = 16;
+		const maxOffset = 20;
 
 		for (let i = 0; i < totalFrames; i++) {
 			// Smooth sailing motion
 			const offset = Math.floor((i / totalFrames) * maxOffset);
-			const wavePhase = i % 6;
+			const wavePhase = i % 8;
 
 			// Build each frame
 			const frameLines: string[] = [];
 
-			// Add boat lines with offset and slight vertical bobbing
-			const bob = i % 4 < 2 ? 0 : 1;
-			if (bob === 1) {
-				frameLines.push(""); // Add extra line for bobbing effect
-			}
-
+			// Add boat lines with horizontal offset (no vertical bobbing)
 			for (const line of boat) {
 				frameLines.push(" ".repeat(offset) + line);
 			}
 
 			// Add animated wave lines using Unicode wave patterns
-			const wave1 = this.createWaveLine(wavePhase, 0, 70);
-			const wave2 = this.createWaveLine(wavePhase, 2, 68);
-			const wave3 = this.createWaveLine(wavePhase, 4, 66);
+			const wave1 = this.createWaveLine(wavePhase, 0, 80);
+			const wave2 = this.createWaveLine(wavePhase, 3, 78);
+			const wave3 = this.createWaveLine(wavePhase, 6, 76);
 
 			frameLines.push(wave1);
 			frameLines.push(wave2);

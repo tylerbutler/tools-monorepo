@@ -277,8 +277,8 @@ describe("SailAnimation", () => {
 
 			// Capture frames by advancing time
 			const frames: string[] = [];
-			for (let i = 0; i < 13; i++) {
-				// 13 to complete one full cycle (12 frames + 1)
+			for (let i = 0; i < 17; i++) {
+				// 17 to complete one full cycle (16 frames + 1)
 				vi.advanceTimersByTime(120);
 				const calls = vi.mocked(logUpdate).mock.calls;
 				if (calls.length > 0) {
@@ -304,8 +304,8 @@ describe("SailAnimation", () => {
 
 			animation.start();
 
-			// Advance through more than one complete cycle (12 frames * 120ms * 2 cycles)
-			const totalTime = 12 * 120 * 2;
+			// Advance through more than one complete cycle (16 frames * 120ms * 2 cycles)
+			const totalTime = 16 * 120 * 2;
 			vi.advanceTimersByTime(totalTime);
 
 			// Animation should still be running
@@ -326,9 +326,9 @@ describe("SailAnimation", () => {
 			// Check for boat Unicode characters (blocks, shading)
 			const frame = lastCall as string;
 			const hasBoatChars =
-				frame.includes("▓") || // Dark shade
+				frame.includes("▒") || // Medium shade
 				frame.includes("█") || // Full block
-				frame.includes("│") || // Box drawing
+				frame.includes("┃") || // Vertical line (mast)
 				frame.includes("▀"); // Upper half block
 
 			expect(hasBoatChars).toBe(true);
