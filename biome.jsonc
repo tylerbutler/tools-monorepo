@@ -39,9 +39,14 @@
 			// test json
 			"!**/test/data/json/**/*.json",
 
+			// test data files used for testing (sail-infrastructure)
+			"!**/packages/sail-infrastructure/src/test/data",
+
 			// auto-generated data files
 			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
 			"!**/packages/ccl-test-viewer/static/data/*.*",
+
+			"!**/FluidFramework",
 		],
 	},
 	"formatter": {
@@ -60,12 +65,27 @@
 				"packages/cli-api/**",
 				"packages/dill-cli/**",
 				"packages/repopo/**",
+				"packages/sail/**",
 				"packages/sort-tsconfig/**",
 			],
 			"linter": {
 				"rules": {
 					"correctness": {
 						"noNodejsModules": "off",
+					},
+				},
+			},
+		},
+		{
+			// sail infrastructure packages - allow namespace imports and complexity
+			"includes": ["packages/sail/**", "packages/sail-infrastructure/**"],
+			"linter": {
+				"rules": {
+					"performance": {
+						"noNamespaceImport": "off",
+					},
+					"complexity": {
+						"noExcessiveCognitiveComplexity": "off",
 					},
 				},
 			},

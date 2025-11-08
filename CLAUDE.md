@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a TypeScript monorepo containing personal tools and CLI utilities, managed with pnpm workspaces and Turbo for build orchestration.
+This is a TypeScript monorepo containing personal tools and CLI utilities, managed with pnpm workspaces and Nx for build orchestration.
 
 **Key Technologies:**
 - **Package Manager**: pnpm 10.10.0 (required - do not use npm or yarn)
-- **Build Orchestration**: Turbo (task caching and parallel execution)
+- **Build Orchestration**: Nx (task caching, parallel execution, affected detection, and plugin-based inference)
 - **Testing**: Vitest with coverage support
 - **Formatting/Linting**: Biome (unified toolchain replacing ESLint/Prettier)
 - **CLI Framework**: OCLIF for command-line tools
@@ -16,16 +16,18 @@ This is a TypeScript monorepo containing personal tools and CLI utilities, manag
 
 ## Essential Commands
 
+**Note on Task Naming**: Root scripts use user-friendly names (`pnpm build`, `pnpm test`) which run Nx targets across packages (e.g., `nx run-many -t build`). Individual packages define implementation tasks like `build:compile`, `build:api`, etc. See Architecture Patterns section for details.
+
 ### Root-Level Development
 
 ```bash
 # Install dependencies (always use pnpm, never npm/yarn)
 pnpm install
 
-# Build all packages
+# Build all packages (runs nx run-many -t build)
 pnpm build
 
-# Run all tests
+# Run all tests (runs nx run-many -t test)
 pnpm test
 
 # Run all checks (format, lint, policy)
@@ -38,8 +40,41 @@ pnpm format
 pnpm lint
 pnpm lint:fix  # Auto-fix issues
 
-# CI pipeline (comprehensive checks)
-pnpm ci
+# CI pipeline (runs on affected projects only)
+pnpm run ci
+
+# CI pipeline on ALL projects (useful for verification)
+pnpm run ci:all
+
+# CI pipeline on local changes only (since last commit)
+pnpm run ci:local
+```
+
+**Note**: The CI task list (check, build, lint, test:coverage) is centralized in `nx.json` targetDefaults. To update which tasks run in CI, modify the `ci` target's `dependsOn` array in `nx.json` - all projects will automatically use the updated configuration.
+
+### Nx-Specific Commands
+
+The monorepo uses Nx for intelligent task orchestration:
+
+```bash
+# Run affected tasks (compares to main branch)
+pnpm nx affected -t build
+pnpm nx affected -t test
+pnpm nx affected -t ci
+
+# Run tasks on all projects
+pnpm nx run-many -t build
+pnpm nx run-many -t test
+
+# Run task on specific project
+pnpm nx run cli:build
+pnpm nx run cli:test
+
+# View project details and task configuration
+pnpm nx show project cli --web
+
+# Visualize project graph
+pnpm nx graph
 ```
 
 ### Package-Level Development
@@ -105,19 +140,55 @@ The monorepo contains these key packages:
 
 ### Build Pipeline
 
-Turbo orchestrates a complex build pipeline with multiple stages:
+Nx orchestrates builds using **pure dependency-based orchestration** - no shell scripts, just dependency graphs:
 
-1. **compile** - TypeScript compilation (src → esm/)
-2. **api** - API Extractor generates API documentation
-3. **docs** - TypeDoc generates documentation
-4. **manifest** (CLI packages) - OCLIF manifest generation
-5. **readme** (CLI packages) - OCLIF readme generation
-6. **generate** (CLI packages) - Command snapshot generation
+**Architecture:** Orchestration via `nx.json`, Implementation via package.json scripts
 
-**Build Steps by Package Type:**
-- Libraries: compile → api → docs
-- CLI tools: compile → api → build:test → manifest → readme → generate
-- Astro sites: Just `astro build`
+**Orchestration Targets** (defined in `nx.json` targetDefaults):
+- `ci` - Full CI pipeline (**centralized task list**: check, build, lint, test:coverage)
+  - Configured once in `nx.json` targetDefaults
+  - Each package enables via `nx.targets.ci` in package.json
+  - Update task list in ONE place (nx.json)
+- `build` - Virtual target that depends on all build implementation tasks
+- `test` - Virtual target that depends on compile + test implementation tasks
+- `check` - Runs all quality checks (format, types, deps, policy, lint)
+- `release` - Prepares releases (build + release:license)
+
+**Implementation Tasks** (package-specific, defined in package.json):
+- `build:compile` - TypeScript compilation (src → esm/)
+- `build:api` - API Extractor documentation
+- `build:docs` - TypeDoc documentation
+- `build:manifest` - OCLIF manifest generation
+- `build:readme` - OCLIF readme generation
+- `build:generate` - OCLIF command snapshots
+- `build:site` - Astro/Vite site builds
+- `build:vite` / `build:tauri` - Svelte/Tauri builds
+- `test:unit`, `test:coverage`, `test:e2e` - Testing variants
+- `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
+
+**Plugin-Inferred Tasks** (auto-detected by Nx plugins):
+- `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vite plugin)
+
+**Package-Specific Pipelines:**
+- **Libraries**: build:compile → build:api → build:docs
+- **CLI tools**: build:compile → build:manifest → build:readme → build:generate
+- **Astro sites**: build:site only
+- **Svelte apps**: build:vite (or build:vite → build:tauri for desktop)
+
+**Key Principles:**
+- **No orchestrator scripts in package.json** - only minimal `"build": ""` to register target
+- **All orchestration in `nx.json`** - dependency chains via `dependsOn`
+- **Granular caching** - each implementation task caches independently
+- **Parallel execution** - tasks without dependencies run concurrently
+- Implementation tasks use `:` separator (e.g., `build:compile`)
+- Nx plugins auto-infer tasks from config files (vitest.config.ts, etc.)
+- All configuration in root `nx.json` (no package-level project.json files)
+
+**Benefits:**
+- Change README → only `build:readme` runs (others cache)
+- Change source → only affected tasks rebuild
+- API Extractor configs run in parallel
+- 60-80% faster for isolated changes
 
 ### TypeScript Configuration
 
@@ -129,6 +200,32 @@ All packages extend base tsconfig files from `config/`:
 - `tsconfig.node.json` - Node-specific settings
 
 **Important:** This monorepo uses **explicit .mjs/.cjs extensions** - no ambiguous .js files allowed. This is enforced via the `NoJsFileExtensions` policy in repopo.
+
+### Nx Plugin Configuration
+
+Nx uses plugins to automatically infer tasks from configuration files, reducing manual configuration:
+
+**Active Plugins:**
+- `@nx/vite/plugin` - Auto-infers test tasks from `vitest.config.ts` files
+
+**Plugin Exclusions** (projects with non-standard configurations):
+- `packages/ccl-test-viewer/**` - Svelte app with custom Vite setup
+- `packages/ccl-docs/**` - Astro site (uses Vite internally but different structure)
+- `packages/dill-docs/**` - Astro site
+- `packages/repopo-docs/**` - Astro site
+
+**Inferred Targets:**
+- `test:vitest` - Automatically created for packages with `vitest.config.ts`
+  - Uses same caching and configuration as manually defined tasks
+  - Available on: fundamentals, cli-api, cli, repopo, sort-tsconfig, xkcd2-api, dill
+
+**Why Use Plugins?**
+- Automatic task discovery when adding new packages
+- Less manual configuration in `nx.json`
+- Consistent task naming across projects
+- Better IDE/Nx Console integration
+
+**Configuration Location:** See `nx.json` → `plugins` array
 
 ### OCLIF CLI Structure
 
@@ -198,7 +295,7 @@ pnpm test:coverage
 3. Add to `pnpm-workspace.yaml` (already includes `packages/*`)
 4. Extend base tsconfig: `{ "extends": "../../config/tsconfig.strict.json" }`
 5. Run `pnpm install` from root
-6. Run `pnpm run check:policy` to verify compliance
+6. Run `pnpm run repopo` to verify compliance (or `pnpm run fix:policy` to auto-fix)
 
 ### Working with OCLIF Commands
 
@@ -209,26 +306,29 @@ pnpm test:coverage
 # Production mode (uses compiled JavaScript)
 ./bin/run.js <command>
 
-# Update README after command changes
-pnpm readme
+# Update README after command changes (runs build:readme task)
+pnpm nx run cli:build:readme
 
-# Update manifest
-pnpm manifest
+# Update manifest (runs build:manifest task)
+pnpm nx run cli:build:manifest
+
+# Generate command snapshots (runs build:generate task)
+pnpm nx run cli:build:generate
 ```
 
 ### Running Individual Package Scripts
 
-Turbo caches based on inputs/outputs, so repeated builds are fast:
+Nx caches based on inputs/outputs, so repeated builds are fast:
 
 ```bash
 # Build with cache
 pnpm build
 
 # Force rebuild without cache
-pnpm build --force
+pnpm nx reset && pnpm build
 
 # See what would be built
-pnpm build --dry-run
+pnpm nx run-many -t build --dry-run
 ```
 
 ### Formatting and Linting
@@ -282,7 +382,7 @@ tools-monorepo/
 │   ├── tsconfig*.json # Base TypeScript configs
 │   ├── vitest.config.ts
 │   └── api-extractor.base.json
-├── turbo.json         # Turbo task configuration
+├── nx.json            # Nx task configuration
 ├── biome.jsonc        # Biome configuration
 ├── repopo.config.ts   # Repository policies
 └── syncpack.config.cjs # Dependency version sync
@@ -291,19 +391,47 @@ tools-monorepo/
 ## Troubleshooting
 
 **Build failures:**
-- Clear Turbo cache: `rm -rf .turbo`
+- Clear Nx cache: `pnpm nx reset`
 - Clear package builds: `pnpm clean`
 - Reinstall: `rm -rf node_modules && pnpm install`
 
 **Policy violations:**
-- Auto-fix: `pnpm run fix:policy`
+- Auto-fix: `pnpm run fix:policy` (runs `repopo check --fix`)
 - Check specific package: `./packages/repopo/bin/dev.js check --path packages/<name>`
 
 **Version mismatches:**
 - Sync dependencies: `pnpm syncpack:fix`
-- Check for mismatches: `pnpm run check:deps`
+- Check for mismatches: `pnpm nx run-many -t syncpack`
 
 **TypeScript errors:**
 - Ensure you're extending the correct base config
 - Check that `esm/` output is current: `pnpm compile`
 - Verify imports use explicit extensions (.mjs/.cjs)
+
+
+<!-- nx configuration start-->
+<!-- Leave the start & end comments to automatically receive updates. -->
+
+# General Guidelines for working with Nx
+
+- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `pnpm nx run`, `pnpm nx run-many`, `pnpm nx affected`) instead of using the underlying tooling directly
+- You have access to the Nx MCP server and its tools, use them to help the user
+- When answering questions about the repository, use the `nx_workspace` tool first to gain an understanding of the workspace architecture where applicable.
+- When working in individual projects, use the `nx_project_details` mcp tool to analyze and understand the specific project structure and dependencies
+- For questions around nx configuration, best practices or if you're unsure, use the `nx_docs` tool to get relevant, up-to-date docs. Always use this instead of assuming things about nx configuration
+- If the user needs help with an Nx configuration or project graph error, use the `nx_workspace` tool to get any errors
+
+# CI Error Guidelines
+
+If the user wants help with fixing an error in their CI pipeline, use the following flow:
+- Retrieve the list of current CI Pipeline Executions (CIPEs) using the `nx_cloud_cipe_details` tool
+- If there are any errors, use the `nx_cloud_fix_cipe_failure` tool to retrieve the logs for a specific task
+- Use the task logs to see what's wrong and help the user fix their problem. Use the appropriate tools if necessary
+- Make sure that the problem is fixed by running the task that you passed into the `nx_cloud_fix_cipe_failure` tool
+
+
+<!-- nx configuration end-->
+
+- This project uses tabs primarily for indentation. Not spaces.
+- We do not use re-export patterns. Always import from the module directly.
+- Use "pnpm vitest" to run specific tests and test files. pnpm test will typically run all tests no matter what arguments you pass.

@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/fundamentals",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"description": "Fundamental functions and classes that I often need in my projects. Zero dependencies.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/fundamentals#tylerbufundamentals",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -37,30 +37,29 @@
 		"esm"
 	],
 	"scripts": {
-		"api": "concurrently npm:docs:api:*",
-		"b": "turbo build",
-		"check": "npm run check:format",
+		"build:api": "concurrently npm:docs:api:*",
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:docs": "typedoc",
+		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
-		"compile": "tsc --project ./tsconfig.json",
-		"docs": "typedoc",
 		"docs:api:array": "api-extractor run --local --config api-extractor.array.json",
 		"docs:api:git": "api-extractor run --local --config api-extractor.git.json",
 		"docs:api:main": "api-extractor run --local",
 		"docs:api:set": "api-extractor run --local --config api-extractor.set.json",
 		"docs:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "turbo full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run test",
 		"test:coverage": "vitest run test --coverage"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-documenter": "^7.27.1",
-		"@microsoft/api-extractor": "^7.53.1",
-		"@types/node": "^20.19.21",
+		"@microsoft/api-documenter": "^7.27.2",
+		"@microsoft/api-extractor": "^7.53.2",
+		"@types/node": "^20.19.23",
 		"@vitest/coverage-v8": "^3.2.4",
 		"concurrently": "^9.2.1",
 		"pathe": "^2.0.3",
@@ -73,5 +72,13 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {}
+		}
 	}
 }

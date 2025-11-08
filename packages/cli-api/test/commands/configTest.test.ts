@@ -26,4 +26,12 @@ describe("CommandWithConfig", () => {
 		});
 		expect(error?.message).toMatch(/^Failure to load config: .*/);
 	});
+
+	it("succeeds when requiresConfig is false and config is missing", async () => {
+		const { stdout, error } = await runCommand(["configTestOptional"], {
+			root: import.meta.url,
+		});
+		expect(error).toBeUndefined();
+		expect(stdout.trim()).to.equal("Loaded config from: undefined");
+	});
 });

@@ -1,0 +1,52 @@
+import type { Logger } from "@tylerbu/cli-api";
+import type { BuildProjectConfig } from "@tylerbu/sail-infrastructure";
+import type { SimpleGit } from "simple-git";
+import type { ISailConfig } from "./sailConfig.js";
+import type { SharedCacheManager } from "./sharedCache/index.js";
+import type { TaskHandlerRegistry } from "./tasks/TaskHandlerRegistry.js";
+
+/**
+ * A context object that is passed to Sail tasks. It is used to provide easy access to commonly-needed metadata
+ * or tools.
+ *
+ * @beta
+ */
+export interface BuildContext {
+	/**
+	 * The Sail configuration for the repo.
+	 */
+	readonly sailConfig: ISailConfig;
+
+	readonly buildProjectConfig: BuildProjectConfig;
+
+	/**
+	 * The absolute path to the root of the Fluid repo.
+	 *
+	 * @deprecated Use fluidRepoLayout.root instead.
+	 */
+	readonly repoRoot: string;
+
+	/**
+	 * A GitRepo object that can be used to call git operations. It is rooted at `gitRoot`.
+	 */
+	readonly gitRepo: SimpleGit;
+
+	/**
+	 * The path to the git repo root.
+	 */
+	readonly gitRoot: string;
+
+	readonly log: Logger;
+
+	/**
+	 * Shared cache manager for storing and retrieving task outputs.
+	 * Undefined if caching is disabled.
+	 */
+	readonly sharedCache?: SharedCacheManager;
+
+	/**
+	 * Registry for custom task handlers.
+	 * This registry contains handlers loaded from configuration and any programmatically registered handlers.
+	 */
+	readonly taskHandlerRegistry: TaskHandlerRegistry;
+}

@@ -1,0 +1,59 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .: {}
+
+  packages/base:
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/left:
+    dependencies:
+      '@test/base':
+        specifier: workspace:*
+        version: link:../base
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/right:
+    dependencies:
+      '@test/base':
+        specifier: workspace:*
+        version: link:../base
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/top:
+    dependencies:
+      '@test/left':
+        specifier: workspace:*
+        version: link:../left
+      '@test/right':
+        specifier: workspace:*
+        version: link:../right
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+packages:
+
+  typescript@5.5.4:
+    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+snapshots:
+
+  typescript@5.5.4: {}
