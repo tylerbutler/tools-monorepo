@@ -221,7 +221,12 @@ export function createManifest(options: {
 	nodeEnv?: string;
 	cacheBustVars?: Record<string, string>;
 	inputFiles: ReadonlyArray<{ path: string; hash: string }>;
-	outputFiles: ReadonlyArray<{ path: string; hash: string; size: number }>;
+	outputFiles: ReadonlyArray<{
+		path: string;
+		hash: string;
+		size: number;
+		mtime: number;
+	}>;
 	stdout: string;
 	stderr: string;
 }): CacheManifest {

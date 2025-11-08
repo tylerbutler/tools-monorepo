@@ -80,6 +80,13 @@ function normalizeInputs(inputs: CacheKeyInputs): Record<string, unknown> {
 		normalized.configHashes = sortedConfigHashes;
 	}
 
+	if (inputs.dependencyHashes !== undefined) {
+		// Sort dependency hashes by name for deterministic serialization
+		normalized.dependencyHashes = [...inputs.dependencyHashes].sort((a, b) =>
+			a.name.localeCompare(b.name),
+		);
+	}
+
 	return normalized;
 }
 

@@ -5,6 +5,7 @@
 
 import { existsSync } from "node:fs";
 import * as path from "node:path";
+import type { Logger } from "@tylerbu/cli-api";
 import registerDebug from "debug";
 import {
 	cacheEntryExists,
@@ -13,7 +14,7 @@ import {
 } from "./cacheDirectory.js";
 import { computeCacheKey } from "./cacheKey.js";
 import {
-	copyFileWithDirs,
+	copyFileWithMtime,
 	hashFilesWithSize,
 	verifyFilesIntegrity,
 } from "./fileOperations.js";
@@ -57,9 +58,11 @@ const traceError = registerDebug("sail:cache:error");
  */
 export class SharedCacheManager {
 	public readonly options: SharedCacheOptions;
+	private readonly logger: Logger;
 	private readonly statistics: CacheStatistics;
 	private initialized = false;
 	private initializationPromise: Promise<void> | undefined;
+	private pendingAccessTimeUpdates = new Set<Promise<void>>();
 
 	/**
 	 * Create a new SharedCacheManager.
@@ -68,6 +71,7 @@ export class SharedCacheManager {
 	 */
 	public constructor(options: SharedCacheOptions) {
 		this.options = options;
+		this.logger = options.logger;
 		// Statistics will be loaded from disk during initialization
 		this.statistics = {
 			totalEntries: 0,
@@ -173,7 +177,11 @@ export class SharedCacheManager {
 
 			// Check if entry exists
 			const entryPath = getCacheEntryPath(this.options.cacheDir, cacheKey);
-			if (!(await cacheEntryExists(this.options.cacheDir, cacheKey))) {
+			const exists = await cacheEntryExists(this.options.cacheDir, cacheKey);
+			traceLookup(
+				`Cache lookup for ${inputs.packageName}#${inputs.taskName} (key: ${shortKey}): ${exists ? "FOUND" : "MISS"}`,
+			);
+			if (!exists) {
 				const elapsed = Date.now() - startTime;
 				traceLookup(`MISS: Entry not found for ${shortKey} (${elapsed}ms)`);
 				this.statistics.missCount++;
@@ -297,13 +305,21 @@ export class SharedCacheManager {
 			// Update access time for LRU tracking (non-blocking, errors ignored)
 			// This is done asynchronously to avoid blocking the lookup and to prevent
 			// race conditions where concurrent lookups might try to update the same file
-			updateManifestAccessTime(manifestPath).catch((error) => {
-				// Silently ignore access time update failures - they're not critical
-				// The manifest will still be valid, just with a slightly stale access time
-				traceError(
-					`Failed to update manifest access time for ${shortKey}: ${error}`,
-				);
-			});
+			// Track the promise to ensure it completes before process exit
+			const updatePromise = updateManifestAccessTime(manifestPath)
+				.catch((error) => {
+					// Silently ignore access time update failures - they're not critical
+					// The manifest will still be valid, just with a slightly stale access time
+					traceError(
+						`Failed to update manifest access time for ${shortKey}: ${error}`,
+					);
+				})
+				.finally(() => {
+					// Remove from tracking set when complete
+					this.pendingAccessTimeUpdates.delete(updatePromise);
+				});
+
+			this.pendingAccessTimeUpdates.add(updatePromise);
 
 			// Cache hit!
 			const elapsed = Date.now() - startTime;
@@ -394,19 +410,52 @@ export class SharedCacheManager {
 			// but not yet write the manifest
 			const manifestPath = path.join(entryPath, "manifest.json");
 			if (existsSync(manifestPath)) {
-				const reason = "cache entry already exists";
-				traceStore(`Cache entry ${shortKey} already exists, skipping store`);
-				return { success: false, reason };
+				if (!this.options.overwriteCache) {
+					const reason = "cache entry already exists";
+					this.logger.warning(
+						`${inputs.packageName}#${inputs.taskName}: Cache entry ${shortKey} already exists when trying to store. ` +
+							"This indicates the task executed despite cache hit, or a race condition between parallel tasks. " +
+							`Manifest path: ${manifestPath}`,
+					);
+					traceStore(`Cache entry ${shortKey} already exists, skipping store`);
+					return { success: false, reason };
+				}
+				// --overwrite-cache enabled: delete existing entry and proceed with store
+				traceStore(
+					`Cache entry ${shortKey} already exists, but --overwrite-cache is enabled. Removing existing entry.`,
+				);
+				const { rm } = await import("node:fs/promises");
+				await rm(entryPath, { recursive: true, force: true });
 			}
 
 			// Hash all output files for integrity verification
+			// NOTE: hashFilesWithSize now throws if any file doesn't exist or is a directory
+			// This ensures tasks accurately declare their outputs
 			const hashStartTime = Date.now();
 			const outputFilesWithHashes = await hashFilesWithSize(
 				outputs.files.map((f) => f.sourcePath),
 			);
 			const hashTime = Date.now() - hashStartTime;
+
+			// Create parallel array with file metadata and hashes
+			const existingFiles: Array<{
+				file: { sourcePath: string; relativePath: string; hash?: string };
+				hash: string;
+				size: number;
+				mtime: number;
+			}> = [];
+			for (let i = 0; i < outputFilesWithHashes.length; i++) {
+				const hashResult = outputFilesWithHashes[i];
+				existingFiles.push({
+					file: outputs.files[i],
+					hash: hashResult.hash,
+					size: hashResult.size,
+					mtime: hashResult.mtime,
+				});
+			}
+
 			traceStore(
-				`Hashed ${outputs.files.length} output files in ${hashTime}ms`,
+				`Hashed ${existingFiles.length} output files in ${hashTime}ms`,
 			);
 
 			// Create manifest
@@ -429,25 +478,26 @@ export class SharedCacheManager {
 					path: input.path,
 					hash: input.hash,
 				})),
-				outputFiles: outputFilesWithHashes.map((output, index) => ({
-					path: outputs.files[index].relativePath,
-					hash: output.hash,
-					size: output.size,
+				outputFiles: existingFiles.map((f) => ({
+					path: f.file.relativePath,
+					hash: f.hash,
+					size: f.size,
+					mtime: f.mtime,
 				})),
 				stdout: outputs.stdout,
 				stderr: outputs.stderr,
 			});
 
-			// Copy output files to cache directory
+			// Copy output files to cache directory with preserved modification times
 			const copyStartTime = Date.now();
-			for (const file of outputs.files) {
+			for (const { file, mtime } of existingFiles) {
 				const sourcePath = file.sourcePath;
 				const destPath = path.join(entryPath, "outputs", file.relativePath);
-				await copyFileWithDirs(sourcePath, destPath);
+				await copyFileWithMtime(sourcePath, destPath, mtime);
 			}
 			const copyTime = Date.now() - copyStartTime;
 			traceStore(
-				`Copied ${outputs.files.length} files to cache in ${copyTime}ms`,
+				`Copied ${existingFiles.length} files to cache with preserved timestamps in ${copyTime}ms`,
 			);
 
 			// Write manifest (atomically)
@@ -467,10 +517,7 @@ export class SharedCacheManager {
 
 			// Update statistics
 			const storeTime = Date.now() - storeStartTime;
-			const entrySize = outputFilesWithHashes.reduce(
-				(sum, f) => sum + f.size,
-				0,
-			);
+			const entrySize = existingFiles.reduce((sum, f) => sum + f.size, 0);
 
 			this.statistics.totalEntries++;
 			this.statistics.totalSize += entrySize;
@@ -497,7 +544,7 @@ export class SharedCacheManager {
 
 			return {
 				success: true,
-				filesStored: outputs.files.length,
+				filesStored: existingFiles.length,
 				bytesStored: entrySize,
 			};
 		} catch (error) {
@@ -577,16 +624,16 @@ export class SharedCacheManager {
 				);
 			}
 
-			// Copy files from cache to workspace
+			// Copy files from cache to workspace with preserved modification times
 			const copyStartTime = Date.now();
 			for (const output of entry.manifest.outputFiles) {
 				const sourcePath = path.join(entry.entryPath, "outputs", output.path);
 				const destPath = path.join(packageRoot, output.path);
-				await copyFileWithDirs(sourcePath, destPath);
+				await copyFileWithMtime(sourcePath, destPath, output.mtime);
 			}
 			const copyTime = Date.now() - copyStartTime;
 			traceRestore(
-				`Copied ${entry.manifest.outputFiles.length} files in ${copyTime}ms`,
+				`Copied ${entry.manifest.outputFiles.length} files with preserved timestamps in ${copyTime}ms`,
 			);
 
 			// Calculate statistics
@@ -649,6 +696,20 @@ export class SharedCacheManager {
 		this.statistics.missCount = 0;
 		this.statistics.avgRestoreTime = 0;
 		this.statistics.avgStoreTime = 0;
+	}
+
+	/**
+	 * Wait for all pending background operations to complete.
+	 *
+	 * This should be called before process exit to ensure all
+	 * async operations (like access time updates) complete properly.
+	 *
+	 * @returns Promise that resolves when all pending operations complete
+	 */
+	public async waitForPendingOperations(): Promise<void> {
+		if (this.pendingAccessTimeUpdates.size > 0) {
+			await Promise.all(this.pendingAccessTimeUpdates);
+		}
 	}
 
 	/**

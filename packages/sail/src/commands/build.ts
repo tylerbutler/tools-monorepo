@@ -1,7 +1,9 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
+import readline from "node:readline/promises";
 import { Args, Flags } from "@oclif/core";
 import { Stopwatch } from "@tylerbu/sail-infrastructure";
+import chalk from "picocolors";
 import { BaseSailCommand } from "../baseCommand.js";
 import { SailBuildRepo } from "../core/buildRepo.js";
 import { type BuildOptions, defaultOptions } from "../core/options.js";
@@ -88,6 +90,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			cacheDir,
 			skipCacheWrite,
 			verifyCacheIntegrity,
+			overwriteCache,
 			clean,
 			concurrency,
 			force,
@@ -106,18 +109,57 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 
 		const buildRepo = new SailBuildRepo(process.cwd(), this);
 
+		// Confirm overwrite-cache option if enabled
+		if (overwriteCache) {
+			const rl = readline.createInterface({
+				input: process.stdin,
+				output: process.stdout,
+			});
+
+			const response = await rl.question(
+				"--overwrite-cache is enabled. This will delete existing cache entries on conflict. Continue? (y/n): ",
+			);
+			rl.close();
+
+			if (response.toLowerCase() !== "y" && response.toLowerCase() !== "yes") {
+				this.log("Aborted by user.");
+				return;
+			}
+		}
+
 		// Initialize shared cache if enabled
 		const sharedCache = await initializeSharedCache(
 			cacheDir,
 			buildRepo.root,
 			skipCacheWrite,
 			verifyCacheIntegrity,
+			{
+				log: (message?: string) => this.log(message ?? ""),
+				info: (msg?: string | Error) => this.log(String(msg ?? "")),
+				warning: (msg?: string | Error) => this.warning(String(msg ?? "")),
+				errorLog: (msg?: string | Error) => this.log(String(msg ?? "")),
+				verbose: (msg?: string | Error) => this.log(String(msg ?? "")),
+			},
+			overwriteCache,
 		);
 
+		// Display prominent cache status
 		if (sharedCache) {
 			// Add cache to build context
 			// biome-ignore lint/suspicious/noExplicitAny: Accessing internal context property
 			(buildRepo as any).context.sharedCache = sharedCache;
+
+			// Prominent success message with green background
+			this.log(chalk.bgGreen(chalk.black(" ✓ SHARED CACHE ENABLED ")));
+			this.log(chalk.green(`   Cache Directory: ${cacheDir}`));
+		} else {
+			// Prominent warning message with yellow background
+			this.log(chalk.bgYellow(chalk.black(" ⚠ SHARED CACHE DISABLED ")));
+			this.log(
+				chalk.yellow(
+					"   Set SAIL_CACHE_DIR or use --cache-dir to enable shared caching",
+				),
+			);
 		}
 
 		if (rebuild) {
@@ -157,12 +199,24 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		try {
 			const buildResult = await runBuild(buildRepo, options, timer, this);
 
+			// Wait for all pending cache operations to complete before exit
+			// This prevents "unsettled top-level await" warnings when background
+			// operations (like access time updates) are still pending
+			if (sharedCache) {
+				await sharedCache.waitForPendingOperations();
+			}
+
 			if (buildResult !== 0) {
 				this.error(`Build result was ${buildResult}.`, { exit: buildResult });
 			}
 		} catch (error) {
 			// this.warning(error as Error);
 			this.error(error as Error, { exit: 100 });
+		} finally {
+			// Ensure pending operations complete even on error
+			if (sharedCache) {
+				await sharedCache.waitForPendingOperations();
+			}
 		}
 	}
 }

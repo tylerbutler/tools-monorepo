@@ -2,6 +2,7 @@ import type { Logger } from "@tylerbu/cli-api";
 import type { Stopwatch } from "@tylerbu/sail-infrastructure";
 import chalk from "picocolors";
 import { Spinner } from "picospinner";
+import { hasTTY, isTest } from "std-env";
 import type { BuildGraph } from "./buildGraph.js";
 import type { SailBuildRepo } from "./buildRepo.js";
 import { BuildResult } from "./execution/BuildResult.js";
@@ -26,17 +27,23 @@ export async function runBuild(
 	let exitCode = 0;
 	if (options.buildTaskNames.length > 0) {
 		// build the graph
-		const spinner = new Spinner("Creating build graph...");
-		spinner.start();
+		// Only show spinner when running in TTY and not in test mode
+		const shouldShowSpinner = hasTTY && !isTest;
+		const spinner = shouldShowSpinner
+			? new Spinner("Creating build graph...")
+			: undefined;
+		spinner?.start();
 
 		let buildGraph: BuildGraph;
 		try {
 			buildGraph = await repo.createBuildGraph(options);
 		} catch (error: unknown) {
-			spinner.stop();
+			spinner?.stop();
 			throw error;
 		}
-		spinner.succeed("Build graph created.");
+		if (spinner) {
+			spinner.succeed("Build graph created.");
+		}
 		// timer.log("Build graph creation completed");
 
 		// Check install
@@ -64,10 +71,26 @@ export async function runBuild(
 			log.log(cacheStats);
 		}
 
+		// Display local and remote cache hit rates
+		const taskStats = buildGraph.taskStats;
+		const totalTasks = taskStats.leafTotalCount;
+		if (totalTasks > 0) {
+			const localHitRate = (
+				(taskStats.leafLocalCacheHitCount / totalTasks) *
+				100
+			).toFixed(1);
+			const remoteHitRate = (
+				(taskStats.leafRemoteCacheHitCount / totalTasks) *
+				100
+			).toFixed(1);
+			log.log(
+				`Local cache: ${taskStats.leafLocalCacheHitCount}/${totalTasks} (${localHitRate}% hit rate) | Remote cache: ${taskStats.leafRemoteCacheHitCount}/${totalTasks} (${remoteHitRate}% hit rate)`,
+			);
+		}
+
 		log.log(`Build ${buildStatus} - ${elapsedTime.toFixed(3)}s`);
 
 		// Display status symbol legend if tasks were built
-		const taskStats = buildGraph.taskStats;
 		if (taskStats.leafBuiltCount > 0) {
 			displayStatusSymbolLegend(log);
 		}
