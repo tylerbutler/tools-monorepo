@@ -5,10 +5,8 @@ import path from "node:path";
 import { GitRepo } from "../../../common/gitRepo.js";
 import { getSailConfig } from "../../../core/config.js";
 import { sha256 } from "../../hash.js";
-import {
-	LeafWithDoneFileTask,
-	LeafWithFileStatDoneFileTask,
-} from "./leafTask.js";
+import { globFn } from "../taskUtils.js";
+import { LeafWithDoneFileTask } from "./leafTask.js";
 
 export class FlubListTask extends LeafWithDoneFileTask {
 	private getReleaseGroup() {
@@ -24,7 +22,7 @@ export class FlubListTask extends LeafWithDoneFileTask {
 		return split.length < 3 || split[2].startsWith("-") ? undefined : split[2];
 	}
 
-	protected async getDoneFileContent(): Promise<string | undefined> {
+	protected override async getDoneFileContent(): Promise<string | undefined> {
 		const resourceGroup = this.getReleaseGroup();
 		if (resourceGroup === undefined) {
 			return undefined;
@@ -36,6 +34,16 @@ export class FlubListTask extends LeafWithDoneFileTask {
 			return undefined;
 		}
 		return JSON.stringify(packages.map((pkg) => [pkg.name, pkg.packageJson]));
+	}
+
+	protected async getInputFiles(): Promise<string[]> {
+		// FlubListTask doesn't use file-based tracking
+		return [];
+	}
+
+	protected async getOutputFiles(): Promise<string[]> {
+		// FlubListTask doesn't produce output files
+		return [];
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {
@@ -65,7 +73,7 @@ export class FlubCheckLayerTask extends LeafWithDoneFileTask {
 		return existsSync(infoFilePath) ? readFile(infoFilePath) : undefined;
 	}
 
-	protected async getDoneFileContent(): Promise<string | undefined> {
+	protected override async getDoneFileContent(): Promise<string | undefined> {
 		const layerInfoFile = await this.getLayerInfoFile();
 		return layerInfoFile
 			? JSON.stringify({
@@ -75,6 +83,16 @@ export class FlubCheckLayerTask extends LeafWithDoneFileTask {
 					),
 				})
 			: undefined;
+	}
+
+	protected async getInputFiles(): Promise<string[]> {
+		// FlubCheckLayerTask doesn't use file-based tracking
+		return [];
+	}
+
+	protected async getOutputFiles(): Promise<string[]> {
+		// FlubCheckLayerTask doesn't produce output files
+		return [];
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {
@@ -87,7 +105,7 @@ export class FlubCheckLayerTask extends LeafWithDoneFileTask {
 }
 
 export class FlubCheckPolicyTask extends LeafWithDoneFileTask {
-	protected async getDoneFileContent(): Promise<string | undefined> {
+	protected override async getDoneFileContent(): Promise<string | undefined> {
 		// We are using the "commit" (for HEAD) as a summary of the state of unchanged files to speed this up.
 		const gitRepo = new GitRepo(this.node.pkg.directory);
 
@@ -101,6 +119,16 @@ export class FlubCheckPolicyTask extends LeafWithDoneFileTask {
 		});
 	}
 
+	protected async getInputFiles(): Promise<string[]> {
+		// FlubCheckPolicyTask uses git-based tracking
+		return [];
+	}
+
+	protected async getOutputFiles(): Promise<string[]> {
+		// FlubCheckPolicyTask doesn't produce output files
+		return [];
+	}
+
 	public override async getCacheInputFiles(): Promise<string[]> {
 		return [];
 	}
@@ -112,7 +140,59 @@ export class FlubCheckPolicyTask extends LeafWithDoneFileTask {
 
 const changesetConfigPath = ".changeset/config.json";
 
-export class FlubGenerateChangesetConfigTask extends LeafWithFileStatDoneFileTask {
+/**
+ * Task for `flub generate typetests` command.
+ * This command generates type validation tests by comparing current package types with previous versions.
+ *
+ * Inputs:
+ * - src/ directory (contains the source types being validated)
+ * - package.json (contains typeValidation config and dependency versions)
+ *
+ * Outputs:
+ * - src/test/types/validate*Previous.generated.ts (default output location)
+ */
+export class FlubGenerateTypeTestsTask extends LeafWithDoneFileTask {
+	/**
+	 * Parse command line arguments to extract output directory and file pattern.
+	 * Defaults match the flub command defaults:
+	 * - outDir: ./src/test/types
+	 * - outFile: validate<PackageName>Previous.generated.ts
+	 */
+	private getOutputInfo(): { outDir: string; outFile: string } {
+		const args = this.command.split(" ");
+		let outDir = "./src/test/types";
+		let outFile = "validate*Previous.generated.ts"; // Use glob pattern for any package name
+
+		for (let i = 0; i < args.length; i++) {
+			if (args[i] === "--outDir" && i + 1 < args.length) {
+				outDir = args[i + 1];
+			}
+			if (args[i] === "--outFile" && i + 1 < args.length) {
+				outFile = args[i + 1];
+			}
+		}
+
+		return { outDir, outFile };
+	}
+
+	protected async getInputFiles(): Promise<string[]> {
+		const pkgDir = this.node.pkg.directory;
+		// Only track package.json as input - this matches the FluidFramework implementation
+		// The actual TypeScript source files are tracked indirectly through package.json changes
+		return [path.join(pkgDir, "package.json")];
+	}
+
+	protected async getOutputFiles(): Promise<string[]> {
+		const pkgDir = this.node.pkg.directory;
+		const { outDir, outFile } = this.getOutputInfo();
+		// Use glob to find actual output files (outFile may contain wildcards like validate*Previous.generated.ts)
+		const outputGlob = path.join(pkgDir, outDir, outFile);
+		// Use nodir: true to exclude directories from results
+		return globFn(outputGlob, { nodir: true });
+	}
+}
+
+export class FlubGenerateChangesetConfigTask extends LeafWithDoneFileTask {
 	/**
 	 * All of these paths are assumed to be relative to the Sail root - the directory in which the Sail config
 	 * file is found.
@@ -140,21 +220,5 @@ export class FlubGenerateChangesetConfigTask extends LeafWithFileStatDoneFileTas
 		const configDir = path.dirname(configFilePath);
 		const configPath = path.resolve(configDir, changesetConfigPath);
 		return [configPath];
-	}
-
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const inputs = await super.getCacheInputFiles();
-		// Add task-specific input files
-		inputs.push(...(await this.getInputFiles()));
-		return inputs;
-	}
-
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-		// Add task-specific output files
-		outputs.push(...(await this.getOutputFiles()));
-		return outputs;
 	}
 }

@@ -48,8 +48,12 @@ export class BuildExecutor implements IBuildExecutor {
 		}
 
 		// Check up-to-date state at the beginning of the build
-		const spinner = new Spinner("Checking incremental build task status...");
-		spinner.start();
+		// Only show spinner when running in TTY and not in test mode
+		const shouldShowSpinner = hasTTY && !isTest;
+		const spinner = shouldShowSpinner
+			? new Spinner("Checking incremental build task status...")
+			: undefined;
+		spinner?.start();
 
 		const isUpToDate = await this.profileOperation(
 			"up-to-date-check",
@@ -58,7 +62,9 @@ export class BuildExecutor implements IBuildExecutor {
 		);
 
 		timer?.log("Check up to date completed");
-		spinner.succeed("Tasks loaded.");
+		if (spinner) {
+			spinner.succeed("Tasks loaded.");
+		}
 
 		this.logBuildStart(buildTaskNames, matchedPackages, buildablePackages.size);
 
@@ -69,6 +75,11 @@ export class BuildExecutor implements IBuildExecutor {
 		if (this.numSkippedTasks) {
 			this.log.log(`Skipping ${this.numSkippedTasks} up to date tasks.`);
 		}
+
+		// Snapshot the up-to-date count before execution starts
+		// This provides a stable denominator for task counters (won't change as tasks complete)
+		this.context.taskStats.leafInitialUpToDateCount =
+			this.context.taskStats.leafUpToDateCount;
 
 		const result = await this.profileOperation(
 			"build-execution",
@@ -123,10 +134,14 @@ export class BuildExecutor implements IBuildExecutor {
 			return "";
 		}
 		const summaryLines = this.context.failedTaskLines;
+		// Calculate tasks that were not run due to failures
+		// Use leafInitialUpToDateCount (stable) instead of leafUpToDateCount (dynamic)
 		const notRunCount =
 			this.context.taskStats.leafTotalCount -
-			this.context.taskStats.leafUpToDateCount -
-			this.context.taskStats.leafBuiltCount;
+			this.context.taskStats.leafInitialUpToDateCount -
+			this.context.taskStats.leafBuiltCount -
+			(this.context.taskStats.leafUpToDateCount -
+				this.context.taskStats.leafInitialUpToDateCount);
 		summaryLines.unshift(chalk.redBright("Failed Tasks:"));
 		summaryLines.push(
 			chalk.yellow(`Did not run ${notRunCount} tasks due to prior failures.`),

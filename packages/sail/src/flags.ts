@@ -51,4 +51,10 @@ export const cacheFlags = {
 			"Verify file hashes when restoring from cache (adds overhead).",
 		default: false,
 	}),
+	overwriteCache: Flags.boolean({
+		description:
+			"Overwrite existing cache entries if a conflict occurs during parallel execution.",
+		default: false,
+		hidden: true,
+	}),
 };

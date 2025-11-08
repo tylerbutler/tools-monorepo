@@ -5,7 +5,7 @@ import picomatch from "picomatch";
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
 import { globFn, toPosixPath } from "../taskUtils.js";
-import { LeafTask, LeafWithFileStatDoneFileTask } from "./leafTask.js";
+import { LeafTask, LeafWithDoneFileTask } from "./leafTask.js";
 
 /**
  * Regular expression to extract package name and version from generated version file
@@ -42,7 +42,7 @@ export class EchoTask extends LeafTask {
 	}
 }
 
-export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
+export class CopyfilesTask extends LeafWithDoneFileTask {
 	private parsed = false;
 	private readonly up: number = 0;
 	private readonly copySrcArg: string[] = [];
@@ -179,22 +179,6 @@ export class CopyfilesTask extends LeafWithFileStatDoneFileTask {
 
 		return this._dstFiles;
 	}
-
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const inputs = await super.getCacheInputFiles();
-		// Add task-specific input files
-		inputs.push(...(await this.getInputFiles()));
-		return inputs;
-	}
-
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-		// Add task-specific output files
-		outputs.push(...(await this.getOutputFiles()));
-		return outputs;
-	}
 }
 
 export class GenVerTask extends LeafTask {
@@ -241,7 +225,7 @@ export class GenVerTask extends LeafTask {
 	}
 }
 
-export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
+export class GoodFenceTask extends LeafWithDoneFileTask {
 	protected override get taskWeight() {
 		return 0; // generally cheap relative to other tasks
 	}
@@ -288,7 +272,7 @@ export class GoodFenceTask extends LeafWithFileStatDoneFileTask {
 	}
 }
 
-export class DepCruiseTask extends LeafWithFileStatDoneFileTask {
+export class DepCruiseTask extends LeafWithDoneFileTask {
 	private inputFiles: string[] | undefined;
 	protected async getInputFiles(): Promise<string[]> {
 		if (this.inputFiles === undefined) {

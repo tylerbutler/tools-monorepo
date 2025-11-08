@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import { existsSync } from "node:fs";
-import { readFile, stat, unlink, writeFile } from "node:fs/promises";
+import { readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { AsyncPriorityQueue } from "async";
 import registerDebug from "debug";
@@ -24,14 +24,12 @@ import type {
 } from "../../sharedCache/index.js";
 import { Task, type TaskExec } from "../task.js";
 
-const traceTaskTrigger = registerDebug("sail:task:trigger");
 const traceTaskCheck = registerDebug("sail:task:check");
 const traceTaskInitDep = registerDebug("sail:task:init:dep");
 const traceTaskInitWeight = registerDebug("sail:task:init:weight");
 const _traceTaskExec = registerDebug("sail:task:exec");
 const _traceTaskCache = registerDebug("sail:task:cache");
 const traceTaskQueue = registerDebug("sail:task:exec:queue");
-const traceError = registerDebug("sail:task:error");
 const traceCacheKey = registerDebug("sail:cache:key");
 const traceUpToDate = registerDebug("sail:task:uptodate");
 
@@ -40,6 +38,46 @@ let taskInstanceCounter = 0;
 
 interface TaskExecResult extends ExecAsyncResult {
 	worker?: boolean;
+}
+
+/**
+ * Interface for tasks that can provide a hash representing their execution state.
+ * This hash is used by dependent tasks to detect when dependencies have changed.
+ *
+ * @remarks
+ * Different task types may use different artifacts to provide this hash:
+ * - LeafWithDoneFileTask uses the sail donefile (.sail-done-<task>)
+ * - TscTask uses TypeScript's tsBuildInfo file
+ * - Other tasks may use their own state representation
+ *
+ * @beta
+ */
+export interface IDependencyHashProvider {
+	/**
+	 * Returns a hash representing this task's current execution state.
+	 * Used by dependent tasks to determine if this dependency has changed.
+	 *
+	 * @returns A hash string if the state can be determined, or undefined if unavailable
+	 * (e.g., task hasn't executed yet, state file doesn't exist)
+	 */
+	getDependencyHash(): Promise<string | undefined>;
+}
+
+/**
+ * Type guard to check if a task implements IDependencyHashProvider.
+ *
+ * @param task - The task to check
+ * @returns true if the task implements getDependencyHash(), false otherwise
+ */
+function isDependencyHashProvider(
+	task: unknown,
+): task is IDependencyHashProvider {
+	return (
+		typeof task === "object" &&
+		task !== null &&
+		"getDependencyHash" in task &&
+		typeof (task as Record<string, unknown>).getDependencyHash === "function"
+	);
 }
 
 /**
@@ -204,11 +242,39 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			}
 		}
 
+		const startTime = Date.now();
+
+		// Try to restore from shared cache AFTER dependencies complete
+		// This ensures dependency outputs exist for getDoneFileContent() to work,
+		// enabling proper cascading cache invalidation based on dependency hashes.
+		// Skip cache when forced flag is set
+		if (this.node.sharedCache && this.canUseCache && !this.forced) {
+			// Clear cached up-to-date status from graph construction phase
+			// Dependencies may have executed and updated their outputs/hashes,
+			// so we need fresh dependency hashes for accurate cache key computation
+			this.clearUpToDateCache();
+
+			traceUpToDate(
+				`${this.nameColored}: trying cache restore after deps complete`,
+			);
+			const cacheHit = await this.tryRestoreFromCache();
+			if (cacheHit) {
+				this.traceExec("Skipping Leaf Task (cache hit)");
+				traceUpToDate(`${this.nameColored}: cache HIT (restored)`);
+				// Increment leafUpToDateCount before execDone (matches checkLeafIsUpToDate pattern)
+				// Cache-restored tasks are counted as "up-to-date", not "built"
+				this.node.taskStats.leafUpToDateCount++;
+				this.node.taskStats.leafRemoteCacheHitCount++;
+				return this.execDone(startTime, BuildResult.CachedSuccess);
+			}
+			traceUpToDate(`${this.nameColored}: cache MISS (will execute)`);
+		}
+
 		if (defaultOptions.showExec) {
 			this.node.taskStats.leafBuiltCount++;
 			const totalTask =
 				this.node.taskStats.leafTotalCount -
-				this.node.taskStats.leafUpToDateCount;
+				this.node.taskStats.leafInitialUpToDateCount;
 			const taskNum = this.node.taskStats.leafBuiltCount
 				.toString()
 				.padStart(totalTask.toString().length, " ");
@@ -216,12 +282,14 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				`[${taskNum}/${totalTask}] ${this.node.pkg.nameColored}: ${this.command}`,
 			);
 		}
-		const startTime = Date.now();
 		if (
 			this.recheckLeafIsUpToDate &&
 			!this.forced &&
 			(await this.checkLeafIsUpToDate())
 		) {
+			// Increment leafUpToDateCount before execDone (matches checkIsUpToDate pattern)
+			this.node.taskStats.leafUpToDateCount++;
+			this.node.taskStats.leafLocalCacheHitCount++;
 			return this.execDone(startTime, BuildResult.UpToDate);
 		}
 		const ret = await this.execCore();
@@ -384,11 +452,24 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 					break;
 			}
 
-			this.node.taskStats.leafBuiltCount++;
+			// Only increment leafBuiltCount for tasks that actually executed
+			// UpToDate and CachedSuccess tasks already incremented leafUpToDateCount
+			const shouldCountAsBuilt =
+				status !== BuildResult.UpToDate && status !== BuildResult.CachedSuccess;
+			if (shouldCountAsBuilt) {
+				this.node.taskStats.leafBuiltCount++;
+			}
+
 			const totalTask =
 				this.node.taskStats.leafTotalCount -
-				this.node.taskStats.leafUpToDateCount;
-			const taskNum = this.node.taskStats.leafBuiltCount
+				this.node.taskStats.leafInitialUpToDateCount;
+			// Task number = built tasks + tasks skipped during execution (cache/recheck)
+			// leafUpToDateCount includes initial skips + execution-time skips
+			// So subtract initial skips to get only execution-time skips
+			const executionTimeSkips =
+				this.node.taskStats.leafUpToDateCount -
+				this.node.taskStats.leafInitialUpToDateCount;
+			const taskNum = (this.node.taskStats.leafBuiltCount + executionTimeSkips)
 				.toString()
 				.padStart(totalTask.toString().length, " ");
 			const elapsedTime = (Date.now() - startTime) / 1000;
@@ -450,24 +531,9 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			return false;
 		}
 
-		// Try shared cache first (if enabled and task supports it)
-		if (this.node.sharedCache && this.canUseCache) {
-			traceUpToDate(
-				`${this.nameColored}: checking cache (sharedCache=${!!this.node.sharedCache}, canUseCache=${this.canUseCache})`,
-			);
-			const cacheHit = await this.tryRestoreFromCache();
-			if (cacheHit) {
-				this.node.taskStats.leafUpToDateCount++;
-				this.traceExec("Skipping Leaf Task (cache hit)");
-				traceUpToDate(`${this.nameColored}: cache HIT`);
-				return true;
-			}
-			traceUpToDate(`${this.nameColored}: cache MISS`);
-		} else {
-			traceUpToDate(
-				`${this.nameColored}: cache check skipped (sharedCache=${!!this.node.sharedCache}, canUseCache=${this.canUseCache})`,
-			);
-		}
+		// NOTE: Cache check moved to exec() to ensure dependencies have completed
+		// and their output files exist for getDoneFileContent() to work correctly.
+		// This enables proper cascading cache invalidation based on dependency hashes.
 
 		const start = Date.now();
 		const leafIsUpToDate = await this.checkLeafIsUpToDate();
@@ -476,6 +542,7 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 		);
 		if (leafIsUpToDate) {
 			this.node.taskStats.leafUpToDateCount++;
+			this.node.taskStats.leafLocalCacheHitCount++;
 			this.traceExec("Skipping Leaf Task");
 		}
 		traceUpToDate(`${this.nameColored}: leafIsUpToDate=${leafIsUpToDate}`);
@@ -542,6 +609,65 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 	}
 
 	/**
+	 * Compute hashes from dependent tasks' execution state.
+	 * This enables cascading cache invalidation: when a dependency's outputs change,
+	 * its state representation (donefile, tsBuildInfo, etc.) changes, which changes
+	 * these hashes, which invalidates this task's cache key.
+	 *
+	 * Tasks that implement IDependencyHashProvider can participate in dependency tracking:
+	 * - LeafWithDoneFileTask provides hash of its donefile
+	 * - TscTask provides hash of its tsBuildInfo file
+	 * - Other task types can implement custom state hashing
+	 *
+	 * Must be called AFTER dependencies have completed (either restored from cache
+	 * or executed), so their state files exist for getDependencyHash() to work.
+	 */
+	protected async getDependencyHashes(): Promise<
+		Array<{ name: string; hash: string }>
+	> {
+		const hashes: Array<{ name: string; hash: string }> = [];
+		const dependentTasks = Array.from(this.getDependentLeafTasks());
+		traceCacheKey(
+			`${this.nameColored}: getDependencyHashes found ${dependentTasks.length} dependent tasks`,
+		);
+
+		for (const depTask of dependentTasks) {
+			try {
+				let hash: string | undefined;
+
+				// Check if task implements IDependencyHashProvider interface
+				if (isDependencyHashProvider(depTask)) {
+					hash = await depTask.getDependencyHash();
+					traceCacheKey(
+						`  ${depTask.name}: dependency hash=${hash?.substring(0, 8) ?? "undefined"}`,
+					);
+				} else {
+					// Task doesn't implement dependency hash provider
+					// Skip these tasks - they won't participate in cascading invalidation
+					traceCacheKey(
+						`  ${depTask.name}: skipping (no IDependencyHashProvider implementation)`,
+					);
+				}
+
+				if (hash) {
+					hashes.push({
+						name: depTask.name,
+						hash,
+					});
+				}
+			} catch (error) {
+				// If we can't get dep's hash, skip it
+				// This can happen if dep's outputs are missing (corrupt cache)
+				this.traceError(
+					`Failed to get dependency hash for ${depTask.name}: ${error}`,
+				);
+			}
+		}
+
+		return hashes;
+	}
+
+	/**
 	 * Try to restore task outputs from shared cache.
 	 * Returns true if cache hit, false if cache miss.
 	 */
@@ -567,12 +693,17 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				})),
 			);
 
+			// Get dependency hashes for cascading cache invalidation
+			const dependencyHashes = await this.getDependencyHashes();
+
 			const cacheKeyInputs: CacheKeyInputs = {
 				packageName: this.node.pkg.name,
 				taskName: this.taskName ?? this.command,
 				executable: this.executable,
 				command: this.command,
 				inputHashes,
+				dependencyHashes:
+					dependencyHashes.length > 0 ? dependencyHashes : undefined,
 				...cache.options.globalKeyComponents,
 			};
 
@@ -586,6 +717,11 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			traceCacheKey(
 				`  inputHashes: ${inputHashes.map((h) => `${h.path}:${h.hash.substring(0, 8)}`).join(", ")}`,
 			);
+			if (dependencyHashes.length > 0) {
+				traceCacheKey(
+					`  dependencyHashes: ${dependencyHashes.map((h) => `${h.name}:${h.hash.substring(0, 8)}`).join(", ")}`,
+				);
+			}
 
 			// Lookup cache entry
 			const entry = await cache.lookup(cacheKeyInputs);
@@ -597,12 +733,14 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 			const result = await cache.restore(entry, this.node.pkg.directory);
 
 			if (result.success) {
-				// Replay stdout/stderr for consistent UX
-				if (result.stdout) {
-					this.log.log(result.stdout);
-				}
-				if (result.stderr?.trim()) {
-					this.log.warning(result.stderr);
+				// Replay stdout/stderr for consistent UX (only when verbose flag is set)
+				if (!this.node.quiet) {
+					if (result.stdout) {
+						this.log.log(result.stdout);
+					}
+					if (result.stderr?.trim()) {
+						this.log.warning(result.stderr);
+					}
 				}
 
 				this.traceTrigger(
@@ -651,6 +789,9 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				})),
 			);
 
+			// Get dependency hashes for cascading cache invalidation
+			const dependencyHashes = await this.getDependencyHashes();
+
 			// Compute cache key inputs
 			const cacheKeyInputs: CacheKeyInputs = {
 				packageName: this.node.pkg.name,
@@ -658,6 +799,8 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				executable: this.executable,
 				command: this.command,
 				inputHashes,
+				dependencyHashes:
+					dependencyHashes.length > 0 ? dependencyHashes : undefined,
 				...cache.options.globalKeyComponents,
 			};
 
@@ -718,32 +861,72 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 	protected getVsCodeErrorMessages(errorMessages: string) {
 		return errorMessages;
 	}
-
-	protected traceNotUpToDate() {
-		this.traceTrigger("not up to date");
-	}
-
-	protected traceTrigger(reason: string) {
-		const msg = `${this.nameColored}: [${reason}]`;
-		traceTaskTrigger(msg);
-	}
-
-	protected traceError(msg: string) {
-		traceError(`${this.nameColored}: ${msg}`);
-	}
 }
 
 /**
  * A LeafTask with a "done file" which represents the work this task needs to do.
+ * Tracks inputs and outputs using file content hashes for deterministic incremental builds.
+ *
+ * Subclasses must implement:
+ * - getInputFiles(): return absolute paths to input files
+ * - getOutputFiles(): return absolute paths to output files
  */
-export abstract class LeafWithDoneFileTask extends LeafTask {
+export abstract class LeafWithDoneFileTask
+	extends LeafTask
+	implements IDependencyHashProvider
+{
 	private _isIncremental = true;
+	private _cachedDoneFileContent?: string;
 
 	protected get isIncremental() {
 		return this._isIncremental;
 	}
 	protected get doneFileFullPath() {
 		return this.getPackageFileFullPath(this.doneFile);
+	}
+
+	/**
+	 * Subclasses can optionally override to provide config file paths that should be included in cache inputs.
+	 * Examples: tsconfig.json, webpack.config.js, .eslintrc, etc.
+	 * These files will be automatically included in getCacheInputFiles() if they exist.
+	 */
+	protected get configFileFullPaths(): string[] {
+		return [];
+	}
+
+	/**
+	 * @returns the list of absolute paths to files that this task depends on.
+	 */
+	protected abstract getInputFiles(): Promise<string[]>;
+
+	/**
+	 * @returns the list of absolute paths to files that this task generates.
+	 */
+	protected abstract getOutputFiles(): Promise<string[]>;
+
+	/**
+	 * Compute a hash of the donefile content.
+	 * This is a public method that can be called by dependent tasks to include
+	 * in their cache keys for cascading invalidation.
+	 *
+	 * Returns undefined if donefile content cannot be computed (e.g., missing outputs).
+	 */
+	public async computeDonefileHash(): Promise<string | undefined> {
+		const donefileContent = await this.getDoneFileContent();
+		if (!donefileContent) {
+			return undefined;
+		}
+		// Import sha256 at the top of the file
+		const { sha256 } = await import("../../hash.js");
+		return sha256(Buffer.from(donefileContent, "utf8"));
+	}
+
+	/**
+	 * Implementation of IDependencyHashProvider.
+	 * Delegates to computeDonefileHash() to provide the hash of this task's done file.
+	 */
+	public async getDependencyHash(): Promise<string | undefined> {
+		return this.computeDonefileHash();
 	}
 
 	protected override async checkIsUpToDate(): Promise<boolean> {
@@ -770,8 +953,9 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	protected override async markExecDone() {
 		const doneFileFullPath = this.doneFileFullPath;
 		try {
-			// TODO: checkLeafIsUpToDate already called this. Consider reusing its results to save recomputation of them.
-			const content = await this.getDoneFileContent();
+			// Use cached content from checkLeafIsUpToDate, or compute if not cached
+			const content =
+				this._cachedDoneFileContent ?? (await this.getDoneFileContent());
 			if (content !== undefined) {
 				await writeFile(doneFileFullPath, content);
 			} else {
@@ -792,6 +976,9 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 		const doneFileFullPath = this.doneFileFullPath;
 		try {
 			const doneFileExpectedContent = await this.getDoneFileContent();
+			// Cache the content for reuse in markExecDone
+			this._cachedDoneFileContent = doneFileExpectedContent;
+
 			if (doneFileExpectedContent !== undefined) {
 				const doneFileContent = await readFile(doneFileFullPath, "utf8");
 				if (doneFileContent === doneFileExpectedContent) {
@@ -818,23 +1005,61 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	 * Override to include the done file in cache inputs (if it exists).
 	 * Subclasses should call super.getCacheInputFiles() and add their own inputs.
 	 */
+	/**
+	 * Automatically includes input files from getInputFiles() and config files for caching.
+	 * Subclasses rarely need to override this - just implement getInputFiles() instead.
+	 */
 	public override async getCacheInputFiles(): Promise<string[]> {
 		const inputs = await super.getCacheInputFiles();
-		const doneFileFullPath = this.doneFileFullPath;
-		if (existsSync(doneFileFullPath)) {
-			inputs.push(doneFileFullPath);
+		// NOTE: Done file is NOT included in cache inputs because:
+		// 1. It's an OUTPUT of the task (created by markExecDone after execution)
+		// 2. It's already included in getCacheOutputFiles()
+		// 3. Including it causes cache key instability:
+		//    - At lookup time: done file doesn't exist yet → not in inputs → key A
+		//    - At store time: done file exists (just created) → would be in inputs → key B
+		// The done file content is based on the actual input files (via getDoneFileContent),
+		// so changes to inputs will already invalidate the cache through input file hashes.
+
+		// Automatically include config files if they exist
+		for (const configPath of this.configFileFullPaths) {
+			if (existsSync(configPath)) {
+				inputs.push(configPath);
+			}
 		}
+
+		// Include input files from subclass
+		inputs.push(...(await this.getInputFiles()));
+
 		return inputs;
 	}
 
 	/**
-	 * Override to include the done file in cache outputs.
-	 * Subclasses should call super.getCacheOutputFiles() and add their own outputs.
+	 * Automatically includes output files from getOutputFiles() and the done file for caching.
+	 * Subclasses rarely need to override this - just implement getOutputFiles() instead.
+	 *
+	 * NOTE: Only includes done file if it exists. The done file may not exist if:
+	 * - getDoneFileContent() returned undefined (e.g., missing tsBuildInfo)
+	 * - Writing the done file failed (caught and logged as warning in markExecDone)
+	 * Since done files are optional markers, not required outputs, we check existence
+	 * to avoid ENOENT errors during cache store operations.
 	 */
 	public override async getCacheOutputFiles(): Promise<string[]> {
 		const outputs = await super.getCacheOutputFiles();
-		outputs.push(this.doneFileFullPath);
+		// Only include done file if it actually exists
+		if (existsSync(this.doneFileFullPath)) {
+			outputs.push(this.doneFileFullPath);
+		}
+
+		// Include output files from subclass
+		outputs.push(...(await this.getOutputFiles()));
+
 		return outputs;
+	}
+
+	public override reset(): void {
+		super.reset();
+		// Clear cached done file content to ensure fresh computation on next build
+		this._cachedDoneFileContent = undefined;
 	}
 
 	/**
@@ -852,96 +1077,11 @@ export abstract class LeafWithDoneFileTask extends LeafTask {
 	}
 
 	/**
-	 * Subclass should override these to configure the leaf with done file task
+	 * Generates donefile content based on file content hashes.
+	 * Using hashes instead of file stats ensures consistency across cache restores
+	 * and avoids invalidation when files are touched but not changed.
 	 */
-
-	/**
-	 * The content to be written in the "done file".
-	 * @remarks
-	 * This file must have different content if the work needed to be done by this task changes.
-	 * This is typically done by listing and/or hashing the inputs and outputs to this task.
-	 * This is invoked before the task is run to check if an existing done file from a previous run matches: if so, the task can be skipped.
-	 * If not, the task is run, after which this is invoked a second time to produce the contents to write to disk.
-	 */
-	protected abstract getDoneFileContent(): Promise<string | undefined>;
-}
-
-export class UnknownLeafTask extends LeafTask {
-	protected get isIncremental() {
-		return this.command === "";
-	}
-
-	protected async checkLeafIsUpToDate() {
-		if (this.command === "") {
-			// Empty command is always up to date.
-			return true;
-		}
-		// Because we don't know, it is always out of date and need to rebuild
-		this.traceTrigger("Unknown task");
-		return false;
-	}
-}
-
-export abstract class LeafWithFileStatDoneFileTask extends LeafWithDoneFileTask {
-	/**
-	 * @returns the list of absolute paths to files that this task depends on.
-	 */
-	protected abstract getInputFiles(): Promise<string[]>;
-
-	/**
-	 * @returns the list of absolute paths to files that this task generates.
-	 */
-	protected abstract getOutputFiles(): Promise<string[]>;
-
-	/**
-	 * If this returns true, then the donefile will use the hash of the file contents instead of the last modified time
-	 * and other file stats.
-	 *
-	 * Hashing is roughly 20% slower than the stats-based approach, but is less susceptible to getting invalidated by
-	 * other processes like git touching files but not ultimately changing their contents.
-	 */
-	protected get useHashes(): boolean {
-		return false;
-	}
-
 	protected async getDoneFileContent(): Promise<string | undefined> {
-		if (this.useHashes) {
-			return this.getHashDoneFileContent();
-		}
-
-		// Gather the file information
-		try {
-			const srcFiles = await this.getInputFiles();
-			const dstFiles = await this.getOutputFiles();
-			const srcTimesP = Promise.all(
-				srcFiles
-					.map((match) => this.getPackageFileFullPath(match))
-					.map((match) => stat(match)),
-			);
-			const dstTimesP = Promise.all(
-				dstFiles
-					.map((match) => this.getPackageFileFullPath(match))
-					.map((match) => stat(match)),
-			);
-			const [srcTimes, dstTimes] = await Promise.all([srcTimesP, dstTimesP]);
-
-			const srcInfo = srcTimes.map((srcTime) => {
-				return { mtimeMs: srcTime.mtimeMs, size: srcTime.size };
-			});
-			const dstInfo = dstTimes.map((dstTime) => {
-				return { mtimeMs: dstTime.mtimeMs, size: dstTime.size };
-			});
-			return JSON.stringify({ srcFiles, dstFiles, srcInfo, dstInfo });
-		} catch (error) {
-			this.traceError(
-				`error comparing file times: ${(error as Error).message}`,
-			);
-			this.traceTrigger("failed to get file stats");
-			return undefined;
-		}
-	}
-
-	private async getHashDoneFileContent(): Promise<string | undefined> {
 		const mapHash = async (name: string) => {
 			const hash = await this.node.fileHashCache.getFileHash(
 				this.getPackageFileFullPath(name),
@@ -987,4 +1127,20 @@ function sortByName(a: { name: string }, b: { name: string }): number {
 		return 1;
 	}
 	return 0;
+}
+
+export class UnknownLeafTask extends LeafTask {
+	protected get isIncremental() {
+		return this.command === "";
+	}
+
+	protected async checkLeafIsUpToDate() {
+		if (this.command === "") {
+			// Empty command is always up to date.
+			return true;
+		}
+		// Because we don't know, it is always out of date and need to rebuild
+		this.traceTrigger("Unknown task");
+		return false;
+	}
 }

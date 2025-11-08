@@ -56,6 +56,13 @@ export class TaskStats {
 	public leafBuiltCount = 0;
 	public leafExecTimeTotal = 0;
 	public leafQueueWaitTimeTotal = 0;
+	/** Snapshot of leafUpToDateCount after initial donefile checks, before execution starts.
+	 * Used for stable task counter denominators. */
+	public leafInitialUpToDateCount = 0;
+	/** Count of tasks that were up-to-date via local donefile check */
+	public leafLocalCacheHitCount = 0;
+	/** Count of tasks that were up-to-date via remote cache restoration */
+	public leafRemoteCacheHitCount = 0;
 }
 
 /**
@@ -156,6 +163,11 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 	/** @internal */
 	public get matchedOnly() {
 		return this.context.matchedOnly;
+	}
+
+	/** @internal */
+	public get quiet() {
+		return this.context.quiet;
 	}
 
 	/** @internal */

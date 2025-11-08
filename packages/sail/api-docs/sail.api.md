@@ -119,6 +119,8 @@ export class BuildGraphPackage implements DependencyNode, IBuildablePackage {
     // (undocumented)
     readonly pkg: BuildPackage;
     // @internal (undocumented)
+    get quiet(): boolean;
+    // @internal (undocumented)
     get repoPackageMap(): ReadonlyMap<string, BuildPackage>;
     reset(): void;
     // @internal (undocumented)
@@ -213,6 +215,10 @@ export interface CacheKeyInputs {
     cacheSchemaVersion: number;
     command: string;
     configHashes?: Record<string, string>;
+    dependencyHashes?: ReadonlyArray<{
+        readonly name: string;
+        readonly hash: string;
+    }>;
     executable: string;
     inputHashes: ReadonlyArray<{
         readonly path: string;
@@ -250,6 +256,7 @@ export interface CacheManifest {
         readonly path: string;
         readonly hash: string;
         readonly size: number;
+        readonly mtime: number;
     }>;
     packageName: string;
     platform: string;
@@ -386,6 +393,7 @@ export interface IBuildStats {
     leafBuiltCount: number;
     // (undocumented)
     leafExecTimeTotal: number;
+    leafInitialUpToDateCount: number;
     // (undocumented)
     leafQueueWaitTimeTotal: number;
     // (undocumented)
@@ -440,6 +448,10 @@ export abstract class LeafTask extends Task implements ICacheableTask {
     protected get executionCommand(): string;
     getCacheInputFiles(): Promise<string[]>;
     getCacheOutputFiles(): Promise<string[]>;
+    protected getDependencyHashes(): Promise<Array<{
+        name: string;
+        hash: string;
+    }>>;
     // (undocumented)
     protected getDependentLeafTasks(): SetIterator<LeafTask>;
     protected getPackageFileFullPath(filePath: string): string;
@@ -459,12 +471,6 @@ export abstract class LeafTask extends Task implements ICacheableTask {
     protected runTask(q: AsyncPriorityQueue<TaskExec>): Promise<BuildResult>;
     // (undocumented)
     protected get taskWeight(): number;
-    // (undocumented)
-    protected traceError(msg: string): void;
-    // (undocumented)
-    protected traceNotUpToDate(): void;
-    // (undocumented)
-    protected traceTrigger(reason: string): void;
     // (undocumented)
     protected get useWorker(): boolean;
     // (undocumented)
@@ -675,12 +681,16 @@ export class SharedCacheManager {
         corrupted: number;
         fixed: number;
     }>;
+    waitForPendingOperations(): Promise<void>;
 }
 
 // @beta
 export interface SharedCacheOptions {
     cacheDir: string;
     globalKeyComponents: GlobalCacheKeyComponents;
+    logger: Logger;
+    // @internal
+    overwriteCache?: boolean;
     repoRoot: string;
     skipCacheWrite?: boolean;
     verifyIntegrity?: boolean;
@@ -703,6 +713,7 @@ export abstract class Task {
     addDependentTasks(dependentTasks: Task[], isDefault?: boolean): void;
     // (undocumented)
     protected abstract checkIsUpToDate(): Promise<boolean>;
+    protected clearUpToDateCache(): void;
     // (undocumented)
     abstract collectLeafTasks(leafTasks: Set<LeafTask>): void;
     // (undocumented)
@@ -741,7 +752,13 @@ export abstract class Task {
     // (undocumented)
     toString(): string;
     // (undocumented)
+    protected traceError(msg: string): void;
+    // (undocumented)
     protected traceExec(msg: string): void;
+    // (undocumented)
+    protected traceNotUpToDate(): void;
+    // (undocumented)
+    protected traceTrigger(reason: string): void;
     // (undocumented)
     protected get transitiveDependentLeafTask(): LeafTask[];
 }
@@ -865,8 +882,11 @@ export class TaskStats {
     leafBuiltCount: number;
     // (undocumented)
     leafExecTimeTotal: number;
+    leafInitialUpToDateCount: number;
+    leafLocalCacheHitCount: number;
     // (undocumented)
     leafQueueWaitTimeTotal: number;
+    leafRemoteCacheHitCount: number;
     // (undocumented)
     leafTotalCount: number;
     // (undocumented)

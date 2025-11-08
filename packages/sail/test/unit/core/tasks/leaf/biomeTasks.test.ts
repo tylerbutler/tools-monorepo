@@ -57,10 +57,10 @@ describe("BiomeTask - Comprehensive Tests", () => {
 			expect(task.name).toBe("test-package#biome-check-task");
 		});
 
-		it("should inherit from LeafWithFileStatDoneFileTask", () => {
+		it("should inherit from LeafWithDoneFileTask", () => {
 			const task = new LeafTaskBuilder().buildBiomeTask();
 
-			// Verify it has methods from LeafWithFileStatDoneFileTask
+			// Verify it has methods from LeafWithDoneFileTask
 			expect(typeof task.isUpToDate).toBe("function");
 		});
 	});
@@ -140,7 +140,7 @@ describe("BiomeTask - Comprehensive Tests", () => {
 					.withPackagePath("/test/package")
 					.buildBiomeTask();
 
-				// The parent class LeafWithFileStatDoneFileTask provides done file logic
+				// The parent class LeafWithDoneFileTask provides done file logic
 				expect(task).toBeDefined();
 			});
 		});

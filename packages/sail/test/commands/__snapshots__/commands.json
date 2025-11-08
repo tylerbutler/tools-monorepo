@@ -51,6 +51,7 @@
             "config",
             "defaultRoot",
             "force",
+            "overwriteCache",
             "quiet",
             "rebuild",
             "releaseGroup",
