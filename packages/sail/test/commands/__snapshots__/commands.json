@@ -179,6 +179,20 @@
     },
     {
         "alias": [],
+        "command": "demo-animation",
+        "flagAliases": [],
+        "flagChars": [
+            "d",
+            "m"
+        ],
+        "flags": [
+            "duration",
+            "message"
+        ],
+        "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
         "command": "help",
         "flagAliases": [],
         "flagChars": [

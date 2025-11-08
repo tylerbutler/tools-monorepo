@@ -310,20 +310,20 @@ describe("ComponentName", () => {
 
 **Running Tests:**
 ```bash
-# All tests
-pnpm test
+# All tests (via Nx)
+pnpm nx run sail:test
 
 # Unit tests only
-pnpm test:unit
+pnpm nx run sail:test:unit
 
 # Coverage report
-pnpm test:coverage
+pnpm nx run sail:test:coverage
+
+# Run specific test file with vitest directly
+pnpm vitest test/unit/core/buildGraph.test.ts
 
 # Watch mode for development
-pnpm test -- --watch
-
-# Run specific test file
-pnpm test test/unit/core/buildGraph.test.ts
+pnpm vitest --watch
 ```
 
 ### OCLIF CLI Development
