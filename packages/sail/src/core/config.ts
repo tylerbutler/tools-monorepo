@@ -1,6 +1,6 @@
 import type { Logger } from "@tylerbu/cli-api";
-import { generateBuildProjectConfig } from "@tylerbu/sail-infrastructure";
 import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
+import { generateBuildProjectConfig } from "@tylerbu/sail-infrastructure";
 import { lilconfigSync } from "lilconfig";
 import { CONFIG_VERSION, type ISailConfig } from "./sailConfig.js";
 

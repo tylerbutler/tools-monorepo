@@ -1,6 +1,6 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getSailConfig } from "../../../../src/core/config.js";
 import type { ISailConfig } from "../../../../src/core/sailConfig.js";
@@ -107,7 +107,9 @@ describe("Config Loading (lilconfig migration)", () => {
 		});
 
 		it("should throw error when no config is found", () => {
-			expect(() => getSailConfig(testDir)).toThrow("No sail configuration found");
+			expect(() => getSailConfig(testDir)).toThrow(
+				"No sail configuration found",
+			);
 		});
 
 		it("should throw error for unsupported config version", async () => {

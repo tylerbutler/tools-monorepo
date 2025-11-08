@@ -1,6 +1,6 @@
 import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { lilconfigSync } from "lilconfig";
-import type { RequireExactlyOne} from "type-fest";
+import type { RequireExactlyOne } from "type-fest";
 import {
 	type IPackage,
 	isIPackage,
