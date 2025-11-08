@@ -75,8 +75,6 @@ export class BuildGraphContext implements BuildContext, IBuildExecutionContext {
     // (undocumented)
     readonly taskStats: TaskStats;
     // (undocumented)
-    readonly verbose: boolean;
-    // (undocumented)
     readonly workerPool?: WorkerPool | undefined;
 }
 
@@ -121,6 +119,8 @@ export class BuildGraphPackage implements DependencyNode, IBuildablePackage {
     // (undocumented)
     readonly pkg: BuildPackage;
     // @internal (undocumented)
+    get quiet(): boolean;
+    // @internal (undocumented)
     get repoPackageMap(): ReadonlyMap<string, BuildPackage>;
     reset(): void;
     // @internal (undocumented)
@@ -133,8 +133,6 @@ export class BuildGraphPackage implements DependencyNode, IBuildablePackage {
     readonly taskManager: TaskManager;
     // @internal (undocumented)
     get taskStats(): TaskStats;
-    // @internal (undocumented)
-    get verbose(): boolean;
     // @internal (undocumented)
     get workerPool(): WorkerPool | undefined;
 }

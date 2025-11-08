@@ -734,7 +734,7 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 
 			if (result.success) {
 				// Replay stdout/stderr for consistent UX (only when verbose flag is set)
-				if (this.node.verbose) {
+				if (!this.node.quiet) {
 					if (result.stdout) {
 						this.log.log(result.stdout);
 					}
