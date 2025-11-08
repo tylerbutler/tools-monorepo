@@ -21,30 +21,38 @@ export class SailAnimation {
 	 * Each frame slightly shifts the boat position and animates the waves.
 	 */
 	private createFrames(): string[] {
-		// More detailed sailing boat using Unicode block elements
-		// ░ = light shade, ▒ = medium shade, ▓ = dark shade, █ = full block
-		// ▀ = upper half, ▄ = lower half, ▌ = left half, ▐ = right half
-		// ┃ = vertical line, ─ = horizontal line
+		// Highly detailed sailing boat using Unicode block elements
+		// ▒ = medium shade, ▓ = dark shade, █ = full block
+		// ▀ = upper half, ▄ = lower half
+		// ┃ = vertical line
 		const boat = [
-			"                 ▒",
-			"                ▒█▒",
-			"               ▒███▒",
-			"      ▒       ▒█████▒",
-			"     ▒█▒     ▒███████▒",
-			"    ▒███▒   ▒█████████▒",
-			"   ▒█████▒ ▒███████████▒",
-			"  ▒███████▒█████┃███████▒",
-			" ▒█████████████ ┃ ████████▒",
-			"▒███████████████┃█████████▒",
-			"▒████████████████┃██████████▒",
-			" ▒███████████████┃█████████▒",
-			"  ▒█████████████ ┃ ████████▒",
-			"   ▒███████████  ┃  ███████▒",
-			"    ▒█████████   ┃   ██████▒",
-			"     ▒███████    ┃    █████▒",
-			"      ▒█████     ┃     ████▒",
-			"       ▀▀▀▀▀▀▀▀▀▀┃▀▀▀▀▀▀▀▀▀",
-			"        ▀▀▀██████████████▀▀▀",
+			"                   ▒",
+			"                  ▒█▒",
+			"                 ▒███▒",
+			"                ▒█████▒",
+			"       ▒       ▒███████▒",
+			"      ▒█▒     ▒█████████▒",
+			"     ▒███▒   ▒███████████▒",
+			"    ▒█████▒ ▒█████████████▒",
+			"   ▒███████▒███████████████▒",
+			"  ▒█████████████┃█████████████▒",
+			" ▒███████████████┃███████████████▒",
+			"▒█████████████████┃█████████████████▒",
+			"▓███████████████████┃███████████████████▓",
+			"▓████████████████████┃████████████████████▓",
+			" ▓███████████████████┃███████████████████▓",
+			"  ▓█████████████████ ┃ █████████████████▓",
+			"   ▓███████████████  ┃  ███████████████▓",
+			"    ▓█████████████   ┃   █████████████▓",
+			"     ▓███████████    ┃    ███████████▓",
+			"      ▓█████████     ┃     █████████▓",
+			"       ▓███████      ┃      ███████▓",
+			"        ▓█████       ┃       █████▓",
+			"         ▓███        ┃        ███▓",
+			"          ▀▀▀▀▀▀▀▀▀▀▀┃▀▀▀▀▀▀▀▀▀▀▀",
+			"           ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀",
+			"            ▀▀███████████████▀▀",
+			"              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀",
 		];
 
 		// Create 16 frames with boat moving right and waves animating
@@ -66,9 +74,9 @@ export class SailAnimation {
 			}
 
 			// Add animated wave lines using Unicode wave patterns
-			const wave1 = this.createWaveLine(wavePhase, 0, 80);
-			const wave2 = this.createWaveLine(wavePhase, 3, 78);
-			const wave3 = this.createWaveLine(wavePhase, 6, 76);
+			const wave1 = this.createWaveLine(wavePhase, 0, 85);
+			const wave2 = this.createWaveLine(wavePhase, 3, 83);
+			const wave3 = this.createWaveLine(wavePhase, 6, 81);
 
 			frameLines.push(wave1);
 			frameLines.push(wave2);

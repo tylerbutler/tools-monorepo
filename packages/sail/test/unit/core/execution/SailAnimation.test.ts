@@ -326,7 +326,9 @@ describe("SailAnimation", () => {
 			// Check for boat Unicode characters (blocks, shading)
 			const frame = lastCall as string;
 			const hasBoatChars =
+				frame.includes("░") || // Light shade
 				frame.includes("▒") || // Medium shade
+				frame.includes("▓") || // Dark shade
 				frame.includes("█") || // Full block
 				frame.includes("┃") || // Vertical line (mast)
 				frame.includes("▀"); // Upper half block
