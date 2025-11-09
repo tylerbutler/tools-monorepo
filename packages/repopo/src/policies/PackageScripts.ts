@@ -14,12 +14,15 @@ export interface PackageScriptsSettings {
 	must?: string[];
 
 	/**
-	 * List of mutually exclusive script groups. Each group is an array of script names,
-	 * and exactly one script from each group must be present.
+	 * List of mutually exclusive script groups. Each group is an array of script names
+	 * where at most one script from the group can be present.
+	 *
+	 * Packages can have zero scripts from the group (all optional), but cannot have
+	 * multiple scripts from the same group.
 	 *
 	 * @example
-	 * // Require either "test" or "test:unit", but not both
-	 * mutuallyExclusive: [["test", "test:unit"]]
+	 * // Allow "test:unit" OR "test:vitest" OR neither, but not both
+	 * mutuallyExclusive: [["test:unit", "test:vitest"]]
 	 */
 	mutuallyExclusive?: string[][];
 }
@@ -70,13 +73,10 @@ export const PackageScripts = definePackagePolicy<
 				(scriptName) => scripts && Object.hasOwn(scripts, scriptName),
 			);
 
-			if (presentScripts.length === 0) {
+			// Only fail if MORE than one script from the group is present
+			if (presentScripts.length > 1) {
 				errorMessages.push(
-					`Exactly one of the following scripts must be present: ${group.join(", ")}`,
-				);
-			} else if (presentScripts.length > 1) {
-				errorMessages.push(
-					`Only one of the following scripts can be present, but found ${presentScripts.length}: ${presentScripts.join(", ")}`,
+					`Scripts are mutually exclusive, but found ${presentScripts.length}: ${presentScripts.join(", ")}`,
 				);
 			}
 		}
