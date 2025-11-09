@@ -178,7 +178,7 @@ export class CheckPolicy<
 		// Check exclusions
 		if (excludeFromAll.some((regex) => regex.test(relPath))) {
 			this.verbose(`Excluded all handlers: ${relPath}`);
-			return false; // File was excluded
+			return false; // File was excluded from all policies
 		}
 
 		// Run all matching policies
@@ -190,26 +190,34 @@ export class CheckPolicy<
 		// 	bars.addFile(policy.name,
 		// }
 
-		await Promise.all(
+		// If no policies match this file, it's still considered processed
+		// (we examined it and determined no policies apply)
+		if (matchingPolicies.length === 0) {
+			return true;
+		}
+
+		const results = await Promise.all(
 			matchingPolicies.map(async (policy) => {
 				return await this.runPolicyOnFile(relPath, policy, context);
 			}),
 		);
 
-		return true; // File was processed
+		// File is considered processed if at least one policy ran on it
+		// If all matching policies excluded it, count as excluded
+		return results.some((ran) => ran);
 	}
 
 	private async runPolicyOnFile(
 		relPath: string,
 		policy: PolicyInstance,
 		context: RepopoCommandContext,
-	): Promise<void> {
+	): Promise<boolean> {
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
 		// Check if the policy is excluded for the file
 		if (this.isPolicyExcluded(relPath, policy, excludePoliciesForFiles)) {
 			this.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
-			return;
+			return false; // Policy didn't run on this file
 		}
 
 		try {
@@ -235,6 +243,8 @@ export class CheckPolicy<
 				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
 			);
 		}
+
+		return true; // Policy ran (successfully or with error)
 	}
 
 	private isPolicyExcluded(
