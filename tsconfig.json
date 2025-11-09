@@ -15,7 +15,7 @@
 			"path": "./packages/cli-api",
 		},
 		{
-			"path": "./packages/dill",
+			"path": "./packages/dill-cli",
 		},
 		{
 			"path": "./packages/dill-docs",

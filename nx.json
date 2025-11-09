@@ -2,7 +2,9 @@
 	"$schema": "./node_modules/nx/schemas/nx-schema.json",
 
 	// Maximum parallel tasks - optimized for modern hardware
-	// "parallel": 25,
+	// Adjust based on your machine's CPU cores (recommended: cores - 2 to leave headroom)
+	// Override in CI via NX_PARALLEL environment variable if needed
+	"parallel": 8,
 
 	"cacheDirectory": ".nx/cache",
 	"defaultBase": "main",
@@ -45,14 +47,8 @@
 		],
 
 		// Shared config files that affect all packages
-		"sharedGlobals": [
-			"{workspaceRoot}/config/tsconfig*.json",
-			"{workspaceRoot}/config/biome/*.jsonc",
-			"{workspaceRoot}/biome.jsonc",
-			"{workspaceRoot}/pnpm-workspace.yaml",
-			"{workspaceRoot}/repopo.config.ts",
-			"{workspaceRoot}/.generatelicensefile.cjs"
-		]
+		// Only truly global files here - task-specific configs belong in target inputs
+		"sharedGlobals": ["{workspaceRoot}/pnpm-workspace.yaml"]
 	},
 
 	// ============================================
@@ -96,11 +92,36 @@
 			"cache": true
 		},
 
+		"test:integration": {
+			"dependsOn": ["build:compile"],
+			"inputs": [
+				"default",
+				"^production",
+				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
+				"{projectRoot}/test/fixtures/**"
+			],
+			"cache": false // Integration tests interact with filesystem and should not be cached
+		},
+
 		"lint": {
+			"inputs": [
+				"{projectRoot}/src/**",
+				"{projectRoot}/test/**",
+				"{projectRoot}/biome.jsonc",
+				"{workspaceRoot}/biome.jsonc",
+				"{workspaceRoot}/config/biome/*.jsonc"
+			],
 			"cache": true
 		},
 
 		"check": {
+			"dependsOn": [
+				"check:format",
+				"check:types",
+				"check:deps",
+				"check:policy",
+				"check:references"
+			],
 			"cache": true
 		},
 
@@ -123,7 +144,12 @@
 		// TypeScript compilation - optimized with production inputs
 		"build:compile": {
 			"dependsOn": ["^build:compile"],
-			"inputs": ["production", "^production", "sharedGlobals"],
+			"inputs": [
+				"production",
+				"^production",
+				"sharedGlobals",
+				"{workspaceRoot}/config/tsconfig*.json"
+			],
 			"outputs": [
 				"{projectRoot}/esm/**",
 				"{projectRoot}/dist/**",
@@ -287,7 +313,8 @@
 			"inputs": [
 				"production",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
-				"{projectRoot}/typedoc.{json,js,cjs}"
+				"{projectRoot}/typedoc.{json,js,cjs}",
+				"{workspaceRoot}/config/tsconfig*.json"
 			],
 			"cache": true
 		},
@@ -303,7 +330,21 @@
 
 		"check:policy": {
 			"dependsOn": ["repopo:build:compile"],
-			"inputs": ["{projectRoot}/**/*"],
+			"inputs": [
+				"{projectRoot}/**/*",
+				"{workspaceRoot}/repopo.config.ts"
+			],
+			"cache": true
+		},
+
+		"check:references": {
+			"inputs": [
+				"{projectRoot}/tsconfig*.json",
+				"{workspaceRoot}/tsconfig*.json",
+				"{workspaceRoot}/config/tsconfig*.json",
+				"{workspaceRoot}/package.json",
+				"{workspaceRoot}/pnpm-workspace.yaml"
+			],
 			"cache": true
 		},
 

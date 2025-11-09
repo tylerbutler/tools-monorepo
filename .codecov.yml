@@ -48,7 +48,7 @@ component_management:
     - component_id: dill # this is an identifier that should not be changed
       name: dill # this is a display name, and can be changed freely
       paths:
-        - packages/dill/**
+        - packages/dill-cli/**
     - component_id: fundamentals
       name: fundamentals
       paths:
@@ -73,3 +73,11 @@ component_management:
       name: ccl-test-viewer
       paths:
         - packages/ccl-test-viewer/**
+    - component_id: sail
+      name: sail
+      paths:
+        - packages/sail/**
+    - component_id: sail-infrastructure
+      name: sail-infrastructure
+      paths:
+        - packages/sail-infrastructure/**

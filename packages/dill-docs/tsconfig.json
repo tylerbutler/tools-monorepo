@@ -2,7 +2,7 @@
 	"extends": "astro/tsconfigs/strictest",
 	"references": [
 		{
-			"path": "../dill",
+			"path": "../dill-cli",
 		},
 	],
 }

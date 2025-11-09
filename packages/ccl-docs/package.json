@@ -12,7 +12,6 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
 	"scripts": {
-		"build": "pnpm build:site",
 		"astro": "astro",
 		"build:site": "astro build",
 		"check:astro": "astro check",
@@ -45,6 +44,7 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {},
 			"ci": {}
 		}
 	}

@@ -24,20 +24,18 @@
 	"main": "lib/index.js",
 	"types": "lib/public.d.ts",
 	"scripts": {
-		"build": "pnpm build:compile && pnpm build:api",
-		"build:api": "api-extractor run --local",
 		"b": "nx build",
+		"build:api": "api-extractor run --local",
+		"build:compile": "tsc",
 		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf --glob esm \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp _temp nyc",
-		"build:compile": "tsc",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
 		"start": "pm2 start -n tinylicious dist/index.js",
 		"start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
 		"stop": "pm2 stop tinylicious",
-		"test": "pnpm test:vitest",
 		"test:coverage": "vitest run --coverage test",
 		"test:mocha": "mocha --recursive dist/test",
 		"test:vitest": "vitest run test"
@@ -85,6 +83,8 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {},
+			"test": {},
 			"ci": {}
 		}
 	}

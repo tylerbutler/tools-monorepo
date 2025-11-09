@@ -180,8 +180,6 @@ export class CheckPolicy<
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
 			);
 		}
-
-		perfStats.processed++;
 	}
 
 	private *routeToPolicies(
@@ -193,17 +191,13 @@ export class CheckPolicy<
 		// Check exclusions
 		if (excludeFromAll.some((regex) => regex.test(relPath))) {
 			this.verbose(`Excluded all handlers: ${relPath}`);
-			return; // Early return for excluded files
+			return;
 		}
 
 		// Run all matching policies
 		const matchingPolicies = policies.filter((policy) =>
 			policy.match.test(relPath),
 		);
-
-		// for(const policy of matchingPolicies) {
-		// 	bars.addFile(policy.name,
-		// }
 
 		yield* all(
 			matchingPolicies.map((policy) => {

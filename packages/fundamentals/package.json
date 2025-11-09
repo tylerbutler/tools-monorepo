@@ -38,11 +38,11 @@
 	],
 	"scripts": {
 		"build:api": "concurrently npm:docs:api:*",
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:docs": "typedoc",
 		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
-		"build:compile": "tsc --project ./tsconfig.json",
-		"build:docs": "typedoc",
 		"docs:api:array": "api-extractor run --local --config api-extractor.array.json",
 		"docs:api:git": "api-extractor run --local --config api-extractor.git.json",
 		"docs:api:main": "api-extractor run --local",
@@ -51,6 +51,7 @@
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --apply",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run test",
 		"test:coverage": "vitest run test --coverage"
 	},
