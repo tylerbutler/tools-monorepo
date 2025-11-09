@@ -13,13 +13,14 @@
 	"scripts": {
 		"build": "nx run-many -t build",
 		"build:affected": "nx affected -t build",
-		"check": "nx run-many -t check && pnpm check:all",
-		"check:all": "concurrently npm:check:deps npm:check:format npm:check:policy npm:check:references npm:lint",
-		"check:deps": "syncpack lint",
-		"check:format": "biome check --linter-enabled=false",
-		"check:policy": "repopo check",
-		"check:references": "workspaces-to-typescript-project-references --check",
-		"ci": "nx affected -t ci",
+		"check": "nx run-many -t check && nx check:all",
+		"check:all": "nx run tools-monorepo:check:all",
+		"check:deps": "nx exec -- syncpack lint",
+		"check:format": "nx exec -- biome check --linter-enabled=false",
+		"check:policy": "nx exec -- repopo check",
+		"check:references": "nx exec -- workspaces-to-typescript-project-references --check",
+		"ci": "nx run tools-monorepo:ci",
+		"ci:affected": "nx affected -t ci",
 		"ci:all": "nx run-many -t ci",
 		"ci:build": "nx run-many -t build build:generate",
 		"ci:check": "pnpm check",
@@ -32,20 +33,20 @@
 		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "nx run-many -t test:coverage",
 		"ci:version": "pnpm run release:license && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
-		"clean": "nx run-many -t clean",
+		"clean": "nx run tools-monorepo:clean:root && nx run-many -t clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "nx run-many -t build:compile",
 		"deps": "ncu --interactive",
 		"deps:dev": "ncu -u --dep dev,peer,optional --reject \"*oclif*\" --reject \"*@fluid*\"",
 		"deps:oclif": "ncu -u --dep prod,dev,peer,optional --filter \"*oclif*\"",
 		"deps:prod": "ncu -u --dep prod --reject \"*oclif*\" --reject \"*@fluid*\"",
-		"deps:sync": "tsx scripts/sync-lockfile-versions.ts",
+		"deps:sync": "nx exec -- tbu sync deps",
 		"docs": "nx run-many -t build:docs",
 		"fix:policy": "repopo check --fix",
 		"fix:references": "workspaces-to-typescript-project-references",
 		"format": "biome check . --linter-enabled=false --write",
 		"generate:packlist": "flub generate packlist -g client --no-private",
-		"lint": "biome lint",
+		"lint": "nx exec -- biome lint",
 		"lint:fix": "biome lint --write",
 		"release:license": "nx run-many -t release:license",
 		"sort-package-json": "sort-package-json package.json \"config/package.json\" \"packages/*/package.json\"",
@@ -117,6 +118,93 @@
 		"overrides": {
 			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
 			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
+		}
+	},
+	"nx": {
+		"includedScripts": [],
+		"targets": {
+			"ci": {
+				"dependsOn": [
+					"check:all",
+					"lint"
+				],
+				"cache": true
+			},
+			"check:all": {
+				"dependsOn": [
+					"check:deps",
+					"check:format",
+					"check:policy",
+					"check:references",
+					"lint"
+				],
+				"cache": true
+			},
+			"check:format": {
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts,json,jsonc,md}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/biome.jsonc",
+					"{workspaceRoot}/config/biome/*.jsonc"
+				],
+				"cache": true
+			},
+			"lint": {
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/biome.jsonc",
+					"{workspaceRoot}/config/biome/*.jsonc"
+				],
+				"cache": true
+			},
+			"check:deps": {
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/syncpack.config.cjs",
+					"{workspaceRoot}/pnpm-lock.yaml"
+				],
+				"cache": true
+			},
+			"check:policy": {
+				"inputs": [
+					"{workspaceRoot}/**/*",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/repopo.config.ts"
+				],
+				"cache": true
+			},
+			"check:references": {
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/packages/*/tsconfig*.json",
+					"{workspaceRoot}/config/tsconfig*.json"
+				],
+				"cache": true
+			},
+			"clean:root": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "clean:root"
+				},
+				"cache": false
+			},
+			"deps:sync": {
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/pnpm-lockfile.yaml"
+				],
+				"cache": true
+			}
 		}
 	}
 }
