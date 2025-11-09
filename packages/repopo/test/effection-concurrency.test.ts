@@ -124,24 +124,24 @@ describe("Effection Structured Concurrency", () => {
 			await run(function* (): Operation<void> {
 				try {
 					yield* all([
-						function* () {
+						(function* () {
 							try {
 								yield* sleep(1000); // Long operation
 							} finally {
 								cancellationTracker.op1 = true;
 							}
-						},
-						function* () {
+						})(),
+						(function* () {
 							yield* sleep(50);
 							throw new Error("Operation 2 failed");
-						},
-						function* () {
+						})(),
+						(function* () {
 							try {
 								yield* sleep(1000); // Long operation
 							} finally {
 								cancellationTracker.op3 = true;
 							}
-						},
+						})(),
 					]);
 				} catch (error) {
 					errorCaught = true;
@@ -275,22 +275,22 @@ describe("Effection Structured Concurrency", () => {
 
 			await run(function* (): Operation<void> {
 				yield* all([
-					function* () {
+					(function* () {
 						// Each operation modifies shared state independently
 						const localValue = sharedState.value;
 						yield* sleep(10);
 						results.push(localValue);
-					},
-					function* () {
+					})(),
+					(function* () {
 						sharedState.value++;
 						yield* sleep(5);
 						results.push(sharedState.value);
-					},
-					function* () {
+					})(),
+					(function* () {
 						sharedState.value++;
 						yield* sleep(5);
 						results.push(sharedState.value);
-					},
+					})(),
 				]);
 			});
 
@@ -330,18 +330,18 @@ describe("Effection Structured Concurrency", () => {
 			await run(function* (): Operation<void> {
 				try {
 					yield* all([
-						function* () {
+						(function* () {
 							yield* sleep(10);
 							completionTracker.op1 = true;
-						},
-						function* () {
+						})(),
+						(function* () {
 							yield* sleep(5);
 							throw new Error("Operation failed");
-						},
-						function* () {
+						})(),
+						(function* () {
 							yield* sleep(10);
 							completionTracker.op3 = true;
-						},
+						})(),
 					]);
 				} catch (error) {
 					errorCaught = true;
@@ -443,14 +443,14 @@ describe("Effection Structured Concurrency", () => {
 
 				// Parallel
 				yield* all([
-					function* () {
+					(function* () {
 						yield* sleep(5);
 						results.push("par1");
-					},
-					function* () {
+					})(),
+					(function* () {
 						yield* sleep(5);
 						results.push("par2");
-					},
+					})(),
 				]);
 
 				// Sequential again
@@ -500,31 +500,33 @@ describe("Effection Structured Concurrency", () => {
 			const startTime = Date.now();
 
 			await run(function* (): Operation<void> {
-				yield* all([
-					function* () {
-						try {
-							yield* sleep(5000);
-						} finally {
-							durations.push(Date.now() - startTime);
-						}
-					},
-					function* () {
-						try {
-							yield* sleep(5000);
-						} finally {
-							durations.push(Date.now() - startTime);
-						}
-					},
-					function* () {
-						try {
-							yield* sleep(5000);
-						} finally {
-							durations.push(Date.now() - startTime);
-						}
-					},
-				]);
+				yield* spawn(function* () {
+					yield* all([
+						(function* () {
+							try {
+								yield* sleep(5000);
+							} finally {
+								durations.push(Date.now() - startTime);
+							}
+						})(),
+						(function* () {
+							try {
+								yield* sleep(5000);
+							} finally {
+								durations.push(Date.now() - startTime);
+							}
+						})(),
+						(function* () {
+							try {
+								yield* sleep(5000);
+							} finally {
+								durations.push(Date.now() - startTime);
+							}
+						})(),
+					]);
+				});
 
-				// Parent completes early
+				// Parent completes early, cancelling spawned operations
 				yield* sleep(100);
 			});
 

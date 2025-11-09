@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { all, run, sleep, type Operation } from "effection";
+import { all, run, sleep, spawn, type Operation } from "effection";
 import { simpleGit } from "simple-git";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type {
@@ -423,23 +423,17 @@ describe("Effection Integration Tests", () => {
 			const startTime = Date.now();
 
 			await run(function* (): Operation<void> {
-				yield* all([
-					// Long-running policy
-					(function* () {
-						yield* (policy.handler as () => Operation<true>)({
-							file: "test.txt",
-							root: testRepoDir,
-							resolve: false,
-							config: undefined,
-						});
-					})(),
-					// Parent exits early
-					(function* () {
-						yield* sleep(50);
-					})(),
-				]);
+				// Spawn long-running policy in background
+				yield* spawn(function* () {
+					yield* (policy.handler as () => Operation<true>)({
+						file: "test.txt",
+						root: testRepoDir,
+						resolve: false,
+						config: undefined,
+					});
+				});
 
-				// Exit after 50ms
+				// Parent exits early after 50ms
 				yield* sleep(50);
 			});
 
