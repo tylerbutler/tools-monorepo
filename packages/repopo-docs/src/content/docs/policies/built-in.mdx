@@ -6,21 +6,64 @@ sidebar:
 
 import { Code } from '@astrojs/starlight/components';
 
-repopo includes several built-in policies. All built-in policies are enabled by default.
+repopo includes several built-in policies that enforce common repository standards. All built-in policies are **enabled by default** but can be configured or disabled as needed.
+
+## Policy Overview
+
+| Policy | Category | Auto-fixable | Purpose |
+|--------|----------|--------------|---------|
+| [HtmlFileHeaders](#htmlfileheaders) | File Headers | Yes | Enforce consistent headers in HTML files |
+| [JsTsFileHeaders](#jstsfileheaders) | File Headers | Yes | Enforce consistent headers in JS/TS files |
+| [NoJsFileExtensions](#nojsfileextensions) | File Extensions | No | Prevent ambiguous `.js` extensions |
+| [PackageJsonProperties](#packagejsonproperties) | Package.json | Yes | Enforce specific package.json fields |
+| [PackageJsonRepoDirectoryProperty](#packagejsonrepodirectoryproperty) | Package.json | Yes | Validate repository.directory path |
+| [PackageJsonSorted](#packagejsonsorted) | Package.json | Yes | Ensure sorted package.json files |
+| [PackageScripts](#packagescripts) | Package.json | No | Validate package.json scripts |
 
 ## File Header Policies
 
 ### HtmlFileHeaders
 
-Enforces consistent file headers in HTML files.
+Enforces consistent file headers in HTML files using HTML comment syntax.
 
-**Configuration:** TODO
+**Configuration:**
+
+<Code code={`import { makePolicy } from "repopo";
+import { HtmlFileHeaders } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(HtmlFileHeaders, {
+      headerText: "Copyright (c) 2024 Your Company. All rights reserved."
+    })
+  ]
+};`} lang="ts" title="repopo.config.ts" />
+
+The policy wraps the header text in HTML comment tags (`<!-- ... -->`). Multi-line headers are automatically formatted with proper comment delimiters on each line.
+
+**Auto-fixable:** Yes
 
 ### JsTsFileHeaders
 
-Enforces consistent file headers in JavaScript and TypeScript files.
+Enforces consistent file headers in JavaScript and TypeScript files using JSDoc-style block comments.
 
-**Configuration:** TODO
+**Configuration:**
+
+<Code code={`import { makePolicy } from "repopo";
+import { JsTsFileHeaders } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(JsTsFileHeaders, {
+      headerText: \`Copyright (c) 2024 Your Company.
+Licensed under the MIT License.\`
+    })
+  ]
+};`} lang="ts" title="repopo.config.ts" />
+
+The policy creates a block comment with `/*!` syntax to ensure it's preserved during minification. Multi-line headers are formatted with `* ` prefix on each line. The policy respects hashbang (`#!`) declarations and places the header after them.
+
+**Auto-fixable:** Yes
 
 ## File Extension Policies
 
@@ -59,15 +102,19 @@ const config = {
   ]
 };`} lang="ts" title="repopo.config.ts" />
 
-**Auto-fixable:** No
+The `verbatim` configuration merges the specified fields into each package.json file. Fields in `verbatim` will override any existing values.
+
+**Auto-fixable:** Yes
 
 ### PackageJsonRepoDirectoryProperty
 
 Validates that the `repository.directory` property in package.json is set correctly based on the package's location in the repository.
 
+The policy automatically calculates the correct directory path relative to the repository root and ensures the `repository.directory` field matches.
+
 **Note:** If the repository field is a string instead of an object, the package will be ignored.
 
-**Auto-fixable:** No
+**Auto-fixable:** Yes
 
 ### PackageJsonSorted
 
@@ -143,3 +190,67 @@ Invalid (mutually exclusive violation):
 }`} lang="json" />
 
 **Auto-fixable:** No
+
+## Configuration and Exclusions
+
+### Configuring Policies
+
+To configure a built-in policy, use the `makePolicy` function with your custom settings:
+
+<Code code={`import { makePolicy } from "repopo";
+import { PackageScripts, JsTsFileHeaders } from "repopo/policies";
+
+const config = {
+  policies: [
+    // Configure with settings
+    makePolicy(PackageScripts, {
+      must: ["build", "test"],
+      mutuallyExclusive: [["lint:eslint", "lint:biome"]]
+    }),
+
+    // Configure with settings and exclusions
+    makePolicy(JsTsFileHeaders,
+      { headerText: "Copyright 2024" },
+      { excludeFiles: ["**/generated/**"] }
+    )
+  ]
+};`} lang="ts" title="repopo.config.ts" />
+
+### Disabling Policies
+
+To disable a built-in policy, simply don't include it in your policies array. By default, all built-in policies are enabled, but you can create a custom configuration that includes only the policies you want:
+
+<Code code={`import { makePolicy } from "repopo";
+import { PackageJsonSorted, NoJsFileExtensions } from "repopo/policies";
+
+// Only enable these two policies
+const config = {
+  policies: [
+    makePolicy(PackageJsonSorted),
+    makePolicy(NoJsFileExtensions)
+  ]
+};`} lang="ts" title="repopo.config.ts" />
+
+### Excluding Files
+
+You can exclude files from specific policies or from all policies:
+
+<Code code={`import { makePolicy } from "repopo";
+import { PackageJsonProperties } from "repopo/policies";
+
+const config = {
+  // Exclude files from ALL policies
+  excludeFiles: [
+    /node_modules/,
+    /\\.coverage/,
+    /dist/
+  ],
+
+  policies: [
+    // Exclude files from specific policy
+    makePolicy(PackageJsonProperties,
+      { verbatim: { license: "MIT" } },
+      { excludeFiles: [/packages\/experimental/] }
+    )
+  ]
+};`} lang="ts" title="repopo.config.ts" />
