@@ -4,6 +4,7 @@ import {
 	PackageJsonProperties,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonSorted,
+	PackageScripts,
 } from "repopo/policies";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
@@ -30,6 +31,13 @@ const config: RepopoConfig = {
 		}),
 		makePolicy(PackageJsonRepoDirectoryProperty),
 		makePolicy(PackageJsonSorted),
+		// Example PackageScripts policy configuration:
+		// makePolicy(PackageScripts, {
+		// 	must: ["build", "clean"],
+		// 	mutuallyExclusive: [
+		// 		["test", "test:unit"],  // Either "test" or "test:unit", not both
+		// 	],
+		// }),
 		makePolicy(SortTsconfigsPolicy),
 		// makePolicy(
 		// 	generatePackagePolicy("SlowTestPolicy", async () => {
