@@ -54,7 +54,7 @@ export const PackageScripts = definePackagePolicy<
 	if (config.must && config.must.length > 0) {
 		const missingScripts: string[] = [];
 		for (const scriptName of config.must) {
-			if (!scripts || !Object.hasOwn(scripts, scriptName)) {
+			if (!(scripts && Object.hasOwn(scripts, scriptName))) {
 				missingScripts.push(scriptName);
 			}
 		}

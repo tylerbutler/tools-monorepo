@@ -6,7 +6,7 @@
 
 # ~~Interface: IFluidBuildDir~~
 
-Defined in: [packages/sail-infrastructure/src/config.ts:174](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L174)
+Defined in: [packages/sail-infrastructure/src/config.ts:175](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L175)
 
 Configures a package or release group
 
@@ -22,7 +22,7 @@ Use buildProject and associated types instead.
 directory: string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:178](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L178)
+Defined in: [packages/sail-infrastructure/src/config.ts:179](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L179)
 
 The path to the package. For release groups this should be the path to the root of the release group.
 
@@ -34,7 +34,7 @@ The path to the package. For release groups this should be the path to the root 
 optional ignoredDirs: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:185](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L185)
+Defined in: [packages/sail-infrastructure/src/config.ts:186](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L186)
 
 An array of paths under `directory` that should be ignored.
 
