@@ -33,14 +33,14 @@
 		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "nx run-many -t test:coverage",
 		"ci:version": "pnpm run release:license && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
-		"clean": "nx run-many -t clean",
+		"clean": "nx run tools-monorepo:clean:root && nx run-many -t clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "nx run-many -t build:compile",
 		"deps": "ncu --interactive",
 		"deps:dev": "ncu -u --dep dev,peer,optional --reject \"*oclif*\" --reject \"*@fluid*\"",
 		"deps:oclif": "ncu -u --dep prod,dev,peer,optional --filter \"*oclif*\"",
 		"deps:prod": "ncu -u --dep prod --reject \"*oclif*\" --reject \"*@fluid*\"",
-		"deps:sync": "tsx scripts/sync-lockfile-versions.ts",
+		"deps:sync": "nx exec -- tbu sync deps",
 		"docs": "nx run-many -t build:docs",
 		"fix:policy": "repopo check --fix",
 		"fix:references": "workspaces-to-typescript-project-references",
@@ -121,6 +121,7 @@
 		}
 	},
 	"nx": {
+		"includedScripts": [],
 		"targets": {
 			"ci": {
 				"dependsOn": [
@@ -185,8 +186,22 @@
 					"{workspaceRoot}/package.json",
 					"{workspaceRoot}/packages/*/package.json",
 					"{workspaceRoot}/packages/*/tsconfig*.json",
-					"{workspaceRoot}/config/tsconfig*.json",
-					"{workspaceRoot}/pnpm-workspace.yaml"
+					"{workspaceRoot}/config/tsconfig*.json"
+				],
+				"cache": true
+			},
+			"clean:root": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "clean:root"
+				},
+				"cache": false
+			},
+			"deps:sync": {
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/pnpm-lockfile.yaml"
 				],
 				"cache": true
 			}
