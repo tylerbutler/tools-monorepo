@@ -31,13 +31,12 @@ const config: RepopoConfig = {
 		}),
 		makePolicy(PackageJsonRepoDirectoryProperty),
 		makePolicy(PackageJsonSorted),
-		// Example PackageScripts policy configuration:
-		// makePolicy(PackageScripts, {
-		// 	must: ["build", "clean"],
-		// 	mutuallyExclusive: [
-		// 		["test", "test:unit"],  // Either "test" or "test:unit", not both
-		// 	],
-		// }),
+		makePolicy(PackageScripts, {
+			must: ["clean"],
+			mutuallyExclusive: [
+				["test:unit", "test:vitest"],
+			],
+		}),
 		makePolicy(SortTsconfigsPolicy),
 		// makePolicy(
 		// 	generatePackagePolicy("SlowTestPolicy", async () => {
