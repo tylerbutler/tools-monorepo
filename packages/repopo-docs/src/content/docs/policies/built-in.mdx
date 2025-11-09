@@ -4,4 +4,142 @@ sidebar:
   order: 2
 ---
 
-## Coming soon!
+import { Code } from '@astrojs/starlight/components';
+
+repopo includes several built-in policies. All built-in policies are enabled by default.
+
+## File Header Policies
+
+### HtmlFileHeaders
+
+Enforces consistent file headers in HTML files.
+
+**Configuration:** TODO
+
+### JsTsFileHeaders
+
+Enforces consistent file headers in JavaScript and TypeScript files.
+
+**Configuration:** TODO
+
+## File Extension Policies
+
+### NoJsFileExtensions
+
+Prevents ambiguous `.js` file extensions in favor of explicit `.mjs` (ESM) or `.cjs` (CommonJS) extensions.
+
+**Why:** JavaScript files with just the `.js` extension may be interpreted by Node.js as either CommonJS or ESM based on the `type` field in the nearest package.json. Using explicit extensions reduces ambiguity and ensures consistent module resolution.
+
+**Auto-fixable:** No
+
+## Package.json Policies
+
+### PackageJsonProperties
+
+Enforces specific fields and values in package.json files across the repository.
+
+**Configuration:**
+
+<Code code={`import { makePolicy } from "repopo";
+import { PackageJsonProperties } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(PackageJsonProperties, {
+      verbatim: {
+        license: "MIT",
+        author: "Tyler Butler <tyler@tylerbutler.com>",
+        bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
+        repository: {
+          type: "git",
+          url: "git+https://github.com/tylerbutler/tools-monorepo.git",
+        }
+      }
+    })
+  ]
+};`} lang="ts" title="repopo.config.ts" />
+
+**Auto-fixable:** No
+
+### PackageJsonRepoDirectoryProperty
+
+Validates that the `repository.directory` property in package.json is set correctly based on the package's location in the repository.
+
+**Note:** If the repository field is a string instead of an object, the package will be ignored.
+
+**Auto-fixable:** No
+
+### PackageJsonSorted
+
+Ensures package.json files are sorted according to a standard key order (using `sort-package-json`).
+
+**Auto-fixable:** Yes
+
+### PackageScripts
+
+Validates package.json scripts based on configurable rules. Supports required scripts and mutually exclusive script groups.
+
+**Configuration:**
+
+<Code code={`import { makePolicy } from "repopo";
+import { PackageScripts } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(PackageScripts, {
+      // Require these scripts in all packages
+      must: ["build", "clean"],
+      // Only allow one script from each group (or none)
+      mutuallyExclusive: [
+        ["test", "test:unit"],        // Either "test" or "test:unit", not both
+        ["lint:eslint", "lint:biome"] // Either "lint:eslint" or "lint:biome", not both
+      ]
+    })
+  ]
+};`} lang="ts" title="repopo.config.ts" />
+
+**Validation Rules:**
+
+1. All scripts in the `must` array must be present
+2. For each group in `mutuallyExclusive`:
+   - Zero scripts from the group is allowed (all optional)
+   - Exactly one script from the group is allowed
+   - Multiple scripts from the same group will fail
+
+**Use Cases:**
+
+- **Enforcing consistency**: Ensure all packages have core scripts like `build` and `clean`
+- **Preventing conflicts**: Avoid duplicate tool configurations (e.g., both `test:unit` and `test:vitest`)
+- **Migration management**: During tool migrations, enforce that packages use either the old or new tool, but not both
+- **Standardization**: Maintain consistent script naming conventions across a monorepo
+
+**Examples:**
+
+Valid configuration:
+<Code code={`{
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest"
+  }
+}`} lang="json" />
+
+Invalid (missing required script):
+<Code code={`{
+  "scripts": {
+    "build": "tsc"
+    // Missing "clean"
+  }
+}`} lang="json" />
+
+Invalid (mutually exclusive violation):
+<Code code={`{
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "test:unit": "vitest run"  // Both "test" and "test:unit" present
+  }
+}`} lang="json" />
+
+**Auto-fixable:** No

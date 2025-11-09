@@ -83,6 +83,100 @@ const config: PolicyConfig = {
 A RepoPolicy that checks that the `repository.directory` property in package.json is set correctly. If the repository
 field is a string instead of an object the package will be ignored.
 
+## PackageScripts
+
+The PackageScripts policy validates package.json scripts based on configurable rules. It supports two validation modes: required scripts and mutually exclusive script groups.
+
+### Configuration
+
+The policy accepts the following configuration options:
+
+- `must`: An array of script names that must be present in all package.json files
+- `mutuallyExclusive`: An array of script groups where exactly one script from each group can be present (or none)
+
+```ts
+import { makePolicy } from "repopo";
+import { PackageScripts } from "repopo/policies";
+
+const config: RepopoConfig = {
+	policies: [
+		makePolicy(PackageScripts, {
+			// Require these scripts in all packages
+			must: ["build", "clean"],
+			// Only allow one of these scripts from each group (or none)
+			mutuallyExclusive: [
+				["test", "test:unit"],        // Either "test" or "test:unit", not both
+				["lint:eslint", "lint:biome"] // Either "lint:eslint" or "lint:biome", not both
+			]
+		})
+	]
+};
+```
+
+### Use Cases
+
+This policy is useful for:
+
+- **Enforcing consistency**: Ensure all packages have core scripts like `build` and `clean`
+- **Preventing conflicts**: Avoid duplicate or conflicting tool configurations (e.g., both `test:unit` and `test:vitest`)
+- **Migration management**: During tool migrations, enforce that packages use either the old or new tool, but not both
+- **Standardization**: Maintain consistent script naming conventions across a monorepo
+
+### Validation Rules
+
+The policy validates that:
+
+1. All scripts listed in the `must` array are present in package.json
+2. For each group in `mutuallyExclusive`:
+   - Zero scripts from the group is allowed (all scripts in a group are optional)
+   - Exactly one script from the group is allowed
+   - Multiple scripts from the same group will fail validation
+
+### Examples
+
+**Valid configurations:**
+
+```json
+// Package with all required scripts and one from each exclusive group
+{
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "lint:biome": "biome check"
+  }
+}
+
+// Package with required scripts and none from exclusive groups
+{
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  }
+}
+```
+
+**Invalid configurations:**
+
+```json
+// Missing required script "clean"
+{
+  "scripts": {
+    "build": "tsc"
+  }
+}
+
+// Has both "test" and "test:unit" (mutually exclusive)
+{
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "test:unit": "vitest run"
+  }
+}
+```
+
 # Policy generators
 
 There are some filetypes that often have policies applied to them, like package.json. You can use the policy generator
