@@ -102,7 +102,11 @@
 	"nx": {
 		"targets": {
 			"build": {
-				"dependsOn": ["^build", "sync-data", "build:vite"]
+				"dependsOn": [
+					"^build",
+					"sync-data",
+					"build:vite"
+				]
 			},
 			"ci": {}
 		}

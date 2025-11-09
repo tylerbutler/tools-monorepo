@@ -1,10 +1,10 @@
-import { describe, expect, it, beforeEach, afterEach } from "vitest";
-import { PackageScripts } from "../../src/policies/PackageScripts.js";
-import type { PackageJson } from "type-fest";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import type { PackageJson } from "type-fest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { PackageScripts } from "../../src/policies/PackageScripts.js";
+import type { PolicyFunctionArguments } from "../../src/policy.js";
 
 describe("PackageScripts policy", () => {
 	let tempDir: string;
@@ -346,7 +346,9 @@ describe("PackageScripts policy", () => {
 			const filePath = createPackageJson(json);
 
 			const result = await PackageScripts.handler(
-				createArgs(filePath, { mutuallyExclusive: [["test:unit", "test:vitest"]] }),
+				createArgs(filePath, {
+					mutuallyExclusive: [["test:unit", "test:vitest"]],
+				}),
 			);
 			expect(result).toBe(true);
 		});
