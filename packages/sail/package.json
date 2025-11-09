@@ -152,14 +152,14 @@
 		"@types/node": "^20.19.23",
 		"@types/picomatch": "^3.0.2",
 		"@types/semver": "^7.7.1",
-		"@vitest/coverage-v8": "^3.2.4",
+		"@vitest/coverage-v8": "^4.0.8",
 		"concurrently": "^9.2.1",
 		"generate-license-file": "^4.1.0",
 		"oclif": "^4.22.32",
 		"pathe": "^2.0.3",
 		"rimraf": "^6.0.1",
 		"ts-node": "^10.9.2",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.8"
 	},
 	"engines": {
 		"node": ">=18.0.0"
