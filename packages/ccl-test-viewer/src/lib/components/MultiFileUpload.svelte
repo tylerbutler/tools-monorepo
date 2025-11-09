@@ -1,4 +1,5 @@
 <script lang="ts">
+import { AlertCircle, CheckCircle2, FileText, Upload, X } from "@lucide/svelte";
 import {
 	Badge,
 	Button,
@@ -7,7 +8,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "$lib/components/ui/index.js";
-import { AlertCircle, CheckCircle2, FileText, Upload, X } from "@lucide/svelte";
 
 interface UploadedFile {
 	file: File;
@@ -81,7 +81,7 @@ function handleFilesSelect(files: FileList | File[]) {
 	}
 
 	// Process valid files
-	processFiles();
+	void processFiles();
 }
 
 // Handle file input change

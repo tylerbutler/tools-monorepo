@@ -3,7 +3,7 @@
  * Placeholder for future OAuth implementation in Tauri desktop app
  */
 
-import { isTauriEnvironment } from "./tauriFileService";
+import { isTauriEnvironment } from "./tauriFileService.js";
 
 export interface AuthConfig {
 	clientId: string;
@@ -38,7 +38,7 @@ class DesktopAuthService {
 
 	public constructor() {
 		// Initialize authentication state from local storage
-		this.loadAuthState();
+		void this.loadAuthState();
 	}
 
 	// Getters
@@ -159,6 +159,7 @@ class DesktopAuthService {
 	/**
 	 * Store authentication state to local storage
 	 */
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: future OAuth implementation
 	private async storeAuthToken(token: AuthToken): Promise<void> {
 		this._authToken = token;
 		this._isAuthenticated = true;
@@ -178,6 +179,7 @@ class DesktopAuthService {
 	/**
 	 * Fetch user information from GitHub API
 	 */
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: future OAuth implementation
 	private async fetchUserInfo(): Promise<void> {
 		const client = this.getAuthenticatedClient();
 		if (!client) {

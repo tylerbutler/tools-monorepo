@@ -62,7 +62,7 @@ The Map key that was already set.
 
 > `optional` **cause**: `unknown`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2022.error.d.ts:24
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2022.error.d.ts:26
 
 **`Beta`**
 
@@ -74,7 +74,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > **message**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1077
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es5.d.ts:1077
 
 **`Beta`**
 
@@ -86,7 +86,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > **name**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1076
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
 
 **`Beta`**
 
@@ -98,7 +98,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > `optional` **stack**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es5.d.ts:1078
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es5.d.ts:1078
 
 **`Beta`**
 
@@ -110,7 +110,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > `static` **stackTraceLimit**: `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.20/node\_modules/@types/node/globals.d.ts:68
+Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/globals.d.ts:68
 
 **`Beta`**
 
@@ -134,7 +134,7 @@ not capture any frames.
 
 > `static` **captureStackTrace**(`targetObject`, `constructorOpt?`): `void`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.20/node\_modules/@types/node/globals.d.ts:52
+Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/globals.d.ts:52
 
 **`Beta`**
 
@@ -204,7 +204,7 @@ a();
 
 > `static` **prepareStackTrace**(`err`, `stackTraces`): `any`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.20/node\_modules/@types/node/globals.d.ts:56
+Defined in: node\_modules/.pnpm/@types+node@20.19.23/node\_modules/@types/node/globals.d.ts:56
 
 **`Beta`**
 
@@ -265,7 +265,7 @@ type of the Map value.
 
 > **new WriteOnceMap**\<`K`, `V`\>(`entries?`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
 
 **`Beta`**
 
@@ -273,7 +273,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ###### entries?
 
-`null` | readonly readonly \[`K`, `V`\][]
+readonly readonly \[`K`, `V`\][] | `null`
 
 ###### Returns
 
@@ -287,7 +287,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > **new WriteOnceMap**\<`K`, `V`\>(`iterable?`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
 
 **`Beta`**
 
@@ -295,7 +295,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ###### iterable?
 
-`null` | `Iterable`\<readonly \[`K`, `V`\]\>
+`Iterable`\<readonly \[`K`, `V`\], `any`, `any`\> | `null`
 
 ###### Returns
 
@@ -311,7 +311,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > `readonly` **\[toStringTag\]**: `string`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:137
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:137
 
 **`Beta`**
 
@@ -323,7 +323,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > `readonly` **size**: `number`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:45
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:45
 
 **`Beta`**
 
@@ -339,7 +339,7 @@ the number of elements in the Map.
 
 > `readonly` `static` **\[species\]**: `MapConstructor`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:319
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:319
 
 **`Beta`**
 
@@ -351,9 +351,9 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 ##### \[iterator\]()
 
-> **\[iterator\]**(): `IterableIterator`\<\[`K`, `V`\]\>
+> **\[iterator\]**(): `MapIterator`\<\[`K`, `V`\]\>
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:119
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:143
 
 **`Beta`**
 
@@ -361,7 +361,7 @@ Returns an iterable of entries in the map.
 
 ###### Returns
 
-`IterableIterator`\<\[`K`, `V`\]\>
+`MapIterator`\<\[`K`, `V`\]\>
 
 ###### Inherited from
 
@@ -371,7 +371,7 @@ Returns an iterable of entries in the map.
 
 > **clear**(): `void`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:20
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:20
 
 **`Beta`**
 
@@ -387,7 +387,7 @@ Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/li
 
 > **delete**(`key`): `boolean`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:24
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:24
 
 **`Beta`**
 
@@ -409,9 +409,9 @@ true if an element in the Map existed and has been removed, or false if the elem
 
 ##### entries()
 
-> **entries**(): `IterableIterator`\<\[`K`, `V`\]\>
+> **entries**(): `MapIterator`\<\[`K`, `V`\]\>
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:124
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:148
 
 **`Beta`**
 
@@ -419,7 +419,7 @@ Returns an iterable of key, value pairs for every entry in the map.
 
 ###### Returns
 
-`IterableIterator`\<\[`K`, `V`\]\>
+`MapIterator`\<\[`K`, `V`\]\>
 
 ###### Inherited from
 
@@ -429,7 +429,7 @@ Returns an iterable of key, value pairs for every entry in the map.
 
 > **forEach**(`callbackfn`, `thisArg?`): `void`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:28
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:28
 
 **`Beta`**
 
@@ -455,9 +455,9 @@ Executes a provided function once per each key/value pair in the Map, in inserti
 
 ##### get()
 
-> **get**(`key`): `undefined` \| `V`
+> **get**(`key`): `V` \| `undefined`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:33
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:33
 
 **`Beta`**
 
@@ -471,7 +471,7 @@ Returns a specified element from the Map object. If the value that is associated
 
 ###### Returns
 
-`undefined` \| `V`
+`V` \| `undefined`
 
 Returns the element associated with the specified key. If no element is associated with the specified key, undefined is returned.
 
@@ -483,7 +483,7 @@ Returns the element associated with the specified key. If no element is associat
 
 > **has**(`key`): `boolean`
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.collection.d.ts:37
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:37
 
 **`Beta`**
 
@@ -505,9 +505,9 @@ boolean indicating whether an element with the specified key exists or not.
 
 ##### keys()
 
-> **keys**(): `IterableIterator`\<`K`\>
+> **keys**(): `MapIterator`\<`K`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:129
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:153
 
 **`Beta`**
 
@@ -515,7 +515,7 @@ Returns an iterable of keys in the map
 
 ###### Returns
 
-`IterableIterator`\<`K`\>
+`MapIterator`\<`K`\>
 
 ###### Inherited from
 
@@ -562,9 +562,9 @@ Set to true to force a Map element to be updated whether it has previously been 
 
 ##### values()
 
-> **values**(): `IterableIterator`\<`V`\>
+> **values**(): `MapIterator`\<`V`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.5.4/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:134
+Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.es2015.iterable.d.ts:158
 
 **`Beta`**
 
@@ -572,11 +572,48 @@ Returns an iterable of values in the map
 
 ###### Returns
 
-`IterableIterator`\<`V`\>
+`MapIterator`\<`V`\>
 
 ###### Inherited from
 
 `Map.values`
+
+## Functions
+
+### exists()
+
+> **exists**(`path`): `Promise`\<`boolean`\>
+
+Defined in: [packages/fundamentals/src/fs.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/fs.ts#L22)
+
+Check if a file or directory exists.
+
+#### Parameters
+
+##### path
+
+`string`
+
+The path to check for existence
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+A promise that resolves to `true` if the path exists, `false` otherwise
+
+#### Remarks
+
+This is an async replacement for the deprecated `fs.exists()` and synchronous `fs.existsSync()`.
+It uses `fs.promises.access()` internally to check file accessibility.
+
+#### Example
+
+```typescript
+if (await exists('./myfile.txt')) {
+  console.log('File exists');
+}
+```
 
 ## References
 

@@ -41,7 +41,7 @@ class OfflineManager {
 
 		// Load cached data if in Tauri environment
 		if (isTauriEnvironment()) {
-			this.loadCachedData();
+			void this.loadCachedData();
 		}
 	}
 
@@ -96,12 +96,12 @@ class OfflineManager {
 		// Listen for online/offline events
 		window.addEventListener("online", () => {
 			this._isOnline = true;
-			this.handleOnlineStateChange();
+			void this.handleOnlineStateChange();
 		});
 
 		window.addEventListener("offline", () => {
 			this._isOnline = false;
-			this.handleOnlineStateChange();
+			void this.handleOnlineStateChange();
 		});
 	}
 
@@ -130,7 +130,7 @@ class OfflineManager {
 
 		if (enabled) {
 			// Cache current data when entering offline mode
-			this.cacheCurrentData();
+			void this.cacheCurrentData();
 		}
 	}
 

@@ -8,9 +8,20 @@
 		"types": ["node"],
 		// "lib": ["ES2020", "DOM", "DOM.Iterable"],
 		"outDir": "./esm",
-		"rootDir": "./src"
+		"rootDir": "./src",
 	},
 	"ts-node": {
-		"esm": true
-	}
+		"esm": true,
+	},
+	"references": [
+		{
+			"path": "../cli-api",
+		},
+		{
+			"path": "../fundamentals",
+		},
+		{
+			"path": "../repopo",
+		},
+	],
 }

@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/levee-client",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"private": true,
 	"description": "Client for the Levee Fluid Framework service.",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -24,21 +24,21 @@
 	"main": "lib/index.js",
 	"types": "lib/public.d.ts",
 	"scripts": {
-		"api": "api-extractor run --local",
-		"b": "turbo build",
-		"build": "turbo run build-steps:lib",
-		"check": "npm run check:format",
+		"b": "nx build",
+		"build:api": "api-extractor run --local",
+		"build:compile": "tsc",
+		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf --glob esm \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp _temp nyc",
-		"compile": "tsc",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "turbo full",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
 		"start": "pm2 start -n tinylicious dist/index.js",
 		"start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
 		"stop": "pm2 stop tinylicious",
-		"test:mocha": "mocha --recursive dist/test"
+		"test:coverage": "vitest run --coverage test",
+		"test:mocha": "mocha --recursive dist/test",
+		"test:vitest": "vitest run test"
 	},
 	"dependencies": {
 		"@fluidframework/container-definitions": "~2.33.2",
@@ -56,7 +56,7 @@
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.18.2",
-		"@biomejs/biome": "2.0.4",
+		"@biomejs/biome": "2.2.5",
 		"@fluid-tools/build-cli": "~0.58.3",
 		"@fluidframework/aqueduct": "~2.42.0",
 		"@fluidframework/build-common": "~2.0.3",
@@ -66,17 +66,26 @@
 		"@fluidframework/eslint-config-fluid": "~5.7.4",
 		"@fluidframework/shared-object-base": "~2.42.0",
 		"@fluidframework/test-utils": "~2.42.0",
-		"@microsoft/api-extractor": "^7.53.1",
+		"@microsoft/api-extractor": "^7.53.2",
 		"@tsconfig/node18": "^18.2.4",
 		"@types/mocha": "^10.0.10",
-		"@types/node": "^20.19.20",
+		"@types/node": "^20.19.23",
+		"@vitest/coverage-v8": "^3.2.4",
 		"concurrently": "^9.2.1",
 		"copyfiles": "^2.4.1",
-		"eslint": "^9.37.0",
+		"eslint": "^9.38.0",
 		"mocha": "^11.7.4",
 		"rimraf": "^6.0.1",
 		"start-server-and-test": "^2.1.2",
 		"tinylicious": "^6.0.0",
-		"typescript": "~5.5.4"
+		"typescript": "~5.9.3",
+		"vitest": "^3.2.4"
+	},
+	"nx": {
+		"targets": {
+			"build": {},
+			"test": {},
+			"ci": {}
+		}
 	}
 }

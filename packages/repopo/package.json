@@ -42,26 +42,25 @@
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
-		"api": "api-extractor run --local",
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"b": "turbo build",
+		"build:api": "api-extractor run --local",
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:manifest": "oclif manifest",
+		"build:readme": "concurrently npm:readme:*",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
-		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
-		"compile": "tsc --project ./tsconfig.json",
 		"format": "biome check . --linter-enabled=false --write",
-		"full": "turbo full",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"manifest": "oclif manifest",
-		"postpack": "npm run clean:manifest",
-		"readme": "concurrently npm:readme:*",
+		"postpack": "pnpm clean:manifest",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",
-		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs"
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "vitest run",
+		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
 	},
 	"oclif": {
 		"bin": "repopo",
@@ -76,9 +75,9 @@
 	},
 	"dependencies": {
 		"@fluid-tools/build-infrastructure": "~0.58.3",
-		"@oclif/core": "^4.5.4",
+		"@oclif/core": "^4.7.2",
 		"@oclif/plugin-help": "^6.2.33",
-		"@rushstack/node-core-library": "^5.17.0",
+		"@rushstack/node-core-library": "^5.17.1",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"defu": "^6.1.4",
@@ -89,20 +88,20 @@
 		"simple-git": "^3.28.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.0.4",
-		"@microsoft/api-extractor": "^7.53.1",
-		"@oclif/plugin-command-snapshot": "^5.3.6",
+		"@biomejs/biome": "2.2.5",
+		"@microsoft/api-extractor": "^7.53.2",
+		"@oclif/plugin-command-snapshot": "^5.3.7",
 		"@oclif/test": "^4.1.14",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.20",
+		"@types/node": "^20.19.23",
 		"@types/tmp": "^0.2.6",
 		"generate-license-file": "^4.1.0",
-		"oclif": "^4.22.29",
+		"oclif": "^4.22.32",
 		"rimraf": "^6.0.1",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^4.41.0",
-		"typescript": "~5.5.4",
+		"type-fest": "^5.1.0",
+		"typescript": "~5.9.3",
 		"vitest": "^3.2.4"
 	},
 	"peerDependencies": {
@@ -115,5 +114,13 @@
 	},
 	"engines": {
 		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {}
+		}
 	}
 }

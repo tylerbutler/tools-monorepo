@@ -1,0 +1,221 @@
+[
+    {
+        "alias": [],
+        "command": "autocomplete",
+        "flagAliases": [],
+        "flagChars": [
+            "r"
+        ],
+        "flags": [
+            "refresh-cache"
+        ],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "autocomplete:create",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [],
+        "command": "autocomplete:script",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [],
+        "plugin": "@oclif/plugin-autocomplete"
+    },
+    {
+        "alias": [
+            "b"
+        ],
+        "command": "build",
+        "flagAliases": [
+            "tasks"
+        ],
+        "flagChars": [
+            "c",
+            "g",
+            "r",
+            "t",
+            "v",
+            "w"
+        ],
+        "flags": [
+            "all",
+            "cacheDir",
+            "clean",
+            "concurrency",
+            "config",
+            "defaultRoot",
+            "force",
+            "overwriteCache",
+            "quiet",
+            "rebuild",
+            "releaseGroup",
+            "root",
+            "showExec",
+            "skipCacheWrite",
+            "task",
+            "verbose",
+            "verifyCacheIntegrity",
+            "vscode",
+            "worker",
+            "workerMemoryLimitMB",
+            "workspace"
+        ],
+        "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "cache:clean",
+        "flagAliases": [],
+        "flagChars": [
+            "f",
+            "v"
+        ],
+        "flags": [
+            "cacheDir",
+            "config",
+            "defaultRoot",
+            "force",
+            "quiet",
+            "root",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "cache:info",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "cacheDir",
+            "config",
+            "defaultRoot",
+            "quiet",
+            "root",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "cache:prune",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "cacheDir",
+            "config",
+            "defaultRoot",
+            "quiet",
+            "root",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "cache:stats",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "cacheDir",
+            "config",
+            "defaultRoot",
+            "quiet",
+            "root",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "cache:verify",
+        "flagAliases": [],
+        "flagChars": [
+            "f",
+            "v"
+        ],
+        "flags": [
+            "cacheDir",
+            "config",
+            "defaultRoot",
+            "fix",
+            "force",
+            "quiet",
+            "root",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "commands",
+        "flagAliases": [],
+        "flagChars": [
+            "c",
+            "x"
+        ],
+        "flags": [
+            "columns",
+            "deprecated",
+            "extended",
+            "hidden",
+            "json",
+            "no-truncate",
+            "sort",
+            "tree"
+        ],
+        "plugin": "@oclif/plugin-commands"
+    },
+    {
+        "alias": [],
+        "command": "help",
+        "flagAliases": [],
+        "flagChars": [
+            "n"
+        ],
+        "flags": [
+            "nested-commands"
+        ],
+        "plugin": "@oclif/plugin-help"
+    },
+    {
+        "alias": [],
+        "command": "scan",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "defaultRoot",
+            "infer",
+            "quiet",
+            "root",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/sail"
+    },
+    {
+        "alias": [],
+        "command": "version",
+        "flagAliases": [],
+        "flagChars": [],
+        "flags": [
+            "json",
+            "verbose"
+        ],
+        "plugin": "@oclif/plugin-version"
+    }
+]

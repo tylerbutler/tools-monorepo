@@ -1,0 +1,165 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/app-desktop:
+    dependencies:
+      '@cache-test/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@cache-test/client':
+        specifier: workspace:*
+        version: link:../client
+      '@cache-test/server':
+        specifier: workspace:*
+        version: link:../server
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/app-web:
+    dependencies:
+      '@cache-test/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@cache-test/client':
+        specifier: workspace:*
+        version: link:../client
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/cli:
+    dependencies:
+      '@cache-test/core':
+        specifier: workspace:*
+        version: link:../core
+      '@cache-test/parser':
+        specifier: workspace:*
+        version: link:../parser
+      '@cache-test/validation':
+        specifier: workspace:*
+        version: link:../validation
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/client:
+    dependencies:
+      '@cache-test/formatter':
+        specifier: workspace:*
+        version: link:../formatter
+      '@cache-test/parser':
+        specifier: workspace:*
+        version: link:../parser
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/config:
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/core:
+    dependencies:
+      '@cache-test/types':
+        specifier: workspace:*
+        version: link:../types
+      '@cache-test/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/formatter:
+    dependencies:
+      '@cache-test/config':
+        specifier: workspace:*
+        version: link:../config
+      '@cache-test/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/parser:
+    dependencies:
+      '@cache-test/types':
+        specifier: workspace:*
+        version: link:../types
+      '@cache-test/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/server:
+    dependencies:
+      '@cache-test/core':
+        specifier: workspace:*
+        version: link:../core
+      '@cache-test/formatter':
+        specifier: workspace:*
+        version: link:../formatter
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/types:
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/utils:
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+  packages/validation:
+    dependencies:
+      '@cache-test/config':
+        specifier: workspace:*
+        version: link:../config
+      '@cache-test/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+
+packages:
+
+  typescript@5.5.4:
+    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+snapshots:
+
+  typescript@5.5.4: {}

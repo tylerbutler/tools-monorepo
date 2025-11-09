@@ -3,9 +3,20 @@
 	"include": ["src/**/*"],
 	"compilerOptions": {
 		"rootDir": "src",
-		"outDir": "esm"
+		"outDir": "esm",
 	},
 	"ts-node": {
-		"esm": true
-	}
+		"esm": true,
+	},
+	"references": [
+		{
+			"path": "../cli-api",
+		},
+		{
+			"path": "../fundamentals",
+		},
+		{
+			"path": "../dill-cli",
+		},
+	],
 }

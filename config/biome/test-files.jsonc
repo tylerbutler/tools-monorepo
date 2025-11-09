@@ -1,9 +1,14 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
 	"overrides": [
 		{
-			// Test files
-			"includes": ["**/*.mochatest.*", "**/*.vitest.*", "**/*.test.ts"],
+			// Test files and helpers
+			"includes": [
+				"**/*.mochatest.*",
+				"**/*.vitest.*",
+				"**/*.test.ts",
+				"**/test/**/*.ts",
+			],
 			"linter": {
 				"rules": {
 					"performance": {
@@ -13,11 +18,15 @@
 					"style": {
 						// Allow default exports in test files.
 						"noDefaultExport": "off",
+						// Test helpers and builders don't need explicit public modifiers
+						"useConsistentMemberAccessibility": "off",
 					},
 					"suspicious": {
 						// Console logging is ok in tests.
 						"noConsole": "off",
 						"useAwait": "off",
+						// Empty blocks in mock/stub objects are intentional
+						"noEmptyBlockStatements": "off",
 					},
 				},
 			},

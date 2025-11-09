@@ -12,7 +12,7 @@ import {
 	saveDataSourceToLocal,
 	type TauriFileResult,
 } from "@/services/tauriFileService";
-import type { DataSource } from "./dataSource";
+import type { DataSource } from "./dataSource.js";
 import { dataSourceManager } from "./dataSourceManager.svelte.js";
 
 /**
@@ -32,7 +32,7 @@ class TauriDataSourceManager {
 
 		// Load saved sources on initialization
 		if (this._isDesktopApp) {
-			this.loadLocalSources();
+			void this.loadLocalSources();
 		}
 	}
 
@@ -202,7 +202,7 @@ class TauriDataSourceManager {
 			);
 			if (!existing) {
 				// Add to main manager (this will trigger UI updates)
-				dataSourceManager.processUploadedFiles(
+				await dataSourceManager.processUploadedFiles(
 					localSource.files.map(
 						(f) =>
 							({
@@ -216,6 +216,7 @@ class TauriDataSourceManager {
 								stream: () => new ReadableStream(),
 								text: async () => f.content,
 								slice: () => new Blob(),
+								bytes: async () => new Uint8Array(0),
 							}) as File,
 					),
 				);
