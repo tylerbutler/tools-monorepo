@@ -40,7 +40,6 @@
 	],
 	"scripts": {
 		"b": "nx build",
-		"build": "pnpm build:compile",
 		"build:api": "api-extractor run --local",
 		"build:compile": "tsc",
 		"build:manifest": "oclif manifest",
@@ -59,7 +58,6 @@
 		"readme:main": "oclif readme --no-aliases",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "serve ./test/data --listen 8080",
-		"test": "pnpm test:vitest",
 		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "pnpm update:test-snapshots",
 		"test:vitest": "vitest run test",
@@ -122,6 +120,8 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {},
+			"test": {},
 			"ci": {}
 		}
 	}

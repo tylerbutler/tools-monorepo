@@ -25,7 +25,6 @@
 	"types": "lib/public.d.ts",
 	"scripts": {
 		"b": "nx build",
-		"build": "pnpm build:compile && pnpm build:api",
 		"build:api": "api-extractor run --local",
 		"build:compile": "tsc",
 		"check": "pnpm check:format",
@@ -37,7 +36,6 @@
 		"start": "pm2 start -n tinylicious dist/index.js",
 		"start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
 		"stop": "pm2 stop tinylicious",
-		"test": "pnpm test:vitest",
 		"test:coverage": "vitest run --coverage test",
 		"test:mocha": "mocha --recursive dist/test",
 		"test:vitest": "vitest run test"
@@ -85,6 +83,8 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {},
+			"test": {},
 			"ci": {}
 		}
 	}

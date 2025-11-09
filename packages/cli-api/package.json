@@ -31,7 +31,6 @@
 	"scripts": {
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"b": "nx build",
-		"build": "pnpm build:compile && pnpm build:api",
 		"build:api": "api-extractor run --local",
 		"build:compile": "tsc --project ./tsconfig.json",
 		"check": "pnpm check:format",
@@ -41,7 +40,6 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "pnpm test:vitest",
 		"test:coverage": "vitest run test --coverage",
 		"test:vitest": "vitest run test"
 	},
@@ -92,6 +90,8 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {},
+			"test": {},
 			"ci": {}
 		}
 	}
