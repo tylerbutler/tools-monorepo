@@ -20,7 +20,6 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
 	"scripts": {
-		"build": "pnpm sync-data && pnpm build:vite",
 		"build:tauri": "BUILD_TARGET=tauri pnpm build:vite && tauri build",
 		"build:vite": "vite build",
 		"check": "pnpm check:svelte && pnpm check:format",
@@ -102,6 +101,9 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {
+				"dependsOn": ["^build", "sync-data", "build:vite"]
+			},
 			"ci": {}
 		}
 	}

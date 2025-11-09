@@ -13,7 +13,6 @@
 	"type": "module",
 	"scripts": {
 		"astro": "astro",
-		"build": "pnpm build:site",
 		"build:site": "astro build",
 		"check:astro": "astro check",
 		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
@@ -45,6 +44,7 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {},
 			"ci": {}
 		}
 	}

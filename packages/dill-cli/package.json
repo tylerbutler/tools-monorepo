@@ -59,7 +59,6 @@
 		"readme:main": "oclif readme --no-aliases",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "serve ./test/data --listen 8080",
-		"test": "pnpm test:vitest",
 		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "pnpm update:test-snapshots",
 		"test:vitest": "vitest run test",
@@ -144,6 +143,7 @@
 			"build": {
 				"executor": "nx:noop"
 			},
+			"test": {},
 			"ci": {}
 		}
 	}
