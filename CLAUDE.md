@@ -138,21 +138,44 @@ The monorepo contains these key packages:
 
 ## Architecture Patterns
 
-### Build Pipeline
+### Build Pipeline & Task Architecture
 
-Nx orchestrates builds using **pure dependency-based orchestration** - no shell scripts, just dependency graphs:
+Nx orchestrates builds using **pure dependency-based orchestration** - no shell scripts, just dependency graphs.
 
-**Architecture:** Orchestration via `nx.json`, Implementation via package.json scripts
+#### **Task Naming Convention**
+
+This monorepo uses a two-tier task architecture:
+
+1. **Orchestration Targets** (no prefix) - Defined in `nx.json` targetDefaults
+   - Examples: `build`, `test`, `check`, `ci`, `release`
+   - **Purpose**: Coordinate multiple implementation tasks via `dependsOn`
+   - **Configuration**: Only dependencies, no inputs/outputs (delegates to implementation tasks)
+   - **Location**: Centralized in `nx.json` targetDefaults
+
+2. **Implementation Tasks** (with `:` prefix) - Defined in package.json scripts
+   - Examples: `build:compile`, `test:unit`, `check:format`
+   - **Purpose**: Perform actual work (compile, test, lint, etc.)
+   - **Configuration**: Specific inputs, outputs, and caching rules
+   - **Location**: Package-specific in package.json, orchestrated via `nx.json`
+
+**Why This Matters:**
+- Orchestration targets provide simple commands (`pnpm build`) that run complex pipelines
+- Implementation tasks enable granular caching (change README → only `build:readme` reruns)
+- Clear separation makes it easy to understand what runs when and why
+
+#### **Architecture Overview**
+
+**Orchestration via `nx.json`, Implementation via package.json scripts**
 
 **Orchestration Targets** (defined in `nx.json` targetDefaults):
 - `ci` - Full CI pipeline (**centralized task list**: check, build, lint, test:coverage)
   - Configured once in `nx.json` targetDefaults
-  - Each package enables via `nx.targets.ci` in package.json
-  - Update task list in ONE place (nx.json)
-- `build` - Virtual target that depends on all build implementation tasks
-- `test` - Virtual target that depends on compile + test implementation tasks
-- `check` - Runs all quality checks (format, types, deps, policy, lint)
-- `release` - Prepares releases (build + release:license)
+  - Each package enables via minimal package.json entry
+  - Update task list in ONE place (nx.json) to affect all projects
+- `build` - Coordinates all build implementation tasks via `dependsOn`
+- `test` - Coordinates compile + all test variants (unit, vitest, snapshots)
+- `check` - Coordinates all quality checks (format, types, deps, policy)
+- `release` - Prepares releases (build + license generation)
 
 **Implementation Tasks** (package-specific, defined in package.json):
 - `build:compile` - TypeScript compilation (src → esm/)
@@ -176,19 +199,21 @@ Nx orchestrates builds using **pure dependency-based orchestration** - no shell 
 - **Svelte apps**: build:vite (or build:vite → build:tauri for desktop)
 
 **Key Principles:**
-- **No orchestrator scripts in package.json** - only minimal `"build": ""` to register target
-- **All orchestration in `nx.json`** - dependency chains via `dependsOn`
-- **Granular caching** - each implementation task caches independently
-- **Parallel execution** - tasks without dependencies run concurrently
-- Implementation tasks use `:` separator (e.g., `build:compile`)
-- Nx plugins auto-infer tasks from config files (vitest.config.ts, etc.)
-- All configuration in root `nx.json` (no package-level project.json files)
+- **Orchestration in `nx.json`** - Dependency chains defined via `dependsOn`
+- **Implementation in package.json** - Actual work performed by scripts
+- **No orchestrator scripts** - Package.json contains minimal entries (e.g., `"build": ""`) to register targets
+- **Granular caching** - Each implementation task caches independently with specific inputs/outputs
+- **Parallel execution** - Nx runs tasks without dependencies concurrently (up to 8 parallel tasks)
+- **Colon separator** - Implementation tasks use `:` (e.g., `build:compile`, `test:unit`)
+- **Plugin inference** - Nx plugins auto-detect tasks from config files (vitest.config.ts, etc.)
+- **Centralized config** - All orchestration in root `nx.json` (no package-level project.json files)
 
 **Benefits:**
-- Change README → only `build:readme` runs (others cache)
-- Change source → only affected tasks rebuild
-- API Extractor configs run in parallel
-- 60-80% faster for isolated changes
+- **Precise caching**: Change README → only `build:readme` runs (others use cache)
+- **Smart rebuilds**: Change source → only affected tasks rebuild
+- **Parallel execution**: API Extractor configs run in parallel across packages
+- **Performance**: 60-80% faster CI for isolated changes due to granular caching
+- **Maintainability**: Update CI tasks once in `nx.json`, all packages inherit changes
 
 ### TypeScript Configuration
 
