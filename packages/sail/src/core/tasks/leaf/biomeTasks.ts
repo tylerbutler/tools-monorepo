@@ -1,6 +1,6 @@
 import { BiomeConfigReader } from "../../../common/biomeConfig.js";
 import { GitRepo } from "../../../common/gitRepo.js";
-import { LeafWithFileStatDoneFileTask } from "./leafTask.js";
+import { LeafWithDoneFileTask } from "./leafTask.js";
 
 /**
  * This task enables incremental build support for Biome formatting tasks. It reads Biome configuration files to load
@@ -12,14 +12,7 @@ import { LeafWithFileStatDoneFileTask } from "./leafTask.js";
  * Note that .gitignored paths are always excluded, regardless of the "vcs" setting in the Biome configuration.
  * Internally the task uses git itself to enumerate files, and files that aren't enumerated are not considered.
  */
-export class BiomeTask extends LeafWithFileStatDoneFileTask {
-	/**
-	 * Use hashes instead of modified times in donefile.
-	 */
-	protected override get useHashes(): boolean {
-		return true;
-	}
-
+export class BiomeTask extends LeafWithDoneFileTask {
 	private _configReader: BiomeConfigReader | undefined;
 
 	private async getBiomeConfigReader(): Promise<BiomeConfigReader> {
@@ -46,21 +39,5 @@ export class BiomeTask extends LeafWithFileStatDoneFileTask {
 	protected async getOutputFiles(): Promise<string[]> {
 		const biomeConfig = await this.getBiomeConfigReader();
 		return biomeConfig.formattedFiles;
-	}
-
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const inputs = await super.getCacheInputFiles();
-		// Add task-specific input files
-		inputs.push(...(await this.getInputFiles()));
-		return inputs;
-	}
-
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-		// Add task-specific output files
-		outputs.push(...(await this.getOutputFiles()));
-		return outputs;
 	}
 }

@@ -56,6 +56,13 @@ export class TaskStats {
 	public leafBuiltCount = 0;
 	public leafExecTimeTotal = 0;
 	public leafQueueWaitTimeTotal = 0;
+	/** Snapshot of leafUpToDateCount after initial donefile checks, before execution starts.
+	 * Used for stable task counter denominators. */
+	public leafInitialUpToDateCount = 0;
+	/** Count of tasks that were up-to-date via local donefile check */
+	public leafLocalCacheHitCount = 0;
+	/** Count of tasks that were up-to-date via remote cache restoration */
+	public leafRemoteCacheHitCount = 0;
 }
 
 /**
@@ -81,6 +88,7 @@ export class BuildGraphContext implements BuildContext, BuildExecutionContext {
 		public readonly buildContext: BuildContext,
 		public readonly force: boolean,
 		public readonly matchedOnly: boolean,
+		public readonly quiet: boolean,
 		public readonly workerPool?: WorkerPool,
 	) {
 		this.sailConfig = buildContext.sailConfig;
@@ -155,6 +163,11 @@ export class BuildGraphPackage implements DependencyNode, BuildablePackage {
 	/** @internal */
 	public get matchedOnly() {
 		return this.context.matchedOnly;
+	}
+
+	/** @internal */
+	public get quiet() {
+		return this.context.quiet;
 	}
 
 	/** @internal */
@@ -425,7 +438,12 @@ export class BuildGraph {
 		private log: Logger,
 		options: Pick<
 			BuildOptions,
-			"matchedOnly" | "worker" | "workerMemoryLimit" | "workerThreads" | "force"
+			| "matchedOnly"
+			| "worker"
+			| "workerMemoryLimit"
+			| "workerThreads"
+			| "force"
+			| "quiet"
 		>,
 	) {
 		traceGraph("globalTaskDefinitions=%O", globalTaskDefinitions);
@@ -438,6 +456,7 @@ export class BuildGraph {
 			buildContext,
 			options.force,
 			options.matchedOnly,
+			options.quiet,
 			options.worker
 				? new WorkerPool(options.workerThreads, options.workerMemoryLimit)
 				: undefined,

@@ -11,6 +11,8 @@ const traceTaskExec = registerDebug("sail:task:exec");
 const traceTaskExecWait = registerDebug("sail:task:exec:wait");
 const traceTaskDepTask = registerDebug("sail:task:init:dep:task");
 const traceUpToDate = registerDebug("sail:task:uptodate");
+const traceTaskTrigger = registerDebug("sail:task:trigger");
+const traceError = registerDebug("sail:task:error");
 
 /**
  * @beta
@@ -192,6 +194,14 @@ export abstract class Task {
 		this.isUpToDateP = undefined;
 	}
 
+	/**
+	 * Clears the cached up-to-date status, forcing re-evaluation on next check.
+	 * Used when dependency state changes and cached result may be stale.
+	 */
+	protected clearUpToDateCache(): void {
+		this.isUpToDateP = undefined;
+	}
+
 	public toString() {
 		return `"${this.command}" in ${this.node.pkg.nameColored}`;
 	}
@@ -217,5 +227,18 @@ export abstract class Task {
 
 	protected traceExec(msg: string) {
 		traceTaskExec(`${this.nameColored}: ${msg}`);
+	}
+
+	protected traceTrigger(reason: string) {
+		const msg = `${this.nameColored}: [${reason}]`;
+		traceTaskTrigger(msg);
+	}
+
+	protected traceNotUpToDate() {
+		this.traceTrigger("not up to date");
+	}
+
+	protected traceError(msg: string) {
+		traceError(`${this.nameColored}: ${msg}`);
 	}
 }

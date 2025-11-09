@@ -8,9 +8,9 @@ import {
 	gitignoreDefaultValue,
 } from "../../sailConfig.js";
 import type { TaskHandlerFunction } from "../taskHandlers.js";
-import { type LeafTask, LeafWithFileStatDoneFileTask } from "./leafTask.js";
+import { type LeafTask, LeafWithDoneFileTask } from "./leafTask.js";
 
-class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
+class DeclarativeTaskHandler extends LeafWithDoneFileTask {
 	public constructor(
 		node: BuildGraphPackage,
 		command: string,
@@ -19,13 +19,6 @@ class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
 		private readonly taskDefinition: DeclarativeTask,
 	) {
 		super(node, command, context, taskName);
-	}
-
-	/**
-	 * Use hashes instead of modified times in donefile.
-	 */
-	protected override get useHashes(): boolean {
-		return true;
 	}
 
 	/**
@@ -60,22 +53,6 @@ class DeclarativeTaskHandler extends LeafWithFileStatDoneFileTask {
 
 	protected async getOutputFiles(): Promise<string[]> {
 		return this.getFiles("output");
-	}
-
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const inputs = await super.getCacheInputFiles();
-		// Add task-specific input files
-		inputs.push(...(await this.getInputFiles()));
-		return inputs;
-	}
-
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-		// Add task-specific output files
-		outputs.push(...(await this.getOutputFiles()));
-		return outputs;
 	}
 }
 

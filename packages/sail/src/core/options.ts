@@ -11,6 +11,7 @@ export interface UserControlledOptions {
 	vscode: boolean;
 	force: boolean;
 	showExec: boolean;
+	quiet: boolean;
 
 	defaultRoot?: string;
 	root?: string;
@@ -46,6 +47,7 @@ export const defaultOptions: BuildOptions = {
 	all: false,
 	worker: false,
 	workerThreads: false,
+	quiet: false,
 	// Setting this lower causes more worker restarts, but uses less memory.
 	// Since using too much memory can cause slow downs, and too many worker restarts can also cause slowdowns,
 	// it's a tradeoff.

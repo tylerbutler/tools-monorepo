@@ -14,7 +14,7 @@
 			"name": "dill: pnpm test",
 			"request": "launch",
 			"runtimeArgs": ["run-script", "test"],
-			"cwd": "${workspaceFolder}/packages/dill",
+			"cwd": "${workspaceFolder}/packages/dill-cli",
 			"runtimeExecutable": "pnpm",
 			"skipFiles": ["<node_internals>/**"],
 			"type": "node",

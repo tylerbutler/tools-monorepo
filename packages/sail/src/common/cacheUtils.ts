@@ -91,6 +91,7 @@ export async function initializeCacheOrFail(
 	cacheDir: string,
 	skipCacheWrite = true,
 	verifyCacheIntegrity = false,
+	overwriteCache = false,
 ): Promise<SharedCacheManager> {
 	const { initializeSharedCache } = await import(
 		"../core/sharedCache/index.js"
@@ -101,6 +102,8 @@ export async function initializeCacheOrFail(
 		process.cwd(),
 		skipCacheWrite,
 		verifyCacheIntegrity,
+		logger,
+		overwriteCache,
 	);
 
 	if (!sharedCache) {

@@ -217,7 +217,7 @@
 - Add download command _[`#8`](https://github.com/tylerbutler/tools-monorepo/pull/8) [`dac542b`](https://github.com/tylerbutler/tools-monorepo/commit/dac542b02484b11a16f2efc8a1e6dd02dcb2b611) [@tylerbutler](https://github.com/tylerbutler)_
 
   The `download` command can be used to download files and optionally decompress their contents. This command is
-  implemented by [dill](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/).
+  implemented by [dill](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/).
 
 - Add search command _[`b60f2ed`](https://github.com/tylerbutler/tools-monorepo/commit/b60f2edd82a62744cfa85f6d198110b25a660544) [@tylerbutler](https://github.com/tylerbutler)_
 

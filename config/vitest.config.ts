@@ -21,6 +21,17 @@ const config = defineConfig({
 			reporter: ["text", "json", "html"],
 			reportsDirectory: ".coverage/vitest",
 		},
+		exclude: [
+			// Default Vitest exclusions
+			"**/node_modules/**",
+			"**/dist/**",
+			"**/cypress/**",
+			"**/.{idea,git,cache,output,temp}/**",
+			"**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*",
+
+			// Exclude test fixtures - these are test data, not actual tests
+			"**/fixtures/**",
+		],
 	},
 });
 

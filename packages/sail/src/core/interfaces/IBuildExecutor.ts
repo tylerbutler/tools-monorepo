@@ -37,6 +37,9 @@ export interface IBuildStats {
 	leafBuiltCount: number;
 	leafExecTimeTotal: number;
 	leafQueueWaitTimeTotal: number;
+	/** Snapshot of leafUpToDateCount after initial donefile checks, before execution starts.
+	 * Used for stable task counter denominators. */
+	leafInitialUpToDateCount: number;
 }
 
 /**
@@ -53,6 +56,7 @@ export interface IBuildExecutionContext {
 		reset(): void;
 	};
 	readonly buildProfiler?: BuildProfiler;
+	readonly quiet: boolean;
 }
 
 /**

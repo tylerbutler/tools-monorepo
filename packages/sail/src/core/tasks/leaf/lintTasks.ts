@@ -33,11 +33,9 @@ export class EsLintTask extends TscDependentTask {
 	}
 
 	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file and TypeScript inputs from parent class
+		// Get done file, TypeScript inputs, and config files from parent class
+		// (config files are now automatically included via configFileFullPaths property)
 		const inputs = await super.getCacheInputFiles();
-
-		// Include the ESLint config file
-		inputs.push(...this.configFileFullPaths);
 
 		// ESLint lints source files in src directory
 		// Include all source files
@@ -51,16 +49,5 @@ export class EsLintTask extends TscDependentTask {
 		}
 
 		return inputs;
-	}
-
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file and TypeScript outputs from parent class
-		const outputs = await super.getCacheOutputFiles();
-
-		// ESLint doesn't produce output files in the traditional sense
-		// It produces reports/logs, but these are typically not cached
-		// Rely on exit code and done file mechanism
-
-		return outputs;
 	}
 }

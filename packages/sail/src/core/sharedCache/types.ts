@@ -6,6 +6,8 @@
  * dramatically reducing build times for repeated builds with identical inputs.
  */
 
+import type { Logger } from "@tylerbu/cli-api";
+
 /**
  * Inputs used to compute a unique cache key for a task execution.
  *
@@ -41,6 +43,16 @@ export interface CacheKeyInputs {
 	inputHashes: ReadonlyArray<{
 		readonly path: string; // Relative to package root
 		readonly hash: string; // SHA-256 hash of file contents
+	}>;
+
+	/**
+	 * Hashes of dependent task donefile content for cascading cache invalidation.
+	 * When a dependency's outputs change, its donefile content changes, which
+	 * invalidates this task's cache key.
+	 */
+	dependencyHashes?: ReadonlyArray<{
+		readonly name: string; // Task name
+		readonly hash: string; // Hash of donefile content
 	}>;
 
 	/**
@@ -185,6 +197,7 @@ export interface CacheManifest {
 		readonly path: string; // Relative to package root
 		readonly hash: string; // SHA-256 for integrity verification
 		readonly size: number; // File size in bytes
+		readonly mtime: number; // Modification time (ms since epoch) to preserve timestamps
 	}>;
 
 	/**
@@ -464,4 +477,17 @@ export interface SharedCacheOptions {
 	 * Whether to skip writing to cache (read-only mode)
 	 */
 	skipCacheWrite?: boolean;
+
+	/**
+	 * Whether to overwrite existing cache entries on conflict.
+	 * Useful for parallel execution scenarios where multiple tasks
+	 * with identical inputs race to store the same cache entry.
+	 * @internal - Hidden flag for advanced use cases
+	 */
+	overwriteCache?: boolean;
+
+	/**
+	 * Logger for cache operations
+	 */
+	logger: Logger;
 }

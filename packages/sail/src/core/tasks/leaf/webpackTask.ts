@@ -4,11 +4,6 @@ import path from "node:path";
 import { globFn, loadModule, toPosixPath } from "../taskUtils.js";
 import { LeafWithDoneFileTask } from "./leafTask.js";
 
-interface DoneFileContent {
-	version: string;
-	config: unknown;
-	sources: { [srcFile: string]: string };
-}
 export class WebpackTask extends LeafWithDoneFileTask {
 	protected override get taskWeight() {
 		return 5; // generally expensive relative to other tasks
@@ -22,43 +17,42 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		}
 		try {
 			const config = await loadModule(
-				this.configFileFullPath,
+				this.configFileFullPaths[0],
 				this.package.packageJson.type,
 			);
-			const content: DoneFileContent = {
+
+			// Get base done file content (includes file hashes)
+			const baseDoneFile = await super.getDoneFileContent();
+			if (!baseDoneFile) {
+				return undefined;
+			}
+
+			// Parse and augment with webpack-specific metadata
+			const baseContent = JSON.parse(baseDoneFile);
+			return JSON.stringify({
 				version: await this.getVersion(),
 				config:
 					typeof config === "function"
 						? config(this.getEnvArguments())
 						: config,
-				sources: {},
-			};
-
-			// TODO: this is specific to the microsoft/FluidFramework repo set up.
-			const srcGlob = `${toPosixPath(this.node.pkg.directory)}/src/**/*.*`;
-			const srcFiles = await globFn(srcGlob);
-			for (const srcFile of srcFiles) {
-				content.sources[srcFile] =
-					await this.node.fileHashCache.getFileHash(srcFile);
-			}
-
-			return JSON.stringify(content);
+				...baseContent,
+			});
 		} catch (e) {
 			this.traceError(`error generating done file content ${e}`);
 			return undefined;
 		}
 	}
 
-	private get configFileFullPath() {
+	protected override get configFileFullPaths() {
 		// TODO: parse the command line for real, split space for now.
 		const args = this.command.split(" ");
 		for (let i = 1; i < args.length; i++) {
 			if (args[i] === "--config" && i + 1 < args.length) {
-				return path.join(this.package.directory, args[i + 1]);
+				return [path.join(this.package.directory, args[i + 1])];
 			}
 		}
 
-		return this.getDefaultConfigFile();
+		return [this.getDefaultConfigFile()];
 	}
 
 	private getDefaultConfigFile() {
@@ -100,37 +94,20 @@ export class WebpackTask extends LeafWithDoneFileTask {
 		return this.node.getLockFileHash();
 	}
 
-	public override async getCacheInputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const inputs = await super.getCacheInputFiles();
-
-		// Include the webpack config file
-		const configPath = this.configFileFullPath;
-		if (configPath) {
-			inputs.push(configPath);
-		}
-
+	protected async getInputFiles(): Promise<string[]> {
 		// Include all source files in src directory
+		// TODO: this is specific to the microsoft/FluidFramework repo set up.
 		const srcGlob = `${toPosixPath(this.node.pkg.directory)}/src/**/*.*`;
 		try {
-			const srcFiles = await globFn(srcGlob);
-			inputs.push(...srcFiles);
+			return await globFn(srcGlob);
 		} catch (error) {
 			this.traceError(`Failed to glob source files for webpack: ${error}`);
+			return [];
 		}
-
-		return inputs;
 	}
 
-	public override async getCacheOutputFiles(): Promise<string[]> {
-		// Get done file from parent class
-		const outputs = await super.getCacheOutputFiles();
-
-		// Webpack outputs depend on output configuration in webpack config
-		// To get accurate outputs, we would need to parse the webpack config
-		// For now, rely on the done file mechanism
-		// Future enhancement: parse config to get output.path and output.filename
-
-		return outputs;
+	protected async getOutputFiles(): Promise<string[]> {
+		// WebpackTask doesn't track output files separately (outputs vary by config)
+		return [];
 	}
 }

@@ -117,7 +117,7 @@ The monorepo contains these key packages:
 
 **CLI Tools (OCLIF-based):**
 - `packages/cli` - @tylerbu/cli - Personal CLI tool (bin: `tbu`)
-- `packages/dill` - dill-cli - File download/extraction utility
+- `packages/dill-cli` - dill-cli - File download/extraction utility
 - `packages/repopo` - Repository policy enforcement tool
 - `packages/sort-tsconfig` - TypeScript config sorting utility
 
@@ -434,3 +434,4 @@ If the user wants help with fixing an error in their CI pipeline, use the follow
 
 - This project uses tabs primarily for indentation. Not spaces.
 - We do not use re-export patterns. Always import from the module directly.
+- Use "pnpm vitest" to run specific tests and test files. pnpm test will typically run all tests no matter what arguments you pass.

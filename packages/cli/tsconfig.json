@@ -16,7 +16,7 @@
 			"path": "../fundamentals",
 		},
 		{
-			"path": "../dill",
+			"path": "../dill-cli",
 		},
 	],
 }
