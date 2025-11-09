@@ -29,7 +29,6 @@
 	"scripts": {
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"b": "nx build",
-		"build": "pnpm build:compile && pnpm build:api",
 		"build:api": "api-extractor run --local",
 		"build:compile": "tsc --project ./tsconfig.json",
 		"check": "pnpm check:format",
@@ -63,6 +62,7 @@
 	},
 	"nx": {
 		"targets": {
+			"build": {},
 			"ci": {}
 		}
 	}

@@ -4,4 +4,271 @@ sidebar:
   order: 2
 ---
 
-## Coming soon!
+repopo includes several built-in policies that enforce common repository standards. All built-in policies are **enabled by default** but can be configured or disabled as needed.
+
+## Policy Overview
+
+| Policy | Category | Auto-fixable | Purpose |
+|--------|----------|--------------|---------|
+| [HtmlFileHeaders](#htmlfileheaders) | File Headers | Yes | Enforce consistent headers in HTML files |
+| [JsTsFileHeaders](#jstsfileheaders) | File Headers | Yes | Enforce consistent headers in JS/TS files |
+| [NoJsFileExtensions](#nojsfileextensions) | File Extensions | No | Prevent ambiguous `.js` extensions |
+| [PackageJsonProperties](#packagejsonproperties) | Package.json | Yes | Enforce specific package.json fields |
+| [PackageJsonRepoDirectoryProperty](#packagejsonrepodirectoryproperty) | Package.json | Yes | Validate repository.directory path |
+| [PackageJsonSorted](#packagejsonsorted) | Package.json | Yes | Ensure sorted package.json files |
+| [PackageScripts](#packagescripts) | Package.json | No | Validate package.json scripts |
+
+## File Header Policies
+
+### HtmlFileHeaders
+
+Enforces consistent file headers in HTML files using HTML comment syntax.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { HtmlFileHeaders } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(HtmlFileHeaders, {
+      headerText: "Copyright (c) 2024 Your Company. All rights reserved."
+    })
+  ]
+};
+```
+
+The policy wraps the header text in HTML comment tags (`<!-- ... -->`). Multi-line headers are automatically formatted with proper comment delimiters on each line.
+
+**Auto-fixable:** Yes
+
+### JsTsFileHeaders
+
+Enforces consistent file headers in JavaScript and TypeScript files using JSDoc-style block comments.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { JsTsFileHeaders } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(JsTsFileHeaders, {
+      headerText: `Copyright (c) 2024 Your Company.
+Licensed under the MIT License.`
+    })
+  ]
+};
+```
+
+The policy creates a block comment with `/*!` syntax to ensure it's preserved during minification. Multi-line headers are formatted with `* ` prefix on each line. The policy respects hashbang (`#!`) declarations and places the header after them.
+
+**Auto-fixable:** Yes
+
+## File Extension Policies
+
+### NoJsFileExtensions
+
+Prevents ambiguous `.js` file extensions in favor of explicit `.mjs` (ESM) or `.cjs` (CommonJS) extensions.
+
+**Why:** JavaScript files with just the `.js` extension may be interpreted by Node.js as either CommonJS or ESM based on the `type` field in the nearest package.json. Using explicit extensions reduces ambiguity and ensures consistent module resolution.
+
+**Auto-fixable:** No
+
+## Package.json Policies
+
+### PackageJsonProperties
+
+Enforces specific fields and values in package.json files across the repository.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageJsonProperties } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(PackageJsonProperties, {
+      verbatim: {
+        license: "MIT",
+        author: "Tyler Butler <tyler@tylerbutler.com>",
+        bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
+        repository: {
+          type: "git",
+          url: "git+https://github.com/tylerbutler/tools-monorepo.git",
+        }
+      }
+    })
+  ]
+};
+```
+
+The `verbatim` configuration merges the specified fields into each package.json file. Fields in `verbatim` will override any existing values.
+
+**Auto-fixable:** Yes
+
+### PackageJsonRepoDirectoryProperty
+
+Validates that the `repository.directory` property in package.json is set correctly based on the package's location in the repository.
+
+The policy automatically calculates the correct directory path relative to the repository root and ensures the `repository.directory` field matches.
+
+**Note:** If the repository field is a string instead of an object, the package will be ignored.
+
+**Auto-fixable:** Yes
+
+### PackageJsonSorted
+
+Ensures package.json files are sorted according to a standard key order (using `sort-package-json`).
+
+**Auto-fixable:** Yes
+
+### PackageScripts
+
+Validates package.json scripts based on configurable rules. Supports required scripts and mutually exclusive script groups.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageScripts } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(PackageScripts, {
+      // Require these scripts in all packages
+      must: ["build", "clean"],
+      // Only allow one script from each group (or none)
+      mutuallyExclusive: [
+        ["test", "test:unit"],        // Either "test" or "test:unit", not both
+        ["lint:eslint", "lint:biome"] // Either "lint:eslint" or "lint:biome", not both
+      ]
+    })
+  ]
+};
+```
+
+**Validation Rules:**
+
+1. All scripts in the `must` array must be present
+2. For each group in `mutuallyExclusive`:
+   - Zero scripts from the group is allowed (all optional)
+   - Exactly one script from the group is allowed
+   - Multiple scripts from the same group will fail
+
+**Use Cases:**
+
+- **Enforcing consistency**: Ensure all packages have core scripts like `build` and `clean`
+- **Preventing conflicts**: Avoid duplicate tool configurations (e.g., both `test:unit` and `test:vitest`)
+- **Migration management**: During tool migrations, enforce that packages use either the old or new tool, but not both
+- **Standardization**: Maintain consistent script naming conventions across a monorepo
+
+**Examples:**
+
+Valid configuration:
+```json
+{
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest"
+  }
+}
+```
+
+Invalid (missing required script):
+```json
+{
+  "scripts": {
+    "build": "tsc"
+    // Missing "clean"
+  }
+}
+```
+
+Invalid (mutually exclusive violation):
+```json
+{
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "test:unit": "vitest run"  // Both "test" and "test:unit" present
+  }
+}
+```
+
+**Auto-fixable:** No
+
+## Configuration and Exclusions
+
+### Configuring Policies
+
+To configure a built-in policy, use the `makePolicy` function with your custom settings:
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageScripts, JsTsFileHeaders } from "repopo/policies";
+
+const config = {
+  policies: [
+    // Configure with settings
+    makePolicy(PackageScripts, {
+      must: ["build", "test"],
+      mutuallyExclusive: [["lint:eslint", "lint:biome"]]
+    }),
+
+    // Configure with settings and exclusions
+    makePolicy(JsTsFileHeaders,
+      { headerText: "Copyright 2024" },
+      { excludeFiles: ["**/generated/**"] }
+    )
+  ]
+};
+```
+
+### Disabling Policies
+
+To disable a built-in policy, simply don't include it in your policies array. By default, all built-in policies are enabled, but you can create a custom configuration that includes only the policies you want:
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageJsonSorted, NoJsFileExtensions } from "repopo/policies";
+
+// Only enable these two policies
+const config = {
+  policies: [
+    makePolicy(PackageJsonSorted),
+    makePolicy(NoJsFileExtensions)
+  ]
+};
+```
+
+### Excluding Files
+
+You can exclude files from specific policies or from all policies:
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageJsonProperties } from "repopo/policies";
+
+const config = {
+  // Exclude files from ALL policies
+  excludeFiles: [
+    /node_modules/,
+    /\\.coverage/,
+    /dist/
+  ],
+
+  policies: [
+    // Exclude files from specific policy
+    makePolicy(PackageJsonProperties,
+      { verbatim: { license: "MIT" } },
+      { excludeFiles: [/packages\/experimental/] }
+    )
+  ]
+};
+```

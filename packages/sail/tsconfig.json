@@ -12,4 +12,12 @@
 	"ts-node": {
 		"esm": true,
 	},
+	"references": [
+		{
+			"path": "../cli-api",
+		},
+		{
+			"path": "../sail-infrastructure",
+		},
+	],
 }

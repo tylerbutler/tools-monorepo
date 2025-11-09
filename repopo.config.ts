@@ -4,10 +4,16 @@ import {
 	PackageJsonProperties,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonSorted,
+	PackageScripts,
 } from "repopo/policies";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
+	excludeFiles: [
+		"test/data",
+		"fixtures",
+		"config/package.json",
+	],
 	policies: [
 		makePolicy(NoJsFileExtensions, undefined, {
 			excludeFiles: [
@@ -30,6 +36,10 @@ const config: RepopoConfig = {
 		}),
 		makePolicy(PackageJsonRepoDirectoryProperty),
 		makePolicy(PackageJsonSorted),
+		makePolicy(PackageScripts, {
+			must: ["clean"],
+			mutuallyExclusive: [["test:unit", "test:vitest"]],
+		}),
 		makePolicy(SortTsconfigsPolicy),
 		// makePolicy(
 		// 	generatePackagePolicy("SlowTestPolicy", async () => {

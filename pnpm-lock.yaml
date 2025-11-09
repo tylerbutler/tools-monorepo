@@ -325,7 +325,7 @@ importers:
         version: 4.4.3(supports-color@8.1.1)
       dill-cli:
         specifier: workspace:^
-        version: link:../dill
+        version: link:../dill-cli
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -503,7 +503,7 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.23)(@vitest/ui@3.2.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.11.6(@types/node@20.19.23)(typescript@5.9.3))(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
-  packages/dill:
+  packages/dill-cli:
     dependencies:
       '@oclif/core':
         specifier: ^4.7.2
@@ -655,7 +655,7 @@ importers:
         version: 5.15.1(@netlify/blobs@10.2.1)(@types/node@24.9.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.52.5)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       dill-cli:
         specifier: workspace:^
-        version: link:../dill
+        version: link:../dill-cli
       sharp:
         specifier: ^0.34.4
         version: 0.34.4
