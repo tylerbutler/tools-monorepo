@@ -18,9 +18,7 @@ describe("ProgressBarManager", () => {
 
 	beforeEach(() => {
 		// Save original console methods
-		// biome-ignore lint/suspicious/noConsole: testing console patching behavior
 		originalConsoleLog = console.log;
-		// biome-ignore lint/suspicious/noConsole: testing console patching behavior
 		originalConsoleError = console.error;
 
 		// Create fresh instance
@@ -32,9 +30,7 @@ describe("ProgressBarManager", () => {
 
 	afterEach(() => {
 		// Ensure console is restored after each test
-		// biome-ignore lint/suspicious/noConsole: restoring console after test
 		console.log = originalConsoleLog;
-		// biome-ignore lint/suspicious/noConsole: restoring console after test
 		console.error = originalConsoleError;
 	});
 
@@ -42,9 +38,7 @@ describe("ProgressBarManager", () => {
 		it("should patch console.log and console.error", () => {
 			progressBar.start();
 
-			// biome-ignore lint/suspicious/noConsole: testing console patching
 			expect(console.log).not.toBe(originalConsoleLog);
-			// biome-ignore lint/suspicious/noConsole: testing console patching
 			expect(console.error).not.toBe(originalConsoleError);
 		});
 
@@ -78,7 +72,6 @@ describe("ProgressBarManager", () => {
 
 			// Clear mocks and trigger console output to verify message is stored
 			vi.clearAllMocks();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("test");
 
 			// Should redraw with the stored message
@@ -98,9 +91,7 @@ describe("ProgressBarManager", () => {
 			progressBar.start();
 			progressBar.done();
 
-			// biome-ignore lint/suspicious/noConsole: testing console restoration
 			expect(console.log).toBe(originalConsoleLog);
-			// biome-ignore lint/suspicious/noConsole: testing console restoration
 			expect(console.error).toBe(originalConsoleError);
 		});
 
@@ -134,9 +125,7 @@ describe("ProgressBarManager", () => {
 			progressBar.start();
 			progressBar.clear();
 
-			// biome-ignore lint/suspicious/noConsole: testing console restoration
 			expect(console.log).toBe(originalConsoleLog);
-			// biome-ignore lint/suspicious/noConsole: testing console restoration
 			expect(console.error).toBe(originalConsoleError);
 		});
 
@@ -155,7 +144,6 @@ describe("ProgressBarManager", () => {
 			// Start again and trigger console output
 			vi.clearAllMocks();
 			progressBar.start();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("test");
 
 			// Should clear but not redraw (no current message)
@@ -170,7 +158,6 @@ describe("ProgressBarManager", () => {
 			progressBar.update("Progress: 50%");
 
 			vi.clearAllMocks();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("Task completed");
 
 			// Should: clear, log, redraw
@@ -184,7 +171,6 @@ describe("ProgressBarManager", () => {
 			progressBar.done();
 
 			vi.clearAllMocks();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("Task completed");
 
 			// Should not call any logUpdate methods
@@ -197,7 +183,6 @@ describe("ProgressBarManager", () => {
 			// Don't set a message
 
 			vi.clearAllMocks();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("Task completed");
 
 			// Should clear but not redraw
@@ -210,11 +195,8 @@ describe("ProgressBarManager", () => {
 			progressBar.update("Progress: 25%");
 
 			vi.clearAllMocks();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("Task 1");
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("Task 2");
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("Task 3");
 
 			// Each should trigger clear and redraw
@@ -229,7 +211,6 @@ describe("ProgressBarManager", () => {
 			progressBar.update("Progress: 75%");
 
 			vi.clearAllMocks();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.error("Error occurred");
 
 			// Should: clear, error, redraw
@@ -242,7 +223,6 @@ describe("ProgressBarManager", () => {
 			progressBar.done();
 
 			vi.clearAllMocks();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.error("Error occurred");
 
 			// Should not call any logUpdate methods
@@ -255,11 +235,8 @@ describe("ProgressBarManager", () => {
 			progressBar.update("Progress: 33%");
 
 			vi.clearAllMocks();
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("Info message");
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.error("Error message");
-			// biome-ignore lint/suspicious/noConsole: testing console coordination
 			console.log("Another info");
 
 			// Each should trigger clear and redraw
