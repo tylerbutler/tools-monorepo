@@ -19,7 +19,9 @@ permissions:
   contents: read
 
 env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  # Disable Nx Cloud for PR builds to test local cache behavior
+  # Main branch builds still use Nx Cloud via secrets.NX_CLOUD_ACCESS_TOKEN
+  NX_CLOUD_ACCESS_TOKEN: ${{ github.event_name == 'pull_request' && '' || secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:
   build-and-test:
@@ -37,8 +39,9 @@ jobs:
           run_install: false
 
       # This enables task distribution via Nx Cloud
-      # Run this command as early as possible, before dependencies are installed
+      # Only run on main branch builds, disabled for PRs to test local cache behavior
       - run: pnpm dlx nx start-ci-run --auto-apply-fixes="*format*,*lint*" --distribute-on="3 linux-medium-js"
+        if: github.event_name != 'pull_request'
 
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
         with:
