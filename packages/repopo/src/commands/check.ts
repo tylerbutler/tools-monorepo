@@ -158,26 +158,27 @@ export class CheckPolicy<
 		perfStats.count++;
 
 		try {
-			await this.routeToPolicies(relPath, context);
+			const wasProcessed = await this.routeToPolicies(relPath, context);
+			if (wasProcessed) {
+				perfStats.processed++;
+			}
 		} catch (error: unknown) {
 			throw new Error(
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
 			);
 		}
-
-		perfStats.processed++;
 	}
 
 	private async routeToPolicies(
 		relPath: string,
 		context: RepopoCommandContext,
-	): Promise<void> {
+	): Promise<boolean> {
 		const { policies, excludeFromAll } = context;
 
 		// Check exclusions
 		if (excludeFromAll.some((regex) => regex.test(relPath))) {
 			this.verbose(`Excluded all handlers: ${relPath}`);
-			return; // Early return for excluded files
+			return false; // File was excluded
 		}
 
 		// Run all matching policies
@@ -194,6 +195,8 @@ export class CheckPolicy<
 				return await this.runPolicyOnFile(relPath, policy, context);
 			}),
 		);
+
+		return true; // File was processed
 	}
 
 	private async runPolicyOnFile(
