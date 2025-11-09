@@ -14,7 +14,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/dill"
+		"directory": "packages/dill-cli"
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -89,7 +89,7 @@
 			"usageHeader": "CUSTOM USAGE HEADER"
 		},
 		"plugins": [],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill/<%- commandPath %>"
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill-cli/<%- commandPath %>"
 	},
 	"dependencies": {
 		"@oclif/core": "^4.7.2",

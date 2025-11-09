@@ -48,7 +48,7 @@ component_management:
     - component_id: dill # this is an identifier that should not be changed
       name: dill # this is a display name, and can be changed freely
       paths:
-        - packages/dill/**
+        - packages/dill-cli/**
     - component_id: fundamentals
       name: fundamentals
       paths:

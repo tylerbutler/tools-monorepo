@@ -117,7 +117,7 @@ The monorepo contains these key packages:
 
 **CLI Tools (OCLIF-based):**
 - `packages/cli` - @tylerbu/cli - Personal CLI tool (bin: `tbu`)
-- `packages/dill` - dill-cli - File download/extraction utility
+- `packages/dill-cli` - dill-cli - File download/extraction utility
 - `packages/repopo` - Repository policy enforcement tool
 - `packages/sort-tsconfig` - TypeScript config sorting utility
 
