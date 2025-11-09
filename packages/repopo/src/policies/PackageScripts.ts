@@ -28,6 +28,52 @@ export interface PackageScriptsSettings {
 }
 
 /**
+ * Validates required scripts and returns error messages for missing scripts.
+ */
+function validateRequiredScripts(
+	must: string[],
+	scripts: PackageJson["scripts"],
+): string[] {
+	const missingScripts: string[] = [];
+	for (const scriptName of must) {
+		if (!(scripts && Object.hasOwn(scripts, scriptName))) {
+			missingScripts.push(scriptName);
+		}
+	}
+
+	if (missingScripts.length > 0) {
+		return [`Missing required scripts:\n\t${missingScripts.join("\n\t")}`];
+	}
+
+	return [];
+}
+
+/**
+ * Validates mutually exclusive script groups and returns error messages for violations.
+ */
+function validateMutuallyExclusiveScripts(
+	groups: string[][],
+	scripts: PackageJson["scripts"],
+): string[] {
+	const errors: string[] = [];
+
+	for (const group of groups) {
+		const presentScripts = group.filter(
+			(scriptName) => scripts && Object.hasOwn(scripts, scriptName),
+		);
+
+		// Only fail if MORE than one script from the group is present
+		if (presentScripts.length > 1) {
+			errors.push(
+				`Scripts are mutually exclusive, but found ${presentScripts.length}: ${presentScripts.join(", ")}`,
+			);
+		}
+	}
+
+	return errors;
+}
+
+/**
  * A RepoPolicy that validates package.json scripts based on configurable rules.
  *
  * @alpha
@@ -52,34 +98,14 @@ export const PackageScripts = definePackagePolicy<
 
 	// Validate required scripts
 	if (config.must && config.must.length > 0) {
-		const missingScripts: string[] = [];
-		for (const scriptName of config.must) {
-			if (!(scripts && Object.hasOwn(scripts, scriptName))) {
-				missingScripts.push(scriptName);
-			}
-		}
-
-		if (missingScripts.length > 0) {
-			errorMessages.push(
-				`Missing required scripts:\n\t${missingScripts.join("\n\t")}`,
-			);
-		}
+		errorMessages.push(...validateRequiredScripts(config.must, scripts));
 	}
 
 	// Validate mutually exclusive script groups
 	if (config.mutuallyExclusive && config.mutuallyExclusive.length > 0) {
-		for (const group of config.mutuallyExclusive) {
-			const presentScripts = group.filter(
-				(scriptName) => scripts && Object.hasOwn(scripts, scriptName),
-			);
-
-			// Only fail if MORE than one script from the group is present
-			if (presentScripts.length > 1) {
-				errorMessages.push(
-					`Scripts are mutually exclusive, but found ${presentScripts.length}: ${presentScripts.join(", ")}`,
-				);
-			}
-		}
+		errorMessages.push(
+			...validateMutuallyExclusiveScripts(config.mutuallyExclusive, scripts),
+		);
 	}
 
 	if (errorMessages.length > 0) {

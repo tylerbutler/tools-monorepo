@@ -330,10 +330,7 @@
 
 		"check:policy": {
 			"dependsOn": ["repopo:build:compile"],
-			"inputs": [
-				"{projectRoot}/**/*",
-				"{workspaceRoot}/repopo.config.ts"
-			],
+			"inputs": ["{projectRoot}/**/*", "{workspaceRoot}/repopo.config.ts"],
 			"cache": true
 		},
 

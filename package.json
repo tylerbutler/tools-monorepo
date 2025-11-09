@@ -46,7 +46,7 @@
 		"fix:references": "workspaces-to-typescript-project-references",
 		"format": "biome check . --linter-enabled=false --write",
 		"generate:packlist": "flub generate packlist -g client --no-private",
-		"lint": "nx exec -- biome lint",
+		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
 		"release:license": "nx run-many -t release:license",
 		"sort-package-json": "sort-package-json package.json \"config/package.json\" \"packages/*/package.json\"",
