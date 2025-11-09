@@ -13,7 +13,10 @@
 			"path": "../cli-api",
 		},
 		{
-			"path": "../dill",
+			"path": "../fundamentals",
+		},
+		{
+			"path": "../dill-cli",
 		},
 	],
 }
