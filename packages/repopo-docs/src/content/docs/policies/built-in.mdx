@@ -4,8 +4,6 @@ sidebar:
   order: 2
 ---
 
-import { Code } from '@astrojs/starlight/components';
-
 repopo includes several built-in policies that enforce common repository standards. All built-in policies are **enabled by default** but can be configured or disabled as needed.
 
 ## Policy Overview
@@ -28,7 +26,8 @@ Enforces consistent file headers in HTML files using HTML comment syntax.
 
 **Configuration:**
 
-<Code code={`import { makePolicy } from "repopo";
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
 import { HtmlFileHeaders } from "repopo/policies";
 
 const config = {
@@ -37,7 +36,8 @@ const config = {
       headerText: "Copyright (c) 2024 Your Company. All rights reserved."
     })
   ]
-};`} lang="ts" title="repopo.config.ts" />
+};
+```
 
 The policy wraps the header text in HTML comment tags (`<!-- ... -->`). Multi-line headers are automatically formatted with proper comment delimiters on each line.
 
@@ -49,17 +49,19 @@ Enforces consistent file headers in JavaScript and TypeScript files using JSDoc-
 
 **Configuration:**
 
-<Code code={`import { makePolicy } from "repopo";
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
 import { JsTsFileHeaders } from "repopo/policies";
 
 const config = {
   policies: [
     makePolicy(JsTsFileHeaders, {
-      headerText: \`Copyright (c) 2024 Your Company.
-Licensed under the MIT License.\`
+      headerText: `Copyright (c) 2024 Your Company.
+Licensed under the MIT License.`
     })
   ]
-};`} lang="ts" title="repopo.config.ts" />
+};
+```
 
 The policy creates a block comment with `/*!` syntax to ensure it's preserved during minification. Multi-line headers are formatted with `* ` prefix on each line. The policy respects hashbang (`#!`) declarations and places the header after them.
 
@@ -83,7 +85,8 @@ Enforces specific fields and values in package.json files across the repository.
 
 **Configuration:**
 
-<Code code={`import { makePolicy } from "repopo";
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
 import { PackageJsonProperties } from "repopo/policies";
 
 const config = {
@@ -100,7 +103,8 @@ const config = {
       }
     })
   ]
-};`} lang="ts" title="repopo.config.ts" />
+};
+```
 
 The `verbatim` configuration merges the specified fields into each package.json file. Fields in `verbatim` will override any existing values.
 
@@ -128,7 +132,8 @@ Validates package.json scripts based on configurable rules. Supports required sc
 
 **Configuration:**
 
-<Code code={`import { makePolicy } from "repopo";
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
 import { PackageScripts } from "repopo/policies";
 
 const config = {
@@ -143,7 +148,8 @@ const config = {
       ]
     })
   ]
-};`} lang="ts" title="repopo.config.ts" />
+};
+```
 
 **Validation Rules:**
 
@@ -163,31 +169,37 @@ const config = {
 **Examples:**
 
 Valid configuration:
-<Code code={`{
+```json
+{
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
     "test": "vitest"
   }
-}`} lang="json" />
+}
+```
 
 Invalid (missing required script):
-<Code code={`{
+```json
+{
   "scripts": {
     "build": "tsc"
     // Missing "clean"
   }
-}`} lang="json" />
+}
+```
 
 Invalid (mutually exclusive violation):
-<Code code={`{
+```json
+{
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
     "test": "vitest",
     "test:unit": "vitest run"  // Both "test" and "test:unit" present
   }
-}`} lang="json" />
+}
+```
 
 **Auto-fixable:** No
 
@@ -197,7 +209,8 @@ Invalid (mutually exclusive violation):
 
 To configure a built-in policy, use the `makePolicy` function with your custom settings:
 
-<Code code={`import { makePolicy } from "repopo";
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
 import { PackageScripts, JsTsFileHeaders } from "repopo/policies";
 
 const config = {
@@ -214,13 +227,15 @@ const config = {
       { excludeFiles: ["**/generated/**"] }
     )
   ]
-};`} lang="ts" title="repopo.config.ts" />
+};
+```
 
 ### Disabling Policies
 
 To disable a built-in policy, simply don't include it in your policies array. By default, all built-in policies are enabled, but you can create a custom configuration that includes only the policies you want:
 
-<Code code={`import { makePolicy } from "repopo";
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
 import { PackageJsonSorted, NoJsFileExtensions } from "repopo/policies";
 
 // Only enable these two policies
@@ -229,13 +244,15 @@ const config = {
     makePolicy(PackageJsonSorted),
     makePolicy(NoJsFileExtensions)
   ]
-};`} lang="ts" title="repopo.config.ts" />
+};
+```
 
 ### Excluding Files
 
 You can exclude files from specific policies or from all policies:
 
-<Code code={`import { makePolicy } from "repopo";
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
 import { PackageJsonProperties } from "repopo/policies";
 
 const config = {
@@ -253,4 +270,5 @@ const config = {
       { excludeFiles: [/packages\/experimental/] }
     )
   ]
-};`} lang="ts" title="repopo.config.ts" />
+};
+```
