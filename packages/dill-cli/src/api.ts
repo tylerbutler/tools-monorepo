@@ -24,6 +24,11 @@ const fileProtocol = "file://";
 const defaultDownloadName = "dill-download";
 
 /**
+ * Regex to match leading "./" in paths
+ */
+const leadingDotSlashRegex = /^\.\//;
+
+/**
  * Known file extensions for compressed archives that dill can decompress.
  */
 export const KNOWN_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
@@ -195,7 +200,7 @@ function stripPathComponents(filePath: string, strip: number): string {
 	}
 
 	// Normalize the path by removing leading './' and splitting on '/'
-	const normalizedPath = filePath.replace(/^\.\//, "");
+	const normalizedPath = filePath.replace(leadingDotSlashRegex, "");
 	const parts = normalizedPath.split("/").filter((p) => p !== "");
 	if (strip >= parts.length) {
 		// If we're stripping all components, skip this file

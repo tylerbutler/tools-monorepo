@@ -192,11 +192,7 @@ describe("with local server", () => {
 
 					const files = await readdir(downloadDir, { recursive: true });
 					expect(files).toMatchSnapshot();
-					expect(files).toEqual([
-						"data",
-						"data/test1.json",
-						"data/test2.json",
-					]);
+					expect(files).toEqual(["data", "data/test1.json", "data/test2.json"]);
 				},
 				{
 					unsafeCleanup: true,
