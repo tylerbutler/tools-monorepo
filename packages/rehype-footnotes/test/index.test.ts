@@ -11,7 +11,8 @@ import {
 
 describe("rehypeFootnotes", () => {
 	it("should work as a rehype plugin and transform footnotes", async () => {
-		const markdown = `Here is a footnote reference[^1].\n\n[^1]: This is the footnote.`;
+		const markdown =
+			"Here is a footnote reference[^1].\n\n[^1]: This is the footnote.";
 
 		const result = await remark()
 			.use(remarkGfm)
@@ -29,7 +30,8 @@ describe("rehypeFootnotes", () => {
 	});
 
 	it("should remove back-reference links", async () => {
-		const markdown = `Here is a footnote reference[^1].\n\n[^1]: This is the footnote.`;
+		const markdown =
+			"Here is a footnote reference[^1].\n\n[^1]: This is the footnote.";
 
 		const result = await remark()
 			.use(remarkGfm)
@@ -47,7 +49,8 @@ describe("rehypeFootnotes", () => {
 	});
 
 	it("should handle multiple footnotes", async () => {
-		const markdown = `First[^1] and second[^2].\n\n[^1]: First note.\n[^2]: Second note.`;
+		const markdown =
+			"First[^1] and second[^2].\n\n[^1]: First note.\n[^2]: Second note.";
 
 		const result = await remark()
 			.use(remarkGfm)
@@ -67,7 +70,8 @@ describe("rehypeFootnotes", () => {
 	});
 
 	it("should accept custom options", async () => {
-		const markdown = `Here is a footnote reference[^1].\n\n[^1]: This is the footnote.`;
+		const markdown =
+			"Here is a footnote reference[^1].\n\n[^1]: This is the footnote.";
 
 		const result = await remark()
 			.use(remarkGfm)
@@ -89,7 +93,8 @@ describe("rehypeFootnotes", () => {
 	});
 
 	it("should handle footnotes with complex content", async () => {
-		const markdown = `Reference[^note].\n\n[^note]: This has **bold** and _italic_ text.`;
+		const markdown =
+			"Reference[^note].\n\n[^note]: This has **bold** and _italic_ text.";
 
 		const result = await remark()
 			.use(remarkGfm)

@@ -4,7 +4,6 @@
  */
 
 import type { Element, Root } from "hast";
-import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
 
 /**
@@ -29,6 +28,7 @@ export interface FootnoteOptions {
 		hoverDelay?: number;
 		numberResetSelector?: string;
 		scope?: string;
+		// biome-ignore lint/suspicious/noExplicitAny: Littlefoot.js accepts arbitrary options
 		[key: string]: any;
 	};
 }
@@ -61,7 +61,7 @@ export function transformFootnotesForLittlefoot(
 	tree: Root,
 	options: FootnoteOptions = {},
 ): void {
-	const opts = { ...defaultOptions, ...options };
+	const _opts = { ...defaultOptions, ...options };
 
 	// Track footnote references and definitions
 	const footnoteMap = new Map<string, { ref: Element; def: Element }>();
@@ -79,25 +79,27 @@ export function transformFootnotesForLittlefoot(
 
 			// Check if this is a footnote reference link
 			if (
-				linkElement.properties?.["id"] &&
-				typeof linkElement.properties["id"] === "string" &&
-				linkElement.properties["id"].startsWith("user-content-fnref-")
+				linkElement.properties?.id &&
+				typeof linkElement.properties.id === "string" &&
+				linkElement.properties.id.startsWith("user-content-fnref-")
 			) {
-				const footnoteId = linkElement.properties["id"].replace(
+				const footnoteId = linkElement.properties.id.replace(
 					"user-content-fnref-",
 					"",
 				);
 
 				// Add rel="footnote" for Littlefoot recognition
 				// Use kebab-case for standard HTML attributes
-				linkElement.properties["rel"] = "footnote";
+				linkElement.properties.rel = "footnote";
 				linkElement.properties["data-footnote-id"] = footnoteId;
 
 				// Store for mapping with definition
-				if (!footnoteMap.has(footnoteId)) {
-					footnoteMap.set(footnoteId, { ref: node, def: null as any });
-				} else {
+				if (footnoteMap.has(footnoteId)) {
+					// biome-ignore lint/style/noNonNullAssertion: Map.has() guarantees entry exists
 					footnoteMap.get(footnoteId)!.ref = node;
+				} else {
+					// biome-ignore lint/suspicious/noExplicitAny: Placeholder for paired definition element
+					footnoteMap.set(footnoteId, { ref: node, def: null as any });
 				}
 			}
 		}
@@ -108,23 +110,23 @@ export function transformFootnotesForLittlefoot(
 		// Match section with dataFootnotes property (camelCase in HAST)
 		if (
 			node.tagName === "section" &&
-			node.properties?.["dataFootnotes"] !== undefined
+			node.properties?.dataFootnotes !== undefined
 		) {
 			// Find all footnote list items within this section
 			visit(node, "element", (listItem: Element) => {
 				if (
 					listItem.tagName === "li" &&
-					listItem.properties?.["id"] &&
-					typeof listItem.properties["id"] === "string" &&
-					listItem.properties["id"].startsWith("user-content-fn-")
+					listItem.properties?.id &&
+					typeof listItem.properties.id === "string" &&
+					listItem.properties.id.startsWith("user-content-fn-")
 				) {
-					const footnoteId = listItem.properties["id"].replace(
+					const footnoteId = listItem.properties.id.replace(
 						"user-content-fn-",
 						"",
 					);
 
 					// Transform for Littlefoot compatibility
-					listItem.properties["id"] = `fn:${footnoteId}`;
+					listItem.properties.id = `fn:${footnoteId}`;
 					listItem.properties["data-footnote-id"] = footnoteId;
 
 					// Remove the back-reference link (↩) as Littlefoot handles this
@@ -132,19 +134,21 @@ export function transformFootnotesForLittlefoot(
 					visit(listItem, "element", (backRef: Element, index, parent) => {
 						if (
 							backRef.tagName === "a" &&
-							backRef.properties?.["dataFootnoteBackref"] !== undefined
+							backRef.properties?.dataFootnoteBackref !== undefined &&
+							parent &&
+							typeof index === "number"
 						) {
-							if (parent && typeof index === "number") {
-								parent.children.splice(index, 1);
-							}
+							parent.children.splice(index, 1);
 						}
 					});
 
 					// Store for mapping
-					if (!footnoteMap.has(footnoteId)) {
-						footnoteMap.set(footnoteId, { ref: null as any, def: listItem });
-					} else {
+					if (footnoteMap.has(footnoteId)) {
+						// biome-ignore lint/style/noNonNullAssertion: Map.has() guarantees entry exists
 						footnoteMap.get(footnoteId)!.def = listItem;
+					} else {
+						// biome-ignore lint/suspicious/noExplicitAny: Placeholder for paired reference element
+						footnoteMap.set(footnoteId, { ref: null as any, def: listItem });
 					}
 				}
 			});
@@ -229,7 +233,7 @@ a[rel="footnote"]:hover {
  * @returns Rehype plugin function
  */
 export function rehypeFootnotes(options: FootnoteOptions = {}) {
-	return function (tree: Root) {
+	return (tree: Root) => {
 		transformFootnotesForLittlefoot(tree, options);
 	};
 }

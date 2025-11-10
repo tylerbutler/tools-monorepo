@@ -20,6 +20,67 @@ interface LazyLinksOptions {
 }
 
 /**
+ * Finds the maximum numbered link reference in the content
+ */
+function findMaxCounter(content: string): number {
+	const counterRegex = /\[(\d+)\]:/g;
+	let maxCounter = 0;
+	const matches = content.matchAll(counterRegex);
+
+	for (const match of matches) {
+		if (match[1]) {
+			const num = Number.parseInt(match[1], 10);
+			if (num > maxCounter) {
+				maxCounter = num;
+			}
+		}
+	}
+
+	return maxCounter;
+}
+
+/**
+ * Transforms lazy links [*] to numbered references
+ */
+function transformLazyLinks(
+	content: string,
+	startCounter: number,
+): {
+	transformed: string;
+	hasChanges: boolean;
+} {
+	const linkRegex =
+		/(\[[^\]]+\]\s*\[)\*(\](?:(?!\[[^\]]+\]\s*\[)[\s\S])*?\[)\*\]:/g;
+	let transformed = content;
+	let hasChanges = false;
+	let counter = startCounter;
+
+	while (linkRegex.test(transformed)) {
+		linkRegex.lastIndex = 0;
+		transformed = transformed.replace(linkRegex, (_match, group1, group2) => {
+			counter++;
+			hasChanges = true;
+			return `${group1}${counter}${group2}${counter}]:`;
+		});
+		linkRegex.lastIndex = 0;
+	}
+
+	return { transformed, hasChanges };
+}
+
+/**
+ * Persists the transformed content to the source file
+ */
+function persistToFile(filepath: string, content: string): void {
+	try {
+		writeFileSync(filepath, content, "utf-8");
+	} catch {
+		// Silently fail if file cannot be written (e.g., readonly filesystem)
+		// The transformation is still applied in-memory for the build
+	}
+}
+
+/**
  * Remark plugin to transform lazy markdown links [*] into numbered references.
  *
  * Inspired by Brett Terpstra's lazy markdown reference links:
@@ -48,7 +109,7 @@ export const remarkLazyLinks: Plugin<[LazyLinksOptions?], Root> = (
 ) => {
 	const { persist = false } = options;
 
-	return (tree: Root, file: VFile) => {
+	return (_tree: Root, file: VFile) => {
 		// Get the raw markdown content
 		const content = String(file.value || "");
 
@@ -57,64 +118,20 @@ export const remarkLazyLinks: Plugin<[LazyLinksOptions?], Root> = (
 			return;
 		}
 
-		// Regular expression to find existing numbered references
-		const counterRegex = /\[(\d+)\]:/g;
-
 		// Find the maximum existing numbered link to avoid conflicts
-		let maxCounter = 0;
-		let match: RegExpExecArray | null;
-
-		counterRegex.lastIndex = 0;
-		while ((match = counterRegex.exec(content)) !== null) {
-			if (match[1]) {
-				const num = parseInt(match[1], 10);
-				if (num > maxCounter) {
-					maxCounter = num;
-				}
-			}
-		}
-
-		// Counter for new lazy links
-		let counter = maxCounter;
-
-		// Regular expression to match lazy link references
-		// Matches: [link text][*] ... [*]: url
-		// Uses DOTALL (s) and MULTILINE (m) flags
-		// The pattern needs to match from [text][*] to the corresponding [*]: url
-		const linkRegex =
-			/(\[[^\]]+\]\s*\[)\*(\](?:(?!\[[^\]]+\]\s*\[)[\s\S])*?\[)\*\]:/g;
+		const maxCounter = findMaxCounter(content);
 
 		// Transform lazy links to numbered links
-		// Use a while loop to handle overlapping matches
-		let transformed = content;
-		let hasChanges = false;
-
-		while (linkRegex.test(transformed)) {
-			linkRegex.lastIndex = 0;
-			transformed = transformed.replace(linkRegex, (match, group1, group2) => {
-				counter++;
-				hasChanges = true;
-				return `${group1}${counter}${group2}${counter}]:`;
-			});
-			linkRegex.lastIndex = 0;
-		}
+		const { transformed, hasChanges } = transformLazyLinks(content, maxCounter);
 
 		// Update the file content for further processing (in-memory)
 		file.value = transformed;
 
 		// If persist is enabled and changes were made, write back to source file
 		if (persist && hasChanges) {
-			const filepath = file.history && file.history[0];
+			const filepath = file.history?.[0];
 			if (filepath) {
-				try {
-					writeFileSync(filepath, transformed, "utf-8");
-					console.log(`✨ Lazy links persisted to: ${filepath}`);
-				} catch (error) {
-					console.warn(
-						`⚠️  Failed to persist lazy links to ${filepath}:`,
-						error,
-					);
-				}
+				persistToFile(filepath, transformed);
 			}
 		}
 	};
