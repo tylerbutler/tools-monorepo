@@ -180,6 +180,49 @@ describe("with local server", () => {
 			);
 		});
 
+		it("compressed tarball, with extract and strip=1", async () => {
+			await withDir(
+				async ({ path: downloadDir }) => {
+					const { data } = await download(testUrls[2], {
+						downloadDir,
+						extract: true,
+						strip: 1,
+					});
+					expect(data).toMatchSnapshot();
+
+					const files = await readdir(downloadDir, { recursive: true });
+					expect(files).toMatchSnapshot();
+					expect(files).toEqual([
+						"data",
+						"data/test1.json",
+						"data/test2.json",
+					]);
+				},
+				{
+					unsafeCleanup: true,
+				},
+			);
+		});
+
+		it("compressed tarball, with extract and strip=2", async () => {
+			await withDir(
+				async ({ path: downloadDir }) => {
+					const { data } = await download(testUrls[2], {
+						downloadDir,
+						extract: true,
+						strip: 2,
+					});
+					expect(data).toMatchSnapshot();
+
+					const files = await readdir(downloadDir, { recursive: true });
+					expect(files).toEqual(["test1.json", "test2.json"]);
+				},
+				{
+					unsafeCleanup: true,
+				},
+			);
+		});
+
 		describe("zip file", () => {
 			it("no extract (default)", async () => {
 				const { data } = await download(testUrls[4], { noFile: true });
@@ -206,6 +249,48 @@ describe("with local server", () => {
 					},
 					{
 						// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+						unsafeCleanup: true,
+					},
+				);
+			});
+
+			it("with extract and strip=1", async () => {
+				await withDir(
+					async ({ path: downloadDir }) => {
+						const { data } = await download(testUrls[4], {
+							downloadDir,
+							extract: true,
+							strip: 1,
+						});
+						expect(data).toMatchSnapshot();
+
+						const files = await readdir(downloadDir, { recursive: true });
+						expect(files).toEqual([
+							"data",
+							"data/test1.json",
+							"data/test2.json",
+						]);
+					},
+					{
+						unsafeCleanup: true,
+					},
+				);
+			});
+
+			it("with extract and strip=2", async () => {
+				await withDir(
+					async ({ path: downloadDir }) => {
+						const { data } = await download(testUrls[4], {
+							downloadDir,
+							extract: true,
+							strip: 2,
+						});
+						expect(data).toMatchSnapshot();
+
+						const files = await readdir(downloadDir, { recursive: true });
+						expect(files).toEqual(["test1.json", "test2.json"]);
+					},
+					{
 						unsafeCleanup: true,
 					},
 				);
@@ -323,6 +408,38 @@ describe("with mock service worker", async () => {
 			await download(testUrls[0], {
 				downloadDir,
 				filename,
+			});
+		}).rejects.toThrow();
+	});
+
+	it("downloads with custom headers", async () => {
+		await withDir(
+			async ({ path: downloadDir }) => {
+				const url = new URL("http://localhost/tests/custom-headers");
+				const filename = "test-with-headers.json";
+				const downloadPath = path.join(downloadDir, filename);
+				const { data } = await download(url, {
+					filename: downloadPath,
+					headers: {
+						Authorization: "Bearer test-token",
+						"X-Custom-Header": "test-value",
+					},
+				});
+				expect(data).toMatchSnapshot();
+				const dl = await readJson(downloadPath);
+				expect(dl).toMatchSnapshot();
+			},
+			{
+				unsafeCleanup: true,
+			},
+		);
+	});
+
+	it("fails with missing custom headers", async () => {
+		const url = new URL("http://localhost/tests/custom-headers");
+		await expect(async () => {
+			await download(url, {
+				noFile: true,
 			});
 		}).rejects.toThrow();
 	});
