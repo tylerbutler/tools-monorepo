@@ -28,32 +28,32 @@ export interface PackageScriptsSettings {
 }
 
 /**
- * Validates required scripts are present.
+ * Validates required scripts and returns error messages for missing scripts.
  */
 function validateRequiredScripts(
+	must: string[],
 	scripts: PackageJson["scripts"],
-	requiredScripts: string[],
-): string | undefined {
+): string[] {
 	const missingScripts: string[] = [];
-	for (const scriptName of requiredScripts) {
+	for (const scriptName of must) {
 		if (!(scripts && Object.hasOwn(scripts, scriptName))) {
 			missingScripts.push(scriptName);
 		}
 	}
 
 	if (missingScripts.length > 0) {
-		return `Missing required scripts:\n\t${missingScripts.join("\n\t")}`;
+		return [`Missing required scripts:\n\t${missingScripts.join("\n\t")}`];
 	}
 
-	return undefined;
+	return [];
 }
 
 /**
- * Validates mutually exclusive script groups.
+ * Validates mutually exclusive script groups and returns error messages for violations.
  */
 function validateMutuallyExclusiveScripts(
-	scripts: PackageJson["scripts"],
 	groups: string[][],
+	scripts: PackageJson["scripts"],
 ): string[] {
 	const errors: string[] = [];
 
@@ -98,19 +98,14 @@ export const PackageScripts = definePackagePolicy<
 
 	// Validate required scripts
 	if (config.must && config.must.length > 0) {
-		const error = validateRequiredScripts(scripts, config.must);
-		if (error) {
-			errorMessages.push(error);
-		}
+		errorMessages.push(...validateRequiredScripts(config.must, scripts));
 	}
 
 	// Validate mutually exclusive script groups
 	if (config.mutuallyExclusive && config.mutuallyExclusive.length > 0) {
-		const errors = validateMutuallyExclusiveScripts(
-			scripts,
-			config.mutuallyExclusive,
+		errorMessages.push(
+			...validateMutuallyExclusiveScripts(config.mutuallyExclusive, scripts),
 		);
-		errorMessages.push(...errors);
 	}
 
 	if (errorMessages.length > 0) {
