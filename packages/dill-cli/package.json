@@ -91,7 +91,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill-cli/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.7.2",
+		"@oclif/core": "^4.8.0",
 		"@oclif/plugin-help": "^6.2.33",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
