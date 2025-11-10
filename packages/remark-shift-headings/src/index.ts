@@ -19,7 +19,7 @@ interface AstroData {
 }
 
 /**
- * Remark plugin to normalize heading levels based on context
+ * Remark plugin to shift heading levels based on context
  *
  * By default, content collection pages (articles, projects) start at h2
  * since their titles are h1 in the layout. Other pages start at h1.
@@ -27,7 +27,7 @@ interface AstroData {
  * Override behavior via frontmatter:
  *   headingStartLevel: 3  # Force highest heading to be h3
  */
-export const remarkNormalizeHeadings: Plugin<[Options?], Root> = (options) => {
+export const remarkShiftHeadings: Plugin<[Options?], Root> = (options) => {
 	const {
 		defaultCollectionLevel = 2,
 		defaultPageLevel = 1,
@@ -53,7 +53,7 @@ export const remarkNormalizeHeadings: Plugin<[Options?], Root> = (options) => {
 			contextLevel ??
 			(isCollection ? defaultCollectionLevel : defaultPageLevel);
 
-		// Skip normalization if target is h1 (no adjustment needed)
+		// Skip shifting if target is h1 (no adjustment needed)
 		if (targetStartLevel === 1) return;
 
 		// Find minimum heading level in the content
@@ -64,7 +64,7 @@ export const remarkNormalizeHeadings: Plugin<[Options?], Root> = (options) => {
 			}
 		});
 
-		// No headings found, nothing to normalize
+		// No headings found, nothing to shift
 		if (minLevel === Infinity) return;
 
 		// Calculate shift amount needed
@@ -73,7 +73,7 @@ export const remarkNormalizeHeadings: Plugin<[Options?], Root> = (options) => {
 		// Skip if no shift needed
 		if (shiftBy === 0) return;
 
-		// Apply normalization to all headings
+		// Apply shift to all headings
 		visit(tree, "heading", (node: Heading) => {
 			const newLevel = node.depth + shiftBy;
 			// Ensure level stays within valid range (1-maxLevel)

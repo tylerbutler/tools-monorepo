@@ -1,6 +1,6 @@
 import { visit } from "unist-util-visit";
 /**
- * Remark plugin to normalize heading levels based on context
+ * Remark plugin to shift heading levels based on context
  *
  * By default, content collection pages (articles, projects) start at h2
  * since their titles are h1 in the layout. Other pages start at h1.
@@ -8,7 +8,7 @@ import { visit } from "unist-util-visit";
  * Override behavior via frontmatter:
  *   headingStartLevel: 3  # Force highest heading to be h3
  */
-export const remarkNormalizeHeadings = (options) => {
+export const remarkShiftHeadings = (options) => {
     const { defaultCollectionLevel = 2, defaultPageLevel = 1, maxLevel = 6, } = options || {};
     return (tree, file) => {
         const fileData = file.data;
@@ -23,7 +23,7 @@ export const remarkNormalizeHeadings = (options) => {
         const targetStartLevel = frontmatterLevel ??
             contextLevel ??
             (isCollection ? defaultCollectionLevel : defaultPageLevel);
-        // Skip normalization if target is h1 (no adjustment needed)
+        // Skip shifting if target is h1 (no adjustment needed)
         if (targetStartLevel === 1)
             return;
         // Find minimum heading level in the content
@@ -33,7 +33,7 @@ export const remarkNormalizeHeadings = (options) => {
                 minLevel = node.depth;
             }
         });
-        // No headings found, nothing to normalize
+        // No headings found, nothing to shift
         if (minLevel === Infinity)
             return;
         // Calculate shift amount needed
@@ -41,7 +41,7 @@ export const remarkNormalizeHeadings = (options) => {
         // Skip if no shift needed
         if (shiftBy === 0)
             return;
-        // Apply normalization to all headings
+        // Apply shift to all headings
         visit(tree, "heading", (node) => {
             const newLevel = node.depth + shiftBy;
             // Ensure level stays within valid range (1-maxLevel)

@@ -1,7 +1,0 @@
----
-"remark-normalize-headings": minor
----
-
-Add remark-normalize-headings plugin
-
-New remark plugin to normalize heading levels based on rendering context. Automatically adjusts heading levels for Astro content collections and pages, with support for frontmatter overrides.

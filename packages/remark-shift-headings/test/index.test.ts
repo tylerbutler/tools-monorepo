@@ -1,13 +1,13 @@
 import { remark } from "remark";
 import { describe, expect, it } from "vitest";
-import { remarkNormalizeHeadings } from "../src/index.js";
+import { remarkShiftHeadings } from "../src/index.js";
 
-describe("remarkNormalizeHeadings", () => {
+describe("remarkShiftHeadings", () => {
 	it("should normalize headings to h2 by default for collection content", async () => {
 		const markdown = `# Heading 1\n## Heading 2\n### Heading 3`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings)
+			.use(remarkShiftHeadings)
 			.process({
 				value: markdown,
 				path: "/src/content/articles/test.md",
@@ -22,7 +22,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `## Heading 2\n### Heading 3\n#### Heading 4`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings)
+			.use(remarkShiftHeadings)
 			.process({
 				value: markdown,
 				path: "/src/pages/test.md",
@@ -37,7 +37,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `# Heading 1\n## Heading 2`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings)
+			.use(remarkShiftHeadings)
 			.process({
 				value: markdown,
 				path: "/src/content/articles/test.md",
@@ -57,7 +57,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `# Heading 1\n## Heading 2`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings)
+			.use(remarkShiftHeadings)
 			.process({
 				value: markdown,
 				path: "/src/pages/test.md",
@@ -73,7 +73,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `# Heading 1`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings)
+			.use(remarkShiftHeadings)
 			.process({
 				value: markdown,
 				path: "/src/pages/test.md",
@@ -94,7 +94,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `# H1\n## H2\n### H3\n#### H4\n##### H5\n###### H6`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings, { maxLevel: 4 })
+			.use(remarkShiftHeadings, { maxLevel: 4 })
 			.process({
 				value: markdown,
 				path: "/src/content/articles/test.md",
@@ -110,7 +110,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `# Heading 1\n## Heading 2`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings, { defaultPageLevel: 1 })
+			.use(remarkShiftHeadings, { defaultPageLevel: 1 })
 			.process({
 				value: markdown,
 				path: "/src/pages/test.md",
@@ -123,7 +123,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `Just some text\n\nAnd a paragraph`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings)
+			.use(remarkShiftHeadings)
 			.process({
 				value: markdown,
 				path: "/src/content/articles/test.md",
@@ -136,7 +136,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `# Project Title\n## Details`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings)
+			.use(remarkShiftHeadings)
 			.process({
 				value: markdown,
 				path: "/src/content/projects/my-project.md",
@@ -149,7 +149,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `# Heading 1\n## Heading 2`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings, { defaultCollectionLevel: 3 })
+			.use(remarkShiftHeadings, { defaultCollectionLevel: 3 })
 			.process({
 				value: markdown,
 				path: "/src/content/articles/test.md",
@@ -162,7 +162,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `# Heading 1\n## Heading 2`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings, { defaultPageLevel: 2 })
+			.use(remarkShiftHeadings, { defaultPageLevel: 2 })
 			.process({
 				value: markdown,
 				path: "/src/pages/test.md",
@@ -175,7 +175,7 @@ describe("remarkNormalizeHeadings", () => {
 		const markdown = `### H3\n# H1\n## H2\n##### H5`;
 
 		const result = await remark()
-			.use(remarkNormalizeHeadings)
+			.use(remarkShiftHeadings)
 			.process({
 				value: markdown,
 				path: "/src/content/articles/test.md",

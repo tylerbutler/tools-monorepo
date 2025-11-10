@@ -1,6 +1,6 @@
-# remark-normalize-headings
+# remark-shift-headings
 
-Remark plugin to normalize heading levels based on rendering context.
+Remark plugin to shift heading levels based on rendering context.
 
 ## Why?
 
@@ -17,7 +17,7 @@ This plugin automatically adjusts heading levels based on context, with support 
 ## Installation
 
 ```bash
-pnpm add remark-normalize-headings
+pnpm add remark-shift-headings
 ```
 
 ## Usage
@@ -27,11 +27,11 @@ pnpm add remark-normalize-headings
 ```js
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
-import { remarkNormalizeHeadings } from 'remark-normalize-headings';
+import { remarkShiftHeadings } from 'remark-shift-headings';
 
 export default defineConfig({
   markdown: {
-    remarkPlugins: [remarkNormalizeHeadings],
+    remarkPlugins: [remarkShiftHeadings],
   },
 });
 ```
@@ -40,7 +40,7 @@ export default defineConfig({
 
 ```js
 remarkPlugins: [
-  [remarkNormalizeHeadings, {
+  [remarkShiftHeadings, {
     defaultCollectionLevel: 2,  // Start at h2 for collections (default: 2)
     defaultPageLevel: 1,        // Start at h1 for pages (default: 1)
     maxLevel: 6,                // Maximum heading level (default: 6)
@@ -67,7 +67,7 @@ When using Astro's Container API or similar, you can set the context level at ru
 
 ```js
 const result = await remark()
-  .use(remarkNormalizeHeadings)
+  .use(remarkShiftHeadings)
   .process({
     value: markdown,
     data: {
