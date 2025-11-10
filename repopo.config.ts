@@ -9,11 +9,7 @@ import {
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
-	excludeFiles: [
-		"test/data",
-		"fixtures",
-		"config/package.json",
-	],
+	excludeFiles: ["test/data", "fixtures", "config/package.json"],
 	policies: [
 		makePolicy(NoJsFileExtensions, undefined, {
 			excludeFiles: [

@@ -6,12 +6,10 @@ describe("remarkShiftHeadings", () => {
 	it("should normalize headings to h2 by default for collection content", async () => {
 		const markdown = `# Heading 1\n## Heading 2\n### Heading 3`;
 
-		const result = await remark()
-			.use(remarkShiftHeadings)
-			.process({
-				value: markdown,
-				path: "/src/content/articles/test.md",
-			});
+		const result = await remark().use(remarkShiftHeadings).process({
+			value: markdown,
+			path: "/src/content/articles/test.md",
+		});
 
 		expect(String(result)).toBe(
 			`## Heading 1\n\n### Heading 2\n\n#### Heading 3\n`,
@@ -21,12 +19,10 @@ describe("remarkShiftHeadings", () => {
 	it("should normalize headings to h1 by default for non-collection content", async () => {
 		const markdown = `## Heading 2\n### Heading 3\n#### Heading 4`;
 
-		const result = await remark()
-			.use(remarkShiftHeadings)
-			.process({
-				value: markdown,
-				path: "/src/pages/test.md",
-			});
+		const result = await remark().use(remarkShiftHeadings).process({
+			value: markdown,
+			path: "/src/pages/test.md",
+		});
 
 		expect(String(result)).toBe(
 			`## Heading 2\n\n### Heading 3\n\n#### Heading 4\n`,
@@ -122,12 +118,10 @@ describe("remarkShiftHeadings", () => {
 	it("should handle content with no headings", async () => {
 		const markdown = `Just some text\n\nAnd a paragraph`;
 
-		const result = await remark()
-			.use(remarkShiftHeadings)
-			.process({
-				value: markdown,
-				path: "/src/content/articles/test.md",
-			});
+		const result = await remark().use(remarkShiftHeadings).process({
+			value: markdown,
+			path: "/src/content/articles/test.md",
+		});
 
 		expect(String(result)).toBe(`Just some text\n\nAnd a paragraph\n`);
 	});
@@ -135,12 +129,10 @@ describe("remarkShiftHeadings", () => {
 	it("should handle projects collection", async () => {
 		const markdown = `# Project Title\n## Details`;
 
-		const result = await remark()
-			.use(remarkShiftHeadings)
-			.process({
-				value: markdown,
-				path: "/src/content/projects/my-project.md",
-			});
+		const result = await remark().use(remarkShiftHeadings).process({
+			value: markdown,
+			path: "/src/content/projects/my-project.md",
+		});
 
 		expect(String(result)).toBe(`## Project Title\n\n### Details\n`);
 	});
@@ -174,12 +166,10 @@ describe("remarkShiftHeadings", () => {
 	it("should handle mixed heading levels", async () => {
 		const markdown = `### H3\n# H1\n## H2\n##### H5`;
 
-		const result = await remark()
-			.use(remarkShiftHeadings)
-			.process({
-				value: markdown,
-				path: "/src/content/articles/test.md",
-			});
+		const result = await remark().use(remarkShiftHeadings).process({
+			value: markdown,
+			path: "/src/content/articles/test.md",
+		});
 
 		// Min level is H1, should shift to H2
 		expect(String(result)).toBe(`#### H3\n\n## H1\n\n### H2\n\n###### H5\n`);

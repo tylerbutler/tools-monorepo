@@ -38,7 +38,7 @@ export interface FootnoteOptions {
  */
 const defaultOptions: Required<FootnoteOptions> = {
 	referenceSelector: 'sup[id^="user-content-fnref-"]',
-	definitionSelector: 'section[data-footnotes]',
+	definitionSelector: "section[data-footnotes]",
 	activateOnLoad: true,
 	littlefootOptions: {
 		allowDuplicates: false,

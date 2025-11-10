@@ -1,7 +1,7 @@
+import rehypeStringify from "rehype-stringify";
 import { remark } from "remark";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
-import rehypeStringify from "rehype-stringify";
 import { describe, expect, it } from "vitest";
 import {
 	generateLittlefootCSS,
@@ -24,7 +24,7 @@ describe("rehypeFootnotes", () => {
 
 		// Check that the output contains Littlefoot-compatible attributes
 		expect(html).toContain('rel="footnote"');
-		expect(html).toContain('data-footnote-id');
+		expect(html).toContain("data-footnote-id");
 		expect(html).toContain('id="fn:');
 	});
 
@@ -41,9 +41,9 @@ describe("rehypeFootnotes", () => {
 		const html = String(result);
 
 		// Back-reference links should be removed
-		expect(html).not.toContain('data-footnote-backref');
+		expect(html).not.toContain("data-footnote-backref");
 		// But footnote data should remain
-		expect(html).toContain('data-footnote-id');
+		expect(html).toContain("data-footnote-id");
 	});
 
 	it("should handle multiple footnotes", async () => {
@@ -85,7 +85,7 @@ describe("rehypeFootnotes", () => {
 
 		// Check that transformation still works with custom options
 		expect(html).toContain('rel="footnote"');
-		expect(html).toContain('data-footnote-id');
+		expect(html).toContain("data-footnote-id");
 	});
 
 	it("should handle footnotes with complex content", async () => {
@@ -101,8 +101,8 @@ describe("rehypeFootnotes", () => {
 		const html = String(result);
 
 		// Should preserve the footnote content formatting
-		expect(html).toContain('<strong>bold</strong>');
-		expect(html).toContain('<em>italic</em>');
+		expect(html).toContain("<strong>bold</strong>");
+		expect(html).toContain("<em>italic</em>");
 		// And add Littlefoot attributes
 		expect(html).toContain('data-footnote-id="note"');
 	});

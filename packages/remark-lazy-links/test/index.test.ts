@@ -8,9 +8,7 @@ describe("remarkLazyLinks", () => {
 
 		const result = await remark().use(remarkLazyLinks).process(markdown);
 
-		expect(String(result)).toBe(
-			`[link text][1]\n\n[1]: http://example.com\n`,
-		);
+		expect(String(result)).toBe(`[link text][1]\n\n[1]: http://example.com\n`);
 	});
 
 	it("should transform multiple lazy links with sequential numbers", async () => {
@@ -49,7 +47,9 @@ describe("remarkLazyLinks", () => {
 
 		const result = await remark().use(remarkLazyLinks).process(markdown);
 
-		expect(String(result)).toBe(`[normal link][1]\n\n[1]: http://example.com\n`);
+		expect(String(result)).toBe(
+			`[normal link][1]\n\n[1]: http://example.com\n`,
+		);
 	});
 
 	it("should handle markdown with no links", async () => {
@@ -137,8 +137,6 @@ describe("remarkLazyLinks with persist option", () => {
 			.use(remarkLazyLinks, { persist: true })
 			.process(markdown);
 
-		expect(String(result)).toBe(
-			`[link][1]\n\n[1]: http://example.com\n`,
-		);
+		expect(String(result)).toBe(`[link][1]\n\n[1]: http://example.com\n`);
 	});
 });
