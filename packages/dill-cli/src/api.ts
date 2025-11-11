@@ -206,7 +206,9 @@ export async function decompressTarball(
 ): Promise<ParsedTarFileItem[]> {
 	const compressedFileType = await fileTypeFromBuffer(compressed);
 	const decompressed =
-		compressedFileType?.ext === "gz" ? decompress(compressed) : compressed;
+		compressedFileType?.ext === "gz" || compressedFileType?.ext === "tar.gz"
+			? decompress(compressed)
+			: compressed;
 	const fileType = await fileTypeFromBuffer(decompressed);
 
 	if (fileType === undefined) {
