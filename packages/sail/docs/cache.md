@@ -19,7 +19,7 @@ USAGE
 
 FLAGS
   -f, --force             (required) Confirm removal of all cache entries.
-      --cacheDir=<value>  Path to shared cache directory.
+      --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
@@ -45,7 +45,7 @@ USAGE
   $ sail cache info [-v | --quiet] [--cacheDir <value>]
 
 FLAGS
-  --cacheDir=<value>  Path to shared cache directory.
+  --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
@@ -71,7 +71,7 @@ USAGE
   $ sail cache prune [-v | --quiet] [--cacheDir <value>]
 
 FLAGS
-  --cacheDir=<value>  Path to shared cache directory.
+  --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
@@ -97,7 +97,7 @@ USAGE
   $ sail cache stats [-v | --quiet] [--cacheDir <value>]
 
 FLAGS
-  --cacheDir=<value>  Path to shared cache directory.
+  --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
 
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
@@ -124,7 +124,7 @@ USAGE
 
 FLAGS
   -f, --force             Confirm fixing corrupted cache entries when using --fix.
-      --cacheDir=<value>  Path to shared cache directory.
+      --cacheDir=<value>  [env: SAIL_CACHE_DIR] Path to shared cache directory.
       --fix               Fix corrupted cache entries. Requires --force to confirm.
 
 LOGGING FLAGS

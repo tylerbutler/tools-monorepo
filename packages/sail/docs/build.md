@@ -23,7 +23,7 @@ FLAGS
   -t, --task=<value>...       [default: build] The task to execute. Multiple tasks can be provided.
   -w, --workspace=<value>     The name of a release group.
       --all                   Run tasks for all packages.
-      --cacheDir=<value>      Path to shared cache directory.
+      --cacheDir=<value>      [env: SAIL_CACHE_DIR] Path to shared cache directory.
       --force                 Force the tasks to run, ignoring dependencies.
       --skipCacheWrite        Read from cache but don't write to it (read-only mode).
       --verifyCacheIntegrity  Verify file hashes when restoring from cache (adds overhead).
