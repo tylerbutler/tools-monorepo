@@ -1,5 +1,58 @@
 # @tylerbu/cli
 
+## 0.5.0
+
+### Minor Changes
+
+- Add `fluid task-rename` command for FluidFramework repository _[`#326`](https://github.com/tylerbutler/tools-monorepo/pull/326) [`bcbee7d`](https://github.com/tylerbutler/tools-monorepo/commit/bcbee7da2d54616abc1cb1b3d16b0ded6edb632d) [@tylerbutler](https://github.com/tylerbutler)_
+
+  **New Command:**
+
+  - `tbu fluid task-rename` - Rename package.json scripts to follow three-tier naming principles
+
+  **Features:**
+
+  - Analyze and validate script naming across all packages
+  - Apply systematic renames with cross-reference updates
+  - Dry-run mode to preview changes before applying
+  - Validation-only mode to check for naming issues
+
+## 0.4.1
+
+### Patch Changes
+
+- Add missing template files to package _[`#324`](https://github.com/tylerbutler/tools-monorepo/pull/324) [`cc72e15`](https://github.com/tylerbutler/tools-monorepo/commit/cc72e156f12de4f502c05a57eeee44d05195ff17) [@tylerbutler](https://github.com/tylerbutler)_
+
+## 0.4.0
+
+### Minor Changes
+
+- New fluid repo-overlay command _[`#322`](https://github.com/tylerbutler/tools-monorepo/pull/322) [`11becec`](https://github.com/tylerbutler/tools-monorepo/commit/11becec23780fb58dcd854e3e910e725864177e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Add `fluid repo-overlay` command to apply Nx or Turbo build configurations to the FluidFramework repository. The command supports dry-run mode to preview changes before applying them, and can update configuration files, package.json files, and .gitignore entries as needed.
+
+### Patch Changes
+
+- Fix git squish command configuration loading _[`#320`](https://github.com/tylerbutler/tools-monorepo/pull/320) [`0028315`](https://github.com/tylerbutler/tools-monorepo/commit/002831523cc6483c79c217dc3e8026ccf2def98e) [@tylerbutler](https://github.com/tylerbutler)_
+
+  - **cli-api**: Add `requiresConfig` property to `CommandWithConfig` to allow commands to skip config loading
+  - **cli-api**: Set `GitCommand.requiresConfig = false` by default since git commands typically don't need config files
+
+  This fixes the "Failure to load config" error that occurred when running git commands in directories without a config file.
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`0028315`](https://github.com/tylerbutler/tools-monorepo/commit/002831523cc6483c79c217dc3e8026ccf2def98e) [`39f8132`](https://github.com/tylerbutler/tools-monorepo/commit/39f81320a5245759b9a797105ac5ffe3caf996f9)
+
+</small>
+
+- `@tylerbu/cli-api@0.7.3`
+- `dill-cli@0.3.1`
+
+</details>
+
 ## 0.3.8
 
 ### Patch Changes
@@ -164,7 +217,7 @@
 - Add download command _[`#8`](https://github.com/tylerbutler/tools-monorepo/pull/8) [`dac542b`](https://github.com/tylerbutler/tools-monorepo/commit/dac542b02484b11a16f2efc8a1e6dd02dcb2b611) [@tylerbutler](https://github.com/tylerbutler)_
 
   The `download` command can be used to download files and optionally decompress their contents. This command is
-  implemented by [dill](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/).
+  implemented by [dill](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/).
 
 - Add search command _[`b60f2ed`](https://github.com/tylerbutler/tools-monorepo/commit/b60f2edd82a62744cfa85f6d198110b25a660544) [@tylerbutler](https://github.com/tylerbutler)_
 

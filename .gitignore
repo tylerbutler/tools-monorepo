@@ -9,14 +9,20 @@ package-lock.json
 yarn.lock
 .require-email.json
 
-# turborepo
-.turbo
+# nx
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
 
 # netlify cache
 .netlify
 
 # astro generated types
 .astro
+
+# svelte build artifacts
+.svelte-kit
 
 # coverage reports
 .coverage

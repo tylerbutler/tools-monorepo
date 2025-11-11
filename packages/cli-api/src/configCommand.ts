@@ -32,8 +32,20 @@ export abstract class CommandWithConfig<
 	 */
 	protected defaultConfig: C | undefined;
 
+	/**
+	 * Whether this command requires a config file. If set to `false`, config loading will be skipped.
+	 * Defaults to `true` for backwards compatibility.
+	 */
+	protected requiresConfig = true;
+
 	public override async init(): Promise<void> {
 		await super.init();
+
+		// Skip config loading if not required
+		if (!this.requiresConfig) {
+			return;
+		}
+
 		const { config: configFlag } = this.flags;
 		const searchPath = configFlag ?? process.cwd();
 		const loaded = await loadConfig<C>(this.config.bin, searchPath, undefined);

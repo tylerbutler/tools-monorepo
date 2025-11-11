@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - debug@4.4.0
+ - debug@4.4.3
 
 This package contains the following license:
 
@@ -55,7 +55,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm package may be included in this product:
 
- - simple-git@3.27.0
+ - simple-git@3.28.0
 
 This package contains the following license:
 
@@ -65,8 +65,8 @@ MIT
 
 The following npm packages may be included in this product:
 
- - @oclif/plugin-commands@4.1.24
- - @oclif/plugin-which@3.2.34
+ - @oclif/plugin-commands@4.1.35
+ - @oclif/plugin-which@3.2.41
 
 These packages each contain the following license:
 
@@ -96,13 +96,13 @@ SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @oclif/core@4.3.0
- - @oclif/plugin-autocomplete@3.2.27
- - @oclif/plugin-help@6.2.27
- - @oclif/plugin-not-found@3.2.50
- - @oclif/plugin-plugins@5.4.36
- - @oclif/plugin-version@2.2.27
- - @oclif/plugin-warn-if-update-available@3.1.38
+ - @oclif/core@4.6.0
+ - @oclif/plugin-autocomplete@3.2.37
+ - @oclif/plugin-help@6.2.33
+ - @oclif/plugin-not-found@3.2.70
+ - @oclif/plugin-plugins@5.4.50
+ - @oclif/plugin-version@2.2.34
+ - @oclif/plugin-warn-if-update-available@3.1.50
 
 These packages each contain the following license:
 
@@ -132,7 +132,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @oclif/plugin-search@1.2.23
+ - @oclif/plugin-search@1.2.33
 
 This package contains the following license:
 
@@ -162,7 +162,37 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - strip-ansi@7.1.0
+ - tinyglobby@0.2.15
+
+This package contains the following license:
+
+MIT License
+
+Copyright (c) 2024 Madeline Gurriarán
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-----------
+
+The following npm package may be included in this product:
+
+ - strip-ansi@7.1.2
 
 This package contains the following license:
 
@@ -180,7 +210,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - dill-cli@0.2.1
+ - dill-cli@0.3.1
 
 This package contains the following license:
 

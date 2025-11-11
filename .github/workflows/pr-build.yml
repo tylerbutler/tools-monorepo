@@ -14,44 +14,55 @@ on:
     workflows: [Release]
     types: [completed]
 
+permissions:
+  actions: read
+  contents: read
+
+env:
+  # Disable Nx Cloud for PR builds to test local cache behavior
+  # Main branch builds use Nx Cloud for remote caching only (no task distribution)
+  NX_CLOUD_ACCESS_TOKEN: ${{ github.event_name == 'pull_request' && '' || secrets.NX_CLOUD_ACCESS_TOKEN }}
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-      TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
 
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+        with:
+          filter: tree:0
+          fetch-depth: 0 # Required for nx affected to compare against base branch
+
       - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
+
       - run: npm i --global corepack@latest
       - run: corepack enable
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Cache turbo build setup
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}-
-            ${{ runner.os }}-turbo-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Sets NX_BASE and NX_HEAD for accurate affected detection
+      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4
+
       - name: Run CI checks, builds, and tests
-        run: pnpm run ci
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            pnpm run ci:all
+          else
+            pnpm run ci:affected
+          fi
+
+      - run: npx nx fix-ci
+        if: always()
 
       - name: "Codecov: upload test results"
         if: ${{ !cancelled() }}
