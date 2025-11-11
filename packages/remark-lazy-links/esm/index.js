@@ -1,4 +1,70 @@
 import { writeFileSync } from "node:fs";
+import { fromMarkdown } from "mdast-util-from-markdown";
+/**
+ * Finds the maximum numbered link reference in the content
+ */
+function findMaxCounter(content) {
+    const counterRegex = /\[(\d+)\]:/g;
+    let maxCounter = 0;
+    const matches = content.matchAll(counterRegex);
+    for (const match of matches) {
+        if (match[1]) {
+            const num = Number.parseInt(match[1], 10);
+            if (num > maxCounter) {
+                maxCounter = num;
+            }
+        }
+    }
+    return maxCounter;
+}
+/**
+ * Transforms lazy links [*] to numbered references
+ */
+function transformLazyLinks(content, startCounter) {
+    let transformed = content;
+    let hasChanges = false;
+    // Count total [*] occurrences
+    const totalMatches = (content.match(/\[\*\]/g) || []).length;
+    if (totalMatches === 0) {
+        return { transformed, hasChanges: false };
+    }
+    // Strategy: The first half are references, the second half are definitions
+    // They map 1-to-1 in order
+    //
+    // Example input:  "[first][*] and [second][*]\n\n[*]: http://first.com\n[*]: http://second.com"
+    // Occurrences: 4 total, so 2 references and 2 definitions
+    // After transform: "[first][1] and [second][2]\n\n[1]: http://first.com\n[2]: http://second.com"
+    const halfPoint = totalMatches / 2;
+    let occurrenceCount = 0;
+    let counter = startCounter;
+    transformed = transformed.replace(/\[\*\]/g, () => {
+        occurrenceCount++;
+        hasChanges = true;
+        // For the first half (references), increment counter
+        // For the second half (definitions), use counter from corresponding reference
+        if (occurrenceCount <= halfPoint) {
+            // This is a reference
+            counter++;
+            return `[${counter}]`;
+        }
+        // This is a definition - use the number from (occurrenceCount - halfPoint)
+        const refNumber = startCounter + (occurrenceCount - halfPoint);
+        return `[${refNumber}]`;
+    });
+    return { transformed, hasChanges };
+}
+/**
+ * Persists the transformed content to the source file
+ */
+function persistToFile(filepath, content) {
+    try {
+        writeFileSync(filepath, content, "utf-8");
+    }
+    catch {
+        // Silently fail if file cannot be written (e.g., readonly filesystem)
+        // The transformation is still applied in-memory for the build
+    }
+}
 /**
  * Remark plugin to transform lazy markdown links [*] into numbered references.
  *
@@ -25,61 +91,37 @@ import { writeFileSync } from "node:fs";
  */
 export const remarkLazyLinks = (options = {}) => {
     const { persist = false } = options;
-    return (tree, file) => {
-        // Get the raw markdown content
-        const content = String(file.value || "");
+    return (_tree, file) => {
+        // This runs after parsing, but we need to work on the original text
+        // The key insight: unified processes file.value through the parser
+        // We need to get the ORIGINAL value before it was parsed
+        // Get the original file contents (before parsing)
+        const originalContent = file.toString();
         // Check if there are any lazy links to process
-        if (!content.includes("[*]")) {
+        if (!originalContent.includes("[*]")) {
             return;
         }
-        // Regular expression to find existing numbered references
-        const counterRegex = /\[(\d+)\]:/g;
         // Find the maximum existing numbered link to avoid conflicts
-        let maxCounter = 0;
-        let match;
-        counterRegex.lastIndex = 0;
-        while ((match = counterRegex.exec(content)) !== null) {
-            if (match[1]) {
-                const num = parseInt(match[1], 10);
-                if (num > maxCounter) {
-                    maxCounter = num;
-                }
-            }
-        }
-        // Counter for new lazy links
-        let counter = maxCounter;
-        // Regular expression to match lazy link references
-        // Matches: [link text][*] ... [*]: url
-        // Uses DOTALL (s) and MULTILINE (m) flags
-        // The pattern needs to match from [text][*] to the corresponding [*]: url
-        const linkRegex = /(\[[^\]]+\]\s*\[)\*(\](?:(?!\[[^\]]+\]\s*\[)[\s\S])*?\[)\*\]:/g;
+        const maxCounter = findMaxCounter(originalContent);
         // Transform lazy links to numbered links
-        // Use a while loop to handle overlapping matches
-        let transformed = content;
-        let hasChanges = false;
-        while (linkRegex.test(transformed)) {
-            linkRegex.lastIndex = 0;
-            transformed = transformed.replace(linkRegex, (match, group1, group2) => {
-                counter++;
-                hasChanges = true;
-                return `${group1}${counter}${group2}${counter}]:`;
-            });
-            linkRegex.lastIndex = 0;
+        const { transformed, hasChanges } = transformLazyLinks(originalContent, maxCounter);
+        if (!hasChanges) {
+            return;
         }
-        // Update the file content for further processing (in-memory)
-        file.value = transformed;
         // If persist is enabled and changes were made, write back to source file
-        if (persist && hasChanges) {
-            const filepath = file.history && file.history[0];
+        if (persist) {
+            const filepath = file.history?.[0];
             if (filepath) {
-                try {
-                    writeFileSync(filepath, transformed, "utf-8");
-                    console.log(`✨ Lazy links persisted to: ${filepath}`);
-                }
-                catch (error) {
-                    console.warn(`⚠️  Failed to persist lazy links to ${filepath}:`, error);
-                }
+                persistToFile(filepath, transformed);
             }
+        }
+        // Re-parse the transformed content to get the correct AST
+        // This is necessary because we modified the raw text, but the tree was already parsed
+        const newTree = fromMarkdown(transformed);
+        // Replace the current tree's children and data with the new tree
+        _tree.children = newTree.children;
+        if (newTree.data) {
+            _tree.data = newTree.data;
         }
     };
 };

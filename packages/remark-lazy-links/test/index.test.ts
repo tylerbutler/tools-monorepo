@@ -18,7 +18,7 @@ describe("remarkLazyLinks", () => {
 		const result = await remark().use(remarkLazyLinks).process(markdown);
 
 		expect(String(result)).toBe(
-			"[first][1] and [second][2]\n\n[1]: http://first.com\n[2]: http://second.com\n",
+			"[first][1] and [second][2]\n\n[1]: http://first.com\n\n[2]: http://second.com\n",
 		);
 	});
 
@@ -29,7 +29,7 @@ describe("remarkLazyLinks", () => {
 		const result = await remark().use(remarkLazyLinks).process(markdown);
 
 		expect(String(result)).toBe(
-			"[existing][1] and [lazy][2]\n\n[1]: http://existing.com\n[2]: http://lazy.com\n",
+			"[existing][1] and [lazy][2]\n\n[1]: http://existing.com\n\n[2]: http://lazy.com\n",
 		);
 	});
 
@@ -41,7 +41,7 @@ describe("remarkLazyLinks", () => {
 
 		// Should continue from max existing number (5)
 		expect(String(result)).toBe(
-			"[one][1] and [five][5] and [lazy][6]\n\n[1]: http://one.com\n[5]: http://five.com\n[6]: http://lazy.com\n",
+			"[one][1] and [five][5] and [lazy][6]\n\n[1]: http://one.com\n\n[5]: http://five.com\n\n[6]: http://lazy.com\n",
 		);
 	});
 
@@ -103,7 +103,7 @@ describe("remarkLazyLinks", () => {
 		const result = await remark().use(remarkLazyLinks).process(markdown);
 
 		expect(String(result)).toBe(
-			"[first][1] [second][2]\n\n[1]: http://first.com\n[2]: http://second.com\n",
+			"[first][1] [second][2]\n\n[1]: http://first.com\n\n[2]: http://second.com\n",
 		);
 	});
 
@@ -114,7 +114,7 @@ describe("remarkLazyLinks", () => {
 		const result = await remark().use(remarkLazyLinks).process(markdown);
 
 		expect(String(result)).toBe(
-			"[numbered][2] and [lazy1][3] and [lazy2][4]\n\n[2]: http://numbered.com\n[3]: http://lazy1.com\n[4]: http://lazy2.com\n",
+			"[numbered][2] and [lazy1][3] and [lazy2][4]\n\n[2]: http://numbered.com\n\n[3]: http://lazy1.com\n\n[4]: http://lazy2.com\n",
 		);
 	});
 

@@ -37,6 +37,7 @@
 		"test:coverage": "vitest run test --coverage"
 	},
 	"dependencies": {
+		"mdast-util-from-markdown": "^2.0.2",
 		"unified": "^11.0.5",
 		"vfile": "^6.0.3"
 	},

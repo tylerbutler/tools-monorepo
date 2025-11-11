@@ -1,4 +1,6 @@
 import { visit } from "unist-util-visit";
+// Regex to detect content collection paths (moved to top level for performance)
+const COLLECTION_PATH_REGEX = /\/src\/content\/(articles|projects)\//;
 /**
  * Remark plugin to shift heading levels based on context
  *
@@ -18,29 +20,32 @@ export const remarkShiftHeadings = (options) => {
         const contextLevel = fileData.headingStartLevel;
         // Strategy 3: Auto-detect content collections from file path
         const filePath = file.history?.[0] || "";
-        const isCollection = /\/src\/content\/(articles|projects)\//.test(filePath);
+        const isCollection = COLLECTION_PATH_REGEX.test(filePath);
         // Determine target start level (frontmatter > context > auto-detect)
         const targetStartLevel = frontmatterLevel ??
             contextLevel ??
             (isCollection ? defaultCollectionLevel : defaultPageLevel);
         // Skip shifting if target is h1 (no adjustment needed)
-        if (targetStartLevel === 1)
+        if (targetStartLevel === 1) {
             return;
+        }
         // Find minimum heading level in the content
-        let minLevel = Infinity;
+        let minLevel = Number.POSITIVE_INFINITY;
         visit(tree, "heading", (node) => {
             if (node.depth < minLevel) {
                 minLevel = node.depth;
             }
         });
         // No headings found, nothing to shift
-        if (minLevel === Infinity)
+        if (minLevel === Number.POSITIVE_INFINITY) {
             return;
+        }
         // Calculate shift amount needed
         const shiftBy = targetStartLevel - minLevel;
         // Skip if no shift needed
-        if (shiftBy === 0)
+        if (shiftBy === 0) {
             return;
+        }
         // Apply shift to all headings
         visit(tree, "heading", (node) => {
             const newLevel = node.depth + shiftBy;

@@ -8,7 +8,7 @@ import { visit } from "unist-util-visit";
  */
 const defaultOptions = {
     referenceSelector: 'sup[id^="user-content-fnref-"]',
-    definitionSelector: 'section[data-footnotes]',
+    definitionSelector: "section[data-footnotes]",
     activateOnLoad: true,
     littlefootOptions: {
         allowDuplicates: false,
@@ -27,7 +27,7 @@ const defaultOptions = {
  * @param options - Configuration options
  */
 export function transformFootnotesForLittlefoot(tree, options = {}) {
-    const opts = { ...defaultOptions, ...options };
+    const _opts = { ...defaultOptions, ...options };
     // Track footnote references and definitions
     const footnoteMap = new Map();
     // First pass: find all footnote references
@@ -48,11 +48,13 @@ export function transformFootnotesForLittlefoot(tree, options = {}) {
                 linkElement.properties["rel"] = "footnote";
                 linkElement.properties["data-footnote-id"] = footnoteId;
                 // Store for mapping with definition
-                if (!footnoteMap.has(footnoteId)) {
-                    footnoteMap.set(footnoteId, { ref: node, def: null });
+                if (footnoteMap.has(footnoteId)) {
+                    // biome-ignore lint/style/noNonNullAssertion: Map.has() guarantees entry exists
+                    footnoteMap.get(footnoteId).ref = node;
                 }
                 else {
-                    footnoteMap.get(footnoteId).ref = node;
+                    // biome-ignore lint/suspicious/noExplicitAny: Placeholder for paired definition element
+                    footnoteMap.set(footnoteId, { ref: node, def: null });
                 }
             }
         }
@@ -76,18 +78,20 @@ export function transformFootnotesForLittlefoot(tree, options = {}) {
                     // Match dataFootnoteBackref property (camelCase in HAST)
                     visit(listItem, "element", (backRef, index, parent) => {
                         if (backRef.tagName === "a" &&
-                            backRef.properties?.["dataFootnoteBackref"] !== undefined) {
-                            if (parent && typeof index === "number") {
-                                parent.children.splice(index, 1);
-                            }
+                            backRef.properties?.["dataFootnoteBackref"] !== undefined &&
+                            parent &&
+                            typeof index === "number") {
+                            parent.children.splice(index, 1);
                         }
                     });
                     // Store for mapping
-                    if (!footnoteMap.has(footnoteId)) {
-                        footnoteMap.set(footnoteId, { ref: null, def: listItem });
+                    if (footnoteMap.has(footnoteId)) {
+                        // biome-ignore lint/style/noNonNullAssertion: Map.has() guarantees entry exists
+                        footnoteMap.get(footnoteId).def = listItem;
                     }
                     else {
-                        footnoteMap.get(footnoteId).def = listItem;
+                        // biome-ignore lint/suspicious/noExplicitAny: Placeholder for paired reference element
+                        footnoteMap.set(footnoteId, { ref: null, def: listItem });
                     }
                 }
             });
@@ -165,7 +169,7 @@ a[rel="footnote"]:hover {
  * @returns Rehype plugin function
  */
 export function rehypeFootnotes(options = {}) {
-    return function (tree) {
+    return (tree) => {
         transformFootnotesForLittlefoot(tree, options);
     };
 }

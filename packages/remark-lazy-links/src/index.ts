@@ -1,5 +1,6 @@
 import { writeFileSync } from "node:fs";
 import type { Root } from "mdast";
+import { fromMarkdown } from "mdast-util-from-markdown";
 import type { Plugin } from "unified";
 import type { VFile } from "vfile";
 
@@ -49,21 +50,42 @@ function transformLazyLinks(
 	transformed: string;
 	hasChanges: boolean;
 } {
-	const linkRegex =
-		/(\[[^\]]+\]\s*\[)\*(\](?:(?!\[[^\]]+\]\s*\[)[\s\S])*?\[)\*\]:/g;
 	let transformed = content;
 	let hasChanges = false;
+
+	// Count total [*] occurrences
+	const totalMatches = (content.match(/\[\*\]/g) || []).length;
+
+	if (totalMatches === 0) {
+		return { transformed, hasChanges: false };
+	}
+
+	// Strategy: The first half are references, the second half are definitions
+	// They map 1-to-1 in order
+	//
+	// Example input:  "[first][*] and [second][*]\n\n[*]: http://first.com\n[*]: http://second.com"
+	// Occurrences: 4 total, so 2 references and 2 definitions
+	// After transform: "[first][1] and [second][2]\n\n[1]: http://first.com\n[2]: http://second.com"
+
+	const halfPoint = totalMatches / 2;
+	let occurrenceCount = 0;
 	let counter = startCounter;
 
-	while (linkRegex.test(transformed)) {
-		linkRegex.lastIndex = 0;
-		transformed = transformed.replace(linkRegex, (_match, group1, group2) => {
+	transformed = transformed.replace(/\[\*\]/g, () => {
+		occurrenceCount++;
+		hasChanges = true;
+
+		// For the first half (references), increment counter
+		// For the second half (definitions), use counter from corresponding reference
+		if (occurrenceCount <= halfPoint) {
+			// This is a reference
 			counter++;
-			hasChanges = true;
-			return `${group1}${counter}${group2}${counter}]:`;
-		});
-		linkRegex.lastIndex = 0;
-	}
+			return `[${counter}]`;
+		}
+		// This is a definition - use the number from (occurrenceCount - halfPoint)
+		const refNumber = startCounter + (occurrenceCount - halfPoint);
+		return `[${refNumber}]`;
+	});
 
 	return { transformed, hasChanges };
 }
@@ -110,29 +132,47 @@ export const remarkLazyLinks: Plugin<[LazyLinksOptions?], Root> = (
 	const { persist = false } = options;
 
 	return (_tree: Root, file: VFile) => {
-		// Get the raw markdown content
-		const content = String(file.value || "");
+		// This runs after parsing, but we need to work on the original text
+		// The key insight: unified processes file.value through the parser
+		// We need to get the ORIGINAL value before it was parsed
+
+		// Get the original file contents (before parsing)
+		const originalContent = file.toString();
 
 		// Check if there are any lazy links to process
-		if (!content.includes("[*]")) {
+		if (!originalContent.includes("[*]")) {
 			return;
 		}
 
 		// Find the maximum existing numbered link to avoid conflicts
-		const maxCounter = findMaxCounter(content);
+		const maxCounter = findMaxCounter(originalContent);
 
 		// Transform lazy links to numbered links
-		const { transformed, hasChanges } = transformLazyLinks(content, maxCounter);
+		const { transformed, hasChanges } = transformLazyLinks(
+			originalContent,
+			maxCounter,
+		);
 
-		// Update the file content for further processing (in-memory)
-		file.value = transformed;
+		if (!hasChanges) {
+			return;
+		}
 
 		// If persist is enabled and changes were made, write back to source file
-		if (persist && hasChanges) {
+		if (persist) {
 			const filepath = file.history?.[0];
 			if (filepath) {
 				persistToFile(filepath, transformed);
 			}
+		}
+
+		// Re-parse the transformed content to get the correct AST
+		// This is necessary because we modified the raw text, but the tree was already parsed
+		const newTree = fromMarkdown(transformed);
+
+		// Replace the current tree's children and data with the new tree
+		_tree.children = newTree.children;
+		if (newTree.data) {
+			_tree.data = newTree.data;
 		}
 	};
 };
