@@ -58,7 +58,7 @@ jobs:
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             pnpm run ci:all
           else
-            pnpm run ci
+            pnpm run ci:affected
           fi
 
       - run: npx nx fix-ci
