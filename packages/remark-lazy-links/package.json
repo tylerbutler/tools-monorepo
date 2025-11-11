@@ -1,0 +1,68 @@
+{
+	"name": "remark-lazy-links",
+	"version": "0.0.1",
+	"description": "Remark plugin to transform lazy markdown links [*] into numbered references",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-lazy-links#remark-lazy-links",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/remark-lazy-links"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		}
+	},
+	"types": "./esm/index.d.ts",
+	"files": [
+		"esm"
+	],
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"check": "pnpm check:format",
+		"check:format": "biome format .",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --apply",
+		"test": "vitest run test",
+		"test:coverage": "vitest run test --coverage"
+	},
+	"dependencies": {
+		"mdast-util-from-markdown": "^2.0.2",
+		"unified": "^11.0.5",
+		"vfile": "^6.0.3"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.5",
+		"@types/mdast": "^4.0.4",
+		"@types/node": "^20.19.23",
+		"@vitest/coverage-v8": "^3.2.4",
+		"remark": "^15.0.1",
+		"remark-parse": "^11.0.0",
+		"rimraf": "^6.0.1",
+		"typescript": "~5.9.3",
+		"vitest": "^3.2.4"
+	},
+	"peerDependencies": {
+		"unified": "^11.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {}
+		}
+	}
+}
