@@ -40,7 +40,7 @@
 		"deps:dev": "ncu -u --dep dev,peer,optional --reject \"*oclif*\" --reject \"*@fluid*\"",
 		"deps:oclif": "ncu -u --dep prod,dev,peer,optional --filter \"*oclif*\"",
 		"deps:prod": "ncu -u --dep prod --reject \"*oclif*\" --reject \"*@fluid*\"",
-		"deps:sync": "nx exec -- tbu sync deps",
+		"deps:sync": "nx exec -- tbu deps sync",
 		"docs": "nx run-many -t build:docs",
 		"fix:policy": "repopo check --fix",
 		"fix:references": "workspaces-to-typescript-project-references",
@@ -60,10 +60,10 @@
 		"@changesets/cli": "^2.29.7",
 		"@changesets/config": "^3.1.1",
 		"@monorepo-utils/workspaces-to-typescript-project-references": "^2.11.0",
-		"@nx/js": "^22.0.1",
-		"@nx/vite": "^22.0.1",
+		"@nx/js": "^22.0.2",
+		"@nx/vite": "^22.0.2",
 		"@tsconfig/node18": "^18.2.4",
-		"@tsconfig/strictest": "^2.0.6",
+		"@tsconfig/strictest": "^2.0.7",
 		"@tylerbu/cli": "workspace:^",
 		"@tylerbu/local-config": "workspace:^",
 		"changesets-changelog-clean": "^1.3.0",
@@ -71,7 +71,7 @@
 		"generate-license-file": "^4.1.0",
 		"nx": "22.0.1",
 		"repopo": "workspace:^",
-		"rimraf": "^6.0.1",
+		"rimraf": "^6.1.0",
 		"semver": "^7.7.3",
 		"sort-package-json": "*",
 		"sort-tsconfig": "workspace:^",
@@ -121,7 +121,9 @@
 		}
 	},
 	"nx": {
-		"includedScripts": [],
+		"includedScripts": [
+			"deps:sync"
+		],
 		"targets": {
 			"ci": {
 				"dependsOn": [
@@ -198,6 +200,9 @@
 				"cache": false
 			},
 			"deps:sync": {
+				"dependsOn": [
+					"cli:build:compile"
+				],
 				"inputs": [
 					"{workspaceRoot}/package.json",
 					"{workspaceRoot}/packages/*/package.json",
