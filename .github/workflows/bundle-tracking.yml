@@ -25,8 +25,7 @@ jobs:
 
       - uses: ./.github/actions/setup-node-pnpm
 
-      # Sets NX_BASE and NX_HEAD for accurate affected detection
-      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4
+      - uses: ./.github/actions/setup-nx
 
       - name: Check if ccl-test-viewer is affected
         id: check-affected

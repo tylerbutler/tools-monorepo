@@ -36,20 +36,9 @@ jobs:
 
       - uses: ./.github/actions/setup-node-pnpm
 
-      # Cache Nx local cache between runs
-      - name: Cache Nx
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache@v4
+      - uses: ./.github/actions/setup-nx
         with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/project.json', 'nx.json') }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-
-            nx-${{ runner.os }}-${{ github.ref_name }}-
-            nx-${{ runner.os }}-main-
-            nx-${{ runner.os }}-
-
-      # Sets NX_BASE and NX_HEAD for accurate affected detection
-      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4
+          enable-cache: 'true'
 
       - name: Run CI checks, builds, and tests
         run: |
