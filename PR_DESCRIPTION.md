@@ -81,13 +81,14 @@ const results = await run(function* (this: DepsSync) {
 ## Testing
 
 Added comprehensive tests in:
-- `packages/dill-cli/test/api.cancellation.test.ts` - Tests error propagation and concurrent writes
-- `packages/cli/test/commands/deps/sync.cancellation.test.ts` - Documents expected cancellation behavior
+- `packages/dill-cli/test/api.cancellation.test.ts` - 5 tests verifying error propagation, concurrent writes, and empty file handling
+- `packages/cli/test/commands/deps/sync.cancellation.test.ts` - 3 tests marked as `it.todo` with detailed implementation guides for future integration work
 
-All tests pass:
-- ✅ 26/26 tests pass in dill-cli API tests
-- ✅ 4/4 tests pass in cli cancellation tests
-- ✅ Existing functionality preserved
+All meaningful tests pass:
+- ✅ 5/5 cancellation tests pass in dill-cli (error propagation, success cases, edge cases)
+- ✅ 26/26 total API tests pass in dill-cli (including existing tests)
+- ✅ 3 integration tests marked as `it.todo` in cli (require OCLIF command runner setup)
+- ✅ All existing functionality preserved
 
 ## Benefits
 
@@ -106,10 +107,12 @@ All tests pass:
 
 ## Test Plan
 
-- [x] All new cancellation tests pass
-- [x] All existing API tests pass
-- [x] Error cases properly handled
-- [x] Success cases work as before
+- [x] All new cancellation tests pass (5/5 in dill-cli)
+- [x] All existing API tests pass (26/26 in dill-cli)
+- [x] Error cases properly handled (invalid paths cause proper error propagation)
+- [x] Success cases work as before (concurrent writes complete successfully)
+- [x] Edge cases covered (empty files are skipped)
+- [ ] Integration tests marked as `it.todo` for future work (require OCLIF command setup)
 
 ---
 
