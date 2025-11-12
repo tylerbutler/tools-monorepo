@@ -111,8 +111,13 @@
 				]
 			},
 			"bundlemon": {
-				"dependsOn": ["build"],
-				"inputs": ["default", "{projectRoot}/build/**"],
+				"dependsOn": [
+					"build"
+				],
+				"inputs": [
+					"default",
+					"{projectRoot}/build/**"
+				],
 				"cache": false
 			},
 			"ci": {}
