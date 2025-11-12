@@ -147,25 +147,4 @@ describe("File Writing with Cancellation", () => {
 		});
 	});
 
-	describe("Cancellation semantics with Effection", () => {
-		it("documents expected cancellation behavior", () => {
-			// When using Effection's `all()` combinator for concurrent operations:
-			//
-			// 1. All operations start concurrently
-			// 2. If any operation fails:
-			//    - The error is propagated immediately
-			//    - All sibling operations are cancelled
-			//    - Resources are cleaned up
-			// 3. If all operations succeed:
-			//    - The combinator resolves with all results
-			//
-			// Benefits over Promise.all:
-			// - Automatic cancellation of pending operations on error
-			// - No orphaned operations continue after failure
-			// - Resource cleanup is guaranteed
-			// - More predictable error handling
-
-			expect(true).toBe(true);
-		});
-	});
 });
