@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { all, call, run } from "effection";
 import { Flags } from "@oclif/core";
 import {
 	CommandWithConfig,
@@ -423,19 +424,24 @@ export default class DepsSync extends CommandWithConfig<
 			projectsWithPackageJson.push(project);
 		}
 
-		// Sync all packages
-		const results = await Promise.all(
-			projectsWithPackageJson.map(async (project) => {
-				const packageJsonPath = path.join(project.path, "package.json");
-				return this.syncPackageJson(
-					packageJsonPath,
-					project.dependencies || {},
-					project.devDependencies || {},
-					project.peerDependencies || {},
-					project.optionalDependencies || {},
-				);
-			}),
-		);
+		// Sync all packages with Effection for structured concurrency
+		// If any package sync fails, remaining operations are automatically cancelled
+		const results = await run(function* (this: DepsSync) {
+			return yield* all(
+				projectsWithPackageJson.map((project) =>
+					call(() => {
+						const packageJsonPath = path.join(project.path, "package.json");
+						return this.syncPackageJson(
+							packageJsonPath,
+							project.dependencies || {},
+							project.devDependencies || {},
+							project.peerDependencies || {},
+							project.optionalDependencies || {},
+						);
+					}),
+				),
+			);
+		}.bind(this));
 
 		// Filter out results with no changes and return
 		return results.filter((r) => r.changes.length > 0);
