@@ -18,7 +18,7 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 env:
-  NX_NO_CLOUD: true  # Disable Nx Cloud for release builds - ensures clean local builds
+  NX_NO_CLOUD: true # Disable Nx Cloud for release builds - ensures clean local builds
 
 jobs:
   release:

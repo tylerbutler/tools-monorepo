@@ -1,5 +1,35 @@
 # @tylerbu/cli
 
+## 0.6.0
+
+### Minor Changes
+
+- Add `tbu deps sync` command to sync package.json versions with lockfile _[`#343`](https://github.com/tylerbutler/tools-monorepo/pull/343) [`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Introduces a new `tbu deps sync` command that automatically updates package.json dependency versions to match what's installed in your lockfile. This is particularly useful when working with Dependabot, which sometimes updates lockfiles without updating package.json for dependencies with caret ranges (^) that already satisfy the new version.
+
+  The command supports npm and pnpm package managers, with detection for yarn and bun (full support coming soon). Run `tbu deps sync` to preview changes in dry-run mode, or `tbu deps sync --execute` to apply updates. Additional flags include `--lockfile` to specify a custom lockfile path, `--cwd` to run in a specific directory, and `--quiet` for minimal output suitable for CI environments.
+
+- Improve performance with async I/O _[`#348`](https://github.com/tylerbutler/tools-monorepo/pull/348) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Improve performance by using async filesystem operations instead of blocking synchronous calls
+
+### Patch Changes
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/cli-api@0.8.0`
+- `@tylerbu/fundamentals@0.3.0`
+- `dill-cli@0.3.2`
+
+</details>
+
 ## 0.5.0
 
 ### Minor Changes

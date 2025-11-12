@@ -9,7 +9,6 @@ const config = mergeConfig(
 			disableConsoleIntercept: true,
 			environment: "node",
 			globals: true,
-			setupFiles: ["tsx/esm"],
 		},
 	}),
 );

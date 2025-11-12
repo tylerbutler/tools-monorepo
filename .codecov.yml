@@ -81,3 +81,15 @@ component_management:
       name: sail-infrastructure
       paths:
         - packages/sail-infrastructure/**
+    - component_id: rehype-footnotes
+      name: rehype-footnotes
+      paths:
+        - packages/rehype-footnotes/**
+    - component_id: remark-shift-headings
+      name: remark-shift-headings
+      paths:
+        - packages/remark-shift-headings/**
+    - component_id: remark-lazy-links
+      name: remark-lazy-links
+      paths:
+        - packages/remark-lazy-links/**
