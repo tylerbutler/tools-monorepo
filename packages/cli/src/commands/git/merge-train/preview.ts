@@ -59,7 +59,7 @@ export default class MergeTrainPreviewCommand extends GitCommand<
 	public override async run(): Promise<void> {
 		this.verbose("starting");
 		if (this.repo === undefined || this.git === undefined) {
-			this.error(`Not a git repo: ${process.cwd()}`);
+			this.exit(`Not a git repo: ${process.cwd()}`);
 		}
 
 		this.initialBranch = (await this.git.status()).current ?? "main";

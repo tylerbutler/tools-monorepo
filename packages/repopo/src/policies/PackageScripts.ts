@@ -86,6 +86,7 @@ export const PackageScripts = definePackagePolicy<
 		name: PackageScripts.name,
 		file,
 		autoFixable: false,
+		errorMessages: [],
 	};
 
 	if (config === undefined) {
@@ -109,7 +110,7 @@ export const PackageScripts = definePackagePolicy<
 	}
 
 	if (errorMessages.length > 0) {
-		failResult.errorMessage = errorMessages.join("\n\n");
+		failResult.errorMessages = errorMessages;
 		return failResult;
 	}
 

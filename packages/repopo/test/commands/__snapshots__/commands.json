@@ -1,14 +1,35 @@
 [
     {
         "alias": [],
-        "command": "help",
-        "flagAliases": [],
+        "command": "check",
+        "flagAliases": [
+            "resolve"
+        ],
         "flagChars": [
-            "n"
+            "f",
+            "v"
         ],
         "flags": [
-            "nested-commands"
+            "config",
+            "fix",
+            "quiet",
+            "stdin",
+            "verbose"
         ],
-        "plugin": "@oclif/plugin-help"
+        "plugin": "repopo"
+    },
+    {
+        "alias": [],
+        "command": "list",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "repopo"
     }
 ]

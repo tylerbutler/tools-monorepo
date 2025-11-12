@@ -88,7 +88,7 @@ export default class RepoOverlayCommand extends BaseCommand<
 				break;
 			default:
 				// This should never happen due to Args validation, but TypeScript doesn't know that
-				this.error(`Unsupported overlay type: ${overlayType}`);
+				this.exit(`Unsupported overlay type: ${overlayType}`);
 		}
 	}
 
@@ -188,7 +188,7 @@ export default class RepoOverlayCommand extends BaseCommand<
 			this.log("  2. Test the build: nx run-many -t build");
 			this.log("  3. Commit the changes");
 		} catch (error) {
-			this.error(`\n❌ Error applying overlay: ${error}`);
+			this.exit(`\n❌ Error applying overlay: ${error}`);
 		}
 	}
 
@@ -288,7 +288,7 @@ export default class RepoOverlayCommand extends BaseCommand<
 			this.log("  2. Test the build: turbo run build");
 			this.log("  3. Commit the changes");
 		} catch (error) {
-			this.error(`\n❌ Error applying overlay: ${error}`);
+			this.exit(`\n❌ Error applying overlay: ${error}`);
 		}
 	}
 }

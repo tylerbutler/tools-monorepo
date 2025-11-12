@@ -93,7 +93,7 @@ node_modules/
 			if (typeof result === "object") {
 				expect(result.name).toBe("RequiredGitignorePatterns");
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain(
+				expect(result.errorMessages?.[0]).toContain(
 					"Missing required .gitignore patterns",
 				);
 			}
@@ -135,7 +135,7 @@ node_modules/
 			if (typeof result === "object") {
 				expect(result.name).toBe("RequiredGitignorePatterns");
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("No .gitignore file found");
+				expect(result.errorMessages?.[0]).toContain("No .gitignore file found");
 			}
 		});
 
@@ -181,8 +181,8 @@ node_modules/
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("custom-pattern/");
-				expect(result.errorMessage).toContain("*.log");
+				expect(result.errorMessages?.[0]).toContain("custom-pattern/");
+				expect(result.errorMessages?.[0]).toContain("*.log");
 			}
 		});
 

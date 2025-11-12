@@ -1,4 +1,5 @@
 import { Args, Flags } from "@oclif/core";
+import { logIndent } from "@tylerbu/cli-api";
 import {
 	getAllDependencies,
 	type IBuildProject,
@@ -52,19 +53,20 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 	private async logFullReport(repo: IBuildProject): Promise<void> {
 		this.log(colors.underline("Build project layout"));
 		for (const workspace of repo.workspaces.values()) {
-			this.logIndent(
+			logIndent(
 				`${colors.blue(workspace.toString())}: ${workspace.directory}`,
+				this,
 				1,
 			);
 			for (const releaseGroup of workspace.releaseGroups.values()) {
 				this.log();
-				this.logIndent(colors.green(releaseGroup.toString()), 1);
-				this.logIndent(colors.bold("Packages"), 3);
+				logIndent(colors.green(releaseGroup.toString()), this, 1);
+				logIndent(colors.bold("Packages"), this, 3);
 				for (const pkg of releaseGroup.packages) {
 					const pkgMessage = colors.white(
 						`${pkg.name}${pkg.isReleaseGroupRoot ? colors.bold(" (root)") : ""}`,
 					);
-					this.logIndent(pkgMessage, 4);
+					logIndent(pkgMessage, this, 4);
 				}
 
 				const { releaseGroups, workspaces } = getAllDependencies(
@@ -73,12 +75,12 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 				);
 				if (releaseGroups.length > 0 || workspaces.length > 0) {
 					this.log();
-					this.logIndent(colors.bold("Depends on:"), 3);
+					logIndent(colors.bold("Depends on:"), this, 3);
 					for (const depReleaseGroup of releaseGroups) {
-						this.logIndent(depReleaseGroup.toString(), 4);
+						logIndent(depReleaseGroup.toString(), this, 4);
 					}
 					for (const depWorkspace of workspaces) {
-						this.logIndent(depWorkspace.toString(), 4);
+						logIndent(depWorkspace.toString(), this, 4);
 					}
 				}
 			}
@@ -88,24 +90,26 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 	private async logCompactReport(repo: IBuildProject): Promise<void> {
 		this.log(colors.underline("Repository layout"));
 		for (const workspace of repo.workspaces.values()) {
-			this.logIndent(
+			logIndent(
 				`${colors.blue(workspace.toString())}: ${workspace.directory}`,
+				this,
 				1,
 			);
-			this.logIndent(colors.bold("Packages"), 2);
+			logIndent(colors.bold("Packages"), this, 2);
 			for (const pkg of workspace.packages.slice(0, 20)) {
 				const pkgMessage = colors.white(
 					`${pkg.isReleaseGroupRoot ? colors.bold("(root) ") : ""}${pkg.name} ${colors.black(colors.bgGreen(pkg.releaseGroup))}`,
 				);
-				this.logIndent(pkgMessage, 3);
+				logIndent(pkgMessage, this, 3);
 			}
 			if (workspace.packages.length > 20) {
-				this.logIndent(
+				logIndent(
 					colors.white(
 						colors.bold(
 							`...and ${workspace.packages.length - 20} more packages.`,
 						),
 					),
+					this,
 				);
 			}
 		}

@@ -37,12 +37,6 @@ const config: RepopoConfig = {
 			mutuallyExclusive: [["test:unit", "test:vitest"]],
 		}),
 		makePolicy(SortTsconfigsPolicy),
-		// makePolicy(
-		// 	generatePackagePolicy("SlowTestPolicy", async () => {
-		// 		await timers.setTimeout(500);
-		// 		return true;
-		// 	}),
-		// ),
 	],
 };
 
