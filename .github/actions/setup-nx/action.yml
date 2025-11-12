@@ -5,14 +5,15 @@ inputs:
   enable-cache:
     description: Enable Nx local cache
     required: false
-    default: 'false'
+    type: boolean
+    default: false
 
 runs:
   using: composite
   steps:
     # Cache Nx local cache between runs
     - name: Cache Nx
-      if: inputs.enable-cache == 'true'
+      if: inputs.enable-cache
       uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache@v4
       with:
         path: .nx/cache

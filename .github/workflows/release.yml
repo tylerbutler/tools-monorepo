@@ -34,12 +34,6 @@ jobs:
 
       - uses: ./.github/actions/setup-node-pnpm
 
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
       # the action that was actually taken.
