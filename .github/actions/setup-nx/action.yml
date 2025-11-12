@@ -7,10 +7,20 @@ inputs:
     required: false
     type: boolean
     default: false
+  nx-cloud-token:
+    description: Nx Cloud access token (empty string disables Nx Cloud)
+    required: false
+    type: string
+    default: ''
 
 runs:
   using: composite
   steps:
+    # Set Nx Cloud access token for subsequent steps
+    - name: Configure Nx Cloud
+      shell: bash
+      run: |
+        echo "NX_CLOUD_ACCESS_TOKEN=${{ inputs.nx-cloud-token }}" >> $GITHUB_ENV
     # Cache Nx local cache between runs
     - name: Cache Nx
       if: inputs.enable-cache
