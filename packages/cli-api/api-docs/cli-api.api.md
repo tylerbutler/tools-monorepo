@@ -282,10 +282,30 @@ export function shortCommit(commit: string): string;
 export function shouldSkipVersion(version: string): boolean;
 
 // @beta
-export function syncAllPackages(projects: ProjectInfo[], options?: SyncPackageJsonOptions): Promise<SyncResult[]>;
+export function syncAllPackages(projects: ProjectInfo[], options?: SyncPackageJsonOptions): Promise<SyncAllResult>;
 
 // @beta
-export function syncDependencyGroup(dependencies: Record<string, string>, installed: Record<string, DependencyInfo>, type: DependencyType, options?: UpdateVersionRangeOptions): DependencyChange[];
+export interface SyncAllResult {
+    // (undocumented)
+    results: SyncResult[];
+    // (undocumented)
+    skippedProjects: Array<{
+        name: string;
+        path: string;
+        reason: string;
+    }>;
+}
+
+// @beta
+export function syncDependencyGroup(dependencies: Record<string, string>, installed: Record<string, DependencyInfo>, type: DependencyType, options?: UpdateVersionRangeOptions): SyncDependencyGroupResult;
+
+// @beta
+export interface SyncDependencyGroupResult {
+    // (undocumented)
+    changes: DependencyChange[];
+    // (undocumented)
+    warnings: string[];
+}
 
 // @beta
 export function syncPackageJson(packageJsonPath: string, installedDeps: Record<string, DependencyInfo>, installedDevDeps: Record<string, DependencyInfo>, installedPeerDeps: Record<string, DependencyInfo>, installedOptionalDeps: Record<string, DependencyInfo>, options?: SyncPackageJsonOptions): Promise<SyncResult>;
@@ -302,6 +322,8 @@ export interface SyncResult {
     changes: DependencyChange[];
     // (undocumented)
     packagePath: string;
+    // (undocumented)
+    warnings?: string[];
 }
 
 // @beta

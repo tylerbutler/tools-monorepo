@@ -130,7 +130,7 @@ export default class DepsSync extends CommandWithConfig<
 			this.verbose(`Found ${projects.length} project(s)\n`);
 
 			// Sync all packages
-			const results = await syncAllPackages(projects, {
+			const syncResult = await syncAllPackages(projects, {
 				write: !this.isDryRun,
 				versionRangeOptions: {
 					emitWarnings: true,
@@ -138,9 +138,25 @@ export default class DepsSync extends CommandWithConfig<
 			});
 
 			if (this.jsonEnabled()) {
-				this.log(JSON.stringify(results, null, 2));
+				this.log(JSON.stringify(syncResult, null, 2));
 			} else {
-				this.reportResults(results);
+				this.reportSkippedProjects(syncResult.skippedProjects);
+				this.reportWarnings(syncResult.results);
+
+				// Only report changes if there are any
+				const resultsWithChanges = syncResult.results.filter(
+					(r) => r.changes.length > 0,
+				);
+				if (resultsWithChanges.length > 0) {
+					this.reportResults(resultsWithChanges);
+				} else if (syncResult.results.length === 0) {
+					// Only show "all in sync" if there are no warnings either
+					this.log(
+						chalk.green(
+							"✅ All package.json files are already in sync with lockfile",
+						),
+					);
+				}
 			}
 		} catch (error) {
 			if (error instanceof Error) {
@@ -193,6 +209,24 @@ export default class DepsSync extends CommandWithConfig<
 		}
 
 		return detected;
+	}
+
+	private reportSkippedProjects(
+		skippedProjects: Array<{ name: string; path: string; reason: string }>,
+	): void {
+		for (const skipped of skippedProjects) {
+			this.log(chalk.yellow(`Skipping ${skipped.name}: ${skipped.reason}`));
+		}
+	}
+
+	private reportWarnings(results: SyncResult[]): void {
+		for (const result of results) {
+			if (result.warnings && result.warnings.length > 0) {
+				for (const warning of result.warnings) {
+					this.log(chalk.yellow(warning));
+				}
+			}
+		}
 	}
 
 	private reportResults(results: SyncResult[]): void {

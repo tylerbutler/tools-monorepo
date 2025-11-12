@@ -27,6 +27,8 @@ export {
 	parseNpmList,
 	parsePackageManagerList,
 	parsePnpmList,
+	type SyncAllResult,
+	type SyncDependencyGroupResult,
 	type SyncPackageJsonOptions,
 	type SyncResult,
 	shouldSkipVersion,

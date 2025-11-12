@@ -76,6 +76,21 @@ export interface DependencyChange {
 export interface SyncResult {
 	packagePath: string;
 	changes: DependencyChange[];
+	warnings?: string[];
+}
+
+/**
+ * Result of syncing all packages, including warnings about skipped items
+ *
+ * @beta
+ */
+export interface SyncAllResult {
+	results: SyncResult[];
+	skippedProjects: Array<{
+		name: string;
+		path: string;
+		reason: string;
+	}>;
 }
 
 /**
@@ -302,13 +317,9 @@ export function updateVersionRange(
 	}
 
 	// Handle hyphen ranges (e.g., "1.0.0 - 2.0.0")
+	// Don't emit warnings - this is intentionally preserved behavior
 	if (currentRange.includes(" - ")) {
-		return createSkippedResult(
-			currentRange,
-			emitWarnings
-				? `Hyphen range detected: "${currentRange}". Keeping as-is.`
-				: undefined,
-		);
+		return createSkippedResult(currentRange, undefined);
 	}
 
 	// Detect the range type and update accordingly
@@ -326,12 +337,8 @@ export function updateVersionRange(
 	}
 	if (isComplexRange(currentRange)) {
 		// Keep complex ranges as-is (too risky to auto-update)
-		return createSkippedResult(
-			currentRange,
-			emitWarnings
-				? `Complex range detected: "${currentRange}". Keeping as-is.`
-				: undefined,
-		);
+		// Don't emit warnings - this is intentionally preserved behavior
+		return createSkippedResult(currentRange, undefined);
 	}
 	if (currentRange === "*" || currentRange === "latest") {
 		return createSkippedResult(currentRange, undefined);
@@ -550,13 +557,23 @@ export async function getInstalledVersions(
 }
 
 /**
+ * Result of syncing a dependency group
+ *
+ * @beta
+ */
+export interface SyncDependencyGroupResult {
+	changes: DependencyChange[];
+	warnings: string[];
+}
+
+/**
  * Syncs a single dependency group (dependencies, devDependencies, etc.)
  *
  * @param dependencies - Dependencies from package.json
  * @param installed - Installed dependencies from lockfile
  * @param type - Type of dependency group
  * @param options - Options for version range updates
- * @returns Array of changes made
+ * @returns Object containing changes made and any warnings
  *
  * @beta
  */
@@ -565,8 +582,9 @@ export function syncDependencyGroup(
 	installed: Record<string, DependencyInfo>,
 	type: DependencyType,
 	options: UpdateVersionRangeOptions = {},
-): DependencyChange[] {
+): SyncDependencyGroupResult {
 	const changes: DependencyChange[] = [];
+	const warnings: string[] = [];
 
 	for (const [dep, currentRange] of Object.entries(dependencies)) {
 		const installedInfo = installed[dep];
@@ -576,6 +594,12 @@ export function syncDependencyGroup(
 				installedInfo.version,
 				options,
 			);
+
+			// Collect warning if present
+			if (result.warning) {
+				warnings.push(`Skipping ${dep}: ${result.warning}`);
+			}
+
 			if (result.updated !== currentRange) {
 				changes.push({
 					dep,
@@ -588,7 +612,7 @@ export function syncDependencyGroup(
 		}
 	}
 
-	return changes;
+	return { changes, warnings };
 }
 
 /**
@@ -631,6 +655,7 @@ export async function syncPackageJson(
 		: (JSON.parse(JSON.stringify(pkg)) as PackageJson);
 
 	const changes: DependencyChange[] = [];
+	const warnings: string[] = [];
 
 	// Define dependency types to sync
 	const depTypes: Array<{
@@ -664,14 +689,14 @@ export async function syncPackageJson(
 	for (const { key, installed, type } of depTypes) {
 		const deps = workingPkg[key];
 		if (deps && typeof deps === "object") {
-			changes.push(
-				...syncDependencyGroup(
-					deps as Record<string, string>,
-					installed,
-					type,
-					versionRangeOptions,
-				),
+			const result = syncDependencyGroup(
+				deps as Record<string, string>,
+				installed,
+				type,
+				versionRangeOptions,
 			);
+			changes.push(...result.changes);
+			warnings.push(...result.warnings);
 		}
 	}
 
@@ -683,10 +708,16 @@ export async function syncPackageJson(
 		);
 	}
 
-	return {
+	const result: SyncResult = {
 		packagePath: packageJsonPath,
 		changes,
 	};
+
+	if (warnings.length > 0) {
+		result.warnings = warnings;
+	}
+
+	return result;
 }
 
 /**
@@ -694,26 +725,33 @@ export async function syncPackageJson(
  *
  * @param projects - Array of project information from package manager
  * @param options - Options for syncing
- * @returns Promise resolving to array of sync results (only packages with changes)
+ * @returns Promise resolving to sync results with information about skipped projects
  *
  * @beta
  */
 export async function syncAllPackages(
 	projects: ProjectInfo[],
 	options: SyncPackageJsonOptions = {},
-): Promise<SyncResult[]> {
-	// Filter projects that have package.json
+): Promise<SyncAllResult> {
+	// Filter projects that have package.json and track skipped ones
 	const projectsWithPackageJson: ProjectInfo[] = [];
+	const skippedProjects: SyncAllResult["skippedProjects"] = [];
+
 	for (const project of projects) {
 		const packageJsonPath = path.join(project.path, "package.json");
 		if (!(await exists(packageJsonPath))) {
+			skippedProjects.push({
+				name: project.name,
+				path: project.path,
+				reason: "package.json not found",
+			});
 			continue;
 		}
 		projectsWithPackageJson.push(project);
 	}
 
 	// Sync all packages
-	const results = await Promise.all(
+	const allResults = await Promise.all(
 		projectsWithPackageJson.map(async (project) => {
 			const packageJsonPath = path.join(project.path, "package.json");
 			return syncPackageJson(
@@ -727,6 +765,13 @@ export async function syncAllPackages(
 		}),
 	);
 
-	// Filter out results with no changes and return
-	return results.filter((r) => r.changes.length > 0);
+	// Filter out results with no changes and no warnings
+	const results = allResults.filter(
+		(r) => r.changes.length > 0 || (r.warnings && r.warnings.length > 0),
+	);
+
+	return {
+		results,
+		skippedProjects,
+	};
 }
