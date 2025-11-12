@@ -40,7 +40,7 @@ export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
 		"LicenseFileExists",
 		// Only trigger on package.json to check once per repository
 		/^package\.json$/,
-		async ({ file, root, config }) => {
+		async ({ root, config }) => {
 			const acceptedNames = config?.acceptedNames ?? DEFAULT_LICENSE_NAMES;
 
 			// Check if any of the accepted license files exist in the root
