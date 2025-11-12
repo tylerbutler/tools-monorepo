@@ -51,6 +51,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Cache Nx local cache between runs
+      - name: Cache Nx
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a # ratchet:actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/project.json', 'nx.json') }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nx-${{ runner.os }}-${{ github.ref_name }}-
+            nx-${{ runner.os }}-main-
+            nx-${{ runner.os }}-
+
       # Sets NX_BASE and NX_HEAD for accurate affected detection
       - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4
 
@@ -81,3 +93,70 @@ jobs:
         run: |
           git diff
           git diff --quiet || (git status -u . && exit 1)
+
+  bundle-size:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - run: npm i --global corepack@latest
+      - run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Cache Nx local cache between runs
+      - name: Cache Nx
+        uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a # ratchet:actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/project.json', 'nx.json') }}
+          restore-keys: |
+            nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nx-${{ runner.os }}-${{ github.ref_name }}-
+            nx-${{ runner.os }}-main-
+            nx-${{ runner.os }}-
+
+      # Sets NX_BASE and NX_HEAD for accurate affected detection
+      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4
+
+      - name: Check if ccl-test-viewer is affected
+        id: check-affected
+        run: |
+          if pnpm nx show project ccl-test-viewer --affected 2>/dev/null; then
+            echo "affected=true" >> $GITHUB_OUTPUT
+          else
+            echo "affected=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build ccl-test-viewer
+        if: steps.check-affected.outputs.affected == 'true'
+        run: pnpm nx run ccl-test-viewer:build
+
+      - name: Run bundlemon
+        if: steps.check-affected.outputs.affected == 'true'
+        run: pnpm nx run ccl-test-viewer:bundlemon
+        env:
+          # GitHub Actions automatically provides all necessary env vars
+          # The GitHub App handles authentication and reporting
+          CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          CI_TARGET_BRANCH: ${{ github.base_ref }}
+          CI_PR_NUMBER: ${{ github.event.pull_request.number }}
