@@ -11,7 +11,7 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"type": "module",
 	"scripts": {
-		"build": "nx run tools-monorepo:build",
+		"build": "nx run-many -t build",
 		"build:affected": "nx affected -t build",
 		"check": "nx run-many -t check && nx check:all",
 		"check:all": "nx run tools-monorepo:check:all",
@@ -19,7 +19,7 @@
 		"check:format": "nx exec -- biome check --linter-enabled=false",
 		"check:policy": "nx exec -- repopo check",
 		"check:references": "nx exec -- workspaces-to-typescript-project-references --check",
-		"ci": "nx run tools-monorepo:ci",
+		"ci": "nx run-many -t ci",
 		"ci:affected": "nx affected -t ci",
 		"ci:all": "nx run-many -t ci",
 		"ci:build": "nx run-many -t build build:generate",
@@ -125,24 +125,6 @@
 			"deps:sync"
 		],
 		"targets": {
-			"build": {
-				"executor": "nx:run-commands",
-				"options": {
-					"command": "nx run-many -t build --exclude=tools-monorepo"
-				},
-				"dependsOn": [
-					"lint",
-					"check:format"
-				],
-				"cache": true
-			},
-			"ci": {
-				"dependsOn": [
-					"check:all",
-					"lint"
-				],
-				"cache": true
-			},
 			"check:all": {
 				"dependsOn": [
 					"check:deps",

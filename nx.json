@@ -64,13 +64,21 @@
 		// Projects inherit this automatically if they have a "ci" script
 		"ci": {
 			"executor": "nx:noop",
-			"dependsOn": ["check", "build", "test:coverage"],
+			"dependsOn": [
+				"tools-monorepo:check:all", // Root-level checks must pass first
+				"tools-monorepo:lint", // Root-level lint must pass first
+				"check",
+				"build",
+				"test:coverage"
+			],
 			"cache": true
 		},
 
 		"build": {
 			"dependsOn": [
 				"^build", // Inter-package dependencies
+				"tools-monorepo:lint", // Root-level lint must pass first
+				"tools-monorepo:check:format", // Root-level format check must pass first
 				"build:compile", // Intra-package: TypeScript compilation
 				"build:api", // Intra-package: API documentation
 				"build:docs", // Intra-package: TypeDoc documentation
