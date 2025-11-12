@@ -395,7 +395,6 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				// biome-ignore lint/style/noProcessEnv: Need to pass parent environment to child process
 				...process.env,
 				PATH: `${path.join(this.node.pkg.directory, "node_modules", ".bin")}${path.delimiter}${
-					// biome-ignore lint/complexity/useLiteralKeys: PATH may not be defined as a property
 					// biome-ignore lint/style/noProcessEnv: Need to preserve PATH for child process
 					process.env["PATH"]
 				}`,
