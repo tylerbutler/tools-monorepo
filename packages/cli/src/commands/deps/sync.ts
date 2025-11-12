@@ -10,8 +10,8 @@ import {
 	getInstalledVersions,
 	isSyncSupported,
 	type PackageManager,
-	syncAllPackages,
 	type SyncResult,
+	syncAllPackages,
 } from "@tylerbu/cli-api";
 import { exists } from "@tylerbu/fundamentals";
 import chalk from "picocolors";

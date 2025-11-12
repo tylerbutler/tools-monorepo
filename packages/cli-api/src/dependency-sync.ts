@@ -607,7 +607,9 @@ export async function syncPackageJson(
 
 	// In dry-run mode, work on a copy to avoid mutations
 	// Note: JSON parse/stringify is acceptable here as PackageJson is a plain object
-	const workingPkg = write ? pkg : (JSON.parse(JSON.stringify(pkg)) as PackageJson);
+	const workingPkg = write
+		? pkg
+		: (JSON.parse(JSON.stringify(pkg)) as PackageJson);
 
 	const changes: DependencyChange[] = [];
 
