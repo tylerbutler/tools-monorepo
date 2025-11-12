@@ -122,15 +122,16 @@ jobs:
             echo "affected=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Build ccl-test-viewer
+        if: steps.check-affected.outputs.affected == 'true'
+        run: pnpm --filter ccl-test-viewer build
+
       - name: Run bundlemon
         if: steps.check-affected.outputs.affected == 'true'
         run: pnpm --filter ccl-test-viewer exec bundlemon
         env:
-          BUNDLEMON_PROJECT_ID: ${{ secrets.BUNDLEMON_PROJECT_ID }}
+          # GitHub Actions automatically provides all necessary env vars
+          # The GitHub App handles authentication and reporting
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
           CI_TARGET_BRANCH: ${{ github.base_ref }}
-          CI_COMMIT_MESSAGE: ${{ github.event.pull_request.title }}
-          CI_REPO_OWNER: ${{ github.repository_owner }}
-          CI_REPO_NAME: ${{ github.event.repository.name }}
           CI_PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

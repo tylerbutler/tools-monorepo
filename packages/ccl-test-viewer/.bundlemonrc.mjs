@@ -29,4 +29,10 @@ export default {
 	],
 	reportOutput: ["github", "console"],
 	verbose: true,
+	// GitHub App integration settings
+	github: {
+		checkRun: true, // Create GitHub check runs
+		commitStatus: true, // Post commit status
+		prComment: true, // Add detailed PR comments
+	},
 };
