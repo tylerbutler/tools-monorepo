@@ -27,6 +27,7 @@ export interface Capability<TCommand extends BaseCommand<any>, TResult = any> {
 export class CapabilityHolder<TCommand extends BaseCommand<any>, TResult> {
 	private _initialized = false;
 	private _result: TResult | undefined;
+	private _initializationPromise: Promise<TResult> | undefined;
 	private readonly capability: Capability<TCommand, TResult>;
 	private readonly command: TCommand;
 
@@ -38,13 +39,33 @@ export class CapabilityHolder<TCommand extends BaseCommand<any>, TResult> {
 	/**
 	 * Get the capability, initializing it if needed.
 	 * Subsequent calls return cached result.
+	 * Concurrent calls will wait for the same initialization promise.
 	 */
 	async get(): Promise<TResult> {
-		if (!this._initialized) {
-			this._result = await this.capability.initialize(this.command);
-			this._initialized = true;
+		if (this._initialized) {
+			return this._result as TResult;
 		}
-		return this._result as TResult;
+
+		// If initialization is in progress, wait for it
+		if (this._initializationPromise) {
+			return this._initializationPromise;
+		}
+
+		// Start initialization
+		this._initializationPromise = (async () => {
+			try {
+				this._result = await this.capability.initialize(this.command);
+				this._initialized = true;
+				return this._result as TResult;
+			} catch (error) {
+				const message = error instanceof Error ? error.message : String(error);
+				this.command.error(`Failed to initialize capability: ${message}`, {
+					exit: 1,
+				});
+			}
+		})();
+
+		return this._initializationPromise;
 	}
 
 	/**

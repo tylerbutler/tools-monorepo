@@ -19,10 +19,10 @@ export interface ConfigCapabilityOptions<TConfig> {
 	required?: boolean;
 
 	/**
-	 * Custom search path for config file.
-	 * @default process.cwd()
+	 * Custom search paths for config file. Will search in order.
+	 * @default [process.cwd()]
 	 */
-	searchPath?: string;
+	searchPaths?: string[];
 }
 
 /**
@@ -59,16 +59,25 @@ export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig>
 	constructor(private options: ConfigCapabilityOptions<TConfig> = {}) {}
 
 	async initialize(command: TCommand): Promise<ConfigResult<TConfig>> {
-		const searchPath = this.options.searchPath ?? process.cwd();
-		const loaded = await loadConfig<TConfig>(
-			command.config.bin,
-			searchPath,
-			undefined,
-		);
+		const searchPaths = this.options.searchPaths ?? [process.cwd()];
+
+		// Try loading from each search path
+		let loaded: { config: TConfig; location: string } | undefined;
+		for (const searchPath of searchPaths) {
+			loaded = await loadConfig<TConfig>(
+				command.config.bin,
+				searchPath,
+				undefined,
+			);
+			if (loaded) break;
+		}
 
 		if (loaded === undefined && this.options.defaultConfig === undefined) {
 			if (this.options.required !== false) {
-				command.error(`Failed to load config: ${searchPath}`, { exit: 1 });
+				command.error(
+					`Could not find config file in search paths: ${searchPaths.join(", ")}`,
+					{ exit: 1 },
+				);
 			}
 			return {
 				config: undefined as unknown as TConfig,
@@ -114,7 +123,10 @@ export function useConfig<TCommand extends BaseCommand<any>, TConfig>(
 	command: TCommand,
 	options?: ConfigCapabilityOptions<TConfig>,
 ): CapabilityHolder<TCommand, ConfigResult<TConfig>> {
-	return new CapabilityHolder(command, new ConfigCapability<TCommand, TConfig>(options));
+	return new CapabilityHolder(
+		command,
+		new ConfigCapability<TCommand, TConfig>(options),
+	);
 }
 
 /**

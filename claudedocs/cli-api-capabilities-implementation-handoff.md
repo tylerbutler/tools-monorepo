@@ -1,8 +1,30 @@
 # CLI-API Capabilities Implementation Handoff
 
 **Date**: 2025-11-12
-**Status**: Phase 1 Complete - Core Infrastructure Implemented
+**Status**: Phase 2 In Progress - Testing Complete, Migration Starting
 **Branch**: cli-composition-model
+
+## Latest Update (Session 3)
+
+**Accomplished:**
+- ✅ Successfully migrated `squish` command to use useGit capability
+- ✅ All CLI tests passing (44 tests across 5 test suites)
+- ✅ Command compiles successfully with new capability system
+- ✅ Documented migration pattern and steps
+- ✅ Verified no regressions in functionality
+
+**Migration Pattern Validated:**
+The squish command migration demonstrates the complete pattern for migrating from `GitCommand` to capability-based composition. Key changes:
+1. Import `BaseCommand` from main module, `useGit` from capabilities
+2. Create private capability holder property
+3. Call `await this.gitCapability.get()` at start of `run()` method
+4. Replace all `this.git` references with destructured `git` variable
+5. Use helper methods like `getCurrentBranch()` for cleaner code
+
+**Next Session:**
+- Continue migrating additional git commands
+- Address linting issues in cli-api capabilities (noExplicitAny, missing JSDoc tags)
+- Document additional migration patterns as discovered
 
 ## Summary
 
@@ -11,8 +33,9 @@ Successfully implemented the core capability system infrastructure for the CLI-A
 ✅ Core capability infrastructure (Capability interface and CapabilityHolder)
 ✅ ConfigCapability with useConfig helper
 ✅ GitCapability with useGit helper
+✅ **Comprehensive unit test coverage (29 new tests)**
 ✅ Full TypeScript compilation and type checking
-✅ All existing tests passing
+✅ All tests passing (89 total)
 ✅ Package exports configured for both main module and capabilities submodule
 
 ## Files Created
@@ -25,9 +48,16 @@ Successfully implemented the core capability system infrastructure for the CLI-A
 - `packages/cli-api/src/capabilities/config.ts` - ConfigCapability implementation
 - `packages/cli-api/src/capabilities/git.ts` - GitCapability implementation
 
+### Test Files
+- `packages/cli-api/test/capabilities/capability-holder.test.ts` - CapabilityHolder tests
+- `packages/cli-api/test/capabilities/config-capability.test.ts` - ConfigCapability tests
+- `packages/cli-api/test/capabilities/git-capability.test.ts` - GitCapability tests
+
 ### Modified Files
 - `packages/cli-api/src/index.ts` - Added export for capabilities
 - `packages/cli-api/package.json` - Added "./capabilities" export path
+- `packages/cli-api/src/capabilities/capability.ts` - Enhanced with concurrent access handling and error reporting
+- `packages/cli-api/src/capabilities/config.ts` - Updated to support multiple search paths
 
 ## Implementation Details
 
@@ -112,7 +142,7 @@ class MyCommand extends BaseCommand {
 ## Build & Test Status
 
 ✅ **Build**: TypeScript compilation successful
-✅ **Tests**: All 58 existing tests passing
+✅ **Tests**: All 89 tests passing (88 passed, 1 skipped)
 ✅ **Types**: No TypeScript errors
 ✅ **Exports**: Package exports configured correctly
 
@@ -124,41 +154,125 @@ pnpm nx run cli-api:build:compile
 pnpm nx run cli-api:test
 ```
 
+### Test Coverage Added
+
+**New Test Files:**
+- `test/capabilities/capability-holder.test.ts` - 9 tests for CapabilityHolder
+- `test/capabilities/config-capability.test.ts` - 8 tests for ConfigCapability (1 skipped)
+- `test/capabilities/git-capability.test.ts` - 12 tests for GitCapability
+
+**Test Coverage:**
+- CapabilityHolder: Initialization, caching, error handling, concurrent access, cleanup
+- ConfigCapability: File loading, default config, search paths, optional vs required
+- GitCapability: Repository detection, helper methods, error handling, custom directories
+
+**Known Limitation:**
+- Config reload test is skipped due to Node.js module caching. The reload() method exists but may not work as expected when the config file is modified at runtime.
+
 ## Next Steps (Phase 2)
 
 Based on the design document, the following tasks remain:
 
-### 1. Create Example Migration
-- [ ] Pick a simple command using GitCommand (e.g., from packages/cli)
-- [ ] Migrate to use useGit capability
-- [ ] Document the migration process
-- [ ] Verify all functionality works identically
+### 1. Testing ✅ **COMPLETE**
+- [x] Add unit tests for CapabilityHolder
+- [x] Add unit tests for ConfigCapability
+- [x] Add unit tests for GitCapability
+- [x] Test error scenarios (missing config, not in git repo)
+- [ ] Add integration tests for migrated commands (after migration)
 
-### 2. Migrate Additional Commands
+### 2. Create Example Migration ✅ **COMPLETE**
+**Selected Command:** `packages/cli/src/commands/git/squish.ts`
+- Simple git-only command (extends GitCommand)
+- Good demonstration of migration pattern
+- No config dependencies
+- Clear git operations (checkout, merge, commit, reset)
+
+**Migration completed successfully:**
+- [x] Migrate squish command to use useGit capability
+- [x] Document the migration process
+- [x] Verify all functionality works identically
+- [x] Run existing tests to ensure no regressions
+
+**Migration Steps (packages/cli/src/commands/git/squish.ts):**
+
+1. **Update imports:**
+   ```typescript
+   // Before:
+   import { GitCommand } from "@tylerbu/cli-api";
+
+   // After:
+   import { BaseCommand } from "@tylerbu/cli-api";
+   import { useGit } from "@tylerbu/cli-api/capabilities";
+   ```
+
+2. **Change base class and add capability:**
+   ```typescript
+   // Before:
+   export default class SquishCommand extends GitCommand<typeof SquishCommand> {
+
+   // After:
+   export default class SquishCommand extends BaseCommand<typeof SquishCommand> {
+     private gitCapability = useGit(this, { required: true });
+   ```
+
+3. **Update run method to get capability:**
+   ```typescript
+   // Before:
+   public override async run(): Promise<void> {
+     if (this.git === undefined) {
+       this.error(`Not a git repo: ${process.cwd()}`);
+     }
+     // ... use this.git directly
+   }
+
+   // After:
+   public override async run(): Promise<void> {
+     const { git, getCurrentBranch } = await this.gitCapability.get();
+     // ... use git and helper methods
+   }
+   ```
+
+4. **Replace all `this.git` references with `git`:**
+   - `this.git.checkoutBranch()` → `git.checkoutBranch()`
+   - `this.git.merge()` → `git.merge()`
+   - `this.git.commit()` → `git.commit()`
+   - etc.
+
+5. **Use helper methods where beneficial:**
+   ```typescript
+   // Before:
+   const sourceBranch = this.args.source ??
+     (await this.git.raw(["branch", "--show-current"])).trim();
+
+   // After:
+   const sourceBranch = this.args.source ?? (await getCurrentBranch());
+   ```
+
+**Benefits observed:**
+- Cleaner code with helper methods
+- No need for manual git repo checking (handled by capability)
+- Capability initialization is lazy and cached
+- Type-safe access to git client and repo
+- All tests pass without modification
+
+### 3. Migrate Additional Commands
 Priority order from design doc:
 - [ ] Simple git-only commands (no config)
 - [ ] Commands with both git and config
 - [ ] Commands with custom capabilities
 - [ ] Test commands
 
-### 3. Add Deprecation Warnings (Phase 3)
+### 4. Add Deprecation Warnings (Phase 3)
 - [ ] Add @deprecated JSDoc to `CommandWithConfig`
 - [ ] Add @deprecated JSDoc to `GitCommand`
 - [ ] Add migration guide link to deprecation messages
 - [ ] Update CHANGELOG.md with deprecation notice
 
-### 4. Documentation
+### 5. Documentation
 - [ ] Add usage examples to package README
 - [ ] Create migration guide document
 - [ ] Update API documentation
 - [ ] Add examples to existing commands
-
-### 5. Testing
-- [ ] Add unit tests for ConfigCapability
-- [ ] Add unit tests for GitCapability
-- [ ] Add unit tests for CapabilityHolder
-- [ ] Add integration tests for migrated commands
-- [ ] Test error scenarios (missing config, not in git repo)
 
 ## Migration Strategy
 
@@ -256,6 +370,12 @@ No new dependencies added. The implementation uses:
 3. **Testing Coverage**: Current tests don't specifically test the new capability system - they continue to test the old base classes
 4. **API Surface**: Once capabilities are widely adopted, the old base classes become dead code until v2.0.0
 5. **Type Complexity**: Generic types may be challenging for some developers unfamiliar with TypeScript generics
+6. **Linting Issues in cli-api**: The capability system has several linting warnings that should be addressed:
+   - `noExplicitAny` warnings on generic type parameters (by design, but could be suppressed)
+   - Missing JSDoc release tags (@public, @beta, etc.) for API Extractor
+   - Missing accessibility modifiers on some class members
+   - Import type optimization opportunities
+   These don't affect functionality but should be fixed for production quality
 
 ## Performance Considerations
 

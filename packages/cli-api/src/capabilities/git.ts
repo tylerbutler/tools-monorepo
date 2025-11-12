@@ -60,9 +60,7 @@ export class GitCapability<TCommand extends BaseCommand<any>>
 		const git = repo.gitClient;
 
 		// Check if we're in a git repository
-		const isRepo = await git
-			.checkIsRepo()
-			.catch(() => false);
+		const isRepo = await git.checkIsRepo().catch(() => false);
 
 		if (!isRepo && this.options.required !== false) {
 			command.error(`Not a git repository: ${baseDir}`, { exit: 1 });
