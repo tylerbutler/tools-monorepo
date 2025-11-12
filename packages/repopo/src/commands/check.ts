@@ -239,7 +239,7 @@ export class CheckPolicy<
 			);
 		} catch (error: unknown) {
 			// Log and rethrow the error for higher-level handling
-			this.error(
+			this.exit(
 				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
 			);
 		}
@@ -276,7 +276,7 @@ export class CheckPolicy<
 				}),
 			);
 		} catch (error: unknown) {
-			this.error(
+			this.exit(
 				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
 			);
 		}

@@ -22,6 +22,6 @@ export const ConsolaLogger: Logger = {
 	success: consola.success,
 	info: consola.info,
 	warning: consola.warn,
-	errorLog: consola.error,
+	error: consola.error,
 	verbose: consola.verbose,
 } as const;

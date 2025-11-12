@@ -92,9 +92,9 @@ describe("BasicLogger", () => {
 		});
 	});
 
-	describe("errorLog", () => {
+	describe("error", () => {
 		it("should log errors to console.error with ERROR prefix", () => {
-			BasicLogger.errorLog("error message");
+			BasicLogger.error("error message");
 			expect(errorSpy).toHaveBeenCalledTimes(1);
 			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("ERROR");
@@ -102,7 +102,7 @@ describe("BasicLogger", () => {
 		});
 
 		it("should use red color for ERROR prefix", () => {
-			BasicLogger.errorLog("test");
+			BasicLogger.error("test");
 			const call = errorSpy.mock.calls[0][0] as string;
 			// picocolors adds ANSI codes, check for ERROR text
 			expect(call).toMatch(/ERROR/);
@@ -111,7 +111,7 @@ describe("BasicLogger", () => {
 		it("should handle Error objects with stack traces", () => {
 			const error = new Error("critical error");
 			error.stack = "detailed stack trace";
-			BasicLogger.errorLog(error);
+			BasicLogger.error(error);
 			expect(errorSpy).toHaveBeenCalledTimes(1);
 			const call = errorSpy.mock.calls[0][0] as string;
 			expect(call).toContain("critical error");
@@ -174,7 +174,7 @@ describe("BasicLogger", () => {
 		});
 
 		it("should apply red color to ERROR", () => {
-			BasicLogger.errorLog("test");
+			BasicLogger.error("test");
 			const output = errorSpy.mock.calls[0][0] as string;
 			expect(output).toContain("ERROR");
 		});
@@ -185,7 +185,7 @@ describe("BasicLogger", () => {
 			BasicLogger.log("message 1");
 			BasicLogger.info("message 2");
 			BasicLogger.warning("message 3");
-			BasicLogger.errorLog("message 4");
+			BasicLogger.error("message 4");
 			BasicLogger.verbose("message 5");
 
 			expect(logSpy).toHaveBeenCalledTimes(4);
@@ -194,7 +194,7 @@ describe("BasicLogger", () => {
 
 		it("should maintain separate stdout/stderr streams", () => {
 			BasicLogger.info("stdout message");
-			BasicLogger.errorLog("stderr message");
+			BasicLogger.error("stderr message");
 
 			expect(logSpy).toHaveBeenCalledTimes(1);
 			expect(errorSpy).toHaveBeenCalledTimes(1);

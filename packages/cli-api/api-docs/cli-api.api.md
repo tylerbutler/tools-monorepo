@@ -13,7 +13,6 @@ import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
 import type { PackageJson } from 'type-fest';
-import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
 import { SimpleGitOptions } from 'simple-git';
@@ -22,22 +21,16 @@ import { SimpleGitOptions } from 'simple-git';
 export type Args<T extends typeof Command> = Interfaces.InferredArgs<T["args"]>;
 
 // @public
-export abstract class BaseCommand<T extends typeof Command> extends Command implements Logger {
+export abstract class BaseCommand<T extends typeof Command> extends Command implements Omit<Logger, "error"> {
     // (undocumented)
     protected args: Args<T>;
     static baseFlags: {
         verbose: Interfaces.BooleanFlag<boolean>;
         quiet: Interfaces.BooleanFlag<boolean>;
     };
-    error(input: string | Error, options: {
-        code?: string | undefined;
-        exit: false;
-    } & PrettyPrintableError): void;
-    error(input: string | Error, options?: ({
-        code?: string | undefined;
-        exit?: number | undefined;
-    } & PrettyPrintableError) | undefined): never;
-    errorLog(message: string | Error): void;
+    error(message: string | Error): void;
+    exit(code?: number): never;
+    exit(message: string | Error, code?: number): never;
     // (undocumented)
     protected flags: Flags<T>;
     info(message: string | Error): void;
@@ -143,7 +136,7 @@ export interface JsonWriteOptions {
 
 // @public
 export interface Logger {
-    errorLog: ErrorLoggingFunction;
+    error: ErrorLoggingFunction;
     // (undocumented)
     formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;

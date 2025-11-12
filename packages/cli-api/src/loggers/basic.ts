@@ -31,7 +31,7 @@ function warning(msg: string | Error) {
 	log(`${chalk.yellow("WARNING")}: ${formatError(msg)}`);
 }
 
-function errorLog(msg: string | Error) {
+function error(msg: string | Error) {
 	// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
 	console.error(`${chalk.red("ERROR")}: ${formatError(msg)}`);
 }
@@ -56,9 +56,9 @@ export const BasicLogger: Logger = {
 	warning,
 
 	/**
-	 * {@inheritDoc Logger.errorLog}
+	 * {@inheritDoc Logger.error}
 	 */
-	errorLog,
+	error,
 
 	/**
 	 * {@inheritDoc Logger.verbose}
