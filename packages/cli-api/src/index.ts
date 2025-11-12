@@ -10,6 +10,7 @@
  */
 
 export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
+export * from "./capabilities/index.js";
 export {
 	CommandWithConfig,
 	type CommandWithContext,

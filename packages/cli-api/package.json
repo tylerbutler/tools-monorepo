@@ -18,6 +18,12 @@
 				"types": "./esm/index.d.ts",
 				"default": "./esm/index.js"
 			}
+		},
+		"./capabilities": {
+			"import": {
+				"types": "./esm/capabilities/index.d.ts",
+				"default": "./esm/capabilities/index.js"
+			}
 		}
 	},
 	"types": "./esm/index.d.ts",
