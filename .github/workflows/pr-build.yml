@@ -143,8 +143,7 @@ jobs:
         if: steps.check-affected.outputs.affected == 'true'
         run: pnpm nx run ccl-test-viewer:bundlemon
         env:
-          # GitHub Actions automatically provides all necessary env vars
-          # The GitHub App handles authentication and reporting
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
           CI_TARGET_BRANCH: ${{ github.base_ref }}
           CI_PR_NUMBER: ${{ github.event.pull_request.number }}
