@@ -10,13 +10,13 @@
 | Phase | Status | Tests Complete | Tests Total | % Complete |
 |-------|--------|----------------|-------------|------------|
 | Phase 1.1: WorkerPool | ✅ Complete | 23 | 23 | 100% |
-| Phase 1.2: TSC Worker | ⏳ Pending | 0 | 15 | 0% |
+| Phase 1.2: TSC Worker | ✅ Complete | 15 | 15 | 100% |
 | Phase 1.3: ESLint Worker | ⏳ Pending | 0 | 19 | 0% |
 | Phase 2.1: PrettierTask | ⏳ Pending | 0 | 24 | 0% |
 | Phase 2.2: WebpackTask | ⏳ Pending | 0 | 33 | 0% |
 | Phase 3.1: Cache Tests | ⏳ Pending | 0 | 2 | 0% |
 | Phase 3.2: Dependency Test | ⏳ Pending | 0 | 1 | 0% |
-| **TOTAL** | **🔄 In Progress** | **23** | **119** | **19%** |
+| **TOTAL** | **🔄 In Progress** | **38** | **119** | **32%** |
 
 ## Current Session (2025-11-12)
 
@@ -25,10 +25,11 @@
 - [x] Create comprehensive implementation plan
 - [x] Set up progress tracking
 - [x] Complete Phase 1.1: WorkerPool tests (23/23 ✅)
+- [x] Complete Phase 1.2: TSC Worker tests (15/15 ✅)
 
 ### Active Work
-**File:** `test/unit/core/tasks/workers/workerPool.test.ts` ✅ COMPLETE
-**Implementation:** `src/core/tasks/workers/workerPool.ts`
+**File:** `test/unit/core/tasks/workers/tscWorker.test.ts` ✅ COMPLETE
+**Implementation:** `src/core/tasks/workers/tscWorker.ts`
 
 ### Progress Notes
 - Created implementation plan with 3 phases
@@ -36,15 +37,20 @@
 - Prioritized worker system tests as highest priority
 - Set up tracking document for session handoffs
 - ✅ **Completed all 23 WorkerPool tests** - 100% passing
-- Implemented comprehensive test coverage for worker thread and child process pools
-- Covered construction, allocation, execution, recovery, memory management, and shutdown
-- All tests use proper mocking and follow AAA pattern
+  - Implemented comprehensive test coverage for worker thread and child process pools
+  - Covered construction, allocation, execution, recovery, memory management, and shutdown
+  - All tests use proper mocking and follow AAA pattern
+- ✅ **Completed all 15 TSC Worker tests** - 100% passing
+  - Tested compile() function with message passthrough
+  - Tested fluidCompile() with regex matching and type override extraction
+  - Verified command transformation from fluid-tsc to tsc
+  - Comprehensive error handling tests
 
 ### Blockers
 None currently
 
 ### Next Session
-Priority: Phase 1.2 - TSC Worker tests (15 tests)
+Priority: Phase 1.3 - ESLint Worker tests (19 tests)
 
 ---
 
@@ -98,32 +104,40 @@ Priority: Phase 1.2 - TSC Worker tests (15 tests)
 - ✅ Simulated crashes, memory pressure, and error scenarios
 - ✅ All 23 tests passing with proper async handling
 
-### Phase 1.2: TSC Worker Tests (15 tests)
-**Status:** ⏳ Pending  
+### Phase 1.2: TSC Worker Tests (15 tests) ✅ COMPLETE
+**Status:** ✅ Complete (15/15)
 **File:** `test/unit/core/tasks/workers/tscWorker.test.ts`
 
 #### Test Groups
 
-**compile function (4 tests)**
-- [ ] should call tsCompile with message
-- [ ] should return WorkerExecResult with code
-- [ ] should pass through command from message
-- [ ] should pass through cwd from message
+**compile function (4 tests)** ✅
+- [x] should call tsCompile with message
+- [x] should return WorkerExecResult with code
+- [x] should pass through command from message
+- [x] should pass through cwd from message
 
-**fluidCompile function (5 tests)**
-- [ ] should match command against fluidTscRegEx
-- [ ] should extract packageJsonTypeOverride from command
-- [ ] should replace fluid command with standard tsc command
-- [ ] should support commonjs type override
-- [ ] should support module type override
-- [ ] should call tsCompile with transformed message
-- [ ] should return WorkerExecResult with code
-- [ ] should throw error for unrecognized command format
+**fluidCompile function (8 tests)** ✅
+- [x] should match command against fluidTscRegEx
+- [x] should extract packageJsonTypeOverride from command
+- [x] should replace fluid command with standard tsc command
+- [x] should support commonjs type override
+- [x] should support module type override
+- [x] should call tsCompile with transformed message
+- [x] should return WorkerExecResult with code
+- [x] should throw error for unrecognized command format
 
-**Error Handling (3 tests)**
-- [ ] should handle tsCompile errors
-- [ ] should handle regex match failures
-- [ ] should include command in error message
+**Error Handling (3 tests)** ✅
+- [x] should handle tsCompile errors
+- [x] should handle regex match failures
+- [x] should include command in error message
+
+**Implementation Summary:**
+- ✅ Mocked `tsCompile` and `fluidTscRegEx` dependencies
+- ✅ Tested standard TypeScript compilation flow
+- ✅ Tested Fluid-specific compilation with type overrides
+- ✅ Verified command transformation and regex matching
+- ✅ Comprehensive error handling for invalid commands
+- ✅ All 15 tests passing with proper async/await patterns
 
 ### Phase 1.3: ESLint Worker Tests (19 tests)
 **Status:** ⏳ Pending  
@@ -286,5 +300,5 @@ pnpm test:coverage -- test/unit/core/tasks/workers/workerPool.test.ts
 
 ---
 
-**Last Updated:** 2025-11-12 (Session 1)  
-**Next Update:** Start of next session implementing WorkerPool tests
+**Last Updated:** 2025-11-12 (Session 1)
+**Next Update:** Start of next session implementing ESLint Worker tests
