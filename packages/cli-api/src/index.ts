@@ -9,7 +9,12 @@
  * @packageDocumentation
  */
 
-export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
+export {
+	type Args,
+	BaseCommand,
+	type Flags,
+	logIndent,
+} from "./baseCommand.js";
 export {
 	CommandWithConfig,
 	type CommandWithContext,

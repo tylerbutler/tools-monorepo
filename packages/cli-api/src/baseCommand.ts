@@ -118,9 +118,9 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs a success message.
 	 */
-	public success(message: string) {
+	public success(message?: string) {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
-			this.logger.success(message);
+			this.logger.success(message ?? "");
 		}
 		if (this.redirectLogToTrace) {
 			this.traceInfo?.(message);
@@ -257,6 +257,7 @@ export abstract class BaseCommand<T extends typeof Command>
 
 /**
  * Logs a message with an indent.
+ * @public
  */
 export function logIndent(input: string, logger: Logger, indentNumber = 2) {
 	const message = indentString(input, indentNumber);

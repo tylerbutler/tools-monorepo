@@ -14,7 +14,7 @@ export type ErrorLoggingFunction = (
 ) => void;
 
 /**
- * A function that logs an error message.
+ * A function that logs a message.
  *
  * @public
  */
@@ -32,27 +32,27 @@ export type LoggingFunction = (message: string, ...args: unknown[]) => void;
  */
 export interface Logger {
 	/**
-	 * Logs an error message as-is.
+	 * Logs a message as-is. Allows optional message for blank lines.
 	 */
-	log: LoggingFunction;
+	log: (message?: string, ...args: unknown[]) => void;
 
 	/**
-	 * Logs a success message.
+	 * Logs a success message. Message is required.
 	 */
 	success: LoggingFunction;
 
 	/**
-	 * Logs an informational message.
+	 * Logs an informational message. Message is required.
 	 */
 	info: ErrorLoggingFunction;
 
 	/**
-	 * Logs a warning message.
+	 * Logs a warning message. Message is required.
 	 */
 	warning: ErrorLoggingFunction;
 
 	/**
-	 * Logs an error message.
+	 * Logs an error message. Message is required.
 	 *
 	 * @remarks
 	 *
@@ -63,7 +63,7 @@ export interface Logger {
 	errorLog: ErrorLoggingFunction;
 
 	/**
-	 * Logs a verbose message.
+	 * Logs a verbose message. Message is required.
 	 */
 	verbose: ErrorLoggingFunction;
 
@@ -87,5 +87,6 @@ export function logWithTime(
 	if (secs.length === 1) {
 		secs = `0${secs}`;
 	}
-	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msg);
+	const msgString = typeof msg === "string" ? msg : msg.message;
+	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msgString);
 }

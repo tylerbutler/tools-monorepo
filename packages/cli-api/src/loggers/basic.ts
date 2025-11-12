@@ -10,13 +10,13 @@ function formatError(message: Error | string): string {
 	return formatted;
 }
 
-function log(msg: string): void {
+function log(msg?: string): void {
 	// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
-	console.log(msg);
+	console.log(msg ?? "");
 }
 
-function success(msg: string | Error) {
-	log(`${chalk.green("SUCCESS")}: ${formatError(msg)}`);
+function success(msg: string) {
+	log(`${chalk.green("SUCCESS")}: ${msg}`);
 }
 
 function info(msg: string | Error) {

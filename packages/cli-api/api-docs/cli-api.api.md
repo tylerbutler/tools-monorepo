@@ -46,7 +46,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
     log(message?: string, ...args: unknown[]): void;
     protected logger: Logger;
     protected redirectLogToTrace: boolean;
-    success(message: string): void;
+    success(message?: string): void;
     // (undocumented)
     protected trace: Debugger | undefined;
     verbose(message: string | Error): void;
@@ -147,7 +147,7 @@ export interface Logger {
     // (undocumented)
     formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
-    log: LoggingFunction;
+    log: (message?: string, ...args: unknown[]) => void;
     success: LoggingFunction;
     verbose: ErrorLoggingFunction;
     warning: ErrorLoggingFunction;
@@ -155,6 +155,9 @@ export interface Logger {
 
 // @public
 export type LoggingFunction = (message: string, ...args: unknown[]) => void;
+
+// @public
+export function logIndent(input: string, logger: Logger, indentNumber?: number): void;
 
 // @beta
 export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo>;
