@@ -105,10 +105,11 @@ Checks and applies policies to the files in the repository.
 
 ```
 USAGE
-  $ repopo check [-v | --quiet] [-f] [--stdin]
+  $ repopo check [-v | --quiet] [-f] [--stats] [--stdin]
 
 FLAGS
   -f, --fix    Fix errors if possible.
+      --stats  Output performance stats after execution. These stats will also be output when using the --verbose flag.
       --stdin  Read list of files from stdin.
 
 LOGGING FLAGS

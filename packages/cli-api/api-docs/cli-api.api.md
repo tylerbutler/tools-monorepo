@@ -13,7 +13,6 @@ import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
 import type { PackageJson } from 'type-fest';
-import type { PathLike } from 'node:fs';
 import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
@@ -38,21 +37,23 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
         code?: string | undefined;
         exit?: number | undefined;
     } & PrettyPrintableError) | undefined): never;
-    errorLog(message: string | Error | undefined): void;
+    errorLog(message: string | Error): void;
     // (undocumented)
     protected flags: Flags<T>;
-    info(message: string | Error | undefined): void;
+    info(message: string | Error): void;
+    // (undocumented)
     init(): Promise<void>;
-    logHr(): void;
-    logIndent(input: string, indentNumber?: number): void;
+    log(message?: string, ...args: unknown[]): void;
+    protected logger: Logger;
     protected redirectLogToTrace: boolean;
+    success(message: string): void;
     // (undocumented)
     protected trace: Debugger | undefined;
-    verbose(message: string | Error | undefined): void;
+    verbose(message: string | Error): void;
     // @deprecated
     warn(_input: string | Error): string | Error;
-    warning(message: string | Error | undefined): void;
-    warningWithDebugTrace(message: string | Error): string | Error;
+    warning(message: string | Error): void;
+    warningWithDebugTrace(message: string | Error): void;
 }
 
 // @beta
@@ -91,6 +92,9 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 // @beta
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
+// @alpha
+export const ConsolaLogger: Logger;
+
 // @beta
 export function detectAllPackageManagers(directory?: string): Promise<PackageManager[]>;
 
@@ -101,7 +105,7 @@ export function detectFromLockfilePath(lockfilePath: string): PackageManager | n
 export function detectPackageManager(directory?: string): Promise<PackageManager | undefined>;
 
 // @public
-export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
+export type ErrorLoggingFunction = (msg: string | Error, ...args: unknown[]) => void;
 
 // @beta (undocumented)
 export function findGitRoot(cwd?: string): Promise<string>;
@@ -140,14 +144,17 @@ export interface JsonWriteOptions {
 // @public
 export interface Logger {
     errorLog: ErrorLoggingFunction;
+    // (undocumented)
+    formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
     log: LoggingFunction;
+    success: LoggingFunction;
     verbose: ErrorLoggingFunction;
     warning: ErrorLoggingFunction;
 }
 
 // @public
-export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
+export type LoggingFunction = (message: string, ...args: unknown[]) => void;
 
 // @beta
 export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo>;
@@ -169,7 +176,7 @@ export interface PackageManagerInfo {
 export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;
 
 // @beta
-export function readJsonWithIndent<J = unknown>(filePath: PathLike): Promise<{
+export function readJsonWithIndent<J = unknown>(filePath: string): Promise<{
     json: J;
     indent: Indent;
 }>;

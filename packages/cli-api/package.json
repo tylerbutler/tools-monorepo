@@ -85,6 +85,14 @@
 		"typescript": "~5.9.3",
 		"vitest": "^3.2.4"
 	},
+	"peerDependencies": {
+		"consola": "^3.4.0"
+	},
+	"peerDependenciesMeta": {
+		"consola": {
+			"optional": true
+		}
+	},
 	"engines": {
 		"node": ">=18.0.0"
 	},

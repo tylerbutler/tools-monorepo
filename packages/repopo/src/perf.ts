@@ -1,8 +1,12 @@
 import type { Logger } from "@tylerbu/cli-api";
+import { colors } from "consola/utils";
 import type { PolicyName } from "./policy.js";
 
-export type PolicyAction = "handle" | "resolve";
+export type PolicyAction = "check" | "resolve";
 
+/**
+ * Stores performance data for each handler. Used to collect and display performance stats.
+ */
 export interface PolicyHandlerPerfStats {
 	count: number;
 	processed: number;
@@ -37,14 +41,13 @@ export async function runWithPerf<T>(
 
 export function logStats(stats: PolicyHandlerPerfStats, log: Logger): void {
 	log.log(
-		`Statistics: ${stats.processed} processed, ${
-			stats.count - stats.processed
-		} excluded, ${stats.count} total`,
+		`Statistics: ${stats.processed} files processed, ` +
+			`${stats.count - stats.processed} excluded, ${stats.count} total`,
 	);
 	for (const [action, handlerPerf] of stats.data.entries()) {
 		log.log(`Performance for "${action}":`);
 		for (const [handler, dur] of handlerPerf.entries()) {
-			log.log(`\t${handler}: ${dur}ms`);
+			log.log(`    ${handler}: ${dur}ms`);
 		}
 	}
 }

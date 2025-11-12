@@ -42,6 +42,7 @@ export type {
 	Logger,
 	LoggingFunction,
 } from "./logger.js";
+export { ConsolaLogger } from "./loggers/consola.js";
 export {
 	detectAllPackageManagers,
 	detectFromLockfilePath,

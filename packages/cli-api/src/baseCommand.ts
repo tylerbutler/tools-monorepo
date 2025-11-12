@@ -2,8 +2,8 @@ import process from "node:process";
 import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
 import type { PrettyPrintableError } from "@oclif/core/errors";
 import registerDebug, { type Debugger } from "debug";
-import chalk from "picocolors";
 import type { Logger } from "./logger.js";
+import { BasicLogger } from "./loggers/basic.js";
 
 /**
  * A type representing all the args of the base commands and subclasses.
@@ -60,6 +60,12 @@ export abstract class BaseCommand<T extends typeof Command>
 	 */
 	private suppressLogging = false;
 
+	/**
+	 * A Logger instance that the command will use for logging. The class methods like log and warning are redirected to
+	 * the functions in this logger.
+	 */
+	protected logger: Logger = BasicLogger;
+
 	protected trace: Debugger | undefined;
 	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: used for future logging enhancement
 	private traceLog: Debugger | undefined;
@@ -71,14 +77,6 @@ export abstract class BaseCommand<T extends typeof Command>
 	 * If true, log statements will be redirected to debug traces.
 	 */
 	protected redirectLogToTrace = false;
-
-	/**
-	 * If true, the command's `git` and `repo` properties will be populated. If the command is used outside a git
-	 * repository, it will fail with an error.
-	 */
-	// protected get useGit(): boolean {
-	// 	return false;
-	// }
 
 	public override async init(): Promise<void> {
 		await super.init();
@@ -112,78 +110,68 @@ export abstract class BaseCommand<T extends typeof Command>
 	}
 
 	/**
-	 * Outputs a horizontal rule.
+	 * Logs a message to the console.
 	 */
-	public logHr() {
-		this.log("=".repeat(Math.max(10, process.stdout.columns)));
+	public override log(message?: string, ...args: unknown[]): void {
+		this.logger.log(message ?? "", ...args);
 	}
 
 	/**
-	 * Logs a message with an indent.
+	 * Logs a success message.
 	 */
-	public logIndent(input: string, indentNumber = 2) {
-		const message = indentString(input, indentNumber);
-		this.log(message);
+	public success(message: string) {
+		if (!(this.suppressLogging || this.redirectLogToTrace)) {
+			this.logger.success(message);
+		}
+		if (this.redirectLogToTrace) {
+			this.traceInfo?.(message);
+		}
 	}
 
 	/**
 	 * Logs an informational message.
 	 */
-	public info(message: string | Error | undefined) {
-		const msg =
-			typeof message === "string"
-				? message
-				: [message?.message, message?.stack].join("\n");
-
+	public info(message: string | Error) {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
-			this.log(`INFO: ${msg}`);
+			this.logger.info(message);
 		}
 		if (this.redirectLogToTrace) {
-			this.traceInfo?.(msg);
+			this.traceInfo?.(message);
 		}
 	}
 
 	/**
 	 * Logs an error without exiting.
 	 */
-	public errorLog(message: string | Error | undefined) {
+	public errorLog(message: string | Error) {
 		if (!this.suppressLogging) {
-			const msg =
-				typeof message === "string"
-					? message
-					: [message?.message, message?.stack].join("\n");
-			this.log(chalk.red(`ERROR: ${msg}`));
+			this.logger.errorLog(message);
 		}
 	}
 
 	/**
 	 * Logs a warning.
 	 */
-	public warning(message: string | Error | undefined): void {
-		const msg =
-			typeof message === "string"
-				? message
-				: [message?.message, message?.stack].join("\n");
-
+	public warning(message: string | Error): void {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
-			this.log(chalk.yellow(`WARNING: ${msg}`));
+			this.logger.warning(message);
 		}
 		if (this.redirectLogToTrace) {
-			this.traceWarning?.(msg);
+			this.traceWarning?.(message);
 		}
 	}
 
 	/**
 	 * Logs a warning with a stack trace in debug mode.
 	 */
-	public warningWithDebugTrace(message: string | Error): string | Error {
+	public warningWithDebugTrace(message: string | Error): void {
 		if (this.suppressLogging && !this.redirectLogToTrace) {
-			return "";
+			return;
 		}
 		if (this.redirectLogToTrace) {
 			this.traceWarning?.(message);
 		}
-		return super.warn(message);
+		this.logger.warning(message);
 	}
 
 	/**
@@ -245,8 +233,9 @@ export abstract class BaseCommand<T extends typeof Command>
 	 */
 	public override error(input: unknown, options?: unknown): void {
 		if (!this.suppressLogging) {
+			this.logger.errorLog(input as Error | string);
 			if (typeof input === "string") {
-				super.error(chalk.red(input), options as never);
+				super.error(input, options as never);
 			}
 
 			super.error(input as Error, options as never);
@@ -256,25 +245,23 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs a verbose log statement.
 	 */
-	public verbose(message: string | Error | undefined): void {
+	public verbose(message: string | Error): void {
 		if (this.flags.verbose || this.redirectLogToTrace) {
-			const msg =
-				typeof message === "string"
-					? message
-					: [message?.message, message?.stack].join("\n");
-
 			if (this.redirectLogToTrace) {
-				this.traceVerbose?.(msg);
+				this.traceVerbose?.(message);
 			} else {
-				const color = typeof message === "string" ? chalk.gray : chalk.red;
-				this.log(color(`VERBOSE: ${msg}`));
+				this.logger.verbose(message);
 			}
 		}
 	}
+}
 
-	// public trace(message: string | Error | undefined): void {
-
-	// }
+/**
+ * Logs a message with an indent.
+ */
+export function logIndent(input: string, logger: Logger, indentNumber = 2) {
+	const message = indentString(input, indentNumber);
+	logger.log(message);
 }
 
 /**

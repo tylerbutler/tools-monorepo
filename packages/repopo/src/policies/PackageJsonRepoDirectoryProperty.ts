@@ -19,6 +19,7 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 		name: PackageJsonRepoDirectoryProperty.name,
 		file,
 		autoFixable: true,
+		errorMessages: [],
 	};
 
 	const fixResult: PolicyFixResult = {
@@ -26,36 +27,38 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 		resolved: false,
 	};
 
-	const pkgDir = path.dirname(file);
+	const pkgDir = path.dirname(path.resolve(root, file));
 	const maybeDir = path.relative(root, pkgDir);
 	const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
 
-	if (
-		typeof json.repository === "object" &&
-		json.repository.directory !== relativePkgDir
-	) {
-		if (resolve) {
-			try {
-				// biome-ignore lint/nursery/noShadow: no need to use shadowed variable
-				updatePackageJsonFile(file, (json) => {
-					assert(typeof json.repository === "object");
-					if (relativePkgDir === undefined) {
-						delete json.repository.directory;
-					} else {
-						json.repository.directory = relativePkgDir;
-					}
-				});
-				fixResult.resolved = true;
-			} catch (error: unknown) {
-				fixResult.resolved = false;
-				fixResult.errorMessage = `${(error as Error).message}\n${
-					(error as Error).stack
-				}`;
+	if (typeof json.repository === "object") {
+		if (json.repository.directory !== relativePkgDir) {
+			if (resolve) {
+				try {
+					// biome-ignore lint/nursery/noShadow: no need to use shadowed variable
+					updatePackageJsonFile(file, (json) => {
+						assert(typeof json.repository === "object");
+						if (relativePkgDir === undefined) {
+							// biome-ignore lint/performance/noDelete: <explanation>
+							delete json.repository.directory;
+						} else {
+							json.repository.directory = relativePkgDir;
+						}
+					});
+					fixResult.resolved = true;
+				} catch (error: unknown) {
+					fixResult.resolved = false;
+					fixResult.errorMessages.push(
+						`${(error as Error).message}\n${(error as Error).stack}`,
+					);
+				}
+				return fixResult;
 			}
-			return fixResult;
+			failResult.errorMessages.push(
+				`repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`,
+			);
+			return failResult;
 		}
-		failResult.errorMessage = `repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`;
-		return failResult;
 	}
 
 	return true;

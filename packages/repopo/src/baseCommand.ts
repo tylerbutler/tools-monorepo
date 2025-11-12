@@ -1,6 +1,7 @@
 import {
 	CommandWithConfig,
 	type CommandWithContext,
+	ConsolaLogger,
 	type RequiresGit,
 } from "@tylerbu/cli-api";
 import { findGitRootSync } from "@tylerbu/fundamentals/git";
@@ -24,6 +25,7 @@ export abstract class BaseRepopoCommand<
 	implements CommandWithContext<RepopoCommandContext>, RequiresGit
 {
 	protected override defaultConfig = DefaultPolicyConfig;
+	protected override logger = ConsolaLogger;
 
 	public static override readonly flags = {
 		...CommandWithConfig.flags,

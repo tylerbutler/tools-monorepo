@@ -33,9 +33,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ***
 
-### errorMessage?
+### errorMessages
 
-> `optional` **errorMessage**: `string`
+> **errorMessages**: `string`[]
 
 Defined in: [policy.ts:172](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L172)
 
@@ -54,6 +54,20 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [policy.ts:162](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L162)
 
 Path to the file that failed the policy.
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+***
+
+### manualFix?
+
+> `optional` **manualFix**: `string`
+
+Defined in: [policy.ts:167](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L167)
+
+An optional string that tells the user how to fix the failure(s).
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
