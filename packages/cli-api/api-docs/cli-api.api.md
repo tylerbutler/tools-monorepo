@@ -120,7 +120,7 @@ export interface ConfigCapabilityOptions<TConfig> {
 export interface ConfigContext<TConfig> {
     config: TConfig;
     isDefault(): boolean;
-    location: string | "DEFAULT" | undefined;
+    location: string | DefaultConfigLocation | undefined;
     reload(): Promise<ConfigContext<TConfig>>;
 }
 
@@ -129,6 +129,11 @@ export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @beta
 export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
+
+// @beta
+export type DefaultConfigLocation = "DEFAULT" & {
+    readonly __brand: "DefaultConfigLocation";
+};
 
 // @beta
 export function detectAllPackageManagers(directory?: string): Promise<PackageManager[]>;

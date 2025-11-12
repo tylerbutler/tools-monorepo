@@ -4,8 +4,12 @@ import type { BaseCommand } from "../baseCommand.js";
  * A capability that can be composed into commands.
  * Capabilities are initialized once and provide functionality to commands.
  *
- * @typeParam TCommand - The command type this capability is attached to
- * @typeParam TResult - The type returned by the capability's API
+ * @typeParam TCommand - The command type this capability is attached to.
+ *   Uses `BaseCommand<any>` to allow any command constructor type while maintaining
+ *   access to BaseCommand methods (error, config, etc.). More specific types can be
+ *   provided when implementing capabilities.
+ * @typeParam TResult - The type returned by the capability's API.
+ *   Defaults to `any` for maximum flexibility - capabilities can return any shape.
  *
  * @beta
  */

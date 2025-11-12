@@ -4,6 +4,7 @@ export {
 	type ConfigCapabilityOptions,
 	type ConfigContext,
 	ConfigFlag,
+	type DefaultConfigLocation,
 	useConfig,
 } from "./config.js";
 export {

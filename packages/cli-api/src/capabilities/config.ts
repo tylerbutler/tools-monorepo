@@ -4,6 +4,15 @@ import { loadConfig } from "../loadConfig.js";
 import { type Capability, CapabilityWrapper } from "./capability.js";
 
 /**
+ * Branded type to distinguish default config location from regular strings.
+ *
+ * @beta
+ */
+export type DefaultConfigLocation = "DEFAULT" & {
+	readonly __brand: "DefaultConfigLocation";
+};
+
+/**
  * Configuration options for config capability.
  *
  * @beta
@@ -41,10 +50,11 @@ export interface ConfigContext<TConfig> {
 	/**
 	 * Path to the config file, "DEFAULT" if using default, or undefined if none found.
 	 */
-	location: string | "DEFAULT" | undefined;
+	location: string | DefaultConfigLocation | undefined;
 
 	/**
 	 * Check if using default config.
+	 * @returns True if the config used is the default, false otherwise.
 	 */
 	isDefault(): boolean;
 
@@ -97,13 +107,13 @@ export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig>
 
 		const { config, location } = loaded ?? {
 			config: this.options.defaultConfig,
-			location: "DEFAULT",
+			location: "DEFAULT" as DefaultConfigLocation,
 		};
 
 		return {
 			config: config as TConfig,
 			location,
-			isDefault: () => location === "DEFAULT",
+			isDefault: () => location === ("DEFAULT" as DefaultConfigLocation),
 			reload: async () => this.initialize(command),
 		};
 	}

@@ -10,7 +10,20 @@
  */
 
 export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
-export * from "./capabilities/index.js";
+export {
+	type Capability,
+	type CapabilityWrapper,
+	ConfigCapability,
+	type ConfigCapabilityOptions,
+	type ConfigContext,
+	ConfigFlag,
+	type DefaultConfigLocation,
+	GitCapability,
+	type GitCapabilityOptions,
+	type GitContext,
+	useConfig,
+	useGit,
+} from "./capabilities/index.js";
 export {
 	CommandWithConfig,
 	type CommandWithContext,

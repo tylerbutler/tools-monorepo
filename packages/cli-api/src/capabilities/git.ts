@@ -11,6 +11,8 @@ import { type Capability, CapabilityWrapper } from "./capability.js";
 export interface GitCapabilityOptions {
 	/**
 	 * Base directory for the git repository.
+	 * Can be an absolute or relative path. If relative, it will be resolved from the current working directory.
+	 * The path does not need to be the repository root - git will search up the directory tree.
 	 * @defaultValue process.cwd()
 	 */
 	baseDir?: string;
