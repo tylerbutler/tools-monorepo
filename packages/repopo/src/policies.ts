@@ -1,8 +1,11 @@
 export { HtmlFileHeaders } from "./policies/HtmlFileHeaders.js";
 export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
+export { LicenseFileExists } from "./policies/LicenseFileExists.js";
 export { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
+export { NoLargeBinaryFiles } from "./policies/NoLargeBinaryFiles.js";
 export { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 export { PackageScripts } from "./policies/PackageScripts.js";
+export { RequiredGitignorePatterns } from "./policies/RequiredGitignorePatterns.js";
 export { DefaultPolicies } from "./policy.js";
