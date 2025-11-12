@@ -1,5 +1,37 @@
 # @tylerbu/cli-api
 
+## 0.8.0
+
+### Minor Changes
+
+- Add package manager detection utilities _[`#343`](https://github.com/tylerbutler/tools-monorepo/pull/343) [`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [@tylerbutler](https://github.com/tylerbutler)_
+
+  - Export `detectPackageManager()` - Detects package manager from lockfile in a directory
+  - Export `detectFromLockfilePath()` - Detects package manager from a specific lockfile path
+  - Export `detectAllPackageManagers()` - Detects all package managers in a directory
+  - Export `getPackageManagerInfo()` - Gets metadata for a package manager
+  - Export `getAllLockfiles()` - Gets all supported lockfile names
+  - Export `PACKAGE_MANAGERS` constant with metadata for npm, pnpm, yarn, and bun
+  - Export `PackageManager` and `PackageManagerInfo` types
+
+- Improve performance with async I/O _[`#348`](https://github.com/tylerbutler/tools-monorepo/pull/348) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Improve performance by using async filesystem operations instead of blocking synchronous calls
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/fundamentals@0.3.0`
+
+</details>
+
 ## 0.7.3
 
 ### Patch Changes
