@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BaseCommand } from "../../src/baseCommand.js";
 import {
 	type Capability,
-	CapabilityHolder,
+	CapabilityWrapper,
 } from "../../src/capabilities/capability.js";
 
 // Mock capability for testing
@@ -49,7 +49,7 @@ class TestCommand extends BaseCommand<typeof TestCommand> {
 	}
 }
 
-describe("CapabilityHolder", () => {
+describe("CapabilityWrapper", () => {
 	let command: TestCommand;
 	let mockConfig: Config;
 
@@ -67,7 +67,7 @@ describe("CapabilityHolder", () => {
 	describe("initialization", () => {
 		it("should initialize capability on first get() call", async () => {
 			const mockCapability = new MockCapability();
-			const holder = new CapabilityHolder(command, mockCapability);
+			const holder = new CapabilityWrapper(command, mockCapability);
 
 			expect(holder.isInitialized).toBe(false);
 			expect(mockCapability.initializeCalled).toBe(false);
@@ -82,7 +82,7 @@ describe("CapabilityHolder", () => {
 
 		it("should cache result after initialization", async () => {
 			const mockCapability = new MockCapability();
-			const holder = new CapabilityHolder(command, mockCapability);
+			const holder = new CapabilityWrapper(command, mockCapability);
 
 			const result1 = await holder.get();
 			const result2 = await holder.get();
@@ -95,7 +95,7 @@ describe("CapabilityHolder", () => {
 
 		it("should not initialize until get() is called", async () => {
 			const mockCapability = new MockCapability();
-			new CapabilityHolder(command, mockCapability);
+			new CapabilityWrapper(command, mockCapability);
 
 			// Just creating the holder shouldn't initialize
 			expect(mockCapability.initializeCalled).toBe(false);
@@ -105,7 +105,7 @@ describe("CapabilityHolder", () => {
 	describe("error handling", () => {
 		it("should call command.error() on initialization failure", async () => {
 			const errorCapability = new ErrorCapability();
-			const holder = new CapabilityHolder(command, errorCapability);
+			const holder = new CapabilityWrapper(command, errorCapability);
 
 			await expect(holder.get()).rejects.toThrow("Initialization failed");
 			expect(command.errorSpy).toHaveBeenCalledWith(
@@ -125,7 +125,10 @@ describe("CapabilityHolder", () => {
 				}
 			}
 
-			const holder = new CapabilityHolder(command, new StringThrowCapability());
+			const holder = new CapabilityWrapper(
+				command,
+				new StringThrowCapability(),
+			);
 
 			await expect(holder.get()).rejects.toThrow();
 			expect(command.errorSpy).toHaveBeenCalledWith(
@@ -138,7 +141,7 @@ describe("CapabilityHolder", () => {
 	describe("cleanup", () => {
 		it("should call capability cleanup() method", async () => {
 			const mockCapability = new MockCapability();
-			const holder = new CapabilityHolder(command, mockCapability);
+			const holder = new CapabilityWrapper(command, mockCapability);
 
 			await holder.get();
 			await holder.cleanup();
@@ -160,7 +163,7 @@ describe("CapabilityHolder", () => {
 				}
 			}
 
-			const holder = new CapabilityHolder(command, new NoCleanupCapability());
+			const holder = new CapabilityWrapper(command, new NoCleanupCapability());
 			await holder.get();
 
 			// Should not throw
@@ -169,7 +172,7 @@ describe("CapabilityHolder", () => {
 
 		it("should not fail if cleanup called before initialization", async () => {
 			const mockCapability = new MockCapability();
-			const holder = new CapabilityHolder(command, mockCapability);
+			const holder = new CapabilityWrapper(command, mockCapability);
 
 			// Should not throw
 			await expect(holder.cleanup()).resolves.toBeUndefined();
@@ -180,7 +183,7 @@ describe("CapabilityHolder", () => {
 	describe("concurrent access", () => {
 		it("should handle concurrent get() calls correctly", async () => {
 			const mockCapability = new MockCapability();
-			const holder = new CapabilityHolder(command, mockCapability);
+			const holder = new CapabilityWrapper(command, mockCapability);
 
 			// Call get() multiple times concurrently
 			const results = await Promise.all([

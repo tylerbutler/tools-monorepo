@@ -4,8 +4,10 @@ import type { BaseCommand } from "../baseCommand.js";
  * A capability that can be composed into commands.
  * Capabilities are initialized once and provide functionality to commands.
  *
- * @template TCommand - The command type this capability is attached to
- * @template TResult - The type returned by the capability's API
+ * @typeParam TCommand - The command type this capability is attached to
+ * @typeParam TResult - The type returned by the capability's API
+ *
+ * @beta
  */
 export interface Capability<TCommand extends BaseCommand<any>, TResult = any> {
 	/**
@@ -23,25 +25,25 @@ export interface Capability<TCommand extends BaseCommand<any>, TResult = any> {
 /**
  * Lazy-initialized capability holder.
  * Ensures capabilities are only initialized once, when first accessed.
+ *
+ * @beta
  */
-export class CapabilityHolder<TCommand extends BaseCommand<any>, TResult> {
+export class CapabilityWrapper<TCommand extends BaseCommand<any>, TResult> {
 	private _initialized = false;
 	private _result: TResult | undefined;
 	private _initializationPromise: Promise<TResult> | undefined;
-	private readonly capability: Capability<TCommand, TResult>;
-	private readonly command: TCommand;
 
-	constructor(command: TCommand, capability: Capability<TCommand, TResult>) {
-		this.command = command;
-		this.capability = capability;
-	}
+	public constructor(
+		private readonly command: TCommand,
+		private readonly capability: Capability<TCommand, TResult>,
+	) {}
 
 	/**
 	 * Get the capability, initializing it if needed.
 	 * Subsequent calls return cached result.
 	 * Concurrent calls will wait for the same initialization promise.
 	 */
-	async get(): Promise<TResult> {
+	public async get(): Promise<TResult> {
 		if (this._initialized) {
 			return this._result as TResult;
 		}
@@ -71,14 +73,14 @@ export class CapabilityHolder<TCommand extends BaseCommand<any>, TResult> {
 	/**
 	 * Check if capability has been initialized.
 	 */
-	get isInitialized(): boolean {
+	public get isInitialized(): boolean {
 		return this._initialized;
 	}
 
 	/**
 	 * Cleanup the capability.
 	 */
-	async cleanup(): Promise<void> {
+	public async cleanup(): Promise<void> {
 		if (this._initialized && this.capability.cleanup) {
 			await this.capability.cleanup();
 		}

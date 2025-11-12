@@ -1,10 +1,12 @@
 import { Flags } from "@oclif/core";
 import type { BaseCommand } from "../baseCommand.js";
 import { loadConfig } from "../loadConfig.js";
-import { Capability, CapabilityHolder } from "./capability.js";
+import { type Capability, CapabilityWrapper } from "./capability.js";
 
 /**
  * Configuration options for config capability.
+ *
+ * @beta
  */
 export interface ConfigCapabilityOptions<TConfig> {
 	/**
@@ -14,21 +16,23 @@ export interface ConfigCapabilityOptions<TConfig> {
 
 	/**
 	 * Whether config is required. If true and no config is found, command will exit.
-	 * @default true
+	 * @defaultValue true
 	 */
 	required?: boolean;
 
 	/**
 	 * Custom search paths for config file. Will search in order.
-	 * @default [process.cwd()]
+	 * @defaultValue [process.cwd()]
 	 */
 	searchPaths?: string[];
 }
 
 /**
- * Result returned by the config capability.
+ * Context returned by the config capability.
+ *
+ * @beta
  */
-export interface ConfigResult<TConfig> {
+export interface ConfigContext<TConfig> {
 	/**
 	 * The loaded configuration.
 	 */
@@ -47,18 +51,20 @@ export interface ConfigResult<TConfig> {
 	/**
 	 * Reload the configuration from disk.
 	 */
-	reload(): Promise<ConfigResult<TConfig>>;
+	reload(): Promise<ConfigContext<TConfig>>;
 }
 
 /**
  * Config capability implementation.
+ *
+ * @beta
  */
 export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig>
-	implements Capability<TCommand, ConfigResult<TConfig>>
+	implements Capability<TCommand, ConfigContext<TConfig>>
 {
-	constructor(private options: ConfigCapabilityOptions<TConfig> = {}) {}
+	public constructor(private options: ConfigCapabilityOptions<TConfig> = {}) {}
 
-	async initialize(command: TCommand): Promise<ConfigResult<TConfig>> {
+	public async initialize(command: TCommand): Promise<ConfigContext<TConfig>> {
 		const searchPaths = this.options.searchPaths ?? [process.cwd()];
 
 		// Try loading from each search path
@@ -69,7 +75,9 @@ export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig>
 				searchPath,
 				undefined,
 			);
-			if (loaded) break;
+			if (loaded) {
+				break;
+			}
 		}
 
 		if (loaded === undefined && this.options.defaultConfig === undefined) {
@@ -118,12 +126,14 @@ export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig>
  *   }
  * }
  * ```
+ *
+ * @beta
  */
 export function useConfig<TCommand extends BaseCommand<any>, TConfig>(
 	command: TCommand,
 	options?: ConfigCapabilityOptions<TConfig>,
-): CapabilityHolder<TCommand, ConfigResult<TConfig>> {
-	return new CapabilityHolder(
+): CapabilityWrapper<TCommand, ConfigContext<TConfig>> {
+	return new CapabilityWrapper(
 		command,
 		new ConfigCapability<TCommand, TConfig>(options),
 	);
@@ -131,6 +141,8 @@ export function useConfig<TCommand extends BaseCommand<any>, TConfig>(
 
 /**
  * Config flag that can be added to command flags.
+ *
+ * @beta
  */
 export const ConfigFlag = Flags.string({
 	char: "c",

@@ -1,30 +1,35 @@
 import type { SimpleGit } from "simple-git";
 import type { BaseCommand } from "../baseCommand.js";
 import { Repository } from "../git.js";
-import { Capability, CapabilityHolder } from "./capability.js";
+import { type Capability, CapabilityWrapper } from "./capability.js";
 
 /**
  * Configuration options for git capability.
+ *
+ * @beta
  */
 export interface GitCapabilityOptions {
 	/**
 	 * Base directory for the git repository.
-	 * @default process.cwd()
+	 * @defaultValue process.cwd()
 	 */
 	baseDir?: string;
 
 	/**
 	 * Whether a git repository is required.
 	 * If true and not in a repo, command will exit.
-	 * @default true
+	 * @defaultValue true
 	 */
 	required?: boolean;
 }
 
 /**
- * Result returned by the git capability.
+ * Context returned by the git capability.
+ * Provides access to git client, repository utilities, and helper methods.
+ *
+ * @beta
  */
-export interface GitResult {
+export interface GitContext {
 	/**
 	 * simple-git client instance.
 	 */
@@ -48,13 +53,15 @@ export interface GitResult {
 
 /**
  * Git capability implementation.
+ *
+ * @beta
  */
 export class GitCapability<TCommand extends BaseCommand<any>>
-	implements Capability<TCommand, GitResult>
+	implements Capability<TCommand, GitContext>
 {
-	constructor(private options: GitCapabilityOptions = {}) {}
+	public constructor(private options: GitCapabilityOptions = {}) {}
 
-	async initialize(command: TCommand): Promise<GitResult> {
+	public async initialize(command: TCommand): Promise<GitContext> {
 		const baseDir = this.options.baseDir ?? process.cwd();
 		const repo = new Repository({ baseDir });
 		const git = repo.gitClient;
@@ -105,10 +112,12 @@ export class GitCapability<TCommand extends BaseCommand<any>>
  *   }
  * }
  * ```
+ *
+ * @beta
  */
 export function useGit<TCommand extends BaseCommand<any>>(
 	command: TCommand,
 	options?: GitCapabilityOptions,
-): CapabilityHolder<TCommand, GitResult> {
-	return new CapabilityHolder(command, new GitCapability<TCommand>(options));
+): CapabilityWrapper<TCommand, GitContext> {
+	return new CapabilityWrapper(command, new GitCapability<TCommand>(options));
 }

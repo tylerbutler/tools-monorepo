@@ -55,14 +55,14 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
     warningWithDebugTrace(message: string | Error): string | Error;
 }
 
-// @public
+// @beta
 export interface Capability<TCommand extends BaseCommand<any>, TResult = any> {
     cleanup?(): Promise<void> | void;
     initialize(command: TCommand): Promise<TResult> | TResult;
 }
 
-// @public
-export class CapabilityHolder<TCommand extends BaseCommand<any>, TResult> {
+// @beta
+export class CapabilityWrapper<TCommand extends BaseCommand<any>, TResult> {
     constructor(command: TCommand, capability: Capability<TCommand, TResult>);
     cleanup(): Promise<void>;
     get(): Promise<TResult>;
@@ -102,14 +102,14 @@ export interface CommandWithContext<CONTEXT> {
 // @beta
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
-// @public
-export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig> implements Capability<TCommand, ConfigResult<TConfig>> {
+// @beta
+export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig> implements Capability<TCommand, ConfigContext<TConfig>> {
     constructor(options?: ConfigCapabilityOptions<TConfig>);
     // (undocumented)
-    initialize(command: TCommand): Promise<ConfigResult<TConfig>>;
+    initialize(command: TCommand): Promise<ConfigContext<TConfig>>;
 }
 
-// @public
+// @beta
 export interface ConfigCapabilityOptions<TConfig> {
     defaultConfig?: TConfig;
     required?: boolean;
@@ -117,18 +117,18 @@ export interface ConfigCapabilityOptions<TConfig> {
 }
 
 // @beta
-export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
-
-// @public
-export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
-
-// @public
-export interface ConfigResult<TConfig> {
+export interface ConfigContext<TConfig> {
     config: TConfig;
     isDefault(): boolean;
     location: string | "DEFAULT" | undefined;
-    reload(): Promise<ConfigResult<TConfig>>;
+    reload(): Promise<ConfigContext<TConfig>>;
 }
+
+// @beta
+export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
+
+// @beta
+export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @beta
 export function detectAllPackageManagers(directory?: string): Promise<PackageManager[]>;
@@ -157,14 +157,14 @@ export function getMergeBase(git: SimpleGit, reference1: string, reference2: str
 // @beta
 export function getPackageManagerInfo(pm: PackageManager): PackageManagerInfo;
 
-// @public
-export class GitCapability<TCommand extends BaseCommand<any>> implements Capability<TCommand, GitResult> {
+// @beta
+export class GitCapability<TCommand extends BaseCommand<any>> implements Capability<TCommand, GitContext> {
     constructor(options?: GitCapabilityOptions);
     // (undocumented)
-    initialize(command: TCommand): Promise<GitResult>;
+    initialize(command: TCommand): Promise<GitContext>;
 }
 
-// @public
+// @beta
 export interface GitCapabilityOptions {
     baseDir?: string;
     required?: boolean;
@@ -183,8 +183,8 @@ export abstract class GitCommand<T extends typeof Command & {
     protected requiresConfig: boolean;
 }
 
-// @public
-export interface GitResult {
+// @beta
+export interface GitContext {
     // (undocumented)
     getCurrentBranch(): Promise<string>;
     git: SimpleGit;
@@ -266,10 +266,10 @@ export function shortCommit(commit: string): string;
 // @beta
 export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
 
-// @public
-export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options?: ConfigCapabilityOptions<TConfig>): CapabilityHolder<TCommand, ConfigResult<TConfig>>;
+// @beta
+export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options?: ConfigCapabilityOptions<TConfig>): CapabilityWrapper<TCommand, ConfigContext<TConfig>>;
 
-// @public
-export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options?: GitCapabilityOptions): CapabilityHolder<TCommand, GitResult>;
+// @beta
+export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options?: GitCapabilityOptions): CapabilityWrapper<TCommand, GitContext>;
 
 ```

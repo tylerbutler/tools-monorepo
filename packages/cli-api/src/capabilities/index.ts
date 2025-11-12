@@ -1,15 +1,14 @@
-export type { Capability } from "./capability.js";
-export { CapabilityHolder } from "./capability.js";
+export type { Capability, CapabilityWrapper } from "./capability.js";
 export {
 	ConfigCapability,
 	type ConfigCapabilityOptions,
+	type ConfigContext,
 	ConfigFlag,
-	type ConfigResult,
 	useConfig,
 } from "./config.js";
 export {
 	GitCapability,
 	type GitCapabilityOptions,
-	type GitResult,
+	type GitContext,
 	useGit,
 } from "./git.js";
