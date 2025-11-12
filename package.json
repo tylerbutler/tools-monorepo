@@ -143,6 +143,10 @@
 				"cache": true
 			},
 			"check:format": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "check:format"
+				},
 				"inputs": [
 					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts,json,jsonc,md}",
 					"!{workspaceRoot}/**/node_modules/**",
@@ -154,6 +158,10 @@
 				"cache": true
 			},
 			"lint": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "lint"
+				},
 				"inputs": [
 					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}",
 					"!{workspaceRoot}/**/node_modules/**",
