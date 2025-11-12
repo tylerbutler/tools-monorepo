@@ -12,11 +12,13 @@ interface MockResult {
 	helperMethod(): string;
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
 class MockCapability implements Capability<BaseCommand<any>, MockResult> {
 	public initializeCalled = false;
 	public cleanupCalled = false;
 
-	public async initialize(command: BaseCommand<any>): Promise<MockResult> {
+	// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	public async initialize(_command: BaseCommand<any>): Promise<MockResult> {
 		this.initializeCalled = true;
 		return {
 			data: "mock-data",
@@ -29,8 +31,10 @@ class MockCapability implements Capability<BaseCommand<any>, MockResult> {
 	}
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
 class ErrorCapability implements Capability<BaseCommand<any>, MockResult> {
-	public async initialize(command: BaseCommand<any>): Promise<MockResult> {
+	// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	public async initialize(_command: BaseCommand<any>): Promise<MockResult> {
 		throw new Error("Initialization failed");
 	}
 }
@@ -58,6 +62,7 @@ describe("CapabilityWrapper", () => {
 			root: "/test/root",
 			bin: "test-cli",
 			version: "1.0.0",
+			// biome-ignore lint/suspicious/noExplicitAny: Test config mock requires partial Config object
 			pjson: {} as any,
 		} as Config;
 
@@ -116,12 +121,16 @@ describe("CapabilityWrapper", () => {
 
 		it("should handle non-Error thrown objects", async () => {
 			class StringThrowCapability
-				implements Capability<BaseCommand<any>, MockResult>
+				implements
+					Capability<
+						// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+						BaseCommand<any>,
+						MockResult
+					>
 			{
-				public async initialize(
-					command: BaseCommand<any>,
-				): Promise<MockResult> {
-					throw "String error";
+				// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+				public async initialize(_cmd: BaseCommand<any>): Promise<MockResult> {
+					throw new Error("String error");
 				}
 			}
 
@@ -151,11 +160,15 @@ describe("CapabilityWrapper", () => {
 
 		it("should not fail if capability has no cleanup method", async () => {
 			class NoCleanupCapability
-				implements Capability<BaseCommand<any>, MockResult>
+				implements
+					Capability<
+						// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+						BaseCommand<any>,
+						MockResult
+					>
 			{
-				public async initialize(
-					command: BaseCommand<any>,
-				): Promise<MockResult> {
+				// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+				public async initialize(_cmd: BaseCommand<any>): Promise<MockResult> {
 					return {
 						data: "test",
 						helperMethod: () => "test",

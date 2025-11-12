@@ -31,6 +31,7 @@ describe("GitCapability", () => {
 			root: "/test/root",
 			bin: "test-cli",
 			version: "1.0.0",
+			// biome-ignore lint/suspicious/noExplicitAny: Test config mock requires partial Config object
 			pjson: {} as any,
 		} as Config;
 

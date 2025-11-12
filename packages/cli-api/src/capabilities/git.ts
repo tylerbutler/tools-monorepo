@@ -58,8 +58,10 @@ export interface GitContext {
  *
  * @beta
  */
-export class GitCapability<TCommand extends BaseCommand<any>>
-	implements Capability<TCommand, GitContext>
+export class GitCapability<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+> implements Capability<TCommand, GitContext>
 {
 	public constructor(private options: GitCapabilityOptions = {}) {}
 
@@ -117,7 +119,10 @@ export class GitCapability<TCommand extends BaseCommand<any>>
  *
  * @beta
  */
-export function useGit<TCommand extends BaseCommand<any>>(
+export function useGit<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+>(
 	command: TCommand,
 	options?: GitCapabilityOptions,
 ): CapabilityWrapper<TCommand, GitContext> {

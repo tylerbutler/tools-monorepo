@@ -69,8 +69,11 @@ export interface ConfigContext<TConfig> {
  *
  * @beta
  */
-export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig>
-	implements Capability<TCommand, ConfigContext<TConfig>>
+export class ConfigCapability<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+	TConfig,
+> implements Capability<TCommand, ConfigContext<TConfig>>
 {
 	public constructor(private options: ConfigCapabilityOptions<TConfig> = {}) {}
 
@@ -139,7 +142,11 @@ export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig>
  *
  * @beta
  */
-export function useConfig<TCommand extends BaseCommand<any>, TConfig>(
+export function useConfig<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+	TConfig,
+>(
 	command: TCommand,
 	options?: ConfigCapabilityOptions<TConfig>,
 ): CapabilityWrapper<TCommand, ConfigContext<TConfig>> {

@@ -56,7 +56,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
 }
 
 // @beta
-export interface Capability<TCommand extends BaseCommand<any>, TResult = any> {
+export interface Capability<TCommand extends BaseCommand<any>, TResult = unknown> {
     cleanup?(): Promise<void> | void;
     initialize(command: TCommand): Promise<TResult> | TResult;
 }

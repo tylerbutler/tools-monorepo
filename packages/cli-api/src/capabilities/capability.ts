@@ -9,11 +9,15 @@ import type { BaseCommand } from "../baseCommand.js";
  *   access to BaseCommand methods (error, config, etc.). More specific types can be
  *   provided when implementing capabilities.
  * @typeParam TResult - The type returned by the capability's API.
- *   Defaults to `any` for maximum flexibility - capabilities can return any shape.
+ *   Defaults to `unknown` for maximum flexibility - capabilities can return any shape.
  *
  * @beta
  */
-export interface Capability<TCommand extends BaseCommand<any>, TResult = any> {
+export interface Capability<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+	TResult = unknown,
+> {
 	/**
 	 * Initialize the capability. Called automatically when accessed for the first time.
 	 * @param command - The command instance this capability is attached to
@@ -32,7 +36,11 @@ export interface Capability<TCommand extends BaseCommand<any>, TResult = any> {
  *
  * @beta
  */
-export class CapabilityWrapper<TCommand extends BaseCommand<any>, TResult> {
+export class CapabilityWrapper<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+	TResult,
+> {
 	private _initialized = false;
 	private _result: TResult | undefined;
 	private _initializationPromise: Promise<TResult> | undefined;
