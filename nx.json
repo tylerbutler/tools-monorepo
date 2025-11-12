@@ -59,11 +59,12 @@
 		// ORCHESTRATION TARGETS
 		// ============================================
 		// CI target - centralizes task list for CI pipeline
-		// Dependencies: check, build, lint, test:coverage
+		// Dependencies: check, build, test:coverage
+		// Note: lint and check:format run at root level only (via root targets)
 		// Projects inherit this automatically if they have a "ci" script
 		"ci": {
 			"executor": "nx:noop",
-			"dependsOn": ["check", "build", "lint", "test:coverage"],
+			"dependsOn": ["check", "build", "test:coverage"],
 			"cache": true
 		},
 
@@ -116,7 +117,6 @@
 
 		"check": {
 			"dependsOn": [
-				"check:format",
 				"check:types",
 				"check:deps",
 				"check:policy",
