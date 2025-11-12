@@ -34,21 +34,15 @@ jobs:
       - uses: ./.github/actions/setup-nx
         with:
           enable-cache: true
-          # Nx Cloud disabled by default (no nxCloudId in nx.json)
-          # Only enabled for build task on main branch (see steps below)
+          # Nx Cloud disabled (no nxCloudId in nx.json)
+          # TODO: Consider re-enabling for main branch builds to enable remote caching
           nx-cloud-token: ''
 
       - name: Run CI checks, builds, and tests
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            # On main branch: Run build with Nx Cloud, everything else without it
-            echo "Running build with Nx Cloud enabled..."
-            NX_CLOUD_ACCESS_TOKEN=${{ secrets.NX_CLOUD_ACCESS_TOKEN }} pnpm nx run-many -t build
-
-            echo "Running checks and tests with local cache only..."
-            NX_NO_CLOUD=true pnpm nx run-many -t check lint test:coverage
+            pnpm run ci:all
           else
-            # On PR branches: Run affected tasks with local cache only
             pnpm run ci:affected
           fi
 
