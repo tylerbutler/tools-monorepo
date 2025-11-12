@@ -74,7 +74,9 @@
 			"strategy": "pattern",
 			"target": "./esm/commands"
 		},
-		"devPlugins": [],
+		"devPlugins": [
+			"@oclif/plugin-command-snapshot"
+		],
 		"dirname": "repopo",
 		"plugins": [],
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"

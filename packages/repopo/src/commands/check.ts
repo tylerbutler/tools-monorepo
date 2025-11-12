@@ -266,7 +266,8 @@ export class CheckPolicy<
 		gitRoot: string,
 	): Promise<PolicyHandlerResult> {
 		try {
-			return await runWithPerf(policy.name, "handle", perfStats, () =>
+			const action = this.flags.fix ? "resolve" : "check";
+			return await runWithPerf(policy.name, action, perfStats, () =>
 				policy.handler({
 					file: relPath,
 					root: gitRoot,
@@ -370,8 +371,8 @@ export class CheckPolicy<
 			process.exitCode = 1;
 		}
 
-		if (resolveResult.errorMessage) {
-			messages.append(newline + resolveResult.errorMessage);
+		if (resolveResult.errorMessages?.length > 0) {
+			messages.append(newline + resolveResult.errorMessages.join(newline));
 		}
 	}
 
@@ -384,8 +385,10 @@ export class CheckPolicy<
 		messages.append(
 			`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
 		);
-		if (result.errorMessage) {
-			messages.append(`${newline}\t${result.errorMessage}`);
+		if (result.errorMessages?.length > 0) {
+			messages.append(
+				`${newline}\t${result.errorMessages.join(`${newline}\t`)}`,
+			);
 		}
 		process.exitCode = 1;
 	}

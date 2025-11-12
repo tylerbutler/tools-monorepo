@@ -152,7 +152,9 @@ export const NoLargeBinaryFiles: PolicyDefinition<NoLargeBinaryFilesSettings> =
 						name: NoLargeBinaryFiles.name,
 						file,
 						autoFixable: false,
-						errorMessage: `File is too large: ${formatBytes(stats.size)} (max: ${formatBytes(maxSizeBytes)}). Consider using Git LFS or removing the file.`,
+						errorMessages: [
+							`File is too large: ${formatBytes(stats.size)} (max: ${formatBytes(maxSizeBytes)}). Consider using Git LFS or removing the file.`,
+						],
 					};
 
 					return result;

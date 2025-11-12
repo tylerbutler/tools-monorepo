@@ -77,10 +77,10 @@ describe("NoLargeBinaryFiles", () => {
 			if (typeof result === "object") {
 				expect(result.name).toBe("NoLargeBinaryFiles");
 				expect(result.autoFixable).toBe(false);
-				expect(result.errorMessage).toContain("File is too large");
-				expect(result.errorMessage).toContain("15.0 MB");
-				expect(result.errorMessage).toContain("10.0 MB");
-				expect(result.errorMessage).toContain("Git LFS");
+				expect(result.errorMessages?.[0]).toContain("File is too large");
+				expect(result.errorMessages?.[0]).toContain("15.0 MB");
+				expect(result.errorMessages?.[0]).toContain("10.0 MB");
+				expect(result.errorMessages?.[0]).toContain("Git LFS");
 			}
 		});
 
@@ -155,8 +155,8 @@ describe("NoLargeBinaryFiles", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("2.0 MB");
-				expect(result.errorMessage).toContain("1.0 MB");
+				expect(result.errorMessages?.[0]).toContain("2.0 MB");
+				expect(result.errorMessages?.[0]).toContain("1.0 MB");
 			}
 		});
 
@@ -294,7 +294,7 @@ describe("NoLargeBinaryFiles", () => {
 				});
 
 				if (typeof result === "object") {
-					expect(result.errorMessage).toContain(expected);
+					expect(result.errorMessages?.[0]).toContain(expected);
 				}
 			}
 		});

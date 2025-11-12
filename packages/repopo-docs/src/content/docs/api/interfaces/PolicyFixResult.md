@@ -5,7 +5,7 @@ prev: false
 title: "PolicyFixResult"
 ---
 
-Defined in: [policy.ts:180](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L180)
+Defined in: [policy.ts:185](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L185)
 
 The result of an automatic fix for a failing policy.
 
@@ -77,7 +77,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **manualFix**: `string`
 
-Defined in: [policy.ts:167](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L167)
+Defined in: [policy.ts:177](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L177)
 
 An optional string that tells the user how to fix the failure(s).
 
@@ -113,7 +113,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **resolved**: `boolean`
 
-Defined in: [policy.ts:184](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L184)
+Defined in: [policy.ts:189](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L189)
 
 Set to true if the failure was resolved by the automated fixer.
 

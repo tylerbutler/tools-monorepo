@@ -65,7 +65,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **manualFix**: `string`
 
-Defined in: [policy.ts:167](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L167)
+Defined in: [policy.ts:177](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L177)
 
 An optional string that tells the user how to fix the failure(s).
 

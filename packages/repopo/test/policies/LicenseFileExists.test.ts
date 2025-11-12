@@ -91,8 +91,8 @@ describe("LicenseFileExists", () => {
 				expect(result.name).toBe("LicenseFileExists");
 				expect(result.file).toBe(".");
 				expect(result.autoFixable).toBe(false);
-				expect(result.errorMessage).toContain("No LICENSE file found");
-				expect(result.errorMessage).toContain("LICENSE, LICENSE.txt");
+				expect(result.errorMessages?.[0]).toContain("No LICENSE file found");
+				expect(result.errorMessages?.[0]).toContain("LICENSE, LICENSE.txt");
 			}
 		});
 	});
@@ -133,8 +133,8 @@ describe("LicenseFileExists", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("COPYING");
-				expect(result.errorMessage).not.toContain("LICENSE.txt");
+				expect(result.errorMessages?.[0]).toContain("COPYING");
+				expect(result.errorMessages?.[0]).not.toContain("LICENSE.txt");
 			}
 		});
 	});
@@ -190,7 +190,7 @@ describe("LicenseFileExists", () => {
 				// Case-sensitive filesystem
 				expect(result).not.toBe(true);
 				if (typeof result === "object") {
-					expect(result.errorMessage).toContain("No LICENSE file found");
+					expect(result.errorMessages?.[0]).toContain("No LICENSE file found");
 				}
 			}
 		});
