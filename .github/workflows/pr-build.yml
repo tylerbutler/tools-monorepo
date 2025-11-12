@@ -124,11 +124,11 @@ jobs:
 
       - name: Build ccl-test-viewer
         if: steps.check-affected.outputs.affected == 'true'
-        run: pnpm --filter ccl-test-viewer build
+        run: pnpm nx run ccl-test-viewer:build
 
       - name: Run bundlemon
         if: steps.check-affected.outputs.affected == 'true'
-        run: pnpm --filter ccl-test-viewer exec bundlemon
+        run: pnpm nx run ccl-test-viewer:bundlemon
         env:
           # GitHub Actions automatically provides all necessary env vars
           # The GitHub App handles authentication and reporting

@@ -22,6 +22,7 @@
 	"scripts": {
 		"build:tauri": "BUILD_TARGET=tauri pnpm build:vite && tauri build",
 		"build:vite": "vite build",
+		"bundlemon": "bundlemon",
 		"check": "pnpm check:svelte && pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -108,6 +109,11 @@
 					"sync-data",
 					"build:vite"
 				]
+			},
+			"bundlemon": {
+				"dependsOn": ["build"],
+				"inputs": ["default", "{projectRoot}/build/**"],
+				"cache": false
 			},
 			"ci": {}
 		}
