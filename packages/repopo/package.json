@@ -63,8 +63,12 @@
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
 	},
 	"oclif": {
-		"additionalHelpFlags": ["-h"],
-		"additionalVersionFlags": ["-V"],
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
 		"bin": "repopo",
 		"commands": {
 			"strategy": "pattern",

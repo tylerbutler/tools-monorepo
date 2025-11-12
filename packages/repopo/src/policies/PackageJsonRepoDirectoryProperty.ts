@@ -31,34 +31,34 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 	const maybeDir = path.relative(root, pkgDir);
 	const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
 
-	if (typeof json.repository === "object") {
-		if (json.repository.directory !== relativePkgDir) {
-			if (resolve) {
-				try {
-					// biome-ignore lint/nursery/noShadow: no need to use shadowed variable
-					updatePackageJsonFile(file, (json) => {
-						assert(typeof json.repository === "object");
-						if (relativePkgDir === undefined) {
-							// biome-ignore lint/performance/noDelete: <explanation>
-							delete json.repository.directory;
-						} else {
-							json.repository.directory = relativePkgDir;
-						}
-					});
-					fixResult.resolved = true;
-				} catch (error: unknown) {
-					fixResult.resolved = false;
-					fixResult.errorMessages.push(
-						`${(error as Error).message}\n${(error as Error).stack}`,
-					);
-				}
-				return fixResult;
+	if (
+		typeof json.repository === "object" &&
+		json.repository.directory !== relativePkgDir
+	) {
+		if (resolve) {
+			try {
+				// biome-ignore lint/nursery/noShadow: no need to use shadowed variable
+				updatePackageJsonFile(file, (json) => {
+					assert(typeof json.repository === "object");
+					if (relativePkgDir === undefined) {
+						delete json.repository.directory;
+					} else {
+						json.repository.directory = relativePkgDir;
+					}
+				});
+				fixResult.resolved = true;
+			} catch (error: unknown) {
+				fixResult.resolved = false;
+				fixResult.errorMessages.push(
+					`${(error as Error).message}\n${(error as Error).stack}`,
+				);
 			}
-			failResult.errorMessages.push(
-				`repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`,
-			);
-			return failResult;
+			return fixResult;
 		}
+		failResult.errorMessages.push(
+			`repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`,
+		);
+		return failResult;
 	}
 
 	return true;

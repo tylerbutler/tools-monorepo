@@ -1,4 +1,4 @@
-import { LogLevels, createConsola } from "consola";
+import { createConsola, LogLevels } from "consola";
 import type { Logger } from "../logger.js";
 
 const consola = createConsola({

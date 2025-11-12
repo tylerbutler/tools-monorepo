@@ -1,5 +1,4 @@
 import type { Logger } from "@tylerbu/cli-api";
-import { colors } from "consola/utils";
 import type { PolicyName } from "./policy.js";
 
 export type PolicyAction = "check" | "resolve";

@@ -11,8 +11,7 @@ function formatError(message: Error | string): string {
 }
 
 function log(msg: string): void {
-	// biome-ignore lint/suspicious/noConsoleLog: <explanation>
-	// biome-ignore lint/suspicious/noConsole: <explanation>
+	// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
 	console.log(msg);
 }
 
@@ -33,8 +32,7 @@ function warning(msg: string | Error) {
 }
 
 function errorLog(msg: string | Error) {
-	// biome-ignore lint/suspicious/noConsoleLog: <explanation>
-	// biome-ignore lint/suspicious/noConsole: <explanation>
+	// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
 	console.error(`${chalk.red("ERROR")}: ${formatError(msg)}`);
 }
 

@@ -1,4 +1,3 @@
-import process from "node:process";
 import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
 import type { PrettyPrintableError } from "@oclif/core/errors";
 import registerDebug, { type Debugger } from "debug";

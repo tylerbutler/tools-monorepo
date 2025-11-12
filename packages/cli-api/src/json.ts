@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import type { Indent } from "detect-indent";
 import detectIndent from "detect-indent";
@@ -45,20 +44,9 @@ export async function readJsonWithIndent<J = unknown>(
 	json: J;
 	indent: Indent;
 }> {
-	console.log(
-		existsSync(filePath),
-		filePath,
-		path.isAbsolute(filePath),
-		path.relative(process.cwd(), filePath),
-	);
-	let contents: string;
-	try {
-		contents = await readFile(filePath, {
-			encoding: "utf8",
-		});
-	} catch (error) {
-		throw error;
-	}
+	const contents = await readFile(filePath, {
+		encoding: "utf8",
+	});
 	const indent = detectIndent(contents);
 	const json = JSON.parse(contents);
 	return { json, indent };
