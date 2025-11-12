@@ -13,6 +13,10 @@
 				"noForEach": "error",
 				"noUselessStringConcat": "error",
 				"noVoid": "error",
+				// Disabled because it conflicts with TypeScript's noPropertyAccessFromIndexSignature option.
+				// When noPropertyAccessFromIndexSignature is enabled, TypeScript requires bracket notation
+				// for index signature properties, but useLiteralKeys wants dot notation.
+				"useLiteralKeys": "off",
 				"useSimplifiedLogicExpression": "error",
 				"useWhile": "error",
 			},
