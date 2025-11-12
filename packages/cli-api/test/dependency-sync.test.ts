@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { temporaryDirectory } from "tempy";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -778,6 +778,9 @@ describe("dependency-sync", () => {
 			const pkg1Path = join(tmpDir, "pkg1");
 			const pkg2Path = join(tmpDir, "pkg2");
 
+			await mkdir(pkg1Path, { recursive: true });
+			await mkdir(pkg2Path, { recursive: true });
+
 			await writeFile(
 				join(pkg1Path, "package.json"),
 				JSON.stringify({
@@ -830,6 +833,7 @@ describe("dependency-sync", () => {
 
 		it("filters out results with no changes", async () => {
 			const pkgPath = join(tmpDir, "pkg");
+			await mkdir(pkgPath, { recursive: true });
 			await writeFile(
 				join(pkgPath, "package.json"),
 				JSON.stringify({

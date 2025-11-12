@@ -219,6 +219,42 @@ export function isValidSemver(version: string): boolean {
 }
 
 /**
+ * Creates a skipped result with an optional warning
+ *
+ * @internal
+ */
+function createSkippedResult(
+	currentRange: string,
+	warning: string | undefined,
+): UpdateVersionRangeResult {
+	if (warning !== undefined) {
+		return {
+			updated: currentRange,
+			skipped: true,
+			warning,
+		};
+	}
+	return {
+		updated: currentRange,
+		skipped: true,
+	};
+}
+
+/**
+ * Checks if a range is a complex range that should be preserved
+ *
+ * @internal
+ */
+function isComplexRange(range: string): boolean {
+	return (
+		range.startsWith(">=") ||
+		range.startsWith("<=") ||
+		range.startsWith(">") ||
+		range.startsWith("<")
+	);
+}
+
+/**
  * Updates a version range based on an installed version
  *
  * @param currentRange - Current version range in package.json
@@ -228,12 +264,12 @@ export function isValidSemver(version: string): boolean {
  *
  * @remarks
  * This function handles various version range formats:
- * - Caret ranges (^1.0.0) → ^{installedVersion}
- * - Tilde ranges (~1.0.0) → ~{installedVersion}
- * - Exact versions (1.0.0) → {installedVersion}
+ * - Caret ranges (^1.0.0) → ^\{installedVersion\}
+ * - Tilde ranges (~1.0.0) → ~\{installedVersion\}
+ * - Exact versions (1.0.0) → \{installedVersion\}
  * - Special values (*, latest) → preserved as-is
  * - Workspace protocol → preserved as-is
- * - Complex ranges (>=, <=, >, <) → preserved as-is with warning
+ * - Complex ranges (\>=, \<=, \>, \<) → preserved as-is with warning
  * - Hyphen ranges (1.0.0 - 2.0.0) → preserved as-is with warning
  *
  * @beta
@@ -247,40 +283,32 @@ export function updateVersionRange(
 
 	// Validate installed version is valid semver
 	if (!isValidSemver(installedVersion)) {
-		return {
-			updated: currentRange,
-			skipped: true,
-			warning: emitWarnings
+		return createSkippedResult(
+			currentRange,
+			emitWarnings
 				? `installed version ${installedVersion} is not valid semver`
 				: undefined,
-		};
+		);
 	}
 
 	// Handle workspace protocol
 	if (currentRange.startsWith("workspace:")) {
-		return {
-			updated: currentRange,
-			skipped: true,
-		};
+		return createSkippedResult(currentRange, undefined);
 	}
 
 	// Handle npm/catalog/other protocols
 	if (currentRange.includes(":")) {
-		return {
-			updated: currentRange,
-			skipped: true,
-		};
+		return createSkippedResult(currentRange, undefined);
 	}
 
 	// Handle hyphen ranges (e.g., "1.0.0 - 2.0.0")
 	if (currentRange.includes(" - ")) {
-		return {
-			updated: currentRange,
-			skipped: true,
-			warning: emitWarnings
+		return createSkippedResult(
+			currentRange,
+			emitWarnings
 				? `Hyphen range detected: "${currentRange}". Keeping as-is.`
 				: undefined,
-		};
+		);
 	}
 
 	// Detect the range type and update accordingly
@@ -296,26 +324,17 @@ export function updateVersionRange(
 			skipped: false,
 		};
 	}
-	if (
-		currentRange.startsWith(">=") ||
-		currentRange.startsWith("<=") ||
-		currentRange.startsWith(">") ||
-		currentRange.startsWith("<")
-	) {
+	if (isComplexRange(currentRange)) {
 		// Keep complex ranges as-is (too risky to auto-update)
-		return {
-			updated: currentRange,
-			skipped: true,
-			warning: emitWarnings
+		return createSkippedResult(
+			currentRange,
+			emitWarnings
 				? `Complex range detected: "${currentRange}". Keeping as-is.`
 				: undefined,
-		};
+		);
 	}
 	if (currentRange === "*" || currentRange === "latest") {
-		return {
-			updated: currentRange,
-			skipped: true,
-		};
+		return createSkippedResult(currentRange, undefined);
 	}
 	// Exact version (pinned)
 	return {
