@@ -1,5 +1,38 @@
 # dill-cli
 
+## 0.1.0
+
+### Minor Changes
+
+- Add pinned progress bar for build execution _[`#370`](https://github.com/tylerbutler/tools-monorepo/pull/370) [`2181b2b`](https://github.com/tylerbutler/tools-monorepo/commit/2181b2b5c1967e5c371df73b9b96250b52e86cbd) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Sail now displays a progress bar that stays pinned at the bottom of your terminal during builds, making it easy to track build progress at a glance. The progress bar shows a visual indicator, percentage complete, task count, and estimated time remaining (e.g., "Building [========] 50% 25/50 tasks | ETA: 2m 30s").
+
+  Task output continues to scroll normally above the progress bar, so you can still see detailed logs from each task while monitoring overall build progress. The progress bar automatically appears when running builds in interactive terminal sessions and respects the `--quiet` flag when you need silent output.
+
+- Add Sail build orchestration CLI tool for monorepos _[`#360`](https://github.com/tylerbutler/tools-monorepo/pull/360) [`18a125a`](https://github.com/tylerbutler/tools-monorepo/commit/18a125ae7171b48fe80ae33ba4e841259d147e79) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Introduces Sail, a powerful build orchestration CLI tool designed specifically for monorepos. Sail provides intelligent task execution with dependency resolution, incremental builds, and parallel processing capabilities. It analyzes package dependencies and executes build tasks in optimal order, dramatically improving build performance in complex monorepo environments.
+
+  The tool supports flexible task configuration through multiple file formats (sailrc, sail.config.js/ts, or package.json), declarative task definitions with dependency expansion syntax, and advanced features including persistent file-based caching, worker thread pooling for compilation tasks, and customizable parallel execution with priority queuing. Sail integrates seamlessly with TypeScript (tsc), Biome, API Extractor, and other build tools commonly used in TypeScript monorepos.
+
+  Key features include dependency-aware task scheduling using `dependsOn`, `before`, and `after` directives, smart change detection to avoid unnecessary rebuilds, configurable concurrency with optional worker thread support, and comprehensive build statistics with performance profiling. Run `sail build` to orchestrate your monorepo builds or `sail scan` to visualize how Sail interprets your repository structure.
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [`18a125a`](https://github.com/tylerbutler/tools-monorepo/commit/18a125ae7171b48fe80ae33ba4e841259d147e79) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/cli-api@0.8.0`
+- `@tylerbu/sail-infrastructure@0.2.0`
+
+</details>
+
 ## 0.1.5
 
 ### Patch Changes
