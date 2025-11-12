@@ -187,32 +187,32 @@ describe("dependency-sync", () => {
 		});
 
 		describe("complex ranges", () => {
-			it("preserves >= range with warning", () => {
+			it("preserves >= range without warning", () => {
 				const result = updateVersionRange(">=1.0.0", "1.2.3");
 				expect(result.skipped).toBe(true);
 				expect(result.updated).toBe(">=1.0.0");
-				expect(result.warning).toContain("Complex range detected");
+				expect(result.warning).toBeUndefined();
 			});
 
-			it("preserves <= range with warning", () => {
+			it("preserves <= range without warning", () => {
 				const result = updateVersionRange("<=2.0.0", "1.2.3");
 				expect(result.skipped).toBe(true);
-				expect(result.warning).toContain("Complex range detected");
+				expect(result.warning).toBeUndefined();
 			});
 
-			it("preserves > range with warning", () => {
+			it("preserves > range without warning", () => {
 				const result = updateVersionRange(">1.0.0", "1.2.3");
 				expect(result.skipped).toBe(true);
-				expect(result.warning).toContain("Complex range detected");
+				expect(result.warning).toBeUndefined();
 			});
 
-			it("preserves < range with warning", () => {
+			it("preserves < range without warning", () => {
 				const result = updateVersionRange("<2.0.0", "1.2.3");
 				expect(result.skipped).toBe(true);
-				expect(result.warning).toContain("Complex range detected");
+				expect(result.warning).toBeUndefined();
 			});
 
-			it("can suppress warnings", () => {
+			it("emitWarnings option does not affect complex ranges", () => {
 				const result = updateVersionRange(">=1.0.0", "1.2.3", {
 					emitWarnings: false,
 				});
@@ -221,14 +221,14 @@ describe("dependency-sync", () => {
 		});
 
 		describe("hyphen ranges", () => {
-			it("preserves hyphen range with warning", () => {
+			it("preserves hyphen range without warning", () => {
 				const result = updateVersionRange("1.0.0 - 2.0.0", "1.5.0");
 				expect(result.skipped).toBe(true);
 				expect(result.updated).toBe("1.0.0 - 2.0.0");
-				expect(result.warning).toContain("Hyphen range detected");
+				expect(result.warning).toBeUndefined();
 			});
 
-			it("can suppress warnings", () => {
+			it("emitWarnings option does not affect hyphen ranges", () => {
 				const result = updateVersionRange("1.0.0 - 2.0.0", "1.5.0", {
 					emitWarnings: false,
 				});
@@ -530,25 +530,26 @@ describe("dependency-sync", () => {
 				semver: { version: "7.7.3" },
 			};
 
-			const changes = syncDependencyGroup(
+			const result = syncDependencyGroup(
 				dependencies,
 				installed,
 				"dependencies",
 			);
 
-			expect(changes).toHaveLength(2);
-			expect(changes[0]).toEqual({
+			expect(result.changes).toHaveLength(2);
+			expect(result.changes[0]).toEqual({
 				dep: "debug",
 				type: "dependencies",
 				from: "^4.4.1",
 				to: "^4.4.3",
 			});
-			expect(changes[1]).toEqual({
+			expect(result.changes[1]).toEqual({
 				dep: "semver",
 				type: "dependencies",
 				from: "^7.7.1",
 				to: "^7.7.3",
 			});
+			expect(result.warnings).toHaveLength(0);
 			expect(dependencies.debug).toBe("^4.4.3");
 			expect(dependencies.semver).toBe("^7.7.3");
 		});
@@ -562,13 +563,14 @@ describe("dependency-sync", () => {
 				debug: { version: "4.4.3" },
 			};
 
-			const changes = syncDependencyGroup(
+			const result = syncDependencyGroup(
 				dependencies,
 				installed,
 				"dependencies",
 			);
 
-			expect(changes).toHaveLength(1);
+			expect(result.changes).toHaveLength(1);
+			expect(result.warnings).toHaveLength(0);
 			expect(dependencies["not-installed"]).toBe("^1.0.0");
 		});
 
@@ -582,14 +584,15 @@ describe("dependency-sync", () => {
 				"@tylerbu/cli-api": { version: "link:../cli-api" },
 			};
 
-			const changes = syncDependencyGroup(
+			const result = syncDependencyGroup(
 				dependencies,
 				installed,
 				"dependencies",
 			);
 
-			expect(changes).toHaveLength(1);
-			expect(changes[0]?.dep).toBe("debug");
+			expect(result.changes).toHaveLength(1);
+			expect(result.changes[0]?.dep).toBe("debug");
+			expect(result.warnings).toHaveLength(0);
 			expect(dependencies["@tylerbu/cli-api"]).toBe("workspace:^");
 		});
 
@@ -601,13 +604,15 @@ describe("dependency-sync", () => {
 				vitest: { version: "3.2.4" },
 			};
 
-			const changes = syncDependencyGroup(
+			const result = syncDependencyGroup(
 				dependencies,
 				installed,
 				"devDependencies",
 			);
 
-			expect(changes[0]?.type).toBe("devDependencies");
+			expect(result.changes).toHaveLength(1);
+			expect(result.changes[0]?.type).toBe("devDependencies");
+			expect(result.warnings).toHaveLength(0);
 		});
 	});
 
@@ -810,11 +815,12 @@ describe("dependency-sync", () => {
 				},
 			];
 
-			const results = await syncAllPackages(projects, { write: true });
+			const result = await syncAllPackages(projects, { write: true });
 
-			expect(results).toHaveLength(2);
-			expect(results[0]?.changes).toHaveLength(1);
-			expect(results[1]?.changes).toHaveLength(1);
+			expect(result.results).toHaveLength(2);
+			expect(result.results[0]?.changes).toHaveLength(1);
+			expect(result.results[1]?.changes).toHaveLength(1);
+			expect(result.skippedProjects).toHaveLength(0);
 		});
 
 		it("skips projects without package.json", async () => {
@@ -826,9 +832,15 @@ describe("dependency-sync", () => {
 				},
 			];
 
-			const results = await syncAllPackages(projects);
+			const result = await syncAllPackages(projects);
 
-			expect(results).toHaveLength(0);
+			expect(result.results).toHaveLength(0);
+			expect(result.skippedProjects).toHaveLength(1);
+			expect(result.skippedProjects[0]).toEqual({
+				name: "missing-pkg",
+				path: join(tmpDir, "nonexistent"),
+				reason: "package.json not found",
+			});
 		});
 
 		it("filters out results with no changes", async () => {
@@ -850,9 +862,10 @@ describe("dependency-sync", () => {
 				},
 			];
 
-			const results = await syncAllPackages(projects);
+			const result = await syncAllPackages(projects);
 
-			expect(results).toHaveLength(0);
+			expect(result.results).toHaveLength(0);
+			expect(result.skippedProjects).toHaveLength(0);
 		});
 	});
 
