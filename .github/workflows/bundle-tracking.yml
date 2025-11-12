@@ -1,0 +1,55 @@
+name: Bundle Size Tracking
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  track-bundle-size:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
+
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for nx affected to compare against base branch
+
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - uses: ./.github/actions/setup-nx
+        with:
+          # Use Nx Cloud for affected detection and caching
+          nx-cloud-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+      - name: Check if ccl-test-viewer is affected
+        id: check-affected
+        run: |
+          if pnpm nx show project ccl-test-viewer --affected 2>/dev/null; then
+            echo "affected=true" >> $GITHUB_OUTPUT
+          else
+            echo "affected=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build ccl-test-viewer
+        if: steps.check-affected.outputs.affected == 'true'
+        run: pnpm nx run ccl-test-viewer:build
+
+      - name: Run bundlemon
+        if: steps.check-affected.outputs.affected == 'true'
+        run: pnpm nx run ccl-test-viewer:bundlemon
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # For PRs, set commit SHA and PR metadata
+          CI_COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || '' }}
+          CI_TARGET_BRANCH: ${{ github.event_name == 'pull_request' && github.base_ref || '' }}
+          CI_PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || '' }}
+          # For main branch pushes, bundlemon will auto-detect and record baseline measurements
