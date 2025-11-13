@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import type { Logger } from "@tylerbu/cli-api";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type {
 	IBuildExecutionContext,
 	IBuildStats,
@@ -13,13 +13,13 @@ import type {
  * leafUpToDateCount value.
  */
 describe("BuildExecutor - Progress Bar Task Counting", () => {
-	let mockLogger: Logger;
-	let mockContext: IBuildExecutionContext;
+	let _mockLogger: Logger;
+	let _mockContext: IBuildExecutionContext;
 	let taskStats: IBuildStats;
 
 	beforeEach(() => {
 		// Create a mock logger
-		mockLogger = {
+		_mockLogger = {
 			log: vi.fn(),
 			errorLog: vi.fn(),
 			warning: vi.fn(),
@@ -38,7 +38,7 @@ describe("BuildExecutor - Progress Bar Task Counting", () => {
 		};
 
 		// Create a mock execution context
-		mockContext = {
+		_mockContext = {
 			taskStats,
 			failedTaskLines: [],
 			fileHashCache: {
@@ -86,17 +86,19 @@ describe("BuildExecutor - Progress Bar Task Counting", () => {
 			taskStats.leafUpToDateCount = 20; // Initially same as snapshot
 
 			// Expected total tasks to run
-			const expectedTotalTasks = 100 - 20; // = 80 tasks
+			const _expectedTotalTasks = 100 - 20; // = 80 tasks
 
 			// Simulate dynamic change during execution
 			taskStats.leafUpToDateCount = 25; // Changed to 25 (e.g., more tasks marked up-to-date)
 
 			// The totalTasks calculation should STILL use leafInitialUpToDateCount (stable)
-			const correctTotalTasks = taskStats.leafTotalCount - taskStats.leafInitialUpToDateCount;
+			const correctTotalTasks =
+				taskStats.leafTotalCount - taskStats.leafInitialUpToDateCount;
 			expect(correctTotalTasks).toBe(80);
 
 			// The buggy calculation would give a different result
-			const buggyTotalTasks = taskStats.leafTotalCount - taskStats.leafUpToDateCount;
+			const buggyTotalTasks =
+				taskStats.leafTotalCount - taskStats.leafUpToDateCount;
 			expect(buggyTotalTasks).toBe(75); // Wrong!
 
 			// Verify they're different (demonstrating the bug)
@@ -149,16 +151,20 @@ describe("BuildExecutor - Progress Bar Task Counting", () => {
 				(taskStats.leafUpToDateCount - taskStats.leafInitialUpToDateCount);
 
 			// Progress bar totalTasks should also use leafInitialUpToDateCount
-			const correctTotalTasks = taskStats.leafTotalCount - taskStats.leafInitialUpToDateCount;
+			const correctTotalTasks =
+				taskStats.leafTotalCount - taskStats.leafInitialUpToDateCount;
 			expect(correctTotalTasks).toBe(80);
 
 			// Verify consistency: totalTasks = built + notRun + (dynamic changes)
 			const expectedBuilt = taskStats.leafBuiltCount; // 50
 			const expectedNotRun = notRunCount; // 100 - 20 - 50 - 5 = 25
-			const dynamicChange = taskStats.leafUpToDateCount - taskStats.leafInitialUpToDateCount; // 5
+			const dynamicChange =
+				taskStats.leafUpToDateCount - taskStats.leafInitialUpToDateCount; // 5
 
 			// Should sum to totalTasks
-			expect(expectedBuilt + expectedNotRun + dynamicChange).toBe(correctTotalTasks);
+			expect(expectedBuilt + expectedNotRun + dynamicChange).toBe(
+				correctTotalTasks,
+			);
 		});
 
 		it("should demonstrate the bug: progress bar shows wrong task counts when leafUpToDateCount changes", () => {
@@ -176,7 +182,8 @@ describe("BuildExecutor - Progress Bar Task Counting", () => {
 			taskStats.leafUpToDateCount = 20; // Initially same
 
 			// Expected behavior: progress bar should show "0/80 tasks"
-			const expectedTotalTasks = taskStats.leafTotalCount - taskStats.leafInitialUpToDateCount;
+			const expectedTotalTasks =
+				taskStats.leafTotalCount - taskStats.leafInitialUpToDateCount;
 			const expectedCompletedTasks = taskStats.leafBuiltCount;
 			expect(expectedTotalTasks).toBe(80);
 			expect(expectedCompletedTasks).toBe(0);
@@ -185,7 +192,8 @@ describe("BuildExecutor - Progress Bar Task Counting", () => {
 			taskStats.leafUpToDateCount = 30; // Dynamic change (10 more tasks marked up-to-date)
 
 			// Bug: progress bar would now show "0/70 tasks" instead of "0/80 tasks"
-			const buggyTotalTasks = taskStats.leafTotalCount - taskStats.leafUpToDateCount;
+			const buggyTotalTasks =
+				taskStats.leafTotalCount - taskStats.leafUpToDateCount;
 			expect(buggyTotalTasks).toBe(70);
 
 			// The denominator changed without the user doing anything!
