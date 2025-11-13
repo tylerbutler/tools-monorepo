@@ -56,7 +56,6 @@
 	"linter": {
 		// "enabled": true,
 		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
-		// NOTE: Always use 'pathe' instead of 'node:path' for cross-platform path handling
 	},
 	"overrides": [
 		{

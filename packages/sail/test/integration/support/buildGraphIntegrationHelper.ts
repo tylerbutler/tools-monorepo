@@ -327,7 +327,7 @@ export async function executeBuildAndGetResult(
 
 	// DEBUG: Check which manifests exist at the END of this build
 	const { readdir } = await import("node:fs/promises");
-	const { join: joinPath } = await import("node:path");
+	const { join: joinPath } = await import("pathe");
 	const { existsSync: checkExists } = await import("node:fs");
 	try {
 		const entriesDir = joinPath(testDir, ".sail-cache/v1/entries");
