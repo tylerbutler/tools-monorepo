@@ -12,6 +12,13 @@
 	// Enable daemon for faster task execution
 	"useDaemonProcess": true,
 
+	// Only mark projects as affected by lockfile changes if they actually depend on updated packages
+	"pluginsConfig": {
+		"@nx/js": {
+			"projectsAffectedByDependencyUpdates": "auto"
+		}
+	},
+
 	// ============================================
 	// PLUGINS - Auto-infer tasks from config files
 	// ============================================
@@ -88,6 +95,7 @@
 				"build:site", // Intra-package: Astro/Vite sites
 				"build:vite" // Intra-package: Vite builds
 			],
+			"inputs": ["production", "^production"], // Only source code changes affect build, not lint/format results
 			"cache": true
 		},
 

@@ -15,6 +15,31 @@ export {
 	type CommandWithContext,
 } from "./configCommand.js";
 export {
+	type DependencyChange,
+	type DependencyInfo,
+	type DependencyType,
+	type GetInstalledVersionsOptions,
+	getInstalledVersions,
+	isSyncSupported,
+	isValidSemver,
+	type PackageJson,
+	type ProjectInfo,
+	parseNpmList,
+	parsePackageManagerList,
+	parsePnpmList,
+	type SyncAllResult,
+	type SyncDependencyGroupResult,
+	type SyncPackageJsonOptions,
+	type SyncResult,
+	shouldSkipVersion,
+	syncAllPackages,
+	syncDependencyGroup,
+	syncPackageJson,
+	type UpdateVersionRangeOptions,
+	type UpdateVersionRangeResult,
+	updateVersionRange,
+} from "./dependency-sync.js";
+export {
 	ConfigFileFlag,
 	RegExpFlag,
 } from "./flags.js";
