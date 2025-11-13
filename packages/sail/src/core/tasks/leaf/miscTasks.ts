@@ -4,7 +4,7 @@ import path from "node:path";
 import picomatch from "picomatch";
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
-import { globFn, toPosixPath } from "../taskUtils.js";
+import { globFn } from "../taskUtils.js";
 import { LeafTask, LeafWithDoneFileTask } from "./leafTask.js";
 
 /**
