@@ -38,6 +38,67 @@ coverage:
       default:
         informational: true
 
+# Flags configuration for monorepo packages
+# Each flag corresponds to a package and enables carryforward
+# Carryforward preserves coverage for packages not tested in a commit
+flags:
+  dill:
+    paths:
+      - packages/dill-cli/
+    carryforward: true
+  fundamentals:
+    paths:
+      - packages/fundamentals/
+    carryforward: true
+  sort-tsconfig:
+    paths:
+      - packages/sort-tsconfig/
+    carryforward: true
+  cli:
+    paths:
+      - packages/cli/
+    carryforward: true
+  cli-api:
+    paths:
+      - packages/cli-api/
+    carryforward: true
+  xkcd2-api:
+    paths:
+      - packages/xkcd2-api/
+    carryforward: true
+  ccl-test-viewer:
+    paths:
+      - packages/ccl-test-viewer/
+    carryforward: true
+  sail:
+    paths:
+      - packages/sail/
+    carryforward: true
+  sail-infrastructure:
+    paths:
+      - packages/sail-infrastructure/
+    carryforward: true
+  rehype-footnotes:
+    paths:
+      - packages/rehype-footnotes/
+    carryforward: true
+  remark-shift-headings:
+    paths:
+      - packages/remark-shift-headings/
+    carryforward: true
+  remark-lazy-links:
+    paths:
+      - packages/remark-lazy-links/
+    carryforward: true
+  repopo:
+    paths:
+      - packages/repopo/
+    carryforward: true
+  lilconfig-loader-ts:
+    paths:
+      - packages/lilconfig-loader-ts/
+    carryforward: true
+
 component_management:
   default_rules: # default rules that will be inherited by all components
     statuses:
@@ -93,3 +154,11 @@ component_management:
       name: remark-lazy-links
       paths:
         - packages/remark-lazy-links/**
+    - component_id: repopo
+      name: repopo
+      paths:
+        - packages/repopo/**
+    - component_id: lilconfig-loader-ts
+      name: lilconfig-loader-ts
+      paths:
+        - packages/lilconfig-loader-ts/**

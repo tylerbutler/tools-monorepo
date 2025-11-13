@@ -1,0 +1,24 @@
+name: Upload Coverage to Codecov
+description: Upload package coverage to Codecov with flags for monorepo support
+
+inputs:
+  package-name:
+    description: 'Package directory name (e.g., dill-cli, fundamentals)'
+    required: true
+  flag:
+    description: 'Codecov flag name for this package'
+    required: true
+  token:
+    description: 'Codecov token'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Upload coverage for ${{ inputs.flag }}
+      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # ratchet:codecov/codecov-action@v4
+      with:
+        token: ${{ inputs.token }}
+        flags: ${{ inputs.flag }}
+        files: ./packages/${{ inputs.package-name }}/.coverage/vitest/cobertura-coverage.xml
+        fail_ci_if_error: false
