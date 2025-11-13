@@ -7,8 +7,13 @@ inputs:
     required: false
     type: boolean
     default: false
+  enable-nx-cloud:
+    description: Enable Nx Cloud (if false, sets NX_NO_CLOUD=true)
+    required: false
+    type: boolean
+    default: false
   nx-cloud-token:
-    description: Nx Cloud access token (empty string disables Nx Cloud)
+    description: Nx Cloud access token (only used if enable-nx-cloud is true)
     required: false
     type: string
     default: ''
@@ -16,11 +21,15 @@ inputs:
 runs:
   using: composite
   steps:
-    # Set Nx Cloud access token for subsequent steps
+    # Configure Nx Cloud settings
     - name: Configure Nx Cloud
       shell: bash
       run: |
-        echo "NX_CLOUD_ACCESS_TOKEN=${{ inputs.nx-cloud-token }}" >> $GITHUB_ENV
+        if [ "${{ inputs.enable-nx-cloud }}" = "true" ]; then
+          echo "NX_CLOUD_ACCESS_TOKEN=${{ inputs.nx-cloud-token }}" >> $GITHUB_ENV
+        else
+          echo "NX_NO_CLOUD=true" >> $GITHUB_ENV
+        fi
     # Cache Nx local cache between runs
     - name: Cache Nx
       if: inputs.enable-cache

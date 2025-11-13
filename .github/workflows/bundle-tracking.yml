@@ -26,9 +26,7 @@ jobs:
       - uses: ./.github/actions/setup-node-pnpm
 
       - uses: ./.github/actions/setup-nx
-        with:
-          # Use Nx Cloud for affected detection and caching
-          nx-cloud-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+        # Nx Cloud disabled by default (enable-nx-cloud: false)
 
       - name: Check if ccl-test-viewer is affected
         id: check-affected

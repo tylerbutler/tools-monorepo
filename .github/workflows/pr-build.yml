@@ -34,8 +34,7 @@ jobs:
       - uses: ./.github/actions/setup-nx
         with:
           enable-cache: true
-          # Disable Nx Cloud for PR builds, enable for main branch (remote caching only, no DTE)
-          nx-cloud-token: ${{ github.event_name == 'pull_request' && '' || secrets.NX_CLOUD_ACCESS_TOKEN }}
+          # Nx Cloud disabled by default (enable-nx-cloud: false)
 
       - name: Run CI checks, builds, and tests
         run: |
