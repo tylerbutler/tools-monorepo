@@ -34,8 +34,7 @@ jobs:
       - uses: ./.github/actions/setup-nx
         with:
           enable-cache: true
-          # Nx Cloud disabled (no nxCloudId in nx.json)
-          # TODO: Consider re-enabling for main branch builds to enable remote caching
+          # Nx Cloud disabled
           nx-cloud-token: ''
 
       - name: Run CI checks, builds, and tests

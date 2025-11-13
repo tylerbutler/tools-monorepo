@@ -27,7 +27,7 @@ jobs:
 
       - uses: ./.github/actions/setup-nx
         with:
-          # Nx Cloud disabled (no nxCloudId in nx.json)
+          # Nx Cloud disabled
           nx-cloud-token: ''
 
       - name: Check if ccl-test-viewer is affected
