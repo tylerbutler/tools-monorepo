@@ -34,8 +34,7 @@ jobs:
       - uses: ./.github/actions/setup-nx
         with:
           enable-cache: true
-          # Nx Cloud disabled
-          nx-cloud-token: ''
+          # Nx Cloud disabled by default (enable-nx-cloud: false)
 
       - name: Run CI checks, builds, and tests
         run: |

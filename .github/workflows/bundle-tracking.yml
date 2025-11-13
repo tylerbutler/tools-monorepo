@@ -26,9 +26,7 @@ jobs:
       - uses: ./.github/actions/setup-node-pnpm
 
       - uses: ./.github/actions/setup-nx
-        with:
-          # Nx Cloud disabled
-          nx-cloud-token: ''
+        # Nx Cloud disabled by default (enable-nx-cloud: false)
 
       - name: Check if ccl-test-viewer is affected
         id: check-affected
