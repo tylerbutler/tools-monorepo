@@ -71,11 +71,9 @@ export async function updateRootPackageJson(
 		packageJson.devDependencies = {};
 	}
 
-	// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
 	if (packageJson.devDependencies["nx"]) {
 		logger.log("  ℹ️  nx already in devDependencies");
 	} else {
-		// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
 		packageJson.devDependencies["nx"] = "21.6.5";
 		packageJson.devDependencies["@nx/workspace"] = "^21.6.5";
 		packageJson.devDependencies["@nx/azure-cache"] = "^4.0.0";
@@ -246,7 +244,6 @@ export async function needsPackageJsonUpdates(
 		const packageJson: PackageJson = JSON.parse(content);
 
 		// Check if nx is in devDependencies
-		// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
 		if (!packageJson.devDependencies?.["nx"]) {
 			return true;
 		}

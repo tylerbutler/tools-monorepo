@@ -19,7 +19,7 @@
 		"check:format": "nx exec -- biome check --linter-enabled=false",
 		"check:policy": "nx exec -- repopo check",
 		"check:references": "nx exec -- workspaces-to-typescript-project-references --check",
-		"ci": "nx run tools-monorepo:ci",
+		"ci": "nx run-many -t ci",
 		"ci:affected": "nx affected -t ci",
 		"ci:all": "nx run-many -t ci",
 		"ci:build": "nx run-many -t build build:generate",
@@ -125,13 +125,6 @@
 			"deps:sync"
 		],
 		"targets": {
-			"ci": {
-				"dependsOn": [
-					"check:all",
-					"lint"
-				],
-				"cache": true
-			},
 			"check:all": {
 				"dependsOn": [
 					"check:deps",
@@ -143,6 +136,10 @@
 				"cache": true
 			},
 			"check:format": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "check:format"
+				},
 				"inputs": [
 					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts,json,jsonc,md}",
 					"!{workspaceRoot}/**/node_modules/**",
@@ -154,6 +151,10 @@
 				"cache": true
 			},
 			"lint": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "lint"
+				},
 				"inputs": [
 					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}",
 					"!{workspaceRoot}/**/node_modules/**",

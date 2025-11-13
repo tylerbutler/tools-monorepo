@@ -1,5 +1,22 @@
 # sort-tsconfig
 
+## 0.3.3
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/cli-api@0.8.0`
+- `@tylerbu/fundamentals@0.3.0`
+
+</details>
+
 ## 0.3.2
 
 ### Patch Changes

@@ -18,7 +18,7 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 env:
-  NX_NO_CLOUD: true  # Disable Nx Cloud for release builds - ensures clean local builds
+  NX_NO_CLOUD: true # Disable Nx Cloud for release builds - ensures clean local builds
 
 jobs:
   release:
@@ -32,24 +32,7 @@ jobs:
           token: ${{ secrets.CHANGESET_TOKEN }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: "pnpm"
-          cache-dependency-path: pnpm-lock.yaml
-      - run: npm i --global corepack@latest
-      - run: corepack enable
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+      - uses: ./.github/actions/setup-node-pnpm
 
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
