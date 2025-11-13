@@ -1,5 +1,5 @@
 import { cp, mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join } from "pathe";
 
 /**
  * Helpers for creating and managing integration test fixtures.

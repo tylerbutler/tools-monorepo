@@ -70,6 +70,7 @@
 		"concurrently": "^9.2.1",
 		"generate-license-file": "^4.1.0",
 		"nx": "22.0.1",
+		"pathe": "^2.0.3",
 		"repopo": "workspace:^",
 		"rimraf": "^6.1.0",
 		"semver": "^7.7.3",

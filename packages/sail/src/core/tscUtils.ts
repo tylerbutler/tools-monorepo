@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import path from "node:path";
+import path from "pathe";
 import type ts from "typescript";
 import { sha256 } from "./hash.js";
 import { require } from "./tasks/taskUtils.js";

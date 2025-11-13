@@ -1,4 +1,4 @@
-import * as path from "node:path";
+import * as path from "pathe";
 
 import execa from "execa";
 import resolveWorkspacePkg from "resolve-workspace-root";

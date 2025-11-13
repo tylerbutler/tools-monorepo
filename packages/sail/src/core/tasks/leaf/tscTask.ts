@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { type BigIntStats, existsSync, lstatSync, type Stats } from "node:fs";
 import { readFile } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 import isEqual from "lodash.isequal";
 import type tsTypes from "typescript";
 

@@ -2,7 +2,7 @@ import { strict as assert } from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { unlink } from "node:fs/promises";
 import * as os from "node:os";
-import * as path from "node:path";
+import * as path from "pathe";
 
 import { readJson, writeJson } from "fs-extra/esm";
 import { CleanOptions, simpleGit } from "simple-git";

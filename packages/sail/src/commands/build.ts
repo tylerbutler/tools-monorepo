@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import path from "node:path";
+import path from "pathe";
 import readline from "node:readline/promises";
 import { Args, Flags } from "@oclif/core";
 import { Stopwatch } from "@tylerbu/sail-infrastructure";

@@ -50,6 +50,7 @@
 		"micromatch": "^4.0.8",
 		"oclif": "^4.22.44",
 		"package-manager-detector": "^0.2.11",
+		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
 		"read-pkg-up": "^11.0.0",
 		"resolve-workspace-root": "^2.0.0",

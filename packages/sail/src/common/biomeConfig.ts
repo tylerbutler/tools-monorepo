@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 import ignore from "ignore";
 import JSON5 from "json5";
 import multimatch from "multimatch";

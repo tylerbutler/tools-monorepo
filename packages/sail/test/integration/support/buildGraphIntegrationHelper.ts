@@ -1,4 +1,4 @@
-import { join } from "node:path";
+import { join } from "pathe";
 import registerDebug from "debug";
 import type { BuildGraph } from "../../../src/core/buildGraph.js";
 import { SailBuildRepo } from "../../../src/core/buildRepo.js";

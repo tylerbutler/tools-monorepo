@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import * as path from "node:path";
+import * as path from "pathe";
 
 import fsePkg from "fs-extra";
 

@@ -1,5 +1,5 @@
 import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join } from "pathe";
 import { temporaryDirectory } from "tempy";
 import { beforeEach, describe, expect, it } from "vitest";
 import {

@@ -1,4 +1,4 @@
-import * as path from "node:path";
+import * as path from "pathe";
 import { WriteOnceMap } from "@tylerbu/fundamentals";
 import { type SimpleGit, simpleGit } from "simple-git";
 import { globSync } from "tinyglobby";

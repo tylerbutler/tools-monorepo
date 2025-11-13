@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import * as path from "node:path";
+import * as path from "pathe";
 
 import detectIndent from "detect-indent";
 import fsePkg from "fs-extra";

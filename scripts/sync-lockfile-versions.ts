@@ -19,7 +19,7 @@
 
 import { execSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 import { exists } from "@tylerbu/fundamentals";
 import semver from "semver";
 

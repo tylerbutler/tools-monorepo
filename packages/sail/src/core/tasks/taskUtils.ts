@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
-import path from "node:path";
+import path from "pathe";
 import { pathToFileURL } from "node:url";
 import type { PackageJson } from "@tylerbu/sail-infrastructure";
 import * as glob from "glob";

@@ -3,7 +3,7 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { relative } from "node:path";
+import { relative } from "pathe";
 import type { Logger } from "@tylerbu/cli-api";
 import { glob } from "tinyglobby";
 

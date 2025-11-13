@@ -6,7 +6,7 @@
 
 import { randomBytes } from "node:crypto";
 import { mkdir, rename, unlink, writeFile } from "node:fs/promises";
-import * as path from "node:path";
+import * as path from "pathe";
 import registerDebug from "debug";
 
 const traceAtomicWrite = registerDebug("sail:cache:atomicwrite");

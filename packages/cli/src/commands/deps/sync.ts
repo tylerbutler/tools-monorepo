@@ -1,5 +1,5 @@
 import { stat } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 import { Flags } from "@oclif/core";
 import {
 	CommandWithConfig,

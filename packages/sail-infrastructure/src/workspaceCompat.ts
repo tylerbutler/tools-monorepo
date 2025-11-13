@@ -1,4 +1,4 @@
-import * as path from "node:path";
+import * as path from "pathe";
 import { WriteOnceMap } from "@tylerbu/fundamentals";
 import type {
 	// eslint-disable-next-line import/no-deprecated -- back-compat code
