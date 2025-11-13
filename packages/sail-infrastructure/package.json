@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/sail-infrastructure",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Sail build infrastructure",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/sail-infrastructure#tylerbusail-infrastructure",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",

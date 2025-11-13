@@ -31,6 +31,16 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
+ - effection@3.6.1
+
+This package contains the following license:
+
+ISC
+
+-----------
+
+The following npm package may be included in this product:
+
  - picocolors@1.1.1
 
 This package contains the following license:
@@ -210,7 +220,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 The following npm package may be included in this product:
 
- - dill-cli@0.3.1
+ - dill-cli@0.3.2
 
 This package contains the following license:
 
