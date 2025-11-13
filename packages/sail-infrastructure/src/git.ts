@@ -1,7 +1,7 @@
 import * as path from "node:path";
 
 import execa from "execa";
-import readPkgUp from "read-pkg-up";
+import { readPackageUpSync } from "read-pkg-up";
 import type { SimpleGit } from "simple-git";
 
 import { NotInGitRepository } from "./errors.js";
@@ -163,7 +163,7 @@ export async function getChangedSinceRef<P extends IPackage>(
 		.map((dir) => {
 			const cwd = path.resolve(buildProject.root, dir);
 			try {
-				return readPkgUp.sync({ cwd })?.packageJson.name;
+				return readPackageUpSync({ cwd })?.packageJson.name;
 			} catch {
 				// Skip directories that don't have valid package.json files
 				return undefined;

@@ -27,10 +27,10 @@ importers:
         specifier: ^2.11.0
         version: 2.11.0
       '@nx/js':
-        specifier: ^22.0.2
+        specifier: ^22.0.3
         version: 22.0.3(@babel/traverse@7.28.4)(nx@22.0.1)
       '@nx/vite':
-        specifier: ^22.0.2
+        specifier: ^22.0.3
         version: 22.0.3(@babel/traverse@7.28.4)(nx@22.0.1)(typescript@5.9.3)(vite@7.2.2(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))(vitest@3.2.4)
       '@tsconfig/node18':
         specifier: ^18.2.4
@@ -118,7 +118,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.15.4
+        specifier: ^5.15.5
         version: 5.15.5(@netlify/blobs@10.2.1)(@types/node@24.9.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.52.5)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       sharp:
         specifier: ^0.34.5
@@ -234,7 +234,7 @@ importers:
         specifier: github:donovanglover/base16-tailwind
         version: https://codeload.github.com/donovanglover/base16-tailwind/tar.gz/3695359c3057b12955c4951a66f89e6a264887e1(@types/slug@5.0.9)(tailwindcss@4.1.17)
       bits-ui:
-        specifier: ^2.14.2
+        specifier: ^2.14.3
         version: 2.14.3(@internationalized/date@3.10.0)(@sveltejs/kit@2.48.4(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@6.2.1(svelte@5.43.6)(vite@7.2.2(@types/node@20.19.24)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.43.6)(vite@7.2.2(@types/node@20.19.24)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)))(svelte@5.43.6)
       bundlemon:
         specifier: ^3.1.0
@@ -258,11 +258,11 @@ importers:
         specifier: '*'
         version: 2.14.0
       svelte:
-        specifier: ^5.43.5
+        specifier: ^5.43.6
         version: 5.43.6
       svelte-check:
-        specifier: ^4.3.3
-        version: 4.3.3(picomatch@4.0.3)(svelte@5.43.6)(typescript@5.9.3)
+        specifier: ^4.3.4
+        version: 4.3.4(picomatch@4.0.3)(svelte@5.43.6)(typescript@5.9.3)
       tailwindcss:
         specifier: ^4.1.17
         version: 4.1.17
@@ -663,7 +663,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.15.4
+        specifier: ^5.15.5
         version: 5.15.5(@netlify/blobs@10.2.1)(@types/node@24.9.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.52.5)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       dill-cli:
         specifier: workspace:^
@@ -925,7 +925,7 @@ importers:
         specifier: ^3.0.4
         version: 3.0.4
       '@types/node':
-        specifier: ^20.19.23
+        specifier: ^20.19.24
         version: 20.19.24
       '@vitest/coverage-v8':
         specifier: ^3.2.4
@@ -952,7 +952,7 @@ importers:
         specifier: ^11.1.2
         version: 11.1.2
       rimraf:
-        specifier: ^6.0.1
+        specifier: ^6.1.0
         version: 6.1.0
       typescript:
         specifier: ~5.9.3
@@ -980,7 +980,7 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4
       '@types/node':
-        specifier: ^20.19.23
+        specifier: ^20.19.24
         version: 20.19.24
       '@vitest/coverage-v8':
         specifier: ^3.2.4
@@ -992,7 +992,7 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       rimraf:
-        specifier: ^6.0.1
+        specifier: ^6.1.0
         version: 6.1.0
       typescript:
         specifier: ~5.9.3
@@ -1020,7 +1020,7 @@ importers:
         specifier: ^4.0.4
         version: 4.0.4
       '@types/node':
-        specifier: ^20.19.23
+        specifier: ^20.19.24
         version: 20.19.24
       '@vitest/coverage-v8':
         specifier: ^3.2.4
@@ -1032,7 +1032,7 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       rimraf:
-        specifier: ^6.0.1
+        specifier: ^6.1.0
         version: 6.1.0
       typescript:
         specifier: ~5.9.3
@@ -1150,7 +1150,7 @@ importers:
         specifier: ^5.2.7
         version: 5.2.7
       astro:
-        specifier: ^5.15.4
+        specifier: ^5.15.5
         version: 5.15.5(@netlify/blobs@10.2.1)(@types/node@24.9.1)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.52.5)(terser@5.44.0)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       repopo:
         specifier: workspace:^
@@ -1419,8 +1419,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       read-pkg-up:
-        specifier: ^7.0.1
-        version: 7.0.1
+        specifier: ^11.0.0
+        version: 11.0.0
       resolve-workspace-root:
         specifier: ^2.0.0
         version: 2.0.0
@@ -11225,6 +11225,11 @@ packages:
     resolution: {integrity: sha512-MbgfoNPANMdb4oRBNg5eqLbB2t2r+o5Ua1pNt8BqGp4I0FJZhuVSOj3PaBPni4azWuSzEdNn2evevzVmEk1ohQ==}
     engines: {node: '>=18'}
 
+  read-pkg-up@11.0.0:
+    resolution: {integrity: sha512-LOVbvF1Q0SZdjClSefZ0Nz5z8u+tIE7mV5NibzmE9VYmDe9CaBbAVtz1veOSZbofrdsilxuDAYnFenukZVp8/Q==}
+    engines: {node: '>=18'}
+    deprecated: Renamed to read-package-up
+
   read-pkg-up@7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
     engines: {node: '>=8'}
@@ -12245,8 +12250,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  svelte-check@4.3.3:
-    resolution: {integrity: sha512-RYP0bEwenDXzfv0P1sKAwjZSlaRyqBn0Fz1TVni58lqyEiqgwztTpmodJrGzP6ZT2aHl4MbTvWP6gbmQ3FOnBg==}
+  svelte-check@4.3.4:
+    resolution: {integrity: sha512-DVWvxhBrDsd+0hHWKfjP99lsSXASeOhHJYyuKOFYJcP7ThfSCKgjVarE8XfuMWpS5JV3AlDf+iK1YGGo2TACdw==}
     engines: {node: '>= 18.0.0'}
     hasBin: true
     peerDependencies:
@@ -27146,6 +27151,12 @@ snapshots:
       read-pkg: 9.0.1
       type-fest: 4.41.0
 
+  read-pkg-up@11.0.0:
+    dependencies:
+      find-up-simple: 1.0.1
+      read-pkg: 9.0.1
+      type-fest: 4.41.0
+
   read-pkg-up@7.0.1:
     dependencies:
       find-up: 4.1.0
@@ -28538,7 +28549,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.3.3(picomatch@4.0.3)(svelte@5.43.6)(typescript@5.9.3):
+  svelte-check@4.3.4(picomatch@4.0.3)(svelte@5.43.6)(typescript@5.9.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       chokidar: 4.0.3
