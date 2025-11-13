@@ -16,7 +16,7 @@ runs:
   using: composite
   steps:
     - name: Upload coverage for ${{ inputs.flag }}
-      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # ratchet:codecov/codecov-action@v4
+      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # ratchet:codecov/codecov-action@v5
       with:
         token: ${{ inputs.token }}
         flags: ${{ inputs.flag }}

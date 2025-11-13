@@ -46,9 +46,6 @@ jobs:
             pnpm run ci:affected
           fi
 
-      - run: npx nx fix-ci
-        if: always()
-
       - name: "Codecov: upload test results"
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # ratchet:codecov/test-results-action@v1
@@ -59,7 +56,7 @@ jobs:
       - name: Upload coverage artifacts
         id: upload-coverage
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # ratchet:actions/upload-artifact@v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # ratchet:actions/upload-artifact@v5
         with:
           name: coverage-reports
           path: packages/*/.coverage/vitest/
@@ -81,26 +78,26 @@ jobs:
       fail-fast: false
       matrix:
         package:
-          - { name: dill-cli, flag: dill }
-          - { name: fundamentals, flag: fundamentals }
-          - { name: sort-tsconfig, flag: sort-tsconfig }
-          - { name: cli, flag: cli }
-          - { name: cli-api, flag: cli-api }
-          - { name: xkcd2-api, flag: xkcd2-api }
-          - { name: ccl-test-viewer, flag: ccl-test-viewer }
-          - { name: sail, flag: sail }
-          - { name: sail-infrastructure, flag: sail-infrastructure }
-          - { name: rehype-footnotes, flag: rehype-footnotes }
-          - { name: remark-shift-headings, flag: remark-shift-headings }
-          - { name: remark-lazy-links, flag: remark-lazy-links }
-          - { name: repopo, flag: repopo }
-          - { name: lilconfig-loader-ts, flag: lilconfig-loader-ts }
+          - {name: dill-cli, flag: dill}
+          - {name: fundamentals, flag: fundamentals}
+          - {name: sort-tsconfig, flag: sort-tsconfig}
+          - {name: cli, flag: cli}
+          - {name: cli-api, flag: cli-api}
+          - {name: xkcd2-api, flag: xkcd2-api}
+          - {name: ccl-test-viewer, flag: ccl-test-viewer}
+          - {name: sail, flag: sail}
+          - {name: sail-infrastructure, flag: sail-infrastructure}
+          - {name: rehype-footnotes, flag: rehype-footnotes}
+          - {name: remark-shift-headings, flag: remark-shift-headings}
+          - {name: remark-lazy-links, flag: remark-lazy-links}
+          - {name: repopo, flag: repopo}
+          - {name: lilconfig-loader-ts, flag: lilconfig-loader-ts}
 
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # ratchet:actions/checkout@v5
 
       - name: Download coverage artifacts
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # ratchet:actions/download-artifact@v4
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # ratchet:actions/download-artifact@v6
         with:
           name: coverage-reports
           path: packages/
