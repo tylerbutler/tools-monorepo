@@ -13,7 +13,7 @@ function loadBuildProject<P>(
 upstreamRemotePartialUrl?): IBuildProject<P>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/buildProject.ts:311](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L311)
+Defined in: [packages/sail-infrastructure/src/buildProject.ts:325](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L325)
 
 Searches for a BuildProject config file and loads the project from the config if found.
 
