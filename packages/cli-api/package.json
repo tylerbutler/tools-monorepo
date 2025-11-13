@@ -77,7 +77,6 @@
 		"generate-license-file": "^4.1.0",
 		"oclif": "^4.22.44",
 		"rimraf": "^6.1.0",
-		"tempy": "^3.1.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
