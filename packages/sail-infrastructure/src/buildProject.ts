@@ -250,6 +250,20 @@ export function generateBuildProjectConfig(
 		},
 	};
 
+	// Build ignore patterns
+	const ignorePatterns = ["**/node_modules/**"];
+
+	// Read SAIL_IGNORE_FILES environment variable and add to ignore patterns
+	// biome-ignore lint/style/noProcessEnv: Need to read environment variable for configuration
+	const ignoreFilesEnv = process.env["SAIL_IGNORE_FILES"];
+	if (ignoreFilesEnv) {
+		const ignoreFiles = ignoreFilesEnv
+			.split(",")
+			.map((f) => f.trim())
+			.filter((f) => f.length > 0);
+		ignorePatterns.push(...ignoreFiles);
+	}
+
 	// Find workspace roots based on lockfiles
 	const lockfilePaths = globSync(
 		[
@@ -262,7 +276,7 @@ export function generateBuildProjectConfig(
 		].map((lockfile) => `**/${lockfile}`),
 		{
 			cwd: searchPath,
-			ignore: ["**/node_modules/**"],
+			ignore: ignorePatterns,
 			onlyFiles: true,
 			absolute: true,
 		},

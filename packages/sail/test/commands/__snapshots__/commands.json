@@ -51,6 +51,7 @@
             "config",
             "defaultRoot",
             "force",
+            "ignoreFiles",
             "overwriteCache",
             "quiet",
             "rebuild",
@@ -81,6 +82,7 @@
             "config",
             "defaultRoot",
             "force",
+            "ignoreFiles",
             "quiet",
             "root",
             "verbose"
@@ -98,6 +100,7 @@
             "cacheDir",
             "config",
             "defaultRoot",
+            "ignoreFiles",
             "quiet",
             "root",
             "verbose"
@@ -115,6 +118,7 @@
             "cacheDir",
             "config",
             "defaultRoot",
+            "ignoreFiles",
             "quiet",
             "root",
             "verbose"
@@ -132,6 +136,7 @@
             "cacheDir",
             "config",
             "defaultRoot",
+            "ignoreFiles",
             "quiet",
             "root",
             "verbose"
@@ -152,6 +157,7 @@
             "defaultRoot",
             "fix",
             "force",
+            "ignoreFiles",
             "quiet",
             "root",
             "verbose"
@@ -200,6 +206,7 @@
         "flags": [
             "config",
             "defaultRoot",
+            "ignoreFiles",
             "infer",
             "quiet",
             "root",
