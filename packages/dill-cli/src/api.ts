@@ -242,9 +242,10 @@ export async function writeTarFiles(
 					if (tarfile.data === undefined) {
 						throw new Error("Data undefined in tarfile.");
 					}
+					const data = tarfile.data;
 					const outPath = path.join(destination, tarfile.name);
 					yield* call(() => mkdir(path.dirname(outPath), { recursive: true }));
-					yield* call(() => writeFile(outPath, tarfile.data));
+					yield* call(() => writeFile(outPath, data));
 				})(),
 			),
 		);
