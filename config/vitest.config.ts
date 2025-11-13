@@ -18,7 +18,8 @@ const config = defineConfig({
 		coverage: {
 			include: ["src/**"],
 			provider: "v8",
-			reporter: ["text", "json", "html"],
+			// Include cobertura for better codecov integration
+			reporter: ["text", "json", "html", "cobertura"],
 			reportsDirectory: ".coverage/vitest",
 		},
 		exclude: [

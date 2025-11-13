@@ -150,11 +150,13 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			(buildRepo as any).context.sharedCache = sharedCache;
 
 			// Prominent success message with green background
-			this.log(chalk.bgGreen(chalk.black(" ✓ SHARED CACHE ENABLED ")));
-			this.log(chalk.green(`   Cache Directory: ${cacheDir}`));
+			this.log(
+				chalk.bgGreen(chalk.black(" ⛵️⛵️⛵️ SHARED CACHE ENABLED ⛵️⛵️⛵️ ")),
+			);
+			this.log(chalk.green(`-> Cache Directory: ${cacheDir}`));
 		} else {
 			// Prominent warning message with yellow background
-			this.log(chalk.bgYellow(chalk.black(" ⚠ SHARED CACHE DISABLED ")));
+			this.log(chalk.bgYellow(chalk.black(" ⚠⚠⚠ SHARED CACHE DISABLED ⚠⚠⚠ ")));
 			this.log(
 				chalk.yellow(
 					"   Set SAIL_CACHE_DIR or use --cache-dir to enable shared caching",

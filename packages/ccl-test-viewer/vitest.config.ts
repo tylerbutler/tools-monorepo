@@ -41,7 +41,8 @@ export default defineConfig({
 			junit: "./_temp/junit.xml",
 		},
 		coverage: {
-			reporter: ["text", "json", "html"],
+			// Include cobertura for better codecov integration
+			reporter: ["text", "json", "html", "cobertura"],
 			provider: "v8",
 			reportsDirectory: ".coverage/vitest",
 			include: ["src/lib/**/*.{ts,js}", "!src/lib/**/*.svelte.ts"],

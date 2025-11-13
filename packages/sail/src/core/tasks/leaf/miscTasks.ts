@@ -156,7 +156,7 @@ export class CopyfilesTask extends LeafWithDoneFileTask {
 			throw new Error("error parsing command line");
 		}
 		if (!this._dstFiles) {
-			const directory = toPosixPath(this.node.pkg.directory);
+			const directory = this.node.pkg.directory;
 			const dstPath = path.resolve(directory, this.copyDstArg);
 			const srcFiles = await this.getInputFiles();
 			this._dstFiles = srcFiles.map((match) => {
