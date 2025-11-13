@@ -33,7 +33,7 @@ const config: RepopoConfig = {
 		makePolicy(PackageJsonRepoDirectoryProperty),
 		makePolicy(PackageJsonSorted),
 		makePolicy(PackageScripts, {
-			must: ["clean"],
+			must: ["clean", "release:license"],
 			mutuallyExclusive: [["test:unit", "test:vitest"]],
 		}),
 		makePolicy(SortTsconfigsPolicy),
