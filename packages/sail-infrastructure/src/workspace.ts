@@ -1,6 +1,6 @@
 import * as path from "node:path";
 
-import execa from "execa";
+import { x } from "tinyexec";
 import resolveWorkspacePkg from "resolve-workspace-root";
 import { globSync } from "tinyglobby";
 
@@ -230,8 +230,10 @@ export class Workspace implements IWorkspace {
 			throw new Error("Package manager install command is empty");
 		}
 
-		const output = await execa(command, args, {
-			cwd: this.directory,
+		const output = await x(command, args, {
+			nodeOptions: {
+				cwd: this.directory,
+			},
 		});
 
 		if (output.exitCode !== 0) {
