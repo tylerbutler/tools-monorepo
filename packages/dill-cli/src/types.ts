@@ -32,6 +32,19 @@ export interface DillOptions {
 	 * @defaultValue `false`
 	 */
 	noFile?: boolean;
+
+	/**
+	 * Custom headers to include in the fetch request.
+	 * Specify as an object with header name-value pairs.
+	 */
+	headers?: Record<string, string>;
+
+	/**
+	 * Number of leading path components to strip from file names during extraction.
+	 * Only applies when extract is true.
+	 * @defaultValue `0`
+	 */
+	strip?: number;
 }
 
 /**
@@ -39,7 +52,7 @@ export interface DillOptions {
  */
 export type DillOptionsResolved = SetOptional<
 	Required<DillOptions>,
-	"filename"
+	"filename" | "headers" | "strip"
 >;
 
 export interface DownloadResponse {
