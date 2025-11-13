@@ -329,6 +329,9 @@ importers:
       dill-cli:
         specifier: workspace:^
         version: link:../dill-cli
+      effection:
+        specifier: ^3.6.1
+        version: 3.6.1
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -523,6 +526,9 @@ importers:
       '@tylerbu/cli-api':
         specifier: workspace:^
         version: link:../cli-api
+      effection:
+        specifier: ^3.6.1
+        version: 3.6.1
       fflate:
         specifier: ^0.8.2
         version: 0.8.2
@@ -7143,6 +7149,10 @@ packages:
 
   effect@3.14.0:
     resolution: {integrity: sha512-Ggb3biSS+2q3Uv+S0YBcKFbhbPCNfIkGOtYnqllmRD9DssT1I8pUMKghn6Vzi5wH693+yB3UVcBJUMz7kYFq4g==}
+
+  effection@3.6.1:
+    resolution: {integrity: sha512-ogsuH/cgxfOOaVUf53pYqhPJth4WhPlva0hGb4Roh6cZhttMoanMqwADkDk9ych28lKuQgntpCszbFRyRFifqg==}
+    engines: {node: '>= 16'}
 
   ejs@3.1.10:
     resolution: {integrity: sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==}
@@ -21753,6 +21763,8 @@ snapshots:
     dependencies:
       '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
+
+  effection@3.6.1: {}
 
   ejs@3.1.10:
     dependencies:
