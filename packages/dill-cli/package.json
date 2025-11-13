@@ -127,11 +127,9 @@
 		"serve-handler": "^6.1.6",
 		"sort-package-json": "*",
 		"start-server-and-test": "^2.1.2",
-		"tempy": "^3.1.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.20.6",
-		"type-fest": "^5.2.0",
 		"typescript": "~5.9.3",
 		"unionfs": "^4.6.0",
 		"vitest": "^3.2.4"
