@@ -95,6 +95,7 @@
 		"@oclif/plugin-help": "^6.2.35",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
+		"effection": "^3.6.1",
 		"fflate": "^0.8.2",
 		"file-type": "^21.1.0",
 		"mime": "^4.1.0",

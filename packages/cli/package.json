@@ -110,6 +110,7 @@
 		"@tylerbu/fundamentals": "workspace:^",
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
+		"effection": "^3.6.1",
 		"picocolors": "^1.1.1",
 		"semver": "^7.7.3",
 		"simple-git": "^3.30.0",
