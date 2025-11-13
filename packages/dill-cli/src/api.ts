@@ -267,7 +267,9 @@ export async function writeZipFiles(
 				.map(([zipFilePath, data]) =>
 					(function* () {
 						const outPath = path.join(destination, zipFilePath);
-						yield* call(() => mkdir(path.dirname(outPath), { recursive: true }));
+						yield* call(() =>
+							mkdir(path.dirname(outPath), { recursive: true }),
+						);
 						yield* call(() => writeFile(outPath, data));
 					})(),
 				),

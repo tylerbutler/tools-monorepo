@@ -6,7 +6,11 @@ describe("Package.json Sync with Cancellation", () => {
 	let testDir: string;
 
 	beforeEach(async () => {
-		testDir = path.join(process.cwd(), "test-output", `sync-test-${Date.now()}`);
+		testDir = path.join(
+			process.cwd(),
+			"test-output",
+			`sync-test-${Date.now()}`,
+		);
 		await mkdir(testDir, { recursive: true });
 	});
 

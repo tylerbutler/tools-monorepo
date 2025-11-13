@@ -1,8 +1,8 @@
 import { mkdir, readdir, rm } from "node:fs/promises";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { ParsedTarFileItem } from "nanotar";
 import type { Unzipped } from "fflate";
+import type { ParsedTarFileItem } from "nanotar";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { writeTarFiles, writeZipFiles } from "../src/api.js";
 
 describe("File Writing with Cancellation", () => {
@@ -146,5 +146,4 @@ describe("File Writing with Cancellation", () => {
 			expect(files).toContain("nonempty.txt");
 		});
 	});
-
 });
