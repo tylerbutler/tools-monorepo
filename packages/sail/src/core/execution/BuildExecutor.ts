@@ -194,9 +194,11 @@ export class BuildExecutor implements IBuildExecutor {
 		let hasError = false;
 
 		// Calculate total tasks that need to run (excluding up-to-date tasks)
+		// Use leafInitialUpToDateCount (stable snapshot) instead of leafUpToDateCount (dynamic)
+		// to ensure consistent progress bar denominator throughout execution
 		const totalTasks =
 			this.context.taskStats.leafTotalCount -
-			this.context.taskStats.leafUpToDateCount;
+			this.context.taskStats.leafInitialUpToDateCount;
 
 		// Create progress display only in TTY mode, not in quiet mode, and when not testing
 		const shouldShowProgress =
