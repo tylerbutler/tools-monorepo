@@ -17,6 +17,12 @@ export abstract class BaseSailCommand<
 			env: "SAIL_ROOT",
 			hidden: true,
 		}),
+		ignoreFiles: Flags.string({
+			env: "SAIL_IGNORE_FILES",
+			hidden: true,
+			description:
+				"Comma-separated list of repo-relative paths to ignore during config inference.",
+		}),
 		...CommandWithConfig.flags,
 	};
 
