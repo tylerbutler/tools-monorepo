@@ -1,5 +1,20 @@
 # @tylerbu/sail-infrastructure
 
+## 0.3.0
+
+### Minor Changes
+
+- Add file ignore filtering to config inference _[`025f2cd`](https://github.com/tylerbutler/tools-monorepo/commit/025f2cd865535eb79bf5f17d5102bdeaf25a90e8) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Add support for ignoring files during config inference via the SAIL_IGNORE_FILES environment variable. This allows users to exclude specific repo-relative paths from being considered when sail automatically infers the workspace configuration.
+
+  Example usage:
+
+  ```bash
+  SAIL_IGNORE_FILES="test/fixtures/**,temp/**" sail scan --infer
+  sail scan --infer --ignore-files "test/fixtures/**"
+  ```
+
 ## 0.2.0
 
 ### Minor Changes

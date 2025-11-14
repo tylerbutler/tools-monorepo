@@ -35,6 +35,7 @@
 		"perf:bundle": "pnpm build && open .sonda/index.html",
 		"perf:lighthouse": "pnpm build && lhci autorun",
 		"preview": "vite preview",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"sync": "svelte-kit sync",
 		"sync-data": "tsx scripts/sync-data.ts",
 		"tauri": "tauri",

@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/sail",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Build orchestration CLI tool",
 	"keywords": [
 		"oclif",
@@ -109,7 +109,6 @@
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"@tylerbu/sail-infrastructure": "workspace:^",
 		"async": "^3.2.6",
-		"lilconfig": "^3.1.3",
 		"date-fns": "^2.30.0",
 		"debug": "^4.4.3",
 		"detect-indent": "^7.0.2",
@@ -119,6 +118,7 @@
 		"globby": "^11.1.0",
 		"ignore": "^7.0.5",
 		"json5": "^2.2.3",
+		"lilconfig": "^3.1.3",
 		"lodash": "^4.17.21",
 		"lodash.isequal": "^4.5.0",
 		"log-update": "^7.0.1",

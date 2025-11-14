@@ -7,56 +7,112 @@ comment:
   behavior: default
 
 ignore:
-  - "**/index.ts"
-  - "**/index.js"
-  - "**/index.mjs"
-  - "**/index.cjs"
-  - "**/*.test.ts"
-  - "**/*.test.js"
-  - "**/test/**"
-  - "**/tests/**"
   - "**/__tests__/**"
-  - "**/bin/**"
-  - "**/*.config.ts"
+  - "**/.astro/**"
+  - "**/.nx/**"
+  - "**/*.config.cjs"
   - "**/*.config.js"
   - "**/*.config.mjs"
-  - "**/*.config.cjs"
-  - "**/docs/**"
-  - "**/.astro/**"
-  - "**/dist/**"
-  - "**/esm/**"
+  - "**/*.config.ts"
+  - "**/*.test.js"
+  - "**/*.test.ts"
+  - "**/bin/**"
   - "**/build/**"
+  - "**/dist/**"
+  - "**/docs/**"
+  - "**/esm/**"
+  - "**/index.cjs"
+  - "**/index.js"
+  - "**/index.mjs"
+  - "**/index.ts"
+  - "**/test/**"
+  - "**/tests/**"
 
 coverage:
   status:
     project:
       default:
         target: auto
-        threshold: 10%
+        threshold: 1%
         base: auto
     patch:
       default:
         informational: true
 
+# Flags configuration for monorepo packages
+# Each flag corresponds to a package and enables carryforward
+# Carryforward preserves coverage for packages not tested in a commit
+flags:
+  ccl-test-viewer:
+    paths:
+      - packages/ccl-test-viewer/
+    carryforward: true
+  cli:
+    paths:
+      - packages/cli/
+    carryforward: true
+  cli-api:
+    paths:
+      - packages/cli-api/
+    carryforward: true
+  dill:
+    paths:
+      - packages/dill-cli/
+    carryforward: true
+  fundamentals:
+    paths:
+      - packages/fundamentals/
+    carryforward: true
+  lilconfig-loader-ts:
+    paths:
+      - packages/lilconfig-loader-ts/
+    carryforward: true
+  rehype-footnotes:
+    paths:
+      - packages/rehype-footnotes/
+    carryforward: true
+  remark-lazy-links:
+    paths:
+      - packages/remark-lazy-links/
+    carryforward: true
+  remark-shift-headings:
+    paths:
+      - packages/remark-shift-headings/
+    carryforward: true
+  repopo:
+    paths:
+      - packages/repopo/
+    carryforward: true
+  sail:
+    paths:
+      - packages/sail/
+    carryforward: true
+  sail-infrastructure:
+    paths:
+      - packages/sail-infrastructure/
+    carryforward: true
+  sort-tsconfig:
+    paths:
+      - packages/sort-tsconfig/
+    carryforward: true
+  xkcd2-api:
+    paths:
+      - packages/xkcd2-api/
+    carryforward: true
+
 component_management:
   default_rules: # default rules that will be inherited by all components
     statuses:
       - type: project # in this case every component that doesn't have a status defined will have a project type one
+        target: auto
+        threshold: 1%
         branches:
           - "!main"
   individual_components:
-    - component_id: dill # this is an identifier that should not be changed
-      name: dill # this is a display name, and can be changed freely
+    - component_id: ccl-test-viewer
+      name: ccl-test-viewer
       paths:
-        - packages/dill-cli/**
-    - component_id: fundamentals
-      name: fundamentals
-      paths:
-        - packages/fundamentals/**
-    - component_id: sort-tsconfig
-      name: sort-tsconfig
-      paths:
-        - packages/sort-tsconfig/**
+        - packages/ccl-test-viewer/**
     - component_id: cli
       name: cli
       paths:
@@ -65,14 +121,34 @@ component_management:
       name: cli-api
       paths:
         - packages/cli-api/**
-    - component_id: xkcd2-api
-      name: xkcd2-api
+    - component_id: dill # this is an identifier that should not be changed
+      name: dill # this is a display name, and can be changed freely
       paths:
-        - packages/xkcd2-api/**
-    - component_id: ccl-test-viewer
-      name: ccl-test-viewer
+        - packages/dill-cli/**
+    - component_id: fundamentals
+      name: fundamentals
       paths:
-        - packages/ccl-test-viewer/**
+        - packages/fundamentals/**
+    - component_id: lilconfig-loader-ts
+      name: lilconfig-loader-ts
+      paths:
+        - packages/lilconfig-loader-ts/**
+    - component_id: rehype-footnotes
+      name: rehype-footnotes
+      paths:
+        - packages/rehype-footnotes/**
+    - component_id: remark-lazy-links
+      name: remark-lazy-links
+      paths:
+        - packages/remark-lazy-links/**
+    - component_id: remark-shift-headings
+      name: remark-shift-headings
+      paths:
+        - packages/remark-shift-headings/**
+    - component_id: repopo
+      name: repopo
+      paths:
+        - packages/repopo/**
     - component_id: sail
       name: sail
       paths:
@@ -81,15 +157,11 @@ component_management:
       name: sail-infrastructure
       paths:
         - packages/sail-infrastructure/**
-    - component_id: rehype-footnotes
-      name: rehype-footnotes
+    - component_id: sort-tsconfig
+      name: sort-tsconfig
       paths:
-        - packages/rehype-footnotes/**
-    - component_id: remark-shift-headings
-      name: remark-shift-headings
+        - packages/sort-tsconfig/**
+    - component_id: xkcd2-api
+      name: xkcd2-api
       paths:
-        - packages/remark-shift-headings/**
-    - component_id: remark-lazy-links
-      name: remark-lazy-links
-      paths:
-        - packages/remark-lazy-links/**
+        - packages/xkcd2-api/**

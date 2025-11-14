@@ -1,5 +1,35 @@
 # @tylerbu/cli
 
+## 0.7.0
+
+### Minor Changes
+
+- Implement structured concurrency with Effection for package.json synchronization _[`#397`](https://github.com/tylerbutler/tools-monorepo/pull/397) [`a93b175`](https://github.com/tylerbutler/tools-monorepo/commit/a93b17539160f45dccba7a9385f553676ec2d3e3) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Replaced Promise.all with Effection's structured concurrency in the deps:sync command's syncAllPackages() method. This ensures atomic updates across all packages in a workspace, with automatic cancellation if any package update fails.
+
+  Benefits:
+
+  - Atomic multi-package updates (all succeed or none are applied)
+  - Automatic cancellation of pending updates when one fails
+  - Consistent workspace state even on errors
+  - No partial package.json updates across the workspace
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`a93b175`](https://github.com/tylerbutler/tools-monorepo/commit/a93b17539160f45dccba7a9385f553676ec2d3e3) [`8832369`](https://github.com/tylerbutler/tools-monorepo/commit/8832369318b6efee8adae1636f3629639b0d76ac)
+
+</small>
+
+- `dill-cli@0.4.0`
+- `@tylerbu/cli-api@0.9.0`
+
+</details>
+
 ## 0.6.0
 
 ### Minor Changes
