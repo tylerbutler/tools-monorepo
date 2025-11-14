@@ -21,10 +21,14 @@ inputs:
 runs:
   using: composite
   steps:
-    # Configure Nx Cloud settings
-    - name: Configure Nx Cloud
+    # Configure Nx settings
+    - name: Configure Nx
       shell: bash
       run: |
+        # Set custom cache directory to avoid conflicts with coverage outputs
+        echo "NX_CACHE_DIRECTORY=/tmp/nx-cache" >> $GITHUB_ENV
+
+        # Configure Nx Cloud
         if [ "${{ inputs.enable-nx-cloud }}" = "true" ]; then
           echo "NX_CLOUD_ACCESS_TOKEN=${{ inputs.nx-cloud-token }}" >> $GITHUB_ENV
         else
@@ -35,7 +39,7 @@ runs:
       if: inputs.enable-cache
       uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache@v4
       with:
-        path: .nx/cache
+        path: /tmp/nx-cache
         key: nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/project.json', 'nx.json') }}
         restore-keys: |
           nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-

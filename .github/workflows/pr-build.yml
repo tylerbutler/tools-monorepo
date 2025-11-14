@@ -35,7 +35,7 @@ jobs:
 
       - uses: ./.github/actions/setup-nx
         with:
-          enable-cache: true
+          enable-cache: false
           # Nx Cloud disabled by default (enable-nx-cloud: false)
 
       - name: Run CI checks, builds, and tests
@@ -100,7 +100,7 @@ jobs:
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # ratchet:actions/download-artifact@v6
         with:
           name: coverage-reports
-          path: .
+          path: packages/
 
       - uses: ./.github/actions/upload-codecov
         with:
