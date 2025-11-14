@@ -100,7 +100,7 @@ jobs:
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # ratchet:actions/download-artifact@v6
         with:
           name: coverage-reports
-          path: packages/
+          path: .
 
       - uses: ./.github/actions/upload-codecov
         with:
