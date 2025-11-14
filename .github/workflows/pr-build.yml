@@ -52,6 +52,19 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      # Debug: List coverage files
+      - name: Debug - List coverage files
+        if: ${{ !cancelled() }}
+        run: |
+          echo "=== Coverage directories found ==="
+          find packages -type d -name ".coverage" 2>/dev/null || echo "No .coverage dirs found"
+          echo ""
+          echo "=== Coverage XML files ==="
+          find packages -name "cobertura-coverage.xml" 2>/dev/null || echo "No XML files found"
+          echo ""
+          echo "=== Directory structure ==="
+          ls -la packages/*/
+
       # Upload coverage artifacts for the upload-coverage job
       - name: Upload coverage artifacts
         id: upload-coverage
