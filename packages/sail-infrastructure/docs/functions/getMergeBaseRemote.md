@@ -14,7 +14,7 @@ function getMergeBaseRemote(
 localRef?): Promise<string>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/git.ts:62](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L62)
+Defined in: [packages/sail-infrastructure/src/git.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L61)
 
 Get the merge base between the current HEAD and a remote branch.
 
