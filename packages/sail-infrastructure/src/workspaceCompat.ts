@@ -1,5 +1,5 @@
-import * as path from "pathe";
 import { WriteOnceMap } from "@tylerbu/fundamentals";
+import * as path from "pathe";
 import type {
 	// eslint-disable-next-line import/no-deprecated -- back-compat code
 	IFluidBuildDir,

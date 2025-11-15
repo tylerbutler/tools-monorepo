@@ -2,8 +2,8 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
 import { captureOutput } from "@oclif/test";
+import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DepsSync from "../../../src/commands/deps/sync.js";
 

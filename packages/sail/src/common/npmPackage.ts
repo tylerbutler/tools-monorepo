@@ -1,5 +1,4 @@
 import { existsSync } from "node:fs";
-import path from "pathe";
 import {
 	type PackageJson as BasePackageJson,
 	type IBuildProject,
@@ -11,6 +10,7 @@ import {
 	type ReleaseGroupName,
 } from "@tylerbu/sail-infrastructure";
 import registerDebug from "debug";
+import path from "pathe";
 
 import type { ISailConfig } from "../core/sailConfig.js";
 import { rimrafWithErrorAsync } from "./utils.js";

@@ -1,7 +1,6 @@
 import { existsSync } from "node:fs";
-import * as path from "pathe";
-
 import fsePkg from "fs-extra";
+import * as path from "pathe";
 
 // eslint-disable-next-line import/no-named-as-default-member -- Imports are written this way for CJS/ESM compat
 const { readJsonSync } = fsePkg;

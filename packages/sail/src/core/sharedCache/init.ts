@@ -4,8 +4,8 @@
 
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
-import path from "pathe";
 import type { Logger } from "@tylerbu/cli-api";
+import path from "pathe";
 import { SharedCacheManager } from "./sharedCacheManager.js";
 import type { GlobalCacheKeyComponents } from "./types.js";
 

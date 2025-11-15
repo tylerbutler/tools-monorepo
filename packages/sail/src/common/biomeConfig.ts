@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
-import path from "pathe";
 import ignore from "ignore";
 import JSON5 from "json5";
 import multimatch from "multimatch";
+import path from "pathe";
 import { merge } from "ts-deepmerge";
 // Note: in more recent versions of type-fest, this type has been replaced with "Tagged"
 // We are using version 2.x because of this issue: https://github.com/sindresorhus/type-fest/issues/547

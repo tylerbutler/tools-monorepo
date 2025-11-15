@@ -9,10 +9,10 @@
  *   tbu fluid repo-overlay nx [options]
  */
 
-import { resolve } from "pathe";
 import process from "node:process";
 import { Args, Flags } from "@oclif/core";
 import { BaseCommand } from "@tylerbu/cli-api";
+import { resolve } from "pathe";
 import {
 	copyNxConfigFiles,
 	isNxConfigured,

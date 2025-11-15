@@ -1,5 +1,5 @@
-import path from "pathe";
 import { exists } from "@tylerbu/fundamentals";
+import path from "pathe";
 
 /**
  * Supported package managers

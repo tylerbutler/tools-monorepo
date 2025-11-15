@@ -1,6 +1,5 @@
-import * as path from "pathe";
-
 import mm from "micromatch";
+import * as path from "pathe";
 
 import { getChangedSinceRef, getRemote } from "./git.js";
 import type { IBuildProject, IPackage } from "./types.js";

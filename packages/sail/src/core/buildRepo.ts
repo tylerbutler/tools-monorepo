@@ -1,5 +1,4 @@
 import { existsSync } from "node:fs";
-import path from "pathe";
 import {
 	BuildProject,
 	type BuildProjectConfig,
@@ -12,6 +11,7 @@ import {
 	type ReleaseGroupName,
 } from "@tylerbu/sail-infrastructure";
 import registerDebug from "debug";
+import path from "pathe";
 import chalk from "picocolors";
 import { simpleGit } from "simple-git";
 

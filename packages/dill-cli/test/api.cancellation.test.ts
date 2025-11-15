@@ -1,7 +1,7 @@
 import { mkdir, readdir, rm } from "node:fs/promises";
-import path from "pathe";
 import type { Unzipped } from "fflate";
 import type { ParsedTarFileItem } from "nanotar";
+import path from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { writeTarFiles, writeZipFiles } from "../src/api.js";
 

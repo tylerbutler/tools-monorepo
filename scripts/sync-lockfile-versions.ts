@@ -19,8 +19,8 @@
 
 import { execSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
-import path from "pathe";
 import { exists } from "@tylerbu/fundamentals";
+import path from "pathe";
 import semver from "semver";
 
 // Types

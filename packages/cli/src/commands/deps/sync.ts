@@ -1,5 +1,4 @@
 import { stat } from "node:fs/promises";
-import path from "pathe";
 import { Flags } from "@oclif/core";
 import {
 	CommandWithConfig,
@@ -14,6 +13,7 @@ import {
 	syncAllPackages,
 } from "@tylerbu/cli-api";
 import { exists } from "@tylerbu/fundamentals";
+import path from "pathe";
 import chalk from "picocolors";
 
 export default class DepsSync extends CommandWithConfig<

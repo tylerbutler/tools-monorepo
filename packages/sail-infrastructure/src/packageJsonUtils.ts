@@ -1,9 +1,8 @@
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import * as path from "pathe";
-
 import detectIndent from "detect-indent";
 import fsePkg from "fs-extra";
+import * as path from "pathe";
 
 // eslint-disable-next-line import/no-named-as-default-member -- Imports are written this way for CJS/ESM compat
 const { writeJson, writeJsonSync } = fsePkg;

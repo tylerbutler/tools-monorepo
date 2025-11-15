@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
-import path from "pathe";
 import ignore from "ignore";
+import path from "pathe";
 
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
