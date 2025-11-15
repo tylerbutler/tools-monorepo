@@ -26,7 +26,7 @@
 		"check": "pnpm check:svelte && pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"clean": "rimraf build .svelte-kit",
+		"clean": "rimraf build .svelte-kit dist",
 		"dev": "vite dev",
 		"dev:tauri": "BUILD_TARGET=tauri tauri dev",
 		"format": "biome check . --linter-enabled=false --write",
@@ -36,8 +36,8 @@
 		"perf:lighthouse": "pnpm build && lhci autorun",
 		"preview": "vite preview",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"sync": "svelte-kit sync",
 		"sync-data": "tsx scripts/sync-data.ts",
+		"sync-svelte-kit": "svelte-kit sync",
 		"tauri": "tauri",
 		"tauri:build": "tauri build",
 		"tauri:build:debug": "tauri build --debug",
@@ -108,6 +108,7 @@
 				"dependsOn": [
 					"^build",
 					"sync-data",
+					"sync-svelte-kit",
 					"build:vite"
 				]
 			},
