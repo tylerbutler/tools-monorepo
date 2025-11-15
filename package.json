@@ -179,6 +179,9 @@
 			},
 			"check:policy": {
 				"executor": "nx:run-script",
+				"dependsOn": [
+					"sort-tsconfig:build:compile"
+				],
 				"options": {
 					"script": "check:policy"
 				},

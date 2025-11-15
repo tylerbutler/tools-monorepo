@@ -1,5 +1,19 @@
 # dill-cli
 
+## 0.2.1
+
+### Patch Changes
+
+- Fix copyfiles warnings due to path separator mismatch _[`#412`](https://github.com/tylerbutler/tools-monorepo/pull/412) [`5888c32`](https://github.com/tylerbutler/tools-monorepo/commit/5888c323b4bbb510d78902477a2e18c8580d2485) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The CopyfilesTask was incorrectly mixing POSIX path separators (forward slashes) with OS-native path operations, causing output file path calculations to fail on Windows. This resulted in warnings about being unable to generate content for done files (e.g., "WARNING: unable to generate content for copyfiles-5c0eb27a.done.build.log").
+
+  Fixed by removing the unnecessary `toPosixPath()` conversion and consistently using OS-native paths throughout the `getOutputFiles()` method.
+
+- Fix progress bar task counting to match displayed task numbers _[`#413`](https://github.com/tylerbutler/tools-monorepo/pull/413) [`9e4dd36`](https://github.com/tylerbutler/tools-monorepo/commit/9e4dd36ac1110cf5f9e131f241273808ae657076) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The progress bar now correctly includes execution-time skips (tasks skipped during execution via cache hits or recheck) in its count, matching the task numbers displayed in the output. Previously, the progress bar would lag behind the actual task numbers because it only counted built tasks, not skipped tasks.
+
 ## 0.2.0
 
 ### Minor Changes
