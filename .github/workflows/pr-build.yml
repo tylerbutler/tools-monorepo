@@ -57,6 +57,10 @@ jobs:
             echo "affected=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Build ccl-test-viewer for bundle tracking
+        if: steps.check-ccl-affected.outputs.affected == 'true'
+        run: pnpm nx run ccl-test-viewer:build
+
       - name: Upload ccl-test-viewer build artifacts
         if: steps.check-ccl-affected.outputs.affected == 'true'
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # ratchet:actions/upload-artifact@v5
@@ -64,7 +68,7 @@ jobs:
           name: ccl-test-viewer-build
           path: packages/ccl-test-viewer/build
           retention-days: 1
-          if-no-files-found: warn
+          if-no-files-found: error
 
       - name: "Codecov: upload test results"
         if: ${{ !cancelled() }}
