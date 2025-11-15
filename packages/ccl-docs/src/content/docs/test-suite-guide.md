@@ -3,7 +3,7 @@ title: Test Suite Guide
 description: Using the CCL test suite for progressive implementation validation.
 ---
 
-The [CCL Test Suite](https://github.com/ccl-test-data) provides 452 assertions across 167 tests for validating CCL implementations.
+The [CCL Test Suite](https://github.com/ccl-test-data) provides 453 assertions across 168 tests for validating CCL implementations.
 
 ## Test Format
 
