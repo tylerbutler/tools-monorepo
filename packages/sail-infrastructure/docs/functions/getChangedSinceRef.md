@@ -19,7 +19,7 @@ function getChangedSinceRef<P>(
 }>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/git.ts:134](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L134)
+Defined in: [packages/sail-infrastructure/src/git.ts:128](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L128)
 
 Gets the changed files, directories, release groups, and packages since the given ref.
 
