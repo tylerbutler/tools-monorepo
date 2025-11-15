@@ -1,6 +1,7 @@
+import { mkdtempSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "pathe";
-import { temporaryDirectory } from "tempy";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	type DependencyInfo,
@@ -620,7 +621,7 @@ describe("dependency-sync", () => {
 		let tmpDir: string;
 
 		beforeEach(() => {
-			tmpDir = temporaryDirectory();
+			tmpDir = mkdtempSync(join(tmpdir(), "sync-package-json-test-"));
 		});
 
 		afterEach(() => {
@@ -775,7 +776,7 @@ describe("dependency-sync", () => {
 		let tmpDir: string;
 
 		beforeEach(() => {
-			tmpDir = temporaryDirectory();
+			tmpDir = mkdtempSync(join(tmpdir(), "sync-all-packages-test-"));
 		});
 
 		it("syncs multiple packages", async () => {

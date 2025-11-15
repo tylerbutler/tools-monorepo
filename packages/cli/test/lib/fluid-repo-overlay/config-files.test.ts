@@ -1,6 +1,7 @@
+import { mkdtempSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "pathe";
-import { temporaryDirectory } from "tempy";
 import { describe, expect, it, vi } from "vitest";
 import {
 	copyNxConfigFiles,
@@ -10,7 +11,7 @@ import {
 describe("config-files", () => {
 	describe("copyNxConfigFiles", () => {
 		it("copies nx.json to repo root", async () => {
-			const tmpDir = temporaryDirectory();
+			const tmpDir = mkdtempSync(join(tmpdir(), "config-files-test-"));
 			const mockLogger = {
 				verbose: vi.fn(),
 			};
@@ -34,7 +35,7 @@ describe("config-files", () => {
 		});
 
 		it("skips copy if nx.json already exists", async () => {
-			const tmpDir = temporaryDirectory();
+			const tmpDir = mkdtempSync(join(tmpdir(), "config-files-test-"));
 			const nxJsonPath = join(tmpDir, "nx.json");
 
 			// Create existing nx.json
@@ -59,14 +60,14 @@ describe("config-files", () => {
 
 	describe("isNxConfigured", () => {
 		it("returns true when nx.json exists", async () => {
-			const tmpDir = temporaryDirectory();
+			const tmpDir = mkdtempSync(join(tmpdir(), "config-files-test-"));
 			await writeFile(join(tmpDir, "nx.json"), "{}", "utf-8");
 
 			expect(await isNxConfigured(tmpDir)).toBe(true);
 		});
 
 		it("returns false when nx.json does not exist", async () => {
-			const tmpDir = temporaryDirectory();
+			const tmpDir = mkdtempSync(join(tmpdir(), "config-files-test-"));
 
 			expect(await isNxConfigured(tmpDir)).toBe(false);
 		});

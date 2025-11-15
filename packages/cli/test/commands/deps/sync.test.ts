@@ -1,8 +1,9 @@
 import { execFileSync } from "node:child_process";
+import { mkdtempSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { captureOutput } from "@oclif/test";
-import { temporaryDirectory } from "tempy";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DepsSync from "../../../src/commands/deps/sync.js";
 
@@ -15,7 +16,7 @@ describe("deps sync", () => {
 	let tmpDir: string;
 
 	beforeEach(() => {
-		tmpDir = temporaryDirectory();
+		tmpDir = mkdtempSync(join(tmpdir(), "deps-sync-test-"));
 		vi.clearAllMocks();
 	});
 
