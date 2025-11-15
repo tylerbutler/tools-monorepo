@@ -1,7 +1,6 @@
-import * as path from "node:path";
-
-import { x } from "tinyexec";
+import * as path from "pathe";
 import resolveWorkspacePkg from "resolve-workspace-root";
+import { x } from "tinyexec";
 import { globSync } from "tinyglobby";
 
 const { getWorkspaceGlobs, resolveWorkspaceRoot } = resolveWorkspacePkg;

@@ -1,5 +1,5 @@
 import { readdir, readFile, stat } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 
 import picomatch from "picomatch";
 import type { BuildContext } from "../../buildContext.js";

@@ -3,8 +3,8 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import type { Logger } from "@tylerbu/cli-api";
+import { join } from "pathe";
 
 const NX_GITIGNORE_ENTRIES = [
 	"",

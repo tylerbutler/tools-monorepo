@@ -1,6 +1,5 @@
 import * as path from "node:path";
-import { execFileSync } from "node:child_process";
-
+import * as path from "pathe";
 import { readPackageUpSync } from "read-pkg-up";
 import type { SimpleGit } from "simple-git";
 
