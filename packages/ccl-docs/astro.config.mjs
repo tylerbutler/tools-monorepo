@@ -91,7 +91,6 @@ export default defineConfig({
 					items: [
 						{ slug: "syntax-reference" },
 						{ slug: "dotted-keys-explained" },
-						{ slug: "format-comparison" },
 					],
 				},
 			],
