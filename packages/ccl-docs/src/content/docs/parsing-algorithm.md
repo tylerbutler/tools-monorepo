@@ -42,7 +42,7 @@ Split lines on first `=` character:
 
 **Special keys**:
 - Empty key `= value` → list item
-- Comment key `/= text` → comment entry
+- Comment entry `/ = text` → key is `/`, value is `text`
 
 ### Stage 2: Build Hierarchy
 
