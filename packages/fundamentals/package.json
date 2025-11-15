@@ -64,7 +64,6 @@
 		"concurrently": "^9.2.1",
 		"pathe": "^2.0.3",
 		"rimraf": "^6.1.0",
-		"tempy": "^3.1.0",
 		"typedoc": "^0.28.14",
 		"typedoc-plugin-markdown": "^4.9.0",
 		"typescript": "~5.9.3",
