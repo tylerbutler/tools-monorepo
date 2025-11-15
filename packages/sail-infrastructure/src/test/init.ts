@@ -1,4 +1,4 @@
-import * as path from "node:path";
+import * as path from "pathe";
 
 // biome-ignore lint/correctness/useImportExtensions: .cjs extension required for CommonJS file
 import { _dirname } from "./dirname.cjs";

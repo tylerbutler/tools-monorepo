@@ -1,6 +1,5 @@
-import * as path from "node:path";
-
 import execa from "execa";
+import * as path from "pathe";
 import resolveWorkspacePkg from "resolve-workspace-root";
 import { globSync } from "tinyglobby";
 

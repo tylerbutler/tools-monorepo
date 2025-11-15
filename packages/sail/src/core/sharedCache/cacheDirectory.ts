@@ -5,8 +5,8 @@
 
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import createDebug from "debug";
+import { join } from "pathe";
 
 const traceLookup = createDebug("sail:cache:lookup");
 

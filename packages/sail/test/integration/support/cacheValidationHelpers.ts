@@ -1,5 +1,5 @@
 import { readdir, readFile, rm, unlink, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join } from "pathe";
 import { expect } from "vitest";
 
 /**
