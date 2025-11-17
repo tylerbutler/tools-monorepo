@@ -4,9 +4,9 @@
  */
 
 import { existsSync } from "node:fs";
-import * as path from "node:path";
 import type { Logger } from "@tylerbu/cli-api";
 import registerDebug from "debug";
+import * as path from "pathe";
 import {
 	cacheEntryExists,
 	getCacheEntryPath,

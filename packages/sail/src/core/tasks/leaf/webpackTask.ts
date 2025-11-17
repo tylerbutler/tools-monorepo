@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import path from "node:path";
+import path from "pathe";
 
 import { globFn, loadModule, toPosixPath } from "../taskUtils.js";
 import { LeafWithDoneFileTask } from "./leafTask.js";

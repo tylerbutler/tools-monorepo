@@ -1,6 +1,6 @@
 import { existsSync, statSync } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 import { FileHashCache, type hashFn, sha256 } from "../fileHashCache.js";
 
 /**

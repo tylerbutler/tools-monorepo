@@ -17,16 +17,15 @@ on:
 permissions:
   actions: read
   contents: read
-
-env:
-  # Disable Nx Cloud for PR builds to test local cache behavior
-  # Main branch builds use Nx Cloud for remote caching only (no task distribution)
-  NX_CLOUD_ACCESS_TOKEN: ${{ github.event_name == 'pull_request' && '' || secrets.NX_CLOUD_ACCESS_TOKEN }}
+  pull-requests: write # Required for bundlemon to comment on PRs
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    outputs:
+      has-coverage: ${{ steps.upload-coverage.outputs.artifact-id != '' }}
+      ccl-test-viewer-affected: ${{ steps.check-ccl-affected.outputs.affected }}
 
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
@@ -34,37 +33,12 @@ jobs:
           filter: tree:0
           fetch-depth: 0 # Required for nx affected to compare against base branch
 
-      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - uses: ./.github/actions/setup-nx
         with:
-          run_install: false
-
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: "pnpm"
-          cache-dependency-path: pnpm-lock.yaml
-
-      - run: npm i --global corepack@latest
-      - run: corepack enable
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # Cache Nx local cache between runs
-      - name: Cache Nx
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/project.json', 'nx.json') }}
-          restore-keys: |
-            nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-
-            nx-${{ runner.os }}-${{ github.ref_name }}-
-            nx-${{ runner.os }}-main-
-            nx-${{ runner.os }}-
-
-      # Sets NX_BASE and NX_HEAD for accurate affected detection
-      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4
+          enable-cache: false
+          # Nx Cloud disabled by default (enable-nx-cloud: false)
 
       - name: Run CI checks, builds, and tests
         run: |
@@ -74,77 +48,129 @@ jobs:
             pnpm run ci:affected
           fi
 
-      - run: npx nx fix-ci
-        if: always()
+      - name: Check if ccl-test-viewer is affected
+        id: check-ccl-affected
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ] || pnpm nx show project ccl-test-viewer --affected 2>/dev/null; then
+            echo "affected=true" >> $GITHUB_OUTPUT
+          else
+            echo "affected=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build ccl-test-viewer for bundle tracking
+        if: steps.check-ccl-affected.outputs.affected == 'true'
+        run: pnpm nx run ccl-test-viewer:build
+
+      - name: Upload ccl-test-viewer build artifacts
+        if: steps.check-ccl-affected.outputs.affected == 'true'
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # ratchet:actions/upload-artifact@v5
+        with:
+          name: ccl-test-viewer-build
+          path: packages/ccl-test-viewer/build
+          retention-days: 1
+          if-no-files-found: error
 
       - name: "Codecov: upload test results"
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # ratchet:codecov/test-results-action@v1
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # ratchet:codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: "Codecov: upload coverage"
+      # Debug: List coverage files
+      - name: Debug - List coverage files
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # ratchet:codecov/codecov-action@v4
+        run: |
+          echo "=== Coverage directories found ==="
+          find packages -type d -name ".coverage" 2>/dev/null || echo "No .coverage dirs found"
+          echo ""
+          echo "=== Coverage XML files ==="
+          find packages -name "cobertura-coverage.xml" 2>/dev/null || echo "No XML files found"
+          echo ""
+          echo "=== Directory structure ==="
+          ls -la packages/*/
+
+      # Upload coverage artifacts for the upload-coverage job
+      - name: Upload coverage artifacts
+        id: upload-coverage
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # ratchet:actions/upload-artifact@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          name: coverage-reports
+          path: packages/*/.coverage/vitest/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 1
 
       - name: Check for edited files
         run: |
           git diff
           git diff --quiet || (git status -u . && exit 1)
 
-  bundle-size:
+  # Upload coverage to Codecov with flags for proper monorepo support
+  # Using matrix strategy to reduce verbosity and repetition
+  upload-coverage:
+    needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
-    permissions:
-      pull-requests: write
-      contents: read
+    if: ${{ !cancelled() && needs.build-and-test.outputs.has-coverage == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - {name: dill-cli, flag: dill}
+          - {name: fundamentals, flag: fundamentals}
+          - {name: sort-tsconfig, flag: sort-tsconfig}
+          - {name: cli, flag: cli}
+          - {name: cli-api, flag: cli-api}
+          - {name: xkcd2-api, flag: xkcd2-api}
+          - {name: ccl-test-viewer, flag: ccl-test-viewer}
+          - {name: sail, flag: sail}
+          - {name: sail-infrastructure, flag: sail-infrastructure}
+          - {name: rehype-footnotes, flag: rehype-footnotes}
+          - {name: remark-shift-headings, flag: remark-shift-headings}
+          - {name: remark-lazy-links, flag: remark-lazy-links}
+          - {name: repopo, flag: repopo}
+          - {name: lilconfig-loader-ts, flag: lilconfig-loader-ts}
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # ratchet:actions/checkout@v5
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # ratchet:actions/download-artifact@v6
+        with:
+          name: coverage-reports
+          path: packages/
+
+      - uses: ./.github/actions/upload-codecov
+        with:
+          package-name: ${{ matrix.package.name }}
+          flag: ${{ matrix.package.flag }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  # Track bundle size for ccl-test-viewer when affected
+  bundle-size-tracking:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: needs.build-and-test.outputs.ccl-test-viewer-affected == 'true'
 
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Required for bundlemon to compare against base branch
 
-      - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
-        name: Install pnpm
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - name: Download ccl-test-viewer build artifacts
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # ratchet:actions/download-artifact@v6
         with:
-          run_install: false
-
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: "pnpm"
-          cache-dependency-path: pnpm-lock.yaml
-
-      - run: npm i --global corepack@latest
-      - run: corepack enable
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # Sets NX_BASE and NX_HEAD for accurate affected detection
-      - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4
-
-      - name: Check if ccl-test-viewer is affected
-        id: check-affected
-        run: |
-          if pnpm nx show project ccl-test-viewer --affected 2>/dev/null; then
-            echo "affected=true" >> $GITHUB_OUTPUT
-          else
-            echo "affected=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Build ccl-test-viewer
-        if: steps.check-affected.outputs.affected == 'true'
-        run: pnpm nx run ccl-test-viewer:build
+          name: ccl-test-viewer-build
+          path: packages/ccl-test-viewer/build
 
       - name: Run bundlemon
-        if: steps.check-affected.outputs.affected == 'true'
-        run: pnpm nx run ccl-test-viewer:bundlemon
+        run: pnpm -C packages/ccl-test-viewer bundlemon
         env:
-          # GitHub Actions automatically provides all necessary env vars
-          # The GitHub App handles authentication and reporting
-          CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-          CI_TARGET_BRANCH: ${{ github.base_ref }}
-          CI_PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # For PRs, set commit SHA and PR metadata
+          CI_COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || '' }}
+          CI_TARGET_BRANCH: ${{ github.event_name == 'pull_request' && github.base_ref || '' }}
+          CI_PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || '' }}
+          # For main branch pushes, bundlemon will auto-detect and record baseline measurements

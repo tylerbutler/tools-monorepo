@@ -17,6 +17,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----------
 
+The following npm package may be included in this product:
+
+ - effection@3.6.1
+
+This package contains the following license:
+
+ISC
+
+-----------
+
 The following npm packages may be included in this product:
 
  - @oclif/core@4.8.0

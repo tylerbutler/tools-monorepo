@@ -220,34 +220,6 @@ Error.captureStackTrace
 
 ***
 
-### isError()
-
-```ts
-static isError(error): error is Error;
-```
-
-Defined in: node\_modules/.pnpm/typescript@5.9.3/node\_modules/typescript/lib/lib.esnext.error.d.ts:23
-
-Indicates whether the argument provided is a built-in Error instance or not.
-
-#### Parameters
-
-##### error
-
-`unknown`
-
-#### Returns
-
-`error is Error`
-
-#### Inherited from
-
-```ts
-Error.isError
-```
-
-***
-
 ### prepareStackTrace()
 
 ```ts
