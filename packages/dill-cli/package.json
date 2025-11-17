@@ -1,6 +1,6 @@
 {
 	"name": "dill-cli",
-	"version": "0.3.1",
+	"version": "0.4.0",
 	"description": "Command-line (CLI) program to download and optionally decompress gzipped files.",
 	"keywords": [
 		"download",
@@ -95,6 +95,7 @@
 		"@oclif/plugin-help": "^6.2.35",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
+		"effection": "^3.6.1",
 		"fflate": "^0.8.2",
 		"file-type": "^21.1.0",
 		"mime": "^4.1.0",
@@ -126,7 +127,6 @@
 		"serve-handler": "^6.1.6",
 		"sort-package-json": "*",
 		"start-server-and-test": "^2.1.2",
-		"tempy": "^3.1.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.20.6",

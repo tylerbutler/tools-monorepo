@@ -1,4 +1,4 @@
-import { resolve as pathResolve } from "node:path";
+import { resolve as pathResolve } from "pathe";
 import type {
 	TaskHandlerPlugin,
 	TaskHandlerPluginConfig,

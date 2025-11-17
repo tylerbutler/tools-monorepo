@@ -1,6 +1,6 @@
 {
 	"name": "sort-tsconfig",
-	"version": "0.3.2",
+	"version": "0.3.4",
 	"description": "Sorts tsconfig files.",
 	"keywords": [
 		"sort",

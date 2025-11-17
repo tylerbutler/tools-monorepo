@@ -17,10 +17,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----------
 
+The following npm package may be included in this product:
+
+ - effection@3.6.1
+
+This package contains the following license:
+
+ISC
+
+-----------
+
 The following npm packages may be included in this product:
 
- - @oclif/core@4.6.0
- - @oclif/plugin-help@6.2.33
+ - @oclif/core@4.8.0
+ - @oclif/plugin-help@6.2.35
 
 These packages each contain the following license:
 
@@ -249,7 +259,7 @@ DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - file-type@21.0.0
+ - file-type@21.1.0
 
 This package contains the following license:
 

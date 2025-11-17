@@ -3,7 +3,7 @@
  * These tasks are automatically available without requiring declarativeTask configuration.
  */
 
-import path from "node:path";
+import path from "pathe";
 import { globFn } from "../taskUtils.js";
 import { LeafWithDoneFileTask } from "./leafTask.js";
 

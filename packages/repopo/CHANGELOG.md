@@ -1,5 +1,73 @@
 # repopo
 
+## 0.7.1
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`8832369`](https://github.com/tylerbutler/tools-monorepo/commit/8832369318b6efee8adae1636f3629639b0d76ac)
+
+</small>
+
+- `@tylerbu/cli-api@0.9.0`
+
+</details>
+
+## 0.7.0
+
+### Minor Changes
+
+- Add configurable PackageScripts policy _[`#376`](https://github.com/tylerbutler/tools-monorepo/pull/376) [`c17462a`](https://github.com/tylerbutler/tools-monorepo/commit/c17462a8af35a8bfbb528f29825a0ef177923946) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Enhances the `PackageScripts` policy with flexible configuration options to enforce package.json script requirements across your repository. The policy now supports two validation modes:
+
+  1.  **Required Scripts (`must`)**: Specify scripts that must be present in all package.json files
+  2.  **Mutually Exclusive Scripts (`mutuallyExclusive`)**: Define groups of scripts where exactly one from each group must exist
+
+  Example configuration:
+
+  ```typescript
+  makePolicy(PackageScripts, {
+    must: ["build", "clean"],
+    mutuallyExclusive: [
+      ["test", "test:unit"], // Either "test" or "test:unit", not both
+    ],
+  });
+  ```
+
+  The policy validates that:
+
+  - All scripts in the `must` array are present
+  - For each group in `mutuallyExclusive`, exactly one script from that group exists (not zero, not multiple)
+
+  This is useful for enforcing consistent npm script conventions across monorepo packages while allowing flexibility where needed.
+
+- New built-in policies _[`#308`](https://github.com/tylerbutler/tools-monorepo/pull/308) [`1856d58`](https://github.com/tylerbutler/tools-monorepo/commit/1856d582fb92692447b02c89cdb45dcd3c5f7370) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Added three new policies for repository quality and safety:
+
+  - **LicenseFileExists**: Ensures a LICENSE file exists in the repository root (essential for open source projects)
+  - **NoLargeBinaryFiles**: Prevents large binary files from being committed (default 10MB max, suggests Git LFS for large assets)
+  - **RequiredGitignorePatterns**: Validates .gitignore contains required patterns to prevent committing sensitive files, dependencies, and build artifacts (auto-fixable)
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/cli-api@0.8.0`
+- `@tylerbu/fundamentals@0.3.0`
+
+</details>
+
 ## 0.6.0
 
 ### Minor Changes

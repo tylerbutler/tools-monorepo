@@ -12,7 +12,9 @@ import { FlagDefinition } from '@oclif/core/interfaces';
 import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
-import type { PackageJson } from 'type-fest';
+import type { PackageJson as PackageJson_2 } from 'type-fest';
+import type { PathLike } from 'node:fs';
+import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
 import { SimpleGitOptions } from 'simple-git';
@@ -89,6 +91,29 @@ export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 export const ConsolaLogger: Logger;
 
 // @beta
+export interface DependencyChange {
+    // (undocumented)
+    dep: string;
+    // (undocumented)
+    from: string;
+    // (undocumented)
+    to: string;
+    // (undocumented)
+    type: DependencyType;
+}
+
+// @beta
+export interface DependencyInfo {
+    // (undocumented)
+    [key: string]: unknown;
+    // (undocumented)
+    version: string;
+}
+
+// @beta
+export type DependencyType = "dependencies" | "devDependencies" | "peerDependencies" | "optionalDependencies";
+
+// @beta
 export function detectAllPackageManagers(directory?: string): Promise<PackageManager[]>;
 
 // @beta
@@ -109,6 +134,14 @@ export type Flags<T extends typeof Command> = Interfaces.InferredFlags<(typeof B
 // @beta
 export function getAllLockfiles(): string[];
 
+// @beta
+export function getInstalledVersions(packageManager: PackageManager, options?: GetInstalledVersionsOptions): Promise<ProjectInfo[]>;
+
+// @beta
+export interface GetInstalledVersionsOptions {
+    cwd?: string;
+}
+
 // @beta (undocumented)
 export function getMergeBase(git: SimpleGit, reference1: string, reference2: string): Promise<string>;
 
@@ -127,6 +160,12 @@ export abstract class GitCommand<T extends typeof Command & {
     protected repo: Repository;
     protected requiresConfig: boolean;
 }
+
+// @beta
+export function isSyncSupported(pm: PackageManager): boolean;
+
+// @beta
+export function isValidSemver(version: string): boolean;
 
 // @beta
 export interface JsonWriteOptions {
@@ -156,6 +195,24 @@ export function logIndent(input: string, logger: Logger, indentNumber?: number):
 export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo>;
 
 // @beta
+export interface PackageJson {
+    // (undocumented)
+    [key: string]: unknown;
+    // (undocumented)
+    dependencies?: Record<string, string>;
+    // (undocumented)
+    devDependencies?: Record<string, string>;
+    // (undocumented)
+    name?: string;
+    // (undocumented)
+    optionalDependencies?: Record<string, string>;
+    // (undocumented)
+    peerDependencies?: Record<string, string>;
+    // (undocumented)
+    version?: string;
+}
+
+// @beta
 export type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
 
 // @beta
@@ -169,7 +226,32 @@ export interface PackageManagerInfo {
 }
 
 // @beta
-export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;
+export type PackageTransformer<J extends PackageJson_2 = PackageJson_2> = (json: J) => J | Promise<J>;
+
+// @beta
+export function parseNpmList(data: unknown, workingDir?: string): ProjectInfo[];
+
+// @beta
+export function parsePackageManagerList(packageManager: PackageManager, output: string, workingDir?: string): ProjectInfo[];
+
+// @beta
+export function parsePnpmList(data: unknown): ProjectInfo[];
+
+// @beta
+export interface ProjectInfo {
+    // (undocumented)
+    dependencies?: Record<string, DependencyInfo>;
+    // (undocumented)
+    devDependencies?: Record<string, DependencyInfo>;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    optionalDependencies?: Record<string, DependencyInfo>;
+    // (undocumented)
+    path: string;
+    // (undocumented)
+    peerDependencies?: Record<string, DependencyInfo>;
+}
 
 // @beta
 export function readJsonWithIndent<J = unknown>(filePath: string): Promise<{
@@ -202,6 +284,69 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 export function shortCommit(commit: string): string;
 
 // @beta
-export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
+export function shouldSkipVersion(version: string): boolean;
+
+// @beta
+export function syncAllPackages(projects: ProjectInfo[], options?: SyncPackageJsonOptions): Promise<SyncAllResult>;
+
+// @beta
+export interface SyncAllResult {
+    // (undocumented)
+    results: SyncResult[];
+    // (undocumented)
+    skippedProjects: Array<{
+        name: string;
+        path: string;
+        reason: string;
+    }>;
+}
+
+// @beta
+export function syncDependencyGroup(dependencies: Record<string, string>, installed: Record<string, DependencyInfo>, type: DependencyType, options?: UpdateVersionRangeOptions): SyncDependencyGroupResult;
+
+// @beta
+export interface SyncDependencyGroupResult {
+    // (undocumented)
+    changes: DependencyChange[];
+    // (undocumented)
+    warnings: string[];
+}
+
+// @beta
+export function syncPackageJson(packageJsonPath: string, installedDeps: Record<string, DependencyInfo>, installedDevDeps: Record<string, DependencyInfo>, installedPeerDeps: Record<string, DependencyInfo>, installedOptionalDeps: Record<string, DependencyInfo>, options?: SyncPackageJsonOptions): Promise<SyncResult>;
+
+// @beta
+export interface SyncPackageJsonOptions {
+    versionRangeOptions?: UpdateVersionRangeOptions;
+    write?: boolean;
+}
+
+// @beta
+export interface SyncResult {
+    // (undocumented)
+    changes: DependencyChange[];
+    // (undocumented)
+    packagePath: string;
+    // (undocumented)
+    warnings?: string[];
+}
+
+// @beta
+export function updatePackageJsonFile<J extends PackageJson_2 = PackageJson_2>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
+
+// @beta
+export function updateVersionRange(currentRange: string, installedVersion: string, options?: UpdateVersionRangeOptions): UpdateVersionRangeResult;
+
+// @beta
+export interface UpdateVersionRangeOptions {
+    emitWarnings?: boolean;
+}
+
+// @beta
+export interface UpdateVersionRangeResult {
+    skipped: boolean;
+    updated: string;
+    warning?: string;
+}
 
 ```

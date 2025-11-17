@@ -5,7 +5,7 @@
 
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import * as path from "node:path";
+import * as path from "pathe";
 import { atomicWriteJson } from "./atomicWrite.js";
 import type { CacheStatistics } from "./types.js";
 

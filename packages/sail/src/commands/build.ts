@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
-import path from "node:path";
 import readline from "node:readline/promises";
 import { Args, Flags } from "@oclif/core";
 import { Stopwatch } from "@tylerbu/sail-infrastructure";
+import path from "pathe";
 import chalk from "picocolors";
 import { BaseSailCommand } from "../baseCommand.js";
 import { SailBuildRepo } from "../core/buildRepo.js";
@@ -151,11 +151,13 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			(buildRepo as any).context.sharedCache = sharedCache;
 
 			// Prominent success message with green background
-			this.log(chalk.bgGreen(chalk.black(" ✓ SHARED CACHE ENABLED ")));
-			this.log(chalk.green(`   Cache Directory: ${cacheDir}`));
+			this.log(
+				chalk.bgGreen(chalk.black(" ⛵️⛵️⛵️ SHARED CACHE ENABLED ⛵️⛵️⛵️ ")),
+			);
+			this.log(chalk.green(`-> Cache Directory: ${cacheDir}`));
 		} else {
 			// Prominent warning message with yellow background
-			this.log(chalk.bgYellow(chalk.black(" ⚠ SHARED CACHE DISABLED ")));
+			this.log(chalk.bgYellow(chalk.black(" ⚠⚠⚠ SHARED CACHE DISABLED ⚠⚠⚠ ")));
 			this.log(
 				chalk.yellow(
 					"   Set SAIL_CACHE_DIR or use --cache-dir to enable shared caching",
