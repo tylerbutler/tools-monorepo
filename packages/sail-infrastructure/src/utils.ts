@@ -1,4 +1,4 @@
-import * as path from "node:path";
+import * as path from "pathe";
 
 /**
  * Traverses up the directory tree from the given starting directory, applying the callback function to each directory.

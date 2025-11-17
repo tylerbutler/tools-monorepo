@@ -46,7 +46,7 @@ servers =
 
 ## Are comments part of the data?
 
-Yes. Comments are entries with `/=` keys:
+Yes. Comments are entries with `/` as the key:
 
 ```ccl
 /= This is a comment

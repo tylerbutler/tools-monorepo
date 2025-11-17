@@ -36,7 +36,8 @@
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write"
+		"lint:fix": "biome lint . --write",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs"
 	},
 	"dependencies": {
 		"jiti": "^2.6.1"

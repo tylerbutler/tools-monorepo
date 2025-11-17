@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import { existsSync } from "node:fs";
 import { readFile, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
 import type { AsyncPriorityQueue } from "async";
 import registerDebug from "debug";
+import path from "pathe";
 import chalk from "picocolors";
 import {
 	type ExecAsyncResult,

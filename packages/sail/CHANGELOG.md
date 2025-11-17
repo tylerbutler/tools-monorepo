@@ -1,5 +1,49 @@
 # dill-cli
 
+## 0.2.1
+
+### Patch Changes
+
+- Fix copyfiles warnings due to path separator mismatch _[`#412`](https://github.com/tylerbutler/tools-monorepo/pull/412) [`5888c32`](https://github.com/tylerbutler/tools-monorepo/commit/5888c323b4bbb510d78902477a2e18c8580d2485) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The CopyfilesTask was incorrectly mixing POSIX path separators (forward slashes) with OS-native path operations, causing output file path calculations to fail on Windows. This resulted in warnings about being unable to generate content for done files (e.g., "WARNING: unable to generate content for copyfiles-5c0eb27a.done.build.log").
+
+  Fixed by removing the unnecessary `toPosixPath()` conversion and consistently using OS-native paths throughout the `getOutputFiles()` method.
+
+- Fix progress bar task counting to match displayed task numbers _[`#413`](https://github.com/tylerbutler/tools-monorepo/pull/413) [`9e4dd36`](https://github.com/tylerbutler/tools-monorepo/commit/9e4dd36ac1110cf5f9e131f241273808ae657076) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The progress bar now correctly includes execution-time skips (tasks skipped during execution via cache hits or recheck) in its count, matching the task numbers displayed in the output. Previously, the progress bar would lag behind the actual task numbers because it only counted built tasks, not skipped tasks.
+
+## 0.2.0
+
+### Minor Changes
+
+- Add file ignore filtering to config inference _[`025f2cd`](https://github.com/tylerbutler/tools-monorepo/commit/025f2cd865535eb79bf5f17d5102bdeaf25a90e8) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Add support for ignoring files during config inference via the SAIL_IGNORE_FILES environment variable. This allows users to exclude specific repo-relative paths from being considered when sail automatically infers the workspace configuration.
+
+  Example usage:
+
+  ```bash
+  SAIL_IGNORE_FILES="test/fixtures/**,temp/**" sail scan --infer
+  sail scan --infer --ignore-files "test/fixtures/**"
+  ```
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`8832369`](https://github.com/tylerbutler/tools-monorepo/commit/8832369318b6efee8adae1636f3629639b0d76ac) [`025f2cd`](https://github.com/tylerbutler/tools-monorepo/commit/025f2cd865535eb79bf5f17d5102bdeaf25a90e8)
+
+</small>
+
+- `@tylerbu/cli-api@0.9.0`
+- `@tylerbu/sail-infrastructure@0.3.0`
+
+</details>
+
 ## 0.1.0
 
 ### Minor Changes
