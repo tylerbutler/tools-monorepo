@@ -4,19 +4,6 @@ import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
 import { FileHashCache } from "../../../src/core/fileHashCache.js";
 import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 import { BiomeTask } from "../../../src/core/tasks/leaf/biomeTasks.js";
-import {
-	CopyfilesTask,
-	DepCruiseTask,
-	EchoTask,
-	GenVerTask,
-	GoodFenceTask,
-} from "../../../src/core/tasks/leaf/miscTasks.js";
-import { PrettierTask } from "../../../src/core/tasks/leaf/prettierTask.js";
-import { TscTask } from "../../../src/core/tasks/leaf/tscTask.js";
-import { WebpackTask } from "../../../src/core/tasks/leaf/webpackTask.js";
-import { BuildContextBuilder } from "./BuildContextBuilder.js";
-import { PackageBuilder } from "./PackageBuilder.js";
-
 /**
  * Fluent builder for creating LeafTask instances for testing.
  *
@@ -39,6 +26,20 @@ import { PackageBuilder } from "./PackageBuilder.js";
  *   .buildBiomeTask();
  * ```
  */
+import { EsLintTask } from "../../../src/core/tasks/leaf/lintTasks.js";
+import {
+	CopyfilesTask,
+	DepCruiseTask,
+	EchoTask,
+	GenVerTask,
+	GoodFenceTask,
+} from "../../../src/core/tasks/leaf/miscTasks.js";
+import { PrettierTask } from "../../../src/core/tasks/leaf/prettierTask.js";
+import { TscTask } from "../../../src/core/tasks/leaf/tscTask.js";
+import { WebpackTask } from "../../../src/core/tasks/leaf/webpackTask.js";
+import { BuildContextBuilder } from "./BuildContextBuilder.js";
+import { PackageBuilder } from "./PackageBuilder.js";
+
 export class LeafTaskBuilder {
 	private buildGraphPackage?: BuildGraphPackage;
 	private context?: BuildContext;
@@ -47,6 +48,7 @@ export class LeafTaskBuilder {
 	private packageName = "test-package";
 	private packagePath = "/test/package";
 	private scripts: Record<string, string> = {};
+	private workerPool?: { useWorkerThreads?: boolean };
 
 	/**
 	 * Set an existing BuildGraphPackage (advanced usage)
@@ -120,6 +122,14 @@ export class LeafTaskBuilder {
 	}
 
 	/**
+	 * Set worker pool configuration
+	 */
+	withWorkerPool(workerPool: { useWorkerThreads?: boolean }): this {
+		this.workerPool = workerPool;
+		return this;
+	}
+
+	/**
 	 * Get or create BuildGraphPackage for task construction
 	 */
 	getBuildGraphPackage(): BuildGraphPackage {
@@ -171,7 +181,7 @@ export class LeafTaskBuilder {
 			},
 			failedTaskLines: [],
 			buildProfiler: new BuildProfiler(buildContext.log),
-			workerPool: undefined,
+			workerPool: this.workerPool,
 		};
 
 		// Create BuildGraphPackage with BuildGraphContext
@@ -273,5 +283,15 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "depcruise src";
 
 		return new DepCruiseTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an EsLintTask instance
+	 */
+	buildEsLintTask(): EsLintTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "eslint src";
+
+		return new EsLintTask(node, cmd, node.context, this.taskName);
 	}
 }
