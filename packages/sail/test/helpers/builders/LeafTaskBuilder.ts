@@ -4,7 +4,13 @@ import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
 import { FileHashCache } from "../../../src/core/fileHashCache.js";
 import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 import { BiomeTask } from "../../../src/core/tasks/leaf/biomeTasks.js";
-import { CopyfilesTask } from "../../../src/core/tasks/leaf/miscTasks.js";
+import {
+	CopyfilesTask,
+	DepCruiseTask,
+	EchoTask,
+	GenVerTask,
+	GoodFenceTask,
+} from "../../../src/core/tasks/leaf/miscTasks.js";
 import { PrettierTask } from "../../../src/core/tasks/leaf/prettierTask.js";
 import { TscTask } from "../../../src/core/tasks/leaf/tscTask.js";
 import { WebpackTask } from "../../../src/core/tasks/leaf/webpackTask.js";
@@ -88,6 +94,13 @@ export class LeafTaskBuilder {
 	withPackagePath(path: string): this {
 		this.packagePath = path;
 		return this;
+	}
+
+	/**
+	 * Alias for withPackagePath for clarity in tests
+	 */
+	withPackageDirectory(path: string): this {
+		return this.withPackagePath(path);
 	}
 
 	/**
@@ -220,5 +233,45 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "prettier --check src";
 
 		return new PrettierTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an EchoTask instance
+	 */
+	buildEchoTask(): EchoTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "echo test";
+
+		return new EchoTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a GenVerTask instance
+	 */
+	buildGenVerTask(): GenVerTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "gen-version";
+
+		return new GenVerTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a GoodFenceTask instance
+	 */
+	buildGoodFenceTask(): GoodFenceTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "good-fences";
+
+		return new GoodFenceTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a DepCruiseTask instance
+	 */
+	buildDepCruiseTask(): DepCruiseTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "depcruise src";
+
+		return new DepCruiseTask(node, cmd, node.context, this.taskName);
 	}
 }

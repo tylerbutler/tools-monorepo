@@ -294,9 +294,8 @@ describe("PrettierTask - Comprehensive Tests", () => {
 				.buildPrettierTask();
 
 			// configFileFullPaths is protected
-			const configFiles = (
-				task as unknown as { configFileFullPaths: string[] }
-			).configFileFullPaths;
+			const configFiles = (task as unknown as { configFileFullPaths: string[] })
+				.configFileFullPaths;
 
 			// Check if any config file includes .prettierrc.json
 			expect(configFiles.some((f) => f.includes(".prettierrc.json"))).toBe(
@@ -310,9 +309,8 @@ describe("PrettierTask - Comprehensive Tests", () => {
 				.withCommand("prettier --check src")
 				.buildPrettierTask();
 
-			const configFiles = (
-				task as unknown as { configFileFullPaths: string[] }
-			).configFileFullPaths;
+			const configFiles = (task as unknown as { configFileFullPaths: string[] })
+				.configFileFullPaths;
 
 			expect(configFiles[0]).toContain(
 				"/workspace/my-package/.prettierrc.json",
@@ -458,9 +456,7 @@ describe("PrettierTask - Comprehensive Tests", () => {
 	describe("Error Handling", () => {
 		it("should handle file system errors gracefully", async () => {
 			vi.mocked(existsSync).mockReturnValue(true);
-			vi.mocked(stat).mockRejectedValue(
-				new Error("EACCES: permission denied"),
-			);
+			vi.mocked(stat).mockRejectedValue(new Error("EACCES: permission denied"));
 
 			const task = new LeafTaskBuilder()
 				.withCommand("prettier --check src")
