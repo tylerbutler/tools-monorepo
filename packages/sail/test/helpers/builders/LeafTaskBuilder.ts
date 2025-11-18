@@ -4,6 +4,14 @@ import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
 import { FileHashCache } from "../../../src/core/fileHashCache.js";
 import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 import { BiomeTask } from "../../../src/core/tasks/leaf/biomeTasks.js";
+import {
+	JssmVizTask,
+	MarkdownMagicTask,
+	OclifManifestTask,
+	OclifReadmeTask,
+	SyncpackLintSemverRangesTask,
+	SyncpackListMismatchesTask,
+} from "../../../src/core/tasks/leaf/commonDeclarativeTasks.js";
 /**
  * Fluent builder for creating LeafTask instances for testing.
  *
@@ -293,5 +301,75 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "eslint src";
 
 		return new EsLintTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an OclifManifestTask instance
+	 */
+	buildOclifManifestTask(): OclifManifestTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "oclif manifest";
+
+		return new OclifManifestTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an OclifReadmeTask instance
+	 */
+	buildOclifReadmeTask(): OclifReadmeTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "oclif readme";
+
+		return new OclifReadmeTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a SyncpackLintSemverRangesTask instance
+	 */
+	buildSyncpackLintSemverRangesTask(): SyncpackLintSemverRangesTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "syncpack lint-semver-ranges";
+
+		return new SyncpackLintSemverRangesTask(
+			node,
+			cmd,
+			node.context,
+			this.taskName,
+		);
+	}
+
+	/**
+	 * Build a SyncpackListMismatchesTask instance
+	 */
+	buildSyncpackListMismatchesTask(): SyncpackListMismatchesTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "syncpack list-mismatches";
+
+		return new SyncpackListMismatchesTask(
+			node,
+			cmd,
+			node.context,
+			this.taskName,
+		);
+	}
+
+	/**
+	 * Build a MarkdownMagicTask instance
+	 */
+	buildMarkdownMagicTask(): MarkdownMagicTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "markdown-magic";
+
+		return new MarkdownMagicTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a JssmVizTask instance
+	 */
+	buildJssmVizTask(): JssmVizTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "jssm-viz";
+
+		return new JssmVizTask(node, cmd, node.context, this.taskName);
 	}
 }
