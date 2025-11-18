@@ -17,8 +17,8 @@ another = some text value
 ```
 
 - Split on first `=`
-- **Key** is trimmed of whitespace
-- **Value** is trimmed of _leading_
+- **Key** is trimmed of leading and trailing whitespace
+- **Value** is trimmed of _leading_ whitespace only (trailing whitespace is preserved)
 
 ### 2. Empty Keys (Lists)
 
@@ -38,10 +38,10 @@ Empty key (`= value`) creates list items.
 key = value  /= Not a comment, value is "value  /= Not a comment"
 ```
 
-Comments use `/=` key syntax. Only at line start.
+Comments use `/=` syntax. Only at line start.
 
 :::tip
-This comment format is a convention, and is changeable. See [What is a comment?][] for more pedantic details.
+This comment format is a convention, and is changeable. Comments are entries with `/` as the key - your application can filter or interpret them differently if needed.
 :::
 
 ### 4. Indentation for Nesting

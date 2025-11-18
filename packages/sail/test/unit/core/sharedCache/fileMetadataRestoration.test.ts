@@ -1,6 +1,6 @@
 import { mkdir, mkdtemp, rm, stat, utimes, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { basename, join } from "node:path";
+import { basename, join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
 	copyFileWithMtime,

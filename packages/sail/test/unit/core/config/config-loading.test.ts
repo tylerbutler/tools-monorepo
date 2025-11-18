@@ -1,6 +1,6 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getSailConfig } from "../../../../src/core/config.js";
 import type { ISailConfig } from "../../../../src/core/sailConfig.js";

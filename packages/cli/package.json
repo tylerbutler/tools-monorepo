@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/cli",
-	"version": "0.6.0",
+	"version": "0.7.0",
 	"description": "Tyler Butler's personal CLI.",
 	"keywords": [
 		"oclif"
@@ -110,6 +110,8 @@
 		"@tylerbu/fundamentals": "workspace:^",
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
+		"effection": "^3.6.1",
+		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
 		"semver": "^7.7.3",
 		"simple-git": "^3.30.0",
@@ -130,7 +132,6 @@
 		"oclif": "^4.22.44",
 		"rimraf": "^6.1.0",
 		"sort-package-json": "*",
-		"tempy": "^3.1.0",
 		"ts-node": "^10.9.2",
 		"tslib": "^2.8.1",
 		"type-fest": "^5.2.0",
