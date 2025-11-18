@@ -5,6 +5,7 @@ import { FileHashCache } from "../../../src/core/fileHashCache.js";
 import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
 import { BiomeTask } from "../../../src/core/tasks/leaf/biomeTasks.js";
 import { CopyfilesTask } from "../../../src/core/tasks/leaf/miscTasks.js";
+import { PrettierTask } from "../../../src/core/tasks/leaf/prettierTask.js";
 import { TscTask } from "../../../src/core/tasks/leaf/tscTask.js";
 import { WebpackTask } from "../../../src/core/tasks/leaf/webpackTask.js";
 import { BuildContextBuilder } from "./BuildContextBuilder.js";
@@ -209,5 +210,15 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "copyfiles src/**/*.txt dist";
 
 		return new CopyfilesTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a PrettierTask instance
+	 */
+	buildPrettierTask(): PrettierTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "prettier --check src";
+
+		return new PrettierTask(node, cmd, node.context, this.taskName);
 	}
 }
