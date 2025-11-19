@@ -411,114 +411,12 @@ describe("TscTask - Comprehensive Tests", () => {
 		});
 	});
 
-	// Helper to access protected getDoneFileContent method
-	async function getDoneFileContent(
-		task: unknown,
-	): Promise<string | undefined> {
-		return (
-			task as unknown as {
-				getDoneFileContent: () => Promise<string | undefined>;
-			}
-		).getDoneFileContent();
-	}
-
-	describe("Donefile Roundtripping - Phase 1: Core Tests", () => {
-		describe("JSON Serialization", () => {
-			it("should produce valid JSON content when tsBuildInfo is available", async () => {
-				const task = new LeafTaskBuilder()
-					.withPackageDirectory("/project")
-					.buildTscTask();
-
-				const content = await getDoneFileContent(task);
-
-				if (content !== undefined) {
-					expect(() => JSON.parse(content)).not.toThrow();
-				}
-			});
-
-			it("should roundtrip through JSON parse/stringify", async () => {
-				const task = new LeafTaskBuilder()
-					.withPackageDirectory("/project")
-					.buildTscTask();
-
-				const content = await getDoneFileContent(task);
-
-				if (content) {
-					const parsed = JSON.parse(content);
-					const reserialized = JSON.stringify(parsed);
-					expect(reserialized).toBe(content);
-				}
-			});
-		});
-
-		describe("Content Determinism", () => {
-			it("should produce identical content for identical tasks", async () => {
-				const task1 = new LeafTaskBuilder()
-					.withPackageDirectory("/project")
-					.buildTscTask();
-				const task2 = new LeafTaskBuilder()
-					.withPackageDirectory("/project")
-					.buildTscTask();
-
-				const content1 = await getDoneFileContent(task1);
-				const content2 = await getDoneFileContent(task2);
-
-				// Both should produce same content (or both undefined)
-				expect(content1).toBe(content2);
-			});
-		});
-
-		describe("Cache Invalidation", () => {
-			it("should produce different content for different package directories", async () => {
-				const task1 = new LeafTaskBuilder()
-					.withPackageDirectory("/project/lib1")
-					.buildTscTask();
-				const task2 = new LeafTaskBuilder()
-					.withPackageDirectory("/project/lib2")
-					.buildTscTask();
-
-				const content1 = await getDoneFileContent(task1);
-				const content2 = await getDoneFileContent(task2);
-
-				// Different directories may have different tsBuildInfo
-				if (content1 !== undefined || content2 !== undefined) {
-					expect(
-						content1 === undefined ||
-							content2 === undefined ||
-							typeof content1 === "string",
-					).toBe(true);
-					expect(
-						content1 === undefined ||
-							content2 === undefined ||
-							typeof content2 === "string",
-					).toBe(true);
-				}
-			});
-		});
-
-		describe("tsBuildInfo-Based Content", () => {
-			it("should return undefined when tsBuildInfo is not available", async () => {
-				const task = new LeafTaskBuilder()
-					.withPackageDirectory("/nonexistent/path")
-					.buildTscTask();
-
-				const content = await getDoneFileContent(task);
-
-				// Will be undefined without valid tsconfig/tsBuildInfo
-				expect(content === undefined || typeof content === "string").toBe(true);
-			});
-
-			it("should use tsBuildInfo for cache tracking", async () => {
-				const task = new LeafTaskBuilder()
-					.withPackageDirectory("/project")
-					.buildTscTask();
-
-				// TscTask overrides getDoneFileContent to use tsBuildInfo
-				const content = await getDoneFileContent(task);
-
-				// Verify it produces content or undefined based on tsBuildInfo availability
-				expect(content === undefined || typeof content === "string").toBe(true);
-			});
-		});
-	});
+	// Note: TscTask does not have donefile roundtrip tests because:
+	// 1. TscTask extends LeafTask (not LeafWithDoneFileTask), so it doesn't use donefiles
+	// 2. TscTask uses dependency hash caching via getDependencyHash(), getCacheInputFiles(), getCacheOutputFiles()
+	// 3. TscDependentTask extends LeafWithDoneFileTask and provides donefile functionality
+	// 4. TscDependentTask donefile behavior is tested via its concrete subclasses:
+	//    - ApiExtractorTask (test/unit/core/tasks/leaf/apiExtractorTask.test.ts)
+	//    - GenerateEntrypointsTask (test/unit/core/tasks/leaf/generateEntrypointsTask.test.ts)
+	//    - EsLintTask (test/unit/core/tasks/leaf/lintTasks.test.ts)
 });
