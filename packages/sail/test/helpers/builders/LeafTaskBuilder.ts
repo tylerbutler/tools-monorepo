@@ -13,6 +13,7 @@ import {
 	SyncpackLintSemverRangesTask,
 	SyncpackListMismatchesTask,
 } from "../../../src/core/tasks/leaf/commonDeclarativeTasks.js";
+import { GenerateEntrypointsTask } from "../../../src/core/tasks/leaf/generateEntrypointsTask.js";
 /**
  * Fluent builder for creating LeafTask instances for testing.
  *
@@ -382,5 +383,15 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "api-extractor run --local";
 
 		return new ApiExtractorTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a GenerateEntrypointsTask instance
+	 */
+	buildGenerateEntrypointsTask(): GenerateEntrypointsTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub generate entrypoints";
+
+		return new GenerateEntrypointsTask(node, cmd, node.context, this.taskName);
 	}
 }
