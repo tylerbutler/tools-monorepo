@@ -517,10 +517,14 @@ describe("ApiExtractorTask - Comprehensive Tests", () => {
 	});
 
 	// Helper to access protected getDoneFileContent method
-	async function getDoneFileContent(task: unknown): Promise<string | undefined> {
-		return (task as unknown as {
-			getDoneFileContent: () => Promise<string | undefined>;
-		}).getDoneFileContent();
+	async function getDoneFileContent(
+		task: unknown,
+	): Promise<string | undefined> {
+		return (
+			task as unknown as {
+				getDoneFileContent: () => Promise<string | undefined>;
+			}
+		).getDoneFileContent();
 	}
 
 	describe("Donefile Roundtripping - Phase 1: Core Tests", () => {

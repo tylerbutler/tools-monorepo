@@ -1,4 +1,5 @@
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
+import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
 
 /**
  * TODO: Implement WebpackTask tests
@@ -93,10 +94,14 @@ describe("WebpackTask", () => {
 	});
 
 	// Helper to access protected getDoneFileContent method
-	async function getDoneFileContent(task: unknown): Promise<string | undefined> {
-		return (task as unknown as {
-			getDoneFileContent: () => Promise<string | undefined>;
-		}).getDoneFileContent();
+	async function getDoneFileContent(
+		task: unknown,
+	): Promise<string | undefined> {
+		return (
+			task as unknown as {
+				getDoneFileContent: () => Promise<string | undefined>;
+			}
+		).getDoneFileContent();
 	}
 
 	describe("Donefile Roundtripping - Phase 1: Core Tests", () => {

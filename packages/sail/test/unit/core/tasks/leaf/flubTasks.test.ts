@@ -632,10 +632,14 @@ describe("FlubTasks - Comprehensive Tests", () => {
 	});
 
 	// Helper to access protected getDoneFileContent method
-	async function getDoneFileContent(task: unknown): Promise<string | undefined> {
-		return (task as unknown as {
-			getDoneFileContent: () => Promise<string | undefined>;
-		}).getDoneFileContent();
+	async function getDoneFileContent(
+		task: unknown,
+	): Promise<string | undefined> {
+		return (
+			task as unknown as {
+				getDoneFileContent: () => Promise<string | undefined>;
+			}
+		).getDoneFileContent();
 	}
 
 	describe("Donefile Roundtripping - Phase 1: Core Tests", () => {
@@ -667,6 +671,7 @@ describe("FlubTasks - Comprehensive Tests", () => {
 			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
 			// The task calls GitRepo.exec() and reads actual files for hashing
 			// Full integration testing would require filesystem setup
+			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
 			it.skip("should produce valid JSON content from FlubCheckPolicyTask", async () => {
 				const task = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
@@ -710,6 +715,7 @@ describe("FlubTasks - Comprehensive Tests", () => {
 			});
 
 			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
+			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
 			it.skip("should produce identical content for identical FlubCheckPolicyTask", async () => {
 				const task1 = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
@@ -752,6 +758,7 @@ describe("FlubTasks - Comprehensive Tests", () => {
 			});
 
 			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
+			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
 			it.skip("should produce different content when package directory changes", async () => {
 				const task1 = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg1")
@@ -855,6 +862,7 @@ describe("FlubTasks - Comprehensive Tests", () => {
 		describe("FlubCheckPolicyTask Donefile Content", () => {
 			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
 			// The task calls GitRepo.exec() and reads actual files for hashing
+			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
 			it.skip("should contain commit and modifications hash", async () => {
 				const task = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
@@ -873,6 +881,7 @@ describe("FlubTasks - Comprehensive Tests", () => {
 			});
 
 			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
+			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
 			it.skip("should use SHA-256 for modifications hash", async () => {
 				const task = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
@@ -888,6 +897,7 @@ describe("FlubTasks - Comprehensive Tests", () => {
 			});
 
 			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
+			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
 			it.skip("should produce different hashes for different git states", async () => {
 				// This test verifies the concept - actual different git states
 				// would require file system manipulation
