@@ -73,6 +73,8 @@ export class LeafTaskBuilder {
 		outputGlobs: string[];
 		gitignore?: ("input" | "output")[];
 	};
+	private recheckLeafIsUpToDate?: boolean;
+	private lockFileHash?: string;
 
 	/**
 	 * Set an existing BuildGraphPackage (advanced usage)
@@ -162,6 +164,22 @@ export class LeafTaskBuilder {
 		gitignore?: ("input" | "output")[];
 	}): this {
 		this.declarativeTask = definition;
+		return this;
+	}
+
+	/**
+	 * Set recheckLeafIsUpToDate property
+	 */
+	withRecheckLeafIsUpToDate(recheck: boolean): this {
+		this.recheckLeafIsUpToDate = recheck;
+		return this;
+	}
+
+	/**
+	 * Set lock file hash for version checking
+	 */
+	withLockFileHash(hash: string): this {
+		this.lockFileHash = hash;
 		return this;
 	}
 
@@ -258,7 +276,23 @@ export class LeafTaskBuilder {
 		const node = this.getBuildGraphPackage();
 		const cmd = this.command ?? "webpack";
 
-		return new WebpackTask(node, cmd, node.context, this.taskName);
+		const task = new WebpackTask(node, cmd, node.context, this.taskName);
+
+		// Apply optional properties if set
+		if (this.recheckLeafIsUpToDate !== undefined) {
+			// Use Object.defineProperty to override the getter
+			Object.defineProperty(task, "recheckLeafIsUpToDate", {
+				get: () => this.recheckLeafIsUpToDate,
+				configurable: true,
+			});
+		}
+
+		if (this.lockFileHash !== undefined) {
+			// Mock getLockFileHash on the node
+			node.getLockFileHash = async () => this.lockFileHash!;
+		}
+
+		return task;
 	}
 
 	/**

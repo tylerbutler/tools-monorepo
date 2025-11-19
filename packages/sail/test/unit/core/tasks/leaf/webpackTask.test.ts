@@ -1,96 +1,290 @@
-import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
+import { WebpackTask } from "../../../../../src/core/tasks/leaf/webpackTask.js";
+import * as taskUtils from "../../../../../src/core/tasks/taskUtils.js";
 
-/**
- * TODO: Implement WebpackTask tests
- *
- * Current coverage: 14.58% → Target: 80%+
- *
- * Priority areas to test:
- * 1. WebpackTask construction and configuration
- * 2. Webpack build execution
- * 3. Done file generation and reading (.done file)
- * 4. Up-to-date checking via done file
- * 5. Webpack configuration discovery
- * 6. Output directory handling
- * 7. Watch mode support
- *
- * Testing challenges:
- * - Webpack CLI integration
- * - Done file I/O operations
- * - Configuration file discovery (webpack.config.js, .ts)
- * - Watch mode lifecycle
- * - Build output parsing
- *
- * Recommended approach:
- * - Extend LeafTask tests
- * - Mock file system for done file operations
- * - Mock child_process for webpack execution
- * - Test done file content parsing (DoneFileContent type)
- * - Test incremental build detection
- * - Test configuration discovery
- *
- * Related files:
- * - src/core/tasks/leaf/webpackTask.ts (implementation)
- * - src/core/tasks/leaf/leafTask.ts (base class)
- */
+vi.mock("node:fs");
+vi.mock("../../../../../src/core/tasks/taskUtils.js", async (importOriginal) => {
+	const actual =
+		await importOriginal<typeof import("../../../../../src/core/tasks/taskUtils.js")>();
+	return {
+		...actual,
+		loadModule: vi.fn(),
+		globFn: vi.fn(),
+	};
+});
 
 describe("WebpackTask", () => {
+	let baseDoneFileContentSpy: ReturnType<typeof vi.spyOn> | null = null;
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	afterEach(() => {
+		if (baseDoneFileContentSpy) {
+			baseDoneFileContentSpy.mockRestore();
+			baseDoneFileContentSpy = null;
+		}
+	});
+
 	describe("Construction", () => {
-		it.todo("should create WebpackTask with package context");
-		it.todo("should initialize with webpack command");
-		it.todo("should inherit from LeafTask");
-		it.todo("should set correct task name");
-	});
+		it("should create WebpackTask with package context", () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.buildWebpackTask();
 
-	describe("Command Execution", () => {
-		it.todo("should execute webpack build command");
-		it.todo("should execute webpack with config file");
-		it.todo("should pass environment variables to webpack");
-		it.todo("should handle webpack exit codes");
-	});
+			expect(task).toBeInstanceOf(WebpackTask);
+			expect(task.node.pkg.directory).toBe("/project");
+		});
 
-	describe("Done File Management", () => {
-		it.todo("should create done file after successful build");
-		it.todo("should write build timestamp to done file");
-		it.todo("should read done file for up-to-date check");
-		it.todo("should parse DoneFileContent from done file");
-		it.todo("should handle missing done file");
-		it.todo("should handle corrupted done file");
-	});
+		it("should initialize with webpack command", () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack --mode production")
+				.buildWebpackTask();
 
-	describe("Incremental Builds", () => {
-		it.todo("should check if task is up to date via done file");
-		it.todo("should detect source changes requiring rebuild");
-		it.todo("should skip build when done file is recent");
-		it.todo("should rebuild when done file is missing");
-		it.todo("should rebuild when source newer than done file");
+			expect(task.command).toBe("webpack --mode production");
+		});
+
+		it("should inherit from LeafWithDoneFileTask", () => {
+			const task = new LeafTaskBuilder().buildWebpackTask();
+
+			// LeafWithDoneFileTask has getDoneFileContent method
+			expect(typeof (task as any).getDoneFileContent).toBe("function");
+		});
+
+		it("should set correct task name", () => {
+			const task = new LeafTaskBuilder()
+				.withTaskName("webpack-build")
+				.buildWebpackTask();
+
+			expect(task.name).toBe("test-package#webpack-build");
+		});
 	});
 
 	describe("Configuration Discovery", () => {
-		it.todo("should discover webpack.config.js");
-		it.todo("should discover webpack.config.ts");
-		it.todo("should use default configuration if none found");
-		it.todo("should support custom config path");
+		it("should discover webpack.config.js by default", () => {
+			vi.mocked(fs.existsSync).mockImplementation((path) => {
+				return path === "/project/webpack.config.js";
+			});
+
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack")
+				.buildWebpackTask();
+
+			const configPaths = (task as any).configFileFullPaths;
+			expect(configPaths).toEqual(["/project/webpack.config.js"]);
+		});
+
+		it("should discover webpack.config.cjs if .js not found", () => {
+			vi.mocked(fs.existsSync).mockImplementation((path) => {
+				return path === "/project/webpack.config.cjs";
+			});
+
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack")
+				.buildWebpackTask();
+
+			const configPaths = (task as any).configFileFullPaths;
+			expect(configPaths).toEqual(["/project/webpack.config.cjs"]);
+		});
+
+		it("should use custom config path from --config flag", () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack --config custom.config.js")
+				.buildWebpackTask();
+
+			const configPaths = (task as any).configFileFullPaths;
+			expect(configPaths).toEqual(["/project/custom.config.js"]);
+		});
+
+		it("should discover .webpack/webpack.config.js", () => {
+			vi.mocked(fs.existsSync).mockImplementation((path) => {
+				return path === "/project/.webpack/webpack.config.js";
+			});
+
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack")
+				.buildWebpackTask();
+
+			const configPaths = (task as any).configFileFullPaths;
+			expect(configPaths).toEqual(["/project/.webpack/webpack.config.js"]);
+		});
 	});
 
-	describe("Output Directory Handling", () => {
-		it.todo("should detect output directory from webpack config");
-		it.todo("should create output directory if missing");
-		it.todo("should clean output directory before build");
+	describe("Done File Management", () => {
+		it("should return undefined if base done file is undefined", async () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withRecheckLeafIsUpToDate(false)
+				.buildWebpackTask();
+
+			vi.spyOn(
+				Object.getPrototypeOf(Object.getPrototypeOf(task)),
+				"getDoneFileContent",
+			).mockResolvedValue(undefined);
+
+			const content = await (task as any).getDoneFileContent();
+
+			expect(content).toBeUndefined();
+		});
+
+		it("should return undefined on config load error", async () => {
+			vi.mocked(taskUtils.loadModule).mockRejectedValue(
+				new Error("Config not found"),
+			);
+
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withRecheckLeafIsUpToDate(false)
+				.buildWebpackTask();
+
+			const content = await (task as any).getDoneFileContent();
+
+			expect(content).toBeUndefined();
+		});
+
+		it("should throw error if recheckLeafIsUpToDate is not false", async () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withRecheckLeafIsUpToDate(true) // Invalid for WebpackTask
+				.buildWebpackTask();
+
+			await expect((task as any).getDoneFileContent()).rejects.toThrow(
+				"WebpackTask requires recheckLeafIsUpToDate to be false",
+			);
+		});
+
+		it("should handle JSON parse errors gracefully", async () => {
+			vi.mocked(taskUtils.loadModule).mockResolvedValue({});
+
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withRecheckLeafIsUpToDate(false)
+				.buildWebpackTask();
+
+			// Return invalid JSON from base
+			vi.spyOn(
+				Object.getPrototypeOf(Object.getPrototypeOf(task)),
+				"getDoneFileContent",
+			).mockResolvedValue("invalid json");
+
+			const content = await (task as any).getDoneFileContent();
+
+			expect(content).toBeUndefined();
+		});
 	});
 
-	describe("Watch Mode", () => {
-		it.todo("should support webpack watch mode");
-		it.todo("should handle watch mode lifecycle");
-		it.todo("should terminate watch mode on task cancellation");
+	describe("Input/Output Files", () => {
+		it("should glob source files from src directory", async () => {
+			const mockFiles = ["/project/src/index.js", "/project/src/utils.js"];
+			vi.mocked(taskUtils.globFn).mockResolvedValue(mockFiles);
+
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.buildWebpackTask();
+
+			const inputFiles = await (task as any).getInputFiles();
+
+			expect(inputFiles).toEqual(mockFiles);
+			expect(taskUtils.globFn).toHaveBeenCalledWith("/project/src/**/*.*");
+		});
+
+		it("should return empty array on glob error", async () => {
+			vi.mocked(taskUtils.globFn).mockRejectedValue(
+				new Error("Glob failed"),
+			);
+
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.buildWebpackTask();
+
+			const inputFiles = await (task as any).getInputFiles();
+
+			expect(inputFiles).toEqual([]);
+		});
+
+		it("should return empty array for output files", async () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.buildWebpackTask();
+
+			const outputFiles = await (task as any).getOutputFiles();
+
+			expect(outputFiles).toEqual([]);
+		});
 	});
 
-	describe("Error Handling", () => {
-		it.todo("should handle webpack not installed");
-		it.todo("should handle webpack configuration errors");
-		it.todo("should handle webpack build errors");
-		it.todo("should handle done file write errors");
+	describe("Environment Arguments Parsing", () => {
+		it("should parse --env flag with boolean value", () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack --env production")
+				.buildWebpackTask();
+
+			const env = (task as any).getEnvArguments();
+
+			expect(env).toEqual({ production: true });
+		});
+
+		it("should parse --env flag with key=value", () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack --env mode=production")
+				.buildWebpackTask();
+
+			const env = (task as any).getEnvArguments();
+
+			expect(env).toEqual({ mode: "production" });
+		});
+
+		it("should handle multiple --env flags", () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack --env production --env optimize=true")
+				.buildWebpackTask();
+
+			const env = (task as any).getEnvArguments();
+
+			expect(env).toEqual({ production: true, optimize: "true" });
+		});
+
+		it("should ignore trailing --env without value", () => {
+			const task = new LeafTaskBuilder()
+				.withPackageDirectory("/project")
+				.withCommand("webpack --mode production --env")
+				.buildWebpackTask();
+
+			const env = (task as any).getEnvArguments();
+
+			expect(env).toEqual({});
+		});
+	});
+
+	describe("Task Properties", () => {
+		it("should have taskWeight of 5 (expensive task)", () => {
+			const task = new LeafTaskBuilder().buildWebpackTask();
+
+			const weight = (task as any).taskWeight;
+
+			expect(weight).toBe(5);
+		});
+
+		it("should use lock file hash for version", async () => {
+			const task = new LeafTaskBuilder()
+				.withLockFileHash("abc123")
+				.buildWebpackTask();
+
+			const version = await (task as any).getVersion();
+
+			expect(version).toBe("abc123");
+		});
 	});
 
 	// Helper to access protected getDoneFileContent method
