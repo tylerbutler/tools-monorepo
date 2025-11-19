@@ -13,6 +13,7 @@ import {
 	SyncpackLintSemverRangesTask,
 	SyncpackListMismatchesTask,
 } from "../../../src/core/tasks/leaf/commonDeclarativeTasks.js";
+import { createDeclarativeTaskHandler } from "../../../src/core/tasks/leaf/declarativeTask.js";
 import {
 	FlubCheckLayerTask,
 	FlubCheckPolicyTask,
@@ -21,6 +22,7 @@ import {
 	FlubListTask,
 } from "../../../src/core/tasks/leaf/flubTasks.js";
 import { GenerateEntrypointsTask } from "../../../src/core/tasks/leaf/generateEntrypointsTask.js";
+import type { LeafTask } from "../../../src/core/tasks/leaf/leafTask.js";
 /**
  * Fluent builder for creating LeafTask instances for testing.
  *
@@ -66,6 +68,11 @@ export class LeafTaskBuilder {
 	private packagePath = "/test/package";
 	private scripts: Record<string, string> = {};
 	private workerPool?: { useWorkerThreads?: boolean };
+	private declarativeTask?: {
+		inputGlobs: string[];
+		outputGlobs: string[];
+		gitignore?: ("input" | "output")[];
+	};
 
 	/**
 	 * Set an existing BuildGraphPackage (advanced usage)
@@ -143,6 +150,18 @@ export class LeafTaskBuilder {
 	 */
 	withWorkerPool(workerPool: { useWorkerThreads?: boolean }): this {
 		this.workerPool = workerPool;
+		return this;
+	}
+
+	/**
+	 * Set the declarative task definition (for buildDeclarativeTaskHandler)
+	 */
+	withDeclarativeTask(definition: {
+		inputGlobs: string[];
+		outputGlobs: string[];
+		gitignore?: ("input" | "output")[];
+	}): this {
+		this.declarativeTask = definition;
 		return this;
 	}
 
@@ -460,5 +479,20 @@ export class LeafTaskBuilder {
 			node.context,
 			this.taskName,
 		);
+	}
+
+	/**
+	 * Build a DeclarativeTaskHandler instance (via factory function)
+	 */
+	buildDeclarativeTaskHandler(): LeafTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "custom-tool";
+		const taskDefinition = this.declarativeTask ?? {
+			inputGlobs: ["src/**/*.ts"],
+			outputGlobs: ["dist/**/*"],
+		};
+
+		const handler = createDeclarativeTaskHandler(taskDefinition);
+		return handler(node, cmd, node.context, this.taskName);
 	}
 }
