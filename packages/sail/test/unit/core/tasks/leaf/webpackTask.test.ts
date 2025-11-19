@@ -1,19 +1,24 @@
 import fs from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
 import { WebpackTask } from "../../../../../src/core/tasks/leaf/webpackTask.js";
 import * as taskUtils from "../../../../../src/core/tasks/taskUtils.js";
+import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
 
 vi.mock("node:fs");
-vi.mock("../../../../../src/core/tasks/taskUtils.js", async (importOriginal) => {
-	const actual =
-		await importOriginal<typeof import("../../../../../src/core/tasks/taskUtils.js")>();
-	return {
-		...actual,
-		loadModule: vi.fn(),
-		globFn: vi.fn(),
-	};
-});
+vi.mock(
+	"../../../../../src/core/tasks/taskUtils.js",
+	async (importOriginal) => {
+		const actual =
+			await importOriginal<
+				typeof import("../../../../../src/core/tasks/taskUtils.js")
+			>();
+		return {
+			...actual,
+			loadModule: vi.fn(),
+			globFn: vi.fn(),
+		};
+	},
+);
 
 describe("WebpackTask", () => {
 	let baseDoneFileContentSpy: ReturnType<typeof vi.spyOn> | null = null;
@@ -197,9 +202,7 @@ describe("WebpackTask", () => {
 		});
 
 		it("should return empty array on glob error", async () => {
-			vi.mocked(taskUtils.globFn).mockRejectedValue(
-				new Error("Glob failed"),
-			);
+			vi.mocked(taskUtils.globFn).mockRejectedValue(new Error("Glob failed"));
 
 			const task = new LeafTaskBuilder()
 				.withPackageDirectory("/project")
