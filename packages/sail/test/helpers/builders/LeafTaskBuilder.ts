@@ -3,13 +3,26 @@ import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
 // Import dependencies needed for BuildGraphContext
 import { FileHashCache } from "../../../src/core/fileHashCache.js";
 import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
+import { ApiExtractorTask } from "../../../src/core/tasks/leaf/apiExtractorTask.js";
 import { BiomeTask } from "../../../src/core/tasks/leaf/biomeTasks.js";
-import { CopyfilesTask } from "../../../src/core/tasks/leaf/miscTasks.js";
-import { TscTask } from "../../../src/core/tasks/leaf/tscTask.js";
-import { WebpackTask } from "../../../src/core/tasks/leaf/webpackTask.js";
-import { BuildContextBuilder } from "./BuildContextBuilder.js";
-import { PackageBuilder } from "./PackageBuilder.js";
-
+import {
+	JssmVizTask,
+	MarkdownMagicTask,
+	OclifManifestTask,
+	OclifReadmeTask,
+	SyncpackLintSemverRangesTask,
+	SyncpackListMismatchesTask,
+} from "../../../src/core/tasks/leaf/commonDeclarativeTasks.js";
+import { createDeclarativeTaskHandler } from "../../../src/core/tasks/leaf/declarativeTask.js";
+import {
+	FlubCheckLayerTask,
+	FlubCheckPolicyTask,
+	FlubGenerateChangesetConfigTask,
+	FlubGenerateTypeTestsTask,
+	FlubListTask,
+} from "../../../src/core/tasks/leaf/flubTasks.js";
+import { GenerateEntrypointsTask } from "../../../src/core/tasks/leaf/generateEntrypointsTask.js";
+import type { LeafTask } from "../../../src/core/tasks/leaf/leafTask.js";
 /**
  * Fluent builder for creating LeafTask instances for testing.
  *
@@ -32,6 +45,20 @@ import { PackageBuilder } from "./PackageBuilder.js";
  *   .buildBiomeTask();
  * ```
  */
+import { EsLintTask } from "../../../src/core/tasks/leaf/lintTasks.js";
+import {
+	CopyfilesTask,
+	DepCruiseTask,
+	EchoTask,
+	GenVerTask,
+	GoodFenceTask,
+} from "../../../src/core/tasks/leaf/miscTasks.js";
+import { PrettierTask } from "../../../src/core/tasks/leaf/prettierTask.js";
+import { TscTask } from "../../../src/core/tasks/leaf/tscTask.js";
+import { WebpackTask } from "../../../src/core/tasks/leaf/webpackTask.js";
+import { BuildContextBuilder } from "./BuildContextBuilder.js";
+import { PackageBuilder } from "./PackageBuilder.js";
+
 export class LeafTaskBuilder {
 	private buildGraphPackage?: BuildGraphPackage;
 	private context?: BuildContext;
@@ -40,6 +67,14 @@ export class LeafTaskBuilder {
 	private packageName = "test-package";
 	private packagePath = "/test/package";
 	private scripts: Record<string, string> = {};
+	private workerPool?: { useWorkerThreads?: boolean };
+	private declarativeTask?: {
+		inputGlobs: string[];
+		outputGlobs: string[];
+		gitignore?: ("input" | "output")[];
+	};
+	private recheckLeafIsUpToDate?: boolean;
+	private lockFileHash?: string;
 
 	/**
 	 * Set an existing BuildGraphPackage (advanced usage)
@@ -90,6 +125,13 @@ export class LeafTaskBuilder {
 	}
 
 	/**
+	 * Alias for withPackagePath for clarity in tests
+	 */
+	withPackageDirectory(path: string): this {
+		return this.withPackagePath(path);
+	}
+
+	/**
 	 * Add a script to package.json
 	 */
 	withScript(name: string, command: string): this {
@@ -102,6 +144,42 @@ export class LeafTaskBuilder {
 	 */
 	withScripts(scripts: Record<string, string>): this {
 		Object.assign(this.scripts, scripts);
+		return this;
+	}
+
+	/**
+	 * Set worker pool configuration
+	 */
+	withWorkerPool(workerPool: { useWorkerThreads?: boolean }): this {
+		this.workerPool = workerPool;
+		return this;
+	}
+
+	/**
+	 * Set the declarative task definition (for buildDeclarativeTaskHandler)
+	 */
+	withDeclarativeTask(definition: {
+		inputGlobs: string[];
+		outputGlobs: string[];
+		gitignore?: ("input" | "output")[];
+	}): this {
+		this.declarativeTask = definition;
+		return this;
+	}
+
+	/**
+	 * Set recheckLeafIsUpToDate property
+	 */
+	withRecheckLeafIsUpToDate(recheck: boolean): this {
+		this.recheckLeafIsUpToDate = recheck;
+		return this;
+	}
+
+	/**
+	 * Set lock file hash for version checking
+	 */
+	withLockFileHash(hash: string): this {
+		this.lockFileHash = hash;
 		return this;
 	}
 
@@ -157,7 +235,7 @@ export class LeafTaskBuilder {
 			},
 			failedTaskLines: [],
 			buildProfiler: new BuildProfiler(buildContext.log),
-			workerPool: undefined,
+			workerPool: this.workerPool,
 		};
 
 		// Create BuildGraphPackage with BuildGraphContext
@@ -198,7 +276,24 @@ export class LeafTaskBuilder {
 		const node = this.getBuildGraphPackage();
 		const cmd = this.command ?? "webpack";
 
-		return new WebpackTask(node, cmd, node.context, this.taskName);
+		const task = new WebpackTask(node, cmd, node.context, this.taskName);
+
+		// Apply optional properties if set
+		if (this.recheckLeafIsUpToDate !== undefined) {
+			// Use Object.defineProperty to override the getter
+			Object.defineProperty(task, "recheckLeafIsUpToDate", {
+				get: () => this.recheckLeafIsUpToDate,
+				configurable: true,
+			});
+		}
+
+		if (this.lockFileHash !== undefined) {
+			// Mock getLockFileHash on the node
+			// biome-ignore lint/style/noNonNullAssertion: Safe in test builder - checked by if condition
+			node.getLockFileHash = async () => this.lockFileHash!;
+		}
+
+		return task;
 	}
 
 	/**
@@ -209,5 +304,230 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "copyfiles src/**/*.txt dist";
 
 		return new CopyfilesTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a PrettierTask instance
+	 */
+	buildPrettierTask(): PrettierTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "prettier --check src";
+
+		return new PrettierTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an EchoTask instance
+	 */
+	buildEchoTask(): EchoTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "echo test";
+
+		return new EchoTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a GenVerTask instance
+	 */
+	buildGenVerTask(): GenVerTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "gen-version";
+
+		return new GenVerTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a GoodFenceTask instance
+	 */
+	buildGoodFenceTask(): GoodFenceTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "good-fences";
+
+		return new GoodFenceTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a DepCruiseTask instance
+	 */
+	buildDepCruiseTask(): DepCruiseTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "depcruise src";
+
+		return new DepCruiseTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an EsLintTask instance
+	 */
+	buildEsLintTask(): EsLintTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "eslint src";
+
+		return new EsLintTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an OclifManifestTask instance
+	 */
+	buildOclifManifestTask(): OclifManifestTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "oclif manifest";
+
+		return new OclifManifestTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an OclifReadmeTask instance
+	 */
+	buildOclifReadmeTask(): OclifReadmeTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "oclif readme";
+
+		return new OclifReadmeTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a SyncpackLintSemverRangesTask instance
+	 */
+	buildSyncpackLintSemverRangesTask(): SyncpackLintSemverRangesTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "syncpack lint-semver-ranges";
+
+		return new SyncpackLintSemverRangesTask(
+			node,
+			cmd,
+			node.context,
+			this.taskName,
+		);
+	}
+
+	/**
+	 * Build a SyncpackListMismatchesTask instance
+	 */
+	buildSyncpackListMismatchesTask(): SyncpackListMismatchesTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "syncpack list-mismatches";
+
+		return new SyncpackListMismatchesTask(
+			node,
+			cmd,
+			node.context,
+			this.taskName,
+		);
+	}
+
+	/**
+	 * Build a MarkdownMagicTask instance
+	 */
+	buildMarkdownMagicTask(): MarkdownMagicTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "markdown-magic";
+
+		return new MarkdownMagicTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a JssmVizTask instance
+	 */
+	buildJssmVizTask(): JssmVizTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "jssm-viz";
+
+		return new JssmVizTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an ApiExtractorTask instance
+	 */
+	buildApiExtractorTask(): ApiExtractorTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "api-extractor run --local";
+
+		return new ApiExtractorTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a GenerateEntrypointsTask instance
+	 */
+	buildGenerateEntrypointsTask(): GenerateEntrypointsTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub generate entrypoints";
+
+		return new GenerateEntrypointsTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a FlubListTask instance
+	 */
+	buildFlubListTask(): FlubListTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub list";
+
+		return new FlubListTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a FlubCheckLayerTask instance
+	 */
+	buildFlubCheckLayerTask(): FlubCheckLayerTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub check layers";
+
+		return new FlubCheckLayerTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a FlubCheckPolicyTask instance
+	 */
+	buildFlubCheckPolicyTask(): FlubCheckPolicyTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub check policy";
+
+		return new FlubCheckPolicyTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a FlubGenerateTypeTestsTask instance
+	 */
+	buildFlubGenerateTypeTestsTask(): FlubGenerateTypeTestsTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub generate typetests";
+
+		return new FlubGenerateTypeTestsTask(
+			node,
+			cmd,
+			node.context,
+			this.taskName,
+		);
+	}
+
+	/**
+	 * Build a FlubGenerateChangesetConfigTask instance
+	 */
+	buildFlubGenerateChangesetConfigTask(): FlubGenerateChangesetConfigTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub generate changeset-config";
+
+		return new FlubGenerateChangesetConfigTask(
+			node,
+			cmd,
+			node.context,
+			this.taskName,
+		);
+	}
+
+	/**
+	 * Build a DeclarativeTaskHandler instance (via factory function)
+	 */
+	buildDeclarativeTaskHandler(): LeafTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "custom-tool";
+		const taskDefinition = this.declarativeTask ?? {
+			inputGlobs: ["src/**/*.ts"],
+			outputGlobs: ["dist/**/*"],
+		};
+
+		const handler = createDeclarativeTaskHandler(taskDefinition);
+		return handler(node, cmd, node.context, this.taskName);
 	}
 }

@@ -20,7 +20,7 @@
     "parse": 153,
     "filter": 3,
     "build_hierarchy": 67,
-    "parse_value": 10,
+    "parse_indented": 10,
     "get_string": 7,
     "get_list": 32,
     "canonical_format": 14,
