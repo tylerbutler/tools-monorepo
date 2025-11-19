@@ -372,6 +372,77 @@ describe("MiscTasks - Comprehensive Tests", () => {
 				expect(task.taskWeight).toBe(0);
 			});
 		});
+
+		describe("Donefile Generation with Missing Output Files", () => {
+			it("should generate donefile content even when output files don't exist yet", async () => {
+				// Setup: Mock input files that exist
+				vi.mocked(globFn).mockResolvedValue([
+					"/test-package/src/file1.ts",
+					"/test-package/src/file2.ts",
+				]);
+
+				const task = new LeafTaskBuilder()
+					.withPackageName("test-app")
+					.withPackagePath("/test-package")
+					.withCommand("copyfiles src/**/*.ts dist")
+					.buildCopyfilesTask();
+
+				// Get donefile content - this would fail before the fix because:
+				// 1. getOutputFiles() returns ["/test-package/dist/file1.ts", "/test-package/dist/file2.ts"]
+				// 2. These files don't exist yet (clean build scenario)
+				// 3. fileHashCache.getFileHash() tries to read them and throws ENOENT
+				// 4. getDoneFileContent() catches error and returns undefined
+				const donefileContent = await (
+					task as unknown as {
+						getDoneFileContent: () => Promise<string | undefined>;
+					}
+				).getDoneFileContent();
+
+				// With the fix: donefile content should be generated with "<missing>" for non-existent files
+				expect(donefileContent).toBeDefined();
+				expect(donefileContent).not.toBe(undefined);
+
+				// Parse and verify structure
+				// biome-ignore lint/style/noNonNullAssertion: donefileContent is checked to be defined above
+				const parsed = JSON.parse(donefileContent!);
+				expect(parsed).toHaveProperty("srcHashes");
+				expect(parsed).toHaveProperty("dstHashes");
+
+				// Output files should have "<missing>" hash since they don't exist
+				expect(parsed.dstHashes).toEqual(
+					expect.arrayContaining([
+						expect.objectContaining({
+							name: expect.stringContaining("dist"),
+							hash: "<missing>",
+						}),
+					]),
+				);
+			});
+
+			it("should handle donefile generation when both input and output files are missing", async () => {
+				// Setup: Mock no files found
+				vi.mocked(globFn).mockResolvedValue([]);
+
+				const task = new LeafTaskBuilder()
+					.withPackageName("test-app")
+					.withPackagePath("/test-package")
+					.withCommand("copyfiles src/**/*.ts dist")
+					.buildCopyfilesTask();
+
+				const donefileContent = await (
+					task as unknown as {
+						getDoneFileContent: () => Promise<string | undefined>;
+					}
+				).getDoneFileContent();
+
+				// Should still generate valid content with empty arrays
+				expect(donefileContent).toBeDefined();
+				// biome-ignore lint/style/noNonNullAssertion: donefileContent is checked to be defined above
+				const parsed = JSON.parse(donefileContent!);
+				expect(parsed.srcHashes).toEqual([]);
+				expect(parsed.dstHashes).toEqual([]);
+			});
+		});
 	});
 
 	describe("EchoTask", () => {
