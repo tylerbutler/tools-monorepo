@@ -13,6 +13,13 @@ import {
 	SyncpackLintSemverRangesTask,
 	SyncpackListMismatchesTask,
 } from "../../../src/core/tasks/leaf/commonDeclarativeTasks.js";
+import {
+	FlubCheckLayerTask,
+	FlubCheckPolicyTask,
+	FlubGenerateChangesetConfigTask,
+	FlubGenerateTypeTestsTask,
+	FlubListTask,
+} from "../../../src/core/tasks/leaf/flubTasks.js";
 import { GenerateEntrypointsTask } from "../../../src/core/tasks/leaf/generateEntrypointsTask.js";
 /**
  * Fluent builder for creating LeafTask instances for testing.
@@ -393,5 +400,65 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "flub generate entrypoints";
 
 		return new GenerateEntrypointsTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a FlubListTask instance
+	 */
+	buildFlubListTask(): FlubListTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub list";
+
+		return new FlubListTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a FlubCheckLayerTask instance
+	 */
+	buildFlubCheckLayerTask(): FlubCheckLayerTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub check layers";
+
+		return new FlubCheckLayerTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a FlubCheckPolicyTask instance
+	 */
+	buildFlubCheckPolicyTask(): FlubCheckPolicyTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub check policy";
+
+		return new FlubCheckPolicyTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build a FlubGenerateTypeTestsTask instance
+	 */
+	buildFlubGenerateTypeTestsTask(): FlubGenerateTypeTestsTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub generate typetests";
+
+		return new FlubGenerateTypeTestsTask(
+			node,
+			cmd,
+			node.context,
+			this.taskName,
+		);
+	}
+
+	/**
+	 * Build a FlubGenerateChangesetConfigTask instance
+	 */
+	buildFlubGenerateChangesetConfigTask(): FlubGenerateChangesetConfigTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "flub generate changeset-config";
+
+		return new FlubGenerateChangesetConfigTask(
+			node,
+			cmd,
+			node.context,
+			this.taskName,
+		);
 	}
 }
