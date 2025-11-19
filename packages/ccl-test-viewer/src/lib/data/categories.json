@@ -1685,12 +1685,12 @@
           "whitespace"
         ],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "  key = val",
-        "name": "indented_key_parse_value",
+        "name": "indented_key_parse_indented",
         "source_test": "indented_key",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": []
       },
       {
@@ -1845,12 +1845,12 @@
           "empty_keys"
         ],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "  = val",
-        "name": "empty_key_indented_parse_value",
+        "name": "empty_key_indented_parse_indented",
         "source_test": "empty_key_indented",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": []
       },
       {
@@ -2060,12 +2060,12 @@
           "whitespace"
         ],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "text = First\n    four spaces\n\ttab preserved",
-        "name": "spaces_vs_tabs_continuation_parse_value",
+        "name": "spaces_vs_tabs_continuation_parse_indented",
         "source_test": "spaces_vs_tabs_continuation",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": []
       },
       {
@@ -2085,12 +2085,12 @@
           "whitespace"
         ],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "text = First\n    four spaces\n\ttab preserved",
-        "name": "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
+        "name": "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
         "source_test": "spaces_vs_tabs_continuation_ocaml_reference",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": []
       },
       {
@@ -2314,12 +2314,12 @@
           "multiline"
         ],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "key =\n  line1\n\n  line2",
-        "name": "nested_with_blank_line_parse_value",
+        "name": "nested_with_blank_line_parse_indented",
         "source_test": "nested_with_blank_line",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": []
       },
       {
@@ -2335,12 +2335,12 @@
         },
         "features": [],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "key =\n  field1 = value1\n  field2 =\n    subfield = x\n    another = y",
-        "name": "deep_nested_structure_parse_value",
+        "name": "deep_nested_structure_parse_indented",
         "source_test": "deep_nested_structure",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": []
       },
       {
@@ -3184,12 +3184,12 @@
           "multiline"
         ],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "== Section Header =\n  This continues the header\nkey = value",
-        "name": "multiline_section_header_value_parse_value",
+        "name": "multiline_section_header_value_parse_indented",
         "source_test": "multiline_section_header_value",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": [
           "proposed_behavior"
         ]
@@ -3213,12 +3213,12 @@
           "empty_keys"
         ],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "== Section Header =\nThis continues the header\nkey = value",
-        "name": "unindented_multiline_becomes_continuation_parse_value",
+        "name": "unindented_multiline_becomes_continuation_parse_indented",
         "source_test": "unindented_multiline_becomes_continuation",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": [
           "proposed_behavior"
         ]
@@ -4094,12 +4094,12 @@
           "multiline"
         ],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "descriptions = First line\nsecond line\ndescriptions = Another item\ndescriptions = Third item",
-        "name": "list_multiline_values_parse_value",
+        "name": "list_multiline_values_parse_indented",
         "source_test": "list_multiline_values",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": [
           "proposed_behavior"
         ]
@@ -4213,12 +4213,12 @@
         },
         "features": [],
         "functions": [
-          "parse_value"
+          "parse_indented"
         ],
         "input": "config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui",
-        "name": "complex_mixed_list_scenarios_parse_value",
+        "name": "complex_mixed_list_scenarios_parse_indented",
         "source_test": "complex_mixed_list_scenarios",
-        "validation": "parse_value",
+        "validation": "parse_indented",
         "variants": [
           "proposed_behavior"
         ]

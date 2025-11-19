@@ -81,14 +81,14 @@
       "empty_input_parse",
       "basic_single_no_spaces_parse",
       "basic_with_spaces_parse",
-      "indented_key_parse_value",
+      "indented_key_parse_indented",
       "value_trailing_spaces_parse",
       "key_value_surrounded_spaces_parse",
       "surrounded_by_newlines_parse",
       "key_empty_value_parse",
       "empty_value_with_newline_parse",
       "empty_value_with_spaces_parse",
-      "empty_key_indented_parse_value",
+      "empty_key_indented_parse_indented",
       "empty_key_with_newline_parse",
       "empty_key_value_with_spaces_parse",
       "equals_in_value_no_spaces_parse",
@@ -97,8 +97,8 @@
       "key_with_tabs_parse",
       "key_with_tabs_ocaml_reference_parse",
       "whitespace_only_value_parse",
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
       "multiple_empty_equality_parse",
       "key_with_newline_before_equals_parse",
       "complex_multi_newline_whitespace_parse",
@@ -108,8 +108,8 @@
       "quotes_treated_as_literal_quoted_parse",
       "nested_single_line_parse",
       "nested_multi_line_parse",
-      "nested_with_blank_line_parse_value",
-      "deep_nested_structure_parse_value",
+      "nested_with_blank_line_parse_indented",
+      "deep_nested_structure_parse_indented",
       "realistic_stress_test_parse",
       "ocaml_stress_test_original_parse",
       "just_key_error_parse",
@@ -125,8 +125,8 @@
       "list_error_nested_missing_key_parse",
       "list_error_non_object_path_parse",
       "list_edge_case_zero_length_parse",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value",
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented",
       "single_item_as_list_parse",
       "mixed_duplicate_single_keys_parse",
       "nested_list_access_parse",
@@ -137,8 +137,8 @@
       "deeply_nested_list_parse",
       "list_with_unicode_parse",
       "list_with_special_characters_parse",
-      "list_multiline_values_parse_value",
-      "complex_mixed_list_scenarios_parse_value",
+      "list_multiline_values_parse_indented",
+      "complex_mixed_list_scenarios_parse_indented",
       "list_path_traversal_protection_parse",
       "parse_empty_value_parse",
       "parse_empty_value_parse",
@@ -291,7 +291,7 @@
       "equals_in_values_parse",
       "multiline_values_parse",
       "empty_values_parse",
-      "list_multiline_values_parse_value",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
       "canonical_format_empty_values_parse",
@@ -316,10 +316,10 @@
     "key": [
       "multiple_values_same_key_parse",
       "basic_key_value_pairs_parse",
-      "indented_key_parse_value",
+      "indented_key_parse_indented",
       "key_value_surrounded_spaces_parse",
       "key_empty_value_parse",
-      "empty_key_indented_parse_value",
+      "empty_key_indented_parse_indented",
       "empty_key_with_newline_parse",
       "empty_key_value_with_spaces_parse",
       "multiple_key_value_pairs_parse",
@@ -403,11 +403,11 @@
       "list_with_special_characters_build_hierarchy",
       "list_with_special_characters_get_list",
       "list_with_special_characters_get_list",
-      "list_multiline_values_parse_value",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
       "list_multiline_values_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "complex_mixed_list_scenarios_get_list",
@@ -481,7 +481,7 @@
       "key_with_newline_before_equals_parse",
       "empty_value_with_trailing_spaces_newline_parse",
       "empty_key_value_with_surrounding_newlines_parse",
-      "nested_with_blank_line_parse_value",
+      "nested_with_blank_line_parse_indented",
       "list_with_comments_parse",
       "list_with_comments_build_hierarchy",
       "list_with_comments_get_list",
@@ -532,7 +532,7 @@
       "key_empty_value_parse",
       "empty_value_with_newline_parse",
       "empty_value_with_spaces_parse",
-      "empty_key_indented_parse_value",
+      "empty_key_indented_parse_indented",
       "empty_key_with_newline_parse",
       "empty_key_value_with_spaces_parse",
       "multiple_empty_equality_parse",
@@ -570,7 +570,7 @@
       "consecutive_section_headers_parse",
       "section_headers_with_comments_parse",
       "section_headers_with_comments_filter",
-      "multiline_section_header_value_parse_value"
+      "multiline_section_header_value_parse_indented"
     ],
     "style": [
       "section_style_syntax_parse",
@@ -594,7 +594,7 @@
       "mixed_duplicate_single_keys_parse",
       "mixed_duplicate_single_keys_build_hierarchy",
       "mixed_duplicate_single_keys_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "mixed_duplicate_single_keys_reference_parse",
@@ -632,7 +632,7 @@
       "empty_section_header_only_parse",
       "section_header_at_end_parse",
       "spaced_equals_not_section_header_parse",
-      "multiline_section_header_value_parse_value"
+      "multiline_section_header_value_parse_indented"
     ],
     "double": [
       "section_header_double_equals_parse"
@@ -916,7 +916,7 @@
     "deep": [
       "deep_nested_objects_parse",
       "deep_nested_objects_build_hierarchy",
-      "deep_nested_structure_parse_value"
+      "deep_nested_structure_parse_indented"
     ],
     "nested": [
       "deep_nested_objects_parse",
@@ -932,8 +932,8 @@
       "nested_structure_parsing_parse",
       "nested_single_line_parse",
       "nested_multi_line_parse",
-      "nested_with_blank_line_parse_value",
-      "deep_nested_structure_parse_value",
+      "nested_with_blank_line_parse_indented",
+      "deep_nested_structure_parse_indented",
       "multiline_plain_nested_error_parse",
       "list_error_nested_missing_key_parse",
       "list_error_nested_missing_key_build_hierarchy",
@@ -1016,9 +1016,9 @@
       "multiline_values_parse",
       "multiline_plain_error_parse",
       "multiline_plain_nested_error_parse",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value",
-      "list_multiline_values_parse_value",
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
       "round_trip_multiline_values_parse",
@@ -1036,29 +1036,19 @@
     ],
     "value": [
       "basic_key_value_pairs_parse",
-      "indented_key_parse_value",
       "value_trailing_spaces_parse",
       "key_value_surrounded_spaces_parse",
       "key_empty_value_parse",
       "empty_value_with_newline_parse",
       "empty_value_with_spaces_parse",
-      "empty_key_indented_parse_value",
       "empty_key_value_with_spaces_parse",
       "equals_in_value_no_spaces_parse",
       "equals_in_value_with_spaces_parse",
       "multiple_key_value_pairs_parse",
       "whitespace_only_value_parse",
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
       "empty_value_with_trailing_spaces_newline_parse",
       "empty_key_value_with_surrounding_newlines_parse",
-      "nested_with_blank_line_parse_value",
-      "deep_nested_structure_parse_value",
-      "multiline_section_header_value_parse_value",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value",
-      "list_multiline_values_parse_value",
-      "complex_mixed_list_scenarios_parse_value",
+      "multiline_section_header_value_parse_indented",
       "parse_empty_value_parse",
       "parse_empty_value_build_hierarchy",
       "parse_empty_value_get_string",
@@ -1098,7 +1088,7 @@
     ],
     "structure": [
       "nested_structure_parsing_parse",
-      "deep_nested_structure_parse_value"
+      "deep_nested_structure_parse_indented"
     ],
     "parsing": [
       "nested_structure_parsing_parse",
@@ -1144,13 +1134,23 @@
       "empty_key_value_with_spaces_parse",
       "equals_in_value_no_spaces_parse",
       "equals_in_value_with_spaces_parse",
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
       "empty_value_with_trailing_spaces_newline_parse"
     ],
     "indented": [
-      "indented_key_parse_value",
-      "empty_key_indented_parse_value",
+      "indented_key_parse_indented",
+      "indented_key_parse_indented",
+      "empty_key_indented_parse_indented",
+      "empty_key_indented_parse_indented",
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
+      "nested_with_blank_line_parse_indented",
+      "deep_nested_structure_parse_indented",
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented",
+      "list_multiline_values_parse_indented",
+      "complex_mixed_list_scenarios_parse_indented",
       "crlf_normalize_to_lf_indented_proposed_parse",
       "crlf_normalize_to_lf_indented_proposed_canonical_format"
     ],
@@ -1175,12 +1175,12 @@
     "tabs": [
       "key_with_tabs_parse",
       "key_with_tabs_ocaml_reference_parse",
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value"
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented"
     ],
     "ocaml": [
       "key_with_tabs_ocaml_reference_parse",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
       "ocaml_stress_test_original_parse",
       "ocaml_stress_test_original_build_hierarchy",
       "ocaml_stress_test_original_get_string",
@@ -1193,7 +1193,7 @@
     ],
     "reference": [
       "key_with_tabs_ocaml_reference_parse",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
       "whitespace_only_error_ocaml_reference_parse",
       "single_item_as_list_reference_parse",
       "single_item_as_list_reference_build_hierarchy",
@@ -1241,13 +1241,13 @@
       "deterministic_output_ocaml_reference_canonical_format"
     ],
     "vs": [
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value"
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented"
     ],
     "continuation": [
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value"
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented"
     ],
     "equality": [
       "multiple_empty_equality_parse"
@@ -1257,7 +1257,7 @@
     ],
     "complex": [
       "complex_multi_newline_whitespace_parse",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "complex_mixed_list_scenarios_reference_build_hierarchy",
@@ -1323,14 +1323,14 @@
     "line": [
       "nested_single_line_parse",
       "nested_multi_line_parse",
-      "nested_with_blank_line_parse_value",
+      "nested_with_blank_line_parse_indented",
       "canonical_format_line_endings_proposed_parse",
       "canonical_format_line_endings_proposed_canonical_format",
       "canonical_format_line_endings_reference_behavior_parse",
       "canonical_format_line_endings_reference_behavior_canonical_format"
     ],
     "blank": [
-      "nested_with_blank_line_parse_value"
+      "nested_with_blank_line_parse_indented"
     ],
     "realistic": [
       "realistic_stress_test_parse"
@@ -1543,10 +1543,10 @@
       "list_edge_case_zero_length_get_list"
     ],
     "unindented": [
-      "unindented_multiline_becomes_continuation_parse_value"
+      "unindented_multiline_becomes_continuation_parse_indented"
     ],
     "becomes": [
-      "unindented_multiline_becomes_continuation_parse_value"
+      "unindented_multiline_becomes_continuation_parse_indented"
     ],
     "item": [
       "single_item_as_list_parse",
@@ -1607,7 +1607,7 @@
       "list_with_special_characters_reference_get_list"
     ],
     "scenarios": [
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "complex_mixed_list_scenarios_reference_build_hierarchy",
@@ -2086,7 +2086,7 @@
       "nested_list_access_parse",
       "nested_list_access_build_hierarchy",
       "nested_list_access_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "nested_list_access_reference_parse",
@@ -2183,8 +2183,8 @@
       "comment_extension_parse",
       "comment_extension_filter",
       "comment_extension_filter",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value"
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented"
     ],
     "name": [
       "mixed_keys_with_duplicates_parse",
@@ -2243,7 +2243,7 @@
       "nested_list_access_parse",
       "nested_list_access_build_hierarchy",
       "nested_list_access_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "nested_list_access_reference_parse",
@@ -2277,7 +2277,7 @@
       "deeply_nested_list_parse",
       "deeply_nested_list_build_hierarchy",
       "deeply_nested_list_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "deeply_nested_list_reference_parse",
@@ -2414,7 +2414,7 @@
       "nested_list_access_parse",
       "nested_list_access_build_hierarchy",
       "nested_list_access_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "nested_list_access_reference_parse",
@@ -2552,7 +2552,7 @@
       "section_headers_with_comments_filter",
       "deep_nested_objects_parse",
       "deep_nested_objects_build_hierarchy",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "complex_mixed_list_scenarios_reference_build_hierarchy",
@@ -2565,7 +2565,7 @@
       "section_headers_with_colons_parse",
       "section_headers_with_comments_parse",
       "section_headers_with_comments_filter",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "complex_mixed_list_scenarios_reference_build_hierarchy",
@@ -2645,7 +2645,7 @@
       "whitespace_trimming_parse",
       "basic_single_no_spaces_parse",
       "basic_with_spaces_parse",
-      "indented_key_parse_value",
+      "indented_key_parse_indented",
       "value_trailing_spaces_parse",
       "key_value_surrounded_spaces_parse",
       "surrounded_by_newlines_parse",
@@ -2659,11 +2659,11 @@
       "empty_value_with_trailing_spaces_newline_parse",
       "nested_single_line_parse",
       "nested_multi_line_parse",
-      "nested_with_blank_line_parse_value",
-      "deep_nested_structure_parse_value",
+      "nested_with_blank_line_parse_indented",
+      "deep_nested_structure_parse_indented",
       "just_key_error_parse",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value",
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented",
       "monoid_left_identity_basic_parse",
       "monoid_right_identity_basic_parse",
       "round_trip_property_basic_parse",
@@ -2687,8 +2687,8 @@
       "list_error_non_object_path_parse",
       "list_error_non_object_path_build_hierarchy",
       "list_error_non_object_path_get_list",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value",
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented",
       "list_path_traversal_protection_parse",
       "list_path_traversal_protection_build_hierarchy",
       "list_path_traversal_protection_get_list",
@@ -2781,27 +2781,27 @@
     "spaces": [
       "spaced_equals_not_section_header_parse",
       "whitespace_trimming_parse",
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value"
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented"
     ],
     "real": [
       "spaced_equals_not_section_header_parse"
     ],
     "header": [
       "spaced_equals_not_section_header_parse",
-      "multiline_section_header_value_parse_value",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value"
+      "multiline_section_header_value_parse_indented",
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented"
     ],
     "first": [
       "consecutive_section_headers_parse",
       "duplicate_keys_to_lists_parse",
       "duplicate_keys_to_lists_build_hierarchy",
       "multiline_values_parse",
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
-      "list_multiline_values_parse_value",
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
       "deterministic_output_parse",
@@ -2837,8 +2837,8 @@
       "ocaml_stress_test_original_parse",
       "ocaml_stress_test_original_build_hierarchy",
       "ocaml_stress_test_original_get_string",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value"
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented"
     ],
     "environment": [
       "comment_extension_parse",
@@ -2903,8 +2903,8 @@
       "single_item_as_list_parse",
       "single_item_as_list_build_hierarchy",
       "single_item_as_list_get_list",
-      "list_multiline_values_parse_value",
-      "list_multiline_values_parse_value",
+      "list_multiline_values_parse_indented",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
@@ -2921,7 +2921,7 @@
       "duplicate_keys_to_lists_parse",
       "duplicate_keys_to_lists_build_hierarchy",
       "multiline_values_parse",
-      "list_multiline_values_parse_value",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
       "round_trip_mixed_content_parse",
@@ -2931,7 +2931,7 @@
       "duplicate_keys_to_lists_parse",
       "duplicate_keys_to_lists_build_hierarchy",
       "multiline_values_parse",
-      "list_multiline_values_parse_value",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list"
     ],
@@ -2954,7 +2954,7 @@
       "deeply_nested_list_parse",
       "deeply_nested_list_build_hierarchy",
       "deeply_nested_list_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "deeply_nested_list_reference_parse",
@@ -2979,7 +2979,7 @@
       "deeply_nested_list_parse",
       "deeply_nested_list_build_hierarchy",
       "deeply_nested_list_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "deeply_nested_list_reference_parse",
@@ -3066,9 +3066,9 @@
       "complete_mixed_workflow_build_hierarchy",
       "real_world_complete_workflow_parse",
       "real_world_complete_workflow_build_hierarchy",
-      "complex_mixed_list_scenarios_parse_value",
-      "complex_mixed_list_scenarios_parse_value",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
+      "complex_mixed_list_scenarios_parse_indented",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_build_hierarchy",
@@ -3142,8 +3142,8 @@
       "deeply_nested_list_get_list",
       "deeply_nested_list_get_list",
       "deeply_nested_list_get_list",
-      "complex_mixed_list_scenarios_parse_value",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
@@ -3210,7 +3210,7 @@
     "value1": [
       "complete_multiline_workflow_parse",
       "complete_multiline_workflow_build_hierarchy",
-      "deep_nested_structure_parse_value",
+      "deep_nested_structure_parse_indented",
       "canonical_format_line_endings_proposed_parse",
       "canonical_format_line_endings_proposed_canonical_format",
       "crlf_normalize_to_lf_proposed_parse",
@@ -3371,8 +3371,8 @@
       "multiline_values_parse",
       "multiline_values_parse",
       "multiline_values_parse",
-      "list_multiline_values_parse_value",
-      "list_multiline_values_parse_value",
+      "list_multiline_values_parse_indented",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
@@ -3413,11 +3413,11 @@
     "val": [
       "basic_single_no_spaces_parse",
       "basic_with_spaces_parse",
-      "indented_key_parse_value",
+      "indented_key_parse_indented",
       "value_trailing_spaces_parse",
       "key_value_surrounded_spaces_parse",
       "surrounded_by_newlines_parse",
-      "empty_key_indented_parse_value",
+      "empty_key_indented_parse_indented",
       "empty_key_with_newline_parse",
       "key_with_newline_before_equals_parse",
       "complex_multi_newline_whitespace_parse",
@@ -3469,8 +3469,8 @@
       "whitespace_only_value_parse"
     ],
     "text": [
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
       "canonical_format_tab_preservation_parse",
       "canonical_format_tab_preservation_canonical_format",
       "canonical_format_tab_preservation_ocaml_reference_canonical_format",
@@ -3480,40 +3480,40 @@
       "parse_with_conservative_options_get_int"
     ],
     "four": [
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value"
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented"
     ],
     "tab": [
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value"
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented"
     ],
     "preserved": [
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value"
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented"
     ],
     "\"localhost\"": [
       "quotes_treated_as_literal_quoted_parse"
     ],
     "line1": [
       "nested_multi_line_parse",
-      "nested_with_blank_line_parse_value"
+      "nested_with_blank_line_parse_indented"
     ],
     "line2": [
       "nested_multi_line_parse",
-      "nested_with_blank_line_parse_value"
+      "nested_with_blank_line_parse_indented"
     ],
     "field1": [
-      "deep_nested_structure_parse_value"
+      "deep_nested_structure_parse_indented"
     ],
     "field2": [
-      "deep_nested_structure_parse_value"
+      "deep_nested_structure_parse_indented"
     ],
     "subfield": [
-      "deep_nested_structure_parse_value"
+      "deep_nested_structure_parse_indented"
     ],
     "another": [
-      "deep_nested_structure_parse_value",
-      "list_multiline_values_parse_value",
+      "deep_nested_structure_parse_indented",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
       "round_trip_property_basic_parse",
@@ -3826,12 +3826,12 @@
       "list_error_non_object_path_get_list"
     ],
     "continues": [
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value"
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented"
     ],
     "the": [
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value"
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented"
     ],
     "single": [
       "single_item_as_list_parse",
@@ -3848,8 +3848,8 @@
       "nested_list_access_build_hierarchy",
       "nested_list_access_get_list",
       "nested_list_access_get_list",
-      "complex_mixed_list_scenarios_parse_value",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
@@ -3869,7 +3869,7 @@
       "nested_list_access_parse",
       "nested_list_access_build_hierarchy",
       "nested_list_access_get_list",
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "nested_list_access_reference_parse",
@@ -4079,9 +4079,9 @@
       "list_with_special_characters_reference_get_list"
     ],
     "descriptions": [
-      "list_multiline_values_parse_value",
-      "list_multiline_values_parse_value",
-      "list_multiline_values_parse_value",
+      "list_multiline_values_parse_indented",
+      "list_multiline_values_parse_indented",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_build_hierarchy",
@@ -4090,21 +4090,21 @@
       "list_multiline_values_get_list"
     ],
     "backup": [
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "complex_mixed_list_scenarios_reference_build_hierarchy",
       "complex_mixed_list_scenarios_reference_get_list"
     ],
     "auth": [
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "complex_mixed_list_scenarios_reference_build_hierarchy",
       "complex_mixed_list_scenarios_reference_get_list"
     ],
     "api": [
-      "complex_mixed_list_scenarios_parse_value",
+      "complex_mixed_list_scenarios_parse_indented",
       "complex_mixed_list_scenarios_build_hierarchy",
       "complex_mixed_list_scenarios_get_list",
       "complex_mixed_list_scenarios_reference_build_hierarchy",
@@ -4718,17 +4718,17 @@
       "parse_boolean_error_build_hierarchy",
       "parse_missing_path_error_build_hierarchy"
     ],
-    "parse_value": [
-      "indented_key_parse_value",
-      "empty_key_indented_parse_value",
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
-      "nested_with_blank_line_parse_value",
-      "deep_nested_structure_parse_value",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value",
-      "list_multiline_values_parse_value",
-      "complex_mixed_list_scenarios_parse_value"
+    "parse_indented": [
+      "indented_key_parse_indented",
+      "empty_key_indented_parse_indented",
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
+      "nested_with_blank_line_parse_indented",
+      "deep_nested_structure_parse_indented",
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented",
+      "list_multiline_values_parse_indented",
+      "complex_mixed_list_scenarios_parse_indented"
     ],
     "get_string": [
       "ocaml_stress_test_original_get_string",
@@ -4860,7 +4860,7 @@
       "key_empty_value_parse",
       "empty_value_with_newline_parse",
       "empty_value_with_spaces_parse",
-      "empty_key_indented_parse_value",
+      "empty_key_indented_parse_indented",
       "empty_key_with_newline_parse",
       "empty_key_value_with_spaces_parse",
       "whitespace_only_value_parse",
@@ -4872,8 +4872,8 @@
       "ocaml_stress_test_original_parse",
       "ocaml_stress_test_original_build_hierarchy",
       "ocaml_stress_test_original_get_string",
-      "multiline_section_header_value_parse_value",
-      "unindented_multiline_becomes_continuation_parse_value",
+      "multiline_section_header_value_parse_indented",
+      "unindented_multiline_becomes_continuation_parse_indented",
       "parse_zero_values_parse",
       "parse_zero_values_build_hierarchy",
       "parse_zero_values_get_int",
@@ -4919,11 +4919,11 @@
       "complete_multiline_workflow_build_hierarchy",
       "multiline_values_parse",
       "nested_multi_line_parse",
-      "nested_with_blank_line_parse_value",
+      "nested_with_blank_line_parse_indented",
       "multiline_plain_error_parse",
       "multiline_plain_nested_error_parse",
-      "multiline_section_header_value_parse_value",
-      "list_multiline_values_parse_value",
+      "multiline_section_header_value_parse_indented",
+      "list_multiline_values_parse_indented",
       "list_multiline_values_build_hierarchy",
       "list_multiline_values_get_list",
       "round_trip_multiline_values_parse",
@@ -4934,7 +4934,7 @@
     "whitespace": [
       "whitespace_trimming_parse",
       "basic_with_spaces_parse",
-      "indented_key_parse_value",
+      "indented_key_parse_indented",
       "value_trailing_spaces_parse",
       "key_value_surrounded_spaces_parse",
       "empty_value_with_spaces_parse",
@@ -4943,8 +4943,8 @@
       "key_with_tabs_parse",
       "key_with_tabs_ocaml_reference_parse",
       "whitespace_only_value_parse",
-      "spaces_vs_tabs_continuation_parse_value",
-      "spaces_vs_tabs_continuation_ocaml_reference_parse_value",
+      "spaces_vs_tabs_continuation_parse_indented",
+      "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
       "multiple_empty_equality_parse",
       "key_with_newline_before_equals_parse",
       "complex_multi_newline_whitespace_parse",
