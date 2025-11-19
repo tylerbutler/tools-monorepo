@@ -11,6 +11,7 @@
  * 5. FlubGenerateChangesetConfigTask - Changeset config generation
  */
 
+import { readFile } from "node:fs/promises";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { globFn } from "../../../../../src/core/tasks/taskUtils.js";
 import { LeafTaskBuilder } from "../../../../helpers/builders/LeafTaskBuilder.js";
@@ -34,6 +35,8 @@ vi.mock("../../../../../src/common/gitRepo.js", () => {
 describe("FlubTasks - Comprehensive Tests", () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
+		// Mock readFile to return empty buffer by default (prevents "Cannot read properties of undefined" errors)
+		vi.mocked(readFile).mockResolvedValue(Buffer.from(""));
 	});
 
 	describe("FlubListTask", () => {
