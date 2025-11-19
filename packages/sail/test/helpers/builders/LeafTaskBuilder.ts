@@ -3,6 +3,7 @@ import { BuildGraphPackage } from "../../../src/core/buildGraph.js";
 // Import dependencies needed for BuildGraphContext
 import { FileHashCache } from "../../../src/core/fileHashCache.js";
 import { BuildProfiler } from "../../../src/core/performance/BuildProfiler.js";
+import { ApiExtractorTask } from "../../../src/core/tasks/leaf/apiExtractorTask.js";
 import { BiomeTask } from "../../../src/core/tasks/leaf/biomeTasks.js";
 import {
 	JssmVizTask,
@@ -371,5 +372,15 @@ export class LeafTaskBuilder {
 		const cmd = this.command ?? "jssm-viz";
 
 		return new JssmVizTask(node, cmd, node.context, this.taskName);
+	}
+
+	/**
+	 * Build an ApiExtractorTask instance
+	 */
+	buildApiExtractorTask(): ApiExtractorTask {
+		const node = this.getBuildGraphPackage();
+		const cmd = this.command ?? "api-extractor run --local";
+
+		return new ApiExtractorTask(node, cmd, node.context, this.taskName);
 	}
 }
