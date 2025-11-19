@@ -289,6 +289,7 @@ export class LeafTaskBuilder {
 
 		if (this.lockFileHash !== undefined) {
 			// Mock getLockFileHash on the node
+			// biome-ignore lint/style/noNonNullAssertion: Safe in test builder - checked by if condition
 			node.getLockFileHash = async () => this.lockFileHash!;
 		}
 

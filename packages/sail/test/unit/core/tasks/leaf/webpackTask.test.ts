@@ -57,6 +57,7 @@ describe("WebpackTask", () => {
 			const task = new LeafTaskBuilder().buildWebpackTask();
 
 			// LeafWithDoneFileTask has getDoneFileContent method
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			expect(typeof (task as any).getDoneFileContent).toBe("function");
 		});
 
@@ -80,6 +81,7 @@ describe("WebpackTask", () => {
 				.withCommand("webpack")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected property
 			const configPaths = (task as any).configFileFullPaths;
 			expect(configPaths).toEqual(["/project/webpack.config.js"]);
 		});
@@ -94,6 +96,7 @@ describe("WebpackTask", () => {
 				.withCommand("webpack")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected property
 			const configPaths = (task as any).configFileFullPaths;
 			expect(configPaths).toEqual(["/project/webpack.config.cjs"]);
 		});
@@ -104,6 +107,7 @@ describe("WebpackTask", () => {
 				.withCommand("webpack --config custom.config.js")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected property
 			const configPaths = (task as any).configFileFullPaths;
 			expect(configPaths).toEqual(["/project/custom.config.js"]);
 		});
@@ -118,6 +122,7 @@ describe("WebpackTask", () => {
 				.withCommand("webpack")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected property
 			const configPaths = (task as any).configFileFullPaths;
 			expect(configPaths).toEqual(["/project/.webpack/webpack.config.js"]);
 		});
@@ -135,6 +140,7 @@ describe("WebpackTask", () => {
 				"getDoneFileContent",
 			).mockResolvedValue(undefined);
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const content = await (task as any).getDoneFileContent();
 
 			expect(content).toBeUndefined();
@@ -150,6 +156,7 @@ describe("WebpackTask", () => {
 				.withRecheckLeafIsUpToDate(false)
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const content = await (task as any).getDoneFileContent();
 
 			expect(content).toBeUndefined();
@@ -161,6 +168,7 @@ describe("WebpackTask", () => {
 				.withRecheckLeafIsUpToDate(true) // Invalid for WebpackTask
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			await expect((task as any).getDoneFileContent()).rejects.toThrow(
 				"WebpackTask requires recheckLeafIsUpToDate to be false",
 			);
@@ -180,6 +188,7 @@ describe("WebpackTask", () => {
 				"getDoneFileContent",
 			).mockResolvedValue("invalid json");
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const content = await (task as any).getDoneFileContent();
 
 			expect(content).toBeUndefined();
@@ -195,6 +204,7 @@ describe("WebpackTask", () => {
 				.withPackageDirectory("/project")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const inputFiles = await (task as any).getInputFiles();
 
 			expect(inputFiles).toEqual(mockFiles);
@@ -208,6 +218,7 @@ describe("WebpackTask", () => {
 				.withPackageDirectory("/project")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const inputFiles = await (task as any).getInputFiles();
 
 			expect(inputFiles).toEqual([]);
@@ -218,6 +229,7 @@ describe("WebpackTask", () => {
 				.withPackageDirectory("/project")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const outputFiles = await (task as any).getOutputFiles();
 
 			expect(outputFiles).toEqual([]);
@@ -231,6 +243,7 @@ describe("WebpackTask", () => {
 				.withCommand("webpack --env production")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const env = (task as any).getEnvArguments();
 
 			expect(env).toEqual({ production: true });
@@ -242,6 +255,7 @@ describe("WebpackTask", () => {
 				.withCommand("webpack --env mode=production")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const env = (task as any).getEnvArguments();
 
 			expect(env).toEqual({ mode: "production" });
@@ -253,6 +267,7 @@ describe("WebpackTask", () => {
 				.withCommand("webpack --env production --env optimize=true")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const env = (task as any).getEnvArguments();
 
 			expect(env).toEqual({ production: true, optimize: "true" });
@@ -264,6 +279,7 @@ describe("WebpackTask", () => {
 				.withCommand("webpack --mode production --env")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const env = (task as any).getEnvArguments();
 
 			expect(env).toEqual({});
@@ -274,6 +290,7 @@ describe("WebpackTask", () => {
 		it("should have taskWeight of 5 (expensive task)", () => {
 			const task = new LeafTaskBuilder().buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected property
 			const weight = (task as any).taskWeight;
 
 			expect(weight).toBe(5);
@@ -284,6 +301,7 @@ describe("WebpackTask", () => {
 				.withLockFileHash("abc123")
 				.buildWebpackTask();
 
+			// biome-ignore lint/suspicious/noExplicitAny: Testing protected method
 			const version = await (task as any).getVersion();
 
 			expect(version).toBe("abc123");
