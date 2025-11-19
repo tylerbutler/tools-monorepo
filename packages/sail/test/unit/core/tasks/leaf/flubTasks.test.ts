@@ -671,9 +671,10 @@ describe("FlubTasks - Comprehensive Tests", () => {
 				}
 			});
 
-			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
-			// The task calls GitRepo.exec() and reads actual files for hashing
-			// Full integration testing would require filesystem setup
+			// NOTE: FlubCheckPolicyTask donefile tests are deferred pending git infrastructure.
+			// These 6 tests require complex git operations (commit hashes, modifications detection)
+			// and should be implemented as integration tests with actual git setup.
+			// See: FlubCheckPolicyTask.getDoneFileContent() which calls GitRepo methods.
 			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
 			it.skip("should produce valid JSON content from FlubCheckPolicyTask", async () => {
 				const task = new LeafTaskBuilder()
