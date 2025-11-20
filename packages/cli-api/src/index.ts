@@ -9,7 +9,12 @@
  * @packageDocumentation
  */
 
-export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
+export {
+	type Args,
+	BaseCommand,
+	type Flags,
+	logIndent,
+} from "./baseCommand.js";
 export {
 	CommandWithConfig,
 	type CommandWithContext,
@@ -67,6 +72,7 @@ export type {
 	Logger,
 	LoggingFunction,
 } from "./logger.js";
+export { ConsolaLogger } from "./loggers/consola.js";
 export {
 	detectAllPackageManagers,
 	detectFromLockfilePath,

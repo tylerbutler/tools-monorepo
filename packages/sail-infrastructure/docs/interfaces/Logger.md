@@ -23,7 +23,7 @@ levels. Methods other than `log` may modify the error message in some way (e.g. 
 errorLog: ErrorLoggingFunction;
 ```
 
-Defined in: [packages/sail-infrastructure/src/logging.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L51)
+Defined in: [packages/sail-infrastructure/src/logging.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L56)
 
 Logs an error message.
 
@@ -35,13 +35,35 @@ error logging that doesn't exit the process.
 
 ***
 
+### formatError()?
+
+```ts
+optional formatError: (message) => string;
+```
+
+Defined in: [packages/sail-infrastructure/src/logging.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L66)
+
+Optional function to format error messages.
+
+#### Parameters
+
+##### message
+
+`string` | `Error`
+
+#### Returns
+
+`string`
+
+***
+
 ### info
 
 ```ts
 info: ErrorLoggingFunction;
 ```
 
-Defined in: [packages/sail-infrastructure/src/logging.ts:35](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L35)
+Defined in: [packages/sail-infrastructure/src/logging.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L40)
 
 Logs an informational message.
 
@@ -59,13 +81,25 @@ Logs an error message as-is.
 
 ***
 
+### success
+
+```ts
+success: LoggingFunction;
+```
+
+Defined in: [packages/sail-infrastructure/src/logging.ts:35](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L35)
+
+Logs a success message.
+
+***
+
 ### verbose
 
 ```ts
 verbose: ErrorLoggingFunction;
 ```
 
-Defined in: [packages/sail-infrastructure/src/logging.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L56)
+Defined in: [packages/sail-infrastructure/src/logging.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L61)
 
 Logs a verbose message.
 
@@ -77,6 +111,6 @@ Logs a verbose message.
 warning: ErrorLoggingFunction;
 ```
 
-Defined in: [packages/sail-infrastructure/src/logging.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L40)
+Defined in: [packages/sail-infrastructure/src/logging.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L45)
 
 Logs a warning message.

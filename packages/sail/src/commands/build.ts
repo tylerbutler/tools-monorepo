@@ -135,6 +135,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			verifyCacheIntegrity,
 			{
 				log: (message?: string) => this.log(message ?? ""),
+				success: (message?: string) => this.success(message ?? ""),
 				info: (msg?: string | Error) => this.log(String(msg ?? "")),
 				warning: (msg?: string | Error) => this.warning(String(msg ?? "")),
 				errorLog: (msg?: string | Error) => this.log(String(msg ?? "")),

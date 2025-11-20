@@ -30,6 +30,11 @@ export interface Logger {
 	log: LoggingFunction;
 
 	/**
+	 * Logs a success message.
+	 */
+	success: LoggingFunction;
+
+	/**
 	 * Logs an informational message.
 	 */
 	info: ErrorLoggingFunction;
@@ -54,6 +59,11 @@ export interface Logger {
 	 * Logs a verbose message.
 	 */
 	verbose: ErrorLoggingFunction;
+
+	/**
+	 * Optional function to format error messages.
+	 */
+	formatError?: ((message: Error | string) => string) | undefined;
 }
 
 /**
@@ -64,6 +74,11 @@ export const defaultLogger: Logger = {
 	 * {@inheritDoc Logger.log}
 	 */
 	log,
+
+	/**
+	 * {@inheritDoc Logger.success}
+	 */
+	success,
 
 	/**
 	 * {@inheritDoc Logger.info}
@@ -110,6 +125,11 @@ function logWithTime(
 function log(msg: string | undefined): void {
 	// biome-ignore lint/suspicious/noConsole: This is a logging utility
 	logWithTime(msg, console.log);
+}
+
+function success(msg: string | undefined): void {
+	// biome-ignore lint/suspicious/noConsole: This is a logging utility
+	logWithTime(`${chalk.green("SUCCESS")}: ${msg}`, console.log);
 }
 
 function info(msg: string | Error | undefined): void {

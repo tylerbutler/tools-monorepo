@@ -151,7 +151,9 @@ function handleExistingGitignore(
 		name: RequiredGitignorePatterns.name,
 		file,
 		autoFixable: true,
-		errorMessage: `Missing required .gitignore patterns: ${missingPatterns.map((p) => (typeof p === "string" ? p : p.pattern)).join(", ")}`,
+		errorMessages: [
+			`Missing required .gitignore patterns: ${missingPatterns.map((p) => (typeof p === "string" ? p : p.pattern)).join(", ")}`,
+		],
 	};
 
 	if (resolve) {
@@ -168,7 +170,9 @@ function handleExistingGitignore(
 			writeFileSync(filePath, newContent);
 			fixResult.resolved = true;
 		} catch (error: unknown) {
-			fixResult.errorMessage = `Failed to update .gitignore: ${(error as Error).message}`;
+			fixResult.errorMessages = [
+				`Failed to update .gitignore: ${(error as Error).message}`,
+			];
 		}
 
 		return fixResult;
@@ -190,7 +194,7 @@ function handleMissingGitignore(
 		name: RequiredGitignorePatterns.name,
 		file,
 		autoFixable: true,
-		errorMessage: "No .gitignore file found in repository root",
+		errorMessages: ["No .gitignore file found in repository root"],
 	};
 
 	if (resolve) {
@@ -204,7 +208,9 @@ function handleMissingGitignore(
 			writeFileSync(filePath, content);
 			fixResult.resolved = true;
 		} catch (writeError: unknown) {
-			fixResult.errorMessage = `Failed to create .gitignore: ${(writeError as Error).message}`;
+			fixResult.errorMessages = [
+				`Failed to create .gitignore: ${(writeError as Error).message}`,
+			];
 		}
 
 		return fixResult;
