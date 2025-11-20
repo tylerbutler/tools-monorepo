@@ -93,7 +93,7 @@
 		"@oclif/test": "^4.1.14",
 		"@types/node": "^20.19.24",
 		"@types/tmp": "^0.2.6",
-		"@vitest/coverage-v8": "^3.2.4",
+		"@vitest/coverage-v8": "^4.0.12",
 		"generate-license-file": "^4.1.0",
 		"memfs": "^4.50.0",
 		"oclif": "^4.22.44",
@@ -105,7 +105,7 @@
 		"tsx": "^4.20.6",
 		"type-fest": "^5.2.0",
 		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.12"
 	},
 	"peerDependencies": {
 		"repopo": ">=0.5.0"
