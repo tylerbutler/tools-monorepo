@@ -53,7 +53,7 @@
 		"tslib": "^2.8.1",
 		"type-fest": "^5.2.0",
 		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.12"
 	},
 	"peerDependencies": {
 		"lilconfig": "^3.1.3"
