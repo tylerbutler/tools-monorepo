@@ -70,6 +70,10 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
+					label: "For AI Assistants",
+					items: [{ slug: "ai-quickstart" }],
+				},
+				{
 					label: "Learning CCL",
 					items: [
 						{ slug: "getting-started" },
