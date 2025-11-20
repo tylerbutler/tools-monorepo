@@ -71,9 +71,7 @@ export default defineConfig({
 			sidebar: [
 				{
 					label: "For AI Assistants",
-					items: [
-						{ slug: "ai-quickstart" },
-					],
+					items: [{ slug: "ai-quickstart" }],
 				},
 				{
 					label: "Learning CCL",
