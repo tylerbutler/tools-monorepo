@@ -48,11 +48,11 @@ export interface DillOptions {
 }
 
 /**
- * Resolved options type. All the options become required when resolved except for filename.
+ * Resolved options type. All the options become required when resolved except for filename and headers.
  */
 export type DillOptionsResolved = SetOptional<
 	Required<DillOptions>,
-	"filename" | "headers" | "strip"
+	"filename" | "headers"
 >;
 
 export interface DownloadResponse {
