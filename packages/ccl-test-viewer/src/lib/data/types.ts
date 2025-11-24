@@ -44,12 +44,12 @@ export interface SearchIndex {
 }
 
 // Enum types for better type safety
-export type CCLFunction = "parse" | "filter" | "build_hierarchy" | "parse_value" | "get_string" | "get_list" | "canonical_format" | "get_int" | "get_float" | "get_bool" | "round_trip";
+export type CCLFunction = "parse" | "filter" | "build_hierarchy" | "parse_indented" | "get_string" | "get_list" | "canonical_format" | "get_int" | "get_float" | "get_bool" | "round_trip";
 export type CCLFeature = "empty_keys" | "comments" | "multiline" | "whitespace" | "unicode" | "optional_typed_accessors";
 export type CCLBehavior = "tabs_preserve" | "list_coercion_enabled" | "crlf_preserve_literal" | "crlf_normalize_to_lf" | "strict_spacing" | "list_coercion_disabled" | "boolean_strict" | "boolean_lenient";
 
 // Available functions for filtering
-export const AVAILABLE_FUNCTIONS: CCLFunction[] = ["parse", "filter", "build_hierarchy", "parse_value", "get_string", "get_list", "canonical_format", "get_int", "get_float", "get_bool", "round_trip"];
+export const AVAILABLE_FUNCTIONS: CCLFunction[] = ["parse", "filter", "build_hierarchy", "parse_indented", "get_string", "get_list", "canonical_format", "get_int", "get_float", "get_bool", "round_trip"];
 
 // Available features for filtering
 export const AVAILABLE_FEATURES: CCLFeature[] = ["empty_keys", "comments", "multiline", "whitespace", "unicode", "optional_typed_accessors"];

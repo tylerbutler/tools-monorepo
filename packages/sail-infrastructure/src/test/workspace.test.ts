@@ -1,6 +1,6 @@
 import { strict as assert } from "node:assert/strict";
 import { rm } from "node:fs/promises";
-import * as path from "node:path";
+import * as path from "pathe";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 

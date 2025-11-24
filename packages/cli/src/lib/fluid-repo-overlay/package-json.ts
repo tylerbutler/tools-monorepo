@@ -3,8 +3,8 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { join, relative } from "node:path";
 import type { Logger } from "@tylerbu/cli-api";
+import { join, relative } from "pathe";
 import { glob } from "tinyglobby";
 
 interface PackageJson {

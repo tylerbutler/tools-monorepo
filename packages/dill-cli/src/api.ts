@@ -1,6 +1,7 @@
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import process from "node:process";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
+import { all, call, run } from "effection";
 import { Decompress, type Unzipped, unzipSync } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
 import mime from "mime";
@@ -265,21 +266,37 @@ export async function writeTarFiles(
 ): Promise<void> {
 	await checkDestination(destination);
 
-	const filesP: Promise<void>[] = [];
-	for (const tarfile of tarFiles) {
-		if (tarfile.data === undefined) {
-			throw new Error("Data undefined in tarfile.");
-		}
-		const strippedName = stripPathComponents(tarfile.name, strip);
-		if (strippedName === "") {
-			// Skip files that have all path components stripped
-			continue;
-		}
-		const outPath = path.join(destination, strippedName);
-		await mkdir(path.dirname(outPath), { recursive: true });
-		filesP.push(writeFile(outPath, tarfile.data));
-	}
-	await Promise.all(filesP);
+	// Use Effection for structured concurrency with automatic cancellation
+	await run(function* () {
+		// Execute all write operations concurrently
+		// If any operation fails, Effection automatically cancels the rest
+		yield* all(
+			tarFiles
+				.map((tarfile) => {
+					if (tarfile.data === undefined) {
+						throw new Error("Data undefined in tarfile.");
+					}
+					const strippedName = stripPathComponents(tarfile.name, strip);
+					if (strippedName === "") {
+						// Skip files that have all path components stripped
+						return null;
+					}
+					return { name: strippedName, data: tarfile.data };
+				})
+				.filter(
+					(item): item is { name: string; data: Uint8Array } => item !== null,
+				)
+				.map((item) =>
+					(function* () {
+						const outPath = path.join(destination, item.name);
+						yield* call(() =>
+							mkdir(path.dirname(outPath), { recursive: true }),
+						);
+						yield* call(() => writeFile(outPath, item.data));
+					})(),
+				),
+		);
+	});
 }
 
 export async function writeZipFiles(
@@ -289,21 +306,35 @@ export async function writeZipFiles(
 ): Promise<void> {
 	await checkDestination(destination);
 
-	const filesP: Promise<void>[] = [];
-	for (const [zipFilePath, data] of Object.entries(zipFiles)) {
-		if (data.length === 0) {
-			continue;
-		}
-		const strippedPath = stripPathComponents(zipFilePath, strip);
-		if (strippedPath === "") {
-			// Skip files that have all path components stripped
-			continue;
-		}
-		const outPath = path.join(destination, strippedPath);
-		await mkdir(path.dirname(outPath), { recursive: true });
-		filesP.push(writeFile(outPath, data));
-	}
-	await Promise.all(filesP);
+	// Use Effection for structured concurrency with automatic cancellation
+	await run(function* () {
+		// Execute all write operations concurrently
+		// If any operation fails, Effection automatically cancels the rest
+		yield* all(
+			Object.entries(zipFiles)
+				.filter(([, data]) => data.length > 0)
+				.map(([zipFilePath, data]) => {
+					const strippedPath = stripPathComponents(zipFilePath, strip);
+					if (strippedPath === "") {
+						// Skip files that have all path components stripped
+						return null;
+					}
+					return { path: strippedPath, data };
+				})
+				.filter(
+					(item): item is { path: string; data: Uint8Array } => item !== null,
+				)
+				.map((item) =>
+					(function* () {
+						const outPath = path.join(destination, item.path);
+						yield* call(() =>
+							mkdir(path.dirname(outPath), { recursive: true }),
+						);
+						yield* call(() => writeFile(outPath, item.data));
+					})(),
+				),
+		);
+	});
 }
 
 export async function decompressZip(compressed: Uint8Array): Promise<Unzipped> {

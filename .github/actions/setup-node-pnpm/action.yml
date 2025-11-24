@@ -1,0 +1,26 @@
+name: Setup Node.js and pnpm
+description: Common setup for Node.js with pnpm and corepack
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # ratchet:pnpm/action-setup@v4
+      name: Install pnpm
+      with:
+        run_install: false
+
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # ratchet:actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: "pnpm"
+        cache-dependency-path: pnpm-lock.yaml
+
+    - run: npm i --global corepack@latest
+      shell: bash
+
+    - run: corepack enable
+      shell: bash
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      shell: bash

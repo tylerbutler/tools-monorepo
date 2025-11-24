@@ -33,6 +33,7 @@
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "pm2 start -n tinylicious dist/index.js",
 		"start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
 		"stop": "pm2 stop tinylicious",

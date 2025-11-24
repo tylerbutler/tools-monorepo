@@ -10,7 +10,7 @@
 function filterPackages<T>(packages, filters): Promise<T[]>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:254](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L254)
+Defined in: [packages/sail-infrastructure/src/filter.ts:253](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L253)
 
 Filters a list of packages by the filter criteria.
 
