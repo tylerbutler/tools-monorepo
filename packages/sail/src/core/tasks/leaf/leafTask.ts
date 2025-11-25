@@ -1082,10 +1082,16 @@ export abstract class LeafWithDoneFileTask
 	 */
 	protected async getDoneFileContent(): Promise<string | undefined> {
 		const mapHash = async (name: string) => {
-			const hash = await this.node.fileHashCache.getFileHash(
-				this.getPackageFileFullPath(name),
-			);
-			return { name, hash };
+			try {
+				const hash = await this.node.fileHashCache.getFileHash(
+					this.getPackageFileFullPath(name),
+				);
+				return { name, hash };
+			} catch {
+				// File doesn't exist yet (common for output files before first build)
+				// Use a sentinel value to indicate missing file
+				return { name, hash: "<missing>" };
+			}
 		};
 
 		try {

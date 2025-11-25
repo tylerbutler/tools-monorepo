@@ -3,7 +3,7 @@ title: Test Suite Guide
 description: Using the CCL test suite for progressive implementation validation.
 ---
 
-The [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) provides 453 assertions across 168 tests for validating CCL implementations.
+The [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) provides 375 assertions across 180 tests for validating CCL implementations.
 
 ## Test Format
 
@@ -24,7 +24,7 @@ Each test includes:
 **Functions** - CCL functions by category:
 - **Core**: `parse`, `build_hierarchy`
 - **Typed Access**: `get_string`, `get_int`, `get_bool`, `get_float`, `get_list`
-- **Processing**: `filter`, `combine`, `expand_dotted`
+- **Processing**: `filter`, `compose`, `expand_dotted`
 - **Formatting**: `canonical_format`
 
 **Features** - Optional language features:

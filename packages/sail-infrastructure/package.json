@@ -30,7 +30,7 @@
 		"build:docs": "typedoc",
 		"check": "pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
-		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log .coverage",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
