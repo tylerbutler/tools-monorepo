@@ -73,15 +73,19 @@
         "command": "download",
         "flagAliases": [],
         "flagChars": [
+            "H",
             "e",
             "o",
+            "s",
             "v"
         ],
         "flags": [
             "extract",
             "filename",
+            "header",
             "out",
             "quiet",
+            "strip",
             "verbose"
         ],
         "plugin": "@tylerbu/cli"
