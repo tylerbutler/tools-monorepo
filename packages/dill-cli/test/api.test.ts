@@ -1,4 +1,4 @@
-import { readFile, readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import http from "node:http";
 import { getRandomPort } from "get-port-please";
 import jsonfile from "jsonfile";
