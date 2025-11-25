@@ -118,7 +118,10 @@
 					"sync-data",
 					"sync-svelte-kit"
 				],
-				"executor": "nx:noop"
+				"executor": "nx:noop",
+				"outputs": [
+					"{projectRoot}/build/**"
+				]
 			},
 			"bundlemon": {
 				"dependsOn": [
