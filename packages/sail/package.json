@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/sail",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Build orchestration CLI tool",
 	"keywords": [
 		"oclif",
@@ -45,7 +45,7 @@
 		"check": "pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
-		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log .coverage",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",

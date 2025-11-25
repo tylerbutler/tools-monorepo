@@ -1,5 +1,17 @@
 # dill-cli
 
+## 0.2.2
+
+### Patch Changes
+
+- Fix donefile generation when output files don't exist _[`#426`](https://github.com/tylerbutler/tools-monorepo/pull/426) [`5cc8e17`](https://github.com/tylerbutler/tools-monorepo/commit/5cc8e17d382828b0679f2e68df5cc40271945919) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Donefile generation would fail during clean builds when output files don't exist yet (e.g., CopyfilesTask before copying). The LeafWithDoneFileTask.getDoneFileContent() method now gracefully handles missing files by returning a sentinel value "<missing>" instead of throwing ENOENT errors. This allows donefile generation to succeed even when output files haven't been created yet, while still tracking which files are expected.
+
+- Fix WebpackTask getEnvArguments method missing return statement _[`#426`](https://github.com/tylerbutler/tools-monorepo/pull/426) [`5cc8e17`](https://github.com/tylerbutler/tools-monorepo/commit/5cc8e17d382828b0679f2e68df5cc40271945919) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The WebpackTask.getEnvArguments() method was building the environment arguments object but not returning it, causing all --env flags to be ignored during webpack execution. This fix adds the missing return statement, allowing webpack environment variables to be properly passed through.
+
 ## 0.2.1
 
 ### Patch Changes

@@ -2592,7 +2592,9 @@
     "description": "List-specific operations and coercion",
     "tests": [
       {
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 3,
           "entries": [
@@ -2621,7 +2623,9 @@
         "variants": []
       },
       {
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 1,
           "object": {
@@ -2646,7 +2650,9 @@
         "args": [
           "servers"
         ],
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 3,
           "list": [
@@ -2666,7 +2672,9 @@
         "variants": []
       },
       {
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 20,
           "entries": [
@@ -2763,7 +2771,9 @@
         "variants": []
       },
       {
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 1,
           "object": {
@@ -2805,7 +2815,9 @@
         "args": [
           "items"
         ],
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 20,
           "list": [
@@ -2842,7 +2854,9 @@
         "variants": []
       },
       {
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 5,
           "entries": [
@@ -2881,7 +2895,9 @@
         "variants": []
       },
       {
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 1,
           "object": {
@@ -2912,7 +2928,9 @@
         "args": [
           "servers"
         ],
-        "behaviors": [],
+        "behaviors": [
+          "list_coercion_enabled"
+        ],
         "expected": {
           "count": 3,
           "list": [
@@ -3154,6 +3172,455 @@
         "input": "",
         "name": "list_edge_case_zero_length_get_list",
         "source_test": "list_edge_case_zero_length",
+        "validation": "get_list",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "entries": [
+            {
+              "key": "servers",
+              "value": "\n  = web1\n  = web2\n  = web3"
+            }
+          ]
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "parse"
+        ],
+        "input": "servers =\n  = web1\n  = web2\n  = web3",
+        "name": "bare_list_basic_parse",
+        "source_test": "bare_list_basic",
+        "validation": "parse",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "object": {
+            "servers": {
+              "": [
+                "web1",
+                "web2",
+                "web3"
+              ]
+            }
+          }
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "build_hierarchy"
+        ],
+        "input": "servers =\n  = web1\n  = web2\n  = web3",
+        "name": "bare_list_basic_build_hierarchy",
+        "source_test": "bare_list_basic",
+        "validation": "build_hierarchy",
+        "variants": []
+      },
+      {
+        "args": [
+          "servers"
+        ],
+        "behaviors": [],
+        "expected": {
+          "count": 3,
+          "list": [
+            "web1",
+            "web2",
+            "web3"
+          ]
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "get_list"
+        ],
+        "input": "servers =\n  = web1\n  = web2\n  = web3",
+        "name": "bare_list_basic_get_list",
+        "source_test": "bare_list_basic",
+        "validation": "get_list",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "entries": [
+            {
+              "key": "network",
+              "value": "\n  ports =\n    = 80\n    = 443\n    = 8080"
+            }
+          ]
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "parse"
+        ],
+        "input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+        "name": "bare_list_nested_parse",
+        "source_test": "bare_list_nested",
+        "validation": "parse",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "object": {
+            "network": {
+              "ports": {
+                "": [
+                  "80",
+                  "443",
+                  "8080"
+                ]
+              }
+            }
+          }
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "build_hierarchy"
+        ],
+        "input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+        "name": "bare_list_nested_build_hierarchy",
+        "source_test": "bare_list_nested",
+        "validation": "build_hierarchy",
+        "variants": []
+      },
+      {
+        "args": [
+          "network",
+          "ports"
+        ],
+        "behaviors": [],
+        "expected": {
+          "count": 3,
+          "list": [
+            "80",
+            "443",
+            "8080"
+          ]
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "get_list"
+        ],
+        "input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+        "name": "bare_list_nested_get_list",
+        "source_test": "bare_list_nested",
+        "validation": "get_list",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "entries": [
+            {
+              "key": "allowed_hosts",
+              "value": "\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com"
+            }
+          ]
+        },
+        "features": [
+          "empty_keys",
+          "comments"
+        ],
+        "functions": [
+          "parse"
+        ],
+        "input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+        "name": "bare_list_with_comments_parse",
+        "source_test": "bare_list_with_comments",
+        "validation": "parse",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "object": {
+            "allowed_hosts": {
+              "": [
+                "localhost",
+                "127.0.0.1",
+                "example.com"
+              ],
+              "/": "Production hosts"
+            }
+          }
+        },
+        "features": [
+          "empty_keys",
+          "comments"
+        ],
+        "functions": [
+          "build_hierarchy"
+        ],
+        "input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+        "name": "bare_list_with_comments_build_hierarchy",
+        "source_test": "bare_list_with_comments",
+        "validation": "build_hierarchy",
+        "variants": []
+      },
+      {
+        "args": [
+          "allowed_hosts"
+        ],
+        "behaviors": [],
+        "expected": {
+          "count": 3,
+          "list": [
+            "localhost",
+            "127.0.0.1",
+            "example.com"
+          ]
+        },
+        "features": [
+          "empty_keys",
+          "comments"
+        ],
+        "functions": [
+          "get_list"
+        ],
+        "input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+        "name": "bare_list_with_comments_get_list",
+        "source_test": "bare_list_with_comments",
+        "validation": "get_list",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "entries": [
+            {
+              "key": "config",
+              "value": "\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1"
+            }
+          ]
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "parse"
+        ],
+        "input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+        "name": "bare_list_deeply_nested_parse",
+        "source_test": "bare_list_deeply_nested",
+        "validation": "parse",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "object": {
+            "config": {
+              "environments": {
+                "production": {
+                  "servers": {
+                    "": [
+                      "web1",
+                      "web2",
+                      "api1"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "build_hierarchy"
+        ],
+        "input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+        "name": "bare_list_deeply_nested_build_hierarchy",
+        "source_test": "bare_list_deeply_nested",
+        "validation": "build_hierarchy",
+        "variants": []
+      },
+      {
+        "args": [
+          "config",
+          "environments",
+          "production",
+          "servers"
+        ],
+        "behaviors": [],
+        "expected": {
+          "count": 3,
+          "list": [
+            "web1",
+            "web2",
+            "api1"
+          ]
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "get_list"
+        ],
+        "input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+        "name": "bare_list_deeply_nested_get_list",
+        "source_test": "bare_list_deeply_nested",
+        "validation": "get_list",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "entries": [
+            {
+              "key": "database",
+              "value": "\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2"
+            }
+          ]
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "parse"
+        ],
+        "input": "database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2",
+        "name": "bare_list_mixed_with_other_keys_parse",
+        "source_test": "bare_list_mixed_with_other_keys",
+        "validation": "parse",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "object": {
+            "database": {
+              "host": "localhost",
+              "port": "5432",
+              "replicas": {
+                "": [
+                  "replica1",
+                  "replica2"
+                ]
+              }
+            }
+          }
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "build_hierarchy"
+        ],
+        "input": "database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2",
+        "name": "bare_list_mixed_with_other_keys_build_hierarchy",
+        "source_test": "bare_list_mixed_with_other_keys",
+        "validation": "build_hierarchy",
+        "variants": []
+      },
+      {
+        "args": [
+          "database",
+          "replicas"
+        ],
+        "behaviors": [],
+        "expected": {
+          "count": 2,
+          "list": [
+            "replica1",
+            "replica2"
+          ]
+        },
+        "features": [
+          "empty_keys"
+        ],
+        "functions": [
+          "get_list"
+        ],
+        "input": "database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2",
+        "name": "bare_list_mixed_with_other_keys_get_list",
+        "source_test": "bare_list_mixed_with_other_keys",
+        "validation": "get_list",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "entries": [
+            {
+              "key": "config",
+              "value": "\n  setting = value"
+            }
+          ]
+        },
+        "features": [],
+        "functions": [
+          "parse"
+        ],
+        "input": "config =\n  setting = value",
+        "name": "bare_list_error_not_a_list_parse",
+        "source_test": "bare_list_error_not_a_list",
+        "validation": "parse",
+        "variants": []
+      },
+      {
+        "behaviors": [],
+        "expected": {
+          "count": 1,
+          "object": {
+            "config": {
+              "setting": "value"
+            }
+          }
+        },
+        "features": [],
+        "functions": [
+          "build_hierarchy"
+        ],
+        "input": "config =\n  setting = value",
+        "name": "bare_list_error_not_a_list_build_hierarchy",
+        "source_test": "bare_list_error_not_a_list",
+        "validation": "build_hierarchy",
+        "variants": []
+      },
+      {
+        "args": [
+          "config",
+          "setting"
+        ],
+        "behaviors": [],
+        "expected": {
+          "count": 0
+        },
+        "features": [],
+        "functions": [
+          "get_list"
+        ],
+        "input": "config =\n  setting = value",
+        "name": "bare_list_error_not_a_list_get_list",
+        "source_test": "bare_list_error_not_a_list",
         "validation": "get_list",
         "variants": []
       }
