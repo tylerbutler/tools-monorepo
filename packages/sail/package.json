@@ -122,7 +122,7 @@
 		"lodash": "^4.17.21",
 		"lodash.isequal": "^4.5.0",
 		"log-update": "^7.0.1",
-		"multimatch": "^5.0.0",
+		"multimatch": "^7.0.0",
 		"picocolors": "^1.1.1",
 		"picomatch": "^2.3.1",
 		"picospinner": "^2.1.0",
