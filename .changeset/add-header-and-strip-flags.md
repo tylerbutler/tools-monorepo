@@ -1,7 +1,7 @@
 ---
-"dill-cli": patch
+"dill-cli": minor
 ---
 
-Add --header and --strip flags to dill
+New --header and --strip flags
 
-Add support for custom HTTP headers via `--header` flag and stripping leading path components during extraction via `--strip` flag.
+Dill now supports custom HTTP headers via the `--header` flag and stripping leading path components during extraction via the `--strip` flag.
