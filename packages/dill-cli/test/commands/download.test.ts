@@ -120,7 +120,12 @@ describe("download command", async () => {
 		);
 
 		const files = await readdir(downloadDir, { recursive: true });
-		expect(files).toMatchSnapshot();
+		expect(files).toEqual([
+			"test",
+			"test/data",
+			"test/data/test1.json",
+			"test/data/test2.json",
+		]);
 	});
 
 	describe("using current working directory", () => {

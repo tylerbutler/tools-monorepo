@@ -221,6 +221,15 @@
 					"{workspaceRoot}/pnpm-lockfile.yaml"
 				],
 				"cache": true
+			},
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {
+				"executor": "nx:noop"
+			},
+			"test": {
+				"executor": "nx:noop"
 			}
 		}
 	}

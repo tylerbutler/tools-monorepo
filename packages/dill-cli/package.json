@@ -143,8 +143,12 @@
 			"build": {
 				"executor": "nx:noop"
 			},
-			"test": {},
-			"ci": {}
+			"test": {
+				"executor": "nx:noop"
+			},
+			"ci": {
+				"executor": "nx:noop"
+			}
 		}
 	}
 }

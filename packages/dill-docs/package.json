@@ -48,8 +48,15 @@
 	},
 	"nx": {
 		"targets": {
-			"build": {},
-			"ci": {}
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {
+				"executor": "nx:noop"
+			},
+			"test": {
+				"executor": "nx:noop"
+			}
 		}
 	}
 }
