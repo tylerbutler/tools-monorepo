@@ -106,10 +106,15 @@
 		"targets": {
 			"build": {
 				"dependsOn": [
+					"build:vite"
+				],
+				"executor": "nx:noop"
+			},
+			"build:vite": {
+				"dependsOn": [
 					"^build",
 					"sync-data",
-					"sync-svelte-kit",
-					"build:vite"
+					"sync-svelte-kit"
 				],
 				"executor": "nx:noop"
 			},
