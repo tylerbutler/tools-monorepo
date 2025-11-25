@@ -109,7 +109,7 @@
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"@tylerbu/sail-infrastructure": "workspace:^",
 		"async": "^3.2.6",
-		"date-fns": "^2.30.0",
+		"date-fns": "^4.1.0",
 		"debug": "^4.4.3",
 		"detect-indent": "^7.0.2",
 		"find-up": "^7.0.0",
