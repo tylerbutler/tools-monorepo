@@ -512,44 +512,51 @@ async function main(): Promise<void> {
 	// Generate TypeScript definitions
 	const types = await generateTypeDefinitions(categories);
 
+	// Initialize Biome for formatting generated files to match project style
+	const biome = new Biome();
+	const { projectKey } = biome.openProject(PROJECT_ROOT);
+
+	const formatJson = (data: unknown, filePath: string): string => {
+		const json = JSON.stringify(data);
+		return biome.formatContent(projectKey, json, { filePath }).content;
+	};
+
+	const formatTs = (content: string, filePath: string): string => {
+		return biome.formatContent(projectKey, content, { filePath }).content;
+	};
+
 	// Write processed data files
 	await writeFile(
 		join(DATA_TARGET, "categories.json"),
-		JSON.stringify(categories, null, 2),
+		formatJson(categories, "categories.json"),
 	);
 
 	await writeFile(
 		join(DATA_TARGET, "stats.json"),
-		JSON.stringify(stats, null, 2),
+		formatJson(stats, "stats.json"),
 	);
 
 	await writeFile(
 		join(DATA_TARGET, "search-index.json"),
-		JSON.stringify(searchIndex, null, 2),
+		formatJson(searchIndex, "search-index.json"),
 	);
 
-	// Format generated TypeScript with Biome to match project style
-	const biome = new Biome();
-	const { projectKey } = biome.openProject(PROJECT_ROOT);
-	const formatted = biome.formatContent(projectKey, types, {
-		filePath: "types.ts",
-	});
-	await writeFile(join(DATA_TARGET, "types.ts"), formatted.content);
+	await writeFile(join(DATA_TARGET, "types.ts"), formatTs(types, "types.ts"));
 
 	// Copy key files to static directory for runtime access
 	await writeFile(
 		join(STATIC_TARGET, "categories.json"),
-		JSON.stringify(categories, null, 2),
+		formatJson(categories, "categories.json"),
 	);
 
 	await writeFile(
 		join(STATIC_TARGET, "stats.json"),
-		JSON.stringify(stats, null, 2),
+		formatJson(stats, "stats.json"),
 	);
 
 	await writeFile(
 		join(STATIC_TARGET, "search-index.json"),
-		JSON.stringify(searchIndex, null, 2),
+		formatJson(searchIndex, "search-index.json"),
 	);
 
 	// Create a summary file with metadata
@@ -570,7 +577,7 @@ async function main(): Promise<void> {
 
 	await writeFile(
 		join(DATA_TARGET, "sync-summary.json"),
-		JSON.stringify(summary, null, 2),
+		formatJson(summary, "sync-summary.json"),
 	);
 
 	console.log("✅ Data sync completed successfully!");

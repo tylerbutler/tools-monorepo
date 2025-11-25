@@ -5,9 +5,6 @@
 	"files": {
 		"includes": [
 			"**",
-			// Exclude generated data files (sync-data.ts outputs with 2-space indentation)
-			"!src/lib/data/*.json",
-			"!static/data/*.json",
 			// Exclude Svelte files with complex template syntax that Biome can't parse
 			// These use {#each}, {#if}, {#await} which Biome doesn't support yet
 			// See: https://biomejs.dev/internals/language-support/
