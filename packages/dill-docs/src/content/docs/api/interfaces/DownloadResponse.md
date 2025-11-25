@@ -5,7 +5,7 @@ prev: false
 title: "DownloadResponse"
 ---
 
-Defined in: [types.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L45)
+Defined in: [types.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L58)
 
 ## Properties
 
@@ -13,7 +13,7 @@ Defined in: [types.ts:45](https://github.com/tylerbutler/tools-monorepo/blob/mai
 
 > **data**: [`Uint8Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array)
 
-Defined in: [types.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L49)
+Defined in: [types.ts:62](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L62)
 
 The raw file data.
 
@@ -23,6 +23,6 @@ The raw file data.
 
 > **writtenTo**: `string` \| `undefined`
 
-Defined in: [types.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L54)
+Defined in: [types.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L67)
 
 The path where the file(s) were written, if any.

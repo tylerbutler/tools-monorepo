@@ -49,6 +49,8 @@ export interface DillOptions {
 
 /**
  * Resolved options type. All the options become required when resolved except for filename and headers.
+ * - `filename` remains optional because it may be determined from the response or remain unknown.
+ * - `headers` remains optional because absence means "no custom headers" - there's no sensible default value.
  */
 export type DillOptionsResolved = SetOptional<
 	Required<DillOptions>,
