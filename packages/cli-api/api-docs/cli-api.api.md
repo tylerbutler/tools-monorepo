@@ -13,8 +13,6 @@ import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
 import type { PackageJson as PackageJson_2 } from 'type-fest';
-import type { PathLike } from 'node:fs';
-import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
 import { SimpleGitOptions } from 'simple-git';
@@ -23,37 +21,37 @@ import { SimpleGitOptions } from 'simple-git';
 export type Args<T extends typeof Command> = Interfaces.InferredArgs<T["args"]>;
 
 // @public
-export abstract class BaseCommand<T extends typeof Command> extends Command implements Logger {
+export abstract class BaseCommand<T extends typeof Command> extends Command {
     // (undocumented)
     protected args: Args<T>;
     static baseFlags: {
         verbose: Interfaces.BooleanFlag<boolean>;
         quiet: Interfaces.BooleanFlag<boolean>;
     };
-    error(input: string | Error, options: {
-        code?: string | undefined;
-        exit: false;
-    } & PrettyPrintableError): void;
-    error(input: string | Error, options?: ({
-        code?: string | undefined;
-        exit?: number | undefined;
-    } & PrettyPrintableError) | undefined): never;
-    errorLog(message: string | Error | undefined): void;
+    exit(code?: number): never;
+    exit(message: string | Error, code?: number): never;
     // (undocumented)
     protected flags: Flags<T>;
-    info(message: string | Error | undefined): void;
+    info(message: string | Error | undefined, ..._args: unknown[]): void;
+    // (undocumented)
     init(): Promise<void>;
-    logHr(): void;
-    logIndent(input: string, indentNumber?: number): void;
+    log(message?: string, ..._args: unknown[]): void;
+    logError(message: string | Error | undefined, ..._args: unknown[]): void;
+    get logger(): Logger;
+    protected _logger: Logger;
     protected redirectLogToTrace: boolean;
+    success(message?: string, ..._args: unknown[]): void;
     // (undocumented)
     protected trace: Debugger | undefined;
-    verbose(message: string | Error | undefined): void;
+    verbose(message: string | Error | undefined, ..._args: unknown[]): void;
     // @deprecated
     warn(_input: string | Error): string | Error;
-    warning(message: string | Error | undefined): void;
-    warningWithDebugTrace(message: string | Error): string | Error;
+    warning(message: string | Error | undefined, ..._args: unknown[]): void;
+    warningWithDebugTrace(message: string | Error | undefined): void;
 }
+
+// @public
+export const BasicLogger: Logger;
 
 // @beta
 export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger): Promise<{
@@ -90,6 +88,9 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
 // @beta
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
+
+// @alpha
+export const ConsolaLogger: Logger;
 
 // @beta
 export interface DependencyChange {
@@ -176,15 +177,21 @@ export interface JsonWriteOptions {
 
 // @public
 export interface Logger {
-    errorLog: ErrorLoggingFunction;
+    error: ErrorLoggingFunction;
+    // (undocumented)
+    formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
-    log: LoggingFunction;
+    log: (message?: string, ...args: unknown[]) => void;
+    success: LoggingFunction;
     verbose: ErrorLoggingFunction;
     warning: ErrorLoggingFunction;
 }
 
 // @public
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
+
+// @public
+export function logIndent(input: string, logger: Logger, indentNumber?: number): void;
 
 // @beta
 export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo>;
@@ -249,7 +256,7 @@ export interface ProjectInfo {
 }
 
 // @beta
-export function readJsonWithIndent<J = unknown>(filePath: PathLike): Promise<{
+export function readJsonWithIndent<J = unknown>(filePath: string): Promise<{
     json: J;
     indent: Indent;
 }>;

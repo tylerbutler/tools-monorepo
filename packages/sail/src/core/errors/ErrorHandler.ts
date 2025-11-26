@@ -168,7 +168,7 @@ export class ErrorHandler {
 	}
 
 	private logError(error: SailError): ErrorHandlingResult {
-		this.logger.errorLog(error.getFormattedMessage());
+		this.logger.error(error.getFormattedMessage());
 		if (error.stack) {
 			this.logger.verbose(`Stack trace: ${error.stack}`);
 		}
@@ -187,9 +187,9 @@ export class ErrorHandler {
 	}
 
 	private fatalError(error: SailError): ErrorHandlingResult {
-		this.logger.errorLog(`Fatal error: ${error.getFormattedMessage()}`);
+		this.logger.error(`Fatal error: ${error.getFormattedMessage()}`);
 		if (error.stack) {
-			this.logger.errorLog(`Stack trace: ${error.stack}`);
+			this.logger.error(`Stack trace: ${error.stack}`);
 		}
 		return { error, shouldThrow: true };
 	}

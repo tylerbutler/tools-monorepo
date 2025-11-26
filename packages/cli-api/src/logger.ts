@@ -1,6 +1,7 @@
-/** biome-ignore-all lint/suspicious/noConsole: this file is a console logger */
-
+import type { Command } from "@oclif/core";
 import chalk from "picocolors";
+
+export type OclifCommandLogger = Pick<Command, "log" | "warn" | "error">;
 
 /**
  * A function that logs an Error or error message.
@@ -13,7 +14,7 @@ export type ErrorLoggingFunction = (
 ) => void;
 
 /**
- * A function that logs an error message.
+ * A function that logs a message. Message is optional to support blank line logging.
  *
  * @public
  */
@@ -31,69 +32,40 @@ export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
  */
 export interface Logger {
 	/**
-	 * Logs an error message as-is.
+	 * Logs a message as-is. Allows optional message for blank lines.
 	 */
-	log: LoggingFunction;
+	log: (message?: string, ...args: unknown[]) => void;
 
 	/**
-	 * Logs an informational message.
+	 * Logs a success message.
+	 */
+	success: LoggingFunction;
+
+	/**
+	 * Logs an informational message. Message is required.
 	 */
 	info: ErrorLoggingFunction;
 
 	/**
-	 * Logs a warning message.
+	 * Logs a warning message. Message is required.
 	 */
 	warning: ErrorLoggingFunction;
 
 	/**
-	 * Logs an error message.
-	 *
-	 * @remarks
-	 *
-	 * This method is not named 'error' because it conflicts with the method that oclif has on its Command class.
-	 * That method exits the process in addition to logging, so this method exists to differentiate, and provide
-	 * error logging that doesn't exit the process.
+	 * Logs an error message without exiting. Message is required.
 	 */
-	errorLog: ErrorLoggingFunction;
+	error: ErrorLoggingFunction;
 
 	/**
-	 * Logs a verbose message.
+	 * Logs a verbose message. Message is required.
 	 */
 	verbose: ErrorLoggingFunction;
+
+	formatError?: ((message: Error | string) => string) | undefined;
 }
 
-/**
- * A {@link Logger} that logs directly to the console.
- */
-export const defaultLogger: Logger = {
-	/**
-	 * {@inheritDoc Logger.log}
-	 */
-	log,
-
-	/**
-	 * {@inheritDoc Logger.info}
-	 */
-	info,
-
-	/**
-	 * {@inheritDoc Logger.warning}
-	 */
-	warning,
-
-	/**
-	 * {@inheritDoc Logger.errorLog}
-	 */
-	errorLog,
-
-	/**
-	 * {@inheritDoc Logger.verbose}
-	 */
-	verbose,
-};
-
-function logWithTime(
-	msg: string | Error | undefined,
+export function logWithTime(
+	msg: string | Error,
 	logFunc: ErrorLoggingFunction,
 ) {
 	const date = new Date();
@@ -109,25 +81,6 @@ function logWithTime(
 	if (secs.length === 1) {
 		secs = `0${secs}`;
 	}
-	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msg);
-}
-
-function log(msg: string | undefined): void {
-	logWithTime(msg, console.log);
-}
-
-function info(msg: string | Error | undefined) {
-	logWithTime(`INFO: ${msg}`, console.log);
-}
-
-function verbose(msg: string | Error | undefined) {
-	logWithTime(`VERBOSE: ${msg}`, console.log);
-}
-
-function warning(msg: string | Error | undefined) {
-	logWithTime(`${chalk.yellow("WARNING")}: ${msg}`, console.log);
-}
-
-function errorLog(msg: string | Error | undefined) {
-	logWithTime(`${chalk.red("ERROR")}: ${msg}`, console.error);
+	const msgString = typeof msg === "string" ? msg : msg.message;
+	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msgString);
 }
