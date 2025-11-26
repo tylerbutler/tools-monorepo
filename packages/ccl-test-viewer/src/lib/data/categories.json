@@ -762,6 +762,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -778,10 +779,11 @@
 				"name": "complete_lists_workflow_parse",
 				"source_test": "complete_lists_workflow",
 				"validation": "parse",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -795,7 +797,46 @@
 				"name": "complete_lists_workflow_build_hierarchy",
 				"source_test": "complete_lists_workflow",
 				"validation": "build_hierarchy",
-				"variants": []
+				"variants": ["proposed_behavior"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 2,
+					"entries": [
+						{
+							"key": "servers",
+							"value": "\n  server = web1\n  server = web2\n  server = web3"
+						},
+						{ "key": "ports", "value": "\n  port = 80\n  port = 443" }
+					]
+				},
+				"features": [],
+				"functions": ["parse"],
+				"input": "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443",
+				"name": "complete_lists_workflow_reference_parse",
+				"source_test": "complete_lists_workflow_reference",
+				"validation": "parse",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 1,
+					"object": {
+						"ports": { "port": ["443", "80"] },
+						"servers": { "server": ["web1", "web2", "web3"] }
+					}
+				},
+				"features": [],
+				"functions": ["build_hierarchy"],
+				"input": "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443",
+				"name": "complete_lists_workflow_reference_build_hierarchy",
+				"source_test": "complete_lists_workflow_reference",
+				"validation": "build_hierarchy",
+				"variants": ["reference_compliant"]
 			},
 			{
 				"behaviors": [],
@@ -1797,7 +1838,10 @@
 			},
 			{
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": { "behaviors": ["list_coercion_disabled"] },
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 5,
 					"entries": [
@@ -1814,11 +1858,14 @@
 				"name": "list_with_comments_parse",
 				"source_test": "list_with_comments",
 				"validation": "parse",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": { "behaviors": ["list_coercion_disabled"] },
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 1,
 					"object": {
@@ -1832,12 +1879,15 @@
 				"name": "list_with_comments_build_hierarchy",
 				"source_test": "list_with_comments",
 				"validation": "build_hierarchy",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": { "behaviors": ["list_coercion_disabled"] },
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": ["comments"],
 				"functions": ["get_list"],
@@ -1845,7 +1895,68 @@
 				"name": "list_with_comments_get_list",
 				"source_test": "list_with_comments",
 				"validation": "get_list",
-				"variants": []
+				"variants": ["proposed_behavior"]
+			},
+			{
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["proposed_behavior"]
+				},
+				"expected": {
+					"count": 5,
+					"entries": [
+						{ "key": "servers", "value": "web1" },
+						{ "key": "/", "value": "Production servers" },
+						{ "key": "servers", "value": "web2" },
+						{ "key": "servers", "value": "web3" },
+						{ "key": "/", "value": "End of list" }
+					]
+				},
+				"features": ["comments"],
+				"functions": ["parse"],
+				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"name": "list_with_comments_reference_parse",
+				"source_test": "list_with_comments_reference",
+				"validation": "parse",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["proposed_behavior"]
+				},
+				"expected": {
+					"count": 1,
+					"object": {
+						"/": ["End of list", "Production servers"],
+						"servers": ["web1", "web2", "web3"]
+					}
+				},
+				"features": ["comments"],
+				"functions": ["build_hierarchy"],
+				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"name": "list_with_comments_reference_build_hierarchy",
+				"source_test": "list_with_comments_reference",
+				"validation": "build_hierarchy",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"args": ["servers"],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["proposed_behavior"]
+				},
+				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
+				"features": ["comments"],
+				"functions": ["get_list"],
+				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"name": "list_with_comments_reference_get_list",
+				"source_test": "list_with_comments_reference",
+				"validation": "get_list",
+				"variants": ["reference_compliant"]
 			},
 			{
 				"behaviors": [],
@@ -2039,6 +2150,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -2054,10 +2166,11 @@
 				"name": "bare_list_nested_parse",
 				"source_test": "bare_list_nested",
 				"validation": "parse",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "network": { "ports": { "": ["80", "443", "8080"] } } }
@@ -2068,11 +2181,12 @@
 				"name": "bare_list_nested_build_hierarchy",
 				"source_test": "bare_list_nested",
 				"validation": "build_hierarchy",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"args": ["network", "ports"],
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 3, "list": ["80", "443", "8080"] },
 				"features": ["empty_keys"],
 				"functions": ["get_list"],
@@ -2080,10 +2194,59 @@
 				"name": "bare_list_nested_get_list",
 				"source_test": "bare_list_nested",
 				"validation": "get_list",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 1,
+					"entries": [
+						{
+							"key": "network",
+							"value": "\n  ports =\n    = 80\n    = 443\n    = 8080"
+						}
+					]
+				},
+				"features": ["empty_keys"],
+				"functions": ["parse"],
+				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"name": "bare_list_nested_reference_parse",
+				"source_test": "bare_list_nested_reference",
+				"validation": "parse",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 1,
+					"object": { "network": { "ports": { "": ["443", "80", "8080"] } } }
+				},
+				"features": ["empty_keys"],
+				"functions": ["build_hierarchy"],
+				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"name": "bare_list_nested_reference_build_hierarchy",
+				"source_test": "bare_list_nested_reference",
+				"validation": "build_hierarchy",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"args": ["network", "ports"],
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": { "count": 3, "list": ["443", "80", "8080"] },
+				"features": ["empty_keys"],
+				"functions": ["get_list"],
+				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"name": "bare_list_nested_reference_get_list",
+				"source_test": "bare_list_nested_reference",
+				"validation": "get_list",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -2099,10 +2262,11 @@
 				"name": "bare_list_with_comments_parse",
 				"source_test": "bare_list_with_comments",
 				"validation": "parse",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -2118,11 +2282,12 @@
 				"name": "bare_list_with_comments_build_hierarchy",
 				"source_test": "bare_list_with_comments",
 				"validation": "build_hierarchy",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"args": ["allowed_hosts"],
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 3,
 					"list": ["localhost", "127.0.0.1", "example.com"]
@@ -2133,10 +2298,67 @@
 				"name": "bare_list_with_comments_get_list",
 				"source_test": "bare_list_with_comments",
 				"validation": "get_list",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 1,
+					"entries": [
+						{
+							"key": "allowed_hosts",
+							"value": "\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com"
+						}
+					]
+				},
+				"features": ["empty_keys", "comments"],
+				"functions": ["parse"],
+				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"name": "bare_list_with_comments_reference_parse",
+				"source_test": "bare_list_with_comments_reference",
+				"validation": "parse",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 1,
+					"object": {
+						"allowed_hosts": {
+							"": ["127.0.0.1", "example.com", "localhost"],
+							"/": "Production hosts"
+						}
+					}
+				},
+				"features": ["empty_keys", "comments"],
+				"functions": ["build_hierarchy"],
+				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"name": "bare_list_with_comments_reference_build_hierarchy",
+				"source_test": "bare_list_with_comments_reference",
+				"validation": "build_hierarchy",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"args": ["allowed_hosts"],
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 3,
+					"list": ["127.0.0.1", "example.com", "localhost"]
+				},
+				"features": ["empty_keys", "comments"],
+				"functions": ["get_list"],
+				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"name": "bare_list_with_comments_reference_get_list",
+				"source_test": "bare_list_with_comments_reference",
+				"validation": "get_list",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -2152,10 +2374,11 @@
 				"name": "bare_list_deeply_nested_parse",
 				"source_test": "bare_list_deeply_nested",
 				"validation": "parse",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -2172,11 +2395,12 @@
 				"name": "bare_list_deeply_nested_build_hierarchy",
 				"source_test": "bare_list_deeply_nested",
 				"validation": "build_hierarchy",
-				"variants": []
+				"variants": ["proposed_behavior"]
 			},
 			{
 				"args": ["config", "environments", "production", "servers"],
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 3, "list": ["web1", "web2", "api1"] },
 				"features": ["empty_keys"],
 				"functions": ["get_list"],
@@ -2184,7 +2408,61 @@
 				"name": "bare_list_deeply_nested_get_list",
 				"source_test": "bare_list_deeply_nested",
 				"validation": "get_list",
-				"variants": []
+				"variants": ["proposed_behavior"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 1,
+					"entries": [
+						{
+							"key": "config",
+							"value": "\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1"
+						}
+					]
+				},
+				"features": ["empty_keys"],
+				"functions": ["parse"],
+				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"name": "bare_list_deeply_nested_reference_parse",
+				"source_test": "bare_list_deeply_nested_reference",
+				"validation": "parse",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": {
+					"count": 1,
+					"object": {
+						"config": {
+							"environments": {
+								"production": { "servers": { "": ["api1", "web1", "web2"] } }
+							}
+						}
+					}
+				},
+				"features": ["empty_keys"],
+				"functions": ["build_hierarchy"],
+				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"name": "bare_list_deeply_nested_reference_build_hierarchy",
+				"source_test": "bare_list_deeply_nested_reference",
+				"validation": "build_hierarchy",
+				"variants": ["reference_compliant"]
+			},
+			{
+				"args": ["config", "environments", "production", "servers"],
+				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
+				"expected": { "count": 3, "list": ["api1", "web1", "web2"] },
+				"features": ["empty_keys"],
+				"functions": ["get_list"],
+				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"name": "bare_list_deeply_nested_reference_get_list",
+				"source_test": "bare_list_deeply_nested_reference",
+				"validation": "get_list",
+				"variants": ["reference_compliant"]
 			},
 			{
 				"behaviors": [],
@@ -2238,7 +2516,8 @@
 				"variants": []
 			},
 			{
-				"behaviors": [],
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "config", "value": "\n  setting = value" }]
@@ -2252,7 +2531,8 @@
 				"variants": []
 			},
 			{
-				"behaviors": [],
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": {
 					"count": 1,
 					"object": { "config": { "setting": "value" } }
@@ -2267,7 +2547,8 @@
 			},
 			{
 				"args": ["config", "setting"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -3532,8 +3813,11 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3552,11 +3836,14 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 1,
-					"object": { "numbers": ["1", "42", "-17", "0"] }
+					"object": { "numbers": ["-17", "0", "1", "42"] }
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -3568,8 +3855,11 @@
 			},
 			{
 				"args": ["numbers"],
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -3580,8 +3870,11 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3600,11 +3893,14 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 1,
-					"object": { "flags": ["true", "false", "yes", "no"] }
+					"object": { "flags": ["false", "no", "true", "yes"] }
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -3616,8 +3912,11 @@
 			},
 			{
 				"args": ["flags"],
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -3628,8 +3927,11 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3648,9 +3950,12 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
-				"expected": { "count": 1, "object": { "items": ["spaced", "normal"] } },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
+				"expected": { "count": 1, "object": { "items": ["normal", "spaced"] } },
 				"features": ["whitespace"],
 				"functions": ["build_hierarchy"],
 				"input": "items =   spaced   \nitems = normal\nitems =\nitems =   ",
@@ -3661,8 +3966,11 @@
 			},
 			{
 				"args": ["items"],
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": ["whitespace"],
 				"functions": ["get_list"],
@@ -3673,8 +3981,11 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -3693,14 +4004,17 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 1,
 					"object": {
 						"config": {
 							"environments": {
-								"production": { "servers": ["web1", "web2", "api1"] }
+								"production": { "servers": ["api1", "web1", "web2"] }
 							}
 						}
 					}
@@ -3715,8 +4029,11 @@
 			},
 			{
 				"args": ["config", "environments", "production", "servers"],
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -3727,8 +4044,11 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3747,11 +4067,14 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 1,
-					"object": { "names": ["张三", "José", "François", "العربية"] }
+					"object": { "names": ["François", "José", "العربية", "张三"] }
 				},
 				"features": ["unicode"],
 				"functions": ["build_hierarchy"],
@@ -3763,8 +4086,11 @@
 			},
 			{
 				"args": ["names"],
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": ["unicode"],
 				"functions": ["get_list"],
@@ -3775,8 +4101,11 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 3,
 					"entries": [
@@ -3794,11 +4123,14 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 1,
-					"object": { "symbols": ["@#$%", "!^&*()", "[]{}|"] }
+					"object": { "symbols": ["!^&*()", "@#$%", "[]{}|"] }
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -3810,8 +4142,11 @@
 			},
 			{
 				"args": ["symbols"],
-				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
+				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -3833,7 +4168,7 @@
 						"config": {
 							"cache": "redis",
 							"database": { "hosts": ["backup", "primary"], "port": "5432" },
-							"servers": ["web2", "web1"]
+							"servers": ["web1", "web2"]
 						},
 						"features": ["api", "auth", "ui"]
 					}

@@ -66,10 +66,10 @@ export type CCLFeature =
 export type CCLBehavior =
 	| "tabs_preserve"
 	| "list_coercion_enabled"
+	| "list_coercion_disabled"
 	| "crlf_preserve_literal"
 	| "crlf_normalize_to_lf"
 	| "strict_spacing"
-	| "list_coercion_disabled"
 	| "boolean_strict"
 	| "boolean_lenient";
 
@@ -102,10 +102,10 @@ export const AVAILABLE_FEATURES: CCLFeature[] = [
 export const AVAILABLE_BEHAVIORS: CCLBehavior[] = [
 	"tabs_preserve",
 	"list_coercion_enabled",
+	"list_coercion_disabled",
 	"crlf_preserve_literal",
 	"crlf_normalize_to_lf",
 	"strict_spacing",
-	"list_coercion_disabled",
 	"boolean_strict",
 	"boolean_lenient",
 ];
