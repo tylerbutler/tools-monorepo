@@ -32,14 +32,29 @@ export interface DillOptions {
 	 * @defaultValue `false`
 	 */
 	noFile?: boolean;
+
+	/**
+	 * Custom headers to include in the fetch request.
+	 * Specify as an object with header name-value pairs.
+	 */
+	headers?: Record<string, string>;
+
+	/**
+	 * Number of leading path components to strip from file names during extraction.
+	 * Only applies when extract is true.
+	 * @defaultValue `0`
+	 */
+	strip?: number;
 }
 
 /**
- * Resolved options type. All the options become required when resolved except for filename.
+ * Resolved options type. All the options become required when resolved except for filename and headers.
+ * - `filename` remains optional because it may be determined from the response or remain unknown.
+ * - `headers` remains optional because absence means "no custom headers" - there's no sensible default value.
  */
 export type DillOptionsResolved = SetOptional<
 	Required<DillOptions>,
-	"filename"
+	"filename" | "headers"
 >;
 
 export interface DownloadResponse {
