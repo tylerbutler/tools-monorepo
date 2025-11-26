@@ -18,6 +18,18 @@
 				"types": "./esm/index.d.ts",
 				"default": "./esm/index.js"
 			}
+		},
+		"./loggers/basic": {
+			"import": {
+				"types": "./esm/loggers/basic.d.ts",
+				"default": "./esm/loggers/basic.js"
+			}
+		},
+		"./loggers/consola": {
+			"import": {
+				"types": "./esm/loggers/consola.d.ts",
+				"default": "./esm/loggers/consola.js"
+			}
 		}
 	},
 	"types": "./esm/index.d.ts",

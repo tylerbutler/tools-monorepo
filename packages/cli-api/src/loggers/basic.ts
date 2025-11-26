@@ -41,6 +41,8 @@ function error(msg: string | Error | undefined) {
 
 /**
  * A {@link Logger} that logs directly to the console.
+ *
+ * @public
  */
 export const BasicLogger: Logger = {
 	/**

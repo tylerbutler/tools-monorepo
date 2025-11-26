@@ -50,6 +50,9 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     warningWithDebugTrace(message: string | Error | undefined): void;
 }
 
+// @public
+export const BasicLogger: Logger;
+
 // @beta
 export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger): Promise<{
     commit: string;
