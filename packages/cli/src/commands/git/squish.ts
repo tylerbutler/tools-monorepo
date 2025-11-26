@@ -1,10 +1,11 @@
-import process from "node:process";
 import { Args, Flags } from "@oclif/core";
-import { CommandWithConfig, GitCommand } from "@tylerbu/cli-api";
+import { BaseCommand, CommandWithConfig } from "@tylerbu/cli-api";
+import { useGit } from "@tylerbu/cli-api/capabilities";
 import chalk from "picocolors";
 import stripAnsi from "strip-ansi";
 
-export default class SquishCommand extends GitCommand<typeof SquishCommand> {
+export default class SquishCommand extends BaseCommand<typeof SquishCommand> {
+	private gitCapability = useGit(this, { required: true });
 	public static override readonly description =
 		"Squash-merge a branch with another branch, and reset the source branch to the squash-merged HEAD. This process results in the branch containing a single commit on top of the target branch.";
 
@@ -31,13 +32,9 @@ export default class SquishCommand extends GitCommand<typeof SquishCommand> {
 	protected override redirectLogToTrace = true;
 
 	public override async run(): Promise<void> {
-		if (this.git === undefined) {
-			this.error(`Not a git repo: ${process.cwd()}`);
-		}
+		const { git, getCurrentBranch } = await this.gitCapability.get();
 
-		const sourceBranch =
-			this.args.source ??
-			(await this.git.raw(["branch", "--show-current"])).trim();
+		const sourceBranch = this.args.source ?? (await getCurrentBranch());
 		const tempBranch = `squish/${sourceBranch}`;
 		const targetBranch = this.args.target;
 
@@ -57,14 +54,14 @@ export default class SquishCommand extends GitCommand<typeof SquishCommand> {
 			)}`,
 		);
 		if (!this.flags["dry-run"]) {
-			await this.git.checkoutBranch(tempBranch, targetBranch);
+			await git.checkoutBranch(tempBranch, targetBranch);
 		}
 
 		this.info(`Squash-merging source branch ${c(sourceBranch)}`);
 		if (!this.flags["dry-run"]) {
-			const result = await this.git.merge([sourceBranch, "--squash"]);
+			const result = await git.merge([sourceBranch, "--squash"]);
 			if (result.failed) {
-				await this.git.deleteLocalBranch(tempBranch, /* force */ true);
+				await git.deleteLocalBranch(tempBranch, /* force */ true);
 				this.errorLog(
 					`Merge failed, so deleted temp branch to clean up: ${c(tempBranch)}`,
 				);
@@ -75,17 +72,17 @@ export default class SquishCommand extends GitCommand<typeof SquishCommand> {
 		const msg = `Squished branch: ${c(sourceBranch)}`;
 		this.info(msg);
 		if (!this.flags["dry-run"]) {
-			await this.git.commit(stripAnsi(msg));
+			await git.commit(stripAnsi(msg));
 		}
 
 		this.info(`Resetting source branch ${c(sourceBranch)} to ${c(tempBranch)}`);
 		if (!this.flags["dry-run"]) {
-			await this.git.checkout(sourceBranch).reset(["--hard", tempBranch]);
+			await git.checkout(sourceBranch).reset(["--hard", tempBranch]);
 		}
 
 		this.info(`Deleting temp branch: ${c(tempBranch)}`);
 		if (!this.flags["dry-run"]) {
-			await this.git.deleteLocalBranch(tempBranch, /* force */ true);
+			await git.deleteLocalBranch(tempBranch, /* force */ true);
 		}
 	}
 }
