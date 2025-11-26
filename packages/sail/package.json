@@ -125,7 +125,7 @@
 		"multimatch": "^5.0.0",
 		"picocolors": "^1.1.1",
 		"picomatch": "^2.3.1",
-		"picospinner": "^2.1.0",
+		"picospinner": "^3.0.0",
 		"rimraf": "^6.1.0",
 		"semver": "^7.7.3",
 		"simple-git": "^3.30.0",
