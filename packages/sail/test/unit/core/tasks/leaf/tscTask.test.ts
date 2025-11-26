@@ -410,4 +410,13 @@ describe("TscTask - Comprehensive Tests", () => {
 			expect(task.context.repoRoot).toBe("/test/repo");
 		});
 	});
+
+	// Note: TscTask does not have donefile roundtrip tests because:
+	// 1. TscTask extends LeafTask (not LeafWithDoneFileTask), so it doesn't use donefiles
+	// 2. TscTask uses dependency hash caching via getDependencyHash(), getCacheInputFiles(), getCacheOutputFiles()
+	// 3. TscDependentTask extends LeafWithDoneFileTask and provides donefile functionality
+	// 4. TscDependentTask donefile behavior is tested via its concrete subclasses:
+	//    - ApiExtractorTask (test/unit/core/tasks/leaf/apiExtractorTask.test.ts)
+	//    - GenerateEntrypointsTask (test/unit/core/tasks/leaf/generateEntrypointsTask.test.ts)
+	//    - EsLintTask (test/unit/core/tasks/leaf/lintTasks.test.ts)
 });

@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/sail",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Build orchestration CLI tool",
 	"keywords": [
 		"oclif",
@@ -45,7 +45,7 @@
 		"check": "pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
-		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"clean:build": "rimraf esm _temp *.tsbuildinfo *.done.build.log .coverage",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
@@ -139,7 +139,7 @@
 		"yaml": "^2.8.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
+		"@biomejs/biome": "2.3.7",
 		"@microsoft/api-extractor": "^7.54.0",
 		"@oclif/plugin-command-snapshot": "^5.3.8",
 		"@oclif/test": "^4.1.14",
