@@ -59,7 +59,7 @@ key = value\r\n
 {"key": "value\r"}
 ```
 
-**Recommendation:** Most implementations should use `crlf_normalize_to_lf` for predictable cross-platform behavior.
+**Recommendation:** Be consistent with your line ending handling. Both options have valid use cases: `crlf_preserve_literal` maintains exact fidelity (important for round-tripping or when carriage returns are meaningful), while `crlf_normalize_to_lf` simplifies cross-platform handling. When in doubt, preserving is the safer default. This is a good candidate for exposing as a configuration option to library consumers.
 
 ---
 
@@ -71,27 +71,31 @@ Controls which string values are accepted as booleans by typed access functions 
 
 #### `boolean_strict`
 
-Only accepts `true` and `false` (case-sensitive) as boolean values.
+Only accepts `true` and `false` as boolean values, but comparison is case-insensitive (so `True`, `FALSE`, `tRuE` are all valid).
 
 ```ccl
 enabled = true
-disabled = false
+disabled = False
+valid = TRUE
 active = yes
 ```
 
 ```javascript
 getBool(obj, "enabled")   // → true
 getBool(obj, "disabled")  // → false
+getBool(obj, "valid")     // → true
 getBool(obj, "active")    // → ERROR: "yes" is not a valid boolean
 ```
 
 #### `boolean_lenient`
 
-Accepts additional truthy/falsy values beyond `true`/`false`.
+Accepts additional truthy/falsy values beyond `true`/`false`. All comparisons are case-insensitive.
 
 | Truthy Values | Falsy Values |
 |---------------|--------------|
 | `true`, `yes`, `on`, `1` | `false`, `no`, `off`, `0` |
+
+Any case variation is accepted (e.g., `YES`, `No`, `TRUE`, `oFf`).
 
 ```ccl
 enabled = yes
@@ -121,7 +125,7 @@ Controls how tab characters are processed during parsing.
 
 #### `tabs_preserve`
 
-Tab characters are kept as-is in values and used literally for indentation calculation.
+Tab characters are kept as-is in values and contribute their full visual width to indentation calculation. This means a tab might count as multiple spaces worth of indentation depending on tab stop settings.
 
 ```ccl
 key = \tindented value
@@ -129,19 +133,21 @@ nested =
 \tchild = data
 ```
 
-**Result:** Tab characters remain in the parsed output.
+**Result:** Tab characters remain in the parsed output and may affect indentation level calculations differently than single spaces.
 
 #### `tabs_to_spaces`
 
-Tab characters are converted to spaces (typically 4 spaces per tab) before parsing.
+Tab characters are treated as equivalent to a single space for indentation purposes. The `\t` and ` ` characters have the same width when calculating indentation levels.
 
 ```ccl
-key = \tindented value
+nested =
+\tchild = data
+ other = value
 ```
 
-**Result:** `key` has value `    indented value` (tab converted to spaces).
+**Result:** Both `child` and `other` are at the same indentation level (one character deep).
 
-**Recommendation:** `tabs_to_spaces` provides more predictable behavior across editors with different tab width settings.
+**Recommendation:** `tabs_to_spaces` provides consistent indentation behavior regardless of editor tab width settings.
 
 ---
 
@@ -285,9 +291,9 @@ const compatibleTests = allTests.filter(test => {
 
 | Behavior Group | Option A | Option B | Recommendation |
 |----------------|----------|----------|----------------|
-| Line Endings | `crlf_preserve_literal` | `crlf_normalize_to_lf` | Normalize for cross-platform |
-| Boolean Parsing | `boolean_strict` | `boolean_lenient` | Depends on use case |
-| Tab Handling | `tabs_preserve` | `tabs_to_spaces` | Convert for consistency |
+| Line Endings | `crlf_preserve_literal` | `crlf_normalize_to_lf` | Preserve when in doubt; consider exposing as option |
+| Boolean Parsing | `boolean_strict` | `boolean_lenient` | Depends on use case (both are case-insensitive) |
+| Tab Handling | `tabs_preserve` | `tabs_to_spaces` | Spaces for consistent indentation |
 | Whitespace | `strict_spacing` | `loose_spacing` | Loose for human-edited files |
 | List Access | `list_coercion_enabled` | `list_coercion_disabled` | Disabled for type safety |
 | Array Ordering | `array_order_insertion` | `array_order_lexicographic` | Insertion preserves intent |
