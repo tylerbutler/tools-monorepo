@@ -27,7 +27,7 @@ export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
  */
 export abstract class BaseCommand<T extends typeof Command>
 	extends Command
-	implements Omit<Logger, "error">
+	implements Logger
 {
 	/**
 	 * The flags defined on the base class.
@@ -129,7 +129,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs an informational message.
 	 */
-	public info(message: string | Error) {
+	public info(message: string | Error | undefined) {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
 			this.logger.info(message);
 		}
@@ -139,35 +139,16 @@ export abstract class BaseCommand<T extends typeof Command>
 	}
 
 	/**
-	 * Logs an error without exiting. Implements {@link Logger.error}.
+	 * Logs an error without exiting. Implements {@link Logger.errorLog}.
 	 *
 	 * @remarks
-	 * This method intentionally shadows OCLIF Command.error() to provide non-exiting error logging.
-	 * OCLIF's error() method (which exits the process) is not available.
-	 * Use {@link BaseCommand.(exit:1)} if you want to log and exit the process.
-	 *
-	 * TypeScript complains about incompatible signatures, but this is intentional:
-	 * - OCLIF's error(): takes options, returns never (exits process)
-	 * - Our error(): simple signature, returns void (doesn't exit)
-	 * At runtime, our method completely replaces the parent's.
+	 * This method provides non-exiting error logging as part of the Logger interface.
+	 * Use the `exit` method if you want to log and exit the process.
 	 */
-	// @ts-expect-error - Intentionally incompatible with Command.error() signature
-	public error(message: string | Error): void {
+	public errorLog(message: string | Error | undefined): void {
 		if (!this.suppressLogging) {
-			this.logger.error(message);
+			this.logger.errorLog(message);
 		}
-	}
-
-	/**
-	 * @deprecated OCLIF's error() method is not available. Use error() for logging or exit() to exit.
-	 * @internal
-	 */
-	// @ts-expect-error - Make OCLIF's error() signature uncallable
-	// biome-ignore lint/suspicious/noDuplicateClassMembers: Intentionally shadowing OCLIF's error() method
-	public override error(_input: never, _options?: never): never {
-		throw new Error(
-			"Do not use the OCLIF error() method. Use this.error(msg) to log without exiting, or this.exit(msg) to log and exit.",
-		);
 	}
 
 	/**
@@ -195,7 +176,7 @@ export abstract class BaseCommand<T extends typeof Command>
 		if (messageOrCode) {
 			// Log the error if logging is enabled
 			if (!this.suppressLogging) {
-				this.logger.error(messageOrCode);
+				this.logger.errorLog(messageOrCode);
 			}
 			// Use OCLIF's error method to properly exit with message (captured by test framework)
 			// We call the parent's error method directly to bypass our override
@@ -209,7 +190,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs a warning.
 	 */
-	public warning(message: string | Error): void {
+	public warning(message: string | Error | undefined): void {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
 			this.logger.warning(message);
 		}
@@ -221,7 +202,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs a warning with a stack trace in debug mode.
 	 */
-	public warningWithDebugTrace(message: string | Error): void {
+	public warningWithDebugTrace(message: string | Error | undefined): void {
 		if (this.suppressLogging && !this.redirectLogToTrace) {
 			return;
 		}
@@ -243,7 +224,7 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs a verbose log statement.
 	 */
-	public verbose(message: string | Error): void {
+	public verbose(message: string | Error | undefined): void {
 		if (this.flags.verbose || this.redirectLogToTrace) {
 			if (this.redirectLogToTrace) {
 				this.traceVerbose?.(message);

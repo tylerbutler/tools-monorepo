@@ -65,10 +65,9 @@ export default class SquishCommand extends GitCommand<typeof SquishCommand> {
 			const result = await this.git.merge([sourceBranch, "--squash"]);
 			if (result.failed) {
 				await this.git.deleteLocalBranch(tempBranch, /* force */ true);
-				this.error(
+				this.exit(
 					`Merge failed, so deleted temp branch to clean up: ${c(tempBranch)}`,
 				);
-				this.exit("Merge failed.");
 			}
 		}
 

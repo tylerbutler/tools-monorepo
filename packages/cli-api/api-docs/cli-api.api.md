@@ -13,8 +13,6 @@ import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
 import type { PackageJson as PackageJson_2 } from 'type-fest';
-import type { PathLike } from 'node:fs';
-import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
 import { SimpleGitOptions } from 'simple-git';
@@ -23,19 +21,19 @@ import { SimpleGitOptions } from 'simple-git';
 export type Args<T extends typeof Command> = Interfaces.InferredArgs<T["args"]>;
 
 // @public
-export abstract class BaseCommand<T extends typeof Command> extends Command implements Omit<Logger, "error"> {
+export abstract class BaseCommand<T extends typeof Command> extends Command implements Logger {
     // (undocumented)
     protected args: Args<T>;
     static baseFlags: {
         verbose: Interfaces.BooleanFlag<boolean>;
         quiet: Interfaces.BooleanFlag<boolean>;
     };
-    error(message: string | Error): void;
+    errorLog(message: string | Error | undefined): void;
     exit(code?: number): never;
     exit(message: string | Error, code?: number): never;
     // (undocumented)
     protected flags: Flags<T>;
-    info(message: string | Error): void;
+    info(message: string | Error | undefined): void;
     // (undocumented)
     init(): Promise<void>;
     log(message?: string, ...args: unknown[]): void;
@@ -44,11 +42,11 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
     success(message?: string): void;
     // (undocumented)
     protected trace: Debugger | undefined;
-    verbose(message: string | Error): void;
+    verbose(message: string | Error | undefined): void;
     // @deprecated
     warn(_input: string | Error): string | Error;
-    warning(message: string | Error): void;
-    warningWithDebugTrace(message: string | Error): void;
+    warning(message: string | Error | undefined): void;
+    warningWithDebugTrace(message: string | Error | undefined): void;
 }
 
 // @beta
@@ -123,7 +121,7 @@ export function detectFromLockfilePath(lockfilePath: string): PackageManager | n
 export function detectPackageManager(directory?: string): Promise<PackageManager | undefined>;
 
 // @public
-export type ErrorLoggingFunction = (msg: string | Error, ...args: unknown[]) => void;
+export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
 
 // @beta (undocumented)
 export function findGitRoot(cwd?: string): Promise<string>;
@@ -175,7 +173,7 @@ export interface JsonWriteOptions {
 
 // @public
 export interface Logger {
-    error: ErrorLoggingFunction;
+    errorLog: ErrorLoggingFunction;
     // (undocumented)
     formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;

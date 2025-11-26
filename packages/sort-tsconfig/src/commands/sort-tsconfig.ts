@@ -123,15 +123,13 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 				const sorted = sorter.isSorted(tsconfig);
 				if (!sorted) {
 					unsortedFiles.push(tsconfig);
-					this.error(`Not sorted! ${tsconfig}`);
+					this.errorLog(`Not sorted! ${tsconfig}`);
 				}
 			}
 		}
 
 		if (unsortedFiles.length > 0) {
-			this.exit(`Found ${unsortedFiles.length} unsorted files.`, {
-				exit: 1,
-			});
+			this.exit(`Found ${unsortedFiles.length} unsorted files.`, 1);
 		}
 		this.log("All files sorted.");
 	}

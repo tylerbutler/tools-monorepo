@@ -9,7 +9,7 @@ export type OclifCommandLogger = Pick<Command, "log" | "warn" | "error">;
  * @public
  */
 export type ErrorLoggingFunction = (
-	msg: string | Error,
+	msg: string | Error | undefined,
 	...args: unknown[]
 ) => void;
 
@@ -53,8 +53,12 @@ export interface Logger {
 
 	/**
 	 * Logs an error message without exiting. Message is required.
+	 *
+	 * @remarks
+	 * This method is named `errorLog` instead of `error` to avoid conflicts with OCLIF's Command.error()
+	 * method which exits the process. This method only logs and does not exit.
 	 */
-	error: ErrorLoggingFunction;
+	errorLog: ErrorLoggingFunction;
 
 	/**
 	 * Logs a verbose message. Message is required.

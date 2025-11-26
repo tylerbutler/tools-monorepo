@@ -1,7 +1,10 @@
 import chalk from "picocolors";
 import type { Logger } from "../logger.js";
 
-function formatError(message: Error | string): string {
+function formatError(message: Error | string | undefined): string {
+	if (message === undefined) {
+		return "";
+	}
 	const formatted =
 		typeof message === "string"
 			? message
@@ -19,19 +22,19 @@ function success(msg: string) {
 	log(`${chalk.green("SUCCESS")}: ${msg}`);
 }
 
-function info(msg: string | Error) {
+function info(msg: string | Error | undefined) {
 	log(`INFO: ${formatError(msg)}`);
 }
 
-function verbose(msg: string | Error) {
+function verbose(msg: string | Error | undefined) {
 	log(`VERBOSE: ${formatError(msg)}`);
 }
 
-function warning(msg: string | Error) {
+function warning(msg: string | Error | undefined) {
 	log(`${chalk.yellow("WARNING")}: ${formatError(msg)}`);
 }
 
-function error(msg: string | Error) {
+function errorLog(msg: string | Error | undefined) {
 	// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
 	console.error(`${chalk.red("ERROR")}: ${formatError(msg)}`);
 }
@@ -56,9 +59,9 @@ export const BasicLogger: Logger = {
 	warning,
 
 	/**
-	 * {@inheritDoc Logger.error}
+	 * {@inheritDoc Logger.errorLog}
 	 */
-	error,
+	errorLog,
 
 	/**
 	 * {@inheritDoc Logger.verbose}
