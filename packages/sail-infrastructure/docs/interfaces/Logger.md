@@ -17,21 +17,20 @@ levels. Methods other than `log` may modify the error message in some way (e.g. 
 
 ## Properties
 
-### errorLog
+### error
 
 ```ts
-errorLog: ErrorLoggingFunction;
+error: ErrorLoggingFunction;
 ```
 
-Defined in: [packages/sail-infrastructure/src/logging.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L56)
+Defined in: [packages/sail-infrastructure/src/logging.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L55)
 
-Logs an error message.
+Logs an error message without exiting.
 
 #### Remarks
 
-This method is not named 'error' because it conflicts with the method that oclif has on its Command class.
-That method exits the process in addition to logging, so this method exists to differentiate, and provide
-error logging that doesn't exit the process.
+This method logs errors to stderr but does not exit the process. For commands that need to exit
+on error, use OCLIF's built-in error() method instead.
 
 ***
 
@@ -41,7 +40,7 @@ error logging that doesn't exit the process.
 optional formatError: (message) => string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/logging.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L66)
+Defined in: [packages/sail-infrastructure/src/logging.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L65)
 
 Optional function to format error messages.
 
@@ -99,7 +98,7 @@ Logs a success message.
 verbose: ErrorLoggingFunction;
 ```
 
-Defined in: [packages/sail-infrastructure/src/logging.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L61)
+Defined in: [packages/sail-infrastructure/src/logging.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L60)
 
 Logs a verbose message.
 

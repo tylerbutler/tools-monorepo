@@ -25,7 +25,7 @@ export abstract class BaseRepopoCommand<
 	implements CommandWithContext<RepopoCommandContext>, RequiresGit
 {
 	protected override defaultConfig = DefaultPolicyConfig;
-	protected override logger = ConsolaLogger;
+	protected override _logger = ConsolaLogger;
 
 	public static override readonly flags = {
 		...CommandWithConfig.flags,

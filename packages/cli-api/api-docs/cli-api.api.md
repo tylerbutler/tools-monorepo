@@ -21,31 +21,32 @@ import { SimpleGitOptions } from 'simple-git';
 export type Args<T extends typeof Command> = Interfaces.InferredArgs<T["args"]>;
 
 // @public
-export abstract class BaseCommand<T extends typeof Command> extends Command implements Logger {
+export abstract class BaseCommand<T extends typeof Command> extends Command {
     // (undocumented)
     protected args: Args<T>;
     static baseFlags: {
         verbose: Interfaces.BooleanFlag<boolean>;
         quiet: Interfaces.BooleanFlag<boolean>;
     };
-    errorLog(message: string | Error | undefined): void;
     exit(code?: number): never;
     exit(message: string | Error, code?: number): never;
     // (undocumented)
     protected flags: Flags<T>;
-    info(message: string | Error | undefined): void;
+    info(message: string | Error | undefined, ..._args: unknown[]): void;
     // (undocumented)
     init(): Promise<void>;
-    log(message?: string, ...args: unknown[]): void;
-    protected logger: Logger;
+    log(message?: string, ..._args: unknown[]): void;
+    logError(message: string | Error | undefined, ..._args: unknown[]): void;
+    get logger(): Logger;
+    protected _logger: Logger;
     protected redirectLogToTrace: boolean;
-    success(message?: string): void;
+    success(message?: string, ..._args: unknown[]): void;
     // (undocumented)
     protected trace: Debugger | undefined;
-    verbose(message: string | Error | undefined): void;
+    verbose(message: string | Error | undefined, ..._args: unknown[]): void;
     // @deprecated
     warn(_input: string | Error): string | Error;
-    warning(message: string | Error | undefined): void;
+    warning(message: string | Error | undefined, ..._args: unknown[]): void;
     warningWithDebugTrace(message: string | Error | undefined): void;
 }
 
@@ -173,7 +174,7 @@ export interface JsonWriteOptions {
 
 // @public
 export interface Logger {
-    errorLog: ErrorLoggingFunction;
+    error: ErrorLoggingFunction;
     // (undocumented)
     formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
@@ -184,7 +185,7 @@ export interface Logger {
 }
 
 // @public
-export type LoggingFunction = (message: string, ...args: unknown[]) => void;
+export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
 // @public
 export function logIndent(input: string, logger: Logger, indentNumber?: number): void;

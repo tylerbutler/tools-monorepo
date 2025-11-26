@@ -18,8 +18,8 @@ function log(msg?: string): void {
 	console.log(msg ?? "");
 }
 
-function success(msg: string) {
-	log(`${chalk.green("SUCCESS")}: ${msg}`);
+function success(msg?: string) {
+	log(`${chalk.green("SUCCESS")}: ${msg ?? ""}`);
 }
 
 function info(msg: string | Error | undefined) {
@@ -34,7 +34,7 @@ function warning(msg: string | Error | undefined) {
 	log(`${chalk.yellow("WARNING")}: ${formatError(msg)}`);
 }
 
-function errorLog(msg: string | Error | undefined) {
+function error(msg: string | Error | undefined) {
 	// biome-ignore lint/suspicious/noConsole: logging is the purpose of this function
 	console.error(`${chalk.red("ERROR")}: ${formatError(msg)}`);
 }
@@ -59,9 +59,9 @@ export const BasicLogger: Logger = {
 	warning,
 
 	/**
-	 * {@inheritDoc Logger.errorLog}
+	 * {@inheritDoc Logger.error}
 	 */
-	errorLog,
+	error,
 
 	/**
 	 * {@inheritDoc Logger.verbose}

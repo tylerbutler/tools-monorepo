@@ -146,7 +146,7 @@ export default class MergeTrainPreviewCommand extends GitCommand<
 		const commitMergeability = await checkConflicts(
 			this.git,
 			unmergedCommitList,
-			this,
+			this.logger,
 		);
 
 		for (const { commit, mergeability } of commitMergeability) {

@@ -23,12 +23,14 @@ export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
  * A base class for oclif commands that includes console and debug logging capabilities that are controlled by flags
  * and properties that can be overridden by subclasses.
  *
+ * @remarks
+ * This class provides a pluggable logger architecture. Subclasses can override the `_logger` property
+ * to use a different logger implementation. The `logger` getter returns a Logger-compatible object
+ * that can be passed to utility functions expecting a Logger.
+ *
  * @public
  */
-export abstract class BaseCommand<T extends typeof Command>
-	extends Command
-	implements Logger
-{
+export abstract class BaseCommand<T extends typeof Command> extends Command {
 	/**
 	 * The flags defined on the base class.
 	 */
@@ -59,10 +61,36 @@ export abstract class BaseCommand<T extends typeof Command>
 	private suppressLogging = false;
 
 	/**
-	 * A Logger instance that the command will use for logging. The class methods like log and warning are redirected to
-	 * the functions in this logger.
+	 * The internal Logger instance that the command will use for logging.
+	 * Override this in subclasses to use a different logger implementation.
 	 */
-	protected logger: Logger = BasicLogger;
+	protected _logger: Logger = BasicLogger;
+
+	/**
+	 * Returns a Logger-compatible object that can be passed to utility functions expecting a Logger.
+	 *
+	 * @remarks
+	 * This getter provides a clean separation between:
+	 * - Command methods (log, info, warning, etc.) which respect flags like --quiet
+	 * - The Logger interface which utility functions can use directly
+	 *
+	 * The returned logger respects the command's suppressLogging flag.
+	 */
+	public get logger(): Logger {
+		return {
+			log: (message?: string, ...args: unknown[]) => this.log(message, ...args),
+			success: (message?: string, ...args: unknown[]) =>
+				this.success(message ?? "", ...args),
+			info: (message: string | Error | undefined, ...args: unknown[]) =>
+				this.info(message, ...args),
+			warning: (message: string | Error | undefined, ...args: unknown[]) =>
+				this.warning(message, ...args),
+			error: (message: string | Error | undefined, ...args: unknown[]) =>
+				this.logError(message, ...args),
+			verbose: (message: string | Error | undefined, ...args: unknown[]) =>
+				this.verbose(message, ...args),
+		};
+	}
 
 	protected trace: Debugger | undefined;
 	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: used for future logging enhancement
@@ -110,16 +138,16 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs a message to the console.
 	 */
-	public override log(message?: string, ...args: unknown[]): void {
-		this.logger.log(message ?? "", ...args);
+	public override log(message?: string, ..._args: unknown[]): void {
+		this._logger.log(message ?? "");
 	}
 
 	/**
 	 * Logs a success message.
 	 */
-	public success(message?: string) {
+	public success(message?: string, ..._args: unknown[]) {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
-			this.logger.success(message ?? "");
+			this._logger.success(message ?? "");
 		}
 		if (this.redirectLogToTrace) {
 			this.traceInfo?.(message);
@@ -129,9 +157,9 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs an informational message.
 	 */
-	public info(message: string | Error | undefined) {
+	public info(message: string | Error | undefined, ..._args: unknown[]) {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
-			this.logger.info(message);
+			this._logger.info(message);
 		}
 		if (this.redirectLogToTrace) {
 			this.traceInfo?.(message);
@@ -139,15 +167,18 @@ export abstract class BaseCommand<T extends typeof Command>
 	}
 
 	/**
-	 * Logs an error without exiting. Implements {@link Logger.errorLog}.
+	 * Logs an error without exiting.
 	 *
 	 * @remarks
-	 * This method provides non-exiting error logging as part of the Logger interface.
+	 * This method logs an error message without terminating the process.
 	 * Use the `exit` method if you want to log and exit the process.
 	 */
-	public errorLog(message: string | Error | undefined): void {
+	public logError(
+		message: string | Error | undefined,
+		..._args: unknown[]
+	): void {
 		if (!this.suppressLogging) {
-			this.logger.errorLog(message);
+			this._logger.error(message);
 		}
 	}
 
@@ -176,7 +207,7 @@ export abstract class BaseCommand<T extends typeof Command>
 		if (messageOrCode) {
 			// Log the error if logging is enabled
 			if (!this.suppressLogging) {
-				this.logger.errorLog(messageOrCode);
+				this._logger.error(messageOrCode);
 			}
 			// Use OCLIF's error method to properly exit with message (captured by test framework)
 			// We call the parent's error method directly to bypass our override
@@ -190,9 +221,12 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs a warning.
 	 */
-	public warning(message: string | Error | undefined): void {
+	public warning(
+		message: string | Error | undefined,
+		..._args: unknown[]
+	): void {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
-			this.logger.warning(message);
+			this._logger.warning(message);
 		}
 		if (this.redirectLogToTrace) {
 			this.traceWarning?.(message);
@@ -209,7 +243,7 @@ export abstract class BaseCommand<T extends typeof Command>
 		if (this.redirectLogToTrace) {
 			this.traceWarning?.(message);
 		}
-		this.logger.warning(message);
+		this._logger.warning(message);
 	}
 
 	/**
@@ -224,12 +258,15 @@ export abstract class BaseCommand<T extends typeof Command>
 	/**
 	 * Logs a verbose log statement.
 	 */
-	public verbose(message: string | Error | undefined): void {
+	public verbose(
+		message: string | Error | undefined,
+		..._args: unknown[]
+	): void {
 		if (this.flags.verbose || this.redirectLogToTrace) {
 			if (this.redirectLogToTrace) {
 				this.traceVerbose?.(message);
 			} else {
-				this.logger.verbose(message);
+				this._logger.verbose(message);
 			}
 		}
 	}

@@ -166,19 +166,19 @@ export default class RepoOverlayCommand extends BaseCommand<
 
 		try {
 			// Step 1: Copy nx configuration files
-			await copyNxConfigFiles(repoRoot, this);
+			await copyNxConfigFiles(repoRoot, this.logger);
 			this.log("");
 
 			// Step 2: Update root package.json
-			await updateRootPackageJson(repoRoot, this);
+			await updateRootPackageJson(repoRoot, this.logger);
 			this.log("");
 
 			// Step 3: Update .gitignore
-			await updateGitignore(repoRoot, this);
+			await updateGitignore(repoRoot, this.logger);
 			this.log("");
 
 			// Step 4: Update package.json files
-			await updatePackageJsonFilesForNx(repoRoot, this);
+			await updatePackageJsonFilesForNx(repoRoot, this.logger);
 			this.log("");
 
 			this.log("✅ Nx overlay applied successfully!");
@@ -266,19 +266,19 @@ export default class RepoOverlayCommand extends BaseCommand<
 
 		try {
 			// Step 1: Copy turbo configuration files
-			await copyTurboConfigFiles(repoRoot, this);
+			await copyTurboConfigFiles(repoRoot, this.logger);
 			this.log("");
 
 			// Step 2: Update root package.json
-			await updateRootPackageJsonForTurbo(repoRoot, this);
+			await updateRootPackageJsonForTurbo(repoRoot, this.logger);
 			this.log("");
 
 			// Step 3: Update .gitignore
-			await updateGitignoreForTurbo(repoRoot, this);
+			await updateGitignoreForTurbo(repoRoot, this.logger);
 			this.log("");
 
 			// Step 4: Update package.json files
-			await updatePackageJsonFilesForTurbo(repoRoot, this);
+			await updatePackageJsonFilesForTurbo(repoRoot, this.logger);
 			this.log("");
 
 			this.log("✅ Turbo overlay applied successfully!");

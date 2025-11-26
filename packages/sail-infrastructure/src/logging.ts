@@ -45,15 +45,14 @@ export interface Logger {
 	warning: ErrorLoggingFunction;
 
 	/**
-	 * Logs an error message.
+	 * Logs an error message without exiting.
 	 *
 	 * @remarks
 	 *
-	 * This method is not named 'error' because it conflicts with the method that oclif has on its Command class.
-	 * That method exits the process in addition to logging, so this method exists to differentiate, and provide
-	 * error logging that doesn't exit the process.
+	 * This method logs errors to stderr but does not exit the process. For commands that need to exit
+	 * on error, use OCLIF's built-in error() method instead.
 	 */
-	errorLog: ErrorLoggingFunction;
+	error: ErrorLoggingFunction;
 
 	/**
 	 * Logs a verbose message.
@@ -91,9 +90,9 @@ export const defaultLogger: Logger = {
 	warning,
 
 	/**
-	 * {@inheritDoc Logger.errorLog}
+	 * {@inheritDoc Logger.error}
 	 */
-	errorLog,
+	error: errorLog,
 
 	/**
 	 * {@inheritDoc Logger.verbose}

@@ -18,7 +18,7 @@ export interface Logger {
   success: LoggingFunction;
   info: ErrorLoggingFunction;
   warning: ErrorLoggingFunction;
-  errorLog: ErrorLoggingFunction;
+  error: ErrorLoggingFunction;
   verbose: ErrorLoggingFunction;
   formatError?: ((message: Error | string) => string) | undefined;
 }
@@ -30,7 +30,7 @@ export interface Logger {
 - **success** - Log success messages (typically with green/positive formatting)
 - **info** - Log informational messages
 - **warning** - Log warnings (typically with yellow/caution formatting)
-- **errorLog** - Log errors to stderr (typically with red/error formatting)
+- **error** - Log errors to stderr (typically with red/error formatting)
 - **verbose** - Log verbose/debug messages (only shown when verbose flag is enabled)
 - **formatError** - Optional hook to customize error formatting
 
@@ -52,7 +52,7 @@ import { BasicLogger } from "@tylerbu/cli-api/loggers/basic.js";
 
 // BasicLogger is the default - no action needed
 // Or set explicitly:
-protected logger: Logger = BasicLogger;
+protected _logger: Logger = BasicLogger;
 ```
 
 **Output Examples:**
@@ -84,7 +84,7 @@ pnpm add consola
 import { ConsolaLogger } from "@tylerbu/cli-api/loggers/consola.js";
 
 export abstract class MyCommand extends CommandWithConfig {
-  protected override logger = ConsolaLogger;
+  protected override _logger = ConsolaLogger;
 }
 ```
 
@@ -113,7 +113,7 @@ export default class MyCommand extends BaseCommand<typeof MyCommand> {
     this.success("Operation completed");
     this.info("Configuration loaded");
     this.warning("No cache found");
-    this.errorLog("Invalid input");
+    this.logError("Invalid input");  // Note: logError() not error() to avoid OCLIF conflict
     this.verbose("Debug information");
   }
 }
@@ -121,14 +121,14 @@ export default class MyCommand extends BaseCommand<typeof MyCommand> {
 
 ### Overriding the Logger
 
-To use a different logger implementation, override the `logger` property:
+To use a different logger implementation, override the `_logger` property:
 
 ```typescript
 import { BaseCommand } from "@tylerbu/cli-api";
 import { ConsolaLogger } from "@tylerbu/cli-api/loggers/consola.js";
 
 export default class MyCommand extends BaseCommand<typeof MyCommand> {
-  protected override logger = ConsolaLogger;
+  protected override _logger = ConsolaLogger;
 
   public async run(): Promise<void> {
     // Now uses ConsolaLogger for all output
@@ -147,7 +147,7 @@ import { CommandWithConfig } from "@tylerbu/cli-api";
 import { ConsolaLogger } from "@tylerbu/cli-api/loggers/consola.js";
 
 export abstract class MyPackageCommand extends CommandWithConfig {
-  protected override logger = ConsolaLogger;
+  protected override _logger = ConsolaLogger;
 }
 
 // src/commands/build.ts
@@ -155,6 +155,35 @@ export default class Build extends MyPackageCommand {
   // Automatically uses ConsolaLogger
 }
 ```
+
+### Passing a Logger to Utility Functions
+
+When utility functions need a logger, use the `this.logger` accessor which provides a standard `Logger` interface:
+
+```typescript
+import { BaseCommand } from "@tylerbu/cli-api";
+import type { Logger } from "@tylerbu/cli-api";
+
+// Utility function that accepts a Logger
+async function processFiles(files: string[], logger: Logger): Promise<void> {
+  logger.info(`Processing ${files.length} files`);
+  for (const file of files) {
+    logger.verbose(`Processing: ${file}`);
+    // ... process file
+  }
+  logger.success("All files processed");
+}
+
+export default class MyCommand extends BaseCommand<typeof MyCommand> {
+  public async run(): Promise<void> {
+    const files = ["a.ts", "b.ts"];
+    // Pass this.logger to utility functions
+    await processFiles(files, this.logger);
+  }
+}
+```
+
+**Note:** Commands expose a `logger` getter that provides a `Logger`-compatible interface. This allows utility functions to receive a standard logger without being coupled to OCLIF's Command class.
 
 ## Creating Custom Loggers
 
@@ -181,7 +210,7 @@ const warning: ErrorLoggingFunction = (message) => {
   console.warn(`[WARNING] ${msg}`);
 };
 
-const errorLog: ErrorLoggingFunction = (message) => {
+const error: ErrorLoggingFunction = (message) => {
   const msg = message instanceof Error ? message.stack || message.message : message;
   console.error(`[ERROR] ${msg}`);
 };
@@ -196,7 +225,7 @@ export const CustomLogger: Logger = {
   success,
   info,
   warning,
-  errorLog,
+  error,
   verbose,
 };
 ```
@@ -224,7 +253,7 @@ export const AdvancedLogger: Logger = {
   success: (msg) => console.log(chalk.green(`✓ ${msg}`)),
   info: (msg) => console.log(chalk.blue(`ℹ ${formatError(msg)}`)),
   warning: (msg) => console.warn(chalk.yellow(`⚠ ${formatError(msg)}`)),
-  errorLog: (msg) => console.error(formatError(msg)),
+  error: (msg) => console.error(formatError(msg)),
   verbose: (msg) => console.log(chalk.gray(formatError(msg))),
   formatError,
 };
@@ -269,9 +298,10 @@ logIndent(message, logger, 4); // 4 spaces indent
 
 1. **Consistent Usage** - Choose one logger for your entire package/project
 2. **Respect Flags** - Logger methods automatically respect `--quiet` and `--verbose` flags
-3. **Error Handling** - Use `errorLog()` for non-fatal errors, `error()` for fatal errors that exit
+3. **Error Handling** - Use `logError()` for non-fatal errors on commands, `this.error()` (OCLIF's built-in) for fatal errors that exit
 4. **Success Messages** - Use `success()` for operation completions to provide clear feedback
 5. **Verbose Logging** - Use `verbose()` for debugging information that shouldn't clutter normal output
+6. **Utility Functions** - Pass `this.logger` to utility functions that need logging capabilities
 
 ## Migration from Previous Versions
 
@@ -284,7 +314,21 @@ console.error("Error");
 
 // After
 this.log("Message");
+this.logError("Error");
+```
+
+If you were using `errorLog` (from an earlier version of this library):
+
+```typescript
+// Before
 this.errorLog("Error");
+protected override logger = ConsolaLogger;
+passToUtility(this);  // Passing command as logger
+
+// After
+this.logError("Error");
+protected override _logger = ConsolaLogger;
+passToUtility(this.logger);  // Pass the logger accessor
 ```
 
 If your commands used inline color formatting:
@@ -332,7 +376,7 @@ export const FileLogger: Logger = {
     const message = msg instanceof Error ? msg.message : msg;
     appendFileSync(logFile, `${new Date().toISOString()} WARNING: ${message}\n`);
   },
-  errorLog: (msg) => {
+  error: (msg) => {
     const message = msg instanceof Error ? (msg.stack || msg.message) : msg;
     appendFileSync(logFile, `${new Date().toISOString()} ERROR: ${message}\n`);
   },
@@ -363,7 +407,7 @@ export const JSONLogger: Logger = {
   success: (msg) => logJSON("success", msg || ""),
   info: (msg) => logJSON("info", msg),
   warning: (msg) => logJSON("warning", msg),
-  errorLog: (msg) => logJSON("error", msg),
+  error: (msg) => logJSON("error", msg),
   verbose: (msg) => logJSON("verbose", msg),
 };
 ```

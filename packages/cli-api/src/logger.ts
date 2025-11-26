@@ -14,11 +14,11 @@ export type ErrorLoggingFunction = (
 ) => void;
 
 /**
- * A function that logs a message.
+ * A function that logs a message. Message is optional to support blank line logging.
  *
  * @public
  */
-export type LoggingFunction = (message: string, ...args: unknown[]) => void;
+export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
 /**
  * A general-purpose logger object.
@@ -37,7 +37,7 @@ export interface Logger {
 	log: (message?: string, ...args: unknown[]) => void;
 
 	/**
-	 * Logs a success message. Message is required.
+	 * Logs a success message.
 	 */
 	success: LoggingFunction;
 
@@ -53,12 +53,8 @@ export interface Logger {
 
 	/**
 	 * Logs an error message without exiting. Message is required.
-	 *
-	 * @remarks
-	 * This method is named `errorLog` instead of `error` to avoid conflicts with OCLIF's Command.error()
-	 * method which exits the process. This method only logs and does not exit.
 	 */
-	errorLog: ErrorLoggingFunction;
+	error: ErrorLoggingFunction;
 
 	/**
 	 * Logs a verbose message. Message is required.

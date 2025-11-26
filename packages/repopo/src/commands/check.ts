@@ -139,7 +139,7 @@ export class CheckPolicy<
 			}
 		} finally {
 			if (!this.flags.quiet) {
-				logStats(context.perfStats, this);
+				logStats(context.perfStats, this.logger);
 			}
 		}
 	}

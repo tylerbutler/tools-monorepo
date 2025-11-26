@@ -22,7 +22,7 @@ describe("sort-tsconfig command", () => {
 			root: import.meta.url,
 		});
 		expect(error?.message).to.equal("No files found matching arguments");
-		expect(error?.oclif?.exit).to.equal(2);
+		expect(error?.oclif?.exit).to.equal(1);
 	});
 
 	it("detects unsorted file", async () => {
