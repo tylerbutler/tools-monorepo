@@ -38,6 +38,8 @@
 		"optional_typed_accessors": 68
 	},
 	"behaviors": {
+		"array_order_insertion": 14,
+		"array_order_lexicographic": 37,
 		"tabs_preserve": 7,
 		"list_coercion_enabled": 27,
 		"list_coercion_disabled": 35,
