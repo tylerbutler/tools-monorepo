@@ -91,7 +91,7 @@
 		"playwright": "^1.56.1",
 		"sonda": "^0.10.0",
 		"sort-package-json": "*",
-		"svelte": "^5.43.6",
+		"svelte": "^5.45.2",
 		"svelte-check": "^4.3.4",
 		"tailwindcss": "^4.1.17",
 		"tsx": "^4.20.6",
