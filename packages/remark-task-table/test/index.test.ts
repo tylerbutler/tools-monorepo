@@ -454,3 +454,143 @@ Some content`;
 		});
 	});
 });
+
+describe("Nx support", () => {
+	/**
+	 * Helper to create a package.json with nx in devDependencies
+	 */
+	function createNxPackageJson(
+		name: string,
+		scripts: Record<string, string> = {},
+	): void {
+		writeFileSync(
+			join(testDir, "package.json"),
+			JSON.stringify(
+				{
+					name,
+					scripts,
+					devDependencies: {
+						nx: "^19.0.0",
+					},
+				},
+				null,
+				2,
+			),
+		);
+	}
+
+	describe("Nx detection", () => {
+		it("should use package.json scripts when nx is not in devDependencies", async () => {
+			// Regular package.json without nx
+			createPackageJson({ build: "tsc", test: "vitest" });
+
+			const result = await processMarkdown("# Project");
+
+			expect(hasTableRow(result, "build", "tsc")).toBe(true);
+			expect(hasTableRow(result, "test", "vitest")).toBe(true);
+		});
+
+		it("should fall back to package.json when includeNx is false", async () => {
+			createNxPackageJson("my-project", { build: "tsc" });
+
+			const result = await processMarkdown("# Project", { includeNx: false });
+
+			expect(hasTableRow(result, "build", "tsc")).toBe(true);
+		});
+	});
+
+	/**
+	 * These tests run against the actual remark-task-table project in the real workspace.
+	 * They verify that Nx extraction works correctly when running from within an Nx workspace.
+	 * Note: Tests run from packages/remark-task-table directory, so process.cwd() is that dir.
+	 */
+	describe("Nx extraction (integration)", () => {
+		/**
+		 * Helper to process markdown from the real project directory.
+		 * Since tests run from packages/remark-task-table, process.cwd() is already correct.
+		 */
+		async function processMarkdownFromProject(
+			markdown: string,
+			options?: Parameters<typeof remarkTaskTable>[0],
+		): Promise<string> {
+			// process.cwd() is already packages/remark-task-table when tests run
+			const projectDir = process.cwd();
+			const result = await remark()
+				.use(remarkGfm)
+				.use(remarkTaskTable, options)
+				.process({
+					value: markdown,
+					path: join(projectDir, "README.md"),
+				});
+			return String(result);
+		}
+
+		it("should use Nx targets when nx is in devDependencies", async () => {
+			// Process from the actual project directory which has nx
+			const result = await processMarkdownFromProject("# Project");
+
+			// The plugin should use Nx and include orchestration targets
+			expect(result).toContain("<!-- task-table-start -->");
+			// Nx provides more targets than just package.json scripts
+			expect(result).toContain("`build`");
+		});
+
+		it("should respect exclude patterns for Nx targets", async () => {
+			const result = await processMarkdownFromProject("# Project", {
+				exclude: ["test:*", "build:*"],
+			});
+
+			expect(result).not.toContain("`test:vitest`");
+			expect(result).not.toContain("`build:compile`");
+		});
+
+		it("should preserve existing descriptions for Nx targets", async () => {
+			const markdown = `# Project
+
+<!-- task-table-start -->
+| Task | Description |
+|------|-------------|
+| \`build\` | Custom build description |
+<!-- task-table-end -->`;
+
+			const result = await processMarkdownFromProject(markdown);
+
+			expect(hasTableRow(result, "build", "Custom build description")).toBe(
+				true,
+			);
+		});
+
+		it("should use custom nxProject option", async () => {
+			// Use nxProject to explicitly specify the project name
+			const result = await processMarkdownFromProject("# Project", {
+				nxProject: "remark-task-table",
+			});
+
+			expect(result).toContain("<!-- task-table-start -->");
+			expect(result).toContain("`build`");
+		});
+	});
+
+	describe("hierarchical sorting", () => {
+		it("should list orchestration targets before their dependencies", async () => {
+			// process.cwd() is already packages/remark-task-table when tests run
+			const projectDir = process.cwd();
+			const result = await remark()
+				.use(remarkGfm)
+				.use(remarkTaskTable)
+				.process({
+					value: "# Project",
+					path: join(projectDir, "README.md"),
+				});
+			const output = String(result);
+
+			// Build should appear before build:compile in the output
+			const buildIndex = output.indexOf("`build`");
+			const buildCompileIndex = output.indexOf("`build:compile`");
+
+			expect(buildIndex).toBeGreaterThan(-1);
+			expect(buildCompileIndex).toBeGreaterThan(-1);
+			expect(buildIndex).toBeLessThan(buildCompileIndex);
+		});
+	});
+});

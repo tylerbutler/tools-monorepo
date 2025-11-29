@@ -11,12 +11,12 @@ import type {
 } from "mdast";
 import { toString as mdastToString } from "mdast-util-to-string";
 import micromatch from "micromatch";
-import { dirname, resolve } from "pathe";
+import { dirname, join, parse, resolve } from "pathe";
 import type { Plugin } from "unified";
 import type { VFile } from "vfile";
 
 /**
- * Represents a task entry from either package.json or justfile
+ * Represents a task entry from package.json, justfile, or Nx
  */
 interface TaskEntry {
 	/** Task/script/recipe name */
@@ -24,7 +24,7 @@ interface TaskEntry {
 	/** The command or body text */
 	command: string;
 	/** Source of the task */
-	source: "package.json" | "justfile";
+	source: "package.json" | "justfile" | "nx";
 }
 
 /**
@@ -68,6 +68,21 @@ export interface TaskTableOptions {
 	 * @default []
 	 */
 	exclude?: string[];
+
+	/**
+	 * Whether to use Nx for task extraction when available.
+	 * When true and Nx is detected in devDependencies, replaces package.json
+	 * scripts with Nx targets (which include all scripts plus plugin-inferred targets).
+	 * @default true
+	 */
+	includeNx?: boolean;
+
+	/**
+	 * The Nx project name. If not specified, inferred from package.json name.
+	 * Only used when Nx extraction is enabled.
+	 * @default undefined (auto-detect from package.json)
+	 */
+	nxProject?: string;
 }
 
 interface JustRecipe {
@@ -79,6 +94,35 @@ interface JustRecipe {
 
 interface JustDump {
 	recipes: Record<string, JustRecipe>;
+}
+
+/**
+ * Nx target from `nx show project --json` output
+ */
+interface NxTarget {
+	executor: string;
+	dependsOn?: string[];
+	metadata?: {
+		scriptContent?: string;
+		description?: string;
+	};
+}
+
+/**
+ * Nx project from `nx show project --json` output
+ */
+interface NxProjectOutput {
+	name: string;
+	targets: Record<string, NxTarget>;
+}
+
+/**
+ * Package.json structure for reading name and devDependencies
+ */
+interface PackageJson {
+	name?: string;
+	scripts?: Record<string, string>;
+	devDependencies?: Record<string, string>;
 }
 
 /**
@@ -100,6 +144,203 @@ function isJustAvailable(): boolean {
 		return true;
 	} catch {
 		return false;
+	}
+}
+
+/**
+ * Check if the `nx` command is available
+ */
+function isNxAvailable(): boolean {
+	try {
+		execSync("npx nx --version", { stdio: "ignore" });
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Read and parse package.json
+ */
+function readPackageJson(
+	dir: string,
+	packageJsonPath: string,
+): PackageJson | undefined {
+	const fullPath = resolve(dir, packageJsonPath);
+
+	if (!existsSync(fullPath)) {
+		return undefined;
+	}
+
+	try {
+		const content = readFileSync(fullPath, "utf-8");
+		return JSON.parse(content) as PackageJson;
+	} catch {
+		return undefined;
+	}
+}
+
+/**
+ * Find the workspace root by looking for nx.json or package.json with nx
+ */
+function findWorkspaceRoot(startDir: string): string | undefined {
+	let current = resolve(startDir);
+	const root = parse(current).root;
+
+	while (current !== root) {
+		// Check for nx.json (most reliable indicator of Nx workspace)
+		if (existsSync(join(current, "nx.json"))) {
+			return current;
+		}
+		// Check for package.json with nx in devDependencies
+		const pkgPath = join(current, "package.json");
+		if (existsSync(pkgPath)) {
+			try {
+				const content = readFileSync(pkgPath, "utf-8");
+				const pkg = JSON.parse(content) as PackageJson;
+				if (pkg?.devDependencies?.["nx"] !== undefined) {
+					return current;
+				}
+			} catch {
+				// Ignore parse errors
+			}
+		}
+		current = dirname(current);
+	}
+	return undefined;
+}
+
+/**
+ * Check if the project uses Nx
+ * Looks for nx.json or nx in devDependencies at the workspace root
+ */
+function isNxProject(dir: string): boolean {
+	return findWorkspaceRoot(dir) !== undefined;
+}
+
+/**
+ * Check if a dependsOn entry is a local task (not cross-project)
+ * Filters out: "^build" (upstream deps), "other-project:task" (external refs)
+ */
+function isLocalTask(dep: string): boolean {
+	// Skip upstream dependency markers
+	if (dep.startsWith("^")) {
+		return false;
+	}
+	// Skip external project references (contains ":")
+	if (dep.includes(":")) {
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Extract Nx targets and sort hierarchically
+ * Orchestration targets (nx:noop) come first, followed by their local dependencies
+ */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Complex algorithm for hierarchical sorting
+function extractNxTasks(
+	dir: string,
+	projectName: string,
+	exclude: string[],
+): TaskEntry[] {
+	if (!isNxAvailable()) {
+		throw new Error(
+			"Nx is configured but 'nx' command is not available. " +
+				"Install dependencies or set includeNx: false",
+		);
+	}
+
+	try {
+		const output = execSync(`npx nx show project ${projectName} --json`, {
+			encoding: "utf-8",
+			cwd: dir,
+			stdio: ["pipe", "pipe", "pipe"],
+		});
+
+		const project = JSON.parse(output) as NxProjectOutput;
+		const targets = project.targets;
+
+		// Separate orchestration vs implementation targets
+		const orchestrationTargets: Array<{ name: string; target: NxTarget }> = [];
+		const implementationTargets: Map<string, NxTarget> = new Map();
+
+		for (const [name, target] of Object.entries(targets)) {
+			if (isExcluded(name, exclude)) {
+				continue;
+			}
+
+			if (target.executor === "nx:noop") {
+				orchestrationTargets.push({ name, target });
+			} else {
+				implementationTargets.set(name, target);
+			}
+		}
+
+		// Sort orchestration targets alphabetically
+		orchestrationTargets.sort((a, b) => a.name.localeCompare(b.name));
+
+		// Build hierarchical output
+		const entries: TaskEntry[] = [];
+		const addedTasks = new Set<string>();
+
+		// Process each orchestration target and its dependencies
+		for (const { name, target } of orchestrationTargets) {
+			// Add the orchestration target
+			entries.push({
+				name,
+				command: `Orchestrates ${name} pipeline`,
+				source: "nx",
+			});
+			addedTasks.add(name);
+
+			// Add its local dependencies in order
+			const localDeps = (target.dependsOn ?? [])
+				.filter(isLocalTask)
+				.filter((dep) => !isExcluded(dep, exclude))
+				.sort((a, b) => a.localeCompare(b));
+
+			for (const dep of localDeps) {
+				if (addedTasks.has(dep)) {
+					continue;
+				}
+
+				const depTarget = implementationTargets.get(dep);
+				if (depTarget) {
+					const command =
+						depTarget.metadata?.scriptContent ||
+						depTarget.metadata?.description ||
+						dep;
+					entries.push({
+						name: dep,
+						command,
+						source: "nx",
+					});
+					addedTasks.add(dep);
+				}
+			}
+		}
+
+		// Add any remaining implementation targets not referenced by orchestration
+		const remainingTargets = [...implementationTargets.entries()]
+			.filter(([name]) => !addedTasks.has(name))
+			.sort(([a], [b]) => a.localeCompare(b));
+
+		for (const [name, target] of remainingTargets) {
+			const command =
+				target.metadata?.scriptContent || target.metadata?.description || name;
+			entries.push({
+				name,
+				command,
+				source: "nx",
+			});
+		}
+
+		return entries;
+	} catch (error) {
+		throw new Error(
+			`Failed to get Nx project info: ${error instanceof Error ? error.message : String(error)}`,
+		);
 	}
 }
 
@@ -393,10 +634,13 @@ export const remarkTaskTable: Plugin<[TaskTableOptions?], Root> = (options) => {
 		justfilePath = "justfile",
 		includePackageJson = true,
 		includeJustfile = true,
+		includeNx = true,
+		nxProject,
 		sectionPrefix = "task-table",
 		exclude = [],
 	} = options || {};
 
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Plugin logic with multiple source extraction paths
 	return (tree: Root, file: VFile) => {
 		// Get the directory of the markdown file
 		const filePath = file.history?.[0] || file.path;
@@ -410,8 +654,20 @@ export const remarkTaskTable: Plugin<[TaskTableOptions?], Root> = (options) => {
 		// Collect all task entries
 		const allEntries: TaskEntry[] = [];
 
-		// Extract from package.json
-		if (includePackageJson) {
+		// Check if this is an Nx project and Nx extraction is enabled
+		const useNx = includeNx && isNxProject(dir);
+
+		if (useNx) {
+			// Get project name from option or package.json
+			const pkg = readPackageJson(dir, packageJsonPath);
+			const projectName = nxProject ?? pkg?.name;
+
+			if (projectName) {
+				const nxTasks = extractNxTasks(dir, projectName, exclude);
+				allEntries.push(...nxTasks);
+			}
+		} else if (includePackageJson) {
+			// Fall back to package.json scripts when not using Nx
 			const pkgScripts = extractPackageJsonScripts(
 				dir,
 				packageJsonPath,
@@ -420,7 +676,7 @@ export const remarkTaskTable: Plugin<[TaskTableOptions?], Root> = (options) => {
 			allEntries.push(...pkgScripts);
 		}
 
-		// Extract from justfile
+		// Extract from justfile (always, regardless of Nx)
 		if (includeJustfile) {
 			const justRecipes = extractJustfileRecipes(dir, justfilePath, exclude);
 			allEntries.push(...justRecipes);

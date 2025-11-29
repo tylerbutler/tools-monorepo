@@ -1,11 +1,13 @@
 # remark-task-table
 
-A [remark](https://github.com/remarkjs/remark) plugin to generate and update task tables from `package.json` scripts and [justfile](https://just.systems) recipes.
+A [remark](https://github.com/remarkjs/remark) plugin to generate and update task tables from `package.json` scripts, [Nx](https://nx.dev) targets, and [justfile](https://just.systems) recipes.
 
 ## Features
 
 - Generates a markdown table from `package.json` scripts
+- Automatically uses [Nx](https://nx.dev) targets when in an Nx workspace
 - Optionally includes [justfile](https://just.systems) recipes
+- Hierarchical sorting for Nx: orchestration targets appear before their dependencies
 - Preserves user-edited descriptions on subsequent runs
 - Auto-inserts table with markers if none exist
 - Supports glob patterns for excluding scripts
@@ -109,6 +111,20 @@ interface TaskTableOptions {
   includeJustfile?: boolean;
 
   /**
+   * Whether to use Nx for task extraction when available.
+   * When true and Nx is detected, replaces package.json scripts with Nx targets.
+   * @default true
+   */
+  includeNx?: boolean;
+
+  /**
+   * The Nx project name. If not specified, inferred from package.json name.
+   * Only used when Nx extraction is enabled.
+   * @default undefined (auto-detect from package.json)
+   */
+  nxProject?: string;
+
+  /**
    * Prefix for section markers.
    * Results in `<!-- {prefix}-start -->` and `<!-- {prefix}-end -->`
    * @default "task-table"
@@ -153,6 +169,46 @@ interface TaskTableOptions {
   includePackageJson: false,
   includeJustfile: true,
 })
+```
+
+#### Disable Nx
+
+```typescript
+// Use package.json scripts even in an Nx workspace
+.use(remarkTaskTable, { includeNx: false })
+```
+
+## Nx Support
+
+When running in an [Nx](https://nx.dev) workspace, the plugin automatically uses `nx show project --json` to extract targets instead of reading `package.json` scripts directly.
+
+**Detection:**
+- The plugin looks for `nx.json` or `nx` in the root `package.json` devDependencies
+- Searches upward from the markdown file's directory to find the workspace root
+
+**Benefits:**
+- Includes all Nx targets, not just package.json scripts
+- Captures plugin-inferred targets (like those from `@nx/vite`)
+- Uses `metadata.scriptContent` for accurate command descriptions
+
+**Hierarchical Sorting:**
+Orchestration targets (using `nx:noop` executor) are listed first, followed by their local dependencies. For example:
+
+```markdown
+| Task | Description |
+| ---- | ----------- |
+| `build` | Orchestrates build pipeline |
+| `build:compile` | tsc --project ./tsconfig.json |
+| `build:api` | api-extractor run |
+| `test` | Orchestrates test pipeline |
+| `test:vitest` | vitest run test |
+```
+
+**Custom Project Name:**
+If the package name in `package.json` doesn't match the Nx project name, use the `nxProject` option:
+
+```typescript
+.use(remarkTaskTable, { nxProject: "my-nx-project-name" })
 ```
 
 ## Justfile Support
