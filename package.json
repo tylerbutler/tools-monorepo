@@ -78,7 +78,7 @@
 		"tsx": "^4.20.6",
 		"type-fest": "^5.2.0"
 	},
-	"packageManager": "pnpm@10.10.0",
+	"packageManager": "pnpm@10.24.0",
 	"engines": {
 		"node": ">=18.0.0"
 	},
