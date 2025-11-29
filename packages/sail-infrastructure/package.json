@@ -39,7 +39,7 @@
 		"test:coverage": "vitest run test --coverage"
 	},
 	"dependencies": {
-		"@manypkg/get-packages": "^2.2.2",
+		"@manypkg/get-packages": "^3.1.0",
 		"@oclif/core": "^4.8.0",
 		"@tylerbu/fundamentals": "workspace:^",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
@@ -56,7 +56,7 @@
 		"semver": "^7.7.3",
 		"simple-git": "^3.30.0",
 		"sort-package-json": "*",
-		"tinyexec": "^0.3.2",
+		"tinyexec": "^1.0.2",
 		"tinyglobby": "^0.2.15",
 		"type-fest": "^5.2.0",
 		"typescript": "~5.9.3"
