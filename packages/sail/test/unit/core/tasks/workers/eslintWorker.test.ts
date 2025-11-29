@@ -4,8 +4,10 @@ import type { WorkerMessage } from "../../../../../src/core/tasks/workers/worker
 
 // Mock the taskUtils module
 vi.mock("../../../../../src/core/tasks/taskUtils.js", () => {
-	const mockRequire = vi.fn() as typeof require;
-	mockRequire.resolve = vi.fn() as typeof require.resolve;
+	const mockRequire = vi.fn() as ReturnType<typeof vi.fn> & {
+		resolve: ReturnType<typeof vi.fn>;
+	};
+	mockRequire.resolve = vi.fn();
 	return {
 		require: mockRequire,
 	};
@@ -26,9 +28,10 @@ vi.mock("../../../../../src/core/tasks/taskUtils.js", () => {
  */
 
 describe("eslintWorker", () => {
-	let mockRequire: typeof require;
+	let mockRequire: ReturnType<typeof vi.fn> & {
+		resolve: ReturnType<typeof vi.fn>;
+	};
 	let mockESLintEngine: {
-		loadESLint: ReturnType<typeof vi.fn>;
 		lintFiles: ReturnType<typeof vi.fn>;
 		loadFormatter: ReturnType<typeof vi.fn>;
 	};

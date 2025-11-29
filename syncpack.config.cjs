@@ -30,6 +30,14 @@ const config = {
 			pinVersion: "workspace:^",
 		},
 		{
+			label:
+				"Use pinned version for sort-package-json in sail (production code)",
+			dependencies: ["sort-package-json"],
+			dependencyTypes: ["prod"],
+			packages: ["@tylerbu/sail"],
+			pinVersion: "2.14.0",
+		},
+		{
 			label: "Use * dep for deps on sort-package-json",
 			dependencies: ["sort-package-json"],
 			dependencyTypes: ["dev", "prod"],

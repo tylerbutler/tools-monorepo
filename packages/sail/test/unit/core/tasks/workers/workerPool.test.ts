@@ -32,14 +32,8 @@ describe("WorkerPool", () => {
 		once: ReturnType<typeof vi.fn>;
 		on: ReturnType<typeof vi.fn>;
 		off: ReturnType<typeof vi.fn>;
-		stdout: {
-			on: ReturnType<typeof vi.fn>;
-			off: ReturnType<typeof vi.fn>;
-		};
-		stderr: {
-			on: ReturnType<typeof vi.fn>;
-			off: ReturnType<typeof vi.fn>;
-		};
+		stdout: { on: ReturnType<typeof vi.fn>; off: ReturnType<typeof vi.fn> };
+		stderr: { on: ReturnType<typeof vi.fn>; off: ReturnType<typeof vi.fn> };
 	};
 	let mockChildProcessInstance: {
 		send: ReturnType<typeof vi.fn>;
@@ -47,14 +41,8 @@ describe("WorkerPool", () => {
 		once: ReturnType<typeof vi.fn>;
 		on: ReturnType<typeof vi.fn>;
 		off: ReturnType<typeof vi.fn>;
-		stdout: {
-			on: ReturnType<typeof vi.fn>;
-			off: ReturnType<typeof vi.fn>;
-		};
-		stderr: {
-			on: ReturnType<typeof vi.fn>;
-			off: ReturnType<typeof vi.fn>;
-		};
+		stdout: { on: ReturnType<typeof vi.fn>; off: ReturnType<typeof vi.fn> };
+		stderr: { on: ReturnType<typeof vi.fn>; off: ReturnType<typeof vi.fn> };
 	};
 
 	beforeEach(() => {
@@ -147,7 +135,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker response
 			const messageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({ code: 0 });
 
@@ -168,7 +156,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker response
 			const messageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({ code: 0 });
 
@@ -192,7 +180,7 @@ describe("WorkerPool", () => {
 
 			// Get first worker's message callback
 			const worker1MessageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 
 			// Start second task while first is running
@@ -200,7 +188,7 @@ describe("WorkerPool", () => {
 
 			// Get second worker's message callback
 			const worker2MessageCallback = mockWorkerInstance.once.mock.calls
-				.filter(([event]: MockCallEntry) => event === "message")
+				.filter(([event]: [string, ...unknown[]]) => event === "message")
 				.at(-1)?.[1];
 
 			// Complete both tasks
@@ -220,7 +208,7 @@ describe("WorkerPool", () => {
 			// Act - run first task
 			const task1Promise = pool.runOnWorker("tsc", "tsc --build", "/test/dir1");
 			const worker1MessageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			worker1MessageCallback?.({ code: 0 });
 			await task1Promise;
@@ -228,7 +216,7 @@ describe("WorkerPool", () => {
 			// Run second task (should reuse worker)
 			const task2Promise = pool.runOnWorker("tsc", "tsc --build", "/test/dir2");
 			const worker2MessageCallback = mockWorkerInstance.once.mock.calls
-				.filter(([event]: MockCallEntry) => event === "message")
+				.filter(([event]: [string, ...unknown[]]) => event === "message")
 				.at(-1)?.[1];
 			worker2MessageCallback?.({ code: 0 });
 			await task2Promise;
@@ -248,8 +236,8 @@ describe("WorkerPool", () => {
 
 			// Complete all tasks
 			const messageCallbacks = mockWorkerInstance.once.mock.calls
-				.filter(([event]: MockCallEntry) => event === "message")
-				.map(([, callback]: MockCallEntry) => callback);
+				.filter(([event]: [string, ...unknown[]]) => event === "message")
+				.map(([, callback]: [unknown, unknown]) => callback);
 
 			for (const callback of messageCallbacks) {
 				callback({ code: 0 });
@@ -272,7 +260,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker response
 			const messageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({ code: 0 });
 
@@ -295,15 +283,15 @@ describe("WorkerPool", () => {
 
 			// Simulate worker response with output
 			const messageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 
 			// Simulate stdout/stderr data events
 			const stdoutCallback = mockWorkerInstance.stdout.on.mock.calls.find(
-				([event]: MockCallEntry) => event === "data",
+				([event]: [string, ...unknown[]]) => event === "data",
 			)?.[1];
 			const stderrCallback = mockWorkerInstance.stderr.on.mock.calls.find(
-				([event]: MockCallEntry) => event === "data",
+				([event]: [string, ...unknown[]]) => event === "data",
 			)?.[1];
 
 			stdoutCallback?.("Build successful\n");
@@ -332,7 +320,7 @@ describe("WorkerPool", () => {
 			// In real implementation, there would be a timeout mechanism
 			// For now, simulate by sending error after delay
 			const messageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 
 			setTimeout(() => {
@@ -356,8 +344,8 @@ describe("WorkerPool", () => {
 
 			// Simulate both workers responding
 			const messageCallbacks = mockWorkerInstance.once.mock.calls
-				.filter(([event]: MockCallEntry) => event === "message")
-				.map(([, callback]: MockCallEntry) => callback);
+				.filter(([event]: [string, ...unknown[]]) => event === "message")
+				.map(([, callback]: [unknown, unknown]) => callback);
 
 			messageCallbacks[0]?.({ code: 0 });
 			messageCallbacks[1]?.({ code: 0 });
@@ -381,7 +369,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker crash via error event
 			const errorCallback = mockChildProcessInstance.on.mock.calls.find(
-				([event]: MockCallEntry) => event === "error",
+				([event]: [string, ...unknown[]]) => event === "error",
 			)?.[1];
 			errorCallback?.();
 
@@ -398,7 +386,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker failure
 			const exitCallback = mockChildProcessInstance.on.mock.calls.find(
-				([event]: MockCallEntry) => event === "exit",
+				([event]: [string, ...unknown[]]) => event === "exit",
 			)?.[1];
 			exitCallback?.();
 
@@ -407,7 +395,7 @@ describe("WorkerPool", () => {
 			// Run another task (should create new worker)
 			const task2Promise = pool.runOnWorker("tsc", "tsc --build", "/test/dir2");
 			const messageCallback = mockChildProcessInstance.once.mock.calls
-				.filter(([event]: MockCallEntry) => event === "message")
+				.filter(([event]: [string, ...unknown[]]) => event === "message")
 				.at(-1)?.[1];
 			messageCallback?.({ code: 0 });
 
@@ -426,7 +414,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker failure
 			const closeCallback = mockChildProcessInstance.on.mock.calls.find(
-				([event]: MockCallEntry) => event === "close",
+				([event]: [string, ...unknown[]]) => event === "close",
 			)?.[1];
 			closeCallback?.();
 
@@ -443,7 +431,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker response with non-zero exit code
 			const messageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({ code: 1 });
 
@@ -464,7 +452,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker response with memory usage
 			const messageCallback = mockChildProcessInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({
 				code: 0,
@@ -488,7 +476,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker response with high memory usage
 			const messageCallback = mockChildProcessInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({
 				code: 0,
@@ -510,7 +498,7 @@ describe("WorkerPool", () => {
 
 			// Simulate worker response
 			const messageCallback = mockChildProcessInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({
 				code: 0,
@@ -547,8 +535,8 @@ describe("WorkerPool", () => {
 
 			// Complete tasks so workers are returned to pool
 			const messageCallbacks = mockWorkerInstance.once.mock.calls
-				.filter(([event]: MockCallEntry) => event === "message")
-				.map(([, callback]: MockCallEntry) => callback);
+				.filter(([event]: [string, ...unknown[]]) => event === "message")
+				.map(([, callback]: [unknown, unknown]) => callback);
 
 			messageCallbacks[0]?.({ code: 0 });
 			messageCallbacks[1]?.({ code: 0 });
@@ -571,7 +559,7 @@ describe("WorkerPool", () => {
 
 			// Complete task before shutdown
 			const messageCallback = mockWorkerInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({ code: 0 });
 
@@ -592,7 +580,7 @@ describe("WorkerPool", () => {
 			const taskPromise = pool.runOnWorker("tsc", "tsc --build", "/test/dir");
 
 			const messageCallback = mockChildProcessInstance.once.mock.calls.find(
-				([event]: MockCallEntry) => event === "message",
+				([event]: [string, ...unknown[]]) => event === "message",
 			)?.[1];
 			messageCallback?.({ code: 0 });
 
@@ -615,8 +603,8 @@ describe("WorkerPool", () => {
 
 			// Complete tasks so workers are returned to pool
 			const messageCallbacks = mockWorkerInstance.once.mock.calls
-				.filter(([event]: MockCallEntry) => event === "message")
-				.map(([, callback]: MockCallEntry) => callback);
+				.filter(([event]: [string, ...unknown[]]) => event === "message")
+				.map(([, callback]: [unknown, unknown]) => callback);
 
 			messageCallbacks[0]?.({ code: 0 });
 			messageCallbacks[1]?.({ code: 0 });

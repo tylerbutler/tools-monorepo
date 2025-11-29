@@ -65,7 +65,9 @@
 		"tailwind-variants": "^1.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
+		"@biomejs/biome": "2.3.7",
+		"@biomejs/js-api": "^4.0.0",
+		"@biomejs/wasm-nodejs": "^2.3.7",
 		"@internationalized/date": "^3.10.0",
 		"@lhci/cli": "^0.15.1",
 		"@playwright/test": "^1.56.1",
@@ -92,7 +94,6 @@
 		"svelte": "^5.43.6",
 		"svelte-check": "^4.3.4",
 		"tailwindcss": "^4.1.17",
-		"tslib": "^2.8.1",
 		"tsx": "^4.20.6",
 		"typescript": "~5.9.3",
 		"vite": "^7.2.2",
