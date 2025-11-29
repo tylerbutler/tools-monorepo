@@ -79,6 +79,10 @@ flags:
     paths:
       - packages/remark-shift-headings/
     carryforward: true
+  remark-task-table:
+    paths:
+      - packages/remark-task-table/
+    carryforward: true
   repopo:
     paths:
       - packages/repopo/
@@ -145,6 +149,10 @@ component_management:
       name: remark-shift-headings
       paths:
         - packages/remark-shift-headings/**
+    - component_id: remark-task-table
+      name: remark-task-table
+      paths:
+        - packages/remark-task-table/**
     - component_id: repopo
       name: repopo
       paths:
