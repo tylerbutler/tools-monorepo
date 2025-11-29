@@ -4,8 +4,8 @@ import type { WorkerMessage } from "../../../../../src/core/tasks/workers/worker
 
 // Mock the taskUtils module
 vi.mock("../../../../../src/core/tasks/taskUtils.js", () => {
-	const mockRequire = vi.fn() as any;
-	mockRequire.resolve = vi.fn();
+	const mockRequire = vi.fn() as typeof require;
+	mockRequire.resolve = vi.fn() as typeof require.resolve;
 	return {
 		require: mockRequire,
 	};
@@ -26,18 +26,22 @@ vi.mock("../../../../../src/core/tasks/taskUtils.js", () => {
  */
 
 describe("eslintWorker", () => {
-	let mockRequire: any;
-	let mockESLintEngine: any;
-	let mockFormatter: any;
-	let originalArgv: string[];
+	let mockRequire: typeof require;
+	let mockESLintEngine: {
+		loadESLint: ReturnType<typeof vi.fn>;
+		lintFiles: ReturnType<typeof vi.fn>;
+		loadFormatter: ReturnType<typeof vi.fn>;
+	};
+	let mockFormatter: {
+		format: ReturnType<typeof vi.fn>;
+	};
 	let originalCwd: string;
-	let chdirSpy: any;
+	let chdirSpy: ReturnType<typeof vi.spyOn>;
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
 		// Save original values
-		originalArgv = [...process.argv];
 		originalCwd = process.cwd();
 
 		// Mock process.chdir to avoid actual directory changes
@@ -61,7 +65,9 @@ describe("eslintWorker", () => {
 		};
 
 		// Import and setup mocked require
-		const taskUtilsModule = await import("../../../../../src/core/tasks/taskUtils.js");
+		const taskUtilsModule = await import(
+			"../../../../../src/core/tasks/taskUtils.js"
+		);
 		mockRequire = vi.mocked(taskUtilsModule.require);
 
 		// Setup require.resolve to return a mock path
@@ -227,10 +233,7 @@ describe("eslintWorker", () => {
 				command: "eslint src",
 				cwd: "/test/project",
 			};
-			const mockResults = [
-				{ errorCount: 0 },
-				{ errorCount: 0 },
-			];
+			const mockResults = [{ errorCount: 0 }, { errorCount: 0 }];
 			mockESLintEngine.lintFiles.mockResolvedValue(mockResults);
 
 			// Act
@@ -247,9 +250,7 @@ describe("eslintWorker", () => {
 				command: "eslint src",
 				cwd: "/test/project",
 			};
-			const mockResults = [
-				{ errorCount: 5 },
-			];
+			const mockResults = [{ errorCount: 5 }];
 			mockESLintEngine.lintFiles.mockResolvedValue(mockResults);
 
 			// Act
@@ -267,7 +268,9 @@ describe("eslintWorker", () => {
 				command: "eslint src",
 				cwd: "/test/project",
 			};
-			mockESLintEngine.loadFormatter.mockRejectedValue(new Error("Formatter not found"));
+			mockESLintEngine.loadFormatter.mockRejectedValue(
+				new Error("Formatter not found"),
+			);
 
 			// Act
 			const result = await lint(message);
@@ -341,7 +344,9 @@ describe("eslintWorker", () => {
 			});
 
 			// Act & Assert
-			await expect(lint(message)).rejects.toThrow("Cannot find module 'eslint'");
+			await expect(lint(message)).rejects.toThrow(
+				"Cannot find module 'eslint'",
+			);
 		});
 
 		it("should handle ESLint initialization errors", async () => {
@@ -358,7 +363,9 @@ describe("eslintWorker", () => {
 			});
 
 			// Act & Assert
-			await expect(lint(message)).rejects.toThrow("ESLint initialization failed");
+			await expect(lint(message)).rejects.toThrow(
+				"ESLint initialization failed",
+			);
 		});
 
 		it("should handle linting errors", async () => {
@@ -381,7 +388,9 @@ describe("eslintWorker", () => {
 				command: "eslint src",
 				cwd: "/test/project",
 			};
-			mockESLintEngine.loadFormatter.mockRejectedValue(new Error("Formatter not found"));
+			mockESLintEngine.loadFormatter.mockRejectedValue(
+				new Error("Formatter not found"),
+			);
 
 			// Act
 			const result = await lint(message);

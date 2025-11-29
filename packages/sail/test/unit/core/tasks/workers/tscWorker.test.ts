@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { compile, fluidCompile } from "../../../../../src/core/tasks/workers/tscWorker.js";
+import {
+	compile,
+	fluidCompile,
+} from "../../../../../src/core/tasks/workers/tscWorker.js";
 import type { WorkerMessage } from "../../../../../src/core/tasks/workers/worker.js";
 
 // Mock the dependencies
@@ -20,18 +23,17 @@ vi.mock("../../../../../src/core/tscUtils.js");
  */
 
 describe("tscWorker", () => {
-	let mockTsCompile: any;
-	let mockFluidTscRegEx: RegExp;
+	let mockTsCompile: ReturnType<typeof vi.fn>;
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
 
 		// Import mocked modules
-		const tsCompileModule = await import("../../../../../src/core/tsCompile.js");
-		const tscUtilsModule = await import("../../../../../src/core/tscUtils.js");
+		const tsCompileModule = await import(
+			"../../../../../src/core/tsCompile.js"
+		);
 
 		mockTsCompile = vi.mocked(tsCompileModule.tsCompile);
-		mockFluidTscRegEx = tscUtilsModule.fluidTscRegEx;
 
 		// Set default return value
 		mockTsCompile.mockReturnValue(0);
@@ -260,7 +262,9 @@ describe("tscWorker", () => {
 			});
 
 			// Act & Assert
-			await expect(compile(message)).rejects.toThrow("TypeScript compilation failed");
+			await expect(compile(message)).rejects.toThrow(
+				"TypeScript compilation failed",
+			);
 		});
 
 		it("should handle regex match failures", async () => {
@@ -272,7 +276,9 @@ describe("tscWorker", () => {
 			};
 
 			// Act & Assert
-			await expect(fluidCompile(message)).rejects.toThrow("worker command not recognized");
+			await expect(fluidCompile(message)).rejects.toThrow(
+				"worker command not recognized",
+			);
 		});
 
 		it("should include command in error message", async () => {
