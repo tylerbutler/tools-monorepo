@@ -1,0 +1,75 @@
+{
+	"name": "remark-workspace-packages",
+	"version": "0.0.1",
+	"description": "Remark plugin to generate and update workspace package tables in markdown",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-workspace-packages#remark-workspace-packages",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/remark-workspace-packages"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		}
+	},
+	"types": "./esm/index.d.ts",
+	"files": [
+		"esm"
+	],
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"check": "pnpm check:format",
+		"check:format": "biome format .",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --apply",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "vitest run test",
+		"test:coverage": "vitest run test --coverage"
+	},
+	"dependencies": {
+		"mdast-util-to-string": "^4.0.0",
+		"micromatch": "^4.0.8",
+		"pathe": "^2.0.3",
+		"tinyglobby": "^0.2.15",
+		"unified": "^11.0.5",
+		"vfile": "^6.0.3",
+		"yaml": "^2.7.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.7",
+		"@types/mdast": "^4.0.4",
+		"@types/micromatch": "^4.0.9",
+		"@types/node": "^20.19.24",
+		"@vitest/coverage-v8": "^3.2.4",
+		"remark": "^15.0.1",
+		"remark-gfm": "^4.0.1",
+		"remark-parse": "^11.0.0",
+		"rimraf": "^6.1.0",
+		"typescript": "~5.9.3",
+		"vitest": "^3.2.4"
+	},
+	"peerDependencies": {
+		"unified": "^11.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {}
+		}
+	}
+}

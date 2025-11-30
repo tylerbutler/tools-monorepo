@@ -49,7 +49,8 @@
 		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
 		"syncpack:fix": "pnpm syncpack fix-mismatches && pnpm syncpack set-semver-ranges",
 		"test": "nx run-many -t test",
-		"test:coverage": "nx run-many -t test:coverage"
+		"test:coverage": "nx run-many -t test:coverage",
+		"update:readme": "remark README.md --output"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.7",
@@ -67,6 +68,11 @@
 		"generate-license-file": "^4.1.0",
 		"nx": "22.0.1",
 		"pathe": "^2.0.3",
+		"remark-cli": "^12.0.1",
+		"remark-gfm": "^4.0.1",
+		"remark-task-table": "workspace:^",
+		"remark-toc": "^9.0.0",
+		"remark-workspace-packages": "workspace:^",
 		"repopo": "workspace:^",
 		"rimraf": "^6.1.0",
 		"semver": "^7.7.3",
@@ -120,10 +126,57 @@
 		}
 	},
 	"nx": {
-		"includedScripts": [
-			"deps:sync"
-		],
+		"includedScripts": [],
 		"targets": {
+			"build": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t build"
+				},
+				"cache": false
+			},
+			"test": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t test"
+				},
+				"cache": false
+			},
+			"ci": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t ci"
+				},
+				"cache": false
+			},
+			"clean": {
+				"dependsOn": [
+					"clean:root",
+					"^clean"
+				],
+				"cache": false
+			},
+			"compile": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t build:compile"
+				},
+				"cache": false
+			},
+			"docs": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t build:docs"
+				},
+				"cache": false
+			},
+			"format": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "format"
+				},
+				"cache": false
+			},
 			"check": {
 				"dependsOn": [
 					"check:all",
