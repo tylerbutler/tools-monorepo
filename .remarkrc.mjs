@@ -28,11 +28,8 @@ const config = {
 				sectionPrefix: "task-table",
 				includeNx: true,
 				exclude: [
-					// Exclude check implementation scripts (check:format, check:deps, etc.)
-					"check:*",
-					// Exclude internal/utility scripts
-					"deps:*",
-					"clean:*",
+					// Exclude executor-style scripts (check:format, check:deps, etc.)
+					"*:*",
 				],
 			},
 		],
