@@ -101,7 +101,7 @@
 		"@oclif/plugin-commands": "^4.1.38",
 		"@oclif/plugin-help": "^6.2.36",
 		"@oclif/plugin-not-found": "^3.2.73",
-		"@oclif/plugin-plugins": "^5.4.53",
+		"@oclif/plugin-plugins": "^5.4.54",
 		"@oclif/plugin-search": "^1.2.36",
 		"@oclif/plugin-version": "^2.2.36",
 		"@oclif/plugin-warn-if-update-available": "^3.1.53",
