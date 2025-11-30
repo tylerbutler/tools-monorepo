@@ -22,12 +22,18 @@ afterEach(() => {
 });
 
 /**
- * Helper to create a pnpm-workspace.yaml
+ * Helper to create a pnpm workspace with pnpm-workspace.yaml and root package.json.
+ * The resolve-workspace-root library requires both files for pnpm workspaces.
  */
 function createPnpmWorkspace(packages: string[]): void {
 	writeFileSync(
 		join(testDir, "pnpm-workspace.yaml"),
 		`packages:\n${packages.map((p) => `  - "${p}"`).join("\n")}\n`,
+	);
+	// Root package.json is required by resolve-workspace-root for pnpm workspaces
+	writeFileSync(
+		join(testDir, "package.json"),
+		JSON.stringify({ name: "test-workspace", version: "1.0.0" }, null, 2),
 	);
 }
 

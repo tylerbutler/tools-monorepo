@@ -11,11 +11,13 @@ import type {
 } from "mdast";
 import { toString as mdastToString } from "mdast-util-to-string";
 import micromatch from "micromatch";
-import { dirname, join, parse, resolve } from "pathe";
+import { dirname, join } from "pathe";
+import resolveWorkspacePkg from "resolve-workspace-root";
 import { globSync } from "tinyglobby";
 import type { Plugin } from "unified";
 import type { VFile } from "vfile";
-import { parse as parseYaml } from "yaml";
+
+const { getWorkspaceGlobs, resolveWorkspaceRoot } = resolveWorkspacePkg;
 
 /**
  * Regex for removing leading slash from relative paths
@@ -107,12 +109,6 @@ interface PackageJson {
 	workspaces?: string[] | { packages: string[] };
 }
 
-/**
- * pnpm-workspace.yaml structure
- */
-interface PnpmWorkspace {
-	packages?: string[];
-}
 
 /**
  * Check if a name matches any exclude pattern
@@ -132,78 +128,6 @@ function isIncluded(name: string, patterns: string[]): boolean {
 		return true;
 	}
 	return micromatch.isMatch(name, patterns);
-}
-
-/**
- * Find the workspace root by looking for pnpm-workspace.yaml or package.json with workspaces
- */
-function findWorkspaceRoot(startDir: string): string | undefined {
-	let current = resolve(startDir);
-	const root = parse(current).root;
-
-	while (current !== root) {
-		// Check for pnpm-workspace.yaml (most reliable for pnpm workspaces)
-		if (existsSync(join(current, "pnpm-workspace.yaml"))) {
-			return current;
-		}
-		// Check for package.json with workspaces field
-		const pkgPath = join(current, "package.json");
-		if (existsSync(pkgPath)) {
-			try {
-				const content = readFileSync(pkgPath, "utf-8");
-				const pkg = JSON.parse(content) as PackageJson;
-				if (pkg?.workspaces !== undefined) {
-					return current;
-				}
-			} catch {
-				// Ignore parse errors
-			}
-		}
-		current = dirname(current);
-	}
-	return undefined;
-}
-
-/**
- * Get workspace package patterns from pnpm-workspace.yaml or package.json
- */
-function getWorkspacePatterns(workspaceRoot: string): string[] {
-	// Try pnpm-workspace.yaml first
-	const pnpmWorkspacePath = join(workspaceRoot, "pnpm-workspace.yaml");
-	if (existsSync(pnpmWorkspacePath)) {
-		try {
-			const content = readFileSync(pnpmWorkspacePath, "utf-8");
-			const workspace = parseYaml(content) as PnpmWorkspace;
-			if (workspace?.packages && Array.isArray(workspace.packages)) {
-				return workspace.packages;
-			}
-		} catch {
-			// Ignore parse errors
-		}
-	}
-
-	// Fall back to package.json workspaces
-	const pkgPath = join(workspaceRoot, "package.json");
-	if (existsSync(pkgPath)) {
-		try {
-			const content = readFileSync(pkgPath, "utf-8");
-			const pkg = JSON.parse(content) as PackageJson;
-			if (Array.isArray(pkg?.workspaces)) {
-				return pkg.workspaces;
-			}
-			if (
-				pkg?.workspaces &&
-				typeof pkg.workspaces === "object" &&
-				"packages" in pkg.workspaces
-			) {
-				return pkg.workspaces.packages;
-			}
-		} catch {
-			// Ignore parse errors
-		}
-	}
-
-	return [];
 }
 
 /**
@@ -276,8 +200,8 @@ function extractWorkspacePackages(
 		includePrivate: boolean;
 	},
 ): PackageEntry[] {
-	const patterns = getWorkspacePatterns(workspaceRoot);
-	if (patterns.length === 0) {
+	const patterns = getWorkspaceGlobs(workspaceRoot);
+	if (patterns === null || patterns.length === 0) {
 		return [];
 	}
 
@@ -587,11 +511,11 @@ export const remarkWorkspacePackages: Plugin<
 		const dir = dirname(filePath);
 
 		// Find workspace root
-		let workspaceRoot: string | undefined;
+		let workspaceRoot: string | null | undefined;
 		if (workspaceRootOption) {
-			workspaceRoot = resolve(dir, workspaceRootOption);
+			workspaceRoot = join(dir, workspaceRootOption);
 		} else {
-			workspaceRoot = findWorkspaceRoot(dir);
+			workspaceRoot = resolveWorkspaceRoot(dir);
 		}
 
 		if (!workspaceRoot) {
