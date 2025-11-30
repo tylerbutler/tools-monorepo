@@ -64,12 +64,14 @@ export type CCLFeature =
 	| "unicode"
 	| "optional_typed_accessors";
 export type CCLBehavior =
+	| "array_order_insertion"
+	| "array_order_lexicographic"
 	| "tabs_preserve"
 	| "list_coercion_enabled"
+	| "list_coercion_disabled"
 	| "crlf_preserve_literal"
 	| "crlf_normalize_to_lf"
 	| "strict_spacing"
-	| "list_coercion_disabled"
 	| "boolean_strict"
 	| "boolean_lenient";
 
@@ -100,12 +102,14 @@ export const AVAILABLE_FEATURES: CCLFeature[] = [
 
 // Available behaviors for filtering
 export const AVAILABLE_BEHAVIORS: CCLBehavior[] = [
+	"array_order_insertion",
+	"array_order_lexicographic",
 	"tabs_preserve",
 	"list_coercion_enabled",
+	"list_coercion_disabled",
 	"crlf_preserve_literal",
 	"crlf_normalize_to_lf",
 	"strict_spacing",
-	"list_coercion_disabled",
 	"boolean_strict",
 	"boolean_lenient",
 ];
