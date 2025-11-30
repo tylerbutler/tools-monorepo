@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
+	"$schema": "../node_modules/@biomejs/biome/configuration_schema.json",
 	"formatter": {
 		"enabled": true,
 		"formatWithErrors": true,
@@ -15,6 +15,12 @@
 				// Only affects CSS, not TS or JSON
 				"useSortedProperties": "on",
 			},
+		},
+	},
+	"html": {
+		"experimentalFullSupportEnabled": true,
+		"formatter": {
+			"indentScriptAndStyle": true,
 		},
 	},
 	"javascript": {

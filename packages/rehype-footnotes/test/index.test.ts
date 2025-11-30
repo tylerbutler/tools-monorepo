@@ -167,3 +167,65 @@ describe("generateLittlefootCSS", () => {
 		expect(css).toContain("color: #0066cc");
 	});
 });
+
+describe("footnote href and id matching (issue 501)", () => {
+	it("should update href attributes to match transformed footnote definition IDs", async () => {
+		const markdown = "Here is a reference[^1].\n\n[^1]: This is the footnote.";
+
+		const result = await remark()
+			.use(remarkGfm)
+			.use(remarkRehype)
+			.use(rehypeFootnotes)
+			.use(rehypeStringify)
+			.process(markdown);
+
+		const html = String(result);
+
+		// The footnote reference should have href="#fn:1" (not "#user-content-fn-1")
+		expect(html).toContain('href="#fn:1"');
+		// The footnote definition should have id="fn:1"
+		expect(html).toContain('id="fn:1"');
+		// Should not contain the old user-content-fn- prefix in href
+		expect(html).not.toContain('href="#user-content-fn-');
+	});
+
+	it("should match href and id for multiple footnotes", async () => {
+		const markdown =
+			"First[^1] and second[^2].\n\n[^1]: First note.\n[^2]: Second note.";
+
+		const result = await remark()
+			.use(remarkGfm)
+			.use(remarkRehype)
+			.use(rehypeFootnotes)
+			.use(rehypeStringify)
+			.process(markdown);
+
+		const html = String(result);
+
+		// Both footnote references should have matching hrefs
+		expect(html).toContain('href="#fn:1"');
+		expect(html).toContain('href="#fn:2"');
+		// Both footnote definitions should have matching ids
+		expect(html).toContain('id="fn:1"');
+		expect(html).toContain('id="fn:2"');
+		// Should not contain old format
+		expect(html).not.toContain('href="#user-content-fn-');
+	});
+
+	it("should match href and id for named footnotes", async () => {
+		const markdown = "Reference[^note].\n\n[^note]: This is a named footnote.";
+
+		const result = await remark()
+			.use(remarkGfm)
+			.use(remarkRehype)
+			.use(rehypeFootnotes)
+			.use(rehypeStringify)
+			.process(markdown);
+
+		const html = String(result);
+
+		// Named footnote should also have matching href and id
+		expect(html).toContain('href="#fn:note"');
+		expect(html).toContain('id="fn:note"');
+	});
+});

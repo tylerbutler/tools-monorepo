@@ -17,6 +17,9 @@
 			"path": "../cli-api",
 		},
 		{
+			"path": "../lilconfig-loader-ts",
+		},
+		{
 			"path": "../sail-infrastructure",
 		},
 	],
