@@ -23,8 +23,6 @@ vi.mock("node:os");
  * 6. Pool shutdown and cleanup
  */
 
-type MockCallEntry = [string, (...args: unknown[]) => void];
-
 describe("WorkerPool", () => {
 	let mockWorkerInstance: {
 		postMessage: ReturnType<typeof vi.fn>;
