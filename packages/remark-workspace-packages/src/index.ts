@@ -111,7 +111,6 @@ interface PackageJson {
 	workspaces?: string[] | { packages: string[] };
 }
 
-
 /**
  * Check if a name matches any exclude pattern
  */

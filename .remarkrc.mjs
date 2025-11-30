@@ -8,8 +8,8 @@
  */
 
 import remarkGfm from "remark-gfm";
-import remarkToc from "remark-toc";
 import { remarkTaskTable } from "remark-task-table";
+import remarkToc from "remark-toc";
 import { remarkWorkspacePackages } from "remark-workspace-packages";
 
 const config = {

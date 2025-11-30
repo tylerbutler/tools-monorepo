@@ -397,9 +397,13 @@ old content
 				/\|\s*Package\s*\|\s*Private\s*\|\s*Description\s*\|/,
 			);
 			// Private package should have checkmark in second column
-			expect(result).toMatch(/private-pkg[^|]*\|\s*✓\s*\|[^|]*Private package[^|]*\|/);
+			expect(result).toMatch(
+				/private-pkg[^|]*\|\s*✓\s*\|[^|]*Private package[^|]*\|/,
+			);
 			// Public package should have empty cell in second column
-			expect(result).toMatch(/public-pkg[^|]*\|\s*\|[^|]*Public package[^|]*\|/);
+			expect(result).toMatch(
+				/public-pkg[^|]*\|\s*\|[^|]*Public package[^|]*\|/,
+			);
 		});
 
 		it("should support custom private column header", async () => {
