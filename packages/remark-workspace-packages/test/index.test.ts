@@ -375,6 +375,51 @@ old content
 
 			expect(result).toMatch(/\|\s*Name\s*\|\s*Purpose\s*\|/);
 		});
+
+		it("should support private column showing package privacy status", async () => {
+			createPnpmWorkspace(["packages/*"]);
+			createPackageJson("packages/public", {
+				name: "public-pkg",
+				description: "Public package",
+			});
+			createPackageJson("packages/private", {
+				name: "private-pkg",
+				description: "Private package",
+				private: true,
+			});
+
+			const result = await processMarkdown("# Workspace", {
+				columns: ["name", "description", "private"],
+			});
+
+			// Private column should be moved to second position automatically
+			expect(result).toMatch(
+				/\|\s*Package\s*\|\s*Private\s*\|\s*Description\s*\|/,
+			);
+			// Private package should have checkmark in second column
+			expect(result).toMatch(/private-pkg[^|]*\|\s*✓\s*\|[^|]*Private package[^|]*\|/);
+			// Public package should have empty cell in second column
+			expect(result).toMatch(/public-pkg[^|]*\|\s*\|[^|]*Public package[^|]*\|/);
+		});
+
+		it("should support custom private column header", async () => {
+			createPnpmWorkspace(["packages/*"]);
+			createPackageJson("packages/foo", {
+				name: "foo",
+				description: "Foo",
+				private: true,
+			});
+
+			const result = await processMarkdown("# Workspace", {
+				columns: ["name", "private"],
+				columnHeaders: {
+					private: "Internal",
+				},
+			});
+
+			expect(result).toMatch(/\|\s*Package\s*\|\s*Internal\s*\|/);
+			expect(result).toContain("✓");
+		});
 	});
 
 	describe("link generation", () => {

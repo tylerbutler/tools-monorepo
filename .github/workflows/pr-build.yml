@@ -128,6 +128,8 @@ jobs:
           - {name: rehype-footnotes, flag: rehype-footnotes}
           - {name: remark-shift-headings, flag: remark-shift-headings}
           - {name: remark-lazy-links, flag: remark-lazy-links}
+          - {name: remark-task-table, flag: remark-task-table}
+          - {name: remark-workspace-packages, flag: remark-workspace-packages}
           - {name: repopo, flag: repopo}
           - {name: lilconfig-loader-ts, flag: lilconfig-loader-ts}
 

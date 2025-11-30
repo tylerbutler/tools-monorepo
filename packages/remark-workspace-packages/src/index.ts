@@ -84,18 +84,20 @@ export interface WorkspacePackagesOptions {
 
 	/**
 	 * Column configuration for the table.
+	 * Use "private" column to show package privacy status (✓ for private, empty for public).
 	 * @default ["name", "description"]
 	 */
-	columns?: Array<"name" | "description" | "path">;
+	columns?: Array<"name" | "description" | "path" | "private">;
 
 	/**
 	 * Custom column headers.
-	 * @default { name: "Package", description: "Description", path: "Path" }
+	 * @default { name: "Package", description: "Description", path: "Path", private: "Private" }
 	 */
 	columnHeaders?: {
 		name?: string;
 		description?: string;
 		path?: string;
+		private?: string;
 	};
 }
 
@@ -361,18 +363,45 @@ function createLinkCell(text: string, url: string): TableCell {
 }
 
 /**
+ * Normalize column order: if "private" is present, move it to second position (after "name")
+ */
+function normalizeColumnOrder(
+	columns: Array<"name" | "description" | "path" | "private">,
+): Array<"name" | "description" | "path" | "private"> {
+	const privateIndex = columns.indexOf("private");
+	if (privateIndex === -1 || privateIndex === 1) {
+		// No private column or already in second position
+		return columns;
+	}
+
+	// Remove private from current position and insert at index 1 (second position)
+	const result: Array<"name" | "description" | "path" | "private"> =
+		columns.filter((col) => col !== "private");
+	result.splice(1, 0, "private");
+	return result;
+}
+
+/**
  * Generate a new table AST from package entries
  */
 function generateTableAst(
 	entries: PackageEntry[],
 	existingDescriptions: Map<string, string>,
 	options: {
-		columns: Array<"name" | "description" | "path">;
-		columnHeaders: { name: string; description: string; path: string };
+		columns: Array<"name" | "description" | "path" | "private">;
+		columnHeaders: {
+			name: string;
+			description: string;
+			path: string;
+			private: string;
+		};
 		includeLinks: boolean;
 	},
 ): Table {
-	const headerCells: TableCell[] = options.columns.map((col) =>
+	// Normalize column order: private should be second if present
+	const columns = normalizeColumnOrder(options.columns);
+
+	const headerCells: TableCell[] = columns.map((col) =>
 		createTextCell(options.columnHeaders[col]),
 	);
 
@@ -384,7 +413,7 @@ function generateTableAst(
 	const dataRows: TableRow[] = entries.map((entry) => {
 		const cells: TableCell[] = [];
 
-		for (const col of options.columns) {
+		for (const col of columns) {
 			switch (col) {
 				case "name":
 					if (options.includeLinks) {
@@ -403,6 +432,9 @@ function generateTableAst(
 				case "path":
 					cells.push(createCodeCell(entry.path));
 					break;
+				case "private":
+					cells.push(createTextCell(entry.private ? "✓" : ""));
+					break;
 				default:
 					// TypeScript exhaustive check - this should never happen
 					break;
@@ -417,7 +449,7 @@ function generateTableAst(
 
 	return {
 		type: "table",
-		align: options.columns.map(() => null),
+		align: columns.map(() => null),
 		children: [headerRow, ...dataRows],
 	};
 }
@@ -496,6 +528,7 @@ export const remarkWorkspacePackages: Plugin<
 		name: columnHeaders.name || "Package",
 		description: columnHeaders.description || "Description",
 		path: columnHeaders.path || "Path",
+		private: columnHeaders.private || "Private",
 	};
 
 	return (tree: Root, file: VFile) => {
