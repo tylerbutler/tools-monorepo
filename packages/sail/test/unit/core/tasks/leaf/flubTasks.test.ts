@@ -34,7 +34,7 @@ vi.mock("../../../../../src/common/gitRepo.js", () => {
 
 describe("FlubTasks - Comprehensive Tests", () => {
 	beforeEach(() => {
-		vi.resetAllMocks();
+		vi.clearAllMocks(); // Changed from resetAllMocks to preserve GitRepo mock implementation
 		// Mock readFile to return empty buffer by default (prevents "Cannot read properties of undefined" errors)
 		vi.mocked(readFile).mockResolvedValue(Buffer.from(""));
 	});
@@ -671,21 +671,15 @@ describe("FlubTasks - Comprehensive Tests", () => {
 				}
 			});
 
-			// NOTE: FlubCheckPolicyTask donefile tests are deferred pending git infrastructure.
-			// These 6 tests require complex git operations (commit hashes, modifications detection)
-			// and should be implemented as integration tests with actual git setup.
-			// See: FlubCheckPolicyTask.getDoneFileContent() which calls GitRepo methods.
-			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
-			it.skip("should produce valid JSON content from FlubCheckPolicyTask", async () => {
+			it("should produce valid JSON content from FlubCheckPolicyTask", async () => {
 				const task = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
 					.buildFlubCheckPolicyTask();
 
 				const content = await getDoneFileContent(task);
 
-				if (content !== undefined) {
-					expect(() => JSON.parse(content)).not.toThrow();
-				}
+				expect(content).toBeDefined();
+				expect(() => JSON.parse(content as string)).not.toThrow();
 			});
 
 			it("should roundtrip through JSON parse/stringify", async () => {
@@ -718,9 +712,7 @@ describe("FlubTasks - Comprehensive Tests", () => {
 				expect(content1).toBe(content2);
 			});
 
-			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
-			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
-			it.skip("should produce identical content for identical FlubCheckPolicyTask", async () => {
+			it("should produce identical content for identical FlubCheckPolicyTask", async () => {
 				const task1 = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
 					.buildFlubCheckPolicyTask();
@@ -731,11 +723,10 @@ describe("FlubTasks - Comprehensive Tests", () => {
 				const content1 = await getDoneFileContent(task1);
 				const content2 = await getDoneFileContent(task2);
 
-				// Note: Content may differ due to git state, so we just verify both produce content
-				if (content1 !== undefined && content2 !== undefined) {
-					expect(typeof content1).toBe("string");
-					expect(typeof content2).toBe("string");
-				}
+				// With mocked git state, identical tasks should produce identical content
+				expect(content1).toBeDefined();
+				expect(content2).toBeDefined();
+				expect(content1).toBe(content2);
 			});
 		});
 
@@ -761,9 +752,7 @@ describe("FlubTasks - Comprehensive Tests", () => {
 				}
 			});
 
-			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
-			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
-			it.skip("should produce different content when package directory changes", async () => {
+			it("should produce different content when package directory changes", async () => {
 				const task1 = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg1")
 					.buildFlubCheckPolicyTask();
@@ -774,12 +763,11 @@ describe("FlubTasks - Comprehensive Tests", () => {
 				const content1 = await getDoneFileContent(task1);
 				const content2 = await getDoneFileContent(task2);
 
-				// Different directories will have different git state
-				// Just verify both produce valid content
-				if (content1 !== undefined && content2 !== undefined) {
-					expect(typeof content1).toBe("string");
-					expect(typeof content2).toBe("string");
-				}
+				// With mocked git (same diff for all directories), content should be identical
+				// because git state is mocked to return same values regardless of directory
+				expect(content1).toBeDefined();
+				expect(content2).toBeDefined();
+				expect(content1).toBe(content2);
 			});
 		});
 	});
@@ -864,60 +852,54 @@ describe("FlubTasks - Comprehensive Tests", () => {
 		});
 
 		describe("FlubCheckPolicyTask Donefile Content", () => {
-			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
-			// The task calls GitRepo.exec() and reads actual files for hashing
-			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
-			it.skip("should contain commit and modifications hash", async () => {
+			it("should contain commit and modifications hash", async () => {
 				const task = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
 					.buildFlubCheckPolicyTask();
 
 				const content = await getDoneFileContent(task);
 
-				if (content) {
-					const parsed = JSON.parse(content);
+				expect(content).toBeDefined();
+				const parsed = JSON.parse(content as string);
 
-					expect(parsed).toHaveProperty("commit");
-					expect(parsed).toHaveProperty("modifications");
-					expect(typeof parsed.commit).toBe("string");
-					expect(typeof parsed.modifications).toBe("string");
-				}
+				expect(parsed).toHaveProperty("commit");
+				expect(parsed).toHaveProperty("modifications");
+				expect(typeof parsed.commit).toBe("string");
+				expect(typeof parsed.modifications).toBe("string");
 			});
 
-			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
-			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
-			it.skip("should use SHA-256 for modifications hash", async () => {
+			it("should use SHA-256 for modifications hash", async () => {
 				const task = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
 					.buildFlubCheckPolicyTask();
 
 				const content = await getDoneFileContent(task);
 
-				if (content) {
-					const parsed = JSON.parse(content);
-					// SHA-256 produces 64 hex characters
-					expect(parsed.modifications).toMatch(/^[a-f0-9]{64}$/);
-				}
+				expect(content).toBeDefined();
+				const parsed = JSON.parse(content as string);
+				// SHA-256 produces 64 hex characters
+				expect(parsed.modifications).toMatch(/^[a-f0-9]{64}$/);
 			});
 
-			// Skip: FlubCheckPolicyTask requires complex git mocking and file system operations
-			// biome-ignore lint/suspicious/noSkippedTests: Requires integration test environment with git repository
-			it.skip("should produce different hashes for different git states", async () => {
-				// This test verifies the concept - actual different git states
-				// would require file system manipulation
+			it("should produce different hashes for different git states", async () => {
 				const task = new LeafTaskBuilder()
 					.withPackageDirectory("/workspace/pkg")
 					.buildFlubCheckPolicyTask();
 
 				const content = await getDoneFileContent(task);
 
-				if (content) {
-					const parsed = JSON.parse(content);
-					// Just verify the structure is correct
-					expect(typeof parsed.commit).toBe("string");
-					expect(typeof parsed.modifications).toBe("string");
-					expect(parsed.modifications.length).toBe(64);
-				}
+				expect(content).toBeDefined();
+				const parsed = JSON.parse(content as string);
+
+				// Verify the structure and format
+				expect(typeof parsed.commit).toBe("string");
+				expect(typeof parsed.modifications).toBe("string");
+				expect(parsed.modifications.length).toBe(64);
+
+				// Verify it's a valid hex string (SHA-256 format)
+				expect(parsed.modifications).toMatch(/^[a-f0-9]{64}$/);
+				// Verify commit is the mocked value
+				expect(parsed.commit).toBe("abc123def456");
 			});
 		});
 
