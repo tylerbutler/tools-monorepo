@@ -40,7 +40,7 @@ const config = {
 			remarkWorkspacePackages,
 			{
 				sectionPrefix: "workspace-packages",
-				includePrivate: false, // Only show public packages
+				includePrivate: true,
 				columns: ["name", "description"],
 				columnHeaders: {
 					name: "Package",
