@@ -21,6 +21,14 @@ export default defineConfig({
 	adapter: netlify({
 		// edgeMiddleware: true
 	}),
+	// Prevent zod from being externalized to avoid conflicts between
+	// Astro's bundled zod v3 and user-installed zod v4
+	// See: https://github.com/withastro/astro/issues/14117
+	vite: {
+		ssr: {
+			noExternal: ["zod"],
+		},
+	},
 	integrations: [
 		starlight({
 			title: "repopo",
