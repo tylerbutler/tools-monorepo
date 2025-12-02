@@ -46,11 +46,14 @@ description: Guide for AI assistants helping users implement CCL parsers and tes
 
 ### Behaviors (Mutually Exclusive Choices)
 
-- `boolean_strict` vs `boolean_lenient`
-- `crlf_normalize_to_lf` vs `crlf_preserve_literal`
-- `tabs_preserve` vs `tabs_to_spaces`
-- `strict_spacing` vs `loose_spacing`
-- `list_coercion_enabled` vs `list_coercion_disabled`
+| Behavior Group | Options | Description |
+|----------------|---------|-------------|
+| Line Endings | `crlf_preserve_literal` vs `crlf_normalize_to_lf` | CRLF handling: preserve `\r` chars vs normalize to LF |
+| Boolean Parsing | `boolean_lenient` vs `boolean_strict` | Accept "yes"/"no" vs only "true"/"false" |
+| Tab Handling | `tabs_preserve` vs `tabs_to_spaces` | Tab character processing |
+| Whitespace | `strict_spacing` vs `loose_spacing` | Whitespace sensitivity |
+| List Access | `list_coercion_enabled` vs `list_coercion_disabled` | List access coercion behavior |
+| Array Ordering | `array_order_insertion` vs `array_order_lexicographic` | Preserve insertion order vs sort lexicographically |
 
 ### Variants (Specification Versions)
 
