@@ -69,11 +69,22 @@ export {
 } from "./json.js";
 export type {
 	ErrorLoggingFunction,
+	ExtendedLogger,
 	Logger,
 	LoggingFunction,
 } from "./logger.js";
 export { BasicLogger } from "./loggers/basic.js";
-export { ConsolaLogger } from "./loggers/consola.js";
+export {
+	ConsolaLogger,
+	type ConsolaLoggerOptions,
+	createConsolaLogger,
+	createExtendedConsolaLogger,
+} from "./loggers/consola.js";
+export {
+	createPrefixReporter,
+	type PrefixReporterOptions,
+	type PrefixStyle,
+} from "./loggers/prefixReporter.js";
 export {
 	detectAllPackageManagers,
 	detectFromLockfilePath,

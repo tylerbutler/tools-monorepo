@@ -85,6 +85,45 @@ export interface Logger {
 	formatError?: ((message: Error | string) => string) | undefined;
 }
 
+/**
+ * An extended logger interface with additional severity levels.
+ *
+ * @remarks
+ * ExtendedLogger adds fatal, debug, and trace levels to the base {@link Logger} interface.
+ * These additional levels provide more granular control for advanced logging scenarios:
+ * - `fatal` - Critical errors that typically cause program termination
+ * - `debug` - Debug information more detailed than verbose
+ * - `trace` - Finest-grained informational events
+ *
+ * @example
+ * ```typescript
+ * import { createExtendedConsolaLogger } from "@tylerbu/cli-api";
+ *
+ * const logger = createExtendedConsolaLogger("capsule");
+ * logger.fatal("Critical failure - shutting down");
+ * logger.debug("Connection pool state: active=5, idle=3");
+ * logger.trace("Entering function processItem()");
+ * ```
+ *
+ * @public
+ */
+export interface ExtendedLogger extends Logger {
+	/**
+	 * Logs a fatal error message. Used for critical failures that typically cause program termination.
+	 */
+	fatal: ErrorLoggingFunction;
+
+	/**
+	 * Logs a debug message. More detailed than verbose, for debugging purposes.
+	 */
+	debug: ErrorLoggingFunction;
+
+	/**
+	 * Logs a trace message. Finest-grained informational events for tracing program flow.
+	 */
+	trace: ErrorLoggingFunction;
+}
+
 export function logWithTime(
 	msg: string | Error,
 	logFunc: ErrorLoggingFunction,

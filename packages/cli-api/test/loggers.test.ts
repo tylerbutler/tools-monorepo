@@ -1,7 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { logWithTime } from "../src/logger.js";
 import { BasicLogger } from "../src/loggers/basic.js";
-import { ConsolaLogger } from "../src/loggers/consola.js";
+import {
+	ConsolaLogger,
+	createConsolaLogger,
+	createExtendedConsolaLogger,
+} from "../src/loggers/consola.js";
+import { createPrefixReporter } from "../src/loggers/prefixReporter.js";
 
 describe("BasicLogger", () => {
 	// Store original console methods
@@ -346,5 +351,372 @@ describe("logWithTime", () => {
 		const call = logFn.mock.calls[0][0] as string;
 		// picocolors wraps text in ANSI codes, just verify the format exists
 		expect(call).toMatch(/\[\d{2}:\d{2}:\d{2}\]/);
+	});
+});
+
+describe("createPrefixReporter", () => {
+	// Store original console methods
+	const originalLog = console.log;
+	const originalError = console.error;
+
+	// Mock console methods
+	let logSpy: ReturnType<typeof vi.fn>;
+	let errorSpy: ReturnType<typeof vi.fn>;
+
+	beforeEach(() => {
+		logSpy = vi.fn();
+		errorSpy = vi.fn();
+		console.log = logSpy;
+		console.error = errorSpy;
+	});
+
+	afterEach(() => {
+		console.log = originalLog;
+		console.error = originalError;
+		vi.clearAllMocks();
+	});
+
+	describe("capsule style", () => {
+		it("should format success as [NOTE]", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "success",
+				args: ["task completed"],
+				level: 3,
+				tag: "",
+				date: new Date(),
+			});
+			expect(logSpy).toHaveBeenCalledTimes(1);
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("[NOTE]");
+			expect(output).toContain("task completed");
+		});
+
+		it("should format info as [INFO]", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "info",
+				args: ["information message"],
+				level: 3,
+				tag: "",
+				date: new Date(),
+			});
+			expect(logSpy).toHaveBeenCalledTimes(1);
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("[INFO]");
+			expect(output).toContain("information message");
+		});
+
+		it("should format warning as [WARNING]", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "warn",
+				args: ["warning message"],
+				level: 2,
+				tag: "",
+				date: new Date(),
+			});
+			expect(logSpy).toHaveBeenCalledTimes(1);
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("[WARNING]");
+			expect(output).toContain("warning message");
+		});
+
+		it("should format error as [ERROR] to stderr", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "error",
+				args: ["error message"],
+				level: 1,
+				tag: "",
+				date: new Date(),
+			});
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const output = errorSpy.mock.calls[0][0] as string;
+			expect(output).toContain("[ERROR]");
+			expect(output).toContain("error message");
+		});
+
+		it("should format verbose as [VERBOSE]", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "verbose",
+				args: ["verbose message"],
+				level: 4,
+				tag: "",
+				date: new Date(),
+			});
+			expect(logSpy).toHaveBeenCalledTimes(1);
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("[VERBOSE]");
+			expect(output).toContain("verbose message");
+		});
+
+		it("should format fatal as [FATAL] to stderr", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "fatal",
+				args: ["fatal error"],
+				level: 0,
+				tag: "",
+				date: new Date(),
+			});
+			expect(errorSpy).toHaveBeenCalledTimes(1);
+			const output = errorSpy.mock.calls[0][0] as string;
+			expect(output).toContain("[FATAL]");
+			expect(output).toContain("fatal error");
+		});
+
+		it("should format debug as [DEBUG]", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "debug",
+				args: ["debug info"],
+				level: 5,
+				tag: "",
+				date: new Date(),
+			});
+			expect(logSpy).toHaveBeenCalledTimes(1);
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("[DEBUG]");
+			expect(output).toContain("debug info");
+		});
+
+		it("should format trace as [TRACE]", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "trace",
+				args: ["trace info"],
+				level: 5,
+				tag: "",
+				date: new Date(),
+			});
+			expect(logSpy).toHaveBeenCalledTimes(1);
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("[TRACE]");
+			expect(output).toContain("trace info");
+		});
+	});
+
+	describe("candy-wrapper style", () => {
+		it("should format success as # NOTE", () => {
+			const reporter = createPrefixReporter({ style: "candy-wrapper" });
+			reporter.log({
+				type: "success",
+				args: ["task completed"],
+				level: 3,
+				tag: "",
+				date: new Date(),
+			});
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("# NOTE");
+			expect(output).toContain("task completed");
+		});
+
+		it("should format warning as # WARNING", () => {
+			const reporter = createPrefixReporter({ style: "candy-wrapper" });
+			reporter.log({
+				type: "warn",
+				args: ["warning"],
+				level: 2,
+				tag: "",
+				date: new Date(),
+			});
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("# WARNING");
+		});
+	});
+
+	describe("tape style", () => {
+		it("should format success as // NOTE", () => {
+			const reporter = createPrefixReporter({ style: "tape" });
+			reporter.log({
+				type: "success",
+				args: ["task completed"],
+				level: 3,
+				tag: "",
+				date: new Date(),
+			});
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("// NOTE");
+			expect(output).toContain("task completed");
+		});
+
+		it("should format error as // ERROR", () => {
+			const reporter = createPrefixReporter({ style: "tape" });
+			reporter.log({
+				type: "error",
+				args: ["error"],
+				level: 1,
+				tag: "",
+				date: new Date(),
+			});
+			const output = errorSpy.mock.calls[0][0] as string;
+			expect(output).toContain("// ERROR");
+		});
+	});
+
+	describe("colors option", () => {
+		it("should apply colors by default", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "success",
+				args: ["test"],
+				level: 3,
+				tag: "",
+				date: new Date(),
+			});
+			const output = logSpy.mock.calls[0][0] as string;
+			// With colors enabled, ANSI codes should be present
+			// NOTE prefix should still be there
+			expect(output).toContain("NOTE");
+		});
+
+		it("should not apply colors when colors=false", () => {
+			const reporter = createPrefixReporter({
+				style: "capsule",
+				colors: false,
+			});
+			reporter.log({
+				type: "success",
+				args: ["test"],
+				level: 3,
+				tag: "",
+				date: new Date(),
+			});
+			const output = logSpy.mock.calls[0][0] as string;
+			// Without colors, the output should be plain text
+			expect(output).toBe("[NOTE] test");
+		});
+	});
+
+	describe("Error handling", () => {
+		it("should format Error objects with message and stack", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			const error = new Error("test error");
+			error.stack = "Error: test error\n    at Test.run";
+			reporter.log({
+				type: "error",
+				args: [error],
+				level: 1,
+				tag: "",
+				date: new Date(),
+			});
+			const output = errorSpy.mock.calls[0][0] as string;
+			expect(output).toContain("test error");
+			expect(output).toContain("at Test.run");
+		});
+
+		it("should handle multiple arguments", () => {
+			const reporter = createPrefixReporter({ style: "capsule" });
+			reporter.log({
+				type: "info",
+				args: ["first", "second", "third"],
+				level: 3,
+				tag: "",
+				date: new Date(),
+			});
+			const output = logSpy.mock.calls[0][0] as string;
+			expect(output).toContain("first second third");
+		});
+	});
+});
+
+describe("createConsolaLogger", () => {
+	it("should return a Logger with all required methods", () => {
+		const logger = createConsolaLogger("capsule");
+
+		expect(logger.log).toBeDefined();
+		expect(typeof logger.log).toBe("function");
+
+		expect(logger.success).toBeDefined();
+		expect(typeof logger.success).toBe("function");
+
+		expect(logger.info).toBeDefined();
+		expect(typeof logger.info).toBe("function");
+
+		expect(logger.warning).toBeDefined();
+		expect(typeof logger.warning).toBe("function");
+
+		expect(logger.error).toBeDefined();
+		expect(typeof logger.error).toBe("function");
+
+		expect(logger.verbose).toBeDefined();
+		expect(typeof logger.verbose).toBe("function");
+	});
+
+	it("should accept all prefix styles", () => {
+		const capsuleLogger = createConsolaLogger("capsule");
+		const candyLogger = createConsolaLogger("candy-wrapper");
+		const tapeLogger = createConsolaLogger("tape");
+
+		expect(capsuleLogger).toBeDefined();
+		expect(candyLogger).toBeDefined();
+		expect(tapeLogger).toBeDefined();
+	});
+
+	it("should accept colors option", () => {
+		const coloredLogger = createConsolaLogger("capsule", { colors: true });
+		const plainLogger = createConsolaLogger("capsule", { colors: false });
+
+		expect(coloredLogger).toBeDefined();
+		expect(plainLogger).toBeDefined();
+	});
+});
+
+describe("createExtendedConsolaLogger", () => {
+	it("should return an ExtendedLogger with all required methods", () => {
+		const logger = createExtendedConsolaLogger("capsule");
+
+		// Base Logger methods
+		expect(logger.log).toBeDefined();
+		expect(typeof logger.log).toBe("function");
+
+		expect(logger.success).toBeDefined();
+		expect(typeof logger.success).toBe("function");
+
+		expect(logger.info).toBeDefined();
+		expect(typeof logger.info).toBe("function");
+
+		expect(logger.warning).toBeDefined();
+		expect(typeof logger.warning).toBe("function");
+
+		expect(logger.error).toBeDefined();
+		expect(typeof logger.error).toBe("function");
+
+		expect(logger.verbose).toBeDefined();
+		expect(typeof logger.verbose).toBe("function");
+
+		// Extended methods
+		expect(logger.fatal).toBeDefined();
+		expect(typeof logger.fatal).toBe("function");
+
+		expect(logger.debug).toBeDefined();
+		expect(typeof logger.debug).toBe("function");
+
+		expect(logger.trace).toBeDefined();
+		expect(typeof logger.trace).toBe("function");
+	});
+
+	it("should accept all prefix styles", () => {
+		const capsuleLogger = createExtendedConsolaLogger("capsule");
+		const candyLogger = createExtendedConsolaLogger("candy-wrapper");
+		const tapeLogger = createExtendedConsolaLogger("tape");
+
+		expect(capsuleLogger).toBeDefined();
+		expect(candyLogger).toBeDefined();
+		expect(tapeLogger).toBeDefined();
+	});
+
+	it("should accept colors option", () => {
+		const coloredLogger = createExtendedConsolaLogger("capsule", {
+			colors: true,
+		});
+		const plainLogger = createExtendedConsolaLogger("capsule", {
+			colors: false,
+		});
+
+		expect(coloredLogger).toBeDefined();
+		expect(plainLogger).toBeDefined();
 	});
 });

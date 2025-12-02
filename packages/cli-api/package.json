@@ -30,6 +30,12 @@
 				"types": "./esm/loggers/consola.d.ts",
 				"default": "./esm/loggers/consola.js"
 			}
+		},
+		"./loggers/prefixReporter": {
+			"import": {
+				"types": "./esm/loggers/prefixReporter.d.ts",
+				"default": "./esm/loggers/prefixReporter.js"
+			}
 		}
 	},
 	"types": "./esm/index.d.ts",
