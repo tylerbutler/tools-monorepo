@@ -152,7 +152,12 @@ describe("BaseCommand logging", () => {
 	describe("quiet mode", () => {
 		it("suppresses success messages with --quiet", async () => {
 			const { error } = await runCommand(
-				["loggingTest", "--method=success", "--message=hiddensuccess", "--quiet"],
+				[
+					"loggingTest",
+					"--method=success",
+					"--message=hiddensuccess",
+					"--quiet",
+				],
 				{
 					root: import.meta.url,
 				},
@@ -172,7 +177,12 @@ describe("BaseCommand logging", () => {
 
 		it("suppresses warning messages with --quiet", async () => {
 			const { error } = await runCommand(
-				["loggingTest", "--method=warning", "--message=hiddenwarning", "--quiet"],
+				[
+					"loggingTest",
+					"--method=warning",
+					"--message=hiddenwarning",
+					"--quiet",
+				],
 				{
 					root: import.meta.url,
 				},
@@ -182,7 +192,12 @@ describe("BaseCommand logging", () => {
 
 		it("suppresses error messages with --quiet", async () => {
 			const { error } = await runCommand(
-				["loggingTest", "--method=logError", "--message=hiddenerror", "--quiet"],
+				[
+					"loggingTest",
+					"--method=logError",
+					"--message=hiddenerror",
+					"--quiet",
+				],
 				{
 					root: import.meta.url,
 				},
@@ -245,7 +260,13 @@ describe("BaseCommand logging", () => {
 	describe("verbose and quiet flags are mutually exclusive", () => {
 		it("fails when both --verbose and --quiet are provided", async () => {
 			const { error } = await runCommand(
-				["loggingTest", "--method=log", "--message=test", "--verbose", "--quiet"],
+				[
+					"loggingTest",
+					"--method=log",
+					"--message=test",
+					"--verbose",
+					"--quiet",
+				],
 				{
 					root: import.meta.url,
 				},
