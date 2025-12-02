@@ -88,12 +88,10 @@ export default class LoggingTestCommand extends BaseCommand<
 				break;
 			}
 			case "exit": {
-				this.exit(flags.message, flags["exit-code"]);
-				break;
+				return this.exit(flags.message, flags["exit-code"]);
 			}
 			case "exitWithCode": {
-				this.exit(flags["exit-code"]);
-				break;
+				return this.exit(flags["exit-code"]);
 			}
 			case "all": {
 				this.log(flags.message);
@@ -103,6 +101,9 @@ export default class LoggingTestCommand extends BaseCommand<
 				this.logError(message);
 				this.verbose(message);
 				break;
+			}
+			default: {
+				this.warning(`Unknown method: ${flags.method}`);
 			}
 		}
 	}
