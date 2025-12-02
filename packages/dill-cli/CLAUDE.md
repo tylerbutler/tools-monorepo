@@ -161,7 +161,6 @@ pnpm test:coverage
 
 **Test Structure:**
 - Unit tests in `test/` directory
-- Uses `memfs` for filesystem mocking
 - Uses `msw` (Mock Service Worker) for HTTP mocking
 - Coverage output in `.coverage/`
 
@@ -288,7 +287,6 @@ This pattern allows sharing command implementations across CLI tools.
 **Key Dev Dependencies:**
 - `vitest` - Testing framework
 - `msw` - HTTP request mocking
-- `memfs` - In-memory filesystem
 - `@oclif/plugin-command-snapshot` - Command snapshot testing
 
 ## Related Documentation

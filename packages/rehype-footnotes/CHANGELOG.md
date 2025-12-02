@@ -1,5 +1,11 @@
 # rehype-footnotes
 
+## 0.1.1
+
+### Patch Changes
+
+- Fix href/id mismatch in footnote references. Updates href attributes to match transformed footnote definition IDs (fn:X format), enabling Littlefoot.js to properly pair references with footnotes. _[`#502`](https://github.com/tylerbutler/tools-monorepo/pull/502) [`ba0aa1b`](https://github.com/tylerbutler/tools-monorepo/commit/ba0aa1b0c147e4d0b0999d6bda1eeda7ef64c440) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.1.0
 
 ### Minor Changes
