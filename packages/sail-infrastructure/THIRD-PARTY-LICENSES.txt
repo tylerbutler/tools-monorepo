@@ -187,7 +187,7 @@ SOFTWARE.
 The following npm packages may be included in this product:
 
  - @oclif/core@4.8.0
- - oclif@4.22.44
+ - oclif@4.22.50
 
 These packages each contain the following license:
 
