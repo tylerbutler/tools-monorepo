@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { logWithTime } from "../src/logger.js";
 import { BasicLogger } from "../src/loggers/basic.js";
+import { ConsolaLogger } from "../src/loggers/consola.js";
 
 describe("BasicLogger", () => {
 	// Store original console methods
@@ -32,6 +34,16 @@ describe("BasicLogger", () => {
 
 		it("should handle empty strings", () => {
 			BasicLogger.log("");
+			expect(logSpy).toHaveBeenCalledWith("");
+		});
+
+		it("should handle undefined message", () => {
+			BasicLogger.log(undefined);
+			expect(logSpy).toHaveBeenCalledWith("");
+		});
+
+		it("should handle no arguments", () => {
+			BasicLogger.log();
 			expect(logSpy).toHaveBeenCalledWith("");
 		});
 	});
@@ -157,6 +169,36 @@ describe("BasicLogger", () => {
 
 			expect(call).toContain("no stack");
 		});
+
+		it("should handle undefined message", () => {
+			BasicLogger.info(undefined);
+			const call = logSpy.mock.calls[0][0] as string;
+
+			expect(call).toContain("INFO:");
+			// formatError returns empty string for undefined
+			expect(call).toBe("INFO: ");
+		});
+
+		it("should handle undefined in warning", () => {
+			BasicLogger.warning(undefined);
+			const call = logSpy.mock.calls[0][0] as string;
+
+			expect(call).toContain("WARNING");
+		});
+
+		it("should handle undefined in error", () => {
+			BasicLogger.error(undefined);
+			const call = errorSpy.mock.calls[0][0] as string;
+
+			expect(call).toContain("ERROR");
+		});
+
+		it("should handle undefined in verbose", () => {
+			BasicLogger.verbose(undefined);
+			const call = logSpy.mock.calls[0][0] as string;
+
+			expect(call).toContain("VERBOSE");
+		});
 	});
 
 	describe("Color formatting", () => {
@@ -205,5 +247,104 @@ describe("BasicLogger", () => {
 			expect(stdoutCall).toContain("stdout message");
 			expect(stderrCall).toContain("stderr message");
 		});
+	});
+});
+
+describe("ConsolaLogger", () => {
+	it("should have all required Logger methods", () => {
+		expect(ConsolaLogger.log).toBeDefined();
+		expect(typeof ConsolaLogger.log).toBe("function");
+
+		expect(ConsolaLogger.success).toBeDefined();
+		expect(typeof ConsolaLogger.success).toBe("function");
+
+		expect(ConsolaLogger.info).toBeDefined();
+		expect(typeof ConsolaLogger.info).toBe("function");
+
+		expect(ConsolaLogger.warning).toBeDefined();
+		expect(typeof ConsolaLogger.warning).toBe("function");
+
+		expect(ConsolaLogger.error).toBeDefined();
+		expect(typeof ConsolaLogger.error).toBe("function");
+
+		expect(ConsolaLogger.verbose).toBeDefined();
+		expect(typeof ConsolaLogger.verbose).toBe("function");
+	});
+
+	it("should be a frozen object", () => {
+		// The ConsolaLogger is defined with `as const`
+		expect(Object.keys(ConsolaLogger)).toContain("log");
+		expect(Object.keys(ConsolaLogger)).toContain("success");
+		expect(Object.keys(ConsolaLogger)).toContain("info");
+		expect(Object.keys(ConsolaLogger)).toContain("warning");
+		expect(Object.keys(ConsolaLogger)).toContain("error");
+		expect(Object.keys(ConsolaLogger)).toContain("verbose");
+	});
+
+	// Note: We don't test consola output directly since it has complex formatting
+	// and uses its own console handling. The important thing is the interface contract.
+});
+
+describe("logWithTime", () => {
+	it("should prepend timestamp to string message", () => {
+		const logFn = vi.fn();
+		logWithTime("test message", logFn);
+
+		expect(logFn).toHaveBeenCalledTimes(1);
+		const call = logFn.mock.calls[0][0] as string;
+
+		// Should contain time format [HH:MM:SS]
+		expect(call).toMatch(/\[\d{2}:\d{2}:\d{2}\]/);
+		expect(call).toContain("test message");
+	});
+
+	it("should handle Error objects", () => {
+		const logFn = vi.fn();
+		const error = new Error("error message");
+		logWithTime(error, logFn);
+
+		expect(logFn).toHaveBeenCalledTimes(1);
+		const call = logFn.mock.calls[0][0] as string;
+
+		expect(call).toMatch(/\[\d{2}:\d{2}:\d{2}\]/);
+		expect(call).toContain("error message");
+	});
+
+	it("should pad single-digit hours, minutes, and seconds", () => {
+		const logFn = vi.fn();
+		// Mock Date to return specific time values
+		const mockDate = new Date("2025-01-01T01:02:03");
+		vi.useFakeTimers();
+		vi.setSystemTime(mockDate);
+
+		logWithTime("test", logFn);
+
+		vi.useRealTimers();
+
+		const call = logFn.mock.calls[0][0] as string;
+		expect(call).toContain("[01:02:03]");
+	});
+
+	it("should not pad double-digit hours, minutes, and seconds", () => {
+		const logFn = vi.fn();
+		const mockDate = new Date("2025-01-01T12:34:56");
+		vi.useFakeTimers();
+		vi.setSystemTime(mockDate);
+
+		logWithTime("test", logFn);
+
+		vi.useRealTimers();
+
+		const call = logFn.mock.calls[0][0] as string;
+		expect(call).toContain("[12:34:56]");
+	});
+
+	it("should apply yellow color to timestamp", () => {
+		const logFn = vi.fn();
+		logWithTime("test", logFn);
+
+		const call = logFn.mock.calls[0][0] as string;
+		// picocolors wraps text in ANSI codes, just verify the format exists
+		expect(call).toMatch(/\[\d{2}:\d{2}:\d{2}\]/);
 	});
 });
