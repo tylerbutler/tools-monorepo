@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile";
+import { resolve } from "pathe";
 import type { PackageJson } from "type-fest";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
@@ -34,7 +35,7 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 		name,
 		match: PackageJsonRegexMatch,
 		handler: async (innerArgs) => {
-			const json: J = await readJson(innerArgs.file);
+			const json: J = await readJson(resolve(innerArgs.root, innerArgs.file));
 			return packagePolicy(json, innerArgs);
 		},
 	};

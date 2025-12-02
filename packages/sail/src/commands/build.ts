@@ -107,7 +107,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		// const fluidConfig = getSailConfig(resolvedRoot, false);
 		// const isDefaultConfig = fluidConfig === DEFAULT_SAIL_CONFIG;
 
-		const buildRepo = new SailBuildRepo(process.cwd(), this);
+		const buildRepo = new SailBuildRepo(process.cwd(), this.logger);
 
 		// Confirm overwrite-cache option if enabled
 		if (overwriteCache) {
@@ -135,9 +135,10 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			verifyCacheIntegrity,
 			{
 				log: (message?: string) => this.log(message ?? ""),
+				success: (message?: string) => this.success(message ?? ""),
 				info: (msg?: string | Error) => this.log(String(msg ?? "")),
 				warning: (msg?: string | Error) => this.warning(String(msg ?? "")),
-				errorLog: (msg?: string | Error) => this.log(String(msg ?? "")),
+				error: (msg?: string | Error) => this.log(String(msg ?? "")),
 				verbose: (msg?: string | Error) => this.log(String(msg ?? "")),
 			},
 			overwriteCache,
@@ -199,7 +200,12 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		}
 
 		try {
-			const buildResult = await runBuild(buildRepo, options, timer, this);
+			const buildResult = await runBuild(
+				buildRepo,
+				options,
+				timer,
+				this.logger,
+			);
 
 			// Wait for all pending cache operations to complete before exit
 			// This prevents "unsettled top-level await" warnings when background

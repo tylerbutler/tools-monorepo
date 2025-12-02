@@ -56,7 +56,9 @@ export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
 				name: LicenseFileExists.name,
 				file: ".", // Report against repository root
 				autoFixable: false,
-				errorMessage: `No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
+				errorMessages: [
+					`No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
+				],
 			};
 
 			return result;

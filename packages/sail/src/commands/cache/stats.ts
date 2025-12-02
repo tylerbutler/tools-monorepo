@@ -32,6 +32,6 @@ export default class CacheStatsCommand extends BaseSailCommand<
 
 		const sharedCache = await initializeCacheOrFail(this, cacheDir);
 
-		await displayCacheStatistics(this, sharedCache);
+		await displayCacheStatistics(this.logger, sharedCache);
 	}
 }
