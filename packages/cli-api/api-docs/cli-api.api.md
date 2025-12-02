@@ -178,7 +178,6 @@ export interface JsonWriteOptions {
 // @public
 export interface Logger {
     error: ErrorLoggingFunction;
-    // (undocumented)
     formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
     log: (message?: string, ...args: unknown[]) => void;

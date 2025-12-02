@@ -13,7 +13,33 @@ const consola = createConsola({
 });
 
 /**
- * A logger that logs using the consola default colorful logger.
+ * A {@link Logger} with rich formatting using the consola library.
+ *
+ * @remarks
+ * ConsolaLogger provides enhanced visual output with icons and colors.
+ * Requires the `consola` peer dependency to be installed.
+ *
+ * Installation:
+ * ```bash
+ * pnpm add consola
+ * ```
+ *
+ * Output format:
+ * ```
+ * ✔ Build completed successfully
+ * ℹ Processing 5 files
+ * ⚠ Config file not found, using defaults
+ * ✖ Failed to read package.json
+ * ```
+ *
+ * @example
+ * ```typescript
+ * import { ConsolaLogger } from "@tylerbu/cli-api/loggers/consola.js";
+ *
+ * export default class MyCommand extends BaseCommand<typeof MyCommand> {
+ *   protected override _logger = ConsolaLogger;
+ * }
+ * ```
  *
  * @alpha
  */

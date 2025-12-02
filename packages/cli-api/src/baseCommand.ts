@@ -61,20 +61,43 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 	private suppressLogging = false;
 
 	/**
-	 * The internal Logger instance that the command will use for logging.
-	 * Override this in subclasses to use a different logger implementation.
+	 * The Logger instance that the command uses for output formatting.
+	 *
+	 * @remarks
+	 * Override this property in subclasses to use a different logger implementation.
+	 * The default is {@link BasicLogger}.
+	 *
+	 * @example
+	 * ```typescript
+	 * import { ConsolaLogger } from "@tylerbu/cli-api/loggers/consola.js";
+	 *
+	 * export default class MyCommand extends BaseCommand<typeof MyCommand> {
+	 *   protected override _logger = ConsolaLogger;
+	 * }
+	 * ```
 	 */
 	protected _logger: Logger = BasicLogger;
 
 	/**
-	 * Returns a Logger-compatible object that can be passed to utility functions expecting a Logger.
+	 * Returns a Logger-compatible object that can be passed to utility functions.
 	 *
 	 * @remarks
-	 * This getter provides a clean separation between:
-	 * - Command methods (log, info, warning, etc.) which respect flags like --quiet
-	 * - The Logger interface which utility functions can use directly
+	 * Use this getter to pass a logger to utility functions that expect a {@link Logger} interface.
+	 * The returned logger respects the command's `--quiet` and `--verbose` flags.
 	 *
-	 * The returned logger respects the command's suppressLogging flag.
+	 * @example
+	 * ```typescript
+	 * async function processFiles(files: string[], logger: Logger): Promise<void> {
+	 *   logger.info(`Processing ${files.length} files`);
+	 *   for (const file of files) {
+	 *     logger.verbose(`Processing: ${file}`);
+	 *   }
+	 *   logger.success("All files processed");
+	 * }
+	 *
+	 * // In command:
+	 * await processFiles(files, this.logger);
+	 * ```
 	 */
 	public get logger(): Logger {
 		return {

@@ -21,46 +21,67 @@ export type ErrorLoggingFunction = (
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
 /**
- * A general-purpose logger object.
+ * A general-purpose logger interface for CLI applications.
  *
  * @remarks
+ * The Logger interface provides a consistent API for logging at different severity levels.
+ * Implementations can customize output formatting (colors, icons, prefixes) while commands
+ * use the same logging methods.
  *
- * The `log` method is the primary logging function. The other functions can be used to support logging at different
- * levels. Methods other than `log` may modify the error message in some way (e.g. by prepending some text to it).
+ * Built-in implementations:
+ * - {@link BasicLogger} - Simple console output with colored prefixes (default)
+ * - {@link ConsolaLogger} - Rich formatting with icons via consola library (alpha)
+ *
+ * To create a custom logger, implement this interface:
+ *
+ * @example
+ * ```typescript
+ * const MyLogger: Logger = {
+ *   log: (msg) => console.log(msg),
+ *   success: (msg) => console.log(`✓ ${msg}`),
+ *   info: (msg) => console.log(`ℹ ${msg instanceof Error ? msg.message : msg}`),
+ *   warning: (msg) => console.warn(`⚠ ${msg instanceof Error ? msg.message : msg}`),
+ *   error: (msg) => console.error(`✖ ${msg instanceof Error ? msg.message : msg}`),
+ *   verbose: (msg) => console.log(`[verbose] ${msg instanceof Error ? msg.message : msg}`),
+ * };
+ * ```
  *
  * @public
  */
 export interface Logger {
 	/**
-	 * Logs a message as-is. Allows optional message for blank lines.
+	 * Logs a message as-is to stdout. Allows optional message for blank lines.
 	 */
 	log: (message?: string, ...args: unknown[]) => void;
 
 	/**
-	 * Logs a success message.
+	 * Logs a success message (typically with green/positive formatting).
 	 */
 	success: LoggingFunction;
 
 	/**
-	 * Logs an informational message. Message is required.
+	 * Logs an informational message.
 	 */
 	info: ErrorLoggingFunction;
 
 	/**
-	 * Logs a warning message. Message is required.
+	 * Logs a warning message (typically with yellow/caution formatting).
 	 */
 	warning: ErrorLoggingFunction;
 
 	/**
-	 * Logs an error message without exiting. Message is required.
+	 * Logs an error message to stderr without exiting (typically with red/error formatting).
 	 */
 	error: ErrorLoggingFunction;
 
 	/**
-	 * Logs a verbose message. Message is required.
+	 * Logs a verbose/debug message. In commands, only shown when --verbose flag is enabled.
 	 */
 	verbose: ErrorLoggingFunction;
 
+	/**
+	 * Optional hook to customize error formatting for Error objects.
+	 */
 	formatError?: ((message: Error | string) => string) | undefined;
 }
 
