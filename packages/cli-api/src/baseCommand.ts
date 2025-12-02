@@ -65,7 +65,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 	 *
 	 * @remarks
 	 * Override this property in subclasses to use a different logger implementation.
-	 * The default is {@link BasicLogger}.
+	 * The default is the logger returned by {@link createBasicLogger}.
 	 *
 	 * @example
 	 * ```typescript

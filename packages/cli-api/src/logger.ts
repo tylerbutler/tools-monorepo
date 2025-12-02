@@ -29,8 +29,8 @@ export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
  * use the same logging methods.
  *
  * Built-in implementations:
- * - {@link BasicLogger} - Simple console output with colored prefixes (default)
- * - {@link ConsolaLogger} - Rich formatting with icons via consola library (alpha)
+ * - {@link createBasicLogger} - Simple console output with colored prefixes (default)
+ * - {@link createConsolaLogger} - Rich formatting with icons via consola library (alpha)
  *
  * To create a custom logger, implement this interface:
  *

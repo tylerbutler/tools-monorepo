@@ -78,13 +78,13 @@ function formatError(message: Error | string | undefined): string {
 }
 
 /**
- * Creates a {@link Logger} with configurable prefix styles using consola.
+ * Creates a {@link Logger} using consola with optional prefix styles.
  *
  * @remarks
- * This factory function creates a logger that formats output with styled prefixes.
- * The SUCCESS level is rendered as NOTE across all styles.
+ * When called without arguments, returns a logger with consola's default formatting
+ * (fancy output with icons like ✔, ℹ, ⚠, ✖).
  *
- * Available styles:
+ * When a style is provided, uses custom prefix formatting:
  * - `capsule` - Bracketed prefixes: `[NOTE]`, `[INFO]`, `[WARNING]`, `[ERROR]`, `[VERBOSE]`
  * - `candy-wrapper` - Hash prefixes: `# NOTE`, `# INFO`, `# WARNING`, `# ERROR`, `# VERBOSE`
  * - `tape` - Comment prefixes: `// NOTE`, `// INFO`, `// WARNING`, `// ERROR`, `// VERBOSE`
@@ -93,25 +93,33 @@ function formatError(message: Error | string | undefined): string {
  * ```typescript
  * import { createConsolaLogger } from "@tylerbu/cli-api";
  *
- * // Create a logger with capsule style
- * const logger = createConsolaLogger("capsule");
- * logger.success("Done!");  // [NOTE] Done!
- * logger.info("Working.."); // [INFO] Working..
+ * // Default consola formatting (icons)
+ * const logger = createConsolaLogger();
+ * logger.success("Done!");  // ✔ Done!
+ *
+ * // Custom prefix style
+ * const styledLogger = createConsolaLogger("capsule");
+ * styledLogger.info("Working.."); // [INFO] Working..
  *
  * // Disable colors
  * const plainLogger = createConsolaLogger("tape", { colors: false });
  * ```
  *
- * @param style - The prefix style to use
+ * @param style - Optional prefix style to use
  * @param options - Optional configuration
  * @returns A Logger instance
  *
  * @public
  */
 export function createConsolaLogger(
-	style: PrefixStyle,
+	style?: PrefixStyle,
 	options?: ConsolaLoggerOptions,
 ): Logger {
+	// Return default consola logger when no style is specified
+	if (style === undefined) {
+		return ConsolaLogger;
+	}
+
 	const { colors = true } = options ?? {};
 
 	const styledConsola = createConsola({

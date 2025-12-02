@@ -40,36 +40,31 @@ function error(msg: string | Error | undefined) {
 }
 
 /**
- * A {@link Logger} that logs directly to the console with colored prefixes.
+ * Creates a {@link Logger} with simple console output and colored prefixes.
  *
  * @remarks
- * BasicLogger is the default logger for all commands extending {@link BaseCommand}.
- * It uses picocolors for colored output:
+ * This factory function returns a logger that outputs to the console with
+ * colored prefixes for different severity levels:
  * - SUCCESS: green prefix
  * - WARNING: yellow prefix
  * - ERROR: red prefix (to stderr)
  *
- * Output format:
- * ```
- * SUCCESS: Build completed successfully
- * INFO: Processing 5 files
- * WARNING: Config file not found, using defaults
- * ERROR: Failed to read package.json
- * VERBOSE: Cache hit for file.ts
- * ```
- *
- * @example
- * ```typescript
- * // BasicLogger is the default - no action needed for commands
- * // Or set explicitly in a command:
- * protected _logger: Logger = BasicLogger;
- *
- * // Or use directly:
- * import { BasicLogger } from "@tylerbu/cli-api/loggers/basic.js";
- * BasicLogger.success("Operation completed");
- * ```
+ * @returns A Logger instance
  *
  * @public
+ */
+export function createBasicLogger(): Logger {
+	return BasicLogger;
+}
+
+/**
+ * A {@link Logger} that logs directly to the console with colored prefixes.
+ *
+ * @remarks
+ * This is the default logger implementation. Use {@link createBasicLogger} to
+ * obtain an instance of this logger.
+ *
+ * @internal
  */
 export const BasicLogger: Logger = {
 	/**
