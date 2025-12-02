@@ -107,10 +107,19 @@
 		"targets": {
 			"build": {
 				"dependsOn": [
+					"build:vite"
+				],
+				"executor": "nx:noop"
+			},
+			"build:vite": {
+				"dependsOn": [
 					"^build",
 					"sync-data",
-					"sync-svelte-kit",
-					"build:vite"
+					"sync-svelte-kit"
+				],
+				"executor": "nx:noop",
+				"outputs": [
+					"{projectRoot}/build/**"
 				]
 			},
 			"bundlemon": {
@@ -123,7 +132,12 @@
 				],
 				"cache": false
 			},
-			"ci": {}
+			"ci": {
+				"executor": "nx:noop"
+			},
+			"test": {
+				"executor": "nx:noop"
+			}
 		}
 	}
 }
