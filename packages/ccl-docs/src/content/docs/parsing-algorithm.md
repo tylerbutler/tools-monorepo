@@ -26,7 +26,7 @@ nested =
   sibling = another nested
 ```
 
-### Stage 1: Parse Entries
+### Parse Entries
 
 Split lines on first `=` character:
 
@@ -44,7 +44,7 @@ Split lines on first `=` character:
 - Empty key `= value` → list item
 - Comment entry `/ = text` → key is `/`, value is `text`
 
-### Stage 2: Build Hierarchy
+### Build Hierarchy
 
 Group entries by indentation level:
 
@@ -64,7 +64,7 @@ Entry {key: "parent", value: "child = nested\nsibling = another"}
 - Lines with MORE indentation than previous = part of previous value
 - Lines with SAME/LESS indentation = new entry at that level
 
-### Stage 3: Recursive Parsing (Fixed Point)
+### Recursive Parsing (Fixed Point)
 
 Parse values that contain CCL syntax:
 
@@ -93,13 +93,13 @@ users =
   = bob
 ```
 
-Step 1 - Parse entries:
+**Parse entries:**
 ```
 Entry {key: "database", value: "host = localhost\nport = 5432"}
 Entry {key: "users", value: "= alice\n= bob"}
 ```
 
-Step 2 - Recursive parsing:
+**Recursive parsing:**
 ```
 database.value contains '=' → parse recursively:
   Entry {key: "host", value: "localhost"}
@@ -110,7 +110,7 @@ users.value contains '=' → parse recursively:
   Entry {key: "", value: "bob"}
 ```
 
-Step 3 - Build objects:
+**Build objects:**
 ```json
 {
   "database": {
@@ -129,9 +129,9 @@ Pseudocode for recursive parser:
 
 ```python
 def parse_ccl(text):
-    entries = parse_entries(text)  # Stage 1: split on '='
-    hierarchy = build_hierarchy(entries)  # Stage 2: group by indentation
-    return recursively_parse(hierarchy)  # Stage 3: fixed point
+    entries = parse_entries(text)  # split on '='
+    hierarchy = build_hierarchy(entries)  # group by indentation
+    return recursively_parse(hierarchy)  # fixed point
 
 def recursively_parse(entries):
     result = {}
