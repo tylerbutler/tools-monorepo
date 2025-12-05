@@ -69,13 +69,13 @@
 		"@types/micromatch": "^4.0.10",
 		"@types/node": "^20.19.25",
 		"@types/semver": "^7.7.1",
-		"@vitest/coverage-v8": "^3.2.4",
+		"@vitest/coverage-v8": "^4.0.15",
 		"concurrently": "^9.2.1",
 		"rimraf": "^6.1.2",
 		"ts-node": "^10.9.2",
 		"typedoc": "^0.28.15",
 		"typedoc-plugin-markdown": "^4.9.0",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.15"
 	},
 	"engines": {
 		"node": ">=18.0.0"
