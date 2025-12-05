@@ -57,6 +57,34 @@ combined = compose(dev_entries, prod_entries)
 final_config = build_hierarchy(combined)
 ```
 
+## Formatting and I/O
+
+CCL provides two formatting functions for different use cases.
+
+**Common Functions**:
+- `print(entries)` - Structure-preserving format (entry-level isomorphism)
+- `canonical_format(model)` - Semantic-preserving format (model-level transformation)
+
+**Key Properties**:
+- `print(parse(x)) == x` for inputs in standard format
+- `parse(print(parse(x))) == parse(x)` (round-trip isomorphism)
+
+**Example**:
+```ccl
+config =
+  host = localhost
+  port = 8080
+```
+
+After `parse` → `print`:
+```ccl
+config =
+  host = localhost
+  port = 8080
+```
+
+See [Formatting Functions](/formatting-functions) for detailed guidance on when to use each function.
+
 ## Experimental Features
 
 Some implementations provide additional experimental features:

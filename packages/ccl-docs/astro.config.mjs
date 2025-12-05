@@ -95,6 +95,7 @@ export default defineConfig({
 						{ slug: "implementing-ccl" },
 						{ slug: "parsing-algorithm" },
 						{ slug: "library-features" },
+						{ slug: "formatting-functions" },
 						{ slug: "test-suite-guide" },
 					],
 				},
