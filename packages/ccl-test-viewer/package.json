@@ -53,7 +53,7 @@
 	},
 	"dependencies": {
 		"@andypf/json-viewer": "^2.2.0",
-		"@lucide/svelte": "^0.553.0",
+		"@lucide/svelte": "^0.555.0",
 		"@tauri-apps/api": "^2.9.0",
 		"@tauri-apps/plugin-dialog": "^2.4.2",
 		"@tauri-apps/plugin-fs": "^2.4.4",
@@ -94,7 +94,7 @@
 		"svelte": "^5.45.2",
 		"svelte-check": "^4.3.4",
 		"tailwindcss": "^4.1.17",
-		"tsx": "^4.20.6",
+		"tsx": "^4.21.0",
 		"typescript": "~5.9.3",
 		"vite": "^7.2.4",
 		"vite-plugin-devtools-json": "^1.0.0",
