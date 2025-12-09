@@ -53,7 +53,7 @@
 	},
 	"dependencies": {
 		"@andypf/json-viewer": "^2.2.0",
-		"@lucide/svelte": "^0.555.0",
+		"@lucide/svelte": "^0.556.0",
 		"@tauri-apps/api": "^2.9.0",
 		"@tauri-apps/plugin-dialog": "^2.4.2",
 		"@tauri-apps/plugin-fs": "^2.4.4",
@@ -86,7 +86,7 @@
 		"bits-ui": "^2.14.4",
 		"bundlemon": "^3.1.0",
 		"happy-dom": "^20.0.11",
-		"jsdom": "^27.2.0",
+		"jsdom": "^27.3.0",
 		"msw": "^2.12.3",
 		"playwright": "^1.57.0",
 		"sonda": "^0.10.0",
