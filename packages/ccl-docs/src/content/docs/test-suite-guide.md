@@ -25,7 +25,8 @@ Each test includes:
 - **Core**: `parse`, `build_hierarchy`
 - **Typed Access**: `get_string`, `get_int`, `get_bool`, `get_float`, `get_list`
 - **Processing**: `filter`, `compose`, `expand_dotted`
-- **Formatting**: `canonical_format`
+- **Formatting**: `print`, `canonical_format`, `round_trip`
+- **Algebraic Properties**: `compose_associative`, `identity_left`, `identity_right`
 
 **Features** - Optional language features:
 - `comments`, `experimental_dotted_keys`, `empty_keys`, `multiline`, `unicode`, `whitespace`
@@ -35,36 +36,46 @@ Each test includes:
 - `boolean_strict` vs `boolean_lenient`
 - `list_coercion_enabled` vs `list_coercion_disabled`
 
-## Progressive Implementation
+## Filtering Tests by Function
 
-### Phase 1: Core Parsing
-**Validation**: `parse`
+### Core Parsing
 
-Filter tests:
+**`parse`** - Filter tests:
 ```javascript
 tests.filter(t => t.validation === 'parse')
 ```
 
-### Phase 2: Object Construction
-**Validation**: `build_hierarchy`
-
-Filter tests:
+**`build_hierarchy`** - Filter tests:
 ```javascript
 tests.filter(t => t.validation === 'build_hierarchy')
 ```
 
-### Phase 3: Typed Access
-**Validation**: `get_string`, `get_int`, `get_bool`, `get_float`, `get_list`
+### Typed Access
 
-Filter tests:
+**`get_string`, `get_int`, `get_bool`, `get_float`, `get_list`** - Filter tests:
 ```javascript
 tests.filter(t => t.validation.startsWith('get_'))
 ```
 
-### Phase 4: Optional Features
-**Features**: `comments`, `experimental_dotted_keys`
+### Formatting
 
-Filter by supported features:
+**`print`, `round_trip`** - Filter tests:
+```javascript
+tests.filter(t => t.validation === 'print' || t.validation === 'round_trip')
+```
+
+The `print` function verifies structure-preserving output. For inputs in standard format (single space around `=`, 2-space indentation), `print(parse(x)) == x`.
+
+### Algebraic Properties
+
+**`compose_associative`, `identity_left`, `identity_right`** - These tests use multiple inputs to verify monoid properties:
+```javascript
+tests.filter(t => ['compose_associative', 'identity_left', 'identity_right'].includes(t.validation))
+```
+
+### Optional Features
+
+Filter by supported features (`comments`, `experimental_dotted_keys`, etc.):
 ```javascript
 tests.filter(t => t.features.every(f => supportedFeatures.includes(f)))
 ```

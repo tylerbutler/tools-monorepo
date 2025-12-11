@@ -229,37 +229,43 @@ function getCompatibleTests(
 }
 ```
 
-## Function-Based Progressive Implementation
+## CCL Functions
 
-Implement CCL functions in this order:
+### Core Functions (Required)
 
-### Stage 1: Core Parsing (Required)
-**163 tests for `parse`**
+**`parse`** - Convert text to flat key-value entries
 - Split lines on first `=`
 - Trim keys, preserve value whitespace
 - Handle multiline via indentation
 
-**77 tests for `build_hierarchy`**
+**`build_hierarchy`** - Build nested objects via recursive parsing
 - Implement internal `parse_indented` helper (not public API) that strips common leading whitespace from multiline values
 - Recursively parse entry values using this helper
 - Fixed-point algorithm: stop when values contain no `=`
 - Create nested objects from flat entries
 
-### Stage 2: Typed Access (Optional - 84 tests total)
-- `get_string` - 7 tests (28 assertions)
-- `get_int` - 11 tests (47 assertions)
-- `get_bool` - 12 tests (49 assertions)
-- `get_float` - 6 tests (28 assertions)
-- `get_list` - 48 tests (186 assertions)
+### Typed Access Functions (Optional)
 
-### Stage 3: Processing (Optional - 38 tests total)
-- `filter` - 3 tests - Remove comment entries
-- `compose` - 9 tests - Monoid composition
-- `canonical_format` - 14 tests - Standardized output
-- `round_trip` - 12 tests - Format → parse identity
+Extract values with type conversion:
+- `get_string` - String extraction
+- `get_int` - Integer parsing
+- `get_bool` - Boolean parsing
+- `get_float` - Float parsing
+- `get_list` - List extraction
 
-### Experimental (NOT Standard Progression)
-- Dotted keys - 10 tests - **Explicitly experimental**
+### Processing Functions (Optional)
+
+- `filter` - Remove comment entries
+- `compose` - Monoid composition of entry lists
+
+### Formatting Functions (Optional)
+
+- `canonical_format` - Standardized output
+- `round_trip` - Format → parse identity
+
+### Experimental Functions
+
+- `expand_dotted` - Dotted key expansion (`foo.bar` → nested) - **Explicitly experimental**
 
 ## Common AI Assistant Pitfalls
 
