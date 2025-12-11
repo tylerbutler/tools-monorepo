@@ -6,10 +6,10 @@
  * Tree-sitter Language object for CCL
  */
 export interface Language {
-  /**
-   * The ABI version number that this Language was generated for
-   */
-  readonly version: number;
+	/**
+	 * The ABI version number that this Language was generated for
+	 */
+	readonly version: number;
 }
 
 /**
@@ -27,43 +27,43 @@ export const nodeTypeInfo: NodeTypeInfo[] | undefined;
  * Information about a node type in the grammar
  */
 export interface NodeTypeInfo {
-  type: string;
-  named: boolean;
-  fields?: Record<string, FieldInfo>;
-  children?: ChildInfo;
-  subtypes?: SubtypeInfo[];
+	type: string;
+	named: boolean;
+	fields?: Record<string, FieldInfo>;
+	children?: ChildInfo;
+	subtypes?: SubtypeInfo[];
 }
 
 /**
  * Information about a field in a node type
  */
 export interface FieldInfo {
-  multiple: boolean;
-  required: boolean;
-  types: TypeInfo[];
+	multiple: boolean;
+	required: boolean;
+	types: TypeInfo[];
 }
 
 /**
  * Information about children of a node type
  */
 export interface ChildInfo {
-  multiple: boolean;
-  required: boolean;
-  types: TypeInfo[];
+	multiple: boolean;
+	required: boolean;
+	types: TypeInfo[];
 }
 
 /**
  * Information about a type
  */
 export interface TypeInfo {
-  type: string;
-  named: boolean;
+	type: string;
+	named: boolean;
 }
 
 /**
  * Information about a subtype
  */
 export interface SubtypeInfo {
-  type: string;
-  named: boolean;
+	type: string;
+	named: boolean;
 }
