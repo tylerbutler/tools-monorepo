@@ -48,7 +48,6 @@ jobs:
 
       - uses: ./.github/actions/setup-nx
         with:
-          enable-cache: false
           # Nx Cloud enabled by: repository variable (NX_CLOUD_MAIN/NX_CLOUD_PR) OR 'nx-cloud' PR label
           enable-nx-cloud-var: ${{ github.ref == 'refs/heads/main' && vars.NX_CLOUD_MAIN || (vars.NX_CLOUD_PR == 'true' || steps.nx-cloud-label.outputs.enabled == 'true') }}
           nx-cloud-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
