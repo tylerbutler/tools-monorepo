@@ -38,7 +38,8 @@ jobs:
       - uses: ./.github/actions/setup-nx
         with:
           enable-cache: false
-          # Nx Cloud disabled by default (enable-nx-cloud: false)
+          # Nx Cloud controlled by repository variables: NX_CLOUD_MAIN for main branch, NX_CLOUD_PR for PRs
+          enable-nx-cloud-var: ${{ github.ref == 'refs/heads/main' && vars.NX_CLOUD_MAIN || vars.NX_CLOUD_PR }}
 
       - name: Run CI checks, builds, and tests
         run: |
