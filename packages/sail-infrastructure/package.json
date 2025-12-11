@@ -67,7 +67,7 @@
 		"@oclif/test": "^4.1.15",
 		"@types/fs-extra": "^11.0.4",
 		"@types/micromatch": "^4.0.10",
-		"@types/node": "^20.19.25",
+		"@types/node": "^25.0.0",
 		"@types/semver": "^7.7.1",
 		"@vitest/coverage-v8": "^3.2.4",
 		"concurrently": "^9.2.1",
