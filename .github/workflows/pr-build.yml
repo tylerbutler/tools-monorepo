@@ -6,7 +6,7 @@ on:
       - main
 
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
     branches:
       - main
 
@@ -35,11 +35,22 @@ jobs:
 
       - uses: ./.github/actions/setup-node-pnpm
 
+      # Check if PR has nx-cloud label to opt-in to Nx Cloud
+      - name: Check for nx-cloud label
+        id: nx-cloud-label
+        if: github.event_name == 'pull_request'
+        run: |
+          if echo '${{ toJson(github.event.pull_request.labels.*.name) }}' | jq -e 'index("nx-cloud")' > /dev/null; then
+            echo "enabled=true" >> $GITHUB_OUTPUT
+          else
+            echo "enabled=false" >> $GITHUB_OUTPUT
+          fi
+
       - uses: ./.github/actions/setup-nx
         with:
-          enable-cache: false
-          # Nx Cloud controlled by repository variables: NX_CLOUD_MAIN for main branch, NX_CLOUD_PR for PRs
-          enable-nx-cloud-var: ${{ github.ref == 'refs/heads/main' && vars.NX_CLOUD_MAIN || vars.NX_CLOUD_PR }}
+          # Nx Cloud enabled by: repository variable (NX_CLOUD_MAIN/NX_CLOUD_PR) OR 'nx-cloud' PR label
+          enable-nx-cloud-var: ${{ github.ref == 'refs/heads/main' && vars.NX_CLOUD_MAIN || (vars.NX_CLOUD_PR == 'true' || steps.nx-cloud-label.outputs.enabled == 'true') }}
+          nx-cloud-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
       - name: Run CI checks, builds, and tests
         run: |
