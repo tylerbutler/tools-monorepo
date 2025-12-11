@@ -32,7 +32,7 @@ const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITH
 
 interface GeneratedTest {
 	name: string;
-	input: string;
+	inputs: string[];
 	validation: string;
 	expected: {
 		count: number;
@@ -304,7 +304,10 @@ function generateSearchIndex(categories: TestCategory[]): SearchIndex {
 			}
 
 			// Index by input content
-			const inputTokens = test.input.toLowerCase().split(/[=\s\n]+/);
+			const inputTokens = test.inputs
+				.join("\n")
+				.toLowerCase()
+				.split(/[=\s\n]+/);
 			for (const token of inputTokens.filter((t) => t.length > 2)) {
 				if (!index.byInput[token]) index.byInput[token] = [];
 				index.byInput[token].push(test.name);
@@ -347,7 +350,7 @@ async function generateTypeDefinitions(
 
 export interface GeneratedTest {
 	name: string;
-	input: string;
+	inputs: string[];
 	validation: string;
 	expected: {
 		count: number;

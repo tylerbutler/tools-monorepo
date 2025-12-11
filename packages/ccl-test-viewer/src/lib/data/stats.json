@@ -1,6 +1,6 @@
 {
-	"totalTests": 359,
-	"totalAssertions": 627,
+	"totalTests": 393,
+	"totalAssertions": 660,
 	"categories": {
 		"Advanced Processing": 17,
 		"Comments": 6,
@@ -10,43 +10,49 @@
 		"Edge Cases": 35,
 		"Error Handling": 6,
 		"List Operations": 51,
-		"Proposed Behavior": 60,
+		"Proposed Behavior": 65,
 		"Reference Compliant": 44,
 		"Typed Access": 74,
+		"Whitespace Behaviors": 28,
 		"Property Algebraic": 15,
-		"Property Round Trip": 17
+		"Property Round Trip": 18
 	},
 	"functions": {
-		"parse": 164,
+		"parse": 174,
 		"filter": 3,
-		"build_hierarchy": 78,
-		"parse_indented": 10,
-		"get_string": 7,
-		"get_list": 42,
-		"canonical_format": 14,
+		"build_hierarchy": 83,
+		"parse_indented": 12,
+		"get_string": 11,
+		"get_list": 43,
+		"canonical_format": 17,
 		"get_int": 11,
 		"get_float": 6,
 		"get_bool": 12,
+		"compose_associative": 3,
+		"identity_left": 3,
+		"identity_right": 3,
 		"round_trip": 12
 	},
 	"features": {
-		"empty_keys": 82,
+		"empty_keys": 84,
 		"comments": 21,
-		"multiline": 15,
-		"whitespace": 32,
+		"multiline": 22,
+		"whitespace": 60,
 		"unicode": 10,
 		"optional_typed_accessors": 68
 	},
 	"behaviors": {
 		"array_order_insertion": 9,
 		"array_order_lexicographic": 25,
-		"tabs_preserve": 7,
-		"list_coercion_enabled": 9,
+		"tabs_preserve": 13,
+		"list_coercion_enabled": 18,
 		"list_coercion_disabled": 12,
 		"crlf_preserve_literal": 4,
 		"crlf_normalize_to_lf": 4,
-		"strict_spacing": 1,
+		"strict_spacing": 2,
 		"boolean_strict": 7,
-		"boolean_lenient": 6
+		"boolean_lenient": 6,
+		"loose_spacing": 11,
+		"tabs_to_spaces": 7
 	}
 }

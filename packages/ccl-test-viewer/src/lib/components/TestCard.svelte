@@ -103,7 +103,7 @@ const expectedSummary = $derived.by(() => {
 			<h4 class="text-sm font-medium text-muted-foreground mb-2">Input</h4>
 			<div class="bg-muted/50 rounded-md p-3">
 				<WhitespaceCodeHighlight
-					code={truncateInput(test.input)}
+					code={truncateInput(test.inputs.join("\n"))}
 					language="ccl"
 				/>
 			</div>

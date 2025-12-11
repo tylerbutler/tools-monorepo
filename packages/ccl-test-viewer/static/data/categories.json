@@ -16,7 +16,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "a = 1\nb = 2\nb = 20\nc = 3",
+				"inputs": ["a = 1\nb = 2\nb = 20\nc = 3"],
 				"name": "composition_stability_duplicate_keys_parse",
 				"source_test": "composition_stability_duplicate_keys",
 				"validation": "parse",
@@ -34,7 +34,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "ports = 8000\nports = 8001\nports = 8002",
+				"inputs": ["ports = 8000\nports = 8001\nports = 8002"],
 				"name": "multiple_values_same_key_parse",
 				"source_test": "multiple_values_same_key",
 				"validation": "parse",
@@ -52,7 +52,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "= 3\n= 1\n= 2",
+				"inputs": ["= 3\n= 1\n= 2"],
 				"name": "list_with_empty_keys_parse",
 				"source_test": "list_with_empty_keys",
 				"validation": "parse",
@@ -66,7 +66,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "== Section 2 ==",
+				"inputs": ["== Section 2 =="],
 				"name": "section_style_syntax_parse",
 				"source_test": "section_style_syntax",
 				"validation": "parse",
@@ -85,7 +85,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "b = 20\nc = 3\na = 1\nb = 2",
+				"inputs": ["b = 20\nc = 3\na = 1\nb = 2"],
 				"name": "composition_stability_ba_parse",
 				"source_test": "composition_stability_ba",
 				"validation": "parse",
@@ -104,7 +104,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "name = app\nports = 8000\nname = service\nports = 8001",
+				"inputs": ["name = app\nports = 8000\nname = service\nports = 8001"],
 				"name": "mixed_keys_with_duplicates_parse",
 				"source_test": "mixed_keys_with_duplicates",
 				"validation": "parse",
@@ -122,7 +122,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "1 =\n2 =\n3 =",
+				"inputs": ["1 =\n2 =\n3 ="],
 				"name": "array_style_list_parse",
 				"source_test": "array_style_list",
 				"validation": "parse",
@@ -140,7 +140,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "== Database Config ==\nhost = localhost\nport = 5432",
+				"inputs": ["== Database Config ==\nhost = localhost\nport = 5432"],
 				"name": "section_header_double_equals_parse",
 				"source_test": "section_header_double_equals",
 				"validation": "parse",
@@ -158,7 +158,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "=== Server Settings ===\nhost = 0.0.0.0\nssl = true",
+				"inputs": ["=== Server Settings ===\nhost = 0.0.0.0\nssl = true"],
 				"name": "section_header_triple_equals_parse",
 				"source_test": "section_header_triple_equals",
 				"validation": "parse",
@@ -179,7 +179,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "== Database ==\nhost = localhost\n\n=== Cache ===\nredis = enabled\n\n== Logging ==\nlevel = info",
+				"inputs": [
+					"== Database ==\nhost = localhost\n\n=== Cache ===\nredis = enabled\n\n== Logging ==\nlevel = info"
+				],
 				"name": "multiple_sections_with_entries_parse",
 				"source_test": "multiple_sections_with_entries",
 				"validation": "parse",
@@ -200,7 +202,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "== Configuration ==\n= item1\n= item2\nkey = value\n=== Next Section ===\nother = data",
+				"inputs": [
+					"== Configuration ==\n= item1\n= item2\nkey = value\n=== Next Section ===\nother = data"
+				],
 				"name": "section_headers_mixed_with_lists_parse",
 				"source_test": "section_headers_mixed_with_lists",
 				"validation": "parse",
@@ -214,7 +218,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "== Empty Section ==",
+				"inputs": ["== Empty Section =="],
 				"name": "empty_section_header_only_parse",
 				"source_test": "empty_section_header_only",
 				"validation": "parse",
@@ -231,7 +235,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "key = value\n== Final Section ==",
+				"inputs": ["key = value\n== Final Section =="],
 				"name": "section_header_at_end_parse",
 				"source_test": "section_header_at_end",
 				"validation": "parse",
@@ -250,7 +254,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "== Database Config\nhost = localhost\n=== Server Settings\nport = 8080",
+				"inputs": [
+					"== Database Config\nhost = localhost\n=== Server Settings\nport = 8080"
+				],
 				"name": "section_headers_no_trailing_equals_parse",
 				"source_test": "section_headers_no_trailing_equals",
 				"validation": "parse",
@@ -269,7 +275,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "== Database: Production ==\nhost = db.prod.com\n=== Cache: Redis Config ===\nport = 6379",
+				"inputs": [
+					"== Database: Production ==\nhost = db.prod.com\n=== Cache: Redis Config ===\nport = 6379"
+				],
 				"name": "section_headers_with_colons_parse",
 				"source_test": "section_headers_with_colons",
 				"validation": "parse",
@@ -288,7 +296,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "= = spaced equals\n=  = wide spaces\n== Real Header ==\nkey = value",
+				"inputs": [
+					"= = spaced equals\n=  = wide spaces\n== Real Header ==\nkey = value"
+				],
 				"name": "spaced_equals_not_section_header_parse",
 				"source_test": "spaced_equals_not_section_header",
 				"validation": "parse",
@@ -307,7 +317,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "== First Section ==\n=== Nested Section ===\n==== Deep Section ====\nkey = value",
+				"inputs": [
+					"== First Section ==\n=== Nested Section ===\n==== Deep Section ====\nkey = value"
+				],
 				"name": "consecutive_section_headers_parse",
 				"source_test": "consecutive_section_headers",
 				"validation": "parse",
@@ -335,7 +347,9 @@
 				},
 				"features": ["comments"],
 				"functions": ["parse"],
-				"input": "/= This is an environment section\nport = 8080\nserve = index.html\n/= Database section\nmode = in-memory\nconnections = 16",
+				"inputs": [
+					"/= This is an environment section\nport = 8080\nserve = index.html\n/= Database section\nmode = in-memory\nconnections = 16"
+				],
 				"name": "comment_extension_parse",
 				"source_test": "comment_extension",
 				"validation": "parse",
@@ -356,7 +370,9 @@
 				},
 				"features": ["comments"],
 				"functions": ["filter"],
-				"input": "/= This is an environment section\nport = 8080\nserve = index.html\n/= Database section\nmode = in-memory\nconnections = 16",
+				"inputs": [
+					"/= This is an environment section\nport = 8080\nserve = index.html\n/= Database section\nmode = in-memory\nconnections = 16"
+				],
 				"name": "comment_extension_filter",
 				"source_test": "comment_extension",
 				"validation": "filter",
@@ -370,7 +386,7 @@
 				},
 				"features": ["comments"],
 				"functions": ["parse"],
-				"input": "/= this is a comment",
+				"inputs": ["/= this is a comment"],
 				"name": "comment_syntax_slash_equals_parse",
 				"source_test": "comment_syntax_slash_equals",
 				"validation": "parse",
@@ -384,7 +400,7 @@
 				},
 				"features": ["comments"],
 				"functions": ["filter"],
-				"input": "/= this is a comment",
+				"inputs": ["/= this is a comment"],
 				"name": "comment_syntax_slash_equals_filter",
 				"source_test": "comment_syntax_slash_equals",
 				"validation": "filter",
@@ -405,7 +421,9 @@
 				},
 				"features": ["comments", "empty_keys"],
 				"functions": ["parse"],
-				"input": "== Database Config ==\n/= Connection settings\nhost = localhost\n=== Cache Config ===\n/= Redis configuration\nport = 6379",
+				"inputs": [
+					"== Database Config ==\n/= Connection settings\nhost = localhost\n=== Cache Config ===\n/= Redis configuration\nport = 6379"
+				],
 				"name": "section_headers_with_comments_parse",
 				"source_test": "section_headers_with_comments",
 				"validation": "parse",
@@ -426,7 +444,9 @@
 				},
 				"features": ["comments", "empty_keys"],
 				"functions": ["filter"],
-				"input": "== Database Config ==\n/= Connection settings\nhost = localhost\n=== Cache Config ===\n/= Redis configuration\nport = 6379",
+				"inputs": [
+					"== Database Config ==\n/= Connection settings\nhost = localhost\n=== Cache Config ===\n/= Redis configuration\nport = 6379"
+				],
 				"name": "section_headers_with_comments_filter",
 				"source_test": "section_headers_with_comments",
 				"validation": "filter",
@@ -450,7 +470,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "name = Alice\nage = 42",
+				"inputs": ["name = Alice\nage = 42"],
 				"name": "basic_object_construction_parse",
 				"source_test": "basic_object_construction",
 				"validation": "parse",
@@ -461,7 +481,7 @@
 				"expected": { "count": 1, "object": { "age": "42", "name": "Alice" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "name = Alice\nage = 42",
+				"inputs": ["name = Alice\nage = 42"],
 				"name": "basic_object_construction_build_hierarchy",
 				"source_test": "basic_object_construction",
 				"validation": "build_hierarchy",
@@ -480,7 +500,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "server =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    enabled = true",
+				"inputs": [
+					"server =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    enabled = true"
+				],
 				"name": "deep_nested_objects_parse",
 				"source_test": "deep_nested_objects",
 				"validation": "parse",
@@ -499,7 +521,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "server =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    enabled = true",
+				"inputs": [
+					"server =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    enabled = true"
+				],
 				"name": "deep_nested_objects_build_hierarchy",
 				"source_test": "deep_nested_objects",
 				"validation": "build_hierarchy",
@@ -517,7 +541,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "item = first\nitem = second\nitem = third",
+				"inputs": ["item = first\nitem = second\nitem = third"],
 				"name": "duplicate_keys_to_lists_parse",
 				"source_test": "duplicate_keys_to_lists",
 				"validation": "parse",
@@ -531,7 +555,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "item = first\nitem = second\nitem = third",
+				"inputs": ["item = first\nitem = second\nitem = third"],
 				"name": "duplicate_keys_to_lists_build_hierarchy",
 				"source_test": "duplicate_keys_to_lists",
 				"validation": "build_hierarchy",
@@ -550,7 +574,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "config =\n  server = web1\n  server = web2\n  port = 80",
+				"inputs": ["config =\n  server = web1\n  server = web2\n  port = 80"],
 				"name": "nested_duplicate_keys_parse",
 				"source_test": "nested_duplicate_keys",
 				"validation": "parse",
@@ -564,7 +588,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  server = web1\n  server = web2\n  port = 80",
+				"inputs": ["config =\n  server = web1\n  server = web2\n  port = 80"],
 				"name": "nested_duplicate_keys_build_hierarchy",
 				"source_test": "nested_duplicate_keys",
 				"validation": "build_hierarchy",
@@ -582,7 +606,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "name = Alice\nconfig =\n  debug = true\n  timeout = 30\nversion = 1.0",
+				"inputs": [
+					"name = Alice\nconfig =\n  debug = true\n  timeout = 30\nversion = 1.0"
+				],
 				"name": "mixed_flat_and_nested_parse",
 				"source_test": "mixed_flat_and_nested",
 				"validation": "parse",
@@ -600,7 +626,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "name = Alice\nconfig =\n  debug = true\n  timeout = 30\nversion = 1.0",
+				"inputs": [
+					"name = Alice\nconfig =\n  debug = true\n  timeout = 30\nversion = 1.0"
+				],
 				"name": "mixed_flat_and_nested_build_hierarchy",
 				"source_test": "mixed_flat_and_nested",
 				"validation": "build_hierarchy",
@@ -619,7 +647,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "environments =\n  prod =\n    server = web1\n    server = web2\n    port = 80\n  dev =\n    server = localhost\n    port = 3000",
+				"inputs": [
+					"environments =\n  prod =\n    server = web1\n    server = web2\n    port = 80\n  dev =\n    server = localhost\n    port = 3000"
+				],
 				"name": "nested_objects_with_lists_parse",
 				"source_test": "nested_objects_with_lists",
 				"validation": "parse",
@@ -638,7 +668,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "environments =\n  prod =\n    server = web1\n    server = web2\n    port = 80\n  dev =\n    server = localhost\n    port = 3000",
+				"inputs": [
+					"environments =\n  prod =\n    server = web1\n    server = web2\n    port = 80\n  dev =\n    server = localhost\n    port = 3000"
+				],
 				"name": "nested_objects_with_lists_build_hierarchy",
 				"source_test": "nested_objects_with_lists",
 				"validation": "build_hierarchy",
@@ -662,7 +694,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "name = Alice\nage = 42",
+				"inputs": ["name = Alice\nage = 42"],
 				"name": "complete_basic_workflow_parse",
 				"source_test": "complete_basic_workflow",
 				"validation": "parse",
@@ -673,7 +705,7 @@
 				"expected": { "count": 1, "object": { "age": "42", "name": "Alice" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "name = Alice\nage = 42",
+				"inputs": ["name = Alice\nage = 42"],
 				"name": "complete_basic_workflow_build_hierarchy",
 				"source_test": "complete_basic_workflow",
 				"validation": "build_hierarchy",
@@ -692,7 +724,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "database =\n  host = localhost\n  port = 5432\n  enabled = true",
+				"inputs": [
+					"database =\n  host = localhost\n  port = 5432\n  enabled = true"
+				],
 				"name": "complete_nested_workflow_parse",
 				"source_test": "complete_nested_workflow",
 				"validation": "parse",
@@ -712,7 +746,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "database =\n  host = localhost\n  port = 5432\n  enabled = true",
+				"inputs": [
+					"database =\n  host = localhost\n  port = 5432\n  enabled = true"
+				],
 				"name": "complete_nested_workflow_build_hierarchy",
 				"source_test": "complete_nested_workflow",
 				"validation": "build_hierarchy",
@@ -733,7 +769,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "app = MyApp\nversion = 1.0.0\nconfig =\n  debug = true\n  features =\n    feature1 = enabled\n    feature2 = disabled",
+				"inputs": [
+					"app = MyApp\nversion = 1.0.0\nconfig =\n  debug = true\n  features =\n    feature1 = enabled\n    feature2 = disabled"
+				],
 				"name": "complete_mixed_workflow_parse",
 				"source_test": "complete_mixed_workflow",
 				"validation": "parse",
@@ -754,7 +792,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "app = MyApp\nversion = 1.0.0\nconfig =\n  debug = true\n  features =\n    feature1 = enabled\n    feature2 = disabled",
+				"inputs": [
+					"app = MyApp\nversion = 1.0.0\nconfig =\n  debug = true\n  features =\n    feature1 = enabled\n    feature2 = disabled"
+				],
 				"name": "complete_mixed_workflow_build_hierarchy",
 				"source_test": "complete_mixed_workflow",
 				"validation": "build_hierarchy",
@@ -774,7 +814,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443",
+				"inputs": [
+					"servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443"
+				],
 				"name": "complete_lists_workflow_parse",
 				"source_test": "complete_lists_workflow",
 				"validation": "parse",
@@ -791,7 +833,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443",
+				"inputs": [
+					"servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443"
+				],
 				"name": "complete_lists_workflow_build_hierarchy",
 				"source_test": "complete_lists_workflow",
 				"validation": "build_hierarchy",
@@ -811,7 +855,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443",
+				"inputs": [
+					"servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443"
+				],
 				"name": "complete_lists_workflow_lexicographic_parse",
 				"source_test": "complete_lists_workflow_lexicographic",
 				"validation": "parse",
@@ -828,7 +874,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443",
+				"inputs": [
+					"servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443"
+				],
 				"name": "complete_lists_workflow_lexicographic_build_hierarchy",
 				"source_test": "complete_lists_workflow_lexicographic",
 				"validation": "build_hierarchy",
@@ -851,7 +899,9 @@
 				},
 				"features": ["multiline"],
 				"functions": ["parse"],
-				"input": "description = Welcome to our app\n  This is a multi-line description\n  With several lines\nconfig =\n  settings =\n    value1 = one\n    value2 = two",
+				"inputs": [
+					"description = Welcome to our app\n  This is a multi-line description\n  With several lines\nconfig =\n  settings =\n    value1 = one\n    value2 = two"
+				],
 				"name": "complete_multiline_workflow_parse",
 				"source_test": "complete_multiline_workflow",
 				"validation": "parse",
@@ -868,7 +918,9 @@
 				},
 				"features": ["multiline"],
 				"functions": ["build_hierarchy"],
-				"input": "description = Welcome to our app\n  This is a multi-line description\n  With several lines\nconfig =\n  settings =\n    value1 = one\n    value2 = two",
+				"inputs": [
+					"description = Welcome to our app\n  This is a multi-line description\n  With several lines\nconfig =\n  settings =\n    value1 = one\n    value2 = two"
+				],
 				"name": "complete_multiline_workflow_build_hierarchy",
 				"source_test": "complete_multiline_workflow",
 				"validation": "build_hierarchy",
@@ -897,7 +949,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "service = MyMicroservice\nversion = 2.1.0\ndatabase =\n  host = db.example.com\n  port = 5432\n  credentials =\n    user = service_user\n    password = secret123\n  pools =\n    read = 5\n    write = 2\nlogging =\n  level = info\n  outputs =\n    output = console\n    output = file\n    output = syslog\nfeatures =\n  feature_a = enabled\n  feature_b = disabled\n  feature_c = experimental",
+				"inputs": [
+					"service = MyMicroservice\nversion = 2.1.0\ndatabase =\n  host = db.example.com\n  port = 5432\n  credentials =\n    user = service_user\n    password = secret123\n  pools =\n    read = 5\n    write = 2\nlogging =\n  level = info\n  outputs =\n    output = console\n    output = file\n    output = syslog\nfeatures =\n  feature_a = enabled\n  feature_b = disabled\n  feature_c = experimental"
+				],
 				"name": "real_world_complete_workflow_parse",
 				"source_test": "real_world_complete_workflow",
 				"validation": "parse",
@@ -932,7 +986,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "service = MyMicroservice\nversion = 2.1.0\ndatabase =\n  host = db.example.com\n  port = 5432\n  credentials =\n    user = service_user\n    password = secret123\n  pools =\n    read = 5\n    write = 2\nlogging =\n  level = info\n  outputs =\n    output = console\n    output = file\n    output = syslog\nfeatures =\n  feature_a = enabled\n  feature_b = disabled\n  feature_c = experimental",
+				"inputs": [
+					"service = MyMicroservice\nversion = 2.1.0\ndatabase =\n  host = db.example.com\n  port = 5432\n  credentials =\n    user = service_user\n    password = secret123\n  pools =\n    read = 5\n    write = 2\nlogging =\n  level = info\n  outputs =\n    output = console\n    output = file\n    output = syslog\nfeatures =\n  feature_a = enabled\n  feature_b = disabled\n  feature_c = experimental"
+				],
 				"name": "real_world_complete_workflow_build_hierarchy",
 				"source_test": "real_world_complete_workflow",
 				"validation": "build_hierarchy",
@@ -956,7 +1012,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "name = Alice\nage = 42",
+				"inputs": ["name = Alice\nage = 42"],
 				"name": "basic_key_value_pairs_parse",
 				"source_test": "basic_key_value_pairs",
 				"validation": "parse",
@@ -973,7 +1029,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "msg = k=v pairs work fine\npath = /bin/app=prod",
+				"inputs": ["msg = k=v pairs work fine\npath = /bin/app=prod"],
 				"name": "equals_in_values_parse",
 				"source_test": "equals_in_values",
 				"validation": "parse",
@@ -990,7 +1046,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "  key   =    value with spaces   \nother = normal",
+				"inputs": ["  key   =    value with spaces   \nother = normal"],
 				"name": "whitespace_trimming_parse",
 				"source_test": "whitespace_trimming",
 				"validation": "parse",
@@ -1010,7 +1066,9 @@
 				},
 				"features": ["multiline"],
 				"functions": ["parse"],
-				"input": "description = First line\n  Second line\n  Third line\ndone = yes",
+				"inputs": [
+					"description = First line\n  Second line\n  Third line\ndone = yes"
+				],
 				"name": "multiline_values_parse",
 				"source_test": "multiline_values",
 				"validation": "parse",
@@ -1027,7 +1085,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "empty =\nother = value",
+				"inputs": ["empty =\nother = value"],
 				"name": "empty_values_parse",
 				"source_test": "empty_values",
 				"validation": "parse",
@@ -1046,7 +1104,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "database =\n  host = localhost\n  port = 5432",
+				"inputs": ["database =\n  host = localhost\n  port = 5432"],
 				"name": "nested_structure_parsing_parse",
 				"source_test": "nested_structure_parsing",
 				"validation": "parse",
@@ -1063,7 +1121,7 @@
 				},
 				"features": ["unicode"],
 				"functions": ["parse"],
-				"input": "emoji = 😀😃😄\n配置 = config",
+				"inputs": ["emoji = 😀😃😄\n配置 = config"],
 				"name": "unicode_parsing_parse",
 				"source_test": "unicode_parsing",
 				"validation": "parse",
@@ -1074,7 +1132,7 @@
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["parse"],
-				"input": "",
+				"inputs": [""],
 				"name": "empty_input_parse",
 				"source_test": "empty_input",
 				"validation": "parse",
@@ -1095,7 +1153,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key=val",
+				"inputs": ["key=val"],
 				"name": "basic_single_no_spaces_parse",
 				"source_test": "basic_single_no_spaces",
 				"validation": "parse",
@@ -1109,7 +1167,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "key = val",
+				"inputs": ["key = val"],
 				"name": "basic_with_spaces_parse",
 				"source_test": "basic_with_spaces",
 				"validation": "parse",
@@ -1123,7 +1181,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse_indented"],
-				"input": "  key = val",
+				"inputs": ["  key = val"],
 				"name": "indented_key_parse_indented",
 				"source_test": "indented_key",
 				"validation": "parse_indented",
@@ -1137,7 +1195,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "key = val  ",
+				"inputs": ["key = val  "],
 				"name": "value_trailing_spaces_parse",
 				"source_test": "value_trailing_spaces",
 				"validation": "parse",
@@ -1151,7 +1209,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "  key  =  val  ",
+				"inputs": ["  key  =  val  "],
 				"name": "key_value_surrounded_spaces_parse",
 				"source_test": "key_value_surrounded_spaces",
 				"validation": "parse",
@@ -1165,7 +1223,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "\nkey = val\n",
+				"inputs": ["\nkey = val\n"],
 				"name": "surrounded_by_newlines_parse",
 				"source_test": "surrounded_by_newlines",
 				"validation": "parse",
@@ -1176,7 +1234,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "key", "value": "" }] },
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "key =",
+				"inputs": ["key ="],
 				"name": "key_empty_value_parse",
 				"source_test": "key_empty_value",
 				"validation": "parse",
@@ -1187,7 +1245,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "key", "value": "" }] },
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "key =\n",
+				"inputs": ["key =\n"],
 				"name": "empty_value_with_newline_parse",
 				"source_test": "empty_value_with_newline",
 				"validation": "parse",
@@ -1198,7 +1256,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "key", "value": "" }] },
 				"features": ["empty_keys", "whitespace"],
 				"functions": ["parse"],
-				"input": "key =  ",
+				"inputs": ["key =  "],
 				"name": "empty_value_with_spaces_parse",
 				"source_test": "empty_value_with_spaces",
 				"validation": "parse",
@@ -1209,7 +1267,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "", "value": "val" }] },
 				"features": ["empty_keys"],
 				"functions": ["parse_indented"],
-				"input": "  = val",
+				"inputs": ["  = val"],
 				"name": "empty_key_indented_parse_indented",
 				"source_test": "empty_key_indented",
 				"validation": "parse_indented",
@@ -1220,7 +1278,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "", "value": "val" }] },
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "\n  = val",
+				"inputs": ["\n  = val"],
 				"name": "empty_key_with_newline_parse",
 				"source_test": "empty_key_with_newline",
 				"validation": "parse",
@@ -1231,7 +1289,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "", "value": "" }] },
 				"features": ["empty_keys", "whitespace"],
 				"functions": ["parse"],
-				"input": "  =  ",
+				"inputs": ["  =  "],
 				"name": "empty_key_value_with_spaces_parse",
 				"source_test": "empty_key_value_with_spaces",
 				"validation": "parse",
@@ -1242,7 +1300,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "a", "value": "b=c" }] },
 				"features": [],
 				"functions": ["parse"],
-				"input": "a=b=c",
+				"inputs": ["a=b=c"],
 				"name": "equals_in_value_no_spaces_parse",
 				"source_test": "equals_in_value_no_spaces",
 				"validation": "parse",
@@ -1256,7 +1314,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "a = b = c",
+				"inputs": ["a = b = c"],
 				"name": "equals_in_value_with_spaces_parse",
 				"source_test": "equals_in_value_with_spaces",
 				"validation": "parse",
@@ -1273,7 +1331,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key1 = val1\nkey2 = val2",
+				"inputs": ["key1 = val1\nkey2 = val2"],
 				"name": "multiple_key_value_pairs_parse",
 				"source_test": "multiple_key_value_pairs",
 				"validation": "parse",
@@ -1281,13 +1339,14 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "\tvalue" }]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "\tkey\t=\tvalue",
+				"inputs": ["\tkey\t=\tvalue"],
 				"name": "key_with_tabs_parse",
 				"source_test": "key_with_tabs",
 				"validation": "parse",
@@ -1295,13 +1354,14 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "\tkey\t=\tvalue",
+				"inputs": ["\tkey\t=\tvalue"],
 				"name": "key_with_tabs_ocaml_reference_parse",
 				"source_test": "key_with_tabs_ocaml_reference",
 				"validation": "parse",
@@ -1315,7 +1375,7 @@
 				},
 				"features": ["empty_keys", "whitespace"],
 				"functions": ["parse"],
-				"input": "onlyspaces =     ",
+				"inputs": ["onlyspaces =     "],
 				"name": "whitespace_only_value_parse",
 				"source_test": "whitespace_only_value",
 				"validation": "parse",
@@ -1323,6 +1383,7 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -1334,7 +1395,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse_indented"],
-				"input": "text = First\n    four spaces\n\ttab preserved",
+				"inputs": ["text = First\n    four spaces\n\ttab preserved"],
 				"name": "spaces_vs_tabs_continuation_parse_indented",
 				"source_test": "spaces_vs_tabs_continuation",
 				"validation": "parse_indented",
@@ -1342,6 +1403,7 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -1350,7 +1412,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse_indented"],
-				"input": "text = First\n    four spaces\n\ttab preserved",
+				"inputs": ["text = First\n    four spaces\n\ttab preserved"],
 				"name": "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
 				"source_test": "spaces_vs_tabs_continuation_ocaml_reference",
 				"validation": "parse_indented",
@@ -1361,7 +1423,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "", "value": "=" }] },
 				"features": ["empty_keys", "whitespace"],
 				"functions": ["parse"],
-				"input": " =  = ",
+				"inputs": [" =  = "],
 				"name": "multiple_empty_equality_parse",
 				"source_test": "multiple_empty_equality",
 				"validation": "parse",
@@ -1375,7 +1437,7 @@
 				},
 				"features": ["empty_keys", "whitespace"],
 				"functions": ["parse"],
-				"input": "key \n= val\n",
+				"inputs": ["key \n= val\n"],
 				"name": "key_with_newline_before_equals_parse",
 				"source_test": "key_with_newline_before_equals",
 				"validation": "parse",
@@ -1389,7 +1451,7 @@
 				},
 				"features": ["empty_keys", "whitespace"],
 				"functions": ["parse"],
-				"input": "  \n key  \n=  val  \n",
+				"inputs": ["  \n key  \n=  val  \n"],
 				"name": "complex_multi_newline_whitespace_parse",
 				"source_test": "complex_multi_newline_whitespace",
 				"validation": "parse",
@@ -1400,7 +1462,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "key", "value": "" }] },
 				"features": ["empty_keys", "whitespace"],
 				"functions": ["parse"],
-				"input": "key =  \n",
+				"inputs": ["key =  \n"],
 				"name": "empty_value_with_trailing_spaces_newline_parse",
 				"source_test": "empty_value_with_trailing_spaces_newline",
 				"validation": "parse",
@@ -1411,7 +1473,7 @@
 				"expected": { "count": 1, "entries": [{ "key": "", "value": "" }] },
 				"features": ["empty_keys", "whitespace"],
 				"functions": ["parse"],
-				"input": "\n  =  \n",
+				"inputs": ["\n  =  \n"],
 				"name": "empty_key_value_with_surrounding_newlines_parse",
 				"source_test": "empty_key_value_with_surrounding_newlines",
 				"validation": "parse",
@@ -1425,7 +1487,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "host = localhost",
+				"inputs": ["host = localhost"],
 				"name": "quotes_treated_as_literal_unquoted_parse",
 				"source_test": "quotes_treated_as_literal_unquoted",
 				"validation": "parse",
@@ -1439,7 +1501,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "host = \"localhost\"",
+				"inputs": ["host = \"localhost\""],
 				"name": "quotes_treated_as_literal_quoted_parse",
 				"source_test": "quotes_treated_as_literal_quoted",
 				"validation": "parse",
@@ -1453,7 +1515,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key =\n  val",
+				"inputs": ["key =\n  val"],
 				"name": "nested_single_line_parse",
 				"source_test": "nested_single_line",
 				"validation": "parse",
@@ -1467,7 +1529,7 @@
 				},
 				"features": ["multiline"],
 				"functions": ["parse"],
-				"input": "key =\n  line1\n  line2",
+				"inputs": ["key =\n  line1\n  line2"],
 				"name": "nested_multi_line_parse",
 				"source_test": "nested_multi_line",
 				"validation": "parse",
@@ -1481,7 +1543,7 @@
 				},
 				"features": ["multiline"],
 				"functions": ["parse_indented"],
-				"input": "key =\n  line1\n\n  line2",
+				"inputs": ["key =\n  line1\n\n  line2"],
 				"name": "nested_with_blank_line_parse_indented",
 				"source_test": "nested_with_blank_line",
 				"validation": "parse_indented",
@@ -1500,7 +1562,9 @@
 				},
 				"features": [],
 				"functions": ["parse_indented"],
-				"input": "key =\n  field1 = value1\n  field2 =\n    subfield = x\n    another = y",
+				"inputs": [
+					"key =\n  field1 = value1\n  field2 =\n    subfield = x\n    another = y"
+				],
 				"name": "deep_nested_structure_parse_indented",
 				"source_test": "deep_nested_structure",
 				"validation": "parse_indented",
@@ -1519,7 +1583,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "name = Dmitrii Kovanikov\nlogin = chshersh\nlanguage = OCaml\ndate = 2024-05-25",
+				"inputs": [
+					"name = Dmitrii Kovanikov\nlogin = chshersh\nlanguage = OCaml\ndate = 2024-05-25"
+				],
 				"name": "realistic_stress_test_parse",
 				"source_test": "realistic_stress_test",
 				"validation": "parse",
@@ -1545,7 +1611,9 @@
 				},
 				"features": ["comments", "empty_keys"],
 				"functions": ["parse"],
-				"input": "/= This is a CCL document\ntitle = CCL Example\n\ndatabase =\n  enabled = true\n  ports =\n    = 8000\n    = 8001\n    = 8002\n  limits =\n    cpu = 1500mi\n    memory = 10Gb\n\nuser =\n  guestId = 42\n\nuser =\n  login = chshersh\n  createdAt = 2024-12-31",
+				"inputs": [
+					"/= This is a CCL document\ntitle = CCL Example\n\ndatabase =\n  enabled = true\n  ports =\n    = 8000\n    = 8001\n    = 8002\n  limits =\n    cpu = 1500mi\n    memory = 10Gb\n\nuser =\n  guestId = 42\n\nuser =\n  login = chshersh\n  createdAt = 2024-12-31"
+				],
 				"name": "ocaml_stress_test_original_parse",
 				"source_test": "ocaml_stress_test_original",
 				"validation": "parse",
@@ -1572,7 +1640,9 @@
 				},
 				"features": ["comments", "empty_keys"],
 				"functions": ["build_hierarchy"],
-				"input": "/= This is a CCL document\ntitle = CCL Example\n\ndatabase =\n  enabled = true\n  ports =\n    = 8000\n    = 8001\n    = 8002\n  limits =\n    cpu = 1500mi\n    memory = 10Gb\n\nuser =\n  guestId = 42\n\nuser =\n  login = chshersh\n  createdAt = 2024-12-31",
+				"inputs": [
+					"/= This is a CCL document\ntitle = CCL Example\n\ndatabase =\n  enabled = true\n  ports =\n    = 8000\n    = 8001\n    = 8002\n  limits =\n    cpu = 1500mi\n    memory = 10Gb\n\nuser =\n  guestId = 42\n\nuser =\n  login = chshersh\n  createdAt = 2024-12-31"
+				],
 				"name": "ocaml_stress_test_original_build_hierarchy",
 				"source_test": "ocaml_stress_test_original",
 				"validation": "build_hierarchy",
@@ -1584,7 +1654,9 @@
 				"expected": { "count": 1, "value": "CCL Example" },
 				"features": ["comments", "empty_keys"],
 				"functions": ["get_string"],
-				"input": "/= This is a CCL document\ntitle = CCL Example\n\ndatabase =\n  enabled = true\n  ports =\n    = 8000\n    = 8001\n    = 8002\n  limits =\n    cpu = 1500mi\n    memory = 10Gb\n\nuser =\n  guestId = 42\n\nuser =\n  login = chshersh\n  createdAt = 2024-12-31",
+				"inputs": [
+					"/= This is a CCL document\ntitle = CCL Example\n\ndatabase =\n  enabled = true\n  ports =\n    = 8000\n    = 8001\n    = 8002\n  limits =\n    cpu = 1500mi\n    memory = 10Gb\n\nuser =\n  guestId = 42\n\nuser =\n  login = chshersh\n  createdAt = 2024-12-31"
+				],
 				"name": "ocaml_stress_test_original_get_string",
 				"source_test": "ocaml_stress_test_original",
 				"validation": "get_string",
@@ -1602,7 +1674,7 @@
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["parse"],
-				"input": "key",
+				"inputs": ["key"],
 				"name": "just_key_error_parse",
 				"source_test": "just_key_error",
 				"validation": "parse",
@@ -1613,7 +1685,7 @@
 				"expected": { "count": 0 },
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "   ",
+				"inputs": ["   "],
 				"name": "whitespace_only_error_parse",
 				"source_test": "whitespace_only_error",
 				"validation": "parse",
@@ -1624,7 +1696,7 @@
 				"expected": { "count": 0 },
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "   ",
+				"inputs": ["   "],
 				"name": "whitespace_only_error_ocaml_reference_parse",
 				"source_test": "whitespace_only_error_ocaml_reference",
 				"validation": "parse",
@@ -1635,7 +1707,7 @@
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["parse"],
-				"input": "val",
+				"inputs": ["val"],
 				"name": "just_string_error_parse",
 				"source_test": "just_string_error",
 				"validation": "parse",
@@ -1646,7 +1718,7 @@
 				"expected": { "count": 0 },
 				"features": ["multiline"],
 				"functions": ["parse"],
-				"input": "val\n  next",
+				"inputs": ["val\n  next"],
 				"name": "multiline_plain_error_parse",
 				"source_test": "multiline_plain_error",
 				"validation": "parse",
@@ -1657,7 +1729,7 @@
 				"expected": { "count": 0 },
 				"features": ["multiline"],
 				"functions": ["parse"],
-				"input": "\nval\n  next",
+				"inputs": ["\nval\n  next"],
 				"name": "multiline_plain_nested_error_parse",
 				"source_test": "multiline_plain_nested_error",
 				"validation": "parse",
@@ -1682,7 +1754,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "servers = web1\nservers = web2\nservers = web3",
+				"inputs": ["servers = web1\nservers = web2\nservers = web3"],
 				"name": "basic_list_from_duplicates_parse",
 				"source_test": "basic_list_from_duplicates",
 				"validation": "parse",
@@ -1696,7 +1768,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "servers = web1\nservers = web2\nservers = web3",
+				"inputs": ["servers = web1\nservers = web2\nservers = web3"],
 				"name": "basic_list_from_duplicates_build_hierarchy",
 				"source_test": "basic_list_from_duplicates",
 				"validation": "build_hierarchy",
@@ -1705,10 +1777,11 @@
 			{
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled"],
+				"conflicts": { "behaviors": ["list_coercion_disabled"] },
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "servers = web1\nservers = web2\nservers = web3",
+				"inputs": ["servers = web1\nservers = web2\nservers = web3"],
 				"name": "basic_list_from_duplicates_get_list",
 				"source_test": "basic_list_from_duplicates",
 				"validation": "get_list",
@@ -1743,7 +1816,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "items = item01\nitems = item02\nitems = item03\nitems = item04\nitems = item05\nitems = item06\nitems = item07\nitems = item08\nitems = item09\nitems = item10\nitems = item11\nitems = item12\nitems = item13\nitems = item14\nitems = item15\nitems = item16\nitems = item17\nitems = item18\nitems = item19\nitems = item20",
+				"inputs": [
+					"items = item01\nitems = item02\nitems = item03\nitems = item04\nitems = item05\nitems = item06\nitems = item07\nitems = item08\nitems = item09\nitems = item10\nitems = item11\nitems = item12\nitems = item13\nitems = item14\nitems = item15\nitems = item16\nitems = item17\nitems = item18\nitems = item19\nitems = item20"
+				],
 				"name": "large_list_parse",
 				"source_test": "large_list",
 				"validation": "parse",
@@ -1780,7 +1855,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "items = item01\nitems = item02\nitems = item03\nitems = item04\nitems = item05\nitems = item06\nitems = item07\nitems = item08\nitems = item09\nitems = item10\nitems = item11\nitems = item12\nitems = item13\nitems = item14\nitems = item15\nitems = item16\nitems = item17\nitems = item18\nitems = item19\nitems = item20",
+				"inputs": [
+					"items = item01\nitems = item02\nitems = item03\nitems = item04\nitems = item05\nitems = item06\nitems = item07\nitems = item08\nitems = item09\nitems = item10\nitems = item11\nitems = item12\nitems = item13\nitems = item14\nitems = item15\nitems = item16\nitems = item17\nitems = item18\nitems = item19\nitems = item20"
+				],
 				"name": "large_list_build_hierarchy",
 				"source_test": "large_list",
 				"validation": "build_hierarchy",
@@ -1789,6 +1866,7 @@
 			{
 				"args": ["items"],
 				"behaviors": ["list_coercion_enabled"],
+				"conflicts": { "behaviors": ["list_coercion_disabled"] },
 				"expected": {
 					"count": 20,
 					"list": [
@@ -1816,7 +1894,9 @@
 				},
 				"features": [],
 				"functions": ["get_list"],
-				"input": "items = item01\nitems = item02\nitems = item03\nitems = item04\nitems = item05\nitems = item06\nitems = item07\nitems = item08\nitems = item09\nitems = item10\nitems = item11\nitems = item12\nitems = item13\nitems = item14\nitems = item15\nitems = item16\nitems = item17\nitems = item18\nitems = item19\nitems = item20",
+				"inputs": [
+					"items = item01\nitems = item02\nitems = item03\nitems = item04\nitems = item05\nitems = item06\nitems = item07\nitems = item08\nitems = item09\nitems = item10\nitems = item11\nitems = item12\nitems = item13\nitems = item14\nitems = item15\nitems = item16\nitems = item17\nitems = item18\nitems = item19\nitems = item20"
+				],
 				"name": "large_list_get_list",
 				"source_test": "large_list",
 				"validation": "get_list",
@@ -1836,7 +1916,9 @@
 				},
 				"features": ["comments"],
 				"functions": ["parse"],
-				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"inputs": [
+					"servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list"
+				],
 				"name": "list_with_comments_parse",
 				"source_test": "list_with_comments",
 				"validation": "parse",
@@ -1853,7 +1935,9 @@
 				},
 				"features": ["comments"],
 				"functions": ["build_hierarchy"],
-				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"inputs": [
+					"servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list"
+				],
 				"name": "list_with_comments_build_hierarchy",
 				"source_test": "list_with_comments",
 				"validation": "build_hierarchy",
@@ -1862,10 +1946,13 @@
 			{
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled", "array_order_insertion"],
+				"conflicts": { "behaviors": ["list_coercion_disabled"] },
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": ["comments"],
 				"functions": ["get_list"],
-				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"inputs": [
+					"servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list"
+				],
 				"name": "list_with_comments_get_list",
 				"source_test": "list_with_comments",
 				"validation": "get_list",
@@ -1885,7 +1972,9 @@
 				},
 				"features": ["comments"],
 				"functions": ["parse"],
-				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"inputs": [
+					"servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list"
+				],
 				"name": "list_with_comments_lexicographic_parse",
 				"source_test": "list_with_comments_lexicographic",
 				"validation": "parse",
@@ -1902,7 +1991,9 @@
 				},
 				"features": ["comments"],
 				"functions": ["build_hierarchy"],
-				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"inputs": [
+					"servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list"
+				],
 				"name": "list_with_comments_lexicographic_build_hierarchy",
 				"source_test": "list_with_comments_lexicographic",
 				"validation": "build_hierarchy",
@@ -1911,10 +2002,13 @@
 			{
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_disabled"] },
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": ["comments"],
 				"functions": ["get_list"],
-				"input": "servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list",
+				"inputs": [
+					"servers = web1\n/= Production servers\nservers = web2\nservers = web3\n/= End of list"
+				],
 				"name": "list_with_comments_lexicographic_get_list",
 				"source_test": "list_with_comments_lexicographic",
 				"validation": "get_list",
@@ -1928,7 +2022,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "existing = value",
+				"inputs": ["existing = value"],
 				"name": "list_error_missing_key_parse",
 				"source_test": "list_error_missing_key",
 				"validation": "parse",
@@ -1939,7 +2033,7 @@
 				"expected": { "count": 1, "object": { "existing": "value" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "existing = value",
+				"inputs": ["existing = value"],
 				"name": "list_error_missing_key_build_hierarchy",
 				"source_test": "list_error_missing_key",
 				"validation": "build_hierarchy",
@@ -1951,7 +2045,7 @@
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "existing = value",
+				"inputs": ["existing = value"],
 				"name": "list_error_missing_key_get_list",
 				"source_test": "list_error_missing_key",
 				"validation": "get_list",
@@ -1965,7 +2059,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "config =\n  server = web1",
+				"inputs": ["config =\n  server = web1"],
 				"name": "list_error_nested_missing_key_parse",
 				"source_test": "list_error_nested_missing_key",
 				"validation": "parse",
@@ -1979,7 +2073,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  server = web1",
+				"inputs": ["config =\n  server = web1"],
 				"name": "list_error_nested_missing_key_build_hierarchy",
 				"source_test": "list_error_nested_missing_key",
 				"validation": "build_hierarchy",
@@ -1991,7 +2085,7 @@
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "config =\n  server = web1",
+				"inputs": ["config =\n  server = web1"],
 				"name": "list_error_nested_missing_key_get_list",
 				"source_test": "list_error_nested_missing_key",
 				"validation": "get_list",
@@ -2005,7 +2099,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "value = simple",
+				"inputs": ["value = simple"],
 				"name": "list_error_non_object_path_parse",
 				"source_test": "list_error_non_object_path",
 				"validation": "parse",
@@ -2016,7 +2110,7 @@
 				"expected": { "count": 1, "object": { "value": "simple" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "value = simple",
+				"inputs": ["value = simple"],
 				"name": "list_error_non_object_path_build_hierarchy",
 				"source_test": "list_error_non_object_path",
 				"validation": "build_hierarchy",
@@ -2028,7 +2122,7 @@
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "value = simple",
+				"inputs": ["value = simple"],
 				"name": "list_error_non_object_path_get_list",
 				"source_test": "list_error_non_object_path",
 				"validation": "get_list",
@@ -2039,7 +2133,7 @@
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["parse"],
-				"input": "",
+				"inputs": [""],
 				"name": "list_edge_case_zero_length_parse",
 				"source_test": "list_edge_case_zero_length",
 				"validation": "parse",
@@ -2050,7 +2144,7 @@
 				"expected": { "count": 1, "object": {} },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "",
+				"inputs": [""],
 				"name": "list_edge_case_zero_length_build_hierarchy",
 				"source_test": "list_edge_case_zero_length",
 				"validation": "build_hierarchy",
@@ -2062,7 +2156,7 @@
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "",
+				"inputs": [""],
 				"name": "list_edge_case_zero_length_get_list",
 				"source_test": "list_edge_case_zero_length",
 				"validation": "get_list",
@@ -2078,7 +2172,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "servers =\n  = web1\n  = web2\n  = web3",
+				"inputs": ["servers =\n  = web1\n  = web2\n  = web3"],
 				"name": "bare_list_basic_parse",
 				"source_test": "bare_list_basic",
 				"validation": "parse",
@@ -2092,7 +2186,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["build_hierarchy"],
-				"input": "servers =\n  = web1\n  = web2\n  = web3",
+				"inputs": ["servers =\n  = web1\n  = web2\n  = web3"],
 				"name": "bare_list_basic_build_hierarchy",
 				"source_test": "bare_list_basic",
 				"validation": "build_hierarchy",
@@ -2104,7 +2198,7 @@
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": ["empty_keys"],
 				"functions": ["get_list"],
-				"input": "servers =\n  = web1\n  = web2\n  = web3",
+				"inputs": ["servers =\n  = web1\n  = web2\n  = web3"],
 				"name": "bare_list_basic_get_list",
 				"source_test": "bare_list_basic",
 				"validation": "get_list",
@@ -2123,7 +2217,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"inputs": ["network =\n  ports =\n    = 80\n    = 443\n    = 8080"],
 				"name": "bare_list_nested_parse",
 				"source_test": "bare_list_nested",
 				"validation": "parse",
@@ -2137,7 +2231,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["build_hierarchy"],
-				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"inputs": ["network =\n  ports =\n    = 80\n    = 443\n    = 8080"],
 				"name": "bare_list_nested_build_hierarchy",
 				"source_test": "bare_list_nested",
 				"validation": "build_hierarchy",
@@ -2149,7 +2243,7 @@
 				"expected": { "count": 3, "list": ["80", "443", "8080"] },
 				"features": ["empty_keys"],
 				"functions": ["get_list"],
-				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"inputs": ["network =\n  ports =\n    = 80\n    = 443\n    = 8080"],
 				"name": "bare_list_nested_get_list",
 				"source_test": "bare_list_nested",
 				"validation": "get_list",
@@ -2168,7 +2262,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"inputs": ["network =\n  ports =\n    = 80\n    = 443\n    = 8080"],
 				"name": "bare_list_nested_lexicographic_parse",
 				"source_test": "bare_list_nested_lexicographic",
 				"validation": "parse",
@@ -2182,7 +2276,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["build_hierarchy"],
-				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"inputs": ["network =\n  ports =\n    = 80\n    = 443\n    = 8080"],
 				"name": "bare_list_nested_lexicographic_build_hierarchy",
 				"source_test": "bare_list_nested_lexicographic",
 				"validation": "build_hierarchy",
@@ -2194,7 +2288,7 @@
 				"expected": { "count": 3, "list": ["443", "80", "8080"] },
 				"features": ["empty_keys"],
 				"functions": ["get_list"],
-				"input": "network =\n  ports =\n    = 80\n    = 443\n    = 8080",
+				"inputs": ["network =\n  ports =\n    = 80\n    = 443\n    = 8080"],
 				"name": "bare_list_nested_lexicographic_get_list",
 				"source_test": "bare_list_nested_lexicographic",
 				"validation": "get_list",
@@ -2213,7 +2307,9 @@
 				},
 				"features": ["empty_keys", "comments"],
 				"functions": ["parse"],
-				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"inputs": [
+					"allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com"
+				],
 				"name": "bare_list_with_comments_parse",
 				"source_test": "bare_list_with_comments",
 				"validation": "parse",
@@ -2232,7 +2328,9 @@
 				},
 				"features": ["empty_keys", "comments"],
 				"functions": ["build_hierarchy"],
-				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"inputs": [
+					"allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com"
+				],
 				"name": "bare_list_with_comments_build_hierarchy",
 				"source_test": "bare_list_with_comments",
 				"validation": "build_hierarchy",
@@ -2247,7 +2345,9 @@
 				},
 				"features": ["empty_keys", "comments"],
 				"functions": ["get_list"],
-				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"inputs": [
+					"allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com"
+				],
 				"name": "bare_list_with_comments_get_list",
 				"source_test": "bare_list_with_comments",
 				"validation": "get_list",
@@ -2266,7 +2366,9 @@
 				},
 				"features": ["empty_keys", "comments"],
 				"functions": ["parse"],
-				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"inputs": [
+					"allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com"
+				],
 				"name": "bare_list_with_comments_lexicographic_parse",
 				"source_test": "bare_list_with_comments_lexicographic",
 				"validation": "parse",
@@ -2285,7 +2387,9 @@
 				},
 				"features": ["empty_keys", "comments"],
 				"functions": ["build_hierarchy"],
-				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"inputs": [
+					"allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com"
+				],
 				"name": "bare_list_with_comments_lexicographic_build_hierarchy",
 				"source_test": "bare_list_with_comments_lexicographic",
 				"validation": "build_hierarchy",
@@ -2300,7 +2404,9 @@
 				},
 				"features": ["empty_keys", "comments"],
 				"functions": ["get_list"],
-				"input": "allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com",
+				"inputs": [
+					"allowed_hosts =\n  /= Production hosts\n  = localhost\n  = 127.0.0.1\n  = example.com"
+				],
 				"name": "bare_list_with_comments_lexicographic_get_list",
 				"source_test": "bare_list_with_comments_lexicographic",
 				"validation": "get_list",
@@ -2319,7 +2425,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1"
+				],
 				"name": "bare_list_deeply_nested_parse",
 				"source_test": "bare_list_deeply_nested",
 				"validation": "parse",
@@ -2339,7 +2447,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1"
+				],
 				"name": "bare_list_deeply_nested_build_hierarchy",
 				"source_test": "bare_list_deeply_nested",
 				"validation": "build_hierarchy",
@@ -2351,7 +2461,9 @@
 				"expected": { "count": 3, "list": ["web1", "web2", "api1"] },
 				"features": ["empty_keys"],
 				"functions": ["get_list"],
-				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1"
+				],
 				"name": "bare_list_deeply_nested_get_list",
 				"source_test": "bare_list_deeply_nested",
 				"validation": "get_list",
@@ -2370,7 +2482,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1"
+				],
 				"name": "bare_list_deeply_nested_lexicographic_parse",
 				"source_test": "bare_list_deeply_nested_lexicographic",
 				"validation": "parse",
@@ -2390,7 +2504,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1"
+				],
 				"name": "bare_list_deeply_nested_lexicographic_build_hierarchy",
 				"source_test": "bare_list_deeply_nested_lexicographic",
 				"validation": "build_hierarchy",
@@ -2402,7 +2518,9 @@
 				"expected": { "count": 3, "list": ["api1", "web1", "web2"] },
 				"features": ["empty_keys"],
 				"functions": ["get_list"],
-				"input": "config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers =\n        = web1\n        = web2\n        = api1"
+				],
 				"name": "bare_list_deeply_nested_lexicographic_get_list",
 				"source_test": "bare_list_deeply_nested_lexicographic",
 				"validation": "get_list",
@@ -2421,7 +2539,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2",
+				"inputs": [
+					"database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2"
+				],
 				"name": "bare_list_mixed_with_other_keys_parse",
 				"source_test": "bare_list_mixed_with_other_keys",
 				"validation": "parse",
@@ -2441,7 +2561,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["build_hierarchy"],
-				"input": "database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2",
+				"inputs": [
+					"database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2"
+				],
 				"name": "bare_list_mixed_with_other_keys_build_hierarchy",
 				"source_test": "bare_list_mixed_with_other_keys",
 				"validation": "build_hierarchy",
@@ -2453,7 +2575,9 @@
 				"expected": { "count": 2, "list": ["replica1", "replica2"] },
 				"features": ["empty_keys"],
 				"functions": ["get_list"],
-				"input": "database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2",
+				"inputs": [
+					"database =\n  host = localhost\n  port = 5432\n  replicas =\n    = replica1\n    = replica2"
+				],
 				"name": "bare_list_mixed_with_other_keys_get_list",
 				"source_test": "bare_list_mixed_with_other_keys",
 				"validation": "get_list",
@@ -2467,7 +2591,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "config =\n  setting = value",
+				"inputs": ["config =\n  setting = value"],
 				"name": "bare_list_error_not_a_list_parse",
 				"source_test": "bare_list_error_not_a_list",
 				"validation": "parse",
@@ -2481,7 +2605,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  setting = value",
+				"inputs": ["config =\n  setting = value"],
 				"name": "bare_list_error_not_a_list_build_hierarchy",
 				"source_test": "bare_list_error_not_a_list",
 				"validation": "build_hierarchy",
@@ -2490,10 +2614,11 @@
 			{
 				"args": ["config", "setting"],
 				"behaviors": ["list_coercion_disabled"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "config =\n  setting = value",
+				"inputs": ["config =\n  setting = value"],
 				"name": "bare_list_error_not_a_list_get_list",
 				"source_test": "bare_list_error_not_a_list",
 				"validation": "get_list",
@@ -2508,6 +2633,7 @@
 		"tests": [
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -2520,7 +2646,9 @@
 				},
 				"features": ["empty_keys", "multiline"],
 				"functions": ["parse_indented"],
-				"input": "== Section Header =\n  This continues the header\nkey = value",
+				"inputs": [
+					"== Section Header =\n  This continues the header\nkey = value"
+				],
 				"name": "multiline_section_header_value_parse_indented",
 				"source_test": "multiline_section_header_value",
 				"validation": "parse_indented",
@@ -2528,6 +2656,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -2540,7 +2669,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse_indented"],
-				"input": "== Section Header =\nThis continues the header\nkey = value",
+				"inputs": [
+					"== Section Header =\nThis continues the header\nkey = value"
+				],
 				"name": "unindented_multiline_becomes_continuation_parse_indented",
 				"source_test": "unindented_multiline_becomes_continuation",
 				"validation": "parse_indented",
@@ -2548,13 +2679,117 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "descriptions", "value": "First line\n  second line" },
+						{ "key": "descriptions", "value": "Another item" }
+					]
+				},
+				"features": ["multiline"],
+				"functions": ["parse_indented"],
+				"inputs": [
+					"descriptions = First line\n  second line\ndescriptions = Another item"
+				],
+				"name": "indented_line_is_continuation_parse_indented",
+				"source_test": "indented_line_is_continuation",
+				"validation": "parse_indented",
+				"variants": ["proposed_behavior"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
+				"expected": {
+					"count": 1,
+					"object": {
+						"descriptions": ["First line\n  second line", "Another item"]
+					}
+				},
+				"features": ["multiline"],
+				"functions": ["build_hierarchy"],
+				"inputs": [
+					"descriptions = First line\n  second line\ndescriptions = Another item"
+				],
+				"name": "indented_line_is_continuation_build_hierarchy",
+				"source_test": "indented_line_is_continuation",
+				"validation": "build_hierarchy",
+				"variants": ["proposed_behavior"]
+			},
+			{
+				"args": ["descriptions"],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
+				"expected": {
+					"count": 2,
+					"list": ["First line\n  second line", "Another item"]
+				},
+				"features": ["multiline"],
+				"functions": ["get_list"],
+				"inputs": [
+					"descriptions = First line\n  second line\ndescriptions = Another item"
+				],
+				"name": "indented_line_is_continuation_get_list",
+				"source_test": "indented_line_is_continuation",
+				"validation": "get_list",
+				"variants": ["proposed_behavior"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
+				"expected": {
+					"count": 4,
+					"entries": [
+						{ "key": "key1", "value": "value1\n  indented continuation" },
+						{ "key": "key2", "value": "value2" },
+						{ "key": "not indented key", "value": "" },
+						{ "key": "indented for not indented", "value": "" }
+					]
+				},
+				"features": ["multiline", "empty_keys"],
+				"functions": ["parse_indented"],
+				"inputs": [
+					"key1 = value1\n  indented continuation\nkey2 = value2\nnot indented key\n  indented for not indented"
+				],
+				"name": "mixed_indentation_levels_parse_indented",
+				"source_test": "mixed_indentation_levels",
+				"validation": "parse_indented",
+				"variants": ["proposed_behavior"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
+				"expected": {
+					"count": 1,
+					"object": {
+						"key1": "value1\n  indented continuation",
+						"key2": "value2",
+						"not indented key": { "indented for not indented": "" }
+					}
+				},
+				"features": ["multiline", "empty_keys"],
+				"functions": ["build_hierarchy"],
+				"inputs": [
+					"key1 = value1\n  indented continuation\nkey2 = value2\nnot indented key\n  indented for not indented"
+				],
+				"name": "mixed_indentation_levels_build_hierarchy",
+				"source_test": "mixed_indentation_levels",
+				"validation": "build_hierarchy",
+				"variants": ["proposed_behavior"]
+			},
+			{
+				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "item", "value": "single" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "item = single",
+				"inputs": ["item = single"],
 				"name": "single_item_as_list_parse",
 				"source_test": "single_item_as_list",
 				"validation": "parse",
@@ -2562,10 +2797,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "object": { "item": "single" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "item = single",
+				"inputs": ["item = single"],
 				"name": "single_item_as_list_build_hierarchy",
 				"source_test": "single_item_as_list",
 				"validation": "build_hierarchy",
@@ -2574,10 +2810,14 @@
 			{
 				"args": ["item"],
 				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 1, "list": ["single"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "item = single",
+				"inputs": ["item = single"],
 				"name": "single_item_as_list_get_list",
 				"source_test": "single_item_as_list",
 				"validation": "get_list",
@@ -2585,6 +2825,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 3,
 					"entries": [
@@ -2595,7 +2836,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "ports = 80\nports = 443\nhost = localhost",
+				"inputs": ["ports = 80\nports = 443\nhost = localhost"],
 				"name": "mixed_duplicate_single_keys_parse",
 				"source_test": "mixed_duplicate_single_keys",
 				"validation": "parse",
@@ -2603,13 +2844,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "host": "localhost", "ports": ["80", "443"] }
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "ports = 80\nports = 443\nhost = localhost",
+				"inputs": ["ports = 80\nports = 443\nhost = localhost"],
 				"name": "mixed_duplicate_single_keys_build_hierarchy",
 				"source_test": "mixed_duplicate_single_keys",
 				"validation": "build_hierarchy",
@@ -2618,10 +2860,14 @@
 			{
 				"args": ["host"],
 				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 1, "list": ["localhost"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "ports = 80\nports = 443\nhost = localhost",
+				"inputs": ["ports = 80\nports = 443\nhost = localhost"],
 				"name": "mixed_duplicate_single_keys_get_list",
 				"source_test": "mixed_duplicate_single_keys",
 				"validation": "get_list",
@@ -2629,6 +2875,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -2640,7 +2887,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432",
+				"inputs": [
+					"database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+				],
 				"name": "nested_list_access_parse",
 				"source_test": "nested_list_access",
 				"validation": "parse",
@@ -2648,6 +2897,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -2656,7 +2906,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432",
+				"inputs": [
+					"database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+				],
 				"name": "nested_list_access_build_hierarchy",
 				"source_test": "nested_list_access",
 				"validation": "build_hierarchy",
@@ -2665,10 +2917,16 @@
 			{
 				"args": ["database", "port"],
 				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 1, "list": ["5432"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432",
+				"inputs": [
+					"database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+				],
 				"name": "nested_list_access_get_list",
 				"source_test": "nested_list_access",
 				"validation": "get_list",
@@ -2676,13 +2934,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_list", "value": "" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "empty_list =",
+				"inputs": ["empty_list ="],
 				"name": "empty_list_parse",
 				"source_test": "empty_list",
 				"validation": "parse",
@@ -2690,10 +2949,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "object": { "empty_list": "" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "empty_list =",
+				"inputs": ["empty_list ="],
 				"name": "empty_list_build_hierarchy",
 				"source_test": "empty_list",
 				"validation": "build_hierarchy",
@@ -2701,11 +2961,15 @@
 			},
 			{
 				"args": ["empty_list"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 1, "list": [""] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "empty_list =",
+				"inputs": ["empty_list ="],
 				"name": "empty_list_get_list",
 				"source_test": "empty_list",
 				"validation": "get_list",
@@ -2713,6 +2977,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -2724,7 +2989,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0",
+				"inputs": ["numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"],
 				"name": "list_with_numbers_parse",
 				"source_test": "list_with_numbers",
 				"validation": "parse",
@@ -2732,13 +2997,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "numbers": ["1", "42", "-17", "0"] }
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0",
+				"inputs": ["numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"],
 				"name": "list_with_numbers_build_hierarchy",
 				"source_test": "list_with_numbers",
 				"validation": "build_hierarchy",
@@ -2746,11 +3012,15 @@
 			},
 			{
 				"args": ["numbers"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 4, "list": ["1", "42", "-17", "0"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0",
+				"inputs": ["numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"],
 				"name": "list_with_numbers_get_list",
 				"source_test": "list_with_numbers",
 				"validation": "get_list",
@@ -2758,6 +3028,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -2769,7 +3040,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "flags = true\nflags = false\nflags = yes\nflags = no",
+				"inputs": ["flags = true\nflags = false\nflags = yes\nflags = no"],
 				"name": "list_with_booleans_parse",
 				"source_test": "list_with_booleans",
 				"validation": "parse",
@@ -2777,13 +3048,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "flags": ["true", "false", "yes", "no"] }
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "flags = true\nflags = false\nflags = yes\nflags = no",
+				"inputs": ["flags = true\nflags = false\nflags = yes\nflags = no"],
 				"name": "list_with_booleans_build_hierarchy",
 				"source_test": "list_with_booleans",
 				"validation": "build_hierarchy",
@@ -2791,11 +3063,15 @@
 			},
 			{
 				"args": ["flags"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 4, "list": ["true", "false", "yes", "no"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "flags = true\nflags = false\nflags = yes\nflags = no",
+				"inputs": ["flags = true\nflags = false\nflags = yes\nflags = no"],
 				"name": "list_with_booleans_get_list",
 				"source_test": "list_with_booleans",
 				"validation": "get_list",
@@ -2803,6 +3079,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -2814,7 +3091,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "items =   spaced   \nitems = normal\nitems =\nitems =   ",
+				"inputs": ["items =   spaced   \nitems = normal\nitems =\nitems =   "],
 				"name": "list_with_whitespace_parse",
 				"source_test": "list_with_whitespace",
 				"validation": "parse",
@@ -2822,13 +3099,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "items": ["spaced", "normal", "", ""] }
 				},
 				"features": ["whitespace"],
 				"functions": ["build_hierarchy"],
-				"input": "items =   spaced   \nitems = normal\nitems =\nitems =   ",
+				"inputs": ["items =   spaced   \nitems = normal\nitems =\nitems =   "],
 				"name": "list_with_whitespace_build_hierarchy",
 				"source_test": "list_with_whitespace",
 				"validation": "build_hierarchy",
@@ -2836,11 +3114,15 @@
 			},
 			{
 				"args": ["items"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 4, "list": ["spaced", "normal", "", ""] },
 				"features": ["whitespace"],
 				"functions": ["get_list"],
-				"input": "items =   spaced   \nitems = normal\nitems =\nitems =   ",
+				"inputs": ["items =   spaced   \nitems = normal\nitems =\nitems =   "],
 				"name": "list_with_whitespace_get_list",
 				"source_test": "list_with_whitespace",
 				"validation": "get_list",
@@ -2848,6 +3130,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 6,
 					"entries": [
@@ -2861,7 +3144,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+				],
 				"name": "deeply_nested_list_parse",
 				"source_test": "deeply_nested_list",
 				"validation": "parse",
@@ -2869,6 +3154,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -2881,7 +3167,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+				],
 				"name": "deeply_nested_list_build_hierarchy",
 				"source_test": "deeply_nested_list",
 				"validation": "build_hierarchy",
@@ -2889,11 +3177,17 @@
 			},
 			{
 				"args": ["config", "environments", "production", "servers"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 3, "list": ["web1", "web2", "api1"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+				],
 				"name": "deeply_nested_list_get_list",
 				"source_test": "deeply_nested_list",
 				"validation": "get_list",
@@ -2901,6 +3195,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -2912,7 +3207,9 @@
 				},
 				"features": ["unicode"],
 				"functions": ["parse"],
-				"input": "names = 张三\nnames = José\nnames = François\nnames = العربية",
+				"inputs": [
+					"names = 张三\nnames = José\nnames = François\nnames = العربية"
+				],
 				"name": "list_with_unicode_parse",
 				"source_test": "list_with_unicode",
 				"validation": "parse",
@@ -2920,13 +3217,16 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "names": ["张三", "José", "François", "العربية"] }
 				},
 				"features": ["unicode"],
 				"functions": ["build_hierarchy"],
-				"input": "names = 张三\nnames = José\nnames = François\nnames = العربية",
+				"inputs": [
+					"names = 张三\nnames = José\nnames = François\nnames = العربية"
+				],
 				"name": "list_with_unicode_build_hierarchy",
 				"source_test": "list_with_unicode",
 				"validation": "build_hierarchy",
@@ -2934,14 +3234,20 @@
 			},
 			{
 				"args": ["names"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 4,
 					"list": ["张三", "José", "François", "العربية"]
 				},
 				"features": ["unicode"],
 				"functions": ["get_list"],
-				"input": "names = 张三\nnames = José\nnames = François\nnames = العربية",
+				"inputs": [
+					"names = 张三\nnames = José\nnames = François\nnames = العربية"
+				],
 				"name": "list_with_unicode_get_list",
 				"source_test": "list_with_unicode",
 				"validation": "get_list",
@@ -2949,6 +3255,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -2960,7 +3267,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|\nsymbols = <>=+",
+				"inputs": [
+					"symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|\nsymbols = <>=+"
+				],
 				"name": "list_with_special_characters_parse",
 				"source_test": "list_with_special_characters",
 				"validation": "parse",
@@ -2968,13 +3277,16 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "symbols": ["@#$%", "!^&*()", "[]{}|", "<>=+"] }
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|\nsymbols = <>=+",
+				"inputs": [
+					"symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|\nsymbols = <>=+"
+				],
 				"name": "list_with_special_characters_build_hierarchy",
 				"source_test": "list_with_special_characters",
 				"validation": "build_hierarchy",
@@ -2982,11 +3294,17 @@
 			},
 			{
 				"args": ["symbols"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 4, "list": ["@#$%", "!^&*()", "[]{}|", "<>=+"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|\nsymbols = <>=+",
+				"inputs": [
+					"symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|\nsymbols = <>=+"
+				],
 				"name": "list_with_special_characters_get_list",
 				"source_test": "list_with_special_characters",
 				"validation": "get_list",
@@ -2994,6 +3312,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3005,7 +3324,9 @@
 				},
 				"features": ["multiline"],
 				"functions": ["parse_indented"],
-				"input": "descriptions = First line\nsecond line\ndescriptions = Another item\ndescriptions = Third item",
+				"inputs": [
+					"descriptions = First line\nsecond line\ndescriptions = Another item\ndescriptions = Third item"
+				],
 				"name": "list_multiline_values_parse_indented",
 				"source_test": "list_multiline_values",
 				"validation": "parse_indented",
@@ -3013,6 +3334,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -3022,7 +3344,9 @@
 				},
 				"features": ["multiline"],
 				"functions": ["build_hierarchy"],
-				"input": "descriptions = First line\nsecond line\ndescriptions = Another item\ndescriptions = Third item",
+				"inputs": [
+					"descriptions = First line\nsecond line\ndescriptions = Another item\ndescriptions = Third item"
+				],
 				"name": "list_multiline_values_build_hierarchy",
 				"source_test": "list_multiline_values",
 				"validation": "build_hierarchy",
@@ -3030,14 +3354,20 @@
 			},
 			{
 				"args": ["descriptions"],
-				"behaviors": [],
+				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 3,
 					"list": ["First line", "Another item", "Third item"]
 				},
 				"features": ["multiline"],
 				"functions": ["get_list"],
-				"input": "descriptions = First line\nsecond line\ndescriptions = Another item\ndescriptions = Third item",
+				"inputs": [
+					"descriptions = First line\nsecond line\ndescriptions = Another item\ndescriptions = Third item"
+				],
 				"name": "list_multiline_values_get_list",
 				"source_test": "list_multiline_values",
 				"validation": "get_list",
@@ -3045,6 +3375,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 11,
 					"entries": [
@@ -3063,7 +3394,9 @@
 				},
 				"features": [],
 				"functions": ["parse_indented"],
-				"input": "config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui",
+				"inputs": [
+					"config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui"
+				],
 				"name": "complex_mixed_list_scenarios_parse_indented",
 				"source_test": "complex_mixed_list_scenarios",
 				"validation": "parse_indented",
@@ -3071,6 +3404,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -3084,7 +3418,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui",
+				"inputs": [
+					"config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui"
+				],
 				"name": "complex_mixed_list_scenarios_build_hierarchy",
 				"source_test": "complex_mixed_list_scenarios",
 				"validation": "build_hierarchy",
@@ -3093,10 +3429,16 @@
 			{
 				"args": ["features"],
 				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 3, "list": ["auth", "api", "ui"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui",
+				"inputs": [
+					"config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui"
+				],
 				"name": "complex_mixed_list_scenarios_get_list",
 				"source_test": "complex_mixed_list_scenarios",
 				"validation": "get_list",
@@ -3104,13 +3446,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "safe", "value": "value" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "safe = value",
+				"inputs": ["safe = value"],
 				"name": "list_path_traversal_protection_parse",
 				"source_test": "list_path_traversal_protection",
 				"validation": "parse",
@@ -3118,10 +3461,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "object": { "safe": "value" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "safe = value",
+				"inputs": ["safe = value"],
 				"name": "list_path_traversal_protection_build_hierarchy",
 				"source_test": "list_path_traversal_protection",
 				"validation": "build_hierarchy",
@@ -3130,10 +3474,14 @@
 			{
 				"args": ["safe"],
 				"behaviors": ["list_coercion_enabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_disabled"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 1, "list": ["value"] },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "safe = value",
+				"inputs": ["safe = value"],
 				"name": "list_path_traversal_protection_get_list",
 				"source_test": "list_path_traversal_protection",
 				"validation": "get_list",
@@ -3141,13 +3489,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_key", "value": "" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "empty_key =",
+				"inputs": ["empty_key ="],
 				"name": "parse_empty_value_parse",
 				"source_test": "parse_empty_value",
 				"validation": "parse",
@@ -3155,10 +3504,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "object": { "empty_key": "" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "empty_key =",
+				"inputs": ["empty_key ="],
 				"name": "parse_empty_value_build_hierarchy",
 				"source_test": "parse_empty_value",
 				"validation": "build_hierarchy",
@@ -3167,10 +3517,11 @@
 			{
 				"args": ["empty_key"],
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "value": "" },
 				"features": [],
 				"functions": ["get_string"],
-				"input": "empty_key =",
+				"inputs": ["empty_key ="],
 				"name": "parse_empty_value_get_string",
 				"source_test": "parse_empty_value",
 				"validation": "get_string",
@@ -3178,13 +3529,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_key", "value": "" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "empty_key =",
+				"inputs": ["empty_key ="],
 				"name": "canonical_format_empty_values_parse",
 				"source_test": "canonical_format_empty_values",
 				"validation": "parse",
@@ -3192,10 +3544,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "value": "empty_key =" },
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "empty_key =",
+				"inputs": ["empty_key ="],
 				"name": "canonical_format_empty_values_canonical_format",
 				"source_test": "canonical_format_empty_values",
 				"validation": "canonical_format",
@@ -3203,6 +3556,10 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
+				"conflicts": {
+					"behaviors": ["tabs_to_spaces"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -3211,7 +3568,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "value_with_tabs = text\t\twith\ttabs\t",
+				"inputs": ["value_with_tabs = text\t\twith\ttabs\t"],
 				"name": "canonical_format_tab_preservation_parse",
 				"source_test": "canonical_format_tab_preservation",
 				"validation": "parse",
@@ -3219,13 +3576,17 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
+				"conflicts": {
+					"behaviors": ["tabs_to_spaces"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 1,
 					"value": "value_with_tabs = text\t\twith\ttabs"
 				},
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "value_with_tabs = text\t\twith\ttabs\t",
+				"inputs": ["value_with_tabs = text\t\twith\ttabs\t"],
 				"name": "canonical_format_tab_preservation_canonical_format",
 				"source_test": "canonical_format_tab_preservation",
 				"validation": "canonical_format",
@@ -3233,6 +3594,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -3242,7 +3604,7 @@
 				},
 				"features": ["unicode"],
 				"functions": ["parse"],
-				"input": "unicode = 你好世界\nemo = 🌟✨",
+				"inputs": ["unicode = 你好世界\nemo = 🌟✨"],
 				"name": "canonical_format_unicode_parse",
 				"source_test": "canonical_format_unicode",
 				"validation": "parse",
@@ -3250,10 +3612,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "value": "unicode = 你好世界\nemo = 🌟✨" },
 				"features": ["unicode"],
 				"functions": ["canonical_format"],
-				"input": "unicode = 你好世界\nemo = 🌟✨",
+				"inputs": ["unicode = 你好世界\nemo = 🌟✨"],
 				"name": "canonical_format_unicode_canonical_format",
 				"source_test": "canonical_format_unicode",
 				"validation": "canonical_format",
@@ -3261,6 +3624,10 @@
 			},
 			{
 				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": {
+					"behaviors": ["crlf_normalize_to_lf"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -3270,7 +3637,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key1 = value1\r\nkey2 = value2\r\n",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
 				"name": "canonical_format_line_endings_proposed_parse",
 				"source_test": "canonical_format_line_endings_proposed",
 				"validation": "parse",
@@ -3278,10 +3645,14 @@
 			},
 			{
 				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": {
+					"behaviors": ["crlf_normalize_to_lf"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 1, "value": "key1 = value1\nkey2 = value2" },
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "key1 = value1\r\nkey2 = value2\r\n",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
 				"name": "canonical_format_line_endings_proposed_canonical_format",
 				"source_test": "canonical_format_line_endings_proposed",
 				"validation": "canonical_format",
@@ -3289,6 +3660,10 @@
 			},
 			{
 				"behaviors": ["crlf_normalize_to_lf"],
+				"conflicts": {
+					"behaviors": ["crlf_preserve_literal"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -3298,7 +3673,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key1 = value1\r\nkey2 = value2\r\n",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
 				"name": "crlf_normalize_to_lf_proposed_parse",
 				"source_test": "crlf_normalize_to_lf_proposed",
 				"validation": "parse",
@@ -3306,10 +3681,14 @@
 			},
 			{
 				"behaviors": ["crlf_normalize_to_lf"],
+				"conflicts": {
+					"behaviors": ["crlf_preserve_literal"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": { "count": 1, "value": "key1 = value1\nkey2 = value2" },
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "key1 = value1\r\nkey2 = value2\r\n",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
 				"name": "crlf_normalize_to_lf_proposed_canonical_format",
 				"source_test": "crlf_normalize_to_lf_proposed",
 				"validation": "canonical_format",
@@ -3317,6 +3696,10 @@
 			},
 			{
 				"behaviors": ["crlf_normalize_to_lf"],
+				"conflicts": {
+					"behaviors": ["crlf_preserve_literal"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -3326,7 +3709,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key1 = value1\r\nkey2 = value2\r\n",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
 				"name": "crlf_normalize_to_lf_indented_proposed_parse",
 				"source_test": "crlf_normalize_to_lf_indented_proposed",
 				"validation": "parse",
@@ -3334,13 +3717,17 @@
 			},
 			{
 				"behaviors": ["crlf_normalize_to_lf"],
+				"conflicts": {
+					"behaviors": ["crlf_preserve_literal"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 1,
 					"value": "key1 =\n  value1 =\nkey2 =\n  value2 =\n"
 				},
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "key1 = value1\r\nkey2 = value2\r\n",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
 				"name": "crlf_normalize_to_lf_indented_proposed_canonical_format",
 				"source_test": "crlf_normalize_to_lf_indented_proposed",
 				"validation": "canonical_format",
@@ -3348,6 +3735,10 @@
 			},
 			{
 				"behaviors": ["strict_spacing"],
+				"conflicts": {
+					"behaviors": ["loose_spacing"],
+					"variants": ["reference_compliant"]
+				},
 				"expected": {
 					"count": 3,
 					"entries": [
@@ -3358,7 +3749,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key1=value1\nkey2  =  value2\nkey3\t=\tvalue3",
+				"inputs": ["key1=value1\nkey2  =  value2\nkey3\t=\tvalue3"],
 				"name": "canonical_format_consistent_spacing_parse",
 				"source_test": "canonical_format_consistent_spacing",
 				"validation": "parse",
@@ -3366,13 +3757,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"value": "key1 = value1\nkey2 = value2\nkey3 = \tvalue3"
 				},
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "key1=value1\nkey2  =  value2\nkey3\t=\tvalue3",
+				"inputs": ["key1=value1\nkey2  =  value2\nkey3\t=\tvalue3"],
 				"name": "canonical_format_consistent_spacing_canonical_format",
 				"source_test": "canonical_format_consistent_spacing",
 				"validation": "canonical_format",
@@ -3380,6 +3772,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 3,
 					"entries": [
@@ -3390,7 +3783,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "z = last\na = first\nm = middle",
+				"inputs": ["z = last\na = first\nm = middle"],
 				"name": "deterministic_output_parse",
 				"source_test": "deterministic_output",
 				"validation": "parse",
@@ -3398,10 +3791,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "value": "z = last\na = first\nm = middle" },
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "z = last\na = first\nm = middle",
+				"inputs": ["z = last\na = first\nm = middle"],
 				"name": "deterministic_output_canonical_format",
 				"source_test": "deterministic_output",
 				"validation": "canonical_format",
@@ -3416,13 +3810,14 @@
 		"tests": [
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "item", "value": "single" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "item = single",
+				"inputs": ["item = single"],
 				"name": "single_item_as_list_reference_parse",
 				"source_test": "single_item_as_list_reference",
 				"validation": "parse",
@@ -3430,10 +3825,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "object": { "item": "single" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "item = single",
+				"inputs": ["item = single"],
 				"name": "single_item_as_list_reference_build_hierarchy",
 				"source_test": "single_item_as_list_reference",
 				"validation": "build_hierarchy",
@@ -3442,10 +3838,14 @@
 			{
 				"args": ["item"],
 				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "item = single",
+				"inputs": ["item = single"],
 				"name": "single_item_as_list_reference_get_list",
 				"source_test": "single_item_as_list_reference",
 				"validation": "get_list",
@@ -3463,7 +3863,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "ports = 80\nports = 443\nhost = localhost",
+				"inputs": ["ports = 80\nports = 443\nhost = localhost"],
 				"name": "mixed_duplicate_single_keys_reference_parse",
 				"source_test": "mixed_duplicate_single_keys_reference",
 				"validation": "parse",
@@ -3477,7 +3877,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "ports = 80\nports = 443\nhost = localhost",
+				"inputs": ["ports = 80\nports = 443\nhost = localhost"],
 				"name": "mixed_duplicate_single_keys_reference_build_hierarchy",
 				"source_test": "mixed_duplicate_single_keys_reference",
 				"validation": "build_hierarchy",
@@ -3486,10 +3886,11 @@
 			{
 				"args": ["host"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "ports = 80\nports = 443\nhost = localhost",
+				"inputs": ["ports = 80\nports = 443\nhost = localhost"],
 				"name": "mixed_duplicate_single_keys_reference_get_list",
 				"source_test": "mixed_duplicate_single_keys_reference",
 				"validation": "get_list",
@@ -3497,6 +3898,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -3508,7 +3910,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432",
+				"inputs": [
+					"database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+				],
 				"name": "nested_list_access_reference_parse",
 				"source_test": "nested_list_access_reference",
 				"validation": "parse",
@@ -3516,6 +3920,7 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -3524,7 +3929,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432",
+				"inputs": [
+					"database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+				],
 				"name": "nested_list_access_reference_build_hierarchy",
 				"source_test": "nested_list_access_reference",
 				"validation": "build_hierarchy",
@@ -3533,10 +3940,16 @@
 			{
 				"args": ["database", "port"],
 				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432",
+				"inputs": [
+					"database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+				],
 				"name": "nested_list_access_reference_get_list",
 				"source_test": "nested_list_access_reference",
 				"validation": "get_list",
@@ -3544,13 +3957,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_list", "value": "" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "empty_list =",
+				"inputs": ["empty_list ="],
 				"name": "empty_list_reference_parse",
 				"source_test": "empty_list_reference",
 				"validation": "parse",
@@ -3558,10 +3972,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "object": { "empty_list": "" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "empty_list =",
+				"inputs": ["empty_list ="],
 				"name": "empty_list_reference_build_hierarchy",
 				"source_test": "empty_list_reference",
 				"validation": "build_hierarchy",
@@ -3570,10 +3985,11 @@
 			{
 				"args": ["empty_list"],
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "empty_list =",
+				"inputs": ["empty_list ="],
 				"name": "empty_list_reference_get_list",
 				"source_test": "empty_list_reference",
 				"validation": "get_list",
@@ -3592,7 +4008,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0",
+				"inputs": ["numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"],
 				"name": "list_with_numbers_reference_parse",
 				"source_test": "list_with_numbers_reference",
 				"validation": "parse",
@@ -3606,7 +4022,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0",
+				"inputs": ["numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"],
 				"name": "list_with_numbers_reference_build_hierarchy",
 				"source_test": "list_with_numbers_reference",
 				"validation": "build_hierarchy",
@@ -3615,10 +4031,11 @@
 			{
 				"args": ["numbers"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0",
+				"inputs": ["numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"],
 				"name": "list_with_numbers_reference_get_list",
 				"source_test": "list_with_numbers_reference",
 				"validation": "get_list",
@@ -3637,7 +4054,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "flags = true\nflags = false\nflags = yes\nflags = no",
+				"inputs": ["flags = true\nflags = false\nflags = yes\nflags = no"],
 				"name": "list_with_booleans_reference_parse",
 				"source_test": "list_with_booleans_reference",
 				"validation": "parse",
@@ -3651,7 +4068,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "flags = true\nflags = false\nflags = yes\nflags = no",
+				"inputs": ["flags = true\nflags = false\nflags = yes\nflags = no"],
 				"name": "list_with_booleans_reference_build_hierarchy",
 				"source_test": "list_with_booleans_reference",
 				"validation": "build_hierarchy",
@@ -3660,10 +4077,11 @@
 			{
 				"args": ["flags"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "flags = true\nflags = false\nflags = yes\nflags = no",
+				"inputs": ["flags = true\nflags = false\nflags = yes\nflags = no"],
 				"name": "list_with_booleans_reference_get_list",
 				"source_test": "list_with_booleans_reference",
 				"validation": "get_list",
@@ -3682,7 +4100,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "items =   spaced   \nitems = normal\nitems =\nitems =   ",
+				"inputs": ["items =   spaced   \nitems = normal\nitems =\nitems =   "],
 				"name": "list_with_whitespace_reference_parse",
 				"source_test": "list_with_whitespace_reference",
 				"validation": "parse",
@@ -3693,7 +4111,7 @@
 				"expected": { "count": 1, "object": { "items": ["normal", "spaced"] } },
 				"features": ["whitespace"],
 				"functions": ["build_hierarchy"],
-				"input": "items =   spaced   \nitems = normal\nitems =\nitems =   ",
+				"inputs": ["items =   spaced   \nitems = normal\nitems =\nitems =   "],
 				"name": "list_with_whitespace_reference_build_hierarchy",
 				"source_test": "list_with_whitespace_reference",
 				"validation": "build_hierarchy",
@@ -3702,10 +4120,11 @@
 			{
 				"args": ["items"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": ["whitespace"],
 				"functions": ["get_list"],
-				"input": "items =   spaced   \nitems = normal\nitems =\nitems =   ",
+				"inputs": ["items =   spaced   \nitems = normal\nitems =\nitems =   "],
 				"name": "list_with_whitespace_reference_get_list",
 				"source_test": "list_with_whitespace_reference",
 				"validation": "get_list",
@@ -3724,7 +4143,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+				],
 				"name": "deeply_nested_list_reference_parse",
 				"source_test": "deeply_nested_list_reference",
 				"validation": "parse",
@@ -3744,7 +4165,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+				],
 				"name": "deeply_nested_list_reference_build_hierarchy",
 				"source_test": "deeply_nested_list_reference",
 				"validation": "build_hierarchy",
@@ -3753,10 +4176,13 @@
 			{
 				"args": ["config", "environments", "production", "servers"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1",
+				"inputs": [
+					"config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+				],
 				"name": "deeply_nested_list_reference_get_list",
 				"source_test": "deeply_nested_list_reference",
 				"validation": "get_list",
@@ -3775,7 +4201,9 @@
 				},
 				"features": ["unicode"],
 				"functions": ["parse"],
-				"input": "names = 张三\nnames = José\nnames = François\nnames = العربية",
+				"inputs": [
+					"names = 张三\nnames = José\nnames = François\nnames = العربية"
+				],
 				"name": "list_with_unicode_reference_parse",
 				"source_test": "list_with_unicode_reference",
 				"validation": "parse",
@@ -3789,7 +4217,9 @@
 				},
 				"features": ["unicode"],
 				"functions": ["build_hierarchy"],
-				"input": "names = 张三\nnames = José\nnames = François\nnames = العربية",
+				"inputs": [
+					"names = 张三\nnames = José\nnames = François\nnames = العربية"
+				],
 				"name": "list_with_unicode_reference_build_hierarchy",
 				"source_test": "list_with_unicode_reference",
 				"validation": "build_hierarchy",
@@ -3798,10 +4228,13 @@
 			{
 				"args": ["names"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": ["unicode"],
 				"functions": ["get_list"],
-				"input": "names = 张三\nnames = José\nnames = François\nnames = العربية",
+				"inputs": [
+					"names = 张三\nnames = José\nnames = François\nnames = العربية"
+				],
 				"name": "list_with_unicode_reference_get_list",
 				"source_test": "list_with_unicode_reference",
 				"validation": "get_list",
@@ -3819,7 +4252,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|",
+				"inputs": ["symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|"],
 				"name": "list_with_special_characters_reference_parse",
 				"source_test": "list_with_special_characters_reference",
 				"validation": "parse",
@@ -3833,7 +4266,7 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|",
+				"inputs": ["symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|"],
 				"name": "list_with_special_characters_reference_build_hierarchy",
 				"source_test": "list_with_special_characters_reference",
 				"validation": "build_hierarchy",
@@ -3842,10 +4275,11 @@
 			{
 				"args": ["symbols"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|",
+				"inputs": ["symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|"],
 				"name": "list_with_special_characters_reference_get_list",
 				"source_test": "list_with_special_characters_reference",
 				"validation": "get_list",
@@ -3866,7 +4300,9 @@
 				},
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui",
+				"inputs": [
+					"config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui"
+				],
 				"name": "complex_mixed_list_scenarios_reference_build_hierarchy",
 				"source_test": "complex_mixed_list_scenarios_reference",
 				"validation": "build_hierarchy",
@@ -3875,10 +4311,13 @@
 			{
 				"args": ["features"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
+				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui",
+				"inputs": [
+					"config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui"
+				],
 				"name": "complex_mixed_list_scenarios_reference_get_list",
 				"source_test": "complex_mixed_list_scenarios_reference",
 				"validation": "get_list",
@@ -3886,13 +4325,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "safe", "value": "value" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "safe = value",
+				"inputs": ["safe = value"],
 				"name": "list_path_traversal_protection_reference_parse",
 				"source_test": "list_path_traversal_protection_reference",
 				"validation": "parse",
@@ -3900,10 +4340,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "object": { "safe": "value" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "safe = value",
+				"inputs": ["safe = value"],
 				"name": "list_path_traversal_protection_reference_build_hierarchy",
 				"source_test": "list_path_traversal_protection_reference",
 				"validation": "build_hierarchy",
@@ -3912,10 +4353,14 @@
 			{
 				"args": ["safe"],
 				"behaviors": ["list_coercion_disabled"],
+				"conflicts": {
+					"behaviors": ["list_coercion_enabled"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
-				"input": "safe = value",
+				"inputs": ["safe = value"],
 				"name": "list_path_traversal_protection_reference_get_list",
 				"source_test": "list_path_traversal_protection_reference",
 				"validation": "get_list",
@@ -3923,13 +4368,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_key", "value": "" }]
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "empty_key =",
+				"inputs": ["empty_key ="],
 				"name": "empty_value_reference_behavior_parse",
 				"source_test": "empty_value_reference_behavior",
 				"validation": "parse",
@@ -3937,10 +4383,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "object": { "empty_key": "" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "empty_key =",
+				"inputs": ["empty_key ="],
 				"name": "empty_value_reference_behavior_build_hierarchy",
 				"source_test": "empty_value_reference_behavior",
 				"validation": "build_hierarchy",
@@ -3948,10 +4395,11 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "value": "empty_key =\n" },
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "empty_key =",
+				"inputs": ["empty_key ="],
 				"name": "canonical_format_empty_values_ocaml_reference_canonical_format",
 				"source_test": "canonical_format_empty_values_ocaml_reference",
 				"validation": "canonical_format",
@@ -3959,13 +4407,17 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
+				"conflicts": {
+					"behaviors": ["tabs_to_spaces"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 1,
 					"value": "value_with_tabs =\n  text\t\twith\ttabs =\n"
 				},
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "value_with_tabs = text\t\twith\ttabs\t",
+				"inputs": ["value_with_tabs = text\t\twith\ttabs\t"],
 				"name": "canonical_format_tab_preservation_ocaml_reference_canonical_format",
 				"source_test": "canonical_format_tab_preservation_ocaml_reference",
 				"validation": "canonical_format",
@@ -3973,13 +4425,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"value": "emo =\n  🌟✨ =\nunicode =\n  你好世界 =\n"
 				},
 				"features": ["unicode"],
 				"functions": ["canonical_format"],
-				"input": "unicode = 你好世界\nemo = 🌟✨",
+				"inputs": ["unicode = 你好世界\nemo = 🌟✨"],
 				"name": "canonical_format_unicode_ocaml_reference_canonical_format",
 				"source_test": "canonical_format_unicode_ocaml_reference",
 				"validation": "canonical_format",
@@ -3987,6 +4440,10 @@
 			},
 			{
 				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": {
+					"behaviors": ["crlf_normalize_to_lf"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -3996,7 +4453,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key1 = value1\r\nkey2 = value2\r\n",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
 				"name": "canonical_format_line_endings_reference_behavior_parse",
 				"source_test": "canonical_format_line_endings_reference_behavior",
 				"validation": "parse",
@@ -4004,13 +4461,17 @@
 			},
 			{
 				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": {
+					"behaviors": ["crlf_normalize_to_lf"],
+					"variants": ["proposed_behavior"]
+				},
 				"expected": {
 					"count": 1,
 					"value": "key1 =\n  value1\r =\nkey2 =\n  value2\r =\n"
 				},
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "key1 = value1\r\nkey2 = value2\r\n",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
 				"name": "canonical_format_line_endings_reference_behavior_canonical_format",
 				"source_test": "canonical_format_line_endings_reference_behavior",
 				"validation": "canonical_format",
@@ -4018,13 +4479,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"value": "key1 =\n  value1 =\nkey2 =\n  value2 =\nkey3 =\n  value3 =\n"
 				},
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "key1=value1\nkey2  =  value2\nkey3\t=\tvalue3",
+				"inputs": ["key1=value1\nkey2  =  value2\nkey3\t=\tvalue3"],
 				"name": "canonical_format_consistent_spacing_ocaml_reference_canonical_format",
 				"source_test": "canonical_format_consistent_spacing_ocaml_reference",
 				"validation": "canonical_format",
@@ -4032,13 +4494,14 @@
 			},
 			{
 				"behaviors": [],
+				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"value": "a =\n  first =\nm =\n  middle =\nz =\n  last =\n"
 				},
 				"features": [],
 				"functions": ["canonical_format"],
-				"input": "z = last\na = first\nm = middle",
+				"inputs": ["z = last\na = first\nm = middle"],
 				"name": "deterministic_output_ocaml_reference_canonical_format",
 				"source_test": "deterministic_output_ocaml_reference",
 				"validation": "canonical_format",
@@ -4059,7 +4522,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "port = 8080",
+				"inputs": ["port = 8080"],
 				"name": "parse_basic_integer_parse",
 				"source_test": "parse_basic_integer",
 				"validation": "parse",
@@ -4070,7 +4533,7 @@
 				"expected": { "count": 1, "object": { "port": "8080" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "port = 8080",
+				"inputs": ["port = 8080"],
 				"name": "parse_basic_integer_build_hierarchy",
 				"source_test": "parse_basic_integer",
 				"validation": "build_hierarchy",
@@ -4082,7 +4545,7 @@
 				"expected": { "count": 1, "value": 8080 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "port = 8080",
+				"inputs": ["port = 8080"],
 				"name": "parse_basic_integer_get_int",
 				"source_test": "parse_basic_integer",
 				"validation": "get_int",
@@ -4096,7 +4559,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "temperature = 98.6",
+				"inputs": ["temperature = 98.6"],
 				"name": "parse_basic_float_parse",
 				"source_test": "parse_basic_float",
 				"validation": "parse",
@@ -4107,7 +4570,7 @@
 				"expected": { "count": 1, "object": { "temperature": "98.6" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "temperature = 98.6",
+				"inputs": ["temperature = 98.6"],
 				"name": "parse_basic_float_build_hierarchy",
 				"source_test": "parse_basic_float",
 				"validation": "build_hierarchy",
@@ -4119,7 +4582,7 @@
 				"expected": { "count": 1, "value": 98.6 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_float"],
-				"input": "temperature = 98.6",
+				"inputs": ["temperature = 98.6"],
 				"name": "parse_basic_float_get_float",
 				"source_test": "parse_basic_float",
 				"validation": "get_float",
@@ -4133,7 +4596,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "enabled = true",
+				"inputs": ["enabled = true"],
 				"name": "parse_boolean_true_parse",
 				"source_test": "parse_boolean_true",
 				"validation": "parse",
@@ -4144,7 +4607,7 @@
 				"expected": { "count": 1, "object": { "enabled": "true" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "enabled = true",
+				"inputs": ["enabled = true"],
 				"name": "parse_boolean_true_build_hierarchy",
 				"source_test": "parse_boolean_true",
 				"validation": "build_hierarchy",
@@ -4156,7 +4619,7 @@
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "enabled = true",
+				"inputs": ["enabled = true"],
 				"name": "parse_boolean_true_get_bool",
 				"source_test": "parse_boolean_true",
 				"validation": "get_bool",
@@ -4170,7 +4633,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "active = yes",
+				"inputs": ["active = yes"],
 				"name": "parse_boolean_yes_parse",
 				"source_test": "parse_boolean_yes",
 				"validation": "parse",
@@ -4181,7 +4644,7 @@
 				"expected": { "count": 1, "object": { "active": "yes" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "active = yes",
+				"inputs": ["active = yes"],
 				"name": "parse_boolean_yes_build_hierarchy",
 				"source_test": "parse_boolean_yes",
 				"validation": "build_hierarchy",
@@ -4190,10 +4653,11 @@
 			{
 				"args": ["active"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "active = yes",
+				"inputs": ["active = yes"],
 				"name": "parse_boolean_yes_get_bool",
 				"source_test": "parse_boolean_yes",
 				"validation": "get_bool",
@@ -4207,7 +4671,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "active = yes",
+				"inputs": ["active = yes"],
 				"name": "parse_boolean_yes_strict_literal_parse",
 				"source_test": "parse_boolean_yes_strict_literal",
 				"validation": "parse",
@@ -4218,7 +4682,7 @@
 				"expected": { "count": 1, "object": { "active": "yes" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "active = yes",
+				"inputs": ["active = yes"],
 				"name": "parse_boolean_yes_strict_literal_build_hierarchy",
 				"source_test": "parse_boolean_yes_strict_literal",
 				"validation": "build_hierarchy",
@@ -4227,10 +4691,11 @@
 			{
 				"args": ["active"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "active = yes",
+				"inputs": ["active = yes"],
 				"name": "parse_boolean_yes_strict_literal_get_bool",
 				"source_test": "parse_boolean_yes_strict_literal",
 				"validation": "get_bool",
@@ -4244,7 +4709,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "disabled = false",
+				"inputs": ["disabled = false"],
 				"name": "parse_boolean_false_parse",
 				"source_test": "parse_boolean_false",
 				"validation": "parse",
@@ -4255,7 +4720,7 @@
 				"expected": { "count": 1, "object": { "disabled": "false" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "disabled = false",
+				"inputs": ["disabled = false"],
 				"name": "parse_boolean_false_build_hierarchy",
 				"source_test": "parse_boolean_false",
 				"validation": "build_hierarchy",
@@ -4267,7 +4732,7 @@
 				"expected": { "count": 1, "value": false },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "disabled = false",
+				"inputs": ["disabled = false"],
 				"name": "parse_boolean_false_get_bool",
 				"source_test": "parse_boolean_false",
 				"validation": "get_bool",
@@ -4281,7 +4746,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "name = Alice",
+				"inputs": ["name = Alice"],
 				"name": "parse_string_fallback_parse",
 				"source_test": "parse_string_fallback",
 				"validation": "parse",
@@ -4292,7 +4757,7 @@
 				"expected": { "count": 1, "object": { "name": "Alice" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "name = Alice",
+				"inputs": ["name = Alice"],
 				"name": "parse_string_fallback_build_hierarchy",
 				"source_test": "parse_string_fallback",
 				"validation": "build_hierarchy",
@@ -4304,7 +4769,7 @@
 				"expected": { "count": 1, "value": "Alice" },
 				"features": [],
 				"functions": ["get_string"],
-				"input": "name = Alice",
+				"inputs": ["name = Alice"],
 				"name": "parse_string_fallback_get_string",
 				"source_test": "parse_string_fallback",
 				"validation": "get_string",
@@ -4318,7 +4783,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "offset = -42",
+				"inputs": ["offset = -42"],
 				"name": "parse_negative_integer_parse",
 				"source_test": "parse_negative_integer",
 				"validation": "parse",
@@ -4329,7 +4794,7 @@
 				"expected": { "count": 1, "object": { "offset": "-42" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "offset = -42",
+				"inputs": ["offset = -42"],
 				"name": "parse_negative_integer_build_hierarchy",
 				"source_test": "parse_negative_integer",
 				"validation": "build_hierarchy",
@@ -4341,7 +4806,7 @@
 				"expected": { "count": 1, "value": -42 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "offset = -42",
+				"inputs": ["offset = -42"],
 				"name": "parse_negative_integer_get_int",
 				"source_test": "parse_negative_integer",
 				"validation": "get_int",
@@ -4359,7 +4824,7 @@
 				},
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_parse",
 				"source_test": "parse_zero_values",
 				"validation": "parse",
@@ -4373,7 +4838,7 @@
 				},
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_build_hierarchy",
 				"source_test": "parse_zero_values",
 				"validation": "build_hierarchy",
@@ -4385,7 +4850,7 @@
 				"expected": { "count": 1, "value": 0 },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_get_int",
 				"source_test": "parse_zero_values",
 				"validation": "get_int",
@@ -4394,10 +4859,11 @@
 			{
 				"args": ["disabled"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": false },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_get_bool",
 				"source_test": "parse_zero_values",
 				"validation": "get_bool",
@@ -4409,7 +4875,7 @@
 				"expected": { "count": 1, "value": 0 },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_float"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_get_float",
 				"source_test": "parse_zero_values",
 				"validation": "get_float",
@@ -4427,7 +4893,7 @@
 				},
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_strict_literal_parse",
 				"source_test": "parse_zero_values_strict_literal",
 				"validation": "parse",
@@ -4441,7 +4907,7 @@
 				},
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_strict_literal_build_hierarchy",
 				"source_test": "parse_zero_values_strict_literal",
 				"validation": "build_hierarchy",
@@ -4453,7 +4919,7 @@
 				"expected": { "count": 1, "value": 0 },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_strict_literal_get_int",
 				"source_test": "parse_zero_values_strict_literal",
 				"validation": "get_int",
@@ -4462,10 +4928,11 @@
 			{
 				"args": ["disabled"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_strict_literal_get_bool",
 				"source_test": "parse_zero_values_strict_literal",
 				"validation": "get_bool",
@@ -4477,7 +4944,7 @@
 				"expected": { "count": 1, "value": 0 },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_float"],
-				"input": "count = 0\ndistance = 0.0\ndisabled = no",
+				"inputs": ["count = 0\ndistance = 0.0\ndisabled = no"],
 				"name": "parse_zero_values_strict_literal_get_float",
 				"source_test": "parse_zero_values_strict_literal",
 				"validation": "get_float",
@@ -4499,7 +4966,9 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0",
+				"inputs": [
+					"flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+				],
 				"name": "parse_boolean_variants_parse",
 				"source_test": "parse_boolean_variants",
 				"validation": "parse",
@@ -4521,7 +4990,9 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0",
+				"inputs": [
+					"flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+				],
 				"name": "parse_boolean_variants_build_hierarchy",
 				"source_test": "parse_boolean_variants",
 				"validation": "build_hierarchy",
@@ -4533,7 +5004,9 @@
 				"expected": { "count": 1, "value": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0",
+				"inputs": [
+					"flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+				],
 				"name": "parse_boolean_variants_get_int",
 				"source_test": "parse_boolean_variants",
 				"validation": "get_int",
@@ -4542,10 +5015,13 @@
 			{
 				"args": ["flag1"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0",
+				"inputs": [
+					"flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+				],
 				"name": "parse_boolean_variants_get_bool",
 				"source_test": "parse_boolean_variants",
 				"validation": "get_bool",
@@ -4567,7 +5043,9 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0",
+				"inputs": [
+					"flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+				],
 				"name": "parse_boolean_variants_strict_literal_parse",
 				"source_test": "parse_boolean_variants_strict_literal",
 				"validation": "parse",
@@ -4589,7 +5067,9 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0",
+				"inputs": [
+					"flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+				],
 				"name": "parse_boolean_variants_strict_literal_build_hierarchy",
 				"source_test": "parse_boolean_variants_strict_literal",
 				"validation": "build_hierarchy",
@@ -4601,7 +5081,9 @@
 				"expected": { "count": 1, "value": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0",
+				"inputs": [
+					"flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+				],
 				"name": "parse_boolean_variants_strict_literal_get_int",
 				"source_test": "parse_boolean_variants_strict_literal",
 				"validation": "get_int",
@@ -4610,10 +5092,13 @@
 			{
 				"args": ["flag1"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0",
+				"inputs": [
+					"flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+				],
 				"name": "parse_boolean_variants_strict_literal_get_bool",
 				"source_test": "parse_boolean_variants_strict_literal",
 				"validation": "get_bool",
@@ -4633,7 +5118,9 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_parse",
 				"source_test": "parse_mixed_types",
 				"validation": "parse",
@@ -4653,7 +5140,9 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_build_hierarchy",
 				"source_test": "parse_mixed_types",
 				"validation": "build_hierarchy",
@@ -4665,7 +5154,9 @@
 				"expected": { "count": 1, "value": "localhost" },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_string"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_get_string",
 				"source_test": "parse_mixed_types",
 				"validation": "get_string",
@@ -4677,7 +5168,9 @@
 				"expected": { "count": 1, "value": 8080 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_get_int",
 				"source_test": "parse_mixed_types",
 				"validation": "get_int",
@@ -4686,10 +5179,13 @@
 			{
 				"args": ["ssl"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_get_bool",
 				"source_test": "parse_mixed_types",
 				"validation": "get_bool",
@@ -4701,7 +5197,9 @@
 				"expected": { "count": 1, "value": 30.5 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_float"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_get_float",
 				"source_test": "parse_mixed_types",
 				"validation": "get_float",
@@ -4721,7 +5219,9 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_strict_literal_parse",
 				"source_test": "parse_mixed_types_strict_literal",
 				"validation": "parse",
@@ -4741,7 +5241,9 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_strict_literal_build_hierarchy",
 				"source_test": "parse_mixed_types_strict_literal",
 				"validation": "build_hierarchy",
@@ -4753,7 +5255,9 @@
 				"expected": { "count": 1, "value": "localhost" },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_string"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_strict_literal_get_string",
 				"source_test": "parse_mixed_types_strict_literal",
 				"validation": "get_string",
@@ -4765,7 +5269,9 @@
 				"expected": { "count": 1, "value": 8080 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_strict_literal_get_int",
 				"source_test": "parse_mixed_types_strict_literal",
 				"validation": "get_int",
@@ -4774,10 +5280,13 @@
 			{
 				"args": ["ssl"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_strict_literal_get_bool",
 				"source_test": "parse_mixed_types_strict_literal",
 				"validation": "get_bool",
@@ -4789,7 +5298,9 @@
 				"expected": { "count": 1, "value": 30.5 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_float"],
-				"input": "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off",
+				"inputs": [
+					"host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+				],
 				"name": "parse_mixed_types_strict_literal_get_float",
 				"source_test": "parse_mixed_types_strict_literal",
 				"validation": "get_float",
@@ -4806,7 +5317,7 @@
 				},
 				"features": ["whitespace", "optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "number =   42   \nflag =  true  ",
+				"inputs": ["number =   42   \nflag =  true  "],
 				"name": "parse_with_whitespace_parse",
 				"source_test": "parse_with_whitespace",
 				"validation": "parse",
@@ -4820,7 +5331,7 @@
 				},
 				"features": ["whitespace", "optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "number =   42   \nflag =  true  ",
+				"inputs": ["number =   42   \nflag =  true  "],
 				"name": "parse_with_whitespace_build_hierarchy",
 				"source_test": "parse_with_whitespace",
 				"validation": "build_hierarchy",
@@ -4832,7 +5343,7 @@
 				"expected": { "count": 1, "value": 42 },
 				"features": ["whitespace", "optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "number =   42   \nflag =  true  ",
+				"inputs": ["number =   42   \nflag =  true  "],
 				"name": "parse_with_whitespace_get_int",
 				"source_test": "parse_with_whitespace",
 				"validation": "get_int",
@@ -4844,7 +5355,7 @@
 				"expected": { "count": 1, "value": true },
 				"features": ["whitespace", "optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "number =   42   \nflag =  true  ",
+				"inputs": ["number =   42   \nflag =  true  "],
 				"name": "parse_with_whitespace_get_bool",
 				"source_test": "parse_with_whitespace",
 				"validation": "get_bool",
@@ -4863,7 +5374,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "number = 42\ndecimal = 3.14\nflag = true\ntext = hello",
+				"inputs": ["number = 42\ndecimal = 3.14\nflag = true\ntext = hello"],
 				"name": "parse_with_conservative_options_parse",
 				"source_test": "parse_with_conservative_options",
 				"validation": "parse",
@@ -4882,7 +5393,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "number = 42\ndecimal = 3.14\nflag = true\ntext = hello",
+				"inputs": ["number = 42\ndecimal = 3.14\nflag = true\ntext = hello"],
 				"name": "parse_with_conservative_options_build_hierarchy",
 				"source_test": "parse_with_conservative_options",
 				"validation": "build_hierarchy",
@@ -4894,7 +5405,7 @@
 				"expected": { "count": 1, "value": "3.14" },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_string"],
-				"input": "number = 42\ndecimal = 3.14\nflag = true\ntext = hello",
+				"inputs": ["number = 42\ndecimal = 3.14\nflag = true\ntext = hello"],
 				"name": "parse_with_conservative_options_get_string",
 				"source_test": "parse_with_conservative_options",
 				"validation": "get_string",
@@ -4906,7 +5417,7 @@
 				"expected": { "count": 1, "value": 42 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "number = 42\ndecimal = 3.14\nflag = true\ntext = hello",
+				"inputs": ["number = 42\ndecimal = 3.14\nflag = true\ntext = hello"],
 				"name": "parse_with_conservative_options_get_int",
 				"source_test": "parse_with_conservative_options",
 				"validation": "get_int",
@@ -4920,7 +5431,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "port = not_a_number",
+				"inputs": ["port = not_a_number"],
 				"name": "parse_integer_error_parse",
 				"source_test": "parse_integer_error",
 				"validation": "parse",
@@ -4931,7 +5442,7 @@
 				"expected": { "count": 1, "object": { "port": "not_a_number" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "port = not_a_number",
+				"inputs": ["port = not_a_number"],
 				"name": "parse_integer_error_build_hierarchy",
 				"source_test": "parse_integer_error",
 				"validation": "build_hierarchy",
@@ -4943,7 +5454,7 @@
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_int"],
-				"input": "port = not_a_number",
+				"inputs": ["port = not_a_number"],
 				"name": "parse_integer_error_get_int",
 				"source_test": "parse_integer_error",
 				"validation": "get_int",
@@ -4957,7 +5468,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "temperature = invalid",
+				"inputs": ["temperature = invalid"],
 				"name": "parse_float_error_parse",
 				"source_test": "parse_float_error",
 				"validation": "parse",
@@ -4968,7 +5479,7 @@
 				"expected": { "count": 1, "object": { "temperature": "invalid" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "temperature = invalid",
+				"inputs": ["temperature = invalid"],
 				"name": "parse_float_error_build_hierarchy",
 				"source_test": "parse_float_error",
 				"validation": "build_hierarchy",
@@ -4980,7 +5491,7 @@
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_float"],
-				"input": "temperature = invalid",
+				"inputs": ["temperature = invalid"],
 				"name": "parse_float_error_get_float",
 				"source_test": "parse_float_error",
 				"validation": "get_float",
@@ -4994,7 +5505,7 @@
 				},
 				"features": ["optional_typed_accessors"],
 				"functions": ["parse"],
-				"input": "enabled = maybe",
+				"inputs": ["enabled = maybe"],
 				"name": "parse_boolean_error_parse",
 				"source_test": "parse_boolean_error",
 				"validation": "parse",
@@ -5005,7 +5516,7 @@
 				"expected": { "count": 1, "object": { "enabled": "maybe" } },
 				"features": ["optional_typed_accessors"],
 				"functions": ["build_hierarchy"],
-				"input": "enabled = maybe",
+				"inputs": ["enabled = maybe"],
 				"name": "parse_boolean_error_build_hierarchy",
 				"source_test": "parse_boolean_error",
 				"validation": "build_hierarchy",
@@ -5014,10 +5525,11 @@
 			{
 				"args": ["enabled"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
-				"input": "enabled = maybe",
+				"inputs": ["enabled = maybe"],
 				"name": "parse_boolean_error_get_bool",
 				"source_test": "parse_boolean_error",
 				"validation": "get_bool",
@@ -5031,7 +5543,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "existing = value",
+				"inputs": ["existing = value"],
 				"name": "parse_missing_path_error_parse",
 				"source_test": "parse_missing_path_error",
 				"validation": "parse",
@@ -5042,7 +5554,7 @@
 				"expected": { "count": 1, "object": { "existing": "value" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
-				"input": "existing = value",
+				"inputs": ["existing = value"],
 				"name": "parse_missing_path_error_build_hierarchy",
 				"source_test": "parse_missing_path_error",
 				"validation": "build_hierarchy",
@@ -5054,7 +5566,7 @@
 				"expected": { "count": 1 },
 				"features": [],
 				"functions": ["get_string"],
-				"input": "existing = value",
+				"inputs": ["existing = value"],
 				"name": "parse_missing_path_error_get_string",
 				"source_test": "parse_missing_path_error",
 				"validation": "get_string",
@@ -5064,168 +5576,536 @@
 		"file": "api_typed_access.json"
 	},
 	{
+		"name": "Whitespace Behaviors",
+		"description": "whitespace behaviors functionality",
+		"tests": [
+			{
+				"behaviors": ["strict_spacing", "loose_spacing"],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "value" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key = value"],
+				"name": "spacing_strict_standard_format_parse",
+				"source_test": "spacing_strict_standard_format",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing"],
+				"conflicts": { "behaviors": ["strict_spacing"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "value" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key=value"],
+				"name": "spacing_loose_no_spaces_parse",
+				"source_test": "spacing_loose_no_spaces",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing"],
+				"conflicts": { "behaviors": ["strict_spacing"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "value" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key =value"],
+				"name": "spacing_loose_left_space_only_parse",
+				"source_test": "spacing_loose_left_space_only",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing"],
+				"conflicts": { "behaviors": ["strict_spacing"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "value" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key= value"],
+				"name": "spacing_loose_right_space_only_parse",
+				"source_test": "spacing_loose_right_space_only",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing"],
+				"conflicts": { "behaviors": ["strict_spacing"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "value" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key  =  value"],
+				"name": "spacing_loose_multiple_spaces_parse",
+				"source_test": "spacing_loose_multiple_spaces",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing"],
+				"conflicts": { "behaviors": ["strict_spacing"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "value" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key\t=\tvalue"],
+				"name": "spacing_loose_tabs_around_equals_parse",
+				"source_test": "spacing_loose_tabs_around_equals",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing"],
+				"conflicts": { "behaviors": ["strict_spacing"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "value" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key \t = \t value"],
+				"name": "spacing_loose_mixed_whitespace_parse",
+				"source_test": "spacing_loose_mixed_whitespace",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing"],
+				"conflicts": { "behaviors": ["strict_spacing"] },
+				"expected": {
+					"count": 4,
+					"entries": [
+						{ "key": "key1", "value": "val1" },
+						{ "key": "key2", "value": "val2" },
+						{ "key": "key3", "value": "val3" },
+						{ "key": "key4", "value": "val4" }
+					]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key1=val1\nkey2 = val2\nkey3  =  val3\nkey4\t=\tval4"],
+				"name": "spacing_loose_multiline_various_parse",
+				"source_test": "spacing_loose_multiline_various",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"object": {
+						"key1": "val1",
+						"key2": "val2",
+						"key3": "val3",
+						"key4": "val4"
+					}
+				},
+				"features": ["whitespace"],
+				"functions": ["build_hierarchy"],
+				"inputs": ["key1=val1\nkey2 = val2\nkey3  =  val3\nkey4\t=\tval4"],
+				"name": "spacing_loose_multiline_various_build_hierarchy",
+				"source_test": "spacing_loose_multiline_various",
+				"validation": "build_hierarchy",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing"],
+				"conflicts": { "behaviors": ["strict_spacing"] },
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "key1", "value": "val1" },
+						{ "key": "key2", "value": "val2" }
+					]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key1=val1\nkey2  =  val2"],
+				"name": "spacing_canonical_format_normalizes_loose_parse",
+				"source_test": "spacing_canonical_format_normalizes_loose",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": { "count": 1, "value": "key1 = val1\nkey2 = val2" },
+				"features": ["whitespace"],
+				"functions": ["canonical_format"],
+				"inputs": ["key1=val1\nkey2  =  val2"],
+				"name": "spacing_canonical_format_normalizes_loose_canonical_format",
+				"source_test": "spacing_canonical_format_normalizes_loose",
+				"validation": "canonical_format",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "\tvalue\twith\ttabs" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key = \tvalue\twith\ttabs"],
+				"name": "tabs_preserve_in_value_parse",
+				"source_test": "tabs_preserve_in_value",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
+				"expected": { "count": 1, "object": { "key": "\tvalue\twith\ttabs" } },
+				"features": ["whitespace"],
+				"functions": ["build_hierarchy"],
+				"inputs": ["key = \tvalue\twith\ttabs"],
+				"name": "tabs_preserve_in_value_build_hierarchy",
+				"source_test": "tabs_preserve_in_value",
+				"validation": "build_hierarchy",
+				"variants": []
+			},
+			{
+				"args": ["key"],
+				"behaviors": [],
+				"expected": { "count": 1, "value": "\tvalue\twith\ttabs" },
+				"features": ["whitespace"],
+				"functions": ["get_string"],
+				"inputs": ["key = \tvalue\twith\ttabs"],
+				"name": "tabs_preserve_in_value_get_string",
+				"source_test": "tabs_preserve_in_value",
+				"validation": "get_string",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "\tindented" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key = \tindented"],
+				"name": "tabs_preserve_leading_tab_parse",
+				"source_test": "tabs_preserve_leading_tab",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["key"],
+				"behaviors": [],
+				"expected": { "count": 1, "value": "\tindented" },
+				"features": ["whitespace"],
+				"functions": ["get_string"],
+				"inputs": ["key = \tindented"],
+				"name": "tabs_preserve_leading_tab_get_string",
+				"source_test": "tabs_preserve_leading_tab",
+				"validation": "get_string",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_to_spaces"],
+				"conflicts": { "behaviors": ["tabs_preserve"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "  value  with  tabs" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key = \tvalue\twith\ttabs"],
+				"name": "tabs_to_spaces_in_value_parse",
+				"source_test": "tabs_to_spaces_in_value",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_to_spaces"],
+				"conflicts": { "behaviors": ["tabs_preserve"] },
+				"expected": { "count": 1, "object": { "key": "  value  with  tabs" } },
+				"features": ["whitespace"],
+				"functions": ["build_hierarchy"],
+				"inputs": ["key = \tvalue\twith\ttabs"],
+				"name": "tabs_to_spaces_in_value_build_hierarchy",
+				"source_test": "tabs_to_spaces_in_value",
+				"validation": "build_hierarchy",
+				"variants": []
+			},
+			{
+				"args": ["key"],
+				"behaviors": [],
+				"expected": { "count": 1, "value": "  value  with  tabs" },
+				"features": ["whitespace"],
+				"functions": ["get_string"],
+				"inputs": ["key = \tvalue\twith\ttabs"],
+				"name": "tabs_to_spaces_in_value_get_string",
+				"source_test": "tabs_to_spaces_in_value",
+				"validation": "get_string",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_to_spaces"],
+				"conflicts": { "behaviors": ["tabs_preserve"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "  indented" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key = \tindented"],
+				"name": "tabs_to_spaces_leading_tab_parse",
+				"source_test": "tabs_to_spaces_leading_tab",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["key"],
+				"behaviors": [],
+				"expected": { "count": 1, "value": "  indented" },
+				"features": ["whitespace"],
+				"functions": ["get_string"],
+				"inputs": ["key = \tindented"],
+				"name": "tabs_to_spaces_leading_tab_get_string",
+				"source_test": "tabs_to_spaces_leading_tab",
+				"validation": "get_string",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_to_spaces"],
+				"conflicts": { "behaviors": ["tabs_preserve"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "      three_tabs" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key = \t\t\tthree_tabs"],
+				"name": "tabs_to_spaces_multiple_tabs_parse",
+				"source_test": "tabs_to_spaces_multiple_tabs",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
+				"expected": {
+					"count": 1,
+					"entries": [
+						{
+							"key": "section",
+							"value": "\n\t\tindented_with_tabs\n\t\tanother_line"
+						}
+					]
+				},
+				"features": ["whitespace", "multiline"],
+				"functions": ["parse"],
+				"inputs": ["section =\n\t\tindented_with_tabs\n\t\tanother_line"],
+				"name": "tabs_preserve_multiline_parse",
+				"source_test": "tabs_preserve_multiline",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_to_spaces"],
+				"conflicts": { "behaviors": ["tabs_preserve"] },
+				"expected": {
+					"count": 1,
+					"entries": [
+						{
+							"key": "section",
+							"value": "\n    indented_with_tabs\n    another_line"
+						}
+					]
+				},
+				"features": ["whitespace", "multiline"],
+				"functions": ["parse"],
+				"inputs": ["section =\n\t\tindented_with_tabs\n\t\tanother_line"],
+				"name": "tabs_to_spaces_multiline_parse",
+				"source_test": "tabs_to_spaces_multiline",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_preserve"],
+				"conflicts": { "behaviors": ["tabs_to_spaces"] },
+				"expected": { "count": 1, "value": "key = \tvalue" },
+				"features": ["whitespace"],
+				"functions": ["canonical_format"],
+				"inputs": ["key = \tvalue"],
+				"name": "tabs_canonical_format_preserve_canonical_format",
+				"source_test": "tabs_canonical_format_preserve",
+				"validation": "canonical_format",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_to_spaces"],
+				"conflicts": { "behaviors": ["tabs_preserve"] },
+				"expected": { "count": 1, "value": "key =   value" },
+				"features": ["whitespace"],
+				"functions": ["canonical_format"],
+				"inputs": ["key = \tvalue"],
+				"name": "tabs_canonical_format_to_spaces_canonical_format",
+				"source_test": "tabs_canonical_format_to_spaces",
+				"validation": "canonical_format",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing", "tabs_preserve"],
+				"conflicts": { "behaviors": ["strict_spacing", "tabs_to_spaces"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "\tvalue\twith\ttabs" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key\t=\t\tvalue\twith\ttabs"],
+				"name": "spacing_and_tabs_combined_loose_preserve_parse",
+				"source_test": "spacing_and_tabs_combined_loose_preserve",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["loose_spacing", "tabs_to_spaces"],
+				"conflicts": { "behaviors": ["strict_spacing", "tabs_preserve"] },
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "  value  with  tabs" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key\t=\t\tvalue\twith\ttabs"],
+				"name": "spacing_and_tabs_combined_loose_to_spaces_parse",
+				"source_test": "spacing_and_tabs_combined_loose_to_spaces",
+				"validation": "parse",
+				"variants": []
+			}
+		],
+		"file": "api_whitespace_behaviors.json"
+	},
+	{
 		"name": "Property Algebraic",
 		"description": "property algebraic functionality",
 		"tests": [
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 3,
-					"entries": [
-						{ "key": "a", "value": "1" },
-						{ "key": "b", "value": "2" },
-						{ "key": "c", "value": "3" }
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": [],
-				"functions": ["parse"],
-				"input": "a = 1\nb = 2\nc = 3",
-				"name": "semigroup_associativity_basic_parse",
+				"functions": ["compose_associative"],
+				"inputs": ["a = 1", "b = 2", "c = 3"],
+				"name": "semigroup_associativity_basic_compose_associative",
 				"source_test": "semigroup_associativity_basic",
-				"validation": "parse",
+				"validation": "compose_associative",
 				"variants": []
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 2,
-					"entries": [
-						{ "key": "config", "value": "\n  host = localhost\n  port = 8080" },
-						{ "key": "db", "value": "\n  name = test" }
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": [],
-				"functions": ["parse"],
-				"input": "config =\n  host = localhost\n  port = 8080\ndb =\n  name = test",
-				"name": "semigroup_associativity_nested_parse",
+				"functions": ["compose_associative"],
+				"inputs": [
+					"config =\n  host = localhost",
+					"config =\n  port = 8080",
+					"db =\n  name = test"
+				],
+				"name": "semigroup_associativity_nested_compose_associative",
 				"source_test": "semigroup_associativity_nested",
-				"validation": "parse",
+				"validation": "compose_associative",
 				"variants": []
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 3,
-					"entries": [
-						{ "key": "", "value": "item1" },
-						{ "key": "", "value": "item2" },
-						{ "key": "", "value": "item3" }
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys"],
-				"functions": ["parse"],
-				"input": "= item1\n= item2\n= item3",
-				"name": "semigroup_associativity_lists_parse",
+				"functions": ["compose_associative"],
+				"inputs": ["= item1", "= item2", "= item3"],
+				"name": "semigroup_associativity_lists_compose_associative",
 				"source_test": "semigroup_associativity_lists",
-				"validation": "parse",
+				"validation": "compose_associative",
 				"variants": []
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 2,
-					"entries": [
-						{ "key": "key", "value": "value" },
-						{ "key": "nested", "value": "\n  sub = val" }
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": [],
-				"functions": ["parse"],
-				"input": "key = value\nnested =\n  sub = val",
-				"name": "monoid_left_identity_basic_parse",
+				"functions": ["identity_left"],
+				"inputs": ["", "key = value\nnested =\n  sub = val"],
+				"name": "monoid_left_identity_basic_identity_left",
 				"source_test": "monoid_left_identity_basic",
-				"validation": "parse",
+				"validation": "identity_left",
 				"variants": []
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 2,
-					"entries": [
-						{ "key": "key", "value": "value" },
-						{ "key": "nested", "value": "\n  sub = val" }
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": [],
-				"functions": ["parse"],
-				"input": "key = value\nnested =\n  sub = val",
-				"name": "monoid_right_identity_basic_parse",
+				"functions": ["identity_right"],
+				"inputs": ["key = value\nnested =\n  sub = val", ""],
+				"name": "monoid_right_identity_basic_identity_right",
 				"source_test": "monoid_right_identity_basic",
-				"validation": "parse",
+				"validation": "identity_right",
 				"variants": []
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 1,
-					"entries": [
-						{
-							"key": "config",
-							"value": "\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    redis = true"
-						}
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": [],
-				"functions": ["parse"],
-				"input": "config =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    redis = true",
-				"name": "monoid_left_identity_nested_parse",
+				"functions": ["identity_left"],
+				"inputs": [
+					"",
+					"config =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    redis = true"
+				],
+				"name": "monoid_left_identity_nested_identity_left",
 				"source_test": "monoid_left_identity_nested",
-				"validation": "parse",
+				"validation": "identity_left",
 				"variants": []
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 1,
-					"entries": [
-						{
-							"key": "config",
-							"value": "\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    redis = true"
-						}
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": [],
-				"functions": ["parse"],
-				"input": "config =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    redis = true",
-				"name": "monoid_right_identity_nested_parse",
+				"functions": ["identity_right"],
+				"inputs": [
+					"config =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    redis = true",
+					""
+				],
+				"name": "monoid_right_identity_nested_identity_right",
 				"source_test": "monoid_right_identity_nested",
-				"validation": "parse",
+				"validation": "identity_right",
 				"variants": []
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 3,
-					"entries": [
-						{ "key": "", "value": "item1" },
-						{ "key": "", "value": "item2" },
-						{ "key": "", "value": "item3" }
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys"],
-				"functions": ["parse"],
-				"input": "= item1\n= item2\n= item3",
-				"name": "monoid_left_identity_lists_parse",
+				"functions": ["identity_left"],
+				"inputs": ["", "= item1\n= item2\n= item3"],
+				"name": "monoid_left_identity_lists_identity_left",
 				"source_test": "monoid_left_identity_lists",
-				"validation": "parse",
+				"validation": "identity_left",
 				"variants": []
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 3,
-					"entries": [
-						{ "key": "", "value": "item1" },
-						{ "key": "", "value": "item2" },
-						{ "key": "", "value": "item3" }
-					]
-				},
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys"],
-				"functions": ["parse"],
-				"input": "= item1\n= item2\n= item3",
-				"name": "monoid_right_identity_lists_parse",
+				"functions": ["identity_right"],
+				"inputs": ["= item1\n= item2\n= item3", ""],
+				"name": "monoid_right_identity_lists_identity_right",
 				"source_test": "monoid_right_identity_lists",
-				"validation": "parse",
+				"validation": "identity_right",
 				"variants": []
 			},
 			{
@@ -5239,7 +6119,7 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "key = value\nanother = test",
+				"inputs": ["key = value\nanother = test"],
 				"name": "round_trip_property_basic_parse",
 				"source_test": "round_trip_property_basic",
 				"validation": "parse",
@@ -5247,10 +6127,10 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": [],
 				"functions": ["round_trip"],
-				"input": "key = value\nanother = test",
+				"inputs": ["key = value\nanother = test"],
 				"name": "round_trip_property_basic_round_trip",
 				"source_test": "round_trip_property_basic",
 				"validation": "round_trip",
@@ -5269,7 +6149,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin",
+				"inputs": [
+					"config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin"
+				],
 				"name": "round_trip_property_nested_parse",
 				"source_test": "round_trip_property_nested",
 				"validation": "parse",
@@ -5277,10 +6159,12 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": [],
 				"functions": ["round_trip"],
-				"input": "config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin",
+				"inputs": [
+					"config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin"
+				],
 				"name": "round_trip_property_nested_round_trip",
 				"source_test": "round_trip_property_nested",
 				"validation": "round_trip",
@@ -5302,7 +6186,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "= item1\n= item2\nconfig =\n  nested =\n    deep = value\n  list =\n    = a\n    = b\n    = c\nfinal = end",
+				"inputs": [
+					"= item1\n= item2\nconfig =\n  nested =\n    deep = value\n  list =\n    = a\n    = b\n    = c\nfinal = end"
+				],
 				"name": "round_trip_property_complex_parse",
 				"source_test": "round_trip_property_complex",
 				"validation": "parse",
@@ -5310,10 +6196,12 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys"],
 				"functions": ["round_trip"],
-				"input": "= item1\n= item2\nconfig =\n  nested =\n    deep = value\n  list =\n    = a\n    = b\n    = c\nfinal = end",
+				"inputs": [
+					"= item1\n= item2\nconfig =\n  nested =\n    deep = value\n  list =\n    = a\n    = b\n    = c\nfinal = end"
+				],
 				"name": "round_trip_property_complex_round_trip",
 				"source_test": "round_trip_property_complex",
 				"validation": "round_trip",
@@ -5328,10 +6216,27 @@
 		"tests": [
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "key", "value": "value" },
+						{ "key": "nested", "value": "\n  sub = val" }
+					]
+				},
+				"features": [],
+				"functions": ["parse"],
+				"inputs": ["key = value\nnested =\n  sub = val"],
+				"name": "round_trip_basic_parse",
+				"source_test": "round_trip_basic",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": { "count": 1, "value": true },
 				"features": [],
 				"functions": ["round_trip"],
-				"input": "key = value\nnested =\n  sub = val",
+				"inputs": ["key = value\nnested =\n  sub = val"],
 				"name": "round_trip_basic_round_trip",
 				"source_test": "round_trip_basic",
 				"validation": "round_trip",
@@ -5347,7 +6252,7 @@
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"input": "  key  =  value  \n  nested  = \n    sub  =  val  ",
+				"inputs": ["  key  =  value  \n  nested  = \n    sub  =  val  "],
 				"name": "round_trip_whitespace_normalization_parse",
 				"source_test": "round_trip_whitespace_normalization",
 				"validation": "parse",
@@ -5355,10 +6260,10 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": ["whitespace"],
 				"functions": ["round_trip"],
-				"input": "  key  =  value  \n  nested  = \n    sub  =  val  ",
+				"inputs": ["  key  =  value  \n  nested  = \n    sub  =  val  "],
 				"name": "round_trip_whitespace_normalization_round_trip",
 				"source_test": "round_trip_whitespace_normalization",
 				"validation": "round_trip",
@@ -5376,7 +6281,7 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "= item1\n= item2\nregular = value",
+				"inputs": ["= item1\n= item2\nregular = value"],
 				"name": "round_trip_empty_keys_lists_parse",
 				"source_test": "round_trip_empty_keys_lists",
 				"validation": "parse",
@@ -5384,10 +6289,10 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys"],
 				"functions": ["round_trip"],
-				"input": "= item1\n= item2\nregular = value",
+				"inputs": ["= item1\n= item2\nregular = value"],
 				"name": "round_trip_empty_keys_lists_round_trip",
 				"source_test": "round_trip_empty_keys_lists",
 				"validation": "round_trip",
@@ -5406,7 +6311,9 @@
 				},
 				"features": [],
 				"functions": ["parse"],
-				"input": "config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin",
+				"inputs": [
+					"config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin"
+				],
 				"name": "round_trip_nested_structures_parse",
 				"source_test": "round_trip_nested_structures",
 				"validation": "parse",
@@ -5414,10 +6321,12 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": [],
 				"functions": ["round_trip"],
-				"input": "config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin",
+				"inputs": [
+					"config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin"
+				],
 				"name": "round_trip_nested_structures_round_trip",
 				"source_test": "round_trip_nested_structures",
 				"validation": "round_trip",
@@ -5436,7 +6345,7 @@
 				},
 				"features": ["multiline"],
 				"functions": ["parse"],
-				"input": "script =\n  #!/bin/bash\n  echo hello\n  exit 0",
+				"inputs": ["script =\n  #!/bin/bash\n  echo hello\n  exit 0"],
 				"name": "round_trip_multiline_values_parse",
 				"source_test": "round_trip_multiline_values",
 				"validation": "parse",
@@ -5444,10 +6353,10 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": ["multiline"],
 				"functions": ["round_trip"],
-				"input": "script =\n  #!/bin/bash\n  echo hello\n  exit 0",
+				"inputs": ["script =\n  #!/bin/bash\n  echo hello\n  exit 0"],
 				"name": "round_trip_multiline_values_round_trip",
 				"source_test": "round_trip_multiline_values",
 				"validation": "round_trip",
@@ -5467,7 +6376,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "name = Alice\n= first item\nconfig =\n  port = 3000\n= second item\nfinal = value",
+				"inputs": [
+					"name = Alice\n= first item\nconfig =\n  port = 3000\n= second item\nfinal = value"
+				],
 				"name": "round_trip_mixed_content_parse",
 				"source_test": "round_trip_mixed_content",
 				"validation": "parse",
@@ -5475,10 +6386,12 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys"],
 				"functions": ["round_trip"],
-				"input": "name = Alice\n= first item\nconfig =\n  port = 3000\n= second item\nfinal = value",
+				"inputs": [
+					"name = Alice\n= first item\nconfig =\n  port = 3000\n= second item\nfinal = value"
+				],
 				"name": "round_trip_mixed_content_round_trip",
 				"source_test": "round_trip_mixed_content",
 				"validation": "round_trip",
@@ -5497,7 +6410,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "app =\n  = item1\n  config =\n    = nested_item\n    db =\n      host = localhost\n      = db_item\n  = item2",
+				"inputs": [
+					"app =\n  = item1\n  config =\n    = nested_item\n    db =\n      host = localhost\n      = db_item\n  = item2"
+				],
 				"name": "round_trip_complex_nesting_parse",
 				"source_test": "round_trip_complex_nesting",
 				"validation": "parse",
@@ -5505,10 +6420,12 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys"],
 				"functions": ["round_trip"],
-				"input": "app =\n  = item1\n  config =\n    = nested_item\n    db =\n      host = localhost\n      = db_item\n  = item2",
+				"inputs": [
+					"app =\n  = item1\n  config =\n    = nested_item\n    db =\n      host = localhost\n      = db_item\n  = item2"
+				],
 				"name": "round_trip_complex_nesting_round_trip",
 				"source_test": "round_trip_complex_nesting",
 				"validation": "round_trip",
@@ -5527,7 +6444,9 @@
 				},
 				"features": ["empty_keys"],
 				"functions": ["parse"],
-				"input": "level1 =\n  level2 =\n    level3 =\n      level4 =\n        deep = value\n        = deep_item",
+				"inputs": [
+					"level1 =\n  level2 =\n    level3 =\n      level4 =\n        deep = value\n        = deep_item"
+				],
 				"name": "round_trip_deeply_nested_parse",
 				"source_test": "round_trip_deeply_nested",
 				"validation": "parse",
@@ -5535,10 +6454,12 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys"],
 				"functions": ["round_trip"],
-				"input": "level1 =\n  level2 =\n    level3 =\n      level4 =\n        deep = value\n        = deep_item",
+				"inputs": [
+					"level1 =\n  level2 =\n    level3 =\n      level4 =\n        deep = value\n        = deep_item"
+				],
 				"name": "round_trip_deeply_nested_round_trip",
 				"source_test": "round_trip_deeply_nested",
 				"validation": "round_trip",
@@ -5555,7 +6476,7 @@
 				},
 				"features": ["empty_keys", "multiline"],
 				"functions": ["parse"],
-				"input": "empty_section =\n\nother = value",
+				"inputs": ["empty_section =\n\nother = value"],
 				"name": "round_trip_empty_multiline_parse",
 				"source_test": "round_trip_empty_multiline",
 				"validation": "parse",
@@ -5563,10 +6484,10 @@
 			},
 			{
 				"behaviors": [],
-				"expected": { "count": 1 },
+				"expected": { "count": 1, "value": true },
 				"features": ["empty_keys", "multiline"],
 				"functions": ["round_trip"],
-				"input": "empty_section =\n\nother = value",
+				"inputs": ["empty_section =\n\nother = value"],
 				"name": "round_trip_empty_multiline_round_trip",
 				"source_test": "round_trip_empty_multiline",
 				"validation": "round_trip",

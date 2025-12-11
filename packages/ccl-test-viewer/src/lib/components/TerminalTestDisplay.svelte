@@ -36,7 +36,7 @@ const assertionCount = $derived(test.expected.count || 0);
 	<div class="input-section">
 		<div class="input-header">📄 CCL INPUT:</div>
 		<div class="input-content">
-			{visualizeWhitespace(test.input)}
+			{visualizeWhitespace(test.inputs.join("\n"))}
 		</div>
 	</div>
 
