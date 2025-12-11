@@ -9,7 +9,8 @@
  * @packageDocumentation
  */
 
-export { type Args, BaseCommand, type Flags } from "./baseCommand.js";
+export type { Args, Flags } from "./baseCommand.js";
+export { BaseCommand, logIndent } from "./baseCommand.js";
 export {
 	CommandWithConfig,
 	type CommandWithContext,
@@ -21,34 +22,22 @@ export {
 	type GetInstalledVersionsOptions,
 	getInstalledVersions,
 	isSyncSupported,
-	isValidSemver,
-	type PackageJson,
 	type ProjectInfo,
-	parseNpmList,
-	parsePackageManagerList,
-	parsePnpmList,
 	type SyncAllResult,
-	type SyncDependencyGroupResult,
 	type SyncPackageJsonOptions,
 	type SyncResult,
-	shouldSkipVersion,
 	syncAllPackages,
-	syncDependencyGroup,
-	syncPackageJson,
 	type UpdateVersionRangeOptions,
-	type UpdateVersionRangeResult,
-	updateVersionRange,
 } from "./dependency-sync.js";
 export {
 	ConfigFileFlag,
 	RegExpFlag,
 } from "./flags.js";
-export type { CommitMergeability } from "./git.js";
+export type { CommitMergeability, Repository } from "./git.js";
 export {
 	checkConflicts,
 	findGitRoot,
 	getMergeBase,
-	Repository,
 	revList,
 	shortCommit,
 } from "./git.js";
@@ -64,16 +53,23 @@ export {
 } from "./json.js";
 export type {
 	ErrorLoggingFunction,
+	ExtendedLogger,
 	Logger,
 	LoggingFunction,
 } from "./logger.js";
+export { createBasicLogger } from "./loggers/basic.js";
+export {
+	type ConsolaLoggerOptions,
+	createConsolaLogger,
+	createExtendedConsolaLogger,
+} from "./loggers/consola.js";
+export type { PrefixStyle } from "./loggers/prefixReporter.js";
 export {
 	detectAllPackageManagers,
 	detectFromLockfilePath,
 	detectPackageManager,
 	getAllLockfiles,
 	getPackageManagerInfo,
-	PACKAGE_MANAGERS,
 	type PackageManager,
 	type PackageManagerInfo,
 } from "./package-manager.js";

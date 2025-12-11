@@ -88,7 +88,7 @@ export default class RepoOverlayCommand extends BaseCommand<
 				break;
 			default:
 				// This should never happen due to Args validation, but TypeScript doesn't know that
-				this.error(`Unsupported overlay type: ${overlayType}`);
+				this.exit(`Unsupported overlay type: ${overlayType}`);
 		}
 	}
 
@@ -166,19 +166,19 @@ export default class RepoOverlayCommand extends BaseCommand<
 
 		try {
 			// Step 1: Copy nx configuration files
-			await copyNxConfigFiles(repoRoot, this);
+			await copyNxConfigFiles(repoRoot, this.logger);
 			this.log("");
 
 			// Step 2: Update root package.json
-			await updateRootPackageJson(repoRoot, this);
+			await updateRootPackageJson(repoRoot, this.logger);
 			this.log("");
 
 			// Step 3: Update .gitignore
-			await updateGitignore(repoRoot, this);
+			await updateGitignore(repoRoot, this.logger);
 			this.log("");
 
 			// Step 4: Update package.json files
-			await updatePackageJsonFilesForNx(repoRoot, this);
+			await updatePackageJsonFilesForNx(repoRoot, this.logger);
 			this.log("");
 
 			this.log("✅ Nx overlay applied successfully!");
@@ -188,7 +188,7 @@ export default class RepoOverlayCommand extends BaseCommand<
 			this.log("  2. Test the build: nx run-many -t build");
 			this.log("  3. Commit the changes");
 		} catch (error) {
-			this.error(`\n❌ Error applying overlay: ${error}`);
+			this.exit(`\n❌ Error applying overlay: ${error}`);
 		}
 	}
 
@@ -266,19 +266,19 @@ export default class RepoOverlayCommand extends BaseCommand<
 
 		try {
 			// Step 1: Copy turbo configuration files
-			await copyTurboConfigFiles(repoRoot, this);
+			await copyTurboConfigFiles(repoRoot, this.logger);
 			this.log("");
 
 			// Step 2: Update root package.json
-			await updateRootPackageJsonForTurbo(repoRoot, this);
+			await updateRootPackageJsonForTurbo(repoRoot, this.logger);
 			this.log("");
 
 			// Step 3: Update .gitignore
-			await updateGitignoreForTurbo(repoRoot, this);
+			await updateGitignoreForTurbo(repoRoot, this.logger);
 			this.log("");
 
 			// Step 4: Update package.json files
-			await updatePackageJsonFilesForTurbo(repoRoot, this);
+			await updatePackageJsonFilesForTurbo(repoRoot, this.logger);
 			this.log("");
 
 			this.log("✅ Turbo overlay applied successfully!");
@@ -288,7 +288,7 @@ export default class RepoOverlayCommand extends BaseCommand<
 			this.log("  2. Test the build: turbo run build");
 			this.log("  3. Commit the changes");
 		} catch (error) {
-			this.error(`\n❌ Error applying overlay: ${error}`);
+			this.exit(`\n❌ Error applying overlay: ${error}`);
 		}
 	}
 }

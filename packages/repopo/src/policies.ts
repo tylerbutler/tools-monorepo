@@ -1,3 +1,4 @@
+// biome-ignore lint/performance/noBarrelFile: intentional public API entry point for policies
 export { HtmlFileHeaders } from "./policies/HtmlFileHeaders.js";
 export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 export { LicenseFileExists } from "./policies/LicenseFileExists.js";

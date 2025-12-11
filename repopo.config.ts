@@ -43,12 +43,6 @@ const config: RepopoConfig = {
 			},
 		),
 		makePolicy(SortTsconfigsPolicy),
-		// makePolicy(
-		// 	generatePackagePolicy("SlowTestPolicy", async () => {
-		// 		await timers.setTimeout(500);
-		// 		return true;
-		// 	}),
-		// ),
 	],
 };
 
