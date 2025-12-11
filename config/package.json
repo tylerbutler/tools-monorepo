@@ -17,7 +17,7 @@
 		"./biome/test-files": "./biome/test-files.jsonc"
 	},
 	"devDependencies": {
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.15"
 	},
 	"peerDependencies": {
 		"@biomejs/biome": "2.0.4"
