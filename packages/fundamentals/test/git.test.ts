@@ -1,6 +1,7 @@
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import path from "pathe";
-import { temporaryDirectory } from "tempy";
 import { describe, expect, it } from "vitest";
 
 import { findGitRootSync } from "../src/git.js";
@@ -18,7 +19,7 @@ describe("git APIs", () => {
 
 		it("throws when not in git repo", () => {
 			expect(() => {
-				findGitRootSync(temporaryDirectory());
+				findGitRootSync(mkdtempSync(path.join(tmpdir(), "git-test-")));
 			}).throws("Failed to find Git repository root");
 		});
 	});

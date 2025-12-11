@@ -1,18 +1,23 @@
 import type { Logger } from "@tylerbu/cli-api";
+import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { generateBuildProjectConfig } from "@tylerbu/sail-infrastructure";
-import { cosmiconfigSync } from "cosmiconfig";
+import { lilconfigSync } from "lilconfig";
 import { CONFIG_VERSION, type ISailConfig } from "./sailConfig.js";
 
 const configName = "sail";
 
 /**
- * A cosmiconfig explorer to find the sail config. First looks for JavaScript config files and falls back to the
- * `sail` property in package.json. We create a single explorer here because cosmiconfig internally caches configs
+ * A lilconfig explorer to find the sail config. First looks for JavaScript config files and falls back to the
+ * `sail` property in package.json. We create a single explorer here because lilconfig internally caches configs
  * for performance. The cache is per-explorer, so re-using the same explorer is a minor perf improvement.
  */
-const configExplorer = cosmiconfigSync(configName, {
+const configExplorer = lilconfigSync(configName, {
 	searchPlaces: [`${configName}.config.cjs`, "fluidBuild.config.cjs"],
-	packageProp: [configName],
+	loaders: {
+		".ts": TypeScriptLoader,
+		".cts": TypeScriptLoader,
+		".mts": TypeScriptLoader,
+	},
 });
 
 /**

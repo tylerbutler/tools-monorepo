@@ -10,4 +10,4 @@
 type BuildProjectConfigV2 = RequireExactlyOne<BuildProjectConfigV2Base, "excludeGlobs" | "buildProject">;
 ```
 
-Defined in: [packages/sail-infrastructure/src/config.ts:81](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L81)
+Defined in: [packages/sail-infrastructure/src/config.ts:82](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L82)

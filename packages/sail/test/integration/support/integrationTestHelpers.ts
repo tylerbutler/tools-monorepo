@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join } from "pathe";
 
 /**
  * Integration test helpers for managing temporary directories and test fixtures.

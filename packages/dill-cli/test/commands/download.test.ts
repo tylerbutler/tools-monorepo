@@ -1,11 +1,12 @@
+import { mkdtempSync } from "node:fs";
 import { readdir, rm } from "node:fs/promises";
 import http from "node:http";
+import { tmpdir } from "node:os";
 import { runCommand } from "@oclif/test";
 import { getRandomPort } from "get-port-please";
 import jsonfile from "jsonfile";
 import path from "pathe";
 import handler from "serve-handler";
-import { temporaryDirectory } from "tempy";
 import { withDir } from "tmp-promise";
 import {
 	afterAll,
@@ -39,7 +40,7 @@ describe("download command", async () => {
 
 	let downloadDir: string;
 	beforeEach(() => {
-		downloadDir = temporaryDirectory();
+		downloadDir = mkdtempSync(path.join(tmpdir(), "download-test-"));
 	});
 
 	afterEach(async () => {

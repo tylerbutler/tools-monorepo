@@ -1,4 +1,4 @@
-import path from "node:path";
+import path from "pathe";
 import type * as tsTypes from "typescript";
 import { getTscUtils, normalizeSlashes } from "./tscUtils.js";
 

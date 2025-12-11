@@ -1,6 +1,7 @@
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import process from "node:process";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
+import { all, call, run } from "effection";
 import { Decompress, type Unzipped, unzipSync } from "fflate";
 import { fileTypeFromBuffer } from "file-type";
 import mime from "mime";
@@ -206,7 +207,9 @@ export async function decompressTarball(
 ): Promise<ParsedTarFileItem[]> {
 	const compressedFileType = await fileTypeFromBuffer(compressed);
 	const decompressed =
-		compressedFileType?.ext === "gz" ? decompress(compressed) : compressed;
+		compressedFileType?.ext === "gz" || compressedFileType?.ext === "tar.gz"
+			? decompress(compressed)
+			: compressed;
 	const fileType = await fileTypeFromBuffer(decompressed);
 
 	if (fileType === undefined) {
@@ -229,16 +232,24 @@ export async function writeTarFiles(
 ): Promise<void> {
 	await checkDestination(destination);
 
-	const filesP: Promise<void>[] = [];
-	for (const tarfile of tarFiles) {
-		if (tarfile.data === undefined) {
-			throw new Error("Data undefined in tarfile.");
-		}
-		const outPath = path.join(destination, tarfile.name);
-		await mkdir(path.dirname(outPath), { recursive: true });
-		filesP.push(writeFile(outPath, tarfile.data));
-	}
-	await Promise.all(filesP);
+	// Use Effection for structured concurrency with automatic cancellation
+	await run(function* () {
+		// Execute all write operations concurrently
+		// If any operation fails, Effection automatically cancels the rest
+		yield* all(
+			tarFiles.map((tarfile) =>
+				(function* () {
+					if (tarfile.data === undefined) {
+						throw new Error("Data undefined in tarfile.");
+					}
+					const data = tarfile.data;
+					const outPath = path.join(destination, tarfile.name);
+					yield* call(() => mkdir(path.dirname(outPath), { recursive: true }));
+					yield* call(() => writeFile(outPath, data));
+				})(),
+			),
+		);
+	});
 }
 
 export async function writeZipFiles(
@@ -247,16 +258,24 @@ export async function writeZipFiles(
 ): Promise<void> {
 	await checkDestination(destination);
 
-	const filesP: Promise<void>[] = [];
-	for (const [zipFilePath, data] of Object.entries(zipFiles)) {
-		if (data.length === 0) {
-			continue;
-		}
-		const outPath = path.join(destination, zipFilePath);
-		await mkdir(path.dirname(outPath), { recursive: true });
-		filesP.push(writeFile(outPath, data));
-	}
-	await Promise.all(filesP);
+	// Use Effection for structured concurrency with automatic cancellation
+	await run(function* () {
+		// Execute all write operations concurrently
+		// If any operation fails, Effection automatically cancels the rest
+		yield* all(
+			Object.entries(zipFiles)
+				.filter(([, data]) => data.length > 0)
+				.map(([zipFilePath, data]) =>
+					(function* () {
+						const outPath = path.join(destination, zipFilePath);
+						yield* call(() =>
+							mkdir(path.dirname(outPath), { recursive: true }),
+						);
+						yield* call(() => writeFile(outPath, data));
+					})(),
+				),
+		);
+	});
 }
 
 export async function decompressZip(compressed: Uint8Array): Promise<Unzipped> {

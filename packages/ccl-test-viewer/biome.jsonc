@@ -1,0 +1,57 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"root": false,
+	"extends": "//",
+	"files": {
+		"includes": [
+			"**",
+			// Exclude Svelte files with complex template syntax that Biome can't parse
+			// These use {#each}, {#if}, {#await} which Biome doesn't support yet
+			// See: https://biomejs.dev/internals/language-support/
+			"!src/lib/components/Base16ColorDemo.svelte",
+			"!src/lib/components/Base16ThemeSelector.svelte",
+			"!src/lib/components/ColorPalette.svelte",
+			"!src/lib/components/FilterSidebar.svelte",
+			"!src/lib/components/GitHubRepositoryBrowser.svelte",
+			"!src/lib/components/GitHubUrlInput.svelte",
+			"!src/lib/components/JsonTreeViewer.svelte",
+			"!src/lib/components/ListDisplay.svelte",
+			"!src/lib/components/MultiFileUpload.svelte",
+			"!src/lib/components/ShadcnDemo.svelte",
+			"!src/lib/components/TauriFileUpload.svelte",
+			"!src/lib/components/TerminalTestDisplay.svelte",
+			"!src/lib/components/TestCard.svelte",
+			"!src/lib/components/TestDetail.svelte",
+			"!src/lib/components/WhitespaceCodeHighlight.svelte",
+			"!src/routes/browse/+page.svelte",
+			"!src/routes/data/+page.svelte",
+		],
+	},
+	"linter": {
+		"rules": {
+			"complexity": {
+				// ccl-test-viewer uses void for fire-and-forget promises
+				"noVoid": "off",
+			},
+			"suspicious": {
+				// Development app - console logging is useful
+				"noConsole": "off",
+				// Dynamic CCL test data has various shapes; any is intentional in types.ts
+				"noExplicitAny": "off",
+			},
+		},
+	},
+	"overrides": [
+		{
+			// Test files import Svelte components without extensions (Vite resolves them)
+			"includes": ["**/*.test.ts"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"useImportExtensions": "off",
+					},
+				},
+			},
+		},
+	],
+}

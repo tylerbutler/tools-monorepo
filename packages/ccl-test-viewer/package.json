@@ -22,10 +22,11 @@
 	"scripts": {
 		"build:tauri": "BUILD_TARGET=tauri pnpm build:vite && tauri build",
 		"build:vite": "vite build",
+		"bundlemon": "bundlemon",
 		"check": "pnpm check:svelte && pnpm check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"check:svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"clean": "rimraf build .svelte-kit",
+		"clean": "rimraf build .svelte-kit dist",
 		"dev": "vite dev",
 		"dev:tauri": "BUILD_TARGET=tauri tauri dev",
 		"format": "biome check . --linter-enabled=false --write",
@@ -34,8 +35,9 @@
 		"perf:bundle": "pnpm build && open .sonda/index.html",
 		"perf:lighthouse": "pnpm build && lhci autorun",
 		"preview": "vite preview",
-		"sync": "svelte-kit sync",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"sync-data": "tsx scripts/sync-data.ts",
+		"sync-svelte-kit": "svelte-kit sync",
 		"tauri": "tauri",
 		"tauri:build": "tauri build",
 		"tauri:build:debug": "tauri build --debug",
@@ -51,10 +53,10 @@
 	},
 	"dependencies": {
 		"@andypf/json-viewer": "^2.2.0",
-		"@lucide/svelte": "^0.546.0",
+		"@lucide/svelte": "^0.556.0",
 		"@tauri-apps/api": "^2.9.0",
-		"@tauri-apps/plugin-dialog": "^2.4.0",
-		"@tauri-apps/plugin-fs": "^2.4.2",
+		"@tauri-apps/plugin-dialog": "^2.4.2",
+		"@tauri-apps/plugin-fs": "^2.4.4",
 		"chart.js": "^4.5.1",
 		"clsx": "^2.1.1",
 		"prismjs": "^1.30.0",
@@ -63,36 +65,38 @@
 		"tailwind-variants": "^1.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
+		"@biomejs/biome": "2.3.8",
+		"@biomejs/js-api": "^4.0.0",
+		"@biomejs/wasm-nodejs": "^2.3.8",
 		"@internationalized/date": "^3.10.0",
 		"@lhci/cli": "^0.15.1",
-		"@playwright/test": "^1.56.1",
+		"@playwright/test": "^1.57.0",
 		"@sveltejs/adapter-netlify": "^5.2.4",
 		"@sveltejs/adapter-static": "^3.0.10",
-		"@sveltejs/kit": "^2.47.3",
+		"@sveltejs/kit": "^2.49.0",
 		"@sveltejs/vite-plugin-svelte": "^6.2.1",
-		"@tailwindcss/vite": "^4.1.16",
+		"@tailwindcss/vite": "^4.1.17",
 		"@testing-library/jest-dom": "^6.9.1",
-		"@testing-library/svelte": "^5.2.8",
-		"@types/node": "^20.19.23",
+		"@testing-library/svelte": "^5.2.9",
+		"@types/node": "^20.19.25",
 		"@types/prismjs": "^1.26.5",
 		"@vitest/coverage-v8": "^3.2.4",
 		"@vitest/ui": "^3.2.4",
 		"base16-tailwind": "github:donovanglover/base16-tailwind",
-		"bits-ui": "^2.14.0",
-		"happy-dom": "^20.0.8",
-		"jsdom": "^27.0.1",
-		"msw": "^2.11.6",
-		"playwright": "^1.56.1",
-		"sonda": "^0.9.0",
+		"bits-ui": "^2.14.4",
+		"bundlemon": "^3.1.0",
+		"happy-dom": "^20.0.11",
+		"jsdom": "^27.3.0",
+		"msw": "^2.12.3",
+		"playwright": "^1.57.0",
+		"sonda": "^0.10.0",
 		"sort-package-json": "*",
-		"svelte": "^5.41.2",
-		"svelte-check": "^4.3.3",
-		"tailwindcss": "^4.1.16",
-		"tslib": "^2.8.1",
-		"tsx": "^4.20.6",
+		"svelte": "^5.45.2",
+		"svelte-check": "^4.3.4",
+		"tailwindcss": "^4.1.17",
+		"tsx": "^4.21.0",
 		"typescript": "~5.9.3",
-		"vite": "^7.1.12",
+		"vite": "^7.2.4",
 		"vite-plugin-devtools-json": "^1.0.0",
 		"vitest": "^3.2.4"
 	},
@@ -102,7 +106,22 @@
 	"nx": {
 		"targets": {
 			"build": {
-				"dependsOn": ["^build", "sync-data", "build:vite"]
+				"dependsOn": [
+					"^build",
+					"sync-data",
+					"sync-svelte-kit",
+					"build:vite"
+				]
+			},
+			"bundlemon": {
+				"dependsOn": [
+					"build"
+				],
+				"inputs": [
+					"default",
+					"{projectRoot}/build/**"
+				],
+				"cache": false
 			},
 			"ci": {}
 		}

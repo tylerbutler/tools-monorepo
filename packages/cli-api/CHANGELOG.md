@@ -1,5 +1,65 @@
 # @tylerbu/cli-api
 
+## 0.9.0
+
+### Minor Changes
+
+- Extract dependency sync functionality from cli to cli-api package for reusability _[`#399`](https://github.com/tylerbutler/tools-monorepo/pull/399) [`8832369`](https://github.com/tylerbutler/tools-monorepo/commit/8832369318b6efee8adae1636f3629639b0d76ac) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Created new dependency-sync module with comprehensive API for dependency synchronization:
+
+  **New Exports:**
+
+  - Types: `DependencyInfo`, `ProjectInfo`, `PackageJson`, `SyncResult`, `DependencyChange`, `DependencyType`, `UpdateVersionRangeOptions`, `UpdateVersionRangeResult`, `SyncPackageJsonOptions`, `SyncAllPackagesOptions`, `GetInstalledVersionsOptions`
+  - Functions: `getInstalledVersions`, `parsePnpmList`, `parseNpmList`, `parsePackageManagerList`, `updateVersionRange`, `syncDependencyGroup`, `syncPackageJson`, `syncAllPackages`, `isSyncSupported`, `shouldSkipVersion`, `isValidSemver`
+
+  **Features:**
+
+  - Intelligent version range updates (caret, tilde, exact, complex ranges)
+  - Support for pnpm and npm list parsing
+  - Workspace dependency filtering
+  - Package.json sync with dry-run and write modes
+  - Comprehensive test coverage (128 test cases)
+
+  **Implementation Quality:**
+
+  - Fixed TypeScript `exactOptionalPropertyTypes` compliance
+  - Reduced cognitive complexity with helper functions (`createSkippedResult`, `isComplexRange`)
+  - Proper TSDoc documentation with escaped special characters
+  - Handles edge cases: workspace protocol, special protocols, hyphen ranges, invalid semver
+
+## 0.8.0
+
+### Minor Changes
+
+- Add package manager detection utilities _[`#343`](https://github.com/tylerbutler/tools-monorepo/pull/343) [`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [@tylerbutler](https://github.com/tylerbutler)_
+
+  - Export `detectPackageManager()` - Detects package manager from lockfile in a directory
+  - Export `detectFromLockfilePath()` - Detects package manager from a specific lockfile path
+  - Export `detectAllPackageManagers()` - Detects all package managers in a directory
+  - Export `getPackageManagerInfo()` - Gets metadata for a package manager
+  - Export `getAllLockfiles()` - Gets all supported lockfile names
+  - Export `PACKAGE_MANAGERS` constant with metadata for npm, pnpm, yarn, and bun
+  - Export `PackageManager` and `PackageManagerInfo` types
+
+- Improve performance with async I/O _[`#348`](https://github.com/tylerbutler/tools-monorepo/pull/348) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Improve performance by using async filesystem operations instead of blocking synchronous calls
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/fundamentals@0.3.0`
+
+</details>
+
 ## 0.7.3
 
 ### Patch Changes

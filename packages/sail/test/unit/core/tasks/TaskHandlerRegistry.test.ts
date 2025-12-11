@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { LeafTask } from "../../../../src/core/tasks/leaf/leafTask.js";
 import { TaskHandlerRegistry } from "../../../../src/core/tasks/TaskHandlerRegistry.js";

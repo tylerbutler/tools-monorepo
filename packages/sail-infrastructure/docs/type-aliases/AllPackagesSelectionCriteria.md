@@ -10,6 +10,6 @@
 type AllPackagesSelectionCriteria = PackageSelectionCriteria;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:74](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L74)
+Defined in: [packages/sail-infrastructure/src/filter.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L73)
 
 A pre-defined [PackageSelectionCriteria](../interfaces/PackageSelectionCriteria.md) that selects all packages.

@@ -167,7 +167,7 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 					<Button
 						variant="ghost"
 						size="sm"
-						onclick={() => copyToClipboard(test.input)}
+						onclick={() => copyToClipboard(test.inputs.join("\n"))}
 						aria-label="Copy input"
 					>
 						<Copy size={14} />
@@ -176,7 +176,7 @@ const formattedExpected = $derived.by((): FunctionSpecificResult => {
 			</CardHeader>
 			<CardContent>
 				<div class="relative">
-					<WhitespaceCodeHighlight code={test.input} language="ccl" />
+					<WhitespaceCodeHighlight code={test.inputs.join("\n")} language="ccl" />
 				</div>
 			</CardContent>
 		</Card>

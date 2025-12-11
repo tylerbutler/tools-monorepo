@@ -9,11 +9,7 @@ import {
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
-	excludeFiles: [
-		"test/data",
-		"fixtures",
-		"config/package.json",
-	],
+	excludeFiles: ["test/data", "fixtures", "config/package.json"],
 	policies: [
 		makePolicy(NoJsFileExtensions, undefined, {
 			excludeFiles: [
@@ -36,10 +32,16 @@ const config: RepopoConfig = {
 		}),
 		makePolicy(PackageJsonRepoDirectoryProperty),
 		makePolicy(PackageJsonSorted),
-		makePolicy(PackageScripts, {
-			must: ["clean"],
-			mutuallyExclusive: [["test:unit", "test:vitest"]],
-		}),
+		makePolicy(
+			PackageScripts,
+			{
+				must: ["clean", "release:license"],
+				mutuallyExclusive: [["test:unit", "test:vitest"]],
+			},
+			{
+				excludeFiles: ["packages/.*-docs/package.json"],
+			},
+		),
 		makePolicy(SortTsconfigsPolicy),
 		// makePolicy(
 		// 	generatePackagePolicy("SlowTestPolicy", async () => {
