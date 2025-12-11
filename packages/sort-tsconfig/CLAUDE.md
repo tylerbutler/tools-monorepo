@@ -349,7 +349,6 @@ Sorted alphabetically within categories:
 
 **Key Dev Dependencies:**
 - `vitest` - Testing framework
-- `memfs` - In-memory filesystem for tests
 - `@oclif/plugin-command-snapshot` - Snapshot testing
 
 ## Related Packages

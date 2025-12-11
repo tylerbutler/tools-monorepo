@@ -1,6 +1,6 @@
 {
 	"name": "remark-task-table",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Remark plugin to generate and update task tables from package.json scripts and justfile recipes",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-task-table#remark-task-table",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -47,13 +47,13 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.3.7",
 		"@types/mdast": "^4.0.4",
-		"@types/micromatch": "^4.0.9",
-		"@types/node": "^20.19.24",
+		"@types/micromatch": "^4.0.10",
+		"@types/node": "^20.19.25",
 		"@vitest/coverage-v8": "^3.2.4",
 		"remark": "^15.0.1",
 		"remark-gfm": "^4.0.1",
 		"remark-parse": "^11.0.0",
-		"rimraf": "^6.1.0",
+		"rimraf": "^6.1.2",
 		"typescript": "~5.9.3",
 		"vitest": "^3.2.4"
 	},

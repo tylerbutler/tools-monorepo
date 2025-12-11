@@ -38,15 +38,15 @@
 		"optional_typed_accessors": 68
 	},
 	"behaviors": {
-		"array_order_insertion": 14,
-		"array_order_lexicographic": 37,
+		"array_order_insertion": 9,
+		"array_order_lexicographic": 25,
 		"tabs_preserve": 7,
-		"list_coercion_enabled": 27,
-		"list_coercion_disabled": 35,
+		"list_coercion_enabled": 9,
+		"list_coercion_disabled": 12,
 		"crlf_preserve_literal": 4,
 		"crlf_normalize_to_lf": 4,
-		"strict_spacing": 3,
-		"boolean_strict": 27,
-		"boolean_lenient": 24
+		"strict_spacing": 1,
+		"boolean_strict": 7,
+		"boolean_lenient": 6
 	}
 }
