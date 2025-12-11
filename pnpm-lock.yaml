@@ -164,8 +164,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
       '@lucide/svelte':
-        specifier: ^0.556.0
-        version: 0.556.0(svelte@5.45.2)
+        specifier: ^0.560.0
+        version: 0.560.0(svelte@5.45.2)
       '@tauri-apps/api':
         specifier: ^2.9.0
         version: 2.9.0
@@ -3888,8 +3888,8 @@ packages:
   '@loaderkit/resolve@1.0.4':
     resolution: {integrity: sha512-rJzYKVcV4dxJv+vW6jlvagF8zvGxHJ2+HTr1e2qOejfmGhAApgJHl8Aog4mMszxceTRiKTTbnpgmTO1bEZHV/A==}
 
-  '@lucide/svelte@0.556.0':
-    resolution: {integrity: sha512-jsJhyyd2xrJ4WtflO5TrTtyCBacF4OLBNCzotvwh4zfbbuE6aqdblx+OB0zg6zOno06ib1GJGdDcfR/2TUcb7g==}
+  '@lucide/svelte@0.560.0':
+    resolution: {integrity: sha512-5z9W4srHj17RWj8HKBUl1lnaUIRE53oiKaPQFKK+TdH3xutyCAzEeTwLAiM7qGk5EeskfgHMhR5IEHhelnfp5A==}
     peerDependencies:
       svelte: ^5
 
@@ -15919,7 +15919,7 @@ snapshots:
     dependencies:
       '@braidai/lang': 1.1.0
 
-  '@lucide/svelte@0.556.0(svelte@5.45.2)':
+  '@lucide/svelte@0.560.0(svelte@5.45.2)':
     dependencies:
       svelte: 5.45.2
 
