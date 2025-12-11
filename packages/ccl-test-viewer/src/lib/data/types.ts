@@ -3,7 +3,7 @@
 
 export interface GeneratedTest {
 	name: string;
-	input: string;
+	inputs: string[];
 	validation: string;
 	expected: {
 		count: number;
@@ -55,6 +55,9 @@ export type CCLFunction =
 	| "get_int"
 	| "get_float"
 	| "get_bool"
+	| "compose_associative"
+	| "identity_left"
+	| "identity_right"
 	| "round_trip";
 export type CCLFeature =
 	| "empty_keys"
@@ -73,7 +76,9 @@ export type CCLBehavior =
 	| "crlf_normalize_to_lf"
 	| "strict_spacing"
 	| "boolean_strict"
-	| "boolean_lenient";
+	| "boolean_lenient"
+	| "loose_spacing"
+	| "tabs_to_spaces";
 
 // Available functions for filtering
 export const AVAILABLE_FUNCTIONS: CCLFunction[] = [
@@ -87,6 +92,9 @@ export const AVAILABLE_FUNCTIONS: CCLFunction[] = [
 	"get_int",
 	"get_float",
 	"get_bool",
+	"compose_associative",
+	"identity_left",
+	"identity_right",
 	"round_trip",
 ];
 
@@ -112,4 +120,6 @@ export const AVAILABLE_BEHAVIORS: CCLBehavior[] = [
 	"strict_spacing",
 	"boolean_strict",
 	"boolean_lenient",
+	"loose_spacing",
+	"tabs_to_spaces",
 ];

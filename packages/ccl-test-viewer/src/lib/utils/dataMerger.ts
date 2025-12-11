@@ -81,8 +81,8 @@ function validateTestObject(
 	if (typeof testObj.name !== "string") {
 		errors.push(`Test at index ${index} missing or invalid 'name' field`);
 	}
-	if (typeof testObj.input !== "string") {
-		errors.push(`Test at index ${index} missing or invalid 'input' field`);
+	if (!Array.isArray(testObj.inputs)) {
+		errors.push(`Test at index ${index} missing or invalid 'inputs' field`);
 	}
 	if (
 		!testObj.expected ||
