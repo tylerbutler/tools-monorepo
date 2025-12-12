@@ -285,7 +285,8 @@ Extract values with type conversion:
 ### ❌ Don't Use Old Test Counts
 - Old: 26/56/135 tests (outdated)
 - Old: 452 assertions, 167 tests (outdated)
-- Current: 180 tests, 375 assertions
+- Old: 180 tests, 375 assertions (outdated)
+- Current: 205 tests, 447 assertions
 
 ### ❌ Don't Parse Like YAML/JSON
 - CCL uses recursive fixed-point parsing
@@ -315,5 +316,5 @@ FEATURES:        comments, empty_keys, multiline, unicode, whitespace
 EXPERIMENTAL:    experimental_dotted_keys (NOT standard)
 FORMAT:          Use flat format (generated_tests/) for implementers
 ALGORITHM:       Recursive fixed-point parsing (NOT like YAML/JSON)
-TEST COUNTS:     180 tests, 375 assertions (current as of 2025-11-19)
+TEST COUNTS:     205 tests, 447 assertions (current as of 2025-12-10)
 ```
