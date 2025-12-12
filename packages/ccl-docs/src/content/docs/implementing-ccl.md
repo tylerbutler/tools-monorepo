@@ -83,7 +83,7 @@ See [Library Features](/library-features) for details.
 
 ## Testing
 
-Use [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) (375 assertions, 180 tests):
+Use [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) (447 assertions, 205 tests):
 
 1. **Core Parsing**: Filter tests by `functions: ["parse"]`
 2. **Object Construction**: Filter by `functions` containing `build_hierarchy`
