@@ -12,15 +12,15 @@ import {
 	createCapabilities,
 	type CCLFunction,
 	type ImplementationCapabilities,
-} from "../src/capabilities.js";
-import { getImplementedFunctions } from "../src/ccl.js";
-import { downloadTestData, getDefaultTestDataPath } from "../src/download.js";
-import type { TestCase } from "../src/schema-validation.js";
+} from "../../src/capabilities.js";
+import { getImplementedFunctions } from "../../src/ccl.js";
+import { downloadTestData, getDefaultTestDataPath } from "../../src/download.js";
+import type { TestCase } from "../../src/schema-validation.js";
 import {
 	groupTestsByFunction,
 	loadAllTests,
 	shouldRunTest,
-} from "../src/test-data.js";
+} from "../../src/test-data.js";
 
 // Test data path
 const TEST_DATA_PATH = getDefaultTestDataPath();
