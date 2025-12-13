@@ -1,0 +1,10 @@
+# Downloaded test data
+.test-data/
+
+# Build output
+esm/
+
+# Temp files
+_temp/
+*.tsbuildinfo
+*.done.build.log
