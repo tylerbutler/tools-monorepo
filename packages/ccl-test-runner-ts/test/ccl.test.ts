@@ -1,10 +1,6 @@
 import { existsSync } from "node:fs";
-import { beforeAll, describe, expect, it, test } from "vitest";
-import {
-	createCapabilities,
-	getStubCapabilities,
-	type ImplementationCapabilities,
-} from "../src/capabilities.js";
+import { beforeAll, describe, expect, it } from "vitest";
+import { createCapabilities, getStubCapabilities } from "../src/capabilities.js";
 import { buildHierarchy, parse, parseIndented } from "../src/ccl.js";
 import { downloadTestData, getDefaultTestDataPath } from "../src/download.js";
 import { NotYetImplementedError } from "../src/errors.js";
@@ -12,7 +8,6 @@ import type { TestCase } from "../src/schema-validation.js";
 import {
 	getTestStats,
 	groupTestsByFunction,
-	type LoadedTestData,
 	loadAllTests,
 	loadTestData,
 	shouldRunTest,
@@ -303,87 +298,3 @@ describe("CCL Test Suite", () => {
 	});
 });
 
-// Dynamic test generation from test data
-// This demonstrates how tests will be run once the CCL functions are implemented
-describe("CCL Generated Tests (Preview)", async () => {
-	let testData: LoadedTestData;
-	let stubCapabilities: ImplementationCapabilities;
-
-	beforeAll(async () => {
-		if (!existsSync(TEST_DATA_PATH)) {
-			await downloadTestData({ outputDir: TEST_DATA_PATH });
-		}
-		stubCapabilities = getStubCapabilities();
-		testData = await loadAllTests(TEST_DATA_PATH);
-	});
-
-	it("should have loaded test data for dynamic test generation", async () => {
-		// This test verifies the test data is available
-		// Once CCL functions are implemented, each test case will become an individual test
-		if (!testData) {
-			testData = await loadAllTests(TEST_DATA_PATH);
-		}
-
-		const stats = getTestStats(testData);
-
-		console.log(
-			`\n📊 Test Data Summary: ${stats.totalTests} tests across ${stats.testsByFunction.size} functions`,
-		);
-		for (const [fn, count] of stats.testsByFunction) {
-			console.log(`   ${fn}: ${count} tests`);
-		}
-
-		// Show filtering info for stub implementation
-		const filteredData = await loadTestData({
-			testDataPath: TEST_DATA_PATH,
-			capabilities: stubCapabilities,
-		});
-
-		console.log(
-			`\n🔧 Stub Implementation: ${filteredData.totalCount} compatible tests (${filteredData.skippedCount} skipped)`,
-		);
-
-		expect(testData.totalCount).toBeGreaterThan(0);
-	});
-
-	// Example of how dynamic tests will work once CCL is implemented
-	// biome-ignore lint/suspicious/noSkippedTests: Intentional - demonstrates future test structure
-	describe.skip("parse tests (skipped - not yet implemented)", () => {
-		// When CCL functions are implemented, these tests will be enabled
-		test("basic_key_value_pairs_parse", () => {
-			const input = "name = Alice\nage = 42";
-			const result = parse(input);
-
-			if (!result.success) {
-				throw new Error(`Parse failed: ${result.error.message}`);
-			}
-
-			expect(result.entries.length).toBe(2);
-			expect(result.entries[0]).toEqual({ key: "name", value: "Alice" });
-			expect(result.entries[1]).toEqual({ key: "age", value: "42" });
-		});
-	});
-
-	// biome-ignore lint/suspicious/noSkippedTests: Intentional - demonstrates future test structure
-	describe.skip("build_hierarchy tests (skipped - not yet implemented)", () => {
-		test("basic_object_construction_build_hierarchy", () => {
-			const input = "name = Alice\nage = 42";
-			const parseResult = parse(input);
-
-			if (!parseResult.success) {
-				throw new Error(`Parse failed: ${parseResult.error.message}`);
-			}
-
-			const result = buildHierarchy(parseResult.entries);
-
-			if (!result.success) {
-				throw new Error(`BuildHierarchy failed: ${result.error.message}`);
-			}
-
-			expect(result.object).toEqual({
-				name: "Alice",
-				age: "42",
-			});
-		});
-	});
-});
