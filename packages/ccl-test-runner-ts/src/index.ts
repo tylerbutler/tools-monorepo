@@ -29,14 +29,6 @@ export {
 	parseToObject,
 } from "./ccl.js";
 
-// Download utilities
-export type { DownloadOptions, DownloadResult } from "./download.js";
-export {
-	downloadSchema,
-	downloadTestData,
-	getDefaultTestDataPath,
-} from "./download.js";
-
 // Errors
 export { NotYetImplementedError } from "./errors.js";
 
