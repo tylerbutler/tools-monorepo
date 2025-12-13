@@ -142,9 +142,7 @@ export interface ImplementationCapabilities {
  * Validation error for capability configuration.
  */
 export class CapabilityValidationError extends Error {
-	public constructor(
-		public readonly errors: string[],
-	) {
+	public constructor(public readonly errors: string[]) {
 		super(`Capability validation failed:\n  - ${errors.join("\n  - ")}`);
 		this.name = "CapabilityValidationError";
 	}

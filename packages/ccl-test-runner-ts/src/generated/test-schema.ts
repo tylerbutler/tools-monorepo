@@ -22,6 +22,6 @@ export interface CCLTestFlatFormat {
 		},
 		...{
 			[k: string]: unknown;
-		}[]
+		}[],
 	];
 }

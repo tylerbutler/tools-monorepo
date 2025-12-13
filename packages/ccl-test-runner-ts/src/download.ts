@@ -128,8 +128,7 @@ export async function downloadTestData(
 
 	// Find the generated tests zip file
 	const zipAsset = release.assets.find(
-		(asset) =>
-			asset.name.includes("generated") && asset.name.endsWith(".zip"),
+		(asset) => asset.name.includes("generated") && asset.name.endsWith(".zip"),
 	);
 
 	if (zipAsset) {

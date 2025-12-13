@@ -1,15 +1,12 @@
 import { existsSync } from "node:fs";
 import { beforeAll, describe, expect, it, test } from "vitest";
-import { buildHierarchy, parse, parseIndented } from "../src/ccl.js";
 import {
-	type ImplementationCapabilities,
 	createCapabilities,
 	getStubCapabilities,
+	type ImplementationCapabilities,
 } from "../src/capabilities.js";
-import {
-	downloadTestData,
-	getDefaultTestDataPath,
-} from "../src/download.js";
+import { buildHierarchy, parse, parseIndented } from "../src/ccl.js";
+import { downloadTestData, getDefaultTestDataPath } from "../src/download.js";
 import { NotYetImplementedError } from "../src/errors.js";
 import type { TestCase } from "../src/schema-validation.js";
 import {

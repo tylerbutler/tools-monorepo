@@ -5,8 +5,8 @@ import {
 	type CCLFeature,
 	type CCLFunction,
 	type CCLVariant,
-	type ImplementationCapabilities,
 	getConflictingBehavior,
+	type ImplementationCapabilities,
 } from "./capabilities.js";
 
 // Types derived from JSON schema (single source of truth)
@@ -173,9 +173,7 @@ function checkConflicts(
 	}
 
 	// Check variant conflicts
-	if (
-		test.conflicts.variants?.includes(capabilities.variant as CCLVariant)
-	) {
+	if (test.conflicts.variants?.includes(capabilities.variant as CCLVariant)) {
 		return {
 			shouldRun: false,
 			skipReason: `Variant conflict: test conflicts with ${capabilities.variant}`,

@@ -1,21 +1,22 @@
 // Capabilities configuration
-export {
-	ALL_FUNCTIONS,
-	ALL_VARIANTS,
-	BEHAVIOR_CONFLICTS,
-	CapabilityValidationError,
-	STANDARD_FEATURES,
-	createCapabilities,
-	getConflictingBehavior,
-	getStubCapabilities,
-	validateCapabilities,
-} from "./capabilities.js";
+
 export type {
 	CCLBehavior,
 	CCLFeature,
 	CCLFunction,
 	CCLVariant,
 	ImplementationCapabilities,
+} from "./capabilities.js";
+export {
+	ALL_FUNCTIONS,
+	ALL_VARIANTS,
+	BEHAVIOR_CONFLICTS,
+	CapabilityValidationError,
+	createCapabilities,
+	getConflictingBehavior,
+	getStubCapabilities,
+	STANDARD_FEATURES,
+	validateCapabilities,
 } from "./capabilities.js";
 
 // CCL functions
@@ -46,7 +47,8 @@ export type {
 	TestExpected,
 	TestFile,
 } from "./schema-validation.js";
-
+// JSON schemas (for runtime validation if needed)
+export { testCaseSchema, testFileSchema } from "./schema-validation.js";
 // Test data loading
 export type {
 	LoadedTestData,
@@ -62,7 +64,6 @@ export {
 	loadTestData,
 	shouldRunTest,
 } from "./test-data.js";
-
 // CCL types
 export type {
 	CCLObject,
@@ -72,6 +73,3 @@ export type {
 	ParseError,
 	ParseResult,
 } from "./types.js";
-
-// JSON schemas (for runtime validation if needed)
-export { testCaseSchema, testFileSchema } from "./schema-validation.js";
