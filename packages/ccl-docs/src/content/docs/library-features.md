@@ -74,4 +74,4 @@ The [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) provides test
 - **Entry Processing**: 67 assertions (19 tests)
 - **Experimental Features**: 18 tests for dotted representation
 
-See [Test Suite Guide](/test-suite-guide) for progressive implementation roadmap.
+See [Test Suite Guide](/test-suite-guide) for function-based implementation guide.

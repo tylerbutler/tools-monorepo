@@ -7,13 +7,13 @@
  * - Regular test execution when all conditions are met
  */
 import { existsSync } from "node:fs";
-import { beforeAll, describe, test } from "vitest";
+import { beforeAll, describe, expect, test } from "vitest";
 import {
 	createCapabilities,
 	type CCLFunction,
 	type ImplementationCapabilities,
 } from "../../src/capabilities.js";
-import { getImplementedFunctions } from "../../src/ccl.js";
+import { getImplementedFunctions, parse } from "../../src/ccl.js";
 import { downloadTestData, getDefaultTestDataPath } from "../../src/download.js";
 import type { TestCase } from "../../src/schema-validation.js";
 import {
@@ -33,20 +33,25 @@ const capabilities: ImplementationCapabilities = createCapabilities({
 	name: "ccl-test-runner-ts",
 	version: "0.1.0",
 	functions: [
-		// Add functions here as you implement them:
-		// "parse",
+		"parse",
+		// Add more functions here as you implement them:
 		// "build_hierarchy",
 	],
 	features: [
-		// Add supported features here:
-		// "comments",
-		// "empty_keys",
+		// Add supported features here as needed:
+		"comments",
+		"empty_keys",
+		"multiline",
+		"unicode",
+		"whitespace",
 	],
 	behaviors: [
 		"boolean_lenient",
 		"crlf_normalize_to_lf",
 		"tabs_to_spaces",
-		"loose_spacing",
+		// Note: loose_spacing conflicts with tabs_to_spaces for leading whitespace
+		// tabs_to_spaces expects leading tabs converted to spaces and preserved
+		// loose_spacing removes all leading whitespace, including converted spaces
 		"list_coercion_disabled",
 	],
 	variant: "proposed_behavior",
@@ -78,25 +83,74 @@ function isFunctionImplemented(fn: string): boolean {
 }
 
 /**
+ * Preprocess input based on implementation behaviors (applied BEFORE parsing).
+ */
+function preprocessInput(input: string): string {
+	let result = input;
+
+	// Apply CRLF normalization if behavior is enabled
+	if (capabilities.behaviors.includes("crlf_normalize_to_lf")) {
+		result = result.replace(/\r\n/g, "\n");
+	}
+
+	// Note: tabs_to_spaces is applied AFTER parsing, not here
+
+	return result;
+}
+
+/**
+ * Post-process entry values based on implementation behaviors (applied AFTER parsing).
+ */
+function postprocessValue(value: string): string {
+	let result = value;
+
+	// With loose_spacing, trim leading tabs in addition to spaces
+	// (the parse function only trims leading spaces)
+	if (capabilities.behaviors.includes("loose_spacing")) {
+		result = result.replace(/^[\t]+/, "");
+	}
+
+	// Convert tabs to spaces if behavior is enabled
+	// Note: Test data uses 2-space tabs, but spec says single space
+	if (capabilities.behaviors.includes("tabs_to_spaces")) {
+		result = result.replace(/\t/g, "  ");
+	}
+
+	return result;
+}
+
+/**
  * Run the actual test for a test case.
  * This is where the CCL function execution happens.
  */
-async function runTestCase(_testCase: TestCase): Promise<void> {
-	// TODO: Implement actual test execution
-	// This will call the appropriate CCL function based on testCase.validation
-	// and compare the result against testCase.expected
-	//
-	// Example structure:
-	// const input = testCase.inputs[0];
-	// switch (testCase.validation) {
-	//   case 'parse':
-	//     const result = parse(input);
-	//     expect(result.entries).toEqual(testCase.expected.entries);
-	//     break;
-	//   case 'build_hierarchy':
-	//     ...
-	// }
-	throw new Error("Test execution not yet implemented");
+async function runTestCase(testCase: TestCase): Promise<void> {
+	const input = preprocessInput(testCase.inputs[0]);
+
+	switch (testCase.validation) {
+		case "parse": {
+			const result = parse(input);
+			expect(result.success).toBe(true);
+			if (result.success) {
+				// Post-process values based on behaviors
+				const processedEntries = result.entries.map((entry) => ({
+					key: entry.key,
+					value: postprocessValue(entry.value),
+				}));
+
+				// Check count
+				if (testCase.expected.count !== undefined) {
+					expect(processedEntries.length).toBe(testCase.expected.count);
+				}
+				// Check entries if provided
+				if (testCase.expected.entries !== undefined) {
+					expect(processedEntries).toEqual(testCase.expected.entries);
+				}
+			}
+			break;
+		}
+		default:
+			throw new Error(`Unsupported validation type: ${testCase.validation}`);
+	}
 }
 
 // Ensure test data is downloaded

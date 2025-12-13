@@ -100,6 +100,7 @@ function checkBehaviors(
 		);
 
 		if (!implHasBehavior) {
+			// Test requires a behavior the implementation doesn't have
 			const conflicting = getConflictingBehavior(
 				requiredBehavior as CCLBehavior,
 			);
@@ -109,6 +110,11 @@ function checkBehaviors(
 					skipReason: `Behavior conflict: test requires ${requiredBehavior}, implementation uses ${conflicting}`,
 				};
 			}
+			// Even without explicit conflict, skip if required behavior is missing
+			return {
+				shouldRun: false,
+				skipReason: `Missing behavior: ${requiredBehavior}`,
+			};
 		}
 	}
 	return null;

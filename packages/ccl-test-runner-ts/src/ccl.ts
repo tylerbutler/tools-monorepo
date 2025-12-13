@@ -2,25 +2,112 @@ import { NotYetImplementedError } from "./errors.js";
 import type { Entry, HierarchyResult, ParseResult } from "./types.js";
 
 /**
+ * Trim spaces (not tabs) from both ends of a string.
+ */
+function trimSpaces(str: string): string {
+	let start = 0;
+	let end = str.length;
+	while (start < end && str[start] === " ") start++;
+	while (end > start && str[end - 1] === " ") end--;
+	return str.slice(start, end);
+}
+
+/**
+ * Get the indentation level (leading whitespace count) of a line.
+ */
+function getIndent(line: string): number {
+	let i = 0;
+	while (i < line.length && (line[i] === " " || line[i] === "\t")) i++;
+	return i;
+}
+
+/**
  * Parse CCL text into flat key-value entries.
  *
- * This is the fundamental CCL parsing operation. It takes raw CCL text
- * and returns a flat list of key-value entries.
+ * Algorithm (from https://ccl.tylerbutler.com/parsing-algorithm/):
+ * - Lines at base indentation with `=` start new entries
+ * - Lines indented MORE than current entry become part of that entry's value
+ * - Keys are fully trimmed; values have spaces trimmed (tabs preserved)
+ * - Empty lines within a value are preserved
  *
  * @param text - The CCL text to parse
- * @returns A result containing either the parsed entries or a parse error
- *
- * @example
- * ```typescript
- * const result = parse("name = Alice\nage = 42");
- * if (result.success) {
- *   console.log(result.entries);
- *   // [{ key: "name", value: "Alice" }, { key: "age", value: "42" }]
- * }
- * ```
+ * @returns A result containing the parsed entries
  */
-export function parse(_text: string): ParseResult {
-	throw new NotYetImplementedError("parse");
+export function parse(text: string): ParseResult {
+	const entries: Entry[] = [];
+	const lines = text.split("\n");
+
+	let currentKey: string | null = null;
+	let currentKeyIndent = 0;
+	let valueLines: string[] = [];
+	let baseIndent: number | null = null;
+
+	for (const line of lines) {
+		const indent = getIndent(line);
+		const trimmed = line.trim();
+
+		// Skip leading empty lines before first content
+		if (trimmed === "" && currentKey === null && entries.length === 0) {
+			continue;
+		}
+
+		// Empty line within a value - preserve it
+		if (trimmed === "") {
+			if (currentKey !== null) {
+				valueLines.push("");
+			}
+			continue;
+		}
+
+		// Set base indentation from first non-empty line
+		if (baseIndent === null) {
+			baseIndent = indent;
+		}
+
+		const base = baseIndent;
+
+		// Check if this line starts a new entry (at/below base level with `=`)
+		if (indent <= base && trimmed.includes("=")) {
+			// Finalize previous entry
+			if (currentKey !== null) {
+				const value = valueLines.join("\n").trimEnd();
+				entries.push({ key: currentKey, value });
+				valueLines = [];
+			}
+
+			// Parse new entry
+			const eqPos = trimmed.indexOf("=");
+			const key = trimmed.slice(0, eqPos).trim();
+			const valueRaw = trimmed.slice(eqPos + 1);
+			const value = trimSpaces(valueRaw);
+
+			currentKey = key;
+			currentKeyIndent = indent;
+
+			// Start value collection - empty string if no inline value
+			valueLines.push(value);
+		} else if (currentKey !== null && indent > currentKeyIndent) {
+			// Indented more than key - continuation of current value
+			valueLines.push(line);
+		} else if (currentKey !== null) {
+			// Same or less indentation, no `=` - finalize and treat as standalone key
+			const value = valueLines.join("\n").trimEnd();
+			entries.push({ key: currentKey, value });
+			valueLines = [];
+
+			currentKey = trimmed;
+			currentKeyIndent = indent;
+			valueLines.push("");
+		}
+	}
+
+	// Finalize last entry
+	if (currentKey !== null) {
+		const value = valueLines.join("\n").trimEnd();
+		entries.push({ key: currentKey, value });
+	}
+
+	return { success: true, entries };
 }
 
 /**
@@ -100,8 +187,7 @@ export function parseToObject(text: string): HierarchyResult {
  * Functions that throw NotYetImplementedError are not included.
  */
 export function getImplementedFunctions(): string[] {
-	// Currently no functions are implemented
-	return [];
+	return ["parse"];
 }
 
 /**

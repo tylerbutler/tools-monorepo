@@ -3,8 +3,9 @@ import { buildHierarchy, parse, parseIndented } from "../../src/ccl.js";
 import { NotYetImplementedError } from "../../src/errors.js";
 
 describe("CCL Functions (Stub Implementations)", () => {
-	it("parse should throw NotYetImplementedError", () => {
-		expect(() => parse("key = value")).toThrow(NotYetImplementedError);
+	it("parse should return a successful result", () => {
+		const result = parse("key = value");
+		expect(result.success).toBe(true);
 	});
 
 	it("parseIndented should throw NotYetImplementedError", () => {

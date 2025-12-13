@@ -277,9 +277,9 @@ Extract values with type conversion:
 - Source format (`source_tests/`) - For test suite maintainers
 - Flat format (`generated_tests/`) - For implementers (use this one)
 
-### ❌ Don't Include Dotted Keys in Standard Progression
+### ❌ Don't Include Dotted Keys in Standard Implementation
 - Dotted keys are **experimental**
-- Not part of standard CCL implementation path
+- Not part of standard CCL implementation
 - Clearly mark as experimental if supporting
 
 ### ❌ Don't Use Old Test Counts
@@ -304,7 +304,7 @@ Extract values with type conversion:
 **Documentation:**
 - Implementation guides in repository README
 - Test filtering documentation available
-- Progressive implementation roadmap
+- Function-based implementation guide
 
 ## Quick Reference Card
 
