@@ -1,7 +1,6 @@
-import { existsSync } from "node:fs";
-import { beforeAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { createCapabilities } from "../../src/capabilities.js";
-import { downloadTestData, getDefaultTestDataPath } from "../../src/download.js";
+import { getBundledTestDataPath } from "../../src/download.js";
 import {
 	getTestStats,
 	groupTestsByFunction,
@@ -9,19 +8,11 @@ import {
 	loadTestData,
 } from "../../src/test-data.js";
 
-// Test data path
-const TEST_DATA_PATH = getDefaultTestDataPath();
-
-// Ensure test data is downloaded before running tests
-beforeAll(async () => {
-	if (!existsSync(TEST_DATA_PATH)) {
-		console.log("Downloading test data...");
-		await downloadTestData({ outputDir: TEST_DATA_PATH });
-	}
-});
+// Test data path - uses bundled data that ships with the package
+const TEST_DATA_PATH = getBundledTestDataPath();
 
 describe("Test Data Loading", () => {
-	it("should load all test data from the downloaded files", async () => {
+	it("should load all test data from the bundled files", async () => {
 		const data = await loadAllTests(TEST_DATA_PATH);
 		expect(data.tests.length).toBeGreaterThan(0);
 		expect(data.fileMap.size).toBeGreaterThan(0);

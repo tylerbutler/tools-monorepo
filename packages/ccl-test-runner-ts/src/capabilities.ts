@@ -91,6 +91,49 @@ export type CCLBehavior =
 	| "array_order_lexicographic";
 
 /**
+ * Strongly-typed behavior constants for IDE autocomplete and type safety.
+ * Use these instead of raw strings when configuring behaviors.
+ *
+ * @example
+ * ```typescript
+ * import { Behavior } from '@tylerbu/ccl-test-runner-ts';
+ *
+ * const config = {
+ *   behaviors: [
+ *     Behavior.BooleanLenient,
+ *     Behavior.CRLFNormalize,
+ *     Behavior.TabsToSpaces,
+ *   ],
+ * };
+ * ```
+ */
+export const Behavior = {
+	// Boolean handling
+	BooleanStrict: "boolean_strict",
+	BooleanLenient: "boolean_lenient",
+
+	// CRLF handling
+	CRLFPreserve: "crlf_preserve_literal",
+	CRLFNormalize: "crlf_normalize_to_lf",
+
+	// Tab handling
+	TabsPreserve: "tabs_preserve",
+	TabsToSpaces: "tabs_to_spaces",
+
+	// Spacing
+	StrictSpacing: "strict_spacing",
+	LooseSpacing: "loose_spacing",
+
+	// List coercion
+	ListCoercionEnabled: "list_coercion_enabled",
+	ListCoercionDisabled: "list_coercion_disabled",
+
+	// Array ordering
+	ArrayOrderInsertion: "array_order_insertion",
+	ArrayOrderLexicographic: "array_order_lexicographic",
+} as const satisfies Record<string, CCLBehavior>;
+
+/**
  * Mutually exclusive behavior groups.
  * Only one behavior from each group can be selected.
  */
@@ -109,12 +152,55 @@ export const BEHAVIOR_CONFLICTS: Record<string, CCLBehavior[]> = {
 export type CCLVariant = "proposed_behavior" | "reference_compliant";
 
 /**
+ * Strongly-typed variant constants for IDE autocomplete and type safety.
+ *
+ * @example
+ * ```typescript
+ * import { Variant } from '@tylerbu/ccl-test-runner-ts';
+ *
+ * const config = {
+ *   variant: Variant.ProposedBehavior,
+ * };
+ * ```
+ */
+export const Variant = {
+	ProposedBehavior: "proposed_behavior",
+	ReferenceCompliant: "reference_compliant",
+} as const satisfies Record<string, CCLVariant>;
+
+/**
  * All valid CCL variants.
  */
 export const ALL_VARIANTS: CCLVariant[] = [
 	"proposed_behavior",
 	"reference_compliant",
 ];
+
+/**
+ * Default behaviors for a typical CCL implementation.
+ * Spread and override as needed.
+ *
+ * @example
+ * ```typescript
+ * import { DefaultBehaviors, Behavior } from '@tylerbu/ccl-test-runner-ts';
+ *
+ * // Use defaults
+ * const behaviors = [...DefaultBehaviors];
+ *
+ * // Override one behavior
+ * const customBehaviors = [
+ *   ...DefaultBehaviors.filter(b => b !== Behavior.LooseSpacing),
+ *   Behavior.StrictSpacing,
+ * ];
+ * ```
+ */
+export const DefaultBehaviors: readonly CCLBehavior[] = [
+	Behavior.BooleanLenient,
+	Behavior.CRLFNormalize,
+	Behavior.TabsToSpaces,
+	Behavior.LooseSpacing,
+	Behavior.ListCoercionDisabled,
+] as const;
 
 /**
  * Implementation capabilities configuration.

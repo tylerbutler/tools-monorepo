@@ -5,16 +5,17 @@
  * - test.todo() - validation function not yet implemented (throws NotYetImplementedError)
  * - context.skip(reason) - function not supported by implementation capabilities
  * - Regular test execution when all conditions are met
+ *
+ * Test data is bundled with the package - no download required!
  */
-import { existsSync } from "node:fs";
-import { beforeAll, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 import {
 	createCapabilities,
 	type CCLFunction,
 	type ImplementationCapabilities,
 } from "../../src/capabilities.js";
 import { getImplementedFunctions, parse } from "../../src/ccl.js";
-import { downloadTestData, getDefaultTestDataPath } from "../../src/download.js";
+import { getBundledTestDataPath } from "../../src/download.js";
 import type { TestCase } from "../../src/schema-validation.js";
 import {
 	groupTestsByFunction,
@@ -22,8 +23,8 @@ import {
 	shouldRunTest,
 } from "../../src/test-data.js";
 
-// Test data path
-const TEST_DATA_PATH = getDefaultTestDataPath();
+// Test data path - uses bundled data that ships with the package
+const TEST_DATA_PATH = getBundledTestDataPath();
 
 /**
  * Current implementation capabilities.
@@ -124,7 +125,11 @@ function postprocessValue(value: string): string {
  * This is where the CCL function execution happens.
  */
 async function runTestCase(testCase: TestCase): Promise<void> {
-	const input = preprocessInput(testCase.inputs[0]);
+	const rawInput = testCase.inputs[0];
+	if (rawInput === undefined) {
+		throw new Error(`Test case "${testCase.name}" has no inputs`);
+	}
+	const input = preprocessInput(rawInput);
 
 	switch (testCase.validation) {
 		case "parse": {
@@ -153,13 +158,6 @@ async function runTestCase(testCase: TestCase): Promise<void> {
 	}
 }
 
-// Ensure test data is downloaded
-beforeAll(async () => {
-	if (!existsSync(TEST_DATA_PATH)) {
-		console.log("Downloading test data...");
-		await downloadTestData({ outputDir: TEST_DATA_PATH });
-	}
-});
 
 describe("CCL", async () => {
 	// Load all test data

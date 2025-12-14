@@ -1,0 +1,848 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.0.1/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [
+        "strict_spacing",
+        "loose_spacing"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = value"
+      ],
+      "name": "spacing_strict_standard_format_parse",
+      "source_test": "spacing_strict_standard_format",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key=value"
+      ],
+      "name": "spacing_loose_no_spaces_parse",
+      "source_test": "spacing_loose_no_spaces",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key =value"
+      ],
+      "name": "spacing_loose_left_space_only_parse",
+      "source_test": "spacing_loose_left_space_only",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key= value"
+      ],
+      "name": "spacing_loose_right_space_only_parse",
+      "source_test": "spacing_loose_right_space_only",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key  =  value"
+      ],
+      "name": "spacing_loose_multiple_spaces_parse",
+      "source_test": "spacing_loose_multiple_spaces",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key\t=\tvalue"
+      ],
+      "name": "spacing_loose_tabs_around_equals_parse",
+      "source_test": "spacing_loose_tabs_around_equals",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key \t = \t value"
+      ],
+      "name": "spacing_loose_mixed_whitespace_parse",
+      "source_test": "spacing_loose_mixed_whitespace",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing"
+        ]
+      },
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "key1",
+            "value": "val1"
+          },
+          {
+            "key": "key2",
+            "value": "val2"
+          },
+          {
+            "key": "key3",
+            "value": "val3"
+          },
+          {
+            "key": "key4",
+            "value": "val4"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key1=val1\nkey2 = val2\nkey3  =  val3\nkey4\t=\tval4"
+      ],
+      "name": "spacing_loose_multiline_various_parse",
+      "source_test": "spacing_loose_multiline_various",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "key1": "val1",
+          "key2": "val2",
+          "key3": "val3",
+          "key4": "val4"
+        }
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "key1=val1\nkey2 = val2\nkey3  =  val3\nkey4\t=\tval4"
+      ],
+      "name": "spacing_loose_multiline_various_build_hierarchy",
+      "source_test": "spacing_loose_multiline_various",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing"
+        ]
+      },
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key1",
+            "value": "val1"
+          },
+          {
+            "key": "key2",
+            "value": "val2"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key1=val1\nkey2  =  val2"
+      ],
+      "name": "spacing_canonical_format_normalizes_loose_parse",
+      "source_test": "spacing_canonical_format_normalizes_loose",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "key1 = val1\nkey2 = val2"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "key1=val1\nkey2  =  val2"
+      ],
+      "name": "spacing_canonical_format_normalizes_loose_canonical_format",
+      "source_test": "spacing_canonical_format_normalizes_loose",
+      "validation": "canonical_format",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_preserve"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_to_spaces"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "\tvalue\twith\ttabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_preserve_in_value_parse",
+      "source_test": "tabs_preserve_in_value",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_preserve"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_to_spaces"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "object": {
+          "key": "\tvalue\twith\ttabs"
+        }
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_preserve_in_value_build_hierarchy",
+      "source_test": "tabs_preserve_in_value",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "key"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "\tvalue\twith\ttabs"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_preserve_in_value_get_string",
+      "source_test": "tabs_preserve_in_value",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_preserve"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_to_spaces"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "\tindented"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tindented"
+      ],
+      "name": "tabs_preserve_leading_tab_parse",
+      "source_test": "tabs_preserve_leading_tab",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "key"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "\tindented"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "key = \tindented"
+      ],
+      "name": "tabs_preserve_leading_tab_get_string",
+      "source_test": "tabs_preserve_leading_tab",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_to_spaces"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_preserve"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "  value  with  tabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_to_spaces_in_value_parse",
+      "source_test": "tabs_to_spaces_in_value",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_to_spaces"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_preserve"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "object": {
+          "key": "  value  with  tabs"
+        }
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_to_spaces_in_value_build_hierarchy",
+      "source_test": "tabs_to_spaces_in_value",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "key"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "  value  with  tabs"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_to_spaces_in_value_get_string",
+      "source_test": "tabs_to_spaces_in_value",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_to_spaces"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_preserve"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "  indented"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tindented"
+      ],
+      "name": "tabs_to_spaces_leading_tab_parse",
+      "source_test": "tabs_to_spaces_leading_tab",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "key"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "  indented"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "key = \tindented"
+      ],
+      "name": "tabs_to_spaces_leading_tab_get_string",
+      "source_test": "tabs_to_spaces_leading_tab",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_to_spaces"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_preserve"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "      three_tabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \t\t\tthree_tabs"
+      ],
+      "name": "tabs_to_spaces_multiple_tabs_parse",
+      "source_test": "tabs_to_spaces_multiple_tabs",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_preserve"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_to_spaces"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "section",
+            "value": "\n\t\tindented_with_tabs\n\t\tanother_line"
+          }
+        ]
+      },
+      "features": [
+        "whitespace",
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "section =\n\t\tindented_with_tabs\n\t\tanother_line"
+      ],
+      "name": "tabs_preserve_multiline_parse",
+      "source_test": "tabs_preserve_multiline",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_to_spaces"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_preserve"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "section",
+            "value": "\n    indented_with_tabs\n    another_line"
+          }
+        ]
+      },
+      "features": [
+        "whitespace",
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "section =\n\t\tindented_with_tabs\n\t\tanother_line"
+      ],
+      "name": "tabs_to_spaces_multiline_parse",
+      "source_test": "tabs_to_spaces_multiline",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_preserve"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_to_spaces"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "value": "key = \tvalue"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "key = \tvalue"
+      ],
+      "name": "tabs_canonical_format_preserve_canonical_format",
+      "source_test": "tabs_canonical_format_preserve",
+      "validation": "canonical_format",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_to_spaces"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_preserve"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "value": "key =   value"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "key = \tvalue"
+      ],
+      "name": "tabs_canonical_format_to_spaces_canonical_format",
+      "source_test": "tabs_canonical_format_to_spaces",
+      "validation": "canonical_format",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing",
+        "tabs_preserve"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing",
+          "tabs_to_spaces"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "\tvalue\twith\ttabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key\t=\t\tvalue\twith\ttabs"
+      ],
+      "name": "spacing_and_tabs_combined_loose_preserve_parse",
+      "source_test": "spacing_and_tabs_combined_loose_preserve",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "loose_spacing",
+        "tabs_to_spaces"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "strict_spacing",
+          "tabs_preserve"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "  value  with  tabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key\t=\t\tvalue\twith\ttabs"
+      ],
+      "name": "spacing_and_tabs_combined_loose_to_spaces_parse",
+      "source_test": "spacing_and_tabs_combined_loose_to_spaces",
+      "validation": "parse",
+      "variants": []
+    }
+  ]
+}

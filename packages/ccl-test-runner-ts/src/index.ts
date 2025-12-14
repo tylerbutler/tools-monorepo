@@ -10,13 +10,16 @@ export type {
 export {
 	ALL_FUNCTIONS,
 	ALL_VARIANTS,
+	Behavior,
 	BEHAVIOR_CONFLICTS,
 	CapabilityValidationError,
 	createCapabilities,
+	DefaultBehaviors,
 	getConflictingBehavior,
 	getStubCapabilities,
 	STANDARD_FEATURES,
 	validateCapabilities,
+	Variant,
 } from "./capabilities.js";
 
 // CCL functions
@@ -28,6 +31,9 @@ export {
 	parseIndented,
 	parseToObject,
 } from "./ccl.js";
+
+// Test data paths
+export { getBundledTestDataPath } from "./download.js";
 
 // Errors
 export { NotYetImplementedError } from "./errors.js";
@@ -58,10 +64,31 @@ export {
 } from "./test-data.js";
 // CCL types
 export type {
+	AnyBuildHierarchyFn,
+	AnyParseFn,
+	BuildHierarchyFn,
+	BuildHierarchyResultFn,
 	CCLObject,
 	CCLValue,
+	ComposeFn,
 	Entry,
+	FilterFn,
+	GetBoolFn,
+	GetFloatFn,
+	GetIntFn,
+	GetListFn,
+	GetStringFn,
 	HierarchyResult,
 	ParseError,
+	ParseFn,
 	ParseResult,
+	ParseResultFn,
+} from "./types.js";
+
+// Type utilities
+export {
+	isHierarchyResult,
+	isParseResult,
+	normalizeBuildHierarchyFunction,
+	normalizeParseFunction,
 } from "./types.js";

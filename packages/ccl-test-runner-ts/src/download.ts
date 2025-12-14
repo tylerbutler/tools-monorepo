@@ -213,10 +213,23 @@ export async function downloadTestData(
 }
 
 /**
- * Get the default test data directory path.
+ * Get the path to the bundled test data that ships with this package.
+ * This is the recommended way to access test data - no download required.
  */
-export function getDefaultTestDataPath(): string {
-	return join(process.cwd(), ".test-data");
+export function getBundledTestDataPath(): string {
+	// Resolve relative to this module's location
+	// In ESM: esm/download.js -> ../data/
+	const moduleUrl = new URL(import.meta.url);
+	const modulePath = moduleUrl.pathname;
+	return join(modulePath, "..", "..", "data");
+}
+
+/**
+ * Get a local test data directory path (for development/syncing).
+ * Used by the download script to update bundled data.
+ */
+export function getLocalTestDataPath(): string {
+	return join(process.cwd(), "data");
 }
 
 /**
@@ -263,7 +276,8 @@ if (process.argv[1] === scriptPath) {
 		const force = process.argv.includes("--force");
 		// Filter out flags from args
 		const args = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
-		const outputDir = args[0] || getDefaultTestDataPath();
+		// Default to local data/ directory for syncing bundled data
+		const outputDir = args[0] || getLocalTestDataPath();
 
 		downloadTestData({ outputDir, force })
 			.then((result) => {

@@ -18,18 +18,25 @@
 				"types": "./esm/index.d.ts",
 				"default": "./esm/index.js"
 			}
+		},
+		"./vitest": {
+			"import": {
+				"types": "./esm/vitest.d.ts",
+				"default": "./esm/vitest.js"
+			}
 		}
 	},
 	"types": "./esm/index.d.ts",
 	"files": [
-		"esm"
+		"esm",
+		"data"
 	],
 	"scripts": {
 		"build:compile": "tsc --project ./tsconfig.json",
 		"build:types": "json2ts schemas/generated-format.json -o src/generated/test-schema.ts --style.tabWidth 4 --style.useTabs",
 		"check": "pnpm check:format",
 		"check:format": "biome format .",
-		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log .test-data",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"download-tests": "node --loader ts-node/esm src/download.ts",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",

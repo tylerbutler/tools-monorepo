@@ -1,18 +1,9 @@
-import { existsSync } from "node:fs";
-import { beforeAll, describe, expect, it } from "vitest";
-import { downloadTestData, getDefaultTestDataPath } from "../../src/download.js";
+import { describe, expect, it } from "vitest";
+import { getBundledTestDataPath } from "../../src/download.js";
 import { loadAllTests } from "../../src/test-data.js";
 
-// Test data path
-const TEST_DATA_PATH = getDefaultTestDataPath();
-
-// Ensure test data is downloaded before running tests
-beforeAll(async () => {
-	if (!existsSync(TEST_DATA_PATH)) {
-		console.log("Downloading test data...");
-		await downloadTestData({ outputDir: TEST_DATA_PATH });
-	}
-});
+// Test data path - uses bundled data that ships with the package
+const TEST_DATA_PATH = getBundledTestDataPath();
 
 describe("Schema Type Validation", () => {
 	it("should validate TestCase structure matches actual JSON data", async () => {
