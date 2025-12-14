@@ -26,6 +26,30 @@ interface ParsedSkipReason {
 }
 
 /**
+ * Category keywords for detection.
+ */
+const CATEGORY_KEYWORDS: SkipCategory[] = [
+	"function",
+	"feature",
+	"behavior",
+	"variant",
+	"conflict",
+];
+
+/**
+ * Try to match a category from the given text.
+ */
+function matchCategory(text: string): SkipCategory | null {
+	const lower = text.toLowerCase();
+	for (const category of CATEGORY_KEYWORDS) {
+		if (lower === category || lower.includes(category)) {
+			return category;
+		}
+	}
+	return null;
+}
+
+/**
  * Parse a skip note into category and detail.
  *
  * Expected formats:
@@ -34,61 +58,21 @@ interface ParsedSkipReason {
  * - "Behavior conflict: ..." → category: behavior, detail: ...
  */
 function parseSkipNote(note: string): ParsedSkipReason {
-	const lowerNote = note.toLowerCase();
-
 	// Check for "category:detail" format
 	const colonIndex = note.indexOf(":");
 	if (colonIndex > 0) {
-		const prefix = note.slice(0, colonIndex).toLowerCase().trim();
+		const prefix = note.slice(0, colonIndex).trim();
 		const detail = note.slice(colonIndex + 1).trim();
-
-		// Direct category match
-		if (prefix === "function") {
-			return { category: "function", detail };
-		}
-		if (prefix === "feature") {
-			return { category: "feature", detail };
-		}
-		if (prefix === "behavior") {
-			return { category: "behavior", detail };
-		}
-		if (prefix === "variant") {
-			return { category: "variant", detail };
-		}
-
-		// Phrase-based matching
-		if (prefix.includes("function")) {
-			return { category: "function", detail };
-		}
-		if (prefix.includes("feature")) {
-			return { category: "feature", detail };
-		}
-		if (prefix.includes("behavior")) {
-			return { category: "behavior", detail };
-		}
-		if (prefix.includes("variant")) {
-			return { category: "variant", detail };
-		}
-		if (prefix.includes("conflict")) {
-			return { category: "conflict", detail };
+		const category = matchCategory(prefix);
+		if (category) {
+			return { category, detail };
 		}
 	}
 
-	// Fallback: detect category from content
-	if (lowerNote.includes("function")) {
-		return { category: "function", detail: note };
-	}
-	if (lowerNote.includes("feature")) {
-		return { category: "feature", detail: note };
-	}
-	if (lowerNote.includes("behavior")) {
-		return { category: "behavior", detail: note };
-	}
-	if (lowerNote.includes("variant")) {
-		return { category: "variant", detail: note };
-	}
-	if (lowerNote.includes("conflict")) {
-		return { category: "conflict", detail: note };
+	// Fallback: detect category from entire content
+	const category = matchCategory(note);
+	if (category) {
+		return { category, detail: note };
 	}
 
 	return { category: "other", detail: note };
@@ -130,19 +114,20 @@ export default class SkipSummaryReporter implements Reporter {
 					);
 				}
 				break;
+			default:
+				// Other states (e.g., pending) - no action needed
+				break;
 		}
 	}
 
-	onTestRunEnd(_testModules: ReadonlyArray<TestModule>): void {
+	onTestRunEnd(_testModules: readonly TestModule[]): void {
 		this.printSummary();
 	}
 
-	private printSummary(): void {
-		if (this.skippedCount === 0 && this.todoCount === 0) {
-			return;
-		}
-
-		// Group by category
+	/**
+	 * Group skip reasons by category.
+	 */
+	private groupByCategory(): Map<SkipCategory, Map<string, number>> {
 		const byCategory = new Map<SkipCategory, Map<string, number>>();
 
 		for (const [key, count] of this.skippedByReason) {
@@ -153,16 +138,97 @@ export default class SkipSummaryReporter implements Reporter {
 			if (!byCategory.has(category)) {
 				byCategory.set(category, new Map());
 			}
-			byCategory.get(category)!.set(detail, count);
+			byCategory.get(category)?.set(detail, count);
 		}
+
+		return byCategory;
+	}
+
+	/**
+	 * Print a single category section.
+	 */
+	private printCategorySection(
+		label: string,
+		details: Map<string, number>,
+	): void {
+		const categoryTotal = [...details.values()].reduce(
+			(sum, count) => sum + count,
+			0,
+		);
+
+		console.log(
+			`│${`  ${label}`.padEnd(50)}${`${categoryTotal}`.padStart(10)}  │`,
+		);
+
+		// Sort by count descending, show top items
+		const sortedDetails = [...details.entries()]
+			.sort((a, b) => b[1] - a[1])
+			.slice(0, 5);
+
+		for (const [detail, count] of sortedDetails) {
+			const truncatedDetail =
+				detail.length > 40 ? `${detail.slice(0, 37)}...` : detail;
+			console.log(
+				"│" +
+					`    └─ ${truncatedDetail}`.padEnd(50) +
+					`${count}`.padStart(10) +
+					"  │",
+			);
+		}
+
+		if (details.size > 5) {
+			console.log(
+				"│" +
+					`    └─ ... and ${details.size - 5} more`.padEnd(50) +
+					"".padStart(10) +
+					"  │",
+			);
+		}
+	}
+
+	/**
+	 * Print the summary footer with totals.
+	 */
+	private printTotals(): void {
+		console.log(`├${"─".repeat(62)}┤`);
+		console.log(
+			`│${"  Passed".padEnd(50)}${`${this.passedCount}`.padStart(10)}  │`,
+		);
+		console.log(
+			`│${"  Failed".padEnd(50)}${`${this.failedCount}`.padStart(10)}  │`,
+		);
+		console.log(
+			"│" +
+				"  Skipped".padEnd(50) +
+				`${this.skippedCount}`.padStart(10) +
+				"  │",
+		);
+		console.log(
+			`│${"  Todo".padEnd(50)}${`${this.todoCount}`.padStart(10)}  │`,
+		);
+		console.log(`├${"─".repeat(62)}┤`);
+
+		const total =
+			this.passedCount + this.failedCount + this.skippedCount + this.todoCount;
+		console.log(`│${"  Total".padEnd(50)}${`${total}`.padStart(10)}  │`);
+		console.log(`└${"─".repeat(62)}┘`);
+		console.log("");
+	}
+
+	private printSummary(): void {
+		if (this.skippedCount === 0 && this.todoCount === 0) {
+			return;
+		}
+
+		const byCategory = this.groupByCategory();
 
 		// Print header
 		console.log("\n");
-		console.log("┌" + "─".repeat(62) + "┐");
-		console.log("│" + "  CCL Test Summary".padEnd(62) + "│");
-		console.log("├" + "─".repeat(62) + "┤");
+		console.log(`┌${"─".repeat(62)}┐`);
+		console.log(`│${"  CCL Test Summary".padEnd(62)}│`);
+		console.log(`├${"─".repeat(62)}┤`);
 
-		// Print category summaries
+		// Category labels and order
 		const categoryLabels: Record<SkipCategory, string> = {
 			function: "Unsupported Functions",
 			feature: "Missing Features",
@@ -182,47 +248,11 @@ export default class SkipSummaryReporter implements Reporter {
 		];
 
 		let hasSkipDetails = false;
-
 		for (const category of categoryOrder) {
 			const details = byCategory.get(category);
-			if (!details || details.size === 0) continue;
-
-			hasSkipDetails = true;
-			const categoryTotal = [...details.values()].reduce(
-				(sum, count) => sum + count,
-				0,
-			);
-
-			console.log(
-				"│" +
-					`  ${categoryLabels[category]}`.padEnd(50) +
-					`${categoryTotal}`.padStart(10) +
-					"  │",
-			);
-
-			// Sort by count descending, show top items
-			const sortedDetails = [...details.entries()]
-				.sort((a, b) => b[1] - a[1])
-				.slice(0, 5); // Show top 5
-
-			for (const [detail, count] of sortedDetails) {
-				const truncatedDetail =
-					detail.length > 40 ? detail.slice(0, 37) + "..." : detail;
-				console.log(
-					"│" +
-						`    └─ ${truncatedDetail}`.padEnd(50) +
-						`${count}`.padStart(10) +
-						"  │",
-				);
-			}
-
-			if (details.size > 5) {
-				console.log(
-					"│" +
-						`    └─ ... and ${details.size - 5} more`.padEnd(50) +
-						"".padStart(10) +
-						"  │",
-				);
+			if (details && details.size > 0) {
+				hasSkipDetails = true;
+				this.printCategorySection(categoryLabels[category], details);
 			}
 		}
 
@@ -235,29 +265,6 @@ export default class SkipSummaryReporter implements Reporter {
 			);
 		}
 
-		// Print totals
-		console.log("├" + "─".repeat(62) + "┤");
-		console.log(
-			"│" + "  Passed".padEnd(50) + `${this.passedCount}`.padStart(10) + "  │",
-		);
-		console.log(
-			"│" + "  Failed".padEnd(50) + `${this.failedCount}`.padStart(10) + "  │",
-		);
-		console.log(
-			"│" +
-				"  Skipped".padEnd(50) +
-				`${this.skippedCount}`.padStart(10) +
-				"  │",
-		);
-		console.log(
-			"│" + "  Todo".padEnd(50) + `${this.todoCount}`.padStart(10) + "  │",
-		);
-		console.log("├" + "─".repeat(62) + "┤");
-
-		const total =
-			this.passedCount + this.failedCount + this.skippedCount + this.todoCount;
-		console.log("│" + "  Total".padEnd(50) + `${total}`.padStart(10) + "  │");
-		console.log("└" + "─".repeat(62) + "┘");
-		console.log("");
+		this.printTotals();
 	}
 }

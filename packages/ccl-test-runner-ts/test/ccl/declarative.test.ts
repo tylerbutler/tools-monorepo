@@ -27,7 +27,7 @@ import {
  *
  * Note: testDataPath is optional - uses bundled data by default.
  */
-export const cclConfig = defineCCLTests({
+const cclConfig = defineCCLTests({
 	name: "ccl-test-runner-ts-example",
 	version: "0.1.0",
 
@@ -81,10 +81,9 @@ describe("CCL (Declarative API)", async () => {
 
 				switch (categorization.type) {
 					case "skip":
-						// Function or feature not supported - skip with reason
-						test(testCase.name, (ctx) => {
-							ctx.skip(categorization.reason);
-						});
+						// Function or feature not supported - skip
+						// biome-ignore lint/suspicious/noSkippedTests: Intentional capability-based skip
+						test.skip(testCase.name, () => {});
 						break;
 
 					case "todo":
@@ -94,21 +93,23 @@ describe("CCL (Declarative API)", async () => {
 
 					case "run":
 						// All requirements met - run the test
+						// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Test assertion logic
 						test(testCase.name, () => {
 							const result = run();
-
 							// Hybrid approach: runner returns values, vitest asserts
-							// This gives clear diffs on failure
 							if (result.testCase.expected.count !== undefined) {
 								expect(
 									Array.isArray(result.output) ? result.output.length : 0,
 								).toBe(result.testCase.expected.count);
 							}
-
 							if (result.testCase.expected.entries !== undefined) {
 								expect(result.output).toEqual(result.testCase.expected.entries);
 							}
 						});
+						break;
+
+					default:
+						// Exhaustive check - should never reach here
 						break;
 				}
 			}

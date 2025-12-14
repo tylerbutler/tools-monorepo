@@ -7,8 +7,12 @@ import type { Entry, HierarchyResult, ParseResult } from "./types.js";
 function trimSpaces(str: string): string {
 	let start = 0;
 	let end = str.length;
-	while (start < end && str[start] === " ") start++;
-	while (end > start && str[end - 1] === " ") end--;
+	while (start < end && str[start] === " ") {
+		start++;
+	}
+	while (end > start && str[end - 1] === " ") {
+		end--;
+	}
 	return str.slice(start, end);
 }
 
@@ -17,8 +21,95 @@ function trimSpaces(str: string): string {
  */
 function getIndent(line: string): number {
 	let i = 0;
-	while (i < line.length && (line[i] === " " || line[i] === "\t")) i++;
+	while (i < line.length && (line[i] === " " || line[i] === "\t")) {
+		i++;
+	}
 	return i;
+}
+
+/**
+ * Internal state for the parser.
+ */
+interface ParseState {
+	entries: Entry[];
+	currentKey: string | null;
+	currentKeyIndent: number;
+	valueLines: string[];
+	baseIndent: number | null;
+}
+
+/**
+ * Finalize the current entry and add it to the entries list.
+ */
+function finalizeEntry(state: ParseState): void {
+	if (state.currentKey !== null) {
+		const value = state.valueLines.join("\n").trimEnd();
+		state.entries.push({ key: state.currentKey, value });
+		state.valueLines = [];
+	}
+}
+
+/**
+ * Start a new entry from a line containing `=`.
+ */
+function startNewEntry(
+	state: ParseState,
+	trimmed: string,
+	indent: number,
+): void {
+	finalizeEntry(state);
+
+	const eqPos = trimmed.indexOf("=");
+	const key = trimmed.slice(0, eqPos).trim();
+	const valueRaw = trimmed.slice(eqPos + 1);
+	const value = trimSpaces(valueRaw);
+
+	state.currentKey = key;
+	state.currentKeyIndent = indent;
+	state.valueLines.push(value);
+}
+
+/**
+ * Handle a standalone key (no `=` sign).
+ */
+function handleStandaloneKey(
+	state: ParseState,
+	trimmed: string,
+	indent: number,
+): void {
+	finalizeEntry(state);
+
+	state.currentKey = trimmed;
+	state.currentKeyIndent = indent;
+	state.valueLines.push("");
+}
+
+/**
+ * Process a single non-empty line during parsing.
+ */
+function processLine(
+	state: ParseState,
+	line: string,
+	trimmed: string,
+	indent: number,
+): void {
+	// Set base indentation from first non-empty line
+	if (state.baseIndent === null) {
+		state.baseIndent = indent;
+	}
+
+	const base = state.baseIndent;
+
+	// Check if this line starts a new entry (at/below base level with `=`)
+	if (indent <= base && trimmed.includes("=")) {
+		startNewEntry(state, trimmed, indent);
+	} else if (state.currentKey !== null && indent > state.currentKeyIndent) {
+		// Indented more than key - continuation of current value
+		state.valueLines.push(line);
+	} else if (state.currentKey !== null) {
+		// Same or less indentation, no `=` - finalize and treat as standalone key
+		handleStandaloneKey(state, trimmed, indent);
+	}
 }
 
 /**
@@ -34,80 +125,44 @@ function getIndent(line: string): number {
  * @returns A result containing the parsed entries
  */
 export function parse(text: string): ParseResult {
-	const entries: Entry[] = [];
-	const lines = text.split("\n");
+	const state: ParseState = {
+		entries: [],
+		currentKey: null,
+		currentKeyIndent: 0,
+		valueLines: [],
+		baseIndent: null,
+	};
 
-	let currentKey: string | null = null;
-	let currentKeyIndent = 0;
-	let valueLines: string[] = [];
-	let baseIndent: number | null = null;
+	const lines = text.split("\n");
 
 	for (const line of lines) {
 		const indent = getIndent(line);
 		const trimmed = line.trim();
 
 		// Skip leading empty lines before first content
-		if (trimmed === "" && currentKey === null && entries.length === 0) {
+		if (
+			trimmed === "" &&
+			state.currentKey === null &&
+			state.entries.length === 0
+		) {
 			continue;
 		}
 
 		// Empty line within a value - preserve it
 		if (trimmed === "") {
-			if (currentKey !== null) {
-				valueLines.push("");
+			if (state.currentKey !== null) {
+				state.valueLines.push("");
 			}
 			continue;
 		}
 
-		// Set base indentation from first non-empty line
-		if (baseIndent === null) {
-			baseIndent = indent;
-		}
-
-		const base = baseIndent;
-
-		// Check if this line starts a new entry (at/below base level with `=`)
-		if (indent <= base && trimmed.includes("=")) {
-			// Finalize previous entry
-			if (currentKey !== null) {
-				const value = valueLines.join("\n").trimEnd();
-				entries.push({ key: currentKey, value });
-				valueLines = [];
-			}
-
-			// Parse new entry
-			const eqPos = trimmed.indexOf("=");
-			const key = trimmed.slice(0, eqPos).trim();
-			const valueRaw = trimmed.slice(eqPos + 1);
-			const value = trimSpaces(valueRaw);
-
-			currentKey = key;
-			currentKeyIndent = indent;
-
-			// Start value collection - empty string if no inline value
-			valueLines.push(value);
-		} else if (currentKey !== null && indent > currentKeyIndent) {
-			// Indented more than key - continuation of current value
-			valueLines.push(line);
-		} else if (currentKey !== null) {
-			// Same or less indentation, no `=` - finalize and treat as standalone key
-			const value = valueLines.join("\n").trimEnd();
-			entries.push({ key: currentKey, value });
-			valueLines = [];
-
-			currentKey = trimmed;
-			currentKeyIndent = indent;
-			valueLines.push("");
-		}
+		processLine(state, line, trimmed, indent);
 	}
 
 	// Finalize last entry
-	if (currentKey !== null) {
-		const value = valueLines.join("\n").trimEnd();
-		entries.push({ key: currentKey, value });
-	}
+	finalizeEntry(state);
 
-	return { success: true, entries };
+	return { success: true, entries: state.entries };
 }
 
 /**

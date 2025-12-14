@@ -121,40 +121,46 @@ function postprocessValue(value: string): string {
 }
 
 /**
- * Run the actual test for a test case.
- * This is where the CCL function execution happens.
+ * Result type for test execution.
  */
-async function runTestCase(testCase: TestCase): Promise<void> {
+interface TestResult {
+	success: boolean;
+	processedEntries?: Array<{ key: string; value: string }>;
+	error?: string;
+}
+
+/**
+ * Execute the CCL function for a test case and return results.
+ * Assertions are performed by the caller in the test context.
+ */
+function executeTestCase(testCase: TestCase): TestResult {
 	const rawInput = testCase.inputs[0];
 	if (rawInput === undefined) {
-		throw new Error(`Test case "${testCase.name}" has no inputs`);
+		return {
+			success: false,
+			error: `Test case "${testCase.name}" has no inputs`,
+		};
 	}
 	const input = preprocessInput(rawInput);
 
 	switch (testCase.validation) {
 		case "parse": {
 			const result = parse(input);
-			expect(result.success).toBe(true);
-			if (result.success) {
-				// Post-process values based on behaviors
-				const processedEntries = result.entries.map((entry) => ({
-					key: entry.key,
-					value: postprocessValue(entry.value),
-				}));
-
-				// Check count
-				if (testCase.expected.count !== undefined) {
-					expect(processedEntries.length).toBe(testCase.expected.count);
-				}
-				// Check entries if provided
-				if (testCase.expected.entries !== undefined) {
-					expect(processedEntries).toEqual(testCase.expected.entries);
-				}
+			if (!result.success) {
+				return { success: false, error: "Parse failed" };
 			}
-			break;
+			// Post-process values based on behaviors
+			const processedEntries = result.entries.map((entry) => ({
+				key: entry.key,
+				value: postprocessValue(entry.value),
+			}));
+			return { success: true, processedEntries };
 		}
 		default:
-			throw new Error(`Unsupported validation type: ${testCase.validation}`);
+			return {
+				success: false,
+				error: `Unsupported validation type: ${testCase.validation}`,
+			};
 	}
 }
 
@@ -169,14 +175,13 @@ describe("CCL", async () => {
 	for (const validationFn of sortedFunctions) {
 		const tests = testsByFunction.get(validationFn) ?? [];
 
+		// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Test categorization logic
 		describe(validationFn, () => {
 			for (const testCase of tests) {
 				// Check if the validation function is supported by capabilities
 				if (!isFunctionSupported(validationFn)) {
-					// Function not in capabilities - skip with reason
-					test(testCase.name, (context) => {
-						context.skip(`function:${validationFn}`);
-					});
+					// biome-ignore lint/suspicious/noSkippedTests: Intentional capability-based skip
+					test.skip(testCase.name, () => {});
 					continue;
 				}
 
@@ -187,10 +192,8 @@ describe("CCL", async () => {
 				);
 
 				if (unsupportedFunctions.length > 0) {
-					// Missing required functions - skip with reason
-					test(testCase.name, (context) => {
-						context.skip(`function:${unsupportedFunctions.join(", ")}`);
-					});
+					// biome-ignore lint/suspicious/noSkippedTests: Intentional capability-based skip
+					test.skip(testCase.name, () => {});
 					continue;
 				}
 
@@ -212,19 +215,35 @@ describe("CCL", async () => {
 					continue;
 				}
 
+				// Check remaining capability compatibility (behaviors, features, variants)
+				const filterResult = shouldRunTest(testCase, capabilities);
+
+				if (!filterResult.shouldRun) {
+					// biome-ignore lint/suspicious/noSkippedTests: Intentional capability-based skip
+					test.skip(testCase.name, () => {});
+					continue;
+				}
+
 				// Function is supported and implemented - create a real test
-				test(testCase.name, (context) => {
-					// Check remaining capability compatibility (behaviors, features, variants)
-					const filterResult = shouldRunTest(testCase, capabilities);
-
-					if (!filterResult.shouldRun) {
-						// Capability mismatch - skip with categorized reason
-						context.skip(filterResult.skipReason ?? "Capability mismatch");
-						return;
-					}
-
+				// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Test assertion logic
+				test(testCase.name, () => {
 					// All conditions met - run the actual test
-					return runTestCase(testCase);
+					const result = executeTestCase(testCase);
+					expect(result.success).toBe(true);
+					if (result.success) {
+						// Check count
+						if (testCase.expected.count !== undefined) {
+							expect(result.processedEntries?.length ?? 0).toBe(
+								testCase.expected.count,
+							);
+						}
+						// Check entries if provided
+						if (testCase.expected.entries !== undefined) {
+							expect(result.processedEntries).toEqual(
+								testCase.expected.entries,
+							);
+						}
+					}
 				});
 			}
 		});

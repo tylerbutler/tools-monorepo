@@ -46,8 +46,6 @@ import type {
 	AnyParseFn,
 	CCLObject,
 	Entry,
-	HierarchyResult,
-	ParseResult,
 } from "./types.js";
 import {
 	normalizeBuildHierarchyFunction,
@@ -57,6 +55,11 @@ import {
 // Re-export for convenience
 export { Behavior, DefaultBehaviors, Variant } from "./capabilities.js";
 export { getBundledTestDataPath } from "./download.js";
+
+// Pre-compiled regex patterns for performance
+const LEADING_TABS_REGEX = /^[\t]+/;
+const TAB_REGEX = /\t/g;
+const CRLF_REGEX = /\r\n/g;
 
 /**
  * Resolve the test data path from config, defaulting to bundled data.
@@ -302,7 +305,7 @@ function preprocessInput(
 	let result = input;
 
 	if (capabilities.behaviors.includes("crlf_normalize_to_lf")) {
-		result = result.replace(/\r\n/g, "\n");
+		result = result.replace(CRLF_REGEX, "\n");
 	}
 
 	return result;
@@ -318,14 +321,144 @@ function postprocessValue(
 	let result = value;
 
 	if (capabilities.behaviors.includes("loose_spacing")) {
-		result = result.replace(/^[\t]+/, "");
+		result = result.replace(LEADING_TABS_REGEX, "");
 	}
 
 	if (capabilities.behaviors.includes("tabs_to_spaces")) {
-		result = result.replace(/\t/g, "  ");
+		result = result.replace(TAB_REGEX, "  ");
 	}
 
 	return result;
+}
+
+/**
+ * Validation result from a handler.
+ */
+interface ValidationResult {
+	rawOutput: unknown;
+	output: unknown;
+	expected: unknown;
+	passed: boolean;
+	error?: string;
+}
+
+/**
+ * Handle parse validation.
+ */
+function handleParseValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+	capabilities: ImplementationCapabilities,
+): ValidationResult {
+	const rawFn = functions.parse;
+	if (!rawFn) {
+		throw new Error("parse function not implemented");
+	}
+
+	const fn = normalizeParseFunction(rawFn);
+	const result = fn(input);
+
+	if (!result.success) {
+		return {
+			rawOutput: result,
+			output: { success: false, error: result.error },
+			expected: testCase.expected,
+			passed: false,
+			error: `Parse failed: ${result.error.message}`,
+		};
+	}
+
+	const processedEntries = result.entries.map((entry) => ({
+		key: entry.key,
+		value: postprocessValue(entry.value, capabilities),
+	}));
+
+	const { passed, error } = checkParseExpectations(testCase, processedEntries);
+
+	return {
+		rawOutput: result,
+		output: processedEntries,
+		expected: testCase.expected.entries ?? { count: testCase.expected.count },
+		passed,
+		error,
+	};
+}
+
+/**
+ * Check parse expectations against processed entries.
+ */
+function checkParseExpectations(
+	testCase: TestCase,
+	processedEntries: Array<{ key: string; value: string }>,
+): { passed: boolean; error?: string } {
+	if (
+		testCase.expected.count !== undefined &&
+		processedEntries.length !== testCase.expected.count
+	) {
+		return {
+			passed: false,
+			error: `Count mismatch: expected ${testCase.expected.count}, got ${processedEntries.length}`,
+		};
+	}
+
+	if (testCase.expected.entries !== undefined) {
+		const entriesMatch =
+			JSON.stringify(processedEntries) ===
+			JSON.stringify(testCase.expected.entries);
+		if (!entriesMatch) {
+			return { passed: false, error: "Entries mismatch" };
+		}
+	}
+
+	return { passed: true };
+}
+
+/**
+ * Handle build_hierarchy validation.
+ */
+function handleBuildHierarchyValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const rawParseFn = functions.parse;
+	const rawBuildFn = functions.build_hierarchy;
+	if (!(rawParseFn && rawBuildFn)) {
+		throw new Error("parse and build_hierarchy functions required");
+	}
+
+	const parseFn = normalizeParseFunction(rawParseFn);
+	const buildFn = normalizeBuildHierarchyFunction(rawBuildFn);
+
+	const parseResult = parseFn(input);
+	if (!parseResult.success) {
+		throw new Error(`Parse failed: ${parseResult.error.message}`);
+	}
+
+	const hierarchyResult = buildFn(parseResult.entries);
+
+	if (!hierarchyResult.success) {
+		return {
+			rawOutput: hierarchyResult,
+			output: { success: false, error: hierarchyResult.error },
+			expected: testCase.expected.object,
+			passed: false,
+			error: `Build hierarchy failed: ${hierarchyResult.error.message}`,
+		};
+	}
+
+	const passed =
+		JSON.stringify(hierarchyResult.object) ===
+		JSON.stringify(testCase.expected.object);
+
+	return {
+		rawOutput: hierarchyResult,
+		output: hierarchyResult.object,
+		expected: testCase.expected.object,
+		passed,
+		error: passed ? undefined : "Object mismatch",
+	};
 }
 
 /**
@@ -342,118 +475,48 @@ export function runCCLTest(
 		throw new Error(`Test case "${testCase.name}" has no inputs`);
 	}
 	const input = preprocessInput(rawInput, capabilities);
-	let rawOutput: unknown;
-	let output: unknown;
-	let expected: unknown = testCase.expected;
-	let passed = false;
-	let error: string | undefined;
 
 	try {
+		let result: ValidationResult;
+
 		switch (testCase.validation) {
-			case "parse": {
-				const rawFn = functions.parse;
-				if (!rawFn) {
-					throw new Error("parse function not implemented");
-				}
-				// Normalize to always return ParseResult (handles both patterns)
-				const fn = normalizeParseFunction(rawFn);
-				const result = fn(input);
-				rawOutput = result;
-
-				if (!result.success) {
-					output = { success: false, error: result.error };
-					passed = false;
-					error = `Parse failed: ${result.error.message}`;
-				} else {
-					const processedEntries = result.entries.map((entry) => ({
-						key: entry.key,
-						value: postprocessValue(entry.value, capabilities),
-					}));
-					output = processedEntries;
-
-					// Check count
-					if (testCase.expected.count !== undefined) {
-						if (processedEntries.length !== testCase.expected.count) {
-							passed = false;
-							error = `Count mismatch: expected ${testCase.expected.count}, got ${processedEntries.length}`;
-						} else {
-							passed = true;
-						}
-					}
-
-					// Check entries if provided
-					if (testCase.expected.entries !== undefined) {
-						const entriesMatch =
-							JSON.stringify(processedEntries) ===
-							JSON.stringify(testCase.expected.entries);
-						if (!entriesMatch) {
-							passed = false;
-							error = "Entries mismatch";
-						} else {
-							passed = true;
-						}
-					}
-
-					expected = testCase.expected.entries ?? {
-						count: testCase.expected.count,
-					};
-				}
+			case "parse":
+				result = handleParseValidation(
+					testCase,
+					input,
+					functions,
+					capabilities,
+				);
 				break;
-			}
 
-			case "build_hierarchy": {
-				const rawParseFn = functions.parse;
-				const rawBuildFn = functions.build_hierarchy;
-				if (!rawParseFn || !rawBuildFn) {
-					throw new Error("parse and build_hierarchy functions required");
-				}
-
-				// Normalize to always return Result types (handles both patterns)
-				const parseFn = normalizeParseFunction(rawParseFn);
-				const buildFn = normalizeBuildHierarchyFunction(rawBuildFn);
-
-				const parseResult = parseFn(input);
-				if (!parseResult.success) {
-					throw new Error(`Parse failed: ${parseResult.error.message}`);
-				}
-
-				const hierarchyResult = buildFn(parseResult.entries);
-				rawOutput = hierarchyResult;
-
-				if (!hierarchyResult.success) {
-					output = { success: false, error: hierarchyResult.error };
-					passed = false;
-					error = `Build hierarchy failed: ${hierarchyResult.error.message}`;
-				} else {
-					output = hierarchyResult.object;
-					expected = testCase.expected.object;
-					passed =
-						JSON.stringify(hierarchyResult.object) ===
-						JSON.stringify(testCase.expected.object);
-					if (!passed) {
-						error = "Object mismatch";
-					}
-				}
+			case "build_hierarchy":
+				result = handleBuildHierarchyValidation(testCase, input, functions);
 				break;
-			}
 
 			default:
 				throw new Error(`Unsupported validation type: ${testCase.validation}`);
 		}
-	} catch (e) {
-		error = e instanceof Error ? e.message : String(e);
-		passed = false;
-	}
 
-	return {
-		testCase,
-		input,
-		rawOutput,
-		output,
-		expected,
-		passed,
-		error,
-	};
+		return {
+			testCase,
+			input,
+			rawOutput: result.rawOutput,
+			output: result.output,
+			expected: result.expected,
+			passed: result.passed,
+			error: result.error,
+		};
+	} catch (e) {
+		return {
+			testCase,
+			input,
+			rawOutput: undefined,
+			output: undefined,
+			expected: testCase.expected,
+			passed: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
 }
 
 /**
@@ -559,6 +622,9 @@ export async function getCCLTestSuiteInfo(
 				break;
 			case "todo":
 				todoTests++;
+				break;
+			default:
+				// Exhaustive check
 				break;
 		}
 	}
