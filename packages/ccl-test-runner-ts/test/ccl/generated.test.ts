@@ -10,8 +10,8 @@
  */
 import { describe, expect, test } from "vitest";
 import {
-	createCapabilities,
 	type CCLFunction,
+	createCapabilities,
 	type ImplementationCapabilities,
 } from "../../src/capabilities.js";
 import { getImplementedFunctions, parse } from "../../src/ccl.js";
@@ -157,7 +157,6 @@ async function runTestCase(testCase: TestCase): Promise<void> {
 			throw new Error(`Unsupported validation type: ${testCase.validation}`);
 	}
 }
-
 
 describe("CCL", async () => {
 	// Load all test data

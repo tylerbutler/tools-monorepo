@@ -9,9 +9,7 @@ describe("CCL Functions (Stub Implementations)", () => {
 	});
 
 	it("parseIndented should throw NotYetImplementedError", () => {
-		expect(() => parseIndented("key = value")).toThrow(
-			NotYetImplementedError,
-		);
+		expect(() => parseIndented("key = value")).toThrow(NotYetImplementedError);
 	});
 
 	it("buildHierarchy should throw NotYetImplementedError", () => {

@@ -295,7 +295,10 @@ function buildCapabilities(config: CCLTestConfig): ImplementationCapabilities {
 /**
  * Preprocess input based on implementation behaviors.
  */
-function preprocessInput(input: string, capabilities: ImplementationCapabilities): string {
+function preprocessInput(
+	input: string,
+	capabilities: ImplementationCapabilities,
+): string {
 	let result = input;
 
 	if (capabilities.behaviors.includes("crlf_normalize_to_lf")) {
@@ -308,7 +311,10 @@ function preprocessInput(input: string, capabilities: ImplementationCapabilities
 /**
  * Post-process entry values based on implementation behaviors.
  */
-function postprocessValue(value: string, capabilities: ImplementationCapabilities): string {
+function postprocessValue(
+	value: string,
+	capabilities: ImplementationCapabilities,
+): string {
 	let result = value;
 
 	if (capabilities.behaviors.includes("loose_spacing")) {
@@ -388,7 +394,9 @@ export function runCCLTest(
 						}
 					}
 
-					expected = testCase.expected.entries ?? { count: testCase.expected.count };
+					expected = testCase.expected.entries ?? {
+						count: testCase.expected.count,
+					};
 				}
 				break;
 			}
@@ -617,10 +625,15 @@ export async function createCCLTestCases(config: CCLTestConfig): Promise<{
 		run: () => CCLTestResult;
 	}>;
 	context: TestContext;
-	byFunction: Map<string, Array<{ categorization: TestCategorization; run: () => CCLTestResult }>>;
+	byFunction: Map<
+		string,
+		Array<{ categorization: TestCategorization; run: () => CCLTestResult }>
+	>;
 }> {
 	const capabilities = buildCapabilities(config);
-	const implementedFunctions = new Set(getImplementedFunctionNames(config.functions));
+	const implementedFunctions = new Set(
+		getImplementedFunctionNames(config.functions),
+	);
 
 	const context: TestContext = {
 		config,

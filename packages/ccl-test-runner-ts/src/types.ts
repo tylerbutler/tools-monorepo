@@ -83,7 +83,10 @@ export type GetListFn = (obj: CCLObject, path: string) => string[];
 /**
  * Simple filter function.
  */
-export type FilterFn = (entries: Entry[], predicate: (entry: Entry) => boolean) => Entry[];
+export type FilterFn = (
+	entries: Entry[],
+	predicate: (entry: Entry) => boolean,
+) => Entry[];
 
 /**
  * Simple compose function.

@@ -10,16 +10,16 @@ export type {
 export {
 	ALL_FUNCTIONS,
 	ALL_VARIANTS,
-	Behavior,
 	BEHAVIOR_CONFLICTS,
+	Behavior,
 	CapabilityValidationError,
 	createCapabilities,
 	DefaultBehaviors,
 	getConflictingBehavior,
 	getStubCapabilities,
 	STANDARD_FEATURES,
-	validateCapabilities,
 	Variant,
+	validateCapabilities,
 } from "./capabilities.js";
 
 // CCL functions

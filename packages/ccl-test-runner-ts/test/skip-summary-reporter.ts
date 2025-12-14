@@ -238,16 +238,10 @@ export default class SkipSummaryReporter implements Reporter {
 		// Print totals
 		console.log("├" + "─".repeat(62) + "┤");
 		console.log(
-			"│" +
-				"  Passed".padEnd(50) +
-				`${this.passedCount}`.padStart(10) +
-				"  │",
+			"│" + "  Passed".padEnd(50) + `${this.passedCount}`.padStart(10) + "  │",
 		);
 		console.log(
-			"│" +
-				"  Failed".padEnd(50) +
-				`${this.failedCount}`.padStart(10) +
-				"  │",
+			"│" + "  Failed".padEnd(50) + `${this.failedCount}`.padStart(10) + "  │",
 		);
 		console.log(
 			"│" +
@@ -262,9 +256,7 @@ export default class SkipSummaryReporter implements Reporter {
 
 		const total =
 			this.passedCount + this.failedCount + this.skippedCount + this.todoCount;
-		console.log(
-			"│" + "  Total".padEnd(50) + `${total}`.padStart(10) + "  │",
-		);
+		console.log("│" + "  Total".padEnd(50) + `${total}`.padStart(10) + "  │");
 		console.log("└" + "─".repeat(62) + "┘");
 		console.log("");
 	}
