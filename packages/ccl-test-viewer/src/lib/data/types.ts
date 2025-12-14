@@ -73,10 +73,9 @@ export type CCLBehavior =
 	| "list_coercion_enabled"
 	| "list_coercion_disabled"
 	| "crlf_preserve_literal"
-	| "crlf_normalize_to_lf"
-	| "strict_spacing"
 	| "boolean_strict"
 	| "boolean_lenient"
+	| "strict_spacing"
 	| "loose_spacing"
 	| "tabs_to_spaces";
 
@@ -116,10 +115,9 @@ export const AVAILABLE_BEHAVIORS: CCLBehavior[] = [
 	"list_coercion_enabled",
 	"list_coercion_disabled",
 	"crlf_preserve_literal",
-	"crlf_normalize_to_lf",
-	"strict_spacing",
 	"boolean_strict",
 	"boolean_lenient",
+	"strict_spacing",
 	"loose_spacing",
 	"tabs_to_spaces",
 ];

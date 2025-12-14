@@ -160,14 +160,6 @@
 			"parse_empty_value_parse",
 			"parse_empty_value_build_hierarchy",
 			"parse_empty_value_get_string",
-			"canonical_format_empty_values_parse",
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_unicode_parse",
-			"canonical_format_line_endings_proposed_parse",
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"canonical_format_consistent_spacing_parse",
-			"deterministic_output_parse",
 			"single_item_as_list_reference_parse",
 			"mixed_duplicate_single_keys_reference_parse",
 			"nested_list_access_reference_parse",
@@ -322,8 +314,6 @@
 			"list_multiline_values_parse_indented",
 			"list_multiline_values_build_hierarchy",
 			"list_multiline_values_get_list",
-			"canonical_format_empty_values_parse",
-			"canonical_format_empty_values_canonical_format",
 			"canonical_format_empty_values_ocaml_reference_canonical_format",
 			"parse_zero_values_parse",
 			"parse_zero_values_build_hierarchy",
@@ -626,8 +616,6 @@
 			"parse_empty_value_parse",
 			"parse_empty_value_build_hierarchy",
 			"parse_empty_value_get_string",
-			"canonical_format_empty_values_parse",
-			"canonical_format_empty_values_canonical_format",
 			"empty_list_reference_parse",
 			"empty_list_reference_build_hierarchy",
 			"empty_list_reference_get_list",
@@ -1095,10 +1083,6 @@
 		"to": [
 			"duplicate_keys_to_lists_parse",
 			"duplicate_keys_to_lists_build_hierarchy",
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format",
 			"tabs_to_spaces_in_value_parse",
 			"tabs_to_spaces_in_value_build_hierarchy",
 			"tabs_to_spaces_in_value_get_string",
@@ -1265,8 +1249,6 @@
 			"list_with_unicode_parse",
 			"list_with_unicode_build_hierarchy",
 			"list_with_unicode_get_list",
-			"canonical_format_unicode_parse",
-			"canonical_format_unicode_canonical_format",
 			"list_with_unicode_reference_parse",
 			"list_with_unicode_reference_build_hierarchy",
 			"list_with_unicode_reference_get_list",
@@ -1330,9 +1312,7 @@
 			"indented_line_is_continuation_get_list",
 			"mixed_indentation_levels_parse_indented",
 			"list_multiline_values_parse_indented",
-			"complex_mixed_list_scenarios_parse_indented",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format"
+			"complex_mixed_list_scenarios_parse_indented"
 		],
 		"surrounded": [
 			"key_value_surrounded_spaces_parse",
@@ -1517,8 +1497,6 @@
 			"indented_line_is_continuation_parse_indented",
 			"indented_line_is_continuation_build_hierarchy",
 			"indented_line_is_continuation_get_list",
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
 			"canonical_format_line_endings_reference_behavior_parse",
 			"canonical_format_line_endings_reference_behavior_canonical_format"
 		],
@@ -1891,25 +1869,13 @@
 			"list_path_traversal_protection_reference_build_hierarchy",
 			"list_path_traversal_protection_reference_get_list"
 		],
+		"behavior": [
+			"empty_value_reference_behavior_parse",
+			"empty_value_reference_behavior_build_hierarchy",
+			"canonical_format_line_endings_reference_behavior_parse",
+			"canonical_format_line_endings_reference_behavior_canonical_format"
+		],
 		"canonical": [
-			"canonical_format_empty_values_parse",
-			"canonical_format_empty_values_canonical_format",
-			"canonical_format_empty_values_canonical_format",
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_tab_preservation_canonical_format",
-			"canonical_format_tab_preservation_canonical_format",
-			"canonical_format_unicode_parse",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format",
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
-			"canonical_format_consistent_spacing_canonical_format",
-			"deterministic_output_canonical_format",
 			"canonical_format_empty_values_ocaml_reference_canonical_format",
 			"canonical_format_empty_values_ocaml_reference_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format",
@@ -1931,24 +1897,6 @@
 			"tabs_canonical_format_to_spaces_canonical_format"
 		],
 		"format": [
-			"canonical_format_empty_values_parse",
-			"canonical_format_empty_values_canonical_format",
-			"canonical_format_empty_values_canonical_format",
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_tab_preservation_canonical_format",
-			"canonical_format_tab_preservation_canonical_format",
-			"canonical_format_unicode_parse",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format",
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
-			"canonical_format_consistent_spacing_canonical_format",
-			"deterministic_output_canonical_format",
 			"canonical_format_empty_values_ocaml_reference_canonical_format",
 			"canonical_format_empty_values_ocaml_reference_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format",
@@ -1971,8 +1919,6 @@
 			"tabs_canonical_format_to_spaces_canonical_format"
 		],
 		"tab": [
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_tab_preservation_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format",
 			"tabs_preserve_leading_tab_parse",
 			"tabs_preserve_leading_tab_get_string",
@@ -1980,50 +1926,16 @@
 			"tabs_to_spaces_leading_tab_get_string"
 		],
 		"preservation": [
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_tab_preservation_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format"
 		],
 		"endings": [
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
 			"canonical_format_line_endings_reference_behavior_parse",
 			"canonical_format_line_endings_reference_behavior_canonical_format"
 		],
-		"proposed": [
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format"
-		],
-		"crlf": [
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format"
-		],
-		"normalize": [
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format"
-		],
-		"lf": [
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format"
-		],
 		"consistent": [
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
 			"canonical_format_consistent_spacing_ocaml_reference_canonical_format"
 		],
 		"spacing": [
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
 			"canonical_format_consistent_spacing_ocaml_reference_canonical_format",
 			"spacing_strict_standard_format_parse",
 			"spacing_loose_no_spaces_parse",
@@ -2039,22 +1951,8 @@
 			"spacing_and_tabs_combined_loose_preserve_parse",
 			"spacing_and_tabs_combined_loose_to_spaces_parse"
 		],
-		"deterministic": [
-			"deterministic_output_parse",
-			"deterministic_output_canonical_format",
-			"deterministic_output_ocaml_reference_canonical_format"
-		],
-		"output": [
-			"deterministic_output_parse",
-			"deterministic_output_canonical_format",
-			"deterministic_output_ocaml_reference_canonical_format"
-		],
-		"behavior": [
-			"empty_value_reference_behavior_parse",
-			"empty_value_reference_behavior_build_hierarchy",
-			"canonical_format_line_endings_reference_behavior_parse",
-			"canonical_format_line_endings_reference_behavior_canonical_format"
-		],
+		"deterministic": ["deterministic_output_ocaml_reference_canonical_format"],
+		"output": ["deterministic_output_ocaml_reference_canonical_format"],
 		"integer": [
 			"parse_basic_integer_parse",
 			"parse_basic_integer_build_hierarchy",
@@ -3283,8 +3181,6 @@
 			"list_multiline_values_parse_indented",
 			"list_multiline_values_build_hierarchy",
 			"list_multiline_values_get_list",
-			"deterministic_output_parse",
-			"deterministic_output_canonical_format",
 			"deterministic_output_ocaml_reference_canonical_format",
 			"round_trip_mixed_content_parse",
 			"round_trip_mixed_content_round_trip"
@@ -3728,8 +3624,6 @@
 			"complete_multiline_workflow_parse",
 			"complete_multiline_workflow_build_hierarchy",
 			"whitespace_trimming_parse",
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_tab_preservation_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format",
 			"tabs_preserve_in_value_parse",
 			"tabs_preserve_in_value_build_hierarchy",
@@ -3754,14 +3648,6 @@
 			"deep_nested_structure_parse_indented",
 			"mixed_indentation_levels_parse_indented",
 			"mixed_indentation_levels_build_hierarchy",
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format",
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
 			"canonical_format_line_endings_reference_behavior_parse",
 			"canonical_format_line_endings_reference_behavior_canonical_format",
 			"canonical_format_consistent_spacing_ocaml_reference_canonical_format"
@@ -3775,14 +3661,6 @@
 			"complete_multiline_workflow_build_hierarchy",
 			"mixed_indentation_levels_parse_indented",
 			"mixed_indentation_levels_build_hierarchy",
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format",
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
 			"canonical_format_line_endings_reference_behavior_parse",
 			"canonical_format_line_endings_reference_behavior_canonical_format",
 			"canonical_format_consistent_spacing_ocaml_reference_canonical_format"
@@ -3969,14 +3847,6 @@
 			"multiple_key_value_pairs_parse",
 			"mixed_indentation_levels_parse_indented",
 			"mixed_indentation_levels_build_hierarchy",
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format",
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
 			"canonical_format_line_endings_reference_behavior_parse",
 			"canonical_format_line_endings_reference_behavior_canonical_format",
 			"canonical_format_consistent_spacing_ocaml_reference_canonical_format",
@@ -3996,14 +3866,6 @@
 			"multiple_key_value_pairs_parse",
 			"mixed_indentation_levels_parse_indented",
 			"mixed_indentation_levels_build_hierarchy",
-			"canonical_format_line_endings_proposed_parse",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format",
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
 			"canonical_format_line_endings_reference_behavior_parse",
 			"canonical_format_line_endings_reference_behavior_canonical_format",
 			"canonical_format_consistent_spacing_ocaml_reference_canonical_format",
@@ -4023,8 +3885,6 @@
 		"text": [
 			"spaces_vs_tabs_continuation_parse_indented",
 			"spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_tab_preservation_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format",
 			"parse_with_conservative_options_parse",
 			"parse_with_conservative_options_build_hierarchy",
@@ -4761,20 +4621,14 @@
 			"parse_empty_value_parse",
 			"parse_empty_value_build_hierarchy",
 			"parse_empty_value_get_string",
-			"canonical_format_empty_values_parse",
-			"canonical_format_empty_values_canonical_format",
 			"empty_value_reference_behavior_parse",
 			"empty_value_reference_behavior_build_hierarchy",
 			"canonical_format_empty_values_ocaml_reference_canonical_format"
 		],
 		"value_with_tabs": [
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_tab_preservation_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format"
 		],
 		"tabs": [
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_tab_preservation_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format",
 			"tabs_preserve_in_value_parse",
 			"tabs_preserve_in_value_build_hierarchy",
@@ -4785,48 +4639,20 @@
 			"spacing_and_tabs_combined_loose_preserve_parse",
 			"spacing_and_tabs_combined_loose_to_spaces_parse"
 		],
-		"unicode": [
-			"canonical_format_unicode_parse",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_unicode_ocaml_reference_canonical_format"
-		],
-		"你好世界": [
-			"canonical_format_unicode_parse",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_unicode_ocaml_reference_canonical_format"
-		],
-		"emo": [
-			"canonical_format_unicode_parse",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_unicode_ocaml_reference_canonical_format"
-		],
-		"🌟✨": [
-			"canonical_format_unicode_parse",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_unicode_ocaml_reference_canonical_format"
-		],
+		"unicode": ["canonical_format_unicode_ocaml_reference_canonical_format"],
+		"你好世界": ["canonical_format_unicode_ocaml_reference_canonical_format"],
+		"emo": ["canonical_format_unicode_ocaml_reference_canonical_format"],
+		"🌟✨": ["canonical_format_unicode_ocaml_reference_canonical_format"],
 		"key3": [
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
 			"canonical_format_consistent_spacing_ocaml_reference_canonical_format",
 			"spacing_loose_multiline_various_parse",
 			"spacing_loose_multiline_various_build_hierarchy"
 		],
 		"value3": [
-			"canonical_format_consistent_spacing_parse",
-			"canonical_format_consistent_spacing_canonical_format",
 			"canonical_format_consistent_spacing_ocaml_reference_canonical_format"
 		],
-		"last": [
-			"deterministic_output_parse",
-			"deterministic_output_canonical_format",
-			"deterministic_output_ocaml_reference_canonical_format"
-		],
-		"middle": [
-			"deterministic_output_parse",
-			"deterministic_output_canonical_format",
-			"deterministic_output_ocaml_reference_canonical_format"
-		],
+		"last": ["deterministic_output_ocaml_reference_canonical_format"],
+		"middle": ["deterministic_output_ocaml_reference_canonical_format"],
 		"temperature": [
 			"parse_basic_float_parse",
 			"parse_basic_float_build_hierarchy",
@@ -5264,14 +5090,6 @@
 			"list_with_special_characters_parse",
 			"list_path_traversal_protection_parse",
 			"parse_empty_value_parse",
-			"canonical_format_empty_values_parse",
-			"canonical_format_tab_preservation_parse",
-			"canonical_format_unicode_parse",
-			"canonical_format_line_endings_proposed_parse",
-			"crlf_normalize_to_lf_proposed_parse",
-			"crlf_normalize_to_lf_indented_proposed_parse",
-			"canonical_format_consistent_spacing_parse",
-			"deterministic_output_parse",
 			"single_item_as_list_reference_parse",
 			"mixed_duplicate_single_keys_reference_parse",
 			"nested_list_access_reference_parse",
@@ -5499,14 +5317,6 @@
 			"list_path_traversal_protection_reference_get_list"
 		],
 		"canonical_format": [
-			"canonical_format_empty_values_canonical_format",
-			"canonical_format_tab_preservation_canonical_format",
-			"canonical_format_unicode_canonical_format",
-			"canonical_format_line_endings_proposed_canonical_format",
-			"crlf_normalize_to_lf_proposed_canonical_format",
-			"crlf_normalize_to_lf_indented_proposed_canonical_format",
-			"canonical_format_consistent_spacing_canonical_format",
-			"deterministic_output_canonical_format",
 			"canonical_format_empty_values_ocaml_reference_canonical_format",
 			"canonical_format_tab_preservation_ocaml_reference_canonical_format",
 			"canonical_format_unicode_ocaml_reference_canonical_format",
@@ -5783,8 +5593,6 @@
 			"list_with_unicode_parse",
 			"list_with_unicode_build_hierarchy",
 			"list_with_unicode_get_list",
-			"canonical_format_unicode_parse",
-			"canonical_format_unicode_canonical_format",
 			"list_with_unicode_reference_parse",
 			"list_with_unicode_reference_build_hierarchy",
 			"list_with_unicode_reference_get_list",

@@ -358,12 +358,10 @@
 			{
 				"behaviors": [],
 				"expected": {
-					"count": 6,
+					"count": 4,
 					"entries": [
-						{ "key": "/", "value": "This is an environment section" },
 						{ "key": "port", "value": "8080" },
 						{ "key": "serve", "value": "index.html" },
-						{ "key": "/", "value": "Database section" },
 						{ "key": "mode", "value": "in-memory" },
 						{ "key": "connections", "value": "16" }
 					]
@@ -394,10 +392,7 @@
 			},
 			{
 				"behaviors": [],
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "/", "value": "this is a comment" }]
-				},
+				"expected": { "count": 0 },
 				"features": ["comments"],
 				"functions": ["filter"],
 				"inputs": ["/= this is a comment"],
@@ -432,13 +427,11 @@
 			{
 				"behaviors": [],
 				"expected": {
-					"count": 6,
+					"count": 4,
 					"entries": [
 						{ "key": "", "value": "= Database Config ==" },
-						{ "key": "/", "value": "Connection settings" },
 						{ "key": "host", "value": "localhost" },
 						{ "key": "", "value": "== Cache Config ===" },
-						{ "key": "/", "value": "Redis configuration" },
 						{ "key": "port", "value": "6379" }
 					]
 				},
@@ -1339,7 +1332,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "\tvalue" }]
@@ -1354,7 +1346,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
@@ -1383,7 +1374,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -1403,7 +1393,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -1777,7 +1766,6 @@
 			{
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": { "behaviors": ["list_coercion_disabled"] },
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -1866,7 +1854,6 @@
 			{
 				"args": ["items"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": { "behaviors": ["list_coercion_disabled"] },
 				"expected": {
 					"count": 20,
 					"list": [
@@ -1946,7 +1933,6 @@
 			{
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled", "array_order_insertion"],
-				"conflicts": { "behaviors": ["list_coercion_disabled"] },
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": ["comments"],
 				"functions": ["get_list"],
@@ -2002,7 +1988,6 @@
 			{
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_disabled"] },
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": ["comments"],
 				"functions": ["get_list"],
@@ -2614,7 +2599,6 @@
 			{
 				"args": ["config", "setting"],
 				"behaviors": ["list_coercion_disabled"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -2633,7 +2617,6 @@
 		"tests": [
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -2656,7 +2639,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -2679,7 +2661,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -2699,7 +2680,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -2719,10 +2699,6 @@
 			{
 				"args": ["descriptions"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": {
 					"count": 2,
 					"list": ["First line\n  second line", "Another item"]
@@ -2739,7 +2715,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -2761,7 +2736,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -2782,7 +2756,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "item", "value": "single" }]
@@ -2797,7 +2770,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "object": { "item": "single" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -2810,10 +2782,6 @@
 			{
 				"args": ["item"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 1, "list": ["single"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -2825,7 +2793,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 3,
 					"entries": [
@@ -2844,7 +2811,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "host": "localhost", "ports": ["80", "443"] }
@@ -2860,10 +2826,6 @@
 			{
 				"args": ["host"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 1, "list": ["localhost"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -2875,7 +2837,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -2897,7 +2858,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -2917,10 +2877,6 @@
 			{
 				"args": ["database", "port"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 1, "list": ["5432"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -2934,7 +2890,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_list", "value": "" }]
@@ -2949,7 +2904,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "object": { "empty_list": "" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -2962,10 +2916,6 @@
 			{
 				"args": ["empty_list"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 1, "list": [""] },
 				"features": [],
 				"functions": ["get_list"],
@@ -2977,7 +2927,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -2997,7 +2946,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "numbers": ["1", "42", "-17", "0"] }
@@ -3013,10 +2961,6 @@
 			{
 				"args": ["numbers"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 4, "list": ["1", "42", "-17", "0"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -3028,7 +2972,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3048,7 +2991,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "flags": ["true", "false", "yes", "no"] }
@@ -3064,10 +3006,6 @@
 			{
 				"args": ["flags"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 4, "list": ["true", "false", "yes", "no"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -3079,7 +3017,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3099,7 +3036,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "items": ["spaced", "normal", "", ""] }
@@ -3115,10 +3051,6 @@
 			{
 				"args": ["items"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 4, "list": ["spaced", "normal", "", ""] },
 				"features": ["whitespace"],
 				"functions": ["get_list"],
@@ -3130,7 +3062,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 6,
 					"entries": [
@@ -3154,7 +3085,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -3178,10 +3108,6 @@
 			{
 				"args": ["config", "environments", "production", "servers"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 3, "list": ["web1", "web2", "api1"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -3195,7 +3121,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3217,7 +3142,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "names": ["张三", "José", "François", "العربية"] }
@@ -3235,10 +3159,6 @@
 			{
 				"args": ["names"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": {
 					"count": 4,
 					"list": ["张三", "José", "François", "العربية"]
@@ -3255,7 +3175,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3277,7 +3196,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": { "symbols": ["@#$%", "!^&*()", "[]{}|", "<>=+"] }
@@ -3295,10 +3213,6 @@
 			{
 				"args": ["symbols"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 4, "list": ["@#$%", "!^&*()", "[]{}|", "<>=+"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -3312,7 +3226,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -3334,7 +3247,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -3355,10 +3267,6 @@
 			{
 				"args": ["descriptions"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": {
 					"count": 3,
 					"list": ["First line", "Another item", "Third item"]
@@ -3375,7 +3283,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 11,
 					"entries": [
@@ -3404,7 +3311,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -3429,10 +3335,6 @@
 			{
 				"args": ["features"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 3, "list": ["auth", "api", "ui"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -3446,7 +3348,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "safe", "value": "value" }]
@@ -3461,7 +3362,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "object": { "safe": "value" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -3474,10 +3374,6 @@
 			{
 				"args": ["safe"],
 				"behaviors": ["list_coercion_enabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_disabled"],
-					"variants": ["reference_compliant"]
-				},
 				"expected": { "count": 1, "list": ["value"] },
 				"features": [],
 				"functions": ["get_list"],
@@ -3489,7 +3385,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_key", "value": "" }]
@@ -3504,7 +3399,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "object": { "empty_key": "" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -3517,7 +3411,6 @@
 			{
 				"args": ["empty_key"],
 				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
 				"expected": { "count": 1, "value": "" },
 				"features": [],
 				"functions": ["get_string"],
@@ -3525,280 +3418,6 @@
 				"name": "parse_empty_value_get_string",
 				"source_test": "parse_empty_value",
 				"validation": "get_string",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "empty_key", "value": "" }]
-				},
-				"features": [],
-				"functions": ["parse"],
-				"inputs": ["empty_key ="],
-				"name": "canonical_format_empty_values_parse",
-				"source_test": "canonical_format_empty_values",
-				"validation": "parse",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
-				"expected": { "count": 1, "value": "empty_key =" },
-				"features": [],
-				"functions": ["canonical_format"],
-				"inputs": ["empty_key ="],
-				"name": "canonical_format_empty_values_canonical_format",
-				"source_test": "canonical_format_empty_values",
-				"validation": "canonical_format",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["tabs_preserve"],
-				"conflicts": {
-					"behaviors": ["tabs_to_spaces"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": {
-					"count": 1,
-					"entries": [
-						{ "key": "value_with_tabs", "value": "text\t\twith\ttabs\t" }
-					]
-				},
-				"features": [],
-				"functions": ["parse"],
-				"inputs": ["value_with_tabs = text\t\twith\ttabs\t"],
-				"name": "canonical_format_tab_preservation_parse",
-				"source_test": "canonical_format_tab_preservation",
-				"validation": "parse",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["tabs_preserve"],
-				"conflicts": {
-					"behaviors": ["tabs_to_spaces"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": {
-					"count": 1,
-					"value": "value_with_tabs = text\t\twith\ttabs"
-				},
-				"features": [],
-				"functions": ["canonical_format"],
-				"inputs": ["value_with_tabs = text\t\twith\ttabs\t"],
-				"name": "canonical_format_tab_preservation_canonical_format",
-				"source_test": "canonical_format_tab_preservation",
-				"validation": "canonical_format",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
-				"expected": {
-					"count": 2,
-					"entries": [
-						{ "key": "unicode", "value": "你好世界" },
-						{ "key": "emo", "value": "🌟✨" }
-					]
-				},
-				"features": ["unicode"],
-				"functions": ["parse"],
-				"inputs": ["unicode = 你好世界\nemo = 🌟✨"],
-				"name": "canonical_format_unicode_parse",
-				"source_test": "canonical_format_unicode",
-				"validation": "parse",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
-				"expected": { "count": 1, "value": "unicode = 你好世界\nemo = 🌟✨" },
-				"features": ["unicode"],
-				"functions": ["canonical_format"],
-				"inputs": ["unicode = 你好世界\nemo = 🌟✨"],
-				"name": "canonical_format_unicode_canonical_format",
-				"source_test": "canonical_format_unicode",
-				"validation": "canonical_format",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["crlf_preserve_literal"],
-				"conflicts": {
-					"behaviors": ["crlf_normalize_to_lf"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": {
-					"count": 2,
-					"entries": [
-						{ "key": "key1", "value": "value1" },
-						{ "key": "key2", "value": "value2" }
-					]
-				},
-				"features": [],
-				"functions": ["parse"],
-				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
-				"name": "canonical_format_line_endings_proposed_parse",
-				"source_test": "canonical_format_line_endings_proposed",
-				"validation": "parse",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["crlf_preserve_literal"],
-				"conflicts": {
-					"behaviors": ["crlf_normalize_to_lf"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": { "count": 1, "value": "key1 = value1\nkey2 = value2" },
-				"features": [],
-				"functions": ["canonical_format"],
-				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
-				"name": "canonical_format_line_endings_proposed_canonical_format",
-				"source_test": "canonical_format_line_endings_proposed",
-				"validation": "canonical_format",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["crlf_normalize_to_lf"],
-				"conflicts": {
-					"behaviors": ["crlf_preserve_literal"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": {
-					"count": 2,
-					"entries": [
-						{ "key": "key1", "value": "value1" },
-						{ "key": "key2", "value": "value2" }
-					]
-				},
-				"features": [],
-				"functions": ["parse"],
-				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
-				"name": "crlf_normalize_to_lf_proposed_parse",
-				"source_test": "crlf_normalize_to_lf_proposed",
-				"validation": "parse",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["crlf_normalize_to_lf"],
-				"conflicts": {
-					"behaviors": ["crlf_preserve_literal"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": { "count": 1, "value": "key1 = value1\nkey2 = value2" },
-				"features": [],
-				"functions": ["canonical_format"],
-				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
-				"name": "crlf_normalize_to_lf_proposed_canonical_format",
-				"source_test": "crlf_normalize_to_lf_proposed",
-				"validation": "canonical_format",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["crlf_normalize_to_lf"],
-				"conflicts": {
-					"behaviors": ["crlf_preserve_literal"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": {
-					"count": 2,
-					"entries": [
-						{ "key": "key1", "value": "value1" },
-						{ "key": "key2", "value": "value2" }
-					]
-				},
-				"features": [],
-				"functions": ["parse"],
-				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
-				"name": "crlf_normalize_to_lf_indented_proposed_parse",
-				"source_test": "crlf_normalize_to_lf_indented_proposed",
-				"validation": "parse",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["crlf_normalize_to_lf"],
-				"conflicts": {
-					"behaviors": ["crlf_preserve_literal"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": {
-					"count": 1,
-					"value": "key1 =\n  value1 =\nkey2 =\n  value2 =\n"
-				},
-				"features": [],
-				"functions": ["canonical_format"],
-				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
-				"name": "crlf_normalize_to_lf_indented_proposed_canonical_format",
-				"source_test": "crlf_normalize_to_lf_indented_proposed",
-				"validation": "canonical_format",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": ["strict_spacing"],
-				"conflicts": {
-					"behaviors": ["loose_spacing"],
-					"variants": ["reference_compliant"]
-				},
-				"expected": {
-					"count": 3,
-					"entries": [
-						{ "key": "key1", "value": "value1" },
-						{ "key": "key2", "value": "value2" },
-						{ "key": "key3", "value": "\tvalue3" }
-					]
-				},
-				"features": [],
-				"functions": ["parse"],
-				"inputs": ["key1=value1\nkey2  =  value2\nkey3\t=\tvalue3"],
-				"name": "canonical_format_consistent_spacing_parse",
-				"source_test": "canonical_format_consistent_spacing",
-				"validation": "parse",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
-				"expected": {
-					"count": 1,
-					"value": "key1 = value1\nkey2 = value2\nkey3 = \tvalue3"
-				},
-				"features": [],
-				"functions": ["canonical_format"],
-				"inputs": ["key1=value1\nkey2  =  value2\nkey3\t=\tvalue3"],
-				"name": "canonical_format_consistent_spacing_canonical_format",
-				"source_test": "canonical_format_consistent_spacing",
-				"validation": "canonical_format",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
-				"expected": {
-					"count": 3,
-					"entries": [
-						{ "key": "z", "value": "last" },
-						{ "key": "a", "value": "first" },
-						{ "key": "m", "value": "middle" }
-					]
-				},
-				"features": [],
-				"functions": ["parse"],
-				"inputs": ["z = last\na = first\nm = middle"],
-				"name": "deterministic_output_parse",
-				"source_test": "deterministic_output",
-				"validation": "parse",
-				"variants": ["proposed_behavior"]
-			},
-			{
-				"behaviors": [],
-				"conflicts": { "variants": ["reference_compliant"] },
-				"expected": { "count": 1, "value": "z = last\na = first\nm = middle" },
-				"features": [],
-				"functions": ["canonical_format"],
-				"inputs": ["z = last\na = first\nm = middle"],
-				"name": "deterministic_output_canonical_format",
-				"source_test": "deterministic_output",
-				"validation": "canonical_format",
 				"variants": ["proposed_behavior"]
 			}
 		],
@@ -3810,7 +3429,6 @@
 		"tests": [
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "item", "value": "single" }]
@@ -3825,7 +3443,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "object": { "item": "single" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -3838,10 +3455,6 @@
 			{
 				"args": ["item"],
 				"behaviors": ["list_coercion_disabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_enabled"],
-					"variants": ["proposed_behavior"]
-				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -3886,7 +3499,6 @@
 			{
 				"args": ["host"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -3898,7 +3510,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -3920,7 +3531,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"object": {
@@ -3940,10 +3550,6 @@
 			{
 				"args": ["database", "port"],
 				"behaviors": ["list_coercion_disabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_enabled"],
-					"variants": ["proposed_behavior"]
-				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -3957,7 +3563,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_list", "value": "" }]
@@ -3972,7 +3577,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "object": { "empty_list": "" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -3985,7 +3589,6 @@
 			{
 				"args": ["empty_list"],
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -4031,7 +3634,6 @@
 			{
 				"args": ["numbers"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -4077,7 +3679,6 @@
 			{
 				"args": ["flags"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -4120,7 +3721,6 @@
 			{
 				"args": ["items"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": ["whitespace"],
 				"functions": ["get_list"],
@@ -4176,7 +3776,6 @@
 			{
 				"args": ["config", "environments", "production", "servers"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -4228,7 +3827,6 @@
 			{
 				"args": ["names"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": ["unicode"],
 				"functions": ["get_list"],
@@ -4275,7 +3873,6 @@
 			{
 				"args": ["symbols"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -4311,7 +3908,6 @@
 			{
 				"args": ["features"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
-				"conflicts": { "behaviors": ["list_coercion_enabled"] },
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -4325,7 +3921,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "safe", "value": "value" }]
@@ -4340,7 +3935,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "object": { "safe": "value" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -4353,10 +3947,6 @@
 			{
 				"args": ["safe"],
 				"behaviors": ["list_coercion_disabled"],
-				"conflicts": {
-					"behaviors": ["list_coercion_enabled"],
-					"variants": ["proposed_behavior"]
-				},
 				"expected": { "count": 0 },
 				"features": [],
 				"functions": ["get_list"],
@@ -4368,7 +3958,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "empty_key", "value": "" }]
@@ -4383,7 +3972,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "object": { "empty_key": "" } },
 				"features": [],
 				"functions": ["build_hierarchy"],
@@ -4395,7 +3983,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": { "count": 1, "value": "empty_key =\n" },
 				"features": [],
 				"functions": ["canonical_format"],
@@ -4407,10 +3994,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": {
-					"behaviors": ["tabs_to_spaces"],
-					"variants": ["proposed_behavior"]
-				},
 				"expected": {
 					"count": 1,
 					"value": "value_with_tabs =\n  text\t\twith\ttabs =\n"
@@ -4425,7 +4008,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"value": "emo =\n  🌟✨ =\nunicode =\n  你好世界 =\n"
@@ -4440,10 +4022,6 @@
 			},
 			{
 				"behaviors": ["crlf_preserve_literal"],
-				"conflicts": {
-					"behaviors": ["crlf_normalize_to_lf"],
-					"variants": ["proposed_behavior"]
-				},
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -4461,10 +4039,6 @@
 			},
 			{
 				"behaviors": ["crlf_preserve_literal"],
-				"conflicts": {
-					"behaviors": ["crlf_normalize_to_lf"],
-					"variants": ["proposed_behavior"]
-				},
 				"expected": {
 					"count": 1,
 					"value": "key1 =\n  value1\r =\nkey2 =\n  value2\r =\n"
@@ -4479,7 +4053,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"value": "key1 =\n  value1 =\nkey2 =\n  value2 =\nkey3 =\n  value3 =\n"
@@ -4494,7 +4067,6 @@
 			},
 			{
 				"behaviors": [],
-				"conflicts": { "variants": ["proposed_behavior"] },
 				"expected": {
 					"count": 1,
 					"value": "a =\n  first =\nm =\n  middle =\nz =\n  last =\n"
@@ -4653,7 +4225,6 @@
 			{
 				"args": ["active"],
 				"behaviors": ["boolean_lenient"],
-				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4691,7 +4262,6 @@
 			{
 				"args": ["active"],
 				"behaviors": ["boolean_strict"],
-				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4859,7 +4429,6 @@
 			{
 				"args": ["disabled"],
 				"behaviors": ["boolean_lenient"],
-				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": false },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4928,7 +4497,6 @@
 			{
 				"args": ["disabled"],
 				"behaviors": ["boolean_strict"],
-				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5015,7 +4583,6 @@
 			{
 				"args": ["flag1"],
 				"behaviors": ["boolean_lenient"],
-				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5092,7 +4659,6 @@
 			{
 				"args": ["flag1"],
 				"behaviors": ["boolean_strict"],
-				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5179,7 +4745,6 @@
 			{
 				"args": ["ssl"],
 				"behaviors": ["boolean_lenient"],
-				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5280,7 +4845,6 @@
 			{
 				"args": ["ssl"],
 				"behaviors": ["boolean_strict"],
-				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5525,7 +5089,6 @@
 			{
 				"args": ["enabled"],
 				"behaviors": ["boolean_strict"],
-				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5595,7 +5158,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing"],
-				"conflicts": { "behaviors": ["strict_spacing"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
@@ -5610,7 +5172,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing"],
-				"conflicts": { "behaviors": ["strict_spacing"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
@@ -5625,7 +5186,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing"],
-				"conflicts": { "behaviors": ["strict_spacing"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
@@ -5640,7 +5200,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing"],
-				"conflicts": { "behaviors": ["strict_spacing"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
@@ -5655,7 +5214,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing"],
-				"conflicts": { "behaviors": ["strict_spacing"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
@@ -5670,7 +5228,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing"],
-				"conflicts": { "behaviors": ["strict_spacing"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
@@ -5685,7 +5242,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing"],
-				"conflicts": { "behaviors": ["strict_spacing"] },
 				"expected": {
 					"count": 4,
 					"entries": [
@@ -5724,7 +5280,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing"],
-				"conflicts": { "behaviors": ["strict_spacing"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -5753,7 +5308,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "\tvalue\twith\ttabs" }]
@@ -5768,7 +5322,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": { "count": 1, "object": { "key": "\tvalue\twith\ttabs" } },
 				"features": ["whitespace"],
 				"functions": ["build_hierarchy"],
@@ -5792,7 +5345,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "\tindented" }]
@@ -5819,7 +5371,6 @@
 			},
 			{
 				"behaviors": ["tabs_to_spaces"],
-				"conflicts": { "behaviors": ["tabs_preserve"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "  value  with  tabs" }]
@@ -5834,7 +5385,6 @@
 			},
 			{
 				"behaviors": ["tabs_to_spaces"],
-				"conflicts": { "behaviors": ["tabs_preserve"] },
 				"expected": { "count": 1, "object": { "key": "  value  with  tabs" } },
 				"features": ["whitespace"],
 				"functions": ["build_hierarchy"],
@@ -5858,7 +5408,6 @@
 			},
 			{
 				"behaviors": ["tabs_to_spaces"],
-				"conflicts": { "behaviors": ["tabs_preserve"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "  indented" }]
@@ -5885,7 +5434,6 @@
 			},
 			{
 				"behaviors": ["tabs_to_spaces"],
-				"conflicts": { "behaviors": ["tabs_preserve"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "      three_tabs" }]
@@ -5900,7 +5448,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -5920,7 +5467,6 @@
 			},
 			{
 				"behaviors": ["tabs_to_spaces"],
-				"conflicts": { "behaviors": ["tabs_preserve"] },
 				"expected": {
 					"count": 1,
 					"entries": [
@@ -5940,7 +5486,6 @@
 			},
 			{
 				"behaviors": ["tabs_preserve"],
-				"conflicts": { "behaviors": ["tabs_to_spaces"] },
 				"expected": { "count": 1, "value": "key = \tvalue" },
 				"features": ["whitespace"],
 				"functions": ["canonical_format"],
@@ -5952,7 +5497,6 @@
 			},
 			{
 				"behaviors": ["tabs_to_spaces"],
-				"conflicts": { "behaviors": ["tabs_preserve"] },
 				"expected": { "count": 1, "value": "key =   value" },
 				"features": ["whitespace"],
 				"functions": ["canonical_format"],
@@ -5964,7 +5508,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing", "tabs_preserve"],
-				"conflicts": { "behaviors": ["strict_spacing", "tabs_to_spaces"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "\tvalue\twith\ttabs" }]
@@ -5979,7 +5522,6 @@
 			},
 			{
 				"behaviors": ["loose_spacing", "tabs_to_spaces"],
-				"conflicts": { "behaviors": ["strict_spacing", "tabs_preserve"] },
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "  value  with  tabs" }]
