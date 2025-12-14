@@ -1,6 +1,6 @@
 {
-	"totalTests": 393,
-	"totalAssertions": 660,
+	"totalTests": 377,
+	"totalAssertions": 631,
 	"categories": {
 		"Advanced Processing": 17,
 		"Comments": 6,
@@ -10,7 +10,7 @@
 		"Edge Cases": 35,
 		"Error Handling": 6,
 		"List Operations": 51,
-		"Proposed Behavior": 65,
+		"Proposed Behavior": 49,
 		"Reference Compliant": 44,
 		"Typed Access": 74,
 		"Whitespace Behaviors": 28,
@@ -18,13 +18,13 @@
 		"Property Round Trip": 18
 	},
 	"functions": {
-		"parse": 174,
+		"parse": 166,
 		"filter": 3,
 		"build_hierarchy": 83,
 		"parse_indented": 12,
 		"get_string": 11,
 		"get_list": 43,
-		"canonical_format": 17,
+		"canonical_format": 9,
 		"get_int": 11,
 		"get_float": 6,
 		"get_bool": 12,
@@ -38,20 +38,19 @@
 		"comments": 21,
 		"multiline": 22,
 		"whitespace": 60,
-		"unicode": 10,
+		"unicode": 8,
 		"optional_typed_accessors": 68
 	},
 	"behaviors": {
 		"array_order_insertion": 9,
 		"array_order_lexicographic": 25,
-		"tabs_preserve": 13,
+		"tabs_preserve": 11,
 		"list_coercion_enabled": 18,
 		"list_coercion_disabled": 12,
-		"crlf_preserve_literal": 4,
-		"crlf_normalize_to_lf": 4,
-		"strict_spacing": 2,
+		"crlf_preserve_literal": 2,
 		"boolean_strict": 7,
 		"boolean_lenient": 6,
+		"strict_spacing": 1,
 		"loose_spacing": 11,
 		"tabs_to_spaces": 7
 	}
