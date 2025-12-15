@@ -92,6 +92,8 @@ export function transformFootnotesForLittlefoot(
 				// Use kebab-case for standard HTML attributes
 				linkElement.properties["rel"] = "footnote";
 				linkElement.properties["data-footnote-id"] = footnoteId;
+				// Update href to match the transformed footnote definition ID
+				linkElement.properties["href"] = `#fn:${footnoteId}`;
 
 				// Store for mapping with definition
 				if (footnoteMap.has(footnoteId)) {

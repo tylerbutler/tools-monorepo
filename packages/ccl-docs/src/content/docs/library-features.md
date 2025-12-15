@@ -68,7 +68,7 @@ Some implementations provide additional experimental features:
 
 ## Test Suite Coverage
 
-The [CCL Test Suite](https://github.com/ccl-test-data) provides tests for these features:
+The [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) provides tests for these features:
 
 - **Type-Safe Access**: 107 assertions (22 tests)
 - **Entry Processing**: 67 assertions (19 tests)

@@ -10,7 +10,7 @@
 function findGitRootSync(cwd): string;
 ```
 
-Defined in: [packages/sail-infrastructure/src/git.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L28)
+Defined in: [packages/sail-infrastructure/src/git.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L27)
 
 Returns the absolute path to the nearest Git repository root found starting at `cwd`.
 

@@ -6,7 +6,7 @@
 
 # Interface: PackageFilterOptions
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:98](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L98)
+Defined in: [packages/sail-infrastructure/src/filter.ts:97](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L97)
 
 The criteria that should be used for filtering package-like objects from a collection.
 
@@ -18,7 +18,7 @@ The criteria that should be used for filtering package-like objects from a colle
 private: boolean | undefined;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:112](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L112)
+Defined in: [packages/sail-infrastructure/src/filter.ts:111](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L111)
 
 If set, filters private packages in/out.
 
@@ -30,7 +30,7 @@ If set, filters private packages in/out.
 optional scope: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:102](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L102)
+Defined in: [packages/sail-infrastructure/src/filter.ts:101](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L101)
 
 If set, filters IN packages whose scope matches the strings provided.
 
@@ -42,6 +42,6 @@ If set, filters IN packages whose scope matches the strings provided.
 optional skipScope: string[];
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:107](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L107)
+Defined in: [packages/sail-infrastructure/src/filter.ts:106](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L106)
 
 If set, filters OUT packages whose scope matches the strings provided.

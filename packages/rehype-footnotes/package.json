@@ -1,6 +1,6 @@
 {
 	"name": "rehype-footnotes",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Rehype plugin to transform GFM footnotes for Littlefoot.js integration",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/rehype-footnotes#rehype-footnotes",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -41,9 +41,9 @@
 		"unist-util-visit": "^5.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
+		"@biomejs/biome": "2.3.8",
 		"@types/hast": "^3.0.4",
-		"@types/node": "^20.19.24",
+		"@types/node": "^20.19.25",
 		"@vitest/coverage-v8": "^3.2.4",
 		"rehype": "^13.0.2",
 		"rehype-parse": "^9.0.1",
@@ -52,7 +52,7 @@
 		"remark-gfm": "^4.0.1",
 		"remark-parse": "^11.0.0",
 		"remark-rehype": "^11.1.2",
-		"rimraf": "^6.1.0",
+		"rimraf": "^6.1.2",
 		"typescript": "~5.9.3",
 		"vitest": "^3.2.4"
 	},

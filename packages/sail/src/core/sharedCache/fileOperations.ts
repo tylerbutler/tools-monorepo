@@ -6,7 +6,7 @@
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { copyFile, mkdir, readFile, stat, utimes } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join } from "pathe";
 
 /**
  * Copy a file from source to destination, creating parent directories as needed.
