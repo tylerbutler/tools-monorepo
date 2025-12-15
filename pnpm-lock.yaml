@@ -148,8 +148,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       zod:
-        specifier: ^4.1.13
-        version: 4.1.13
+        specifier: ^4.2.0
+        version: 4.2.0
     devDependencies:
       '@fec/remark-a11y-emoji':
         specifier: ^4.0.2
@@ -164,8 +164,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
       '@lucide/svelte':
-        specifier: ^0.556.0
-        version: 0.556.0(svelte@5.45.2)
+        specifier: ^0.561.0
+        version: 0.561.0(svelte@5.45.2)
       '@tauri-apps/api':
         specifier: ^2.9.0
         version: 2.9.0
@@ -693,8 +693,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       zod:
-        specifier: ^4.1.13
-        version: 4.1.13
+        specifier: ^4.2.0
+        version: 4.2.0
     devDependencies:
       '@fec/remark-a11y-emoji':
         specifier: ^4.0.2
@@ -1214,8 +1214,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       zod:
-        specifier: ^4.1.13
-        version: 4.1.13
+        specifier: ^4.2.0
+        version: 4.2.0
     devDependencies:
       '@fec/remark-a11y-emoji':
         specifier: ^4.0.2
@@ -3888,8 +3888,8 @@ packages:
   '@loaderkit/resolve@1.0.4':
     resolution: {integrity: sha512-rJzYKVcV4dxJv+vW6jlvagF8zvGxHJ2+HTr1e2qOejfmGhAApgJHl8Aog4mMszxceTRiKTTbnpgmTO1bEZHV/A==}
 
-  '@lucide/svelte@0.556.0':
-    resolution: {integrity: sha512-jsJhyyd2xrJ4WtflO5TrTtyCBacF4OLBNCzotvwh4zfbbuE6aqdblx+OB0zg6zOno06ib1GJGdDcfR/2TUcb7g==}
+  '@lucide/svelte@0.561.0':
+    resolution: {integrity: sha512-vofKV2UFVrKE6I4ewKJ3dfCXSV6iP6nWVmiM83MLjsU91EeJcEg7LoWUABLp/aOTxj1HQNbJD1f3g3L0JQgH9A==}
     peerDependencies:
       svelte: ^5
 
@@ -12521,8 +12521,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.1.13:
-    resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
+  zod@4.2.0:
+    resolution: {integrity: sha512-Bd5fw9wlIhtqCCxotZgdTOMwGm1a0u75wARVEY9HMs1X17trvA/lMi4+MGK5EUfYkXVTbX8UDiDKW4OgzHVUZw==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -15919,7 +15919,7 @@ snapshots:
     dependencies:
       '@braidai/lang': 1.1.0
 
-  '@lucide/svelte@0.556.0(svelte@5.45.2)':
+  '@lucide/svelte@0.561.0(svelte@5.45.2)':
     dependencies:
       svelte: 5.45.2
 
@@ -26822,6 +26822,6 @@ snapshots:
 
   zod@3.25.76: {}
 
-  zod@4.1.13: {}
+  zod@4.2.0: {}
 
   zwitch@2.0.4: {}
