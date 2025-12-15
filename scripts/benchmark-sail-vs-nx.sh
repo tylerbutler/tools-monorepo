@@ -105,13 +105,38 @@ check_dependencies() {
 }
 
 # Build sail itself (needed for benchmarking)
+# NOTE: Temporarily disabled while Sail benchmarking is not active
 build_sail() {
 	echo -e "${YELLOW}Building Sail...${NC}"
 	cd "${REPO_ROOT}"
-	pnpm nx run sail:build > /dev/null 2>&1
-	echo -e "${GREEN}✓ Sail built successfully${NC}"
+	# Temporarily skipped - uncomment when Sail benchmarking is re-enabled
+	# pnpm nx run sail:build > /dev/null 2>&1
+	echo -e "${GREEN}✓ Sail build skipped (benchmarking temporarily disabled)${NC}"
 	echo ""
 }
+
+# NOTE: These functions are temporarily unused while Sail benchmarking is disabled
+# # Hide test fixtures' lockfiles to avoid workspace conflicts in Sail
+# hide_test_lockfiles() {
+# 	echo -e "${YELLOW}Hiding test fixture lockfiles for Sail...${NC}"
+# 	cd "${REPO_ROOT}"
+# 	# Find and rename lockfiles in test directories
+# 	find packages/*/test packages/*/tests packages/*/src/test -name "pnpm-lock.yaml" -o -name "package-lock.json" -o -name "yarn.lock" -o -name "bun.lock" -o -name "bun.lockb" 2>/dev/null | while read -r lockfile; do
+# 		mv "$lockfile" "$lockfile.hidden" 2>/dev/null || true
+# 	done
+# 	echo -e "${GREEN}✓ Test lockfiles hidden${NC}"
+# }
+
+# # Restore test fixtures' lockfiles
+# restore_test_lockfiles() {
+# 	echo -e "${YELLOW}Restoring test fixture lockfiles...${NC}"
+# 	cd "${REPO_ROOT}"
+# 	# Find and restore hidden lockfiles
+# 	find packages/*/test packages/*/tests packages/*/src/test -name "*.hidden" 2>/dev/null | while read -r lockfile; do
+# 		mv "$lockfile" "${lockfile%.hidden}" 2>/dev/null || true
+# 	done
+# 	echo -e "${GREEN}✓ Test lockfiles restored${NC}"
+# }
 
 # Cache management functions
 clear_nx_cache() {
@@ -179,6 +204,8 @@ benchmark_cold_cache() {
 
 	local output_file="${RESULTS_DIR}/cold-cache-${TIMESTAMP}"
 
+	# NOTE: Sail benchmarking temporarily disabled due to workspace detection issues with test fixtures
+	# Will be re-enabled once workspace filtering is fixed
 	hyperfine \
 		--warmup 0 \
 		--runs "${BENCHMARK_RUNS}" \
@@ -186,9 +213,9 @@ benchmark_cold_cache() {
 		--export-markdown "${output_file}.md" \
 		--export-json "${output_file}.json" \
 		--command-name "Nx (cold)" \
-		"pnpm nx run-many -t ${BUILD_TASK} --skip-nx-cache" \
-		--command-name "Sail (cold)" \
-		"${SAIL_BIN} build --task ${BUILD_TASK} --force --cache-dir ${SAIL_CACHE_DIR}"
+		"pnpm nx run-many -t ${BUILD_TASK} --skip-nx-cache"
+	# --command-name "Sail (cold)" \
+	# "${SAIL_BIN} build --task ${BUILD_TASK} --force --cache-dir ${SAIL_CACHE_DIR}"
 
 	echo ""
 	echo -e "${GREEN}Results saved to: ${output_file}.{md,json}${NC}"
@@ -218,18 +245,19 @@ benchmark_warm_remote_cold_local() {
 
 	local output_file="${RESULTS_DIR}/warm-remote-cold-local-${TIMESTAMP}"
 
-	# For Nx: clear local .nx/cache but keep remote (simulated by rebuilding cache)
-	# For Sail: keep shared cache but clear donefiles
+	# For Nx: keep cache
+	# For Sail: keep shared cache but clear donefiles (temporarily disabled)
+	# NOTE: Sail benchmarking temporarily disabled due to workspace detection issues
 	hyperfine \
 		--warmup "${WARMUP_RUNS}" \
 		--runs "${BENCHMARK_RUNS}" \
-		--prepare 'clear_sail_local_cache' \
 		--export-markdown "${output_file}.md" \
 		--export-json "${output_file}.json" \
 		--command-name "Nx (warm)" \
-		"pnpm nx run-many -t ${BUILD_TASK}" \
-		--command-name "Sail (warm)" \
-		"${SAIL_BIN} build --task ${BUILD_TASK} --cache-dir ${SAIL_CACHE_DIR}"
+		"pnpm nx run-many -t ${BUILD_TASK}"
+	# --prepare 'clear_sail_local_cache' \
+	# --command-name "Sail (warm)" \
+	# "${SAIL_BIN} build --task ${BUILD_TASK} --cache-dir ${SAIL_CACHE_DIR}"
 
 	echo ""
 	echo -e "${GREEN}Results saved to: ${output_file}.{md,json}${NC}"
@@ -243,25 +271,27 @@ benchmark_hot_cache() {
 	echo "Full cache from previous run (best case)"
 	echo ""
 
-	# Warm up both systems
+	# Warm up Nx cache
 	echo -e "${YELLOW}Warming up caches...${NC}"
 	cd "${REPO_ROOT}"
 	pnpm nx run-many -t "${BUILD_TASK}" > /dev/null 2>&1
-	"${SAIL_BIN}" build --task "${BUILD_TASK}" --cache-dir "${SAIL_CACHE_DIR}" > /dev/null 2>&1
+	# Sail warmup temporarily disabled
+	# "${SAIL_BIN}" build --task "${BUILD_TASK}" --cache-dir "${SAIL_CACHE_DIR}" > /dev/null 2>&1
 	echo -e "${GREEN}✓ Caches warmed up${NC}"
 	echo ""
 
 	local output_file="${RESULTS_DIR}/hot-cache-${TIMESTAMP}"
 
+	# NOTE: Sail benchmarking temporarily disabled due to workspace detection issues
 	hyperfine \
 		--warmup "${WARMUP_RUNS}" \
 		--runs "${BENCHMARK_RUNS}" \
 		--export-markdown "${output_file}.md" \
 		--export-json "${output_file}.json" \
 		--command-name "Nx (hot)" \
-		"pnpm nx run-many -t ${BUILD_TASK}" \
-		--command-name "Sail (hot)" \
-		"${SAIL_BIN} build --task ${BUILD_TASK} --cache-dir ${SAIL_CACHE_DIR}"
+		"pnpm nx run-many -t ${BUILD_TASK}"
+	# --command-name "Sail (hot)" \
+	# "${SAIL_BIN} build --task ${BUILD_TASK} --cache-dir ${SAIL_CACHE_DIR}"
 
 	echo ""
 	echo -e "${GREEN}Results saved to: ${output_file}.{md,json}${NC}"

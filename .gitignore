@@ -30,3 +30,7 @@ yarn.lock
 # AI artifacts
 .claude
 .serena
+
+# Benchmark results
+benchmark-results/
+.sail-cache/

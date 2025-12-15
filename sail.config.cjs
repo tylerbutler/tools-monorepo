@@ -29,4 +29,14 @@ module.exports = {
 			script: true,
 		},
 	},
+	// Exclude test fixtures to avoid workspace conflicts
+	buildProject: {
+		version: 2,
+		excludeGlobs: [
+			"**/test/**",
+			"**/tests/**",
+			"**/__tests__/**",
+			"**/fixtures/**",
+		],
+	},
 };
