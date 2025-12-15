@@ -8,7 +8,7 @@ import TestCard from "./TestCard.svelte";
 
 const mockTest: GeneratedTest = {
 	name: "test-basic-parsing",
-	input: "key = value\nother = data",
+	inputs: ["key = value\nother = data"],
 	expected: {
 		entries: [
 			{ key: "key", value: "value" },
@@ -162,7 +162,7 @@ describe("TestCard", () => {
 	it("truncates long input correctly", () => {
 		const longInputTest: GeneratedTest = {
 			...mockTest,
-			input: "a".repeat(150), // Input longer than 100 characters
+			inputs: ["a".repeat(150)], // Input longer than 100 characters
 		};
 
 		const mockOnView = vi.fn();

@@ -4,7 +4,7 @@ https://www.npmjs.com/package/generate-license-file
 The following npm packages may be included in this product:
 
  - @oclif/core@4.8.0
- - @oclif/plugin-help@6.2.35
+ - @oclif/plugin-help@6.2.36
 
 These packages each contain the following license:
 

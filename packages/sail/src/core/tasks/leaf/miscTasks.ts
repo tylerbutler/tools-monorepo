@@ -1,10 +1,10 @@
 import { readdir, readFile, stat } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 
 import picomatch from "picomatch";
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";
-import { globFn, toPosixPath } from "../taskUtils.js";
+import { globFn } from "../taskUtils.js";
 import { LeafTask, LeafWithDoneFileTask } from "./leafTask.js";
 
 /**
@@ -156,7 +156,7 @@ export class CopyfilesTask extends LeafWithDoneFileTask {
 			throw new Error("error parsing command line");
 		}
 		if (!this._dstFiles) {
-			const directory = toPosixPath(this.node.pkg.directory);
+			const directory = this.node.pkg.directory;
 			const dstPath = path.resolve(directory, this.copyDstArg);
 			const srcFiles = await this.getInputFiles();
 			this._dstFiles = srcFiles.map((match) => {

@@ -51,30 +51,30 @@
 				console.log('🔧 Disabling service worker registration');
 
 				// Override the register function to prevent any registration
-				const originalRegister = navigator.serviceWorker.register;
-				navigator.serviceWorker.register = function() {
+				const _originalRegister = navigator.serviceWorker.register;
+				navigator.serviceWorker.register = () => {
 					console.log('🚫 Service worker registration blocked');
 					return Promise.reject(new Error('Service worker registration is disabled'));
 				};
 
 				// Unregister any existing service workers
 				navigator.serviceWorker.getRegistrations()
-					.then(function(registrations) {
+					.then((registrations) => {
 						console.log('🔧 Found', registrations.length, 'service worker registrations to unregister');
-						const unregisterPromises = registrations.map(function(registration) {
+						const unregisterPromises = registrations.map((registration) => {
 							console.log('🔧 Unregistering service worker:', registration.scope);
 							return registration.unregister();
 						});
 						return Promise.all(unregisterPromises);
 					})
-					.then(function() {
+					.then(() => {
 						console.log('✅ All service workers unregistered');
 						// Clear all caches
 						if ('caches' in window) {
-							return caches.keys().then(function(cacheNames) {
+							return caches.keys().then((cacheNames) => {
 								console.log('🔧 Found', cacheNames.length, 'caches to clear');
 								return Promise.all(
-									cacheNames.map(function(cacheName) {
+									cacheNames.map((cacheName) => {
 										console.log('🔧 Clearing cache:', cacheName);
 										return caches.delete(cacheName);
 									})
@@ -82,10 +82,10 @@
 							});
 						}
 					})
-					.then(function() {
+					.then(() => {
 						console.log('✅ All caches cleared');
 					})
-					.catch(function(error) {
+					.catch((error) => {
 						console.error('❌ Error cleaning up service workers and caches:', error);
 					});
 			}

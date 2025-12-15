@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import path from "node:path";
+import path from "pathe";
 
 import { globFn, loadModule, toPosixPath } from "../taskUtils.js";
 import { LeafWithDoneFileTask } from "./leafTask.js";
@@ -86,6 +86,7 @@ export class WebpackTask extends LeafWithDoneFileTask {
 				env[value[0]] = value.length === 1 ? true : value[1];
 			}
 		}
+		return env;
 	}
 
 	private async getVersion() {

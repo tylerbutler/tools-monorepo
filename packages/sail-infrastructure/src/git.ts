@@ -1,6 +1,5 @@
-import * as path from "node:path";
-
-import execa from "execa";
+import { execFileSync } from "node:child_process";
+import * as path from "pathe";
 import { readPackageUpSync } from "read-pkg-up";
 import type { SimpleGit } from "simple-git";
 
@@ -28,20 +27,14 @@ import { isPathUnder } from "./utils.js";
 export function findGitRootSync(cwd = process.cwd()): string {
 	try {
 		// This call will throw outside a git repo, which we'll catch and throw a NotInGitRepo error instead.
-		const result = execa.sync("git", ["rev-parse", "--show-toplevel"], {
+		const stdout = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 			cwd,
 			encoding: "utf8",
-			// Ignore stdin but pipe (capture) stdout and stderr since git will write to both.
+			// Ignore stdin, capture stdout. stderr will throw on error.
 			stdio: ["ignore", "pipe", "pipe"],
 		});
 
-		// If anything was written to stderr, then it's not a git repo.
-		// This is likely unnecessary since the earlier exec call should throw, but just in case, throw here as well.
-		if (result.stderr) {
-			throw new NotInGitRepository(cwd);
-		}
-
-		return result.stdout.trim();
+		return stdout.trim();
 	} catch (error) {
 		const message = (error as Error).message;
 		if (message.includes("not a git repository")) {

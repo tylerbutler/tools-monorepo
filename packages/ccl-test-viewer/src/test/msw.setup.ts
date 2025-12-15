@@ -92,12 +92,12 @@ export const handlers = [
 				tests: [
 					{
 						name: "test-basic",
-						input: "key = value",
+						inputs: ["key = value"],
 						expected: { count: 1 },
 					},
 					{
 						name: "test-complex",
-						input: "key1 = value1\nkey2 = value2",
+						inputs: ["key1 = value1\nkey2 = value2"],
 						expected: { count: 2 },
 					},
 				],

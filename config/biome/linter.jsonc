@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
+	"$schema": "../node_modules/@biomejs/biome/configuration_schema.json",
 	"linter": {
 		"enabled": true,
 		"domains": {
@@ -38,7 +38,6 @@
 			"nursery": {
 				"noFloatingPromises": "error",
 				"noImportCycles": "error",
-				"noSecrets": "off",
 				"noShadow": "error",
 				"noUnresolvedImports": "off",
 				"useSortedClasses": "error",
@@ -64,6 +63,15 @@
 				"noParameterProperties": "off",
 				"noProcessEnv": "error",
 				"noRestrictedGlobals": "error",
+				"noRestrictedImports": {
+					"level": "error",
+					"options": {
+						"paths": {
+							"node:path": "Use 'pathe' instead for cross-platform path handling",
+							"path": "Use 'pathe' instead for cross-platform path handling",
+						},
+					},
+				},
 				"noRestrictedTypes": "error",
 				"noShoutyConstants": "error",
 				"noSubstr": "error",
