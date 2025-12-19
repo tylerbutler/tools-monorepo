@@ -83,7 +83,7 @@ See [Library Features](/library-features) for details.
 
 ## Testing
 
-Use [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) (375 assertions, 180 tests):
+Use [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) (447 assertions, 205 tests):
 
 1. **Core Parsing**: Filter tests by `functions: ["parse"]`
 2. **Object Construction**: Filter by `functions` containing `build_hierarchy`
@@ -91,6 +91,69 @@ Use [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) (375 assertio
 4. **Optional Features**: Filter by `features` arrays (`comments`, `experimental_dotted_keys`, etc.)
 
 See [Test Suite Guide](/test-suite-guide) for complete filtering examples.
+
+## Internal Representation Choices
+
+How you represent CCL data internally affects which features are easy to implement.
+
+### The OCaml Approach
+
+The reference OCaml implementation represents all data as nested `KeyMap` structures:
+
+```ocaml
+type ccl = KeyMap of ccl StringMap.t
+```
+
+**Advantages**:
+- Uniform data structure (everything is a nested map)
+- Elegant recursion with `fix` function
+- Clean pattern matching and algebraic properties
+
+**Trade-off**: This model cannot distinguish between a string value:
+```ccl
+name = Alice
+```
+and a nested key with empty value:
+```ccl
+name =
+  Alice =
+```
+
+Both produce identical models: `{ "name": { "Alice": {} } }`
+
+### Alternative: Tagged Union
+
+For implementations that need structure-preserving `print`, use a tagged union:
+
+```pseudocode
+type Value =
+  | String(string)
+  | Object(map<string, Value>)
+  | List(list<Value>)
+```
+
+**Advantages**:
+- Easy to implement `print` (structure recovery is straightforward)
+- Can distinguish string values from nested structures
+- Natural representation for most languages
+
+### Lazy Hierarchy Building
+
+Another approach: preserve original entries and build hierarchy on-demand:
+
+```pseudocode
+type CCL = {
+  entries: List(Entry),
+  hierarchy: Lazy(Object)
+}
+```
+
+**Advantages**:
+- Perfect structure preservation for `print`
+- Can support both `print` and `canonical_format`
+- Deferred parsing cost
+
+See [Library Features](/library-features#formatting-functions) for details on `print` vs `canonical_format`.
 
 ## Common Challenges
 
