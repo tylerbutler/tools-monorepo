@@ -109,14 +109,14 @@ type ccl = KeyMap of ccl StringMap.t
 - Elegant recursion with `fix` function
 - Clean pattern matching and algebraic properties
 
-**Trade-off**: This model cannot distinguish between:
+**Trade-off**: This model cannot distinguish between a string value:
 ```ccl
-name = Alice          # String value
+name = Alice
 ```
-and:
+and a nested key with empty value:
 ```ccl
 name =
-  Alice =             # Nested key with empty value
+  Alice =
 ```
 
 Both produce identical models: `{ "name": { "Alice": {} } }`
@@ -153,7 +153,7 @@ type CCL = {
 - Can support both `print` and `canonical_format`
 - Deferred parsing cost
 
-See [Formatting Functions](/formatting-functions) for details on `print` vs `canonical_format`.
+See [Library Features](/library-features#formatting-functions) for details on `print` vs `canonical_format`.
 
 ## Common Challenges
 

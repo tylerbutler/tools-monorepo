@@ -1,6 +1,6 @@
 ---
 title: Library Features
-description: Optional convenience APIs for type-safe access and entry processing in CCL implementations.
+description: Optional convenience APIs for type-safe access, entry processing, and formatting in CCL implementations.
 ---
 
 # Library Features (Optional)
@@ -57,33 +57,115 @@ combined = compose(dev_entries, prod_entries)
 final_config = build_hierarchy(combined)
 ```
 
-## Formatting and I/O
+## Formatting Functions
 
-CCL provides two formatting functions for different use cases.
+CCL provides two distinct formatting functions that serve different purposes.
 
-**Common Functions**:
-- `print(entries)` - Structure-preserving format (entry-level isomorphism)
-- `canonical_format(model)` - Semantic-preserving format (model-level transformation)
+| Function | Purpose | Property |
+|----------|---------|----------|
+| `print` | Standard format | Structure-preserving: `print(parse(x)) == x` for standard inputs |
+| `canonical_format` | Model-level format | Semantic-preserving: transforms `key = value` to nested form |
 
-**Key Properties**:
-- `print(parse(x)) == x` for inputs in standard format
-- `parse(print(parse(x))) == parse(x)` (round-trip isomorphism)
+### The `print` Function
+
+**Purpose**: Convert parsed entries back to CCL text format, preserving the original structure.
+
+**Key Property**: For inputs in standard format:
+```
+print(parse(x)) == x
+```
+
+This is an **entry-level isomorphism** - the round-trip preserves the textual structure.
 
 **Example**:
 ```ccl
+name = Alice
 config =
-  host = localhost
   port = 8080
+  debug = true
 ```
 
-After `parse` → `print`:
+After `parse` and `print`, the structure is preserved exactly.
+
+### The `canonical_format` Function
+
+**Purpose**: Convert to a normalized model-level representation.
+
+**Key Property**: Transforms all values into nested key structures:
+```
+key = value  →  key =
+                  value =
+```
+
+This is a **semantic-preserving isomorphism** - no information is lost, but the structure changes to reflect the internal model.
+
+The OCaml CCL implementation uses this approach, representing all data uniformly as nested `KeyMap` structures. This enables elegant recursion with the `fix` function and clean pattern matching.
+
+**Trade-off**: With `canonical_format`, these two inputs produce identical output:
+
 ```ccl
-config =
-  host = localhost
-  port = 8080
+name = Alice
 ```
 
-See [Formatting Functions](/formatting-functions) for detailed guidance on when to use each function.
+and:
+
+```ccl
+name =
+  Alice =
+```
+
+Both become `{ "name": { "Alice": {} } }` in the model, so the original structure cannot be recovered.
+
+### Standard Input Format
+
+A CCL input is in **standard format** when:
+
+1. Keys have exactly one space before and after `=`
+2. Nested content uses 2-space indentation per level
+3. Line endings are LF only (CR characters become part of value content)
+4. No extra whitespace before keys or after values
+
+**Standard format**:
+```ccl
+key = value
+nested =
+  child = value
+```
+
+**Non-standard** (extra spaces):
+```ccl
+key  =  value
+  nested =
+```
+
+### Round-Trip Testing
+
+Use `round_trip` to verify the isomorphism property:
+
+```
+parse(print(parse(x))) == parse(x)
+```
+
+This verifies that `print` followed by `parse` produces identical entries to the original parse.
+
+### Implementation Guidance
+
+For structure-preserving `print`, implementations need to track whether a value was originally a string or nested structure. Options:
+
+1. **Leaf flag**: Mark nodes that were originally string values
+2. **Original value storage**: Keep raw string alongside children
+3. **Entry preservation**: Keep original entry list, build hierarchy on-demand
+
+For new implementations, use a **tagged union** type:
+
+```pseudocode
+type Value =
+  | String(string)
+  | Object(map<string, Value>)
+  | List(list<Value>)
+```
+
+This makes `print` straightforward to implement while still supporting `canonical_format` when needed.
 
 ## Experimental Features
 
@@ -100,6 +182,7 @@ The [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) provides test
 
 - **Type-Safe Access**: 381 assertions (99 tests) - `get_string`, `get_int`, `get_bool`, `get_float`, `get_list`
 - **Entry Processing**: 15 assertions (12 tests) - `filter`, `compose`, identity properties
+- **Formatting**: `print` and `round_trip` tests verify isomorphism properties
 - **Experimental Features**: 22 assertions (10 tests) for dotted representation
 
 See [Test Suite Guide](/test-suite-guide) for progressive implementation roadmap.
