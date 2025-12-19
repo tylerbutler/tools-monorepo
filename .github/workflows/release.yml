@@ -17,9 +17,6 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-env:
-  NX_NO_CLOUD: true # Disable Nx Cloud for release builds - ensures clean local builds
-
 jobs:
   release:
     name: Release
@@ -33,6 +30,11 @@ jobs:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-node-pnpm
+
+      - uses: ./.github/actions/setup-nx
+        with:
+          # Nx Cloud controlled by repository variable NX_CLOUD_RELEASE
+          enable-nx-cloud-var: ${{ vars.NX_CLOUD_RELEASE }}
 
       # Despite the name, this step either creates/updates a PR or publishes packages
       # To improve the experience viewing the results in the Actions UI, subsequent steps log
