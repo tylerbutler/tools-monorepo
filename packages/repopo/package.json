@@ -76,7 +76,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "~0.61.0",
+		"@fluid-tools/build-infrastructure": "~0.62.0",
 		"@oclif/core": "^4.8.0",
 		"@oclif/plugin-help": "^6.2.36",
 		"@rushstack/node-core-library": "^5.19.0",

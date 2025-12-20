@@ -53,7 +53,7 @@
 	},
 	"dependencies": {
 		"@andypf/json-viewer": "^2.2.0",
-		"@lucide/svelte": "^0.556.0",
+		"@lucide/svelte": "^0.562.0",
 		"@tauri-apps/api": "^2.9.0",
 		"@tauri-apps/plugin-dialog": "^2.4.2",
 		"@tauri-apps/plugin-fs": "^2.4.4",
