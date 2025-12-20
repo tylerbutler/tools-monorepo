@@ -28,11 +28,18 @@ Use these exact terms when discussing CCL:
 | **Features** | `comments`, `empty_keys`, `multiline`, `unicode`, `whitespace` |
 | **Experimental** | `experimental_dotted_keys` (not standard) |
 
-### Behaviors (Mutually Exclusive Choices)
+### Behaviors (Implementation Choices)
 
-- `boolean_strict` vs `boolean_lenient`
-- `crlf_normalize_to_lf` vs `crlf_preserve_literal`
-- `list_coercion_enabled` vs `list_coercion_disabled`
+Behaviors are not inherently mutually exclusive. Tests use a `conflicts` field to specify incompatible combinations.
+
+| Behavior Group | Options | Description |
+|----------------|---------|-------------|
+| Line Endings | `crlf_preserve_literal` vs `crlf_normalize_to_lf` | CRLF handling: preserve `\r` chars vs normalize to LF |
+| Boolean Parsing | `boolean_lenient` vs `boolean_strict` | Accept "yes"/"no" vs only "true"/"false" |
+| Tab Handling | `tabs_as_content` vs `tabs_as_whitespace` | Preserve tabs literally vs treat as whitespace |
+| Indentation | `indent_spaces` vs `indent_tabs` | Output formatting style |
+| List Access | `list_coercion_enabled` vs `list_coercion_disabled` | List access coercion behavior |
+| Array Ordering | `array_order_insertion` vs `array_order_lexicographic` | Preserve insertion order vs sort lexicographically |
 
 ### Variants
 

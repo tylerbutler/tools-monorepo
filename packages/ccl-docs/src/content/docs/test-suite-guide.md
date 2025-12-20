@@ -31,10 +31,18 @@ Each test includes:
 **Features** - Optional language features:
 - `comments`, `experimental_dotted_keys`, `empty_keys`, `multiline`, `unicode`, `whitespace`
 
-**Behaviors** - Implementation choices (mutually exclusive):
-- `crlf_preserve_literal` vs `crlf_normalize_to_lf`
-- `boolean_strict` vs `boolean_lenient`
-- `list_coercion_enabled` vs `list_coercion_disabled`
+**Behaviors** - Implementation choices (exclusivity defined per-test via `conflicts` field):
+
+| Behavior Group | Options | Description |
+|----------------|---------|-------------|
+| Line Endings | `crlf_preserve_literal` vs `crlf_normalize_to_lf` | CRLF handling: preserve `\r` chars vs normalize to LF |
+| Boolean Parsing | `boolean_lenient` vs `boolean_strict` | Accept "yes"/"no" vs only "true"/"false" |
+| Tab Handling | `tabs_as_content` vs `tabs_as_whitespace` | Preserve tabs literally vs treat as whitespace |
+| Indentation | `indent_spaces` vs `indent_tabs` | Output formatting style |
+| List Access | `list_coercion_enabled` vs `list_coercion_disabled` | List access coercion behavior |
+| Array Ordering | `array_order_insertion` vs `array_order_lexicographic` | Preserve insertion order vs sort lexicographically |
+
+See the [Behavior Reference](/behavior-reference/) for detailed documentation of each behavior.
 
 ## Filtering Tests by Function
 
