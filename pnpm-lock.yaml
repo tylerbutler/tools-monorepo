@@ -69,8 +69,8 @@ importers:
         specifier: ^7.7.3
         version: 7.7.3
       sort-package-json:
-        specifier: ^3.5.0
-        version: 3.5.0
+        specifier: ^3.6.0
+        version: 3.6.0
       sort-tsconfig:
         specifier: workspace:^
         version: link:packages/sort-tsconfig
@@ -271,7 +271,7 @@ importers:
         version: 0.10.0
       sort-package-json:
         specifier: '*'
-        version: 3.5.0
+        version: 3.6.0
       svelte:
         specifier: ^5.45.2
         version: 5.45.2
@@ -401,7 +401,7 @@ importers:
         version: 6.1.2
       sort-package-json:
         specifier: '*'
-        version: 3.5.0
+        version: 3.6.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.19.25)(typescript@5.9.3)
@@ -449,7 +449,7 @@ importers:
         version: 3.30.0
       sort-package-json:
         specifier: '*'
-        version: 3.5.0
+        version: 3.6.0
       strip-ansi:
         specifier: ^7.1.2
         version: 7.1.2
@@ -610,7 +610,7 @@ importers:
         version: 6.1.6
       sort-package-json:
         specifier: '*'
-        version: 3.5.0
+        version: 3.6.0
       start-server-and-test:
         specifier: ^2.1.3
         version: 2.1.3
@@ -1323,8 +1323,8 @@ importers:
         specifier: ^3.30.0
         version: 3.30.0
       sort-package-json:
-        specifier: 2.14.0
-        version: 2.14.0
+        specifier: 3.6.0
+        version: 3.6.0
       std-env:
         specifier: ^3.10.0
         version: 3.10.0
@@ -1460,7 +1460,7 @@ importers:
         version: 3.30.0
       sort-package-json:
         specifier: '*'
-        version: 3.5.0
+        version: 3.6.0
       tinyexec:
         specifier: ^1.0.2
         version: 1.0.2
@@ -1582,7 +1582,7 @@ importers:
         version: 6.1.2
       sort-package-json:
         specifier: '*'
-        version: 3.5.0
+        version: 3.6.0
       start-server-and-test:
         specifier: ^2.1.3
         version: 2.1.3
@@ -1627,7 +1627,7 @@ importers:
         version: 6.1.2
       sort-package-json:
         specifier: '*'
-        version: 3.5.0
+        version: 3.6.0
       typedoc:
         specifier: ^0.28.15
         version: 0.28.15(typescript@5.9.3)
@@ -4778,6 +4778,9 @@ packages:
 
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
+
+  '@standard-schema/spec@1.1.0':
+    resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
   '@sveltejs/acorn-typescript@1.0.6':
     resolution: {integrity: sha512-4awhxtMh4cx9blePWl10HRHj8Iivtqj+2QdDCSMDzxG+XKa9+VCNupQuCuvzEhYPzZSrX+0gC+0lHA/0fFKKQQ==}
@@ -10853,16 +10856,17 @@ packages:
     resolution: {integrity: sha512-FYsjYn2dHTRb41wqnv+uEqCUvBpK3jZcTp9rbz2qDTmel7Pmdtf+i2rLaaPMRZeSVM60V3Se31GyWFpmKs4Q5Q==}
     hasBin: true
 
-  sort-package-json@2.14.0:
-    resolution: {integrity: sha512-xBRdmMjFB/KW3l51mP31dhlaiFmqkHLfWTfZAno8prb/wbDxwBPWFpxB16GZbiPbYr3wL41H8Kx22QIDWRe8WQ==}
-    hasBin: true
-
   sort-package-json@2.15.1:
     resolution: {integrity: sha512-9x9+o8krTT2saA9liI4BljNjwAbvUnWf11Wq+i/iZt8nl2UGYnf3TH5uBydE7VALmP7AGwlfszuEeL8BDyb0YA==}
     hasBin: true
 
   sort-package-json@3.5.0:
     resolution: {integrity: sha512-moY4UtptUuP5sPuu9H9dp8xHNel7eP5/Kz/7+90jTvC0IOiPH2LigtRM/aSFSxreaWoToHUVUpEV4a2tAs2oKQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  sort-package-json@3.6.0:
+    resolution: {integrity: sha512-fyJsPLhWvY7u2KsKPZn1PixbXp+1m7V8NWqU8CvgFRbMEX41Ffw1kD8n0CfJiGoaSfoAvbrqRRl/DcHO8omQOQ==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -17280,6 +17284,8 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
+  '@standard-schema/spec@1.1.0': {}
+
   '@sveltejs/acorn-typescript@1.0.6(acorn@8.15.0)':
     dependencies:
       acorn: 8.15.0
@@ -17803,7 +17809,7 @@ snapshots:
 
   '@vitest/expect@4.0.14':
     dependencies:
-      '@standard-schema/spec': 1.0.0
+      '@standard-schema/spec': 1.1.0
       '@types/chai': 5.2.3
       '@vitest/spy': 4.0.14
       '@vitest/utils': 4.0.14
@@ -24905,17 +24911,6 @@ snapshots:
       is-plain-obj: 2.1.0
       sort-object-keys: 1.1.3
 
-  sort-package-json@2.14.0:
-    dependencies:
-      detect-indent: 7.0.2
-      detect-newline: 4.0.1
-      get-stdin: 9.0.0
-      git-hooks-list: 3.2.0
-      is-plain-obj: 4.1.0
-      semver: 7.7.3
-      sort-object-keys: 1.1.3
-      tinyglobby: 0.2.15
-
   sort-package-json@2.15.1:
     dependencies:
       detect-indent: 7.0.2
@@ -24928,6 +24923,16 @@ snapshots:
       tinyglobby: 0.2.15
 
   sort-package-json@3.5.0:
+    dependencies:
+      detect-indent: 7.0.2
+      detect-newline: 4.0.1
+      git-hooks-list: 4.1.1
+      is-plain-obj: 4.1.0
+      semver: 7.7.3
+      sort-object-keys: 2.0.1
+      tinyglobby: 0.2.15
+
+  sort-package-json@3.6.0:
     dependencies:
       detect-indent: 7.0.2
       detect-newline: 4.0.1
