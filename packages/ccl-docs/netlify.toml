@@ -1,5 +1,6 @@
 [build]
   # Only trigger builds when files in this package change.
+  # Debug version - remove echo statements once confirmed working.
   ignore = """
     echo "=== Netlify Ignore Debug ===" && \
     echo "PWD: $(pwd)" && \
