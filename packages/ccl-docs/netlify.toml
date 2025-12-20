@@ -1,13 +1,4 @@
 [build]
   # Only trigger builds when files in this package change.
-  # Debug version - remove echo statements once confirmed working.
-  ignore = """
-    echo "=== Netlify Ignore Debug ===" && \
-    echo "PWD: $(pwd)" && \
-    echo "CACHED_COMMIT_REF: $CACHED_COMMIT_REF" && \
-    echo "COMMIT_REF: $COMMIT_REF" && \
-    echo "Changed files:" && \
-    git diff --name-only $CACHED_COMMIT_REF $COMMIT_REF -- packages/ccl-docs/ && \
-    echo "Running: git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- packages/ccl-docs/" && \
-    git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- packages/ccl-docs/
-  """
+  # Paths are relative to repo root (Netlify runs from /opt/build/repo).
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- packages/ccl-docs/"
