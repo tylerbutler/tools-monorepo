@@ -25,6 +25,11 @@ const fileProtocol = "file://";
 const defaultDownloadName = "dill-download";
 
 /**
+ * Regex to match leading "./" in paths
+ */
+const leadingDotSlashRegex = /^\.\//;
+
+/**
  * Known file extensions for compressed archives that dill can decompress.
  */
 export const KNOWN_ARCHIVE_EXTENSIONS: ReadonlySet<string> = new Set([
@@ -56,12 +61,19 @@ function resolveOptions(options?: DillOptions): Readonly<DillOptionsResolved> {
 			? path.dirname(options.filename)
 			: process.cwd());
 
-	return {
+	const resolved: DillOptionsResolved = {
 		extract: options?.extract ?? false,
 		downloadDir,
 		filename,
 		noFile: options?.noFile ?? false,
+		strip: options?.strip ?? 0,
 	};
+
+	if (options?.headers !== undefined) {
+		resolved.headers = options.headers;
+	}
+
+	return resolved;
 }
 
 async function readFileIntoUint8Array(filePath: string): Promise<Uint8Array> {
@@ -161,13 +173,14 @@ async function handleExtraction(
 	extension: string,
 	downloadDir: string,
 	filename: string,
+	strip = 0,
 ): Promise<void> {
 	if (extension === "gz") {
 		const decompressed = decompress(file);
 		const fileType = await fileTypeFromBuffer(decompressed);
 		if (fileType?.ext === "tar") {
 			const files = await decompressTarball(decompressed);
-			await writeTarFiles(files, downloadDir);
+			await writeTarFiles(files, downloadDir, strip);
 		} else {
 			await checkDestination(downloadDir);
 			const outputPath = path.join(
@@ -178,8 +191,23 @@ async function handleExtraction(
 		}
 	} else if (extension === "zip") {
 		const files = await decompressZip(file);
-		await writeZipFiles(files, downloadDir);
+		await writeZipFiles(files, downloadDir, strip);
 	}
+}
+
+function stripPathComponents(filePath: string, strip: number): string {
+	if (strip === 0) {
+		return filePath;
+	}
+
+	// Normalize the path by removing leading './' and splitting on '/'
+	const normalizedPath = filePath.replace(leadingDotSlashRegex, "");
+	const parts = normalizedPath.split("/").filter((p) => p !== "");
+	if (strip >= parts.length) {
+		// If we're stripping all components, skip this file
+		return "";
+	}
+	return parts.slice(strip).join("/");
 }
 
 /**
@@ -187,17 +215,22 @@ async function handleExtraction(
  *
  * @param fileUrl - The URL of the file. If the URL begins with `file://`, then the path will be treated as a file
  * system path and loaded using `node:fs.readFile`.
+ * @param headers - Optional custom headers to include in the fetch request.
  * @returns The file contents as a Uint8Array.
  */
 export async function fetchFile(
 	fileUrl: URL | string,
+	headers?: Record<string, string>,
 ): Promise<{ contents: Uint8Array; response?: Response }> {
 	if (typeof fileUrl === "string" && fileUrl.startsWith(fileProtocol)) {
 		const filePath = fileUrl.slice(fileProtocol.length);
 		return { contents: await readFileIntoUint8Array(filePath) };
 	}
 
-	const response = await fetch(fileUrl);
+	const response = await fetch(
+		fileUrl,
+		headers !== undefined ? { headers } : undefined,
+	);
 	const contents = new Uint8Array(await response.arrayBuffer());
 	return { contents, response };
 }
@@ -229,6 +262,7 @@ export async function decompressTarball(
 export async function writeTarFiles(
 	tarFiles: ParsedTarFileItem[],
 	destination: string,
+	strip = 0,
 ): Promise<void> {
 	await checkDestination(destination);
 
@@ -237,17 +271,30 @@ export async function writeTarFiles(
 		// Execute all write operations concurrently
 		// If any operation fails, Effection automatically cancels the rest
 		yield* all(
-			tarFiles.map((tarfile) =>
-				(function* () {
+			tarFiles
+				.map((tarfile) => {
 					if (tarfile.data === undefined) {
 						throw new Error("Data undefined in tarfile.");
 					}
-					const data = tarfile.data;
-					const outPath = path.join(destination, tarfile.name);
-					yield* call(() => mkdir(path.dirname(outPath), { recursive: true }));
-					yield* call(() => writeFile(outPath, data));
-				})(),
-			),
+					const strippedName = stripPathComponents(tarfile.name, strip);
+					if (strippedName === "") {
+						// Skip files that have all path components stripped
+						return null;
+					}
+					return { name: strippedName, data: tarfile.data };
+				})
+				.filter(
+					(item): item is { name: string; data: Uint8Array } => item !== null,
+				)
+				.map((item) =>
+					(function* () {
+						const outPath = path.join(destination, item.name);
+						yield* call(() =>
+							mkdir(path.dirname(outPath), { recursive: true }),
+						);
+						yield* call(() => writeFile(outPath, item.data));
+					})(),
+				),
 		);
 	});
 }
@@ -255,6 +302,7 @@ export async function writeTarFiles(
 export async function writeZipFiles(
 	zipFiles: Unzipped,
 	destination: string,
+	strip = 0,
 ): Promise<void> {
 	await checkDestination(destination);
 
@@ -265,13 +313,24 @@ export async function writeZipFiles(
 		yield* all(
 			Object.entries(zipFiles)
 				.filter(([, data]) => data.length > 0)
-				.map(([zipFilePath, data]) =>
+				.map(([zipFilePath, data]) => {
+					const strippedPath = stripPathComponents(zipFilePath, strip);
+					if (strippedPath === "") {
+						// Skip files that have all path components stripped
+						return null;
+					}
+					return { path: strippedPath, data };
+				})
+				.filter(
+					(item): item is { path: string; data: Uint8Array } => item !== null,
+				)
+				.map((item) =>
 					(function* () {
-						const outPath = path.join(destination, zipFilePath);
+						const outPath = path.join(destination, item.path);
 						yield* call(() =>
 							mkdir(path.dirname(outPath), { recursive: true }),
 						);
-						yield* call(() => writeFile(outPath, data));
+						yield* call(() => writeFile(outPath, item.data));
 					})(),
 				),
 		);
@@ -314,6 +373,8 @@ export const download = async (
 		downloadDir,
 		filename: providedFilename,
 		noFile,
+		headers,
+		strip,
 	} = resolveOptions(options);
 
 	// Validate download directory
@@ -323,7 +384,7 @@ export const download = async (
 	}
 
 	// Fetch the file
-	const { contents: file, response } = await fetchFile(url);
+	const { contents: file, response } = await fetchFile(url, headers);
 
 	// Determine file information
 	const { filename, extension } = await determineFileInfo(
@@ -352,6 +413,6 @@ export const download = async (
 	}
 
 	// Handle extraction
-	await handleExtraction(file, extension, downloadDir, filename);
+	await handleExtraction(file, extension, downloadDir, filename, strip);
 	return { data: file, writtenTo: downloadDir };
 };

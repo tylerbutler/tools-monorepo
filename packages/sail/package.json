@@ -53,7 +53,6 @@
 		"postpack": "pnpm clean:manifest",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"start": "serve ./test/data --listen 8080",
-		"test": "vitest run test",
 		"test:coverage": "vitest run test --coverage",
 		"test:integration": "vitest run test/integration",
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
@@ -169,7 +168,12 @@
 			"build": {
 				"executor": "nx:noop"
 			},
-			"ci": {}
+			"ci": {
+				"executor": "nx:noop"
+			},
+			"test": {
+				"executor": "nx:noop"
+			}
 		}
 	}
 }
