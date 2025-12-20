@@ -50,8 +50,9 @@ export interface PolicyDefinition<C = undefined> {
 // @alpha
 export interface PolicyFailure {
     autoFixable?: boolean | undefined;
-    errorMessage?: string | undefined;
+    errorMessages: string[];
     file: string;
+    manualFix?: string;
     name: PolicyName;
 }
 

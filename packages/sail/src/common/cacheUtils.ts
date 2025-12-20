@@ -2,9 +2,17 @@ import type { Logger } from "@tylerbu/cli-api";
 import type { SharedCacheManager } from "../core/sharedCache/index.js";
 
 /**
- * Logger interface with error method for CLI commands.
+ * Interface for a command that has a logger and can exit with error.
+ * This is used by functions that need both logging capability and the ability
+ * to exit the process on error.
  */
-export interface LoggerWithError extends Logger {
+export interface CommandWithLogger {
+	/** The command's logger for logging messages. */
+	logger: Logger;
+	/**
+	 * Logs an error and exits the process.
+	 * This is the OCLIF Command.error() method, not the Logger.error() method.
+	 */
 	error(message: string, options: { exit: number }): never;
 }
 
@@ -72,11 +80,11 @@ export async function displayMinimalCacheStatistics(
  * Validate that a cache directory is specified.
  */
 export function validateCacheDir(
-	logger: LoggerWithError,
+	command: CommandWithLogger,
 	cacheDir: string | undefined,
 ): asserts cacheDir is string {
 	if (!cacheDir) {
-		logger.error(
+		command.error(
 			"No cache directory specified. Use --cache-dir or set SAIL_CACHE_DIR environment variable.",
 			{ exit: 1 },
 		);
@@ -87,7 +95,7 @@ export function validateCacheDir(
  * Initialize the shared cache and handle errors.
  */
 export async function initializeCacheOrFail(
-	logger: LoggerWithError,
+	command: CommandWithLogger,
 	cacheDir: string,
 	skipCacheWrite = true,
 	verifyCacheIntegrity = false,
@@ -102,12 +110,12 @@ export async function initializeCacheOrFail(
 		process.cwd(),
 		skipCacheWrite,
 		verifyCacheIntegrity,
-		logger,
+		command.logger,
 		overwriteCache,
 	);
 
 	if (!sharedCache) {
-		logger.error("Failed to initialize cache.", { exit: 1 });
+		command.error("Failed to initialize cache.", { exit: 1 });
 	}
 
 	return sharedCache;
