@@ -106,6 +106,8 @@
 			"protobufjs",
 			"re2",
 			"sharp",
+			"tree-sitter",
+			"tree-sitter-cli",
 			"unrs-resolver",
 			"yarn"
 		],
