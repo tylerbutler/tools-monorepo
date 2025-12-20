@@ -1,4 +1,12 @@
 [build]
-  # This will ignore changes outside of the packages/ccl-docs directory,
-  # which means the builds will only be triggered by changes to the ccl-docs package.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF packages/ccl-docs"
+  # Only trigger builds when files in this package change.
+  ignore = """
+    echo "=== Netlify Ignore Debug ===" && \
+    echo "PWD: $(pwd)" && \
+    echo "CACHED_COMMIT_REF: $CACHED_COMMIT_REF" && \
+    echo "COMMIT_REF: $COMMIT_REF" && \
+    echo "Changed files:" && \
+    git diff --name-only $CACHED_COMMIT_REF $COMMIT_REF -- packages/ccl-docs/ && \
+    echo "Running: git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- packages/ccl-docs/" && \
+    git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- packages/ccl-docs/
+  """
