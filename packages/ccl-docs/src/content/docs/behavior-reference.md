@@ -300,6 +300,6 @@ const compatibleTests = allTests.filter(test => {
 
 ## See Also
 
-- [Test Suite Guide](./test-suite-guide) - Overview of the CCL test suite
-- [AI Quickstart](./ai-quickstart) - Quick reference for AI assistants
+- [Test Suite Guide](/test-suite-guide/) - Overview of the CCL test suite
+- [AI Quickstart](/ai-quickstart/) - Quick reference for AI assistants
 - [CCL Test Data Repository](https://github.com/tylerbutler/ccl-test-data) - Full test suite with filtering examples
