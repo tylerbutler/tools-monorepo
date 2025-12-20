@@ -56,6 +56,20 @@ export abstract class BaseCommand<T extends typeof Command> extends Command impl
 }
 
 // @beta
+export interface Capability<TCommand extends BaseCommand<any>, TResult = unknown> {
+    cleanup?(): Promise<void> | void;
+    initialize(command: TCommand): Promise<TResult> | TResult;
+}
+
+// @beta
+export class CapabilityWrapper<TCommand extends BaseCommand<any>, TResult> {
+    constructor(command: TCommand, capability: Capability<TCommand, TResult>);
+    cleanup(): Promise<void>;
+    get(): Promise<TResult>;
+    get isInitialized(): boolean;
+}
+
+// @beta
 export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger): Promise<{
     commit: string;
     mergeability: CommitMergeability;
@@ -89,7 +103,37 @@ export interface CommandWithContext<CONTEXT> {
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
 // @beta
+export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig> implements Capability<TCommand, ConfigContext<TConfig>> {
+    constructor(options?: ConfigCapabilityOptions<TConfig>);
+    // (undocumented)
+    initialize(command: TCommand): Promise<ConfigContext<TConfig>>;
+}
+
+// @beta
+export interface ConfigCapabilityOptions<TConfig> {
+    defaultConfig?: TConfig;
+    required?: boolean;
+    searchPaths?: string[];
+}
+
+// @beta
+export interface ConfigContext<TConfig> {
+    config: TConfig;
+    isDefault(): boolean;
+    location: string | DefaultConfigLocation | undefined;
+    reload(): Promise<ConfigContext<TConfig>>;
+}
+
+// @beta
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
+
+// @beta
+export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
+
+// @beta
+export type DefaultConfigLocation = "DEFAULT" & {
+    readonly __brand: "DefaultConfigLocation";
+};
 
 // @beta
 export interface DependencyChange {
@@ -150,6 +194,19 @@ export function getMergeBase(git: SimpleGit, reference1: string, reference2: str
 export function getPackageManagerInfo(pm: PackageManager): PackageManagerInfo;
 
 // @beta
+export class GitCapability<TCommand extends BaseCommand<any>> implements Capability<TCommand, GitContext> {
+    constructor(options?: GitCapabilityOptions);
+    // (undocumented)
+    initialize(command: TCommand): Promise<GitContext>;
+}
+
+// @beta
+export interface GitCapabilityOptions {
+    baseDir?: string;
+    required?: boolean;
+}
+
+// @beta
 export abstract class GitCommand<T extends typeof Command & {
     args: typeof GitCommand.args;
     flags: typeof GitCommand.flags;
@@ -160,6 +217,19 @@ export abstract class GitCommand<T extends typeof Command & {
     // (undocumented)
     protected repo: Repository;
     protected requiresConfig: boolean;
+}
+
+// @beta
+export interface GitContext {
+    // (undocumented)
+    getCurrentBranch(): Promise<string>;
+    git: SimpleGit;
+    // (undocumented)
+    hasUncommittedChanges(): Promise<boolean>;
+    // (undocumented)
+    isCleanWorkingTree(): Promise<boolean>;
+    isRepo: boolean;
+    repo: Repository;
 }
 
 // @beta
@@ -343,5 +413,11 @@ export interface UpdateVersionRangeResult {
     updated: string;
     warning?: string;
 }
+
+// @beta
+export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options?: ConfigCapabilityOptions<TConfig>): CapabilityWrapper<TCommand, ConfigContext<TConfig>>;
+
+// @beta
+export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options?: GitCapabilityOptions): CapabilityWrapper<TCommand, GitContext>;
 
 ```
