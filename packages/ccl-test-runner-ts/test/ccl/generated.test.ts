@@ -6,7 +6,7 @@
  * - context.skip(reason) - function not supported by implementation capabilities
  * - Regular test execution when all conditions are met
  *
- * Test data is bundled with the package - no download required!
+ * Test data must be downloaded first: npx ccl-download-tests --output ./ccl-test-data
  */
 import { describe, expect, test } from "vitest";
 import {
@@ -15,7 +15,6 @@ import {
 	type ImplementationCapabilities,
 } from "../../src/capabilities.js";
 import { getImplementedFunctions, parse } from "../../src/ccl.js";
-import { getBundledTestDataPath } from "../../src/download.js";
 import type { TestCase } from "../../src/schema-validation.js";
 import {
 	groupTestsByFunction,
@@ -24,8 +23,8 @@ import {
 } from "../../src/test-data.js";
 import { STUB_PARSER_SKIP_TESTS } from "./test-config.js";
 
-// Test data path - uses bundled data that ships with the package
-const TEST_DATA_PATH = getBundledTestDataPath();
+// Test data path - download first with: npx ccl-download-tests --output ./ccl-test-data
+const TEST_DATA_PATH = "./ccl-test-data";
 
 /**
  * Current implementation capabilities.

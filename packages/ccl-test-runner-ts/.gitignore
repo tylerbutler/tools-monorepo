@@ -5,3 +5,6 @@ esm/
 _temp/
 *.tsbuildinfo
 *.done.build.log
+
+# Downloaded test data
+ccl-test-data/

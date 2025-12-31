@@ -32,8 +32,9 @@ export {
 	parseToObject,
 } from "./ccl.js";
 
-// Test data paths
-export { getBundledTestDataPath } from "./download.js";
+// Test data download
+export type { DownloadOptions, DownloadResult } from "./download.js";
+export { downloadSchema, downloadTestData } from "./download.js";
 
 // Errors
 export { NotYetImplementedError } from "./errors.js";

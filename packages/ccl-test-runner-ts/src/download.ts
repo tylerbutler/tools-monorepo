@@ -1,11 +1,39 @@
-import { existsSync, readdirSync } from "node:fs";
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+#!/usr/bin/env node
+/**
+ * CLI tool to download CCL test data from GitHub releases.
+ *
+ * @example
+ * ```bash
+ * # Download to default location (./ccl-test-data)
+ * npx ccl-download-tests
+ *
+ * # Download to custom location
+ * npx ccl-download-tests --output ./my-test-data
+ *
+ * # Force re-download even if up to date
+ * npx ccl-download-tests --force
+ *
+ * # Download specific version
+ * npx ccl-download-tests --version v1.0.0
+ *
+ * # Download JSON schema only
+ * npx ccl-download-tests schema --output ./schemas
+ * ```
+ */
+
+import { existsSync } from "node:fs";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { defineCommand, runMain } from "citty";
+import consola from "consola";
 import { download } from "dill-cli";
 import { join } from "pathe";
 
 const GITHUB_API_BASE = "https://api.github.com";
 const REPO_OWNER = "tylerbutler";
 const REPO_NAME = "ccl-test-data";
+
+/** Default output directory for downloaded test data */
+const DEFAULT_OUTPUT_DIR = "./ccl-test-data";
 
 /**
  * GitHub release asset information.
@@ -116,8 +144,7 @@ export async function downloadTestData(
 	if (!force && existsSync(versionFile)) {
 		const existingVersion = await readFile(versionFile, "utf-8");
 		if (existingVersion.trim() === release.tag_name) {
-			// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-			console.log(`Test data already at version ${release.tag_name}`);
+			consola.info(`Test data already at version ${release.tag_name}`);
 			return {
 				version: release.tag_name,
 				filesDownloaded: 0,
@@ -126,56 +153,7 @@ export async function downloadTestData(
 		}
 	}
 
-	// Find the generated tests zip file
-	const zipAsset = release.assets.find(
-		(asset) => asset.name.includes("generated") && asset.name.endsWith(".zip"),
-	);
-
-	if (zipAsset) {
-		// Download and extract the zip file using dill
-		// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-		console.log(
-			`Downloading ${zipAsset.name} from release ${release.tag_name}...`,
-		);
-
-		// Use a temporary directory for extraction
-		const tempDir = join(outputDir, ".temp-extract");
-		await mkdir(tempDir, { recursive: true });
-
-		await download(zipAsset.browser_download_url, {
-			downloadDir: tempDir,
-			extract: true,
-		});
-
-		// Move extracted JSON files to the output directory
-		const files = readdirSync(tempDir);
-		let filesDownloaded = 0;
-		for (const file of files) {
-			if (file.endsWith(".json")) {
-				const srcPath = join(tempDir, file);
-				const destPath = join(outputDir, file);
-				await rename(srcPath, destPath);
-				filesDownloaded++;
-			}
-		}
-
-		// Clean up temp directory
-		await rm(tempDir, { recursive: true, force: true });
-
-		// Write version marker
-		await writeFile(versionFile, release.tag_name);
-
-		// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-		console.log(`Extracted ${filesDownloaded} test files to ${outputDir}`);
-
-		return {
-			version: release.tag_name,
-			filesDownloaded,
-			outputDir,
-		};
-	}
-
-	// Fallback: download individual JSON files using dill
+	// Download individual JSON files using dill
 	const jsonAssets = release.assets.filter(
 		(asset) =>
 			asset.name.endsWith(".json") &&
@@ -183,15 +161,13 @@ export async function downloadTestData(
 			asset.name !== "SHA256SUMS",
 	);
 
-	// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-	console.log(
+	consola.start(
 		`Downloading ${jsonAssets.length} test files from release ${release.tag_name}...`,
 	);
 
 	let filesDownloaded = 0;
 	for (const asset of jsonAssets) {
-		// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-		console.log(`  Downloading ${asset.name}...`);
+		consola.info(`  Downloading ${asset.name}...`);
 		await download(asset.browser_download_url, {
 			downloadDir: outputDir,
 			filename: asset.name,
@@ -202,34 +178,13 @@ export async function downloadTestData(
 	// Write version marker
 	await writeFile(versionFile, release.tag_name);
 
-	// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-	console.log(`Downloaded ${filesDownloaded} files to ${outputDir}`);
+	consola.success(`Downloaded ${filesDownloaded} files to ${outputDir}`);
 
 	return {
 		version: release.tag_name,
 		filesDownloaded,
 		outputDir,
 	};
-}
-
-/**
- * Get the path to the bundled test data that ships with this package.
- * This is the recommended way to access test data - no download required.
- */
-export function getBundledTestDataPath(): string {
-	// Resolve relative to this module's location
-	// In ESM: esm/download.js -> ../data/
-	const moduleUrl = new URL(import.meta.url);
-	const modulePath = moduleUrl.pathname;
-	return join(modulePath, "..", "..", "data");
-}
-
-/**
- * Get a local test data directory path (for development/syncing).
- * Used by the download script to update bundled data.
- */
-export function getLocalTestDataPath(): string {
-	return join(process.cwd(), "data");
 }
 
 /**
@@ -242,8 +197,7 @@ export async function downloadSchema(outputDir: string): Promise<void> {
 	// We fetch it from the release tag
 	const schemaUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${release.tag_name}/schemas/generated-format.json`;
 
-	// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-	console.log(`Downloading schema from release ${release.tag_name}...`);
+	consola.start(`Downloading schema from release ${release.tag_name}...`);
 
 	await mkdir(outputDir, { recursive: true });
 	await download(schemaUrl, {
@@ -251,49 +205,69 @@ export async function downloadSchema(outputDir: string): Promise<void> {
 		filename: "generated-format.json",
 	});
 
-	// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-	console.log(`Schema downloaded to ${outputDir}/generated-format.json`);
+	consola.success(`Schema downloaded to ${outputDir}/generated-format.json`);
 }
 
-// Run as script if executed directly
-const scriptPath = new URL(import.meta.url).pathname;
-if (process.argv[1] === scriptPath) {
-	const command = process.argv[2];
+// Schema subcommand
+const schemaCommand = defineCommand({
+	meta: {
+		name: "schema",
+		description: "Download the CCL test data JSON schema",
+	},
+	args: {
+		output: {
+			type: "string",
+			alias: "o",
+			description: "Output directory for schema file",
+			default: "./schemas",
+		},
+	},
+	async run({ args }) {
+		await downloadSchema(args.output);
+	},
+});
 
-	if (command === "schema") {
-		const outputDir = process.argv[3] || join(process.cwd(), "schemas");
-		downloadSchema(outputDir)
-			.then(() => {
-				// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-				console.log("Schema download complete");
-			})
-			.catch((error) => {
-				// biome-ignore lint/suspicious/noConsole: Intentional CLI error output
-				console.error("Schema download failed:", error);
-				process.exit(1);
-			});
-	} else {
-		const force = process.argv.includes("--force");
-		// Filter out flags from args
-		const args = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
-		// Default to local data/ directory for syncing bundled data
-		const outputDir = args[0] || getLocalTestDataPath();
+// Main command
+const main = defineCommand({
+	meta: {
+		name: "ccl-download-tests",
+		version: "0.1.0",
+		description: "Download CCL test data from GitHub releases",
+	},
+	args: {
+		output: {
+			type: "string",
+			alias: "o",
+			description: "Output directory for test data",
+			default: DEFAULT_OUTPUT_DIR,
+		},
+		force: {
+			type: "boolean",
+			alias: "f",
+			description: "Force download even if already up to date",
+			default: false,
+		},
+		version: {
+			type: "string",
+			alias: "v",
+			description: "Specific version tag to download (default: latest)",
+		},
+	},
+	subCommands: {
+		schema: schemaCommand,
+	},
+	async run({ args }) {
+		const result = await downloadTestData({
+			outputDir: args.output,
+			force: args.force,
+			version: args.version,
+		});
 
-		downloadTestData({ outputDir, force })
-			.then((result) => {
-				// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-				console.log("\nDownload complete:");
-				// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-				console.log(`  Version: ${result.version}`);
-				// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-				console.log(`  Files: ${result.filesDownloaded}`);
-				// biome-ignore lint/suspicious/noConsole: Intentional CLI output
-				console.log(`  Path: ${result.outputDir}`);
-			})
-			.catch((error) => {
-				// biome-ignore lint/suspicious/noConsole: Intentional CLI error output
-				console.error("Download failed:", error);
-				process.exit(1);
-			});
-	}
-}
+		consola.box(
+			`Version: ${result.version}\nFiles: ${result.filesDownloaded}\nPath: ${result.outputDir}`,
+		);
+	},
+});
+
+// Run CLI
+runMain(main);

@@ -28,8 +28,7 @@
 	},
 	"types": "./esm/index.d.ts",
 	"files": [
-		"esm",
-		"data"
+		"esm"
 	],
 	"scripts": {
 		"build:compile": "tsc --project ./tsconfig.json",
@@ -37,7 +36,6 @@
 		"check": "pnpm check:format",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
-		"download-tests": "node --loader ts-node/esm src/download.ts",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write --unsafe",
@@ -49,7 +47,12 @@
 		"test:runner": "vitest run test/runner",
 		"test:ui": "vitest --ui"
 	},
+	"bin": {
+		"ccl-download-tests": "./esm/download.js"
+	},
 	"dependencies": {
+		"citty": "^0.1.6",
+		"consola": "^3.4.0",
 		"dill-cli": "workspace:^",
 		"pathe": "^2.0.3"
 	},

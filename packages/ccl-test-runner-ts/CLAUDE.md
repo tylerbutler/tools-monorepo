@@ -6,10 +6,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TypeScript test runner and library for validating CCL (Categorical Configuration Language) implementations against the `ccl-test-data` JSON test suite. This package provides:
 
+- **CLI tool** - Download test data from GitHub releases
 - **Capability-based test filtering** - Run only tests compatible with your implementation
-- **Test data loading** - Load and filter tests from ccl-test-data releases
+- **Vitest integration** - Declarative API for wiring up CCL implementations
 - **Schema validation** - Type-safe test structures derived from JSON schema
 - **CCL function stubs** - Placeholder implementations for incremental development
+
+## Quick Start
+
+```bash
+# 1. Download test data
+npx ccl-download-tests --output ./ccl-test-data
+
+# 2. Create test file (see examples in test/ccl/)
+# 3. Run tests
+pnpm test
+```
 
 ## Commands
 
@@ -27,12 +39,32 @@ pnpm lint             # Check linting
 pnpm lint:fix         # Auto-fix lint issues
 pnpm format           # Format code
 
-# Test data management
-pnpm download-tests   # Download test data from ccl-test-data releases
+# Test data management (for package maintainers)
 pnpm sync-schema      # Update JSON schema from ccl-test-data
 
 # Type generation
 pnpm build:types      # Generate TypeScript types from JSON schema
+```
+
+## CLI Tool
+
+The package includes a CLI for downloading test data:
+
+```bash
+# Download test data to default location (./ccl-test-data)
+npx ccl-download-tests
+
+# Download to custom location
+npx ccl-download-tests --output ./my-test-data
+
+# Force re-download even if up to date
+npx ccl-download-tests --force
+
+# Download specific version
+npx ccl-download-tests --version v1.0.0
+
+# Download JSON schema only
+npx ccl-download-tests schema --output ./schemas
 ```
 
 ## Architecture
@@ -64,18 +96,18 @@ pnpm build:types      # Generate TypeScript types from JSON schema
 - `TestCase`, `TestFile`, `TestExpected`, `TestConflicts` types
 - Schema defined inline with `as const satisfies JSONSchema` pattern
 
-**`src/download.ts`** - Test data download from GitHub releases
+**`src/download.ts`** - CLI and API for downloading test data
 - `downloadTestData()` - Download test files from ccl-test-data releases
 - `downloadSchema()` - Download JSON schema
 - Version tracking via `.version` marker file
-- Can run as script: `node --loader ts-node/esm src/download.ts`
+- CLI built with citty and consola
 
 ### Test Data Flow
 
 ```
 ccl-test-data (GitHub releases)
-    ↓ pnpm download-tests
-.test-data/*.json (local test files)
+    ↓ npx ccl-download-tests
+./ccl-test-data/*.json (local test files)
     ↓ loadTestData({ capabilities })
 LoadedTestData (filtered tests)
     ↓ vitest
@@ -121,16 +153,22 @@ src/
     └── test-schema.ts
 
 test/
-└── ccl.test.ts       # Test suite
+├── ccl/              # CCL implementation tests
+│   ├── declarative.test.ts  # Declarative API example
+│   ├── generated.test.ts    # Programmatic API example
+│   └── test-config.ts       # Shared test configuration
+└── runner/           # Test runner unit tests
 
-.test-data/           # Downloaded test JSON files (gitignored)
+ccl-test-data/        # Downloaded test JSON files (gitignored)
 schemas/              # JSON schema from ccl-test-data
 ```
 
 ## Key Dependencies
 
+- **citty** - Lightweight CLI framework (unjs)
+- **consola** - Beautiful console logging (unjs)
 - **dill-cli** - File download/extraction (workspace dependency)
-- **pathe** - Cross-platform path handling
+- **pathe** - Cross-platform path handling (unjs)
 - **json-schema-to-ts** - Compile-time type derivation from JSON schema
 - **vitest** - Test framework
 
@@ -139,4 +177,5 @@ schemas/              # JSON schema from ccl-test-data
 - CCL functions in `src/ccl.ts` are stubs that throw `NotYetImplementedError`
 - Implementing a function: remove the throw, implement the logic, add to `getImplementedFunctions()`
 - Update capabilities in tests when implementing new functions
-- Test data is downloaded on first test run if `.test-data/` doesn't exist
+- Test data must be downloaded before running tests: `npx ccl-download-tests`
+- `testDataPath` is a required config option pointing to downloaded test data

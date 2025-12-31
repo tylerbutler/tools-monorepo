@@ -4,10 +4,13 @@
  * Provides a declarative API for CCL implementers to wire up their
  * implementations and automatically run the CCL test suite.
  *
- * Test data is bundled with the package - no download required.
+ * Test data must be downloaded first using the `ccl-download-tests` CLI.
  *
  * @example
  * ```typescript
+ * // First, download test data:
+ * // npx ccl-download-tests --output ./ccl-test-data
+ *
  * // ccl.test.ts
  * import { defineCCLTests, Behavior, Variant } from 'ccl-test-runner-ts/vitest';
  * import { parse, buildHierarchy } from './my-ccl-impl';
@@ -15,13 +18,13 @@
  * export const cclConfig = defineCCLTests({
  *   name: 'my-ccl-ts',
  *   version: '0.1.0',
+ *   testDataPath: './ccl-test-data',  // Required: path to downloaded test data
  *   functions: {
  *     parse,
  *     build_hierarchy: buildHierarchy,
  *   },
  *   behaviors: [Behavior.BooleanLenient, Behavior.CRLFNormalize],
  *   variant: Variant.ProposedBehavior,
- *   // testDataPath is optional - uses bundled data by default
  * });
  * ```
  */
@@ -38,7 +41,6 @@ import {
 	Variant,
 	validateCapabilities,
 } from "./capabilities.js";
-import { getBundledTestDataPath } from "./download.js";
 import type { TestCase } from "./schema-validation.js";
 import { loadAllTests, shouldRunTest } from "./test-data.js";
 import type {
@@ -54,19 +56,11 @@ import {
 
 // Re-export for convenience
 export { Behavior, DefaultBehaviors, Variant } from "./capabilities.js";
-export { getBundledTestDataPath } from "./download.js";
 
 // Pre-compiled regex patterns for performance
 const LEADING_TABS_REGEX = /^[\t]+/;
 const TAB_REGEX = /\t/g;
 const CRLF_REGEX = /\r\n/g;
-
-/**
- * Resolve the test data path from config, defaulting to bundled data.
- */
-function resolveTestDataPath(config: CCLTestConfig): string {
-	return config.testDataPath ?? getBundledTestDataPath();
-}
 
 /**
  * Function signatures for CCL implementations.
@@ -164,10 +158,9 @@ export interface CCLTestConfig {
 
 	/**
 	 * Path to test data directory.
-	 * Defaults to bundled test data that ships with this package.
-	 * Override to use custom test data.
+	 * Download test data first using: npx ccl-download-tests --output ./ccl-test-data
 	 */
-	testDataPath?: string;
+	testDataPath: string;
 
 	/** Tests to skip by name */
 	skipTests?: string[];
@@ -609,7 +602,7 @@ export async function getCCLTestSuiteInfo(
 		(fn) => !implementedSet.has(fn),
 	);
 
-	const data = await loadAllTests(resolveTestDataPath(config));
+	const data = await loadAllTests(config.testDataPath);
 	const context: TestContext = {
 		config,
 		capabilities,
@@ -716,7 +709,7 @@ export async function createCCLTestCases(config: CCLTestConfig): Promise<{
 		implementedFunctions,
 	};
 
-	const data = await loadAllTests(resolveTestDataPath(config));
+	const data = await loadAllTests(config.testDataPath);
 	const tests: Array<{
 		categorization: TestCategorization;
 		run: () => CCLTestResult;

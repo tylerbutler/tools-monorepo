@@ -2,11 +2,10 @@
  * Example: Declarative CCL test suite using the vitest integration.
  *
  * This demonstrates the recommended approach for CCL implementers:
- * 1. Import defineCCLTests and wire up your functions
- * 2. Export the config for potential CLI tooling
- * 3. Tests are automatically generated with proper skip/todo handling
- *
- * Test data is bundled with the package - no download or setup required!
+ * 1. Download test data: npx ccl-download-tests --output ./ccl-test-data
+ * 2. Import defineCCLTests and wire up your functions
+ * 3. Export the config for potential CLI tooling
+ * 4. Tests are automatically generated with proper skip/todo handling
  */
 import { describe, expect, test } from "vitest";
 import { parse } from "../../src/ccl.js";
@@ -25,12 +24,13 @@ import { STUB_PARSER_SKIP_TESTS } from "./test-config.js";
  *
  * This is the declarative approach - just wire up your functions
  * and the library handles test generation, skip/todo logic, etc.
- *
- * Note: testDataPath is optional - uses bundled data by default.
  */
 const cclConfig = defineCCLTests({
 	name: "ccl-test-runner-ts-example",
 	version: "0.1.0",
+
+	// Path to downloaded test data (run: npx ccl-download-tests --output ./ccl-test-data)
+	testDataPath: "./ccl-test-data",
 
 	// Wire up only the functions you've implemented
 	functions: {
@@ -55,10 +55,6 @@ const cclConfig = defineCCLTests({
 
 	// Tests to skip - these require full CCL parser features not implemented in stub
 	skipTests: STUB_PARSER_SKIP_TESTS,
-
-	// testDataPath is optional - uses bundled data by default
-	// Uncomment to use custom test data:
-	// testDataPath: './my-custom-tests',
 });
 
 describe("CCL (Declarative API)", async () => {
