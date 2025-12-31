@@ -3,6 +3,10 @@ title: AI Assistant Quickstart
 description: Quick reference for AI assistants helping users implement CCL parsers and test runners
 ---
 
+:::note[For AI Agents]
+This page is a quick reference for AI agents. For a complete implementation guide, see [AI Implementation Guide](/ai-implementation-guide). Humans looking for prompts should see [CCL Prompts](/ai-prompts).
+:::
+
 # CCL Quick Reference for AI Assistants
 
 > Single-page orientation for AI assistants. For details, follow links to specific documentation pages.
