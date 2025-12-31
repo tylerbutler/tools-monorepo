@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 import type {
+	CCLObject,
 	Entry,
 	HierarchyResult,
 	ParseResult,
-	CCLObject,
 } from "../../src/types.js";
 import {
-	isParseResult,
 	isHierarchyResult,
-	normalizeParseFunction,
+	isParseResult,
 	normalizeBuildHierarchyFunction,
+	normalizeParseFunction,
 } from "../../src/types.js";
 
 describe("Type Guard Functions", () => {

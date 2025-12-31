@@ -1,17 +1,22 @@
 import { describe, expect, it } from "vitest";
+import { createCapabilities } from "../../src/capabilities.js";
 import type { TestCase } from "../../src/schema-validation.js";
-import type { Entry, CCLObject, ParseResult, HierarchyResult } from "../../src/types.js";
+import type {
+	CCLObject,
+	Entry,
+	HierarchyResult,
+	ParseResult,
+} from "../../src/types.js";
 import {
 	Behavior,
-	DefaultBehaviors,
-	Variant,
-	defineCCLTests,
-	runCCLTest,
-	categorizeTest,
 	type CCLFunctions,
 	type CCLTestConfig,
+	categorizeTest,
+	DefaultBehaviors,
+	defineCCLTests,
+	runCCLTest,
+	Variant,
 } from "../../src/vitest.js";
-import { createCapabilities } from "../../src/capabilities.js";
 
 // Helper to create minimal test cases
 function createTestCase(overrides: Partial<TestCase>): TestCase {

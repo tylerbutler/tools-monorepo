@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
 	buildHierarchy,
+	getAllFunctions,
+	getImplementedFunctions,
 	parse,
 	parseIndented,
 	parseToObject,
-	getImplementedFunctions,
-	getAllFunctions,
 } from "../../src/ccl.js";
 import { NotYetImplementedError } from "../../src/errors.js";
 

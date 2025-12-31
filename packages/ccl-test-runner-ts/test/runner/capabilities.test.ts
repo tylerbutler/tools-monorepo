@@ -1,17 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
-	createCapabilities,
-	getStubCapabilities,
-	validateCapabilities,
-	getConflictingBehavior,
-	CapabilityValidationError,
-	Behavior,
-	Variant,
 	ALL_FUNCTIONS,
-	STANDARD_FEATURES,
 	ALL_VARIANTS,
-	DefaultBehaviors,
 	BEHAVIOR_CONFLICTS,
+	Behavior,
+	CapabilityValidationError,
+	createCapabilities,
+	DefaultBehaviors,
+	getConflictingBehavior,
+	getStubCapabilities,
+	STANDARD_FEATURES,
+	Variant,
+	validateCapabilities,
 } from "../../src/capabilities.js";
 import type { TestCase } from "../../src/schema-validation.js";
 import { shouldRunTest } from "../../src/test-data.js";

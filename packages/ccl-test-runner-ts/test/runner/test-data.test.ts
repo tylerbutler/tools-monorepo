@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createCapabilities } from "../../src/capabilities.js";
+import type { TestCase } from "../../src/schema-validation.js";
 import {
 	getTestStats,
 	groupTestsByFunction,
@@ -7,7 +8,6 @@ import {
 	loadAllTests,
 	loadTestData,
 } from "../../src/test-data.js";
-import type { TestCase } from "../../src/schema-validation.js";
 
 // Test data path - download first with: npx ccl-download-tests --output ./ccl-test-data
 const TEST_DATA_PATH = "./ccl-test-data";
