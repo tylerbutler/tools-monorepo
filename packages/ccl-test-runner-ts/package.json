@@ -41,6 +41,7 @@
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write --unsafe",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"sync-schema": "dill https://raw.githubusercontent.com/tylerbutler/ccl-test-data/main/schemas/generated-format.json -o schemas/",
 		"test": "vitest run",
 		"test:ccl": "vitest run test/ccl",
