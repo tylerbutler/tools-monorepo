@@ -24,6 +24,12 @@
 				"types": "./esm/vitest.d.ts",
 				"default": "./esm/vitest.js"
 			}
+		},
+		"./types": {
+			"import": {
+				"types": "./esm/types.d.ts",
+				"default": "./esm/types.js"
+			}
 		}
 	},
 	"types": "./esm/index.d.ts",

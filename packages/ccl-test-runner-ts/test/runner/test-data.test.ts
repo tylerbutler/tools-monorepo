@@ -3,12 +3,28 @@ import { createCapabilities } from "../../src/capabilities.js";
 import {
 	getTestStats,
 	groupTestsByFunction,
+	groupTestsBySourceTest,
 	loadAllTests,
 	loadTestData,
 } from "../../src/test-data.js";
+import type { TestCase } from "../../src/schema-validation.js";
 
 // Test data path - download first with: npx ccl-download-tests --output ./ccl-test-data
 const TEST_DATA_PATH = "./ccl-test-data";
+
+// Helper to create mock test cases for unit tests
+function createMockTestCase(overrides: Partial<TestCase>): TestCase {
+	return {
+		name: "mock_test",
+		inputs: ["key = value"],
+		validation: "parse",
+		expected: { count: 1 },
+		behaviors: [],
+		variants: [],
+		features: [],
+		...overrides,
+	};
+}
 
 describe("Test Data Loading", () => {
 	it("should load all test data from the bundled files", async () => {
@@ -50,6 +66,25 @@ describe("Test Data Loading", () => {
 		}
 	});
 
+	it("should skip tests listed in skipTests", async () => {
+		const allData = await loadAllTests(TEST_DATA_PATH);
+		const firstTestName = allData.tests[0]?.name;
+
+		if (!firstTestName) {
+			throw new Error("No tests available to skip");
+		}
+
+		const data = await loadTestData({
+			testDataPath: TEST_DATA_PATH,
+			skipTests: [firstTestName],
+		});
+
+		// The skipped test should not be in the results
+		const hasSkippedTest = data.tests.some((t) => t.name === firstTestName);
+		expect(hasSkippedTest).toBe(false);
+		expect(data.skippedCount).toBeGreaterThan(0);
+	});
+
 	it("should group tests by function", async () => {
 		const data = await loadAllTests(TEST_DATA_PATH);
 		const groups = groupTestsByFunction(data.tests);
@@ -67,5 +102,141 @@ describe("Test Data Loading", () => {
 
 		expect(stats.totalTests).toBe(data.totalCount);
 		expect(stats.testsByFunction.size).toBeGreaterThan(0);
+	});
+});
+
+describe("groupTestsByFunction", () => {
+	it("should group tests by validation function", () => {
+		const tests: TestCase[] = [
+			createMockTestCase({ name: "test1", validation: "parse" }),
+			createMockTestCase({ name: "test2", validation: "parse" }),
+			createMockTestCase({ name: "test3", validation: "build_hierarchy" }),
+		];
+
+		const groups = groupTestsByFunction(tests);
+
+		expect(groups.get("parse")).toHaveLength(2);
+		expect(groups.get("build_hierarchy")).toHaveLength(1);
+	});
+
+	it("should handle empty test array", () => {
+		const groups = groupTestsByFunction([]);
+		expect(groups.size).toBe(0);
+	});
+});
+
+describe("groupTestsBySourceTest", () => {
+	it("should group tests by source_test", () => {
+		const tests: TestCase[] = [
+			createMockTestCase({ name: "test1", source_test: "source_a" }),
+			createMockTestCase({ name: "test2", source_test: "source_a" }),
+			createMockTestCase({ name: "test3", source_test: "source_b" }),
+		];
+
+		const groups = groupTestsBySourceTest(tests);
+
+		expect(groups.get("source_a")).toHaveLength(2);
+		expect(groups.get("source_b")).toHaveLength(1);
+	});
+
+	it("should use 'unknown' for tests without source_test", () => {
+		const tests: TestCase[] = [createMockTestCase({ name: "test1" })];
+
+		const groups = groupTestsBySourceTest(tests);
+
+		expect(groups.get("unknown")).toHaveLength(1);
+	});
+});
+
+describe("getTestStats", () => {
+	it("should calculate correct statistics", () => {
+		const data = {
+			tests: [
+				createMockTestCase({
+					name: "test1",
+					validation: "parse",
+					features: ["comments"],
+					behaviors: ["boolean_strict"],
+					variants: ["proposed_behavior"],
+				}),
+				createMockTestCase({
+					name: "test2",
+					validation: "parse",
+					features: ["unicode"],
+					behaviors: ["boolean_lenient"],
+					variants: ["reference_compliant"],
+				}),
+				createMockTestCase({
+					name: "test3",
+					validation: "build_hierarchy",
+					features: [],
+					behaviors: [],
+					variants: [],
+				}),
+			],
+			fileMap: new Map(),
+			totalCount: 3,
+			skippedCount: 1,
+		};
+
+		const stats = getTestStats(data);
+
+		expect(stats.totalTests).toBe(3);
+		expect(stats.skippedTests).toBe(1);
+
+		// Check testsByFunction
+		expect(stats.testsByFunction.get("parse")).toBe(2);
+		expect(stats.testsByFunction.get("build_hierarchy")).toBe(1);
+
+		// Check testsByFeature
+		expect(stats.testsByFeature.get("comments")).toBe(1);
+		expect(stats.testsByFeature.get("unicode")).toBe(1);
+
+		// Check testsByBehavior
+		expect(stats.testsByBehavior.get("boolean_strict")).toBe(1);
+		expect(stats.testsByBehavior.get("boolean_lenient")).toBe(1);
+
+		// Check testsByVariant
+		expect(stats.testsByVariant.get("proposed_behavior")).toBe(1);
+		expect(stats.testsByVariant.get("reference_compliant")).toBe(1);
+	});
+
+	it("should handle empty test data", () => {
+		const data = {
+			tests: [],
+			fileMap: new Map(),
+			totalCount: 0,
+			skippedCount: 0,
+		};
+
+		const stats = getTestStats(data);
+
+		expect(stats.totalTests).toBe(0);
+		expect(stats.testsByFunction.size).toBe(0);
+	});
+
+	it("should count multiple features/behaviors per test", () => {
+		const data = {
+			tests: [
+				createMockTestCase({
+					name: "test1",
+					validation: "parse",
+					features: ["comments", "unicode", "multiline"],
+					behaviors: ["boolean_strict", "crlf_normalize_to_lf"],
+					variants: [],
+				}),
+			],
+			fileMap: new Map(),
+			totalCount: 1,
+			skippedCount: 0,
+		};
+
+		const stats = getTestStats(data);
+
+		expect(stats.testsByFeature.get("comments")).toBe(1);
+		expect(stats.testsByFeature.get("unicode")).toBe(1);
+		expect(stats.testsByFeature.get("multiline")).toBe(1);
+		expect(stats.testsByBehavior.get("boolean_strict")).toBe(1);
+		expect(stats.testsByBehavior.get("crlf_normalize_to_lf")).toBe(1);
 	});
 });

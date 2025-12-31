@@ -13,6 +13,18 @@ const config = mergeConfig(
 			testTimeout: 10000,
 			// Enable test reporters: verbose for standard output, skip-summary for categorized skip reasons
 			reporters: ["verbose", new SkipSummaryReporter()],
+			coverage: {
+				exclude: [
+					// CLI tool with network calls - integration-level code
+					"**/download.ts",
+					// Type definitions only, no runtime logic
+					"**/schema-validation.ts",
+					// Generated code - types only, no runtime logic
+					"**/generated/**",
+					// Re-export barrel file
+					"**/index.ts",
+				],
+			},
 		},
 	}),
 );
