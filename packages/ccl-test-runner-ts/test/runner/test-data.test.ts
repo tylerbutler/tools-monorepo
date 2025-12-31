@@ -9,8 +9,8 @@ import {
 	loadTestData,
 } from "../../src/test-data.js";
 
-// Test data path - download first with: npx ccl-download-tests --output ./ccl-test-data
-const TEST_DATA_PATH = "./ccl-test-data";
+// Test data path - use bundled data directory (checked into repo)
+const TEST_DATA_PATH = "./data";
 
 // Helper to create mock test cases for unit tests
 function createMockTestCase(overrides: Partial<TestCase>): TestCase {
