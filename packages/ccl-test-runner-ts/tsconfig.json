@@ -1,6 +1,6 @@
 {
 	"extends": "../../config/tsconfig.strict.json",
-	"include": ["src/**/*", "test/**/*", "vitest.d.ts"],
+	"include": ["src/**/*"],
 	"compilerOptions": {
 		"rootDir": ".",
 		"outDir": "./esm",
