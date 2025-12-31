@@ -98,15 +98,9 @@ database =
 - `source_tests/` → For test suite maintainers
 - `generated_tests/` → **For implementers (use this one)**
 
-### ❌ Don't Include Dotted Keys in Standard Implementation
+### ❌ Don't Include Dotted Keys in Standard Progression
 - Dotted keys are **experimental**
-- Not part of standard CCL implementation
-- Clearly mark as experimental if supporting
-
-### ❌ Don't Use Old Test Counts
-- Old: 26/56/135 tests (outdated)
-- Old: 452 assertions, 167 tests (outdated)
-- Current: 180 tests, 375 assertions
+- Not part of standard CCL implementation path
 
 ### ❌ Don't Parse Like YAML/JSON
 - CCL uses recursive fixed-point parsing
@@ -117,20 +111,6 @@ database =
 - `print` → Structure-preserving: `print(parse(x)) == x`
 - `canonical_format` → Semantic-preserving: transforms to model representation
 - See [Library Features: Formatting](/library-features#formatting-functions)
-
-## Test Suite Repository
-
-**GitHub:** https://github.com/tylerbutler/ccl-test-data
-
-**Test Files:**
-- All in `generated_tests/` directory
-- JSON format with typed fields
-- Use `.json` extension
-
-**Documentation:**
-- Implementation guides in repository README
-- Test filtering documentation available
-- Function-based implementation guide
 
 ## Quick Reference Card
 

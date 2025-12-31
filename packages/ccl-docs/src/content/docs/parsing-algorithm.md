@@ -28,53 +28,17 @@ nested =
 
 ### Parse Entries
 
-Parse entries splits lines on `=` while grouping indented lines into the current entry's value.
-
-**For each line**:
-
-1. **Lines at base indentation with `=`** → Start a new entry
-   - Split on first `=` character
-   - Trim whitespace from key
-   - Remove leading spaces from value (preserve trailing)
-
-2. **Lines indented MORE than current entry** → Continuation
-   - Append to current entry's value (preserving the full line including indentation)
-   - Prefixed with `\n`
-
-3. **Lines without `=`** → Also continuation (if indented) or skip
-
-**Examples**:
+Split lines on first `=` character:
 
 ```
 "key = value"  →  Entry {key: "key", value: "value"}
 "a = b = c"    →  Entry {key: "a", value: "b = c"}
 ```
 
-**Indentation grouping**:
-
-```ccl
-parent =
-  child = nested
-  sibling = another
-```
-
-Becomes a single entry:
-```
-Entry {key: "parent", value: "\n  child = nested\n  sibling = another"}
-```
-
-The indented lines become part of `parent`'s value because they are indented MORE than `parent`. The value still contains CCL syntax (`=`), which Build Hierarchy will recursively parse.
-
-**Key rules**:
-- Base indentation is determined by the first non-empty line
-- Lines with `indent <= base` and containing `=` start new entries
-- Lines with `indent > currentKeyIndent` are continuations
-- Both tabs and spaces count as indentation characters
-- Tabs are treated as a single space for indentation counting
-
-**Whitespace handling**:
-- Keys: fully trimmed
-- Values: leading spaces removed, trailing preserved
+**Whitespace rules**:
+- Trim whitespace from keys: `"  key  "` → `"key"`
+- Preserve value whitespace except leading: `"  value  "` → `"value  "`
+- Tab characters and spaces both count as indentation
 
 **Special keys**:
 - Empty key `= value` → list item
@@ -82,23 +46,38 @@ The indented lines become part of `parent`'s value because they are indented MOR
 
 ### Build Hierarchy
 
-Build hierarchy takes the flat entries from Parse Entries and recursively parses values that contain CCL syntax.
+Group entries by indentation level:
 
-**Algorithm**:
-1. For each entry, check if the value contains `=`
-2. If yes → recursively parse the value as CCL (back to Parse Entries)
-3. If no → the value is a terminal string (fixed point reached)
-4. Build the final nested object structure
-
-**Example**:
+```ccl
+parent =
+  child = nested
+  sibling = another
 ```
-value: "\n  child = nested\n  sibling = another"
+
+Becomes:
+```
+Entry {key: "parent", value: "child = nested\nsibling = another"}
+```
+
+**Indentation logic**:
+- Count leading whitespace characters
+- Lines with MORE indentation than previous = part of previous value
+- Lines with SAME/LESS indentation = new entry at that level
+
+### Recursive Parsing (Fixed Point)
+
+Parse values that contain CCL syntax:
+
+```
+value: "child = nested\nsibling = another"
 → Contains '=' → Parse recursively
 → Results in: {child: "nested", sibling: "another"}
 ```
 
 **Fixed-point termination**:
-- Recursion stops when values no longer contain `=`
+- Parse value as CCL
+- If parsing yields structure → recurse on nested values
+- If value has no '=' → stop (fixed point reached)
 - Prevents infinite recursion: plain strings have no structure to parse
 
 ### Complete Example
@@ -116,11 +95,11 @@ users =
 
 **Parse entries:**
 ```
-Entry {key: "database", value: "\n  host = localhost\n  port = 5432"}
-Entry {key: "users", value: "\n  = alice\n  = bob"}
+Entry {key: "database", value: "host = localhost\nport = 5432"}
+Entry {key: "users", value: "= alice\n= bob"}
 ```
 
-**Build hierarchy (recursive parsing):**
+**Recursive parsing:**
 ```
 database.value contains '=' → parse recursively:
   Entry {key: "host", value: "localhost"}

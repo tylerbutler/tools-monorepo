@@ -185,4 +185,4 @@ The [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) provides test
 - **Formatting**: `print` and `round_trip` tests verify isomorphism properties
 - **Experimental Features**: 22 assertions (10 tests) for dotted representation
 
-See [Test Suite Guide](/test-suite-guide) for function-based implementation guide.
+See [Test Suite Guide](/test-suite-guide) for progressive implementation roadmap.
