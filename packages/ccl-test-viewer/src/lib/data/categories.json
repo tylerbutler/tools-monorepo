@@ -1331,7 +1331,7 @@
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "\tvalue" }]
@@ -1345,7 +1345,7 @@
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "value" }]
@@ -1373,35 +1373,32 @@
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": {
 					"count": 1,
 					"entries": [
-						{
-							"key": "text",
-							"value": "First\n    four spaces\n\ttab preserved"
-						}
+						{ "key": "text", "value": "First\n   four spaces\n\ttab preserved" }
 					]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse_indented"],
-				"inputs": ["text = First\n    four spaces\n\ttab preserved"],
+				"inputs": ["text = First\n    four spaces\n \ttab preserved"],
 				"name": "spaces_vs_tabs_continuation_parse_indented",
 				"source_test": "spaces_vs_tabs_continuation",
 				"validation": "parse_indented",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": {
 					"count": 1,
 					"entries": [
-						{ "key": "text", "value": "First\n    four spaces\n tab preserved" }
+						{ "key": "text", "value": "First\n   four spaces\n\ttab preserved" }
 					]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse_indented"],
-				"inputs": ["text = First\n    four spaces\n\ttab preserved"],
+				"inputs": ["text = First\n    four spaces\n \ttab preserved"],
 				"name": "spaces_vs_tabs_continuation_ocaml_reference_parse_indented",
 				"source_test": "spaces_vs_tabs_continuation_ocaml_reference",
 				"validation": "parse_indented",
@@ -3993,7 +3990,7 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": {
 					"count": 1,
 					"value": "value_with_tabs =\n  text\t\twith\ttabs =\n"
@@ -5134,6 +5131,300 @@
 				"source_test": "parse_missing_path_error",
 				"validation": "get_string",
 				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "upper_true", "value": "TRUE" },
+						{ "key": "upper_false", "value": "FALSE" }
+					]
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["parse"],
+				"inputs": ["upper_true = TRUE\nupper_false = FALSE"],
+				"name": "boolean_case_sensitivity_uppercase_parse",
+				"source_test": "boolean_case_sensitivity_uppercase",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["upper_true"],
+				"behaviors": ["boolean_strict"],
+				"expected": { "count": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_bool"],
+				"inputs": ["upper_true = TRUE\nupper_false = FALSE"],
+				"name": "boolean_case_sensitivity_uppercase_get_bool",
+				"source_test": "boolean_case_sensitivity_uppercase",
+				"validation": "get_bool",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "mixed_true", "value": "True" },
+						{ "key": "mixed_false", "value": "False" }
+					]
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["parse"],
+				"inputs": ["mixed_true = True\nmixed_false = False"],
+				"name": "boolean_case_sensitivity_mixed_parse",
+				"source_test": "boolean_case_sensitivity_mixed",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["mixed_true"],
+				"behaviors": ["boolean_strict"],
+				"expected": { "count": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_bool"],
+				"inputs": ["mixed_true = True\nmixed_false = False"],
+				"name": "boolean_case_sensitivity_mixed_get_bool",
+				"source_test": "boolean_case_sensitivity_mixed",
+				"validation": "get_bool",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "upper_yes", "value": "YES" },
+						{ "key": "upper_no", "value": "NO" }
+					]
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["parse"],
+				"inputs": ["upper_yes = YES\nupper_no = NO"],
+				"name": "boolean_lenient_uppercase_yes_no_parse",
+				"source_test": "boolean_lenient_uppercase_yes_no",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["upper_yes"],
+				"behaviors": ["boolean_lenient"],
+				"expected": { "count": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_bool"],
+				"inputs": ["upper_yes = YES\nupper_no = NO"],
+				"name": "boolean_lenient_uppercase_yes_no_get_bool",
+				"source_test": "boolean_lenient_uppercase_yes_no",
+				"validation": "get_bool",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "one", "value": "1" },
+						{ "key": "zero", "value": "0" }
+					]
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["parse"],
+				"inputs": ["one = 1\nzero = 0"],
+				"name": "boolean_numeric_one_zero_strict_parse",
+				"source_test": "boolean_numeric_one_zero_strict",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["one"],
+				"behaviors": [],
+				"expected": { "count": 1, "value": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_int"],
+				"inputs": ["one = 1\nzero = 0"],
+				"name": "boolean_numeric_one_zero_strict_get_int",
+				"source_test": "boolean_numeric_one_zero_strict",
+				"validation": "get_int",
+				"variants": []
+			},
+			{
+				"args": ["one"],
+				"behaviors": ["boolean_strict"],
+				"expected": { "count": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_bool"],
+				"inputs": ["one = 1\nzero = 0"],
+				"name": "boolean_numeric_one_zero_strict_get_bool",
+				"source_test": "boolean_numeric_one_zero_strict",
+				"validation": "get_bool",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "padded", "value": "true" }]
+				},
+				"features": ["optional_typed_accessors", "whitespace"],
+				"functions": ["parse"],
+				"inputs": ["padded =   true   "],
+				"name": "boolean_with_whitespace_parse",
+				"source_test": "boolean_with_whitespace",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["padded"],
+				"behaviors": ["boolean_strict"],
+				"expected": { "count": 1, "value": true },
+				"features": ["optional_typed_accessors", "whitespace"],
+				"functions": ["get_bool"],
+				"inputs": ["padded =   true   "],
+				"name": "boolean_with_whitespace_get_bool",
+				"source_test": "boolean_with_whitespace",
+				"validation": "get_bool",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"object": {
+						"config": {
+							"debug": "true",
+							"experimental": "yes",
+							"verbose": "false"
+						}
+					}
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["build_hierarchy"],
+				"inputs": [
+					"config =\n  debug = true\n  verbose = false\n  experimental = yes"
+				],
+				"name": "boolean_nested_object_build_hierarchy",
+				"source_test": "boolean_nested_object",
+				"validation": "build_hierarchy",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "flag", "value": "true" }]
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["parse"],
+				"inputs": ["flag = true"],
+				"name": "type_mismatch_get_int_on_bool_parse",
+				"source_test": "type_mismatch_get_int_on_bool",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["flag"],
+				"behaviors": [],
+				"expected": { "count": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_int"],
+				"inputs": ["flag = true"],
+				"name": "type_mismatch_get_int_on_bool_get_int",
+				"source_test": "type_mismatch_get_int_on_bool",
+				"validation": "get_int",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "number", "value": "42" }]
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["parse"],
+				"inputs": ["number = 42"],
+				"name": "type_mismatch_get_bool_on_int_parse",
+				"source_test": "type_mismatch_get_bool_on_int",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["number"],
+				"behaviors": ["boolean_strict"],
+				"expected": { "count": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_bool"],
+				"inputs": ["number = 42"],
+				"name": "type_mismatch_get_bool_on_int_get_bool",
+				"source_test": "type_mismatch_get_bool_on_int",
+				"validation": "get_bool",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "flag", "value": "false" }]
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["parse"],
+				"inputs": ["flag = false"],
+				"name": "type_mismatch_get_float_on_bool_parse",
+				"source_test": "type_mismatch_get_float_on_bool",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["flag"],
+				"behaviors": [],
+				"expected": { "count": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_float"],
+				"inputs": ["flag = false"],
+				"name": "type_mismatch_get_float_on_bool_get_float",
+				"source_test": "type_mismatch_get_float_on_bool",
+				"validation": "get_float",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"object": { "config": { "count": "abc", "name": "test" } }
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["build_hierarchy"],
+				"inputs": ["config =\n  name = test\n  count = abc"],
+				"name": "type_mismatch_nested_path_build_hierarchy",
+				"source_test": "type_mismatch_nested_path",
+				"validation": "build_hierarchy",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "empty", "value": "" }]
+				},
+				"features": ["optional_typed_accessors"],
+				"functions": ["parse"],
+				"inputs": ["empty ="],
+				"name": "boolean_empty_value_error_parse",
+				"source_test": "boolean_empty_value_error",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"args": ["empty"],
+				"behaviors": ["boolean_strict"],
+				"expected": { "count": 1 },
+				"features": ["optional_typed_accessors"],
+				"functions": ["get_bool"],
+				"inputs": ["empty ="],
+				"name": "boolean_empty_value_error_get_bool",
+				"source_test": "boolean_empty_value_error",
+				"validation": "get_bool",
+				"variants": []
 			}
 		],
 		"file": "api_typed_access.json"
@@ -5143,171 +5434,7 @@
 		"description": "whitespace behaviors functionality",
 		"tests": [
 			{
-				"behaviors": ["strict_spacing", "loose_spacing"],
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "key", "value": "value" }]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key = value"],
-				"name": "spacing_strict_standard_format_parse",
-				"source_test": "spacing_strict_standard_format",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": ["loose_spacing"],
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "key", "value": "value" }]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key=value"],
-				"name": "spacing_loose_no_spaces_parse",
-				"source_test": "spacing_loose_no_spaces",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": ["loose_spacing"],
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "key", "value": "value" }]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key =value"],
-				"name": "spacing_loose_left_space_only_parse",
-				"source_test": "spacing_loose_left_space_only",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": ["loose_spacing"],
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "key", "value": "value" }]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key= value"],
-				"name": "spacing_loose_right_space_only_parse",
-				"source_test": "spacing_loose_right_space_only",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": ["loose_spacing"],
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "key", "value": "value" }]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key  =  value"],
-				"name": "spacing_loose_multiple_spaces_parse",
-				"source_test": "spacing_loose_multiple_spaces",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": ["loose_spacing"],
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "key", "value": "value" }]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key\t=\tvalue"],
-				"name": "spacing_loose_tabs_around_equals_parse",
-				"source_test": "spacing_loose_tabs_around_equals",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": ["loose_spacing"],
-				"expected": {
-					"count": 1,
-					"entries": [{ "key": "key", "value": "value" }]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key \t = \t value"],
-				"name": "spacing_loose_mixed_whitespace_parse",
-				"source_test": "spacing_loose_mixed_whitespace",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": ["loose_spacing"],
-				"expected": {
-					"count": 4,
-					"entries": [
-						{ "key": "key1", "value": "val1" },
-						{ "key": "key2", "value": "val2" },
-						{ "key": "key3", "value": "val3" },
-						{ "key": "key4", "value": "val4" }
-					]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key1=val1\nkey2 = val2\nkey3  =  val3\nkey4\t=\tval4"],
-				"name": "spacing_loose_multiline_various_parse",
-				"source_test": "spacing_loose_multiline_various",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": [],
-				"expected": {
-					"count": 1,
-					"object": {
-						"key1": "val1",
-						"key2": "val2",
-						"key3": "val3",
-						"key4": "val4"
-					}
-				},
-				"features": ["whitespace"],
-				"functions": ["build_hierarchy"],
-				"inputs": ["key1=val1\nkey2 = val2\nkey3  =  val3\nkey4\t=\tval4"],
-				"name": "spacing_loose_multiline_various_build_hierarchy",
-				"source_test": "spacing_loose_multiline_various",
-				"validation": "build_hierarchy",
-				"variants": []
-			},
-			{
-				"behaviors": ["loose_spacing"],
-				"expected": {
-					"count": 2,
-					"entries": [
-						{ "key": "key1", "value": "val1" },
-						{ "key": "key2", "value": "val2" }
-					]
-				},
-				"features": ["whitespace"],
-				"functions": ["parse"],
-				"inputs": ["key1=val1\nkey2  =  val2"],
-				"name": "spacing_canonical_format_normalizes_loose_parse",
-				"source_test": "spacing_canonical_format_normalizes_loose",
-				"validation": "parse",
-				"variants": []
-			},
-			{
-				"behaviors": [],
-				"expected": { "count": 1, "value": "key1 = val1\nkey2 = val2" },
-				"features": ["whitespace"],
-				"functions": ["canonical_format"],
-				"inputs": ["key1=val1\nkey2  =  val2"],
-				"name": "spacing_canonical_format_normalizes_loose_canonical_format",
-				"source_test": "spacing_canonical_format_normalizes_loose",
-				"validation": "canonical_format",
-				"variants": []
-			},
-			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "\tvalue\twith\ttabs" }]
@@ -5315,19 +5442,19 @@
 				"features": ["whitespace"],
 				"functions": ["parse"],
 				"inputs": ["key = \tvalue\twith\ttabs"],
-				"name": "tabs_preserve_in_value_parse",
-				"source_test": "tabs_preserve_in_value",
+				"name": "tabs_as_content_in_value_parse",
+				"source_test": "tabs_as_content_in_value",
 				"validation": "parse",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": { "count": 1, "object": { "key": "\tvalue\twith\ttabs" } },
 				"features": ["whitespace"],
 				"functions": ["build_hierarchy"],
 				"inputs": ["key = \tvalue\twith\ttabs"],
-				"name": "tabs_preserve_in_value_build_hierarchy",
-				"source_test": "tabs_preserve_in_value",
+				"name": "tabs_as_content_in_value_build_hierarchy",
+				"source_test": "tabs_as_content_in_value",
 				"validation": "build_hierarchy",
 				"variants": []
 			},
@@ -5338,13 +5465,13 @@
 				"features": ["whitespace"],
 				"functions": ["get_string"],
 				"inputs": ["key = \tvalue\twith\ttabs"],
-				"name": "tabs_preserve_in_value_get_string",
-				"source_test": "tabs_preserve_in_value",
+				"name": "tabs_as_content_in_value_get_string",
+				"source_test": "tabs_as_content_in_value",
 				"validation": "get_string",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": {
 					"count": 1,
 					"entries": [{ "key": "key", "value": "\tindented" }]
@@ -5352,8 +5479,8 @@
 				"features": ["whitespace"],
 				"functions": ["parse"],
 				"inputs": ["key = \tindented"],
-				"name": "tabs_preserve_leading_tab_parse",
-				"source_test": "tabs_preserve_leading_tab",
+				"name": "tabs_as_content_leading_tab_parse",
+				"source_test": "tabs_as_content_leading_tab",
 				"validation": "parse",
 				"variants": []
 			},
@@ -5364,173 +5491,367 @@
 				"features": ["whitespace"],
 				"functions": ["get_string"],
 				"inputs": ["key = \tindented"],
-				"name": "tabs_preserve_leading_tab_get_string",
-				"source_test": "tabs_preserve_leading_tab",
+				"name": "tabs_as_content_leading_tab_get_string",
+				"source_test": "tabs_as_content_leading_tab",
 				"validation": "get_string",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_to_spaces"],
+				"behaviors": ["tabs_as_whitespace"],
 				"expected": {
 					"count": 1,
-					"entries": [{ "key": "key", "value": "  value  with  tabs" }]
+					"entries": [{ "key": "key", "value": "value with tabs" }]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
 				"inputs": ["key = \tvalue\twith\ttabs"],
-				"name": "tabs_to_spaces_in_value_parse",
-				"source_test": "tabs_to_spaces_in_value",
+				"name": "tabs_as_whitespace_in_value_parse",
+				"source_test": "tabs_as_whitespace_in_value",
 				"validation": "parse",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_to_spaces"],
-				"expected": { "count": 1, "object": { "key": "  value  with  tabs" } },
+				"behaviors": ["tabs_as_whitespace"],
+				"expected": { "count": 1, "object": { "key": "value with tabs" } },
 				"features": ["whitespace"],
 				"functions": ["build_hierarchy"],
 				"inputs": ["key = \tvalue\twith\ttabs"],
-				"name": "tabs_to_spaces_in_value_build_hierarchy",
-				"source_test": "tabs_to_spaces_in_value",
+				"name": "tabs_as_whitespace_in_value_build_hierarchy",
+				"source_test": "tabs_as_whitespace_in_value",
 				"validation": "build_hierarchy",
 				"variants": []
 			},
 			{
 				"args": ["key"],
 				"behaviors": [],
-				"expected": { "count": 1, "value": "  value  with  tabs" },
+				"expected": { "count": 1, "value": "value with tabs" },
 				"features": ["whitespace"],
 				"functions": ["get_string"],
 				"inputs": ["key = \tvalue\twith\ttabs"],
-				"name": "tabs_to_spaces_in_value_get_string",
-				"source_test": "tabs_to_spaces_in_value",
+				"name": "tabs_as_whitespace_in_value_get_string",
+				"source_test": "tabs_as_whitespace_in_value",
 				"validation": "get_string",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_to_spaces"],
+				"behaviors": ["tabs_as_whitespace"],
 				"expected": {
 					"count": 1,
-					"entries": [{ "key": "key", "value": "  indented" }]
+					"entries": [{ "key": "key", "value": "indented" }]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
 				"inputs": ["key = \tindented"],
-				"name": "tabs_to_spaces_leading_tab_parse",
-				"source_test": "tabs_to_spaces_leading_tab",
+				"name": "tabs_as_whitespace_leading_tab_parse",
+				"source_test": "tabs_as_whitespace_leading_tab",
 				"validation": "parse",
 				"variants": []
 			},
 			{
 				"args": ["key"],
 				"behaviors": [],
-				"expected": { "count": 1, "value": "  indented" },
+				"expected": { "count": 1, "value": "indented" },
 				"features": ["whitespace"],
 				"functions": ["get_string"],
 				"inputs": ["key = \tindented"],
-				"name": "tabs_to_spaces_leading_tab_get_string",
-				"source_test": "tabs_to_spaces_leading_tab",
+				"name": "tabs_as_whitespace_leading_tab_get_string",
+				"source_test": "tabs_as_whitespace_leading_tab",
 				"validation": "get_string",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_to_spaces"],
+				"behaviors": ["tabs_as_whitespace"],
 				"expected": {
 					"count": 1,
-					"entries": [{ "key": "key", "value": "      three_tabs" }]
+					"entries": [{ "key": "key", "value": "three_tabs" }]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
 				"inputs": ["key = \t\t\tthree_tabs"],
-				"name": "tabs_to_spaces_multiple_tabs_parse",
-				"source_test": "tabs_to_spaces_multiple_tabs",
+				"name": "tabs_as_whitespace_multiple_tabs_parse",
+				"source_test": "tabs_as_whitespace_multiple_tabs",
 				"validation": "parse",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_content"],
 				"expected": {
 					"count": 1,
 					"entries": [
 						{
 							"key": "section",
-							"value": "\n\t\tindented_with_tabs\n\t\tanother_line"
+							"value": "\n \tindented_with_tabs\n \tanother_line"
 						}
 					]
 				},
 				"features": ["whitespace", "multiline"],
 				"functions": ["parse"],
-				"inputs": ["section =\n\t\tindented_with_tabs\n\t\tanother_line"],
-				"name": "tabs_preserve_multiline_parse",
-				"source_test": "tabs_preserve_multiline",
+				"inputs": ["section =\n \tindented_with_tabs\n \tanother_line"],
+				"name": "tabs_as_content_multiline_parse",
+				"source_test": "tabs_as_content_multiline",
 				"validation": "parse",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_to_spaces"],
+				"behaviors": ["tabs_as_whitespace"],
 				"expected": {
 					"count": 1,
 					"entries": [
-						{
-							"key": "section",
-							"value": "\n    indented_with_tabs\n    another_line"
-						}
+						{ "key": "section", "value": "\nindented_with_tabs\nanother_line" }
 					]
 				},
 				"features": ["whitespace", "multiline"],
 				"functions": ["parse"],
 				"inputs": ["section =\n\t\tindented_with_tabs\n\t\tanother_line"],
-				"name": "tabs_to_spaces_multiline_parse",
-				"source_test": "tabs_to_spaces_multiline",
+				"name": "tabs_as_whitespace_multiline_parse",
+				"source_test": "tabs_as_whitespace_multiline",
 				"validation": "parse",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_preserve"],
+				"behaviors": ["tabs_as_whitespace"],
+				"expected": {
+					"count": 1,
+					"entries": [
+						{ "key": "section", "value": "\nmixed_indent\nanother_line" }
+					]
+				},
+				"features": ["whitespace", "multiline"],
+				"functions": ["parse"],
+				"inputs": ["section =\n \tmixed_indent\n\t another_line"],
+				"name": "tabs_as_whitespace_mixed_indent_parse",
+				"source_test": "tabs_as_whitespace_mixed_indent",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_as_content"],
 				"expected": { "count": 1, "value": "key = \tvalue" },
 				"features": ["whitespace"],
 				"functions": ["canonical_format"],
 				"inputs": ["key = \tvalue"],
-				"name": "tabs_canonical_format_preserve_canonical_format",
-				"source_test": "tabs_canonical_format_preserve",
+				"name": "tabs_canonical_format_as_content_canonical_format",
+				"source_test": "tabs_canonical_format_as_content",
 				"validation": "canonical_format",
 				"variants": []
 			},
 			{
-				"behaviors": ["tabs_to_spaces"],
-				"expected": { "count": 1, "value": "key =   value" },
+				"behaviors": ["tabs_as_whitespace"],
+				"expected": { "count": 1, "value": "key = value" },
 				"features": ["whitespace"],
 				"functions": ["canonical_format"],
 				"inputs": ["key = \tvalue"],
-				"name": "tabs_canonical_format_to_spaces_canonical_format",
-				"source_test": "tabs_canonical_format_to_spaces",
+				"name": "tabs_canonical_format_as_whitespace_canonical_format",
+				"source_test": "tabs_canonical_format_as_whitespace",
 				"validation": "canonical_format",
 				"variants": []
 			},
 			{
-				"behaviors": ["loose_spacing", "tabs_preserve"],
+				"behaviors": ["tabs_as_whitespace", "indent_spaces"],
+				"expected": { "count": 1, "value": "section =\n  indented\n  another" },
+				"features": ["whitespace", "multiline"],
+				"functions": ["canonical_format"],
+				"inputs": ["section =\n\t\tindented\n\t\tanother"],
+				"name": "tabs_as_whitespace_multiline_print_canonical_format",
+				"source_test": "tabs_as_whitespace_multiline_print",
+				"validation": "canonical_format",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": { "count": 1, "value": "key = value with tabs" },
+				"features": ["whitespace"],
+				"functions": ["round_trip"],
+				"inputs": ["key = \tvalue\twith\ttabs"],
+				"name": "tabs_as_whitespace_round_trip_round_trip",
+				"source_test": "tabs_as_whitespace_round_trip",
+				"validation": "round_trip",
+				"variants": []
+			},
+			{
+				"behaviors": ["indent_spaces"],
 				"expected": {
 					"count": 1,
-					"entries": [{ "key": "key", "value": "\tvalue\twith\ttabs" }]
+					"value": "package =\n  = brew\n  = scoop\n  = nix"
+				},
+				"features": ["empty_keys", "whitespace"],
+				"functions": ["canonical_format"],
+				"inputs": ["package =\n  = brew\n  = scoop\n  = nix"],
+				"name": "nested_bare_list_indentation_canonical_format",
+				"source_test": "nested_bare_list_indentation",
+				"validation": "canonical_format",
+				"variants": []
+			},
+			{
+				"behaviors": ["indent_spaces"],
+				"expected": {
+					"count": 1,
+					"value": "app =\n  = item1\n  = item2\n  config =\n    = nested1\n    = nested2\n    deep =\n      = level3a\n      = level3b"
+				},
+				"features": ["empty_keys", "whitespace"],
+				"functions": ["canonical_format"],
+				"inputs": [
+					"app =\n  = item1\n  config =\n    = nested1\n    = nested2\n    deep =\n      = level3a\n      = level3b\n  = item2"
+				],
+				"name": "deeply_nested_bare_list_indentation_canonical_format",
+				"source_test": "deeply_nested_bare_list_indentation",
+				"validation": "canonical_format",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_normalize_to_lf"],
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "key1", "value": "value1" },
+						{ "key": "key2", "value": "value2" }
+					]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"inputs": ["key\t=\t\tvalue\twith\ttabs"],
-				"name": "spacing_and_tabs_combined_loose_preserve_parse",
-				"source_test": "spacing_and_tabs_combined_loose_preserve",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
+				"name": "crlf_normalize_to_lf_basic_parse",
+				"source_test": "crlf_normalize_to_lf_basic",
 				"validation": "parse",
 				"variants": []
 			},
 			{
-				"behaviors": ["loose_spacing", "tabs_to_spaces"],
+				"behaviors": [],
 				"expected": {
 					"count": 1,
-					"entries": [{ "key": "key", "value": "  value  with  tabs" }]
+					"object": { "key1": "value1", "key2": "value2" }
+				},
+				"features": ["whitespace"],
+				"functions": ["build_hierarchy"],
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
+				"name": "crlf_normalize_to_lf_basic_build_hierarchy",
+				"source_test": "crlf_normalize_to_lf_basic",
+				"validation": "build_hierarchy",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_preserve_literal"],
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "key1", "value": "value1\r" },
+						{ "key": "key2", "value": "value2\r" }
+					]
 				},
 				"features": ["whitespace"],
 				"functions": ["parse"],
-				"inputs": ["key\t=\t\tvalue\twith\ttabs"],
-				"name": "spacing_and_tabs_combined_loose_to_spaces_parse",
-				"source_test": "spacing_and_tabs_combined_loose_to_spaces",
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
+				"name": "crlf_preserve_literal_basic_parse",
+				"source_test": "crlf_preserve_literal_basic",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_normalize_to_lf"],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "multiline", "value": "\n  line1\n  line2" }]
+				},
+				"features": ["whitespace", "multiline"],
+				"functions": ["parse"],
+				"inputs": ["multiline =\r\n  line1\r\n  line2"],
+				"name": "crlf_normalize_multiline_value_parse",
+				"source_test": "crlf_normalize_multiline_value",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_preserve_literal"],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "multiline", "value": "\r\n  line1\r\n  line2" }]
+				},
+				"features": ["whitespace", "multiline"],
+				"functions": ["parse"],
+				"inputs": ["multiline =\r\n  line1\r\n  line2"],
+				"name": "crlf_preserve_multiline_value_parse",
+				"source_test": "crlf_preserve_multiline_value",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_normalize_to_lf"],
+				"expected": {
+					"count": 3,
+					"entries": [
+						{ "key": "lf_line", "value": "value1" },
+						{ "key": "crlf_line", "value": "value2" },
+						{ "key": "lf_again", "value": "value3" }
+					]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": [
+					"lf_line = value1\ncrlf_line = value2\r\nlf_again = value3\n"
+				],
+				"name": "crlf_mixed_line_endings_parse",
+				"source_test": "crlf_mixed_line_endings",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_normalize_to_lf"],
+				"expected": {
+					"count": 1,
+					"entries": [
+						{ "key": "config", "value": "\n  host = localhost\n  port = 8080" }
+					]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["config =\r\n  host = localhost\r\n  port = 8080"],
+				"name": "crlf_nested_structure_parse",
+				"source_test": "crlf_nested_structure",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": [],
+				"expected": {
+					"count": 1,
+					"object": { "config": { "host": "localhost", "port": "8080" } }
+				},
+				"features": ["whitespace"],
+				"functions": ["build_hierarchy"],
+				"inputs": ["config =\r\n  host = localhost\r\n  port = 8080"],
+				"name": "crlf_nested_structure_build_hierarchy",
+				"source_test": "crlf_nested_structure",
+				"validation": "build_hierarchy",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_as_whitespace", "crlf_normalize_to_lf"],
+				"expected": {
+					"count": 1,
+					"entries": [{ "key": "key", "value": "value with tabs" }]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key = \tvalue\twith\ttabs\r\n"],
+				"name": "behavior_combo_tabs_and_crlf_parse",
+				"source_test": "behavior_combo_tabs_and_crlf",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["tabs_as_content", "crlf_normalize_to_lf"],
+				"expected": {
+					"count": 2,
+					"entries": [
+						{ "key": "key1", "value": "\tvalue1" },
+						{ "key": "key2", "value": "\tvalue2" }
+					]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["key1 = \tvalue1\r\nkey2 = \tvalue2\r\n"],
+				"name": "behavior_combo_content_tabs_crlf_parse",
+				"source_test": "behavior_combo_content_tabs_crlf",
 				"validation": "parse",
 				"variants": []
 			}
