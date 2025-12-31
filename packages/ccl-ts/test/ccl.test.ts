@@ -12,6 +12,7 @@
 import {
 	Behavior,
 	type CCLFunctions,
+	type CCLTestResult,
 	createCCLTestCases,
 	defineCCLTests,
 	getCCLTestSuiteInfo,
@@ -19,6 +20,33 @@ import {
 } from "ccl-test-runner-ts/vitest";
 import { describe, expect, test } from "vitest";
 import { parse } from "../src/ccl.js";
+
+/**
+ * Run assertions for a test result based on expected values.
+ * Extracted to reduce cognitive complexity of the main test loop.
+ */
+function runAssertions(result: CCLTestResult): void {
+	const { expected } = result.testCase;
+
+	// Check count if expected
+	if (expected.count !== undefined) {
+		const actualCount = Array.isArray(result.output) ? result.output.length : 0;
+		// biome-ignore lint/suspicious/noMisplacedAssertion: helper function called from within test()
+		expect(actualCount).toBe(expected.count);
+	}
+
+	// Check entries if expected
+	if (expected.entries !== undefined) {
+		// biome-ignore lint/suspicious/noMisplacedAssertion: helper function called from within test()
+		expect(result.output).toEqual(expected.entries);
+	}
+
+	// Check object if expected
+	if (expected.object !== undefined) {
+		// biome-ignore lint/suspicious/noMisplacedAssertion: helper function called from within test()
+		expect(result.output).toEqual(expected.object);
+	}
+}
 
 /**
  * Define CCL test configuration.
@@ -98,24 +126,7 @@ describe("CCL", async () => {
 					case "run":
 						// All requirements met - run the test
 						test(testCase.name, () => {
-							const result = run();
-
-							// Check count if expected
-							if (result.testCase.expected.count !== undefined) {
-								expect(
-									Array.isArray(result.output) ? result.output.length : 0,
-								).toBe(result.testCase.expected.count);
-							}
-
-							// Check entries if expected
-							if (result.testCase.expected.entries !== undefined) {
-								expect(result.output).toEqual(result.testCase.expected.entries);
-							}
-
-							// Check object if expected
-							if (result.testCase.expected.object !== undefined) {
-								expect(result.output).toEqual(result.testCase.expected.object);
-							}
+							runAssertions(run());
 						});
 						break;
 

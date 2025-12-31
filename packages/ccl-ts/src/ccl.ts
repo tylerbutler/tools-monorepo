@@ -24,7 +24,7 @@ import type { Entry } from "ccl-test-runner-ts/types";
  * // [{ key: "name", value: "Alice" }, { key: "age", value: "42" }]
  * ```
  */
-export function parse(text: string): Entry[] {
+export function parse(_text: string): Entry[] {
 	// TODO: Implement CCL parsing algorithm
 	// For now, return empty array as stub
 	return [];

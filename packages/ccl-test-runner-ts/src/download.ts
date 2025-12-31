@@ -270,4 +270,4 @@ const main = defineCommand({
 });
 
 // Run CLI
-runMain(main);
+runMain(main).catch(consola.error);
