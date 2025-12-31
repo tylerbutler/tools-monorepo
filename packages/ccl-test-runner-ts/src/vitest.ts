@@ -381,7 +381,7 @@ function handleParseValidation(
 		output: processedEntries,
 		expected: testCase.expected.entries ?? { count: testCase.expected.count },
 		passed,
-		error,
+		...(error !== undefined && { error }),
 	};
 }
 
@@ -457,7 +457,7 @@ function handleBuildHierarchyValidation(
 		output: hierarchyResult.object,
 		expected: testCase.expected.object,
 		passed,
-		error: passed ? undefined : "Object mismatch",
+		...(passed ? {} : { error: "Object mismatch" }),
 	};
 }
 
