@@ -27,6 +27,8 @@ ignore:
   - "**/index.ts"
   - "**/test/**"
   - "**/tests/**"
+  # Exclude from overall project stats but still report via component/flag
+  - "packages/ccl-test-viewer/**"
 
 coverage:
   status:

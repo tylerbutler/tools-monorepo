@@ -96,6 +96,7 @@ export default defineConfig({
 						{ slug: "parsing-algorithm" },
 						{ slug: "library-features" },
 						{ slug: "test-suite-guide" },
+						{ slug: "behavior-reference" },
 					],
 				},
 				{

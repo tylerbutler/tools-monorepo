@@ -70,7 +70,7 @@ The value `mode = sandbox\ncapacity = 2` is **recursively parsed as CCL**.
 
 **Unicode**: UTF-8 supported. Keys and values can contain any Unicode characters.
 
-**CRLF vs LF**: Line endings normalized to LF (`\n`) before parsing.
+**CRLF vs LF**: CCL treats only LF (`\n`) as a newline; CR characters are preserved as content by default. Implementations may optionally normalize CRLF to LF with the `crlf_normalize_to_lf` behavior.
 
 **Whitespace-only values**: Preserved if present after `=`.
 
