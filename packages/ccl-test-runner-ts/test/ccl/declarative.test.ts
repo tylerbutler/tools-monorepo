@@ -18,6 +18,7 @@ import {
 	getCCLTestSuiteInfo,
 	Variant,
 } from "../../src/vitest.js";
+import { STUB_PARSER_SKIP_TESTS } from "./test-config.js";
 
 /**
  * Define CCL test configuration.
@@ -51,6 +52,9 @@ const cclConfig = defineCCLTests({
 
 	// Explicit variant choice
 	variant: Variant.ProposedBehavior,
+
+	// Tests to skip - these require full CCL parser features not implemented in stub
+	skipTests: STUB_PARSER_SKIP_TESTS,
 
 	// testDataPath is optional - uses bundled data by default
 	// Uncomment to use custom test data:

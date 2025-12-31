@@ -206,6 +206,7 @@ function checkConflicts(
  * Check if a test should run based on implementation capabilities.
  *
  * Filtering logic:
+ * 0. SkipTests: Explicitly skipped tests are excluded
  * 1. Functions: ALL required functions must be supported by the implementation
  * 2. Features: ALL required features must be supported by the implementation
  * 3. Behaviors: If a test requires specific behaviors, implementation must match
@@ -216,6 +217,14 @@ export function shouldRunTest(
 	test: TestCase,
 	capabilities: ImplementationCapabilities,
 ): TestFilterResult {
+	// Check explicit skip list first
+	if (capabilities.skipTests?.includes(test.name)) {
+		return {
+			shouldRun: false,
+			skipReason: "Explicitly skipped via skipTests",
+		};
+	}
+
 	// Check each requirement in order
 	const checks = [
 		checkFunctions,

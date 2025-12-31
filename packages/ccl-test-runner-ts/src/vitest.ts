@@ -536,6 +536,15 @@ export function categorizeTest(
 ): TestCategorization {
 	const { capabilities, implementedFunctions } = context;
 
+	// Check if test is explicitly skipped
+	if (capabilities.skipTests?.includes(testCase.name)) {
+		return {
+			type: "skip",
+			testCase,
+			reason: "Explicitly skipped via skipTests",
+		};
+	}
+
 	// Check if validation function is implemented
 	const validationFn = testCase.validation;
 	if (!implementedFunctions.has(validationFn)) {

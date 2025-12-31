@@ -22,6 +22,7 @@ import {
 	loadAllTests,
 	shouldRunTest,
 } from "../../src/test-data.js";
+import { STUB_PARSER_SKIP_TESTS } from "./test-config.js";
 
 // Test data path - uses bundled data that ships with the package
 const TEST_DATA_PATH = getBundledTestDataPath();
@@ -56,6 +57,8 @@ const capabilities: ImplementationCapabilities = createCapabilities({
 		"list_coercion_disabled",
 	],
 	variant: "proposed_behavior",
+	// Tests to skip - these require full CCL parser features not implemented in stub
+	skipTests: STUB_PARSER_SKIP_TESTS,
 });
 
 /**
