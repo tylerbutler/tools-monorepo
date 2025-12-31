@@ -84,17 +84,17 @@ export function parse(text: string): Entry[] {
 		// - Must have previous entry
 		// - Must have more indentation than the entry's starting line
 		// - OR has no equals sign (implicit continuation)
-		const prev = entries[entries.length - 1];
+		const prev = entries.at(-1);
 		if (prev !== undefined && lineIndent > currentEntryIndent) {
 			// This is a continuation line - append to previous value
-			prev.value = prev.value + "\n" + line;
+			prev.value = `${prev.value}\n${line}`;
 			continue;
 		}
 
 		if (eqIndex === -1) {
 			// No equals sign and not a continuation - append to previous if exists
 			if (prev !== undefined) {
-				prev.value = prev.value + "\n" + line;
+				prev.value = `${prev.value}\n${line}`;
 			}
 			// If no previous entry, ignore the line (invalid CCL)
 			continue;
