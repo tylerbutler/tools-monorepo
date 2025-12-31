@@ -9,6 +9,8 @@ const config = mergeConfig(
 		test: {
 			// Include the generated tests directory
 			include: ["test/**/*.test.ts"],
+			// Setup file for custom matchers
+			setupFiles: ["./test/vitest-setup.ts"],
 			// Increase timeout for test loading
 			testTimeout: 10000,
 			// Enable test reporters: verbose for standard output, skip-summary for categorized skip reasons

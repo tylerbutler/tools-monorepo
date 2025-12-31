@@ -25,6 +25,12 @@
 				"default": "./esm/vitest.js"
 			}
 		},
+		"./vitest-matchers": {
+			"import": {
+				"types": "./esm/vitest-matchers.d.ts",
+				"default": "./esm/vitest-matchers.js"
+			}
+		},
 		"./types": {
 			"import": {
 				"types": "./esm/types.d.ts",

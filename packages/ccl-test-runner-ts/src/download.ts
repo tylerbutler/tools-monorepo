@@ -270,4 +270,7 @@ const main = defineCommand({
 });
 
 // Run CLI
-runMain(main).catch(consola.error);
+runMain(main).catch((error: unknown) => {
+	consola.error(error);
+	process.exit(1);
+});
