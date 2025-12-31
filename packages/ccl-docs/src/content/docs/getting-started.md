@@ -18,7 +18,7 @@ another = some text value
 
 - Split on first `=`
 - **Key** is trimmed of leading and trailing whitespace
-- **Value** is trimmed of _leading_ whitespace only (trailing whitespace is preserved)
+- **Value** is trimmed of both leading and trailing whitespace
 
 ### 2. Empty Keys (Lists)
 

@@ -16,7 +16,7 @@ CCL is parsed through recursive descent to a fixed point. The algorithm is simpl
 
 ### Input Format
 
-CCL is line-based text with key-value pairs:
+CCL consists of key-value pairs separated by `=`:
 
 ```ccl
 key = value
@@ -28,17 +28,30 @@ nested =
 
 ### Parse Entries
 
-Split lines on first `=` character:
+Find the first `=` character and split:
 
 ```
 "key = value"  →  Entry {key: "key", value: "value"}
 "a = b = c"    →  Entry {key: "a", value: "b = c"}
 ```
 
-**Whitespace rules**:
-- Trim whitespace from keys: `"  key  "` → `"key"`
-- Preserve value whitespace except leading: `"  value  "` → `"value  "`
-- Tab characters and spaces both count as indentation
+**Key whitespace rules**:
+- Trim all whitespace from keys (including newlines): `"  key  "` → `"key"`
+- Keys can span multiple lines if `=` appears on a subsequent line
+
+**Value whitespace rules**:
+- Trim leading whitespace on first line: `key =   value` → `"value"`
+- Trim trailing whitespace on final line
+- Preserve internal structure (newlines + indentation for continuation lines)
+
+**Indentation tracking**:
+1. Record the entry's indentation level (whitespace count before the key)
+2. For each subsequent line, compare its indentation to the entry's level:
+   - Greater indentation → continuation line (part of value)
+   - Same or less indentation → new entry
+3. Which characters count as whitespace depends on parser behavior:
+   - `tabs_as_whitespace`: spaces and tabs are whitespace
+   - `tabs_as_content`: only spaces are whitespace; tabs are content
 
 **Special keys**:
 - Empty key `= value` → list item
@@ -46,7 +59,7 @@ Split lines on first `=` character:
 
 ### Build Hierarchy
 
-Group entries by indentation level:
+Indentation determines structure. Example:
 
 ```ccl
 parent =
@@ -54,15 +67,11 @@ parent =
   sibling = another
 ```
 
-Becomes:
+The parser records `parent`'s indentation level (0). Lines `child` and `sibling` have greater indentation (2), so they become part of `parent`'s value:
+
 ```
 Entry {key: "parent", value: "child = nested\nsibling = another"}
 ```
-
-**Indentation logic**:
-- Count leading whitespace characters
-- Lines with MORE indentation than previous = part of previous value
-- Lines with SAME/LESS indentation = new entry at that level
 
 ### Recursive Parsing (Fixed Point)
 
