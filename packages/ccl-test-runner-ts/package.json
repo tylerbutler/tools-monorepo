@@ -39,6 +39,9 @@
 		}
 	},
 	"types": "./esm/index.d.ts",
+	"bin": {
+		"ccl-download-tests": "./esm/download.js"
+	},
 	"files": [
 		"esm"
 	],
@@ -58,9 +61,6 @@
 		"test:coverage": "vitest run --coverage",
 		"test:runner": "vitest run test/runner",
 		"test:ui": "vitest --ui"
-	},
-	"bin": {
-		"ccl-download-tests": "./esm/download.js"
 	},
 	"dependencies": {
 		"citty": "^0.1.6",
