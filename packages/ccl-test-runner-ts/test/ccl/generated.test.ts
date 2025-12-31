@@ -21,6 +21,7 @@ import {
 	loadAllTests,
 	shouldRunTest,
 } from "../../src/test-data.js";
+import type { CCLTestResult } from "../../src/vitest.js";
 import { STUB_PARSER_SKIP_TESTS } from "./test-config.js";
 
 // Test data path - download first with: npx ccl-download-tests --output ./ccl-test-data
@@ -123,23 +124,19 @@ function postprocessValue(value: string): string {
 }
 
 /**
- * Result type for test execution.
+ * Execute the CCL function for a test case and return a CCLTestResult.
+ * Uses the CCLTestResult type for compatibility with custom matchers.
  */
-interface TestResult {
-	success: boolean;
-	processedEntries?: Array<{ key: string; value: string }>;
-	error?: string;
-}
-
-/**
- * Execute the CCL function for a test case and return results.
- * Assertions are performed by the caller in the test context.
- */
-function executeTestCase(testCase: TestCase): TestResult {
+function executeTestCase(testCase: TestCase): CCLTestResult {
 	const rawInput = testCase.inputs[0];
 	if (rawInput === undefined) {
 		return {
-			success: false,
+			testCase,
+			input: "",
+			rawOutput: undefined,
+			output: undefined,
+			expected: testCase.expected,
+			passed: false,
 			error: `Test case "${testCase.name}" has no inputs`,
 		};
 	}
@@ -149,18 +146,64 @@ function executeTestCase(testCase: TestCase): TestResult {
 		case "parse": {
 			const result = parse(input);
 			if (!result.success) {
-				return { success: false, error: "Parse failed" };
+				return {
+					testCase,
+					input,
+					rawOutput: result,
+					output: { success: false, error: result.error },
+					expected: testCase.expected,
+					passed: false,
+					error: `Parse failed: ${result.error?.message ?? "unknown error"}`,
+				};
 			}
 			// Post-process values based on behaviors
 			const processedEntries = result.entries.map((entry) => ({
 				key: entry.key,
 				value: postprocessValue(entry.value),
 			}));
-			return { success: true, processedEntries };
+
+			// Check expectations
+			let passed = true;
+			let error: string | undefined;
+
+			if (
+				testCase.expected.count !== undefined &&
+				processedEntries.length !== testCase.expected.count
+			) {
+				passed = false;
+				error = `Count mismatch: expected ${testCase.expected.count}, got ${processedEntries.length}`;
+			}
+
+			if (
+				passed &&
+				testCase.expected.entries !== undefined &&
+				JSON.stringify(processedEntries) !==
+					JSON.stringify(testCase.expected.entries)
+			) {
+				passed = false;
+				error = "Entries mismatch";
+			}
+
+			return {
+				testCase,
+				input,
+				rawOutput: result,
+				output: processedEntries,
+				expected: testCase.expected.entries ?? {
+					count: testCase.expected.count,
+				},
+				passed,
+				error,
+			};
 		}
 		default:
 			return {
-				success: false,
+				testCase,
+				input,
+				rawOutput: undefined,
+				output: undefined,
+				expected: testCase.expected,
+				passed: false,
 				error: `Unsupported validation type: ${testCase.validation}`,
 			};
 	}
@@ -227,25 +270,11 @@ describe("CCL", async () => {
 				}
 
 				// Function is supported and implemented - create a real test
-				// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Test assertion logic
 				test(testCase.name, () => {
 					// All conditions met - run the actual test
 					const result = executeTestCase(testCase);
-					expect(result.success).toBe(true);
-					if (result.success) {
-						// Check count
-						if (testCase.expected.count !== undefined) {
-							expect(result.processedEntries?.length ?? 0).toBe(
-								testCase.expected.count,
-							);
-						}
-						// Check entries if provided
-						if (testCase.expected.entries !== undefined) {
-							expect(result.processedEntries).toEqual(
-								testCase.expected.entries,
-							);
-						}
-					}
+					// Use custom CCL matcher for rich error messages
+					expect(result).toPassCCLTest();
 				});
 			}
 		});

@@ -93,18 +93,10 @@ describe("CCL (Declarative API)", async () => {
 
 					case "run":
 						// All requirements met - run the test
-						// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Test assertion logic
 						test(testCase.name, () => {
 							const result = run();
-							// Hybrid approach: runner returns values, vitest asserts
-							if (result.testCase.expected.count !== undefined) {
-								expect(
-									Array.isArray(result.output) ? result.output.length : 0,
-								).toBe(result.testCase.expected.count);
-							}
-							if (result.testCase.expected.entries !== undefined) {
-								expect(result.output).toEqual(result.testCase.expected.entries);
-							}
+							// Use custom CCL matcher for rich error messages
+							expect(result).toPassCCLTest();
 						});
 						break;
 
