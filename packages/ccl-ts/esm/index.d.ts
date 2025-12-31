@@ -7,5 +7,5 @@
  * @packageDocumentation
  */
 export type { CCLObject, CCLValue, Entry, HierarchyResult, ParseError, ParseResult, } from "ccl-test-runner-ts/types";
-export { parse } from "./ccl.js";
+export { buildHierarchy, parse } from "./ccl.js";
 //# sourceMappingURL=index.d.ts.map

@@ -19,7 +19,7 @@ import {
 	Variant,
 } from "ccl-test-runner-ts/vitest";
 import { describe, expect, test } from "vitest";
-import { parse } from "../src/ccl.js";
+import { buildHierarchy, parse } from "../src/ccl.js";
 
 /**
  * Run assertions for a test result based on expected values.
@@ -64,8 +64,8 @@ const cclConfig = defineCCLTests({
 	// Wire up implemented functions
 	functions: {
 		parse,
+		build_hierarchy: buildHierarchy,
 		// Uncomment as you implement:
-		// build_hierarchy: buildHierarchy,
 		// get_string: getString,
 		// get_int: getInt,
 		// get_bool: getBool,

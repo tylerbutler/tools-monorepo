@@ -17,4 +17,4 @@ export type {
 	ParseResult,
 } from "ccl-test-runner-ts/types";
 // CCL functions
-export { parse } from "./ccl.js";
+export { buildHierarchy, parse } from "./ccl.js";

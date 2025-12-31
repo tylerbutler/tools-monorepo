@@ -7,5 +7,5 @@
  * @packageDocumentation
  */
 // CCL functions
-export { parse } from "./ccl.js";
+export { buildHierarchy, parse } from "./ccl.js";
 //# sourceMappingURL=index.js.map

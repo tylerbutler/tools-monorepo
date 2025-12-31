@@ -5,12 +5,45 @@
  * See https://ccl.tylerbutler.com for the CCL specification.
  */
 /**
+ * Count leading whitespace characters (spaces and tabs).
+ */
+function countIndentation(line) {
+    let count = 0;
+    for (const char of line) {
+        if (char === " " || char === "\t") {
+            count++;
+        }
+        else {
+            break;
+        }
+    }
+    return count;
+}
+/**
+ * Trim leading and trailing spaces only (preserving tabs).
+ * This matches CCL behavior where tabs are preserved in values.
+ */
+function trimSpacesOnly(str) {
+    // Trim leading spaces only (not tabs)
+    let start = 0;
+    while (start < str.length && str[start] === " ") {
+        start++;
+    }
+    // Trim trailing spaces only (not tabs)
+    let end = str.length;
+    while (end > start && str[end - 1] === " ") {
+        end--;
+    }
+    return str.slice(start, end);
+}
+/**
  * Parse CCL text into flat key-value entries.
  *
  * CCL is a simple configuration format where:
  * - Lines with `=` define key-value pairs
- * - Indented lines continue the previous value
- * - Keys are trimmed; values have leading/trailing spaces trimmed (tabs preserved)
+ * - Indented lines (more indentation than the entry start) continue the previous value
+ * - Keys are trimmed; values have leading/trailing spaces trimmed
+ * - Tabs in values are preserved
  *
  * @param text - The CCL text to parse
  * @returns An array of entries with key-value pairs
@@ -22,9 +55,102 @@
  * ```
  */
 export function parse(text) {
-    // TODO: Implement CCL parsing algorithm
-    // For now, return empty array as stub
-    return [];
+    const entries = [];
+    // Split on LF only; CR is treated as content per spec
+    const lines = text.split("\n");
+    // Track the indentation level of the current entry
+    let currentEntryIndent = 0;
+    for (const line of lines) {
+        // Skip empty lines
+        if (line.length === 0) {
+            continue;
+        }
+        const lineIndent = countIndentation(line);
+        // Find first equals sign (split on first = only)
+        const eqIndex = line.indexOf("=");
+        // Check if this is a continuation line:
+        // - Must have previous entry
+        // - Must have more indentation than the entry's starting line
+        // - OR has no equals sign (implicit continuation)
+        const prev = entries[entries.length - 1];
+        if (prev !== undefined && lineIndent > currentEntryIndent) {
+            // This is a continuation line - append to previous value
+            prev.value = prev.value + "\n" + line;
+            continue;
+        }
+        if (eqIndex === -1) {
+            // No equals sign and not a continuation - append to previous if exists
+            if (prev !== undefined) {
+                prev.value = prev.value + "\n" + line;
+            }
+            // If no previous entry, ignore the line (invalid CCL)
+            continue;
+        }
+        // New entry - extract key and value
+        const rawKey = line.slice(0, eqIndex);
+        const rawValue = line.slice(eqIndex + 1);
+        // Key: trim whitespace on both sides
+        const key = rawKey.trim();
+        // Value: trim leading/trailing spaces (preserving tabs)
+        const value = trimSpacesOnly(rawValue);
+        entries.push({ key, value });
+        // Track the indentation of this entry's starting line
+        currentEntryIndent = lineIndent;
+    }
+    return entries;
+}
+/**
+ * Build a hierarchical object from flat entries.
+ *
+ * Takes a flat list of entries (from `parse`) and recursively
+ * parses any nested CCL syntax in the values to build a hierarchical object.
+ *
+ * The algorithm uses recursive fixed-point parsing:
+ * - If a value contains '=', it's recursively parsed as CCL
+ * - If a value has no '=', it's stored as a terminal string
+ * - Empty keys ('') indicate list items
+ *
+ * @param entries - The flat entries from a parse operation
+ * @returns A hierarchical CCL object
+ *
+ * @example
+ * ```typescript
+ * const entries = parse("server =\n  host = localhost\n  port = 8080");
+ * const obj = buildHierarchy(entries);
+ * // { server: { host: "localhost", port: "8080" } }
+ * ```
+ */
+export function buildHierarchy(entries) {
+    const result = {};
+    const listItems = [];
+    for (const entry of entries) {
+        const { key, value } = entry;
+        if (key === "") {
+            // Empty key = list item
+            listItems.push(value);
+            continue;
+        }
+        // Check if value contains nested CCL (has an equals sign)
+        if (value.includes("=")) {
+            // Recursively parse the value
+            const nestedEntries = parse(value);
+            const nestedObject = buildHierarchy(nestedEntries);
+            result[key] = nestedObject;
+        }
+        else {
+            // Terminal value - store as string
+            result[key] = value;
+        }
+    }
+    // If we collected list items, add them under a special key or return as-is
+    // Per CCL spec, list items without keys become an array
+    if (listItems.length > 0) {
+        // If there's only list items and no other keys, the behavior depends on context
+        // For now, store them as an array under the empty string key
+        // This matches how CCL handles lists at the top level
+        result[""] = listItems;
+    }
+    return result;
 }
 // ============================================================================
 // Future Functions (commented out stubs)
