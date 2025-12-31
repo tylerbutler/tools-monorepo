@@ -55,10 +55,10 @@ export type CCLFunction =
 	| "get_int"
 	| "get_float"
 	| "get_bool"
+	| "round_trip"
 	| "compose_associative"
 	| "identity_left"
-	| "identity_right"
-	| "round_trip";
+	| "identity_right";
 export type CCLFeature =
 	| "empty_keys"
 	| "comments"
@@ -69,15 +69,15 @@ export type CCLFeature =
 export type CCLBehavior =
 	| "array_order_insertion"
 	| "array_order_lexicographic"
-	| "tabs_preserve"
+	| "tabs_as_content"
 	| "list_coercion_enabled"
 	| "list_coercion_disabled"
 	| "crlf_preserve_literal"
 	| "boolean_strict"
 	| "boolean_lenient"
-	| "strict_spacing"
-	| "loose_spacing"
-	| "tabs_to_spaces";
+	| "tabs_as_whitespace"
+	| "indent_spaces"
+	| "crlf_normalize_to_lf";
 
 // Available functions for filtering
 export const AVAILABLE_FUNCTIONS: CCLFunction[] = [
@@ -91,10 +91,10 @@ export const AVAILABLE_FUNCTIONS: CCLFunction[] = [
 	"get_int",
 	"get_float",
 	"get_bool",
+	"round_trip",
 	"compose_associative",
 	"identity_left",
 	"identity_right",
-	"round_trip",
 ];
 
 // Available features for filtering
@@ -111,13 +111,13 @@ export const AVAILABLE_FEATURES: CCLFeature[] = [
 export const AVAILABLE_BEHAVIORS: CCLBehavior[] = [
 	"array_order_insertion",
 	"array_order_lexicographic",
-	"tabs_preserve",
+	"tabs_as_content",
 	"list_coercion_enabled",
 	"list_coercion_disabled",
 	"crlf_preserve_literal",
 	"boolean_strict",
 	"boolean_lenient",
-	"strict_spacing",
-	"loose_spacing",
-	"tabs_to_spaces",
+	"tabs_as_whitespace",
+	"indent_spaces",
+	"crlf_normalize_to_lf",
 ];
