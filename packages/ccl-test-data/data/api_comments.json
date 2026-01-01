@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.0.1/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -49,12 +49,8 @@
     {
       "behaviors": [],
       "expected": {
-        "count": 6,
+        "count": 4,
         "entries": [
-          {
-            "key": "/",
-            "value": "This is an environment section"
-          },
           {
             "key": "port",
             "value": "8080"
@@ -62,10 +58,6 @@
           {
             "key": "serve",
             "value": "index.html"
-          },
-          {
-            "key": "/",
-            "value": "Database section"
           },
           {
             "key": "mode",
@@ -119,13 +111,7 @@
     {
       "behaviors": [],
       "expected": {
-        "count": 1,
-        "entries": [
-          {
-            "key": "/",
-            "value": "this is a comment"
-          }
-        ]
+        "count": 0
       },
       "features": [
         "comments"
@@ -190,15 +176,11 @@
     {
       "behaviors": [],
       "expected": {
-        "count": 6,
+        "count": 4,
         "entries": [
           {
             "key": "",
             "value": "= Database Config =="
-          },
-          {
-            "key": "/",
-            "value": "Connection settings"
           },
           {
             "key": "host",
@@ -207,10 +189,6 @@
           {
             "key": "",
             "value": "== Cache Config ==="
-          },
-          {
-            "key": "/",
-            "value": "Redis configuration"
           },
           {
             "key": "port",

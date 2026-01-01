@@ -1,0 +1,786 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [
+        "tabs_as_content"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "\tvalue\twith\ttabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_as_content_in_value_parse",
+      "source_test": "tabs_as_content_in_value",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_content"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "key": "\tvalue\twith\ttabs"
+        }
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_as_content_in_value_build_hierarchy",
+      "source_test": "tabs_as_content_in_value",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "key"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "\tvalue\twith\ttabs"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_as_content_in_value_get_string",
+      "source_test": "tabs_as_content_in_value",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_content"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "\tindented"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tindented"
+      ],
+      "name": "tabs_as_content_leading_tab_parse",
+      "source_test": "tabs_as_content_leading_tab",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "key"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "\tindented"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "key = \tindented"
+      ],
+      "name": "tabs_as_content_leading_tab_get_string",
+      "source_test": "tabs_as_content_leading_tab",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value with tabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_as_whitespace_in_value_parse",
+      "source_test": "tabs_as_whitespace_in_value",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "key": "value with tabs"
+        }
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_as_whitespace_in_value_build_hierarchy",
+      "source_test": "tabs_as_whitespace_in_value",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "key"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "value with tabs"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_as_whitespace_in_value_get_string",
+      "source_test": "tabs_as_whitespace_in_value",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "indented"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tindented"
+      ],
+      "name": "tabs_as_whitespace_leading_tab_parse",
+      "source_test": "tabs_as_whitespace_leading_tab",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "key"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "indented"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "key = \tindented"
+      ],
+      "name": "tabs_as_whitespace_leading_tab_get_string",
+      "source_test": "tabs_as_whitespace_leading_tab",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "three_tabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \t\t\tthree_tabs"
+      ],
+      "name": "tabs_as_whitespace_multiple_tabs_parse",
+      "source_test": "tabs_as_whitespace_multiple_tabs",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_content"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "section",
+            "value": "\n \tindented_with_tabs\n \tanother_line"
+          }
+        ]
+      },
+      "features": [
+        "whitespace",
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "section =\n \tindented_with_tabs\n \tanother_line"
+      ],
+      "name": "tabs_as_content_multiline_parse",
+      "source_test": "tabs_as_content_multiline",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "section",
+            "value": "\nindented_with_tabs\nanother_line"
+          }
+        ]
+      },
+      "features": [
+        "whitespace",
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "section =\n\t\tindented_with_tabs\n\t\tanother_line"
+      ],
+      "name": "tabs_as_whitespace_multiline_parse",
+      "source_test": "tabs_as_whitespace_multiline",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "section",
+            "value": "\nmixed_indent\nanother_line"
+          }
+        ]
+      },
+      "features": [
+        "whitespace",
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "section =\n \tmixed_indent\n\t another_line"
+      ],
+      "name": "tabs_as_whitespace_mixed_indent_parse",
+      "source_test": "tabs_as_whitespace_mixed_indent",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_content"
+      ],
+      "expected": {
+        "count": 1,
+        "value": "key = \tvalue"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "key = \tvalue"
+      ],
+      "name": "tabs_canonical_format_as_content_canonical_format",
+      "source_test": "tabs_canonical_format_as_content",
+      "validation": "canonical_format",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace"
+      ],
+      "expected": {
+        "count": 1,
+        "value": "key = value"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "key = \tvalue"
+      ],
+      "name": "tabs_canonical_format_as_whitespace_canonical_format",
+      "source_test": "tabs_canonical_format_as_whitespace",
+      "validation": "canonical_format",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace",
+        "indent_spaces"
+      ],
+      "expected": {
+        "count": 1,
+        "value": "section =\n  indented\n  another"
+      },
+      "features": [
+        "whitespace",
+        "multiline"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "section =\n\t\tindented\n\t\tanother"
+      ],
+      "name": "tabs_as_whitespace_multiline_print_canonical_format",
+      "source_test": "tabs_as_whitespace_multiline_print",
+      "validation": "canonical_format",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "key = value with tabs"
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs"
+      ],
+      "name": "tabs_as_whitespace_round_trip_round_trip",
+      "source_test": "tabs_as_whitespace_round_trip",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "indent_spaces"
+      ],
+      "expected": {
+        "count": 1,
+        "value": "package =\n  = brew\n  = scoop\n  = nix"
+      },
+      "features": [
+        "empty_keys",
+        "whitespace"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "package =\n  = brew\n  = scoop\n  = nix"
+      ],
+      "name": "nested_bare_list_indentation_canonical_format",
+      "source_test": "nested_bare_list_indentation",
+      "validation": "canonical_format",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "indent_spaces"
+      ],
+      "expected": {
+        "count": 1,
+        "value": "app =\n  = item1\n  = item2\n  config =\n    = nested1\n    = nested2\n    deep =\n      = level3a\n      = level3b"
+      },
+      "features": [
+        "empty_keys",
+        "whitespace"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "app =\n  = item1\n  config =\n    = nested1\n    = nested2\n    deep =\n      = level3a\n      = level3b\n  = item2"
+      ],
+      "name": "deeply_nested_bare_list_indentation_canonical_format",
+      "source_test": "deeply_nested_bare_list_indentation",
+      "validation": "canonical_format",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "crlf_normalize_to_lf"
+      ],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key1",
+            "value": "value1"
+          },
+          {
+            "key": "key2",
+            "value": "value2"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key1 = value1\r\nkey2 = value2\r\n"
+      ],
+      "name": "crlf_normalize_to_lf_basic_parse",
+      "source_test": "crlf_normalize_to_lf_basic",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "key1": "value1",
+          "key2": "value2"
+        }
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "key1 = value1\r\nkey2 = value2\r\n"
+      ],
+      "name": "crlf_normalize_to_lf_basic_build_hierarchy",
+      "source_test": "crlf_normalize_to_lf_basic",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "crlf_preserve_literal"
+      ],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key1",
+            "value": "value1\r"
+          },
+          {
+            "key": "key2",
+            "value": "value2\r"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key1 = value1\r\nkey2 = value2\r\n"
+      ],
+      "name": "crlf_preserve_literal_basic_parse",
+      "source_test": "crlf_preserve_literal_basic",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "crlf_normalize_to_lf"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "multiline",
+            "value": "\n  line1\n  line2"
+          }
+        ]
+      },
+      "features": [
+        "whitespace",
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "multiline =\r\n  line1\r\n  line2"
+      ],
+      "name": "crlf_normalize_multiline_value_parse",
+      "source_test": "crlf_normalize_multiline_value",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "crlf_preserve_literal"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "multiline",
+            "value": "\r\n  line1\r\n  line2"
+          }
+        ]
+      },
+      "features": [
+        "whitespace",
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "multiline =\r\n  line1\r\n  line2"
+      ],
+      "name": "crlf_preserve_multiline_value_parse",
+      "source_test": "crlf_preserve_multiline_value",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "crlf_normalize_to_lf"
+      ],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "lf_line",
+            "value": "value1"
+          },
+          {
+            "key": "crlf_line",
+            "value": "value2"
+          },
+          {
+            "key": "lf_again",
+            "value": "value3"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "lf_line = value1\ncrlf_line = value2\r\nlf_again = value3\n"
+      ],
+      "name": "crlf_mixed_line_endings_parse",
+      "source_test": "crlf_mixed_line_endings",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "crlf_normalize_to_lf"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "config",
+            "value": "\n  host = localhost\n  port = 8080"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "config =\r\n  host = localhost\r\n  port = 8080"
+      ],
+      "name": "crlf_nested_structure_parse",
+      "source_test": "crlf_nested_structure",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "host": "localhost",
+            "port": "8080"
+          }
+        }
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\r\n  host = localhost\r\n  port = 8080"
+      ],
+      "name": "crlf_nested_structure_build_hierarchy",
+      "source_test": "crlf_nested_structure",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_whitespace",
+        "crlf_normalize_to_lf"
+      ],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value with tabs"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = \tvalue\twith\ttabs\r\n"
+      ],
+      "name": "behavior_combo_tabs_and_crlf_parse",
+      "source_test": "behavior_combo_tabs_and_crlf",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "tabs_as_content",
+        "crlf_normalize_to_lf"
+      ],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key1",
+            "value": "\tvalue1"
+          },
+          {
+            "key": "key2",
+            "value": "\tvalue2"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key1 = \tvalue1\r\nkey2 = \tvalue2\r\n"
+      ],
+      "name": "behavior_combo_content_tabs_crlf_parse",
+      "source_test": "behavior_combo_content_tabs_crlf",
+      "validation": "parse",
+      "variants": []
+    }
+  ]
+}

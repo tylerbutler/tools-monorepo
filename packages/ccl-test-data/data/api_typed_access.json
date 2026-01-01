@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.0.1/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -268,11 +268,6 @@
       "behaviors": [
         "boolean_lenient"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_strict"
-        ]
-      },
       "expected": {
         "count": 1,
         "value": true
@@ -345,11 +340,6 @@
       "behaviors": [
         "boolean_strict"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_lenient"
-        ]
-      },
       "expected": {
         "count": 1
       },
@@ -664,11 +654,6 @@
       "behaviors": [
         "boolean_lenient"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_strict"
-        ]
-      },
       "expected": {
         "count": 1,
         "value": false
@@ -802,11 +787,6 @@
       "behaviors": [
         "boolean_strict"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_lenient"
-        ]
-      },
       "expected": {
         "count": 1
       },
@@ -956,11 +936,6 @@
       "behaviors": [
         "boolean_lenient"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_strict"
-        ]
-      },
       "expected": {
         "count": 1,
         "value": true
@@ -1086,11 +1061,6 @@
       "behaviors": [
         "boolean_strict"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_lenient"
-        ]
-      },
       "expected": {
         "count": 1
       },
@@ -1228,11 +1198,6 @@
       "behaviors": [
         "boolean_lenient"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_strict"
-        ]
-      },
       "expected": {
         "count": 1,
         "value": true
@@ -1394,11 +1359,6 @@
       "behaviors": [
         "boolean_strict"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_lenient"
-        ]
-      },
       "expected": {
         "count": 1,
         "value": true
@@ -1842,11 +1802,6 @@
       "behaviors": [
         "boolean_strict"
       ],
-      "conflicts": {
-        "behaviors": [
-          "boolean_lenient"
-        ]
-      },
       "expected": {
         "count": 1
       },
@@ -1925,6 +1880,536 @@
       "name": "parse_missing_path_error_get_string",
       "source_test": "parse_missing_path_error",
       "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "upper_true",
+            "value": "TRUE"
+          },
+          {
+            "key": "upper_false",
+            "value": "FALSE"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "upper_true = TRUE\nupper_false = FALSE"
+      ],
+      "name": "boolean_case_sensitivity_uppercase_parse",
+      "source_test": "boolean_case_sensitivity_uppercase",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "upper_true"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "upper_true = TRUE\nupper_false = FALSE"
+      ],
+      "name": "boolean_case_sensitivity_uppercase_get_bool",
+      "source_test": "boolean_case_sensitivity_uppercase",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "mixed_true",
+            "value": "True"
+          },
+          {
+            "key": "mixed_false",
+            "value": "False"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "mixed_true = True\nmixed_false = False"
+      ],
+      "name": "boolean_case_sensitivity_mixed_parse",
+      "source_test": "boolean_case_sensitivity_mixed",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "mixed_true"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "mixed_true = True\nmixed_false = False"
+      ],
+      "name": "boolean_case_sensitivity_mixed_get_bool",
+      "source_test": "boolean_case_sensitivity_mixed",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "upper_yes",
+            "value": "YES"
+          },
+          {
+            "key": "upper_no",
+            "value": "NO"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "upper_yes = YES\nupper_no = NO"
+      ],
+      "name": "boolean_lenient_uppercase_yes_no_parse",
+      "source_test": "boolean_lenient_uppercase_yes_no",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "upper_yes"
+      ],
+      "behaviors": [
+        "boolean_lenient"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "upper_yes = YES\nupper_no = NO"
+      ],
+      "name": "boolean_lenient_uppercase_yes_no_get_bool",
+      "source_test": "boolean_lenient_uppercase_yes_no",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "one",
+            "value": "1"
+          },
+          {
+            "key": "zero",
+            "value": "0"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "one = 1\nzero = 0"
+      ],
+      "name": "boolean_numeric_one_zero_strict_parse",
+      "source_test": "boolean_numeric_one_zero_strict",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "one"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "one = 1\nzero = 0"
+      ],
+      "name": "boolean_numeric_one_zero_strict_get_int",
+      "source_test": "boolean_numeric_one_zero_strict",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "one"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "one = 1\nzero = 0"
+      ],
+      "name": "boolean_numeric_one_zero_strict_get_bool",
+      "source_test": "boolean_numeric_one_zero_strict",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "padded",
+            "value": "true"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors",
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "padded =   true   "
+      ],
+      "name": "boolean_with_whitespace_parse",
+      "source_test": "boolean_with_whitespace",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "padded"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "optional_typed_accessors",
+        "whitespace"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "padded =   true   "
+      ],
+      "name": "boolean_with_whitespace_get_bool",
+      "source_test": "boolean_with_whitespace",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "debug": "true",
+            "experimental": "yes",
+            "verbose": "false"
+          }
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\n  debug = true\n  verbose = false\n  experimental = yes"
+      ],
+      "name": "boolean_nested_object_build_hierarchy",
+      "source_test": "boolean_nested_object",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "flag",
+            "value": "true"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "flag = true"
+      ],
+      "name": "type_mismatch_get_int_on_bool_parse",
+      "source_test": "type_mismatch_get_int_on_bool",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "flag = true"
+      ],
+      "name": "type_mismatch_get_int_on_bool_get_int",
+      "source_test": "type_mismatch_get_int_on_bool",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "number",
+            "value": "42"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "number = 42"
+      ],
+      "name": "type_mismatch_get_bool_on_int_parse",
+      "source_test": "type_mismatch_get_bool_on_int",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "number"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "number = 42"
+      ],
+      "name": "type_mismatch_get_bool_on_int_get_bool",
+      "source_test": "type_mismatch_get_bool_on_int",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "flag",
+            "value": "false"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "flag = false"
+      ],
+      "name": "type_mismatch_get_float_on_bool_parse",
+      "source_test": "type_mismatch_get_float_on_bool",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_float"
+      ],
+      "inputs": [
+        "flag = false"
+      ],
+      "name": "type_mismatch_get_float_on_bool_get_float",
+      "source_test": "type_mismatch_get_float_on_bool",
+      "validation": "get_float",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "count": "abc",
+            "name": "test"
+          }
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\n  name = test\n  count = abc"
+      ],
+      "name": "type_mismatch_nested_path_build_hierarchy",
+      "source_test": "type_mismatch_nested_path",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "empty",
+            "value": ""
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "empty ="
+      ],
+      "name": "boolean_empty_value_error_parse",
+      "source_test": "boolean_empty_value_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "empty"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "empty ="
+      ],
+      "name": "boolean_empty_value_error_get_bool",
+      "source_test": "boolean_empty_value_error",
+      "validation": "get_bool",
       "variants": []
     }
   ]

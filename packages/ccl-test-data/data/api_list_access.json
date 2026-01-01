@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.0.1/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -63,11 +63,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ]
-      },
       "expected": {
         "count": 3,
         "list": [
@@ -235,11 +230,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ]
-      },
       "expected": {
         "count": 20,
         "list": [
@@ -358,11 +348,6 @@
         "list_coercion_enabled",
         "array_order_insertion"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ]
-      },
       "expected": {
         "count": 3,
         "list": [
@@ -466,11 +451,6 @@
         "list_coercion_enabled",
         "array_order_lexicographic"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ]
-      },
       "expected": {
         "count": 3,
         "list": [
@@ -1493,11 +1473,6 @@
       "behaviors": [
         "list_coercion_disabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_enabled"
-        ]
-      },
       "expected": {
         "count": 0
       },

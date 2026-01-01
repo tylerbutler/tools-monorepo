@@ -1,13 +1,8 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.0.1/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 2,
         "entries": [
@@ -40,11 +35,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 2,
         "entries": [
@@ -76,11 +66,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 2,
         "entries": [
@@ -112,11 +97,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -149,14 +129,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 2,
         "list": [
@@ -182,11 +154,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "entries": [
@@ -227,11 +194,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -261,11 +223,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "entries": [
@@ -291,11 +248,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -323,14 +275,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "list": [
@@ -353,11 +297,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 3,
         "entries": [
@@ -391,11 +330,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -427,14 +361,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "list": [
@@ -457,11 +383,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "entries": [
@@ -487,11 +408,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -526,14 +442,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "list": [
@@ -556,11 +464,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "entries": [
@@ -586,11 +489,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -618,14 +516,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "list": [
@@ -648,11 +538,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "entries": [
@@ -690,11 +575,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -727,14 +607,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "list": [
@@ -760,11 +632,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "entries": [
@@ -802,11 +669,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -839,14 +701,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "list": [
@@ -872,11 +726,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "entries": [
@@ -916,11 +765,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -955,14 +799,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "list": [
@@ -990,11 +826,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 6,
         "entries": [
@@ -1040,11 +871,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -1085,14 +911,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 3,
         "list": [
@@ -1117,11 +935,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "entries": [
@@ -1161,11 +974,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -1200,14 +1008,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "list": [
@@ -1235,11 +1035,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "entries": [
@@ -1277,11 +1072,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -1314,14 +1104,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "list": [
@@ -1347,11 +1129,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 4,
         "entries": [
@@ -1391,11 +1168,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -1430,14 +1202,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 3,
         "list": [
@@ -1464,11 +1228,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 11,
         "entries": [
@@ -1534,11 +1293,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -1584,14 +1338,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 3,
         "list": [
@@ -1616,11 +1362,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "entries": [
@@ -1646,11 +1387,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -1678,14 +1414,6 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
-      "conflicts": {
-        "behaviors": [
-          "list_coercion_disabled"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "list": [
@@ -1708,11 +1436,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "entries": [
@@ -1738,11 +1461,6 @@
     },
     {
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "object": {
@@ -1768,11 +1486,6 @@
         "empty_key"
       ],
       "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
       "expected": {
         "count": 1,
         "value": ""
@@ -1787,527 +1500,6 @@
       "name": "parse_empty_value_get_string",
       "source_test": "parse_empty_value",
       "validation": "get_string",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "entries": [
-          {
-            "key": "empty_key",
-            "value": ""
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "empty_key ="
-      ],
-      "name": "canonical_format_empty_values_parse",
-      "source_test": "canonical_format_empty_values",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "value": "empty_key ="
-      },
-      "features": [],
-      "functions": [
-        "canonical_format"
-      ],
-      "inputs": [
-        "empty_key ="
-      ],
-      "name": "canonical_format_empty_values_canonical_format",
-      "source_test": "canonical_format_empty_values",
-      "validation": "canonical_format",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "tabs_preserve"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "tabs_to_spaces"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "entries": [
-          {
-            "key": "value_with_tabs",
-            "value": "text\t\twith\ttabs\t"
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "value_with_tabs = text\t\twith\ttabs\t"
-      ],
-      "name": "canonical_format_tab_preservation_parse",
-      "source_test": "canonical_format_tab_preservation",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "tabs_preserve"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "tabs_to_spaces"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "value": "value_with_tabs = text\t\twith\ttabs"
-      },
-      "features": [],
-      "functions": [
-        "canonical_format"
-      ],
-      "inputs": [
-        "value_with_tabs = text\t\twith\ttabs\t"
-      ],
-      "name": "canonical_format_tab_preservation_canonical_format",
-      "source_test": "canonical_format_tab_preservation",
-      "validation": "canonical_format",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 2,
-        "entries": [
-          {
-            "key": "unicode",
-            "value": "你好世界"
-          },
-          {
-            "key": "emo",
-            "value": "🌟✨"
-          }
-        ]
-      },
-      "features": [
-        "unicode"
-      ],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "unicode = 你好世界\nemo = 🌟✨"
-      ],
-      "name": "canonical_format_unicode_parse",
-      "source_test": "canonical_format_unicode",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "value": "unicode = 你好世界\nemo = 🌟✨"
-      },
-      "features": [
-        "unicode"
-      ],
-      "functions": [
-        "canonical_format"
-      ],
-      "inputs": [
-        "unicode = 你好世界\nemo = 🌟✨"
-      ],
-      "name": "canonical_format_unicode_canonical_format",
-      "source_test": "canonical_format_unicode",
-      "validation": "canonical_format",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "crlf_preserve_literal"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "crlf_normalize_to_lf"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 2,
-        "entries": [
-          {
-            "key": "key1",
-            "value": "value1"
-          },
-          {
-            "key": "key2",
-            "value": "value2"
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "key1 = value1\r\nkey2 = value2\r\n"
-      ],
-      "name": "canonical_format_line_endings_proposed_parse",
-      "source_test": "canonical_format_line_endings_proposed",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "crlf_preserve_literal"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "crlf_normalize_to_lf"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "value": "key1 = value1\nkey2 = value2"
-      },
-      "features": [],
-      "functions": [
-        "canonical_format"
-      ],
-      "inputs": [
-        "key1 = value1\r\nkey2 = value2\r\n"
-      ],
-      "name": "canonical_format_line_endings_proposed_canonical_format",
-      "source_test": "canonical_format_line_endings_proposed",
-      "validation": "canonical_format",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "crlf_normalize_to_lf"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "crlf_preserve_literal"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 2,
-        "entries": [
-          {
-            "key": "key1",
-            "value": "value1"
-          },
-          {
-            "key": "key2",
-            "value": "value2"
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "key1 = value1\r\nkey2 = value2\r\n"
-      ],
-      "name": "crlf_normalize_to_lf_proposed_parse",
-      "source_test": "crlf_normalize_to_lf_proposed",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "crlf_normalize_to_lf"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "crlf_preserve_literal"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "value": "key1 = value1\nkey2 = value2"
-      },
-      "features": [],
-      "functions": [
-        "canonical_format"
-      ],
-      "inputs": [
-        "key1 = value1\r\nkey2 = value2\r\n"
-      ],
-      "name": "crlf_normalize_to_lf_proposed_canonical_format",
-      "source_test": "crlf_normalize_to_lf_proposed",
-      "validation": "canonical_format",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "crlf_normalize_to_lf"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "crlf_preserve_literal"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 2,
-        "entries": [
-          {
-            "key": "key1",
-            "value": "value1"
-          },
-          {
-            "key": "key2",
-            "value": "value2"
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "key1 = value1\r\nkey2 = value2\r\n"
-      ],
-      "name": "crlf_normalize_to_lf_indented_proposed_parse",
-      "source_test": "crlf_normalize_to_lf_indented_proposed",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "crlf_normalize_to_lf"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "crlf_preserve_literal"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "value": "key1 =\n  value1 =\nkey2 =\n  value2 =\n"
-      },
-      "features": [],
-      "functions": [
-        "canonical_format"
-      ],
-      "inputs": [
-        "key1 = value1\r\nkey2 = value2\r\n"
-      ],
-      "name": "crlf_normalize_to_lf_indented_proposed_canonical_format",
-      "source_test": "crlf_normalize_to_lf_indented_proposed",
-      "validation": "canonical_format",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [
-        "strict_spacing"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "loose_spacing"
-        ],
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 3,
-        "entries": [
-          {
-            "key": "key1",
-            "value": "value1"
-          },
-          {
-            "key": "key2",
-            "value": "value2"
-          },
-          {
-            "key": "key3",
-            "value": "\tvalue3"
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "key1=value1\nkey2  =  value2\nkey3\t=\tvalue3"
-      ],
-      "name": "canonical_format_consistent_spacing_parse",
-      "source_test": "canonical_format_consistent_spacing",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "value": "key1 = value1\nkey2 = value2\nkey3 = \tvalue3"
-      },
-      "features": [],
-      "functions": [
-        "canonical_format"
-      ],
-      "inputs": [
-        "key1=value1\nkey2  =  value2\nkey3\t=\tvalue3"
-      ],
-      "name": "canonical_format_consistent_spacing_canonical_format",
-      "source_test": "canonical_format_consistent_spacing",
-      "validation": "canonical_format",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 3,
-        "entries": [
-          {
-            "key": "z",
-            "value": "last"
-          },
-          {
-            "key": "a",
-            "value": "first"
-          },
-          {
-            "key": "m",
-            "value": "middle"
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "z = last\na = first\nm = middle"
-      ],
-      "name": "deterministic_output_parse",
-      "source_test": "deterministic_output",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "conflicts": {
-        "variants": [
-          "reference_compliant"
-        ]
-      },
-      "expected": {
-        "count": 1,
-        "value": "z = last\na = first\nm = middle"
-      },
-      "features": [],
-      "functions": [
-        "canonical_format"
-      ],
-      "inputs": [
-        "z = last\na = first\nm = middle"
-      ],
-      "name": "deterministic_output_canonical_format",
-      "source_test": "deterministic_output",
-      "validation": "canonical_format",
       "variants": [
         "proposed_behavior"
       ]

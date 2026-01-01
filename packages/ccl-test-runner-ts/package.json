@@ -63,6 +63,7 @@
 		"test:ui": "vitest --ui"
 	},
 	"dependencies": {
+		"@tylerbu/ccl-test-data": "workspace:^",
 		"citty": "^0.1.6",
 		"consola": "^3.4.0",
 		"dill-cli": "workspace:^",
