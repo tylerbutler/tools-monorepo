@@ -10,6 +10,11 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  * This policy ensures that packages have appropriate test scripts when they
  * contain test files or have test-related dependencies.
  *
+ * The policy automatically determines what to check based on what's configured:
+ * - If `testDirectories` is set, checks for test directories
+ * - If `testDependencies` is set, checks for test dependencies
+ * - If both are set, a package triggers validation if either condition is met
+ *
  * @example
  * ```typescript
  * const config: PackageTestScriptsConfig = {
@@ -31,7 +36,12 @@ export interface PackageTestScriptsConfig {
 	 * If any of these directories exist relative to the package.json,
 	 * the policy will require test scripts to be present.
 	 *
-	 * @defaultValue ["test", "tests", "__tests__"]
+	 * If not set or empty, directory checking is skipped.
+	 *
+	 * @example
+	 * ```typescript
+	 * testDirectories: ["test", "tests", "__tests__"]
+	 * ```
 	 */
 	testDirectories?: string[];
 
@@ -40,6 +50,8 @@ export interface PackageTestScriptsConfig {
 	 *
 	 * If any of these appear in devDependencies, the policy will require
 	 * test scripts to be present.
+	 *
+	 * If not set or empty, dependency checking is skipped.
 	 *
 	 * @example
 	 * ```typescript
@@ -54,14 +66,6 @@ export interface PackageTestScriptsConfig {
 	 * @defaultValue ["test"]
 	 */
 	requiredScripts?: string[];
-
-	/**
-	 * If true, only check packages that have test directories.
-	 * If false, also check packages with test dependencies.
-	 *
-	 * @defaultValue false
-	 */
-	onlyCheckDirectories?: boolean;
 
 	/**
 	 * Package names or scopes to exclude from validation.
@@ -186,29 +190,30 @@ export const PackageTestScripts = definePackagePolicy<
 		return true;
 	}
 
-	// Get defaults
-	const testDirectories = config.testDirectories ?? [
-		"test",
-		"tests",
-		"__tests__",
-	];
+	// Get config values
+	const testDirectories = config.testDirectories ?? [];
 	const testDependencies = config.testDependencies ?? [];
 	const requiredScripts = config.requiredScripts ?? ["test"];
-	const onlyCheckDirectories = config.onlyCheckDirectories ?? false;
+
+	// If neither directories nor dependencies are configured, skip validation
+	if (testDirectories.length === 0 && testDependencies.length === 0) {
+		return true;
+	}
 
 	// Determine the package directory
 	const packageDir = path.dirname(file);
 
-	// Check if tests are expected
-	const hasTestDir = hasTestDirectory(packageDir, testDirectories);
+	// Check if tests are expected based on what's configured
+	const hasTestDir =
+		testDirectories.length > 0 && hasTestDirectory(packageDir, testDirectories);
 	const hasTestDep =
-		!onlyCheckDirectories &&
+		testDependencies.length > 0 &&
 		hasTestDependency(
 			json.devDependencies as Record<string, string> | undefined,
 			testDependencies,
 		);
 
-	// If no tests expected, pass
+	// If no tests expected based on configured checks, pass
 	if (!hasTestDir && !hasTestDep) {
 		return true;
 	}

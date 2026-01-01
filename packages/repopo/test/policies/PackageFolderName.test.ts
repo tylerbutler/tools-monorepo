@@ -187,6 +187,47 @@ describe("PackageFolderName policy", () => {
 			);
 			expect(result).toBe(true);
 		});
+
+		it("should strip all scopes with @* glob pattern", async () => {
+			const json: PackageJson = {
+				name: "@anyorg/my-package",
+				version: "1.0.0",
+			};
+			const filePath = createPackageJson("my-package", json);
+
+			const result = await PackageFolderName.handler(
+				createArgs(filePath, { stripScopes: ["@*"] }),
+			);
+			expect(result).toBe(true);
+		});
+
+		it("should strip scopes matching prefix glob pattern", async () => {
+			const json: PackageJson = {
+				name: "@fluid-internal/test-lib",
+				version: "1.0.0",
+			};
+			const filePath = createPackageJson("test-lib", json);
+
+			const result = await PackageFolderName.handler(
+				createArgs(filePath, { stripScopes: ["@fluid*"] }),
+			);
+			expect(result).toBe(true);
+		});
+
+		it("should not strip scopes not matching glob pattern", async () => {
+			const json: PackageJson = {
+				name: "@other/my-package",
+				version: "1.0.0",
+			};
+			const filePath = createPackageJson("my-package", json);
+
+			const result = await PackageFolderName.handler(
+				createArgs(filePath, { stripScopes: ["@fluid*"] }),
+			);
+
+			// Should fail because @other doesn't match @fluid*
+			expect(result).not.toBe(true);
+		});
 	});
 
 	describe("excludePackages", () => {

@@ -237,8 +237,8 @@ describe("PackageTestScripts policy", () => {
 		});
 	});
 
-	describe("onlyCheckDirectories", () => {
-		it("should ignore dependencies when onlyCheckDirectories is true", async () => {
+	describe("automatic detection based on config", () => {
+		it("should only check dependencies when only testDependencies is configured", async () => {
 			const json: PackageJson = {
 				name: "test-package",
 				version: "1.0.0",
@@ -250,35 +250,58 @@ describe("PackageTestScripts policy", () => {
 				},
 			};
 			const filePath = createPackageJson(json);
+			createTestDir("test"); // Directory exists but won't be checked
 
+			// Only testDependencies configured, no testDirectories
 			const result = await PackageTestScripts.handler(
 				createArgs(filePath, {
 					testDependencies: ["vitest"],
-					onlyCheckDirectories: true,
 				}),
 			);
-			expect(result).toBe(true);
+
+			expect(result).not.toBe(true);
 		});
 
-		it("should still check directories when onlyCheckDirectories is true", async () => {
+		it("should only check directories when only testDirectories is configured", async () => {
 			const json: PackageJson = {
 				name: "test-package",
 				version: "1.0.0",
 				scripts: {
 					build: "tsc",
 				},
+				devDependencies: {
+					vitest: "^1.0.0", // Dependency exists but won't be checked
+				},
+			};
+			const filePath = createPackageJson(json);
+			// No test directory
+
+			// Only testDirectories configured, no testDependencies
+			const result = await PackageTestScripts.handler(
+				createArgs(filePath, {
+					testDirectories: ["test"],
+				}),
+			);
+
+			// Should pass because no test directory exists
+			expect(result).toBe(true);
+		});
+
+		it("should skip validation when neither directories nor dependencies are configured", async () => {
+			const json: PackageJson = {
+				name: "test-package",
+				version: "1.0.0",
+				scripts: {},
+				devDependencies: {
+					vitest: "^1.0.0",
+				},
 			};
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
-				createArgs(filePath, {
-					testDirectories: ["test"],
-					onlyCheckDirectories: true,
-				}),
-			);
-
-			expect(result).not.toBe(true);
+			// Empty config
+			const result = await PackageTestScripts.handler(createArgs(filePath, {}));
+			expect(result).toBe(true);
 		});
 	});
 

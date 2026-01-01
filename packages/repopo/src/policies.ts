@@ -8,10 +8,6 @@ export {
 	type PackageAllowedScopesConfig,
 } from "./policies/PackageAllowedScopes.js";
 export {
-	PackageCleanScript,
-	type PackageCleanScriptConfig,
-} from "./policies/PackageCleanScript.js";
-export {
 	PackageEsmType,
 	type PackageEsmTypeConfig,
 } from "./policies/PackageEsmType.js";
@@ -19,11 +15,6 @@ export {
 	PackageFolderName,
 	type PackageFolderNameConfig,
 } from "./policies/PackageFolderName.js";
-export {
-	type FormatScriptRule,
-	PackageFormatScripts,
-	type PackageFormatScriptsConfig,
-} from "./policies/PackageFormatScripts.js";
 export { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";

@@ -1,4 +1,5 @@
 import path from "node:path";
+import picomatch from "picomatch";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -12,7 +13,9 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  * @example
  * ```typescript
  * const config: PackageFolderNameConfig = {
- *   // Strip @myorg/ scope when matching folder names
+ *   // Strip all scopes when matching folder names
+ *   stripScopes: ["@*"],
+ *   // Or strip specific scopes
  *   stripScopes: ["@myorg", "@internal"],
  *   // These packages are exempt from the check
  *   excludePackages: ["@myorg/special-name"],
@@ -23,19 +26,28 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  */
 export interface PackageFolderNameConfig {
 	/**
-	 * A list of npm scopes to strip when comparing folder names to package names.
+	 * A list of npm scope patterns to strip when comparing folder names to package names.
 	 *
-	 * For scoped packages like `@myorg/my-package`, if `@myorg` is in this list,
+	 * For scoped packages like `@myorg/my-package`, if `@myorg` matches a pattern in this list,
 	 * the policy will expect the folder to be named `my-package` (not `@myorg/my-package`).
 	 *
 	 * @remarks
 	 *
-	 * Scopes should start with `@` (e.g., `@myorg`).
+	 * Supports glob patterns:
+	 * - `@*` - matches all scopes
+	 * - `@myorg` - matches exactly `@myorg`
+	 * - `@my*` - matches scopes starting with `@my`
 	 *
 	 * @example
 	 * ```typescript
-	 * // @myorg/my-package would be expected in folder named "my-package"
-	 * stripScopes: ["@myorg"]
+	 * // Strip all scopes - @anything/my-package → folder "my-package"
+	 * stripScopes: ["@*"]
+	 *
+	 * // Strip specific scopes only
+	 * stripScopes: ["@myorg", "@internal"]
+	 *
+	 * // Strip scopes matching a pattern
+	 * stripScopes: ["@fluid*"]
 	 * ```
 	 */
 	stripScopes?: string[];
@@ -55,10 +67,28 @@ export interface PackageFolderNameConfig {
 }
 
 /**
+ * Check if a scope should be stripped based on the patterns.
+ *
+ * @param scope - The scope to check (e.g., `@myorg`)
+ * @param stripScopes - List of scope patterns to match (supports glob patterns via picomatch)
+ * @returns `true` if the scope matches any pattern
+ */
+function shouldStripScope(
+	scope: string,
+	stripScopes: string[] | undefined,
+): boolean {
+	if (stripScopes === undefined || stripScopes.length === 0) {
+		return false;
+	}
+
+	return picomatch.isMatch(scope, stripScopes);
+}
+
+/**
  * Get the expected folder name from a package name.
  *
  * @param packageName - The package name (e.g., `@myorg/my-package`)
- * @param stripScopes - Scopes to strip from the package name
+ * @param stripScopes - Scope patterns to strip from the package name
  * @returns The expected folder name
  */
 function getExpectedFolderName(
@@ -70,7 +100,7 @@ function getExpectedFolderName(
 		const slashIndex = packageName.indexOf("/");
 		if (slashIndex !== -1) {
 			const scope = packageName.slice(0, slashIndex);
-			if (stripScopes.includes(scope)) {
+			if (shouldStripScope(scope, stripScopes)) {
 				return packageName.slice(slashIndex + 1);
 			}
 		}
