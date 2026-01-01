@@ -30,7 +30,9 @@
 	"nx": {
 		"targets": {
 			"update": {
-				"dependsOn": ["ccl-test-runner-ts:build"]
+				"dependsOn": [
+					"ccl-test-runner-ts:build"
+				]
 			}
 		}
 	}
