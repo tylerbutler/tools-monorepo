@@ -1,4 +1,10 @@
 export { run } from "@oclif/core";
+export {
+	type FluidAdapterOptions,
+	type FluidHandler,
+	fromFluidHandler,
+	fromFluidHandlers,
+} from "./adapters/fluidFramework.js";
 export type {
 	// PolicyList,
 	RepopoConfig,
@@ -25,9 +31,3 @@ export {
 	definePackagePolicy as generatePackagePolicy,
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";
-export {
-	fromFluidHandler,
-	fromFluidHandlers,
-	type FluidAdapterOptions,
-	type FluidHandler,
-} from "./adapters/fluidFramework.js";

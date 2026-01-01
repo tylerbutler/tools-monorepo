@@ -143,7 +143,10 @@ describe("FluidFramework adapter", () => {
 					resolve: true,
 				});
 
-				expect(resolverCalled).toHaveBeenCalledWith(join(tempDir, file), tempDir);
+				expect(resolverCalled).toHaveBeenCalledWith(
+					join(tempDir, file),
+					tempDir,
+				);
 				expect(result).not.toBe(true);
 				if (typeof result === "object" && "resolved" in result) {
 					expect(result.resolved).toBe(true);
