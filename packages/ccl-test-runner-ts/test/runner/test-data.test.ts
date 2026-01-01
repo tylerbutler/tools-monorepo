@@ -8,9 +8,7 @@ import {
 	loadAllTests,
 	loadTestData,
 } from "../../src/test-data.js";
-
-// Test data path - use bundled data directory (checked into repo)
-const TEST_DATA_PATH = "./data";
+import { TEST_DATA_PATH } from "../ccl/test-config.js";
 
 // Helper to create mock test cases for unit tests
 function createMockTestCase(overrides: Partial<TestCase>): TestCase {

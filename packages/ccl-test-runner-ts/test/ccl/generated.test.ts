@@ -20,10 +20,7 @@ import {
 	shouldRunTest,
 } from "../../src/test-data.js";
 import type { CCLTestResult } from "../../src/vitest.js";
-import { STUB_PARSER_SKIP_TESTS } from "./test-config.js";
-
-// Test data path - use bundled data directory (checked into repo)
-const TEST_DATA_PATH = "./data";
+import { STUB_PARSER_SKIP_TESTS, TEST_DATA_PATH } from "./test-config.js";
 
 /**
  * Current implementation capabilities.

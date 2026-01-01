@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadAllTests } from "../../src/test-data.js";
-
-// Test data path - use bundled data directory (checked into repo)
-const TEST_DATA_PATH = "./data";
+import { TEST_DATA_PATH } from "../ccl/test-config.js";
 
 describe("Schema Type Validation", () => {
 	it("should validate TestCase structure matches actual JSON data", async () => {

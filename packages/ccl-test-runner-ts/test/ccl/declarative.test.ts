@@ -16,7 +16,7 @@ import {
 	getCCLTestSuiteInfo,
 	Variant,
 } from "../../src/vitest.js";
-import { STUB_PARSER_SKIP_TESTS } from "./test-config.js";
+import { STUB_PARSER_SKIP_TESTS, TEST_DATA_PATH } from "./test-config.js";
 
 /**
  * Define CCL test configuration.
@@ -28,8 +28,7 @@ const cclConfig = defineCCLTests({
 	name: "ccl-test-runner-ts-example",
 	version: "0.1.0",
 
-	// Path to bundled test data (checked into repo)
-	testDataPath: "./data",
+	testDataPath: TEST_DATA_PATH,
 
 	// Wire up only the functions you've implemented
 	functions: {
