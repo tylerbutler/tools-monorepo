@@ -7,6 +7,23 @@ export {
 	PackageAllowedScopes,
 	type PackageAllowedScopesConfig,
 } from "./policies/PackageAllowedScopes.js";
+export {
+	PackageCleanScript,
+	type PackageCleanScriptConfig,
+} from "./policies/PackageCleanScript.js";
+export {
+	PackageEsmType,
+	type PackageEsmTypeConfig,
+} from "./policies/PackageEsmType.js";
+export {
+	PackageFolderName,
+	type PackageFolderNameConfig,
+} from "./policies/PackageFolderName.js";
+export {
+	type FormatScriptRule,
+	PackageFormatScripts,
+	type PackageFormatScriptsConfig,
+} from "./policies/PackageFormatScripts.js";
 export { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
@@ -29,5 +46,9 @@ export {
 	type RequiredScriptEntry,
 	type ScriptMustContainRule,
 } from "./policies/PackageScripts.js";
+export {
+	PackageTestScripts,
+	type PackageTestScriptsConfig,
+} from "./policies/PackageTestScripts.js";
 export { RequiredGitignorePatterns } from "./policies/RequiredGitignorePatterns.js";
 export { DefaultPolicies } from "./policy.js";
