@@ -25,3 +25,9 @@ export {
 	definePackagePolicy as generatePackagePolicy,
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";
+export {
+	fromFluidHandler,
+	fromFluidHandlers,
+	type FluidAdapterOptions,
+	type FluidHandler,
+} from "./adapters/fluidFramework.js";
