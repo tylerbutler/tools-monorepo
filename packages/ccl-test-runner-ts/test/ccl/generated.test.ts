@@ -1,12 +1,10 @@
 /**
- * Dynamically generated CCL tests from ccl-test-data.
+ * Dynamically generated CCL tests from bundled test data.
  *
  * Tests are organized by validation function and use:
  * - test.todo() - validation function not yet implemented (throws NotYetImplementedError)
  * - context.skip(reason) - function not supported by implementation capabilities
  * - Regular test execution when all conditions are met
- *
- * Test data must be downloaded first: npx ccl-download-tests --output ./ccl-test-data
  */
 import { describe, expect, test } from "vitest";
 import {
@@ -24,8 +22,8 @@ import {
 import type { CCLTestResult } from "../../src/vitest.js";
 import { STUB_PARSER_SKIP_TESTS } from "./test-config.js";
 
-// Test data path - download first with: npx ccl-download-tests --output ./ccl-test-data
-const TEST_DATA_PATH = "./ccl-test-data";
+// Test data path - use bundled data directory (checked into repo)
+const TEST_DATA_PATH = "./data";
 
 /**
  * Current implementation capabilities.

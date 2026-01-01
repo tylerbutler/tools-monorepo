@@ -2,10 +2,9 @@
  * Example: Declarative CCL test suite using the vitest integration.
  *
  * This demonstrates the recommended approach for CCL implementers:
- * 1. Download test data: npx ccl-download-tests --output ./ccl-test-data
- * 2. Import defineCCLTests and wire up your functions
- * 3. Export the config for potential CLI tooling
- * 4. Tests are automatically generated with proper skip/todo handling
+ * 1. Import defineCCLTests and wire up your functions
+ * 2. Export the config for potential CLI tooling
+ * 3. Tests are automatically generated with proper skip/todo handling
  */
 import { describe, expect, test } from "vitest";
 import { parse } from "../../src/ccl.js";
@@ -29,8 +28,8 @@ const cclConfig = defineCCLTests({
 	name: "ccl-test-runner-ts-example",
 	version: "0.1.0",
 
-	// Path to downloaded test data (run: npx ccl-download-tests --output ./ccl-test-data)
-	testDataPath: "./ccl-test-data",
+	// Path to bundled test data (checked into repo)
+	testDataPath: "./data",
 
 	// Wire up only the functions you've implemented
 	functions: {
