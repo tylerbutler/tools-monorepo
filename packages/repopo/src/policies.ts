@@ -6,6 +6,10 @@ export { NoLargeBinaryFiles } from "./policies/NoLargeBinaryFiles.js";
 export { PackageJsonProperties } from "./policies/PackageJsonProperties.js";
 export { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 export { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
+export {
+	PackagePrivateField,
+	type PackagePrivateFieldConfig,
+} from "./policies/PackagePrivateField.js";
 export { PackageScripts } from "./policies/PackageScripts.js";
 export { RequiredGitignorePatterns } from "./policies/RequiredGitignorePatterns.js";
 export { DefaultPolicies } from "./policy.js";
