@@ -7,7 +7,7 @@
  * @packageDocumentation
  */
 
-// Re-export types from ccl-test-runner-ts for convenience
+// Core types
 export type {
 	CCLObject,
 	CCLValue,
@@ -15,6 +15,7 @@ export type {
 	HierarchyResult,
 	ParseError,
 	ParseResult,
-} from "ccl-test-runner-ts/types";
+} from "./types.js";
+
 // CCL functions
 export { buildHierarchy, parse } from "./ccl.js";

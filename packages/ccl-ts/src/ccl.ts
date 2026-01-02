@@ -5,7 +5,7 @@
  * See https://ccl.tylerbutler.com for the CCL specification.
  */
 
-import type { CCLObject, Entry } from "ccl-test-runner-ts/types";
+import type { CCLObject, Entry } from "./types.js";
 
 /**
  * Count leading whitespace characters (spaces and tabs).

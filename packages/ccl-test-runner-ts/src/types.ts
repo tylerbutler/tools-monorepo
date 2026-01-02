@@ -1,3 +1,11 @@
+// ============================================================================
+// Core CCL Types
+// ============================================================================
+// NOTE: These types are duplicated from ccl-ts to avoid circular dependencies.
+// The SOURCE OF TRUTH is in ccl-ts/src/types.ts.
+// If you modify these types, update ccl-ts/src/types.ts as well.
+// ============================================================================
+
 /**
  * A key-value entry from parsing CCL text.
  * This is the output of the `parse` function.
