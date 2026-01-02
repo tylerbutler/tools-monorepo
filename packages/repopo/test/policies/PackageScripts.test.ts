@@ -83,10 +83,10 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("Missing required scripts");
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("test");
-				expect(result.errorMessage).not.toContain("build");
+				expect(result.errorMessages?.[0]).toContain("Missing required scripts");
+				expect(result.errorMessages?.[0]).toContain("clean");
+				expect(result.errorMessages?.[0]).toContain("test");
+				expect(result.errorMessages?.[0]).not.toContain("build");
 			}
 		});
 
@@ -103,8 +103,8 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("Missing required scripts");
-				expect(result.errorMessage).toContain("build");
+				expect(result.errorMessages?.[0]).toContain("Missing required scripts");
+				expect(result.errorMessages?.[0]).toContain("build");
 			}
 		});
 
@@ -178,9 +178,9 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("mutually exclusive");
-				expect(result.errorMessage).toContain("test:unit");
-				expect(result.errorMessage).toContain("test:vitest");
+				expect(result.errorMessages?.[0]).toContain("mutually exclusive");
+				expect(result.errorMessages?.[0]).toContain("test:unit");
+				expect(result.errorMessages?.[0]).toContain("test:vitest");
 			}
 		});
 
@@ -210,11 +210,11 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				// Should fail for lint group only
-				expect(result.errorMessage).toContain("lint:eslint");
-				expect(result.errorMessage).toContain("lint:biome");
+				expect(result.errorMessages?.[0]).toContain("lint:eslint");
+				expect(result.errorMessages?.[0]).toContain("lint:biome");
 				// Should not mention the valid groups
-				expect(result.errorMessage).not.toContain("build:tsc");
-				expect(result.errorMessage).not.toContain("test:unit");
+				expect(result.errorMessages?.[0]).not.toContain("build:tsc");
+				expect(result.errorMessages?.[0]).not.toContain("test:unit");
 			}
 		});
 
@@ -275,10 +275,11 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("Missing required scripts");
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("mutually exclusive");
-				expect(result.errorMessage).toContain("test:unit");
+				const allErrors = result.errorMessages?.join(" ") ?? "";
+				expect(allErrors).toContain("Missing required scripts");
+				expect(allErrors).toContain("clean");
+				expect(allErrors).toContain("mutually exclusive");
+				expect(allErrors).toContain("test:unit");
 			}
 		});
 	});
@@ -298,7 +299,7 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("Missing required scripts");
+				expect(result.errorMessages?.[0]).toContain("Missing required scripts");
 			}
 		});
 
@@ -374,8 +375,8 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("mutually exclusive");
-				expect(result.errorMessage).toContain("2");
+				expect(result.errorMessages?.[0]).toContain("mutually exclusive");
+				expect(result.errorMessages?.[0]).toContain("2");
 			}
 		});
 	});

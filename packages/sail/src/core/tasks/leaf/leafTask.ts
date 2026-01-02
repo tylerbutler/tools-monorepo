@@ -297,10 +297,10 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 		if (ret.error) {
 			const codeStr =
 				ret.error.code !== undefined ? ` (exit code ${ret.error.code})` : "";
-			this.log.errorLog(
+			this.log.error(
 				`${this.node.pkg.nameColored}: error during command '${this.command}'${codeStr}`,
 			);
-			this.log.errorLog(this.getExecErrors(ret));
+			this.log.error(this.getExecErrors(ret));
 			return this.execDone(startTime, BuildResult.Failed);
 		}
 		if (ret.stderr) {

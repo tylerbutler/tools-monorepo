@@ -79,10 +79,12 @@
 		},
 		{
 			// sail infrastructure packages - allow namespace imports and complexity
+			// [TODO] Remove noBarrelFile override after refactoring sail to eliminate barrel files
 			"includes": ["packages/sail/**", "packages/sail-infrastructure/**"],
 			"linter": {
 				"rules": {
 					"performance": {
+						"noBarrelFile": "off",
 						"noNamespaceImport": "off",
 					},
 					"complexity": {
@@ -203,14 +205,19 @@
 			},
 		},
 		{
-			// Barrel exports (shadcn-svelte and library patterns)
-			"includes": ["**/components/ui/**/index.ts", "**/lib/index.ts"],
+			// Package entry points and UI component barrels (shadcn-svelte patterns)
+			"includes": [
+				"**/src/index.ts",
+				"**/components/ui/**/index.ts",
+				"**/lib/index.ts",
+			],
 			"linter": {
 				"rules": {
 					"style": {
 						"noExportedImports": "off",
 					},
 					"performance": {
+						"noBarrelFile": "off",
 						"noReExportAll": "off",
 					},
 				},

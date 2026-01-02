@@ -1,4 +1,3 @@
-import type { PathLike } from "node:fs";
 import { readFile } from "node:fs/promises";
 import type { Indent } from "detect-indent";
 import detectIndent from "detect-indent";
@@ -40,12 +39,12 @@ const defaultJsonWriteOptions = {
  * @beta
  */
 export async function readJsonWithIndent<J = unknown>(
-	filePath: PathLike,
+	filePath: string,
 ): Promise<{
 	json: J;
 	indent: Indent;
 }> {
-	const contents: string = await readFile(filePath, {
+	const contents = await readFile(filePath, {
 		encoding: "utf8",
 	});
 	const indent = detectIndent(contents);

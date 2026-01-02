@@ -106,7 +106,7 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		const errors = await registry.loadPlugins(plugins, this.root);
 		if (errors.length > 0) {
 			for (const error of errors) {
-				this.log.errorLog(`Failed to load plugin: ${error.message}`);
+				this.log.error(`Failed to load plugin: ${error.message}`);
 			}
 			// Don't fail the build, just log the errors
 		}
