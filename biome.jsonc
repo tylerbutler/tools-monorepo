@@ -43,6 +43,10 @@
 			// test data files used for testing (sail-infrastructure)
 			"!**/packages/sail-infrastructure/src/test/data",
 
+			// tree-sitter generated files
+			"!**/packages/tree-sitter-ccl/src/grammar.json",
+			"!**/packages/tree-sitter-ccl/src/node-types.json",
+
 			// auto-generated data files
 			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
 			"!**/packages/ccl-test-viewer/static/data/*.*",
