@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile";
+import picomatch from "picomatch";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -12,15 +13,17 @@ const { writeFile: writeJson } = jsonfile;
  * their scope or name. This is essential for monorepos where some packages should be
  * published to npm while others should remain internal.
  *
+ * All pattern matching uses glob patterns via picomatch.
+ *
  * @example
  * ```typescript
  * const config: PackagePrivateFieldConfig = {
- *   // Packages in @myorg scope must be published (private: false or absent)
- *   mustPublish: ["@myorg"],
- *   // Packages in @internal scope must be private
- *   mustBePrivate: ["@internal"],
- *   // Packages in @experimental scope can choose
- *   mayPublish: ["@experimental"],
+ *   // Packages in myorg scope must be published (private: false or absent)
+ *   mustPublish: ["@myorg/*"],
+ *   // Packages in internal scope must be private
+ *   mustBePrivate: ["@internal/*"],
+ *   // Packages in experimental scope can choose
+ *   mayPublish: ["@experimental/*"],
  * };
  * ```
  *
@@ -28,57 +31,54 @@ const { writeFile: writeJson } = jsonfile;
  */
 export interface PackagePrivateFieldConfig {
 	/**
-	 * A list of package scopes or exact package names that must be published.
+	 * A list of glob patterns for packages that must be published.
 	 *
 	 * Packages matching these patterns must NOT have `private: true` in their package.json.
 	 * If they do, the policy will fail and can auto-fix by removing the private field.
 	 *
 	 * @remarks
 	 *
-	 * - Scopes should start with `@` (e.g., `@myorg`)
-	 * - Exact package names can be specified (e.g., `my-package`)
-	 * - A scope matches any package within it (e.g., `@myorg` matches `@myorg/foo`)
+	 * Uses glob patterns via picomatch. Use "@scope/*" to match all packages in a scope,
+	 * or use exact package names.
 	 *
 	 * @example
 	 * ```typescript
-	 * mustPublish: ["@fluidframework", "@fluid-tools", "tinylicious"]
+	 * mustPublish: ["@fluidframework/*", "@fluid-tools/*", "tinylicious"]
 	 * ```
 	 */
 	mustPublish?: string[];
 
 	/**
-	 * A list of package scopes or exact package names that must be private.
+	 * A list of glob patterns for packages that must be private.
 	 *
 	 * Packages matching these patterns must have `private: true` in their package.json.
 	 * If they don't, the policy will fail and can auto-fix by adding `private: true`.
 	 *
 	 * @remarks
 	 *
-	 * - Scopes should start with `@` (e.g., `@internal`)
-	 * - Exact package names can be specified (e.g., `my-internal-package`)
-	 * - A scope matches any package within it
+	 * Uses glob patterns via picomatch (see mustPublish for pattern examples).
 	 *
 	 * @example
 	 * ```typescript
-	 * mustBePrivate: ["@fluid-internal", "@fluid-private"]
+	 * mustBePrivate: ["@fluid-internal/*", "@fluid-private/*"]
 	 * ```
 	 */
 	mustBePrivate?: string[];
 
 	/**
-	 * A list of package scopes or exact package names that may optionally be published.
+	 * A list of glob patterns for packages that may optionally be published.
 	 *
 	 * Packages matching these patterns can choose whether to be private or public.
 	 * The policy will not enforce either state for these packages.
 	 *
 	 * @remarks
 	 *
-	 * - Use this for experimental packages that might be published later
-	 * - Packages not matching any list default to requiring `private: true`
+	 * Uses glob patterns via picomatch (see mustPublish for pattern examples).
+	 * Packages not matching any list default to requiring `private: true`.
 	 *
 	 * @example
 	 * ```typescript
-	 * mayPublish: ["@fluid-experimental"]
+	 * mayPublish: ["@fluid-experimental/*"]
 	 * ```
 	 */
 	mayPublish?: string[];
@@ -98,8 +98,13 @@ export interface PackagePrivateFieldConfig {
 /**
  * Check if a package name matches any pattern in the list.
  *
+ * Supports glob patterns via picomatch. Use patterns like:
+ * - "@myorg/\*" - matches all packages in the myorg scope
+ * - "my-package" - exact match
+ * - "my-*" - matches my-foo, my-bar, etc.
+ *
  * @param packageName - The package name to check (e.g., `@myorg/foo`)
- * @param patterns - List of scopes or exact package names
+ * @param patterns - List of glob patterns or exact package names
  * @returns `true` if the package matches any pattern
  */
 function matchesAnyPattern(
@@ -110,22 +115,7 @@ function matchesAnyPattern(
 		return false;
 	}
 
-	for (const pattern of patterns) {
-		// If the pattern starts with @, treat it as a scope
-		if (pattern.startsWith("@")) {
-			// Match packages in this scope (e.g., @myorg matches @myorg/foo)
-			if (packageName.startsWith(`${pattern}/`)) {
-				return true;
-			}
-		}
-
-		// Exact match
-		if (packageName === pattern) {
-			return true;
-		}
-	}
-
-	return false;
+	return picomatch.isMatch(packageName, patterns);
 }
 
 /**
@@ -161,6 +151,8 @@ function getRequiredPrivateState(
 			return false;
 		case "ignore":
 			return undefined;
+		default:
+			throw new Error(`Unknown unmatchedPackages value: ${unmatchedBehavior}`);
 	}
 }
 
@@ -190,9 +182,9 @@ function getRequiredPrivateState(
  * const config: RepopoConfig = {
  *   policies: [
  *     makePolicy(PackagePrivateField, {
- *       mustPublish: ["@myorg"],
- *       mustBePrivate: ["@internal"],
- *       mayPublish: ["@experimental"],
+ *       mustPublish: ["@myorg/*"],
+ *       mustBePrivate: ["@internal/*"],
+ *       mayPublish: ["@experimental/*"],
  *       unmatchedPackages: "private",
  *     }),
  *   ],

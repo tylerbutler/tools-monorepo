@@ -1,4 +1,4 @@
-import path from "node:path";
+import path from "pathe";
 import picomatch from "picomatch";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure } from "../policy.js";

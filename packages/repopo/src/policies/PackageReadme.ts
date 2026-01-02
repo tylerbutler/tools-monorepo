@@ -4,6 +4,10 @@ import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
+// Pre-compiled regex for performance
+const LINE_SPLIT_REGEX = /\r?\n/;
+const HEADING_REGEX = /^#\s+(.+)$/;
+
 /**
  * Policy settings for the PackageReadme repo policy.
  *
@@ -57,9 +61,9 @@ export interface PackageReadmeSettings {
  * @returns The title text (without the `# ` prefix) or `undefined` if not found
  */
 function extractReadmeTitle(content: string): string | undefined {
-	const lines = content.split(/\r?\n/);
+	const lines = content.split(LINE_SPLIT_REGEX);
 	for (const line of lines) {
-		const match = line.match(/^#\s+(.+)$/);
+		const match = HEADING_REGEX.exec(line);
 		if (match) {
 			return match[1].trim();
 		}
@@ -102,7 +106,7 @@ function extractReadmeTitle(content: string): string | undefined {
 export const PackageReadme = definePackagePolicy<
 	PackageJson,
 	PackageReadmeSettings | undefined
->("PackageReadme", async (json, { file, root, resolve, config }) => {
+>("PackageReadme", async (json, { file, resolve, config }) => {
 	const skipPrivate = config?.skipPrivate ?? true;
 	const requireMatchingTitle = config?.requireMatchingTitle ?? true;
 	const requiredContent = config?.requiredContent;

@@ -34,6 +34,41 @@ export interface PackageLicenseSettings {
 const DEFAULT_LICENSE_FILE_NAME = "LICENSE";
 
 /**
+ * Copies the root LICENSE file to the package directory.
+ * @returns A PolicyFixResult indicating success or failure.
+ */
+function copyLicenseFile(
+	rootLicensePath: string,
+	packageLicensePath: string,
+	policyName: string,
+	file: string,
+	packageName: string,
+	licenseFileName: string,
+	isCreate: boolean,
+): PolicyFixResult {
+	try {
+		copyFileSync(rootLicensePath, packageLicensePath);
+		return {
+			name: policyName,
+			file,
+			resolved: true,
+			errorMessage: isCreate
+				? `Created ${licenseFileName} file for package "${packageName}"`
+				: `Updated ${licenseFileName} file for package "${packageName}" to match root`,
+		};
+	} catch {
+		return {
+			name: policyName,
+			file,
+			resolved: false,
+			errorMessage: isCreate
+				? `Failed to copy ${licenseFileName} to package "${packageName}"`
+				: `Failed to update ${licenseFileName} for package "${packageName}"`,
+		};
+	}
+}
+
+/**
  * A repo policy that ensures each package has a LICENSE file that matches the root LICENSE.
  *
  * @remarks
@@ -99,24 +134,15 @@ export const PackageLicense = definePackagePolicy<
 	// Check if package LICENSE exists
 	if (!existsSync(packageLicensePath)) {
 		if (resolve) {
-			try {
-				copyFileSync(rootLicensePath, packageLicensePath);
-				const result: PolicyFixResult = {
-					name: PackageLicense.name,
-					file,
-					resolved: true,
-					errorMessage: `Created ${licenseFileName} file for package "${packageName}"`,
-				};
-				return result;
-			} catch {
-				const result: PolicyFixResult = {
-					name: PackageLicense.name,
-					file,
-					resolved: false,
-					errorMessage: `Failed to copy ${licenseFileName} to package "${packageName}"`,
-				};
-				return result;
-			}
+			return copyLicenseFile(
+				rootLicensePath,
+				packageLicensePath,
+				PackageLicense.name,
+				file,
+				packageName,
+				licenseFileName,
+				true,
+			);
 		}
 
 		const result: PolicyFailure = {
@@ -134,24 +160,15 @@ export const PackageLicense = definePackagePolicy<
 
 	if (packageLicenseContent !== rootLicenseContent) {
 		if (resolve) {
-			try {
-				copyFileSync(rootLicensePath, packageLicensePath);
-				const result: PolicyFixResult = {
-					name: PackageLicense.name,
-					file,
-					resolved: true,
-					errorMessage: `Updated ${licenseFileName} file for package "${packageName}" to match root`,
-				};
-				return result;
-			} catch {
-				const result: PolicyFixResult = {
-					name: PackageLicense.name,
-					file,
-					resolved: false,
-					errorMessage: `Failed to update ${licenseFileName} for package "${packageName}"`,
-				};
-				return result;
-			}
+			return copyLicenseFile(
+				rootLicensePath,
+				packageLicensePath,
+				PackageLicense.name,
+				file,
+				packageName,
+				licenseFileName,
+				false,
+			);
 		}
 
 		const result: PolicyFailure = {
