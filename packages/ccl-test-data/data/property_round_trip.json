@@ -1,0 +1,436 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          },
+          {
+            "key": "nested",
+            "value": "\n  sub = val"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = value\nnested =\n  sub = val"
+      ],
+      "name": "round_trip_basic_parse",
+      "source_test": "round_trip_basic",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "key = value\nnested =\n  sub = val"
+      ],
+      "name": "round_trip_basic_round_trip",
+      "source_test": "round_trip_basic",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value  \n  nested  = \n    sub  =  val"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "  key  =  value  \n  nested  = \n    sub  =  val  "
+      ],
+      "name": "round_trip_whitespace_normalization_parse",
+      "source_test": "round_trip_whitespace_normalization",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "  key  =  value  \n  nested  = \n    sub  =  val  "
+      ],
+      "name": "round_trip_whitespace_normalization_round_trip",
+      "source_test": "round_trip_whitespace_normalization",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "",
+            "value": "item1"
+          },
+          {
+            "key": "",
+            "value": "item2"
+          },
+          {
+            "key": "regular",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "= item1\n= item2\nregular = value"
+      ],
+      "name": "round_trip_empty_keys_lists_parse",
+      "source_test": "round_trip_empty_keys_lists",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "= item1\n= item2\nregular = value"
+      ],
+      "name": "round_trip_empty_keys_lists_round_trip",
+      "source_test": "round_trip_empty_keys_lists",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "config",
+            "value": "\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin"
+      ],
+      "name": "round_trip_nested_structures_parse",
+      "source_test": "round_trip_nested_structures",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "config =\n  host = localhost\n  port = 8080\n  db =\n    name = mydb\n    user = admin"
+      ],
+      "name": "round_trip_nested_structures_round_trip",
+      "source_test": "round_trip_nested_structures",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "script",
+            "value": "\n  #!/bin/bash\n  echo hello\n  exit 0"
+          }
+        ]
+      },
+      "features": [
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "script =\n  #!/bin/bash\n  echo hello\n  exit 0"
+      ],
+      "name": "round_trip_multiline_values_parse",
+      "source_test": "round_trip_multiline_values",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "multiline"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "script =\n  #!/bin/bash\n  echo hello\n  exit 0"
+      ],
+      "name": "round_trip_multiline_values_round_trip",
+      "source_test": "round_trip_multiline_values",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 5,
+        "entries": [
+          {
+            "key": "name",
+            "value": "Alice"
+          },
+          {
+            "key": "",
+            "value": "first item"
+          },
+          {
+            "key": "config",
+            "value": "\n  port = 3000"
+          },
+          {
+            "key": "",
+            "value": "second item"
+          },
+          {
+            "key": "final",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "name = Alice\n= first item\nconfig =\n  port = 3000\n= second item\nfinal = value"
+      ],
+      "name": "round_trip_mixed_content_parse",
+      "source_test": "round_trip_mixed_content",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "name = Alice\n= first item\nconfig =\n  port = 3000\n= second item\nfinal = value"
+      ],
+      "name": "round_trip_mixed_content_round_trip",
+      "source_test": "round_trip_mixed_content",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "app",
+            "value": "\n  = item1\n  config =\n    = nested_item\n    db =\n      host = localhost\n      = db_item\n  = item2"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "app =\n  = item1\n  config =\n    = nested_item\n    db =\n      host = localhost\n      = db_item\n  = item2"
+      ],
+      "name": "round_trip_complex_nesting_parse",
+      "source_test": "round_trip_complex_nesting",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "app =\n  = item1\n  config =\n    = nested_item\n    db =\n      host = localhost\n      = db_item\n  = item2"
+      ],
+      "name": "round_trip_complex_nesting_round_trip",
+      "source_test": "round_trip_complex_nesting",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "level1",
+            "value": "\n  level2 =\n    level3 =\n      level4 =\n        deep = value\n        = deep_item"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "level1 =\n  level2 =\n    level3 =\n      level4 =\n        deep = value\n        = deep_item"
+      ],
+      "name": "round_trip_deeply_nested_parse",
+      "source_test": "round_trip_deeply_nested",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "level1 =\n  level2 =\n    level3 =\n      level4 =\n        deep = value\n        = deep_item"
+      ],
+      "name": "round_trip_deeply_nested_round_trip",
+      "source_test": "round_trip_deeply_nested",
+      "validation": "round_trip",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "empty_section",
+            "value": ""
+          },
+          {
+            "key": "other",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys",
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "empty_section =\n\nother = value"
+      ],
+      "name": "round_trip_empty_multiline_parse",
+      "source_test": "round_trip_empty_multiline",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "empty_keys",
+        "multiline"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "empty_section =\n\nother = value"
+      ],
+      "name": "round_trip_empty_multiline_round_trip",
+      "source_test": "round_trip_empty_multiline",
+      "validation": "round_trip",
+      "variants": []
+    }
+  ]
+}

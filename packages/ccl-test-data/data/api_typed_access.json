@@ -1,0 +1,2416 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "port",
+            "value": "8080"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "port = 8080"
+      ],
+      "name": "parse_basic_integer_parse",
+      "source_test": "parse_basic_integer",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "port": "8080"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "port = 8080"
+      ],
+      "name": "parse_basic_integer_build_hierarchy",
+      "source_test": "parse_basic_integer",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "port"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 8080
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "port = 8080"
+      ],
+      "name": "parse_basic_integer_get_int",
+      "source_test": "parse_basic_integer",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "temperature",
+            "value": "98.6"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "temperature = 98.6"
+      ],
+      "name": "parse_basic_float_parse",
+      "source_test": "parse_basic_float",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "temperature": "98.6"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "temperature = 98.6"
+      ],
+      "name": "parse_basic_float_build_hierarchy",
+      "source_test": "parse_basic_float",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "temperature"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 98.6
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_float"
+      ],
+      "inputs": [
+        "temperature = 98.6"
+      ],
+      "name": "parse_basic_float_get_float",
+      "source_test": "parse_basic_float",
+      "validation": "get_float",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "enabled",
+            "value": "true"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "enabled = true"
+      ],
+      "name": "parse_boolean_true_parse",
+      "source_test": "parse_boolean_true",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "enabled": "true"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "enabled = true"
+      ],
+      "name": "parse_boolean_true_build_hierarchy",
+      "source_test": "parse_boolean_true",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "enabled"
+      ],
+      "behaviors": [
+        "boolean_strict",
+        "boolean_lenient"
+      ],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "enabled = true"
+      ],
+      "name": "parse_boolean_true_get_bool",
+      "source_test": "parse_boolean_true",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "active",
+            "value": "yes"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "active = yes"
+      ],
+      "name": "parse_boolean_yes_parse",
+      "source_test": "parse_boolean_yes",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "active": "yes"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "active = yes"
+      ],
+      "name": "parse_boolean_yes_build_hierarchy",
+      "source_test": "parse_boolean_yes",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "active"
+      ],
+      "behaviors": [
+        "boolean_lenient"
+      ],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "active = yes"
+      ],
+      "name": "parse_boolean_yes_get_bool",
+      "source_test": "parse_boolean_yes",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "active",
+            "value": "yes"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "active = yes"
+      ],
+      "name": "parse_boolean_yes_strict_literal_parse",
+      "source_test": "parse_boolean_yes_strict_literal",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "active": "yes"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "active = yes"
+      ],
+      "name": "parse_boolean_yes_strict_literal_build_hierarchy",
+      "source_test": "parse_boolean_yes_strict_literal",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "active"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "active = yes"
+      ],
+      "name": "parse_boolean_yes_strict_literal_get_bool",
+      "source_test": "parse_boolean_yes_strict_literal",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "disabled",
+            "value": "false"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "disabled = false"
+      ],
+      "name": "parse_boolean_false_parse",
+      "source_test": "parse_boolean_false",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "disabled": "false"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "disabled = false"
+      ],
+      "name": "parse_boolean_false_build_hierarchy",
+      "source_test": "parse_boolean_false",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "disabled"
+      ],
+      "behaviors": [
+        "boolean_strict",
+        "boolean_lenient"
+      ],
+      "expected": {
+        "count": 1,
+        "value": false
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "disabled = false"
+      ],
+      "name": "parse_boolean_false_get_bool",
+      "source_test": "parse_boolean_false",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "name",
+            "value": "Alice"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "name = Alice"
+      ],
+      "name": "parse_string_fallback_parse",
+      "source_test": "parse_string_fallback",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "name": "Alice"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "name = Alice"
+      ],
+      "name": "parse_string_fallback_build_hierarchy",
+      "source_test": "parse_string_fallback",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "name"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "Alice"
+      },
+      "features": [],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "name = Alice"
+      ],
+      "name": "parse_string_fallback_get_string",
+      "source_test": "parse_string_fallback",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "offset",
+            "value": "-42"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "offset = -42"
+      ],
+      "name": "parse_negative_integer_parse",
+      "source_test": "parse_negative_integer",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "offset": "-42"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "offset = -42"
+      ],
+      "name": "parse_negative_integer_build_hierarchy",
+      "source_test": "parse_negative_integer",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "offset"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": -42
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "offset = -42"
+      ],
+      "name": "parse_negative_integer_get_int",
+      "source_test": "parse_negative_integer",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "count",
+            "value": "0"
+          },
+          {
+            "key": "distance",
+            "value": "0.0"
+          },
+          {
+            "key": "disabled",
+            "value": "no"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_parse",
+      "source_test": "parse_zero_values",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "count": "0",
+          "disabled": "no",
+          "distance": "0.0"
+        }
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_build_hierarchy",
+      "source_test": "parse_zero_values",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "count"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 0
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_get_int",
+      "source_test": "parse_zero_values",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "disabled"
+      ],
+      "behaviors": [
+        "boolean_lenient"
+      ],
+      "expected": {
+        "count": 1,
+        "value": false
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_get_bool",
+      "source_test": "parse_zero_values",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "args": [
+        "distance"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 0
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_float"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_get_float",
+      "source_test": "parse_zero_values",
+      "validation": "get_float",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "count",
+            "value": "0"
+          },
+          {
+            "key": "distance",
+            "value": "0.0"
+          },
+          {
+            "key": "disabled",
+            "value": "no"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_strict_literal_parse",
+      "source_test": "parse_zero_values_strict_literal",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "count": "0",
+          "disabled": "no",
+          "distance": "0.0"
+        }
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_strict_literal_build_hierarchy",
+      "source_test": "parse_zero_values_strict_literal",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "count"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 0
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_strict_literal_get_int",
+      "source_test": "parse_zero_values_strict_literal",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "disabled"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_strict_literal_get_bool",
+      "source_test": "parse_zero_values_strict_literal",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "args": [
+        "distance"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 0
+      },
+      "features": [
+        "empty_keys",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_float"
+      ],
+      "inputs": [
+        "count = 0\ndistance = 0.0\ndisabled = no"
+      ],
+      "name": "parse_zero_values_strict_literal_get_float",
+      "source_test": "parse_zero_values_strict_literal",
+      "validation": "get_float",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 7,
+        "entries": [
+          {
+            "key": "flag1",
+            "value": "yes"
+          },
+          {
+            "key": "flag2",
+            "value": "on"
+          },
+          {
+            "key": "flag3",
+            "value": "1"
+          },
+          {
+            "key": "flag4",
+            "value": "false"
+          },
+          {
+            "key": "flag5",
+            "value": "no"
+          },
+          {
+            "key": "flag6",
+            "value": "off"
+          },
+          {
+            "key": "flag7",
+            "value": "0"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+      ],
+      "name": "parse_boolean_variants_parse",
+      "source_test": "parse_boolean_variants",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "flag1": "yes",
+          "flag2": "on",
+          "flag3": "1",
+          "flag4": "false",
+          "flag5": "no",
+          "flag6": "off",
+          "flag7": "0"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+      ],
+      "name": "parse_boolean_variants_build_hierarchy",
+      "source_test": "parse_boolean_variants",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag3"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+      ],
+      "name": "parse_boolean_variants_get_int",
+      "source_test": "parse_boolean_variants",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag1"
+      ],
+      "behaviors": [
+        "boolean_lenient"
+      ],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+      ],
+      "name": "parse_boolean_variants_get_bool",
+      "source_test": "parse_boolean_variants",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 7,
+        "entries": [
+          {
+            "key": "flag1",
+            "value": "yes"
+          },
+          {
+            "key": "flag2",
+            "value": "on"
+          },
+          {
+            "key": "flag3",
+            "value": "1"
+          },
+          {
+            "key": "flag4",
+            "value": "false"
+          },
+          {
+            "key": "flag5",
+            "value": "no"
+          },
+          {
+            "key": "flag6",
+            "value": "off"
+          },
+          {
+            "key": "flag7",
+            "value": "0"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+      ],
+      "name": "parse_boolean_variants_strict_literal_parse",
+      "source_test": "parse_boolean_variants_strict_literal",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "flag1": "yes",
+          "flag2": "on",
+          "flag3": "1",
+          "flag4": "false",
+          "flag5": "no",
+          "flag6": "off",
+          "flag7": "0"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+      ],
+      "name": "parse_boolean_variants_strict_literal_build_hierarchy",
+      "source_test": "parse_boolean_variants_strict_literal",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag3"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+      ],
+      "name": "parse_boolean_variants_strict_literal_get_int",
+      "source_test": "parse_boolean_variants_strict_literal",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag1"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "flag1 = yes\nflag2 = on\nflag3 = 1\nflag4 = false\nflag5 = no\nflag6 = off\nflag7 = 0"
+      ],
+      "name": "parse_boolean_variants_strict_literal_get_bool",
+      "source_test": "parse_boolean_variants_strict_literal",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 5,
+        "entries": [
+          {
+            "key": "host",
+            "value": "localhost"
+          },
+          {
+            "key": "port",
+            "value": "8080"
+          },
+          {
+            "key": "ssl",
+            "value": "true"
+          },
+          {
+            "key": "timeout",
+            "value": "30.5"
+          },
+          {
+            "key": "debug",
+            "value": "off"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_parse",
+      "source_test": "parse_mixed_types",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "debug": "off",
+          "host": "localhost",
+          "port": "8080",
+          "ssl": "true",
+          "timeout": "30.5"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_build_hierarchy",
+      "source_test": "parse_mixed_types",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "host"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "localhost"
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_get_string",
+      "source_test": "parse_mixed_types",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "args": [
+        "port"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 8080
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_get_int",
+      "source_test": "parse_mixed_types",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "ssl"
+      ],
+      "behaviors": [
+        "boolean_lenient"
+      ],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_get_bool",
+      "source_test": "parse_mixed_types",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "args": [
+        "timeout"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 30.5
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_float"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_get_float",
+      "source_test": "parse_mixed_types",
+      "validation": "get_float",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 5,
+        "entries": [
+          {
+            "key": "host",
+            "value": "localhost"
+          },
+          {
+            "key": "port",
+            "value": "8080"
+          },
+          {
+            "key": "ssl",
+            "value": "true"
+          },
+          {
+            "key": "timeout",
+            "value": "30.5"
+          },
+          {
+            "key": "debug",
+            "value": "off"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_strict_literal_parse",
+      "source_test": "parse_mixed_types_strict_literal",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "debug": "off",
+          "host": "localhost",
+          "port": "8080",
+          "ssl": "true",
+          "timeout": "30.5"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_strict_literal_build_hierarchy",
+      "source_test": "parse_mixed_types_strict_literal",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "host"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "localhost"
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_strict_literal_get_string",
+      "source_test": "parse_mixed_types_strict_literal",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "args": [
+        "port"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 8080
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_strict_literal_get_int",
+      "source_test": "parse_mixed_types_strict_literal",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "ssl"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_strict_literal_get_bool",
+      "source_test": "parse_mixed_types_strict_literal",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "args": [
+        "timeout"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 30.5
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_float"
+      ],
+      "inputs": [
+        "host = localhost\nport = 8080\nssl = true\ntimeout = 30.5\ndebug = off"
+      ],
+      "name": "parse_mixed_types_strict_literal_get_float",
+      "source_test": "parse_mixed_types_strict_literal",
+      "validation": "get_float",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "number",
+            "value": "42"
+          },
+          {
+            "key": "flag",
+            "value": "true"
+          }
+        ]
+      },
+      "features": [
+        "whitespace",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "number =   42   \nflag =  true  "
+      ],
+      "name": "parse_with_whitespace_parse",
+      "source_test": "parse_with_whitespace",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "flag": "true",
+          "number": "42"
+        }
+      },
+      "features": [
+        "whitespace",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "number =   42   \nflag =  true  "
+      ],
+      "name": "parse_with_whitespace_build_hierarchy",
+      "source_test": "parse_with_whitespace",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "number"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 42
+      },
+      "features": [
+        "whitespace",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "number =   42   \nflag =  true  "
+      ],
+      "name": "parse_with_whitespace_get_int",
+      "source_test": "parse_with_whitespace",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "whitespace",
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "number =   42   \nflag =  true  "
+      ],
+      "name": "parse_with_whitespace_get_bool",
+      "source_test": "parse_with_whitespace",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "number",
+            "value": "42"
+          },
+          {
+            "key": "decimal",
+            "value": "3.14"
+          },
+          {
+            "key": "flag",
+            "value": "true"
+          },
+          {
+            "key": "text",
+            "value": "hello"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "number = 42\ndecimal = 3.14\nflag = true\ntext = hello"
+      ],
+      "name": "parse_with_conservative_options_parse",
+      "source_test": "parse_with_conservative_options",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "decimal": "3.14",
+          "flag": "true",
+          "number": "42",
+          "text": "hello"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "number = 42\ndecimal = 3.14\nflag = true\ntext = hello"
+      ],
+      "name": "parse_with_conservative_options_build_hierarchy",
+      "source_test": "parse_with_conservative_options",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "decimal"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "3.14"
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "number = 42\ndecimal = 3.14\nflag = true\ntext = hello"
+      ],
+      "name": "parse_with_conservative_options_get_string",
+      "source_test": "parse_with_conservative_options",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "args": [
+        "number"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 42
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "number = 42\ndecimal = 3.14\nflag = true\ntext = hello"
+      ],
+      "name": "parse_with_conservative_options_get_int",
+      "source_test": "parse_with_conservative_options",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "port",
+            "value": "not_a_number"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "port = not_a_number"
+      ],
+      "name": "parse_integer_error_parse",
+      "source_test": "parse_integer_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "port": "not_a_number"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "port = not_a_number"
+      ],
+      "name": "parse_integer_error_build_hierarchy",
+      "source_test": "parse_integer_error",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "port"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "port = not_a_number"
+      ],
+      "name": "parse_integer_error_get_int",
+      "source_test": "parse_integer_error",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "temperature",
+            "value": "invalid"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "temperature = invalid"
+      ],
+      "name": "parse_float_error_parse",
+      "source_test": "parse_float_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "temperature": "invalid"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "temperature = invalid"
+      ],
+      "name": "parse_float_error_build_hierarchy",
+      "source_test": "parse_float_error",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "temperature"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_float"
+      ],
+      "inputs": [
+        "temperature = invalid"
+      ],
+      "name": "parse_float_error_get_float",
+      "source_test": "parse_float_error",
+      "validation": "get_float",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "enabled",
+            "value": "maybe"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "enabled = maybe"
+      ],
+      "name": "parse_boolean_error_parse",
+      "source_test": "parse_boolean_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "enabled": "maybe"
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "enabled = maybe"
+      ],
+      "name": "parse_boolean_error_build_hierarchy",
+      "source_test": "parse_boolean_error",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "enabled"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "enabled = maybe"
+      ],
+      "name": "parse_boolean_error_get_bool",
+      "source_test": "parse_boolean_error",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "existing",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "existing = value"
+      ],
+      "name": "parse_missing_path_error_parse",
+      "source_test": "parse_missing_path_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "existing": "value"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "existing = value"
+      ],
+      "name": "parse_missing_path_error_build_hierarchy",
+      "source_test": "parse_missing_path_error",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "missing"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1
+      },
+      "features": [],
+      "functions": [
+        "get_string"
+      ],
+      "inputs": [
+        "existing = value"
+      ],
+      "name": "parse_missing_path_error_get_string",
+      "source_test": "parse_missing_path_error",
+      "validation": "get_string",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "upper_true",
+            "value": "TRUE"
+          },
+          {
+            "key": "upper_false",
+            "value": "FALSE"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "upper_true = TRUE\nupper_false = FALSE"
+      ],
+      "name": "boolean_case_sensitivity_uppercase_parse",
+      "source_test": "boolean_case_sensitivity_uppercase",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "upper_true"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "upper_true = TRUE\nupper_false = FALSE"
+      ],
+      "name": "boolean_case_sensitivity_uppercase_get_bool",
+      "source_test": "boolean_case_sensitivity_uppercase",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "mixed_true",
+            "value": "True"
+          },
+          {
+            "key": "mixed_false",
+            "value": "False"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "mixed_true = True\nmixed_false = False"
+      ],
+      "name": "boolean_case_sensitivity_mixed_parse",
+      "source_test": "boolean_case_sensitivity_mixed",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "mixed_true"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "mixed_true = True\nmixed_false = False"
+      ],
+      "name": "boolean_case_sensitivity_mixed_get_bool",
+      "source_test": "boolean_case_sensitivity_mixed",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "upper_yes",
+            "value": "YES"
+          },
+          {
+            "key": "upper_no",
+            "value": "NO"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "upper_yes = YES\nupper_no = NO"
+      ],
+      "name": "boolean_lenient_uppercase_yes_no_parse",
+      "source_test": "boolean_lenient_uppercase_yes_no",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "upper_yes"
+      ],
+      "behaviors": [
+        "boolean_lenient"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "upper_yes = YES\nupper_no = NO"
+      ],
+      "name": "boolean_lenient_uppercase_yes_no_get_bool",
+      "source_test": "boolean_lenient_uppercase_yes_no",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "one",
+            "value": "1"
+          },
+          {
+            "key": "zero",
+            "value": "0"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "one = 1\nzero = 0"
+      ],
+      "name": "boolean_numeric_one_zero_strict_parse",
+      "source_test": "boolean_numeric_one_zero_strict",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "one"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "one = 1\nzero = 0"
+      ],
+      "name": "boolean_numeric_one_zero_strict_get_int",
+      "source_test": "boolean_numeric_one_zero_strict",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "args": [
+        "one"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "one = 1\nzero = 0"
+      ],
+      "name": "boolean_numeric_one_zero_strict_get_bool",
+      "source_test": "boolean_numeric_one_zero_strict",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "padded",
+            "value": "true"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors",
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "padded =   true   "
+      ],
+      "name": "boolean_with_whitespace_parse",
+      "source_test": "boolean_with_whitespace",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "padded"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "optional_typed_accessors",
+        "whitespace"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "padded =   true   "
+      ],
+      "name": "boolean_with_whitespace_get_bool",
+      "source_test": "boolean_with_whitespace",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "debug": "true",
+            "experimental": "yes",
+            "verbose": "false"
+          }
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\n  debug = true\n  verbose = false\n  experimental = yes"
+      ],
+      "name": "boolean_nested_object_build_hierarchy",
+      "source_test": "boolean_nested_object",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "flag",
+            "value": "true"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "flag = true"
+      ],
+      "name": "type_mismatch_get_int_on_bool_parse",
+      "source_test": "type_mismatch_get_int_on_bool",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_int"
+      ],
+      "inputs": [
+        "flag = true"
+      ],
+      "name": "type_mismatch_get_int_on_bool_get_int",
+      "source_test": "type_mismatch_get_int_on_bool",
+      "validation": "get_int",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "number",
+            "value": "42"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "number = 42"
+      ],
+      "name": "type_mismatch_get_bool_on_int_parse",
+      "source_test": "type_mismatch_get_bool_on_int",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "number"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "number = 42"
+      ],
+      "name": "type_mismatch_get_bool_on_int_get_bool",
+      "source_test": "type_mismatch_get_bool_on_int",
+      "validation": "get_bool",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "flag",
+            "value": "false"
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "flag = false"
+      ],
+      "name": "type_mismatch_get_float_on_bool_parse",
+      "source_test": "type_mismatch_get_float_on_bool",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "flag"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_float"
+      ],
+      "inputs": [
+        "flag = false"
+      ],
+      "name": "type_mismatch_get_float_on_bool_get_float",
+      "source_test": "type_mismatch_get_float_on_bool",
+      "validation": "get_float",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "count": "abc",
+            "name": "test"
+          }
+        }
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\n  name = test\n  count = abc"
+      ],
+      "name": "type_mismatch_nested_path_build_hierarchy",
+      "source_test": "type_mismatch_nested_path",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "empty",
+            "value": ""
+          }
+        ]
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "empty ="
+      ],
+      "name": "boolean_empty_value_error_parse",
+      "source_test": "boolean_empty_value_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "args": [
+        "empty"
+      ],
+      "behaviors": [
+        "boolean_strict"
+      ],
+      "expected": {
+        "count": 1
+      },
+      "features": [
+        "optional_typed_accessors"
+      ],
+      "functions": [
+        "get_bool"
+      ],
+      "inputs": [
+        "empty ="
+      ],
+      "name": "boolean_empty_value_error_get_bool",
+      "source_test": "boolean_empty_value_error",
+      "validation": "get_bool",
+      "variants": []
+    }
+  ]
+}
