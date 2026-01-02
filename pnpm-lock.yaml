@@ -162,9 +162,6 @@ importers:
 
   packages/ccl-test-runner-ts:
     dependencies:
-      '@tylerbu/ccl-test-data':
-        specifier: workspace:^
-        version: link:../ccl-test-data
       citty:
         specifier: ^0.1.6
         version: 0.1.6
@@ -181,6 +178,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.3.8
         version: 2.3.8
+      '@tylerbu/ccl-test-data':
+        specifier: workspace:^
+        version: link:../ccl-test-data
       '@types/node':
         specifier: ^20.19.25
         version: 20.19.25
