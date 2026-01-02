@@ -1,4 +1,10 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import {
+	mkdirSync,
+	mkdtempSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "pathe";
 import type { PackageJson } from "type-fest";
@@ -22,10 +28,10 @@ describe("PackageReadme policy", () => {
 
 	const createPackageJson = (
 		json: PackageJson,
-		subdir: string = "packages/my-pkg",
+		subdir = "packages/my-pkg",
 	): string => {
 		const pkgDir = join(tempDir, subdir);
-		require("node:fs").mkdirSync(pkgDir, { recursive: true });
+		mkdirSync(pkgDir, { recursive: true });
 		const filePath = join(pkgDir, "package.json");
 		writeFileSync(filePath, JSON.stringify(json, null, 2));
 		return join(subdir, "package.json");
@@ -34,7 +40,7 @@ describe("PackageReadme policy", () => {
 	const createArgs = (
 		file: string,
 		config?: PackageReadmeSettings,
-		resolve: boolean = false,
+		resolve = false,
 	): PolicyFunctionArguments<typeof config> => ({
 		file: join(tempDir, file),
 		root: tempDir,
@@ -93,7 +99,7 @@ describe("PackageReadme policy", () => {
 			}
 
 			// Verify README was created with correct title
-			const createdReadme = require("node:fs").readFileSync(
+			const createdReadme = readFileSync(
 				join(tempDir, "packages/my-pkg/README.md"),
 				"utf-8",
 			);
@@ -116,7 +122,7 @@ describe("PackageReadme policy", () => {
 				expect(result.resolved).toBe(true);
 			}
 
-			const createdReadme = require("node:fs").readFileSync(
+			const createdReadme = readFileSync(
 				join(tempDir, "packages/my-pkg/README.md"),
 				"utf-8",
 			);
@@ -243,7 +249,7 @@ describe("PackageReadme policy", () => {
 				expect(result.resolved).toBe(true);
 			}
 
-			const updatedReadme = require("node:fs").readFileSync(
+			const updatedReadme = readFileSync(
 				join(tempDir, "packages/my-pkg/README.md"),
 				"utf-8",
 			);

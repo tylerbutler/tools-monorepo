@@ -1,6 +1,5 @@
 import jsonfile from "jsonfile";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
@@ -175,6 +174,8 @@ export interface PackageScriptsSettings {
 	scriptMustContain?: ScriptMustContainRule[];
 }
 
+const POLICY_NAME = "PackageScripts";
+
 /**
  * Extracts script name and optional default value from a RequiredScriptEntry.
  */
@@ -191,8 +192,26 @@ function parseRequiredEntry(entry: RequiredScriptEntry): {
 			`Invalid required script entry: expected single key-value pair, got ${keys.length} keys`,
 		);
 	}
-	const name = keys[0];
-	return { name, defaultValue: entry[name] };
+	// biome-ignore lint/style/noNonNullAssertion: we verified length is 1
+	const name = keys[0]!;
+	const defaultValue = entry[name];
+	// Only include defaultValue if it's defined (exactOptionalPropertyTypes)
+	return defaultValue !== undefined ? { name, defaultValue } : { name };
+}
+
+/**
+ * Extract defaults from RequiredScriptEntry array.
+ */
+function extractDefaultsFromEntries(
+	entries: RequiredScriptEntry[],
+	defaults: Record<string, string>,
+): void {
+	for (const entry of entries) {
+		const { name, defaultValue } = parseRequiredEntry(entry);
+		if (defaultValue !== undefined) {
+			defaults[name] = defaultValue;
+		}
+	}
 }
 
 /**
@@ -205,31 +224,19 @@ function buildDefaultsMap(
 
 	// Add defaults from must entries
 	if (config.must) {
-		for (const entry of config.must) {
-			const { name, defaultValue } = parseRequiredEntry(entry);
-			if (defaultValue !== undefined) {
-				defaults[name] = defaultValue;
-			}
-		}
+		extractDefaultsFromEntries(config.must, defaults);
 	}
 
 	// Add defaults from conditionalRequired entries
 	if (config.conditionalRequired) {
 		for (const rule of config.conditionalRequired) {
-			for (const entry of rule.requires) {
-				const { name, defaultValue } = parseRequiredEntry(entry);
-				if (defaultValue !== undefined) {
-					defaults[name] = defaultValue;
-				}
-			}
+			extractDefaultsFromEntries(rule.requires, defaults);
 		}
 	}
 
 	// Add defaults from exact (these override must/conditionalRequired if both specified)
 	if (config.exact) {
-		for (const [name, value] of Object.entries(config.exact)) {
-			defaults[name] = value;
-		}
+		Object.assign(defaults, config.exact);
 	}
 
 	return defaults;
@@ -323,6 +330,317 @@ function validateScriptContents(
 }
 
 /**
+ * Result of validating required scripts.
+ */
+interface MustScriptsResult {
+	errors: string[];
+	missingWithDefaults: string[];
+}
+
+/**
+ * Validates required scripts from 'must' config.
+ */
+function validateMustScripts(
+	must: RequiredScriptEntry[],
+	scripts: PackageJson["scripts"],
+): MustScriptsResult {
+	const missingScripts: string[] = [];
+	const missingWithDefaults: string[] = [];
+
+	for (const entry of must) {
+		const { name, defaultValue } = parseRequiredEntry(entry);
+		if (!(scripts && Object.hasOwn(scripts, name))) {
+			missingScripts.push(name);
+			if (defaultValue !== undefined) {
+				missingWithDefaults.push(name);
+			}
+		}
+	}
+
+	const errors: string[] = [];
+	if (missingScripts.length > 0) {
+		errors.push(`Missing required scripts:\n\t${missingScripts.join("\n\t")}`);
+	}
+
+	return { errors, missingWithDefaults };
+}
+
+/**
+ * Result of validating exact scripts.
+ */
+interface ExactScriptsResult {
+	errors: string[];
+	missingWithDefaults: string[];
+	mismatchedScripts: string[];
+}
+
+/**
+ * Validates scripts from 'exact' config - must exist AND match exactly.
+ */
+function validateExactScripts(
+	exact: Record<string, string>,
+	scripts: PackageJson["scripts"],
+): ExactScriptsResult {
+	const errors: string[] = [];
+	const missingWithDefaults: string[] = [];
+	const mismatchedScripts: string[] = [];
+
+	for (const [scriptName, expectedValue] of Object.entries(exact)) {
+		if (scripts && Object.hasOwn(scripts, scriptName)) {
+			const actualValue = scripts[scriptName];
+			if (actualValue !== expectedValue) {
+				mismatchedScripts.push(scriptName);
+				errors.push(
+					`Script "${scriptName}" must be "${expectedValue}", but found "${actualValue}"`,
+				);
+			}
+		} else {
+			missingWithDefaults.push(scriptName);
+			errors.push(`Missing required script: ${scriptName}`);
+		}
+	}
+
+	return { errors, missingWithDefaults, mismatchedScripts };
+}
+
+/**
+ * Result of validating conditional requirements.
+ */
+interface ConditionalResult {
+	errors: string[];
+	missingWithDefaults: string[];
+}
+
+/**
+ * Find missing scripts from a conditional rule's requirements.
+ */
+function findMissingFromRule(
+	rule: ConditionalScriptRule,
+	scripts: PackageJson["scripts"],
+): string[] {
+	return rule.requires
+		.map((entry) => parseRequiredEntry(entry).name)
+		.filter((name) => !(scripts && Object.hasOwn(scripts, name)));
+}
+
+/**
+ * Validates conditional requirements and tracks missing scripts with defaults.
+ */
+function validateConditionalWithDefaults(
+	rules: ConditionalScriptRule[],
+	scripts: PackageJson["scripts"],
+	defaultScripts: Record<string, string>,
+	existingMissingWithDefaults: string[],
+): ConditionalResult {
+	const errors: string[] = [];
+	const missingWithDefaults: string[] = [];
+	const allTracked = new Set(existingMissingWithDefaults);
+
+	for (const rule of rules) {
+		if (!(scripts && Object.hasOwn(scripts, rule.ifPresent))) {
+			continue;
+		}
+
+		const missingRequired = findMissingFromRule(rule, scripts);
+
+		for (const scriptName of missingRequired) {
+			if (scriptName in defaultScripts && !allTracked.has(scriptName)) {
+				missingWithDefaults.push(scriptName);
+				allTracked.add(scriptName);
+			}
+		}
+
+		if (missingRequired.length > 0) {
+			errors.push(
+				`Script "${rule.ifPresent}" is present, but required companion script(s) missing: ${missingRequired.join(", ")}`,
+			);
+		}
+	}
+
+	return { errors, missingWithDefaults };
+}
+
+/**
+ * Apply fixes to scripts and return the updated scripts object.
+ */
+function applyScriptFixes(
+	scripts: PackageJson["scripts"],
+	missingScriptsWithDefaults: string[],
+	mismatchedScripts: string[],
+	defaultScripts: Record<string, string>,
+): { updatedScripts: Record<string, string>; fixedScripts: string[] } {
+	const updatedScripts: Record<string, string> = {};
+
+	// Copy existing scripts, filtering out undefined values
+	if (scripts) {
+		for (const [key, value] of Object.entries(scripts)) {
+			if (value !== undefined) {
+				updatedScripts[key] = value;
+			}
+		}
+	}
+
+	const fixedScripts: string[] = [];
+
+	for (const scriptName of missingScriptsWithDefaults) {
+		const defaultValue = defaultScripts[scriptName];
+		if (defaultValue !== undefined) {
+			updatedScripts[scriptName] = defaultValue;
+			fixedScripts.push(scriptName);
+		}
+	}
+
+	for (const scriptName of mismatchedScripts) {
+		const defaultValue = defaultScripts[scriptName];
+		if (defaultValue !== undefined && !fixedScripts.includes(scriptName)) {
+			updatedScripts[scriptName] = defaultValue;
+			fixedScripts.push(scriptName);
+		}
+	}
+
+	return { updatedScripts, fixedScripts };
+}
+
+/**
+ * Validate 'must' scripts and return any remaining missing scripts.
+ */
+function validateRemainingMustScripts(
+	must: RequiredScriptEntry[],
+	scripts: Record<string, string>,
+): string[] {
+	const stillMissing = must
+		.map((entry) => parseRequiredEntry(entry).name)
+		.filter((name) => !Object.hasOwn(scripts, name));
+
+	if (stillMissing.length > 0) {
+		return [`Missing required scripts:\n\t${stillMissing.join("\n\t")}`];
+	}
+	return [];
+}
+
+/**
+ * Validate 'exact' scripts and return any errors.
+ */
+function validateRemainingExactScripts(
+	exact: Record<string, string>,
+	scripts: Record<string, string>,
+): string[] {
+	const errors: string[] = [];
+	for (const [scriptName, expectedValue] of Object.entries(exact)) {
+		if (!Object.hasOwn(scripts, scriptName)) {
+			errors.push(`Missing required script: ${scriptName}`);
+		} else if (scripts[scriptName] !== expectedValue) {
+			errors.push(
+				`Script "${scriptName}" must be "${expectedValue}", but found "${scripts[scriptName]}"`,
+			);
+		}
+	}
+	return errors;
+}
+
+/**
+ * Re-validate all rules after applying fixes.
+ */
+function revalidateAfterFix(
+	config: PackageScriptsSettings,
+	updatedScripts: Record<string, string>,
+): string[] {
+	const errors: string[] = [];
+
+	if (config.mutuallyExclusive && config.mutuallyExclusive.length > 0) {
+		errors.push(
+			...validateMutuallyExclusiveScripts(
+				config.mutuallyExclusive,
+				updatedScripts,
+			),
+		);
+	}
+
+	if (config.scriptMustContain && config.scriptMustContain.length > 0) {
+		errors.push(
+			...validateScriptContents(config.scriptMustContain, updatedScripts),
+		);
+	}
+
+	if (config.must && config.must.length > 0) {
+		errors.push(...validateRemainingMustScripts(config.must, updatedScripts));
+	}
+
+	if (config.exact && Object.keys(config.exact).length > 0) {
+		errors.push(...validateRemainingExactScripts(config.exact, updatedScripts));
+	}
+
+	if (config.conditionalRequired && config.conditionalRequired.length > 0) {
+		errors.push(
+			...validateConditionalRequirements(
+				config.conditionalRequired,
+				updatedScripts,
+			),
+		);
+	}
+
+	return errors;
+}
+
+/**
+ * Result of running all script validations.
+ */
+interface AllValidationsResult {
+	errors: string[];
+	missingWithDefaults: string[];
+	mismatchedScripts: string[];
+}
+
+/**
+ * Run all script validations and aggregate results.
+ */
+function runAllValidations(
+	config: PackageScriptsSettings,
+	scripts: PackageJson["scripts"],
+	defaultScripts: Record<string, string>,
+): AllValidationsResult {
+	const errors: string[] = [];
+	const missingWithDefaults: string[] = [];
+	let mismatchedScripts: string[] = [];
+
+	if (config.must && config.must.length > 0) {
+		const result = validateMustScripts(config.must, scripts);
+		errors.push(...result.errors);
+		missingWithDefaults.push(...result.missingWithDefaults);
+	}
+
+	if (config.exact && Object.keys(config.exact).length > 0) {
+		const result = validateExactScripts(config.exact, scripts);
+		errors.push(...result.errors);
+		missingWithDefaults.push(...result.missingWithDefaults);
+		mismatchedScripts = result.mismatchedScripts;
+	}
+
+	if (config.mutuallyExclusive && config.mutuallyExclusive.length > 0) {
+		errors.push(
+			...validateMutuallyExclusiveScripts(config.mutuallyExclusive, scripts),
+		);
+	}
+
+	if (config.conditionalRequired && config.conditionalRequired.length > 0) {
+		const result = validateConditionalWithDefaults(
+			config.conditionalRequired,
+			scripts,
+			defaultScripts,
+			missingWithDefaults,
+		);
+		errors.push(...result.errors);
+		missingWithDefaults.push(...result.missingWithDefaults);
+	}
+
+	if (config.scriptMustContain && config.scriptMustContain.length > 0) {
+		errors.push(...validateScriptContents(config.scriptMustContain, scripts));
+	}
+
+	return { errors, missingWithDefaults, mismatchedScripts };
+}
+
+/**
  * A RepoPolicy that validates package.json scripts based on configurable rules.
  *
  * @remarks
@@ -374,231 +692,56 @@ export const PackageScripts = definePackagePolicy<
 		return true;
 	}
 
-	const hasScriptsField = Object.hasOwn(json, "scripts");
-	const scripts = hasScriptsField ? json.scripts : {};
-	const errorMessages: string[] = [];
-
-	// Build a map of all default values for auto-fix
+	const scripts = Object.hasOwn(json, "scripts") ? json.scripts : {};
 	const defaultScripts = buildDefaultsMap(config);
 
-	// Track which missing scripts have defaults available for auto-fix
-	const missingScriptsWithDefaults: string[] = [];
-	// Track which existing scripts don't match their exact values
-	const mismatchedScripts: string[] = [];
+	const { errors, missingWithDefaults, mismatchedScripts } = runAllValidations(
+		config,
+		scripts,
+		defaultScripts,
+	);
 
-	// Validate required scripts from 'must'
-	if (config.must && config.must.length > 0) {
-		const missingScripts: string[] = [];
-		for (const entry of config.must) {
-			const { name, defaultValue } = parseRequiredEntry(entry);
-			if (!(scripts && Object.hasOwn(scripts, name))) {
-				missingScripts.push(name);
-				// Check if this missing script has a default for auto-fix
-				if (defaultValue !== undefined) {
-					missingScriptsWithDefaults.push(name);
-				}
-			}
-		}
-
-		if (missingScripts.length > 0) {
-			errorMessages.push(
-				`Missing required scripts:\n\t${missingScripts.join("\n\t")}`,
-			);
-		}
+	if (errors.length === 0) {
+		return true;
 	}
 
-	// Validate scripts from 'exact' - must exist AND match exactly
-	if (config.exact && Object.keys(config.exact).length > 0) {
-		for (const [scriptName, expectedValue] of Object.entries(config.exact)) {
-			if (scripts && Object.hasOwn(scripts, scriptName)) {
-				// Script exists - check if it matches
-				const actualValue = scripts[scriptName];
-				if (actualValue !== expectedValue) {
-					mismatchedScripts.push(scriptName);
-					errorMessages.push(
-						`Script "${scriptName}" must be "${expectedValue}", but found "${actualValue}"`,
-					);
-				}
-			} else {
-				// Script is missing
-				missingScriptsWithDefaults.push(scriptName);
-				errorMessages.push(`Missing required script: ${scriptName}`);
-			}
-		}
-	}
-
-	// Validate mutually exclusive script groups
-	if (config.mutuallyExclusive && config.mutuallyExclusive.length > 0) {
-		errorMessages.push(
-			...validateMutuallyExclusiveScripts(config.mutuallyExclusive, scripts),
-		);
-	}
-
-	// Validate conditional requirements (if X exists, Y must also exist)
-	if (config.conditionalRequired && config.conditionalRequired.length > 0) {
-		for (const rule of config.conditionalRequired) {
-			// Check if the triggering script exists
-			if (scripts && Object.hasOwn(scripts, rule.ifPresent)) {
-				// Find missing required scripts
-				const missingRequired: string[] = [];
-				for (const entry of rule.requires) {
-					const { name } = parseRequiredEntry(entry);
-					if (!(scripts && Object.hasOwn(scripts, name))) {
-						missingRequired.push(name);
-					}
-				}
-
-				for (const scriptName of missingRequired) {
-					// Check if this missing script has a default for auto-fix
-					if (
-						scriptName in defaultScripts &&
-						!missingScriptsWithDefaults.includes(scriptName)
-					) {
-						missingScriptsWithDefaults.push(scriptName);
-					}
-				}
-
-				if (missingRequired.length > 0) {
-					errorMessages.push(
-						`Script "${rule.ifPresent}" is present, but required companion script(s) missing: ${missingRequired.join(", ")}`,
-					);
-				}
-			}
-		}
-	}
-
-	// Validate script body contents
-	if (config.scriptMustContain && config.scriptMustContain.length > 0) {
-		errorMessages.push(
-			...validateScriptContents(config.scriptMustContain, scripts),
-		);
-	}
-
-	// Determine if errors are auto-fixable
 	const hasAutoFixableErrors =
-		missingScriptsWithDefaults.length > 0 || mismatchedScripts.length > 0;
+		missingWithDefaults.length > 0 || mismatchedScripts.length > 0;
 
-	if (errorMessages.length > 0) {
-		// If we can auto-fix and resolve is requested, apply the fix
-		if (resolve && hasAutoFixableErrors) {
-			// Create a new scripts object with defaults for missing/mismatched scripts
-			const updatedScripts: Record<string, string> = { ...scripts };
-			const fixedScripts: string[] = [];
+	if (resolve && hasAutoFixableErrors) {
+		const { updatedScripts, fixedScripts } = applyScriptFixes(
+			scripts,
+			missingWithDefaults,
+			mismatchedScripts,
+			defaultScripts,
+		);
 
-			// Fix missing scripts
-			for (const scriptName of missingScriptsWithDefaults) {
-				if (scriptName in defaultScripts) {
-					updatedScripts[scriptName] = defaultScripts[scriptName];
-					fixedScripts.push(scriptName);
-				}
-			}
+		try {
+			await jsonfile.writeFile(
+				file,
+				{ ...json, scripts: updatedScripts },
+				{ spaces: 2 },
+			);
+			const postFixErrors = revalidateAfterFix(config, updatedScripts);
 
-			// Fix mismatched scripts (overwrite with defaults)
-			for (const scriptName of mismatchedScripts) {
-				if (scriptName in defaultScripts) {
-					updatedScripts[scriptName] = defaultScripts[scriptName];
-					if (!fixedScripts.includes(scriptName)) {
-						fixedScripts.push(scriptName);
-					}
-				}
-			}
-
-			// Update the package.json
-			const updatedJson: PackageJson = {
-				...json,
-				scripts: updatedScripts,
+			return {
+				name: POLICY_NAME,
+				file,
+				resolved: postFixErrors.length === 0,
+				errorMessage:
+					postFixErrors.length > 0
+						? `Fixed scripts: ${fixedScripts.join(", ")}. Remaining errors:\n${postFixErrors.join("\n\n")}`
+						: `Fixed scripts: ${fixedScripts.join(", ")}`,
 			};
-
-			try {
-				await jsonfile.writeFile(file, updatedJson, { spaces: 2 });
-
-				// Recalculate remaining errors properly after fix
-				const postFixErrors: string[] = [];
-
-				// Re-validate mutually exclusive (these can't be auto-fixed)
-				if (config.mutuallyExclusive && config.mutuallyExclusive.length > 0) {
-					postFixErrors.push(
-						...validateMutuallyExclusiveScripts(
-							config.mutuallyExclusive,
-							updatedScripts,
-						),
-					);
-				}
-
-				// Re-validate script contents (these can't be auto-fixed)
-				if (config.scriptMustContain && config.scriptMustContain.length > 0) {
-					postFixErrors.push(
-						...validateScriptContents(config.scriptMustContain, updatedScripts),
-					);
-				}
-
-				// Re-validate required scripts with the updated scripts
-				if (config.must && config.must.length > 0) {
-					const stillMissing: string[] = [];
-					for (const entry of config.must) {
-						const { name } = parseRequiredEntry(entry);
-						if (!Object.hasOwn(updatedScripts, name)) {
-							stillMissing.push(name);
-						}
-					}
-					if (stillMissing.length > 0) {
-						postFixErrors.push(
-							`Missing required scripts:\n\t${stillMissing.join("\n\t")}`,
-						);
-					}
-				}
-
-				// Re-validate exact scripts
-				if (config.exact && Object.keys(config.exact).length > 0) {
-					for (const [scriptName, expectedValue] of Object.entries(
-						config.exact,
-					)) {
-						if (!Object.hasOwn(updatedScripts, scriptName)) {
-							postFixErrors.push(`Missing required script: ${scriptName}`);
-						} else if (updatedScripts[scriptName] !== expectedValue) {
-							postFixErrors.push(
-								`Script "${scriptName}" must be "${expectedValue}", but found "${updatedScripts[scriptName]}"`,
-							);
-						}
-					}
-				}
-
-				// Re-validate conditional requirements
-				if (
-					config.conditionalRequired &&
-					config.conditionalRequired.length > 0
-				) {
-					postFixErrors.push(
-						...validateConditionalRequirements(
-							config.conditionalRequired,
-							updatedScripts,
-						),
-					);
-				}
-
-				const fixResult: PolicyFixResult = {
-					name: PackageScripts.name,
-					file,
-					resolved: postFixErrors.length === 0,
-					errorMessage:
-						postFixErrors.length > 0
-							? `Fixed scripts: ${fixedScripts.join(", ")}. Remaining errors:\n${postFixErrors.join("\n\n")}`
-							: `Fixed scripts: ${fixedScripts.join(", ")}`,
-				};
-				return fixResult;
-			} catch {
-				// Fall through to return regular failure
-			}
+		} catch {
+			// Fall through to return regular failure
 		}
-
-		const failResult: PolicyFailure = {
-			name: PackageScripts.name,
-			file,
-			autoFixable: hasAutoFixableErrors,
-			errorMessage: errorMessages.join("\n\n"),
-		};
-		return failResult;
 	}
 
-	return true;
+	return {
+		name: POLICY_NAME,
+		file,
+		autoFixable: hasAutoFixableErrors,
+		errorMessage: errors.join("\n\n"),
+	};
 });

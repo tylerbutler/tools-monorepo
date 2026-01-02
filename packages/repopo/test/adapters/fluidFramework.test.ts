@@ -109,8 +109,8 @@ describe("FluidFramework adapter", () => {
 			const fluidHandler: FluidHandler = {
 				name: "path-checker",
 				match: /\.ts$/,
-				handler: async (file) => {
-					receivedPath(file);
+				handler: async (handlerFile) => {
+					receivedPath(handlerFile);
 					return undefined;
 				},
 			};
@@ -130,8 +130,8 @@ describe("FluidFramework adapter", () => {
 					name: "fixable",
 					match: /\.ts$/,
 					handler: async () => "needs fix",
-					resolver: async (file, root) => {
-						resolverCalled(file, root);
+					resolver: async (resolverFile, root) => {
+						resolverCalled(resolverFile, root);
 						return { resolved: true, message: "Fixed!" };
 					},
 				};

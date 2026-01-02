@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "pathe";
 import type { PackageJson } from "type-fest";
@@ -405,9 +405,7 @@ describe("PackagePrivateField policy", () => {
 			}
 
 			// Verify the file was updated
-			const updatedJson = JSON.parse(
-				require("node:fs").readFileSync(filePath, "utf-8"),
-			);
+			const updatedJson = JSON.parse(readFileSync(filePath, "utf-8"));
 			expect(updatedJson.private).toBe(true);
 		});
 
@@ -430,9 +428,7 @@ describe("PackagePrivateField policy", () => {
 			}
 
 			// Verify the file was updated
-			const updatedJson = JSON.parse(
-				require("node:fs").readFileSync(filePath, "utf-8"),
-			);
+			const updatedJson = JSON.parse(readFileSync(filePath, "utf-8"));
 			expect(updatedJson.private).toBeUndefined();
 		});
 	});

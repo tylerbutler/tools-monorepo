@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import path from "node:path";
+import { dirname, join } from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -104,7 +104,7 @@ function hasTestDirectory(
 	testDirectories: string[],
 ): boolean {
 	for (const testDir of testDirectories) {
-		const testPath = path.join(packageDir, testDir);
+		const testPath = join(packageDir, testDir);
 		if (existsSync(testPath)) {
 			return true;
 		}
@@ -123,12 +123,58 @@ function hasTestDependency(
 		return false;
 	}
 
-	for (const dep of testDependencies) {
-		if (devDependencies[dep] !== undefined) {
-			return true;
-		}
+	return testDependencies.some((dep) => devDependencies[dep] !== undefined);
+}
+
+/**
+ * Find missing scripts from the required list.
+ */
+function findMissingScripts(
+	scripts: PackageJson["scripts"],
+	requiredScripts: string[],
+): string[] {
+	return requiredScripts.filter(
+		(scriptName) => scripts?.[scriptName] === undefined,
+	);
+}
+
+/**
+ * Get the list of test dependencies that are present in devDependencies.
+ */
+function getPresentTestDependencies(
+	devDependencies: Record<string, string> | undefined,
+	testDependencies: string[],
+): string[] {
+	if (devDependencies === undefined) {
+		return [];
 	}
-	return false;
+	return testDependencies.filter((d) => devDependencies[d] !== undefined);
+}
+
+/**
+ * Check if a package should be validated based on config and package properties.
+ */
+function shouldSkipValidation(
+	json: PackageJson,
+	config: PackageTestScriptsConfig,
+): boolean {
+	const packageName = json.name;
+
+	// Skip packages without a name or root package
+	if (packageName === undefined || packageName === "root") {
+		return true;
+	}
+
+	// Check exclusions
+	if (isExcluded(packageName, config.excludePackages)) {
+		return true;
+	}
+
+	// Skip if neither directories nor dependencies are configured
+	const testDirectories = config.testDirectories ?? [];
+	const testDependencies = config.testDependencies ?? [];
+
+	return testDirectories.length === 0 && testDependencies.length === 0;
 }
 
 /**
@@ -173,20 +219,8 @@ export const PackageTestScripts = definePackagePolicy<
 		return true;
 	}
 
-	const packageName = json.name;
-
-	// Skip packages without a name
-	if (packageName === undefined) {
-		return true;
-	}
-
-	// Skip the root package
-	if (packageName === "root") {
-		return true;
-	}
-
-	// Check exclusions
-	if (isExcluded(packageName, config.excludePackages)) {
+	// Skip validation based on package properties and config
+	if (shouldSkipValidation(json, config)) {
 		return true;
 	}
 
@@ -194,39 +228,22 @@ export const PackageTestScripts = definePackagePolicy<
 	const testDirectories = config.testDirectories ?? [];
 	const testDependencies = config.testDependencies ?? [];
 	const requiredScripts = config.requiredScripts ?? ["test"];
-
-	// If neither directories nor dependencies are configured, skip validation
-	if (testDirectories.length === 0 && testDependencies.length === 0) {
-		return true;
-	}
-
-	// Determine the package directory
-	const packageDir = path.dirname(file);
+	const packageDir = dirname(file);
+	const devDeps = json.devDependencies as Record<string, string> | undefined;
 
 	// Check if tests are expected based on what's configured
 	const hasTestDir =
 		testDirectories.length > 0 && hasTestDirectory(packageDir, testDirectories);
 	const hasTestDep =
-		testDependencies.length > 0 &&
-		hasTestDependency(
-			json.devDependencies as Record<string, string> | undefined,
-			testDependencies,
-		);
+		testDependencies.length > 0 && hasTestDependency(devDeps, testDependencies);
 
 	// If no tests expected based on configured checks, pass
-	if (!hasTestDir && !hasTestDep) {
+	if (!(hasTestDir || hasTestDep)) {
 		return true;
 	}
 
 	// Tests are expected - check for required scripts
-	const scripts = json.scripts ?? {};
-	const missingScripts: string[] = [];
-
-	for (const scriptName of requiredScripts) {
-		if (scripts[scriptName] === undefined) {
-			missingScripts.push(scriptName);
-		}
-	}
+	const missingScripts = findMissingScripts(json.scripts, requiredScripts);
 
 	if (missingScripts.length === 0) {
 		return true;
@@ -234,14 +251,14 @@ export const PackageTestScripts = definePackagePolicy<
 
 	// Build error message
 	const reason = hasTestDir
-		? `test directory exists`
-		: `test dependencies found (${testDependencies.filter((d) => (json.devDependencies as Record<string, string> | undefined)?.[d] !== undefined).join(", ")})`;
+		? "test directory exists"
+		: `test dependencies found (${getPresentTestDependencies(devDeps, testDependencies).join(", ")})`;
 
 	const failResult: PolicyFailure = {
 		name: PackageTestScripts.name,
 		file,
 		autoFixable: false,
-		errorMessage: `Package "${packageName}" has ${reason} but is missing test scripts: ${missingScripts.join(", ")}`,
+		errorMessage: `Package "${json.name}" has ${reason} but is missing test scripts: ${missingScripts.join(", ")}`,
 	};
 
 	return failResult;

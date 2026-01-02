@@ -32,6 +32,7 @@ export interface PackageLicenseSettings {
 }
 
 const DEFAULT_LICENSE_FILE_NAME = "LICENSE";
+const POLICY_NAME = "PackageLicense";
 
 /**
  * Copies the root LICENSE file to the package directory.
@@ -123,7 +124,7 @@ export const PackageLicense = definePackagePolicy<
 	// Check if root LICENSE exists
 	if (!existsSync(rootLicensePath)) {
 		const result: PolicyFailure = {
-			name: PackageLicense.name,
+			name: POLICY_NAME,
 			file,
 			autoFixable: false,
 			errorMessage: `Cannot validate package LICENSE: root ${licenseFileName} file not found`,
@@ -137,7 +138,7 @@ export const PackageLicense = definePackagePolicy<
 			return copyLicenseFile(
 				rootLicensePath,
 				packageLicensePath,
-				PackageLicense.name,
+				POLICY_NAME,
 				file,
 				packageName,
 				licenseFileName,
@@ -146,7 +147,7 @@ export const PackageLicense = definePackagePolicy<
 		}
 
 		const result: PolicyFailure = {
-			name: PackageLicense.name,
+			name: POLICY_NAME,
 			file,
 			autoFixable: true,
 			errorMessage: `${licenseFileName} file missing for package "${packageName}"`,
@@ -163,7 +164,7 @@ export const PackageLicense = definePackagePolicy<
 			return copyLicenseFile(
 				rootLicensePath,
 				packageLicensePath,
-				PackageLicense.name,
+				POLICY_NAME,
 				file,
 				packageName,
 				licenseFileName,
@@ -172,7 +173,7 @@ export const PackageLicense = definePackagePolicy<
 		}
 
 		const result: PolicyFailure = {
-			name: PackageLicense.name,
+			name: POLICY_NAME,
 			file,
 			autoFixable: true,
 			errorMessage: `${licenseFileName} file in package "${packageName}" doesn't match root ${licenseFileName}`,

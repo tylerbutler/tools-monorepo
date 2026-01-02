@@ -64,11 +64,179 @@ function extractReadmeTitle(content: string): string | undefined {
 	const lines = content.split(LINE_SPLIT_REGEX);
 	for (const line of lines) {
 		const match = HEADING_REGEX.exec(line);
-		if (match) {
+		if (match?.[1]) {
 			return match[1].trim();
 		}
 	}
 	return undefined;
+}
+
+/**
+ * Create a basic README content with package name as title.
+ */
+function createReadmeContent(
+	packageName: string,
+	requiredContent?: string,
+): string {
+	let content = `# ${packageName}\n`;
+	if (requiredContent) {
+		content += `\n${requiredContent}\n`;
+	}
+	return content;
+}
+
+/**
+ * Handle case when README is missing.
+ */
+function handleMissingReadme(
+	readmePath: string,
+	packageName: string,
+	file: string,
+	resolve: boolean,
+	requiredContent?: string,
+): PolicyFailure | PolicyFixResult {
+	if (resolve) {
+		try {
+			writeFileSync(
+				readmePath,
+				createReadmeContent(packageName, requiredContent),
+			);
+			return {
+				name: "PackageReadme",
+				file,
+				resolved: true,
+				errorMessage: `Created README.md for package "${packageName}"`,
+			};
+		} catch {
+			return {
+				name: "PackageReadme",
+				file,
+				resolved: false,
+				errorMessage: `Failed to create README.md for package "${packageName}"`,
+			};
+		}
+	}
+
+	return {
+		name: "PackageReadme",
+		file,
+		autoFixable: true,
+		errorMessage: `README.md missing for package "${packageName}"`,
+	};
+}
+
+/**
+ * Validate README title against package name.
+ */
+function validateTitle(
+	readmeContent: string,
+	packageName: string,
+): string | undefined {
+	const title = extractReadmeTitle(readmeContent);
+	if (title !== packageName) {
+		return `README title "${title ?? "(none)"}" doesn't match package name "${packageName}"`;
+	}
+	return undefined;
+}
+
+/**
+ * Handle required content validation and auto-fix.
+ */
+function handleRequiredContent(
+	readmePath: string,
+	readmeContent: string,
+	requiredContent: string,
+	resolve: boolean,
+): { error?: string; fixed: boolean } {
+	if (readmeContent.includes(requiredContent)) {
+		return { fixed: false };
+	}
+
+	if (resolve) {
+		try {
+			const newContent = readmeContent.endsWith("\n")
+				? `${readmeContent}${requiredContent}\n`
+				: `${readmeContent}\n${requiredContent}\n`;
+			writeFileSync(readmePath, newContent);
+			return {
+				error: `README missing required content: "${requiredContent}"`,
+				fixed: true,
+			};
+		} catch {
+			// Fall through to report error
+		}
+	}
+
+	return {
+		error: `README missing required content: "${requiredContent}"`,
+		fixed: false,
+	};
+}
+
+interface ValidationContext {
+	readmePath: string;
+	readmeContent: string;
+	packageName: string;
+	file: string;
+	resolve: boolean;
+	requireMatchingTitle: boolean;
+	requiredContent: string | undefined;
+}
+
+/**
+ * Validate existing README content.
+ */
+function validateExistingReadme(
+	ctx: ValidationContext,
+): true | PolicyFailure | PolicyFixResult {
+	const errors: string[] = [];
+	let wasFixed = false;
+
+	// Check title matches package name
+	if (ctx.requireMatchingTitle) {
+		const titleError = validateTitle(ctx.readmeContent, ctx.packageName);
+		if (titleError) {
+			errors.push(titleError);
+		}
+	}
+
+	// Check required content
+	if (ctx.requiredContent) {
+		const contentResult = handleRequiredContent(
+			ctx.readmePath,
+			ctx.readmeContent,
+			ctx.requiredContent,
+			ctx.resolve,
+		);
+		if (contentResult.error) {
+			errors.push(contentResult.error);
+		}
+		if (contentResult.fixed) {
+			wasFixed = true;
+		}
+	}
+
+	if (errors.length === 0) {
+		return true;
+	}
+
+	if (wasFixed) {
+		return {
+			name: "PackageReadme",
+			file: ctx.file,
+			resolved: true,
+			errorMessage: errors.join("; "),
+		};
+	}
+
+	return {
+		name: "PackageReadme",
+		file: ctx.file,
+		autoFixable:
+			ctx.requiredContent !== undefined &&
+			!ctx.readmeContent.includes(ctx.requiredContent),
+		errorMessage: errors.join("; "),
+	};
 }
 
 /**
@@ -122,97 +290,23 @@ export const PackageReadme = definePackagePolicy<
 
 	// Check if README exists
 	if (!existsSync(readmePath)) {
-		if (resolve) {
-			try {
-				// Create a basic README with the package name as title
-				let content = `# ${packageName}\n`;
-				if (requiredContent) {
-					content += `\n${requiredContent}\n`;
-				}
-				writeFileSync(readmePath, content);
-				const result: PolicyFixResult = {
-					name: PackageReadme.name,
-					file,
-					resolved: true,
-					errorMessage: `Created README.md for package "${packageName}"`,
-				};
-				return result;
-			} catch {
-				const result: PolicyFixResult = {
-					name: PackageReadme.name,
-					file,
-					resolved: false,
-					errorMessage: `Failed to create README.md for package "${packageName}"`,
-				};
-				return result;
-			}
-		}
-
-		const result: PolicyFailure = {
-			name: PackageReadme.name,
+		return handleMissingReadme(
+			readmePath,
+			packageName,
 			file,
-			autoFixable: true,
-			errorMessage: `README.md missing for package "${packageName}"`,
-		};
-		return result;
+			resolve,
+			requiredContent,
+		);
 	}
 
 	// README exists, validate content
-	const readmeContent = readFileSync(readmePath, "utf-8");
-	const errors: string[] = [];
-	let needsFix = false;
-
-	// Check title matches package name
-	if (requireMatchingTitle) {
-		const title = extractReadmeTitle(readmeContent);
-		if (title !== packageName) {
-			errors.push(
-				`README title "${title ?? "(none)"}" doesn't match package name "${packageName}"`,
-			);
-			// Title mismatch is not auto-fixable without potentially losing content
-			needsFix = false;
-		}
-	}
-
-	// Check required content
-	if (requiredContent && !readmeContent.includes(requiredContent)) {
-		errors.push(`README missing required content: "${requiredContent}"`);
-
-		if (resolve) {
-			try {
-				// Append required content
-				const newContent = readmeContent.endsWith("\n")
-					? `${readmeContent}${requiredContent}\n`
-					: `${readmeContent}\n${requiredContent}\n`;
-				writeFileSync(readmePath, newContent);
-				needsFix = true;
-			} catch {
-				// Fall through to report error
-			}
-		}
-	}
-
-	if (errors.length > 0) {
-		if (needsFix) {
-			const result: PolicyFixResult = {
-				name: PackageReadme.name,
-				file,
-				resolved: true,
-				errorMessage: errors.join("; "),
-			};
-			return result;
-		}
-
-		const result: PolicyFailure = {
-			name: PackageReadme.name,
-			file,
-			autoFixable:
-				requiredContent !== undefined &&
-				!readmeContent.includes(requiredContent),
-			errorMessage: errors.join("; "),
-		};
-		return result;
-	}
-
-	return true;
+	return validateExistingReadme({
+		readmePath,
+		readmeContent: readFileSync(readmePath, "utf-8"),
+		packageName,
+		file,
+		resolve,
+		requireMatchingTitle,
+		requiredContent,
+	});
 });

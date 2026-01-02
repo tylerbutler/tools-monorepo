@@ -1,4 +1,10 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import {
+	mkdirSync,
+	mkdtempSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "pathe";
 import type { PackageJson } from "type-fest";
@@ -26,10 +32,10 @@ describe("PackageLicense policy", () => {
 
 	const createPackageJson = (
 		json: PackageJson,
-		subdir: string = "packages/my-pkg",
+		subdir = "packages/my-pkg",
 	): string => {
 		const pkgDir = join(tempDir, subdir);
-		require("node:fs").mkdirSync(pkgDir, { recursive: true });
+		mkdirSync(pkgDir, { recursive: true });
 		const filePath = join(pkgDir, "package.json");
 		writeFileSync(filePath, JSON.stringify(json, null, 2));
 		return join(subdir, "package.json");
@@ -38,7 +44,7 @@ describe("PackageLicense policy", () => {
 	const createArgs = (
 		file: string,
 		config?: PackageLicenseSettings,
-		resolve: boolean = false,
+		resolve = false,
 	): PolicyFunctionArguments<typeof config> => ({
 		file: join(tempDir, file), // Full path for handler to read JSON
 		root: tempDir,
@@ -98,7 +104,7 @@ describe("PackageLicense policy", () => {
 			}
 
 			// Verify LICENSE was created
-			const createdLicense = require("node:fs").readFileSync(
+			const createdLicense = readFileSync(
 				join(tempDir, "packages/my-pkg/LICENSE"),
 				"utf-8",
 			);
@@ -149,7 +155,7 @@ describe("PackageLicense policy", () => {
 			}
 
 			// Verify LICENSE was updated
-			const updatedLicense = require("node:fs").readFileSync(
+			const updatedLicense = readFileSync(
 				join(tempDir, "packages/my-pkg/LICENSE"),
 				"utf-8",
 			);
