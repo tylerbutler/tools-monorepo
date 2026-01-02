@@ -1,0 +1,215 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "name",
+            "value": "Alice"
+          },
+          {
+            "key": "age",
+            "value": "42"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "name = Alice\nage = 42"
+      ],
+      "name": "basic_key_value_pairs_parse",
+      "source_test": "basic_key_value_pairs",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "msg",
+            "value": "k=v pairs work fine"
+          },
+          {
+            "key": "path",
+            "value": "/bin/app=prod"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "msg = k=v pairs work fine\npath = /bin/app=prod"
+      ],
+      "name": "equals_in_values_parse",
+      "source_test": "equals_in_values",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value with spaces"
+          },
+          {
+            "key": "other",
+            "value": "normal"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "  key   =    value with spaces   \nother = normal"
+      ],
+      "name": "whitespace_trimming_parse",
+      "source_test": "whitespace_trimming",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "description",
+            "value": "First line\n  Second line\n  Third line"
+          },
+          {
+            "key": "done",
+            "value": "yes"
+          }
+        ]
+      },
+      "features": [
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "description = First line\n  Second line\n  Third line\ndone = yes"
+      ],
+      "name": "multiline_values_parse",
+      "source_test": "multiline_values",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "empty",
+            "value": ""
+          },
+          {
+            "key": "other",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "empty =\nother = value"
+      ],
+      "name": "empty_values_parse",
+      "source_test": "empty_values",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "database",
+            "value": "\n  host = localhost\n  port = 5432"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "database =\n  host = localhost\n  port = 5432"
+      ],
+      "name": "nested_structure_parsing_parse",
+      "source_test": "nested_structure_parsing",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "emoji",
+            "value": "😀😃😄"
+          },
+          {
+            "key": "配置",
+            "value": "config"
+          }
+        ]
+      },
+      "features": [
+        "unicode"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "emoji = 😀😃😄\n配置 = config"
+      ],
+      "name": "unicode_parsing_parse",
+      "source_test": "unicode_parsing",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        ""
+      ],
+      "name": "empty_input_parse",
+      "source_test": "empty_input",
+      "validation": "parse",
+      "variants": []
+    }
+  ]
+}

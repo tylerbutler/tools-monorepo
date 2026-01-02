@@ -1,0 +1,590 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "a",
+            "value": "1"
+          },
+          {
+            "key": "b",
+            "value": "2"
+          },
+          {
+            "key": "b",
+            "value": "20"
+          },
+          {
+            "key": "c",
+            "value": "3"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "a = 1\nb = 2\nb = 20\nc = 3"
+      ],
+      "name": "composition_stability_duplicate_keys_parse",
+      "source_test": "composition_stability_duplicate_keys",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "ports",
+            "value": "8000"
+          },
+          {
+            "key": "ports",
+            "value": "8001"
+          },
+          {
+            "key": "ports",
+            "value": "8002"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "ports = 8000\nports = 8001\nports = 8002"
+      ],
+      "name": "multiple_values_same_key_parse",
+      "source_test": "multiple_values_same_key",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "",
+            "value": "3"
+          },
+          {
+            "key": "",
+            "value": "1"
+          },
+          {
+            "key": "",
+            "value": "2"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "= 3\n= 1\n= 2"
+      ],
+      "name": "list_with_empty_keys_parse",
+      "source_test": "list_with_empty_keys",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Section 2 =="
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== Section 2 =="
+      ],
+      "name": "section_style_syntax_parse",
+      "source_test": "section_style_syntax",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "b",
+            "value": "20"
+          },
+          {
+            "key": "c",
+            "value": "3"
+          },
+          {
+            "key": "a",
+            "value": "1"
+          },
+          {
+            "key": "b",
+            "value": "2"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "b = 20\nc = 3\na = 1\nb = 2"
+      ],
+      "name": "composition_stability_ba_parse",
+      "source_test": "composition_stability_ba",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "name",
+            "value": "app"
+          },
+          {
+            "key": "ports",
+            "value": "8000"
+          },
+          {
+            "key": "name",
+            "value": "service"
+          },
+          {
+            "key": "ports",
+            "value": "8001"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "name = app\nports = 8000\nname = service\nports = 8001"
+      ],
+      "name": "mixed_keys_with_duplicates_parse",
+      "source_test": "mixed_keys_with_duplicates",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "1",
+            "value": ""
+          },
+          {
+            "key": "2",
+            "value": ""
+          },
+          {
+            "key": "3",
+            "value": ""
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "1 =\n2 =\n3 ="
+      ],
+      "name": "array_style_list_parse",
+      "source_test": "array_style_list",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Database Config =="
+          },
+          {
+            "key": "host",
+            "value": "localhost"
+          },
+          {
+            "key": "port",
+            "value": "5432"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== Database Config ==\nhost = localhost\nport = 5432"
+      ],
+      "name": "section_header_double_equals_parse",
+      "source_test": "section_header_double_equals",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "",
+            "value": "== Server Settings ==="
+          },
+          {
+            "key": "host",
+            "value": "0.0.0.0"
+          },
+          {
+            "key": "ssl",
+            "value": "true"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "=== Server Settings ===\nhost = 0.0.0.0\nssl = true"
+      ],
+      "name": "section_header_triple_equals_parse",
+      "source_test": "section_header_triple_equals",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 6,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Database =="
+          },
+          {
+            "key": "host",
+            "value": "localhost"
+          },
+          {
+            "key": "",
+            "value": "== Cache ==="
+          },
+          {
+            "key": "redis",
+            "value": "enabled"
+          },
+          {
+            "key": "",
+            "value": "= Logging =="
+          },
+          {
+            "key": "level",
+            "value": "info"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== Database ==\nhost = localhost\n\n=== Cache ===\nredis = enabled\n\n== Logging ==\nlevel = info"
+      ],
+      "name": "multiple_sections_with_entries_parse",
+      "source_test": "multiple_sections_with_entries",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 6,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Configuration =="
+          },
+          {
+            "key": "",
+            "value": "item1"
+          },
+          {
+            "key": "",
+            "value": "item2"
+          },
+          {
+            "key": "key",
+            "value": "value"
+          },
+          {
+            "key": "",
+            "value": "== Next Section ==="
+          },
+          {
+            "key": "other",
+            "value": "data"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== Configuration ==\n= item1\n= item2\nkey = value\n=== Next Section ===\nother = data"
+      ],
+      "name": "section_headers_mixed_with_lists_parse",
+      "source_test": "section_headers_mixed_with_lists",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Empty Section =="
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== Empty Section =="
+      ],
+      "name": "empty_section_header_only_parse",
+      "source_test": "empty_section_header_only",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          },
+          {
+            "key": "",
+            "value": "= Final Section =="
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key = value\n== Final Section =="
+      ],
+      "name": "section_header_at_end_parse",
+      "source_test": "section_header_at_end",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Database Config"
+          },
+          {
+            "key": "host",
+            "value": "localhost"
+          },
+          {
+            "key": "",
+            "value": "== Server Settings"
+          },
+          {
+            "key": "port",
+            "value": "8080"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== Database Config\nhost = localhost\n=== Server Settings\nport = 8080"
+      ],
+      "name": "section_headers_no_trailing_equals_parse",
+      "source_test": "section_headers_no_trailing_equals",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Database: Production =="
+          },
+          {
+            "key": "host",
+            "value": "db.prod.com"
+          },
+          {
+            "key": "",
+            "value": "== Cache: Redis Config ==="
+          },
+          {
+            "key": "port",
+            "value": "6379"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== Database: Production ==\nhost = db.prod.com\n=== Cache: Redis Config ===\nport = 6379"
+      ],
+      "name": "section_headers_with_colons_parse",
+      "source_test": "section_headers_with_colons",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "",
+            "value": "= spaced equals"
+          },
+          {
+            "key": "",
+            "value": "= wide spaces"
+          },
+          {
+            "key": "",
+            "value": "= Real Header =="
+          },
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "= = spaced equals\n=  = wide spaces\n== Real Header ==\nkey = value"
+      ],
+      "name": "spaced_equals_not_section_header_parse",
+      "source_test": "spaced_equals_not_section_header",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "",
+            "value": "= First Section =="
+          },
+          {
+            "key": "",
+            "value": "== Nested Section ==="
+          },
+          {
+            "key": "",
+            "value": "=== Deep Section ===="
+          },
+          {
+            "key": "key",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== First Section ==\n=== Nested Section ===\n==== Deep Section ====\nkey = value"
+      ],
+      "name": "consecutive_section_headers_parse",
+      "source_test": "consecutive_section_headers",
+      "validation": "parse",
+      "variants": []
+    }
+  ]
+}

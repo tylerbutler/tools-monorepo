@@ -1,0 +1,1152 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "item",
+            "value": "single"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "item = single"
+      ],
+      "name": "single_item_as_list_reference_parse",
+      "source_test": "single_item_as_list_reference",
+      "validation": "parse",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "item": "single"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "item = single"
+      ],
+      "name": "single_item_as_list_reference_build_hierarchy",
+      "source_test": "single_item_as_list_reference",
+      "validation": "build_hierarchy",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "args": [
+        "item"
+      ],
+      "behaviors": [
+        "list_coercion_disabled"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "item = single"
+      ],
+      "name": "single_item_as_list_reference_get_list",
+      "source_test": "single_item_as_list_reference",
+      "validation": "get_list",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "ports",
+            "value": "80"
+          },
+          {
+            "key": "ports",
+            "value": "443"
+          },
+          {
+            "key": "host",
+            "value": "localhost"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "ports = 80\nports = 443\nhost = localhost"
+      ],
+      "name": "mixed_duplicate_single_keys_reference_parse",
+      "source_test": "mixed_duplicate_single_keys_reference",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "host": "localhost",
+          "ports": [
+            "443",
+            "80"
+          ]
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "ports = 80\nports = 443\nhost = localhost"
+      ],
+      "name": "mixed_duplicate_single_keys_reference_build_hierarchy",
+      "source_test": "mixed_duplicate_single_keys_reference",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "host"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "ports = 80\nports = 443\nhost = localhost"
+      ],
+      "name": "mixed_duplicate_single_keys_reference_get_list",
+      "source_test": "mixed_duplicate_single_keys_reference",
+      "validation": "get_list",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "database",
+            "value": "\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+      ],
+      "name": "nested_list_access_reference_parse",
+      "source_test": "nested_list_access_reference",
+      "validation": "parse",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "database": {
+            "hosts": [
+              "primary",
+              "secondary"
+            ],
+            "port": "5432"
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+      ],
+      "name": "nested_list_access_reference_build_hierarchy",
+      "source_test": "nested_list_access_reference",
+      "validation": "build_hierarchy",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "args": [
+        "database",
+        "port"
+      ],
+      "behaviors": [
+        "list_coercion_disabled"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "database =\n  hosts = primary\n  hosts = secondary\n  port = 5432"
+      ],
+      "name": "nested_list_access_reference_get_list",
+      "source_test": "nested_list_access_reference",
+      "validation": "get_list",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "empty_list",
+            "value": ""
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "empty_list ="
+      ],
+      "name": "empty_list_reference_parse",
+      "source_test": "empty_list_reference",
+      "validation": "parse",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "empty_list": ""
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "empty_list ="
+      ],
+      "name": "empty_list_reference_build_hierarchy",
+      "source_test": "empty_list_reference",
+      "validation": "build_hierarchy",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "args": [
+        "empty_list"
+      ],
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "empty_list ="
+      ],
+      "name": "empty_list_reference_get_list",
+      "source_test": "empty_list_reference",
+      "validation": "get_list",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "numbers",
+            "value": "1"
+          },
+          {
+            "key": "numbers",
+            "value": "42"
+          },
+          {
+            "key": "numbers",
+            "value": "-17"
+          },
+          {
+            "key": "numbers",
+            "value": "0"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"
+      ],
+      "name": "list_with_numbers_reference_parse",
+      "source_test": "list_with_numbers_reference",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "numbers": [
+            "-17",
+            "0",
+            "1",
+            "42"
+          ]
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"
+      ],
+      "name": "list_with_numbers_reference_build_hierarchy",
+      "source_test": "list_with_numbers_reference",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "numbers"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "numbers = 1\nnumbers = 42\nnumbers = -17\nnumbers = 0"
+      ],
+      "name": "list_with_numbers_reference_get_list",
+      "source_test": "list_with_numbers_reference",
+      "validation": "get_list",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "flags",
+            "value": "true"
+          },
+          {
+            "key": "flags",
+            "value": "false"
+          },
+          {
+            "key": "flags",
+            "value": "yes"
+          },
+          {
+            "key": "flags",
+            "value": "no"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "flags = true\nflags = false\nflags = yes\nflags = no"
+      ],
+      "name": "list_with_booleans_reference_parse",
+      "source_test": "list_with_booleans_reference",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "flags": [
+            "false",
+            "no",
+            "true",
+            "yes"
+          ]
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "flags = true\nflags = false\nflags = yes\nflags = no"
+      ],
+      "name": "list_with_booleans_reference_build_hierarchy",
+      "source_test": "list_with_booleans_reference",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "flags"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "flags = true\nflags = false\nflags = yes\nflags = no"
+      ],
+      "name": "list_with_booleans_reference_get_list",
+      "source_test": "list_with_booleans_reference",
+      "validation": "get_list",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "items",
+            "value": "spaced"
+          },
+          {
+            "key": "items",
+            "value": "normal"
+          },
+          {
+            "key": "items",
+            "value": ""
+          },
+          {
+            "key": "items",
+            "value": ""
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "items =   spaced   \nitems = normal\nitems =\nitems =   "
+      ],
+      "name": "list_with_whitespace_reference_parse",
+      "source_test": "list_with_whitespace_reference",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "items": [
+            "normal",
+            "spaced"
+          ]
+        }
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "items =   spaced   \nitems = normal\nitems =\nitems =   "
+      ],
+      "name": "list_with_whitespace_reference_build_hierarchy",
+      "source_test": "list_with_whitespace_reference",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "items"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "items =   spaced   \nitems = normal\nitems =\nitems =   "
+      ],
+      "name": "list_with_whitespace_reference_get_list",
+      "source_test": "list_with_whitespace_reference",
+      "validation": "get_list",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "config",
+            "value": "\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+      ],
+      "name": "deeply_nested_list_reference_parse",
+      "source_test": "deeply_nested_list_reference",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "environments": {
+              "production": {
+                "servers": [
+                  "api1",
+                  "web1",
+                  "web2"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+      ],
+      "name": "deeply_nested_list_reference_build_hierarchy",
+      "source_test": "deeply_nested_list_reference",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "config",
+        "environments",
+        "production",
+        "servers"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+      ],
+      "name": "deeply_nested_list_reference_get_list",
+      "source_test": "deeply_nested_list_reference",
+      "validation": "get_list",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "names",
+            "value": "张三"
+          },
+          {
+            "key": "names",
+            "value": "José"
+          },
+          {
+            "key": "names",
+            "value": "François"
+          },
+          {
+            "key": "names",
+            "value": "العربية"
+          }
+        ]
+      },
+      "features": [
+        "unicode"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "names = 张三\nnames = José\nnames = François\nnames = العربية"
+      ],
+      "name": "list_with_unicode_reference_parse",
+      "source_test": "list_with_unicode_reference",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "names": [
+            "François",
+            "José",
+            "العربية",
+            "张三"
+          ]
+        }
+      },
+      "features": [
+        "unicode"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "names = 张三\nnames = José\nnames = François\nnames = العربية"
+      ],
+      "name": "list_with_unicode_reference_build_hierarchy",
+      "source_test": "list_with_unicode_reference",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "names"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [
+        "unicode"
+      ],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "names = 张三\nnames = José\nnames = François\nnames = العربية"
+      ],
+      "name": "list_with_unicode_reference_get_list",
+      "source_test": "list_with_unicode_reference",
+      "validation": "get_list",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "symbols",
+            "value": "@#$%"
+          },
+          {
+            "key": "symbols",
+            "value": "!^&*()"
+          },
+          {
+            "key": "symbols",
+            "value": "[]{}|"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|"
+      ],
+      "name": "list_with_special_characters_reference_parse",
+      "source_test": "list_with_special_characters_reference",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "symbols": [
+            "!^&*()",
+            "@#$%",
+            "[]{}|"
+          ]
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|"
+      ],
+      "name": "list_with_special_characters_reference_build_hierarchy",
+      "source_test": "list_with_special_characters_reference",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "symbols"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "symbols = @#$%\nsymbols = !^&*()\nsymbols = []{}|"
+      ],
+      "name": "list_with_special_characters_reference_get_list",
+      "source_test": "list_with_special_characters_reference",
+      "validation": "get_list",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "cache": "redis",
+            "database": {
+              "hosts": [
+                "backup",
+                "primary"
+              ],
+              "port": "5432"
+            },
+            "servers": [
+              "web1",
+              "web2"
+            ]
+          },
+          "features": [
+            "api",
+            "auth",
+            "ui"
+          ]
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui"
+      ],
+      "name": "complex_mixed_list_scenarios_reference_build_hierarchy",
+      "source_test": "complex_mixed_list_scenarios_reference",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "features"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "config =\n  servers = web1\n  servers = web2\n  database =\n    hosts = primary\n    hosts = backup\n    port = 5432\n  cache = redis\nfeatures = auth\nfeatures = api\nfeatures = ui"
+      ],
+      "name": "complex_mixed_list_scenarios_reference_get_list",
+      "source_test": "complex_mixed_list_scenarios_reference",
+      "validation": "get_list",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "safe",
+            "value": "value"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "safe = value"
+      ],
+      "name": "list_path_traversal_protection_reference_parse",
+      "source_test": "list_path_traversal_protection_reference",
+      "validation": "parse",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "safe": "value"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "safe = value"
+      ],
+      "name": "list_path_traversal_protection_reference_build_hierarchy",
+      "source_test": "list_path_traversal_protection_reference",
+      "validation": "build_hierarchy",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "args": [
+        "safe"
+      ],
+      "behaviors": [
+        "list_coercion_disabled"
+      ],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "safe = value"
+      ],
+      "name": "list_path_traversal_protection_reference_get_list",
+      "source_test": "list_path_traversal_protection_reference",
+      "validation": "get_list",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "empty_key",
+            "value": ""
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "empty_key ="
+      ],
+      "name": "empty_value_reference_behavior_parse",
+      "source_test": "empty_value_reference_behavior",
+      "validation": "parse",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "empty_key": ""
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "empty_key ="
+      ],
+      "name": "empty_value_reference_behavior_build_hierarchy",
+      "source_test": "empty_value_reference_behavior",
+      "validation": "build_hierarchy",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "empty_key =\n"
+      },
+      "features": [],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "empty_key ="
+      ],
+      "name": "canonical_format_empty_values_ocaml_reference_canonical_format",
+      "source_test": "canonical_format_empty_values_ocaml_reference",
+      "validation": "canonical_format",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [
+        "tabs_as_content"
+      ],
+      "expected": {
+        "count": 1,
+        "value": "value_with_tabs =\n  text\t\twith\ttabs =\n"
+      },
+      "features": [],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "value_with_tabs = text\t\twith\ttabs\t"
+      ],
+      "name": "canonical_format_tab_preservation_ocaml_reference_canonical_format",
+      "source_test": "canonical_format_tab_preservation_ocaml_reference",
+      "validation": "canonical_format",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "emo =\n  🌟✨ =\nunicode =\n  你好世界 =\n"
+      },
+      "features": [
+        "unicode"
+      ],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "unicode = 你好世界\nemo = 🌟✨"
+      ],
+      "name": "canonical_format_unicode_ocaml_reference_canonical_format",
+      "source_test": "canonical_format_unicode_ocaml_reference",
+      "validation": "canonical_format",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [
+        "crlf_preserve_literal"
+      ],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key1",
+            "value": "value1\r"
+          },
+          {
+            "key": "key2",
+            "value": "value2\r"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key1 = value1\r\nkey2 = value2\r\n"
+      ],
+      "name": "canonical_format_line_endings_reference_behavior_parse",
+      "source_test": "canonical_format_line_endings_reference_behavior",
+      "validation": "parse",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [
+        "crlf_preserve_literal"
+      ],
+      "expected": {
+        "count": 1,
+        "value": "key1 =\n  value1\r =\nkey2 =\n  value2\r =\n"
+      },
+      "features": [],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "key1 = value1\r\nkey2 = value2\r\n"
+      ],
+      "name": "canonical_format_line_endings_reference_behavior_canonical_format",
+      "source_test": "canonical_format_line_endings_reference_behavior",
+      "validation": "canonical_format",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "key1 =\n  value1 =\nkey2 =\n  value2 =\nkey3 =\n  value3 =\n"
+      },
+      "features": [],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "key1=value1\nkey2  =  value2\nkey3\t=\tvalue3"
+      ],
+      "name": "canonical_format_consistent_spacing_ocaml_reference_canonical_format",
+      "source_test": "canonical_format_consistent_spacing_ocaml_reference",
+      "validation": "canonical_format",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": "a =\n  first =\nm =\n  middle =\nz =\n  last =\n"
+      },
+      "features": [],
+      "functions": [
+        "canonical_format"
+      ],
+      "inputs": [
+        "z = last\na = first\nm = middle"
+      ],
+      "name": "deterministic_output_ocaml_reference_canonical_format",
+      "source_test": "deterministic_output_ocaml_reference",
+      "validation": "canonical_format",
+      "variants": [
+        "reference_compliant"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+	"name": "ccl-test-runner-ts",
+	"version": "0.1.0",
+	"description": "TypeScript CCL test runner with vitest integration for ccl-test-data.",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/ccl-test-runner-ts",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/ccl-test-runner-ts"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		},
+		"./vitest": {
+			"import": {
+				"types": "./esm/vitest.d.ts",
+				"default": "./esm/vitest.js"
+			}
+		},
+		"./vitest-matchers": {
+			"import": {
+				"types": "./esm/vitest-matchers.d.ts",
+				"default": "./esm/vitest-matchers.js"
+			}
+		},
+		"./types": {
+			"import": {
+				"types": "./esm/types.d.ts",
+				"default": "./esm/types.js"
+			}
+		}
+	},
+	"types": "./esm/index.d.ts",
+	"bin": {
+		"ccl-download-tests": "./esm/download.js"
+	},
+	"files": [
+		"esm"
+	],
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:types": "json2ts schemas/generated-format.json -o src/generated/test-schema.ts --style.tabWidth 4 --style.useTabs",
+		"check": "pnpm check:format",
+		"check:format": "biome format .",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --write --unsafe",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"sync-schema": "dill https://raw.githubusercontent.com/tylerbutler/ccl-test-data/main/schemas/generated-format.json -o schemas/",
+		"test": "vitest run",
+		"test:ccl": "vitest run test/ccl",
+		"test:coverage": "vitest run --coverage",
+		"test:runner": "vitest run test/runner",
+		"test:ui": "vitest --ui"
+	},
+	"dependencies": {
+		"citty": "^0.1.6",
+		"consola": "^3.4.0",
+		"dill-cli": "workspace:^",
+		"pathe": "^2.0.3"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@tylerbu/ccl-test-data": "workspace:^",
+		"@types/node": "^20.19.25",
+		"@vitest/coverage-v8": "^3.2.4",
+		"@vitest/ui": "^3.2.4",
+		"json-schema-to-ts": "^3.1.1",
+		"json-schema-to-typescript": "^15.0.4",
+		"rimraf": "^6.1.2",
+		"sort-package-json": "*",
+		"ts-node": "^10.9.2",
+		"typescript": "~5.9.3",
+		"vitest": "^3.2.4"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {}
+		}
+	}
+}

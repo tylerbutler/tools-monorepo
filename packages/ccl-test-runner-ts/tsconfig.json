@@ -1,0 +1,10 @@
+{
+	"extends": "../../config/tsconfig.strict.json",
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"rootDir": ".",
+		"outDir": "./esm",
+		"types": ["node"],
+		"resolveJsonModule": true,
+	},
+}
