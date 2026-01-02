@@ -54,11 +54,13 @@ Entry {
 
 **Algorithm:**
 
-1. Split input on newlines (LF only; CR is content, not a line break)
-2. For each line, find the first `=` character
-3. Everything before `=` is the key (trimmed of whitespace)
-4. Everything after `=` is the value (leading whitespace trimmed, trailing preserved)
-5. Handle indented continuation lines (part of previous entry's value)
+1. Find the first `=` character in the input
+2. Everything before `=` is the key (trimmed of all whitespace including newlines)
+3. Parse the value:
+   - Trim leading whitespace on the first line
+   - Include continuation lines (lines with greater indentation) as part of the value
+   - Trim trailing whitespace from the final line
+4. Repeat for remaining input
 
 **Example:**
 ```ccl
@@ -78,15 +80,27 @@ Parses to:
 
 **Key rules:**
 - Split on **first** `=` only: `a = b = c` → key: `a`, value: `b = c`
-- Trim whitespace from keys: `"  key  "` → `"key"`
-- Preserve value whitespace (except leading): `"  value  "` → `"value  "`
+- Trim all whitespace from keys (including newlines): `"  key  "` → `"key"`, `"key \n"` → `"key"`
 - Empty key `= value` → list item (key is empty string)
 - Comment entry `/ = text` → key is `/`, value is `text`
 
+**Value rules:**
+- Trim leading whitespace on first line: `key =   value` → value is `"value"`
+- Trim trailing whitespace on final line: `key = value  ` → value is `"value"`
+- Preserve internal structure (newlines + indentation for continuation lines)
+
 **Indentation handling:**
-- Count leading whitespace characters (spaces or tabs)
-- Lines with MORE indentation than previous = continuation of previous value
-- Lines with SAME or LESS indentation = new entry
+1. When starting to parse an entry, record the indentation level (count of leading whitespace characters before the key)
+2. After the `=`, check if the value continues on the same line or the next line
+3. For each subsequent line, count its leading whitespace:
+   - If indentation > entry's indentation level → continuation line (append to value)
+   - If indentation ≤ entry's indentation level → new entry (stop parsing current value)
+
+**Whitespace characters:** Which characters count as whitespace depends on parser behavior:
+- `tabs_as_whitespace`: spaces and tabs are whitespace (used for indentation)
+- `tabs_as_content`: only spaces are whitespace; tabs are preserved as content
+
+See [Behavior Reference](/behavior-reference) for details.
 
 See [Parsing Algorithm](/parsing-algorithm) for complete details.
 
@@ -360,9 +374,10 @@ These are the most common mistakes when implementing CCL:
    - CR (`\r`) is preserved as content
    - CRLF handling is a behavior choice
 
-5. **Trim keys, preserve value whitespace**
-   - Key: trim both sides
-   - Value: trim leading only, preserve trailing
+5. **Whitespace trimming**
+   - Keys: trim all whitespace (including newlines)
+   - Values: trim leading (first line) and trailing (final line) only
+   - Values preserve internal newlines and indentation
 
 6. **Empty key = list item**
    - `= alice` has key `""` and value `"alice"`

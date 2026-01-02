@@ -61,8 +61,10 @@ describe("eslintWorker", () => {
 			loadFormatter: vi.fn().mockResolvedValue(mockFormatter),
 		};
 
-		// Mock ESLint class constructor
-		const mockESLintClass = vi.fn(() => mockESLintEngine);
+		// Mock ESLint class constructor - must use function keyword for Vitest 4
+		const mockESLintClass = vi.fn(function (this: typeof mockESLintEngine) {
+			Object.assign(this, mockESLintEngine);
+		}) as unknown as typeof import("eslint").ESLint;
 		const mockESLintModule = {
 			ESLint: mockESLintClass,
 		};
@@ -359,8 +361,9 @@ describe("eslintWorker", () => {
 				command: "eslint src",
 				cwd: "/test/project",
 			};
+			// Must use function keyword for Vitest 4 constructor mocks
 			mockRequire.mockReturnValue({
-				ESLint: vi.fn(() => {
+				ESLint: vi.fn(function () {
 					throw new Error("ESLint initialization failed");
 				}),
 			});

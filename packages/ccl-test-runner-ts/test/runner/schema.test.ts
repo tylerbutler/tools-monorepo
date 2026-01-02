@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadAllTests } from "../../src/test-data.js";
-
-// Test data path - download first with: npx ccl-download-tests --output ./ccl-test-data
-const TEST_DATA_PATH = "./ccl-test-data";
+import { TEST_DATA_PATH } from "../ccl/test-config.js";
 
 describe("Schema Type Validation", () => {
 	it("should validate TestCase structure matches actual JSON data", async () => {

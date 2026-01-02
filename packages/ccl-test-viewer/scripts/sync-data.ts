@@ -11,19 +11,32 @@
 // See: https://github.com/biomejs/biome/tree/main/packages/@biomejs/js-api
 import { Biome } from "@biomejs/js-api/nodejs";
 import { mkdir, readdir, readFile, stat, writeFile } from "fs/promises";
-import { join, relative, resolve } from "path";
+import { createRequire } from "module";
+import { dirname, join, relative, resolve } from "path";
 import { fileURLToPath } from "url";
+
+const require = createRequire(import.meta.url);
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const PROJECT_ROOT = resolve(__dirname, "..");
-const DATA_SOURCE = resolve(
-	PROJECT_ROOT,
-	"../../../ccl-test-data/generated_tests",
-);
 const DATA_TARGET = resolve(PROJECT_ROOT, "src/lib/data");
 const STATIC_TARGET = resolve(PROJECT_ROOT, "static/data");
 
-// GitHub repository configuration
+// Legacy fallback paths for local development
+const LEGACY_DATA_SOURCE = resolve(
+	PROJECT_ROOT,
+	"../../../ccl-test-data/generated_tests",
+);
+
+// Resolve path to @tylerbu/ccl-test-data workspace package
+function getWorkspaceDataPath(): string {
+	const packageJsonPath = require.resolve(
+		"@tylerbu/ccl-test-data/package.json",
+	);
+	return join(dirname(packageJsonPath), "data");
+}
+
+// GitHub repository configuration (fallback when workspace package unavailable)
 const GITHUB_REPO = "tylerbutler/ccl-test-data";
 const GITHUB_BRANCH = "main";
 const GITHUB_PATH = "generated_tests";
@@ -452,12 +465,31 @@ async function main(): Promise<void> {
 		}
 	}
 
-	// Determine data source: GitHub or local filesystem
-	const useGitHub = process.env.CCL_USE_GITHUB !== "false"; // Default to GitHub
+	// Determine data source priority:
+	// 1. Workspace package (@tylerbu/ccl-test-data) - preferred
+	// 2. GitHub (fallback if workspace unavailable or CCL_USE_GITHUB=true)
+	// 3. Legacy local path (fallback if explicitly requested via CCL_USE_LOCAL=true)
+
+	let dataSource: string | null = null;
 	let testFilenames: string[] = [];
 	let githubToken: string | undefined;
+	let useGitHub = false;
 
-	if (useGitHub) {
+	// Try workspace package first (preferred)
+	try {
+		dataSource = getWorkspaceDataPath();
+		const entries = await readdir(dataSource);
+		testFilenames = entries.filter((file) => file.endsWith(".json"));
+		console.log(`📦 Using workspace package: @tylerbu/ccl-test-data`);
+		console.log(`📁 Found ${testFilenames.length} test files in ${dataSource}`);
+	} catch {
+		// Workspace package not available, try fallbacks
+		dataSource = null;
+	}
+
+	// Fallback to GitHub if workspace unavailable or explicitly requested
+	if (!dataSource && process.env.CCL_USE_GITHUB !== "false") {
+		useGitHub = true;
 		console.log(`🌐 Fetching test data from GitHub: ${GITHUB_REPO}`);
 		githubToken = await getGitHubToken();
 		if (githubToken) {
@@ -466,10 +498,14 @@ async function main(): Promise<void> {
 			console.log(`⚠️  No GitHub token found - using unauthenticated access`);
 		}
 		testFilenames = await getAllTestFilesFromGitHub(githubToken);
-	} else {
-		console.log(`📁 Loading test data from local filesystem`);
+	}
+
+	// Legacy local fallback (for backward compatibility)
+	if (!dataSource && !useGitHub && process.env.CCL_USE_LOCAL === "true") {
+		dataSource = LEGACY_DATA_SOURCE;
+		console.log(`📁 Loading test data from legacy local path`);
 		const testFiles = await getAllTestFiles();
-		testFilenames = testFiles.map((path) => relative(DATA_SOURCE, path));
+		testFilenames = testFiles.map((path) => relative(dataSource!, path));
 	}
 
 	console.log(`📁 Found ${testFilenames.length} test files`);
@@ -488,7 +524,7 @@ async function main(): Promise<void> {
 		const { name, description } = createCategoryFromFilename(filename);
 		const { tests } = useGitHub
 			? await loadTestFileFromGitHub(filename, githubToken)
-			: await loadTestFile(join(DATA_SOURCE, filename));
+			: await loadTestFile(join(dataSource!, filename));
 
 		categories.push({
 			name,
@@ -567,7 +603,9 @@ async function main(): Promise<void> {
 		generatedAt: new Date().toISOString(),
 		source: useGitHub
 			? `GitHub: ${GITHUB_REPO}/${GITHUB_PATH} (${GITHUB_BRANCH})`
-			: relative(PROJECT_ROOT, DATA_SOURCE),
+			: dataSource?.includes("node_modules")
+				? "@tylerbu/ccl-test-data (workspace package)"
+				: relative(PROJECT_ROOT, dataSource || "unknown"),
 		stats: {
 			categories: categories.length,
 			totalTests: stats.totalTests,

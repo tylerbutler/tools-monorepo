@@ -1,0 +1,215 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 6,
+        "entries": [
+          {
+            "key": "/",
+            "value": "This is an environment section"
+          },
+          {
+            "key": "port",
+            "value": "8080"
+          },
+          {
+            "key": "serve",
+            "value": "index.html"
+          },
+          {
+            "key": "/",
+            "value": "Database section"
+          },
+          {
+            "key": "mode",
+            "value": "in-memory"
+          },
+          {
+            "key": "connections",
+            "value": "16"
+          }
+        ]
+      },
+      "features": [
+        "comments"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "/= This is an environment section\nport = 8080\nserve = index.html\n/= Database section\nmode = in-memory\nconnections = 16"
+      ],
+      "name": "comment_extension_parse",
+      "source_test": "comment_extension",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "port",
+            "value": "8080"
+          },
+          {
+            "key": "serve",
+            "value": "index.html"
+          },
+          {
+            "key": "mode",
+            "value": "in-memory"
+          },
+          {
+            "key": "connections",
+            "value": "16"
+          }
+        ]
+      },
+      "features": [
+        "comments"
+      ],
+      "functions": [
+        "filter"
+      ],
+      "inputs": [
+        "/= This is an environment section\nport = 8080\nserve = index.html\n/= Database section\nmode = in-memory\nconnections = 16"
+      ],
+      "name": "comment_extension_filter",
+      "source_test": "comment_extension",
+      "validation": "filter",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "/",
+            "value": "this is a comment"
+          }
+        ]
+      },
+      "features": [
+        "comments"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "/= this is a comment"
+      ],
+      "name": "comment_syntax_slash_equals_parse",
+      "source_test": "comment_syntax_slash_equals",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [
+        "comments"
+      ],
+      "functions": [
+        "filter"
+      ],
+      "inputs": [
+        "/= this is a comment"
+      ],
+      "name": "comment_syntax_slash_equals_filter",
+      "source_test": "comment_syntax_slash_equals",
+      "validation": "filter",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 6,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Database Config =="
+          },
+          {
+            "key": "/",
+            "value": "Connection settings"
+          },
+          {
+            "key": "host",
+            "value": "localhost"
+          },
+          {
+            "key": "",
+            "value": "== Cache Config ==="
+          },
+          {
+            "key": "/",
+            "value": "Redis configuration"
+          },
+          {
+            "key": "port",
+            "value": "6379"
+          }
+        ]
+      },
+      "features": [
+        "comments",
+        "empty_keys"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "== Database Config ==\n/= Connection settings\nhost = localhost\n=== Cache Config ===\n/= Redis configuration\nport = 6379"
+      ],
+      "name": "section_headers_with_comments_parse",
+      "source_test": "section_headers_with_comments",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 4,
+        "entries": [
+          {
+            "key": "",
+            "value": "= Database Config =="
+          },
+          {
+            "key": "host",
+            "value": "localhost"
+          },
+          {
+            "key": "",
+            "value": "== Cache Config ==="
+          },
+          {
+            "key": "port",
+            "value": "6379"
+          }
+        ]
+      },
+      "features": [
+        "comments",
+        "empty_keys"
+      ],
+      "functions": [
+        "filter"
+      ],
+      "inputs": [
+        "== Database Config ==\n/= Connection settings\nhost = localhost\n=== Cache Config ===\n/= Redis configuration\nport = 6379"
+      ],
+      "name": "section_headers_with_comments_filter",
+      "source_test": "section_headers_with_comments",
+      "validation": "filter",
+      "variants": []
+    }
+  ]
+}

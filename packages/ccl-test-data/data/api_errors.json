@@ -1,0 +1,115 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "key"
+      ],
+      "name": "just_key_error_parse",
+      "source_test": "just_key_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "   "
+      ],
+      "name": "whitespace_only_error_parse",
+      "source_test": "whitespace_only_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "   "
+      ],
+      "name": "whitespace_only_error_ocaml_reference_parse",
+      "source_test": "whitespace_only_error_ocaml_reference",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "val"
+      ],
+      "name": "just_string_error_parse",
+      "source_test": "just_string_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "val\n  next"
+      ],
+      "name": "multiline_plain_error_parse",
+      "source_test": "multiline_plain_error",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 0
+      },
+      "features": [
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "\nval\n  next"
+      ],
+      "name": "multiline_plain_nested_error_parse",
+      "source_test": "multiline_plain_nested_error",
+      "validation": "parse",
+      "variants": []
+    }
+  ]
+}

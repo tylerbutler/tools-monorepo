@@ -1,10 +1,33 @@
 /**
  * Shared test configuration for ccl-test-runner-ts.
  *
- * This file contains the list of tests to skip that are not implemented
- * in the stub parser. This is internal to the test suite and not exported
- * to consumers of the package.
+ * This file contains shared configuration for the test suite including
+ * the path to test data and the list of tests to skip. This is internal
+ * to the test suite and not exported to consumers of the package.
  */
+
+import { createRequire } from "node:module";
+import { dirname, join } from "pathe";
+
+const require = createRequire(import.meta.url);
+
+/**
+ * Resolves the path to the ccl-test-data package's data directory.
+ * Uses require.resolve to find the workspace package.
+ */
+function resolveTestDataPath(): string {
+	// Resolve the package.json of ccl-test-data, then get the data directory
+	const packageJsonPath = require.resolve(
+		"@tylerbu/ccl-test-data/package.json",
+	);
+	return join(dirname(packageJsonPath), "data");
+}
+
+/**
+ * Path to the shared test data directory from @tylerbu/ccl-test-data package.
+ * All test files should import this constant instead of hardcoding the path.
+ */
+export const TEST_DATA_PATH = resolveTestDataPath();
 
 /**
  * Tests to skip - these require full CCL parser features not implemented in the stub.
