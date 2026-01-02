@@ -13,10 +13,17 @@ repopo includes several built-in policies that enforce common repository standar
 | [HtmlFileHeaders](#htmlfileheaders) | File Headers | Yes | Enforce consistent headers in HTML files |
 | [JsTsFileHeaders](#jstsfileheaders) | File Headers | Yes | Enforce consistent headers in JS/TS files |
 | [NoJsFileExtensions](#nojsfileextensions) | File Extensions | No | Prevent ambiguous `.js` extensions |
+| [PackageAllowedScopes](#packageallowedscopes) | Package.json | No | Validate packages use approved scopes |
+| [PackageEsmType](#packageesmtype) | Package.json | Yes | Enforce ESM/CommonJS type field |
+| [PackageFolderName](#packagefoldername) | Package.json | No | Ensure folder names match package names |
 | [PackageJsonProperties](#packagejsonproperties) | Package.json | Yes | Enforce specific package.json fields |
 | [PackageJsonRepoDirectoryProperty](#packagejsonrepodirectoryproperty) | Package.json | Yes | Validate repository.directory path |
 | [PackageJsonSorted](#packagejsonsorted) | Package.json | Yes | Ensure sorted package.json files |
-| [PackageScripts](#packagescripts) | Package.json | No | Validate package.json scripts |
+| [PackageLicense](#packagelicense) | Package.json | Yes | Sync LICENSE files from root |
+| [PackagePrivateField](#packageprivatefield) | Package.json | Yes | Enforce private/public based on scope |
+| [PackageReadme](#packagereadme) | Package.json | Yes | Validate README existence and content |
+| [PackageScripts](#packagescripts) | Package.json | Partial | Validate package.json scripts |
+| [PackageTestScripts](#packagetestscripts) | Package.json | No | Require test scripts when tests exist |
 
 ## File Header Policies
 
@@ -79,6 +86,111 @@ Prevents ambiguous `.js` file extensions in favor of explicit `.mjs` (ESM) or `.
 
 ## Package.json Policies
 
+### PackageAllowedScopes
+
+Validates that packages use only approved npm scopes or package names. This prevents accidental introduction of new scopes and maintains naming consistency across a monorepo.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageAllowedScopes } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(PackageAllowedScopes, {
+      // Only these scopes are allowed
+      allowedScopes: ["@myorg", "@internal", "@experimental"],
+      // These specific unscoped packages are also allowed
+      unscopedPackages: ["legacy-tool", "special-package"]
+    })
+  ]
+};
+```
+
+**Validation Rules:**
+
+- Scoped packages must use a scope from `allowedScopes`
+- Unscoped packages must be listed in `unscopedPackages`
+- The "root" package (common in monorepos) is automatically skipped
+
+**Auto-fixable:** No (package names cannot be auto-fixed)
+
+### PackageEsmType
+
+Ensures the `type` field in package.json is correctly set to indicate ESM or CommonJS module format.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageEsmType } from "repopo/policies";
+
+const config = {
+  policies: [
+    // Option 1: Require all packages to be ESM
+    makePolicy(PackageEsmType, { requiredType: "module" }),
+
+    // Option 2: Detect based on exports/main field
+    makePolicy(PackageEsmType, { detectFromExports: true }),
+
+    // Option 3: With exclusions
+    makePolicy(PackageEsmType, {
+      requiredType: "module",
+      excludePackages: ["@myorg/legacy-cjs-package"]
+    })
+  ]
+};
+```
+
+**Detection Logic (when `detectFromExports: true`):**
+
+- `.mjs` extensions or `"import"` conditions → expects `"module"`
+- `.cjs` extensions or `"require"` conditions → expects `"commonjs"`
+- `module` field present → expects `"module"`
+
+**Auto-fixable:** Yes
+
+### PackageFolderName
+
+Ensures package folder names match their package names, making packages easier to find in the file system.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageFolderName } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(PackageFolderName, {
+      // Strip all scopes when matching: @myorg/my-package → folder "my-package"
+      stripScopes: ["@*"],
+
+      // Or strip specific scopes only
+      // stripScopes: ["@myorg", "@internal"],
+
+      // Or use glob patterns: @fluid-anything/pkg → folder "pkg"
+      // stripScopes: ["@fluid*"],
+
+      // Exclude packages with intentionally different folder names
+      excludePackages: ["@myorg/special-case"]
+    })
+  ]
+};
+```
+
+**Examples:**
+
+| Package Name | stripScopes | Expected Folder |
+|-------------|-------------|-----------------|
+| `@myorg/my-lib` | `["@*"]` | `my-lib` |
+| `@myorg/my-lib` | `["@myorg"]` | `my-lib` |
+| `@other/my-lib` | `["@myorg"]` | `@other/my-lib` |
+| `my-lib` | `["@*"]` | `my-lib` |
+
+**Auto-fixable:** No (folder names cannot be auto-fixed)
+
 ### PackageJsonProperties
 
 Enforces specific fields and values in package.json files across the repository.
@@ -126,9 +238,116 @@ Ensures package.json files are sorted according to a standard key order (using `
 
 **Auto-fixable:** Yes
 
+### PackageLicense
+
+Ensures each package has a LICENSE file that matches the root repository LICENSE. Essential for monorepos where individual packages are published to npm.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageLicense } from "repopo/policies";
+
+const config = {
+  policies: [
+    // Use defaults (skip private packages, look for LICENSE)
+    makePolicy(PackageLicense),
+
+    // Require LICENSE for all packages including private
+    makePolicy(PackageLicense, { skipPrivate: false }),
+
+    // Use a different license file name
+    makePolicy(PackageLicense, { licenseFileName: "LICENSE.md" })
+  ]
+};
+```
+
+**Behavior:**
+
+1. Checks if LICENSE file exists in the package directory
+2. Compares it with the root LICENSE file
+3. Auto-fixes by copying the root LICENSE to the package directory
+
+**Auto-fixable:** Yes
+
+### PackagePrivateField
+
+Enforces the `private` field in package.json based on package scope or name. Essential for monorepos where publishing control is important.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackagePrivateField } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(PackagePrivateField, {
+      // Packages in these scopes must be published (no private: true)
+      mustPublish: ["@myorg", "@myorg-tools"],
+
+      // Packages in these scopes must be private
+      mustBePrivate: ["@internal", "@private"],
+
+      // Packages in these scopes can choose
+      mayPublish: ["@experimental"],
+
+      // Default for packages not matching any list
+      // Options: "private" (default), "public", "ignore"
+      unmatchedPackages: "private"
+    })
+  ]
+};
+```
+
+**Evaluation Order:**
+
+1. If package matches `mustPublish` → must NOT have `private: true`
+2. If package matches `mustBePrivate` → must have `private: true`
+3. If package matches `mayPublish` → no enforcement
+4. Otherwise, `unmatchedPackages` setting applies
+
+**Auto-fixable:** Yes (adds or removes `private` field)
+
+### PackageReadme
+
+Validates that packages have README.md files with proper content.
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageReadme } from "repopo/policies";
+
+const config = {
+  policies: [
+    // Basic README validation
+    makePolicy(PackageReadme),
+
+    // Require README title to match package name
+    makePolicy(PackageReadme, { requireMatchingTitle: true }),
+
+    // Require specific content (e.g., trademark notice)
+    makePolicy(PackageReadme, {
+      requiredContent: "## Trademark",
+      skipPrivate: true
+    })
+  ]
+};
+```
+
+**Validation:**
+
+- Checks README.md file exists
+- Optionally validates first H1 heading matches package name
+- Optionally requires specific content to be present
+- Auto-fixes by creating README or appending required content
+
+**Auto-fixable:** Yes (creates README or appends required content)
+
 ### PackageScripts
 
-Validates package.json scripts based on configurable rules. Supports required scripts and mutually exclusive script groups.
+Validates package.json scripts with comprehensive rules including required scripts, exact content matching, conditional requirements, and content validation.
 
 **Configuration:**
 
@@ -139,12 +358,37 @@ import { PackageScripts } from "repopo/policies";
 const config = {
   policies: [
     makePolicy(PackageScripts, {
-      // Require these scripts in all packages
-      must: ["build", "clean"],
-      // Only allow one script from each group (or none)
+      // Scripts that must exist (with optional defaults for auto-fix)
+      must: [
+        "test",                        // Must exist, no auto-fix
+        { build: "tsc" },              // Must exist, auto-fix adds "tsc" if missing
+        { lint: "biome lint ." }       // Must exist, auto-fix available
+      ],
+
+      // Scripts that must exist AND have exact content
+      exact: {
+        clean: "rimraf dist esm",
+        format: "biome format --write ."
+      },
+
+      // If a script exists, other scripts must also exist
+      conditionalRequired: [
+        // If "build" exists, "clean" must exist (with auto-fix default)
+        { ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
+        // Mixed: "test" required without default, "lint" with default
+        { ifPresent: "ci", requires: ["test", { lint: "biome lint" }] }
+      ],
+
+      // Validate script body contains required substrings
+      scriptMustContain: [
+        { script: "clean", mustContain: ["rimraf"] },
+        { script: "build", mustContain: ["tsc"] }
+      ],
+
+      // Only one script from each group can exist
       mutuallyExclusive: [
-        ["test", "test:unit"],        // Either "test" or "test:unit", not both
-        ["lint:eslint", "lint:biome"] // Either "lint:eslint" or "lint:biome", not both
+        ["test:unit", "test:vitest"],
+        ["lint:eslint", "lint:biome"]
       ]
     })
   ]
@@ -153,53 +397,50 @@ const config = {
 
 **Validation Rules:**
 
-1. All scripts in the `must` array must be present
-2. For each group in `mutuallyExclusive`:
-   - Zero scripts from the group is allowed (all optional)
-   - Exactly one script from the group is allowed
-   - Multiple scripts from the same group will fail
+| Option | Purpose | Auto-fixable |
+|--------|---------|--------------|
+| `must` | Scripts that must exist | Yes (if default provided) |
+| `exact` | Scripts with exact required content | Yes |
+| `conditionalRequired` | If X exists, Y must exist | Yes (if default provided) |
+| `scriptMustContain` | Script body must include substrings | No |
+| `mutuallyExclusive` | Only one from group can exist | No |
 
-**Use Cases:**
+**Auto-fixable:** Partial (depends on configuration)
 
-- **Enforcing consistency**: Ensure all packages have core scripts like `build` and `clean`
-- **Preventing conflicts**: Avoid duplicate tool configurations (e.g., both `test:unit` and `test:vitest`)
-- **Migration management**: During tool migrations, enforce that packages use either the old or new tool, but not both
-- **Standardization**: Maintain consistent script naming conventions across a monorepo
+### PackageTestScripts
 
-**Examples:**
+Requires test scripts when test files or test dependencies exist in a package.
 
-Valid configuration:
-```json
-{
-  "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist",
-    "test": "vitest"
-  }
-}
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { PackageTestScripts } from "repopo/policies";
+
+const config = {
+  policies: [
+    makePolicy(PackageTestScripts, {
+      // Check for these test directories
+      testDirectories: ["test", "tests", "__tests__"],
+
+      // Require test script if these devDependencies exist
+      testDependencies: ["vitest", "jest", "mocha", "@jest/globals"],
+
+      // Required test script names
+      requiredScripts: ["test"],
+
+      // Exclude specific packages
+      excludePackages: ["@myorg/docs", "@myorg/examples"]
+    })
+  ]
+};
 ```
 
-Invalid (missing required script):
-```json
-{
-  "scripts": {
-    "build": "tsc"
-    // Missing "clean"
-  }
-}
-```
+**Detection Logic:**
 
-Invalid (mutually exclusive violation):
-```json
-{
-  "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist",
-    "test": "vitest",
-    "test:unit": "vitest run"  // Both "test" and "test:unit" present
-  }
-}
-```
+- If `testDirectories` is configured → checks for test directories
+- If `testDependencies` is configured → checks devDependencies
+- If either condition is met → requires scripts from `requiredScripts`
 
 **Auto-fixable:** No
 
