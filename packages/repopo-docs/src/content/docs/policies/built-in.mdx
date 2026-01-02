@@ -13,6 +13,7 @@ repopo includes several built-in policies that enforce common repository standar
 | [HtmlFileHeaders](#htmlfileheaders) | File Headers | Yes | Enforce consistent headers in HTML files |
 | [JsTsFileHeaders](#jstsfileheaders) | File Headers | Yes | Enforce consistent headers in JS/TS files |
 | [NoJsFileExtensions](#nojsfileextensions) | File Extensions | No | Prevent ambiguous `.js` extensions |
+| [NoPrivateWorkspaceDependencies](#noprivateworkspacedependencies) | Dependencies | No | Prevent publishable packages from depending on private packages |
 | [PackageJsonProperties](#packagejsonproperties) | Package.json | Yes | Enforce specific package.json fields |
 | [PackageJsonRepoDirectoryProperty](#packagejsonrepodirectoryproperty) | Package.json | Yes | Validate repository.directory path |
 | [PackageJsonSorted](#packagejsonsorted) | Package.json | Yes | Ensure sorted package.json files |
@@ -74,6 +75,69 @@ The policy creates a block comment with `/*!` syntax to ensure it's preserved du
 Prevents ambiguous `.js` file extensions in favor of explicit `.mjs` (ESM) or `.cjs` (CommonJS) extensions.
 
 **Why:** JavaScript files with just the `.js` extension may be interpreted by Node.js as either CommonJS or ESM based on the `type` field in the nearest package.json. Using explicit extensions reduces ambiguity and ensures consistent module resolution.
+
+**Auto-fixable:** No
+
+## Dependency Policies
+
+### NoPrivateWorkspaceDependencies
+
+Prevents publishable packages from depending on private workspace packages via the `workspace:` protocol.
+
+**Why:** When a package is published to npm, any `workspace:` dependencies are resolved to actual versions. However, if a publishable package depends on a private workspace package (one with `"private": true`), that dependency won't be available on npm, causing installation failures for consumers.
+
+**How it works:**
+
+1. **Private packages are skipped:** Packages with `"private": true` can depend on anything since they won't be published
+2. **Workspace dependencies are checked:** For publishable packages, all `workspace:` dependencies are examined
+3. **Private dependency detection:** If a `workspace:` dependency points to a package marked as private, the policy fails
+
+**Configuration:**
+
+```ts title="repopo.config.ts"
+import { makePolicy } from "repopo";
+import { NoPrivateWorkspaceDependencies } from "repopo/policies";
+
+const config = {
+  policies: [
+    // Default: only check dependencies (not devDependencies)
+    makePolicy(NoPrivateWorkspaceDependencies),
+
+    // Or: also check devDependencies
+    makePolicy(NoPrivateWorkspaceDependencies, {
+      checkDevDependencies: true
+    })
+  ]
+};
+```
+
+**Configuration Options:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `checkDevDependencies` | `boolean` | `false` | Whether to also check devDependencies for private workspace dependencies |
+
+**Example Scenario:**
+
+Given a monorepo with:
+- `packages/shared-utils` - `"private": true` (internal tooling)
+- `packages/public-lib` - `"private": false` (published to npm)
+
+If `public-lib` has:
+```json
+{
+  "dependencies": {
+    "shared-utils": "workspace:^"
+  }
+}
+```
+
+The policy will fail because `shared-utils` is private and won't be available when `public-lib` is published.
+
+**Resolution:**
+- Make `shared-utils` publishable (remove `"private": true`)
+- Move shared code to a publishable package
+- Remove the dependency if not needed at runtime
 
 **Auto-fixable:** No
 
