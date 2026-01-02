@@ -363,12 +363,18 @@ importers:
       '@biomejs/biome':
         specifier: 2.3.8
         version: 2.3.8
+      '@tylerbu/ccl-test-data':
+        specifier: workspace:^
+        version: link:../ccl-test-data
       '@types/node':
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
       rimraf:
         specifier: ^6.1.2
         version: 6.1.2

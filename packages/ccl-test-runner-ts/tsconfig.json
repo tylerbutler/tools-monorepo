@@ -5,6 +5,6 @@
 		"rootDir": "./src",
 		"outDir": "./esm",
 		"types": ["node"],
-		"resolveJsonModule": true
-	}
+		"resolveJsonModule": true,
+	},
 }

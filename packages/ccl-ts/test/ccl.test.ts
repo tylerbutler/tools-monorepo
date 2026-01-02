@@ -5,10 +5,10 @@
  * from ccl-test-data. Tests are automatically generated based on
  * the declared capabilities.
  *
- * Test data must be downloaded first:
- *   cd ../ccl-test-runner-ts && npx ccl-download-tests --output ./ccl-test-data
+ * Test data is provided by the @tylerbu/ccl-test-data workspace package.
  */
 
+import { createRequire } from "node:module";
 import {
 	Behavior,
 	type CCLFunctions,
@@ -18,8 +18,24 @@ import {
 	getCCLTestSuiteInfo,
 	Variant,
 } from "ccl-test-runner-ts/vitest";
+import { dirname, join } from "pathe";
 import { describe, expect, test } from "vitest";
 import { buildHierarchy, parse } from "../src/ccl.js";
+
+const require = createRequire(import.meta.url);
+
+/**
+ * Resolves the path to the ccl-test-data package's data directory.
+ * Uses require.resolve to find the workspace package.
+ */
+function resolveTestDataPath(): string {
+	const packageJsonPath = require.resolve(
+		"@tylerbu/ccl-test-data/package.json",
+	);
+	return join(dirname(packageJsonPath), "data");
+}
+
+const TEST_DATA_PATH = resolveTestDataPath();
 
 /**
  * Run assertions for a test result based on expected values.
@@ -58,8 +74,8 @@ const cclConfig = defineCCLTests({
 	name: "ccl-ts",
 	version: "0.1.0",
 
-	// Path to test data (relative to this package)
-	testDataPath: "../ccl-test-runner-ts/ccl-test-data",
+	// Path to test data from @tylerbu/ccl-test-data package
+	testDataPath: TEST_DATA_PATH,
 
 	// Wire up implemented functions
 	functions: {
