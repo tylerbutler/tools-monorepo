@@ -3,6 +3,7 @@ export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
 export { LicenseFileExists } from "./policies/LicenseFileExists.js";
 export { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 export { NoLargeBinaryFiles } from "./policies/NoLargeBinaryFiles.js";
+export { NoPrivateWorkspaceDependencies } from "./policies/NoPrivateWorkspaceDependencies.js";
 export {
 	PackageAllowedScopes,
 	type PackageAllowedScopesConfig,
