@@ -363,6 +363,7 @@ describe("eslintWorker", () => {
 			};
 			// Must use function keyword for Vitest 4 constructor mocks
 			mockRequire.mockReturnValue({
+				// biome-ignore lint/complexity/useArrowFunction: Vitest 4 constructor mocks require function keyword
 				ESLint: vi.fn(function () {
 					throw new Error("ESLint initialization failed");
 				}),
