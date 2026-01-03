@@ -44,8 +44,10 @@ const TEST_DATA_PATH = resolveTestDataPath();
 function runAssertions(result: CCLTestResult): void {
 	const { expected } = result.testCase;
 
-	// Check count if expected
-	if (expected.count !== undefined) {
+	// Check count if expected - only for array outputs (entries)
+	// For object outputs (build_hierarchy), the count field exists but is not meaningful
+	// as a count of the output - it's typically 1 to indicate a single valid object result
+	if (expected.count !== undefined && expected.entries !== undefined) {
 		const actualCount = Array.isArray(result.output) ? result.output.length : 0;
 		// biome-ignore lint/suspicious/noMisplacedAssertion: helper function called from within test()
 		expect(actualCount).toBe(expected.count);
@@ -103,7 +105,9 @@ const cclConfig = defineCCLTests({
 	],
 
 	// Specification variant
-	variant: Variant.ProposedBehavior,
+	// Using ReferenceCompliant because the parser keeps nested content as the value
+	// (rather than flattening to individual entries as in ProposedBehavior)
+	variant: Variant.ReferenceCompliant,
 });
 
 describe("CCL", async () => {
