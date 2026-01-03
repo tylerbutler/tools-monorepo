@@ -29,6 +29,19 @@ const config: RepopoConfig = {
 					type: "git",
 					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
 				},
+				nx: {
+					targets: {
+						build: {
+							executor: "nx:noop",
+						},
+						ci: {
+							executor: "nx:noop",
+						},
+						test: {
+							executor: "nx:noop",
+						},
+					},
+				},
 			},
 		}),
 		makePolicy(PackageJsonRepoDirectoryProperty),
