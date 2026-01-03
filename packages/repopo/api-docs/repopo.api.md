@@ -26,6 +26,31 @@ export interface FileHeaderPolicyConfig {
 }
 
 // @alpha
+export interface FluidAdapterOptions {
+    namePrefix?: string;
+}
+
+// @alpha
+export interface FluidHandler {
+    handler: (file: string, root: string) => Promise<string | undefined>;
+    match: RegExp;
+    name: string;
+    resolver?: (file: string, root: string) => Promise<{
+        resolved: boolean;
+        message?: string;
+    }> | {
+        resolved: boolean;
+        message?: string;
+    };
+}
+
+// @alpha
+export function fromFluidHandler(fluidHandler: FluidHandler, options?: FluidAdapterOptions): PolicyDefinition;
+
+// @alpha
+export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: FluidAdapterOptions): PolicyDefinition[];
+
+// @alpha
 export function generateFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
 
 // @alpha
