@@ -8,7 +8,150 @@
 import type { CCLObject, Entry } from "./types.js";
 
 export function parse(text: string): Entry[] {
-	throw new Error("Not yet implemented");
+	const entries: Entry[] = [];
+
+	// Work with the text as a whole, finding '=' separators
+	let pos = 0;
+
+	while (pos < text.length) {
+		// Find the next '='
+		const eqIndex = text.indexOf("=", pos);
+
+		if (eqIndex === -1) {
+			// No more '=' in the text - we're done
+			break;
+		}
+
+		// Key is everything from current position to '=', with all whitespace trimmed
+		const rawKey = text.slice(pos, eqIndex);
+		const key = rawKey.replace(/\s+/g, " ").trim();
+
+		// Find the line containing the '=' to determine base indentation
+		const lineStart = findLineStart(text, eqIndex);
+		const baseIndent = countLeadingWhitespace(text.slice(lineStart));
+
+		// Value starts after '='
+		const valueStart = eqIndex + 1;
+
+		// Find the end of the value by looking for the next entry
+		// An entry ends when we find a line with equal or less indentation that contains '='
+		// or when we reach the end of text
+
+		// First, get the rest of the current line after '='
+		let lineEnd = text.indexOf("\n", valueStart);
+		if (lineEnd === -1) lineEnd = text.length;
+
+		const rawFirstLine = text.slice(valueStart, lineEnd);
+		const firstLineValue = rawFirstLine.trimStart();
+		const valueLines: string[] = [];
+		const firstLineEmpty = firstLineValue.length === 0;
+
+		if (!firstLineEmpty) {
+			valueLines.push(firstLineValue);
+		}
+
+		// Move past the first line
+		let scanPos = lineEnd + 1;
+
+		// Now look at subsequent lines
+		while (scanPos < text.length) {
+			const nextLineStart = scanPos;
+			let nextLineEnd = text.indexOf("\n", scanPos);
+			if (nextLineEnd === -1) nextLineEnd = text.length;
+
+			const nextLine = text.slice(nextLineStart, nextLineEnd);
+			const nextIndent = countLeadingWhitespace(nextLine);
+			const isEmpty = nextLine.trim() === "";
+
+			if (isEmpty) {
+				// Empty line - check ahead to see if there are more continuation lines
+				let hasMoreContinuation = false;
+				let lookAhead = nextLineEnd + 1;
+				while (lookAhead < text.length) {
+					let futureEnd = text.indexOf("\n", lookAhead);
+					if (futureEnd === -1) futureEnd = text.length;
+					const futureLine = text.slice(lookAhead, futureEnd);
+					if (futureLine.trim() === "") {
+						lookAhead = futureEnd + 1;
+						continue;
+					}
+					const futureIndent = countLeadingWhitespace(futureLine);
+					if (futureIndent > baseIndent) {
+						hasMoreContinuation = true;
+					}
+					break;
+				}
+				if (hasMoreContinuation) {
+					valueLines.push("");
+					scanPos = nextLineEnd + 1;
+					continue;
+				}
+				// No more continuation - stop here
+				break;
+			}
+
+			// Check if this is a continuation line (greater indentation than base)
+			if (nextIndent > baseIndent) {
+				// This is a continuation line - preserve the full line content
+				valueLines.push(nextLine);
+				scanPos = nextLineEnd + 1;
+			} else {
+				// Not a continuation - new entry begins
+				break;
+			}
+		}
+
+		// Build the final value
+		let value: string;
+		if (valueLines.length === 0) {
+			value = "";
+		} else if (valueLines.length === 1 && !firstLineEmpty) {
+			// Single line value - just trim trailing whitespace
+			value = valueLines[0].trimEnd();
+		} else {
+			// Multiline value
+			// If first line was empty, prepend a newline
+			const allLines = firstLineEmpty ? ["", ...valueLines] : valueLines;
+			// Join with newlines, trim trailing whitespace from last line only
+			const processed = allLines.map((l, idx, arr) =>
+				idx === arr.length - 1 ? l.trimEnd() : l,
+			);
+			value = processed.join("\n");
+		}
+
+		entries.push({ key, value });
+
+		// Move position past this entry
+		pos = scanPos;
+	}
+
+	return entries;
+}
+
+/**
+ * Find the start of the line containing the given position.
+ */
+function findLineStart(text: string, pos: number): number {
+	let lineStart = pos;
+	while (lineStart > 0 && text[lineStart - 1] !== "\n") {
+		lineStart--;
+	}
+	return lineStart;
+}
+
+/**
+ * Count leading whitespace characters (spaces and tabs).
+ */
+function countLeadingWhitespace(line: string): number {
+	let count = 0;
+	for (const char of line) {
+		if (char === " " || char === "\t") {
+			count++;
+		} else {
+			break;
+		}
+	}
+	return count;
 }
 
 export function buildHierarchy(_entries: Entry[]): CCLObject {
