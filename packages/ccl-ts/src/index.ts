@@ -7,6 +7,8 @@
  * @packageDocumentation
  */
 
+// CCL functions
+export { buildHierarchy, parse } from "./ccl.js";
 // Core types
 export type {
 	CCLObject,
@@ -16,6 +18,3 @@ export type {
 	ParseError,
 	ParseResult,
 } from "./types.js";
-
-// CCL functions
-export { buildHierarchy, parse } from "./ccl.js";
