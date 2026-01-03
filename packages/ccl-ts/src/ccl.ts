@@ -7,6 +7,7 @@
 
 import type { CCLObject, Entry } from "./types.js";
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: CCL parsing inherently requires complex control flow for handling multiline values, continuation lines, and indentation
 export function parse(text: string): Entry[] {
 	const entries: Entry[] = [];
 
@@ -39,7 +40,9 @@ export function parse(text: string): Entry[] {
 
 		// First, get the rest of the current line after '='
 		let lineEnd = text.indexOf("\n", valueStart);
-		if (lineEnd === -1) lineEnd = text.length;
+		if (lineEnd === -1) {
+			lineEnd = text.length;
+		}
 
 		const rawFirstLine = text.slice(valueStart, lineEnd);
 		const firstLineValue = rawFirstLine.trimStart();
@@ -57,7 +60,9 @@ export function parse(text: string): Entry[] {
 		while (scanPos < text.length) {
 			const nextLineStart = scanPos;
 			let nextLineEnd = text.indexOf("\n", scanPos);
-			if (nextLineEnd === -1) nextLineEnd = text.length;
+			if (nextLineEnd === -1) {
+				nextLineEnd = text.length;
+			}
 
 			const nextLine = text.slice(nextLineStart, nextLineEnd);
 			const nextIndent = countLeadingWhitespace(nextLine);
@@ -69,7 +74,9 @@ export function parse(text: string): Entry[] {
 				let lookAhead = nextLineEnd + 1;
 				while (lookAhead < text.length) {
 					let futureEnd = text.indexOf("\n", lookAhead);
-					if (futureEnd === -1) futureEnd = text.length;
+					if (futureEnd === -1) {
+						futureEnd = text.length;
+					}
 					const futureLine = text.slice(lookAhead, futureEnd);
 					if (futureLine.trim() === "") {
 						lookAhead = futureEnd + 1;
@@ -173,6 +180,7 @@ function countLeadingWhitespace(line: string): number {
  * @param entries - The flat entries from a parse operation
  * @returns A hierarchical CCL object
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Hierarchy building requires handling multiple entry types (empty keys, nested CCL, terminals) and duplicate key merging
 export function buildHierarchy(entries: Entry[]): CCLObject {
 	const result: CCLObject = {};
 
@@ -233,6 +241,7 @@ function isPlainObject(value: unknown): value is CCLObject {
  * - If both are arrays, concatenate
  * - Otherwise, the second value takes precedence
  */
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Object merging requires handling all type combinations (object+object, array+array, string+string, mixed types)
 function mergeObjects(base: CCLObject, overlay: CCLObject): CCLObject {
 	const result: CCLObject = { ...base };
 

@@ -239,7 +239,9 @@ interface TestContext {
  * Matches both NotYetImplementedError class and generic "Not yet implemented" messages.
  */
 function isNotYetImplementedError(error: unknown): boolean {
-	if (!(error instanceof Error)) return false;
+	if (!(error instanceof Error)) {
+		return false;
+	}
 	return (
 		error.name === "NotYetImplementedError" ||
 		error.message.toLowerCase().includes("not yet implemented") ||
@@ -252,7 +254,9 @@ function isNotYetImplementedError(error: unknown): boolean {
  * Returns true if the function appears implemented, false if it throws "not implemented".
  */
 function probeFunction(fn: unknown, probeArgs: unknown[]): boolean {
-	if (typeof fn !== "function") return false;
+	if (typeof fn !== "function") {
+		return false;
+	}
 	try {
 		fn(...probeArgs);
 		return true; // Succeeded = implemented
@@ -351,7 +355,6 @@ function getDeclaredFunctionNames(functions: CCLFunctions): CCLFunction[] {
  * You can also explicitly add functions to todoFunctions for the same effect.
  */
 function buildCapabilities(config: CCLTestConfig): ImplementationCapabilities {
-	const implementedFunctions = getImplementedFunctionNames(config.functions);
 	const declaredFunctions = getDeclaredFunctionNames(config.functions);
 	const todoFunctions = config.todoFunctions ?? [];
 
