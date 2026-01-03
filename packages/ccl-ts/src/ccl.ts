@@ -140,41 +140,8 @@ export function parse(text: string): Entry[] {
  * // { server: { host: "localhost", port: "8080" } }
  * ```
  */
-export function buildHierarchy(entries: Entry[]): CCLObject {
-	const result: CCLObject = {};
-	const listItems: string[] = [];
-
-	for (const entry of entries) {
-		const { key, value } = entry;
-
-		if (key === "") {
-			// Empty key = list item
-			listItems.push(value);
-			continue;
-		}
-
-		// Check if value contains nested CCL (has an equals sign)
-		if (value.includes("=")) {
-			// Recursively parse the value
-			const nestedEntries = parse(value);
-			const nestedObject = buildHierarchy(nestedEntries);
-			result[key] = nestedObject;
-		} else {
-			// Terminal value - store as string
-			result[key] = value;
-		}
-	}
-
-	// If we collected list items, add them under a special key or return as-is
-	// Per CCL spec, list items without keys become an array
-	if (listItems.length > 0) {
-		// If there's only list items and no other keys, the behavior depends on context
-		// For now, store them as an array under the empty string key
-		// This matches how CCL handles lists at the top level
-		result[""] = listItems;
-	}
-
-	return result;
+export function buildHierarchy(_entries: Entry[]): CCLObject {
+	throw new Error("Not yet implemented");
 }
 
 // ============================================================================

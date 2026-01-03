@@ -78,9 +78,10 @@ const cclConfig = defineCCLTests({
 	testDataPath: TEST_DATA_PATH,
 
 	// Wire up implemented functions
+	// Note: Stubs that throw "Not yet implemented" are auto-detected as todo
 	functions: {
 		parse,
-		build_hierarchy: buildHierarchy,
+		build_hierarchy: buildHierarchy, // Auto-detected as todo (throws "Not yet implemented")
 		// Uncomment as you implement:
 		// get_string: getString,
 		// get_int: getInt,
