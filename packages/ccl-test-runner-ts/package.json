@@ -1,6 +1,6 @@
 {
 	"name": "ccl-test-runner-ts",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "TypeScript CCL test runner with vitest integration for ccl-test-data.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/ccl-test-runner-ts",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",

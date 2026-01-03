@@ -1,5 +1,18 @@
 # repopo
 
+## 0.8.0
+
+### Minor Changes
+
+- Add NoPrivateWorkspaceDependencies policy that prevents publishable packages from depending on private workspace packages via the `workspace:` protocol. This catches configuration issues where a public npm package would fail to install because its workspace dependencies aren't published. _[`#534`](https://github.com/tylerbutler/tools-monorepo/pull/534) [`b7e4d4b`](https://github.com/tylerbutler/tools-monorepo/commit/b7e4d4b374cae228d246b16c668ba6e55c08f3dc) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The policy:
+  - Detects workspace dependencies using the `workspace:` protocol
+  - Checks if those dependencies are marked as private
+  - Reports violations for publishable packages that depend on private packages
+  - Supports configurable `checkDevDependencies` option (default: false)
+  - Uses workspace configuration (pnpm-workspace.yaml or package.json workspaces) for package discovery
+
 ## 0.7.1
 
 ### Patch Changes
@@ -23,7 +36,6 @@
 - Add configurable PackageScripts policy _[`#376`](https://github.com/tylerbutler/tools-monorepo/pull/376) [`c17462a`](https://github.com/tylerbutler/tools-monorepo/commit/c17462a8af35a8bfbb528f29825a0ef177923946) [@tylerbutler](https://github.com/tylerbutler)_
 
   Enhances the `PackageScripts` policy with flexible configuration options to enforce package.json script requirements across your repository. The policy now supports two validation modes:
-
   1.  **Required Scripts (`must`)**: Specify scripts that must be present in all package.json files
   2.  **Mutually Exclusive Scripts (`mutuallyExclusive`)**: Define groups of scripts where exactly one from each group must exist
 
@@ -39,7 +51,6 @@
   ```
 
   The policy validates that:
-
   - All scripts in the `must` array are present
   - For each group in `mutuallyExclusive`, exactly one script from that group exists (not zero, not multiple)
 
@@ -48,7 +59,6 @@
 - New built-in policies _[`#308`](https://github.com/tylerbutler/tools-monorepo/pull/308) [`1856d58`](https://github.com/tylerbutler/tools-monorepo/commit/1856d582fb92692447b02c89cdb45dcd3c5f7370) [@tylerbutler](https://github.com/tylerbutler)_
 
   Added three new policies for repository quality and safety:
-
   - **LicenseFileExists**: Ensures a LICENSE file exists in the repository root (essential for open source projects)
   - **NoLargeBinaryFiles**: Prevents large binary files from being committed (default 10MB max, suggests Git LFS for large assets)
   - **RequiredGitignorePatterns**: Validates .gitignore contains required patterns to prevent committing sensitive files, dependencies, and build artifacts (auto-fixable)
@@ -112,18 +122,15 @@
   repopo now exports all included policies individually so users can opt in and out of them in their config.
 
 - New policies _[`#31`](https://github.com/tylerbutler/tools-monorepo/pull/31) [`c97a565`](https://github.com/tylerbutler/tools-monorepo/commit/c97a56518d9726667531aa71de9445fed8d56b96) [@tylerbutler](https://github.com/tylerbutler)_
-
   - JsTsFileHeaders
   - HtmlFileHeaders
   - PackageScripts
 
 - API changes: _[`#120`](https://github.com/tylerbutler/tools-monorepo/pull/120) [`1108950`](https://github.com/tylerbutler/tools-monorepo/commit/1108950a7732dcc3ac9b8da10bd014bfec6c45b7) [@tylerbutler](https://github.com/tylerbutler)_
-
   - **Breaking change**: `PolicyConfig` was renamed to `RepopoConfig`.
   - **Breaking change**: Removed several flags from the check command.
 
   Other changes:
-
   - Refactor check command for clarity (more to do)
 
 - Functions to more easily create package.json handlers _[`#190`](https://github.com/tylerbutler/tools-monorepo/pull/190) [`84c4185`](https://github.com/tylerbutler/tools-monorepo/commit/84c4185e76186c3489a4b70e3a3015ba289df139) [@tylerbutler](https://github.com/tylerbutler)_
