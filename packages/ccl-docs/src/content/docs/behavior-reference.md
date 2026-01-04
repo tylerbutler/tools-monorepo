@@ -211,6 +211,54 @@ getList(obj, "multiple")  // → ["item1", "item2"]
 
 ---
 
+### Continuation Baseline
+
+**Options:** `toplevel_indent_strip` vs `toplevel_indent_preserve`
+
+Controls how the baseline indentation (N) is determined during top-level parsing. This affects whether lines at the same indentation level are treated as continuations or separate entries.
+
+#### `toplevel_indent_strip`
+
+Top-level parsing always uses N=0 as the baseline. Any line with indentation > 0 is treated as a continuation of the previous entry. Leading whitespace is effectively "stripped" when determining entry boundaries.
+
+```ccl
+  key = value
+  next = another
+```
+
+**Result:** One entry, because both lines have indent 2 > 0.
+
+```json
+{"key": "value\n  next = another"}
+```
+
+This is the OCaml reference implementation's behavior.
+
+#### `toplevel_indent_preserve`
+
+Top-level parsing uses the first key's indentation as N. Lines at the same indentation level as the first key are separate entries. The original indentation structure is "preserved" for entry boundary detection.
+
+```ccl
+  key = value
+  next = another
+```
+
+**Result:** Two entries, because both lines have indent 2 = N (2), so 2 > 2 is false.
+
+```json
+{"key": "value", "next": "another"}
+```
+
+**Trade-offs:**
+- `toplevel_indent_strip` matches the OCaml reference and existing test suite expectations
+- `toplevel_indent_preserve` may be more intuitive: indenting your whole document doesn't change parsing semantics
+
+**Implementation note:** With `toplevel_indent_preserve`, top-level and nested parsing use the same algorithm—always determine N from the first non-empty line's indentation. The distinction between `parse` and `parse_indented` only matters for `toplevel_indent_strip`, where top-level parsing must force N=0. See [Continuation Lines](/continuation-lines) for details.
+
+**Recommendation:** Use `toplevel_indent_strip` for reference compliance. Consider `toplevel_indent_preserve` if your use case involves documents that may be indented as a whole (e.g., embedded within other files), or if you want a simpler single-algorithm implementation.
+
+---
+
 ### Array Ordering
 
 **Options:** `array_order_insertion` vs `array_order_lexicographic`
@@ -291,6 +339,7 @@ const compatibleTests = allTests.filter(test => {
 | Tab Handling | `tabs_as_content` | `tabs_as_whitespace` | Content preserves exact input |
 | Indentation | `indent_spaces` | `indent_tabs` | Output formatting only |
 | List Access | `list_coercion_enabled` | `list_coercion_disabled` | Disabled for type safety |
+| Continuation Baseline | `toplevel_indent_strip` | `toplevel_indent_preserve` | Strip for reference compliance |
 | Array Ordering | `array_order_insertion` | `array_order_lexicographic` | Insertion preserves intent |
 
 ## See Also

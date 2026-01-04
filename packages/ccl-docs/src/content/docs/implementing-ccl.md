@@ -54,7 +54,7 @@ function build_hierarchy(entries):
         if key == "":
             add_to_list(result, value)
         else if value_looks_like_ccl(value):
-            nested = parse(value)
+            nested = parse(value)  # Uses nested context detection
             result[key] = build_hierarchy(nested)  # Recurse
         else:
             result[key] = value
@@ -62,6 +62,12 @@ function build_hierarchy(entries):
 ```
 
 **Fixed-point termination**: Recurse until no more CCL syntax found.
+
+:::caution[Critical: Nested Parsing Context]
+When `build_hierarchy` calls `parse` on a nested value, the parser must detect that the value starts with `\n` and use the first content line's indentation as the baseline—regardless of the `toplevel_indent_strip`/`toplevel_indent_preserve` behavior setting for top-level parsing.
+
+This is the most common source of parsing bugs. See [Continuation Lines](/continuation-lines) for the complete algorithm and [Behavior Reference](/behavior-reference#continuation-baseline) for top-level baseline choices.
+:::
 
 See [Parsing Algorithm](/parsing-algorithm) for details.
 

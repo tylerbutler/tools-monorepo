@@ -90,11 +90,17 @@ Parses to:
 - Preserve internal structure (newlines + indentation for continuation lines)
 
 **Indentation handling:**
-1. When starting to parse an entry, record the indentation level (count of leading whitespace characters before the key)
-2. After the `=`, check if the value continues on the same line or the next line
-3. For each subsequent line, count its leading whitespace:
-   - If indentation > entry's indentation level → continuation line (append to value)
-   - If indentation ≤ entry's indentation level → new entry (stop parsing current value)
+
+The baseline indentation (N) determines which lines are continuations vs new entries. How N is determined depends on the `toplevel_indent_strip` vs `toplevel_indent_preserve` behavior:
+
+- **`toplevel_indent_strip`** (OCaml reference): Top-level parsing uses N=0; nested parsing uses first content line's indent
+- **`toplevel_indent_preserve`** (simpler): Always use first content line's indent for all contexts
+
+For each subsequent line, count its leading whitespace:
+- If indentation > N → continuation line (append to value)
+- If indentation ≤ N → new entry (stop parsing current value)
+
+**Note:** With `toplevel_indent_preserve`, you only need one parsing algorithm. With `toplevel_indent_strip`, you need context detection to distinguish top-level from nested parsing. See [Continuation Lines](/continuation-lines) for details.
 
 **Whitespace characters:** Which characters count as whitespace depends on parser behavior:
 - `tabs_as_whitespace`: spaces and tabs are whitespace (used for indentation)
@@ -286,6 +292,7 @@ CCL implementations make choices about edge cases. Declare your choices and the 
 
 | Behavior Group | Options | Description |
 |----------------|---------|-------------|
+| Continuation Baseline | `toplevel_indent_strip` / `toplevel_indent_preserve` | Top-level N=0 (reference) or N=first key's indent (simpler) |
 | Line Endings | `crlf_preserve_literal` / `crlf_normalize_to_lf` | Keep `\r` chars or normalize to LF |
 | Boolean Parsing | `boolean_strict` / `boolean_lenient` | Only true/false or also yes/no |
 | Tab Handling | `tabs_as_content` / `tabs_as_whitespace` | Preserve tabs or treat as whitespace |
