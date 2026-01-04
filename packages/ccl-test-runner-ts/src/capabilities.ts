@@ -88,7 +88,9 @@ export type CCLBehavior =
 	| "list_coercion_enabled"
 	| "list_coercion_disabled"
 	| "array_order_insertion"
-	| "array_order_lexicographic";
+	| "array_order_lexicographic"
+	| "toplevel_indent_strip"
+	| "toplevel_indent_preserve";
 
 /**
  * Strongly-typed behavior constants for IDE autocomplete and type safety.
@@ -131,6 +133,10 @@ export const Behavior = {
 	// Array ordering
 	ArrayOrderInsertion: "array_order_insertion",
 	ArrayOrderLexicographic: "array_order_lexicographic",
+
+	// Top-level indentation handling
+	ToplevelIndentStrip: "toplevel_indent_strip",
+	ToplevelIndentPreserve: "toplevel_indent_preserve",
 } as const satisfies Record<string, CCLBehavior>;
 
 /**
@@ -144,6 +150,7 @@ export const BEHAVIOR_CONFLICTS: Record<string, CCLBehavior[]> = {
 	spacing: ["strict_spacing", "loose_spacing"],
 	list_coercion: ["list_coercion_enabled", "list_coercion_disabled"],
 	array_order: ["array_order_insertion", "array_order_lexicographic"],
+	toplevel_indent: ["toplevel_indent_strip", "toplevel_indent_preserve"],
 };
 
 /**

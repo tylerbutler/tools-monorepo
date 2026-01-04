@@ -1,10 +1,15 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.2.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -32,6 +37,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -79,6 +89,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -129,6 +144,11 @@
       "behaviors": [
         "tabs_as_whitespace"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -156,6 +176,11 @@
       "behaviors": [
         "tabs_as_whitespace"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -203,6 +228,11 @@
       "behaviors": [
         "tabs_as_whitespace"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -253,6 +283,11 @@
       "behaviors": [
         "tabs_as_whitespace"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -280,6 +315,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -308,6 +348,11 @@
       "behaviors": [
         "tabs_as_whitespace"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -336,6 +381,11 @@
       "behaviors": [
         "tabs_as_whitespace"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -364,6 +414,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "value": "key = \tvalue"
@@ -386,6 +441,11 @@
       "behaviors": [
         "tabs_as_whitespace"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content"
+        ]
+      },
       "expected": {
         "count": 1,
         "value": "key = value"
@@ -409,6 +469,11 @@
         "tabs_as_whitespace",
         "indent_spaces"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content"
+        ]
+      },
       "expected": {
         "count": 1,
         "value": "section =\n  indented\n  another"
@@ -498,6 +563,11 @@
       "behaviors": [
         "crlf_normalize_to_lf"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_preserve_literal"
+        ]
+      },
       "expected": {
         "count": 2,
         "entries": [
@@ -552,6 +622,11 @@
       "behaviors": [
         "crlf_preserve_literal"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_normalize_to_lf"
+        ]
+      },
       "expected": {
         "count": 2,
         "entries": [
@@ -583,6 +658,11 @@
       "behaviors": [
         "crlf_normalize_to_lf"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_preserve_literal"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -611,6 +691,11 @@
       "behaviors": [
         "crlf_preserve_literal"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_normalize_to_lf"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -639,6 +724,11 @@
       "behaviors": [
         "crlf_normalize_to_lf"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_preserve_literal"
+        ]
+      },
       "expected": {
         "count": 3,
         "entries": [
@@ -674,6 +764,11 @@
       "behaviors": [
         "crlf_normalize_to_lf"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_preserve_literal"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -727,6 +822,12 @@
         "tabs_as_whitespace",
         "crlf_normalize_to_lf"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_content",
+          "crlf_preserve_literal"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -755,6 +856,12 @@
         "tabs_as_content",
         "crlf_normalize_to_lf"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace",
+          "crlf_preserve_literal"
+        ]
+      },
       "expected": {
         "count": 2,
         "entries": [
