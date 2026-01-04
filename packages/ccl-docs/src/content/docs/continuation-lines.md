@@ -24,9 +24,9 @@ CCL has two parsing contexts with different rules for determining N:
 
 ### Top-Level Parsing
 
-When parsing a CCL document from the beginning, how N is determined depends on the `baseline_zero` vs `baseline_first_key` behavior choice (see [Behavior Reference](/behavior-reference#continuation-baseline)).
+When parsing a CCL document from the beginning, how N is determined depends on the `toplevel_indent_strip` vs `toplevel_indent_preserve` behavior choice (see [Behavior Reference](/behavior-reference#continuation-baseline)).
 
-#### With `baseline_zero` (default)
+#### With `toplevel_indent_strip` (default)
 
 **N is always 0.** Any line with leading whitespace becomes a continuation. This is the OCaml reference implementation's behavior.
 
@@ -43,7 +43,7 @@ server =
 
 **Result:** One entry: `{key: "server", value: "\n  host = localhost\n  port = 8080"}`
 
-#### With `baseline_first_key`
+#### With `toplevel_indent_preserve`
 
 **N equals the first key's indentation.** Lines at the same indentation as the first key are separate entries.
 
@@ -58,7 +58,7 @@ server =
 
 **Result:** Two entries: `{key: "server", value: "localhost"}` and `{key: "port", value: "8080"}`
 
-With `baseline_zero`, this same input would produce **one entry** because 2 > 0 makes line 2 a continuation.
+With `toplevel_indent_strip`, this same input would produce **one entry** because 2 > 0 makes line 2 a continuation.
 
 ### Nested Parsing (N = first line's indent)
 
@@ -75,20 +75,20 @@ The value from above is `"\n  host = localhost\n  port = 8080"`. When `build_hie
 
 ## Why Two Contexts?
 
-The distinction between top-level and nested parsing exists because the OCaml reference uses `baseline_zero`:
+The distinction between top-level and nested parsing exists because the OCaml reference uses `toplevel_indent_strip`:
 
 - `kvs_p` - top-level, uses `prefix_len = 0`
 - `nested_kvs_p` - nested, determines `prefix_len` from first content line
 
-With `baseline_zero`, you need two different algorithms: one that forces N=0, and one that determines N dynamically.
+With `toplevel_indent_strip`, you need two different algorithms: one that forces N=0, and one that determines N dynamically.
 
-**With `baseline_first_key`, the distinction disappears.** Both top-level and nested parsing use the same algorithm: determine N from the first non-empty line's indentation. This simplifies implementation—you only need one parsing function that works for all contexts.
+**With `toplevel_indent_preserve`, the distinction disappears.** Both top-level and nested parsing use the same algorithm: determine N from the first non-empty line's indentation. This simplifies implementation—you only need one parsing function that works for all contexts.
 
 ## Detecting Context
 
 How the baseline is determined depends on which behavior you're implementing:
 
-### With `baseline_zero` (OCaml reference)
+### With `toplevel_indent_strip` (OCaml reference)
 
 Context detection is required:
 
@@ -105,7 +105,7 @@ function determine_baseline(text):
     return 0
 ```
 
-### With `baseline_first_key` (simplified)
+### With `toplevel_indent_preserve` (simplified)
 
 No context detection needed—use the same algorithm everywhere:
 
@@ -143,13 +143,13 @@ next = another
 
 Both lines have indent 2. The result depends on the baseline behavior:
 
-**With `baseline_zero`:**
+**With `toplevel_indent_strip`:**
 - Line 1: indent 2, N=0 → 2 > 0 is **true** → first entry starts
 - Line 2: indent 2, N=0 → 2 > 0 is **true** → **continuation!**
 
 **Result:** 1 entry with key="key", value="value\n  next = another"
 
-**With `baseline_first_key`:**
+**With `toplevel_indent_preserve`:**
 - Line 1: indent 2 → first entry starts, N=2
 - Line 2: indent 2, N=2 → 2 > 2 is **false** → **new entry**
 
@@ -279,7 +279,7 @@ function parse(text):
     return entries
 ```
 
-### `baseline_zero` (OCaml reference)
+### `toplevel_indent_strip` (OCaml reference)
 
 ```pseudocode
 function determine_baseline(text):
@@ -298,7 +298,7 @@ function determine_baseline(text):
     return 0
 ```
 
-### `baseline_first_key` (simplified)
+### `toplevel_indent_preserve` (simplified)
 
 ```pseudocode
 function determine_baseline(text):
@@ -313,9 +313,9 @@ function determine_baseline(text):
 
 | Behavior | Baseline Algorithm | Implementation Complexity |
 |----------|-------------------|--------------------------|
-| `baseline_zero` | N=0 for top-level, N=first line for nested | Requires context detection |
-| `baseline_first_key` | N=first line for all contexts | Single algorithm, simpler |
+| `toplevel_indent_strip` | N=0 for top-level, N=first line for nested | Requires context detection |
+| `toplevel_indent_preserve` | N=first line for all contexts | Single algorithm, simpler |
 
-With `baseline_first_key`, you only need one `parse` function. With `baseline_zero`, you need context detection to distinguish top-level from nested parsing.
+With `toplevel_indent_preserve`, you only need one `parse` function. With `toplevel_indent_strip`, you need context detection to distinguish top-level from nested parsing.
 
 See [Behavior Reference](/behavior-reference#continuation-baseline) for guidance on choosing between behaviors.
