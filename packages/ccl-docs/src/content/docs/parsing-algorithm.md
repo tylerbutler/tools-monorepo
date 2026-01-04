@@ -55,7 +55,7 @@ Find the first `=` character and split:
 
 :::caution[Context-Dependent Baseline]
 The baseline N is determined differently depending on parsing context:
-- **Top-level parsing**: N = 0 with `baseline_zero` behavior (default), or N = first key's indent with `baseline_first_key`
+- **Top-level parsing**: N = 0 with `toplevel_indent_strip` behavior (default), or N = first key's indent with `toplevel_indent_preserve`
 - **Nested parsing** (recursive calls): N = first content line's indentation (always)
 
 See [Continuation Lines](/continuation-lines) for detailed examples and [Behavior Reference](/behavior-reference#continuation-baseline) for choosing between baseline behaviors.
@@ -98,7 +98,7 @@ value: "child = nested\nsibling = another"
 - Prevents infinite recursion: plain strings have no structure to parse
 
 :::note[Nested Parsing Context]
-When recursively parsing a multiline value, the parser must detect that it's in a **nested context** (the value starts with `\n`) and use the first content line's indentation as the baseline—regardless of the `baseline_zero`/`baseline_first_key` behavior setting.
+When recursively parsing a multiline value, the parser must detect that it's in a **nested context** (the value starts with `\n`) and use the first content line's indentation as the baseline—regardless of the `toplevel_indent_strip`/`toplevel_indent_preserve` behavior setting.
 
 For example, the value `"\n  host = localhost\n  port = 8080"`:
 1. Starts with `\n` → nested context
