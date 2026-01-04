@@ -124,25 +124,35 @@ getBool(obj, "inactive")  // → false
 
 Controls how tab characters are processed during parsing.
 
+**Important:** These behaviors affect two specific areas:
+1. **Indentation detection:** Whether tabs count as whitespace for determining continuation lines
+2. **Leading whitespace in values:** Whether tabs immediately after the `=` are preserved or stripped
+
+**Interior tabs within values are always preserved regardless of behavior choice.**
+
 #### `tabs_as_content`
 
-Tab characters are preserved as literal content in values. A leading tab in a value remains as `\t` in the parsed output.
+Only spaces count as whitespace for indentation. Tabs are preserved as content:
+- **Indentation:** Only spaces determine indentation level (tabs don't affect continuation detection)
+- **Values:** Leading tabs after `=` are preserved as `\t` in output
 
 ```ccl
 key = 	value	with	tabs
 ```
 
-**Result:** The value contains literal tab characters: `"\tvalue\twith\ttabs"`.
+**Result:** Value is `"\tvalue\twith\ttabs"` (leading and interior tabs preserved).
 
 #### `tabs_as_whitespace`
 
-Tab characters are treated as whitespace and normalized (typically to spaces or stripped). Tabs in values are converted to spaces.
+Both spaces and tabs count as whitespace:
+- **Indentation:** Both spaces and tabs contribute to indentation level
+- **Values:** Leading tabs after `=` are stripped (normalized as whitespace)
 
 ```ccl
 key = 	value	with	tabs
 ```
 
-**Result:** The value has tabs converted: `"value with tabs"`.
+**Result:** Value is `"value\twith\ttabs"` (leading tab stripped, interior tabs preserved).
 
 **Recommendation:** `tabs_as_content` preserves exact input fidelity; `tabs_as_whitespace` provides consistent behavior regardless of tab usage.
 
