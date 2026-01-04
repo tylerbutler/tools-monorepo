@@ -25,6 +25,7 @@
 		"esm"
 	],
 	"scripts": {
+		"build:api": "api-extractor run --local",
 		"build:compile": "tsc --project ./tsconfig.json",
 		"check": "pnpm check:format",
 		"check:format": "biome format .",
@@ -38,6 +39,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
+		"@microsoft/api-extractor": "^7.55.1",
 		"@tylerbu/ccl-test-data": "workspace:^",
 		"@types/node": "^20.19.25",
 		"@vitest/coverage-v8": "^3.2.4",

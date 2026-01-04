@@ -7,6 +7,23 @@
 
 import type { CCLObject, Entry } from "./types.js";
 
+/**
+ * Parse CCL text into a flat list of entries.
+ *
+ * Each entry contains a key-value pair extracted from the CCL input.
+ * The parser handles multiline values, continuation lines, and indentation-based nesting.
+ *
+ * @param text - The CCL text to parse
+ * @returns An array of entries with key-value pairs
+ *
+ * @example
+ * ```ts
+ * const entries = parse("name=Alice\nage=30");
+ * // => [{ key: "name", value: "Alice" }, { key: "age", value: "30" }]
+ * ```
+ *
+ * @beta
+ */
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: CCL parsing inherently requires complex control flow for handling multiline values, continuation lines, and indentation
 export function parse(text: string): Entry[] {
 	const entries: Entry[] = [];
@@ -179,6 +196,15 @@ function countLeadingWhitespace(line: string): number {
  *
  * @param entries - The flat entries from a parse operation
  * @returns A hierarchical CCL object
+ *
+ * @example
+ * ```ts
+ * const entries = parse("server=\n  host=localhost\n  port=8080");
+ * const obj = buildHierarchy(entries);
+ * // => { server: { host: "localhost", port: "8080" } }
+ * ```
+ *
+ * @beta
  */
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Hierarchy building requires handling multiple entry types (empty keys, nested CCL, terminals) and duplicate key merging
 export function buildHierarchy(entries: Entry[]): CCLObject {
