@@ -24,144 +24,226 @@ import type { CCLObject, Entry } from "./types.js";
  *
  * @beta
  */
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: CCL parsing inherently requires complex control flow for handling multiline values, continuation lines, and indentation
 export function parse(text: string): Entry[] {
+	const baseline = determineBaseline(text);
 	const entries: Entry[] = [];
-
-	// Work with the text as a whole, finding '=' separators
 	let pos = 0;
 
 	while (pos < text.length) {
-		// Find the next '='
-		const eqIndex = text.indexOf("=", pos);
-
-		if (eqIndex === -1) {
-			// No more '=' in the text - we're done
+		const entryResult = getNextEntry(text, pos, baseline);
+		if (!entryResult) {
 			break;
 		}
 
-		// Key is everything from current position to '=', with all whitespace trimmed
-		const rawKey = text.slice(pos, eqIndex);
-		const key = rawKey.replace(/\s+/g, " ").trim();
-
-		// Find the line containing the '=' to determine base indentation
-		const lineStart = findLineStart(text, eqIndex);
-		const baseIndent = countLeadingWhitespace(text.slice(lineStart));
-
-		// Value starts after '='
-		const valueStart = eqIndex + 1;
-
-		// Find the end of the value by looking for the next entry
-		// An entry ends when we find a line with equal or less indentation that contains '='
-		// or when we reach the end of text
-
-		// First, get the rest of the current line after '='
-		let lineEnd = text.indexOf("\n", valueStart);
-		if (lineEnd === -1) {
-			lineEnd = text.length;
-		}
-
-		const rawFirstLine = text.slice(valueStart, lineEnd);
-		const firstLineValue = rawFirstLine.trimStart();
-		const valueLines: string[] = [];
-		const firstLineEmpty = firstLineValue.length === 0;
-
-		if (!firstLineEmpty) {
-			valueLines.push(firstLineValue);
-		}
-
-		// Move past the first line
-		let scanPos = lineEnd + 1;
-
-		// Now look at subsequent lines
-		while (scanPos < text.length) {
-			const nextLineStart = scanPos;
-			let nextLineEnd = text.indexOf("\n", scanPos);
-			if (nextLineEnd === -1) {
-				nextLineEnd = text.length;
-			}
-
-			const nextLine = text.slice(nextLineStart, nextLineEnd);
-			const nextIndent = countLeadingWhitespace(nextLine);
-			const isEmpty = nextLine.trim() === "";
-
-			if (isEmpty) {
-				// Empty line - check ahead to see if there are more continuation lines
-				let hasMoreContinuation = false;
-				let lookAhead = nextLineEnd + 1;
-				while (lookAhead < text.length) {
-					let futureEnd = text.indexOf("\n", lookAhead);
-					if (futureEnd === -1) {
-						futureEnd = text.length;
-					}
-					const futureLine = text.slice(lookAhead, futureEnd);
-					if (futureLine.trim() === "") {
-						lookAhead = futureEnd + 1;
-						continue;
-					}
-					const futureIndent = countLeadingWhitespace(futureLine);
-					if (futureIndent > baseIndent) {
-						hasMoreContinuation = true;
-					}
-					break;
-				}
-				if (hasMoreContinuation) {
-					valueLines.push("");
-					scanPos = nextLineEnd + 1;
-					continue;
-				}
-				// No more continuation - stop here
-				break;
-			}
-
-			// Check if this is a continuation line (greater indentation than base)
-			if (nextIndent > baseIndent) {
-				// This is a continuation line - preserve the full line content
-				valueLines.push(nextLine);
-				scanPos = nextLineEnd + 1;
-			} else {
-				// Not a continuation - new entry begins
-				break;
-			}
-		}
-
-		// Build the final value
-		let value: string;
-		if (valueLines.length === 0) {
-			value = "";
-		} else if (valueLines.length === 1 && !firstLineEmpty) {
-			// Single line value - just trim trailing whitespace
-			// biome-ignore lint/style/noNonNullAssertion: length check above guarantees element exists
-			value = valueLines[0]!.trimEnd();
-		} else {
-			// Multiline value
-			// If first line was empty, prepend a newline
-			const allLines = firstLineEmpty ? ["", ...valueLines] : valueLines;
-			// Join with newlines, trim trailing whitespace from last line only
-			const processed = allLines.map((l, idx, arr) =>
-				idx === arr.length - 1 ? l.trimEnd() : l,
-			);
-			value = processed.join("\n");
-		}
-
+		const { key, value, nextPos } = entryResult;
 		entries.push({ key, value });
-
-		// Move position past this entry
-		pos = scanPos;
+		pos = nextPos;
 	}
 
 	return entries;
 }
 
 /**
- * Find the start of the line containing the given position.
+ * Determine the baseline indentation for parsing.
+ *
+ * Finds the first non-empty line and uses its indentation as the baseline.
+ * This enables correct parsing of both top-level content and nested content
+ * where all entries share a common indentation level.
  */
-function findLineStart(text: string, pos: number): number {
-	let lineStart = pos;
-	while (lineStart > 0 && text[lineStart - 1] !== "\n") {
-		lineStart--;
+function determineBaseline(text: string): number {
+	let pos = 0;
+	while (pos < text.length) {
+		const line = getLineAt(text, pos);
+		if (line === null) {
+			break;
+		}
+		if (!isEmptyLine(line)) {
+			return countLeadingWhitespace(line);
+		}
+		pos = skipLine(text, pos);
 	}
-	return lineStart;
+	return 0;
+}
+
+/**
+ * Extract the next entry from the text starting at the given position.
+ */
+function getNextEntry(
+	text: string,
+	startPos: number,
+	baseline: number,
+): (Entry & { nextPos: number }) | null {
+	// Find the next '='
+	const eqIndex = text.indexOf("=", startPos);
+	if (eqIndex === -1) {
+		return null;
+	}
+
+	// Extract and trim the key
+	const rawKey = text.slice(startPos, eqIndex);
+	const key = rawKey.replace(/\s+/g, " ").trim();
+
+	// Collect value lines
+	const valueStart = eqIndex + 1;
+	const { valueLines, nextPos } = collectValueLines(text, valueStart, baseline);
+
+	// Build the final value
+	const value = buildValue(valueLines);
+
+	return { key, value, nextPos };
+}
+
+/**
+ * Collect value lines for an entry, handling continuation lines.
+ */
+function collectValueLines(
+	text: string,
+	startPos: number,
+	baseline: number,
+): { valueLines: string[]; nextPos: number } {
+	const valueLines: string[] = [];
+	let pos = startPos;
+
+	// Get the first line of the value
+	const firstLine = getLineAt(text, pos);
+	if (firstLine !== null) {
+		valueLines.push(trimLeadingSpacesAndTabs(firstLine));
+		pos = skipLine(text, pos);
+	}
+
+	// Collect continuation lines
+	while (pos < text.length) {
+		const line = getLineAt(text, pos);
+		if (line === null) {
+			break;
+		}
+
+		if (isEmptyLine(line)) {
+			// Empty line - check if there are more continuation lines
+			if (hasMoreContinuations(text, pos, baseline)) {
+				valueLines.push("");
+				pos = skipLine(text, pos);
+				continue;
+			}
+			break;
+		}
+
+		const indent = countLeadingWhitespace(line);
+		if (indent > baseline) {
+			// Continuation line - preserve full content
+			valueLines.push(line);
+			pos = skipLine(text, pos);
+		} else {
+			// New entry begins
+			break;
+		}
+	}
+
+	return { valueLines, nextPos: pos };
+}
+
+/**
+ * Trim only leading spaces and tabs from a string, preserving \r for CRLF handling.
+ */
+function trimLeadingSpacesAndTabs(s: string): string {
+	let start = 0;
+	while (start < s.length) {
+		const char = s[start];
+		if (char === " " || char === "\t") {
+			start++;
+		} else {
+			break;
+		}
+	}
+	return s.slice(start);
+}
+
+/**
+ * Trim only trailing spaces and tabs from a string, preserving \r for CRLF handling.
+ */
+function trimTrailingSpacesAndTabs(s: string): string {
+	let end = s.length;
+	while (end > 0) {
+		const char = s[end - 1];
+		if (char === " " || char === "\t") {
+			end--;
+		} else {
+			break;
+		}
+	}
+	return s.slice(0, end);
+}
+
+/**
+ * Build the final value string from collected lines.
+ */
+function buildValue(valueLines: string[]): string {
+	if (valueLines.length === 0) {
+		return "";
+	}
+	if (valueLines.length === 1) {
+		return trimTrailingSpacesAndTabs(valueLines[0]!);
+	}
+
+	// Multiline value - join with newlines, trim trailing spaces/tabs from last line only
+	const processed = valueLines.map((l, idx, arr) =>
+		idx === arr.length - 1 ? trimTrailingSpacesAndTabs(l) : l,
+	);
+	return processed.join("\n");
+}
+
+/**
+ * Check if a line is empty (contains only whitespace or nothing).
+ */
+function isEmptyLine(line: string): boolean {
+	return line.trim() === "";
+}
+
+/**
+ * Check if there are more continuation lines after the current position.
+ */
+function hasMoreContinuations(
+	text: string,
+	pos: number,
+	baseline: number,
+): boolean {
+	let checkPos = pos;
+
+	while (checkPos < text.length) {
+		const line = getLineAt(text, checkPos);
+		if (line === null) {
+			break;
+		}
+
+		if (!isEmptyLine(line)) {
+			const indent = countLeadingWhitespace(line);
+			return indent > baseline;
+		}
+
+		checkPos = skipLine(text, checkPos);
+	}
+
+	return false;
+}
+
+/**
+ * Get the line at the given position, or null if at end.
+ */
+function getLineAt(text: string, pos: number): string | null {
+	if (pos >= text.length) {
+		return null;
+	}
+
+	const end = text.indexOf("\n", pos);
+	return end === -1 ? text.slice(pos) : text.slice(pos, end);
+}
+
+/**
+ * Skip past the current line and return the position of the next line.
+ */
+function skipLine(text: string, pos: number): number {
+	const end = text.indexOf("\n", pos);
+	return end === -1 ? text.length : end + 1;
 }
 
 /**

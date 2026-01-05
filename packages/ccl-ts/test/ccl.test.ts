@@ -98,7 +98,7 @@ const cclConfig = defineCCLTests({
 	// Declare behavioral choices
 	behaviors: [
 		Behavior.BooleanLenient,
-		Behavior.CRLFNormalize,
+		Behavior.CRLFPreserve,
 		Behavior.TabsPreserve,
 		Behavior.StrictSpacing,
 		Behavior.ListCoercionDisabled,
