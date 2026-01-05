@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.2.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -81,14 +81,7 @@
       ]
     },
     {
-      "behaviors": [
-        "toplevel_indent_strip"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "toplevel_indent_preserve"
-        ]
-      },
+      "behaviors": [],
       "expected": {
         "count": 1,
         "value": true
@@ -146,14 +139,7 @@
       "variants": []
     },
     {
-      "behaviors": [
-        "toplevel_indent_preserve"
-      ],
-      "conflicts": {
-        "behaviors": [
-          "toplevel_indent_strip"
-        ]
-      },
+      "behaviors": [],
       "expected": {
         "count": 1,
         "value": true

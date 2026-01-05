@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.2.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -397,8 +397,8 @@
       ],
       "conflicts": {
         "behaviors": [
-          "array_order_insertion",
-          "list_coercion_enabled"
+          "list_coercion_enabled",
+          "array_order_insertion"
         ]
       },
       "expected": {
@@ -493,8 +493,8 @@
       ],
       "conflicts": {
         "behaviors": [
-          "array_order_insertion",
-          "list_coercion_enabled"
+          "list_coercion_enabled",
+          "array_order_insertion"
         ]
       },
       "expected": {
@@ -591,8 +591,8 @@
       ],
       "conflicts": {
         "behaviors": [
-          "array_order_insertion",
-          "list_coercion_enabled"
+          "list_coercion_enabled",
+          "array_order_insertion"
         ]
       },
       "expected": {
@@ -693,8 +693,8 @@
       ],
       "conflicts": {
         "behaviors": [
-          "array_order_insertion",
-          "list_coercion_enabled"
+          "list_coercion_enabled",
+          "array_order_insertion"
         ]
       },
       "expected": {
@@ -786,8 +786,8 @@
       ],
       "conflicts": {
         "behaviors": [
-          "array_order_insertion",
-          "list_coercion_enabled"
+          "list_coercion_enabled",
+          "array_order_insertion"
         ]
       },
       "expected": {
@@ -860,8 +860,8 @@
       ],
       "conflicts": {
         "behaviors": [
-          "array_order_insertion",
-          "list_coercion_enabled"
+          "list_coercion_enabled",
+          "array_order_insertion"
         ]
       },
       "expected": {
@@ -1026,6 +1026,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "value": "value_with_tabs =\n  text\t\twith\ttabs =\n"
@@ -1070,6 +1075,11 @@
       "behaviors": [
         "crlf_preserve_literal"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_normalize_to_lf"
+        ]
+      },
       "expected": {
         "count": 2,
         "entries": [
@@ -1101,6 +1111,11 @@
       "behaviors": [
         "crlf_preserve_literal"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_normalize_to_lf"
+        ]
+      },
       "expected": {
         "count": 1,
         "value": "key1 =\n  value1\r =\nkey2 =\n  value2\r =\n"
