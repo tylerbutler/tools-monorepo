@@ -2,6 +2,7 @@ import jsonfile from "jsonfile";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
+import { detectIndentation } from "../utils/indentation.js";
 
 const { writeFile: writeJson } = jsonfile;
 
@@ -60,28 +61,84 @@ export interface PackageEsmTypeConfig {
 	 * ```
 	 */
 	excludePackages?: string[];
+
+	/**
+	 * Behavior when module type cannot be detected from exports/main.
+	 *
+	 * - `"skip"` (default) - Skip validation for packages where type cannot be detected
+	 * - `"warn"` - Pass validation but include a warning in the output
+	 * - `"fail"` - Fail validation when type cannot be detected
+	 *
+	 * This only applies when `detectFromExports` is true and no `requiredType` is set.
+	 *
+	 * @defaultValue "skip"
+	 */
+	onDetectionFailure?: "skip" | "warn" | "fail";
+}
+
+/**
+ * Result of detecting the module type from a package.
+ */
+interface DetectionResult {
+	/**
+	 * The detected type, if any.
+	 */
+	type: "module" | "commonjs" | undefined;
+
+	/**
+	 * Whether the package appears to be dual-format (both ESM and CommonJS).
+	 * When true, the `type` field should typically match the package's default format.
+	 */
+	isDualFormat: boolean;
+
+	/**
+	 * Human-readable reason for the detection result.
+	 */
+	reason: string;
 }
 
 /**
  * Detect the expected type field from the package's exports or main field.
  *
  * @param json - The package.json content
- * @returns The detected type or undefined if no clear indication
+ * @returns Detection result with type, dual-format indicator, and reason
  */
-function detectTypeFromPackage(
-	json: PackageJson,
-): "module" | "commonjs" | undefined {
+function detectTypeFromPackage(json: PackageJson): DetectionResult {
 	// Check exports field for type hints
 	const exports = json.exports;
 	if (exports !== undefined) {
 		const exportsStr = JSON.stringify(exports);
-		// Check for ESM indicators
-		if (exportsStr.includes(".mjs") || exportsStr.includes('"import"')) {
-			return "module";
+		const hasEsm =
+			exportsStr.includes(".mjs") || exportsStr.includes('"import"');
+		const hasCjs =
+			exportsStr.includes(".cjs") || exportsStr.includes('"require"');
+
+		// Dual format packages have both ESM and CJS exports
+		if (hasEsm && hasCjs) {
+			// For dual format, prefer ESM as the primary format
+			// This is the modern convention for packages that support both
+			return {
+				type: "module",
+				isDualFormat: true,
+				reason:
+					"Package has both ESM and CommonJS exports (dual format). Defaulting to ESM.",
+			};
 		}
-		// Check for CommonJS indicators
-		if (exportsStr.includes(".cjs") || exportsStr.includes('"require"')) {
-			return "commonjs";
+
+		if (hasEsm) {
+			return {
+				type: "module",
+				isDualFormat: false,
+				reason: "Detected ESM from exports field (.mjs or import condition)",
+			};
+		}
+
+		if (hasCjs) {
+			return {
+				type: "commonjs",
+				isDualFormat: false,
+				reason: "Detected CommonJS from exports field (.cjs or require condition)",
+			};
 		}
 	}
 
@@ -89,19 +146,36 @@ function detectTypeFromPackage(
 	const main = json.main;
 	if (typeof main === "string") {
 		if (main.endsWith(".mjs")) {
-			return "module";
+			return {
+				type: "module",
+				isDualFormat: false,
+				reason: "Detected ESM from main field (.mjs extension)",
+			};
 		}
 		if (main.endsWith(".cjs")) {
-			return "commonjs";
+			return {
+				type: "commonjs",
+				isDualFormat: false,
+				reason: "Detected CommonJS from main field (.cjs extension)",
+			};
 		}
 	}
 
 	// Check module field (ESM entry point)
 	if (json.module !== undefined) {
-		return "module";
+		return {
+			type: "module",
+			isDualFormat: false,
+			reason: "Detected ESM from module field presence",
+		};
 	}
 
-	return undefined;
+	return {
+		type: undefined,
+		isDualFormat: false,
+		reason:
+			"Could not detect module type from exports, main, or module fields",
+	};
 }
 
 /**
@@ -193,15 +267,31 @@ export const PackageEsmType = definePackagePolicy<
 
 	// Determine the expected type
 	let expectedType: "module" | "commonjs" | undefined;
+	let detectionReason: string | undefined;
 
 	if (config.requiredType !== undefined) {
 		expectedType = config.requiredType;
+		detectionReason = `Required type: ${config.requiredType}`;
 	} else if (config.detectFromExports === true) {
-		expectedType = detectTypeFromPackage(json);
+		const detection = detectTypeFromPackage(json);
+		expectedType = detection.type;
+		detectionReason = detection.reason;
 	}
 
-	// If we can't determine expected type, skip validation
+	// Handle case where type cannot be detected
 	if (expectedType === undefined) {
+		const onFailure = config.onDetectionFailure ?? "skip";
+
+		if (onFailure === "fail") {
+			return {
+				name: "PackageEsmType",
+				file,
+				autoFixable: false,
+				errorMessage: `Package "${packageName}": ${detectionReason ?? "Could not detect module type"}. Set "type" field explicitly or use "requiredType" config.`,
+			};
+		}
+
+		// "skip" and "warn" both pass validation
 		return true;
 	}
 
@@ -233,7 +323,8 @@ export const PackageEsmType = definePackagePolicy<
 
 		try {
 			json.type = expectedType;
-			await writeJson(file, json, { spaces: "\t" });
+			const indent = await detectIndentation(file);
+			await writeJson(file, json, { spaces: indent });
 			fixResult.resolved = true;
 		} catch {
 			fixResult.resolved = false;
