@@ -1,6 +1,7 @@
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
+import { getPackageScope, isScoped } from "../utils/packageName.js";
 
 /**
  * Configuration for the PackageAllowedScopes policy.
@@ -57,26 +58,6 @@ export interface PackageAllowedScopesConfig {
 }
 
 /**
- * Extract the scope from a package name.
- *
- * @param packageName - The package name (e.g., `@myorg/foo` or `unscoped-pkg`)
- * @returns The scope (e.g., `@myorg`) or `undefined` if unscoped
- */
-function getPackageScope(packageName: string): string | undefined {
-	if (!packageName.startsWith("@")) {
-		return undefined;
-	}
-
-	const slashIndex = packageName.indexOf("/");
-	if (slashIndex === -1) {
-		// Malformed scoped name without a slash
-		return undefined;
-	}
-
-	return packageName.slice(0, slashIndex);
-}
-
-/**
  * Check if a package's scope is in the allowed list.
  *
  * @param packageName - The package name to check
@@ -87,7 +68,7 @@ function isScopeAllowed(
 	packageName: string,
 	allowedScopes: string[] | undefined,
 ): boolean {
-	if (allowedScopes === undefined || allowedScopes.length === 0) {
+	if ((allowedScopes?.length ?? 0) === 0) {
 		return false;
 	}
 
@@ -97,7 +78,7 @@ function isScopeAllowed(
 		return false;
 	}
 
-	return allowedScopes.includes(scope);
+	return allowedScopes!.includes(scope);
 }
 
 /**
@@ -111,16 +92,16 @@ function isUnscopedPackageAllowed(
 	packageName: string,
 	unscopedPackages: string[] | undefined,
 ): boolean {
-	if (unscopedPackages === undefined || unscopedPackages.length === 0) {
+	if ((unscopedPackages?.length ?? 0) === 0) {
 		return false;
 	}
 
 	// Only applies to unscoped packages
-	if (packageName.startsWith("@")) {
+	if (isScoped(packageName)) {
 		return false;
 	}
 
-	return unscopedPackages.includes(packageName);
+	return unscopedPackages!.includes(packageName);
 }
 
 /**

@@ -1,4 +1,5 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
@@ -88,16 +89,16 @@ function createReadmeContent(
 /**
  * Handle case when README is missing.
  */
-function handleMissingReadme(
+async function handleMissingReadme(
 	readmePath: string,
 	packageName: string,
 	file: string,
 	resolve: boolean,
 	requiredContent?: string,
-): PolicyFailure | PolicyFixResult {
+): Promise<PolicyFailure | PolicyFixResult> {
 	if (resolve) {
 		try {
-			writeFileSync(
+			await writeFile(
 				readmePath,
 				createReadmeContent(packageName, requiredContent),
 			);
@@ -142,12 +143,12 @@ function validateTitle(
 /**
  * Handle required content validation and auto-fix.
  */
-function handleRequiredContent(
+async function handleRequiredContent(
 	readmePath: string,
 	readmeContent: string,
 	requiredContent: string,
 	resolve: boolean,
-): { error?: string; fixed: boolean } {
+): Promise<{ error?: string; fixed: boolean }> {
 	if (readmeContent.includes(requiredContent)) {
 		return { fixed: false };
 	}
@@ -157,7 +158,7 @@ function handleRequiredContent(
 			const newContent = readmeContent.endsWith("\n")
 				? `${readmeContent}${requiredContent}\n`
 				: `${readmeContent}\n${requiredContent}\n`;
-			writeFileSync(readmePath, newContent);
+			await writeFile(readmePath, newContent);
 			return {
 				error: `README missing required content: "${requiredContent}"`,
 				fixed: true,
@@ -186,9 +187,9 @@ interface ValidationContext {
 /**
  * Validate existing README content.
  */
-function validateExistingReadme(
+async function validateExistingReadme(
 	ctx: ValidationContext,
-): true | PolicyFailure | PolicyFixResult {
+): Promise<true | PolicyFailure | PolicyFixResult> {
 	const errors: string[] = [];
 	let wasFixed = false;
 
@@ -202,7 +203,7 @@ function validateExistingReadme(
 
 	// Check required content
 	if (ctx.requiredContent) {
-		const contentResult = handleRequiredContent(
+		const contentResult = await handleRequiredContent(
 			ctx.readmePath,
 			ctx.readmeContent,
 			ctx.requiredContent,
@@ -290,7 +291,7 @@ export const PackageReadme = definePackagePolicy<
 
 	// Check if README exists
 	if (!existsSync(readmePath)) {
-		return handleMissingReadme(
+		return await handleMissingReadme(
 			readmePath,
 			packageName,
 			file,
@@ -300,9 +301,10 @@ export const PackageReadme = definePackagePolicy<
 	}
 
 	// README exists, validate content
-	return validateExistingReadme({
+	const readmeContent = await readFile(readmePath, "utf-8");
+	return await validateExistingReadme({
 		readmePath,
-		readmeContent: readFileSync(readmePath, "utf-8"),
+		readmeContent,
 		packageName,
 		file,
 		resolve,

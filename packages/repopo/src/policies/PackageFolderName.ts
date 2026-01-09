@@ -3,6 +3,7 @@ import picomatch from "picomatch";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
+import { parsePackageName } from "../utils/packageName.js";
 
 /**
  * Configuration for the PackageFolderName policy.
@@ -77,11 +78,11 @@ function shouldStripScope(
 	scope: string,
 	stripScopes: string[] | undefined,
 ): boolean {
-	if (stripScopes === undefined || stripScopes.length === 0) {
+	if ((stripScopes?.length ?? 0) === 0) {
 		return false;
 	}
 
-	return picomatch.isMatch(scope, stripScopes);
+	return picomatch.isMatch(scope, stripScopes!);
 }
 
 /**
@@ -95,15 +96,11 @@ function getExpectedFolderName(
 	packageName: string,
 	stripScopes: string[] | undefined,
 ): string {
+	const { scope, unscopedName } = parsePackageName(packageName);
+
 	// Check if the package is scoped and should have scope stripped
-	if (packageName.startsWith("@") && stripScopes !== undefined) {
-		const slashIndex = packageName.indexOf("/");
-		if (slashIndex !== -1) {
-			const scope = packageName.slice(0, slashIndex);
-			if (shouldStripScope(scope, stripScopes)) {
-				return packageName.slice(slashIndex + 1);
-			}
-		}
+	if (scope !== undefined && shouldStripScope(scope, stripScopes)) {
+		return unscopedName;
 	}
 
 	// Return full package name for unscoped packages or scopes not in stripScopes
