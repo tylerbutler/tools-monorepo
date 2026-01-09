@@ -128,16 +128,18 @@ async function handleMissingReadme(
 
 /**
  * Validate README title against package name.
+ *
+ * @returns `true` if valid, or an error message string if invalid
  */
 function validateTitle(
 	readmeContent: string,
 	packageName: string,
-): string | undefined {
+): true | string {
 	const title = extractReadmeTitle(readmeContent);
 	if (title !== packageName) {
 		return `README title "${title ?? "(none)"}" doesn't match package name "${packageName}"`;
 	}
-	return undefined;
+	return true;
 }
 
 /**
@@ -195,9 +197,9 @@ async function validateExistingReadme(
 
 	// Check title matches package name
 	if (ctx.requireMatchingTitle) {
-		const titleError = validateTitle(ctx.readmeContent, ctx.packageName);
-		if (titleError) {
-			errors.push(titleError);
+		const titleResult = validateTitle(ctx.readmeContent, ctx.packageName);
+		if (titleResult !== true) {
+			errors.push(titleResult);
 		}
 	}
 

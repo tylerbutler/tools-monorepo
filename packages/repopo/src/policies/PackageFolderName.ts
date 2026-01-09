@@ -74,15 +74,12 @@ export interface PackageFolderNameConfig {
  * @param stripScopes - List of scope patterns to match (supports glob patterns via picomatch)
  * @returns `true` if the scope matches any pattern
  */
-function shouldStripScope(
-	scope: string,
-	stripScopes: string[] | undefined,
-): boolean {
-	if ((stripScopes?.length ?? 0) === 0) {
+function shouldStripScope(scope: string, stripScopes: string[]): boolean {
+	if (stripScopes.length === 0) {
 		return false;
 	}
 
-	return picomatch.isMatch(scope, stripScopes!);
+	return picomatch.isMatch(scope, stripScopes);
 }
 
 /**
@@ -94,7 +91,7 @@ function shouldStripScope(
  */
 function getExpectedFolderName(
 	packageName: string,
-	stripScopes: string[] | undefined,
+	stripScopes: string[],
 ): string {
 	const { scope, unscopedName } = parsePackageName(packageName);
 
@@ -172,7 +169,7 @@ export const PackageFolderName = definePackagePolicy<
 	// Get the expected folder name
 	const expectedFolderName = getExpectedFolderName(
 		packageName,
-		effectiveConfig.stripScopes,
+		effectiveConfig.stripScopes ?? [],
 	);
 
 	// Compare folder name to expected name

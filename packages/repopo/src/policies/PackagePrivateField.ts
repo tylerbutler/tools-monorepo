@@ -7,6 +7,20 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 const { writeFile: writeJson } = jsonfile;
 
 /**
+ * Sentinel value indicating that the package's private status should not be enforced.
+ * This is more explicit than using `undefined` to represent "ignore".
+ */
+const IGNORE_PRIVATE_STATE = "ignore" as const;
+
+/**
+ * The required private state for a package.
+ * - `true`: Package must have `private: true`
+ * - `false`: Package must NOT have `private: true`
+ * - `"ignore"`: No enforcement - package can be either private or public
+ */
+type RequiredPrivateState = boolean | typeof IGNORE_PRIVATE_STATE;
+
+/**
  * Configuration for the PackagePrivateField policy.
  *
  * This policy enforces that packages are correctly marked as private or public based on
@@ -121,12 +135,12 @@ function matchesAnyPattern(
 /**
  * Determine what the private field should be for a package.
  *
- * @returns `true` if package must be private, `false` if must be public, `undefined` if either is ok
+ * @returns `true` if package must be private, `false` if must be public, `"ignore"` if either is ok
  */
 function getRequiredPrivateState(
 	packageName: string,
 	config: PackagePrivateFieldConfig,
-): boolean | undefined {
+): RequiredPrivateState {
 	// Check mustPublish first - these packages must NOT be private
 	if (matchesAnyPattern(packageName, config.mustPublish)) {
 		return false;
@@ -139,7 +153,7 @@ function getRequiredPrivateState(
 
 	// Check mayPublish - these packages can be either
 	if (matchesAnyPattern(packageName, config.mayPublish)) {
-		return undefined;
+		return IGNORE_PRIVATE_STATE;
 	}
 
 	// Default behavior for unmatched packages
@@ -150,7 +164,7 @@ function getRequiredPrivateState(
 		case "public":
 			return false;
 		case "ignore":
-			return undefined;
+			return IGNORE_PRIVATE_STATE;
 		default:
 			throw new Error(`Unknown unmatchedPackages value: ${unmatchedBehavior}`);
 	}
@@ -216,8 +230,8 @@ export const PackagePrivateField = definePackagePolicy<
 
 	const requiredState = getRequiredPrivateState(packageName, config);
 
-	// If undefined, the package can be either private or public
-	if (requiredState === undefined) {
+	// If "ignore", the package can be either private or public
+	if (requiredState === IGNORE_PRIVATE_STATE) {
 		return true;
 	}
 
