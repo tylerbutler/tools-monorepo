@@ -1,5 +1,5 @@
-import { copyFile, readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { copyFile, readFile } from "node:fs/promises";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";

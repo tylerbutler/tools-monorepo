@@ -61,7 +61,7 @@ describe("indentation utilities", () => {
 
 		describe("edge cases", () => {
 			it("should detect from first indented line", () => {
-				const content = 'first line\nsecond line\n  indented\n    more';
+				const content = "first line\nsecond line\n  indented\n    more";
 				expect(detectIndentationFromContent(content)).toBe(2);
 			});
 
@@ -123,9 +123,7 @@ describe("indentation utilities", () => {
 		});
 
 		it("should return default when file does not exist", async () => {
-			const result = await detectIndentation(
-				join(tempDir, "nonexistent.json"),
-			);
+			const result = await detectIndentation(join(tempDir, "nonexistent.json"));
 			expect(result).toBe("\t");
 		});
 

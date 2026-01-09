@@ -567,7 +567,9 @@ function revalidateAfterFix(
 	}
 
 	if (Object.keys(config.exact ?? {}).length > 0) {
-		errors.push(...validateRemainingExactScripts(config.exact!, updatedScripts));
+		errors.push(
+			...validateRemainingExactScripts(config.exact!, updatedScripts),
+		);
 	}
 
 	if ((config.conditionalRequired?.length ?? 0) > 0) {

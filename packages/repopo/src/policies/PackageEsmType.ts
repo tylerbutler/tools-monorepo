@@ -137,7 +137,8 @@ function detectTypeFromPackage(json: PackageJson): DetectionResult {
 			return {
 				type: "commonjs",
 				isDualFormat: false,
-				reason: "Detected CommonJS from exports field (.cjs or require condition)",
+				reason:
+					"Detected CommonJS from exports field (.cjs or require condition)",
 			};
 		}
 	}
@@ -173,8 +174,7 @@ function detectTypeFromPackage(json: PackageJson): DetectionResult {
 	return {
 		type: undefined,
 		isDualFormat: false,
-		reason:
-			"Could not detect module type from exports, main, or module fields",
+		reason: "Could not detect module type from exports, main, or module fields",
 	};
 }
 

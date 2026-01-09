@@ -12,7 +12,10 @@ describe("FluidFramework adapter", () => {
 	let tempDir: string;
 
 	beforeEach(async () => {
-		tempDir = join(tmpdir(), `repopo-fluid-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+		tempDir = join(
+			tmpdir(),
+			`repopo-fluid-test-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+		);
 		await mkdir(tempDir, { recursive: true });
 	});
 
@@ -20,7 +23,10 @@ describe("FluidFramework adapter", () => {
 		await rm(tempDir, { recursive: true, force: true });
 	});
 
-	const createTestFile = async (filename: string, content: string): Promise<string> => {
+	const createTestFile = async (
+		filename: string,
+		content: string,
+	): Promise<string> => {
 		const filePath = join(tempDir, filename);
 		await writeFile(filePath, content);
 		return filename; // return relative path
