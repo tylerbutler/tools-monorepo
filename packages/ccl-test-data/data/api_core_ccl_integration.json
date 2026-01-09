@@ -1,0 +1,425 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "name",
+            "value": "Alice"
+          },
+          {
+            "key": "age",
+            "value": "42"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "name = Alice\nage = 42"
+      ],
+      "name": "complete_basic_workflow_parse",
+      "source_test": "complete_basic_workflow",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "age": "42",
+          "name": "Alice"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "name = Alice\nage = 42"
+      ],
+      "name": "complete_basic_workflow_build_hierarchy",
+      "source_test": "complete_basic_workflow",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "database",
+            "value": "\n  host = localhost\n  port = 5432\n  enabled = true"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "database =\n  host = localhost\n  port = 5432\n  enabled = true"
+      ],
+      "name": "complete_nested_workflow_parse",
+      "source_test": "complete_nested_workflow",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "database": {
+            "enabled": "true",
+            "host": "localhost",
+            "port": "5432"
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "database =\n  host = localhost\n  port = 5432\n  enabled = true"
+      ],
+      "name": "complete_nested_workflow_build_hierarchy",
+      "source_test": "complete_nested_workflow",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "app",
+            "value": "MyApp"
+          },
+          {
+            "key": "version",
+            "value": "1.0.0"
+          },
+          {
+            "key": "config",
+            "value": "\n  debug = true\n  features =\n    feature1 = enabled\n    feature2 = disabled"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "app = MyApp\nversion = 1.0.0\nconfig =\n  debug = true\n  features =\n    feature1 = enabled\n    feature2 = disabled"
+      ],
+      "name": "complete_mixed_workflow_parse",
+      "source_test": "complete_mixed_workflow",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "app": "MyApp",
+          "config": {
+            "debug": "true",
+            "features": {
+              "feature1": "enabled",
+              "feature2": "disabled"
+            }
+          },
+          "version": "1.0.0"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "app = MyApp\nversion = 1.0.0\nconfig =\n  debug = true\n  features =\n    feature1 = enabled\n    feature2 = disabled"
+      ],
+      "name": "complete_mixed_workflow_build_hierarchy",
+      "source_test": "complete_mixed_workflow",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "servers",
+            "value": "\n  server = web1\n  server = web2\n  server = web3"
+          },
+          {
+            "key": "ports",
+            "value": "\n  port = 80\n  port = 443"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443"
+      ],
+      "name": "complete_lists_workflow_parse",
+      "source_test": "complete_lists_workflow",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_insertion"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "ports": {
+            "port": [
+              "80",
+              "443"
+            ]
+          },
+          "servers": {
+            "server": [
+              "web1",
+              "web2",
+              "web3"
+            ]
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443"
+      ],
+      "name": "complete_lists_workflow_build_hierarchy",
+      "source_test": "complete_lists_workflow",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "servers",
+            "value": "\n  server = web1\n  server = web2\n  server = web3"
+          },
+          {
+            "key": "ports",
+            "value": "\n  port = 80\n  port = 443"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443"
+      ],
+      "name": "complete_lists_workflow_lexicographic_parse",
+      "source_test": "complete_lists_workflow_lexicographic",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "expected": {
+        "count": 1,
+        "object": {
+          "ports": {
+            "port": [
+              "443",
+              "80"
+            ]
+          },
+          "servers": {
+            "server": [
+              "web1",
+              "web2",
+              "web3"
+            ]
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "servers =\n  server = web1\n  server = web2\n  server = web3\nports =\n  port = 80\n  port = 443"
+      ],
+      "name": "complete_lists_workflow_lexicographic_build_hierarchy",
+      "source_test": "complete_lists_workflow_lexicographic",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "description",
+            "value": "Welcome to our app\n  This is a multi-line description\n  With several lines"
+          },
+          {
+            "key": "config",
+            "value": "\n  settings =\n    value1 = one\n    value2 = two"
+          }
+        ]
+      },
+      "features": [
+        "multiline"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "description = Welcome to our app\n  This is a multi-line description\n  With several lines\nconfig =\n  settings =\n    value1 = one\n    value2 = two"
+      ],
+      "name": "complete_multiline_workflow_parse",
+      "source_test": "complete_multiline_workflow",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "settings": {
+              "value1": "one",
+              "value2": "two"
+            }
+          },
+          "description": "Welcome to our app\n  This is a multi-line description\n  With several lines"
+        }
+      },
+      "features": [
+        "multiline"
+      ],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "description = Welcome to our app\n  This is a multi-line description\n  With several lines\nconfig =\n  settings =\n    value1 = one\n    value2 = two"
+      ],
+      "name": "complete_multiline_workflow_build_hierarchy",
+      "source_test": "complete_multiline_workflow",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 5,
+        "entries": [
+          {
+            "key": "service",
+            "value": "MyMicroservice"
+          },
+          {
+            "key": "version",
+            "value": "2.1.0"
+          },
+          {
+            "key": "database",
+            "value": "\n  host = db.example.com\n  port = 5432\n  credentials =\n    user = service_user\n    password = secret123\n  pools =\n    read = 5\n    write = 2"
+          },
+          {
+            "key": "logging",
+            "value": "\n  level = info\n  outputs =\n    output = console\n    output = file\n    output = syslog"
+          },
+          {
+            "key": "features",
+            "value": "\n  feature_a = enabled\n  feature_b = disabled\n  feature_c = experimental"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "service = MyMicroservice\nversion = 2.1.0\ndatabase =\n  host = db.example.com\n  port = 5432\n  credentials =\n    user = service_user\n    password = secret123\n  pools =\n    read = 5\n    write = 2\nlogging =\n  level = info\n  outputs =\n    output = console\n    output = file\n    output = syslog\nfeatures =\n  feature_a = enabled\n  feature_b = disabled\n  feature_c = experimental"
+      ],
+      "name": "real_world_complete_workflow_parse",
+      "source_test": "real_world_complete_workflow",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "database": {
+            "credentials": {
+              "password": "secret123",
+              "user": "service_user"
+            },
+            "host": "db.example.com",
+            "pools": {
+              "read": "5",
+              "write": "2"
+            },
+            "port": "5432"
+          },
+          "features": {
+            "feature_a": "enabled",
+            "feature_b": "disabled",
+            "feature_c": "experimental"
+          },
+          "logging": {
+            "level": "info",
+            "outputs": {
+              "output": [
+                "console",
+                "file",
+                "syslog"
+              ]
+            }
+          },
+          "service": "MyMicroservice",
+          "version": "2.1.0"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "service = MyMicroservice\nversion = 2.1.0\ndatabase =\n  host = db.example.com\n  port = 5432\n  credentials =\n    user = service_user\n    password = secret123\n  pools =\n    read = 5\n    write = 2\nlogging =\n  level = info\n  outputs =\n    output = console\n    output = file\n    output = syslog\nfeatures =\n  feature_a = enabled\n  feature_b = disabled\n  feature_c = experimental"
+      ],
+      "name": "real_world_complete_workflow_build_hierarchy",
+      "source_test": "real_world_complete_workflow",
+      "validation": "build_hierarchy",
+      "variants": []
+    }
+  ]
+}

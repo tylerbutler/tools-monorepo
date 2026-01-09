@@ -1,0 +1,319 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "tests": [
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "name",
+            "value": "Alice"
+          },
+          {
+            "key": "age",
+            "value": "42"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "name = Alice\nage = 42"
+      ],
+      "name": "basic_object_construction_parse",
+      "source_test": "basic_object_construction",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "age": "42",
+          "name": "Alice"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "name = Alice\nage = 42"
+      ],
+      "name": "basic_object_construction_build_hierarchy",
+      "source_test": "basic_object_construction",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "server",
+            "value": "\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    enabled = true"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "server =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    enabled = true"
+      ],
+      "name": "deep_nested_objects_parse",
+      "source_test": "deep_nested_objects",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "server": {
+            "cache": {
+              "enabled": "true"
+            },
+            "database": {
+              "host": "localhost",
+              "port": "5432"
+            }
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "server =\n  database =\n    host = localhost\n    port = 5432\n  cache =\n    enabled = true"
+      ],
+      "name": "deep_nested_objects_build_hierarchy",
+      "source_test": "deep_nested_objects",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "item",
+            "value": "first"
+          },
+          {
+            "key": "item",
+            "value": "second"
+          },
+          {
+            "key": "item",
+            "value": "third"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "item = first\nitem = second\nitem = third"
+      ],
+      "name": "duplicate_keys_to_lists_parse",
+      "source_test": "duplicate_keys_to_lists",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "item": [
+            "first",
+            "second",
+            "third"
+          ]
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "item = first\nitem = second\nitem = third"
+      ],
+      "name": "duplicate_keys_to_lists_build_hierarchy",
+      "source_test": "duplicate_keys_to_lists",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "config",
+            "value": "\n  server = web1\n  server = web2\n  port = 80"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "config =\n  server = web1\n  server = web2\n  port = 80"
+      ],
+      "name": "nested_duplicate_keys_parse",
+      "source_test": "nested_duplicate_keys",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "port": "80",
+            "server": [
+              "web1",
+              "web2"
+            ]
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\n  server = web1\n  server = web2\n  port = 80"
+      ],
+      "name": "nested_duplicate_keys_build_hierarchy",
+      "source_test": "nested_duplicate_keys",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 3,
+        "entries": [
+          {
+            "key": "name",
+            "value": "Alice"
+          },
+          {
+            "key": "config",
+            "value": "\n  debug = true\n  timeout = 30"
+          },
+          {
+            "key": "version",
+            "value": "1.0"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "name = Alice\nconfig =\n  debug = true\n  timeout = 30\nversion = 1.0"
+      ],
+      "name": "mixed_flat_and_nested_parse",
+      "source_test": "mixed_flat_and_nested",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "debug": "true",
+            "timeout": "30"
+          },
+          "name": "Alice",
+          "version": "1.0"
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "name = Alice\nconfig =\n  debug = true\n  timeout = 30\nversion = 1.0"
+      ],
+      "name": "mixed_flat_and_nested_build_hierarchy",
+      "source_test": "mixed_flat_and_nested",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "environments",
+            "value": "\n  prod =\n    server = web1\n    server = web2\n    port = 80\n  dev =\n    server = localhost\n    port = 3000"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "environments =\n  prod =\n    server = web1\n    server = web2\n    port = 80\n  dev =\n    server = localhost\n    port = 3000"
+      ],
+      "name": "nested_objects_with_lists_parse",
+      "source_test": "nested_objects_with_lists",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "object": {
+          "environments": {
+            "dev": {
+              "port": "3000",
+              "server": "localhost"
+            },
+            "prod": {
+              "port": "80",
+              "server": [
+                "web1",
+                "web2"
+              ]
+            }
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "environments =\n  prod =\n    server = web1\n    server = web2\n    port = 80\n  dev =\n    server = localhost\n    port = 3000"
+      ],
+      "name": "nested_objects_with_lists_build_hierarchy",
+      "source_test": "nested_objects_with_lists",
+      "validation": "build_hierarchy",
+      "variants": []
+    }
+  ]
+}

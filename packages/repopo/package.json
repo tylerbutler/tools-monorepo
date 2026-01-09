@@ -76,7 +76,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "~0.61.0",
+		"@fluid-tools/build-infrastructure": "~0.62.0",
 		"@oclif/core": "^4.8.0",
 		"@oclif/plugin-help": "^6.2.36",
 		"@rushstack/node-core-library": "^5.19.0",
@@ -108,7 +108,7 @@
 		"ts-node": "^10.9.2",
 		"type-fest": "^5.3.0",
 		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.16"
 	},
 	"peerDependencies": {
 		"sort-package-json": "*"

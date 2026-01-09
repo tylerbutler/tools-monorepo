@@ -45,13 +45,21 @@ Find the first `=` character and split:
 - Preserve internal structure (newlines + indentation for continuation lines)
 
 **Indentation tracking**:
-1. Record the entry's indentation level (whitespace count before the key)
-2. For each subsequent line, compare its indentation to the entry's level:
-   - Greater indentation → continuation line (part of value)
-   - Same or less indentation → new entry
+1. Determine the **baseline indentation** (N) for the current parsing context
+2. For each subsequent line, compare its indentation to N:
+   - `indent > N` → continuation line (part of value)
+   - `indent ≤ N` → new entry starts
 3. Which characters count as whitespace depends on parser behavior:
    - `tabs_as_whitespace`: spaces and tabs are whitespace
    - `tabs_as_content`: only spaces are whitespace; tabs are content
+
+:::caution[Context-Dependent Baseline]
+The baseline N is determined differently depending on parsing context:
+- **Top-level parsing**: N = 0 with `toplevel_indent_strip` behavior (default), or N = first key's indent with `toplevel_indent_preserve`
+- **Nested parsing** (recursive calls): N = first content line's indentation (always)
+
+See [Continuation Lines](/continuation-lines) for detailed examples and [Behavior Reference](/behavior-reference#continuation-baseline) for choosing between baseline behaviors.
+:::
 
 **Special keys**:
 - Empty key `= value` → list item
@@ -88,6 +96,17 @@ value: "child = nested\nsibling = another"
 - If parsing yields structure → recurse on nested values
 - If value has no '=' → stop (fixed point reached)
 - Prevents infinite recursion: plain strings have no structure to parse
+
+:::note[Nested Parsing Context]
+When recursively parsing a multiline value, the parser must detect that it's in a **nested context** (the value starts with `\n`) and use the first content line's indentation as the baseline—regardless of the `toplevel_indent_strip`/`toplevel_indent_preserve` behavior setting.
+
+For example, the value `"\n  host = localhost\n  port = 8080"`:
+1. Starts with `\n` → nested context
+2. First content line `  host = localhost` has indent 2 → N = 2
+3. Both lines have indent 2, which is NOT > 2 → two separate entries
+
+This is why the same text produces different results depending on context. See [Continuation Lines](/continuation-lines) for the complete algorithm.
+:::
 
 ### Complete Example
 
