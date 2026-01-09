@@ -1,6 +1,11 @@
 import { readFile } from "node:fs/promises";
 
 /**
+ * Regex to match leading whitespace at the start of a line.
+ */
+const LEADING_WHITESPACE_REGEX = /^(\s+)/;
+
+/**
  * Represents detected indentation style.
  *
  * - `"\t"` - Tab character
@@ -93,7 +98,7 @@ export function detectIndentationFromContent(
 
 	// Look for the first indented line to detect the pattern
 	for (const line of lines) {
-		const match = /^(\s+)/.exec(line);
+		const match = LEADING_WHITESPACE_REGEX.exec(line);
 		if (match?.[1]) {
 			const indent = match[1];
 			// Check if it's tabs

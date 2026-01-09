@@ -98,6 +98,78 @@ interface DetectionResult {
 }
 
 /**
+ * Detect module type from the exports field.
+ */
+function detectTypeFromExports(
+	exports: PackageJson["exports"],
+): DetectionResult | undefined {
+	if (exports === undefined) {
+		return undefined;
+	}
+
+	const exportsStr = JSON.stringify(exports);
+	const hasEsm = exportsStr.includes(".mjs") || exportsStr.includes('"import"');
+	const hasCjs =
+		exportsStr.includes(".cjs") || exportsStr.includes('"require"');
+
+	// Dual format packages have both ESM and CJS exports
+	if (hasEsm && hasCjs) {
+		return {
+			type: "module",
+			isDualFormat: true,
+			reason:
+				"Package has both ESM and CommonJS exports (dual format). Defaulting to ESM.",
+		};
+	}
+
+	if (hasEsm) {
+		return {
+			type: "module",
+			isDualFormat: false,
+			reason: "Detected ESM from exports field (.mjs or import condition)",
+		};
+	}
+
+	if (hasCjs) {
+		return {
+			type: "commonjs",
+			isDualFormat: false,
+			reason:
+				"Detected CommonJS from exports field (.cjs or require condition)",
+		};
+	}
+
+	return undefined;
+}
+
+/**
+ * Detect module type from the main field.
+ */
+function detectTypeFromMain(main: unknown): DetectionResult | undefined {
+	if (typeof main !== "string") {
+		return undefined;
+	}
+
+	if (main.endsWith(".mjs")) {
+		return {
+			type: "module",
+			isDualFormat: false,
+			reason: "Detected ESM from main field (.mjs extension)",
+		};
+	}
+
+	if (main.endsWith(".cjs")) {
+		return {
+			type: "commonjs",
+			isDualFormat: false,
+			reason: "Detected CommonJS from main field (.cjs extension)",
+		};
+	}
+
+	return undefined;
+}
+
+/**
  * Detect the expected type field from the package's exports or main field.
  *
  * @param json - The package.json content
@@ -105,61 +177,15 @@ interface DetectionResult {
  */
 function detectTypeFromPackage(json: PackageJson): DetectionResult {
 	// Check exports field for type hints
-	const exports = json.exports;
-	if (exports !== undefined) {
-		const exportsStr = JSON.stringify(exports);
-		const hasEsm =
-			exportsStr.includes(".mjs") || exportsStr.includes('"import"');
-		const hasCjs =
-			exportsStr.includes(".cjs") || exportsStr.includes('"require"');
-
-		// Dual format packages have both ESM and CJS exports
-		if (hasEsm && hasCjs) {
-			// For dual format, prefer ESM as the primary format
-			// This is the modern convention for packages that support both
-			return {
-				type: "module",
-				isDualFormat: true,
-				reason:
-					"Package has both ESM and CommonJS exports (dual format). Defaulting to ESM.",
-			};
-		}
-
-		if (hasEsm) {
-			return {
-				type: "module",
-				isDualFormat: false,
-				reason: "Detected ESM from exports field (.mjs or import condition)",
-			};
-		}
-
-		if (hasCjs) {
-			return {
-				type: "commonjs",
-				isDualFormat: false,
-				reason:
-					"Detected CommonJS from exports field (.cjs or require condition)",
-			};
-		}
+	const exportsResult = detectTypeFromExports(json.exports);
+	if (exportsResult !== undefined) {
+		return exportsResult;
 	}
 
 	// Check main field
-	const main = json.main;
-	if (typeof main === "string") {
-		if (main.endsWith(".mjs")) {
-			return {
-				type: "module",
-				isDualFormat: false,
-				reason: "Detected ESM from main field (.mjs extension)",
-			};
-		}
-		if (main.endsWith(".cjs")) {
-			return {
-				type: "commonjs",
-				isDualFormat: false,
-				reason: "Detected CommonJS from main field (.cjs extension)",
-			};
-		}
+	const mainResult = detectTypeFromMain(json.main);
+	if (mainResult !== undefined) {
+		return mainResult;
 	}
 
 	// Check module field (ESM entry point)
@@ -208,6 +234,96 @@ function isExcluded(
 }
 
 /**
+ * Check if the package should be skipped from validation.
+ */
+function shouldSkipPackage(
+	packageName: string | undefined,
+	config: PackageEsmTypeConfig,
+): boolean {
+	// Skip packages without a name
+	if (packageName === undefined) {
+		return true;
+	}
+
+	// Skip the root package
+	if (packageName === "root") {
+		return true;
+	}
+
+	// Check exclusions
+	return isExcluded(packageName, config.excludePackages);
+}
+
+/**
+ * Determine the expected type and reason from the config and package.
+ */
+function determineExpectedType(
+	json: PackageJson,
+	config: PackageEsmTypeConfig,
+): {
+	expectedType: "module" | "commonjs" | undefined;
+	detectionReason: string | undefined;
+} {
+	if (config.requiredType !== undefined) {
+		return {
+			expectedType: config.requiredType,
+			detectionReason: `Required type: ${config.requiredType}`,
+		};
+	}
+
+	if (config.detectFromExports === true) {
+		const detection = detectTypeFromPackage(json);
+		return {
+			expectedType: detection.type,
+			detectionReason: detection.reason,
+		};
+	}
+
+	return { expectedType: undefined, detectionReason: undefined };
+}
+
+/**
+ * Build the error message for a type mismatch.
+ */
+function buildErrorMessage(
+	packageName: string,
+	currentType: string | undefined,
+	expectedType: string,
+): string {
+	if (currentType === undefined) {
+		return `Package "${packageName}" is missing the "type" field. Expected: "type": "${expectedType}"`;
+	}
+	return `Package "${packageName}" has "type": "${currentType}" but expected "type": "${expectedType}"`;
+}
+
+/**
+ * Apply the auto-fix for the type field.
+ */
+async function applyFix(
+	json: PackageJson,
+	file: string,
+	expectedType: "module" | "commonjs",
+	failResult: PolicyFailure,
+): Promise<PolicyFixResult> {
+	const fixResult: PolicyFixResult = {
+		...failResult,
+		resolved: false,
+	};
+
+	try {
+		json.type = expectedType;
+		const indent = await detectIndentation(file);
+		await writeJson(file, json, { spaces: indent });
+		fixResult.resolved = true;
+	} catch {
+		fixResult.resolved = false;
+		fixResult.errorMessage = `Failed to update ${file}`;
+	}
+
+	return fixResult;
+}
+
+/**
  * A policy that ensures the `type` field in package.json is correctly set.
  *
  * This policy helps maintain consistency in how packages declare their module format,
@@ -250,39 +366,17 @@ export const PackageEsmType = definePackagePolicy<
 
 	const packageName = json.name;
 
-	// Skip packages without a name
-	if (packageName === undefined) {
-		return true;
-	}
-
-	// Skip the root package
-	if (packageName === "root") {
-		return true;
-	}
-
-	// Check exclusions
-	if (isExcluded(packageName, config.excludePackages)) {
+	// Check if package should be skipped
+	if (shouldSkipPackage(packageName, config)) {
 		return true;
 	}
 
 	// Determine the expected type
-	let expectedType: "module" | "commonjs" | undefined;
-	let detectionReason: string | undefined;
-
-	if (config.requiredType !== undefined) {
-		expectedType = config.requiredType;
-		detectionReason = `Required type: ${config.requiredType}`;
-	} else if (config.detectFromExports === true) {
-		const detection = detectTypeFromPackage(json);
-		expectedType = detection.type;
-		detectionReason = detection.reason;
-	}
+	const { expectedType, detectionReason } = determineExpectedType(json, config);
 
 	// Handle case where type cannot be detected
 	if (expectedType === undefined) {
-		const onFailure = config.onDetectionFailure ?? "skip";
-
-		if (onFailure === "fail") {
+		if (config.onDetectionFailure === "fail") {
 			return {
 				name: "PackageEsmType",
 				file,
@@ -290,48 +384,30 @@ export const PackageEsmType = definePackagePolicy<
 				errorMessage: `Package "${packageName}": ${detectionReason ?? "Could not detect module type"}. Set "type" field explicitly or use "requiredType" config.`,
 			};
 		}
-
 		// "skip" and "warn" both pass validation
 		return true;
 	}
 
-	const currentType = json.type;
-
 	// Check if current type matches expected
-	if (currentType === expectedType) {
+	if (json.type === expectedType) {
 		return true;
 	}
 
-	// Build error message
+	// Build failure result
 	const failResult: PolicyFailure = {
 		name: PackageEsmType.name,
 		file,
 		autoFixable: true,
+		// packageName is guaranteed to be defined here due to shouldSkipPackage check
+		errorMessage: buildErrorMessage(
+			packageName as string,
+			json.type,
+			expectedType,
+		),
 	};
 
-	if (currentType === undefined) {
-		failResult.errorMessage = `Package "${packageName}" is missing the "type" field. Expected: "type": "${expectedType}"`;
-	} else {
-		failResult.errorMessage = `Package "${packageName}" has "type": "${currentType}" but expected "type": "${expectedType}"`;
-	}
-
 	if (resolve) {
-		const fixResult: PolicyFixResult = {
-			...failResult,
-			resolved: false,
-		};
-
-		try {
-			json.type = expectedType;
-			const indent = await detectIndentation(file);
-			await writeJson(file, json, { spaces: indent });
-			fixResult.resolved = true;
-		} catch {
-			fixResult.resolved = false;
-			fixResult.errorMessage = `Failed to update ${file}`;
-		}
-
-		return fixResult;
+		return applyFix(json, file, expectedType, failResult);
 	}
 
 	return failResult;

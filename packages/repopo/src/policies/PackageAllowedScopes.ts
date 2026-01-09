@@ -68,7 +68,7 @@ function isScopeAllowed(
 	packageName: string,
 	allowedScopes: string[] | undefined,
 ): boolean {
-	if ((allowedScopes?.length ?? 0) === 0) {
+	if (allowedScopes === undefined || allowedScopes.length === 0) {
 		return false;
 	}
 
@@ -78,7 +78,7 @@ function isScopeAllowed(
 		return false;
 	}
 
-	return allowedScopes!.includes(scope);
+	return allowedScopes.includes(scope);
 }
 
 /**
@@ -92,7 +92,7 @@ function isUnscopedPackageAllowed(
 	packageName: string,
 	unscopedPackages: string[] | undefined,
 ): boolean {
-	if ((unscopedPackages?.length ?? 0) === 0) {
+	if (unscopedPackages === undefined || unscopedPackages.length === 0) {
 		return false;
 	}
 
@@ -101,7 +101,7 @@ function isUnscopedPackageAllowed(
 		return false;
 	}
 
-	return unscopedPackages!.includes(packageName);
+	return unscopedPackages.includes(packageName);
 }
 
 /**
