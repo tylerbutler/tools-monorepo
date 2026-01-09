@@ -2,7 +2,6 @@ export { run } from "@oclif/core";
 export {
 	type FluidAdapterOptions,
 	type FluidHandler,
-	fromFluidHandler,
 	fromFluidHandlers,
 } from "./adapters/fluidFramework.js";
 export type {

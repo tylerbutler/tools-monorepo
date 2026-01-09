@@ -1,4 +1,5 @@
-import { copyFileSync, existsSync, readFileSync } from "node:fs";
+import { copyFile, readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
@@ -38,7 +39,7 @@ const POLICY_NAME = "PackageLicense";
  * Copies the root LICENSE file to the package directory.
  * @returns A PolicyFixResult indicating success or failure.
  */
-function copyLicenseFile(
+async function copyLicenseFile(
 	rootLicensePath: string,
 	packageLicensePath: string,
 	policyName: string,
@@ -46,9 +47,9 @@ function copyLicenseFile(
 	packageName: string,
 	licenseFileName: string,
 	isCreate: boolean,
-): PolicyFixResult {
+): Promise<PolicyFixResult> {
 	try {
-		copyFileSync(rootLicensePath, packageLicensePath);
+		await copyFile(rootLicensePath, packageLicensePath);
 		return {
 			name: policyName,
 			file,
@@ -135,7 +136,7 @@ export const PackageLicense = definePackagePolicy<
 	// Check if package LICENSE exists
 	if (!existsSync(packageLicensePath)) {
 		if (resolve) {
-			return copyLicenseFile(
+			return await copyLicenseFile(
 				rootLicensePath,
 				packageLicensePath,
 				POLICY_NAME,
@@ -156,12 +157,14 @@ export const PackageLicense = definePackagePolicy<
 	}
 
 	// Compare package LICENSE with root LICENSE
-	const packageLicenseContent = readFileSync(packageLicensePath, "utf-8");
-	const rootLicenseContent = readFileSync(rootLicensePath, "utf-8");
+	const [packageLicenseContent, rootLicenseContent] = await Promise.all([
+		readFile(packageLicensePath, "utf-8"),
+		readFile(rootLicensePath, "utf-8"),
+	]);
 
 	if (packageLicenseContent !== rootLicenseContent) {
 		if (resolve) {
-			return copyLicenseFile(
+			return await copyLicenseFile(
 				rootLicensePath,
 				packageLicensePath,
 				POLICY_NAME,

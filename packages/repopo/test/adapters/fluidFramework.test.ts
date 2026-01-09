@@ -1,10 +1,9 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	type FluidHandler,
-	fromFluidHandler,
 	fromFluidHandlers,
 } from "../../src/adapters/fluidFramework.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
@@ -12,17 +11,18 @@ import type { PolicyFunctionArguments } from "../../src/policy.js";
 describe("FluidFramework adapter", () => {
 	let tempDir: string;
 
-	beforeEach(() => {
-		tempDir = mkdtempSync(join(tmpdir(), "repopo-fluid-test-"));
+	beforeEach(async () => {
+		tempDir = join(tmpdir(), `repopo-fluid-test-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+		await mkdir(tempDir, { recursive: true });
 	});
 
-	afterEach(() => {
-		rmSync(tempDir, { recursive: true, force: true });
+	afterEach(async () => {
+		await rm(tempDir, { recursive: true, force: true });
 	});
 
-	const createTestFile = (filename: string, content: string): string => {
+	const createTestFile = async (filename: string, content: string): Promise<string> => {
 		const filePath = join(tempDir, filename);
-		writeFileSync(filePath, content);
+		await writeFile(filePath, content);
 		return filename; // return relative path
 	};
 
@@ -33,7 +33,7 @@ describe("FluidFramework adapter", () => {
 		config: undefined,
 	});
 
-	describe("fromFluidHandler", () => {
+	describe("single handler conversion", () => {
 		it("should convert a passing Fluid handler", async () => {
 			const fluidHandler: FluidHandler = {
 				name: "test-handler",
@@ -41,12 +41,12 @@ describe("FluidFramework adapter", () => {
 				handler: async () => undefined, // passes
 			};
 
-			const policy = fromFluidHandler(fluidHandler);
+			const policy = fromFluidHandlers([fluidHandler])[0];
 
 			expect(policy.name).toBe("test-handler");
 			expect(policy.match).toEqual(/\.ts$/);
 
-			const file = createTestFile("test.ts", "const x = 1;");
+			const file = await createTestFile("test.ts", "const x = 1;");
 			const result = await policy.handler(createArgs(file));
 
 			expect(result).toBe(true);
@@ -59,8 +59,8 @@ describe("FluidFramework adapter", () => {
 				handler: async () => "console.log is not allowed",
 			};
 
-			const policy = fromFluidHandler(fluidHandler);
-			const file = createTestFile("test.ts", "console.log('hi');");
+			const policy = fromFluidHandlers([fluidHandler])[0];
+			const file = await createTestFile("test.ts", "console.log('hi');");
 			const result = await policy.handler(createArgs(file));
 
 			expect(result).not.toBe(true);
@@ -80,8 +80,8 @@ describe("FluidFramework adapter", () => {
 				resolver: async () => ({ resolved: true }),
 			};
 
-			const policy = fromFluidHandler(fluidHandler);
-			const file = createTestFile("test.ts", "content");
+			const policy = fromFluidHandlers([fluidHandler])[0];
+			const file = await createTestFile("test.ts", "content");
 			const result = await policy.handler(createArgs(file));
 
 			expect(result).not.toBe(true);
@@ -97,7 +97,7 @@ describe("FluidFramework adapter", () => {
 				handler: async () => undefined,
 			};
 
-			const policy = fromFluidHandler(fluidHandler, {
+			const [policy] = fromFluidHandlers([fluidHandler], {
 				namePrefix: "Fluid:",
 			});
 
@@ -115,8 +115,8 @@ describe("FluidFramework adapter", () => {
 				},
 			};
 
-			const policy = fromFluidHandler(fluidHandler);
-			const file = createTestFile("test.ts", "content");
+			const policy = fromFluidHandlers([fluidHandler])[0];
+			const file = await createTestFile("test.ts", "content");
 			await policy.handler(createArgs(file));
 
 			// Fluid handler should receive absolute path
@@ -136,8 +136,8 @@ describe("FluidFramework adapter", () => {
 					},
 				};
 
-				const policy = fromFluidHandler(fluidHandler);
-				const file = createTestFile("test.ts", "content");
+				const policy = fromFluidHandlers([fluidHandler])[0];
+				const file = await createTestFile("test.ts", "content");
 				const result = await policy.handler({
 					...createArgs(file),
 					resolve: true,
@@ -166,8 +166,8 @@ describe("FluidFramework adapter", () => {
 					},
 				};
 
-				const policy = fromFluidHandler(fluidHandler);
-				const file = createTestFile("test.ts", "content");
+				const policy = fromFluidHandlers([fluidHandler])[0];
+				const file = await createTestFile("test.ts", "content");
 				await policy.handler(createArgs(file));
 
 				expect(resolverCalled).not.toHaveBeenCalled();
@@ -181,11 +181,11 @@ describe("FluidFramework adapter", () => {
 					resolver: async () => ({ resolved: true, message: "standalone fix" }),
 				};
 
-				const policy = fromFluidHandler(fluidHandler);
+				const policy = fromFluidHandlers([fluidHandler])[0];
 
 				expect(policy.resolver).toBeDefined();
 
-				const file = createTestFile("test.ts", "content");
+				const file = await createTestFile("test.ts", "content");
 				// biome-ignore lint/style/noNonNullAssertion: we just checked it's defined
 				const result = await policy.resolver!({
 					file,
@@ -208,8 +208,8 @@ describe("FluidFramework adapter", () => {
 					}),
 				};
 
-				const policy = fromFluidHandler(fluidHandler);
-				const file = createTestFile("test.ts", "content");
+				const policy = fromFluidHandlers([fluidHandler])[0];
+				const file = await createTestFile("test.ts", "content");
 				const result = await policy.handler({
 					...createArgs(file),
 					resolve: true,
@@ -229,8 +229,8 @@ describe("FluidFramework adapter", () => {
 					resolver: () => ({ resolved: true }), // sync, not async
 				};
 
-				const policy = fromFluidHandler(fluidHandler);
-				const file = createTestFile("test.ts", "content");
+				const policy = fromFluidHandlers([fluidHandler])[0];
+				const file = await createTestFile("test.ts", "content");
 				const result = await policy.handler({
 					...createArgs(file),
 					resolve: true,

@@ -283,7 +283,7 @@ function validateConditionalRequirements(
 			const missingRequired: string[] = [];
 			for (const entry of rule.requires) {
 				const { name } = parseRequiredEntry(entry);
-				if (!(scripts && Object.hasOwn(scripts, name))) {
+				if (!Object.hasOwn(scripts, name)) {
 					missingRequired.push(name);
 				}
 			}
@@ -547,33 +547,33 @@ function revalidateAfterFix(
 ): string[] {
 	const errors: string[] = [];
 
-	if (config.mutuallyExclusive && config.mutuallyExclusive.length > 0) {
+	if ((config.mutuallyExclusive?.length ?? 0) > 0) {
 		errors.push(
 			...validateMutuallyExclusiveScripts(
-				config.mutuallyExclusive,
+				config.mutuallyExclusive!,
 				updatedScripts,
 			),
 		);
 	}
 
-	if (config.scriptMustContain && config.scriptMustContain.length > 0) {
+	if ((config.scriptMustContain?.length ?? 0) > 0) {
 		errors.push(
-			...validateScriptContents(config.scriptMustContain, updatedScripts),
+			...validateScriptContents(config.scriptMustContain!, updatedScripts),
 		);
 	}
 
-	if (config.must && config.must.length > 0) {
-		errors.push(...validateRemainingMustScripts(config.must, updatedScripts));
+	if ((config.must?.length ?? 0) > 0) {
+		errors.push(...validateRemainingMustScripts(config.must!, updatedScripts));
 	}
 
-	if (config.exact && Object.keys(config.exact).length > 0) {
-		errors.push(...validateRemainingExactScripts(config.exact, updatedScripts));
+	if (Object.keys(config.exact ?? {}).length > 0) {
+		errors.push(...validateRemainingExactScripts(config.exact!, updatedScripts));
 	}
 
-	if (config.conditionalRequired && config.conditionalRequired.length > 0) {
+	if ((config.conditionalRequired?.length ?? 0) > 0) {
 		errors.push(
 			...validateConditionalRequirements(
-				config.conditionalRequired,
+				config.conditionalRequired!,
 				updatedScripts,
 			),
 		);
@@ -603,28 +603,28 @@ function runAllValidations(
 	const missingWithDefaults: string[] = [];
 	let mismatchedScripts: string[] = [];
 
-	if (config.must && config.must.length > 0) {
-		const result = validateMustScripts(config.must, scripts);
+	if ((config.must?.length ?? 0) > 0) {
+		const result = validateMustScripts(config.must!, scripts);
 		errors.push(...result.errors);
 		missingWithDefaults.push(...result.missingWithDefaults);
 	}
 
-	if (config.exact && Object.keys(config.exact).length > 0) {
-		const result = validateExactScripts(config.exact, scripts);
+	if (Object.keys(config.exact ?? {}).length > 0) {
+		const result = validateExactScripts(config.exact!, scripts);
 		errors.push(...result.errors);
 		missingWithDefaults.push(...result.missingWithDefaults);
 		mismatchedScripts = result.mismatchedScripts;
 	}
 
-	if (config.mutuallyExclusive && config.mutuallyExclusive.length > 0) {
+	if ((config.mutuallyExclusive?.length ?? 0) > 0) {
 		errors.push(
-			...validateMutuallyExclusiveScripts(config.mutuallyExclusive, scripts),
+			...validateMutuallyExclusiveScripts(config.mutuallyExclusive!, scripts),
 		);
 	}
 
-	if (config.conditionalRequired && config.conditionalRequired.length > 0) {
+	if ((config.conditionalRequired?.length ?? 0) > 0) {
 		const result = validateConditionalWithDefaults(
-			config.conditionalRequired,
+			config.conditionalRequired!,
 			scripts,
 			defaultScripts,
 			missingWithDefaults,
@@ -633,8 +633,8 @@ function runAllValidations(
 		missingWithDefaults.push(...result.missingWithDefaults);
 	}
 
-	if (config.scriptMustContain && config.scriptMustContain.length > 0) {
-		errors.push(...validateScriptContents(config.scriptMustContain, scripts));
+	if ((config.scriptMustContain?.length ?? 0) > 0) {
+		errors.push(...validateScriptContents(config.scriptMustContain!, scripts));
 	}
 
 	return { errors, missingWithDefaults, mismatchedScripts };

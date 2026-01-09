@@ -66,41 +66,15 @@ export interface FluidAdapterOptions {
 /**
  * Converts a FluidFramework handler to a repopo PolicyDefinition.
  *
- * This adapter bridges the gap between FluidFramework's build-tools policy system
- * and repopo's policy system, allowing you to reuse existing Fluid policies in repopo.
- *
- * @remarks
- *
- * Key differences handled by this adapter:
- *
- * - **Handler signature**: Fluid uses `(file, root) => string | undefined`,
- *   repopo uses `(args) => PolicyHandlerResult`
- *
- * - **File paths**: Fluid passes absolute paths, repopo passes repo-relative paths.
- *   The adapter converts between the two.
- *
- * - **Return types**: Fluid returns `string | undefined` (error message or success),
- *   repopo returns `true | PolicyFailure | PolicyFixResult`
- *
- * @example
- * ```typescript
- * import { fromFluidHandler, makePolicy } from "repopo";
- * import { fluidCaseHandler } from "@fluidframework/build-tools";
- *
- * const FluidCasePolicy = fromFluidHandler(fluidCaseHandler);
- *
- * const config: RepopoConfig = {
- *   policies: [makePolicy(FluidCasePolicy)],
- * };
- * ```
+ * This is an internal function used by {@link fromFluidHandlers}.
  *
  * @param fluidHandler - A FluidFramework Handler object to convert.
  * @param options - Optional configuration for the conversion.
  * @returns A repopo PolicyDefinition that wraps the Fluid handler.
  *
- * @alpha
+ * @internal
  */
-export function fromFluidHandler(
+function fromFluidHandler(
 	fluidHandler: FluidHandler,
 	options?: FluidAdapterOptions,
 ): PolicyDefinition {
@@ -174,21 +148,44 @@ export function fromFluidHandler(
 }
 
 /**
- * Converts an array of FluidFramework handlers to repopo PolicyDefinitions.
+ * Converts FluidFramework handlers to repopo PolicyDefinitions.
  *
- * This is a convenience function for converting multiple handlers at once.
+ * This adapter bridges the gap between FluidFramework's build-tools policy system
+ * and repopo's policy system, allowing you to reuse existing Fluid policies in repopo.
+ *
+ * @remarks
+ *
+ * Key differences handled by this adapter:
+ *
+ * - **Handler signature**: Fluid uses `(file, root) => string | undefined`,
+ *   repopo uses `(args) => PolicyHandlerResult`
+ *
+ * - **File paths**: Fluid passes absolute paths, repopo passes repo-relative paths.
+ *   The adapter converts between the two.
+ *
+ * - **Return types**: Fluid returns `string | undefined` (error message or success),
+ *   repopo returns `true | PolicyFailure | PolicyFixResult`
+ *
+ * For a single handler, wrap it in an array: `fromFluidHandlers([handler])`.
  *
  * @example
  * ```typescript
  * import { fromFluidHandlers, makePolicy } from "repopo";
- * import { copyrightFileHeaderHandlers } from "@fluidframework/build-tools";
+ * import { copyrightFileHeaderHandlers, fluidCaseHandler } from "@fluidframework/build-tools";
  *
+ * // Convert multiple handlers with a namespace prefix
  * const FluidCopyrightPolicies = fromFluidHandlers(copyrightFileHeaderHandlers, {
  *   namePrefix: "Fluid:",
  * });
  *
+ * // For a single handler, wrap it in an array
+ * const [FluidCasePolicy] = fromFluidHandlers([fluidCaseHandler]);
+ *
  * const config: RepopoConfig = {
- *   policies: FluidCopyrightPolicies.map(p => makePolicy(p)),
+ *   policies: [
+ *     ...FluidCopyrightPolicies.map(p => makePolicy(p)),
+ *     makePolicy(FluidCasePolicy),
+ *   ],
  * };
  * ```
  *

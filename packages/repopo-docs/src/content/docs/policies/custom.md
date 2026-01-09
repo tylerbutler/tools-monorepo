@@ -13,39 +13,27 @@ Custom policies can be created using the `Policy` class or policy generator func
 
 If you're migrating from FluidFramework's build-tools or want to reuse existing Fluid policy handlers, repopo provides an adapter to convert them to repopo policies.
 
-### Converting a Single Handler
+### Converting Handlers
 
-Use `fromFluidHandler` to convert a single FluidFramework handler:
-
-```ts title="repopo.config.ts"
-import { fromFluidHandler, makePolicy } from "repopo";
-import { fluidCaseHandler } from "@fluidframework/build-tools";
-
-// Convert a single Fluid handler
-const FluidCasePolicy = fromFluidHandler(fluidCaseHandler);
-
-const config = {
-  policies: [makePolicy(FluidCasePolicy)]
-};
-
-export default config;
-```
-
-### Converting Multiple Handlers
-
-Use `fromFluidHandlers` to convert an array of handlers at once:
+Use `fromFluidHandlers` to convert FluidFramework handlers to repopo policies:
 
 ```ts title="repopo.config.ts"
 import { fromFluidHandlers, makePolicy } from "repopo";
-import { copyrightFileHeaderHandlers } from "@fluidframework/build-tools";
+import { copyrightFileHeaderHandlers, fluidCaseHandler } from "@fluidframework/build-tools";
 
 // Convert multiple handlers with a namespace prefix
 const FluidCopyrightPolicies = fromFluidHandlers(copyrightFileHeaderHandlers, {
   namePrefix: "Fluid:"  // Results in "Fluid:my-handler-name"
 });
 
+// For a single handler, wrap it in an array
+const [FluidCasePolicy] = fromFluidHandlers([fluidCaseHandler]);
+
 const config = {
-  policies: FluidCopyrightPolicies.map(p => makePolicy(p))
+  policies: [
+    ...FluidCopyrightPolicies.map(p => makePolicy(p)),
+    makePolicy(FluidCasePolicy),
+  ]
 };
 
 export default config;
@@ -95,8 +83,8 @@ interface FluidAdapterOptions {
 ### Import Paths
 
 ```ts
-// Main exports
-import { fromFluidHandler, fromFluidHandlers } from "repopo";
+// Main export
+import { fromFluidHandlers } from "repopo";
 
 // Types
 import type { FluidHandler, FluidAdapterOptions } from "repopo";
