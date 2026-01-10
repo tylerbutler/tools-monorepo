@@ -717,7 +717,7 @@
 				"args": ["config", "environments", "production", "servers"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
 				"conflicts": {
-					"behaviors": ["array_order_insertion", "list_coercion_enabled"]
+					"behaviors": ["list_coercion_enabled", "array_order_insertion"]
 				},
 				"expected": { "count": 0 },
 				"features": [],
@@ -2051,7 +2051,7 @@
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled", "array_order_insertion"],
 				"conflicts": {
-					"behaviors": ["array_order_lexicographic", "list_coercion_disabled"]
+					"behaviors": ["list_coercion_disabled", "array_order_lexicographic"]
 				},
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": ["comments"],
@@ -2110,7 +2110,7 @@
 				"args": ["servers"],
 				"behaviors": ["list_coercion_enabled", "array_order_lexicographic"],
 				"conflicts": {
-					"behaviors": ["array_order_insertion", "list_coercion_disabled"]
+					"behaviors": ["list_coercion_disabled", "array_order_insertion"]
 				},
 				"expected": { "count": 3, "list": ["web1", "web2", "web3"] },
 				"features": ["comments"],
@@ -3733,7 +3733,7 @@
 				"args": ["numbers"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
 				"conflicts": {
-					"behaviors": ["array_order_insertion", "list_coercion_enabled"]
+					"behaviors": ["list_coercion_enabled", "array_order_insertion"]
 				},
 				"expected": { "count": 0 },
 				"features": [],
@@ -3782,7 +3782,7 @@
 				"args": ["flags"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
 				"conflicts": {
-					"behaviors": ["array_order_insertion", "list_coercion_enabled"]
+					"behaviors": ["list_coercion_enabled", "array_order_insertion"]
 				},
 				"expected": { "count": 0 },
 				"features": [],
@@ -3828,7 +3828,7 @@
 				"args": ["items"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
 				"conflicts": {
-					"behaviors": ["array_order_insertion", "list_coercion_enabled"]
+					"behaviors": ["list_coercion_enabled", "array_order_insertion"]
 				},
 				"expected": { "count": 0 },
 				"features": ["whitespace"],
@@ -3881,7 +3881,7 @@
 				"args": ["names"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
 				"conflicts": {
-					"behaviors": ["array_order_insertion", "list_coercion_enabled"]
+					"behaviors": ["list_coercion_enabled", "array_order_insertion"]
 				},
 				"expected": { "count": 0 },
 				"features": ["unicode"],
@@ -3931,7 +3931,7 @@
 				"args": ["symbols"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
 				"conflicts": {
-					"behaviors": ["array_order_insertion", "list_coercion_enabled"]
+					"behaviors": ["list_coercion_enabled", "array_order_insertion"]
 				},
 				"expected": { "count": 0 },
 				"features": [],
@@ -3970,7 +3970,7 @@
 				"args": ["features"],
 				"behaviors": ["list_coercion_disabled", "array_order_lexicographic"],
 				"conflicts": {
-					"behaviors": ["array_order_insertion", "list_coercion_enabled"]
+					"behaviors": ["list_coercion_enabled", "array_order_insertion"]
 				},
 				"expected": { "count": 0 },
 				"features": [],
@@ -4059,6 +4059,7 @@
 			},
 			{
 				"behaviors": ["tabs_as_content"],
+				"conflicts": { "behaviors": ["tabs_as_whitespace"] },
 				"expected": {
 					"count": 1,
 					"value": "value_with_tabs =\n  text\t\twith\ttabs =\n"
@@ -4087,6 +4088,7 @@
 			},
 			{
 				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": { "behaviors": ["crlf_normalize_to_lf"] },
 				"expected": {
 					"count": 2,
 					"entries": [
@@ -4104,6 +4106,7 @@
 			},
 			{
 				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": { "behaviors": ["crlf_normalize_to_lf"] },
 				"expected": {
 					"count": 1,
 					"value": "key1 =\n  value1\r =\nkey2 =\n  value2\r =\n"
@@ -4253,6 +4256,7 @@
 			{
 				"args": ["enabled"],
 				"behaviors": ["boolean_strict", "boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_lenient", "boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4290,6 +4294,7 @@
 			{
 				"args": ["active"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4327,6 +4332,7 @@
 			{
 				"args": ["active"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4364,6 +4370,7 @@
 			{
 				"args": ["disabled"],
 				"behaviors": ["boolean_strict", "boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_lenient", "boolean_strict"] },
 				"expected": { "count": 1, "value": false },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4494,6 +4501,7 @@
 			{
 				"args": ["disabled"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": false },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4562,6 +4570,7 @@
 			{
 				"args": ["disabled"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["empty_keys", "optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4648,6 +4657,7 @@
 			{
 				"args": ["flag1"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4724,6 +4734,7 @@
 			{
 				"args": ["flag1"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4810,6 +4821,7 @@
 			{
 				"args": ["ssl"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -4910,6 +4922,7 @@
 			{
 				"args": ["ssl"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5154,6 +5167,7 @@
 			{
 				"args": ["enabled"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5220,6 +5234,7 @@
 			{
 				"args": ["upper_true"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5249,6 +5264,7 @@
 			{
 				"args": ["mixed_true"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5278,6 +5294,7 @@
 			{
 				"args": ["upper_yes"],
 				"behaviors": ["boolean_lenient"],
+				"conflicts": { "behaviors": ["boolean_strict"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5319,6 +5336,7 @@
 			{
 				"args": ["one"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5345,6 +5363,7 @@
 			{
 				"args": ["padded"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1, "value": true },
 				"features": ["optional_typed_accessors", "whitespace"],
 				"functions": ["get_bool"],
@@ -5419,6 +5438,7 @@
 			{
 				"args": ["number"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5485,6 +5505,7 @@
 			{
 				"args": ["empty"],
 				"behaviors": ["boolean_strict"],
+				"conflicts": { "behaviors": ["boolean_lenient"] },
 				"expected": { "count": 1 },
 				"features": ["optional_typed_accessors"],
 				"functions": ["get_bool"],
@@ -5530,7 +5551,8 @@
 			},
 			{
 				"args": ["key"],
-				"behaviors": [],
+				"behaviors": ["tabs_as_content"],
+				"conflicts": { "behaviors": ["tabs_as_whitespace"] },
 				"expected": { "count": 1, "value": "\tvalue\twith\ttabs" },
 				"features": ["whitespace"],
 				"functions": ["get_string"],
@@ -5557,7 +5579,8 @@
 			},
 			{
 				"args": ["key"],
-				"behaviors": [],
+				"behaviors": ["tabs_as_content"],
+				"conflicts": { "behaviors": ["tabs_as_whitespace"] },
 				"expected": { "count": 1, "value": "\tindented" },
 				"features": ["whitespace"],
 				"functions": ["get_string"],
@@ -5728,7 +5751,7 @@
 			},
 			{
 				"behaviors": ["tabs_as_whitespace", "indent_spaces"],
-				"conflicts": { "behaviors": ["tabs_as_content"] },
+				"conflicts": { "behaviors": ["indent_tabs", "tabs_as_content"] },
 				"expected": { "count": 1, "value": "section =\n  indented\n  another" },
 				"features": ["whitespace", "multiline"],
 				"functions": ["canonical_format"],
@@ -5751,6 +5774,7 @@
 			},
 			{
 				"behaviors": ["indent_spaces"],
+				"conflicts": { "behaviors": ["indent_tabs"] },
 				"expected": {
 					"count": 1,
 					"value": "package =\n  = brew\n  = scoop\n  = nix"
@@ -5765,6 +5789,7 @@
 			},
 			{
 				"behaviors": ["indent_spaces"],
+				"conflicts": { "behaviors": ["indent_tabs"] },
 				"expected": {
 					"count": 1,
 					"value": "app =\n  = item1\n  = item2\n  config =\n    = nested1\n    = nested2\n    deep =\n      = level3a\n      = level3b"
@@ -5798,7 +5823,8 @@
 				"variants": []
 			},
 			{
-				"behaviors": [],
+				"behaviors": ["crlf_normalize_to_lf"],
+				"conflicts": { "behaviors": ["crlf_preserve_literal"] },
 				"expected": {
 					"count": 1,
 					"object": { "key1": "value1", "key2": "value2" }
@@ -5827,6 +5853,21 @@
 				"name": "crlf_preserve_literal_basic_parse",
 				"source_test": "crlf_preserve_literal_basic",
 				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": { "behaviors": ["crlf_normalize_to_lf"] },
+				"expected": {
+					"count": 1,
+					"object": { "key1": "value1\r", "key2": "value2\r" }
+				},
+				"features": ["whitespace"],
+				"functions": ["build_hierarchy"],
+				"inputs": ["key1 = value1\r\nkey2 = value2\r\n"],
+				"name": "crlf_preserve_literal_basic_build_hierarchy",
+				"source_test": "crlf_preserve_literal_basic",
+				"validation": "build_hierarchy",
 				"variants": []
 			},
 			{
@@ -5898,7 +5939,8 @@
 				"variants": []
 			},
 			{
-				"behaviors": [],
+				"behaviors": ["crlf_normalize_to_lf"],
+				"conflicts": { "behaviors": ["crlf_preserve_literal"] },
 				"expected": {
 					"count": 1,
 					"object": { "config": { "host": "localhost", "port": "8080" } }
@@ -5908,6 +5950,41 @@
 				"inputs": ["config =\r\n  host = localhost\r\n  port = 8080"],
 				"name": "crlf_nested_structure_build_hierarchy",
 				"source_test": "crlf_nested_structure",
+				"validation": "build_hierarchy",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": { "behaviors": ["crlf_normalize_to_lf"] },
+				"expected": {
+					"count": 1,
+					"entries": [
+						{
+							"key": "config",
+							"value": "\r\n  host = localhost\r\n  port = 8080"
+						}
+					]
+				},
+				"features": ["whitespace"],
+				"functions": ["parse"],
+				"inputs": ["config =\r\n  host = localhost\r\n  port = 8080"],
+				"name": "crlf_preserve_nested_structure_parse",
+				"source_test": "crlf_preserve_nested_structure",
+				"validation": "parse",
+				"variants": []
+			},
+			{
+				"behaviors": ["crlf_preserve_literal"],
+				"conflicts": { "behaviors": ["crlf_normalize_to_lf"] },
+				"expected": {
+					"count": 1,
+					"object": { "config": { "host": "localhost\r", "port": "8080" } }
+				},
+				"features": ["whitespace"],
+				"functions": ["build_hierarchy"],
+				"inputs": ["config =\r\n  host = localhost\r\n  port = 8080"],
+				"name": "crlf_preserve_nested_structure_build_hierarchy",
+				"source_test": "crlf_preserve_nested_structure",
 				"validation": "build_hierarchy",
 				"variants": []
 			},
@@ -6216,8 +6293,7 @@
 				"variants": ["reference_compliant"]
 			},
 			{
-				"behaviors": ["toplevel_indent_strip"],
-				"conflicts": { "behaviors": ["toplevel_indent_preserve"] },
+				"behaviors": [],
 				"expected": { "count": 1, "value": true },
 				"features": ["whitespace"],
 				"functions": ["round_trip"],
@@ -6246,8 +6322,7 @@
 				"variants": []
 			},
 			{
-				"behaviors": ["toplevel_indent_preserve"],
-				"conflicts": { "behaviors": ["toplevel_indent_strip"] },
+				"behaviors": [],
 				"expected": { "count": 1, "value": true },
 				"features": ["whitespace"],
 				"functions": ["round_trip"],

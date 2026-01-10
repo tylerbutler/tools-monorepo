@@ -292,6 +292,7 @@
 			"crlf_preserve_multiline_value_parse",
 			"crlf_mixed_line_endings_parse",
 			"crlf_nested_structure_parse",
+			"crlf_preserve_nested_structure_parse",
 			"behavior_combo_tabs_and_crlf_parse",
 			"behavior_combo_content_tabs_crlf_parse",
 			"round_trip_property_basic_parse",
@@ -845,6 +846,7 @@
 			"crlf_normalize_to_lf_basic_parse",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
 			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy",
 			"semigroup_associativity_basic_compose_associative",
 			"monoid_left_identity_basic_identity_left",
 			"monoid_right_identity_basic_identity_right",
@@ -950,7 +952,9 @@
 			"tabs_as_content_in_value_build_hierarchy",
 			"tabs_as_whitespace_in_value_build_hierarchy",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
-			"crlf_nested_structure_build_hierarchy"
+			"crlf_preserve_literal_basic_build_hierarchy",
+			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_build_hierarchy"
 		],
 		"hierarchy": [
 			"basic_object_construction_build_hierarchy",
@@ -1037,7 +1041,9 @@
 			"tabs_as_content_in_value_build_hierarchy",
 			"tabs_as_whitespace_in_value_build_hierarchy",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
-			"crlf_nested_structure_build_hierarchy"
+			"crlf_preserve_literal_basic_build_hierarchy",
+			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_build_hierarchy"
 		],
 		"deep": [
 			"deep_nested_objects_parse",
@@ -1091,6 +1097,8 @@
 			"deeply_nested_bare_list_indentation_canonical_format",
 			"crlf_nested_structure_parse",
 			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"semigroup_associativity_nested_compose_associative",
 			"monoid_left_identity_nested_identity_left",
 			"monoid_right_identity_nested_identity_right",
@@ -1398,7 +1406,9 @@
 			"nested_structure_parsing_parse",
 			"deep_nested_structure_parse_indented",
 			"crlf_nested_structure_parse",
-			"crlf_nested_structure_build_hierarchy"
+			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy"
 		],
 		"parsing": ["nested_structure_parsing_parse", "unicode_parsing_parse"],
 		"unicode": [
@@ -1455,7 +1465,10 @@
 		"preserve": [
 			"leading_whitespace_toplevel_indent_preserve_parse",
 			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy",
 			"crlf_preserve_multiline_value_parse",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"round_trip_whitespace_normalization_toplevel_indent_preserve_parse",
 			"round_trip_whitespace_normalization_toplevel_indent_preserve_round_trip"
 		],
@@ -1697,7 +1710,8 @@
 			"parse_mixed_types_strict_literal_get_int",
 			"parse_mixed_types_strict_literal_get_bool",
 			"parse_mixed_types_strict_literal_get_float",
-			"crlf_preserve_literal_basic_parse"
+			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy"
 		],
 		"unquoted": ["quotes_treated_as_literal_unquoted_parse"],
 		"quoted": ["quotes_treated_as_literal_quoted_parse"],
@@ -2406,11 +2420,14 @@
 			"crlf_normalize_to_lf_basic_parse",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
 			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy",
 			"crlf_normalize_multiline_value_parse",
 			"crlf_preserve_multiline_value_parse",
 			"crlf_mixed_line_endings_parse",
 			"crlf_nested_structure_parse",
 			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"behavior_combo_tabs_and_crlf_parse",
 			"behavior_combo_content_tabs_crlf_parse"
 		],
@@ -2611,6 +2628,8 @@
 			"parse_mixed_types_strict_literal_get_float",
 			"crlf_nested_structure_parse",
 			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"semigroup_associativity_nested_compose_associative",
 			"round_trip_property_nested_parse",
 			"round_trip_property_nested_round_trip",
@@ -2783,6 +2802,8 @@
 			"deeply_nested_bare_list_indentation_canonical_format",
 			"crlf_nested_structure_parse",
 			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"semigroup_associativity_nested_compose_associative",
 			"semigroup_associativity_nested_compose_associative",
 			"monoid_left_identity_nested_identity_left",
@@ -2838,6 +2859,8 @@
 			"parse_mixed_types_strict_literal_get_float",
 			"crlf_nested_structure_parse",
 			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"semigroup_associativity_nested_compose_associative",
 			"monoid_left_identity_nested_identity_left",
 			"monoid_right_identity_nested_identity_right",
@@ -2891,6 +2914,8 @@
 			"parse_mixed_types_strict_literal_get_float",
 			"crlf_nested_structure_parse",
 			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"semigroup_associativity_nested_compose_associative",
 			"monoid_left_identity_nested_identity_left",
 			"monoid_right_identity_nested_identity_right",
@@ -2964,6 +2989,8 @@
 			"parse_integer_error_get_int",
 			"crlf_nested_structure_parse",
 			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"semigroup_associativity_nested_compose_associative",
 			"monoid_left_identity_nested_identity_left",
 			"monoid_right_identity_nested_identity_right",
@@ -3859,6 +3886,7 @@
 			"crlf_normalize_to_lf_basic_parse",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
 			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy",
 			"crlf_mixed_line_endings_parse",
 			"behavior_combo_content_tabs_crlf_parse"
 		],
@@ -3881,6 +3909,7 @@
 			"crlf_normalize_to_lf_basic_parse",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
 			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy",
 			"crlf_mixed_line_endings_parse",
 			"behavior_combo_content_tabs_crlf_parse"
 		],
@@ -4055,6 +4084,7 @@
 			"crlf_normalize_to_lf_basic_parse",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
 			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy",
 			"behavior_combo_content_tabs_crlf_parse"
 		],
 		"key2": [
@@ -4068,6 +4098,7 @@
 			"crlf_normalize_to_lf_basic_parse",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
 			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy",
 			"behavior_combo_content_tabs_crlf_parse"
 		],
 		"entry": ["leading_whitespace_toplevel_indent_preserve_parse"],
@@ -5412,6 +5443,7 @@
 			"crlf_preserve_multiline_value_parse",
 			"crlf_mixed_line_endings_parse",
 			"crlf_nested_structure_parse",
+			"crlf_preserve_nested_structure_parse",
 			"behavior_combo_tabs_and_crlf_parse",
 			"behavior_combo_content_tabs_crlf_parse",
 			"round_trip_property_basic_parse",
@@ -5518,7 +5550,9 @@
 			"tabs_as_content_in_value_build_hierarchy",
 			"tabs_as_whitespace_in_value_build_hierarchy",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
-			"crlf_nested_structure_build_hierarchy"
+			"crlf_preserve_literal_basic_build_hierarchy",
+			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_build_hierarchy"
 		],
 		"get_list": [
 			"deeply_nested_list_get_list",
@@ -5880,11 +5914,14 @@
 			"crlf_normalize_to_lf_basic_parse",
 			"crlf_normalize_to_lf_basic_build_hierarchy",
 			"crlf_preserve_literal_basic_parse",
+			"crlf_preserve_literal_basic_build_hierarchy",
 			"crlf_normalize_multiline_value_parse",
 			"crlf_preserve_multiline_value_parse",
 			"crlf_mixed_line_endings_parse",
 			"crlf_nested_structure_parse",
 			"crlf_nested_structure_build_hierarchy",
+			"crlf_preserve_nested_structure_parse",
+			"crlf_preserve_nested_structure_build_hierarchy",
 			"behavior_combo_tabs_and_crlf_parse",
 			"behavior_combo_content_tabs_crlf_parse",
 			"round_trip_whitespace_normalization_parse",
