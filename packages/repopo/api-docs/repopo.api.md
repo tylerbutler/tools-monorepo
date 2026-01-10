@@ -45,9 +45,6 @@ export interface FluidHandler {
 }
 
 // @alpha
-export function fromFluidHandler(fluidHandler: FluidHandler, options?: FluidAdapterOptions): PolicyDefinition;
-
-// @alpha
 export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: FluidAdapterOptions): PolicyDefinition[];
 
 // @alpha

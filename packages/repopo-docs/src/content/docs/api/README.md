@@ -31,7 +31,6 @@ title: "repopo"
 
 ## Functions
 
-- [fromFluidHandler](/api/functions/fromfluidhandler/)
 - [fromFluidHandlers](/api/functions/fromfluidhandlers/)
 - [generateFileHeaderPolicy](/api/functions/generatefileheaderpolicy/)
 - [generatePackagePolicy](/api/functions/generatepackagepolicy/)
