@@ -1194,6 +1194,9 @@ importers:
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
+      picomatch:
+        specifier: ^4.0.3
+        version: 4.0.3
       resolve-workspace-root:
         specifier: ^2.0.0
         version: 2.0.0
@@ -1225,6 +1228,9 @@ importers:
       '@types/node':
         specifier: ^20.19.25
         version: 20.19.25
+      '@types/picomatch':
+        specifier: ^4.0.2
+        version: 4.0.2
       '@types/tmp':
         specifier: ^0.2.6
         version: 0.2.6
