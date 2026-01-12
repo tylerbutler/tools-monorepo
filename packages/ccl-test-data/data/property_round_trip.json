@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -47,7 +47,14 @@
       "variants": []
     },
     {
-      "behaviors": [],
+      "behaviors": [
+        "toplevel_indent_strip"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "toplevel_indent_preserve"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -69,7 +76,9 @@
       "name": "round_trip_whitespace_normalization_parse",
       "source_test": "round_trip_whitespace_normalization",
       "validation": "parse",
-      "variants": []
+      "variants": [
+        "reference_compliant"
+      ]
     },
     {
       "behaviors": [],
@@ -88,6 +97,64 @@
       ],
       "name": "round_trip_whitespace_normalization_round_trip",
       "source_test": "round_trip_whitespace_normalization",
+      "validation": "round_trip",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [
+        "toplevel_indent_preserve"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "toplevel_indent_strip"
+        ]
+      },
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          },
+          {
+            "key": "nested",
+            "value": "\n    sub  =  val"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "  key  =  value  \n  nested  = \n    sub  =  val  "
+      ],
+      "name": "round_trip_whitespace_normalization_toplevel_indent_preserve_parse",
+      "source_test": "round_trip_whitespace_normalization_toplevel_indent_preserve",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "value": true
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "round_trip"
+      ],
+      "inputs": [
+        "  key  =  value  \n  nested  = \n    sub  =  val  "
+      ],
+      "name": "round_trip_whitespace_normalization_toplevel_indent_preserve_round_trip",
+      "source_test": "round_trip_whitespace_normalization_toplevel_indent_preserve",
       "validation": "round_trip",
       "variants": []
     },

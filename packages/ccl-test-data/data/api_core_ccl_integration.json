@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -186,6 +186,11 @@
       "behaviors": [
         "array_order_insertion"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_lexicographic"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -247,6 +252,11 @@
       "behaviors": [
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {

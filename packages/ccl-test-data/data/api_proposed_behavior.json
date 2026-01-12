@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -129,6 +129,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 2,
         "list": [
@@ -275,6 +280,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 1,
         "list": [
@@ -361,6 +371,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 1,
         "list": [
@@ -442,6 +457,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 1,
         "list": [
@@ -516,6 +536,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 1,
         "list": [
@@ -607,6 +632,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 4,
         "list": [
@@ -701,6 +731,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 4,
         "list": [
@@ -799,6 +834,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 4,
         "list": [
@@ -819,115 +859,6 @@
       ],
       "name": "list_with_whitespace_get_list",
       "source_test": "list_with_whitespace",
-      "validation": "get_list",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "expected": {
-        "count": 6,
-        "entries": [
-          {
-            "key": "config",
-            "value": ""
-          },
-          {
-            "key": "environments",
-            "value": ""
-          },
-          {
-            "key": "production",
-            "value": ""
-          },
-          {
-            "key": "servers",
-            "value": "web1"
-          },
-          {
-            "key": "servers",
-            "value": "web2"
-          },
-          {
-            "key": "servers",
-            "value": "api1"
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
-      ],
-      "name": "deeply_nested_list_parse",
-      "source_test": "deeply_nested_list",
-      "validation": "parse",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "behaviors": [],
-      "expected": {
-        "count": 1,
-        "object": {
-          "config": {
-            "environments": {
-              "production": {
-                "servers": [
-                  "web1",
-                  "web2",
-                  "api1"
-                ]
-              }
-            }
-          }
-        }
-      },
-      "features": [],
-      "functions": [
-        "build_hierarchy"
-      ],
-      "inputs": [
-        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
-      ],
-      "name": "deeply_nested_list_build_hierarchy",
-      "source_test": "deeply_nested_list",
-      "validation": "build_hierarchy",
-      "variants": [
-        "proposed_behavior"
-      ]
-    },
-    {
-      "args": [
-        "config",
-        "environments",
-        "production",
-        "servers"
-      ],
-      "behaviors": [
-        "list_coercion_enabled"
-      ],
-      "expected": {
-        "count": 3,
-        "list": [
-          "web1",
-          "web2",
-          "api1"
-        ]
-      },
-      "features": [],
-      "functions": [
-        "get_list"
-      ],
-      "inputs": [
-        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
-      ],
-      "name": "deeply_nested_list_get_list",
-      "source_test": "deeply_nested_list",
       "validation": "get_list",
       "variants": [
         "proposed_behavior"
@@ -1008,6 +939,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 4,
         "list": [
@@ -1104,6 +1040,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 4,
         "list": [
@@ -1202,6 +1143,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 3,
         "list": [
@@ -1338,6 +1284,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 3,
         "list": [
@@ -1414,6 +1365,11 @@
       "behaviors": [
         "list_coercion_enabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_disabled"
+        ]
+      },
       "expected": {
         "count": 1,
         "list": [

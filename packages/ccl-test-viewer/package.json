@@ -114,6 +114,13 @@
 					"build:vite"
 				]
 			},
+			"build:vite": {
+				"outputs": [
+					"{projectRoot}/build/**",
+					"{projectRoot}/dist/**",
+					"{projectRoot}/.svelte-kit/**"
+				]
+			},
 			"bundlemon": {
 				"dependsOn": [
 					"build"

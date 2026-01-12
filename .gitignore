@@ -30,3 +30,4 @@ yarn.lock
 # AI artifacts
 .claude
 .serena
+**/CLAUDE.md

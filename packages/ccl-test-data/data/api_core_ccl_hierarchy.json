@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -313,6 +313,98 @@
       "name": "nested_objects_with_lists_build_hierarchy",
       "source_test": "nested_objects_with_lists",
       "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "config",
+            "value": "\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+          }
+        ]
+      },
+      "features": [],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+      ],
+      "name": "deeply_nested_list_parse",
+      "source_test": "deeply_nested_list",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "array_order_lexicographic"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "object": {
+          "config": {
+            "environments": {
+              "production": {
+                "servers": [
+                  "api1",
+                  "web1",
+                  "web2"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "features": [],
+      "functions": [
+        "build_hierarchy"
+      ],
+      "inputs": [
+        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+      ],
+      "name": "deeply_nested_list_build_hierarchy",
+      "source_test": "deeply_nested_list",
+      "validation": "build_hierarchy",
+      "variants": []
+    },
+    {
+      "args": [
+        "config",
+        "environments",
+        "production",
+        "servers"
+      ],
+      "behaviors": [
+        "list_coercion_disabled",
+        "array_order_lexicographic"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled",
+          "array_order_insertion"
+        ]
+      },
+      "expected": {
+        "count": 0
+      },
+      "features": [],
+      "functions": [
+        "get_list"
+      ],
+      "inputs": [
+        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
+      ],
+      "name": "deeply_nested_list_get_list",
+      "source_test": "deeply_nested_list",
+      "validation": "get_list",
       "variants": []
     }
   ]

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -55,6 +55,11 @@
       "behaviors": [
         "list_coercion_disabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -107,6 +112,11 @@
       "behaviors": [
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -137,6 +147,12 @@
         "list_coercion_disabled",
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion",
+          "list_coercion_enabled"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -213,6 +229,11 @@
       "behaviors": [
         "list_coercion_disabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -338,6 +359,11 @@
       "behaviors": [
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -369,6 +395,12 @@
         "list_coercion_disabled",
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled",
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -423,6 +455,11 @@
       "behaviors": [
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -454,6 +491,12 @@
         "list_coercion_disabled",
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled",
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -510,6 +553,11 @@
       "behaviors": [
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -541,6 +589,12 @@
         "list_coercion_disabled",
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled",
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -555,87 +609,6 @@
       ],
       "name": "list_with_whitespace_reference_get_list",
       "source_test": "list_with_whitespace_reference",
-      "validation": "get_list",
-      "variants": []
-    },
-    {
-      "behaviors": [],
-      "expected": {
-        "count": 1,
-        "entries": [
-          {
-            "key": "config",
-            "value": "\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
-          }
-        ]
-      },
-      "features": [],
-      "functions": [
-        "parse"
-      ],
-      "inputs": [
-        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
-      ],
-      "name": "deeply_nested_list_reference_parse",
-      "source_test": "deeply_nested_list_reference",
-      "validation": "parse",
-      "variants": []
-    },
-    {
-      "behaviors": [
-        "array_order_lexicographic"
-      ],
-      "expected": {
-        "count": 1,
-        "object": {
-          "config": {
-            "environments": {
-              "production": {
-                "servers": [
-                  "api1",
-                  "web1",
-                  "web2"
-                ]
-              }
-            }
-          }
-        }
-      },
-      "features": [],
-      "functions": [
-        "build_hierarchy"
-      ],
-      "inputs": [
-        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
-      ],
-      "name": "deeply_nested_list_reference_build_hierarchy",
-      "source_test": "deeply_nested_list_reference",
-      "validation": "build_hierarchy",
-      "variants": []
-    },
-    {
-      "args": [
-        "config",
-        "environments",
-        "production",
-        "servers"
-      ],
-      "behaviors": [
-        "list_coercion_disabled",
-        "array_order_lexicographic"
-      ],
-      "expected": {
-        "count": 0
-      },
-      "features": [],
-      "functions": [
-        "get_list"
-      ],
-      "inputs": [
-        "config =\n  environments =\n    production =\n      servers = web1\n      servers = web2\n      servers = api1"
-      ],
-      "name": "deeply_nested_list_reference_get_list",
-      "source_test": "deeply_nested_list_reference",
       "validation": "get_list",
       "variants": []
     },
@@ -680,6 +653,11 @@
       "behaviors": [
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -713,6 +691,12 @@
         "list_coercion_disabled",
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled",
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -765,6 +749,11 @@
       "behaviors": [
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -795,6 +784,12 @@
         "list_coercion_disabled",
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled",
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -814,6 +809,11 @@
       "behaviors": [
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 1,
         "object": {
@@ -858,6 +858,12 @@
         "list_coercion_disabled",
         "array_order_lexicographic"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled",
+          "array_order_insertion"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -927,6 +933,11 @@
       "behaviors": [
         "list_coercion_disabled"
       ],
+      "conflicts": {
+        "behaviors": [
+          "list_coercion_enabled"
+        ]
+      },
       "expected": {
         "count": 0
       },
@@ -1015,6 +1026,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "value": "value_with_tabs =\n  text\t\twith\ttabs =\n"
@@ -1059,6 +1075,11 @@
       "behaviors": [
         "crlf_preserve_literal"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_normalize_to_lf"
+        ]
+      },
       "expected": {
         "count": 2,
         "entries": [
@@ -1090,6 +1111,11 @@
       "behaviors": [
         "crlf_preserve_literal"
       ],
+      "conflicts": {
+        "behaviors": [
+          "crlf_normalize_to_lf"
+        ]
+      },
       "expected": {
         "count": 1,
         "value": "key1 =\n  value1\r =\nkey2 =\n  value2\r =\n"

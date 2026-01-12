@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -208,6 +208,105 @@
       ],
       "name": "empty_input_parse",
       "source_test": "empty_input",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "toplevel_indent_strip"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "toplevel_indent_preserve"
+        ]
+      },
+      "expected": {
+        "count": 1,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value\n  second"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "  key = value\n  second"
+      ],
+      "name": "leading_whitespace_baseline_zero_parse",
+      "source_test": "leading_whitespace_baseline_zero",
+      "validation": "parse",
+      "variants": [
+        "reference_compliant"
+      ]
+    },
+    {
+      "behaviors": [],
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key1",
+            "value": "value1"
+          },
+          {
+            "key": "key2",
+            "value": "value2"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "  key1 = value1\nkey2 = value2"
+      ],
+      "name": "leading_whitespace_multiple_entries_parse",
+      "source_test": "leading_whitespace_multiple_entries",
+      "validation": "parse",
+      "variants": []
+    },
+    {
+      "behaviors": [
+        "toplevel_indent_preserve"
+      ],
+      "conflicts": {
+        "behaviors": [
+          "toplevel_indent_strip"
+        ]
+      },
+      "expected": {
+        "count": 2,
+        "entries": [
+          {
+            "key": "key",
+            "value": "value"
+          },
+          {
+            "key": "second",
+            "value": "entry"
+          }
+        ]
+      },
+      "features": [
+        "whitespace"
+      ],
+      "functions": [
+        "parse"
+      ],
+      "inputs": [
+        "  key = value\n  second = entry"
+      ],
+      "name": "leading_whitespace_toplevel_indent_preserve_parse",
+      "source_test": "leading_whitespace_toplevel_indent_preserve",
       "validation": "parse",
       "variants": []
     }

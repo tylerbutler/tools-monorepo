@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.1.0/schemas/generated-format.json",
+  "$schema": "https://raw.githubusercontent.com/tylerbutler/ccl-test-data/v0.3.0/schemas/generated-format.json",
   "tests": [
     {
       "behaviors": [],
@@ -378,6 +378,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -405,6 +410,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -426,7 +436,9 @@
       "name": "key_with_tabs_ocaml_reference_parse",
       "source_test": "key_with_tabs_ocaml_reference",
       "validation": "parse",
-      "variants": []
+      "variants": [
+        "reference_compliant"
+      ]
     },
     {
       "behaviors": [],
@@ -458,6 +470,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [
@@ -485,6 +502,11 @@
       "behaviors": [
         "tabs_as_content"
       ],
+      "conflicts": {
+        "behaviors": [
+          "tabs_as_whitespace"
+        ]
+      },
       "expected": {
         "count": 1,
         "entries": [

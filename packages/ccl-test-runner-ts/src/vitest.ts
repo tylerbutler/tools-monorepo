@@ -147,6 +147,12 @@ export interface CCLTestConfig {
 	/** Implemented CCL functions */
 	functions: CCLFunctions;
 
+	/**
+	 * Functions planned but not yet implemented.
+	 * Tests for these functions will be marked as `todo` instead of `skip`.
+	 */
+	todoFunctions?: CCLFunction[];
+
 	/** Supported optional features */
 	features?: CCLFeature[];
 
@@ -229,10 +235,85 @@ interface TestContext {
 }
 
 /**
+ * Check if an error indicates a function is not yet implemented.
+ * Matches both NotYetImplementedError class and generic "Not yet implemented" messages.
+ */
+function isNotYetImplementedError(error: unknown): boolean {
+	if (!(error instanceof Error)) {
+		return false;
+	}
+	return (
+		error.name === "NotYetImplementedError" ||
+		error.message.toLowerCase().includes("not yet implemented") ||
+		error.message.toLowerCase().includes("not implemented")
+	);
+}
+
+/**
+ * Probe a function with minimal input to check if it's actually implemented.
+ * Returns true if the function appears implemented, false if it throws "not implemented".
+ */
+function probeFunction(fn: unknown, probeArgs: unknown[]): boolean {
+	if (typeof fn !== "function") {
+		return false;
+	}
+	try {
+		fn(...probeArgs);
+		return true; // Succeeded = implemented
+	} catch (error) {
+		if (isNotYetImplementedError(error)) {
+			return false; // Stub that throws "not implemented"
+		}
+		// Other errors mean the function has real logic (just failed on probe input)
+		return true;
+	}
+}
+
+/**
  * Infer which CCL functions are actually implemented (have non-undefined values).
+ * Also probes functions to detect stubs that throw "Not yet implemented".
  */
 function getImplementedFunctionNames(functions: CCLFunctions): CCLFunction[] {
 	const implemented: CCLFunction[] = [];
+
+	// Map of function names to their keys and probe arguments
+	const functionProbes: Array<{
+		name: CCLFunction;
+		key: keyof CCLFunctions;
+		probeArgs: unknown[];
+	}> = [
+		{ name: "parse", key: "parse", probeArgs: [""] },
+		{ name: "parse_indented", key: "parse_indented", probeArgs: [""] },
+		{ name: "filter", key: "filter", probeArgs: [[], () => true] },
+		{ name: "compose", key: "compose", probeArgs: [[], []] },
+		{ name: "expand_dotted", key: "expand_dotted", probeArgs: [[]] },
+		{ name: "build_hierarchy", key: "build_hierarchy", probeArgs: [[]] },
+		{ name: "get_string", key: "get_string", probeArgs: [{}, ""] },
+		{ name: "get_int", key: "get_int", probeArgs: [{}, ""] },
+		{ name: "get_bool", key: "get_bool", probeArgs: [{}, ""] },
+		{ name: "get_float", key: "get_float", probeArgs: [{}, ""] },
+		{ name: "get_list", key: "get_list", probeArgs: [{}, ""] },
+		{ name: "print", key: "print", probeArgs: [[]] },
+		{ name: "canonical_format", key: "canonical_format", probeArgs: [""] },
+		{ name: "load", key: "load", probeArgs: [""] },
+		{ name: "round_trip", key: "round_trip", probeArgs: [""] },
+	];
+
+	for (const { name, key, probeArgs } of functionProbes) {
+		const fn = functions[key];
+		if (fn !== undefined && probeFunction(fn, probeArgs)) {
+			implemented.push(name);
+		}
+	}
+
+	return implemented;
+}
+
+/**
+ * Get all declared function names (present in the functions object, whether implemented or not).
+ */
+function getDeclaredFunctionNames(functions: CCLFunctions): CCLFunction[] {
+	const declared: CCLFunction[] = [];
 
 	const functionMap: Record<string, keyof CCLFunctions> = {
 		parse: "parse",
@@ -254,24 +335,41 @@ function getImplementedFunctionNames(functions: CCLFunctions): CCLFunction[] {
 
 	for (const [name, key] of Object.entries(functionMap)) {
 		if (functions[key] !== undefined) {
-			implemented.push(name as CCLFunction);
+			declared.push(name as CCLFunction);
 		}
 	}
 
-	return implemented;
+	return declared;
 }
 
 /**
  * Build ImplementationCapabilities from CCLTestConfig.
- * Functions are inferred from what's actually provided.
+ *
+ * Functions are automatically detected:
+ * - Declared = present in the functions object
+ * - Implemented = declared AND doesn't throw "Not yet implemented" when probed
+ *
+ * This enables automatic todo detection: if you pass a stub function that throws
+ * "Not yet implemented", tests for that function will be marked as "todo" (not "skip").
+ *
+ * You can also explicitly add functions to todoFunctions for the same effect.
  */
 function buildCapabilities(config: CCLTestConfig): ImplementationCapabilities {
-	const implementedFunctions = getImplementedFunctionNames(config.functions);
+	const declaredFunctions = getDeclaredFunctionNames(config.functions);
+	const todoFunctions = config.todoFunctions ?? [];
+
+	// Combine declared + explicit todo functions for capability declaration
+	// This makes todo functions show as "todo" (declared but not implemented)
+	// rather than "skip" (not declared at all)
+	const allDeclaredFunctions = [
+		...declaredFunctions,
+		...todoFunctions.filter((fn) => !declaredFunctions.includes(fn)),
+	];
 
 	const capabilities: ImplementationCapabilities = {
 		name: config.name,
 		version: config.version ?? "0.0.0",
-		functions: implementedFunctions,
+		functions: allDeclaredFunctions,
 		features: config.features ?? [],
 		behaviors: config.behaviors ?? [...DefaultBehaviors],
 		variant: config.variant ?? Variant.ProposedBehavior,

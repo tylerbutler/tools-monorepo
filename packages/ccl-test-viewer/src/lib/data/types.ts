@@ -48,9 +48,9 @@ export type CCLFunction =
 	| "parse"
 	| "filter"
 	| "build_hierarchy"
+	| "get_list"
 	| "parse_indented"
 	| "get_string"
-	| "get_list"
 	| "canonical_format"
 	| "get_int"
 	| "get_float"
@@ -67,11 +67,13 @@ export type CCLFeature =
 	| "unicode"
 	| "optional_typed_accessors";
 export type CCLBehavior =
-	| "array_order_insertion"
 	| "array_order_lexicographic"
+	| "list_coercion_disabled"
+	| "array_order_insertion"
+	| "toplevel_indent_strip"
+	| "toplevel_indent_preserve"
 	| "tabs_as_content"
 	| "list_coercion_enabled"
-	| "list_coercion_disabled"
 	| "crlf_preserve_literal"
 	| "boolean_strict"
 	| "boolean_lenient"
@@ -84,9 +86,9 @@ export const AVAILABLE_FUNCTIONS: CCLFunction[] = [
 	"parse",
 	"filter",
 	"build_hierarchy",
+	"get_list",
 	"parse_indented",
 	"get_string",
-	"get_list",
 	"canonical_format",
 	"get_int",
 	"get_float",
@@ -109,11 +111,13 @@ export const AVAILABLE_FEATURES: CCLFeature[] = [
 
 // Available behaviors for filtering
 export const AVAILABLE_BEHAVIORS: CCLBehavior[] = [
-	"array_order_insertion",
 	"array_order_lexicographic",
+	"list_coercion_disabled",
+	"array_order_insertion",
+	"toplevel_indent_strip",
+	"toplevel_indent_preserve",
 	"tabs_as_content",
 	"list_coercion_enabled",
-	"list_coercion_disabled",
 	"crlf_preserve_literal",
 	"boolean_strict",
 	"boolean_lenient",
