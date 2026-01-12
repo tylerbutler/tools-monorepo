@@ -124,25 +124,35 @@ getBool(obj, "inactive")  // → false
 
 Controls how tab characters are processed during parsing.
 
+**Important:** These behaviors affect two specific areas:
+1. **Indentation detection:** Whether tabs count as whitespace for determining continuation lines
+2. **Leading whitespace in values:** Whether tabs immediately after the `=` are preserved or stripped
+
+**Interior tabs within values are always preserved regardless of behavior choice.**
+
 #### `tabs_as_content`
 
-Tab characters are preserved as literal content in values. A leading tab in a value remains as `\t` in the parsed output.
+Only spaces count as whitespace for indentation. Tabs are preserved as content:
+- **Indentation:** Only spaces determine indentation level (tabs don't affect continuation detection)
+- **Values:** Leading tabs after `=` are preserved as `\t` in output
 
 ```ccl
 key = 	value	with	tabs
 ```
 
-**Result:** The value contains literal tab characters: `"\tvalue\twith\ttabs"`.
+**Result:** Value is `"\tvalue\twith\ttabs"` (leading and interior tabs preserved).
 
 #### `tabs_as_whitespace`
 
-Tab characters are treated as whitespace and normalized (typically to spaces or stripped). Tabs in values are converted to spaces.
+Both spaces and tabs count as whitespace:
+- **Indentation:** Both spaces and tabs contribute to indentation level
+- **Values:** Leading tabs after `=` are stripped (normalized as whitespace)
 
 ```ccl
 key = 	value	with	tabs
 ```
 
-**Result:** The value has tabs converted: `"value with tabs"`.
+**Result:** Value is `"value\twith\ttabs"` (leading tab stripped, interior tabs preserved).
 
 **Recommendation:** `tabs_as_content` preserves exact input fidelity; `tabs_as_whitespace` provides consistent behavior regardless of tab usage.
 
@@ -208,6 +218,54 @@ getList(obj, "multiple")  // → ["item1", "item2"]
 ```
 
 **Recommendation:** `list_coercion_disabled` provides stricter type safety; `list_coercion_enabled` is more convenient for optional list fields.
+
+---
+
+### Continuation Baseline
+
+**Options:** `toplevel_indent_strip` vs `toplevel_indent_preserve`
+
+Controls how the baseline indentation (N) is determined during top-level parsing. This affects whether lines at the same indentation level are treated as continuations or separate entries.
+
+#### `toplevel_indent_strip`
+
+Top-level parsing always uses N=0 as the baseline. Any line with indentation > 0 is treated as a continuation of the previous entry. Leading whitespace is effectively "stripped" when determining entry boundaries.
+
+```ccl
+  key = value
+  next = another
+```
+
+**Result:** One entry, because both lines have indent 2 > 0.
+
+```json
+{"key": "value\n  next = another"}
+```
+
+This is the OCaml reference implementation's behavior.
+
+#### `toplevel_indent_preserve`
+
+Top-level parsing uses the first key's indentation as N. Lines at the same indentation level as the first key are separate entries. The original indentation structure is "preserved" for entry boundary detection.
+
+```ccl
+  key = value
+  next = another
+```
+
+**Result:** Two entries, because both lines have indent 2 = N (2), so 2 > 2 is false.
+
+```json
+{"key": "value", "next": "another"}
+```
+
+**Trade-offs:**
+- `toplevel_indent_strip` matches the OCaml reference and existing test suite expectations
+- `toplevel_indent_preserve` may be more intuitive: indenting your whole document doesn't change parsing semantics
+
+**Implementation note:** With `toplevel_indent_preserve`, top-level and nested parsing use the same algorithm—always determine N from the first non-empty line's indentation. The distinction between `parse` and `parse_indented` only matters for `toplevel_indent_strip`, where top-level parsing must force N=0. See [Continuation Lines](/continuation-lines) for details.
+
+**Recommendation:** Use `toplevel_indent_strip` for reference compliance. Consider `toplevel_indent_preserve` if your use case involves documents that may be indented as a whole (e.g., embedded within other files), or if you want a simpler single-algorithm implementation.
 
 ---
 
@@ -291,6 +349,7 @@ const compatibleTests = allTests.filter(test => {
 | Tab Handling | `tabs_as_content` | `tabs_as_whitespace` | Content preserves exact input |
 | Indentation | `indent_spaces` | `indent_tabs` | Output formatting only |
 | List Access | `list_coercion_enabled` | `list_coercion_disabled` | Disabled for type safety |
+| Continuation Baseline | `toplevel_indent_strip` | `toplevel_indent_preserve` | Strip for reference compliance |
 | Array Ordering | `array_order_insertion` | `array_order_lexicographic` | Insertion preserves intent |
 
 ## See Also

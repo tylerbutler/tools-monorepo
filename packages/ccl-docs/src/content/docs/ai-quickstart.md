@@ -3,6 +3,10 @@ title: AI Assistant Quickstart
 description: Quick reference for AI assistants helping users implement CCL parsers and test runners
 ---
 
+:::note[For AI Agents]
+This page is a quick reference for AI agents. For a complete implementation guide, see [AI Implementation Guide](/ai-implementation-guide). Humans looking for prompts should see [CCL Prompts](/ai-prompts).
+:::
+
 # CCL Quick Reference for AI Assistants
 
 > Single-page orientation for AI assistants. For details, follow links to specific documentation pages.
@@ -34,6 +38,7 @@ Behaviors are not inherently mutually exclusive. Tests use a `conflicts` field t
 
 | Behavior Group | Options | Description |
 |----------------|---------|-------------|
+| Continuation Baseline | `toplevel_indent_strip` vs `toplevel_indent_preserve` | Top-level N=0 (reference) vs N=first key's indent (simpler) |
 | Line Endings | `crlf_preserve_literal` vs `crlf_normalize_to_lf` | CRLF handling: preserve `\r` chars vs normalize to LF |
 | Boolean Parsing | `boolean_lenient` vs `boolean_strict` | Accept "yes"/"no" vs only "true"/"false" |
 | Tab Handling | `tabs_as_content` vs `tabs_as_whitespace` | Preserve tabs literally vs treat as whitespace |
