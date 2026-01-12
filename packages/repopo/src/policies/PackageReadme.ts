@@ -106,14 +106,18 @@ async function handleMissingReadme(
 				name: "PackageReadme",
 				file,
 				resolved: true,
-				errorMessage: `Created README.md for package "${packageName}"`,
+				autoFixable: true,
+				errorMessages: [`Created README.md for package "${packageName}"`],
 			};
 		} catch {
 			return {
 				name: "PackageReadme",
 				file,
 				resolved: false,
-				errorMessage: `Failed to create README.md for package "${packageName}"`,
+				autoFixable: true,
+				errorMessages: [
+					`Failed to create README.md for package "${packageName}"`,
+				],
 			};
 		}
 	}
@@ -122,7 +126,7 @@ async function handleMissingReadme(
 		name: "PackageReadme",
 		file,
 		autoFixable: true,
-		errorMessage: `README.md missing for package "${packageName}"`,
+		errorMessages: [`README.md missing for package "${packageName}"`],
 	};
 }
 
@@ -228,7 +232,8 @@ async function validateExistingReadme(
 			name: "PackageReadme",
 			file: ctx.file,
 			resolved: true,
-			errorMessage: errors.join("; "),
+			autoFixable: true,
+			errorMessages: [errors.join("; ")],
 		};
 	}
 
@@ -238,7 +243,7 @@ async function validateExistingReadme(
 		autoFixable:
 			ctx.requiredContent !== undefined &&
 			!ctx.readmeContent.includes(ctx.requiredContent),
-		errorMessage: errors.join("; "),
+		errorMessages: [errors.join("; ")],
 	};
 }
 
