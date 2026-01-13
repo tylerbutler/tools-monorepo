@@ -77,10 +77,10 @@ describe("NoLargeBinaryFiles", () => {
 			if (typeof result === "object") {
 				expect(result.name).toBe("NoLargeBinaryFiles");
 				expect(result.autoFixable).toBe(false);
-				expect(result.errorMessages?.[0]).toContain("File is too large");
-				expect(result.errorMessages?.[0]).toContain("15.0 MB");
-				expect(result.errorMessages?.[0]).toContain("10.0 MB");
-				expect(result.errorMessages?.[0]).toContain("Git LFS");
+				expect(result.errorMessages.join()).toContain("File is too large");
+				expect(result.errorMessages.join()).toContain("15.0 MB");
+				expect(result.errorMessages.join()).toContain("10.0 MB");
+				expect(result.errorMessages.join()).toContain("Git LFS");
 			}
 		});
 
@@ -155,8 +155,8 @@ describe("NoLargeBinaryFiles", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("2.0 MB");
-				expect(result.errorMessages?.[0]).toContain("1.0 MB");
+				expect(result.errorMessages.join()).toContain("2.0 MB");
+				expect(result.errorMessages.join()).toContain("1.0 MB");
 			}
 		});
 
@@ -294,7 +294,7 @@ describe("NoLargeBinaryFiles", () => {
 				});
 
 				if (typeof result === "object") {
-					expect(result.errorMessages?.[0]).toContain(expected);
+					expect(result.errorMessages.join()).toContain(expected);
 				}
 			}
 		});

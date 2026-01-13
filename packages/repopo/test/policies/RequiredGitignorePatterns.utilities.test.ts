@@ -159,10 +159,10 @@ dist/
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("dist/");
-				expect(result.errorMessages?.[0]).toContain(".env");
-				expect(result.errorMessages?.[0]).toContain("build/");
-				expect(result.errorMessages?.[0]).not.toContain("node_modules/");
+				expect(result.errorMessages.join()).toContain("dist/");
+				expect(result.errorMessages.join()).toContain(".env");
+				expect(result.errorMessages.join()).toContain("build/");
+				expect(result.errorMessages.join()).not.toContain("node_modules/");
 			}
 		});
 
@@ -183,8 +183,8 @@ dist/
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("node_modules/");
-				expect(result.errorMessages?.[0]).toContain(".env");
+				expect(result.errorMessages.join()).toContain("node_modules/");
+				expect(result.errorMessages.join()).toContain(".env");
 			}
 		});
 
@@ -206,9 +206,9 @@ dist/
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages?.[0]).toContain("dist/");
-				expect(result.errorMessages?.[0]).toContain(".env");
-				expect(result.errorMessages?.[0]).not.toContain("node_modules/");
+				expect(result.errorMessages.join()).toContain("dist/");
+				expect(result.errorMessages.join()).toContain(".env");
+				expect(result.errorMessages.join()).not.toContain("node_modules/");
 			}
 		});
 	});
@@ -416,7 +416,7 @@ node_modules/
 			expect(result).not.toBe(true);
 			if (typeof result === "object" && "resolved" in result) {
 				expect(result.resolved).toBe(false);
-				expect(result.errorMessages?.[0]).toContain(
+				expect(result.errorMessages.join()).toContain(
 					"Failed to create .gitignore",
 				);
 			}
@@ -446,7 +446,7 @@ node_modules/
 				expect(result).not.toBe(true);
 				if (typeof result === "object" && "resolved" in result) {
 					expect(result.resolved).toBe(false);
-					expect(result.errorMessages?.[0]).toContain(
+					expect(result.errorMessages.join()).toContain(
 						"Failed to update .gitignore",
 					);
 				}

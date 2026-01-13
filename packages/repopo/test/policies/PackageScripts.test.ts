@@ -820,7 +820,9 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain("Missing required scripts");
+				expect(result.errorMessages.join()).toContain(
+					"Missing required scripts",
+				);
 				expect(result.errorMessages.join()).toContain("clean");
 			}
 		});
@@ -1120,7 +1122,9 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain("Missing required script");
+				expect(result.errorMessages.join()).toContain(
+					"Missing required script",
+				);
 				expect(result.errorMessages.join()).toContain("clean");
 			}
 		});

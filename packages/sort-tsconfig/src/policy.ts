@@ -18,7 +18,7 @@ export const SortTsconfigsPolicy: PolicyDefinition = {
 			name: SortTsconfigsPolicy.name,
 			file,
 			autoFixable: true,
-			errorMessages: [],
+			errorMessages: [`${file} is not sorted.`],
 		};
 
 		if (resolve) {

@@ -224,7 +224,9 @@ describe("PackageReadme policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("missing required content");
+				expect(result.errorMessages.join()).toContain(
+					"missing required content",
+				);
 				expect(result.autoFixable).toBe(true);
 			}
 		});
