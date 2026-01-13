@@ -76,8 +76,8 @@ describe("PackageFolderName policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("wrong-folder");
-				expect(result.errorMessage).toContain("my-package");
+				expect(result.errorMessages.join()).toContain("wrong-folder");
+				expect(result.errorMessages.join()).toContain("my-package");
 				expect(result.autoFixable).toBe(false);
 			}
 		});
@@ -103,8 +103,8 @@ describe("PackageFolderName policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("my-package");
-				expect(result.errorMessage).toContain("@myorg/my-package");
+				expect(result.errorMessages.join()).toContain("my-package");
+				expect(result.errorMessages.join()).toContain("@myorg/my-package");
 			}
 		});
 
@@ -119,8 +119,8 @@ describe("PackageFolderName policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("my-package");
-				expect(result.errorMessage).toContain("@myorg/my-package");
+				expect(result.errorMessages.join()).toContain("my-package");
+				expect(result.errorMessages.join()).toContain("@myorg/my-package");
 			}
 		});
 	});
@@ -152,8 +152,8 @@ describe("PackageFolderName policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("wrong-folder");
-				expect(result.errorMessage).toContain("my-package");
+				expect(result.errorMessages.join()).toContain("wrong-folder");
+				expect(result.errorMessages.join()).toContain("my-package");
 			}
 		});
 

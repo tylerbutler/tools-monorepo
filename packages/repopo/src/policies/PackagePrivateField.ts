@@ -243,19 +243,17 @@ export const PackagePrivateField = definePackagePolicy<
 	}
 
 	// State mismatch - build error message
+	const errorMessage =
+		requiredState === true
+			? `Package "${packageName}" must be marked private. Add "private": true to package.json.`
+			: `Package "${packageName}" must not be marked private. Remove "private": true from package.json to allow publishing.`;
+
 	const failResult: PolicyFailure = {
 		name: PackagePrivateField.name,
 		file,
 		autoFixable: true,
+		errorMessages: [errorMessage],
 	};
-
-	if (requiredState === true) {
-		// Package should be private but isn't
-		failResult.errorMessage = `Package "${packageName}" must be marked private. Add "private": true to package.json.`;
-	} else {
-		// Package should be public but is private
-		failResult.errorMessage = `Package "${packageName}" must not be marked private. Remove "private": true from package.json to allow publishing.`;
-	}
 
 	if (resolve) {
 		const fixResult: PolicyFixResult = {
@@ -276,7 +274,7 @@ export const PackagePrivateField = definePackagePolicy<
 			fixResult.resolved = true;
 		} catch {
 			fixResult.resolved = false;
-			fixResult.errorMessage = `Failed to update ${file}`;
+			fixResult.errorMessages = [`Failed to update ${file}`];
 		}
 
 		return fixResult;

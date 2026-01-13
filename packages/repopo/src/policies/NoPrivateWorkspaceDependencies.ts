@@ -158,12 +158,6 @@ export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 		}
 	}
 
-	const failResult: PolicyFailure = {
-		name: NoPrivateWorkspaceDependencies.name,
-		file,
-		autoFixable: false,
-	};
-
 	const errorMessages: string[] = [];
 
 	if (privateWorkspaceDeps.length > 0) {
@@ -179,7 +173,12 @@ export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 	}
 
 	if (errorMessages.length > 0) {
-		failResult.errorMessage = errorMessages.join("\n\n");
+		const failResult: PolicyFailure = {
+			name: NoPrivateWorkspaceDependencies.name,
+			file,
+			autoFixable: false,
+			errorMessages,
+		};
 		return failResult;
 	}
 

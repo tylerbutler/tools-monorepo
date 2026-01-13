@@ -182,8 +182,9 @@ export const PackageFolderName = definePackagePolicy<
 		name: PackageFolderName.name,
 		file,
 		autoFixable: false, // Can't auto-fix folder names
-		errorMessage: `Package folder "${folderName}" does not match package name "${packageName}". Expected folder name: "${expectedFolderName}"`,
+		errorMessages: [
+			`Package folder "${folderName}" does not match package name "${packageName}". Expected folder name: "${expectedFolderName}"`,
+		],
 	};
-
 	return failResult;
 });

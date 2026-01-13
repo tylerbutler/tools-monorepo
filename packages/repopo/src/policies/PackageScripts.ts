@@ -746,10 +746,12 @@ export const PackageScripts = definePackagePolicy<
 				name: POLICY_NAME,
 				file,
 				resolved: postFixErrors.length === 0,
-				errorMessage:
+				errorMessages:
 					postFixErrors.length > 0
-						? `Fixed scripts: ${fixedScripts.join(", ")}. Remaining errors:\n${postFixErrors.join("\n\n")}`
-						: `Fixed scripts: ${fixedScripts.join(", ")}`,
+						? [
+								`Fixed scripts: ${fixedScripts.join(", ")}. Remaining errors:\n${postFixErrors.join("\n\n")}`,
+							]
+						: [`Fixed scripts: ${fixedScripts.join(", ")}`],
 			};
 		} catch {
 			// Fall through to return regular failure
@@ -760,6 +762,6 @@ export const PackageScripts = definePackagePolicy<
 		name: POLICY_NAME,
 		file,
 		autoFixable: hasAutoFixableErrors,
-		errorMessage: errors.join("\n\n"),
+		errorMessages: errors,
 	};
 });

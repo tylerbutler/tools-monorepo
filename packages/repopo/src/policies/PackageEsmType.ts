@@ -317,7 +317,7 @@ async function applyFix(
 		fixResult.resolved = true;
 	} catch {
 		fixResult.resolved = false;
-		fixResult.errorMessage = `Failed to update ${file}`;
+		fixResult.errorMessages = [`Failed to update ${file}`];
 	}
 
 	return fixResult;
@@ -381,7 +381,9 @@ export const PackageEsmType = definePackagePolicy<
 				name: "PackageEsmType",
 				file,
 				autoFixable: false,
-				errorMessage: `Package "${packageName}": ${detectionReason ?? "Could not detect module type"}. Set "type" field explicitly or use "requiredType" config.`,
+				errorMessages: [
+					`Package "${packageName}": ${detectionReason ?? "Could not detect module type"}. Set "type" field explicitly or use "requiredType" config.`,
+				],
 			};
 		}
 		// "skip" and "warn" both pass validation
@@ -399,11 +401,9 @@ export const PackageEsmType = definePackagePolicy<
 		file,
 		autoFixable: true,
 		// packageName is guaranteed to be defined here due to shouldSkipPackage check
-		errorMessage: buildErrorMessage(
-			packageName as string,
-			json.type,
-			expectedType,
-		),
+		errorMessages: [
+			buildErrorMessage(packageName as string, json.type, expectedType),
+		],
 	};
 
 	if (resolve) {

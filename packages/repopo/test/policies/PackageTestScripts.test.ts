@@ -77,8 +77,8 @@ describe("PackageTestScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("test directory exists");
-				expect(result.errorMessage).toContain("test");
+				expect(result.errorMessages.join()).toContain("test directory exists");
+				expect(result.errorMessages.join()).toContain("test");
 			}
 		});
 
@@ -173,8 +173,8 @@ describe("PackageTestScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("test dependencies");
-				expect(result.errorMessage).toContain("vitest");
+				expect(result.errorMessages.join()).toContain("test dependencies");
+				expect(result.errorMessages.join()).toContain("vitest");
 			}
 		});
 
@@ -326,7 +326,7 @@ describe("PackageTestScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("test:coverage");
+				expect(result.errorMessages.join()).toContain("test:coverage");
 			}
 		});
 

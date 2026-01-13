@@ -73,7 +73,7 @@ describe("FluidFramework adapter", () => {
 			if (typeof result === "object") {
 				expect(result.name).toBe("no-console");
 				expect(result.file).toBe(file);
-				expect(result.errorMessage).toBe("console.log is not allowed");
+				expect(result.errorMessages.join()).toBe("console.log is not allowed");
 				expect(result.autoFixable).toBe(false);
 			}
 		});
@@ -156,7 +156,7 @@ describe("FluidFramework adapter", () => {
 				expect(result).not.toBe(true);
 				if (typeof result === "object" && "resolved" in result) {
 					expect(result.resolved).toBe(true);
-					expect(result.errorMessage).toBe("Fixed!");
+					expect(result.errorMessages.join()).toBe("Fixed!");
 				}
 			});
 
@@ -200,7 +200,7 @@ describe("FluidFramework adapter", () => {
 				});
 
 				expect(result.resolved).toBe(true);
-				expect(result.errorMessage).toBe("standalone fix");
+				expect(result.errorMessages.join()).toBe("standalone fix");
 			});
 
 			it("should handle resolver returning unresolved", async () => {
@@ -223,7 +223,7 @@ describe("FluidFramework adapter", () => {
 
 				if (typeof result === "object" && "resolved" in result) {
 					expect(result.resolved).toBe(false);
-					expect(result.errorMessage).toBe("Could not fix");
+					expect(result.errorMessages.join()).toBe("Could not fix");
 				}
 			});
 
