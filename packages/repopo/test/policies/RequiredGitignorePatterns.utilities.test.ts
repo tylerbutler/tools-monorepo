@@ -416,7 +416,9 @@ node_modules/
 			expect(result).not.toBe(true);
 			if (typeof result === "object" && "resolved" in result) {
 				expect(result.resolved).toBe(false);
-				expect(result.errorMessages.join()).toContain("Failed to create .gitignore");
+				expect(result.errorMessages.join()).toContain(
+					"Failed to create .gitignore",
+				);
 			}
 		});
 	});
@@ -444,7 +446,9 @@ node_modules/
 				expect(result).not.toBe(true);
 				if (typeof result === "object" && "resolved" in result) {
 					expect(result.resolved).toBe(false);
-					expect(result.errorMessages.join()).toContain("Failed to update .gitignore");
+					expect(result.errorMessages.join()).toContain(
+						"Failed to update .gitignore",
+					);
 				}
 			} finally {
 				// Restore write permissions for cleanup

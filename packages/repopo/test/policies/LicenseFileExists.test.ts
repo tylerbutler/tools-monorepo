@@ -190,7 +190,9 @@ describe("LicenseFileExists", () => {
 				// Case-sensitive filesystem
 				expect(result).not.toBe(true);
 				if (typeof result === "object") {
-					expect(result.errorMessages.join()).toContain("No LICENSE file found");
+					expect(result.errorMessages.join()).toContain(
+						"No LICENSE file found",
+					);
 				}
 			}
 		});

@@ -93,7 +93,9 @@ describe("PackagePrivateField policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("must not be marked private");
+				expect(result.errorMessages.join()).toContain(
+					"must not be marked private",
+				);
 				expect(result.autoFixable).toBe(true);
 			}
 		});
@@ -112,7 +114,9 @@ describe("PackagePrivateField policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("must not be marked private");
+				expect(result.errorMessages.join()).toContain(
+					"must not be marked private",
+				);
 			}
 		});
 	});
@@ -233,7 +237,9 @@ describe("PackagePrivateField policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("must not be marked private");
+				expect(result.errorMessages.join()).toContain(
+					"must not be marked private",
+				);
 			}
 		});
 
@@ -276,7 +282,9 @@ describe("PackagePrivateField policy", () => {
 			// mustPublish is checked first, so package should not be private
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("must not be marked private");
+				expect(result.errorMessages.join()).toContain(
+					"must not be marked private",
+				);
 			}
 		});
 

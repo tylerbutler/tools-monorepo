@@ -135,7 +135,9 @@ node_modules/
 			if (typeof result === "object") {
 				expect(result.name).toBe("RequiredGitignorePatterns");
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessages.join()).toContain("No .gitignore file found");
+				expect(result.errorMessages.join()).toContain(
+					"No .gitignore file found",
+				);
 			}
 		});
 

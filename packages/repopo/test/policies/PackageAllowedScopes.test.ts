@@ -94,7 +94,9 @@ describe("PackageAllowedScopes policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				expect(result.errorMessages.join()).toContain("@unknown");
-				expect(result.errorMessages.join()).toContain("not in the allowed scopes");
+				expect(result.errorMessages.join()).toContain(
+					"not in the allowed scopes",
+				);
 				expect(result.autoFixable).toBe(false);
 			}
 		});
