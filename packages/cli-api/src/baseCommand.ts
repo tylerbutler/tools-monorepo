@@ -1,9 +1,7 @@
-import process from "node:process";
 import { Command, type Interfaces, Flags as OclifFlags } from "@oclif/core";
-import type { PrettyPrintableError } from "@oclif/core/errors";
 import registerDebug, { type Debugger } from "debug";
-import chalk from "picocolors";
 import type { Logger } from "./logger.js";
+import { BasicLogger } from "./loggers/basic.js";
 
 /**
  * A type representing all the args of the base commands and subclasses.
@@ -25,12 +23,14 @@ export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
  * A base class for oclif commands that includes console and debug logging capabilities that are controlled by flags
  * and properties that can be overridden by subclasses.
  *
+ * @remarks
+ * This class provides a pluggable logger architecture. Subclasses can override the `_logger` property
+ * to use a different logger implementation. The `logger` getter returns a Logger-compatible object
+ * that can be passed to utility functions expecting a Logger.
+ *
  * @public
  */
-export abstract class BaseCommand<T extends typeof Command>
-	extends Command
-	implements Logger
-{
+export abstract class BaseCommand<T extends typeof Command> extends Command {
 	/**
 	 * The flags defined on the base class.
 	 */
@@ -60,6 +60,61 @@ export abstract class BaseCommand<T extends typeof Command>
 	 */
 	private suppressLogging = false;
 
+	/**
+	 * The Logger instance that the command uses for output formatting.
+	 *
+	 * @remarks
+	 * Override this property in subclasses to use a different logger implementation.
+	 * The default is the logger returned by {@link createBasicLogger}.
+	 *
+	 * @example
+	 * ```typescript
+	 * import { ConsolaLogger } from "@tylerbu/cli-api/loggers/consola.js";
+	 *
+	 * export default class MyCommand extends BaseCommand<typeof MyCommand> {
+	 *   protected override _logger = ConsolaLogger;
+	 * }
+	 * ```
+	 */
+	protected _logger: Logger = BasicLogger;
+
+	/**
+	 * Returns a Logger-compatible object that can be passed to utility functions.
+	 *
+	 * @remarks
+	 * Use this getter to pass a logger to utility functions that expect a {@link Logger} interface.
+	 * The returned logger respects the command's `--quiet` and `--verbose` flags.
+	 *
+	 * @example
+	 * ```typescript
+	 * async function processFiles(files: string[], logger: Logger): Promise<void> {
+	 *   logger.info(`Processing ${files.length} files`);
+	 *   for (const file of files) {
+	 *     logger.verbose(`Processing: ${file}`);
+	 *   }
+	 *   logger.success("All files processed");
+	 * }
+	 *
+	 * // In command:
+	 * await processFiles(files, this.logger);
+	 * ```
+	 */
+	public get logger(): Logger {
+		return {
+			log: (message?: string, ...args: unknown[]) => this.log(message, ...args),
+			success: (message?: string, ...args: unknown[]) =>
+				this.success(message ?? "", ...args),
+			info: (message: string | Error | undefined, ...args: unknown[]) =>
+				this.info(message, ...args),
+			warning: (message: string | Error | undefined, ...args: unknown[]) =>
+				this.warning(message, ...args),
+			error: (message: string | Error | undefined, ...args: unknown[]) =>
+				this.logError(message, ...args),
+			verbose: (message: string | Error | undefined, ...args: unknown[]) =>
+				this.verbose(message, ...args),
+		};
+	}
+
 	protected trace: Debugger | undefined;
 	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: used for future logging enhancement
 	private traceLog: Debugger | undefined;
@@ -71,14 +126,6 @@ export abstract class BaseCommand<T extends typeof Command>
 	 * If true, log statements will be redirected to debug traces.
 	 */
 	protected redirectLogToTrace = false;
-
-	/**
-	 * If true, the command's `git` and `repo` properties will be populated. If the command is used outside a git
-	 * repository, it will fail with an error.
-	 */
-	// protected get useGit(): boolean {
-	// 	return false;
-	// }
 
 	public override async init(): Promise<void> {
 		await super.init();
@@ -101,7 +148,7 @@ export abstract class BaseCommand<T extends typeof Command>
 
 		const { args, flags } = await this.parse({
 			flags: this.ctor.flags,
-			baseFlags: (super.ctor as typeof BaseCommand).baseFlags,
+			baseFlags: (super.ctor as unknown as typeof BaseCommand).baseFlags,
 			args: this.ctor.args,
 			strict: this.ctor.strict,
 		});
@@ -112,78 +159,114 @@ export abstract class BaseCommand<T extends typeof Command>
 	}
 
 	/**
-	 * Outputs a horizontal rule.
+	 * Logs a message to the console.
 	 */
-	public logHr() {
-		this.log("=".repeat(Math.max(10, process.stdout.columns)));
+	public override log(message?: string, ..._args: unknown[]): void {
+		this._logger.log(message ?? "");
 	}
 
 	/**
-	 * Logs a message with an indent.
+	 * Logs a success message.
 	 */
-	public logIndent(input: string, indentNumber = 2) {
-		const message = indentString(input, indentNumber);
-		this.log(message);
+	public success(message?: string, ..._args: unknown[]) {
+		if (!(this.suppressLogging || this.redirectLogToTrace)) {
+			this._logger.success(message ?? "");
+		}
+		if (this.redirectLogToTrace) {
+			this.traceInfo?.(message);
+		}
 	}
 
 	/**
 	 * Logs an informational message.
 	 */
-	public info(message: string | Error | undefined) {
-		const msg =
-			typeof message === "string"
-				? message
-				: [message?.message, message?.stack].join("\n");
-
+	public info(message: string | Error | undefined, ..._args: unknown[]) {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
-			this.log(`INFO: ${msg}`);
+			this._logger.info(message);
 		}
 		if (this.redirectLogToTrace) {
-			this.traceInfo?.(msg);
+			this.traceInfo?.(message);
 		}
 	}
 
 	/**
 	 * Logs an error without exiting.
+	 *
+	 * @remarks
+	 * This method logs an error message without terminating the process.
+	 * Use the `exit` method if you want to log and exit the process.
 	 */
-	public errorLog(message: string | Error | undefined) {
+	public logError(
+		message: string | Error | undefined,
+		..._args: unknown[]
+	): void {
 		if (!this.suppressLogging) {
-			const msg =
-				typeof message === "string"
-					? message
-					: [message?.message, message?.stack].join("\n");
-			this.log(chalk.red(`ERROR: ${msg}`));
+			this._logger.error(message);
 		}
+	}
+
+	/**
+	 * Logs an error and exits the process.
+	 *
+	 * @param code - Exit code (default: 1)
+	 */
+	public override exit(code?: number): never;
+	/**
+	 * Logs an error message and exits the process.
+	 *
+	 * @param message - Error message or Error object to log
+	 * @param code - Exit code (default: 1)
+	 */
+	public override exit(message: string | Error, code?: number): never;
+	public override exit(
+		messageOrCode?: string | Error | number,
+		code = 1,
+	): never {
+		if (typeof messageOrCode === "number") {
+			// Called as exit(code)
+			return super.exit(messageOrCode) as never;
+		}
+
+		if (messageOrCode) {
+			// Log the error if logging is enabled
+			if (!this.suppressLogging) {
+				this._logger.error(messageOrCode);
+			}
+			// Use OCLIF's error method to properly exit with message (captured by test framework)
+			// We call the parent's error method directly to bypass our override
+			return Command.prototype.error.call(this, messageOrCode, {
+				exit: code,
+			}) as never;
+		}
+		return super.exit(code) as never;
 	}
 
 	/**
 	 * Logs a warning.
 	 */
-	public warning(message: string | Error | undefined): void {
-		const msg =
-			typeof message === "string"
-				? message
-				: [message?.message, message?.stack].join("\n");
-
+	public warning(
+		message: string | Error | undefined,
+		..._args: unknown[]
+	): void {
 		if (!(this.suppressLogging || this.redirectLogToTrace)) {
-			this.log(chalk.yellow(`WARNING: ${msg}`));
+			this._logger.warning(message);
 		}
 		if (this.redirectLogToTrace) {
-			this.traceWarning?.(msg);
+			this.traceWarning?.(message);
 		}
 	}
 
 	/**
 	 * Logs a warning with a stack trace in debug mode.
 	 */
-	public warningWithDebugTrace(message: string | Error): string | Error {
+	public warningWithDebugTrace(message: string | Error | undefined): void {
 		if (this.suppressLogging && !this.redirectLogToTrace) {
-			return "";
+			return;
 		}
 		if (this.redirectLogToTrace) {
 			this.traceWarning?.(message);
 		}
-		return super.warn(message);
+		this._logger.warning(message);
 	}
 
 	/**
@@ -196,85 +279,29 @@ export abstract class BaseCommand<T extends typeof Command>
 	}
 
 	/**
-	 * Logs an error and exits the process. If you don't want to exit the process use {@link BaseCommand.errorLog}
-	 * instead.
-	 *
-	 * @param input - an Error or a error message string,
-	 * @param options - options for the error handler.
-	 *
-	 * @remarks
-	 *
-	 * This method overrides the oclif Command error method so we can do some formatting on the strings.
-	 */
-	public override error(
-		input: string | Error,
-		options: { code?: string | undefined; exit: false } & PrettyPrintableError,
-	): void;
-
-	/**
-	 * Logs an error and exits the process. If you don't want to exit the process use {@link BaseCommand.errorLog}
-	 * instead.
-	 *
-	 * @param input - an Error or a error message string,
-	 * @param options - options for the error handler.
-	 *
-	 * @remarks
-	 *
-	 * This method overrides the oclif Command error method so we can do some formatting on the strings.
-	 */
-	public override error(
-		input: string | Error,
-		options?:
-			| ({
-					code?: string | undefined;
-					exit?: number | undefined;
-			  } & PrettyPrintableError)
-			| undefined,
-	): never;
-
-	/**
-	 * Logs an error and exits the process. If you don't want to exit the process use {@link BaseCommand.errorLog}
-	 * instead.
-	 *
-	 * @param input - an Error or a error message string,
-	 * @param options - options for the error handler.
-	 *
-	 * @remarks
-	 *
-	 * This method overrides the oclif Command error method so we can do some formatting on the strings.
-	 */
-	public override error(input: unknown, options?: unknown): void {
-		if (!this.suppressLogging) {
-			if (typeof input === "string") {
-				super.error(chalk.red(input), options as never);
-			}
-
-			super.error(input as Error, options as never);
-		}
-	}
-
-	/**
 	 * Logs a verbose log statement.
 	 */
-	public verbose(message: string | Error | undefined): void {
+	public verbose(
+		message: string | Error | undefined,
+		..._args: unknown[]
+	): void {
 		if (this.flags.verbose || this.redirectLogToTrace) {
-			const msg =
-				typeof message === "string"
-					? message
-					: [message?.message, message?.stack].join("\n");
-
 			if (this.redirectLogToTrace) {
-				this.traceVerbose?.(msg);
+				this.traceVerbose?.(message);
 			} else {
-				const color = typeof message === "string" ? chalk.gray : chalk.red;
-				this.log(color(`VERBOSE: ${msg}`));
+				this._logger.verbose(message);
 			}
 		}
 	}
+}
 
-	// public trace(message: string | Error | undefined): void {
-
-	// }
+/**
+ * Logs a message with an indent.
+ * @public
+ */
+export function logIndent(input: string, logger: Logger, indentNumber = 2) {
+	const message = indentString(input, indentNumber);
+	logger.log(message);
 }
 
 /**

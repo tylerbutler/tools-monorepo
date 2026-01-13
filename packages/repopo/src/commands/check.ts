@@ -139,7 +139,7 @@ export class CheckPolicy<
 			}
 		} finally {
 			if (!this.flags.quiet) {
-				logStats(context.perfStats, this);
+				logStats(context.perfStats, this.logger);
 			}
 		}
 	}
@@ -239,7 +239,7 @@ export class CheckPolicy<
 			);
 		} catch (error: unknown) {
 			// Log and rethrow the error for higher-level handling
-			this.error(
+			this.exit(
 				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
 			);
 		}
@@ -266,7 +266,8 @@ export class CheckPolicy<
 		gitRoot: string,
 	): Promise<PolicyHandlerResult> {
 		try {
-			return await runWithPerf(policy.name, "handle", perfStats, () =>
+			const action = this.flags.fix ? "resolve" : "check";
+			return await runWithPerf(policy.name, action, perfStats, () =>
 				policy.handler({
 					file: relPath,
 					root: gitRoot,
@@ -275,7 +276,7 @@ export class CheckPolicy<
 				}),
 			);
 		} catch (error: unknown) {
-			this.error(
+			this.exit(
 				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
 			);
 		}

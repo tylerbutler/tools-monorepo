@@ -43,7 +43,7 @@
 				"useSortedClasses": "error",
 			},
 			"performance": {
-				"noBarrelFile": "off",
+				"noBarrelFile": "error",
 				"noNamespaceImport": "error",
 				"noReExportAll": "error",
 				"useTopLevelRegex": "error",

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createCapabilities } from "../../src/capabilities.js";
+import {
+	Behavior,
+	createCapabilities,
+	DefaultBehaviors,
+	Variant,
+} from "../../src/capabilities.js";
 import type { TestCase } from "../../src/schema-validation.js";
 import type {
 	CCLObject,
@@ -8,14 +13,11 @@ import type {
 	ParseResult,
 } from "../../src/types.js";
 import {
-	Behavior,
 	type CCLFunctions,
 	type CCLTestConfig,
 	categorizeTest,
-	DefaultBehaviors,
 	defineCCLTests,
 	runCCLTest,
-	Variant,
 } from "../../src/vitest.js";
 
 // Helper to create minimal test cases

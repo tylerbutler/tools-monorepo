@@ -1,4 +1,4 @@
-import { generatePackagePolicy, makePolicy, type RepopoConfig } from "repopo";
+import { makePolicy, type RepopoConfig } from "repopo";
 import {
 	NoJsFileExtensions,
 	NoPrivateWorkspaceDependencies,
@@ -45,12 +45,6 @@ const config: RepopoConfig = {
 		),
 		makePolicy(SortTsconfigsPolicy),
 		makePolicy(NoPrivateWorkspaceDependencies),
-		// makePolicy(
-		// 	generatePackagePolicy("SlowTestPolicy", async () => {
-		// 		await timers.setTimeout(500);
-		// 		return true;
-		// 	}),
-		// ),
 	],
 };
 

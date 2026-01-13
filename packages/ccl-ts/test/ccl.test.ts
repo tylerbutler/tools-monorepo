@@ -9,14 +9,13 @@
  */
 
 import { createRequire } from "node:module";
+import { Behavior, Variant } from "ccl-test-runner-ts";
 import {
-	Behavior,
 	type CCLFunctions,
 	type CCLTestResult,
 	createCCLTestCases,
 	defineCCLTests,
 	getCCLTestSuiteInfo,
-	Variant,
 } from "ccl-test-runner-ts/vitest";
 import { dirname, join } from "pathe";
 import { describe, expect, test } from "vitest";

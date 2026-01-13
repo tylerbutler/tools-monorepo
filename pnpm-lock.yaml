@@ -574,6 +574,9 @@ importers:
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.2
       generate-license-file:
         specifier: ^4.1.1
         version: 4.1.1(typescript@5.9.3)
@@ -1179,6 +1182,9 @@ importers:
       '@tylerbu/fundamentals':
         specifier: workspace:^
         version: link:../fundamentals
+      consola:
+        specifier: ^3.4.0
+        version: 3.4.2
       defu:
         specifier: ^6.1.4
         version: 6.1.4

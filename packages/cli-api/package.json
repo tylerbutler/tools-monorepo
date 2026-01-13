@@ -18,6 +18,24 @@
 				"types": "./esm/index.d.ts",
 				"default": "./esm/index.js"
 			}
+		},
+		"./loggers/basic": {
+			"import": {
+				"types": "./esm/loggers/basic.d.ts",
+				"default": "./esm/loggers/basic.js"
+			}
+		},
+		"./loggers/consola": {
+			"import": {
+				"types": "./esm/loggers/consola.d.ts",
+				"default": "./esm/loggers/consola.js"
+			}
+		},
+		"./loggers/prefixReporter": {
+			"import": {
+				"types": "./esm/loggers/prefixReporter.d.ts",
+				"default": "./esm/loggers/prefixReporter.js"
+			}
 		}
 	},
 	"types": "./esm/index.d.ts",
@@ -74,6 +92,7 @@
 		"@types/semver": "^7.7.1",
 		"@vitest/coverage-v8": "^4.0.16",
 		"concurrently": "^9.2.1",
+		"consola": "^3.4.0",
 		"generate-license-file": "^4.1.1",
 		"oclif": "^4.22.50",
 		"rimraf": "^6.1.2",
@@ -83,6 +102,14 @@
 		"type-fest": "^5.3.0",
 		"typescript": "~5.9.3",
 		"vitest": "^4.0.16"
+	},
+	"peerDependencies": {
+		"consola": "^3.4.0"
+	},
+	"peerDependenciesMeta": {
+		"consola": {
+			"optional": true
+		}
 	},
 	"engines": {
 		"node": ">=18.0.0"

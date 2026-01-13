@@ -182,7 +182,8 @@ function buildValue(valueLines: string[]): string {
 		return "";
 	}
 	if (valueLines.length === 1) {
-		return trimTrailingSpacesAndTabs(valueLines[0]!);
+		const firstLine = valueLines[0];
+		return firstLine === undefined ? "" : trimTrailingSpacesAndTabs(firstLine);
 	}
 
 	// Multiline value - join with newlines, trim trailing spaces/tabs from last line only

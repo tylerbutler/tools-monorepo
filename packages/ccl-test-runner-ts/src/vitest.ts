@@ -54,9 +54,6 @@ import {
 	normalizeParseFunction,
 } from "./types.js";
 
-// Re-export for convenience
-export { Behavior, DefaultBehaviors, Variant } from "./capabilities.js";
-
 // Pre-compiled regex patterns for performance
 const LEADING_TABS_REGEX = /^[\t]+/;
 const TAB_REGEX = /\t/g;
