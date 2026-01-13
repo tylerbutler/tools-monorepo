@@ -7,14 +7,13 @@
  * 3. Tests are automatically generated with proper skip/todo handling
  */
 import { describe, expect, test } from "vitest";
+import { Behavior, Variant } from "../../src/capabilities.js";
 import { parse } from "../../src/ccl.js";
 import {
-	Behavior,
 	type CCLFunctions,
 	createCCLTestCases,
 	defineCCLTests,
 	getCCLTestSuiteInfo,
-	Variant,
 } from "../../src/vitest.js";
 import { STUB_PARSER_SKIP_TESTS, TEST_DATA_PATH } from "./test-config.js";
 

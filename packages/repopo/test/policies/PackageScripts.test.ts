@@ -441,9 +441,9 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("build");
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("missing");
+				expect(result.errorMessages.join()).toContain("build");
+				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.errorMessages.join()).toContain("missing");
 			}
 		});
 
@@ -468,8 +468,8 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("lint");
-				expect(result.errorMessage).not.toContain("clean");
+				expect(result.errorMessages.join()).toContain("lint");
+				expect(result.errorMessages.join()).not.toContain("clean");
 			}
 		});
 
@@ -495,8 +495,8 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("test:coverage");
+				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.errorMessages.join()).toContain("test:coverage");
 			}
 		});
 
@@ -542,7 +542,7 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("clean");
+				expect(result.errorMessages.join()).toContain("clean");
 			}
 		});
 
@@ -608,7 +608,7 @@ describe("PackageScripts policy", () => {
 			if (typeof result === "object" && "resolved" in result) {
 				// Partially resolved - clean was added but test has no default
 				expect(result.resolved).toBe(false);
-				expect(result.errorMessage).toContain("test");
+				expect(result.errorMessages.join()).toContain("test");
 			}
 
 			// Verify clean was added
@@ -674,8 +674,8 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("rimraf");
+				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.errorMessages.join()).toContain("rimraf");
 			}
 		});
 
@@ -699,8 +699,8 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("rimraf");
-				expect(result.errorMessage).toContain("--glob");
+				expect(result.errorMessages.join()).toContain("rimraf");
+				expect(result.errorMessages.join()).toContain("--glob");
 			}
 		});
 
@@ -744,10 +744,10 @@ describe("PackageScripts policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("rimraf");
-				expect(result.errorMessage).toContain("build");
-				expect(result.errorMessage).toContain("tsc");
+				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.errorMessages.join()).toContain("rimraf");
+				expect(result.errorMessages.join()).toContain("build");
+				expect(result.errorMessages.join()).toContain("tsc");
 			}
 		});
 	});
@@ -775,9 +775,9 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				// conditionalRequired error
-				expect(result.errorMessage).toContain("test");
+				expect(result.errorMessages.join()).toContain("test");
 				// scriptMustContain error
-				expect(result.errorMessage).toContain("rimraf");
+				expect(result.errorMessages.join()).toContain("rimraf");
 			}
 		});
 	});
@@ -820,8 +820,8 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("Missing required scripts");
-				expect(result.errorMessage).toContain("clean");
+				expect(result.errorMessages.join()).toContain("Missing required scripts");
+				expect(result.errorMessages.join()).toContain("clean");
 			}
 		});
 
@@ -868,8 +868,8 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object" && "resolved" in result) {
 				expect(result.resolved).toBe(true);
-				expect(result.errorMessage).toContain("Fixed scripts");
-				expect(result.errorMessage).toContain("clean");
+				expect(result.errorMessages.join()).toContain("Fixed scripts");
+				expect(result.errorMessages.join()).toContain("clean");
 			}
 
 			// Verify the file was updated
@@ -930,10 +930,10 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object" && "resolved" in result) {
 				expect(result.resolved).toBe(false);
-				expect(result.errorMessage).toContain("Fixed scripts");
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("Remaining errors");
-				expect(result.errorMessage).toContain("test");
+				expect(result.errorMessages.join()).toContain("Fixed scripts");
+				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.errorMessages.join()).toContain("Remaining errors");
+				expect(result.errorMessages.join()).toContain("test");
 			}
 
 			// Verify clean was added
@@ -990,9 +990,9 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object" && "resolved" in result) {
 				expect(result.resolved).toBe(true);
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("format");
-				expect(result.errorMessage).toContain("lint");
+				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.errorMessages.join()).toContain("format");
+				expect(result.errorMessages.join()).toContain("lint");
 			}
 
 			// Verify all scripts were added
@@ -1094,9 +1094,9 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("rimraf dist esm");
-				expect(result.errorMessage).toContain("rm -rf dist");
+				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.errorMessages.join()).toContain("rimraf dist esm");
+				expect(result.errorMessages.join()).toContain("rm -rf dist");
 			}
 		});
 
@@ -1120,8 +1120,8 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("Missing required script");
-				expect(result.errorMessage).toContain("clean");
+				expect(result.errorMessages.join()).toContain("Missing required script");
+				expect(result.errorMessages.join()).toContain("clean");
 			}
 		});
 
@@ -1182,8 +1182,8 @@ describe("PackageScripts policy", () => {
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("clean");
-				expect(result.errorMessage).toContain("format");
+				expect(result.errorMessages.join()).toContain("clean");
+				expect(result.errorMessages.join()).toContain("format");
 			}
 		});
 

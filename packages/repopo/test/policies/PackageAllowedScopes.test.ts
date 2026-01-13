@@ -93,8 +93,8 @@ describe("PackageAllowedScopes policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("@unknown");
-				expect(result.errorMessage).toContain("not in the allowed scopes");
+				expect(result.errorMessages.join()).toContain("@unknown");
+				expect(result.errorMessages.join()).toContain("not in the allowed scopes");
 				expect(result.autoFixable).toBe(false);
 			}
 		});
@@ -156,8 +156,8 @@ describe("PackageAllowedScopes policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("random-package");
-				expect(result.errorMessage).toContain("unscoped package");
+				expect(result.errorMessages.join()).toContain("random-package");
+				expect(result.errorMessages.join()).toContain("unscoped package");
 				expect(result.autoFixable).toBe(false);
 			}
 		});
@@ -283,7 +283,7 @@ describe("PackageAllowedScopes policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("unscoped package");
+				expect(result.errorMessages.join()).toContain("unscoped package");
 			}
 		});
 	});
@@ -302,8 +302,8 @@ describe("PackageAllowedScopes policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("@good");
-				expect(result.errorMessage).toContain("@better");
+				expect(result.errorMessages.join()).toContain("@good");
+				expect(result.errorMessages.join()).toContain("@better");
 			}
 		});
 
@@ -320,8 +320,8 @@ describe("PackageAllowedScopes policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("good-pkg");
-				expect(result.errorMessage).toContain("better-pkg");
+				expect(result.errorMessages.join()).toContain("good-pkg");
+				expect(result.errorMessages.join()).toContain("better-pkg");
 			}
 		});
 
@@ -338,7 +338,7 @@ describe("PackageAllowedScopes policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("(none)");
+				expect(result.errorMessages.join()).toContain("(none)");
 			}
 		});
 	});
