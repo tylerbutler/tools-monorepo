@@ -7,7 +7,7 @@ title: "fromFluidHandlers"
 
 > **fromFluidHandlers**(`fluidHandlers`, `options?`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`undefined`\>[]
 
-Defined in: [adapters/fluidFramework.ts:198](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L198)
+Defined in: [adapters/fluidFramework.ts:200](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L200)
 
 Converts FluidFramework handlers to repopo PolicyDefinitions.
 

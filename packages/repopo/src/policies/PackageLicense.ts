@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { copyFile, readFile } from "node:fs/promises";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import type { PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
@@ -54,18 +54,24 @@ async function copyLicenseFile(
 			name: policyName,
 			file,
 			resolved: true,
-			errorMessage: isCreate
-				? `Created ${licenseFileName} file for package "${packageName}"`
-				: `Updated ${licenseFileName} file for package "${packageName}" to match root`,
+			autoFixable: true,
+			errorMessages: [
+				isCreate
+					? `Created ${licenseFileName} file for package "${packageName}"`
+					: `Updated ${licenseFileName} file for package "${packageName}" to match root`,
+			],
 		};
 	} catch {
 		return {
 			name: policyName,
 			file,
 			resolved: false,
-			errorMessage: isCreate
-				? `Failed to copy ${licenseFileName} to package "${packageName}"`
-				: `Failed to update ${licenseFileName} for package "${packageName}"`,
+			autoFixable: true,
+			errorMessages: [
+				isCreate
+					? `Failed to copy ${licenseFileName} to package "${packageName}"`
+					: `Failed to update ${licenseFileName} for package "${packageName}"`,
+			],
 		};
 	}
 }
@@ -124,13 +130,14 @@ export const PackageLicense = definePackagePolicy<
 
 	// Check if root LICENSE exists
 	if (!existsSync(rootLicensePath)) {
-		const result: PolicyFailure = {
+		return {
 			name: POLICY_NAME,
 			file,
 			autoFixable: false,
-			errorMessage: `Cannot validate package LICENSE: root ${licenseFileName} file not found`,
+			errorMessages: [
+				`Cannot validate package LICENSE: root ${licenseFileName} file not found`,
+			],
 		};
-		return result;
 	}
 
 	// Check if package LICENSE exists
@@ -147,13 +154,14 @@ export const PackageLicense = definePackagePolicy<
 			);
 		}
 
-		const result: PolicyFailure = {
+		return {
 			name: POLICY_NAME,
 			file,
 			autoFixable: true,
-			errorMessage: `${licenseFileName} file missing for package "${packageName}"`,
+			errorMessages: [
+				`${licenseFileName} file missing for package "${packageName}"`,
+			],
 		};
-		return result;
 	}
 
 	// Compare package LICENSE with root LICENSE
@@ -175,13 +183,14 @@ export const PackageLicense = definePackagePolicy<
 			);
 		}
 
-		const result: PolicyFailure = {
+		return {
 			name: POLICY_NAME,
 			file,
 			autoFixable: true,
-			errorMessage: `${licenseFileName} file in package "${packageName}" doesn't match root ${licenseFileName}`,
+			errorMessages: [
+				`${licenseFileName} file in package "${packageName}" doesn't match root ${licenseFileName}`,
+			],
 		};
-		return result;
 	}
 
 	return true;

@@ -77,7 +77,7 @@ describe("PackageReadme policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("missing");
+				expect(result.errorMessages.join()).toContain("missing");
 				expect(result.autoFixable).toBe(true);
 			}
 		});
@@ -147,8 +147,8 @@ describe("PackageReadme policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("doesn't match");
-				expect(result.errorMessage).toContain("Wrong Title");
+				expect(result.errorMessages.join()).toContain("doesn't match");
+				expect(result.errorMessages.join()).toContain("Wrong Title");
 			}
 		});
 
@@ -167,7 +167,7 @@ describe("PackageReadme policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("(none)");
+				expect(result.errorMessages.join()).toContain("(none)");
 			}
 		});
 
@@ -224,7 +224,9 @@ describe("PackageReadme policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("missing required content");
+				expect(result.errorMessages.join()).toContain(
+					"missing required content",
+				);
 				expect(result.autoFixable).toBe(true);
 			}
 		});
@@ -284,7 +286,7 @@ describe("PackageReadme policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("missing");
+				expect(result.errorMessages.join()).toContain("missing");
 			}
 		});
 	});

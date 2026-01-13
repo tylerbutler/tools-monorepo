@@ -48,7 +48,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 					});
 
 					if (typeof result === "object") {
-						expect(result.errorMessage).toContain(expected);
+						expect(result.errorMessages.join()).toContain(expected);
 					}
 				}
 			} finally {

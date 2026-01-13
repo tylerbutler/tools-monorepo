@@ -94,8 +94,8 @@ describe("PackageEsmType policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("missing");
-				expect(result.errorMessage).toContain("module");
+				expect(result.errorMessages.join()).toContain("missing");
+				expect(result.errorMessages.join()).toContain("module");
 				expect(result.autoFixable).toBe(true);
 			}
 		});
@@ -114,8 +114,8 @@ describe("PackageEsmType policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("commonjs");
-				expect(result.errorMessage).toContain("module");
+				expect(result.errorMessages.join()).toContain("commonjs");
+				expect(result.errorMessages.join()).toContain("module");
 			}
 		});
 	});
@@ -137,7 +137,7 @@ describe("PackageEsmType policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("module");
+				expect(result.errorMessages.join()).toContain("module");
 			}
 		});
 
@@ -176,7 +176,7 @@ describe("PackageEsmType policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("commonjs");
+				expect(result.errorMessages.join()).toContain("commonjs");
 			}
 		});
 
@@ -194,7 +194,7 @@ describe("PackageEsmType policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("module");
+				expect(result.errorMessages.join()).toContain("module");
 			}
 		});
 
@@ -213,7 +213,7 @@ describe("PackageEsmType policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("module");
+				expect(result.errorMessages.join()).toContain("module");
 			}
 		});
 

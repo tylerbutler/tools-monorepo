@@ -101,7 +101,7 @@ function fromFluidHandler(
 			return {
 				name: policyName,
 				file,
-				errorMessage: resolveResult.message ?? errorMessage,
+				errorMessages: [resolveResult.message ?? errorMessage],
 				autoFixable: true,
 				resolved: resolveResult.resolved,
 			} satisfies PolicyFixResult;
@@ -110,7 +110,7 @@ function fromFluidHandler(
 		return {
 			name: policyName,
 			file,
-			errorMessage,
+			errorMessages: [errorMessage],
 			autoFixable,
 		};
 	};
@@ -130,7 +130,9 @@ function fromFluidHandler(
 			return {
 				name: policyName,
 				file,
-				errorMessage: resolveResult.message ?? errorMessage ?? "Unknown error",
+				errorMessages: [
+					resolveResult.message ?? errorMessage ?? "Unknown error",
+				],
 				autoFixable: true,
 				resolved: resolveResult.resolved,
 			};

@@ -106,8 +106,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 
 		expect(result).not.toBe(true);
 		if (typeof result === "object") {
-			expect(result.errorMessage).toContain("@test/private-dep");
-			expect(result.errorMessage).toContain("private packages");
+			expect(result.errorMessages.join()).toContain("@test/private-dep");
+			expect(result.errorMessages.join()).toContain("private packages");
 			expect(result.autoFixable).toBe(false);
 		}
 	});
@@ -201,7 +201,7 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 
 		expect(result).not.toBe(true);
 		if (typeof result === "object") {
-			expect(result.errorMessage).toContain("@test/private-dep");
+			expect(result.errorMessages.join()).toContain("@test/private-dep");
 		}
 	});
 
@@ -235,8 +235,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 
 		expect(result).not.toBe(true);
 		if (typeof result === "object") {
-			expect(result.errorMessage).toContain("@test/private-dep-1");
-			expect(result.errorMessage).toContain("@test/private-dep-2");
+			expect(result.errorMessages.join()).toContain("@test/private-dep-1");
+			expect(result.errorMessages.join()).toContain("@test/private-dep-2");
 		}
 	});
 
@@ -269,8 +269,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 
 		expect(result).not.toBe(true);
 		if (typeof result === "object") {
-			expect(result.errorMessage).toContain("@test/private-dep");
-			expect(result.errorMessage).not.toContain("@test/public-dep");
+			expect(result.errorMessages.join()).toContain("@test/private-dep");
+			expect(result.errorMessages.join()).not.toContain("@test/public-dep");
 		}
 	});
 
@@ -297,7 +297,7 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 
 		expect(result).not.toBe(true);
 		if (typeof result === "object") {
-			expect(result.errorMessage).toContain("@test/private-app");
+			expect(result.errorMessages.join()).toContain("@test/private-app");
 		}
 	});
 

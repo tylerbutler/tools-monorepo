@@ -258,8 +258,9 @@ export const PackageTestScripts = definePackagePolicy<
 		name: PackageTestScripts.name,
 		file,
 		autoFixable: false,
-		errorMessage: `Package "${json.name}" has ${reason} but is missing test scripts: ${missingScripts.join(", ")}`,
+		errorMessages: [
+			`Package "${json.name}" has ${reason} but is missing test scripts: ${missingScripts.join(", ")}`,
+		],
 	};
-
 	return failResult;
 });

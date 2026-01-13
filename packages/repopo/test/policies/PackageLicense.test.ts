@@ -82,7 +82,7 @@ describe("PackageLicense policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("missing");
+				expect(result.errorMessages.join()).toContain("missing");
 				expect(result.autoFixable).toBe(true);
 			}
 		});
@@ -129,7 +129,7 @@ describe("PackageLicense policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("doesn't match");
+				expect(result.errorMessages.join()).toContain("doesn't match");
 				expect(result.autoFixable).toBe(true);
 			}
 		});
@@ -190,7 +190,7 @@ describe("PackageLicense policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("missing");
+				expect(result.errorMessages.join()).toContain("missing");
 			}
 		});
 	});
@@ -229,7 +229,7 @@ describe("PackageLicense policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("LICENSE.txt");
+				expect(result.errorMessages.join()).toContain("LICENSE.txt");
 			}
 		});
 	});
@@ -249,8 +249,8 @@ describe("PackageLicense policy", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("root");
-				expect(result.errorMessage).toContain("not found");
+				expect(result.errorMessages.join()).toContain("root");
+				expect(result.errorMessages.join()).toContain("not found");
 				expect(result.autoFixable).toBe(false);
 			}
 		});

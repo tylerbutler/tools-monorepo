@@ -170,20 +170,21 @@ export const PackageAllowedScopes = definePackagePolicy<
 	}
 
 	// Package doesn't match any allowed pattern - build error message
+	const scope = getPackageScope(packageName);
+	let errorMessage: string;
+	if (scope !== undefined) {
+		// Package has an unexpected scope
+		errorMessage = `Package "${packageName}" uses scope "${scope}" which is not in the allowed scopes list. Allowed scopes: ${config.allowedScopes?.join(", ") ?? "(none)"}`;
+	} else {
+		// Package is unscoped but not in the allowed list
+		errorMessage = `Package "${packageName}" is an unscoped package that is not in the allowed unscoped packages list. Allowed unscoped packages: ${config.unscopedPackages?.join(", ") ?? "(none)"}`;
+	}
+
 	const failResult: PolicyFailure = {
 		name: PackageAllowedScopes.name,
 		file,
 		autoFixable: false, // Can't auto-fix package names
+		errorMessages: [errorMessage],
 	};
-
-	const scope = getPackageScope(packageName);
-	if (scope !== undefined) {
-		// Package has an unexpected scope
-		failResult.errorMessage = `Package "${packageName}" uses scope "${scope}" which is not in the allowed scopes list. Allowed scopes: ${config.allowedScopes?.join(", ") ?? "(none)"}`;
-	} else {
-		// Package is unscoped but not in the allowed list
-		failResult.errorMessage = `Package "${packageName}" is an unscoped package that is not in the allowed unscoped packages list. Allowed unscoped packages: ${config.unscopedPackages?.join(", ") ?? "(none)"}`;
-	}
-
 	return failResult;
 });
