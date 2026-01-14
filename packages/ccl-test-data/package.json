@@ -1,0 +1,41 @@
+{
+	"name": "@tylerbu/ccl-test-data",
+	"version": "0.0.1",
+	"private": true,
+	"description": "CCL test data files for ccl-test-runner-ts and ccl-test-viewer. Internal package, not published.",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/ccl-test-data",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/ccl-test-data"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./data/"
+		},
+		"./data/*": "./data/*",
+		"./version": "./data/.version",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"data"
+	],
+	"scripts": {
+		"clean": "rimraf data/*.json data/.version",
+		"release:license": "echo 'No license file needed for internal data package'",
+		"update": "node ../ccl-test-runner-ts/esm/download.js -f -o=./data"
+	},
+	"nx": {
+		"targets": {
+			"update": {
+				"dependsOn": [
+					"ccl-test-runner-ts:build"
+				]
+			}
+		}
+	}
+}

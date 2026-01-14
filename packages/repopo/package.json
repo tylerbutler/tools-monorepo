@@ -63,6 +63,12 @@
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
 	},
 	"oclif": {
+		"additionalHelpFlags": [
+			"-h"
+		],
+		"additionalVersionFlags": [
+			"-V"
+		],
 		"bin": "repopo",
 		"commands": {
 			"strategy": "pattern",
@@ -76,18 +82,22 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "~0.60.0",
+		"@fluid-tools/build-infrastructure": "~0.62.0",
 		"@oclif/core": "^4.8.0",
 		"@oclif/plugin-help": "^6.2.36",
 		"@rushstack/node-core-library": "^5.19.0",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
+		"consola": "^3.4.0",
 		"defu": "^6.1.4",
 		"jsonfile": "^6.2.0",
 		"microdiff": "^1.5.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
-		"simple-git": "^3.30.0"
+		"picomatch": "^4.0.3",
+		"resolve-workspace-root": "^2.0.0",
+		"simple-git": "^3.30.0",
+		"tinyglobby": "^0.2.15"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
@@ -96,15 +106,16 @@
 		"@oclif/test": "^4.1.15",
 		"@types/jsonfile": "^6.1.4",
 		"@types/node": "^20.19.25",
+		"@types/picomatch": "^4.0.2",
 		"@types/tmp": "^0.2.6",
 		"generate-license-file": "^4.1.1",
 		"oclif": "^4.22.50",
 		"rimraf": "^6.1.2",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^5.2.0",
+		"type-fest": "^5.3.0",
 		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.16"
 	},
 	"peerDependencies": {
 		"sort-package-json": "*"

@@ -53,7 +53,7 @@ export default class CacheInfoCommand extends BaseSailCommand<
 		if (cacheDir && existsSync(cacheDir)) {
 			try {
 				const sharedCache = await initializeCacheOrFail(this, cacheDir);
-				await displayCacheStatistics(this, sharedCache);
+				await displayCacheStatistics(this.logger, sharedCache);
 			} catch (error) {
 				this.log("Failed to read cache statistics:");
 				this.log(error instanceof Error ? error.message : String(error));

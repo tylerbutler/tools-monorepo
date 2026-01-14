@@ -1,30 +1,10 @@
 import process from "node:process";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { svelteTesting } from "@testing-library/svelte/vite";
-import type { Plugin } from "vite";
 import { defineConfig } from "vitest/config";
 
-// Plugin to resolve MSW node imports correctly in test environment
-const mswResolverPlugin = (): Plugin => ({
-	name: "msw-resolver",
-	enforce: "pre",
-	async resolveId(id) {
-		if (id === "msw/node") {
-			// Directly return the path to MSW's node entry point
-			const resolved = await this.resolve("msw", undefined, {
-				skipSelf: true,
-			});
-			if (resolved) {
-				// Replace lib/core/index with node directory
-				const basePath = resolved.id.replace(/\/lib\/core\/[^/]+$/, "");
-				return `${basePath}/node`;
-			}
-		}
-	},
-});
-
 export default defineConfig({
-	plugins: [mswResolverPlugin(), sveltekit(), svelteTesting()],
+	plugins: [sveltekit(), svelteTesting()],
 	test: {
 		include: ["src/**/*.{test,spec}.{js,ts}"],
 		exclude: ["tests/**/*", "e2e/**/*"],

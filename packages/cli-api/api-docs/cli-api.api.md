@@ -12,9 +12,7 @@ import { FlagDefinition } from '@oclif/core/interfaces';
 import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
-import type { PackageJson as PackageJson_2 } from 'type-fest';
-import type { PathLike } from 'node:fs';
-import type { PrettyPrintableError } from '@oclif/core/errors';
+import type { PackageJson } from 'type-fest';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
 import { SimpleGitOptions } from 'simple-git';
@@ -23,36 +21,33 @@ import { SimpleGitOptions } from 'simple-git';
 export type Args<T extends typeof Command> = Interfaces.InferredArgs<T["args"]>;
 
 // @public
-export abstract class BaseCommand<T extends typeof Command> extends Command implements Logger {
+export abstract class BaseCommand<T extends typeof Command> extends Command {
     // (undocumented)
     protected args: Args<T>;
     static baseFlags: {
         verbose: Interfaces.BooleanFlag<boolean>;
         quiet: Interfaces.BooleanFlag<boolean>;
     };
-    error(input: string | Error, options: {
-        code?: string | undefined;
-        exit: false;
-    } & PrettyPrintableError): void;
-    error(input: string | Error, options?: ({
-        code?: string | undefined;
-        exit?: number | undefined;
-    } & PrettyPrintableError) | undefined): never;
-    errorLog(message: string | Error | undefined): void;
+    exit(code?: number): never;
+    exit(message: string | Error, code?: number): never;
     // (undocumented)
     protected flags: Flags<T>;
-    info(message: string | Error | undefined): void;
+    info(message: string | Error | undefined, ..._args: unknown[]): void;
+    // (undocumented)
     init(): Promise<void>;
-    logHr(): void;
-    logIndent(input: string, indentNumber?: number): void;
+    log(message?: string, ..._args: unknown[]): void;
+    logError(message: string | Error | undefined, ..._args: unknown[]): void;
+    get logger(): Logger;
+    protected _logger: Logger;
     protected redirectLogToTrace: boolean;
+    success(message?: string, ..._args: unknown[]): void;
     // (undocumented)
     protected trace: Debugger | undefined;
-    verbose(message: string | Error | undefined): void;
+    verbose(message: string | Error | undefined, ..._args: unknown[]): void;
     // @deprecated
     warn(_input: string | Error): string | Error;
-    warning(message: string | Error | undefined): void;
-    warningWithDebugTrace(message: string | Error): string | Error;
+    warning(message: string | Error | undefined, ..._args: unknown[]): void;
+    warningWithDebugTrace(message: string | Error | undefined): void;
 }
 
 // @beta
@@ -91,6 +86,20 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 // @beta
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
+// @public
+export interface ConsolaLoggerOptions {
+    colors?: boolean;
+}
+
+// @public
+export function createBasicLogger(): Logger;
+
+// @public
+export function createConsolaLogger(style?: PrefixStyle, options?: ConsolaLoggerOptions): Logger;
+
+// @public
+export function createExtendedConsolaLogger(style: PrefixStyle, options?: ConsolaLoggerOptions): ExtendedLogger;
+
 // @beta
 export interface DependencyChange {
     // (undocumented)
@@ -125,6 +134,13 @@ export function detectPackageManager(directory?: string): Promise<PackageManager
 
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
+
+// @public
+export interface ExtendedLogger extends Logger {
+    debug: ErrorLoggingFunction;
+    fatal: ErrorLoggingFunction;
+    trace: ErrorLoggingFunction;
+}
 
 // @beta (undocumented)
 export function findGitRoot(cwd?: string): Promise<string>;
@@ -166,9 +182,6 @@ export abstract class GitCommand<T extends typeof Command & {
 export function isSyncSupported(pm: PackageManager): boolean;
 
 // @beta
-export function isValidSemver(version: string): boolean;
-
-// @beta
 export interface JsonWriteOptions {
     indent?: string | Indent | undefined;
     sort?: true | undefined;
@@ -176,9 +189,11 @@ export interface JsonWriteOptions {
 
 // @public
 export interface Logger {
-    errorLog: ErrorLoggingFunction;
+    error: ErrorLoggingFunction;
+    formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
-    log: LoggingFunction;
+    log: (message?: string, ...args: unknown[]) => void;
+    success: LoggingFunction;
     verbose: ErrorLoggingFunction;
     warning: ErrorLoggingFunction;
 }
@@ -186,26 +201,8 @@ export interface Logger {
 // @public
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
-// @beta
-export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo>;
-
-// @beta
-export interface PackageJson {
-    // (undocumented)
-    [key: string]: unknown;
-    // (undocumented)
-    dependencies?: Record<string, string>;
-    // (undocumented)
-    devDependencies?: Record<string, string>;
-    // (undocumented)
-    name?: string;
-    // (undocumented)
-    optionalDependencies?: Record<string, string>;
-    // (undocumented)
-    peerDependencies?: Record<string, string>;
-    // (undocumented)
-    version?: string;
-}
+// @public
+export function logIndent(input: string, logger: Logger, indentNumber?: number): void;
 
 // @beta
 export type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
@@ -221,16 +218,10 @@ export interface PackageManagerInfo {
 }
 
 // @beta
-export type PackageTransformer<J extends PackageJson_2 = PackageJson_2> = (json: J) => J | Promise<J>;
+export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;
 
-// @beta
-export function parseNpmList(data: unknown, workingDir?: string): ProjectInfo[];
-
-// @beta
-export function parsePackageManagerList(packageManager: PackageManager, output: string, workingDir?: string): ProjectInfo[];
-
-// @beta
-export function parsePnpmList(data: unknown): ProjectInfo[];
+// @public
+export type PrefixStyle = "capsule" | "candy-wrapper" | "tape";
 
 // @beta
 export interface ProjectInfo {
@@ -249,7 +240,7 @@ export interface ProjectInfo {
 }
 
 // @beta
-export function readJsonWithIndent<J = unknown>(filePath: PathLike): Promise<{
+export function readJsonWithIndent<J = unknown>(filePath: string): Promise<{
     json: J;
     indent: Indent;
 }>;
@@ -279,9 +270,6 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 export function shortCommit(commit: string): string;
 
 // @beta
-export function shouldSkipVersion(version: string): boolean;
-
-// @beta
 export function syncAllPackages(projects: ProjectInfo[], options?: SyncPackageJsonOptions): Promise<SyncAllResult>;
 
 // @beta
@@ -295,20 +283,6 @@ export interface SyncAllResult {
         reason: string;
     }>;
 }
-
-// @beta
-export function syncDependencyGroup(dependencies: Record<string, string>, installed: Record<string, DependencyInfo>, type: DependencyType, options?: UpdateVersionRangeOptions): SyncDependencyGroupResult;
-
-// @beta
-export interface SyncDependencyGroupResult {
-    // (undocumented)
-    changes: DependencyChange[];
-    // (undocumented)
-    warnings: string[];
-}
-
-// @beta
-export function syncPackageJson(packageJsonPath: string, installedDeps: Record<string, DependencyInfo>, installedDevDeps: Record<string, DependencyInfo>, installedPeerDeps: Record<string, DependencyInfo>, installedOptionalDeps: Record<string, DependencyInfo>, options?: SyncPackageJsonOptions): Promise<SyncResult>;
 
 // @beta
 export interface SyncPackageJsonOptions {
@@ -327,21 +301,11 @@ export interface SyncResult {
 }
 
 // @beta
-export function updatePackageJsonFile<J extends PackageJson_2 = PackageJson_2>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
-
-// @beta
-export function updateVersionRange(currentRange: string, installedVersion: string, options?: UpdateVersionRangeOptions): UpdateVersionRangeResult;
+export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
 
 // @beta
 export interface UpdateVersionRangeOptions {
     emitWarnings?: boolean;
-}
-
-// @beta
-export interface UpdateVersionRangeResult {
-    skipped: boolean;
-    updated: string;
-    warning?: string;
 }
 
 ```

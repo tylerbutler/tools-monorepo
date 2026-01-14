@@ -3,7 +3,7 @@
 
 export interface GeneratedTest {
 	name: string;
-	input: string;
+	inputs: string[];
 	validation: string;
 	expected: {
 		count: number;
@@ -48,14 +48,17 @@ export type CCLFunction =
 	| "parse"
 	| "filter"
 	| "build_hierarchy"
+	| "get_list"
 	| "parse_indented"
 	| "get_string"
-	| "get_list"
 	| "canonical_format"
 	| "get_int"
 	| "get_float"
 	| "get_bool"
-	| "round_trip";
+	| "round_trip"
+	| "compose_associative"
+	| "identity_left"
+	| "identity_right";
 export type CCLFeature =
 	| "empty_keys"
 	| "comments"
@@ -64,30 +67,36 @@ export type CCLFeature =
 	| "unicode"
 	| "optional_typed_accessors";
 export type CCLBehavior =
-	| "array_order_insertion"
 	| "array_order_lexicographic"
-	| "tabs_preserve"
-	| "list_coercion_enabled"
 	| "list_coercion_disabled"
+	| "array_order_insertion"
+	| "toplevel_indent_strip"
+	| "toplevel_indent_preserve"
+	| "tabs_as_content"
+	| "list_coercion_enabled"
 	| "crlf_preserve_literal"
-	| "crlf_normalize_to_lf"
-	| "strict_spacing"
 	| "boolean_strict"
-	| "boolean_lenient";
+	| "boolean_lenient"
+	| "tabs_as_whitespace"
+	| "indent_spaces"
+	| "crlf_normalize_to_lf";
 
 // Available functions for filtering
 export const AVAILABLE_FUNCTIONS: CCLFunction[] = [
 	"parse",
 	"filter",
 	"build_hierarchy",
+	"get_list",
 	"parse_indented",
 	"get_string",
-	"get_list",
 	"canonical_format",
 	"get_int",
 	"get_float",
 	"get_bool",
 	"round_trip",
+	"compose_associative",
+	"identity_left",
+	"identity_right",
 ];
 
 // Available features for filtering
@@ -102,14 +111,17 @@ export const AVAILABLE_FEATURES: CCLFeature[] = [
 
 // Available behaviors for filtering
 export const AVAILABLE_BEHAVIORS: CCLBehavior[] = [
-	"array_order_insertion",
 	"array_order_lexicographic",
-	"tabs_preserve",
-	"list_coercion_enabled",
 	"list_coercion_disabled",
+	"array_order_insertion",
+	"toplevel_indent_strip",
+	"toplevel_indent_preserve",
+	"tabs_as_content",
+	"list_coercion_enabled",
 	"crlf_preserve_literal",
-	"crlf_normalize_to_lf",
-	"strict_spacing",
 	"boolean_strict",
 	"boolean_lenient",
+	"tabs_as_whitespace",
+	"indent_spaces",
+	"crlf_normalize_to_lf",
 ];

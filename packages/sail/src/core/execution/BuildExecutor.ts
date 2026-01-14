@@ -210,7 +210,7 @@ export class BuildExecutor implements IBuildExecutor {
 			: undefined;
 
 		q.error((err, task) => {
-			this.log.errorLog(
+			this.log.error(
 				`${task.task.nameColored}: Internal uncaught exception: ${err}\n${err.stack}`,
 			);
 			hasError = true;

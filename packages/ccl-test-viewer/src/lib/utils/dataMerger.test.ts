@@ -67,7 +67,7 @@ describe("dataMerger", () => {
 				"Test at index 0 missing or invalid 'name' field",
 			);
 			expect(result.errors).toContain(
-				"Test at index 0 missing or invalid 'input' field",
+				"Test at index 0 missing or invalid 'inputs' field",
 			);
 			expect(result.errors).toContain(
 				"Test at index 0 missing or invalid 'expected.count' field",
@@ -77,7 +77,7 @@ describe("dataMerger", () => {
 		it("validates valid test data successfully", () => {
 			const validTest = {
 				name: "test-basic",
-				input: "key = value",
+				inputs: ["key = value"],
 				expected: { count: 1 },
 				functions: ["parse"],
 				features: ["comments"],
@@ -103,7 +103,7 @@ describe("dataMerger", () => {
 		it("warns about invalid array fields", () => {
 			const testWithInvalidArrays = {
 				name: "test",
-				input: "data",
+				inputs: ["data"],
 				expected: { count: 1 },
 				functions: "not-an-array",
 				features: { invalid: true },
@@ -130,7 +130,7 @@ describe("dataMerger", () => {
 			const tests = [
 				{
 					name: "test1",
-					input: "data1",
+					inputs: ["data1"],
 					expected: { count: 1 },
 					functions: ["parse"],
 					features: ["comments"],
@@ -138,7 +138,7 @@ describe("dataMerger", () => {
 				},
 				{
 					name: "test2",
-					input: "data2",
+					inputs: ["data2"],
 					expected: { count: 1 },
 					functions: ["parse", "filter"],
 					features: ["unicode"],
@@ -165,7 +165,7 @@ describe("dataMerger", () => {
 			const tests: GeneratedTest[] = [
 				{
 					name: "test1",
-					input: "data",
+					inputs: ["data"],
 					expected: { count: 1 },
 					functions: [],
 					features: [],
@@ -209,7 +209,7 @@ describe("dataMerger", () => {
 				tests: [
 					{
 						name: "test1",
-						input: "data",
+						inputs: ["data"],
 						expected: { count: 5 },
 						functions: ["parse"],
 						features: ["comments"],
@@ -220,7 +220,7 @@ describe("dataMerger", () => {
 					},
 					{
 						name: "test2",
-						input: "data",
+						inputs: ["data"],
 						expected: { count: 3 },
 						functions: ["parse", "filter"],
 						features: ["unicode"],
@@ -238,7 +238,7 @@ describe("dataMerger", () => {
 				tests: [
 					{
 						name: "test3",
-						input: "data",
+						inputs: ["data"],
 						expected: { count: 2 },
 						functions: ["build_hierarchy"],
 						features: [],
@@ -412,7 +412,7 @@ describe("dataMerger", () => {
 			const tests: GeneratedTest[] = [
 				{
 					name: "test1",
-					input: "data",
+					inputs: ["data"],
 					expected: { count: 1 },
 					functions: [],
 					features: [],
@@ -461,7 +461,7 @@ describe("dataMerger", () => {
 							tests: [
 								{
 									name: "test1",
-									input: "data",
+									inputs: ["data"],
 									expected: { count: 1 },
 								},
 							],
@@ -573,9 +573,9 @@ describe("dataMerger", () => {
 			const mixedData = {
 				$schema: "1.0",
 				tests: [
-					{ name: "valid1", input: "data", expected: { count: 1 } },
+					{ name: "valid1", inputs: ["data"], expected: { count: 1 } },
 					{ invalid: "test" }, // This will fail validateTestObject, triggering continue
-					{ name: "valid2", input: "data", expected: { count: 1 } },
+					{ name: "valid2", inputs: ["data"], expected: { count: 1 } },
 				],
 			};
 
