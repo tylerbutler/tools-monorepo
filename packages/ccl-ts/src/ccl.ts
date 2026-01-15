@@ -769,7 +769,7 @@ export function print(entries: Entry[]): string {
  * - Consistent spacing: " = " between key and value
  * - 2-space indentation for nested content
  * - Trailing newline
- * - All values converted to nested structure form (key = value becomes key = \n  value =)
+ * - All values converted to nested structure form
  *
  * This transformation is semantic-preserving but changes structural representation.
  * It enables deterministic output regardless of input ordering.

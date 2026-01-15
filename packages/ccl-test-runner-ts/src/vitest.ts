@@ -960,7 +960,7 @@ function handleCanonicalFormatValidation(
  * Checks if print(parse(input)) == input.
  */
 function handleRoundTripValidation(
-	testCase: TestCase,
+	_testCase: TestCase,
 	input: string,
 	functions: CCLFunctions,
 ): ValidationResult {
@@ -1092,6 +1092,115 @@ export type TestCategorization =
 	| { type: "todo"; testCase: TestCase; reason: string };
 
 /**
+ * Composite validations that require multiple functions.
+ * TODO: Remove this workaround once ccl-test-data is fixed to list actual
+ * required functions instead of composite function names.
+ * See: https://github.com/CatConfLang/ccl-test-data/issues/60
+ */
+const compositeValidations: Record<string, string[]> = {
+	round_trip: ["parse", "print"],
+};
+
+type FunctionCheckResult =
+	| { status: "implemented" }
+	| { status: "todo"; reason: string }
+	| { status: "skip"; reason: string };
+
+/**
+ * Check if a function is implemented or should be skipped/todo.
+ */
+function checkFunctionStatus(
+	fn: string,
+	implementedFunctions: Set<string>,
+	capabilities: ImplementationCapabilities,
+	reasonContext?: string,
+): FunctionCheckResult {
+	if (implementedFunctions.has(fn)) {
+		return { status: "implemented" };
+	}
+	const contextSuffix = reasonContext ? ` ${reasonContext}` : "";
+	if (capabilities.functions.includes(fn as CCLFunction)) {
+		return {
+			status: "todo",
+			reason: `function:${fn}${contextSuffix} declared but not implemented`,
+		};
+	}
+	return {
+		status: "skip",
+		reason: `function:${fn}${contextSuffix} not supported`,
+	};
+}
+
+/**
+ * Check if a composite function's dependencies are all implemented.
+ */
+function areCompositeDepsImplemented(
+	fn: string,
+	implementedFunctions: Set<string>,
+): boolean {
+	const compositeDeps = compositeValidations[fn];
+	if (!compositeDeps) {
+		return false;
+	}
+	return compositeDeps.every((dep) => implementedFunctions.has(dep));
+}
+
+/**
+ * Check validation function requirements for a test case.
+ */
+function checkValidationFunction(
+	validationFn: string,
+	implementedFunctions: Set<string>,
+	capabilities: ImplementationCapabilities,
+): FunctionCheckResult {
+	const requiredForValidation = compositeValidations[validationFn];
+	if (requiredForValidation) {
+		// Composite validation - check all required functions
+		for (const fn of requiredForValidation) {
+			const result = checkFunctionStatus(
+				fn,
+				implementedFunctions,
+				capabilities,
+				`(required for ${validationFn})`,
+			);
+			if (result.status !== "implemented") {
+				return result;
+			}
+		}
+		return { status: "implemented" };
+	}
+	// Simple validation - check single function
+	return checkFunctionStatus(validationFn, implementedFunctions, capabilities);
+}
+
+/**
+ * Check required functions for a test case.
+ */
+function checkRequiredFunctions(
+	requiredFunctions: string[],
+	implementedFunctions: Set<string>,
+	capabilities: ImplementationCapabilities,
+): FunctionCheckResult {
+	for (const fn of requiredFunctions) {
+		// Check if this function is satisfied by composite implementation
+		if (areCompositeDepsImplemented(fn, implementedFunctions)) {
+			continue; // Composite requirements satisfied
+		}
+
+		const result = checkFunctionStatus(
+			fn,
+			implementedFunctions,
+			capabilities,
+			"required",
+		);
+		if (result.status !== "implemented") {
+			return result;
+		}
+	}
+	return { status: "implemented" };
+}
+
+/**
  * Categorize a test case based on implementation capabilities.
  */
 export function categorizeTest(
@@ -1110,80 +1219,31 @@ export function categorizeTest(
 	}
 
 	// Check if validation function is implemented
-	// Some validations are composite (use multiple functions)
-	// TODO: Remove this workaround once ccl-test-data is fixed to list actual
-	// required functions instead of composite function names.
-	// See: https://github.com/CatConfLang/ccl-test-data/issues/60
-	const validationFn = testCase.validation;
-	const compositeValidations: Record<string, string[]> = {
-		round_trip: ["parse", "print"],
-	};
-
-	const requiredForValidation = compositeValidations[validationFn];
-	if (requiredForValidation) {
-		// Composite validation - check all required functions
-		for (const fn of requiredForValidation) {
-			if (!implementedFunctions.has(fn)) {
-				if (capabilities.functions.includes(fn as CCLFunction)) {
-					return {
-						type: "todo",
-						testCase,
-						reason: `function:${fn} (required for ${validationFn}) declared but not implemented`,
-					};
-				}
-				return {
-					type: "skip",
-					testCase,
-					reason: `function:${fn} (required for ${validationFn}) not supported`,
-				};
-			}
-		}
-	} else if (!implementedFunctions.has(validationFn)) {
-		// Simple validation - check single function
-		if (capabilities.functions.includes(validationFn as CCLFunction)) {
-			return {
-				type: "todo",
-				testCase,
-				reason: `function:${validationFn} declared but not implemented`,
-			};
-		}
+	const validationResult = checkValidationFunction(
+		testCase.validation,
+		implementedFunctions,
+		capabilities,
+	);
+	if (validationResult.status !== "implemented") {
 		return {
-			type: "skip",
+			type: validationResult.status,
 			testCase,
-			reason: `function:${validationFn} not supported`,
+			reason: validationResult.reason,
 		};
 	}
 
 	// Check required functions
-	// Some required functions can be satisfied by composite implementations
-	const requiredFunctions = testCase.functions ?? [];
-	for (const fn of requiredFunctions) {
-		// Check if this function is satisfied by composite implementation
-		const compositeDeps = compositeValidations[fn];
-		if (compositeDeps) {
-			// Check if all composite dependencies are implemented
-			const allDepsImplemented = compositeDeps.every((dep) =>
-				implementedFunctions.has(dep),
-			);
-			if (allDepsImplemented) {
-				continue; // Composite requirements satisfied
-			}
-		}
-
-		if (!implementedFunctions.has(fn)) {
-			if (capabilities.functions.includes(fn as CCLFunction)) {
-				return {
-					type: "todo",
-					testCase,
-					reason: `required function:${fn} not implemented`,
-				};
-			}
-			return {
-				type: "skip",
-				testCase,
-				reason: `required function:${fn} not supported`,
-			};
-		}
+	const requiredResult = checkRequiredFunctions(
+		testCase.functions ?? [],
+		implementedFunctions,
+		capabilities,
+	);
+	if (requiredResult.status !== "implemented") {
+		return {
+			type: requiredResult.status,
+			testCase,
+			reason: requiredResult.reason,
+		};
 	}
 
 	// Check remaining capability filters (features, behaviors, variants)
