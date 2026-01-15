@@ -187,15 +187,17 @@ These provide convenient, type-safe value extraction. All are optional library f
 ### `get_string`
 
 ```
-get_string(ccl: CCL, path: string) -> string | Error
+get_string(ccl: CCL, ...path: string[]) -> string | Error
 ```
 
 Navigate to path and return string value. Error if path not found or value is not a string.
 
+**Example:** `get_string(config, "database", "host")` navigates to `config["database"]["host"]`.
+
 ### `get_int`
 
 ```
-get_int(ccl: CCL, path: string) -> int | Error
+get_int(ccl: CCL, ...path: string[]) -> int | Error
 ```
 
 Navigate to path, parse value as integer. Error if not a valid integer.
@@ -203,7 +205,7 @@ Navigate to path, parse value as integer. Error if not a valid integer.
 ### `get_bool`
 
 ```
-get_bool(ccl: CCL, path: string) -> bool | Error
+get_bool(ccl: CCL, ...path: string[]) -> bool | Error
 ```
 
 Navigate to path, parse value as boolean.
@@ -215,7 +217,7 @@ Navigate to path, parse value as boolean.
 ### `get_float`
 
 ```
-get_float(ccl: CCL, path: string) -> float | Error
+get_float(ccl: CCL, ...path: string[]) -> float | Error
 ```
 
 Navigate to path, parse value as floating-point number.
@@ -223,7 +225,7 @@ Navigate to path, parse value as floating-point number.
 ### `get_list`
 
 ```
-get_list(ccl: CCL, path: string) -> List[string] | Error
+get_list(ccl: CCL, ...path: string[]) -> List[string] | Error
 ```
 
 Navigate to path, return list of values.
@@ -232,7 +234,7 @@ Navigate to path, return list of values.
 - `list_coercion_enabled`: Single value returns `[value]`
 - `list_coercion_disabled`: Error if not actually a list
 
-**Path navigation:** Use dot notation for nested access: `database.host`
+**Path navigation:** Pass each path segment as a separate argument: `get_string(config, "database", "host")`
 
 See [Library Features](/library-features) for implementation details.
 

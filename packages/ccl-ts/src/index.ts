@@ -8,7 +8,15 @@
  */
 
 // CCL functions
-export { buildHierarchy, parse } from "./ccl.js";
+export {
+	buildHierarchy,
+	getBool,
+	getFloat,
+	getInt,
+	getList,
+	getString,
+	parse,
+} from "./ccl.js";
 // Core types
 export type {
 	CCLObject,
