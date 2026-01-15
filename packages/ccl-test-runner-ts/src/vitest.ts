@@ -987,7 +987,9 @@ function handleRoundTripValidation(
 		passed,
 		...(passed
 			? {}
-			: { error: `Round-trip mismatch:\nInput: "${input}"\nOutput: "${roundTripped}"` }),
+			: {
+					error: `Round-trip mismatch:\nInput: "${input}"\nOutput: "${roundTripped}"`,
+				}),
 	};
 }
 
