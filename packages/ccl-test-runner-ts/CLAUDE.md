@@ -118,10 +118,12 @@ Test execution
 
 Tests are filtered by checking all requirements (ALL must pass):
 1. **Functions** - All required functions must be implemented
-2. **Features** - All required features must be supported
-3. **Behaviors** - Implementation behaviors must match (no conflicts)
-4. **Variants** - Implementation variant must match if specified
-5. **Conflicts** - Test must not conflict with implementation capabilities
+2. **Behaviors** - Implementation behaviors must match (no conflicts)
+3. **Variants** - Implementation variant must match if specified
+4. **Conflicts** - Test must not conflict with implementation capabilities
+
+**Note:** Features are NOT used for filtering - they are metadata for reporting only.
+Features describe what syntax an implementation supports but do not affect which tests run.
 
 ### Type Generation Pattern
 
@@ -198,4 +200,12 @@ schemas/              # JSON schema from ccl-test-data
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
 | #2032 | 11:18 PM | ✅ | Added consola dependency to ccl-test-runner-ts package | ~220 |
+
+### Jan 15, 2026
+
+| ID | Time | T | Title | Read |
+|----|------|---|-------|------|
+| #6668 | 12:11 AM | ✅ | Updated CLAUDE.md to remove features from filtering logic documentation | ~298 |
+| #6667 | " | 🔵 | CLAUDE.md contains outdated capability filtering documentation | ~259 |
+| #6658 | 12:07 AM | 🔵 | README documents features as configuration option without explaining their purpose | ~419 |
 </claude-mem-context>

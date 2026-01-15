@@ -573,7 +573,7 @@ describe("categorizeTest", () => {
 		expect(result.reason).toContain("filter");
 	});
 
-	it("should return 'skip' when features don't match", () => {
+	it("should NOT return 'skip' when features don't match (features are metadata only)", () => {
 		const testCase = createTestCase({
 			validation: "parse",
 			features: ["comments"],
@@ -582,7 +582,8 @@ describe("categorizeTest", () => {
 		const context = createContext({ functions: ["parse"], features: [] });
 		const result = categorizeTest(testCase, context);
 
-		expect(result.type).toBe("skip");
+		// Features don't affect test categorization - tests should run
+		expect(result.type).toBe("run");
 	});
 });
 
