@@ -2,7 +2,6 @@ import { readdir, readFile } from "node:fs/promises";
 import { join } from "pathe";
 import {
 	type CCLBehavior,
-	type CCLFeature,
 	type CCLFunction,
 	type CCLVariant,
 	getConflictingBehavior,
@@ -63,25 +62,6 @@ function checkFunctions(
 		return {
 			shouldRun: false,
 			skipReason: `Missing required functions: ${unsupportedFunctions.join(", ")}`,
-		};
-	}
-	return null;
-}
-
-/**
- * Check if all required features are supported.
- */
-function checkFeatures(
-	test: TestCase,
-	capabilities: ImplementationCapabilities,
-): TestFilterResult | null {
-	const unsupportedFeatures = test.features.filter(
-		(f) => !capabilities.features.includes(f as CCLFeature),
-	);
-	if (unsupportedFeatures.length > 0) {
-		return {
-			shouldRun: false,
-			skipReason: `Missing required features: ${unsupportedFeatures.join(", ")}`,
 		};
 	}
 	return null;
@@ -186,18 +166,7 @@ function checkConflicts(
 		};
 	}
 
-	// Check feature conflicts
-	if (test.conflicts.features) {
-		const conflictingFeatures = test.conflicts.features.filter((f) =>
-			capabilities.features.includes(f as CCLFeature),
-		);
-		if (conflictingFeatures.length > 0) {
-			return {
-				shouldRun: false,
-				skipReason: `Feature conflict: test conflicts with ${conflictingFeatures.join(", ")}`,
-			};
-		}
-	}
+	// Note: Feature conflicts are NOT checked - features are metadata for reporting only
 
 	return null;
 }
@@ -208,10 +177,11 @@ function checkConflicts(
  * Filtering logic:
  * 0. SkipTests: Explicitly skipped tests are excluded
  * 1. Functions: ALL required functions must be supported by the implementation
- * 2. Features: ALL required features must be supported by the implementation
- * 3. Behaviors: If a test requires specific behaviors, implementation must match
- * 4. Variants: If a test requires a specific variant, implementation must match
- * 5. Conflicts: Test must not conflict with implementation capabilities
+ * 2. Behaviors: If a test requires specific behaviors, implementation must match
+ * 3. Variants: If a test requires a specific variant, implementation must match
+ * 4. Conflicts: Test must not conflict with implementation capabilities
+ *
+ * Note: Features are NOT used for filtering - they are metadata for reporting only.
  */
 export function shouldRunTest(
 	test: TestCase,
@@ -228,7 +198,6 @@ export function shouldRunTest(
 	// Check each requirement in order
 	const checks = [
 		checkFunctions,
-		checkFeatures,
 		checkBehaviors,
 		checkVariants,
 		checkConflicts,
