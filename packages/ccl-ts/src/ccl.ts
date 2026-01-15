@@ -706,6 +706,134 @@ export function getList(obj: CCLObject, ...pathParts: string[]): string[] {
 }
 
 // ============================================================================
+// Formatting Functions
+// ============================================================================
+// These functions convert CCL structures back to text representation.
+
+/**
+ * Print entries to CCL format.
+ *
+ * Converts a flat list of entries back to CCL text format.
+ * This function provides structure-preserving round-trip capability:
+ * for standard-format inputs, `print(parse(x)) == x`.
+ *
+ * Output format:
+ * - Keys and values separated by " = "
+ * - Empty keys formatted as " = value" (space before = for clarity)
+ * - Multiline values preserve their content as continuation lines
+ * - No trailing newline is added
+ *
+ * @param entries - The entries to format
+ * @returns CCL-formatted string
+ *
+ * @example
+ * ```ts
+ * const entries = [
+ *   { key: "name", value: "Alice" },
+ *   { key: "config", value: "\n  host = localhost\n  port = 8080" }
+ * ];
+ * print(entries);
+ * // => "name = Alice\nconfig = \n  host = localhost\n  port = 8080"
+ * ```
+ *
+ * @beta
+ */
+export function print(entries: Entry[]): string {
+	const lines: string[] = [];
+
+	for (const entry of entries) {
+		const { key, value } = entry;
+
+		// Format the key portion - empty keys get a leading space for clarity
+		const keyPart = key === "" ? " " : key;
+
+		// Check if value contains newlines (multiline value)
+		if (value.includes("\n")) {
+			// Multiline value - key followed by " =" then the value content
+			// The value already includes the leading newline and indentation
+			lines.push(`${keyPart} =${value}`);
+		} else {
+			// Single-line value
+			lines.push(`${keyPart} = ${value}`);
+		}
+	}
+
+	return lines.join("\n");
+}
+
+/**
+ * Format input to canonical CCL representation.
+ *
+ * Parses the input and produces a normalized output with:
+ * - Keys sorted alphabetically
+ * - Consistent spacing: " = " between key and value
+ * - 2-space indentation for nested content
+ * - Trailing newline
+ * - All values converted to nested structure form (key = value becomes key = \n  value =)
+ *
+ * This transformation is semantic-preserving but changes structural representation.
+ * It enables deterministic output regardless of input ordering.
+ *
+ * @param input - The CCL text to canonicalize
+ * @returns Canonicalized CCL string
+ *
+ * @example
+ * ```ts
+ * canonicalFormat("z = last\na = first\nm = middle");
+ * // => "a =\n  first =\nm =\n  middle =\nz =\n  last =\n"
+ * ```
+ *
+ * @beta
+ */
+export function canonicalFormat(input: string): string {
+	const entries = parse(input);
+	const obj = buildHierarchy(entries);
+	return formatCanonical(obj, 0);
+}
+
+/**
+ * Recursively format a CCL object in canonical form.
+ */
+function formatCanonical(obj: CCLObject, depth: number): string {
+	const indent = "  ".repeat(depth);
+	const lines: string[] = [];
+
+	// Get sorted keys
+	const keys = Object.keys(obj).sort();
+
+	for (const key of keys) {
+		const value = obj[key] as CCLValue;
+
+		if (typeof value === "string") {
+			// Terminal value - convert to nested form: key =\n  value =
+			if (value === "") {
+				// Empty value
+				lines.push(`${indent}${key} =`);
+			} else {
+				// Non-empty value - nested form
+				lines.push(`${indent}${key} =`);
+				lines.push(`${indent}  ${value} =`);
+			}
+		} else if (Array.isArray(value)) {
+			// List value - output each item as empty-key entry
+			lines.push(`${indent}${key} =`);
+			for (const item of value) {
+				lines.push(`${indent}  ${item} =`);
+			}
+		} else {
+			// Nested object
+			lines.push(`${indent}${key} =`);
+			const nested = formatCanonical(value, depth + 1);
+			// Remove trailing newline from nested, we'll add it when joining
+			lines.push(nested.slice(0, -1));
+		}
+	}
+
+	// Join with newlines and add trailing newline
+	return lines.join("\n") + "\n";
+}
+
+// ============================================================================
 // Future Functions (commented out stubs)
 // ============================================================================
 // Uncomment and implement these functions as needed.
@@ -748,26 +876,6 @@ export function getList(obj: CCLObject, ...pathParts: string[]): string[] {
 //  * @returns Composed entries
 //  */
 // export function compose(base: Entry[], overlay: Entry[]): Entry[] {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Print entries to CCL format.
-//  *
-//  * @param entries - The entries to format
-//  * @returns CCL-formatted string
-//  */
-// export function print(entries: Entry[]): string {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Format input to canonical CCL representation.
-//  *
-//  * @param input - The CCL text to canonicalize
-//  * @returns Canonicalized CCL string
-//  */
-// export function canonicalFormat(input: string): string {
 // 	throw new Error("Not yet implemented");
 // }
 

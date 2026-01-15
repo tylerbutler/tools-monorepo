@@ -896,6 +896,102 @@ function handleGetListValidation(
 }
 
 /**
+ * Handle print validation.
+ */
+function handlePrintValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const rawParseFn = functions.parse;
+	const printFn = functions.print;
+	if (!(rawParseFn && printFn)) {
+		throw new Error("parse and print functions required");
+	}
+
+	const parseFn = normalizeParseFunction(rawParseFn);
+
+	const parseResult = parseFn(input);
+	if (!parseResult.success) {
+		throw new Error(`Parse failed: ${parseResult.error.message}`);
+	}
+
+	const result = printFn(parseResult.entries);
+	const expected = testCase.expected.value;
+	const passed = result === expected;
+
+	return {
+		rawOutput: result,
+		output: result,
+		expected,
+		passed,
+		...(passed ? {} : { error: `Expected "${expected}", got "${result}"` }),
+	};
+}
+
+/**
+ * Handle canonical_format validation.
+ */
+function handleCanonicalFormatValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const fn = functions.canonical_format;
+	if (!fn) {
+		throw new Error("canonical_format function not implemented");
+	}
+
+	const result = fn(input);
+	const expected = testCase.expected.value;
+	const passed = result === expected;
+
+	return {
+		rawOutput: result,
+		output: result,
+		expected,
+		passed,
+		...(passed ? {} : { error: `Expected "${expected}", got "${result}"` }),
+	};
+}
+
+/**
+ * Handle round_trip validation.
+ * Checks if print(parse(input)) == input.
+ */
+function handleRoundTripValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const rawParseFn = functions.parse;
+	const printFn = functions.print;
+	if (!(rawParseFn && printFn)) {
+		throw new Error("parse and print functions required for round_trip");
+	}
+
+	const parseFn = normalizeParseFunction(rawParseFn);
+
+	const parseResult = parseFn(input);
+	if (!parseResult.success) {
+		throw new Error(`Parse failed: ${parseResult.error.message}`);
+	}
+
+	const roundTripped = printFn(parseResult.entries);
+	const passed = roundTripped === input;
+
+	return {
+		rawOutput: roundTripped,
+		output: passed,
+		expected: true,
+		passed,
+		...(passed
+			? {}
+			: { error: `Round-trip mismatch:\nInput: "${input}"\nOutput: "${roundTripped}"` }),
+	};
+}
+
+/**
  * Run a single CCL test case and return detailed results.
  * This is the hybrid approach - returns values for vitest assertions.
  */
@@ -945,6 +1041,18 @@ export function runCCLTest(
 
 			case "get_list":
 				result = handleGetListValidation(testCase, input, functions);
+				break;
+
+			case "print":
+				result = handlePrintValidation(testCase, input, functions);
+				break;
+
+			case "canonical_format":
+				result = handleCanonicalFormatValidation(testCase, input, functions);
+				break;
+
+			case "round_trip":
+				result = handleRoundTripValidation(testCase, input, functions);
 				break;
 
 			default:
@@ -1000,9 +1108,36 @@ export function categorizeTest(
 	}
 
 	// Check if validation function is implemented
+	// Some validations are composite (use multiple functions)
+	// TODO: Remove this workaround once ccl-test-data is fixed to list actual
+	// required functions instead of composite function names.
+	// See: https://github.com/CatConfLang/ccl-test-data/issues/60
 	const validationFn = testCase.validation;
-	if (!implementedFunctions.has(validationFn)) {
-		// Check if it's in declared capabilities but not implemented
+	const compositeValidations: Record<string, string[]> = {
+		round_trip: ["parse", "print"],
+	};
+
+	const requiredForValidation = compositeValidations[validationFn];
+	if (requiredForValidation) {
+		// Composite validation - check all required functions
+		for (const fn of requiredForValidation) {
+			if (!implementedFunctions.has(fn)) {
+				if (capabilities.functions.includes(fn as CCLFunction)) {
+					return {
+						type: "todo",
+						testCase,
+						reason: `function:${fn} (required for ${validationFn}) declared but not implemented`,
+					};
+				}
+				return {
+					type: "skip",
+					testCase,
+					reason: `function:${fn} (required for ${validationFn}) not supported`,
+				};
+			}
+		}
+	} else if (!implementedFunctions.has(validationFn)) {
+		// Simple validation - check single function
 		if (capabilities.functions.includes(validationFn as CCLFunction)) {
 			return {
 				type: "todo",
@@ -1018,8 +1153,21 @@ export function categorizeTest(
 	}
 
 	// Check required functions
+	// Some required functions can be satisfied by composite implementations
 	const requiredFunctions = testCase.functions ?? [];
 	for (const fn of requiredFunctions) {
+		// Check if this function is satisfied by composite implementation
+		const compositeDeps = compositeValidations[fn];
+		if (compositeDeps) {
+			// Check if all composite dependencies are implemented
+			const allDepsImplemented = compositeDeps.every((dep) =>
+				implementedFunctions.has(dep),
+			);
+			if (allDepsImplemented) {
+				continue; // Composite requirements satisfied
+			}
+		}
+
 		if (!implementedFunctions.has(fn)) {
 			if (capabilities.functions.includes(fn as CCLFunction)) {
 				return {

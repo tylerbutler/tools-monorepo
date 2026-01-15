@@ -21,12 +21,14 @@ import { dirname, join } from "pathe";
 import { describe, expect, test } from "vitest";
 import {
 	buildHierarchy,
+	canonicalFormat,
 	getBool,
 	getFloat,
 	getInt,
 	getList,
 	getString,
 	parse,
+	print,
 } from "../src/ccl.js";
 
 const require = createRequire(import.meta.url);
@@ -96,6 +98,8 @@ const cclConfig = defineCCLTests({
 		get_bool: getBool,
 		get_float: getFloat,
 		get_list: getList,
+		print,
+		canonical_format: canonicalFormat,
 	} satisfies CCLFunctions,
 
 	// Declare supported features

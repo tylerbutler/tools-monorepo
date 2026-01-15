@@ -10,12 +10,14 @@
 // CCL functions
 export {
 	buildHierarchy,
+	canonicalFormat,
 	getBool,
 	getFloat,
 	getInt,
 	getList,
 	getString,
 	parse,
+	print,
 } from "./ccl.js";
 // Core types
 export type {
