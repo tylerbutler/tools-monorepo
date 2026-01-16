@@ -4,11 +4,23 @@
 
 ```ts
 
-// @beta
-export function buildHierarchy(entries: Entry[]): CCLObject;
+import { Err } from 'true-myth/result';
+import { err } from 'true-myth/result';
+import { Ok } from 'true-myth/result';
+import { ok } from 'true-myth/result';
+import { Result } from 'true-myth/result';
 
 // @beta
-export function canonicalFormat(input: string): string;
+export interface AccessError {
+    message: string;
+    path: string[];
+}
+
+// @beta
+export function buildHierarchy(entries: Entry[]): Result<CCLObject, ParseError>;
+
+// @beta
+export function canonicalFormat(input: string): Result<string, ParseError>;
 
 // @beta
 export interface CCLObject {
@@ -25,32 +37,31 @@ export interface Entry {
     value: string;
 }
 
-// @beta
-export function getBool(obj: CCLObject, ...pathParts: string[]): boolean;
+export { Err }
+
+export { err }
 
 // @beta
-export function getFloat(obj: CCLObject, ...pathParts: string[]): number;
+export function getBool(obj: CCLObject, ...pathParts: string[]): Result<boolean, AccessError>;
 
 // @beta
-export function getInt(obj: CCLObject, ...pathParts: string[]): number;
+export function getFloat(obj: CCLObject, ...pathParts: string[]): Result<number, AccessError>;
 
 // @beta
-export function getList(obj: CCLObject, ...pathParts: string[]): string[];
+export function getInt(obj: CCLObject, ...pathParts: string[]): Result<number, AccessError>;
 
 // @beta
-export function getString(obj: CCLObject, ...pathParts: string[]): string;
+export function getList(obj: CCLObject, ...pathParts: string[]): Result<string[], AccessError>;
 
 // @beta
-export type HierarchyResult = {
-    success: true;
-    object: CCLObject;
-} | {
-    success: false;
-    error: ParseError;
-};
+export function getString(obj: CCLObject, ...pathParts: string[]): Result<string, AccessError>;
+
+export { Ok }
+
+export { ok }
 
 // @beta
-export function parse(text: string): Entry[];
+export function parse(text: string): Result<Entry[], ParseError>;
 
 // @beta
 export interface ParseError {
@@ -60,15 +71,8 @@ export interface ParseError {
 }
 
 // @beta
-export type ParseResult = {
-    success: true;
-    entries: Entry[];
-} | {
-    success: false;
-    error: ParseError;
-};
-
-// @beta
 export function print(entries: Entry[]): string;
+
+export { Result }
 
 ```

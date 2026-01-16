@@ -4,10 +4,6 @@
  * These types represent the data structures used throughout CCL parsing
  * and object construction.
  *
- * SOURCE OF TRUTH: This file is the canonical definition of CCL types.
- * These types are duplicated in ccl-test-runner-ts/src/types.ts to avoid
- * circular dependencies. If you modify types here, update the copy there.
- *
  * @packageDocumentation
  */
 
@@ -60,21 +56,13 @@ export interface ParseError {
 }
 
 /**
- * Result type for parse operations (internal use).
- * Either returns entries or a parse error.
+ * Access error that can occur when accessing values in a CCL object.
  *
  * @beta
  */
-export type ParseResult =
-	| { success: true; entries: Entry[] }
-	| { success: false; error: ParseError };
-
-/**
- * Result type for buildHierarchy operations (internal use).
- * Either returns a CCL object or an error.
- *
- * @beta
- */
-export type HierarchyResult =
-	| { success: true; object: CCLObject }
-	| { success: false; error: ParseError };
+export interface AccessError {
+	/** Error message */
+	message: string;
+	/** Path to the value that caused the error */
+	path: string[];
+}

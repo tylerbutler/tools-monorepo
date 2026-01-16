@@ -174,6 +174,9 @@ importers:
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
+      true-myth:
+        specifier: ^9.3.1
+        version: 9.3.1
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.8
@@ -355,6 +358,10 @@ importers:
         version: 4.0.16(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.1.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/ccl-ts:
+    dependencies:
+      true-myth:
+        specifier: ^9.3.1
+        version: 9.3.1
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.8
@@ -11512,6 +11519,10 @@ packages:
 
   trough@2.2.0:
     resolution: {integrity: sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw==}
+
+  true-myth@9.3.1:
+    resolution: {integrity: sha512-a+u2L3y6XF3HLBJrSox8pRmod2o/3k28hpXX8OD56mLnffmXOwzQFBDBT0gy8ROIReLvdVvMPtQYtCsgFldfMw==}
+    engines: {node: 18.* || >= 20.*}
 
   ts-algebra@2.0.0:
     resolution: {integrity: sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw==}
@@ -25692,6 +25703,8 @@ snapshots:
   triple-beam@1.4.1: {}
 
   trough@2.2.0: {}
+
+  true-myth@9.3.1: {}
 
   ts-algebra@2.0.0: {}
 
