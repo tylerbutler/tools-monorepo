@@ -10,9 +10,9 @@
  * @packageDocumentation
  */
 
+export type { Err, Ok } from "true-myth/result";
 // Re-export Result types and constructors from true-myth for convenience
 export { err, ok, Result } from "true-myth/result";
-export type { Err, Ok } from "true-myth/result";
 // CCL functions
 export {
 	buildHierarchy,
