@@ -22,15 +22,16 @@ import {
 
 // Helper to create minimal test cases
 function createTestCase(overrides: Partial<TestCase>): TestCase {
+	const { expected: expectedOverrides, ...restOverrides } = overrides;
 	return {
 		name: "test_case",
 		inputs: ["key = value"],
 		validation: "parse",
-		expected: { count: 1 },
+		expected: { count: 1, ...expectedOverrides },
 		behaviors: [],
 		variants: [],
 		features: [],
-		...overrides,
+		...restOverrides,
 	};
 }
 
@@ -503,7 +504,9 @@ describe("categorizeTest", () => {
 		const result = categorizeTest(testCase, context);
 
 		expect(result.type).toBe("skip");
-		expect(result.reason).toContain("Explicitly skipped");
+		if (result.type === "skip") {
+			expect(result.reason).toContain("Explicitly skipped");
+		}
 	});
 
 	it("should return 'skip' when validation function not supported", () => {
@@ -513,7 +516,9 @@ describe("categorizeTest", () => {
 		const result = categorizeTest(testCase, context);
 
 		expect(result.type).toBe("skip");
-		expect(result.reason).toContain("not supported");
+		if (result.type === "skip") {
+			expect(result.reason).toContain("not supported");
+		}
 	});
 
 	it("should return 'todo' when validation function declared but not implemented", () => {
@@ -534,7 +539,9 @@ describe("categorizeTest", () => {
 		const result = categorizeTest(testCase, context);
 
 		expect(result.type).toBe("todo");
-		expect(result.reason).toContain("declared but not implemented");
+		if (result.type === "todo") {
+			expect(result.reason).toContain("declared but not implemented");
+		}
 	});
 
 	it("should return 'skip' when required function not supported", () => {
@@ -547,7 +554,9 @@ describe("categorizeTest", () => {
 		const result = categorizeTest(testCase, context);
 
 		expect(result.type).toBe("skip");
-		expect(result.reason).toContain("build_hierarchy");
+		if (result.type === "skip") {
+			expect(result.reason).toContain("build_hierarchy");
+		}
 	});
 
 	it("should return 'todo' when required function declared but not implemented", () => {
@@ -570,7 +579,9 @@ describe("categorizeTest", () => {
 		const result = categorizeTest(testCase, context);
 
 		expect(result.type).toBe("todo");
-		expect(result.reason).toContain("filter");
+		if (result.type === "todo") {
+			expect(result.reason).toContain("filter");
+		}
 	});
 
 	it("should NOT return 'skip' when features don't match (features are metadata only)", () => {
@@ -603,5 +614,663 @@ describe("Behavior and Variant exports", () => {
 	it("should export DefaultBehaviors", () => {
 		expect(DefaultBehaviors).toContain("boolean_lenient");
 		expect(DefaultBehaviors).toContain("crlf_normalize_to_lf");
+	});
+});
+
+describe("runCCLTest typed access validations", () => {
+	describe("get_string validation", () => {
+		it("should run get_string validation successfully", () => {
+			const testCase = createTestCase({
+				validation: "get_string",
+				inputs: ["name = Alice"],
+				args: ["name"],
+				expected: { value: "Alice" },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ name: "Alice" }),
+				get_string: (obj: CCLObject, ...path: string[]) =>
+					obj[path[0]] as string,
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_string"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+			expect(result.output).toBe("Alice");
+		});
+
+		it("should handle expected error case", () => {
+			const testCase = createTestCase({
+				validation: "get_string",
+				inputs: ["name = Alice"],
+				args: ["missing"],
+				expected: { error: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ name: "Alice" }),
+				get_string: (_obj: CCLObject, ...path: string[]) => {
+					throw new Error(`Path not found: ${path.join(".")}`);
+				},
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_string"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+		});
+
+		it("should fail when expected error but function succeeds", () => {
+			const testCase = createTestCase({
+				validation: "get_string",
+				inputs: ["name = Alice"],
+				args: ["name"],
+				expected: { error: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ name: "Alice" }),
+				get_string: (obj: CCLObject, ...path: string[]) =>
+					obj[path[0]] as string,
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_string"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("Expected error but function succeeded");
+		});
+
+		it("should detect value mismatch", () => {
+			const testCase = createTestCase({
+				validation: "get_string",
+				inputs: ["name = Alice"],
+				args: ["name"],
+				expected: { value: "Bob" },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ name: "Alice" }),
+				get_string: (obj: CCLObject, ...path: string[]) =>
+					obj[path[0]] as string,
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_string"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain('Expected "Bob"');
+		});
+
+		it("should return error when get_string not implemented", () => {
+			const testCase = createTestCase({
+				validation: "get_string",
+				inputs: ["name = Alice"],
+				args: ["name"],
+				expected: { value: "Alice" },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({}),
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("get_string function not implemented");
+		});
+	});
+
+	describe("get_int validation", () => {
+		it("should run get_int validation successfully", () => {
+			const testCase = createTestCase({
+				validation: "get_int",
+				inputs: ["port = 8080"],
+				args: ["port"],
+				expected: { value: 8080 },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "port", value: "8080" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ port: "8080" }),
+				get_int: (_obj: CCLObject, ..._path: string[]) => 8080,
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_int"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+			expect(result.output).toBe(8080);
+		});
+
+		it("should handle expected error case", () => {
+			const testCase = createTestCase({
+				validation: "get_int",
+				inputs: ["name = Alice"],
+				args: ["name"],
+				expected: { error: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ name: "Alice" }),
+				get_int: () => {
+					throw new Error("Not a valid integer");
+				},
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_int"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+		});
+
+		it("should return error when get_int not implemented", () => {
+			const testCase = createTestCase({
+				validation: "get_int",
+				inputs: ["port = 8080"],
+				args: ["port"],
+				expected: { value: 8080 },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({}),
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("get_int function not implemented");
+		});
+	});
+
+	describe("get_bool validation", () => {
+		it("should run get_bool validation successfully", () => {
+			const testCase = createTestCase({
+				validation: "get_bool",
+				inputs: ["enabled = true"],
+				args: ["enabled"],
+				expected: { value: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "enabled", value: "true" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({
+					enabled: "true",
+				}),
+				get_bool: () => true,
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_bool"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+			expect(result.output).toBe(true);
+		});
+
+		it("should handle expected error case", () => {
+			const testCase = createTestCase({
+				validation: "get_bool",
+				inputs: ["name = Alice"],
+				args: ["name"],
+				expected: { error: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ name: "Alice" }),
+				get_bool: () => {
+					throw new Error("Not a valid boolean");
+				},
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_bool"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+		});
+
+		it("should return error when get_bool not implemented", () => {
+			const testCase = createTestCase({
+				validation: "get_bool",
+				inputs: ["enabled = true"],
+				args: ["enabled"],
+				expected: { value: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({}),
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("get_bool function not implemented");
+		});
+	});
+
+	describe("get_float validation", () => {
+		it("should run get_float validation successfully", () => {
+			const testCase = createTestCase({
+				validation: "get_float",
+				inputs: ["ratio = 3.14"],
+				args: ["ratio"],
+				expected: { value: 3.14 },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "ratio", value: "3.14" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ ratio: "3.14" }),
+				get_float: () => 3.14,
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_float"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+			expect(result.output).toBe(3.14);
+		});
+
+		it("should handle expected error case", () => {
+			const testCase = createTestCase({
+				validation: "get_float",
+				inputs: ["name = Alice"],
+				args: ["name"],
+				expected: { error: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ name: "Alice" }),
+				get_float: () => {
+					throw new Error("Not a valid float");
+				},
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_float"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+		});
+
+		it("should return error when get_float not implemented", () => {
+			const testCase = createTestCase({
+				validation: "get_float",
+				inputs: ["ratio = 3.14"],
+				args: ["ratio"],
+				expected: { value: 3.14 },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({}),
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("get_float function not implemented");
+		});
+	});
+
+	describe("get_list validation", () => {
+		it("should run get_list validation successfully", () => {
+			const testCase = createTestCase({
+				validation: "get_list",
+				inputs: ["colors = red\ncolors = green"],
+				args: ["colors"],
+				expected: { list: ["red", "green"] },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [
+					{ key: "colors", value: "red" },
+					{ key: "colors", value: "green" },
+				],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({
+					colors: ["red", "green"],
+				}),
+				get_list: () => ["red", "green"],
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_list"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+			expect(result.output).toEqual(["red", "green"]);
+		});
+
+		it("should handle expected error case", () => {
+			const testCase = createTestCase({
+				validation: "get_list",
+				inputs: ["name = Alice"],
+				args: ["name"],
+				expected: { error: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({ name: "Alice" }),
+				get_list: () => {
+					throw new Error("Not a list");
+				},
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_list"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+		});
+
+		it("should return error when get_list not implemented", () => {
+			const testCase = createTestCase({
+				validation: "get_list",
+				inputs: ["colors = red"],
+				args: ["colors"],
+				expected: { list: ["red"] },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({}),
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("get_list function not implemented");
+		});
+
+		it("should handle list mismatch", () => {
+			const testCase = createTestCase({
+				validation: "get_list",
+				inputs: ["colors = red"],
+				args: ["colors"],
+				expected: { list: ["blue", "green"] },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "colors", value: "red" }],
+				build_hierarchy: (_entries: Entry[]): CCLObject => ({
+					colors: ["red"],
+				}),
+				get_list: () => ["red"],
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "build_hierarchy", "get_list"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("Expected");
+		});
+	});
+});
+
+describe("runCCLTest formatting validations", () => {
+	describe("print validation", () => {
+		it("should run print validation successfully", () => {
+			const testCase = createTestCase({
+				validation: "print",
+				inputs: ["name = Alice"],
+				expected: { value: "name = Alice" },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				print: (_entries: Entry[]) => "name = Alice",
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "print"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+			expect(result.output).toBe("name = Alice");
+		});
+
+		it("should detect print output mismatch", () => {
+			const testCase = createTestCase({
+				validation: "print",
+				inputs: ["name = Alice"],
+				expected: { value: "name = Bob" },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				print: (_entries: Entry[]) => "name = Alice",
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "print"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain('Expected "name = Bob"');
+		});
+
+		it("should return error when print not implemented", () => {
+			const testCase = createTestCase({
+				validation: "print",
+				inputs: ["name = Alice"],
+				expected: { value: "name = Alice" },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [],
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("print functions required");
+		});
+	});
+
+	describe("canonical_format validation", () => {
+		it("should run canonical_format validation successfully", () => {
+			const testCase = createTestCase({
+				validation: "canonical_format",
+				inputs: ["z = 1\na = 2"],
+				expected: { value: "a =\n  2 =\nz =\n  1 =\n" },
+			});
+
+			const functions: CCLFunctions = {
+				canonical_format: (_input: string) => "a =\n  2 =\nz =\n  1 =\n",
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["canonical_format"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+		});
+
+		it("should detect canonical_format output mismatch", () => {
+			const testCase = createTestCase({
+				validation: "canonical_format",
+				inputs: ["a = 1"],
+				expected: { value: "different output" },
+			});
+
+			const functions: CCLFunctions = {
+				canonical_format: (_input: string) => "a =\n  1 =\n",
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["canonical_format"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("Expected");
+		});
+
+		it("should return error when canonical_format not implemented", () => {
+			const testCase = createTestCase({
+				validation: "canonical_format",
+				inputs: ["a = 1"],
+				expected: { value: "a =\n  1 =\n" },
+			});
+
+			const functions: CCLFunctions = {};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: [],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain(
+				"canonical_format function not implemented",
+			);
+		});
+	});
+
+	describe("round_trip validation", () => {
+		it("should run round_trip validation successfully", () => {
+			const testCase = createTestCase({
+				validation: "round_trip",
+				inputs: ["name = Alice"],
+				expected: { value: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				print: (_entries: Entry[]) => "name = Alice",
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "print"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(true);
+			expect(result.output).toBe(true);
+		});
+
+		it("should detect round_trip mismatch", () => {
+			const testCase = createTestCase({
+				validation: "round_trip",
+				inputs: ["name = Alice"],
+				expected: { value: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [{ key: "name", value: "Alice" }],
+				print: (_entries: Entry[]) => "name = Bob", // Different output
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse", "print"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain("Round-trip mismatch");
+		});
+
+		it("should return error when parse/print not implemented", () => {
+			const testCase = createTestCase({
+				validation: "round_trip",
+				inputs: ["name = Alice"],
+				expected: { value: true },
+			});
+
+			const functions: CCLFunctions = {
+				parse: (_input: string): Entry[] => [],
+			};
+
+			const capabilities = createCapabilities({
+				name: "test",
+				functions: ["parse"],
+			});
+
+			const result = runCCLTest(testCase, functions, capabilities);
+			expect(result.passed).toBe(false);
+			expect(result.error).toContain(
+				"parse and print functions required for round_trip",
+			);
+		});
 	});
 });

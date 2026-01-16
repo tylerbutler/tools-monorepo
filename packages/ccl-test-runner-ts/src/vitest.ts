@@ -104,19 +104,19 @@ export interface CCLFunctions {
 	build_hierarchy?: AnyBuildHierarchyFn;
 
 	/** Get string value at path (throws or returns undefined on missing) */
-	get_string?: (obj: CCLObject, path: string) => string | undefined;
+	get_string?: (obj: CCLObject, ...pathParts: string[]) => string | undefined;
 
 	/** Get integer value at path (throws or returns undefined on missing) */
-	get_int?: (obj: CCLObject, path: string) => number | undefined;
+	get_int?: (obj: CCLObject, ...pathParts: string[]) => number | undefined;
 
 	/** Get boolean value at path (throws or returns undefined on missing) */
-	get_bool?: (obj: CCLObject, path: string) => boolean | undefined;
+	get_bool?: (obj: CCLObject, ...pathParts: string[]) => boolean | undefined;
 
 	/** Get float value at path (throws or returns undefined on missing) */
-	get_float?: (obj: CCLObject, path: string) => number | undefined;
+	get_float?: (obj: CCLObject, ...pathParts: string[]) => number | undefined;
 
 	/** Get list value at path (throws or returns undefined on missing) */
-	get_list?: (obj: CCLObject, path: string) => string[] | undefined;
+	get_list?: (obj: CCLObject, ...pathParts: string[]) => string[] | undefined;
 
 	/** Print entries to CCL format */
 	print?: (entries: Entry[]) => string;
@@ -550,6 +550,450 @@ function handleBuildHierarchyValidation(
 }
 
 /**
+ * Build a CCL object from input using parse and build_hierarchy.
+ * Helper for typed access validation handlers.
+ */
+function buildObjectFromInput(
+	input: string,
+	functions: CCLFunctions,
+): CCLObject {
+	const rawParseFn = functions.parse;
+	const rawBuildFn = functions.build_hierarchy;
+	if (!(rawParseFn && rawBuildFn)) {
+		throw new Error("parse and build_hierarchy functions required");
+	}
+
+	const parseFn = normalizeParseFunction(rawParseFn);
+	const buildFn = normalizeBuildHierarchyFunction(rawBuildFn);
+
+	const parseResult = parseFn(input);
+	if (!parseResult.success) {
+		throw new Error(`Parse failed: ${parseResult.error.message}`);
+	}
+
+	const hierarchyResult = buildFn(parseResult.entries);
+	if (!hierarchyResult.success) {
+		throw new Error(`Build hierarchy failed: ${hierarchyResult.error.message}`);
+	}
+
+	return hierarchyResult.object;
+}
+
+/**
+ * Get the path arguments from test case args.
+ * Test data uses an array of path components.
+ */
+function getPathArgsFromTestCase(testCase: TestCase): string[] {
+	const args = testCase.args;
+	if (!args || args.length === 0) {
+		throw new Error(`Test case "${testCase.name}" has no args for path`);
+	}
+	return args;
+}
+
+/**
+ * Handle get_string validation.
+ */
+function handleGetStringValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const fn = functions.get_string;
+	if (!fn) {
+		throw new Error("get_string function not implemented");
+	}
+
+	const obj = buildObjectFromInput(input, functions);
+	const pathArgs = getPathArgsFromTestCase(testCase);
+
+	// Check if we expect an error
+	if (testCase.expected.error === true) {
+		try {
+			fn(obj, ...pathArgs);
+			return {
+				rawOutput: undefined,
+				output: undefined,
+				expected: { error: true },
+				passed: false,
+				error: "Expected error but function succeeded",
+			};
+		} catch {
+			return {
+				rawOutput: undefined,
+				output: { error: true },
+				expected: { error: true },
+				passed: true,
+			};
+		}
+	}
+
+	try {
+		const result = fn(obj, ...pathArgs);
+		const expected = testCase.expected.value;
+		const passed = result === expected;
+
+		return {
+			rawOutput: result,
+			output: result,
+			expected,
+			passed,
+			...(passed ? {} : { error: `Expected "${expected}", got "${result}"` }),
+		};
+	} catch (e) {
+		return {
+			rawOutput: undefined,
+			output: undefined,
+			expected: testCase.expected.value,
+			passed: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
+}
+
+/**
+ * Handle get_int validation.
+ */
+function handleGetIntValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const fn = functions.get_int;
+	if (!fn) {
+		throw new Error("get_int function not implemented");
+	}
+
+	const obj = buildObjectFromInput(input, functions);
+	const pathArgs = getPathArgsFromTestCase(testCase);
+
+	// Check if we expect an error
+	if (testCase.expected.error === true) {
+		try {
+			fn(obj, ...pathArgs);
+			return {
+				rawOutput: undefined,
+				output: undefined,
+				expected: { error: true },
+				passed: false,
+				error: "Expected error but function succeeded",
+			};
+		} catch {
+			return {
+				rawOutput: undefined,
+				output: { error: true },
+				expected: { error: true },
+				passed: true,
+			};
+		}
+	}
+
+	try {
+		const result = fn(obj, ...pathArgs);
+		const expected = testCase.expected.value;
+		const passed = result === expected;
+
+		return {
+			rawOutput: result,
+			output: result,
+			expected,
+			passed,
+			...(passed ? {} : { error: `Expected ${expected}, got ${result}` }),
+		};
+	} catch (e) {
+		return {
+			rawOutput: undefined,
+			output: undefined,
+			expected: testCase.expected.value,
+			passed: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
+}
+
+/**
+ * Handle get_bool validation.
+ */
+function handleGetBoolValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const fn = functions.get_bool;
+	if (!fn) {
+		throw new Error("get_bool function not implemented");
+	}
+
+	const obj = buildObjectFromInput(input, functions);
+	const pathArgs = getPathArgsFromTestCase(testCase);
+
+	// Check if we expect an error
+	if (testCase.expected.error === true) {
+		try {
+			fn(obj, ...pathArgs);
+			return {
+				rawOutput: undefined,
+				output: undefined,
+				expected: { error: true },
+				passed: false,
+				error: "Expected error but function succeeded",
+			};
+		} catch {
+			return {
+				rawOutput: undefined,
+				output: { error: true },
+				expected: { error: true },
+				passed: true,
+			};
+		}
+	}
+
+	try {
+		const result = fn(obj, ...pathArgs);
+		const expected = testCase.expected.value;
+		const passed = result === expected;
+
+		return {
+			rawOutput: result,
+			output: result,
+			expected,
+			passed,
+			...(passed ? {} : { error: `Expected ${expected}, got ${result}` }),
+		};
+	} catch (e) {
+		return {
+			rawOutput: undefined,
+			output: undefined,
+			expected: testCase.expected.value,
+			passed: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
+}
+
+/**
+ * Handle get_float validation.
+ */
+function handleGetFloatValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const fn = functions.get_float;
+	if (!fn) {
+		throw new Error("get_float function not implemented");
+	}
+
+	const obj = buildObjectFromInput(input, functions);
+	const pathArgs = getPathArgsFromTestCase(testCase);
+
+	// Check if we expect an error
+	if (testCase.expected.error === true) {
+		try {
+			fn(obj, ...pathArgs);
+			return {
+				rawOutput: undefined,
+				output: undefined,
+				expected: { error: true },
+				passed: false,
+				error: "Expected error but function succeeded",
+			};
+		} catch {
+			return {
+				rawOutput: undefined,
+				output: { error: true },
+				expected: { error: true },
+				passed: true,
+			};
+		}
+	}
+
+	try {
+		const result = fn(obj, ...pathArgs);
+		const expected = testCase.expected.value;
+		const passed = result === expected;
+
+		return {
+			rawOutput: result,
+			output: result,
+			expected,
+			passed,
+			...(passed ? {} : { error: `Expected ${expected}, got ${result}` }),
+		};
+	} catch (e) {
+		return {
+			rawOutput: undefined,
+			output: undefined,
+			expected: testCase.expected.value,
+			passed: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
+}
+
+/**
+ * Handle get_list validation.
+ */
+function handleGetListValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const fn = functions.get_list;
+	if (!fn) {
+		throw new Error("get_list function not implemented");
+	}
+
+	const obj = buildObjectFromInput(input, functions);
+	const pathArgs = getPathArgsFromTestCase(testCase);
+
+	// Check if we expect an error
+	if (testCase.expected.error === true) {
+		try {
+			fn(obj, ...pathArgs);
+			return {
+				rawOutput: undefined,
+				output: undefined,
+				expected: { error: true },
+				passed: false,
+				error: "Expected error but function succeeded",
+			};
+		} catch {
+			return {
+				rawOutput: undefined,
+				output: { error: true },
+				expected: { error: true },
+				passed: true,
+			};
+		}
+	}
+
+	try {
+		const result = fn(obj, ...pathArgs);
+		const expected = testCase.expected.list ?? testCase.expected.value;
+		const passed = JSON.stringify(result) === JSON.stringify(expected);
+
+		return {
+			rawOutput: result,
+			output: result,
+			expected,
+			passed,
+			...(passed
+				? {}
+				: {
+						error: `Expected ${JSON.stringify(expected)}, got ${JSON.stringify(result)}`,
+					}),
+		};
+	} catch (e) {
+		return {
+			rawOutput: undefined,
+			output: undefined,
+			expected: testCase.expected.list ?? testCase.expected.value,
+			passed: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
+}
+
+/**
+ * Handle print validation.
+ */
+function handlePrintValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const rawParseFn = functions.parse;
+	const printFn = functions.print;
+	if (!(rawParseFn && printFn)) {
+		throw new Error("parse and print functions required");
+	}
+
+	const parseFn = normalizeParseFunction(rawParseFn);
+
+	const parseResult = parseFn(input);
+	if (!parseResult.success) {
+		throw new Error(`Parse failed: ${parseResult.error.message}`);
+	}
+
+	const result = printFn(parseResult.entries);
+	const expected = testCase.expected.value;
+	const passed = result === expected;
+
+	return {
+		rawOutput: result,
+		output: result,
+		expected,
+		passed,
+		...(passed ? {} : { error: `Expected "${expected}", got "${result}"` }),
+	};
+}
+
+/**
+ * Handle canonical_format validation.
+ */
+function handleCanonicalFormatValidation(
+	testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const fn = functions.canonical_format;
+	if (!fn) {
+		throw new Error("canonical_format function not implemented");
+	}
+
+	const result = fn(input);
+	const expected = testCase.expected.value;
+	const passed = result === expected;
+
+	return {
+		rawOutput: result,
+		output: result,
+		expected,
+		passed,
+		...(passed ? {} : { error: `Expected "${expected}", got "${result}"` }),
+	};
+}
+
+/**
+ * Handle round_trip validation.
+ * Checks if print(parse(input)) == input.
+ */
+function handleRoundTripValidation(
+	_testCase: TestCase,
+	input: string,
+	functions: CCLFunctions,
+): ValidationResult {
+	const rawParseFn = functions.parse;
+	const printFn = functions.print;
+	if (!(rawParseFn && printFn)) {
+		throw new Error("parse and print functions required for round_trip");
+	}
+
+	const parseFn = normalizeParseFunction(rawParseFn);
+
+	const parseResult = parseFn(input);
+	if (!parseResult.success) {
+		throw new Error(`Parse failed: ${parseResult.error.message}`);
+	}
+
+	const roundTripped = printFn(parseResult.entries);
+	const passed = roundTripped === input;
+
+	return {
+		rawOutput: roundTripped,
+		output: passed,
+		expected: true,
+		passed,
+		...(passed
+			? {}
+			: {
+					error: `Round-trip mismatch:\nInput: "${input}"\nOutput: "${roundTripped}"`,
+				}),
+	};
+}
+
+/**
  * Run a single CCL test case and return detailed results.
  * This is the hybrid approach - returns values for vitest assertions.
  */
@@ -579,6 +1023,38 @@ export function runCCLTest(
 
 			case "build_hierarchy":
 				result = handleBuildHierarchyValidation(testCase, input, functions);
+				break;
+
+			case "get_string":
+				result = handleGetStringValidation(testCase, input, functions);
+				break;
+
+			case "get_int":
+				result = handleGetIntValidation(testCase, input, functions);
+				break;
+
+			case "get_bool":
+				result = handleGetBoolValidation(testCase, input, functions);
+				break;
+
+			case "get_float":
+				result = handleGetFloatValidation(testCase, input, functions);
+				break;
+
+			case "get_list":
+				result = handleGetListValidation(testCase, input, functions);
+				break;
+
+			case "print":
+				result = handlePrintValidation(testCase, input, functions);
+				break;
+
+			case "canonical_format":
+				result = handleCanonicalFormatValidation(testCase, input, functions);
+				break;
+
+			case "round_trip":
+				result = handleRoundTripValidation(testCase, input, functions);
 				break;
 
 			default:
@@ -616,6 +1092,115 @@ export type TestCategorization =
 	| { type: "todo"; testCase: TestCase; reason: string };
 
 /**
+ * Composite validations that require multiple functions.
+ * TODO: Remove this workaround once ccl-test-data is fixed to list actual
+ * required functions instead of composite function names.
+ * See: https://github.com/CatConfLang/ccl-test-data/issues/60
+ */
+const compositeValidations: Record<string, string[]> = {
+	round_trip: ["parse", "print"],
+};
+
+type FunctionCheckResult =
+	| { status: "implemented" }
+	| { status: "todo"; reason: string }
+	| { status: "skip"; reason: string };
+
+/**
+ * Check if a function is implemented or should be skipped/todo.
+ */
+function checkFunctionStatus(
+	fn: string,
+	implementedFunctions: Set<string>,
+	capabilities: ImplementationCapabilities,
+	reasonContext?: string,
+): FunctionCheckResult {
+	if (implementedFunctions.has(fn)) {
+		return { status: "implemented" };
+	}
+	const contextSuffix = reasonContext ? ` ${reasonContext}` : "";
+	if (capabilities.functions.includes(fn as CCLFunction)) {
+		return {
+			status: "todo",
+			reason: `function:${fn}${contextSuffix} declared but not implemented`,
+		};
+	}
+	return {
+		status: "skip",
+		reason: `function:${fn}${contextSuffix} not supported`,
+	};
+}
+
+/**
+ * Check if a composite function's dependencies are all implemented.
+ */
+function areCompositeDepsImplemented(
+	fn: string,
+	implementedFunctions: Set<string>,
+): boolean {
+	const compositeDeps = compositeValidations[fn];
+	if (!compositeDeps) {
+		return false;
+	}
+	return compositeDeps.every((dep) => implementedFunctions.has(dep));
+}
+
+/**
+ * Check validation function requirements for a test case.
+ */
+function checkValidationFunction(
+	validationFn: string,
+	implementedFunctions: Set<string>,
+	capabilities: ImplementationCapabilities,
+): FunctionCheckResult {
+	const requiredForValidation = compositeValidations[validationFn];
+	if (requiredForValidation) {
+		// Composite validation - check all required functions
+		for (const fn of requiredForValidation) {
+			const result = checkFunctionStatus(
+				fn,
+				implementedFunctions,
+				capabilities,
+				`(required for ${validationFn})`,
+			);
+			if (result.status !== "implemented") {
+				return result;
+			}
+		}
+		return { status: "implemented" };
+	}
+	// Simple validation - check single function
+	return checkFunctionStatus(validationFn, implementedFunctions, capabilities);
+}
+
+/**
+ * Check required functions for a test case.
+ */
+function checkRequiredFunctions(
+	requiredFunctions: string[],
+	implementedFunctions: Set<string>,
+	capabilities: ImplementationCapabilities,
+): FunctionCheckResult {
+	for (const fn of requiredFunctions) {
+		// Check if this function is satisfied by composite implementation
+		if (areCompositeDepsImplemented(fn, implementedFunctions)) {
+			continue; // Composite requirements satisfied
+		}
+
+		const result = checkFunctionStatus(
+			fn,
+			implementedFunctions,
+			capabilities,
+			"required",
+		);
+		if (result.status !== "implemented") {
+			return result;
+		}
+	}
+	return { status: "implemented" };
+}
+
+/**
  * Categorize a test case based on implementation capabilities.
  */
 export function categorizeTest(
@@ -634,40 +1219,31 @@ export function categorizeTest(
 	}
 
 	// Check if validation function is implemented
-	const validationFn = testCase.validation;
-	if (!implementedFunctions.has(validationFn)) {
-		// Check if it's in declared capabilities but not implemented
-		if (capabilities.functions.includes(validationFn as CCLFunction)) {
-			return {
-				type: "todo",
-				testCase,
-				reason: `function:${validationFn} declared but not implemented`,
-			};
-		}
+	const validationResult = checkValidationFunction(
+		testCase.validation,
+		implementedFunctions,
+		capabilities,
+	);
+	if (validationResult.status !== "implemented") {
 		return {
-			type: "skip",
+			type: validationResult.status,
 			testCase,
-			reason: `function:${validationFn} not supported`,
+			reason: validationResult.reason,
 		};
 	}
 
 	// Check required functions
-	const requiredFunctions = testCase.functions ?? [];
-	for (const fn of requiredFunctions) {
-		if (!implementedFunctions.has(fn)) {
-			if (capabilities.functions.includes(fn as CCLFunction)) {
-				return {
-					type: "todo",
-					testCase,
-					reason: `required function:${fn} not implemented`,
-				};
-			}
-			return {
-				type: "skip",
-				testCase,
-				reason: `required function:${fn} not supported`,
-			};
-		}
+	const requiredResult = checkRequiredFunctions(
+		testCase.functions ?? [],
+		implementedFunctions,
+		capabilities,
+	);
+	if (requiredResult.status !== "implemented") {
+		return {
+			type: requiredResult.status,
+			testCase,
+			reason: requiredResult.reason,
+		};
 	}
 
 	// Check remaining capability filters (features, behaviors, variants)

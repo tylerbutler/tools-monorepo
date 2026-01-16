@@ -48,6 +48,41 @@ export interface TestFilterResult {
 }
 
 /**
+ * Map of composite functions to their dependencies.
+ * Some test functions can be implemented via other functions.
+ *
+ * TODO: Remove this workaround once ccl-test-data is fixed to list actual
+ * required functions instead of composite function names.
+ * See: https://github.com/CatConfLang/ccl-test-data/issues/60
+ */
+const COMPOSITE_FUNCTIONS: Record<string, string[]> = {
+	round_trip: ["parse", "print"],
+};
+
+/**
+ * Check if a function is supported, either directly or via composite implementation.
+ */
+function isFunctionSupported(
+	fn: string,
+	capabilities: ImplementationCapabilities,
+): boolean {
+	// Direct implementation
+	if (capabilities.functions.includes(fn as CCLFunction)) {
+		return true;
+	}
+
+	// Composite implementation
+	const compositeDeps = COMPOSITE_FUNCTIONS[fn];
+	if (compositeDeps) {
+		return compositeDeps.every((dep) =>
+			capabilities.functions.includes(dep as CCLFunction),
+		);
+	}
+
+	return false;
+}
+
+/**
  * Check if all required functions are supported.
  */
 function checkFunctions(
@@ -56,7 +91,7 @@ function checkFunctions(
 ): TestFilterResult | null {
 	const functions = test.functions ?? [];
 	const unsupportedFunctions = functions.filter(
-		(fn) => !capabilities.functions.includes(fn as CCLFunction),
+		(fn) => !isFunctionSupported(fn, capabilities),
 	);
 	if (unsupportedFunctions.length > 0) {
 		return {

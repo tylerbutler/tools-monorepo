@@ -19,7 +19,17 @@ import {
 } from "ccl-test-runner-ts/vitest";
 import { dirname, join } from "pathe";
 import { describe, expect, test } from "vitest";
-import { buildHierarchy, parse } from "../src/ccl.js";
+import {
+	buildHierarchy,
+	canonicalFormat,
+	getBool,
+	getFloat,
+	getInt,
+	getList,
+	getString,
+	parse,
+	print,
+} from "../src/ccl.js";
 
 const require = createRequire(import.meta.url);
 
@@ -82,17 +92,25 @@ const cclConfig = defineCCLTests({
 	// Note: Stubs that throw "Not yet implemented" are auto-detected as todo
 	functions: {
 		parse,
-		build_hierarchy: buildHierarchy, // Auto-detected as todo (throws "Not yet implemented")
-		// Uncomment as you implement:
-		// get_string: getString,
-		// get_int: getInt,
-		// get_bool: getBool,
-		// get_float: getFloat,
-		// get_list: getList,
+		build_hierarchy: buildHierarchy,
+		get_string: getString,
+		get_int: getInt,
+		get_bool: getBool,
+		get_float: getFloat,
+		get_list: getList,
+		print,
+		canonical_format: canonicalFormat,
 	} satisfies CCLFunctions,
 
 	// Declare supported features
-	features: ["comments", "empty_keys", "multiline", "unicode", "whitespace"],
+	features: [
+		"comments",
+		"empty_keys",
+		"multiline",
+		"optional_typed_accessors",
+		"unicode",
+		"whitespace",
+	],
 
 	// Declare behavioral choices
 	behaviors: [

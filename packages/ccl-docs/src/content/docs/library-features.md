@@ -171,10 +171,11 @@ This makes `print` straightforward to implement while still supporting `canonica
 
 Some implementations provide additional experimental features:
 
-**Dotted Representation** (Go implementation):
-- Provides dotted access to hierarchical data
-- `get_string(config, "database.host")` works for nested structure
-- Both `get_string(config, "database.host")` and `get_string(config, "database", "host")` access same data
+**Dotted Representation** (experimental):
+- Allows accessing nested values using dot-separated paths in a single argument
+- Example: `get_string(config, "database.host")` instead of `get_string(config, "database", "host")`
+- **Not recommended** for new implementations - use variadic path arguments as the standard API
+- May be useful for compatibility with existing configuration conventions
 
 ## Test Suite Coverage
 
