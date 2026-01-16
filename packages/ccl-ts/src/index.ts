@@ -4,17 +4,15 @@
  * This package provides a CCL parser implementation in TypeScript.
  * See https://ccl.tylerbutler.com for the CCL specification.
  *
- * Types and Result utilities can be imported from 'ccl-ts/types':
- * @example
- * ```typescript
- * import { Entry, CCLObject, Result, ok, err } from 'ccl-ts/types';
- * ```
+ * All functions that can fail return Result types from true-myth.
+ * Use `.isOk` / `.isErr` to check success, or `.match()` for pattern matching.
  *
  * @packageDocumentation
  */
 
-// Re-export Result types from true-myth for convenience
-export type { Err, Ok, Result } from "true-myth/result";
+// Re-export Result types and constructors from true-myth for convenience
+export { err, ok, Result } from "true-myth/result";
+export type { Err, Ok } from "true-myth/result";
 // CCL functions
 export {
 	buildHierarchy,

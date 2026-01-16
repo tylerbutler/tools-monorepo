@@ -5,7 +5,9 @@
 ```ts
 
 import { Err } from 'true-myth/result';
+import { err } from 'true-myth/result';
 import { Ok } from 'true-myth/result';
+import { ok } from 'true-myth/result';
 import { Result } from 'true-myth/result';
 
 // @beta
@@ -37,6 +39,8 @@ export interface Entry {
 
 export { Err }
 
+export { err }
+
 // @beta
 export function getBool(obj: CCLObject, ...pathParts: string[]): Result<boolean, AccessError>;
 
@@ -53,6 +57,8 @@ export function getList(obj: CCLObject, ...pathParts: string[]): Result<string[]
 export function getString(obj: CCLObject, ...pathParts: string[]): Result<string, AccessError>;
 
 export { Ok }
+
+export { ok }
 
 // @beta
 export function parse(text: string): Result<Entry[], ParseError>;

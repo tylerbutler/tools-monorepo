@@ -18,12 +18,6 @@
 				"types": "./esm/index.d.ts",
 				"default": "./esm/index.js"
 			}
-		},
-		"./types": {
-			"import": {
-				"types": "./esm/types-export.d.ts",
-				"default": "./esm/types-export.js"
-			}
 		}
 	},
 	"types": "./esm/index.d.ts",
