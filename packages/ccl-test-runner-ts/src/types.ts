@@ -81,12 +81,13 @@ export type BuildHierarchyFn = (entries: Entry[]) => CCLObject;
 
 /**
  * Simple typed access function that throws on error.
+ * Path is specified as variadic arguments: get_string(obj, "server", "host")
  */
-export type GetStringFn = (obj: CCLObject, path: string) => string;
-export type GetIntFn = (obj: CCLObject, path: string) => number;
-export type GetBoolFn = (obj: CCLObject, path: string) => boolean;
-export type GetFloatFn = (obj: CCLObject, path: string) => number;
-export type GetListFn = (obj: CCLObject, path: string) => string[];
+export type GetStringFn = (obj: CCLObject, ...pathParts: string[]) => string;
+export type GetIntFn = (obj: CCLObject, ...pathParts: string[]) => number;
+export type GetBoolFn = (obj: CCLObject, ...pathParts: string[]) => boolean;
+export type GetFloatFn = (obj: CCLObject, ...pathParts: string[]) => number;
+export type GetListFn = (obj: CCLObject, ...pathParts: string[]) => string[];
 
 /**
  * Simple filter function.

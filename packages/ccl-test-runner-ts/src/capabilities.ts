@@ -221,7 +221,11 @@ export interface ImplementationCapabilities {
 	version: string;
 	/** Supported CCL functions */
 	functions: CCLFunction[];
-	/** Supported optional features */
+	/**
+	 * Supported optional features (metadata only - not used for test filtering).
+	 * Features describe what syntax the implementation supports but do not affect
+	 * which tests are run. They are used for reporting and documentation purposes.
+	 */
 	features: CCLFeature[];
 	/** Behavioral choices (one from each conflict group) */
 	behaviors: CCLBehavior[];

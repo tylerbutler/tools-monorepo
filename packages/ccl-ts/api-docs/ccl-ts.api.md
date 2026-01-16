@@ -8,6 +8,9 @@
 export function buildHierarchy(entries: Entry[]): CCLObject;
 
 // @beta
+export function canonicalFormat(input: string): string;
+
+// @beta
 export interface CCLObject {
     // (undocumented)
     [key: string]: CCLValue;
@@ -21,6 +24,21 @@ export interface Entry {
     key: string;
     value: string;
 }
+
+// @beta
+export function getBool(obj: CCLObject, ...pathParts: string[]): boolean;
+
+// @beta
+export function getFloat(obj: CCLObject, ...pathParts: string[]): number;
+
+// @beta
+export function getInt(obj: CCLObject, ...pathParts: string[]): number;
+
+// @beta
+export function getList(obj: CCLObject, ...pathParts: string[]): string[];
+
+// @beta
+export function getString(obj: CCLObject, ...pathParts: string[]): string;
 
 // @beta
 export type HierarchyResult = {
@@ -49,5 +67,8 @@ export type ParseResult = {
     success: false;
     error: ParseError;
 };
+
+// @beta
+export function print(entries: Entry[]): string;
 
 ```

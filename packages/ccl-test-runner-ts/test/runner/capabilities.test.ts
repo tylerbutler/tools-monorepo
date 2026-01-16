@@ -318,11 +318,11 @@ describe("Capability Filtering", () => {
 		expect(result.shouldRun).toBe(true);
 	});
 
-	it("should skip tests with missing required features", () => {
+	it("should NOT skip tests with missing features (features are metadata only)", () => {
 		const capabilities = createCapabilities({
 			name: "test-impl",
 			functions: ["parse"],
-			features: [], // No features
+			features: [], // No features declared, but this doesn't matter
 		});
 
 		const testCase: TestCase = {
@@ -331,15 +331,15 @@ describe("Capability Filtering", () => {
 			validation: "parse",
 			expected: { count: 1 },
 			functions: ["parse"],
-			features: ["comments"], // Requires comments
+			features: ["comments"], // Has features, but they're metadata only
 			behaviors: [],
 			variants: [],
 			source_test: "test_source",
 		};
 
+		// Features don't affect test filtering - tests should still run
 		const result = shouldRunTest(testCase, capabilities);
-		expect(result.shouldRun).toBe(false);
-		expect(result.skipReason).toContain("Missing required features");
+		expect(result.shouldRun).toBe(true);
 	});
 
 	it("should skip tests with missing required functions", () => {
@@ -495,7 +495,7 @@ describe("Conflict checking", () => {
 		expect(result.skipReason).toContain("Variant conflict");
 	});
 
-	it("should skip tests with feature conflicts", () => {
+	it("should NOT skip tests with feature conflicts (features are metadata only)", () => {
 		const capabilities = createCapabilities({
 			name: "test-impl",
 			functions: ["parse"],
@@ -512,13 +512,13 @@ describe("Conflict checking", () => {
 			behaviors: [],
 			variants: [],
 			conflicts: {
-				features: ["comments"], // Conflicts with our feature
+				features: ["comments"], // Has feature conflicts, but they're not checked
 			},
 			source_test: "test_source",
 		};
 
+		// Feature conflicts don't affect test filtering - tests should still run
 		const result = shouldRunTest(testCase, capabilities);
-		expect(result.shouldRun).toBe(false);
-		expect(result.skipReason).toContain("Feature conflict");
+		expect(result.shouldRun).toBe(true);
 	});
 });

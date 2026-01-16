@@ -5,7 +5,7 @@
  * See https://ccl.tylerbutler.com for the CCL specification.
  */
 
-import type { CCLObject, Entry } from "./types.js";
+import type { CCLObject, CCLValue, Entry } from "./types.js";
 
 /**
  * Parse CCL text into a flat list of entries.
@@ -429,6 +429,411 @@ function addToList(result: CCLObject, key: string, value: string): void {
 }
 
 // ============================================================================
+// Typed Access Functions
+// ============================================================================
+// These functions provide type-safe access to CCL values.
+// CCL values are always strings; type conversion is a library convenience.
+// Path navigation uses variadic arguments: getString(obj, "server", "host")
+
+/**
+ * Navigate to a value at the specified path in a CCL object.
+ *
+ * @param obj - The CCL object to navigate
+ * @param pathParts - Path components to the value (e.g., "server", "host")
+ * @returns The value at the path, or undefined if not found
+ */
+function navigateToValue(
+	obj: CCLObject,
+	pathParts: string[],
+): CCLValue | undefined {
+	if (pathParts.length === 0) {
+		// Empty path - return the root object itself is not valid for typed access
+		return undefined;
+	}
+
+	let current: CCLValue = obj;
+
+	for (const part of pathParts) {
+		if (!isPlainObject(current)) {
+			// Can't navigate further into a non-object
+			return undefined;
+		}
+		const next: CCLValue | undefined = current[part];
+		if (next === undefined) {
+			return undefined;
+		}
+		current = next;
+	}
+
+	return current;
+}
+
+/**
+ * Format path parts for error messages.
+ */
+function formatPath(pathParts: string[]): string {
+	return pathParts.map((p) => (p === "" ? '""' : p)).join(", ");
+}
+
+/**
+ * Get a string value at the specified path.
+ *
+ * Navigates to the path and returns the value if it's a string.
+ * Throws an error if the path doesn't exist or the value isn't a string.
+ *
+ * @param obj - The CCL object to query
+ * @param pathParts - Path components to the value (e.g., "server", "host")
+ * @returns The string value
+ * @throws Error if path not found or value is not a string
+ *
+ * @example
+ * ```ts
+ * const obj = buildHierarchy(parse("server=\n  host=localhost"));
+ * const host = getString(obj, "server", "host"); // => "localhost"
+ * ```
+ *
+ * @beta
+ */
+export function getString(obj: CCLObject, ...pathParts: string[]): string {
+	const value = navigateToValue(obj, pathParts);
+	const path = formatPath(pathParts);
+
+	if (value === undefined) {
+		throw new Error(`Path not found: ${path}`);
+	}
+
+	if (typeof value !== "string") {
+		throw new Error(
+			`Value at path '${path}' is not a string (got ${Array.isArray(value) ? "array" : "object"})`,
+		);
+	}
+
+	return value;
+}
+
+/**
+ * Get an integer value at the specified path.
+ *
+ * Navigates to the path, retrieves the string value, and parses it as an integer.
+ * Throws an error if the path doesn't exist, value isn't a string, or parsing fails.
+ *
+ * @param obj - The CCL object to query
+ * @param pathParts - Path components to the value
+ * @returns The integer value
+ * @throws Error if path not found, value is not a string, or not a valid integer
+ *
+ * @example
+ * ```ts
+ * const obj = buildHierarchy(parse("port=8080"));
+ * const port = getInt(obj, "port"); // => 8080
+ * ```
+ *
+ * @beta
+ */
+export function getInt(obj: CCLObject, ...pathParts: string[]): number {
+	const strValue = getString(obj, ...pathParts);
+	const path = formatPath(pathParts);
+
+	// Parse as integer - must be a valid integer string
+	// Trim whitespace for robustness
+	const trimmed = strValue.trim();
+
+	// Check for empty string
+	if (trimmed === "") {
+		throw new Error(
+			`Value at path '${path}' is empty, cannot parse as integer`,
+		);
+	}
+
+	// Use Number() for parsing, then validate it's an integer
+	const parsed = Number(trimmed);
+
+	if (!Number.isFinite(parsed)) {
+		throw new Error(
+			`Value at path '${path}' is not a valid integer: '${strValue}'`,
+		);
+	}
+
+	// Ensure it's actually an integer (no decimal part)
+	if (!Number.isInteger(parsed)) {
+		throw new Error(
+			`Value at path '${path}' is not an integer (has decimal): '${strValue}'`,
+		);
+	}
+
+	return parsed;
+}
+
+/**
+ * Get a boolean value at the specified path.
+ *
+ * Navigates to the path, retrieves the string value, and parses it as a boolean.
+ * Supports lenient parsing: true/false, yes/no, 1/0 (case-insensitive).
+ * Throws an error if the path doesn't exist, value isn't a string, or not a valid boolean.
+ *
+ * @param obj - The CCL object to query
+ * @param pathParts - Path components to the value
+ * @returns The boolean value
+ * @throws Error if path not found, value is not a string, or not a valid boolean
+ *
+ * @example
+ * ```ts
+ * const obj = buildHierarchy(parse("enabled=true\ndebug=yes"));
+ * getBool(obj, "enabled"); // => true
+ * getBool(obj, "debug");   // => true
+ * ```
+ *
+ * @beta
+ */
+export function getBool(obj: CCLObject, ...pathParts: string[]): boolean {
+	const strValue = getString(obj, ...pathParts);
+	const path = formatPath(pathParts);
+
+	// Normalize to lowercase and trim for comparison
+	const normalized = strValue.trim().toLowerCase();
+
+	// Lenient mode: accept true/false, yes/no, 1/0
+	switch (normalized) {
+		case "true":
+		case "yes":
+		case "1":
+			return true;
+		case "false":
+		case "no":
+		case "0":
+			return false;
+		default:
+			throw new Error(
+				`Value at path '${path}' is not a valid boolean: '${strValue}'`,
+			);
+	}
+}
+
+/**
+ * Get a float value at the specified path.
+ *
+ * Navigates to the path, retrieves the string value, and parses it as a float.
+ * Throws an error if the path doesn't exist, value isn't a string, or parsing fails.
+ *
+ * @param obj - The CCL object to query
+ * @param pathParts - Path components to the value
+ * @returns The float value
+ * @throws Error if path not found, value is not a string, or not a valid number
+ *
+ * @example
+ * ```ts
+ * const obj = buildHierarchy(parse("ratio=3.14"));
+ * const ratio = getFloat(obj, "ratio"); // => 3.14
+ * ```
+ *
+ * @beta
+ */
+export function getFloat(obj: CCLObject, ...pathParts: string[]): number {
+	const strValue = getString(obj, ...pathParts);
+	const path = formatPath(pathParts);
+
+	// Trim whitespace for robustness
+	const trimmed = strValue.trim();
+
+	// Check for empty string
+	if (trimmed === "") {
+		throw new Error(`Value at path '${path}' is empty, cannot parse as float`);
+	}
+
+	const parsed = Number(trimmed);
+
+	if (!Number.isFinite(parsed)) {
+		throw new Error(
+			`Value at path '${path}' is not a valid number: '${strValue}'`,
+		);
+	}
+
+	return parsed;
+}
+
+/**
+ * Get a list value at the specified path.
+ *
+ * Navigates to the path and returns the value if it's an array.
+ * If the path points to an object with an empty-key list (bare list syntax),
+ * automatically returns that list.
+ * Does NOT coerce single values to lists (ListCoercionDisabled behavior).
+ * Throws an error if the path doesn't exist or the value isn't a list.
+ *
+ * @param obj - The CCL object to query
+ * @param pathParts - Path components to the value
+ * @returns The array of strings
+ * @throws Error if path not found or value is not a list
+ *
+ * @example
+ * ```ts
+ * // Duplicate keys create a list directly
+ * const obj1 = buildHierarchy(parse("colors=red\ncolors=green\ncolors=blue"));
+ * getList(obj1, "colors"); // => ["red", "green", "blue"]
+ *
+ * // Bare list syntax (empty keys) also works
+ * const obj2 = buildHierarchy(parse("colors=\n  =red\n  =green\n  =blue"));
+ * getList(obj2, "colors"); // => ["red", "green", "blue"]
+ * ```
+ *
+ * @beta
+ */
+export function getList(obj: CCLObject, ...pathParts: string[]): string[] {
+	const value = navigateToValue(obj, pathParts);
+	const path = formatPath(pathParts);
+
+	if (value === undefined) {
+		throw new Error(`Path not found: ${path}`);
+	}
+
+	// Direct array (from duplicate keys)
+	if (Array.isArray(value)) {
+		return value;
+	}
+
+	// Object with empty-key list (bare list syntax)
+	if (isPlainObject(value)) {
+		const emptyKeyValue = value[""];
+		if (Array.isArray(emptyKeyValue)) {
+			return emptyKeyValue;
+		}
+	}
+
+	// ListCoercionDisabled: do not coerce single values to lists
+	throw new Error(
+		`Value at path '${path}' is not a list (got ${typeof value === "string" ? "string" : "object"})`,
+	);
+}
+
+// ============================================================================
+// Formatting Functions
+// ============================================================================
+// These functions convert CCL structures back to text representation.
+
+/**
+ * Print entries to CCL format.
+ *
+ * Converts a flat list of entries back to CCL text format.
+ * This function provides structure-preserving round-trip capability:
+ * for standard-format inputs, `print(parse(x)) == x`.
+ *
+ * Output format:
+ * - Keys and values separated by " = "
+ * - Empty keys formatted as " = value" (space before = for clarity)
+ * - Multiline values preserve their content as continuation lines
+ * - No trailing newline is added
+ *
+ * @param entries - The entries to format
+ * @returns CCL-formatted string
+ *
+ * @example
+ * ```ts
+ * const entries = [
+ *   { key: "name", value: "Alice" },
+ *   { key: "config", value: "\n  host = localhost\n  port = 8080" }
+ * ];
+ * print(entries);
+ * // => "name = Alice\nconfig = \n  host = localhost\n  port = 8080"
+ * ```
+ *
+ * @beta
+ */
+export function print(entries: Entry[]): string {
+	const lines: string[] = [];
+
+	for (const entry of entries) {
+		const { key, value } = entry;
+
+		// Format the key portion - empty keys get a leading space for clarity
+		const keyPart = key === "" ? " " : key;
+
+		// Check if value contains newlines (multiline value)
+		if (value.includes("\n")) {
+			// Multiline value - key followed by " =" then the value content
+			// The value already includes the leading newline and indentation
+			lines.push(`${keyPart} =${value}`);
+		} else {
+			// Single-line value
+			lines.push(`${keyPart} = ${value}`);
+		}
+	}
+
+	return lines.join("\n");
+}
+
+/**
+ * Format input to canonical CCL representation.
+ *
+ * Parses the input and produces a normalized output with:
+ * - Keys sorted alphabetically
+ * - Consistent spacing: " = " between key and value
+ * - 2-space indentation for nested content
+ * - Trailing newline
+ * - All values converted to nested structure form
+ *
+ * This transformation is semantic-preserving but changes structural representation.
+ * It enables deterministic output regardless of input ordering.
+ *
+ * @param input - The CCL text to canonicalize
+ * @returns Canonicalized CCL string
+ *
+ * @example
+ * ```ts
+ * canonicalFormat("z = last\na = first\nm = middle");
+ * // => "a =\n  first =\nm =\n  middle =\nz =\n  last =\n"
+ * ```
+ *
+ * @beta
+ */
+export function canonicalFormat(input: string): string {
+	const entries = parse(input);
+	const obj = buildHierarchy(entries);
+	return formatCanonical(obj, 0);
+}
+
+/**
+ * Recursively format a CCL object in canonical form.
+ */
+function formatCanonical(obj: CCLObject, depth: number): string {
+	const indent = "  ".repeat(depth);
+	const lines: string[] = [];
+
+	// Get sorted keys
+	const keys = Object.keys(obj).sort();
+
+	for (const key of keys) {
+		const value = obj[key] as CCLValue;
+
+		if (typeof value === "string") {
+			// Terminal value - convert to nested form: key =\n  value =
+			if (value === "") {
+				// Empty value
+				lines.push(`${indent}${key} =`);
+			} else {
+				// Non-empty value - nested form
+				lines.push(`${indent}${key} =`);
+				lines.push(`${indent}  ${value} =`);
+			}
+		} else if (Array.isArray(value)) {
+			// List value - output each item as empty-key entry
+			lines.push(`${indent}${key} =`);
+			for (const item of value) {
+				lines.push(`${indent}  ${item} =`);
+			}
+		} else {
+			// Nested object
+			lines.push(`${indent}${key} =`);
+			const nested = formatCanonical(value, depth + 1);
+			// Remove trailing newline from nested, we'll add it when joining
+			lines.push(nested.slice(0, -1));
+		}
+	}
+
+	// Join with newlines and add trailing newline
+	return lines.join("\n") + "\n";
+}
+
+// ============================================================================
 // Future Functions (commented out stubs)
 // ============================================================================
 // Uncomment and implement these functions as needed.
@@ -446,74 +851,6 @@ function addToList(result: CCLObject, key: string, value: string): void {
 //  * @returns An array of entries with key-value pairs
 //  */
 // export function parseIndented(text: string): Entry[] {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Build a hierarchical object from flat entries.
-//  *
-//  * Takes a flat list of entries (from `parse`) and recursively
-//  * parses any nested CCL syntax in the values to build a hierarchical object.
-//  *
-//  * @param entries - The flat entries from a parse operation
-//  * @returns A hierarchical CCL object
-//  */
-// export function buildHierarchy(entries: Entry[]): CCLObject {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Get a string value at the specified path.
-//  *
-//  * @param obj - The CCL object to query
-//  * @param path - The path to the value (e.g., "server.host")
-//  * @returns The string value, or undefined if not found
-//  */
-// export function getString(obj: CCLObject, path: string): string | undefined {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Get an integer value at the specified path.
-//  *
-//  * @param obj - The CCL object to query
-//  * @param path - The path to the value
-//  * @returns The integer value, or undefined if not found/invalid
-//  */
-// export function getInt(obj: CCLObject, path: string): number | undefined {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Get a boolean value at the specified path.
-//  *
-//  * @param obj - The CCL object to query
-//  * @param path - The path to the value
-//  * @returns The boolean value, or undefined if not found/invalid
-//  */
-// export function getBool(obj: CCLObject, path: string): boolean | undefined {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Get a float value at the specified path.
-//  *
-//  * @param obj - The CCL object to query
-//  * @param path - The path to the value
-//  * @returns The float value, or undefined if not found/invalid
-//  */
-// export function getFloat(obj: CCLObject, path: string): number | undefined {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Get a list value at the specified path.
-//  *
-//  * @param obj - The CCL object to query
-//  * @param path - The path to the value
-//  * @returns The list of strings, or undefined if not found
-//  */
-// export function getList(obj: CCLObject, path: string): string[] | undefined {
 // 	throw new Error("Not yet implemented");
 // }
 
@@ -539,26 +876,6 @@ function addToList(result: CCLObject, key: string, value: string): void {
 //  * @returns Composed entries
 //  */
 // export function compose(base: Entry[], overlay: Entry[]): Entry[] {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Print entries to CCL format.
-//  *
-//  * @param entries - The entries to format
-//  * @returns CCL-formatted string
-//  */
-// export function print(entries: Entry[]): string {
-// 	throw new Error("Not yet implemented");
-// }
-
-// /**
-//  * Format input to canonical CCL representation.
-//  *
-//  * @param input - The CCL text to canonicalize
-//  * @returns Canonicalized CCL string
-//  */
-// export function canonicalFormat(input: string): string {
 // 	throw new Error("Not yet implemented");
 // }
 
