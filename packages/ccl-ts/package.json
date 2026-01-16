@@ -18,6 +18,12 @@
 				"types": "./esm/index.d.ts",
 				"default": "./esm/index.js"
 			}
+		},
+		"./types": {
+			"import": {
+				"types": "./esm/types-export.d.ts",
+				"default": "./esm/types-export.js"
+			}
 		}
 	},
 	"types": "./esm/index.d.ts",
@@ -36,6 +42,9 @@
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage"
+	},
+	"dependencies": {
+		"true-myth": "^9.3.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
