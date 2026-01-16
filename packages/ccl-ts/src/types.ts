@@ -4,9 +4,6 @@
  * These types represent the data structures used throughout CCL parsing
  * and object construction.
  *
- * SOURCE OF TRUTH: This file is the canonical definition of CCL types.
- * Import from 'ccl-ts/types' to use these types in other packages.
- *
  * @packageDocumentation
  */
 
