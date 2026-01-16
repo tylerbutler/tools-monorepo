@@ -827,9 +827,7 @@ describe("runCCLTest typed access validations", () => {
 			});
 
 			const functions: CCLFunctions = {
-				parse: (_input: string): Entry[] => [
-					{ key: "enabled", value: "true" },
-				],
+				parse: (_input: string): Entry[] => [{ key: "enabled", value: "true" }],
 				build_hierarchy: (_entries: Entry[]): CCLObject => ({
 					enabled: "true",
 				}),

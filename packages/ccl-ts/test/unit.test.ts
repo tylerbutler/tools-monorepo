@@ -133,9 +133,7 @@ describe("buildHierarchy edge cases", () => {
 	});
 
 	it("should merge nested objects with same key", () => {
-		const entries = parse(
-			"server=\n  host=localhost\nserver=\n  port=8080",
-		);
+		const entries = parse("server=\n  host=localhost\nserver=\n  port=8080");
 		const obj = buildHierarchy(entries);
 		expect(obj).toEqual({
 			server: {
