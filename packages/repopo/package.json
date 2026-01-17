@@ -60,7 +60,8 @@
 		"readme:main": "oclif readme --no-aliases",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run",
-		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
+		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
+		"test:coverage": "vitest run --coverage"
 	},
 	"oclif": {
 		"additionalHelpFlags": [

@@ -26,6 +26,7 @@ jobs:
     outputs:
       has-coverage: ${{ steps.upload-coverage.outputs.artifact-id != '' }}
       ccl-test-viewer-affected: ${{ steps.check-ccl-affected.outputs.affected }}
+      coverage-matrix: ${{ steps.coverage-matrix.outputs.matrix }}
 
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
@@ -82,24 +83,57 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-      - name: "Codecov: upload test results"
-        if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # ratchet:codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      # Debug: List coverage files
-      - name: Debug - List coverage files
+      # Build dynamic matrix of packages with coverage files
+      # This ensures we only upload coverage for packages that were actually tested
+      - name: Build coverage matrix
+        id: coverage-matrix
         if: ${{ !cancelled() }}
         run: |
-          echo "=== Coverage directories found ==="
-          find packages -type d -name ".coverage" 2>/dev/null || echo "No .coverage dirs found"
-          echo ""
-          echo "=== Coverage XML files ==="
-          find packages -name "cobertura-coverage.xml" 2>/dev/null || echo "No XML files found"
-          echo ""
-          echo "=== Directory structure ==="
-          ls -la packages/*/
+          # Define package name to codecov flag mapping
+          declare -A FLAG_MAP=(
+            ["dill-cli"]="dill"
+            ["fundamentals"]="fundamentals"
+            ["sort-tsconfig"]="sort-tsconfig"
+            ["cli"]="cli"
+            ["cli-api"]="cli-api"
+            ["xkcd2-api"]="xkcd2-api"
+            ["ccl-test-viewer"]="ccl-test-viewer"
+            ["sail"]="sail"
+            ["sail-infrastructure"]="sail-infrastructure"
+            ["rehype-footnotes"]="rehype-footnotes"
+            ["remark-shift-headings"]="remark-shift-headings"
+            ["remark-lazy-links"]="remark-lazy-links"
+            ["remark-task-table"]="remark-task-table"
+            ["repopo"]="repopo"
+            ["lilconfig-loader-ts"]="lilconfig-loader-ts"
+          )
+
+          # Find packages with coverage files and build JSON array
+          MATRIX="["
+          FIRST=true
+
+          for coverage_file in packages/*/.coverage/vitest/cobertura-coverage.xml; do
+            if [ -f "$coverage_file" ]; then
+              # Extract package name from path
+              PKG_NAME=$(echo "$coverage_file" | cut -d'/' -f2)
+              FLAG="${FLAG_MAP[$PKG_NAME]}"
+
+              if [ -n "$FLAG" ]; then
+                if [ "$FIRST" = true ]; then
+                  FIRST=false
+                else
+                  MATRIX="$MATRIX,"
+                fi
+                MATRIX="$MATRIX{\"name\":\"$PKG_NAME\",\"flag\":\"$FLAG\"}"
+                echo "Found coverage for: $PKG_NAME (flag: $FLAG)"
+              fi
+            fi
+          done
+
+          MATRIX="$MATRIX]"
+
+          echo "Coverage matrix: $MATRIX"
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
       # Upload coverage artifacts for the upload-coverage job
       - name: Upload coverage artifacts
@@ -119,30 +153,16 @@ jobs:
           git diff --quiet || (git status -u . && exit 1)
 
   # Upload coverage to Codecov with flags for proper monorepo support
-  # Using matrix strategy to reduce verbosity and repetition
+  # Uses dynamic matrix based on which packages actually have coverage files
   upload-coverage:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: ${{ !cancelled() && needs.build-and-test.outputs.has-coverage == 'true' }}
+    # Only run if we have coverage AND at least one package in the matrix
+    if: ${{ !cancelled() && needs.build-and-test.outputs.has-coverage == 'true' && needs.build-and-test.outputs.coverage-matrix != '[]' }}
     strategy:
       fail-fast: false
       matrix:
-        package:
-          - {name: dill-cli, flag: dill}
-          - {name: fundamentals, flag: fundamentals}
-          - {name: sort-tsconfig, flag: sort-tsconfig}
-          - {name: cli, flag: cli}
-          - {name: cli-api, flag: cli-api}
-          - {name: xkcd2-api, flag: xkcd2-api}
-          - {name: ccl-test-viewer, flag: ccl-test-viewer}
-          - {name: sail, flag: sail}
-          - {name: sail-infrastructure, flag: sail-infrastructure}
-          - {name: rehype-footnotes, flag: rehype-footnotes}
-          - {name: remark-shift-headings, flag: remark-shift-headings}
-          - {name: remark-lazy-links, flag: remark-lazy-links}
-          - {name: remark-task-table, flag: remark-task-table}
-          - {name: repopo, flag: repopo}
-          - {name: lilconfig-loader-ts, flag: lilconfig-loader-ts}
+        package: ${{ fromJson(needs.build-and-test.outputs.coverage-matrix) }}
 
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # ratchet:actions/checkout@v5
