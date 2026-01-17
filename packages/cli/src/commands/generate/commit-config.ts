@@ -1,7 +1,14 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { Flags } from "@oclif/core";
 import { BaseCommand } from "@tylerbu/cli-api";
-import { buildHierarchy, type CCLObject, parse } from "ccl-ts";
+import {
+	buildHierarchy,
+	type CCLObject,
+	getBool,
+	getList,
+	getString,
+	parse,
+} from "ccl-ts";
 import { join, resolve } from "pathe";
 
 interface CommitType {
@@ -23,18 +30,30 @@ interface CommitTypesConfig {
 }
 
 /**
- * Helper to get a string value from a CCL object.
- */
-function getString(obj: CCLObject, key: string): string | undefined {
-	const value = obj[key];
-	return typeof value === "string" ? value : undefined;
-}
-
-/**
  * Check if a CCL value is a nested object.
  */
 function isObject(value: unknown): value is CCLObject {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * Get a string value from a CCL object, returning undefined on error.
+ */
+function getStringValue(obj: CCLObject, key: string): string | undefined {
+	const result = getString(obj, key);
+	return result.isOk ? result.value : undefined;
+}
+
+/**
+ * Get a boolean value from a CCL object, returning the default on error.
+ */
+function getBoolValue(
+	obj: CCLObject,
+	key: string,
+	defaultValue: boolean,
+): boolean {
+	const result = getBool(obj, key);
+	return result.isOk ? result.value : defaultValue;
 }
 
 /**
@@ -44,11 +63,10 @@ function parseTypes(typesObj: CCLObject): Record<string, CommitType> {
 	const result: Record<string, CommitType> = {};
 	for (const [typeName, typeConfig] of Object.entries(typesObj)) {
 		if (isObject(typeConfig)) {
-			const description = getString(typeConfig, "description") ?? "";
-			const changelogGroupRaw = getString(typeConfig, "changelog_group");
+			const description = getStringValue(typeConfig, "description") ?? "";
+			const changelogGroupRaw = getStringValue(typeConfig, "changelog_group");
 			const changelogGroup = changelogGroupRaw || null;
-			const scopeRequiredRaw = getString(typeConfig, "scope_required");
-			const scopeRequired = scopeRequiredRaw === "true";
+			const scopeRequired = getBoolValue(typeConfig, "scope_required", false);
 
 			result[typeName] = {
 				description,
@@ -67,9 +85,9 @@ function parseScopes(scopesObj: CCLObject): Record<string, Scope> {
 	const result: Record<string, Scope> = {};
 	for (const [scopeName, scopeConfig] of Object.entries(scopesObj)) {
 		if (isObject(scopeConfig)) {
-			const displayName = getString(scopeConfig, "display_name") ?? scopeName;
-			const inChangelogRaw = getString(scopeConfig, "in_changelog");
-			const inChangelog = inChangelogRaw !== "false"; // default true
+			const displayName =
+				getStringValue(scopeConfig, "display_name") ?? scopeName;
+			const inChangelog = getBoolValue(scopeConfig, "in_changelog", true);
 
 			result[scopeName] = {
 				display_name: displayName,
@@ -116,19 +134,9 @@ function parseCCLConfig(cclText: string): CommitTypesConfig {
 	}
 
 	// Parse changelog_scope_order (list of strings)
-	// CCL lists are represented as { "": ["item1", "item2", ...] }
-	const scopeOrderObj = obj["changelog_scope_order"];
-	if (isObject(scopeOrderObj)) {
-		const listItems = scopeOrderObj[""];
-		if (Array.isArray(listItems)) {
-			config.changelog_scope_order = listItems.filter(
-				(s): s is string => typeof s === "string",
-			);
-		}
-	} else if (Array.isArray(scopeOrderObj)) {
-		config.changelog_scope_order = scopeOrderObj.filter(
-			(s): s is string => typeof s === "string",
-		);
+	const listResult = getList(obj, "changelog_scope_order");
+	if (listResult.isOk) {
+		config.changelog_scope_order = listResult.value;
 	}
 
 	return config;
