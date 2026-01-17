@@ -44,7 +44,7 @@
 		"@biomejs/biome": "2.3.8",
 		"@types/hast": "^3.0.4",
 		"@types/node": "^20.19.25",
-		"@vitest/coverage-v8": "^4.0.16",
+		"@vitest/coverage-v8": "^4.0.17",
 		"rehype": "^13.0.2",
 		"rehype-parse": "^9.0.1",
 		"rehype-stringify": "^10.0.1",
@@ -54,7 +54,7 @@
 		"remark-rehype": "^11.1.2",
 		"rimraf": "^6.1.2",
 		"typescript": "~5.9.3",
-		"vitest": "^4.0.16"
+		"vitest": "^4.0.17"
 	},
 	"peerDependencies": {
 		"unified": "^11.0.0"

@@ -73,15 +73,15 @@
 		"@biomejs/biome": "2.3.8",
 		"@tylerbu/ccl-test-data": "workspace:^",
 		"@types/node": "^20.19.25",
-		"@vitest/coverage-v8": "^3.2.4",
-		"@vitest/ui": "^3.2.4",
+		"@vitest/coverage-v8": "^4.0.17",
+		"@vitest/ui": "^4.0.16",
 		"json-schema-to-ts": "^3.1.1",
 		"json-schema-to-typescript": "^15.0.4",
 		"rimraf": "^6.1.2",
 		"sort-package-json": "*",
 		"ts-node": "^10.9.2",
 		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.17"
 	},
 	"engines": {
 		"node": ">=18.0.0"

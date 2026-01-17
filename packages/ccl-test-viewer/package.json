@@ -81,7 +81,7 @@
 		"@testing-library/svelte": "^5.3.1",
 		"@types/node": "^20.19.25",
 		"@types/prismjs": "^1.26.5",
-		"@vitest/coverage-v8": "^4.0.16",
+		"@vitest/coverage-v8": "^4.0.17",
 		"@vitest/ui": "^4.0.16",
 		"base16-tailwind": "github:donovanglover/base16-tailwind",
 		"bits-ui": "^2.15.4",
@@ -99,7 +99,7 @@
 		"typescript": "~5.9.3",
 		"vite": "^7.3.0",
 		"vite-plugin-devtools-json": "^1.0.0",
-		"vitest": "^4.0.16"
+		"vitest": "^4.0.17"
 	},
 	"engines": {
 		"node": ">=18.0.0"

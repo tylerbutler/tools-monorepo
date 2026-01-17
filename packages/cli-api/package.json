@@ -90,7 +90,7 @@
 		"@types/jsonfile": "^6.1.4",
 		"@types/node": "^20.19.25",
 		"@types/semver": "^7.7.1",
-		"@vitest/coverage-v8": "^4.0.16",
+		"@vitest/coverage-v8": "^4.0.17",
 		"concurrently": "^9.2.1",
 		"consola": "^3.4.0",
 		"generate-license-file": "^4.1.1",
@@ -101,7 +101,7 @@
 		"tsx": "^4.21.0",
 		"type-fest": "^5.4.1",
 		"typescript": "~5.9.3",
-		"vitest": "^4.0.16"
+		"vitest": "^4.0.17"
 	},
 	"peerDependencies": {
 		"consola": "^3.4.0"
