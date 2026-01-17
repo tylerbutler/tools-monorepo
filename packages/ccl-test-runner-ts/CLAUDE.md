@@ -205,6 +205,7 @@ schemas/              # JSON schema from ccl-test-data
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #6681 | 12:14 AM | ✅ | Changes committed to new branch tylerbu/fix-feature-filtering-557 | ~292 |
 | #6668 | 12:11 AM | ✅ | Updated CLAUDE.md to remove features from filtering logic documentation | ~298 |
 | #6667 | " | 🔵 | CLAUDE.md contains outdated capability filtering documentation | ~259 |
 | #6658 | 12:07 AM | 🔵 | README documents features as configuration option without explaining their purpose | ~419 |

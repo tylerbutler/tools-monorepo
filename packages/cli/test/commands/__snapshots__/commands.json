@@ -120,6 +120,22 @@
         "plugin": "@tylerbu/cli"
     },
     {
+        "alias": [],
+        "command": "generate:commit-config",
+        "flagAliases": [],
+        "flagChars": [
+            "n",
+            "v"
+        ],
+        "flags": [
+            "cwd",
+            "dry-run",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
         "alias": [
             "mtp"
         ],

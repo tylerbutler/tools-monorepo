@@ -87,6 +87,9 @@
 			"fluid": {
 				"description": "FluidFramework repository tools."
 			},
+			"generate": {
+				"description": "Code and config generation commands."
+			},
 			"git": {
 				"description": "Git-related commands."
 			},
@@ -108,9 +111,10 @@
 		"@oclif/plugin-which": "^3.2.42",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
+		"ccl-ts": "workspace:^",
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
-		"effection": "^3.6.1",
+		"effection": "^4.0.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
 		"semver": "^7.7.3",
