@@ -19,13 +19,13 @@ import type { VFile } from "vfile";
 
 const { getWorkspaceGlobs, resolveWorkspaceRoot } = resolveWorkspacePkg;
 
-/**
- * Regex for removing leading slash from relative paths
- */
-const LEADING_SLASH_REGEX = /^\//;
+const LEADING_SLASH = /^\//;
+
+/** Available column types for the workspace packages table. */
+export type ColumnType = "name" | "description" | "path" | "private";
 
 /**
- * Represents a package entry discovered from the workspace
+ * A package entry discovered from the workspace.
  */
 export interface PackageEntry {
 	/** Package name from package.json */
@@ -39,12 +39,12 @@ export interface PackageEntry {
 }
 
 /**
- * Options for the remark-workspace-packages plugin
+ * Options for the remark-workspace-packages plugin.
  */
 export interface WorkspacePackagesOptions {
 	/**
 	 * Path to the workspace root relative to the markdown file's directory.
-	 * If not specified, the plugin will search upward for pnpm-workspace.yaml or package.json with workspaces.
+	 * If not specified, the plugin searches upward for pnpm-workspace.yaml or package.json with workspaces.
 	 * @default undefined (auto-detect)
 	 */
 	workspaceRoot?: string;
@@ -57,15 +57,13 @@ export interface WorkspacePackagesOptions {
 	sectionPrefix?: string;
 
 	/**
-	 * Glob patterns to exclude packages from the table.
-	 * Matches against package names.
+	 * Glob patterns to exclude packages from the table. Matches against package names.
 	 * @default []
 	 */
 	exclude?: string[];
 
 	/**
-	 * Glob patterns to include packages in the table.
-	 * If specified, only matching packages are included.
+	 * Glob patterns to include packages in the table. If specified, only matching packages are included.
 	 * @default [] (include all)
 	 */
 	include?: string[];
@@ -84,26 +82,18 @@ export interface WorkspacePackagesOptions {
 
 	/**
 	 * Column configuration for the table.
-	 * Use "private" column to show package privacy status (✓ for private, empty for public).
+	 * Use "private" column to show package privacy status (checkmark for private, empty for public).
 	 * @default ["name", "description"]
 	 */
-	columns?: Array<"name" | "description" | "path" | "private">;
+	columns?: ColumnType[];
 
 	/**
 	 * Custom column headers.
 	 * @default { name: "Package", description: "Description", path: "Path", private: "Private" }
 	 */
-	columnHeaders?: {
-		name?: string;
-		description?: string;
-		path?: string;
-		private?: string;
-	};
+	columnHeaders?: Partial<Record<ColumnType, string>>;
 }
 
-/**
- * Package.json structure for reading workspace packages
- */
 interface PackageJson {
 	name?: string;
 	description?: string;
@@ -111,52 +101,34 @@ interface PackageJson {
 	workspaces?: string[] | { packages: string[] };
 }
 
-/**
- * Check if a name matches any exclude pattern
- */
-function isExcluded(name: string, patterns: string[]): boolean {
+function matchesPatterns(
+	name: string,
+	patterns: string[],
+	defaultIfEmpty: boolean,
+): boolean {
 	if (patterns.length === 0) {
-		return false;
+		return defaultIfEmpty;
 	}
 	return micromatch.isMatch(name, patterns);
 }
 
-/**
- * Check if a name matches any include pattern (or no patterns means include all)
- */
-function isIncluded(name: string, patterns: string[]): boolean {
-	if (patterns.length === 0) {
-		return true;
-	}
-	return micromatch.isMatch(name, patterns);
-}
-
-/**
- * Expand workspace glob patterns to find package directories containing package.json
- */
 function expandWorkspacePatterns(
 	workspaceRoot: string,
 	patterns: string[],
 ): string[] {
-	// Convert workspace patterns to glob patterns for package.json files
 	const globPatterns = patterns
 		.filter((p) => !p.startsWith("!"))
 		.map((p) => join(p, "package.json"));
 
-	// Find all matching package.json files
 	const packageJsonPaths = globSync(globPatterns, {
 		cwd: workspaceRoot,
 		absolute: true,
 		ignore: ["**/node_modules/**"],
 	});
 
-	// Return the directory containing each package.json
 	return packageJsonPaths.map((p) => dirname(p));
 }
 
-/**
- * Read package information from a package directory
- */
 function readPackageInfo(
 	packageDir: string,
 	workspaceRoot: string,
@@ -174,14 +146,13 @@ function readPackageInfo(
 			return undefined;
 		}
 
-		// Calculate relative path from workspace root
 		const relativePath = packageDir
 			.replace(workspaceRoot, "")
-			.replace(LEADING_SLASH_REGEX, "");
+			.replace(LEADING_SLASH, "");
 
 		return {
 			name: pkg.name,
-			description: pkg.description || "",
+			description: pkg.description ?? "",
 			path: relativePath,
 			private: pkg.private === true,
 		};
@@ -190,9 +161,6 @@ function readPackageInfo(
 	}
 }
 
-/**
- * Extract workspace packages
- */
 function extractWorkspacePackages(
 	workspaceRoot: string,
 	options: {
@@ -215,34 +183,26 @@ function extractWorkspacePackages(
 			continue;
 		}
 
-		// Apply filters
-		if (!options.includePrivate && pkg.private) {
-			continue;
-		}
-		if (isExcluded(pkg.name, options.exclude)) {
-			continue;
-		}
-		if (!isIncluded(pkg.name, options.include)) {
+		const isExcluded = matchesPatterns(pkg.name, options.exclude, false);
+		const isIncluded = matchesPatterns(pkg.name, options.include, true);
+		const isPrivateAndExcluded = !options.includePrivate && pkg.private;
+
+		if (isPrivateAndExcluded || isExcluded || !isIncluded) {
 			continue;
 		}
 
 		packages.push(pkg);
 	}
 
-	// Sort alphabetically by name
 	return packages.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-/**
- * Find the indices of start and end markers in the AST
- */
-function findMarkers(
-	tree: Root,
-	prefix: string,
-): {
+interface MarkerIndices {
 	startIndex: number | null;
 	endIndex: number | null;
-} {
+}
+
+function findMarkers(tree: Root, prefix: string): MarkerIndices {
 	const startMarker = `<!-- ${prefix}-start -->`;
 	const endMarker = `<!-- ${prefix}-end -->`;
 
@@ -251,7 +211,7 @@ function findMarkers(
 
 	for (let i = 0; i < tree.children.length; i++) {
 		const node = tree.children[i];
-		if (node !== undefined && node.type === "html") {
+		if (node?.type === "html") {
 			const value = node.value.trim();
 			if (value === startMarker) {
 				startIndex = i;
@@ -264,38 +224,24 @@ function findMarkers(
 	return { startIndex, endIndex };
 }
 
-/**
- * Extract name and description from a table row
- */
 function extractRowData(
 	row: TableRow,
 ): { name: string; description: string } | undefined {
-	if (row.children.length < 2) {
-		return undefined;
-	}
-
-	const nameCell = row.children[0];
-	const descCell = row.children[1];
-
-	if (nameCell === undefined || descCell === undefined) {
+	const [nameCell, descCell] = row.children;
+	if (!(nameCell && descCell)) {
 		return undefined;
 	}
 
 	const name = mdastToString(nameCell).trim();
-	const description = mdastToString(descCell).trim();
-
 	if (!name) {
 		return undefined;
 	}
 
-	// Remove backticks and link syntax from inline code/links
+	const description = mdastToString(descCell).trim();
 	const cleanName = name.replace(/^`|`$/g, "").replace(/^\[|\].*$/g, "");
 	return { name: cleanName, description };
 }
 
-/**
- * Parse an existing table to extract name → description mapping
- */
 function parseExistingTable(
 	tree: Root,
 	startIndex: number,
@@ -303,19 +249,15 @@ function parseExistingTable(
 ): Map<string, string> {
 	const descriptions = new Map<string, string>();
 
-	// Find table node between markers
 	for (let i = startIndex + 1; i < endIndex; i++) {
 		const node = tree.children[i];
 		if (node?.type === "table") {
 			const tableNode = node as Table;
 			// Skip header row (index 0), process data rows
-			for (let rowIdx = 1; rowIdx < tableNode.children.length; rowIdx++) {
-				const row = tableNode.children[rowIdx];
-				if (row !== undefined) {
-					const data = extractRowData(row);
-					if (data) {
-						descriptions.set(data.name, data.description);
-					}
+			for (const row of tableNode.children.slice(1)) {
+				const data = extractRowData(row);
+				if (data) {
+					descriptions.set(data.name, data.description);
 				}
 			}
 			break;
@@ -325,9 +267,6 @@ function parseExistingTable(
 	return descriptions;
 }
 
-/**
- * Create a table cell with text content
- */
 function createTextCell(text: string): TableCell {
 	return {
 		type: "tableCell",
@@ -335,9 +274,6 @@ function createTextCell(text: string): TableCell {
 	};
 }
 
-/**
- * Create a table cell with inline code content
- */
 function createCodeCell(code: string): TableCell {
 	return {
 		type: "tableCell",
@@ -345,9 +281,6 @@ function createCodeCell(code: string): TableCell {
 	};
 }
 
-/**
- * Create a table cell with a link
- */
 function createLinkCell(text: string, url: string): TableCell {
 	return {
 		type: "tableCell",
@@ -361,90 +294,73 @@ function createLinkCell(text: string, url: string): TableCell {
 	};
 }
 
-/**
- * Normalize column order: if "private" is present, move it to second position (after "name")
- */
-function normalizeColumnOrder(
-	columns: Array<"name" | "description" | "path" | "private">,
-): Array<"name" | "description" | "path" | "private"> {
+/** Moves "private" column to second position (after "name") if present. */
+function normalizeColumnOrder(columns: ColumnType[]): ColumnType[] {
 	const privateIndex = columns.indexOf("private");
 	if (privateIndex === -1 || privateIndex === 1) {
-		// No private column or already in second position
 		return columns;
 	}
 
-	// Remove private from current position and insert at index 1 (second position)
-	const result: Array<"name" | "description" | "path" | "private"> =
-		columns.filter((col) => col !== "private");
+	const result: ColumnType[] = columns.filter((col) => col !== "private");
 	result.splice(1, 0, "private");
 	return result;
 }
 
-/**
- * Generate a new table AST from package entries
- */
+interface TableGenerationOptions {
+	columns: ColumnType[];
+	columnHeaders: Record<ColumnType, string>;
+	includeLinks: boolean;
+}
+
+function createCellForColumn(
+	col: ColumnType,
+	entry: PackageEntry,
+	existingDescriptions: Map<string, string>,
+	includeLinks: boolean,
+): TableCell {
+	switch (col) {
+		case "name":
+			return includeLinks
+				? createLinkCell(entry.name, `./${entry.path}`)
+				: createCodeCell(entry.name);
+		case "description":
+			return createTextCell(
+				existingDescriptions.get(entry.name) ?? entry.description,
+			);
+		case "path":
+			return createCodeCell(entry.path);
+		case "private":
+			return createTextCell(entry.private ? "✓" : "");
+		default: {
+			const exhaustiveCheck: never = col;
+			throw new Error(`Unknown column type: ${exhaustiveCheck}`);
+		}
+	}
+}
+
 function generateTableAst(
 	entries: PackageEntry[],
 	existingDescriptions: Map<string, string>,
-	options: {
-		columns: Array<"name" | "description" | "path" | "private">;
-		columnHeaders: {
-			name: string;
-			description: string;
-			path: string;
-			private: string;
-		};
-		includeLinks: boolean;
-	},
+	options: TableGenerationOptions,
 ): Table {
-	// Normalize column order: private should be second if present
 	const columns = normalizeColumnOrder(options.columns);
-
-	const headerCells: TableCell[] = columns.map((col) =>
-		createTextCell(options.columnHeaders[col]),
-	);
 
 	const headerRow: TableRow = {
 		type: "tableRow",
-		children: headerCells,
+		children: columns.map((col) => createTextCell(options.columnHeaders[col])),
 	};
 
-	const dataRows: TableRow[] = entries.map((entry) => {
-		const cells: TableCell[] = [];
-
-		for (const col of columns) {
-			switch (col) {
-				case "name":
-					if (options.includeLinks) {
-						cells.push(createLinkCell(entry.name, `./${entry.path}`));
-					} else {
-						cells.push(createCodeCell(entry.name));
-					}
-					break;
-				case "description": {
-					// Preserve existing description if present, otherwise use package.json description
-					const description =
-						existingDescriptions.get(entry.name) || entry.description;
-					cells.push(createTextCell(description));
-					break;
-				}
-				case "path":
-					cells.push(createCodeCell(entry.path));
-					break;
-				case "private":
-					cells.push(createTextCell(entry.private ? "✓" : ""));
-					break;
-				default:
-					// TypeScript exhaustive check - this should never happen
-					break;
-			}
-		}
-
-		return {
-			type: "tableRow",
-			children: cells,
-		};
-	});
+	const dataRows: TableRow[] = entries.map((entry) => ({
+		type: "tableRow",
+		children: columns.map((col) =>
+			createCellForColumn(
+				col,
+				entry,
+				existingDescriptions,
+				options.includeLinks,
+			),
+		),
+	}));
 
 	return {
 		type: "table",
@@ -453,15 +369,11 @@ function generateTableAst(
 	};
 }
 
-/**
- * Update the AST with the new table content
- */
 function updateAst(
 	tree: Root,
 	table: Table,
 	prefix: string,
-	startIndex: number | null,
-	endIndex: number | null,
+	markers: MarkerIndices,
 ): void {
 	const startMarkerNode: Html = {
 		type: "html",
@@ -472,8 +384,11 @@ function updateAst(
 		value: `<!-- ${prefix}-end -->`,
 	};
 
-	if (startIndex !== null && endIndex !== null && startIndex < endIndex) {
-		// Replace content between markers
+	const { startIndex, endIndex } = markers;
+	const hasValidMarkers =
+		startIndex !== null && endIndex !== null && startIndex < endIndex;
+
+	if (hasValidMarkers) {
 		tree.children.splice(
 			startIndex,
 			endIndex - startIndex + 1,
@@ -482,7 +397,6 @@ function updateAst(
 			endMarkerNode,
 		);
 	} else {
-		// Append at end of file
 		tree.children.push(startMarkerNode, table, endMarkerNode);
 	}
 }
@@ -490,12 +404,11 @@ function updateAst(
 /**
  * Remark plugin to generate and update workspace package tables.
  *
- * The plugin looks for HTML comment markers (`<!-- workspace-packages-start -->` and
- * `<!-- workspace-packages-end -->`) in the markdown and replaces the content between
- * them with an updated table of workspace packages.
+ * Looks for HTML comment markers (`<!-- workspace-packages-start -->` and
+ * `<!-- workspace-packages-end -->`) in the markdown and replaces the content
+ * between them with an updated table of workspace packages.
  *
  * If no markers exist, the table is appended at the end of the file with markers.
- *
  * User-edited descriptions in the description column are preserved across updates.
  *
  * @example
@@ -521,18 +434,17 @@ export const remarkWorkspacePackages: Plugin<
 		includeLinks = true,
 		columns = ["name", "description"],
 		columnHeaders = {},
-	} = options || {};
+	} = options ?? {};
 
-	const mergedColumnHeaders = {
-		name: columnHeaders.name || "Package",
-		description: columnHeaders.description || "Description",
-		path: columnHeaders.path || "Path",
-		private: columnHeaders.private || "Private",
+	const mergedColumnHeaders: Record<ColumnType, string> = {
+		name: columnHeaders.name ?? "Package",
+		description: columnHeaders.description ?? "Description",
+		path: columnHeaders.path ?? "Path",
+		private: columnHeaders.private ?? "Private",
 	};
 
 	return (tree: Root, file: VFile) => {
-		// Get the directory of the markdown file
-		const filePath = file.history?.[0] || file.path;
+		const filePath = file.history?.[0] ?? file.path;
 		if (!filePath) {
 			file.message(
 				"No file path available, skipping workspace packages generation",
@@ -541,14 +453,9 @@ export const remarkWorkspacePackages: Plugin<
 		}
 
 		const dir = dirname(filePath);
-
-		// Find workspace root
-		let workspaceRoot: string | null | undefined;
-		if (workspaceRootOption) {
-			workspaceRoot = join(dir, workspaceRootOption);
-		} else {
-			workspaceRoot = resolveWorkspaceRoot(dir);
-		}
+		const workspaceRoot = workspaceRootOption
+			? join(dir, workspaceRootOption)
+			: resolveWorkspaceRoot(dir);
 
 		if (!workspaceRoot) {
 			file.message(
@@ -557,35 +464,30 @@ export const remarkWorkspacePackages: Plugin<
 			return;
 		}
 
-		// Extract workspace packages
 		const packages = extractWorkspacePackages(workspaceRoot, {
 			exclude,
 			include,
 			includePrivate,
 		});
 
-		// If no packages, don't create/update table
 		if (packages.length === 0) {
 			return;
 		}
 
-		// Find existing markers
-		const { startIndex, endIndex } = findMarkers(tree, sectionPrefix);
+		const markers = findMarkers(tree, sectionPrefix);
+		const { startIndex, endIndex } = markers;
 
-		// Parse existing table for description preservation
-		let existingDescriptions = new Map<string, string>();
-		if (startIndex !== null && endIndex !== null && startIndex < endIndex) {
-			existingDescriptions = parseExistingTable(tree, startIndex, endIndex);
-		}
+		const existingDescriptions =
+			startIndex !== null && endIndex !== null && startIndex < endIndex
+				? parseExistingTable(tree, startIndex, endIndex)
+				: new Map<string, string>();
 
-		// Generate new table
 		const table = generateTableAst(packages, existingDescriptions, {
 			columns,
 			columnHeaders: mergedColumnHeaders,
 			includeLinks,
 		});
 
-		// Update AST
-		updateAst(tree, table, sectionPrefix, startIndex, endIndex);
+		updateAst(tree, table, sectionPrefix, markers);
 	};
 };

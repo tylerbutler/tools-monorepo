@@ -6,7 +6,6 @@ import remarkGfm from "remark-gfm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { remarkWorkspacePackages } from "../src/index.js";
 
-// Create a unique temp directory for each test run
 const testDir = join(tmpdir(), `remark-workspace-packages-test-${Date.now()}`);
 
 beforeEach(() => {
@@ -21,25 +20,23 @@ afterEach(() => {
 	}
 });
 
-/**
- * Helper to create a pnpm workspace with pnpm-workspace.yaml and root package.json.
- * The resolve-workspace-root library requires both files for pnpm workspaces.
- */
+function escapeRegex(str: string): string {
+	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Creates a pnpm workspace with pnpm-workspace.yaml and root package.json. */
 function createPnpmWorkspace(packages: string[]): void {
 	writeFileSync(
 		join(testDir, "pnpm-workspace.yaml"),
 		`packages:\n${packages.map((p) => `  - "${p}"`).join("\n")}\n`,
 	);
-	// Root package.json is required by resolve-workspace-root for pnpm workspaces
 	writeFileSync(
 		join(testDir, "package.json"),
 		JSON.stringify({ name: "test-workspace", version: "1.0.0" }, null, 2),
 	);
 }
 
-/**
- * Helper to create a package.json in a directory
- */
+/** Creates a package.json in a directory. */
 function createPackageJson(
 	relativePath: string,
 	pkg: { name: string; description?: string; private?: boolean },
@@ -49,9 +46,7 @@ function createPackageJson(
 	writeFileSync(join(dir, "package.json"), JSON.stringify(pkg, null, 2));
 }
 
-/**
- * Helper to process markdown with the plugin
- */
+/** Processes markdown with the plugin. */
 async function processMarkdown(
 	markdown: string,
 	options?: Parameters<typeof remarkWorkspacePackages>[0],
@@ -66,38 +61,24 @@ async function processMarkdown(
 	return String(result);
 }
 
-/**
- * Helper to check if a table row exists with the given package name
- */
+/** Checks if a table row exists with the given package name. */
 function hasTableRow(result: string, packageName: string): boolean {
-	// Match table row with package name as inline code or link
-	const codePattern = new RegExp(`\\|\\s*\`${escapeRegex(packageName)}\``);
-	const linkPattern = new RegExp(
-		`\\|\\s*\\[\\s*\`${escapeRegex(packageName)}\`\\s*\\]`,
-	);
+	const escaped = escapeRegex(packageName);
+	const codePattern = new RegExp(`\\|\\s*\`${escaped}\``);
+	const linkPattern = new RegExp(`\\|\\s*\\[\\s*\`${escaped}\`\\s*\\]`);
 	return codePattern.test(result) || linkPattern.test(result);
 }
 
-/**
- * Helper to check if a table row has a specific description
- */
+/** Checks if a table row has a specific description. */
 function hasTableRowWithDescription(
 	result: string,
 	packageName: string,
 	description: string,
 ): boolean {
-	// Match table row with package name and description
 	const pattern = new RegExp(
 		`\\|[^|]*${escapeRegex(packageName)}[^|]*\\|\\s*${escapeRegex(description)}\\s*\\|`,
 	);
 	return pattern.test(result);
-}
-
-/**
- * Helper to escape regex special characters
- */
-function escapeRegex(str: string): string {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 describe("remarkWorkspacePackages", () => {
@@ -239,11 +220,9 @@ old content
 
 			const result = await processMarkdown(markdown);
 
-			// Existing description should be preserved
 			expect(
 				hasTableRowWithDescription(result, "foo", "Custom edited description"),
 			).toBe(true);
-			// New package should use package.json description
 			expect(hasTableRowWithDescription(result, "bar", "Bar original")).toBe(
 				true,
 			);
@@ -392,15 +371,12 @@ old content
 				columns: ["name", "description", "private"],
 			});
 
-			// Private column should be moved to second position automatically
 			expect(result).toMatch(
 				/\|\s*Package\s*\|\s*Private\s*\|\s*Description\s*\|/,
 			);
-			// Private package should have checkmark in second column
 			expect(result).toMatch(
 				/private-pkg[^|]*\|\s*✓\s*\|[^|]*Private package[^|]*\|/,
 			);
-			// Public package should have empty cell in second column
 			expect(result).toMatch(
 				/public-pkg[^|]*\|\s*\|[^|]*Public package[^|]*\|/,
 			);
@@ -451,13 +427,9 @@ old content
 
 	describe("workspace detection", () => {
 		it("should detect npm workspaces from package.json", async () => {
-			// Create root package.json with workspaces field
 			writeFileSync(
 				join(testDir, "package.json"),
-				JSON.stringify({
-					name: "root",
-					workspaces: ["packages/*"],
-				}),
+				JSON.stringify({ name: "root", workspaces: ["packages/*"] }),
 			);
 			createPackageJson("packages/foo", { name: "foo", description: "Foo" });
 
@@ -528,20 +500,16 @@ old content
 	});
 
 	describe("integration with real workspace", () => {
-		/**
-		 * Process markdown from the real project directory
-		 */
 		async function processMarkdownFromProject(
 			markdown: string,
 			options?: Parameters<typeof remarkWorkspacePackages>[0],
 		): Promise<string> {
-			const projectDir = process.cwd();
 			const result = await remark()
 				.use(remarkGfm)
 				.use(remarkWorkspacePackages, options)
 				.process({
 					value: markdown,
-					path: join(projectDir, "README.md"),
+					path: join(process.cwd(), "README.md"),
 				});
 			return String(result);
 		}
@@ -549,9 +517,7 @@ old content
 		it("should detect packages from the actual workspace", async () => {
 			const result = await processMarkdownFromProject("# Workspace");
 
-			// Should find the remark-workspace-packages package itself
 			expect(hasTableRow(result, "remark-workspace-packages")).toBe(true);
-			// And other packages in the monorepo
 			expect(hasTableRow(result, "remark-task-table")).toBe(true);
 		});
 

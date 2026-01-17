@@ -15,36 +15,16 @@ import { remarkWorkspacePackages } from "remark-workspace-packages";
 const config = {
 	plugins: [
 		remarkGfm,
-		[
-			remarkToc,
-			{
-				heading: "Contents",
-				tight: true,
-			},
-		],
+		[remarkToc, { heading: "Contents", tight: true }],
 		[
 			remarkTaskTable,
 			{
 				sectionPrefix: "task-table",
 				includeNx: true,
-				exclude: [
-					// Exclude executor-style scripts (check:format, check:deps, etc.)
-					"*:*",
-				],
+				exclude: ["*:*"],
 			},
 		],
-		[
-			remarkWorkspacePackages,
-			{
-				sectionPrefix: "workspace-packages",
-				includePrivate: true,
-				columns: ["name", "description"],
-				columnHeaders: {
-					name: "Package",
-					description: "Description",
-				},
-			},
-		],
+		remarkWorkspacePackages,
 	],
 };
 
