@@ -37,36 +37,18 @@ function isObject(value: unknown): value is CCLObject {
 }
 
 /**
- * Get a string value from a CCL object, returning undefined on error.
- */
-function getStringValue(obj: CCLObject, key: string): string | undefined {
-	const result = getString(obj, key);
-	return result.isOk ? result.value : undefined;
-}
-
-/**
- * Get a boolean value from a CCL object, returning the default on error.
- */
-function getBoolValue(
-	obj: CCLObject,
-	key: string,
-	defaultValue: boolean,
-): boolean {
-	const result = getBool(obj, key);
-	return result.isOk ? result.value : defaultValue;
-}
-
-/**
  * Parse types section from CCL object.
  */
 function parseTypes(typesObj: CCLObject): Record<string, CommitType> {
 	const result: Record<string, CommitType> = {};
 	for (const [typeName, typeConfig] of Object.entries(typesObj)) {
 		if (isObject(typeConfig)) {
-			const description = getStringValue(typeConfig, "description") ?? "";
-			const changelogGroupRaw = getStringValue(typeConfig, "changelog_group");
-			const changelogGroup = changelogGroupRaw || null;
-			const scopeRequired = getBoolValue(typeConfig, "scope_required", false);
+			const description = getString(typeConfig, "description").unwrapOr("");
+			const changelogGroup =
+				getString(typeConfig, "changelog_group").unwrapOr("") || null;
+			const scopeRequired = getBool(typeConfig, "scope_required").unwrapOr(
+				false,
+			);
 
 			result[typeName] = {
 				description,
@@ -85,9 +67,10 @@ function parseScopes(scopesObj: CCLObject): Record<string, Scope> {
 	const result: Record<string, Scope> = {};
 	for (const [scopeName, scopeConfig] of Object.entries(scopesObj)) {
 		if (isObject(scopeConfig)) {
-			const displayName =
-				getStringValue(scopeConfig, "display_name") ?? scopeName;
-			const inChangelog = getBoolValue(scopeConfig, "in_changelog", true);
+			const displayName = getString(scopeConfig, "display_name").unwrapOr(
+				scopeName,
+			);
+			const inChangelog = getBool(scopeConfig, "in_changelog").unwrapOr(true);
 
 			result[scopeName] = {
 				display_name: displayName,
