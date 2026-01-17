@@ -19,8 +19,10 @@ export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 			name: NoJsFileExtensions.name,
 			file,
 			autoFixable: false,
-			errorMessage:
-				"JavaScript files should have a .cjs or .mjs file extension based on the module format of the file. Rename the file accordingly.",
+			errorMessages: [
+				"JavaScript files should have a .cjs or .mjs file extension based on the module format of the file.",
+			],
+			manualFix: "Rename the file to have a .cjs or .mjs file extension.",
 		};
 		return result;
 	},

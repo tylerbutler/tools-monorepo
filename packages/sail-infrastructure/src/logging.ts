@@ -30,6 +30,11 @@ export interface Logger {
 	log: LoggingFunction;
 
 	/**
+	 * Logs a success message.
+	 */
+	success: LoggingFunction;
+
+	/**
 	 * Logs an informational message.
 	 */
 	info: ErrorLoggingFunction;
@@ -40,20 +45,24 @@ export interface Logger {
 	warning: ErrorLoggingFunction;
 
 	/**
-	 * Logs an error message.
+	 * Logs an error message without exiting.
 	 *
 	 * @remarks
 	 *
-	 * This method is not named 'error' because it conflicts with the method that oclif has on its Command class.
-	 * That method exits the process in addition to logging, so this method exists to differentiate, and provide
-	 * error logging that doesn't exit the process.
+	 * This method logs errors to stderr but does not exit the process. For commands that need to exit
+	 * on error, use OCLIF's built-in error() method instead.
 	 */
-	errorLog: ErrorLoggingFunction;
+	error: ErrorLoggingFunction;
 
 	/**
 	 * Logs a verbose message.
 	 */
 	verbose: ErrorLoggingFunction;
+
+	/**
+	 * Optional function to format error messages.
+	 */
+	formatError?: ((message: Error | string) => string) | undefined;
 }
 
 /**
@@ -66,6 +75,11 @@ export const defaultLogger: Logger = {
 	log,
 
 	/**
+	 * {@inheritDoc Logger.success}
+	 */
+	success,
+
+	/**
 	 * {@inheritDoc Logger.info}
 	 */
 	info,
@@ -76,9 +90,9 @@ export const defaultLogger: Logger = {
 	warning,
 
 	/**
-	 * {@inheritDoc Logger.errorLog}
+	 * {@inheritDoc Logger.error}
 	 */
-	errorLog,
+	error: errorLog,
 
 	/**
 	 * {@inheritDoc Logger.verbose}
@@ -110,6 +124,11 @@ function logWithTime(
 function log(msg: string | undefined): void {
 	// biome-ignore lint/suspicious/noConsole: This is a logging utility
 	logWithTime(msg, console.log);
+}
+
+function success(msg: string | undefined): void {
+	// biome-ignore lint/suspicious/noConsole: This is a logging utility
+	logWithTime(`${chalk.green("SUCCESS")}: ${msg}`, console.log);
 }
 
 function info(msg: string | Error | undefined): void {

@@ -66,7 +66,7 @@ export default class FluidTaskRename extends GitCommand<
 		this.info("📋 Analyzing FluidFramework repository...");
 
 		// Analyze current naming patterns
-		const analysis = await analyzeTaskNaming(flags["repo-dir"], this);
+		const analysis = await analyzeTaskNaming(flags["repo-dir"], this.logger);
 
 		this.info(`  ✓ Found ${analysis.totalPackages} packages`);
 		this.info(`  ✓ Analyzed ${analysis.totalScripts} scripts`);
@@ -138,7 +138,10 @@ export default class FluidTaskRename extends GitCommand<
 		};
 
 		this.info("\n🔧 Applying renames...");
-		const result: TaskRenameResult = await applyTaskRenames(options, this);
+		const result: TaskRenameResult = await applyTaskRenames(
+			options,
+			this.logger,
+		);
 
 		this.info(`  ✓ Modified ${result.packagesModified} packages`);
 		this.info(`  ✓ Renamed ${result.scriptsRenamed} scripts`);
@@ -148,18 +151,21 @@ export default class FluidTaskRename extends GitCommand<
 
 		// Disable fluid-build-tasks-* policies to prevent re-adding incorrect task names
 		this.info("\n🔧 Disabling fluid-build-tasks-* policies...");
-		await disableFluidBuildTasksPolicies(flags["repo-dir"], this);
+		await disableFluidBuildTasksPolicies(flags["repo-dir"], this.logger);
 
 		// Update root fluidBuild.config.cjs
 		const renameMap = new Map<string, string>();
 		for (const rename of analysis.renames) {
 			renameMap.set(rename.from, rename.to);
 		}
-		await updateFluidBuildConfig(flags["repo-dir"], renameMap, this);
+		await updateFluidBuildConfig(flags["repo-dir"], renameMap, this.logger);
 
 		// Validate changes
 		this.info("\n✅ Validation:");
-		const validation = await validateTaskRenames(flags["repo-dir"], this);
+		const validation = await validateTaskRenames(
+			flags["repo-dir"],
+			this.logger,
+		);
 
 		for (const check of validation.checks) {
 			const icon = check.passed ? "✓" : "✗";

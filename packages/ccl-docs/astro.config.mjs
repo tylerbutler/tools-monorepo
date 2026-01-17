@@ -79,7 +79,11 @@ export default defineConfig({
 			sidebar: [
 				{
 					label: "For AI Assistants",
-					items: [{ slug: "ai-quickstart" }],
+					items: [
+						{ slug: "ai-quickstart" },
+						{ slug: "ai-implementation-guide" },
+						{ slug: "ai-prompts" },
+					],
 				},
 				{
 					label: "Learning CCL",
@@ -94,8 +98,10 @@ export default defineConfig({
 					items: [
 						{ slug: "implementing-ccl" },
 						{ slug: "parsing-algorithm" },
+						{ slug: "continuation-lines" },
 						{ slug: "library-features" },
 						{ slug: "test-suite-guide" },
+						{ slug: "behavior-reference" },
 					],
 				},
 				{
