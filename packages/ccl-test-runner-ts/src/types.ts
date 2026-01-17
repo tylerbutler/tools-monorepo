@@ -1,86 +1,102 @@
 // ============================================================================
 // Core CCL Types
 // ============================================================================
-// NOTE: These types are duplicated from ccl-ts to avoid circular dependencies.
-// The SOURCE OF TRUTH is in ccl-ts/src/types.ts.
-// If you modify these types, update ccl-ts/src/types.ts as well.
+// These types are duplicated from ccl-ts to avoid a cyclic dependency.
+// The canonical source of truth is ccl-ts/src/types.ts.
+// ============================================================================
+
+import { err, ok, type Result } from "true-myth/result";
+
+export type { Err, Ok } from "true-myth/result";
+// Re-export Result types from true-myth
+// biome-ignore lint/performance/noBarrelFile: This is an intentional re-export entrypoint
+export { err, ok, Result } from "true-myth/result";
+
+// ============================================================================
+// Core CCL Types (duplicated from ccl-ts to avoid cyclic dependency)
 // ============================================================================
 
 /**
- * A key-value entry from parsing CCL text.
- * This is the output of the `parse` function.
+ * A single key-value entry from CCL parsing.
+ * Represents a parsed line in CCL format.
  */
 export interface Entry {
-	/** The key portion of the entry */
 	key: string;
-	/** The value portion of the entry (always a string in flat parsing) */
 	value: string;
 }
 
 /**
- * Recursive CCL object type representing the output of `buildHierarchy`.
- * Values can be:
- * - string: A leaf value
- * - string[]: An array of values (from duplicate keys)
- * - CCLObject: A nested object
+ * Possible values in a CCL object.
  */
 export type CCLValue = string | string[] | CCLObject;
 
 /**
- * A CCL object is a record of string keys to CCL values.
- * This is the output of the `buildHierarchy` function.
+ * A nested object structure built from CCL entries.
  */
 export interface CCLObject {
 	[key: string]: CCLValue;
 }
 
 /**
- * Parse error that can occur when parsing CCL text.
+ * Error type for parse operations.
  */
 export interface ParseError {
-	/** Error message */
 	message: string;
-	/** Line number where the error occurred (1-indexed) */
 	line?: number;
-	/** Column number where the error occurred (1-indexed) */
 	column?: number;
 }
 
 /**
- * Result type for parse operations (internal use).
+ * Error type for typed access operations.
+ */
+export interface AccessError {
+	message: string;
+	path: string[];
+}
+
+// ============================================================================
+// Legacy Result Types (for backwards compatibility)
+// ============================================================================
+// These types are used by the normalization utilities to support implementations
+// that return custom result objects instead of true-myth Results.
+
+/**
+ * Legacy result type for parse operations.
  * Either returns entries or a parse error.
+ *
+ * @deprecated Use true-myth Result<Entry[], ParseError> instead
  */
 export type ParseResult =
 	| { success: true; entries: Entry[] }
 	| { success: false; error: ParseError };
 
 /**
- * Result type for buildHierarchy operations (internal use).
+ * Legacy result type for buildHierarchy operations.
  * Either returns a CCL object or an error.
+ *
+ * @deprecated Use true-myth Result<CCLObject, ParseError> instead
  */
 export type HierarchyResult =
 	| { success: true; object: CCLObject }
 	| { success: false; error: ParseError };
 
 // ============================================================================
-// Simple Function Types (Recommended API)
+// Simple Function Types (Throwing Pattern)
 // ============================================================================
-// These are the recommended function signatures for CCL implementations.
-// Functions should throw on errors (standard JS/TS pattern).
+// These are the function signatures for implementations that throw on errors.
 
 /**
- * Simple parse function that throws on error.
- * This is the recommended API for CCL implementations.
+ * Parse function that throws on error.
  */
 export type ParseFn = (input: string) => Entry[];
 
 /**
- * Simple build_hierarchy function that throws on error.
+ * Build_hierarchy function that throws on error.
  */
 export type BuildHierarchyFn = (entries: Entry[]) => CCLObject;
 
 /**
- * Simple typed access function that throws on error.
+ * Typed access function that throws on error.
  * Path is specified as variadic arguments: get_string(obj, "server", "host")
  */
 export type GetStringFn = (obj: CCLObject, ...pathParts: string[]) => string;
@@ -90,7 +106,7 @@ export type GetFloatFn = (obj: CCLObject, ...pathParts: string[]) => number;
 export type GetListFn = (obj: CCLObject, ...pathParts: string[]) => string[];
 
 /**
- * Simple filter function.
+ * Filter function.
  */
 export type FilterFn = (
 	entries: Entry[],
@@ -98,118 +114,198 @@ export type FilterFn = (
 ) => Entry[];
 
 /**
- * Simple compose function.
+ * Compose function.
  */
 export type ComposeFn = (base: Entry[], overlay: Entry[]) => Entry[];
 
 // ============================================================================
-// Result-Returning Function Types (Alternative API)
+// Result-Returning Function Types (true-myth Result Pattern)
 // ============================================================================
-// These types support implementations that prefer explicit Result types.
+// These types support implementations that use true-myth Result types.
 
 /**
- * Parse function that returns a Result.
+ * Parse function that returns a true-myth Result.
  */
-export type ParseResultFn = (input: string) => ParseResult;
+export type ParseResultFn = (input: string) => Result<Entry[], ParseError>;
 
 /**
- * Build hierarchy function that returns a Result.
+ * Build hierarchy function that returns a true-myth Result.
  */
-export type BuildHierarchyResultFn = (entries: Entry[]) => HierarchyResult;
+export type BuildHierarchyResultFn = (
+	entries: Entry[],
+) => Result<CCLObject, ParseError>;
 
 // ============================================================================
-// Union Types (Accept Either Pattern)
+// Legacy Result-Returning Function Types (custom result objects)
+// ============================================================================
+// These types support implementations that return custom { success, ... } objects.
+
+/**
+ * Parse function that returns a legacy ParseResult.
+ * @deprecated Use ParseResultFn (true-myth Result) instead
+ */
+export type LegacyParseResultFn = (input: string) => ParseResult;
+
+/**
+ * Build hierarchy function that returns a legacy HierarchyResult.
+ * @deprecated Use BuildHierarchyResultFn (true-myth Result) instead
+ */
+export type LegacyBuildHierarchyResultFn = (
+	entries: Entry[],
+) => HierarchyResult;
+
+// ============================================================================
+// Union Types (Accept Any Pattern)
 // ============================================================================
 
 /**
- * Parse function accepting either throwing or Result-returning pattern.
+ * Parse function accepting throwing, true-myth Result, or legacy result pattern.
  */
-export type AnyParseFn = ParseFn | ParseResultFn;
+export type AnyParseFn = ParseFn | ParseResultFn | LegacyParseResultFn;
 
 /**
- * Build hierarchy function accepting either pattern.
+ * Build hierarchy function accepting any pattern.
  */
-export type AnyBuildHierarchyFn = BuildHierarchyFn | BuildHierarchyResultFn;
+export type AnyBuildHierarchyFn =
+	| BuildHierarchyFn
+	| BuildHierarchyResultFn
+	| LegacyBuildHierarchyResultFn;
+
+// ============================================================================
+// Type Guards
+// ============================================================================
+
+/**
+ * Check if a value is a true-myth Result.
+ */
+export function isResult<T, E>(value: unknown): value is Result<T, E> {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		("isOk" in value || "isErr" in value) &&
+		typeof (value as Result<T, E>).isOk === "boolean"
+	);
+}
+
+/**
+ * Check if a value is a legacy ParseResult (has success property).
+ */
+export function isLegacyParseResult(value: unknown): value is ParseResult {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"success" in value &&
+		typeof (value as ParseResult).success === "boolean" &&
+		!("isOk" in value) // Not a true-myth Result
+	);
+}
+
+/**
+ * Check if a value is a legacy HierarchyResult.
+ */
+export function isLegacyHierarchyResult(
+	value: unknown,
+): value is HierarchyResult {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"success" in value &&
+		typeof (value as HierarchyResult).success === "boolean" &&
+		!("isOk" in value) // Not a true-myth Result
+	);
+}
+
+/**
+ * Check if a value is a ParseResult (legacy).
+ * @deprecated Use isLegacyParseResult or isResult instead
+ */
+export function isParseResult(value: unknown): value is ParseResult {
+	return isLegacyParseResult(value);
+}
+
+/**
+ * Check if a value is a HierarchyResult (legacy).
+ * @deprecated Use isLegacyHierarchyResult or isResult instead
+ */
+export function isHierarchyResult(value: unknown): value is HierarchyResult {
+	return isLegacyHierarchyResult(value);
+}
 
 // ============================================================================
 // Normalization Utilities
 // ============================================================================
+// These utilities normalize any function pattern to a consistent Result type.
 
 /**
- * Check if a value is a ParseResult (has success property).
+ * Normalize a parse function to always return a true-myth Result.
+ * Handles:
+ * - Throwing functions (wraps in try/catch)
+ * - true-myth Result-returning functions (pass through)
+ * - Legacy ParseResult-returning functions (converts to Result)
  */
-export function isParseResult(value: unknown): value is ParseResult {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"success" in value &&
-		typeof (value as ParseResult).success === "boolean"
-	);
-}
-
-/**
- * Check if a value is a HierarchyResult.
- */
-export function isHierarchyResult(value: unknown): value is HierarchyResult {
-	return (
-		typeof value === "object" &&
-		value !== null &&
-		"success" in value &&
-		typeof (value as HierarchyResult).success === "boolean"
-	);
-}
-
-/**
- * Normalize a parse function to always return ParseResult.
- * Wraps throwing functions in try/catch.
- */
-export function normalizeParseFunction(fn: AnyParseFn): ParseResultFn {
-	return (input: string): ParseResult => {
+export function normalizeParseFunction(
+	fn: AnyParseFn,
+): (input: string) => Result<Entry[], ParseError> {
+	return (input: string): Result<Entry[], ParseError> => {
 		try {
 			const result = fn(input);
 
-			// If it's already a ParseResult, return it
-			if (isParseResult(result)) {
+			// Check if it's a true-myth Result
+			if (isResult<Entry[], ParseError>(result)) {
 				return result;
 			}
 
-			// Otherwise it's Entry[], wrap in success result
-			return { success: true, entries: result };
+			// Check if it's a legacy ParseResult
+			if (isLegacyParseResult(result)) {
+				if (result.success) {
+					return ok(result.entries);
+				}
+				return err(result.error);
+			}
+
+			// Otherwise it's Entry[], wrap in ok()
+			return ok(result as Entry[]);
 		} catch (error) {
-			return {
-				success: false,
-				error: {
-					message: error instanceof Error ? error.message : String(error),
-				},
-			};
+			return err({
+				message: error instanceof Error ? error.message : String(error),
+			});
 		}
 	};
 }
 
 /**
- * Normalize a build_hierarchy function to always return HierarchyResult.
+ * Normalize a build_hierarchy function to always return a true-myth Result.
+ * Handles:
+ * - Throwing functions (wraps in try/catch)
+ * - true-myth Result-returning functions (pass through)
+ * - Legacy HierarchyResult-returning functions (converts to Result)
  */
 export function normalizeBuildHierarchyFunction(
 	fn: AnyBuildHierarchyFn,
-): BuildHierarchyResultFn {
-	return (entries: Entry[]): HierarchyResult => {
+): (entries: Entry[]) => Result<CCLObject, ParseError> {
+	return (entries: Entry[]): Result<CCLObject, ParseError> => {
 		try {
 			const result = fn(entries);
 
-			// If it's already a HierarchyResult, return it
-			if (isHierarchyResult(result)) {
+			// Check if it's a true-myth Result
+			if (isResult<CCLObject, ParseError>(result)) {
 				return result;
 			}
 
-			// Otherwise it's CCLObject, wrap in success result
-			return { success: true, object: result };
+			// Check if it's a legacy HierarchyResult
+			if (isLegacyHierarchyResult(result)) {
+				if (result.success) {
+					return ok(result.object);
+				}
+				return err(result.error);
+			}
+
+			// Otherwise it's CCLObject, wrap in ok()
+			return ok(result as CCLObject);
 		} catch (error) {
-			return {
-				success: false,
-				error: {
-					message: error instanceof Error ? error.message : String(error),
-				},
-			};
+			return err({
+				message: error instanceof Error ? error.message : String(error),
+			});
 		}
 	};
 }

@@ -29,6 +29,7 @@
  * ```
  */
 
+import type { Result } from "true-myth/result";
 import type {
 	CCLBehavior,
 	CCLFeature,
@@ -44,12 +45,15 @@ import {
 import type { TestCase } from "./schema-validation.js";
 import { loadAllTests, shouldRunTest } from "./test-data.js";
 import type {
+	AccessError,
 	AnyBuildHierarchyFn,
 	AnyParseFn,
 	CCLObject,
 	Entry,
+	ParseError,
 } from "./types.js";
 import {
+	isResult,
 	normalizeBuildHierarchyFunction,
 	normalizeParseFunction,
 } from "./types.js";
@@ -62,13 +66,14 @@ const CRLF_REGEX = /\r\n/g;
 /**
  * Function signatures for CCL implementations.
  *
- * Functions can use either pattern:
- * 1. **Simple (recommended)**: Return values directly, throw on errors
- * 2. **Result**: Return { success: true, ... } or { success: false, error: ... }
+ * Functions can use any of these patterns:
+ * 1. **Throwing**: Return values directly, throw on errors
+ * 2. **true-myth Result**: Return Result<T, E> from true-myth
+ * 3. **Legacy Result**: Return { success: true, ... } or { success: false, error: ... }
  *
- * The test runner automatically handles both patterns.
+ * The test runner automatically handles all patterns.
  *
- * @example Simple pattern (recommended)
+ * @example Throwing pattern
  * ```typescript
  * functions: {
  *   parse: (input) => parseEntries(input),  // throws on error
@@ -76,11 +81,12 @@ const CRLF_REGEX = /\r\n/g;
  * }
  * ```
  *
- * @example Result pattern
+ * @example true-myth Result pattern
  * ```typescript
+ * import { ok, err } from 'true-myth/result';
  * functions: {
- *   parse: (input) => ({ success: true, entries: parseEntries(input) }),
- *   build_hierarchy: (entries) => ({ success: true, object: buildObject(entries) }),
+ *   parse: (input) => ok(parseEntries(input)),
+ *   build_hierarchy: (entries) => ok(buildObject(entries)),
  * }
  * ```
  */
@@ -103,26 +109,41 @@ export interface CCLFunctions {
 	/** Build hierarchical object from flat entries */
 	build_hierarchy?: AnyBuildHierarchyFn;
 
-	/** Get string value at path (throws or returns undefined on missing) */
-	get_string?: (obj: CCLObject, ...pathParts: string[]) => string | undefined;
+	/** Get string value at path (returns value, Result, throws, or returns undefined) */
+	get_string?: (
+		obj: CCLObject,
+		...pathParts: string[]
+	) => string | undefined | Result<string, AccessError>;
 
-	/** Get integer value at path (throws or returns undefined on missing) */
-	get_int?: (obj: CCLObject, ...pathParts: string[]) => number | undefined;
+	/** Get integer value at path (returns value, Result, throws, or returns undefined) */
+	get_int?: (
+		obj: CCLObject,
+		...pathParts: string[]
+	) => number | undefined | Result<number, AccessError>;
 
-	/** Get boolean value at path (throws or returns undefined on missing) */
-	get_bool?: (obj: CCLObject, ...pathParts: string[]) => boolean | undefined;
+	/** Get boolean value at path (returns value, Result, throws, or returns undefined) */
+	get_bool?: (
+		obj: CCLObject,
+		...pathParts: string[]
+	) => boolean | undefined | Result<boolean, AccessError>;
 
-	/** Get float value at path (throws or returns undefined on missing) */
-	get_float?: (obj: CCLObject, ...pathParts: string[]) => number | undefined;
+	/** Get float value at path (returns value, Result, throws, or returns undefined) */
+	get_float?: (
+		obj: CCLObject,
+		...pathParts: string[]
+	) => number | undefined | Result<number, AccessError>;
 
-	/** Get list value at path (throws or returns undefined on missing) */
-	get_list?: (obj: CCLObject, ...pathParts: string[]) => string[] | undefined;
+	/** Get list value at path (returns value, Result, throws, or returns undefined) */
+	get_list?: (
+		obj: CCLObject,
+		...pathParts: string[]
+	) => string[] | undefined | Result<string[], AccessError>;
 
 	/** Print entries to CCL format */
 	print?: (entries: Entry[]) => string;
 
-	/** Format to canonical CCL representation */
-	canonical_format?: (input: string) => string;
+	/** Format to canonical CCL representation (may return string or Result) */
+	canonical_format?: (input: string) => string | Result<string, ParseError>;
 
 	/** Load and parse CCL from string */
 	load?: (input: string) => CCLObject;
@@ -447,7 +468,7 @@ function handleParseValidation(
 	const fn = normalizeParseFunction(rawFn);
 	const result = fn(input);
 
-	if (!result.success) {
+	if (result.isErr) {
 		return {
 			rawOutput: result,
 			output: { success: false, error: result.error },
@@ -457,7 +478,7 @@ function handleParseValidation(
 		};
 	}
 
-	const processedEntries = result.entries.map((entry) => ({
+	const processedEntries = result.value.map((entry: Entry) => ({
 		key: entry.key,
 		value: postprocessValue(entry.value, capabilities),
 	}));
@@ -520,13 +541,13 @@ function handleBuildHierarchyValidation(
 	const buildFn = normalizeBuildHierarchyFunction(rawBuildFn);
 
 	const parseResult = parseFn(input);
-	if (!parseResult.success) {
+	if (parseResult.isErr) {
 		throw new Error(`Parse failed: ${parseResult.error.message}`);
 	}
 
-	const hierarchyResult = buildFn(parseResult.entries);
+	const hierarchyResult = buildFn(parseResult.value);
 
-	if (!hierarchyResult.success) {
+	if (hierarchyResult.isErr) {
 		return {
 			rawOutput: hierarchyResult,
 			output: { success: false, error: hierarchyResult.error },
@@ -537,12 +558,12 @@ function handleBuildHierarchyValidation(
 	}
 
 	const passed =
-		JSON.stringify(hierarchyResult.object) ===
+		JSON.stringify(hierarchyResult.value) ===
 		JSON.stringify(testCase.expected.object);
 
 	return {
 		rawOutput: hierarchyResult,
-		output: hierarchyResult.object,
+		output: hierarchyResult.value,
 		expected: testCase.expected.object,
 		passed,
 		...(passed ? {} : { error: "Object mismatch" }),
@@ -567,16 +588,16 @@ function buildObjectFromInput(
 	const buildFn = normalizeBuildHierarchyFunction(rawBuildFn);
 
 	const parseResult = parseFn(input);
-	if (!parseResult.success) {
+	if (parseResult.isErr) {
 		throw new Error(`Parse failed: ${parseResult.error.message}`);
 	}
 
-	const hierarchyResult = buildFn(parseResult.entries);
-	if (!hierarchyResult.success) {
+	const hierarchyResult = buildFn(parseResult.value);
+	if (hierarchyResult.isErr) {
 		throw new Error(`Build hierarchy failed: ${hierarchyResult.error.message}`);
 	}
 
-	return hierarchyResult.object;
+	return hierarchyResult.value;
 }
 
 /**
@@ -589,6 +610,28 @@ function getPathArgsFromTestCase(testCase: TestCase): string[] {
 		throw new Error(`Test case "${testCase.name}" has no args for path`);
 	}
 	return args;
+}
+
+/**
+ * Unwrap a typed access result that may be a Result or a direct value.
+ * Returns { value, isError } to handle both patterns uniformly.
+ */
+function unwrapTypedAccessResult<T>(result: T | Result<T, AccessError>): {
+	value: T | undefined;
+	isError: boolean;
+	errorMessage?: string;
+} {
+	if (isResult<T, AccessError>(result)) {
+		if (result.isErr) {
+			return {
+				value: undefined,
+				isError: true,
+				errorMessage: result.error.message,
+			};
+		}
+		return { value: result.value, isError: false };
+	}
+	return { value: result as T, isError: false };
 }
 
 /**
@@ -610,10 +653,19 @@ function handleGetStringValidation(
 	// Check if we expect an error
 	if (testCase.expected.error === true) {
 		try {
-			fn(obj, ...pathArgs);
+			const rawResult = fn(obj, ...pathArgs);
+			const unwrapped = unwrapTypedAccessResult(rawResult);
+			if (unwrapped.isError) {
+				return {
+					rawOutput: rawResult,
+					output: { error: true },
+					expected: { error: true },
+					passed: true,
+				};
+			}
 			return {
-				rawOutput: undefined,
-				output: undefined,
+				rawOutput: rawResult,
+				output: unwrapped.value,
 				expected: { error: true },
 				passed: false,
 				error: "Expected error but function succeeded",
@@ -629,12 +681,23 @@ function handleGetStringValidation(
 	}
 
 	try {
-		const result = fn(obj, ...pathArgs);
+		const rawResult = fn(obj, ...pathArgs);
+		const unwrapped = unwrapTypedAccessResult(rawResult);
+		if (unwrapped.isError) {
+			return {
+				rawOutput: rawResult,
+				output: undefined,
+				expected: testCase.expected.value,
+				passed: false,
+				error: unwrapped.errorMessage ?? "Unknown error",
+			};
+		}
+		const result = unwrapped.value;
 		const expected = testCase.expected.value;
 		const passed = result === expected;
 
 		return {
-			rawOutput: result,
+			rawOutput: rawResult,
 			output: result,
 			expected,
 			passed,
@@ -670,10 +733,19 @@ function handleGetIntValidation(
 	// Check if we expect an error
 	if (testCase.expected.error === true) {
 		try {
-			fn(obj, ...pathArgs);
+			const rawResult = fn(obj, ...pathArgs);
+			const unwrapped = unwrapTypedAccessResult(rawResult);
+			if (unwrapped.isError) {
+				return {
+					rawOutput: rawResult,
+					output: { error: true },
+					expected: { error: true },
+					passed: true,
+				};
+			}
 			return {
-				rawOutput: undefined,
-				output: undefined,
+				rawOutput: rawResult,
+				output: unwrapped.value,
 				expected: { error: true },
 				passed: false,
 				error: "Expected error but function succeeded",
@@ -689,12 +761,23 @@ function handleGetIntValidation(
 	}
 
 	try {
-		const result = fn(obj, ...pathArgs);
+		const rawResult = fn(obj, ...pathArgs);
+		const unwrapped = unwrapTypedAccessResult(rawResult);
+		if (unwrapped.isError) {
+			return {
+				rawOutput: rawResult,
+				output: undefined,
+				expected: testCase.expected.value,
+				passed: false,
+				error: unwrapped.errorMessage ?? "Unknown error",
+			};
+		}
+		const result = unwrapped.value;
 		const expected = testCase.expected.value;
 		const passed = result === expected;
 
 		return {
-			rawOutput: result,
+			rawOutput: rawResult,
 			output: result,
 			expected,
 			passed,
@@ -730,10 +813,19 @@ function handleGetBoolValidation(
 	// Check if we expect an error
 	if (testCase.expected.error === true) {
 		try {
-			fn(obj, ...pathArgs);
+			const rawResult = fn(obj, ...pathArgs);
+			const unwrapped = unwrapTypedAccessResult(rawResult);
+			if (unwrapped.isError) {
+				return {
+					rawOutput: rawResult,
+					output: { error: true },
+					expected: { error: true },
+					passed: true,
+				};
+			}
 			return {
-				rawOutput: undefined,
-				output: undefined,
+				rawOutput: rawResult,
+				output: unwrapped.value,
 				expected: { error: true },
 				passed: false,
 				error: "Expected error but function succeeded",
@@ -749,12 +841,23 @@ function handleGetBoolValidation(
 	}
 
 	try {
-		const result = fn(obj, ...pathArgs);
+		const rawResult = fn(obj, ...pathArgs);
+		const unwrapped = unwrapTypedAccessResult(rawResult);
+		if (unwrapped.isError) {
+			return {
+				rawOutput: rawResult,
+				output: undefined,
+				expected: testCase.expected.value,
+				passed: false,
+				error: unwrapped.errorMessage ?? "Unknown error",
+			};
+		}
+		const result = unwrapped.value;
 		const expected = testCase.expected.value;
 		const passed = result === expected;
 
 		return {
-			rawOutput: result,
+			rawOutput: rawResult,
 			output: result,
 			expected,
 			passed,
@@ -790,10 +893,19 @@ function handleGetFloatValidation(
 	// Check if we expect an error
 	if (testCase.expected.error === true) {
 		try {
-			fn(obj, ...pathArgs);
+			const rawResult = fn(obj, ...pathArgs);
+			const unwrapped = unwrapTypedAccessResult(rawResult);
+			if (unwrapped.isError) {
+				return {
+					rawOutput: rawResult,
+					output: { error: true },
+					expected: { error: true },
+					passed: true,
+				};
+			}
 			return {
-				rawOutput: undefined,
-				output: undefined,
+				rawOutput: rawResult,
+				output: unwrapped.value,
 				expected: { error: true },
 				passed: false,
 				error: "Expected error but function succeeded",
@@ -809,12 +921,23 @@ function handleGetFloatValidation(
 	}
 
 	try {
-		const result = fn(obj, ...pathArgs);
+		const rawResult = fn(obj, ...pathArgs);
+		const unwrapped = unwrapTypedAccessResult(rawResult);
+		if (unwrapped.isError) {
+			return {
+				rawOutput: rawResult,
+				output: undefined,
+				expected: testCase.expected.value,
+				passed: false,
+				error: unwrapped.errorMessage ?? "Unknown error",
+			};
+		}
+		const result = unwrapped.value;
 		const expected = testCase.expected.value;
 		const passed = result === expected;
 
 		return {
-			rawOutput: result,
+			rawOutput: rawResult,
 			output: result,
 			expected,
 			passed,
@@ -850,10 +973,19 @@ function handleGetListValidation(
 	// Check if we expect an error
 	if (testCase.expected.error === true) {
 		try {
-			fn(obj, ...pathArgs);
+			const rawResult = fn(obj, ...pathArgs);
+			const unwrapped = unwrapTypedAccessResult(rawResult);
+			if (unwrapped.isError) {
+				return {
+					rawOutput: rawResult,
+					output: { error: true },
+					expected: { error: true },
+					passed: true,
+				};
+			}
 			return {
-				rawOutput: undefined,
-				output: undefined,
+				rawOutput: rawResult,
+				output: unwrapped.value,
 				expected: { error: true },
 				passed: false,
 				error: "Expected error but function succeeded",
@@ -869,12 +1001,23 @@ function handleGetListValidation(
 	}
 
 	try {
-		const result = fn(obj, ...pathArgs);
+		const rawResult = fn(obj, ...pathArgs);
+		const unwrapped = unwrapTypedAccessResult(rawResult);
+		if (unwrapped.isError) {
+			return {
+				rawOutput: rawResult,
+				output: undefined,
+				expected: testCase.expected.list ?? testCase.expected.value,
+				passed: false,
+				error: unwrapped.errorMessage ?? "Unknown error",
+			};
+		}
+		const result = unwrapped.value;
 		const expected = testCase.expected.list ?? testCase.expected.value;
 		const passed = JSON.stringify(result) === JSON.stringify(expected);
 
 		return {
-			rawOutput: result,
+			rawOutput: rawResult,
 			output: result,
 			expected,
 			passed,
@@ -912,11 +1055,11 @@ function handlePrintValidation(
 	const parseFn = normalizeParseFunction(rawParseFn);
 
 	const parseResult = parseFn(input);
-	if (!parseResult.success) {
+	if (parseResult.isErr) {
 		throw new Error(`Parse failed: ${parseResult.error.message}`);
 	}
 
-	const result = printFn(parseResult.entries);
+	const result = printFn(parseResult.value);
 	const expected = testCase.expected.value;
 	const passed = result === expected;
 
@@ -942,17 +1085,50 @@ function handleCanonicalFormatValidation(
 		throw new Error("canonical_format function not implemented");
 	}
 
-	const result = fn(input);
-	const expected = testCase.expected.value;
-	const passed = result === expected;
-
-	return {
-		rawOutput: result,
-		output: result,
-		expected,
-		passed,
-		...(passed ? {} : { error: `Expected "${expected}", got "${result}"` }),
-	};
+	try {
+		const rawResult = fn(input);
+		// Handle both Result-returning and direct-returning functions
+		if (isResult<string, ParseError>(rawResult)) {
+			if (rawResult.isErr) {
+				return {
+					rawOutput: rawResult,
+					output: undefined,
+					expected: testCase.expected.value,
+					passed: false,
+					error: rawResult.error.message,
+				};
+			}
+			const result = rawResult.value;
+			const expected = testCase.expected.value;
+			const passed = result === expected;
+			return {
+				rawOutput: rawResult,
+				output: result,
+				expected,
+				passed,
+				...(passed ? {} : { error: `Expected "${expected}", got "${result}"` }),
+			};
+		}
+		// Direct string return
+		const result = rawResult;
+		const expected = testCase.expected.value;
+		const passed = result === expected;
+		return {
+			rawOutput: result,
+			output: result,
+			expected,
+			passed,
+			...(passed ? {} : { error: `Expected "${expected}", got "${result}"` }),
+		};
+	} catch (e) {
+		return {
+			rawOutput: undefined,
+			output: undefined,
+			expected: testCase.expected.value,
+			passed: false,
+			error: e instanceof Error ? e.message : String(e),
+		};
+	}
 }
 
 /**
@@ -973,11 +1149,11 @@ function handleRoundTripValidation(
 	const parseFn = normalizeParseFunction(rawParseFn);
 
 	const parseResult = parseFn(input);
-	if (!parseResult.success) {
+	if (parseResult.isErr) {
 		throw new Error(`Parse failed: ${parseResult.error.message}`);
 	}
 
-	const roundTripped = printFn(parseResult.entries);
+	const roundTripped = printFn(parseResult.value);
 	const passed = roundTripped === input;
 
 	return {

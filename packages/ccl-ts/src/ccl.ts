@@ -3,9 +3,19 @@
  *
  * This module provides the core parsing functionality for CCL.
  * See https://ccl.tylerbutler.com for the CCL specification.
+ *
+ * All functions that can fail return Result types from true-myth.
+ * Use .isOk/.isErr to check success, or .match() for pattern matching.
  */
 
-import type { CCLObject, CCLValue, Entry } from "./types.js";
+import { err, ok, type Result } from "true-myth/result";
+import type {
+	AccessError,
+	CCLObject,
+	CCLValue,
+	Entry,
+	ParseError,
+} from "./types.js";
 
 /**
  * Parse CCL text into a flat list of entries.
@@ -14,17 +24,20 @@ import type { CCLObject, CCLValue, Entry } from "./types.js";
  * The parser handles multiline values, continuation lines, and indentation-based nesting.
  *
  * @param text - The CCL text to parse
- * @returns An array of entries with key-value pairs
+ * @returns A Result containing an array of entries or a parse error
  *
  * @example
  * ```ts
- * const entries = parse("name=Alice\nage=30");
- * // => [{ key: "name", value: "Alice" }, { key: "age", value: "30" }]
+ * const result = parse("name=Alice\nage=30");
+ * if (result.isOk) {
+ *   console.log(result.value);
+ *   // => [{ key: "name", value: "Alice" }, { key: "age", value: "30" }]
+ * }
  * ```
  *
  * @beta
  */
-export function parse(text: string): Entry[] {
+export function parse(text: string): Result<Entry[], ParseError> {
 	const baseline = determineBaseline(text);
 	const entries: Entry[] = [];
 	let pos = 0;
@@ -40,7 +53,7 @@ export function parse(text: string): Entry[] {
 		pos = nextPos;
 	}
 
-	return entries;
+	return ok(entries);
 }
 
 /**
@@ -278,19 +291,26 @@ function countLeadingWhitespace(line: string): number {
  * 4. Return the constructed hierarchy
  *
  * @param entries - The flat entries from a parse operation
- * @returns A hierarchical CCL object
+ * @returns A Result containing a hierarchical CCL object or a parse error
  *
  * @example
  * ```ts
- * const entries = parse("server=\n  host=localhost\n  port=8080");
- * const obj = buildHierarchy(entries);
- * // => { server: { host: "localhost", port: "8080" } }
+ * const parseResult = parse("server=\n  host=localhost\n  port=8080");
+ * if (parseResult.isOk) {
+ *   const objResult = buildHierarchy(parseResult.value);
+ *   if (objResult.isOk) {
+ *     console.log(objResult.value);
+ *     // => { server: { host: "localhost", port: "8080" } }
+ *   }
+ * }
  * ```
  *
  * @beta
  */
 // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Hierarchy building requires handling multiple entry types (empty keys, nested CCL, terminals) and duplicate key merging
-export function buildHierarchy(entries: Entry[]): CCLObject {
+export function buildHierarchy(
+	entries: Entry[],
+): Result<CCLObject, ParseError> {
 	const result: CCLObject = {};
 
 	for (const entry of entries) {
@@ -301,8 +321,15 @@ export function buildHierarchy(entries: Entry[]): CCLObject {
 			addToList(result, "", value);
 		} else if (containsCCLSyntax(value)) {
 			// Value contains "=" → recursively parse as nested CCL
-			const nestedEntries = parse(value);
-			const nestedObj = buildHierarchy(nestedEntries);
+			const nestedEntriesResult = parse(value);
+			if (nestedEntriesResult.isErr) {
+				return err(nestedEntriesResult.error);
+			}
+			const nestedObjResult = buildHierarchy(nestedEntriesResult.value);
+			if (nestedObjResult.isErr) {
+				return nestedObjResult;
+			}
+			const nestedObj = nestedObjResult.value;
 
 			// Check if key already exists
 			const existing = result[key];
@@ -332,7 +359,7 @@ export function buildHierarchy(entries: Entry[]): CCLObject {
 		}
 	}
 
-	return result;
+	return ok(result);
 }
 
 /**
@@ -469,70 +496,80 @@ function navigateToValue(
 }
 
 /**
- * Format path parts for error messages.
- */
-function formatPath(pathParts: string[]): string {
-	return pathParts.map((p) => (p === "" ? '""' : p)).join(", ");
-}
-
-/**
  * Get a string value at the specified path.
  *
  * Navigates to the path and returns the value if it's a string.
- * Throws an error if the path doesn't exist or the value isn't a string.
+ * Returns an error Result if the path doesn't exist or the value isn't a string.
  *
  * @param obj - The CCL object to query
  * @param pathParts - Path components to the value (e.g., "server", "host")
- * @returns The string value
- * @throws Error if path not found or value is not a string
+ * @returns A Result containing the string value or an access error
  *
  * @example
  * ```ts
- * const obj = buildHierarchy(parse("server=\n  host=localhost"));
- * const host = getString(obj, "server", "host"); // => "localhost"
+ * const objResult = buildHierarchy(parse("server=\n  host=localhost").value);
+ * if (objResult.isOk) {
+ *   const hostResult = getString(objResult.value, "server", "host");
+ *   if (hostResult.isOk) {
+ *     console.log(hostResult.value); // => "localhost"
+ *   }
+ * }
  * ```
  *
  * @beta
  */
-export function getString(obj: CCLObject, ...pathParts: string[]): string {
+export function getString(
+	obj: CCLObject,
+	...pathParts: string[]
+): Result<string, AccessError> {
 	const value = navigateToValue(obj, pathParts);
-	const path = formatPath(pathParts);
 
 	if (value === undefined) {
-		throw new Error(`Path not found: ${path}`);
+		return err({ message: "Path not found", path: pathParts });
 	}
 
 	if (typeof value !== "string") {
-		throw new Error(
-			`Value at path '${path}' is not a string (got ${Array.isArray(value) ? "array" : "object"})`,
-		);
+		return err({
+			message: `Value is not a string (got ${Array.isArray(value) ? "array" : "object"})`,
+			path: pathParts,
+		});
 	}
 
-	return value;
+	return ok(value);
 }
 
 /**
  * Get an integer value at the specified path.
  *
  * Navigates to the path, retrieves the string value, and parses it as an integer.
- * Throws an error if the path doesn't exist, value isn't a string, or parsing fails.
+ * Returns an error Result if the path doesn't exist, value isn't a string, or parsing fails.
  *
  * @param obj - The CCL object to query
  * @param pathParts - Path components to the value
- * @returns The integer value
- * @throws Error if path not found, value is not a string, or not a valid integer
+ * @returns A Result containing the integer value or an access error
  *
  * @example
  * ```ts
- * const obj = buildHierarchy(parse("port=8080"));
- * const port = getInt(obj, "port"); // => 8080
+ * const objResult = buildHierarchy(parse("port=8080").value);
+ * if (objResult.isOk) {
+ *   const portResult = getInt(objResult.value, "port");
+ *   if (portResult.isOk) {
+ *     console.log(portResult.value); // => 8080
+ *   }
+ * }
  * ```
  *
  * @beta
  */
-export function getInt(obj: CCLObject, ...pathParts: string[]): number {
-	const strValue = getString(obj, ...pathParts);
-	const path = formatPath(pathParts);
+export function getInt(
+	obj: CCLObject,
+	...pathParts: string[]
+): Result<number, AccessError> {
+	const strResult = getString(obj, ...pathParts);
+	if (strResult.isErr) {
+		return err(strResult.error);
+	}
+	const strValue = strResult.value;
 
 	// Parse as integer - must be a valid integer string
 	// Trim whitespace for robustness
@@ -540,28 +577,31 @@ export function getInt(obj: CCLObject, ...pathParts: string[]): number {
 
 	// Check for empty string
 	if (trimmed === "") {
-		throw new Error(
-			`Value at path '${path}' is empty, cannot parse as integer`,
-		);
+		return err({
+			message: "Value is empty, cannot parse as integer",
+			path: pathParts,
+		});
 	}
 
 	// Use Number() for parsing, then validate it's an integer
 	const parsed = Number(trimmed);
 
 	if (!Number.isFinite(parsed)) {
-		throw new Error(
-			`Value at path '${path}' is not a valid integer: '${strValue}'`,
-		);
+		return err({
+			message: `Value is not a valid integer: '${strValue}'`,
+			path: pathParts,
+		});
 	}
 
 	// Ensure it's actually an integer (no decimal part)
 	if (!Number.isInteger(parsed)) {
-		throw new Error(
-			`Value at path '${path}' is not an integer (has decimal): '${strValue}'`,
-		);
+		return err({
+			message: `Value is not an integer (has decimal): '${strValue}'`,
+			path: pathParts,
+		});
 	}
 
-	return parsed;
+	return ok(parsed);
 }
 
 /**
@@ -569,25 +609,34 @@ export function getInt(obj: CCLObject, ...pathParts: string[]): number {
  *
  * Navigates to the path, retrieves the string value, and parses it as a boolean.
  * Supports lenient parsing: true/false, yes/no, 1/0 (case-insensitive).
- * Throws an error if the path doesn't exist, value isn't a string, or not a valid boolean.
+ * Returns an error Result if the path doesn't exist, value isn't a string, or not a valid boolean.
  *
  * @param obj - The CCL object to query
  * @param pathParts - Path components to the value
- * @returns The boolean value
- * @throws Error if path not found, value is not a string, or not a valid boolean
+ * @returns A Result containing the boolean value or an access error
  *
  * @example
  * ```ts
- * const obj = buildHierarchy(parse("enabled=true\ndebug=yes"));
- * getBool(obj, "enabled"); // => true
- * getBool(obj, "debug");   // => true
+ * const objResult = buildHierarchy(parse("enabled=true\ndebug=yes").value);
+ * if (objResult.isOk) {
+ *   const enabledResult = getBool(objResult.value, "enabled");
+ *   if (enabledResult.isOk) {
+ *     console.log(enabledResult.value); // => true
+ *   }
+ * }
  * ```
  *
  * @beta
  */
-export function getBool(obj: CCLObject, ...pathParts: string[]): boolean {
-	const strValue = getString(obj, ...pathParts);
-	const path = formatPath(pathParts);
+export function getBool(
+	obj: CCLObject,
+	...pathParts: string[]
+): Result<boolean, AccessError> {
+	const strResult = getString(obj, ...pathParts);
+	if (strResult.isErr) {
+		return err(strResult.error);
+	}
+	const strValue = strResult.value;
 
 	// Normalize to lowercase and trim for comparison
 	const normalized = strValue.trim().toLowerCase();
@@ -597,15 +646,16 @@ export function getBool(obj: CCLObject, ...pathParts: string[]): boolean {
 		case "true":
 		case "yes":
 		case "1":
-			return true;
+			return ok(true);
 		case "false":
 		case "no":
 		case "0":
-			return false;
+			return ok(false);
 		default:
-			throw new Error(
-				`Value at path '${path}' is not a valid boolean: '${strValue}'`,
-			);
+			return err({
+				message: `Value is not a valid boolean: '${strValue}'`,
+				path: pathParts,
+			});
 	}
 }
 
@@ -613,42 +663,56 @@ export function getBool(obj: CCLObject, ...pathParts: string[]): boolean {
  * Get a float value at the specified path.
  *
  * Navigates to the path, retrieves the string value, and parses it as a float.
- * Throws an error if the path doesn't exist, value isn't a string, or parsing fails.
+ * Returns an error Result if the path doesn't exist, value isn't a string, or parsing fails.
  *
  * @param obj - The CCL object to query
  * @param pathParts - Path components to the value
- * @returns The float value
- * @throws Error if path not found, value is not a string, or not a valid number
+ * @returns A Result containing the float value or an access error
  *
  * @example
  * ```ts
- * const obj = buildHierarchy(parse("ratio=3.14"));
- * const ratio = getFloat(obj, "ratio"); // => 3.14
+ * const objResult = buildHierarchy(parse("ratio=3.14").value);
+ * if (objResult.isOk) {
+ *   const ratioResult = getFloat(objResult.value, "ratio");
+ *   if (ratioResult.isOk) {
+ *     console.log(ratioResult.value); // => 3.14
+ *   }
+ * }
  * ```
  *
  * @beta
  */
-export function getFloat(obj: CCLObject, ...pathParts: string[]): number {
-	const strValue = getString(obj, ...pathParts);
-	const path = formatPath(pathParts);
+export function getFloat(
+	obj: CCLObject,
+	...pathParts: string[]
+): Result<number, AccessError> {
+	const strResult = getString(obj, ...pathParts);
+	if (strResult.isErr) {
+		return err(strResult.error);
+	}
+	const strValue = strResult.value;
 
 	// Trim whitespace for robustness
 	const trimmed = strValue.trim();
 
 	// Check for empty string
 	if (trimmed === "") {
-		throw new Error(`Value at path '${path}' is empty, cannot parse as float`);
+		return err({
+			message: "Value is empty, cannot parse as float",
+			path: pathParts,
+		});
 	}
 
 	const parsed = Number(trimmed);
 
 	if (!Number.isFinite(parsed)) {
-		throw new Error(
-			`Value at path '${path}' is not a valid number: '${strValue}'`,
-		);
+		return err({
+			message: `Value is not a valid number: '${strValue}'`,
+			path: pathParts,
+		});
 	}
 
-	return parsed;
+	return ok(parsed);
 }
 
 /**
@@ -658,51 +722,63 @@ export function getFloat(obj: CCLObject, ...pathParts: string[]): number {
  * If the path points to an object with an empty-key list (bare list syntax),
  * automatically returns that list.
  * Does NOT coerce single values to lists (ListCoercionDisabled behavior).
- * Throws an error if the path doesn't exist or the value isn't a list.
+ * Returns an error Result if the path doesn't exist or the value isn't a list.
  *
  * @param obj - The CCL object to query
  * @param pathParts - Path components to the value
- * @returns The array of strings
- * @throws Error if path not found or value is not a list
+ * @returns A Result containing the array of strings or an access error
  *
  * @example
  * ```ts
  * // Duplicate keys create a list directly
- * const obj1 = buildHierarchy(parse("colors=red\ncolors=green\ncolors=blue"));
- * getList(obj1, "colors"); // => ["red", "green", "blue"]
+ * const objResult1 = buildHierarchy(parse("colors=red\ncolors=green\ncolors=blue").value);
+ * if (objResult1.isOk) {
+ *   const listResult = getList(objResult1.value, "colors");
+ *   if (listResult.isOk) {
+ *     console.log(listResult.value); // => ["red", "green", "blue"]
+ *   }
+ * }
  *
  * // Bare list syntax (empty keys) also works
- * const obj2 = buildHierarchy(parse("colors=\n  =red\n  =green\n  =blue"));
- * getList(obj2, "colors"); // => ["red", "green", "blue"]
+ * const objResult2 = buildHierarchy(parse("colors=\n  =red\n  =green\n  =blue").value);
+ * if (objResult2.isOk) {
+ *   const listResult = getList(objResult2.value, "colors");
+ *   if (listResult.isOk) {
+ *     console.log(listResult.value); // => ["red", "green", "blue"]
+ *   }
+ * }
  * ```
  *
  * @beta
  */
-export function getList(obj: CCLObject, ...pathParts: string[]): string[] {
+export function getList(
+	obj: CCLObject,
+	...pathParts: string[]
+): Result<string[], AccessError> {
 	const value = navigateToValue(obj, pathParts);
-	const path = formatPath(pathParts);
 
 	if (value === undefined) {
-		throw new Error(`Path not found: ${path}`);
+		return err({ message: "Path not found", path: pathParts });
 	}
 
 	// Direct array (from duplicate keys)
 	if (Array.isArray(value)) {
-		return value;
+		return ok(value);
 	}
 
 	// Object with empty-key list (bare list syntax)
 	if (isPlainObject(value)) {
 		const emptyKeyValue = value[""];
 		if (Array.isArray(emptyKeyValue)) {
-			return emptyKeyValue;
+			return ok(emptyKeyValue);
 		}
 	}
 
 	// ListCoercionDisabled: do not coerce single values to lists
-	throw new Error(
-		`Value at path '${path}' is not a list (got ${typeof value === "string" ? "string" : "object"})`,
-	);
+	return err({
+		message: `Value is not a list (got ${typeof value === "string" ? "string" : "object"})`,
+		path: pathParts,
+	});
 }
 
 // ============================================================================
@@ -775,20 +851,29 @@ export function print(entries: Entry[]): string {
  * It enables deterministic output regardless of input ordering.
  *
  * @param input - The CCL text to canonicalize
- * @returns Canonicalized CCL string
+ * @returns A Result containing the canonicalized CCL string or a parse error
  *
  * @example
  * ```ts
- * canonicalFormat("z = last\na = first\nm = middle");
- * // => "a =\n  first =\nm =\n  middle =\nz =\n  last =\n"
+ * const result = canonicalFormat("z = last\na = first\nm = middle");
+ * if (result.isOk) {
+ *   console.log(result.value);
+ *   // => "a =\n  first =\nm =\n  middle =\nz =\n  last =\n"
+ * }
  * ```
  *
  * @beta
  */
-export function canonicalFormat(input: string): string {
-	const entries = parse(input);
-	const obj = buildHierarchy(entries);
-	return formatCanonical(obj, 0);
+export function canonicalFormat(input: string): Result<string, ParseError> {
+	const entriesResult = parse(input);
+	if (entriesResult.isErr) {
+		return err(entriesResult.error);
+	}
+	const objResult = buildHierarchy(entriesResult.value);
+	if (objResult.isErr) {
+		return err(objResult.error);
+	}
+	return ok(formatCanonical(objResult.value, 0));
 }
 
 /**
@@ -830,7 +915,7 @@ function formatCanonical(obj: CCLObject, depth: number): string {
 	}
 
 	// Join with newlines and add trailing newline
-	return lines.join("\n") + "\n";
+	return `${lines.join("\n")}\n`;
 }
 
 // ============================================================================
