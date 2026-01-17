@@ -95,7 +95,7 @@
 		"@oclif/plugin-help": "^6.2.36",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
-		"effection": "^3.6.1",
+		"effection": "^4.0.0",
 		"fflate": "^0.8.2",
 		"file-type": "^21.3.0",
 		"mime": "^4.1.0",
@@ -129,7 +129,7 @@
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.21.0",
-		"type-fest": "^5.3.0",
+		"type-fest": "^5.4.1",
 		"typescript": "~5.9.3",
 		"unionfs": "^4.6.0",
 		"vitest": "^4.0.16"
