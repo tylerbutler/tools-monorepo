@@ -127,7 +127,7 @@
 		"@oclif/plugin-command-snapshot": "^5.3.8",
 		"@oclif/test": "^4.1.15",
 		"@types/debug": "^4.1.12",
-		"@types/node": "^20.19.25",
+		"@types/node": "^25.0.9",
 		"@types/semver": "^7.7.1",
 		"@vitest/coverage-v8": "^4.0.17",
 		"concurrently": "^9.2.1",
