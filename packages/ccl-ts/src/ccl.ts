@@ -17,6 +17,10 @@ import type {
 	ParseError,
 } from "./types.js";
 
+// Regex patterns for whitespace trimming (top-level for performance)
+const LEADING_WHITESPACE = /^[ \t]+/;
+const TRAILING_WHITESPACE = /[ \t]+$/;
+
 /**
  * Parse CCL text into a flat list of entries.
  *
@@ -159,32 +163,14 @@ function collectValueLines(
  * Trim only leading spaces and tabs from a string, preserving \r for CRLF handling.
  */
 function trimLeadingSpacesAndTabs(s: string): string {
-	let start = 0;
-	while (start < s.length) {
-		const char = s[start];
-		if (char === " " || char === "\t") {
-			start++;
-		} else {
-			break;
-		}
-	}
-	return s.slice(start);
+	return s.replace(LEADING_WHITESPACE, "");
 }
 
 /**
  * Trim only trailing spaces and tabs from a string, preserving \r for CRLF handling.
  */
 function trimTrailingSpacesAndTabs(s: string): string {
-	let end = s.length;
-	while (end > 0) {
-		const char = s[end - 1];
-		if (char === " " || char === "\t") {
-			end--;
-		} else {
-			break;
-		}
-	}
-	return s.slice(0, end);
+	return s.replace(TRAILING_WHITESPACE, "");
 }
 
 /**
@@ -194,14 +180,15 @@ function buildValue(valueLines: string[]): string {
 	if (valueLines.length === 0) {
 		return "";
 	}
+
 	if (valueLines.length === 1) {
-		const firstLine = valueLines[0];
-		return firstLine === undefined ? "" : trimTrailingSpacesAndTabs(firstLine);
+		return trimTrailingSpacesAndTabs(valueLines[0] as string);
 	}
 
-	// Multiline value - join with newlines, trim trailing spaces/tabs from last line only
-	const processed = valueLines.map((l, idx, arr) =>
-		idx === arr.length - 1 ? trimTrailingSpacesAndTabs(l) : l,
+	// Multiline value - trim trailing spaces/tabs from last line only
+	const lastIndex = valueLines.length - 1;
+	const processed = valueLines.map((line, idx) =>
+		idx === lastIndex ? trimTrailingSpacesAndTabs(line) : line,
 	);
 	return processed.join("\n");
 }
@@ -539,6 +526,32 @@ export function getString(
 }
 
 /**
+ * Get a trimmed non-empty string for numeric parsing.
+ * Returns the original value alongside trimmed for error messages.
+ */
+function getTrimmedForParsing(
+	obj: CCLObject,
+	pathParts: string[],
+	typeName: string,
+): Result<{ original: string; trimmed: string }, AccessError> {
+	const strResult = getString(obj, ...pathParts);
+	if (strResult.isErr) {
+		return err(strResult.error);
+	}
+	const original = strResult.value;
+	const trimmed = original.trim();
+
+	if (trimmed === "") {
+		return err({
+			message: `Value is empty, cannot parse as ${typeName}`,
+			path: pathParts,
+		});
+	}
+
+	return ok({ original, trimmed });
+}
+
+/**
  * Get an integer value at the specified path.
  *
  * Navigates to the path, retrieves the string value, and parses it as an integer.
@@ -565,38 +578,24 @@ export function getInt(
 	obj: CCLObject,
 	...pathParts: string[]
 ): Result<number, AccessError> {
-	const strResult = getString(obj, ...pathParts);
-	if (strResult.isErr) {
-		return err(strResult.error);
+	const prepResult = getTrimmedForParsing(obj, pathParts, "integer");
+	if (prepResult.isErr) {
+		return err(prepResult.error);
 	}
-	const strValue = strResult.value;
+	const { original, trimmed } = prepResult.value;
 
-	// Parse as integer - must be a valid integer string
-	// Trim whitespace for robustness
-	const trimmed = strValue.trim();
-
-	// Check for empty string
-	if (trimmed === "") {
-		return err({
-			message: "Value is empty, cannot parse as integer",
-			path: pathParts,
-		});
-	}
-
-	// Use Number() for parsing, then validate it's an integer
 	const parsed = Number(trimmed);
 
 	if (!Number.isFinite(parsed)) {
 		return err({
-			message: `Value is not a valid integer: '${strValue}'`,
+			message: `Value is not a valid integer: '${original}'`,
 			path: pathParts,
 		});
 	}
 
-	// Ensure it's actually an integer (no decimal part)
 	if (!Number.isInteger(parsed)) {
 		return err({
-			message: `Value is not an integer (has decimal): '${strValue}'`,
+			message: `Value is not an integer (has decimal): '${original}'`,
 			path: pathParts,
 		});
 	}
@@ -686,28 +685,17 @@ export function getFloat(
 	obj: CCLObject,
 	...pathParts: string[]
 ): Result<number, AccessError> {
-	const strResult = getString(obj, ...pathParts);
-	if (strResult.isErr) {
-		return err(strResult.error);
+	const prepResult = getTrimmedForParsing(obj, pathParts, "float");
+	if (prepResult.isErr) {
+		return err(prepResult.error);
 	}
-	const strValue = strResult.value;
-
-	// Trim whitespace for robustness
-	const trimmed = strValue.trim();
-
-	// Check for empty string
-	if (trimmed === "") {
-		return err({
-			message: "Value is empty, cannot parse as float",
-			path: pathParts,
-		});
-	}
+	const { original, trimmed } = prepResult.value;
 
 	const parsed = Number(trimmed);
 
 	if (!Number.isFinite(parsed)) {
 		return err({
-			message: `Value is not a valid number: '${strValue}'`,
+			message: `Value is not a valid number: '${original}'`,
 			path: pathParts,
 		});
 	}
@@ -815,26 +803,16 @@ export function getList(
  * @beta
  */
 export function print(entries: Entry[]): string {
-	const lines: string[] = [];
-
-	for (const entry of entries) {
-		const { key, value } = entry;
-
-		// Format the key portion - empty keys get a leading space for clarity
-		const keyPart = key === "" ? " " : key;
-
-		// Check if value contains newlines (multiline value)
-		if (value.includes("\n")) {
-			// Multiline value - key followed by " =" then the value content
-			// The value already includes the leading newline and indentation
-			lines.push(`${keyPart} =${value}`);
-		} else {
-			// Single-line value
-			lines.push(`${keyPart} = ${value}`);
-		}
-	}
-
-	return lines.join("\n");
+	return entries
+		.map(({ key, value }) => {
+			// Empty keys get a leading space for clarity
+			const keyPart = key === "" ? " " : key;
+			// Multiline values: key followed by " =" (value includes newline)
+			// Single-line values: key followed by " = value"
+			const separator = value.includes("\n") ? " =" : " = ";
+			return `${keyPart}${separator}${value}`;
+		})
+		.join("\n");
 }
 
 /**
@@ -881,40 +859,26 @@ export function canonicalFormat(input: string): Result<string, ParseError> {
  */
 function formatCanonical(obj: CCLObject, depth: number): string {
 	const indent = "  ".repeat(depth);
-	const lines: string[] = [];
+	const childIndent = `${indent}  `;
 
-	// Get sorted keys
-	const keys = Object.keys(obj).sort();
+	const lines = Object.keys(obj)
+		.sort()
+		.flatMap((key) => {
+			const value = obj[key] as CCLValue;
+			const keyLine = `${indent}${key} =`;
 
-	for (const key of keys) {
-		const value = obj[key] as CCLValue;
-
-		if (typeof value === "string") {
-			// Terminal value - convert to nested form: key =\n  value =
-			if (value === "") {
-				// Empty value
-				lines.push(`${indent}${key} =`);
-			} else {
-				// Non-empty value - nested form
-				lines.push(`${indent}${key} =`);
-				lines.push(`${indent}  ${value} =`);
+			if (typeof value === "string") {
+				// Empty string: just the key line; non-empty: key line + value line
+				return value === "" ? [keyLine] : [keyLine, `${childIndent}${value} =`];
 			}
-		} else if (Array.isArray(value)) {
-			// List value - output each item as empty-key entry
-			lines.push(`${indent}${key} =`);
-			for (const item of value) {
-				lines.push(`${indent}  ${item} =`);
+			if (Array.isArray(value)) {
+				// List: key line + each item as a child line
+				return [keyLine, ...value.map((item) => `${childIndent}${item} =`)];
 			}
-		} else {
-			// Nested object
-			lines.push(`${indent}${key} =`);
-			const nested = formatCanonical(value, depth + 1);
-			// Remove trailing newline from nested, we'll add it when joining
-			lines.push(nested.slice(0, -1));
-		}
-	}
+			// Nested object: key line + recursive content (trim trailing newline)
+			return [keyLine, formatCanonical(value, depth + 1).slice(0, -1)];
+		});
 
-	// Join with newlines and add trailing newline
 	return `${lines.join("\n")}\n`;
 }
 
