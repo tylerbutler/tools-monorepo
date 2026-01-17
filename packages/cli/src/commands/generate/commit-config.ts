@@ -85,8 +85,19 @@ function parseScopes(scopesObj: CCLObject): Record<string, Scope> {
  * Handles the conversion from CCL's string-based values to typed config.
  */
 function parseCCLConfig(cclText: string): CommitTypesConfig {
-	const entries = parse(cclText);
-	const obj = buildHierarchy(entries);
+	const entriesResult = parse(cclText);
+	if (entriesResult.isErr) {
+		throw new Error(`Failed to parse CCL: ${entriesResult.error.message}`);
+	}
+
+	const objResult = buildHierarchy(entriesResult.value);
+	if (objResult.isErr) {
+		throw new Error(
+			`Failed to build CCL hierarchy: ${objResult.error.message}`,
+		);
+	}
+
+	const obj = objResult.value;
 
 	const config: CommitTypesConfig = {
 		types: {},
