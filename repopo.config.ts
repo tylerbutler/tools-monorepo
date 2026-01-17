@@ -38,6 +38,12 @@ const config: RepopoConfig = {
 			{
 				must: ["clean", "release:license"],
 				mutuallyExclusive: [["test:unit", "test:vitest"]],
+				conditionalRequired: [
+					{
+						ifPresent: "test",
+						requires: [{ "test:coverage": "vitest run --coverage" }],
+					},
+				],
 			},
 			{
 				excludeFiles: ["packages/.*-docs/package.json"],

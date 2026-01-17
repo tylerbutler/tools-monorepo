@@ -60,6 +60,7 @@
 		"readme:main": "oclif readme --no-aliases",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
 	},
 	"oclif": {
@@ -108,6 +109,7 @@
 		"@types/node": "^20.19.25",
 		"@types/picomatch": "^4.0.2",
 		"@types/tmp": "^0.2.6",
+		"@vitest/coverage-v8": "^4.0.17",
 		"generate-license-file": "^4.1.1",
 		"oclif": "^4.22.50",
 		"rimraf": "^6.1.2",
@@ -115,7 +117,7 @@
 		"ts-node": "^10.9.2",
 		"type-fest": "^5.4.1",
 		"typescript": "~5.9.3",
-		"vitest": "^4.0.16"
+		"vitest": "^4.0.17"
 	},
 	"peerDependencies": {
 		"sort-package-json": "*"
