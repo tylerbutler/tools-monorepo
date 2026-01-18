@@ -29,6 +29,20 @@ export interface GitCapabilityOptions {
  * Context returned by the git capability.
  * Provides access to git client, repository utilities, and helper methods.
  *
+ * @remarks
+ * The helper methods (`getCurrentBranch`, `isCleanWorkingTree`, `hasUncommittedChanges`)
+ * require `isRepo` to be `true`. When `required: false` is used and not in a git repo,
+ * calling these methods will throw an error. Always check `isRepo` first when using
+ * optional git capability.
+ *
+ * @example
+ * ```typescript
+ * const ctx = await gitCapability.get();
+ * if (ctx.isRepo) {
+ *   const branch = await ctx.getCurrentBranch();
+ * }
+ * ```
+ *
  * @beta
  */
 export interface GitContext {
@@ -44,12 +58,26 @@ export interface GitContext {
 
 	/**
 	 * Whether we're in a git repository.
+	 * When `false`, helper methods will throw an error if called.
 	 */
 	isRepo: boolean;
 
-	// Helper methods
+	/**
+	 * Get the current branch name.
+	 * @throws Error if `isRepo` is `false`.
+	 */
 	getCurrentBranch(): Promise<string>;
+
+	/**
+	 * Check if the working tree is clean (no uncommitted changes).
+	 * @throws Error if `isRepo` is `false`.
+	 */
 	isCleanWorkingTree(): Promise<boolean>;
+
+	/**
+	 * Check if there are uncommitted changes.
+	 * @throws Error if `isRepo` is `false`.
+	 */
 	hasUncommittedChanges(): Promise<boolean>;
 }
 
@@ -82,18 +110,33 @@ export class GitCapability<
 			repo,
 			isRepo,
 
-			// Attach helper methods
+			// Attach helper methods with runtime guards
 			getCurrentBranch: async () => {
+				if (!isRepo) {
+					throw new Error(
+						"Cannot get current branch: not in a git repository",
+					);
+				}
 				const branch = await git.branchLocal();
 				return branch.current;
 			},
 
 			isCleanWorkingTree: async () => {
+				if (!isRepo) {
+					throw new Error(
+						"Cannot check working tree: not in a git repository",
+					);
+				}
 				const status = await git.status();
 				return status.isClean();
 			},
 
 			hasUncommittedChanges: async () => {
+				if (!isRepo) {
+					throw new Error(
+						"Cannot check uncommitted changes: not in a git repository",
+					);
+				}
 				const status = await git.status();
 				return !status.isClean();
 			},

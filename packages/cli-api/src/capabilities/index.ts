@@ -3,6 +3,8 @@ export {
 	ConfigCapability,
 	type ConfigCapabilityOptions,
 	type ConfigContext,
+	type ConfigContextFound,
+	type ConfigContextNotFound,
 	ConfigFlag,
 	type DefaultConfigLocation,
 	useConfig,

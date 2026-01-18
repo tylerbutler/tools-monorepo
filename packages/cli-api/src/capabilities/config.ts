@@ -37,32 +37,84 @@ export interface ConfigCapabilityOptions<TConfig> {
 }
 
 /**
- * Context returned by the config capability.
+ * Context returned by the config capability when a config was found or defaults were used.
  *
  * @beta
  */
-export interface ConfigContext<TConfig> {
+export interface ConfigContextFound<TConfig> {
+	/**
+	 * Whether a configuration was found (or default was used).
+	 * When true, `config` is guaranteed to be defined.
+	 */
+	found: true;
+
 	/**
 	 * The loaded configuration.
 	 */
 	config: TConfig;
 
 	/**
-	 * Path to the config file, "DEFAULT" if using default, or undefined if none found.
+	 * Path to the config file, or "DEFAULT" if using default config.
 	 */
-	location: string | DefaultConfigLocation | undefined;
+	location: string | DefaultConfigLocation;
 
 	/**
 	 * Check if using default config.
 	 * @returns True if the config used is the default, false otherwise.
 	 */
 	isDefault(): boolean;
+}
+
+/**
+ * Context returned by the config capability when no config was found and none was required.
+ *
+ * @beta
+ */
+export interface ConfigContextNotFound {
+	/**
+	 * Whether a configuration was found.
+	 * When false, `config` is undefined.
+	 */
+	found: false;
 
 	/**
-	 * Reload the configuration from disk.
+	 * The configuration value. Undefined when no config was found.
 	 */
-	reload(): Promise<ConfigContext<TConfig>>;
+	config: undefined;
+
+	/**
+	 * The location of the config file. Undefined when no config was found.
+	 */
+	location: undefined;
+
+	/**
+	 * Check if using default config.
+	 * @returns Always false when no config was found.
+	 */
+	isDefault(): false;
 }
+
+/**
+ * Context returned by the config capability.
+ * Use the `found` discriminator to determine if a config was loaded.
+ *
+ * @example
+ * ```typescript
+ * const ctx = await configCapability.get();
+ * if (ctx.found) {
+ *   // TypeScript knows ctx.config is TConfig here
+ *   console.log(ctx.config);
+ * } else {
+ *   // TypeScript knows ctx.config is undefined here
+ *   console.log("No config found");
+ * }
+ * ```
+ *
+ * @beta
+ */
+export type ConfigContext<TConfig> =
+	| ConfigContextFound<TConfig>
+	| ConfigContextNotFound;
 
 /**
  * Config capability implementation.
@@ -101,11 +153,11 @@ export class ConfigCapability<
 				);
 			}
 			return {
-				config: undefined as unknown as TConfig,
+				found: false,
+				config: undefined,
 				location: undefined,
 				isDefault: () => false,
-				reload: async () => this.initialize(command),
-			};
+			} satisfies ConfigContextNotFound;
 		}
 
 		const { config, location } = loaded ?? {
@@ -114,11 +166,11 @@ export class ConfigCapability<
 		};
 
 		return {
+			found: true,
 			config: config as TConfig,
 			location,
 			isDefault: () => location === ("DEFAULT" as DefaultConfigLocation),
-			reload: async () => this.initialize(command),
-		};
+		} satisfies ConfigContextFound<TConfig>;
 	}
 }
 
@@ -157,7 +209,25 @@ export function useConfig<
 }
 
 /**
- * Config flag that can be added to command flags.
+ * A simple string flag for specifying a config file path.
+ * This is a convenience flag that can be added to command flags.
+ *
+ * Use this flag when you want a simple `-c` shorthand for config files.
+ * For a flag that validates the file exists and groups under CONFIGURATION,
+ * use {@link ConfigFileFlag} from the main module instead.
+ *
+ * @example
+ * ```typescript
+ * import { ConfigFlag } from "@tylerbu/cli-api/capabilities";
+ *
+ * class MyCommand extends BaseCommand {
+ *   static flags = {
+ *     config: ConfigFlag,  // Adds -c, --config <path>
+ *   };
+ * }
+ * ```
+ *
+ * @see {@link ConfigFileFlag} from "@tylerbu/cli-api" for a flag that validates file existence
  *
  * @beta
  */

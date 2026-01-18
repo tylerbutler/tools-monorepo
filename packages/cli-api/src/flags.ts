@@ -28,6 +28,23 @@ export const RegExpFlag = Flags.custom<RegExp>({
  * A pre-configured oclif flag for configuration file paths.
  * Validates that the file exists and displays in the CONFIGURATION help group.
  *
+ * Use this flag when you need file existence validation and want the flag
+ * grouped under CONFIGURATION in help output. For a simpler flag with `-c`
+ * shorthand but no validation, use {@link ConfigFlag} from the capabilities module.
+ *
+ * @example
+ * ```typescript
+ * import { ConfigFileFlag } from "@tylerbu/cli-api";
+ *
+ * class MyCommand extends BaseCommand {
+ *   static flags = {
+ *     config: ConfigFileFlag,  // Validates file exists
+ *   };
+ * }
+ * ```
+ *
+ * @see {@link ConfigFlag} from "@tylerbu/cli-api/capabilities" for a simple string flag
+ *
  * @beta
  */
 export const ConfigFileFlag = Flags.file({

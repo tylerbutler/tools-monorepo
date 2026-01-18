@@ -66,41 +66,12 @@ describe("ConfigCapability", () => {
 
 			const result = await capability.initialize(command);
 
+			expect(result.found).toBe(true);
 			expect(result.config).toEqual(testConfig);
 			expect(result.location).toBe(configPath);
 			expect(result.isDefault()).toBe(false);
 		});
 
-		it.skip("should support config reload", async () => {
-			// TODO: Module caching prevents reload from working properly
-			// Need to investigate how to clear Node.js module cache or use a different approach
-			const configPath = path.join(tempDir, "test-cli.config.cjs");
-			const testConfig: TestConfig = { name: "test", value: 42 };
-			fs.writeFileSync(
-				configPath,
-				`module.exports = ${JSON.stringify(testConfig)};`,
-			);
-
-			const capability = new ConfigCapability<TestConfig>({
-				searchPaths: [tempDir],
-				required: true,
-			});
-
-			const result = await capability.initialize(command);
-			expect(result.config.value).toBe(42);
-
-			// Modify config file
-			const updatedConfig: TestConfig = { name: "test", value: 99 };
-			fs.writeFileSync(
-				configPath,
-				`module.exports = ${JSON.stringify(updatedConfig)};`,
-			);
-
-			// Reload
-			const reloaded = await result.reload();
-			expect(reloaded.config.value).toBe(99);
-			expect(reloaded.location).toBe(configPath);
-		});
 	});
 
 	describe("with default config", () => {
@@ -115,6 +86,7 @@ describe("ConfigCapability", () => {
 
 			const result = await capability.initialize(command);
 
+			expect(result.found).toBe(true);
 			expect(result.config).toEqual(defaultConfig);
 			expect(result.location).toBe("DEFAULT");
 			expect(result.isDefault()).toBe(true);
@@ -138,6 +110,7 @@ describe("ConfigCapability", () => {
 
 			const result = await capability.initialize(command);
 
+			expect(result.found).toBe(true);
 			expect(result.config).toEqual(fileConfig);
 			expect(result.isDefault()).toBe(false);
 		});
@@ -165,6 +138,7 @@ describe("ConfigCapability", () => {
 
 			const result = await capability.initialize(command);
 
+			expect(result.found).toBe(false);
 			expect(result.config).toBeUndefined();
 			expect(result.location).toBeUndefined();
 			expect(result.isDefault()).toBe(false);
@@ -180,7 +154,7 @@ describe("ConfigCapability", () => {
 				`module.exports = ${JSON.stringify(testConfig)};`,
 			);
 
-			const holder = useConfig<TestConfig>(command, {
+			const holder = useConfig<typeof command, TestConfig>(command, {
 				searchPaths: [tempDir],
 				required: true,
 			});
@@ -190,13 +164,14 @@ describe("ConfigCapability", () => {
 			const result = await holder.get();
 
 			expect(holder.isInitialized).toBe(true);
+			expect(result.found).toBe(true);
 			expect(result.config).toEqual(testConfig);
 		});
 
 		it("should work with default config", async () => {
 			const defaultConfig: TestConfig = { name: "default", value: 0 };
 
-			const holder = useConfig<TestConfig>(command, {
+			const holder = useConfig<typeof command, TestConfig>(command, {
 				searchPaths: [tempDir],
 				defaultConfig,
 				required: false,
@@ -204,6 +179,7 @@ describe("ConfigCapability", () => {
 
 			const result = await holder.get();
 
+			expect(result.found).toBe(true);
 			expect(result.config).toEqual(defaultConfig);
 			expect(result.isDefault()).toBe(true);
 		});
@@ -230,6 +206,7 @@ describe("ConfigCapability", () => {
 
 			const result = await capability.initialize(command);
 
+			expect(result.found).toBe(true);
 			expect(result.config).toEqual(testConfig);
 			expect(result.location).toBe(configPath);
 		});

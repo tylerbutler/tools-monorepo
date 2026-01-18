@@ -174,6 +174,55 @@ describe("GitCapability", () => {
 			// Should still return git/repo objects, but they won't work
 			expect(result.git).toBeDefined();
 			expect(result.repo).toBeDefined();
+			expect(result.isRepo).toBe(false);
+		});
+
+		it("should throw when calling getCurrentBranch outside git repo", async () => {
+			const nonGitDir = path.join(tempDir, "non-git");
+			fs.mkdirSync(nonGitDir);
+
+			const capability = new GitCapability({
+				baseDir: nonGitDir,
+				required: false,
+			});
+
+			const result = await capability.initialize(command);
+
+			await expect(result.getCurrentBranch()).rejects.toThrow(
+				"Cannot get current branch: not in a git repository",
+			);
+		});
+
+		it("should throw when calling isCleanWorkingTree outside git repo", async () => {
+			const nonGitDir = path.join(tempDir, "non-git");
+			fs.mkdirSync(nonGitDir);
+
+			const capability = new GitCapability({
+				baseDir: nonGitDir,
+				required: false,
+			});
+
+			const result = await capability.initialize(command);
+
+			await expect(result.isCleanWorkingTree()).rejects.toThrow(
+				"Cannot check working tree: not in a git repository",
+			);
+		});
+
+		it("should throw when calling hasUncommittedChanges outside git repo", async () => {
+			const nonGitDir = path.join(tempDir, "non-git");
+			fs.mkdirSync(nonGitDir);
+
+			const capability = new GitCapability({
+				baseDir: nonGitDir,
+				required: false,
+			});
+
+			const result = await capability.initialize(command);
+
+			await expect(result.hasUncommittedChanges()).rejects.toThrow(
+				"Cannot check uncommitted changes: not in a git repository",
+			);
 		});
 	});
 
