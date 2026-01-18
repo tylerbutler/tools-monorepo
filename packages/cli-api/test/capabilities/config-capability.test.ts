@@ -71,7 +71,6 @@ describe("ConfigCapability", () => {
 			expect(result.location).toBe(configPath);
 			expect(result.isDefault()).toBe(false);
 		});
-
 	});
 
 	describe("with default config", () => {

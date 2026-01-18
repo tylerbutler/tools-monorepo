@@ -113,9 +113,7 @@ export class GitCapability<
 			// Attach helper methods with runtime guards
 			getCurrentBranch: async () => {
 				if (!isRepo) {
-					throw new Error(
-						"Cannot get current branch: not in a git repository",
-					);
+					throw new Error("Cannot get current branch: not in a git repository");
 				}
 				const branch = await git.branchLocal();
 				return branch.current;
@@ -123,9 +121,7 @@ export class GitCapability<
 
 			isCleanWorkingTree: async () => {
 				if (!isRepo) {
-					throw new Error(
-						"Cannot check working tree: not in a git repository",
-					);
+					throw new Error("Cannot check working tree: not in a git repository");
 				}
 				const status = await git.status();
 				return status.isClean();
