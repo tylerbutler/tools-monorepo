@@ -1,6 +1,6 @@
 ---
-"repopo": major
-"sort-tsconfig": patch
+"repopo": minor
+"sort-tsconfig": minor
 ---
 
 **BREAKING CHANGE**: Change `PolicyFailure.errorMessage` to `errorMessages` array.

@@ -10,4 +10,4 @@ Add validation handlers for typed access functions
 - `handleGetFloatValidation`: Validates getFloat function behavior
 - `handleGetListValidation`: Validates getList function behavior
 
-Handlers convert test data path arguments to variadic arguments for the ccl-ts implementation.
+Handlers convert test data path arguments to variadic arguments for CCL implementations.
