@@ -112,15 +112,13 @@ export interface ConfigCapabilityOptions<TConfig> {
 }
 
 // @beta
-export interface ConfigContext<TConfig> {
-    config: TConfig;
-    isDefault(): boolean;
-    location: string | DefaultConfigLocation | undefined;
-    reload(): Promise<ConfigContext<TConfig>>;
-}
+export type ConfigContext<TConfig> = ConfigContextFound<TConfig> | ConfigContextNotFound;
 
 // @beta
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
+
+// @beta
+export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export interface ConsolaLoggerOptions {
@@ -135,9 +133,6 @@ export function createConsolaLogger(style?: PrefixStyle, options?: ConsolaLogger
 
 // @public
 export function createExtendedConsolaLogger(style: PrefixStyle, options?: ConsolaLoggerOptions): ExtendedLogger;
-
-// @beta
-export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @beta
 export type DefaultConfigLocation = "DEFAULT" & {
@@ -237,12 +232,9 @@ export abstract class GitCommand<T extends typeof Command & {
 
 // @beta
 export interface GitContext {
-    // (undocumented)
     getCurrentBranch(): Promise<string>;
     git: SimpleGit;
-    // (undocumented)
     hasUncommittedChanges(): Promise<boolean>;
-    // (undocumented)
     isCleanWorkingTree(): Promise<boolean>;
     isRepo: boolean;
     repo: Repository;
@@ -376,13 +368,6 @@ export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packa
 // @beta
 export interface UpdateVersionRangeOptions {
     emitWarnings?: boolean;
-}
-
-// @beta
-export interface UpdateVersionRangeResult {
-    skipped: boolean;
-    updated: string;
-    warning?: string;
 }
 
 // @beta

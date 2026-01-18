@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
-import path from "pathe";
 import type { Config } from "@oclif/core";
+import path from "pathe";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BaseCommand } from "../../src/baseCommand.js";
 import { ConfigCapability, useConfig } from "../../src/capabilities/config.js";
