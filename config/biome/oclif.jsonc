@@ -9,6 +9,10 @@
 						// oclif commands are required to use default exports.
 						"noDefaultExport": "off",
 					},
+					"performance": {
+						// oclif commands can re-export from other packages.
+						"noBarrelFile": "off",
+					},
 				},
 			},
 		},

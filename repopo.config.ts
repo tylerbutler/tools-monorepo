@@ -1,6 +1,7 @@
-import { generatePackagePolicy, makePolicy, type RepopoConfig } from "repopo";
+import { makePolicy, type RepopoConfig } from "repopo";
 import {
 	NoJsFileExtensions,
+	NoPrivateWorkspaceDependencies,
 	PackageJsonProperties,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonSorted,
@@ -37,18 +38,19 @@ const config: RepopoConfig = {
 			{
 				must: ["clean", "release:license"],
 				mutuallyExclusive: [["test:unit", "test:vitest"]],
+				conditionalRequired: [
+					{
+						ifPresent: "test",
+						requires: [{ "test:coverage": "vitest run --coverage" }],
+					},
+				],
 			},
 			{
 				excludeFiles: ["packages/.*-docs/package.json"],
 			},
 		),
 		makePolicy(SortTsconfigsPolicy),
-		// makePolicy(
-		// 	generatePackagePolicy("SlowTestPolicy", async () => {
-		// 		await timers.setTimeout(500);
-		// 		return true;
-		// 	}),
-		// ),
+		makePolicy(NoPrivateWorkspaceDependencies),
 	],
 };
 

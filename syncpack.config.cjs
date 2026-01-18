@@ -48,7 +48,7 @@ const config = {
 			label: "Prefer lowest version when there's a mismatch",
 			dependencies: ["**"],
 			packages: ["**"],
-			preferVersion: "lowestSemver",
+			preferVersion: "highestSemver",
 		},
 	],
 	semverGroups: [

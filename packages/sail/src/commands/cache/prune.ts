@@ -42,6 +42,6 @@ export default class CachePruneCommand extends BaseSailCommand<
 		this.log(`Pruned ${prunedCount} cache entries.`);
 
 		// Display statistics after pruning
-		await displayMinimalCacheStatistics(this, sharedCache);
+		await displayMinimalCacheStatistics(this.logger, sharedCache);
 	}
 }

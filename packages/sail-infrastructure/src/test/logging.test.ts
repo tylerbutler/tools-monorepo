@@ -26,7 +26,7 @@ describe("logging", () => {
 			expect(defaultLogger).toHaveProperty("log");
 			expect(defaultLogger).toHaveProperty("info");
 			expect(defaultLogger).toHaveProperty("warning");
-			expect(defaultLogger).toHaveProperty("errorLog");
+			expect(defaultLogger).toHaveProperty("error");
 			expect(defaultLogger).toHaveProperty("verbose");
 		});
 
@@ -107,9 +107,9 @@ describe("logging", () => {
 		});
 	});
 
-	describe("errorLog method", () => {
+	describe("error method", () => {
 		it("should log error message with ERROR prefix to stderr", () => {
-			defaultLogger.errorLog("error message");
+			defaultLogger.error("error message");
 
 			expect(consoleErrorSpy).toHaveBeenCalledOnce();
 			const call = consoleErrorSpy.mock.calls[0][0];
@@ -120,7 +120,7 @@ describe("logging", () => {
 
 		it("should handle Error objects", () => {
 			const error = new Error("critical error");
-			defaultLogger.errorLog(error);
+			defaultLogger.error(error);
 
 			expect(consoleErrorSpy).toHaveBeenCalledOnce();
 			const call = consoleErrorSpy.mock.calls[0][0];
@@ -129,7 +129,7 @@ describe("logging", () => {
 		});
 
 		it("should use console.error instead of console.log", () => {
-			defaultLogger.errorLog("error");
+			defaultLogger.error("error");
 
 			expect(consoleErrorSpy).toHaveBeenCalledOnce();
 			expect(consoleLogSpy).not.toHaveBeenCalled();

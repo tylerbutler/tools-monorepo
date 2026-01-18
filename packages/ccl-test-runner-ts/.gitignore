@@ -1,0 +1,10 @@
+# Build output
+esm/
+
+# Temp files
+_temp/
+*.tsbuildinfo
+*.done.build.log
+
+# Downloaded test data
+ccl-test-data/

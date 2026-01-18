@@ -16,7 +16,7 @@ describe("ErrorHandler", () => {
 
 	beforeEach(() => {
 		mockLogger = {
-			errorLog: vi.fn(),
+			error: vi.fn(),
 			warning: vi.fn(),
 			verbose: vi.fn(),
 			info: vi.fn(),
@@ -63,7 +63,7 @@ describe("ErrorHandler", () => {
 			// Assert
 			expect(result.shouldThrow).toBe(false);
 			expect(result.error).toBe(error);
-			expect(mockLogger.errorLog).toHaveBeenCalledWith(
+			expect(mockLogger.error).toHaveBeenCalledWith(
 				expect.stringContaining("Test error"),
 			);
 		});
@@ -91,7 +91,7 @@ describe("ErrorHandler", () => {
 
 			// Assert
 			expect(result.shouldThrow).toBe(false);
-			expect(mockLogger.errorLog).toHaveBeenCalled();
+			expect(mockLogger.error).toHaveBeenCalled();
 		});
 
 		it("should convert non-SailError to SailError", () => {
@@ -107,7 +107,7 @@ describe("ErrorHandler", () => {
 
 			// Assert
 			expect(result.error).toBeInstanceOf(SailError);
-			expect(mockLogger.errorLog).toHaveBeenCalled();
+			expect(mockLogger.error).toHaveBeenCalled();
 		});
 	});
 
@@ -141,7 +141,7 @@ describe("ErrorHandler", () => {
 
 			// Assert
 			expect(mockLogger.verbose).not.toHaveBeenCalled();
-			expect(mockLogger.errorLog).not.toHaveBeenCalled();
+			expect(mockLogger.error).not.toHaveBeenCalled();
 		});
 	});
 
@@ -160,7 +160,7 @@ describe("ErrorHandler", () => {
 			// Assert
 			expect(result.shouldThrow).toBe(false);
 			expect(result.error).toBe(error);
-			expect(mockLogger.errorLog).not.toHaveBeenCalled();
+			expect(mockLogger.error).not.toHaveBeenCalled();
 			expect(mockLogger.warning).not.toHaveBeenCalled();
 		});
 
@@ -209,7 +209,7 @@ describe("ErrorHandler", () => {
 			// Assert
 			expect(result.shouldThrow).toBe(true);
 			expect(result.error).toBe(error);
-			expect(mockLogger.errorLog).toHaveBeenCalledWith(
+			expect(mockLogger.error).toHaveBeenCalledWith(
 				expect.stringContaining("Fatal error"),
 			);
 		});
@@ -223,7 +223,7 @@ describe("ErrorHandler", () => {
 			errorHandler.handleError(error, {}, ErrorHandlingStrategy.Fatal);
 
 			// Assert
-			expect(mockLogger.errorLog).toHaveBeenCalledWith(
+			expect(mockLogger.error).toHaveBeenCalledWith(
 				expect.stringContaining("Stack trace"),
 			);
 		});
@@ -275,7 +275,7 @@ describe("ErrorHandler", () => {
 
 			// Assert
 			expect(result.shouldThrow).toBe(false);
-			expect(mockLogger.errorLog).toHaveBeenCalled();
+			expect(mockLogger.error).toHaveBeenCalled();
 			expect(mockLogger.warning).not.toHaveBeenCalled();
 		});
 	});
@@ -424,7 +424,7 @@ describe("ErrorHandler", () => {
 
 			// Assert
 			expect(result).toBeNull();
-			expect(mockLogger.errorLog).toHaveBeenCalled();
+			expect(mockLogger.error).toHaveBeenCalled();
 		});
 
 		it("should throw error on failure with Fatal strategy", async () => {
@@ -500,7 +500,7 @@ describe("ErrorHandler", () => {
 
 			// Assert
 			expect(mockLogger.warning).toHaveBeenCalled();
-			expect(mockLogger.errorLog).not.toHaveBeenCalled();
+			expect(mockLogger.error).not.toHaveBeenCalled();
 		});
 
 		it("should merge context for safe execute errors", () => {
@@ -659,7 +659,7 @@ describe("ContextualErrorHandler", () => {
 
 	beforeEach(() => {
 		mockLogger = {
-			errorLog: vi.fn(),
+			error: vi.fn(),
 			warning: vi.fn(),
 			verbose: vi.fn(),
 			info: vi.fn(),
@@ -716,7 +716,7 @@ describe("ContextualErrorHandler", () => {
 			contextualHandler.handleError(error, {}, ErrorHandlingStrategy.Log);
 
 			// Assert
-			expect(mockLogger.errorLog).toHaveBeenCalled();
+			expect(mockLogger.error).toHaveBeenCalled();
 		});
 	});
 
