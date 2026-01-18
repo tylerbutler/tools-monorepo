@@ -72,9 +72,8 @@
 		"ci": {
 			"executor": "nx:noop",
 			"dependsOn": [
-				"tools-monorepo:check:all", // Root-level checks must pass first
+				"tools-monorepo:check", // Root-level checks must pass first
 				"tools-monorepo:lint", // Root-level lint must pass first
-				"check",
 				"build",
 				"test:coverage"
 			],
@@ -127,16 +126,6 @@
 				"{projectRoot}/biome.jsonc",
 				"{workspaceRoot}/biome.jsonc",
 				"{workspaceRoot}/config/biome/*.jsonc"
-			],
-			"cache": true
-		},
-
-		"check": {
-			"dependsOn": [
-				"check:types",
-				"check:deps",
-				"check:policy",
-				"check:references"
 			],
 			"cache": true
 		},

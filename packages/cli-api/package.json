@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/cli-api",
-	"version": "0.8.0",
+	"version": "0.9.0",
 	"description": "Base classes and other API helpers for oclif-based CLI projects.",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli-api#tylerbucli-api",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -23,6 +23,24 @@
 			"import": {
 				"types": "./esm/capabilities/index.d.ts",
 				"default": "./esm/capabilities/index.js"
+			}
+		},
+		"./loggers/basic": {
+			"import": {
+				"types": "./esm/loggers/basic.d.ts",
+				"default": "./esm/loggers/basic.js"
+			}
+		},
+		"./loggers/consola": {
+			"import": {
+				"types": "./esm/loggers/consola.d.ts",
+				"default": "./esm/loggers/consola.js"
+			}
+		},
+		"./loggers/prefixReporter": {
+			"import": {
+				"types": "./esm/loggers/prefixReporter.d.ts",
+				"default": "./esm/loggers/prefixReporter.js"
 			}
 		}
 	},
@@ -70,27 +88,34 @@
 		"strip-ansi": "^7.1.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-documenter": "^7.27.4",
-		"@microsoft/api-extractor": "^7.54.0",
-		"@oclif/test": "^4.1.14",
+		"@biomejs/biome": "2.3.8",
+		"@microsoft/api-documenter": "^7.28.1",
+		"@microsoft/api-extractor": "^7.55.1",
+		"@oclif/test": "^4.1.15",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.24",
+		"@types/node": "^20.19.25",
 		"@types/semver": "^7.7.1",
-		"@vitest/coverage-v8": "^3.2.4",
+		"@vitest/coverage-v8": "^4.0.17",
 		"concurrently": "^9.2.1",
-		"generate-license-file": "^4.1.0",
-		"oclif": "^4.22.44",
-		"rimraf": "^6.1.0",
-		"tempy": "^3.1.0",
+		"consola": "^3.4.0",
+		"generate-license-file": "^4.1.1",
+		"oclif": "^4.22.50",
+		"rimraf": "^6.1.2",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"tslib": "^2.8.1",
-		"tsx": "^4.20.6",
-		"type-fest": "^5.2.0",
+		"tsx": "^4.21.0",
+		"type-fest": "^5.4.1",
 		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.17"
+	},
+	"peerDependencies": {
+		"consola": "^3.4.0"
+	},
+	"peerDependenciesMeta": {
+		"consola": {
+			"optional": true
+		}
 	},
 	"engines": {
 		"node": ">=18.0.0"

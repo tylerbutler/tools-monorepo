@@ -1,6 +1,6 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { RequiredGitignorePatterns } from "../../src/policies/RequiredGitignorePatterns.js";
 
@@ -93,7 +93,7 @@ node_modules/
 			if (typeof result === "object") {
 				expect(result.name).toBe("RequiredGitignorePatterns");
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain(
+				expect(result.errorMessages.join()).toContain(
 					"Missing required .gitignore patterns",
 				);
 			}
@@ -135,7 +135,9 @@ node_modules/
 			if (typeof result === "object") {
 				expect(result.name).toBe("RequiredGitignorePatterns");
 				expect(result.autoFixable).toBe(true);
-				expect(result.errorMessage).toContain("No .gitignore file found");
+				expect(result.errorMessages.join()).toContain(
+					"No .gitignore file found",
+				);
 			}
 		});
 
@@ -181,8 +183,8 @@ node_modules/
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("custom-pattern/");
-				expect(result.errorMessage).toContain("*.log");
+				expect(result.errorMessages.join()).toContain("custom-pattern/");
+				expect(result.errorMessages.join()).toContain("*.log");
 			}
 		});
 

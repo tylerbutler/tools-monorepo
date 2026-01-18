@@ -177,7 +177,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @tylerbu/sail-infrastructure@0.1.0
+ - @tylerbu/sail-infrastructure@0.3.0
 
 This package contains the following license:
 
@@ -448,7 +448,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @oclif/plugin-commands@4.1.37
+ - @oclif/plugin-commands@4.1.38
 
 This package contains the following license:
 
@@ -480,10 +480,10 @@ The following npm packages may be included in this product:
 
  - @oclif/core@4.8.0
  - @oclif/plugin-autocomplete@3.2.39
- - @oclif/plugin-help@6.2.35
- - @oclif/plugin-not-found@3.2.72
+ - @oclif/plugin-help@6.2.36
+ - @oclif/plugin-not-found@3.2.73
  - @oclif/plugin-version@2.2.36
- - @oclif/plugin-warn-if-update-available@3.1.52
+ - @oclif/plugin-warn-if-update-available@3.1.53
 
 These packages each contain the following license:
 
@@ -635,7 +635,7 @@ The following npm packages may be included in this product:
 
  - detect-indent@7.0.2
  - find-up@7.0.0
- - log-update@7.0.1
+ - log-update@7.0.2
  - multimatch@5.0.0
  - type-fest@5.2.0
 

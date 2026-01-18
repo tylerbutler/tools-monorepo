@@ -13,7 +13,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 			);
 			const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
 			const { tmpdir } = await import("node:os");
-			const { join } = await import("node:path");
+			const { join } = await import("pathe");
 
 			const testDir = join(
 				tmpdir(),
@@ -48,7 +48,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 					});
 
 					if (typeof result === "object") {
-						expect(result.errorMessage).toContain(expected);
+						expect(result.errorMessages.join()).toContain(expected);
 					}
 				}
 			} finally {
@@ -62,7 +62,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 			);
 			const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
 			const { tmpdir } = await import("node:os");
-			const { join } = await import("node:path");
+			const { join } = await import("pathe");
 
 			const testDir = join(
 				tmpdir(),
@@ -97,7 +97,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 			);
 			const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
 			const { tmpdir } = await import("node:os");
-			const { join } = await import("node:path");
+			const { join } = await import("pathe");
 
 			const testDir = join(
 				tmpdir(),
@@ -158,7 +158,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 			);
 			const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
 			const { tmpdir } = await import("node:os");
-			const { join } = await import("node:path");
+			const { join } = await import("pathe");
 
 			const testDir = join(
 				tmpdir(),
@@ -203,7 +203,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 			);
 			const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
 			const { tmpdir } = await import("node:os");
-			const { join } = await import("node:path");
+			const { join } = await import("pathe");
 
 			const testDir = join(
 				tmpdir(),
@@ -241,7 +241,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 			);
 			const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
 			const { tmpdir } = await import("node:os");
-			const { join } = await import("node:path");
+			const { join } = await import("pathe");
 
 			const testDir = join(
 				tmpdir(),
@@ -274,7 +274,7 @@ describe("NoLargeBinaryFiles utility functions", () => {
 			);
 			const { mkdirSync, writeFileSync, rmSync } = await import("node:fs");
 			const { tmpdir } = await import("node:os");
-			const { join } = await import("node:path");
+			const { join } = await import("pathe");
 
 			const testDir = join(
 				tmpdir(),

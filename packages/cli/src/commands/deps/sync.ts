@@ -1,5 +1,4 @@
 import { stat } from "node:fs/promises";
-import path from "node:path";
 import { Flags } from "@oclif/core";
 import {
 	CommandWithConfig,
@@ -14,7 +13,7 @@ import {
 	syncAllPackages,
 } from "@tylerbu/cli-api";
 import { exists } from "@tylerbu/fundamentals";
-import { all, call, run } from "effection";
+import path from "pathe";
 import chalk from "picocolors";
 
 export default class DepsSync extends CommandWithConfig<
@@ -106,13 +105,13 @@ export default class DepsSync extends CommandWithConfig<
 
 		// Validate that the working directory exists and is safe
 		if (!(await exists(this.workingDir))) {
-			this.error(`Working directory does not exist: ${this.workingDir}`);
+			this.exit(`Working directory does not exist: ${this.workingDir}`);
 		}
 
 		// Verify it's actually a directory
 		const stats = await stat(this.workingDir);
 		if (!stats.isDirectory()) {
-			this.error(`Path is not a directory: ${this.workingDir}`);
+			this.exit(`Path is not a directory: ${this.workingDir}`);
 		}
 
 		this.isDryRun = !this.flags.execute;
@@ -161,7 +160,7 @@ export default class DepsSync extends CommandWithConfig<
 			}
 		} catch (error) {
 			if (error instanceof Error) {
-				this.error(error.message);
+				this.exit(error.message);
 			}
 			throw error;
 		}
@@ -179,14 +178,14 @@ export default class DepsSync extends CommandWithConfig<
 
 			const detected = detectFromLockfilePath(lockfilePath);
 			if (!detected) {
-				this.error(
+				this.exit(
 					`Unrecognized lockfile: ${path.basename(lockfilePath)}\nSupported: ${getAllLockfiles().join(", ")}`,
 				);
 			}
 
 			// Check if sync is supported
 			if (!isSyncSupported(detected)) {
-				this.error(
+				this.exit(
 					`❌ ${detected} is not yet fully supported for sync operations.\nCurrently supported: npm, pnpm\nContributions welcome! See: https://github.com/tylerbutler/tools-monorepo`,
 				);
 			}
@@ -197,14 +196,14 @@ export default class DepsSync extends CommandWithConfig<
 		// Auto-detect from current directory
 		const detected = await detectPackageManager(this.workingDir);
 		if (!detected) {
-			this.error(
+			this.exit(
 				`No lockfile found in ${this.workingDir}\nSupported: ${getAllLockfiles().join(", ")}`,
 			);
 		}
 
 		// Check if sync is supported
 		if (!isSyncSupported(detected)) {
-			this.error(
+			this.exit(
 				`❌ ${detected} is not yet fully supported for sync operations.\nCurrently supported: npm, pnpm\nContributions welcome! See: https://github.com/tylerbutler/tools-monorepo`,
 			);
 		}

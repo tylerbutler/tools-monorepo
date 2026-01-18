@@ -1,6 +1,6 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { LicenseFileExists } from "../../src/policies/LicenseFileExists.js";
 
@@ -91,8 +91,8 @@ describe("LicenseFileExists", () => {
 				expect(result.name).toBe("LicenseFileExists");
 				expect(result.file).toBe(".");
 				expect(result.autoFixable).toBe(false);
-				expect(result.errorMessage).toContain("No LICENSE file found");
-				expect(result.errorMessage).toContain("LICENSE, LICENSE.txt");
+				expect(result.errorMessages.join()).toContain("No LICENSE file found");
+				expect(result.errorMessages.join()).toContain("LICENSE, LICENSE.txt");
 			}
 		});
 	});
@@ -133,8 +133,8 @@ describe("LicenseFileExists", () => {
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("COPYING");
-				expect(result.errorMessage).not.toContain("LICENSE.txt");
+				expect(result.errorMessages.join()).toContain("COPYING");
+				expect(result.errorMessages.join()).not.toContain("LICENSE.txt");
 			}
 		});
 	});
@@ -190,7 +190,9 @@ describe("LicenseFileExists", () => {
 				// Case-sensitive filesystem
 				expect(result).not.toBe(true);
 				if (typeof result === "object") {
-					expect(result.errorMessage).toContain("No LICENSE file found");
+					expect(result.errorMessages.join()).toContain(
+						"No LICENSE file found",
+					);
 				}
 			}
 		});

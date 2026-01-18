@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
+	"$schema": "../node_modules/@biomejs/biome/configuration_schema.json",
 	"overrides": [
 		{
 			"includes": ["**/src/commands/**/*.ts"],
@@ -8,6 +8,10 @@
 					"style": {
 						// oclif commands are required to use default exports.
 						"noDefaultExport": "off",
+					},
+					"performance": {
+						// oclif commands can re-export from other packages.
+						"noBarrelFile": "off",
 					},
 				},
 			},

@@ -1,7 +1,7 @@
 import child_process from "node:child_process";
 import fs from "node:fs";
-import path from "node:path";
 import isEqual from "lodash.isequal";
+import path from "pathe";
 
 /**
  *	An array of commands that are known to have subcommands and should be parsed as such. These will be combined with

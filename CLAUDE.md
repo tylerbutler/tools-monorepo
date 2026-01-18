@@ -569,11 +569,13 @@ pnpm run ci:lint
 
 1. **Always use pnpm** - The `packageManager` field enforces pnpm 10.10.0
 2. **No .js files** - Use .mjs or .cjs for JavaScript files (enforced by repopo)
-3. **Workspace protocol** - Internal deps use `workspace:^`
-4. **Synchronized versions** - Run `pnpm syncpack:fix` to sync dependency versions
-5. **Sorted configs** - package.json and tsconfig.json must be sorted
-6. **Biome formatting** - Code must pass Biome checks before commit
-7. **Policy compliance** - All packages must pass repopo policy checks
+3. **Use pathe for path handling** - Always use `pathe` instead of `node:path` for cross-platform path operations
+4. **Async file I/O** - Prefer `fs/promises` over sync fs operations (e.g., `readFile` over `readFileSync`)
+5. **Workspace protocol** - Internal deps use `workspace:^`
+6. **Synchronized versions** - Run `pnpm syncpack:fix` to sync dependency versions
+7. **Sorted configs** - package.json and tsconfig.json must be sorted
+8. **Biome formatting** - Code must pass Biome checks before commit
+9. **Policy compliance** - All packages must pass repopo policy checks
 
 ## File Organization
 

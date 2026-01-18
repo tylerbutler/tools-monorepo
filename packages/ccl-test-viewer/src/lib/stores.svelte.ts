@@ -254,7 +254,7 @@ class AppState {
 			allTests = allTests.filter(
 				(test) =>
 					test.name.toLowerCase().includes(query) ||
-					test.input.toLowerCase().includes(query) ||
+					test.inputs.join("\n").toLowerCase().includes(query) ||
 					test.functions.some((func) => func.toLowerCase().includes(query)) ||
 					test.features.some((feature) =>
 						feature.toLowerCase().includes(query),

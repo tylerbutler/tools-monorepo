@@ -1,5 +1,5 @@
 import { cp, mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { BuildGraphPackage } from "../../../src/core/buildGraph.js";
 import { createBuildGraphTestContext } from "../support/buildGraphIntegrationHelper.js";

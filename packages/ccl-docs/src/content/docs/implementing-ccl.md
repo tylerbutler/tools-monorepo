@@ -54,7 +54,7 @@ function build_hierarchy(entries):
         if key == "":
             add_to_list(result, value)
         else if value_looks_like_ccl(value):
-            nested = parse(value)
+            nested = parse(value)  # Uses nested context detection
             result[key] = build_hierarchy(nested)  # Recurse
         else:
             result[key] = value
@@ -62,6 +62,12 @@ function build_hierarchy(entries):
 ```
 
 **Fixed-point termination**: Recurse until no more CCL syntax found.
+
+:::caution[Critical: Nested Parsing Context]
+When `build_hierarchy` calls `parse` on a nested value, the parser must detect that the value starts with `\n` and use the first content line's indentation as the baseline—regardless of the `toplevel_indent_strip`/`toplevel_indent_preserve` behavior setting for top-level parsing.
+
+This is the most common source of parsing bugs. See [Continuation Lines](/continuation-lines) for the complete algorithm and [Behavior Reference](/behavior-reference#continuation-baseline) for top-level baseline choices.
+:::
 
 See [Parsing Algorithm](/parsing-algorithm) for details.
 
@@ -83,7 +89,7 @@ See [Library Features](/library-features) for details.
 
 ## Testing
 
-Use [CCL Test Suite](https://github.com/ccl-test-data) (453 assertions, 168 tests):
+Use [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) (447 assertions, 205 tests):
 
 1. **Core Parsing**: Filter tests by `functions: ["parse"]`
 2. **Object Construction**: Filter by `functions` containing `build_hierarchy`
@@ -91,6 +97,69 @@ Use [CCL Test Suite](https://github.com/ccl-test-data) (453 assertions, 168 test
 4. **Optional Features**: Filter by `features` arrays (`comments`, `experimental_dotted_keys`, etc.)
 
 See [Test Suite Guide](/test-suite-guide) for complete filtering examples.
+
+## Internal Representation Choices
+
+How you represent CCL data internally affects which features are easy to implement.
+
+### The OCaml Approach
+
+The reference OCaml implementation represents all data as nested `KeyMap` structures:
+
+```ocaml
+type ccl = KeyMap of ccl StringMap.t
+```
+
+**Advantages**:
+- Uniform data structure (everything is a nested map)
+- Elegant recursion with `fix` function
+- Clean pattern matching and algebraic properties
+
+**Trade-off**: This model cannot distinguish between a string value:
+```ccl
+name = Alice
+```
+and a nested key with empty value:
+```ccl
+name =
+  Alice =
+```
+
+Both produce identical models: `{ "name": { "Alice": {} } }`
+
+### Alternative: Tagged Union
+
+For implementations that need structure-preserving `print`, use a tagged union:
+
+```pseudocode
+type Value =
+  | String(string)
+  | Object(map<string, Value>)
+  | List(list<Value>)
+```
+
+**Advantages**:
+- Easy to implement `print` (structure recovery is straightforward)
+- Can distinguish string values from nested structures
+- Natural representation for most languages
+
+### Lazy Hierarchy Building
+
+Another approach: preserve original entries and build hierarchy on-demand:
+
+```pseudocode
+type CCL = {
+  entries: List(Entry),
+  hierarchy: Lazy(Object)
+}
+```
+
+**Advantages**:
+- Perfect structure preservation for `print`
+- Can support both `print` and `canonical_format`
+- Deferred parsing cost
+
+See [Library Features](/library-features#formatting-functions) for details on `print` vs `canonical_format`.
 
 ## Common Challenges
 

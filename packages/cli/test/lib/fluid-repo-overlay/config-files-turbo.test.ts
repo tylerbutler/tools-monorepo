@@ -1,6 +1,7 @@
+import { mkdtempSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { temporaryDirectory } from "tempy";
+import { tmpdir } from "node:os";
+import { join } from "pathe";
 import { describe, expect, it, vi } from "vitest";
 import {
 	copyTurboConfigFiles,
@@ -10,7 +11,7 @@ import {
 describe("config-files-turbo", () => {
 	describe("copyTurboConfigFiles", () => {
 		it("copies turbo.jsonc to repo root", async () => {
-			const tmpDir = temporaryDirectory();
+			const tmpDir = mkdtempSync(join(tmpdir(), "config-files-turbo-test-"));
 			const mockLogger = {
 				verbose: vi.fn(),
 			};
@@ -34,7 +35,7 @@ describe("config-files-turbo", () => {
 		});
 
 		it("skips copy if turbo.jsonc already exists", async () => {
-			const tmpDir = temporaryDirectory();
+			const tmpDir = mkdtempSync(join(tmpdir(), "config-files-turbo-test-"));
 			const turboJsonPath = join(tmpDir, "turbo.jsonc");
 
 			// Create existing turbo.jsonc
@@ -65,14 +66,14 @@ describe("config-files-turbo", () => {
 
 	describe("isTurboConfigured", () => {
 		it("returns true when turbo.jsonc exists", async () => {
-			const tmpDir = temporaryDirectory();
+			const tmpDir = mkdtempSync(join(tmpdir(), "config-files-turbo-test-"));
 			await writeFile(join(tmpDir, "turbo.jsonc"), "{}", "utf-8");
 
 			expect(await isTurboConfigured(tmpDir)).toBe(true);
 		});
 
 		it("returns false when turbo.jsonc does not exist", async () => {
-			const tmpDir = temporaryDirectory();
+			const tmpDir = mkdtempSync(join(tmpdir(), "config-files-turbo-test-"));
 
 			expect(await isTurboConfigured(tmpDir)).toBe(false);
 		});

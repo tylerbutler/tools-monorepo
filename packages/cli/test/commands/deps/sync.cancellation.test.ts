@@ -1,5 +1,5 @@
-import { mkdir, rm, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { mkdir, rm } from "node:fs/promises";
+import path from "pathe";
 import { afterEach, beforeEach, describe, it } from "vitest";
 
 describe("Package.json Sync with Cancellation", () => {

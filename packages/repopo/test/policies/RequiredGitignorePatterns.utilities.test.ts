@@ -1,6 +1,6 @@
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { RequiredGitignorePatterns } from "../../src/policies/RequiredGitignorePatterns.js";
 
@@ -159,10 +159,10 @@ dist/
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("dist/");
-				expect(result.errorMessage).toContain(".env");
-				expect(result.errorMessage).toContain("build/");
-				expect(result.errorMessage).not.toContain("node_modules/");
+				expect(result.errorMessages.join()).toContain("dist/");
+				expect(result.errorMessages.join()).toContain(".env");
+				expect(result.errorMessages.join()).toContain("build/");
+				expect(result.errorMessages.join()).not.toContain("node_modules/");
 			}
 		});
 
@@ -183,8 +183,8 @@ dist/
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("node_modules/");
-				expect(result.errorMessage).toContain(".env");
+				expect(result.errorMessages.join()).toContain("node_modules/");
+				expect(result.errorMessages.join()).toContain(".env");
 			}
 		});
 
@@ -206,9 +206,9 @@ dist/
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
-				expect(result.errorMessage).toContain("dist/");
-				expect(result.errorMessage).toContain(".env");
-				expect(result.errorMessage).not.toContain("node_modules/");
+				expect(result.errorMessages.join()).toContain("dist/");
+				expect(result.errorMessages.join()).toContain(".env");
+				expect(result.errorMessages.join()).not.toContain("node_modules/");
 			}
 		});
 	});
@@ -416,7 +416,9 @@ node_modules/
 			expect(result).not.toBe(true);
 			if (typeof result === "object" && "resolved" in result) {
 				expect(result.resolved).toBe(false);
-				expect(result.errorMessage).toContain("Failed to create .gitignore");
+				expect(result.errorMessages.join()).toContain(
+					"Failed to create .gitignore",
+				);
 			}
 		});
 	});
@@ -444,7 +446,9 @@ node_modules/
 				expect(result).not.toBe(true);
 				if (typeof result === "object" && "resolved" in result) {
 					expect(result.resolved).toBe(false);
-					expect(result.errorMessage).toContain("Failed to update .gitignore");
+					expect(result.errorMessages.join()).toContain(
+						"Failed to update .gitignore",
+					);
 				}
 			} finally {
 				// Restore write permissions for cleanup

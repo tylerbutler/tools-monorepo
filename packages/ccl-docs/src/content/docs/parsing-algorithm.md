@@ -16,7 +16,7 @@ CCL is parsed through recursive descent to a fixed point. The algorithm is simpl
 
 ### Input Format
 
-CCL is line-based text with key-value pairs:
+CCL consists of key-value pairs separated by `=`:
 
 ```ccl
 key = value
@@ -26,27 +26,48 @@ nested =
   sibling = another nested
 ```
 
-### Stage 1: Parse Entries
+### Parse Entries
 
-Split lines on first `=` character:
+Find the first `=` character and split:
 
 ```
 "key = value"  →  Entry {key: "key", value: "value"}
 "a = b = c"    →  Entry {key: "a", value: "b = c"}
 ```
 
-**Whitespace rules**:
-- Trim whitespace from keys: `"  key  "` → `"key"`
-- Preserve value whitespace except leading: `"  value  "` → `"value  "`
-- Tab characters and spaces both count as indentation
+**Key whitespace rules**:
+- Trim all whitespace from keys (including newlines): `"  key  "` → `"key"`
+- Keys can span multiple lines if `=` appears on a subsequent line
+
+**Value whitespace rules**:
+- Trim leading whitespace on first line: `key =   value` → `"value"`
+- Trim trailing whitespace on final line
+- Preserve internal structure (newlines + indentation for continuation lines)
+
+**Indentation tracking**:
+1. Determine the **baseline indentation** (N) for the current parsing context
+2. For each subsequent line, compare its indentation to N:
+   - `indent > N` → continuation line (part of value)
+   - `indent ≤ N` → new entry starts
+3. Which characters count as whitespace depends on parser behavior:
+   - `tabs_as_whitespace`: spaces and tabs are whitespace
+   - `tabs_as_content`: only spaces are whitespace; tabs are content
+
+:::caution[Context-Dependent Baseline]
+The baseline N is determined differently depending on parsing context:
+- **Top-level parsing**: N = 0 with `toplevel_indent_strip` behavior (default), or N = first key's indent with `toplevel_indent_preserve`
+- **Nested parsing** (recursive calls): N = first content line's indentation (always)
+
+See [Continuation Lines](/continuation-lines) for detailed examples and [Behavior Reference](/behavior-reference#continuation-baseline) for choosing between baseline behaviors.
+:::
 
 **Special keys**:
 - Empty key `= value` → list item
-- Comment key `/= text` → comment entry
+- Comment entry `/ = text` → key is `/`, value is `text`
 
-### Stage 2: Build Hierarchy
+### Build Hierarchy
 
-Group entries by indentation level:
+Indentation determines structure. Example:
 
 ```ccl
 parent =
@@ -54,17 +75,13 @@ parent =
   sibling = another
 ```
 
-Becomes:
+The parser records `parent`'s indentation level (0). Lines `child` and `sibling` have greater indentation (2), so they become part of `parent`'s value:
+
 ```
 Entry {key: "parent", value: "child = nested\nsibling = another"}
 ```
 
-**Indentation logic**:
-- Count leading whitespace characters
-- Lines with MORE indentation than previous = part of previous value
-- Lines with SAME/LESS indentation = new entry at that level
-
-### Stage 3: Recursive Parsing (Fixed Point)
+### Recursive Parsing (Fixed Point)
 
 Parse values that contain CCL syntax:
 
@@ -80,6 +97,17 @@ value: "child = nested\nsibling = another"
 - If value has no '=' → stop (fixed point reached)
 - Prevents infinite recursion: plain strings have no structure to parse
 
+:::note[Nested Parsing Context]
+When recursively parsing a multiline value, the parser must detect that it's in a **nested context** (the value starts with `\n`) and use the first content line's indentation as the baseline—regardless of the `toplevel_indent_strip`/`toplevel_indent_preserve` behavior setting.
+
+For example, the value `"\n  host = localhost\n  port = 8080"`:
+1. Starts with `\n` → nested context
+2. First content line `  host = localhost` has indent 2 → N = 2
+3. Both lines have indent 2, which is NOT > 2 → two separate entries
+
+This is why the same text produces different results depending on context. See [Continuation Lines](/continuation-lines) for the complete algorithm.
+:::
+
 ### Complete Example
 
 Input:
@@ -93,13 +121,13 @@ users =
   = bob
 ```
 
-Step 1 - Parse entries:
+**Parse entries:**
 ```
 Entry {key: "database", value: "host = localhost\nport = 5432"}
 Entry {key: "users", value: "= alice\n= bob"}
 ```
 
-Step 2 - Recursive parsing:
+**Recursive parsing:**
 ```
 database.value contains '=' → parse recursively:
   Entry {key: "host", value: "localhost"}
@@ -110,7 +138,7 @@ users.value contains '=' → parse recursively:
   Entry {key: "", value: "bob"}
 ```
 
-Step 3 - Build objects:
+**Build objects:**
 ```json
 {
   "database": {
@@ -129,9 +157,9 @@ Pseudocode for recursive parser:
 
 ```python
 def parse_ccl(text):
-    entries = parse_entries(text)  # Stage 1: split on '='
-    hierarchy = build_hierarchy(entries)  # Stage 2: group by indentation
-    return recursively_parse(hierarchy)  # Stage 3: fixed point
+    entries = parse_entries(text)  # split on '='
+    hierarchy = build_hierarchy(entries)  # group by indentation
+    return recursively_parse(hierarchy)  # fixed point
 
 def recursively_parse(entries):
     result = {}

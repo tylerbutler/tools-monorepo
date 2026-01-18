@@ -2,46 +2,54 @@ name: Setup Nx
 description: Configure Nx cache and affected detection
 
 inputs:
-  enable-cache:
-    description: Enable Nx local cache
-    required: false
-    type: boolean
-    default: false
   enable-nx-cloud:
-    description: Enable Nx Cloud (if false, sets NX_NO_CLOUD=true)
+    description: |
+      Enable Nx Cloud. Options:
+        - 'true': Enable Nx Cloud
+        - 'false': Disable Nx Cloud (sets NX_NO_CLOUD=true)
+        - 'auto' (default): Use repository variable ENABLE_NX_CLOUD to decide
     required: false
-    type: boolean
-    default: false
+    type: string
+    default: 'auto'
   nx-cloud-token:
     description: Nx Cloud access token (only used if enable-nx-cloud is true)
     required: false
     type: string
     default: ''
+  enable-nx-cloud-var:
+    description: |
+      Value of a repository variable to control Nx Cloud (e.g., vars.NX_CLOUD_PR or vars.NX_CLOUD_MAIN).
+      Only used when enable-nx-cloud is 'auto'. Set to 'true' to enable, any other value disables.
+    required: false
+    type: string
+    default: 'false'
 
 runs:
   using: composite
   steps:
-    # Configure Nx Cloud settings
-    - name: Configure Nx Cloud
+    # Configure Nx settings
+    - name: Configure Nx
       shell: bash
       run: |
-        if [ "${{ inputs.enable-nx-cloud }}" = "true" ]; then
+        # Set custom cache directory to avoid conflicts with coverage outputs
+        echo "NX_CACHE_DIRECTORY=/tmp/nx-cache" >> $GITHUB_ENV
+
+        # Determine if Nx Cloud should be enabled
+        # Priority: explicit input > repository variable > default (disabled)
+        ENABLE_NX_CLOUD="${{ inputs.enable-nx-cloud }}"
+        if [ "$ENABLE_NX_CLOUD" = "auto" ]; then
+          # Use repository variable value (defaults to 'false' if not set)
+          ENABLE_NX_CLOUD="${{ inputs.enable-nx-cloud-var }}"
+        fi
+
+        # Configure Nx Cloud based on resolved value
+        if [ "$ENABLE_NX_CLOUD" = "true" ]; then
+          echo "Nx Cloud: enabled"
           echo "NX_CLOUD_ACCESS_TOKEN=${{ inputs.nx-cloud-token }}" >> $GITHUB_ENV
         else
+          echo "Nx Cloud: disabled"
           echo "NX_NO_CLOUD=true" >> $GITHUB_ENV
         fi
-    # Cache Nx local cache between runs
-    - name: Cache Nx
-      if: inputs.enable-cache
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # ratchet:actions/cache@v4
-      with:
-        path: .nx/cache
-        key: nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/project.json', 'nx.json') }}
-        restore-keys: |
-          nx-${{ runner.os }}-${{ github.ref_name }}-${{ hashFiles('pnpm-lock.yaml') }}-
-          nx-${{ runner.os }}-${{ github.ref_name }}-
-          nx-${{ runner.os }}-main-
-          nx-${{ runner.os }}-
 
     # Sets NX_BASE and NX_HEAD for accurate affected detection
     - uses: nrwl/nx-set-shas@826660b82addbef3abff5fa871492ebad618c9e1 # ratchet:nrwl/nx-set-shas@v4

@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import path from "node:path";
+import path from "pathe";
 
 import { GitRepo } from "../../../common/gitRepo.js";
 import { getSailConfig } from "../../../core/config.js";

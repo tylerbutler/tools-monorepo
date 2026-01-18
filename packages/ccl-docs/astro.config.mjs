@@ -29,6 +29,14 @@ export default defineConfig({
 		imageCDN: false,
 	}),
 	site: "https://ccl.tylerbutler.com",
+	// Prevent zod from being externalized to avoid conflicts between
+	// Astro's bundled zod v3 and user-installed zod v4
+	// See: https://github.com/withastro/astro/issues/14117
+	vite: {
+		ssr: {
+			noExternal: ["zod"],
+		},
+	},
 	integrations: [
 		starlight({
 			title: "CCL",
@@ -70,6 +78,14 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
+					label: "For AI Assistants",
+					items: [
+						{ slug: "ai-quickstart" },
+						{ slug: "ai-implementation-guide" },
+						{ slug: "ai-prompts" },
+					],
+				},
+				{
 					label: "Learning CCL",
 					items: [
 						{ slug: "getting-started" },
@@ -82,8 +98,10 @@ export default defineConfig({
 					items: [
 						{ slug: "implementing-ccl" },
 						{ slug: "parsing-algorithm" },
+						{ slug: "continuation-lines" },
 						{ slug: "library-features" },
 						{ slug: "test-suite-guide" },
+						{ slug: "behavior-reference" },
 					],
 				},
 				{
