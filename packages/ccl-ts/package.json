@@ -35,7 +35,7 @@
 		"lint:fix": "biome lint . --write --unsafe",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run --coverage"
 	},
 	"dependencies": {
 		"true-myth": "^9.3.1"

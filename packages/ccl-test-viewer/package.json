@@ -44,7 +44,7 @@
 		"tauri:dev": "tauri dev",
 		"test": "vitest run",
 		"test:all": "pnpm test && pnpm test:e2e",
-		"test:coverage": "vitest run --coverage",
+		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run --coverage",
 		"test:e2e": "playwright test",
 		"test:e2e:debug": "playwright test --debug",
 		"test:e2e:ui": "playwright test --ui",

@@ -36,7 +36,7 @@
 		"lint:fix": "biome lint . --write",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run test",
-		"test:coverage": "vitest run test --coverage"
+		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run test --coverage"
 	},
 	"dependencies": {
 		"@manypkg/get-packages": "^3.1.0",
