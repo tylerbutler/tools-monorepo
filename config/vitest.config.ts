@@ -21,6 +21,9 @@ const config = defineConfig({
 			// Include cobertura for better codecov integration
 			reporter: ["text", "json", "html", "cobertura"],
 			reportsDirectory: ".coverage/vitest",
+			// Serialize coverage processing to prevent race condition in CI
+			// where parallel workers try to write to .tmp directory simultaneously
+			processingConcurrency: 1,
 		},
 		exclude: [
 			// Default Vitest exclusions

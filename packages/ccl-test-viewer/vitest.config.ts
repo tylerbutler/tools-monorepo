@@ -25,6 +25,9 @@ export default defineConfig({
 			reporter: ["text", "json", "html", "cobertura"],
 			provider: "v8",
 			reportsDirectory: ".coverage/vitest",
+			// Serialize coverage processing to prevent race condition in CI
+			// where parallel workers try to write to .tmp directory simultaneously
+			processingConcurrency: 1,
 			include: ["src/lib/**/*.{ts,js}", "!src/lib/**/*.svelte.ts"],
 			exclude: [
 				"node_modules/",
