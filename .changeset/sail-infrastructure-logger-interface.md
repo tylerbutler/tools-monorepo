@@ -1,5 +1,5 @@
 ---
-"@tylerbu/sail-infrastructure": major
+"@tylerbu/sail-infrastructure": minor
 ---
 
 feat!: update Logger interface for consistency with cli-api

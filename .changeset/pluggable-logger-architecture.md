@@ -1,5 +1,5 @@
 ---
-"@tylerbu/cli-api": major
+"@tylerbu/cli-api": minor
 ---
 
 feat!: pluggable logger architecture for BaseCommand

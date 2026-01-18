@@ -1,5 +1,5 @@
 ---
-"repopo": major
+"repopo": minor
 "sort-tsconfig": patch
 ---
 
