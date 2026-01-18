@@ -1,5 +1,5 @@
-import { fileURLToPath } from "node:url";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "pathe";
 import { defineConfig } from "vitest/config";
 
