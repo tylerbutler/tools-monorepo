@@ -9,6 +9,8 @@ export default defineConfig({
 		include: ["src/**/*.{test,spec}.{js,ts}"],
 		exclude: ["tests/**/*", "e2e/**/*"],
 		environment: "happy-dom",
+		// Create coverage temp directory before tests to prevent race condition
+		globalSetup: ["src/test/vitest.global-setup.ts"],
 		setupFiles: ["src/test/setup.ts", "src/test/msw.setup.ts"],
 		// CI environments are slower, so increase timeout to prevent flaky test failures
 		testTimeout: process.env.GITHUB_ACTIONS ? 15000 : 5000,
