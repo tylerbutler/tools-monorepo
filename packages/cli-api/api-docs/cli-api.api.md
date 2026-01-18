@@ -115,10 +115,26 @@ export interface ConfigCapabilityOptions<TConfig> {
 export type ConfigContext<TConfig> = ConfigContextFound<TConfig> | ConfigContextNotFound;
 
 // @beta
-export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
+export interface ConfigContextFound<TConfig> {
+    config: TConfig;
+    found: true;
+    isDefault(): boolean;
+    location: string | DefaultConfigLocation;
+}
+
+// @beta
+export interface ConfigContextNotFound {
+    config: undefined;
+    found: false;
+    isDefault(): false;
+    location: undefined;
+}
 
 // @beta
 export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
+
+// @beta
+export const ConfigFlagHidden: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export interface ConsolaLoggerOptions {

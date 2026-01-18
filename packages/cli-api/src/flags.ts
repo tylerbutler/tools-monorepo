@@ -26,41 +26,37 @@ export const RegExpFlag = Flags.custom<RegExp>({
 
 /**
  * A pre-configured oclif flag for configuration file paths.
- * Validates that the file exists and displays in the CONFIGURATION help group.
- *
- * Use this flag when you need file existence validation and want the flag
- * grouped under CONFIGURATION in help output. For a simpler flag with `-c`
- * shorthand but no validation, use {@link ConfigFlag} from the capabilities module.
+ * Includes `-c` shorthand, validates that the file exists, and displays in the CONFIGURATION help group.
  *
  * @example
  * ```typescript
- * import { ConfigFileFlag } from "@tylerbu/cli-api";
+ * import { ConfigFlag } from "@tylerbu/cli-api";
  *
  * class MyCommand extends BaseCommand {
  *   static flags = {
- *     config: ConfigFileFlag,  // Validates file exists
+ *     config: ConfigFlag,  // Adds -c, --config <path> with file validation
  *   };
  * }
  * ```
  *
- * @see {@link ConfigFlag} from "@tylerbu/cli-api/capabilities" for a simple string flag
- *
  * @beta
  */
-export const ConfigFileFlag = Flags.file({
-	description: "The path to a configuration file.",
+export const ConfigFlag = Flags.file({
+	char: "c",
+	description: "Path to configuration file.",
 	helpGroup: "CONFIGURATION",
 	exists: true,
 });
 
 /**
  * A pre-configured oclif flag for configuration file paths that is hidden from help output.
- * Validates that the file exists and displays in the CONFIGURATION help group.
+ * Validates that the file exists.
  *
  * @beta
  */
-export const ConfigFileFlagHidden = Flags.file({
-	description: "The path to a configuration file.",
+export const ConfigFlagHidden = Flags.file({
+	char: "c",
+	description: "Path to configuration file.",
 	helpGroup: "CONFIGURATION",
 	exists: true,
 	hidden: true,

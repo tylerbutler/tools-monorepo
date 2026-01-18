@@ -17,7 +17,8 @@ export {
 	ConfigCapability,
 	type ConfigCapabilityOptions,
 	type ConfigContext,
-	ConfigFlag,
+	type ConfigContextFound,
+	type ConfigContextNotFound,
 	type DefaultConfigLocation,
 	GitCapability,
 	type GitCapabilityOptions,
@@ -43,10 +44,7 @@ export {
 	syncAllPackages,
 	type UpdateVersionRangeOptions,
 } from "./dependency-sync.js";
-export {
-	ConfigFileFlag,
-	RegExpFlag,
-} from "./flags.js";
+export { ConfigFlag, ConfigFlagHidden, RegExpFlag } from "./flags.js";
 export type { CommitMergeability, Repository } from "./git.js";
 export {
 	checkConflicts,

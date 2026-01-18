@@ -1,4 +1,3 @@
-import { Flags } from "@oclif/core";
 import type { BaseCommand } from "../baseCommand.js";
 import { loadConfig } from "../loadConfig.js";
 import { type Capability, CapabilityWrapper } from "./capability.js";
@@ -207,32 +206,3 @@ export function useConfig<
 		new ConfigCapability<TCommand, TConfig>(options),
 	);
 }
-
-/**
- * A simple string flag for specifying a config file path.
- * This is a convenience flag that can be added to command flags.
- *
- * Use this flag when you want a simple `-c` shorthand for config files.
- * For a flag that validates the file exists and groups under CONFIGURATION,
- * use {@link ConfigFileFlag} from the main module instead.
- *
- * @example
- * ```typescript
- * import { ConfigFlag } from "@tylerbu/cli-api/capabilities";
- *
- * class MyCommand extends BaseCommand {
- *   static flags = {
- *     config: ConfigFlag,  // Adds -c, --config <path>
- *   };
- * }
- * ```
- *
- * @see {@link ConfigFileFlag} from "@tylerbu/cli-api" for a flag that validates file existence
- *
- * @beta
- */
-export const ConfigFlag = Flags.string({
-	char: "c",
-	description: "Path to config file",
-	required: false,
-});

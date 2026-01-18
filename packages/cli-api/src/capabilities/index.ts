@@ -6,7 +6,6 @@ export {
 	type ConfigContext,
 	type ConfigContextFound,
 	type ConfigContextNotFound,
-	ConfigFlag,
 	type DefaultConfigLocation,
 	useConfig,
 } from "./config.js";
