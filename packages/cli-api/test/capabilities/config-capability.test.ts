@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import os from "node:os";
-import path from "node:path";
+import path from "pathe";
 import type { Config } from "@oclif/core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BaseCommand } from "../../src/baseCommand.js";
