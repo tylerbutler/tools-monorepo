@@ -169,7 +169,8 @@
 			"build": {
 				"executor": "nx:noop"
 			},
-			"ci": {}
+			"ci": {},
+			"ci:full": {}
 		}
 	}
 }

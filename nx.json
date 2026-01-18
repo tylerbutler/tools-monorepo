@@ -80,6 +80,27 @@
 			"cache": true
 		},
 
+		// CI Full target - includes slow tasks that only run on main branch
+		// This extends ci with integration tests and full doc site builds
+		// Use ci:full on main branch, ci on PRs for faster feedback
+		"ci:full": {
+			"executor": "nx:noop",
+			"dependsOn": [
+				"ci", // Run standard CI first
+				"ci:site", // Doc site builds (slow, only on main)
+				"test:integration" // Integration tests (slow, filesystem-heavy)
+			],
+			"cache": true
+		},
+
+		// CI Site target - wraps build:site for doc sites
+		// Only runs on packages that have build:site defined
+		"ci:site": {
+			"executor": "nx:noop",
+			"dependsOn": ["build:site"],
+			"cache": true
+		},
+
 		"build": {
 			"dependsOn": [
 				"^build", // Inter-package dependencies
@@ -91,7 +112,7 @@
 				"build:manifest", // Intra-package: OCLIF manifest
 				"build:readme", // Intra-package: OCLIF readme
 				"build:generate", // Intra-package: OCLIF snapshots
-				"build:site", // Intra-package: Astro/Vite sites
+				// NOTE: build:site moved to ci:site (runs only on main branch via ci:full)
 				"build:vite" // Intra-package: Vite builds
 			],
 			"inputs": ["production", "^production"], // Only source code changes affect build, not lint/format results
