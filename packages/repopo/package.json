@@ -106,7 +106,7 @@
 		"@oclif/plugin-command-snapshot": "^5.3.8",
 		"@oclif/test": "^4.1.15",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.25",
+		"@types/node": "^25.0.9",
 		"@types/picomatch": "^4.0.2",
 		"@types/tmp": "^0.2.6",
 		"@vitest/coverage-v8": "^4.0.17",

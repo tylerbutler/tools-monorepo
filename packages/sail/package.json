@@ -149,7 +149,7 @@
 		"@types/glob": "^8.1.0",
 		"@types/jsonfile": "^6.1.4",
 		"@types/lodash.isequal": "^4.5.8",
-		"@types/node": "^20.19.25",
+		"@types/node": "^25.0.9",
 		"@types/picomatch": "^4.0.2",
 		"@types/semver": "^7.7.1",
 		"@vitest/coverage-v8": "^4.0.17",

@@ -79,7 +79,7 @@
 		"@tailwindcss/vite": "^4.1.17",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/svelte": "^5.3.1",
-		"@types/node": "^20.19.25",
+		"@types/node": "^25.0.9",
 		"@types/prismjs": "^1.26.5",
 		"@vitest/coverage-v8": "^4.0.17",
 		"@vitest/ui": "^4.0.16",
