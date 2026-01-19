@@ -1,6 +1,6 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
 import { call } from "effection";
-import { join } from "pathe";
+import { resolve as resolvePath } from "pathe";
 import { sortPackageJson } from "sort-package-json";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -23,7 +23,7 @@ export const PackageJsonSorted = definePackagePolicy(
 		if (resolve) {
 			try {
 				yield* call(() =>
-					updatePackageJsonFile(join(root, file), (pkgJson) => pkgJson, {
+					updatePackageJsonFile(resolvePath(root, file), (pkgJson) => pkgJson, {
 						sort: true,
 					}),
 				);

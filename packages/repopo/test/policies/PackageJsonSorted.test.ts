@@ -1,11 +1,11 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { run } from "effection";
+import { join } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PackageJsonSorted } from "../../src/policies/PackageJsonSorted.js";
 import type { PolicyFailure, PolicyFixResult } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageJsonSorted Policy", () => {
 	let testDir: string;
@@ -61,14 +61,12 @@ describe("PackageJsonSorted Policy", () => {
 				JSON.stringify(sortedPackageJson, null, 2),
 			);
 
-			const result = await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			);
+			const result = await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			});
 
 			expect(result).toBe(true);
 		});
@@ -92,14 +90,12 @@ describe("PackageJsonSorted Policy", () => {
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
 
-			const result = (await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result).toHaveProperty("autoFixable", true);
@@ -118,14 +114,12 @@ describe("PackageJsonSorted Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = (await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 		});
@@ -143,14 +137,12 @@ describe("PackageJsonSorted Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = (await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 		});
@@ -168,14 +160,12 @@ describe("PackageJsonSorted Policy", () => {
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
 
-			const result = (await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			})) as PolicyFailure;
 
 			expect(result.autoFixable).toBe(true);
 		});
@@ -195,14 +185,12 @@ describe("PackageJsonSorted Policy", () => {
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
 
-			const result = (await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config: undefined,
-				}),
-			)) as PolicyFixResult;
+			const result = (await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config: undefined,
+			})) as PolicyFixResult;
 
 			expect(result.resolved).toBe(true);
 
@@ -230,14 +218,12 @@ describe("PackageJsonSorted Policy", () => {
 			const originalContent = JSON.stringify(unsortedPackageJson, null, 2);
 			await writeFile(packageJsonPath, originalContent);
 
-			await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			);
+			await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			});
 
 			const content = await readFile(packageJsonPath, "utf-8");
 			expect(content).toBe(originalContent);
@@ -256,14 +242,12 @@ describe("PackageJsonSorted Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config: undefined,
-				}),
-			);
+			await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config: undefined,
+			});
 
 			const content = JSON.parse(await readFile(packageJsonPath, "utf-8"));
 			const scriptKeys = Object.keys(content.scripts);
@@ -281,14 +265,12 @@ describe("PackageJsonSorted Policy", () => {
 				JSON.stringify(minimalPackageJson, null, 2),
 			);
 
-			const result = (await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config: undefined,
-				}),
-			)) as PolicyFixResult;
+			const result = (await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config: undefined,
+			})) as PolicyFixResult;
 
 			expect(result.resolved).toBe(true);
 
@@ -314,14 +296,12 @@ describe("PackageJsonSorted Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config: undefined,
-				}),
-			);
+			await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config: undefined,
+			});
 
 			const content = JSON.parse(await readFile(packageJsonPath, "utf-8"));
 			const keys = Object.keys(content);
@@ -348,14 +328,12 @@ describe("PackageJsonSorted Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config: undefined,
-				}),
-			);
+			await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config: undefined,
+			});
 
 			const content = JSON.parse(await readFile(packageJsonPath, "utf-8"));
 
@@ -378,14 +356,12 @@ describe("PackageJsonSorted Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config: undefined,
-				}),
-			);
+			await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config: undefined,
+			});
 
 			const content = JSON.parse(await readFile(packageJsonPath, "utf-8"));
 			expect(content.workspaces).toEqual(["packages/*"]);
@@ -404,14 +380,12 @@ describe("PackageJsonSorted Policy", () => {
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
 
-			const result = (await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			})) as PolicyFailure;
 
 			expect(result.file).toBe(packageJsonPath);
 		});
@@ -427,14 +401,12 @@ describe("PackageJsonSorted Policy", () => {
 				JSON.stringify(unsortedPackageJson, null, 2),
 			);
 
-			const result = (await run(() =>
-				PackageJsonSorted.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonSorted.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			})) as PolicyFailure;
 
 			expect(result.name).toBe("PackageJsonSorted");
 		});

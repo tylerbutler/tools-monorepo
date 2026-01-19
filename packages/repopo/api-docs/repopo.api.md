@@ -57,7 +57,7 @@ export function generatePackagePolicy<J = PackageJson, C = undefined>(name: stri
 export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha
-export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult>;
+export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
 
 // @alpha
 export interface PolicyDefinition<C = undefined> {

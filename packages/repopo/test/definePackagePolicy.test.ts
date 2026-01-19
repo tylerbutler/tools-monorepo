@@ -1,12 +1,12 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { run } from "effection";
+import { join } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { PolicyFailure } from "../src/policy.js";
 import type { PackageJsonHandler } from "../src/policyDefiners/definePackagePolicy.js";
 import { definePackagePolicy } from "../src/policyDefiners/definePackagePolicy.js";
+import { runHandler } from "./test-helpers.js";
 
 describe("definePackagePolicy", () => {
 	let testDir: string;
@@ -47,14 +47,12 @@ describe("definePackagePolicy", () => {
 
 		const policy = definePackagePolicy("TestPackagePolicy", handler);
 
-		const result = await run(() =>
-			policy.handler({
-				file: join(testDir, packageJsonPath),
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}),
-		);
+		const result = await runHandler(policy.handler, {
+			file: join(testDir, packageJsonPath),
+			root: testDir,
+			resolve: false,
+			config: undefined,
+		});
 
 		expect(result).toBe(true);
 		expect(receivedJson).toEqual(packageJson);
@@ -118,14 +116,12 @@ describe("definePackagePolicy", () => {
 
 		const policy = definePackagePolicy("ComplexPackagePolicy", handler);
 
-		await run(() =>
-			policy.handler({
-				file: join(testDir, packageJsonPath),
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}),
-		);
+		await runHandler(policy.handler, {
+			file: join(testDir, packageJsonPath),
+			root: testDir,
+			resolve: false,
+			config: undefined,
+		});
 
 		expect(receivedJson).toEqual(complexPackageJson);
 		expect(receivedJson?.scripts?.build).toBe("tsc");
@@ -161,14 +157,12 @@ describe("definePackagePolicy", () => {
 
 		const policy = definePackagePolicy("TestPackagePolicy", handler);
 
-		const result = await run(() =>
-			policy.handler({
-				file: join(testDir, packageJsonPath),
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}),
-		);
+		const result = await runHandler(policy.handler, {
+			file: join(testDir, packageJsonPath),
+			root: testDir,
+			resolve: false,
+			config: undefined,
+		});
 
 		expect(result).toMatchObject({
 			name: "TestPackagePolicy",
@@ -209,14 +203,12 @@ describe("definePackagePolicy", () => {
 			handler,
 		);
 
-		await run(() =>
-			policy.handler({
-				file: join(testDir, packageJsonPath),
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}),
-		);
+		await runHandler(policy.handler, {
+			file: join(testDir, packageJsonPath),
+			root: testDir,
+			resolve: false,
+			config: undefined,
+		});
 
 		expect(receivedCustomField).toBe("custom-value");
 	});
@@ -254,14 +246,12 @@ describe("definePackagePolicy", () => {
 			handler,
 		);
 
-		const result = await run(() =>
-			policy.handler({
-				file: join(testDir, packageJsonPath),
-				root: testDir,
-				resolve: false,
-				config: { requiredVersion: "2.0.0" },
-			}),
-		);
+		const result = await runHandler(policy.handler, {
+			file: join(testDir, packageJsonPath),
+			root: testDir,
+			resolve: false,
+			config: { requiredVersion: "2.0.0" },
+		});
 
 		expect(result).toBe(true);
 		expect(receivedConfig).toEqual({ requiredVersion: "2.0.0" });
@@ -289,14 +279,12 @@ describe("definePackagePolicy", () => {
 
 		const policy = definePackagePolicy("MinimalPackagePolicy", handler);
 
-		const result = await run(() =>
-			policy.handler({
-				file: join(testDir, packageJsonPath),
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}),
-		);
+		const result = await runHandler(policy.handler, {
+			file: join(testDir, packageJsonPath),
+			root: testDir,
+			resolve: false,
+			config: undefined,
+		});
 
 		expect(result).toBe(true);
 	});
@@ -331,14 +319,12 @@ describe("definePackagePolicy", () => {
 
 		const policy = definePackagePolicy("ArgsPackagePolicy", handler);
 
-		await run(() =>
-			policy.handler({
-				file: join(testDir, packageJsonPath),
-				root: testDir,
-				resolve: true,
-				config: undefined,
-			}),
-		);
+		await runHandler(policy.handler, {
+			file: join(testDir, packageJsonPath),
+			root: testDir,
+			resolve: true,
+			config: undefined,
+		});
 
 		expect(receivedFile).toBe(join(testDir, packageJsonPath));
 		expect(receivedRoot).toBe(testDir);
@@ -383,14 +369,12 @@ describe("definePackagePolicy", () => {
 
 		const policy = definePackagePolicy("NestedPackagePolicy", handler);
 
-		await run(() =>
-			policy.handler({
-				file: join(testDir, packageJsonPath),
-				root: testDir,
-				resolve: false,
-				config: undefined,
-			}),
-		);
+		await runHandler(policy.handler, {
+			file: join(testDir, packageJsonPath),
+			root: testDir,
+			resolve: false,
+			config: undefined,
+		});
 
 		expect(receivedExports).toBeDefined();
 		expect(receivedWorkspaces).toEqual(["packages/*"]);

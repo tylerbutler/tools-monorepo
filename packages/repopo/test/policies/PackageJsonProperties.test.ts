@@ -1,7 +1,6 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { run } from "effection";
+import { join } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
@@ -9,6 +8,7 @@ import {
 	type PackageJsonPropertiesSettings,
 } from "../../src/policies/PackageJsonProperties.js";
 import type { PolicyFailure, PolicyFixResult } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageJsonProperties Policy", () => {
 	let testDir: string;
@@ -52,14 +52,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			);
+			const result = await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			});
 
 			expect(result).toBe(true);
 		});
@@ -79,18 +77,16 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result.autoFixable).toBe(true);
-			expect(result.errorMessage).toContain("license");
+			expect(result.errorMessages.join()).toContain("license");
 		});
 
 		it("should fail when property is missing", async () => {
@@ -108,18 +104,16 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
-			expect(result.errorMessage).toContain("license");
-			expect(result.errorMessage).toContain("author");
+			expect(result.errorMessages.join()).toContain("license");
+			expect(result.errorMessages.join()).toContain("author");
 		});
 
 		it("should check multiple properties", async () => {
@@ -140,19 +134,17 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
-			expect(result.errorMessage).toContain("author");
-			expect(result.errorMessage).toContain("homepage");
-			expect(result.errorMessage).not.toContain("license");
+			expect(result.errorMessages.join()).toContain("author");
+			expect(result.errorMessages.join()).toContain("homepage");
+			expect(result.errorMessages.join()).not.toContain("license");
 		});
 
 		it("should pass when config is undefined", async () => {
@@ -163,14 +155,12 @@ describe("PackageJsonProperties Policy", () => {
 
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-			const result = await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			);
+			const result = await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			});
 
 			expect(result).toBe(true);
 		});
@@ -191,14 +181,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			})) as PolicyFailure;
 
 			expect(result.autoFixable).toBe(true);
 		});
@@ -218,14 +206,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config,
-				}),
-			)) as PolicyFixResult;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config,
+			})) as PolicyFixResult;
 
 			expect(result.resolved).toBe(true);
 
@@ -254,14 +240,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config,
-				}),
-			);
+			await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config,
+			});
 
 			const updatedContent = JSON.parse(
 				await readFile(packageJsonPath, "utf-8"),
@@ -285,14 +269,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config,
-				}),
-			);
+			await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config,
+			});
 
 			const updatedContent = JSON.parse(
 				await readFile(packageJsonPath, "utf-8"),
@@ -319,14 +301,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			);
+			await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			});
 
 			const content = await readFile(packageJsonPath, "utf-8");
 			expect(content).toBe(originalContent);
@@ -346,14 +326,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config,
-				}),
-			);
+			await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config,
+			});
 
 			const content = await readFile(packageJsonPath, "utf-8");
 			expect(content).toContain("\t");
@@ -382,17 +360,15 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
-			expect(result.errorMessage).toContain("repository");
+			expect(result.errorMessages.join()).toContain("repository");
 		});
 
 		it("should handle array properties", async () => {
@@ -410,14 +386,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 		});
@@ -438,14 +412,12 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: true,
-					config,
-				}),
-			);
+			await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: true,
+				config,
+			});
 
 			const updatedContent = JSON.parse(
 				await readFile(packageJsonPath, "utf-8"),
@@ -472,18 +444,16 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			})) as PolicyFailure;
 
-			expect(result.errorMessage).toBeDefined();
-			expect(result.errorMessage).toContain("license");
-			expect(result.errorMessage).toContain("Incorrect");
+			expect(result.errorMessages.join()).toBeDefined();
+			expect(result.errorMessages.join()).toContain("license");
+			expect(result.errorMessages.join()).toContain("Incorrect");
 		});
 
 		it("should list all property mismatches", async () => {
@@ -502,17 +472,15 @@ describe("PackageJsonProperties Policy", () => {
 				},
 			};
 
-			const result = (await run(() =>
-				PackageJsonProperties.handler({
-					file: packageJsonPath,
-					root: testDir,
-					resolve: false,
-					config,
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(PackageJsonProperties.handler, {
+				file: packageJsonPath,
+				root: testDir,
+				resolve: false,
+				config,
+			})) as PolicyFailure;
 
-			const errorLines = result.errorMessage.split("\n");
-			expect(errorLines.length).toBeGreaterThan(1);
+			// With 3 missing properties (license, author, homepage), we expect 3 error messages
+			expect(result.errorMessages.length).toBeGreaterThan(1);
 		});
 	});
 });

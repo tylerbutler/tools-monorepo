@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { all, run, sleep, spawn, type Operation } from "effection";
+import { join } from "pathe";
+import { all, type Operation, run, sleep, spawn } from "effection";
 import { simpleGit } from "simple-git";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
@@ -306,6 +306,7 @@ describe("Effection Structured Concurrency", () => {
 			await run(function* (): Operation<void> {
 				try {
 					yield* (function* () {
+						// biome-ignore lint/correctness/useYield: Generator used for Effection testing
 						yield* (function* () {
 							throw new Error("Nested error");
 						})();
@@ -364,6 +365,7 @@ describe("Effection Structured Concurrency", () => {
 
 			await run(function* (): Operation<void> {
 				try {
+					// biome-ignore lint/correctness/useYield: Generator used for Effection testing
 					yield* (function* () {
 						try {
 							throw new Error("Recoverable error");
@@ -454,6 +456,7 @@ describe("Effection Structured Concurrency", () => {
 				]);
 
 				// Sequential again
+				// biome-ignore lint/correctness/useYield: Generator used for Effection testing
 				yield* (function* () {
 					results.push("seq2");
 				})();

@@ -1,13 +1,13 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { EOL, tmpdir } from "node:os";
-import { join } from "node:path";
-import { run } from "effection";
+import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { PolicyFailure, PolicyFixResult } from "../src/policy.js";
 import {
 	defineFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,
 } from "../src/policyDefiners/defineFileHeaderPolicy.js";
+import { runHandler } from "./test-helpers.js";
 
 describe("defineFileHeaderPolicy", () => {
 	let testDir: string;
@@ -70,18 +70,16 @@ describe("defineFileHeaderPolicy", () => {
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
 
-			const result = (await run(() =>
-				policy.handler({
-					file: testFile,
-					root: testDir,
-					resolve: false,
-					config: { headerText: "Copyright 2025" },
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(policy.handler, {
+				file: testFile,
+				root: testDir,
+				resolve: false,
+				config: { headerText: "Copyright 2025" },
+			})) as PolicyFailure;
 
 			expect(result).not.toBe(true);
 			expect(result).toHaveProperty("autoFixable", true);
-			expect(result.errorMessage).toContain(".ts file missing header");
+			expect(result.errorMessages.join()).toContain(".ts file missing header");
 		});
 
 		it("should pass when config is undefined", async () => {
@@ -97,14 +95,12 @@ describe("defineFileHeaderPolicy", () => {
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
 
-			const result = await run(() =>
-				policy.handler({
-					file: testFile,
-					root: testDir,
-					resolve: false,
-					config: undefined,
-				}),
-			);
+			const result = await runHandler(policy.handler, {
+				file: testFile,
+				root: testDir,
+				resolve: false,
+				config: undefined,
+			});
 
 			expect(result).toBe(true);
 		});
@@ -125,14 +121,12 @@ describe("defineFileHeaderPolicy", () => {
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
 
-			const result = (await run(() =>
-				policy.handler({
-					file: testFile,
-					root: testDir,
-					resolve: false,
-					config: { headerText: "Copyright 2025" },
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(policy.handler, {
+				file: testFile,
+				root: testDir,
+				resolve: false,
+				config: { headerText: "Copyright 2025" },
+			})) as PolicyFailure;
 
 			expect(result.autoFixable).toBe(true);
 		});
@@ -153,14 +147,12 @@ describe("defineFileHeaderPolicy", () => {
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
 
-			const result = (await run(() =>
-				policy.handler({
-					file: testFile,
-					root: testDir,
-					resolve: true,
-					config: { headerText },
-				}),
-			)) as PolicyFixResult;
+			const result = (await runHandler(policy.handler, {
+				file: testFile,
+				root: testDir,
+				resolve: true,
+				config: { headerText },
+			})) as PolicyFixResult;
 
 			expect(result.resolved).toBe(true);
 			expect(result.autoFixable).toBe(true);
@@ -186,14 +178,12 @@ describe("defineFileHeaderPolicy", () => {
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
 
-			await run(() =>
-				policy.handler({
-					file: testFile,
-					root: testDir,
-					resolve: false,
-					config: { headerText: "Copyright 2025" },
-				}),
-			);
+			await runHandler(policy.handler, {
+				file: testFile,
+				root: testDir,
+				resolve: false,
+				config: { headerText: "Copyright 2025" },
+			});
 
 			// Verify file was NOT modified
 			const content = await readFile(testFile, "utf-8");
@@ -216,14 +206,12 @@ describe("defineFileHeaderPolicy", () => {
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
 
-			await run(() =>
-				policy.handler({
-					file: testFile,
-					root: testDir,
-					resolve: true,
-					config: { headerText },
-				}),
-			);
+			await runHandler(policy.handler, {
+				file: testFile,
+				root: testDir,
+				resolve: true,
+				config: { headerText },
+			});
 
 			const newContent = await readFile(testFile, "utf-8");
 			expect(newContent).toContain(originalContent);
@@ -246,17 +234,15 @@ describe("defineFileHeaderPolicy", () => {
 
 			const policy = defineFileHeaderPolicy("TestPolicy", config);
 
-			const result = (await run(() =>
-				policy.handler({
-					file: testFile,
-					root: testDir,
-					resolve: false,
-					config: { headerText: "Copyright" },
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(policy.handler, {
+				file: testFile,
+				root: testDir,
+				resolve: false,
+				config: { headerText: "Copyright" },
+			})) as PolicyFailure;
 
-			expect(result.errorMessage).toContain(".ts");
-			expect(result.errorMessage).toContain("missing header");
+			expect(result.errorMessages.join()).toContain(".ts");
+			expect(result.errorMessages.join()).toContain("missing header");
 		});
 
 		it("should include policy name in failure", async () => {
@@ -273,14 +259,12 @@ describe("defineFileHeaderPolicy", () => {
 
 			const policy = defineFileHeaderPolicy("CustomHeaderPolicy", config);
 
-			const result = (await run(() =>
-				policy.handler({
-					file: testFile,
-					root: testDir,
-					resolve: false,
-					config: { headerText: "Copyright" },
-				}),
-			)) as PolicyFailure;
+			const result = (await runHandler(policy.handler, {
+				file: testFile,
+				root: testDir,
+				resolve: false,
+				config: { headerText: "Copyright" },
+			})) as PolicyFailure;
 
 			expect(result.name).toBe("CustomHeaderPolicy");
 		});

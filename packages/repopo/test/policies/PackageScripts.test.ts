@@ -8,6 +8,7 @@ import {
 	type PackageScriptsSettings,
 } from "../../src/policies/PackageScripts.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageScripts policy", () => {
 	let tempDir: string;
@@ -45,7 +46,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, undefined),
 			);
 			expect(result).toBe(true);
@@ -65,7 +67,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, { must: ["build", "clean"] }),
 			);
 			expect(result).toBe(true);
@@ -81,7 +84,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, { must: ["build", "clean", "test"] }),
 			);
 
@@ -101,7 +105,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, { must: ["build"] }),
 			);
 
@@ -119,7 +124,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, { must: [] }),
 			);
 			expect(result).toBe(true);
@@ -137,7 +143,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
@@ -155,7 +162,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
@@ -174,7 +182,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
@@ -201,7 +210,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					mutuallyExclusive: [
 						["build:tsc", "build:swc"],
@@ -229,7 +239,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, { mutuallyExclusive: [] }),
 			);
 			expect(result).toBe(true);
@@ -249,7 +260,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					must: ["build", "clean"],
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
@@ -270,7 +282,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					must: ["build", "clean"],
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
@@ -297,7 +310,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, { must: ["build"] }),
 			);
 
@@ -314,7 +328,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, { must: ["build"] }),
 			);
 
@@ -334,7 +349,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, { must: ["build"] }),
 			);
 			expect(result).toBe(true);
@@ -350,7 +366,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					mutuallyExclusive: [["test:unit", "test:vitest"]],
 				}),
@@ -369,7 +386,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					mutuallyExclusive: [
 						["format:prettier", "format:biome", "format:dprint"],
@@ -396,7 +414,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					conditionalRequired: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
@@ -415,7 +434,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					conditionalRequired: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
@@ -433,7 +453,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					conditionalRequired: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
@@ -458,7 +479,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					conditionalRequired: [
 						{ ifPresent: "build", requires: ["clean", "lint"] },
@@ -484,7 +506,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					conditionalRequired: [
 						{ ifPresent: "build", requires: ["clean"] },
@@ -511,7 +534,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					conditionalRequired: [
 						{ ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
@@ -531,7 +555,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					conditionalRequired: [
 						{ ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
@@ -556,7 +581,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -589,7 +615,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -628,7 +655,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					scriptMustContain: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
@@ -646,7 +674,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					scriptMustContain: [
 						{ script: "clean", mustContain: ["rimraf", "dist"] },
@@ -666,7 +695,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					scriptMustContain: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
@@ -689,7 +719,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					scriptMustContain: [
 						{ script: "clean", mustContain: ["rimraf", "--glob"] },
@@ -714,7 +745,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					scriptMustContain: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
@@ -733,7 +765,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					scriptMustContain: [
 						{ script: "clean", mustContain: ["rimraf"] },
@@ -764,7 +797,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					must: ["build"],
 					conditionalRequired: [{ ifPresent: "build", requires: ["test"] }],
@@ -793,7 +827,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					must: [{ clean: "rimraf dist esm" }],
 				}),
@@ -811,7 +846,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					must: [{ clean: "rimraf dist" }],
 				}),
@@ -835,7 +871,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					must: ["clean"], // No default, just string
 				}),
@@ -857,7 +894,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -890,7 +928,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -919,7 +958,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -952,7 +992,8 @@ describe("PackageScripts policy", () => {
 			const filePath = createPackageJson(json);
 			const originalContent = readFileSync(filePath, "utf-8");
 
-			await PackageScripts.handler(
+			await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -975,7 +1016,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -1015,7 +1057,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			await PackageScripts.handler(
+			await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -1040,7 +1083,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					must: ["clean", "build", "test"],
 				}),
@@ -1064,7 +1108,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					exact: {
 						clean: "rimraf dist esm",
@@ -1085,7 +1130,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					exact: {
 						clean: "rimraf dist esm",
@@ -1110,7 +1156,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					exact: {
 						clean: "rimraf dist esm",
@@ -1140,7 +1187,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -1174,7 +1222,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(filePath, {
 					exact: {
 						clean: "rimraf dist esm",
@@ -1202,7 +1251,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -1236,7 +1286,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -1269,7 +1320,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
@@ -1300,7 +1352,8 @@ describe("PackageScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageScripts.handler(
+			const result = await runHandler(
+				PackageScripts.handler,
 				createArgs(
 					filePath,
 					{
