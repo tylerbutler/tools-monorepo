@@ -1,5 +1,18 @@
 # @tylerbu/sail-infrastructure
 
+## 0.4.0
+
+### Minor Changes
+
+- Feat!: update Logger interface for consistency with cli-api _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  **Breaking changes:**
+  - `errorLog` renamed to `error` in Logger interface
+  - Added `success` method to Logger interface
+  - Added optional `formatError` method to Logger interface
+
+  This aligns the sail-infrastructure Logger interface with the cli-api Logger interface for consistency across packages.
+
 ## 0.3.0
 
 ### Minor Changes
