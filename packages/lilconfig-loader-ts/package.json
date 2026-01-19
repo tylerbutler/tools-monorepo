@@ -36,23 +36,22 @@
 		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write"
+		"lint:fix": "biome lint . --write",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs"
 	},
 	"dependencies": {
 		"jiti": "^2.6.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.5",
-		"@microsoft/api-documenter": "^7.27.2",
-		"@microsoft/api-extractor": "^7.53.2",
-		"@types/node": "^20.19.23",
+		"@biomejs/biome": "2.3.8",
+		"@microsoft/api-documenter": "^7.28.1",
+		"@microsoft/api-extractor": "^7.55.1",
+		"@types/node": "^20.19.25",
 		"concurrently": "^9.2.1",
-		"generate-license-file": "^4.1.0",
-		"rimraf": "^6.0.1",
-		"tslib": "^2.8.1",
-		"type-fest": "^5.1.0",
+		"generate-license-file": "^4.1.1",
+		"rimraf": "^6.1.2",
 		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.17"
 	},
 	"peerDependencies": {
 		"lilconfig": "^3.1.3"

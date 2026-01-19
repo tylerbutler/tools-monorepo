@@ -3,8 +3,8 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { join, relative } from "node:path";
 import type { Logger } from "@tylerbu/cli-api";
+import { join, relative } from "pathe";
 import { glob } from "tinyglobby";
 
 interface PackageJson {
@@ -129,11 +129,9 @@ export async function updateRootPackageJsonForTurbo(
 		packageJson.devDependencies = {};
 	}
 
-	// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
 	if (packageJson.devDependencies["turbo"]) {
 		logger.log("  ℹ️  turbo already in devDependencies");
 	} else {
-		// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
 		packageJson.devDependencies["turbo"] = "^2.3.3";
 		modified = true;
 		logger.log("  ✅ Added turbo dependency");
@@ -290,7 +288,6 @@ export async function needsPackageJsonUpdatesForTurbo(
 		const packageJson: PackageJson = JSON.parse(content);
 
 		// Check if turbo is in devDependencies
-		// biome-ignore lint/complexity/useLiteralKeys: Required for TypeScript strict mode with index signatures
 		if (!packageJson.devDependencies?.["turbo"]) {
 			return true;
 		}

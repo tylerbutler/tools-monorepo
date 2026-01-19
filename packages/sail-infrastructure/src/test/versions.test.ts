@@ -1,9 +1,9 @@
 import { strict as assert } from "node:assert/strict";
-import * as path from "node:path";
+import * as path from "pathe";
 
 import * as semver from "semver";
 import { simpleGit } from "simple-git";
-import { afterEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { loadBuildProject } from "../buildProject.js";
 import type { ReleaseGroupName, WorkspaceName } from "../types.js";
@@ -30,7 +30,10 @@ assert(secondWorkspace !== undefined);
 const git = simpleGit(testRepoRoot);
 
 describe("setVersion", () => {
-	afterEach(async () => {
+	// Use beforeEach instead of afterEach for cleanup to avoid git index.lock race conditions.
+	// With afterEach, the cleanup from test N can still be running when test N+1's afterEach starts,
+	// causing concurrent git operations that conflict on .git/index.lock.
+	beforeEach(async () => {
 		await git.checkout(["HEAD", "--", testRepoRoot]);
 		repo.reload();
 	});

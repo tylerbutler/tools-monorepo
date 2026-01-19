@@ -51,7 +51,7 @@ export abstract class CommandWithConfig<
 		const loaded = await loadConfig<C>(this.config.bin, searchPath, undefined);
 
 		if (loaded === undefined && this.defaultConfig === undefined) {
-			this.error(`Failure to load config: ${searchPath}`, { exit: 1 });
+			this.exit(`Failure to load config: ${searchPath}`, 1);
 		}
 		const { config, location } = loaded ?? {
 			config: this.defaultConfig,

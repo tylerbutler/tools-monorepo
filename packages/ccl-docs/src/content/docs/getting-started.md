@@ -17,8 +17,8 @@ another = some text value
 ```
 
 - Split on first `=`
-- **Key** is trimmed of whitespace
-- **Value** is trimmed of _leading_
+- **Key** is trimmed of leading and trailing whitespace
+- **Value** is trimmed of both leading and trailing whitespace
 
 ### 2. Empty Keys (Lists)
 
@@ -38,10 +38,10 @@ Empty key (`= value`) creates list items.
 key = value  /= Not a comment, value is "value  /= Not a comment"
 ```
 
-Comments use `/=` key syntax. Only at line start.
+Comments use `/=` syntax. Only at line start.
 
 :::tip
-This comment format is a convention, and is changeable. See [What is a comment?][] for more pedantic details.
+This comment format is a convention, and is changeable. Comments are entries with `/` as the key - your application can filter or interpret them differently if needed.
 :::
 
 ### 4. Indentation for Nesting
@@ -70,7 +70,7 @@ The value `mode = sandbox\ncapacity = 2` is **recursively parsed as CCL**.
 
 **Unicode**: UTF-8 supported. Keys and values can contain any Unicode characters.
 
-**CRLF vs LF**: Line endings normalized to LF (`\n`) before parsing.
+**CRLF vs LF**: CCL treats only LF (`\n`) as a newline; CR characters are preserved as content by default. Implementations may optionally normalize CRLF to LF with the `crlf_normalize_to_lf` behavior.
 
 **Whitespace-only values**: Preserved if present after `=`.
 

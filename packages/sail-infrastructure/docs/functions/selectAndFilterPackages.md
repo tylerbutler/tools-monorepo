@@ -16,7 +16,7 @@ function selectAndFilterPackages<P>(
 }>;
 ```
 
-Defined in: [packages/sail-infrastructure/src/filter.ts:221](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L221)
+Defined in: [packages/sail-infrastructure/src/filter.ts:220](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L220)
 
 Selects packages from the BuildProject based on the selection criteria. The selected packages will be filtered by the
 filter criteria if provided.

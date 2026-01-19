@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import { existsSync } from "node:fs";
 import { readFile, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
 import type { AsyncPriorityQueue } from "async";
 import registerDebug from "debug";
+import path from "pathe";
 import chalk from "picocolors";
 import {
 	type ExecAsyncResult,
@@ -297,10 +297,10 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 		if (ret.error) {
 			const codeStr =
 				ret.error.code !== undefined ? ` (exit code ${ret.error.code})` : "";
-			this.log.errorLog(
+			this.log.error(
 				`${this.node.pkg.nameColored}: error during command '${this.command}'${codeStr}`,
 			);
-			this.log.errorLog(this.getExecErrors(ret));
+			this.log.error(this.getExecErrors(ret));
 			return this.execDone(startTime, BuildResult.Failed);
 		}
 		if (ret.stderr) {
@@ -395,7 +395,6 @@ export abstract class LeafTask extends Task implements ICacheableTask {
 				// biome-ignore lint/style/noProcessEnv: Need to pass parent environment to child process
 				...process.env,
 				PATH: `${path.join(this.node.pkg.directory, "node_modules", ".bin")}${path.delimiter}${
-					// biome-ignore lint/complexity/useLiteralKeys: PATH may not be defined as a property
 					// biome-ignore lint/style/noProcessEnv: Need to preserve PATH for child process
 					process.env["PATH"]
 				}`,
@@ -1083,10 +1082,16 @@ export abstract class LeafWithDoneFileTask
 	 */
 	protected async getDoneFileContent(): Promise<string | undefined> {
 		const mapHash = async (name: string) => {
-			const hash = await this.node.fileHashCache.getFileHash(
-				this.getPackageFileFullPath(name),
-			);
-			return { name, hash };
+			try {
+				const hash = await this.node.fileHashCache.getFileHash(
+					this.getPackageFileFullPath(name),
+				);
+				return { name, hash };
+			} catch {
+				// File doesn't exist yet (common for output files before first build)
+				// Use a sentinel value to indicate missing file
+				return { name, hash: "<missing>" };
+			}
 		};
 
 		try {

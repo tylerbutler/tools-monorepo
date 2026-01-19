@@ -38,6 +38,7 @@ export const PackageJsonProperties = definePackagePolicy<
 		name: PackageJsonProperties.name,
 		file,
 		autoFixable: true,
+		errorMessages: [],
 	};
 
 	const merged = defu(verbatim, json);
@@ -64,7 +65,7 @@ export const PackageJsonProperties = definePackagePolicy<
 		}
 
 		// There were errors, and we're not resolving them, so return a fail result
-		failResult.errorMessage = messages.join("\n");
+		failResult.errorMessages = messages;
 		return failResult;
 	}
 

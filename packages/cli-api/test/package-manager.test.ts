@@ -1,6 +1,7 @@
+import { mkdtempSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { temporaryDirectory } from "tempy";
+import { tmpdir } from "node:os";
+import { join } from "pathe";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
 	detectAllPackageManagers,
@@ -16,7 +17,7 @@ describe("package-manager", () => {
 	let tmpDir: string;
 
 	beforeEach(() => {
-		tmpDir = temporaryDirectory();
+		tmpDir = mkdtempSync(join(tmpdir(), "package-manager-test-"));
 	});
 
 	describe("detectAllPackageManagers", () => {

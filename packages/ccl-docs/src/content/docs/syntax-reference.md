@@ -71,5 +71,5 @@ author = François Müller
 
 **Whitespace handling:**
 - Keys are trimmed: `  key  = value` → `"key"`
-- Values preserve trailing spaces
+- Values are trimmed: `key =   value  ` → `"value"`
 - CRLF vs LF: CCL treats only LF as a newline, so CRs present are preserved as-is

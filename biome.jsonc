@@ -29,6 +29,7 @@
 			// build output
 			"!**/_temp",
 			"!**/.coverage",
+			"!**/build",
 			"!**/built",
 			"!**/dist",
 			"!**/esm",
@@ -43,6 +44,8 @@
 			"!**/packages/sail-infrastructure/src/test/data",
 
 			// auto-generated data files
+			"!**/packages/ccl-test-data/data",
+			"!**/packages/ccl-test-runner-ts/data/*.*",
 			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
 			"!**/packages/ccl-test-viewer/static/data/*.*",
 
@@ -78,10 +81,12 @@
 		},
 		{
 			// sail infrastructure packages - allow namespace imports and complexity
+			// [TODO] Remove noBarrelFile override after refactoring sail to eliminate barrel files
 			"includes": ["packages/sail/**", "packages/sail-infrastructure/**"],
 			"linter": {
 				"rules": {
 					"performance": {
+						"noBarrelFile": "off",
 						"noNamespaceImport": "off",
 					},
 					"complexity": {
@@ -96,23 +101,39 @@
 			"includes": ["**/*.svelte"],
 			"linter": {
 				"rules": {
+					"complexity": {
+						// Svelte runes like $state() often use explicit undefined initialization
+						"noUselessUndefinedInitialization": "off",
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off",
+						"noUndeclaredVariables": "off",
+						// SvelteKit doesn't require .js extensions on imports
+						"useImportExtensions": "off",
+					},
+					"nursery": {
+						"noShadow": "off",
+						// Svelte runes pattern uses undefined returns
+						"noUselessUndefined": "off",
+					},
 					"style": {
 						"useConst": "off",
 						"useImportType": "off",
 						"noNonNullAssertion": "off",
 						"useReadonlyClassProperties": "off",
 					},
-					"correctness": {
-						"noUnusedVariables": "off",
-						"noUnusedImports": "off",
-						"noUndeclaredVariables": "off",
-					},
 					"suspicious": {
 						"noEmptyBlockStatements": "off",
 						"noExplicitAny": "off",
 					},
-					"nursery": {
-						"noShadow": "off",
+				},
+			},
+			"assist": {
+				"actions": {
+					"source": {
+						// CSS property sorting in <style> blocks conflicts with Tailwind conventions
+						"useSortedProperties": "off",
 					},
 				},
 			},
@@ -129,32 +150,76 @@
 			},
 		},
 		{
-			// CSS files with Tailwind custom properties
-			"includes": ["**/app.css"],
+			// SvelteKit/Vite TypeScript files - Vite handles module resolution without extensions
+			// This covers SvelteKit route files, rune files, and UI component libraries
+			"includes": [
+				"**/*.svelte.ts",
+				"**/+page.ts",
+				"**/+layout.ts",
+				"**/+server.ts",
+				"**/+page.server.ts",
+				"**/+layout.server.ts",
+				"**/components/ui/**/index.ts",
+				"**/lib/index.ts",
+			],
 			"linter": {
 				"rules": {
 					"correctness": {
-						"noInvalidPositionAtImportRule": "off",
-						"noUnknownProperty": "off",
-					},
-					"complexity": {
-						"noImportantStyles": "off",
-					},
-					"suspicious": {
-						"noUnknownAtRules": "off",
+						"useImportExtensions": "off",
 					},
 				},
 			},
 		},
 		{
-			// Barrel exports (shadcn-svelte and library patterns)
-			"includes": ["**/components/ui/**/index.ts", "**/lib/index.ts"],
+			// CSS files with Tailwind - applies to all CSS in Tailwind projects
+			"includes": ["**/*.css"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						// Tailwind utilities use !important
+						"noImportantStyles": "off",
+					},
+					"correctness": {
+						// Tailwind @import positioning
+						"noInvalidPositionAtImportRule": "off",
+						// Tailwind custom properties
+						"noUnknownProperty": "off",
+					},
+					"suspicious": {
+						// Tailwind directives: @apply, @theme, @tailwind, etc.
+						"noUnknownAtRules": "off",
+					},
+				},
+			},
+			"assist": {
+				"actions": {
+					"source": {
+						// CSS property sorting conflicts with Tailwind conventions
+						"useSortedProperties": "off",
+					},
+				},
+			},
+			"css": {
+				"parser": {
+					// Enable Tailwind directive parsing
+					"tailwindDirectives": true,
+				},
+			},
+		},
+		{
+			// Package entry points and UI component barrels (shadcn-svelte patterns)
+			"includes": [
+				"**/src/index.ts",
+				"**/components/ui/**/index.ts",
+				"**/lib/index.ts",
+			],
 			"linter": {
 				"rules": {
 					"style": {
 						"noExportedImports": "off",
 					},
 					"performance": {
+						"noBarrelFile": "off",
 						"noReExportAll": "off",
 					},
 				},

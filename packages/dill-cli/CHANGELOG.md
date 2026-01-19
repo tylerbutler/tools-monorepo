@@ -1,5 +1,50 @@
 # dill-cli
 
+## 0.4.0
+
+### Minor Changes
+
+- Implement structured concurrency with Effection for file operations _[`#397`](https://github.com/tylerbutler/tools-monorepo/pull/397) [`a93b175`](https://github.com/tylerbutler/tools-monorepo/commit/a93b17539160f45dccba7a9385f553676ec2d3e3) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Replaced Promise.all with Effection's structured concurrency in writeTarFiles() and writeZipFiles() functions. This provides automatic cancellation of pending operations when one fails, preventing partial file extractions and unhandled promise rejections.
+
+  Benefits:
+
+  - Automatic cancellation when any file operation fails
+  - No orphaned file writes or partial extractions
+  - Guaranteed resource cleanup on success or failure
+  - Atomic extraction semantics (all files succeed or none are written)
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`8832369`](https://github.com/tylerbutler/tools-monorepo/commit/8832369318b6efee8adae1636f3629639b0d76ac)
+
+</small>
+
+- `@tylerbu/cli-api@0.9.0`
+
+</details>
+
+## 0.3.2
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/cli-api@0.8.0`
+
+</details>
+
 ## 0.3.1
 
 ### Patch Changes

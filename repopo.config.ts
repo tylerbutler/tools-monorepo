@@ -1,6 +1,7 @@
-import { generatePackagePolicy, makePolicy, type RepopoConfig } from "repopo";
+import { makePolicy, type RepopoConfig } from "repopo";
 import {
 	NoJsFileExtensions,
+	NoPrivateWorkspaceDependencies,
 	PackageJsonProperties,
 	PackageJsonRepoDirectoryProperty,
 	PackageJsonSorted,
@@ -9,11 +10,7 @@ import {
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
-	excludeFiles: [
-		"test/data",
-		"fixtures",
-		"config/package.json",
-	],
+	excludeFiles: ["test/data", "fixtures", "config/package.json"],
 	policies: [
 		makePolicy(NoJsFileExtensions, undefined, {
 			excludeFiles: [
@@ -36,17 +33,24 @@ const config: RepopoConfig = {
 		}),
 		makePolicy(PackageJsonRepoDirectoryProperty),
 		makePolicy(PackageJsonSorted),
-		makePolicy(PackageScripts, {
-			must: ["clean"],
-			mutuallyExclusive: [["test:unit", "test:vitest"]],
-		}),
+		makePolicy(
+			PackageScripts,
+			{
+				must: ["clean", "release:license"],
+				mutuallyExclusive: [["test:unit", "test:vitest"]],
+				conditionalRequired: [
+					{
+						ifPresent: "test",
+						requires: [{ "test:coverage": "vitest run --coverage" }],
+					},
+				],
+			},
+			{
+				excludeFiles: ["packages/.*-docs/package.json"],
+			},
+		),
 		makePolicy(SortTsconfigsPolicy),
-		// makePolicy(
-		// 	generatePackagePolicy("SlowTestPolicy", async () => {
-		// 		await timers.setTimeout(500);
-		// 		return true;
-		// 	}),
-		// ),
+		makePolicy(NoPrivateWorkspaceDependencies),
 	],
 };
 

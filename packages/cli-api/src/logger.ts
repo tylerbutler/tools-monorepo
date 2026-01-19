@@ -1,6 +1,7 @@
-/** biome-ignore-all lint/suspicious/noConsole: this file is a console logger */
-
+import type { Command } from "@oclif/core";
 import chalk from "picocolors";
+
+export type OclifCommandLogger = Pick<Command, "log" | "warn" | "error">;
 
 /**
  * A function that logs an Error or error message.
@@ -13,27 +14,50 @@ export type ErrorLoggingFunction = (
 ) => void;
 
 /**
- * A function that logs an error message.
+ * A function that logs a message. Message is optional to support blank line logging.
  *
  * @public
  */
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
 /**
- * A general-purpose logger object.
+ * A general-purpose logger interface for CLI applications.
  *
  * @remarks
+ * The Logger interface provides a consistent API for logging at different severity levels.
+ * Implementations can customize output formatting (colors, icons, prefixes) while commands
+ * use the same logging methods.
  *
- * The `log` method is the primary logging function. The other functions can be used to support logging at different
- * levels. Methods other than `log` may modify the error message in some way (e.g. by prepending some text to it).
+ * Built-in implementations:
+ * - {@link createBasicLogger} - Simple console output with colored prefixes (default)
+ * - {@link createConsolaLogger} - Rich formatting with icons via consola library (alpha)
+ *
+ * To create a custom logger, implement this interface:
+ *
+ * @example
+ * ```typescript
+ * const MyLogger: Logger = {
+ *   log: (msg) => console.log(msg),
+ *   success: (msg) => console.log(`✓ ${msg}`),
+ *   info: (msg) => console.log(`ℹ ${msg instanceof Error ? msg.message : msg}`),
+ *   warning: (msg) => console.warn(`⚠ ${msg instanceof Error ? msg.message : msg}`),
+ *   error: (msg) => console.error(`✖ ${msg instanceof Error ? msg.message : msg}`),
+ *   verbose: (msg) => console.log(`[verbose] ${msg instanceof Error ? msg.message : msg}`),
+ * };
+ * ```
  *
  * @public
  */
 export interface Logger {
 	/**
-	 * Logs an error message as-is.
+	 * Logs a message as-is to stdout. Allows optional message for blank lines.
 	 */
-	log: LoggingFunction;
+	log: (message?: string, ...args: unknown[]) => void;
+
+	/**
+	 * Logs a success message (typically with green/positive formatting).
+	 */
+	success: LoggingFunction;
 
 	/**
 	 * Logs an informational message.
@@ -41,59 +65,67 @@ export interface Logger {
 	info: ErrorLoggingFunction;
 
 	/**
-	 * Logs a warning message.
+	 * Logs a warning message (typically with yellow/caution formatting).
 	 */
 	warning: ErrorLoggingFunction;
 
 	/**
-	 * Logs an error message.
-	 *
-	 * @remarks
-	 *
-	 * This method is not named 'error' because it conflicts with the method that oclif has on its Command class.
-	 * That method exits the process in addition to logging, so this method exists to differentiate, and provide
-	 * error logging that doesn't exit the process.
+	 * Logs an error message to stderr without exiting (typically with red/error formatting).
 	 */
-	errorLog: ErrorLoggingFunction;
+	error: ErrorLoggingFunction;
 
 	/**
-	 * Logs a verbose message.
+	 * Logs a verbose/debug message. In commands, only shown when --verbose flag is enabled.
 	 */
 	verbose: ErrorLoggingFunction;
+
+	/**
+	 * Optional hook to customize error formatting for Error objects.
+	 */
+	formatError?: ((message: Error | string) => string) | undefined;
 }
 
 /**
- * A {@link Logger} that logs directly to the console.
+ * An extended logger interface with additional severity levels.
+ *
+ * @remarks
+ * ExtendedLogger adds fatal, debug, and trace levels to the base {@link Logger} interface.
+ * These additional levels provide more granular control for advanced logging scenarios:
+ * - `fatal` - Critical errors that typically cause program termination
+ * - `debug` - Debug information more detailed than verbose
+ * - `trace` - Finest-grained informational events
+ *
+ * @example
+ * ```typescript
+ * import { createExtendedConsolaLogger } from "@tylerbu/cli-api";
+ *
+ * const logger = createExtendedConsolaLogger("capsule");
+ * logger.fatal("Critical failure - shutting down");
+ * logger.debug("Connection pool state: active=5, idle=3");
+ * logger.trace("Entering function processItem()");
+ * ```
+ *
+ * @public
  */
-export const defaultLogger: Logger = {
+export interface ExtendedLogger extends Logger {
 	/**
-	 * {@inheritDoc Logger.log}
+	 * Logs a fatal error message. Used for critical failures that typically cause program termination.
 	 */
-	log,
+	fatal: ErrorLoggingFunction;
 
 	/**
-	 * {@inheritDoc Logger.info}
+	 * Logs a debug message. More detailed than verbose, for debugging purposes.
 	 */
-	info,
+	debug: ErrorLoggingFunction;
 
 	/**
-	 * {@inheritDoc Logger.warning}
+	 * Logs a trace message. Finest-grained informational events for tracing program flow.
 	 */
-	warning,
+	trace: ErrorLoggingFunction;
+}
 
-	/**
-	 * {@inheritDoc Logger.errorLog}
-	 */
-	errorLog,
-
-	/**
-	 * {@inheritDoc Logger.verbose}
-	 */
-	verbose,
-};
-
-function logWithTime(
-	msg: string | Error | undefined,
+export function logWithTime(
+	msg: string | Error,
 	logFunc: ErrorLoggingFunction,
 ) {
 	const date = new Date();
@@ -109,25 +141,6 @@ function logWithTime(
 	if (secs.length === 1) {
 		secs = `0${secs}`;
 	}
-	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msg);
-}
-
-function log(msg: string | undefined): void {
-	logWithTime(msg, console.log);
-}
-
-function info(msg: string | Error | undefined) {
-	logWithTime(`INFO: ${msg}`, console.log);
-}
-
-function verbose(msg: string | Error | undefined) {
-	logWithTime(`VERBOSE: ${msg}`, console.log);
-}
-
-function warning(msg: string | Error | undefined) {
-	logWithTime(`${chalk.yellow("WARNING")}: ${msg}`, console.log);
-}
-
-function errorLog(msg: string | Error | undefined) {
-	logWithTime(`${chalk.red("ERROR")}: ${msg}`, console.error);
+	const msgString = typeof msg === "string" ? msg : msg.message;
+	logFunc(chalk.yellow(`[${hours}:${mins}:${secs}] `) + msgString);
 }

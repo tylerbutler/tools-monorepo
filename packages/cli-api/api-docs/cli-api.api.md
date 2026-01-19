@@ -13,8 +13,6 @@ import type { Indent } from 'detect-indent';
 import { Interfaces } from '@oclif/core';
 import { OptionFlag } from '@oclif/core/interfaces';
 import type { PackageJson } from 'type-fest';
-import type { PathLike } from 'node:fs';
-import type { PrettyPrintableError } from '@oclif/core/errors';
 import type { SetRequired } from 'type-fest';
 import { SimpleGit } from 'simple-git';
 import { SimpleGitOptions } from 'simple-git';
@@ -23,36 +21,33 @@ import { SimpleGitOptions } from 'simple-git';
 export type Args<T extends typeof Command> = Interfaces.InferredArgs<T["args"]>;
 
 // @public
-export abstract class BaseCommand<T extends typeof Command> extends Command implements Logger {
+export abstract class BaseCommand<T extends typeof Command> extends Command {
     // (undocumented)
     protected args: Args<T>;
     static baseFlags: {
         verbose: Interfaces.BooleanFlag<boolean>;
         quiet: Interfaces.BooleanFlag<boolean>;
     };
-    error(input: string | Error, options: {
-        code?: string | undefined;
-        exit: false;
-    } & PrettyPrintableError): void;
-    error(input: string | Error, options?: ({
-        code?: string | undefined;
-        exit?: number | undefined;
-    } & PrettyPrintableError) | undefined): never;
-    errorLog(message: string | Error | undefined): void;
+    exit(code?: number): never;
+    exit(message: string | Error, code?: number): never;
     // (undocumented)
     protected flags: Flags<T>;
-    info(message: string | Error | undefined): void;
+    info(message: string | Error | undefined, ..._args: unknown[]): void;
+    // (undocumented)
     init(): Promise<void>;
-    logHr(): void;
-    logIndent(input: string, indentNumber?: number): void;
+    log(message?: string, ..._args: unknown[]): void;
+    logError(message: string | Error | undefined, ..._args: unknown[]): void;
+    get logger(): Logger;
+    protected _logger: Logger;
     protected redirectLogToTrace: boolean;
+    success(message?: string, ..._args: unknown[]): void;
     // (undocumented)
     protected trace: Debugger | undefined;
-    verbose(message: string | Error | undefined): void;
+    verbose(message: string | Error | undefined, ..._args: unknown[]): void;
     // @deprecated
     warn(_input: string | Error): string | Error;
-    warning(message: string | Error | undefined): void;
-    warningWithDebugTrace(message: string | Error): string | Error;
+    warning(message: string | Error | undefined, ..._args: unknown[]): void;
+    warningWithDebugTrace(message: string | Error | undefined): void;
 }
 
 // @beta
@@ -91,6 +86,43 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 // @beta
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
+// @public
+export interface ConsolaLoggerOptions {
+    colors?: boolean;
+}
+
+// @public
+export function createBasicLogger(): Logger;
+
+// @public
+export function createConsolaLogger(style?: PrefixStyle, options?: ConsolaLoggerOptions): Logger;
+
+// @public
+export function createExtendedConsolaLogger(style: PrefixStyle, options?: ConsolaLoggerOptions): ExtendedLogger;
+
+// @beta
+export interface DependencyChange {
+    // (undocumented)
+    dep: string;
+    // (undocumented)
+    from: string;
+    // (undocumented)
+    to: string;
+    // (undocumented)
+    type: DependencyType;
+}
+
+// @beta
+export interface DependencyInfo {
+    // (undocumented)
+    [key: string]: unknown;
+    // (undocumented)
+    version: string;
+}
+
+// @beta
+export type DependencyType = "dependencies" | "devDependencies" | "peerDependencies" | "optionalDependencies";
+
 // @beta
 export function detectAllPackageManagers(directory?: string): Promise<PackageManager[]>;
 
@@ -103,6 +135,13 @@ export function detectPackageManager(directory?: string): Promise<PackageManager
 // @public
 export type ErrorLoggingFunction = (msg: string | Error | undefined, ...args: unknown[]) => void;
 
+// @public
+export interface ExtendedLogger extends Logger {
+    debug: ErrorLoggingFunction;
+    fatal: ErrorLoggingFunction;
+    trace: ErrorLoggingFunction;
+}
+
 // @beta (undocumented)
 export function findGitRoot(cwd?: string): Promise<string>;
 
@@ -111,6 +150,14 @@ export type Flags<T extends typeof Command> = Interfaces.InferredFlags<(typeof B
 
 // @beta
 export function getAllLockfiles(): string[];
+
+// @beta
+export function getInstalledVersions(packageManager: PackageManager, options?: GetInstalledVersionsOptions): Promise<ProjectInfo[]>;
+
+// @beta
+export interface GetInstalledVersionsOptions {
+    cwd?: string;
+}
 
 // @beta (undocumented)
 export function getMergeBase(git: SimpleGit, reference1: string, reference2: string): Promise<string>;
@@ -132,6 +179,9 @@ export abstract class GitCommand<T extends typeof Command & {
 }
 
 // @beta
+export function isSyncSupported(pm: PackageManager): boolean;
+
+// @beta
 export interface JsonWriteOptions {
     indent?: string | Indent | undefined;
     sort?: true | undefined;
@@ -139,9 +189,11 @@ export interface JsonWriteOptions {
 
 // @public
 export interface Logger {
-    errorLog: ErrorLoggingFunction;
+    error: ErrorLoggingFunction;
+    formatError?: ((message: Error | string) => string) | undefined;
     info: ErrorLoggingFunction;
-    log: LoggingFunction;
+    log: (message?: string, ...args: unknown[]) => void;
+    success: LoggingFunction;
     verbose: ErrorLoggingFunction;
     warning: ErrorLoggingFunction;
 }
@@ -149,8 +201,8 @@ export interface Logger {
 // @public
 export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
 
-// @beta
-export const PACKAGE_MANAGERS: Record<PackageManager, PackageManagerInfo>;
+// @public
+export function logIndent(input: string, logger: Logger, indentNumber?: number): void;
 
 // @beta
 export type PackageManager = "npm" | "pnpm" | "yarn" | "bun";
@@ -168,8 +220,27 @@ export interface PackageManagerInfo {
 // @beta
 export type PackageTransformer<J extends PackageJson = PackageJson> = (json: J) => J | Promise<J>;
 
+// @public
+export type PrefixStyle = "capsule" | "candy-wrapper" | "tape";
+
 // @beta
-export function readJsonWithIndent<J = unknown>(filePath: PathLike): Promise<{
+export interface ProjectInfo {
+    // (undocumented)
+    dependencies?: Record<string, DependencyInfo>;
+    // (undocumented)
+    devDependencies?: Record<string, DependencyInfo>;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    optionalDependencies?: Record<string, DependencyInfo>;
+    // (undocumented)
+    path: string;
+    // (undocumented)
+    peerDependencies?: Record<string, DependencyInfo>;
+}
+
+// @beta
+export function readJsonWithIndent<J = unknown>(filePath: string): Promise<{
     json: J;
     indent: Indent;
 }>;
@@ -199,6 +270,42 @@ export function revList(git: SimpleGit, baseCommit: string, headCommit?: string)
 export function shortCommit(commit: string): string;
 
 // @beta
+export function syncAllPackages(projects: ProjectInfo[], options?: SyncPackageJsonOptions): Promise<SyncAllResult>;
+
+// @beta
+export interface SyncAllResult {
+    // (undocumented)
+    results: SyncResult[];
+    // (undocumented)
+    skippedProjects: Array<{
+        name: string;
+        path: string;
+        reason: string;
+    }>;
+}
+
+// @beta
+export interface SyncPackageJsonOptions {
+    versionRangeOptions?: UpdateVersionRangeOptions;
+    write?: boolean;
+}
+
+// @beta
+export interface SyncResult {
+    // (undocumented)
+    changes: DependencyChange[];
+    // (undocumented)
+    packagePath: string;
+    // (undocumented)
+    warnings?: string[];
+}
+
+// @beta
 export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packagePath: string, packageTransformer: PackageTransformer, options?: JsonWriteOptions): Promise<void>;
+
+// @beta
+export interface UpdateVersionRangeOptions {
+    emitWarnings?: boolean;
+}
 
 ```

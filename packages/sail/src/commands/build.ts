@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
-import path from "node:path";
 import readline from "node:readline/promises";
 import { Args, Flags } from "@oclif/core";
 import { Stopwatch } from "@tylerbu/sail-infrastructure";
+import path from "pathe";
 import chalk from "picocolors";
 import { BaseSailCommand } from "../baseCommand.js";
 import { SailBuildRepo } from "../core/buildRepo.js";
@@ -107,7 +107,7 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		// const fluidConfig = getSailConfig(resolvedRoot, false);
 		// const isDefaultConfig = fluidConfig === DEFAULT_SAIL_CONFIG;
 
-		const buildRepo = new SailBuildRepo(process.cwd(), this);
+		const buildRepo = new SailBuildRepo(process.cwd(), this.logger);
 
 		// Confirm overwrite-cache option if enabled
 		if (overwriteCache) {
@@ -135,9 +135,10 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			verifyCacheIntegrity,
 			{
 				log: (message?: string) => this.log(message ?? ""),
+				success: (message?: string) => this.success(message ?? ""),
 				info: (msg?: string | Error) => this.log(String(msg ?? "")),
 				warning: (msg?: string | Error) => this.warning(String(msg ?? "")),
-				errorLog: (msg?: string | Error) => this.log(String(msg ?? "")),
+				error: (msg?: string | Error) => this.log(String(msg ?? "")),
 				verbose: (msg?: string | Error) => this.log(String(msg ?? "")),
 			},
 			overwriteCache,
@@ -150,11 +151,13 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 			(buildRepo as any).context.sharedCache = sharedCache;
 
 			// Prominent success message with green background
-			this.log(chalk.bgGreen(chalk.black(" ✓ SHARED CACHE ENABLED ")));
-			this.log(chalk.green(`   Cache Directory: ${cacheDir}`));
+			this.log(
+				chalk.bgGreen(chalk.black(" ⛵️⛵️⛵️ SHARED CACHE ENABLED ⛵️⛵️⛵️ ")),
+			);
+			this.log(chalk.green(`-> Cache Directory: ${cacheDir}`));
 		} else {
 			// Prominent warning message with yellow background
-			this.log(chalk.bgYellow(chalk.black(" ⚠ SHARED CACHE DISABLED ")));
+			this.log(chalk.bgYellow(chalk.black(" ⚠⚠⚠ SHARED CACHE DISABLED ⚠⚠⚠ ")));
 			this.log(
 				chalk.yellow(
 					"   Set SAIL_CACHE_DIR or use --cache-dir to enable shared caching",
@@ -197,7 +200,12 @@ export default class BuildCommand extends BaseSailCommand<typeof BuildCommand> {
 		}
 
 		try {
-			const buildResult = await runBuild(buildRepo, options, timer, this);
+			const buildResult = await runBuild(
+				buildRepo,
+				options,
+				timer,
+				this.logger,
+			);
 
 			// Wait for all pending cache operations to complete before exit
 			// This prevents "unsettled top-level await" warnings when background

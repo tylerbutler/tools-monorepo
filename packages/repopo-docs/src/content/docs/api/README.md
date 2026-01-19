@@ -19,6 +19,8 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 
 - [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
 - [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
+- [FluidAdapterOptions](/api/interfaces/fluidadapteroptions/)
+- [FluidHandler](/api/interfaces/fluidhandler/)
 - [PolicyDefinition](/api/interfaces/policydefinition/)
 - [PolicyFailure](/api/interfaces/policyfailure/)
 - [PolicyFixResult](/api/interfaces/policyfixresult/)
@@ -38,5 +40,6 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 ## Functions
 
 - [defineFileHeaderPolicy](/api/functions/definefileheaderpolicy/)
+- [fromFluidHandlers](/api/functions/fromfluidhandlers/)
 - [generatePackagePolicy](/api/functions/generatepackagepolicy/)
 - [makePolicy](/api/functions/makepolicy/)

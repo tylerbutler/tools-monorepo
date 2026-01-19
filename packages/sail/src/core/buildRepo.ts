@@ -1,5 +1,4 @@
 import { existsSync } from "node:fs";
-import path from "node:path";
 import {
 	BuildProject,
 	type BuildProjectConfig,
@@ -12,6 +11,7 @@ import {
 	type ReleaseGroupName,
 } from "@tylerbu/sail-infrastructure";
 import registerDebug from "debug";
+import path from "pathe";
 import chalk from "picocolors";
 import { simpleGit } from "simple-git";
 
@@ -106,7 +106,7 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 		const errors = await registry.loadPlugins(plugins, this.root);
 		if (errors.length > 0) {
 			for (const error of errors) {
-				this.log.errorLog(`Failed to load plugin: ${error.message}`);
+				this.log.error(`Failed to load plugin: ${error.message}`);
 			}
 			// Don't fail the build, just log the errors
 		}
@@ -133,7 +133,6 @@ export class SailBuildRepo extends BuildProject<BuildPackage> {
 					cwd: pkg.directory,
 					env: {
 						PATH: `${
-							// biome-ignore lint/complexity/useLiteralKeys: PATH may not be defined as a property
 							// biome-ignore lint/style/noProcessEnv: PATH environment variable needed for executable resolution
 							process.env["PATH"]
 						}${path.delimiter}${path.join(

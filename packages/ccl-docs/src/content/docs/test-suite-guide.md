@@ -3,7 +3,7 @@ title: Test Suite Guide
 description: Using the CCL test suite for progressive implementation validation.
 ---
 
-The [CCL Test Suite](https://github.com/ccl-test-data) provides 452 assertions across 167 tests for validating CCL implementations.
+The [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) provides 447 assertions across 205 tests for validating CCL implementations.
 
 ## Test Format
 
@@ -24,47 +24,67 @@ Each test includes:
 **Functions** - CCL functions by category:
 - **Core**: `parse`, `build_hierarchy`
 - **Typed Access**: `get_string`, `get_int`, `get_bool`, `get_float`, `get_list`
-- **Processing**: `filter`, `combine`, `expand_dotted`
-- **Formatting**: `canonical_format`
+- **Processing**: `filter`, `compose`, `expand_dotted`
+- **Formatting**: `print`, `canonical_format`, `round_trip`
+- **Algebraic Properties**: `compose_associative`, `identity_left`, `identity_right`
 
 **Features** - Optional language features:
 - `comments`, `experimental_dotted_keys`, `empty_keys`, `multiline`, `unicode`, `whitespace`
 
-**Behaviors** - Implementation choices (mutually exclusive):
-- `crlf_preserve_literal` vs `crlf_normalize_to_lf`
-- `boolean_strict` vs `boolean_lenient`
-- `list_coercion_enabled` vs `list_coercion_disabled`
+**Behaviors** - Implementation choices (exclusivity defined per-test via `conflicts` field):
 
-## Progressive Implementation
+| Behavior Group | Options | Description |
+|----------------|---------|-------------|
+| Continuation Baseline | `toplevel_indent_strip` vs `toplevel_indent_preserve` | Top-level N=0 (reference) vs N=first key's indent (simpler) |
+| Line Endings | `crlf_preserve_literal` vs `crlf_normalize_to_lf` | CRLF handling: preserve `\r` chars vs normalize to LF |
+| Boolean Parsing | `boolean_lenient` vs `boolean_strict` | Accept "yes"/"no" vs only "true"/"false" |
+| Tab Handling | `tabs_as_content` vs `tabs_as_whitespace` | Preserve tabs literally vs treat as whitespace |
+| Indentation | `indent_spaces` vs `indent_tabs` | Output formatting style |
+| List Access | `list_coercion_enabled` vs `list_coercion_disabled` | List access coercion behavior |
+| Array Ordering | `array_order_insertion` vs `array_order_lexicographic` | Preserve insertion order vs sort lexicographically |
 
-### Phase 1: Core Parsing
-**Validation**: `parse`
+See the [Behavior Reference](/behavior-reference/) for detailed documentation of each behavior.
 
-Filter tests:
+## Filtering Tests by Function
+
+### Core Parsing
+
+**`parse`** - Filter tests:
 ```javascript
 tests.filter(t => t.validation === 'parse')
 ```
 
-### Phase 2: Object Construction
-**Validation**: `build_hierarchy`
-
-Filter tests:
+**`build_hierarchy`** - Filter tests:
 ```javascript
 tests.filter(t => t.validation === 'build_hierarchy')
 ```
 
-### Phase 3: Typed Access
-**Validation**: `get_string`, `get_int`, `get_bool`, `get_float`, `get_list`
+### Typed Access
 
-Filter tests:
+**`get_string`, `get_int`, `get_bool`, `get_float`, `get_list`** - Filter tests:
 ```javascript
 tests.filter(t => t.validation.startsWith('get_'))
 ```
 
-### Phase 4: Optional Features
-**Features**: `comments`, `experimental_dotted_keys`
+### Formatting
 
-Filter by supported features:
+**`print`, `round_trip`** - Filter tests:
+```javascript
+tests.filter(t => t.validation === 'print' || t.validation === 'round_trip')
+```
+
+The `print` function verifies structure-preserving output. For inputs in standard format (single space around `=`, 2-space indentation), `print(parse(x)) == x`.
+
+### Algebraic Properties
+
+**`compose_associative`, `identity_left`, `identity_right`** - These tests use multiple inputs to verify monoid properties:
+```javascript
+tests.filter(t => ['compose_associative', 'identity_left', 'identity_right'].includes(t.validation))
+```
+
+### Optional Features
+
+Filter by supported features (`comments`, `experimental_dotted_keys`, etc.):
 ```javascript
 tests.filter(t => t.features.every(f => supportedFeatures.includes(f)))
 ```
@@ -108,4 +128,4 @@ const supportedTests = tests.filter(test => {
 }
 ```
 
-See [CCL Test Suite](https://github.com/ccl-test-data) repository for complete test runner and JSON schema.
+See [CCL Test Suite](https://github.com/tylerbutler/ccl-test-data) repository for complete test runner and JSON schema.

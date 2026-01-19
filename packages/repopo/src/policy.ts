@@ -179,7 +179,12 @@ export interface PolicyFailure {
 	/**
 	 * An optional error message accompanying the failure.
 	 */
-	errorMessage?: string | undefined;
+	errorMessages: string[];
+
+	/**
+	 * An optional string that tells the user how to fix the failure(s).
+	 */
+	manualFix?: string;
 }
 
 /**
