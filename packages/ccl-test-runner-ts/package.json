@@ -63,7 +63,7 @@
 		"test:ui": "vitest --ui"
 	},
 	"dependencies": {
-		"citty": "^0.1.6",
+		"citty": "^0.2.0",
 		"consola": "^3.4.0",
 		"dill-cli": "workspace:^",
 		"pathe": "^2.0.3",
