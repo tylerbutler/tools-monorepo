@@ -66,7 +66,7 @@ async function loadPolicies(configPath: string): Promise<PolicyInfo[]> {
 		const configModule = await import(configUrl);
 		const config = configModule.default;
 
-		if (!config?.policies || !Array.isArray(config.policies)) {
+		if (!(config?.policies && Array.isArray(config.policies))) {
 			return [];
 		}
 
@@ -78,12 +78,14 @@ async function loadPolicies(configPath: string): Promise<PolicyInfo[]> {
 				description: policy.description ?? "",
 				hasAutoFix: policy.resolver !== undefined,
 				filePattern: policy.match?.source ?? "*",
-				configSummary: policy.config ? summarizeConfig(policy.config) : undefined,
+				configSummary: policy.config
+					? summarizeConfig(policy.config)
+					: undefined,
 			});
 		}
 
 		return policies;
-	} catch (error) {
+	} catch (_error) {
 		// Config loading failed - return empty array
 		return [];
 	}
@@ -213,7 +215,11 @@ function generateTableAst(
 	existingDescriptions: Map<string, string>,
 	options: { showFilePattern: boolean; showConfig: boolean },
 ): Table {
-	const headerCells = [createTextCell("Policy"), createTextCell("Description"), createTextCell("Auto-Fix")];
+	const headerCells = [
+		createTextCell("Policy"),
+		createTextCell("Description"),
+		createTextCell("Auto-Fix"),
+	];
 	if (options.showFilePattern) {
 		headerCells.push(createTextCell("Files"));
 	}
@@ -229,7 +235,9 @@ function generateTableAst(
 	const dataRows: TableRow[] = policies.map((policy) => {
 		// Preserve existing description if present, otherwise use policy description
 		const description =
-			existingDescriptions.get(policy.name) || policy.description || "(no description)";
+			existingDescriptions.get(policy.name) ||
+			policy.description ||
+			"(no description)";
 
 		const cells = [
 			createTextCell(policy.name),
@@ -254,8 +262,12 @@ function generateTableAst(
 	});
 
 	const align: (null | "left" | "right" | "center")[] = [null, null, null];
-	if (options.showFilePattern) align.push(null);
-	if (options.showConfig) align.push(null);
+	if (options.showFilePattern) {
+		align.push(null);
+	}
+	if (options.showConfig) {
+		align.push(null);
+	}
 
 	return {
 		type: "table",

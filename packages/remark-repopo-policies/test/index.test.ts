@@ -1,9 +1,9 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "pathe";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { remark } from "remark";
 import remarkGfm from "remark-gfm";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { RepopoPoliciesOptions } from "../src/index.js";
 import { remarkRepopoPolicies } from "../src/index.js";
 
@@ -118,7 +118,9 @@ describe("remarkRepopoPolicies", () => {
 		it("should generate table with Policy, Description, Auto-Fix columns", async () => {
 			createMockConfig(["MockPolicy1", "MockPolicy2"]);
 			const result = await processMarkdown("# Project");
-			expect(result).toMatch(/\|\s*Policy\s*\|\s*Description\s*\|\s*Auto-Fix\s*\|/);
+			expect(result).toMatch(
+				/\|\s*Policy\s*\|\s*Description\s*\|\s*Auto-Fix\s*\|/,
+			);
 		});
 
 		it("should show Yes/No for auto-fix capability", async () => {
@@ -130,13 +132,17 @@ describe("remarkRepopoPolicies", () => {
 
 		it("should include file pattern column when showFilePattern is true", async () => {
 			createMockConfig(["MockPolicy1"]);
-			const result = await processMarkdown("# Project", { showFilePattern: true });
+			const result = await processMarkdown("# Project", {
+				showFilePattern: true,
+			});
 			expect(result).toMatch(/\|\s*Files\s*\|/);
 		});
 
 		it("should exclude file pattern column when showFilePattern is false", async () => {
 			createMockConfig(["MockPolicy1"]);
-			const result = await processMarkdown("# Project", { showFilePattern: false });
+			const result = await processMarkdown("# Project", {
+				showFilePattern: false,
+			});
 			expect(result).not.toMatch(/\|\s*Files\s*\|/);
 		});
 	});
@@ -166,7 +172,9 @@ describe("remarkRepopoPolicies", () => {
 <!-- policies-start -->
 old content
 <!-- policies-end -->`;
-			const result = await processMarkdown(markdown, { sectionPrefix: "policies" });
+			const result = await processMarkdown(markdown, {
+				sectionPrefix: "policies",
+			});
 			expect(result).toContain("<!-- policies-start -->");
 			expect(result).toContain("<!-- policies-end -->");
 			expect(result).not.toContain("old content");
@@ -176,7 +184,9 @@ old content
 			createMockConfig(["MockPolicy1"]);
 			const markdown = "# My Project\n\nSome content.";
 			const result = await processMarkdown(markdown);
-			expect(result).toMatch(/Some content\.\n\n<!-- repopo-policies-start -->/);
+			expect(result).toMatch(
+				/Some content\.\n\n<!-- repopo-policies-start -->/,
+			);
 		});
 	});
 
