@@ -1,5 +1,40 @@
 # sort-tsconfig
 
+## 0.4.0
+
+### Minor Changes
+
+- **BREAKING CHANGE**: Change `PolicyFailure.errorMessage` to `errorMessages` array. _[`#552`](https://github.com/tylerbutler/tools-monorepo/pull/552) [`6b6317a`](https://github.com/tylerbutler/tools-monorepo/commit/6b6317a7be0a050dc0665a9af7b187afb1bb4b31) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The `PolicyFailure` interface now uses `errorMessages: string[]` instead of `errorMessage?: string`. This allows policies to report multiple error messages per failure and provides clearer semantics.
+
+  Additionally, a new optional `manualFix?: string` property has been added to provide user guidance on how to resolve policy failures manually.
+
+  Migration:
+  - Change `errorMessage: "message"` to `errorMessages: ["message"]`
+  - For multiple messages, use `errorMessages: ["msg1", "msg2"]`
+  - When checking failures, use `errorMessages.join("\n")` instead of `errorMessage`
+
+### Patch Changes
+
+- Update to use new cli-api logger API _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Updates commands to use the new logger API from @tylerbu/cli-api:
+  - Replace `errorLog()` calls with `logError()`
+  - Use standalone `logIndent()` function where needed
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.0`
+
+</details>
+
 ## 0.3.4
 
 ### Patch Changes
