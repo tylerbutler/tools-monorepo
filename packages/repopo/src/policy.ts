@@ -206,7 +206,7 @@ export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
 
 // biome-ignore lint/suspicious/noExplicitAny: type guard
 export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
-	if (typeof toCheck !== "object") {
+	if (typeof toCheck !== "object" || toCheck === null) {
 		return false;
 	}
 	return "resolved" in toCheck;

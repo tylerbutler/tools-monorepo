@@ -369,6 +369,39 @@ describe("PackageJsonSorted Policy", () => {
 	});
 
 	describe("Error Handling", () => {
+		it("should return error result when file update fails during resolve", async () => {
+			// Create unsorted package.json
+			const unsortedPackageJson = {
+				version: "1.0.0",
+				name: "test-package",
+			};
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify(unsortedPackageJson, null, 2),
+			);
+
+			// Make the file read-only to cause updatePackageJsonFile to fail
+			const { chmod } = await import("node:fs/promises");
+			await chmod(packageJsonPath, 0o444); // read-only
+
+			try {
+				const result = (await runHandler(PackageJsonSorted.handler, {
+					file: packageJsonPath,
+					root: testDir,
+					resolve: true,
+					config: undefined,
+				})) as PolicyFixResult;
+
+				// Should return a fix result with resolved: false and error messages
+				expect(result.resolved).toBe(false);
+				expect(result.autoFixable).toBe(true);
+				expect(result.errorMessages.length).toBeGreaterThan(0);
+			} finally {
+				// Restore write permissions so cleanup can succeed
+				await chmod(packageJsonPath, 0o644);
+			}
+		});
+
 		it("should handle file path in failure result", async () => {
 			const unsortedPackageJson = {
 				version: "1.0.0",
