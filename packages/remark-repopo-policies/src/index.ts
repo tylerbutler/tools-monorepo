@@ -18,8 +18,14 @@ interface PolicyInfo {
 	hasAutoFix: boolean;
 	/** File match pattern as string */
 	filePattern: string;
+	/** Human-readable description of what files match */
+	filePatternReadable: string;
 	/** Configuration summary (if any) */
 	configSummary: string | undefined;
+	/** Detailed config for display */
+	configDetails: string | undefined;
+	/** Excluded file patterns */
+	excludedFiles: string[];
 }
 
 /**
@@ -50,6 +56,130 @@ export interface RepopoPoliciesOptions {
 	 * @default true
 	 */
 	showFilePattern?: boolean;
+
+	/**
+	 * Whether to show human-readable descriptions of file patterns.
+	 * @default false
+	 */
+	showReadablePattern?: boolean;
+
+	/**
+	 * Whether to show excluded file patterns.
+	 * @default false
+	 */
+	showExcludedFiles?: boolean;
+
+	/**
+	 * Whether to show detailed configuration values instead of just keys.
+	 * @default false
+	 */
+	showConfigDetails?: boolean;
+}
+
+/**
+ * Regex pattern mappings for human-readable descriptions
+ * Defined at top-level for performance (biome lint/performance/useTopLevelRegex)
+ */
+const PATTERN_MAPPINGS: [RegExp, string][] = [
+	[/^package\.json\$$/, "package.json files"],
+	[/^\^?package\.json\$$/, "package.json files"],
+	[/^tsconfig.*\.json\$$/, "tsconfig JSON files"],
+	[/^\^?tsconfig.*\.json\$$/, "tsconfig JSON files"],
+	[/^\.\[jt\]sx\?\$$/, "JavaScript/TypeScript files"],
+	[/^\.tsx\?\$$/, "TypeScript files"],
+	[/^\.jsx\?\$$/, "JavaScript files"],
+	[/^\.ts\$$/, "TypeScript files (.ts)"],
+	[/^\.js\$$/, "JavaScript files (.js)"],
+	[/^\.mjs\$$/, "ES modules (.mjs)"],
+	[/^\.cjs\$$/, "CommonJS files (.cjs)"],
+	[/^\.json\$$/, "JSON files"],
+	[/^\.ya?ml\$$/, "YAML files"],
+	[/^\.html\$$/, "HTML files"],
+	[/^\.css\$$/, "CSS files"],
+	[/^\.md\$$/, "Markdown files"],
+];
+
+/**
+ * Convert a regex pattern to a human-readable description
+ */
+function regexToReadable(pattern: string): string {
+	for (const [regex, readable] of PATTERN_MAPPINGS) {
+		if (regex.test(pattern)) {
+			return readable;
+		}
+	}
+
+	// Try to derive a description from the pattern
+	if (pattern.includes("package.json")) {
+		return "package.json files";
+	}
+	if (pattern.includes("tsconfig") && pattern.includes(".json")) {
+		return "tsconfig files";
+	}
+	if (pattern.includes(".ts") || pattern.includes(".js")) {
+		if (pattern.includes("[jt]s")) {
+			return "JavaScript/TypeScript files";
+		}
+		if (pattern.includes(".ts")) {
+			return "TypeScript files";
+		}
+		return "JavaScript files";
+	}
+	if (pattern.includes(".json")) {
+		return "JSON files";
+	}
+	if (pattern.includes(".html")) {
+		return "HTML files";
+	}
+	if (pattern.includes(".md")) {
+		return "Markdown files";
+	}
+
+	// For complex patterns, return a simplified version
+	return pattern
+		.replace(/\\\./g, ".")
+		.replace(/\$$/g, "")
+		.replace(/^\^/g, "")
+		.replace(/\?/g, "")
+		.replace(/\+/g, "");
+}
+
+/**
+ * Format config details for display
+ */
+function formatConfigDetails(config: unknown): string {
+	if (config === undefined || config === null) {
+		return "";
+	}
+	if (typeof config !== "object") {
+		return String(config);
+	}
+
+	try {
+		const formatted = JSON.stringify(config, null, 2);
+		// Truncate if too long
+		if (formatted.length > 200) {
+			return `${formatted.slice(0, 197)}...`;
+		}
+		return formatted;
+	} catch {
+		return String(config);
+	}
+}
+
+/**
+ * Format excluded files for display
+ */
+function formatExcludedFiles(excludeFiles: unknown): string[] {
+	if (!(excludeFiles && Array.isArray(excludeFiles))) {
+		return [];
+	}
+	return excludeFiles.map((pattern) => {
+		if (pattern instanceof RegExp) {
+			return pattern.source;
+		}
+		return String(pattern);
+	});
 }
 
 /**
@@ -73,14 +203,20 @@ async function loadPolicies(configPath: string): Promise<PolicyInfo[]> {
 		const policies: PolicyInfo[] = [];
 
 		for (const policy of config.policies) {
+			const pattern = policy.match?.source ?? "*";
 			policies.push({
 				name: policy.name ?? "Unknown",
 				description: policy.description ?? "",
 				hasAutoFix: policy.resolver !== undefined,
-				filePattern: policy.match?.source ?? "*",
+				filePattern: pattern,
+				filePatternReadable: regexToReadable(pattern),
 				configSummary: policy.config
 					? summarizeConfig(policy.config)
 					: undefined,
+				configDetails: policy.config
+					? formatConfigDetails(policy.config)
+					: undefined,
+				excludedFiles: formatExcludedFiles(policy.excludeFiles),
 			});
 		}
 
@@ -208,66 +344,130 @@ function createTextCell(text: string): TableCell {
 }
 
 /**
+ * Options for table generation
+ */
+interface TableGenOptions {
+	showFilePattern: boolean;
+	showReadablePattern: boolean;
+	showConfig: boolean;
+	showConfigDetails: boolean;
+	showExcludedFiles: boolean;
+}
+
+/**
+ * Build header cells based on options
+ */
+function buildHeaderCells(options: TableGenOptions): TableCell[] {
+	const cells = [
+		createTextCell("Policy"),
+		createTextCell("Description"),
+		createTextCell("Auto-Fix"),
+	];
+	if (options.showReadablePattern) {
+		cells.push(createTextCell("Matches"));
+	}
+	if (options.showFilePattern) {
+		cells.push(createTextCell("Pattern"));
+	}
+	if (options.showConfigDetails) {
+		cells.push(createTextCell("Configuration"));
+	} else if (options.showConfig) {
+		cells.push(createTextCell("Config"));
+	}
+	if (options.showExcludedFiles) {
+		cells.push(createTextCell("Excluded"));
+	}
+	return cells;
+}
+
+/**
+ * Build optional cells for a policy row
+ */
+function buildOptionalCells(
+	policy: PolicyInfo,
+	options: TableGenOptions,
+): TableCell[] {
+	const cells: TableCell[] = [];
+
+	if (options.showReadablePattern) {
+		cells.push(createTextCell(policy.filePatternReadable));
+	}
+
+	if (options.showFilePattern) {
+		cells.push(createTextCell(`\`${policy.filePattern}\``));
+	}
+
+	if (options.showConfigDetails) {
+		const content = policy.configDetails ? `\`${policy.configDetails}\`` : "-";
+		cells.push(createTextCell(content));
+	} else if (options.showConfig) {
+		cells.push(createTextCell(policy.configSummary ?? "-"));
+	}
+
+	if (options.showExcludedFiles) {
+		const content =
+			policy.excludedFiles.length > 0
+				? policy.excludedFiles.map((f) => `\`${f}\``).join(", ")
+				: "-";
+		cells.push(createTextCell(content));
+	}
+
+	return cells;
+}
+
+/**
+ * Count the number of columns based on options
+ */
+function countColumns(options: TableGenOptions): number {
+	let count = 3; // Policy, Description, Auto-Fix
+	if (options.showReadablePattern) {
+		count++;
+	}
+	if (options.showFilePattern) {
+		count++;
+	}
+	if (options.showConfigDetails || options.showConfig) {
+		count++;
+	}
+	if (options.showExcludedFiles) {
+		count++;
+	}
+	return count;
+}
+
+/**
  * Generate a table AST from policy entries
  */
 function generateTableAst(
 	policies: PolicyInfo[],
 	existingDescriptions: Map<string, string>,
-	options: { showFilePattern: boolean; showConfig: boolean },
+	options: TableGenOptions,
 ): Table {
-	const headerCells = [
-		createTextCell("Policy"),
-		createTextCell("Description"),
-		createTextCell("Auto-Fix"),
-	];
-	if (options.showFilePattern) {
-		headerCells.push(createTextCell("Files"));
-	}
-	if (options.showConfig) {
-		headerCells.push(createTextCell("Config"));
-	}
-
 	const headerRow: TableRow = {
 		type: "tableRow",
-		children: headerCells,
+		children: buildHeaderCells(options),
 	};
 
 	const dataRows: TableRow[] = policies.map((policy) => {
-		// Preserve existing description if present, otherwise use policy description
 		const description =
 			existingDescriptions.get(policy.name) ||
 			policy.description ||
 			"(no description)";
 
-		const cells = [
+		const baseCells = [
 			createTextCell(policy.name),
 			createTextCell(description),
 			createTextCell(policy.hasAutoFix ? "Yes" : "No"),
 		];
 
-		if (options.showFilePattern) {
-			cells.push(createTextCell(`\`${policy.filePattern}\``));
-		}
-
-		if (options.showConfig && policy.configSummary) {
-			cells.push(createTextCell(policy.configSummary));
-		} else if (options.showConfig) {
-			cells.push(createTextCell("-"));
-		}
-
 		return {
 			type: "tableRow",
-			children: cells,
+			children: [...baseCells, ...buildOptionalCells(policy, options)],
 		};
 	});
 
-	const align: (null | "left" | "right" | "center")[] = [null, null, null];
-	if (options.showFilePattern) {
-		align.push(null);
-	}
-	if (options.showConfig) {
-		align.push(null);
-	}
+	const columnCount = countColumns(options);
+	const align = Array.from<null>({ length: columnCount }).fill(null);
 
 	return {
 		type: "table",
@@ -339,6 +539,9 @@ export const remarkRepopoPolicies: Plugin<[RepopoPoliciesOptions?], Root> = (
 		sectionPrefix = "repopo-policies",
 		showConfig = false,
 		showFilePattern = true,
+		showReadablePattern = false,
+		showExcludedFiles = false,
+		showConfigDetails = false,
 	} = options ?? {};
 
 	return async (tree: Root, file: VFile) => {
@@ -372,7 +575,10 @@ export const remarkRepopoPolicies: Plugin<[RepopoPoliciesOptions?], Root> = (
 		// Generate new table
 		const table = generateTableAst(policies, existingDescriptions, {
 			showFilePattern,
+			showReadablePattern,
 			showConfig,
+			showConfigDetails,
+			showExcludedFiles,
 		});
 
 		// Update AST

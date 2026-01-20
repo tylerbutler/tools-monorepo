@@ -97,6 +97,7 @@ describe("remarkRepopoPolicies", () => {
 		// Note: Tests using createMockConfig are skipped because Node.js cannot
 		// dynamically import uncompiled TypeScript files from temp directories.
 		// The functionality is validated via integration tests with real config.
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should load policies from repopo.config.ts", async () => {
 			createMockConfig(["MockPolicy1", "MockPolicy2"]);
 
@@ -121,6 +122,7 @@ describe("remarkRepopoPolicies", () => {
 	// Node.js cannot dynamically import uncompiled TypeScript files from temp
 	// directories. Table generation is validated via integration tests.
 	describe("table generation", () => {
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should generate table with Policy, Description, Auto-Fix columns", async () => {
 			createMockConfig(["MockPolicy1", "MockPolicy2"]);
 			const result = await processMarkdown("# Project");
@@ -129,6 +131,7 @@ describe("remarkRepopoPolicies", () => {
 			);
 		});
 
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should show Yes/No for auto-fix capability", async () => {
 			createMockConfig(["MockPolicy1", "MockPolicy2"]);
 			const result = await processMarkdown("# Project");
@@ -136,6 +139,7 @@ describe("remarkRepopoPolicies", () => {
 			expect(result).toContain("Yes");
 		});
 
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should include file pattern column when showFilePattern is true", async () => {
 			createMockConfig(["MockPolicy1"]);
 			const result = await processMarkdown("# Project", {
@@ -144,6 +148,7 @@ describe("remarkRepopoPolicies", () => {
 			expect(result).toMatch(/\|\s*Files\s*\|/);
 		});
 
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should exclude file pattern column when showFilePattern is false", async () => {
 			createMockConfig(["MockPolicy1"]);
 			const result = await processMarkdown("# Project", {
@@ -157,6 +162,7 @@ describe("remarkRepopoPolicies", () => {
 	// Node.js cannot dynamically import uncompiled TypeScript files from temp
 	// directories. Marker handling is validated via integration tests.
 	describe("marker handling", () => {
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should replace content between existing markers", async () => {
 			createMockConfig(["MockPolicy1"]);
 			const markdown = `# My Project
@@ -174,6 +180,7 @@ describe("remarkRepopoPolicies", () => {
 			expect(result).toContain("## Footer");
 		});
 
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should handle custom section prefix", async () => {
 			createMockConfig(["MockPolicy1"]);
 			const markdown = `# Project
@@ -189,6 +196,7 @@ old content
 			expect(result).not.toContain("old content");
 		});
 
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should append at EOF when no markers exist", async () => {
 			createMockConfig(["MockPolicy1"]);
 			const markdown = "# My Project\n\nSome content.";
@@ -203,6 +211,7 @@ old content
 	// because Node.js cannot dynamically import uncompiled TypeScript files from
 	// temp directories. Description preservation is validated via integration tests.
 	describe("description preservation", () => {
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should preserve user-edited descriptions for existing policies", async () => {
 			createMockConfig(["MockPolicy1", "MockPolicy2"]);
 			const markdown = `# My Project
@@ -216,6 +225,7 @@ old content
 			expect(result).toContain("Custom user description");
 		});
 
+		// biome-ignore lint/suspicious/noSkippedTests: Cannot dynamically import uncompiled TS from temp dirs
 		it.skip("should use policy description for new policies", async () => {
 			createMockConfig(["MockPolicy1", "MockPolicy2"]);
 			const markdown = `# My Project
@@ -267,6 +277,54 @@ old content
 			expect(result).toContain("| PackageJsonSorted");
 			// Check for the No column in the table
 			expect(result).toContain("| No");
+		});
+
+		it("should show human-readable patterns when showReadablePattern is true", async () => {
+			const result = await processFromMonorepoRoot("# Project", {
+				showReadablePattern: true,
+			});
+
+			// Should have the Matches column header (with possible padding)
+			expect(result).toMatch(/\|\s*Matches\s*\|/);
+			// Should have human-readable descriptions
+			expect(result).toMatch(/package\.json files|JavaScript|TypeScript/i);
+		});
+
+		it("should show excluded files when showExcludedFiles is true", async () => {
+			const result = await processFromMonorepoRoot("# Project", {
+				showExcludedFiles: true,
+			});
+
+			// Should have the Excluded column header (with possible padding)
+			expect(result).toMatch(/\|\s*Excluded\s*\|/);
+			// NoJsFileExtensions has excluded files in the monorepo config
+			expect(result).toMatch(/bin|svelte\.config|tailwind\.config/);
+		});
+
+		it("should show config details when showConfigDetails is true", async () => {
+			const result = await processFromMonorepoRoot("# Project", {
+				showConfigDetails: true,
+			});
+
+			// Should have the Configuration column header (with possible padding)
+			expect(result).toMatch(/\|\s*Configuration\s*\|/);
+			// PackageJsonProperties has config with verbatim values
+			expect(result).toMatch(/license|MIT|author/i);
+		});
+
+		it("should support all new columns together", async () => {
+			const result = await processFromMonorepoRoot("# Project", {
+				showReadablePattern: true,
+				showExcludedFiles: true,
+				showConfigDetails: true,
+				showFilePattern: true,
+			});
+
+			// Should have all column headers (with possible padding)
+			expect(result).toMatch(/\|\s*Matches\s*\|/);
+			expect(result).toMatch(/\|\s*Pattern\s*\|/);
+			expect(result).toMatch(/\|\s*Configuration\s*\|/);
+			expect(result).toMatch(/\|\s*Excluded\s*\|/);
 		});
 	});
 });
