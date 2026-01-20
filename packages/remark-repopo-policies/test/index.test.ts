@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, resolve } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { remark } from "remark";
 import remarkGfm from "remark-gfm";
@@ -25,7 +25,7 @@ afterEach(() => {
 /**
  * Helper to create a mock repopo config file
  */
-function createMockConfig(policies: string[]): void {
+function createMockConfig(_policies?: string[]): void {
 	const configContent = `
 import { makePolicy, type RepopoConfig } from "repopo";
 
@@ -115,15 +115,6 @@ describe("remarkRepopoPolicies", () => {
 	});
 
 	describe("table generation", () => {
-		function hasTableRow(result: string, ...cells: string[]): boolean {
-			const pattern = cells.map((cell) => `\\|\\s*${escapeRegex(cell)}\\s*`).join("");
-			return new RegExp(pattern + "\\|").test(result);
-		}
-
-		function escapeRegex(str: string): string {
-			return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-		}
-
 		it("should generate table with Policy, Description, Auto-Fix columns", async () => {
 			createMockConfig(["MockPolicy1", "MockPolicy2"]);
 			const result = await processMarkdown("# Project");
@@ -214,6 +205,46 @@ old content
 <!-- repopo-policies-end -->`;
 			const result = await processMarkdown(markdown);
 			expect(result).toContain("MockPolicy2");
+		});
+	});
+
+	describe("integration with real repopo config", () => {
+		/**
+		 * Process markdown from the actual monorepo root where repopo.config.ts exists
+		 */
+		async function processFromMonorepoRoot(
+			markdown: string,
+			options?: RepopoPoliciesOptions,
+		): Promise<string> {
+			// Go up from packages/remark-repopo-policies to monorepo root
+			const monorepoRoot = resolve(process.cwd(), "../..");
+			const result = await remark()
+				.use(remarkGfm)
+				.use(remarkRepopoPolicies, options)
+				.process({
+					value: markdown,
+					path: join(monorepoRoot, "README.md"),
+				});
+			return String(result);
+		}
+
+		it("should load policies from the actual repopo.config.ts", async () => {
+			const result = await processFromMonorepoRoot("# Project");
+
+			// These are the actual policies configured in the monorepo
+			expect(result).toContain("NoJsFileExtensions");
+			expect(result).toContain("PackageJsonProperties");
+			expect(result).toContain("PackageJsonSorted");
+		});
+
+		it("should correctly identify auto-fix capabilities", async () => {
+			const result = await processFromMonorepoRoot("# Project");
+
+			// All actual policies in the config have no resolvers (No)
+			expect(result).toContain("| NoJsFileExtensions");
+			expect(result).toContain("| PackageJsonSorted");
+			// Check for the No column in the table
+			expect(result).toContain("| No");
 		});
 	});
 });
