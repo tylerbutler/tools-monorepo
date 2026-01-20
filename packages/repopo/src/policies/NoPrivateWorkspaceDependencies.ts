@@ -2,7 +2,9 @@ import { readFileSync } from "node:fs";
 // Use default import + destructure for CJS/ESM interop
 // (resolve-workspace-root is a bundled CJS module)
 import resolveWorkspaceRoot from "resolve-workspace-root";
+
 const { getWorkspaceGlobs } = resolveWorkspaceRoot;
+
 import { globSync } from "tinyglobby";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure } from "../policy.js";
