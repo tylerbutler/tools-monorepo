@@ -55,7 +55,13 @@
 
 		// Shared config files that affect all packages
 		// Only truly global files here - task-specific configs belong in target inputs
-		"sharedGlobals": ["{workspaceRoot}/pnpm-workspace.yaml"]
+		"sharedGlobals": [
+			"{workspaceRoot}/pnpm-workspace.yaml",
+			// Exclude Claude Code config files - they don't affect builds
+			"!{workspaceRoot}/.claude/**",
+			"!{workspaceRoot}/CLAUDE.md",
+			"!{workspaceRoot}/.mcp.json"
+		]
 	},
 
 	// ============================================
