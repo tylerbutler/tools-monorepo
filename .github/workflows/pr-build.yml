@@ -78,10 +78,13 @@ jobs:
             pnpm run ci:affected
           fi
 
-      - name: Check if ccl-test-viewer is affected
+      - name: Check if ccl-test-viewer build would run
         id: check-ccl-affected
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ] || pnpm nx show project ccl-test-viewer --affected 2>/dev/null; then
+          # On main, always run bundle tracking. For PRs, check if build task would actually execute (not cached).
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "affected=true" >> $GITHUB_OUTPUT
+          elif pnpm nx build ccl-test-viewer --dry-run 2>&1 | grep -q "ccl-test-viewer:build"; then
             echo "affected=true" >> $GITHUB_OUTPUT
           else
             echo "affected=false" >> $GITHUB_OUTPUT
