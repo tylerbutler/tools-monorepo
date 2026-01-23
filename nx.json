@@ -324,6 +324,17 @@
 			"cache": true
 		},
 
+		// TypeScript Native (tsgo) shadow testing - runs alongside tsc for comparison
+		// Use: pnpm check:types:native to validate with the Go-based compiler
+		"check:types:native": {
+			"inputs": [
+				"production",
+				"{projectRoot}/tsconfig*.json",
+				"{workspaceRoot}/config/tsconfig*.json"
+			],
+			"cache": true
+		},
+
 		"check:deps": {
 			"inputs": [
 				"{projectRoot}/package.json",

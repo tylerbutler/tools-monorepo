@@ -20,6 +20,23 @@ permissions:
   pull-requests: write # Required for bundlemon to comment on PRs
 
 jobs:
+  # Validate compatibility with TypeScript Native (tsgo) compiler
+  # This runs in parallel with build-and-test to catch any tsgo-specific issues early
+  tsgo-validation:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - name: Build with tsgo
+        run: pnpm compile:native
+
+      - name: Run smoke tests on tsgo output
+        run: pnpm test:tsgo-build
+
   build-and-test:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
