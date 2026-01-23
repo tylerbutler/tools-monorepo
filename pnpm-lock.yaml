@@ -444,9 +444,6 @@ importers:
       dill-cli:
         specifier: workspace:^
         version: link:../dill-cli
-      effection:
-        specifier: ^4.0.0
-        version: 4.0.0
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
@@ -1202,8 +1199,8 @@ importers:
         specifier: ^6.1.4
         version: 6.1.4
       effection:
-        specifier: ^3.5.0
-        version: 3.6.1
+        specifier: ^4.0.0
+        version: 4.0.0
       jsonfile:
         specifier: ^6.2.0
         version: 6.2.0
@@ -6926,10 +6923,6 @@ packages:
 
   effect@3.19.8:
     resolution: {integrity: sha512-OmLw8EfH02vdmyU2fO4uY9He/wepwKI5E/JNpE2pseaWWUbaYOK9UlxIiKP20ZEqQr+S/jSqRDGmpiqD/2DeCQ==}
-
-  effection@3.6.1:
-    resolution: {integrity: sha512-ogsuH/cgxfOOaVUf53pYqhPJth4WhPlva0hGb4Roh6cZhttMoanMqwADkDk9ych28lKuQgntpCszbFRyRFifqg==}
-    engines: {node: '>= 16'}
 
   effection@4.0.0:
     resolution: {integrity: sha512-eW2yqhyBdey4k8lkp7hpiev2FSHvJvQqvaIebI3EGikHZvfUWvNy7SmkwOnJa6WcsUtSh7VHUwdjHTbV++8M9w==}
@@ -19530,8 +19523,6 @@ snapshots:
     dependencies:
       '@standard-schema/spec': 1.1.0
       fast-check: 3.23.2
-
-  effection@3.6.1: {}
 
   effection@4.0.0: {}
 
