@@ -149,7 +149,7 @@ function formatMessage(logObj: LogObject): string {
  * @example
  * ```typescript
  * import { createConsola } from "consola";
- * import { createPrefixReporter } from "@tylerbu/cli-api";
+ * import { createPrefixReporter } from "@tylerbu/cli-api/loggers/prefixReporter";
  *
  * const consola = createConsola({
  *   reporters: [createPrefixReporter({ style: "capsule" })],
