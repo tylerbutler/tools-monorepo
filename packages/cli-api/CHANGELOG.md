@@ -1,5 +1,13 @@
 # @tylerbu/cli-api
 
+## 0.10.1
+
+### Patch Changes
+
+- Make consola peer dependency truly optional by removing its exports from the main entrypoint. _[`#585`](https://github.com/tylerbutler/tools-monorepo/pull/585) [`c577266`](https://github.com/tylerbutler/tools-monorepo/commit/c577266129da545000aea343256b06129a243987) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The consola logger functions are now only available via the dedicated `@tylerbu/cli-api/loggers/consola` entrypoint. This allows consumers who don't use the consola logger to avoid installing the consola peer dependency.
+
 ## 0.10.0
 
 ### Minor Changes

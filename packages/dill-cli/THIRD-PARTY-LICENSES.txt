@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - whatwg-mimetype@4.0.0
+ - whatwg-mimetype@5.0.0
 
 This package contains the following license:
 
