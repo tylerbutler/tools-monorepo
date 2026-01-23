@@ -14,6 +14,7 @@ import {
 	type PackageLicenseSettings,
 } from "../../src/policies/PackageLicense.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageLicense policy", () => {
 	let tempDir: string;
@@ -65,7 +66,7 @@ describe("PackageLicense policy", () => {
 				rootLicenseContent,
 			);
 
-			const result = await PackageLicense.handler(createArgs(file));
+			const result = await runHandler(PackageLicense.handler, createArgs(file));
 			expect(result).toBe(true);
 		});
 	});
@@ -78,7 +79,7 @@ describe("PackageLicense policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageLicense.handler(createArgs(file));
+			const result = await runHandler(PackageLicense.handler, createArgs(file));
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -94,7 +95,8 @@ describe("PackageLicense policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageLicense.handler(
+			const result = await runHandler(
+				PackageLicense.handler,
 				createArgs(file, undefined, true),
 			);
 
@@ -125,7 +127,7 @@ describe("PackageLicense policy", () => {
 				differentLicenseContent,
 			);
 
-			const result = await PackageLicense.handler(createArgs(file));
+			const result = await runHandler(PackageLicense.handler, createArgs(file));
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -145,7 +147,8 @@ describe("PackageLicense policy", () => {
 				differentLicenseContent,
 			);
 
-			const result = await PackageLicense.handler(
+			const result = await runHandler(
+				PackageLicense.handler,
 				createArgs(file, undefined, true),
 			);
 
@@ -172,7 +175,7 @@ describe("PackageLicense policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageLicense.handler(createArgs(file));
+			const result = await runHandler(PackageLicense.handler, createArgs(file));
 			expect(result).toBe(true);
 		});
 
@@ -184,7 +187,8 @@ describe("PackageLicense policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageLicense.handler(
+			const result = await runHandler(
+				PackageLicense.handler,
 				createArgs(file, { skipPrivate: false }),
 			);
 
@@ -209,7 +213,8 @@ describe("PackageLicense policy", () => {
 				rootLicenseContent,
 			);
 
-			const result = await PackageLicense.handler(
+			const result = await runHandler(
+				PackageLicense.handler,
 				createArgs(file, { licenseFileName: "LICENSE.txt" }),
 			);
 			expect(result).toBe(true);
@@ -223,7 +228,8 @@ describe("PackageLicense policy", () => {
 			const file = createPackageJson(json);
 			writeFileSync(join(tempDir, "LICENSE.txt"), rootLicenseContent);
 
-			const result = await PackageLicense.handler(
+			const result = await runHandler(
+				PackageLicense.handler,
 				createArgs(file, { licenseFileName: "LICENSE.txt" }),
 			);
 
@@ -245,7 +251,7 @@ describe("PackageLicense policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageLicense.handler(createArgs(file));
+			const result = await runHandler(PackageLicense.handler, createArgs(file));
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {

@@ -1,5 +1,6 @@
 import { updatePackageJsonFile } from "@tylerbu/cli-api";
-import { join } from "pathe";
+import { call } from "effection";
+import { resolve as resolvePath } from "pathe";
 import { sortPackageJson } from "sort-package-json";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -11,7 +12,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  */
 export const PackageJsonSorted = definePackagePolicy(
 	"PackageJsonSorted",
-	async (json, { file, root, resolve }) => {
+	function* (json, { file, root, resolve }) {
 		const sortedJson = sortPackageJson(json);
 		const isSorted = JSON.stringify(sortedJson) === JSON.stringify(json);
 
@@ -21,10 +22,11 @@ export const PackageJsonSorted = definePackagePolicy(
 
 		if (resolve) {
 			try {
-				// biome-ignore lint/nursery/noShadow: no need to use the shadowed variable
-				await updatePackageJsonFile(join(root, file), (json) => json, {
-					sort: true,
-				});
+				yield* call(() =>
+					updatePackageJsonFile(resolvePath(root, file), (pkgJson) => pkgJson, {
+						sort: true,
+					}),
+				);
 				const result: PolicyFixResult = {
 					name: PackageJsonSorted.name,
 					file,

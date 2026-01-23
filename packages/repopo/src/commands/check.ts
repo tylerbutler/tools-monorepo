@@ -2,7 +2,21 @@ import { EOL as newline } from "node:os";
 import process from "node:process";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
+import { all, call, type Operation, run } from "effection";
 import chalk from "picocolors";
+
+/**
+ * Type guard to check if a value is an Effection Operation (generator).
+ */
+function isOperation<T>(value: unknown): value is Operation<T> {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		"next" in value &&
+		typeof (value as { next: unknown }).next === "function"
+	);
+}
+
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
 import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";
@@ -82,9 +96,11 @@ export class CheckPolicy<
 		const filePathsToCheck: string[] = [];
 
 		if (this.flags.stdin) {
-			const stdInput = await readStdin();
+			const stdInput = await run(function* () {
+				return yield* call(() => readStdin());
+			});
 
-			if (stdInput !== undefined) {
+			if (stdInput !== undefined && stdInput !== null) {
 				filePathsToCheck.push(
 					...stdInput
 						.replace(
@@ -120,7 +136,7 @@ export class CheckPolicy<
 
 		const context: RepopoCommandContext = await this.getContext();
 
-		await this.checkAllFiles(filePathsToCheck, context);
+		await run(() => this.checkAllFiles(filePathsToCheck, context));
 	}
 
 	/**
@@ -129,13 +145,13 @@ export class CheckPolicy<
 	 * @param pathsToCheck - All paths that should be checked. Paths should be relative to the repository root.
 	 * @param context - The context.
 	 */
-	private async checkAllFiles(
+	private *checkAllFiles(
 		pathsToCheck: string[],
 		context: RepopoCommandContext,
-	): Promise<void> {
+	): Operation<void> {
 		try {
 			for (const pathToCheck of pathsToCheck) {
-				await this.checkOrExcludeFile(pathToCheck, context);
+				yield* this.checkOrExcludeFile(pathToCheck, context);
 			}
 		} finally {
 			if (!this.flags.quiet) {
@@ -150,18 +166,15 @@ export class CheckPolicy<
 	 *
 	 * @param relPath - A git repo-relative path to a file.
 	 */
-	private async checkOrExcludeFile(
+	private *checkOrExcludeFile(
 		relPath: string,
 		context: RepopoCommandContext,
-	): Promise<void> {
+	): Operation<void> {
 		const { perfStats } = context;
 		perfStats.count++;
 
 		try {
-			const wasProcessed = await this.routeToPolicies(relPath, context);
-			if (wasProcessed) {
-				perfStats.processed++;
-			}
+			yield* this.routeToPolicies(relPath, context);
 		} catch (error: unknown) {
 			throw new Error(
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
@@ -169,16 +182,16 @@ export class CheckPolicy<
 		}
 	}
 
-	private async routeToPolicies(
+	private *routeToPolicies(
 		relPath: string,
 		context: RepopoCommandContext,
-	): Promise<boolean> {
+	): Operation<void> {
 		const { policies, excludeFromAll } = context;
 
 		// Check exclusions
 		if (excludeFromAll.some((regex) => regex.test(relPath))) {
 			this.verbose(`Excluded all handlers: ${relPath}`);
-			return false; // File was excluded from all policies
+			return;
 		}
 
 		// Run all matching policies
@@ -186,43 +199,29 @@ export class CheckPolicy<
 			policy.match.test(relPath),
 		);
 
-		// for(const policy of matchingPolicies) {
-		// 	bars.addFile(policy.name,
-		// }
-
-		// If no policies match this file, it's still considered processed
-		// (we examined it and determined no policies apply)
-		if (matchingPolicies.length === 0) {
-			return true;
-		}
-
-		const results = await Promise.all(
-			matchingPolicies.map(async (policy) => {
-				return await this.runPolicyOnFile(relPath, policy, context);
+		yield* all(
+			matchingPolicies.map((policy) => {
+				return this.runPolicyOnFile(relPath, policy, context);
 			}),
 		);
-
-		// File is considered processed if at least one policy ran on it
-		// If all matching policies excluded it, count as excluded
-		return results.some((ran) => ran);
 	}
 
-	private async runPolicyOnFile(
+	private *runPolicyOnFile(
 		relPath: string,
 		policy: PolicyInstance,
 		context: RepopoCommandContext,
-	): Promise<boolean> {
+	): Operation<void> {
 		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
 
 		// Check if the policy is excluded for the file
 		if (this.isPolicyExcluded(relPath, policy, excludePoliciesForFiles)) {
 			this.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
-			return false; // Policy didn't run on this file
+			return;
 		}
 
 		try {
 			// Execute the policy handler
-			const result = await this.executePolicyHandler(
+			const result = yield* this.executePolicyHandler(
 				relPath,
 				policy,
 				perfStats,
@@ -230,7 +229,7 @@ export class CheckPolicy<
 			);
 
 			// Handle the result of the policy execution
-			await this.handlePolicyResult(
+			yield* this.handlePolicyResult(
 				result,
 				relPath,
 				policy,
@@ -243,8 +242,6 @@ export class CheckPolicy<
 				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
 			);
 		}
-
-		return true; // Policy ran (successfully or with error)
 	}
 
 	private isPolicyExcluded(
@@ -259,22 +256,44 @@ export class CheckPolicy<
 		);
 	}
 
-	private async executePolicyHandler(
+	private *executePolicyHandler(
 		relPath: string,
 		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
-	): Promise<PolicyHandlerResult> {
+	): Operation<PolicyHandlerResult> {
+		const resolve = this.flags.fix;
 		try {
-			const action = this.flags.fix ? "resolve" : "check";
-			return await runWithPerf(policy.name, action, perfStats, () =>
-				policy.handler({
-					file: relPath,
-					root: gitRoot,
-					resolve: this.flags.fix,
-					config: policy.config,
-				}),
+			const result = yield* runWithPerf(
+				policy.name,
+				"handle",
+				perfStats,
+				function* () {
+					const handlerResult = policy.handler({
+						file: relPath,
+						root: gitRoot,
+						resolve,
+						config: policy.config,
+					});
+
+					// Handle both Operation (generator) and Promise return types
+					if (handlerResult instanceof Promise) {
+						return yield* call(() => handlerResult);
+					}
+					// Check if it's an Effection Operation (generator)
+					if (isOperation<PolicyHandlerResult>(handlerResult)) {
+						return yield* handlerResult;
+					}
+					// This should never happen with proper handler typing
+					throw new Error(
+						`Unexpected handler result type: ${typeof handlerResult}`,
+					);
+				},
 			);
+			if (result === undefined) {
+				throw new Error("Policy result was undefined.");
+			}
+			return result;
 		} catch (error: unknown) {
 			this.exit(
 				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
@@ -282,13 +301,13 @@ export class CheckPolicy<
 		}
 	}
 
-	private async handlePolicyResult(
+	private *handlePolicyResult(
 		result: PolicyHandlerResult,
 		relPath: string,
 		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
-	): Promise<void> {
+	): Operation<void> {
 		if (result === true) {
 			return;
 		}
@@ -296,7 +315,7 @@ export class CheckPolicy<
 		if (isPolicyFixResult(result)) {
 			this.handleFixResult(result, policy);
 		} else {
-			await this.handleFailureResult(
+			yield* this.handleFailureResult(
 				result,
 				relPath,
 				policy,
@@ -326,17 +345,17 @@ export class CheckPolicy<
 		this.logMessages(messages);
 	}
 
-	private async handleFailureResult(
+	private *handleFailureResult(
 		result: PolicyFailure,
 		relPath: string,
 		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
-	): Promise<void> {
+	): Operation<void> {
 		const messages = new StringBuilder();
 
 		if (this.flags.fix && policy.resolver) {
-			await this.attemptResolution(
+			yield* this.attemptResolution(
 				relPath,
 				policy,
 				policy.resolver,
@@ -351,20 +370,33 @@ export class CheckPolicy<
 		this.logMessages(messages);
 	}
 
-	private async attemptResolution(
+	private *attemptResolution(
 		relPath: string,
 		policy: PolicyInstance,
 		resolver: PolicyStandaloneResolver,
 		perfStats: PolicyHandlerPerfStats,
 		gitRoot: string,
 		messages: StringBuilder,
-	): Promise<void> {
+	): Operation<void> {
 		messages.append(`${newline}Attempting to resolve: ${relPath}`);
-		const resolveResult = await runWithPerf(
+		const resolveResult = yield* runWithPerf(
 			policy.name,
 			"resolve",
 			perfStats,
-			() => resolver({ file: relPath, root: gitRoot }),
+			function* () {
+				const result = resolver({ file: relPath, root: gitRoot });
+
+				// Handle both Operation (generator) and Promise return types
+				if (result instanceof Promise) {
+					return yield* call(() => result);
+				}
+				// Check if it's an Effection Operation (generator)
+				if (isOperation<PolicyFixResult>(result)) {
+					return yield* result;
+				}
+				// This should never happen with proper resolver typing
+				throw new Error(`Unexpected resolver result type: ${typeof result}`);
+			},
 		);
 
 		if (!resolveResult.resolved) {

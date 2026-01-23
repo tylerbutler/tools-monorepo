@@ -14,52 +14,54 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 	PackageJson,
 	undefined
->("PackageJsonRepoDirectoryProperty", async (json, { file, root, resolve }) => {
-	const failResult: PolicyFailure = {
-		name: PackageJsonRepoDirectoryProperty.name,
-		file,
-		autoFixable: true,
-		errorMessages: [],
-	};
+>(
+	"PackageJsonRepoDirectoryProperty",
+	function* (json, { file, root, resolve }) {
+		const failResult: PolicyFailure = {
+			name: PackageJsonRepoDirectoryProperty.name,
+			file,
+			autoFixable: true,
+			errorMessages: [],
+		};
 
-	const fixResult: PolicyFixResult = {
-		...failResult,
-		resolved: false,
-	};
+		const fixResult: PolicyFixResult = {
+			...failResult,
+			resolved: false,
+		};
 
-	const pkgDir = path.dirname(path.resolve(root, file));
-	const maybeDir = path.relative(root, pkgDir);
-	const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
+		const pkgDir = path.dirname(file);
+		const maybeDir = path.relative(root, pkgDir);
+		const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
 
-	if (
-		typeof json.repository === "object" &&
-		json.repository.directory !== relativePkgDir
-	) {
-		if (resolve) {
-			try {
-				// biome-ignore lint/nursery/noShadow: no need to use shadowed variable
-				updatePackageJsonFile(file, (json) => {
-					assert(typeof json.repository === "object");
-					if (relativePkgDir === undefined) {
-						delete json.repository.directory;
-					} else {
-						json.repository.directory = relativePkgDir;
-					}
-				});
-				fixResult.resolved = true;
-			} catch (error: unknown) {
-				fixResult.resolved = false;
-				fixResult.errorMessages.push(
-					`${(error as Error).message}\n${(error as Error).stack}`,
-				);
+		if (
+			typeof json.repository === "object" &&
+			json.repository.directory !== relativePkgDir
+		) {
+			if (resolve) {
+				try {
+					updatePackageJsonFile(file, (pkgJson) => {
+						assert(typeof pkgJson.repository === "object");
+						if (relativePkgDir === undefined) {
+							delete pkgJson.repository.directory;
+						} else {
+							pkgJson.repository.directory = relativePkgDir;
+						}
+					});
+					fixResult.resolved = true;
+				} catch (error: unknown) {
+					fixResult.resolved = false;
+					fixResult.errorMessages.push(
+						`${(error as Error).message}\n${(error as Error).stack}`,
+					);
+				}
+				return fixResult;
 			}
-			return fixResult;
+			failResult.errorMessages.push(
+				`repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`,
+			);
+			return failResult;
 		}
-		failResult.errorMessages.push(
-			`repository.directory value is wrong. Expected '${relativePkgDir}', got '${json.repository.directory}'`,
-		);
-		return failResult;
-	}
 
-	return true;
-});
+		return true;
+	},
+);

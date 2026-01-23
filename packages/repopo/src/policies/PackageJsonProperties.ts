@@ -1,4 +1,5 @@
 import { defu } from "defu";
+import { call } from "effection";
 import jsonfile from "jsonfile";
 import diff from "microdiff";
 import type { PackageJson } from "type-fest";
@@ -27,7 +28,7 @@ export interface PackageJsonPropertiesSettings {
 export const PackageJsonProperties = definePackagePolicy<
 	PackageJson,
 	PackageJsonPropertiesSettings | undefined
->("PackageJsonProperties", async (json, { file, config, resolve }) => {
+>("PackageJsonProperties", function* (json, { file, config, resolve }) {
 	if (config === undefined) {
 		return true;
 	}
@@ -57,7 +58,7 @@ export const PackageJsonProperties = definePackagePolicy<
 				resolved: false,
 			};
 
-			await writeJson(file, merged, { spaces: "\t" });
+			yield* call(() => writeJson(file, merged, { spaces: "\t" }));
 
 			fixResult.resolved = true;
 			return fixResult;
