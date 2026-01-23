@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Commands (for Claude)
+
+**Before making changes:**
+- `pnpm nx affected -t build` - Build affected packages
+- `pnpm nx affected -t test` - Test affected packages
+
+**After making changes:**
+- `./packages/repopo/bin/dev.js check --fix` - Fix policy violations
+- `pnpm format` - Format code
+
+**Package-specific work:**
+- Use `pnpm nx run <pkg>:<task>` for targeted execution
+- Check `packages/<name>/CLAUDE.md` for package guidance
+
 ## Project Overview
 
 This is a TypeScript monorepo containing personal tools and CLI utilities, managed with pnpm workspaces and Nx for build orchestration.
