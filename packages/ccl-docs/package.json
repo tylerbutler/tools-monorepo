@@ -45,7 +45,9 @@
 	"nx": {
 		"targets": {
 			"build": {},
-			"ci": {}
+			"ci": {},
+			"ci:full": {},
+			"ci:site": {}
 		}
 	}
 }

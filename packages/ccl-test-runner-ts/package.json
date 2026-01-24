@@ -58,7 +58,7 @@
 		"sync-schema": "dill https://raw.githubusercontent.com/tylerbutler/ccl-test-data/main/schemas/generated-format.json -o schemas/",
 		"test": "vitest run",
 		"test:ccl": "vitest run test/ccl",
-		"test:coverage": "vitest run --coverage",
+		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run --coverage",
 		"test:runner": "vitest run test/runner",
 		"test:ui": "vitest --ui"
 	},

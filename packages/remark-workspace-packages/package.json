@@ -1,13 +1,13 @@
 {
-	"name": "remark-task-table",
-	"version": "0.2.0",
-	"description": "Remark plugin to generate and update task tables from package.json scripts and justfile recipes",
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-task-table#remark-task-table",
+	"name": "remark-workspace-packages",
+	"version": "0.0.1",
+	"description": "Remark plugin to generate and update workspace package tables in markdown",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-workspace-packages#remark-workspace-packages",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/remark-task-table"
+		"directory": "packages/remark-workspace-packages"
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -40,8 +40,9 @@
 		"mdast-util-to-string": "^4.0.0",
 		"micromatch": "^4.0.8",
 		"pathe": "^2.0.3",
+		"resolve-workspace-root": "^2.0.0",
+		"tinyglobby": "^0.2.15",
 		"unified": "^11.0.5",
-		"unist-util-visit": "^5.0.0",
 		"vfile": "^6.0.3"
 	},
 	"devDependencies": {

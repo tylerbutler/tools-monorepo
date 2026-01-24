@@ -9,6 +9,8 @@ export default defineConfig({
 		include: ["src/**/*.{test,spec}.{js,ts}"],
 		exclude: ["tests/**/*", "e2e/**/*"],
 		environment: "happy-dom",
+		// Create coverage temp directory before tests to prevent race condition
+		globalSetup: ["src/test/vitest.global-setup.ts"],
 		setupFiles: ["src/test/setup.ts", "src/test/msw.setup.ts"],
 		// CI environments are slower, so increase timeout to prevent flaky test failures
 		testTimeout: process.env.GITHUB_ACTIONS ? 15000 : 5000,
@@ -25,6 +27,9 @@ export default defineConfig({
 			reporter: ["text", "json", "html", "cobertura"],
 			provider: "v8",
 			reportsDirectory: ".coverage/vitest",
+			// Serialize coverage processing to prevent race condition in CI
+			// where parallel workers try to write to .tmp directory simultaneously
+			processingConcurrency: 1,
 			include: ["src/lib/**/*.{ts,js}", "!src/lib/**/*.svelte.ts"],
 			exclude: [
 				"node_modules/",
