@@ -28,6 +28,6 @@ yarn.lock
 .coverage
 
 # AI artifacts
-.claude
+.claude/settings.local.json
 .serena
 **/CLAUDE.md

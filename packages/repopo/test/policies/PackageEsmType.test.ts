@@ -8,6 +8,7 @@ import {
 	type PackageEsmTypeConfig,
 } from "../../src/policies/PackageEsmType.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageEsmType policy", () => {
 	let tempDir: string;
@@ -45,7 +46,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, undefined),
 			);
 			expect(result).toBe(true);
@@ -61,7 +63,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
 			expect(result).toBe(true);
@@ -75,7 +78,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "commonjs" }),
 			);
 			expect(result).toBe(true);
@@ -88,7 +92,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
 
@@ -108,7 +113,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
 
@@ -131,7 +137,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
 
@@ -154,7 +161,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
 
@@ -170,7 +178,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
 
@@ -188,7 +197,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
 
@@ -207,7 +217,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
 
@@ -226,7 +237,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
 			expect(result).toBe(true);
@@ -240,7 +252,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { detectFromExports: true }),
 			);
 			expect(result).toBe(true);
@@ -256,7 +269,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, {
 					requiredType: "module",
 					excludePackages: ["@myorg/excluded"],
@@ -273,7 +287,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, {
 					requiredType: "module",
 					excludePackages: ["@legacy"],
@@ -291,7 +306,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }, true),
 			);
 
@@ -312,7 +328,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }, true),
 			);
 
@@ -334,7 +351,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
 			expect(result).toBe(true);
@@ -346,7 +364,8 @@ describe("PackageEsmType policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageEsmType.handler(
+			const result = await runHandler(
+				PackageEsmType.handler,
 				createArgs(filePath, { requiredType: "module" }),
 			);
 			expect(result).toBe(true);

@@ -5,9 +5,9 @@ prev: false
 title: "PolicyStandaloneResolver"
 ---
 
-> **PolicyStandaloneResolver**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
+> **PolicyStandaloneResolver**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\> \| `Operation`\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
 
-Defined in: [policy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L63)
+Defined in: [policy.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L73)
 
 A standalone function that can be called to resolve a policy failure.
 
@@ -29,4 +29,12 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Returns
 
-[`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
+[`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\> \| `Operation`\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
+
+## Remarks
+
+Resolvers can be implemented in two ways:
+- As an async function returning a Promise
+- As an Effection generator function returning an Operation
+
+Both styles are supported to allow gradual migration and flexibility.

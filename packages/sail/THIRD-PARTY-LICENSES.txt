@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - fs-extra@11.3.2
+ - fs-extra@11.3.3
 
 This package contains the following license:
 
@@ -207,7 +207,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - yaml@2.8.1
+ - yaml@2.8.2
 
 This package contains the following license:
 
@@ -375,7 +375,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @manypkg/get-packages@2.2.2
+ - @manypkg/get-packages@3.1.0
  - simple-git@3.30.0
 
 These packages each contain the following license:
@@ -513,7 +513,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - date-fns@2.30.0
+ - date-fns@4.1.0
 
 This package contains the following license:
 
@@ -634,10 +634,10 @@ SOFTWARE.
 The following npm packages may be included in this product:
 
  - detect-indent@7.0.2
- - find-up@7.0.0
+ - find-up@8.0.0
  - log-update@7.0.2
- - multimatch@5.0.0
- - type-fest@5.2.0
+ - multimatch@7.0.0
+ - type-fest@5.4.1
 
 These packages each contain the following license:
 
@@ -703,7 +703,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - picospinner@2.1.0
+ - picospinner@3.0.0
 
 This package contains the following license:
 
@@ -786,7 +786,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 The following npm package may be included in this product:
 
- - ts-morph@22.0.0
+ - ts-morph@27.0.2
 
 This package contains the following license:
 
@@ -816,7 +816,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - picomatch@2.3.1
+ - picomatch@4.0.3
 
 This package contains the following license:
 

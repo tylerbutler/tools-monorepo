@@ -7,6 +7,7 @@ import {
 	fromFluidHandlers,
 } from "../../src/adapters/fluidFramework.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("FluidFramework adapter", () => {
 	let tempDir: string;
@@ -53,7 +54,7 @@ describe("FluidFramework adapter", () => {
 			expect(policy.match).toEqual(/\.ts$/);
 
 			const file = await createTestFile("test.ts", "const x = 1;");
-			const result = await policy.handler(createArgs(file));
+			const result = await runHandler(policy.handler, createArgs(file));
 
 			expect(result).toBe(true);
 		});
@@ -67,7 +68,7 @@ describe("FluidFramework adapter", () => {
 
 			const policy = fromFluidHandlers([fluidHandler])[0];
 			const file = await createTestFile("test.ts", "console.log('hi');");
-			const result = await policy.handler(createArgs(file));
+			const result = await runHandler(policy.handler, createArgs(file));
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -88,7 +89,7 @@ describe("FluidFramework adapter", () => {
 
 			const policy = fromFluidHandlers([fluidHandler])[0];
 			const file = await createTestFile("test.ts", "content");
-			const result = await policy.handler(createArgs(file));
+			const result = await runHandler(policy.handler, createArgs(file));
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -123,7 +124,7 @@ describe("FluidFramework adapter", () => {
 
 			const policy = fromFluidHandlers([fluidHandler])[0];
 			const file = await createTestFile("test.ts", "content");
-			await policy.handler(createArgs(file));
+			await runHandler(policy.handler, createArgs(file));
 
 			// Fluid handler should receive absolute path
 			expect(receivedPath).toHaveBeenCalledWith(join(tempDir, file));
@@ -144,7 +145,7 @@ describe("FluidFramework adapter", () => {
 
 				const policy = fromFluidHandlers([fluidHandler])[0];
 				const file = await createTestFile("test.ts", "content");
-				const result = await policy.handler({
+				const result = await runHandler(policy.handler, {
 					...createArgs(file),
 					resolve: true,
 				});
@@ -174,7 +175,7 @@ describe("FluidFramework adapter", () => {
 
 				const policy = fromFluidHandlers([fluidHandler])[0];
 				const file = await createTestFile("test.ts", "content");
-				await policy.handler(createArgs(file));
+				await runHandler(policy.handler, createArgs(file));
 
 				expect(resolverCalled).not.toHaveBeenCalled();
 			});
@@ -216,7 +217,7 @@ describe("FluidFramework adapter", () => {
 
 				const policy = fromFluidHandlers([fluidHandler])[0];
 				const file = await createTestFile("test.ts", "content");
-				const result = await policy.handler({
+				const result = await runHandler(policy.handler, {
 					...createArgs(file),
 					resolve: true,
 				});
@@ -237,7 +238,7 @@ describe("FluidFramework adapter", () => {
 
 				const policy = fromFluidHandlers([fluidHandler])[0];
 				const file = await createTestFile("test.ts", "content");
-				const result = await policy.handler({
+				const result = await runHandler(policy.handler, {
 					...createArgs(file),
 					resolve: true,
 				});

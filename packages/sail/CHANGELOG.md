@@ -1,5 +1,28 @@
 # dill-cli
 
+## 0.2.3
+
+### Patch Changes
+
+- Update to use new cli-api logger API _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Updates commands to use the new logger API from @tylerbu/cli-api:
+  - Replace `errorLog()` calls with `logError()`
+  - Use standalone `logIndent()` function where needed
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.0`
+- `@tylerbu/sail-infrastructure@0.4.0`
+
+</details>
+
 ## 0.2.2
 
 ### Patch Changes

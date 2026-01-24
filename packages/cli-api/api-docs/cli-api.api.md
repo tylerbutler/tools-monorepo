@@ -87,18 +87,7 @@ export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
-export interface ConsolaLoggerOptions {
-    colors?: boolean;
-}
-
-// @public
 export function createBasicLogger(): Logger;
-
-// @public
-export function createConsolaLogger(style?: PrefixStyle, options?: ConsolaLoggerOptions): Logger;
-
-// @public
-export function createExtendedConsolaLogger(style: PrefixStyle, options?: ConsolaLoggerOptions): ExtendedLogger;
 
 // @beta
 export interface DependencyChange {

@@ -8,6 +8,7 @@ import {
 	type PackagePrivateFieldConfig,
 } from "../../src/policies/PackagePrivateField.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackagePrivateField policy", () => {
 	let tempDir: string;
@@ -44,7 +45,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, undefined),
 			);
 			expect(result).toBe(true);
@@ -59,7 +61,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mustPublish: ["@myorg/*"] }),
 			);
 			expect(result).toBe(true);
@@ -73,7 +76,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mustPublish: ["@myorg/*"] }),
 			);
 			expect(result).toBe(true);
@@ -87,7 +91,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mustPublish: ["@myorg/*"] }),
 			);
 
@@ -108,7 +113,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mustPublish: ["my-special-package"] }),
 			);
 
@@ -130,7 +136,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mustBePrivate: ["@internal/*"] }),
 			);
 			expect(result).toBe(true);
@@ -143,7 +150,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mustBePrivate: ["@internal/*"] }),
 			);
 
@@ -162,7 +170,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mustBePrivate: ["@internal/*"] }),
 			);
 
@@ -179,7 +188,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mayPublish: ["@experimental/*"] }),
 			);
 			expect(result).toBe(true);
@@ -192,7 +202,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, { mayPublish: ["@experimental/*"] }),
 			);
 			expect(result).toBe(true);
@@ -207,7 +218,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, {
 					mustPublish: ["@myorg/*"],
 					// unmatchedPackages defaults to "private"
@@ -228,7 +240,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, {
 					mustPublish: ["@myorg/*"],
 					unmatchedPackages: "public",
@@ -251,7 +264,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, {
 					mustPublish: ["@myorg/*"],
 					unmatchedPackages: "ignore",
@@ -272,7 +286,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, {
 					mustPublish: ["@myorg/*"],
 					mustBePrivate: ["@myorg/internal"], // exact match shouldn't override scope
@@ -295,7 +310,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, {
 					mustBePrivate: ["@internal/*"],
 					mayPublish: ["@internal/experimental-pkg"],
@@ -318,7 +334,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, {
 					mustBePrivate: ["root"],
 				}),
@@ -333,7 +350,8 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler(
+			const result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(filePath, {
 					mustBePrivate: ["@internal/*"],
 				}),
@@ -355,7 +373,8 @@ describe("PackagePrivateField policy", () => {
 			// Public package without private field - should pass
 			const publicJson: PackageJson = { name: "@public/pkg", version: "1.0.0" };
 			const publicPath = createPackageJson(publicJson);
-			let result = await PackagePrivateField.handler(
+			let result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(publicPath, config),
 			);
 			expect(result).toBe(true);
@@ -367,7 +386,8 @@ describe("PackagePrivateField policy", () => {
 				private: true,
 			};
 			const privatePath = createPackageJson(privateJson);
-			result = await PackagePrivateField.handler(
+			result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(privatePath, config),
 			);
 			expect(result).toBe(true);
@@ -378,7 +398,10 @@ describe("PackagePrivateField policy", () => {
 				version: "1.0.0",
 			};
 			const expPath = createPackageJson(expJson);
-			result = await PackagePrivateField.handler(createArgs(expPath, config));
+			result = await runHandler(
+				PackagePrivateField.handler,
+				createArgs(expPath, config),
+			);
 			expect(result).toBe(true);
 
 			// Unknown package without private: true - should fail (default is private)
@@ -387,7 +410,8 @@ describe("PackagePrivateField policy", () => {
 				version: "1.0.0",
 			};
 			const unknownPath = createPackageJson(unknownJson);
-			result = await PackagePrivateField.handler(
+			result = await runHandler(
+				PackagePrivateField.handler,
 				createArgs(unknownPath, config),
 			);
 			expect(result).not.toBe(true);
@@ -402,7 +426,7 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler({
+			const result = await runHandler(PackagePrivateField.handler, {
 				...createArgs(filePath, { mustBePrivate: ["@internal/*"] }),
 				resolve: true,
 			});
@@ -425,7 +449,7 @@ describe("PackagePrivateField policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackagePrivateField.handler({
+			const result = await runHandler(PackagePrivateField.handler, {
 				...createArgs(filePath, { mustPublish: ["@public/*"] }),
 				resolve: true,
 			});

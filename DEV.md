@@ -82,3 +82,127 @@ Example:
   }
 }
 ```
+
+## TypeScript Native (tsgo) Shadow Testing
+
+This monorepo includes infrastructure for testing with `tsgo`, the Go-based TypeScript compiler that will become TypeScript 7.0. Shadow testing helps validate compatibility before the official release.
+
+### Background
+
+- **TypeScript 6.0** - Final JavaScript-based TypeScript (bridge release)
+- **TypeScript 7.0** - Go-based compiler (`tsgo`) with ~10x performance improvement
+- **`@typescript/native-preview`** - npm package providing `tsgo` for testing
+
+### Available Scripts
+
+```bash
+# Type-check only with tsgo (no emit)
+pnpm check:types:native
+
+# Build with tsgo (compiles to esm/)
+pnpm compile:native
+
+# Clean build with tsgo (removes old output first)
+pnpm compile:native:clean
+
+# Run smoke tests against tsgo-compiled output
+pnpm test:tsgo-build
+
+# Full workflow: build with tsgo + run smoke tests
+pnpm test:tsgo-build:full
+```
+
+### Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `tsconfig.tsgo.json` | Solution file listing packages for tsgo builds |
+| `scripts/test-tsgo-build.mts` | Smoke test that validates compiled JS output |
+
+### What Gets Tested
+
+The `tsconfig.tsgo.json` solution file includes 17 packages. Excluded packages:
+
+- **Astro sites** (`ccl-docs`, `dill-docs`, `repopo-docs`) - Use special `astro/tsconfigs/*` extends
+- **Svelte apps** (`ccl-test-viewer`) - Different build toolchain
+
+The smoke test validates 13 packages by importing compiled output and executing basic functions:
+
+```
+@tylerbu/fundamentals     - isSorted()
+@tylerbu/fundamentals/set - addAll()
+@tylerbu/cli-api          - CommandWithConfig class
+lilconfig-loader-ts       - TypeScriptLoader class
+xkcd2-api                 - getRandomComicId()
+levee-client              - LeveeClient class
+ccl-ts                    - parse()
+rehype-footnotes          - plugin export
+remark-lazy-links         - plugin export
+remark-shift-headings     - plugin export
+remark-task-table         - plugin export
+sort-tsconfig             - sortTsconfigFile()
+repopo                    - module loads
+```
+
+### Performance Comparison
+
+Typical build times on this codebase:
+
+| Compiler | Time | Speedup |
+|----------|------|---------|
+| `tsgo` | ~0.8s | **4.3x faster** |
+| `tsc` | ~3.5s | baseline |
+
+### Adding Packages to Shadow Testing
+
+1. Add the package path to `tsconfig.tsgo.json`:
+   ```json
+   { "path": "./packages/new-package" }
+   ```
+
+2. Add a smoke test in `scripts/test-tsgo-build.mts`:
+   ```typescript
+   results.push(
+     await testPackage(
+       "new-package",
+       "packages/new-package/esm/index.js",
+       (mod: any) => {
+         if (typeof mod.someExport !== "function") {
+           throw new Error("someExport is not a function");
+         }
+       },
+     ),
+   );
+   ```
+
+3. Run tests to verify:
+   ```bash
+   pnpm compile:native && pnpm test:tsgo-build
+   ```
+
+### CI Integration
+
+The `tsgo-validation` job in `.github/workflows/pr-build.yml` runs in parallel with the main build:
+
+1. Builds all packages with `tsgo`
+2. Runs smoke tests to validate the compiled output
+
+This catches tsgo compatibility issues early, before TypeScript 7.0 is released.
+
+### Troubleshooting
+
+**"Cannot find module" errors during tsgo build:**
+- Ensure the package is listed in `tsconfig.tsgo.json`
+- Check that project references are correctly configured in the package's `tsconfig.json`
+- Verify dependencies are installed (`pnpm install`)
+
+**Smoke test failures:**
+- Check the actual exports in `packages/<name>/esm/index.js`
+- Update the test function to match actual export names
+- Some packages may have different default exports
+
+### Resources
+
+- [TypeScript 6.0 Migration Guide](https://github.com/microsoft/TypeScript/issues/62508)
+- [@typescript/native-preview on npm](https://www.npmjs.com/package/@typescript/native-preview)
+- [Progress on TypeScript 7](https://devblogs.microsoft.com/typescript/progress-on-typescript-7-december-2025/)

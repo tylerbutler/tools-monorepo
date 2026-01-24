@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/cli",
-	"version": "0.7.0",
+	"version": "0.8.0",
 	"description": "Tyler Butler's personal CLI.",
 	"keywords": [
 		"oclif"
@@ -114,7 +114,6 @@
 		"ccl-ts": "workspace:^",
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
-		"effection": "^4.0.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
 		"semver": "^7.7.3",
