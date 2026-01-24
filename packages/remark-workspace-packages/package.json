@@ -41,22 +41,22 @@
 		"micromatch": "^4.0.8",
 		"pathe": "^2.0.3",
 		"resolve-workspace-root": "^2.0.0",
-		"tinyglobby": "^0.2.14",
+		"tinyglobby": "^0.2.15",
 		"unified": "^11.0.5",
 		"vfile": "^6.0.3"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.7",
+		"@biomejs/biome": "2.3.8",
 		"@types/mdast": "^4.0.4",
-		"@types/micromatch": "^4.0.9",
-		"@types/node": "^20.19.24",
-		"@vitest/coverage-v8": "^3.2.4",
+		"@types/micromatch": "^4.0.10",
+		"@types/node": "^20.19.25",
+		"@vitest/coverage-v8": "^4.0.17",
 		"remark": "^15.0.1",
 		"remark-gfm": "^4.0.1",
 		"remark-parse": "^11.0.0",
-		"rimraf": "^6.1.0",
+		"rimraf": "^6.1.2",
 		"typescript": "~5.9.3",
-		"vitest": "^3.2.4"
+		"vitest": "^4.0.17"
 	},
 	"peerDependencies": {
 		"unified": "^11.0.0"
