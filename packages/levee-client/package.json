@@ -16,20 +16,20 @@
 	"exports": {
 		".": {
 			"import": {
-				"types": "./lib/public.d.ts",
-				"default": "./lib/index.js"
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
 			}
 		}
 	},
-	"main": "lib/index.js",
-	"types": "lib/public.d.ts",
+	"main": "esm/index.js",
+	"types": "esm/index.d.ts",
 	"scripts": {
 		"b": "nx build",
 		"build:api": "api-extractor run --local",
 		"build:compile": "tsc",
 		"check": "pnpm check:format",
 		"check:format": "biome format .",
-		"clean": "rimraf --glob lib \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp _temp nyc",
+		"clean": "rimraf --glob esm \"**/*.tsbuildinfo\" \"**/*.build.log\" _api-extractor-temp _temp nyc",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",

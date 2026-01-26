@@ -33,6 +33,7 @@
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test:coverage": "vitest run --coverage test",
 		"test:vitest": "vitest run test"
 	},
