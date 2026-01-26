@@ -31,11 +31,11 @@
 		"test:vitest": "vitest run test/unit"
 	},
 	"dependencies": {
-		"@fluidframework/aqueduct": "~2.33.2",
+		"@fluidframework/aqueduct": "~2.42.0",
 		"@fluidframework/container-definitions": "~2.33.2",
 		"@fluidframework/container-loader": "~2.33.2",
-		"@fluidframework/container-runtime": "~2.33.2",
-		"@fluidframework/container-runtime-definitions": "~2.33.2",
+		"@fluidframework/container-runtime": "~2.42.0",
+		"@fluidframework/container-runtime-definitions": "~2.42.0",
 		"@fluidframework/core-interfaces": "~2.33.2",
 		"@fluidframework/datastore-definitions": "~2.33.2",
 		"@fluidframework/driver-definitions": "~2.33.2",
@@ -55,7 +55,7 @@
 		"@vitest/coverage-v8": "^4.0.17",
 		"rimraf": "^6.1.2",
 		"typescript": "~5.9.3",
-		"vite": "^6.0.0",
+		"vite": "^7.3.0",
 		"vitest": "^4.0.17"
 	},
 	"engines": {

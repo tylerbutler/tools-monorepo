@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" style="height: 100%">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Levee Presence Tracker</title>
+		<style>
+			.reaction {
+				position: absolute;
+				font-size: x-large;
+				animation: fadeUp 1s forwards;
+			}
+
+			@keyframes fadeUp {
+				0% {
+					opacity: 1;
+					transform: translateY(0) rotate(45deg);
+				}
+				100% {
+					opacity: 0;
+					transform: translateY(-50px) rotate(-45deg);
+				}
+			}
+
+			emoji-picker {
+				--num-columns: 6;
+				width: 300px;
+				height: 200px;
+			}
+
+			#cover {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background-color: black;
+			}
+
+			#status {
+				position: fixed;
+				top: 10px;
+				right: 10px;
+				z-index: 1000;
+				padding: 8px 16px;
+				font-size: 14px;
+				background: #f0f0f0;
+				border-radius: 4px;
+			}
+
+			#status.connected {
+				color: #155724;
+				background: #d4edda;
+			}
+
+			#status.error {
+				color: #721c24;
+				background: #f8d7da;
+			}
+		</style>
+	</head>
+	<body style="margin: 0; height: 100%">
+		<div id="status">Connecting...</div>
+		<div id="cover" style="opacity: 0"></div>
+		<div id="control-panel" style="padding: 10px"></div>
+		<div id="focus-content" style="min-height: 100%; border: 1px solid black"></div>
+		<div id="mouse-position"></div>
+		<script type="module" src="/src/app.ts"></script>
+	</body>
+</html>

@@ -18,6 +18,13 @@ const config: RepopoConfig = {
 				".lighthouserc.js",
 				"svelte.config.js",
 				"tailwind.config.js",
+				// Exclude esm/dist/coverage output in example packages (bundled by Vite, not consumed as npm packages)
+				"packages/levee-example/esm/.*js",
+				"packages/levee-example/dist/.*js",
+				"packages/levee-example/coverage/.*js",
+				"packages/levee-presence-tracker/esm/.*js",
+				"packages/levee-presence-tracker/dist/.*js",
+				"packages/levee-presence-tracker/coverage/.*js",
 			],
 		}),
 		makePolicy(PackageJsonProperties, {

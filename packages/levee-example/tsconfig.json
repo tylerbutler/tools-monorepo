@@ -10,4 +10,9 @@
 		"exactOptionalPropertyTypes": false,
 		"noPropertyAccessFromIndexSignature": false,
 	},
+	"references": [
+		{
+			"path": "../levee-driver",
+		},
+	],
 }

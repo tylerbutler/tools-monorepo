@@ -1009,8 +1009,8 @@ importers:
   packages/levee-example:
     dependencies:
       '@fluidframework/aqueduct':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.42.0
+        version: 2.42.0
       '@fluidframework/container-definitions':
         specifier: ~2.33.2
         version: 2.33.2
@@ -1018,11 +1018,11 @@ importers:
         specifier: ~2.33.2
         version: 2.33.2
       '@fluidframework/container-runtime':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.42.0
+        version: 2.42.0(debug@4.4.3)
       '@fluidframework/container-runtime-definitions':
-        specifier: ~2.33.2
-        version: 2.33.2
+        specifier: ~2.42.0
+        version: 2.42.0
       '@fluidframework/core-interfaces':
         specifier: ~2.33.2
         version: 2.33.2
@@ -1065,7 +1065,7 @@ importers:
         version: 18.3.7(@types/react@18.3.27)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.7.0(vite@6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        version: 4.7.0(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
       '@vitest/coverage-v8':
         specifier: ^4.0.17
         version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -1076,11 +1076,66 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vite:
-        specifier: ^6.0.0
-        version: 6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^7.3.0
+        version: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
       vitest:
         specifier: ^4.0.17
         version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/levee-presence-tracker:
+    dependencies:
+      '@fluidframework/core-interfaces':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/core-utils':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/datastore':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/fluid-static':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/presence':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/runtime-definitions':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/runtime-utils':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/shared-object-base':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@tylerbu/levee-client':
+        specifier: workspace:^
+        version: link:../levee-client
+      emoji-picker-element:
+        specifier: ^1.26.1
+        version: 1.28.1
+      fluid-framework:
+        specifier: ~2.33.2
+        version: 2.33.2
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 2.3.8
+        version: 2.3.8
+      '@types/node':
+        specifier: ^20.19.25
+        version: 20.19.25
+      generate-license-file:
+        specifier: ^4.1.1
+        version: 4.1.1(typescript@5.9.3)
+      rimraf:
+        specifier: ^6.1.2
+        version: 6.1.2
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.0
+        version: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/lilconfig-loader-ts:
     dependencies:
@@ -3522,6 +3577,9 @@ packages:
   '@fluidframework/odsp-driver@2.42.0':
     resolution: {integrity: sha512-qjm7OklzM8TCjXFy76RxrXv2vWAxI9lKfdwHUnP3fkIKRDKURqbF3DPLfLhcov+DWKSV0JUl4TNtbA5Msjsmdw==}
 
+  '@fluidframework/presence@2.33.2':
+    resolution: {integrity: sha512-S9Ln8zHRo0M9mO8zNrH2LUtcCRui0U654EZq/MNzZTptTJfhqAxHTabTtkx1xeeg/U+/qcIyths78HmBOKOnMw==}
+
   '@fluidframework/protocol-base@5.0.0':
     resolution: {integrity: sha512-q5qQt269nUYQERwX5lntfEXVv7jbxFmGAZC1z1I5hZmkvSC6PJGF6GzXAtP43/eq0+hCftxmIT0jus+kLL/K4w==}
 
@@ -3557,6 +3615,9 @@ packages:
 
   '@fluidframework/runtime-utils@2.42.0':
     resolution: {integrity: sha512-RUlltVnkmdBN7qIOGIv1oVMSKDDRkkGfAv2CY3lyqSV4eDmR8eBW3tsTpqnl3Tm6xczkrhur5J1dBYmzJP2yxQ==}
+
+  '@fluidframework/sequence@2.33.2':
+    resolution: {integrity: sha512-Dm/ZCPkjaRYNKclmamMWxHVcoNL5zOFj/YfIFvltTGXDilzjChclFBHNgT4U8On7zOdYSttng4tghDHNQMpIEw==}
 
   '@fluidframework/server-lambdas-driver@5.0.0':
     resolution: {integrity: sha512-tnMxsxKr2zajQ64Ew7zcTKclK2Rkp7cqK4ghiuYkzhdbt7ZxIMVmkSW3B5/DXDSxVoi4VR6q1BA6cMnGJMcwsw==}
@@ -7120,6 +7181,9 @@ packages:
   emmet@2.4.11:
     resolution: {integrity: sha512-23QPJB3moh/U9sT4rQzGgeyyGIrcM+GH5uVYg2C6wZIxAIJq7Ng3QLT79tl8FUwDXhyq9SusfknOrofAKqvgyQ==}
 
+  emoji-picker-element@1.28.1:
+    resolution: {integrity: sha512-8c64IPish2PWoV9oYCo2pvuPHwIv+uK9bO0dfpPyMupDAvaWL9ZvYhWNTAR+2sx7BhfRjciImqP6CIUgNX+DMg==}
+
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
 
@@ -7571,6 +7635,9 @@ packages:
   flattie@1.1.1:
     resolution: {integrity: sha512-9UbaD6XdAL97+k/n+N7JwX46K/M6Zc6KcFYskrYL8wbBV/Uyk0CTAMY0VT+qiK5PM7AIc9aTWYtq65U7T+aCNQ==}
     engines: {node: '>=8'}
+
+  fluid-framework@2.33.2:
+    resolution: {integrity: sha512-E4AzWAuKtgIUHTZNeVVwz3iOPkviOfly/Eyd8Uvm096bOUNxqfk/izqnc8wEAGPF4m8fwRmvQR2d2SmzYh5K7Q==}
 
   fn.name@1.1.0:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
@@ -14909,6 +14976,26 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@fluidframework/presence@2.33.2':
+    dependencies:
+      '@fluid-internal/client-utils': 2.33.2
+      '@fluidframework/container-definitions': 2.33.2
+      '@fluidframework/container-loader': 2.33.2
+      '@fluidframework/container-runtime-definitions': 2.33.2
+      '@fluidframework/core-interfaces': 2.33.2
+      '@fluidframework/core-utils': 2.33.2
+      '@fluidframework/datastore': 2.33.2
+      '@fluidframework/datastore-definitions': 2.33.2
+      '@fluidframework/fluid-static': 2.33.2
+      '@fluidframework/id-compressor': 2.33.2
+      '@fluidframework/runtime-definitions': 2.33.2
+      '@fluidframework/runtime-utils': 2.33.2
+      '@fluidframework/shared-object-base': 2.33.2
+      '@fluidframework/telemetry-utils': 2.33.2
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+
   '@fluidframework/protocol-base@5.0.0':
     dependencies:
       '@fluidframework/common-utils': 3.1.0
@@ -15039,6 +15126,24 @@ snapshots:
       '@fluidframework/driver-utils': 2.42.0(debug@4.4.3)
       '@fluidframework/runtime-definitions': 2.42.0
       '@fluidframework/telemetry-utils': 2.42.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+
+  '@fluidframework/sequence@2.33.2':
+    dependencies:
+      '@fluid-internal/client-utils': 2.33.2
+      '@fluidframework/core-interfaces': 2.33.2
+      '@fluidframework/core-utils': 2.33.2
+      '@fluidframework/datastore-definitions': 2.33.2
+      '@fluidframework/driver-definitions': 2.33.2
+      '@fluidframework/merge-tree': 2.33.2
+      '@fluidframework/runtime-definitions': 2.33.2
+      '@fluidframework/runtime-utils': 2.33.2
+      '@fluidframework/shared-object-base': 2.33.2
+      '@fluidframework/telemetry-utils': 2.33.2
+      double-ended-queue: 2.1.0-0
+      uuid: 9.0.1
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -17982,7 +18087,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vitejs/plugin-react@4.7.0(vite@6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+  '@vitejs/plugin-react@4.7.0(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -17990,7 +18095,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -19775,6 +19880,8 @@ snapshots:
       '@emmetio/abbreviation': 2.3.3
       '@emmetio/css-abbreviation': 2.1.8
 
+  emoji-picker-element@1.28.1: {}
+
   emoji-regex@10.6.0: {}
 
   emoji-regex@8.0.0: {}
@@ -20393,6 +20500,23 @@ snapshots:
   flatted@3.3.3: {}
 
   flattie@1.1.1: {}
+
+  fluid-framework@2.33.2:
+    dependencies:
+      '@fluidframework/container-definitions': 2.33.2
+      '@fluidframework/container-loader': 2.33.2
+      '@fluidframework/core-interfaces': 2.33.2
+      '@fluidframework/core-utils': 2.33.2
+      '@fluidframework/driver-definitions': 2.33.2
+      '@fluidframework/fluid-static': 2.33.2
+      '@fluidframework/map': 2.33.2
+      '@fluidframework/runtime-utils': 2.33.2
+      '@fluidframework/sequence': 2.33.2
+      '@fluidframework/shared-object-base': 2.33.2
+      '@fluidframework/tree': 2.33.2
+    transitivePeerDependencies:
+      - debug
+      - supports-color
 
   fn.name@1.1.0: {}
 
@@ -26197,23 +26321,6 @@ snapshots:
     dependencies:
       uuid: 11.1.0
       vite: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
-
-  vite@6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
-    dependencies:
-      esbuild: 0.25.12
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
-      postcss: 8.5.6
-      rollup: 4.54.0
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 20.19.25
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      lightningcss: 1.30.2
-      terser: 5.44.0
-      tsx: 4.21.0
-      yaml: 2.8.2
 
   vite@6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
