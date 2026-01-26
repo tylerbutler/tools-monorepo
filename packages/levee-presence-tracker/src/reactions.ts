@@ -5,7 +5,11 @@
  * emoji reactions that appear at the user's cursor position.
  */
 
-import type { Attendee, Presence } from "@fluidframework/presence/alpha";
+import type {
+	Attendee,
+	Presence,
+	PresenceWithNotifications,
+} from "@fluidframework/presence/alpha";
 import { Notifications } from "@fluidframework/presence/alpha";
 
 import type { IMousePosition, MouseTracker } from "./MouseTracker.js";
@@ -23,11 +27,9 @@ export function initializeReactions(
 	mouseTracker: MouseTracker,
 ): void {
 	// Create a notifications workspace to send reactions-related notifications.
-	// Use type assertion to access notifications API (alpha API shape)
+	// Cast to PresenceWithNotifications to access the alpha notifications API
 	const notificationsWorkspace = (
-		presence as Presence & {
-			notifications: { getWorkspace: Presence["states"]["getWorkspace"] };
-		}
+		presence as PresenceWithNotifications
 	).notifications.getWorkspace("name:reactions", {
 		// Initialize a notifications manager with the provided message schema.
 		reactions: Notifications<{
