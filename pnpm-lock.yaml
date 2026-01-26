@@ -1417,8 +1417,8 @@ importers:
         specifier: ^3.1.3
         version: 3.1.3
       lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
+        specifier: ^4.17.23
+        version: 4.17.23
       lodash.isequal:
         specifier: ^4.5.0
         version: 4.5.0
@@ -8676,6 +8676,9 @@ packages:
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
+  lodash@4.17.23:
+    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
+
   log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
     engines: {node: '>=10'}
@@ -14291,7 +14294,7 @@ snapshots:
       base64-js: 1.5.1
       buffer: 6.0.3
       events: 3.3.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       sha.js: 2.4.12
 
   '@fluidframework/container-definitions@2.33.2':
@@ -14847,7 +14850,7 @@ snapshots:
       assert: 2.1.0
       async: 3.2.6
       events: 3.3.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       nconf: 0.12.1
       serialize-error: 8.1.0
     transitivePeerDependencies:
@@ -14862,7 +14865,7 @@ snapshots:
       assert: 2.1.0
       async: 3.2.6
       events: 3.3.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       nconf: 0.12.1
       serialize-error: 8.1.0
     transitivePeerDependencies:
@@ -14886,7 +14889,7 @@ snapshots:
       double-ended-queue: 2.1.0-0
       events: 3.3.0
       json-stringify-safe: 5.0.1
-      lodash: 4.17.21
+      lodash: 4.17.23
       nconf: 0.12.1
       semver: 7.7.3
       sha.js: 2.4.12
@@ -14913,7 +14916,7 @@ snapshots:
       double-ended-queue: 2.1.0-0
       events: 3.3.0
       json-stringify-safe: 5.0.1
-      lodash: 4.17.21
+      lodash: 4.17.23
       nconf: 0.12.1
       opossum: 8.5.0
       semver: 7.7.3
@@ -14980,7 +14983,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       double-ended-queue: 2.1.0-0
       events: 3.3.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       sillyname: 0.1.0
       uuid: 9.0.1
       ws: 7.5.10
@@ -15007,7 +15010,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       double-ended-queue: 2.1.0-0
       events: 3.3.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       sillyname: 0.1.0
       uuid: 11.1.0
       ws: 7.5.10
@@ -15098,7 +15101,7 @@ snapshots:
       express: 4.21.2
       fast-redact: 3.5.0
       ioredis: 5.6.1
-      lodash: 4.17.21
+      lodash: 4.17.23
       nconf: 0.12.1
       notepack.io: 2.3.0
       serialize-error: 8.1.0
@@ -15165,7 +15168,7 @@ snapshots:
       events: 3.3.0
       ioredis: 5.6.1
       ioredis-mock: 8.9.0(@types/ioredis-mock@8.2.6(ioredis@5.6.1))(ioredis@5.6.1)
-      lodash: 4.17.21
+      lodash: 4.17.23
       string-hash: 1.1.3
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -15186,7 +15189,7 @@ snapshots:
       events: 3.3.0
       ioredis: 5.6.1
       ioredis-mock: 8.9.0(@types/ioredis-mock@8.2.6(ioredis@5.6.1))(ioredis@5.6.1)
-      lodash: 4.17.21
+      lodash: 4.17.23
       string-hash: 1.1.3
       uuid: 11.1.0
     transitivePeerDependencies:
@@ -18107,7 +18110,7 @@ snapshots:
       graceful-fs: 4.2.11
       is-stream: 2.0.1
       lazystream: 1.0.1
-      lodash: 4.17.21
+      lodash: 4.17.23
       normalize-path: 3.0.0
       readable-stream: 4.7.0
 
@@ -20940,7 +20943,7 @@ snapshots:
       code-excerpt: 4.0.0
       indent-string: 5.0.0
       is-in-ci: 0.1.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       patch-console: 2.0.0
       react: 18.3.1
       react-reconciler: 0.29.2(react@18.3.1)
@@ -20977,7 +20980,7 @@ snapshots:
       cli-width: 2.2.1
       external-editor: 3.1.0
       figures: 2.0.0
-      lodash: 4.17.21
+      lodash: 4.17.23
       mute-stream: 0.0.7
       run-async: 2.4.1
       rxjs: 6.6.7
@@ -21721,6 +21724,8 @@ snapshots:
   lodash.truncate@4.4.2: {}
 
   lodash@4.17.21: {}
+
+  lodash@4.17.23: {}
 
   log-symbols@4.1.0:
     dependencies:
@@ -26197,7 +26202,7 @@ snapshots:
     dependencies:
       axios: 1.13.2(debug@4.4.3)
       joi: 18.0.2
-      lodash: 4.17.21
+      lodash: 4.17.23
       minimist: 1.2.8
       rxjs: 7.8.2
     transitivePeerDependencies:
@@ -26490,7 +26495,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
       '@types/lodash': 4.17.16
-      lodash: 4.17.21
+      lodash: 4.17.23
       lodash-es: 4.17.21
       nanoclone: 0.2.1
       property-expr: 2.0.6
