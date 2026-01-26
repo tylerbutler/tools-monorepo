@@ -4,7 +4,12 @@ Package-specific guidance for the Levee Fluid Framework service client.
 
 ## Package Overview
 
-Client library for interacting with the Levee Fluid Framework service. This package provides a simplified interface for connecting to Fluid Framework containers and working with distributed data structures.
+Client library for interacting with the Levee Fluid Framework service. This package provides:
+
+1. **LeveeClient** - High-level client for Tinylicious-compatible servers
+2. **Phoenix Driver** - Low-level driver for Phoenix Channel-based Levee servers
+
+The Phoenix driver enables Fluid Framework applications to connect to servers using Phoenix Channels (Elixir/Phoenix) instead of Socket.IO for real-time WebSocket communication.
 
 **Status:** Private package (not published to npm)
 **Framework:** Fluid Framework v2.33.x
@@ -67,12 +72,24 @@ Levee is a custom Fluid Framework service configuration. This client package pro
 ```
 packages/levee-client/
 ├── src/
-│   ├── index.ts              # Main exports
-│   ├── client.ts             # Client configuration
-│   ├── container.ts          # Container utilities
-│   └── types.ts              # Type definitions
-├── lib/                      # Compiled output (esm)
-├── test/                     # Tests (Mocha and Vitest)
+│   ├── index.ts                    # Main exports
+│   ├── client.ts                   # LeveeClient (Tinylicious-compatible)
+│   ├── audience.ts                 # Audience member utilities
+│   ├── interfaces.ts               # Type definitions
+│   └── phoenix/                    # Phoenix Channel driver
+│       ├── index.ts                # Phoenix driver exports
+│       ├── contracts.ts            # Types and interfaces
+│       ├── tokenProvider.ts        # JWT token providers
+│       ├── urlResolver.ts          # URL resolver for Phoenix server
+│       ├── restWrapper.ts          # HTTP client with auth
+│       ├── gitManager.ts           # Git storage operations
+│       ├── phoenixDocumentServiceFactory.ts
+│       ├── phoenixDocumentService.ts
+│       ├── phoenixDocumentDeltaConnection.ts
+│       ├── phoenixDocumentStorageService.ts
+│       └── phoenixDocumentDeltaStorageService.ts
+├── lib/                            # Compiled output
+├── test/                           # Tests (Vitest)
 ├── package.json
 └── tsconfig.json
 ```
@@ -121,6 +138,67 @@ myMap.on("valueChanged", (changed, local) => {
 myMap.set("key", "value");
 ```
 
+## Phoenix Driver Usage
+
+The Phoenix driver enables connecting to Phoenix Channel-based Levee servers.
+
+### Basic Setup
+
+```typescript
+import {
+  PhoenixDocumentServiceFactory,
+  PhoenixUrlResolver,
+  InsecurePhoenixTokenProvider,
+} from "@tylerbu/levee-client/phoenix";
+
+// Create token provider (for dev/test only)
+const tokenProvider = new InsecurePhoenixTokenProvider(
+  "tenant-secret-key",
+  { id: "user-123", name: "Test User" }
+);
+
+// Create URL resolver
+const urlResolver = new PhoenixUrlResolver(
+  "ws://localhost:4000/socket",  // Phoenix WebSocket URL
+  "http://localhost:4000"         // HTTP API URL
+);
+
+// Create document service factory
+const serviceFactory = new PhoenixDocumentServiceFactory(tokenProvider);
+```
+
+### Using with Fluid Container Loader
+
+```typescript
+import { Loader } from "@fluidframework/container-loader";
+
+const loader = new Loader({
+  urlResolver,
+  documentServiceFactory: serviceFactory,
+  codeLoader,
+  logger,
+});
+
+// Load existing container
+const container = await loader.resolve({ url: "fluid/my-document-id" });
+
+// Create new container
+const container = await loader.createDetachedContainer(codeDetails);
+await container.attach(createNewRequest);
+```
+
+### Event Mapping (Socket.IO → Phoenix Channels)
+
+| Fluid Event | Socket.IO | Phoenix Channels |
+|-------------|-----------|------------------|
+| Connect doc | `socket.emit("connect_document")` | `channel.push("connect_document")` |
+| Submit op | `socket.emit("submitOp")` | `channel.push("submitOp")` |
+| Receive op | `socket.on("op")` | `channel.on("op")` |
+| Submit signal | `socket.emit("submitSignal")` | `channel.push("submitSignal")` |
+| Receive signal | `socket.on("signal")` | `channel.on("signal")` |
+| Nack | `socket.on("nack")` | `channel.on("nack")` |
+| Disconnect | `socket.on("disconnect")` | `channel.onClose()` |
+
 ## Testing Strategy
 
 ### Local Testing with Tinylicious
@@ -168,6 +246,11 @@ pnpm test:mocha
 - `@fluidframework/map` - SharedMap DDS
 - `@fluidframework/routerlicious-driver` - Azure driver
 - `@fluidframework/tinylicious-driver` - Local dev driver
+
+**Phoenix Driver Dependencies:**
+- `phoenix` - Phoenix JavaScript client for WebSocket channels
+- `jsonwebtoken` - JWT token generation for authentication
+- `uuid` - UUID generation for token JTI claims
 
 **Version Pinning:**
 All Fluid Framework packages are pinned to `~2.33.2` for consistency.
@@ -309,3 +392,6 @@ Ensure all `@fluidframework` packages are at compatible versions. The framework 
 - Add more DDS examples (SharedString, SharedTree)
 - Improve error handling and reconnection logic
 - Add telemetry and monitoring
+- Phoenix driver: Add automatic reconnection with exponential backoff
+- Phoenix driver: Add presence/heartbeat support
+- Phoenix driver: Integration tests against running Levee server

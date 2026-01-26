@@ -5,8 +5,8 @@
 	"exclude": ["src/test/**/*"],
 	"compilerOptions": {
 		"rootDir": "./src",
-		"outDir": "./esm",
+		"outDir": "./lib",
 
-		"exactOptionalPropertyTypes": false,
-	},
+		"exactOptionalPropertyTypes": false
+	}
 }
