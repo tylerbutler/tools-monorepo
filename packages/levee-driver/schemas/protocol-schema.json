@@ -1,0 +1,463 @@
+{
+  "$defs": {
+    "Client": {
+      "$ref": "#/$defs/ref_D769054AE9A0D0DE975EFB7E5F0D0A754D0B8E51"
+    },
+    "ClientCapabilities": {
+      "$ref": "#/$defs/ref_8BFF6809DBCA4B12D684D7BD6002CFE2D3FA5D24"
+    },
+    "ClientDetails": {
+      "$ref": "#/$defs/ref_B1AE80BCD8E0452983053D9A1C4447B945BE1CA9"
+    },
+    "ConnectionMode": {
+      "additionalProperties": false,
+      "properties": {
+        "enum": {
+          "enum": [
+            "write",
+            "read"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "enum"
+      ],
+      "type": "object"
+    },
+    "DocumentMessage": {
+      "$ref": "#/$defs/ref_F7882E6B23AD28EA6CBDAE83BB50464123B858D1"
+    },
+    "MessageOrigin": {
+      "$ref": "#/$defs/ref_D8ECC9AC348C6B93773F8C59F802AE13073A5B56"
+    },
+    "Scope": {
+      "additionalProperties": false,
+      "properties": {
+        "enum": {
+          "enum": [
+            "doc:read",
+            "doc:write",
+            "summary:write"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "enum"
+      ],
+      "type": "object"
+    },
+    "SequencedClient": {
+      "$ref": "#/$defs/ref_05C13B6AA1CFE86B7576912C66A7BD2F504AD965"
+    },
+    "SequencedDocumentMessage": {
+      "$ref": "#/$defs/ref_F74940136EE2EAA51FC53F9C4F4B9F2DC7C9C4B2"
+    },
+    "ServiceConfiguration": {
+      "$ref": "#/$defs/ref_A1CDB35AB1E06F52BC657251B3CE5D24E4BB47C5"
+    },
+    "SignalClient": {
+      "$ref": "#/$defs/ref_A2947B956F3E5E98232D2E259F839D54F003296A"
+    },
+    "TokenClaims": {
+      "$ref": "#/$defs/ref_68FAF717D043CD19F67B2EEA0D5FA1D50518ACEE"
+    },
+    "Trace": {
+      "$ref": "#/$defs/ref_A655E07C5371D9F456F78923687729222B9E2CF0"
+    },
+    "User": {
+      "$ref": "#/$defs/ref_343DAB01C6EB32A140302B06F664F3E792B04055"
+    },
+    "ref_05C13B6AA1CFE86B7576912C66A7BD2F504AD965": {
+      "additionalProperties": false,
+      "properties": {
+        "client": {
+          "$ref": "#/$defs/ref_D769054AE9A0D0DE975EFB7E5F0D0A754D0B8E51"
+        },
+        "sequence_number": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "client",
+        "sequence_number"
+      ],
+      "type": "object"
+    },
+    "ref_343DAB01C6EB32A140302B06F664F3E792B04055": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "properties": {
+          "additionalProperties": {
+            "type": true
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "properties"
+      ],
+      "type": "object"
+    },
+    "ref_68FAF717D043CD19F67B2EEA0D5FA1D50518ACEE": {
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "type": "string"
+        },
+        "expiration": {
+          "type": "integer"
+        },
+        "issued_at": {
+          "type": "integer"
+        },
+        "jti": {
+          "type": "string"
+        },
+        "scopes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tenant_id": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/$defs/ref_343DAB01C6EB32A140302B06F664F3E792B04055"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "scopes",
+        "tenant_id",
+        "user",
+        "issued_at",
+        "expiration",
+        "version"
+      ],
+      "type": "object"
+    },
+    "ref_8BFF6809DBCA4B12D684D7BD6002CFE2D3FA5D24": {
+      "additionalProperties": false,
+      "properties": {
+        "interactive": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "interactive"
+      ],
+      "type": "object"
+    },
+    "ref_A1CDB35AB1E06F52BC657251B3CE5D24E4BB47C5": {
+      "additionalProperties": false,
+      "properties": {
+        "block_size": {
+          "type": "integer"
+        },
+        "max_message_size": {
+          "type": "integer"
+        },
+        "noop_count_frequency": {
+          "type": "integer"
+        },
+        "noop_time_frequency": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "block_size",
+        "max_message_size"
+      ],
+      "type": "object"
+    },
+    "ref_A2947B956F3E5E98232D2E259F839D54F003296A": {
+      "additionalProperties": false,
+      "properties": {
+        "client": {
+          "$ref": "#/$defs/ref_D769054AE9A0D0DE975EFB7E5F0D0A754D0B8E51"
+        },
+        "client_connection_number": {
+          "type": "integer"
+        },
+        "client_id": {
+          "type": "string"
+        },
+        "reference_sequence_number": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "client_id",
+        "client"
+      ],
+      "type": "object"
+    },
+    "ref_A655E07C5371D9F456F78923687729222B9E2CF0": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "service": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "service",
+        "action",
+        "timestamp"
+      ],
+      "type": "object"
+    },
+    "ref_B1AE80BCD8E0452983053D9A1C4447B945BE1CA9": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "$ref": "#/$defs/ref_8BFF6809DBCA4B12D684D7BD6002CFE2D3FA5D24"
+        },
+        "client_type": {
+          "type": "string"
+        },
+        "device": {
+          "type": "string"
+        },
+        "environment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "capabilities"
+      ],
+      "type": "object"
+    },
+    "ref_D769054AE9A0D0DE975EFB7E5F0D0A754D0B8E51": {
+      "additionalProperties": false,
+      "properties": {
+        "details": {
+          "$ref": "#/$defs/ref_B1AE80BCD8E0452983053D9A1C4447B945BE1CA9"
+        },
+        "mode": {
+          "additionalProperties": false,
+          "properties": {
+            "enum": {
+              "enum": [
+                "write",
+                "read"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "enum"
+          ],
+          "type": "object"
+        },
+        "permission": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "scopes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "timestamp": {
+          "type": "integer"
+        },
+        "user": {
+          "$ref": "#/$defs/ref_343DAB01C6EB32A140302B06F664F3E792B04055"
+        }
+      },
+      "required": [
+        "mode",
+        "details",
+        "permission",
+        "user",
+        "scopes"
+      ],
+      "type": "object"
+    },
+    "ref_D8ECC9AC348C6B93773F8C59F802AE13073A5B56": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "minimum_sequence_number": {
+          "type": "integer"
+        },
+        "sequence_number": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "sequence_number",
+        "minimum_sequence_number"
+      ],
+      "type": "object"
+    },
+    "ref_F74940136EE2EAA51FC53F9C4F4B9F2DC7C9C4B2": {
+      "additionalProperties": false,
+      "properties": {
+        "client_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "client_sequence_number": {
+          "type": "integer"
+        },
+        "contents": {
+          "type": true
+        },
+        "data": {
+          "type": "string"
+        },
+        "message_type": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": true
+        },
+        "minimum_sequence_number": {
+          "type": "integer"
+        },
+        "origin": {
+          "$ref": "#/$defs/ref_D8ECC9AC348C6B93773F8C59F802AE13073A5B56"
+        },
+        "reference_sequence_number": {
+          "type": "integer"
+        },
+        "sequence_number": {
+          "type": "integer"
+        },
+        "server_metadata": {
+          "type": true
+        },
+        "timestamp": {
+          "type": "integer"
+        },
+        "traces": {
+          "items": {
+            "$ref": "#/$defs/ref_A655E07C5371D9F456F78923687729222B9E2CF0"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "sequence_number",
+        "minimum_sequence_number",
+        "client_sequence_number",
+        "reference_sequence_number",
+        "message_type",
+        "contents",
+        "timestamp"
+      ],
+      "type": "object"
+    },
+    "ref_F7882E6B23AD28EA6CBDAE83BB50464123B858D1": {
+      "additionalProperties": false,
+      "properties": {
+        "client_sequence_number": {
+          "type": "integer"
+        },
+        "compression": {
+          "type": "string"
+        },
+        "contents": {
+          "type": true
+        },
+        "message_type": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": true
+        },
+        "reference_sequence_number": {
+          "type": "integer"
+        },
+        "server_metadata": {
+          "type": true
+        },
+        "traces": {
+          "items": {
+            "$ref": "#/$defs/ref_A655E07C5371D9F456F78923687729222B9E2CF0"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "client_sequence_number",
+        "reference_sequence_number",
+        "message_type",
+        "contents"
+      ],
+      "type": "object"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "properties": {
+    "Client": {
+      "$ref": "#/$defs/Client"
+    },
+    "ClientCapabilities": {
+      "$ref": "#/$defs/ClientCapabilities"
+    },
+    "ClientDetails": {
+      "$ref": "#/$defs/ClientDetails"
+    },
+    "ConnectionMode": {
+      "$ref": "#/$defs/ConnectionMode"
+    },
+    "DocumentMessage": {
+      "$ref": "#/$defs/DocumentMessage"
+    },
+    "MessageOrigin": {
+      "$ref": "#/$defs/MessageOrigin"
+    },
+    "Scope": {
+      "$ref": "#/$defs/Scope"
+    },
+    "SequencedClient": {
+      "$ref": "#/$defs/SequencedClient"
+    },
+    "SequencedDocumentMessage": {
+      "$ref": "#/$defs/SequencedDocumentMessage"
+    },
+    "ServiceConfiguration": {
+      "$ref": "#/$defs/ServiceConfiguration"
+    },
+    "SignalClient": {
+      "$ref": "#/$defs/SignalClient"
+    },
+    "TokenClaims": {
+      "$ref": "#/$defs/TokenClaims"
+    },
+    "Trace": {
+      "$ref": "#/$defs/Trace"
+    },
+    "User": {
+      "$ref": "#/$defs/User"
+    }
+  },
+  "type": "object"
+}

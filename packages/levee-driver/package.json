@@ -27,6 +27,7 @@
 		"esm"
 	],
 	"scripts": {
+		"build:types": "json2ts schemas/protocol-schema.json -o src/generated/protocol-types.ts --bannerComment \"/* This file is auto-generated from Gleam protocol types. Do not edit manually. */\"",
 		"build:compile": "tsc --project ./tsconfig.json",
 		"check:format": "biome format .",
 		"clean": "rimraf esm _temp *.tsbuildinfo",
@@ -55,6 +56,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
+		"json-schema-to-typescript": "^15.0.4",
 		"@types/jsonwebtoken": "^9.0.7",
 		"@types/node": "^20.19.25",
 		"@types/phoenix": "^1.6.6",
