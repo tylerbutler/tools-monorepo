@@ -1,5 +1,5 @@
 /**
- * Document service factory for Phoenix/Levee server.
+ * Document service factory for Levee server.
  */
 
 import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
@@ -11,30 +11,30 @@ import type {
 import type { ISummaryTree } from "@fluidframework/protocol-definitions";
 import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
 
-import type { IPhoenixResolvedUrl } from "./contracts.js";
-import { PhoenixDocumentService } from "./phoenixDocumentService.js";
+import type { LeveeResolvedUrl } from "./contracts.js";
+import { LeveeDocumentService } from "./leveeDocumentService.js";
 import { RestWrapper } from "./restWrapper.js";
 
 /**
  * Protocol identifier for this document service factory.
  */
-const PHOENIX_PROTOCOL_NAME = "phoenix";
+const LEVEE_PROTOCOL_NAME = "levee";
 
 /**
- * Document service factory for Phoenix/Levee server.
+ * Document service factory for Levee server.
  *
  * @remarks
- * Creates document services that connect to a Phoenix-based Fluid server.
- * This is the main entry point for the Phoenix driver.
+ * Creates document services that connect to a Levee Fluid server.
+ * This is the main entry point for the Levee driver.
  *
  * @example
  * ```typescript
- * const tokenProvider = new InsecurePhoenixTokenProvider(
+ * const tokenProvider = new InsecureLeveeTokenProvider(
  *   "tenant-secret-key",
  *   { id: "user-123", name: "Test User" }
  * );
  *
- * const factory = new PhoenixDocumentServiceFactory(tokenProvider);
+ * const factory = new LeveeDocumentServiceFactory(tokenProvider);
  *
  * // Use with Fluid container loader
  * const loader = new Loader({
@@ -46,16 +46,16 @@ const PHOENIX_PROTOCOL_NAME = "phoenix";
  *
  * @public
  */
-export class PhoenixDocumentServiceFactory implements IDocumentServiceFactory {
+export class LeveeDocumentServiceFactory implements IDocumentServiceFactory {
 	/**
 	 * Protocol name for this factory.
 	 */
-	public readonly protocolName = PHOENIX_PROTOCOL_NAME;
+	public readonly protocolName = LEVEE_PROTOCOL_NAME;
 
 	private readonly tokenProvider: ITokenProvider;
 
 	/**
-	 * Creates a new PhoenixDocumentServiceFactory.
+	 * Creates a new LeveeDocumentServiceFactory.
 	 *
 	 * @param tokenProvider - Token provider for authentication
 	 */
@@ -76,7 +76,7 @@ export class PhoenixDocumentServiceFactory implements IDocumentServiceFactory {
 		_logger?: ITelemetryBaseLogger,
 		_clientIsSummarizer?: boolean,
 	): Promise<IDocumentService> {
-		return new PhoenixDocumentService(resolvedUrl, this.tokenProvider);
+		return new LeveeDocumentService(resolvedUrl, this.tokenProvider);
 	}
 
 	/**
@@ -99,35 +99,35 @@ export class PhoenixDocumentServiceFactory implements IDocumentServiceFactory {
 		_logger?: ITelemetryBaseLogger,
 		_clientIsSummarizer?: boolean,
 	): Promise<IDocumentService> {
-		const phoenixUrl = createNewResolvedUrl as IPhoenixResolvedUrl;
+		const leveeUrl = createNewResolvedUrl as LeveeResolvedUrl;
 
 		// Create the document on the server
 		const restWrapper = new RestWrapper(
-			phoenixUrl.httpUrl,
+			leveeUrl.httpUrl,
 			this.tokenProvider,
-			phoenixUrl.tenantId,
+			leveeUrl.tenantId,
 			"", // No document ID yet
 		);
 
 		const createResponse = await restWrapper.post<{ id: string }>(
-			`/documents/${phoenixUrl.tenantId}`,
+			`/documents/${leveeUrl.tenantId}`,
 			{
-				id: phoenixUrl.documentId || undefined, // Let server generate if not provided
+				id: leveeUrl.documentId || undefined, // Let server generate if not provided
 			},
 		);
 
 		// Update resolved URL with the document ID from server
-		const updatedUrl: IPhoenixResolvedUrl = {
-			...phoenixUrl,
+		const updatedUrl: LeveeResolvedUrl = {
+			...leveeUrl,
 			id: createResponse.id,
 			documentId: createResponse.id,
-			url: `${phoenixUrl.httpUrl}/${phoenixUrl.tenantId}/${createResponse.id}`,
+			url: `${leveeUrl.httpUrl}/${leveeUrl.tenantId}/${createResponse.id}`,
 			endpoints: {
-				deltaStorageUrl: `${phoenixUrl.httpUrl}/deltas/${phoenixUrl.tenantId}/${createResponse.id}`,
-				storageUrl: `${phoenixUrl.httpUrl}/repos/${phoenixUrl.tenantId}`,
+				deltaStorageUrl: `${leveeUrl.httpUrl}/deltas/${leveeUrl.tenantId}/${createResponse.id}`,
+				storageUrl: `${leveeUrl.httpUrl}/repos/${leveeUrl.tenantId}`,
 			},
 		};
 
-		return new PhoenixDocumentService(updatedUrl, this.tokenProvider);
+		return new LeveeDocumentService(updatedUrl, this.tokenProvider);
 	}
 }

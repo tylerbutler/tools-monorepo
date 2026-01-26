@@ -1,5 +1,5 @@
 /**
- * Document storage service for Phoenix/Levee server.
+ * Document storage service for Levee server.
  */
 
 import type {
@@ -16,12 +16,12 @@ import type {
 	SummaryType,
 } from "@fluidframework/protocol-definitions";
 
-import type { IDocumentVersion, IGitTree } from "./contracts.js";
-import { GitManager, type IGitCreateTreeEntry } from "./gitManager.js";
+import type { DocumentVersion, GitTree } from "./contracts.js";
+import { type GitCreateTreeEntry, GitManager } from "./gitManager.js";
 import type { RestWrapper } from "./restWrapper.js";
 
 /**
- * Document storage service implementation for Phoenix/Levee server.
+ * Document storage service implementation for Levee server.
  *
  * @remarks
  * Provides storage operations for snapshots, blobs, and summaries
@@ -29,7 +29,7 @@ import type { RestWrapper } from "./restWrapper.js";
  *
  * @internal
  */
-export class PhoenixDocumentStorageService implements IDocumentStorageService {
+export class LeveeStorageService implements IDocumentStorageService {
 	public readonly policies: IDocumentStorageServicePolicies = {
 		caching: undefined, // No special caching policy
 	};
@@ -40,7 +40,7 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 	private readonly tenantId: string;
 
 	/**
-	 * Creates a new PhoenixDocumentStorageService.
+	 * Creates a new LeveeStorageService.
 	 *
 	 * @param restWrapper - REST client for API requests
 	 * @param tenantId - The tenant ID
@@ -68,7 +68,7 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 		_versionId: string | null,
 		count: number,
 	): Promise<IVersion[]> {
-		const commits = await this.restWrapper.get<IDocumentVersion[]>(
+		const commits = await this.restWrapper.get<DocumentVersion[]>(
 			`/repos/${this.tenantId}/commits?sha=${this.documentId}&count=${count}`,
 		);
 
@@ -221,7 +221,7 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 	 * Converts a Git tree to a Fluid snapshot tree.
 	 */
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: tree conversion requires nested logic
-	private convertGitTreeToSnapshotTree(gitTree: IGitTree): ISnapshotTree {
+	private convertGitTreeToSnapshotTree(gitTree: GitTree): ISnapshotTree {
 		const snapshotTree: ISnapshotTree = {
 			blobs: {},
 			trees: {},
@@ -281,7 +281,7 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 		tree: ISummaryTree,
 		path = "",
 	): Promise<string> {
-		const entries: IGitCreateTreeEntry[] = [];
+		const entries: GitCreateTreeEntry[] = [];
 
 		for (const [key, value] of Object.entries(tree.tree)) {
 			const entryPath = path ? `${path}/${key}` : key;
@@ -353,7 +353,7 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 	/**
 	 * Converts a Git tree to a summary tree.
 	 */
-	private async convertTreeToSummary(tree: IGitTree): Promise<ISummaryTree> {
+	private async convertTreeToSummary(tree: GitTree): Promise<ISummaryTree> {
 		const summaryTree: ISummaryTree = {
 			type: 1, // SummaryType.Tree
 			tree: {},

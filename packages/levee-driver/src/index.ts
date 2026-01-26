@@ -1,51 +1,51 @@
 /**
- * Phoenix driver for Fluid Framework.
+ * Levee driver for Fluid Framework.
  *
  * @remarks
- * This driver enables Fluid Framework applications to connect to a Phoenix-based
- * Levee server using Phoenix Channels for real-time WebSocket communication.
+ * This driver enables Fluid Framework applications to connect to a Levee server
+ * using Phoenix Channels for real-time WebSocket communication.
  *
  * @packageDocumentation
  */
 
 // Types and interfaces
 export type {
+	ConnectedResponse,
+	DeltaStorageResponse,
 	DisconnectReason,
-	IConnectedResponse,
-	IDeltaStorageResponse,
-	IDocumentMessageInput,
-	IDocumentVersion,
-	IGitBlob,
-	IGitCommit,
-	IGitTree,
-	IGitTreeEntry,
-	INackResponse,
-	IPhoenixConfig,
-	IPhoenixResolvedUrl,
-	IPhoenixTokenClaims,
-	IPhoenixUser,
-	IServiceConfiguration,
+	DocumentMessageInput,
+	DocumentVersion,
+	GitBlob,
+	GitCommit,
+	GitTree,
+	GitTreeEntry,
+	LeveeConfig,
+	LeveeResolvedUrl,
+	LeveeTokenClaims,
+	LeveeUser,
+	NackResponse,
+	ServiceConfiguration,
 } from "./contracts.js";
 export { NackErrorType } from "./contracts.js";
 // Git storage manager
 export {
+	type GitCreateCommitRequest,
+	type GitCreateTreeEntry,
+	type GitCreateTreeRequest,
 	GitManager,
-	type IGitCreateCommitRequest,
-	type IGitCreateTreeEntry,
-	type IGitCreateTreeRequest,
 } from "./gitManager.js";
-export { PhoenixDocumentDeltaConnection } from "./phoenixDocumentDeltaConnection.js";
-export { PhoenixDocumentDeltaStorageService } from "./phoenixDocumentDeltaStorageService.js";
-export { PhoenixDocumentService } from "./phoenixDocumentService.js";
+export { LeveeDeltaConnection } from "./leveeDeltaConnection.js";
+export { LeveeDeltaStorageService } from "./leveeDeltaStorageService.js";
+export { LeveeDocumentService } from "./leveeDocumentService.js";
 // Core driver components
-export { PhoenixDocumentServiceFactory } from "./phoenixDocumentServiceFactory.js";
-export { PhoenixDocumentStorageService } from "./phoenixDocumentStorageService.js";
+export { LeveeDocumentServiceFactory } from "./leveeDocumentServiceFactory.js";
+export { LeveeStorageService } from "./leveeStorageService.js";
 // HTTP utilities
 export { RestError, RestWrapper } from "./restWrapper.js";
 // Token Providers
 export {
-	InsecurePhoenixTokenProvider,
-	RemotePhoenixTokenProvider,
+	InsecureLeveeTokenProvider,
+	RemoteLeveeTokenProvider,
 } from "./tokenProvider.js";
 // URL Resolver
-export { PhoenixUrlResolver } from "./urlResolver.js";
+export { LeveeUrlResolver } from "./urlResolver.js";

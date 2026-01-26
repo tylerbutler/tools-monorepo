@@ -1,5 +1,5 @@
 /**
- * Delta storage service for Phoenix/Levee server.
+ * Delta storage service for Levee server.
  */
 
 import type {
@@ -9,7 +9,7 @@ import type {
 } from "@fluidframework/driver-definitions/internal";
 import type { ISequencedDocumentMessage } from "@fluidframework/protocol-definitions";
 
-import type { IDeltaStorageResponse } from "./contracts.js";
+import type { DeltaStorageResponse } from "./contracts.js";
 import type { RestWrapper } from "./restWrapper.js";
 
 /**
@@ -26,14 +26,12 @@ const DEFAULT_BATCH_SIZE = 2000;
  *
  * @internal
  */
-export class PhoenixDocumentDeltaStorageService
-	implements IDocumentDeltaStorageService
-{
+export class LeveeDeltaStorageService implements IDocumentDeltaStorageService {
 	private readonly restWrapper: RestWrapper;
 	private readonly deltaStorageUrl: string;
 
 	/**
-	 * Creates a new PhoenixDocumentDeltaStorageService.
+	 * Creates a new LeveeDeltaStorageService.
 	 *
 	 * @param restWrapper - REST client for API requests
 	 * @param deltaStorageUrl - Base URL for delta storage (e.g., /deltas/tenantId/docId)
@@ -84,7 +82,7 @@ export class PhoenixDocumentDeltaStorageService
 
 				try {
 					const response =
-						await this.restWrapper.get<IDeltaStorageResponse>(url);
+						await this.restWrapper.get<DeltaStorageResponse>(url);
 
 					const messages = response.value ?? [];
 

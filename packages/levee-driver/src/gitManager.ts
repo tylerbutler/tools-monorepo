@@ -2,13 +2,13 @@
  * Git storage manager for blob, tree, and commit operations.
  */
 
-import type { IGitBlob, IGitCommit, IGitTree } from "./contracts.js";
+import type { GitBlob, GitCommit, GitTree } from "./contracts.js";
 import type { RestWrapper } from "./restWrapper.js";
 
 /**
  * Git tree entry for creating new trees.
  */
-export interface IGitCreateTreeEntry {
+export interface GitCreateTreeEntry {
 	path: string;
 	mode: string;
 	type: "blob" | "tree";
@@ -19,15 +19,15 @@ export interface IGitCreateTreeEntry {
 /**
  * Request for creating a new tree.
  */
-export interface IGitCreateTreeRequest {
-	tree: IGitCreateTreeEntry[];
+export interface GitCreateTreeRequest {
+	tree: GitCreateTreeEntry[];
 	base_tree?: string;
 }
 
 /**
  * Request for creating a new commit.
  */
-export interface IGitCreateCommitRequest {
+export interface GitCreateCommitRequest {
 	message: string;
 	tree: string;
 	parents: string[];
@@ -68,10 +68,8 @@ export class GitManager {
 	 * @param sha - The blob's SHA hash
 	 * @returns The blob content and metadata
 	 */
-	public async getBlob(sha: string): Promise<IGitBlob> {
-		return this.restWrapper.get<IGitBlob>(
-			`${this.storageUrl}/git/blobs/${sha}`,
-		);
+	public async getBlob(sha: string): Promise<GitBlob> {
+		return this.restWrapper.get<GitBlob>(`${this.storageUrl}/git/blobs/${sha}`);
 	}
 
 	/**
@@ -84,8 +82,8 @@ export class GitManager {
 	public async createBlob(
 		content: string,
 		encoding: "base64" | "utf-8" = "utf-8",
-	): Promise<IGitBlob> {
-		return this.restWrapper.post<IGitBlob>(`${this.storageUrl}/git/blobs`, {
+	): Promise<GitBlob> {
+		return this.restWrapper.post<GitBlob>(`${this.storageUrl}/git/blobs`, {
 			content,
 			encoding,
 		});
@@ -98,9 +96,9 @@ export class GitManager {
 	 * @param recursive - Whether to fetch tree entries recursively
 	 * @returns The tree structure
 	 */
-	public async getTree(sha: string, recursive = false): Promise<IGitTree> {
+	public async getTree(sha: string, recursive = false): Promise<GitTree> {
 		const recursiveParam = recursive ? "?recursive=1" : "";
-		return this.restWrapper.get<IGitTree>(
+		return this.restWrapper.get<GitTree>(
 			`${this.storageUrl}/git/trees/${sha}${recursiveParam}`,
 		);
 	}
@@ -111,8 +109,8 @@ export class GitManager {
 	 * @param request - The tree creation request
 	 * @returns The created tree metadata
 	 */
-	public async createTree(request: IGitCreateTreeRequest): Promise<IGitTree> {
-		return this.restWrapper.post<IGitTree>(
+	public async createTree(request: GitCreateTreeRequest): Promise<GitTree> {
+		return this.restWrapper.post<GitTree>(
 			`${this.storageUrl}/git/trees`,
 			request,
 		);
@@ -124,8 +122,8 @@ export class GitManager {
 	 * @param sha - The commit's SHA hash
 	 * @returns The commit metadata
 	 */
-	public async getCommit(sha: string): Promise<IGitCommit> {
-		return this.restWrapper.get<IGitCommit>(
+	public async getCommit(sha: string): Promise<GitCommit> {
+		return this.restWrapper.get<GitCommit>(
 			`${this.storageUrl}/git/commits/${sha}`,
 		);
 	}
@@ -137,9 +135,9 @@ export class GitManager {
 	 * @returns The created commit metadata
 	 */
 	public async createCommit(
-		request: IGitCreateCommitRequest,
-	): Promise<IGitCommit> {
-		return this.restWrapper.post<IGitCommit>(
+		request: GitCreateCommitRequest,
+	): Promise<GitCommit> {
+		return this.restWrapper.post<GitCommit>(
 			`${this.storageUrl}/git/commits`,
 			request,
 		);

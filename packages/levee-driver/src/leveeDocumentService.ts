@@ -1,5 +1,5 @@
 /**
- * Document service for Phoenix/Levee server.
+ * Document service for Levee server.
  */
 
 import type {
@@ -14,36 +14,36 @@ import type { IClient } from "@fluidframework/protocol-definitions";
 import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
 import { EventEmitterWithErrorHandling } from "@fluidframework/telemetry-utils/internal";
 
-import type { IPhoenixResolvedUrl } from "./contracts.js";
-import { PhoenixDocumentDeltaConnection } from "./phoenixDocumentDeltaConnection.js";
-import { PhoenixDocumentDeltaStorageService } from "./phoenixDocumentDeltaStorageService.js";
-import { PhoenixDocumentStorageService } from "./phoenixDocumentStorageService.js";
+import type { LeveeResolvedUrl } from "./contracts.js";
+import { LeveeDeltaConnection } from "./leveeDeltaConnection.js";
+import { LeveeDeltaStorageService } from "./leveeDeltaStorageService.js";
+import { LeveeStorageService } from "./leveeStorageService.js";
 import { RestWrapper } from "./restWrapper.js";
 
 /**
- * Document service implementation for Phoenix/Levee server.
+ * Document service implementation for Levee server.
  *
  * @remarks
  * Coordinates the storage service, delta storage service, and delta connection
- * for a single document. Created by PhoenixDocumentServiceFactory.
+ * for a single document. Created by LeveeDocumentServiceFactory.
  *
  * @public
  */
-export class PhoenixDocumentService
+export class LeveeDocumentService
 	extends EventEmitterWithErrorHandling<IDocumentServiceEvents>
 	implements IDocumentService
 {
 	/**
 	 * Resolved URL containing connection details.
 	 */
-	public readonly resolvedUrl: IPhoenixResolvedUrl;
+	public readonly resolvedUrl: LeveeResolvedUrl;
 
 	private readonly tokenProvider: ITokenProvider;
 	private readonly restWrapper: RestWrapper;
 	private _disposed = false;
 
 	/**
-	 * Creates a new PhoenixDocumentService.
+	 * Creates a new LeveeDocumentService.
 	 *
 	 * @param resolvedUrl - Resolved URL with connection details
 	 * @param tokenProvider - Token provider for authentication
@@ -54,7 +54,7 @@ export class PhoenixDocumentService
 			console.error(`Error in event ${String(eventName)}:`, error),
 		);
 
-		this.resolvedUrl = resolvedUrl as IPhoenixResolvedUrl;
+		this.resolvedUrl = resolvedUrl as LeveeResolvedUrl;
 		this.tokenProvider = tokenProvider;
 
 		this.restWrapper = new RestWrapper(
@@ -78,7 +78,7 @@ export class PhoenixDocumentService
 	 * @returns The storage service for blob and snapshot operations
 	 */
 	public async connectToStorage(): Promise<IDocumentStorageService> {
-		return new PhoenixDocumentStorageService(
+		return new LeveeStorageService(
 			this.restWrapper,
 			this.resolvedUrl.tenantId,
 			this.resolvedUrl.documentId,
@@ -91,7 +91,7 @@ export class PhoenixDocumentService
 	 * @returns The delta storage service for historical ops
 	 */
 	public async connectToDeltaStorage(): Promise<IDocumentDeltaStorageService> {
-		return new PhoenixDocumentDeltaStorageService(
+		return new LeveeDeltaStorageService(
 			this.restWrapper,
 			this.resolvedUrl.endpoints.deltaStorageUrl,
 		);
@@ -114,7 +114,7 @@ export class PhoenixDocumentService
 
 		const mode = client.mode === "read" ? "read" : "write";
 
-		return PhoenixDocumentDeltaConnection.create(
+		return LeveeDeltaConnection.create(
 			this.resolvedUrl.socketUrl,
 			this.resolvedUrl.tenantId,
 			this.resolvedUrl.documentId,

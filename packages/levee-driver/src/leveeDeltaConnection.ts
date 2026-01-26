@@ -21,7 +21,7 @@ import type {
 import { EventEmitterWithErrorHandling } from "@fluidframework/telemetry-utils/internal";
 import { type Channel, Socket } from "phoenix";
 
-import type { DisconnectReason, IConnectedResponse } from "./contracts.js";
+import type { ConnectedResponse, DisconnectReason } from "./contracts.js";
 
 /**
  * Timeout for channel join operations in milliseconds.
@@ -43,7 +43,7 @@ const SOCKET_CONNECT_TIMEOUT_MS = 10000;
  *
  * @public
  */
-export class PhoenixDocumentDeltaConnection
+export class LeveeDeltaConnection
 	extends EventEmitterWithErrorHandling<IDocumentDeltaConnectionEvents>
 	implements IDocumentDeltaConnection, IDisposable
 {
@@ -65,8 +65,8 @@ export class PhoenixDocumentDeltaConnection
 		token: string,
 		client: IClient,
 		mode: ConnectionMode = "write",
-	): Promise<PhoenixDocumentDeltaConnection> {
-		const connection = new PhoenixDocumentDeltaConnection(
+	): Promise<LeveeDeltaConnection> {
+		const connection = new LeveeDeltaConnection(
 			socketUrl,
 			tenantId,
 			documentId,
@@ -297,7 +297,7 @@ export class PhoenixDocumentDeltaConnection
 			versions: ["^0.4.0", "^0.3.0", "^0.2.0", "^0.1.0"],
 		};
 
-		const connectedResponse = await new Promise<IConnectedResponse>(
+		const connectedResponse = await new Promise<ConnectedResponse>(
 			(resolve, reject) => {
 				const timeout = setTimeout(() => {
 					reject(new Error("connect_document timeout"));
@@ -305,7 +305,7 @@ export class PhoenixDocumentDeltaConnection
 
 				channel
 					.push("connect_document", connectMessage)
-					.receive("ok", (response: IConnectedResponse) => {
+					.receive("ok", (response: ConnectedResponse) => {
 						clearTimeout(timeout);
 						resolve(response);
 					})

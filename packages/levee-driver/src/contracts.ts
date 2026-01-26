@@ -1,5 +1,5 @@
 /**
- * Contracts and interfaces for the Phoenix Fluid driver.
+ * Contracts and interfaces for the Levee Fluid driver.
  */
 
 import type {
@@ -13,9 +13,9 @@ import type {
 } from "@fluidframework/protocol-definitions";
 
 /**
- * Resolved URL format for Phoenix-based Levee server.
+ * Resolved URL format for Levee server.
  */
-export interface IPhoenixResolvedUrl extends IResolvedUrl {
+export interface LeveeResolvedUrl extends IResolvedUrl {
 	type: "fluid";
 
 	/**
@@ -65,13 +65,13 @@ export interface IPhoenixResolvedUrl extends IResolvedUrl {
 }
 
 /**
- * Token claims for Phoenix authentication.
+ * Token claims for Levee authentication.
  */
-export interface IPhoenixTokenClaims extends ITokenClaims {
+export interface LeveeTokenClaims extends ITokenClaims {
 	tenantId: string;
 	documentId: string;
 	scopes: string[];
-	user: IPhoenixUser;
+	user: LeveeUser;
 	iat: number;
 	exp: number;
 	ver: string;
@@ -80,7 +80,7 @@ export interface IPhoenixTokenClaims extends ITokenClaims {
 /**
  * User information for token generation.
  */
-export interface IPhoenixUser {
+export interface LeveeUser {
 	id: string;
 	name?: string;
 	email?: string;
@@ -88,9 +88,9 @@ export interface IPhoenixUser {
 }
 
 /**
- * Configuration for creating Phoenix driver components.
+ * Configuration for creating Levee driver components.
  */
-export interface IPhoenixConfig {
+export interface LeveeConfig {
 	/**
 	 * WebSocket URL for Phoenix socket.
 	 */
@@ -120,7 +120,7 @@ export interface IPhoenixConfig {
 /**
  * Response received on successful document connection.
  */
-export interface IConnectedResponse {
+export interface ConnectedResponse {
 	clientId: string;
 	existing: boolean;
 	maxMessageSize: number;
@@ -129,8 +129,8 @@ export interface IConnectedResponse {
 	initialMessages: ISequencedDocumentMessage[];
 	initialSignals: ISignalMessage[];
 	initialClients: ISignalClient[];
-	serviceConfiguration: IServiceConfiguration;
-	claims: IPhoenixTokenClaims;
+	serviceConfiguration: ServiceConfiguration;
+	claims: LeveeTokenClaims;
 	mode: "write" | "read";
 	epoch?: string;
 	supportedVersions?: string[];
@@ -139,7 +139,7 @@ export interface IConnectedResponse {
 /**
  * Service configuration from server.
  */
-export interface IServiceConfiguration {
+export interface ServiceConfiguration {
 	blockSize: number;
 	maxMessageSize: number;
 	summary?: {
@@ -153,7 +153,7 @@ export interface IServiceConfiguration {
 /**
  * Document message input format for submission.
  */
-export interface IDocumentMessageInput {
+export interface DocumentMessageInput {
 	type: string;
 	contents: unknown;
 	clientSequenceNumber: number;
@@ -165,7 +165,7 @@ export interface IDocumentMessageInput {
 /**
  * Nack (negative acknowledgment) response.
  */
-export interface INackResponse {
+export interface NackResponse {
 	operation: unknown;
 	sequenceNumber: number;
 	content: {
@@ -191,7 +191,7 @@ export enum NackErrorType {
 /**
  * Git blob reference.
  */
-export interface IGitBlob {
+export interface GitBlob {
 	content: string;
 	encoding: "base64" | "utf-8";
 	sha: string;
@@ -202,7 +202,7 @@ export interface IGitBlob {
 /**
  * Git tree entry.
  */
-export interface IGitTreeEntry {
+export interface GitTreeEntry {
 	mode: string;
 	path: string;
 	sha: string;
@@ -214,16 +214,16 @@ export interface IGitTreeEntry {
 /**
  * Git tree structure.
  */
-export interface IGitTree {
+export interface GitTree {
 	sha: string;
-	tree: IGitTreeEntry[];
+	tree: GitTreeEntry[];
 	url: string;
 }
 
 /**
  * Git commit information.
  */
-export interface IGitCommit {
+export interface GitCommit {
 	sha: string;
 	url: string;
 	author: {
@@ -250,7 +250,7 @@ export interface IGitCommit {
 /**
  * Document version information.
  */
-export interface IDocumentVersion {
+export interface DocumentVersion {
 	id: string;
 	treeId: string;
 	date?: string;
@@ -259,7 +259,7 @@ export interface IDocumentVersion {
 /**
  * Delta storage response format.
  */
-export interface IDeltaStorageResponse {
+export interface DeltaStorageResponse {
 	value: ISequencedDocumentMessage[];
 }
 

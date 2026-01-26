@@ -1,5 +1,5 @@
 /**
- * URL resolver for Phoenix-based Levee server.
+ * URL resolver for Levee server.
  */
 
 import type { IRequest } from "@fluidframework/core-interfaces";
@@ -8,7 +8,7 @@ import type {
 	IUrlResolver,
 } from "@fluidframework/driver-definitions/internal";
 
-import type { IPhoenixResolvedUrl } from "./contracts.js";
+import type { LeveeResolvedUrl } from "./contracts.js";
 
 /**
  * Default tenant ID used when none is specified.
@@ -26,7 +26,7 @@ const TRAILING_SLASH_REGEX = /\/$/;
 const PROTOCOL_REGEX = /^(levee|phoenix):/;
 
 /**
- * URL resolver for connecting to a Phoenix-based Levee server.
+ * URL resolver for connecting to a Levee server.
  *
  * @remarks
  * This resolver handles URLs in the following formats:
@@ -36,13 +36,13 @@ const PROTOCOL_REGEX = /^(levee|phoenix):/;
  *
  * @public
  */
-export class PhoenixUrlResolver implements IUrlResolver {
+export class LeveeUrlResolver implements IUrlResolver {
 	private readonly socketUrl: string;
 	private readonly httpUrl: string;
 	private readonly defaultTenantId: string;
 
 	/**
-	 * Creates a new PhoenixUrlResolver.
+	 * Creates a new LeveeUrlResolver.
 	 *
 	 * @param socketUrl - WebSocket URL for Phoenix socket (e.g., ws://localhost:4000/socket)
 	 * @param httpUrl - HTTP base URL for REST API (e.g., http://localhost:4000)
@@ -62,7 +62,7 @@ export class PhoenixUrlResolver implements IUrlResolver {
 	}
 
 	/**
-	 * Resolves a Fluid request URL to a Phoenix resolved URL.
+	 * Resolves a Fluid request URL to a Levee resolved URL.
 	 *
 	 * @param request - The request containing the URL to resolve
 	 * @returns The resolved URL with all connection information
@@ -70,7 +70,7 @@ export class PhoenixUrlResolver implements IUrlResolver {
 	public async resolve(request: IRequest): Promise<IResolvedUrl> {
 		const { tenantId, documentId } = this.parseUrl(request.url);
 
-		const resolvedUrl: IPhoenixResolvedUrl = {
+		const resolvedUrl: LeveeResolvedUrl = {
 			type: "fluid",
 			id: documentId,
 			url: `${this.httpUrl}/${tenantId}/${documentId}`,
@@ -99,13 +99,13 @@ export class PhoenixUrlResolver implements IUrlResolver {
 		resolvedUrl: IResolvedUrl,
 		relativeUrl: string,
 	): Promise<string> {
-		const phoenixUrl = resolvedUrl as IPhoenixResolvedUrl;
+		const leveeUrl = resolvedUrl as LeveeResolvedUrl;
 
 		if (relativeUrl) {
-			return `${phoenixUrl.url}/${relativeUrl}`;
+			return `${leveeUrl.url}/${relativeUrl}`;
 		}
 
-		return phoenixUrl.url;
+		return leveeUrl.url;
 	}
 
 	/**

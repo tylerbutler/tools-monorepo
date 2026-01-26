@@ -1,5 +1,5 @@
 /**
- * Token provider implementations for Phoenix driver authentication.
+ * Token provider implementations for Levee driver authentication.
  */
 
 import type {
@@ -9,7 +9,7 @@ import type {
 import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
 
-import type { IPhoenixUser } from "./contracts.js";
+import type { LeveeUser } from "./contracts.js";
 
 /**
  * Insecure token provider for development and testing.
@@ -21,19 +21,19 @@ import type { IPhoenixUser } from "./contracts.js";
  *
  * @public
  */
-export class InsecurePhoenixTokenProvider implements ITokenProvider {
+export class InsecureLeveeTokenProvider implements ITokenProvider {
 	private readonly key: string;
-	private readonly user: IPhoenixUser;
+	private readonly user: LeveeUser;
 	private readonly tenantId: string;
 
 	/**
-	 * Creates a new InsecurePhoenixTokenProvider.
+	 * Creates a new InsecureLeveeTokenProvider.
 	 *
 	 * @param key - The shared secret key for signing tokens
 	 * @param user - User information to include in the token
 	 * @param tenantId - The tenant ID (defaults to "fluid")
 	 */
-	public constructor(key: string, user: IPhoenixUser, tenantId = "fluid") {
+	public constructor(key: string, user: LeveeUser, tenantId = "fluid") {
 		this.key = key;
 		this.user = user;
 		this.tenantId = tenantId;
@@ -78,7 +78,7 @@ export class InsecurePhoenixTokenProvider implements ITokenProvider {
 	/**
 	 * Gets the current user associated with this token provider.
 	 */
-	public get currentUser(): IPhoenixUser {
+	public get currentUser(): LeveeUser {
 		return this.user;
 	}
 
@@ -115,18 +115,18 @@ export class InsecurePhoenixTokenProvider implements ITokenProvider {
  *
  * @public
  */
-export class RemotePhoenixTokenProvider implements ITokenProvider {
+export class RemoteLeveeTokenProvider implements ITokenProvider {
 	private readonly tokenEndpoint: string;
-	private readonly user: IPhoenixUser;
+	private readonly user: LeveeUser;
 	private cachedTokens: Map<string, { token: string; expiresAt: number }>;
 
 	/**
-	 * Creates a new RemotePhoenixTokenProvider.
+	 * Creates a new RemoteLeveeTokenProvider.
 	 *
 	 * @param tokenEndpoint - The URL endpoint for fetching tokens
 	 * @param user - User information to send with token requests
 	 */
-	public constructor(tokenEndpoint: string, user: IPhoenixUser) {
+	public constructor(tokenEndpoint: string, user: LeveeUser) {
 		this.tokenEndpoint = tokenEndpoint;
 		this.user = user;
 		this.cachedTokens = new Map();
@@ -157,7 +157,7 @@ export class RemotePhoenixTokenProvider implements ITokenProvider {
 	/**
 	 * Gets the current user associated with this token provider.
 	 */
-	public get currentUser(): IPhoenixUser {
+	public get currentUser(): LeveeUser {
 		return this.user;
 	}
 

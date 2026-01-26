@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
-import type { IPhoenixUser } from "../src/contracts.js";
-import { InsecurePhoenixTokenProvider } from "../src/tokenProvider.js";
+import type { LeveeUser } from "../src/contracts.js";
+import { InsecureLeveeTokenProvider } from "../src/tokenProvider.js";
 
-describe("InsecurePhoenixTokenProvider", () => {
+describe("InsecureLeveeTokenProvider", () => {
 	const testKey = "test-secret-key";
-	const testUser: IPhoenixUser = {
+	const testUser: LeveeUser = {
 		id: "user-123",
 		name: "Test User",
 		email: "test@example.com",
@@ -13,18 +13,18 @@ describe("InsecurePhoenixTokenProvider", () => {
 
 	describe("constructor", () => {
 		it("creates provider with user and key", () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			expect(provider.currentUser).toEqual(testUser);
 		});
 
 		it("uses default tenant ID when not specified", () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			// Default is "fluid"
 			expect(provider.currentUser.id).toBe("user-123");
 		});
 
 		it("accepts custom tenant ID", () => {
-			const provider = new InsecurePhoenixTokenProvider(
+			const provider = new InsecureLeveeTokenProvider(
 				testKey,
 				testUser,
 				"custom-tenant",
@@ -35,7 +35,7 @@ describe("InsecurePhoenixTokenProvider", () => {
 
 	describe("fetchOrdererToken", () => {
 		it("returns valid JWT token", async () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchOrdererToken("tenant1", "doc1");
 
 			expect(response.jwt).toBeDefined();
@@ -43,7 +43,7 @@ describe("InsecurePhoenixTokenProvider", () => {
 		});
 
 		it("generates token with correct claims", async () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchOrdererToken("tenant1", "doc1");
 
 			const decoded = jwt.verify(response.jwt, testKey) as Record<
@@ -60,7 +60,7 @@ describe("InsecurePhoenixTokenProvider", () => {
 		});
 
 		it("generates token with expiration", async () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchOrdererToken("tenant1", "doc1");
 
 			const decoded = jwt.verify(response.jwt, testKey) as Record<
@@ -74,7 +74,7 @@ describe("InsecurePhoenixTokenProvider", () => {
 		});
 
 		it("handles empty document ID", async () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchOrdererToken("tenant1");
 
 			const decoded = jwt.verify(response.jwt, testKey) as Record<
@@ -88,7 +88,7 @@ describe("InsecurePhoenixTokenProvider", () => {
 
 	describe("fetchStorageToken", () => {
 		it("returns valid JWT token", async () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchStorageToken("tenant1", "doc1");
 
 			expect(response.jwt).toBeDefined();
@@ -96,7 +96,7 @@ describe("InsecurePhoenixTokenProvider", () => {
 		});
 
 		it("generates token with correct claims", async () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchStorageToken("tenant1", "doc1");
 
 			const decoded = jwt.verify(response.jwt, testKey) as Record<
@@ -111,12 +111,12 @@ describe("InsecurePhoenixTokenProvider", () => {
 
 	describe("currentUser", () => {
 		it("returns the user passed to constructor", () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			expect(provider.currentUser).toBe(testUser);
 		});
 
 		it("includes all user properties", () => {
-			const userWithDetails: IPhoenixUser = {
+			const userWithDetails: LeveeUser = {
 				id: "user-456",
 				name: "Detailed User",
 				email: "detailed@example.com",
@@ -126,17 +126,14 @@ describe("InsecurePhoenixTokenProvider", () => {
 				},
 			};
 
-			const provider = new InsecurePhoenixTokenProvider(
-				testKey,
-				userWithDetails,
-			);
+			const provider = new InsecureLeveeTokenProvider(testKey, userWithDetails);
 			expect(provider.currentUser).toEqual(userWithDetails);
 		});
 	});
 
 	describe("token uniqueness", () => {
 		it("generates different JTI for each token", async () => {
-			const provider = new InsecurePhoenixTokenProvider(testKey, testUser);
+			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 
 			const response1 = await provider.fetchOrdererToken("tenant1", "doc1");
 			const response2 = await provider.fetchOrdererToken("tenant1", "doc1");

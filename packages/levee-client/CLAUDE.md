@@ -129,25 +129,25 @@ For Phoenix Channels driver support, install the separate `@tylerbu/levee-driver
 
 ```typescript
 import {
-  PhoenixDocumentServiceFactory,
-  PhoenixUrlResolver,
-  InsecurePhoenixTokenProvider,
+  LeveeDocumentServiceFactory,
+  LeveeUrlResolver,
+  InsecureLeveeTokenProvider,
 } from "@tylerbu/levee-driver";
 
 // Create token provider (for dev/test only)
-const tokenProvider = new InsecurePhoenixTokenProvider(
+const tokenProvider = new InsecureLeveeTokenProvider(
   "tenant-secret-key",
   { id: "user-123", name: "Test User" }
 );
 
 // Create URL resolver
-const urlResolver = new PhoenixUrlResolver(
+const urlResolver = new LeveeUrlResolver(
   "ws://localhost:4000/socket",  // Phoenix WebSocket URL
   "http://localhost:4000"         // HTTP API URL
 );
 
 // Create document service factory
-const serviceFactory = new PhoenixDocumentServiceFactory(tokenProvider);
+const serviceFactory = new LeveeDocumentServiceFactory(tokenProvider);
 ```
 
 ## Testing Strategy
