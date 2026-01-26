@@ -10,10 +10,8 @@ import {
 } from "@fluidframework/container-loader/internal";
 import type {
 	ConfigTypes,
-	FluidObject,
 	ITelemetryBaseLogger,
 } from "@fluidframework/core-interfaces";
-import { assert } from "@fluidframework/core-utils/internal";
 import type { IClient, IUser } from "@fluidframework/driver-definitions";
 import type { IDocumentServiceFactory } from "@fluidframework/driver-definitions/internal";
 import type {
@@ -25,7 +23,6 @@ import {
 	createDOProviderContainerRuntimeFactory,
 	createFluidContainer,
 	createServiceAudience,
-	type IRootDataObject,
 } from "@fluidframework/fluid-static/internal";
 import { wrapConfigProviderWithDefaults } from "@fluidframework/telemetry-utils/internal";
 import {
@@ -123,8 +120,6 @@ export class LeveeClient {
 			},
 		});
 
-		const rootDataObject = await this.getContainerEntryPoint(container);
-
 		/**
 		 * See {@link FluidContainer.attach}
 		 */
@@ -142,9 +137,8 @@ export class LeveeClient {
 			return container.resolvedUrl.id;
 		};
 
-		const fluidContainer = createFluidContainer<TContainerSchema>({
+		const fluidContainer = await createFluidContainer<TContainerSchema>({
 			container,
-			rootDataObject,
 		});
 		fluidContainer.attach = attach;
 
@@ -172,10 +166,8 @@ export class LeveeClient {
 			...loaderProps,
 			request: { url: id },
 		});
-		const rootDataObject = await this.getContainerEntryPoint(container);
-		const fluidContainer = createFluidContainer<TContainerSchema>({
+		const fluidContainer = await createFluidContainer<TContainerSchema>({
 			container,
-			rootDataObject,
 		});
 		const services = this.getContainerServices(container);
 		return { container: fluidContainer, services };
@@ -238,16 +230,5 @@ export class LeveeClient {
 		return loaderProps;
 	}
 
-	private async getContainerEntryPoint(
-		container: IContainer,
-	): Promise<IRootDataObject> {
-		const rootDataObject: FluidObject<IRootDataObject> =
-			await container.getEntryPoint();
-		assert(
-			rootDataObject.IRootDataObject !== undefined,
-			0x8_75 /* entryPoint must be of type IRootDataObject */,
-		);
-		return rootDataObject.IRootDataObject;
-	}
 	// #endregion
 }
