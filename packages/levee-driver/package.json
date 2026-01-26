@@ -43,10 +43,10 @@
 	},
 	"dependencies": {
 		"@fluidframework/core-interfaces": "~2.33.2",
-		"@fluidframework/driver-definitions": "~2.33.2",
+		"@fluidframework/driver-definitions": "~2.81.0",
 		"@fluidframework/protocol-definitions": "~4.0.0",
 		"@fluidframework/routerlicious-driver": "~2.33.2",
-		"@fluidframework/telemetry-utils": "~2.33.2",
+		"@fluidframework/telemetry-utils": "~2.81.0",
 		"jsonwebtoken": "^9.0.2",
 		"phoenix": "^1.7.14",
 		"uuid": "^11.0.5"

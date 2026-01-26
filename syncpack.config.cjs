@@ -2,7 +2,16 @@
 
 /** @type {import("syncpack").RcFile} */
 const config = {
-	lintFormatting: false,
+	dependencyGroups: [
+		{
+			aliasName: "fluidframework",
+			dependencies: [
+				"@fluidframework/**",
+				"!@fluidframework/protocol-definitions",
+				"fluid-framework",
+			],
+		},
+	],
 	customTypes: {
 		engines: {
 			path: "engines",
@@ -13,15 +22,6 @@ const config = {
 			strategy: "name@version",
 		},
 	},
-	dependencyTypes: [
-		"dev",
-		"engines",
-		// Disabled for now because it removes the sha from the field.
-		// "packageManager",
-		// Disabled because of interactions with changeset versioning.
-		// "peer",
-		"prod",
-	],
 	versionGroups: [
 		{
 			label: "Use workspace protocol for workspace dependencies",
@@ -45,20 +45,31 @@ const config = {
 			packages: ["**"],
 		},
 		{
-			label: "Prefer lowest version when there's a mismatch",
+			label: "Ensure all Fluid Framework packages use consistent versions",
+			dependencies: ["fluidframework"],
+			packages: ["**"],
+			preferVersion: "highestSemver",
+		},
+		{
+			label: "Prefer highest semver when there's a mismatch",
 			dependencies: ["**"],
 			packages: ["**"],
 			preferVersion: "highestSemver",
 		},
 	],
 	semverGroups: [
-		// Disabled for now because it removes the sha from the field.
-		// {
-		// 	label: "Use exact ranges for packageManager field",
-		// 	range: "",
-		// 	dependencyTypes: ["packageManager"],
-		// 	packages: ["**"],
-		// },
+		{
+			label: "Ignore packageManager field",
+			isIgnored: true,
+			dependencyTypes: ["packageManager"],
+			packages: ["**"],
+		},
+		{
+			label: "Ignore pnpm overrides",
+			isIgnored: true,
+			dependencyTypes: ["pnpmOverrides"],
+			packages: ["**"],
+		},
 		{
 			label: "Ignore GitHub URL dependencies",
 			isIgnored: true,
@@ -68,7 +79,13 @@ const config = {
 		{
 			label: "Use exact ranges for these deps",
 			range: "",
-			dependencies: ["@biomejs/biome", "nx", "sort-package-json"],
+			dependencies: [
+				"@biomejs/biome",
+				"@typescript/native-preview",
+				"nx",
+				"sort-package-json",
+				"syncpack",
+			],
 			packages: ["**"],
 		},
 		{
@@ -88,9 +105,9 @@ const config = {
 			label: "Use tilde range for Fluid Framework packages",
 			range: "~",
 			dependencies: [
-				"@fluidframework/**",
+				"fluidframework",
+				"@fluidframework/protocol-definitions",
 				"@fluid-tools/**",
-				"fluid-framework",
 			],
 			packages: ["**"],
 		},

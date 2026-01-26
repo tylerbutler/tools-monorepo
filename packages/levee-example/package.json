@@ -31,17 +31,17 @@
 		"test:vitest": "vitest run test/unit"
 	},
 	"dependencies": {
-		"@fluidframework/aqueduct": "~2.42.0",
+		"@fluidframework/aqueduct": "~2.81.0",
 		"@fluidframework/container-definitions": "~2.33.2",
 		"@fluidframework/container-loader": "~2.33.2",
-		"@fluidframework/container-runtime": "~2.42.0",
-		"@fluidframework/container-runtime-definitions": "~2.42.0",
+		"@fluidframework/container-runtime": "~2.81.0",
+		"@fluidframework/container-runtime-definitions": "~2.81.0",
 		"@fluidframework/core-interfaces": "~2.33.2",
 		"@fluidframework/datastore-definitions": "~2.33.2",
-		"@fluidframework/driver-definitions": "~2.33.2",
-		"@fluidframework/map": "~2.33.2",
+		"@fluidframework/driver-definitions": "~2.81.0",
+		"@fluidframework/map": "~2.81.0",
 		"@fluidframework/runtime-definitions": "~2.33.2",
-		"@fluidframework/runtime-utils": "~2.33.2",
+		"@fluidframework/runtime-utils": "~2.81.0",
 		"@tylerbu/levee-driver": "workspace:^",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1"
