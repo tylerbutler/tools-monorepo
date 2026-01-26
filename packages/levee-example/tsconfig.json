@@ -1,0 +1,13 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "../../config/tsconfig.strict.json",
+	"include": ["src/**/*"],
+	"compilerOptions": {
+		"rootDir": "./src",
+		"outDir": "./esm",
+		"jsx": "react-jsx",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"exactOptionalPropertyTypes": false,
+		"noPropertyAccessFromIndexSignature": false,
+	},
+}

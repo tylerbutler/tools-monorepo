@@ -1,0 +1,77 @@
+{
+	"name": "@tylerbu/levee-example",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Fluid Framework DiceRoller example using Levee driver",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/levee-example"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:vite": "vite build",
+		"check:format": "biome format .",
+		"clean": "rimraf esm dist _temp *.tsbuildinfo",
+		"dev": "vite",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --write",
+		"preview": "vite preview",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:coverage": "vitest run --coverage test/unit",
+		"test:integration": "vitest run test/integration",
+		"test:integration:down": "cd ../levee-driver && docker compose down -v",
+		"test:integration:logs": "cd ../levee-driver && docker compose logs -f levee",
+		"test:integration:up": "cd ../levee-driver && docker compose up -d --wait",
+		"test:vitest": "vitest run test/unit"
+	},
+	"dependencies": {
+		"@fluidframework/aqueduct": "~2.33.2",
+		"@fluidframework/container-definitions": "~2.33.2",
+		"@fluidframework/container-loader": "~2.33.2",
+		"@fluidframework/container-runtime": "~2.33.2",
+		"@fluidframework/container-runtime-definitions": "~2.33.2",
+		"@fluidframework/core-interfaces": "~2.33.2",
+		"@fluidframework/datastore-definitions": "~2.33.2",
+		"@fluidframework/driver-definitions": "~2.33.2",
+		"@fluidframework/map": "~2.33.2",
+		"@fluidframework/runtime-definitions": "~2.33.2",
+		"@fluidframework/runtime-utils": "~2.33.2",
+		"@tylerbu/levee-driver": "workspace:^",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@types/node": "^20.19.25",
+		"@types/react": "^18.3.12",
+		"@types/react-dom": "^18.3.1",
+		"@vitejs/plugin-react": "^4.3.4",
+		"@vitest/coverage-v8": "^4.0.17",
+		"rimraf": "^6.1.2",
+		"typescript": "~5.9.3",
+		"vite": "^6.0.0",
+		"vitest": "^4.0.17"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"dependsOn": [
+					"^build",
+					"build:compile",
+					"build:vite"
+				]
+			},
+			"test": {},
+			"ci": {}
+		}
+	}
+}

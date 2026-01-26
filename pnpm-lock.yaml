@@ -1009,6 +1009,82 @@ importers:
         specifier: ^4.0.17
         version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
+  packages/levee-example:
+    dependencies:
+      '@fluidframework/aqueduct':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/container-definitions':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/container-loader':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/container-runtime':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/container-runtime-definitions':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/core-interfaces':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/datastore-definitions':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/driver-definitions':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/map':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/runtime-definitions':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/runtime-utils':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@tylerbu/levee-driver':
+        specifier: workspace:^
+        version: link:../levee-driver
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 2.3.8
+        version: 2.3.8
+      '@types/node':
+        specifier: ^20.19.25
+        version: 20.19.25
+      '@types/react':
+        specifier: ^18.3.12
+        version: 18.3.27
+      '@types/react-dom':
+        specifier: ^18.3.1
+        version: 18.3.7(@types/react@18.3.27)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.7.0(vite@6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+      '@vitest/coverage-v8':
+        specifier: ^4.0.17
+        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+      rimraf:
+        specifier: ^6.1.2
+        version: 6.1.2
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^6.0.0
+        version: 6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vitest:
+        specifier: ^4.0.17
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+
   packages/lilconfig-loader-ts:
     dependencies:
       jiti:
@@ -2345,6 +2421,18 @@ packages:
 
   '@babel/plugin-transform-property-literals@7.27.1':
     resolution: {integrity: sha512-oThy3BCuCha8kDZ8ZkgOg2exvPYUlprMukKQXI1r1pJ47NCvxfkEy8vK+r/hT9nF0Aa4H1WUPZZjHTFtAhGfmQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+
+  '@babel/plugin-transform-react-jsx-self@7.27.1':
+    resolution: {integrity: sha512-6UzkCs+ejGdZ5mFFC/OCUrv028ab2fp1znZmCZjAOBKiBK2jXD1O+BPSfX8X2qjJ75fZBMSnQn3Rq2mrBJK2mw==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+
+  '@babel/plugin-transform-react-jsx-source@7.27.1':
+    resolution: {integrity: sha512-zbwoTsBruTeKB9hSq73ha66iFeJHuaFkUbwvqElnygoNbj/jHRsSeokowZFN3CZ64IvEqcmmkVe89OPXc7ldAw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -4654,6 +4742,9 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  '@rolldown/pluginutils@1.0.0-beta.27':
+    resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
+
   '@rollup/pluginutils@5.3.0':
     resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
     engines: {node: '>=14.0.0'}
@@ -5145,6 +5236,18 @@ packages:
   '@types/async@3.2.25':
     resolution: {integrity: sha512-O6Th/DI18XjrL9TX8LO9F/g26qAz5vynmQqlXt/qLGrskvzCKXKc5/tATz3G2N6lM8eOf3M8/StB14FncAmocg==}
 
+  '@types/babel__core@7.20.5':
+    resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
+
+  '@types/babel__generator@7.27.0':
+    resolution: {integrity: sha512-ufFd2Xi92OAVPYsy+P4n7/U7e68fex0+Ee8gSG9KX7eo084CWiQ4sdxktvdl0bOPupXtVJPY19zk6EwWqUQ8lg==}
+
+  '@types/babel__template@7.4.4':
+    resolution: {integrity: sha512-h/NUaSyG5EyxBIp8YRxo4RMe2/qQgvyowRwVMzhYhBCONbW8PUsg4lkFMrhgZhUe5z3L3MiLDuvyJ/CaPa2A8A==}
+
+  '@types/babel__traverse@7.28.0':
+    resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
+
   '@types/braces@3.0.5':
     resolution: {integrity: sha512-SQFof9H+LXeWNz8wDe7oN5zu7ket0qwMu5vZubW4GCJ8Kkeh6nBWUz87+KTz/G3Kqsrp0j/W253XJb3KMEeg3w==}
 
@@ -5301,6 +5404,11 @@ packages:
   '@types/prop-types@15.7.15':
     resolution: {integrity: sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==}
 
+  '@types/react-dom@18.3.7':
+    resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
+    peerDependencies:
+      '@types/react': ^18.0.0
+
   '@types/react@18.3.27':
     resolution: {integrity: sha512-cisd7gxkzjBKU2GgdYrTdtQx1SORymWyaAFhaxQPK9bYO9ot3Y5OikQRvY0VYQtvwjeQnizCINJAenh/V7MK2w==}
 
@@ -5432,6 +5540,12 @@ packages:
     resolution: {integrity: sha512-wE6eAGSXScra60N2l6jWvNtVK0m+sh873CpfZW4KI2v8EHuUQp+mSEi4T+IcdPCSEDgCdAS/7bizbhQlkjzrSA==}
     engines: {node: '>=18'}
     hasBin: true
+
+  '@vitejs/plugin-react@4.7.0':
+    resolution: {integrity: sha512-gUu9hwfWvvEDBBmgtAowQCojwZmJ5mcLn3aufeCsitijs3+f2NsrPtlAWIR6OPiqljl96GVCUbLe0HyqIpVaoA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
 
   '@vitest/coverage-v8@4.0.17':
     resolution: {integrity: sha512-/6zU2FLGg0jsd+ePZcwHRy3+WpNTBBhDY56P4JTRqUN/Dp6CvOEa9HrikcQ4KfV2b2kAHUFB4dl1SuocWXSFEw==}
@@ -10344,6 +10458,11 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
+  react-dom@18.3.1:
+    resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
+    peerDependencies:
+      react: ^18.3.1
+
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
@@ -10355,6 +10474,10 @@ packages:
     engines: {node: '>=0.10.0'}
     peerDependencies:
       react: ^18.3.1
+
+  react-refresh@0.17.0:
+    resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
+    engines: {node: '>=0.10.0'}
 
   react@18.3.1:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
@@ -13379,6 +13502,16 @@ snapshots:
       - supports-color
 
   '@babel/plugin-transform-property-literals@7.27.1(@babel/core@7.28.5)':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/helper-plugin-utils': 7.27.1
+
+  '@babel/plugin-transform-react-jsx-self@7.27.1(@babel/core@7.28.5)':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/helper-plugin-utils': 7.27.1
+
+  '@babel/plugin-transform-react-jsx-source@7.27.1(@babel/core@7.28.5)':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/helper-plugin-utils': 7.27.1
@@ -17061,6 +17194,8 @@ snapshots:
       - react-native-b4a
       - supports-color
 
+  '@rolldown/pluginutils@1.0.0-beta.27': {}
+
   '@rollup/pluginutils@5.3.0(rollup@4.54.0)':
     dependencies:
       '@types/estree': 1.0.8
@@ -17530,6 +17665,27 @@ snapshots:
 
   '@types/async@3.2.25': {}
 
+  '@types/babel__core@7.20.5':
+    dependencies:
+      '@babel/parser': 7.28.5
+      '@babel/types': 7.28.5
+      '@types/babel__generator': 7.27.0
+      '@types/babel__template': 7.4.4
+      '@types/babel__traverse': 7.28.0
+
+  '@types/babel__generator@7.27.0':
+    dependencies:
+      '@babel/types': 7.28.5
+
+  '@types/babel__template@7.4.4':
+    dependencies:
+      '@babel/parser': 7.28.5
+      '@babel/types': 7.28.5
+
+  '@types/babel__traverse@7.28.0':
+    dependencies:
+      '@babel/types': 7.28.5
+
   '@types/braces@3.0.5': {}
 
   '@types/chai@5.2.3':
@@ -17687,6 +17843,10 @@ snapshots:
 
   '@types/prop-types@15.7.15': {}
 
+  '@types/react-dom@18.3.7(@types/react@18.3.27)':
+    dependencies:
+      '@types/react': 18.3.27
+
   '@types/react@18.3.27':
     dependencies:
       '@types/prop-types': 15.7.15
@@ -17841,6 +18001,18 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - rollup
+      - supports-color
+
+  '@vitejs/plugin-react@4.7.0(vite@6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
+      '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.28.5)
+      '@rolldown/pluginutils': 1.0.0-beta.27
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.17.0
+      vite: 6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+    transitivePeerDependencies:
       - supports-color
 
   '@vitest/coverage-v8@4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
@@ -23990,6 +24162,12 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
+  react-dom@18.3.1(react@18.3.1):
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.3.1
+      scheduler: 0.23.2
+
   react-is@17.0.2: {}
 
   react-is@18.3.1: {}
@@ -23999,6 +24177,8 @@ snapshots:
       loose-envify: 1.4.0
       react: 18.3.1
       scheduler: 0.23.2
+
+  react-refresh@0.17.0: {}
 
   react@18.3.1:
     dependencies:
@@ -26038,6 +26218,23 @@ snapshots:
     dependencies:
       uuid: 11.1.0
       vite: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+
+  vite@6.4.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
+    dependencies:
+      esbuild: 0.25.12
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.54.0
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 20.19.25
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      lightningcss: 1.30.2
+      terser: 5.44.0
+      tsx: 4.21.0
+      yaml: 2.8.2
 
   vite@6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
