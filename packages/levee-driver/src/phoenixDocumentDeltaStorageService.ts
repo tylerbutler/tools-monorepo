@@ -26,7 +26,9 @@ const DEFAULT_BATCH_SIZE = 2000;
  *
  * @internal
  */
-export class PhoenixDocumentDeltaStorageService implements IDocumentDeltaStorageService {
+export class PhoenixDocumentDeltaStorageService
+	implements IDocumentDeltaStorageService
+{
 	private readonly restWrapper: RestWrapper;
 	private readonly deltaStorageUrl: string;
 
@@ -36,7 +38,7 @@ export class PhoenixDocumentDeltaStorageService implements IDocumentDeltaStorage
 	 * @param restWrapper - REST client for API requests
 	 * @param deltaStorageUrl - Base URL for delta storage (e.g., /deltas/tenantId/docId)
 	 */
-	constructor(restWrapper: RestWrapper, deltaStorageUrl: string) {
+	public constructor(restWrapper: RestWrapper, deltaStorageUrl: string) {
 		this.restWrapper = restWrapper;
 		this.deltaStorageUrl = deltaStorageUrl;
 	}
@@ -56,12 +58,13 @@ export class PhoenixDocumentDeltaStorageService implements IDocumentDeltaStorage
 		to: number | undefined,
 		abortSignal?: AbortSignal,
 		cachedOnly?: boolean,
-		fetchReason?: string,
+		_fetchReason?: string,
 	): IStream<ISequencedDocumentMessage[]> {
 		let currentFrom = from;
 		let done = false;
 
 		return {
+			// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: streaming logic requires control flow
 			read: async (): Promise<IStreamResult<ISequencedDocumentMessage[]>> => {
 				if (done || cachedOnly) {
 					return { done: true };
@@ -80,7 +83,8 @@ export class PhoenixDocumentDeltaStorageService implements IDocumentDeltaStorage
 				const url = `${this.deltaStorageUrl}?from=${currentFrom}${toParam}`;
 
 				try {
-					const response = await this.restWrapper.get<IDeltaStorageResponse>(url);
+					const response =
+						await this.restWrapper.get<IDeltaStorageResponse>(url);
 
 					const messages = response.value ?? [];
 
@@ -89,18 +93,19 @@ export class PhoenixDocumentDeltaStorageService implements IDocumentDeltaStorage
 						return { done: true };
 					}
 
-					const lastSeq = messages[messages.length - 1]!.sequenceNumber;
-					currentFrom = lastSeq;
+					const lastMessage = messages.at(-1);
+					if (lastMessage) {
+						currentFrom = lastMessage.sequenceNumber;
 
-					// Check if we've reached the end
-					if (to !== undefined && lastSeq >= to) {
-						done = true;
+						// Check if we've reached the end
+						if (to !== undefined && lastMessage.sequenceNumber >= to) {
+							done = true;
+						}
 					}
 
 					return { done: false, value: messages };
-				} catch (error) {
+				} catch {
 					// Return done on error - the container will retry
-					console.error("Error fetching deltas:", error);
 					done = true;
 					return { done: true };
 				}

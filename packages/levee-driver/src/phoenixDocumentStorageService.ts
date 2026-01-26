@@ -10,7 +10,11 @@ import type {
 	ISummaryContext,
 	IVersion,
 } from "@fluidframework/driver-definitions/internal";
-import type { ISummaryHandle, ISummaryTree, SummaryType } from "@fluidframework/protocol-definitions";
+import type {
+	ISummaryHandle,
+	ISummaryTree,
+	SummaryType,
+} from "@fluidframework/protocol-definitions";
 
 import type { IDocumentVersion, IGitTree } from "./contracts.js";
 import { GitManager, type IGitCreateTreeEntry } from "./gitManager.js";
@@ -42,7 +46,11 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 	 * @param tenantId - The tenant ID
 	 * @param documentId - The document ID
 	 */
-	constructor(restWrapper: RestWrapper, tenantId: string, documentId: string) {
+	public constructor(
+		restWrapper: RestWrapper,
+		tenantId: string,
+		documentId: string,
+	) {
 		this.restWrapper = restWrapper;
 		this.tenantId = tenantId;
 		this.documentId = documentId;
@@ -56,7 +64,10 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 	 * @param count - Maximum number of versions to return
 	 * @returns Array of available versions
 	 */
-	public async getVersions(versionId: string | null, count: number): Promise<IVersion[]> {
+	public async getVersions(
+		_versionId: string | null,
+		count: number,
+	): Promise<IVersion[]> {
 		const commits = await this.restWrapper.get<IDocumentVersion[]>(
 			`/repos/${this.tenantId}/commits?sha=${this.documentId}&count=${count}`,
 		);
@@ -74,7 +85,9 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 	 * @param version - The version to get (latest if not specified)
 	 * @returns The snapshot tree or null if not found
 	 */
-	public async getSnapshotTree(version?: IVersion): Promise<ISnapshotTree | null> {
+	public async getSnapshotTree(
+		version?: IVersion,
+	): Promise<ISnapshotTree | null> {
 		const sha = version?.treeId;
 
 		if (!sha) {
@@ -127,8 +140,8 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 		// Convert ArrayBuffer to base64
 		const bytes = new Uint8Array(file);
 		let binary = "";
-		for (let i = 0; i < bytes.length; i++) {
-			binary += String.fromCharCode(bytes[i] ?? 0);
+		for (const byte of bytes) {
+			binary += String.fromCharCode(byte);
 		}
 		const base64Content = btoa(binary);
 
@@ -207,6 +220,7 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 	/**
 	 * Converts a Git tree to a Fluid snapshot tree.
 	 */
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: tree conversion requires nested logic
 	private convertGitTreeToSnapshotTree(gitTree: IGitTree): ISnapshotTree {
 		const snapshotTree: ISnapshotTree = {
 			blobs: {},
@@ -219,11 +233,14 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 		pathMap.set("", snapshotTree);
 
 		// Sort entries so parent directories come before children
-		const sortedEntries = [...gitTree.tree].sort((a, b) => a.path.localeCompare(b.path));
+		const sortedEntries = [...gitTree.tree].sort((a, b) =>
+			a.path.localeCompare(b.path),
+		);
 
 		for (const entry of sortedEntries) {
 			const pathParts = entry.path.split("/");
-			const name = pathParts.pop()!;
+			const name = pathParts.at(-1) ?? "";
+			pathParts.pop();
 			const parentPath = pathParts.join("/");
 
 			// Ensure parent exists
@@ -259,7 +276,11 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 	/**
 	 * Writes a summary tree to storage.
 	 */
-	private async writeSummaryTree(tree: ISummaryTree, path = ""): Promise<string> {
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: handles multiple summary types
+	private async writeSummaryTree(
+		tree: ISummaryTree,
+		path = "",
+	): Promise<string> {
 		const entries: IGitCreateTreeEntry[] = [];
 
 		for (const [key, value] of Object.entries(tree.tree)) {
@@ -277,7 +298,8 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 									.map((b) => String.fromCharCode(b))
 									.join(""),
 							);
-				const encoding = typeof blobValue.content === "string" ? "utf-8" : "base64";
+				const encoding =
+					typeof blobValue.content === "string" ? "utf-8" : "base64";
 				const blob = await this.gitManager.createBlob(content, encoding);
 				entries.push({
 					path: key,
@@ -297,7 +319,11 @@ export class PhoenixDocumentStorageService implements IDocumentStorageService {
 				});
 			} else if (value.type === 3) {
 				// Handle
-				const handleValue = value as { type: 3; handle: string; handleType: SummaryType };
+				const handleValue = value as {
+					type: 3;
+					handle: string;
+					handleType: SummaryType;
+				};
 				entries.push({
 					path: key,
 					mode: handleValue.handleType === 1 ? "040000" : "100644",

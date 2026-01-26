@@ -2,7 +2,10 @@
  * Token provider implementations for Phoenix driver authentication.
  */
 
-import type { ITokenProvider, ITokenResponse } from "@fluidframework/routerlicious-driver";
+import type {
+	ITokenProvider,
+	ITokenResponse,
+} from "@fluidframework/routerlicious-driver";
 import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
 
@@ -30,7 +33,7 @@ export class InsecurePhoenixTokenProvider implements ITokenProvider {
 	 * @param user - User information to include in the token
 	 * @param tenantId - The tenant ID (defaults to "fluid")
 	 */
-	constructor(key: string, user: IPhoenixUser, tenantId = "fluid") {
+	public constructor(key: string, user: IPhoenixUser, tenantId = "fluid") {
 		this.key = key;
 		this.user = user;
 		this.tenantId = tenantId;
@@ -47,7 +50,7 @@ export class InsecurePhoenixTokenProvider implements ITokenProvider {
 	public async fetchOrdererToken(
 		tenantId: string,
 		documentId?: string,
-		refresh?: boolean,
+		_refresh?: boolean,
 	): Promise<ITokenResponse> {
 		return {
 			jwt: this.generateToken(tenantId, documentId ?? ""),
@@ -65,7 +68,7 @@ export class InsecurePhoenixTokenProvider implements ITokenProvider {
 	public async fetchStorageToken(
 		tenantId: string,
 		documentId: string,
-		refresh?: boolean,
+		_refresh?: boolean,
 	): Promise<ITokenResponse> {
 		return {
 			jwt: this.generateToken(tenantId, documentId),
@@ -123,7 +126,7 @@ export class RemotePhoenixTokenProvider implements ITokenProvider {
 	 * @param tokenEndpoint - The URL endpoint for fetching tokens
 	 * @param user - User information to send with token requests
 	 */
-	constructor(tokenEndpoint: string, user: IPhoenixUser) {
+	public constructor(tokenEndpoint: string, user: IPhoenixUser) {
 		this.tokenEndpoint = tokenEndpoint;
 		this.user = user;
 		this.cachedTokens = new Map();
@@ -192,7 +195,9 @@ export class RemotePhoenixTokenProvider implements ITokenProvider {
 		});
 
 		if (!response.ok) {
-			throw new Error(`Failed to fetch token: ${response.status} ${response.statusText}`);
+			throw new Error(
+				`Failed to fetch token: ${response.status} ${response.statusText}`,
+			);
 		}
 
 		const data = (await response.json()) as { jwt: string; expiresIn?: number };

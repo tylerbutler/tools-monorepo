@@ -3,7 +3,7 @@
  */
 
 import type { IGitBlob, IGitCommit, IGitTree } from "./contracts.js";
-import { RestWrapper } from "./restWrapper.js";
+import type { RestWrapper } from "./restWrapper.js";
 
 /**
  * Git tree entry for creating new trees.
@@ -57,7 +57,7 @@ export class GitManager {
 	 * @param restWrapper - REST client for making requests
 	 * @param storageUrl - Base URL for storage operations (e.g., /repos/tenantId)
 	 */
-	constructor(restWrapper: RestWrapper, storageUrl: string) {
+	public constructor(restWrapper: RestWrapper, storageUrl: string) {
 		this.restWrapper = restWrapper;
 		this.storageUrl = storageUrl;
 	}
@@ -69,7 +69,9 @@ export class GitManager {
 	 * @returns The blob content and metadata
 	 */
 	public async getBlob(sha: string): Promise<IGitBlob> {
-		return this.restWrapper.get<IGitBlob>(`${this.storageUrl}/git/blobs/${sha}`);
+		return this.restWrapper.get<IGitBlob>(
+			`${this.storageUrl}/git/blobs/${sha}`,
+		);
 	}
 
 	/**
@@ -110,7 +112,10 @@ export class GitManager {
 	 * @returns The created tree metadata
 	 */
 	public async createTree(request: IGitCreateTreeRequest): Promise<IGitTree> {
-		return this.restWrapper.post<IGitTree>(`${this.storageUrl}/git/trees`, request);
+		return this.restWrapper.post<IGitTree>(
+			`${this.storageUrl}/git/trees`,
+			request,
+		);
 	}
 
 	/**
@@ -120,7 +125,9 @@ export class GitManager {
 	 * @returns The commit metadata
 	 */
 	public async getCommit(sha: string): Promise<IGitCommit> {
-		return this.restWrapper.get<IGitCommit>(`${this.storageUrl}/git/commits/${sha}`);
+		return this.restWrapper.get<IGitCommit>(
+			`${this.storageUrl}/git/commits/${sha}`,
+		);
 	}
 
 	/**
@@ -129,8 +136,13 @@ export class GitManager {
 	 * @param request - The commit creation request
 	 * @returns The created commit metadata
 	 */
-	public async createCommit(request: IGitCreateCommitRequest): Promise<IGitCommit> {
-		return this.restWrapper.post<IGitCommit>(`${this.storageUrl}/git/commits`, request);
+	public async createCommit(
+		request: IGitCreateCommitRequest,
+	): Promise<IGitCommit> {
+		return this.restWrapper.post<IGitCommit>(
+			`${this.storageUrl}/git/commits`,
+			request,
+		);
 	}
 
 	/**
@@ -153,9 +165,10 @@ export class GitManager {
 	 * @param ref - The ref name (e.g., "heads/main")
 	 * @returns The ref data
 	 */
-	public async getRef(
-		ref: string,
-	): Promise<{ ref: string; object: { sha: string; type: string; url: string } }> {
+	public async getRef(ref: string): Promise<{
+		ref: string;
+		object: { sha: string; type: string; url: string };
+	}> {
 		return this.restWrapper.get(`${this.storageUrl}/git/refs/${ref}`);
 	}
 
@@ -171,7 +184,10 @@ export class GitManager {
 		ref: string,
 		sha: string,
 		force = false,
-	): Promise<{ ref: string; object: { sha: string; type: string; url: string } }> {
+	): Promise<{
+		ref: string;
+		object: { sha: string; type: string; url: string };
+	}> {
 		return this.restWrapper.patch(`${this.storageUrl}/git/refs/${ref}`, {
 			sha,
 			force,

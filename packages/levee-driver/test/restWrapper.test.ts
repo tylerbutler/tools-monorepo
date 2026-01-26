@@ -1,7 +1,6 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-
-import { RestWrapper, RestError } from "../../src/phoenix/restWrapper.js";
-import type { ITokenProvider, ITokenResponse } from "@fluidframework/routerlicious-driver";
+import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { RestError, RestWrapper } from "../src/restWrapper.js";
 
 describe("RestWrapper", () => {
 	const baseUrl = "http://localhost:4000";

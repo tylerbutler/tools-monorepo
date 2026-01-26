@@ -59,7 +59,7 @@ export class PhoenixDocumentServiceFactory implements IDocumentServiceFactory {
 	 *
 	 * @param tokenProvider - Token provider for authentication
 	 */
-	constructor(tokenProvider: ITokenProvider) {
+	public constructor(tokenProvider: ITokenProvider) {
 		this.tokenProvider = tokenProvider;
 	}
 
@@ -73,8 +73,8 @@ export class PhoenixDocumentServiceFactory implements IDocumentServiceFactory {
 	 */
 	public async createDocumentService(
 		resolvedUrl: IResolvedUrl,
-		logger?: ITelemetryBaseLogger,
-		clientIsSummarizer?: boolean,
+		_logger?: ITelemetryBaseLogger,
+		_clientIsSummarizer?: boolean,
 	): Promise<IDocumentService> {
 		return new PhoenixDocumentService(resolvedUrl, this.tokenProvider);
 	}
@@ -94,10 +94,10 @@ export class PhoenixDocumentServiceFactory implements IDocumentServiceFactory {
 	 * @returns Document service connected to the new document
 	 */
 	public async createContainer(
-		createNewSummary: ISummaryTree | undefined,
+		_createNewSummary: ISummaryTree | undefined,
 		createNewResolvedUrl: IResolvedUrl,
-		logger?: ITelemetryBaseLogger,
-		clientIsSummarizer?: boolean,
+		_logger?: ITelemetryBaseLogger,
+		_clientIsSummarizer?: boolean,
 	): Promise<IDocumentService> {
 		const phoenixUrl = createNewResolvedUrl as IPhoenixResolvedUrl;
 

@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
-
-import { InsecurePhoenixTokenProvider } from "../../src/phoenix/tokenProvider.js";
-import type { IPhoenixUser } from "../../src/phoenix/contracts.js";
+import type { IPhoenixUser } from "../src/contracts.js";
+import { InsecurePhoenixTokenProvider } from "../src/tokenProvider.js";
 
 describe("InsecurePhoenixTokenProvider", () => {
 	const testKey = "test-secret-key";

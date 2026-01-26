@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
-
-import { PhoenixUrlResolver } from "../../src/phoenix/urlResolver.js";
-import type { IPhoenixResolvedUrl } from "../../src/phoenix/contracts.js";
+import type { IPhoenixResolvedUrl } from "../src/contracts.js";
+import { PhoenixUrlResolver } from "../src/urlResolver.js";
 
 describe("PhoenixUrlResolver", () => {
 	const socketUrl = "ws://localhost:4000/socket";
@@ -10,21 +9,18 @@ describe("PhoenixUrlResolver", () => {
 
 	describe("constructor", () => {
 		it("stores socket URL with /socket suffix", () => {
-			const resolver = new PhoenixUrlResolver(
-				"ws://localhost:4000",
-				httpUrl,
-			);
+			const _resolver = new PhoenixUrlResolver("ws://localhost:4000", httpUrl);
 			// We can't directly test private fields, so we'll test via resolve
 			// which uses the socketUrl
 		});
 
 		it("preserves socket URL if already has /socket suffix", () => {
-			const resolver = new PhoenixUrlResolver(socketUrl, httpUrl);
+			const _resolver = new PhoenixUrlResolver(socketUrl, httpUrl);
 			// Constructor should not double the suffix
 		});
 
 		it("removes trailing slash from httpUrl", () => {
-			const resolver = new PhoenixUrlResolver(
+			const _resolver = new PhoenixUrlResolver(
 				socketUrl,
 				"http://localhost:4000/",
 			);

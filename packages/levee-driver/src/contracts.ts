@@ -179,6 +179,7 @@ export interface INackResponse {
 /**
  * Types of nack errors.
  */
+// biome-ignore lint/style/noEnum: required for Fluid Framework protocol compatibility
 export enum NackErrorType {
 	ThrottlingError = "ThrottlingError",
 	InvalidScopeError = "InvalidScopeError",

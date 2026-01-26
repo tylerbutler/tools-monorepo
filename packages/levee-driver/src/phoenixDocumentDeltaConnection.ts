@@ -19,7 +19,7 @@ import type {
 	ITokenClaims,
 } from "@fluidframework/driver-definitions/internal";
 import { EventEmitterWithErrorHandling } from "@fluidframework/telemetry-utils/internal";
-import { Channel, Socket } from "phoenix";
+import { type Channel, Socket } from "phoenix";
 
 import type { DisconnectReason, IConnectedResponse } from "./contracts.js";
 
@@ -80,12 +80,12 @@ export class PhoenixDocumentDeltaConnection
 	}
 
 	// IDocumentDeltaConnection properties
-	public clientId: string = "";
+	public clientId = "";
 	public claims: ITokenClaims = {} as ITokenClaims;
 	public mode: ConnectionMode = "write";
-	public existing: boolean = false;
+	public existing = false;
 	public maxMessageSize: number = 16 * 1024; // 16KB default
-	public version: string = "0.1";
+	public version = "0.1";
 	public initialMessages: ISequencedDocumentMessage[] = [];
 	public initialSignals: ISignalMessage[] = [];
 	public initialClients: ISignalClient[] = [];
@@ -99,7 +99,8 @@ export class PhoenixDocumentDeltaConnection
 	private socket: Socket | null = null;
 	private channel: Channel | null = null;
 	private _disposed = false;
-	private earlyOpHandler: ((ops: ISequencedDocumentMessage[]) => void) | null = null;
+	private earlyOpHandler: ((ops: ISequencedDocumentMessage[]) => void) | null =
+		null;
 	private earlySignalHandler: ((signal: ISignalMessage) => void) | null = null;
 	private readonly queuedMessages: IDocumentMessage[] = [];
 	private submitEnabled = false;
@@ -119,10 +120,10 @@ export class PhoenixDocumentDeltaConnection
 		client: IClient,
 		mode: ConnectionMode,
 	) {
-		super((eventName, error) => {
-			// Error handler for events - log and re-emit as error event
-			console.error(`Error in event ${String(eventName)}:`, error);
-		});
+		super((eventName, error) =>
+			// biome-ignore lint/suspicious/noConsole: error handler for event emitter
+			console.error(`Error in event ${String(eventName)}:`, error),
+		);
 
 		this.socketUrl = socketUrl;
 		this.tenantId = tenantId;
@@ -235,22 +236,23 @@ export class PhoenixDocumentDeltaConnection
 		});
 
 		// Connect socket
+		const socket = this.socket;
 		await new Promise<void>((resolve, reject) => {
 			const timeout = setTimeout(() => {
 				reject(new Error("Socket connection timeout"));
 			}, SOCKET_CONNECT_TIMEOUT_MS);
 
-			this.socket!.onOpen(() => {
+			socket.onOpen(() => {
 				clearTimeout(timeout);
 				resolve();
 			});
 
-			this.socket!.onError(() => {
+			socket.onError(() => {
 				clearTimeout(timeout);
 				reject(new Error("Socket connection failed"));
 			});
 
-			this.socket!.connect();
+			socket.connect();
 		});
 
 		// Create and join channel for this document
@@ -263,12 +265,14 @@ export class PhoenixDocumentDeltaConnection
 		this.setupChannelHandlers();
 
 		// Join channel and wait for response
+		const channel = this.channel;
 		await new Promise<void>((resolve, reject) => {
 			const timeout = setTimeout(() => {
 				reject(new Error("Channel join timeout"));
 			}, CHANNEL_JOIN_TIMEOUT_MS);
 
-			this.channel!.join()
+			channel
+				.join()
 				.receive("ok", () => {
 					clearTimeout(timeout);
 					resolve();
@@ -293,25 +297,30 @@ export class PhoenixDocumentDeltaConnection
 			versions: ["^0.4.0", "^0.3.0", "^0.2.0", "^0.1.0"],
 		};
 
-		const connectedResponse = await new Promise<IConnectedResponse>((resolve, reject) => {
-			const timeout = setTimeout(() => {
-				reject(new Error("connect_document timeout"));
-			}, CHANNEL_JOIN_TIMEOUT_MS);
-
-			this.channel!.push("connect_document", connectMessage)
-				.receive("ok", (response: IConnectedResponse) => {
-					clearTimeout(timeout);
-					resolve(response);
-				})
-				.receive("error", (error: unknown) => {
-					clearTimeout(timeout);
-					reject(new Error(`connect_document failed: ${JSON.stringify(error)}`));
-				})
-				.receive("timeout", () => {
-					clearTimeout(timeout);
+		const connectedResponse = await new Promise<IConnectedResponse>(
+			(resolve, reject) => {
+				const timeout = setTimeout(() => {
 					reject(new Error("connect_document timeout"));
-				});
-		});
+				}, CHANNEL_JOIN_TIMEOUT_MS);
+
+				channel
+					.push("connect_document", connectMessage)
+					.receive("ok", (response: IConnectedResponse) => {
+						clearTimeout(timeout);
+						resolve(response);
+					})
+					.receive("error", (error: unknown) => {
+						clearTimeout(timeout);
+						reject(
+							new Error(`connect_document failed: ${JSON.stringify(error)}`),
+						);
+					})
+					.receive("timeout", () => {
+						clearTimeout(timeout);
+						reject(new Error("connect_document timeout"));
+					});
+			},
+		);
 
 		// Store connection info
 		this.clientId = connectedResponse.clientId;
@@ -357,19 +366,22 @@ export class PhoenixDocumentDeltaConnection
 		}
 
 		// Handle incoming operations
-		this.channel.on("op", (payload: { documentId: string; ops: ISequencedDocumentMessage[] }) => {
-			if (this._disposed) {
-				return;
-			}
+		this.channel.on(
+			"op",
+			(payload: { documentId: string; ops: ISequencedDocumentMessage[] }) => {
+				if (this._disposed) {
+					return;
+				}
 
-			const ops = payload.ops;
+				const ops = payload.ops;
 
-			if (this.earlyOpHandler) {
-				this.earlyOpHandler(ops);
-			} else {
-				this.emit("op", payload.documentId, ops);
-			}
-		});
+				if (this.earlyOpHandler) {
+					this.earlyOpHandler(ops);
+				} else {
+					this.emit("op", payload.documentId, ops);
+				}
+			},
+		);
 
 		// Handle incoming signals
 		this.channel.on("signal", (payload: ISignalMessage | ISignalMessage[]) => {
@@ -449,6 +461,7 @@ export class PhoenixDocumentDeltaConnection
 			return;
 		}
 
+		// biome-ignore lint/suspicious/noConsole: intentional error logging
 		console.error(`${context}:`, error);
 
 		const errorObj =

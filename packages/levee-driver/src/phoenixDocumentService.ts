@@ -2,7 +2,6 @@
  * Document service for Phoenix/Levee server.
  */
 
-import type { IEvent, IEventProvider } from "@fluidframework/core-interfaces";
 import type {
 	IDocumentDeltaConnection,
 	IDocumentDeltaStorageService,
@@ -49,10 +48,11 @@ export class PhoenixDocumentService
 	 * @param resolvedUrl - Resolved URL with connection details
 	 * @param tokenProvider - Token provider for authentication
 	 */
-	constructor(resolvedUrl: IResolvedUrl, tokenProvider: ITokenProvider) {
-		super((eventName, error) => {
-			console.error(`Error in event ${String(eventName)}:`, error);
-		});
+	public constructor(resolvedUrl: IResolvedUrl, tokenProvider: ITokenProvider) {
+		super((eventName, error) =>
+			// biome-ignore lint/suspicious/noConsole: error handler for event emitter
+			console.error(`Error in event ${String(eventName)}:`, error),
+		);
 
 		this.resolvedUrl = resolvedUrl as IPhoenixResolvedUrl;
 		this.tokenProvider = tokenProvider;
@@ -103,7 +103,9 @@ export class PhoenixDocumentService
 	 * @param client - Client information for connection
 	 * @returns The delta connection for real-time ops and signals
 	 */
-	public async connectToDeltaStream(client: IClient): Promise<IDocumentDeltaConnection> {
+	public async connectToDeltaStream(
+		client: IClient,
+	): Promise<IDocumentDeltaConnection> {
 		// Get fresh token for connection
 		const tokenResponse = await this.tokenProvider.fetchOrdererToken(
 			this.resolvedUrl.tenantId,

@@ -2,11 +2,9 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"extends": "../../config/tsconfig.strict.json",
 	"include": ["src/**/*"],
-	"exclude": ["src/test/**/*"],
 	"compilerOptions": {
 		"rootDir": "./src",
-		"outDir": "./lib",
-
+		"outDir": "./esm",
 		"exactOptionalPropertyTypes": false,
 	},
 }

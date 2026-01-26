@@ -5,6 +5,11 @@
 import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
 
 /**
+ * Regex for removing trailing slashes from URLs.
+ */
+const TRAILING_SLASH_REGEX = /\/$/;
+
+/**
  * Options for REST requests.
  */
 export interface IRestRequestOptions {
@@ -36,14 +41,14 @@ export class RestWrapper {
 	 * @param documentId - Document ID for token generation
 	 * @param defaultTimeout - Default request timeout in ms (default: 30000)
 	 */
-	constructor(
+	public constructor(
 		baseUrl: string,
 		tokenProvider: ITokenProvider,
 		tenantId: string,
 		documentId: string,
 		defaultTimeout = 30000,
 	) {
-		this.baseUrl = baseUrl.replace(/\/$/, "");
+		this.baseUrl = baseUrl.replace(TRAILING_SLASH_REGEX, "");
 		this.tokenProvider = tokenProvider;
 		this.tenantId = tenantId;
 		this.documentId = documentId;
@@ -100,13 +105,17 @@ export class RestWrapper {
 	 * @param options - Optional request options
 	 * @returns Parsed JSON response
 	 */
-	public async delete<T>(path: string, options?: IRestRequestOptions): Promise<T> {
+	public async delete<T>(
+		path: string,
+		options?: IRestRequestOptions,
+	): Promise<T> {
 		return this.request<T>("DELETE", path, undefined, options);
 	}
 
 	/**
 	 * Makes an authenticated request with automatic token refresh on auth errors.
 	 */
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: HTTP request handling requires error path logic
 	private async request<T>(
 		method: string,
 		path: string,
@@ -198,7 +207,7 @@ export class RestError extends Error {
 	 */
 	public readonly canRetry: boolean;
 
-	constructor(message: string, statusCode: number) {
+	public constructor(message: string, statusCode: number) {
 		super(message);
 		this.name = "RestError";
 		this.statusCode = statusCode;

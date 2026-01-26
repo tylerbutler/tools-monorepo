@@ -16,6 +16,16 @@ import type { IPhoenixResolvedUrl } from "./contracts.js";
 const DEFAULT_TENANT_ID = "fluid";
 
 /**
+ * Regex for removing trailing slashes from URLs.
+ */
+const TRAILING_SLASH_REGEX = /\/$/;
+
+/**
+ * Regex for converting levee/phoenix protocols to http.
+ */
+const PROTOCOL_REGEX = /^(levee|phoenix):/;
+
+/**
  * URL resolver for connecting to a Phoenix-based Levee server.
  *
  * @remarks
@@ -38,10 +48,16 @@ export class PhoenixUrlResolver implements IUrlResolver {
 	 * @param httpUrl - HTTP base URL for REST API (e.g., http://localhost:4000)
 	 * @param defaultTenantId - Default tenant ID to use when not specified in URL
 	 */
-	constructor(socketUrl: string, httpUrl: string, defaultTenantId = DEFAULT_TENANT_ID) {
+	public constructor(
+		socketUrl: string,
+		httpUrl: string,
+		defaultTenantId = DEFAULT_TENANT_ID,
+	) {
 		// Ensure socket URL ends with /socket if not already
-		this.socketUrl = socketUrl.endsWith("/socket") ? socketUrl : `${socketUrl}/socket`;
-		this.httpUrl = httpUrl.replace(/\/$/, ""); // Remove trailing slash
+		this.socketUrl = socketUrl.endsWith("/socket")
+			? socketUrl
+			: `${socketUrl}/socket`;
+		this.httpUrl = httpUrl.replace(TRAILING_SLASH_REGEX, ""); // Remove trailing slash
 		this.defaultTenantId = defaultTenantId;
 	}
 
@@ -112,7 +128,10 @@ export class PhoenixUrlResolver implements IUrlResolver {
 	 * @param tenantId - Optional tenant ID (uses default if not specified)
 	 * @returns A request object for the existing document
 	 */
-	public createRequestForDocument(documentId: string, tenantId?: string): IRequest {
+	public createRequestForDocument(
+		documentId: string,
+		tenantId?: string,
+	): IRequest {
 		return {
 			url: `${this.httpUrl}/${tenantId ?? this.defaultTenantId}/${documentId}`,
 			headers: {},
@@ -125,10 +144,11 @@ export class PhoenixUrlResolver implements IUrlResolver {
 	 * @param url - The URL to parse
 	 * @returns Object containing tenantId and documentId
 	 */
+	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: URL parsing handles multiple formats
 	private parseUrl(url: string): { tenantId: string; documentId: string } {
 		// Handle levee:// or phoenix:// protocol
 		if (url.startsWith("levee://") || url.startsWith("phoenix://")) {
-			const parsed = new URL(url.replace(/^(levee|phoenix):/, "http:"));
+			const parsed = new URL(url.replace(PROTOCOL_REGEX, "http:"));
 			const pathParts = parsed.pathname.split("/").filter((p) => p.length > 0);
 
 			if (pathParts.length >= 2) {
@@ -136,7 +156,8 @@ export class PhoenixUrlResolver implements IUrlResolver {
 					tenantId: pathParts[0] ?? this.defaultTenantId,
 					documentId: pathParts[1] ?? "",
 				};
-			} else if (pathParts.length === 1) {
+			}
+			if (pathParts.length === 1) {
 				return {
 					tenantId: this.defaultTenantId,
 					documentId: pathParts[0] ?? "",
@@ -154,7 +175,8 @@ export class PhoenixUrlResolver implements IUrlResolver {
 					tenantId: pathParts[0] ?? this.defaultTenantId,
 					documentId: pathParts[1] ?? "",
 				};
-			} else if (pathParts.length === 1) {
+			}
+			if (pathParts.length === 1) {
 				return {
 					tenantId: this.defaultTenantId,
 					documentId: pathParts[0] ?? "",
@@ -163,7 +185,7 @@ export class PhoenixUrlResolver implements IUrlResolver {
 		}
 
 		// Handle plain document ID
-		if (!url.includes("/") && !url.includes(":")) {
+		if (!(url.includes("/") || url.includes(":"))) {
 			return {
 				tenantId: this.defaultTenantId,
 				documentId: url,
@@ -177,7 +199,8 @@ export class PhoenixUrlResolver implements IUrlResolver {
 				tenantId: parts[0] ?? this.defaultTenantId,
 				documentId: parts[1] ?? "",
 			};
-		} else if (parts.length === 1) {
+		}
+		if (parts.length === 1) {
 			return {
 				tenantId: this.defaultTenantId,
 				documentId: parts[0] ?? "",

@@ -8,7 +8,7 @@ overrides:
   oclif>@aws-sdk/client-cloudfront: npm:empty-npm-package@1.0.0
   oclif>@aws-sdk/client-s3: npm:empty-npm-package@1.0.0
 
-pnpmfileChecksum: o3iindjgixzfd4sutj54hs3ode
+pnpmfileChecksum: sha256-0s6hX8JFdcjaX4/n6c0RoxzjoCbey4apBGYHu6r3r8A=
 
 importers:
 
@@ -886,15 +886,6 @@ importers:
       '@fluidframework/tinylicious-driver':
         specifier: ~2.33.2
         version: 2.33.2(encoding@0.1.13)
-      jsonwebtoken:
-        specifier: ^9.0.2
-        version: 9.0.2
-      phoenix:
-        specifier: ^1.7.14
-        version: 1.8.3
-      uuid:
-        specifier: ^11.0.5
-        version: 11.1.0
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.18.2
@@ -923,21 +914,12 @@ importers:
       '@tsconfig/node18':
         specifier: ^18.2.6
         version: 18.2.6
-      '@types/jsonwebtoken':
-        specifier: ^9.0.7
-        version: 9.0.10
       '@types/mocha':
         specifier: ^10.0.10
         version: 10.0.10
       '@types/node':
         specifier: ^20.19.25
         version: 20.19.25
-      '@types/phoenix':
-        specifier: ^1.6.6
-        version: 1.6.7
-      '@types/uuid':
-        specifier: ^10.0.0
-        version: 10.0.0
       '@vitest/coverage-v8':
         specifier: ^4.0.17
         version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
@@ -962,6 +944,61 @@ importers:
       tinylicious:
         specifier: ^6.0.0
         version: 6.0.0
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^4.0.17
+        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/levee-driver:
+    dependencies:
+      '@fluidframework/core-interfaces':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/driver-definitions':
+        specifier: ~2.33.2
+        version: 2.33.2
+      '@fluidframework/protocol-definitions':
+        specifier: ~4.0.0
+        version: 4.0.0
+      '@fluidframework/routerlicious-driver':
+        specifier: ~2.33.2
+        version: 2.33.2(encoding@0.1.13)
+      '@fluidframework/telemetry-utils':
+        specifier: ~2.33.2
+        version: 2.33.2
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+      phoenix:
+        specifier: ^1.7.14
+        version: 1.8.3
+      uuid:
+        specifier: ^11.0.5
+        version: 11.1.0
+    devDependencies:
+      '@biomejs/biome':
+        specifier: 2.3.8
+        version: 2.3.8
+      '@types/jsonwebtoken':
+        specifier: ^9.0.7
+        version: 9.0.10
+      '@types/node':
+        specifier: ^20.19.25
+        version: 20.19.25
+      '@types/phoenix':
+        specifier: ^1.6.6
+        version: 1.6.7
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
+      '@vitest/coverage-v8':
+        specifier: ^4.0.17
+        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+      rimraf:
+        specifier: ^6.1.2
+        version: 6.1.2
       typescript:
         specifier: ~5.9.3
         version: 5.9.3

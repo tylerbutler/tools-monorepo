@@ -6,9 +6,7 @@
  * containers through the Levee service. It handles container lifecycle, authentication,
  * and service configuration, making it easier to build collaborative applications.
  *
- * This package includes:
- * - **LeveeClient**: High-level client for Tinylicious-compatible servers
- * - **Phoenix Driver**: Low-level driver for Phoenix Channel-based servers
+ * For Phoenix Channels driver support, see the separate `@tylerbu/levee-driver` package.
  *
  * @packageDocumentation
  */
@@ -25,46 +23,3 @@ export type {
 	LeveeMember,
 	LeveeUser,
 } from "./interfaces.js";
-
-// Phoenix driver exports
-export {
-	// Core driver components
-	PhoenixDocumentServiceFactory,
-	PhoenixDocumentService,
-	PhoenixDocumentDeltaConnection,
-	PhoenixDocumentStorageService,
-	PhoenixDocumentDeltaStorageService,
-	// URL Resolver
-	PhoenixUrlResolver,
-	// Token Providers
-	InsecurePhoenixTokenProvider,
-	RemotePhoenixTokenProvider,
-	// HTTP utilities
-	RestWrapper,
-	RestError,
-	// Git storage manager
-	GitManager,
-	// Enums
-	NackErrorType,
-} from "./phoenix/index.js";
-
-export type {
-	IPhoenixResolvedUrl,
-	IPhoenixTokenClaims,
-	IPhoenixUser,
-	IPhoenixConfig,
-	IConnectedResponse,
-	IServiceConfiguration,
-	IDocumentMessageInput,
-	INackResponse,
-	IGitBlob,
-	IGitTreeEntry,
-	IGitTree,
-	IGitCommit,
-	IDocumentVersion,
-	IDeltaStorageResponse,
-	DisconnectReason,
-	IGitCreateTreeEntry,
-	IGitCreateTreeRequest,
-	IGitCreateCommitRequest,
-} from "./phoenix/index.js";
