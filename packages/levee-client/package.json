@@ -51,10 +51,9 @@
 		"@fluidframework/fluid-static": "~2.33.2",
 		"@fluidframework/map": "~2.33.2",
 		"@fluidframework/protocol-definitions": "~4.0.0",
-		"@fluidframework/routerlicious-driver": "~2.33.2",
 		"@fluidframework/runtime-utils": "~2.33.2",
 		"@fluidframework/telemetry-utils": "~2.33.2",
-		"@fluidframework/tinylicious-driver": "~2.33.2"
+		"@tylerbu/levee-driver": "workspace:^"
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.18.2",

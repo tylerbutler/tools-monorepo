@@ -1,7 +1,10 @@
 import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
 import type { IUser } from "@fluidframework/driver-definitions";
 import type { IMember, IServiceAudience } from "@fluidframework/fluid-static";
-import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
+import type {
+	LeveeUser as DriverLeveeUser,
+	TokenProvider,
+} from "@tylerbu/levee-driver";
 
 /**
  * Properties for initializing a {@link LeveeClient}.
@@ -27,12 +30,37 @@ export interface LeveeClientProps {
  * @public
  */
 export interface LeveeConnectionConfig {
-	/** The port number for the Levee service. If not specified, uses the default port. */
-	readonly port?: number;
-	/** The domain name for the Levee service. If not specified, uses the default domain. */
-	readonly domain?: string;
-	/** Token provider for authentication with the Levee service. */
-	readonly tokenProvider: ITokenProvider;
+	/**
+	 * HTTP base URL for REST API (e.g., "http://localhost:4000").
+	 */
+	readonly httpUrl: string;
+
+	/**
+	 * WebSocket URL for Phoenix socket (e.g., "ws://localhost:4000/socket").
+	 */
+	readonly socketUrl: string;
+
+	/**
+	 * Tenant ID (defaults to "fluid").
+	 */
+	readonly tenantId?: string;
+
+	/**
+	 * Tenant secret key for InsecureLeveeTokenProvider (dev only).
+	 * If provided, creates an InsecureLeveeTokenProvider automatically.
+	 * Ignored if tokenProvider is specified.
+	 */
+	readonly tenantKey?: string;
+
+	/**
+	 * User information for token generation and audience identification.
+	 */
+	readonly user: DriverLeveeUser;
+
+	/**
+	 * Custom token provider (overrides tenantKey if provided).
+	 */
+	readonly tokenProvider?: TokenProvider;
 }
 
 /**

@@ -8,6 +8,8 @@
  * @packageDocumentation
  */
 
+// Token Providers
+export type { ITokenProvider as TokenProvider } from "@fluidframework/routerlicious-driver";
 // Types and interfaces
 export type {
 	ConnectedResponse,
@@ -42,7 +44,6 @@ export { LeveeDocumentServiceFactory } from "./leveeDocumentServiceFactory.js";
 export { LeveeStorageService } from "./leveeStorageService.js";
 // HTTP utilities
 export { RestError, RestWrapper } from "./restWrapper.js";
-// Token Providers
 export {
 	InsecureLeveeTokenProvider,
 	RemoteLeveeTokenProvider,

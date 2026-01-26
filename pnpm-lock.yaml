@@ -874,18 +874,15 @@ importers:
       '@fluidframework/protocol-definitions':
         specifier: ~4.0.0
         version: 4.0.0
-      '@fluidframework/routerlicious-driver':
-        specifier: ~2.33.2
-        version: 2.33.2(encoding@0.1.13)
       '@fluidframework/runtime-utils':
         specifier: ~2.33.2
         version: 2.33.2
       '@fluidframework/telemetry-utils':
         specifier: ~2.33.2
         version: 2.33.2
-      '@fluidframework/tinylicious-driver':
-        specifier: ~2.33.2
-        version: 2.33.2(encoding@0.1.13)
+      '@tylerbu/levee-driver':
+        specifier: workspace:^
+        version: link:../levee-driver
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.18.2
@@ -3635,9 +3632,6 @@ packages:
 
   '@fluidframework/test-utils@2.42.0':
     resolution: {integrity: sha512-kfjy7X6269k0E58RfJgHQYW027l4vM7lmHhg4eZ0ZW432d5xF6p9pKLbwKjmIfKbJ8kwP4xPszBLys3tp9IuyQ==}
-
-  '@fluidframework/tinylicious-driver@2.33.2':
-    resolution: {integrity: sha512-vO9v6n3YPM6JGaw0XANVT0NFJggbEVLR7xWSMV01YAkEoyA/cyEdjaAfmyAVIoXb4JARAhw1dIctJh+XkhbZrg==}
 
   '@fluidframework/tree@2.33.2':
     resolution: {integrity: sha512-CeOGzpQ8EqJ/j3RfwjhgCLhXVokIkSHiOrCw+THnXT321/QL0n7LNIwHAumP2yQVhwRK+MIo8XxYeRSyicOjyw==}
@@ -15496,21 +15490,6 @@ snapshots:
       uuid: 9.0.1
     transitivePeerDependencies:
       - bufferutil
-      - encoding
-      - supports-color
-      - utf-8-validate
-
-  '@fluidframework/tinylicious-driver@2.33.2(encoding@0.1.13)':
-    dependencies:
-      '@fluidframework/core-interfaces': 2.33.2
-      '@fluidframework/driver-definitions': 2.33.2
-      '@fluidframework/driver-utils': 2.33.2(debug@4.4.3)
-      '@fluidframework/routerlicious-driver': 2.33.2(encoding@0.1.13)
-      jsrsasign: 11.1.0
-      uuid: 9.0.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
       - encoding
       - supports-color
       - utf-8-validate
