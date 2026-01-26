@@ -1,5 +1,5 @@
-# Dockerfile for building Levee server from source
-# This clones the repo and builds an Elixir release
+# Dockerfile for building Levee server from local source
+# Expects the levee repo to be available in the build context
 
 # Build stage
 FROM elixir:1.16-otp-26-alpine AS builder
@@ -12,9 +12,8 @@ ENV MIX_ENV=prod
 
 WORKDIR /build
 
-# Clone the Levee server repository
-ARG LEVEE_REF=main
-RUN git clone --depth 1 --branch ${LEVEE_REF} https://github.com/tylerbutler/levee.git .
+# Copy the Levee source from local checkout
+COPY . .
 
 # Install hex and rebar
 RUN mix local.hex --force && \

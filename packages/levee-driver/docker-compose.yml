@@ -1,5 +1,9 @@
 # Docker Compose for local Levee server testing
 #
+# Prerequisites:
+#   Clone the levee repo locally, then set LEVEE_SOURCE_PATH:
+#     export LEVEE_SOURCE_PATH=/path/to/levee
+#
 # Usage:
 #   docker compose up -d          # Start server
 #   docker compose down           # Stop server
@@ -12,10 +16,8 @@
 services:
   levee:
     build:
-      context: ./docker
-      dockerfile: Dockerfile.levee-server
-      args:
-        LEVEE_REF: main  # Branch/tag to build from
+      context: ${LEVEE_SOURCE_PATH:?Set LEVEE_SOURCE_PATH to your local levee repo}
+      dockerfile: ${PWD}/docker/Dockerfile.levee-server
     ports:
       - "4000:4000"
     environment:

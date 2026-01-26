@@ -35,11 +35,11 @@
 		"lint:fix": "biome lint . --write",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test:coverage": "vitest run --coverage test",
-		"test:vitest": "vitest run test",
 		"test:integration": "vitest run test/integration",
-		"test:integration:up": "docker compose up -d --wait",
 		"test:integration:down": "docker compose down -v",
-		"test:integration:logs": "docker compose logs -f levee"
+		"test:integration:logs": "docker compose logs -f levee",
+		"test:integration:up": "docker compose up -d --wait",
+		"test:vitest": "vitest run test"
 	},
 	"dependencies": {
 		"@fluidframework/core-interfaces": "~2.33.2",
