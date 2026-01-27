@@ -24,6 +24,13 @@ const config = {
 	},
 	versionGroups: [
 		{
+			label: "Use >= range for repopo peer dependency in sort-tsconfig",
+			dependencies: ["repopo"],
+			dependencyTypes: ["peer"],
+			packages: ["sort-tsconfig"],
+			pinVersion: ">=0.5.0",
+		},
+		{
 			label: "Use workspace protocol for workspace dependencies",
 			dependencies: ["$LOCAL"],
 			dependencyTypes: ["dev", "prod"],
