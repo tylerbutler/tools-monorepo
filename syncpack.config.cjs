@@ -47,7 +47,7 @@ const config = {
 		{
 			label: "Use * dep for deps on sort-package-json",
 			dependencies: ["sort-package-json"],
-			dependencyTypes: ["dev", "prod"],
+			dependencyTypes: ["dev", "prod", "peer"],
 			pinVersion: "*",
 			packages: ["**"],
 		},
