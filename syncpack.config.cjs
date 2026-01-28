@@ -11,6 +11,10 @@ const config = {
 				"fluid-framework",
 			],
 		},
+		{
+			aliasName: "vitest",
+			dependencies: ["vitest", "@vitest/**"],
+		},
 	],
 	customTypes: {
 		engines: {
@@ -54,6 +58,12 @@ const config = {
 		{
 			label: "Ensure all Fluid Framework packages use consistent versions",
 			dependencies: ["fluidframework"],
+			packages: ["**"],
+			preferVersion: "highestSemver",
+		},
+		{
+			label: "Ensure all vitest packages use consistent versions",
+			dependencies: ["vitest"],
 			packages: ["**"],
 			preferVersion: "highestSemver",
 		},

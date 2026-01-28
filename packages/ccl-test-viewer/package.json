@@ -82,7 +82,7 @@
 		"@types/node": "^20.19.25",
 		"@types/prismjs": "^1.26.5",
 		"@vitest/coverage-v8": "^4.0.17",
-		"@vitest/ui": "^4.0.16",
+		"@vitest/ui": "^4.0.17",
 		"base16-tailwind": "github:donovanglover/base16-tailwind",
 		"bits-ui": "^2.15.4",
 		"bundlemon": "^3.1.0",

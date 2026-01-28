@@ -74,7 +74,7 @@
 		"@tylerbu/ccl-test-data": "workspace:^",
 		"@types/node": "^20.19.25",
 		"@vitest/coverage-v8": "^4.0.17",
-		"@vitest/ui": "^4.0.16",
+		"@vitest/ui": "^4.0.17",
 		"json-schema-to-ts": "^3.1.1",
 		"json-schema-to-typescript": "^15.0.4",
 		"rimraf": "^6.1.2",
