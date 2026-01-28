@@ -31,7 +31,7 @@ importers:
         version: 22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)
       '@nx/vite':
         specifier: ^22.3.3
-        version: 22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        version: 22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)
       '@tsconfig/node18':
         specifier: ^18.2.6
         version: 18.2.6
@@ -100,8 +100,8 @@ importers:
         version: 2.3.8
     devDependencies:
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/ccl-docs:
     dependencies:
@@ -110,10 +110,10 @@ importers:
         version: 0.9.6(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
         specifier: ^6.6.3
-        version: 6.6.3(@netlify/api@14.0.10)(@types/node@25.0.9)(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        version: 6.6.3(@netlify/api@14.0.10)(@types/node@25.0.9)(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
       '@astrojs/starlight':
         specifier: ^0.37.0
-        version: 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@fontsource-variable/fira-code':
         specifier: ^5.2.7
         version: 5.2.7
@@ -131,22 +131,22 @@ importers:
         version: 5.2.7
       astro:
         specifier: ^5.16.3
-        version: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
       starlight-heading-badges:
         specifier: ^0.6.1
-        version: 0.6.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.6.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       starlight-links-validator:
         specifier: ^0.19.1
-        version: 0.19.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.19.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       starlight-llms-txt:
         specifier: ^0.7.0
-        version: 0.7.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.7.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       starlight-package-managers:
         specifier: ^0.12.0
-        version: 0.12.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.12.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -191,11 +191,11 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       '@vitest/ui':
-        specifier: ^4.0.16
-        version: 4.0.16(vitest@4.0.17)
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       json-schema-to-ts:
         specifier: ^3.1.1
         version: 3.1.1
@@ -215,8 +215,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/ccl-test-viewer:
     dependencies:
@@ -295,7 +295,7 @@ importers:
         version: 6.9.1
       '@testing-library/svelte':
         specifier: ^5.3.1
-        version: 5.3.1(svelte@5.47.0)(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.17)
+        version: 5.3.1(svelte@5.47.0)(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)
       '@types/node':
         specifier: ^20.19.25
         version: 20.19.25
@@ -303,11 +303,11 @@ importers:
         specifier: ^1.26.5
         version: 1.26.5
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       '@vitest/ui':
-        specifier: ^4.0.16
-        version: 4.0.16(vitest@4.0.17)
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       base16-tailwind:
         specifier: github:donovanglover/base16-tailwind
         version: https://codeload.github.com/donovanglover/base16-tailwind/tar.gz/3695359c3057b12955c4951a66f89e6a264887e1(@types/slug@5.0.9)(tailwindcss@4.1.17)
@@ -357,8 +357,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/ccl-ts:
     dependencies:
@@ -379,8 +379,8 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       ccl-test-runner-ts:
         specifier: workspace:^
         version: link:../ccl-test-runner-ts
@@ -394,8 +394,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/cli:
     dependencies:
@@ -482,8 +482,8 @@ importers:
         specifier: ^7.7.1
         version: 7.7.1
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -509,8 +509,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/cli-api:
     dependencies:
@@ -579,8 +579,8 @@ importers:
         specifier: ^7.7.1
         version: 7.7.1
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -612,8 +612,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/dill-cli:
     dependencies:
@@ -685,8 +685,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       generate-license-file:
         specifier: ^4.1.1
         version: 4.1.1(typescript@5.9.3)
@@ -736,8 +736,8 @@ importers:
         specifier: ^4.6.0
         version: 4.6.0
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/dill-docs:
     dependencies:
@@ -746,10 +746,10 @@ importers:
         version: 0.9.6(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
         specifier: ^6.6.3
-        version: 6.6.3(@netlify/api@14.0.10)(@types/node@25.0.9)(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        version: 6.6.3(@netlify/api@14.0.10)(@types/node@25.0.9)(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
       '@astrojs/starlight':
         specifier: ^0.37.0
-        version: 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@fontsource/ibm-plex-serif':
         specifier: ^5.2.7
         version: 5.2.7
@@ -761,7 +761,7 @@ importers:
         version: 5.2.7
       astro:
         specifier: ^5.16.3
-        version: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       dill-cli:
         specifier: workspace:^
         version: link:../dill-cli
@@ -770,16 +770,16 @@ importers:
         version: 0.34.5
       starlight-heading-badges:
         specifier: ^0.6.1
-        version: 0.6.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.6.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       starlight-links-validator:
         specifier: ^0.19.1
-        version: 0.19.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.19.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       starlight-package-managers:
         specifier: ^0.12.0
-        version: 0.12.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.12.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       starlight-typedoc:
         specifier: ^0.21.4
-        version: 0.21.4(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.9.3)))(typedoc@0.28.15(typescript@5.9.3))
+        version: 0.21.4(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.9.3)))(typedoc@0.28.15(typescript@5.9.3))
       typedoc:
         specifier: ^0.28.15
         version: 0.28.15(typescript@5.9.3)
@@ -821,8 +821,8 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -842,8 +842,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/levee-client:
     dependencies:
@@ -918,8 +918,8 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -945,8 +945,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/levee-driver:
     dependencies:
@@ -991,8 +991,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       rimraf:
         specifier: ^6.1.2
         version: 6.1.2
@@ -1003,8 +1003,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/levee-example:
     dependencies:
@@ -1067,8 +1067,8 @@ importers:
         specifier: ^4.3.4
         version: 4.7.0(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       rimraf:
         specifier: ^6.1.2
         version: 6.1.2
@@ -1079,8 +1079,8 @@ importers:
         specifier: ^7.3.0
         version: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/levee-presence-tracker:
     dependencies:
@@ -1171,8 +1171,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/rehype-footnotes:
     dependencies:
@@ -1193,8 +1193,8 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       rehype:
         specifier: ^13.0.2
         version: 13.0.2
@@ -1223,8 +1223,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/remark-lazy-links:
     dependencies:
@@ -1248,8 +1248,8 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       remark:
         specifier: ^15.0.1
         version: 15.0.1
@@ -1263,8 +1263,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/remark-shift-headings:
     dependencies:
@@ -1288,8 +1288,8 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       remark:
         specifier: ^15.0.1
         version: 15.0.1
@@ -1303,8 +1303,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/remark-task-table:
     dependencies:
@@ -1340,8 +1340,8 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       remark:
         specifier: ^15.0.1
         version: 15.0.1
@@ -1358,8 +1358,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/repopo:
     dependencies:
@@ -1443,8 +1443,8 @@ importers:
         specifier: ^0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       generate-license-file:
         specifier: ^4.1.1
         version: 4.1.1(typescript@5.9.3)
@@ -1467,8 +1467,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/repopo-docs:
     dependencies:
@@ -1477,10 +1477,10 @@ importers:
         version: 0.9.6(prettier@3.6.2)(typescript@5.9.3)
       '@astrojs/netlify':
         specifier: ^6.6.3
-        version: 6.6.3(@netlify/api@14.0.10)(@types/node@25.0.9)(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        version: 6.6.3(@netlify/api@14.0.10)(@types/node@25.0.9)(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
       '@astrojs/starlight':
         specifier: ^0.37.0
-        version: 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@fontsource/ibm-plex-serif':
         specifier: ^5.2.7
         version: 5.2.7
@@ -1492,7 +1492,7 @@ importers:
         version: 5.2.7
       astro:
         specifier: ^5.16.3
-        version: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       repopo:
         specifier: workspace:^
         version: link:../repopo
@@ -1501,16 +1501,16 @@ importers:
         version: 0.34.5
       starlight-heading-badges:
         specifier: ^0.6.1
-        version: 0.6.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.6.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       starlight-links-validator:
         specifier: ^0.19.1
-        version: 0.19.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.19.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       starlight-package-managers:
         specifier: ^0.12.0
-        version: 0.12.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
+        version: 0.12.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))
       starlight-typedoc:
         specifier: ^0.21.4
-        version: 0.21.4(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.9.3)))(typedoc@0.28.15(typescript@5.9.3))
+        version: 0.21.4(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.9.3)))(typedoc@0.28.15(typescript@5.9.3))
       typedoc:
         specifier: ^0.28.15
         version: 0.28.15(typescript@5.9.3)
@@ -1700,8 +1700,8 @@ importers:
         specifier: ^7.7.1
         version: 7.7.1
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -1718,8 +1718,8 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.19.25)(typescript@5.9.3)
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/sail-infrastructure:
     dependencies:
@@ -1809,8 +1809,8 @@ importers:
         specifier: ^7.7.1
         version: 7.7.1
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -1827,8 +1827,8 @@ importers:
         specifier: ^4.9.0
         version: 4.9.0(typedoc@0.28.15(typescript@5.9.3))
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/sort-tsconfig:
     dependencies:
@@ -1879,8 +1879,8 @@ importers:
         specifier: ^0.2.6
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       generate-license-file:
         specifier: ^4.1.1
         version: 4.1.1(typescript@5.9.3)
@@ -1912,8 +1912,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/xkcd2-api:
     devDependencies:
@@ -1930,8 +1930,8 @@ importers:
         specifier: ^20.19.25
         version: 20.19.25
       '@vitest/coverage-v8':
-        specifier: ^4.0.17
-        version: 4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+        specifier: ^4.0.18
+        version: 4.0.18(vitest@4.0.18)
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
@@ -1951,8 +1951,8 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^4.0.17
-        version: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+        specifier: ^4.0.18
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
 packages:
 
@@ -4689,8 +4689,18 @@ packages:
     cpu: [arm]
     os: [android]
 
+  '@rollup/rollup-android-arm-eabi@4.57.0':
+    resolution: {integrity: sha512-tPgXB6cDTndIe1ah7u6amCI1T0SsnlOuKgg10Xh3uizJk4e5M1JGaUMk7J4ciuAUcFpbOiNhm2XIjP9ON0dUqA==}
+    cpu: [arm]
+    os: [android]
+
   '@rollup/rollup-android-arm64@4.54.0':
     resolution: {integrity: sha512-Skx39Uv+u7H224Af+bDgNinitlmHyQX1K/atIA32JP3JQw6hVODX5tkbi2zof/E69M1qH2UoN3Xdxgs90mmNYw==}
+    cpu: [arm64]
+    os: [android]
+
+  '@rollup/rollup-android-arm64@4.57.0':
+    resolution: {integrity: sha512-sa4LyseLLXr1onr97StkU1Nb7fWcg6niokTwEVNOO7awaKaoRObQ54+V/hrF/BP1noMEaaAW6Fg2d/CfLiq3Mg==}
     cpu: [arm64]
     os: [android]
 
@@ -4699,8 +4709,18 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@rollup/rollup-darwin-arm64@4.57.0':
+    resolution: {integrity: sha512-/NNIj9A7yLjKdmkx5dC2XQ9DmjIECpGpwHoGmA5E1AhU0fuICSqSWScPhN1yLCkEdkCwJIDu2xIeLPs60MNIVg==}
+    cpu: [arm64]
+    os: [darwin]
+
   '@rollup/rollup-darwin-x64@4.54.0':
     resolution: {integrity: sha512-cOo7biqwkpawslEfox5Vs8/qj83M/aZCSSNIWpVzfU2CYHa2G3P1UN5WF01RdTHSgCkri7XOlTdtk17BezlV3A==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@rollup/rollup-darwin-x64@4.57.0':
+    resolution: {integrity: sha512-xoh8abqgPrPYPr7pTYipqnUi1V3em56JzE/HgDgitTqZBZ3yKCWI+7KUkceM6tNweyUKYru1UMi7FC060RyKwA==}
     cpu: [x64]
     os: [darwin]
 
@@ -4709,8 +4729,18 @@ packages:
     cpu: [arm64]
     os: [freebsd]
 
+  '@rollup/rollup-freebsd-arm64@4.57.0':
+    resolution: {integrity: sha512-PCkMh7fNahWSbA0OTUQ2OpYHpjZZr0hPr8lId8twD7a7SeWrvT3xJVyza+dQwXSSq4yEQTMoXgNOfMCsn8584g==}
+    cpu: [arm64]
+    os: [freebsd]
+
   '@rollup/rollup-freebsd-x64@4.54.0':
     resolution: {integrity: sha512-KGXIs55+b/ZfZsq9aR026tmr/+7tq6VG6MsnrvF4H8VhwflTIuYh+LFUlIsRdQSgrgmtM3fVATzEAj4hBQlaqQ==}
+    cpu: [x64]
+    os: [freebsd]
+
+  '@rollup/rollup-freebsd-x64@4.57.0':
+    resolution: {integrity: sha512-1j3stGx+qbhXql4OCDZhnK7b01s6rBKNybfsX+TNrEe9JNq4DLi1yGiR1xW+nL+FNVvI4D02PUnl6gJ/2y6WJA==}
     cpu: [x64]
     os: [freebsd]
 
@@ -4719,8 +4749,18 @@ packages:
     cpu: [arm]
     os: [linux]
 
+  '@rollup/rollup-linux-arm-gnueabihf@4.57.0':
+    resolution: {integrity: sha512-eyrr5W08Ms9uM0mLcKfM/Uzx7hjhz2bcjv8P2uynfj0yU8GGPdz8iYrBPhiLOZqahoAMB8ZiolRZPbbU2MAi6Q==}
+    cpu: [arm]
+    os: [linux]
+
   '@rollup/rollup-linux-arm-musleabihf@4.54.0':
     resolution: {integrity: sha512-+pBrqEjaakN2ySv5RVrj/qLytYhPKEUwk+e3SFU5jTLHIcAtqh2rLrd/OkbNuHJpsBgxsD8ccJt5ga/SeG0JmA==}
+    cpu: [arm]
+    os: [linux]
+
+  '@rollup/rollup-linux-arm-musleabihf@4.57.0':
+    resolution: {integrity: sha512-Xds90ITXJCNyX9pDhqf85MKWUI4lqjiPAipJ8OLp8xqI2Ehk+TCVhF9rvOoN8xTbcafow3QOThkNnrM33uCFQA==}
     cpu: [arm]
     os: [linux]
 
@@ -4729,8 +4769,18 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@rollup/rollup-linux-arm64-gnu@4.57.0':
+    resolution: {integrity: sha512-Xws2KA4CLvZmXjy46SQaXSejuKPhwVdaNinldoYfqruZBaJHqVo6hnRa8SDo9z7PBW5x84SH64+izmldCgbezw==}
+    cpu: [arm64]
+    os: [linux]
+
   '@rollup/rollup-linux-arm64-musl@4.54.0':
     resolution: {integrity: sha512-gr5vDbg3Bakga5kbdpqx81m2n9IX8M6gIMlQQIXiLTNeQW6CucvuInJ91EuCJ/JYvc+rcLLsDFcfAD1K7fMofg==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@rollup/rollup-linux-arm64-musl@4.57.0':
+    resolution: {integrity: sha512-hrKXKbX5FdaRJj7lTMusmvKbhMJSGWJ+w++4KmjiDhpTgNlhYobMvKfDoIWecy4O60K6yA4SnztGuNTQF+Lplw==}
     cpu: [arm64]
     os: [linux]
 
@@ -4739,8 +4789,28 @@ packages:
     cpu: [loong64]
     os: [linux]
 
+  '@rollup/rollup-linux-loong64-gnu@4.57.0':
+    resolution: {integrity: sha512-6A+nccfSDGKsPm00d3xKcrsBcbqzCTAukjwWK6rbuAnB2bHaL3r9720HBVZ/no7+FhZLz/U3GwwZZEh6tOSI8Q==}
+    cpu: [loong64]
+    os: [linux]
+
+  '@rollup/rollup-linux-loong64-musl@4.57.0':
+    resolution: {integrity: sha512-4P1VyYUe6XAJtQH1Hh99THxr0GKMMwIXsRNOceLrJnaHTDgk1FTcTimDgneRJPvB3LqDQxUmroBclQ1S0cIJwQ==}
+    cpu: [loong64]
+    os: [linux]
+
   '@rollup/rollup-linux-ppc64-gnu@4.54.0':
     resolution: {integrity: sha512-y3qNOfTBStmFNq+t4s7Tmc9hW2ENtPg8FeUD/VShI7rKxNW7O4fFeaYbMsd3tpFlIg1Q8IapFgy7Q9i2BqeBvA==}
+    cpu: [ppc64]
+    os: [linux]
+
+  '@rollup/rollup-linux-ppc64-gnu@4.57.0':
+    resolution: {integrity: sha512-8Vv6pLuIZCMcgXre6c3nOPhE0gjz1+nZP6T+hwWjr7sVH8k0jRkH+XnfjjOTglyMBdSKBPPz54/y1gToSKwrSQ==}
+    cpu: [ppc64]
+    os: [linux]
+
+  '@rollup/rollup-linux-ppc64-musl@4.57.0':
+    resolution: {integrity: sha512-r1te1M0Sm2TBVD/RxBPC6RZVwNqUTwJTA7w+C/IW5v9Ssu6xmxWEi+iJQlpBhtUiT1raJ5b48pI8tBvEjEFnFA==}
     cpu: [ppc64]
     os: [linux]
 
@@ -4749,8 +4819,18 @@ packages:
     cpu: [riscv64]
     os: [linux]
 
+  '@rollup/rollup-linux-riscv64-gnu@4.57.0':
+    resolution: {integrity: sha512-say0uMU/RaPm3CDQLxUUTF2oNWL8ysvHkAjcCzV2znxBr23kFfaxocS9qJm+NdkRhF8wtdEEAJuYcLPhSPbjuQ==}
+    cpu: [riscv64]
+    os: [linux]
+
   '@rollup/rollup-linux-riscv64-musl@4.54.0':
     resolution: {integrity: sha512-ZcU77ieh0M2Q8Ur7D5X7KvK+UxbXeDHwiOt/CPSBTI1fBmeDMivW0dPkdqkT4rOgDjrDDBUed9x4EgraIKoR2A==}
+    cpu: [riscv64]
+    os: [linux]
+
+  '@rollup/rollup-linux-riscv64-musl@4.57.0':
+    resolution: {integrity: sha512-/MU7/HizQGsnBREtRpcSbSV1zfkoxSTR7wLsRmBPQ8FwUj5sykrP1MyJTvsxP5KBq9SyE6kH8UQQQwa0ASeoQQ==}
     cpu: [riscv64]
     os: [linux]
 
@@ -4759,8 +4839,18 @@ packages:
     cpu: [s390x]
     os: [linux]
 
+  '@rollup/rollup-linux-s390x-gnu@4.57.0':
+    resolution: {integrity: sha512-Q9eh+gUGILIHEaJf66aF6a414jQbDnn29zeu0eX3dHMuysnhTvsUvZTCAyZ6tJhUjnvzBKE4FtuaYxutxRZpOg==}
+    cpu: [s390x]
+    os: [linux]
+
   '@rollup/rollup-linux-x64-gnu@4.54.0':
     resolution: {integrity: sha512-WGt5J8Ij/rvyqpFexxk3ffKqqbLf9AqrTBbWDk7ApGUzaIs6V+s2s84kAxklFwmMF/vBNGrVdYgbblCOFFezMQ==}
+    cpu: [x64]
+    os: [linux]
+
+  '@rollup/rollup-linux-x64-gnu@4.57.0':
+    resolution: {integrity: sha512-OR5p5yG5OKSxHReWmwvM0P+VTPMwoBS45PXTMYaskKQqybkS3Kmugq1W+YbNWArF8/s7jQScgzXUhArzEQ7x0A==}
     cpu: [x64]
     os: [linux]
 
@@ -4769,8 +4859,23 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@rollup/rollup-linux-x64-musl@4.57.0':
+    resolution: {integrity: sha512-XeatKzo4lHDsVEbm1XDHZlhYZZSQYym6dg2X/Ko0kSFgio+KXLsxwJQprnR48GvdIKDOpqWqssC3iBCjoMcMpw==}
+    cpu: [x64]
+    os: [linux]
+
+  '@rollup/rollup-openbsd-x64@4.57.0':
+    resolution: {integrity: sha512-Lu71y78F5qOfYmubYLHPcJm74GZLU6UJ4THkf/a1K7Tz2ycwC2VUbsqbJAXaR6Bx70SRdlVrt2+n5l7F0agTUw==}
+    cpu: [x64]
+    os: [openbsd]
+
   '@rollup/rollup-openharmony-arm64@4.54.0':
     resolution: {integrity: sha512-huT3fd0iC7jigGh7n3q/+lfPcXxBi+om/Rs3yiFxjvSxbSB6aohDFXbWvlspaqjeOh+hx7DDHS+5Es5qRkWkZg==}
+    cpu: [arm64]
+    os: [openharmony]
+
+  '@rollup/rollup-openharmony-arm64@4.57.0':
+    resolution: {integrity: sha512-v5xwKDWcu7qhAEcsUubiav7r+48Uk/ENWdr82MBZZRIm7zThSxCIVDfb3ZeRRq9yqk+oIzMdDo6fCcA5DHfMyA==}
     cpu: [arm64]
     os: [openharmony]
 
@@ -4779,8 +4884,18 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@rollup/rollup-win32-arm64-msvc@4.57.0':
+    resolution: {integrity: sha512-XnaaaSMGSI6Wk8F4KK3QP7GfuuhjGchElsVerCplUuxRIzdvZ7hRBpLR0omCmw+kI2RFJB80nenhOoGXlJ5TfQ==}
+    cpu: [arm64]
+    os: [win32]
+
   '@rollup/rollup-win32-ia32-msvc@4.54.0':
     resolution: {integrity: sha512-woEHgqQqDCkAzrDhvDipnSirm5vxUXtSKDYTVpZG3nUdW/VVB5VdCYA2iReSj/u3yCZzXID4kuKG7OynPnB3WQ==}
+    cpu: [ia32]
+    os: [win32]
+
+  '@rollup/rollup-win32-ia32-msvc@4.57.0':
+    resolution: {integrity: sha512-3K1lP+3BXY4t4VihLw5MEg6IZD3ojSYzqzBG571W3kNQe4G4CcFpSUQVgurYgib5d+YaCjeFow8QivWp8vuSvA==}
     cpu: [ia32]
     os: [win32]
 
@@ -4789,8 +4904,18 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@rollup/rollup-win32-x64-gnu@4.57.0':
+    resolution: {integrity: sha512-MDk610P/vJGc5L5ImE4k5s+GZT3en0KoK1MKPXCRgzmksAMk79j4h3k1IerxTNqwDLxsGxStEZVBqG0gIqZqoA==}
+    cpu: [x64]
+    os: [win32]
+
   '@rollup/rollup-win32-x64-msvc@4.54.0':
     resolution: {integrity: sha512-hYT5d3YNdSh3mbCU1gwQyPgQd3T2ne0A3KG8KSBdav5TiBg6eInVmV+TeR5uHufiIgSFg0XsOWGW5/RhNcSvPg==}
+    cpu: [x64]
+    os: [win32]
+
+  '@rollup/rollup-win32-x64-msvc@4.57.0':
+    resolution: {integrity: sha512-Zv7v6q6aV+VslnpwzqKAmrk5JdVkLUzok2208ZXGipjb+msxBr/fJPZyeEXiFgH7k62Ak0SLIfxQRZQvTuf7rQ==}
     cpu: [x64]
     os: [win32]
 
@@ -5477,20 +5602,20 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
 
-  '@vitest/coverage-v8@4.0.17':
-    resolution: {integrity: sha512-/6zU2FLGg0jsd+ePZcwHRy3+WpNTBBhDY56P4JTRqUN/Dp6CvOEa9HrikcQ4KfV2b2kAHUFB4dl1SuocWXSFEw==}
+  '@vitest/coverage-v8@4.0.18':
+    resolution: {integrity: sha512-7i+N2i0+ME+2JFZhfuz7Tg/FqKtilHjGyGvoHYQ6iLV0zahbsJ9sljC9OcFcPDbhYKCet+sG8SsVqlyGvPflZg==}
     peerDependencies:
-      '@vitest/browser': 4.0.17
-      vitest: 4.0.17
+      '@vitest/browser': 4.0.18
+      vitest: 4.0.18
     peerDependenciesMeta:
       '@vitest/browser':
         optional: true
 
-  '@vitest/expect@4.0.17':
-    resolution: {integrity: sha512-mEoqP3RqhKlbmUmntNDDCJeTDavDR+fVYkSOw8qRwJFaW/0/5zA9zFeTrHqNtcmwh6j26yMmwx2PqUDPzt5ZAQ==}
+  '@vitest/expect@4.0.18':
+    resolution: {integrity: sha512-8sCWUyckXXYvx4opfzVY03EOiYVxyNrHS5QxX3DAIi5dpJAAkyJezHCP77VMX4HKA2LDT/Jpfo8i2r5BE3GnQQ==}
 
-  '@vitest/mocker@4.0.17':
-    resolution: {integrity: sha512-+ZtQhLA3lDh1tI2wxe3yMsGzbp7uuJSWBM1iTIKCbppWTSBN09PUC+L+fyNlQApQoR+Ps8twt2pbSSXg2fQVEQ==}
+  '@vitest/mocker@4.0.18':
+    resolution: {integrity: sha512-HhVd0MDnzzsgevnOWCBj5Otnzobjy5wLBe4EdeeFGv8luMsGcYqDuFRMcttKWZA5vVO8RFjexVovXvAM4JoJDQ==}
     peerDependencies:
       msw: ^2.4.9
       vite: ^6.0.0 || ^7.0.0-0
@@ -5500,31 +5625,25 @@ packages:
       vite:
         optional: true
 
-  '@vitest/pretty-format@4.0.16':
-    resolution: {integrity: sha512-eNCYNsSty9xJKi/UdVD8Ou16alu7AYiS2fCPRs0b1OdhJiV89buAXQLpTbe+X8V9L6qrs9CqyvU7OaAopJYPsA==}
+  '@vitest/pretty-format@4.0.18':
+    resolution: {integrity: sha512-P24GK3GulZWC5tz87ux0m8OADrQIUVDPIjjj65vBXYG17ZeU3qD7r+MNZ1RNv4l8CGU2vtTRqixrOi9fYk/yKw==}
 
-  '@vitest/pretty-format@4.0.17':
-    resolution: {integrity: sha512-Ah3VAYmjcEdHg6+MwFE17qyLqBHZ+ni2ScKCiW2XrlSBV4H3Z7vYfPfz7CWQ33gyu76oc0Ai36+kgLU3rfF4nw==}
+  '@vitest/runner@4.0.18':
+    resolution: {integrity: sha512-rpk9y12PGa22Jg6g5M3UVVnTS7+zycIGk9ZNGN+m6tZHKQb7jrP7/77WfZy13Y/EUDd52NDsLRQhYKtv7XfPQw==}
 
-  '@vitest/runner@4.0.17':
-    resolution: {integrity: sha512-JmuQyf8aMWoo/LmNFppdpkfRVHJcsgzkbCA+/Bk7VfNH7RE6Ut2qxegeyx2j3ojtJtKIbIGy3h+KxGfYfk28YQ==}
+  '@vitest/snapshot@4.0.18':
+    resolution: {integrity: sha512-PCiV0rcl7jKQjbgYqjtakly6T1uwv/5BQ9SwBLekVg/EaYeQFPiXcgrC2Y7vDMA8dM1SUEAEV82kgSQIlXNMvA==}
 
-  '@vitest/snapshot@4.0.17':
-    resolution: {integrity: sha512-npPelD7oyL+YQM2gbIYvlavlMVWUfNNGZPcu0aEUQXt7FXTuqhmgiYupPnAanhKvyP6Srs2pIbWo30K0RbDtRQ==}
+  '@vitest/spy@4.0.18':
+    resolution: {integrity: sha512-cbQt3PTSD7P2OARdVW3qWER5EGq7PHlvE+QfzSC0lbwO+xnt7+XH06ZzFjFRgzUX//JmpxrCu92VdwvEPlWSNw==}
 
-  '@vitest/spy@4.0.17':
-    resolution: {integrity: sha512-I1bQo8QaP6tZlTomQNWKJE6ym4SHf3oLS7ceNjozxxgzavRAgZDc06T7kD8gb9bXKEgcLNt00Z+kZO6KaJ62Ew==}
-
-  '@vitest/ui@4.0.16':
-    resolution: {integrity: sha512-rkoPH+RqWopVxDnCBE/ysIdfQ2A7j1eDmW8tCxxrR9nnFBa9jKf86VgsSAzxBd1x+ny0GC4JgiD3SNfRHv3pOg==}
+  '@vitest/ui@4.0.18':
+    resolution: {integrity: sha512-CGJ25bc8fRi8Lod/3GHSvXRKi7nBo3kxh0ApW4yCjmrWmRmlT53B5E08XRSZRliygG0aVNxLrBEqPYdz/KcCtQ==}
     peerDependencies:
-      vitest: 4.0.16
+      vitest: 4.0.18
 
-  '@vitest/utils@4.0.16':
-    resolution: {integrity: sha512-h8z9yYhV3e1LEfaQ3zdypIrnAg/9hguReGZoS7Gl0aBG5xgA410zBqECqmaF/+RkTggRsfnzc1XaAHA6bmUufA==}
-
-  '@vitest/utils@4.0.17':
-    resolution: {integrity: sha512-RG6iy+IzQpa9SB8HAFHJ9Y+pTzI+h8553MrciN9eC6TFBErqrQaTas4vG+MVj8S4uKk8uTT2p0vgZPnTdxd96w==}
+  '@vitest/utils@4.0.18':
+    resolution: {integrity: sha512-msMRKLMVLWygpK3u2Hybgi4MNjcYJvwTb0Ru09+fOyCXIgT5raYP041DRRdiJiI3k/2U6SEbAETB3YtBrUkCFA==}
 
   '@volar/kit@2.4.26':
     resolution: {integrity: sha512-shgNg7PbV8SIxxQLOQh5zMr8KV0JvdG9If0MwJb5L1HMrBU91jBxR0ANi2OJPMMme6/l1vIYm4hCaO6W2JaEcQ==}
@@ -10705,6 +10824,11 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
+  rollup@4.57.0:
+    resolution: {integrity: sha512-e5lPJi/aui4TO1LpAXIRLySmwXSE8k3b9zoGfd42p67wzxog4WHjiZF3M2uheQih4DGyc25QEV4yRBbpueNiUA==}
+    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
+    hasBin: true
+
   run-applescript@7.1.0:
     resolution: {integrity: sha512-DPe5pVFaAsinSaV6QjQ6gdiedWDcRCbUuiQfQa2wmWV7+xC9bGulGI8+TdRmoFkAPaBXk8CrAbnlY2ISniJ47Q==}
     engines: {node: '>=18'}
@@ -12150,6 +12274,46 @@ packages:
       yaml:
         optional: true
 
+  vite@7.3.1:
+    resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^20.19.0 || >=22.12.0
+      jiti: '>=1.21.0'
+      less: ^4.0.0
+      lightningcss: ^1.21.0
+      sass: ^1.70.0
+      sass-embedded: ^1.70.0
+      stylus: '>=0.54.8'
+      sugarss: ^5.0.0
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
   vitefu@1.1.1:
     resolution: {integrity: sha512-B/Fegf3i8zh0yFbpzZ21amWzHmuNlLlmJT6n7bu5e+pCHUKQIfXSYokrqOBGEMMe9UG2sostKQF9mml/vYaWJQ==}
     peerDependencies:
@@ -12158,18 +12322,18 @@ packages:
       vite:
         optional: true
 
-  vitest@4.0.17:
-    resolution: {integrity: sha512-FQMeF0DJdWY0iOnbv466n/0BudNdKj1l5jYgl5JVTwjSsZSlqyXFt/9+1sEyhR6CLowbZpV7O1sCHrzBhucKKg==}
+  vitest@4.0.18:
+    resolution: {integrity: sha512-hOQuK7h0FGKgBAas7v0mSAsnvrIgAvWmRFjmzpJ7SwFHH3g1k2u37JtYwOwmEKhK6ZO3v9ggDBBm0La1LCK4uQ==}
     engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@opentelemetry/api': ^1.9.0
       '@types/node': ^20.0.0 || ^22.0.0 || >=24.0.0
-      '@vitest/browser-playwright': 4.0.17
-      '@vitest/browser-preview': 4.0.17
-      '@vitest/browser-webdriverio': 4.0.17
-      '@vitest/ui': 4.0.17
+      '@vitest/browser-playwright': 4.0.18
+      '@vitest/browser-preview': 4.0.18
+      '@vitest/browser-webdriverio': 4.0.18
+      '@vitest/ui': 4.0.18
       happy-dom: '*'
       jsdom: '*'
     peerDependenciesMeta:
@@ -12787,12 +12951,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.3.13(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
+  '@astrojs/mdx@4.3.13(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.10
       '@mdx-js/mdx': 3.1.1
       acorn: 8.15.0
-      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -12806,15 +12970,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/netlify@6.6.3(@netlify/api@14.0.10)(@types/node@25.0.9)(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)':
+  '@astrojs/netlify@6.6.3(@netlify/api@14.0.10)(@types/node@25.0.9)(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)':
     dependencies:
       '@astrojs/internal-helpers': 0.7.5
       '@astrojs/underscore-redirects': 1.0.0
       '@netlify/blobs': 10.4.1
       '@netlify/functions': 5.1.0
-      '@netlify/vite-plugin': 2.7.14(@netlify/api@14.0.10)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.54.0)(vite@6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
-      '@vercel/nft': 0.30.4(encoding@0.1.13)(rollup@4.54.0)
-      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      '@netlify/vite-plugin': 2.7.14(@netlify/api@14.0.10)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.57.0)(vite@6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+      '@vercel/nft': 0.30.4(encoding@0.1.13)(rollup@4.57.0)
+      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       esbuild: 0.25.12
       tinyglobby: 0.2.15
       vite: 6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
@@ -12866,17 +13030,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.25.76
 
-  '@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
+  '@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.10
-      '@astrojs/mdx': 4.3.13(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@astrojs/mdx': 4.3.13(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@astrojs/sitemap': 3.6.0
       '@pagefind/default-ui': 1.4.0
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
-      astro-expressive-code: 0.41.3(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      astro-expressive-code: 0.41.3(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -15908,14 +16072,14 @@ snapshots:
       uuid: 13.0.0
       write-file-atomic: 5.0.1
 
-  '@netlify/dev@4.8.2(@netlify/api@14.0.10)(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.54.0)':
+  '@netlify/dev@4.8.2(@netlify/api@14.0.10)(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.57.0)':
     dependencies:
       '@netlify/ai': 0.3.3(@netlify/api@14.0.10)
       '@netlify/blobs': 10.4.1
       '@netlify/config': 23.2.0
       '@netlify/dev-utils': 4.3.2
       '@netlify/edge-functions-dev': 1.0.5
-      '@netlify/functions-dev': 1.1.2(encoding@0.1.13)(rollup@4.54.0)
+      '@netlify/functions-dev': 1.1.2(encoding@0.1.13)(rollup@4.57.0)
       '@netlify/headers': 2.1.2
       '@netlify/images': 1.3.2(@netlify/blobs@10.4.1)(ioredis@5.6.1)
       '@netlify/redirects': 3.1.3
@@ -15986,12 +16150,12 @@ snapshots:
     dependencies:
       '@netlify/types': 2.2.0
 
-  '@netlify/functions-dev@1.1.2(encoding@0.1.13)(rollup@4.54.0)':
+  '@netlify/functions-dev@1.1.2(encoding@0.1.13)(rollup@4.57.0)':
     dependencies:
       '@netlify/blobs': 10.4.1
       '@netlify/dev-utils': 4.3.2
       '@netlify/functions': 5.1.0
-      '@netlify/zip-it-and-ship-it': 14.1.14(encoding@0.1.13)(rollup@4.54.0)
+      '@netlify/zip-it-and-ship-it': 14.1.14(encoding@0.1.13)(rollup@4.57.0)
       cron-parser: 4.9.0
       decache: 4.6.2
       extract-zip: 2.0.1
@@ -16095,9 +16259,9 @@ snapshots:
 
   '@netlify/types@2.2.0': {}
 
-  '@netlify/vite-plugin@2.7.14(@netlify/api@14.0.10)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.54.0)(vite@6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+  '@netlify/vite-plugin@2.7.14(@netlify/api@14.0.10)(babel-plugin-macros@3.1.0)(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.57.0)(vite@6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
-      '@netlify/dev': 4.8.2(@netlify/api@14.0.10)(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.54.0)
+      '@netlify/dev': 4.8.2(@netlify/api@14.0.10)(encoding@0.1.13)(ioredis@5.6.1)(rollup@4.57.0)
       '@netlify/dev-utils': 4.3.2
       dedent: 1.7.0(babel-plugin-macros@3.1.0)
       vite: 6.4.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
@@ -16128,13 +16292,13 @@ snapshots:
       - supports-color
       - uploadthing
 
-  '@netlify/zip-it-and-ship-it@14.1.14(encoding@0.1.13)(rollup@4.54.0)':
+  '@netlify/zip-it-and-ship-it@14.1.14(encoding@0.1.13)(rollup@4.57.0)':
     dependencies:
       '@babel/parser': 7.28.5
       '@babel/types': 7.28.5
       '@netlify/binary-info': 1.0.0
       '@netlify/serverless-functions-api': 2.7.2
-      '@vercel/nft': 0.29.4(encoding@0.1.13)(rollup@4.54.0)
+      '@vercel/nft': 0.29.4(encoding@0.1.13)(rollup@4.57.0)
       archiver: 7.0.1
       common-path-prefix: 3.0.0
       copy-file: 11.1.0
@@ -16378,11 +16542,11 @@ snapshots:
   '@nx/nx-win32-x64-msvc@22.3.3':
     optional: true
 
-  '@nx/vite@22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+  '@nx/vite@22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)':
     dependencies:
       '@nx/devkit': 22.3.3(nx@22.3.3)
       '@nx/js': 22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)
-      '@nx/vitest': 22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+      '@nx/vitest': 22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)
       '@phenomnomnominal/tsquery': 5.0.1(typescript@5.9.3)
       ajv: 8.17.1
       enquirer: 2.3.6
@@ -16390,8 +16554,8 @@ snapshots:
       semver: 7.7.3
       tsconfig-paths: 4.2.0
       tslib: 2.8.1
-      vite: 7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -16402,7 +16566,7 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nx/vitest@22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+  '@nx/vitest@22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)':
     dependencies:
       '@nx/devkit': 22.3.3(nx@22.3.3)
       '@nx/js': 22.3.3(@babel/traverse@7.28.5)(nx@22.3.3)
@@ -16410,8 +16574,8 @@ snapshots:
       semver: 7.7.3
       tslib: 2.8.1
     optionalDependencies:
-      vite: 7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -16774,78 +16938,153 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
-  '@rollup/pluginutils@5.3.0(rollup@4.54.0)':
+  '@rollup/pluginutils@5.3.0(rollup@4.57.0)':
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
       picomatch: 4.0.3
     optionalDependencies:
-      rollup: 4.54.0
+      rollup: 4.57.0
 
   '@rollup/rollup-android-arm-eabi@4.54.0':
+    optional: true
+
+  '@rollup/rollup-android-arm-eabi@4.57.0':
     optional: true
 
   '@rollup/rollup-android-arm64@4.54.0':
     optional: true
 
+  '@rollup/rollup-android-arm64@4.57.0':
+    optional: true
+
   '@rollup/rollup-darwin-arm64@4.54.0':
+    optional: true
+
+  '@rollup/rollup-darwin-arm64@4.57.0':
     optional: true
 
   '@rollup/rollup-darwin-x64@4.54.0':
     optional: true
 
+  '@rollup/rollup-darwin-x64@4.57.0':
+    optional: true
+
   '@rollup/rollup-freebsd-arm64@4.54.0':
+    optional: true
+
+  '@rollup/rollup-freebsd-arm64@4.57.0':
     optional: true
 
   '@rollup/rollup-freebsd-x64@4.54.0':
     optional: true
 
+  '@rollup/rollup-freebsd-x64@4.57.0':
+    optional: true
+
   '@rollup/rollup-linux-arm-gnueabihf@4.54.0':
+    optional: true
+
+  '@rollup/rollup-linux-arm-gnueabihf@4.57.0':
     optional: true
 
   '@rollup/rollup-linux-arm-musleabihf@4.54.0':
     optional: true
 
+  '@rollup/rollup-linux-arm-musleabihf@4.57.0':
+    optional: true
+
   '@rollup/rollup-linux-arm64-gnu@4.54.0':
+    optional: true
+
+  '@rollup/rollup-linux-arm64-gnu@4.57.0':
     optional: true
 
   '@rollup/rollup-linux-arm64-musl@4.54.0':
     optional: true
 
+  '@rollup/rollup-linux-arm64-musl@4.57.0':
+    optional: true
+
   '@rollup/rollup-linux-loong64-gnu@4.54.0':
+    optional: true
+
+  '@rollup/rollup-linux-loong64-gnu@4.57.0':
+    optional: true
+
+  '@rollup/rollup-linux-loong64-musl@4.57.0':
     optional: true
 
   '@rollup/rollup-linux-ppc64-gnu@4.54.0':
     optional: true
 
+  '@rollup/rollup-linux-ppc64-gnu@4.57.0':
+    optional: true
+
+  '@rollup/rollup-linux-ppc64-musl@4.57.0':
+    optional: true
+
   '@rollup/rollup-linux-riscv64-gnu@4.54.0':
+    optional: true
+
+  '@rollup/rollup-linux-riscv64-gnu@4.57.0':
     optional: true
 
   '@rollup/rollup-linux-riscv64-musl@4.54.0':
     optional: true
 
+  '@rollup/rollup-linux-riscv64-musl@4.57.0':
+    optional: true
+
   '@rollup/rollup-linux-s390x-gnu@4.54.0':
+    optional: true
+
+  '@rollup/rollup-linux-s390x-gnu@4.57.0':
     optional: true
 
   '@rollup/rollup-linux-x64-gnu@4.54.0':
     optional: true
 
+  '@rollup/rollup-linux-x64-gnu@4.57.0':
+    optional: true
+
   '@rollup/rollup-linux-x64-musl@4.54.0':
+    optional: true
+
+  '@rollup/rollup-linux-x64-musl@4.57.0':
+    optional: true
+
+  '@rollup/rollup-openbsd-x64@4.57.0':
     optional: true
 
   '@rollup/rollup-openharmony-arm64@4.54.0':
     optional: true
 
+  '@rollup/rollup-openharmony-arm64@4.57.0':
+    optional: true
+
   '@rollup/rollup-win32-arm64-msvc@4.54.0':
+    optional: true
+
+  '@rollup/rollup-win32-arm64-msvc@4.57.0':
     optional: true
 
   '@rollup/rollup-win32-ia32-msvc@4.54.0':
     optional: true
 
+  '@rollup/rollup-win32-ia32-msvc@4.57.0':
+    optional: true
+
   '@rollup/rollup-win32-x64-gnu@4.54.0':
     optional: true
 
+  '@rollup/rollup-win32-x64-gnu@4.57.0':
+    optional: true
+
   '@rollup/rollup-win32-x64-msvc@4.54.0':
+    optional: true
+
+  '@rollup/rollup-win32-x64-msvc@4.57.0':
     optional: true
 
   '@rushstack/node-core-library@5.19.0(@types/node@20.19.25)':
@@ -17180,14 +17419,14 @@ snapshots:
     dependencies:
       svelte: 5.47.0
 
-  '@testing-library/svelte@5.3.1(svelte@5.47.0)(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.17)':
+  '@testing-library/svelte@5.3.1(svelte@5.47.0)(vite@7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))(vitest@4.0.18)':
     dependencies:
       '@testing-library/dom': 10.4.1
       '@testing-library/svelte-core': 1.0.0(svelte@5.47.0)
       svelte: 5.47.0
     optionalDependencies:
       vite: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
   '@tinyhttp/content-disposition@2.2.2': {}
 
@@ -17543,10 +17782,10 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vercel/nft@0.29.4(encoding@0.1.13)(rollup@4.54.0)':
+  '@vercel/nft@0.29.4(encoding@0.1.13)(rollup@4.57.0)':
     dependencies:
       '@mapbox/node-pre-gyp': 2.0.0(encoding@0.1.13)
-      '@rollup/pluginutils': 5.3.0(rollup@4.54.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.57.0)
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
       async-sema: 3.1.1
@@ -17562,10 +17801,10 @@ snapshots:
       - rollup
       - supports-color
 
-  '@vercel/nft@0.30.4(encoding@0.1.13)(rollup@4.54.0)':
+  '@vercel/nft@0.30.4(encoding@0.1.13)(rollup@4.57.0)':
     dependencies:
       '@mapbox/node-pre-gyp': 2.0.0(encoding@0.1.13)
-      '@rollup/pluginutils': 5.3.0(rollup@4.54.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.57.0)
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
       async-sema: 3.1.1
@@ -17593,10 +17832,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@4.0.17(vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+  '@vitest/coverage-v8@4.0.18(vitest@4.0.18)':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
-      '@vitest/utils': 4.0.17
+      '@vitest/utils': 4.0.18
       ast-v8-to-istanbul: 0.3.10
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
@@ -17605,75 +17844,66 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
-  '@vitest/expect@4.0.17':
+  '@vitest/expect@4.0.18':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@types/chai': 5.2.3
-      '@vitest/spy': 4.0.17
-      '@vitest/utils': 4.0.17
+      '@vitest/spy': 4.0.18
+      '@vitest/utils': 4.0.18
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.17(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+  '@vitest/mocker@4.0.18(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
-      '@vitest/spy': 4.0.17
+      '@vitest/spy': 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       msw: 2.12.3(@types/node@20.19.25)(typescript@5.9.3)
-      vite: 7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
-  '@vitest/mocker@4.0.17(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
+  '@vitest/mocker@4.0.18(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
-      '@vitest/spy': 4.0.17
+      '@vitest/spy': 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       msw: 2.12.3(@types/node@25.0.9)(typescript@5.9.3)
-      vite: 7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
-  '@vitest/pretty-format@4.0.16':
+  '@vitest/pretty-format@4.0.18':
     dependencies:
       tinyrainbow: 3.0.3
 
-  '@vitest/pretty-format@4.0.17':
+  '@vitest/runner@4.0.18':
     dependencies:
-      tinyrainbow: 3.0.3
-
-  '@vitest/runner@4.0.17':
-    dependencies:
-      '@vitest/utils': 4.0.17
+      '@vitest/utils': 4.0.18
       pathe: 2.0.3
 
-  '@vitest/snapshot@4.0.17':
+  '@vitest/snapshot@4.0.18':
     dependencies:
-      '@vitest/pretty-format': 4.0.17
+      '@vitest/pretty-format': 4.0.18
       magic-string: 0.30.21
       pathe: 2.0.3
 
-  '@vitest/spy@4.0.17': {}
+  '@vitest/spy@4.0.18': {}
 
-  '@vitest/ui@4.0.16(vitest@4.0.17)':
+  '@vitest/ui@4.0.18(vitest@4.0.18)':
     dependencies:
-      '@vitest/utils': 4.0.16
+      '@vitest/utils': 4.0.18
       fflate: 0.8.2
       flatted: 3.3.3
       pathe: 2.0.3
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vitest: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
-  '@vitest/utils@4.0.16':
+  '@vitest/utils@4.0.18':
     dependencies:
-      '@vitest/pretty-format': 4.0.16
-      tinyrainbow: 3.0.3
-
-  '@vitest/utils@4.0.17':
-    dependencies:
-      '@vitest/pretty-format': 4.0.17
+      '@vitest/pretty-format': 4.0.18
       tinyrainbow: 3.0.3
 
   '@volar/kit@2.4.26(typescript@5.9.3)':
@@ -18017,12 +18247,12 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.41.3(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)):
+  astro-expressive-code@0.41.3(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)):
     dependencies:
-      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       rehype-expressive-code: 0.41.3
 
-  astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2):
+  astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2):
     dependencies:
       '@astrojs/compiler': 2.13.0
       '@astrojs/internal-helpers': 0.7.5
@@ -18030,7 +18260,7 @@ snapshots:
       '@astrojs/telemetry': 3.3.0
       '@capsizecss/unpack': 3.0.1
       '@oslojs/encoding': 1.1.0
-      '@rollup/pluginutils': 5.3.0(rollup@4.54.0)
+      '@rollup/pluginutils': 5.3.0(rollup@4.57.0)
       acorn: 8.15.0
       aria-query: 5.3.2
       axobject-query: 4.1.0
@@ -24211,6 +24441,37 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.54.0
       fsevents: 2.3.3
 
+  rollup@4.57.0:
+    dependencies:
+      '@types/estree': 1.0.8
+    optionalDependencies:
+      '@rollup/rollup-android-arm-eabi': 4.57.0
+      '@rollup/rollup-android-arm64': 4.57.0
+      '@rollup/rollup-darwin-arm64': 4.57.0
+      '@rollup/rollup-darwin-x64': 4.57.0
+      '@rollup/rollup-freebsd-arm64': 4.57.0
+      '@rollup/rollup-freebsd-x64': 4.57.0
+      '@rollup/rollup-linux-arm-gnueabihf': 4.57.0
+      '@rollup/rollup-linux-arm-musleabihf': 4.57.0
+      '@rollup/rollup-linux-arm64-gnu': 4.57.0
+      '@rollup/rollup-linux-arm64-musl': 4.57.0
+      '@rollup/rollup-linux-loong64-gnu': 4.57.0
+      '@rollup/rollup-linux-loong64-musl': 4.57.0
+      '@rollup/rollup-linux-ppc64-gnu': 4.57.0
+      '@rollup/rollup-linux-ppc64-musl': 4.57.0
+      '@rollup/rollup-linux-riscv64-gnu': 4.57.0
+      '@rollup/rollup-linux-riscv64-musl': 4.57.0
+      '@rollup/rollup-linux-s390x-gnu': 4.57.0
+      '@rollup/rollup-linux-x64-gnu': 4.57.0
+      '@rollup/rollup-linux-x64-musl': 4.57.0
+      '@rollup/rollup-openbsd-x64': 4.57.0
+      '@rollup/rollup-openharmony-arm64': 4.57.0
+      '@rollup/rollup-win32-arm64-msvc': 4.57.0
+      '@rollup/rollup-win32-ia32-msvc': 4.57.0
+      '@rollup/rollup-win32-x64-gnu': 4.57.0
+      '@rollup/rollup-win32-x64-msvc': 4.57.0
+      fsevents: 2.3.3
+
   run-applescript@7.1.0: {}
 
   run-async@2.4.1: {}
@@ -24706,19 +24967,19 @@ snapshots:
 
   standard-as-callback@2.1.0: {}
 
-  starlight-heading-badges@0.6.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))):
+  starlight-heading-badges@0.6.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))):
     dependencies:
       '@astrojs/markdown-remark': 6.3.10
-      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       github-slugger: 2.0.0
       mdast-util-directive: 3.1.0
       unist-util-visit: 5.0.0
     transitivePeerDependencies:
       - supports-color
 
-  starlight-links-validator@0.19.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))):
+  starlight-links-validator@0.19.1(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))):
     dependencies:
-      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@types/picomatch': 3.0.2
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.3
@@ -24733,13 +24994,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-llms-txt@0.7.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)):
+  starlight-llms-txt@0.7.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)):
     dependencies:
-      '@astrojs/mdx': 4.3.13(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@astrojs/mdx': 4.3.13(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@types/hast': 3.0.4
       '@types/micromatch': 4.0.10
-      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       github-slugger: 2.0.0
       hast-util-select: 6.0.4
       micromatch: 4.0.8
@@ -24752,13 +25013,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-package-managers@0.12.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))):
+  starlight-package-managers@0.12.0(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))):
     dependencies:
-      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
 
-  starlight-typedoc@0.21.4(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.9.3)))(typedoc@0.28.15(typescript@5.9.3)):
+  starlight-typedoc@0.21.4(@astrojs/starlight@0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.9.3)))(typedoc@0.28.15(typescript@5.9.3)):
     dependencies:
-      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.54.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@astrojs/starlight': 0.37.0(astro@5.16.3(@netlify/blobs@10.4.1)(@types/node@25.0.9)(ioredis@5.6.1)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.57.0)(terser@5.44.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       github-slugger: 2.0.0
       typedoc: 0.28.15(typescript@5.9.3)
       typedoc-plugin-markdown: 4.9.0(typedoc@0.28.15(typescript@5.9.3))
@@ -25802,13 +26063,30 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.2
 
-  vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
+  vite@7.3.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
       postcss: 8.5.6
-      rollup: 4.54.0
+      rollup: 4.57.0
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 20.19.25
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      lightningcss: 1.30.2
+      terser: 5.44.0
+      tsx: 4.21.0
+      yaml: 2.8.2
+
+  vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
+    dependencies:
+      esbuild: 0.27.2
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.57.0
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 25.0.9
@@ -25827,15 +26105,15 @@ snapshots:
     optionalDependencies:
       vite: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
 
-  vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.16)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
+  vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@20.19.25)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
-      '@vitest/expect': 4.0.17
-      '@vitest/mocker': 4.0.17(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
-      '@vitest/pretty-format': 4.0.17
-      '@vitest/runner': 4.0.17
-      '@vitest/snapshot': 4.0.17
-      '@vitest/spy': 4.0.17
-      '@vitest/utils': 4.0.17
+      '@vitest/expect': 4.0.18
+      '@vitest/mocker': 4.0.18(msw@2.12.3(@types/node@20.19.25)(typescript@5.9.3))(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+      '@vitest/pretty-format': 4.0.18
+      '@vitest/runner': 4.0.18
+      '@vitest/snapshot': 4.0.18
+      '@vitest/spy': 4.0.18
+      '@vitest/utils': 4.0.18
       es-module-lexer: 1.7.0
       expect-type: 1.3.0
       magic-string: 0.30.21
@@ -25847,12 +26125,12 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.0(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@20.19.25)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
       '@types/node': 20.19.25
-      '@vitest/ui': 4.0.16(vitest@4.0.17)
+      '@vitest/ui': 4.0.18(vitest@4.0.18)
       happy-dom: 20.3.1
       jsdom: 27.4.0
     transitivePeerDependencies:
@@ -25868,15 +26146,15 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.0.17(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
+  vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.0.9)(@vitest/ui@4.0.18)(happy-dom@20.3.1)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
-      '@vitest/expect': 4.0.17
-      '@vitest/mocker': 4.0.17(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(vite@7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
-      '@vitest/pretty-format': 4.0.17
-      '@vitest/runner': 4.0.17
-      '@vitest/snapshot': 4.0.17
-      '@vitest/spy': 4.0.17
-      '@vitest/utils': 4.0.17
+      '@vitest/expect': 4.0.18
+      '@vitest/mocker': 4.0.18(msw@2.12.3(@types/node@25.0.9)(typescript@5.9.3))(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2))
+      '@vitest/pretty-format': 4.0.18
+      '@vitest/runner': 4.0.18
+      '@vitest/snapshot': 4.0.18
+      '@vitest/spy': 4.0.18
+      '@vitest/utils': 4.0.18
       es-module-lexer: 1.7.0
       expect-type: 1.3.0
       magic-string: 0.30.21
@@ -25888,11 +26166,12 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.0(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.0.9)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
       '@types/node': 25.0.9
+      '@vitest/ui': 4.0.18(vitest@4.0.18)
       happy-dom: 20.3.1
       jsdom: 27.4.0
     transitivePeerDependencies:
