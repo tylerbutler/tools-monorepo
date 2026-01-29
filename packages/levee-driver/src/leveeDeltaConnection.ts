@@ -306,6 +306,8 @@ export class LeveeDeltaConnection
 		});
 
 		// Send connect_document message
+		// Per spec: Server responds via connect_document_success/connect_document_error events
+		// (not via Phoenix reply pattern)
 		const connectMessage: IConnect = {
 			tenantId: this.tenantId,
 			id: this.documentId,
@@ -320,37 +322,52 @@ export class LeveeDeltaConnection
 		const connectedResponse = await new Promise<ConnectedResponse>(
 			(resolve, reject) => {
 				const timeout = setTimeout(() => {
+					// Clean up listeners on timeout
+					channel.off("connect_document_success");
+					channel.off("connect_document_error");
 					reject(new Error("connect_document timeout"));
 				}, CHANNEL_JOIN_TIMEOUT_MS);
 
-				channel
-					.push("connect_document", connectMessage)
-					.receive("ok", (rawResponse: unknown) => {
-						clearTimeout(timeout);
-						this.logger.log("connect_document raw response:", rawResponse);
-						try {
-							const normalized = normalizeConnectedResponse(rawResponse);
-							this.logger.log("connect_document normalized:", normalized);
-							resolve(normalized);
-						} catch (err) {
-							reject(
-								new Error(
-									`connect_document parse error: ${err instanceof Error ? err.message : String(err)}`,
-								),
-							);
-						}
-					})
-					.receive("error", (error: unknown) => {
-						clearTimeout(timeout);
-						this.logger.log("connect_document error:", error);
+				// Listen for success event (per spec)
+				channel.on("connect_document_success", (rawResponse: unknown) => {
+					clearTimeout(timeout);
+					channel.off("connect_document_success");
+					channel.off("connect_document_error");
+					this.logger.log(
+						"connect_document_success raw response:",
+						rawResponse,
+					);
+					try {
+						const normalized = normalizeConnectedResponse(rawResponse);
+						this.logger.log("connect_document_success normalized:", normalized);
+						resolve(normalized);
+					} catch (err) {
 						reject(
-							new Error(`connect_document failed: ${JSON.stringify(error)}`),
+							new Error(
+								`connect_document parse error: ${err instanceof Error ? err.message : String(err)}`,
+							),
 						);
-					})
-					.receive("timeout", () => {
+					}
+				});
+
+				// Listen for error event (per spec)
+				channel.on(
+					"connect_document_error",
+					(error: { code?: number; message?: string }) => {
 						clearTimeout(timeout);
-						reject(new Error("connect_document timeout"));
-					});
+						channel.off("connect_document_success");
+						channel.off("connect_document_error");
+						this.logger.log("connect_document_error:", error);
+						reject(
+							new Error(
+								`connect_document failed: ${error.message ?? JSON.stringify(error)}`,
+							),
+						);
+					},
+				);
+
+				// Send the connect_document message
+				channel.push("connect_document", connectMessage);
 			},
 		);
 

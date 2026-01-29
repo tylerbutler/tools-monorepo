@@ -16,7 +16,7 @@ import type {
 	SummaryType,
 } from "@fluidframework/protocol-definitions";
 
-import type { DocumentVersion, GitTree } from "./contracts.js";
+import type { GitTree } from "./contracts.js";
 import { type GitCreateTreeEntry, GitManager } from "./gitManager.js";
 import type { RestWrapper } from "./restWrapper.js";
 
@@ -35,9 +35,7 @@ export class LeveeStorageService implements IDocumentStorageService {
 	};
 
 	private readonly gitManager: GitManager;
-	private readonly restWrapper: RestWrapper;
 	private readonly documentId: string;
-	private readonly tenantId: string;
 
 	/**
 	 * Creates a new LeveeStorageService.
@@ -51,8 +49,6 @@ export class LeveeStorageService implements IDocumentStorageService {
 		tenantId: string,
 		documentId: string,
 	) {
-		this.restWrapper = restWrapper;
-		this.tenantId = tenantId;
 		this.documentId = documentId;
 		this.gitManager = new GitManager(restWrapper, `/repos/${tenantId}`);
 	}
@@ -60,23 +56,37 @@ export class LeveeStorageService implements IDocumentStorageService {
 	/**
 	 * Gets available versions (snapshots) for the document.
 	 *
-	 * @param versionId - Optional version ID to start from
+	 * Per spec, uses the Git refs and commits endpoints to get the latest version.
+	 * Returns at most one version (the current HEAD) since the spec doesn't define
+	 * a "list commits" endpoint.
+	 *
+	 * @param versionId - Optional version ID to start from (ignored, for interface compat)
 	 * @param count - Maximum number of versions to return
-	 * @returns Array of available versions
+	 * @returns Array of available versions (at most one)
 	 */
 	public async getVersions(
 		_versionId: string | null,
-		count: number,
+		_count: number,
 	): Promise<IVersion[]> {
-		const commits = await this.restWrapper.get<DocumentVersion[]>(
-			`/repos/${this.tenantId}/commits?sha=${this.documentId}&count=${count}`,
-		);
+		try {
+			// Per spec: Get the ref to find the current HEAD commit
+			const ref = await this.gitManager.getRef(`heads/${this.documentId}`);
+			const commitSha = ref.object.sha;
 
-		return commits.map((commit) => ({
-			id: commit.id,
-			treeId: commit.treeId,
-			date: commit.date,
-		}));
+			// Get the commit to retrieve the tree SHA
+			const commit = await this.gitManager.getCommit(commitSha);
+
+			return [
+				{
+					id: commitSha,
+					treeId: commit.tree.sha,
+					date: commit.author?.date,
+				},
+			];
+		} catch {
+			// No ref found means no versions exist yet (new document)
+			return [];
+		}
 	}
 
 	/**

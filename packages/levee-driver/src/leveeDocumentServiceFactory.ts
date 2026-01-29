@@ -129,23 +129,24 @@ export class LeveeDocumentServiceFactory implements IDocumentServiceFactory {
 			this.debug,
 		);
 
-		const createResponse = await restWrapper.post<{ id: string }>(
+		// Per spec, document creation returns just the document ID string
+		const documentId = await restWrapper.post<string>(
 			`/documents/${leveeUrl.tenantId}`,
 			{
 				id: leveeUrl.documentId || undefined, // Let server generate if not provided
 			},
 		);
 
-		this.logger.log(`Container created with ID: ${createResponse.id}`);
+		this.logger.log(`Container created with ID: ${documentId}`);
 
 		// Update resolved URL with the document ID from server
 		const updatedUrl: LeveeResolvedUrl = {
 			...leveeUrl,
-			id: createResponse.id,
-			documentId: createResponse.id,
-			url: `${leveeUrl.httpUrl}/${leveeUrl.tenantId}/${createResponse.id}`,
+			id: documentId,
+			documentId: documentId,
+			url: `${leveeUrl.httpUrl}/${leveeUrl.tenantId}/${documentId}`,
 			endpoints: {
-				deltaStorageUrl: `${leveeUrl.httpUrl}/deltas/${leveeUrl.tenantId}/${createResponse.id}`,
+				deltaStorageUrl: `${leveeUrl.httpUrl}/deltas/${leveeUrl.tenantId}/${documentId}`,
 				storageUrl: `${leveeUrl.httpUrl}/repos/${leveeUrl.tenantId}`,
 			},
 		};
