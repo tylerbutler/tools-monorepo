@@ -20,10 +20,13 @@ import {
 	renderMousePresence,
 } from "./view.js";
 
-// Environment configuration from Vite
-declare const __VITE_LEVEE_HTTP_URL__: string;
-declare const __VITE_LEVEE_SOCKET_URL__: string;
-declare const __VITE_LEVEE_TENANT_KEY__: string;
+// Default configuration values
+const LEVEE_HTTP_URL =
+	import.meta.env.VITE_LEVEE_HTTP_URL || "http://localhost:4000";
+const LEVEE_SOCKET_URL =
+	import.meta.env.VITE_LEVEE_SOCKET_URL || "ws://localhost:4000/socket";
+const LEVEE_TENANT_KEY =
+	import.meta.env.VITE_LEVEE_TENANT_KEY || "dev-tenant-secret-key";
 
 // Define the schema of the Fluid container.
 // This example uses the presence features only, so no data object is required.
@@ -63,9 +66,9 @@ async function start(): Promise<void> {
 
 	const client = new LeveeClient({
 		connection: {
-			httpUrl: __VITE_LEVEE_HTTP_URL__,
-			socketUrl: __VITE_LEVEE_SOCKET_URL__,
-			tenantKey: __VITE_LEVEE_TENANT_KEY__,
+			httpUrl: LEVEE_HTTP_URL,
+			socketUrl: LEVEE_SOCKET_URL,
+			tenantKey: LEVEE_TENANT_KEY,
 			user: {
 				id: userId,
 				name: `User ${userId.slice(-5)}`,
