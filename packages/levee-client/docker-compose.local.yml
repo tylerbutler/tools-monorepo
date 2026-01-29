@@ -1,0 +1,18 @@
+# Docker Compose override for building from local Levee source
+#
+# Prerequisites:
+#   Set LEVEE_SOURCE_PATH to your local levee checkout:
+#     export LEVEE_SOURCE_PATH=/path/to/levee
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+#
+# Or use the npm script:
+#   LEVEE_SOURCE_PATH=/path/to/levee pnpm test:integration:up:local
+
+services:
+  levee:
+    image: levee:local
+    build:
+      context: ${LEVEE_SOURCE_PATH:?Set LEVEE_SOURCE_PATH to your local levee repo}
+      dockerfile: Dockerfile

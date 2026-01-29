@@ -25,9 +25,10 @@
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test:coverage": "vitest run --coverage test/unit",
 		"test:integration": "vitest run test/integration",
-		"test:integration:down": "cd ../levee-driver && docker compose down -v",
-		"test:integration:logs": "cd ../levee-driver && docker compose logs -f levee",
-		"test:integration:up": "cd ../levee-driver && docker compose up -d --wait",
+		"test:integration:down": "docker compose down -v",
+		"test:integration:logs": "docker compose logs -f levee",
+		"test:integration:up": "docker compose up -d --wait",
+		"test:integration:up:local": "docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --wait --build",
 		"test:vitest": "vitest run test/unit"
 	},
 	"dependencies": {

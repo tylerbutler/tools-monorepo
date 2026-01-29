@@ -39,6 +39,7 @@
 		"test:integration:down": "docker compose down -v",
 		"test:integration:logs": "docker compose logs -f levee",
 		"test:integration:up": "docker compose up -d --wait",
+		"test:integration:up:local": "docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --wait --build",
 		"test:vitest": "vitest run test"
 	},
 	"dependencies": {

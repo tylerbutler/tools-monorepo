@@ -34,11 +34,12 @@
 		"lint": "biome lint",
 		"lint:fix": "biome lint --write",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"start": "pm2 start -n tinylicious dist/index.js",
-		"start:debug": "node --inspect=0.0.0.0:9229 dist/index.js",
-		"stop": "pm2 stop tinylicious",
 		"test:coverage": "vitest run --coverage test",
-		"test:mocha": "mocha --recursive dist/test",
+		"test:integration": "vitest run test/integration",
+		"test:integration:down": "docker compose down -v",
+		"test:integration:logs": "docker compose logs -f levee",
+		"test:integration:up": "docker compose up -d --wait",
+		"test:integration:up:local": "docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --wait --build",
 		"test:vitest": "vitest run test"
 	},
 	"dependencies": {

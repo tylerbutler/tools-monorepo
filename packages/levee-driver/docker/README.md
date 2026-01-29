@@ -2,30 +2,15 @@
 
 This directory contains Docker configuration for running the Levee server locally for integration testing.
 
-## Prerequisites
+## Quick Start (Published Image)
 
-Clone the Levee server repository locally:
-
-```bash
-git clone git@github.com:tylerbutler/levee.git /path/to/levee
-```
-
-Set the `LEVEE_SOURCE_PATH` environment variable to point to your local checkout:
-
-```bash
-export LEVEE_SOURCE_PATH=/path/to/levee
-```
-
-## Quick Start
+The simplest way to run the Levee server is using the published Docker image:
 
 ```bash
 # From the levee-driver package directory
 cd packages/levee-driver
 
-# Set path to your local levee checkout
-export LEVEE_SOURCE_PATH=/path/to/levee
-
-# Start the Levee server
+# Start the Levee server (pulls from ghcr.io/tylerbutler/levee:latest)
 pnpm test:integration:up
 
 # Run integration tests
@@ -38,6 +23,31 @@ pnpm test:integration:logs
 pnpm test:integration:down
 ```
 
+## Building from Local Source
+
+To test against a local development version of the Levee server:
+
+```bash
+# Set path to your local levee checkout
+export LEVEE_SOURCE_PATH=/path/to/levee
+
+# Start the server (builds from source)
+pnpm test:integration:up:local
+
+# Run tests, view logs, stop (same as above)
+pnpm test:integration
+pnpm test:integration:logs
+pnpm test:integration:down
+```
+
+**Note:** The local build requires the levee repo to have a `Dockerfile` at its root.
+
+## Server Endpoints
+
+The server will be available at:
+- HTTP: http://localhost:4000
+- WebSocket: ws://localhost:4000/socket
+
 ## Configuration
 
 ### Environment Variables
@@ -46,22 +56,10 @@ The following environment variables can be used to configure the tests:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `LEVEE_SOURCE_PATH` | (required) | Path to local levee repo checkout |
+| `LEVEE_SOURCE_PATH` | (none) | Path to local levee repo (for local builds) |
 | `LEVEE_HTTP_URL` | `http://localhost:4000` | HTTP API endpoint |
 | `LEVEE_SOCKET_URL` | `ws://localhost:4000/socket` | WebSocket endpoint |
 | `LEVEE_TENANT_KEY` | `dev-tenant-secret-key` | Tenant secret for token generation |
-
-## Dockerfile Details
-
-The `Dockerfile.levee-server` uses a multi-stage build:
-
-1. **Builder stage**: Copies local Levee source and builds an Elixir release
-2. **Runtime stage**: Minimal Alpine image with just the compiled release
-
-This approach ensures:
-- Builds from your local source (supports private repos)
-- Small runtime image (~50MB)
-- No build tools in production image
 
 ## Troubleshooting
 
@@ -73,9 +71,14 @@ docker compose logs levee
 ```
 
 Common issues:
-- `LEVEE_SOURCE_PATH` not set: Export the environment variable pointing to your levee checkout
 - Port 4000 already in use: Stop other services or change the port in `docker-compose.yml`
-- Build failures: Check that your levee checkout is on a valid branch
+- Image not found: Run `docker compose pull` to fetch the latest image
+
+### Local build fails
+
+- Ensure `LEVEE_SOURCE_PATH` points to a valid levee checkout
+- Ensure the levee repo has a `Dockerfile` at its root
+- Check that your levee checkout is on a valid branch
 
 ### Tests fail to connect
 
@@ -85,10 +88,16 @@ docker compose ps
 curl http://localhost:4000/health
 ```
 
-### Rebuild from scratch
+### Force pull latest image
 
 ```bash
-docker compose down -v
-docker compose build --no-cache
+docker compose pull
 docker compose up -d
+```
+
+### Rebuild local image from scratch
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.local.yml build --no-cache
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
 ```
