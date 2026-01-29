@@ -4,8 +4,19 @@
 # Build stage
 FROM elixir:1.16-otp-26-alpine AS builder
 
-# Install build dependencies
-RUN apk add --no-cache git build-base
+# Install build dependencies including Gleam
+RUN apk add --no-cache git build-base curl
+
+# Install Gleam (required for levee_protocol)
+ARG GLEAM_VERSION=1.9.1
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ]; then \
+      GLEAM_ARCH="aarch64-unknown-linux-musl"; \
+    else \
+      GLEAM_ARCH="x86_64-unknown-linux-musl"; \
+    fi && \
+    curl -fsSL https://github.com/gleam-lang/gleam/releases/download/v${GLEAM_VERSION}/gleam-v${GLEAM_VERSION}-${GLEAM_ARCH}.tar.gz \
+    | tar -xzC /usr/local/bin
 
 # Set build environment
 ENV MIX_ENV=prod
