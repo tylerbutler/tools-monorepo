@@ -1,0 +1,14 @@
+{
+	"extends": "../../config/tsconfig.strict.json",
+	"compilerOptions": {
+		"outDir": "./esm",
+		"rootDir": "./src",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+	},
+	"include": ["src/**/*"],
+	"references": [
+		{
+			"path": "../levee-client",
+		},
+	],
+}

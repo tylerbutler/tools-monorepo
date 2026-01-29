@@ -24,8 +24,13 @@ yarn.lock
 # svelte build artifacts
 .svelte-kit
 
+# build artifacts
+esm/
+dist/
+
 # coverage reports
 .coverage
+coverage/
 
 # AI artifacts
 .claude/settings.local.json
