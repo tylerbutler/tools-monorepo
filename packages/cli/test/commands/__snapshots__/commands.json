@@ -180,6 +180,43 @@
     },
     {
         "alias": [],
+        "command": "pr:collect",
+        "flagAliases": [],
+        "flagChars": [
+            "o",
+            "s",
+            "v"
+        ],
+        "flags": [
+            "output",
+            "quiet",
+            "since",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "pr:report",
+        "flagAliases": [],
+        "flagChars": [
+            "d",
+            "e",
+            "s",
+            "v"
+        ],
+        "flags": [
+            "csv",
+            "data",
+            "end",
+            "quiet",
+            "start",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
         "command": "search",
         "flagAliases": [],
         "flagChars": [],
