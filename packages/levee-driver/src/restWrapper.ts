@@ -4,6 +4,8 @@
 
 import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
 
+import { LeveeDebugLogger } from "./contracts.js";
+
 /**
  * Regex for removing trailing slashes from URLs.
  */
@@ -31,6 +33,7 @@ export class RestWrapper {
 	private readonly tenantId: string;
 	private readonly documentId: string;
 	private readonly defaultTimeout: number;
+	private readonly logger: LeveeDebugLogger;
 
 	/**
 	 * Creates a new RestWrapper instance.
@@ -40,6 +43,7 @@ export class RestWrapper {
 	 * @param tenantId - Tenant ID for token generation
 	 * @param documentId - Document ID for token generation
 	 * @param defaultTimeout - Default request timeout in ms (default: 30000)
+	 * @param debug - Whether to enable debug logging
 	 */
 	public constructor(
 		baseUrl: string,
@@ -47,12 +51,14 @@ export class RestWrapper {
 		tenantId: string,
 		documentId: string,
 		defaultTimeout = 30000,
+		debug?: boolean,
 	) {
 		this.baseUrl = baseUrl.replace(TRAILING_SLASH_REGEX, "");
 		this.tokenProvider = tokenProvider;
 		this.tenantId = tenantId;
 		this.documentId = documentId;
 		this.defaultTimeout = defaultTimeout;
+		this.logger = new LeveeDebugLogger("REST", debug);
 	}
 
 	/**
@@ -125,6 +131,8 @@ export class RestWrapper {
 	): Promise<T> {
 		const url = `${this.baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
 
+		this.logger.logRequest(method, url, body);
+
 		// Get fresh token
 		const tokenResponse = await this.tokenProvider.fetchStorageToken(
 			this.tenantId,
@@ -154,11 +162,15 @@ export class RestWrapper {
 
 			// Handle auth errors with retry
 			if ((response.status === 401 || response.status === 403) && !isRetry) {
+				this.logger.log(
+					`Auth error (${response.status}), retrying with fresh token`,
+				);
 				return this.request<T>(method, path, body, options, true);
 			}
 
 			if (!response.ok) {
 				const errorText = await response.text().catch(() => "Unknown error");
+				this.logger.logResponse(method, url, response.status, errorText);
 				throw new RestError(
 					`HTTP ${response.status}: ${response.statusText} - ${errorText}`,
 					response.status,
@@ -168,19 +180,24 @@ export class RestWrapper {
 			// Handle empty responses
 			const text = await response.text();
 			if (!text) {
+				this.logger.logResponse(method, url, response.status, "(empty)");
 				return undefined as T;
 			}
 
-			return JSON.parse(text) as T;
+			const parsed = JSON.parse(text) as T;
+			this.logger.logResponse(method, url, response.status, parsed);
+			return parsed;
 		} catch (error) {
 			if (error instanceof RestError) {
 				throw error;
 			}
 
 			if (error instanceof Error && error.name === "AbortError") {
+				this.logger.log(`Request timeout: ${method} ${url}`);
 				throw new RestError("Request timeout", 408);
 			}
 
+			this.logger.log(`Request error: ${method} ${url}`, error);
 			throw new RestError(
 				error instanceof Error ? error.message : "Unknown request error",
 				0,

@@ -28,7 +28,14 @@ export type {
 	NackResponse,
 	ServiceConfiguration,
 } from "./contracts.js";
-export { NackErrorType } from "./contracts.js";
+export {
+	isDebugEnabled,
+	LeveeDebugLogger,
+	NackErrorType,
+	normalizeConnectedResponse,
+	normalizeKeys,
+	normalizeOpPayload,
+} from "./contracts.js";
 // Git storage manager
 export {
 	type GitCreateCommitRequest,

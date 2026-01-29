@@ -14,7 +14,7 @@ import type { IClient } from "@fluidframework/protocol-definitions";
 import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
 import { EventEmitterWithErrorHandling } from "@fluidframework/telemetry-utils/internal";
 
-import type { LeveeResolvedUrl } from "./contracts.js";
+import { isDebugEnabled, type LeveeResolvedUrl } from "./contracts.js";
 import { LeveeDeltaConnection } from "./leveeDeltaConnection.js";
 import { LeveeDeltaStorageService } from "./leveeDeltaStorageService.js";
 import { LeveeStorageService } from "./leveeStorageService.js";
@@ -40,6 +40,7 @@ export class LeveeDocumentService
 
 	private readonly tokenProvider: ITokenProvider;
 	private readonly restWrapper: RestWrapper;
+	private readonly debug: boolean;
 	private _disposed = false;
 
 	/**
@@ -47,8 +48,13 @@ export class LeveeDocumentService
 	 *
 	 * @param resolvedUrl - Resolved URL with connection details
 	 * @param tokenProvider - Token provider for authentication
+	 * @param debug - Whether to enable debug logging
 	 */
-	public constructor(resolvedUrl: IResolvedUrl, tokenProvider: ITokenProvider) {
+	public constructor(
+		resolvedUrl: IResolvedUrl,
+		tokenProvider: ITokenProvider,
+		debug?: boolean,
+	) {
 		super((eventName, error) =>
 			// biome-ignore lint/suspicious/noConsole: error handler for event emitter
 			console.error(`Error in event ${String(eventName)}:`, error),
@@ -56,12 +62,15 @@ export class LeveeDocumentService
 
 		this.resolvedUrl = resolvedUrl as LeveeResolvedUrl;
 		this.tokenProvider = tokenProvider;
+		this.debug = isDebugEnabled(debug);
 
 		this.restWrapper = new RestWrapper(
 			this.resolvedUrl.httpUrl,
 			this.tokenProvider,
 			this.resolvedUrl.tenantId,
 			this.resolvedUrl.documentId,
+			30000, // default timeout
+			this.debug,
 		);
 	}
 
@@ -121,6 +130,7 @@ export class LeveeDocumentService
 			tokenResponse.jwt,
 			client,
 			mode,
+			this.debug,
 		);
 	}
 

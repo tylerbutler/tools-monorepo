@@ -11,7 +11,11 @@ import type {
 import type { ISummaryTree } from "@fluidframework/protocol-definitions";
 import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
 
-import type { LeveeResolvedUrl } from "./contracts.js";
+import {
+	isDebugEnabled,
+	LeveeDebugLogger,
+	type LeveeResolvedUrl,
+} from "./contracts.js";
 import { LeveeDocumentService } from "./leveeDocumentService.js";
 import { RestWrapper } from "./restWrapper.js";
 
@@ -53,14 +57,19 @@ export class LeveeDocumentServiceFactory implements IDocumentServiceFactory {
 	public readonly protocolName = LEVEE_PROTOCOL_NAME;
 
 	private readonly tokenProvider: ITokenProvider;
+	private readonly debug: boolean;
+	private readonly logger: LeveeDebugLogger;
 
 	/**
 	 * Creates a new LeveeDocumentServiceFactory.
 	 *
 	 * @param tokenProvider - Token provider for authentication
+	 * @param debug - Whether to enable debug logging
 	 */
-	public constructor(tokenProvider: ITokenProvider) {
+	public constructor(tokenProvider: ITokenProvider, debug?: boolean) {
 		this.tokenProvider = tokenProvider;
+		this.debug = isDebugEnabled(debug);
+		this.logger = new LeveeDebugLogger("Factory", this.debug);
 	}
 
 	/**
@@ -76,7 +85,14 @@ export class LeveeDocumentServiceFactory implements IDocumentServiceFactory {
 		_logger?: ITelemetryBaseLogger,
 		_clientIsSummarizer?: boolean,
 	): Promise<IDocumentService> {
-		return new LeveeDocumentService(resolvedUrl, this.tokenProvider);
+		this.logger.log(
+			`Creating document service for ${(resolvedUrl as LeveeResolvedUrl).documentId}`,
+		);
+		return new LeveeDocumentService(
+			resolvedUrl,
+			this.tokenProvider,
+			this.debug,
+		);
 	}
 
 	/**
@@ -101,12 +117,16 @@ export class LeveeDocumentServiceFactory implements IDocumentServiceFactory {
 	): Promise<IDocumentService> {
 		const leveeUrl = createNewResolvedUrl as LeveeResolvedUrl;
 
+		this.logger.log(`Creating container for tenant: ${leveeUrl.tenantId}`);
+
 		// Create the document on the server
 		const restWrapper = new RestWrapper(
 			leveeUrl.httpUrl,
 			this.tokenProvider,
 			leveeUrl.tenantId,
 			"", // No document ID yet
+			30000, // default timeout
+			this.debug,
 		);
 
 		const createResponse = await restWrapper.post<{ id: string }>(
@@ -115,6 +135,8 @@ export class LeveeDocumentServiceFactory implements IDocumentServiceFactory {
 				id: leveeUrl.documentId || undefined, // Let server generate if not provided
 			},
 		);
+
+		this.logger.log(`Container created with ID: ${createResponse.id}`);
 
 		// Update resolved URL with the document ID from server
 		const updatedUrl: LeveeResolvedUrl = {
@@ -128,6 +150,6 @@ export class LeveeDocumentServiceFactory implements IDocumentServiceFactory {
 			},
 		};
 
-		return new LeveeDocumentService(updatedUrl, this.tokenProvider);
+		return new LeveeDocumentService(updatedUrl, this.tokenProvider, this.debug);
 	}
 }

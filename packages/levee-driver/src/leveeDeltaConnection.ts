@@ -21,7 +21,13 @@ import type {
 import { EventEmitterWithErrorHandling } from "@fluidframework/telemetry-utils/internal";
 import { type Channel, Socket } from "phoenix";
 
-import type { ConnectedResponse, DisconnectReason } from "./contracts.js";
+import {
+	type ConnectedResponse,
+	type DisconnectReason,
+	LeveeDebugLogger,
+	normalizeConnectedResponse,
+	normalizeOpPayload,
+} from "./contracts.js";
 
 /**
  * Timeout for channel join operations in milliseconds.
@@ -56,6 +62,7 @@ export class LeveeDeltaConnection
 	 * @param token - Authentication token
 	 * @param client - Client information
 	 * @param mode - Connection mode (read or write)
+	 * @param debug - Whether to enable debug logging
 	 * @returns Promise resolving to the established connection
 	 */
 	public static async create(
@@ -65,6 +72,7 @@ export class LeveeDeltaConnection
 		token: string,
 		client: IClient,
 		mode: ConnectionMode = "write",
+		debug?: boolean,
 	): Promise<LeveeDeltaConnection> {
 		const connection = new LeveeDeltaConnection(
 			socketUrl,
@@ -73,6 +81,7 @@ export class LeveeDeltaConnection
 			token,
 			client,
 			mode,
+			debug,
 		);
 
 		await connection.connect();
@@ -111,6 +120,7 @@ export class LeveeDeltaConnection
 	private readonly token: string;
 	private readonly clientInfo: IClient;
 	private readonly requestedMode: ConnectionMode;
+	private readonly logger: LeveeDebugLogger;
 
 	private constructor(
 		socketUrl: string,
@@ -119,6 +129,7 @@ export class LeveeDeltaConnection
 		token: string,
 		client: IClient,
 		mode: ConnectionMode,
+		debug?: boolean,
 	) {
 		super((eventName, error) =>
 			// biome-ignore lint/suspicious/noConsole: error handler for event emitter
@@ -131,6 +142,7 @@ export class LeveeDeltaConnection
 		this.token = token;
 		this.clientInfo = client;
 		this.requestedMode = mode;
+		this.logger = new LeveeDebugLogger("DeltaConnection", debug);
 
 		// Set up early handlers for messages that arrive before full setup
 		this.earlyOpHandler = (ops: ISequencedDocumentMessage[]) => {
@@ -220,6 +232,8 @@ export class LeveeDeltaConnection
 	 * Establishes the WebSocket connection and joins the document channel.
 	 */
 	private async connect(): Promise<void> {
+		this.logger.log(`Connecting to ${this.socketUrl}`);
+
 		// Create Phoenix socket with auth token
 		this.socket = new Socket(this.socketUrl, {
 			params: { token: this.token },
@@ -244,6 +258,7 @@ export class LeveeDeltaConnection
 
 			socket.onOpen(() => {
 				clearTimeout(timeout);
+				this.logger.log("Socket connected");
 				resolve();
 			});
 
@@ -257,6 +272,7 @@ export class LeveeDeltaConnection
 
 		// Create and join channel for this document
 		const channelTopic = `document:${this.tenantId}:${this.documentId}`;
+		this.logger.log(`Joining channel: ${channelTopic}`);
 		this.channel = this.socket.channel(channelTopic, {
 			token: this.token,
 		});
@@ -275,10 +291,12 @@ export class LeveeDeltaConnection
 				.join()
 				.receive("ok", () => {
 					clearTimeout(timeout);
+					this.logger.log("Channel joined successfully");
 					resolve();
 				})
 				.receive("error", (error: unknown) => {
 					clearTimeout(timeout);
+					this.logger.log("Channel join error:", error);
 					reject(new Error(`Channel join failed: ${JSON.stringify(error)}`));
 				})
 				.receive("timeout", () => {
@@ -297,6 +315,8 @@ export class LeveeDeltaConnection
 			versions: ["^0.4.0", "^0.3.0", "^0.2.0", "^0.1.0"],
 		};
 
+		this.logger.log("Sending connect_document:", connectMessage);
+
 		const connectedResponse = await new Promise<ConnectedResponse>(
 			(resolve, reject) => {
 				const timeout = setTimeout(() => {
@@ -305,12 +325,24 @@ export class LeveeDeltaConnection
 
 				channel
 					.push("connect_document", connectMessage)
-					.receive("ok", (response: ConnectedResponse) => {
+					.receive("ok", (rawResponse: unknown) => {
 						clearTimeout(timeout);
-						resolve(response);
+						this.logger.log("connect_document raw response:", rawResponse);
+						try {
+							const normalized = normalizeConnectedResponse(rawResponse);
+							this.logger.log("connect_document normalized:", normalized);
+							resolve(normalized);
+						} catch (err) {
+							reject(
+								new Error(
+									`connect_document parse error: ${err instanceof Error ? err.message : String(err)}`,
+								),
+							);
+						}
 					})
 					.receive("error", (error: unknown) => {
 						clearTimeout(timeout);
+						this.logger.log("connect_document error:", error);
 						reject(
 							new Error(`connect_document failed: ${JSON.stringify(error)}`),
 						);
@@ -345,6 +377,10 @@ export class LeveeDeltaConnection
 		];
 		this.initialClients = connectedResponse.initialClients;
 
+		this.logger.log(
+			`Connected as client: ${this.clientId}, mode: ${this.mode}, existing: ${this.existing}`,
+		);
+
 		// Clear early handlers and enable normal message flow
 		this.earlyOpHandler = null;
 		this.earlySignalHandler = null;
@@ -352,6 +388,7 @@ export class LeveeDeltaConnection
 		// Enable submit and flush queued messages
 		this.submitEnabled = true;
 		if (this.queuedMessages.length > 0) {
+			this.logger.log(`Flushing ${this.queuedMessages.length} queued messages`);
 			this.submitCore(this.queuedMessages);
 			this.queuedMessages.length = 0;
 		}
@@ -366,28 +403,32 @@ export class LeveeDeltaConnection
 		}
 
 		// Handle incoming operations
-		this.channel.on(
-			"op",
-			(payload: { documentId: string; ops: ISequencedDocumentMessage[] }) => {
-				if (this._disposed) {
-					return;
-				}
+		this.channel.on("op", (rawPayload: unknown) => {
+			if (this._disposed) {
+				return;
+			}
 
-				const ops = payload.ops;
+			this.logger.log("Received op event (raw):", rawPayload);
+			const { documentId, ops } = normalizeOpPayload(
+				rawPayload,
+				this.documentId,
+			);
+			this.logger.log("Received op event (normalized):", { documentId, ops });
 
-				if (this.earlyOpHandler) {
-					this.earlyOpHandler(ops);
-				} else {
-					this.emit("op", payload.documentId, ops);
-				}
-			},
-		);
+			if (this.earlyOpHandler) {
+				this.earlyOpHandler(ops);
+			} else {
+				this.emit("op", documentId, ops);
+			}
+		});
 
 		// Handle incoming signals
 		this.channel.on("signal", (payload: ISignalMessage | ISignalMessage[]) => {
 			if (this._disposed) {
 				return;
 			}
+
+			this.logger.log("Received signal:", payload);
 
 			if (this.earlySignalHandler) {
 				const signals = Array.isArray(payload) ? payload : [payload];
@@ -405,6 +446,7 @@ export class LeveeDeltaConnection
 				return;
 			}
 
+			this.logger.log("Received nack:", payload);
 			this.emit("nack", this.documentId, [payload]);
 		});
 
@@ -418,11 +460,13 @@ export class LeveeDeltaConnection
 
 		// Handle channel close
 		this.channel.onClose(() => {
+			this.logger.log("Channel closed");
 			this.handleDisconnect("server");
 		});
 
 		// Handle channel errors
 		this.channel.onError((error: unknown) => {
+			this.logger.log("Channel error:", error);
 			this.handleError("Channel error", error);
 		});
 	}
@@ -450,6 +494,7 @@ export class LeveeDeltaConnection
 			messages: opMessages,
 		};
 
+		this.logger.log("Submitting ops:", payload);
 		this.channel.push("submitOp", payload);
 	}
 
