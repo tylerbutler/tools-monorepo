@@ -251,6 +251,18 @@
 			},
 		},
 		{
+			// Auto-generated TypeScript files from JSON schemas
+			"includes": ["**/generated/**/*.ts"],
+			"linter": {
+				"rules": {
+					"nursery": {
+						// json2ts generates nested index signatures that shadow variable names
+						"noShadow": "off",
+					},
+				},
+			},
+		},
+		{
 			// ccl-test-viewer specific overrides
 			"includes": ["packages/ccl-test-viewer/**"],
 			"linter": {

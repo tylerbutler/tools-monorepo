@@ -151,13 +151,10 @@ describe("Server Connection Tests", () => {
 	beforeAll(async () => {
 		serverRunning = await isServerRunning();
 		if (!serverRunning) {
-			// biome-ignore lint/suspicious/noConsole: test info message
 			console.log(
 				"\n⚠️  Levee server not running. Skipping server connection tests.",
 			);
-			// biome-ignore lint/suspicious/noConsole: test info message
 			console.log("   Start the server with: docker compose up -d");
-			// biome-ignore lint/suspicious/noConsole: test info message
 			console.log(`   Expected server at: ${LEVEE_HTTP_URL}\n`);
 		}
 
