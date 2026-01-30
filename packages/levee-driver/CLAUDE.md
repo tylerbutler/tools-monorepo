@@ -10,6 +10,8 @@ Low-level Fluid Framework driver for connecting to Levee servers. This driver pr
 **Framework:** Fluid Framework v2.33.x
 **Purpose:** Personal projects using Fluid Framework with Phoenix/Elixir servers
 
+See [DEV.md](DEV.md) for development workflows (e.g., updating protocol schema).
+
 ## Essential Commands
 
 ```bash
