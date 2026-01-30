@@ -6,7 +6,7 @@ import type {
 	ITokenProvider,
 	ITokenResponse,
 } from "@fluidframework/routerlicious-driver";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 import { v4 as uuid } from "uuid";
 
 import type { LeveeUser } from "./contracts.js";
@@ -53,7 +53,7 @@ export class InsecureLeveeTokenProvider implements ITokenProvider {
 		_refresh?: boolean,
 	): Promise<ITokenResponse> {
 		return {
-			jwt: this.generateToken(tenantId, documentId ?? ""),
+			jwt: await this.generateToken(tenantId, documentId ?? ""),
 		};
 	}
 
@@ -71,7 +71,7 @@ export class InsecureLeveeTokenProvider implements ITokenProvider {
 		_refresh?: boolean,
 	): Promise<ITokenResponse> {
 		return {
-			jwt: this.generateToken(tenantId, documentId),
+			jwt: await this.generateToken(tenantId, documentId),
 		};
 	}
 
@@ -89,20 +89,27 @@ export class InsecureLeveeTokenProvider implements ITokenProvider {
 	 * @param documentId - The document ID
 	 * @returns The signed JWT string
 	 */
-	private generateToken(tenantId: string, documentId: string): string {
+	private async generateToken(
+		tenantId: string,
+		documentId: string,
+	): Promise<string> {
 		const now = Math.floor(Date.now() / 1000);
 		const claims = {
 			documentId,
 			tenantId: tenantId || this.tenantId,
 			scopes: ["doc:read", "doc:write", "summary:write"],
 			user: this.user,
-			iat: now,
-			exp: now + 3600, // 1 hour expiration
 			ver: "1.0",
 			jti: uuid(),
 		};
 
-		return jwt.sign(claims, this.key);
+		const secret = new TextEncoder().encode(this.key);
+
+		return new SignJWT(claims)
+			.setProtectedHeader({ alg: "HS256" })
+			.setIssuedAt(now)
+			.setExpirationTime(now + 3600) // 1 hour expiration
+			.sign(secret);
 	}
 }
 

@@ -1,7 +1,16 @@
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 import { describe, expect, it } from "vitest";
 import type { LeveeUser } from "../src/contracts.js";
 import { InsecureLeveeTokenProvider } from "../src/tokenProvider.js";
+
+const verifyToken = async (
+	token: string,
+	key: string,
+): Promise<Record<string, unknown>> => {
+	const secret = new TextEncoder().encode(key);
+	const { payload } = await jwtVerify(token, secret);
+	return payload as Record<string, unknown>;
+};
 
 describe("InsecureLeveeTokenProvider", () => {
 	const testKey = "test-secret-key";
@@ -46,10 +55,7 @@ describe("InsecureLeveeTokenProvider", () => {
 			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchOrdererToken("tenant1", "doc1");
 
-			const decoded = jwt.verify(response.jwt, testKey) as Record<
-				string,
-				unknown
-			>;
+			const decoded = await verifyToken(response.jwt, testKey);
 
 			expect(decoded.tenantId).toBe("tenant1");
 			expect(decoded.documentId).toBe("doc1");
@@ -63,10 +69,7 @@ describe("InsecureLeveeTokenProvider", () => {
 			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchOrdererToken("tenant1", "doc1");
 
-			const decoded = jwt.verify(response.jwt, testKey) as Record<
-				string,
-				unknown
-			>;
+			const decoded = await verifyToken(response.jwt, testKey);
 
 			expect(decoded.exp).toBeDefined();
 			expect(decoded.iat).toBeDefined();
@@ -77,10 +80,7 @@ describe("InsecureLeveeTokenProvider", () => {
 			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchOrdererToken("tenant1");
 
-			const decoded = jwt.verify(response.jwt, testKey) as Record<
-				string,
-				unknown
-			>;
+			const decoded = await verifyToken(response.jwt, testKey);
 
 			expect(decoded.documentId).toBe("");
 		});
@@ -99,10 +99,7 @@ describe("InsecureLeveeTokenProvider", () => {
 			const provider = new InsecureLeveeTokenProvider(testKey, testUser);
 			const response = await provider.fetchStorageToken("tenant1", "doc1");
 
-			const decoded = jwt.verify(response.jwt, testKey) as Record<
-				string,
-				unknown
-			>;
+			const decoded = await verifyToken(response.jwt, testKey);
 
 			expect(decoded.tenantId).toBe("tenant1");
 			expect(decoded.documentId).toBe("doc1");
@@ -138,14 +135,8 @@ describe("InsecureLeveeTokenProvider", () => {
 			const response1 = await provider.fetchOrdererToken("tenant1", "doc1");
 			const response2 = await provider.fetchOrdererToken("tenant1", "doc1");
 
-			const decoded1 = jwt.verify(response1.jwt, testKey) as Record<
-				string,
-				unknown
-			>;
-			const decoded2 = jwt.verify(response2.jwt, testKey) as Record<
-				string,
-				unknown
-			>;
+			const decoded1 = await verifyToken(response1.jwt, testKey);
+			const decoded2 = await verifyToken(response2.jwt, testKey);
 
 			expect(decoded1.jti).not.toBe(decoded2.jti);
 		});
