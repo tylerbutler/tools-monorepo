@@ -1,0 +1,80 @@
+{
+	"name": "@tylerbu/levee-example",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Fluid Framework DiceRoller example using Levee driver",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/levee-example"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:vite": "vite build",
+		"check:format": "biome format .",
+		"clean": "rimraf esm dist _temp *.tsbuildinfo",
+		"dev": "vite",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --write",
+		"preview": "vite preview",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:coverage": "vitest run --coverage test/unit",
+		"test:integration": "start-server-and-test 'docker compose up' http://localhost:4000/health 'vitest run test/integration'",
+		"test:integration:down": "docker compose down -v",
+		"test:integration:local": "start-server-and-test 'docker compose -f docker-compose.yml -f docker-compose.local.yml up --build' http://localhost:4000/health 'vitest run test/integration'",
+		"test:integration:logs": "docker compose logs -f levee",
+		"test:integration:up": "docker compose up -d --wait",
+		"test:integration:up:local": "docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --wait --build",
+		"test:vitest": "vitest run test/unit"
+	},
+	"dependencies": {
+		"@fluidframework/aqueduct": "~2.81.0",
+		"@fluidframework/container-definitions": "~2.81.0",
+		"@fluidframework/container-loader": "~2.81.0",
+		"@fluidframework/container-runtime": "~2.81.0",
+		"@fluidframework/container-runtime-definitions": "~2.81.0",
+		"@fluidframework/core-interfaces": "~2.81.0",
+		"@fluidframework/datastore-definitions": "~2.81.0",
+		"@fluidframework/driver-definitions": "~2.81.0",
+		"@fluidframework/map": "~2.81.0",
+		"@fluidframework/runtime-definitions": "~2.81.0",
+		"@fluidframework/runtime-utils": "~2.81.0",
+		"@tylerbu/levee-driver": "workspace:^",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@types/node": "^20.19.25",
+		"@types/react": "^18.3.12",
+		"@types/react-dom": "^18.3.1",
+		"@vitejs/plugin-react": "^4.3.4",
+		"@vitest/coverage-v8": "^4.0.18",
+		"rimraf": "^6.1.2",
+		"start-server-and-test": "^2.1.3",
+		"typescript": "~5.9.3",
+		"vite": "^7.3.0",
+		"vitest": "^4.0.18"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"dependsOn": [
+					"^build",
+					"build:compile",
+					"build:vite"
+				]
+			},
+			"test": {},
+			"ci": {}
+		}
+	}
+}

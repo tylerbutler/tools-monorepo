@@ -1,0 +1,68 @@
+# Dockerfile for building Levee server from local source
+# Expects the levee repo to be available in the build context
+
+# Build stage
+FROM elixir:1.16-otp-26-alpine AS builder
+
+# Install build dependencies including Gleam
+RUN apk add --no-cache git build-base curl
+
+# Install Gleam (required for levee_protocol)
+ARG GLEAM_VERSION=1.9.1
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ]; then \
+      GLEAM_ARCH="aarch64-unknown-linux-musl"; \
+    else \
+      GLEAM_ARCH="x86_64-unknown-linux-musl"; \
+    fi && \
+    curl -fsSL https://github.com/gleam-lang/gleam/releases/download/v${GLEAM_VERSION}/gleam-v${GLEAM_VERSION}-${GLEAM_ARCH}.tar.gz \
+    | tar -xzC /usr/local/bin
+
+# Set build environment
+ENV MIX_ENV=prod
+
+WORKDIR /build
+
+# Copy the Levee source from local checkout
+COPY . .
+
+# Install hex and rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+# Install dependencies
+RUN mix deps.get --only prod
+
+# Compile the application
+RUN mix compile
+
+# Build the release
+RUN mix release
+
+# Runtime stage
+FROM alpine:3.19 AS runtime
+
+# Install runtime dependencies
+RUN apk add --no-cache libstdc++ openssl ncurses-libs
+
+WORKDIR /app
+
+# Copy the release from builder
+COPY --from=builder /build/_build/prod/rel/levee ./
+
+# Set runtime environment
+ENV MIX_ENV=prod
+ENV PHX_SERVER=true
+ENV PHX_HOST=localhost
+ENV PORT=4000
+ENV SECRET_KEY_BASE=dev-only-secret-key-base-at-least-64-characters-long-for-phoenix-framework
+
+# Expose the Phoenix port
+EXPOSE 4000
+
+# Health check
+HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:4000/health || exit 1
+
+# Start the server
+CMD ["bin/levee", "start"]

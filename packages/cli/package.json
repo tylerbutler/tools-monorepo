@@ -128,7 +128,7 @@
 		"@types/debug": "^4.1.12",
 		"@types/node": "^20.19.25",
 		"@types/semver": "^7.7.1",
-		"@vitest/coverage-v8": "^4.0.17",
+		"@vitest/coverage-v8": "^4.0.18",
 		"concurrently": "^9.2.1",
 		"copyfiles": "^2.4.1",
 		"generate-license-file": "^4.1.1",
@@ -137,7 +137,7 @@
 		"sort-package-json": "*",
 		"ts-node": "^10.9.2",
 		"typescript": "~5.9.3",
-		"vitest": "^4.0.17"
+		"vitest": "^4.0.18"
 	},
 	"engines": {
 		"node": ">=18.0.0"

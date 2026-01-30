@@ -9,4 +9,9 @@
 
 		"exactOptionalPropertyTypes": false,
 	},
+	"references": [
+		{
+			"path": "../levee-driver",
+		},
+	],
 }
