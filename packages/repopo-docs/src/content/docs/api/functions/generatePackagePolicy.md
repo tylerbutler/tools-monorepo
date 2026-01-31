@@ -5,7 +5,7 @@ prev: false
 title: "generatePackagePolicy"
 ---
 
-> **generatePackagePolicy**\<`J`, `C`\>(`name`, `packagePolicy`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
+> **generatePackagePolicy**\<`J`, `C`\>(`name`, `description`, `packagePolicy`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
 
 Defined in: [policyDefiners/definePackagePolicy.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L48)
 
@@ -28,6 +28,10 @@ This API should not be used in production and may be trimmed from a public relea
 ## Parameters
 
 ### name
+
+`string`
+
+### description
 
 `string`
 

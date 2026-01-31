@@ -5,7 +5,7 @@ prev: false
 title: "defineFileHeaderPolicy"
 ---
 
-> **defineFileHeaderPolicy**(`name`, `config`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
+> **defineFileHeaderPolicy**(`name`, `description`, `config`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
 
 Defined in: [policyDefiners/defineFileHeaderPolicy.ts:78](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L78)
 
@@ -19,6 +19,10 @@ This API should not be used in production and may be trimmed from a public relea
 ## Parameters
 
 ### name
+
+`string`
+
+### description
 
 `string`
 
