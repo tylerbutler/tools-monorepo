@@ -1,5 +1,5 @@
 ---
-"repopo": major
+"repopo": minor
 ---
 
 Make `description` required on PolicyDefinition

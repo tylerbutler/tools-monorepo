@@ -1,5 +1,5 @@
 ---
-"repopo": major
+"repopo": minor
 ---
 
 Use object parameters for policy factory functions and Policy class
