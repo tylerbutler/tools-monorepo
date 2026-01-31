@@ -25,6 +25,7 @@
 * [`tbu generate`](docs/generate.md) - Code and config generation commands.
 * [`tbu git`](docs/git.md) - Git-related commands.
 * [`tbu help`](docs/help.md) - Display help for tbu.
+* [`tbu pr`](docs/pr.md) - GitHub pull request metrics collection and reporting.
 * [`tbu search`](docs/search.md) - Search for a command.
 * [`tbu version`](docs/version.md)
 * [`tbu which`](docs/which.md) - Show which plugin a command is in.
