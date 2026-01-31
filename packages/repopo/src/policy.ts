@@ -1,3 +1,5 @@
+import type { Operation } from "effection";
+import type { RequireExactlyOne } from "type-fest";
 import { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 import { PackageJsonRepoDirectoryProperty } from "./policies/PackageJsonRepoDirectoryProperty.js";
 import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
@@ -41,30 +43,36 @@ export interface PolicyFunctionArguments<C> {
 }
 
 /**
- * A policy handler is a function that is called to check policy against a file.
+ * A policy handler function that is called to check policy against a file.
+ *
+ * @remarks
+ * Policy handlers can be implemented in two ways:
+ * - As an async function returning a Promise
+ * - As an Effection generator function returning an Operation
+ *
+ * Both styles are supported to allow gradual migration and flexibility.
  *
  * @alpha
  */
-
-export type PolicyHandler<C = unknown | undefined> = (
-	args: PolicyFunctionArguments<C>,
-) => Promise<PolicyHandlerResult>;
-
-// export type PolicyCheckOnly = (
-// 	file: string,
-// 	root: string,
-// ) => Promise<PolicyHandlerResult>;
+export type PolicyHandler<C = unknown | undefined> =
+	| ((args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>)
+	| ((args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult>);
 
 /**
  * A standalone function that can be called to resolve a policy failure.
+ *
+ * @remarks
+ * Resolvers can be implemented in two ways:
+ * - As an async function returning a Promise
+ * - As an Effection generator function returning an Operation
+ *
+ * Both styles are supported to allow gradual migration and flexibility.
  *
  * @alpha
  */
 export type PolicyStandaloneResolver<C = undefined> = (
 	args: Omit<PolicyFunctionArguments<C>, "resolve">,
-) => Promise<PolicyFixResult>;
-
-// function isPolicyHandler(input: PolicyHandler | PolicyCheckOnly): input is PolicyHandler
+) => Promise<PolicyFixResult> | Operation<PolicyFixResult>;
 
 /**
  * A RepoPolicyDefinition checks and applies policies to files in the repository.
@@ -142,8 +150,10 @@ export interface PolicyInstanceSettings<C> {
 /**
  * @alpha
  */
-export type PolicyInstance<C = undefined> = PolicyDefinition<C> &
-	PolicyInstanceSettings<C>;
+export type PolicyInstance<C = undefined> = RequireExactlyOne<
+	PolicyDefinition<C> & PolicyInstanceSettings<C>,
+	"handler"
+>;
 
 /**
  * A policy failure.
@@ -196,7 +206,7 @@ export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
 
 // biome-ignore lint/suspicious/noExplicitAny: type guard
 export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
-	if (typeof toCheck !== "object") {
+	if (typeof toCheck !== "object" || toCheck === null) {
 		return false;
 	}
 	return "resolved" in toCheck;

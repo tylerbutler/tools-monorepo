@@ -260,7 +260,7 @@ const main = defineCommand({
 		const result = await downloadTestData({
 			outputDir: args.output,
 			force: args.force,
-			version: args.version,
+			...(args.version !== undefined && { version: args.version }),
 		});
 
 		consola.box(

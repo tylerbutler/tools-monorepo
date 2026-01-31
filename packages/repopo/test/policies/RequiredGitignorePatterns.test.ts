@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { RequiredGitignorePatterns } from "../../src/policies/RequiredGitignorePatterns.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("RequiredGitignorePatterns", () => {
 	let testDir: string;
@@ -61,7 +62,7 @@ Thumbs.db
 		});
 
 		it("should pass when all default patterns are present", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
@@ -83,7 +84,7 @@ node_modules/
 		});
 
 		it("should fail when patterns are missing", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
@@ -100,7 +101,7 @@ node_modules/
 		});
 
 		it("should auto-fix by adding missing patterns", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: true,
@@ -125,7 +126,7 @@ node_modules/
 
 	describe("missing .gitignore file", () => {
 		it("should fail when .gitignore doesn't exist", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
@@ -142,7 +143,7 @@ node_modules/
 		});
 
 		it("should auto-fix by creating .gitignore with all patterns", async () => {
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: true,
@@ -174,7 +175,7 @@ node_modules/
 				],
 			};
 
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
@@ -198,7 +199,7 @@ node_modules/
 				],
 			};
 
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: true,
@@ -232,7 +233,7 @@ build/
 `,
 			);
 
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: false,
@@ -244,7 +245,7 @@ build/
 		it("should handle .gitignore without final newline", async () => {
 			writeFileSync(gitignoreFile, "node_modules/");
 
-			const result = await RequiredGitignorePatterns.handler({
+			const result = await runHandler(RequiredGitignorePatterns.handler, {
 				file: ".gitignore",
 				root: testDir,
 				resolve: true,

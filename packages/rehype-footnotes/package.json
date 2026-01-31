@@ -38,7 +38,7 @@
 	},
 	"dependencies": {
 		"unified": "^11.0.5",
-		"unist-util-visit": "^5.0.0"
+		"unist-util-visit": "^5.1.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",

@@ -1,3 +1,4 @@
+import type { Operation } from "effection";
 import { makePolicyDefinition } from "../makePolicy.js";
 import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 
@@ -13,9 +14,9 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 	"NoJsFileExtensions",
 	/(^|\/)[^/]+\.js$/i,
-	async ({ file }) => {
-		// Any match is considered a failure.
-		const result: PolicyFailure = {
+	// biome-ignore lint/correctness/useYield: no yield needed
+	function* ({ file }): Operation<PolicyFailure> {
+		return {
 			name: NoJsFileExtensions.name,
 			file,
 			autoFixable: false,
@@ -24,6 +25,5 @@ export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 			],
 			manualFix: "Rename the file to have a .cjs or .mjs file extension.",
 		};
-		return result;
 	},
 );

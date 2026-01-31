@@ -61,7 +61,8 @@
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json"
+		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
+		"test:watch": "vitest"
 	},
 	"oclif": {
 		"additionalHelpFlags": [
@@ -91,6 +92,7 @@
 		"@tylerbu/fundamentals": "workspace:^",
 		"consola": "^3.4.0",
 		"defu": "^6.1.4",
+		"effection": "^4.0.0",
 		"jsonfile": "^6.2.0",
 		"microdiff": "^1.5.0",
 		"pathe": "^2.0.3",
@@ -102,7 +104,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.55.1",
+		"@microsoft/api-extractor": "^7.56.0",
 		"@oclif/plugin-command-snapshot": "^5.3.8",
 		"@oclif/test": "^4.1.15",
 		"@types/jsonfile": "^6.1.4",

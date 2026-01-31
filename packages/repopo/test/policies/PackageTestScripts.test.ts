@@ -8,6 +8,7 @@ import {
 	type PackageTestScriptsConfig,
 } from "../../src/policies/PackageTestScripts.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageTestScripts policy", () => {
 	let tempDir: string;
@@ -52,7 +53,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, undefined),
 			);
 			expect(result).toBe(true);
@@ -71,7 +73,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
 
@@ -93,7 +96,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("tests");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test", "tests"] }),
 			);
 
@@ -111,7 +115,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("__tests__");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test", "__tests__"] }),
 			);
 
@@ -129,7 +134,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
 			expect(result).toBe(true);
@@ -146,7 +152,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			// Don't create any test directory
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test", "tests"] }),
 			);
 			expect(result).toBe(true);
@@ -167,7 +174,8 @@ describe("PackageTestScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDependencies: ["vitest", "jest"] }),
 			);
 
@@ -191,7 +199,8 @@ describe("PackageTestScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDependencies: ["vitest", "jest"] }),
 			);
 
@@ -211,7 +220,8 @@ describe("PackageTestScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDependencies: ["vitest", "jest"] }),
 			);
 			expect(result).toBe(true);
@@ -230,7 +240,8 @@ describe("PackageTestScripts policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDependencies: ["vitest", "jest"] }),
 			);
 			expect(result).toBe(true);
@@ -253,7 +264,8 @@ describe("PackageTestScripts policy", () => {
 			createTestDir("test"); // Directory exists but won't be checked
 
 			// Only testDependencies configured, no testDirectories
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, {
 					testDependencies: ["vitest"],
 				}),
@@ -277,7 +289,8 @@ describe("PackageTestScripts policy", () => {
 			// No test directory
 
 			// Only testDirectories configured, no testDependencies
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, {
 					testDirectories: ["test"],
 				}),
@@ -300,7 +313,10 @@ describe("PackageTestScripts policy", () => {
 			createTestDir("test");
 
 			// Empty config
-			const result = await PackageTestScripts.handler(createArgs(filePath, {}));
+			const result = await runHandler(
+				PackageTestScripts.handler,
+				createArgs(filePath, {}),
+			);
 			expect(result).toBe(true);
 		});
 	});
@@ -317,7 +333,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, {
 					testDirectories: ["test"],
 					requiredScripts: ["test", "test:coverage"],
@@ -342,7 +359,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, {
 					testDirectories: ["test"],
 					requiredScripts: ["test", "test:coverage"],
@@ -364,7 +382,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, {
 					testDirectories: ["test"],
 					excludePackages: ["@myorg/excluded"],
@@ -384,7 +403,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
 			expect(result).toBe(true);
@@ -397,7 +417,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
 			expect(result).toBe(true);
@@ -418,7 +439,8 @@ describe("PackageTestScripts policy", () => {
 			const filePath = createPackageJson(json);
 			createTestDir("test");
 
-			const result = await PackageTestScripts.handler(
+			const result = await runHandler(
+				PackageTestScripts.handler,
 				createArgs(filePath, { testDirectories: ["test"] }),
 			);
 

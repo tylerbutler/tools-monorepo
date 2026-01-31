@@ -124,68 +124,72 @@ function isWorkspaceDependency(version: string | undefined): boolean {
 export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 	PackageJson,
 	NoPrivateWorkspaceDependenciesSettings | undefined
->("NoPrivateWorkspaceDependencies", async (json, { file, root, config }) => {
-	// Private packages can depend on anything - they won't be published
-	if (json.private === true) {
-		return true;
-	}
-
-	const checkDevDeps = config?.checkDevDependencies ?? false;
-
-	// Collect dependencies to check
-	const depsToCheck: Record<string, string | undefined> = {
-		...(json.dependencies ?? {}),
-	};
-
-	if (checkDevDeps) {
-		Object.assign(depsToCheck, json.devDependencies ?? {});
-	}
-
-	const privateWorkspaceDeps: string[] = [];
-	const unresolvableDeps: string[] = [];
-
-	for (const [depName, version] of Object.entries(depsToCheck)) {
-		if (!isWorkspaceDependency(version)) {
-			continue;
+>(
+	"NoPrivateWorkspaceDependencies",
+	// biome-ignore lint/correctness/useYield: no yield needed
+	function* (json, { file, root, config }) {
+		// Private packages can depend on anything - they won't be published
+		if (json.private === true) {
+			return true;
 		}
 
-		const depPackageJson = findWorkspacePackage(depName, root);
+		const checkDevDeps = config?.checkDevDependencies ?? false;
 
-		if (depPackageJson === undefined) {
-			// Could not find the package - might be a configuration issue
-			// We'll warn but not fail, as this could be a valid setup we don't understand
-			unresolvableDeps.push(depName);
-			continue;
-		}
-
-		if (depPackageJson.private === true) {
-			privateWorkspaceDeps.push(depName);
-		}
-	}
-
-	const errorMessages: string[] = [];
-
-	if (privateWorkspaceDeps.length > 0) {
-		errorMessages.push(
-			`Publishable package has workspace dependencies on private packages that won't be available on npm:\n\t${privateWorkspaceDeps.join("\n\t")}`,
-		);
-	}
-
-	if (unresolvableDeps.length > 0) {
-		errorMessages.push(
-			`Could not resolve workspace dependencies (verify they exist):\n\t${unresolvableDeps.join("\n\t")}`,
-		);
-	}
-
-	if (errorMessages.length > 0) {
-		const failResult: PolicyFailure = {
-			name: NoPrivateWorkspaceDependencies.name,
-			file,
-			autoFixable: false,
-			errorMessages,
+		// Collect dependencies to check
+		const depsToCheck: Record<string, string | undefined> = {
+			...(json.dependencies ?? {}),
 		};
-		return failResult;
-	}
 
-	return true;
-});
+		if (checkDevDeps) {
+			Object.assign(depsToCheck, json.devDependencies ?? {});
+		}
+
+		const privateWorkspaceDeps: string[] = [];
+		const unresolvableDeps: string[] = [];
+
+		for (const [depName, version] of Object.entries(depsToCheck)) {
+			if (!isWorkspaceDependency(version)) {
+				continue;
+			}
+
+			const depPackageJson = findWorkspacePackage(depName, root);
+
+			if (depPackageJson === undefined) {
+				// Could not find the package - might be a configuration issue
+				// We'll warn but not fail, as this could be a valid setup we don't understand
+				unresolvableDeps.push(depName);
+				continue;
+			}
+
+			if (depPackageJson.private === true) {
+				privateWorkspaceDeps.push(depName);
+			}
+		}
+
+		const errorMessages: string[] = [];
+
+		if (privateWorkspaceDeps.length > 0) {
+			errorMessages.push(
+				`Publishable package has workspace dependencies on private packages that won't be available on npm:\n\t${privateWorkspaceDeps.join("\n\t")}`,
+			);
+		}
+
+		if (unresolvableDeps.length > 0) {
+			errorMessages.push(
+				`Could not resolve workspace dependencies (verify they exist):\n\t${unresolvableDeps.join("\n\t")}`,
+			);
+		}
+
+		if (errorMessages.length > 0) {
+			const failResult: PolicyFailure = {
+				name: NoPrivateWorkspaceDependencies.name,
+				file,
+				autoFixable: false,
+				errorMessages,
+			};
+			return failResult;
+		}
+
+		return true;
+	},
+);

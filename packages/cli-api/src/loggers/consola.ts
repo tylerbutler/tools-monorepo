@@ -91,7 +91,7 @@ function formatError(message: Error | string | undefined): string {
  *
  * @example
  * ```typescript
- * import { createConsolaLogger } from "@tylerbu/cli-api";
+ * import { createConsolaLogger } from "@tylerbu/cli-api/loggers/consola";
  *
  * // Default consola formatting (icons)
  * const logger = createConsolaLogger();
@@ -151,7 +151,7 @@ export function createConsolaLogger(
  *
  * @example
  * ```typescript
- * import { createExtendedConsolaLogger } from "@tylerbu/cli-api";
+ * import { createExtendedConsolaLogger } from "@tylerbu/cli-api/loggers/consola";
  *
  * const logger = createExtendedConsolaLogger("capsule");
  * logger.fatal("Critical failure!");  // [FATAL] Critical failure!

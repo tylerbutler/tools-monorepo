@@ -14,6 +14,7 @@ import {
 	type PackageReadmeSettings,
 } from "../../src/policies/PackageReadme.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageReadme policy", () => {
 	let tempDir: string;
@@ -60,7 +61,7 @@ describe("PackageReadme policy", () => {
 				"# @myorg/test-package\n\nSome content.",
 			);
 
-			const result = await PackageReadme.handler(createArgs(file));
+			const result = await runHandler(PackageReadme.handler, createArgs(file));
 			expect(result).toBe(true);
 		});
 	});
@@ -73,7 +74,7 @@ describe("PackageReadme policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageReadme.handler(createArgs(file));
+			const result = await runHandler(PackageReadme.handler, createArgs(file));
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -89,7 +90,8 @@ describe("PackageReadme policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageReadme.handler(
+			const result = await runHandler(
+				PackageReadme.handler,
 				createArgs(file, undefined, true),
 			);
 
@@ -113,7 +115,8 @@ describe("PackageReadme policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageReadme.handler(
+			const result = await runHandler(
+				PackageReadme.handler,
 				createArgs(file, { requiredContent: "## Trademark" }, true),
 			);
 
@@ -143,7 +146,7 @@ describe("PackageReadme policy", () => {
 				"# Wrong Title\n\nSome content.",
 			);
 
-			const result = await PackageReadme.handler(createArgs(file));
+			const result = await runHandler(PackageReadme.handler, createArgs(file));
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -163,7 +166,7 @@ describe("PackageReadme policy", () => {
 				"No title here, just content.",
 			);
 
-			const result = await PackageReadme.handler(createArgs(file));
+			const result = await runHandler(PackageReadme.handler, createArgs(file));
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -182,7 +185,8 @@ describe("PackageReadme policy", () => {
 				"# Any Title\n\nSome content.",
 			);
 
-			const result = await PackageReadme.handler(
+			const result = await runHandler(
+				PackageReadme.handler,
 				createArgs(file, { requireMatchingTitle: false }),
 			);
 			expect(result).toBe(true);
@@ -201,7 +205,8 @@ describe("PackageReadme policy", () => {
 				"# @myorg/test-package\n\nContent\n\n## Trademark\n\nNotice here.",
 			);
 
-			const result = await PackageReadme.handler(
+			const result = await runHandler(
+				PackageReadme.handler,
 				createArgs(file, { requiredContent: "## Trademark" }),
 			);
 			expect(result).toBe(true);
@@ -218,7 +223,8 @@ describe("PackageReadme policy", () => {
 				"# @myorg/test-package\n\nContent without trademark.",
 			);
 
-			const result = await PackageReadme.handler(
+			const result = await runHandler(
+				PackageReadme.handler,
 				createArgs(file, { requiredContent: "## Trademark" }),
 			);
 
@@ -242,7 +248,8 @@ describe("PackageReadme policy", () => {
 				"# @myorg/test-package\n\nContent\n",
 			);
 
-			const result = await PackageReadme.handler(
+			const result = await runHandler(
+				PackageReadme.handler,
 				createArgs(file, { requiredContent: "## Trademark" }, true),
 			);
 
@@ -268,7 +275,7 @@ describe("PackageReadme policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageReadme.handler(createArgs(file));
+			const result = await runHandler(PackageReadme.handler, createArgs(file));
 			expect(result).toBe(true);
 		});
 
@@ -280,7 +287,8 @@ describe("PackageReadme policy", () => {
 			};
 			const file = createPackageJson(json);
 
-			const result = await PackageReadme.handler(
+			const result = await runHandler(
+				PackageReadme.handler,
 				createArgs(file, { skipPrivate: false }),
 			);
 

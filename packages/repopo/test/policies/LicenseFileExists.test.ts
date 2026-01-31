@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { LicenseFileExists } from "../../src/policies/LicenseFileExists.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("LicenseFileExists", () => {
 	let testDir: string;
@@ -41,7 +42,7 @@ describe("LicenseFileExists", () => {
 		});
 
 		it("should pass when LICENSE file exists", async () => {
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: false,
@@ -67,7 +68,7 @@ describe("LicenseFileExists", () => {
 			it(`should pass when ${variant} exists`, async () => {
 				writeFileSync(join(testDir, variant), "License content");
 
-				const result = await LicenseFileExists.handler({
+				const result = await runHandler(LicenseFileExists.handler, {
 					file: "package.json",
 					root: testDir,
 					resolve: false,
@@ -80,7 +81,7 @@ describe("LicenseFileExists", () => {
 
 	describe("missing LICENSE file", () => {
 		it("should fail when no LICENSE file exists", async () => {
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: false,
@@ -106,7 +107,7 @@ describe("LicenseFileExists", () => {
 				acceptedNames: ["COPYING", "COPYING.txt"],
 			};
 
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: false,
@@ -124,7 +125,7 @@ describe("LicenseFileExists", () => {
 				acceptedNames: ["COPYING"],
 			};
 
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: false,
@@ -141,7 +142,7 @@ describe("LicenseFileExists", () => {
 
 	describe("resolve behavior", () => {
 		it("should not auto-fix missing LICENSE files", async () => {
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: true,
@@ -160,7 +161,7 @@ describe("LicenseFileExists", () => {
 			const emptyDir = join(testDir, "empty");
 			mkdirSync(emptyDir);
 
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: emptyDir,
 				resolve: false,
@@ -173,7 +174,7 @@ describe("LicenseFileExists", () => {
 			// Create lowercase license file
 			writeFileSync(join(testDir, "license"), "License content");
 
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: false,
@@ -205,7 +206,7 @@ describe("LicenseFileExists", () => {
 				acceptedNames: ["license", "LICENSE"],
 			};
 
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: false,
@@ -220,7 +221,7 @@ describe("LicenseFileExists", () => {
 			writeFileSync(join(testDir, "LICENSE"), "MIT License");
 			writeFileSync(join(testDir, "LICENSE.txt"), "Also MIT License");
 
-			const result = await LicenseFileExists.handler({
+			const result = await runHandler(LicenseFileExists.handler, {
 				file: "package.json",
 				root: testDir,
 				resolve: false,
