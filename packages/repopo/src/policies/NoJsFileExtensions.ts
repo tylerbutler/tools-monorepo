@@ -13,6 +13,7 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
  */
 export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 	"NoJsFileExtensions",
+	"Prevents ambiguous .js files by requiring explicit .mjs or .cjs extensions based on module format.",
 	/(^|\/)[^/]+\.js$/i,
 	// biome-ignore lint/correctness/useYield: no yield needed
 	function* ({ file }): Operation<PolicyFailure> {

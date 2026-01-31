@@ -141,10 +141,10 @@ function fromFluidHandler(
 
 	return makePolicyDefinition(
 		policyName,
+		`FluidFramework policy: ${fluidHandler.name}`,
 		fluidHandler.match,
 		handler,
 		undefined, // no config
-		undefined, // no description
 		resolver,
 	);
 }

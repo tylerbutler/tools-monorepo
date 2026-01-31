@@ -47,10 +47,12 @@ function isOperation<T>(value: unknown): value is Operation<T> {
  */
 export function definePackagePolicy<J = PackageJson, C = undefined>(
 	name: string,
+	description: string,
 	packagePolicy: PackageJsonHandler<J, C>,
 ): PolicyDefinition<C> {
 	return {
 		name,
+		description,
 		match: PackageJsonRegexMatch,
 		handler: function* (innerArgs) {
 			const json: J = yield* call(() =>

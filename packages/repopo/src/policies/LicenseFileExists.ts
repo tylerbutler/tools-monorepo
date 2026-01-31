@@ -38,6 +38,7 @@ const DEFAULT_LICENSE_NAMES = [
 export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
 	makePolicyDefinition(
 		"LicenseFileExists",
+		"Ensures a LICENSE file exists in the repository root for open source projects.",
 		// Only trigger on package.json to check once per repository
 		/^package\.json$/,
 		async ({ root, config }) => {

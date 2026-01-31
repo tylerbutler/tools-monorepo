@@ -125,6 +125,7 @@ function formatBytes(bytes: number): string {
 export const NoLargeBinaryFiles: PolicyDefinition<NoLargeBinaryFilesSettings> =
 	makePolicyDefinition(
 		"NoLargeBinaryFiles",
+		"Prevents large binary files from being committed to avoid repository bloat; consider using Git LFS for large assets.",
 		// Match all files
 		/.*/,
 		async ({ file, root, config }) => {

@@ -10,7 +10,7 @@ import type { RequireExactlyOne } from 'type-fest';
 import { run } from '@oclif/core';
 
 // @alpha
-export function defineFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
+export function defineFileHeaderPolicy(name: string, description: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
 
 // @alpha
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -51,7 +51,7 @@ export interface FluidHandler {
 export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: FluidAdapterOptions): PolicyDefinition[];
 
 // @alpha
-export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
+export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, description: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
 
 // @alpha
 export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
@@ -62,7 +62,7 @@ export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C
 // @alpha
 export interface PolicyDefinition<C = undefined> {
     defaultConfig?: C | undefined;
-    description?: string | undefined;
+    description: string;
     handler: PolicyHandler<C>;
     match: RegExp;
     name: PolicyName;

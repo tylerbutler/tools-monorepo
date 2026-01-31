@@ -228,6 +228,7 @@ function handleMissingGitignore(
 export const RequiredGitignorePatterns: PolicyDefinition<RequiredGitignorePatternsSettings> =
 	makePolicyDefinition(
 		"RequiredGitignorePatterns",
+		"Ensures .gitignore contains required patterns to prevent committing sensitive files, dependencies, and build artifacts.",
 		/^\.gitignore$/,
 		async ({ file, root, resolve, config }) => {
 			const patterns = config?.patterns ?? DEFAULT_PATTERNS;

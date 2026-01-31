@@ -210,75 +210,79 @@ function getRequiredPrivateState(
 export const PackagePrivateField = definePackagePolicy<
 	PackageJson,
 	PackagePrivateFieldConfig | undefined
->("PackagePrivateField", async (json, { file, config, resolve }) => {
-	// If no config provided, skip validation
-	if (config === undefined) {
-		return true;
-	}
-
-	const packageName = json.name;
-
-	// Skip packages without a name (shouldn't happen in practice)
-	if (packageName === undefined) {
-		return true;
-	}
-
-	// Skip the root package (typically named "root" in monorepos)
-	if (packageName === "root") {
-		return true;
-	}
-
-	const requiredState = getRequiredPrivateState(packageName, config);
-
-	// If "ignore", the package can be either private or public
-	if (requiredState === IGNORE_PRIVATE_STATE) {
-		return true;
-	}
-
-	const currentlyPrivate = json.private === true;
-
-	// Check if the current state matches the required state
-	if (requiredState === currentlyPrivate) {
-		return true;
-	}
-
-	// State mismatch - build error message
-	const errorMessage =
-		requiredState === true
-			? `Package "${packageName}" must be marked private. Add "private": true to package.json.`
-			: `Package "${packageName}" must not be marked private. Remove "private": true from package.json to allow publishing.`;
-
-	const failResult: PolicyFailure = {
-		name: PackagePrivateField.name,
-		file,
-		autoFixable: true,
-		errorMessages: [errorMessage],
-	};
-
-	if (resolve) {
-		const fixResult: PolicyFixResult = {
-			...failResult,
-			resolved: false,
-		};
-
-		try {
-			if (requiredState === true) {
-				// Add private: true
-				json.private = true;
-			} else {
-				// Remove private field
-				delete json.private;
-			}
-
-			await writeJson(file, json, { spaces: "\t" });
-			fixResult.resolved = true;
-		} catch {
-			fixResult.resolved = false;
-			fixResult.errorMessages = [`Failed to update ${file}`];
+>(
+	"PackagePrivateField",
+	"Enforces the private field in package.json based on package scope or name patterns.",
+	async (json, { file, config, resolve }) => {
+		// If no config provided, skip validation
+		if (config === undefined) {
+			return true;
 		}
 
-		return fixResult;
-	}
+		const packageName = json.name;
 
-	return failResult;
-});
+		// Skip packages without a name (shouldn't happen in practice)
+		if (packageName === undefined) {
+			return true;
+		}
+
+		// Skip the root package (typically named "root" in monorepos)
+		if (packageName === "root") {
+			return true;
+		}
+
+		const requiredState = getRequiredPrivateState(packageName, config);
+
+		// If "ignore", the package can be either private or public
+		if (requiredState === IGNORE_PRIVATE_STATE) {
+			return true;
+		}
+
+		const currentlyPrivate = json.private === true;
+
+		// Check if the current state matches the required state
+		if (requiredState === currentlyPrivate) {
+			return true;
+		}
+
+		// State mismatch - build error message
+		const errorMessage =
+			requiredState === true
+				? `Package "${packageName}" must be marked private. Add "private": true to package.json.`
+				: `Package "${packageName}" must not be marked private. Remove "private": true from package.json to allow publishing.`;
+
+		const failResult: PolicyFailure = {
+			name: PackagePrivateField.name,
+			file,
+			autoFixable: true,
+			errorMessages: [errorMessage],
+		};
+
+		if (resolve) {
+			const fixResult: PolicyFixResult = {
+				...failResult,
+				resolved: false,
+			};
+
+			try {
+				if (requiredState === true) {
+					// Add private: true
+					json.private = true;
+				} else {
+					// Remove private field
+					delete json.private;
+				}
+
+				await writeJson(file, json, { spaces: "\t" });
+				fixResult.resolved = true;
+			} catch {
+				fixResult.resolved = false;
+				fixResult.errorMessages = [`Failed to update ${file}`];
+			}
+
+			return fixResult;
+		}
+
+		return failResult;
+	},
+);

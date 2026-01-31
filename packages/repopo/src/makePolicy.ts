@@ -7,7 +7,7 @@ import type {
 	PolicyStandaloneResolver,
 } from "./policy.js";
 
-function generatePolicyFunction(name: PolicyName, description?: string) {
+function generatePolicyFunction(name: PolicyName, description: string) {
 	return <C>(
 		match: RegExp,
 		handler: PolicyHandler<C>,
@@ -16,9 +16,9 @@ function generatePolicyFunction(name: PolicyName, description?: string) {
 	): PolicyDefinition<C> => {
 		return {
 			name,
+			description,
 			match,
 			handler,
-			description,
 			defaultConfig,
 			resolver,
 		};
@@ -27,10 +27,10 @@ function generatePolicyFunction(name: PolicyName, description?: string) {
 
 export function makePolicyDefinition<C = undefined>(
 	name: PolicyName,
+	description: string,
 	match: RegExp,
 	handler: PolicyHandler<C>,
 	defaultConfig?: C,
-	description?: string,
 	resolver?: PolicyStandaloneResolver<C>,
 ): PolicyDefinition<C> {
 	return generatePolicyFunction(name, description)(

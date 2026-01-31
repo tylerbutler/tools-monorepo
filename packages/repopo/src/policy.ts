@@ -96,7 +96,7 @@ export interface PolicyDefinition<C = undefined> {
 	/**
 	 * A more detailed description of the policy and its intended function.
 	 */
-	description?: string | undefined;
+	description: string;
 
 	/**
 	 * A regular expression that is used to match files in the repo.
@@ -229,9 +229,9 @@ export const DefaultPolicies: PolicyDefinition<any>[] = [
 export abstract class Policy<C> implements PolicyDefinition<C> {
 	public constructor(
 		public readonly name: string,
+		public readonly description: string,
 		public readonly match: RegExp,
 		public readonly handler: PolicyHandler<C>,
-		public readonly description?: string,
 		public readonly defaultConfig?: C,
 		public readonly resolver?: PolicyStandaloneResolver<C>,
 	) {}

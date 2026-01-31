@@ -25,11 +25,15 @@ const jsTsReplacer = (
  *
  * @alpha
  */
-export const JsTsFileHeaders = defineFileHeaderPolicy("JsTsFileHeaders", {
-	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
-	headerStart: /(#![^\n]*\r?\n)?\/\*!\r?\n/, // Begins with optional hashbang followed by '/*!'
-	lineStart: / \* /, // Subsequent lines begins with ' * '
-	lineEnd: /\r?\n/, // Subsequent lines end with CRLF or LF
-	headerEnd: / \*\/\r?\n\r?\n/, // Header ends with ' */' on a line by itself, followed by another newline
-	replacer: jsTsReplacer,
-});
+export const JsTsFileHeaders = defineFileHeaderPolicy(
+	"JsTsFileHeaders",
+	"Ensures JavaScript and TypeScript source files have the configured header comment.",
+	{
+		match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
+		headerStart: /(#![^\n]*\r?\n)?\/\*!\r?\n/, // Begins with optional hashbang followed by '/*!'
+		lineStart: / \* /, // Subsequent lines begins with ' * '
+		lineEnd: /\r?\n/, // Subsequent lines end with CRLF or LF
+		headerEnd: / \*\/\r?\n\r?\n/, // Header ends with ' */' on a line by itself, followed by another newline
+		replacer: jsTsReplacer,
+	},
+);

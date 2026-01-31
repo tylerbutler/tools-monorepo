@@ -9,18 +9,22 @@ import {
  *
  * @alpha
  */
-export const HtmlFileHeaders = defineFileHeaderPolicy("HtmlFileHeaders", {
-	match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
-	lineStart: /<!-- /, // Lines begin with '<!-- '
-	lineEnd: / -->\r?\n/, // Lines end with ' -->' followed by CRLF or LF
-	replacer: (
-		content: string,
-		{ headerText }: FileHeaderPolicyConfig,
-	): string => {
-		const newContent = `<!-- ${headerText.replace(
-			newline,
-			` -->${newline}<!-- `,
-		)} -->${newline}${newline}${content}`;
-		return newContent;
+export const HtmlFileHeaders = defineFileHeaderPolicy(
+	"HtmlFileHeaders",
+	"Ensures HTML files have the configured header comment.",
+	{
+		match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
+		lineStart: /<!-- /, // Lines begin with '<!-- '
+		lineEnd: / -->\r?\n/, // Lines end with ' -->' followed by CRLF or LF
+		replacer: (
+			content: string,
+			{ headerText }: FileHeaderPolicyConfig,
+		): string => {
+			const newContent = `<!-- ${headerText.replace(
+				newline,
+				` -->${newline}<!-- `,
+			)} -->${newline}${newline}${content}`;
+			return newContent;
+		},
 	},
-});
+);

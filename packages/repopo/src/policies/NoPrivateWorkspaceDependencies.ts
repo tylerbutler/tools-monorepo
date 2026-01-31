@@ -121,6 +121,7 @@ export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 	NoPrivateWorkspaceDependenciesSettings | undefined
 >(
 	"NoPrivateWorkspaceDependencies",
+	"Prevents publishable packages from depending on private workspace packages that won't be available on npm.",
 	// biome-ignore lint/correctness/useYield: no yield needed
 	function* (json, { file, root, config }) {
 		// Private packages can depend on anything - they won't be published

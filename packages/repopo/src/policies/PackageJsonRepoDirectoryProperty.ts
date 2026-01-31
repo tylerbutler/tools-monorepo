@@ -16,6 +16,7 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 	undefined
 >(
 	"PackageJsonRepoDirectoryProperty",
+	"Ensures the repository.directory property in package.json is set correctly for monorepo packages.",
 	function* (json, { file, root, resolve }) {
 		const failResult: PolicyFailure = {
 			name: PackageJsonRepoDirectoryProperty.name,

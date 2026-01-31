@@ -77,6 +77,7 @@ export interface FileHeaderGeneratorConfig
  */
 export function defineFileHeaderPolicy(
 	name: string,
+	description: string,
 	config: FileHeaderGeneratorConfig,
 ): PolicyDefinition<FileHeaderPolicyConfig> {
 	const pre = config.headerStart?.source ?? "";
@@ -104,6 +105,7 @@ export function defineFileHeaderPolicy(
 
 	return {
 		name,
+		description,
 		match: config.match,
 		handler: function* ({ file, resolve, config: policyConfig }) {
 			if (policyConfig === undefined) {

@@ -143,6 +143,7 @@ export const PackageAllowedScopes = definePackagePolicy<
 	PackageAllowedScopesConfig | undefined
 >(
 	"PackageAllowedScopes",
+	"Ensures packages use only allowed npm scopes and package names.",
 	// biome-ignore lint/correctness/useYield: no yield needed
 	function* (json, { file, config }) {
 		// If no config provided, skip validation

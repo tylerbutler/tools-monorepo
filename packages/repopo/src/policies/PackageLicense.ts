@@ -113,85 +113,90 @@ async function copyLicenseFile(
 export const PackageLicense = definePackagePolicy<
 	PackageJson,
 	PackageLicenseSettings | undefined
->("PackageLicense", async (json, { file, root, resolve, config }) => {
-	const skipPrivate = config?.skipPrivate ?? true;
-	const licenseFileName = config?.licenseFileName ?? DEFAULT_LICENSE_FILE_NAME;
+>(
+	"PackageLicense",
+	"Ensures each package has a LICENSE file that matches the root repository LICENSE.",
+	async (json, { file, root, resolve, config }) => {
+		const skipPrivate = config?.skipPrivate ?? true;
+		const licenseFileName =
+			config?.licenseFileName ?? DEFAULT_LICENSE_FILE_NAME;
 
-	// Skip private packages if configured to do so
-	if (skipPrivate && json.private === true) {
+		// Skip private packages if configured to do so
+		if (skipPrivate && json.private === true) {
+			return true;
+		}
+
+		const packageName = json.name ?? "unknown";
+		// file is an absolute path, get the directory containing package.json
+		const packageDir = path.dirname(file);
+		const packageLicensePath = path.join(packageDir, licenseFileName);
+		const rootLicensePath = path.join(root, licenseFileName);
+
+		// Check if root LICENSE exists
+		if (!existsSync(rootLicensePath)) {
+			return {
+				name: POLICY_NAME,
+				file,
+				autoFixable: false,
+				errorMessages: [
+					`Cannot validate package LICENSE: root ${licenseFileName} file not found`,
+				],
+			};
+		}
+
+		// Check if package LICENSE exists
+		if (!existsSync(packageLicensePath)) {
+			if (resolve) {
+				return await copyLicenseFile(
+					rootLicensePath,
+					packageLicensePath,
+					POLICY_NAME,
+					file,
+					packageName,
+					licenseFileName,
+					true,
+				);
+			}
+
+			return {
+				name: POLICY_NAME,
+				file,
+				autoFixable: true,
+				errorMessages: [
+					`${licenseFileName} file missing for package "${packageName}"`,
+				],
+			};
+		}
+
+		// Compare package LICENSE with root LICENSE
+		const [packageLicenseContent, rootLicenseContent] = await Promise.all([
+			readFile(packageLicensePath, "utf-8"),
+			readFile(rootLicensePath, "utf-8"),
+		]);
+
+		if (packageLicenseContent !== rootLicenseContent) {
+			if (resolve) {
+				return await copyLicenseFile(
+					rootLicensePath,
+					packageLicensePath,
+					POLICY_NAME,
+					file,
+					packageName,
+					licenseFileName,
+					false,
+				);
+			}
+
+			return {
+				name: POLICY_NAME,
+				file,
+				autoFixable: true,
+				errorMessages: [
+					`${licenseFileName} file in package "${packageName}" doesn't match root ${licenseFileName}`,
+				],
+			};
+		}
+
 		return true;
-	}
-
-	const packageName = json.name ?? "unknown";
-	// file is an absolute path, get the directory containing package.json
-	const packageDir = path.dirname(file);
-	const packageLicensePath = path.join(packageDir, licenseFileName);
-	const rootLicensePath = path.join(root, licenseFileName);
-
-	// Check if root LICENSE exists
-	if (!existsSync(rootLicensePath)) {
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: false,
-			errorMessages: [
-				`Cannot validate package LICENSE: root ${licenseFileName} file not found`,
-			],
-		};
-	}
-
-	// Check if package LICENSE exists
-	if (!existsSync(packageLicensePath)) {
-		if (resolve) {
-			return await copyLicenseFile(
-				rootLicensePath,
-				packageLicensePath,
-				POLICY_NAME,
-				file,
-				packageName,
-				licenseFileName,
-				true,
-			);
-		}
-
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: true,
-			errorMessages: [
-				`${licenseFileName} file missing for package "${packageName}"`,
-			],
-		};
-	}
-
-	// Compare package LICENSE with root LICENSE
-	const [packageLicenseContent, rootLicenseContent] = await Promise.all([
-		readFile(packageLicensePath, "utf-8"),
-		readFile(rootLicensePath, "utf-8"),
-	]);
-
-	if (packageLicenseContent !== rootLicenseContent) {
-		if (resolve) {
-			return await copyLicenseFile(
-				rootLicensePath,
-				packageLicensePath,
-				POLICY_NAME,
-				file,
-				packageName,
-				licenseFileName,
-				false,
-			);
-		}
-
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: true,
-			errorMessages: [
-				`${licenseFileName} file in package "${packageName}" doesn't match root ${licenseFileName}`,
-			],
-		};
-	}
-
-	return true;
-});
+	},
+);

@@ -12,6 +12,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  */
 export const PackageJsonSorted = definePackagePolicy(
 	"PackageJsonSorted",
+	"Ensures package.json files are sorted consistently using sort-package-json.",
 	function* (json, { file, root, resolve }) {
 		const sortedJson = sortPackageJson(json);
 		const isSorted = JSON.stringify(sortedJson) === JSON.stringify(json);

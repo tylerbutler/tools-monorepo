@@ -28,46 +28,50 @@ export interface PackageJsonPropertiesSettings {
 export const PackageJsonProperties = definePackagePolicy<
 	PackageJson,
 	PackageJsonPropertiesSettings | undefined
->("PackageJsonProperties", function* (json, { file, config, resolve }) {
-	if (config === undefined) {
-		return true;
-	}
-	const { verbatim } = config;
+>(
+	"PackageJsonProperties",
+	"Ensures package.json files contain required properties with correct values.",
+	function* (json, { file, config, resolve }) {
+		if (config === undefined) {
+			return true;
+		}
+		const { verbatim } = config;
 
-	const failResult: PolicyFailure = {
-		name: PackageJsonProperties.name,
-		file,
-		autoFixable: true,
-		errorMessages: [],
-	};
+		const failResult: PolicyFailure = {
+			name: PackageJsonProperties.name,
+			file,
+			autoFixable: true,
+			errorMessages: [],
+		};
 
-	const merged = defu(verbatim, json);
-	const result = diff(merged, json);
+		const merged = defu(verbatim, json);
+		const result = diff(merged, json);
 
-	const messages: string[] = [];
-	for (const diffResult of result) {
-		messages.push(
-			`Incorrect package.json field value for '${diffResult.path}'.`,
-		);
-	}
-
-	if (messages.length > 0) {
-		if (resolve) {
-			const fixResult: PolicyFixResult = {
-				...failResult,
-				resolved: false,
-			};
-
-			yield* call(() => writeJson(file, merged, { spaces: "\t" }));
-
-			fixResult.resolved = true;
-			return fixResult;
+		const messages: string[] = [];
+		for (const diffResult of result) {
+			messages.push(
+				`Incorrect package.json field value for '${diffResult.path}'.`,
+			);
 		}
 
-		// There were errors, and we're not resolving them, so return a fail result
-		failResult.errorMessages = messages;
-		return failResult;
-	}
+		if (messages.length > 0) {
+			if (resolve) {
+				const fixResult: PolicyFixResult = {
+					...failResult,
+					resolved: false,
+				};
 
-	return true;
-});
+				yield* call(() => writeJson(file, merged, { spaces: "\t" }));
+
+				fixResult.resolved = true;
+				return fixResult;
+			}
+
+			// There were errors, and we're not resolving them, so return a fail result
+			failResult.errorMessages = messages;
+			return failResult;
+		}
+
+		return true;
+	},
+);
