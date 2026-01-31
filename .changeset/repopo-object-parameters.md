@@ -1,20 +1,21 @@
 ---
-"repopo": minor
+"repopo": major
 ---
 
-Make description required on PolicyDefinition and use object parameters for factory functions
+Use object parameters for policy factory functions and Policy class
 
 BREAKING CHANGES:
 
-- `PolicyDefinition.description` is now required (was optional)
 - `makePolicyDefinition()` now takes an object argument: `{ name, description, match, handler, defaultConfig?, resolver? }`
 - `definePackagePolicy()` now takes an object argument: `{ name, description, handler }`
 - `defineFileHeaderPolicy()` now takes an object argument: `{ name, description, config }`
+- `Policy` class constructor now takes a `PolicyDefinition` object instead of positional arguments
+
+This change makes it easier to add new optional properties in the future without breaking changes.
 
 New exports:
+
 - `makePolicyDefinition` function (previously internal)
 - `PolicyDefinitionInput` type
 - `DefinePackagePolicyArgs` interface
 - `DefineFileHeaderPolicyArgs` interface
-
-All built-in policies now include descriptions.
