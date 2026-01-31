@@ -37,13 +37,13 @@ export type {
 	PolicyStandaloneResolver,
 } from "./policy.js";
 export {
-	defineFileHeaderPolicy,
 	type DefineFileHeaderPolicyArgs,
+	defineFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,
 	type FileHeaderPolicyConfig,
 } from "./policyDefiners/defineFileHeaderPolicy.js";
 export {
-	definePackagePolicy as generatePackagePolicy,
 	type DefinePackagePolicyArgs,
+	definePackagePolicy as generatePackagePolicy,
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";

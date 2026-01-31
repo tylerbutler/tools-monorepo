@@ -226,13 +226,29 @@ export const DefaultPolicies: PolicyDefinition<any>[] = [
 	PackageScripts,
 ] as const;
 
+/**
+ * Abstract base class for creating policies with object-based construction.
+ *
+ * @remarks
+ * This class accepts a {@link PolicyDefinition} object in its constructor,
+ * making it easier to add new optional properties in the future without breaking changes.
+ *
+ * @alpha
+ */
 export abstract class Policy<C> implements PolicyDefinition<C> {
-	public constructor(
-		public readonly name: string,
-		public readonly description: string,
-		public readonly match: RegExp,
-		public readonly handler: PolicyHandler<C>,
-		public readonly defaultConfig?: C,
-		public readonly resolver?: PolicyStandaloneResolver<C>,
-	) {}
+	public readonly name: string;
+	public readonly description: string;
+	public readonly match: RegExp;
+	public readonly handler: PolicyHandler<C>;
+	public readonly defaultConfig?: C | undefined;
+	public readonly resolver?: PolicyStandaloneResolver<C> | undefined;
+
+	public constructor(definition: PolicyDefinition<C>) {
+		this.name = definition.name;
+		this.description = definition.description;
+		this.match = definition.match;
+		this.handler = definition.handler;
+		this.defaultConfig = definition.defaultConfig;
+		this.resolver = definition.resolver;
+	}
 }

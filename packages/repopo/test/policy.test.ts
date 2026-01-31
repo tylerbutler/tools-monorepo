@@ -73,14 +73,14 @@ describe("Policy Module", () => {
 				errorMessages: [],
 			});
 
-			const policy = new TestPolicy(
-				"TestPolicy",
-				"A test policy for TypeScript files",
-				/\.ts$/,
+			const policy = new TestPolicy({
+				name: "TestPolicy",
+				description: "A test policy for TypeScript files",
+				match: /\.ts$/,
 				handler,
-				{ setting: "default" },
+				defaultConfig: { setting: "default" },
 				resolver,
-			);
+			});
 
 			expect(policy.name).toBe("TestPolicy");
 			expect(policy.description).toBe("A test policy for TypeScript files");
@@ -97,12 +97,12 @@ describe("Policy Module", () => {
 
 			class MinimalPolicy extends Policy<undefined> {}
 
-			const policy = new MinimalPolicy(
-				"MinimalPolicy",
-				"A minimal policy for package.json files",
-				/package\.json$/,
+			const policy = new MinimalPolicy({
+				name: "MinimalPolicy",
+				description: "A minimal policy for package.json files",
+				match: /package\.json$/,
 				handler,
-			);
+			});
 
 			expect(policy.name).toBe("MinimalPolicy");
 			expect(policy.description).toBe(
@@ -121,12 +121,12 @@ describe("Policy Module", () => {
 
 			class MinimalPolicy extends Policy<undefined> {}
 
-			const policy = new MinimalPolicy(
-				"TypeScriptPolicy",
-				"A policy for TypeScript files",
-				/\.(ts|tsx)$/,
+			const policy = new MinimalPolicy({
+				name: "TypeScriptPolicy",
+				description: "A policy for TypeScript files",
+				match: /\.(ts|tsx)$/,
 				handler,
-			);
+			});
 
 			expect(policy.match.test("component.ts")).toBe(true);
 			expect(policy.match.test("component.tsx")).toBe(true);
@@ -151,13 +151,13 @@ describe("Policy Module", () => {
 
 			class ConfigurablePolicy extends Policy<{ threshold: number }> {}
 
-			const policy = new ConfigurablePolicy(
-				"ConfigurablePolicy",
-				"A configurable policy",
-				/\.ts$/,
+			const policy = new ConfigurablePolicy({
+				name: "ConfigurablePolicy",
+				description: "A configurable policy",
+				match: /\.ts$/,
 				handler,
-				{ threshold: 10 },
-			);
+				defaultConfig: { threshold: 10 },
+			});
 
 			const passResult = await policy.handler({
 				file: "test.ts",
