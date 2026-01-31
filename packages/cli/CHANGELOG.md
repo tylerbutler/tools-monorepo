@@ -1,5 +1,23 @@
 # @tylerbu/cli
 
+## 0.8.1
+
+### Patch Changes
+
+- Remove unused effection dependency _[`#379`](https://github.com/tylerbutler/tools-monorepo/pull/379) [`1582ad1`](https://github.com/tylerbutler/tools-monorepo/commit/1582ad1abc79b211492dba2e5172e995c9c47fe0) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`c577266`](https://github.com/tylerbutler/tools-monorepo/commit/c577266129da545000aea343256b06129a243987)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.1`
+
+</details>
+
 ## 0.8.0
 
 ### Minor Changes
