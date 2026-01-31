@@ -705,10 +705,11 @@ function runAllValidations(
 export const PackageScripts = definePackagePolicy<
 	PackageJson,
 	PackageScriptsSettings | undefined
->(
-	"PackageScripts",
-	"Validates package.json scripts based on configurable rules including required scripts, exact content, and conditional requirements.",
-	async (json, { file, resolve, config }) => {
+>({
+	name: "PackageScripts",
+	description:
+		"Validates package.json scripts based on configurable rules including required scripts, exact content, and conditional requirements.",
+	handler: async (json, { file, resolve, config }) => {
 		if (config === undefined) {
 			return true;
 		}
@@ -765,4 +766,4 @@ export const PackageScripts = definePackagePolicy<
 			errorMessages: errors,
 		};
 	},
-);
+});

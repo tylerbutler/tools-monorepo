@@ -358,10 +358,11 @@ async function applyFix(
 export const PackageEsmType = definePackagePolicy<
 	PackageJson,
 	PackageEsmTypeConfig | undefined
->(
-	"PackageEsmType",
-	"Ensures the type field in package.json correctly indicates ESM or CommonJS module format.",
-	async (json, { file, config, resolve }) => {
+>({
+	name: "PackageEsmType",
+	description:
+		"Ensures the type field in package.json correctly indicates ESM or CommonJS module format.",
+	handler: async (json, { file, config, resolve }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
 			return true;
@@ -418,4 +419,4 @@ export const PackageEsmType = definePackagePolicy<
 
 		return failResult;
 	},
-);
+});

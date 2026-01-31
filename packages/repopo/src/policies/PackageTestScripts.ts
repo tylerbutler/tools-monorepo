@@ -213,10 +213,11 @@ function shouldSkipValidation(
 export const PackageTestScripts = definePackagePolicy<
 	PackageJson,
 	PackageTestScriptsConfig | undefined
->(
-	"PackageTestScripts",
-	"Ensures packages have test scripts when test directories or test framework dependencies exist.",
-	async (json, { file, config }) => {
+>({
+	name: "PackageTestScripts",
+	description:
+		"Ensures packages have test scripts when test directories or test framework dependencies exist.",
+	handler: async (json, { file, config }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
 			return true;
@@ -269,4 +270,4 @@ export const PackageTestScripts = definePackagePolicy<
 		};
 		return failResult;
 	},
-);
+});

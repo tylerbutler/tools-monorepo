@@ -12,12 +12,12 @@ describe("makePolicyDefinition", () => {
 	it("should create a valid PolicyDefinition with required parameters", () => {
 		const handler: PolicyHandler = async () => true as const;
 
-		const definition = makePolicyDefinition(
-			"TestPolicy",
-			"A test policy for testing purposes.",
-			/\.test\.ts$/,
+		const definition = makePolicyDefinition({
+			name: "TestPolicy",
+			description: "A test policy for testing purposes.",
+			match: /\.test\.ts$/,
 			handler,
-		);
+		});
 
 		expect(definition).toEqual({
 			name: "TestPolicy",
@@ -54,14 +54,14 @@ describe("makePolicyDefinition", () => {
 			errorMessages: ["Fixed"],
 		});
 
-		const definition = makePolicyDefinition(
-			"TestPolicy",
-			"Test policy with config",
-			/\.ts$/,
+		const definition = makePolicyDefinition({
+			name: "TestPolicy",
+			description: "Test policy with config",
+			match: /\.ts$/,
 			handler,
-			{ threshold: 100 },
+			defaultConfig: { threshold: 100 },
 			resolver,
-		);
+		});
 
 		expect(definition.name).toBe("TestPolicy");
 		expect(definition.match).toEqual(/\.ts$/);
@@ -74,12 +74,12 @@ describe("makePolicyDefinition", () => {
 	it("should create PolicyDefinition with description but no config", () => {
 		const handler: PolicyHandler = async () => true as const;
 
-		const definition = makePolicyDefinition(
-			"DescriptivePolicy",
-			"A policy with description",
-			/\.md$/,
+		const definition = makePolicyDefinition({
+			name: "DescriptivePolicy",
+			description: "A policy with description",
+			match: /\.md$/,
 			handler,
-		);
+		});
 
 		expect(definition.name).toBe("DescriptivePolicy");
 		expect(definition.description).toBe("A policy with description");
@@ -104,13 +104,13 @@ describe("makePolicyDefinition", () => {
 			};
 		};
 
-		const definition = makePolicyDefinition(
-			"ConfigPolicy",
-			"Policy with configuration",
-			/\.json$/,
+		const definition = makePolicyDefinition({
+			name: "ConfigPolicy",
+			description: "Policy with configuration",
+			match: /\.json$/,
 			handler,
-			{ maxSize: 500 },
-		);
+			defaultConfig: { maxSize: 500 },
+		});
 
 		expect(definition.name).toBe("ConfigPolicy");
 		expect(definition.defaultConfig).toEqual({ maxSize: 500 });
@@ -132,14 +132,14 @@ describe("makePolicyDefinition", () => {
 			errorMessages: ["Fixed"],
 		});
 
-		const definition = makePolicyDefinition(
-			"ResolverPolicy",
-			"Policy with resolver",
-			/\.txt$/,
+		const definition = makePolicyDefinition({
+			name: "ResolverPolicy",
+			description: "Policy with resolver",
+			match: /\.txt$/,
 			handler,
-			undefined,
+			defaultConfig: undefined,
 			resolver,
-		);
+		});
 
 		expect(definition.resolver).toBe(resolver);
 		expect(definition.defaultConfig).toBeUndefined();
@@ -154,12 +154,12 @@ describe("makePolicyDefinition", () => {
 			return true as const;
 		};
 
-		const definition = makePolicyDefinition(
-			"GeneratorPolicy",
-			"Policy using Effection generators",
-			/\.ts$/,
+		const definition = makePolicyDefinition({
+			name: "GeneratorPolicy",
+			description: "Policy using Effection generators",
+			match: /\.ts$/,
 			handler,
-		);
+		});
 
 		expect(definition.handler).toBe(handler);
 		expect(definition.name).toBe("GeneratorPolicy");
@@ -181,14 +181,14 @@ describe("makePolicyDefinition", () => {
 			return result;
 		};
 
-		const definition = makePolicyDefinition(
-			"GeneratorResolverPolicy",
-			"Policy with generator resolver",
-			/\.js$/,
+		const definition = makePolicyDefinition({
+			name: "GeneratorResolverPolicy",
+			description: "Policy with generator resolver",
+			match: /\.js$/,
 			handler,
-			undefined,
+			defaultConfig: undefined,
 			resolver,
-		);
+		});
 
 		expect(definition.resolver).toBe(resolver);
 	});
@@ -197,12 +197,12 @@ describe("makePolicyDefinition", () => {
 		const handler: PolicyHandler = async () => true as const;
 		const complexRegex = /^(src|test)\/.*\.(ts|tsx|js|jsx)$/;
 
-		const definition = makePolicyDefinition(
-			"ComplexMatchPolicy",
-			"Policy with complex regex match",
-			complexRegex,
+		const definition = makePolicyDefinition({
+			name: "ComplexMatchPolicy",
+			description: "Policy with complex regex match",
+			match: complexRegex,
 			handler,
-		);
+		});
 
 		expect(definition.match).toBe(complexRegex);
 		expect("src/index.ts").toMatch(definition.match);

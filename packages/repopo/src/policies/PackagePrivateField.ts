@@ -210,10 +210,11 @@ function getRequiredPrivateState(
 export const PackagePrivateField = definePackagePolicy<
 	PackageJson,
 	PackagePrivateFieldConfig | undefined
->(
-	"PackagePrivateField",
-	"Enforces the private field in package.json based on package scope or name patterns.",
-	async (json, { file, config, resolve }) => {
+>({
+	name: "PackagePrivateField",
+	description:
+		"Enforces the private field in package.json based on package scope or name patterns.",
+	handler: async (json, { file, config, resolve }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
 			return true;
@@ -285,4 +286,4 @@ export const PackagePrivateField = definePackagePolicy<
 
 		return failResult;
 	},
-);
+});

@@ -226,11 +226,12 @@ function handleMissingGitignore(
  * @alpha
  */
 export const RequiredGitignorePatterns: PolicyDefinition<RequiredGitignorePatternsSettings> =
-	makePolicyDefinition(
-		"RequiredGitignorePatterns",
-		"Ensures .gitignore contains required patterns to prevent committing sensitive files, dependencies, and build artifacts.",
-		/^\.gitignore$/,
-		async ({ file, root, resolve, config }) => {
+	makePolicyDefinition({
+		name: "RequiredGitignorePatterns",
+		description:
+			"Ensures .gitignore contains required patterns to prevent committing sensitive files, dependencies, and build artifacts.",
+		match: /^\.gitignore$/,
+		handler: async ({ file, root, resolve, config }) => {
 			const patterns = config?.patterns ?? DEFAULT_PATTERNS;
 			const filePath = path.join(root, file);
 
@@ -240,4 +241,4 @@ export const RequiredGitignorePatterns: PolicyDefinition<RequiredGitignorePatter
 				return handleMissingGitignore(filePath, patterns, file, resolve);
 			}
 		},
-	);
+	});

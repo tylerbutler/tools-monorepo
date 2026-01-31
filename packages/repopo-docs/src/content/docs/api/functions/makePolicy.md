@@ -7,7 +7,7 @@ title: "makePolicy"
 
 > **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
 
-Defined in: [makePolicy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L49)
+Defined in: [makePolicy.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L55)
 
 Combine a [PolicyDefinition](/api/interfaces/policydefinition/) with a policy-specific config and other settings to produce a [PolicyInstance](/api/type-aliases/policyinstance/).
 

@@ -142,10 +142,11 @@ function getExpectedFolderName(
 export const PackageFolderName = definePackagePolicy<
 	PackageJson,
 	PackageFolderNameConfig | undefined
->(
-	"PackageFolderName",
-	"Ensures package folder names match package names for consistent file structure.",
-	async (json, { file, config }) => {
+>({
+	name: "PackageFolderName",
+	description:
+		"Ensures package folder names match package names for consistent file structure.",
+	handler: async (json, { file, config }) => {
 		// If no config provided, use defaults (check all packages)
 		const effectiveConfig = config ?? {};
 
@@ -191,4 +192,4 @@ export const PackageFolderName = definePackagePolicy<
 		};
 		return failResult;
 	},
-);
+});

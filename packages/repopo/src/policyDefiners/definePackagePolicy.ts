@@ -41,15 +41,50 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 }
 
 /**
+ * Input arguments for defining a package.json policy.
+ *
+ * @alpha
+ */
+export interface DefinePackagePolicyArgs<J, C> {
+	/**
+	 * The name of the policy.
+	 */
+	name: string;
+
+	/**
+	 * A description of the policy's purpose.
+	 */
+	description: string;
+
+	/**
+	 * The handler function that receives the parsed package.json and policy arguments.
+	 */
+	handler: PackageJsonHandler<J, C>;
+}
+
+/**
  * Define a repo policy for package.json files.
+ *
+ * @example
+ * ```typescript
+ * const MyPackagePolicy = definePackagePolicy({
+ *   name: "MyPackagePolicy",
+ *   description: "Ensures package.json has required fields",
+ *   handler: function* (json, { file }) {
+ *     if (!json.name) {
+ *       return { name: "MyPackagePolicy", file, errorMessages: ["Missing name"] };
+ *     }
+ *     return true;
+ *   },
+ * });
+ * ```
  *
  * @alpha
  */
 export function definePackagePolicy<J = PackageJson, C = undefined>(
-	name: string,
-	description: string,
-	packagePolicy: PackageJsonHandler<J, C>,
+	args: DefinePackagePolicyArgs<J, C>,
 ): PolicyDefinition<C> {
+	const { name, description, handler: packagePolicy } = args;
 	return {
 		name,
 		description,

@@ -45,11 +45,11 @@ describe("definePackagePolicy", () => {
 			return true as const;
 		};
 
-		const policy = definePackagePolicy(
-			"TestPackagePolicy",
-			"Test policy for package.json validation",
+		const policy = definePackagePolicy({
+			name: "TestPackagePolicy",
+			description: "Test policy for package.json validation",
 			handler,
-		);
+		});
 
 		const result = await runHandler(policy.handler, {
 			file: join(testDir, packageJsonPath),
@@ -72,11 +72,11 @@ describe("definePackagePolicy", () => {
 			return true as const;
 		};
 
-		const policy = definePackagePolicy(
-			"TestPackagePolicy",
-			"Test policy for package.json validation",
+		const policy = definePackagePolicy({
+			name: "TestPackagePolicy",
+			description: "Test policy for package.json validation",
 			handler,
-		);
+		});
 
 		expect(policy.match).toBeDefined();
 		expect("package.json").toMatch(policy.match);
@@ -122,11 +122,11 @@ describe("definePackagePolicy", () => {
 			return true as const;
 		};
 
-		const policy = definePackagePolicy(
-			"ComplexPackagePolicy",
-			"Complex package.json validation policy",
+		const policy = definePackagePolicy({
+			name: "ComplexPackagePolicy",
+			description: "Complex package.json validation policy",
 			handler,
-		);
+		});
 
 		await runHandler(policy.handler, {
 			file: join(testDir, packageJsonPath),
@@ -167,11 +167,11 @@ describe("definePackagePolicy", () => {
 			return failure;
 		};
 
-		const policy = definePackagePolicy(
-			"TestPackagePolicy",
-			"Test policy for package.json validation",
+		const policy = definePackagePolicy({
+			name: "TestPackagePolicy",
+			description: "Test policy for package.json validation",
 			handler,
-		);
+		});
 
 		const result = await runHandler(policy.handler, {
 			file: join(testDir, packageJsonPath),
@@ -214,11 +214,11 @@ describe("definePackagePolicy", () => {
 				return true as const;
 			};
 
-		const policy = definePackagePolicy<CustomPackageJson>(
-			"CustomPackagePolicy",
-			"Custom package.json type validation policy",
+		const policy = definePackagePolicy<CustomPackageJson>({
+			name: "CustomPackagePolicy",
+			description: "Custom package.json type validation policy",
 			handler,
-		);
+		});
 
 		await runHandler(policy.handler, {
 			file: join(testDir, packageJsonPath),
@@ -266,11 +266,11 @@ describe("definePackagePolicy", () => {
 			};
 		};
 
-		const policy = definePackagePolicy<PackageJson, TestConfig>(
-			"ConfigPackagePolicy",
-			"Config-based package.json validation policy",
+		const policy = definePackagePolicy<PackageJson, TestConfig>({
+			name: "ConfigPackagePolicy",
+			description: "Config-based package.json validation policy",
 			handler,
-		);
+		});
 
 		const result = await runHandler(policy.handler, {
 			file: join(testDir, packageJsonPath),
@@ -311,11 +311,11 @@ describe("definePackagePolicy", () => {
 			};
 		};
 
-		const policy = definePackagePolicy(
-			"MinimalPackagePolicy",
-			"Minimal package.json validation policy",
+		const policy = definePackagePolicy({
+			name: "MinimalPackagePolicy",
+			description: "Minimal package.json validation policy",
 			handler,
-		);
+		});
 
 		const result = await runHandler(policy.handler, {
 			file: join(testDir, packageJsonPath),
@@ -355,11 +355,11 @@ describe("definePackagePolicy", () => {
 			return true as const;
 		};
 
-		const policy = definePackagePolicy(
-			"ArgsPackagePolicy",
-			"Package policy that validates arguments",
+		const policy = definePackagePolicy({
+			name: "ArgsPackagePolicy",
+			description: "Package policy that validates arguments",
 			handler,
-		);
+		});
 
 		await runHandler(policy.handler, {
 			file: join(testDir, packageJsonPath),
@@ -409,11 +409,11 @@ describe("definePackagePolicy", () => {
 			return true as const;
 		};
 
-		const policy = definePackagePolicy(
-			"NestedPackagePolicy",
-			"Package policy for nested structures",
+		const policy = definePackagePolicy({
+			name: "NestedPackagePolicy",
+			description: "Package policy for nested structures",
 			handler,
-		);
+		});
 
 		await runHandler(policy.handler, {
 			file: join(testDir, packageJsonPath),
@@ -434,11 +434,11 @@ describe("definePackagePolicy", () => {
 			return true as const;
 		};
 
-		const policy = definePackagePolicy(
-			"MyCustomPackagePolicy",
-			"Custom named package policy",
+		const policy = definePackagePolicy({
+			name: "MyCustomPackagePolicy",
+			description: "Custom named package policy",
 			handler,
-		);
+		});
 
 		expect(policy.name).toBe("MyCustomPackagePolicy");
 	});

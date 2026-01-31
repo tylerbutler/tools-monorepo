@@ -14,10 +14,11 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 	PackageJson,
 	undefined
->(
-	"PackageJsonRepoDirectoryProperty",
-	"Ensures the repository.directory property in package.json is set correctly for monorepo packages.",
-	function* (json, { file, root, resolve }) {
+>({
+	name: "PackageJsonRepoDirectoryProperty",
+	description:
+		"Ensures the repository.directory property in package.json is set correctly for monorepo packages.",
+	handler: function* (json, { file, root, resolve }) {
 		const failResult: PolicyFailure = {
 			name: PackageJsonRepoDirectoryProperty.name,
 			file,
@@ -65,4 +66,4 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 
 		return true;
 	},
-);
+});

@@ -9,10 +9,10 @@ import {
  *
  * @alpha
  */
-export const HtmlFileHeaders = defineFileHeaderPolicy(
-	"HtmlFileHeaders",
-	"Ensures HTML files have the configured header comment.",
-	{
+export const HtmlFileHeaders = defineFileHeaderPolicy({
+	name: "HtmlFileHeaders",
+	description: "Ensures HTML files have the configured header comment.",
+	config: {
 		match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
 		lineStart: /<!-- /, // Lines begin with '<!-- '
 		lineEnd: / -->\r?\n/, // Lines end with ' -->' followed by CRLF or LF
@@ -27,4 +27,4 @@ export const HtmlFileHeaders = defineFileHeaderPolicy(
 			return newContent;
 		},
 	},
-);
+});

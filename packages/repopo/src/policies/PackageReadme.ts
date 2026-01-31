@@ -282,10 +282,11 @@ async function validateExistingReadme(
 export const PackageReadme = definePackagePolicy<
 	PackageJson,
 	PackageReadmeSettings | undefined
->(
-	"PackageReadme",
-	"Ensures each package has a README.md file with proper title and required content.",
-	async (json, { file, resolve, config }) => {
+>({
+	name: "PackageReadme",
+	description:
+		"Ensures each package has a README.md file with proper title and required content.",
+	handler: async (json, { file, resolve, config }) => {
 		const skipPrivate = config?.skipPrivate ?? true;
 		const requireMatchingTitle = config?.requireMatchingTitle ?? true;
 		const requiredContent = config?.requiredContent;
@@ -322,4 +323,4 @@ export const PackageReadme = definePackagePolicy<
 			requiredContent,
 		});
 	},
-);
+});

@@ -113,10 +113,11 @@ async function copyLicenseFile(
 export const PackageLicense = definePackagePolicy<
 	PackageJson,
 	PackageLicenseSettings | undefined
->(
-	"PackageLicense",
-	"Ensures each package has a LICENSE file that matches the root repository LICENSE.",
-	async (json, { file, root, resolve, config }) => {
+>({
+	name: "PackageLicense",
+	description:
+		"Ensures each package has a LICENSE file that matches the root repository LICENSE.",
+	handler: async (json, { file, root, resolve, config }) => {
 		const skipPrivate = config?.skipPrivate ?? true;
 		const licenseFileName =
 			config?.licenseFileName ?? DEFAULT_LICENSE_FILE_NAME;
@@ -199,4 +200,4 @@ export const PackageLicense = definePackagePolicy<
 
 		return true;
 	},
-);
+});

@@ -123,12 +123,13 @@ function formatBytes(bytes: number): string {
  * @alpha
  */
 export const NoLargeBinaryFiles: PolicyDefinition<NoLargeBinaryFilesSettings> =
-	makePolicyDefinition(
-		"NoLargeBinaryFiles",
-		"Prevents large binary files from being committed to avoid repository bloat; consider using Git LFS for large assets.",
+	makePolicyDefinition({
+		name: "NoLargeBinaryFiles",
+		description:
+			"Prevents large binary files from being committed to avoid repository bloat; consider using Git LFS for large assets.",
 		// Match all files
-		/.*/,
-		async ({ file, root, config }) => {
+		match: /.*/,
+		handler: async ({ file, root, config }) => {
 			const maxSizeBytes = config?.maxSizeBytes ?? DEFAULT_MAX_SIZE;
 			const excludeExtensions =
 				config?.excludeExtensions ?? DEFAULT_EXCLUDE_EXTENSIONS;
@@ -167,4 +168,4 @@ export const NoLargeBinaryFiles: PolicyDefinition<NoLargeBinaryFilesSettings> =
 				return true;
 			}
 		},
-	);
+	});

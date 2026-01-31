@@ -28,10 +28,11 @@ export interface PackageJsonPropertiesSettings {
 export const PackageJsonProperties = definePackagePolicy<
 	PackageJson,
 	PackageJsonPropertiesSettings | undefined
->(
-	"PackageJsonProperties",
-	"Ensures package.json files contain required properties with correct values.",
-	function* (json, { file, config, resolve }) {
+>({
+	name: "PackageJsonProperties",
+	description:
+		"Ensures package.json files contain required properties with correct values.",
+	handler: function* (json, { file, config, resolve }) {
 		if (config === undefined) {
 			return true;
 		}
@@ -74,4 +75,4 @@ export const PackageJsonProperties = definePackagePolicy<
 
 		return true;
 	},
-);
+});
