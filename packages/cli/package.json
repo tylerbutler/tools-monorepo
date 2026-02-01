@@ -32,6 +32,7 @@
 		"/CHANGELOG.md",
 		"/esm",
 		"/oclif.manifest.json",
+		"/queries",
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
@@ -92,6 +93,9 @@
 			},
 			"git": {
 				"description": "Git-related commands."
+			},
+			"pr": {
+				"description": "GitHub pull request metrics collection and reporting."
 			},
 			"sort": {
 				"description": "Commands to sort config files like tsconfigs."
