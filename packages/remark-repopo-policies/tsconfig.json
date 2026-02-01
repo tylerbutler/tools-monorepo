@@ -6,4 +6,9 @@
 		"outDir": "./esm",
 		"types": ["node"],
 	},
+	"references": [
+		{
+			"path": "../repopo",
+		},
+	],
 }
