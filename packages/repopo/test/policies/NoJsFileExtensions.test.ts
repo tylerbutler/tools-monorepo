@@ -10,7 +10,9 @@ describe("NoJsFileExtensions Policy", () => {
 		});
 
 		it("should have description", () => {
-			expect(NoJsFileExtensions.description).toBeUndefined();
+			expect(NoJsFileExtensions.description).toBe(
+				"Prevents ambiguous .js files by requiring explicit .mjs or .cjs extensions based on module format.",
+			);
 		});
 
 		it("should have handler function", () => {

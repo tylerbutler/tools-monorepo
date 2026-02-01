@@ -142,49 +142,54 @@ function getExpectedFolderName(
 export const PackageFolderName = definePackagePolicy<
 	PackageJson,
 	PackageFolderNameConfig | undefined
->("PackageFolderName", async (json, { file, config }) => {
-	// If no config provided, use defaults (check all packages)
-	const effectiveConfig = config ?? {};
+>({
+	name: "PackageFolderName",
+	description:
+		"Ensures package folder names match package names for consistent file structure.",
+	handler: async (json, { file, config }) => {
+		// If no config provided, use defaults (check all packages)
+		const effectiveConfig = config ?? {};
 
-	const packageName = json.name;
+		const packageName = json.name;
 
-	// Skip packages without a name
-	if (packageName === undefined) {
-		return true;
-	}
+		// Skip packages without a name
+		if (packageName === undefined) {
+			return true;
+		}
 
-	// Skip the root package (common in monorepos)
-	if (packageName === "root") {
-		return true;
-	}
+		// Skip the root package (common in monorepos)
+		if (packageName === "root") {
+			return true;
+		}
 
-	// Skip explicitly excluded packages
-	if (effectiveConfig.excludePackages?.includes(packageName)) {
-		return true;
-	}
+		// Skip explicitly excluded packages
+		if (effectiveConfig.excludePackages?.includes(packageName)) {
+			return true;
+		}
 
-	// Get the folder name (parent directory of package.json)
-	const folderName = path.basename(path.dirname(file));
+		// Get the folder name (parent directory of package.json)
+		const folderName = path.basename(path.dirname(file));
 
-	// Get the expected folder name
-	const expectedFolderName = getExpectedFolderName(
-		packageName,
-		effectiveConfig.stripScopes ?? [],
-	);
+		// Get the expected folder name
+		const expectedFolderName = getExpectedFolderName(
+			packageName,
+			effectiveConfig.stripScopes ?? [],
+		);
 
-	// Compare folder name to expected name
-	if (folderName === expectedFolderName) {
-		return true;
-	}
+		// Compare folder name to expected name
+		if (folderName === expectedFolderName) {
+			return true;
+		}
 
-	// Mismatch - build error message
-	const failResult: PolicyFailure = {
-		name: PackageFolderName.name,
-		file,
-		autoFixable: false, // Can't auto-fix folder names
-		errorMessages: [
-			`Package folder "${folderName}" does not match package name "${packageName}". Expected folder name: "${expectedFolderName}"`,
-		],
-	};
-	return failResult;
+		// Mismatch - build error message
+		const failResult: PolicyFailure = {
+			name: PackageFolderName.name,
+			file,
+			autoFixable: false, // Can't auto-fix folder names
+			errorMessages: [
+				`Package folder "${folderName}" does not match package name "${packageName}". Expected folder name: "${expectedFolderName}"`,
+			],
+		};
+		return failResult;
+	},
 });
