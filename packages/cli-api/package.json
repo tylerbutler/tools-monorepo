@@ -116,9 +116,15 @@
 	},
 	"nx": {
 		"targets": {
-			"build": {},
-			"test": {},
-			"ci": {}
+			"build": {
+				"executor": "nx:noop"
+			},
+			"test": {
+				"executor": "nx:noop"
+			},
+			"ci": {
+				"executor": "nx:noop"
+			}
 		}
 	}
 }

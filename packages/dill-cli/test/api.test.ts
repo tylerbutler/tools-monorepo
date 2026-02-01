@@ -1,4 +1,4 @@
-import { readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import http from "node:http";
 import { getRandomPort } from "get-port-please";
 import jsonfile from "jsonfile";
@@ -13,6 +13,37 @@ import process from "node:process";
 import { decompressTarball, fetchFile, writeTarFiles } from "../src/api.js";
 import { download } from "../src/index.js";
 import { getTestUrls, testDataPath } from "./common.js";
+
+/**
+ * Test file mappings:
+ * - testUrls[0] → test0.json
+ * - testUrls[1] → test1.json
+ * - testUrls[2] → tarball2.tar.gz
+ * - testUrls[3] → tarball3.tar
+ * - testUrls[4] → test4.zip
+ * - testUrls[5] → test5.json.gz
+ */
+const testFiles = {
+	json0: "test0.json",
+	json1: "test1.json",
+	tarballGz: "tarball2.tar.gz",
+	tarball: "tarball3.tar",
+	zip: "test4.zip",
+	jsonGz: "test5.json.gz",
+};
+
+/** Expected JSON content for test0.json and test1.json */
+const expectedJsonContent = {
+	key1: 1,
+	key2: {
+		nested: "object",
+	},
+};
+
+/** Helper to read a test data file as a Buffer */
+async function readTestFile(filename: string): Promise<Buffer> {
+	return readFile(path.join(testDataPath, filename));
+}
 
 let testUrls: URL[];
 
@@ -62,9 +93,12 @@ describe("download file: URLs", () => {
 	});
 
 	it("detects file type from buffer", async () => {
-		const testUrl = `file://${path.join(testDataPath, "tarball2.tar.gz")}`;
+		const testUrl = `file://${path.join(testDataPath, testFiles.tarballGz)}`;
 		const { data } = await download(testUrl, { noFile: true, extract: true });
-		expect(data).toMatchSnapshot();
+
+		// Verify downloaded bytes match the source file exactly
+		const expected = await readTestFile(testFiles.tarballGz);
+		expect(Buffer.from(data)).toEqual(expected);
 	});
 });
 
@@ -89,7 +123,10 @@ describe("with local server", () => {
 	describe("download", () => {
 		it("JSON, no arguments", async () => {
 			const { data } = await download(testUrls[0], { noFile: true });
-			expect(data).toMatchSnapshot();
+
+			// Verify downloaded bytes match source file exactly
+			const expected = await readTestFile(testFiles.json0);
+			expect(Buffer.from(data)).toEqual(expected);
 		});
 
 		it("JSON, downloadPath = file", async () => {
@@ -102,13 +139,17 @@ describe("with local server", () => {
 						downloadDir,
 						filename,
 					});
-					expect(data).toMatchSnapshot();
 
+					// Verify downloaded bytes match source file exactly
+					const expected = await readTestFile(testFiles.json0);
+					expect(Buffer.from(data)).toEqual(expected);
+
+					// Verify written file content
 					const dl = await readJson(downloadPath);
-					expect(dl).toMatchSnapshot();
+					expect(dl).toEqual(expectedJsonContent);
 				},
 				{
-					// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+					// unsafeCleanup ensures the cleanup doesn't fail if there are files in the directory
 					unsafeCleanup: true,
 				},
 			);
@@ -118,14 +159,18 @@ describe("with local server", () => {
 			await withDir(
 				async ({ path: downloadDir }) => {
 					const { data } = await download(testUrls[1], { downloadDir });
-					expect(data).toMatchSnapshot();
 
+					// Verify downloaded bytes match source file exactly
+					const expected = await readTestFile(testFiles.json1);
+					expect(Buffer.from(data)).toEqual(expected);
+
+					// Verify written file content
 					const expectedPath = path.join(downloadDir, "test1.json");
 					const dl = await readJson(expectedPath);
-					expect(dl).toMatchSnapshot();
+					expect(dl).toEqual(expectedJsonContent);
 				},
 				{
-					// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+					// unsafeCleanup ensures the cleanup doesn't fail if there are files in the directory
 					unsafeCleanup: true,
 				},
 			);
@@ -138,13 +183,17 @@ describe("with local server", () => {
 						downloadDir,
 						extract: true,
 					});
-					expect(data).toMatchSnapshot();
 
+					// Verify downloaded bytes match source file exactly
+					const expected = await readTestFile(testFiles.jsonGz);
+					expect(Buffer.from(data)).toEqual(expected);
+
+					// Verify extraction produced expected files
 					const files = await readdir(downloadDir, { recursive: true });
-					expect(files).toMatchSnapshot();
+					expect(files).toEqual(["test5.json"]);
 				},
 				{
-					// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+					// unsafeCleanup ensures the cleanup doesn't fail if there are files in the directory
 					unsafeCleanup: true,
 				},
 			);
@@ -152,7 +201,10 @@ describe("with local server", () => {
 
 		it("compressed tarball, no extract (default)", async () => {
 			const { data } = await download(testUrls[2], { noFile: true });
-			expect(data).toMatchSnapshot();
+
+			// Verify downloaded bytes match source file exactly
+			const expected = await readTestFile(testFiles.tarballGz);
+			expect(Buffer.from(data)).toEqual(expected);
 		});
 
 		it("compressed tarball, with extract", async () => {
@@ -162,10 +214,13 @@ describe("with local server", () => {
 						downloadDir,
 						extract: true,
 					});
-					expect(data).toMatchSnapshot();
 
+					// Verify downloaded bytes match source file exactly
+					const expected = await readTestFile(testFiles.tarballGz);
+					expect(Buffer.from(data)).toEqual(expected);
+
+					// Verify extraction produced expected files
 					const files = await readdir(downloadDir, { recursive: true });
-					expect(files).toMatchSnapshot();
 					expect(files).toEqual([
 						"test",
 						"test/data",
@@ -174,7 +229,53 @@ describe("with local server", () => {
 					]);
 				},
 				{
-					// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+					// unsafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+					unsafeCleanup: true,
+				},
+			);
+		});
+
+		it("compressed tarball, with extract and strip=1", async () => {
+			await withDir(
+				async ({ path: downloadDir }) => {
+					const { data } = await download(testUrls[2], {
+						downloadDir,
+						extract: true,
+						strip: 1,
+					});
+
+					// Verify downloaded bytes match source file exactly
+					const expected = await readTestFile(testFiles.tarballGz);
+					expect(Buffer.from(data)).toEqual(expected);
+
+					// Verify extraction with strip=1 produced expected files
+					const files = await readdir(downloadDir, { recursive: true });
+					expect(files).toEqual(["data", "data/test1.json", "data/test2.json"]);
+				},
+				{
+					unsafeCleanup: true,
+				},
+			);
+		});
+
+		it("compressed tarball, with extract and strip=2", async () => {
+			await withDir(
+				async ({ path: downloadDir }) => {
+					const { data } = await download(testUrls[2], {
+						downloadDir,
+						extract: true,
+						strip: 2,
+					});
+
+					// Verify downloaded bytes match source file exactly
+					const expected = await readTestFile(testFiles.tarballGz);
+					expect(Buffer.from(data)).toEqual(expected);
+
+					// Verify extraction with strip=2 produced expected files
+					const files = await readdir(downloadDir, { recursive: true });
+					expect(files).toEqual(["test1.json", "test2.json"]);
+				},
+				{
 					unsafeCleanup: true,
 				},
 			);
@@ -183,7 +284,10 @@ describe("with local server", () => {
 		describe("zip file", () => {
 			it("no extract (default)", async () => {
 				const { data } = await download(testUrls[4], { noFile: true });
-				expect(data).toMatchSnapshot();
+
+				// Verify downloaded bytes match source file exactly
+				const expected = await readTestFile(testFiles.zip);
+				expect(Buffer.from(data)).toEqual(expected);
 			});
 
 			it("with extract", async () => {
@@ -193,10 +297,13 @@ describe("with local server", () => {
 							downloadDir,
 							extract: true,
 						});
-						expect(data).toMatchSnapshot();
 
+						// Verify downloaded bytes match source file exactly
+						const expected = await readTestFile(testFiles.zip);
+						expect(Buffer.from(data)).toEqual(expected);
+
+						// Verify extraction produced expected files
 						const files = await readdir(downloadDir, { recursive: true });
-						expect(files).toMatchSnapshot();
 						expect(files).toEqual([
 							"test",
 							"test/data",
@@ -205,7 +312,57 @@ describe("with local server", () => {
 						]);
 					},
 					{
-						// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+						// unsafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+						unsafeCleanup: true,
+					},
+				);
+			});
+
+			it("with extract and strip=1", async () => {
+				await withDir(
+					async ({ path: downloadDir }) => {
+						const { data } = await download(testUrls[4], {
+							downloadDir,
+							extract: true,
+							strip: 1,
+						});
+
+						// Verify downloaded bytes match source file exactly
+						const expected = await readTestFile(testFiles.zip);
+						expect(Buffer.from(data)).toEqual(expected);
+
+						// Verify extraction with strip=1 produced expected files
+						const files = await readdir(downloadDir, { recursive: true });
+						expect(files).toEqual([
+							"data",
+							"data/test1.json",
+							"data/test2.json",
+						]);
+					},
+					{
+						unsafeCleanup: true,
+					},
+				);
+			});
+
+			it("with extract and strip=2", async () => {
+				await withDir(
+					async ({ path: downloadDir }) => {
+						const { data } = await download(testUrls[4], {
+							downloadDir,
+							extract: true,
+							strip: 2,
+						});
+
+						// Verify downloaded bytes match source file exactly
+						const expected = await readTestFile(testFiles.zip);
+						expect(Buffer.from(data)).toEqual(expected);
+
+						// Verify extraction with strip=2 produced expected files
+						const files = await readdir(downloadDir, { recursive: true });
+						expect(files).toEqual(["test1.json", "test2.json"]);
+					},
+					{
 						unsafeCleanup: true,
 					},
 				);
@@ -216,7 +373,10 @@ describe("with local server", () => {
 	describe("fetchFile", () => {
 		it("fetches file", async () => {
 			const { contents } = await fetchFile(testUrls[2]);
-			expect(contents).toMatchSnapshot();
+
+			// Verify fetched bytes match source file exactly
+			const expected = await readTestFile(testFiles.tarballGz);
+			expect(Buffer.from(contents)).toEqual(expected);
 		});
 	});
 
@@ -224,7 +384,27 @@ describe("with local server", () => {
 		it("decompresses", async () => {
 			const { contents } = await fetchFile(testUrls[2]);
 			const result = await decompressTarball(contents);
-			expect(result).toMatchSnapshot();
+
+			// Verify structural properties of decompressed tarball
+			expect(result).toHaveLength(2);
+
+			// Verify first file
+			expect(result[0]).toMatchObject({
+				name: expect.stringContaining("test1.json"),
+				type: "file",
+				size: 51,
+			});
+			expect(result[0].text).toContain('"key1": 1');
+			expect(result[0].text).toContain('"nested": "object"');
+
+			// Verify second file
+			expect(result[1]).toMatchObject({
+				name: expect.stringContaining("test2.json"),
+				type: "file",
+				size: 51,
+			});
+			expect(result[1].text).toContain('"key1": 1');
+			expect(result[1].text).toContain('"nested": "object"');
 		});
 
 		it("throws when file is not a tarball", async () => {
@@ -283,12 +463,17 @@ describe("with mock service worker", async () => {
 				const { data } = await download(url, {
 					filename: downloadPath,
 				});
-				expect(data).toMatchSnapshot();
+
+				// Mock server returns test0.json content - verify bytes match
+				const expected = await readTestFile(testFiles.json0);
+				expect(Buffer.from(data)).toEqual(expected);
+
+				// Verify written file content
 				const dl = await readJson(downloadPath);
-				expect(dl).toMatchSnapshot();
+				expect(dl).toEqual(expectedJsonContent);
 			},
 			{
-				// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+				// unsafeCleanup ensures the cleanup doesn't fail if there are files in the directory
 				unsafeCleanup: true,
 			},
 		);
@@ -305,12 +490,17 @@ describe("with mock service worker", async () => {
 				const { data } = await download(url, {
 					filename,
 				});
-				expect(data).toMatchSnapshot();
+
+				// Mock server returns test0.json content - verify bytes match
+				const expected = await readTestFile(testFiles.json0);
+				expect(Buffer.from(data)).toEqual(expected);
+
+				// Verify written file content
 				const dl = await readJson(downloadPath);
-				expect(dl).toMatchSnapshot();
+				expect(dl).toEqual(expectedJsonContent);
 			},
 			{
-				// usafeCleanup ensures the cleanup doesn't fail if there are files in the directory
+				// unsafeCleanup ensures the cleanup doesn't fail if there are files in the directory
 				unsafeCleanup: true,
 			},
 		);
@@ -323,6 +513,43 @@ describe("with mock service worker", async () => {
 			await download(testUrls[0], {
 				downloadDir,
 				filename,
+			});
+		}).rejects.toThrow();
+	});
+
+	it("downloads with custom headers", async () => {
+		await withDir(
+			async ({ path: downloadDir }) => {
+				const url = new URL("http://localhost/tests/custom-headers");
+				const filename = "test-with-headers.json";
+				const downloadPath = path.join(downloadDir, filename);
+				const { data } = await download(url, {
+					filename: downloadPath,
+					headers: {
+						Authorization: "Bearer test-token",
+						"X-Custom-Header": "test-value",
+					},
+				});
+
+				// Mock server returns test0.json content - verify bytes match
+				const expected = await readTestFile(testFiles.json0);
+				expect(Buffer.from(data)).toEqual(expected);
+
+				// Verify written file content
+				const dl = await readJson(downloadPath);
+				expect(dl).toEqual(expectedJsonContent);
+			},
+			{
+				unsafeCleanup: true,
+			},
+		);
+	});
+
+	it("fails with missing custom headers", async () => {
+		const url = new URL("http://localhost/tests/custom-headers");
+		await expect(async () => {
+			await download(url, {
+				noFile: true,
 			});
 		}).rejects.toThrow();
 	});

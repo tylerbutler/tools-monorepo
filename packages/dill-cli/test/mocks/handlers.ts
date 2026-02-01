@@ -11,7 +11,7 @@ const file = await readFile(fileName);
  * HTTP handlers for tests. These handlers are used in a Mock Service Worker instance to respond to requests.
  */
 export const testHttpHandlers = [
-	http.get("http://localhost/tests/:test", ({ params }) => {
+	http.get("http://localhost/tests/:test", ({ params, request }) => {
 		// All request path params are provided in the "params"
 		// argument of the response resolver.
 		const { test } = params;
@@ -21,6 +21,9 @@ export const testHttpHandlers = [
 			}
 			case "content-disposition-undefined": {
 				return testContentDispositionHeaderUndefined(file);
+			}
+			case "custom-headers": {
+				return testCustomHeaders(file, request);
 			}
 			default: {
 				throw new Error(`Unknown test case name: ${test}`);
@@ -48,4 +51,30 @@ function testContentDispositionHeaderUndefined(theFile: Buffer): HttpResponse {
 		// 	},
 		// }
 	);
+}
+
+function testCustomHeaders(theFile: Buffer, request: Request): HttpResponse {
+	const authHeader = request.headers.get("Authorization");
+	const customHeader = request.headers.get("X-Custom-Header");
+
+	// Return an error if expected headers are missing
+	if (authHeader !== "Bearer test-token") {
+		return new HttpResponse(null, {
+			status: 401,
+			statusText: "Unauthorized",
+		});
+	}
+
+	if (customHeader !== "test-value") {
+		return new HttpResponse(null, {
+			status: 400,
+			statusText: "Bad Request",
+		});
+	}
+
+	return new HttpResponse(theFile, {
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
 }
