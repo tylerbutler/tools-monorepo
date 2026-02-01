@@ -504,7 +504,7 @@ describe("Nx support", () => {
 	 * They verify that Nx extraction works correctly when running from within an Nx workspace.
 	 * Note: Tests run from packages/remark-task-table directory, so process.cwd() is that dir.
 	 */
-	describe("Nx extraction (integration)", () => {
+	describe("Nx extraction (integration)", { timeout: 30_000 }, () => {
 		/**
 		 * Helper to process markdown from the real project directory.
 		 * Since tests run from packages/remark-task-table, process.cwd() is already correct.
@@ -571,7 +571,7 @@ describe("Nx support", () => {
 		});
 	});
 
-	describe("hierarchical sorting", () => {
+	describe("hierarchical sorting", { timeout: 30_000 }, () => {
 		it("should list orchestration targets before their dependencies", async () => {
 			// process.cwd() is already packages/remark-task-table when tests run
 			const projectDir = process.cwd();

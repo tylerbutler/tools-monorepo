@@ -1,13 +1,13 @@
 {
-	"name": "@tylerbu/sail-infrastructure",
-	"version": "0.4.0",
-	"description": "Sail build infrastructure",
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/sail-infrastructure#tylerbusail-infrastructure",
+	"name": "remark-workspace-packages",
+	"version": "0.0.1",
+	"description": "Remark plugin to generate and update workspace package tables in markdown",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-workspace-packages#remark-workspace-packages",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/sail-infrastructure"
+		"directory": "packages/remark-workspace-packages"
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
@@ -22,60 +22,44 @@
 	},
 	"types": "./esm/index.d.ts",
 	"files": [
-		"/esm",
-		"!esm/test"
+		"esm"
 	],
 	"scripts": {
 		"build:compile": "tsc --project ./tsconfig.json",
-		"build:docs": "typedoc",
 		"check": "pnpm check:format",
-		"check:format": "biome check . --linter-enabled=false",
-		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log .coverage",
+		"check:format": "biome format .",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write",
+		"lint:fix": "biome lint . --apply",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run test",
 		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run test --coverage"
 	},
 	"dependencies": {
-		"@manypkg/get-packages": "^3.1.0",
-		"@oclif/core": "^4.8.0",
-		"@tylerbu/fundamentals": "workspace:^",
-		"@tylerbu/lilconfig-loader-ts": "workspace:^",
-		"detect-indent": "^7.0.2",
-		"fs-extra": "^11.3.2",
-		"lilconfig": "^3.1.3",
+		"mdast-util-to-string": "^4.0.0",
 		"micromatch": "^4.0.8",
-		"oclif": "^4.22.50",
-		"package-manager-detector": "^0.2.11",
 		"pathe": "^2.0.3",
-		"picocolors": "^1.1.1",
-		"read-pkg-up": "^11.0.0",
 		"resolve-workspace-root": "^2.0.0",
-		"semver": "^7.7.3",
-		"simple-git": "^3.30.0",
-		"sort-package-json": "*",
-		"tinyexec": "^1.0.2",
 		"tinyglobby": "^0.2.15",
-		"type-fest": "^5.4.1",
-		"typescript": "~5.9.3"
+		"unified": "^11.0.5",
+		"vfile": "^6.0.3"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.56.0",
-		"@oclif/test": "^4.1.15",
-		"@types/fs-extra": "^11.0.4",
+		"@types/mdast": "^4.0.4",
 		"@types/micromatch": "^4.0.10",
 		"@types/node": "^20.19.25",
-		"@types/semver": "^7.7.1",
 		"@vitest/coverage-v8": "^4.0.17",
-		"concurrently": "^9.2.1",
+		"remark": "^15.0.1",
+		"remark-gfm": "^4.0.1",
+		"remark-parse": "^11.0.0",
 		"rimraf": "^6.1.2",
-		"ts-node": "^10.9.2",
-		"typedoc": "^0.28.15",
-		"typedoc-plugin-markdown": "^4.9.0",
+		"typescript": "~5.9.3",
 		"vitest": "^4.0.17"
+	},
+	"peerDependencies": {
+		"unified": "^11.0.0"
 	},
 	"engines": {
 		"node": ">=18.0.0"
