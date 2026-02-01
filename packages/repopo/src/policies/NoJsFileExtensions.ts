@@ -11,11 +11,13 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
  *
  * @alpha
  */
-export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
-	"NoJsFileExtensions",
-	/(^|\/)[^/]+\.js$/i,
+export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition({
+	name: "NoJsFileExtensions",
+	description:
+		"Prevents ambiguous .js files by requiring explicit .mjs or .cjs extensions based on module format.",
+	match: /(^|\/)[^/]+\.js$/i,
 	// biome-ignore lint/correctness/useYield: no yield needed
-	function* ({ file }): Operation<PolicyFailure> {
+	handler: function* ({ file }): Operation<PolicyFailure> {
 		return {
 			name: NoJsFileExtensions.name,
 			file,
@@ -26,4 +28,4 @@ export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 			manualFix: "Rename the file to have a .cjs or .mjs file extension.",
 		};
 	},
-);
+});

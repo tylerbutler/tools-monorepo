@@ -17,7 +17,9 @@ export class ListCommand<
 		const policies = this.commandConfig?.policies ?? DefaultPolicies;
 		// list the handlers then exit
 		for (const h of policies) {
-			this.log(`${h.name}\nresolver: ${h.resolver !== undefined}\n`);
+			this.log(`${h.name}`);
+			this.log(`  ${h.description}`);
+			this.log(`  resolver: ${h.resolver !== undefined}\n`);
 		}
 		this.log(`${policies.length} TOTAL POLICY HANDLERS`);
 	}

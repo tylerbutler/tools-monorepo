@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { makePolicy, makePolicyDefinition } from "../src/makePolicy.js";
 import type {
 	PolicyDefinition,
@@ -10,19 +10,20 @@ import type {
 
 describe("makePolicyDefinition", () => {
 	it("should create a valid PolicyDefinition with required parameters", () => {
-		const handler: PolicyHandler = async () => true;
+		const handler: PolicyHandler = async () => true as const;
 
-		const definition = makePolicyDefinition(
-			"TestPolicy",
-			/\.test\.ts$/,
+		const definition = makePolicyDefinition({
+			name: "TestPolicy",
+			description: "A test policy for testing purposes.",
+			match: /\.test\.ts$/,
 			handler,
-		);
+		});
 
 		expect(definition).toEqual({
 			name: "TestPolicy",
+			description: "A test policy for testing purposes.",
 			match: /\.test\.ts$/,
 			handler,
-			description: undefined,
 			defaultConfig: undefined,
 			resolver: undefined,
 		});
@@ -31,8 +32,17 @@ describe("makePolicyDefinition", () => {
 	it("should create PolicyDefinition with all optional parameters", () => {
 		const handler: PolicyHandler<{ threshold: number }> = async ({
 			config,
+			file,
 		}) => {
-			return config?.threshold > 0;
+			if (config !== undefined && config.threshold > 0) {
+				return true;
+			}
+			return {
+				name: "TestPolicy",
+				file,
+				errorMessages: ["Config threshold must be positive"],
+				autoFixable: false,
+			};
 		};
 
 		const resolver: PolicyStandaloneResolver<{ threshold: number }> = async ({
@@ -41,17 +51,17 @@ describe("makePolicyDefinition", () => {
 			name: "TestPolicy",
 			file,
 			resolved: true,
-			errorMessage: "Fixed",
+			errorMessages: ["Fixed"],
 		});
 
-		const definition = makePolicyDefinition(
-			"TestPolicy",
-			/\.ts$/,
+		const definition = makePolicyDefinition({
+			name: "TestPolicy",
+			description: "Test policy with config",
+			match: /\.ts$/,
 			handler,
-			{ threshold: 100 },
-			"Test policy with config",
+			defaultConfig: { threshold: 100 },
 			resolver,
-		);
+		});
 
 		expect(definition.name).toBe("TestPolicy");
 		expect(definition.match).toEqual(/\.ts$/);
@@ -62,15 +72,14 @@ describe("makePolicyDefinition", () => {
 	});
 
 	it("should create PolicyDefinition with description but no config", () => {
-		const handler: PolicyHandler = async () => true;
+		const handler: PolicyHandler = async () => true as const;
 
-		const definition = makePolicyDefinition(
-			"DescriptivePolicy",
-			/\.md$/,
+		const definition = makePolicyDefinition({
+			name: "DescriptivePolicy",
+			description: "A policy with description",
+			match: /\.md$/,
 			handler,
-			undefined,
-			"A policy with description",
-		);
+		});
 
 		expect(definition.name).toBe("DescriptivePolicy");
 		expect(definition.description).toBe("A policy with description");
@@ -78,32 +87,41 @@ describe("makePolicyDefinition", () => {
 		expect(definition.resolver).toBeUndefined();
 	});
 
-	it("should create PolicyDefinition with config but no description", () => {
+	it("should create PolicyDefinition with config", () => {
 		interface TestConfig {
 			maxSize: number;
 		}
 
-		const handler: PolicyHandler<TestConfig> = async ({ config }) => {
-			return config?.maxSize < 1000;
+		const handler: PolicyHandler<TestConfig> = async ({ config, file }) => {
+			if (config !== undefined && config.maxSize < 1000) {
+				return true;
+			}
+			return {
+				name: "ConfigPolicy",
+				file,
+				errorMessages: ["Max size must be less than 1000"],
+				autoFixable: false,
+			};
 		};
 
-		const definition = makePolicyDefinition(
-			"ConfigPolicy",
-			/\.json$/,
+		const definition = makePolicyDefinition({
+			name: "ConfigPolicy",
+			description: "Policy with configuration",
+			match: /\.json$/,
 			handler,
-			{ maxSize: 500 },
-		);
+			defaultConfig: { maxSize: 500 },
+		});
 
 		expect(definition.name).toBe("ConfigPolicy");
 		expect(definition.defaultConfig).toEqual({ maxSize: 500 });
-		expect(definition.description).toBeUndefined();
+		expect(definition.description).toBe("Policy with configuration");
 	});
 
 	it("should create PolicyDefinition with resolver but no config", () => {
 		const handler: PolicyHandler = async ({ file }) => ({
 			name: "ResolverPolicy",
 			file,
-			errorMessage: "Needs fix",
+			errorMessages: ["Needs fix"],
 			autoFixable: true,
 		});
 
@@ -111,21 +129,21 @@ describe("makePolicyDefinition", () => {
 			name: "ResolverPolicy",
 			file,
 			resolved: true,
-			errorMessage: "Fixed",
+			errorMessages: ["Fixed"],
 		});
 
-		const definition = makePolicyDefinition(
-			"ResolverPolicy",
-			/\.txt$/,
+		const definition = makePolicyDefinition({
+			name: "ResolverPolicy",
+			description: "Policy with resolver",
+			match: /\.txt$/,
 			handler,
-			undefined,
-			undefined,
+			defaultConfig: undefined,
 			resolver,
-		);
+		});
 
 		expect(definition.resolver).toBe(resolver);
 		expect(definition.defaultConfig).toBeUndefined();
-		expect(definition.description).toBeUndefined();
+		expect(definition.description).toBe("Policy with resolver");
 	});
 
 	it("should work with Effection generator handlers", () => {
@@ -133,21 +151,22 @@ describe("makePolicyDefinition", () => {
 			yield* (function* () {
 				// Minimal yield to satisfy generator requirements
 			})();
-			return true;
+			return true as const;
 		};
 
-		const definition = makePolicyDefinition(
-			"GeneratorPolicy",
-			/\.ts$/,
+		const definition = makePolicyDefinition({
+			name: "GeneratorPolicy",
+			description: "Policy using Effection generators",
+			match: /\.ts$/,
 			handler,
-		);
+		});
 
 		expect(definition.handler).toBe(handler);
 		expect(definition.name).toBe("GeneratorPolicy");
 	});
 
 	it("should work with Effection generator resolvers", () => {
-		const handler: PolicyHandler = async () => true;
+		const handler: PolicyHandler = async () => true as const;
 
 		const resolver: PolicyStandaloneResolver = function* ({ file }) {
 			yield* (function* () {
@@ -157,32 +176,33 @@ describe("makePolicyDefinition", () => {
 				name: "GeneratorResolverPolicy",
 				file,
 				resolved: true,
-				errorMessage: "Fixed with generator",
+				errorMessages: ["Fixed with generator"],
 			};
 			return result;
 		};
 
-		const definition = makePolicyDefinition(
-			"GeneratorResolverPolicy",
-			/\.js$/,
+		const definition = makePolicyDefinition({
+			name: "GeneratorResolverPolicy",
+			description: "Policy with generator resolver",
+			match: /\.js$/,
 			handler,
-			undefined,
-			undefined,
+			defaultConfig: undefined,
 			resolver,
-		);
+		});
 
 		expect(definition.resolver).toBe(resolver);
 	});
 
 	it("should preserve regex patterns correctly", () => {
-		const handler: PolicyHandler = async () => true;
+		const handler: PolicyHandler = async () => true as const;
 		const complexRegex = /^(src|test)\/.*\.(ts|tsx|js|jsx)$/;
 
-		const definition = makePolicyDefinition(
-			"ComplexMatchPolicy",
-			complexRegex,
+		const definition = makePolicyDefinition({
+			name: "ComplexMatchPolicy",
+			description: "Policy with complex regex match",
+			match: complexRegex,
 			handler,
-		);
+		});
 
 		expect(definition.match).toBe(complexRegex);
 		expect("src/index.ts").toMatch(definition.match);
@@ -197,16 +217,25 @@ describe("makePolicy", () => {
 	beforeEach(() => {
 		const handler: PolicyHandler<{ threshold: number }> = async ({
 			config,
+			file,
 		}) => {
-			return config?.threshold > 0;
+			if (config !== undefined && config.threshold > 0) {
+				return true;
+			}
+			return {
+				name: "TestPolicy",
+				file,
+				errorMessages: ["Config threshold must be positive"],
+				autoFixable: false,
+			};
 		};
 
 		baseDefinition = {
 			name: "TestPolicy",
+			description: "A test policy",
 			match: /\.ts$/,
 			handler,
 			defaultConfig: { threshold: 50 },
-			description: "A test policy",
 		};
 	});
 
@@ -230,7 +259,7 @@ describe("makePolicy", () => {
 	});
 
 	it("should merge settings into policy instance", () => {
-		const settings: PolicyInstanceSettings = {
+		const settings: PolicyInstanceSettings<{ threshold: number }> = {
 			excludeFiles: [/test\.ts$/, /spec\.ts$/],
 		};
 
@@ -259,7 +288,7 @@ describe("makePolicy", () => {
 			name: "TestPolicy",
 			file,
 			resolved: true,
-			errorMessage: "Fixed",
+			errorMessages: ["Fixed"],
 		});
 
 		const definitionWithResolver: PolicyDefinition<{ threshold: number }> = {
@@ -293,9 +322,10 @@ describe("makePolicy", () => {
 	});
 
 	it("should handle policy without defaultConfig", () => {
-		const handler: PolicyHandler = async () => true;
+		const handler: PolicyHandler = async () => true as const;
 		const simpleDefinition: PolicyDefinition = {
 			name: "SimplePolicy",
+			description: "A simple policy",
 			match: /\.txt$/,
 			handler,
 		};
@@ -307,50 +337,17 @@ describe("makePolicy", () => {
 		expect(instance.defaultConfig).toBeUndefined();
 	});
 
-	it("should override definition properties with settings", () => {
-		const originalResolver: PolicyStandaloneResolver<{
-			threshold: number;
-		}> = async ({ file }) => ({
-			name: "TestPolicy",
-			file,
-			resolved: true,
-			errorMessage: "Original resolver",
-		});
-
-		const newResolver: PolicyStandaloneResolver<{
-			threshold: number;
-		}> = async ({ file }) => ({
-			name: "TestPolicy",
-			file,
-			resolved: true,
-			errorMessage: "New resolver",
-		});
-
-		const definitionWithResolver: PolicyDefinition<{ threshold: number }> = {
-			...baseDefinition,
-			resolver: originalResolver,
-		};
-
-		const settings: PolicyInstanceSettings<{ threshold: number }> = {
-			resolver: newResolver,
-		};
-
-		const instance = makePolicy(definitionWithResolver, undefined, settings);
-
-		expect(instance.resolver).toBe(newResolver);
-		expect(instance.resolver).not.toBe(originalResolver);
-	});
-
 	it("should work with Effection-based definitions", () => {
 		const generatorHandler: PolicyHandler = function* () {
 			yield* (function* () {
 				// Minimal yield to satisfy generator requirements
 			})();
-			return true;
+			return true as const;
 		};
 
 		const generatorDefinition: PolicyDefinition = {
 			name: "GeneratorPolicy",
+			description: "Policy using generators",
 			match: /\.ts$/,
 			handler: generatorHandler,
 		};
@@ -372,7 +369,7 @@ describe("makePolicy", () => {
 	});
 
 	it("should support complex excludeFiles patterns", () => {
-		const settings: PolicyInstanceSettings = {
+		const settings: PolicyInstanceSettings<{ threshold: number }> = {
 			excludeFiles: [/node_modules/, /\.git/, /dist/, /build/, /coverage/],
 		};
 

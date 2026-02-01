@@ -705,63 +705,65 @@ function runAllValidations(
 export const PackageScripts = definePackagePolicy<
 	PackageJson,
 	PackageScriptsSettings | undefined
->("PackageScripts", async (json, { file, resolve, config }) => {
-	if (config === undefined) {
-		return true;
-	}
-
-	const scripts = Object.hasOwn(json, "scripts") ? json.scripts : {};
-	const defaultScripts = buildDefaultsMap(config);
-
-	const { errors, missingWithDefaults, mismatchedScripts } = runAllValidations(
-		config,
-		scripts,
-		defaultScripts,
-	);
-
-	if (errors.length === 0) {
-		return true;
-	}
-
-	const hasAutoFixableErrors =
-		missingWithDefaults.length > 0 || mismatchedScripts.length > 0;
-
-	if (resolve && hasAutoFixableErrors) {
-		const { updatedScripts, fixedScripts } = applyScriptFixes(
-			scripts,
-			missingWithDefaults,
-			mismatchedScripts,
-			defaultScripts,
-		);
-
-		try {
-			await jsonfile.writeFile(
-				file,
-				{ ...json, scripts: updatedScripts },
-				{ spaces: 2 },
-			);
-			const postFixErrors = revalidateAfterFix(config, updatedScripts);
-
-			return {
-				name: POLICY_NAME,
-				file,
-				resolved: postFixErrors.length === 0,
-				errorMessages:
-					postFixErrors.length > 0
-						? [
-								`Fixed scripts: ${fixedScripts.join(", ")}. Remaining errors:\n${postFixErrors.join("\n\n")}`,
-							]
-						: [`Fixed scripts: ${fixedScripts.join(", ")}`],
-			};
-		} catch {
-			// Fall through to return regular failure
+>({
+	name: "PackageScripts",
+	description:
+		"Validates package.json scripts based on configurable rules including required scripts, exact content, and conditional requirements.",
+	handler: async (json, { file, resolve, config }) => {
+		if (config === undefined) {
+			return true;
 		}
-	}
 
-	return {
-		name: POLICY_NAME,
-		file,
-		autoFixable: hasAutoFixableErrors,
-		errorMessages: errors,
-	};
+		const scripts = Object.hasOwn(json, "scripts") ? json.scripts : {};
+		const defaultScripts = buildDefaultsMap(config);
+
+		const { errors, missingWithDefaults, mismatchedScripts } =
+			runAllValidations(config, scripts, defaultScripts);
+
+		if (errors.length === 0) {
+			return true;
+		}
+
+		const hasAutoFixableErrors =
+			missingWithDefaults.length > 0 || mismatchedScripts.length > 0;
+
+		if (resolve && hasAutoFixableErrors) {
+			const { updatedScripts, fixedScripts } = applyScriptFixes(
+				scripts,
+				missingWithDefaults,
+				mismatchedScripts,
+				defaultScripts,
+			);
+
+			try {
+				await jsonfile.writeFile(
+					file,
+					{ ...json, scripts: updatedScripts },
+					{ spaces: 2 },
+				);
+				const postFixErrors = revalidateAfterFix(config, updatedScripts);
+
+				return {
+					name: POLICY_NAME,
+					file,
+					resolved: postFixErrors.length === 0,
+					errorMessages:
+						postFixErrors.length > 0
+							? [
+									`Fixed scripts: ${fixedScripts.join(", ")}. Remaining errors:\n${postFixErrors.join("\n\n")}`,
+								]
+							: [`Fixed scripts: ${fixedScripts.join(", ")}`],
+				};
+			} catch {
+				// Fall through to return regular failure
+			}
+		}
+
+		return {
+			name: POLICY_NAME,
+			file,
+			autoFixable: hasAutoFixableErrors,
+			errorMessages: errors,
+		};
+	},
 });

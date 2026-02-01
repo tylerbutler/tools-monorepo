@@ -19,7 +19,11 @@ export type {
 	// PolicyList,
 	RepopoConfig,
 } from "./config.js";
-export { makePolicy } from "./makePolicy.js";
+export {
+	makePolicy,
+	makePolicyDefinition,
+	type PolicyDefinitionInput,
+} from "./makePolicy.js";
 export type {
 	PolicyDefinition,
 	PolicyFailure,
@@ -33,11 +37,13 @@ export type {
 	PolicyStandaloneResolver,
 } from "./policy.js";
 export {
+	type DefineFileHeaderPolicyArgs,
 	defineFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,
 	type FileHeaderPolicyConfig,
 } from "./policyDefiners/defineFileHeaderPolicy.js";
 export {
+	type DefinePackagePolicyArgs,
 	definePackagePolicy as generatePackagePolicy,
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";

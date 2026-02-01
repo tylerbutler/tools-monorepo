@@ -139,14 +139,14 @@ function fromFluidHandler(
 		};
 	}
 
-	return makePolicyDefinition(
-		policyName,
-		fluidHandler.match,
+	return makePolicyDefinition({
+		name: policyName,
+		description: `FluidFramework policy: ${fluidHandler.name}`,
+		match: fluidHandler.match,
 		handler,
-		undefined, // no config
-		undefined, // no description
+		defaultConfig: undefined, // no config
 		resolver,
-	);
+	});
 }
 
 /**
