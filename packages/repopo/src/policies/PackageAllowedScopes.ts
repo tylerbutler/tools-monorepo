@@ -141,10 +141,12 @@ function isUnscopedPackageAllowed(
 export const PackageAllowedScopes = definePackagePolicy<
 	PackageJson,
 	PackageAllowedScopesConfig | undefined
->(
-	"PackageAllowedScopes",
+>({
+	name: "PackageAllowedScopes",
+	description:
+		"Ensures packages use only allowed npm scopes and package names.",
 	// biome-ignore lint/correctness/useYield: no yield needed
-	function* (json, { file, config }) {
+	handler: function* (json, { file, config }) {
 		// If no config provided, skip validation
 		if (config === undefined) {
 			return true;
@@ -191,4 +193,4 @@ export const PackageAllowedScopes = definePackagePolicy<
 		};
 		return failResult;
 	},
-);
+});

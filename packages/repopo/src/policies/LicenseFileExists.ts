@@ -36,11 +36,13 @@ const DEFAULT_LICENSE_NAMES = [
  * @alpha
  */
 export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
-	makePolicyDefinition(
-		"LicenseFileExists",
+	makePolicyDefinition({
+		name: "LicenseFileExists",
+		description:
+			"Ensures a LICENSE file exists in the repository root for open source projects.",
 		// Only trigger on package.json to check once per repository
-		/^package\.json$/,
-		async ({ root, config }) => {
+		match: /^package\.json$/,
+		handler: async ({ root, config }) => {
 			const acceptedNames = config?.acceptedNames ?? DEFAULT_LICENSE_NAMES;
 
 			// Check if any of the accepted license files exist in the root
@@ -63,4 +65,4 @@ export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
 
 			return result;
 		},
-	);
+	});

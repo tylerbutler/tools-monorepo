@@ -73,19 +73,19 @@ describe("Policy Module", () => {
 				errorMessages: [],
 			});
 
-			const policy = new TestPolicy(
-				"TestPolicy",
-				/\.ts$/,
+			const policy = new TestPolicy({
+				name: "TestPolicy",
+				description: "A test policy for TypeScript files",
+				match: /\.ts$/,
 				handler,
-				"A test policy for TypeScript files",
-				{ setting: "default" },
+				defaultConfig: { setting: "default" },
 				resolver,
-			);
+			});
 
 			expect(policy.name).toBe("TestPolicy");
+			expect(policy.description).toBe("A test policy for TypeScript files");
 			expect(policy.match).toEqual(/\.ts$/);
 			expect(policy.handler).toBe(handler);
-			expect(policy.description).toBe("A test policy for TypeScript files");
 			expect(policy.defaultConfig).toEqual({ setting: "default" });
 			expect(policy.resolver).toBe(resolver);
 		});
@@ -97,16 +97,19 @@ describe("Policy Module", () => {
 
 			class MinimalPolicy extends Policy<undefined> {}
 
-			const policy = new MinimalPolicy(
-				"MinimalPolicy",
-				/package\.json$/,
+			const policy = new MinimalPolicy({
+				name: "MinimalPolicy",
+				description: "A minimal policy for package.json files",
+				match: /package\.json$/,
 				handler,
-			);
+			});
 
 			expect(policy.name).toBe("MinimalPolicy");
+			expect(policy.description).toBe(
+				"A minimal policy for package.json files",
+			);
 			expect(policy.match).toEqual(/package\.json$/);
 			expect(policy.handler).toBe(handler);
-			expect(policy.description).toBeUndefined();
 			expect(policy.defaultConfig).toBeUndefined();
 			expect(policy.resolver).toBeUndefined();
 		});
@@ -118,11 +121,12 @@ describe("Policy Module", () => {
 
 			class MinimalPolicy extends Policy<undefined> {}
 
-			const policy = new MinimalPolicy(
-				"TypeScriptPolicy",
-				/\.(ts|tsx)$/,
+			const policy = new MinimalPolicy({
+				name: "TypeScriptPolicy",
+				description: "A policy for TypeScript files",
+				match: /\.(ts|tsx)$/,
 				handler,
-			);
+			});
 
 			expect(policy.match.test("component.ts")).toBe(true);
 			expect(policy.match.test("component.tsx")).toBe(true);
@@ -147,13 +151,13 @@ describe("Policy Module", () => {
 
 			class ConfigurablePolicy extends Policy<{ threshold: number }> {}
 
-			const policy = new ConfigurablePolicy(
-				"ConfigurablePolicy",
-				/\.ts$/,
+			const policy = new ConfigurablePolicy({
+				name: "ConfigurablePolicy",
+				description: "A configurable policy",
+				match: /\.ts$/,
 				handler,
-				"A configurable policy",
-				{ threshold: 10 },
-			);
+				defaultConfig: { threshold: 10 },
+			});
 
 			const passResult = await policy.handler({
 				file: "test.ts",

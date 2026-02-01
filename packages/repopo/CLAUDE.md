@@ -19,7 +19,7 @@ Policies are objects that implement the `PolicyDefinition<C>` interface:
 ```typescript
 interface PolicyDefinition<C = undefined> {
   name: PolicyName;              // Display name
-  description?: string;          // Detailed description
+  description: string;           // Detailed description (required)
   match: RegExp;                 // File path regex
   handler: PolicyHandler<C>;     // Check function
   resolver?: PolicyStandaloneResolver<C>;  // Optional auto-fix
@@ -152,12 +152,12 @@ const handler: PolicyHandler = async ({ file, root, resolve, config }) => {
   return true;
 };
 
-export const NoTodoComments = new Policy(
-  "NoTodoComments",
-  /\.(ts|js)$/,  // Match TypeScript/JavaScript files
+export const NoTodoComments = new Policy({
+  name: "NoTodoComments",
+  description: "Prevents TODO comments in code",
+  match: /\.(ts|js)$/,  // Match TypeScript/JavaScript files
   handler,
-  "Prevents TODO comments in code",
-);
+});
 ```
 
 ### Policy with Auto-Fix
@@ -209,13 +209,13 @@ const handler: PolicyHandler<TodoPolicyConfig> = async ({
   // Use config.allowedKeywords in validation logic
 };
 
-export const ConfigurableTodoPolicy = new Policy<TodoPolicyConfig>(
-  "ConfigurableTodoPolicy",
-  /\.(ts|js)$/,
+export const ConfigurableTodoPolicy = new Policy<TodoPolicyConfig>({
+  name: "ConfigurableTodoPolicy",
+  description: "Configurable TODO validation",
+  match: /\.(ts|js)$/,
   handler,
-  "Configurable TODO validation",
-  { allowedKeywords: ["TODO", "FIXME"] }, // defaultConfig
-);
+  defaultConfig: { allowedKeywords: ["TODO", "FIXME"] },
+});
 ```
 
 ## CLI Commands

@@ -10,7 +10,21 @@ import type { RequireExactlyOne } from 'type-fest';
 import { run } from '@oclif/core';
 
 // @alpha
-export function defineFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
+export function defineFileHeaderPolicy(args: DefineFileHeaderPolicyArgs): PolicyDefinition<FileHeaderPolicyConfig>;
+
+// @alpha
+export interface DefineFileHeaderPolicyArgs {
+    config: FileHeaderGeneratorConfig;
+    description: string;
+    name: string;
+}
+
+// @alpha
+export interface DefinePackagePolicyArgs<J, C> {
+    description: string;
+    handler: PackageJsonHandler<J, C>;
+    name: string;
+}
 
 // @alpha
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -51,10 +65,13 @@ export interface FluidHandler {
 export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: FluidAdapterOptions): PolicyDefinition[];
 
 // @alpha
-export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
+export function generatePackagePolicy<J = PackageJson, C = undefined>(args: DefinePackagePolicyArgs<J, C>): PolicyDefinition<C>;
 
 // @alpha
 export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
+
+// @alpha
+export function makePolicyDefinition<C = undefined>(args: PolicyDefinitionInput<C>): PolicyDefinition<C>;
 
 // @alpha
 export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
@@ -62,12 +79,15 @@ export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C
 // @alpha
 export interface PolicyDefinition<C = undefined> {
     defaultConfig?: C | undefined;
-    description?: string | undefined;
+    description: string;
     handler: PolicyHandler<C>;
     match: RegExp;
     name: PolicyName;
     resolver?: PolicyStandaloneResolver<C> | undefined;
 }
+
+// @alpha
+export type PolicyDefinitionInput<C = undefined> = PolicyDefinition<C>;
 
 // @alpha
 export interface PolicyFailure {

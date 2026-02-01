@@ -282,40 +282,45 @@ async function validateExistingReadme(
 export const PackageReadme = definePackagePolicy<
 	PackageJson,
 	PackageReadmeSettings | undefined
->("PackageReadme", async (json, { file, resolve, config }) => {
-	const skipPrivate = config?.skipPrivate ?? true;
-	const requireMatchingTitle = config?.requireMatchingTitle ?? true;
-	const requiredContent = config?.requiredContent;
+>({
+	name: "PackageReadme",
+	description:
+		"Ensures each package has a README.md file with proper title and required content.",
+	handler: async (json, { file, resolve, config }) => {
+		const skipPrivate = config?.skipPrivate ?? true;
+		const requireMatchingTitle = config?.requireMatchingTitle ?? true;
+		const requiredContent = config?.requiredContent;
 
-	// Skip private packages if configured to do so
-	if (skipPrivate && json.private === true) {
-		return true;
-	}
+		// Skip private packages if configured to do so
+		if (skipPrivate && json.private === true) {
+			return true;
+		}
 
-	const packageName = json.name ?? "unknown";
-	const packageDir = path.dirname(file);
-	const readmePath = path.join(packageDir, "README.md");
+		const packageName = json.name ?? "unknown";
+		const packageDir = path.dirname(file);
+		const readmePath = path.join(packageDir, "README.md");
 
-	// Check if README exists
-	if (!existsSync(readmePath)) {
-		return await handleMissingReadme(
+		// Check if README exists
+		if (!existsSync(readmePath)) {
+			return await handleMissingReadme(
+				readmePath,
+				packageName,
+				file,
+				resolve,
+				requiredContent,
+			);
+		}
+
+		// README exists, validate content
+		const readmeContent = await readFile(readmePath, "utf-8");
+		return await validateExistingReadme({
 			readmePath,
+			readmeContent,
 			packageName,
 			file,
 			resolve,
+			requireMatchingTitle,
 			requiredContent,
-		);
-	}
-
-	// README exists, validate content
-	const readmeContent = await readFile(readmePath, "utf-8");
-	return await validateExistingReadme({
-		readmePath,
-		readmeContent,
-		packageName,
-		file,
-		resolve,
-		requireMatchingTitle,
-		requiredContent,
-	});
+		});
+	},
 });

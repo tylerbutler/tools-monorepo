@@ -30,7 +30,11 @@ describe("defineFileHeaderPolicy", () => {
 					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
-			const policy = defineFileHeaderPolicy("TestHeaderPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "TestHeaderPolicy",
+				description: "Enforces header comments in TypeScript files",
+				config,
+			});
 
 			expect(policy.name).toBe("TestHeaderPolicy");
 			expect(policy.match).toEqual(/\.ts$/);
@@ -46,7 +50,11 @@ describe("defineFileHeaderPolicy", () => {
 				replacer: (content) => content,
 			};
 
-			const policy = defineFileHeaderPolicy("JsHeaderPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "JsHeaderPolicy",
+				description: "Enforces header comments in JavaScript files",
+				config,
+			});
 
 			expect("file.js").toMatch(policy.match);
 			expect("file.jsx").toMatch(policy.match);
@@ -68,7 +76,11 @@ describe("defineFileHeaderPolicy", () => {
 					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
-			const policy = defineFileHeaderPolicy("TestPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "TestPolicy",
+				description: "Test file header policy",
+				config,
+			});
 
 			const result = (await runHandler(policy.handler, {
 				file: testFile,
@@ -93,7 +105,11 @@ describe("defineFileHeaderPolicy", () => {
 				replacer: (content) => content,
 			};
 
-			const policy = defineFileHeaderPolicy("TestPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "TestPolicy",
+				description: "Test file header policy",
+				config,
+			});
 
 			const result = await runHandler(policy.handler, {
 				file: testFile,
@@ -119,7 +135,11 @@ describe("defineFileHeaderPolicy", () => {
 					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
-			const policy = defineFileHeaderPolicy("TestPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "TestPolicy",
+				description: "Test file header policy",
+				config,
+			});
 
 			const result = (await runHandler(policy.handler, {
 				file: testFile,
@@ -145,7 +165,11 @@ describe("defineFileHeaderPolicy", () => {
 					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
-			const policy = defineFileHeaderPolicy("TestPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "TestPolicy",
+				description: "Test file header policy",
+				config,
+			});
 
 			const result = (await runHandler(policy.handler, {
 				file: testFile,
@@ -176,7 +200,11 @@ describe("defineFileHeaderPolicy", () => {
 					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
-			const policy = defineFileHeaderPolicy("TestPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "TestPolicy",
+				description: "Test file header policy",
+				config,
+			});
 
 			await runHandler(policy.handler, {
 				file: testFile,
@@ -204,7 +232,11 @@ describe("defineFileHeaderPolicy", () => {
 					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
-			const policy = defineFileHeaderPolicy("TestPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "TestPolicy",
+				description: "Test file header policy",
+				config,
+			});
 
 			await runHandler(policy.handler, {
 				file: testFile,
@@ -232,7 +264,11 @@ describe("defineFileHeaderPolicy", () => {
 					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
-			const policy = defineFileHeaderPolicy("TestPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "TestPolicy",
+				description: "Test file header policy",
+				config,
+			});
 
 			const result = (await runHandler(policy.handler, {
 				file: testFile,
@@ -257,7 +293,11 @@ describe("defineFileHeaderPolicy", () => {
 					`// ${cfg.headerText}${EOL}${fileContent}`,
 			};
 
-			const policy = defineFileHeaderPolicy("CustomHeaderPolicy", config);
+			const policy = defineFileHeaderPolicy({
+				name: "CustomHeaderPolicy",
+				description: "Custom file header policy",
+				config,
+			});
 
 			const result = (await runHandler(policy.handler, {
 				file: testFile,

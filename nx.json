@@ -222,7 +222,7 @@
 
 		// Vite/Astro builds - plugins will infer these, but we provide defaults
 		"build:site": {
-			"dependsOn": ["^build:compile"],
+			"dependsOn": ["^build:compile", "^build:api"],
 			"inputs": [
 				"{projectRoot}/src/**",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",

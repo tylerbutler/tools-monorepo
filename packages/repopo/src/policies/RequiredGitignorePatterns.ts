@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "pathe";
 import { makePolicyDefinition } from "../makePolicy.js";
 import type {
@@ -133,13 +133,13 @@ function createGitignoreContent(
 /**
  * Handle the case when .gitignore exists.
  */
-function handleExistingGitignore(
+async function handleExistingGitignore(
 	filePath: string,
 	patterns: Array<string | { pattern: string; comment?: string }>,
 	file: string,
 	resolve: boolean,
-) {
-	const gitignoreContent = readFileSync(filePath, "utf-8");
+): Promise<true | PolicyFailure | PolicyFixResult> {
+	const gitignoreContent = await readFile(filePath, "utf-8");
 	const lines = gitignoreContent.split("\n");
 	const missingPatterns = findMissingPatterns(patterns, lines);
 
@@ -167,7 +167,7 @@ function handleExistingGitignore(
 				gitignoreContent,
 				missingPatterns,
 			);
-			writeFileSync(filePath, newContent);
+			await writeFile(filePath, newContent);
 			fixResult.resolved = true;
 		} catch (error: unknown) {
 			fixResult.errorMessages = [
@@ -184,12 +184,12 @@ function handleExistingGitignore(
 /**
  * Handle the case when .gitignore doesn't exist.
  */
-function handleMissingGitignore(
+async function handleMissingGitignore(
 	filePath: string,
 	patterns: Array<string | { pattern: string; comment?: string }>,
 	file: string,
 	resolve: boolean,
-) {
+): Promise<PolicyFailure | PolicyFixResult> {
 	const result: PolicyFailure = {
 		name: RequiredGitignorePatterns.name,
 		file,
@@ -205,7 +205,7 @@ function handleMissingGitignore(
 
 		try {
 			const content = createGitignoreContent(patterns);
-			writeFileSync(filePath, content);
+			await writeFile(filePath, content);
 			fixResult.resolved = true;
 		} catch (writeError: unknown) {
 			fixResult.errorMessages = [
@@ -226,17 +226,19 @@ function handleMissingGitignore(
  * @alpha
  */
 export const RequiredGitignorePatterns: PolicyDefinition<RequiredGitignorePatternsSettings> =
-	makePolicyDefinition(
-		"RequiredGitignorePatterns",
-		/^\.gitignore$/,
-		async ({ file, root, resolve, config }) => {
+	makePolicyDefinition({
+		name: "RequiredGitignorePatterns",
+		description:
+			"Ensures .gitignore contains required patterns to prevent committing sensitive files, dependencies, and build artifacts.",
+		match: /^\.gitignore$/,
+		handler: async ({ file, root, resolve, config }) => {
 			const patterns = config?.patterns ?? DEFAULT_PATTERNS;
 			const filePath = path.join(root, file);
 
 			try {
-				return handleExistingGitignore(filePath, patterns, file, resolve);
+				return await handleExistingGitignore(filePath, patterns, file, resolve);
 			} catch (_error: unknown) {
-				return handleMissingGitignore(filePath, patterns, file, resolve);
+				return await handleMissingGitignore(filePath, patterns, file, resolve);
 			}
 		},
-	);
+	});

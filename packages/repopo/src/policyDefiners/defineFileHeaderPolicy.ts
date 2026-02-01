@@ -70,15 +70,46 @@ export interface FileHeaderGeneratorConfig
 }
 
 /**
+ * Input arguments for defining a file header policy.
+ *
+ * @alpha
+ */
+export interface DefineFileHeaderPolicyArgs {
+	/**
+	 * The name of the policy.
+	 */
+	name: string;
+
+	/**
+	 * A description of the policy's purpose.
+	 */
+	description: string;
+
+	/**
+	 * Configuration for how headers are detected and inserted.
+	 */
+	config: FileHeaderGeneratorConfig;
+}
+
+/**
  * Given a {@link FileHeaderPolicyConfig}, produces a function that detects correct file headers
  * and returns an error string if the header is missing or incorrect.
+ *
+ * @example
+ * ```typescript
+ * const MyHeaderPolicy = defineFileHeaderPolicy({
+ *   name: "MyHeaderPolicy",
+ *   description: "Ensures files have required headers",
+ *   config: { match: /\.ts$/, lineStart: /\/\/ /, lineEnd: /\r?\n/, replacer: ... },
+ * });
+ * ```
  *
  * @alpha
  */
 export function defineFileHeaderPolicy(
-	name: string,
-	config: FileHeaderGeneratorConfig,
+	args: DefineFileHeaderPolicyArgs,
 ): PolicyDefinition<FileHeaderPolicyConfig> {
+	const { name, description, config } = args;
 	const pre = config.headerStart?.source ?? "";
 	const start = config.lineStart.source;
 	const end = config.lineEnd.source;
@@ -104,6 +135,7 @@ export function defineFileHeaderPolicy(
 
 	return {
 		name,
+		description,
 		match: config.match,
 		handler: function* ({ file, resolve, config: policyConfig }) {
 			if (policyConfig === undefined) {

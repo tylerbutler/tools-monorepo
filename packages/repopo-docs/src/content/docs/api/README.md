@@ -17,6 +17,8 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 
 ## Interfaces
 
+- [DefineFileHeaderPolicyArgs](/api/interfaces/definefileheaderpolicyargs/)
+- [DefinePackagePolicyArgs](/api/interfaces/definepackagepolicyargs/)
 - [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
 - [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
 - [FluidAdapterOptions](/api/interfaces/fluidadapteroptions/)
@@ -31,6 +33,7 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 ## Type Aliases
 
 - [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
+- [PolicyDefinitionInput](/api/type-aliases/policydefinitioninput/)
 - [PolicyHandler](/api/type-aliases/policyhandler/)
 - [PolicyHandlerResult](/api/type-aliases/policyhandlerresult/)
 - [PolicyInstance](/api/type-aliases/policyinstance/)
@@ -43,3 +46,4 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 - [fromFluidHandlers](/api/functions/fromfluidhandlers/)
 - [generatePackagePolicy](/api/functions/generatepackagepolicy/)
 - [makePolicy](/api/functions/makepolicy/)
+- [makePolicyDefinition](/api/functions/makepolicydefinition/)
