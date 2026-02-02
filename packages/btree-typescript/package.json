@@ -24,7 +24,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qwertie/btree-typescript.git"
+    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+    "directory": "packages/btree-typescript"
   },
   "keywords": [
     "B+",
@@ -42,9 +43,9 @@
   "author": "David Piepgrass",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/qwertie/btree-typescript/issues"
+    "url": "https://github.com/tylerbutler/tools-monorepo/issues"
   },
-  "homepage": "https://github.com/qwertie/btree-typescript#readme",
+  "homepage": "https://github.com/tylerbutler/tools-monorepo/blob/main/packages/btree-typescript/README.md#readme",
   "devDependencies": {
     "@types/bintrees": "^1.0.2",
     "@types/collections": "^5.0.2",
