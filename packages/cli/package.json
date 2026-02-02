@@ -115,7 +115,7 @@
 		"@oclif/plugin-which": "^3.2.42",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
-		"ccl-ts": "workspace:^",
+		"ccl-ts": "^0.2.0",
 		"debug": "^4.4.3",
 		"dill-cli": "workspace:^",
 		"pathe": "^2.0.3",
