@@ -1,9 +1,21 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EmptyBTree = exports.BTree = void 0;
-exports.defaultComparator = defaultComparator;
-exports.simpleComparator = simpleComparator;
-exports.asSet = asSet;
+exports.EmptyBTree = exports.check = exports.areOverlapping = exports.sumChildSizes = exports.BNodeInternal = exports.BNode = exports.asSet = exports.fixMaxSize = exports.simpleComparator = exports.defaultComparator = void 0;
 /**
  * Compares DefaultComparables to form a strict partial ordering.
  *
@@ -18,15 +30,15 @@ exports.asSet = asSet;
 function defaultComparator(a, b) {
     // Special case finite numbers first for performance.
     // Note that the trick of using 'a - b' and checking for NaN to detect non-numbers
-    // does not work if the strings are numeric (ex: "5"). This would leading most
+    // does not work if the strings are numeric (ex: "5"). This would leading most 
     // comparison functions using that approach to fail to have transitivity.
     if (Number.isFinite(a) && Number.isFinite(b)) {
         return a - b;
     }
     // The default < and > operators are not totally ordered. To allow types to be mixed
     // in a single collection, compare types and order values of different types by type.
-    let ta = typeof a;
-    let tb = typeof b;
+    var ta = typeof a;
+    var tb = typeof b;
     if (ta !== tb) {
         return ta < tb ? -1 : 1;
     }
@@ -45,7 +57,7 @@ function defaultComparator(a, b) {
             return ta < tb ? -1 : 1;
         }
     }
-    // a and b are now the same type, and will be a number, string or array
+    // a and b are now the same type, and will be a number, string or array 
     // (which we assume holds numbers or strings), or something unsupported.
     if (a < b)
         return -1;
@@ -61,11 +73,19 @@ function defaultComparator(a, b) {
     // This could be two objects (e.g. [7] and ['7']) that aren't ordered
     return Array.isArray(a) ? 0 : Number.NaN;
 }
+exports.defaultComparator = defaultComparator;
 ;
 function simpleComparator(a, b) {
     return a > b ? 1 : a < b ? -1 : 0;
 }
+exports.simpleComparator = simpleComparator;
 ;
+/** Sanitizes a requested max node size.
+ *  @internal */
+function fixMaxSize(maxNodeSize) {
+    return maxNodeSize >= 4 ? Math.min(maxNodeSize | 0, 256) : 32;
+}
+exports.fixMaxSize = fixMaxSize;
 /**
  * A reasonably fast collection of key-value pairs with a powerful API.
  * Largely compatible with the standard Map. BTree is a B+ tree data structure,
@@ -130,7 +150,7 @@ function simpleComparator(a, b) {
  *
  * @author David Piepgrass
  */
-class BTree {
+var BTree = /** @class */ (function () {
     /**
      * Initializes an empty B+ tree.
      * @param compare Custom function to compare pairs of elements in the tree.
@@ -139,27 +159,37 @@ class BTree {
      * @param maxNodeSize Branching factor (maximum items or children per node)
      *   Must be in range 4..256. If undefined or <4 then default is used; if >256 then 256.
      */
-    constructor(entries, compare, maxNodeSize) {
+    function BTree(entries, compare, maxNodeSize) {
         this._root = EmptyLeaf;
-        this._size = 0;
-        this._maxNodeSize = maxNodeSize >= 4 ? Math.min(maxNodeSize, 256) : 32;
+        this._maxNodeSize = fixMaxSize(maxNodeSize);
         this._compare = compare || defaultComparator;
         if (entries)
             this.setPairs(entries);
     }
-    /////////////////////////////////////////////////////////////////////////////
-    // ES6 Map<K,V> methods /////////////////////////////////////////////////////
-    /** Gets the number of key-value pairs in the tree. */
-    get size() { return this._size; }
-    /** Gets the number of key-value pairs in the tree. */
-    get length() { return this._size; }
-    /** Returns true iff the tree contains no key-value pairs. */
-    get isEmpty() { return this._size === 0; }
+    Object.defineProperty(BTree.prototype, "size", {
+        /////////////////////////////////////////////////////////////////////////////
+        // ES6 Map<K,V> methods /////////////////////////////////////////////////////
+        /** Gets the number of key-value pairs in the tree. */
+        get: function () { return this._root.size(); },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(BTree.prototype, "length", {
+        /** Gets the number of key-value pairs in the tree. */
+        get: function () { return this.size; },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(BTree.prototype, "isEmpty", {
+        /** Returns true iff the tree contains no key-value pairs. */
+        get: function () { return this._root.size() === 0; },
+        enumerable: false,
+        configurable: true
+    });
     /** Releases the tree so that its size is 0. */
-    clear() {
+    BTree.prototype.clear = function () {
         this._root = EmptyLeaf;
-        this._size = 0;
-    }
+    };
     /** Runs a function for each key-value pair, in order from smallest to
      *  largest key. For compatibility with ES6 Map, the argument order to
      *  the callback is backwards: value first, then key. Call forEachPair
@@ -168,11 +198,12 @@ class BTree {
      *        value for each callback.
      * @returns the number of values that were sent to the callback,
      *        or the R value if the callback returned {break:R}. */
-    forEach(callback, thisArg) {
+    BTree.prototype.forEach = function (callback, thisArg) {
+        var _this = this;
         if (thisArg !== undefined)
             callback = callback.bind(thisArg);
-        return this.forEachPair((k, v) => callback(v, k, this));
-    }
+        return this.forEachPair(function (k, v) { return callback(v, k, _this); });
+    };
     /** Runs a function for each key-value pair, in order from smallest to
      *  largest key. The callback can return {break:R} (where R is any value
      *  except undefined) to stop immediately and return R from forEachPair.
@@ -187,19 +218,19 @@ class BTree {
      * @returns the number of pairs sent to the callback (plus initialCounter,
      *        if you provided one). If the callback returned {break:R} then
      *        the R value is returned instead. */
-    forEachPair(callback, initialCounter) {
+    BTree.prototype.forEachPair = function (callback, initialCounter) {
         var low = this.minKey(), high = this.maxKey();
         return this.forRange(low, high, true, callback, initialCounter);
-    }
+    };
     /**
      * Finds a pair in the tree and returns the associated value.
      * @param defaultValue a value to return if the key was not found.
      * @returns the value, or defaultValue if the key was not found.
      * @description Computational complexity: O(log size)
      */
-    get(key, defaultValue) {
+    BTree.prototype.get = function (key, defaultValue) {
         return this._root.get(key, defaultValue, this);
-    }
+    };
     /**
      * Adds or overwrites a key-value pair in the B+ tree.
      * @param key the key is used to determine the sort order of
@@ -214,16 +245,17 @@ class BTree {
      * as well as the value. This has no effect unless the new key
      * has data that does not affect its sort order.
      */
-    set(key, value, overwrite) {
+    BTree.prototype.set = function (key, value, overwrite) {
         if (this._root.isShared)
             this._root = this._root.clone();
         var result = this._root.set(key, value, overwrite, this);
         if (result === true || result === false)
             return result;
         // Root node has split, so create a new root node.
-        this._root = new BNodeInternal([this._root, result]);
+        var children = [this._root, result];
+        this._root = new BNodeInternal(children, sumChildSizes(children));
         return true;
-    }
+    };
     /**
      * Returns true if the key exists in the B+ tree, false if not.
      * Use get() for best performance; use has() if you need to
@@ -231,27 +263,27 @@ class BTree {
      * @param key Key to detect
      * @description Computational complexity: O(log size)
      */
-    has(key) {
+    BTree.prototype.has = function (key) {
         return this.forRange(key, key, true, undefined) !== 0;
-    }
+    };
     /**
      * Removes a single key-value pair from the B+ tree.
      * @param key Key to find
      * @returns true if a pair was found and removed, false otherwise.
      * @description Computational complexity: O(log size)
      */
-    delete(key) {
+    BTree.prototype.delete = function (key) {
         return this.editRange(key, key, true, DeleteRange) !== 0;
-    }
-    with(key, value, overwrite) {
-        let nu = this.clone();
+    };
+    BTree.prototype.with = function (key, value, overwrite) {
+        var nu = this.clone();
         return nu.set(key, value, overwrite) || overwrite ? nu : this;
-    }
+    };
     /** Returns a copy of the tree with the specified key-value pairs set. */
-    withPairs(pairs, overwrite) {
-        let nu = this.clone();
+    BTree.prototype.withPairs = function (pairs, overwrite) {
+        var nu = this.clone();
         return nu.setPairs(pairs, overwrite) !== 0 || overwrite ? nu : this;
-    }
+    };
     /** Returns a copy of the tree with the specified keys present.
      *  @param keys The keys to add. If a key is already present in the tree,
      *         neither the existing key nor the existing value is modified.
@@ -260,67 +292,67 @@ class BTree {
      *  node(s) leading to existing keys are cloned even if the collection is
      *  ultimately unchanged.
     */
-    withKeys(keys, returnThisIfUnchanged) {
-        let nu = this.clone(), changed = false;
+    BTree.prototype.withKeys = function (keys, returnThisIfUnchanged) {
+        var nu = this.clone(), changed = false;
         for (var i = 0; i < keys.length; i++)
             changed = nu.set(keys[i], undefined, false) || changed;
         return returnThisIfUnchanged && !changed ? this : nu;
-    }
+    };
     /** Returns a copy of the tree with the specified key removed.
      * @param returnThisIfUnchanged if true, returns this if the key didn't exist.
      *  Performance note: due to the architecture of this class, node(s) leading
      *  to where the key would have been stored are cloned even when the key
      *  turns out not to exist and the collection is unchanged.
      */
-    without(key, returnThisIfUnchanged) {
+    BTree.prototype.without = function (key, returnThisIfUnchanged) {
         return this.withoutRange(key, key, true, returnThisIfUnchanged);
-    }
+    };
     /** Returns a copy of the tree with the specified keys removed.
      * @param returnThisIfUnchanged if true, returns this if none of the keys
      *  existed. Performance note: due to the architecture of this class,
      *  node(s) leading to where the key would have been stored are cloned
      *  even when the key turns out not to exist.
      */
-    withoutKeys(keys, returnThisIfUnchanged) {
-        let nu = this.clone();
+    BTree.prototype.withoutKeys = function (keys, returnThisIfUnchanged) {
+        var nu = this.clone();
         return nu.deleteKeys(keys) || !returnThisIfUnchanged ? nu : this;
-    }
+    };
     /** Returns a copy of the tree with the specified range of keys removed. */
-    withoutRange(low, high, includeHigh, returnThisIfUnchanged) {
-        let nu = this.clone();
+    BTree.prototype.withoutRange = function (low, high, includeHigh, returnThisIfUnchanged) {
+        var nu = this.clone();
         if (nu.deleteRange(low, high, includeHigh) === 0 && returnThisIfUnchanged)
             return this;
         return nu;
-    }
+    };
     /** Returns a copy of the tree with pairs removed whenever the callback
      *  function returns false. `where()` is a synonym for this method. */
-    filter(callback, returnThisIfUnchanged) {
+    BTree.prototype.filter = function (callback, returnThisIfUnchanged) {
         var nu = this.greedyClone();
         var del;
-        nu.editAll((k, v, i) => {
+        nu.editAll(function (k, v, i) {
             if (!callback(k, v, i))
                 return del = Delete;
         });
         if (!del && returnThisIfUnchanged)
             return this;
         return nu;
-    }
+    };
     /** Returns a copy of the tree with all values altered by a callback function. */
-    mapValues(callback) {
+    BTree.prototype.mapValues = function (callback) {
         var tmp = {};
         var nu = this.greedyClone();
-        nu.editAll((k, v, i) => {
+        nu.editAll(function (k, v, i) {
             return tmp.value = callback(v, k, i), tmp;
         });
         return nu;
-    }
-    reduce(callback, initialValue) {
-        let i = 0, p = initialValue;
+    };
+    BTree.prototype.reduce = function (callback, initialValue) {
+        var i = 0, p = initialValue;
         var it = this.entries(this.minKey(), ReusedArray), next;
         while (!(next = it.next()).done)
             p = callback(p, next.value, i++, this);
         return p;
-    }
+    };
     /////////////////////////////////////////////////////////////////////////////
     // Iterator methods /////////////////////////////////////////////////////////
     /** Returns an iterator that provides items in order (ascending order if
@@ -331,14 +363,14 @@ class BTree {
      *  @param reusedArray Optional array used repeatedly to store key-value
      *         pairs, to avoid creating a new array on every iteration.
      */
-    entries(lowestKey, reusedArray) {
+    BTree.prototype.entries = function (lowestKey, reusedArray) {
         var info = this.findPath(lowestKey);
         if (info === undefined)
             return iterator();
-        var { nodequeue, nodeindex, leaf } = info;
+        var nodequeue = info.nodequeue, nodeindex = info.nodeindex, leaf = info.leaf;
         var state = reusedArray !== undefined ? 1 : 0;
         var i = (lowestKey === undefined ? -1 : leaf.indexOf(lowestKey, 0, this._compare) - 1);
-        return iterator(() => {
+        return iterator(function () {
             jump: for (;;) {
                 switch (state) {
                     case 0:
@@ -375,7 +407,7 @@ class BTree {
                 }
             }
         });
-    }
+    };
     /** Returns an iterator that provides items in reversed order.
      *  @param highestKey Key at which to start iterating, or undefined to
      *         start at maxKey(). If the specified key doesn't exist then iteration
@@ -385,20 +417,20 @@ class BTree {
      *  @param skipHighest Iff this flag is true and the highestKey exists in the
      *         collection, the pair matching highestKey is skipped, not iterated.
      */
-    entriesReversed(highestKey, reusedArray, skipHighest) {
+    BTree.prototype.entriesReversed = function (highestKey, reusedArray, skipHighest) {
         if (highestKey === undefined) {
             highestKey = this.maxKey();
             skipHighest = undefined;
             if (highestKey === undefined)
                 return iterator(); // collection is empty
         }
-        var { nodequeue, nodeindex, leaf } = this.findPath(highestKey) || this.findPath(this.maxKey());
+        var _a = this.findPath(highestKey) || this.findPath(this.maxKey()), nodequeue = _a.nodequeue, nodeindex = _a.nodeindex, leaf = _a.leaf;
         check(!nodequeue[0] || leaf === nodequeue[0][nodeindex[0]], "wat!");
         var i = leaf.indexOf(highestKey, 0, this._compare);
         if (!skipHighest && i < leaf.keys.length && this._compare(leaf.keys[i], highestKey) <= 0)
             i++;
         var state = reusedArray !== undefined ? 1 : 0;
-        return iterator(() => {
+        return iterator(function () {
             jump: for (;;) {
                 switch (state) {
                     case 0:
@@ -435,7 +467,7 @@ class BTree {
                 }
             }
         });
-    }
+    };
     /* Used by entries() and entriesReversed() to prepare to start iterating.
      * It develops a "node queue" for each non-leaf level of the tree.
      * Levels are numbered "bottom-up" so that level 0 is a list of leaf
@@ -445,7 +477,7 @@ class BTree {
      * such that nodequeue[L-1] === nodequeue[L][nodeindex[L]].children.
      * (However inside this function the order is reversed.)
      */
-    findPath(key) {
+    BTree.prototype.findPath = function (key) {
         var nextnode = this._root;
         var nodequeue, nodeindex;
         if (nextnode.isLeaf) {
@@ -463,370 +495,135 @@ class BTree {
             nodequeue.reverse();
             nodeindex.reverse();
         }
-        return { nodequeue, nodeindex, leaf: nextnode };
-    }
-    /**
-     * Computes the differences between `this` and `other`.
-     * For efficiency, the diff is returned via invocations of supplied handlers.
-     * The computation is optimized for the case in which the two trees have large amounts
-     * of shared data (obtained by calling the `clone` or `with` APIs) and will avoid
-     * any iteration of shared state.
-     * The handlers can cause computation to early exit by returning {break: R}.
-     * Neither of the collections should be changed during the comparison process (in your callbacks), as this method assumes they will not be mutated.
-     * @param other The tree to compute a diff against.
-     * @param onlyThis Callback invoked for all keys only present in `this`.
-     * @param onlyOther Callback invoked for all keys only present in `other`.
-     * @param different Callback invoked for all keys with differing values.
-     */
-    diffAgainst(other, onlyThis, onlyOther, different) {
-        if (other._compare !== this._compare) {
-            throw new Error("Tree comparators are not the same.");
-        }
-        if (this.isEmpty || other.isEmpty) {
-            if (this.isEmpty && other.isEmpty)
-                return undefined;
-            // If one tree is empty, everything will be an onlyThis/onlyOther.
-            if (this.isEmpty)
-                return onlyOther === undefined ? undefined : BTree.stepToEnd(BTree.makeDiffCursor(other), onlyOther);
-            return onlyThis === undefined ? undefined : BTree.stepToEnd(BTree.makeDiffCursor(this), onlyThis);
-        }
-        // Cursor-based diff algorithm is as follows:
-        // - Until neither cursor has navigated to the end of the tree, do the following:
-        //  - If the `this` cursor is "behind" the `other` cursor (strictly <, via compare), advance it.
-        //  - Otherwise, advance the `other` cursor.
-        //  - Any time a cursor is stepped, perform the following:
-        //    - If either cursor points to a key/value pair:
-        //      - If thisCursor === otherCursor and the values differ, it is a Different.
-        //      - If thisCursor > otherCursor and otherCursor is at a key/value pair, it is an OnlyOther.
-        //      - If thisCursor < otherCursor and thisCursor is at a key/value pair, it is an OnlyThis as long as the most recent
-        //        cursor step was *not* otherCursor advancing from a tie. The extra condition avoids erroneous OnlyOther calls
-        //        that would occur due to otherCursor being the "leader".
-        //    - Otherwise, if both cursors point to nodes, compare them. If they are equal by reference (shared), skip
-        //      both cursors to the next node in the walk.
-        // - Once one cursor has finished stepping, any remaining steps (if any) are taken and key/value pairs are logged
-        //   as OnlyOther (if otherCursor is stepping) or OnlyThis (if thisCursor is stepping).
-        // This algorithm gives the critical guarantee that all locations (both nodes and key/value pairs) in both trees that
-        // are identical by value (and possibly by reference) will be visited *at the same time* by the cursors.
-        // This removes the possibility of emitting incorrect diffs, as well as allowing for skipping shared nodes.
-        const { _compare } = this;
-        const thisCursor = BTree.makeDiffCursor(this);
-        const otherCursor = BTree.makeDiffCursor(other);
-        // It doesn't matter how thisSteppedLast is initialized.
-        // Step order is only used when either cursor is at a leaf, and cursors always start at a node.
-        let thisSuccess = true, otherSuccess = true, prevCursorOrder = BTree.compare(thisCursor, otherCursor, _compare);
-        while (thisSuccess && otherSuccess) {
-            const cursorOrder = BTree.compare(thisCursor, otherCursor, _compare);
-            const { leaf: thisLeaf, internalSpine: thisInternalSpine, levelIndices: thisLevelIndices } = thisCursor;
-            const { leaf: otherLeaf, internalSpine: otherInternalSpine, levelIndices: otherLevelIndices } = otherCursor;
-            if (thisLeaf || otherLeaf) {
-                // If the cursors were at the same location last step, then there is no work to be done.
-                if (prevCursorOrder !== 0) {
-                    if (cursorOrder === 0) {
-                        if (thisLeaf && otherLeaf && different) {
-                            // Equal keys, check for modifications
-                            const valThis = thisLeaf.values[thisLevelIndices[thisLevelIndices.length - 1]];
-                            const valOther = otherLeaf.values[otherLevelIndices[otherLevelIndices.length - 1]];
-                            if (!Object.is(valThis, valOther)) {
-                                const result = different(thisCursor.currentKey, valThis, valOther);
-                                if (result && result.break)
-                                    return result.break;
-                            }
-                        }
-                    }
-                    else if (cursorOrder > 0) {
-                        // If this is the case, we know that either:
-                        // 1. otherCursor stepped last from a starting position that trailed thisCursor, and is still behind, or
-                        // 2. thisCursor stepped last and leapfrogged otherCursor
-                        // Either of these cases is an "only other"
-                        if (otherLeaf && onlyOther) {
-                            const otherVal = otherLeaf.values[otherLevelIndices[otherLevelIndices.length - 1]];
-                            const result = onlyOther(otherCursor.currentKey, otherVal);
-                            if (result && result.break)
-                                return result.break;
-                        }
-                    }
-                    else if (onlyThis) {
-                        if (thisLeaf && prevCursorOrder !== 0) {
-                            const valThis = thisLeaf.values[thisLevelIndices[thisLevelIndices.length - 1]];
-                            const result = onlyThis(thisCursor.currentKey, valThis);
-                            if (result && result.break)
-                                return result.break;
-                        }
-                    }
-                }
-            }
-            else if (!thisLeaf && !otherLeaf && cursorOrder === 0) {
-                const lastThis = thisInternalSpine.length - 1;
-                const lastOther = otherInternalSpine.length - 1;
-                const nodeThis = thisInternalSpine[lastThis][thisLevelIndices[lastThis]];
-                const nodeOther = otherInternalSpine[lastOther][otherLevelIndices[lastOther]];
-                if (nodeOther === nodeThis) {
-                    prevCursorOrder = 0;
-                    thisSuccess = BTree.step(thisCursor, true);
-                    otherSuccess = BTree.step(otherCursor, true);
-                    continue;
-                }
-            }
-            prevCursorOrder = cursorOrder;
-            if (cursorOrder < 0) {
-                thisSuccess = BTree.step(thisCursor);
-            }
-            else {
-                otherSuccess = BTree.step(otherCursor);
-            }
-        }
-        if (thisSuccess && onlyThis)
-            return BTree.finishCursorWalk(thisCursor, otherCursor, _compare, onlyThis);
-        if (otherSuccess && onlyOther)
-            return BTree.finishCursorWalk(otherCursor, thisCursor, _compare, onlyOther);
-    }
-    ///////////////////////////////////////////////////////////////////////////
-    // Helper methods for diffAgainst /////////////////////////////////////////
-    static finishCursorWalk(cursor, cursorFinished, compareKeys, callback) {
-        const compared = BTree.compare(cursor, cursorFinished, compareKeys);
-        if (compared === 0) {
-            if (!BTree.step(cursor))
-                return undefined;
-        }
-        else if (compared < 0) {
-            check(false, "cursor walk terminated early");
-        }
-        return BTree.stepToEnd(cursor, callback);
-    }
-    static stepToEnd(cursor, callback) {
-        let canStep = true;
-        while (canStep) {
-            const { leaf, levelIndices, currentKey } = cursor;
-            if (leaf) {
-                const value = leaf.values[levelIndices[levelIndices.length - 1]];
-                const result = callback(currentKey, value);
-                if (result && result.break)
-                    return result.break;
-            }
-            canStep = BTree.step(cursor);
-        }
-        return undefined;
-    }
-    static makeDiffCursor(tree) {
-        const { _root, height } = tree;
-        return { height: height, internalSpine: [[_root]], levelIndices: [0], leaf: undefined, currentKey: _root.maxKey() };
-    }
-    /**
-     * Advances the cursor to the next step in the walk of its tree.
-     * Cursors are walked backwards in sort order, as this allows them to leverage maxKey() in order to be compared in O(1).
-     * @param cursor The cursor to step
-     * @param stepToNode If true, the cursor will be advanced to the next node (skipping values)
-     * @returns true if the step was completed and false if the step would have caused the cursor to move beyond the end of the tree.
-     */
-    static step(cursor, stepToNode) {
-        const { internalSpine, levelIndices, leaf } = cursor;
-        if (stepToNode === true || leaf) {
-            const levelsLength = levelIndices.length;
-            // Step to the next node only if:
-            // - We are explicitly directed to via stepToNode, or
-            // - There are no key/value pairs left to step to in this leaf
-            if (stepToNode === true || levelIndices[levelsLength - 1] === 0) {
-                const spineLength = internalSpine.length;
-                // Root is leaf
-                if (spineLength === 0)
-                    return false;
-                // Walk back up the tree until we find a new subtree to descend into
-                const nodeLevelIndex = spineLength - 1;
-                let levelIndexWalkBack = nodeLevelIndex;
-                while (levelIndexWalkBack >= 0) {
-                    if (levelIndices[levelIndexWalkBack] > 0) {
-                        if (levelIndexWalkBack < levelsLength - 1) {
-                            // Remove leaf state from cursor
-                            cursor.leaf = undefined;
-                            levelIndices.pop();
-                        }
-                        // If we walked upwards past any internal node, slice them out
-                        if (levelIndexWalkBack < nodeLevelIndex)
-                            cursor.internalSpine = internalSpine.slice(0, levelIndexWalkBack + 1);
-                        // Move to new internal node
-                        cursor.currentKey = internalSpine[levelIndexWalkBack][--levelIndices[levelIndexWalkBack]].maxKey();
-                        return true;
-                    }
-                    levelIndexWalkBack--;
-                }
-                // Cursor is in the far left leaf of the tree, no more nodes to enumerate
-                return false;
-            }
-            else {
-                // Move to new leaf value
-                const valueIndex = --levelIndices[levelsLength - 1];
-                cursor.currentKey = leaf.keys[valueIndex];
-                return true;
-            }
-        }
-        else { // Cursor does not point to a value in a leaf, so move downwards
-            const nextLevel = internalSpine.length;
-            const currentLevel = nextLevel - 1;
-            const node = internalSpine[currentLevel][levelIndices[currentLevel]];
-            if (node.isLeaf) {
-                // Entering into a leaf. Set the cursor to point at the last key/value pair.
-                cursor.leaf = node;
-                const valueIndex = levelIndices[nextLevel] = node.values.length - 1;
-                cursor.currentKey = node.keys[valueIndex];
-            }
-            else {
-                const children = node.children;
-                internalSpine[nextLevel] = children;
-                const childIndex = children.length - 1;
-                levelIndices[nextLevel] = childIndex;
-                cursor.currentKey = children[childIndex].maxKey();
-            }
-            return true;
-        }
-    }
-    /**
-     * Compares the two cursors. Returns a value indicating which cursor is ahead in a walk.
-     * Note that cursors are advanced in reverse sorting order.
-     */
-    static compare(cursorA, cursorB, compareKeys) {
-        const { height: heightA, currentKey: currentKeyA, levelIndices: levelIndicesA } = cursorA;
-        const { height: heightB, currentKey: currentKeyB, levelIndices: levelIndicesB } = cursorB;
-        // Reverse the comparison order, as cursors are advanced in reverse sorting order
-        const keyComparison = compareKeys(currentKeyB, currentKeyA);
-        if (keyComparison !== 0) {
-            return keyComparison;
-        }
-        // Normalize depth values relative to the shortest tree.
-        // This ensures that concurrent cursor walks of trees of differing heights can reliably land on shared nodes at the same time.
-        // To accomplish this, a cursor that is on an internal node at depth D1 with maxKey X is considered "behind" a cursor on an
-        // internal node at depth D2 with maxKey Y, when D1 < D2. Thus, always walking the cursor that is "behind" will allow the cursor
-        // at shallower depth (but equal maxKey) to "catch up" and land on shared nodes.
-        const heightMin = heightA < heightB ? heightA : heightB;
-        const depthANormalized = levelIndicesA.length - (heightA - heightMin);
-        const depthBNormalized = levelIndicesB.length - (heightB - heightMin);
-        return depthANormalized - depthBNormalized;
-    }
-    // End of helper methods for diffAgainst //////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////
+        return { nodequeue: nodequeue, nodeindex: nodeindex, leaf: nextnode };
+    };
     /** Returns a new iterator for iterating the keys of each pair in ascending order.
      *  @param firstKey: Minimum key to include in the output. */
-    keys(firstKey) {
+    BTree.prototype.keys = function (firstKey) {
         var it = this.entries(firstKey, ReusedArray);
-        return iterator(() => {
+        return iterator(function () {
             var n = it.next();
             if (n.value)
                 n.value = n.value[0];
             return n;
         });
-    }
+    };
     /** Returns a new iterator for iterating the values of each pair in order by key.
      *  @param firstKey: Minimum key whose associated value is included in the output. */
-    values(firstKey) {
+    BTree.prototype.values = function (firstKey) {
         var it = this.entries(firstKey, ReusedArray);
-        return iterator(() => {
+        return iterator(function () {
             var n = it.next();
             if (n.value)
                 n.value = n.value[1];
             return n;
         });
-    }
-    /////////////////////////////////////////////////////////////////////////////
-    // Additional methods ///////////////////////////////////////////////////////
-    /** Returns the maximum number of children/values before nodes will split. */
-    get maxNodeSize() {
-        return this._maxNodeSize;
-    }
+    };
+    Object.defineProperty(BTree.prototype, "maxNodeSize", {
+        /////////////////////////////////////////////////////////////////////////////
+        // Additional methods ///////////////////////////////////////////////////////
+        /** Returns the maximum number of children/values before nodes will split. */
+        get: function () {
+            return this._maxNodeSize;
+        },
+        enumerable: false,
+        configurable: true
+    });
     /** Gets the lowest key in the tree. Complexity: O(log size) */
-    minKey() { return this._root.minKey(); }
+    BTree.prototype.minKey = function () { return this._root.minKey(); };
     /** Gets the highest key in the tree. Complexity: O(1) */
-    maxKey() { return this._root.maxKey(); }
+    BTree.prototype.maxKey = function () { return this._root.maxKey(); };
     /** Quickly clones the tree by marking the root node as shared.
      *  Both copies remain editable. When you modify either copy, any
      *  nodes that are shared (or potentially shared) between the two
      *  copies are cloned so that the changes do not affect other copies.
      *  This is known as copy-on-write behavior, or "lazy copying". */
-    clone() {
+    BTree.prototype.clone = function () {
         this._root.isShared = true;
         var result = new BTree(undefined, this._compare, this._maxNodeSize);
         result._root = this._root;
-        result._size = this._size;
         return result;
-    }
+    };
     /** Performs a greedy clone, immediately duplicating any nodes that are
      *  not currently marked as shared, in order to avoid marking any
      *  additional nodes as shared.
      *  @param force Clone all nodes, even shared ones.
      */
-    greedyClone(force) {
+    BTree.prototype.greedyClone = function (force) {
         var result = new BTree(undefined, this._compare, this._maxNodeSize);
         result._root = this._root.greedyClone(force);
-        result._size = this._size;
         return result;
-    }
+    };
     /** Gets an array filled with the contents of the tree, sorted by key */
-    toArray(maxLength = 0x7FFFFFFF) {
-        let min = this.minKey(), max = this.maxKey();
+    BTree.prototype.toArray = function (maxLength) {
+        if (maxLength === void 0) { maxLength = 0x7FFFFFFF; }
+        var min = this.minKey(), max = this.maxKey();
         if (min !== undefined)
             return this.getRange(min, max, true, maxLength);
         return [];
-    }
+    };
     /** Gets an array of all keys, sorted */
-    keysArray() {
+    BTree.prototype.keysArray = function () {
         var results = [];
-        this._root.forRange(this.minKey(), this.maxKey(), true, false, this, 0, (k, v) => { results.push(k); });
+        this._root.forRange(this.minKey(), this.maxKey(), true, false, this, 0, function (k, v) { results.push(k); });
         return results;
-    }
+    };
     /** Gets an array of all values, sorted by key */
-    valuesArray() {
+    BTree.prototype.valuesArray = function () {
         var results = [];
-        this._root.forRange(this.minKey(), this.maxKey(), true, false, this, 0, (k, v) => { results.push(v); });
+        this._root.forRange(this.minKey(), this.maxKey(), true, false, this, 0, function (k, v) { results.push(v); });
         return results;
-    }
+    };
     /** Gets a string representing the tree's data based on toArray(). */
-    toString() {
+    BTree.prototype.toString = function () {
         return this.toArray().toString();
-    }
+    };
     /** Stores a key-value pair only if the key doesn't already exist in the tree.
      * @returns true if a new key was added
     */
-    setIfNotPresent(key, value) {
+    BTree.prototype.setIfNotPresent = function (key, value) {
         return this.set(key, value, false);
-    }
+    };
     /** Returns the next pair whose key is larger than the specified key (or undefined if there is none).
      * If key === undefined, this function returns the lowest pair.
      * @param key The key to search for.
      * @param reusedArray Optional array used repeatedly to store key-value pairs, to
      * avoid creating a new array on every iteration.
      */
-    nextHigherPair(key, reusedArray) {
+    BTree.prototype.nextHigherPair = function (key, reusedArray) {
         reusedArray = reusedArray || [];
         if (key === undefined) {
             return this._root.minPair(reusedArray);
         }
         return this._root.getPairOrNextHigher(key, this._compare, false, reusedArray);
-    }
+    };
     /** Returns the next key larger than the specified key, or undefined if there is none.
      *  Also, nextHigherKey(undefined) returns the lowest key.
      */
-    nextHigherKey(key) {
+    BTree.prototype.nextHigherKey = function (key) {
         var p = this.nextHigherPair(key, ReusedArray);
         return p && p[0];
-    }
+    };
     /** Returns the next pair whose key is smaller than the specified key (or undefined if there is none).
      *  If key === undefined, this function returns the highest pair.
      * @param key The key to search for.
      * @param reusedArray Optional array used repeatedly to store key-value pairs, to
      *        avoid creating a new array each time you call this method.
      */
-    nextLowerPair(key, reusedArray) {
+    BTree.prototype.nextLowerPair = function (key, reusedArray) {
         reusedArray = reusedArray || [];
         if (key === undefined) {
             return this._root.maxPair(reusedArray);
         }
         return this._root.getPairOrNextLower(key, this._compare, false, reusedArray);
-    }
+    };
     /** Returns the next key smaller than the specified key, or undefined if there is none.
      *  Also, nextLowerKey(undefined) returns the highest key.
      */
-    nextLowerKey(key) {
+    BTree.prototype.nextLowerKey = function (key) {
         var p = this.nextLowerPair(key, ReusedArray);
         return p && p[0];
-    }
+    };
     /** Returns the key-value pair associated with the supplied key if it exists
      *  or the pair associated with the next lower pair otherwise. If there is no
      *  next lower pair, undefined is returned.
@@ -834,9 +631,9 @@ class BTree {
      * @param reusedArray Optional array used repeatedly to store key-value pairs, to
      *        avoid creating a new array each time you call this method.
      * */
-    getPairOrNextLower(key, reusedArray) {
+    BTree.prototype.getPairOrNextLower = function (key, reusedArray) {
         return this._root.getPairOrNextLower(key, this._compare, true, reusedArray || []);
-    }
+    };
     /** Returns the key-value pair associated with the supplied key if it exists
      *  or the pair associated with the next lower pair otherwise. If there is no
      *  next lower pair, undefined is returned.
@@ -844,15 +641,15 @@ class BTree {
      * @param reusedArray Optional array used repeatedly to store key-value pairs, to
      *        avoid creating a new array each time you call this method.
      * */
-    getPairOrNextHigher(key, reusedArray) {
+    BTree.prototype.getPairOrNextHigher = function (key, reusedArray) {
         return this._root.getPairOrNextHigher(key, this._compare, true, reusedArray || []);
-    }
+    };
     /** Edits the value associated with a key in the tree, if it already exists.
      * @returns true if the key existed, false if not.
     */
-    changeIfPresent(key, value) {
-        return this.editRange(key, key, true, (k, v) => ({ value })) !== 0;
-    }
+    BTree.prototype.changeIfPresent = function (key, value) {
+        return this.editRange(key, key, true, function (k, v) { return ({ value: value }); }) !== 0;
+    };
     /**
      * Builds an array of pairs from the specified range of keys, sorted by key.
      * Each returned pair is also an array: pair[0] is the key, pair[1] is the value.
@@ -865,14 +662,15 @@ class BTree {
      *                  the array reaches this size.
      * @description Computational complexity: O(result.length + log size)
      */
-    getRange(low, high, includeHigh, maxLength = 0x3FFFFFF) {
+    BTree.prototype.getRange = function (low, high, includeHigh, maxLength) {
+        if (maxLength === void 0) { maxLength = 0x3FFFFFF; }
         var results = [];
-        this._root.forRange(low, high, includeHigh, false, this, 0, (k, v) => {
+        this._root.forRange(low, high, includeHigh, false, this, 0, function (k, v) {
             results.push([k, v]);
             return results.length > maxLength ? Break : undefined;
         });
         return results;
-    }
+    };
     /** Adds all pairs from a list of key-value pairs.
      * @param pairs Pairs to add to this tree. If there are duplicate keys,
      *        later pairs currently overwrite earlier ones (e.g. [[0,1],[0,7]]
@@ -882,13 +680,13 @@ class BTree {
      * @returns The number of pairs added to the collection.
      * @description Computational complexity: O(pairs.length * log(size + pairs.length))
      */
-    setPairs(pairs, overwrite) {
+    BTree.prototype.setPairs = function (pairs, overwrite) {
         var added = 0;
         for (var i = 0; i < pairs.length; i++)
             if (this.set(pairs[i][0], pairs[i][1], overwrite))
                 added++;
         return added;
-    }
+    };
     /**
      * Scans the specified range of keys, in ascending order by key.
      * Note: the callback `onFound` must not insert or remove items in the
@@ -906,10 +704,10 @@ class BTree {
      *        `{break:R}` to stop early.
      * @description Computational complexity: O(number of items scanned + log size)
      */
-    forRange(low, high, includeHigh, onFound, initialCounter) {
+    BTree.prototype.forRange = function (low, high, includeHigh, onFound, initialCounter) {
         var r = this._root.forRange(low, high, includeHigh, false, this, initialCounter || 0, onFound);
         return typeof r === "number" ? r : r.break;
-    }
+    };
     /**
      * Scans and potentially modifies values for a subsequence of keys.
      * Note: the callback `onFound` should ideally be a pure function.
@@ -939,7 +737,7 @@ class BTree {
      *   nodes are copied before `onFound` is called. This takes O(n) time
      *   where n is proportional to the amount of shared data scanned.
      */
-    editRange(low, high, includeHigh, onFound, initialCounter) {
+    BTree.prototype.editRange = function (low, high, includeHigh, onFound, initialCounter) {
         var root = this._root;
         if (root.isShared)
             this._root = root = root.clone();
@@ -948,7 +746,7 @@ class BTree {
             return typeof r === "number" ? r : r.break;
         }
         finally {
-            let isShared;
+            var isShared = void 0;
             while (root.keys.length <= 1 && !root.isLeaf) {
                 isShared || (isShared = root.isShared);
                 this._root = root = root.keys.length === 0 ? EmptyLeaf :
@@ -959,11 +757,11 @@ class BTree {
                 root.isShared = true;
             }
         }
-    }
+    };
     /** Same as `editRange` except that the callback is called for all pairs. */
-    editAll(onFound, initialCounter) {
+    BTree.prototype.editAll = function (onFound, initialCounter) {
         return this.editRange(this.minKey(), this.maxKey(), true, onFound, initialCounter);
-    }
+    };
     /**
      * Removes a range of key-value pairs from the B+ tree.
      * @param low The first key scanned will be greater than or equal to `low`.
@@ -972,43 +770,47 @@ class BTree {
      * @returns The number of key-value pairs that were deleted.
      * @description Computational complexity: O(log size + number of items deleted)
      */
-    deleteRange(low, high, includeHigh) {
+    BTree.prototype.deleteRange = function (low, high, includeHigh) {
         return this.editRange(low, high, includeHigh, DeleteRange);
-    }
+    };
     /** Deletes a series of keys from the collection. */
-    deleteKeys(keys) {
+    BTree.prototype.deleteKeys = function (keys) {
         for (var i = 0, r = 0; i < keys.length; i++)
             if (this.delete(keys[i]))
                 r++;
         return r;
-    }
-    /** Gets the height of the tree: the number of internal nodes between the
-     *  BTree object and its leaf nodes (zero if there are no internal nodes). */
-    get height() {
-        let node = this._root;
-        let height = -1;
-        while (node) {
-            height++;
-            node = node.isLeaf ? undefined : node.children[0];
-        }
-        return height;
-    }
+    };
+    Object.defineProperty(BTree.prototype, "height", {
+        /** Gets the height of the tree: the number of internal nodes between the
+         *  BTree object and its leaf nodes (zero if there are no internal nodes). */
+        get: function () {
+            var node = this._root;
+            var height = -1;
+            while (node) {
+                height++;
+                node = node.isLeaf ? undefined : node.children[0];
+            }
+            return height;
+        },
+        enumerable: false,
+        configurable: true
+    });
     /** Makes the object read-only to ensure it is not accidentally modified.
      *  Freezing does not have to be permanent; unfreeze() reverses the effect.
      *  This is accomplished by replacing mutator functions with a function
      *  that throws an Error. Compared to using a property (e.g. this.isFrozen)
      *  this implementation gives better performance in non-frozen BTrees.
      */
-    freeze() {
+    BTree.prototype.freeze = function () {
         var t = this;
-        // Note: all other mutators ultimately call set() or editRange()
+        // Note: all other mutators ultimately call set() or editRange() 
         //       so we don't need to override those others.
         t.clear = t.set = t.editRange = function () {
             throw new Error("Attempted to modify a frozen BTree");
         };
-    }
+    };
     /** Ensures mutations are allowed, reversing the effect of freeze(). */
-    unfreeze() {
+    BTree.prototype.unfreeze = function () {
         // @ts-ignore "The operand of a 'delete' operator must be optional."
         //            (wrong: delete does not affect the prototype.)
         delete this.clear;
@@ -1016,22 +818,28 @@ class BTree {
         delete this.set;
         // @ts-ignore
         delete this.editRange;
-    }
-    /** Returns true if the tree appears to be frozen. */
-    get isFrozen() {
-        return this.hasOwnProperty('editRange');
-    }
+    };
+    Object.defineProperty(BTree.prototype, "isFrozen", {
+        /** Returns true if the tree appears to be frozen. */
+        get: function () {
+            return this.hasOwnProperty('editRange');
+        },
+        enumerable: false,
+        configurable: true
+    });
     /** Scans the tree for signs of serious bugs (e.g. this.size doesn't match
-     *  number of elements, internal nodes not caching max element properly...)
-     *  Computational complexity: O(number of nodes), i.e. O(size). This method
-     *  skips the most expensive test - whether all keys are sorted - but it
-     *  does check that maxKey() of the children of internal nodes are sorted. */
-    checkValid() {
-        var size = this._root.checkValid(0, this, 0);
+     *  number of elements, internal nodes not caching max element properly...).
+     *  Computational complexity: O(number of nodes). This method validates cached size
+     *  information and, optionally, the ordering of keys (including leaves), which
+     *  takes more time to check (O(size), which is technically the same big-O). */
+    BTree.prototype.checkValid = function (checkOrdering) {
+        if (checkOrdering === void 0) { checkOrdering = false; }
+        var size = this._root.checkValid(0, this, 0, checkOrdering)[0];
         check(size === this.size, "size mismatch: counted ", size, "but stored", this.size);
-    }
-}
-exports.BTree = BTree;
+    };
+    return BTree;
+}());
+exports.default = BTree;
 /** A TypeScript helper function that simply returns its argument, typed as
  *  `ISortedSet<K>` if the BTree implements it, as it does if `V extends undefined`.
  *  If `V` cannot be `undefined`, it returns `unknown` instead. Or at least, that
@@ -1040,34 +848,44 @@ exports.BTree = BTree;
 function asSet(btree) {
     return btree;
 }
+exports.asSet = asSet;
 if (Symbol && Symbol.iterator) // iterator is equivalent to entries()
     BTree.prototype[Symbol.iterator] = BTree.prototype.entries;
 BTree.prototype.where = BTree.prototype.filter;
 BTree.prototype.setRange = BTree.prototype.setPairs;
 BTree.prototype.add = BTree.prototype.set; // for compatibility with ISetSink<K>
-function iterator(next = (() => ({ done: true, value: undefined }))) {
-    var result = { next };
+function iterator(next) {
+    if (next === void 0) { next = (function () { return ({ done: true, value: undefined }); }); }
+    var result = { next: next };
     if (Symbol && Symbol.iterator)
         result[Symbol.iterator] = function () { return this; };
     return result;
 }
-/** Leaf node / base class. **************************************************/
-class BNode {
-    get isLeaf() { return this.children === undefined; }
-    constructor(keys = [], values) {
+/** @internal */
+var BNode = /** @class */ (function () {
+    function BNode(keys, values) {
+        if (keys === void 0) { keys = []; }
         this.keys = keys;
         this.values = values || undefVals;
         this.isShared = undefined;
     }
+    Object.defineProperty(BNode.prototype, "isLeaf", {
+        get: function () { return this.children === undefined; },
+        enumerable: false,
+        configurable: true
+    });
+    BNode.prototype.size = function () {
+        return this.keys.length;
+    };
     ///////////////////////////////////////////////////////////////////////////
     // Shared methods /////////////////////////////////////////////////////////
-    maxKey() {
+    BNode.prototype.maxKey = function () {
         return this.keys[this.keys.length - 1];
-    }
+    };
     // If key not found, returns i^failXor where i is the insertion index.
     // Callers that don't care whether there was a match will set failXor=0.
-    indexOf(key, failXor, cmp) {
-        const keys = this.keys;
+    BNode.prototype.indexOf = function (key, failXor, cmp) {
+        var keys = this.keys;
         var lo = 0, hi = keys.length, mid = hi >> 1;
         while (lo < hi) {
             var c = cmp(keys[mid], key);
@@ -1131,78 +949,83 @@ class BNode {
             throw new Error("BTree: NaN was used as a key");
         }
         return c === 0 ? i : i ^ failXor;*/
-    }
+    };
     /////////////////////////////////////////////////////////////////////////////
     // Leaf Node: misc //////////////////////////////////////////////////////////
-    minKey() {
+    BNode.prototype.minKey = function () {
         return this.keys[0];
-    }
-    minPair(reusedArray) {
+    };
+    BNode.prototype.minPair = function (reusedArray) {
         if (this.keys.length === 0)
             return undefined;
         reusedArray[0] = this.keys[0];
         reusedArray[1] = this.values[0];
         return reusedArray;
-    }
-    maxPair(reusedArray) {
+    };
+    BNode.prototype.maxPair = function (reusedArray) {
         if (this.keys.length === 0)
             return undefined;
-        const lastIndex = this.keys.length - 1;
+        var lastIndex = this.keys.length - 1;
         reusedArray[0] = this.keys[lastIndex];
         reusedArray[1] = this.values[lastIndex];
         return reusedArray;
-    }
-    clone() {
+    };
+    BNode.prototype.clone = function () {
         var v = this.values;
         return new BNode(this.keys.slice(0), v === undefVals ? v : v.slice(0));
-    }
-    greedyClone(force) {
+    };
+    BNode.prototype.greedyClone = function (force) {
         return this.isShared && !force ? this : this.clone();
-    }
-    get(key, defaultValue, tree) {
+    };
+    BNode.prototype.get = function (key, defaultValue, tree) {
         var i = this.indexOf(key, -1, tree._compare);
         return i < 0 ? defaultValue : this.values[i];
-    }
-    getPairOrNextLower(key, compare, inclusive, reusedArray) {
+    };
+    BNode.prototype.getPairOrNextLower = function (key, compare, inclusive, reusedArray) {
         var i = this.indexOf(key, -1, compare);
-        const indexOrLower = i < 0 ? ~i - 1 : (inclusive ? i : i - 1);
+        var indexOrLower = i < 0 ? ~i - 1 : (inclusive ? i : i - 1);
         if (indexOrLower >= 0) {
             reusedArray[0] = this.keys[indexOrLower];
             reusedArray[1] = this.values[indexOrLower];
             return reusedArray;
         }
         return undefined;
-    }
-    getPairOrNextHigher(key, compare, inclusive, reusedArray) {
+    };
+    BNode.prototype.getPairOrNextHigher = function (key, compare, inclusive, reusedArray) {
         var i = this.indexOf(key, -1, compare);
-        const indexOrLower = i < 0 ? ~i : (inclusive ? i : i + 1);
-        const keys = this.keys;
+        var indexOrLower = i < 0 ? ~i : (inclusive ? i : i + 1);
+        var keys = this.keys;
         if (indexOrLower < keys.length) {
             reusedArray[0] = keys[indexOrLower];
             reusedArray[1] = this.values[indexOrLower];
             return reusedArray;
         }
         return undefined;
-    }
-    checkValid(depth, tree, baseIndex) {
+    };
+    BNode.prototype.checkValid = function (depth, tree, baseIndex, checkOrdering) {
         var kL = this.keys.length, vL = this.values.length;
         check(this.values === undefVals ? kL <= vL : kL === vL, "keys/values length mismatch: depth", depth, "with lengths", kL, vL, "and baseIndex", baseIndex);
         // Note: we don't check for "node too small" because sometimes a node
-        // can legitimately have size 1. This occurs if there is a batch
+        // can legitimately have size 1. This occurs if there is a batch 
         // deletion, leaving a node of size 1, and the siblings are full so
         // it can't be merged with adjacent nodes. However, the parent will
         // verify that the average node size is at least half of the maximum.
         check(depth == 0 || kL > 0, "empty leaf at depth", depth, "and baseIndex", baseIndex);
-        return kL;
-    }
+        if (checkOrdering === true) {
+            for (var i = 1; i < kL; i++) {
+                var c = tree._compare(this.keys[i - 1], this.keys[i]);
+                check(c < 0, "keys out of order at depth", depth, "and baseIndex", baseIndex + i - 1, ": ", this.keys[i - 1], " !< ", this.keys[i]);
+            }
+        }
+        return [kL, this.keys[0], this.keys[kL - 1]];
+    };
     /////////////////////////////////////////////////////////////////////////////
     // Leaf Node: set & node splitting //////////////////////////////////////////
-    set(key, value, overwrite, tree) {
+    BNode.prototype.set = function (key, value, overwrite, tree) {
         var i = this.indexOf(key, -1, tree._compare);
         if (i < 0) {
             // key does not exist yet
             i = ~i;
-            tree._size++;
             if (this.keys.length < tree._maxNodeSize) {
                 return this.insertInLeaf(i, key, value, tree);
             }
@@ -1228,13 +1051,13 @@ class BNode {
             }
             return false;
         }
-    }
-    reifyValues() {
+    };
+    BNode.prototype.reifyValues = function () {
         if (this.values === undefVals)
             return this.values = this.values.slice(0, this.keys.length);
         return this.values;
-    }
-    insertInLeaf(i, key, value, tree) {
+    };
+    BNode.prototype.insertInLeaf = function (i, key, value, tree) {
         this.keys.splice(i, 0, key);
         if (this.values === undefVals) {
             while (undefVals.length < tree._maxNodeSize)
@@ -1248,8 +1071,8 @@ class BNode {
         }
         this.values.splice(i, 0, value);
         return true;
-    }
-    takeFromRight(rhs) {
+    };
+    BNode.prototype.takeFromRight = function (rhs) {
         // Reminder: parent node must update its copy of key for this node
         // assert: neither node is shared
         // assert rhs.keys.length > (maxNodeSize/2 && this.keys.length<maxNodeSize)
@@ -1263,8 +1086,8 @@ class BNode {
             v.push(rhs.values.shift());
         }
         this.keys.push(rhs.keys.shift());
-    }
-    takeFromLeft(lhs) {
+    };
+    BNode.prototype.takeFromLeft = function (lhs) {
         // Reminder: parent node must update its copy of key for this node
         // assert: neither node is shared
         // assert rhs.keys.length > (maxNodeSize/2 && this.keys.length<maxNodeSize)
@@ -1278,16 +1101,16 @@ class BNode {
             v.unshift(lhs.values.pop());
         }
         this.keys.unshift(lhs.keys.pop());
-    }
-    splitOffRightSide() {
+    };
+    BNode.prototype.splitOffRightSide = function () {
         // Reminder: parent node must update its copy of key for this node
         var half = this.keys.length >> 1, keys = this.keys.splice(half);
         var values = this.values === undefVals ? undefVals : this.values.splice(half);
         return new BNode(keys, values);
-    }
+    };
     /////////////////////////////////////////////////////////////////////////////
     // Leaf Node: scanning & deletions //////////////////////////////////////////
-    forRange(low, high, includeHigh, editMode, tree, count, onFound) {
+    BNode.prototype.forRange = function (low, high, includeHigh, editMode, tree, count, onFound) {
         var cmp = tree._compare;
         var iLow, iHigh;
         if (high === low) {
@@ -1318,7 +1141,6 @@ class BNode {
                             this.keys.splice(i, 1);
                             if (this.values !== undefVals)
                                 this.values.splice(i, 1);
-                            tree._size--;
                             i--;
                             iHigh--;
                         }
@@ -1334,9 +1156,9 @@ class BNode {
         else
             count += iHigh - iLow;
         return count;
-    }
+    };
     /** Adds entire contents of right-hand sibling (rhs is left unchanged) */
-    mergeSibling(rhs, _) {
+    BNode.prototype.mergeSibling = function (rhs, _) {
         this.keys.push.apply(this.keys, rhs.keys);
         if (this.values === undefVals) {
             if (rhs.values === undefVals)
@@ -1344,95 +1166,118 @@ class BNode {
             this.values = this.values.slice(0, this.keys.length);
         }
         this.values.push.apply(this.values, rhs.reifyValues());
-    }
-}
+    };
+    return BNode;
+}());
+exports.BNode = BNode;
 /** Internal node (non-leaf node) ********************************************/
-class BNodeInternal extends BNode {
+/** @internal */
+var BNodeInternal = /** @class */ (function (_super) {
+    __extends(BNodeInternal, _super);
     /**
      * This does not mark `children` as shared, so it is the responsibility of the caller
      * to ensure children are either marked shared, or aren't included in another tree.
      */
-    constructor(children, keys) {
+    function BNodeInternal(children, size, keys) {
+        var _this = this;
         if (!keys) {
             keys = [];
             for (var i = 0; i < children.length; i++)
                 keys[i] = children[i].maxKey();
         }
-        super(keys);
-        this.children = children;
+        _this = _super.call(this, keys) || this;
+        _this.children = children;
+        _this._size = size;
+        return _this;
     }
-    clone() {
+    BNodeInternal.prototype.clone = function () {
         var children = this.children.slice(0);
         for (var i = 0; i < children.length; i++)
             children[i].isShared = true;
-        return new BNodeInternal(children, this.keys.slice(0));
-    }
-    greedyClone(force) {
+        return new BNodeInternal(children, this._size, this.keys.slice(0));
+    };
+    BNodeInternal.prototype.size = function () {
+        return this._size;
+    };
+    BNodeInternal.prototype.greedyClone = function (force) {
         if (this.isShared && !force)
             return this;
-        var nu = new BNodeInternal(this.children.slice(0), this.keys.slice(0));
+        var nu = new BNodeInternal(this.children.slice(0), this._size, this.keys.slice(0));
         for (var i = 0; i < nu.children.length; i++)
             nu.children[i] = nu.children[i].greedyClone(force);
         return nu;
-    }
-    minKey() {
+    };
+    BNodeInternal.prototype.minKey = function () {
         return this.children[0].minKey();
-    }
-    minPair(reusedArray) {
+    };
+    BNodeInternal.prototype.minPair = function (reusedArray) {
         return this.children[0].minPair(reusedArray);
-    }
-    maxPair(reusedArray) {
+    };
+    BNodeInternal.prototype.maxPair = function (reusedArray) {
         return this.children[this.children.length - 1].maxPair(reusedArray);
-    }
-    get(key, defaultValue, tree) {
+    };
+    BNodeInternal.prototype.get = function (key, defaultValue, tree) {
         var i = this.indexOf(key, 0, tree._compare), children = this.children;
         return i < children.length ? children[i].get(key, defaultValue, tree) : undefined;
-    }
-    getPairOrNextLower(key, compare, inclusive, reusedArray) {
+    };
+    BNodeInternal.prototype.getPairOrNextLower = function (key, compare, inclusive, reusedArray) {
         var i = this.indexOf(key, 0, compare), children = this.children;
         if (i >= children.length)
             return this.maxPair(reusedArray);
-        const result = children[i].getPairOrNextLower(key, compare, inclusive, reusedArray);
+        var result = children[i].getPairOrNextLower(key, compare, inclusive, reusedArray);
         if (result === undefined && i > 0) {
             return children[i - 1].maxPair(reusedArray);
         }
         return result;
-    }
-    getPairOrNextHigher(key, compare, inclusive, reusedArray) {
+    };
+    BNodeInternal.prototype.getPairOrNextHigher = function (key, compare, inclusive, reusedArray) {
         var i = this.indexOf(key, 0, compare), children = this.children, length = children.length;
         if (i >= length)
             return undefined;
-        const result = children[i].getPairOrNextHigher(key, compare, inclusive, reusedArray);
+        var result = children[i].getPairOrNextHigher(key, compare, inclusive, reusedArray);
         if (result === undefined && i < length - 1) {
             return children[i + 1].minPair(reusedArray);
         }
         return result;
-    }
-    checkValid(depth, tree, baseIndex) {
-        let kL = this.keys.length, cL = this.children.length;
+    };
+    BNodeInternal.prototype.checkValid = function (depth, tree, baseIndex, checkOrdering) {
+        var kL = this.keys.length, cL = this.children.length;
         check(kL === cL, "keys/children length mismatch: depth", depth, "lengths", kL, cL, "baseIndex", baseIndex);
         check(kL > 1 || depth > 0, "internal node has length", kL, "at depth", depth, "baseIndex", baseIndex);
-        let size = 0, c = this.children, k = this.keys, childSize = 0;
+        var size = 0, c = this.children, k = this.keys, childSize = 0;
+        var prevMinKey = undefined;
+        var prevMaxKey = undefined;
         for (var i = 0; i < cL; i++) {
-            size += c[i].checkValid(depth + 1, tree, baseIndex + size);
-            childSize += c[i].keys.length;
+            var child = c[i];
+            var _a = child.checkValid(depth + 1, tree, baseIndex + size, checkOrdering), subtreeSize = _a[0], minKey = _a[1], maxKey = _a[2];
+            check(subtreeSize === child.size(), "cached size mismatch at depth", depth, "index", i, "baseIndex", baseIndex);
+            check(subtreeSize === 1 || tree._compare(minKey, maxKey) < 0, "child node keys not sorted at depth", depth, "index", i, "baseIndex", baseIndex);
+            if (prevMinKey !== undefined && prevMaxKey !== undefined && checkOrdering) {
+                check(!areOverlapping(prevMinKey, prevMaxKey, minKey, maxKey, tree._compare), "children keys not sorted at depth", depth, "index", i, "baseIndex", baseIndex, ": ", prevMaxKey, " !< ", minKey);
+                check(tree._compare(prevMaxKey, minKey) < 0, "children keys not sorted at depth", depth, "index", i, "baseIndex", baseIndex, ": ", prevMaxKey, " !< ", minKey);
+            }
+            prevMinKey = minKey;
+            prevMaxKey = maxKey;
+            size += subtreeSize;
+            childSize += child.keys.length;
             check(size >= childSize, "wtf", baseIndex); // no way this will ever fail
-            check(i === 0 || c[i - 1].constructor === c[i].constructor, "type mismatch, baseIndex:", baseIndex);
-            if (c[i].maxKey() != k[i])
-                check(false, "keys[", i, "] =", k[i], "is wrong, should be ", c[i].maxKey(), "at depth", depth, "baseIndex", baseIndex);
+            check(i === 0 || c[i - 1].constructor === child.constructor, "type mismatch, baseIndex:", baseIndex);
+            if (child.maxKey() != k[i])
+                check(false, "keys[", i, "] =", k[i], "is wrong, should be ", child.maxKey(), "at depth", depth, "baseIndex", baseIndex);
             if (!(i === 0 || tree._compare(k[i - 1], k[i]) < 0))
                 check(false, "sort violation at depth", depth, "index", i, "keys", k[i - 1], k[i]);
         }
+        check(this._size === size, "internal node cached size mismatch at depth", depth, "baseIndex", baseIndex, "cached", this._size, "actual", size);
         // 2020/08: BTree doesn't always avoid grossly undersized nodes,
         // but AFAIK such nodes are pretty harmless, so accept them.
-        let toofew = childSize === 0; // childSize < (tree.maxNodeSize >> 1)*cL;
+        var toofew = childSize === 0; // childSize < (tree.maxNodeSize >> 1)*cL;
         if (toofew || childSize > tree.maxNodeSize * cL)
             check(false, toofew ? "too few" : "too many", "children (", childSize, size, ") at depth", depth, "maxNodeSize:", tree.maxNodeSize, "children.length:", cL, "baseIndex:", baseIndex);
-        return size;
-    }
+        return [size, this.minKey(), this.maxKey()];
+    };
     /////////////////////////////////////////////////////////////////////////////
     // Internal Node: set & node splitting //////////////////////////////////////
-    set(key, value, overwrite, tree) {
+    BNodeInternal.prototype.set = function (key, value, overwrite, tree) {
         var c = this.children, max = tree._maxNodeSize, cmp = tree._compare;
         var i = Math.min(this.indexOf(key, 0, cmp), c.length - 1), child = c[i];
         if (child.isShared)
@@ -1456,7 +1301,9 @@ class BNodeInternal extends BNode {
                 this.keys[i] = c[i].maxKey();
             }
         }
+        var oldSize = child.size();
         var result = child.set(key, value, overwrite, tree);
+        this._size += child.size() - oldSize;
         if (result === false)
             return false;
         this.keys[i] = child.maxKey();
@@ -1476,45 +1323,75 @@ class BNodeInternal extends BNode {
             target.insert(i + 1, result);
             return newRightSibling;
         }
-    }
+    };
     /**
      * Inserts `child` at index `i`.
      * This does not mark `child` as shared, so it is the responsibility of the caller
      * to ensure that either child is marked shared, or it is not included in another tree.
      */
-    insert(i, child) {
+    BNodeInternal.prototype.insert = function (i, child) {
         this.children.splice(i, 0, child);
         this.keys.splice(i, 0, child.maxKey());
-    }
+        this._size += child.size();
+    };
     /**
      * Split this node.
      * Modifies this to remove the second half of the items, returning a separate node containing them.
      */
-    splitOffRightSide() {
+    BNodeInternal.prototype.splitOffRightSide = function () {
         // assert !this.isShared;
         var half = this.children.length >> 1;
-        return new BNodeInternal(this.children.splice(half), this.keys.splice(half));
-    }
-    takeFromRight(rhs) {
+        var newChildren = this.children.splice(half);
+        var newKeys = this.keys.splice(half);
+        var sizePrev = this._size;
+        this._size = sumChildSizes(this.children);
+        var newNode = new BNodeInternal(newChildren, sizePrev - this._size, newKeys);
+        return newNode;
+    };
+    /**
+     * Split this node.
+     * Modifies this to remove the first half of the items, returning a separate node containing them.
+     */
+    BNodeInternal.prototype.splitOffLeftSide = function () {
+        // assert !this.isShared;
+        var half = this.children.length >> 1;
+        var newChildren = this.children.splice(0, half);
+        var newKeys = this.keys.splice(0, half);
+        var sizePrev = this._size;
+        this._size = sumChildSizes(this.children);
+        var newNode = new BNodeInternal(newChildren, sizePrev - this._size, newKeys);
+        return newNode;
+    };
+    BNodeInternal.prototype.takeFromRight = function (rhs) {
         // Reminder: parent node must update its copy of key for this node
         // assert: neither node is shared
         // assert rhs.keys.length > (maxNodeSize/2 && this.keys.length<maxNodeSize)
+        var rhsInternal = rhs;
         this.keys.push(rhs.keys.shift());
-        this.children.push(rhs.children.shift());
-    }
-    takeFromLeft(lhs) {
+        var child = rhsInternal.children.shift();
+        this.children.push(child);
+        var size = child.size();
+        rhsInternal._size -= size;
+        this._size += size;
+    };
+    BNodeInternal.prototype.takeFromLeft = function (lhs) {
         // Reminder: parent node must update its copy of key for this node
         // assert: neither node is shared
         // assert rhs.keys.length > (maxNodeSize/2 && this.keys.length<maxNodeSize)
+        var lhsInternal = lhs;
+        var child = lhsInternal.children.pop();
         this.keys.unshift(lhs.keys.pop());
-        this.children.unshift(lhs.children.pop());
-    }
+        this.children.unshift(child);
+        var size = child.size();
+        lhsInternal._size -= size;
+        this._size += size;
+    };
     /////////////////////////////////////////////////////////////////////////////
     // Internal Node: scanning & deletions //////////////////////////////////////
-    // Note: `count` is the next value of the third argument to `onFound`.
+    // Note: `count` is the next value of the third argument to `onFound`. 
     //       A leaf node's `forRange` function returns a new value for this counter,
     //       unless the operation is to stop early.
-    forRange(low, high, includeHigh, editMode, tree, count, onFound) {
+    BNodeInternal.prototype.forRange = function (low, high, includeHigh, editMode, tree, count, onFound) {
         var cmp = tree._compare;
         var keys = this.keys, children = this.children;
         var iLow = this.indexOf(low, 0, cmp), i = iLow;
@@ -1531,15 +1408,18 @@ class BNodeInternal extends BNode {
         else if (i <= iHigh) {
             try {
                 for (; i <= iHigh; i++) {
-                    if (children[i].isShared)
-                        children[i] = children[i].clone();
-                    var result = children[i].forRange(low, high, includeHigh, editMode, tree, count, onFound);
+                    var child = children[i];
+                    if (child.isShared)
+                        children[i] = child = child.clone();
+                    var beforeSize = child.size();
+                    var result_1 = child.forRange(low, high, includeHigh, editMode, tree, count, onFound);
                     // Note: if children[i] is empty then keys[i]=undefined.
                     //       This is an invalid state, but it is fixed below.
-                    keys[i] = children[i].maxKey();
-                    if (typeof result !== 'number')
-                        return result;
-                    count = result;
+                    keys[i] = child.maxKey();
+                    this._size += child.size() - beforeSize;
+                    if (typeof result_1 !== 'number')
+                        return result_1;
+                    count = result_1;
                 }
             }
             finally {
@@ -1554,7 +1434,8 @@ class BNodeInternal extends BNode {
                         }
                         else { // child is empty! delete it!
                             keys.splice(i, 1);
-                            children.splice(i, 1);
+                            var removed = children.splice(i, 1);
+                            check(removed[0].size() === 0, "emptiness cleanup");
                         }
                     }
                 }
@@ -1563,9 +1444,9 @@ class BNodeInternal extends BNode {
             }
         }
         return count;
-    }
+    };
     /** Merges child i with child i+1 if their combined size is not too large */
-    tryMerge(i, maxSize) {
+    BNodeInternal.prototype.tryMerge = function (i, maxSize) {
         var children = this.children;
         if (i >= 0 && i + 1 < children.length) {
             if (children[i].keys.length + children[i + 1].keys.length <= maxSize) {
@@ -1579,18 +1460,19 @@ class BNodeInternal extends BNode {
             }
         }
         return false;
-    }
+    };
     /**
      * Move children from `rhs` into this.
      * `rhs` must be part of this tree, and be removed from it after this call
      * (otherwise isShared for its children could be incorrect).
      */
-    mergeSibling(rhs, maxNodeSize) {
+    BNodeInternal.prototype.mergeSibling = function (rhs, maxNodeSize) {
         // assert !this.isShared;
         var oldLength = this.keys.length;
         this.keys.push.apply(this.keys, rhs.keys);
-        const rhsChildren = rhs.children;
+        var rhsChildren = rhs.children;
         this.children.push.apply(this.children, rhsChildren);
+        this._size += rhs.size();
         if (rhs.isShared && !this.isShared) {
             // All children of a shared node are implicitly shared, and since their new
             // parent is not shared, they must now be explicitly marked as shared.
@@ -1601,8 +1483,10 @@ class BNodeInternal extends BNode {
         // they may need to be merged too (but only the oldLength-1 and its
         // right sibling should need this).
         this.tryMerge(oldLength - 1, maxNodeSize);
-    }
-}
+    };
+    return BNodeInternal;
+}(BNode));
+exports.BNodeInternal = BNodeInternal;
 // Optimization: this array of `undefined`s is used instead of a normal
 // array of values in nodes where `undefined` is the only value.
 // Its length is extended to max node size on first use; since it can
@@ -1615,20 +1499,47 @@ class BNodeInternal extends BNode {
 // Reading outside the bounds of an array is relatively slow because it
 // has the side effect of scanning the prototype chain.
 var undefVals = [];
-const Delete = { delete: true }, DeleteRange = () => Delete;
-const Break = { break: true };
-const EmptyLeaf = (function () {
+/**
+ * Sums the sizes of the given child nodes.
+ * @param children the child nodes
+ * @returns the total size
+ * @internal
+ */
+function sumChildSizes(children) {
+    var total = 0;
+    for (var i = 0; i < children.length; i++)
+        total += children[i].size();
+    return total;
+}
+exports.sumChildSizes = sumChildSizes;
+/**
+ * Determines whether two nodes are overlapping in key range.
+ * @internal
+ */
+function areOverlapping(aMin, aMax, bMin, bMax, cmp) {
+    return cmp(aMin, bMax) <= 0 && cmp(aMax, bMin) >= 0;
+}
+exports.areOverlapping = areOverlapping;
+var Delete = { delete: true }, DeleteRange = function () { return Delete; };
+var Break = { break: true };
+var EmptyLeaf = (function () {
     var n = new BNode();
     n.isShared = true;
     return n;
 })();
-const EmptyArray = [];
-const ReusedArray = []; // assumed thread-local
-function check(fact, ...args) {
+var EmptyArray = [];
+var ReusedArray = []; // assumed thread-local
+/** @internal */
+function check(fact) {
+    var args = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        args[_i - 1] = arguments[_i];
+    }
     if (!fact) {
         args.unshift('B+ tree'); // at beginning of message
         throw new Error(args.join(' '));
     }
 }
+exports.check = check;
 /** A BTree frozen in the empty state. */
-exports.EmptyBTree = (() => { let t = new BTree(); t.freeze(); return t; })();
+exports.EmptyBTree = (function () { var t = new BTree(); t.freeze(); return t; })();

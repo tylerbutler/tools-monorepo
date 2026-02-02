@@ -153,6 +153,9 @@ importers:
       typescript:
         specifier: ^5.1.6
         version: 5.9.3
+      uglify-js:
+        specifier: ^3.19.3
+        version: 3.19.3
 
   packages/cli:
     dependencies:
@@ -25519,8 +25522,7 @@ snapshots:
 
   ufo@1.6.3: {}
 
-  uglify-js@3.19.3:
-    optional: true
+  uglify-js@3.19.3: {}
 
   uid2@1.0.0: {}
 
