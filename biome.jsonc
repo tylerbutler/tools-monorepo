@@ -43,12 +43,6 @@
 			// test data files used for testing (sail-infrastructure)
 			"!**/packages/sail-infrastructure/src/test/data",
 
-			// auto-generated data files
-			"!**/packages/ccl-test-data/data",
-			"!**/packages/ccl-test-runner-ts/data/*.*",
-			"!**/packages/ccl-test-viewer/src/lib/data/*.*",
-			"!**/packages/ccl-test-viewer/static/data/*.*",
-
 			"!**/FluidFramework",
 		],
 	},
@@ -247,27 +241,6 @@
 						"useTopLevelRegex": "off",
 					},
 					"nursery": {},
-				},
-			},
-		},
-		{
-			// ccl-test-viewer specific overrides
-			"includes": ["packages/ccl-test-viewer/**"],
-			"linter": {
-				"rules": {
-					"complexity": {
-						"noUselessUndefinedInitialization": "off",
-						"noVoid": "off",
-					},
-					"correctness": {
-						"useImportExtensions": "off",
-					},
-					"nursery": {
-						"noUselessUndefined": "off",
-					},
-					"suspicious": {
-						"noUnknownAtRules": "off",
-					},
 				},
 			},
 		},

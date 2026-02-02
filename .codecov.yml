@@ -27,8 +27,6 @@ ignore:
   - "**/index.ts"
   - "**/test/**"
   - "**/tests/**"
-  # Exclude from overall project stats but still report via component/flag
-  - "packages/ccl-test-viewer/**"
 
 coverage:
   status:
@@ -45,10 +43,6 @@ coverage:
 # Each flag corresponds to a package and enables carryforward
 # Carryforward preserves coverage for packages not tested in a commit
 flags:
-  ccl-test-viewer:
-    paths:
-      - packages/ccl-test-viewer/
-    carryforward: true
   cli:
     paths:
       - packages/cli/
@@ -115,10 +109,6 @@ component_management:
         branches:
           - "!main"
   individual_components:
-    - component_id: ccl-test-viewer
-      name: ccl-test-viewer
-      paths:
-        - packages/ccl-test-viewer/**
     - component_id: cli
       name: cli
       paths:

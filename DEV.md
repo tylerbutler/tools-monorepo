@@ -43,16 +43,10 @@ build:compile → build:api → build:docs
 build:compile → build:manifest → build:readme → build:generate
 ```
 
-**Documentation Sites** (`ccl-docs`, `dill-docs`, `repopo-docs`):
+**Documentation Sites** (`dill-docs`, `repopo-docs`):
 
 ```bash
 build:site (Astro only)
-```
-
-**Svelte Apps** (`ccl-test-viewer`):
-
-```bash
-build:vite (or build:tauri for desktop)
 ```
 
 ### Key Principles
@@ -148,8 +142,7 @@ pnpm test:tsgo-build:full
 
 The `tsconfig.tsgo.json` solution file includes 17 packages. Excluded packages:
 
-- **Astro sites** (`ccl-docs`, `dill-docs`, `repopo-docs`) - Use special `astro/tsconfigs/*` extends
-- **Svelte apps** (`ccl-test-viewer`) - Different build toolchain
+- **Astro sites** (`dill-docs`, `repopo-docs`) - Use special `astro/tsconfigs/*` extends
 
 The smoke test validates 13 packages by importing compiled output and executing basic functions:
 
@@ -160,7 +153,6 @@ The smoke test validates 13 packages by importing compiled output and executing 
 lilconfig-loader-ts       - TypeScriptLoader class
 xkcd2-api                 - getRandomComicId()
 levee-client              - LeveeClient class
-ccl-ts                    - parse()
 rehype-footnotes          - plugin export
 remark-lazy-links         - plugin export
 remark-shift-headings     - plugin export

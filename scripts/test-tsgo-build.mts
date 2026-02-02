@@ -162,15 +162,6 @@ async function runTests() {
 		),
 	);
 
-	// Test ccl-ts
-	results.push(
-		await testPackage("ccl-ts", "packages/ccl-ts/esm/index.js", (mod: any) => {
-			if (typeof mod.parse !== "function") {
-				throw new Error("parse is not a function");
-			}
-		}),
-	);
-
 	// Test rehype-footnotes
 	results.push(
 		await testPackage(
