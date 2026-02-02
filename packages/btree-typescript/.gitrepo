@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://github.com/qwertie/btree-typescript
 	branch = master
-	commit = 491067c0ccc47d852f8ff99f1d924118ab3c4a3c
+	commit = e54ffd3c042fd066be55262751691b271413794c
 	parent = 39789afa7df920bf89427229db70cde022b0d659
 	method = merge
 	cmdver = 0.4.9

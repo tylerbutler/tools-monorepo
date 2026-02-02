@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EmptyBTree = exports.check = exports.areOverlapping = exports.sumChildSizes = exports.BNodeInternal = exports.BNode = exports.asSet = exports.fixMaxSize = exports.simpleComparator = exports.defaultComparator = void 0;
+exports.EmptyBTree = exports.asSet = exports.simpleComparator = exports.defaultComparator = void 0;
 /**
  * Compares DefaultComparables to form a strict partial ordering.
  *
@@ -80,12 +80,6 @@ function simpleComparator(a, b) {
 }
 exports.simpleComparator = simpleComparator;
 ;
-/** Sanitizes a requested max node size.
- *  @internal */
-function fixMaxSize(maxNodeSize) {
-    return maxNodeSize >= 4 ? Math.min(maxNodeSize | 0, 256) : 32;
-}
-exports.fixMaxSize = fixMaxSize;
 /**
  * A reasonably fast collection of key-value pairs with a powerful API.
  * Largely compatible with the standard Map. BTree is a B+ tree data structure,
@@ -161,7 +155,8 @@ var BTree = /** @class */ (function () {
      */
     function BTree(entries, compare, maxNodeSize) {
         this._root = EmptyLeaf;
-        this._maxNodeSize = fixMaxSize(maxNodeSize);
+        this._size = 0;
+        this._maxNodeSize = maxNodeSize >= 4 ? Math.min(maxNodeSize, 256) : 32;
         this._compare = compare || defaultComparator;
         if (entries)
             this.setPairs(entries);
@@ -170,25 +165,26 @@ var BTree = /** @class */ (function () {
         /////////////////////////////////////////////////////////////////////////////
         // ES6 Map<K,V> methods /////////////////////////////////////////////////////
         /** Gets the number of key-value pairs in the tree. */
-        get: function () { return this._root.size(); },
+        get: function () { return this._size; },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(BTree.prototype, "length", {
         /** Gets the number of key-value pairs in the tree. */
-        get: function () { return this.size; },
+        get: function () { return this._size; },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(BTree.prototype, "isEmpty", {
         /** Returns true iff the tree contains no key-value pairs. */
-        get: function () { return this._root.size() === 0; },
+        get: function () { return this._size === 0; },
         enumerable: false,
         configurable: true
     });
     /** Releases the tree so that its size is 0. */
     BTree.prototype.clear = function () {
         this._root = EmptyLeaf;
+        this._size = 0;
     };
     /** Runs a function for each key-value pair, in order from smallest to
      *  largest key. For compatibility with ES6 Map, the argument order to
@@ -252,8 +248,7 @@ var BTree = /** @class */ (function () {
         if (result === true || result === false)
             return result;
         // Root node has split, so create a new root node.
-        var children = [this._root, result];
-        this._root = new BNodeInternal(children, sumChildSizes(children));
+        this._root = new BNodeInternal([this._root, result]);
         return true;
     };
     /**
@@ -497,6 +492,244 @@ var BTree = /** @class */ (function () {
         }
         return { nodequeue: nodequeue, nodeindex: nodeindex, leaf: nextnode };
     };
+    /**
+     * Computes the differences between `this` and `other`.
+     * For efficiency, the diff is returned via invocations of supplied handlers.
+     * The computation is optimized for the case in which the two trees have large amounts
+     * of shared data (obtained by calling the `clone` or `with` APIs) and will avoid
+     * any iteration of shared state.
+     * The handlers can cause computation to early exit by returning {break: R}.
+     * Neither of the collections should be changed during the comparison process (in your callbacks), as this method assumes they will not be mutated.
+     * @param other The tree to compute a diff against.
+     * @param onlyThis Callback invoked for all keys only present in `this`.
+     * @param onlyOther Callback invoked for all keys only present in `other`.
+     * @param different Callback invoked for all keys with differing values.
+     */
+    BTree.prototype.diffAgainst = function (other, onlyThis, onlyOther, different) {
+        if (other._compare !== this._compare) {
+            throw new Error("Tree comparators are not the same.");
+        }
+        if (this.isEmpty || other.isEmpty) {
+            if (this.isEmpty && other.isEmpty)
+                return undefined;
+            // If one tree is empty, everything will be an onlyThis/onlyOther.
+            if (this.isEmpty)
+                return onlyOther === undefined ? undefined : BTree.stepToEnd(BTree.makeDiffCursor(other), onlyOther);
+            return onlyThis === undefined ? undefined : BTree.stepToEnd(BTree.makeDiffCursor(this), onlyThis);
+        }
+        // Cursor-based diff algorithm is as follows:
+        // - Until neither cursor has navigated to the end of the tree, do the following:
+        //  - If the `this` cursor is "behind" the `other` cursor (strictly <, via compare), advance it.
+        //  - Otherwise, advance the `other` cursor.
+        //  - Any time a cursor is stepped, perform the following:
+        //    - If either cursor points to a key/value pair:
+        //      - If thisCursor === otherCursor and the values differ, it is a Different.
+        //      - If thisCursor > otherCursor and otherCursor is at a key/value pair, it is an OnlyOther.
+        //      - If thisCursor < otherCursor and thisCursor is at a key/value pair, it is an OnlyThis as long as the most recent 
+        //        cursor step was *not* otherCursor advancing from a tie. The extra condition avoids erroneous OnlyOther calls 
+        //        that would occur due to otherCursor being the "leader".
+        //    - Otherwise, if both cursors point to nodes, compare them. If they are equal by reference (shared), skip
+        //      both cursors to the next node in the walk.
+        // - Once one cursor has finished stepping, any remaining steps (if any) are taken and key/value pairs are logged
+        //   as OnlyOther (if otherCursor is stepping) or OnlyThis (if thisCursor is stepping).
+        // This algorithm gives the critical guarantee that all locations (both nodes and key/value pairs) in both trees that 
+        // are identical by value (and possibly by reference) will be visited *at the same time* by the cursors.
+        // This removes the possibility of emitting incorrect diffs, as well as allowing for skipping shared nodes.
+        var _compare = this._compare;
+        var thisCursor = BTree.makeDiffCursor(this);
+        var otherCursor = BTree.makeDiffCursor(other);
+        // It doesn't matter how thisSteppedLast is initialized.
+        // Step order is only used when either cursor is at a leaf, and cursors always start at a node.
+        var thisSuccess = true, otherSuccess = true, prevCursorOrder = BTree.compare(thisCursor, otherCursor, _compare);
+        while (thisSuccess && otherSuccess) {
+            var cursorOrder = BTree.compare(thisCursor, otherCursor, _compare);
+            var thisLeaf = thisCursor.leaf, thisInternalSpine = thisCursor.internalSpine, thisLevelIndices = thisCursor.levelIndices;
+            var otherLeaf = otherCursor.leaf, otherInternalSpine = otherCursor.internalSpine, otherLevelIndices = otherCursor.levelIndices;
+            if (thisLeaf || otherLeaf) {
+                // If the cursors were at the same location last step, then there is no work to be done.
+                if (prevCursorOrder !== 0) {
+                    if (cursorOrder === 0) {
+                        if (thisLeaf && otherLeaf && different) {
+                            // Equal keys, check for modifications
+                            var valThis = thisLeaf.values[thisLevelIndices[thisLevelIndices.length - 1]];
+                            var valOther = otherLeaf.values[otherLevelIndices[otherLevelIndices.length - 1]];
+                            if (!Object.is(valThis, valOther)) {
+                                var result = different(thisCursor.currentKey, valThis, valOther);
+                                if (result && result.break)
+                                    return result.break;
+                            }
+                        }
+                    }
+                    else if (cursorOrder > 0) {
+                        // If this is the case, we know that either:
+                        // 1. otherCursor stepped last from a starting position that trailed thisCursor, and is still behind, or
+                        // 2. thisCursor stepped last and leapfrogged otherCursor
+                        // Either of these cases is an "only other"
+                        if (otherLeaf && onlyOther) {
+                            var otherVal = otherLeaf.values[otherLevelIndices[otherLevelIndices.length - 1]];
+                            var result = onlyOther(otherCursor.currentKey, otherVal);
+                            if (result && result.break)
+                                return result.break;
+                        }
+                    }
+                    else if (onlyThis) {
+                        if (thisLeaf && prevCursorOrder !== 0) {
+                            var valThis = thisLeaf.values[thisLevelIndices[thisLevelIndices.length - 1]];
+                            var result = onlyThis(thisCursor.currentKey, valThis);
+                            if (result && result.break)
+                                return result.break;
+                        }
+                    }
+                }
+            }
+            else if (!thisLeaf && !otherLeaf && cursorOrder === 0) {
+                var lastThis = thisInternalSpine.length - 1;
+                var lastOther = otherInternalSpine.length - 1;
+                var nodeThis = thisInternalSpine[lastThis][thisLevelIndices[lastThis]];
+                var nodeOther = otherInternalSpine[lastOther][otherLevelIndices[lastOther]];
+                if (nodeOther === nodeThis) {
+                    prevCursorOrder = 0;
+                    thisSuccess = BTree.step(thisCursor, true);
+                    otherSuccess = BTree.step(otherCursor, true);
+                    continue;
+                }
+            }
+            prevCursorOrder = cursorOrder;
+            if (cursorOrder < 0) {
+                thisSuccess = BTree.step(thisCursor);
+            }
+            else {
+                otherSuccess = BTree.step(otherCursor);
+            }
+        }
+        if (thisSuccess && onlyThis)
+            return BTree.finishCursorWalk(thisCursor, otherCursor, _compare, onlyThis);
+        if (otherSuccess && onlyOther)
+            return BTree.finishCursorWalk(otherCursor, thisCursor, _compare, onlyOther);
+    };
+    ///////////////////////////////////////////////////////////////////////////
+    // Helper methods for diffAgainst /////////////////////////////////////////
+    BTree.finishCursorWalk = function (cursor, cursorFinished, compareKeys, callback) {
+        var compared = BTree.compare(cursor, cursorFinished, compareKeys);
+        if (compared === 0) {
+            if (!BTree.step(cursor))
+                return undefined;
+        }
+        else if (compared < 0) {
+            check(false, "cursor walk terminated early");
+        }
+        return BTree.stepToEnd(cursor, callback);
+    };
+    BTree.stepToEnd = function (cursor, callback) {
+        var canStep = true;
+        while (canStep) {
+            var leaf = cursor.leaf, levelIndices = cursor.levelIndices, currentKey = cursor.currentKey;
+            if (leaf) {
+                var value = leaf.values[levelIndices[levelIndices.length - 1]];
+                var result = callback(currentKey, value);
+                if (result && result.break)
+                    return result.break;
+            }
+            canStep = BTree.step(cursor);
+        }
+        return undefined;
+    };
+    BTree.makeDiffCursor = function (tree) {
+        var _root = tree._root, height = tree.height;
+        return { height: height, internalSpine: [[_root]], levelIndices: [0], leaf: undefined, currentKey: _root.maxKey() };
+    };
+    /**
+     * Advances the cursor to the next step in the walk of its tree.
+     * Cursors are walked backwards in sort order, as this allows them to leverage maxKey() in order to be compared in O(1).
+     * @param cursor The cursor to step
+     * @param stepToNode If true, the cursor will be advanced to the next node (skipping values)
+     * @returns true if the step was completed and false if the step would have caused the cursor to move beyond the end of the tree.
+     */
+    BTree.step = function (cursor, stepToNode) {
+        var internalSpine = cursor.internalSpine, levelIndices = cursor.levelIndices, leaf = cursor.leaf;
+        if (stepToNode === true || leaf) {
+            var levelsLength = levelIndices.length;
+            // Step to the next node only if:
+            // - We are explicitly directed to via stepToNode, or
+            // - There are no key/value pairs left to step to in this leaf
+            if (stepToNode === true || levelIndices[levelsLength - 1] === 0) {
+                var spineLength = internalSpine.length;
+                // Root is leaf
+                if (spineLength === 0)
+                    return false;
+                // Walk back up the tree until we find a new subtree to descend into
+                var nodeLevelIndex = spineLength - 1;
+                var levelIndexWalkBack = nodeLevelIndex;
+                while (levelIndexWalkBack >= 0) {
+                    if (levelIndices[levelIndexWalkBack] > 0) {
+                        if (levelIndexWalkBack < levelsLength - 1) {
+                            // Remove leaf state from cursor
+                            cursor.leaf = undefined;
+                            levelIndices.pop();
+                        }
+                        // If we walked upwards past any internal node, slice them out
+                        if (levelIndexWalkBack < nodeLevelIndex)
+                            cursor.internalSpine = internalSpine.slice(0, levelIndexWalkBack + 1);
+                        // Move to new internal node
+                        cursor.currentKey = internalSpine[levelIndexWalkBack][--levelIndices[levelIndexWalkBack]].maxKey();
+                        return true;
+                    }
+                    levelIndexWalkBack--;
+                }
+                // Cursor is in the far left leaf of the tree, no more nodes to enumerate
+                return false;
+            }
+            else {
+                // Move to new leaf value
+                var valueIndex = --levelIndices[levelsLength - 1];
+                cursor.currentKey = leaf.keys[valueIndex];
+                return true;
+            }
+        }
+        else { // Cursor does not point to a value in a leaf, so move downwards
+            var nextLevel = internalSpine.length;
+            var currentLevel = nextLevel - 1;
+            var node = internalSpine[currentLevel][levelIndices[currentLevel]];
+            if (node.isLeaf) {
+                // Entering into a leaf. Set the cursor to point at the last key/value pair.
+                cursor.leaf = node;
+                var valueIndex = levelIndices[nextLevel] = node.values.length - 1;
+                cursor.currentKey = node.keys[valueIndex];
+            }
+            else {
+                var children = node.children;
+                internalSpine[nextLevel] = children;
+                var childIndex = children.length - 1;
+                levelIndices[nextLevel] = childIndex;
+                cursor.currentKey = children[childIndex].maxKey();
+            }
+            return true;
+        }
+    };
+    /**
+     * Compares the two cursors. Returns a value indicating which cursor is ahead in a walk.
+     * Note that cursors are advanced in reverse sorting order.
+     */
+    BTree.compare = function (cursorA, cursorB, compareKeys) {
+        var heightA = cursorA.height, currentKeyA = cursorA.currentKey, levelIndicesA = cursorA.levelIndices;
+        var heightB = cursorB.height, currentKeyB = cursorB.currentKey, levelIndicesB = cursorB.levelIndices;
+        // Reverse the comparison order, as cursors are advanced in reverse sorting order
+        var keyComparison = compareKeys(currentKeyB, currentKeyA);
+        if (keyComparison !== 0) {
+            return keyComparison;
+        }
+        // Normalize depth values relative to the shortest tree.
+        // This ensures that concurrent cursor walks of trees of differing heights can reliably land on shared nodes at the same time.
+        // To accomplish this, a cursor that is on an internal node at depth D1 with maxKey X is considered "behind" a cursor on an
+        // internal node at depth D2 with maxKey Y, when D1 < D2. Thus, always walking the cursor that is "behind" will allow the cursor
+        // at shallower depth (but equal maxKey) to "catch up" and land on shared nodes.
+        var heightMin = heightA < heightB ? heightA : heightB;
+        var depthANormalized = levelIndicesA.length - (heightA - heightMin);
+        var depthBNormalized = levelIndicesB.length - (heightB - heightMin);
+        return depthANormalized - depthBNormalized;
+    };
+    // End of helper methods for diffAgainst //////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     /** Returns a new iterator for iterating the keys of each pair in ascending order.
      *  @param firstKey: Minimum key to include in the output. */
     BTree.prototype.keys = function (firstKey) {
@@ -542,6 +775,7 @@ var BTree = /** @class */ (function () {
         this._root.isShared = true;
         var result = new BTree(undefined, this._compare, this._maxNodeSize);
         result._root = this._root;
+        result._size = this._size;
         return result;
     };
     /** Performs a greedy clone, immediately duplicating any nodes that are
@@ -552,6 +786,7 @@ var BTree = /** @class */ (function () {
     BTree.prototype.greedyClone = function (force) {
         var result = new BTree(undefined, this._compare, this._maxNodeSize);
         result._root = this._root.greedyClone(force);
+        result._size = this._size;
         return result;
     };
     /** Gets an array filled with the contents of the tree, sorted by key */
@@ -828,13 +1063,12 @@ var BTree = /** @class */ (function () {
         configurable: true
     });
     /** Scans the tree for signs of serious bugs (e.g. this.size doesn't match
-     *  number of elements, internal nodes not caching max element properly...).
-     *  Computational complexity: O(number of nodes). This method validates cached size
-     *  information and, optionally, the ordering of keys (including leaves), which
-     *  takes more time to check (O(size), which is technically the same big-O). */
-    BTree.prototype.checkValid = function (checkOrdering) {
-        if (checkOrdering === void 0) { checkOrdering = false; }
-        var size = this._root.checkValid(0, this, 0, checkOrdering)[0];
+     *  number of elements, internal nodes not caching max element properly...)
+     *  Computational complexity: O(number of nodes), i.e. O(size). This method
+     *  skips the most expensive test - whether all keys are sorted - but it
+     *  does check that maxKey() of the children of internal nodes are sorted. */
+    BTree.prototype.checkValid = function () {
+        var size = this._root.checkValid(0, this, 0);
         check(size === this.size, "size mismatch: counted ", size, "but stored", this.size);
     };
     return BTree;
@@ -861,7 +1095,7 @@ function iterator(next) {
         result[Symbol.iterator] = function () { return this; };
     return result;
 }
-/** @internal */
+/** Leaf node / base class. **************************************************/
 var BNode = /** @class */ (function () {
     function BNode(keys, values) {
         if (keys === void 0) { keys = []; }
@@ -874,9 +1108,6 @@ var BNode = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    BNode.prototype.size = function () {
-        return this.keys.length;
-    };
     ///////////////////////////////////////////////////////////////////////////
     // Shared methods /////////////////////////////////////////////////////////
     BNode.prototype.maxKey = function () {
@@ -1002,7 +1233,7 @@ var BNode = /** @class */ (function () {
         }
         return undefined;
     };
-    BNode.prototype.checkValid = function (depth, tree, baseIndex, checkOrdering) {
+    BNode.prototype.checkValid = function (depth, tree, baseIndex) {
         var kL = this.keys.length, vL = this.values.length;
         check(this.values === undefVals ? kL <= vL : kL === vL, "keys/values length mismatch: depth", depth, "with lengths", kL, vL, "and baseIndex", baseIndex);
         // Note: we don't check for "node too small" because sometimes a node
@@ -1011,13 +1242,7 @@ var BNode = /** @class */ (function () {
         // it can't be merged with adjacent nodes. However, the parent will
         // verify that the average node size is at least half of the maximum.
         check(depth == 0 || kL > 0, "empty leaf at depth", depth, "and baseIndex", baseIndex);
-        if (checkOrdering === true) {
-            for (var i = 1; i < kL; i++) {
-                var c = tree._compare(this.keys[i - 1], this.keys[i]);
-                check(c < 0, "keys out of order at depth", depth, "and baseIndex", baseIndex + i - 1, ": ", this.keys[i - 1], " !< ", this.keys[i]);
-            }
-        }
-        return [kL, this.keys[0], this.keys[kL - 1]];
+        return kL;
     };
     /////////////////////////////////////////////////////////////////////////////
     // Leaf Node: set & node splitting //////////////////////////////////////////
@@ -1026,6 +1251,7 @@ var BNode = /** @class */ (function () {
         if (i < 0) {
             // key does not exist yet
             i = ~i;
+            tree._size++;
             if (this.keys.length < tree._maxNodeSize) {
                 return this.insertInLeaf(i, key, value, tree);
             }
@@ -1141,6 +1367,7 @@ var BNode = /** @class */ (function () {
                             this.keys.splice(i, 1);
                             if (this.values !== undefVals)
                                 this.values.splice(i, 1);
+                            tree._size--;
                             i--;
                             iHigh--;
                         }
@@ -1169,16 +1396,14 @@ var BNode = /** @class */ (function () {
     };
     return BNode;
 }());
-exports.BNode = BNode;
 /** Internal node (non-leaf node) ********************************************/
-/** @internal */
 var BNodeInternal = /** @class */ (function (_super) {
     __extends(BNodeInternal, _super);
     /**
      * This does not mark `children` as shared, so it is the responsibility of the caller
      * to ensure children are either marked shared, or aren't included in another tree.
      */
-    function BNodeInternal(children, size, keys) {
+    function BNodeInternal(children, keys) {
         var _this = this;
         if (!keys) {
             keys = [];
@@ -1187,22 +1412,18 @@ var BNodeInternal = /** @class */ (function (_super) {
         }
         _this = _super.call(this, keys) || this;
         _this.children = children;
-        _this._size = size;
         return _this;
     }
     BNodeInternal.prototype.clone = function () {
         var children = this.children.slice(0);
         for (var i = 0; i < children.length; i++)
             children[i].isShared = true;
-        return new BNodeInternal(children, this._size, this.keys.slice(0));
-    };
-    BNodeInternal.prototype.size = function () {
-        return this._size;
+        return new BNodeInternal(children, this.keys.slice(0));
     };
     BNodeInternal.prototype.greedyClone = function (force) {
         if (this.isShared && !force)
             return this;
-        var nu = new BNodeInternal(this.children.slice(0), this._size, this.keys.slice(0));
+        var nu = new BNodeInternal(this.children.slice(0), this.keys.slice(0));
         for (var i = 0; i < nu.children.length; i++)
             nu.children[i] = nu.children[i].greedyClone(force);
         return nu;
@@ -1240,40 +1461,27 @@ var BNodeInternal = /** @class */ (function (_super) {
         }
         return result;
     };
-    BNodeInternal.prototype.checkValid = function (depth, tree, baseIndex, checkOrdering) {
+    BNodeInternal.prototype.checkValid = function (depth, tree, baseIndex) {
         var kL = this.keys.length, cL = this.children.length;
         check(kL === cL, "keys/children length mismatch: depth", depth, "lengths", kL, cL, "baseIndex", baseIndex);
         check(kL > 1 || depth > 0, "internal node has length", kL, "at depth", depth, "baseIndex", baseIndex);
         var size = 0, c = this.children, k = this.keys, childSize = 0;
-        var prevMinKey = undefined;
-        var prevMaxKey = undefined;
         for (var i = 0; i < cL; i++) {
-            var child = c[i];
-            var _a = child.checkValid(depth + 1, tree, baseIndex + size, checkOrdering), subtreeSize = _a[0], minKey = _a[1], maxKey = _a[2];
-            check(subtreeSize === child.size(), "cached size mismatch at depth", depth, "index", i, "baseIndex", baseIndex);
-            check(subtreeSize === 1 || tree._compare(minKey, maxKey) < 0, "child node keys not sorted at depth", depth, "index", i, "baseIndex", baseIndex);
-            if (prevMinKey !== undefined && prevMaxKey !== undefined && checkOrdering) {
-                check(!areOverlapping(prevMinKey, prevMaxKey, minKey, maxKey, tree._compare), "children keys not sorted at depth", depth, "index", i, "baseIndex", baseIndex, ": ", prevMaxKey, " !< ", minKey);
-                check(tree._compare(prevMaxKey, minKey) < 0, "children keys not sorted at depth", depth, "index", i, "baseIndex", baseIndex, ": ", prevMaxKey, " !< ", minKey);
-            }
-            prevMinKey = minKey;
-            prevMaxKey = maxKey;
-            size += subtreeSize;
-            childSize += child.keys.length;
+            size += c[i].checkValid(depth + 1, tree, baseIndex + size);
+            childSize += c[i].keys.length;
             check(size >= childSize, "wtf", baseIndex); // no way this will ever fail
-            check(i === 0 || c[i - 1].constructor === child.constructor, "type mismatch, baseIndex:", baseIndex);
-            if (child.maxKey() != k[i])
-                check(false, "keys[", i, "] =", k[i], "is wrong, should be ", child.maxKey(), "at depth", depth, "baseIndex", baseIndex);
+            check(i === 0 || c[i - 1].constructor === c[i].constructor, "type mismatch, baseIndex:", baseIndex);
+            if (c[i].maxKey() != k[i])
+                check(false, "keys[", i, "] =", k[i], "is wrong, should be ", c[i].maxKey(), "at depth", depth, "baseIndex", baseIndex);
             if (!(i === 0 || tree._compare(k[i - 1], k[i]) < 0))
                 check(false, "sort violation at depth", depth, "index", i, "keys", k[i - 1], k[i]);
         }
-        check(this._size === size, "internal node cached size mismatch at depth", depth, "baseIndex", baseIndex, "cached", this._size, "actual", size);
         // 2020/08: BTree doesn't always avoid grossly undersized nodes,
         // but AFAIK such nodes are pretty harmless, so accept them.
         var toofew = childSize === 0; // childSize < (tree.maxNodeSize >> 1)*cL;
         if (toofew || childSize > tree.maxNodeSize * cL)
             check(false, toofew ? "too few" : "too many", "children (", childSize, size, ") at depth", depth, "maxNodeSize:", tree.maxNodeSize, "children.length:", cL, "baseIndex:", baseIndex);
-        return [size, this.minKey(), this.maxKey()];
+        return size;
     };
     /////////////////////////////////////////////////////////////////////////////
     // Internal Node: set & node splitting //////////////////////////////////////
@@ -1301,9 +1509,7 @@ var BNodeInternal = /** @class */ (function (_super) {
                 this.keys[i] = c[i].maxKey();
             }
         }
-        var oldSize = child.size();
         var result = child.set(key, value, overwrite, tree);
-        this._size += child.size() - oldSize;
         if (result === false)
             return false;
         this.keys[i] = child.maxKey();
@@ -1332,7 +1538,6 @@ var BNodeInternal = /** @class */ (function (_super) {
     BNodeInternal.prototype.insert = function (i, child) {
         this.children.splice(i, 0, child);
         this.keys.splice(i, 0, child.maxKey());
-        this._size += child.size();
     };
     /**
      * Split this node.
@@ -1341,50 +1546,21 @@ var BNodeInternal = /** @class */ (function (_super) {
     BNodeInternal.prototype.splitOffRightSide = function () {
         // assert !this.isShared;
         var half = this.children.length >> 1;
-        var newChildren = this.children.splice(half);
-        var newKeys = this.keys.splice(half);
-        var sizePrev = this._size;
-        this._size = sumChildSizes(this.children);
-        var newNode = new BNodeInternal(newChildren, sizePrev - this._size, newKeys);
-        return newNode;
-    };
-    /**
-     * Split this node.
-     * Modifies this to remove the first half of the items, returning a separate node containing them.
-     */
-    BNodeInternal.prototype.splitOffLeftSide = function () {
-        // assert !this.isShared;
-        var half = this.children.length >> 1;
-        var newChildren = this.children.splice(0, half);
-        var newKeys = this.keys.splice(0, half);
-        var sizePrev = this._size;
-        this._size = sumChildSizes(this.children);
-        var newNode = new BNodeInternal(newChildren, sizePrev - this._size, newKeys);
-        return newNode;
+        return new BNodeInternal(this.children.splice(half), this.keys.splice(half));
     };
     BNodeInternal.prototype.takeFromRight = function (rhs) {
         // Reminder: parent node must update its copy of key for this node
         // assert: neither node is shared
         // assert rhs.keys.length > (maxNodeSize/2 && this.keys.length<maxNodeSize)
-        var rhsInternal = rhs;
         this.keys.push(rhs.keys.shift());
-        var child = rhsInternal.children.shift();
-        this.children.push(child);
-        var size = child.size();
-        rhsInternal._size -= size;
-        this._size += size;
+        this.children.push(rhs.children.shift());
     };
     BNodeInternal.prototype.takeFromLeft = function (lhs) {
         // Reminder: parent node must update its copy of key for this node
         // assert: neither node is shared
         // assert rhs.keys.length > (maxNodeSize/2 && this.keys.length<maxNodeSize)
-        var lhsInternal = lhs;
-        var child = lhsInternal.children.pop();
         this.keys.unshift(lhs.keys.pop());
-        this.children.unshift(child);
-        var size = child.size();
-        lhsInternal._size -= size;
-        this._size += size;
+        this.children.unshift(lhs.children.pop());
     };
     /////////////////////////////////////////////////////////////////////////////
     // Internal Node: scanning & deletions //////////////////////////////////////
@@ -1408,18 +1584,15 @@ var BNodeInternal = /** @class */ (function (_super) {
         else if (i <= iHigh) {
             try {
                 for (; i <= iHigh; i++) {
-                    var child = children[i];
-                    if (child.isShared)
-                        children[i] = child = child.clone();
-                    var beforeSize = child.size();
-                    var result_1 = child.forRange(low, high, includeHigh, editMode, tree, count, onFound);
+                    if (children[i].isShared)
+                        children[i] = children[i].clone();
+                    var result = children[i].forRange(low, high, includeHigh, editMode, tree, count, onFound);
                     // Note: if children[i] is empty then keys[i]=undefined.
                     //       This is an invalid state, but it is fixed below.
-                    keys[i] = child.maxKey();
-                    this._size += child.size() - beforeSize;
-                    if (typeof result_1 !== 'number')
-                        return result_1;
-                    count = result_1;
+                    keys[i] = children[i].maxKey();
+                    if (typeof result !== 'number')
+                        return result;
+                    count = result;
                 }
             }
             finally {
@@ -1434,8 +1607,7 @@ var BNodeInternal = /** @class */ (function (_super) {
                         }
                         else { // child is empty! delete it!
                             keys.splice(i, 1);
-                            var removed = children.splice(i, 1);
-                            check(removed[0].size() === 0, "emptiness cleanup");
+                            children.splice(i, 1);
                         }
                     }
                 }
@@ -1472,7 +1644,6 @@ var BNodeInternal = /** @class */ (function (_super) {
         this.keys.push.apply(this.keys, rhs.keys);
         var rhsChildren = rhs.children;
         this.children.push.apply(this.children, rhsChildren);
-        this._size += rhs.size();
         if (rhs.isShared && !this.isShared) {
             // All children of a shared node are implicitly shared, and since their new
             // parent is not shared, they must now be explicitly marked as shared.
@@ -1486,7 +1657,6 @@ var BNodeInternal = /** @class */ (function (_super) {
     };
     return BNodeInternal;
 }(BNode));
-exports.BNodeInternal = BNodeInternal;
 // Optimization: this array of `undefined`s is used instead of a normal
 // array of values in nodes where `undefined` is the only value.
 // Its length is extended to max node size on first use; since it can
@@ -1499,27 +1669,6 @@ exports.BNodeInternal = BNodeInternal;
 // Reading outside the bounds of an array is relatively slow because it
 // has the side effect of scanning the prototype chain.
 var undefVals = [];
-/**
- * Sums the sizes of the given child nodes.
- * @param children the child nodes
- * @returns the total size
- * @internal
- */
-function sumChildSizes(children) {
-    var total = 0;
-    for (var i = 0; i < children.length; i++)
-        total += children[i].size();
-    return total;
-}
-exports.sumChildSizes = sumChildSizes;
-/**
- * Determines whether two nodes are overlapping in key range.
- * @internal
- */
-function areOverlapping(aMin, aMax, bMin, bMax, cmp) {
-    return cmp(aMin, bMax) <= 0 && cmp(aMax, bMin) >= 0;
-}
-exports.areOverlapping = areOverlapping;
 var Delete = { delete: true }, DeleteRange = function () { return Delete; };
 var Break = { break: true };
 var EmptyLeaf = (function () {
@@ -1529,7 +1678,6 @@ var EmptyLeaf = (function () {
 })();
 var EmptyArray = [];
 var ReusedArray = []; // assumed thread-local
-/** @internal */
 function check(fact) {
     var args = [];
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -1540,6 +1688,5 @@ function check(fact) {
         throw new Error(args.join(' '));
     }
 }
-exports.check = check;
 /** A BTree frozen in the empty state. */
 exports.EmptyBTree = (function () { var t = new BTree(); t.freeze(); return t; })();

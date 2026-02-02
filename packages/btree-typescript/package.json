@@ -1,15 +1,13 @@
 {
   "name": "sorted-btree",
-  "version": "2.1.0",
+  "version": "1.8.0",
   "description": "A sorted list of key-value pairs in a fast, typed in-memory B+ tree with a powerful API.",
-  "sideEffects": false,
   "main": "b+tree.js",
   "typings": "b+tree",
   "scripts": {
     "test": "tsc && echo //ts-jest-issue-657 >interfaces.js && jest",
     "build": "tsc && npm run minify",
-    "minify": "node scripts/minify.js",
-    "sizes": "npm run build && node scripts/size-report.js",
+    "minify": "uglifyjs -cm -o b+tree.min.js -- b+tree.js",
     "prepare": "npm run build",
     "safePublish": "npm run build && testpack && npm publish",
     "benchmark": "npm run build && node benchmarks.js"
@@ -18,9 +16,6 @@
     "b+tree.js",
     "b+tree.d.ts",
     "b+tree.min.js",
-    "extended/*.js",
-    "extended/*.d.ts",
-    "extended/*.min.js",
     "sorted-array.js",
     "sorted-array.d.ts",
     "interfaces.d.ts",
@@ -28,8 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-    "directory": "packages/btree-typescript"
+    "url": "git+https://github.com/qwertie/btree-typescript.git"
   },
   "keywords": [
     "B+",
@@ -57,7 +51,7 @@
     "@types/node": "^10.17.28",
     "babel-core": "^6.26.3",
     "bintrees": "^1.0.2",
-    "collections": "^5.1.13",
+    "collections": "^5.1.11",
     "functional-red-black-tree": "^1.0.1",
     "jest": "^26.6.2",
     "mersenne-twister": "^1.1.0",
@@ -69,14 +63,6 @@
   },
   "dependencies": {},
   "jest": {
-    "globals": {
-      "ts-jest": {
-        "diagnostics": {
-          "//": "There are errors accessing internal symbols during safePublish; treat them as warnings",
-          "warnOnly": true
-        }
-      }
-    },
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
@@ -92,8 +78,7 @@
       "jsx",
       "json"
     ],
-    "verbose": true,
-    "bail": false,
+    "bail": true,
     "testEnvironment": "node"
   },
   "testpack": {
@@ -110,15 +95,11 @@
     "test-folder": ".testpack",
     "rmdir": true,
     "dirty": true,
-    "replace-import//": [
-      "The first argument ensures tests run against the minified version of the library.",
-      "The second and third patterns are similar to defaults in testpack, but only replace relative imports that navigate",
-      "outside the test directory. This is necessary because the test directory is not published with the package."
-    ],
+    "replace-import//": "// Use the minified version in .testpack",
     "replace-import": [
-      "|\\./b\\+tree|$P/b+tree|",
-      "|\\.\\.|$P|",
-      "|\\.\\.([/\\\\].*)|$P$1|"
+      "|./b\\+tree|$P/b+tree|",
+      "|..?|$P|",
+      "|..?([/\\\\].*)|$P$1|"
     ]
   }
 }
