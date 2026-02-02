@@ -1,4 +1,4 @@
-import BTree, {IMap, EmptyBTree, defaultComparator, simpleComparator} from './b+tree';
+import {BTree, IMap, EmptyBTree, defaultComparator, simpleComparator} from './b+tree';
 import SortedArray from './sorted-array';
 import MersenneTwister from 'mersenne-twister';
 
@@ -323,11 +323,11 @@ describe('Simple tests on leaf nodes', () =>
     expect(tree.isFrozen).toBe(false);
     tree.freeze();
     expect(tree.isFrozen).toBe(true);
-    expect(() => tree.set(2, "two")).toThrowError(/frozen/);
-    expect(() => tree.setPairs([[2, "two"]])).toThrowError(/frozen/);
-    expect(() => tree.clear()).toThrowError(/frozen/);
-    expect(() => tree.delete(1)).toThrowError(/frozen/);
-    expect(() => tree.editRange(0,10,true, ()=>{return {delete:true};})).toThrowError(/frozen/);
+    expect(() => tree.set(2, "two")).toThrow(/frozen/);
+    expect(() => tree.setPairs([[2, "two"]])).toThrow(/frozen/);
+    expect(() => tree.clear()).toThrow(/frozen/);
+    expect(() => tree.delete(1)).toThrow(/frozen/);
+    expect(() => tree.editRange(0,10,true, ()=>{return {delete:true};})).toThrow(/frozen/);
     expect(tree.toArray()).toEqual([[1, "one"]]);
 
     tree.unfreeze();

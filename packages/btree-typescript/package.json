@@ -48,8 +48,9 @@
   "devDependencies": {
     "@types/bintrees": "^1.0.2",
     "@types/collections": "^5.0.2",
+    "@types/jest": "^30.0.0",
     "@types/mersenne-twister": "^1.1.2",
-    "@types/node": "^10.17.28",
+    "@types/node": "^25.2.0",
     "babel-core": "^6.26.3",
     "bintrees": "^1.0.2",
     "collections": "^5.1.11",

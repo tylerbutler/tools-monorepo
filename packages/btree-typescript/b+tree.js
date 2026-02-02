@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EmptyBTree = exports.asSet = exports.BTree = exports.simpleComparator = exports.defaultComparator = void 0;
+exports.EmptyBTree = exports.BTree = void 0;
+exports.defaultComparator = defaultComparator;
+exports.simpleComparator = simpleComparator;
+exports.asSet = asSet;
 /**
  * Compares DefaultComparables to form a strict partial ordering.
  *
@@ -58,12 +61,10 @@ function defaultComparator(a, b) {
     // This could be two objects (e.g. [7] and ['7']) that aren't ordered
     return Array.isArray(a) ? 0 : Number.NaN;
 }
-exports.defaultComparator = defaultComparator;
 ;
 function simpleComparator(a, b) {
     return a > b ? 1 : a < b ? -1 : 0;
 }
-exports.simpleComparator = simpleComparator;
 ;
 /**
  * A reasonably fast collection of key-value pairs with a powerful API.
@@ -1039,7 +1040,6 @@ exports.BTree = BTree;
 function asSet(btree) {
     return btree;
 }
-exports.asSet = asSet;
 if (Symbol && Symbol.iterator) // iterator is equivalent to entries()
     BTree.prototype[Symbol.iterator] = BTree.prototype.entries;
 BTree.prototype.where = BTree.prototype.filter;
