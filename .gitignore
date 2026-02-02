@@ -33,6 +33,6 @@ dist/
 coverage/
 
 # AI artifacts
-.claude/settings.local.json
-.serena
+**/.claude/settings.local.json
 **/CLAUDE.md
+.serena

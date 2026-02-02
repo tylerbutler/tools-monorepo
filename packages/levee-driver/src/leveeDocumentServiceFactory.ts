@@ -10,7 +10,6 @@ import type {
 } from "@fluidframework/driver-definitions/internal";
 import type { ISummaryTree } from "@fluidframework/protocol-definitions";
 import type { ITokenProvider } from "@fluidframework/routerlicious-driver";
-
 import {
 	isDebugEnabled,
 	LeveeDebugLogger,
@@ -119,22 +118,22 @@ export class LeveeDocumentServiceFactory implements IDocumentServiceFactory {
 
 		this.logger.log(`Creating container for tenant: ${leveeUrl.tenantId}`);
 
-		// Create the document on the server
+		// Create the document on the server - server generates the document ID
+		// Use a placeholder document ID for the creation token since the server
+		// will generate and return the actual ID
 		const restWrapper = new RestWrapper(
 			leveeUrl.httpUrl,
 			this.tokenProvider,
 			leveeUrl.tenantId,
-			"", // No document ID yet
+			"__new__", // Placeholder for new document creation
 			30000, // default timeout
 			this.debug,
 		);
 
-		// Per spec, document creation returns just the document ID string
+		// Create document - server generates and returns the document ID
 		const documentId = await restWrapper.post<string>(
 			`/documents/${leveeUrl.tenantId}`,
-			{
-				id: leveeUrl.documentId || undefined, // Let server generate if not provided
-			},
+			{}, // Empty body - let server generate the ID
 		);
 
 		this.logger.log(`Container created with ID: ${documentId}`);

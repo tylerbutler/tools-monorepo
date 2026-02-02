@@ -22,7 +22,10 @@
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"preview": "vite preview",
-		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs"
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:e2e": "playwright test",
+		"test:e2e:headed": "playwright test --headed",
+		"test:e2e:ui": "playwright test --ui"
 	},
 	"dependencies": {
 		"@fluidframework/core-interfaces": "~2.81.0",
@@ -39,6 +42,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
+		"@playwright/test": "^1.50.0",
 		"@types/node": "^20.19.25",
 		"generate-license-file": "^4.1.1",
 		"rimraf": "^6.1.2",

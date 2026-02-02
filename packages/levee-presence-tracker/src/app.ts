@@ -21,10 +21,16 @@ import {
 } from "./view.js";
 
 // Default configuration values
+// In dev mode, requests are proxied through Vite to avoid CORS issues
+// We use full URLs with window.location.origin to ensure URL constructors work
 const LEVEE_HTTP_URL =
-	import.meta.env.VITE_LEVEE_HTTP_URL || "http://localhost:4000";
+	import.meta.env.VITE_LEVEE_HTTP_URL ||
+	(import.meta.env.DEV ? window.location.origin : "http://localhost:4000");
 const LEVEE_SOCKET_URL =
-	import.meta.env.VITE_LEVEE_SOCKET_URL || "ws://localhost:4000/socket";
+	import.meta.env.VITE_LEVEE_SOCKET_URL ||
+	(import.meta.env.DEV
+		? `ws://${window.location.host}/socket`
+		: "ws://localhost:4000/socket");
 const LEVEE_TENANT_KEY =
 	import.meta.env.VITE_LEVEE_TENANT_KEY || "dev-tenant-secret-key";
 
