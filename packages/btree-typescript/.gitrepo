@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/qwertie/btree-typescript
+	branch = master
+	commit = 491067c0ccc47d852f8ff99f1d924118ab3c4a3c
+	parent = 39789afa7df920bf89427229db70cde022b0d659
+	method = merge
+	cmdver = 0.4.9
