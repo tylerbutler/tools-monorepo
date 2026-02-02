@@ -6,9 +6,6 @@
 	"files": [],
 	"references": [
 		{
-			"path": "./packages/ccl-docs",
-		},
-		{
 			"path": "./packages/cli",
 		},
 		{

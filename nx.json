@@ -26,8 +26,6 @@
 		{
 			"plugin": "@nx/vite/plugin",
 			"exclude": [
-				"packages/ccl-test-viewer/**", // Svelte app with custom Vite setup
-				"packages/ccl-docs/**", // Astro site (uses Vite internally but different config)
 				"packages/dill-docs/**", // Astro site
 				"packages/repopo-docs/**" // Astro site
 			],

@@ -75,7 +75,6 @@ pnpm nx graph
 - `@tylerbu/levee-client` - HTTP client library
 
 **Documentation Sites:**
-- `ccl-docs` - CCL language documentation
 - `dill-docs` - Dill CLI documentation
 - `repopo-docs` - Repopo tool documentation
 
