@@ -28,7 +28,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/qwertie/btree-typescript.git"
+    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+    "directory": "packages/btree-typescript"
   },
   "keywords": [
     "B+",

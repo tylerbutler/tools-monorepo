@@ -44,6 +44,10 @@
 			"!**/packages/sail-infrastructure/src/test/data",
 
 			"!**/FluidFramework",
+
+			// vendored packages (git subrepo) - exclude all except package.json
+			"!packages/btree-typescript/**",
+			"packages/btree-typescript/package.json",
 		],
 	},
 	"formatter": {
@@ -55,6 +59,14 @@
 		"includes": ["**/config/**", "**/docs/**", "**/src/**", "**/test/**"],
 	},
 	"overrides": [
+		{
+			// vendored packages - preserve original formatting style (spaces)
+			"includes": ["packages/btree-typescript/package.json"],
+			"formatter": {
+				"indentStyle": "space",
+				"indentWidth": 2,
+			},
+		},
 		{
 			// node projects
 			"includes": [
