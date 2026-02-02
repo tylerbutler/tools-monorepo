@@ -41,3 +41,6 @@ typings/
 .yarn-integrity
 # dotenv environment variables file
 .env
+
+# pnpm uses root lockfile
+package-lock.json

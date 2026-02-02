@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var shared_1 = require("./shared");
-var decompose_1 = require("./decompose");
+exports.default = subtract;
+const shared_1 = require("./shared");
+const decompose_1 = require("./decompose");
 /**
  * Returns a new tree containing only the keys that are present in `targetTree` but not `subtractTree` (set subtraction).
  * Neither tree is modified.
@@ -17,19 +18,18 @@ var decompose_1 = require("./decompose");
  * @throws Error if the trees were created with different comparators or max node sizes.
  */
 function subtract(targetTree, subtractTree) {
-    var _targetTree = targetTree;
-    var _subtractTree = subtractTree;
-    var branchingFactor = (0, shared_1.checkCanDoSetOperation)(_targetTree, _subtractTree, false);
+    const _targetTree = targetTree;
+    const _subtractTree = subtractTree;
+    const branchingFactor = (0, shared_1.checkCanDoSetOperation)(_targetTree, _subtractTree, false);
     if (_targetTree._root.size() === 0 || _subtractTree._root.size() === 0)
         return targetTree.clone();
     // Decompose target tree into disjoint subtrees leaves.
     // As many of these as possible will be reused from the original trees, and the remaining
     // will be leaves that are exploded (and filtered) due to intersecting leaves in subtractTree.
-    var decomposed = (0, decompose_1.decompose)(_targetTree, _subtractTree, function () { return undefined; }, true);
-    var constructor = targetTree.constructor;
+    const decomposed = (0, decompose_1.decompose)(_targetTree, _subtractTree, () => undefined, true);
+    const constructor = targetTree.constructor;
     if (decomposed.heights.length === 0) {
         return new constructor(undefined, targetTree._compare, targetTree._maxNodeSize);
     }
     return (0, decompose_1.buildFromDecomposition)(constructor, branchingFactor, decomposed, targetTree._compare, targetTree._maxNodeSize);
 }
-exports.default = subtract;

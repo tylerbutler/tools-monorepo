@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var shared_1 = require("./shared");
-var forEachKeyInBoth_1 = __importDefault(require("./forEachKeyInBoth"));
-var bulkLoad_1 = require("./bulkLoad");
+exports.default = intersect;
+const shared_1 = require("./shared");
+const forEachKeyInBoth_1 = __importDefault(require("./forEachKeyInBoth"));
+const bulkLoad_1 = require("./bulkLoad");
 /**
  * Returns a new tree containing only keys present in both input trees.
  * Neither tree is modified.
@@ -21,24 +22,23 @@ var bulkLoad_1 = require("./bulkLoad");
  * @throws Error if the trees were created with different comparators.
  */
 function intersect(treeA, treeB, combineFn) {
-    var _treeA = treeA;
-    var _treeB = treeB;
-    var branchingFactor = (0, shared_1.checkCanDoSetOperation)(_treeA, _treeB, true);
+    const _treeA = treeA;
+    const _treeB = treeB;
+    const branchingFactor = (0, shared_1.checkCanDoSetOperation)(_treeA, _treeB, true);
     if (_treeA._root.size() === 0)
         return treeA.clone();
     if (_treeB._root.size() === 0)
         return treeB.clone();
-    var intersectedKeys = [];
-    var intersectedValues = [];
-    (0, forEachKeyInBoth_1.default)(treeA, treeB, function (key, leftValue, rightValue) {
-        var mergedValue = combineFn(key, leftValue, rightValue);
+    const intersectedKeys = [];
+    const intersectedValues = [];
+    (0, forEachKeyInBoth_1.default)(treeA, treeB, (key, leftValue, rightValue) => {
+        const mergedValue = combineFn(key, leftValue, rightValue);
         intersectedKeys.push(key);
         intersectedValues.push(mergedValue);
     });
     // Intersected keys are guaranteed to be in order, so we can bulk load
-    var constructor = treeA.constructor;
-    var resultTree = new constructor(undefined, treeA._compare, branchingFactor);
+    const constructor = treeA.constructor;
+    const resultTree = new constructor(undefined, treeA._compare, branchingFactor);
     resultTree._root = (0, bulkLoad_1.bulkLoadRoot)(intersectedKeys, intersectedValues, branchingFactor, treeA._compare);
     return resultTree;
 }
-exports.default = intersect;

@@ -1,6 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.noop = exports.moveTo = exports.getKey = exports.createCursor = exports.moveForwardOne = void 0;
+exports.moveForwardOne = moveForwardOne;
+exports.createCursor = createCursor;
+exports.getKey = getKey;
+exports.moveTo = moveTo;
+exports.noop = noop;
 /**
  * Walks the cursor forward by one key.
  * Returns true if end-of-tree was reached (cursor not structurally mutated).
@@ -8,8 +12,8 @@ exports.noop = exports.moveTo = exports.getKey = exports.createCursor = exports.
  * @internal
  */
 function moveForwardOne(cur, other) {
-    var leaf = cur.leaf;
-    var nextIndex = cur.leafIndex + 1;
+    const leaf = cur.leaf;
+    const nextIndex = cur.leafIndex + 1;
     if (nextIndex < leaf.keys.length) {
         // Still within current leaf
         cur.onMoveInLeaf(leaf, cur.leafPayload, cur.leafIndex, nextIndex, true);
@@ -20,36 +24,26 @@ function moveForwardOne(cur, other) {
     // Pass isInclusive=false to ensure we walk forward to the key exactly after the current
     return moveTo(cur, other, getKey(cur), false, true)[0];
 }
-exports.moveForwardOne = moveForwardOne;
 /**
  * Create a cursor pointing to the leftmost key of the supplied tree.
  * @internal
  */
 function createCursor(tree, makePayload, onEnterLeaf, onMoveInLeaf, onExitLeaf, onStepUp, onStepDown) {
-    var spine = [];
-    var n = tree._root;
+    const spine = [];
+    let n = tree._root;
     while (!n.isLeaf) {
-        var ni = n;
-        var payload = makePayload();
-        spine.push({ node: ni, childIndex: 0, payload: payload });
+        const ni = n;
+        const payload = makePayload();
+        spine.push({ node: ni, childIndex: 0, payload });
         n = ni.children[0];
     }
-    var leafPayload = makePayload();
-    var cur = {
-        tree: tree,
-        leaf: n, leafIndex: 0,
-        spine: spine,
-        leafPayload: leafPayload,
-        makePayload: makePayload,
-        onEnterLeaf: onEnterLeaf,
-        onMoveInLeaf: onMoveInLeaf,
-        onExitLeaf: onExitLeaf,
-        onStepUp: onStepUp,
-        onStepDown: onStepDown
+    const leafPayload = makePayload();
+    const cur = {
+        tree, leaf: n, leafIndex: 0, spine, leafPayload, makePayload: makePayload,
+        onEnterLeaf, onMoveInLeaf, onExitLeaf, onStepUp, onStepDown
     };
     return cur;
 }
-exports.createCursor = createCursor;
 /**
  * Gets the key at the current cursor position.
  * @internal
@@ -57,7 +51,6 @@ exports.createCursor = createCursor;
 function getKey(c) {
     return c.leaf.keys[c.leafIndex];
 }
-exports.getKey = getKey;
 /**
  * Move cursor strictly forward to the first key >= (inclusive) or > (exclusive) target.
  * Returns a boolean indicating if end-of-tree was reached (cursor not structurally mutated).
@@ -66,14 +59,14 @@ exports.getKey = getKey;
  */
 function moveTo(cur, other, targetKey, isInclusive, startedEqual) {
     // Cache for perf
-    var cmp = cur.tree._compare;
-    var onMoveInLeaf = cur.onMoveInLeaf;
+    const cmp = cur.tree._compare;
+    const onMoveInLeaf = cur.onMoveInLeaf;
     // Fast path: destination within current leaf
-    var leaf = cur.leaf;
-    var leafPayload = cur.leafPayload;
-    var i = leaf.indexOf(targetKey, -1, cmp);
-    var destInLeaf;
-    var targetExactlyReached;
+    const leaf = cur.leaf;
+    const leafPayload = cur.leafPayload;
+    const i = leaf.indexOf(targetKey, -1, cmp);
+    let destInLeaf;
+    let targetExactlyReached;
     if (i < 0) {
         destInLeaf = ~i;
         targetExactlyReached = false;
@@ -88,21 +81,21 @@ function moveTo(cur, other, targetKey, isInclusive, startedEqual) {
             targetExactlyReached = false;
         }
     }
-    var leafKeyCount = leaf.keys.length;
+    const leafKeyCount = leaf.keys.length;
     if (destInLeaf < leafKeyCount) {
         onMoveInLeaf(leaf, leafPayload, cur.leafIndex, destInLeaf, startedEqual);
         cur.leafIndex = destInLeaf;
         return [false, targetExactlyReached];
     }
     // Find first ancestor with a viable right step
-    var spine = cur.spine;
-    var initialSpineLength = spine.length;
-    var descentLevel = -1;
-    var descentIndex = -1;
-    for (var s = initialSpineLength - 1; s >= 0; s--) {
-        var parent = spine[s].node;
-        var indexOf = parent.indexOf(targetKey, -1, cmp);
-        var stepDownIndex = void 0;
+    const spine = cur.spine;
+    const initialSpineLength = spine.length;
+    let descentLevel = -1;
+    let descentIndex = -1;
+    for (let s = initialSpineLength - 1; s >= 0; s--) {
+        const parent = spine[s].node;
+        const indexOf = parent.indexOf(targetKey, -1, cmp);
+        let stepDownIndex;
         if (indexOf < 0) {
             stepDownIndex = ~indexOf;
         }
@@ -117,48 +110,48 @@ function moveTo(cur, other, targetKey, isInclusive, startedEqual) {
         }
     }
     // Exit leaf; even if no spine, we did walk out of it conceptually
-    var startIndex = cur.leafIndex;
+    const startIndex = cur.leafIndex;
     cur.onExitLeaf(leaf, leafPayload, startIndex, startedEqual, cur);
-    var onStepUp = cur.onStepUp;
+    const onStepUp = cur.onStepUp;
     if (descentLevel < 0) {
         // No descent point; step up all the way; last callback gets infinity
-        for (var depth = initialSpineLength - 1; depth >= 0; depth--) {
-            var entry_1 = spine[depth];
-            var sd = depth === 0 ? Number.POSITIVE_INFINITY : Number.NaN;
-            onStepUp(entry_1.node, initialSpineLength - depth, entry_1.payload, entry_1.childIndex, depth, sd, cur, other);
+        for (let depth = initialSpineLength - 1; depth >= 0; depth--) {
+            const entry = spine[depth];
+            const sd = depth === 0 ? Number.POSITIVE_INFINITY : Number.NaN;
+            onStepUp(entry.node, initialSpineLength - depth, entry.payload, entry.childIndex, depth, sd, cur, other);
         }
         return [true, false];
     }
     // Step up through ancestors above the descentLevel
-    for (var depth = initialSpineLength - 1; depth > descentLevel; depth--) {
-        var entry_2 = spine[depth];
-        onStepUp(entry_2.node, initialSpineLength - depth, entry_2.payload, entry_2.childIndex, depth, Number.NaN, cur, other);
+    for (let depth = initialSpineLength - 1; depth > descentLevel; depth--) {
+        const entry = spine[depth];
+        onStepUp(entry.node, initialSpineLength - depth, entry.payload, entry.childIndex, depth, Number.NaN, cur, other);
     }
-    var entry = spine[descentLevel];
+    const entry = spine[descentLevel];
     onStepUp(entry.node, initialSpineLength - descentLevel, entry.payload, entry.childIndex, descentLevel, descentIndex, cur, other);
     entry.childIndex = descentIndex;
-    var onStepDown = cur.onStepDown;
-    var makePayload = cur.makePayload;
+    const onStepDown = cur.onStepDown;
+    const makePayload = cur.makePayload;
     // Descend, invoking onStepDown and creating payloads
-    var height = initialSpineLength - descentLevel - 1; // calculate height before changing length
+    let height = initialSpineLength - descentLevel - 1; // calculate height before changing length
     spine.length = descentLevel + 1;
-    var node = spine[descentLevel].node.children[descentIndex];
+    let node = spine[descentLevel].node.children[descentIndex];
     while (!node.isLeaf) {
-        var ni = node;
-        var keys = ni.keys;
-        var stepDownIndex = ni.indexOf(targetKey, 0, cmp);
+        const ni = node;
+        const keys = ni.keys;
+        let stepDownIndex = ni.indexOf(targetKey, 0, cmp);
         if (!isInclusive && stepDownIndex < keys.length && cmp(keys[stepDownIndex], targetKey) === 0)
             stepDownIndex++;
-        var payload = makePayload();
-        var spineIndex = spine.length;
-        spine.push({ node: ni, childIndex: stepDownIndex, payload: payload });
+        const payload = makePayload();
+        const spineIndex = spine.length;
+        spine.push({ node: ni, childIndex: stepDownIndex, payload });
         onStepDown(ni, height, spineIndex, stepDownIndex, cur, other);
         node = ni.children[stepDownIndex];
         height -= 1;
     }
     // Enter destination leaf
-    var idx = node.indexOf(targetKey, -1, cmp);
-    var destIndex;
+    const idx = node.indexOf(targetKey, -1, cmp);
+    let destIndex;
     if (idx < 0) {
         destIndex = ~idx;
         targetExactlyReached = false;
@@ -179,10 +172,8 @@ function moveTo(cur, other, targetKey, isInclusive, startedEqual) {
     cur.onEnterLeaf(node, destIndex, cur, other);
     return [false, targetExactlyReached];
 }
-exports.moveTo = moveTo;
 /**
  * A no-operation function.
  * @internal
  */
 function noop() { }
-exports.noop = noop;

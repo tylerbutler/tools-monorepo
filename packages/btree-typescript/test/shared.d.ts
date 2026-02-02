@@ -3,20 +3,20 @@ import SortedArray from '../sorted-array';
 import MersenneTwister from 'mersenne-twister';
 import BTreeEx from '../extended';
 export declare const compareNumbers: (a: number, b: number) => number;
-export declare type TreeNodeStats = {
+export type TreeNodeStats = {
     total: number;
     shared: number;
     newUnderfilled: number;
     averageLoadFactor: number;
 };
-export declare type TreeEntries = Array<[number, number]>;
-export declare type SetOperationFuzzSettings = {
+export type TreeEntries = Array<[number, number]>;
+export type SetOperationFuzzSettings = {
     branchingFactors: number[];
     ooms: number[];
     fractionsPerOOM: number[];
     removalChances: number[];
 };
-export declare type FuzzCase = {
+export type FuzzCase = {
     maxNodeSize: number;
     oom: number;
     size: number;
@@ -33,12 +33,12 @@ export declare function addToBoth<K, V>(a: IMap<K, V>, b: IMap<K, V>, k: K, v: V
 export declare function makeArray(size: number, randomOrder: boolean, spacing?: number, rng?: MersenneTwister): number[];
 export declare const randomInt: (rng: MersenneTwister, maxExclusive: number) => number;
 export declare function buildEntriesFromMap(entriesMap: Map<number, number>, compareFn?: (a: number, b: number) => number): TreeEntries;
-export declare type FuzzTreeSpec = {
+export type FuzzTreeSpec = {
     tree: BTree<number, number>;
     fraction: number;
     removalChance?: number;
 };
-export declare type PopulateFuzzTreesOptions = {
+export type PopulateFuzzTreesOptions = {
     size: number;
     rng: MersenneTwister;
     compare: (a: number, b: number) => number;

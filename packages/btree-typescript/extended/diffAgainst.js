@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var b_tree_1 = require("../b+tree");
+exports.default = diffAgainst;
+const b_tree_1 = require("../b+tree");
 /**
  * Computes the differences between `treeA` and `treeB`.
  * For efficiency, the diff is returned via invocations of supplied handlers.
@@ -17,8 +18,8 @@ var b_tree_1 = require("../b+tree");
  * @throws Error if the supplied trees were created with different comparators.
  */
 function diffAgainst(_treeA, _treeB, onlyA, onlyB, different) {
-    var treeA = _treeA;
-    var treeB = _treeB;
+    const treeA = _treeA;
+    const treeB = _treeB;
     if (treeB._compare !== treeA._compare) {
         throw new Error('Tree comparators are not the same.');
     }
@@ -52,28 +53,28 @@ function diffAgainst(_treeA, _treeB, onlyA, onlyB, different) {
     // This algorithm gives the critical guarantee that all locations (both nodes and key/value pairs) in both trees that
     // are identical by value (and possibly by reference) will be visited *at the same time* by the cursors.
     // This removes the possibility of emitting incorrect diffs, as well as allowing for skipping shared nodes.
-    var compareKeys = treeA._compare;
-    var thisCursor = makeDiffCursor(treeA);
-    var otherCursor = makeDiffCursor(treeB);
-    var thisSuccess = true;
-    var otherSuccess = true;
+    const compareKeys = treeA._compare;
+    const thisCursor = makeDiffCursor(treeA);
+    const otherCursor = makeDiffCursor(treeB);
+    let thisSuccess = true;
+    let otherSuccess = true;
     // It doesn't matter how thisSteppedLast is initialized.
     // Step order is only used when either cursor is at a leaf, and cursors always start at a node.
-    var prevCursorOrder = compareDiffCursors(thisCursor, otherCursor, compareKeys);
+    let prevCursorOrder = compareDiffCursors(thisCursor, otherCursor, compareKeys);
     while (thisSuccess && otherSuccess) {
-        var cursorOrder = compareDiffCursors(thisCursor, otherCursor, compareKeys);
-        var thisLeaf = thisCursor.leaf, thisInternalSpine = thisCursor.internalSpine, thisLevelIndices = thisCursor.levelIndices;
-        var otherLeaf = otherCursor.leaf, otherInternalSpine = otherCursor.internalSpine, otherLevelIndices = otherCursor.levelIndices;
+        const cursorOrder = compareDiffCursors(thisCursor, otherCursor, compareKeys);
+        const { leaf: thisLeaf, internalSpine: thisInternalSpine, levelIndices: thisLevelIndices } = thisCursor;
+        const { leaf: otherLeaf, internalSpine: otherInternalSpine, levelIndices: otherLevelIndices } = otherCursor;
         if (thisLeaf || otherLeaf) {
             // If the cursors were at the same location last step, then there is no work to be done.
             if (prevCursorOrder !== 0) {
                 if (cursorOrder === 0) {
                     if (thisLeaf && otherLeaf && different) {
                         // Equal keys, check for modifications
-                        var valThis = thisLeaf.values[thisLevelIndices[thisLevelIndices.length - 1]];
-                        var valOther = otherLeaf.values[otherLevelIndices[otherLevelIndices.length - 1]];
+                        const valThis = thisLeaf.values[thisLevelIndices[thisLevelIndices.length - 1]];
+                        const valOther = otherLeaf.values[otherLevelIndices[otherLevelIndices.length - 1]];
                         if (!Object.is(valThis, valOther)) {
-                            var result = different(thisCursor.currentKey, valThis, valOther);
+                            const result = different(thisCursor.currentKey, valThis, valOther);
                             if (result && result.break)
                                 return result.break;
                         }
@@ -85,16 +86,16 @@ function diffAgainst(_treeA, _treeB, onlyA, onlyB, different) {
                     // 2. thisCursor stepped last and leapfrogged otherCursor
                     // Either of these cases is an "only other"
                     if (otherLeaf && onlyB) {
-                        var otherVal = otherLeaf.values[otherLevelIndices[otherLevelIndices.length - 1]];
-                        var result = onlyB(otherCursor.currentKey, otherVal);
+                        const otherVal = otherLeaf.values[otherLevelIndices[otherLevelIndices.length - 1]];
+                        const result = onlyB(otherCursor.currentKey, otherVal);
                         if (result && result.break)
                             return result.break;
                     }
                 }
                 else if (onlyA) {
                     if (thisLeaf && prevCursorOrder !== 0) {
-                        var valThis = thisLeaf.values[thisLevelIndices[thisLevelIndices.length - 1]];
-                        var result = onlyA(thisCursor.currentKey, valThis);
+                        const valThis = thisLeaf.values[thisLevelIndices[thisLevelIndices.length - 1]];
+                        const result = onlyA(thisCursor.currentKey, valThis);
                         if (result && result.break)
                             return result.break;
                     }
@@ -102,10 +103,10 @@ function diffAgainst(_treeA, _treeB, onlyA, onlyB, different) {
             }
         }
         else if (!thisLeaf && !otherLeaf && cursorOrder === 0) {
-            var lastThis = thisInternalSpine.length - 1;
-            var lastOther = otherInternalSpine.length - 1;
-            var nodeThis = thisInternalSpine[lastThis][thisLevelIndices[lastThis]];
-            var nodeOther = otherInternalSpine[lastOther][otherLevelIndices[lastOther]];
+            const lastThis = thisInternalSpine.length - 1;
+            const lastOther = otherInternalSpine.length - 1;
+            const nodeThis = thisInternalSpine[lastThis][thisLevelIndices[lastThis]];
+            const nodeOther = otherInternalSpine[lastOther][otherLevelIndices[lastOther]];
             if (nodeOther === nodeThis) {
                 prevCursorOrder = 0;
                 thisSuccess = stepDiffCursor(thisCursor, true);
@@ -127,12 +128,11 @@ function diffAgainst(_treeA, _treeB, onlyA, onlyB, different) {
         return finishCursorWalk(otherCursor, thisCursor, compareKeys, onlyB);
     return undefined;
 }
-exports.default = diffAgainst;
 /**
  * Finishes walking `cursor` once the other cursor has already completed its walk.
  */
 function finishCursorWalk(cursor, cursorFinished, compareKeys, callback) {
-    var compared = compareDiffCursors(cursor, cursorFinished, compareKeys);
+    const compared = compareDiffCursors(cursor, cursorFinished, compareKeys);
     if (compared === 0) {
         if (!stepDiffCursor(cursor))
             return undefined;
@@ -146,12 +146,12 @@ function finishCursorWalk(cursor, cursorFinished, compareKeys, callback) {
  * Walks the cursor to the end of the tree, invoking the callback for each key/value pair.
  */
 function stepToEnd(cursor, callback) {
-    var canStep = true;
+    let canStep = true;
     while (canStep) {
-        var leaf = cursor.leaf, levelIndices = cursor.levelIndices, currentKey = cursor.currentKey;
+        const { leaf, levelIndices, currentKey } = cursor;
         if (leaf) {
-            var value = leaf.values[levelIndices[levelIndices.length - 1]];
-            var result = callback(currentKey, value);
+            const value = leaf.values[levelIndices[levelIndices.length - 1]];
+            const result = callback(currentKey, value);
             if (result && result.break)
                 return result.break;
         }
@@ -160,7 +160,7 @@ function stepToEnd(cursor, callback) {
     return undefined;
 }
 function makeDiffCursor(internal) {
-    var root = internal._root;
+    const root = internal._root;
     return {
         height: internal.height,
         internalSpine: [[root]],
@@ -174,19 +174,19 @@ function makeDiffCursor(internal) {
  * Cursors are walked backwards in sort order, as this allows them to leverage maxKey() in order to be compared in O(1).
  */
 function stepDiffCursor(cursor, stepToNode) {
-    var internalSpine = cursor.internalSpine, levelIndices = cursor.levelIndices, leaf = cursor.leaf;
+    const { internalSpine, levelIndices, leaf } = cursor;
     if (stepToNode === true || leaf) {
-        var levelsLength = levelIndices.length;
+        const levelsLength = levelIndices.length;
         // Step to the next node only if:
         // - We are explicitly directed to via stepToNode, or
         // - There are no key/value pairs left to step to in this leaf
         if (stepToNode === true || levelIndices[levelsLength - 1] === 0) {
-            var spineLength = internalSpine.length;
+            const spineLength = internalSpine.length;
             if (spineLength === 0)
                 return false;
             // Walk back up the tree until we find a new subtree to descend into
-            var nodeLevelIndex = spineLength - 1;
-            var levelIndexWalkBack = nodeLevelIndex;
+            const nodeLevelIndex = spineLength - 1;
+            let levelIndexWalkBack = nodeLevelIndex;
             while (levelIndexWalkBack >= 0) {
                 if (levelIndices[levelIndexWalkBack] > 0) {
                     if (levelIndexWalkBack < levelsLength - 1) {
@@ -207,24 +207,24 @@ function stepDiffCursor(cursor, stepToNode) {
         }
         else {
             // Move to new leaf value
-            var valueIndex = --levelIndices[levelsLength - 1];
+            const valueIndex = --levelIndices[levelsLength - 1];
             cursor.currentKey = leaf.keys[valueIndex];
             return true;
         }
     }
     else { // Cursor does not point to a value in a leaf, so move downwards
-        var nextLevel = internalSpine.length;
-        var currentLevel = nextLevel - 1;
-        var node = internalSpine[currentLevel][levelIndices[currentLevel]];
+        const nextLevel = internalSpine.length;
+        const currentLevel = nextLevel - 1;
+        const node = internalSpine[currentLevel][levelIndices[currentLevel]];
         if (node.isLeaf) {
             cursor.leaf = node;
-            var valueIndex = (levelIndices[nextLevel] = node.values.length - 1);
+            const valueIndex = (levelIndices[nextLevel] = node.values.length - 1);
             cursor.currentKey = node.keys[valueIndex];
         }
         else {
-            var children = node.children;
+            const children = node.children;
             internalSpine[nextLevel] = children;
-            var childIndex = children.length - 1;
+            const childIndex = children.length - 1;
             levelIndices[nextLevel] = childIndex;
             cursor.currentKey = children[childIndex].maxKey();
         }
@@ -236,10 +236,10 @@ function stepDiffCursor(cursor, stepToNode) {
  * Note that cursors advance in reverse sort order.
  */
 function compareDiffCursors(cursorA, cursorB, compareKeys) {
-    var heightA = cursorA.height, currentKeyA = cursorA.currentKey, levelIndicesA = cursorA.levelIndices;
-    var heightB = cursorB.height, currentKeyB = cursorB.currentKey, levelIndicesB = cursorB.levelIndices;
+    const { height: heightA, currentKey: currentKeyA, levelIndices: levelIndicesA } = cursorA;
+    const { height: heightB, currentKey: currentKeyB, levelIndices: levelIndicesB } = cursorB;
     // Reverse the comparison order, as cursors are advanced in reverse sorting order
-    var keyComparison = compareKeys(currentKeyB, currentKeyA);
+    const keyComparison = compareKeys(currentKeyB, currentKeyA);
     if (keyComparison !== 0)
         return keyComparison;
     // Normalize depth values relative to the shortest tree.
@@ -247,8 +247,8 @@ function compareDiffCursors(cursorA, cursorB, compareKeys) {
     // To accomplish this, a cursor that is on an internal node at depth D1 with maxKey X is considered "behind" a cursor on an
     // internal node at depth D2 with maxKey Y, when D1 < D2. Thus, always walking the cursor that is "behind" will allow the cursor
     // at shallower depth (but equal maxKey) to "catch up" and land on shared nodes.
-    var heightMin = heightA < heightB ? heightA : heightB;
-    var depthANormalized = levelIndicesA.length - (heightA - heightMin);
-    var depthBNormalized = levelIndicesB.length - (heightB - heightMin);
+    const heightMin = heightA < heightB ? heightA : heightB;
+    const depthANormalized = levelIndicesA.length - (heightA - heightMin);
+    const depthBNormalized = levelIndicesB.length - (heightB - heightMin);
     return depthANormalized - depthBNormalized;
 }
