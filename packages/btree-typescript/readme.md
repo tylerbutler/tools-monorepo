@@ -1,3 +1,9 @@
+This is a fork!
+===============
+
+This is a fork of https://github.com/qwertie/btree-typescript that drops ES5 support. This addresses the problem
+described at https://github.com/qwertie/btree-typescript/issues/36
+
 B+ tree
 =======
 
@@ -55,25 +61,25 @@ Features
 
 - Requires ES5 only (`Symbol.iterator` is not required but is used if defined.)
 - Includes typings (`BTree` was written in TypeScript)
-- API similar to ES6 `Map` with methods such as `size(), clear()`, 
+- API similar to ES6 `Map` with methods such as `size(), clear()`,
   `forEach((v,k,tree)=>{}), get(K), set(K,V), has(K), delete(K)`,
   plus iterator functions `keys()`, `values()` and `entries()`.
 - Supports keys that are numbers, strings, arrays of numbers/strings, `Date`,
   and objects that have a `valueOf()` method that returns a number or string.
-- Other data types can also be supported with a custom comparator (second  
+- Other data types can also be supported with a custom comparator (second
   constructor argument).
 - Supports O(1) fast cloning with subtree sharing. This works by marking the
-  root node as "shared between instances". This makes the tree read-only 
-  with copy-on-edit behavior; both copies of the tree remain mutable. I call 
-  this category of data structure "dynamically persistent" or "mutably 
-  persistent" because AFAIK no one else has given it a name; it walks the line 
+  root node as "shared between instances". This makes the tree read-only
+  with copy-on-edit behavior; both copies of the tree remain mutable. I call
+  this category of data structure "dynamically persistent" or "mutably
+  persistent" because AFAIK no one else has given it a name; it walks the line
   between mutating and [persistent](https://en.wikipedia.org/wiki/Persistent_data_structure).
 - Includes persistent methods such as `with` and `without`, which return a
   modified tree without changing the original (in O(log(size)) time).
-- When a node fills up, items are shifted to siblings when possible to 
+- When a node fills up, items are shifted to siblings when possible to
   keep nodes near their capacity, to improve memory utilization.
 - Efficiently supports sets (keys without values). The collection does
-  not allocate memory for values if the value `undefined` is associated 
+  not allocate memory for values if the value `undefined` is associated
   with all keys in a given node.
 - Includes neat stuff such as `Range` methods for batch operations
 - Throws an exception if you try to use `NaN` as a key, but infinity is allowed.
@@ -176,7 +182,7 @@ You can scan a range of items and selectively delete or change some of them usin
 ~~~js
 var t = new BTree().setRange([[1,"fun"],[2,"yay"],[4,"whee"],[8,"zany"],[10,"boring"]);
 t.editRange(t.minKey(), t.maxKey(), true, (k, v) => {
-  if (k === 4) 
+  if (k === 4)
     return {delete: true};
   if (v !== "boring")
     return {value: v + '!'};

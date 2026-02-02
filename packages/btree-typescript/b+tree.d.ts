@@ -103,7 +103,7 @@ export declare function simpleComparator(a: (number | string)[], b: (number | st
  *
  * @author David Piepgrass
  */
-export default class BTree<K = any, V = any> implements ISortedMapF<K, V>, ISortedMap<K, V> {
+export declare class BTree<K = any, V = any> implements ISortedMapF<K, V>, ISortedMap<K, V> {
     private _root;
     _size: number;
     _maxNodeSize: number;

@@ -7,6 +7,6 @@
 	remote = https://github.com/qwertie/btree-typescript
 	branch = master
 	commit = e54ffd3c042fd066be55262751691b271413794c
-	parent = 39789afa7df920bf89427229db70cde022b0d659
+	parent = be20c025d115e922bc4e8004fe7f3be49a2dacf0
 	method = merge
 	cmdver = 0.4.9
