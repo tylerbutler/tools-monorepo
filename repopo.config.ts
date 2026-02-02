@@ -9,6 +9,10 @@ import {
 } from "repopo/policies";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
+// Vendored packages (git subrepo) - exclude from policies that enforce monorepo conventions
+const vendoredPackages = ["packages/btree-typescript"];
+const vendoredPackageJsons = vendoredPackages.map((p) => `${p}/package.json`);
+
 const config: RepopoConfig = {
 	excludeFiles: ["test/data", "fixtures", "config/package.json"],
 	policies: [
@@ -18,21 +22,30 @@ const config: RepopoConfig = {
 				".lighthouserc.js",
 				"svelte.config.js",
 				"tailwind.config.js",
+				...vendoredPackages,
 			],
 		}),
-		makePolicy(PackageJsonProperties, {
-			verbatim: {
-				license: "MIT",
-				author: "Tyler Butler <tyler@tylerbutler.com>",
-				bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
-				repository: {
-					type: "git",
-					url: "git+https://github.com/tylerbutler/tools-monorepo.git",
+		makePolicy(
+			PackageJsonProperties,
+			{
+				verbatim: {
+					license: "MIT",
+					author: "Tyler Butler <tyler@tylerbutler.com>",
+					bugs: "https://github.com/tylerbutler/tools-monorepo/issues",
+					repository: {
+						type: "git",
+						url: "git+https://github.com/tylerbutler/tools-monorepo.git",
+					},
 				},
 			},
-		}),
+			{
+				excludeFiles: vendoredPackageJsons,
+			},
+		),
 		makePolicy(PackageJsonRepoDirectoryProperty),
-		makePolicy(PackageJsonSorted),
+		makePolicy(PackageJsonSorted, undefined, {
+			excludeFiles: vendoredPackageJsons,
+		}),
 		makePolicy(
 			PackageScripts,
 			{
@@ -46,7 +59,10 @@ const config: RepopoConfig = {
 				],
 			},
 			{
-				excludeFiles: ["packages/.*-docs/package.json"],
+				excludeFiles: [
+					"packages/.*-docs/package.json",
+					...vendoredPackageJsons,
+				],
 			},
 		),
 		makePolicy(SortTsconfigsPolicy),
