@@ -10,7 +10,6 @@ This package is a fork of [qwertie/btree-typescript](https://github.com/qwertie/
 | Target | ES5 | ES2020 |
 | Module | CommonJS | Node16 (CommonJS output) |
 | Minifier | uglify-js | terser |
-| Extended functionality | Included | Excluded (ES2020 compatibility issues) |
 
 ## Changes from Upstream
 
@@ -31,7 +30,6 @@ This package is a fork of [qwertie/btree-typescript](https://github.com/qwertie/
 - **name**: Changed to `@tylerbu/sorted-btree-es6`
 - **type**: Added `"type": "commonjs"` for node16 module resolution
 - **minify script**: Changed from `node scripts/minify.js` to `terser -cm -o b+tree.min.js -- b+tree.js`
-- **files**: Removed `extended/*` entries (see [Extended Functionality](#extended-functionality))
 - **devDependencies**: Updated to modern versions:
   - `jest`: ^29.7.0
   - `ts-jest`: ^29.1.1
@@ -44,22 +42,10 @@ This package is a fork of [qwertie/btree-typescript](https://github.com/qwertie/
   - Removed deprecated `globals.ts-jest` config
   - Changed `bail` to `true`
   - Removed `verbose`
-  - Added exclusions for extended tests
 
-### Extended Functionality
+### extended/forEachKeyNotIn.ts
 
-The `extended/` directory contains additional B+ tree algorithms (bulkLoad, diffAgainst, intersect, subtract, union, etc.). These are **excluded from this fork** because they have temporal dead zone (TDZ) bugs that surface when compiled to ES2020.
-
-Specifically, `forEachKeyNotIn.ts` has a reference error:
-```
-ReferenceError: Cannot access 'cursorExclude' before initialization
-```
-
-This bug was hidden in ES5 due to `var` hoisting but is exposed by ES2020's `let`/`const` semantics.
-
-If you need the extended functionality, you can either:
-1. Fix the TDZ bugs in the upstream code
-2. Use the original `sorted-btree` package for those features
+Fixed a temporal dead zone (TDZ) bug that was hidden in ES5 but exposed by ES2020's `let`/`const` semantics. The `finishWalk` function referenced `cursorExclude` before it was declared when `excludeTree.size === 0`. The fix handles the empty exclude tree case before creating `cursorExclude`.
 
 ## Pulling Upstream Changes
 
@@ -96,20 +82,18 @@ The `scripts/apply-es2020-transforms.js` script automatically applies all necess
   - Minify script (terser)
   - DevDependency versions
   - Jest configuration
-  - Removes extended/* from files
-  - Adds extended test exclusions
+
+**Note:** The TDZ fix in `extended/forEachKeyNotIn.ts` must be reapplied manually after upstream pulls, or you can add it to the transformation script.
 
 ## Testing
 
 ```bash
-# Run all tests
+# Run all tests (741 tests across 7 test suites)
 pnpm test
 
 # Run tests in watch mode
 pnpm test -- --watch
 ```
-
-The test suite includes 149 tests covering the core B+ tree functionality.
 
 ## Building
 
@@ -128,6 +112,7 @@ Output files:
 - `b+tree.js` - Compiled ES2020 JavaScript
 - `b+tree.d.ts` - TypeScript declarations
 - `b+tree.min.js` - Minified version
+- `extended/*.js` - Extended set operation algorithms
 
 ## Publishing
 
@@ -150,6 +135,6 @@ pnpm install
 
 Ensure `@types/node` is at least `^20.10.0`. Older versions have incompatibilities with TypeScript 5.x.
 
-### Tests fail in extended/ tests
+### ts-jest warning about isolatedModules
 
-The extended tests are excluded by default. If you see failures there, ensure `testPathIgnorePatterns` in package.json includes the extended test files.
+The warning about "hybrid module kind (Node16/18/Next)" can be ignored. Tests still run correctly. To suppress it, you could add `isolatedModules: true` to tsconfig.json, but this may affect type checking behavior.

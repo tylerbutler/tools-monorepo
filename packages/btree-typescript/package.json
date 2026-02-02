@@ -19,6 +19,8 @@
     "b+tree.js",
     "b+tree.d.ts",
     "b+tree.min.js",
+    "extended/*.js",
+    "extended/*.d.ts",
     "sorted-array.js",
     "sorted-array.d.ts",
     "interfaces.d.ts",
@@ -73,13 +75,7 @@
     "testRegex": "(/tests/.*|(\\.|/)test)\\.(jsx?|tsx?)$",
     "testPathIgnorePatterns": [
       "<rootDir>.*nontest.*",
-      "<rootDir>/.testpack",
-      "<rootDir>/test/bulkLoad.test.ts",
-      "<rootDir>/test/diffAgainst.test.ts",
-      "<rootDir>/test/intersect.test.ts",
-      "<rootDir>/test/setOperationFuzz.test.ts",
-      "<rootDir>/test/subtract.test.ts",
-      "<rootDir>/test/union.test.ts"
+      "<rootDir>/.testpack"
     ],
     "moduleFileExtensions": [
       "ts",

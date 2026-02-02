@@ -7,7 +7,6 @@
  * - Use node16 module resolution
  * - Use terser instead of uglify-js for minification
  * - Update dependencies to versions compatible with ES2020 output
- * - Remove extended/ functionality (has ES2020 compatibility issues)
  *
  * Run this after: git subrepo pull packages/btree-typescript
  */
@@ -92,41 +91,6 @@ function transformPackageJson() {
 		/"minify":\s*"node scripts\/minify\.js"/,
 		'"minify": "terser -cm -o b+tree.min.js -- b+tree.js"',
 	);
-
-	// Remove extended/* from files array (has ES2020 compatibility issues)
-	content = content.replace(
-		/"extended\/\*\.js",\s*\n/g,
-		"",
-	);
-	content = content.replace(
-		/"extended\/\*\.d\.ts",\s*\n/g,
-		"",
-	);
-	content = content.replace(
-		/"extended\/\*\.min\.js",\s*\n/g,
-		"",
-	);
-
-	// Add extended test exclusions to testPathIgnorePatterns
-	const extendedTestExclusions = [
-		'"<rootDir>/test/bulkLoad.test.ts"',
-		'"<rootDir>/test/diffAgainst.test.ts"',
-		'"<rootDir>/test/intersect.test.ts"',
-		'"<rootDir>/test/setOperationFuzz.test.ts"',
-		'"<rootDir>/test/subtract.test.ts"',
-		'"<rootDir>/test/union.test.ts"',
-	];
-
-	// Add exclusions if not already present
-	if (!content.includes("bulkLoad.test.ts")) {
-		content = content.replace(
-			/("testPathIgnorePatterns":\s*\[[\s\S]*?)(\s*\],)/m,
-			(_match, before, after) => {
-				const exclusions = extendedTestExclusions.map((e) => `\n      ${e}`).join(",");
-				return `${before},${exclusions}${after}`;
-			},
-		);
-	}
 
 	// Update devDependencies versions
 	const devDepUpdates = {

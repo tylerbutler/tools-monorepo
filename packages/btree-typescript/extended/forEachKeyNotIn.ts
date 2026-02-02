@@ -28,6 +28,28 @@ export default function forEachKeyNotIn<K, V, R = void>(
     return;
   }
 
+  const cmp = includeTree._compare;
+  const makePayload = (): undefined => undefined;
+  let cursorInclude = createCursor<K, V, undefined>(_includeTree, makePayload, noop, noop, noop, noop, noop);
+
+  // Handle empty excludeTree case before creating cursorExclude to avoid TDZ issues
+  if (excludeTree.size === 0) {
+    // Simple iteration through all keys in includeTree
+    let out = false;
+    do {
+      const key = getKey(cursorInclude);
+      const value = cursorInclude.leaf.values[cursorInclude.leafIndex];
+      const result = callback(key, value);
+      if (result && result.break) {
+        return result.break;
+      }
+      out = moveForwardOne(cursorInclude, cursorInclude); // Use cursorInclude as dummy for unused 'other' param
+    } while (!out);
+    return undefined;
+  }
+
+  let cursorExclude = createCursor<K, V, undefined>(_excludeTree, makePayload, noop, noop, noop, noop, noop);
+
   const finishWalk = (): R | undefined => {
     let out = false;
     do {
@@ -41,16 +63,6 @@ export default function forEachKeyNotIn<K, V, R = void>(
     } while (!out);
     return undefined;
   }
-
-  const cmp = includeTree._compare;
-  const makePayload = (): undefined => undefined;
-  let cursorInclude = createCursor<K, V, undefined>(_includeTree, makePayload, noop, noop, noop, noop, noop);
-
-  if (excludeTree.size === 0) {
-    return finishWalk();
-  }
-
-  let cursorExclude = createCursor<K, V, undefined>(_excludeTree, makePayload, noop, noop, noop, noop, noop);
   let order = cmp(getKey(cursorInclude), getKey(cursorExclude));
 
   while (true) {
