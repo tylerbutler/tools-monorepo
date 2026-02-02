@@ -38,4 +38,4 @@ BREAKING CHANGE: Description of what breaks and how to migrate.
 - One changeset per logical change (not per commit)
 - Use descriptive filenames: `.changeset/<package>-<change>.md`
 - Check existing changesets first: `ls .changeset/*.md`
-- Packages in `ignore` list (ccl-docs, dill-docs, repopo-docs) don't need changesets
+- Packages in `ignore` list (dill-docs, repopo-docs) don't need changesets

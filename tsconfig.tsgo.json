@@ -18,7 +18,5 @@
 		{ "path": "./packages/remark-task-table" },
 		{ "path": "./packages/sail" },
 		{ "path": "./packages/sail-infrastructure" },
-		{ "path": "./packages/ccl-ts" },
-		{ "path": "./packages/ccl-test-runner-ts" },
 	],
 }
