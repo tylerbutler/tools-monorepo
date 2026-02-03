@@ -17,6 +17,8 @@ Sync with upstream btree-typescript and modernize toolchain
 **Toolchain modernization:**
 - Target ES2020 instead of ES5
 - Use node16 module resolution for TypeScript 5 compatibility
-- Replace uglify-js with terser for minification
 - Update Jest to v29, ts-jest to v29, TypeScript to v5.1
 - Move tests to `test/` directory with comprehensive test coverage
+
+**Bug fixes:**
+- Fix temporal dead zone issue in `forEachKeyNotIn` by reordering declarations
