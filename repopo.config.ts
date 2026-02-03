@@ -129,22 +129,19 @@ const config: RepopoConfig = {
 		makePolicy(PackageTestScripts, undefined, {
 			excludeFiles: [...vendoredPackageJsons, "packages/.*-docs/package.json"],
 		}),
-		makePolicy(
-			RequiredGitignorePatterns,
-			{
-				patterns: [
-					{ pattern: "node_modules/", comment: "Dependencies" },
-					{ pattern: ".env", comment: "Environment files" },
-					{ pattern: ".env.*", comment: "Environment files" },
-					{ pattern: "!.env.example", comment: "Allow example env file" },
-					{ pattern: ".DS_Store", comment: "macOS system files" },
-					{ pattern: "Thumbs.db", comment: "Windows system files" },
-					// Lockfile enforcement - only pnpm-lock.yaml should be committed
-					{ pattern: "package-lock.json", comment: "npm lockfile (use pnpm)" },
-					{ pattern: "yarn.lock", comment: "yarn lockfile (use pnpm)" },
-				],
-			},
-		),
+		makePolicy(RequiredGitignorePatterns, {
+			patterns: [
+				{ pattern: "node_modules/", comment: "Dependencies" },
+				{ pattern: ".env", comment: "Environment files" },
+				{ pattern: ".env.*", comment: "Environment files" },
+				{ pattern: "!.env.example", comment: "Allow example env file" },
+				{ pattern: ".DS_Store", comment: "macOS system files" },
+				{ pattern: "Thumbs.db", comment: "Windows system files" },
+				// Lockfile enforcement - only pnpm-lock.yaml should be committed
+				{ pattern: "package-lock.json", comment: "npm lockfile (use pnpm)" },
+				{ pattern: "yarn.lock", comment: "yarn lockfile (use pnpm)" },
+			],
+		}),
 	],
 };
 
