@@ -46,7 +46,7 @@
 			"!**/FluidFramework",
 
 			// vendored packages (git subrepo) - exclude all except package.json
-			"!packages/btree-typescript/**",
+			"!packages/btree-typescript",
 			"packages/btree-typescript/package.json",
 		],
 	},
