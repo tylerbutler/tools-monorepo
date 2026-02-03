@@ -1,22 +1,11 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -26,26 +15,36 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BTreeEx = void 0;
-var b_tree_1 = __importStar(require("../b+tree"));
-var diffAgainst_1 = __importDefault(require("./diffAgainst"));
-var forEachKeyInBoth_1 = __importDefault(require("./forEachKeyInBoth"));
-var forEachKeyNotIn_1 = __importDefault(require("./forEachKeyNotIn"));
-var intersect_1 = __importDefault(require("./intersect"));
-var subtract_1 = __importDefault(require("./subtract"));
-var union_1 = __importDefault(require("./union"));
-var bulkLoad_1 = require("./bulkLoad");
+const b_tree_1 = __importStar(require("../b+tree"));
+const diffAgainst_1 = __importDefault(require("./diffAgainst"));
+const forEachKeyInBoth_1 = __importDefault(require("./forEachKeyInBoth"));
+const forEachKeyNotIn_1 = __importDefault(require("./forEachKeyNotIn"));
+const intersect_1 = __importDefault(require("./intersect"));
+const subtract_1 = __importDefault(require("./subtract"));
+const union_1 = __importDefault(require("./union"));
+const bulkLoad_1 = require("./bulkLoad");
 /**
  * An extended version of the `BTree` class that includes additional functionality
  * such as bulk loading, set operations, and diffing.
@@ -53,11 +52,7 @@ var bulkLoad_1 = require("./bulkLoad");
  * Note: each additional functionality piece is available as a standalone function from the extended folder.
  * @extends BTree
  */
-var BTreeEx = /** @class */ (function (_super) {
-    __extends(BTreeEx, _super);
-    function BTreeEx() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
+class BTreeEx extends b_tree_1.default {
     /**
      * Bulk loads a new `BTreeEx` from parallel arrays of sorted entries.
      * This reuses the same algorithm as `extended/bulkLoad`, but produces a `BTreeEx`.
@@ -69,31 +64,31 @@ var BTreeEx = /** @class */ (function (_super) {
      * @returns A fully built tree containing the supplied entries.
      * @throws Error if the entries are not strictly sorted or contain duplicate keys.
      */
-    BTreeEx.bulkLoad = function (keys, values, maxNodeSize, compare) {
-        var cmp = compare !== null && compare !== void 0 ? compare : b_tree_1.defaultComparator;
-        var root = (0, bulkLoad_1.bulkLoadRoot)(keys, values, maxNodeSize, cmp);
-        var tree = new BTreeEx(undefined, cmp, maxNodeSize);
-        var target = tree;
+    static bulkLoad(keys, values, maxNodeSize, compare) {
+        const cmp = compare ?? b_tree_1.defaultComparator;
+        const root = (0, bulkLoad_1.bulkLoadRoot)(keys, values, maxNodeSize, cmp);
+        const tree = new BTreeEx(undefined, cmp, maxNodeSize);
+        const target = tree;
         target._root = root;
         return tree;
-    };
+    }
     /** See {@link BTree.clone}. */
-    BTreeEx.prototype.clone = function () {
-        var source = this;
+    clone() {
+        const source = this;
         source._root.isShared = true;
-        var result = new BTreeEx(undefined, this._compare, this._maxNodeSize);
-        var target = result;
+        const result = new BTreeEx(undefined, this._compare, this._maxNodeSize);
+        const target = result;
         target._root = source._root;
         return result;
-    };
+    }
     /** See {@link BTree.greedyClone}. */
-    BTreeEx.prototype.greedyClone = function (force) {
-        var source = this;
-        var result = new BTreeEx(undefined, this._compare, this._maxNodeSize);
-        var target = result;
+    greedyClone(force) {
+        const source = this;
+        const result = new BTreeEx(undefined, this._compare, this._maxNodeSize);
+        const target = result;
         target._root = source._root.greedyClone(force);
         return result;
-    };
+    }
     /**
      * Computes the differences between `this` and `other`.
      * For efficiency, the diff is returned via invocations of supplied handlers.
@@ -108,9 +103,9 @@ var BTreeEx = /** @class */ (function (_super) {
      * @returns The first `break` payload returned by a handler, or `undefined` if no handler breaks.
      * @throws Error if the supplied trees were created with different comparators.
      */
-    BTreeEx.prototype.diffAgainst = function (other, onlyThis, onlyOther, different) {
+    diffAgainst(other, onlyThis, onlyOther, different) {
         return (0, diffAgainst_1.default)(this, other, onlyThis, onlyOther, different);
-    };
+    }
     /**
      * Calls the supplied `callback` for each key/value pair shared by this tree and `other`, in sorted key order.
      * Neither tree is modified.
@@ -124,9 +119,9 @@ var BTreeEx = /** @class */ (function (_super) {
      * @returns The first `break` payload returned by the callback, or `undefined` if the walk finishes.
      * @throws Error if the two trees were created with different comparators.
      */
-    BTreeEx.prototype.forEachKeyInBoth = function (other, callback) {
+    forEachKeyInBoth(other, callback) {
         return (0, forEachKeyInBoth_1.default)(this, other, callback);
-    };
+    }
     /**
      * Calls the supplied `callback` for each key/value pair that exists in this tree but not in `other`
      * (set subtraction). The callback runs in sorted key order and neither tree is modified.
@@ -140,9 +135,9 @@ var BTreeEx = /** @class */ (function (_super) {
      * @returns The first `break` payload returned by the callback, or `undefined` if all qualifying keys are visited.
      * @throws Error if the trees were created with different comparators.
      */
-    BTreeEx.prototype.forEachKeyNotIn = function (other, callback) {
+    forEachKeyNotIn(other, callback) {
         return (0, forEachKeyNotIn_1.default)(this, other, callback);
-    };
+    }
     /**
      * Returns a new tree containing only keys present in both trees.
      * Neither tree is modified.
@@ -156,9 +151,9 @@ var BTreeEx = /** @class */ (function (_super) {
      * @returns A new `BTreeEx` populated with the intersection.
      * @throws Error if the trees were created with different comparators.
      */
-    BTreeEx.prototype.intersect = function (other, combineFn) {
+    intersect(other, combineFn) {
         return (0, intersect_1.default)(this, other, combineFn);
-    };
+    }
     /**
      * Efficiently unions this tree with `other`, reusing subtrees wherever possible without modifying either input.
      *
@@ -171,9 +166,9 @@ var BTreeEx = /** @class */ (function (_super) {
      * @returns A new `BTreeEx` that contains the unioned key/value pairs.
      * @throws Error if the trees were created with different comparators or max node sizes.
      */
-    BTreeEx.prototype.union = function (other, combineFn) {
+    union(other, combineFn) {
         return (0, union_1.default)(this, other, combineFn);
-    };
+    }
     /**
      * Returns a new tree containing only the keys that are present in this tree but not `other` (set subtraction).
      * Neither input tree is modified.
@@ -187,10 +182,9 @@ var BTreeEx = /** @class */ (function (_super) {
      * @returns A new `BTreeEx` representing `this \ other`.
      * @throws Error if the trees were created with different comparators or max node sizes.
      */
-    BTreeEx.prototype.subtract = function (other) {
+    subtract(other) {
         return (0, subtract_1.default)(this, other);
-    };
-    return BTreeEx;
-}(b_tree_1.default));
+    }
+}
 exports.BTreeEx = BTreeEx;
 exports.default = BTreeEx;

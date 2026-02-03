@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var shared_1 = require("./shared");
-var parallelWalk_1 = require("./parallelWalk");
+exports.default = forEachKeyNotIn;
+const shared_1 = require("./shared");
+const parallelWalk_1 = require("./parallelWalk");
 /**
  * Calls the supplied `callback` for each key/value pair that is in `includeTree` but not in `excludeTree`
  * (set subtraction). The callback runs in sorted key order and neither tree is modified.
@@ -17,18 +18,18 @@ var parallelWalk_1 = require("./parallelWalk");
  * @throws Error if the trees were built with different comparators.
  */
 function forEachKeyNotIn(includeTree, excludeTree, callback) {
-    var _includeTree = includeTree;
-    var _excludeTree = excludeTree;
+    const _includeTree = includeTree;
+    const _excludeTree = excludeTree;
     (0, shared_1.checkCanDoSetOperation)(_includeTree, _excludeTree, true);
     if (includeTree.size === 0) {
         return;
     }
-    var finishWalk = function () {
-        var out = false;
+    const finishWalk = () => {
+        let out = false;
         do {
-            var key = (0, parallelWalk_1.getKey)(cursorInclude);
-            var value = cursorInclude.leaf.values[cursorInclude.leafIndex];
-            var result = callback(key, value);
+            const key = (0, parallelWalk_1.getKey)(cursorInclude);
+            const value = cursorInclude.leaf.values[cursorInclude.leafIndex];
+            const result = callback(key, value);
             if (result && result.break) {
                 return result.break;
             }
@@ -36,32 +37,32 @@ function forEachKeyNotIn(includeTree, excludeTree, callback) {
         } while (!out);
         return undefined;
     };
-    var cmp = includeTree._compare;
-    var makePayload = function () { return undefined; };
-    var cursorInclude = (0, parallelWalk_1.createCursor)(_includeTree, makePayload, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop);
+    const cmp = includeTree._compare;
+    const makePayload = () => undefined;
+    let cursorInclude = (0, parallelWalk_1.createCursor)(_includeTree, makePayload, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop);
     if (excludeTree.size === 0) {
         return finishWalk();
     }
-    var cursorExclude = (0, parallelWalk_1.createCursor)(_excludeTree, makePayload, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop);
-    var order = cmp((0, parallelWalk_1.getKey)(cursorInclude), (0, parallelWalk_1.getKey)(cursorExclude));
+    let cursorExclude = (0, parallelWalk_1.createCursor)(_excludeTree, makePayload, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop);
+    let order = cmp((0, parallelWalk_1.getKey)(cursorInclude), (0, parallelWalk_1.getKey)(cursorExclude));
     while (true) {
-        var areEqual = order === 0;
+        const areEqual = order === 0;
         if (areEqual) {
             // Keys are equal, so this key is in both trees and should be skipped.
-            var outInclude = (0, parallelWalk_1.moveForwardOne)(cursorInclude, cursorExclude);
+            const outInclude = (0, parallelWalk_1.moveForwardOne)(cursorInclude, cursorExclude);
             if (outInclude)
                 break;
             order = 1; // include is now ahead of exclude
         }
         else {
             if (order < 0) {
-                var key = (0, parallelWalk_1.getKey)(cursorInclude);
-                var value = cursorInclude.leaf.values[cursorInclude.leafIndex];
-                var result = callback(key, value);
+                const key = (0, parallelWalk_1.getKey)(cursorInclude);
+                const value = cursorInclude.leaf.values[cursorInclude.leafIndex];
+                const result = callback(key, value);
                 if (result && result.break) {
                     return result.break;
                 }
-                var outInclude = (0, parallelWalk_1.moveForwardOne)(cursorInclude, cursorExclude);
+                const outInclude = (0, parallelWalk_1.moveForwardOne)(cursorInclude, cursorExclude);
                 if (outInclude) {
                     break;
                 }
@@ -69,7 +70,7 @@ function forEachKeyNotIn(includeTree, excludeTree, callback) {
             }
             else {
                 // At this point, include is guaranteed to be ahead of exclude.
-                var _a = (0, parallelWalk_1.moveTo)(cursorExclude, cursorInclude, (0, parallelWalk_1.getKey)(cursorInclude), true, areEqual), out = _a[0], nowEqual = _a[1];
+                const [out, nowEqual] = (0, parallelWalk_1.moveTo)(cursorExclude, cursorInclude, (0, parallelWalk_1.getKey)(cursorInclude), true, areEqual);
                 if (out) {
                     // We've reached the end of exclude, so call for all remaining keys in include
                     return finishWalk();
@@ -84,4 +85,3 @@ function forEachKeyNotIn(includeTree, excludeTree, callback) {
         }
     }
 }
-exports.default = forEachKeyNotIn;

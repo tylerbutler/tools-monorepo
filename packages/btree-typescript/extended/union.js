@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var shared_1 = require("./shared");
-var decompose_1 = require("./decompose");
+exports.default = union;
+const shared_1 = require("./shared");
+const decompose_1 = require("./decompose");
 /**
  * Efficiently unions two trees, reusing subtrees wherever possible without mutating either input.
  *
@@ -19,9 +20,9 @@ var decompose_1 = require("./decompose");
 function union(treeA, treeB, combineFn) {
     if (treeA === treeB)
         return treeA.clone();
-    var _treeA = treeA;
-    var _treeB = treeB;
-    var branchingFactor = (0, shared_1.checkCanDoSetOperation)(_treeA, _treeB, false);
+    const _treeA = treeA;
+    const _treeB = treeB;
+    const branchingFactor = (0, shared_1.checkCanDoSetOperation)(_treeA, _treeB, false);
     if (_treeA._root.size() === 0)
         return treeB.clone();
     if (_treeB._root.size() === 0)
@@ -29,8 +30,7 @@ function union(treeA, treeB, combineFn) {
     // Decompose both trees into disjoint subtrees leaves.
     // As many of these as possible will be reused from the original trees, and the remaining
     // will be leaves that are the result of merging intersecting leaves.
-    var decomposed = (0, decompose_1.decompose)(_treeA, _treeB, combineFn);
-    var constructor = treeA.constructor;
+    const decomposed = (0, decompose_1.decompose)(_treeA, _treeB, combineFn);
+    const constructor = treeA.constructor;
     return (0, decompose_1.buildFromDecomposition)(constructor, branchingFactor, decomposed, _treeA._compare, _treeA._maxNodeSize);
 }
-exports.default = union;

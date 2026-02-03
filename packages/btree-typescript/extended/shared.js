@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkCanDoSetOperation = exports.branchingFactorErrorMsg = exports.comparatorErrorMsg = exports.makeLeavesFrom = void 0;
-var b_tree_1 = require("../b+tree");
+exports.branchingFactorErrorMsg = exports.comparatorErrorMsg = void 0;
+exports.makeLeavesFrom = makeLeavesFrom;
+exports.checkCanDoSetOperation = checkCanDoSetOperation;
+const b_tree_1 = require("../b+tree");
 /**
  * Builds leaves from the given parallel arrays of entries.
  * The supplied load factor will be respected if possible, but may be exceeded
@@ -17,27 +19,26 @@ var b_tree_1 = require("../b+tree");
 function makeLeavesFrom(keys, values, maxNodeSize, loadFactor, onLeafCreation) {
     if (keys.length !== values.length)
         throw new Error("makeLeavesFrom: keys and values arrays must be the same length");
-    var totalPairs = keys.length;
+    const totalPairs = keys.length;
     if (totalPairs === 0)
         return 0;
-    var targetSize = Math.ceil(maxNodeSize * loadFactor);
+    const targetSize = Math.ceil(maxNodeSize * loadFactor);
     // This method creates as many evenly filled leaves as possible from
     // the pending entries. All will be > 50% full if we are creating more than one leaf.
-    var remaining = totalPairs;
-    var pairIndex = 0;
-    var remainingLeaves = totalPairs <= maxNodeSize ? 1 : Math.ceil(totalPairs / targetSize);
+    let remaining = totalPairs;
+    let pairIndex = 0;
+    let remainingLeaves = totalPairs <= maxNodeSize ? 1 : Math.ceil(totalPairs / targetSize);
     for (; remainingLeaves > 0; remainingLeaves--) {
-        var chunkSize = Math.ceil(remaining / remainingLeaves);
-        var nextIndex = pairIndex + chunkSize;
-        var chunkKeys = keys.slice(pairIndex, nextIndex);
-        var chunkVals = values.slice(pairIndex, nextIndex);
+        const chunkSize = Math.ceil(remaining / remainingLeaves);
+        const nextIndex = pairIndex + chunkSize;
+        const chunkKeys = keys.slice(pairIndex, nextIndex);
+        const chunkVals = values.slice(pairIndex, nextIndex);
         pairIndex = nextIndex;
         remaining -= chunkSize;
-        var leaf = new b_tree_1.BNode(chunkKeys, chunkVals);
+        const leaf = new b_tree_1.BNode(chunkKeys, chunkVals);
         onLeafCreation(leaf);
     }
 }
-exports.makeLeavesFrom = makeLeavesFrom;
 ;
 /**
  * Error message used when comparators differ between trees.
@@ -56,9 +57,8 @@ exports.branchingFactorErrorMsg = "Cannot perform set operations on BTrees with 
 function checkCanDoSetOperation(treeA, treeB, supportsDifferentBranchingFactors) {
     if (treeA._compare !== treeB._compare)
         throw new Error(exports.comparatorErrorMsg);
-    var branchingFactor = treeA._maxNodeSize;
+    const branchingFactor = treeA._maxNodeSize;
     if (!supportsDifferentBranchingFactors && branchingFactor !== treeB._maxNodeSize)
         throw new Error(exports.branchingFactorErrorMsg);
     return branchingFactor;
 }
-exports.checkCanDoSetOperation = checkCanDoSetOperation;

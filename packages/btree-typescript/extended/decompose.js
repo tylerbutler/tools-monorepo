@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildFromDecomposition = exports.decompose = void 0;
-var b_tree_1 = require("../b+tree");
-var shared_1 = require("./shared");
-var parallelWalk_1 = require("./parallelWalk");
-var decomposeLoadFactor = 0.7;
+exports.decompose = decompose;
+exports.buildFromDecomposition = buildFromDecomposition;
+const b_tree_1 = require("../b+tree");
+const shared_1 = require("./shared");
+const parallelWalk_1 = require("./parallelWalk");
+const decomposeLoadFactor = 0.7;
 /**
  * Decomposes two trees into disjoint nodes. Reuses interior nodes when they do not overlap/intersect with any leaf nodes
  * in the other tree. Overlapping leaf nodes are broken down into new leaf nodes containing merged entries.
@@ -16,15 +17,14 @@ var decomposeLoadFactor = 0.7;
  * Note: some of the returned leaves may be underfilled.
  * @internal
  */
-function decompose(left, right, combineFn, ignoreRight) {
-    if (ignoreRight === void 0) { ignoreRight = false; }
-    var maxNodeSize = left._maxNodeSize;
-    var cmp = left._compare;
+function decompose(left, right, combineFn, ignoreRight = false) {
+    const maxNodeSize = left._maxNodeSize;
+    const cmp = left._compare;
     (0, b_tree_1.check)(left._root.size() > 0 && right._root.size() > 0, "decompose requires non-empty inputs");
     // Holds the disjoint nodes that result from decomposition.
     // Stored as parallel arrays of (height, node) to avoid creating many tiny tuples
-    var disjointHeights = [];
-    var disjointNodes = [];
+    const disjointHeights = [];
+    const disjointNodes = [];
     // During the decomposition, leaves that are not disjoint are decomposed into individual entries
     // that accumulate in this array in sorted order. They are flushed into leaf nodes whenever a reused
     // disjoint subtree is added to the disjoint set.
@@ -32,20 +32,22 @@ function decompose(left, right, combineFn, ignoreRight) {
     // An example of this would be a leaf in one tree that contained keys [0, 100, 101, 102].
     // In the other tree, there is a leaf that contains [2, 3, 4, 5]. This leaf can be reused entirely,
     // but the first tree's leaf must be decomposed into [0] and [100, 101, 102]
-    var pendingKeys = [];
-    var pendingValues = [];
-    var tallestIndex = -1, tallestHeight = -1;
+    const pendingKeys = [];
+    const pendingValues = [];
+    let tallestIndex = -1, tallestHeight = -1;
     // During the upward part of the cursor walk, this holds the highest disjoint node seen so far.
     // This is done because we cannot know immediately whether we can add the node to the disjoint set
     // because its ancestor may also be disjoint and should be reused instead.
-    var highestDisjoint = undefined;
-    var minSize = Math.floor(maxNodeSize / 2);
-    var onLeafCreation = function (leaf) {
-        var height = leaf.keys.length < minSize ? -1 : 0;
+    let highestDisjoint 
+    // Have to do this as cast to convince TS it's ever assigned
+    = undefined;
+    const minSize = Math.floor(maxNodeSize / 2);
+    const onLeafCreation = (leaf) => {
+        const height = leaf.keys.length < minSize ? -1 : 0;
         disjointHeights.push(height);
         disjointNodes.push(leaf);
     };
-    var addSharedNodeToDisjointSet = function (node, height) {
+    const addSharedNodeToDisjointSet = (node, height) => {
         // flush pending entries
         (0, shared_1.makeLeavesFrom)(pendingKeys, pendingValues, maxNodeSize, decomposeLoadFactor, onLeafCreation);
         pendingKeys.length = 0;
@@ -65,17 +67,17 @@ function decompose(left, right, combineFn, ignoreRight) {
             tallestHeight = height;
         }
     };
-    var addHighestDisjoint = function () {
+    const addHighestDisjoint = () => {
         if (highestDisjoint !== undefined) {
             addSharedNodeToDisjointSet(highestDisjoint.node, highestDisjoint.height);
             highestDisjoint = undefined;
         }
     };
     // Mark all nodes at or above depthFrom in the cursor spine as disqualified (non-disjoint)
-    var disqualifySpine = function (cursor, depthFrom) {
-        var spine = cursor.spine;
-        for (var i = depthFrom; i >= 0; --i) {
-            var payload = spine[i].payload;
+    const disqualifySpine = (cursor, depthFrom) => {
+        const spine = cursor.spine;
+        for (let i = depthFrom; i >= 0; --i) {
+            const payload = spine[i].payload;
             // Safe to early out because we always disqualify all ancestors of a disqualified node
             // That is correct because every ancestor of a non-disjoint node is also non-disjoint
             // because it must enclose the non-disjoint range.
@@ -85,22 +87,22 @@ function decompose(left, right, combineFn, ignoreRight) {
         }
     };
     // Cursor payload factory
-    var makePayload = function () { return ({ disqualified: false }); };
-    var pushLeafRange = function (leaf, from, toExclusive) {
-        var keys = leaf.keys;
-        var values = leaf.values;
-        for (var i = from; i < toExclusive; ++i) {
+    const makePayload = () => ({ disqualified: false });
+    const pushLeafRange = (leaf, from, toExclusive) => {
+        const keys = leaf.keys;
+        const values = leaf.values;
+        for (let i = from; i < toExclusive; ++i) {
             pendingKeys.push(keys[i]);
             pendingValues.push(values[i]);
         }
     };
-    var onMoveInLeaf = function (leaf, payload, fromIndex, toIndex, startedEqual) {
+    const onMoveInLeaf = (leaf, payload, fromIndex, toIndex, startedEqual) => {
         (0, b_tree_1.check)(payload.disqualified === true, "onMoveInLeaf: leaf must be disqualified");
-        var start = startedEqual ? fromIndex + 1 : fromIndex;
+        const start = startedEqual ? fromIndex + 1 : fromIndex;
         if (start < toIndex)
             pushLeafRange(leaf, start, toIndex);
     };
-    var onExitLeaf = function (leaf, payload, startingIndex, startedEqual, cursorThis) {
+    const onExitLeaf = (leaf, payload, startingIndex, startedEqual, cursorThis) => {
         highestDisjoint = undefined;
         if (!payload.disqualified) {
             highestDisjoint = { node: leaf, height: 0 };
@@ -111,15 +113,15 @@ function decompose(left, right, combineFn, ignoreRight) {
             }
         }
         else {
-            var start = startedEqual ? startingIndex + 1 : startingIndex;
-            var leafSize = leaf.keys.length;
+            const start = startedEqual ? startingIndex + 1 : startingIndex;
+            const leafSize = leaf.keys.length;
             if (start < leafSize)
                 pushLeafRange(leaf, start, leafSize);
         }
     };
-    var onStepUp = function (parent, height, payload, fromIndex, spineIndex, stepDownIndex, cursorThis) {
-        var children = parent.children;
-        var nextHeight = height - 1;
+    const onStepUp = (parent, height, payload, fromIndex, spineIndex, stepDownIndex, cursorThis) => {
+        const children = parent.children;
+        const nextHeight = height - 1;
         if (stepDownIndex !== stepDownIndex /* NaN: still walking up */
             || stepDownIndex === Number.POSITIVE_INFINITY /* target key is beyond edge of tree, done with walk */) {
             if (!payload.disqualified) {
@@ -130,7 +132,7 @@ function decompose(left, right, combineFn, ignoreRight) {
                     // Note: the main btree implementation allows underfilled nodes in general, this algorithm
                     // guarantees that no additional underfilled nodes are created beyond what was already present.
                     if (parent.keys.length < minSize) {
-                        for (var i = fromIndex; i < children.length; ++i)
+                        for (let i = fromIndex; i < children.length; ++i)
                             addSharedNodeToDisjointSet(children[i], nextHeight);
                     }
                     else {
@@ -139,13 +141,13 @@ function decompose(left, right, combineFn, ignoreRight) {
                     highestDisjoint = undefined;
                 }
                 else {
-                    highestDisjoint = { node: parent, height: height };
+                    highestDisjoint = { node: parent, height };
                 }
             }
             else {
                 addHighestDisjoint();
-                var len = children.length;
-                for (var i = fromIndex + 1; i < len; ++i)
+                const len = children.length;
+                for (let i = fromIndex + 1; i < len; ++i)
                     addSharedNodeToDisjointSet(children[i], nextHeight);
             }
         }
@@ -157,11 +159,11 @@ function decompose(left, right, combineFn, ignoreRight) {
                 disqualifySpine(cursorThis, spineIndex);
             }
             addHighestDisjoint();
-            for (var i = fromIndex + 1; i < stepDownIndex; ++i)
+            for (let i = fromIndex + 1; i < stepDownIndex; ++i)
                 addSharedNodeToDisjointSet(children[i], nextHeight);
         }
     };
-    var onStepDown = function (node, height, spineIndex, stepDownIndex, cursorThis) {
+    const onStepDown = (node, height, spineIndex, stepDownIndex, cursorThis) => {
         if (stepDownIndex > 0) {
             // When we step down into a node, we know that we have walked from a key that is less than our target.
             // Because of this, if we are not stepping down into the first child, we know that all children before
@@ -170,13 +172,13 @@ function decompose(left, right, combineFn, ignoreRight) {
             // If a child overlaps, the entire spine overlaps because a parent in a btree always encloses the range
             // of its children.
             disqualifySpine(cursorThis, spineIndex);
-            var children = node.children;
-            var nextHeight = height - 1;
-            for (var i = 0; i < stepDownIndex; ++i)
+            const children = node.children;
+            const nextHeight = height - 1;
+            for (let i = 0; i < stepDownIndex; ++i)
                 addSharedNodeToDisjointSet(children[i], nextHeight);
         }
     };
-    var onEnterLeaf = function (leaf, destIndex, cursorThis, cursorOther) {
+    const onEnterLeaf = (leaf, destIndex, cursorThis, cursorOther) => {
         if (destIndex > 0
             || (0, b_tree_1.areOverlapping)(leaf.minKey(), leaf.maxKey(), (0, parallelWalk_1.getKey)(cursorOther), cursorOther.leaf.maxKey(), cmp)) {
             // Similar logic to the step-down case, except in this case we also know the leaf in the other
@@ -189,32 +191,32 @@ function decompose(left, right, combineFn, ignoreRight) {
         }
     };
     // Need the max key of both trees to perform the "finishing" walk of which ever cursor finishes second
-    var maxKeyLeft = left._root.maxKey();
-    var maxKeyRight = right._root.maxKey();
-    var maxKey = cmp(maxKeyLeft, maxKeyRight) >= 0 ? maxKeyLeft : maxKeyRight;
+    const maxKeyLeft = left._root.maxKey();
+    const maxKeyRight = right._root.maxKey();
+    const maxKey = cmp(maxKeyLeft, maxKeyRight) >= 0 ? maxKeyLeft : maxKeyRight;
     // Initialize cursors at minimum keys.
-    var curA = (0, parallelWalk_1.createCursor)(left, makePayload, onEnterLeaf, onMoveInLeaf, onExitLeaf, onStepUp, onStepDown);
-    var curB;
+    const curA = (0, parallelWalk_1.createCursor)(left, makePayload, onEnterLeaf, onMoveInLeaf, onExitLeaf, onStepUp, onStepDown);
+    let curB;
     if (ignoreRight) {
-        var dummyPayload_1 = { disqualified: true };
-        var onStepUpIgnore = function (_1, _2, _3, _4, spineIndex, stepDownIndex, cursorThis) {
+        const dummyPayload = { disqualified: true };
+        const onStepUpIgnore = (_1, _2, _3, _4, spineIndex, stepDownIndex, cursorThis) => {
             if (stepDownIndex > 0) {
                 disqualifySpine(cursorThis, spineIndex);
             }
         };
-        var onStepDownIgnore = function (_, __, spineIndex, stepDownIndex, cursorThis) {
+        const onStepDownIgnore = (_, __, spineIndex, stepDownIndex, cursorThis) => {
             if (stepDownIndex > 0) {
                 disqualifySpine(cursorThis, spineIndex);
             }
         };
-        var onEnterLeafIgnore = function (leaf, destIndex, _, cursorOther) {
+        const onEnterLeafIgnore = (leaf, destIndex, _, cursorOther) => {
             if (destIndex > 0
                 || (0, b_tree_1.areOverlapping)(leaf.minKey(), leaf.maxKey(), (0, parallelWalk_1.getKey)(cursorOther), cursorOther.leaf.maxKey(), cmp)) {
                 cursorOther.leafPayload.disqualified = true;
                 disqualifySpine(cursorOther, cursorOther.spine.length - 1);
             }
         };
-        curB = (0, parallelWalk_1.createCursor)(right, function () { return dummyPayload_1; }, onEnterLeafIgnore, parallelWalk_1.noop, parallelWalk_1.noop, onStepUpIgnore, onStepDownIgnore);
+        curB = (0, parallelWalk_1.createCursor)(right, () => dummyPayload, onEnterLeafIgnore, parallelWalk_1.noop, parallelWalk_1.noop, onStepUpIgnore, onStepDownIgnore);
     }
     else {
         curB = (0, parallelWalk_1.createCursor)(right, makePayload, onEnterLeaf, onMoveInLeaf, onExitLeaf, onStepUp, onStepDown);
@@ -229,14 +231,14 @@ function decompose(left, right, combineFn, ignoreRight) {
     // The one issue then is detecting any overlaps that occur based on their very initial position (minimum key of each tree).
     // This is handled by the initial disqualification step below, which essentially emulates the step down disqualification for each spine.
     // Initialize disqualification w.r.t. opposite leaf.
-    var initDisqualify = function (cur, other) {
-        var minKey = (0, parallelWalk_1.getKey)(cur);
-        var otherMin = (0, parallelWalk_1.getKey)(other);
-        var otherMax = other.leaf.maxKey();
+    const initDisqualify = (cur, other) => {
+        const minKey = (0, parallelWalk_1.getKey)(cur);
+        const otherMin = (0, parallelWalk_1.getKey)(other);
+        const otherMax = other.leaf.maxKey();
         if ((0, b_tree_1.areOverlapping)(minKey, cur.leaf.maxKey(), otherMin, otherMax, cmp))
             cur.leafPayload.disqualified = true;
-        for (var i = 0; i < cur.spine.length; ++i) {
-            var entry = cur.spine[i];
+        for (let i = 0; i < cur.spine.length; ++i) {
+            const entry = cur.spine[i];
             // Since we are on the left side of the tree, we can use the leaf min key for every spine node
             if ((0, b_tree_1.areOverlapping)(minKey, entry.node.maxKey(), otherMin, otherMax, cmp))
                 entry.payload.disqualified = true;
@@ -244,25 +246,25 @@ function decompose(left, right, combineFn, ignoreRight) {
     };
     initDisqualify(curA, curB);
     initDisqualify(curB, curA);
-    var leading = curA;
-    var trailing = curB;
-    var order = cmp((0, parallelWalk_1.getKey)(leading), (0, parallelWalk_1.getKey)(trailing));
+    let leading = curA;
+    let trailing = curB;
+    let order = cmp((0, parallelWalk_1.getKey)(leading), (0, parallelWalk_1.getKey)(trailing));
     // Walk both cursors in alternating hops
     while (true) {
-        var areEqual = order === 0;
+        const areEqual = order === 0;
         if (areEqual) {
-            var key = (0, parallelWalk_1.getKey)(leading);
-            var vA = curA.leaf.values[curA.leafIndex];
-            var vB = curB.leaf.values[curB.leafIndex];
+            const key = (0, parallelWalk_1.getKey)(leading);
+            const vA = curA.leaf.values[curA.leafIndex];
+            const vB = curB.leaf.values[curB.leafIndex];
             // Perform the actual merge of values here. The cursors will avoid adding a duplicate of this key/value
             // to pending because they respect the areEqual flag during their moves.
-            var combined = combineFn(key, vA, vB);
+            const combined = combineFn(key, vA, vB);
             if (combined !== undefined) {
                 pendingKeys.push(key);
                 pendingValues.push(combined);
             }
-            var outTrailing = (0, parallelWalk_1.moveForwardOne)(trailing, leading);
-            var outLeading = (0, parallelWalk_1.moveForwardOne)(leading, trailing);
+            const outTrailing = (0, parallelWalk_1.moveForwardOne)(trailing, leading);
+            const outLeading = (0, parallelWalk_1.moveForwardOne)(leading, trailing);
             if (outTrailing || outLeading) {
                 if (!outTrailing || !outLeading) {
                     // In these cases, we pass areEqual=false because a return value of "out of tree" means
@@ -281,11 +283,11 @@ function decompose(left, right, combineFn, ignoreRight) {
         }
         else {
             if (order < 0) {
-                var tmp = trailing;
+                const tmp = trailing;
                 trailing = leading;
                 leading = tmp;
             }
-            var _a = (0, parallelWalk_1.moveTo)(trailing, leading, (0, parallelWalk_1.getKey)(leading), true, areEqual), out = _a[0], nowEqual = _a[1];
+            const [out, nowEqual] = (0, parallelWalk_1.moveTo)(trailing, leading, (0, parallelWalk_1.getKey)(leading), true, areEqual);
             if (out) {
                 (0, parallelWalk_1.moveTo)(leading, trailing, maxKey, false, areEqual);
                 break;
@@ -304,17 +306,16 @@ function decompose(left, right, combineFn, ignoreRight) {
     if (tallestHeight < 0 && disjointHeights.length > 0) {
         tallestIndex = 0;
     }
-    return { heights: disjointHeights, nodes: disjointNodes, tallestIndex: tallestIndex };
+    return { heights: disjointHeights, nodes: disjointNodes, tallestIndex };
 }
-exports.decompose = decompose;
 /**
  * Constructs a B-Tree from the result of a decomposition (set of disjoint nodes).
  * @internal
  */
 function buildFromDecomposition(constructor, branchingFactor, decomposed, cmp, maxNodeSize) {
-    var heights = decomposed.heights, nodes = decomposed.nodes, tallestIndex = decomposed.tallestIndex;
+    const { heights, nodes, tallestIndex } = decomposed;
     (0, b_tree_1.check)(heights.length === nodes.length, "Decompose result has mismatched heights and nodes.");
-    var disjointEntryCount = heights.length;
+    const disjointEntryCount = heights.length;
     // Now we have a set of disjoint subtrees and we need to merge them into a single tree.
     // To do this, we start with the tallest subtree from the disjoint set and, for all subtrees
     // to the "right" and "left" of it in sorted order, we append them onto the appropriate side
@@ -323,10 +324,10 @@ function buildFromDecomposition(constructor, branchingFactor, decomposed, cmp, m
     // the leaf level on that side of the tree. Each appended subtree is appended to the node at the
     // same height as itself on the frontier. Each tree is guaranteed to be at most as tall as the
     // current frontier because we start from the tallest subtree and work outward.
-    var initialRoot = nodes[tallestIndex];
-    var frontier = [initialRoot];
-    var rightContext = {
-        branchingFactor: branchingFactor,
+    const initialRoot = nodes[tallestIndex];
+    const frontier = [initialRoot];
+    const rightContext = {
+        branchingFactor,
         spine: frontier,
         sideIndex: getRightmostIndex,
         sideInsertionIndex: getRightInsertionIndex,
@@ -340,14 +341,14 @@ function buildFromDecomposition(constructor, branchingFactor, decomposed, cmp, m
         updateFrontier(rightContext, 0);
         processSide(heights, nodes, tallestIndex + 1, disjointEntryCount, 1, rightContext);
     }
-    var leftContext = {
-        branchingFactor: branchingFactor,
+    const leftContext = {
+        branchingFactor,
         spine: frontier,
         sideIndex: getLeftmostIndex,
         sideInsertionIndex: getLeftmostIndex,
         splitOffSide: splitOffLeftSide,
         balanceLeaves: balanceLeavesLeft,
-        updateMax: parallelWalk_1.noop,
+        updateMax: parallelWalk_1.noop, // left side appending doesn't update max keys,
         mergeLeaves: mergeLeftEntries
     };
     // Process all subtrees to the left of the current tree
@@ -356,25 +357,24 @@ function buildFromDecomposition(constructor, branchingFactor, decomposed, cmp, m
         updateFrontier(leftContext, 0);
         processSide(heights, nodes, tallestIndex - 1, -1, -1, leftContext);
     }
-    var reconstructed = new constructor(undefined, cmp, maxNodeSize);
+    const reconstructed = new constructor(undefined, cmp, maxNodeSize);
     reconstructed._root = frontier[0];
     // Return the resulting tree
     return reconstructed;
 }
-exports.buildFromDecomposition = buildFromDecomposition;
 /**
  * Processes one side (left or right) of the disjoint subtree set during a reconstruction operation.
  * Merges each subtree in the disjoint set from start to end (exclusive) into the given spine.
  * @internal
  */
 function processSide(heights, nodes, start, end, step, context) {
-    var spine = context.spine, sideIndex = context.sideIndex;
+    const { spine, sideIndex } = context;
     // Determine the depth of the first shared node on the frontier.
     // Appending subtrees to the frontier must respect the copy-on-write semantics by cloning
     // any shared nodes down to the insertion point. We track it by depth to avoid a log(n) walk of the
     // frontier for each insertion as that would fundamentally change our asymptotics.
-    var isSharedFrontierDepth = 0;
-    var cur = spine[0];
+    let isSharedFrontierDepth = 0;
+    let cur = spine[0];
     // Find the first shared node on the frontier
     while (!cur.isShared && isSharedFrontierDepth < spine.length - 1) {
         isSharedFrontierDepth++;
@@ -386,20 +386,20 @@ function processSide(heights, nodes, start, end, step, context) {
     // These sizes are flushed upward any time we need to insert at level higher than pending unflushed sizes.
     // E.g. in our example, if we later insert at depth 0, we will add 5 to the node at depth 1 and the root at depth 0 before inserting.
     // This scheme enables us to avoid a log(n) propagation of sizes for each insertion.
-    var unflushedSizes = new Array(spine.length).fill(0); // pre-fill to avoid "holey" array
-    for (var i = start; i != end; i += step) {
-        var currentHeight = spine.length - 1; // height is number of internal levels; 0 means leaf
-        var subtree = nodes[i];
-        var subtreeHeight = heights[i];
-        var isEntryInsertion = subtreeHeight === -1;
+    const unflushedSizes = new Array(spine.length).fill(0); // pre-fill to avoid "holey" array
+    for (let i = start; i != end; i += step) {
+        const currentHeight = spine.length - 1; // height is number of internal levels; 0 means leaf
+        const subtree = nodes[i];
+        const subtreeHeight = heights[i];
+        const isEntryInsertion = subtreeHeight === -1;
         (0, b_tree_1.check)(subtreeHeight <= currentHeight, "Subtree taller than spine during reconstruction.");
         // If subtree height is -1 (indicating underfilled leaf), then this indicates insertion into a leaf
         // otherwise, it points to a node whose children have height === subtreeHeight
-        var insertionDepth = currentHeight - (subtreeHeight + 1);
+        const insertionDepth = currentHeight - (subtreeHeight + 1);
         // Ensure path is unshared before mutation
         ensureNotShared(context, isSharedFrontierDepth, insertionDepth);
-        var insertionCount = void 0; // non-recursive
-        var insertionSize = void 0; // recursive
+        let insertionCount; // non-recursive
+        let insertionSize; // recursive
         if (isEntryInsertion) {
             (0, b_tree_1.check)(subtree.isShared !== true);
             insertionCount = insertionSize = subtree.keys.length;
@@ -408,21 +408,21 @@ function processSide(heights, nodes, start, end, step, context) {
             insertionCount = 1;
             insertionSize = subtree.size();
         }
-        var cascadeEndDepth = findSplitCascadeEndDepth(context, insertionDepth, insertionCount);
+        const cascadeEndDepth = findSplitCascadeEndDepth(context, insertionDepth, insertionCount);
         // Calculate expansion depth (first ancestor with capacity)
-        var expansionDepth = Math.max(0, // -1 indicates we will cascade to new root
+        const expansionDepth = Math.max(0, // -1 indicates we will cascade to new root
         cascadeEndDepth);
         // Update sizes on spine above the shared ancestor before we expand
         updateSizeAndMax(context, unflushedSizes, isSharedFrontierDepth, expansionDepth);
-        var newRoot = undefined;
-        var sizeChangeDepth = void 0;
+        let newRoot = undefined;
+        let sizeChangeDepth;
         if (isEntryInsertion) {
             newRoot = splitUpwardsAndInsertEntries(context, insertionDepth, subtree);
             // if we are inserting entries, we don't have to update a cached size on the leaf as they simply return count of keys
             sizeChangeDepth = insertionDepth - 1;
         }
         else {
-            newRoot = splitUpwardsAndInsert(context, insertionDepth, subtree)[0];
+            [newRoot] = splitUpwardsAndInsert(context, insertionDepth, subtree);
             sizeChangeDepth = insertionDepth;
         }
         if (newRoot) {
@@ -454,23 +454,23 @@ function processSide(heights, nodes, start, end, step, context) {
  * Returns a new root if the root was split, otherwise undefined, and the node into which the subtree was inserted.
  */
 function splitUpwardsAndInsert(context, insertionDepth, subtree) {
-    var spine = context.spine, branchingFactor = context.branchingFactor, sideIndex = context.sideIndex, sideInsertionIndex = context.sideInsertionIndex, splitOffSide = context.splitOffSide, updateMax = context.updateMax;
+    const { spine, branchingFactor, sideIndex, sideInsertionIndex, splitOffSide, updateMax } = context;
     // We must take care to avoid accidental propagation upward of the size of the inserted subtree
     // To do this, we first split nodes upward from the insertion point until we find a node with capacity
     // or create a new root. Since all un-propagated sizes have already been applied to the spine up to this point,
     // inserting at the end ensures no accidental propagation.
     // Depth is -1 if the subtree is the same height as the current tree
     if (insertionDepth >= 0) {
-        var carry = undefined;
+        let carry = undefined;
         // Determine initially where to insert after any splits
-        var insertTarget = spine[insertionDepth];
+        let insertTarget = spine[insertionDepth];
         if (insertTarget.keys.length === branchingFactor) {
             insertTarget = carry = splitOffSide(insertTarget);
         }
-        var d = insertionDepth - 1;
+        let d = insertionDepth - 1;
         while (carry && d >= 0) {
-            var parent = spine[d];
-            var sideChildIndex = sideIndex(parent);
+            const parent = spine[d];
+            const sideChildIndex = sideIndex(parent);
             // Refresh last key since child was split
             updateMax(parent, parent.children[sideChildIndex].maxKey());
             if (parent.keys.length < branchingFactor) {
@@ -484,16 +484,16 @@ function splitUpwardsAndInsert(context, insertionDepth, subtree) {
                 // We split the node into two nodes of 2 children each, but this does *not* modify the size
                 // of its parent. Therefore when we insert the carry into the torn-off node, we must not
                 // increase its size or we will double-count the size of the carry subtree.
-                var tornOff = splitOffSide(parent);
+                const tornOff = splitOffSide(parent);
                 insertNoCount(tornOff, sideInsertionIndex(tornOff), carry);
                 carry = tornOff;
             }
             d--;
         }
-        var newRoot = undefined;
+        let newRoot = undefined;
         if (carry !== undefined) {
             // Expansion reached the root, need a new root to hold carry
-            var oldRoot = spine[0];
+            const oldRoot = spine[0];
             newRoot = new b_tree_1.BNodeInternal([oldRoot], oldRoot.size() + carry.size());
             insertNoCount(newRoot, sideInsertionIndex(newRoot), carry);
         }
@@ -503,8 +503,8 @@ function splitUpwardsAndInsert(context, insertionDepth, subtree) {
     }
     else {
         // Insertion of subtree with equal height to current tree
-        var oldRoot = spine[0];
-        var newRoot = new b_tree_1.BNodeInternal([oldRoot], oldRoot.size());
+        const oldRoot = spine[0];
+        const newRoot = new b_tree_1.BNodeInternal([oldRoot], oldRoot.size());
         insertNoCount(newRoot, sideInsertionIndex(newRoot), subtree);
         return [newRoot, newRoot];
     }
@@ -514,10 +514,10 @@ function splitUpwardsAndInsert(context, insertionDepth, subtree) {
  * Inserts an underfilled leaf (entryContainer), merging with its sibling if possible and splitting upward if not.
  */
 function splitUpwardsAndInsertEntries(context, insertionDepth, entryContainer) {
-    var branchingFactor = context.branchingFactor, spine = context.spine, balanceLeaves = context.balanceLeaves, mergeLeaves = context.mergeLeaves;
-    var entryCount = entryContainer.keys.length;
-    var parent = spine[insertionDepth];
-    var parentSize = parent.keys.length;
+    const { branchingFactor, spine, balanceLeaves, mergeLeaves } = context;
+    const entryCount = entryContainer.keys.length;
+    const parent = spine[insertionDepth];
+    const parentSize = parent.keys.length;
     if (parentSize + entryCount <= branchingFactor) {
         // Sibling has capacity, just merge into it
         mergeLeaves(parent, entryContainer);
@@ -526,9 +526,9 @@ function splitUpwardsAndInsertEntries(context, insertionDepth, entryContainer) {
     else {
         // As with the internal node splitUpwardsAndInsert method, this method also must make all structural changes
         // to the tree before inserting any new content. This is to avoid accidental propagation of sizes upward.
-        var _a = splitUpwardsAndInsert(context, insertionDepth - 1, entryContainer), newRoot = _a[0], grandparent = _a[1];
-        var minSize = Math.floor(branchingFactor / 2);
-        var toTake = minSize - entryCount;
+        const [newRoot, grandparent] = splitUpwardsAndInsert(context, insertionDepth - 1, entryContainer);
+        const minSize = Math.floor(branchingFactor / 2);
+        const toTake = minSize - entryCount;
         balanceLeaves(grandparent, entryContainer, toTake);
         return newRoot;
     }
@@ -538,19 +538,19 @@ function splitUpwardsAndInsertEntries(context, insertionDepth, entryContainer) {
  * Short-circuits if first shared node is deeper than depthTo (the insertion depth).
  */
 function ensureNotShared(context, isSharedFrontierDepth, depthToInclusive) {
-    var spine = context.spine, sideIndex = context.sideIndex;
+    const { spine, sideIndex } = context;
     if (depthToInclusive < 0 /* new root case */)
         return; // nothing to clone when root is a leaf; equal-height case will handle this
     // Clone root if needed first (depth 0)
     if (isSharedFrontierDepth === 0) {
-        var root = spine[0];
+        const root = spine[0];
         spine[0] = root.clone();
     }
     // Clone downward along the frontier to 'depthToInclusive'
-    for (var depth = Math.max(isSharedFrontierDepth, 1); depth <= depthToInclusive; depth++) {
-        var parent = spine[depth - 1];
-        var childIndex = sideIndex(parent);
-        var clone = parent.children[childIndex].clone();
+    for (let depth = Math.max(isSharedFrontierDepth, 1); depth <= depthToInclusive; depth++) {
+        const parent = spine[depth - 1];
+        const childIndex = sideIndex(parent);
+        const clone = parent.children[childIndex].clone();
         parent.children[childIndex] = clone;
         spine[depth] = clone;
     }
@@ -560,20 +560,20 @@ function ensureNotShared(context, isSharedFrontierDepth, depthToInclusive) {
  * Propagates size updates and updates max keys for nodes in (isSharedFrontierDepth, depthTo)
  */
 function updateSizeAndMax(context, unflushedSizes, isSharedFrontierDepth, depthUpToInclusive) {
-    var spine = context.spine, updateMax = context.updateMax;
+    const { spine, updateMax } = context;
     // If isSharedFrontierDepth is <= depthUpToInclusive there is nothing to update because
     // the insertion point is inside a shared node which will always have correct sizes
-    var maxKey = spine[isSharedFrontierDepth].maxKey();
-    var startDepth = isSharedFrontierDepth - 1;
-    for (var depth = startDepth; depth >= depthUpToInclusive; depth--) {
-        var sizeAtLevel = unflushedSizes[depth];
+    const maxKey = spine[isSharedFrontierDepth].maxKey();
+    const startDepth = isSharedFrontierDepth - 1;
+    for (let depth = startDepth; depth >= depthUpToInclusive; depth--) {
+        const sizeAtLevel = unflushedSizes[depth];
         unflushedSizes[depth] = 0; // we are propagating it now
         if (depth > 0) {
             // propagate size upward, will be added lazily, either when a subtree is appended at or above that level or
             // at the end of processing the entire side
             unflushedSizes[depth - 1] += sizeAtLevel;
         }
-        var node = spine[depth];
+        const node = spine[depth];
         node._size += sizeAtLevel;
         // No-op if left side, as max keys in parents are unchanged by appending to the beginning of a node
         updateMax(node, maxKey);
@@ -585,16 +585,16 @@ function updateSizeAndMax(context, unflushedSizes, isSharedFrontierDepth, depthU
  * Extends the frontier array if it is not already as long as the frontier.
  */
 function updateFrontier(context, depthLastValid) {
-    var frontier = context.spine, sideIndex = context.sideIndex;
+    const { spine: frontier, sideIndex } = context;
     (0, b_tree_1.check)(frontier.length > depthLastValid, "updateFrontier: depthLastValid exceeds frontier height");
-    var startingAncestor = frontier[depthLastValid];
+    const startingAncestor = frontier[depthLastValid];
     if (startingAncestor.isLeaf)
         return;
-    var internal = startingAncestor;
-    var cur = internal.children[sideIndex(internal)];
-    var depth = depthLastValid + 1;
+    const internal = startingAncestor;
+    let cur = internal.children[sideIndex(internal)];
+    let depth = depthLastValid + 1;
     while (!cur.isLeaf) {
-        var ni = cur;
+        const ni = cur;
         frontier[depth] = ni;
         cur = ni.children[sideIndex(ni)];
         depth++;
@@ -606,9 +606,9 @@ function updateFrontier(context, depthLastValid) {
  * Find the first ancestor (starting at insertionDepth) with capacity.
  */
 function findSplitCascadeEndDepth(context, insertionDepth, insertionCount) {
-    var spine = context.spine, branchingFactor = context.branchingFactor;
+    const { spine, branchingFactor } = context;
     if (insertionDepth >= 0) {
-        var depth = insertionDepth;
+        let depth = insertionDepth;
         if (spine[depth].keys.length + insertionCount <= branchingFactor) {
             return depth;
         }
@@ -646,19 +646,19 @@ function splitOffLeftSide(node) {
     return node.splitOffLeftSide();
 }
 function balanceLeavesRight(parent, underfilled, toTake) {
-    var siblingIndex = parent.children.length - 2;
-    var sibling = parent.children[siblingIndex];
-    var index = sibling.keys.length - toTake;
-    var movedKeys = sibling.keys.splice(index);
-    var movedValues = sibling.values.splice(index);
+    const siblingIndex = parent.children.length - 2;
+    const sibling = parent.children[siblingIndex];
+    const index = sibling.keys.length - toTake;
+    const movedKeys = sibling.keys.splice(index);
+    const movedValues = sibling.values.splice(index);
     underfilled.keys.unshift.apply(underfilled.keys, movedKeys);
     underfilled.values.unshift.apply(underfilled.values, movedValues);
     parent.keys[siblingIndex] = sibling.maxKey();
 }
 function balanceLeavesLeft(parent, underfilled, toTake) {
-    var sibling = parent.children[1];
-    var movedKeys = sibling.keys.splice(0, toTake);
-    var movedValues = sibling.values.splice(0, toTake);
+    const sibling = parent.children[1];
+    const movedKeys = sibling.keys.splice(0, toTake);
+    const movedValues = sibling.values.splice(0, toTake);
     underfilled.keys.push.apply(underfilled.keys, movedKeys);
     underfilled.values.push.apply(underfilled.values, movedValues);
     parent.keys[0] = underfilled.maxKey();
