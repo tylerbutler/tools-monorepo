@@ -24,6 +24,10 @@ function forEachKeyNotIn(includeTree, excludeTree, callback) {
     if (includeTree.size === 0) {
         return;
     }
+    const cmp = includeTree._compare;
+    const makePayload = () => undefined;
+    let cursorInclude = (0, parallelWalk_1.createCursor)(_includeTree, makePayload, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop);
+    let cursorExclude = (0, parallelWalk_1.createCursor)(_excludeTree, makePayload, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop);
     const finishWalk = () => {
         let out = false;
         do {
@@ -37,13 +41,9 @@ function forEachKeyNotIn(includeTree, excludeTree, callback) {
         } while (!out);
         return undefined;
     };
-    const cmp = includeTree._compare;
-    const makePayload = () => undefined;
-    let cursorInclude = (0, parallelWalk_1.createCursor)(_includeTree, makePayload, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop);
     if (excludeTree.size === 0) {
         return finishWalk();
     }
-    let cursorExclude = (0, parallelWalk_1.createCursor)(_excludeTree, makePayload, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop, parallelWalk_1.noop);
     let order = cmp((0, parallelWalk_1.getKey)(cursorInclude), (0, parallelWalk_1.getKey)(cursorExclude));
     while (true) {
         const areEqual = order === 0;

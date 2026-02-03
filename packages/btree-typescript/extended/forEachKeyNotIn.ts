@@ -28,6 +28,11 @@ export default function forEachKeyNotIn<K, V, R = void>(
     return;
   }
 
+  const cmp = includeTree._compare;
+  const makePayload = (): undefined => undefined;
+  let cursorInclude = createCursor<K, V, undefined>(_includeTree, makePayload, noop, noop, noop, noop, noop);
+  let cursorExclude = createCursor<K, V, undefined>(_excludeTree, makePayload, noop, noop, noop, noop, noop);
+
   const finishWalk = (): R | undefined => {
     let out = false;
     do {
@@ -42,15 +47,10 @@ export default function forEachKeyNotIn<K, V, R = void>(
     return undefined;
   }
 
-  const cmp = includeTree._compare;
-  const makePayload = (): undefined => undefined;
-  let cursorInclude = createCursor<K, V, undefined>(_includeTree, makePayload, noop, noop, noop, noop, noop);
-
   if (excludeTree.size === 0) {
     return finishWalk();
   }
 
-  let cursorExclude = createCursor<K, V, undefined>(_excludeTree, makePayload, noop, noop, noop, noop, noop);
   let order = cmp(getKey(cursorInclude), getKey(cursorExclude));
 
   while (true) {
