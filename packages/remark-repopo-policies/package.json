@@ -1,6 +1,6 @@
 {
 	"name": "remark-repopo-policies",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Remark plugin to generate documentation tables for repopo repository policies",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-repopo-policies#remark-repopo-policies",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
