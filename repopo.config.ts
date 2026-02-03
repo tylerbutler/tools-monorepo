@@ -76,8 +76,6 @@ const config: RepopoConfig = {
 		),
 		makePolicy(SortTsconfigsPolicy),
 		makePolicy(NoPrivateWorkspaceDependencies),
-
-		// Newly enabled policies
 		makePolicy(LicenseFileExists),
 		makePolicy(NoLargeBinaryFiles),
 		makePolicy(PackageEsmType),
