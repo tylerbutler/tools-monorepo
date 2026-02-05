@@ -1,4 +1,4 @@
-import BTree from '../b+tree';
+import { BTree } from '../b+tree';
 import { type BTreeWithInternals, checkCanDoSetOperation } from './shared';
 import { createCursor, moveForwardOne, moveTo, getKey, noop } from "./parallelWalk"
 
@@ -17,7 +17,7 @@ import { createCursor, moveForwardOne, moveTo, getKey, noop } from "./parallelWa
  * @returns The first `break` payload returned by the callback, or `undefined` if the walk finishes.
  * @throws Error if the trees were built with different comparators.
  */
-export default function forEachKeyInBoth<K, V, R = void>(
+export function forEachKeyInBoth<K, V, R = void>(
   treeA: BTree<K, V>,
   treeB: BTree<K, V>,
   callback: (key: K, leftValue: V, rightValue: V) => { break?: R } | void

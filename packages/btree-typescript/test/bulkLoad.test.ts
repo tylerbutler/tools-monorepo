@@ -1,5 +1,5 @@
-import BTree, { BNode, BNodeInternal } from '../b+tree';
-import BTreeEx from '../extended';
+import { BTree, BNode, BNodeInternal } from '../b+tree';
+import { BTreeEx } from '../extended';
 import { bulkLoad } from '../extended/bulkLoad';
 import MersenneTwister from 'mersenne-twister';
 import { makeArray, randomInt } from './shared';

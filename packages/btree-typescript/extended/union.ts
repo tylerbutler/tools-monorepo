@@ -1,4 +1,4 @@
-import BTree from '../b+tree';
+import { BTree } from '../b+tree';
 import { BTreeConstructor, type BTreeWithInternals, checkCanDoSetOperation } from './shared';
 import { decompose, buildFromDecomposition } from "./decompose";
 
@@ -16,7 +16,7 @@ import { decompose, buildFromDecomposition } from "./decompose";
  * @returns A new BTree that contains the unioned key/value pairs.
  * @throws Error if the trees were created with different comparators or max node sizes.
  */
-export default function union<TBTree extends BTree<K, V>, K, V>(
+export function union<TBTree extends BTree<K, V>, K, V>(
   treeA: TBTree,
   treeB: TBTree,
   combineFn: (key: K, leftValue: V, rightValue: V) => V | undefined

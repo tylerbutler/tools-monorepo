@@ -1,4 +1,4 @@
-import BTree from '../b+tree';
+import { BTree } from '../b+tree';
 import { checkCanDoSetOperation, type BTreeWithInternals, BTreeConstructor } from './shared';
 import { buildFromDecomposition, decompose } from './decompose';
 
@@ -16,7 +16,7 @@ import { buildFromDecomposition, decompose } from './decompose';
  * @returns A new tree that contains the subtraction result.
  * @throws Error if the trees were created with different comparators or max node sizes.
  */
-export default function subtract<TBTree extends BTree<K, V>, K, V>(
+export function subtract<TBTree extends BTree<K, V>, K, V>(
   targetTree: TBTree,
   subtractTree: TBTree
 ): TBTree {

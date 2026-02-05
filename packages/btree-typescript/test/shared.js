@@ -15,7 +15,7 @@ exports.populateFuzzTrees = populateFuzzTrees;
 exports.applyRemovalRunsToTree = applyRemovalRunsToTree;
 exports.expectTreeMatchesEntries = expectTreeMatchesEntries;
 exports.forEachFuzzCase = forEachFuzzCase;
-const b_tree_1 = __importDefault(require("../b+tree"));
+const b_tree_1 = require("../b+tree");
 const mersenne_twister_1 = __importDefault(require("mersenne-twister"));
 const rand = new mersenne_twister_1.default(1234);
 const compareNumbers = (a, b) => a - b;
@@ -59,7 +59,7 @@ function countTreeNodeStats(tree) {
     };
 }
 function logTreeNodeStats(prefix, stats) {
-    if (stats instanceof b_tree_1.default)
+    if (stats instanceof b_tree_1.BTree)
         stats = countTreeNodeStats(stats);
     const percent = (stats.averageLoadFactor * 100).toFixed(2);
     console.log(`\t${prefix} ${stats.shared}/${stats.total} shared nodes, ` +

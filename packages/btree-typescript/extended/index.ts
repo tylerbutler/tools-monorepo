@@ -1,11 +1,11 @@
-import BTree, { defaultComparator } from '../b+tree';
+import { BTree, defaultComparator } from '../b+tree';
 import type { BTreeWithInternals } from './shared';
-import diffAgainst from './diffAgainst';
-import forEachKeyInBoth from './forEachKeyInBoth';
-import forEachKeyNotIn from './forEachKeyNotIn';
-import intersect from './intersect';
-import subtract from './subtract';
-import union from './union';
+import { diffAgainst } from './diffAgainst';
+import { forEachKeyInBoth } from './forEachKeyInBoth';
+import { forEachKeyNotIn } from './forEachKeyNotIn';
+import { intersect } from './intersect';
+import { subtract } from './subtract';
+import { union } from './union';
 import { bulkLoadRoot } from './bulkLoad';
 
 /**
@@ -187,4 +187,3 @@ export interface BTreeEx<K = any, V = any> {
   mapValues<R>(callback: (v: V, k: K, counter: number) => R): BTreeEx<K, R>;
 }
 
-export default BTreeEx;

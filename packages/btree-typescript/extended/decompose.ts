@@ -1,4 +1,4 @@
-import BTree, { areOverlapping, BNode, BNodeInternal, check } from '../b+tree';
+import { BTree, areOverlapping, BNode, BNodeInternal, check } from '../b+tree';
 import { BTreeConstructor, makeLeavesFrom, type BTreeWithInternals } from './shared';
 import { createCursor, getKey, Cursor, moveForwardOne, moveTo, noop } from "./parallelWalk";
 

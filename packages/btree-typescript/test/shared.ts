@@ -1,8 +1,8 @@
-import BTree, { BNode, BNodeInternal, IMap } from '../b+tree';
-import SortedArray from '../sorted-array';
+import { BTree, BNode, BNodeInternal, IMap } from '../b+tree';
+import { SortedArray } from '../sorted-array';
 import MersenneTwister from 'mersenne-twister';
 import type { BTreeWithInternals } from '../extended/shared';
-import BTreeEx from '../extended';
+import { BTreeEx } from '../extended';
 
 const rand = new MersenneTwister(1234);
 export const compareNumbers = (a: number, b: number) => a - b;
