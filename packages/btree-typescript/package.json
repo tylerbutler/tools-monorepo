@@ -3,8 +3,30 @@
   "version": "2.1.0",
   "description": "A sorted list of key-value pairs in a fast, typed in-memory B+ tree with a powerful API.",
   "sideEffects": false,
+  "type": "commonjs",
   "main": "b+tree.js",
-  "typings": "b+tree",
+  "types": "b+tree.d.ts",
+  "exports": {
+    ".": {
+      "types": "./b+tree.d.ts",
+      "default": "./b+tree.js"
+    },
+    "./extended": {
+      "types": "./extended/index.d.ts",
+      "default": "./extended/index.js"
+    },
+    "./extended/*": {
+      "types": "./extended/*.d.ts",
+      "default": "./extended/*.js"
+    },
+    "./sorted-array": {
+      "types": "./sorted-array.d.ts",
+      "default": "./sorted-array.js"
+    },
+    "./interfaces": {
+      "types": "./interfaces.d.ts"
+    }
+  },
   "scripts": {
     "test": "tsc && echo //ts-jest-issue-657 >interfaces.js && jest",
     "build": "tsc && npm run minify",
