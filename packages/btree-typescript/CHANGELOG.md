@@ -1,5 +1,11 @@
 # @tylerbu/sorted-btree-es6
 
+## 2.1.1
+
+### Patch Changes
+
+- Add proper package.json exports configuration with subpath exports for extended modules, sorted-array, and interfaces. _[`#609`](https://github.com/tylerbutler/tools-monorepo/pull/609) [`d6e61b1`](https://github.com/tylerbutler/tools-monorepo/commit/d6e61b186ff4c30c6cc66aa0cee7507b82efe0e8) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 2.1.0
 
 ### Minor Changes
