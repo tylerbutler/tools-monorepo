@@ -1,6 +1,6 @@
-import BTree from '../b+tree';
-import BTreeEx from '../extended';
-import diffAgainst from '../extended/diffAgainst';
+import { BTree } from '../b+tree';
+import { BTreeEx } from '../extended';
+import { diffAgainst } from '../extended/diffAgainst';
 
 var test: (name: string, f: () => void) => void = it;
 

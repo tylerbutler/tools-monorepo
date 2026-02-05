@@ -1,4 +1,4 @@
-import BTreeEx from '../extended';
+import { BTreeEx } from '../extended';
 import MersenneTwister from 'mersenne-twister';
 import {
   expectTreeMatchesEntries,

@@ -1,7 +1,7 @@
-import BTree, { IMap } from '../b+tree';
-import SortedArray from '../sorted-array';
+import { BTree, IMap } from '../b+tree';
+import { SortedArray } from '../sorted-array';
 import MersenneTwister from 'mersenne-twister';
-import BTreeEx from '../extended';
+import { BTreeEx } from '../extended';
 export declare const compareNumbers: (a: number, b: number) => number;
 export type TreeNodeStats = {
     total: number;

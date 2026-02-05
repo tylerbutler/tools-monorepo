@@ -1,6 +1,6 @@
-import BTreeEx from '../extended';
-import forEachKeyNotIn from '../extended/forEachKeyNotIn';
-import subtract from '../extended/subtract';
+import { BTreeEx } from '../extended';
+import { forEachKeyNotIn } from '../extended/forEachKeyNotIn';
+import { subtract } from '../extended/subtract';
 import { comparatorErrorMsg, branchingFactorErrorMsg } from '../extended/shared';
 import MersenneTwister from 'mersenne-twister';
 import {

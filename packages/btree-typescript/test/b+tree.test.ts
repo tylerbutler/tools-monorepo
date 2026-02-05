@@ -1,6 +1,6 @@
-import BTree, { IMap, defaultComparator, simpleComparator, areOverlapping } from '../b+tree';
-import BTreeEx from '../extended';
-import SortedArray from '../sorted-array';
+import { BTree, IMap, defaultComparator, simpleComparator, areOverlapping } from '../b+tree';
+import { BTreeEx } from '../extended';
+import { SortedArray } from '../sorted-array';
 import { addToBoth, expectTreeEqualTo, randInt } from './shared';
 
 var test: (name:string,f:()=>void)=>void = it;

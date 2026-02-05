@@ -1,4 +1,4 @@
-import BTree, { BNode, BNodeInternal, check, fixMaxSize, sumChildSizes } from '../b+tree';
+import { BTree, BNode, BNodeInternal, check, fixMaxSize, sumChildSizes } from '../b+tree';
 import { makeLeavesFrom as makeAllLeafNodes, type BTreeWithInternals } from './shared';
 
 /**
