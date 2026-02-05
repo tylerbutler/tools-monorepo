@@ -1,5 +1,51 @@
 # repopo
 
+## 0.9.0
+
+### Minor Changes
+
+- Make `description` required on PolicyDefinition _[`#594`](https://github.com/tylerbutler/tools-monorepo/pull/594) [`c3d1b65`](https://github.com/tylerbutler/tools-monorepo/commit/c3d1b65299f58b9fa605ebd18e7fb4346ae7745f) [@tylerbutler](https://github.com/tylerbutler)_
+
+  BREAKING CHANGE: `PolicyDefinition.description` is now required (was optional). All policies must include a description that explains their purpose.
+
+  All built-in policies now include descriptions.
+
+- Use object parameters for policy factory functions and Policy class _[`#594`](https://github.com/tylerbutler/tools-monorepo/pull/594) [`c3d1b65`](https://github.com/tylerbutler/tools-monorepo/commit/c3d1b65299f58b9fa605ebd18e7fb4346ae7745f) [@tylerbutler](https://github.com/tylerbutler)_
+
+  BREAKING CHANGES:
+  - `makePolicyDefinition()` now takes an object argument: `{ name, description, match, handler, defaultConfig?, resolver? }`
+  - `definePackagePolicy()` now takes an object argument: `{ name, description, handler }`
+  - `defineFileHeaderPolicy()` now takes an object argument: `{ name, description, config }`
+  - `Policy` class constructor now takes a `PolicyDefinition` object instead of positional arguments
+
+  This change makes it easier to add new optional properties in the future without breaking changes.
+
+  New exports:
+  - `makePolicyDefinition` function (previously internal)
+  - `PolicyDefinitionInput` type
+  - `DefinePackagePolicyArgs` interface
+  - `DefineFileHeaderPolicyArgs` interface
+
+### Patch Changes
+
+- Refactor to use Effection 4 for structured concurrency _[`#379`](https://github.com/tylerbutler/tools-monorepo/pull/379) [`1582ad1`](https://github.com/tylerbutler/tools-monorepo/commit/1582ad1abc79b211492dba2e5172e995c9c47fe0) [@tylerbutler](https://github.com/tylerbutler)_
+  - Replace manual async handling with Effection's structured concurrency primitives
+  - Policy handlers now support generator functions for better cancellation and resource management
+  - Improved internal architecture for concurrent policy execution
+  - Added comprehensive test coverage for async/generator patterns
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`c577266`](https://github.com/tylerbutler/tools-monorepo/commit/c577266129da545000aea343256b06129a243987)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.1`
+
+</details>
+
 ## 0.8.0
 
 ### Minor Changes

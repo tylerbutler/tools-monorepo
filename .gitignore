@@ -36,3 +36,17 @@ coverage/
 **/.claude/settings.local.json
 **/CLAUDE.md
 .serena
+
+# Added by repopo RequiredGitignorePatterns policy
+# Dependencies
+node_modules/
+# Environment files
+.env
+# Environment files
+.env.*
+# Allow example env file
+!.env.example
+# macOS system files
+.DS_Store
+# Windows system files
+Thumbs.db

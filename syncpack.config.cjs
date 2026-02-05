@@ -2,6 +2,9 @@
 
 /** @type {import("syncpack").RcFile} */
 const config = {
+	lintFormatting: false,
+	// Exclude vendored packages (git subrepo)
+	filter: "!btree-typescript",
 	dependencyGroups: [
 		{
 			aliasName: "fluidframework",
