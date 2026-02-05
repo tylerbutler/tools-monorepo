@@ -83,7 +83,7 @@
     "bintrees": "^1.0.2",
     "collections": "^5.1.13",
     "functional-red-black-tree": "^1.0.1",
-    "jest": "^29.7.0",
+    "jest": "^30.2.0",
     "mersenne-twister": "^1.1.0",
     "rimraf": "^6.0.0",
     "testpack-cli": "^1.1.4",
