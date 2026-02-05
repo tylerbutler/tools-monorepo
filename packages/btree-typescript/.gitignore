@@ -5,6 +5,17 @@
 *.min.js
 .testpack/
 
+# Generated JavaScript (output from tsc)
+b+tree.js
+sorted-array.js
+extended/*.js
+
+# Generated declaration files (output from tsc)
+# Note: interfaces.d.ts is hand-authored and should NOT be ignored
+b+tree.d.ts
+sorted-array.d.ts
+extended/*.d.ts
+
 # Misc
 benchmarks.js
 benchmarks.d.ts
