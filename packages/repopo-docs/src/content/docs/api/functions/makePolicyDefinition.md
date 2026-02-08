@@ -5,11 +5,11 @@ prev: false
 title: "makePolicyDefinition"
 ---
 
-> **makePolicyDefinition**\<`C`\>(`args`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
+> **makePolicyDefinition**\<`C`\>(`args`): [`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
 
-Defined in: [makePolicy.ts:37](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L37)
+Defined in: [makePolicy.ts:162](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L162)
 
-Creates a [PolicyDefinition](/api/interfaces/policydefinition/) from the provided arguments.
+Creates a [PolicyDefinition](/api/type-aliases/policydefinition/) from the provided arguments.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -29,12 +29,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Returns
 
-[`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
-
-## Remarks
-
-This function accepts an object with all policy properties, making it easier
-to add new optional properties in the future without breaking changes.
+[`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
 
 ## Example
 

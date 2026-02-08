@@ -7,9 +7,9 @@ title: "makePolicy"
 
 > **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
 
-Defined in: [makePolicy.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L55)
+Defined in: [makePolicy.ts:188](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L188)
 
-Combine a [PolicyDefinition](/api/interfaces/policydefinition/) with a policy-specific config and other settings to produce a [PolicyInstance](/api/type-aliases/policyinstance/).
+Combine a [PolicyDefinition](/api/type-aliases/policydefinition/) with a policy-specific config and other settings.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -25,7 +25,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### definition
 
-[`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
+[`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
 
 ### config?
 
@@ -38,3 +38,13 @@ This API should not be used in production and may be trimmed from a public relea
 ## Returns
 
 [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
+
+## Remarks
+
+For new code, consider using the `policy` function which has a simpler API.
+
+## Example
+
+```typescript
+makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["bin/*"] })
+```
