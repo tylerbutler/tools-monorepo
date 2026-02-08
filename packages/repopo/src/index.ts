@@ -23,18 +23,33 @@ export {
 	makePolicy,
 	makePolicyDefinition,
 	type PolicyDefinitionInput,
+	type PolicyOptions,
+	policy,
 } from "./makePolicy.js";
-export type {
-	PolicyDefinition,
-	PolicyFailure,
-	PolicyFixResult,
-	PolicyFunctionArguments,
-	PolicyHandler,
-	PolicyHandlerResult,
-	PolicyInstance,
-	PolicyInstanceSettings,
-	PolicyName,
-	PolicyStandaloneResolver,
+export {
+	type ConfiguredPolicy,
+	// Type guards
+	isPolicyError,
+	isPolicyFailure,
+	isPolicyFixResult,
+	// New types
+	Policy,
+	type PolicyArgs,
+	// Legacy types (for backward compatibility)
+	type PolicyDefinition,
+	type PolicyError,
+	type PolicyFailure,
+	type PolicyFixResult,
+	type PolicyFunctionArguments,
+	type PolicyHandler,
+	type PolicyHandlerResult,
+	type PolicyInstance,
+	type PolicyInstanceSettings,
+	type PolicyName,
+	type PolicyResolver,
+	type PolicyResult,
+	type PolicyShape,
+	type PolicyStandaloneResolver,
 } from "./policy.js";
 export {
 	type DefineFileHeaderPolicyArgs,

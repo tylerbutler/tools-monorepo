@@ -2,11 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { EOL as newline } from "node:os";
 import { call } from "effection";
 import { extname } from "pathe";
-import type {
-	PolicyDefinition,
-	PolicyFailure,
-	PolicyFixResult,
-} from "../policy.js";
+import type { PolicyFailure, PolicyFixResult, PolicyShape } from "../policy.js";
 
 const trailingSpaces = /\s*\\r\?\\n/;
 
@@ -108,7 +104,7 @@ export interface DefineFileHeaderPolicyArgs {
  */
 export function defineFileHeaderPolicy(
 	args: DefineFileHeaderPolicyArgs,
-): PolicyDefinition<FileHeaderPolicyConfig> {
+): PolicyShape<FileHeaderPolicyConfig> {
 	const { name, description, config } = args;
 	const pre = config.headerStart?.source ?? "";
 	const start = config.lineStart.source;
@@ -177,3 +173,9 @@ export function defineFileHeaderPolicy(
 		},
 	};
 }
+
+/**
+ * Alias for defineFileHeaderPolicy.
+ * @alpha
+ */
+export const fileHeaderPolicy = defineFileHeaderPolicy;

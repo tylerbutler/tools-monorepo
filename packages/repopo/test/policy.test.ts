@@ -215,11 +215,8 @@ describe("Policy Module", () => {
 			expect(hasPolicy).toBe(true);
 		});
 
-		it("should include PackageScripts policy", () => {
-			const hasPolicy = DefaultPolicies.some(
-				(p) => p.name === "PackageScripts",
-			);
-			expect(hasPolicy).toBe(true);
-		});
+		// Note: PackageScripts was removed from DefaultPolicies as part of API simplification.
+		// It was split into focused policies: RequiredScripts, ExactScripts,
+		// MutuallyExclusiveScripts, ConditionalScripts, ScriptContains
 	});
 });
