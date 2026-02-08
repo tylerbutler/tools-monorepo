@@ -5,9 +5,9 @@ prev: false
 title: "generatePackagePolicy"
 ---
 
-> **generatePackagePolicy**\<`J`, `C`\>(`args`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
+> **generatePackagePolicy**\<`J`, `C`\>(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policyDefiners/definePackagePolicy.ts:84](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L84)
+Defined in: [policyDefiners/definePackagePolicy.ts:93](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L93)
 
 Define a repo policy for package.json files.
 
@@ -33,7 +33,12 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Returns
 
-[`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
+[`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
+
+## Remarks
+
+This is a helper function that creates a policy pre-configured to match
+package.json files. The handler receives the parsed JSON content.
 
 ## Example
 
@@ -41,9 +46,9 @@ This API should not be used in production and may be trimmed from a public relea
 const MyPackagePolicy = definePackagePolicy({
   name: "MyPackagePolicy",
   description: "Ensures package.json has required fields",
-  handler: function* (json, { file }) {
+  handler: async (json, { file }) => {
     if (!json.name) {
-      return { name: "MyPackagePolicy", file, errorMessages: ["Missing name"] };
+      return { error: "Missing name", fixable: false };
     }
     return true;
   },

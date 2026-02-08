@@ -1,9 +1,9 @@
 #!/usr/bin/env ts-node
-import BTree from '.';
-import BTreeEx from './extended';
-import SortedArray from './sorted-array';
-import forEachKeyNotIn from './extended/forEachKeyNotIn';
-import subtract from './extended/subtract';
+import { BTree } from '.';
+import { BTreeEx } from './extended';
+import { SortedArray } from './sorted-array';
+import { forEachKeyNotIn } from './extended/forEachKeyNotIn';
+import { subtract } from './extended/subtract';
 // Note: The `bintrees` package also includes a `BinTree` type which turned
 // out to be an unbalanced binary tree. It is faster than `RBTree` for
 // randomized data, but it becomes extremely slow when filled with sorted 

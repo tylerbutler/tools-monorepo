@@ -5,7 +5,7 @@ prev: false
 title: "fromFluidHandlers"
 ---
 
-> **fromFluidHandlers**(`fluidHandlers`, `options?`): [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`undefined`\>[]
+> **fromFluidHandlers**(`fluidHandlers`, `options?`): [`PolicyDefinition`](/api/type-aliases/policydefinition/)[]
 
 Defined in: [adapters/fluidFramework.ts:200](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L200)
 
@@ -34,7 +34,7 @@ Optional configuration applied to all conversions.
 
 ## Returns
 
-[`PolicyDefinition`](/api/interfaces/policydefinition/)\<`undefined`\>[]
+[`PolicyDefinition`](/api/type-aliases/policydefinition/)[]
 
 An array of repopo PolicyDefinitions.
 

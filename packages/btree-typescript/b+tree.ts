@@ -187,7 +187,7 @@ export function fixMaxSize(maxNodeSize?: number) {
  * 
  * @author David Piepgrass
  */
-export default class BTree<K=any, V=any> implements ISortedMapF<K,V>, ISortedMap<K,V>
+export class BTree<K=any, V=any> implements ISortedMapF<K,V>, ISortedMap<K,V>
 {
   private _root: BNode<K, V> = EmptyLeaf as BNode<K,V>;
   _maxNodeSize: number;

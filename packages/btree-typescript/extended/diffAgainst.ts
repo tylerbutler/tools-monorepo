@@ -1,4 +1,4 @@
-import BTree from '../b+tree';
+import { BTree } from '../b+tree';
 import { BNode, BNodeInternal, check } from '../b+tree';
 import { type BTreeWithInternals } from './shared';
 
@@ -17,7 +17,7 @@ import { type BTreeWithInternals } from './shared';
  * @returns The first `break` payload returned by a handler, or `undefined` if no handler breaks.
  * @throws Error if the supplied trees were created with different comparators.
  */
-export default function diffAgainst<K, V, R>(
+export function diffAgainst<K, V, R>(
   _treeA: BTree<K, V>,
   _treeB: BTree<K, V>,
   onlyA?: (k: K, v: V) => { break?: R } | void,

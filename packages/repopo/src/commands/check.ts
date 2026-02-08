@@ -21,7 +21,9 @@ import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
 import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";
 import {
+	isPolicyError,
 	isPolicyFixResult,
+	type PolicyError,
 	type PolicyFailure,
 	type PolicyFixResult,
 	type PolicyHandlerResult,
@@ -269,12 +271,21 @@ export class CheckPolicy<
 				"handle",
 				perfStats,
 				function* () {
-					const handlerResult = policy.handler({
+					const args = {
 						file: relPath,
 						root: gitRoot,
 						resolve,
 						config: policy.config,
-					});
+					};
+
+					// Use normalized _internalHandler if available (from policy() function)
+					// This avoids per-invocation type checking
+					if (policy._internalHandler) {
+						return yield* policy._internalHandler(args);
+					}
+
+					// Fallback for policies not created with policy() function
+					const handlerResult = policy.handler(args);
 
 					// Handle both Operation (generator) and Promise return types
 					if (handlerResult instanceof Promise) {
@@ -312,17 +323,26 @@ export class CheckPolicy<
 			return;
 		}
 
+		// Handle fix results (both legacy and new formats)
 		if (isPolicyFixResult(result)) {
 			this.handleFixResult(result, policy);
-		} else {
-			yield* this.handleFailureResult(
-				result,
-				relPath,
-				policy,
-				perfStats,
-				gitRoot,
-			);
+			return;
 		}
+
+		// Handle new PolicyError with fixed property (fix was attempted)
+		if (isPolicyError(result) && result.fixed !== undefined) {
+			this.handlePolicyErrorFixResult(result, relPath, policy);
+			return;
+		}
+
+		// Handle failure results (PolicyFailure or PolicyError without fix)
+		yield* this.handleFailureResult(
+			result,
+			relPath,
+			policy,
+			perfStats,
+			gitRoot,
+		);
 	}
 
 	private handleFixResult(
@@ -345,8 +365,30 @@ export class CheckPolicy<
 		this.logMessages(messages);
 	}
 
+	private handlePolicyErrorFixResult(
+		result: PolicyError,
+		file: string,
+		policy: PolicyInstance,
+	): void {
+		const messages = new StringBuilder();
+
+		if (result.fixed) {
+			messages.append(
+				`Resolved ${policy.name} policy failure for file: ${file}`,
+			);
+		} else {
+			messages.append(`Error fixing ${policy.name} policy failure in ${file}`);
+			if (result.error) {
+				messages.append(`${newline}\t${result.error}`);
+			}
+			process.exitCode = 1;
+		}
+
+		this.logMessages(messages);
+	}
+
 	private *handleFailureResult(
-		result: PolicyFailure,
+		result: PolicyFailure | PolicyError,
 		relPath: string,
 		policy: PolicyInstance,
 		perfStats: PolicyHandlerPerfStats,
@@ -364,7 +406,7 @@ export class CheckPolicy<
 				messages,
 			);
 		} else {
-			this.logPolicyFailure(result, policy, messages);
+			this.logPolicyFailure(result, relPath, policy, messages);
 		}
 
 		this.logMessages(messages);
@@ -409,18 +451,30 @@ export class CheckPolicy<
 	}
 
 	private logPolicyFailure(
-		result: PolicyFailure,
+		result: PolicyFailure | PolicyError,
+		file: string,
 		policy: PolicyInstance,
 		messages: StringBuilder,
 	): void {
-		const autoFixable = result.autoFixable ? chalk.green(" (autofixable)") : "";
-		messages.append(
-			`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
-		);
-		if (result.errorMessages?.length > 0) {
+		// Handle both legacy PolicyFailure and new PolicyError formats
+		if (isPolicyError(result)) {
+			const autoFixable = result.fixable ? chalk.green(" (autofixable)") : "";
 			messages.append(
-				`${newline}\t${result.errorMessages.join(`${newline}\t`)}`,
+				`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${file}`,
 			);
+			messages.append(`${newline}\t${result.error}`);
+		} else {
+			const autoFixable = result.autoFixable
+				? chalk.green(" (autofixable)")
+				: "";
+			messages.append(
+				`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
+			);
+			if (result.errorMessages?.length > 0) {
+				messages.append(
+					`${newline}\t${result.errorMessages.join(`${newline}\t`)}`,
+				);
+			}
 		}
 		process.exitCode = 1;
 	}

@@ -1,6 +1,6 @@
-import BTree from '../b+tree';
+import { BTree } from '../b+tree';
 import { checkCanDoSetOperation, type BTreeWithInternals, BTreeConstructor } from './shared';
-import forEachKeyInBoth from './forEachKeyInBoth';
+import { forEachKeyInBoth } from './forEachKeyInBoth';
 import { bulkLoadRoot } from './bulkLoad';
 
 /**
@@ -17,7 +17,7 @@ import { bulkLoadRoot } from './bulkLoad';
  * @returns A new tree populated with the intersection.
  * @throws Error if the trees were created with different comparators.
  */
-export default function intersect<TBTree extends BTree<K, V>, K, V>(
+export function intersect<TBTree extends BTree<K, V>, K, V>(
   treeA: TBTree,
   treeB: TBTree,
   combineFn: (key: K, leftValue: V, rightValue: V) => V

@@ -1,5 +1,5 @@
-import BTreeEx from '../extended';
-import intersect from '../extended/intersect';
+import { BTreeEx } from '../extended';
+import { intersect } from '../extended/intersect';
 import { comparatorErrorMsg } from '../extended/shared';
 import MersenneTwister from 'mersenne-twister';
 import {
