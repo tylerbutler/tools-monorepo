@@ -11,6 +11,10 @@ Defined in: [makePolicy.ts:188](https://github.com/tylerbutler/tools-monorepo/bl
 
 Combine a [PolicyDefinition](/api/type-aliases/policydefinition/) with a policy-specific config and other settings.
 
+:::caution[Deprecated]
+Use the `policy` function instead, which has a simpler API.
+:::
+
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
 :::
@@ -38,10 +42,6 @@ This API should not be used in production and may be trimmed from a public relea
 ## Returns
 
 [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
-
-## Remarks
-
-For new code, consider using the `policy` function which has a simpler API.
 
 ## Example
 
