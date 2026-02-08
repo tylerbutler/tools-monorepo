@@ -4,9 +4,9 @@ import { resolve } from "pathe";
 import type { PackageJson } from "type-fest";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
-	PolicyDefinition,
-	PolicyFunctionArguments,
+	PolicyArgs,
 	PolicyHandlerResult,
+	PolicyShape,
 } from "../policy.js";
 
 const { readFile: readJson } = jsonfile;
@@ -25,7 +25,7 @@ const { readFile: readJson } = jsonfile;
  */
 export type PackageJsonHandler<J, C> = (
 	json: J,
-	args: PolicyFunctionArguments<C>,
+	args: PolicyArgs<C>,
 ) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
 
 /**
@@ -60,19 +60,28 @@ export interface DefinePackagePolicyArgs<J, C> {
 	 * The handler function that receives the parsed package.json and policy arguments.
 	 */
 	handler: PackageJsonHandler<J, C>;
+
+	/**
+	 * Optional default configuration for the policy.
+	 */
+	defaultConfig?: C;
 }
 
 /**
  * Define a repo policy for package.json files.
+ *
+ * @remarks
+ * This is a helper function that creates a policy pre-configured to match
+ * package.json files. The handler receives the parsed JSON content.
  *
  * @example
  * ```typescript
  * const MyPackagePolicy = definePackagePolicy({
  *   name: "MyPackagePolicy",
  *   description: "Ensures package.json has required fields",
- *   handler: function* (json, { file }) {
+ *   handler: async (json, { file }) => {
  *     if (!json.name) {
- *       return { name: "MyPackagePolicy", file, errorMessages: ["Missing name"] };
+ *       return { error: "Missing name", fixable: false };
  *     }
  *     return true;
  *   },
@@ -83,17 +92,18 @@ export interface DefinePackagePolicyArgs<J, C> {
  */
 export function definePackagePolicy<J = PackageJson, C = undefined>(
 	args: DefinePackagePolicyArgs<J, C>,
-): PolicyDefinition<C> {
-	const { name, description, handler: packagePolicy } = args;
+): PolicyShape<C> {
+	const { name, description, handler: packageHandler, defaultConfig } = args;
 	return {
 		name,
 		description,
 		match: PackageJsonRegexMatch,
+		defaultConfig,
 		handler: function* (innerArgs) {
 			const json: J = yield* call(() =>
 				readJson(resolve(innerArgs.root, innerArgs.file)),
 			);
-			const result = packagePolicy(json, innerArgs);
+			const result = packageHandler(json, innerArgs);
 
 			// Handle both Operation (generator) and Promise return types
 			if (result instanceof Promise) {
@@ -108,3 +118,9 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 		},
 	};
 }
+
+/**
+ * Alias for definePackagePolicy.
+ * @alpha
+ */
+export const packagePolicy = definePackagePolicy;

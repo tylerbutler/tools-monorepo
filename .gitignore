@@ -45,3 +45,4 @@ node_modules/
 .DS_Store
 # Windows system files
 Thumbs.db
+**/.claude/settings.local.json

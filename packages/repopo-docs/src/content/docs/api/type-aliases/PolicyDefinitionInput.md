@@ -5,11 +5,15 @@ prev: false
 title: "PolicyDefinitionInput"
 ---
 
-> **PolicyDefinitionInput**\<`C`\> = [`PolicyDefinition`](/api/interfaces/policydefinition/)\<`C`\>
+> **PolicyDefinitionInput**\<`C`\> = [`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
 
-Defined in: [makePolicy.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L16)
+Defined in: [makePolicy.ts:144](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L144)
 
 Input arguments for creating a policy definition.
+
+:::caution[Deprecated]
+Use [PolicyShape](/api/interfaces/policyshape/) directly instead.
+:::
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -20,8 +24,3 @@ This API should not be used in production and may be trimmed from a public relea
 ### C
 
 `C` = `undefined`
-
-## Remarks
-
-This type is identical to [PolicyDefinition](/api/interfaces/policydefinition/) but is used as the input type
-for [makePolicyDefinition](/api/functions/makepolicydefinition/) to make the API more explicit.

@@ -33,7 +33,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### args
 
-[`PolicyFunctionArguments`](/api/interfaces/policyfunctionarguments/)\<`C`\>
+[`PolicyArgs`](/api/interfaces/policyargs/)\<`C`\>
 
 ## Returns
 
