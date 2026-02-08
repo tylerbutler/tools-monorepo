@@ -1,9 +1,6 @@
+import { call, type Operation } from "effection";
 import { beforeEach, describe, expect, it } from "vitest";
-import {
-	makePolicy,
-	makePolicyDefinition,
-	policy,
-} from "../src/makePolicy.js";
+import { makePolicy, makePolicyDefinition, policy } from "../src/makePolicy.js";
 import type {
 	PolicyDefinition,
 	PolicyFixResult,
@@ -467,9 +464,13 @@ describe("policy()", () => {
 
 	describe("three-argument form: policy(def, config, options)", () => {
 		it("should accept both config and options", () => {
-			const result = policy(basePolicyDef, { threshold: 100 }, {
-				exclude: [/node_modules/],
-			});
+			const result = policy(
+				basePolicyDef,
+				{ threshold: 100 },
+				{
+					exclude: [/node_modules/],
+				},
+			);
 
 			expect(result.config).toEqual({ threshold: 100 });
 			expect(result.exclude).toEqual([/node_modules/]);
@@ -492,8 +493,8 @@ describe("policy()", () => {
 		});
 
 		it("should normalize generator handlers to _internalHandler", () => {
-			const genHandler: PolicyHandler = function* () {
-				return true as const;
+			const genHandler: PolicyHandler = function* (): Operation<true> {
+				return yield* call(() => Promise.resolve(true as const));
 			};
 			const def: PolicyShape = {
 				name: "GenPolicy",

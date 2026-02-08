@@ -76,9 +76,7 @@ describe("ConditionalScripts policy", () => {
 			const result = await runHandler(
 				ConditionalScripts.handler,
 				createArgs(filePath, {
-					rules: [
-						{ ifPresent: "build", requires: ["clean"] },
-					],
+					rules: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
 			expect(result).toBe(true);
@@ -98,9 +96,7 @@ describe("ConditionalScripts policy", () => {
 			const result = await runHandler(
 				ConditionalScripts.handler,
 				createArgs(filePath, {
-					rules: [
-						{ ifPresent: "build", requires: ["clean"] },
-					],
+					rules: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
 			expect(result).toBe(true);
@@ -117,9 +113,7 @@ describe("ConditionalScripts policy", () => {
 			const result = await runHandler(
 				ConditionalScripts.handler,
 				createArgs(filePath, {
-					rules: [
-						{ ifPresent: "build", requires: ["clean"] },
-					],
+					rules: [{ ifPresent: "build", requires: ["clean"] }],
 				}),
 			);
 			expect(result).not.toBe(true);
@@ -226,9 +220,7 @@ describe("ConditionalScripts policy", () => {
 				createArgs(
 					filePath,
 					{
-						rules: [
-							{ ifPresent: "build", requires: ["clean"] },
-						],
+						rules: [{ ifPresent: "build", requires: ["clean"] }],
 					},
 					true,
 				),

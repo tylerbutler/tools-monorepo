@@ -93,9 +93,7 @@ describe("ScriptContains policy", () => {
 			const result = await runHandler(
 				ScriptContains.handler,
 				createArgs(filePath, {
-					rules: [
-						{ script: "test", mustContain: ["vitest", "run"] },
-					],
+					rules: [{ script: "test", mustContain: ["vitest", "run"] }],
 				}),
 			);
 			expect(result).toBe(true);

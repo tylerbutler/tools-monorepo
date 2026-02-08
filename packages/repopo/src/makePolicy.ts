@@ -176,7 +176,7 @@ export function makePolicyDefinition<C = undefined>(
 /**
  * Combine a {@link PolicyDefinition} with a policy-specific config and other settings.
  *
- * @deprecated Use the {@link policy} function instead, which has a simpler API.
+ * @deprecated Use the `policy` function instead, which has a simpler API.
  *
  * @example
  * ```typescript

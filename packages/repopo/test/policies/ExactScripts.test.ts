@@ -164,11 +164,7 @@ describe("ExactScripts policy", () => {
 
 			const result = await runHandler(
 				ExactScripts.handler,
-				createArgs(
-					filePath,
-					{ scripts: { clean: "rimraf dist" } },
-					true,
-				),
+				createArgs(filePath, { scripts: { clean: "rimraf dist" } }, true),
 			);
 			expect(result).not.toBe(true);
 			if (typeof result !== "boolean") {
@@ -190,11 +186,7 @@ describe("ExactScripts policy", () => {
 
 			const result = await runHandler(
 				ExactScripts.handler,
-				createArgs(
-					filePath,
-					{ scripts: { clean: "rimraf dist" } },
-					true,
-				),
+				createArgs(filePath, { scripts: { clean: "rimraf dist" } }, true),
 			);
 			expect(result).not.toBe(true);
 			if (typeof result !== "boolean") {
