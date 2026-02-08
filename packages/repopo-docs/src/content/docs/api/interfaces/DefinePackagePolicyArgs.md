@@ -25,6 +25,20 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Properties
 
+### defaultConfig?
+
+> `optional` **defaultConfig**: `C`
+
+Defined in: [policyDefiners/definePackagePolicy.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L67)
+
+Optional default configuration for the policy.
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+***
+
 ### description
 
 > **description**: `string`

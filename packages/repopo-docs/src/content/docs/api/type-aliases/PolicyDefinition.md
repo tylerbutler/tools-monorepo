@@ -2,12 +2,12 @@
 editUrl: false
 next: false
 prev: false
-title: "PolicyInstance"
+title: "PolicyDefinition"
 ---
 
-> **PolicyInstance**\<`C`\> = [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+> **PolicyDefinition**\<`C`\> = [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policy.ts:326](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L326)
+Defined in: [policy.ts:269](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L269)
 
 Alias for backward compatibility.
 
