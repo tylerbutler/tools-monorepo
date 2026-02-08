@@ -38,7 +38,7 @@ export interface PolicyArgs<C = void> {
 }
 
 /**
- * Alias for backward compatibility.
+ * @deprecated Use {@link PolicyArgs} instead.
  * @alpha
  */
 export type PolicyFunctionArguments<C> = PolicyArgs<C>;
@@ -89,8 +89,7 @@ export type PolicyResult = true | PolicyError;
 /**
  * A policy failure (legacy format).
  *
- * @remarks
- * New policies should use {@link PolicyError} instead, which has a simpler API.
+ * @deprecated Use {@link PolicyError} instead, which has a simpler API.
  *
  * @alpha
  */
@@ -124,8 +123,7 @@ export interface PolicyFailure {
 /**
  * The result of an automatic fix for a failing policy (legacy format).
  *
- * @remarks
- * New policies should use {@link PolicyError} with `fixed: boolean` instead.
+ * @deprecated Use {@link PolicyError} with `fixed: boolean` instead.
  *
  * @alpha
  */
@@ -172,10 +170,9 @@ export type PolicyHandler<C = unknown | undefined> =
 	| ((args: PolicyArgs<C>) => Operation<PolicyHandlerResult>);
 
 /**
- * A standalone resolver function that can fix policy violations.
+ * A standalone resolver function that can fix policy violations (legacy format).
  *
- * @remarks
- * Resolvers can be implemented as async functions or Effection generators.
+ * @deprecated Use {@link PolicyResolver} instead, which uses {@link PolicyError}.
  *
  * @alpha
  */
@@ -263,7 +260,7 @@ export abstract class Policy<C = void> implements PolicyShape<C> {
 }
 
 /**
- * Alias for backward compatibility.
+ * @deprecated Use {@link PolicyShape} instead.
  * @alpha
  */
 export type PolicyDefinition<C = undefined> = PolicyShape<C>;
@@ -320,7 +317,7 @@ export interface PolicyInstanceSettings<C> {
 }
 
 /**
- * Alias for backward compatibility.
+ * @deprecated Use {@link ConfiguredPolicy} instead.
  * @alpha
  */
 export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
@@ -330,7 +327,9 @@ export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
 // ============================================================================
 
 /**
- * Type guard to check if a result is a PolicyFixResult (legacy).
+ * Type guard to check if a result is a {@link PolicyFixResult} (legacy).
+ *
+ * @deprecated Use {@link isPolicyError} instead when working with the new {@link PolicyError} format.
  *
  * @alpha
  */
@@ -356,7 +355,9 @@ export function isPolicyError(toCheck: any): toCheck is PolicyError {
 }
 
 /**
- * Type guard to check if a result is a PolicyFailure (legacy format).
+ * Type guard to check if a result is a {@link PolicyFailure} (legacy format).
+ *
+ * @deprecated Use {@link isPolicyError} instead when working with the new {@link PolicyError} format.
  *
  * @alpha
  */

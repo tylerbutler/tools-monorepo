@@ -7,7 +7,7 @@ title: "PolicyHandlerResult"
 
 > **PolicyHandlerResult** = `true` \| [`PolicyFailure`](/api/interfaces/policyfailure/) \| [`PolicyFixResult`](/api/interfaces/policyfixresult/) \| [`PolicyError`](/api/interfaces/policyerror/)
 
-Defined in: [policy.ts:144](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L144)
+Defined in: [policy.ts:142](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L142)
 
 Result type that accepts both legacy and new formats.
 

@@ -9,7 +9,9 @@ title: "PolicyFunctionArguments"
 
 Defined in: [policy.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L44)
 
-Alias for backward compatibility.
+:::caution[Deprecated]
+Use [PolicyArgs](/api/interfaces/policyargs/) instead.
+:::
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

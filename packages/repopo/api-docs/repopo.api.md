@@ -80,16 +80,16 @@ export function generatePackagePolicy<J = PackageJson, C = undefined>(args: Defi
 // @alpha
 export function isPolicyError(toCheck: any): toCheck is PolicyError;
 
-// @alpha
+// @alpha @deprecated
 export function isPolicyFailure(toCheck: any): toCheck is PolicyFailure;
 
-// @alpha
+// @alpha @deprecated
 export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult;
 
-// @alpha
+// @alpha @deprecated
 export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
-// @alpha
+// @alpha @deprecated
 export function makePolicyDefinition<C = undefined>(args: PolicyDefinitionInput<C>): PolicyDefinition<C>;
 
 // @alpha
@@ -126,10 +126,10 @@ export interface PolicyArgs<C = void> {
     root: string;
 }
 
-// @alpha
+// @alpha @deprecated (undocumented)
 export type PolicyDefinition<C = undefined> = PolicyShape<C>;
 
-// @alpha
+// @alpha @deprecated
 export type PolicyDefinitionInput<C = undefined> = PolicyDefinition<C>;
 
 // @alpha
@@ -140,7 +140,7 @@ export interface PolicyError {
     manualFix?: string | undefined;
 }
 
-// @alpha
+// @alpha @deprecated
 export interface PolicyFailure {
     autoFixable?: boolean | undefined;
     errorMessages: string[];
@@ -149,12 +149,12 @@ export interface PolicyFailure {
     name: PolicyName;
 }
 
-// @alpha
+// @alpha @deprecated
 export interface PolicyFixResult extends PolicyFailure {
     resolved: boolean;
 }
 
-// @alpha
+// @alpha @deprecated (undocumented)
 export type PolicyFunctionArguments<C> = PolicyArgs<C>;
 
 // @alpha
@@ -163,7 +163,7 @@ export type PolicyHandler<C = unknown | undefined> = ((args: PolicyArgs<C>) => P
 // @alpha
 export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult | PolicyError;
 
-// @alpha
+// @alpha @deprecated (undocumented)
 export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
 
 // @alpha
@@ -196,7 +196,7 @@ export interface PolicyShape<C = void> {
     resolver?: PolicyStandaloneResolver<C> | undefined;
 }
 
-// @alpha
+// @alpha @deprecated
 export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyArgs<C>, "resolve">) => Promise<PolicyFixResult> | Operation<PolicyFixResult>;
 
 // @alpha (undocumented)
