@@ -137,8 +137,7 @@ export function policy<C>(
 /**
  * Input arguments for creating a policy definition.
  *
- * @remarks
- * You can also define policies as object literals with `satisfies Policy<C>`.
+ * @deprecated Use {@link PolicyShape} directly instead.
  *
  * @alpha
  */
@@ -146,6 +145,8 @@ export type PolicyDefinitionInput<C = undefined> = PolicyDefinition<C>;
 
 /**
  * Creates a {@link PolicyDefinition} from the provided arguments.
+ *
+ * @deprecated Define policies as object literals satisfying {@link PolicyShape} instead.
  *
  * @example
  * ```typescript
@@ -175,8 +176,7 @@ export function makePolicyDefinition<C = undefined>(
 /**
  * Combine a {@link PolicyDefinition} with a policy-specific config and other settings.
  *
- * @remarks
- * For new code, consider using the `policy` function which has a simpler API.
+ * @deprecated Use the {@link policy} function instead, which has a simpler API.
  *
  * @example
  * ```typescript
