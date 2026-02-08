@@ -394,6 +394,21 @@ export class LeveeDeltaConnection
 		];
 		this.initialClients = connectedResponse.initialClients;
 
+		// Ensure the self client is in initialClients.
+		// The Fluid Framework's ConnectionManager synthesizes ClientJoin signals from
+		// initialClients to populate the signal audience. If the self client is missing,
+		// the presence system's clientToSessionId mapping won't be initialized, causing
+		// assertion failures in sendQueuedMessage.
+		const selfInClients = this.initialClients.some(
+			(c) => c.clientId === this.clientId,
+		);
+		if (!selfInClients) {
+			this.initialClients.push({
+				clientId: this.clientId,
+				client: this.clientInfo,
+			});
+		}
+
 		this.logger.log(
 			`Connected as client: ${this.clientId}, mode: ${this.mode}, existing: ${this.existing}`,
 		);
