@@ -12,15 +12,15 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  * and orchestration.
  */
 export class CheckNative extends Command {
-	static override readonly summary =
+	public static override readonly summary =
 		"Checks and applies policies using the Rust engine.";
 
-	static override readonly description =
+	public static override readonly description =
 		"Runs the Rust-based repopo-core engine with the Node.js sidecar. " +
 		"This provides the same policy checking as 'check' but with Rust-based " +
 		"file enumeration, regex matching, and orchestration for better performance.";
 
-	static override readonly flags = {
+	public static override readonly flags = {
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -66,15 +66,26 @@ export class CheckNative extends Command {
 
 		const args: string[] = ["check", "--sidecar-path", sidecarPath];
 
-		if (flags.fix) args.push("--fix");
-		if (flags.stdin) args.push("--stdin");
-		if (flags.verbose) args.push("--verbose");
-		if (flags.quiet) args.push("--quiet");
-		if (flags.config) args.push("--config", flags.config);
+		if (flags.fix) {
+			args.push("--fix");
+		}
+		if (flags.stdin) {
+			args.push("--stdin");
+		}
+		if (flags.verbose) {
+			args.push("--verbose");
+		}
+		if (flags.quiet) {
+			args.push("--quiet");
+		}
+		if (flags.config) {
+			args.push("--config", flags.config);
+		}
 
 		return new Promise<void>((resolvePromise, reject) => {
 			const child = spawn(binaryPath, args, {
 				stdio: "inherit",
+				// biome-ignore lint/style/noProcessEnv: Need to pass parent environment to child process
 				env: { ...process.env },
 			});
 
@@ -83,7 +94,7 @@ export class CheckNative extends Command {
 					new Error(
 						`Failed to spawn repopo-core: ${err.message}\n` +
 							`Binary path: ${binaryPath}\n` +
-							`Make sure the Rust binary has been built: cargo build --manifest-path crates/core/Cargo.toml`,
+							"Make sure the Rust binary has been built: cargo build --manifest-path crates/core/Cargo.toml",
 					),
 				);
 			});
@@ -98,7 +109,9 @@ export class CheckNative extends Command {
 	}
 
 	private resolveBinaryPath(explicit?: string): string {
-		if (explicit) return explicit;
+		if (explicit) {
+			return explicit;
+		}
 
 		// Look for the binary relative to the package root
 		const packageRoot = resolve(__dirname, "..", "..");
@@ -115,7 +128,9 @@ export class CheckNative extends Command {
 	}
 
 	private resolveSidecarPath(explicit?: string): string {
-		if (explicit) return explicit;
+		if (explicit) {
+			return explicit;
+		}
 
 		const packageRoot = resolve(__dirname, "..", "..");
 		return resolve(packageRoot, "sidecar", "sidecar.mjs");
