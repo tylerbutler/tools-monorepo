@@ -149,9 +149,7 @@ async function handleLoadConfig(params) {
 			loadedConfig = maybeConfig.config?.default ?? maybeConfig.config;
 		} else {
 			// Use default config
-			const { DefaultPolicyConfig } = await import(
-				"../esm/config.js"
-			);
+			const { DefaultPolicyConfig } = await import("../esm/config.js");
 			loadedConfig = DefaultPolicyConfig;
 		}
 
