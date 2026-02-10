@@ -10,15 +10,10 @@ import {
 } from "@fluidframework/container-loader/internal";
 import type {
 	ConfigTypes,
-	FluidObject,
 	ITelemetryBaseLogger,
 } from "@fluidframework/core-interfaces";
-import { assert } from "@fluidframework/core-utils/internal";
-import type { IClient } from "@fluidframework/driver-definitions";
-import type {
-	IDocumentServiceFactory,
-	IUrlResolver,
-} from "@fluidframework/driver-definitions/internal";
+import type { IClient, IUser } from "@fluidframework/driver-definitions";
+import type { IDocumentServiceFactory } from "@fluidframework/driver-definitions/internal";
 import type {
 	CompatibilityMode,
 	ContainerSchema,
@@ -28,14 +23,14 @@ import {
 	createDOProviderContainerRuntimeFactory,
 	createFluidContainer,
 	createServiceAudience,
-	type IRootDataObject,
 } from "@fluidframework/fluid-static/internal";
-import { RouterliciousDocumentServiceFactory } from "@fluidframework/routerlicious-driver/internal";
 import { wrapConfigProviderWithDefaults } from "@fluidframework/telemetry-utils/internal";
 import {
-	createTinyliciousCreateNewRequest,
-	InsecureTinyliciousUrlResolver,
-} from "@fluidframework/tinylicious-driver/internal";
+	InsecureLeveeTokenProvider,
+	LeveeDocumentServiceFactory,
+	LeveeUrlResolver,
+	type LeveeUser,
+} from "@tylerbu/levee-driver";
 
 import { createLeveeAudienceMember } from "./audience.js";
 import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.js";
@@ -51,9 +46,10 @@ import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.js";
  * ```typescript
  * const client = new LeveeClient({
  *   connection: {
- *     tokenProvider: myTokenProvider,
- *     domain: "localhost",
- *     port: 7070
+ *     httpUrl: "http://localhost:4000",
+ *     socketUrl: "ws://localhost:4000/socket",
+ *     tenantKey: "dev-secret",
+ *     user: { id: "user-123", name: "Test User" },
  *   }
  * });
  *
@@ -64,21 +60,37 @@ import type { LeveeClientProps, LeveeContainerServices } from "./interfaces.js";
  */
 export class LeveeClient {
 	private readonly documentServiceFactory: IDocumentServiceFactory;
-	private readonly urlResolver: IUrlResolver;
+	private readonly urlResolver: LeveeUrlResolver;
 	private readonly logger: ITelemetryBaseLogger | undefined;
+	private readonly user: LeveeUser;
 
 	/**
 	 * Creates a new client instance using configuration parameters.
 	 * @param properties - Optional. Properties for initializing a new LeveeClient instance
 	 */
 	public constructor(properties: LeveeClientProps) {
+		const { connection } = properties;
 		this.logger = properties?.logger;
-		this.urlResolver = new InsecureTinyliciousUrlResolver(
-			properties.connection.port,
-			properties.connection.domain,
+		this.user = connection.user;
+
+		// Create URL resolver with the configured URLs
+		this.urlResolver = new LeveeUrlResolver(
+			connection.socketUrl,
+			connection.httpUrl,
+			connection.tenantId,
 		);
-		this.documentServiceFactory = new RouterliciousDocumentServiceFactory(
-			properties.connection.tokenProvider,
+
+		// Use provided token provider or create an InsecureLeveeTokenProvider
+		const tokenProvider =
+			connection.tokenProvider ??
+			new InsecureLeveeTokenProvider(
+				connection.tenantKey ?? "",
+				connection.user,
+				connection.tenantId,
+			);
+
+		this.documentServiceFactory = new LeveeDocumentServiceFactory(
+			tokenProvider,
 		);
 	}
 
@@ -108,8 +120,6 @@ export class LeveeClient {
 			},
 		});
 
-		const rootDataObject = await this.getContainerEntryPoint(container);
-
 		/**
 		 * See {@link FluidContainer.attach}
 		 */
@@ -119,7 +129,7 @@ export class LeveeClient {
 					"Cannot attach container. Container is not in detached state.",
 				);
 			}
-			const request = createTinyliciousCreateNewRequest();
+			const request = this.urlResolver.createCreateNewRequest();
 			await container.attach(request);
 			if (container.resolvedUrl === undefined) {
 				throw new Error("Resolved Url not available on attached container");
@@ -127,9 +137,8 @@ export class LeveeClient {
 			return container.resolvedUrl.id;
 		};
 
-		const fluidContainer = createFluidContainer<TContainerSchema>({
+		const fluidContainer = await createFluidContainer<TContainerSchema>({
 			container,
-			rootDataObject,
 		});
 		fluidContainer.attach = attach;
 
@@ -157,10 +166,8 @@ export class LeveeClient {
 			...loaderProps,
 			request: { url: id },
 		});
-		const rootDataObject = await this.getContainerEntryPoint(container);
-		const fluidContainer = createFluidContainer<TContainerSchema>({
+		const fluidContainer = await createFluidContainer<TContainerSchema>({
 			container,
-			rootDataObject,
 		});
 		const services = this.getContainerServices(container);
 		return { container: fluidContainer, services };
@@ -192,18 +199,20 @@ export class LeveeClient {
 		};
 
 		const codeLoader = { load };
+		// Cast user to IUser since Fluid Framework passes through additional properties to audience
+		const user = { id: this.user.id, name: this.user.name ?? "" } as IUser;
 		const client: IClient = {
 			details: {
 				capabilities: { interactive: true },
 			},
 			permission: [],
 			scopes: [],
-			user: { id: "" },
+			user,
 			mode: "write",
 		};
 
 		const featureGates: Record<string, ConfigTypes> = {
-			// T9s client requires a write connection by default
+			// Levee requires a write connection by default
 			"Fluid.Container.ForceWriteConnection": true,
 		};
 		const loaderProps = {
@@ -221,16 +230,5 @@ export class LeveeClient {
 		return loaderProps;
 	}
 
-	private async getContainerEntryPoint(
-		container: IContainer,
-	): Promise<IRootDataObject> {
-		const rootDataObject: FluidObject<IRootDataObject> =
-			await container.getEntryPoint();
-		assert(
-			rootDataObject.IRootDataObject !== undefined,
-			0x8_75 /* entryPoint must be of type IRootDataObject */,
-		);
-		return rootDataObject.IRootDataObject;
-	}
 	// #endregion
 }

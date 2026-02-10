@@ -27,7 +27,9 @@
 			"plugin": "@nx/vite/plugin",
 			"exclude": [
 				"packages/dill-docs/**", // Astro site
-				"packages/repopo-docs/**" // Astro site
+				"packages/repopo-docs/**", // Astro site
+				"packages/levee-example/**", // Custom build orchestration
+				"packages/levee-presence-tracker/**" // Custom build orchestration
 			],
 			"options": {
 				"testTargetName": "test:vitest", // Avoid conflicts with existing test:unit
@@ -44,6 +46,8 @@
 		"default": ["{projectRoot}/**/*", "sharedGlobals"],
 		"production": [
 			"default",
+			"!{projectRoot}/esm/**",
+			"!{projectRoot}/dist/**",
 			"!{projectRoot}/**/*.spec.ts",
 			"!{projectRoot}/**/*.test.ts",
 			"!{projectRoot}/test/**/*",
@@ -231,8 +235,10 @@
 		},
 
 		"build:vite": {
+			"dependsOn": ["^build:compile", "build:compile"],
 			"inputs": [
 				"{projectRoot}/src/**",
+				"^production",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
 				"{projectRoot}/public/**",
 				"{projectRoot}/index.html"

@@ -1,0 +1,76 @@
+{
+	"name": "@tylerbu/levee-driver",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Phoenix Channels driver for Fluid Framework (Levee service)",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/levee-driver"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		}
+	},
+	"main": "esm/index.js",
+	"types": "esm/index.d.ts",
+	"files": [
+		"esm"
+	],
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:types": "json2ts schemas/protocol-schema.json -o src/generated/protocol-types.ts --bannerComment \"/* This file is auto-generated from Gleam protocol types. Do not edit manually. */\"",
+		"check:format": "biome format .",
+		"clean": "rimraf esm _temp *.tsbuildinfo",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --write",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:coverage": "vitest run --coverage test",
+		"test:integration": "start-server-and-test 'docker compose up' http://localhost:4000/health 'vitest run test/integration'",
+		"test:integration:down": "docker compose down -v",
+		"test:integration:local": "start-server-and-test 'docker compose -f docker-compose.yml -f docker-compose.local.yml up --build' http://localhost:4000/health 'vitest run test/integration'",
+		"test:integration:logs": "docker compose logs -f levee",
+		"test:integration:up": "docker compose up -d --wait",
+		"test:integration:up:local": "docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --wait --build",
+		"test:vitest": "vitest run test"
+	},
+	"dependencies": {
+		"@fluidframework/core-interfaces": "~2.81.0",
+		"@fluidframework/driver-definitions": "~2.81.0",
+		"@fluidframework/protocol-definitions": "~4.0.0",
+		"@fluidframework/routerlicious-driver": "~2.81.0",
+		"@fluidframework/telemetry-utils": "~2.81.0",
+		"jose": "^6.0.11",
+		"phoenix": "^1.7.14",
+		"uuid": "^11.0.5"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@types/node": "^20.19.25",
+		"@types/phoenix": "^1.6.6",
+		"@types/uuid": "^10.0.0",
+		"@vitest/coverage-v8": "^4.0.18",
+		"json-schema-to-typescript": "^15.0.4",
+		"rimraf": "^6.1.2",
+		"start-server-and-test": "^2.1.3",
+		"typescript": "~5.9.3",
+		"vitest": "^4.0.18"
+	},
+	"nx": {
+		"targets": {
+			"build": {},
+			"test": {},
+			"ci": {}
+		}
+	}
+}

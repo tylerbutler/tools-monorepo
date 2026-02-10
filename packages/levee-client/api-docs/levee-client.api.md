@@ -6,17 +6,25 @@
 
 import { CompatibilityMode } from '@fluidframework/fluid-static';
 import type { ContainerSchema } from '@fluidframework/fluid-static';
+import { LeveeUser as DriverLeveeUser } from '@tylerbu/levee-driver';
 import type { IFluidContainer } from '@fluidframework/fluid-static';
 import type { IMember } from '@fluidframework/fluid-static';
+import { InsecureLeveeTokenProvider } from '@tylerbu/levee-driver';
 import type { IServiceAudience } from '@fluidframework/fluid-static';
 import type { ITelemetryBaseLogger } from '@fluidframework/core-interfaces';
-import type { ITokenProvider } from '@fluidframework/routerlicious-driver';
 import type { IUser } from '@fluidframework/driver-definitions';
+import { LeveeConfig } from '@tylerbu/levee-driver';
+import { RemoteLeveeTokenProvider } from '@tylerbu/levee-driver';
+import type { TokenProvider } from '@tylerbu/levee-driver';
 
 export { CompatibilityMode }
 
+export { DriverLeveeUser }
+
 // @public @sealed
 export type ILeveeAudience = IServiceAudience<LeveeMember>;
+
+export { InsecureLeveeTokenProvider }
 
 // @public
 export class LeveeClient {
@@ -37,11 +45,16 @@ export interface LeveeClientProps {
     readonly logger?: ITelemetryBaseLogger;
 }
 
+export { LeveeConfig }
+
 // @public
 export interface LeveeConnectionConfig {
-    readonly domain?: string;
-    readonly port?: number;
-    readonly tokenProvider: ITokenProvider;
+    readonly httpUrl: string;
+    readonly socketUrl: string;
+    readonly tenantId?: string;
+    readonly tenantKey?: string;
+    readonly tokenProvider?: TokenProvider;
+    readonly user: DriverLeveeUser;
 }
 
 // @public @sealed
@@ -58,5 +71,7 @@ export interface LeveeMember extends IMember {
 export interface LeveeUser extends IUser {
     readonly name: string;
 }
+
+export { RemoteLeveeTokenProvider }
 
 ```

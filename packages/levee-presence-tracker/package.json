@@ -1,0 +1,67 @@
+{
+	"name": "@tylerbu/levee-presence-tracker",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Presence tracker example using Levee client and Fluid Framework presence features",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/levee-presence-tracker"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"build:vite": "vite build",
+		"check:format": "biome format .",
+		"clean": "rimraf esm dist _temp *.tsbuildinfo",
+		"dev": "vite",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --write",
+		"preview": "vite preview",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:e2e": "playwright test",
+		"test:e2e:headed": "playwright test --headed",
+		"test:e2e:ui": "playwright test --ui"
+	},
+	"dependencies": {
+		"@fluidframework/core-interfaces": "~2.81.0",
+		"@fluidframework/core-utils": "~2.81.0",
+		"@fluidframework/datastore": "~2.81.0",
+		"@fluidframework/fluid-static": "~2.81.0",
+		"@fluidframework/presence": "~2.81.0",
+		"@fluidframework/runtime-definitions": "~2.81.0",
+		"@fluidframework/runtime-utils": "~2.81.0",
+		"@fluidframework/shared-object-base": "~2.81.0",
+		"@tylerbu/levee-client": "workspace:^",
+		"emoji-picker-element": "^1.26.1",
+		"fluid-framework": "~2.81.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@playwright/test": "^1.50.0",
+		"@types/node": "^20.19.25",
+		"generate-license-file": "^4.1.1",
+		"rimraf": "^6.1.2",
+		"typescript": "~5.9.3",
+		"vite": "^7.3.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"dependsOn": [
+					"^build",
+					"build:compile",
+					"build:vite"
+				]
+			},
+			"ci": {}
+		}
+	}
+}

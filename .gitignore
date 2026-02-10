@@ -24,13 +24,18 @@ yarn.lock
 # svelte build artifacts
 .svelte-kit
 
+# build artifacts
+esm/
+dist/
+
 # coverage reports
 .coverage
+coverage/
 
 # AI artifacts
-.claude/settings.local.json
-.serena
+**/.claude/settings.local.json
 **/CLAUDE.md
+.serena
 
 # Added by repopo RequiredGitignorePatterns policy
 # Dependencies
