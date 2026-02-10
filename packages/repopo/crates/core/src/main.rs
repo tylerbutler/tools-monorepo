@@ -155,8 +155,8 @@ fn main() -> Result<()> {
                 eprintln!("{} files to check.", file_list.len());
             }
 
-            // Spawn sidecar and run
-            let mut sidecar = ipc::Sidecar::spawn(&sidecar_script)?;
+            // Spawn sidecar with cwd set to git root so relative file paths work
+            let mut sidecar = ipc::Sidecar::spawn(&sidecar_script, &git_root)?;
 
             let success = engine::run_check(
                 &mut sidecar,
@@ -190,7 +190,7 @@ fn main() -> Result<()> {
 
             let git_root = files::find_git_root(&cwd)?;
 
-            let mut sidecar = ipc::Sidecar::spawn(&sidecar_script)?;
+            let mut sidecar = ipc::Sidecar::spawn(&sidecar_script, &git_root)?;
             engine::run_list(&mut sidecar, &git_root, config.as_deref(), verbose)?;
             sidecar.shutdown()?;
         }

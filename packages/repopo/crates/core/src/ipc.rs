@@ -19,9 +19,12 @@ impl Sidecar {
     /// Spawn the Node.js sidecar process.
     ///
     /// The `sidecar_path` should point to the sidecar .mjs file.
-    pub fn spawn(sidecar_path: &str) -> Result<Self> {
+    /// The `git_root` sets the sidecar's working directory so that
+    /// policy handlers can use repo-relative file paths directly.
+    pub fn spawn(sidecar_path: &str, git_root: &str) -> Result<Self> {
         let mut child = Command::new("node")
             .arg(sidecar_path)
+            .current_dir(git_root)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::inherit())
