@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { Command, Flags } from "@oclif/core";
 import { dirname, resolve } from "pathe";
@@ -115,16 +116,15 @@ export class CheckNative extends Command {
 
 		// Look for the binary relative to the package root
 		const packageRoot = resolve(__dirname, "..", "..");
+		const cratesDir = resolve(packageRoot, "crates", "core", "target");
 
-		// Development: debug build
-		return resolve(
-			packageRoot,
-			"crates",
-			"core",
-			"target",
-			"debug",
-			"repopo-core",
-		);
+		// Prefer release build if it exists, fall back to debug
+		const releasePath = resolve(cratesDir, "release", "repopo-core");
+		if (existsSync(releasePath)) {
+			return releasePath;
+		}
+
+		return resolve(cratesDir, "debug", "repopo-core");
 	}
 
 	private resolveSidecarPath(explicit?: string): string {
