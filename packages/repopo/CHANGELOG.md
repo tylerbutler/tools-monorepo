@@ -1,5 +1,26 @@
 # repopo
 
+## 0.10.0
+
+### Minor Changes
+
+- Add new `policy()` function as simplified API for defining repository policies, replacing the more complex `makePolicy`/`makePolicyDefinition` workflow. _[`#617`](https://github.com/tylerbutler/tools-monorepo/pull/617) [`becd406`](https://github.com/tylerbutler/tools-monorepo/commit/becd4064e1434b2384cda991f2d0702d91ed5ed9) [@tylerbutler](https://github.com/tylerbutler)_
+
+  New features:
+  - `policy()` function with multiple overload signatures for defining policies concisely
+  - `PolicyShape` interface for object-literal policy definitions
+  - `ConfiguredPolicy` and `PolicyError` types for the new API surface
+  - Five new script-focused policies: `RequiredScripts`, `ExactScripts`, `MutuallyExclusiveScripts`, `ConditionalScripts`, and `ScriptContains`
+  - `isPolicyError` type guard and `convertLegacyResult`/`convertToPolicyFailure` conversion utilities
+
+  Deprecations (old APIs still work but are marked `@deprecated`):
+  - `makePolicy` → use `policy()` instead
+  - `makePolicyDefinition` → use `PolicyShape` object literals instead
+  - `PolicyFailure` → use `PolicyError` instead
+  - `PolicyInstance` → use `ConfiguredPolicy` instead
+  - `PolicyStandaloneResolver` → use `PolicyResolver` instead
+  - `isPolicyFailure` → use `isPolicyError` instead
+
 ## 0.9.0
 
 ### Minor Changes
