@@ -50,6 +50,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy1: PolicyDefinition = {
 				name: "Policy1",
+				description: "Test policy 1 for parallel execution",
 				match: /\.txt$/,
 				// @ts-expect-error - Generator handlers work with Effection at runtime
 				handler: function* ({ file }) {
@@ -61,6 +62,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy2: PolicyDefinition = {
 				name: "Policy2",
+				description: "Test policy 2 for parallel execution",
 				match: /\.txt$/,
 				// @ts-expect-error - Generator handlers work with Effection at runtime
 				handler: function* ({ file }) {
@@ -118,6 +120,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy: PolicyDefinition = {
 				name: "TestPolicy",
+				description: "Test policy for failure handling",
 				match: /\.txt$/,
 				handler: function* ({ file }) {
 					yield* sleep(5);
@@ -177,6 +180,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy: PolicyDefinition = {
 				name: "CountingPolicy",
+				description: "Test policy for counting processed files",
 				match: /\.txt$/,
 				handler: function* () {
 					yield* sleep(1); // Minimal work
@@ -225,6 +229,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy: PolicyDefinition = {
 				name: "RecoveryPolicy",
+				description: "Test policy for error recovery",
 				match: /\.txt$/,
 				handler: function* () {
 					try {
@@ -263,6 +268,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy: PolicyDefinition = {
 				name: "FixablePolicy",
+				description: "Test policy for auto-fix functionality",
 				match: /\.txt$/,
 				handler: function* ({ file }) {
 					yield* sleep(5);
@@ -310,6 +316,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy: PolicyDefinition = {
 				name: "FailingResolverPolicy",
+				description: "Test policy for resolver failure handling",
 				match: /\.txt$/,
 				// biome-ignore lint/correctness/useYield: Generator used for Effection compatibility
 				handler: function* ({ file }) {
@@ -357,6 +364,7 @@ describe("Effection Integration Tests", () => {
 
 			const operationPolicy: PolicyDefinition = {
 				name: "OperationPolicy",
+				description: "Test policy using operation handlers",
 				match: /file1\.txt$/,
 				handler: function* ({ file }) {
 					yield* sleep(10);
@@ -369,11 +377,12 @@ describe("Effection Integration Tests", () => {
 			// but isn't called directly in this test (would need call() wrapper)
 			const _promisePolicy: PolicyDefinition = {
 				name: "PromisePolicy",
+				description: "Test policy using promise handlers",
 				match: /file2\.txt$/,
 				handler: async ({ file }) => {
 					await new Promise((resolve) => setTimeout(resolve, 10));
 					executionLog.push(`promise-${file}`);
-					return true;
+					return true as const;
 				},
 			};
 
@@ -415,6 +424,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy: PolicyDefinition = {
 				name: "LongRunningPolicy",
+				description: "Test policy for cancellation behavior",
 				match: /\.txt$/,
 				handler: function* () {
 					try {
@@ -468,6 +478,7 @@ describe("Effection Integration Tests", () => {
 
 			const policy: PolicyDefinition<TestConfig> = {
 				name: "ConfiguredPolicy",
+				description: "Test policy for configuration propagation",
 				match: /\.txt$/,
 				handler: function* ({ config }) {
 					yield* sleep(5);

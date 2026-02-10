@@ -89,7 +89,7 @@ MIT
 
 The following npm package may be included in this product:
 
- - sort-package-json@3.5.0
+ - sort-package-json@2.14.0
 
 This package contains the following license:
 

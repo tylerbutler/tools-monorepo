@@ -24,6 +24,16 @@ const config = defineConfig({
 		},
 		coverage: {
 			include: ["src/**"],
+			exclude: [
+				// Non-code files - V8 coverage provider fails to parse them
+				"**/*.json",
+				"**/*.md",
+				"**/*.yaml",
+				"**/*.yml",
+				// Test fixtures are test data, not source code
+				"**/fixtures/**",
+				"**/test/data/**",
+			],
 			provider: "v8",
 			// Include cobertura for better codecov integration
 			reporter: ["text", "json", "html", "cobertura"],

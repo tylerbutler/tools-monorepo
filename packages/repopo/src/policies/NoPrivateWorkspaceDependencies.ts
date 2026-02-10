@@ -1,5 +1,10 @@
 import { readFileSync } from "node:fs";
-import { getWorkspaceGlobs } from "resolve-workspace-root";
+// Use default import + destructure for CJS/ESM interop
+// (resolve-workspace-root is a bundled CJS module)
+import resolveWorkspaceRoot from "resolve-workspace-root";
+
+const { getWorkspaceGlobs } = resolveWorkspaceRoot;
+
 import { globSync } from "tinyglobby";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure } from "../policy.js";
@@ -119,10 +124,12 @@ function isWorkspaceDependency(version: string | undefined): boolean {
 export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 	PackageJson,
 	NoPrivateWorkspaceDependenciesSettings | undefined
->(
-	"NoPrivateWorkspaceDependencies",
+>({
+	name: "NoPrivateWorkspaceDependencies",
+	description:
+		"Prevents publishable packages from depending on private workspace packages that won't be available on npm.",
 	// biome-ignore lint/correctness/useYield: no yield needed
-	function* (json, { file, root, config }) {
+	handler: function* (json, { file, root, config }) {
 		// Private packages can depend on anything - they won't be published
 		if (json.private === true) {
 			return true;
@@ -187,4 +194,4 @@ export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 
 		return true;
 	},
-);
+});

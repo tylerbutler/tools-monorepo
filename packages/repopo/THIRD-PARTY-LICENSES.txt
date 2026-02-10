@@ -27,7 +27,7 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 
 The following npm package may be included in this product:
 
- - @rushstack/node-core-library@5.19.0
+ - @rushstack/node-core-library@5.19.1
 
 This package contains the following license:
 
@@ -142,11 +142,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
+ - effection@4.0.0
  - simple-git@3.30.0
 
-This package contains the following license:
+These packages each contain the following license:
 
 MIT
 

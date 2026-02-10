@@ -14,15 +14,15 @@ Extensible policy enforcement tool that validates and auto-fixes files in git re
 
 ### Policy System
 
-Policies are objects that implement the `PolicyDefinition<C>` interface:
+Policies are objects that implement the `PolicyShape<C>` interface:
 
 ```typescript
-interface PolicyDefinition<C = undefined> {
+interface PolicyShape<C = void> {
   name: PolicyName;              // Display name
-  description?: string;          // Detailed description
+  description: string;           // Detailed description (required)
   match: RegExp;                 // File path regex
-  handler: PolicyHandler<C>;     // Check function
-  resolver?: PolicyStandaloneResolver<C>;  // Optional auto-fix
+  handler: PolicyHandler<C>;     // Check function (async or generator)
+  resolver?: PolicyResolver<C>;  // Optional auto-fix
   defaultConfig?: C;             // Default configuration
 }
 ```
@@ -30,39 +30,57 @@ interface PolicyDefinition<C = undefined> {
 **Policy Execution Flow:**
 1. Enumerate all files in git repo
 2. For each file, test against all policy `match` regexes
-3. If match, call `handler(file, root, resolve, config)`
-4. Handler returns `true` or `PolicyFailure`
-5. If `resolve=true` and policy has `resolver`, auto-fix
+3. If match, call `handler({ file, root, resolve, config })`
+4. Handler returns `true` or `PolicyError`
+5. If `resolve=true`, handler can apply auto-fixes
 
 ### Handler Function
 
+Handlers can be async functions OR Effection generators (for resource cleanup):
+
 ```typescript
-type PolicyHandler<C> = (args: {
+type PolicyHandler<C> =
+  | ((args: PolicyArgs<C>) => Promise<PolicyResult>)
+  | ((args: PolicyArgs<C>) => Operation<PolicyResult>);
+
+interface PolicyArgs<C> {
   file: string;    // Repo-relative path
   root: string;    // Absolute repo root
   resolve: boolean; // If true, apply auto-fixes
   config?: C;      // Policy configuration
-}) => Promise<PolicyHandlerResult>;
+}
 
-type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
+type PolicyResult = true | PolicyError;
 ```
 
 **Return values:**
 - `true` - File passes policy
-- `PolicyFailure` - File fails (includes `autoFixable` flag)
-- `PolicyFixResult` - Failure with `resolved: boolean` field
+- `PolicyError` - File fails with details
+
+### PolicyError Format
+
+The new simplified error format:
+
+```typescript
+interface PolicyError {
+  error: string;        // Single error message
+  fixable?: boolean;    // Can be auto-fixed?
+  fixed?: boolean;      // Was it fixed? (only when resolve=true)
+  manualFix?: string;   // Instructions for manual fix
+}
+```
 
 ### Configuration System
 
-Policies are configured in `repopo.config.ts`:
+Policies are configured in `repopo.config.ts` using the `policy()` function:
 
 ```typescript
-import { makePolicy, type RepopoConfig } from "repopo";
+import { policy, type RepopoConfig } from "repopo";
 import { PackageJsonProperties } from "repopo/policies";
 
 const config: RepopoConfig = {
   policies: [
-    makePolicy(PackageJsonProperties, {
+    policy(PackageJsonProperties, {
       verbatim: {
         license: "MIT",
         author: "Tyler Butler <tyler@tylerbutler.com>",
@@ -76,7 +94,7 @@ export default config;
 
 **File Exclusion:**
 - Global: `RepopoConfig.excludeFiles` (excludes from all policies)
-- Per-policy: `makePolicy(Policy, config, { excludeFiles: [...] })`
+- Per-policy: `policy(Policy, config, { exclude: [...] })`
 
 ## Built-in Policies
 
@@ -88,10 +106,20 @@ export default config;
 - `PackageJsonProperties` - Enforce specific fields/values
 - `PackageJsonRepoDirectoryProperty` - Validate `repository.directory`
 - `PackageJsonSorted` - Enforce sorted keys (uses `sort-package-json`)
-- `PackageScripts` - Validate npm scripts
+
+**Script Validation (Focused Policies):**
+- `RequiredScripts` - Scripts that must exist (with optional defaults)
+- `ExactScripts` - Scripts that must match exactly
+- `MutuallyExclusiveScripts` - At most one script from a group
+- `ConditionalScripts` - If script X exists, script Y must exist
+- `ScriptContains` - Script body must contain substring
 
 **Code Standards:**
 - `NoJsFileExtensions` - Prevent ambiguous `.js` files (require `.mjs`/`.cjs`)
+- `NoLargeBinaryFiles` - Prevent large binary files in repo
+
+**Legacy:**
+- `PackageScripts` - Monolithic script validation (prefer focused policies above)
 
 All built-in policies are **enabled by default** via `DefaultPolicies` array.
 
@@ -99,33 +127,32 @@ All built-in policies are **enabled by default** via `DefaultPolicies` array.
 
 Helper functions to reduce boilerplate for common file types:
 
-### generatePackagePolicy
+### definePackagePolicy
 
-Creates policies for `package.json` files:
+Creates policies for `package.json` files with automatic JSON parsing:
 
 ```typescript
-import { generatePackagePolicy, makePolicy } from "repopo";
+import { definePackagePolicy } from "repopo";
 
-const MyPackagePolicy = generatePackagePolicy(
-  "MyPackagePolicy",
-  async ({ content, resolve, config }) => {
-    // content: parsed package.json
-    // Return true or PolicyFailure
-    if (content.version === "0.0.0") {
+export const MyPackagePolicy = definePackagePolicy({
+  name: "MyPackagePolicy",
+  description: "Validates package.json version",
+  // Handler receives parsed JSON as first argument
+  handler: async (json, { file, resolve }) => {
+    if (json.version === "0.0.0") {
       return {
-        name: "MyPackagePolicy",
-        file: "package.json",
-        errorMessage: "Version must not be 0.0.0",
-        autoFixable: false,
+        error: "Version must not be 0.0.0",
+        fixable: false,
       };
     }
     return true;
-  }
-);
+  },
+});
 
 // Use in config
+import { policy, type RepopoConfig } from "repopo";
 const config: RepopoConfig = {
-  policies: [makePolicy(MyPackagePolicy)],
+  policies: [policy(MyPackagePolicy)],
 };
 ```
 
@@ -134,64 +161,54 @@ const config: RepopoConfig = {
 ### Simple Policy
 
 ```typescript
-import { Policy, type PolicyHandler } from "repopo";
+import type { PolicyShape } from "repopo";
 
-const handler: PolicyHandler = async ({ file, root, resolve, config }) => {
-  const absolutePath = path.join(root, file);
-  const content = await fs.readFile(absolutePath, "utf-8");
+export const NoTodoComments: PolicyShape = {
+  name: "NoTodoComments",
+  description: "Prevents TODO comments in code",
+  match: /\.(ts|js)$/,
+  handler: async ({ file, root }) => {
+    const absolutePath = path.join(root, file);
+    const content = await fs.readFile(absolutePath, "utf-8");
 
-  if (content.includes("TODO")) {
-    return {
-      name: "NoTodoComments",
-      file,
-      errorMessage: "File contains TODO comments",
-      autoFixable: true,
-    };
-  }
+    if (content.includes("TODO")) {
+      return {
+        error: "File contains TODO comments",
+        fixable: true,
+      };
+    }
 
-  return true;
+    return true;
+  },
 };
-
-export const NoTodoComments = new Policy(
-  "NoTodoComments",
-  /\.(ts|js)$/,  // Match TypeScript/JavaScript files
-  handler,
-  "Prevents TODO comments in code",
-);
 ```
 
 ### Policy with Auto-Fix
 
 ```typescript
-const handlerWithFix: PolicyHandler = async ({ file, root, resolve }) => {
-  const absolutePath = path.join(root, file);
-  let content = await fs.readFile(absolutePath, "utf-8");
+export const NoTodoComments: PolicyShape = {
+  name: "NoTodoComments",
+  description: "Prevents TODO comments in code",
+  match: /\.(ts|js)$/,
+  handler: async ({ file, root, resolve }) => {
+    const absolutePath = path.join(root, file);
+    let content = await fs.readFile(absolutePath, "utf-8");
 
-  if (content.includes("TODO")) {
-    if (resolve) {
-      // Auto-fix: remove TODO lines
-      content = content.split("\n")
-        .filter(line => !line.includes("TODO"))
-        .join("\n");
-      await fs.writeFile(absolutePath, content);
+    if (content.includes("TODO")) {
+      if (resolve) {
+        // Auto-fix: remove TODO lines
+        content = content.split("\n")
+          .filter(line => !line.includes("TODO"))
+          .join("\n");
+        await fs.writeFile(absolutePath, content);
+        return { error: "Removed TODO comments", fixed: true };
+      }
 
-      return {
-        name: "NoTodoComments",
-        file,
-        resolved: true,
-        errorMessage: "Removed TODO comments",
-      };
+      return { error: "File contains TODO comments", fixable: true };
     }
 
-    return {
-      name: "NoTodoComments",
-      file,
-      autoFixable: true,
-      errorMessage: "File contains TODO comments",
-    };
-  }
-
-  return true;
+    return true;
+  },
 };
 ```
 
@@ -202,20 +219,17 @@ interface TodoPolicyConfig {
   allowedKeywords: string[];
 }
 
-const handler: PolicyHandler<TodoPolicyConfig> = async ({
-  file, root, resolve, config
-}) => {
-  const allowed = config?.allowedKeywords ?? ["TODO"];
-  // Use config.allowedKeywords in validation logic
+export const ConfigurableTodoPolicy: PolicyShape<TodoPolicyConfig> = {
+  name: "ConfigurableTodoPolicy",
+  description: "Configurable TODO validation",
+  match: /\.(ts|js)$/,
+  defaultConfig: { allowedKeywords: ["TODO", "FIXME"] },
+  handler: async ({ file, root, config }) => {
+    const allowed = config?.allowedKeywords ?? ["TODO"];
+    // Use config.allowedKeywords in validation logic
+    return true;
+  },
 };
-
-export const ConfigurableTodoPolicy = new Policy<TodoPolicyConfig>(
-  "ConfigurableTodoPolicy",
-  /\.(ts|js)$/,
-  handler,
-  "Configurable TODO validation",
-  { allowedKeywords: ["TODO", "FIXME"] }, // defaultConfig
-);
 ```
 
 ## CLI Commands
@@ -270,27 +284,41 @@ pnpm test
 Place `repopo.config.ts` at monorepo root:
 
 ```typescript
-import { makePolicy, type RepopoConfig } from "repopo";
+import { policy, type RepopoConfig } from "repopo";
 import {
   NoJsFileExtensions,
   PackageJsonProperties,
   PackageJsonSorted,
+  RequiredScripts,
 } from "repopo/policies";
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 
 const config: RepopoConfig = {
   policies: [
-    makePolicy(NoJsFileExtensions, undefined, {
-      excludeFiles: [".*/bin/.*js"],  // Exclude bin scripts
-    }),
-    makePolicy(PackageJsonProperties, {
+    // Policy with no config, just exclusions
+    policy(NoJsFileExtensions, { exclude: [".*/bin/.*js"] }),
+
+    // Policy with config
+    policy(PackageJsonProperties, {
       verbatim: {
         license: "MIT",
         author: "Tyler Butler <tyler@tylerbutler.com>",
       },
     }),
-    makePolicy(PackageJsonSorted),
-    makePolicy(SortTsconfigsPolicy),  // External policy from another package
+
+    // Policy with no config (uses defaults)
+    policy(PackageJsonSorted),
+
+    // Focused script policy
+    policy(RequiredScripts, {
+      scripts: [
+        { name: "build", default: "tsc" },
+        { name: "test" },
+      ],
+    }),
+
+    // External policy from another package
+    policy(SortTsconfigsPolicy),
   ],
 };
 
@@ -303,12 +331,12 @@ Other packages can export policies (e.g., `sort-tsconfig` exports `SortTsconfigs
 
 ```typescript
 // In sort-tsconfig package
-export const SortTsconfigsPolicy: PolicyDefinition = { /* ... */ };
+export const SortTsconfigsPolicy: PolicyShape = { /* ... */ };
 
 // In repopo.config.ts
 import { SortTsconfigsPolicy } from "sort-tsconfig";
 const config: RepopoConfig = {
-  policies: [makePolicy(SortTsconfigsPolicy)],
+  policies: [policy(SortTsconfigsPolicy)],
 };
 ```
 
@@ -316,12 +344,14 @@ const config: RepopoConfig = {
 
 ```typescript
 // Core exports
-import { makePolicy, generatePackagePolicy } from "repopo";
+import { policy, generatePackagePolicy } from "repopo";
 import type {
   RepopoConfig,
-  PolicyDefinition,
+  PolicyShape,
   PolicyHandler,
-  PolicyFailure,
+  PolicyArgs,
+  PolicyResult,
+  PolicyError,
 } from "repopo";
 
 // Built-in policies
@@ -332,11 +362,17 @@ import {
   PackageJsonProperties,
   PackageJsonRepoDirectoryProperty,
   PackageJsonSorted,
-  PackageScripts,
+  // Focused script policies
+  RequiredScripts,
+  ExactScripts,
+  MutuallyExclusiveScripts,
+  ConditionalScripts,
+  ScriptContains,
 } from "repopo/policies";
 
-// API utilities
-import type { /* advanced types */ } from "repopo/api";
+// Legacy (for backward compatibility)
+import { makePolicy } from "repopo"; // Use policy() instead
+import type { PolicyFailure, PolicyFixResult } from "repopo";
 ```
 
 ## Testing Policies
@@ -361,15 +397,26 @@ test("MyPolicy fails on invalid file", async () => {
   });
 
   expect(result).not.toBe(true);
-  expect(result).toHaveProperty("errorMessage");
+  expect(result).toHaveProperty("error"); // New format uses "error"
 });
 ```
 
 ## Key Constraints
 
-- Policies must return `true` or `PolicyFailure`/`PolicyFixResult`
+- Policies must return `true` or `PolicyError`
+- Handlers can be async functions or Effection generators
 - File paths in `match` regex are relative to repo root
 - `resolve=true` means auto-fix should be applied (if supported)
 - All built-in policies are enabled by default
 - Config file must have default export of type `RepopoConfig`
 - Policies run on all files in git repo (respecting `.gitignore`)
+- Use `policy()` function to configure policies (not `makePolicy()`)
+
+
+<claude-mem-context>
+# Recent Activity
+
+<!-- This section is auto-generated by claude-mem. Edit content outside the tags. -->
+
+*No recent activity*
+</claude-mem-context>

@@ -7,46 +7,46 @@ This monorepo uses a **hierarchical task structure** where top-level tasks orche
 ### Task Hierarchy
 
 **Orchestration Targets** (defined in root `nx.json` targetDefaults):
-- `build` - Orchestrates all build steps across packages
-- `test` - Runs tests (depends on `build:compile`)
-- `check` - Runs all quality checks
-- `release` - Prepares release artifacts
-- `clean` - Cleanup tasks
-- `dev` - Development servers
+
+* `build` - Orchestrates all build steps across packages
+* `test` - Runs tests (depends on `build:compile`)
+* `check` - Runs all quality checks
+* `release` - Prepares release artifacts
+* `clean` - Cleanup tasks
+* `dev` - Development servers
 
 **Implementation Tasks** (package-specific scripts in `package.json`):
-- `build:compile` - TypeScript compilation
-- `build:api` - API Extractor documentation
-- `build:docs` - TypeDoc generation
-- `build:manifest` - OCLIF manifest (CLI packages)
-- `build:readme` - OCLIF readme (CLI packages)
-- `build:generate` - Command snapshots (CLI packages)
-- `build:site` - Astro builds (doc sites)
-- `build:vite` - Vite builds (Svelte apps)
-- `build:tauri` - Tauri desktop builds
-- `test:unit`, `test:coverage`, `test:e2e` - Test variants
-- `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
+
+* `build:compile` - TypeScript compilation
+* `build:api` - API Extractor documentation
+* `build:docs` - TypeDoc generation
+* `build:manifest` - OCLIF manifest (CLI packages)
+* `build:readme` - OCLIF readme (CLI packages)
+* `build:generate` - Command snapshots (CLI packages)
+* `build:site` - Astro builds (doc sites)
+* `build:vite` - Vite builds (Svelte apps)
+* `build:tauri` - Tauri desktop builds
+* `test:unit`, `test:coverage`, `test:e2e` - Test variants
+* `check:format`, `check:types`, `check:deps`, `check:policy` - Quality checks
 
 ### Package-Type Pipelines
 
 **Libraries** (`fundamentals`, `cli-api`, `levee-client`, etc.):
+
 ```bash
 build:compile → build:api → build:docs
 ```
 
 **CLI Tools** (`cli`, `dill`, `repopo`, `sort-tsconfig`):
+
 ```bash
 build:compile → build:manifest → build:readme → build:generate
 ```
 
-**Documentation Sites** (`ccl-docs`, `dill-docs`, `repopo-docs`):
+**Documentation Sites** (`dill-docs`, `repopo-docs`):
+
 ```bash
 build:site (Astro only)
-```
-
-**Svelte Apps** (`ccl-test-viewer`):
-```bash
-build:vite (or build:tauri for desktop)
 ```
 
 ### Key Principles
@@ -67,6 +67,7 @@ When adding a new task type:
 4. **Define dependencies**: Use `dependsOn` to ensure proper task ordering
 
 Example:
+
 ```jsonc
 // nx.json targetDefaults
 "build:lint": {
@@ -82,6 +83,24 @@ Example:
   }
 }
 ```
+
+## Repository Policies
+
+This monorepo uses [repopo](./packages/repopo) to enforce consistency across packages. Run `pnpm run check:policy` to validate or `pnpm run fix:policy` to auto-fix violations.
+
+<!-- repopo-policies-start -->
+
+| Policy                           | Description      | Auto-Fix | Matches          | Pattern                     | Excluded                                                                              |
+| -------------------------------- | ---------------- | -------- | ---------------- | --------------------------- | ------------------------------------------------------------------------------------- |
+| NoJsFileExtensions               | (no description) | No       | JavaScript files | \`(^|\\/)[^/]+\\.js$\`    | \`.\*/bin/.\*js\`, \`.lighthouserc.js\`, \`svelte.config.js\`, \`tailwind.config.js\` |
+| PackageJsonProperties            | (no description) | No       | JavaScript files | \`(^|\\/)package\\.json\`  | -                                                                                     |
+| PackageJsonRepoDirectoryProperty | (no description) | No       | JavaScript files | \`(^|\\/)package\\.json\`  | -                                                                                     |
+| PackageJsonSorted                | (no description) | No       | JavaScript files | \`(^|\\/)package\\.json\`  | -                                                                                     |
+| PackageScripts                   | (no description) | No       | JavaScript files | \`(^|\\/)package\\.json\`  | \`packages/.\*-docs/package.json\`                                                    |
+| SortTsconfigs                    | (no description) | No       | tsconfig files   | \`.\*\\.?tsconfig\\.json$\` | -                                                                                     |
+| NoPrivateWorkspaceDependencies   | (no description) | No       | JavaScript files | \`(^|\\/)package\\.json\`  | -                                                                                     |
+
+<!-- repopo-policies-end -->
 
 ## TypeScript Native (tsgo) Shadow Testing
 
@@ -123,8 +142,7 @@ pnpm test:tsgo-build:full
 
 The `tsconfig.tsgo.json` solution file includes 17 packages. Excluded packages:
 
-- **Astro sites** (`ccl-docs`, `dill-docs`, `repopo-docs`) - Use special `astro/tsconfigs/*` extends
-- **Svelte apps** (`ccl-test-viewer`) - Different build toolchain
+- **Astro sites** (`dill-docs`, `repopo-docs`) - Use special `astro/tsconfigs/*` extends
 
 The smoke test validates 13 packages by importing compiled output and executing basic functions:
 
@@ -135,7 +153,6 @@ The smoke test validates 13 packages by importing compiled output and executing 
 lilconfig-loader-ts       - TypeScriptLoader class
 xkcd2-api                 - getRandomComicId()
 levee-client              - LeveeClient class
-ccl-ts                    - parse()
 rehype-footnotes          - plugin export
 remark-lazy-links         - plugin export
 remark-shift-headings     - plugin export

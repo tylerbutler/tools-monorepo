@@ -41,7 +41,7 @@
 		"micromatch": "^4.0.8",
 		"pathe": "^2.0.3",
 		"unified": "^11.0.5",
-		"unist-util-visit": "^5.0.0",
+		"unist-util-visit": "^5.1.0",
 		"vfile": "^6.0.3"
 	},
 	"devDependencies": {

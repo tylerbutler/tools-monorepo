@@ -16,9 +16,6 @@
 			"path": "../fundamentals",
 		},
 		{
-			"path": "../ccl-ts",
-		},
-		{
 			"path": "../dill-cli",
 		},
 	],
