@@ -3,8 +3,8 @@ use std::io::{BufRead, BufReader, Write};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 
 use crate::types::{
-    HandlerResult, IpcRequest, IpcResponse, LoadConfigParams, LoadConfigResponse, RunHandlerParams,
-    RunResolverParams,
+    BatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams, LoadConfigResponse,
+    RunHandlerBatchParams, RunHandlerParams, RunResolverBatchParams, RunResolverParams,
 };
 
 /// A connection to the Node.js sidecar process that loads TypeScript
@@ -153,6 +153,84 @@ impl Sidecar {
 
         let result: crate::types::PolicyErrorResult =
             serde_json::from_value(data).context("Failed to parse resolver result")?;
+        Ok(HandlerResult::Failure(result))
+    }
+
+    /// Ask the sidecar to run a policy handler on a batch of files.
+    /// Returns a Vec of (file, HandlerResult) pairs in the same order as the input files.
+    pub fn run_handler_batch(
+        &mut self,
+        policy_name: &str,
+        files: &[String],
+        root: &str,
+        resolve: bool,
+    ) -> Result<Vec<(String, HandlerResult)>> {
+        let req = IpcRequest::RunHandlerBatch(RunHandlerBatchParams {
+            policy_name: policy_name.to_string(),
+            files: files.to_vec(),
+            root: root.to_string(),
+            resolve,
+        });
+
+        let response = self.request(&req)?;
+        let data = response
+            .data
+            .context("No data in run_handler_batch response")?;
+        let batch: BatchResponse =
+            serde_json::from_value(data).context("Failed to parse batch handler response")?;
+
+        batch
+            .results
+            .into_iter()
+            .map(|item| {
+                let result = Self::parse_handler_data(item.data)?;
+                Ok((item.file, result))
+            })
+            .collect()
+    }
+
+    /// Ask the sidecar to run a policy resolver on a batch of files.
+    /// Returns a Vec of (file, HandlerResult) pairs in the same order as the input files.
+    pub fn run_resolver_batch(
+        &mut self,
+        policy_name: &str,
+        files: &[String],
+        root: &str,
+    ) -> Result<Vec<(String, HandlerResult)>> {
+        let req = IpcRequest::RunResolverBatch(RunResolverBatchParams {
+            policy_name: policy_name.to_string(),
+            files: files.to_vec(),
+            root: root.to_string(),
+        });
+
+        let response = self.request(&req)?;
+        let data = response
+            .data
+            .context("No data in run_resolver_batch response")?;
+        let batch: BatchResponse =
+            serde_json::from_value(data).context("Failed to parse batch resolver response")?;
+
+        batch
+            .results
+            .into_iter()
+            .map(|item| {
+                let result = Self::parse_handler_data(item.data)?;
+                Ok((item.file, result))
+            })
+            .collect()
+    }
+
+    /// Parse a single handler/resolver result value into a HandlerResult.
+    fn parse_handler_data(data: serde_json::Value) -> Result<HandlerResult> {
+        if data.is_boolean() {
+            if data.as_bool() == Some(true) {
+                return Ok(HandlerResult::Pass(true));
+            }
+            anyhow::bail!("Handler returned false (unexpected)");
+        }
+
+        let result: crate::types::PolicyErrorResult =
+            serde_json::from_value(data).context("Failed to parse handler result")?;
         Ok(HandlerResult::Failure(result))
     }
 

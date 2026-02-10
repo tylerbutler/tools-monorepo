@@ -141,6 +141,14 @@ pub enum IpcRequest {
     #[serde(rename = "run_resolver")]
     RunResolver(RunResolverParams),
 
+    /// Ask the sidecar to run a policy handler on a batch of files.
+    #[serde(rename = "run_handler_batch")]
+    RunHandlerBatch(RunHandlerBatchParams),
+
+    /// Ask the sidecar to run a policy resolver on a batch of files.
+    #[serde(rename = "run_resolver_batch")]
+    RunResolverBatch(RunResolverBatchParams),
+
     /// Tell the sidecar to shut down.
     #[serde(rename = "shutdown")]
     Shutdown,
@@ -183,6 +191,54 @@ pub struct RunResolverParams {
 
     /// Absolute path to the repo root.
     pub root: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RunHandlerBatchParams {
+    /// Name of the policy to run.
+    pub policy_name: String,
+
+    /// Repo-relative paths to the files.
+    pub files: Vec<String>,
+
+    /// Absolute path to the repo root.
+    pub root: String,
+
+    /// Whether to attempt auto-fix.
+    pub resolve: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RunResolverBatchParams {
+    /// Name of the policy whose resolver to run.
+    pub policy_name: String,
+
+    /// Repo-relative paths to the files.
+    pub files: Vec<String>,
+
+    /// Absolute path to the repo root.
+    pub root: String,
+}
+
+/// A single result item within a batch response.
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BatchResultItem {
+    /// The file this result corresponds to.
+    pub file: String,
+
+    /// The handler/resolver result for this file.
+    pub data: serde_json::Value,
+}
+
+/// Response payload for batch handler/resolver calls.
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BatchResponse {
+    /// Results for each file in the batch.
+    pub results: Vec<BatchResultItem>,
 }
 
 /// IPC response sent from the Node sidecar to Rust.

@@ -13,6 +13,8 @@
  *   { "method": "load_config", "params": { "configPath": "...", "gitRoot": "..." } }
  *   { "method": "run_handler", "params": { "policyName": "...", "file": "...", "root": "...", "resolve": false } }
  *   { "method": "run_resolver", "params": { "policyName": "...", "file": "...", "root": "..." } }
+ *   { "method": "run_handler_batch", "params": { "policyName": "...", "files": [...], "root": "...", "resolve": false } }
+ *   { "method": "run_resolver_batch", "params": { "policyName": "...", "files": [...], "root": "..." } }
  *   { "method": "shutdown" }
  *
  * Response format:
@@ -221,6 +223,56 @@ async function handleRunHandler(params) {
 }
 
 /**
+ * Handle a run_handler_batch request.
+ * Runs the handler for each file sequentially and returns all results.
+ * @param {object} params
+ */
+async function handleRunHandlerBatch(params) {
+	try {
+		const policy = policiesByName.get(params.policyName);
+		if (!policy) {
+			respond({
+				ok: false,
+				error: `Unknown policy: ${params.policyName}`,
+			});
+			return;
+		}
+
+		const handler = policy._internalHandler ?? policy.handler;
+		const resolve = params.resolve ?? false;
+		const results = [];
+
+		for (const file of params.files) {
+			try {
+				const args = {
+					file,
+					root: params.root,
+					resolve,
+					config: policy.config,
+				};
+				const result = await executeHandler(handler, args);
+				results.push({ file, data: result });
+			} catch (err) {
+				results.push({
+					file,
+					data: {
+						error: `Handler error: ${err.message}`,
+						fixable: false,
+					},
+				});
+			}
+		}
+
+		respond({ ok: true, data: { results } });
+	} catch (err) {
+		respond({
+			ok: false,
+			error: `Batch handler error for ${params.policyName}: ${err.message}`,
+		});
+	}
+}
+
+/**
  * Handle a run_resolver request.
  * @param {object} params
  */
@@ -260,6 +312,62 @@ async function handleRunResolver(params) {
 }
 
 /**
+ * Handle a run_resolver_batch request.
+ * Runs the resolver for each file sequentially and returns all results.
+ * @param {object} params
+ */
+async function handleRunResolverBatch(params) {
+	try {
+		const policy = policiesByName.get(params.policyName);
+		if (!policy) {
+			respond({
+				ok: false,
+				error: `Unknown policy: ${params.policyName}`,
+			});
+			return;
+		}
+
+		if (typeof policy.resolver !== "function") {
+			respond({
+				ok: false,
+				error: `Policy ${params.policyName} has no resolver`,
+			});
+			return;
+		}
+
+		const results = [];
+
+		for (const file of params.files) {
+			try {
+				const args = {
+					file,
+					root: params.root,
+					config: policy.config,
+				};
+				const result = await executeHandler(policy.resolver, args);
+				results.push({ file, data: result });
+			} catch (err) {
+				results.push({
+					file,
+					data: {
+						error: `Resolver error: ${err.message}`,
+						fixable: false,
+						fixed: false,
+					},
+				});
+			}
+		}
+
+		respond({ ok: true, data: { results } });
+	} catch (err) {
+		respond({
+			ok: false,
+			error: `Batch resolver error for ${params.policyName}: ${err.message}`,
+		});
+	}
+}
+
+/**
  * Main loop: read JSON requests from stdin, dispatch, respond on stdout.
  */
 async function main() {
@@ -292,6 +400,14 @@ async function main() {
 
 			case "run_resolver":
 				await handleRunResolver(params ?? {});
+				break;
+
+			case "run_handler_batch":
+				await handleRunHandlerBatch(params ?? {});
+				break;
+
+			case "run_resolver_batch":
+				await handleRunResolverBatch(params ?? {});
 				break;
 
 			case "shutdown":
