@@ -31,6 +31,12 @@ import { lilconfig } from "lilconfig";
 /** @type {Map<string, import("../src/policy.js").ConfiguredPolicy>} */
 let policiesByName = new Map();
 
+/** @type {Array<import("../src/policy.js").ConfiguredPolicy>} */
+let policiesByIndex = [];
+
+/** @type {string} */
+let storedGitRoot = "";
+
 /** @type {import("../src/config.js").RepopoConfig | undefined} */
 let loadedConfig = undefined;
 
@@ -155,11 +161,16 @@ async function handleLoadConfig(params) {
 			loadedConfig = DefaultPolicyConfig;
 		}
 
-		// Build the policy map
+		// Store git root for reuse in batch calls
+		storedGitRoot = params.gitRoot ?? process.cwd();
+
+		// Build the policy map and index array
 		policiesByName.clear();
+		policiesByIndex = [];
 		const policies = loadedConfig?.policies ?? [];
 		for (const p of policies) {
 			policiesByName.set(p.name, p);
+			policiesByIndex.push(p);
 		}
 
 		// Serialize for Rust
@@ -224,50 +235,63 @@ async function handleRunHandler(params) {
 
 /**
  * Handle a run_handler_batch request.
- * Runs the handler for each file sequentially and returns all results.
+ * Runs the handler for each file sequentially and returns compact results.
+ * Accepts policyId (index) and uses stored gitRoot.
  * @param {object} params
  */
 async function handleRunHandlerBatch(params) {
 	try {
-		const policy = policiesByName.get(params.policyName);
+		const policy = policiesByIndex[params.policyId];
 		if (!policy) {
 			respond({
 				ok: false,
-				error: `Unknown policy: ${params.policyName}`,
+				error: `Unknown policy index: ${params.policyId}`,
 			});
 			return;
 		}
 
 		const handler = policy._internalHandler ?? policy.handler;
 		const resolve = params.resolve ?? false;
-		const results = [];
+		/** @type {string[]} */
+		const pass = [];
+		/** @type {Array<{file: string, error?: string, errorMessages?: string[], fixable?: boolean, fixed?: boolean, manualFix?: string}>} */
+		const fail = [];
 
 		for (const file of params.files) {
 			try {
 				const args = {
 					file,
-					root: params.root,
+					root: storedGitRoot,
 					resolve,
 					config: policy.config,
 				};
 				const result = await executeHandler(handler, args);
-				results.push({ file, data: result });
+				if (result === true) {
+					pass.push(file);
+				} else {
+					fail.push({
+						file,
+						error: result.error,
+						errorMessages: result.errorMessages,
+						fixable: result.fixable,
+						fixed: result.fixed,
+						manualFix: result.manualFix,
+					});
+				}
 			} catch (err) {
-				results.push({
+				fail.push({
 					file,
-					data: {
-						error: `Handler error: ${err.message}`,
-						fixable: false,
-					},
+					error: `Handler error: ${err.message}`,
+					fixable: false,
 				});
 			}
 		}
 
-		respond({ ok: true, data: { results } });
+		respond({ ok: true, data: { pass, fail } });
 	} catch (err) {
 		respond({
 			ok: false,
-			error: `Batch handler error for ${params.policyName}: ${err.message}`,
+			error: `Batch handler error for policy index ${params.policyId}: ${err.message}`,
 		});
 	}
 }
@@ -313,16 +337,17 @@ async function handleRunResolver(params) {
 
 /**
  * Handle a run_resolver_batch request.
- * Runs the resolver for each file sequentially and returns all results.
+ * Runs the resolver for each file sequentially and returns compact results.
+ * Accepts policyId (index) and uses stored gitRoot.
  * @param {object} params
  */
 async function handleRunResolverBatch(params) {
 	try {
-		const policy = policiesByName.get(params.policyName);
+		const policy = policiesByIndex[params.policyId];
 		if (!policy) {
 			respond({
 				ok: false,
-				error: `Unknown policy: ${params.policyName}`,
+				error: `Unknown policy index: ${params.policyId}`,
 			});
 			return;
 		}
@@ -330,39 +355,51 @@ async function handleRunResolverBatch(params) {
 		if (typeof policy.resolver !== "function") {
 			respond({
 				ok: false,
-				error: `Policy ${params.policyName} has no resolver`,
+				error: `Policy index ${params.policyId} has no resolver`,
 			});
 			return;
 		}
 
-		const results = [];
+		/** @type {string[]} */
+		const pass = [];
+		/** @type {Array<{file: string, error?: string, errorMessages?: string[], fixable?: boolean, fixed?: boolean, manualFix?: string}>} */
+		const fail = [];
 
 		for (const file of params.files) {
 			try {
 				const args = {
 					file,
-					root: params.root,
+					root: storedGitRoot,
 					config: policy.config,
 				};
 				const result = await executeHandler(policy.resolver, args);
-				results.push({ file, data: result });
+				if (result === true) {
+					pass.push(file);
+				} else {
+					fail.push({
+						file,
+						error: result.error,
+						errorMessages: result.errorMessages,
+						fixable: result.fixable,
+						fixed: result.fixed,
+						manualFix: result.manualFix,
+					});
+				}
 			} catch (err) {
-				results.push({
+				fail.push({
 					file,
-					data: {
-						error: `Resolver error: ${err.message}`,
-						fixable: false,
-						fixed: false,
-					},
+					error: `Resolver error: ${err.message}`,
+					fixable: false,
+					fixed: false,
 				});
 			}
 		}
 
-		respond({ ok: true, data: { results } });
+		respond({ ok: true, data: { pass, fail } });
 	} catch (err) {
 		respond({
 			ok: false,
-			error: `Batch resolver error for ${params.policyName}: ${err.message}`,
+			error: `Batch resolver error for policy index ${params.policyId}: ${err.message}`,
 		});
 	}
 }

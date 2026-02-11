@@ -3,8 +3,9 @@ use std::io::{BufRead, BufReader, Write};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 
 use crate::types::{
-    BatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams, LoadConfigResponse,
-    RunHandlerBatchParams, RunHandlerParams, RunResolverBatchParams, RunResolverParams,
+    CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams,
+    LoadConfigResponse, PolicyErrorResult, RunHandlerBatchParams, RunHandlerParams,
+    RunResolverBatchParams, RunResolverParams,
 };
 
 /// A connection to the Node.js sidecar process that loads TypeScript
@@ -160,18 +161,16 @@ impl Sidecar {
     }
 
     /// Ask the sidecar to run a policy handler on a batch of files.
-    /// Returns a Vec of (file, HandlerResult) pairs in the same order as the input files.
+    /// Returns a Vec of (file, HandlerResult) pairs.
     pub fn run_handler_batch(
         &mut self,
-        policy_name: &str,
+        policy_id: usize,
         files: &[String],
-        root: &str,
         resolve: bool,
     ) -> Result<Vec<(String, HandlerResult)>> {
         let req = IpcRequest::RunHandlerBatch(RunHandlerBatchParams {
-            policy_name: policy_name.to_string(),
+            policy_id,
             files: files.to_vec(),
-            root: root.to_string(),
             resolve,
         });
 
@@ -179,51 +178,36 @@ impl Sidecar {
         let data = response
             .data
             .context("No data in run_handler_batch response")?;
-        let batch: BatchResponse =
+        let batch: CompactBatchResponse =
             serde_json::from_value(data).context("Failed to parse batch handler response")?;
 
-        batch
-            .results
-            .into_iter()
-            .map(|item| {
-                let result = Self::parse_handler_data(item.data)?;
-                Ok((item.file, result))
-            })
-            .collect()
+        Ok(Self::expand_compact_response(batch))
     }
 
     /// Ask the sidecar to run a policy resolver on a batch of files.
-    /// Returns a Vec of (file, HandlerResult) pairs in the same order as the input files.
+    /// Returns a Vec of (file, HandlerResult) pairs.
     pub fn run_resolver_batch(
         &mut self,
-        policy_name: &str,
+        policy_id: usize,
         files: &[String],
-        root: &str,
     ) -> Result<Vec<(String, HandlerResult)>> {
         let req = IpcRequest::RunResolverBatch(RunResolverBatchParams {
-            policy_name: policy_name.to_string(),
+            policy_id,
             files: files.to_vec(),
-            root: root.to_string(),
         });
 
         let response = self.request(&req)?;
         let data = response
             .data
             .context("No data in run_resolver_batch response")?;
-        let batch: BatchResponse =
+        let batch: CompactBatchResponse =
             serde_json::from_value(data).context("Failed to parse batch resolver response")?;
 
-        batch
-            .results
-            .into_iter()
-            .map(|item| {
-                let result = Self::parse_handler_data(item.data)?;
-                Ok((item.file, result))
-            })
-            .collect()
+        Ok(Self::expand_compact_response(batch))
     }
 
     /// Parse a single handler/resolver result value into a HandlerResult.
+    /// Used by single-call methods (run_handler, run_resolver).
     fn parse_handler_data(data: serde_json::Value) -> Result<HandlerResult> {
         if data.is_boolean() {
             if data.as_bool() == Some(true) {
@@ -232,9 +216,37 @@ impl Sidecar {
             anyhow::bail!("Handler returned false (unexpected)");
         }
 
-        let result: crate::types::PolicyErrorResult =
+        let result: PolicyErrorResult =
             serde_json::from_value(data).context("Failed to parse handler result")?;
         Ok(HandlerResult::Failure(result))
+    }
+
+    /// Convert a compact batch response into the Vec<(file, HandlerResult)> format
+    /// expected by callers.
+    fn expand_compact_response(batch: CompactBatchResponse) -> Vec<(String, HandlerResult)> {
+        let mut results =
+            Vec::with_capacity(batch.pass.len() + batch.fail.len());
+
+        for file in batch.pass {
+            results.push((file, HandlerResult::Pass(true)));
+        }
+
+        for item in batch.fail {
+            results.push((
+                item.file,
+                HandlerResult::Failure(PolicyErrorResult {
+                    error: item.error,
+                    error_messages: item.error_messages,
+                    name: None,
+                    file: None,
+                    fixable: item.fixable,
+                    fixed: item.fixed,
+                    manual_fix: item.manual_fix,
+                }),
+            ));
+        }
+
+        results
     }
 
     /// Tell the sidecar to shut down gracefully.

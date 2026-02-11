@@ -196,14 +196,11 @@ pub struct RunResolverParams {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RunHandlerBatchParams {
-    /// Name of the policy to run.
-    pub policy_name: String,
+    /// Index of the policy in the load_config response array.
+    pub policy_id: usize,
 
     /// Repo-relative paths to the files.
     pub files: Vec<String>,
-
-    /// Absolute path to the repo root.
-    pub root: String,
 
     /// Whether to attempt auto-fix.
     pub resolve: bool,
@@ -212,14 +209,11 @@ pub struct RunHandlerBatchParams {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RunResolverBatchParams {
-    /// Name of the policy whose resolver to run.
-    pub policy_name: String,
+    /// Index of the policy in the load_config response array.
+    pub policy_id: usize,
 
     /// Repo-relative paths to the files.
     pub files: Vec<String>,
-
-    /// Absolute path to the repo root.
-    pub root: String,
 }
 
 /// A single result item within a batch response.
@@ -239,6 +233,41 @@ pub struct BatchResultItem {
 pub struct BatchResponse {
     /// Results for each file in the batch.
     pub results: Vec<BatchResultItem>,
+}
+
+/// A failure item in the compact batch response.
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompactBatchFailureItem {
+    /// The file this failure corresponds to.
+    pub file: String,
+
+    /// The error message.
+    pub error: Option<String>,
+
+    /// Legacy: array of error messages.
+    pub error_messages: Option<Vec<String>>,
+
+    /// Whether this violation can be auto-fixed.
+    pub fixable: Option<bool>,
+
+    /// Whether the violation was fixed (only set when resolve=true).
+    pub fixed: Option<bool>,
+
+    /// Instructions for manual fix.
+    pub manual_fix: Option<String>,
+}
+
+/// Compact response payload for batch handler/resolver calls.
+/// Passing files are listed as bare strings; only failures carry detail.
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompactBatchResponse {
+    /// Files that passed the policy check (returned `true`).
+    pub pass: Vec<String>,
+
+    /// Files that failed, with error details.
+    pub fail: Vec<CompactBatchFailureItem>,
 }
 
 /// IPC response sent from the Node sidecar to Rust.

@@ -181,7 +181,7 @@ pub fn run_check(
     }
 
     // Step 4: Policy-first batching — one IPC call per policy
-    for policy in &compiled_policies {
+    for (policy_id, policy) in compiled_policies.iter().enumerate() {
         // Collect files matching this policy
         let matching_files: Vec<String> = eligible_files
             .iter()
@@ -215,7 +215,7 @@ pub fn run_check(
         // Batch handler call — single IPC round-trip for all files
         let start = Instant::now();
         let batch_results = sidecar
-            .run_handler_batch(&policy.meta.name, &matching_files, git_root, fix)
+            .run_handler_batch(policy_id, &matching_files, fix)
             .with_context(|| {
                 format!(
                     "Error executing batch handler for policy '{}'",
@@ -289,7 +289,7 @@ pub fn run_check(
 
             let start = Instant::now();
             let resolver_results = sidecar
-                .run_resolver_batch(&policy.meta.name, &needs_resolver, git_root)
+                .run_resolver_batch(policy_id, &needs_resolver)
                 .with_context(|| {
                     format!(
                         "Error executing batch resolver for policy '{}'",
