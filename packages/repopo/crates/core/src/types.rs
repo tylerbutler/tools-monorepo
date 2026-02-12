@@ -295,3 +295,22 @@ pub struct LoadConfigResponse {
     #[serde(default)]
     pub exclude_files: Vec<String>,
 }
+
+/// Response from the sidecar in bundle mode.
+///
+/// Contains policy metadata plus the esbuild-generated JS bundle
+/// that can be evaluated directly in QuickJS.
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BundleResponse {
+    /// Metadata for all configured policies.
+    pub policies: Vec<PolicyMeta>,
+
+    /// Global file exclusion patterns (regex strings).
+    #[serde(default)]
+    pub exclude_files: Vec<String>,
+
+    /// The complete esbuild-generated JS bundle for QuickJS execution.
+    /// Contains all policy code, shims, and the bridge dispatch layer.
+    pub bundle: String,
+}

@@ -28,6 +28,30 @@ import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { run } from "effection";
 import { lilconfig } from "lilconfig";
 
+// --- CLI argument parsing ---
+
+function parseSidecarArgs(argv) {
+	const result = { mode: "ipc", gitRoot: process.cwd(), config: undefined };
+	for (let i = 0; i < argv.length; i++) {
+		if (argv[i] === "--mode" && argv[i + 1]) {
+			result.mode = argv[++i];
+		} else if (argv[i].startsWith("--mode=")) {
+			result.mode = argv[i].slice("--mode=".length);
+		} else if (argv[i] === "--git-root" && argv[i + 1]) {
+			result.gitRoot = argv[++i];
+		} else if (argv[i].startsWith("--git-root=")) {
+			result.gitRoot = argv[i].slice("--git-root=".length);
+		} else if (argv[i] === "--config" && argv[i + 1]) {
+			result.config = argv[++i];
+		} else if (argv[i].startsWith("--config=")) {
+			result.config = argv[i].slice("--config=".length);
+		}
+	}
+	return result;
+}
+
+const sidecarArgs = parseSidecarArgs(process.argv.slice(2));
+
 /** @type {Map<string, import("../src/policy.js").ConfiguredPolicy>} */
 let policiesByName = new Map();
 
@@ -460,7 +484,308 @@ async function main() {
 	process.exit(0);
 }
 
-main().catch((err) => {
-	process.stderr.write(`Sidecar fatal error: ${err.message}\n`);
-	process.exit(1);
-});
+/**
+ * Bundle mode: load config, bundle all policies with esbuild for QuickJS, and exit.
+ *
+ * Output (JSON to stdout):
+ *   { policies: [...], excludeFiles: [...], bundle: "...js code..." }
+ */
+async function bundleMode() {
+	const { build } = await import("esbuild");
+	const { join, dirname } = await import("node:path");
+	const {
+		writeFileSync: fsWriteFileSync,
+		unlinkSync: fsUnlinkSync,
+	} = await import("node:fs");
+	const { tmpdir } = await import("node:os");
+	const { fileURLToPath } = await import("node:url");
+
+	const __dirname = dirname(fileURLToPath(import.meta.url));
+	const shimsDir = join(__dirname, "shims");
+	const searchPath = sidecarArgs.config ?? sidecarArgs.gitRoot;
+
+	// Step 1: Find config file
+	const configLoader = lilconfig("repopo", {
+		searchPlaces: [
+			"repopo.config.ts",
+			"repopo.config.mjs",
+			"repopo.config.cjs",
+		],
+		loaders: {
+			".ts": TypeScriptLoader,
+		},
+	});
+
+	const pathStats = await stat(searchPath);
+	const maybeConfig = pathStats.isDirectory()
+		? await configLoader.search(searchPath)
+		: await configLoader.load(searchPath);
+
+	if (!maybeConfig) {
+		process.stderr.write("No repopo config found\n");
+		process.exit(1);
+	}
+
+	const configFilePath = maybeConfig.filepath;
+
+	// Step 2: Generate entry point that imports config and bridge
+	const tmpEntry = join(tmpdir(), `repopo-entry-${Date.now()}.mjs`);
+	const entryCode = [
+		"// Process polyfill for QuickJS",
+		"if (typeof globalThis.process === 'undefined') {",
+		"  globalThis.process = {",
+		"    cwd: () => globalThis.__process_cwd?.() ?? '/',",
+		"    env: {},",
+		"    platform: 'linux',",
+		"    version: 'v18.0.0',",
+		"    stdout: { write: () => {} },",
+		"    stderr: { write: (s) => globalThis.__stderr_write?.(s) },",
+		"    exit: () => {},",
+		"  };",
+		"}",
+		"",
+		`import config from ${JSON.stringify(configFilePath)};`,
+		`import { initBridge } from ${JSON.stringify(join(shimsDir, "quickjs-bridge.mjs"))};`,
+		"",
+		"const resolvedConfig = config.default ?? config;",
+		"initBridge(resolvedConfig);",
+	].join("\n");
+
+	fsWriteFileSync(tmpEntry, entryCode);
+
+	try {
+		// Step 3: Bundle with esbuild using shim plugin
+		const shimAliases = new Map([
+			["fs", join(shimsDir, "fs-shim.mjs")],
+			["node:fs", join(shimsDir, "fs-shim.mjs")],
+			["graceful-fs", join(shimsDir, "fs-shim.mjs")],
+			["fs-extra", join(shimsDir, "fs-shim.mjs")],
+			["fs/promises", join(shimsDir, "fs-promises-shim.mjs")],
+			["node:fs/promises", join(shimsDir, "fs-promises-shim.mjs")],
+			["path", join(shimsDir, "path-shim.mjs")],
+			["node:path", join(shimsDir, "path-shim.mjs")],
+			["os", join(shimsDir, "os-shim.mjs")],
+			["node:os", join(shimsDir, "os-shim.mjs")],
+			["url", join(shimsDir, "url-shim.mjs")],
+			["node:url", join(shimsDir, "url-shim.mjs")],
+			["assert", join(shimsDir, "assert-shim.mjs")],
+			["node:assert", join(shimsDir, "assert-shim.mjs")],
+			["node:assert/strict", join(shimsDir, "assert-shim.mjs")],
+			["effection", join(shimsDir, "effection-shim.mjs")],
+		]);
+
+		// Node.js builtins that we don't have shims for.
+		// These get a no-op stub so transitive dependencies don't fail at bundle time.
+		const nodeBuiltins = new Set([
+			"buffer",
+			"child_process",
+			"cluster",
+			"console",
+			"constants",
+			"crypto",
+			"dgram",
+			"dns",
+			"domain",
+			"events",
+			"http",
+			"http2",
+			"https",
+			"inspector",
+			"module",
+			"net",
+			"perf_hooks",
+			"process",
+			"punycode",
+			"querystring",
+			"readline",
+			"repl",
+			"stream",
+			"string_decoder",
+			"sys",
+			"timers",
+			"tls",
+			"tty",
+			"util",
+			"v8",
+			"vm",
+			"worker_threads",
+			"zlib",
+		]);
+
+		// npm packages that are NOT needed for policy execution and should be
+		// stubbed out. These are CLI infrastructure, git clients, etc. that
+		// only run in Node.js and pull in heavy transitive dependency trees.
+		// Packages that need special inline handling
+		const inlineModules = new Map([
+			[
+				"git-hooks-list",
+				// git-hooks-list reads index.json via import.meta.url which is empty in IIFE.
+				// Inline the data directly to avoid the runtime file read.
+				`export default ["applypatch-msg","pre-applypatch","post-applypatch","pre-commit","pre-merge-commit","prepare-commit-msg","commit-msg","post-commit","pre-rebase","post-checkout","post-merge","pre-push","pre-receive","update","proc-receive","post-receive","post-update","reference-transaction","push-to-checkout","pre-auto-gc","post-rewrite","sendemail-validate","fsmonitor-watchman","p4-changelist","p4-prepare-changelist","p4-post-changelist","p4-pre-submit","post-index-change"];`,
+			],
+		]);
+
+		const npmPackagesToStub = new Set([
+			"@oclif/core",
+			"@oclif/errors",
+			"@oclif/parser",
+			"simple-git",
+			"jiti",
+			"lilconfig",
+			"execa",
+			"cross-spawn",
+			"human-signals",
+			"which",
+			"isexe",
+		]);
+
+		const shimPlugin = {
+			name: "quickjs-shims",
+			setup(build) {
+				// 1. Resolve modules we have shims for (both bare and node: prefixed)
+				build.onResolve({ filter: /^[^./]/ }, (args) => {
+					const shimPath = shimAliases.get(args.path);
+					if (shimPath) return { path: shimPath };
+
+					// Inline modules that need special handling
+					if (inlineModules.has(args.path)) {
+						return { path: args.path, namespace: "inline-module" };
+					}
+
+					// Stub heavy npm packages not needed for policy execution
+					const pkgName = args.path.startsWith("@")
+						? args.path.split("/").slice(0, 2).join("/")
+						: args.path.split("/")[0];
+					if (npmPackagesToStub.has(pkgName)) {
+						return { path: args.path, namespace: "node-stub" };
+					}
+
+					return null;
+				});
+
+				// Load inline modules
+				build.onLoad(
+					{ filter: /.*/, namespace: "inline-module" },
+					(args) => ({
+						contents: inlineModules.get(args.path),
+						loader: "js",
+					}),
+				);
+
+				// 2. Stub unshimmed node: prefixed builtins
+				build.onResolve({ filter: /^node:/ }, (args) => {
+					return { path: args.path, namespace: "node-stub" };
+				});
+
+				// 3. Stub bare Node.js builtins that aren't shimmed
+				build.onResolve({ filter: /^[a-z]/ }, (args) => {
+					const baseName = args.path.split("/")[0];
+					if (nodeBuiltins.has(baseName)) {
+						return { path: args.path, namespace: "node-stub" };
+					}
+					return null;
+				});
+
+				// Virtual module loader: returns a lenient no-op stub in CJS format.
+				// CJS format is critical: esbuild can't statically validate CJS exports,
+				// so any named import (Buffer, EventEmitter, etc.) will resolve via
+				// the Proxy at bundle time without errors.
+				//
+				// Key design: The Proxy returns itself from getPrototypeOf so that
+				// when esbuild's __toESM does Object.create(getPrototypeOf(mod)),
+				// the resulting object inherits from the Proxy. This means ANY
+				// property access on the __toESM result falls through to the Proxy's
+				// get trap, which returns noop. Without this, __toESM creates a plain
+				// object and only copies enumerable own properties (losing the trap).
+				build.onLoad(
+					{ filter: /.*/, namespace: "node-stub" },
+					() => {
+						return {
+							contents: `
+								function noop() { return stub; }
+								const handler = {
+									get(_, prop) {
+										if (prop === '__esModule') return true;
+										if (prop === 'then') return undefined;
+										return stub;
+									},
+									getPrototypeOf() { return stub; },
+									apply() { return stub; },
+									construct() { return stub; },
+								};
+								const stub = new Proxy(noop, handler);
+								module.exports = stub;
+							`,
+							loader: "js",
+						};
+					},
+				);
+			},
+		};
+
+		const result = await build({
+			entryPoints: [tmpEntry],
+			bundle: true,
+			write: false,
+			format: "iife",
+			platform: "neutral",
+			mainFields: ["module", "main"],
+			target: "es2020",
+			plugins: [shimPlugin],
+			logLevel: "warning",
+		});
+
+		if (result.errors.length > 0) {
+			process.stderr.write(
+				`esbuild errors: ${JSON.stringify(result.errors)}\n`,
+			);
+			process.exit(1);
+		}
+
+		const bundleCode = result.outputFiles[0].text;
+
+		// Step 4: Serialize policy metadata (reuse loaded config)
+		const loadedConfig =
+			maybeConfig.config?.default ?? maybeConfig.config;
+		const policies = (loadedConfig?.policies ?? []).map(serializePolicy);
+		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map((e) => {
+			if (e instanceof RegExp) return e.source;
+			return String(e);
+		});
+
+		// Step 5: Output JSON to stdout
+		const output = JSON.stringify({
+			policies,
+			excludeFiles,
+			bundle: bundleCode,
+		});
+		// Wait for the write to fully flush before exiting.
+		// process.exit() terminates immediately and can truncate piped stdout.
+		const flushed = process.stdout.write(output + "\n");
+		if (flushed) {
+			process.exit(0);
+		} else {
+			process.stdout.once("drain", () => process.exit(0));
+		}
+	} finally {
+		try {
+			fsUnlinkSync(tmpEntry);
+		} catch (_) {}
+	}
+}
+
+// --- Entry point ---
+
+if (sidecarArgs.mode === "bundle") {
+	bundleMode().catch((err) => {
+		process.stderr.write(
+			`Bundle mode error: ${err.message}\n${err.stack}\n`,
+		);
+		process.exit(1);
+	});
+} else {
+	main().catch((err) => {
+		process.stderr.write(`Sidecar fatal error: ${err.message}\n`);
+		process.exit(1);
+	});
+}

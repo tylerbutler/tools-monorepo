@@ -1,12 +1,22 @@
 mod engine;
 mod files;
 mod ipc;
+mod quickjs_runtime;
 mod types;
 
 use anyhow::{Context, Result};
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 use std::env;
 use std::process;
+
+/// Execution mode for policy checks.
+#[derive(Clone, Debug, ValueEnum)]
+enum ExecutionMode {
+    /// In-process JavaScript execution via QuickJS (default).
+    Quickjs,
+    /// IPC-based execution via Node.js sidecar process.
+    Ipc,
+}
 
 #[derive(Parser)]
 #[command(
@@ -46,6 +56,10 @@ enum Commands {
         /// Path to the Node.js sidecar script.
         #[arg(long, env = "REPOPO_SIDECAR_PATH")]
         sidecar_path: Option<String>,
+
+        /// Execution mode: quickjs (default) or ipc.
+        #[arg(long, default_value = "quickjs")]
+        mode: ExecutionMode,
     },
 
     /// List all configured policies.
@@ -65,6 +79,10 @@ enum Commands {
         /// Path to the Node.js sidecar script.
         #[arg(long, env = "REPOPO_SIDECAR_PATH")]
         sidecar_path: Option<String>,
+
+        /// Execution mode: quickjs (default) or ipc.
+        #[arg(long, default_value = "quickjs")]
+        mode: ExecutionMode,
     },
 }
 
@@ -126,6 +144,7 @@ fn main() -> Result<()> {
             quiet,
             config,
             sidecar_path,
+            mode,
         } => {
             let sidecar_script = resolve_sidecar_path(sidecar_path.as_deref())?;
 
@@ -155,20 +174,63 @@ fn main() -> Result<()> {
                 eprintln!("{} files to check.", file_list.len());
             }
 
-            // Spawn sidecar with cwd set to git root so relative file paths work
-            let mut sidecar = ipc::Sidecar::spawn(&sidecar_script, &git_root)?;
+            let success = match mode {
+                ExecutionMode::Quickjs => {
+                    if verbose {
+                        eprintln!("Mode: QuickJS (in-process)");
+                        eprintln!("Bundling policy code...");
+                    }
 
-            let success = engine::run_check(
-                &mut sidecar,
-                file_list,
-                &git_root,
-                config.as_deref(),
-                fix,
-                verbose,
-                quiet,
-            )?;
+                    let bundle = ipc::run_bundle_mode(
+                        &sidecar_script,
+                        &git_root,
+                        config.as_deref(),
+                    )?;
 
-            sidecar.shutdown()?;
+                    let config_resp = types::LoadConfigResponse {
+                        policies: bundle.policies,
+                        exclude_files: bundle.exclude_files,
+                    };
+
+                    if verbose {
+                        eprintln!("Initializing QuickJS runtime...");
+                    }
+
+                    let js_runtime =
+                        quickjs_runtime::QuickJsRuntime::new(&git_root, &bundle.bundle)?;
+
+                    let mut backend = engine::PolicyBackend::QuickJs(&js_runtime);
+                    engine::run_check(
+                        &mut backend,
+                        &config_resp,
+                        file_list,
+                        &git_root,
+                        fix,
+                        verbose,
+                        quiet,
+                    )?
+                }
+                ExecutionMode::Ipc => {
+                    if verbose {
+                        eprintln!("Mode: IPC (Node.js sidecar)");
+                    }
+
+                    let mut sidecar = ipc::Sidecar::spawn(&sidecar_script, &git_root)?;
+                    let config_resp = sidecar.load_config(config.as_deref(), &git_root)?;
+
+                    let mut backend = engine::PolicyBackend::Sidecar(&mut sidecar);
+                    engine::run_check(
+                        &mut backend,
+                        &config_resp,
+                        file_list,
+                        &git_root,
+                        fix,
+                        verbose,
+                        quiet,
+                    )?
+                    // sidecar shuts down via Drop
+                }
+            };
 
             if !success {
                 process::exit(1);
@@ -180,6 +242,7 @@ fn main() -> Result<()> {
             quiet: _,
             config,
             sidecar_path,
+            mode,
         } => {
             let sidecar_script = resolve_sidecar_path(sidecar_path.as_deref())?;
 
@@ -190,9 +253,27 @@ fn main() -> Result<()> {
 
             let git_root = files::find_git_root(&cwd)?;
 
-            let mut sidecar = ipc::Sidecar::spawn(&sidecar_script, &git_root)?;
-            engine::run_list(&mut sidecar, &git_root, config.as_deref(), verbose)?;
-            sidecar.shutdown()?;
+            let config_resp = match mode {
+                ExecutionMode::Quickjs => {
+                    let bundle = ipc::run_bundle_mode(
+                        &sidecar_script,
+                        &git_root,
+                        config.as_deref(),
+                    )?;
+
+                    types::LoadConfigResponse {
+                        policies: bundle.policies,
+                        exclude_files: bundle.exclude_files,
+                    }
+                }
+                ExecutionMode::Ipc => {
+                    let mut sidecar = ipc::Sidecar::spawn(&sidecar_script, &git_root)?;
+                    sidecar.load_config(config.as_deref(), &git_root)?
+                    // sidecar shuts down via Drop
+                }
+            };
+
+            engine::run_list(&config_resp, verbose)?;
         }
     }
 

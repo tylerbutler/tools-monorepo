@@ -3,9 +3,9 @@ use std::io::{BufRead, BufReader, Write};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 
 use crate::types::{
-    CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams,
-    LoadConfigResponse, PolicyErrorResult, RunHandlerBatchParams, RunHandlerParams,
-    RunResolverBatchParams, RunResolverParams,
+    BundleResponse, CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse,
+    LoadConfigParams, LoadConfigResponse, PolicyErrorResult, RunHandlerBatchParams,
+    RunHandlerParams, RunResolverBatchParams, RunResolverParams,
 };
 
 /// A connection to the Node.js sidecar process that loads TypeScript
@@ -265,4 +265,45 @@ impl Drop for Sidecar {
     fn drop(&mut self) {
         let _ = self.shutdown();
     }
+}
+
+/// Spawn the sidecar in one-shot bundle mode.
+///
+/// The sidecar loads the config, bundles all policy code with esbuild into a
+/// QuickJS-compatible IIFE, writes JSON to stdout, and exits.
+/// Returns the bundle response containing metadata + JS bundle string.
+pub fn run_bundle_mode(
+    sidecar_path: &str,
+    git_root: &str,
+    config_path: Option<&str>,
+) -> Result<BundleResponse> {
+    let mut cmd = Command::new("node");
+    cmd.arg(sidecar_path)
+        .args(["--mode", "bundle"])
+        .args(["--git-root", git_root]);
+
+    if let Some(config) = config_path {
+        cmd.args(["--config", config]);
+    }
+
+    cmd.current_dir(git_root)
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::inherit());
+
+    let output = cmd
+        .output()
+        .with_context(|| format!("Failed to spawn sidecar in bundle mode at {sidecar_path}"))?;
+
+    if !output.status.success() {
+        anyhow::bail!(
+            "Sidecar bundle mode exited with status {}",
+            output.status
+        );
+    }
+
+    let response: BundleResponse = serde_json::from_slice(&output.stdout)
+        .context("Failed to parse sidecar bundle response")?;
+
+    Ok(response)
 }

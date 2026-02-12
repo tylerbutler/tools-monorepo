@@ -5,7 +5,8 @@ use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
 use crate::ipc::Sidecar;
-use crate::types::{LoadConfigResponse, PolicyMeta};
+use crate::quickjs_runtime::QuickJsRuntime;
+use crate::types::{HandlerResult, LoadConfigResponse, PolicyMeta};
 
 /// A compiled policy ready for matching.
 struct CompiledPolicy {
@@ -72,6 +73,41 @@ impl PerfStats {
     }
 }
 
+/// Execution backend for policy checks.
+pub enum PolicyBackend<'a> {
+    /// IPC-based execution via Node.js sidecar.
+    Sidecar(&'a mut Sidecar),
+    /// In-process execution via QuickJS.
+    QuickJs(&'a QuickJsRuntime),
+}
+
+impl PolicyBackend<'_> {
+    fn run_handler_batch(
+        &mut self,
+        policy_id: usize,
+        files: &[String],
+        root: &str,
+        resolve: bool,
+    ) -> anyhow::Result<Vec<(String, HandlerResult)>> {
+        match self {
+            PolicyBackend::Sidecar(s) => s.run_handler_batch(policy_id, files, resolve),
+            PolicyBackend::QuickJs(js) => js.run_handler_batch(policy_id, files, root, resolve),
+        }
+    }
+
+    fn run_resolver_batch(
+        &mut self,
+        policy_id: usize,
+        files: &[String],
+        root: &str,
+    ) -> anyhow::Result<Vec<(String, HandlerResult)>> {
+        match self {
+            PolicyBackend::Sidecar(s) => s.run_resolver_batch(policy_id, files),
+            PolicyBackend::QuickJs(js) => js.run_resolver_batch(policy_id, files, root),
+        }
+    }
+}
+
 /// Build a Rust regex from a JS regex pattern and flags.
 fn compile_js_regex(pattern: &str, flags: &str) -> Result<Regex> {
     let case_insensitive = flags.contains('i');
@@ -124,27 +160,18 @@ fn compile_policies(config: &LoadConfigResponse) -> Result<(Vec<CompiledPolicy>,
 
 /// Run the check engine using policy-first batching.
 ///
-/// This is the main entry point for the Rust core. It:
-/// 1. Loads config from the Node sidecar
-/// 2. Compiles regexes
-/// 3. For each policy, collects matching files and runs a single batch IPC call
-/// 4. Reports results
+/// Takes a pre-loaded config and an execution backend (IPC sidecar or QuickJS).
+/// For each policy, collects matching files and runs a single batch call,
+/// then reports results.
 pub fn run_check(
-    sidecar: &mut Sidecar,
+    backend: &mut PolicyBackend,
+    config: &LoadConfigResponse,
     files: Vec<String>,
     git_root: &str,
-    config_path: Option<&str>,
     fix: bool,
     verbose: bool,
     quiet: bool,
 ) -> Result<bool> {
-    // Step 1: Load config from sidecar
-    if verbose {
-        eprintln!("Loading configuration...");
-    }
-
-    let config = sidecar.load_config(config_path, git_root)?;
-
     if verbose {
         eprintln!("{} policies loaded.", config.policies.len());
         for p in &config.policies {
@@ -152,10 +179,10 @@ pub fn run_check(
         }
     }
 
-    // Step 2: Compile regexes
-    let (compiled_policies, global_excludes) = compile_policies(&config)?;
+    // Step 1: Compile regexes
+    let (compiled_policies, global_excludes) = compile_policies(config)?;
 
-    // Step 3: Filter to non-empty, non-globally-excluded files
+    // Step 2: Filter to non-empty, non-globally-excluded files
     let eligible_files: Vec<&String> = files
         .iter()
         .filter(|f| {
@@ -180,7 +207,7 @@ pub fn run_check(
         eprintln!("Resolving errors if possible.");
     }
 
-    // Step 4: Policy-first batching — one IPC call per policy
+    // Step 3: Policy-first batching — one batch call per policy
     for (policy_id, policy) in compiled_policies.iter().enumerate() {
         // Collect files matching this policy
         let matching_files: Vec<String> = eligible_files
@@ -212,10 +239,10 @@ pub fn run_check(
             );
         }
 
-        // Batch handler call — single IPC round-trip for all files
+        // Batch handler call
         let start = Instant::now();
-        let batch_results = sidecar
-            .run_handler_batch(policy_id, &matching_files, fix)
+        let batch_results = backend
+            .run_handler_batch(policy_id, &matching_files, git_root, fix)
             .with_context(|| {
                 format!(
                     "Error executing batch handler for policy '{}'",
@@ -288,8 +315,8 @@ pub fn run_check(
             }
 
             let start = Instant::now();
-            let resolver_results = sidecar
-                .run_resolver_batch(policy_id, &needs_resolver)
+            let resolver_results = backend
+                .run_resolver_batch(policy_id, &needs_resolver, git_root)
                 .with_context(|| {
                     format!(
                         "Error executing batch resolver for policy '{}'",
@@ -321,7 +348,7 @@ pub fn run_check(
         }
     }
 
-    // Step 5: Log performance stats
+    // Step 4: Log performance stats
     stats.log(verbose);
 
     Ok(!had_failures)
@@ -329,13 +356,9 @@ pub fn run_check(
 
 /// List all configured policies.
 pub fn run_list(
-    sidecar: &mut Sidecar,
-    git_root: &str,
-    config_path: Option<&str>,
+    config: &LoadConfigResponse,
     verbose: bool,
 ) -> Result<()> {
-    let config = sidecar.load_config(config_path, git_root)?;
-
     println!("{}", "Configured policies:".bold());
     for policy in &config.policies {
         let resolver_tag = if policy.has_resolver {
