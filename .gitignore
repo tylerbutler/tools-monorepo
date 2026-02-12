@@ -27,6 +27,9 @@ yarn.lock
 # coverage reports
 .coverage
 
+# Rust build artifacts
+**/target/
+
 # AI artifacts
 .claude/settings.local.json
 .serena
