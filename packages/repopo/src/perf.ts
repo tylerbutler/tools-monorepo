@@ -1,7 +1,8 @@
 import type { Logger } from "@tylerbu/cli-api";
+import type { Operation } from "effection";
 import type { PolicyName } from "./policy.js";
 
-export type PolicyAction = "check" | "resolve";
+export type PolicyAction = "check" | "resolve" | "handle";
 
 /**
  * Stores performance data for each handler. Used to collect and display performance stats.
@@ -20,17 +21,17 @@ export function newPerfStats(): PolicyHandlerPerfStats {
 	};
 }
 
-export async function runWithPerf<T>(
+export function* runWithPerf<T>(
 	name: string,
 	action: PolicyAction,
 	stats: PolicyHandlerPerfStats,
-	run: () => Promise<T>,
-): Promise<T> {
+	run: () => Operation<T>,
+): Operation<T> {
 	const actionMap = stats.data.get(action) ?? new Map<string, number>();
 	let dur = actionMap.get(name) ?? 0;
 
 	const start = Date.now();
-	const result = await run();
+	const result = yield* run();
 	dur += Date.now() - start;
 
 	actionMap.set(name, dur);

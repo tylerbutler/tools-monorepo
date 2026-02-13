@@ -1,6 +1,6 @@
 {
 	"name": "dill-cli",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "Command-line (CLI) program to download and optionally decompress gzipped files.",
 	"keywords": [
 		"download",
@@ -101,11 +101,11 @@
 		"mime": "^4.1.0",
 		"nanotar": "^0.2.0",
 		"pathe": "^2.0.3",
-		"whatwg-mimetype": "^4.0.0"
+		"whatwg-mimetype": "^5.0.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.55.1",
+		"@microsoft/api-extractor": "^7.56.0",
 		"@oclif/plugin-command-snapshot": "^5.3.8",
 		"@oclif/test": "^4.1.15",
 		"@types/debug": "^4.1.12",

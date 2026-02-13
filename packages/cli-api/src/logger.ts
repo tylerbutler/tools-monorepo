@@ -30,7 +30,7 @@ export type LoggingFunction = (message?: string, ...args: unknown[]) => void;
  *
  * Built-in implementations:
  * - {@link createBasicLogger} - Simple console output with colored prefixes (default)
- * - {@link createConsolaLogger} - Rich formatting with icons via consola library (alpha)
+ * - `createConsolaLogger` (from `@tylerbu/cli-api/loggers/consola`) - Rich formatting with icons via consola library (alpha)
  *
  * To create a custom logger, implement this interface:
  *
@@ -97,7 +97,7 @@ export interface Logger {
  *
  * @example
  * ```typescript
- * import { createExtendedConsolaLogger } from "@tylerbu/cli-api";
+ * import { createExtendedConsolaLogger } from "@tylerbu/cli-api/loggers/consola";
  *
  * const logger = createExtendedConsolaLogger("capsule");
  * logger.fatal("Critical failure - shutting down");

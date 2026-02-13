@@ -1,9 +1,9 @@
 import {
 	CommandWithConfig,
 	type CommandWithContext,
-	createConsolaLogger,
 	type RequiresGit,
 } from "@tylerbu/cli-api";
+import { createConsolaLogger } from "@tylerbu/cli-api/loggers/consola";
 import { findGitRootSync } from "@tylerbu/fundamentals/git";
 import { type SimpleGit, simpleGit } from "simple-git";
 import { DefaultPolicyConfig, type RepopoConfig } from "./config.js";

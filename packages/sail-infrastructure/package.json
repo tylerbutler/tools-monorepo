@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/sail-infrastructure",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"description": "Sail build infrastructure",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/sail-infrastructure#tylerbusail-infrastructure",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -63,7 +63,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.55.1",
+		"@microsoft/api-extractor": "^7.56.0",
 		"@oclif/test": "^4.1.15",
 		"@types/fs-extra": "^11.0.4",
 		"@types/micromatch": "^4.0.10",

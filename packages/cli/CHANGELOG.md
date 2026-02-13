@@ -1,5 +1,71 @@
 # @tylerbu/cli
 
+## 0.9.0
+
+### Minor Changes
+
+- Add `pr collect` and `pr report` commands for GitHub PR metrics _[`#590`](https://github.com/tylerbutler/tools-monorepo/pull/590) [`145f441`](https://github.com/tylerbutler/tools-monorepo/commit/145f441a7d9ff877dfc8eda54e8fabe814ccd626) [@tylerbutler](https://github.com/tylerbutler)_
+  - `pr collect <repo>` fetches PR metadata, reviews, and comments via GraphQL API to JSON Lines files
+  - `pr report` generates contributor metrics reports using DuckDB queries
+
+### Patch Changes
+
+- Remove unused effection dependency _[`#379`](https://github.com/tylerbutler/tools-monorepo/pull/379) [`1582ad1`](https://github.com/tylerbutler/tools-monorepo/commit/1582ad1abc79b211492dba2e5172e995c9c47fe0) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`c577266`](https://github.com/tylerbutler/tools-monorepo/commit/c577266129da545000aea343256b06129a243987)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.1`
+
+</details>
+
+## 0.8.0
+
+### Minor Changes
+
+- Feat: add generate:commit-config command _[`#555`](https://github.com/tylerbutler/tools-monorepo/pull/555) [`d91da7c`](https://github.com/tylerbutler/tools-monorepo/commit/d91da7cbdaa5ce2444ff2abda9910e2d7837248e) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Adds a new command that generates git-cliff and commitlint configuration files from a `commit-types.ccl` source file. This enables a single source of truth for commit type definitions.
+
+  **Usage:**
+
+  ```bash
+  tbu generate commit-config              # Generate in current directory
+  tbu generate commit-config --dry-run    # Preview without writing
+  tbu generate commit-config --cwd ../foo # Generate in another directory
+  ```
+
+  **Generated files:**
+  - `cliff.toml` - git-cliff changelog configuration
+  - `.commitlintrc.json` or `commitlint.config.cjs` - commitlint configuration (format depends on scope config)
+
+### Patch Changes
+
+- Update to use new cli-api logger API _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Updates commands to use the new logger API from @tylerbu/cli-api:
+  - Replace `errorLog()` calls with `logError()`
+  - Use standalone `logIndent()` function where needed
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`d485ff9`](https://github.com/tylerbutler/tools-monorepo/commit/d485ff93255e16822961680be9b3e21c100e1bc9) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4)
+
+</small>
+
+- `ccl-ts@0.2.0`
+- `@tylerbu/cli-api@0.10.0`
+- `dill-cli@0.4.1`
+
+</details>
+
 ## 0.7.0
 
 ### Minor Changes
@@ -9,7 +75,6 @@
   Replaced Promise.all with Effection's structured concurrency in the deps:sync command's syncAllPackages() method. This ensures atomic updates across all packages in a workspace, with automatic cancellation if any package update fails.
 
   Benefits:
-
   - Atomic multi-package updates (all succeed or none are applied)
   - Automatic cancellation of pending updates when one fails
   - Consistent workspace state even on errors
@@ -67,11 +132,9 @@
 - Add `fluid task-rename` command for FluidFramework repository _[`#326`](https://github.com/tylerbutler/tools-monorepo/pull/326) [`bcbee7d`](https://github.com/tylerbutler/tools-monorepo/commit/bcbee7da2d54616abc1cb1b3d16b0ded6edb632d) [@tylerbutler](https://github.com/tylerbutler)_
 
   **New Command:**
-
   - `tbu fluid task-rename` - Rename package.json scripts to follow three-tier naming principles
 
   **Features:**
-
   - Analyze and validate script naming across all packages
   - Apply systematic renames with cross-reference updates
   - Dry-run mode to preview changes before applying
@@ -94,7 +157,6 @@
 ### Patch Changes
 
 - Fix git squish command configuration loading _[`#320`](https://github.com/tylerbutler/tools-monorepo/pull/320) [`0028315`](https://github.com/tylerbutler/tools-monorepo/commit/002831523cc6483c79c217dc3e8026ccf2def98e) [@tylerbutler](https://github.com/tylerbutler)_
-
   - **cli-api**: Add `requiresConfig` property to `CommandWithConfig` to allow commands to skip config loading
   - **cli-api**: Set `GitCommand.requiresConfig = false` by default since git commands typically don't need config files
 

@@ -137,18 +137,7 @@ export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
 export const ConfigFlagHidden: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
-export interface ConsolaLoggerOptions {
-    colors?: boolean;
-}
-
-// @public
 export function createBasicLogger(): Logger;
-
-// @public
-export function createConsolaLogger(style?: PrefixStyle, options?: ConsolaLoggerOptions): Logger;
-
-// @public
-export function createExtendedConsolaLogger(style: PrefixStyle, options?: ConsolaLoggerOptions): ExtendedLogger;
 
 // @beta
 export type DefaultConfigLocation = "DEFAULT" & {

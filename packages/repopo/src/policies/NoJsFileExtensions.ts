@@ -1,3 +1,4 @@
+import type { Operation } from "effection";
 import { makePolicyDefinition } from "../makePolicy.js";
 import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 
@@ -10,12 +11,14 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
  *
  * @alpha
  */
-export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
-	"NoJsFileExtensions",
-	/(^|\/)[^/]+\.js$/i,
-	async ({ file }) => {
-		// Any match is considered a failure.
-		const result: PolicyFailure = {
+export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition({
+	name: "NoJsFileExtensions",
+	description:
+		"Prevents ambiguous .js files by requiring explicit .mjs or .cjs extensions based on module format.",
+	match: /(^|\/)[^/]+\.js$/i,
+	// biome-ignore lint/correctness/useYield: no yield needed
+	handler: function* ({ file }): Operation<PolicyFailure> {
+		return {
 			name: NoJsFileExtensions.name,
 			file,
 			autoFixable: false,
@@ -24,6 +27,5 @@ export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition(
 			],
 			manualFix: "Rename the file to have a .cjs or .mjs file extension.",
 		};
-		return result;
 	},
-);
+});

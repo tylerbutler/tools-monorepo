@@ -8,6 +8,7 @@ import {
 	type PackageFolderNameConfig,
 } from "../../src/policies/PackageFolderName.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageFolderName policy", () => {
 	let tempDir: string;
@@ -46,7 +47,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("my-lib", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, undefined),
 			);
 			expect(result).toBe(true);
@@ -61,7 +63,10 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("my-package", json);
 
-			const result = await PackageFolderName.handler(createArgs(filePath, {}));
+			const result = await runHandler(
+				PackageFolderName.handler,
+				createArgs(filePath, {}),
+			);
 			expect(result).toBe(true);
 		});
 
@@ -72,7 +77,10 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("wrong-folder", json);
 
-			const result = await PackageFolderName.handler(createArgs(filePath, {}));
+			const result = await runHandler(
+				PackageFolderName.handler,
+				createArgs(filePath, {}),
+			);
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -99,7 +107,10 @@ describe("PackageFolderName policy", () => {
 
 			// Without stripScopes, the policy expects the full name "@myorg/my-package"
 			// which can't be a real folder name, so this test documents the behavior
-			const result = await PackageFolderName.handler(createArgs(filePath, {}));
+			const result = await runHandler(
+				PackageFolderName.handler,
+				createArgs(filePath, {}),
+			);
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -115,7 +126,10 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("my-package", json);
 
-			const result = await PackageFolderName.handler(createArgs(filePath, {}));
+			const result = await runHandler(
+				PackageFolderName.handler,
+				createArgs(filePath, {}),
+			);
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {
@@ -133,7 +147,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("my-package", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@myorg"] }),
 			);
 			expect(result).toBe(true);
@@ -146,7 +161,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("wrong-folder", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@myorg"] }),
 			);
 
@@ -165,7 +181,8 @@ describe("PackageFolderName policy", () => {
 			// Expected folder name is the full package name since @other is not in stripScopes
 			const filePath = createPackageJson("my-package", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@myorg"] }),
 			);
 
@@ -180,7 +197,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("test-lib", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, {
 					stripScopes: ["@myorg", "@internal", "@tools"],
 				}),
@@ -195,7 +213,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("my-package", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@*"] }),
 			);
 			expect(result).toBe(true);
@@ -208,7 +227,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("test-lib", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@fluid*"] }),
 			);
 			expect(result).toBe(true);
@@ -221,7 +241,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("my-package", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, { stripScopes: ["@fluid*"] }),
 			);
 
@@ -238,7 +259,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("completely-different-name", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, { excludePackages: ["@myorg/special-case"] }),
 			);
 			expect(result).toBe(true);
@@ -251,7 +273,8 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("wrong-name", json);
 
-			const result = await PackageFolderName.handler(
+			const result = await runHandler(
+				PackageFolderName.handler,
 				createArgs(filePath, { excludePackages: ["@myorg/other-package"] }),
 			);
 
@@ -267,7 +290,10 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("any-folder", json);
 
-			const result = await PackageFolderName.handler(createArgs(filePath, {}));
+			const result = await runHandler(
+				PackageFolderName.handler,
+				createArgs(filePath, {}),
+			);
 			expect(result).toBe(true);
 		});
 
@@ -277,7 +303,10 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("any-folder", json);
 
-			const result = await PackageFolderName.handler(createArgs(filePath, {}));
+			const result = await runHandler(
+				PackageFolderName.handler,
+				createArgs(filePath, {}),
+			);
 			expect(result).toBe(true);
 		});
 	});
@@ -294,7 +323,10 @@ describe("PackageFolderName policy", () => {
 			};
 			const filePath = createPackageJson("wrong-folder", json);
 
-			const result = await PackageFolderName.handler(createArgs(filePath, {}));
+			const result = await runHandler(
+				PackageFolderName.handler,
+				createArgs(filePath, {}),
+			);
 
 			expect(result).not.toBe(true);
 			if (typeof result === "object") {

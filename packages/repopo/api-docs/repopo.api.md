@@ -4,18 +4,45 @@
 
 ```ts
 
+import { Operation } from 'effection';
 import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
 
-// @alpha (undocumented)
+// @alpha
+export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
+    config?: C | undefined;
+    // @deprecated
+    exclude?: (string | RegExp)[] | undefined;
+    excludeFiles?: (string | RegExp)[] | undefined;
+    // @internal
+    _internalHandler?: (args: PolicyArgs<C>) => Operation<PolicyHandlerResult>;
+}
+
+// @alpha
+export function defineFileHeaderPolicy(args: DefineFileHeaderPolicyArgs): PolicyShape<FileHeaderPolicyConfig>;
+
+// @alpha
+export interface DefineFileHeaderPolicyArgs {
+    config: FileHeaderGeneratorConfig;
+    description: string;
+    name: string;
+}
+
+// @alpha
+export interface DefinePackagePolicyArgs<J, C> {
+    defaultConfig?: C;
+    description: string;
+    handler: PackageJsonHandler<J, C>;
+    name: string;
+}
+
+// @alpha
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
     headerEnd?: RegExp;
     headerStart?: RegExp;
     lineEnd: RegExp;
     lineStart: RegExp;
-    // (undocumented)
     match: RegExp;
-    // (undocumented)
     replacer: (content: string, config: FileHeaderPolicyConfig) => string;
 }
 
@@ -48,60 +75,98 @@ export interface FluidHandler {
 export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: FluidAdapterOptions): PolicyDefinition[];
 
 // @alpha
-export function generateFileHeaderPolicy(name: string, config: FileHeaderGeneratorConfig): PolicyDefinition<FileHeaderPolicyConfig>;
+export function generatePackagePolicy<J = PackageJson, C = undefined>(args: DefinePackagePolicyArgs<J, C>): PolicyShape<C>;
 
 // @alpha
-export function generatePackagePolicy<J = PackageJson, C = undefined>(name: string, packagePolicy: PackageJsonHandler<J, C>): PolicyDefinition<C>;
+export function isPolicyError(toCheck: any): toCheck is PolicyError;
 
-// @alpha
+// @alpha @deprecated
+export function isPolicyFailure(toCheck: any): toCheck is PolicyFailure;
+
+// @alpha @deprecated
+export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult;
+
+// @alpha @deprecated
 export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
-// @alpha
-export type PackageJsonHandler<J, C> = (json: J, args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+// @alpha @deprecated
+export function makePolicyDefinition<C = undefined>(args: PolicyDefinitionInput<C>): PolicyDefinition<C>;
 
 // @alpha
-export interface PolicyDefinition<C = undefined> {
-    defaultConfig?: C | undefined;
-    description?: string | undefined;
-    handler: PolicyHandler<C>;
-    match: RegExp;
-    name: PolicyName;
-    resolver?: PolicyStandaloneResolver<C> | undefined;
-}
+export type PackageJsonHandler<J, C> = (json: J, args: PolicyArgs<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
 
 // @alpha
-export interface PolicyFailure {
-    autoFixable?: boolean | undefined;
-    errorMessages: string[];
-    file: string;
-    manualFix?: string;
-    name: PolicyName;
-}
-
-// @alpha
-export interface PolicyFixResult extends PolicyFailure {
-    resolved: boolean;
-}
-
-// @alpha
-export interface PolicyFunctionArguments<C> {
+export abstract class Policy<C = void> implements PolicyShape<C> {
+    constructor(definition: PolicyShape<C>);
     // (undocumented)
+    readonly defaultConfig?: C | undefined;
+    // (undocumented)
+    readonly description: string;
+    // (undocumented)
+    readonly handler: PolicyHandler<C>;
+    // (undocumented)
+    readonly match: RegExp;
+    // (undocumented)
+    readonly name: string;
+    // (undocumented)
+    readonly resolver?: PolicyStandaloneResolver<C> | undefined;
+}
+
+// @alpha
+export function policy<C = void>(policyDef: PolicyShape<C>, options?: PolicyOptions): ConfiguredPolicy<C>;
+
+// @alpha (undocumented)
+export function policy<C>(policyDef: PolicyShape<C>, config: C, options?: PolicyOptions): ConfiguredPolicy<C>;
+
+// @alpha
+export interface PolicyArgs<C = void> {
     config?: C | undefined;
     file: string;
     resolve: boolean;
     root: string;
 }
 
+// @alpha @deprecated (undocumented)
+export type PolicyDefinition<C = undefined> = PolicyShape<C>;
+
+// @alpha @deprecated
+export type PolicyDefinitionInput<C = undefined> = PolicyDefinition<C>;
+
 // @alpha
-export type PolicyHandler<C = unknown | undefined> = (args: PolicyFunctionArguments<C>) => Promise<PolicyHandlerResult>;
+export interface PolicyError {
+    error: string;
+    fixable?: boolean | undefined;
+    fixed?: boolean | undefined;
+    manualFix?: string | undefined;
+}
 
-// @alpha (undocumented)
-export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult;
+// @alpha @deprecated
+export interface PolicyFailure {
+    autoFixable?: boolean | undefined;
+    errorMessages: string[];
+    file: string;
+    manualFix?: string | undefined;
+    name: PolicyName;
+}
 
-// @alpha (undocumented)
-export type PolicyInstance<C = undefined> = PolicyDefinition<C> & PolicyInstanceSettings<C>;
+// @alpha @deprecated
+export interface PolicyFixResult extends PolicyFailure {
+    resolved: boolean;
+}
 
-// @alpha (undocumented)
+// @alpha @deprecated (undocumented)
+export type PolicyFunctionArguments<C> = PolicyArgs<C>;
+
+// @alpha
+export type PolicyHandler<C = unknown | undefined> = ((args: PolicyArgs<C>) => Promise<PolicyHandlerResult>) | ((args: PolicyArgs<C>) => Operation<PolicyHandlerResult>);
+
+// @alpha
+export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult | PolicyError;
+
+// @alpha @deprecated (undocumented)
+export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
+
+// @alpha
 export interface PolicyInstanceSettings<C> {
     config?: C | undefined;
     excludeFiles?: (string | RegExp)[];
@@ -111,16 +176,35 @@ export interface PolicyInstanceSettings<C> {
 export type PolicyName = string;
 
 // @alpha
-export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyFunctionArguments<C>, "resolve">) => Promise<PolicyFixResult>;
+export interface PolicyOptions {
+    exclude?: (string | RegExp)[];
+}
+
+// @alpha
+export type PolicyResolver<C = void> = (args: Omit<PolicyArgs<C>, "resolve">) => Promise<PolicyError> | Operation<PolicyError>;
+
+// @alpha
+export type PolicyResult = true | PolicyError;
+
+// @alpha
+export interface PolicyShape<C = void> {
+    defaultConfig?: C | undefined;
+    description: string;
+    handler: PolicyHandler<C>;
+    match: RegExp;
+    name: PolicyName;
+    resolver?: PolicyStandaloneResolver<C> | undefined;
+}
+
+// @alpha @deprecated
+export type PolicyStandaloneResolver<C = undefined> = (args: Omit<PolicyArgs<C>, "resolve">) => Promise<PolicyFixResult> | Operation<PolicyFixResult>;
 
 // @alpha (undocumented)
 export interface RepopoConfig {
     excludeFiles?: (string | RegExp)[];
-    policies?: PolicyInstance<any>[];
+    policies?: (ConfiguredPolicy<any> | PolicyInstance<any>)[];
 }
 
 export { run }
-
-// (No @packageDocumentation comment for this package)
 
 ```

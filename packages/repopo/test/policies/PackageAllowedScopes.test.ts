@@ -8,6 +8,7 @@ import {
 	type PackageAllowedScopesConfig,
 } from "../../src/policies/PackageAllowedScopes.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("PackageAllowedScopes policy", () => {
 	let tempDir: string;
@@ -44,7 +45,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, undefined),
 			);
 			expect(result).toBe(true);
@@ -59,7 +61,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
 			expect(result).toBe(true);
@@ -72,7 +75,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, {
 					allowedScopes: ["@myorg", "@internal", "@experimental"],
 				}),
@@ -87,7 +91,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
 
@@ -108,7 +113,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: [] }),
 			);
 
@@ -124,7 +130,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { unscopedPackages: ["my-special-tool"] }),
 			);
 			expect(result).toBe(true);
@@ -137,7 +144,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, {
 					unscopedPackages: ["my-special-tool", "legacy-pkg", "another-tool"],
 				}),
@@ -152,7 +160,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { unscopedPackages: ["my-special-tool"] }),
 			);
 
@@ -171,7 +180,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { unscopedPackages: [] }),
 			);
 
@@ -192,7 +202,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, fullConfig),
 			);
 			expect(result).toBe(true);
@@ -205,7 +216,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, fullConfig),
 			);
 			expect(result).toBe(true);
@@ -218,7 +230,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, fullConfig),
 			);
 
@@ -232,7 +245,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, fullConfig),
 			);
 
@@ -248,7 +262,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
 
@@ -261,7 +276,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
 
@@ -276,7 +292,8 @@ describe("PackageAllowedScopes policy", () => {
 			const filePath = createPackageJson(json);
 
 			// Malformed scope without slash is treated as unscoped
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, {
 					allowedScopes: ["@myorg"],
 					unscopedPackages: [],
@@ -298,7 +315,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@good", "@better"] }),
 			);
 
@@ -316,7 +334,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { unscopedPackages: ["good-pkg", "better-pkg"] }),
 			);
 
@@ -334,7 +353,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, {}),
 			);
 
@@ -357,7 +377,8 @@ describe("PackageAllowedScopes policy", () => {
 			};
 			const filePath = createPackageJson(json);
 
-			const result = await PackageAllowedScopes.handler(
+			const result = await runHandler(
+				PackageAllowedScopes.handler,
 				createArgs(filePath, { allowedScopes: ["@myorg"] }),
 			);
 

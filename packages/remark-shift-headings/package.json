@@ -1,6 +1,6 @@
 {
 	"name": "remark-shift-headings",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Remark plugin to shift heading levels based on rendering context",
 	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/remark-shift-headings#remark-shift-headings",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
@@ -38,7 +38,7 @@
 	},
 	"dependencies": {
 		"unified": "^11.0.5",
-		"unist-util-visit": "^5.0.0",
+		"unist-util-visit": "^5.1.0",
 		"vfile": "^6.0.3"
 	},
 	"devDependencies": {

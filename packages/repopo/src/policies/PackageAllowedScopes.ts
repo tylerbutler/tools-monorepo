@@ -141,50 +141,56 @@ function isUnscopedPackageAllowed(
 export const PackageAllowedScopes = definePackagePolicy<
 	PackageJson,
 	PackageAllowedScopesConfig | undefined
->("PackageAllowedScopes", async (json, { file, config }) => {
-	// If no config provided, skip validation
-	if (config === undefined) {
-		return true;
-	}
+>({
+	name: "PackageAllowedScopes",
+	description:
+		"Ensures packages use only allowed npm scopes and package names.",
+	// biome-ignore lint/correctness/useYield: no yield needed
+	handler: function* (json, { file, config }) {
+		// If no config provided, skip validation
+		if (config === undefined) {
+			return true;
+		}
 
-	const packageName = json.name;
+		const packageName = json.name;
 
-	// Skip packages without a name
-	if (packageName === undefined) {
-		return true;
-	}
+		// Skip packages without a name
+		if (packageName === undefined) {
+			return true;
+		}
 
-	// Skip the root package (common in monorepos)
-	if (packageName === "root") {
-		return true;
-	}
+		// Skip the root package (common in monorepos)
+		if (packageName === "root") {
+			return true;
+		}
 
-	// Check if the package uses an allowed scope
-	if (isScopeAllowed(packageName, config.allowedScopes)) {
-		return true;
-	}
+		// Check if the package uses an allowed scope
+		if (isScopeAllowed(packageName, config.allowedScopes)) {
+			return true;
+		}
 
-	// Check if the package is an allowed unscoped package
-	if (isUnscopedPackageAllowed(packageName, config.unscopedPackages)) {
-		return true;
-	}
+		// Check if the package is an allowed unscoped package
+		if (isUnscopedPackageAllowed(packageName, config.unscopedPackages)) {
+			return true;
+		}
 
-	// Package doesn't match any allowed pattern - build error message
-	const scope = getPackageScope(packageName);
-	let errorMessage: string;
-	if (scope !== undefined) {
-		// Package has an unexpected scope
-		errorMessage = `Package "${packageName}" uses scope "${scope}" which is not in the allowed scopes list. Allowed scopes: ${config.allowedScopes?.join(", ") ?? "(none)"}`;
-	} else {
-		// Package is unscoped but not in the allowed list
-		errorMessage = `Package "${packageName}" is an unscoped package that is not in the allowed unscoped packages list. Allowed unscoped packages: ${config.unscopedPackages?.join(", ") ?? "(none)"}`;
-	}
+		// Package doesn't match any allowed pattern - build error message
+		const scope = getPackageScope(packageName);
+		let errorMessage: string;
+		if (scope !== undefined) {
+			// Package has an unexpected scope
+			errorMessage = `Package "${packageName}" uses scope "${scope}" which is not in the allowed scopes list. Allowed scopes: ${config.allowedScopes?.join(", ") ?? "(none)"}`;
+		} else {
+			// Package is unscoped but not in the allowed list
+			errorMessage = `Package "${packageName}" is an unscoped package that is not in the allowed unscoped packages list. Allowed unscoped packages: ${config.unscopedPackages?.join(", ") ?? "(none)"}`;
+		}
 
-	const failResult: PolicyFailure = {
-		name: PackageAllowedScopes.name,
-		file,
-		autoFixable: false, // Can't auto-fix package names
-		errorMessages: [errorMessage],
-	};
-	return failResult;
+		const failResult: PolicyFailure = {
+			name: PackageAllowedScopes.name,
+			file,
+			autoFixable: false, // Can't auto-fix package names
+			errorMessages: [errorMessage],
+		};
+		return failResult;
+	},
 });

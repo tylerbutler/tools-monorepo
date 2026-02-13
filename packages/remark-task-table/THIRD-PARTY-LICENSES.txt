@@ -4,7 +4,7 @@ https://www.npmjs.com/package/generate-license-file
 The following npm packages may be included in this product:
 
  - mdast-util-to-string@4.0.0
- - unist-util-visit@5.0.0
+ - unist-util-visit@5.1.0
 
 These packages each contain the following license:
 

@@ -20,12 +20,28 @@ permissions:
   pull-requests: write # Required for bundlemon to comment on PRs
 
 jobs:
+  # Validate compatibility with TypeScript Native (tsgo) compiler
+  # This runs in parallel with build-and-test to catch any tsgo-specific issues early
+  tsgo-validation:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+
+      - uses: ./.github/actions/setup-node-pnpm
+
+      - name: Build with tsgo
+        run: pnpm compile:native
+
+      - name: Run smoke tests on tsgo output
+        run: pnpm test:tsgo-build
+
   build-and-test:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     outputs:
       has-coverage: ${{ steps.upload-coverage.outputs.artifact-id != '' }}
-      ccl-test-viewer-affected: ${{ steps.check-ccl-affected.outputs.affected }}
       coverage-matrix: ${{ steps.coverage-matrix.outputs.matrix }}
 
     steps:
@@ -61,28 +77,6 @@ jobs:
             pnpm run ci:affected
           fi
 
-      - name: Check if ccl-test-viewer is affected
-        id: check-ccl-affected
-        run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ] || pnpm nx show project ccl-test-viewer --affected 2>/dev/null; then
-            echo "affected=true" >> $GITHUB_OUTPUT
-          else
-            echo "affected=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Build ccl-test-viewer for bundle tracking
-        if: steps.check-ccl-affected.outputs.affected == 'true'
-        run: pnpm nx run ccl-test-viewer:build
-
-      - name: Upload ccl-test-viewer build artifacts
-        if: steps.check-ccl-affected.outputs.affected == 'true'
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # ratchet:actions/upload-artifact@v5
-        with:
-          name: ccl-test-viewer-build
-          path: packages/ccl-test-viewer/build
-          retention-days: 1
-          if-no-files-found: error
-
       # Build dynamic matrix of packages with coverage files
       # This ensures we only upload coverage for packages that were actually tested
       - name: Build coverage matrix
@@ -97,7 +91,6 @@ jobs:
             ["cli"]="cli"
             ["cli-api"]="cli-api"
             ["xkcd2-api"]="xkcd2-api"
-            ["ccl-test-viewer"]="ccl-test-viewer"
             ["sail"]="sail"
             ["sail-infrastructure"]="sail-infrastructure"
             ["rehype-footnotes"]="rehype-footnotes"
@@ -178,32 +171,3 @@ jobs:
           package-name: ${{ matrix.package.name }}
           flag: ${{ matrix.package.flag }}
           token: ${{ secrets.CODECOV_TOKEN }}
-
-  # Track bundle size for ccl-test-viewer when affected
-  bundle-size-tracking:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: needs.build-and-test.outputs.ccl-test-viewer-affected == 'true'
-
-    steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
-        with:
-          fetch-depth: 0 # Required for bundlemon to compare against base branch
-
-      - uses: ./.github/actions/setup-node-pnpm
-
-      - name: Download ccl-test-viewer build artifacts
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # ratchet:actions/download-artifact@v6
-        with:
-          name: ccl-test-viewer-build
-          path: packages/ccl-test-viewer/build
-
-      - name: Run bundlemon
-        run: pnpm -C packages/ccl-test-viewer bundlemon
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # For PRs, set commit SHA and PR metadata
-          CI_COMMIT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || '' }}
-          CI_TARGET_BRANCH: ${{ github.event_name == 'pull_request' && github.base_ref || '' }}
-          CI_PR_NUMBER: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || '' }}
-          # For main branch pushes, bundlemon will auto-detect and record baseline measurements

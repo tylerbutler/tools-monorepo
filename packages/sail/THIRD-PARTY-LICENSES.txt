@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - fs-extra@11.3.2
+ - fs-extra@11.3.3
 
 This package contains the following license:
 
@@ -177,37 +177,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @tylerbu/sail-infrastructure@0.3.0
-
-This package contains the following license:
-
-Copyright (c) Microsoft Corporation and contributors. All rights reserved.
-
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
------------
-
-The following npm package may be included in this product:
-
- - yaml@2.8.1
+ - yaml@2.8.2
 
 This package contains the following license:
 
@@ -285,7 +255,7 @@ terms above.
 
 The following npm package may be included in this product:
 
- - lodash@4.17.21
+ - lodash@4.17.23
 
 This package contains the following license:
 
@@ -375,7 +345,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @manypkg/get-packages@2.2.2
+ - @manypkg/get-packages@3.1.0
  - simple-git@3.30.0
 
 These packages each contain the following license:
@@ -513,7 +483,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - date-fns@2.30.0
+ - date-fns@4.1.0
 
 This package contains the following license:
 
@@ -634,10 +604,10 @@ SOFTWARE.
 The following npm packages may be included in this product:
 
  - detect-indent@7.0.2
- - find-up@7.0.0
+ - find-up@8.0.0
  - log-update@7.0.2
- - multimatch@5.0.0
- - type-fest@5.2.0
+ - multimatch@7.0.0
+ - type-fest@5.4.1
 
 These packages each contain the following license:
 
@@ -671,11 +641,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
  - @tylerbu/lilconfig-loader-ts@0.1.3
+ - @tylerbu/sail-infrastructure@0.4.0
 
-This package contains the following license:
+These packages each contain the following license:
 
 MIT License
 
@@ -703,7 +674,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - picospinner@2.1.0
+ - picospinner@3.0.0
 
 This package contains the following license:
 
@@ -786,7 +757,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 The following npm package may be included in this product:
 
- - ts-morph@22.0.0
+ - ts-morph@27.0.2
 
 This package contains the following license:
 
@@ -816,7 +787,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - picomatch@2.3.1
+ - picomatch@4.0.3
 
 This package contains the following license:
 

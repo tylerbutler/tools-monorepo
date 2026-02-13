@@ -1,5 +1,65 @@
 # @tylerbu/cli-api
 
+## 0.10.1
+
+### Patch Changes
+
+- Make consola peer dependency truly optional by removing its exports from the main entrypoint. _[`#585`](https://github.com/tylerbutler/tools-monorepo/pull/585) [`c577266`](https://github.com/tylerbutler/tools-monorepo/commit/c577266129da545000aea343256b06129a243987) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The consola logger functions are now only available via the dedicated `@tylerbu/cli-api/loggers/consola` entrypoint. This allows consumers who don't use the consola logger to avoid installing the consola peer dependency.
+
+## 0.10.0
+
+### Minor Changes
+
+- Feat!: pluggable logger architecture for BaseCommand _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Introduces a pluggable logger system that allows CLI tools to customize logging output without modifying command logic.
+
+  **New exports:**
+  - `BasicLogger` - Default console logger with colored output (SUCCESS/INFO/WARNING/ERROR/VERBOSE prefixes)
+  - `ConsolaLogger` (alpha) - Rich formatting logger using consola library
+  - `logIndent()` - Standalone function for indented logging
+  - `Args` and `Flags` type helpers
+
+  **Breaking changes:**
+  - `BaseCommand` no longer implements `Logger` directly; use the `logger` getter instead
+  - `errorLog()` method renamed to `logError()` for consistency
+  - `exit()` method now supports `exit(message, code)` overload for error+exit in one call
+  - `warningWithDebugTrace()` return type changed from `string | Error` to `void`
+  - `logIndent()` is now a standalone function: `logIndent(input, logger, indent)` instead of `this.logIndent(input, indent)`
+  - Removed custom `error()` override that formatted strings with chalk (now delegated to logger)
+
+  **Migration:**
+
+  ```typescript
+  // Before
+  class MyCommand extends BaseCommand {
+    run() {
+      this.errorLog("message");
+      this.logIndent("text", 2);
+    }
+  }
+
+  // After
+  import { logIndent } from "@tylerbu/cli-api";
+
+  class MyCommand extends BaseCommand {
+    run() {
+      this.logError("message");
+      logIndent("text", this.logger, 2);
+    }
+  }
+  ```
+
+  **Custom logger:**
+
+  ```typescript
+  class MyCommand extends BaseCommand {
+    protected override _logger = ConsolaLogger; // or your own Logger implementation
+  }
+  ```
+
 ## 0.9.0
 
 ### Minor Changes
@@ -9,12 +69,10 @@
   Created new dependency-sync module with comprehensive API for dependency synchronization:
 
   **New Exports:**
-
   - Types: `DependencyInfo`, `ProjectInfo`, `PackageJson`, `SyncResult`, `DependencyChange`, `DependencyType`, `UpdateVersionRangeOptions`, `UpdateVersionRangeResult`, `SyncPackageJsonOptions`, `SyncAllPackagesOptions`, `GetInstalledVersionsOptions`
   - Functions: `getInstalledVersions`, `parsePnpmList`, `parseNpmList`, `parsePackageManagerList`, `updateVersionRange`, `syncDependencyGroup`, `syncPackageJson`, `syncAllPackages`, `isSyncSupported`, `shouldSkipVersion`, `isValidSemver`
 
   **Features:**
-
   - Intelligent version range updates (caret, tilde, exact, complex ranges)
   - Support for pnpm and npm list parsing
   - Workspace dependency filtering
@@ -22,7 +80,6 @@
   - Comprehensive test coverage (128 test cases)
 
   **Implementation Quality:**
-
   - Fixed TypeScript `exactOptionalPropertyTypes` compliance
   - Reduced cognitive complexity with helper functions (`createSkippedResult`, `isComplexRange`)
   - Proper TSDoc documentation with escaped special characters
@@ -33,7 +90,6 @@
 ### Minor Changes
 
 - Add package manager detection utilities _[`#343`](https://github.com/tylerbutler/tools-monorepo/pull/343) [`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [@tylerbutler](https://github.com/tylerbutler)_
-
   - Export `detectPackageManager()` - Detects package manager from lockfile in a directory
   - Export `detectFromLockfilePath()` - Detects package manager from a specific lockfile path
   - Export `detectAllPackageManagers()` - Detects all package managers in a directory
@@ -65,7 +121,6 @@
 ### Patch Changes
 
 - Fix git squish command configuration loading _[`#320`](https://github.com/tylerbutler/tools-monorepo/pull/320) [`0028315`](https://github.com/tylerbutler/tools-monorepo/commit/002831523cc6483c79c217dc3e8026ccf2def98e) [@tylerbutler](https://github.com/tylerbutler)_
-
   - **cli-api**: Add `requiresConfig` property to `CommandWithConfig` to allow commands to skip config loading
   - **cli-api**: Set `GitCommand.requiresConfig = false` by default since git commands typically don't need config files
 
@@ -126,7 +181,6 @@
 ### Minor Changes
 
 - API changes _[`#157`](https://github.com/tylerbutler/tools-monorepo/pull/157) [`ede1957`](https://github.com/tylerbutler/tools-monorepo/commit/ede19579ffc630f6e176046c6e11e170849a0d48) [@tylerbutler](https://github.com/tylerbutler)_
-
   - **Breaking change:** `CommandWithConfig.configPath` is now `CommandWithConfig.configLocation`.
   - `PackageTransformer`s can now be async.
   - `readJsonWithIndent` is now generic.
@@ -177,7 +231,6 @@
 ### Minor Changes
 
 - Update CommandWithConfig typing _[`#136`](https://github.com/tylerbutler/tools-monorepo/pull/136) [`f803610`](https://github.com/tylerbutler/tools-monorepo/commit/f803610f64936c5d49d862b2f4240ea248fe3f76) [@tylerbutler](https://github.com/tylerbutler)_
-
   - The `loadConfig` method now takes a reload parameter.
   - The `defaultConfig` method has been removed.
 

@@ -70,11 +70,6 @@ export type {
 	LoggingFunction,
 } from "./logger.js";
 export { createBasicLogger } from "./loggers/basic.js";
-export {
-	type ConsolaLoggerOptions,
-	createConsolaLogger,
-	createExtendedConsolaLogger,
-} from "./loggers/consola.js";
 export type { PrefixStyle } from "./loggers/prefixReporter.js";
 export {
 	detectAllPackageManagers,

@@ -1,0 +1,22 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"files": [],
+	"// comment": "Solution file for tsgo shadow testing - excludes Astro packages",
+	"references": [
+		{ "path": "./packages/fundamentals" },
+		{ "path": "./packages/lilconfig-loader-ts" },
+		{ "path": "./packages/cli-api" },
+		{ "path": "./packages/cli" },
+		{ "path": "./packages/dill-cli" },
+		{ "path": "./packages/repopo" },
+		{ "path": "./packages/sort-tsconfig" },
+		{ "path": "./packages/xkcd2-api" },
+		{ "path": "./packages/levee-client" },
+		{ "path": "./packages/rehype-footnotes" },
+		{ "path": "./packages/remark-lazy-links" },
+		{ "path": "./packages/remark-shift-headings" },
+		{ "path": "./packages/remark-task-table" },
+		{ "path": "./packages/sail" },
+		{ "path": "./packages/sail-infrastructure" },
+	],
+}

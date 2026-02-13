@@ -358,57 +358,65 @@ async function applyFix(
 export const PackageEsmType = definePackagePolicy<
 	PackageJson,
 	PackageEsmTypeConfig | undefined
->("PackageEsmType", async (json, { file, config, resolve }) => {
-	// If no config provided, skip validation
-	if (config === undefined) {
-		return true;
-	}
-
-	const packageName = json.name;
-
-	// Check if package should be skipped
-	if (shouldSkipPackage(packageName, config)) {
-		return true;
-	}
-
-	// Determine the expected type
-	const { expectedType, detectionReason } = determineExpectedType(json, config);
-
-	// Handle case where type cannot be detected
-	if (expectedType === undefined) {
-		if (config.onDetectionFailure === "fail") {
-			return {
-				name: "PackageEsmType",
-				file,
-				autoFixable: false,
-				errorMessages: [
-					`Package "${packageName}": ${detectionReason ?? "Could not detect module type"}. Set "type" field explicitly or use "requiredType" config.`,
-				],
-			};
+>({
+	name: "PackageEsmType",
+	description:
+		"Ensures the type field in package.json correctly indicates ESM or CommonJS module format.",
+	handler: async (json, { file, config, resolve }) => {
+		// If no config provided, skip validation
+		if (config === undefined) {
+			return true;
 		}
-		// "skip" and "warn" both pass validation
-		return true;
-	}
 
-	// Check if current type matches expected
-	if (json.type === expectedType) {
-		return true;
-	}
+		const packageName = json.name;
 
-	// Build failure result
-	const failResult: PolicyFailure = {
-		name: PackageEsmType.name,
-		file,
-		autoFixable: true,
-		// packageName is guaranteed to be defined here due to shouldSkipPackage check
-		errorMessages: [
-			buildErrorMessage(packageName as string, json.type, expectedType),
-		],
-	};
+		// Check if package should be skipped
+		if (shouldSkipPackage(packageName, config)) {
+			return true;
+		}
 
-	if (resolve) {
-		return applyFix(json, file, expectedType, failResult);
-	}
+		// Determine the expected type
+		const { expectedType, detectionReason } = determineExpectedType(
+			json,
+			config,
+		);
 
-	return failResult;
+		// Handle case where type cannot be detected
+		if (expectedType === undefined) {
+			if (config.onDetectionFailure === "fail") {
+				return {
+					name: "PackageEsmType",
+					file,
+					autoFixable: false,
+					errorMessages: [
+						`Package "${packageName}": ${detectionReason ?? "Could not detect module type"}. Set "type" field explicitly or use "requiredType" config.`,
+					],
+				};
+			}
+			// "skip" and "warn" both pass validation
+			return true;
+		}
+
+		// Check if current type matches expected
+		if (json.type === expectedType) {
+			return true;
+		}
+
+		// Build failure result
+		const failResult: PolicyFailure = {
+			name: PackageEsmType.name,
+			file,
+			autoFixable: true,
+			// packageName is guaranteed to be defined here due to shouldSkipPackage check
+			errorMessages: [
+				buildErrorMessage(packageName as string, json.type, expectedType),
+			],
+		};
+
+		if (resolve) {
+			return applyFix(json, file, expectedType, failResult);
+		}
+
+		return failResult;
+	},
 });

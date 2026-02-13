@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Quick Commands (for Claude)
+
+**Before making changes:**
+- `pnpm nx affected -t build` - Build affected packages
+- `pnpm nx affected -t test` - Test affected packages
+
+**After making changes:**
+- `./packages/repopo/bin/dev.js check --fix` - Fix policy violations
+- `pnpm format` - Format code
+
+**Package-specific work:**
+- Use `pnpm nx run <pkg>:<task>` for targeted execution
+- Check `packages/<name>/CLAUDE.md` for package guidance
+
 ## Project Overview
 
 This is a TypeScript monorepo containing personal tools and CLI utilities, managed with pnpm workspaces and Nx for build orchestration.
@@ -113,22 +127,7 @@ pnpm deps
 
 ## Task Reference
 
-This section documents the top-level tasks available in the monorepo and their purposes.
-
-### Orchestration vs Implementation Tasks
-
-The monorepo uses a two-tier task architecture:
-
-**Orchestration Tasks** (no prefix):
-- Defined as empty synthetic targets in `nx.targets` section of package.json
-- Actual orchestration happens via `dependsOn` in `nx.json` targetDefaults
-- Examples: `build`, `test`, `check`, `ci`
-- **Never** run implementation code directly in package.json scripts
-
-**Implementation Tasks** (`:` prefix):
-- Contain actual shell commands to execute
-- Examples: `build:compile`, `build:api`, `test:vitest`, `check:format`
-- Run by Nx based on dependency graph defined in `nx.json`
+This section documents the top-level tasks. See [Architecture Patterns](#build-pipeline--task-architecture) for how the two-tier task system (orchestration vs implementation) works.
 
 ### Top-Level Tasks
 
@@ -576,6 +575,9 @@ pnpm run ci:lint
 7. **Sorted configs** - package.json and tsconfig.json must be sorted
 8. **Biome formatting** - Code must pass Biome checks before commit
 9. **Policy compliance** - All packages must pass repopo policy checks
+10. **Tabs for indentation** - This project uses tabs, not spaces
+11. **No re-exports** - Always import from the module directly, not through barrel files
+12. **Vitest for specific tests** - Use `pnpm vitest` to run specific tests; `pnpm test` runs all tests
 
 ## File Organization
 
@@ -640,7 +642,3 @@ If the user wants help with fixing an error in their CI pipeline, use the follow
 
 
 <!-- nx configuration end-->
-
-- This project uses tabs primarily for indentation. Not spaces.
-- We do not use re-export patterns. Always import from the module directly.
-- Use "pnpm vitest" to run specific tests and test files. pnpm test will typically run all tests no matter what arguments you pass.

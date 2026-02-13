@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { NoPrivateWorkspaceDependenciesSettings } from "../../src/policies/NoPrivateWorkspaceDependencies.js";
 import { NoPrivateWorkspaceDependencies } from "../../src/policies/NoPrivateWorkspaceDependencies.js";
 import type { PolicyFunctionArguments } from "../../src/policy.js";
+import { runHandler } from "../test-helpers.js";
 
 describe("NoPrivateWorkspaceDependencies policy", () => {
 	let tempDir: string;
@@ -76,7 +77,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
@@ -100,7 +102,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
@@ -129,7 +132,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
@@ -147,7 +151,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
@@ -171,7 +176,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
@@ -195,7 +201,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath, { checkDevDependencies: true }),
 		);
 
@@ -229,7 +236,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
@@ -263,7 +271,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
@@ -291,7 +300,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			},
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
@@ -307,7 +317,8 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			version: "1.0.0",
 		});
 
-		const result = await NoPrivateWorkspaceDependencies.handler(
+		const result = await runHandler(
+			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
 
