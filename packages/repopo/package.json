@@ -60,7 +60,7 @@
 		"readme:main": "oclif readme --no-aliases",
 		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
 		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
+		"test:coverage": "mkdir -p .coverage/vitest/.tmp && vitest run --coverage",
 		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
 		"test:watch": "vitest"
 	},

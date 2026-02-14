@@ -72,8 +72,10 @@ jobs:
       - name: Run CI checks, builds, and tests
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            pnpm run ci:all
+            # Main branch: run full CI including integration tests on all packages
+            pnpm run ci:full:all
           else
+            # PRs: run fast CI (no integration tests) on affected packages only
             pnpm run ci:affected
           fi
 
@@ -97,6 +99,7 @@ jobs:
             ["remark-shift-headings"]="remark-shift-headings"
             ["remark-lazy-links"]="remark-lazy-links"
             ["remark-task-table"]="remark-task-table"
+            ["remark-workspace-packages"]="remark-workspace-packages"
             ["repopo"]="repopo"
             ["lilconfig-loader-ts"]="lilconfig-loader-ts"
           )

@@ -28,6 +28,9 @@
 		"ci:check:astro": "nx run-many -t check:astro",
 		"ci:check:svelte": "nx run-many -t check:svelte",
 		"ci:docs": "nx run-many -t build:docs",
+		"ci:full": "nx run-many -t ci:full",
+		"ci:full:affected": "nx affected -t ci:full",
+		"ci:full:all": "nx run-many -t ci:full",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:local": "nx affected -t ci --base=HEAD~1",
 		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
@@ -54,7 +57,8 @@
 		"test": "nx run-many -t test",
 		"test:coverage": "nx run-many -t test:coverage",
 		"test:tsgo-build": "tsx scripts/test-tsgo-build.mts",
-		"test:tsgo-build:full": "tsx scripts/test-tsgo-build.mts --build"
+		"test:tsgo-build:full": "tsx scripts/test-tsgo-build.mts --build",
+		"update:readme": "remark README.md --output"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
@@ -73,6 +77,11 @@
 		"generate-license-file": "^4.1.1",
 		"nx": "22.5.0",
 		"pathe": "^2.0.3",
+		"remark-cli": "^12.0.1",
+		"remark-gfm": "^4.0.1",
+		"remark-task-table": "workspace:^",
+		"remark-toc": "^9.0.0",
+		"remark-workspace-packages": "workspace:^",
 		"repopo": "workspace:^",
 		"rimraf": "^6.1.2",
 		"semver": "^7.7.3",
@@ -126,10 +135,57 @@
 		}
 	},
 	"nx": {
-		"includedScripts": [
-			"deps:sync"
-		],
+		"includedScripts": [],
 		"targets": {
+			"build": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t build"
+				},
+				"cache": false
+			},
+			"test": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t test"
+				},
+				"cache": false
+			},
+			"ci": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t ci"
+				},
+				"cache": false
+			},
+			"clean": {
+				"dependsOn": [
+					"clean:root",
+					"^clean"
+				],
+				"cache": false
+			},
+			"compile": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t build:compile"
+				},
+				"cache": false
+			},
+			"docs": {
+				"executor": "nx:run-commands",
+				"options": {
+					"command": "nx run-many -t build:docs"
+				},
+				"cache": false
+			},
+			"format": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "format"
+				},
+				"cache": false
+			},
 			"check": {
 				"dependsOn": [
 					"check:all",

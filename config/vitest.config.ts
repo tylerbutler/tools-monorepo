@@ -1,8 +1,15 @@
 import process from "node:process";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "pathe";
 import { defineConfig } from "vitest/config";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const config = defineConfig({
 	test: {
+		// Create coverage temp directory before tests to prevent race condition
+		// where parallel workers try to write before the directory exists
+		globalSetup: [resolve(__dirname, "vitest.global-setup.ts")],
 		// Explicitly disable watch mode to prevent interactive TUI
 		watch: false,
 		// CI environments are slower, so increase timeout to prevent flaky test failures
@@ -31,6 +38,9 @@ const config = defineConfig({
 			// Include cobertura for better codecov integration
 			reporter: ["text", "json", "html", "cobertura"],
 			reportsDirectory: ".coverage/vitest",
+			// Serialize coverage processing to prevent race condition in CI
+			// where parallel workers try to write to .tmp directory simultaneously
+			processingConcurrency: 1,
 		},
 		exclude: [
 			// Default Vitest exclusions

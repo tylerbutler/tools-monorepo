@@ -21,5 +21,8 @@
 	},
 	"peerDependencies": {
 		"@biomejs/biome": "2.0.4"
+	},
+	"dependencies": {
+		"pathe": "^2.0.3"
 	}
 }
