@@ -99,7 +99,7 @@
 		"fflate": "^0.8.2",
 		"file-type": "^21.3.0",
 		"mime": "^4.1.0",
-		"nanotar": "^0.2.1",
+		"nanotar": "^0.3.0",
 		"pathe": "^2.0.3",
 		"whatwg-mimetype": "^5.0.0"
 	},
