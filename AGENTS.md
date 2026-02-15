@@ -68,8 +68,20 @@ Order: `pnpm install --frozen-lockfile` → `ci:check` (format/deps/policies/lin
 
 ## Rules
 
-**DO:** (1) `corepack enable` before `pnpm install` (2) Use `pnpm install --ignore-scripts` (3) Run `pnpm run build` after changes (4) Run `pnpm run ci:check` before committing (5) Run `pnpm run test` (6) Trust these instructions
-**DON'T:** (1) Use npm (2) Manually edit pnpm-lock.yaml (3) Add deps without `workspace:^` (4) Skip CI validation (5) Fix unrelated xkcd2-api failures
+**DO:**
+1. `corepack enable` before `pnpm install`
+2. Use `pnpm install --ignore-scripts`
+3. Run `pnpm run build` after changes
+4. Run `pnpm run ci:check` before committing
+5. Run `pnpm run test`
+6. Trust these instructions
+
+**DON'T:**
+1. Use npm
+2. Manually edit pnpm-lock.yaml
+3. Add deps without `workspace:^`
+4. Skip CI validation
+5. Fix unrelated xkcd2-api failures
 
 **For more info:** Check package README.md, .github/workflows/pr-build.yml, nx.json, or package.json scripts, or consult CLAUDE.md for comprehensive details.
 
