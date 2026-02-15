@@ -5,20 +5,6 @@ const config = {
 	lintFormatting: false,
 	// Exclude vendored packages (git subrepo)
 	filter: "!btree-typescript",
-	dependencyGroups: [
-		{
-			aliasName: "fluidframework",
-			dependencies: [
-				"@fluidframework/**",
-				"!@fluidframework/protocol-definitions",
-				"fluid-framework",
-			],
-		},
-		{
-			aliasName: "vitest",
-			dependencies: ["vitest", "@vitest/**"],
-		},
-	],
 	customTypes: {
 		engines: {
 			path: "engines",
@@ -29,14 +15,16 @@ const config = {
 			strategy: "name@version",
 		},
 	},
+	dependencyTypes: [
+		"dev",
+		"engines",
+		// Disabled for now because it removes the sha from the field.
+		// "packageManager",
+		// Disabled because of interactions with changeset versioning.
+		// "peer",
+		"prod",
+	],
 	versionGroups: [
-		{
-			label: "Use >= range for repopo peer dependency in sort-tsconfig",
-			dependencies: ["repopo"],
-			dependencyTypes: ["peer"],
-			packages: ["sort-tsconfig"],
-			pinVersion: ">=0.5.0",
-		},
 		{
 			label: "Use workspace protocol for workspace dependencies",
 			dependencies: ["$LOCAL"],
@@ -54,42 +42,25 @@ const config = {
 		{
 			label: "Use * dep for deps on sort-package-json",
 			dependencies: ["sort-package-json"],
-			dependencyTypes: ["dev", "prod", "peer"],
+			dependencyTypes: ["dev", "prod"],
 			pinVersion: "*",
 			packages: ["**"],
 		},
 		{
-			label: "Ensure all Fluid Framework packages use consistent versions",
-			dependencies: ["fluidframework"],
-			packages: ["**"],
-			preferVersion: "highestSemver",
-		},
-		{
-			label: "Ensure all vitest packages use consistent versions",
-			dependencies: ["vitest"],
-			packages: ["**"],
-			preferVersion: "highestSemver",
-		},
-		{
-			label: "Prefer highest semver when there's a mismatch",
+			label: "Prefer lowest version when there's a mismatch",
 			dependencies: ["**"],
 			packages: ["**"],
 			preferVersion: "highestSemver",
 		},
 	],
 	semverGroups: [
-		{
-			label: "Ignore packageManager field",
-			isIgnored: true,
-			dependencyTypes: ["packageManager"],
-			packages: ["**"],
-		},
-		{
-			label: "Ignore pnpm overrides",
-			isIgnored: true,
-			dependencyTypes: ["pnpmOverrides"],
-			packages: ["**"],
-		},
+		// Disabled for now because it removes the sha from the field.
+		// {
+		// 	label: "Use exact ranges for packageManager field",
+		// 	range: "",
+		// 	dependencyTypes: ["packageManager"],
+		// 	packages: ["**"],
+		// },
 		{
 			label: "Ignore GitHub URL dependencies",
 			isIgnored: true,
@@ -99,13 +70,7 @@ const config = {
 		{
 			label: "Use exact ranges for these deps",
 			range: "",
-			dependencies: [
-				"@biomejs/biome",
-				"@typescript/native-preview",
-				"nx",
-				"sort-package-json",
-				"syncpack",
-			],
+			dependencies: ["@biomejs/biome", "nx", "sort-package-json"],
 			packages: ["**"],
 		},
 		{
@@ -125,9 +90,9 @@ const config = {
 			label: "Use tilde range for Fluid Framework packages",
 			range: "~",
 			dependencies: [
-				"fluidframework",
-				"@fluidframework/protocol-definitions",
+				"@fluidframework/**",
 				"@fluid-tools/**",
+				"fluid-framework",
 			],
 			packages: ["**"],
 		},
