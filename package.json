@@ -1,258 +1,258 @@
 {
-  "name": "tools-monorepo",
-  "version": "0.0.0",
-  "private": true,
-  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tylerbutler/tools-monorepo.git"
-  },
-  "license": "MIT",
-  "author": "Tyler Butler <tyler@tylerbutler.com>",
-  "type": "module",
-  "scripts": {
-    "build": "nx run-many -t build",
-    "build:affected": "nx affected -t build",
-    "check": "nx run tools-monorepo:check",
-    "check:all": "nx run tools-monorepo:check:all",
-    "check:deps": "syncpack lint",
-    "check:format": "biome check --linter-enabled=false --no-errors-on-unmatched",
-    "check:policy": "repopo check",
-    "check:references": "workspaces-to-typescript-project-references --check",
-    "check:types:native": "tsgo --build tsconfig.tsgo.json",
-    "ci": "nx run-many -t ci",
-    "ci:affected": "nx affected -t ci",
-    "ci:all": "nx run-many -t ci",
-    "ci:build": "nx run-many -t build build:generate",
-    "ci:check": "pnpm check",
-    "ci:check:astro": "nx run-many -t check:astro",
-    "ci:check:svelte": "nx run-many -t check:svelte",
-    "ci:docs": "nx run-many -t build:docs",
-    "ci:lint": "biome ci --reporter=github",
-    "ci:local": "nx affected -t ci --base=HEAD~1",
-    "ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
-    "ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
-    "ci:test": "nx run-many -t test:coverage",
-    "ci:version": "pnpm run release:license && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
-    "clean": "nx run tools-monorepo:clean:root && nx run-many -t clean",
-    "clean:root": "rimraf *.tsbuildinfo *.done.build.log",
-    "compile": "nx run-many -t build:compile",
-    "compile:native": "tsgo --build tsconfig.tsgo.json",
-    "compile:native:clean": "tsgo --build tsconfig.tsgo.json --clean && tsgo --build tsconfig.tsgo.json",
-    "deps:sync": "tbu deps sync",
-    "docs": "nx run-many -t build:docs",
-    "fix:policy": "repopo check --fix",
-    "fix:references": "workspaces-to-typescript-project-references",
-    "format": "biome check . --linter-enabled=false --write",
-    "generate:packlist": "flub generate packlist -g client --no-private",
-    "lint": "biome lint --no-errors-on-unmatched",
-    "lint:fix": "biome lint --write",
-    "release:license": "nx run-many -t release:license",
-    "sort-package-json": "sort-package-json package.json \"config/package.json\" \"packages/*/package.json\"",
-    "sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
-    "syncpack:fix": "syncpack fix",
-    "test": "nx run-many -t test",
-    "test:coverage": "nx run-many -t test:coverage",
-    "test:tsgo-build": "tsx scripts/test-tsgo-build.mts",
-    "test:tsgo-build:full": "tsx scripts/test-tsgo-build.mts --build"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.3.8",
-    "@changesets/cli": "^2.29.8",
-    "@changesets/config": "^3.1.2",
-    "@monorepo-utils/workspaces-to-typescript-project-references": "^2.11.0",
-    "@nx/js": "^22.5.0",
-    "@nx/vite": "^22.5.0",
-    "@tsconfig/node18": "^18.2.6",
-    "@tsconfig/strictest": "^2.0.8",
-    "@tylerbu/cli": "workspace:^",
-    "@tylerbu/local-config": "workspace:^",
-    "@typescript/native-preview": "7.0.0-dev.20260122.4",
-    "changesets-changelog-clean": "^1.3.0",
-    "concurrently": "^9.2.1",
-    "generate-license-file": "^4.1.1",
-    "nx": "22.5.0",
-    "pathe": "^2.0.3",
-    "repopo": "workspace:^",
-    "rimraf": "^6.1.2",
-    "semver": "^7.7.3",
-    "sort-package-json": "*",
-    "sort-tsconfig": "workspace:^",
-    "syncpack": "14.0.0-alpha.37",
-    "ts-node": "^10.9.2",
-    "tslib": "^2.8.1",
-    "tsx": "^4.21.0",
-    "type-fest": "^5.4.1"
-  },
-  "packageManager": "pnpm@10.24.0",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "allowAny": [
-        "@aws-sdk/*"
-      ],
-      "ignoreMissing": [
-        "@aws-sdk/*",
-        "@octokit/core"
-      ]
-    },
-    "onlyBuiltDependencies": [
-      "@biomejs/biome",
-      "@parcel/watcher",
-      "@tailwindcss/oxide",
-      "better-sqlite3",
-      "core-js",
-      "core-js-pure",
-      "dtrace-provider",
-      "esbuild",
-      "msw",
-      "nx",
-      "protobufjs",
-      "re2",
-      "sharp",
-      "unrs-resolver",
-      "yarn"
-    ],
-    "updateConfig": {
-      "ignoreDependencies": [
-        "@types/node"
-      ]
-    },
-    "overrides": {
-      "oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
-      "oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
-    }
-  },
-  "nx": {
-    "includedScripts": [
-      "deps:sync"
-    ],
-    "targets": {
-      "check": {
-        "dependsOn": [
-          "check:all",
-          "^check"
-        ],
-        "cache": true
-      },
-      "check:all": {
-        "dependsOn": [
-          "check:deps",
-          "check:format",
-          "check:policy",
-          "check:references",
-          "lint"
-        ],
-        "cache": true
-      },
-      "check:format": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "check:format"
-        },
-        "inputs": [
-          "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts,json,jsonc,md}",
-          "!{workspaceRoot}/**/node_modules/**",
-          "!{workspaceRoot}/**/dist/**",
-          "!{workspaceRoot}/**/esm/**",
-          "{workspaceRoot}/biome.jsonc",
-          "{workspaceRoot}/config/biome/*.jsonc"
-        ],
-        "cache": true
-      },
-      "lint": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "lint"
-        },
-        "inputs": [
-          "{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}",
-          "!{workspaceRoot}/**/node_modules/**",
-          "!{workspaceRoot}/**/dist/**",
-          "!{workspaceRoot}/**/esm/**",
-          "{workspaceRoot}/biome.jsonc",
-          "{workspaceRoot}/config/biome/*.jsonc"
-        ],
-        "cache": true
-      },
-      "check:deps": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "check:deps"
-        },
-        "inputs": [
-          "{workspaceRoot}/package.json",
-          "{workspaceRoot}/packages/*/package.json",
-          "{workspaceRoot}/syncpack.config.cjs",
-          "{workspaceRoot}/pnpm-lock.yaml"
-        ],
-        "cache": true
-      },
-      "check:policy": {
-        "executor": "nx:run-script",
-        "dependsOn": [
-          "sort-tsconfig:build:compile"
-        ],
-        "options": {
-          "script": "check:policy"
-        },
-        "inputs": [
-          "{workspaceRoot}/**/*",
-          "!{workspaceRoot}/**/node_modules/**",
-          "!{workspaceRoot}/**/dist/**",
-          "!{workspaceRoot}/**/esm/**",
-          "{workspaceRoot}/repopo.config.ts"
-        ],
-        "cache": true
-      },
-      "check:references": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "check:references"
-        },
-        "inputs": [
-          "{workspaceRoot}/package.json",
-          "{workspaceRoot}/packages/*/package.json",
-          "{workspaceRoot}/packages/*/tsconfig*.json",
-          "{workspaceRoot}/config/tsconfig*.json"
-        ],
-        "cache": true
-      },
-      "check:types:native": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "check:types:native"
-        },
-        "inputs": [
-          "{workspaceRoot}/**/*.{ts,tsx,mts,cts}",
-          "!{workspaceRoot}/**/node_modules/**",
-          "!{workspaceRoot}/**/dist/**",
-          "!{workspaceRoot}/**/esm/**",
-          "{workspaceRoot}/config/tsconfig*.json",
-          "{workspaceRoot}/packages/*/tsconfig*.json"
-        ],
-        "cache": true
-      },
-      "clean:root": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "clean:root"
-        },
-        "cache": false
-      },
-      "deps:sync": {
-        "dependsOn": [
-          "cli:build:compile"
-        ],
-        "inputs": [
-          "{workspaceRoot}/package.json",
-          "{workspaceRoot}/packages/*/package.json",
-          "{workspaceRoot}/pnpm-lockfile.yaml"
-        ],
-        "cache": true
-      }
-    }
-  }
+	"name": "tools-monorepo",
+	"version": "0.0.0",
+	"private": true,
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"scripts": {
+		"build": "nx run-many -t build",
+		"build:affected": "nx affected -t build",
+		"check": "nx run tools-monorepo:check",
+		"check:all": "nx run tools-monorepo:check:all",
+		"check:deps": "syncpack lint",
+		"check:format": "biome check --linter-enabled=false --no-errors-on-unmatched",
+		"check:policy": "repopo check",
+		"check:references": "workspaces-to-typescript-project-references --check",
+		"check:types:native": "tsgo --build tsconfig.tsgo.json",
+		"ci": "nx run-many -t ci",
+		"ci:affected": "nx affected -t ci",
+		"ci:all": "nx run-many -t ci",
+		"ci:build": "nx run-many -t build build:generate",
+		"ci:check": "pnpm check",
+		"ci:check:astro": "nx run-many -t check:astro",
+		"ci:check:svelte": "nx run-many -t check:svelte",
+		"ci:docs": "nx run-many -t build:docs",
+		"ci:lint": "biome ci --reporter=github",
+		"ci:local": "nx affected -t ci --base=HEAD~1",
+		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
+		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
+		"ci:test": "nx run-many -t test:coverage",
+		"ci:version": "pnpm run release:license && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
+		"clean": "nx run tools-monorepo:clean:root && nx run-many -t clean",
+		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
+		"compile": "nx run-many -t build:compile",
+		"compile:native": "tsgo --build tsconfig.tsgo.json",
+		"compile:native:clean": "tsgo --build tsconfig.tsgo.json --clean && tsgo --build tsconfig.tsgo.json",
+		"deps:sync": "tbu deps sync",
+		"docs": "nx run-many -t build:docs",
+		"fix:policy": "repopo check --fix",
+		"fix:references": "workspaces-to-typescript-project-references",
+		"format": "biome check . --linter-enabled=false --write",
+		"generate:packlist": "flub generate packlist -g client --no-private",
+		"lint": "biome lint --no-errors-on-unmatched",
+		"lint:fix": "biome lint --write",
+		"release:license": "nx run-many -t release:license",
+		"sort-package-json": "sort-package-json package.json \"config/package.json\" \"packages/*/package.json\"",
+		"sort:tsconfig": "sort-tsconfig \"config/tsconfig*.json\" --write && sort-tsconfig \"packages/*/tsconfig*.json\" --write",
+		"syncpack:fix": "syncpack fix",
+		"test": "nx run-many -t test",
+		"test:coverage": "nx run-many -t test:coverage",
+		"test:tsgo-build": "tsx scripts/test-tsgo-build.mts",
+		"test:tsgo-build:full": "tsx scripts/test-tsgo-build.mts --build"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@changesets/cli": "^2.29.8",
+		"@changesets/config": "^3.1.2",
+		"@monorepo-utils/workspaces-to-typescript-project-references": "^2.11.0",
+		"@nx/js": "^22.5.0",
+		"@nx/vite": "^22.5.0",
+		"@tsconfig/node18": "^18.2.6",
+		"@tsconfig/strictest": "^2.0.8",
+		"@tylerbu/cli": "workspace:^",
+		"@tylerbu/local-config": "workspace:^",
+		"@typescript/native-preview": "7.0.0-dev.20260122.4",
+		"changesets-changelog-clean": "^1.3.0",
+		"concurrently": "^9.2.1",
+		"generate-license-file": "^4.1.1",
+		"nx": "22.5.0",
+		"pathe": "^2.0.3",
+		"repopo": "workspace:^",
+		"rimraf": "^6.1.2",
+		"semver": "^7.7.3",
+		"sort-package-json": "*",
+		"sort-tsconfig": "workspace:^",
+		"syncpack": "14.0.0-alpha.37",
+		"ts-node": "^10.9.2",
+		"tslib": "^2.8.1",
+		"tsx": "^4.21.0",
+		"type-fest": "^5.4.1"
+	},
+	"packageManager": "pnpm@10.24.0",
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"pnpm": {
+		"peerDependencyRules": {
+			"allowAny": [
+				"@aws-sdk/*"
+			],
+			"ignoreMissing": [
+				"@aws-sdk/*",
+				"@octokit/core"
+			]
+		},
+		"onlyBuiltDependencies": [
+			"@biomejs/biome",
+			"@parcel/watcher",
+			"@tailwindcss/oxide",
+			"better-sqlite3",
+			"core-js",
+			"core-js-pure",
+			"dtrace-provider",
+			"esbuild",
+			"msw",
+			"nx",
+			"protobufjs",
+			"re2",
+			"sharp",
+			"unrs-resolver",
+			"yarn"
+		],
+		"updateConfig": {
+			"ignoreDependencies": [
+				"@types/node"
+			]
+		},
+		"overrides": {
+			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
+			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
+		}
+	},
+	"nx": {
+		"includedScripts": [
+			"deps:sync"
+		],
+		"targets": {
+			"check": {
+				"dependsOn": [
+					"check:all",
+					"^check"
+				],
+				"cache": true
+			},
+			"check:all": {
+				"dependsOn": [
+					"check:deps",
+					"check:format",
+					"check:policy",
+					"check:references",
+					"lint"
+				],
+				"cache": true
+			},
+			"check:format": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "check:format"
+				},
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts,json,jsonc,md}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/biome.jsonc",
+					"{workspaceRoot}/config/biome/*.jsonc"
+				],
+				"cache": true
+			},
+			"lint": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "lint"
+				},
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/biome.jsonc",
+					"{workspaceRoot}/config/biome/*.jsonc"
+				],
+				"cache": true
+			},
+			"check:deps": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "check:deps"
+				},
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/syncpack.config.cjs",
+					"{workspaceRoot}/pnpm-lock.yaml"
+				],
+				"cache": true
+			},
+			"check:policy": {
+				"executor": "nx:run-script",
+				"dependsOn": [
+					"sort-tsconfig:build:compile"
+				],
+				"options": {
+					"script": "check:policy"
+				},
+				"inputs": [
+					"{workspaceRoot}/**/*",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/repopo.config.ts"
+				],
+				"cache": true
+			},
+			"check:references": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "check:references"
+				},
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/packages/*/tsconfig*.json",
+					"{workspaceRoot}/config/tsconfig*.json"
+				],
+				"cache": true
+			},
+			"check:types:native": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "check:types:native"
+				},
+				"inputs": [
+					"{workspaceRoot}/**/*.{ts,tsx,mts,cts}",
+					"!{workspaceRoot}/**/node_modules/**",
+					"!{workspaceRoot}/**/dist/**",
+					"!{workspaceRoot}/**/esm/**",
+					"{workspaceRoot}/config/tsconfig*.json",
+					"{workspaceRoot}/packages/*/tsconfig*.json"
+				],
+				"cache": true
+			},
+			"clean:root": {
+				"executor": "nx:run-script",
+				"options": {
+					"script": "clean:root"
+				},
+				"cache": false
+			},
+			"deps:sync": {
+				"dependsOn": [
+					"cli:build:compile"
+				],
+				"inputs": [
+					"{workspaceRoot}/package.json",
+					"{workspaceRoot}/packages/*/package.json",
+					"{workspaceRoot}/pnpm-lockfile.yaml"
+				],
+				"cache": true
+			}
+		}
+	}
 }

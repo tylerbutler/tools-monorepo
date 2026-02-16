@@ -1,25 +1,25 @@
 {
-  "name": "@tylerbu/local-config",
-  "private": true,
-  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-    "directory": "config"
-  },
-  "license": "MIT",
-  "author": "Tyler Butler <tyler@tylerbutler.com>",
-  "type": "module",
-  "exports": {
-    "./biome/formatter": "./biome/formatter.jsonc",
-    "./biome/linter": "./biome/linter.jsonc",
-    "./biome/oclif": "./biome/oclif.jsonc",
-    "./biome/test-files": "./biome/test-files.jsonc"
-  },
-  "devDependencies": {
-    "vitest": "^4.0.18"
-  },
-  "peerDependencies": {
-    "@biomejs/biome": "2.3.8"
-  }
+	"name": "@tylerbu/local-config",
+	"private": true,
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "config"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		"./biome/formatter": "./biome/formatter.jsonc",
+		"./biome/linter": "./biome/linter.jsonc",
+		"./biome/oclif": "./biome/oclif.jsonc",
+		"./biome/test-files": "./biome/test-files.jsonc"
+	},
+	"devDependencies": {
+		"vitest": "^4.0.18"
+	},
+	"peerDependencies": {
+		"@biomejs/biome": "2.3.8"
+	}
 }

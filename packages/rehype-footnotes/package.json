@@ -1,73 +1,73 @@
 {
-  "name": "rehype-footnotes",
-  "version": "0.1.2",
-  "description": "Rehype plugin to transform GFM footnotes for Littlefoot.js integration",
-  "homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/rehype-footnotes#rehype-footnotes",
-  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-    "directory": "packages/rehype-footnotes"
-  },
-  "license": "MIT",
-  "author": "Tyler Butler <tyler@tylerbutler.com>",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./esm/index.d.ts",
-        "default": "./esm/index.js"
-      }
-    }
-  },
-  "types": "./esm/index.d.ts",
-  "files": [
-    "esm"
-  ],
-  "scripts": {
-    "build:compile": "tsc --project ./tsconfig.json",
-    "check": "pnpm check:format",
-    "check:format": "biome format .",
-    "clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
-    "format": "biome check . --linter-enabled=false --write",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint . --apply",
-    "release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-    "test": "vitest run test",
-    "test:coverage": "vitest run test --coverage"
-  },
-  "dependencies": {
-    "unified": "^11.0.5",
-    "unist-util-visit": "^5.1.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.3.8",
-    "@types/hast": "^3.0.4",
-    "@types/node": "^20.19.25",
-    "@vitest/coverage-v8": "^4.0.18",
-    "rehype": "^13.0.2",
-    "rehype-parse": "^9.0.1",
-    "rehype-stringify": "^10.0.1",
-    "remark": "^15.0.1",
-    "remark-gfm": "^4.0.1",
-    "remark-parse": "^11.0.0",
-    "remark-rehype": "^11.1.2",
-    "rimraf": "^6.1.2",
-    "typescript": "~5.9.3",
-    "vitest": "^4.0.18"
-  },
-  "peerDependencies": {
-    "unified": "^11.0.5"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "nx": {
-    "targets": {
-      "build": {
-        "executor": "nx:noop"
-      },
-      "ci": {}
-    }
-  }
+	"name": "rehype-footnotes",
+	"version": "0.1.2",
+	"description": "Rehype plugin to transform GFM footnotes for Littlefoot.js integration",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/rehype-footnotes#rehype-footnotes",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/rehype-footnotes"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./esm/index.d.ts",
+				"default": "./esm/index.js"
+			}
+		}
+	},
+	"types": "./esm/index.d.ts",
+	"files": [
+		"esm"
+	],
+	"scripts": {
+		"build:compile": "tsc --project ./tsconfig.json",
+		"check": "pnpm check:format",
+		"check:format": "biome format .",
+		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --apply",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test": "vitest run test",
+		"test:coverage": "vitest run test --coverage"
+	},
+	"dependencies": {
+		"unified": "^11.0.5",
+		"unist-util-visit": "^5.1.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@types/hast": "^3.0.4",
+		"@types/node": "^20.19.25",
+		"@vitest/coverage-v8": "^4.0.18",
+		"rehype": "^13.0.2",
+		"rehype-parse": "^9.0.1",
+		"rehype-stringify": "^10.0.1",
+		"remark": "^15.0.1",
+		"remark-gfm": "^4.0.1",
+		"remark-parse": "^11.0.0",
+		"remark-rehype": "^11.1.2",
+		"rimraf": "^6.1.2",
+		"typescript": "~5.9.3",
+		"vitest": "^4.0.18"
+	},
+	"peerDependencies": {
+		"unified": "^11.0.5"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {
+				"executor": "nx:noop"
+			},
+			"ci": {}
+		}
+	}
 }

@@ -34,6 +34,12 @@ const config = {
 			packages: ["@tylerbu/sorted-btree-es6"],
 		},
 		{
+			label: "Ignore levee-client package (being removed from monorepo)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: ["@tylerbu/levee-client"],
+		},
+		{
 			label: "Use >= range for repopo peer dependency in sort-tsconfig",
 			dependencies: ["repopo"],
 			dependencyTypes: ["peer"],
@@ -86,6 +92,12 @@ const config = {
 			isIgnored: true,
 			dependencies: ["**"],
 			packages: ["@tylerbu/sorted-btree-es6"],
+		},
+		{
+			label: "Ignore levee-client package (being removed from monorepo)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: ["@tylerbu/levee-client"],
 		},
 		{
 			label: "Ignore packageManager field",
