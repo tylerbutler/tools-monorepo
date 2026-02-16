@@ -1,55 +1,55 @@
 {
-	"name": "repopo-docs",
-	"version": "0.0.1",
-	"private": true,
-	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/repopo-docs"
-	},
-	"license": "MIT",
-	"author": "Tyler Butler <tyler@tylerbutler.com>",
-	"type": "module",
-	"scripts": {
-		"astro": "astro",
-		"b": "nx build",
-		"build:site": "astro build",
-		"check:astro": "astro check",
-		"clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
-		"dev": "astro dev",
-		"preview": "astro preview",
-		"start": "astro dev"
-	},
-	"dependencies": {
-		"@astrojs/check": "^0.9.6",
-		"@astrojs/netlify": "^6.6.3",
-		"@astrojs/starlight": "^0.37.0",
-		"@fontsource/ibm-plex-serif": "^5.2.7",
-		"@fontsource/metropolis": "^5.2.5",
-		"@fontsource/open-sans": "^5.2.7",
-		"astro": "^5.17.1",
-		"repopo": "workspace:^",
-		"sharp": "^0.34.5",
-		"starlight-heading-badges": "^0.6.1",
-		"starlight-links-validator": "^0.19.1",
-		"starlight-package-managers": "^0.12.0",
-		"starlight-typedoc": "^0.21.4",
-		"typedoc": "^0.28.15",
-		"typedoc-plugin-frontmatter": "^1.3.1",
-		"typedoc-plugin-markdown": "^4.9.0",
-		"typedoc-plugin-mdn-links": "^5.1.0",
-		"typescript": "~5.9.3",
-		"zod": "^4.3.5"
-	},
-	"devDependencies": {
-		"@fec/remark-a11y-emoji": "^4.0.2",
-		"@hashicorp/platform-remark-plugins": "^0.2.1"
-	},
-	"nx": {
-		"targets": {
-			"build": {},
-			"ci": {}
-		}
-	}
+  "name": "repopo-docs",
+  "version": "0.0.1",
+  "private": true,
+  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+    "directory": "packages/repopo-docs"
+  },
+  "license": "MIT",
+  "author": "Tyler Butler <tyler@tylerbutler.com>",
+  "type": "module",
+  "scripts": {
+    "astro": "astro",
+    "b": "nx build",
+    "build:site": "astro build",
+    "check:astro": "astro check",
+    "clean": "rimraf dist *.tsbuildinfo *.done.build.log .astro .netlify",
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "start": "astro dev"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@astrojs/netlify": "^6.6.3",
+    "@astrojs/starlight": "^0.37.0",
+    "@fontsource/ibm-plex-serif": "^5.2.7",
+    "@fontsource/metropolis": "^5.2.5",
+    "@fontsource/open-sans": "^5.2.7",
+    "astro": "^5.17.1",
+    "repopo": "workspace:^",
+    "sharp": "^0.34.5",
+    "starlight-heading-badges": "^0.6.1",
+    "starlight-links-validator": "^0.19.1",
+    "starlight-package-managers": "^0.12.0",
+    "starlight-typedoc": "^0.21.4",
+    "typedoc": "^0.28.15",
+    "typedoc-plugin-frontmatter": "^1.3.1",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typedoc-plugin-mdn-links": "^5.1.0",
+    "typescript": "~5.9.3",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@fec/remark-a11y-emoji": "^4.0.2",
+    "@hashicorp/platform-remark-plugins": "^0.2.1"
+  },
+  "nx": {
+    "targets": {
+      "build": {},
+      "ci": {}
+    }
+  }
 }

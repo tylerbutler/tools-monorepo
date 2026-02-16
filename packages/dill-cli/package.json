@@ -1,149 +1,149 @@
 {
-	"name": "dill-cli",
-	"version": "0.4.1",
-	"description": "Command-line (CLI) program to download and optionally decompress gzipped files.",
-	"keywords": [
-		"download",
-		"ci",
-		"tar",
-		"gzip",
-		"decompress"
-	],
-	"homepage": "https://dill.tylerbutler.com/",
-	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/dill-cli"
-	},
-	"license": "MIT",
-	"author": "Tyler Butler <tyler@tylerbutler.com>",
-	"type": "module",
-	"exports": {
-		".": {
-			"types": "./esm/index.d.ts",
-			"import": "./esm/index.js"
-		},
-		"./command": {
-			"types": "./esm/commands/download.d.ts",
-			"import": "./esm/commands/download.js"
-		}
-	},
-	"types": "esm/index.d.ts",
-	"bin": {
-		"dill": "./bin/run.js"
-	},
-	"files": [
-		"/bin",
-		"/CHANGELOG.md",
-		"/esm",
-		"/oclif.manifest.json",
-		"/THIRD-PARTY-LICENSES.txt"
-	],
-	"scripts": {
-		"build:compile": "tsc --project ./tsconfig.json",
-		"build:manifest": "oclif manifest",
-		"build:readme": "concurrently npm:readme:*",
-		"check": "concurrently npm:check:format",
-		"check:format": "biome check . --linter-enabled=false",
-		"check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-		"clean": "concurrently npm:clean:build npm:clean:manifest",
-		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
-		"clean:manifest": "rimraf oclif.manifest.json",
-		"dill": "./bin/dev.js",
-		"format": "biome check . --linter-enabled=false --write",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write",
-		"postpack": "pnpm clean:manifest",
-		"readme:docs": "oclif readme --no-aliases --readme-path=../dill-docs/src/content/docs/cli-reference.md",
-		"readme:main": "oclif readme --no-aliases",
-		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"start": "serve ./test/data --listen 8080",
-		"test:coverage": "vitest run test --coverage",
-		"test:snapshots": "pnpm update:test-snapshots",
-		"test:vitest": "vitest run test",
-		"update:test-snapshots": "vitest run test -u"
-	},
-	"oclif": {
-		"additionalHelpFlags": [
-			"-h"
-		],
-		"additionalVersionFlags": [
-			"-V"
-		],
-		"bin": "dill",
-		"commands": {
-			"strategy": "single",
-			"target": "./esm/commands/download.js"
-		},
-		"devPlugins": [],
-		"dirname": "dill",
-		"flexibleTaxonomy": true,
-		"helpOptions": {
-			"hideAliasesFromRoot": true,
-			"hideCommandSummaryInDescription": true,
-			"showFlagNameInTitle": false,
-			"showFlagOptionsInTitle": true,
-			"stripAnsi": true,
-			"usageHeader": "CUSTOM USAGE HEADER"
-		},
-		"plugins": [],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill-cli/<%- commandPath %>"
-	},
-	"dependencies": {
-		"@oclif/core": "^4.8.0",
-		"@oclif/plugin-help": "^6.2.36",
-		"@tinyhttp/content-disposition": "^2.2.2",
-		"@tylerbu/cli-api": "workspace:^",
-		"effection": "^4.0.0",
-		"fflate": "^0.8.2",
-		"file-type": "^21.3.0",
-		"mime": "^4.1.0",
-		"nanotar": "^0.3.0",
-		"pathe": "^2.0.3",
-		"whatwg-mimetype": "^5.0.0"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.56.0",
-		"@oclif/plugin-command-snapshot": "^5.3.8",
-		"@oclif/test": "^4.1.15",
-		"@types/debug": "^4.1.12",
-		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.25",
-		"@types/semver": "^7.7.1",
-		"@types/serve-handler": "^6.1.4",
-		"@types/tmp": "^0.2.6",
-		"@types/whatwg-mimetype": "^3.0.2",
-		"@vitest/coverage-v8": "^4.0.18",
-		"generate-license-file": "^4.1.1",
-		"get-port-please": "^3.2.0",
-		"jsonfile": "^6.2.0",
-		"msw": "^2.12.3",
-		"oclif": "^4.22.50",
-		"rimraf": "^6.1.2",
-		"serve": "^14.2.5",
-		"serve-handler": "^6.1.6",
-		"sort-package-json": "*",
-		"start-server-and-test": "^2.1.3",
-		"tmp-promise": "^3.0.3",
-		"ts-node": "^10.9.2",
-		"tsx": "^4.21.0",
-		"type-fest": "^5.4.1",
-		"typescript": "~5.9.3",
-		"unionfs": "^4.6.0",
-		"vitest": "^4.0.18"
-	},
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"nx": {
-		"targets": {
-			"build": {
-				"executor": "nx:noop"
-			},
-			"test": {},
-			"ci": {}
-		}
-	}
+  "name": "dill-cli",
+  "version": "0.4.1",
+  "description": "Command-line (CLI) program to download and optionally decompress gzipped files.",
+  "keywords": [
+    "download",
+    "ci",
+    "tar",
+    "gzip",
+    "decompress"
+  ],
+  "homepage": "https://dill.tylerbutler.com/",
+  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+    "directory": "packages/dill-cli"
+  },
+  "license": "MIT",
+  "author": "Tyler Butler <tyler@tylerbutler.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./esm/index.d.ts",
+      "import": "./esm/index.js"
+    },
+    "./command": {
+      "types": "./esm/commands/download.d.ts",
+      "import": "./esm/commands/download.js"
+    }
+  },
+  "types": "esm/index.d.ts",
+  "bin": {
+    "dill": "./bin/run.js"
+  },
+  "files": [
+    "/bin",
+    "/CHANGELOG.md",
+    "/esm",
+    "/oclif.manifest.json",
+    "/THIRD-PARTY-LICENSES.txt"
+  ],
+  "scripts": {
+    "build:compile": "tsc --project ./tsconfig.json",
+    "build:manifest": "oclif manifest",
+    "build:readme": "concurrently npm:readme:*",
+    "check": "concurrently npm:check:format",
+    "check:format": "biome check . --linter-enabled=false",
+    "check:snapshot": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
+    "clean": "concurrently npm:clean:build npm:clean:manifest",
+    "clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
+    "clean:manifest": "rimraf oclif.manifest.json",
+    "dill": "./bin/dev.js",
+    "format": "biome check . --linter-enabled=false --write",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint . --write",
+    "postpack": "pnpm clean:manifest",
+    "readme:docs": "oclif readme --no-aliases --readme-path=../dill-docs/src/content/docs/cli-reference.md",
+    "readme:main": "oclif readme --no-aliases",
+    "release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+    "start": "serve ./test/data --listen 8080",
+    "test:coverage": "vitest run test --coverage",
+    "test:snapshots": "pnpm update:test-snapshots",
+    "test:vitest": "vitest run test",
+    "update:test-snapshots": "vitest run test -u"
+  },
+  "oclif": {
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-V"
+    ],
+    "bin": "dill",
+    "commands": {
+      "strategy": "single",
+      "target": "./esm/commands/download.js"
+    },
+    "devPlugins": [],
+    "dirname": "dill",
+    "flexibleTaxonomy": true,
+    "helpOptions": {
+      "hideAliasesFromRoot": true,
+      "hideCommandSummaryInDescription": true,
+      "showFlagNameInTitle": false,
+      "showFlagOptionsInTitle": true,
+      "stripAnsi": true,
+      "usageHeader": "CUSTOM USAGE HEADER"
+    },
+    "plugins": [],
+    "repositoryPrefix": "<%- repo %>/blob/main/packages/dill-cli/<%- commandPath %>"
+  },
+  "dependencies": {
+    "@oclif/core": "^4.8.0",
+    "@oclif/plugin-help": "^6.2.36",
+    "@tinyhttp/content-disposition": "^2.2.2",
+    "@tylerbu/cli-api": "workspace:^",
+    "effection": "^4.0.0",
+    "fflate": "^0.8.2",
+    "file-type": "^21.3.0",
+    "mime": "^4.1.0",
+    "nanotar": "^0.3.0",
+    "pathe": "^2.0.3",
+    "whatwg-mimetype": "^5.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.8",
+    "@microsoft/api-extractor": "^7.56.0",
+    "@oclif/plugin-command-snapshot": "^5.3.8",
+    "@oclif/test": "^4.1.15",
+    "@types/debug": "^4.1.12",
+    "@types/jsonfile": "^6.1.4",
+    "@types/node": "^20.19.25",
+    "@types/semver": "^7.7.1",
+    "@types/serve-handler": "^6.1.4",
+    "@types/tmp": "^0.2.6",
+    "@types/whatwg-mimetype": "^3.0.2",
+    "@vitest/coverage-v8": "^4.0.18",
+    "generate-license-file": "^4.1.1",
+    "get-port-please": "^3.2.0",
+    "jsonfile": "^6.2.0",
+    "msw": "^2.12.3",
+    "oclif": "^4.22.50",
+    "rimraf": "^6.1.2",
+    "serve": "^14.2.5",
+    "serve-handler": "^6.1.6",
+    "sort-package-json": "*",
+    "start-server-and-test": "^2.1.3",
+    "tmp-promise": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "type-fest": "^5.4.1",
+    "typescript": "~5.9.3",
+    "unionfs": "^4.6.0",
+    "vitest": "^4.0.18"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "nx:noop"
+      },
+      "test": {},
+      "ci": {}
+    }
+  }
 }

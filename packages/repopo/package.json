@@ -1,143 +1,143 @@
 {
-	"name": "repopo",
-	"version": "0.10.0",
-	"description": "Enforce policies on all or some of the files in a git repository.",
-	"keywords": [
-		"policy",
-		"ci"
-	],
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies",
-	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/repopo"
-	},
-	"license": "MIT",
-	"author": "Tyler Butler <tyler@tylerbutler.com>",
-	"type": "module",
-	"exports": {
-		".": {
-			"types": "./esm/index.d.ts",
-			"import": "./esm/index.js"
-		},
-		"./api": {
-			"types": "./esm/api.d.ts",
-			"import": "./esm/api.js"
-		},
-		"./policies": {
-			"types": "./esm/policies.d.ts",
-			"import": "./esm/policies.js"
-		}
-	},
-	"types": "esm/index.d.ts",
-	"bin": {
-		"repopo": "./bin/run.js"
-	},
-	"files": [
-		"/CHANGELOG.md",
-		"/bin",
-		"/oclif.manifest.json",
-		"/esm",
-		"/THIRD-PARTY-LICENSES.txt"
-	],
-	"scripts": {
-		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"build:api": "api-extractor run --local",
-		"build:compile": "tsc --project ./tsconfig.json",
-		"build:manifest": "oclif manifest",
-		"build:readme": "concurrently npm:readme:*",
-		"check": "concurrently npm:check:format",
-		"check:format": "biome check . --linter-enabled=false",
-		"clean": "concurrently npm:clean:build npm:clean:manifest",
-		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
-		"clean:manifest": "rimraf oclif.manifest.json",
-		"format": "biome check . --linter-enabled=false --write",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write",
-		"postpack": "pnpm clean:manifest",
-		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
-		"readme:main": "oclif readme --no-aliases",
-		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
-		"test:watch": "vitest"
-	},
-	"oclif": {
-		"additionalHelpFlags": [
-			"-h"
-		],
-		"additionalVersionFlags": [
-			"-V"
-		],
-		"bin": "repopo",
-		"commands": {
-			"strategy": "pattern",
-			"target": "./esm/commands"
-		},
-		"devPlugins": [
-			"@oclif/plugin-command-snapshot"
-		],
-		"dirname": "repopo",
-		"plugins": [],
-		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
-	},
-	"dependencies": {
-		"@fluid-tools/build-infrastructure": "~0.63.0",
-		"@oclif/core": "^4.8.0",
-		"@oclif/plugin-help": "^6.2.36",
-		"@rushstack/node-core-library": "^5.19.0",
-		"@tylerbu/cli-api": "workspace:^",
-		"@tylerbu/fundamentals": "workspace:^",
-		"consola": "^3.4.0",
-		"defu": "^6.1.4",
-		"effection": "^4.0.0",
-		"jsonfile": "^6.2.0",
-		"microdiff": "^1.5.0",
-		"pathe": "^2.0.3",
-		"picocolors": "^1.1.1",
-		"picomatch": "^4.0.3",
-		"resolve-workspace-root": "^2.0.0",
-		"simple-git": "^3.30.0",
-		"tinyglobby": "^0.2.15"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.56.0",
-		"@oclif/plugin-command-snapshot": "^5.3.8",
-		"@oclif/test": "^4.1.15",
-		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.25",
-		"@types/picomatch": "^4.0.2",
-		"@types/tmp": "^0.2.6",
-		"@vitest/coverage-v8": "^4.0.18",
-		"generate-license-file": "^4.1.1",
-		"oclif": "^4.22.50",
-		"rimraf": "^6.1.2",
-		"tmp-promise": "^3.0.3",
-		"ts-node": "^10.9.2",
-		"type-fest": "^5.4.1",
-		"typescript": "~5.9.3",
-		"vitest": "^4.0.18"
-	},
-	"peerDependencies": {
-		"sort-package-json": "*"
-	},
-	"peerDependenciesMeta": {
-		"sort-package-json": {
-			"optional": true
-		}
-	},
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"nx": {
-		"targets": {
-			"build": {
-				"executor": "nx:noop"
-			},
-			"ci": {}
-		}
-	}
+  "name": "repopo",
+  "version": "0.10.0",
+  "description": "Enforce policies on all or some of the files in a git repository.",
+  "keywords": [
+    "policy",
+    "ci"
+  ],
+  "homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/repopo#repopo---police-the-files-in-your-git-repo-with-extensible-policies",
+  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+    "directory": "packages/repopo"
+  },
+  "license": "MIT",
+  "author": "Tyler Butler <tyler@tylerbutler.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./esm/index.d.ts",
+      "import": "./esm/index.js"
+    },
+    "./api": {
+      "types": "./esm/api.d.ts",
+      "import": "./esm/api.js"
+    },
+    "./policies": {
+      "types": "./esm/policies.d.ts",
+      "import": "./esm/policies.js"
+    }
+  },
+  "types": "esm/index.d.ts",
+  "bin": {
+    "repopo": "./bin/run.js"
+  },
+  "files": [
+    "/CHANGELOG.md",
+    "/bin",
+    "/oclif.manifest.json",
+    "/esm",
+    "/THIRD-PARTY-LICENSES.txt"
+  ],
+  "scripts": {
+    "api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
+    "build:api": "api-extractor run --local",
+    "build:compile": "tsc --project ./tsconfig.json",
+    "build:manifest": "oclif manifest",
+    "build:readme": "concurrently npm:readme:*",
+    "check": "concurrently npm:check:format",
+    "check:format": "biome check . --linter-enabled=false",
+    "clean": "concurrently npm:clean:build npm:clean:manifest",
+    "clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
+    "clean:manifest": "rimraf oclif.manifest.json",
+    "format": "biome check . --linter-enabled=false --write",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint . --write",
+    "postpack": "pnpm clean:manifest",
+    "readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
+    "readme:main": "oclif readme --no-aliases",
+    "release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:snapshots": "./bin/dev.js snapshot:compare --filepath test/commands/__snapshots__/commands.json",
+    "test:watch": "vitest"
+  },
+  "oclif": {
+    "additionalHelpFlags": [
+      "-h"
+    ],
+    "additionalVersionFlags": [
+      "-V"
+    ],
+    "bin": "repopo",
+    "commands": {
+      "strategy": "pattern",
+      "target": "./esm/commands"
+    },
+    "devPlugins": [
+      "@oclif/plugin-command-snapshot"
+    ],
+    "dirname": "repopo",
+    "plugins": [],
+    "repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
+  },
+  "dependencies": {
+    "@fluid-tools/build-infrastructure": "~0.63.0",
+    "@oclif/core": "^4.8.0",
+    "@oclif/plugin-help": "^6.2.36",
+    "@rushstack/node-core-library": "^5.19.0",
+    "@tylerbu/cli-api": "workspace:^",
+    "@tylerbu/fundamentals": "workspace:^",
+    "consola": "^3.4.0",
+    "defu": "^6.1.4",
+    "effection": "^4.0.0",
+    "jsonfile": "^6.2.0",
+    "microdiff": "^1.5.0",
+    "pathe": "^2.0.3",
+    "picocolors": "^1.1.1",
+    "picomatch": "^4.0.3",
+    "resolve-workspace-root": "^2.0.0",
+    "simple-git": "^3.30.0",
+    "tinyglobby": "^0.2.15"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.8",
+    "@microsoft/api-extractor": "^7.56.0",
+    "@oclif/plugin-command-snapshot": "^5.3.8",
+    "@oclif/test": "^4.1.15",
+    "@types/jsonfile": "^6.1.4",
+    "@types/node": "^20.19.25",
+    "@types/picomatch": "^4.0.2",
+    "@types/tmp": "^0.2.6",
+    "@vitest/coverage-v8": "^4.0.18",
+    "generate-license-file": "^4.1.1",
+    "oclif": "^4.22.50",
+    "rimraf": "^6.1.2",
+    "tmp-promise": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "type-fest": "^5.4.1",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "peerDependencies": {
+    "sort-package-json": "*"
+  },
+  "peerDependenciesMeta": {
+    "sort-package-json": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "nx:noop"
+      },
+      "ci": {}
+    }
+  }
 }

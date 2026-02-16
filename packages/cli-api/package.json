@@ -1,124 +1,124 @@
 {
-	"name": "@tylerbu/cli-api",
-	"version": "0.10.1",
-	"description": "Base classes and other API helpers for oclif-based CLI projects.",
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli-api#tylerbucli-api",
-	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
-		"directory": "packages/cli-api"
-	},
-	"license": "MIT",
-	"author": "Tyler Butler <tyler@tylerbutler.com>",
-	"type": "module",
-	"exports": {
-		".": {
-			"import": {
-				"types": "./esm/index.d.ts",
-				"default": "./esm/index.js"
-			}
-		},
-		"./loggers/basic": {
-			"import": {
-				"types": "./esm/loggers/basic.d.ts",
-				"default": "./esm/loggers/basic.js"
-			}
-		},
-		"./loggers/consola": {
-			"import": {
-				"types": "./esm/loggers/consola.d.ts",
-				"default": "./esm/loggers/consola.js"
-			}
-		},
-		"./loggers/prefixReporter": {
-			"import": {
-				"types": "./esm/loggers/prefixReporter.d.ts",
-				"default": "./esm/loggers/prefixReporter.js"
-			}
-		}
-	},
-	"types": "./esm/index.d.ts",
-	"files": [
-		"/CHANGELOG.md",
-		"/esm",
-		"!/esm/commands",
-		"!/esm/testConfig.*",
-		"/THIRD-PARTY-LICENSES.txt"
-	],
-	"scripts": {
-		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"b": "nx build",
-		"build:api": "api-extractor run --local",
-		"build:compile": "tsc --project ./tsconfig.json",
-		"check": "pnpm check:format",
-		"check:format": "biome format .",
-		"clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
-		"format": "biome check . --linter-enabled=false --write",
-		"lint": "biome lint .",
-		"lint:fix": "biome lint . --write",
-		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test:coverage": "vitest run test --coverage",
-		"test:vitest": "vitest run test"
-	},
-	"oclif": {
-		"bin": "tylerbu-cli-api",
-		"commands": "./esm/commands",
-		"dirname": "tylerbu-cli-api"
-	},
-	"dependencies": {
-		"@oclif/core": "^4.8.0",
-		"@tylerbu/fundamentals": "workspace:^",
-		"@tylerbu/lilconfig-loader-ts": "workspace:^",
-		"debug": "^4.4.3",
-		"detect-indent": "^7.0.2",
-		"jsonfile": "^6.2.0",
-		"lilconfig": "^3.1.3",
-		"pathe": "^2.0.3",
-		"picocolors": "^1.1.1",
-		"semver": "^7.7.3",
-		"simple-git": "^3.30.0",
-		"sort-package-json": "*",
-		"strip-ansi": "^7.1.2"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-documenter": "^7.28.1",
-		"@microsoft/api-extractor": "^7.56.0",
-		"@oclif/test": "^4.1.15",
-		"@types/debug": "^4.1.12",
-		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.25",
-		"@types/semver": "^7.7.1",
-		"@vitest/coverage-v8": "^4.0.18",
-		"concurrently": "^9.2.1",
-		"consola": "^3.4.0",
-		"generate-license-file": "^4.1.1",
-		"oclif": "^4.22.50",
-		"rimraf": "^6.1.2",
-		"tmp-promise": "^3.0.3",
-		"ts-node": "^10.9.2",
-		"tsx": "^4.21.0",
-		"type-fest": "^5.4.1",
-		"typescript": "~5.9.3",
-		"vitest": "^4.0.18"
-	},
-	"peerDependencies": {
-		"consola": "^3.4.0"
-	},
-	"peerDependenciesMeta": {
-		"consola": {
-			"optional": true
-		}
-	},
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"nx": {
-		"targets": {
-			"build": {},
-			"test": {},
-			"ci": {}
-		}
-	}
+  "name": "@tylerbu/cli-api",
+  "version": "0.10.1",
+  "description": "Base classes and other API helpers for oclif-based CLI projects.",
+  "homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/cli-api#tylerbucli-api",
+  "bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+    "directory": "packages/cli-api"
+  },
+  "license": "MIT",
+  "author": "Tyler Butler <tyler@tylerbutler.com>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./esm/index.d.ts",
+        "default": "./esm/index.js"
+      }
+    },
+    "./loggers/basic": {
+      "import": {
+        "types": "./esm/loggers/basic.d.ts",
+        "default": "./esm/loggers/basic.js"
+      }
+    },
+    "./loggers/consola": {
+      "import": {
+        "types": "./esm/loggers/consola.d.ts",
+        "default": "./esm/loggers/consola.js"
+      }
+    },
+    "./loggers/prefixReporter": {
+      "import": {
+        "types": "./esm/loggers/prefixReporter.d.ts",
+        "default": "./esm/loggers/prefixReporter.js"
+      }
+    }
+  },
+  "types": "./esm/index.d.ts",
+  "files": [
+    "/CHANGELOG.md",
+    "/esm",
+    "!/esm/commands",
+    "!/esm/testConfig.*",
+    "/THIRD-PARTY-LICENSES.txt"
+  ],
+  "scripts": {
+    "api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
+    "b": "nx build",
+    "build:api": "api-extractor run --local",
+    "build:compile": "tsc --project ./tsconfig.json",
+    "check": "pnpm check:format",
+    "check:format": "biome format .",
+    "clean": "rimraf esm _temp *.tsbuildinfo *.done.build.log",
+    "format": "biome check . --linter-enabled=false --write",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint . --write",
+    "release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+    "test:coverage": "vitest run test --coverage",
+    "test:vitest": "vitest run test"
+  },
+  "oclif": {
+    "bin": "tylerbu-cli-api",
+    "commands": "./esm/commands",
+    "dirname": "tylerbu-cli-api"
+  },
+  "dependencies": {
+    "@oclif/core": "^4.8.0",
+    "@tylerbu/fundamentals": "workspace:^",
+    "@tylerbu/lilconfig-loader-ts": "workspace:^",
+    "debug": "^4.4.3",
+    "detect-indent": "^7.0.2",
+    "jsonfile": "^6.2.0",
+    "lilconfig": "^3.1.3",
+    "pathe": "^2.0.3",
+    "picocolors": "^1.1.1",
+    "semver": "^7.7.3",
+    "simple-git": "^3.30.0",
+    "sort-package-json": "*",
+    "strip-ansi": "^7.1.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.8",
+    "@microsoft/api-documenter": "^7.28.1",
+    "@microsoft/api-extractor": "^7.56.0",
+    "@oclif/test": "^4.1.15",
+    "@types/debug": "^4.1.12",
+    "@types/jsonfile": "^6.1.4",
+    "@types/node": "^20.19.25",
+    "@types/semver": "^7.7.1",
+    "@vitest/coverage-v8": "^4.0.18",
+    "concurrently": "^9.2.1",
+    "consola": "^3.4.0",
+    "generate-license-file": "^4.1.1",
+    "oclif": "^4.22.50",
+    "rimraf": "^6.1.2",
+    "tmp-promise": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "type-fest": "^5.4.1",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "peerDependencies": {
+    "consola": "^3.4.0"
+  },
+  "peerDependenciesMeta": {
+    "consola": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "nx": {
+    "targets": {
+      "build": {},
+      "test": {},
+      "ci": {}
+    }
+  }
 }
