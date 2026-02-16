@@ -2,9 +2,6 @@
 
 /** @type {import("syncpack").RcFile} */
 const config = {
-	lintFormatting: false,
-	// Exclude vendored packages (git subrepo)
-	filter: "!btree-typescript",
 	dependencyGroups: [
 		{
 			aliasName: "fluidframework",
@@ -30,6 +27,12 @@ const config = {
 		},
 	},
 	versionGroups: [
+		{
+			label: "Ignore vendored btree-typescript package (git subrepo)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: ["@tylerbu/sorted-btree-es6"],
+		},
 		{
 			label: "Use >= range for repopo peer dependency in sort-tsconfig",
 			dependencies: ["repopo"],
@@ -78,6 +81,12 @@ const config = {
 		},
 	],
 	semverGroups: [
+		{
+			label: "Ignore vendored btree-typescript package (git subrepo)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: ["@tylerbu/sorted-btree-es6"],
+		},
 		{
 			label: "Ignore packageManager field",
 			isIgnored: true,
