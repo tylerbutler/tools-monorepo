@@ -44,6 +44,8 @@
 		"default": ["{projectRoot}/**/*", "sharedGlobals"],
 		"production": [
 			"default",
+			"!{projectRoot}/esm/**",
+			"!{projectRoot}/dist/**",
 			"!{projectRoot}/**/*.spec.ts",
 			"!{projectRoot}/**/*.test.ts",
 			"!{projectRoot}/test/**/*",
@@ -231,8 +233,10 @@
 		},
 
 		"build:vite": {
+			"dependsOn": ["^build:compile", "build:compile"],
 			"inputs": [
 				"{projectRoot}/src/**",
+				"^production",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
 				"{projectRoot}/public/**",
 				"{projectRoot}/index.html"
