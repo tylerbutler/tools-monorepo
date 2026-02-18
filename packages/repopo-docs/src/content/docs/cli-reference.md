@@ -33,6 +33,7 @@ Checks and applies policies using the Rust engine.
 ```
 USAGE
   $ repopo check-native [-f] [--stdin] [-v] [-q] [-c <value>] [--sidecar-path <value>] [--binary-path <value>]
+    [--runtime auto|node|bun]
 
 FLAGS
   -c, --config=<value>        Path to the config file.
@@ -40,6 +41,8 @@ FLAGS
   -q, --quiet                 Suppress all output except errors.
   -v, --verbose               Show verbose output including per-policy timing.
       --binary-path=<value>   [env: REPOPO_CORE_PATH] Path to the repopo-core Rust binary.
+      --runtime=<option>      [env: REPOPO_RUNTIME] JS runtime for the sidecar process (auto, node, bun).
+                              <options: auto|node|bun>
       --sidecar-path=<value>  [env: REPOPO_SIDECAR_PATH] Path to the Node.js sidecar script.
       --stdin                 Read list of files from stdin.
 

@@ -58,8 +58,7 @@ export class CheckNative extends Command {
 			env: "REPOPO_CORE_PATH",
 		}),
 		runtime: Flags.string({
-			description:
-				"JS runtime for the sidecar process (auto, node, bun).",
+			description: "JS runtime for the sidecar process (auto, node, bun).",
 			required: false,
 			env: "REPOPO_RUNTIME",
 			options: ["auto", "node", "bun"],
