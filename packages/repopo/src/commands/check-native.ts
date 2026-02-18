@@ -57,6 +57,13 @@ export class CheckNative extends Command {
 			required: false,
 			env: "REPOPO_CORE_PATH",
 		}),
+		runtime: Flags.string({
+			description:
+				"JS runtime for the sidecar process (auto, node, bun).",
+			required: false,
+			env: "REPOPO_RUNTIME",
+			options: ["auto", "node", "bun"],
+		}),
 	} as const;
 
 	public override async run(): Promise<void> {
@@ -81,6 +88,9 @@ export class CheckNative extends Command {
 		}
 		if (flags.config) {
 			args.push("--config", flags.config);
+		}
+		if (flags.runtime) {
+			args.push("--runtime", flags.runtime);
 		}
 
 		return new Promise<void>((resolvePromise, reject) => {

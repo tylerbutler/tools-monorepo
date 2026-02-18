@@ -4,9 +4,9 @@ mod ipc;
 mod types;
 
 use anyhow::{Context, Result};
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 use std::env;
-use std::process;
+use std::process::{self, Command, Stdio};
 
 #[derive(Parser)]
 #[command(
@@ -46,6 +46,10 @@ enum Commands {
         /// Path to the Node.js sidecar script.
         #[arg(long, env = "REPOPO_SIDECAR_PATH")]
         sidecar_path: Option<String>,
+
+        /// JS runtime to use for the sidecar process.
+        #[arg(long, value_enum, env = "REPOPO_RUNTIME", default_value_t = Runtime::Auto)]
+        runtime: Runtime,
     },
 
     /// List all configured policies.
@@ -65,7 +69,43 @@ enum Commands {
         /// Path to the Node.js sidecar script.
         #[arg(long, env = "REPOPO_SIDECAR_PATH")]
         sidecar_path: Option<String>,
+
+        /// JS runtime to use for the sidecar process.
+        #[arg(long, value_enum, env = "REPOPO_RUNTIME", default_value_t = Runtime::Auto)]
+        runtime: Runtime,
     },
+}
+
+#[derive(Clone, Debug, ValueEnum)]
+enum Runtime {
+    /// Auto-detect: use bun if available, otherwise node.
+    Auto,
+    /// Use Node.js.
+    Node,
+    /// Use Bun.
+    Bun,
+}
+
+/// Resolve which JS runtime binary to use.
+fn resolve_runtime(runtime: &Runtime) -> String {
+    match runtime {
+        Runtime::Node => "node".to_string(),
+        Runtime::Bun => "bun".to_string(),
+        Runtime::Auto => {
+            // Check if bun is on PATH
+            if Command::new("bun")
+                .arg("--version")
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .status()
+                .is_ok()
+            {
+                "bun".to_string()
+            } else {
+                "node".to_string()
+            }
+        }
+    }
 }
 
 /// Resolve the sidecar path. Looks for it relative to the binary location
@@ -126,11 +166,13 @@ fn main() -> Result<()> {
             quiet,
             config,
             sidecar_path,
+            runtime,
         } => {
             let sidecar_script = resolve_sidecar_path(sidecar_path.as_deref())?;
+            let runtime_bin = resolve_runtime(&runtime);
 
             if verbose {
-                eprintln!("Using sidecar: {sidecar_script}");
+                eprintln!("Using sidecar: {sidecar_script} (runtime: {runtime_bin})");
             }
 
             let cwd = env::current_dir()
@@ -156,7 +198,7 @@ fn main() -> Result<()> {
             }
 
             // Spawn sidecar with cwd set to git root so relative file paths work
-            let mut sidecar = ipc::Sidecar::spawn(&sidecar_script, &git_root)?;
+            let mut sidecar = ipc::Sidecar::spawn(&runtime_bin, &sidecar_script, &git_root)?;
 
             let success = engine::run_check(
                 &mut sidecar,
@@ -180,8 +222,10 @@ fn main() -> Result<()> {
             quiet: _,
             config,
             sidecar_path,
+            runtime,
         } => {
             let sidecar_script = resolve_sidecar_path(sidecar_path.as_deref())?;
+            let runtime_bin = resolve_runtime(&runtime);
 
             let cwd = env::current_dir()
                 .context("Failed to get current directory")?
@@ -190,7 +234,7 @@ fn main() -> Result<()> {
 
             let git_root = files::find_git_root(&cwd)?;
 
-            let mut sidecar = ipc::Sidecar::spawn(&sidecar_script, &git_root)?;
+            let mut sidecar = ipc::Sidecar::spawn(&runtime_bin, &sidecar_script, &git_root)?;
             engine::run_list(&mut sidecar, &git_root, config.as_deref(), verbose)?;
             sidecar.shutdown()?;
         }

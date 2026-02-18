@@ -8,7 +8,7 @@ use crate::types::{
     RunResolverBatchParams, RunResolverParams,
 };
 
-/// A connection to the Node.js sidecar process that loads TypeScript
+/// A connection to the sidecar process that loads TypeScript
 /// configurations and executes policy handlers.
 pub struct Sidecar {
     child: Child,
@@ -17,20 +17,21 @@ pub struct Sidecar {
 }
 
 impl Sidecar {
-    /// Spawn the Node.js sidecar process.
+    /// Spawn the sidecar process using the given JS runtime.
     ///
+    /// The `runtime` should be `"node"`, `"bun"`, or another Node-compatible runtime.
     /// The `sidecar_path` should point to the sidecar .mjs file.
     /// The `git_root` sets the sidecar's working directory so that
     /// policy handlers can use repo-relative file paths directly.
-    pub fn spawn(sidecar_path: &str, git_root: &str) -> Result<Self> {
-        let mut child = Command::new("node")
+    pub fn spawn(runtime: &str, sidecar_path: &str, git_root: &str) -> Result<Self> {
+        let mut child = Command::new(runtime)
             .arg(sidecar_path)
             .current_dir(git_root)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::inherit())
             .spawn()
-            .with_context(|| format!("Failed to spawn Node.js sidecar at {sidecar_path}"))?;
+            .with_context(|| format!("Failed to spawn sidecar with {runtime} at {sidecar_path}"))?;
 
         let stdin = child.stdin.take().context("Failed to get sidecar stdin")?;
         let stdout = child
