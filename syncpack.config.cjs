@@ -2,9 +2,6 @@
 
 /** @type {import("syncpack").RcFile} */
 const config = {
-	lintFormatting: false,
-	// Exclude vendored packages (git subrepo)
-	filter: "!btree-typescript",
 	customTypes: {
 		engines: {
 			path: "engines",
@@ -15,16 +12,17 @@ const config = {
 			strategy: "name@version",
 		},
 	},
-	dependencyTypes: [
-		"dev",
-		"engines",
-		// Disabled for now because it removes the sha from the field.
-		// "packageManager",
-		// Disabled because of interactions with changeset versioning.
-		// "peer",
-		"prod",
-	],
 	versionGroups: [
+		{
+			label: "Ignore btree-typescript (vendored package)",
+			packages: ["@tylerbu/sorted-btree-es6"],
+			isIgnored: true,
+		},
+		{
+			label: "Ignore all dependency types except dev, engines, and prod",
+			dependencyTypes: ["!dev", "!engines", "!prod"],
+			isIgnored: true,
+		},
 		{
 			label: "Use workspace protocol for workspace dependencies",
 			dependencies: ["$LOCAL"],
