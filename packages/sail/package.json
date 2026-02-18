@@ -128,7 +128,7 @@
 		"picospinner": "^3.0.0",
 		"rimraf": "^6.1.2",
 		"semver": "^7.7.3",
-		"simple-git": "^3.30.0",
+		"simple-git": "^3.31.1",
 		"sort-package-json": "2.14.0",
 		"std-env": "^3.10.0",
 		"ts-deepmerge": "^7.0.3",

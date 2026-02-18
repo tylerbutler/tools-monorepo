@@ -214,8 +214,8 @@ importers:
         specifier: ^7.7.3
         version: 7.7.3
       simple-git:
-        specifier: ^3.30.0
-        version: 3.30.0
+        specifier: ^3.31.1
+        version: 3.31.1
       strip-ansi:
         specifier: ^7.1.2
         version: 7.1.2
@@ -305,8 +305,8 @@ importers:
         specifier: ^7.7.3
         version: 7.7.3
       simple-git:
-        specifier: ^3.30.0
-        version: 3.30.0
+        specifier: ^3.31.1
+        version: 3.31.1
       sort-package-json:
         specifier: '*'
         version: 2.14.0
@@ -1029,8 +1029,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       simple-git:
-        specifier: ^3.30.0
-        version: 3.30.0
+        specifier: ^3.31.1
+        version: 3.31.1
       sort-package-json:
         specifier: '*'
         version: 2.14.0
@@ -1253,8 +1253,8 @@ importers:
         specifier: ^7.7.3
         version: 7.7.3
       simple-git:
-        specifier: ^3.30.0
-        version: 3.30.0
+        specifier: ^3.31.1
+        version: 3.31.1
       sort-package-json:
         specifier: 2.14.0
         version: 2.14.0
@@ -1389,8 +1389,8 @@ importers:
         specifier: ^7.7.3
         version: 7.7.3
       simple-git:
-        specifier: ^3.30.0
-        version: 3.30.0
+        specifier: ^3.31.1
+        version: 3.31.1
       sort-package-json:
         specifier: '*'
         version: 2.14.0
@@ -1598,8 +1598,8 @@ packages:
   '@asamuzakjp/css-color@4.1.2':
     resolution: {integrity: sha512-NfBUvBaYgKIuq6E/RBLY1m0IohzNHAYyaJGuTK79Z23uNwmz2jl1mPsC5ZxCCxylinKhT1Amn5oNTlx1wN8cQg==}
 
-  '@asamuzakjp/dom-selector@6.7.8':
-    resolution: {integrity: sha512-stisC1nULNc9oH5lakAj8MH88ZxeGxzyWNDfbdCxvJSJIvDsHNZqYvscGTgy/ysgXWLJPt6K/4t0/GjvtKcFJQ==}
+  '@asamuzakjp/dom-selector@6.8.1':
+    resolution: {integrity: sha512-MvRz1nCqW0fsy8Qz4dnLIvhOlMzqDVBabZx6lH+YywFDdjXhMY37SmpV1XFX3JzG5GWHn63j6HX6QPr3lZXHvQ==}
 
   '@asamuzakjp/nwsapi@2.3.9':
     resolution: {integrity: sha512-n8GuYSrI9bF7FFZ/SjhwevlHc8xaVlb/7HmHelnc/PZXBD2ZR49NnN9sMMuDdEGPeeRQ5d0hqlSlEpgCX3Wl0Q==}
@@ -10403,8 +10403,8 @@ packages:
   simple-get@4.0.1:
     resolution: {integrity: sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==}
 
-  simple-git@3.30.0:
-    resolution: {integrity: sha512-q6lxyDsCmEal/MEGhP1aVyQ3oxnagGlBDOVSIB4XUVLl1iZh0Pah6ebC9V4xBap/RfgP2WlI8EKs0WS0rMEJHg==}
+  simple-git@3.31.1:
+    resolution: {integrity: sha512-oiWP4Q9+kO8q9hHqkX35uuHmxiEbZNTrZ5IPxgMGrJwN76pzjm/jabkZO0ItEcqxAincqGAzL3QHSaHt4+knBg==}
 
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
@@ -12103,7 +12103,7 @@ snapshots:
       lru-cache: 11.2.6
     optional: true
 
-  '@asamuzakjp/dom-selector@6.7.8':
+  '@asamuzakjp/dom-selector@6.8.1':
     dependencies:
       '@asamuzakjp/nwsapi': 2.3.9
       bidi-js: 1.0.3
@@ -13751,7 +13751,7 @@ snapshots:
       picocolors: 1.1.1
       read-pkg-up: 7.0.1
       semver: 7.7.3
-      simple-git: 3.30.0
+      simple-git: 3.31.1
       sort-package-json: 1.57.0
       type-fest: 2.19.0
       typescript: 5.4.5
@@ -21157,7 +21157,7 @@ snapshots:
   jsdom@27.4.0:
     dependencies:
       '@acemir/cssom': 0.9.31
-      '@asamuzakjp/dom-selector': 6.7.8
+      '@asamuzakjp/dom-selector': 6.8.1
       '@exodus/bytes': 1.14.1
       cssstyle: 5.3.7
       data-urls: 6.0.1
@@ -24294,7 +24294,7 @@ snapshots:
       once: 1.4.0
       simple-concat: 1.0.1
 
-  simple-git@3.30.0:
+  simple-git@3.31.1:
     dependencies:
       '@kwsites/file-exists': 1.1.1
       '@kwsites/promise-deferred': 1.1.1
