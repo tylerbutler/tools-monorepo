@@ -99,7 +99,7 @@
 		"fflate": "^0.8.2",
 		"file-type": "^21.3.0",
 		"mime": "^4.1.0",
-		"nanotar": "^0.2.0",
+		"nanotar": "^0.3.0",
 		"pathe": "^2.0.3",
 		"whatwg-mimetype": "^5.0.0"
 	},
@@ -115,7 +115,7 @@
 		"@types/serve-handler": "^6.1.4",
 		"@types/tmp": "^0.2.6",
 		"@types/whatwg-mimetype": "^3.0.2",
-		"@vitest/coverage-v8": "^4.0.17",
+		"@vitest/coverage-v8": "^4.0.18",
 		"generate-license-file": "^4.1.1",
 		"get-port-please": "^3.2.0",
 		"jsonfile": "^6.2.0",
@@ -132,7 +132,7 @@
 		"type-fest": "^5.4.1",
 		"typescript": "~5.9.3",
 		"unionfs": "^4.6.0",
-		"vitest": "^4.0.17"
+		"vitest": "^4.0.18"
 	},
 	"engines": {
 		"node": ">=18.0.0"
