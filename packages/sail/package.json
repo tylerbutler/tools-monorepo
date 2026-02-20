@@ -129,7 +129,7 @@
 		"rimraf": "^6.1.2",
 		"semver": "^7.7.3",
 		"simple-git": "^3.30.0",
-		"sort-package-json": "2.14.0",
+		"sort-package-json": "3.6.1",
 		"std-env": "^3.10.0",
 		"ts-deepmerge": "^7.0.3",
 		"ts-morph": "^27.0.2",
