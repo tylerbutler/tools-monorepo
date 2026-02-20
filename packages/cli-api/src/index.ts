@@ -12,6 +12,21 @@
 export type { Args, Flags } from "./baseCommand.js";
 export { BaseCommand, logIndent } from "./baseCommand.js";
 export {
+	type Capability,
+	type CapabilityWrapper,
+	ConfigCapability,
+	type ConfigCapabilityOptions,
+	type ConfigContext,
+	type ConfigContextFound,
+	type ConfigContextNotFound,
+	type DefaultConfigLocation,
+	GitCapability,
+	type GitCapabilityOptions,
+	type GitContext,
+	useConfig,
+	useGit,
+} from "./capabilities/index.js";
+export {
 	CommandWithConfig,
 	type CommandWithContext,
 } from "./configCommand.js";
@@ -29,10 +44,7 @@ export {
 	syncAllPackages,
 	type UpdateVersionRangeOptions,
 } from "./dependency-sync.js";
-export {
-	ConfigFileFlag,
-	RegExpFlag,
-} from "./flags.js";
+export { ConfigFlag, ConfigFlagHidden, RegExpFlag } from "./flags.js";
 export type { CommitMergeability, Repository } from "./git.js";
 export {
 	checkConflicts,
