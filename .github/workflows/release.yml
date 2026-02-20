@@ -31,6 +31,10 @@ jobs:
 
       - uses: ./.github/actions/setup-node-pnpm
 
+      - uses: tylerbutler/actions/setup-rust@main
+        with:
+          install-just: 'false'
+
       - uses: ./.github/actions/setup-nx
         with:
           # Nx Cloud controlled by repository variable NX_CLOUD_RELEASE
@@ -109,3 +113,21 @@ jobs:
         run: |
           echo "### No packages to publish" >> $GITHUB_STEP_SUMMARY
           echo "There were no packages to publish." >> $GITHUB_STEP_SUMMARY
+
+      - name: Trigger repopo-core binary release
+        if: steps.publish.outputs.report != '[]' && steps.publish.outputs.report != null
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const packages = JSON.parse('${{ steps.publish.outputs.report }}');
+            const repopo = packages.find(p => p.name === 'repopo');
+            if (repopo) {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'repopo-core-release.yml',
+                ref: 'main',
+                inputs: { version: repopo.version },
+              });
+              console.log(`Triggered repopo-core binary release for v${repopo.version}`);
+            }

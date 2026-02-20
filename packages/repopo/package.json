@@ -39,12 +39,15 @@
 		"/bin",
 		"/oclif.manifest.json",
 		"/esm",
+		"/scripts",
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
 		"build:api": "api-extractor run --local",
 		"build:compile": "tsc --project ./tsconfig.json",
+		"build:rust": "cargo build --manifest-path crates/core/Cargo.toml",
+		"build:rust:release": "cargo build --release --manifest-path crates/core/Cargo.toml",
 		"build:manifest": "oclif manifest",
 		"build:readme": "concurrently npm:readme:*",
 		"check": "concurrently npm:check:format",
@@ -55,6 +58,7 @@
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
+		"postinstall": "node scripts/postinstall.mjs",
 		"postpack": "pnpm clean:manifest",
 		"readme:docs": "oclif readme --no-aliases --readme-path=../repopo-docs/src/content/docs/cli-reference.md",
 		"readme:main": "oclif readme --no-aliases",

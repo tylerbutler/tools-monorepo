@@ -52,6 +52,10 @@ jobs:
 
       - uses: ./.github/actions/setup-node-pnpm
 
+      - uses: tylerbutler/actions/setup-rust@main
+        with:
+          install-just: 'false'
+
       # Check if PR has nx-cloud label to opt-in to Nx Cloud
       - name: Check for nx-cloud label
         id: nx-cloud-label
