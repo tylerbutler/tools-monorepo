@@ -6,13 +6,19 @@
  * the Rust engine is optional.
  */
 
-import { createHash } from "node:crypto";
-import { createWriteStream, existsSync, mkdirSync, chmodSync, unlinkSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { join, dirname } from "node:path";
 import { execFileSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
+import {
+	chmodSync,
+	createWriteStream,
+	existsSync,
+	mkdirSync,
+	unlinkSync,
+} from "node:fs";
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { pipeline } from "node:stream/promises";
+import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const packageRoot = join(__dirname, "..");
@@ -42,12 +48,16 @@ const platformKey = `${process.platform}-${process.arch}`;
 const assetName = PLATFORM_MAP[platformKey];
 
 if (!assetName) {
-	console.warn(`repopo: unsupported platform ${platformKey}, skipping binary download.`);
+	console.warn(
+		`repopo: unsupported platform ${platformKey}, skipping binary download.`,
+	);
 	process.exit(0);
 }
 
 try {
-	const pkg = JSON.parse(await readFile(join(packageRoot, "package.json"), "utf-8"));
+	const pkg = JSON.parse(
+		await readFile(join(packageRoot, "package.json"), "utf-8"),
+	);
 	const version = pkg.version;
 	const isWindows = process.platform === "win32";
 	const ext = isWindows ? ".zip" : ".tar.gz";
@@ -83,17 +93,25 @@ try {
 
 	if (actualHash !== expectedHash) {
 		unlinkSync(archivePath);
-		throw new Error(`Checksum mismatch: expected ${expectedHash}, got ${actualHash}`);
+		throw new Error(
+			`Checksum mismatch: expected ${expectedHash}, got ${actualHash}`,
+		);
 	}
 
 	// Extract — uses execFileSync with explicit argument arrays to avoid shell injection
 	if (isWindows) {
-		execFileSync("powershell", [
-			"-Command",
-			`Expand-Archive -Path '${archivePath}' -DestinationPath '${nativeDir}' -Force`,
-		], { stdio: "pipe" });
+		execFileSync(
+			"powershell",
+			[
+				"-Command",
+				`Expand-Archive -Path '${archivePath}' -DestinationPath '${nativeDir}' -Force`,
+			],
+			{ stdio: "pipe" },
+		);
 	} else {
-		execFileSync("tar", ["xzf", archivePath, "-C", nativeDir], { stdio: "pipe" });
+		execFileSync("tar", ["xzf", archivePath, "-C", nativeDir], {
+			stdio: "pipe",
+		});
 	}
 
 	// Clean up archive
@@ -106,7 +124,9 @@ try {
 
 	console.log("repopo: binary installed successfully.");
 } catch (err) {
-	console.warn(`repopo: failed to download binary (${err.message}). The Rust engine will be unavailable.`);
+	console.warn(
+		`repopo: failed to download binary (${err.message}). The Rust engine will be unavailable.`,
+	);
 	process.exit(0);
 }
 
