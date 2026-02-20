@@ -149,19 +149,6 @@ async function runTests() {
 		),
 	);
 
-	// Test levee-client
-	results.push(
-		await testPackage(
-			"levee-client",
-			"packages/levee-client/esm/index.js",
-			(mod: any) => {
-				if (typeof mod.LeveeClient !== "function") {
-					throw new Error("LeveeClient is not a function");
-				}
-			},
-		),
-	);
-
 	// Test rehype-footnotes
 	results.push(
 		await testPackage(

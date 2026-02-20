@@ -1,0 +1,114 @@
+name: Repopo Core Binary Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 0.10.0)'
+        required: true
+        type: string
+
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-binary:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            asset-name: repopo-core-linux-x64
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-22.04-arm
+            asset-name: repopo-core-linux-arm64
+          - target: x86_64-apple-darwin
+            os: macos-13
+            asset-name: repopo-core-darwin-x64
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            asset-name: repopo-core-darwin-arm64
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            asset-name: repopo-core-win32-x64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+
+      - uses: tylerbutler/actions/setup-rust@main
+        with:
+          targets: ${{ matrix.target }}
+          install-just: 'false'
+
+      - name: Build release binary
+        run: cargo build --release --target ${{ matrix.target }} --manifest-path packages/repopo/crates/core/Cargo.toml
+
+      - name: Package binary (unix)
+        if: runner.os != 'Windows'
+        run: |
+          cd packages/repopo/crates/core/target/${{ matrix.target }}/release
+          tar czf "$GITHUB_WORKSPACE/${{ matrix.asset-name }}.tar.gz" repopo-core
+          cd "$GITHUB_WORKSPACE"
+          sha256sum "${{ matrix.asset-name }}.tar.gz" > "${{ matrix.asset-name }}.tar.gz.sha256"
+
+      - name: Package binary (windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $binaryPath = "packages/repopo/crates/core/target/${{ matrix.target }}/release/repopo-core.exe"
+          $archiveName = "${{ matrix.asset-name }}.zip"
+          Compress-Archive -Path $binaryPath -DestinationPath $archiveName -Force
+          $hash = (Get-FileHash -Algorithm SHA256 $archiveName).Hash.ToLower()
+          "$hash  $archiveName" | Out-File -Encoding ascii "$archiveName.sha256"
+
+      - name: Upload artifact (unix)
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset-name }}
+          path: |
+            ${{ matrix.asset-name }}.tar.gz
+            ${{ matrix.asset-name }}.tar.gz.sha256
+
+      - name: Upload artifact (windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset-name }}
+          path: |
+            ${{ matrix.asset-name }}.zip
+            ${{ matrix.asset-name }}.zip.sha256
+
+  upload-release:
+    needs: build-binary
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List artifacts
+        run: ls -la artifacts/
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          gh release create "repopo-core-v${RELEASE_VERSION}" \
+            --repo "${{ github.repository }}" \
+            --title "repopo-core v${RELEASE_VERSION}" \
+            --notes "Binary release for repopo-core v${RELEASE_VERSION}" \
+            artifacts/*

@@ -39,6 +39,7 @@
 		"/bin",
 		"/oclif.manifest.json",
 		"/esm",
+		"/scripts",
 		"/THIRD-PARTY-LICENSES.txt"
 	],
 	"scripts": {
@@ -47,12 +48,15 @@
 		"build:compile": "tsc --project ./tsconfig.json",
 		"build:manifest": "oclif manifest",
 		"build:readme": "concurrently npm:readme:*",
+		"build:rust": "cargo build --manifest-path crates/core/Cargo.toml",
+		"build:rust:release": "cargo build --release --manifest-path crates/core/Cargo.toml",
 		"check": "concurrently npm:check:format",
 		"check:format": "biome check . --linter-enabled=false",
 		"clean": "concurrently npm:clean:build npm:clean:manifest",
 		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
 		"clean:manifest": "rimraf oclif.manifest.json",
 		"format": "biome check . --linter-enabled=false --write",
+		"postinstall": "node scripts/postinstall.mjs",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
 		"postpack": "pnpm clean:manifest",
