@@ -113,7 +113,7 @@ const config: RepopoConfig = {
 		makePolicy(
 			PackagePrivateField,
 			{
-				mustBePrivate: ["*-docs", "@tylerbu/levee-client"],
+				mustBePrivate: ["*-docs"],
 				unmatchedPackages: "ignore",
 			},
 			{
