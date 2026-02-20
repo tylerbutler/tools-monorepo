@@ -21,7 +21,11 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write       # For changesets PR creation
+      pull-requests: write  # For changesets PR updates
+      id-token: write       # OIDC token for npm trusted publishing
+      attestations: write   # For GitHub build attestations
 
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
@@ -103,6 +107,19 @@ jobs:
         uses: parkerbxyz/json-to-markdown-table@564b4821b8128f1cd7a0eb6b5616680a818719ab # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
           json: '${{ steps.publish.outputs.report }}'
+
+      # Generate GitHub-native attestations for published packages (public npm only)
+      # This creates SLSA-compliant build provenance verifiable via `gh attestation verify`
+      - name: Generate build attestations
+        if: |
+          steps.publish.outputs.report != null &&
+          steps.publish.outputs.report != '[]' &&
+          github.event.inputs.publish_public != 'false'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            packages/*/esm/**/*.js
+            packages/*/esm/**/*.mjs
 
       - name: No packages published
         if: steps.publish.outputs.report == '[]'
