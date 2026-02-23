@@ -30,7 +30,7 @@
 		"ci:docs": "nx run-many -t build:docs",
 		"ci:lint": "biome ci --reporter=github",
 		"ci:local": "nx affected -t ci --base=HEAD~1",
-		"ci:publish": "pnpm publish -r --access public --report-summary --no-git-checks",
+		"ci:publish": "pnpm publish -r --access public --provenance --report-summary --no-git-checks",
 		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "nx run-many -t test:coverage",
 		"ci:version": "pnpm run release:license && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
