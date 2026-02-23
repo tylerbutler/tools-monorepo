@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-	ConfigFileFlag,
-	ConfigFileFlagHidden,
-	RegExpFlag,
-} from "../src/flags.js";
+import { ConfigFlag, ConfigFlagHidden, RegExpFlag } from "../src/flags.js";
 
 describe("RegExpFlag", () => {
 	it("is a function that returns a flag definition", () => {
@@ -51,70 +47,68 @@ describe("RegExpFlag", () => {
 	});
 });
 
-describe("ConfigFileFlag", () => {
+describe("ConfigFlag", () => {
 	it("has correct description", () => {
-		expect(ConfigFileFlag.description).toBe(
-			"The path to a configuration file.",
-		);
+		expect(ConfigFlag.description).toBe("Path to configuration file.");
+	});
+
+	it("has -c shorthand", () => {
+		expect(ConfigFlag.char).toBe("c");
 	});
 
 	it("is in CONFIGURATION help group", () => {
-		expect(ConfigFileFlag.helpGroup).toBe("CONFIGURATION");
+		expect(ConfigFlag.helpGroup).toBe("CONFIGURATION");
 	});
 
 	it("requires file to exist", () => {
-		// The exists property should be set to true
-		expect((ConfigFileFlag as { exists?: boolean }).exists).toBe(true);
+		expect((ConfigFlag as { exists?: boolean }).exists).toBe(true);
 	});
 
 	it("is not hidden by default", () => {
-		// Hidden should be undefined or false
-		expect((ConfigFileFlag as { hidden?: boolean }).hidden).toBeFalsy();
+		expect((ConfigFlag as { hidden?: boolean }).hidden).toBeFalsy();
 	});
 
 	it("is a file type flag", () => {
-		// File flags have a parse function and type
-		expect(ConfigFileFlag.parse).toBeDefined();
-		expect(typeof ConfigFileFlag.parse).toBe("function");
+		expect(ConfigFlag.parse).toBeDefined();
+		expect(typeof ConfigFlag.parse).toBe("function");
 	});
 });
 
-describe("ConfigFileFlagHidden", () => {
+describe("ConfigFlagHidden", () => {
 	it("has correct description", () => {
-		expect(ConfigFileFlagHidden.description).toBe(
-			"The path to a configuration file.",
-		);
+		expect(ConfigFlagHidden.description).toBe("Path to configuration file.");
+	});
+
+	it("has -c shorthand", () => {
+		expect(ConfigFlagHidden.char).toBe("c");
 	});
 
 	it("is in CONFIGURATION help group", () => {
-		expect(ConfigFileFlagHidden.helpGroup).toBe("CONFIGURATION");
+		expect(ConfigFlagHidden.helpGroup).toBe("CONFIGURATION");
 	});
 
 	it("requires file to exist", () => {
-		expect((ConfigFileFlagHidden as { exists?: boolean }).exists).toBe(true);
+		expect((ConfigFlagHidden as { exists?: boolean }).exists).toBe(true);
 	});
 
 	it("is hidden from help output", () => {
-		expect((ConfigFileFlagHidden as { hidden?: boolean }).hidden).toBe(true);
+		expect((ConfigFlagHidden as { hidden?: boolean }).hidden).toBe(true);
 	});
 
 	it("is a file type flag", () => {
-		expect(ConfigFileFlagHidden.parse).toBeDefined();
-		expect(typeof ConfigFileFlagHidden.parse).toBe("function");
+		expect(ConfigFlagHidden.parse).toBeDefined();
+		expect(typeof ConfigFlagHidden.parse).toBe("function");
 	});
 
-	it("has same configuration as ConfigFileFlag except hidden", () => {
-		// Should have same description
-		expect(ConfigFileFlagHidden.description).toBe(ConfigFileFlag.description);
-		// Should have same help group
-		expect(ConfigFileFlagHidden.helpGroup).toBe(ConfigFileFlag.helpGroup);
-		// Should have same exists requirement
-		expect((ConfigFileFlagHidden as { exists?: boolean }).exists).toBe(
-			(ConfigFileFlag as { exists?: boolean }).exists,
+	it("has same configuration as ConfigFlag except hidden", () => {
+		expect(ConfigFlagHidden.description).toBe(ConfigFlag.description);
+		expect(ConfigFlagHidden.char).toBe(ConfigFlag.char);
+		expect(ConfigFlagHidden.helpGroup).toBe(ConfigFlag.helpGroup);
+		expect((ConfigFlagHidden as { exists?: boolean }).exists).toBe(
+			(ConfigFlag as { exists?: boolean }).exists,
 		);
-		// Should differ only in hidden property
-		expect((ConfigFileFlagHidden as { hidden?: boolean }).hidden).not.toBe(
-			(ConfigFileFlag as { hidden?: boolean }).hidden,
+		expect((ConfigFlagHidden as { hidden?: boolean }).hidden).not.toBe(
+			(ConfigFlag as { hidden?: boolean }).hidden,
 		);
 	});
 });

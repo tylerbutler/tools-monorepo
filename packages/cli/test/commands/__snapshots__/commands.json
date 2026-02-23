@@ -52,6 +52,7 @@
         "command": "deps:sync",
         "flagAliases": [],
         "flagChars": [
+            "c",
             "l",
             "v",
             "x"
@@ -106,6 +107,7 @@
         "command": "fluid:task-rename",
         "flagAliases": [],
         "flagChars": [
+            "c",
             "v"
         ],
         "flags": [
@@ -142,6 +144,7 @@
         "command": "git:merge-train:preview",
         "flagAliases": [],
         "flagChars": [
+            "c",
             "v"
         ],
         "flags": [
@@ -156,6 +159,7 @@
         "command": "git:squish",
         "flagAliases": [],
         "flagChars": [
+            "c",
             "v"
         ],
         "flags": [
