@@ -32,6 +32,9 @@ dist/
 .coverage
 coverage/
 
+# Rust build artifacts
+**/target/
+
 # AI artifacts
 **/.claude/settings.local.json
 **/CLAUDE.md

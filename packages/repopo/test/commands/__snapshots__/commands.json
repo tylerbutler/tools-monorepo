@@ -20,6 +20,29 @@
     },
     {
         "alias": [],
+        "command": "check-native",
+        "flagAliases": [
+            "resolve"
+        ],
+        "flagChars": [
+            "c",
+            "f",
+            "q",
+            "v"
+        ],
+        "flags": [
+            "binary-path",
+            "config",
+            "fix",
+            "quiet",
+            "sidecar-path",
+            "stdin",
+            "verbose"
+        ],
+        "plugin": "repopo"
+    },
+    {
+        "alias": [],
         "command": "list",
         "flagAliases": [],
         "flagChars": [
