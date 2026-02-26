@@ -77,14 +77,14 @@
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
 		"semver": "^7.7.3",
-		"simple-git": "^3.30.0",
+		"simple-git": "^3.32.3",
 		"sort-package-json": "*",
 		"strip-ansi": "^7.1.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-documenter": "^7.28.1",
-		"@microsoft/api-extractor": "^7.56.0",
+		"@microsoft/api-documenter": "^7.29.6",
+		"@microsoft/api-extractor": "^7.57.6",
 		"@oclif/test": "^4.1.15",
 		"@types/debug": "^4.1.12",
 		"@types/jsonfile": "^6.1.4",
