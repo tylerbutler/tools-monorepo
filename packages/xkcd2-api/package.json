@@ -50,7 +50,7 @@
 		"rimraf": "^6.1.2",
 		"sort-package-json": "*",
 		"typedoc": "^0.28.15",
-		"typedoc-plugin-markdown": "^4.9.0",
+		"typedoc-plugin-markdown": "^4.10.0",
 		"typescript": "~5.9.3",
 		"vitest": "^4.0.18"
 	},
