@@ -1,5 +1,13 @@
 # repopo
 
+## 0.11.0
+
+### Minor Changes
+
+- Add experimental `check-native` command powered by a Rust core engine for significantly faster policy checking (up to 1.5x faster than the standard `check` command). The Rust engine handles file enumeration, pattern matching, and orchestration while delegating policy evaluation to a Node.js sidecar, so all existing configs and third-party policies work without changes. _[`#623`](https://github.com/tylerbutler/tools-monorepo/pull/623) [`dd15dc9`](https://github.com/tylerbutler/tools-monorepo/commit/dd15dc98c5c2a69c2a6f022a2a0c985f2c26dcf4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Also adds a simplified `policy()` function for defining policies and new focused script policies (`RequiredScripts`, `ExactScripts`, `MutuallyExclusiveScripts`, `ConditionalScripts`, `ScriptContains`) that replace the monolithic `PackageScripts` policy with more granular, composable alternatives.
+
 ## 0.10.0
 
 ### Minor Changes

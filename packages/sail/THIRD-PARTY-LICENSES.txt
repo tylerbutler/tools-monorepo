@@ -605,7 +605,7 @@ The following npm packages may be included in this product:
 
  - detect-indent@7.0.2
  - find-up@8.0.0
- - log-update@7.0.2
+ - log-update@7.1.0
  - multimatch@7.0.0
  - type-fest@5.4.1
 
