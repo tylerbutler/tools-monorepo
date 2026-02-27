@@ -90,7 +90,7 @@
 		"@fluid-tools/build-infrastructure": "~0.63.0",
 		"@oclif/core": "^4.8.0",
 		"@oclif/plugin-help": "^6.2.36",
-		"@rushstack/node-core-library": "^5.19.0",
+		"@rushstack/node-core-library": "^5.20.3",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
@@ -104,12 +104,12 @@
 		"picocolors": "^1.1.1",
 		"picomatch": "^4.0.3",
 		"resolve-workspace-root": "^2.0.0",
-		"simple-git": "^3.30.0",
+		"simple-git": "^3.32.3",
 		"tinyglobby": "^0.2.15"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.56.0",
+		"@microsoft/api-extractor": "^7.57.6",
 		"@oclif/plugin-command-snapshot": "^5.3.8",
 		"@oclif/test": "^4.1.15",
 		"@types/jsonfile": "^6.1.4",
