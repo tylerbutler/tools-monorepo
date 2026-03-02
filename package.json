@@ -57,7 +57,7 @@
 		"test:tsgo-build:full": "tsx scripts/test-tsgo-build.mts --build"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
+		"@biomejs/biome": "2.4.4",
 		"@changesets/cli": "^2.29.8",
 		"@changesets/config": "^3.1.2",
 		"@monorepo-utils/workspaces-to-typescript-project-references": "^2.11.0",

@@ -57,7 +57,7 @@
 	},
 	"devDependencies": {
 		"@arethetypeswrong/cli": "^0.18.2",
-		"@biomejs/biome": "2.3.8",
+		"@biomejs/biome": "2.4.4",
 		"@fluidframework/aqueduct": "~2.42.0",
 		"@fluidframework/container-runtime": "~2.42.0",
 		"@fluidframework/container-runtime-definitions": "~2.42.0",
