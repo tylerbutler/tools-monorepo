@@ -54,7 +54,7 @@
 		"read-pkg-up": "^11.0.0",
 		"resolve-workspace-root": "^2.0.0",
 		"semver": "^7.7.3",
-		"simple-git": "^3.30.0",
+		"simple-git": "^3.32.3",
 		"sort-package-json": "*",
 		"tinyexec": "^1.0.2",
 		"tinyglobby": "^0.2.15",
@@ -63,7 +63,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.56.0",
+		"@microsoft/api-extractor": "^7.57.6",
 		"@oclif/test": "^4.1.15",
 		"@types/fs-extra": "^11.0.4",
 		"@types/micromatch": "^4.0.10",
