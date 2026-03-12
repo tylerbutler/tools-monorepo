@@ -1,6 +1,10 @@
 // Cargo.toml / Rust policies
 // biome-ignore lint/performance/noBarrelFile: intentional public API entry point for policies
 export {
+	CargoLicenceValidated,
+	type CargoLicenceValidatedConfig,
+} from "./policies/CargoLicenceValidated.js";
+export {
 	CargoLintsConfigured,
 	type CargoLintsConfiguredConfig,
 } from "./policies/CargoLintsConfigured.js";
