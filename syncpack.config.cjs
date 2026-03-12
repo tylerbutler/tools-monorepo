@@ -40,6 +40,11 @@ const config = {
 			packages: ["@tylerbu/levee-client"],
 		},
 		{
+			label: "Ignore all dependency types except dev, engines, and prod",
+			dependencyTypes: ["!dev", "!engines", "!prod"],
+			isIgnored: true,
+		},
+		{
 			label: "Use >= range for repopo peer dependency in sort-tsconfig",
 			dependencies: ["repopo"],
 			dependencyTypes: ["peer"],
