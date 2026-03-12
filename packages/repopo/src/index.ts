@@ -52,6 +52,12 @@ export {
 	type PolicyStandaloneResolver,
 } from "./policy.js";
 export {
+	type CargoToml,
+	type CargoTomlHandler,
+	type DefineCargoPolicyArgs,
+	defineCargoPolicy,
+} from "./policyDefiners/defineCargoPolicy.js";
+export {
 	type DefineFileHeaderPolicyArgs,
 	defineFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,

@@ -120,6 +120,7 @@
 		"generate-license-file": "^4.1.1",
 		"oclif": "^4.22.50",
 		"rimraf": "^6.1.2",
+		"smol-toml": "^1.6.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"type-fest": "^5.4.1",
@@ -127,9 +128,13 @@
 		"vitest": "^4.0.18"
 	},
 	"peerDependencies": {
+		"smol-toml": "^1.0.0",
 		"sort-package-json": "*"
 	},
 	"peerDependenciesMeta": {
+		"smol-toml": {
+			"optional": true
+		},
 		"sort-package-json": {
 			"optional": true
 		}
