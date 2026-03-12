@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "pathe";
 import { makePolicyDefinition } from "../makePolicy.js";
 import type { PolicyDefinition } from "../policy.js";
+import { parseToml } from "../policyDefiners/tomlParser.js";
 
 /**
  * Configuration for the WorkspaceInheritance policy.
@@ -22,21 +23,6 @@ export interface WorkspaceInheritanceConfig {
 }
 
 const DEFAULT_INHERIT_FIELDS = ["version", "authors", "license", "repository"];
-
-/**
- * Lazily parse TOML content.
- */
-async function parseToml(content: string): Promise<Record<string, unknown>> {
-	try {
-		const { parse } = await import("smol-toml");
-		return parse(content) as Record<string, unknown>;
-	} catch {
-		throw new Error(
-			"smol-toml is required for Cargo workspace policies but is not installed. " +
-				"Install it with: pnpm add smol-toml",
-		);
-	}
-}
 
 /**
  * Check if a member path matches any override pattern.

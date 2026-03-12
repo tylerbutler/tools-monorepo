@@ -1,4 +1,5 @@
 // Cargo.toml / Rust policies
+// biome-ignore lint/performance/noBarrelFile: intentional public API entry point for policies
 export {
 	CargoLintsConfigured,
 	type CargoLintsConfiguredConfig,
@@ -16,7 +17,6 @@ export {
 	type CargoTomlSortedConfig,
 } from "./policies/CargoTomlSorted.js";
 // New focused script policies (replacements for PackageScripts)
-// biome-ignore lint/performance/noBarrelFile: intentional public API entry point for policies
 export {
 	type ConditionalScriptEntry,
 	type ConditionalScriptRule,
@@ -27,6 +27,67 @@ export {
 	ExactScripts,
 	type ExactScriptsConfig,
 } from "./policies/ExactScripts.js";
+// Gleam dependency policies
+export {
+	GleamDepVersions,
+	type GleamDepVersionsConfig,
+} from "./policies/GleamDepVersions.js";
+// Gleam documentation policies
+export {
+	GleamDocExists,
+	type GleamDocExistsConfig,
+} from "./policies/GleamDocExists.js";
+// Gleam internal modules policies
+export {
+	GleamInternalModulesConfigured,
+	type GleamInternalModulesConfiguredConfig,
+} from "./policies/GleamInternalModulesConfigured.js";
+// Gleam licence policies
+export {
+	GleamLicenceConfigured,
+	type GleamLicenceConfiguredConfig,
+} from "./policies/GleamLicenceConfigured.js";
+// Gleam project structure policies
+export { GleamManifestCommitted } from "./policies/GleamManifestCommitted.js";
+// Gleam monorepo policies
+export {
+	GleamMonorepoConsistency,
+	type GleamMonorepoConsistencyConfig,
+} from "./policies/GleamMonorepoConsistency.js";
+// Gleam naming policies
+export {
+	GleamNameRestrictions,
+	type GleamNameRestrictionsConfig,
+} from "./policies/GleamNameRestrictions.js";
+// Gleam path dependency policies
+export {
+	GleamNoPathDepsInPublished,
+	type GleamNoPathDepsInPublishedConfig,
+} from "./policies/GleamNoPathDepsInPublished.js";
+export { GleamPathDepsValid } from "./policies/GleamPathDepsValid.js";
+export {
+	GleamProjectStructure,
+	type GleamProjectStructureConfig,
+} from "./policies/GleamProjectStructure.js";
+// Gleam shared dependency version policies
+export {
+	GleamSharedDependencyVersions,
+	type GleamSharedDependencyVersionsConfig,
+} from "./policies/GleamSharedDependencyVersions.js";
+// Gleam toml field policies
+export {
+	GleamTomlRequired,
+	type GleamTomlRequiredConfig,
+} from "./policies/GleamTomlRequired.js";
+export {
+	GleamTomlSorted,
+	type GleamTomlSortedConfig,
+} from "./policies/GleamTomlSorted.js";
+// Gleam version constraint policies
+export {
+	GleamVersionConstraint,
+	type GleamVersionConstraintConfig,
+} from "./policies/GleamVersionConstraint.js";
 // File header policies
 export { HtmlFileHeaders } from "./policies/HtmlFileHeaders.js";
 export { JsTsFileHeaders } from "./policies/JsTsFileHeaders.js";
@@ -36,6 +97,8 @@ export {
 	MutuallyExclusiveScripts,
 	type MutuallyExclusiveScriptsConfig,
 } from "./policies/MutuallyExclusiveScripts.js";
+// Build directory policies
+export { NoBuildDirectory } from "./policies/NoBuildDirectory.js";
 // File extension policies
 export { NoJsFileExtensions } from "./policies/NoJsFileExtensions.js";
 // File size policies

@@ -64,6 +64,12 @@ export {
 	type FileHeaderPolicyConfig,
 } from "./policyDefiners/defineFileHeaderPolicy.js";
 export {
+	type DefineGleamPolicyArgs,
+	defineGleamPolicy,
+	type GleamToml,
+	type GleamTomlHandler,
+} from "./policyDefiners/defineGleamPolicy.js";
+export {
 	type DefinePackagePolicyArgs,
 	definePackagePolicy as generatePackagePolicy,
 	type PackageJsonHandler,
