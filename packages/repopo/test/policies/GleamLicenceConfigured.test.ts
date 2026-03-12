@@ -1,4 +1,4 @@
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -100,22 +100,98 @@ describe("GleamLicenceConfigured", () => {
 		expect(result).toBe(true);
 	});
 
-	it("should fail with invalid SPDX pattern when requireSpdx is true", async () => {
-		writeFileSync(
-			join(testDir, "gleam.toml"),
-			'name = "app"\nlicences = ["not a valid spdx!!"]\n',
-		);
+	describe("validateSpdx (spdx-correct)", () => {
+		it("should pass with a valid SPDX identifier", async () => {
+			writeFileSync(
+				join(testDir, "gleam.toml"),
+				'name = "app"\nlicences = ["Apache-2.0"]\n',
+			);
 
-		const result = await runHandler(GleamLicenceConfigured.handler, {
-			file: "gleam.toml",
-			root: testDir,
-			resolve: false,
-			config: { requireSpdx: true },
+			const result = await runHandler(GleamLicenceConfigured.handler, {
+				file: "gleam.toml",
+				root: testDir,
+				resolve: false,
+				config: { validateSpdx: true },
+			});
+
+			expect(result).toBe(true);
 		});
 
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("does not look like a valid SPDX");
-		}
+		it("should detect a typo and suggest correction", async () => {
+			writeFileSync(
+				join(testDir, "gleam.toml"),
+				'name = "app"\nlicences = ["mit"]\n',
+			);
+
+			const result = await runHandler(GleamLicenceConfigured.handler, {
+				file: "gleam.toml",
+				root: testDir,
+				resolve: false,
+				config: { validateSpdx: true },
+			});
+
+			expect(result).not.toBe(true);
+			if (typeof result === "object" && "error" in result) {
+				expect(result.error).toContain('"mit"');
+				expect(result.error).toContain('"MIT"');
+				expect(result.fixable).toBe(true);
+			}
+		});
+
+		it("should fail for unrecognized licence with no correction", async () => {
+			writeFileSync(
+				join(testDir, "gleam.toml"),
+				'name = "app"\nlicences = ["TOTALLY-FAKE-LICENSE"]\n',
+			);
+
+			const result = await runHandler(GleamLicenceConfigured.handler, {
+				file: "gleam.toml",
+				root: testDir,
+				resolve: false,
+				config: { validateSpdx: true },
+			});
+
+			expect(result).not.toBe(true);
+			if (typeof result === "object" && "error" in result) {
+				expect(result.error).toContain("not a recognized SPDX identifier");
+			}
+		});
+
+		it("should auto-fix correctable licences when resolve is true", async () => {
+			const filePath = join(testDir, "gleam.toml");
+			writeFileSync(filePath, 'name = "app"\nlicences = ["mit"]\n');
+
+			const result = await runHandler(GleamLicenceConfigured.handler, {
+				file: "gleam.toml",
+				root: testDir,
+				resolve: true,
+				config: { validateSpdx: true },
+			});
+
+			expect(result).not.toBe(true);
+			if (typeof result === "object" && "error" in result) {
+				expect(result.fixed).toBe(true);
+			}
+
+			const content = readFileSync(filePath, "utf-8");
+			expect(content).toContain('"MIT"');
+			expect(content).not.toContain('"mit"');
+		});
+
+		it("should pass without validateSpdx even with bad casing", async () => {
+			writeFileSync(
+				join(testDir, "gleam.toml"),
+				'name = "app"\nlicences = ["mit"]\n',
+			);
+
+			const result = await runHandler(GleamLicenceConfigured.handler, {
+				file: "gleam.toml",
+				root: testDir,
+				resolve: false,
+			});
+
+			// Without validateSpdx, "mit" passes (no validation beyond existence)
+			expect(result).toBe(true);
+		});
 	});
 });

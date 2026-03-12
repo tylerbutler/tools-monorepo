@@ -1,3 +1,5 @@
+import { readFile, writeFile } from "node:fs/promises";
+import { resolve } from "pathe";
 import type { PolicyShape } from "../policy.js";
 import {
 	defineGleamPolicy,
@@ -16,61 +18,108 @@ export interface GleamLicenceConfiguredConfig {
 	allowedLicences?: string[];
 
 	/**
-	 * If true, validate that values look like SPDX identifiers.
-	 * @defaultValue true
+	 * If true, validate licence values against the SPDX licence list
+	 * using `spdx-correct`. When enabled, typos like "MIIT" are detected
+	 * and can be auto-fixed to the correct identifier ("MIT").
+	 *
+	 * Requires the optional peer dependency `spdx-correct` to be installed.
+	 *
+	 * @defaultValue false
 	 */
-	requireSpdx?: boolean;
+	validateSpdx?: boolean;
 }
 
-const COMMON_SPDX = new Set([
-	"MIT",
-	"Apache-2.0",
-	"GPL-2.0-only",
-	"GPL-2.0-or-later",
-	"GPL-3.0-only",
-	"GPL-3.0-or-later",
-	"LGPL-2.1-only",
-	"LGPL-2.1-or-later",
-	"LGPL-3.0-only",
-	"LGPL-3.0-or-later",
-	"BSD-2-Clause",
-	"BSD-3-Clause",
-	"ISC",
-	"MPL-2.0",
-	"AGPL-3.0-only",
-	"AGPL-3.0-or-later",
-	"Unlicense",
-	"CC0-1.0",
-	"0BSD",
-	"EUPL-1.2",
-	"Artistic-2.0",
-	"Zlib",
-	"BSL-1.0",
-]);
+/**
+ * Lazily load spdx-correct. It's an optional peer dependency.
+ */
+async function tryCorrectLicence(
+	licence: string,
+): Promise<string | null | undefined> {
+	try {
+		const mod = (await import("spdx-correct")) as {
+			default?: (id: string) => string | null;
+		};
+		const correct =
+			mod.default ?? (mod as unknown as (id: string) => string | null);
+		return correct(licence);
+	} catch {
+		return undefined;
+	}
+}
 
-// Simple SPDX-like pattern: letters, digits, hyphens, dots
-const SPDX_PATTERN = /^[A-Za-z0-9][A-Za-z0-9.\-+]*$/;
+interface LicenceValidationResult {
+	errors: string[];
+	corrections: Map<string, string>;
+}
 
-function validateLicences(
+async function validateWithSpdxCorrect(
 	licences: string[],
-	allowedLicences: string[] | undefined,
-	requireSpdx: boolean,
-): string[] {
+): Promise<LicenceValidationResult> {
 	const errors: string[] = [];
+	const corrections = new Map<string, string>();
 
 	for (const licence of licences) {
-		if (allowedLicences && !allowedLicences.includes(licence)) {
+		const corrected = await tryCorrectLicence(licence);
+		if (corrected === undefined) {
 			errors.push(
-				`Licence "${licence}" is not in the allowed list: ${allowedLicences.join(", ")}`,
+				`Cannot validate "${licence}": spdx-correct is not installed. Install it with: pnpm add spdx-correct`,
 			);
-		} else if (requireSpdx && !SPDX_PATTERN.test(licence)) {
-			errors.push(
-				`Licence "${licence}" does not look like a valid SPDX identifier`,
-			);
+			break;
+		}
+		if (corrected === null) {
+			errors.push(`Licence "${licence}" is not a recognized SPDX identifier`);
+		} else if (corrected !== licence) {
+			corrections.set(licence, corrected);
+			errors.push(`Licence "${licence}" should be "${corrected}"`);
 		}
 	}
 
+	return { errors, corrections };
+}
+
+function validateAllowlist(
+	licences: string[],
+	allowedLicences: string[],
+): string[] {
+	const errors: string[] = [];
+	for (const licence of licences) {
+		if (!allowedLicences.includes(licence)) {
+			errors.push(
+				`Licence "${licence}" is not in the allowed list: ${allowedLicences.join(", ")}`,
+			);
+		}
+	}
 	return errors;
+}
+
+function applyCorrections(
+	content: string,
+	corrections: Map<string, string>,
+): string {
+	let result = content;
+	for (const [original, corrected] of corrections) {
+		result = result.replace(`"${original}"`, `"${corrected}"`);
+	}
+	return result;
+}
+
+async function tryAutoFix(
+	filePath: string,
+	corrections: Map<string, string>,
+	errors: string[],
+): Promise<{ error: string; fixable: boolean; fixed: boolean }> {
+	try {
+		const content = await readFile(filePath, "utf-8");
+		const fixed = applyCorrections(content, corrections);
+		await writeFile(filePath, fixed);
+		return { error: errors.join("; "), fixable: true, fixed: true };
+	} catch {
+		return {
+			error: `${errors.join("; ")}. Auto-fix failed.`,
+			fixable: true,
+			fixed: false,
+		};
+	}
 }
 
 /**
@@ -83,10 +132,13 @@ export const GleamLicenceConfigured: PolicyShape<GleamLicenceConfiguredConfig> =
 		name: "GleamLicenceConfigured",
 		description:
 			"Ensures gleam.toml has valid SPDX licence identifiers configured.",
-		handler: async (toml: GleamToml, { config }) => {
-			const licences = toml.licences as string[] | undefined;
+		handler: async (
+			toml: GleamToml,
+			{ file, root, resolve: shouldResolve, config },
+		) => {
+			const licences = toml.licences;
 
-			if (!(licences && Array.isArray(licences)) || licences.length === 0) {
+			if (!Array.isArray(licences) || licences.length === 0) {
 				return {
 					error: "Missing or empty licences field in gleam.toml.",
 					manualFix:
@@ -94,24 +146,39 @@ export const GleamLicenceConfigured: PolicyShape<GleamLicenceConfiguredConfig> =
 				};
 			}
 
-			const requireSpdx = config?.requireSpdx ?? true;
-			const errors = validateLicences(
-				licences,
-				config?.allowedLicences,
-				requireSpdx,
-			);
+			// Check allowlist first (takes priority)
+			if (config?.allowedLicences) {
+				const errors = validateAllowlist(
+					licences as string[],
+					config.allowedLicences,
+				);
+				if (errors.length > 0) {
+					return {
+						error: errors.join("; "),
+						manualFix:
+							"Use valid SPDX licence identifiers (e.g., MIT, Apache-2.0, MPL-2.0).",
+					};
+				}
+			}
 
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Use valid SPDX licence identifiers (e.g., MIT, Apache-2.0, MPL-2.0).",
-				};
+			// Validate with spdx-correct if enabled
+			if (config?.validateSpdx) {
+				const { errors, corrections } = await validateWithSpdxCorrect(
+					licences as string[],
+				);
+				if (errors.length > 0) {
+					if (shouldResolve && corrections.size > 0) {
+						return tryAutoFix(resolve(root, file), corrections, errors);
+					}
+					return {
+						error: errors.join("; "),
+						fixable: corrections.size > 0,
+						manualFix:
+							"Use valid SPDX licence identifiers (e.g., MIT, Apache-2.0, MPL-2.0).",
+					};
+				}
 			}
 
 			return true;
 		},
 	});
-
-// Re-export for potential use in other policies
-export { COMMON_SPDX };
