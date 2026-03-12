@@ -22,7 +22,9 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 ## Interfaces
 
 - [ConfiguredPolicy](/api/interfaces/configuredpolicy/)
+- [DefineCargoPolicyArgs](/api/interfaces/definecargopolicyargs/)
 - [DefineFileHeaderPolicyArgs](/api/interfaces/definefileheaderpolicyargs/)
+- [DefineGleamPolicyArgs](/api/interfaces/definegleampolicyargs/)
 - [DefinePackagePolicyArgs](/api/interfaces/definepackagepolicyargs/)
 - [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
 - [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
@@ -39,6 +41,10 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 
 ## Type Aliases
 
+- [CargoToml](/api/type-aliases/cargotoml/)
+- [CargoTomlHandler](/api/type-aliases/cargotomlhandler/)
+- [GleamToml](/api/type-aliases/gleamtoml/)
+- [GleamTomlHandler](/api/type-aliases/gleamtomlhandler/)
 - [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
 - [~~PolicyDefinition~~](/api/type-aliases/policydefinition/)
 - [~~PolicyDefinitionInput~~](/api/type-aliases/policydefinitioninput/)
@@ -53,7 +59,9 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 
 ## Functions
 
+- [defineCargoPolicy](/api/functions/definecargopolicy/)
 - [defineFileHeaderPolicy](/api/functions/definefileheaderpolicy/)
+- [defineGleamPolicy](/api/functions/definegleampolicy/)
 - [fromFluidHandlers](/api/functions/fromfluidhandlers/)
 - [generatePackagePolicy](/api/functions/generatepackagepolicy/)
 - [isPolicyError](/api/functions/ispolicyerror/)

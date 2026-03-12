@@ -58,7 +58,9 @@ export const GleamLicenceConfigured: PolicyShape<GleamLicenceConfiguredConfig> =
 
 			const result = await validateLicenceField({
 				licences: licences as string[],
-				allowedLicences: config?.allowedLicences,
+				...(config?.allowedLicences !== undefined && {
+					allowedLicences: config.allowedLicences,
+				}),
 				validateSpdx: config?.validateSpdx ?? false,
 				shouldResolve,
 				filePath: resolve(root, file),

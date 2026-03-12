@@ -78,7 +78,9 @@ export const CargoLicenceValidated: PolicyShape<CargoLicenceValidatedConfig> =
 
 			const result = await validateLicenceField({
 				licences: [licence],
-				allowedLicences: config?.allowedLicences,
+				...(config?.allowedLicences !== undefined && {
+					allowedLicences: config.allowedLicences,
+				}),
 				validateSpdx: config?.validateSpdx ?? true,
 				shouldResolve,
 				filePath: resolve(root, file),
