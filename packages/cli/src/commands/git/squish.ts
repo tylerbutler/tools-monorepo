@@ -1,5 +1,5 @@
 import { Args, Flags } from "@oclif/core";
-import { BaseCommand, CommandWithConfig } from "@tylerbu/cli-api";
+import { BaseCommand } from "@tylerbu/cli-api";
 import { useGit } from "@tylerbu/cli-api/capabilities";
 import chalk from "picocolors";
 import stripAnsi from "strip-ansi";
@@ -13,7 +13,6 @@ export default class SquishCommand extends BaseCommand<typeof SquishCommand> {
 		"dry-run": Flags.boolean({
 			description: "Don't make any changes.",
 		}),
-		...CommandWithConfig.flags,
 	};
 
 	public static override readonly args = {

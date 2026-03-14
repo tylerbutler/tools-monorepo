@@ -19,6 +19,7 @@ export {
 	type ConfigContext,
 	type ConfigContextFound,
 	type ConfigContextNotFound,
+	DEFAULT_CONFIG_LOCATION,
 	type DefaultConfigLocation,
 	GitCapability,
 	type GitCapabilityOptions,

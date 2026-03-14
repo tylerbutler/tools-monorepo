@@ -41,7 +41,6 @@ export class CapabilityWrapper<
 	TCommand extends BaseCommand<any>,
 	TResult,
 > {
-	private _initialized = false;
 	private _result: TResult | undefined;
 	private _initializationPromise: Promise<TResult> | undefined;
 
@@ -56,8 +55,8 @@ export class CapabilityWrapper<
 	 * Concurrent calls will wait for the same initialization promise.
 	 */
 	public async get(): Promise<TResult> {
-		if (this._initialized) {
-			return this._result as TResult;
+		if (this._result !== undefined) {
+			return this._result;
 		}
 
 		// If initialization is in progress, wait for it
@@ -69,8 +68,7 @@ export class CapabilityWrapper<
 		this._initializationPromise = (async () => {
 			try {
 				this._result = await this.capability.initialize(this.command);
-				this._initialized = true;
-				return this._result as TResult;
+				return this._result;
 			} catch (error) {
 				const message = error instanceof Error ? error.message : String(error);
 				this.command.error(`Failed to initialize capability: ${message}`, {
@@ -86,14 +84,14 @@ export class CapabilityWrapper<
 	 * Check if capability has been initialized.
 	 */
 	public get isInitialized(): boolean {
-		return this._initialized;
+		return this._result !== undefined;
 	}
 
 	/**
 	 * Cleanup the capability.
 	 */
 	public async cleanup(): Promise<void> {
-		if (this._initialized && this.capability.cleanup) {
+		if (this._result !== undefined && this.capability.cleanup) {
 			await this.capability.cleanup();
 		}
 	}

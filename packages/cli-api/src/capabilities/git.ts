@@ -105,34 +105,31 @@ export class GitCapability<
 			command.error(`Not a git repository: ${baseDir}`, { exit: 1 });
 		}
 
+		const requireRepo = (operation: string) => {
+			if (!isRepo) {
+				throw new Error(`Cannot ${operation}: not in a git repository`);
+			}
+		};
+
 		return {
 			git,
 			repo,
 			isRepo,
 
-			// Attach helper methods with runtime guards
 			getCurrentBranch: async () => {
-				if (!isRepo) {
-					throw new Error("Cannot get current branch: not in a git repository");
-				}
+				requireRepo("get current branch");
 				const branch = await git.branchLocal();
 				return branch.current;
 			},
 
 			isCleanWorkingTree: async () => {
-				if (!isRepo) {
-					throw new Error("Cannot check working tree: not in a git repository");
-				}
+				requireRepo("check working tree");
 				const status = await git.status();
 				return status.isClean();
 			},
 
 			hasUncommittedChanges: async () => {
-				if (!isRepo) {
-					throw new Error(
-						"Cannot check uncommitted changes: not in a git repository",
-					);
-				}
+				requireRepo("check uncommitted changes");
 				const status = await git.status();
 				return !status.isClean();
 			},

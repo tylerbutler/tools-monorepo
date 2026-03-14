@@ -12,6 +12,13 @@ export type DefaultConfigLocation = "DEFAULT" & {
 };
 
 /**
+ * Sentinel value for the default config location.
+ *
+ * @beta
+ */
+export const DEFAULT_CONFIG_LOCATION = "DEFAULT" as DefaultConfigLocation;
+
+/**
  * Configuration options for config capability.
  *
  * @beta
@@ -161,14 +168,14 @@ export class ConfigCapability<
 
 		const { config, location } = loaded ?? {
 			config: this.options.defaultConfig,
-			location: "DEFAULT" as DefaultConfigLocation,
+			location: DEFAULT_CONFIG_LOCATION,
 		};
 
 		return {
 			found: true,
 			config: config as TConfig,
 			location,
-			isDefault: () => location === ("DEFAULT" as DefaultConfigLocation),
+			isDefault: () => location === (DEFAULT_CONFIG_LOCATION),
 		} satisfies ConfigContextFound<TConfig>;
 	}
 }
