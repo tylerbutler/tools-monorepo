@@ -302,6 +302,9 @@ The monorepo contains these key packages:
 - `packages/repopo` - Repository policy enforcement tool
 - `packages/sort-tsconfig` - TypeScript config sorting utility
 
+**Rust Crates (Cargo, via @monodon/rust plugin):**
+- `packages/repopo-core` - Rust policy engine binary (sidecar for repopo)
+
 **Libraries:**
 - `packages/fundamentals` - Shared utilities (array, git, etc.) with zero dependencies
 - `packages/cli-api` - Shared CLI command infrastructure for OCLIF projects
@@ -372,10 +375,12 @@ This monorepo uses a two-tier task architecture:
 
 **Plugin-Inferred Tasks** (auto-detected by Nx plugins):
 - `test:vitest` - Auto-inferred from vitest.config.ts (via @nx/vite plugin)
+- `build`, `test`, `lint` - Rust targets via @monodon/rust executors (configured in project.json)
 
 **Package-Specific Pipelines:**
 - **Libraries**: build:compile → build:api → build:docs
 - **CLI tools**: build:compile → build:manifest → build:readme → build:generate
+- **Rust crates**: build, test, lint (via `@monodon/rust` executors, configured in `project.json`)
 - **Astro sites**: build:site only
 - **Svelte apps**: build:vite (or build:vite → build:tauri for desktop)
 
@@ -386,8 +391,8 @@ This monorepo uses a two-tier task architecture:
 - **Granular caching** - Each implementation task caches independently with specific inputs/outputs
 - **Parallel execution** - Nx runs tasks without dependencies concurrently (up to 8 parallel tasks)
 - **Colon separator** - Implementation tasks use `:` (e.g., `build:compile`, `test:unit`)
-- **Plugin inference** - Nx plugins auto-detect tasks from config files (vitest.config.ts, etc.)
-- **Centralized config** - All orchestration in root `nx.json` (no package-level project.json files)
+- **Plugin inference** - Nx plugins auto-detect tasks from config files (vitest.config.ts, Cargo.toml, etc.)
+- **Centralized config** - All orchestration in root `nx.json` (Rust crates use `project.json` for executor config)
 
 **Benefits:**
 - **Precise caching**: Change README → only `build:readme` runs (others use cache)
@@ -413,6 +418,7 @@ Nx uses plugins to automatically infer tasks from configuration files, reducing 
 
 **Active Plugins:**
 - `@nx/vite/plugin` - Auto-infers test tasks from `vitest.config.ts` files
+- `@monodon/rust` - Auto-detects Rust crates from `Cargo.toml`, provides build/test/lint executors and Cargo dependency graph integration
 
 **Plugin Exclusions** (projects with non-standard configurations):
 - `packages/ccl-test-viewer/**` - Svelte app with custom Vite setup
@@ -424,6 +430,7 @@ Nx uses plugins to automatically infer tasks from configuration files, reducing 
 - `test:vitest` - Automatically created for packages with `vitest.config.ts`
   - Uses same caching and configuration as manually defined tasks
   - Available on: fundamentals, cli-api, cli, repopo, sort-tsconfig, xkcd2-api, dill
+- `nx-release-publish` - Automatically created for Rust crates by `@monodon/rust`
 
 **Why Use Plugins?**
 - Automatic task discovery when adding new packages
@@ -583,8 +590,11 @@ pnpm run ci:lint
 
 ```
 tools-monorepo/
+├── Cargo.toml         # Cargo workspace root
+├── Cargo.lock         # Cargo dependency lock
 ├── packages/           # All packages
 │   ├── cli/           # OCLIF CLI tools
+│   ├── repopo-core/   # Rust binary crate (repopo policy engine)
 │   ├── */src/         # TypeScript source
 │   ├── */esm/         # Compiled output
 │   ├── */test/        # Test files
@@ -593,6 +603,7 @@ tools-monorepo/
 │   ├── tsconfig*.json # Base TypeScript configs
 │   ├── vitest.config.ts
 │   └── api-extractor.base.json
+├── target/            # Cargo build output (workspace-level)
 ├── nx.json            # Nx task configuration
 ├── biome.jsonc        # Biome configuration
 ├── repopo.config.ts   # Repository policies
