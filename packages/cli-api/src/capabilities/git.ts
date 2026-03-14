@@ -2,7 +2,7 @@ import { resolve } from "pathe";
 import type { SimpleGit } from "simple-git";
 import type { BaseCommand } from "../baseCommand.js";
 import { Repository } from "../git.js";
-import { type Capability, CapabilityWrapper } from "./capability.js";
+import { type LazyCapability, createLazy } from "./capability.js";
 
 /**
  * Configuration options for git capability.
@@ -110,71 +110,67 @@ export interface GitContextNoRepo {
 export type GitContext = GitContextInRepo | GitContextNoRepo;
 
 /**
- * Git capability implementation.
- *
- * @beta
+ * Initialize git capability logic shared by useGit overloads.
  */
-export class GitCapability<
+async function initializeGit<
 	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
 	TCommand extends BaseCommand<any>,
-> implements Capability<TCommand, GitContext>
-{
-	public constructor(private options: GitCapabilityOptions = {}) {}
+>(command: TCommand, options: GitCapabilityOptions): Promise<GitContext> {
+	const baseDir = resolve(options.baseDir ?? process.cwd());
+	const repo = new Repository({ baseDir });
+	const git = repo.gitClient;
 
-	public async initialize(command: TCommand): Promise<GitContext> {
-		const baseDir = resolve(this.options.baseDir ?? process.cwd());
-		const repo = new Repository({ baseDir });
-		const git = repo.gitClient;
+	// Check if we're in a git repository
+	const isRepo = await git.checkIsRepo().catch(() => false);
 
-		// Check if we're in a git repository
-		const isRepo = await git.checkIsRepo().catch(() => false);
-
-		if (!isRepo && this.options.required !== false) {
-			command.error(`Not a git repository: ${baseDir}`, { exit: 1 });
-		}
-
-		if (!isRepo) {
-			return {
-				isRepo: false,
-				baseDir,
-			} satisfies GitContextNoRepo;
-		}
-
-		return {
-			git,
-			repo,
-			isRepo: true,
-
-			getCurrentBranch: async () => {
-				const branch = await git.branchLocal();
-				return branch.current;
-			},
-
-			isCleanWorkingTree: async () => {
-				const status = await git.status();
-				return status.isClean();
-			},
-
-			hasUncommittedChanges: async () => {
-				const status = await git.status();
-				return !status.isClean();
-			},
-		} satisfies GitContextInRepo;
+	if (!isRepo && options.required !== false) {
+		command.error(`Not a git repository: ${baseDir}`, { exit: 1 });
 	}
+
+	if (!isRepo) {
+		return {
+			isRepo: false,
+			baseDir,
+		} satisfies GitContextNoRepo;
+	}
+
+	return {
+		git,
+		repo,
+		isRepo: true,
+
+		getCurrentBranch: async () => {
+			const branch = await git.branchLocal();
+			return branch.current;
+		},
+
+		isCleanWorkingTree: async () => {
+			const status = await git.status();
+			return status.isClean();
+		},
+
+		hasUncommittedChanges: async () => {
+			const status = await git.status();
+			return !status.isClean();
+		},
+	} satisfies GitContextInRepo;
 }
 
 /**
- * Helper function to create a git capability for a command.
+ * Create a git capability for a command.
+ *
+ * When `required` is `true` (or omitted), the returned capability is narrowed to
+ * `GitContextInRepo` since the command will exit if not in a git repository.
  *
  * @example
  * ```typescript
  * class MyCommand extends BaseCommand {
- *   private git = useGit(this, { required: true });
+ *   // required: true (default) — no need to check isRepo
+ *   private git = useGit(this);
  *
  *   async run() {
  *     const { git, getCurrentBranch } = await this.git.get();
  *     const branch = await getCurrentBranch();
- *     console.log(`On branch: ${branch}`);
  *   }
  * }
  * ```
@@ -186,7 +182,47 @@ export function useGit<
 	TCommand extends BaseCommand<any>,
 >(
 	command: TCommand,
+	options: GitCapabilityOptions & { required: true },
+): LazyCapability<GitContextInRepo>;
+/**
+ * Create a git capability for a command.
+ *
+ * When `required` is `false`, the returned capability uses the full
+ * `GitContext` union — check `isRepo` to determine if git is available.
+ *
+ * @beta
+ */
+export function useGit<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+>(
+	command: TCommand,
+	options: GitCapabilityOptions & { required: false },
+): LazyCapability<GitContext>;
+/**
+ * Create a git capability for a command.
+ *
+ * When `required` is omitted, defaults to `true` — the returned capability is narrowed to
+ * `GitContextInRepo`.
+ *
+ * @beta
+ */
+export function useGit<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+>(
+	command: TCommand,
 	options?: GitCapabilityOptions,
-): CapabilityWrapper<TCommand, GitContext> {
-	return new CapabilityWrapper(command, new GitCapability<TCommand>(options));
+): LazyCapability<GitContextInRepo>;
+export function useGit<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+>(
+	command: TCommand,
+	options?: GitCapabilityOptions,
+): LazyCapability<GitContext> {
+	return createLazy(
+		() => initializeGit(command, options ?? {}),
+		command,
+	);
 }

@@ -1,7 +1,6 @@
-export type { Capability, CapabilityWrapper } from "./capability.js";
+export type { LazyCapability } from "./capability.js";
 // biome-ignore lint/performance/noBarrelFile: Intentional barrel file for capabilities module public API - required for @tylerbu/cli-api/capabilities subpath export
 export {
-	ConfigCapability,
 	type ConfigCapabilityOptions,
 	type ConfigContext,
 	type ConfigContextFound,
@@ -11,7 +10,6 @@ export {
 	useConfig,
 } from "./config.js";
 export {
-	GitCapability,
 	type GitCapabilityOptions,
 	type GitContext,
 	type GitContextInRepo,

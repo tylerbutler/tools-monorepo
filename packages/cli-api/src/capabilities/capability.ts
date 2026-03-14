@@ -1,102 +1,72 @@
 import type { BaseCommand } from "../baseCommand.js";
 
 /**
- * A capability that can be composed into commands.
- * Capabilities are initialized once and provide functionality to commands.
+ * A lazy-initialized capability that caches its result after the first access.
+ * Concurrent calls to `get()` will share the same initialization promise.
  *
- * @typeParam TCommand - The command type this capability is attached to.
- *   Uses `BaseCommand<any>` to allow any command constructor type while maintaining
- *   access to BaseCommand methods (error, config, etc.). More specific types can be
- *   provided when implementing capabilities.
- * @typeParam TResult - The type returned by the capability's API.
- *   Defaults to `unknown` for maximum flexibility - capabilities can return any shape.
+ * @typeParam T - The type returned by the capability.
  *
  * @beta
  */
-export interface Capability<
-	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-	TCommand extends BaseCommand<any>,
-	TResult = unknown,
-> {
+export interface LazyCapability<T> {
 	/**
-	 * Initialize the capability. Called automatically when accessed for the first time.
-	 * @param command - The command instance this capability is attached to
+	 * Get the capability result, initializing it on first access.
+	 * Subsequent calls return the cached result.
 	 */
-	initialize(command: TCommand): Promise<TResult> | TResult;
+	get(): Promise<T>;
 
 	/**
-	 * Optional cleanup when command completes.
+	 * Whether the capability has been initialized.
 	 */
-	cleanup?(): Promise<void> | void;
+	readonly isInitialized: boolean;
 }
 
 /**
- * Lazy-initialized capability holder.
- * Ensures capabilities are only initialized once, when first accessed.
+ * Create a lazy-initialized capability that caches its result.
+ * Handles concurrent access by sharing a single initialization promise.
  *
- * @deprecated Use the `useConfig` or `useGit` helper functions instead of constructing
- * `CapabilityWrapper` directly. This class is an implementation detail and will be
- * removed from the public API in a future release.
+ * @param init - Async function that initializes and returns the capability result.
+ * @param onError - Error handler called if initialization fails. Should call `command.error()` or throw.
+ * @returns A `LazyCapability` that initializes on first `get()` call.
  *
  * @beta
  */
-export class CapabilityWrapper<
+export function createLazy<T>(
+	init: () => Promise<T>,
 	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-	TCommand extends BaseCommand<any>,
-	TResult,
-> {
-	private _result: TResult | undefined;
-	private _initializationPromise: Promise<TResult> | undefined;
+	command: BaseCommand<any>,
+): LazyCapability<T> {
+	let result: T | undefined;
+	let promise: Promise<T> | undefined;
 
-	public constructor(
-		private readonly command: TCommand,
-		private readonly capability: Capability<TCommand, TResult>,
-	) {}
-
-	/**
-	 * Get the capability, initializing it if needed.
-	 * Subsequent calls return cached result.
-	 * Concurrent calls will wait for the same initialization promise.
-	 */
-	public async get(): Promise<TResult> {
-		if (this._result !== undefined) {
-			return this._result;
-		}
-
-		// If initialization is in progress, wait for it
-		if (this._initializationPromise) {
-			return this._initializationPromise;
-		}
-
-		// Start initialization
-		this._initializationPromise = (async () => {
-			try {
-				this._result = await this.capability.initialize(this.command);
-				return this._result;
-			} catch (error) {
-				const message = error instanceof Error ? error.message : String(error);
-				this.command.error(`Failed to initialize capability: ${message}`, {
-					exit: 1,
-				});
+	return {
+		async get(): Promise<T> {
+			if (result !== undefined) {
+				return result;
 			}
-		})();
 
-		return this._initializationPromise;
-	}
+			if (promise) {
+				return promise;
+			}
 
-	/**
-	 * Check if capability has been initialized.
-	 */
-	public get isInitialized(): boolean {
-		return this._result !== undefined;
-	}
+			promise = (async () => {
+				try {
+					result = await init();
+					return result;
+				} catch (error) {
+					const message =
+						error instanceof Error ? error.message : String(error);
+					command.error(`Failed to initialize capability: ${message}`, {
+						exit: 1,
+					});
+				}
+			})();
 
-	/**
-	 * Cleanup the capability.
-	 */
-	public async cleanup(): Promise<void> {
-		if (this._result !== undefined && this.capability.cleanup) {
-			await this.capability.cleanup();
-		}
-	}
+			return promise;
+		},
+
+		get isInitialized(): boolean {
+			return result !== undefined;
+		},
+	};
 }

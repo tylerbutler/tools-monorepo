@@ -4,7 +4,7 @@ import type { Config } from "@oclif/core";
 import path from "pathe";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BaseCommand } from "../../src/baseCommand.js";
-import { ConfigCapability, useConfig } from "../../src/capabilities/config.js";
+import { useConfig } from "../../src/capabilities/config.js";
 
 interface TestConfig {
 	name: string;
@@ -59,12 +59,12 @@ describe("ConfigCapability", () => {
 				`module.exports = ${JSON.stringify(testConfig)};`,
 			);
 
-			const capability = new ConfigCapability<TestConfig>({
+			const holder = useConfig<typeof command, TestConfig>(command, {
 				searchPaths: [tempDir],
 				required: true,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			expect(result.found).toBe(true);
 			expect(result.config).toEqual(testConfig);
@@ -77,18 +77,20 @@ describe("ConfigCapability", () => {
 		it("should use default config when file not found", async () => {
 			const defaultConfig: TestConfig = { name: "default", value: 0 };
 
-			const capability = new ConfigCapability<TestConfig>({
+			const holder = useConfig<typeof command, TestConfig>(command, {
 				searchPaths: [tempDir],
 				defaultConfig,
 				required: false,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			expect(result.found).toBe(true);
-			expect(result.config).toEqual(defaultConfig);
-			expect(result.location).toBe("DEFAULT");
-			expect(result.isDefault()).toBe(true);
+			if (result.found) {
+				expect(result.config).toEqual(defaultConfig);
+				expect(result.location).toBe("DEFAULT");
+				expect(result.isDefault()).toBe(true);
+			}
 		});
 
 		it("should prefer file config over default", async () => {
@@ -101,28 +103,30 @@ describe("ConfigCapability", () => {
 				`module.exports = ${JSON.stringify(fileConfig)};`,
 			);
 
-			const capability = new ConfigCapability<TestConfig>({
+			const holder = useConfig<typeof command, TestConfig>(command, {
 				searchPaths: [tempDir],
 				defaultConfig,
 				required: false,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			expect(result.found).toBe(true);
-			expect(result.config).toEqual(fileConfig);
-			expect(result.isDefault()).toBe(false);
+			if (result.found) {
+				expect(result.config).toEqual(fileConfig);
+				expect(result.isDefault()).toBe(false);
+			}
 		});
 	});
 
 	describe("error handling", () => {
 		it("should error when config required but not found", async () => {
-			const capability = new ConfigCapability<TestConfig>({
+			const holder = useConfig<typeof command, TestConfig>(command, {
 				searchPaths: [tempDir],
 				required: true,
 			});
 
-			await expect(capability.initialize(command)).rejects.toThrow();
+			await expect(holder.get()).rejects.toThrow();
 			expect(command.errorSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Could not find config file"),
 				{ exit: 1 },
@@ -130,22 +134,24 @@ describe("ConfigCapability", () => {
 		});
 
 		it("should not error when config optional and not found", async () => {
-			const capability = new ConfigCapability<TestConfig>({
+			const holder = useConfig<typeof command, TestConfig>(command, {
 				searchPaths: [tempDir],
 				required: false,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			expect(result.found).toBe(false);
-			expect(result.config).toBeUndefined();
-			expect(result.location).toBeUndefined();
-			expect(result.isDefault()).toBe(false);
+			if (!result.found) {
+				expect(result.config).toBeUndefined();
+				expect(result.location).toBeUndefined();
+				expect(result.isDefault()).toBe(false);
+			}
 		});
 	});
 
 	describe("useConfig helper", () => {
-		it("should create capability holder with config capability", async () => {
+		it("should create lazy capability with config", async () => {
 			const configPath = path.join(tempDir, "test-cli.config.cjs");
 			const testConfig: TestConfig = { name: "test", value: 42 };
 			fs.writeFileSync(
@@ -179,8 +185,10 @@ describe("ConfigCapability", () => {
 			const result = await holder.get();
 
 			expect(result.found).toBe(true);
-			expect(result.config).toEqual(defaultConfig);
-			expect(result.isDefault()).toBe(true);
+			if (result.found) {
+				expect(result.config).toEqual(defaultConfig);
+				expect(result.isDefault()).toBe(true);
+			}
 		});
 	});
 
@@ -198,12 +206,12 @@ describe("ConfigCapability", () => {
 				`module.exports = ${JSON.stringify(testConfig)};`,
 			);
 
-			const capability = new ConfigCapability<TestConfig>({
+			const holder = useConfig<typeof command, TestConfig>(command, {
 				searchPaths: [dir1, dir2],
 				required: true,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			expect(result.found).toBe(true);
 			expect(result.config).toEqual(testConfig);

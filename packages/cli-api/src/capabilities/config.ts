@@ -1,6 +1,6 @@
 import type { BaseCommand } from "../baseCommand.js";
 import { loadConfig } from "../loadConfig.js";
-import { type Capability, CapabilityWrapper } from "./capability.js";
+import { type LazyCapability, createLazy } from "./capability.js";
 
 /**
  * Branded type to distinguish default config location from regular strings.
@@ -123,77 +123,74 @@ export type ConfigContext<TConfig> =
 	| ConfigContextNotFound;
 
 /**
- * Config capability implementation.
- *
- * @beta
+ * Initialize config capability logic shared by useConfig overloads.
  */
-export class ConfigCapability<
+async function initializeConfig<
 	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
 	TCommand extends BaseCommand<any>,
 	TConfig,
-> implements Capability<TCommand, ConfigContext<TConfig>>
-{
-	public constructor(private options: ConfigCapabilityOptions<TConfig> = {}) {}
+>(
+	command: TCommand,
+	options: ConfigCapabilityOptions<TConfig>,
+): Promise<ConfigContext<TConfig>> {
+	const searchPaths = options.searchPaths ?? [process.cwd()];
 
-	public async initialize(command: TCommand): Promise<ConfigContext<TConfig>> {
-		const searchPaths = this.options.searchPaths ?? [process.cwd()];
-
-		// Try loading from each search path
-		let loaded: { config: TConfig; location: string } | undefined;
-		for (const searchPath of searchPaths) {
-			loaded = await loadConfig<TConfig>(
-				command.config.bin,
-				searchPath,
-				undefined,
-			);
-			if (loaded) {
-				break;
-			}
+	// Try loading from each search path
+	let loaded: { config: TConfig; location: string } | undefined;
+	for (const searchPath of searchPaths) {
+		loaded = await loadConfig<TConfig>(
+			command.config.bin,
+			searchPath,
+			undefined,
+		);
+		if (loaded) {
+			break;
 		}
-
-		if (loaded === undefined && this.options.defaultConfig === undefined) {
-			if (this.options.required !== false) {
-				command.error(
-					`Could not find config file in search paths: ${searchPaths.join(", ")}`,
-					{ exit: 1 },
-				);
-			}
-			return {
-				found: false,
-				config: undefined,
-				location: undefined,
-				isDefault: () => false,
-			} satisfies ConfigContextNotFound;
-		}
-
-		const { config, location } = loaded ?? {
-			config: this.options.defaultConfig,
-			location: DEFAULT_CONFIG_LOCATION,
-		};
-
-		return {
-			found: true,
-			config: config as TConfig,
-			location,
-			isDefault: () => location === (DEFAULT_CONFIG_LOCATION),
-		} satisfies ConfigContextFound<TConfig>;
 	}
+
+	if (loaded === undefined && options.defaultConfig === undefined) {
+		if (options.required !== false) {
+			command.error(
+				`Could not find config file in search paths: ${searchPaths.join(", ")}`,
+				{ exit: 1 },
+			);
+		}
+		return {
+			found: false,
+			config: undefined,
+			location: undefined,
+			isDefault: () => false,
+		} satisfies ConfigContextNotFound;
+	}
+
+	const { config, location } = loaded ?? {
+		config: options.defaultConfig,
+		location: DEFAULT_CONFIG_LOCATION,
+	};
+
+	return {
+		found: true,
+		config: config as TConfig,
+		location,
+		isDefault: () => location === DEFAULT_CONFIG_LOCATION,
+	} satisfies ConfigContextFound<TConfig>;
 }
 
 /**
- * Helper function to create a config capability for a command.
+ * Create a config capability for a command.
+ *
+ * When `required` is `true` (or omitted), the returned capability is narrowed to
+ * `ConfigContextFound<TConfig>` since the command will exit if no config is found.
  *
  * @example
  * ```typescript
  * class MyCommand extends BaseCommand {
- *   private config = useConfig<MyConfig>(this, {
- *     defaultConfig: { foo: "bar" },
- *     required: true
- *   });
+ *   // required: true (default) — no need to check `found`
+ *   private config = useConfig<typeof MyCommand, MyConfig>(this);
  *
  *   async run() {
  *     const { config } = await this.config.get();
- *     console.log(config.foo);
+ *     console.log(config.foo); // TConfig, not TConfig | undefined
  *   }
  * }
  * ```
@@ -206,10 +203,50 @@ export function useConfig<
 	TConfig,
 >(
 	command: TCommand,
+	options: ConfigCapabilityOptions<TConfig> & { required: true },
+): LazyCapability<ConfigContextFound<TConfig>>;
+/**
+ * Create a config capability for a command.
+ *
+ * When `required` is `false`, the returned capability uses the full
+ * `ConfigContext<TConfig>` union — check `found` to determine if config was loaded.
+ *
+ * @beta
+ */
+export function useConfig<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+	TConfig,
+>(
+	command: TCommand,
+	options: ConfigCapabilityOptions<TConfig> & { required: false },
+): LazyCapability<ConfigContext<TConfig>>;
+/**
+ * Create a config capability for a command.
+ *
+ * When `required` is omitted, defaults to `true` — the returned capability is narrowed to
+ * `ConfigContextFound<TConfig>`.
+ *
+ * @beta
+ */
+export function useConfig<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+	TConfig,
+>(
+	command: TCommand,
 	options?: ConfigCapabilityOptions<TConfig>,
-): CapabilityWrapper<TCommand, ConfigContext<TConfig>> {
-	return new CapabilityWrapper(
+): LazyCapability<ConfigContextFound<TConfig>>;
+export function useConfig<
+	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
+	TCommand extends BaseCommand<any>,
+	TConfig,
+>(
+	command: TCommand,
+	options?: ConfigCapabilityOptions<TConfig>,
+): LazyCapability<ConfigContext<TConfig>> {
+	return createLazy(
+		() => initializeConfig(command, options ?? {}),
 		command,
-		new ConfigCapability<TCommand, TConfig>(options),
 	);
 }

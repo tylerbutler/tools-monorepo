@@ -5,7 +5,7 @@ import path from "pathe";
 import { simpleGit } from "simple-git";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BaseCommand } from "../../src/baseCommand.js";
-import { GitCapability, useGit } from "../../src/capabilities/git.js";
+import { useGit } from "../../src/capabilities/git.js";
 
 class TestCommand extends BaseCommand<typeof TestCommand> {
 	public static override readonly description = "Test command";
@@ -62,12 +62,12 @@ describe("GitCapability", () => {
 
 	describe("initialization in git repo", () => {
 		it("should initialize git client and repository", async () => {
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			expect(result.git).toBeDefined();
 			expect(result.repo).toBeDefined();
@@ -75,28 +75,26 @@ describe("GitCapability", () => {
 		});
 
 		it("should provide helper methods when in a git repo", async () => {
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
-			expect(result.isRepo).toBe(true);
-			if (result.isRepo) {
-				expect(result.getCurrentBranch).toBeInstanceOf(Function);
-				expect(result.isCleanWorkingTree).toBeInstanceOf(Function);
-				expect(result.hasUncommittedChanges).toBeInstanceOf(Function);
-			}
+			// With required: true, result is narrowed to GitContextInRepo
+			expect(result.getCurrentBranch).toBeInstanceOf(Function);
+			expect(result.isCleanWorkingTree).toBeInstanceOf(Function);
+			expect(result.hasUncommittedChanges).toBeInstanceOf(Function);
 		});
 
 		it("should detect git repository correctly", async () => {
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 			const isRepo = await result.git.checkIsRepo();
 
 			expect(isRepo).toBe(true);
@@ -105,63 +103,55 @@ describe("GitCapability", () => {
 
 	describe("helper methods", () => {
 		it("should get current branch name", async () => {
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
-			expect(result.isRepo).toBe(true);
-			if (result.isRepo) {
-				const branch = await result.getCurrentBranch();
-				// Default branch should be master or main
-				expect(["master", "main"]).toContain(branch);
-			}
+			const branch = await result.getCurrentBranch();
+
+			// Default branch should be master or main
+			expect(["master", "main"]).toContain(branch);
 		});
 
 		it("should detect clean working tree", async () => {
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
-			expect(result.isRepo).toBe(true);
-			if (result.isRepo) {
-				const isClean = await result.isCleanWorkingTree();
-				expect(isClean).toBe(true);
-			}
+			const isClean = await result.isCleanWorkingTree();
+
+			expect(isClean).toBe(true);
 		});
 
 		it("should detect uncommitted changes", async () => {
 			// Add a new file
 			fs.writeFileSync(path.join(gitRepoDir, "new-file.txt"), "content");
 
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
-			expect(result.isRepo).toBe(true);
-			if (result.isRepo) {
-				const hasChanges = await result.hasUncommittedChanges();
-				expect(hasChanges).toBe(true);
-			}
+			const hasChanges = await result.hasUncommittedChanges();
+
+			expect(hasChanges).toBe(true);
 		});
 
 		it("should detect no uncommitted changes when clean", async () => {
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
-			expect(result.isRepo).toBe(true);
-			if (result.isRepo) {
-				const hasChanges = await result.hasUncommittedChanges();
-				expect(hasChanges).toBe(false);
-			}
+			const hasChanges = await result.hasUncommittedChanges();
+
+			expect(hasChanges).toBe(false);
 		});
 	});
 
@@ -170,12 +160,12 @@ describe("GitCapability", () => {
 			const nonGitDir = path.join(tempDir, "non-git");
 			fs.mkdirSync(nonGitDir);
 
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: nonGitDir,
 				required: true,
 			});
 
-			await expect(capability.initialize(command)).rejects.toThrow();
+			await expect(holder.get()).rejects.toThrow();
 			expect(command.errorSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Not a git repository"),
 				{ exit: 1 },
@@ -186,12 +176,12 @@ describe("GitCapability", () => {
 			const nonGitDir = path.join(tempDir, "non-git");
 			fs.mkdirSync(nonGitDir);
 
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: nonGitDir,
 				required: false,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			expect(result.isRepo).toBe(false);
 			if (!result.isRepo) {
@@ -203,12 +193,12 @@ describe("GitCapability", () => {
 			const nonGitDir = path.join(tempDir, "non-git");
 			fs.mkdirSync(nonGitDir);
 
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: nonGitDir,
 				required: false,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			expect(result.isRepo).toBe(false);
 			if (!result.isRepo) {
@@ -223,7 +213,7 @@ describe("GitCapability", () => {
 	});
 
 	describe("useGit helper", () => {
-		it("should create capability holder with git capability", async () => {
+		it("should create lazy capability with git", async () => {
 			const holder = useGit(command, { baseDir: gitRepoDir, required: true });
 
 			expect(holder.isInitialized).toBe(false);
@@ -255,12 +245,12 @@ describe("GitCapability", () => {
 
 	describe("custom base directory", () => {
 		it("should use custom base directory", async () => {
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
 
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 			const isRepo = await result.git.checkIsRepo();
 
 			expect(isRepo).toBe(true);
@@ -271,8 +261,8 @@ describe("GitCapability", () => {
 			process.chdir(gitRepoDir);
 
 			try {
-				const capability = new GitCapability({ required: true });
-				const result = await capability.initialize(command);
+				const holder = useGit(command, { required: true });
+				const result = await holder.get();
 				const isRepo = await result.git.checkIsRepo();
 
 				expect(isRepo).toBe(true);
@@ -284,11 +274,11 @@ describe("GitCapability", () => {
 
 	describe("repository wrapper", () => {
 		it("should provide Repository wrapper with helper methods", async () => {
-			const capability = new GitCapability({
+			const holder = useGit(command, {
 				baseDir: gitRepoDir,
 				required: true,
 			});
-			const result = await capability.initialize(command);
+			const result = await holder.get();
 
 			// Repository should have the git client
 			expect(result.repo.gitClient).toBe(result.git);

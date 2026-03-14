@@ -1,43 +1,7 @@
 import type { Config } from "@oclif/core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { BaseCommand } from "../../src/baseCommand.js";
-import {
-	type Capability,
-	CapabilityWrapper,
-} from "../../src/capabilities/capability.js";
-
-// Mock capability for testing
-interface MockResult {
-	data: string;
-	helperMethod(): string;
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-class MockCapability implements Capability<BaseCommand<any>, MockResult> {
-	public initializeCalled = false;
-	public cleanupCalled = false;
-
-	// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-	public async initialize(_command: BaseCommand<any>): Promise<MockResult> {
-		this.initializeCalled = true;
-		return {
-			data: "mock-data",
-			helperMethod: () => "helper-result",
-		};
-	}
-
-	public async cleanup(): Promise<void> {
-		this.cleanupCalled = true;
-	}
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-class ErrorCapability implements Capability<BaseCommand<any>, MockResult> {
-	// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-	public async initialize(_command: BaseCommand<any>): Promise<MockResult> {
-		throw new Error("Initialization failed");
-	}
-}
+import { createLazy } from "../../src/capabilities/capability.js";
 
 // Test command class
 class TestCommand extends BaseCommand<typeof TestCommand> {
@@ -53,7 +17,12 @@ class TestCommand extends BaseCommand<typeof TestCommand> {
 	}
 }
 
-describe("CapabilityWrapper", () => {
+interface MockResult {
+	data: string;
+	helperMethod(): string;
+}
+
+describe("createLazy", () => {
 	let command: TestCommand;
 	let mockConfig: Config;
 
@@ -70,49 +39,58 @@ describe("CapabilityWrapper", () => {
 	});
 
 	describe("initialization", () => {
-		it("should initialize capability on first get() call", async () => {
-			const mockCapability = new MockCapability();
-			const holder = new CapabilityWrapper(command, mockCapability);
+		it("should initialize on first get() call", async () => {
+			let initCalled = false;
+			const lazy = createLazy<MockResult>(async () => {
+				initCalled = true;
+				return { data: "mock-data", helperMethod: () => "helper-result" };
+			}, command);
 
-			expect(holder.isInitialized).toBe(false);
-			expect(mockCapability.initializeCalled).toBe(false);
+			expect(lazy.isInitialized).toBe(false);
+			expect(initCalled).toBe(false);
 
-			const result = await holder.get();
+			const result = await lazy.get();
 
-			expect(holder.isInitialized).toBe(true);
-			expect(mockCapability.initializeCalled).toBe(true);
+			expect(lazy.isInitialized).toBe(true);
+			expect(initCalled).toBe(true);
 			expect(result.data).toBe("mock-data");
 			expect(result.helperMethod()).toBe("helper-result");
 		});
 
 		it("should cache result after initialization", async () => {
-			const mockCapability = new MockCapability();
-			const holder = new CapabilityWrapper(command, mockCapability);
+			let initCount = 0;
+			const lazy = createLazy<MockResult>(async () => {
+				initCount++;
+				return { data: "mock-data", helperMethod: () => "helper-result" };
+			}, command);
 
-			const result1 = await holder.get();
-			const result2 = await holder.get();
+			const result1 = await lazy.get();
+			const result2 = await lazy.get();
 
 			// Should be the same object
 			expect(result1).toBe(result2);
 			// Initialize should only be called once
-			expect(mockCapability.initializeCalled).toBe(true);
+			expect(initCount).toBe(1);
 		});
 
 		it("should not initialize until get() is called", async () => {
-			const mockCapability = new MockCapability();
-			new CapabilityWrapper(command, mockCapability);
+			let initCalled = false;
+			createLazy<MockResult>(async () => {
+				initCalled = true;
+				return { data: "test", helperMethod: () => "test" };
+			}, command);
 
-			// Just creating the holder shouldn't initialize
-			expect(mockCapability.initializeCalled).toBe(false);
+			expect(initCalled).toBe(false);
 		});
 	});
 
 	describe("error handling", () => {
 		it("should call command.error() on initialization failure", async () => {
-			const errorCapability = new ErrorCapability();
-			const holder = new CapabilityWrapper(command, errorCapability);
+			const lazy = createLazy<MockResult>(async () => {
+				throw new Error("Initialization failed");
+			}, command);
 
-			await expect(holder.get()).rejects.toThrow("Initialization failed");
+			await expect(lazy.get()).rejects.toThrow("Initialization failed");
 			expect(command.errorSpy).toHaveBeenCalledWith(
 				"Failed to initialize capability: Initialization failed",
 				{ exit: 1 },
@@ -120,26 +98,11 @@ describe("CapabilityWrapper", () => {
 		});
 
 		it("should handle non-Error thrown objects", async () => {
-			class StringThrowCapability
-				implements
-					Capability<
-						// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-						BaseCommand<any>,
-						MockResult
-					>
-			{
-				// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-				public async initialize(_cmd: BaseCommand<any>): Promise<MockResult> {
-					throw new Error("String error");
-				}
-			}
+			const lazy = createLazy<MockResult>(async () => {
+				throw new Error("String error");
+			}, command);
 
-			const holder = new CapabilityWrapper(
-				command,
-				new StringThrowCapability(),
-			);
-
-			await expect(holder.get()).rejects.toThrow();
+			await expect(lazy.get()).rejects.toThrow();
 			expect(command.errorSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Failed to initialize capability"),
 				{ exit: 1 },
@@ -147,62 +110,19 @@ describe("CapabilityWrapper", () => {
 		});
 	});
 
-	describe("cleanup", () => {
-		it("should call capability cleanup() method", async () => {
-			const mockCapability = new MockCapability();
-			const holder = new CapabilityWrapper(command, mockCapability);
-
-			await holder.get();
-			await holder.cleanup();
-
-			expect(mockCapability.cleanupCalled).toBe(true);
-		});
-
-		it("should not fail if capability has no cleanup method", async () => {
-			class NoCleanupCapability
-				implements
-					Capability<
-						// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-						BaseCommand<any>,
-						MockResult
-					>
-			{
-				// biome-ignore lint/suspicious/noExplicitAny: Test mock needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-				public async initialize(_cmd: BaseCommand<any>): Promise<MockResult> {
-					return {
-						data: "test",
-						helperMethod: () => "test",
-					};
-				}
-			}
-
-			const holder = new CapabilityWrapper(command, new NoCleanupCapability());
-			await holder.get();
-
-			// Should not throw
-			await expect(holder.cleanup()).resolves.toBeUndefined();
-		});
-
-		it("should not fail if cleanup called before initialization", async () => {
-			const mockCapability = new MockCapability();
-			const holder = new CapabilityWrapper(command, mockCapability);
-
-			// Should not throw
-			await expect(holder.cleanup()).resolves.toBeUndefined();
-			expect(mockCapability.cleanupCalled).toBe(false);
-		});
-	});
-
 	describe("concurrent access", () => {
 		it("should handle concurrent get() calls correctly", async () => {
-			const mockCapability = new MockCapability();
-			const holder = new CapabilityWrapper(command, mockCapability);
+			let initCount = 0;
+			const lazy = createLazy<MockResult>(async () => {
+				initCount++;
+				return { data: "mock-data", helperMethod: () => "helper-result" };
+			}, command);
 
 			// Call get() multiple times concurrently
 			const results = await Promise.all([
-				holder.get(),
-				holder.get(),
-				holder.get(),
+				lazy.get(),
+				lazy.get(),
+				lazy.get(),
 			]);
 
 			// All should return the same object
@@ -210,7 +130,7 @@ describe("CapabilityWrapper", () => {
 			expect(results[1]).toBe(results[2]);
 
 			// Initialize should only be called once
-			expect(mockCapability.initializeCalled).toBe(true);
+			expect(initCount).toBe(1);
 		});
 	});
 });
