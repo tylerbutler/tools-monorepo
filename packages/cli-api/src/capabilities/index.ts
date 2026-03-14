@@ -14,5 +14,7 @@ export {
 	GitCapability,
 	type GitCapabilityOptions,
 	type GitContext,
+	type GitContextInRepo,
+	type GitContextNoRepo,
 	useGit,
 } from "./git.js";

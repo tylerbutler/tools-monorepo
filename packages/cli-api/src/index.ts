@@ -24,6 +24,8 @@ export {
 	GitCapability,
 	type GitCapabilityOptions,
 	type GitContext,
+	type GitContextInRepo,
+	type GitContextNoRepo,
 	useConfig,
 	useGit,
 } from "./capabilities/index.js";

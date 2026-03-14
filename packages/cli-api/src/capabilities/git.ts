@@ -1,3 +1,4 @@
+import { resolve } from "pathe";
 import type { SimpleGit } from "simple-git";
 import type { BaseCommand } from "../baseCommand.js";
 import { Repository } from "../git.js";
@@ -26,14 +27,8 @@ export interface GitCapabilityOptions {
 }
 
 /**
- * Context returned by the git capability.
+ * Context returned when inside a git repository.
  * Provides access to git client, repository utilities, and helper methods.
- *
- * @remarks
- * The helper methods (`getCurrentBranch`, `isCleanWorkingTree`, `hasUncommittedChanges`)
- * require `isRepo` to be `true`. When `required: false` is used and not in a git repo,
- * calling these methods will throw an error. Always check `isRepo` first when using
- * optional git capability.
  *
  * @example
  * ```typescript
@@ -45,7 +40,12 @@ export interface GitCapabilityOptions {
  *
  * @beta
  */
-export interface GitContext {
+export interface GitContextInRepo {
+	/**
+	 * Whether we're in a git repository.
+	 */
+	isRepo: true;
+
 	/**
 	 * simple-git client instance.
 	 */
@@ -57,29 +57,57 @@ export interface GitContext {
 	repo: Repository;
 
 	/**
-	 * Whether we're in a git repository.
-	 * When `false`, helper methods will throw an error if called.
-	 */
-	isRepo: boolean;
-
-	/**
 	 * Get the current branch name.
-	 * @throws Error if `isRepo` is `false`.
 	 */
 	getCurrentBranch(): Promise<string>;
 
 	/**
 	 * Check if the working tree is clean (no uncommitted changes).
-	 * @throws Error if `isRepo` is `false`.
 	 */
 	isCleanWorkingTree(): Promise<boolean>;
 
 	/**
 	 * Check if there are uncommitted changes.
-	 * @throws Error if `isRepo` is `false`.
 	 */
 	hasUncommittedChanges(): Promise<boolean>;
 }
+
+/**
+ * Context returned when not inside a git repository and `required` is `false`.
+ *
+ * @beta
+ */
+export interface GitContextNoRepo {
+	/**
+	 * Whether we're in a git repository.
+	 */
+	isRepo: false;
+
+	/**
+	 * The base directory that was searched for a git repository.
+	 */
+	baseDir: string;
+}
+
+/**
+ * Context returned by the git capability.
+ * Use the `isRepo` discriminator to determine if git helper methods are available.
+ *
+ * @example
+ * ```typescript
+ * const ctx = await gitCapability.get();
+ * if (ctx.isRepo) {
+ *   // TypeScript knows helper methods are available
+ *   const branch = await ctx.getCurrentBranch();
+ * } else {
+ *   // TypeScript knows helper methods are not available
+ *   console.log("Not in a git repository");
+ * }
+ * ```
+ *
+ * @beta
+ */
+export type GitContext = GitContextInRepo | GitContextNoRepo;
 
 /**
  * Git capability implementation.
@@ -94,7 +122,7 @@ export class GitCapability<
 	public constructor(private options: GitCapabilityOptions = {}) {}
 
 	public async initialize(command: TCommand): Promise<GitContext> {
-		const baseDir = this.options.baseDir ?? process.cwd();
+		const baseDir = resolve(this.options.baseDir ?? process.cwd());
 		const repo = new Repository({ baseDir });
 		const git = repo.gitClient;
 
@@ -105,35 +133,33 @@ export class GitCapability<
 			command.error(`Not a git repository: ${baseDir}`, { exit: 1 });
 		}
 
-		const requireRepo = (operation: string) => {
-			if (!isRepo) {
-				throw new Error(`Cannot ${operation}: not in a git repository`);
-			}
-		};
+		if (!isRepo) {
+			return {
+				isRepo: false,
+				baseDir,
+			} satisfies GitContextNoRepo;
+		}
 
 		return {
 			git,
 			repo,
-			isRepo,
+			isRepo: true,
 
 			getCurrentBranch: async () => {
-				requireRepo("get current branch");
 				const branch = await git.branchLocal();
 				return branch.current;
 			},
 
 			isCleanWorkingTree: async () => {
-				requireRepo("check working tree");
 				const status = await git.status();
 				return status.isClean();
 			},
 
 			hasUncommittedChanges: async () => {
-				requireRepo("check uncommitted changes");
 				const status = await git.status();
 				return !status.isClean();
 			},
-		};
+		} satisfies GitContextInRepo;
 	}
 }
 

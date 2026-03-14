@@ -31,7 +31,11 @@ export default class SquishCommand extends BaseCommand<typeof SquishCommand> {
 	protected override redirectLogToTrace = true;
 
 	public override async run(): Promise<void> {
-		const { git, getCurrentBranch } = await this.gitCapability.get();
+		const ctx = await this.gitCapability.get();
+		if (!ctx.isRepo) {
+			this.error("Not in a git repository", { exit: 1 });
+		}
+		const { git, getCurrentBranch } = ctx;
 
 		const sourceBranch = this.args.source ?? (await getCurrentBranch());
 		const tempBranch = `squish/${sourceBranch}`;

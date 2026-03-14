@@ -34,6 +34,10 @@ export interface Capability<
  * Lazy-initialized capability holder.
  * Ensures capabilities are only initialized once, when first accessed.
  *
+ * @deprecated Use the `useConfig` or `useGit` helper functions instead of constructing
+ * `CapabilityWrapper` directly. This class is an implementation detail and will be
+ * removed from the public API in a future release.
+ *
  * @beta
  */
 export class CapabilityWrapper<

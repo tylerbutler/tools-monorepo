@@ -71,9 +71,23 @@ describe("GitCapability", () => {
 
 			expect(result.git).toBeDefined();
 			expect(result.repo).toBeDefined();
-			expect(result.getCurrentBranch).toBeInstanceOf(Function);
-			expect(result.isCleanWorkingTree).toBeInstanceOf(Function);
-			expect(result.hasUncommittedChanges).toBeInstanceOf(Function);
+			expect(result.isRepo).toBe(true);
+		});
+
+		it("should provide helper methods when in a git repo", async () => {
+			const capability = new GitCapability({
+				baseDir: gitRepoDir,
+				required: true,
+			});
+
+			const result = await capability.initialize(command);
+
+			expect(result.isRepo).toBe(true);
+			if (result.isRepo) {
+				expect(result.getCurrentBranch).toBeInstanceOf(Function);
+				expect(result.isCleanWorkingTree).toBeInstanceOf(Function);
+				expect(result.hasUncommittedChanges).toBeInstanceOf(Function);
+			}
 		});
 
 		it("should detect git repository correctly", async () => {
@@ -97,10 +111,12 @@ describe("GitCapability", () => {
 			});
 			const result = await capability.initialize(command);
 
-			const branch = await result.getCurrentBranch();
-
-			// Default branch should be master or main
-			expect(["master", "main"]).toContain(branch);
+			expect(result.isRepo).toBe(true);
+			if (result.isRepo) {
+				const branch = await result.getCurrentBranch();
+				// Default branch should be master or main
+				expect(["master", "main"]).toContain(branch);
+			}
 		});
 
 		it("should detect clean working tree", async () => {
@@ -110,9 +126,11 @@ describe("GitCapability", () => {
 			});
 			const result = await capability.initialize(command);
 
-			const isClean = await result.isCleanWorkingTree();
-
-			expect(isClean).toBe(true);
+			expect(result.isRepo).toBe(true);
+			if (result.isRepo) {
+				const isClean = await result.isCleanWorkingTree();
+				expect(isClean).toBe(true);
+			}
 		});
 
 		it("should detect uncommitted changes", async () => {
@@ -125,9 +143,11 @@ describe("GitCapability", () => {
 			});
 			const result = await capability.initialize(command);
 
-			const hasChanges = await result.hasUncommittedChanges();
-
-			expect(hasChanges).toBe(true);
+			expect(result.isRepo).toBe(true);
+			if (result.isRepo) {
+				const hasChanges = await result.hasUncommittedChanges();
+				expect(hasChanges).toBe(true);
+			}
 		});
 
 		it("should detect no uncommitted changes when clean", async () => {
@@ -137,9 +157,11 @@ describe("GitCapability", () => {
 			});
 			const result = await capability.initialize(command);
 
-			const hasChanges = await result.hasUncommittedChanges();
-
-			expect(hasChanges).toBe(false);
+			expect(result.isRepo).toBe(true);
+			if (result.isRepo) {
+				const hasChanges = await result.hasUncommittedChanges();
+				expect(hasChanges).toBe(false);
+			}
 		});
 	});
 
@@ -171,13 +193,13 @@ describe("GitCapability", () => {
 
 			const result = await capability.initialize(command);
 
-			// Should still return git/repo objects, but they won't work
-			expect(result.git).toBeDefined();
-			expect(result.repo).toBeDefined();
 			expect(result.isRepo).toBe(false);
+			if (!result.isRepo) {
+				expect(result.baseDir).toBe(nonGitDir);
+			}
 		});
 
-		it("should throw when calling getCurrentBranch outside git repo", async () => {
+		it("should not have helper methods when not in git repo", async () => {
 			const nonGitDir = path.join(tempDir, "non-git");
 			fs.mkdirSync(nonGitDir);
 
@@ -188,41 +210,15 @@ describe("GitCapability", () => {
 
 			const result = await capability.initialize(command);
 
-			await expect(result.getCurrentBranch()).rejects.toThrow(
-				"Cannot get current branch: not in a git repository",
-			);
-		});
-
-		it("should throw when calling isCleanWorkingTree outside git repo", async () => {
-			const nonGitDir = path.join(tempDir, "non-git");
-			fs.mkdirSync(nonGitDir);
-
-			const capability = new GitCapability({
-				baseDir: nonGitDir,
-				required: false,
-			});
-
-			const result = await capability.initialize(command);
-
-			await expect(result.isCleanWorkingTree()).rejects.toThrow(
-				"Cannot check working tree: not in a git repository",
-			);
-		});
-
-		it("should throw when calling hasUncommittedChanges outside git repo", async () => {
-			const nonGitDir = path.join(tempDir, "non-git");
-			fs.mkdirSync(nonGitDir);
-
-			const capability = new GitCapability({
-				baseDir: nonGitDir,
-				required: false,
-			});
-
-			const result = await capability.initialize(command);
-
-			await expect(result.hasUncommittedChanges()).rejects.toThrow(
-				"Cannot check uncommitted changes: not in a git repository",
-			);
+			expect(result.isRepo).toBe(false);
+			if (!result.isRepo) {
+				// TypeScript correctly narrows: helper methods don't exist on GitContextNoRepo
+				expect("getCurrentBranch" in result).toBe(false);
+				expect("isCleanWorkingTree" in result).toBe(false);
+				expect("hasUncommittedChanges" in result).toBe(false);
+				expect("git" in result).toBe(false);
+				expect("repo" in result).toBe(false);
+			}
 		});
 	});
 
