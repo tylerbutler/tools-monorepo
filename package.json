@@ -33,7 +33,7 @@
 		"ci:publish": "pnpm publish -r --access public --provenance --report-summary --no-git-checks",
 		"ci:publish:internal": "pnpm publish -r --report-summary --no-git-checks --filter \"@tylerbu/*\"",
 		"ci:test": "nx run-many -t test:coverage",
-		"ci:version": "pnpm run release:license && changeset version && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
+		"ci:version": "pnpm run release:license && changeset version && ./scripts/sync-cargo-versions.sh && pnpm install --no-frozen-lockfile && pnpm format && pnpm build",
 		"clean": "nx run tools-monorepo:clean:root && nx run-many -t clean",
 		"clean:root": "rimraf *.tsbuildinfo *.done.build.log",
 		"compile": "nx run-many -t build:compile",
