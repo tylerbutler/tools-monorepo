@@ -18,5 +18,8 @@
 		{
 			"path": "../fundamentals",
 		},
+		{
+			"path": "../lilconfig-loader-ts",
+		},
 	],
 }
