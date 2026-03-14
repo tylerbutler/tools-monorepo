@@ -51,12 +51,12 @@ jobs:
           install-just: 'false'
 
       - name: Build release binary
-        run: cargo build --release --target ${{ matrix.target }} --manifest-path packages/repopo/crates/core/Cargo.toml
+        run: cargo build --release --target ${{ matrix.target }} --manifest-path packages/repopo-core/Cargo.toml
 
       - name: Package binary (unix)
         if: runner.os != 'Windows'
         run: |
-          cd packages/repopo/crates/core/target/${{ matrix.target }}/release
+          cd target/${{ matrix.target }}/release
           tar czf "$GITHUB_WORKSPACE/${{ matrix.asset-name }}.tar.gz" repopo-core
           cd "$GITHUB_WORKSPACE"
           sha256sum "${{ matrix.asset-name }}.tar.gz" > "${{ matrix.asset-name }}.tar.gz.sha256"
@@ -65,7 +65,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $binaryPath = "packages/repopo/crates/core/target/${{ matrix.target }}/release/repopo-core.exe"
+          $binaryPath = "target/${{ matrix.target }}/release/repopo-core.exe"
           $archiveName = "${{ matrix.asset-name }}.zip"
           Compress-Archive -Path $binaryPath -DestinationPath $archiveName -Force
           $hash = (Get-FileHash -Algorithm SHA256 $archiveName).Hash.ToLower()
