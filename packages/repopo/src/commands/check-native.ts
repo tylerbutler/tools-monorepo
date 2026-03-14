@@ -123,17 +123,48 @@ export class CheckNative extends Command {
 			return explicit;
 		}
 
-		// Look for the binary relative to the package root
 		const packageRoot = resolve(__dirname, "..", "..");
-		const cratesDir = resolve(packageRoot, "crates", "core", "target");
+		const binaryName =
+			process.platform === "win32" ? "repopo-core.exe" : "repopo-core";
 
-		// Prefer release build if it exists, fall back to debug
-		const releasePath = resolve(cratesDir, "release", "repopo-core");
+		// Check paths in priority order:
+		// 1. Postinstall-downloaded binary (npm install)
+		const nativePath = resolve(packageRoot, "native", binaryName);
+		if (existsSync(nativePath)) {
+			return nativePath;
+		}
+
+		// 2. Local release build (cargo build --release)
+		const releasePath = resolve(
+			packageRoot,
+			"crates",
+			"core",
+			"target",
+			"release",
+			binaryName,
+		);
 		if (existsSync(releasePath)) {
 			return releasePath;
 		}
 
-		return resolve(cratesDir, "debug", "repopo-core");
+		// 3. Local debug build (cargo build)
+		const debugPath = resolve(
+			packageRoot,
+			"crates",
+			"core",
+			"target",
+			"debug",
+			binaryName,
+		);
+		if (existsSync(debugPath)) {
+			return debugPath;
+		}
+
+		throw new Error(
+			"repopo-core binary not found. Either:\n" +
+				"  - Install the package (npm install repopo) to download pre-built binaries\n" +
+				"  - Build from source: cargo build --manifest-path crates/core/Cargo.toml",
+		);
 	}
 
 	private resolveSidecarPath(explicit?: string): string {

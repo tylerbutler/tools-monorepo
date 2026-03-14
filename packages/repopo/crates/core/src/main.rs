@@ -118,6 +118,11 @@ fn resolve_sidecar_path(explicit: Option<&str>) -> Result<String> {
     // Try to find the sidecar relative to the binary
     if let Ok(exe) = env::current_exe() {
         let candidates = [
+            // Installed via postinstall: binary is in native/,
+            // sidecar is in package-root/sidecar/
+            exe.parent()
+                .and_then(|p| p.parent())
+                .map(|p| p.join("sidecar").join("sidecar.mjs")),
             // Development: binary is in target/debug or target/release,
             // sidecar is in the package root
             exe.parent()
