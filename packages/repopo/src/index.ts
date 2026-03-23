@@ -62,3 +62,9 @@ export {
 	definePackagePolicy as generatePackagePolicy,
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";
+export {
+	type PolicyFileResult,
+	PolicyRunner,
+	type PolicyRunnerOptions,
+	type PolicyRunResults,
+} from "./runner.js";
