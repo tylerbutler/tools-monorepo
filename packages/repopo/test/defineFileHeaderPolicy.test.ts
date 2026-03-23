@@ -94,6 +94,41 @@ describe("defineFileHeaderPolicy", () => {
 			expect(result.errorMessages.join()).toContain(".ts file missing header");
 		});
 
+		it("should reject file paths outside repository root", async () => {
+			const outsideDir = await mkdtemp(
+				join(tmpdir(), "repopo-header-outside-test-"),
+			);
+			const outsideFile = join(outsideDir, "outside.ts");
+			await writeFile(outsideFile, "const x = 1;");
+
+			const config: FileHeaderGeneratorConfig = {
+				match: /\.ts$/,
+				lineStart: /\/\/ /,
+				lineEnd: /\r?\n/,
+				replacer: (fileContent, cfg) =>
+					`// ${cfg.headerText}${EOL}${fileContent}`,
+			};
+
+			const policy = defineFileHeaderPolicy({
+				name: "TestPolicy",
+				description: "Test file header policy",
+				config,
+			});
+
+			try {
+				await expect(
+					runHandler(policy.handler, {
+						file: outsideFile,
+						root: testDir,
+						resolve: false,
+						config: { headerText: "Copyright 2025" },
+					}),
+				).rejects.toThrow("within repository root");
+			} finally {
+				await rm(outsideDir, { recursive: true, force: true });
+			}
+		});
+
 		it("should pass when config is undefined", async () => {
 			const testFile = join(testDir, "test.ts");
 			await writeFile(testFile, "const x = 1;");

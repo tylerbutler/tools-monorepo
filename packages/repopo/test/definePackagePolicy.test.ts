@@ -64,6 +64,45 @@ describe("definePackagePolicy", () => {
 		expect(receivedJson?.version).toBe("1.0.0");
 	});
 
+	it("should reject package.json paths outside repository root", async () => {
+		const outsideDir = await mkdtemp(
+			join(tmpdir(), "repopo-pkg-outside-test-"),
+		);
+		const outsidePath = join(outsideDir, packageJsonPath);
+		const packageJson: PackageJson = {
+			name: "outside-package",
+			version: "1.0.0",
+		};
+
+		try {
+			await writeFile(outsidePath, JSON.stringify(packageJson, null, 2));
+
+			const handler: PackageJsonHandler<PackageJson, undefined> = function* () {
+				yield* (function* () {
+					// Minimal yield to satisfy generator requirements
+				})();
+				return true as const;
+			};
+
+			const policy = definePackagePolicy({
+				name: "TestPackagePolicy",
+				description: "Test policy for package.json validation",
+				handler,
+			});
+
+			await expect(
+				runHandler(policy.handler, {
+					file: outsidePath,
+					root: testDir,
+					resolve: false,
+					config: undefined,
+				}),
+			).rejects.toThrow("within repository root");
+		} finally {
+			await rm(outsideDir, { recursive: true, force: true });
+		}
+	});
+
 	it("should match package.json files with regex", () => {
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* () {
 			yield* (function* () {
