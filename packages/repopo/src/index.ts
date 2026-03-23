@@ -19,6 +19,7 @@ export type {
 	// PolicyList,
 	RepopoConfig,
 } from "./config.js";
+export type { ExcludedPolicyFileMap } from "./context.js";
 export {
 	makePolicy,
 	makePolicyDefinition,
@@ -26,6 +27,7 @@ export {
 	type PolicyOptions,
 	policy,
 } from "./makePolicy.js";
+export type { PolicyAction, PolicyHandlerPerfStats } from "./perf.js";
 export {
 	type ConfiguredPolicy,
 	// Type guards

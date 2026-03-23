@@ -25,7 +25,10 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 	);
 }
 
-/** Result of running a single policy on a single file */
+/**
+ * Result of running a single policy on a single file.
+ * @alpha
+ */
 export interface PolicyFileResult {
 	file: string;
 	policy: PolicyName;
@@ -35,12 +38,19 @@ export interface PolicyFileResult {
 	resolution?: PolicyFixResult;
 }
 
-/** Aggregated results from a full policy run */
+/**
+ * Aggregated results from a full policy run.
+ * @alpha
+ */
 export interface PolicyRunResults {
 	results: PolicyFileResult[];
 	perfStats: PolicyHandlerPerfStats;
 }
 
+/**
+ * Options for configuring a {@link PolicyRunner}.
+ * @alpha
+ */
 export interface PolicyRunnerOptions {
 	policies: PolicyInstance[];
 	excludeFromAll: RegExp[];
@@ -50,6 +60,10 @@ export interface PolicyRunnerOptions {
 	logger?: Pick<Logger, "verbose">;
 }
 
+/**
+ * Runs configured policies against files and collects results.
+ * @alpha
+ */
 export class PolicyRunner {
 	private readonly policies: PolicyInstance[];
 	private readonly excludeFromAll: RegExp[];

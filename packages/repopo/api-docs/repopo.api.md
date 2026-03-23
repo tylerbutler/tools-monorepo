@@ -4,6 +4,7 @@
 
 ```ts
 
+import type { Logger } from '@tylerbu/cli-api';
 import { Operation } from 'effection';
 import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
@@ -35,6 +36,9 @@ export interface DefinePackagePolicyArgs<J, C> {
     handler: PackageJsonHandler<J, C>;
     name: string;
 }
+
+// @alpha
+export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
 
 // @alpha
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -119,6 +123,9 @@ export function policy<C = void>(policyDef: PolicyShape<C>, options?: PolicyOpti
 export function policy<C>(policyDef: PolicyShape<C>, config: C, options?: PolicyOptions): ConfiguredPolicy<C>;
 
 // @alpha
+export type PolicyAction = "check" | "resolve" | "handle";
+
+// @alpha
 export interface PolicyArgs<C = void> {
     config?: C | undefined;
     file: string;
@@ -149,6 +156,16 @@ export interface PolicyFailure {
     name: PolicyName;
 }
 
+// @alpha
+export interface PolicyFileResult {
+    // (undocumented)
+    file: string;
+    outcome: PolicyHandlerResult;
+    // (undocumented)
+    policy: PolicyName;
+    resolution?: PolicyFixResult;
+}
+
 // @alpha @deprecated
 export interface PolicyFixResult extends PolicyFailure {
     resolved: boolean;
@@ -159,6 +176,16 @@ export type PolicyFunctionArguments<C> = PolicyArgs<C>;
 
 // @alpha
 export type PolicyHandler<C = unknown | undefined> = ((args: PolicyArgs<C>) => Promise<PolicyHandlerResult>) | ((args: PolicyArgs<C>) => Operation<PolicyHandlerResult>);
+
+// @alpha
+export interface PolicyHandlerPerfStats {
+    // (undocumented)
+    count: number;
+    // (undocumented)
+    data: Map<PolicyAction, Map<PolicyName, number>>;
+    // (undocumented)
+    processed: number;
+}
 
 // @alpha
 export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult | PolicyError;
@@ -185,6 +212,37 @@ export type PolicyResolver<C = void> = (args: Omit<PolicyArgs<C>, "resolve">) =>
 
 // @alpha
 export type PolicyResult = true | PolicyError;
+
+// @alpha
+export class PolicyRunner {
+    constructor(options: PolicyRunnerOptions);
+    // (undocumented)
+    run(filePaths: string[]): Operation<PolicyRunResults>;
+}
+
+// @alpha
+export interface PolicyRunnerOptions {
+    // (undocumented)
+    excludeFromAll: RegExp[];
+    // (undocumented)
+    excludePoliciesForFiles: ExcludedPolicyFileMap;
+    // (undocumented)
+    gitRoot: string;
+    // (undocumented)
+    logger?: Pick<Logger, "verbose">;
+    // (undocumented)
+    policies: PolicyInstance[];
+    // (undocumented)
+    resolve: boolean;
+}
+
+// @alpha
+export interface PolicyRunResults {
+    // (undocumented)
+    perfStats: PolicyHandlerPerfStats;
+    // (undocumented)
+    results: PolicyFileResult[];
+}
 
 // @alpha
 export interface PolicyShape<C = void> {
