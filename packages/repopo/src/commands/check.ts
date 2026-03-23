@@ -30,6 +30,9 @@ import {
 	type PolicyInstance,
 	type PolicyStandaloneResolver,
 } from "../policy.js";
+import { normalizeRepoRelativeFilePath } from "../utils/safePaths.js";
+
+const trailingCarriageReturnRegex = /\r$/;
 
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
@@ -95,7 +98,8 @@ export class CheckPolicy<
 			this.verbose(h.name);
 		}
 
-		const filePathsToCheck: string[] = [];
+		const context: RepopoCommandContext = await this.getContext();
+		const rawFilePathsToCheck: string[] = [];
 
 		if (this.flags.stdin) {
 			const stdInput = await run(function* () {
@@ -103,15 +107,7 @@ export class CheckPolicy<
 			});
 
 			if (stdInput !== undefined && stdInput !== null) {
-				filePathsToCheck.push(
-					...stdInput
-						.replace(
-							// normalize slashes in case they're windows paths
-							/\\/g,
-							"/",
-						)
-						.split("\n"),
-				);
+				rawFilePathsToCheck.push(...this.splitInputPaths(stdInput));
 			}
 		} else {
 			const gitFiles =
@@ -125,20 +121,45 @@ export class CheckPolicy<
 					"--full-name",
 				)) ?? "";
 
-			filePathsToCheck.push(
-				...gitFiles
-					.replace(
-						// normalize slashes in case they're windows paths
-						/\\/g,
-						"/",
-					)
-					.split("\n"),
-			);
+			rawFilePathsToCheck.push(...this.splitInputPaths(gitFiles));
 		}
 
-		const context: RepopoCommandContext = await this.getContext();
+		const filePathsToCheck = this.normalizePathsToCheck(
+			rawFilePathsToCheck,
+			context.gitRoot,
+		);
 
 		await run(() => this.checkAllFiles(filePathsToCheck, context));
+	}
+
+	private splitInputPaths(input: string): string[] {
+		return input
+			.replace(
+				// normalize slashes in case they're windows paths
+				/\\/g,
+				"/",
+			)
+			.split("\n")
+			.map((path) => path.replace(trailingCarriageReturnRegex, ""));
+	}
+
+	private normalizePathsToCheck(paths: string[], gitRoot: string): string[] {
+		const normalizedPaths: string[] = [];
+		for (const path of paths) {
+			if (path.length === 0) {
+				continue;
+			}
+
+			try {
+				normalizedPaths.push(normalizeRepoRelativeFilePath(gitRoot, path));
+			} catch (error: unknown) {
+				throw new Error(
+					`Invalid file path '${path}': ${(error as Error).message}`,
+				);
+			}
+		}
+
+		return normalizedPaths;
 	}
 
 	/**
