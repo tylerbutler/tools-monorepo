@@ -18,6 +18,7 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 ## Classes
 
 - [Policy](/api/classes/policy/)
+- [PolicyRunner](/api/classes/policyrunner/)
 
 ## Interfaces
 
@@ -31,15 +32,21 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 - [PolicyArgs](/api/interfaces/policyargs/)
 - [PolicyError](/api/interfaces/policyerror/)
 - [~~PolicyFailure~~](/api/interfaces/policyfailure/)
+- [PolicyFileResult](/api/interfaces/policyfileresult/)
 - [~~PolicyFixResult~~](/api/interfaces/policyfixresult/)
+- [PolicyHandlerPerfStats](/api/interfaces/policyhandlerperfstats/)
 - [PolicyInstanceSettings](/api/interfaces/policyinstancesettings/)
 - [PolicyOptions](/api/interfaces/policyoptions/)
+- [PolicyRunnerOptions](/api/interfaces/policyrunneroptions/)
+- [PolicyRunResults](/api/interfaces/policyrunresults/)
 - [PolicyShape](/api/interfaces/policyshape/)
 - [RepopoConfig](/api/interfaces/repopoconfig/)
 
 ## Type Aliases
 
+- [ExcludedPolicyFileMap](/api/type-aliases/excludedpolicyfilemap/)
 - [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
+- [PolicyAction](/api/type-aliases/policyaction/)
 - [~~PolicyDefinition~~](/api/type-aliases/policydefinition/)
 - [~~PolicyDefinitionInput~~](/api/type-aliases/policydefinitioninput/)
 - [~~PolicyFunctionArguments~~](/api/type-aliases/policyfunctionarguments/)
