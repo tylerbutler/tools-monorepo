@@ -48,7 +48,7 @@ export async function atomicWrite(
 		}
 
 		// Atomically rename temp file to target
-		traceAtomicWrite(`renaming temp file to %s`, targetPath);
+		traceAtomicWrite("renaming temp file to %s", targetPath);
 		await rename(tempPath, targetPath);
 	} catch (error) {
 		// Clean up temp file if write failed
