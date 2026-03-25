@@ -123,7 +123,7 @@
 		"generate-license-file": "^4.1.1",
 		"oclif": "^4.22.50",
 		"rimraf": "^6.1.2",
-		"smol-toml": "^1.6.0",
+		"smol-toml": "^1.6.1",
 		"spdx-correct": "^3.2.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
