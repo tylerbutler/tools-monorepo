@@ -1,5 +1,27 @@
 # dill-cli
 
+## 0.2.4
+
+### Patch Changes
+
+- Maintenance and correctness improvements from code review: _[`#673`](https://github.com/tylerbutler/tools-monorepo/pull/673) [`a4f70e9`](https://github.com/tylerbutler/tools-monorepo/commit/a4f70e9caaa4f2a3d96c10daaa7bcd95ef89961a) [@tylerbutler](https://github.com/tylerbutler)_
+  - Implement `printExecError` function that was previously a no-op with a TODO comment; now logs errors and warnings via the `debug` module
+  - Replace sync file I/O (`existsSync`, `statSync`) with async equivalents in `PersistentFileHashCache`
+  - Remove leftover debug code in `atomicWrite.ts` that dynamically imported `existsSync` for manifest-specific logging
+  - Add `debug`-based logging in `statistics.ts` where errors were previously silently swallowed
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`a4f70e9`](https://github.com/tylerbutler/tools-monorepo/commit/a4f70e9caaa4f2a3d96c10daaa7bcd95ef89961a)
+
+</small>
+
+- `@tylerbu/sail-infrastructure@0.4.1`
+
+</details>
+
 ## 0.2.3
 
 ### Patch Changes
