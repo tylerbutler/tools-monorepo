@@ -346,7 +346,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 The following npm packages may be included in this product:
 
  - @manypkg/get-packages@3.1.0
- - simple-git@3.30.0
+ - simple-git@3.32.3
 
 These packages each contain the following license:
 
@@ -605,7 +605,7 @@ The following npm packages may be included in this product:
 
  - detect-indent@7.0.2
  - find-up@8.0.0
- - log-update@7.0.2
+ - log-update@7.1.0
  - multimatch@7.0.0
  - type-fest@5.4.1
 
