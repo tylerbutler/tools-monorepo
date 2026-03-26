@@ -10,6 +10,12 @@ import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
 
 // @alpha
+export type CargoToml = Record<string, unknown>;
+
+// @alpha
+export type CargoTomlHandler<C> = (toml: CargoToml, args: PolicyArgs<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
+
+// @alpha
 export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
     config?: C | undefined;
     // @deprecated
@@ -20,12 +26,34 @@ export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
 }
 
 // @alpha
+export function defineCargoPolicy<C = undefined>(args: DefineCargoPolicyArgs<C>): PolicyShape<C>;
+
+// @alpha
+export interface DefineCargoPolicyArgs<C> {
+    defaultConfig?: C;
+    description: string;
+    handler: CargoTomlHandler<C>;
+    name: string;
+}
+
+// @alpha
 export function defineFileHeaderPolicy(args: DefineFileHeaderPolicyArgs): PolicyShape<FileHeaderPolicyConfig>;
 
 // @alpha
 export interface DefineFileHeaderPolicyArgs {
     config: FileHeaderGeneratorConfig;
     description: string;
+    name: string;
+}
+
+// @alpha
+export function defineGleamPolicy<C = undefined>(args: DefineGleamPolicyArgs<C>): PolicyShape<C>;
+
+// @alpha
+export interface DefineGleamPolicyArgs<C> {
+    defaultConfig?: C;
+    description: string;
+    handler: GleamTomlHandler<C>;
     name: string;
 }
 
@@ -80,6 +108,12 @@ export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: Fluid
 
 // @alpha
 export function generatePackagePolicy<J = PackageJson, C = undefined>(args: DefinePackagePolicyArgs<J, C>): PolicyShape<C>;
+
+// @alpha
+export type GleamToml = Record<string, unknown>;
+
+// @alpha
+export type GleamTomlHandler<C> = (toml: GleamToml, args: PolicyArgs<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
 
 // @alpha
 export function isPolicyError(toCheck: any): toCheck is PolicyError;

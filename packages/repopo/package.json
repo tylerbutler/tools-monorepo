@@ -117,11 +117,14 @@
 		"@types/jsonfile": "^6.1.4",
 		"@types/node": "^20.19.25",
 		"@types/picomatch": "^4.0.2",
+		"@types/spdx-correct": "^3.1.3",
 		"@types/tmp": "^0.2.6",
 		"@vitest/coverage-v8": "^4.0.18",
 		"generate-license-file": "^4.1.1",
 		"oclif": "^4.22.50",
 		"rimraf": "^6.1.2",
+		"smol-toml": "^1.6.0",
+		"spdx-correct": "^3.2.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
 		"type-fest": "^5.4.1",
@@ -129,10 +132,18 @@
 		"vitest": "^4.0.18"
 	},
 	"peerDependencies": {
-		"sort-package-json": "*"
+		"smol-toml": "^1.0.0",
+		"sort-package-json": "*",
+		"spdx-correct": "^3.0.0"
 	},
 	"peerDependenciesMeta": {
+		"smol-toml": {
+			"optional": true
+		},
 		"sort-package-json": {
+			"optional": true
+		},
+		"spdx-correct": {
 			"optional": true
 		}
 	},
