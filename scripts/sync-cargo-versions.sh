@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Syncs Cargo.toml versions from their nearest ancestor package.json.
+# Syncs Cargo.toml versions from a specified package.json.
 # Uses the same sed-based approach as tylerbutler/actions/update-version-files.
 #
 # Usage: ./scripts/sync-cargo-versions.sh
 #
-# Each entry below is a "toml_file:key" pair. The version is read from the
-# nearest ancestor package.json.
+# Each entry below is a "toml_file:key:package_json" triple. The version is
+# read from the specified package.json.
 
 set -euo pipefail
 
 VERSION_FILES="
-packages/repopo/crates/core/Cargo.toml:version
+packages/repopo-core/Cargo.toml:version:packages/repopo/package.json
 "
 
 while IFS= read -r line; do
@@ -18,6 +18,7 @@ while IFS= read -r line; do
 
 	file=$(echo "$line" | cut -d: -f1 | xargs)
 	key=$(echo "$line" | cut -d: -f2 | xargs)
+	pkg_json=$(echo "$line" | cut -d: -f3 | xargs)
 
 	[ -z "$file" ] && continue
 
@@ -26,19 +27,8 @@ while IFS= read -r line; do
 		exit 1
 	fi
 
-	# Walk up from the TOML file's directory to find nearest package.json
-	search_dir=$(dirname "$file")
-	pkg_json=""
-	while [ "$search_dir" != "." ] && [ "$search_dir" != "/" ]; do
-		if [ -f "${search_dir}/package.json" ]; then
-			pkg_json="${search_dir}/package.json"
-			break
-		fi
-		search_dir=$(dirname "$search_dir")
-	done
-
-	if [ -z "$pkg_json" ]; then
-		echo "error: No package.json found in ancestor directories of $file" >&2
+	if [ ! -f "$pkg_json" ]; then
+		echo "error: package.json not found: $pkg_json" >&2
 		exit 1
 	fi
 
