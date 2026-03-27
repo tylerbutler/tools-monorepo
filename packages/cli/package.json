@@ -103,7 +103,7 @@
 		}
 	},
 	"dependencies": {
-		"@oclif/core": "^4.8.0",
+		"@oclif/core": "^4.10.3",
 		"@oclif/plugin-autocomplete": "^3.2.39",
 		"@oclif/plugin-commands": "^4.1.38",
 		"@oclif/plugin-help": "^6.2.36",
