@@ -40,7 +40,7 @@
 	},
 	"dependencies": {
 		"@manypkg/get-packages": "^3.1.0",
-		"@oclif/core": "^4.8.0",
+		"@oclif/core": "^4.10.5",
 		"@tylerbu/fundamentals": "workspace:^",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"detect-indent": "^7.0.2",
