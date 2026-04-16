@@ -3,7 +3,10 @@
 	"version": "0.0.1",
 	"private": true,
 	"description": "Useful tools for building Svelte apps using the Fluid Framework.",
-	"keywords": ["fluidframework", "svelte"],
+	"keywords": [
+		"fluidframework",
+		"svelte"
+	],
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
@@ -12,7 +15,9 @@
 	},
 	"license": "MIT",
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
-	"sideEffects": ["**/*.css"],
+	"sideEffects": [
+		"**/*.css"
+	],
 	"type": "module",
 	"exports": {
 		".": {
@@ -54,6 +59,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
+		"@fluidframework/tinylicious-client": "^2.93.0",
 		"@microsoft/api-extractor": "^7.52.7",
 		"@sveltejs/adapter-auto": "^4.0.0",
 		"@sveltejs/kit": "^2.16.0",

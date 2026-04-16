@@ -581,6 +581,9 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
+      '@fluidframework/tinylicious-client':
+        specifier: ^2.93.0
+        version: 2.93.0
       '@microsoft/api-extractor':
         specifier: ^7.52.7
         version: 7.56.0(@types/node@20.19.25)
@@ -3040,6 +3043,12 @@ packages:
   '@fluidframework/aqueduct@2.93.0':
     resolution: {integrity: sha512-ey2fufY4I6gxT+xEGyfCtpnX+8VePgM2QbTCCYumLEl5pO0DqQ9tHDcTkMWsETG8Pj+MJrMNiax+lFw4+IUbMg==}
 
+  '@fluidframework/common-definitions@1.1.0':
+    resolution: {integrity: sha512-WQYtG9tkx2j7i1JSXPvwLnQsqCOZAghMj0aGciqjZVNppUly/XBpAjb4V6FEUCEjxCScPKhyE+1rhV1ep52NgA==}
+
+  '@fluidframework/common-utils@3.1.0':
+    resolution: {integrity: sha512-KpBQqpZKAHCKFMoxtAdrgqL1nIJhT7r2IRGmS3Rm5CMTLsegQ8ifX5lFvd6IbjeWmvLz1qLsY3eS5HBYqy9CVQ==}
+
   '@fluidframework/container-definitions@2.93.0':
     resolution: {integrity: sha512-IONxKLpMeffu4ffuQxmPfOSvQssGc60q/RcGET+I3BUqWjugfT2cgwkmLPWAlOF4XPhBzicxbEzrSbb98drk5Q==}
 
@@ -3064,6 +3073,9 @@ packages:
   '@fluidframework/datastore@2.93.0':
     resolution: {integrity: sha512-MeKpQgh1Epbzp0K8DYzSSPFcPuP7m3J1AZsCJT+IEer61j01MXuslps6NJg07At5oPKTgbZPukffyp5QQEA3vA==}
 
+  '@fluidframework/driver-base@2.93.0':
+    resolution: {integrity: sha512-k9K8hXBKrMWXEwpKJczoir4ZWX708vSqzsSA1xO7OmhCD8eG4pithlhgc3s/kkyrfSd/FrdgcxFI83Rrr4+HqA==}
+
   '@fluidframework/driver-definitions@2.93.0':
     resolution: {integrity: sha512-z/60uov84QRpFSF7itMDCPAdRAvlRSMGzXUK44+sUnJmYIYvTpcZZpdwSwoJK/YzgdmHfsIpGDSS4JVqLY8DUw==}
 
@@ -3072,6 +3084,9 @@ packages:
 
   '@fluidframework/fluid-static@2.93.0':
     resolution: {integrity: sha512-lj2qSaCU8GYFOSYs8RtRqCGYgrwnZsH5MqGiA7sbY1junNqfLOIyFgYmtLkFQVWwnnKUq1pn3yRVfMsEBYBzoA==}
+
+  '@fluidframework/gitresources@7.0.0':
+    resolution: {integrity: sha512-APAxqCF/+2ljC8th0PoXzdUAo2EJapdTk9KNm6dp7dFD5hxYWoscFqdyu5K+bvMxmhrIpGd0f//nbb7rZq7bog==}
 
   '@fluidframework/id-compressor@2.93.0':
     resolution: {integrity: sha512-o5QxIPxIsSgf+g+4TF5FZUsT4oOBVrrAw368o5gb9Z9bKgj97ZYN2cOMMFR/6assm9/bBSdMN/X/XWQ2E/T85w==}
@@ -3085,8 +3100,17 @@ packages:
   '@fluidframework/presence@2.93.0':
     resolution: {integrity: sha512-lXezlK0l4utH8UCsFyaKxC0aIMAZmYiqrGnVsiLw4MQxoWl8sX34ka2JMqLd2TH5fo9Ku978G6Km8f0FiUXPLg==}
 
+  '@fluidframework/protocol-base@7.0.0':
+    resolution: {integrity: sha512-LUSTKQBJVnemMLMQUuoszHvl46XBfflI8U9R8kW+12T2W/Vvt+ldML7203MvNg4E/sFScGfqqZS5OzYn0z1TIw==}
+
+  '@fluidframework/protocol-definitions@3.2.0':
+    resolution: {integrity: sha512-xgcyMN4uF6dAp2/XYFSHvGFITIV7JbVt3itA+T0c71/lZjq/HU/a/ClPIxfl9AEN0RbtuR/1n5LP4FXSV9j0hA==}
+
   '@fluidframework/request-handler@2.93.0':
     resolution: {integrity: sha512-vB9Ez4Ea0vhkuE+Pk76QZZ1Wrk+MgEG4rb3tshp4SQwsVrt7wt5GE9GcJAFiTo2TQ+XRJ3/Bqp4N3BZQLeqR3g==}
+
+  '@fluidframework/routerlicious-driver@2.93.0':
+    resolution: {integrity: sha512-vgYV7rd+TN346h8lgMvogTN7cSZgTNjvLF/O8KSHN1vpz6mCzWxC08vhkLsjZ5iNXTSSjxVzZWJQr4Y3AWql5w==}
 
   '@fluidframework/runtime-definitions@2.93.0':
     resolution: {integrity: sha512-rVCksJGTvZiyVh13gajo/YL7TbCEqHJEcYTt9tdxvr/zY5oHOhP6QdLVBjB6aF7X7P1yh26tkJeY2pfVJeJ9aQ==}
@@ -3097,6 +3121,9 @@ packages:
   '@fluidframework/sequence@2.93.0':
     resolution: {integrity: sha512-DYxR8BauxdHU5HThL4rj4sCzLDMUSFPNAapYnbj7FIEOPfONTV8Do65sHDF2VsEu42aSW2r4lCQXLqdB3nAN6A==}
 
+  '@fluidframework/server-services-client@7.0.0':
+    resolution: {integrity: sha512-gzEvH6wNpRuMsyZhY22JrOHbTFsPGSzjLIlAWmnT7UT0znYGCDaMC39WPbOLLm7O8JSvmUblGe2Vx8N1+gCOgQ==}
+
   '@fluidframework/shared-object-base@2.93.0':
     resolution: {integrity: sha512-QgfLI9mkJ5gGlMzbvn1FGTsMImBKpkmS4+IMx6b60dBaCAZu2fVTrC4eKR4PD4xP6eVlipg/1cW67CJPomq2AQ==}
 
@@ -3105,6 +3132,12 @@ packages:
 
   '@fluidframework/telemetry-utils@2.93.0':
     resolution: {integrity: sha512-I0UDO8QgD6B81kCf3DCI/qfhqXBcY3brVnYbpSITehatykMskIKbL6rKDccB3Fwjq3xpA6gtdJlE6/Z1Y4wdwQ==}
+
+  '@fluidframework/tinylicious-client@2.93.0':
+    resolution: {integrity: sha512-Uecgi8pozI8NuqFnW8izJtTpyrHwJUiGCcjod8pGp0fevZhLBM8mjjP14InqXScq5BZaOKkk0he9kYd9cANxcQ==}
+
+  '@fluidframework/tinylicious-driver@2.93.0':
+    resolution: {integrity: sha512-K5c3MUbCfM2yfRY0W77FH7SAyHm1w46W+Gi+S4uGS2OY9l60i/tVhIss9CFjTRXJYlB9i8UTea2PYP/HVGeM2A==}
 
   '@fluidframework/tree@2.93.0':
     resolution: {integrity: sha512-X/k0nuD0Qg8MkYjRvwlx11UJ3bdUTwlJmg2ELOeaVoek50PuHFQeZv5T3tqVwsTl4EOkr9WZ2wKVo6ecTcxeKA==}
@@ -4467,6 +4500,9 @@ packages:
 
   '@so-ric/colorspace@1.1.6':
     resolution: {integrity: sha512-/KiKkpHNOBgkFJwu9sh48LkHSMYGyuTcSFK/qMBdnOAlrRJzRSXAOFB5qwzaVQuDl8wAvHVMkaASQDReTahxuw==}
+
+  '@socket.io/component-emitter@3.1.2':
+    resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -6013,6 +6049,11 @@ packages:
       typescript:
         optional: true
 
+  crc-32@1.2.0:
+    resolution: {integrity: sha512-1uBwHxF+Y/4yF5G48fwnKq6QsIXheor3ZLPT80yGBV1oEUwpPojlEhQbWKVw1VwcTQyMGHK1/XMmTjmlsmTTGA==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+
   crc-32@1.2.2:
     resolution: {integrity: sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==}
     engines: {node: '>=0.8'}
@@ -6405,6 +6446,13 @@ packages:
   end-of-stream@1.4.5:
     resolution: {integrity: sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg==}
 
+  engine.io-client@6.6.4:
+    resolution: {integrity: sha512-+kjUJnZGwzewFDw951CDWcwj35vMNf2fcj7xQWOctq1F2i1jkDdVvdFG9kM/BEChymCH36KgjnW0NsL58JYRxw==}
+
+  engine.io-parser@5.2.3:
+    resolution: {integrity: sha512-HqD3yTBfnBxIrbnM1DoD6Pcq8NECnh8d4As1Qgh0z5Gg3jRRIqijury0CL3ghu/edArpUYiYqQiDUQBIs4np3Q==}
+    engines: {node: '>=10.0.0'}
+
   enquirer@2.3.6:
     resolution: {integrity: sha512-yjNnPr315/FjS4zIsUxYguYUPP2e1NK4d7E7ZOLiyYCcbFBiTMyID+2wvm2w6+pZ/odMA7cRkjhsPbltwBOrLg==}
     engines: {node: '>=8.6'}
@@ -6594,6 +6642,10 @@ packages:
   execa@8.0.1:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
     engines: {node: '>=16.17'}
+
+  exit-on-epipe@1.0.1:
+    resolution: {integrity: sha512-h2z5mrROTxce56S+pnvAV890uu7ls7f1kEvVGJbw1OlFH3/mlJ5bkXu0KRyW94v37zzHPiUd55iLn3DA7TjWpw==}
+    engines: {node: '>=0.8'}
 
   exit-x@0.2.2:
     resolution: {integrity: sha512-+I6B/IkJc1o/2tiURyz/ivu/O0nKNEArIUB5O7zBrlDVJr22SCLH3xTeEry428LvFhRzIA1g8izguxJ/gbNcVQ==}
@@ -7719,6 +7771,9 @@ packages:
   json-stringify-nice@1.1.4:
     resolution: {integrity: sha512-5Z5RFW63yxReJ7vANgW6eZFGWaQvnPE3WNmZoOJrSkGju2etKA2L5rrOa1sm877TVTFt57A80BH1bArcmlLfPw==}
 
+  json-stringify-safe@5.0.1:
+    resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
+
   json5@0.5.1:
     resolution: {integrity: sha512-4xrs1aW+6N5DalkqSVA8fxh458CXvR99WU8WLKmq4v8eWAL86Xo3BVqyd3SkA9wEVjCMqyvvRRkshAdOnBp5rw==}
     hasBin: true
@@ -7754,6 +7809,9 @@ packages:
   jsonwebtoken@9.0.2:
     resolution: {integrity: sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==}
     engines: {node: '>=12', npm: '>=6'}
+
+  jsrsasign@11.1.2:
+    resolution: {integrity: sha512-GJuqiU/Grs6BaBBXMAZM9kxhsBrksZE0pF3qIfpkopMd7OMJ9zZmE/+CpV//97srfEyyyq1Ec0ELQtSlW/gPTA==}
 
   junk@4.0.1:
     resolution: {integrity: sha512-Qush0uP+G8ZScpGMZvHUiRfI0YBWuB3gVBYlI0v0vvOJt5FLicco+IkP0a50LqTTQhmts/m6tP5SWE+USyIvcQ==}
@@ -9219,6 +9277,11 @@ packages:
     resolution: {integrity: sha512-9uBdv/B4EefsuAL+pWqueZyZS2Ba+LxfFeQ9DN14HU4bN8bhaxKdkpjpB6fs9+pSjIBu+FXQHImEg8j/Lw0+vA==}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
 
+  printj@1.1.2:
+    resolution: {integrity: sha512-zA2SmoLaxZyArQTOPj5LXecR+RagfPSU5Kw1qP+jkWeNlrq+eJZyY2oS68SU1Z/7/myXM4lo9716laOFAVStCQ==}
+    engines: {node: '>=0.8'}
+    hasBin: true
+
   prismjs@1.30.0:
     resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==}
     engines: {node: '>=6'}
@@ -9772,6 +9835,9 @@ packages:
     resolution: {integrity: sha512-Gw/FgHtrLM9WP8P5lLcSGh9OQcrTruWCELAiS48ik1QbL0cH+dfjomiRTUE9zzz+D1N6rOLkwXUvVmXZAsNE0Q==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
+  sillyname@0.1.0:
+    resolution: {integrity: sha512-GWA0Zont13ov+cMNw4T7nU4SCyW8jdhD3vjA5+qs8jr+09sCPxOf+FPS5zE0c9pYlCwD+NU/CiMimY462lgG9g==}
+
   simple-git@3.32.3:
     resolution: {integrity: sha512-56a5oxFdWlsGygOXHWrG+xjj5w9ZIt2uQbzqiIGdR/6i5iococ7WQ/bNPzWxCJdEUGUCmyMH0t9zMpRJTaKxmw==}
 
@@ -9824,6 +9890,14 @@ packages:
 
   snake-case@3.0.4:
     resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
+
+  socket.io-client@4.8.3:
+    resolution: {integrity: sha512-uP0bpjWrjQmUt5DTHq9RuoCBdFJF10cdX9X+a368j/Ft0wmaVgxlrjvK3kjvgCODOMMOz9lcaRzxmso0bTWZ/g==}
+    engines: {node: '>=10.0.0'}
+
+  socket.io-parser@4.2.6:
+    resolution: {integrity: sha512-asJqbVBDsBCJx0pTqw3WfesSY0iRX+2xzWEWzrpcH7L6fLzrhyF8WPI8UaeM4YCuDfpwA/cgsdugMsmtz8EJeg==}
+    engines: {node: '>=10.0.0'}
 
   socks-proxy-agent@8.0.5:
     resolution: {integrity: sha512-HehCEsotFqbPW9sJ8WVYB6UbmIMv7kUUORIF2Nncq4VQvBfNBLibW9YZR5dlYCSUhwcD628pRllm7n+E+YTzJw==}
@@ -11221,6 +11295,18 @@ packages:
     resolution: {integrity: sha512-YnlPC6JqnZl6aO4uRc+dx5PHguiR9S6WeoLtpxNT9wIG+BDya7ZNE1q7KOjVgaA73hKhKLpVPgJ5QA9THQ5BRg==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
+  ws@8.18.3:
+    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   ws@8.19.0:
     resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
     engines: {node: '>=10.0.0'}
@@ -11239,6 +11325,10 @@ packages:
 
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
+
+  xmlhttprequest-ssl@2.1.2:
+    resolution: {integrity: sha512-TEU+nJVUUnA4CYJFLvK5X9AOeH4KvDvhIfm0vV1GaQRtchnG0hgK5p8hw/xjv8cunWYCsiPCSDzObPyhEwq3KQ==}
+    engines: {node: '>=0.4.0'}
 
   xss@1.0.15:
     resolution: {integrity: sha512-FVdlVVC67WOIPvfOwhoMETV72f6GbW7aOabBC3WxN/oUdoEMDyLz4OgRv5/gck2ZeNqEQu+Tb0kloovXOfpYVg==}
@@ -13076,6 +13166,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@fluidframework/common-definitions@1.1.0': {}
+
+  '@fluidframework/common-utils@3.1.0':
+    dependencies:
+      '@fluidframework/common-definitions': 1.1.0
+      '@types/events': 3.0.3
+      base64-js: 1.5.1
+      buffer: 6.0.3
+      events: 3.3.0
+      lodash: 4.17.23
+      sha.js: 2.4.12
+
   '@fluidframework/container-definitions@2.93.0':
     dependencies:
       '@fluidframework/core-interfaces': 2.93.0
@@ -13160,6 +13262,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@fluidframework/driver-base@2.93.0':
+    dependencies:
+      '@fluid-internal/client-utils': 2.93.0
+      '@fluidframework/core-interfaces': 2.93.0
+      '@fluidframework/core-utils': 2.93.0
+      '@fluidframework/driver-definitions': 2.93.0
+      '@fluidframework/driver-utils': 2.93.0
+      '@fluidframework/telemetry-utils': 2.93.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@fluidframework/driver-definitions@2.93.0':
     dependencies:
       '@fluidframework/core-interfaces': 2.93.0
@@ -13198,6 +13311,8 @@ snapshots:
       '@fluidframework/tree': 2.93.0
     transitivePeerDependencies:
       - supports-color
+
+  '@fluidframework/gitresources@7.0.0': {}
 
   '@fluidframework/id-compressor@2.93.0':
     dependencies:
@@ -13251,6 +13366,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@fluidframework/protocol-base@7.0.0':
+    dependencies:
+      '@fluidframework/common-utils': 3.1.0
+      '@fluidframework/gitresources': 7.0.0
+      '@fluidframework/protocol-definitions': 3.2.0
+      events_pkg: events@3.3.0
+
+  '@fluidframework/protocol-definitions@3.2.0': {}
+
   '@fluidframework/request-handler@2.93.0':
     dependencies:
       '@fluidframework/container-runtime-definitions': 2.93.0
@@ -13260,6 +13384,23 @@ snapshots:
       '@fluidframework/runtime-utils': 2.93.0
     transitivePeerDependencies:
       - supports-color
+
+  '@fluidframework/routerlicious-driver@2.93.0':
+    dependencies:
+      '@fluid-internal/client-utils': 2.93.0
+      '@fluidframework/core-interfaces': 2.93.0
+      '@fluidframework/core-utils': 2.93.0
+      '@fluidframework/driver-base': 2.93.0
+      '@fluidframework/driver-definitions': 2.93.0
+      '@fluidframework/driver-utils': 2.93.0
+      '@fluidframework/server-services-client': 7.0.0
+      '@fluidframework/telemetry-utils': 2.93.0
+      json-stringify-safe: 5.0.1
+      socket.io-client: 4.8.3
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
 
   '@fluidframework/runtime-definitions@2.93.0':
     dependencies:
@@ -13305,6 +13446,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@fluidframework/server-services-client@7.0.0':
+    dependencies:
+      '@fluidframework/common-utils': 3.1.0
+      '@fluidframework/gitresources': 7.0.0
+      '@fluidframework/protocol-base': 7.0.0
+      '@fluidframework/protocol-definitions': 3.2.0
+      axios: 1.13.5(debug@4.4.3)
+      crc-32: 1.2.0
+      debug: 4.4.3(supports-color@8.1.1)
+      json-stringify-safe: 5.0.1
+      jsrsasign: 11.1.2
+      jwt-decode: 4.0.0
+      sillyname: 0.1.0
+      uuid: 11.1.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@fluidframework/shared-object-base@2.93.0':
     dependencies:
       '@fluid-internal/client-utils': 2.93.0
@@ -13336,6 +13494,38 @@ snapshots:
       uuid: 11.1.0
     transitivePeerDependencies:
       - supports-color
+
+  '@fluidframework/tinylicious-client@2.93.0':
+    dependencies:
+      '@fluidframework/container-definitions': 2.93.0
+      '@fluidframework/container-loader': 2.93.0
+      '@fluidframework/core-interfaces': 2.93.0
+      '@fluidframework/core-utils': 2.93.0
+      '@fluidframework/driver-definitions': 2.93.0
+      '@fluidframework/driver-utils': 2.93.0
+      '@fluidframework/fluid-static': 2.93.0
+      '@fluidframework/map': 2.93.0
+      '@fluidframework/routerlicious-driver': 2.93.0
+      '@fluidframework/runtime-utils': 2.93.0
+      '@fluidframework/telemetry-utils': 2.93.0
+      '@fluidframework/tinylicious-driver': 2.93.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  '@fluidframework/tinylicious-driver@2.93.0':
+    dependencies:
+      '@fluidframework/core-interfaces': 2.93.0
+      '@fluidframework/driver-definitions': 2.93.0
+      '@fluidframework/driver-utils': 2.93.0
+      '@fluidframework/routerlicious-driver': 2.93.0
+      jsrsasign: 11.1.2
+      uuid: 11.1.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
 
   '@fluidframework/tree@2.93.0':
     dependencies:
@@ -15314,6 +15504,8 @@ snapshots:
       color: 5.0.2
       text-hex: 1.0.0
 
+  '@socket.io/component-emitter@3.1.2': {}
+
   '@standard-schema/spec@1.1.0': {}
 
   '@sveltejs/acorn-typescript@1.0.9(acorn@8.16.0)':
@@ -17182,6 +17374,11 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
+  crc-32@1.2.0:
+    dependencies:
+      exit-on-epipe: 1.0.1
+      printj: 1.1.2
+
   crc-32@1.2.2: {}
 
   crc32-stream@6.0.0:
@@ -17532,6 +17729,20 @@ snapshots:
     dependencies:
       once: 1.4.0
 
+  engine.io-client@6.6.4:
+    dependencies:
+      '@socket.io/component-emitter': 3.1.2
+      debug: 4.4.3(supports-color@8.1.1)
+      engine.io-parser: 5.2.3
+      ws: 8.18.3
+      xmlhttprequest-ssl: 2.1.2
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  engine.io-parser@5.2.3: {}
+
   enquirer@2.3.6:
     dependencies:
       ansi-colors: 4.1.3
@@ -17802,6 +18013,8 @@ snapshots:
       onetime: 6.0.0
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
+
+  exit-on-epipe@1.0.1: {}
 
   exit-x@0.2.2: {}
 
@@ -19412,6 +19625,8 @@ snapshots:
 
   json-stringify-nice@1.1.4: {}
 
+  json-stringify-safe@5.0.1: {}
+
   json5@0.5.1: {}
 
   json5@2.2.3: {}
@@ -19448,6 +19663,8 @@ snapshots:
       lodash.once: 4.1.1
       ms: 2.1.3
       semver: 7.7.4
+
+  jsrsasign@11.1.2: {}
 
   junk@4.0.1: {}
 
@@ -21450,6 +21667,8 @@ snapshots:
       ansi-styles: 5.2.0
       react-is: 18.3.1
 
+  printj@1.1.2: {}
+
   prismjs@1.30.0: {}
 
   private@0.1.8: {}
@@ -22172,6 +22391,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  sillyname@0.1.0: {}
+
   simple-git@3.32.3:
     dependencies:
       '@kwsites/file-exists': 1.1.1
@@ -22227,6 +22448,24 @@ snapshots:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.8.1
+
+  socket.io-client@4.8.3:
+    dependencies:
+      '@socket.io/component-emitter': 3.1.2
+      debug: 4.4.3(supports-color@8.1.1)
+      engine.io-client: 6.6.4
+      socket.io-parser: 4.2.6
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  socket.io-parser@4.2.6:
+    dependencies:
+      '@socket.io/component-emitter': 3.1.2
+      debug: 4.4.3(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
 
   socks-proxy-agent@8.0.5:
     dependencies:
@@ -23783,6 +24022,8 @@ snapshots:
       imurmurhash: 0.1.4
       signal-exit: 4.1.0
 
+  ws@8.18.3: {}
+
   ws@8.19.0: {}
 
   xml-name-validator@5.0.0:
@@ -23790,6 +24031,8 @@ snapshots:
 
   xmlchars@2.2.0:
     optional: true
+
+  xmlhttprequest-ssl@2.1.2: {}
 
   xss@1.0.15:
     dependencies:
