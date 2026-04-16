@@ -34,18 +34,12 @@ describe("RequireDoubleUnderscore", () => {
 	});
 
 	it("should pass through strings not starting with __", () => {
-		expectTypeOf<
-			RequireDoubleUnderscore<"foo">
-		>().toEqualTypeOf<"foo">();
-		expectTypeOf<
-			RequireDoubleUnderscore<"bar">
-		>().toEqualTypeOf<"bar">();
+		expectTypeOf<RequireDoubleUnderscore<"foo">>().toEqualTypeOf<"foo">();
+		expectTypeOf<RequireDoubleUnderscore<"bar">>().toEqualTypeOf<"bar">();
 	});
 
 	it("should pass through single underscore strings", () => {
-		expectTypeOf<
-			RequireDoubleUnderscore<"_foo">
-		>().toEqualTypeOf<"_foo">();
+		expectTypeOf<RequireDoubleUnderscore<"_foo">>().toEqualTypeOf<"_foo">();
 	});
 });
 

@@ -1,7 +1,7 @@
-import { ReactiveStateWorkspace } from "$lib/ReactiveStateWorkspace.svelte.js";
 import { StateFactory } from "@fluidframework/presence/alpha";
 import type { IFluidContainer } from "fluid-framework";
 import { getPresence } from "fluid-framework";
+import { ReactiveStateWorkspace } from "$lib/ReactiveStateWorkspace.svelte.js";
 
 interface MouseCoordinate {
 	x: number;

@@ -1,5 +1,5 @@
-import type { SchemaToInterface } from "$lib/types.js";
 import { SchemaFactory, Tree } from "fluid-framework";
+import type { SchemaToInterface } from "$lib/types.js";
 
 export const sf = new SchemaFactory("AppSchema");
 

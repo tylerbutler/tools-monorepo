@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { ReactiveStateWorkspace } from "$lib/ReactiveStateWorkspace.svelte.js";
-	import { connectToFluid, type MousePosition } from "$lib/container.js";
 	import type { Attendee } from "@fluidframework/presence/alpha";
+	import { onMount } from "svelte";
+	import { connectToFluid, type MousePosition } from "$lib/container.js";
+	import { ReactiveStateWorkspace } from "$lib/ReactiveStateWorkspace.svelte.js";
 
 	let mouseWorkspace: ReactiveStateWorkspace<MousePosition> | undefined =
 		$state();

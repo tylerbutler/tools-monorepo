@@ -1,6 +1,5 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"root": true,
 	"extends": [
 		// "@tylerbu/local-config/biome",
 		"@tylerbu/local-config/biome/formatter",
@@ -74,6 +73,7 @@
 				"packages/cli/**",
 				"packages/cli-api/**",
 				"packages/dill-cli/**",
+				"packages/fluid-svelte/**",
 				"packages/repopo/**",
 				"packages/sail/**",
 				"packages/sort-tsconfig/**",

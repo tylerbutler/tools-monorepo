@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from "vitest";
-
 import type { LatestRaw } from "@fluidframework/presence/alpha";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { ReactiveStateWorkspace } from "../src/lib/ReactiveStateWorkspace.svelte.js";
 import {
@@ -86,12 +85,14 @@ describe("ReactiveStateWorkspace", () => {
 			});
 
 			expect(workspace.data.size).toBe(2);
-			expect(
-				workspace.data.get(attendee1 as unknown as never),
-			).toEqual({ x: 10, y: 20 });
-			expect(
-				workspace.data.get(attendee2 as unknown as never),
-			).toEqual({ x: 30, y: 40 });
+			expect(workspace.data.get(attendee1 as unknown as never)).toEqual({
+				x: 10,
+				y: 20,
+			});
+			expect(workspace.data.get(attendee2 as unknown as never)).toEqual({
+				x: 30,
+				y: 40,
+			});
 		});
 
 		it("should also appear in unfilteredData", () => {
@@ -142,9 +143,7 @@ describe("ReactiveStateWorkspace", () => {
 			});
 			expect(workspace.data.size).toBe(1);
 
-			mockLatest.emitAttendeeDisconnected(
-				attendee as unknown as never,
-			);
+			mockLatest.emitAttendeeDisconnected(attendee as unknown as never);
 			expect(workspace.data.size).toBe(0);
 			expect(workspace.unfilteredData.size).toBe(0);
 		});
@@ -163,13 +162,12 @@ describe("ReactiveStateWorkspace", () => {
 			});
 			expect(workspace.data.size).toBe(2);
 
-			mockLatest.emitAttendeeDisconnected(
-				attendee1 as unknown as never,
-			);
+			mockLatest.emitAttendeeDisconnected(attendee1 as unknown as never);
 			expect(workspace.data.size).toBe(1);
-			expect(
-				workspace.data.get(attendee2 as unknown as never),
-			).toEqual({ x: 30, y: 40 });
+			expect(workspace.data.get(attendee2 as unknown as never)).toEqual({
+				x: 30,
+				y: 40,
+			});
 		});
 
 		it("should be a no-op for unknown attendees", () => {
@@ -181,9 +179,7 @@ describe("ReactiveStateWorkspace", () => {
 				value: { x: 10, y: 20 },
 			});
 
-			mockLatest.emitAttendeeDisconnected(
-				unknown as unknown as never,
-			);
+			mockLatest.emitAttendeeDisconnected(unknown as unknown as never);
 			expect(workspace.data.size).toBe(1);
 		});
 	});
@@ -191,10 +187,7 @@ describe("ReactiveStateWorkspace", () => {
 	describe("data filtering", () => {
 		it("should exclude attendees with Disconnected status from data", () => {
 			const connected = createMockAttendee("remote-1", "Connected");
-			const disconnected = createMockAttendee(
-				"remote-2",
-				"Disconnected",
-			);
+			const disconnected = createMockAttendee("remote-2", "Disconnected");
 
 			mockLatest.emitRemoteUpdated({
 				attendee: connected,
@@ -207,19 +200,15 @@ describe("ReactiveStateWorkspace", () => {
 
 			// data should filter out the disconnected attendee
 			expect(workspace.data.size).toBe(1);
-			expect(
-				workspace.data.get(connected as unknown as never),
-			).toEqual({ x: 10, y: 20 });
-			expect(
-				workspace.data.has(disconnected as unknown as never),
-			).toBe(false);
+			expect(workspace.data.get(connected as unknown as never)).toEqual({
+				x: 10,
+				y: 20,
+			});
+			expect(workspace.data.has(disconnected as unknown as never)).toBe(false);
 		});
 
 		it("should include attendees with Disconnected status in unfilteredData", () => {
-			const disconnected = createMockAttendee(
-				"remote-1",
-				"Disconnected",
-			);
+			const disconnected = createMockAttendee("remote-1", "Disconnected");
 
 			mockLatest.emitRemoteUpdated({
 				attendee: disconnected,
@@ -229,9 +218,7 @@ describe("ReactiveStateWorkspace", () => {
 			// unfilteredData should include all attendees regardless of status
 			expect(workspace.unfilteredData.size).toBe(1);
 			expect(
-				workspace.unfilteredData.get(
-					disconnected as unknown as never,
-				),
+				workspace.unfilteredData.get(disconnected as unknown as never),
 			).toEqual({ x: 10, y: 20 });
 		});
 	});

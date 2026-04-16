@@ -1,8 +1,12 @@
 import type { Presence, StatesWorkspace } from "@fluidframework/presence/alpha";
 import { StateFactory } from "@fluidframework/presence/alpha";
 import { TinyliciousClient } from "@fluidframework/tinylicious-client";
-import { SharedTree, type ContainerSchema, type IFluidContainer } from "fluid-framework";
-import { getPresence } from "fluid-framework";
+import {
+	type ContainerSchema,
+	getPresence,
+	type IFluidContainer,
+	SharedTree,
+} from "fluid-framework";
 
 export interface MousePosition {
 	x: number;
