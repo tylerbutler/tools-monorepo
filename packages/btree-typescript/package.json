@@ -33,7 +33,6 @@
     "build": "npm run clean && tsc && npm run minify",
     "minify": "node scripts/minify.js",
     "sizes": "npm run build && node scripts/size-report.js",
-    "prepare": "npm run build",
     "safePublish": "npm run build && testpack && npm publish",
     "benchmark": "npm run build && node benchmarks.js"
   },
