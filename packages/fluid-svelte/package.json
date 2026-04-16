@@ -49,8 +49,7 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"preview": "vite preview",
 		"release:license-file": "generate-license-file -c ../../.generatelicensefile.cjs",
-		"test:coverage:disabled": "vitest run test --coverage",
-		"test:disabled": "npm run test:vitest",
+		"test:coverage": "vitest run test --coverage",
 		"test:snapshots": "npm run update:test-snapshots",
 		"test:vitest": "vitest run test",
 		"update:test-snapshots": "vitest run test -u"
