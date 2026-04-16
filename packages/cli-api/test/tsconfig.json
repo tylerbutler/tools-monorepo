@@ -5,7 +5,7 @@
 		"rootDir": "./",
 		"outDir": "../esm/test",
 		"types": ["node"],
-		"noEmit": true
+		"noEmit": true,
 	},
-	"references": [{ "path": ".." }]
+	"references": [{ "path": ".." }],
 }

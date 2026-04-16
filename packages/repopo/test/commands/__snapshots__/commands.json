@@ -1,14 +1,58 @@
 [
     {
         "alias": [],
-        "command": "help",
-        "flagAliases": [],
+        "command": "check",
+        "flagAliases": [
+            "resolve"
+        ],
         "flagChars": [
-            "n"
+            "f",
+            "v"
         ],
         "flags": [
-            "nested-commands"
+            "config",
+            "fix",
+            "quiet",
+            "stdin",
+            "verbose"
         ],
-        "plugin": "@oclif/plugin-help"
+        "plugin": "repopo"
+    },
+    {
+        "alias": [],
+        "command": "check-native",
+        "flagAliases": [
+            "resolve"
+        ],
+        "flagChars": [
+            "c",
+            "f",
+            "q",
+            "v"
+        ],
+        "flags": [
+            "binary-path",
+            "config",
+            "fix",
+            "quiet",
+            "sidecar-path",
+            "stdin",
+            "verbose"
+        ],
+        "plugin": "repopo"
+    },
+    {
+        "alias": [],
+        "command": "list",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "repopo"
     }
 ]

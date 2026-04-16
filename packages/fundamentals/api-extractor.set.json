@@ -4,6 +4,6 @@
 	"mainEntryPointFilePath": "<projectFolder>/esm/set.d.ts",
 	"apiReport": {
 		"enabled": true,
-		"reportFileName": "<unscopedPackageName>.set.api.md"
-	}
+		"reportFileName": "<unscopedPackageName>.set.api.md",
+	},
 }

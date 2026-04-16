@@ -1,5 +1,92 @@
 # sort-tsconfig
 
+## 0.4.0
+
+### Minor Changes
+
+- **BREAKING CHANGE**: Change `PolicyFailure.errorMessage` to `errorMessages` array. _[`#552`](https://github.com/tylerbutler/tools-monorepo/pull/552) [`6b6317a`](https://github.com/tylerbutler/tools-monorepo/commit/6b6317a7be0a050dc0665a9af7b187afb1bb4b31) [@tylerbutler](https://github.com/tylerbutler)_
+
+  The `PolicyFailure` interface now uses `errorMessages: string[]` instead of `errorMessage?: string`. This allows policies to report multiple error messages per failure and provides clearer semantics.
+
+  Additionally, a new optional `manualFix?: string` property has been added to provide user guidance on how to resolve policy failures manually.
+
+  Migration:
+  - Change `errorMessage: "message"` to `errorMessages: ["message"]`
+  - For multiple messages, use `errorMessages: ["msg1", "msg2"]`
+  - When checking failures, use `errorMessages.join("\n")` instead of `errorMessage`
+
+### Patch Changes
+
+- Update to use new cli-api logger API _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Updates commands to use the new logger API from @tylerbu/cli-api:
+  - Replace `errorLog()` calls with `logError()`
+  - Use standalone `logIndent()` function where needed
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.0`
+
+</details>
+
+## 0.3.4
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`8832369`](https://github.com/tylerbutler/tools-monorepo/commit/8832369318b6efee8adae1636f3629639b0d76ac)
+
+</small>
+
+- `@tylerbu/cli-api@0.9.0`
+
+</details>
+
+## 0.3.3
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/cli-api@0.8.0`
+- `@tylerbu/fundamentals@0.3.0`
+
+</details>
+
+## 0.3.2
+
+### Patch Changes
+
+- Update documentation _[`39f8132`](https://github.com/tylerbutler/tools-monorepo/commit/39f81320a5245759b9a797105ac5ffe3caf996f9) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`0028315`](https://github.com/tylerbutler/tools-monorepo/commit/002831523cc6483c79c217dc3e8026ccf2def98e) [`39f8132`](https://github.com/tylerbutler/tools-monorepo/commit/39f81320a5245759b9a797105ac5ffe3caf996f9)
+
+</small>
+
+- `@tylerbu/cli-api@0.7.3`
+- `@tylerbu/fundamentals@0.2.3`
+
+</details>
+
 ## 0.3.1
 
 ### Patch Changes

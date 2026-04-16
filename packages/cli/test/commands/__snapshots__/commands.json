@@ -49,6 +49,27 @@
     },
     {
         "alias": [],
+        "command": "deps:sync",
+        "flagAliases": [],
+        "flagChars": [
+            "l",
+            "v",
+            "x"
+        ],
+        "flags": [
+            "config",
+            "cwd",
+            "execute",
+            "json",
+            "lockfile",
+            "package-manager",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
         "command": "download",
         "flagAliases": [],
         "flagChars": [
@@ -60,6 +81,55 @@
             "extract",
             "filename",
             "out",
+            "quiet",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "fluid:repo-overlay",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "dry-run",
+            "quiet",
+            "repo-dir",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "fluid:task-rename",
+        "flagAliases": [],
+        "flagChars": [
+            "v"
+        ],
+        "flags": [
+            "config",
+            "dry-run",
+            "quiet",
+            "repo-dir",
+            "skip-cross-refs",
+            "validate-only",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "generate:commit-config",
+        "flagAliases": [],
+        "flagChars": [
+            "n",
+            "v"
+        ],
+        "flags": [
+            "cwd",
+            "dry-run",
             "quiet",
             "verbose"
         ],
@@ -107,6 +177,43 @@
             "nested-commands"
         ],
         "plugin": "@oclif/plugin-help"
+    },
+    {
+        "alias": [],
+        "command": "pr:collect",
+        "flagAliases": [],
+        "flagChars": [
+            "o",
+            "s",
+            "v"
+        ],
+        "flags": [
+            "output",
+            "quiet",
+            "since",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
+    },
+    {
+        "alias": [],
+        "command": "pr:report",
+        "flagAliases": [],
+        "flagChars": [
+            "d",
+            "e",
+            "s",
+            "v"
+        ],
+        "flags": [
+            "csv",
+            "data",
+            "end",
+            "quiet",
+            "start",
+            "verbose"
+        ],
+        "plugin": "@tylerbu/cli"
     },
     {
         "alias": [],

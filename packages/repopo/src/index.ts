@@ -1,27 +1,84 @@
+/**
+ * A tool for enforcing repository policies and standards across codebases.
+ *
+ * @remarks
+ * Repopo provides a framework for defining and enforcing policies across repositories,
+ * such as file headers, package.json consistency, and other code standards.
+ * It can be used as a CLI tool or integrated into CI/CD pipelines.
+ *
+ * @packageDocumentation
+ */
+
 export { run } from "@oclif/core";
+export {
+	type FluidAdapterOptions,
+	type FluidHandler,
+	fromFluidHandlers,
+} from "./adapters/fluidFramework.js";
 export type {
 	// PolicyList,
 	RepopoConfig,
 } from "./config.js";
-export { makePolicy } from "./makePolicy.js";
-export type {
-	PolicyDefinition,
-	PolicyFailure,
-	PolicyFixResult,
-	PolicyFunctionArguments,
-	PolicyHandler,
-	PolicyHandlerResult,
-	PolicyInstance,
-	PolicyInstanceSettings,
-	PolicyName,
-	PolicyStandaloneResolver,
+export type { ExcludedPolicyFileMap } from "./context.js";
+export {
+	makePolicy,
+	makePolicyDefinition,
+	type PolicyDefinitionInput,
+	type PolicyOptions,
+	policy,
+} from "./makePolicy.js";
+export type { PolicyAction, PolicyHandlerPerfStats } from "./perf.js";
+export {
+	type ConfiguredPolicy,
+	// Type guards
+	isPolicyError,
+	isPolicyFailure,
+	isPolicyFixResult,
+	// New types
+	Policy,
+	type PolicyArgs,
+	// Legacy types (for backward compatibility)
+	type PolicyDefinition,
+	type PolicyError,
+	type PolicyFailure,
+	type PolicyFixResult,
+	type PolicyFunctionArguments,
+	type PolicyHandler,
+	type PolicyHandlerResult,
+	type PolicyInstance,
+	type PolicyInstanceSettings,
+	type PolicyName,
+	type PolicyResolver,
+	type PolicyResult,
+	type PolicyShape,
+	type PolicyStandaloneResolver,
 } from "./policy.js";
 export {
-	defineFileHeaderPolicy as generateFileHeaderPolicy,
+	type CargoToml,
+	type CargoTomlHandler,
+	type DefineCargoPolicyArgs,
+	defineCargoPolicy,
+} from "./policyDefiners/defineCargoPolicy.js";
+export {
+	type DefineFileHeaderPolicyArgs,
+	defineFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,
 	type FileHeaderPolicyConfig,
 } from "./policyDefiners/defineFileHeaderPolicy.js";
 export {
+	type DefineGleamPolicyArgs,
+	defineGleamPolicy,
+	type GleamToml,
+	type GleamTomlHandler,
+} from "./policyDefiners/defineGleamPolicy.js";
+export {
+	type DefinePackagePolicyArgs,
 	definePackagePolicy as generatePackagePolicy,
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";
+export {
+	type PolicyFileResult,
+	PolicyRunner,
+	type PolicyRunnerOptions,
+	type PolicyRunResults,
+} from "./runner.js";

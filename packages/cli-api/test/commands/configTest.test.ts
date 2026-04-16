@@ -17,7 +17,7 @@ describe("CommandWithConfig", () => {
 		const { stdout } = await runCommand(["configTest"], {
 			root: import.meta.url,
 		});
-		expect(stdout.trim()).to.equal("Loaded config from: DEFAULT");
+		expect(stdout.trim()).toMatch(/^.*?Loaded config from: DEFAULT/);
 	});
 
 	it("fails when config is missing", async () => {
@@ -25,5 +25,13 @@ describe("CommandWithConfig", () => {
 			root: import.meta.url,
 		});
 		expect(error?.message).toMatch(/^Failure to load config: .*/);
+	});
+
+	it("succeeds when requiresConfig is false and config is missing", async () => {
+		const { stdout, error } = await runCommand(["configTestOptional"], {
+			root: import.meta.url,
+		});
+		expect(error).toBeUndefined();
+		expect(stdout.trim()).to.equal("Loaded config from: undefined");
 	});
 });

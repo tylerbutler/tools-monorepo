@@ -1,0 +1,14 @@
+{
+	"name": "other-pkg-b",
+	"version": "2.0.0",
+	"description": "Test package",
+	"homepage": "https://fluidframework.com",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "build-tools/packages/build-infrastructure/src/test/data/testRepo/second/packages/other-pkg-b"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues"
+}

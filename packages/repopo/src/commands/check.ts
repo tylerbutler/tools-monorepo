@@ -2,18 +2,19 @@ import { EOL as newline } from "node:os";
 import process from "node:process";
 import { Flags } from "@oclif/core";
 import { StringBuilder } from "@rushstack/node-core-library";
+import { call, run } from "effection";
 import chalk from "picocolors";
+
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
-import { logStats, type PolicyHandlerPerfStats, runWithPerf } from "../perf.js";
+import { logStats } from "../perf.js";
 import {
+	isPolicyError,
 	isPolicyFixResult,
+	type PolicyError,
 	type PolicyFailure,
-	type PolicyFixResult,
-	type PolicyHandlerResult,
-	type PolicyInstance,
-	type PolicyStandaloneResolver,
 } from "../policy.js";
+import { type PolicyFileResult, PolicyRunner } from "../runner.js";
 
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
@@ -79,303 +80,196 @@ export class CheckPolicy<
 			this.verbose(h.name);
 		}
 
-		const filePathsToCheck: string[] = [];
+		const filePathsToCheck = await this.collectFilePaths();
+		const context: RepopoCommandContext = await this.getContext();
 
+		const runner = new PolicyRunner({
+			policies: context.policies,
+			excludeFromAll: context.excludeFromAll,
+			excludePoliciesForFiles: context.excludePoliciesForFiles,
+			gitRoot: context.gitRoot,
+			resolve: this.flags.fix,
+			logger: this.logger,
+		});
+
+		const runResults = await run(() => runner.run(filePathsToCheck));
+
+		// Format and log results
+		for (const result of runResults.results) {
+			this.formatResult(result);
+		}
+
+		if (!this.flags.quiet) {
+			logStats(runResults.perfStats, this.logger);
+		}
+	}
+
+	/**
+	 * Collects file paths to check from either stdin or git ls-files.
+	 */
+	private async collectFilePaths(): Promise<string[]> {
 		if (this.flags.stdin) {
-			const stdInput = await readStdin();
+			const stdInput = await run(function* () {
+				return yield* call(() => readStdin());
+			});
 
-			if (stdInput !== undefined) {
-				filePathsToCheck.push(
-					...stdInput
-						.replace(
-							// normalize slashes in case they're windows paths
-							/\\/g,
-							"/",
-						)
-						.split("\n"),
-				);
-			}
-		} else {
-			const gitFiles =
-				(await this.git.raw(
-					"ls-files",
-					// include staged files and untracked files
-					"-co",
-					// exclude gitignored files and other standard ignore rules
-					"--exclude-standard",
-					// Outputs paths relative to the root of the repository, regardless of the current working directory.
-					"--full-name",
-				)) ?? "";
-
-			filePathsToCheck.push(
-				...gitFiles
+			if (stdInput !== undefined && stdInput !== null) {
+				return stdInput
 					.replace(
 						// normalize slashes in case they're windows paths
 						/\\/g,
 						"/",
 					)
-					.split("\n"),
-			);
+					.split("\n");
+			}
+
+			return [];
 		}
 
-		const context: RepopoCommandContext = await this.getContext();
+		const gitFiles =
+			(await this.git.raw(
+				"ls-files",
+				// include staged files and untracked files
+				"-co",
+				// exclude gitignored files and other standard ignore rules
+				"--exclude-standard",
+				// Outputs paths relative to the root of the repository, regardless of the current working directory.
+				"--full-name",
+			)) ?? "";
 
-		await this.checkAllFiles(filePathsToCheck, context);
+		return gitFiles
+			.replace(
+				// normalize slashes in case they're windows paths
+				/\\/g,
+				"/",
+			)
+			.split("\n");
 	}
 
 	/**
-	 * Executes all policies against the provided paths.
-	 *
-	 * @param pathsToCheck - All paths that should be checked. Paths should be relative to the repository root.
-	 * @param context - The context.
+	 * Formats a single policy file result, logging messages and setting exit codes.
 	 */
-	private async checkAllFiles(
-		pathsToCheck: string[],
-		context: RepopoCommandContext,
-	): Promise<void> {
-		try {
-			for (const pathToCheck of pathsToCheck) {
-				await this.checkOrExcludeFile(pathToCheck, context);
-			}
-		} finally {
-			if (!this.flags.quiet) {
-				logStats(context.perfStats, this);
-			}
-		}
-	}
+	private formatResult(result: PolicyFileResult): void {
+		const { outcome, resolution } = result;
 
-	/**
-	 * Given a string that represents a path to a file in the repo, determines if the file should be checked, and if so,
-	 * routes the file to the appropriate handlers.
-	 *
-	 * @param relPath - A git repo-relative path to a file.
-	 */
-	private async checkOrExcludeFile(
-		relPath: string,
-		context: RepopoCommandContext,
-	): Promise<void> {
-		const { perfStats } = context;
-		perfStats.count++;
-
-		try {
-			await this.routeToPolicies(relPath, context);
-		} catch (error: unknown) {
-			throw new Error(
-				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
-			);
-		}
-
-		perfStats.processed++;
-	}
-
-	private async routeToPolicies(
-		relPath: string,
-		context: RepopoCommandContext,
-	): Promise<void> {
-		const { policies, excludeFromAll } = context;
-
-		// Check exclusions
-		if (excludeFromAll.some((regex) => regex.test(relPath))) {
-			this.verbose(`Excluded all handlers: ${relPath}`);
-			return; // Early return for excluded files
-		}
-
-		// Run all matching policies
-		const matchingPolicies = policies.filter((policy) =>
-			policy.match.test(relPath),
-		);
-
-		// for(const policy of matchingPolicies) {
-		// 	bars.addFile(policy.name,
-		// }
-
-		await Promise.all(
-			matchingPolicies.map(async (policy) => {
-				return await this.runPolicyOnFile(relPath, policy, context);
-			}),
-		);
-	}
-
-	private async runPolicyOnFile(
-		relPath: string,
-		policy: PolicyInstance,
-		context: RepopoCommandContext,
-	): Promise<void> {
-		const { excludePoliciesForFiles, perfStats, gitRoot } = context;
-
-		// Check if the policy is excluded for the file
-		if (this.isPolicyExcluded(relPath, policy, excludePoliciesForFiles)) {
-			this.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
+		// Handle fix results (legacy format with resolved property)
+		if (isPolicyFixResult(outcome)) {
+			this.formatFixResult(outcome.resolved, outcome.file, result.policy);
 			return;
 		}
 
-		try {
-			// Execute the policy handler
-			const result = await this.executePolicyHandler(
-				relPath,
-				policy,
-				perfStats,
-				gitRoot,
-			);
-
-			// Handle the result of the policy execution
-			await this.handlePolicyResult(
-				result,
-				relPath,
-				policy,
-				perfStats,
-				gitRoot,
-			);
-		} catch (error: unknown) {
-			// Log and rethrow the error for higher-level handling
-			this.error(
-				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
-			);
-		}
-	}
-
-	private isPolicyExcluded(
-		relPath: string,
-		policy: PolicyInstance,
-		excludePoliciesForFiles: Map<string, RegExp[]>,
-	): boolean {
-		return (
-			excludePoliciesForFiles
-				.get(policy.name)
-				?.some((regex) => regex.test(relPath)) ?? false
-		);
-	}
-
-	private async executePolicyHandler(
-		relPath: string,
-		policy: PolicyInstance,
-		perfStats: PolicyHandlerPerfStats,
-		gitRoot: string,
-	): Promise<PolicyHandlerResult> {
-		try {
-			return await runWithPerf(policy.name, "handle", perfStats, () =>
-				policy.handler({
-					file: relPath,
-					root: gitRoot,
-					resolve: this.flags.fix,
-					config: policy.config,
-				}),
-			);
-		} catch (error: unknown) {
-			this.error(
-				`Error in policy handler '${policy.name}' for file '${relPath}': ${error}`,
-			);
-		}
-	}
-
-	private async handlePolicyResult(
-		result: PolicyHandlerResult,
-		relPath: string,
-		policy: PolicyInstance,
-		perfStats: PolicyHandlerPerfStats,
-		gitRoot: string,
-	): Promise<void> {
-		if (result === true) {
+		// Handle new PolicyError with fixed property (fix was attempted inline)
+		if (isPolicyError(outcome) && outcome.fixed !== undefined) {
+			this.formatPolicyErrorFixResult(outcome, result.file, result.policy);
 			return;
 		}
 
-		if (isPolicyFixResult(result)) {
-			this.handleFixResult(result, policy);
-		} else {
-			await this.handleFailureResult(
-				result,
-				relPath,
-				policy,
-				perfStats,
-				gitRoot,
-			);
+		// Handle failure with standalone resolver result
+		if (resolution !== undefined) {
+			this.formatResolutionResult(resolution, result.file, result.policy);
+			return;
 		}
+
+		// Handle plain failure (no fix attempted)
+		// The runner only collects non-true results, but TypeScript needs explicit narrowing
+		if (outcome === true) {
+			return;
+		}
+		this.formatPolicyFailure(outcome, result.file, result.policy);
 	}
 
-	private handleFixResult(
-		result: PolicyFixResult,
-		policy: PolicyInstance,
+	private formatFixResult(
+		resolved: boolean,
+		file: string,
+		policyName: string,
 	): void {
 		const messages = new StringBuilder();
 
-		if (result.resolved) {
+		if (resolved) {
 			messages.append(
-				`Resolved ${policy.name} policy failure for file: ${result.file}`,
+				`Resolved ${policyName} policy failure for file: ${file}`,
 			);
 		} else {
-			messages.append(
-				`Error fixing ${policy.name} policy failure in ${result.file}`,
-			);
+			messages.append(`Error fixing ${policyName} policy failure in ${file}`);
 			process.exitCode = 1;
 		}
 
 		this.logMessages(messages);
 	}
 
-	private async handleFailureResult(
-		result: PolicyFailure,
-		relPath: string,
-		policy: PolicyInstance,
-		perfStats: PolicyHandlerPerfStats,
-		gitRoot: string,
-	): Promise<void> {
+	private formatPolicyErrorFixResult(
+		result: PolicyError,
+		file: string,
+		policyName: string,
+	): void {
 		const messages = new StringBuilder();
 
-		if (this.flags.fix && policy.resolver) {
-			await this.attemptResolution(
-				relPath,
-				policy,
-				policy.resolver,
-				perfStats,
-				gitRoot,
-				messages,
+		if (result.fixed) {
+			messages.append(
+				`Resolved ${policyName} policy failure for file: ${file}`,
 			);
 		} else {
-			this.logPolicyFailure(result, policy, messages);
+			messages.append(`Error fixing ${policyName} policy failure in ${file}`);
+			if (result.error) {
+				messages.append(`${newline}\t${result.error}`);
+			}
+			process.exitCode = 1;
 		}
 
 		this.logMessages(messages);
 	}
 
-	private async attemptResolution(
-		relPath: string,
-		policy: PolicyInstance,
-		resolver: PolicyStandaloneResolver,
-		perfStats: PolicyHandlerPerfStats,
-		gitRoot: string,
-		messages: StringBuilder,
-	): Promise<void> {
-		messages.append(`${newline}Attempting to resolve: ${relPath}`);
-		const resolveResult = await runWithPerf(
-			policy.name,
-			"resolve",
-			perfStats,
-			() => resolver({ file: relPath, root: gitRoot }),
-		);
+	private formatResolutionResult(
+		resolution: { resolved: boolean; errorMessages?: string[] },
+		file: string,
+		_policyName: string,
+	): void {
+		const messages = new StringBuilder();
+		messages.append(`${newline}Attempting to resolve: ${file}`);
 
-		if (!resolveResult.resolved) {
+		if (!resolution.resolved) {
 			process.exitCode = 1;
 		}
 
-		if (resolveResult.errorMessage) {
-			messages.append(newline + resolveResult.errorMessage);
+		if (resolution.errorMessages && resolution.errorMessages.length > 0) {
+			messages.append(newline + resolution.errorMessages.join(newline));
 		}
+
+		this.logMessages(messages);
 	}
 
-	private logPolicyFailure(
-		result: PolicyFailure,
-		policy: PolicyInstance,
-		messages: StringBuilder,
+	private formatPolicyFailure(
+		result: PolicyFailure | PolicyError,
+		file: string,
+		policyName: string,
 	): void {
-		const autoFixable = result.autoFixable ? chalk.green(" (autofixable)") : "";
-		messages.append(
-			`'${chalk.bold(policy.name)}' policy failure${autoFixable}: ${result.file}`,
-		);
-		if (result.errorMessage) {
-			messages.append(`${newline}\t${result.errorMessage}`);
+		const messages = new StringBuilder();
+
+		// Handle both legacy PolicyFailure and new PolicyError formats
+		if (isPolicyError(result)) {
+			const autoFixable = result.fixable ? chalk.green(" (autofixable)") : "";
+			messages.append(
+				`'${chalk.bold(policyName)}' policy failure${autoFixable}: ${file}`,
+			);
+			messages.append(`${newline}\t${result.error}`);
+		} else {
+			const autoFixable = result.autoFixable
+				? chalk.green(" (autofixable)")
+				: "";
+			messages.append(
+				`'${chalk.bold(policyName)}' policy failure${autoFixable}: ${result.file}`,
+			);
+			if (result.errorMessages?.length > 0) {
+				messages.append(
+					`${newline}\t${result.errorMessages.join(`${newline}\t`)}`,
+				);
+			}
 		}
 		process.exitCode = 1;
+
+		this.logMessages(messages);
 	}
+
 	private logMessages(messages: StringBuilder): void {
 		if ((process.exitCode ?? 0) === 0) {
 			this.info(messages.toString());

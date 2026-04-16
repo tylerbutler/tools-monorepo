@@ -9,8 +9,11 @@ package-lock.json
 yarn.lock
 .require-email.json
 
-# turborepo
-.turbo
+# nx
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
 
 # netlify cache
 .netlify
@@ -18,9 +21,36 @@ yarn.lock
 # astro generated types
 .astro
 
+# svelte build artifacts
+.svelte-kit
+
+# build artifacts
+esm/
+dist/
+
 # coverage reports
 .coverage
+coverage/
+
+# Rust build artifacts
+**/target/
 
 # AI artifacts
-.claude
+**/.claude/settings.local.json
+**/CLAUDE.md
 .serena
+
+# Added by repopo RequiredGitignorePatterns policy
+# Dependencies
+node_modules/
+# Environment files
+.env
+# Environment files
+.env.*
+# Allow example env file
+!.env.example
+# macOS system files
+.DS_Store
+# Windows system files
+Thumbs.db
+**/.claude/settings.local.json

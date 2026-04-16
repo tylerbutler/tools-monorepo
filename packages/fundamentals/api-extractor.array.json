@@ -4,6 +4,6 @@
 	"mainEntryPointFilePath": "<projectFolder>/esm/array.d.ts",
 	"apiReport": {
 		"enabled": true,
-		"reportFileName": "<unscopedPackageName>.array.api.md"
-	}
+		"reportFileName": "<unscopedPackageName>.array.api.md",
+	},
 }

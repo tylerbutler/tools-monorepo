@@ -8,6 +8,8 @@ import { isSorted, sortTsconfigFile } from "sort-tsconfig";
  */
 export const SortTsconfigsPolicy: PolicyDefinition = {
 	name: "SortTsconfigs",
+	description:
+		"Ensures tsconfig.json files are sorted consistently for better readability and diff clarity.",
 	match: /.*\.?tsconfig\.json$/i,
 	handler: async ({ file, config, resolve }) => {
 		if (config === undefined) {
@@ -18,6 +20,7 @@ export const SortTsconfigsPolicy: PolicyDefinition = {
 			name: SortTsconfigsPolicy.name,
 			file,
 			autoFixable: true,
+			errorMessages: [`${file} is not sorted.`],
 		};
 
 		if (resolve) {

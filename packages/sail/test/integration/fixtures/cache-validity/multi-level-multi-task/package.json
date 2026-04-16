@@ -1,0 +1,9 @@
+{
+	"name": "cache-validity-multi-level-multi-task",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {},
+	"devDependencies": {
+		"typescript": "~5.5.4"
+	}
+}

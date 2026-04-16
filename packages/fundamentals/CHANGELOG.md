@@ -1,5 +1,19 @@
 # @tylerbu/fundamentals
 
+## 0.3.0
+
+### Minor Changes
+
+- Add async file existence check _[`#348`](https://github.com/tylerbutler/tools-monorepo/pull/348) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Add `exists()` function for checking if a file or directory exists asynchronously
+
+## 0.2.3
+
+### Patch Changes
+
+- Update documentation _[`39f8132`](https://github.com/tylerbutler/tools-monorepo/commit/39f81320a5245759b9a797105ac5ffe3caf996f9) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.2.2
 
 ### Patch Changes

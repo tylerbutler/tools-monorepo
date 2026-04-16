@@ -7,28 +7,73 @@ title: "repopo"
 
 # repopo API
 
+A tool for enforcing repository policies and standards across codebases.
+
+## Remarks
+
+Repopo provides a framework for defining and enforcing policies across repositories,
+such as file headers, package.json consistency, and other code standards.
+It can be used as a CLI tool or integrated into CI/CD pipelines.
+
+## Classes
+
+- [Policy](/api/classes/policy/)
+- [PolicyRunner](/api/classes/policyrunner/)
+
 ## Interfaces
 
+- [ConfiguredPolicy](/api/interfaces/configuredpolicy/)
+- [DefineCargoPolicyArgs](/api/interfaces/definecargopolicyargs/)
+- [DefineFileHeaderPolicyArgs](/api/interfaces/definefileheaderpolicyargs/)
+- [DefineGleamPolicyArgs](/api/interfaces/definegleampolicyargs/)
+- [DefinePackagePolicyArgs](/api/interfaces/definepackagepolicyargs/)
 - [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
 - [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
-- [PolicyDefinition](/api/interfaces/policydefinition/)
-- [PolicyFailure](/api/interfaces/policyfailure/)
-- [PolicyFixResult](/api/interfaces/policyfixresult/)
-- [PolicyFunctionArguments](/api/interfaces/policyfunctionarguments/)
+- [FluidAdapterOptions](/api/interfaces/fluidadapteroptions/)
+- [FluidHandler](/api/interfaces/fluidhandler/)
+- [PolicyArgs](/api/interfaces/policyargs/)
+- [PolicyError](/api/interfaces/policyerror/)
+- [~~PolicyFailure~~](/api/interfaces/policyfailure/)
+- [PolicyFileResult](/api/interfaces/policyfileresult/)
+- [~~PolicyFixResult~~](/api/interfaces/policyfixresult/)
+- [PolicyHandlerPerfStats](/api/interfaces/policyhandlerperfstats/)
 - [PolicyInstanceSettings](/api/interfaces/policyinstancesettings/)
+- [PolicyOptions](/api/interfaces/policyoptions/)
+- [PolicyRunnerOptions](/api/interfaces/policyrunneroptions/)
+- [PolicyRunResults](/api/interfaces/policyrunresults/)
+- [PolicyShape](/api/interfaces/policyshape/)
 - [RepopoConfig](/api/interfaces/repopoconfig/)
 
 ## Type Aliases
 
+- [CargoToml](/api/type-aliases/cargotoml/)
+- [CargoTomlHandler](/api/type-aliases/cargotomlhandler/)
+- [ExcludedPolicyFileMap](/api/type-aliases/excludedpolicyfilemap/)
+- [GleamToml](/api/type-aliases/gleamtoml/)
+- [GleamTomlHandler](/api/type-aliases/gleamtomlhandler/)
 - [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
+- [PolicyAction](/api/type-aliases/policyaction/)
+- [~~PolicyDefinition~~](/api/type-aliases/policydefinition/)
+- [~~PolicyDefinitionInput~~](/api/type-aliases/policydefinitioninput/)
+- [~~PolicyFunctionArguments~~](/api/type-aliases/policyfunctionarguments/)
 - [PolicyHandler](/api/type-aliases/policyhandler/)
 - [PolicyHandlerResult](/api/type-aliases/policyhandlerresult/)
-- [PolicyInstance](/api/type-aliases/policyinstance/)
+- [~~PolicyInstance~~](/api/type-aliases/policyinstance/)
 - [PolicyName](/api/type-aliases/policyname/)
-- [PolicyStandaloneResolver](/api/type-aliases/policystandaloneresolver/)
+- [PolicyResolver](/api/type-aliases/policyresolver/)
+- [PolicyResult](/api/type-aliases/policyresult/)
+- [~~PolicyStandaloneResolver~~](/api/type-aliases/policystandaloneresolver/)
 
 ## Functions
 
-- [generateFileHeaderPolicy](/api/functions/generatefileheaderpolicy/)
+- [defineCargoPolicy](/api/functions/definecargopolicy/)
+- [defineFileHeaderPolicy](/api/functions/definefileheaderpolicy/)
+- [defineGleamPolicy](/api/functions/definegleampolicy/)
+- [fromFluidHandlers](/api/functions/fromfluidhandlers/)
 - [generatePackagePolicy](/api/functions/generatepackagepolicy/)
-- [makePolicy](/api/functions/makepolicy/)
+- [isPolicyError](/api/functions/ispolicyerror/)
+- [~~isPolicyFailure~~](/api/functions/ispolicyfailure/)
+- [~~isPolicyFixResult~~](/api/functions/ispolicyfixresult/)
+- [~~makePolicy~~](/api/functions/makepolicy/)
+- [~~makePolicyDefinition~~](/api/functions/makepolicydefinition/)
+- [policy](/api/functions/policy/)

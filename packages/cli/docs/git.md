@@ -14,8 +14,8 @@ USAGE
   $ tbu git squish TARGET [SOURCE] [-v | --quiet] [--dry-run]
 
 ARGUMENTS
-  TARGET  [default: main] Branch to rebase on top of.
-  SOURCE  Branch that should be squished. If not provided, the current branch is used.
+  TARGET    [default: main] Branch to rebase on top of.
+  [SOURCE]  Branch that should be squished. If not provided, the current branch is used.
 
 FLAGS
   --dry-run  Don't make any changes.

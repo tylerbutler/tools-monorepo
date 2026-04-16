@@ -1,0 +1,17 @@
+{
+	"name": "@shared/shared",
+	"version": "1.0.0",
+	"description": "Test package",
+	"homepage": "https://fluidframework.com",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "build-tools/packages/build-infrastructure/src/test/data/testRepo/packages/shared"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"dependencies": {
+		"@group2/pkg-d": "1.0.0"
+	},
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues"
+}

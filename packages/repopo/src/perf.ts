@@ -1,8 +1,17 @@
 import type { Logger } from "@tylerbu/cli-api";
+import type { Operation } from "effection";
 import type { PolicyName } from "./policy.js";
 
-export type PolicyAction = "handle" | "resolve";
+/**
+ * The type of action a policy can perform.
+ * @alpha
+ */
+export type PolicyAction = "check" | "resolve" | "handle";
 
+/**
+ * Stores performance data for each handler. Used to collect and display performance stats.
+ * @alpha
+ */
 export interface PolicyHandlerPerfStats {
 	count: number;
 	processed: number;
@@ -17,17 +26,17 @@ export function newPerfStats(): PolicyHandlerPerfStats {
 	};
 }
 
-export async function runWithPerf<T>(
+export function* runWithPerf<T>(
 	name: string,
 	action: PolicyAction,
 	stats: PolicyHandlerPerfStats,
-	run: () => Promise<T>,
-): Promise<T> {
+	run: () => Operation<T>,
+): Operation<T> {
 	const actionMap = stats.data.get(action) ?? new Map<string, number>();
 	let dur = actionMap.get(name) ?? 0;
 
 	const start = Date.now();
-	const result = await run();
+	const result = yield* run();
 	dur += Date.now() - start;
 
 	actionMap.set(name, dur);
@@ -37,14 +46,13 @@ export async function runWithPerf<T>(
 
 export function logStats(stats: PolicyHandlerPerfStats, log: Logger): void {
 	log.log(
-		`Statistics: ${stats.processed} processed, ${
-			stats.count - stats.processed
-		} excluded, ${stats.count} total`,
+		`Statistics: ${stats.processed} files processed, ` +
+			`${stats.count - stats.processed} excluded, ${stats.count} total`,
 	);
 	for (const [action, handlerPerf] of stats.data.entries()) {
 		log.log(`Performance for "${action}":`);
 		for (const [handler, dur] of handlerPerf.entries()) {
-			log.log(`\t${handler}: ${dur}ms`);
+			log.log(`    ${handler}: ${dur}ms`);
 		}
 	}
 }

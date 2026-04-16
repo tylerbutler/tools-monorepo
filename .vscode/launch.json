@@ -8,20 +8,20 @@
 			"cwd": "${workspaceFolder}/packages/cli-api",
 			"runtimeExecutable": "pnpm",
 			"skipFiles": ["<node_internals>/**"],
-			"type": "node"
+			"type": "node",
 		},
 		{
 			"name": "dill: pnpm test",
 			"request": "launch",
 			"runtimeArgs": ["run-script", "test"],
-			"cwd": "${workspaceFolder}/packages/dill",
+			"cwd": "${workspaceFolder}/packages/dill-cli",
 			"runtimeExecutable": "pnpm",
 			"skipFiles": ["<node_internals>/**"],
 			"type": "node",
 			"env": {
 				"NODE_ENV": "test",
-				"FORCE_NODE_FETCH": "true"
-			}
+				"FORCE_NODE_FETCH": "true",
+			},
 		},
 		{
 			"name": "sort-tsconfig: pnpm test",
@@ -33,8 +33,8 @@
 			"type": "node",
 			"env": {
 				"NODE_ENV": "test",
-				"FORCE_NODE_FETCH": "true"
-			}
+				"FORCE_NODE_FETCH": "true",
+			},
 		},
 		{
 			"name": "sort-tsconfig",
@@ -43,7 +43,7 @@
 			"args": ["tsconfig.json", "-v"],
 			"cwd": "${workspaceFolder}/packages/sort-tsconfig",
 			"skipFiles": ["<node_internals>/**"],
-			"type": "node"
+			"type": "node",
 		},
 		{
 			"name": "tbu",
@@ -51,7 +51,7 @@
 			"program": "${workspaceFolder}/packages/cli/bin/dev.js",
 			"args": [],
 			"skipFiles": ["<node_internals>/**"],
-			"type": "node"
+			"type": "node",
 		},
 		{
 			"name": "repopo",
@@ -59,7 +59,7 @@
 			"program": "${workspaceFolder}/packages/repopo/bin/dev.js",
 			"args": ["check", "-v"],
 			"skipFiles": ["<node_internals>/**"],
-			"type": "node"
+			"type": "node",
 		},
 		{
 			"name": "repopo fix",
@@ -67,14 +67,14 @@
 			"program": "${workspaceFolder}/packages/repopo/bin/dev.js",
 			"args": ["check", "-v", "--fix"],
 			"skipFiles": ["<node_internals>/**"],
-			"type": "node"
+			"type": "node",
 		},
 		{
 			"name": "dill: astro dev",
 			"command": "./node_modules/.bin/astro dev",
 			"cwd": "${workspaceFolder}/packages/dill-docs",
 			"request": "launch",
-			"type": "node-terminal"
+			"type": "node-terminal",
 		},
 
 		{
@@ -83,7 +83,7 @@
 			"name": "Execute Command",
 			"skipFiles": ["<node_internals>/**"],
 			"program": "${workspaceFolder}/bin/dev",
-			"args": ["hello", "world"]
-		}
-	]
+			"args": ["hello", "world"],
+		},
+	],
 }

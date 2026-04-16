@@ -1,0 +1,51 @@
+name: Convert Dependabot PRs to Issues
+
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  convert-to-issue:
+    # Only run on Dependabot PRs
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Create issue from Dependabot PR
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # ratchet:actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+
+            // Create an issue with the PR details
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Dependabot] ${pr.title}`,
+              body: `## Dependency Update Available\n\n${pr.body}\n\n---\n\n*Automatically created from Dependabot PR #${pr.number}*`,
+              labels: ['dependencies', 'dependabot']
+            });
+
+            console.log(`Created issue #${issue.data.number}`);
+
+            // Close the PR with a comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: `This PR has been converted to issue #${issue.data.number} for tracking.\n\nTo apply this update, manually create a branch and cherry-pick or recreate the changes.`
+            });
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              state: 'closed'
+            });
+
+            console.log(`Closed PR #${pr.number}`);

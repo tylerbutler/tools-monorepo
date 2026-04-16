@@ -1,5 +1,180 @@
 # @tylerbu/cli
 
+## 0.9.0
+
+### Minor Changes
+
+- Add `pr collect` and `pr report` commands for GitHub PR metrics _[`#590`](https://github.com/tylerbutler/tools-monorepo/pull/590) [`145f441`](https://github.com/tylerbutler/tools-monorepo/commit/145f441a7d9ff877dfc8eda54e8fabe814ccd626) [@tylerbutler](https://github.com/tylerbutler)_
+  - `pr collect <repo>` fetches PR metadata, reviews, and comments via GraphQL API to JSON Lines files
+  - `pr report` generates contributor metrics reports using DuckDB queries
+
+### Patch Changes
+
+- Remove unused effection dependency _[`#379`](https://github.com/tylerbutler/tools-monorepo/pull/379) [`1582ad1`](https://github.com/tylerbutler/tools-monorepo/commit/1582ad1abc79b211492dba2e5172e995c9c47fe0) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`c577266`](https://github.com/tylerbutler/tools-monorepo/commit/c577266129da545000aea343256b06129a243987)
+
+</small>
+
+- `@tylerbu/cli-api@0.10.1`
+
+</details>
+
+## 0.8.0
+
+### Minor Changes
+
+- Feat: add generate:commit-config command _[`#555`](https://github.com/tylerbutler/tools-monorepo/pull/555) [`d91da7c`](https://github.com/tylerbutler/tools-monorepo/commit/d91da7cbdaa5ce2444ff2abda9910e2d7837248e) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Adds a new command that generates git-cliff and commitlint configuration files from a `commit-types.ccl` source file. This enables a single source of truth for commit type definitions.
+
+  **Usage:**
+
+  ```bash
+  tbu generate commit-config              # Generate in current directory
+  tbu generate commit-config --dry-run    # Preview without writing
+  tbu generate commit-config --cwd ../foo # Generate in another directory
+  ```
+
+  **Generated files:**
+  - `cliff.toml` - git-cliff changelog configuration
+  - `.commitlintrc.json` or `commitlint.config.cjs` - commitlint configuration (format depends on scope config)
+
+### Patch Changes
+
+- Update to use new cli-api logger API _[`#395`](https://github.com/tylerbutler/tools-monorepo/pull/395) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Updates commands to use the new logger API from @tylerbu/cli-api:
+  - Replace `errorLog()` calls with `logError()`
+  - Use standalone `logIndent()` function where needed
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`d485ff9`](https://github.com/tylerbutler/tools-monorepo/commit/d485ff93255e16822961680be9b3e21c100e1bc9) [`ee059d0`](https://github.com/tylerbutler/tools-monorepo/commit/ee059d02161494c14eb6131aaf32624902fd65e4)
+
+</small>
+
+- `ccl-ts@0.2.0`
+- `@tylerbu/cli-api@0.10.0`
+- `dill-cli@0.4.1`
+
+</details>
+
+## 0.7.0
+
+### Minor Changes
+
+- Implement structured concurrency with Effection for package.json synchronization _[`#397`](https://github.com/tylerbutler/tools-monorepo/pull/397) [`a93b175`](https://github.com/tylerbutler/tools-monorepo/commit/a93b17539160f45dccba7a9385f553676ec2d3e3) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Replaced Promise.all with Effection's structured concurrency in the deps:sync command's syncAllPackages() method. This ensures atomic updates across all packages in a workspace, with automatic cancellation if any package update fails.
+
+  Benefits:
+  - Atomic multi-package updates (all succeed or none are applied)
+  - Automatic cancellation of pending updates when one fails
+  - Consistent workspace state even on errors
+  - No partial package.json updates across the workspace
+
+### Patch Changes
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`a93b175`](https://github.com/tylerbutler/tools-monorepo/commit/a93b17539160f45dccba7a9385f553676ec2d3e3) [`8832369`](https://github.com/tylerbutler/tools-monorepo/commit/8832369318b6efee8adae1636f3629639b0d76ac)
+
+</small>
+
+- `dill-cli@0.4.0`
+- `@tylerbu/cli-api@0.9.0`
+
+</details>
+
+## 0.6.0
+
+### Minor Changes
+
+- Add `tbu deps sync` command to sync package.json versions with lockfile _[`#343`](https://github.com/tylerbutler/tools-monorepo/pull/343) [`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Introduces a new `tbu deps sync` command that automatically updates package.json dependency versions to match what's installed in your lockfile. This is particularly useful when working with Dependabot, which sometimes updates lockfiles without updating package.json for dependencies with caret ranges (^) that already satisfy the new version.
+
+  The command supports npm and pnpm package managers, with detection for yarn and bun (full support coming soon). Run `tbu deps sync` to preview changes in dry-run mode, or `tbu deps sync --execute` to apply updates. Additional flags include `--lockfile` to specify a custom lockfile path, `--cwd` to run in a specific directory, and `--quiet` for minimal output suitable for CI environments.
+
+- Improve performance with async I/O _[`#348`](https://github.com/tylerbutler/tools-monorepo/pull/348) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Improve performance by using async filesystem operations instead of blocking synchronous calls
+
+### Patch Changes
+
+<details><summary>Updated 3 dependencies</summary>
+
+<small>
+
+[`b0d8cb9`](https://github.com/tylerbutler/tools-monorepo/commit/b0d8cb9a9ee27a0b778ee58055bcbdd7d6d9b4eb) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a) [`08e571f`](https://github.com/tylerbutler/tools-monorepo/commit/08e571f028e868d5db1c337e51804f5884cd2f4a)
+
+</small>
+
+- `@tylerbu/cli-api@0.8.0`
+- `@tylerbu/fundamentals@0.3.0`
+- `dill-cli@0.3.2`
+
+</details>
+
+## 0.5.0
+
+### Minor Changes
+
+- Add `fluid task-rename` command for FluidFramework repository _[`#326`](https://github.com/tylerbutler/tools-monorepo/pull/326) [`bcbee7d`](https://github.com/tylerbutler/tools-monorepo/commit/bcbee7da2d54616abc1cb1b3d16b0ded6edb632d) [@tylerbutler](https://github.com/tylerbutler)_
+
+  **New Command:**
+  - `tbu fluid task-rename` - Rename package.json scripts to follow three-tier naming principles
+
+  **Features:**
+  - Analyze and validate script naming across all packages
+  - Apply systematic renames with cross-reference updates
+  - Dry-run mode to preview changes before applying
+  - Validation-only mode to check for naming issues
+
+## 0.4.1
+
+### Patch Changes
+
+- Add missing template files to package _[`#324`](https://github.com/tylerbutler/tools-monorepo/pull/324) [`cc72e15`](https://github.com/tylerbutler/tools-monorepo/commit/cc72e156f12de4f502c05a57eeee44d05195ff17) [@tylerbutler](https://github.com/tylerbutler)_
+
+## 0.4.0
+
+### Minor Changes
+
+- New fluid repo-overlay command _[`#322`](https://github.com/tylerbutler/tools-monorepo/pull/322) [`11becec`](https://github.com/tylerbutler/tools-monorepo/commit/11becec23780fb58dcd854e3e910e725864177e4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Add `fluid repo-overlay` command to apply Nx or Turbo build configurations to the FluidFramework repository. The command supports dry-run mode to preview changes before applying them, and can update configuration files, package.json files, and .gitignore entries as needed.
+
+### Patch Changes
+
+- Fix git squish command configuration loading _[`#320`](https://github.com/tylerbutler/tools-monorepo/pull/320) [`0028315`](https://github.com/tylerbutler/tools-monorepo/commit/002831523cc6483c79c217dc3e8026ccf2def98e) [@tylerbutler](https://github.com/tylerbutler)_
+  - **cli-api**: Add `requiresConfig` property to `CommandWithConfig` to allow commands to skip config loading
+  - **cli-api**: Set `GitCommand.requiresConfig = false` by default since git commands typically don't need config files
+
+  This fixes the "Failure to load config" error that occurred when running git commands in directories without a config file.
+
+<details><summary>Updated 2 dependencies</summary>
+
+<small>
+
+[`0028315`](https://github.com/tylerbutler/tools-monorepo/commit/002831523cc6483c79c217dc3e8026ccf2def98e) [`39f8132`](https://github.com/tylerbutler/tools-monorepo/commit/39f81320a5245759b9a797105ac5ffe3caf996f9)
+
+</small>
+
+- `@tylerbu/cli-api@0.7.3`
+- `dill-cli@0.3.1`
+
+</details>
+
 ## 0.3.8
 
 ### Patch Changes
@@ -164,7 +339,7 @@
 - Add download command _[`#8`](https://github.com/tylerbutler/tools-monorepo/pull/8) [`dac542b`](https://github.com/tylerbutler/tools-monorepo/commit/dac542b02484b11a16f2efc8a1e6dd02dcb2b611) [@tylerbutler](https://github.com/tylerbutler)_
 
   The `download` command can be used to download files and optionally decompress their contents. This command is
-  implemented by [dill](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill/).
+  implemented by [dill](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/).
 
 - Add search command _[`b60f2ed`](https://github.com/tylerbutler/tools-monorepo/commit/b60f2edd82a62744cfa85f6d198110b25a660544) [@tylerbutler](https://github.com/tylerbutler)_
 

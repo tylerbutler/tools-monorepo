@@ -1,0 +1,16 @@
+{
+	"enabledPlugins": {
+		"typescript-lsp@claude-plugins-official": true,
+		"frontend-design@claude-plugins-official": false,
+		"playwright@claude-plugins-official": false
+	},
+	"permissions": {
+		"allow": [
+			"Bash(./packages/repopo/bin/dev.js *)",
+			"Bash(pnpm:*)",
+			"Bash(git:*)"
+		],
+		"deny": [],
+		"ask": []
+	}
+}

@@ -5,11 +5,11 @@ prev: false
 title: "PolicyHandler"
 ---
 
-> **PolicyHandler**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>
+> **PolicyHandler**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\> \| (`args`) => `Operation`\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>
 
-Defined in: [policy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L49)
+Defined in: [policy.ts:168](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L168)
 
-A policy handler is a function that is called to check policy against a file.
+A policy handler function that checks a file against a policy.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -21,12 +21,14 @@ This API should not be used in production and may be trimmed from a public relea
 
 `C` = `unknown` \| `undefined`
 
-## Parameters
+## Remarks
 
-### args
+Policy handlers can be implemented in two ways:
+- As an async function returning a Promise
+- As an Effection generator function returning an Operation
 
-[`PolicyFunctionArguments`](/api/interfaces/policyfunctionarguments/)\<`C`\>
+Both styles are supported. Async handlers are automatically wrapped for Effection.
 
-## Returns
-
-[`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>
+Handlers can return either the legacy format ([PolicyFailure](/api/interfaces/policyfailure/)) or
+the new format ([PolicyError](/api/interfaces/policyerror/)). The new format is simpler and recommended
+for new policies.

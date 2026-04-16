@@ -32,7 +32,7 @@ export default class SquishCommand extends GitCommand<typeof SquishCommand> {
 
 	public override async run(): Promise<void> {
 		if (this.git === undefined) {
-			this.error(`Not a git repo: ${process.cwd()}`);
+			this.exit(`Not a git repo: ${process.cwd()}`);
 		}
 
 		const sourceBranch =
@@ -65,10 +65,9 @@ export default class SquishCommand extends GitCommand<typeof SquishCommand> {
 			const result = await this.git.merge([sourceBranch, "--squash"]);
 			if (result.failed) {
 				await this.git.deleteLocalBranch(tempBranch, /* force */ true);
-				this.errorLog(
+				this.exit(
 					`Merge failed, so deleted temp branch to clean up: ${c(tempBranch)}`,
 				);
-				this.error("Merge failed.");
 			}
 		}
 

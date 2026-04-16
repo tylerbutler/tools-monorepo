@@ -1,0 +1,14 @@
+{
+	"all": true,
+	"include": ["esm/**", "src/**"],
+	"cache-dir": "_temp/.c8-cache",
+	"report-dir": ".coverage/c8",
+	"reporter": ["cobertura", "text", "text-summary"],
+	"exclude": [
+		"**/{test,tests}/**",
+		"**/**.{test,tests}.{js,jsx,ts,tsx}",
+		"**/*test_index.js",
+		"esm/.cache/*",
+		"dist/main.js"
+	]
+}

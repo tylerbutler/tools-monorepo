@@ -19,9 +19,13 @@
 
 * [`tbu autocomplete`](docs/autocomplete.md) - Display autocomplete installation instructions.
 * [`tbu commands`](docs/commands.md) - List all tbu commands.
+* [`tbu deps`](docs/deps.md) - Dependency management commands.
 * [`tbu download`](docs/download.md) - Downloads a file from a URL and optionally extracts its contents.
+* [`tbu fluid`](docs/fluid.md) - FluidFramework repository tools.
+* [`tbu generate`](docs/generate.md) - Code and config generation commands.
 * [`tbu git`](docs/git.md) - Git-related commands.
 * [`tbu help`](docs/help.md) - Display help for tbu.
+* [`tbu pr`](docs/pr.md) - GitHub pull request metrics collection and reporting.
 * [`tbu search`](docs/search.md) - Search for a command.
 * [`tbu version`](docs/version.md)
 * [`tbu which`](docs/which.md) - Show which plugin a command is in.

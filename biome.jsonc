@@ -8,6 +8,9 @@
 		"@tylerbu/local-config/biome/oclif",
 		"@tylerbu/local-config/biome/test-files",
 	],
+	"javascript": {
+		"globals": ["$state", "$derived", "$effect", "$props", "$inspect"],
+	},
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -21,21 +24,31 @@
 			"**",
 
 			// jj vcs folders
-			"!.jj/**",
+			"!.jj",
 
 			// build output
-			"!**/_temp/**",
-			"!**/.coverage/**",
-			"!**/.svelte-kit/**",
-			"!**/built/**",
-			"!**/dist/**",
-			"!**/esm/**",
+			"!**/_temp",
+			"!**/.coverage",
+			"!**/.svelte-kit",
+			"!**/build",
+			"!**/built",
+			"!**/dist",
+			"!**/esm",
 
 			// oclif manifest
 			"!**/oclif.manifest.json",
 
 			// test json
 			"!**/test/data/json/**/*.json",
+
+			// test data files used for testing (sail-infrastructure)
+			"!**/packages/sail-infrastructure/src/test/data",
+
+			"!**/FluidFramework",
+
+			// vendored packages (git subrepo) - exclude all except package.json
+			"!packages/btree-typescript",
+			"packages/btree-typescript/package.json",
 		],
 	},
 	"formatter": {
@@ -48,18 +61,210 @@
 	},
 	"overrides": [
 		{
+			// vendored packages - preserve original formatting style (spaces)
+			"includes": ["packages/btree-typescript/package.json"],
+			"formatter": {
+				"indentStyle": "space",
+				"indentWidth": 2,
+			},
+		},
+		{
 			// node projects
 			"includes": [
 				"packages/cli/**",
 				"packages/cli-api/**",
-				"packages/dill/**",
+				"packages/dill-cli/**",
 				"packages/repopo/**",
+				"packages/sail/**",
 				"packages/sort-tsconfig/**",
 			],
 			"linter": {
 				"rules": {
 					"correctness": {
 						"noNodejsModules": "off",
+					},
+				},
+			},
+		},
+		{
+			// sail infrastructure packages - allow namespace imports and complexity
+			// [TODO] Remove noBarrelFile override after refactoring sail to eliminate barrel files
+			"includes": ["packages/sail/**", "packages/sail-infrastructure/**"],
+			"linter": {
+				"rules": {
+					"performance": {
+						"noBarrelFile": "off",
+						"noNamespaceImport": "off",
+					},
+					"complexity": {
+						"noExcessiveCognitiveComplexity": "off",
+					},
+				},
+			},
+		},
+		{
+			// Svelte files - official Biome recommended configuration for partial support
+			// https://biomejs.dev/internals/language-support/
+			"includes": ["**/*.svelte"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						// Svelte runes like $state() often use explicit undefined initialization
+						"noUselessUndefinedInitialization": "off",
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off",
+						"noUndeclaredVariables": "off",
+						// SvelteKit doesn't require .js extensions on imports
+						"useImportExtensions": "off",
+					},
+					"nursery": {
+						"noShadow": "off",
+						// Svelte runes pattern uses undefined returns
+						"noUselessUndefined": "off",
+					},
+					"style": {
+						"useConst": "off",
+						"useImportType": "off",
+						"noNonNullAssertion": "off",
+						"useReadonlyClassProperties": "off",
+					},
+					"suspicious": {
+						"noEmptyBlockStatements": "off",
+						"noExplicitAny": "off",
+					},
+				},
+			},
+			"assist": {
+				"actions": {
+					"source": {
+						// CSS property sorting in <style> blocks conflicts with Tailwind conventions
+						"useSortedProperties": "off",
+					},
+				},
+			},
+		},
+		{
+			// SvelteKit standard files
+			"includes": ["**/app.d.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noNamespace": "off",
+					},
+				},
+			},
+		},
+		{
+			// SvelteKit/Vite TypeScript files - Vite handles module resolution without extensions
+			// This covers SvelteKit route files, rune files, and UI component libraries
+			"includes": [
+				"**/*.svelte.ts",
+				"**/+page.ts",
+				"**/+layout.ts",
+				"**/+server.ts",
+				"**/+page.server.ts",
+				"**/+layout.server.ts",
+				"**/components/ui/**/index.ts",
+				"**/lib/index.ts",
+			],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"useImportExtensions": "off",
+					},
+				},
+			},
+		},
+		{
+			// CSS files with Tailwind - applies to all CSS in Tailwind projects
+			"includes": ["**/*.css"],
+			"linter": {
+				"rules": {
+					"complexity": {
+						// Tailwind utilities use !important
+						"noImportantStyles": "off",
+					},
+					"correctness": {
+						// Tailwind @import positioning
+						"noInvalidPositionAtImportRule": "off",
+						// Tailwind custom properties
+						"noUnknownProperty": "off",
+					},
+					"suspicious": {
+						// Tailwind directives: @apply, @theme, @tailwind, etc.
+						"noUnknownAtRules": "off",
+					},
+				},
+			},
+			"assist": {
+				"actions": {
+					"source": {
+						// CSS property sorting conflicts with Tailwind conventions
+						"useSortedProperties": "off",
+					},
+				},
+			},
+			"css": {
+				"parser": {
+					// Enable Tailwind directive parsing
+					"tailwindDirectives": true,
+				},
+			},
+		},
+		{
+			// Package entry points and UI component barrels (shadcn-svelte patterns)
+			"includes": [
+				"**/src/index.ts",
+				"**/components/ui/**/index.ts",
+				"**/lib/index.ts",
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"noExportedImports": "off",
+					},
+					"performance": {
+						"noBarrelFile": "off",
+						"noReExportAll": "off",
+					},
+				},
+			},
+		},
+		{
+			// Service and store files with Svelte runes
+			"includes": ["**/services/*.ts", "**/*.svelte.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noEmptyBlockStatements": "off",
+						"noExplicitAny": "off",
+					},
+					"style": {
+						"useConsistentMemberAccessibility": "off",
+						"noNonNullAssertion": "off",
+						"useReadonlyClassProperties": "off",
+					},
+					"complexity": {
+						"noExcessiveCognitiveComplexity": "off",
+						"noBannedTypes": "off",
+					},
+					"performance": {
+						"useTopLevelRegex": "off",
+					},
+					"nursery": {},
+				},
+			},
+		},
+		{
+			// Auto-generated TypeScript files from JSON schemas
+			"includes": ["**/generated/**/*.ts"],
+			"linter": {
+				"rules": {
+					"nursery": {
+						// json2ts generates nested index signatures that shadow variable names
+						"noShadow": "off",
 					},
 				},
 			},

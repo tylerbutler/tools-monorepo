@@ -1,0 +1,17 @@
+{
+	"name": "lib-a",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc --build",
+		"build:gen": "copyfiles -u 1 \"src/gen/**\" dist",
+		"build:test:esm": "tsc --project src/test/tsconfig.json",
+		"build:test:cjs": "tsc --project src/test/tsconfig.cjs.json",
+		"build:test:no-exact": "tsc --project src/test/tsconfig.no-exactOptionalPropertyTypes.json"
+	},
+	"devDependencies": {
+		"copyfiles": "^2.4.1",
+		"typescript": "~5.5.4"
+	}
+}

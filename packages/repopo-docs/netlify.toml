@@ -1,4 +1,4 @@
 [build]
-  # This will ignore changes outside of the packages/repopo and packages/repopo-docs directories,
-  # which means the builds will only be triggered by changes to the repopo and repopo-docs packages.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF packages/repopo packages/repopo-docs"
+  # Only trigger builds when files in repopo-docs or repopo change.
+  # Paths are relative to repo root (Netlify runs from /opt/build/repo).
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- packages/repopo-docs/ packages/repopo/"
