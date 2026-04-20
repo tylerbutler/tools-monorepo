@@ -102,6 +102,21 @@
 			},
 		},
 		{
+			// Astro files - biome can parse the frontmatter but not the template
+			// below it, so it treats any variable referenced only in the template
+			// as unused. Disable the affected correctness rules for .astro.
+			"includes": ["**/*.astro"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off",
+						"noUndeclaredVariables": "off",
+					},
+				},
+			},
+		},
+		{
 			// Svelte files - official Biome recommended configuration for partial support
 			// https://biomejs.dev/internals/language-support/
 			"includes": ["**/*.svelte"],
