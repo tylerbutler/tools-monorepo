@@ -1,0 +1,54 @@
+/*
+ * @tylerbu/astro-tinylytics — default stylesheet
+ *
+ * Opt in with: import "@tylerbu/astro-tinylytics/styles.css";
+ *
+ * Every visible property is driven by a CSS custom property with a
+ * sensible inherit / currentColor fallback, so the component adapts
+ * to whatever theme surrounds it. Override any of the --tlt-kudos-*
+ * variables at a higher scope to restyle.
+ *
+ * The wrapper selector uses :where() for zero specificity so plain
+ * class selectors in the consumer's CSS can override it.
+ */
+
+:where(.tinylytics-kudos-wrapper) {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.75em;
+}
+
+.tinylytics_kudos {
+	font: inherit;
+	color: var(--tlt-kudos-fg, inherit);
+	background: var(--tlt-kudos-bg, transparent);
+	border: var(--tlt-kudos-border, 1px solid currentColor);
+	border-radius: var(--tlt-kudos-radius, 4px);
+	padding: var(--tlt-kudos-padding, 4px 10px);
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.tinylytics_kudos::before {
+	content: var(--tlt-kudos-icon, "🚀");
+}
+
+.tinylytics_kudos:not(:empty)::before {
+	margin-right: 0.35em;
+}
+
+.tinylytics_kudos:hover {
+	background: var(--tlt-kudos-hover-bg, currentColor);
+	color: var(--tlt-kudos-hover-fg, white);
+	border-color: var(--tlt-kudos-hover-border, currentColor);
+}
+
+.tinylytics-kudos-label,
+.tinylytics-kudos-suffix {
+	font-style: italic;
+	color: var(--tlt-kudos-muted, inherit);
+}
+
+.tinylytics-kudos-suffix[hidden] {
+	display: none;
+}

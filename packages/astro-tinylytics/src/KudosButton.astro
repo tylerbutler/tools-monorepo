@@ -1,0 +1,106 @@
+---
+interface Props {
+	path: string;
+	label?: string;
+	countThreshold?: number;
+	suffixTemplate?: string;
+	icon?: string;
+	class?: string;
+	as?: "div" | "span";
+}
+
+const {
+	path,
+	label = "I like this",
+	countThreshold = 10,
+	suffixTemplate = "— and so do {count} others",
+	icon = "🚀",
+	class: className,
+	as: Tag = "div",
+} = Astro.props;
+
+const wrapperClass = ["tinylytics-kudos-wrapper", className]
+	.filter(Boolean)
+	.join(" ");
+
+// JSON.stringify produces a CSS-safe quoted string (handles embedded quotes).
+const iconStyle = `--tlt-kudos-icon: ${JSON.stringify(icon)}`;
+
+// Split on {count} so the observer only has to update a single text node.
+const placeholder = "{count}";
+const placeholderIndex = suffixTemplate.indexOf(placeholder);
+const suffixPrefix =
+	placeholderIndex >= 0
+		? suffixTemplate.slice(0, placeholderIndex)
+		: suffixTemplate;
+const suffixPostfix =
+	placeholderIndex >= 0
+		? suffixTemplate.slice(placeholderIndex + placeholder.length)
+		: "";
+---
+
+<Tag class={wrapperClass} data-count-threshold={String(countThreshold)}>
+	<span class="tinylytics-kudos-label">{label}</span>
+	<button
+		class="tinylytics_kudos"
+		data-path={path}
+		type="button"
+		aria-label={label}
+		style={iconStyle}
+	/>
+	<span class="tinylytics-kudos-suffix" hidden
+		>{suffixPrefix}<span class="tinylytics-kudos-count"></span>{suffixPostfix}</span
+	>
+</Tag>
+
+<script>
+	// Tinylytics is expected to be configured with ?kudos=custom, which means the
+	// embed script injects only the count (a number) into each .tinylytics_kudos
+	// button. We strip it on arrival and — if it clears the per-wrapper threshold —
+	// render it into the sibling suffix's .tinylytics-kudos-count span. The icon is
+	// a CSS ::before pseudo-element so clearing the button never hides it.
+	function updateKudos(btn: HTMLElement) {
+		const wrapper = btn.closest<HTMLElement>(".tinylytics-kudos-wrapper");
+		if (!wrapper) {
+			return;
+		}
+		const suffix = wrapper.querySelector<HTMLElement>(
+			".tinylytics-kudos-suffix",
+		);
+		const countEl = wrapper.querySelector<HTMLElement>(
+			".tinylytics-kudos-count",
+		);
+		const threshold =
+			Number.parseInt(wrapper.dataset.countThreshold ?? "", 10) || 0;
+		const text = btn.textContent?.trim() ?? "";
+		if (text === "") {
+			if (suffix) {
+				suffix.hidden = true;
+			}
+			return;
+		}
+		const count = Number.parseInt(text, 10);
+		if (!Number.isFinite(count)) {
+			return;
+		}
+		btn.textContent = "";
+		if (count > threshold && suffix && countEl) {
+			countEl.textContent = String(count);
+			suffix.hidden = false;
+		} else if (suffix) {
+			suffix.hidden = true;
+		}
+	}
+
+	for (const btn of document.querySelectorAll<HTMLElement>(
+		".tinylytics_kudos",
+	)) {
+		updateKudos(btn);
+		const observer = new MutationObserver(() => updateKudos(btn));
+		observer.observe(btn, {
+			childList: true,
+			characterData: true,
+			subtree: true,
+		});
+	}
+</script>
