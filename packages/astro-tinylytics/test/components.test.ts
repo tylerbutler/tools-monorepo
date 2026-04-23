@@ -82,7 +82,9 @@ describe("Script", () => {
 describe("Hits", () => {
 	it("renders a span with tinylytics_hits class", async () => {
 		const html = await render(Hits);
-		expect(html).toMatchInlineSnapshot(`"<span class="tinylytics_hits"></span>"`);
+		expect(html).toMatchInlineSnapshot(
+			`"<span class="tinylytics_hits"></span>"`,
+		);
 	});
 
 	it("renders slot content", async () => {
@@ -294,7 +296,11 @@ describe("Event", () => {
 
 	it("adds data-tinylytics-event-value when value is provided", async () => {
 		const html = await render(Event, {
-			props: { name: "file.download", value: "resume.pdf", href: "/resume.pdf" },
+			props: {
+				name: "file.download",
+				value: "resume.pdf",
+				href: "/resume.pdf",
+			},
 			slots: { default: "Download" },
 		});
 		expect(html).toMatchInlineSnapshot(

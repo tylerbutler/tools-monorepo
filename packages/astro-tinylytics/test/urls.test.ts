@@ -31,9 +31,7 @@ describe("buildScriptUrl", () => {
 		expect(buildScriptUrl({ embedCode: "x", kudos: "custom" })).toContain(
 			"kudos=custom",
 		);
-		expect(buildScriptUrl({ embedCode: "x", kudos: "❤️" })).toContain(
-			"kudos=❤️",
-		);
+		expect(buildScriptUrl({ embedCode: "x", kudos: "❤️" })).toContain("kudos=❤️");
 	});
 
 	it("appends webring flag variants", () => {

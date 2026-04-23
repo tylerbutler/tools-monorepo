@@ -7,11 +7,20 @@ export default getViteConfig({
 		globals: true,
 		watch: false,
 		testTimeout: process.env.GITHUB_ACTIONS ? 15_000 : 5000,
-		reporters: process.env.GITHUB_ACTIONS ? ["github-actions", "junit"] : ["verbose", "junit"],
+		reporters: process.env.GITHUB_ACTIONS
+			? ["github-actions", "junit"]
+			: ["verbose", "junit"],
 		outputFile: { junit: "./_temp/junit.xml" },
 		coverage: {
 			include: ["src/**"],
-			exclude: ["**/*.json", "**/*.md", "**/*.yaml", "**/*.yml", "**/fixtures/**", "**/test/data/**"],
+			exclude: [
+				"**/*.json",
+				"**/*.md",
+				"**/*.yaml",
+				"**/*.yml",
+				"**/fixtures/**",
+				"**/test/data/**",
+			],
 			provider: "v8",
 			reporter: ["text", "json", "html", "cobertura"],
 			reportsDirectory: ".coverage/vitest",

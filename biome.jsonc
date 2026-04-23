@@ -102,6 +102,19 @@
 			},
 		},
 		{
+			// Astro component package entry points re-export .astro files directly.
+			// Biome's useImportExtensions rule doesn't recognise .astro as a valid
+			// extension and suggests rewriting to .js, which breaks the imports.
+			"includes": ["packages/astro-tinylytics/**"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"useImportExtensions": "off",
+					},
+				},
+			},
+		},
+		{
 			// Astro files - biome can parse the frontmatter but not the template
 			// below it, so it treats any variable referenced only in the template
 			// as unused. Disable the affected correctness rules for .astro.

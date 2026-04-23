@@ -21,23 +21,45 @@ export function buildScriptUrl(props: ScriptProps): string {
 
 	const flags: string[] = [];
 
-	if (hits === "unique") flags.push("hits=unique");
-	else if (hits === true) flags.push("hits");
+	if (hits === "unique") {
+		flags.push("hits=unique");
+	} else if (hits === true) {
+		flags.push("hits");
+	}
 
-	if (kudos === true) flags.push("kudos");
-	else if (kudos === "custom") flags.push("kudos=custom");
-	else if (typeof kudos === "string") flags.push(`kudos=${kudos}`);
+	if (kudos === true) {
+		flags.push("kudos");
+	} else if (kudos === "custom") {
+		flags.push("kudos=custom");
+	} else if (typeof kudos === "string") {
+		flags.push(`kudos=${kudos}`);
+	}
 
-	if (uptime) flags.push("uptime");
-	if (countries) flags.push("countries");
+	if (uptime) {
+		flags.push("uptime");
+	}
+	if (countries) {
+		flags.push("countries");
+	}
 
-	if (webring === "avatars") flags.push("webring=avatars");
-	else if (webring) flags.push("webring");
+	if (webring === "avatars") {
+		flags.push("webring=avatars");
+	} else if (webring) {
+		flags.push("webring");
+	}
 
-	if (events) flags.push("events");
-	if (beacon) flags.push("beacon");
-	if (spa) flags.push("spa");
-	if (ignore) flags.push("ignore");
+	if (events) {
+		flags.push("events");
+	}
+	if (beacon) {
+		flags.push("beacon");
+	}
+	if (spa) {
+		flags.push("spa");
+	}
+	if (ignore) {
+		flags.push("ignore");
+	}
 
 	const path = min ? `${embedCode}/min.js` : `${embedCode}.js`;
 	const query = flags.length > 0 ? `?${flags.join("&")}` : "";
