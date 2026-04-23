@@ -67,7 +67,7 @@
 		"dirname": "tylerbu-cli-api"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.8.0",
+		"@oclif/core": "^4.10.5",
 		"@tylerbu/fundamentals": "workspace:^",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"debug": "^4.4.3",
@@ -94,7 +94,7 @@
 		"concurrently": "^9.2.1",
 		"consola": "^3.4.0",
 		"generate-license-file": "^4.1.1",
-		"oclif": "^4.22.50",
+		"oclif": "^4.23.0",
 		"rimraf": "^6.1.2",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",

@@ -91,7 +91,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/dill-cli/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.8.0",
+		"@oclif/core": "^4.10.5",
 		"@oclif/plugin-help": "^6.2.36",
 		"@tinyhttp/content-disposition": "^2.2.2",
 		"@tylerbu/cli-api": "workspace:^",
@@ -120,7 +120,7 @@
 		"get-port-please": "^3.2.0",
 		"jsonfile": "^6.2.0",
 		"msw": "^2.12.3",
-		"oclif": "^4.22.50",
+		"oclif": "^4.23.0",
 		"rimraf": "^6.1.2",
 		"serve": "^14.2.5",
 		"serve-handler": "^6.1.6",

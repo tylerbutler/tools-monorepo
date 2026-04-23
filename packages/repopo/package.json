@@ -90,7 +90,7 @@
 	},
 	"dependencies": {
 		"@fluid-tools/build-infrastructure": "~0.63.0",
-		"@oclif/core": "^4.8.0",
+		"@oclif/core": "^4.10.5",
 		"@oclif/plugin-help": "^6.2.36",
 		"@rushstack/node-core-library": "^5.19.0",
 		"@tylerbu/cli-api": "workspace:^",
@@ -121,7 +121,7 @@
 		"@types/tmp": "^0.2.6",
 		"@vitest/coverage-v8": "^4.0.18",
 		"generate-license-file": "^4.1.1",
-		"oclif": "^4.22.50",
+		"oclif": "^4.23.0",
 		"rimraf": "^6.1.2",
 		"smol-toml": "^1.6.1",
 		"spdx-correct": "^3.2.0",

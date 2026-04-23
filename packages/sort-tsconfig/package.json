@@ -76,7 +76,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/sort-tsconfig/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.8.0",
+		"@oclif/core": "^4.10.5",
 		"@oclif/plugin-help": "^6.2.36",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
@@ -95,7 +95,7 @@
 		"@types/tmp": "^0.2.6",
 		"@vitest/coverage-v8": "^4.0.18",
 		"generate-license-file": "^4.1.1",
-		"oclif": "^4.22.50",
+		"oclif": "^4.23.0",
 		"repopo": "workspace:^",
 		"rimraf": "^6.1.2",
 		"sort-package-json": "*",

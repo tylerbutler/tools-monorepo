@@ -103,7 +103,7 @@
 		}
 	},
 	"dependencies": {
-		"@oclif/core": "^4.8.0",
+		"@oclif/core": "^4.10.5",
 		"@oclif/plugin-autocomplete": "^3.2.39",
 		"@oclif/plugin-commands": "^4.1.38",
 		"@oclif/plugin-help": "^6.2.36",
@@ -136,7 +136,7 @@
 		"concurrently": "^9.2.1",
 		"copyfiles": "^2.4.1",
 		"generate-license-file": "^4.1.1",
-		"oclif": "^4.22.50",
+		"oclif": "^4.23.0",
 		"rimraf": "^6.1.2",
 		"sort-package-json": "*",
 		"ts-node": "^10.9.2",
