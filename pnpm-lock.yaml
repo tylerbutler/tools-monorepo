@@ -1005,8 +1005,8 @@ importers:
         specifier: ^6.1.2
         version: 6.1.2
       smol-toml:
-        specifier: ^1.6.0
-        version: 1.6.0
+        specifier: ^1.6.1
+        version: 1.6.1
       spdx-correct:
         specifier: ^3.2.0
         version: 3.2.0
@@ -9580,6 +9580,10 @@ packages:
     resolution: {integrity: sha512-4zemZi0HvTnYwLfrpk/CF9LOd9Lt87kAt50GnqhMpyF9U3poDAP2+iukq2bZsO/ufegbYehBkqINbsWxj4l4cw==}
     engines: {node: '>= 18'}
 
+  smol-toml@1.6.1:
+    resolution: {integrity: sha512-dWUG8F5sIIARXih1DTaQAX4SsiTXhInKf1buxdY9DIg4ZYPZK5nGM1VRIYmEbDbsHt7USo99xSLFu5Q1IqTmsg==}
+    engines: {node: '>= 18'}
+
   snake-case@3.0.4:
     resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
 
@@ -11150,7 +11154,7 @@ snapshots:
       remark-rehype: 11.1.2
       remark-smartypants: 3.0.2
       shiki: 3.21.0
-      smol-toml: 1.6.0
+      smol-toml: 1.6.1
       unified: 11.0.5
       unist-util-remove-position: 5.0.0
       unist-util-visit: 5.1.0
@@ -11176,7 +11180,7 @@ snapshots:
       remark-rehype: 11.1.2
       remark-smartypants: 3.0.2
       shiki: 3.21.0
-      smol-toml: 1.6.0
+      smol-toml: 1.6.1
       unified: 11.0.5
       unist-util-remove-position: 5.0.0
       unist-util-visit: 5.1.0
@@ -15608,7 +15612,7 @@ snapshots:
       rehype: 13.0.2
       semver: 7.7.3
       shiki: 3.21.0
-      smol-toml: 1.6.0
+      smol-toml: 1.6.1
       svgo: 4.0.0
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
@@ -21449,6 +21453,8 @@ snapshots:
   smart-buffer@4.2.0: {}
 
   smol-toml@1.6.0: {}
+
+  smol-toml@1.6.1: {}
 
   snake-case@3.0.4:
     dependencies:
