@@ -1,13 +1,7 @@
 ---
-export interface Props {
-	path: string;
-	label?: string;
-	countThreshold?: number;
-	suffixTemplate?: string;
-	icon?: string;
-	class?: string;
-	as?: "div" | "span";
-}
+import type { KudosButtonProps } from "./types.ts";
+
+export type Props = KudosButtonProps;
 
 const {
 	path,

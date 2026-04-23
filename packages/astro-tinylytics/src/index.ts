@@ -27,10 +27,12 @@ export { default as Countries } from "./Countries.astro";
 export { default as Event } from "./Event.astro";
 export { default as Hits } from "./Hits.astro";
 export { default as Kudos } from "./Kudos.astro";
+export { default as KudosButton } from "./KudosButton.astro";
 export { default as Pixel } from "./Pixel.astro";
 export { default as Script } from "./Script.astro";
 export type {
 	EventProps,
+	KudosButtonProps,
 	KudosProps,
 	PixelProps,
 	ScriptProps,

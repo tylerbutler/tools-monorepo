@@ -51,6 +51,16 @@ export interface PixelProps {
 	path?: string;
 }
 
+export interface KudosButtonProps {
+	path: string;
+	label?: string;
+	countThreshold?: number;
+	suffixTemplate?: string;
+	icon?: string;
+	class?: string;
+	as?: "div" | "span";
+}
+
 export interface EventProps {
 	/** Event name in `category.action` format. */
 	name: string;
