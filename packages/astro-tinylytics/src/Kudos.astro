@@ -9,20 +9,9 @@
  *
  * @see https://tinylytics.app/docs/showing_kudos
  */
-export interface Props {
-  /**
-   * Path the kudos count is associated with. Required when multiple kudos
-   * buttons live on a single page (e.g. an index of posts). Must start
-   * with `/`.
-   */
-  path?: string;
-  /** Render kudos privately (count visible only to the site owner). */
-  private?: boolean;
-  /** Ignore clicks on this button (useful for demos). */
-  ignore?: boolean;
-  /** Optional class name(s) to append. */
-  class?: string;
-}
+import type { KudosProps } from "./types.ts";
+
+export type Props = KudosProps;
 
 const {
   path,

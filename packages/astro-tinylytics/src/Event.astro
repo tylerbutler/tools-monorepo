@@ -14,18 +14,13 @@
  *
  * @see https://tinylytics.app/docs/event_tracking
  */
+import type { EventProps } from "./types.ts";
+
 type AnchorAttrs = astroHTML.JSX.AnchorHTMLAttributes;
 type ButtonAttrs = astroHTML.JSX.ButtonHTMLAttributes;
 type DivAttrs = astroHTML.JSX.HTMLAttributes;
 
-export type Props = (AnchorAttrs | ButtonAttrs | DivAttrs) & {
-  /** Event name (`category.action`). */
-  name: string;
-  /** Optional event value (stored as `event_properties["value"]`). */
-  value?: string;
-  /** Element to render. Defaults to `a` when `href` is present, else `button`. */
-  as?: "a" | "button" | "div" | "span";
-};
+export type Props = (AnchorAttrs | ButtonAttrs | DivAttrs) & EventProps;
 
 const { name, value, as, ...rest } = Astro.props;
 const Tag = as ?? ("href" in rest && rest.href ? "a" : "button");

@@ -7,16 +7,9 @@
  * @see https://tinylytics.app/docs/pixel_tracking
  */
 import { buildPixelUrl } from "./urls.ts";
+import type { PixelProps } from "./types.ts";
 
-export interface Props {
-  /** Your unique site embed code. */
-  embedCode: string;
-  /**
-   * Optional path to associate with this view (e.g. the post URL). Strongly
-   * recommended for per-content tracking. Leading slash is added automatically.
-   */
-  path?: string;
-}
+export type Props = PixelProps;
 
 const { embedCode, path } = Astro.props;
 const src = buildPixelUrl(embedCode, path);

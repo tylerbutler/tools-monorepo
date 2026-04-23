@@ -12,18 +12,9 @@
  *
  * @see https://tinylytics.app/docs/showing_webring
  */
-export interface Props {
-  /** Render the avatar `<img>` placeholder. Requires `webring="avatars"` on the script. */
-  avatar?: boolean;
-  /** Position of the avatar relative to the slot content. */
-  avatarPosition?: "before" | "after";
-  /** Open the link in a new tab. Defaults to `true`. */
-  newTab?: boolean;
-  /** Optional class name(s) to append. */
-  class?: string;
-  /** Alt text for the avatar image (defaults to empty + aria-hidden). */
-  avatarAlt?: string;
-}
+import type { WebringProps } from "./types.ts";
+
+export type Props = WebringProps;
 
 const {
   avatar = false,
