@@ -1,0 +1,53 @@
+---
+/**
+ * Tinylytics script loader.
+ *
+ * Renders the `<script>` tag for the Tinylytics analytics embed and exposes
+ * every documented script-URL parameter as a typed prop.
+ *
+ * @see https://tinylytics.app/docs/embedding_your_script
+ */
+import { buildScriptUrl } from "./urls.ts";
+
+export interface Props {
+  /** The unique site embed code from your Tinylytics dashboard. */
+  embedCode: string;
+  /** Use the minified embed (`/min.js`). */
+  min?: boolean;
+  /** Enable SPA mode for client-side navigation tracking. */
+  spa?: boolean;
+  /** Ignore hits from this page load (useful while developing). */
+  ignore?: boolean;
+  /**
+   * Hit counter widget.
+   * `true` → `?hits`; `"unique"` → `?hits=unique` (paid plans).
+   */
+  hits?: boolean | "unique";
+  /**
+   * Kudos widget.
+   * `true` → default 👋 emoji; `"custom"` → count only;
+   * any other string → custom emoji (e.g. `"❤️"`).
+   */
+  kudos?: boolean | "custom" | string;
+  /** Uptime percentage widget (paid plans). */
+  uptime?: boolean;
+  /** Visitor country flags widget. */
+  countries?: boolean;
+  /**
+   * Webring widget.
+   * `true` → text-only; `"avatars"` → include site avatars.
+   */
+  webring?: boolean | "avatars";
+  /** Enable click event tracking via `data-tinylytics-event` attributes. */
+  events?: boolean;
+  /** Use `navigator.sendBeacon` for events (better for unload navigations). */
+  beacon?: boolean;
+  /** Add `defer` to the script tag. Defaults to `true`. */
+  defer?: boolean;
+}
+
+const { defer = true, ...rest } = Astro.props;
+const scriptSrc = buildScriptUrl(rest);
+---
+
+{defer ? <script src={scriptSrc} defer is:inline /> : <script src={scriptSrc} is:inline />}
