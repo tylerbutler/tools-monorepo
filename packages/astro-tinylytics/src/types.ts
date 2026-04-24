@@ -11,7 +11,7 @@ export interface ScriptProps {
 	spa?: boolean;
 	ignore?: boolean;
 	hits?: boolean | "unique";
-	kudos?: boolean | "custom" | string;
+	kudos?: boolean | "custom" | (string & {});
 	uptime?: boolean;
 	countries?: boolean;
 	webring?: boolean | "avatars";

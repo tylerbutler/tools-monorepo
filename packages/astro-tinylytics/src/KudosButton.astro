@@ -1,7 +1,5 @@
 ---
 
-
-
 import type { KudosButtonProps } from "./types.ts";
 
 export type Props = KudosButtonProps;
@@ -15,10 +13,6 @@ const {
 	class: className,
 	as: Tag = "div",
 } = Astro.props;
-
-const wrapperClass = ["tinylytics-kudos-wrapper", className]
-	.filter(Boolean)
-	.join(" ");
 
 // JSON.stringify produces a CSS-safe quoted string (handles embedded quotes).
 const iconStyle = `--tlt-kudos-icon: ${JSON.stringify(icon)}`;
@@ -36,7 +30,10 @@ const suffixPostfix =
 		: "";
 ---
 
-<Tag class={wrapperClass} data-count-threshold={String(countThreshold)}>
+<Tag
+	class:list={["tinylytics-kudos-wrapper", className]}
+	data-count-threshold={String(countThreshold)}
+>
 	<span class="tinylytics-kudos-label">{label}</span>
 	<button
 		class="tinylytics_kudos"

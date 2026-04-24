@@ -15,11 +15,12 @@ beforeAll(async () => {
 	container = await experimental_AstroContainer.create();
 });
 
+const SOURCE_FILE_RE = /\s*data-astro-source-file="[^"]*"/g;
+const SOURCE_LOC_RE = /\s*data-astro-source-loc="[^"]*"/g;
+
 /** Strip Astro dev-mode source-map attributes that contain absolute paths. */
 function clean(html: string): string {
-	return html
-		.replace(/\s*data-astro-source-file="[^"]*"/g, "")
-		.replace(/\s*data-astro-source-loc="[^"]*"/g, "");
+	return html.replace(SOURCE_FILE_RE, "").replace(SOURCE_LOC_RE, "");
 }
 
 async function render(
@@ -28,10 +29,6 @@ async function render(
 ): Promise<string> {
 	return clean(await container.renderToString(component, options));
 }
-
-// ---------------------------------------------------------------------------
-// Script
-// ---------------------------------------------------------------------------
 
 describe("Script", () => {
 	it("renders a deferred script tag by default", async () => {
@@ -75,10 +72,6 @@ describe("Script", () => {
 	});
 });
 
-// ---------------------------------------------------------------------------
-// Hits
-// ---------------------------------------------------------------------------
-
 describe("Hits", () => {
 	it("renders a span with tinylytics_hits class", async () => {
 		const html = await render(Hits);
@@ -113,10 +106,6 @@ describe("Hits", () => {
 		);
 	});
 });
-
-// ---------------------------------------------------------------------------
-// Kudos
-// ---------------------------------------------------------------------------
 
 describe("Kudos", () => {
 	it("renders a button with tinylytics_kudos class", async () => {
@@ -155,10 +144,6 @@ describe("Kudos", () => {
 	});
 });
 
-// ---------------------------------------------------------------------------
-// Countries
-// ---------------------------------------------------------------------------
-
 describe("Countries", () => {
 	it("renders a span with tinylytics_countries class", async () => {
 		const html = await render(Countries);
@@ -184,10 +169,6 @@ describe("Countries", () => {
 	});
 });
 
-// ---------------------------------------------------------------------------
-// Uptime
-// ---------------------------------------------------------------------------
-
 describe("Uptime", () => {
 	it("renders a span with tinylytics_uptime class", async () => {
 		const html = await render(Uptime);
@@ -205,10 +186,6 @@ describe("Uptime", () => {
 		);
 	});
 });
-
-// ---------------------------------------------------------------------------
-// Webring
-// ---------------------------------------------------------------------------
 
 describe("Webring", () => {
 	it("renders an anchor with tinylytics_webring class opening in a new tab", async () => {
@@ -259,10 +236,6 @@ describe("Webring", () => {
 	});
 });
 
-// ---------------------------------------------------------------------------
-// Event
-// ---------------------------------------------------------------------------
-
 describe("Event", () => {
 	it("renders a button when no href is present", async () => {
 		const html = await render(Event, {
@@ -308,10 +281,6 @@ describe("Event", () => {
 		);
 	});
 });
-
-// ---------------------------------------------------------------------------
-// Pixel
-// ---------------------------------------------------------------------------
 
 describe("Pixel", () => {
 	it("renders a 1x1 img with the embed code URL", async () => {

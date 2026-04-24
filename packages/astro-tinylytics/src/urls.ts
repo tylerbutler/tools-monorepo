@@ -2,7 +2,6 @@ import type { ScriptProps } from "./types.ts";
 
 /**
  * Builds the Tinylytics embed script URL from ScriptProps.
- * Extracted for testability.
  */
 export function buildScriptUrl(props: ScriptProps): string {
 	const {
@@ -68,7 +67,6 @@ export function buildScriptUrl(props: ScriptProps): string {
 
 /**
  * Builds the Tinylytics pixel tracking URL.
- * Extracted for testability.
  */
 export function buildPixelUrl(embedCode: string, path?: string): string {
 	let src = `https://tinylytics.app/pixel/${embedCode}.gif`;

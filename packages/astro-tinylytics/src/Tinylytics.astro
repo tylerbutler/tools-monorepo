@@ -1,6 +1,6 @@
 ---
 
-
+import { buildScriptUrl } from "./urls.ts";
 
 type Props =
 	| { embedCode: string; webmention: true; kudos?: never; hits?: never }
@@ -12,28 +12,10 @@ type Props =
 	  };
 
 const props = Astro.props;
-const { embedCode } = props;
-
-let webmentionHref: string | null = null;
-let scriptSrc: string | null = null;
-
-if (props.webmention === true) {
-	webmentionHref = `https://tinylytics.app/webmention/${embedCode}`;
-} else {
-	const flags: string[] = [];
-	if (props.kudos === "custom") {
-		flags.push("kudos=custom");
-	} else if (props.kudos === true) {
-		flags.push("kudos");
-	}
-	if (props.hits === "unique") {
-		flags.push("hits=unique");
-	} else if (props.hits === true) {
-		flags.push("hits");
-	}
-	const query = flags.length > 0 ? `?${flags.join("&")}` : "";
-	scriptSrc = `https://tinylytics.app/embed/${embedCode}.js${query}`;
-}
+const webmentionHref = props.webmention
+	? `https://tinylytics.app/webmention/${props.embedCode}`
+	: null;
+const scriptSrc = props.webmention ? null : buildScriptUrl(props);
 ---
 
 {webmentionHref && <link rel="webmention" href={webmentionHref} />}

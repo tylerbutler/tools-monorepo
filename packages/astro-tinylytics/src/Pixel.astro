@@ -1,8 +1,5 @@
 ---
 
-
-
-import type { PixelProps } from "./types.ts";
 /**
  * Tinylytics tracking pixel for environments that do not support JavaScript,
  * such as RSS feeds or HTML email. Renders an invisible 1×1 GIF that
@@ -10,6 +7,7 @@ import type { PixelProps } from "./types.ts";
  *
  * @see https://tinylytics.app/docs/pixel_tracking
  */
+import type { PixelProps } from "./types.ts";
 import { buildPixelUrl } from "./urls.ts";
 
 export type Props = PixelProps;
