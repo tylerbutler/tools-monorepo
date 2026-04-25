@@ -1,5 +1,11 @@
 # @tylerbu/sail-infrastructure
 
+## 0.4.1
+
+### Patch Changes
+
+- Fix `iterateDependencies` bug where `peerDependencies` were never iterated. The third loop incorrectly read `devDependencies` again (yielding them as `depKind: "peer"`) instead of reading `peerDependencies`. _[`#673`](https://github.com/tylerbutler/tools-monorepo/pull/673) [`a4f70e9`](https://github.com/tylerbutler/tools-monorepo/commit/a4f70e9caaa4f2a3d96c10daaa7bcd95ef89961a) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.4.0
 
 ### Minor Changes
