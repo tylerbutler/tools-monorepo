@@ -1,17 +1,17 @@
 {
-	"name": "@tylerbu/astro-tinylytics",
-	"version": "0.1.0",
+	"name": "astro-tinylytics",
+	"version": "0.0.1",
 	"description": "Astro components for Tinylytics analytics, kudos buttons, and webmentions.",
 	"keywords": [
 		"astro",
 		"astro-component",
-		"tinylytics",
-		"webmention",
-		"kudos",
 		"indieweb",
-		"analytics"
+		"analytics",
+		"kudos",
+		"tinylytics",
+		"webmention"
 	],
-	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/astro-tinylytics#tylerbuastro-tinylytics",
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/astro-tinylytics#astro-tinylytics",
 	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
 	"repository": {
 		"type": "git",
@@ -25,44 +25,48 @@
 	],
 	"type": "module",
 	"exports": {
-		"./Tinylytics.astro": "./src/Tinylytics.astro",
+		".": "./src/index.ts",
 		"./KudosButton.astro": "./src/KudosButton.astro",
 		"./styles.css": "./src/styles.css",
+		"./Tinylytics.astro": "./src/Tinylytics.astro",
 		"./package.json": "./package.json"
 	},
 	"files": [
-		"src",
 		"CHANGELOG.md",
 		"LICENSE",
-		"README.md"
+		"README.md",
+		"src"
 	],
 	"scripts": {
-		"check": "pnpm check:format && pnpm check:astro",
 		"check:astro": "astro check",
-		"check:format": "biome check . --linter-enabled=false",
 		"clean": "rimraf *.tsbuildinfo *.done.build.log .astro",
 		"format": "biome check . --linter-enabled=false --write",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint . --write",
-		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs"
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:coverage": "vitest run --coverage",
+		"test:vitest": "vitest run"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.6",
 		"@biomejs/biome": "2.3.8",
+		"@vitest/coverage-v8": "^4.0.18",
 		"astro": "^5.17.1",
 		"generate-license-file": "^4.1.1",
 		"rimraf": "^6.1.2",
 		"sort-package-json": "*",
-		"typescript": "~5.9.3"
+		"typescript": "~5.9.3",
+		"vitest": "^4.0.18"
 	},
 	"peerDependencies": {
-		"astro": "^5.0.0"
+		"astro": ">=4.0.0"
 	},
 	"engines": {
 		"node": ">=18.0.0"
 	},
 	"nx": {
 		"targets": {
+			"build": {},
 			"ci": {}
 		}
 	}

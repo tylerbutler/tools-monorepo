@@ -1,0 +1,31 @@
+---
+
+/**
+ * Tinylytics kudos (like) button. Requires the script to be loaded with
+ * `kudos` (any variant, including `kudos="custom"`).
+ *
+ * - Leave the slot empty to let Tinylytics inject the default `👋 N` content.
+ * - When `kudos="custom"` is used on the script loader, the script will
+ *   inject just the count, leaving you free to render your own visual.
+ *
+ * @see https://tinylytics.app/docs/showing_kudos
+ */
+import type { KudosProps } from "./types.ts";
+
+export type Props = KudosProps;
+
+const {
+  path,
+  private: isPrivate = false,
+  ignore = false,
+  class: className,
+} = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={["tinylytics_kudos", className]}
+  data-path={path}
+  data-private={isPrivate ? "true" : undefined}
+  data-ignore={ignore ? "true" : undefined}
+><slot /></button>

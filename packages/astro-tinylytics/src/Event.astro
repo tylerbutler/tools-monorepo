@@ -1,0 +1,34 @@
+---
+
+/**
+ * Wrap any element with Tinylytics event-tracking data attributes. Requires
+ * the script to be loaded with `events` (and ideally `beacon` for links
+ * that navigate away).
+ *
+ * Event names must use the `category.action` format. The Tinylytics script
+ * also accepts `category->action` and converts arrows to dots.
+ *
+ * @example
+ *   <Event name="file.download" value="pricing.pdf" as="a" href="/pricing.pdf">
+ *     Download pricing
+ *   </Event>
+ *
+ * @see https://tinylytics.app/docs/event_tracking
+ */
+import type { EventProps } from "./types.ts";
+
+type AnchorAttrs = astroHTML.JSX.AnchorHTMLAttributes;
+type ButtonAttrs = astroHTML.JSX.ButtonHTMLAttributes;
+type DivAttrs = astroHTML.JSX.HTMLAttributes;
+
+export type Props = (AnchorAttrs | ButtonAttrs | DivAttrs) & EventProps;
+
+const { name, value, as, ...rest } = Astro.props;
+const Tag = as ?? ("href" in rest && rest.href ? "a" : "button");
+---
+
+<Tag
+  {...rest}
+  data-tinylytics-event={name}
+  data-tinylytics-event-value={value}
+><slot /></Tag>

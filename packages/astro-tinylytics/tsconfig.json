@@ -1,5 +1,4 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "astro/tsconfigs/strict",
-	"include": ["src/**/*"],
+	"extends": "astro/tsconfigs/strictest",
+	"include": ["src/**/*", "test/**/*"],
 }
