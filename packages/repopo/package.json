@@ -89,10 +89,10 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "~0.63.0",
+		"@fluid-tools/build-infrastructure": "~0.65.0",
 		"@oclif/core": "^4.10.6",
 		"@oclif/plugin-help": "^6.2.44",
-		"@rushstack/node-core-library": "^5.19.0",
+		"@rushstack/node-core-library": "^5.23.1",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
