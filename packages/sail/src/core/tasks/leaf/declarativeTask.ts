@@ -1,4 +1,4 @@
-import globby from "globby";
+import { globby } from "globby";
 
 import type { BuildContext } from "../../buildContext.js";
 import type { BuildGraphPackage } from "../../buildGraph.js";

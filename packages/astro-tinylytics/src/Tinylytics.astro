@@ -1,0 +1,21 @@
+---
+import { buildScriptUrl } from "./urls.ts";
+
+type Props =
+	| { embedCode: string; webmention: true; kudos?: never; hits?: never }
+	| {
+			embedCode: string;
+			webmention?: false;
+			kudos?: boolean | "custom";
+			hits?: boolean | "unique";
+	  };
+
+const props = Astro.props;
+const webmentionHref = props.webmention
+	? `https://tinylytics.app/webmention/${props.embedCode}`
+	: null;
+const scriptSrc = props.webmention ? null : buildScriptUrl(props);
+---
+
+{webmentionHref && <link rel="webmention" href={webmentionHref} />}
+{scriptSrc && <script src={scriptSrc} defer is:inline />}

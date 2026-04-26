@@ -45,6 +45,13 @@ const config = {
 			isIgnored: true,
 		},
 		{
+			label:
+				"Allow engines.node to differ across packages (each package declares its own runtime floor)",
+			dependencyTypes: ["engines"],
+			isIgnored: true,
+			packages: ["**"],
+		},
+		{
 			label: "Use >= range for repopo peer dependency in sort-tsconfig",
 			dependencies: ["repopo"],
 			dependencyTypes: ["peer"],

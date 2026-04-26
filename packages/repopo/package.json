@@ -1,6 +1,6 @@
 {
 	"name": "repopo",
-	"version": "0.10.0",
+	"version": "0.11.0",
 	"description": "Enforce policies on all or some of the files in a git repository.",
 	"keywords": [
 		"policy",
@@ -87,50 +87,61 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/repopo/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@fluid-tools/build-infrastructure": "~0.63.0",
-		"@oclif/core": "^4.8.0",
-		"@oclif/plugin-help": "^6.2.36",
-		"@rushstack/node-core-library": "^5.19.0",
+		"@fluid-tools/build-infrastructure": "~0.65.0",
+		"@oclif/core": "^4.10.6",
+		"@oclif/plugin-help": "^6.2.44",
+		"@rushstack/node-core-library": "^5.23.1",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
-		"consola": "^3.4.0",
-		"defu": "^6.1.4",
-		"effection": "^4.0.0",
-		"jsonfile": "^6.2.0",
+		"consola": "^3.4.2",
+		"defu": "^6.1.7",
+		"effection": "^4.0.2",
+		"jsonfile": "^6.2.1",
 		"lilconfig": "^3.1.3",
 		"microdiff": "^1.5.0",
 		"pathe": "^2.0.3",
 		"picocolors": "^1.1.1",
-		"picomatch": "^4.0.3",
-		"resolve-workspace-root": "^2.0.0",
-		"simple-git": "^3.32.3",
-		"tinyglobby": "^0.2.15"
+		"picomatch": "^4.0.4",
+		"resolve-workspace-root": "^2.0.1",
+		"simple-git": "^3.36.0",
+		"tinyglobby": "^0.2.16"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@microsoft/api-extractor": "^7.56.0",
-		"@oclif/plugin-command-snapshot": "^5.3.8",
-		"@oclif/test": "^4.1.15",
+		"@microsoft/api-extractor": "^7.58.7",
+		"@oclif/plugin-command-snapshot": "^5.3.16",
+		"@oclif/test": "^4.1.18",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.25",
-		"@types/picomatch": "^4.0.2",
+		"@types/node": "^20.19.39",
+		"@types/picomatch": "^4.0.3",
+		"@types/spdx-correct": "^3.1.3",
 		"@types/tmp": "^0.2.6",
-		"@vitest/coverage-v8": "^4.0.18",
+		"@vitest/coverage-v8": "^4.1.5",
 		"generate-license-file": "^4.1.1",
-		"oclif": "^4.22.50",
-		"rimraf": "^6.1.2",
+		"oclif": "^4.23.0",
+		"rimraf": "^6.1.3",
+		"smol-toml": "^1.6.1",
+		"spdx-correct": "^3.2.0",
 		"tmp-promise": "^3.0.3",
 		"ts-node": "^10.9.2",
-		"type-fest": "^5.4.1",
-		"typescript": "~5.9.3",
-		"vitest": "^4.0.18"
+		"type-fest": "^5.6.0",
+		"typescript": "~6.0.3",
+		"vitest": "^4.1.5"
 	},
 	"peerDependencies": {
-		"sort-package-json": "*"
+		"smol-toml": "^1.0.0",
+		"sort-package-json": "*",
+		"spdx-correct": "^3.0.0"
 	},
 	"peerDependenciesMeta": {
+		"smol-toml": {
+			"optional": true
+		},
 		"sort-package-json": {
+			"optional": true
+		},
+		"spdx-correct": {
 			"optional": true
 		}
 	},

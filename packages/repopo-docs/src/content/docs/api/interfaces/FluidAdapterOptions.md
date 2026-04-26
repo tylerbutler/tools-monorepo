@@ -17,7 +17,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### namePrefix?
 
-> `optional` **namePrefix**: `string`
+> `optional` **namePrefix?**: `string`
 
 Defined in: [adapters/fluidFramework.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L63)
 

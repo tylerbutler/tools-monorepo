@@ -17,7 +17,7 @@ Defined in: [packages/sail-infrastructure/src/config.ts:40](https://github.com/t
 ### buildProject?
 
 ```ts
-optional buildProject: object;
+optional buildProject?: object;
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:30](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L30)
@@ -49,7 +49,7 @@ BuildProjectConfigBase.buildProject
 ### ~~repoPackages?~~
 
 ```ts
-optional repoPackages: IFluidBuildDirs;
+optional repoPackages?: IFluidBuildDirs;
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L53)

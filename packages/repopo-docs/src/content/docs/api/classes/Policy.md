@@ -54,7 +54,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### defaultConfig?
 
-> `readonly` `optional` **defaultConfig**: `C`
+> `readonly` `optional` **defaultConfig?**: `C`
 
 Defined in: [policy.ts:249](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L249)
 
@@ -144,7 +144,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### resolver?
 
-> `readonly` `optional` **resolver**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
+> `readonly` `optional` **resolver?**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
 Defined in: [policy.ts:250](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L250)
 

@@ -15,7 +15,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### excludeFiles?
 
-> `optional` **excludeFiles**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
+> `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
 Defined in: [config.ts:42](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L42)
 
@@ -30,7 +30,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### policies?
 
-> `optional` **policies**: ([`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`any`\> \| [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`any`\>)[]
+> `optional` **policies?**: ([`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`any`\> \| [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`any`\>)[]
 
 Defined in: [config.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L36)
 
