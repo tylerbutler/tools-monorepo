@@ -55,7 +55,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### resolution?
 
-> `optional` **resolution**: [`PolicyFixResult`](/api/interfaces/policyfixresult/)
+> `optional` **resolution?**: [`PolicyFixResult`](/api/interfaces/policyfixresult/)
 
 Defined in: [runner.ts:38](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L38)
 

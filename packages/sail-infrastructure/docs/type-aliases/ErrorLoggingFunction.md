@@ -4,7 +4,7 @@
 
 [@tylerbu/sail-infrastructure](../README.md) / ErrorLoggingFunction
 
-# Type Alias: ErrorLoggingFunction()
+# Type Alias: ErrorLoggingFunction
 
 ```ts
 type ErrorLoggingFunction = (msg, ...args) => void;
@@ -18,7 +18,7 @@ A function that logs an Error or error message.
 
 ### msg
 
-`string` | `Error` | `undefined`
+`string` \| `Error` \| `undefined`
 
 ### args
 

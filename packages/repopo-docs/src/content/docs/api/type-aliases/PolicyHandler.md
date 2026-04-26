@@ -5,7 +5,7 @@ prev: false
 title: "PolicyHandler"
 ---
 
-> **PolicyHandler**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\> \| (`args`) => `Operation`\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>
+> **PolicyHandler**\<`C`\> = ((`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>) \| ((`args`) => `Operation`\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>)
 
 Defined in: [policy.ts:168](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L168)
 
