@@ -52,7 +52,7 @@
 	},
 	"formatter": {
 		// "enabled": true,
-		"includes": ["**", "!**/__snapshots__/**", "!**/*.astro"],
+		"includes": ["**", "!**/__snapshots__/**"],
 	},
 	"linter": {
 		// "enabled": true,
@@ -118,7 +118,15 @@
 			// Astro files - biome can parse the frontmatter but not the template
 			// below it, so it treats any variable referenced only in the template
 			// as unused. Disable the affected correctness rules for .astro.
+			// Also disable formatter and assist: biome's partial .astro support
+			// mangles the frontmatter (e.g. inserts blank line after ---).
 			"includes": ["**/*.astro"],
+			"formatter": {
+				"enabled": false,
+			},
+			"assist": {
+				"enabled": false,
+			},
 			"linter": {
 				"rules": {
 					"correctness": {
