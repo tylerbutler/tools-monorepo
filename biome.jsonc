@@ -52,7 +52,7 @@
 	},
 	"formatter": {
 		// "enabled": true,
-		"includes": ["**", "!**/__snapshots__/**"],
+		"includes": ["**", "!**/__snapshots__/**", "!**/*.astro"],
 	},
 	"linter": {
 		// "enabled": true,
