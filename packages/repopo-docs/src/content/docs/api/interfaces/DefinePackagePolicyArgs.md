@@ -27,7 +27,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### defaultConfig?
 
-> `optional` **defaultConfig**: `C`
+> `optional` **defaultConfig?**: `C`
 
 Defined in: [policyDefiners/definePackagePolicy.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L67)
 

@@ -25,7 +25,7 @@ Defined in: [packages/sail-infrastructure/src/filter.ts:241](https://github.com/
 ### private?
 
 ```ts
-optional private: boolean;
+optional private?: boolean;
 ```
 
 Defined in: [packages/sail-infrastructure/src/filter.ts:242](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L242)

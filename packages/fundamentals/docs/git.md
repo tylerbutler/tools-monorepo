@@ -10,7 +10,7 @@
 
 ### findGitRootSync()
 
-> **findGitRootSync**(`cwd`): `string`
+> **findGitRootSync**(`cwd?`): `string`
 
 Defined in: [packages/fundamentals/src/git.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/git.ts#L17)
 
@@ -22,7 +22,7 @@ If the current directory is not part of a Git repository, it throws an error.
 
 #### Parameters
 
-##### cwd
+##### cwd?
 
 `string` = `...`
 
