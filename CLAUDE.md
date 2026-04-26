@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Workflow
+
+**Never push directly to main.** Always create a branch, commit there, and open a PR — even for small fixes. Only push to main if explicitly instructed.
+
 ## Quick Commands (for Claude)
 
 **Before making changes:**
