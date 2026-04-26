@@ -27,6 +27,7 @@
 			"plugin": "@nx/vite/plugin",
 			"exclude": [
 				"packages/dill-docs/**", // Astro site
+				"packages/fluid-svelte/**", // SvelteKit library
 				"packages/repopo-docs/**" // Astro site
 			],
 			"options": {

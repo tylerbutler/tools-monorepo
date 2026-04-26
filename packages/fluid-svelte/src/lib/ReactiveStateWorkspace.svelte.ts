@@ -1,12 +1,9 @@
 import type {
 	Attendee,
-	LatestClientData,
+	Latest,
 	LatestRaw,
 } from "@fluidframework/presence/alpha";
 import { SvelteMap } from "svelte/reactivity";
-
-// temporary type
-type Latest<T> = LatestRaw<T>;
 
 /**
  * A class that wraps a Fluid Framework presence state workspace in Svelte state so the data becomes reactive when used
@@ -44,7 +41,7 @@ export class ReactiveStateWorkspace<
 
 	constructor(public readonly latest: L) {
 		// Wire up event listener to update the reactive map when the remote users' data is updated
-		latest.events.on("remoteUpdated", (data: LatestClientData<T>) => {
+		latest.events.on("remoteUpdated", (data) => {
 			this.reactiveState.set(data.attendee, data.value as T);
 		});
 
