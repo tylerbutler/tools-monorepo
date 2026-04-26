@@ -60,7 +60,7 @@ The Map key that was already set.
 
 ##### cause?
 
-> `optional` **cause**: `unknown`
+> `optional` **cause?**: `unknown`
 
 Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.es2022.error.d.ts:24
 
@@ -96,7 +96,7 @@ Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/li
 
 ##### stack?
 
-> `optional` **stack**: `string`
+> `optional` **stack?**: `string`
 
 Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
 
@@ -273,7 +273,7 @@ Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/li
 
 ###### entries?
 
-readonly readonly \[`K`, `V`\][] | `null`
+readonly readonly \[`K`, `V`\][] \| `null`
 
 ###### Returns
 
@@ -295,7 +295,7 @@ Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/li
 
 ###### iterable?
 
-`Iterable`\<readonly \[`K`, `V`\], `any`, `any`\> | `null`
+`Iterable`\<readonly \[`K`, `V`\], `any`, `any`\> \| `null`
 
 ###### Returns
 
@@ -525,7 +525,7 @@ Returns an iterable of keys in the map
 
 ##### set()
 
-> **set**(`key`, `value`, `force`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
+> **set**(`key`, `value`, `force?`): [`WriteOnceMap`](#writeoncemap)\<`K`, `V`\>
 
 Defined in: [packages/fundamentals/src/writeOnceMap.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/fundamentals/src/writeOnceMap.ts#L36)
 
@@ -548,7 +548,7 @@ The key to set.
 
 The value to set.
 
-###### force
+###### force?
 
 `boolean` = `false`
 

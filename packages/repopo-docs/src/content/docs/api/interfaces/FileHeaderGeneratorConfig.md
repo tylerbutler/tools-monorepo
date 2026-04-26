@@ -26,7 +26,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### autoGenText?
 
-> `optional` **autoGenText**: `string`
+> `optional` **autoGenText?**: `string`
 
 Defined in: [policyDefiners/defineFileHeaderPolicy.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L21)
 
@@ -44,7 +44,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### headerEnd?
 
-> `optional` **headerEnd**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+> `optional` **headerEnd?**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
 Defined in: [policyDefiners/defineFileHeaderPolicy.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L56)
 
@@ -58,7 +58,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### headerStart?
 
-> `optional` **headerStart**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
+> `optional` **headerStart?**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
 Defined in: [policyDefiners/defineFileHeaderPolicy.ts:41](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L41)
 
@@ -72,7 +72,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### headerText?
 
-> `optional` **headerText**: `string`
+> `optional` **headerText?**: `string`
 
 Defined in: [policyDefiners/defineFileHeaderPolicy.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L16)
 
@@ -130,7 +130,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ***
 
-### replacer()
+### replacer
 
 > **replacer**: (`content`, `config`) => `string`
 

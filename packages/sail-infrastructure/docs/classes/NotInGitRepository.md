@@ -47,7 +47,7 @@ Error.constructor
 ### cause?
 
 ```ts
-optional cause: unknown;
+optional cause?: unknown;
 ```
 
 Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.es2022.error.d.ts:24
@@ -107,7 +107,7 @@ The path that was checked and found to be outside a Git repository.
 ### stack?
 
 ```ts
-optional stack: string;
+optional stack?: string;
 ```
 
 Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.es5.d.ts:1076
