@@ -115,7 +115,6 @@ impl HandlerResult {
             }
         }
     }
-
 }
 
 /// IPC request sent from Rust to the Node sidecar.

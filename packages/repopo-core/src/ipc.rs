@@ -148,8 +148,7 @@ impl Sidecar {
     /// Convert a compact batch response into the Vec<(file, HandlerResult)> format
     /// expected by callers.
     fn expand_compact_response(batch: CompactBatchResponse) -> Vec<(String, HandlerResult)> {
-        let mut results =
-            Vec::with_capacity(batch.pass.len() + batch.fail.len());
+        let mut results = Vec::with_capacity(batch.pass.len() + batch.fail.len());
 
         for file in batch.pass {
             results.push((file, HandlerResult::Pass(true)));
