@@ -3,7 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 import type { PackageJson } from "@tylerbu/sail-infrastructure";
-import * as glob from "glob";
+import { type GlobOptions, glob } from "glob";
 import path from "pathe";
 
 import { lookUpDirSync } from "../../common/utils.js";
@@ -93,16 +93,9 @@ export function toPosixPath(s: string) {
 
 export async function globFn(
 	pattern: string,
-	options: glob.IOptions = {},
+	options: GlobOptions = {},
 ): Promise<string[]> {
-	return new Promise((resolve, reject) => {
-		glob.default(pattern, options, (err, matches) => {
-			if (err) {
-				reject(err);
-			}
-			resolve(matches);
-		});
-	});
+	return (await glob(pattern, options)) as string[];
 }
 
 export async function loadModule(modulePath: string, moduleType?: string) {
