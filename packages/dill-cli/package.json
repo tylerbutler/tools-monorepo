@@ -92,7 +92,7 @@
 	},
 	"dependencies": {
 		"@oclif/core": "^4.10.6",
-		"@oclif/plugin-help": "^6.2.44",
+		"@oclif/plugin-help": "^6.2.45",
 		"@tinyhttp/content-disposition": "^2.2.4",
 		"@tylerbu/cli-api": "workspace:^",
 		"effection": "^4.0.2",
