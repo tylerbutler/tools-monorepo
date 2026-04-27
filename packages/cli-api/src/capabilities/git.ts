@@ -2,7 +2,7 @@ import { resolve } from "pathe";
 import type { SimpleGit } from "simple-git";
 import type { BaseCommand } from "../baseCommand.js";
 import { Repository } from "../git.js";
-import { type LazyCapability, createLazy } from "./capability.js";
+import { createLazy, type LazyCapability } from "./capability.js";
 
 /**
  * Configuration options for git capability.
@@ -221,8 +221,5 @@ export function useGit<
 	command: TCommand,
 	options?: GitCapabilityOptions,
 ): LazyCapability<GitContext> {
-	return createLazy(
-		() => initializeGit(command, options ?? {}),
-		command,
-	);
+	return createLazy(() => initializeGit(command, options ?? {}), command);
 }

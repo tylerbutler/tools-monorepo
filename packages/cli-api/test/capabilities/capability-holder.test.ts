@@ -119,11 +119,7 @@ describe("createLazy", () => {
 			}, command);
 
 			// Call get() multiple times concurrently
-			const results = await Promise.all([
-				lazy.get(),
-				lazy.get(),
-				lazy.get(),
-			]);
+			const results = await Promise.all([lazy.get(), lazy.get(), lazy.get()]);
 
 			// All should return the same object
 			expect(results[0]).toBe(results[1]);

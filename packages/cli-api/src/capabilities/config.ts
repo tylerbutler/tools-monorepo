@@ -1,6 +1,6 @@
 import type { BaseCommand } from "../baseCommand.js";
 import { loadConfig } from "../loadConfig.js";
-import { type LazyCapability, createLazy } from "./capability.js";
+import { createLazy, type LazyCapability } from "./capability.js";
 
 /**
  * Branded type to distinguish default config location from regular strings.
@@ -245,8 +245,5 @@ export function useConfig<
 	command: TCommand,
 	options?: ConfigCapabilityOptions<TConfig>,
 ): LazyCapability<ConfigContext<TConfig>> {
-	return createLazy(
-		() => initializeConfig(command, options ?? {}),
-		command,
-	);
+	return createLazy(() => initializeConfig(command, options ?? {}), command);
 }
