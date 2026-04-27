@@ -93,6 +93,7 @@ const config: RepopoConfig = {
 			{
 				allowedScopes: ["@tylerbu"],
 				unscopedPackages: [
+					"astro-tinylytics",
 					"dill-cli",
 					"dill-docs",
 					"rehype-footnotes",

@@ -29,7 +29,7 @@ Type of configuration object used by the policy
 
 ### config?
 
-> `optional` **config**: `C`
+> `optional` **config?**: `C`
 
 Defined in: [policy.ts:279](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L279)
 
@@ -43,7 +43,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### defaultConfig?
 
-> `optional` **defaultConfig**: `C`
+> `optional` **defaultConfig?**: `C`
 
 Defined in: [policy.ts:232](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L232)
 
@@ -79,7 +79,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### ~~exclude?~~
 
-> `optional` **exclude**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
+> `optional` **exclude?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
 Defined in: [policy.ts:285](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L285)
 
@@ -97,7 +97,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### excludeFiles?
 
-> `optional` **excludeFiles**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
+> `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
 Defined in: [policy.ts:290](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L290)
 
@@ -165,7 +165,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### resolver?
 
-> `optional` **resolver**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
+> `optional` **resolver?**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
 Defined in: [policy.ts:227](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L227)
 

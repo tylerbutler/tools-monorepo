@@ -2,10 +2,15 @@ import type { Logger } from "@tylerbu/cli-api";
 import type { Operation } from "effection";
 import type { PolicyName } from "./policy.js";
 
+/**
+ * The type of action a policy can perform.
+ * @alpha
+ */
 export type PolicyAction = "check" | "resolve" | "handle";
 
 /**
  * Stores performance data for each handler. Used to collect and display performance stats.
+ * @alpha
  */
 export interface PolicyHandlerPerfStats {
 	count: number;

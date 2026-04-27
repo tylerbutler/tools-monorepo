@@ -72,9 +72,9 @@ describe("PersistentFileHashCache", () => {
 			expect(customCache).toBeInstanceOf(PersistentFileHashCache);
 		});
 
-		it("should initialize with empty cache", () => {
+		it("should initialize with empty cache", async () => {
 			// Act
-			const stats = cache.getCacheStats();
+			const stats = await cache.getCacheStats();
 
 			// Assert
 			expect(stats.persistentEntries).toBe(0);
@@ -323,7 +323,7 @@ describe("PersistentFileHashCache", () => {
 			await cache2.loadCache();
 
 			// Assert - should start fresh, not use incompatible cache
-			const stats = cache2.getCacheStats();
+			const stats = await cache2.getCacheStats();
 			expect(stats.persistentEntries).toBe(0);
 		});
 	});
@@ -335,7 +335,7 @@ describe("PersistentFileHashCache", () => {
 			await cache.getFileHash(testFile2);
 
 			// Act
-			const stats = cache.getCacheStats();
+			const stats = await cache.getCacheStats();
 
 			// Assert
 			expect(stats.persistentEntries).toBe(2);
@@ -348,16 +348,16 @@ describe("PersistentFileHashCache", () => {
 			await cache.saveCache();
 
 			// Act
-			const stats = cache.getCacheStats();
+			const stats = await cache.getCacheStats();
 
 			// Assert
 			expect(stats.lastSaved).toBeDefined();
 			expect(stats.lastSaved).toBeGreaterThan(0);
 		});
 
-		it("should return undefined for last saved time when cache not saved", () => {
+		it("should return undefined for last saved time when cache not saved", async () => {
 			// Act
-			const stats = cache.getCacheStats();
+			const stats = await cache.getCacheStats();
 
 			// Assert
 			expect(stats.lastSaved).toBeUndefined();
@@ -378,7 +378,7 @@ describe("PersistentFileHashCache", () => {
 
 			// Assert - entry should be removed
 			expect(removedCount).toBeGreaterThanOrEqual(0); // May be 0 if timing is tight
-			const newStats = cache.getCacheStats();
+			const newStats = await cache.getCacheStats();
 			// After cleanup with 1ms, entries should be gone
 			if (removedCount > 0) {
 				expect(newStats.persistentEntries).toBe(0);
@@ -394,7 +394,7 @@ describe("PersistentFileHashCache", () => {
 
 			// Assert
 			expect(removedCount).toBe(0);
-			const stats = cache.getCacheStats();
+			const stats = await cache.getCacheStats();
 			expect(stats.persistentEntries).toBe(1);
 		});
 
@@ -444,14 +444,14 @@ describe("PersistentFileHashCache", () => {
 			// Arrange
 			await cache.getFileHash(testFile1);
 			await cache.getFileHash(testFile2);
-			const statsBefore = cache.getCacheStats();
+			const statsBefore = await cache.getCacheStats();
 			expect(statsBefore.persistentEntries).toBe(2);
 
 			// Act
 			cache.clear();
 
 			// Assert
-			const statsAfter = cache.getCacheStats();
+			const statsAfter = await cache.getCacheStats();
 			expect(statsAfter.persistentEntries).toBe(0);
 		});
 
@@ -488,7 +488,7 @@ describe("PersistentFileHashCache", () => {
 
 			// Assert - hashes should be same (same file) but cache was cleared
 			expect(hash2).toBe(hash1);
-			const stats = cache.getCacheStats();
+			const stats = await cache.getCacheStats();
 			expect(stats.persistentEntries).toBe(1); // Re-cached after clear
 		});
 	});

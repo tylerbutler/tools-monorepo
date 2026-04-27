@@ -15,7 +15,7 @@ The criteria that should be used for selecting package-like objects from a colle
 ### changedSinceBranch?
 
 ```ts
-optional changedSinceBranch: string;
+optional changedSinceBranch?: string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/filter.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L67)
@@ -27,7 +27,7 @@ If set, only selects packages that have changes when compared with the branch of
 ### directory?
 
 ```ts
-optional directory: string;
+optional directory?: string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/filter.ts:62](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L62)

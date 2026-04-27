@@ -17,7 +17,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Properties
 
-### handler()
+### handler
 
 > **handler**: (`file`, `root`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<`string` \| `undefined`\>
 
@@ -79,9 +79,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ***
 
-### resolver()?
+### resolver?
 
-> `optional` **resolver**: (`file`, `root`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<\{ `message?`: `string`; `resolved`: `boolean`; \}\> \| \{ `message?`: `string`; `resolved`: `boolean`; \}
+> `optional` **resolver?**: (`file`, `root`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<\{ `message?`: `string`; `resolved`: `boolean`; \}\> \| \{ `message?`: `string`; `resolved`: `boolean`; \}
 
 Defined in: [adapters/fluidFramework.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L44)
 

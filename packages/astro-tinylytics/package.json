@@ -1,0 +1,73 @@
+{
+	"name": "astro-tinylytics",
+	"version": "0.1.0",
+	"description": "Astro components for Tinylytics analytics, kudos buttons, and webmentions.",
+	"keywords": [
+		"astro",
+		"astro-component",
+		"indieweb",
+		"analytics",
+		"kudos",
+		"tinylytics",
+		"webmention"
+	],
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/astro-tinylytics#astro-tinylytics",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/astro-tinylytics"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"sideEffects": [
+		"**/*.css"
+	],
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./KudosButton.astro": "./src/KudosButton.astro",
+		"./styles.css": "./src/styles.css",
+		"./Tinylytics.astro": "./src/Tinylytics.astro",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"CHANGELOG.md",
+		"LICENSE",
+		"README.md",
+		"src"
+	],
+	"scripts": {
+		"check:astro": "astro check",
+		"clean": "rimraf *.tsbuildinfo *.done.build.log .astro",
+		"format": "biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --write",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:coverage": "vitest run --coverage",
+		"test:vitest": "vitest run"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.8",
+		"@biomejs/biome": "2.3.8",
+		"@vitest/coverage-v8": "^4.1.5",
+		"astro": "^6.1.9",
+		"generate-license-file": "^4.1.1",
+		"rimraf": "^6.1.3",
+		"sort-package-json": "*",
+		"typescript": "~6.0.3",
+		"vitest": "^4.1.5"
+	},
+	"peerDependencies": {
+		"astro": ">=4.0.0"
+	},
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"nx": {
+		"targets": {
+			"build": {},
+			"ci": {}
+		}
+	}
+}

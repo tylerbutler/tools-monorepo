@@ -25,7 +25,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### ~~autoFixable?~~
 
-> `optional` **autoFixable**: `boolean`
+> `optional` **autoFixable?**: `boolean`
 
 Defined in: [policy.ts:110](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L110)
 
@@ -79,7 +79,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### ~~manualFix?~~
 
-> `optional` **manualFix**: `string`
+> `optional` **manualFix?**: `string`
 
 Defined in: [policy.ts:120](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L120)
 

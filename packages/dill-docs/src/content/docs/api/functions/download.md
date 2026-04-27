@@ -16,9 +16,9 @@ Downloads a file from a URL. By default, the file will be downloaded to the curr
 
 ### url
 
-The URL to download.
+`string` \| `URL`
 
-`string` | `URL`
+The URL to download.
 
 ### options?
 

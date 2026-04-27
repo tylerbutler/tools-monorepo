@@ -92,7 +92,7 @@ The absolute path to the root of the IBuildProject. This is the path where the c
 ### upstreamRemotePartialUrl?
 
 ```ts
-optional upstreamRemotePartialUrl: string;
+optional upstreamRemotePartialUrl?: string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/types.ts:89](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L89)

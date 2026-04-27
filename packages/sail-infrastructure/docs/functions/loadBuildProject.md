@@ -9,7 +9,7 @@
 ```ts
 function loadBuildProject<P>(
    searchPath, 
-   infer, 
+   infer?, 
 upstreamRemotePartialUrl?): IBuildProject<P>;
 ```
 
@@ -33,7 +33,7 @@ The type to use for Packages.
 
 The path to start searching for a BuildProject config.
 
-### infer
+### infer?
 
 `boolean` = `false`
 
