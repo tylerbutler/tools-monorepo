@@ -51,20 +51,6 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
 }
 
 // @beta
-export interface Capability<TCommand extends BaseCommand<any>, TResult = unknown> {
-    cleanup?(): Promise<void> | void;
-    initialize(command: TCommand): Promise<TResult> | TResult;
-}
-
-// @beta
-export class CapabilityWrapper<TCommand extends BaseCommand<any>, TResult> {
-    constructor(command: TCommand, capability: Capability<TCommand, TResult>);
-    cleanup(): Promise<void>;
-    get(): Promise<TResult>;
-    get isInitialized(): boolean;
-}
-
-// @beta
 export function checkConflicts(git: SimpleGit, commitIds: string[], log?: Logger): Promise<{
     commit: string;
     mergeability: CommitMergeability;
@@ -96,13 +82,6 @@ export interface CommandWithContext<CONTEXT> {
 
 // @beta
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
-
-// @beta
-export class ConfigCapability<TCommand extends BaseCommand<any>, TConfig> implements Capability<TCommand, ConfigContext<TConfig>> {
-    constructor(options?: ConfigCapabilityOptions<TConfig>);
-    // (undocumented)
-    initialize(command: TCommand): Promise<ConfigContext<TConfig>>;
-}
 
 // @beta
 export interface ConfigCapabilityOptions<TConfig> {
@@ -138,6 +117,9 @@ export const ConfigFlagHidden: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export function createBasicLogger(): Logger;
+
+// @beta
+export const DEFAULT_CONFIG_LOCATION: DefaultConfigLocation;
 
 // @beta
 export type DefaultConfigLocation = "DEFAULT" & {
@@ -210,13 +192,6 @@ export function getMergeBase(git: SimpleGit, reference1: string, reference2: str
 export function getPackageManagerInfo(pm: PackageManager): PackageManagerInfo;
 
 // @beta
-export class GitCapability<TCommand extends BaseCommand<any>> implements Capability<TCommand, GitContext> {
-    constructor(options?: GitCapabilityOptions);
-    // (undocumented)
-    initialize(command: TCommand): Promise<GitContext>;
-}
-
-// @beta
 export interface GitCapabilityOptions {
     baseDir?: string;
     required?: boolean;
@@ -236,13 +211,22 @@ export abstract class GitCommand<T extends typeof Command & {
 }
 
 // @beta
-export interface GitContext {
+export type GitContext = GitContextInRepo | GitContextNoRepo;
+
+// @beta
+export interface GitContextInRepo {
     getCurrentBranch(): Promise<string>;
     git: SimpleGit;
     hasUncommittedChanges(): Promise<boolean>;
     isCleanWorkingTree(): Promise<boolean>;
-    isRepo: boolean;
+    isRepo: true;
     repo: Repository;
+}
+
+// @beta
+export interface GitContextNoRepo {
+    baseDir: string;
+    isRepo: false;
 }
 
 // @beta
@@ -252,6 +236,12 @@ export function isSyncSupported(pm: PackageManager): boolean;
 export interface JsonWriteOptions {
     indent?: string | Indent | undefined;
     sort?: true | undefined;
+}
+
+// @beta
+export interface LazyCapability<T> {
+    get(): Promise<T>;
+    readonly isInitialized: boolean;
 }
 
 // @public
@@ -376,9 +366,29 @@ export interface UpdateVersionRangeOptions {
 }
 
 // @beta
-export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options?: ConfigCapabilityOptions<TConfig>): CapabilityWrapper<TCommand, ConfigContext<TConfig>>;
+export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options: ConfigCapabilityOptions<TConfig> & {
+    required: true;
+}): LazyCapability<ConfigContextFound<TConfig>>;
 
 // @beta
-export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options?: GitCapabilityOptions): CapabilityWrapper<TCommand, GitContext>;
+export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options: ConfigCapabilityOptions<TConfig> & {
+    required: false;
+}): LazyCapability<ConfigContext<TConfig>>;
+
+// @beta
+export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options?: ConfigCapabilityOptions<TConfig>): LazyCapability<ConfigContextFound<TConfig>>;
+
+// @beta
+export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options: GitCapabilityOptions & {
+    required: true;
+}): LazyCapability<GitContextInRepo>;
+
+// @beta
+export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options: GitCapabilityOptions & {
+    required: false;
+}): LazyCapability<GitContext>;
+
+// @beta
+export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options?: GitCapabilityOptions): LazyCapability<GitContextInRepo>;
 
 ```

@@ -79,8 +79,8 @@ describe("ConfigFlagHidden", () => {
 		expect(ConfigFlagHidden.description).toBe("Path to configuration file.");
 	});
 
-	it("has -c shorthand", () => {
-		expect(ConfigFlagHidden.char).toBe("c");
+	it("does not claim a short-char alias", () => {
+		expect(ConfigFlagHidden.char).toBeUndefined();
 	});
 
 	it("is in CONFIGURATION help group", () => {
@@ -100,9 +100,10 @@ describe("ConfigFlagHidden", () => {
 		expect(typeof ConfigFlagHidden.parse).toBe("function");
 	});
 
-	it("has same configuration as ConfigFlag except hidden", () => {
+	it("has same configuration as ConfigFlag except hidden and no short-char", () => {
 		expect(ConfigFlagHidden.description).toBe(ConfigFlag.description);
-		expect(ConfigFlagHidden.char).toBe(ConfigFlag.char);
+		expect(ConfigFlagHidden.char).toBeUndefined();
+		expect(ConfigFlag.char).toBe("c");
 		expect(ConfigFlagHidden.helpGroup).toBe(ConfigFlag.helpGroup);
 		expect((ConfigFlagHidden as { exists?: boolean }).exists).toBe(
 			(ConfigFlag as { exists?: boolean }).exists,

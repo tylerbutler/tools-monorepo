@@ -50,12 +50,12 @@ export const ConfigFlag = Flags.file({
 
 /**
  * A pre-configured oclif flag for configuration file paths that is hidden from help output.
- * Validates that the file exists.
+ * Validates that the file exists. Does not claim a short-char alias so subclasses
+ * spreading these flags can use `-c` for their own purposes.
  *
  * @beta
  */
 export const ConfigFlagHidden = Flags.file({
-	char: "c",
 	description: "Path to configuration file.",
 	helpGroup: "CONFIGURATION",
 	exists: true,

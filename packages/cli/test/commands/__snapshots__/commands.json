@@ -159,11 +159,9 @@
         "command": "git:squish",
         "flagAliases": [],
         "flagChars": [
-            "c",
             "v"
         ],
         "flags": [
-            "config",
             "dry-run",
             "quiet",
             "verbose"
