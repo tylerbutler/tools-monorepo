@@ -122,7 +122,12 @@
 		},
 		"overrides": {
 			"oclif>@aws-sdk/client-cloudfront": "npm:empty-npm-package@1.0.0",
-			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0"
+			"oclif>@aws-sdk/client-s3": "npm:empty-npm-package@1.0.0",
+			"json5@<1.0.2": ">=1.0.2",
+			"brace-expansion@>=4.0.0 <5.0.5": ">=5.0.5",
+			"yaml@>=2.0.0 <2.8.3": ">=2.8.3",
+			"follow-redirects@<=1.15.11": ">=1.16.0",
+			"uuid@<14.0.0": ">=14.0.0"
 		}
 	},
 	"devEngines": {
