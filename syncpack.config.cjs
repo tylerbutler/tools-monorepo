@@ -1,5 +1,30 @@
 // @ts-check
 
+// Fixture packages used by sail and sail-infrastructure integration tests.
+// These simulate real-world repos with intentionally varied workspace protocols
+// (workspace:*, workspace:~) and lockfile-pinned dep versions (e.g., TypeScript)
+// that should not be synced with the monorepo.
+const fixturePackages = [
+	"@cache-test/**",
+	"@group2/**",
+	"@group3/**",
+	"@private/**",
+	"@shared/**",
+	"@test/**",
+	"cache-validity-multi-level-multi-task",
+	"diamond-dependency-fixture",
+	"lib-a",
+	"main-release-group-root",
+	"other-pkg-a",
+	"other-pkg-b",
+	"pkg-a",
+	"pkg-b",
+	"second-release-group-root",
+	"simple-monorepo-fixture",
+	"typescript-project-references-fixture",
+	"yarn-release-group-root",
+];
+
 /** @type {import("syncpack").RcFile} */
 const config = {
 	dependencyGroups: [
@@ -38,6 +63,13 @@ const config = {
 			isIgnored: true,
 			dependencies: ["**"],
 			packages: ["@tylerbu/levee-client"],
+		},
+		{
+			label:
+				"Ignore sail/sail-infrastructure integration test fixtures (simulate real-world repos)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: fixturePackages,
 		},
 		{
 			label: "Ignore all dependency types except dev, engines, and prod",
@@ -110,6 +142,13 @@ const config = {
 			isIgnored: true,
 			dependencies: ["**"],
 			packages: ["@tylerbu/levee-client"],
+		},
+		{
+			label:
+				"Ignore sail/sail-infrastructure integration test fixtures (simulate real-world repos)",
+			isIgnored: true,
+			dependencies: ["**"],
+			packages: fixturePackages,
 		},
 		{
 			label: "Ignore packageManager field",
