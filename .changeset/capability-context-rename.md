@@ -8,8 +8,8 @@ A new composition-based capability system is now available as an alternative to 
 
 **Core API:**
 
-- `createLazy()` / `LazyCapability<T>` — lazy-init primitive with concurrent-safe caching and standardized init-error handling.
-- `useGit(command, options)` — exposes `git` (SimpleGit), `repository`, and helpers (`getCurrentBranch`, `isCleanWorkingTree`, `hasUncommittedChanges`).
+- `LazyCapability<T>` — the lazy-init interface returned by capabilities after first access.
+- `useGit(command, options)` — exposes `git` (SimpleGit), `repo`, and helpers (`getCurrentBranch`, `isCleanWorkingTree`, `hasUncommittedChanges`).
 - `useConfig(command, options)` — config-file loading with multi-path search and default-config fallback.
 
 **Type safety:**

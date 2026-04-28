@@ -36,13 +36,14 @@ export function createLazy<T>(
 	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
 	command: BaseCommand<any>,
 ): LazyCapability<T> {
+	let initialized = false;
 	let result: T | undefined;
 	let promise: Promise<T> | undefined;
 
 	return {
 		async get(): Promise<T> {
-			if (result !== undefined) {
-				return result;
+			if (initialized) {
+				return result as T;
 			}
 
 			if (promise) {
@@ -52,6 +53,7 @@ export function createLazy<T>(
 			promise = (async () => {
 				try {
 					result = await init();
+					initialized = true;
 					return result;
 				} catch (error) {
 					const message =
@@ -66,7 +68,7 @@ export function createLazy<T>(
 		},
 
 		get isInitialized(): boolean {
-			return result !== undefined;
+			return initialized;
 		},
 	};
 }

@@ -73,6 +73,22 @@ describe("createLazy", () => {
 			expect(initCount).toBe(1);
 		});
 
+		it("should cache undefined results after initialization", async () => {
+			let initCount = 0;
+			const lazy = createLazy<undefined>(async () => {
+				initCount++;
+				return undefined;
+			}, command);
+
+			const result1 = await lazy.get();
+			const result2 = await lazy.get();
+
+			expect(result1).toBeUndefined();
+			expect(result2).toBeUndefined();
+			expect(lazy.isInitialized).toBe(true);
+			expect(initCount).toBe(1);
+		});
+
 		it("should not initialize until get() is called", async () => {
 			let initCalled = false;
 			createLazy<MockResult>(async () => {

@@ -1,8 +1,16 @@
 # CLI-API Capabilities Implementation Handoff
 
 **Date**: 2025-11-12
-**Status**: Phase 2 In Progress - Testing Complete, Migration Starting
+**Status**: Historical handoff with current API notes
 **Branch**: cli-composition-model
+
+> [!IMPORTANT]
+> This handoff captures implementation history from the capability rollout. The
+> shipped public API is `useConfig()` / `useGit()` plus the `LazyCapability<T>`,
+> `ConfigContext*`, and `GitContext*` types exported from `@tylerbu/cli-api` and
+> `@tylerbu/cli-api/capabilities`. Some sections below preserve earlier draft
+> terminology for historical context; use the summary and examples below as the
+> current reference.
 
 ## Latest Update (Session 3)
 
@@ -28,30 +36,30 @@ The squish command migration demonstrates the complete pattern for migrating fro
 
 ## Summary
 
-Successfully implemented the core capability system infrastructure for the CLI-API package as defined in `cli-api-capabilities-design.md`. The implementation includes:
+Successfully implemented the composition-based capability system for the CLI-API package. The shipped API includes:
 
-✅ Core capability infrastructure (Capability interface and CapabilityHolder)
-✅ ConfigCapability with useConfig helper
-✅ GitCapability with useGit helper
-✅ **Comprehensive unit test coverage (29 new tests)**
+✅ `LazyCapability<T>` for lazy, cached capability access
+✅ `useConfig()` with discriminated config context types
+✅ `useGit()` with discriminated git context types
+✅ Comprehensive unit test coverage
 ✅ Full TypeScript compilation and type checking
-✅ All tests passing (89 total)
+✅ Targeted tests passing
 ✅ Package exports configured for both main module and capabilities submodule
 
 ## Files Created
 
 ### Core Infrastructure
-- `packages/cli-api/src/capabilities/capability.ts` - Core types and CapabilityHolder class
+- `packages/cli-api/src/capabilities/capability.ts` - Lazy capability types and shared initialization helper
 - `packages/cli-api/src/capabilities/index.ts` - Public exports for capabilities module
 
 ### Capabilities
-- `packages/cli-api/src/capabilities/config.ts` - ConfigCapability implementation
-- `packages/cli-api/src/capabilities/git.ts` - GitCapability implementation
+- `packages/cli-api/src/capabilities/config.ts` - `useConfig()` implementation
+- `packages/cli-api/src/capabilities/git.ts` - `useGit()` implementation
 
 ### Test Files
-- `packages/cli-api/test/capabilities/capability-holder.test.ts` - CapabilityHolder tests
-- `packages/cli-api/test/capabilities/config-capability.test.ts` - ConfigCapability tests
-- `packages/cli-api/test/capabilities/git-capability.test.ts` - GitCapability tests
+- `packages/cli-api/test/capabilities/capability-holder.test.ts` - `createLazy()` tests
+- `packages/cli-api/test/capabilities/config-capability.test.ts` - `useConfig()` tests
+- `packages/cli-api/test/capabilities/git-capability.test.ts` - `useGit()` tests
 
 ### Modified Files
 - `packages/cli-api/src/index.ts` - Added export for capabilities
@@ -70,10 +78,10 @@ The capability system follows the composition-over-inheritance pattern:
 class MyCommand extends GitCommand { }
 
 // New (composition):
-class MyCommand extends BaseCommand {
+class MyCommand extends BaseCommand<typeof MyCommand> {
   private git = useGit(this);
 
-  async run() {
+  async run(): Promise<void> {
     const { git } = await this.git.get();
   }
 }
@@ -84,10 +92,10 @@ class MyCommand extends BaseCommand {
 1. **Lazy Initialization**: Capabilities only initialize when first accessed via `get()`
 2. **Caching**: Results cached after first initialization
 3. **Type Safety**: Full TypeScript inference for capability results
-4. **Lifecycle Management**: Optional cleanup support via `cleanup()` method
+4. **Discriminated Contexts**: `found` / `isRepo` narrow the returned capability context
 5. **Error Handling**: Proper error reporting using OCLIF's `command.error()`
 
-### ConfigCapability
+### useConfig()
 
 **Location**: `packages/cli-api/src/capabilities/config.ts`
 
@@ -95,25 +103,34 @@ class MyCommand extends BaseCommand {
 - Loads configuration from disk using existing `loadConfig` function
 - Supports default config fallback
 - Optional config mode (required: false)
-- Custom search path support
-- Config reload capability
+- Custom search paths support
+- Overloads that narrow the return type when config is required
 - ConfigFlag export for adding to command flags
 
 **Usage**:
 ```typescript
-class MyCommand extends BaseCommand {
-  private config = useConfig<MyConfig>(this, {
+import { BaseCommand, ConfigFlag } from "@tylerbu/cli-api";
+import { useConfig } from "@tylerbu/cli-api/capabilities";
+
+class MyCommand extends BaseCommand<typeof MyCommand> {
+  private config = useConfig<typeof this, MyConfig>(this, {
     defaultConfig: { foo: "bar" },
-    required: true
+    searchPaths:
+      this.flags.config === undefined ? undefined : [this.flags.config],
   });
 
-  async run() {
+  public static override readonly flags = {
+    ...BaseCommand.baseFlags,
+    config: ConfigFlag,
+  };
+
+  async run(): Promise<void> {
     const { config, location, isDefault } = await this.config.get();
   }
 }
 ```
 
-### GitCapability
+### useGit()
 
 **Location**: `packages/cli-api/src/capabilities/git.ts`
 
@@ -129,20 +146,25 @@ class MyCommand extends BaseCommand {
 
 **Usage**:
 ```typescript
-class MyCommand extends BaseCommand {
+class MyCommand extends BaseCommand<typeof MyCommand> {
   private git = useGit(this, { required: true });
 
-  async run() {
+  async run(): Promise<void> {
     const { git, repo, getCurrentBranch } = await this.git.get();
     const branch = await getCurrentBranch();
   }
 }
 ```
 
+> [!NOTE]
+> The remaining sections below are retained as migration history and draft design
+> notes. Where they conflict with the summary above or generated API docs, prefer
+> the shipped `useConfig()` / `useGit()` API.
+
 ## Build & Test Status
 
 ✅ **Build**: TypeScript compilation successful
-✅ **Tests**: All 89 tests passing (88 passed, 1 skipped)
+✅ **Tests**: Targeted capability tests passing
 ✅ **Types**: No TypeScript errors
 ✅ **Exports**: Package exports configured correctly
 
@@ -157,17 +179,14 @@ pnpm nx run cli-api:test
 ### Test Coverage Added
 
 **New Test Files:**
-- `test/capabilities/capability-holder.test.ts` - 9 tests for CapabilityHolder
-- `test/capabilities/config-capability.test.ts` - 8 tests for ConfigCapability (1 skipped)
-- `test/capabilities/git-capability.test.ts` - 12 tests for GitCapability
+- `test/capabilities/capability-holder.test.ts` - `createLazy()` tests
+- `test/capabilities/config-capability.test.ts` - `useConfig()` tests
+- `test/capabilities/git-capability.test.ts` - `useGit()` tests
 
 **Test Coverage:**
-- CapabilityHolder: Initialization, caching, error handling, concurrent access, cleanup
-- ConfigCapability: File loading, default config, search paths, optional vs required
-- GitCapability: Repository detection, helper methods, error handling, custom directories
-
-**Known Limitation:**
-- Config reload test is skipped due to Node.js module caching. The reload() method exists but may not work as expected when the config file is modified at runtime.
+- `createLazy()`: Initialization, caching, error handling, concurrent access
+- `useConfig()`: File loading, default config, search paths, optional vs required
+- `useGit()`: Repository detection, helper methods, error handling, custom directories
 
 ## Next Steps (Phase 2)
 

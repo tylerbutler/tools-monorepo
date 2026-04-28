@@ -1,8 +1,15 @@
 # CLI-API Capability System Design
 
-**Status**: Design Proposal
+**Status**: Historical design reference with current API notes
 **Date**: 2025-11-12
 **Purpose**: Move from inheritance-based to composition-based architecture for OCLIF commands
+
+> [!IMPORTANT]
+> This document includes early design exploration that predates the final shipped API.
+> The current public API is the composition-based `useConfig()` / `useGit()` helpers plus the
+> `LazyCapability<T>` interface and the `ConfigContext*` / `GitContext*` discriminated unions
+> exported by `@tylerbu/cli-api` and `@tylerbu/cli-api/capabilities`.
+> Import `ConfigFlag` from `@tylerbu/cli-api`, not from the capabilities subpath.
 
 ## Table of Contents
 
@@ -39,12 +46,12 @@ GitCommand (git integration)
 ### Proposed Architecture (Composition-Based)
 
 ```typescript
-class MyCommand extends BaseCommand {
+class MyCommand extends BaseCommand<typeof MyCommand> {
   // Compose capabilities as needed
-  private config = useConfig<MyConfig>(this);
+  private config = useConfig<typeof this, MyConfig>(this);
   private git = useGit(this);
 
-  async run() {
+  async run(): Promise<void> {
     const { config } = await this.config.get();
     const { git } = await this.git.get();
   }
@@ -62,81 +69,69 @@ class MyCommand extends BaseCommand {
 
 ## Core Architecture
 
-### 1. Capability Interface
+### 1. LazyCapability<T>
 
-The foundation of the system - defines what a capability is:
+The shipped API exposes a small lazy-initialization contract rather than a public
+`Capability` / `CapabilityHolder` class pair:
 
 ```typescript
-/**
- * A capability that can be composed into commands.
- * Capabilities are initialized once and provide functionality to commands.
- *
- * @template TCommand - The command type this capability is attached to
- * @template TResult - The type returned by the capability's API
- */
-export interface Capability<TCommand extends BaseCommand<any>, TResult = any> {
-	/**
-	 * Initialize the capability. Called automatically when accessed for the first time.
-	 * @param command - The command instance this capability is attached to
-	 */
-	initialize(command: TCommand): Promise<TResult> | TResult;
-
-	/**
-	 * Optional cleanup when command completes.
-	 */
-	cleanup?(): Promise<void> | void;
+export interface LazyCapability<T> {
+	get(): Promise<T>;
+	readonly isInitialized: boolean;
 }
 ```
 
-### 2. CapabilityHolder - Lazy Initialization
+The helper implementation is intentionally internal. Consumers use the exported
+`useConfig()` and `useGit()` helpers rather than constructing capability objects
+themselves.
 
-Manages capability lifecycle and ensures single initialization:
+### 2. First-Class Capability Helpers
+
+The public composition model is built around command-local helper properties:
 
 ```typescript
-/**
- * Lazy-initialized capability holder.
- * Ensures capabilities are only initialized once, when first accessed.
- */
-export class CapabilityHolder<TCommand extends BaseCommand<any>, TResult> {
-	private _initialized = false;
-	private _result: TResult | undefined;
-	private readonly capability: Capability<TCommand, TResult>;
-	private readonly command: TCommand;
+import { BaseCommand, ConfigFlag } from "@tylerbu/cli-api";
+import { useConfig, useGit } from "@tylerbu/cli-api/capabilities";
 
-	constructor(command: TCommand, capability: Capability<TCommand, TResult>) {
-		this.command = command;
-		this.capability = capability;
-	}
+interface MyConfig {
+	defaultBranch: string;
+	autoCommit: boolean;
+}
 
-	/**
-	 * Get the capability, initializing it if needed.
-	 * Subsequent calls return cached result.
-	 */
-	async get(): Promise<TResult> {
-		if (!this._initialized) {
-			this._result = await this.capability.initialize(this.command);
-			this._initialized = true;
-		}
-		return this._result as TResult;
-	}
+export default class MyCommand extends BaseCommand<typeof MyCommand> {
+	private configCapability = useConfig<typeof this, MyConfig>(this, {
+		defaultConfig: {
+			autoCommit: false,
+			defaultBranch: "main",
+		},
+		searchPaths:
+			this.flags.config === undefined ? undefined : [this.flags.config],
+	});
 
-	/**
-	 * Check if capability has been initialized.
-	 */
-	get isInitialized(): boolean {
-		return this._initialized;
-	}
+	private gitCapability = useGit(this, { required: true });
 
-	/**
-	 * Cleanup the capability.
-	 */
-	async cleanup(): Promise<void> {
-		if (this._initialized && this.capability.cleanup) {
-			await this.capability.cleanup();
+	public static override readonly flags = {
+		config: ConfigFlag,
+		...BaseCommand.baseFlags,
+	};
+
+	public override async run(): Promise<void> {
+		const { config } = await this.configCapability.get();
+		const { getCurrentBranch, git } = await this.gitCapability.get();
+		const branch = await getCurrentBranch();
+
+		if (config.autoCommit && branch !== config.defaultBranch) {
+			await git.add(".");
+			await git.commit("Auto-commit from CLI");
 		}
 	}
 }
 ```
+
+> [!NOTE]
+> Sections below this point preserve earlier design exploration. They are useful as
+> implementation history, but the public API summary above is the authoritative
+> reference for current usage.
 
 **Key Features:**
 - **Lazy**: Only initializes when `get()` is called
@@ -846,8 +841,8 @@ export default class MyGitCommand extends BaseCommand<typeof MyGitCommand> {
 ### Multiple Capabilities
 
 ```typescript
-import { BaseCommand } from "@tylerbu/cli-api";
-import { useConfig, useGit, ConfigFlag } from "@tylerbu/cli-api/capabilities";
+import { BaseCommand, ConfigFlag } from "@tylerbu/cli-api";
+import { useConfig, useGit } from "@tylerbu/cli-api/capabilities";
 
 interface MyConfig {
 	defaultBranch: string;
@@ -858,13 +853,15 @@ export default class MyComplexCommand extends BaseCommand<typeof MyComplexComman
 	// Compose multiple capabilities
 	private configCapability = useConfig<typeof this, MyConfig>(this, {
 		defaultConfig: { defaultBranch: "main", autoCommit: false },
+		searchPaths:
+			this.flags.config === undefined ? undefined : [this.flags.config],
 	});
 
 	private gitCapability = useGit(this, { required: true });
 
 	public static override readonly flags = {
-		config: ConfigFlag,
 		...BaseCommand.baseFlags,
+		config: ConfigFlag,
 	};
 
 	public override async run(): Promise<void> {
