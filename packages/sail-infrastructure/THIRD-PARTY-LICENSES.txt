@@ -3,7 +3,7 @@ https://www.npmjs.com/package/generate-license-file
 
 The following npm package may be included in this product:
 
- - fs-extra@11.3.3
+ - fs-extra@11.3.4
 
 This package contains the following license:
 
@@ -27,7 +27,7 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 
 The following npm package may be included in this product:
 
- - resolve-workspace-root@2.0.0
+ - resolve-workspace-root@2.0.1
 
 This package contains the following license:
 
@@ -57,7 +57,7 @@ Copyright (c) 2024-present Cedric van Putten <me@cedric.dev>
 
 The following npm package may be included in this product:
 
- - typescript@5.9.3
+ - typescript@6.0.3
 
 This package contains the following license:
 
@@ -146,7 +146,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 The following npm packages may be included in this product:
 
  - @manypkg/get-packages@3.1.0
- - simple-git@3.32.3
+ - simple-git@3.36.0
 
 These packages each contain the following license:
 
@@ -186,8 +186,8 @@ SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @oclif/core@4.8.0
- - oclif@4.22.50
+ - @oclif/core@4.10.6
+ - oclif@4.23.0
 
 These packages each contain the following license:
 
@@ -277,7 +277,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - tinyglobby@0.2.15
+ - tinyglobby@0.2.16
 
 This package contains the following license:
 
@@ -307,7 +307,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - tinyexec@1.0.2
+ - tinyexec@1.1.1
 
 This package contains the following license:
 
@@ -418,7 +418,7 @@ The following npm packages may be included in this product:
 
  - detect-indent@7.0.2
  - read-pkg-up@11.0.0
- - type-fest@5.4.1
+ - type-fest@5.6.0
 
 These packages each contain the following license:
 
@@ -466,7 +466,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - semver@7.7.3
+ - semver@7.7.4
 
 This package contains the following license:
 
