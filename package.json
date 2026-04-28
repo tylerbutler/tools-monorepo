@@ -60,6 +60,7 @@
 		"@biomejs/biome": "2.3.8",
 		"@changesets/cli": "^2.31.0",
 		"@changesets/config": "^3.1.4",
+		"@monodon/rust": "^2.3.0",
 		"@monorepo-utils/workspaces-to-typescript-project-references": "^2.11.0",
 		"@nx/js": "^22.7.0",
 		"@nx/vite": "^22.7.0",
