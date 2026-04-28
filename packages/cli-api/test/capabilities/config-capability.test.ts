@@ -69,7 +69,7 @@ describe("ConfigCapability", () => {
 			expect(result.found).toBe(true);
 			expect(result.config).toEqual(testConfig);
 			expect(result.location).toBe(configPath);
-			expect(result.isDefault()).toBe(false);
+			expect(result.isDefault).toBe(false);
 		});
 	});
 
@@ -89,7 +89,7 @@ describe("ConfigCapability", () => {
 			if (result.found) {
 				expect(result.config).toEqual(defaultConfig);
 				expect(result.location).toBe("DEFAULT");
-				expect(result.isDefault()).toBe(true);
+				expect(result.isDefault).toBe(true);
 			}
 		});
 
@@ -114,7 +114,7 @@ describe("ConfigCapability", () => {
 			expect(result.found).toBe(true);
 			if (result.found) {
 				expect(result.config).toEqual(fileConfig);
-				expect(result.isDefault()).toBe(false);
+				expect(result.isDefault).toBe(false);
 			}
 		});
 	});
@@ -127,6 +127,7 @@ describe("ConfigCapability", () => {
 			});
 
 			await expect(holder.get()).rejects.toThrow();
+			expect(command.errorSpy).toHaveBeenCalledTimes(1);
 			expect(command.errorSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Could not find config file"),
 				{ exit: 1 },
@@ -145,7 +146,7 @@ describe("ConfigCapability", () => {
 			if (!result.found) {
 				expect(result.config).toBeUndefined();
 				expect(result.location).toBeUndefined();
-				expect(result.isDefault()).toBe(false);
+				expect(result.isDefault).toBe(false);
 			}
 		});
 	});
@@ -187,7 +188,7 @@ describe("ConfigCapability", () => {
 			expect(result.found).toBe(true);
 			if (result.found) {
 				expect(result.config).toEqual(defaultConfig);
-				expect(result.isDefault()).toBe(true);
+				expect(result.isDefault).toBe(true);
 			}
 		});
 	});
@@ -216,6 +217,55 @@ describe("ConfigCapability", () => {
 			expect(result.found).toBe(true);
 			expect(result.config).toEqual(testConfig);
 			expect(result.location).toBe(configPath);
+		});
+
+		it("should return the first matching path when config exists in multiple paths", async () => {
+			const dir1 = path.join(tempDir, "dir1");
+			const dir2 = path.join(tempDir, "dir2");
+			fs.mkdirSync(dir1);
+			fs.mkdirSync(dir2);
+
+			const firstConfig: TestConfig = { name: "first", value: 1 };
+			const secondConfig: TestConfig = { name: "second", value: 2 };
+
+			fs.writeFileSync(
+				path.join(dir1, "test-cli.config.cjs"),
+				`module.exports = ${JSON.stringify(firstConfig)};`,
+			);
+			fs.writeFileSync(
+				path.join(dir2, "test-cli.config.cjs"),
+				`module.exports = ${JSON.stringify(secondConfig)};`,
+			);
+
+			const holder = useConfig<typeof command, TestConfig>(command, {
+				searchPaths: [dir1, dir2],
+				required: true,
+			});
+
+			const result = await holder.get();
+
+			expect(result.found).toBe(true);
+			expect(result.config).toEqual(firstConfig);
+		});
+	});
+
+	describe("defaultConfig behavior", () => {
+		it("should use defaultConfig when required:true but no file found", async () => {
+			const defaultConfig: TestConfig = { name: "default", value: 0 };
+
+			// required:true + defaultConfig + no file → uses defaultConfig (does NOT error)
+			const holder = useConfig<typeof command, TestConfig>(command, {
+				searchPaths: [tempDir],
+				defaultConfig,
+				required: true,
+			});
+
+			const result = await holder.get();
+
+			expect(result.found).toBe(true);
+			expect(result.config).toEqual(defaultConfig);
+			expect(result.isDefault).toBe(true);
+			expect(command.errorSpy).not.toHaveBeenCalled();
 		});
 	});
 });

@@ -107,22 +107,37 @@ describe("createLazy", () => {
 			}, command);
 
 			await expect(lazy.get()).rejects.toThrow("Initialization failed");
-			expect(command.errorSpy).toHaveBeenCalledWith(
-				"Failed to initialize capability: Initialization failed",
-				{ exit: 1 },
-			);
+			expect(command.errorSpy).toHaveBeenCalledTimes(1);
+			expect(command.errorSpy).toHaveBeenCalledWith("Initialization failed", {
+				exit: 1,
+			});
 		});
 
 		it("should handle non-Error thrown objects", async () => {
 			const lazy = createLazy<MockResult>(async () => {
-				throw new Error("String error");
+				// biome-ignore lint/suspicious/noExplicitAny: intentionally throwing a non-Error to test String(error) branch
+				throw "raw string error" as any;
 			}, command);
 
 			await expect(lazy.get()).rejects.toThrow();
-			expect(command.errorSpy).toHaveBeenCalledWith(
-				expect.stringContaining("Failed to initialize capability"),
-				{ exit: 1 },
-			);
+			expect(command.errorSpy).toHaveBeenCalledTimes(1);
+			expect(command.errorSpy).toHaveBeenCalledWith("raw string error", {
+				exit: 1,
+			});
+		});
+
+		it("should reuse the rejected promise on subsequent get() calls", async () => {
+			let initCount = 0;
+			const lazy = createLazy<MockResult>(async () => {
+				initCount++;
+				throw new Error("Init failed");
+			}, command);
+
+			await expect(lazy.get()).rejects.toThrow();
+			await expect(lazy.get()).rejects.toThrow();
+
+			// init should only be called once — subsequent calls reuse the cached rejected promise
+			expect(initCount).toBe(1);
 		});
 	});
 

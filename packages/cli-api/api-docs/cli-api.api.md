@@ -84,32 +84,6 @@ export interface CommandWithContext<CONTEXT> {
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
 // @beta
-export interface ConfigCapabilityOptions<TConfig> {
-    defaultConfig?: TConfig;
-    required?: boolean;
-    searchPaths?: string[];
-}
-
-// @beta
-export type ConfigContext<TConfig> = ConfigContextFound<TConfig> | ConfigContextNotFound;
-
-// @beta
-export interface ConfigContextFound<TConfig> {
-    config: TConfig;
-    found: true;
-    isDefault(): boolean;
-    location: string | DefaultConfigLocation;
-}
-
-// @beta
-export interface ConfigContextNotFound {
-    config: undefined;
-    found: false;
-    isDefault(): false;
-    location: undefined;
-}
-
-// @beta
 export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
 
 // @beta
@@ -117,14 +91,6 @@ export const ConfigFlagHidden: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export function createBasicLogger(): Logger;
-
-// @beta
-export const DEFAULT_CONFIG_LOCATION: DefaultConfigLocation;
-
-// @beta
-export type DefaultConfigLocation = "DEFAULT" & {
-    readonly __brand: "DefaultConfigLocation";
-};
 
 // @beta
 export interface DependencyChange {
@@ -192,12 +158,6 @@ export function getMergeBase(git: SimpleGit, reference1: string, reference2: str
 export function getPackageManagerInfo(pm: PackageManager): PackageManagerInfo;
 
 // @beta
-export interface GitCapabilityOptions {
-    baseDir?: string;
-    required?: boolean;
-}
-
-// @beta
 export abstract class GitCommand<T extends typeof Command & {
     args: typeof GitCommand.args;
     flags: typeof GitCommand.flags;
@@ -211,37 +171,12 @@ export abstract class GitCommand<T extends typeof Command & {
 }
 
 // @beta
-export type GitContext = GitContextInRepo | GitContextNoRepo;
-
-// @beta
-export interface GitContextInRepo {
-    getCurrentBranch(): Promise<string>;
-    git: SimpleGit;
-    hasUncommittedChanges(): Promise<boolean>;
-    isCleanWorkingTree(): Promise<boolean>;
-    isRepo: true;
-    repo: Repository;
-}
-
-// @beta
-export interface GitContextNoRepo {
-    baseDir: string;
-    isRepo: false;
-}
-
-// @beta
 export function isSyncSupported(pm: PackageManager): boolean;
 
 // @beta
 export interface JsonWriteOptions {
     indent?: string | Indent | undefined;
     sort?: true | undefined;
-}
-
-// @beta
-export interface LazyCapability<T> {
-    get(): Promise<T>;
-    readonly isInitialized: boolean;
 }
 
 // @public
@@ -364,31 +299,5 @@ export function updatePackageJsonFile<J extends PackageJson = PackageJson>(packa
 export interface UpdateVersionRangeOptions {
     emitWarnings?: boolean;
 }
-
-// @beta
-export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options: ConfigCapabilityOptions<TConfig> & {
-    required: true;
-}): LazyCapability<ConfigContextFound<TConfig>>;
-
-// @beta
-export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options: ConfigCapabilityOptions<TConfig> & {
-    required: false;
-}): LazyCapability<ConfigContext<TConfig>>;
-
-// @beta
-export function useConfig<TCommand extends BaseCommand<any>, TConfig>(command: TCommand, options?: ConfigCapabilityOptions<TConfig>): LazyCapability<ConfigContextFound<TConfig>>;
-
-// @beta
-export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options: GitCapabilityOptions & {
-    required: true;
-}): LazyCapability<GitContextInRepo>;
-
-// @beta
-export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options: GitCapabilityOptions & {
-    required: false;
-}): LazyCapability<GitContext>;
-
-// @beta
-export function useGit<TCommand extends BaseCommand<any>>(command: TCommand, options?: GitCapabilityOptions): LazyCapability<GitContextInRepo>;
 
 ```

@@ -166,6 +166,7 @@ describe("GitCapability", () => {
 			});
 
 			await expect(holder.get()).rejects.toThrow();
+			expect(command.errorSpy).toHaveBeenCalledTimes(1);
 			expect(command.errorSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Not a git repository"),
 				{ exit: 1 },

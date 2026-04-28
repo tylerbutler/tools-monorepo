@@ -4,19 +4,15 @@ import { createLazy, type LazyCapability } from "./capability.js";
 
 /**
  * Branded type to distinguish default config location from regular strings.
- *
- * @beta
  */
-export type DefaultConfigLocation = "DEFAULT" & {
+type DefaultConfigLocation = "DEFAULT" & {
 	readonly __brand: "DefaultConfigLocation";
 };
 
 /**
  * Sentinel value for the default config location.
- *
- * @beta
  */
-export const DEFAULT_CONFIG_LOCATION = "DEFAULT" as DefaultConfigLocation;
+const DEFAULT_CONFIG_LOCATION = "DEFAULT" as DefaultConfigLocation;
 
 /**
  * Configuration options for config capability.
@@ -60,15 +56,14 @@ export interface ConfigContextFound<TConfig> {
 	config: TConfig;
 
 	/**
-	 * Path to the config file, or "DEFAULT" if using default config.
+	 * Path to the config file, or a sentinel string if using the default config.
 	 */
-	location: string | DefaultConfigLocation;
+	location: string;
 
 	/**
-	 * Check if using default config.
-	 * @returns True if the config used is the default, false otherwise.
+	 * Whether the default config is being used (no config file was found).
 	 */
-	isDefault(): boolean;
+	isDefault: boolean;
 }
 
 /**
@@ -95,9 +90,9 @@ export interface ConfigContextNotFound {
 
 	/**
 	 * Check if using default config.
-	 * @returns Always false when no config was found.
+	 * Always false when no config was found.
 	 */
-	isDefault(): false;
+	isDefault: false;
 }
 
 /**
@@ -150,16 +145,15 @@ async function initializeConfig<
 
 	if (loaded === undefined && options.defaultConfig === undefined) {
 		if (options.required !== false) {
-			command.error(
+			throw new Error(
 				`Could not find config file in search paths: ${searchPaths.join(", ")}`,
-				{ exit: 1 },
 			);
 		}
 		return {
 			found: false,
 			config: undefined,
 			location: undefined,
-			isDefault: () => false,
+			isDefault: false,
 		} satisfies ConfigContextNotFound;
 	}
 
@@ -172,7 +166,7 @@ async function initializeConfig<
 		found: true,
 		config: config as TConfig,
 		location,
-		isDefault: () => location === DEFAULT_CONFIG_LOCATION,
+		isDefault: location === DEFAULT_CONFIG_LOCATION,
 	} satisfies ConfigContextFound<TConfig>;
 }
 

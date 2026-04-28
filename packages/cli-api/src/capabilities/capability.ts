@@ -58,9 +58,7 @@ export function createLazy<T>(
 				} catch (error) {
 					const message =
 						error instanceof Error ? error.message : String(error);
-					command.error(`Failed to initialize capability: ${message}`, {
-						exit: 1,
-					});
+					command.error(message, { exit: 1 });
 				}
 			})();
 

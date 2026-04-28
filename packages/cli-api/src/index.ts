@@ -12,21 +12,6 @@
 export type { Args, Flags } from "./baseCommand.js";
 export { BaseCommand, logIndent } from "./baseCommand.js";
 export {
-	type ConfigCapabilityOptions,
-	type ConfigContext,
-	type ConfigContextFound,
-	type ConfigContextNotFound,
-	DEFAULT_CONFIG_LOCATION,
-	type DefaultConfigLocation,
-	type GitCapabilityOptions,
-	type GitContext,
-	type GitContextInRepo,
-	type GitContextNoRepo,
-	type LazyCapability,
-	useConfig,
-	useGit,
-} from "./capabilities/index.js";
-export {
 	CommandWithConfig,
 	type CommandWithContext,
 } from "./configCommand.js";

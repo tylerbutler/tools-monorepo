@@ -112,10 +112,9 @@ export type GitContext = GitContextInRepo | GitContextNoRepo;
 /**
  * Initialize git capability logic shared by useGit overloads.
  */
-async function initializeGit<
-	// biome-ignore lint/suspicious/noExplicitAny: Generic base type needs 'any' to satisfy BaseCommand<T extends typeof Command> constraint
-	TCommand extends BaseCommand<any>,
->(command: TCommand, options: GitCapabilityOptions): Promise<GitContext> {
+async function initializeGit(
+	options: GitCapabilityOptions,
+): Promise<GitContext> {
 	const baseDir = resolve(options.baseDir ?? process.cwd());
 	const repo = new Repository({ baseDir });
 	const git = repo.gitClient;
@@ -124,7 +123,7 @@ async function initializeGit<
 	const isRepo = await git.checkIsRepo().catch(() => false);
 
 	if (!isRepo && options.required !== false) {
-		command.error(`Not a git repository: ${baseDir}`, { exit: 1 });
+		throw new Error(`Not a git repository: ${baseDir}`);
 	}
 
 	if (!isRepo) {
@@ -221,5 +220,5 @@ export function useGit<
 	command: TCommand,
 	options?: GitCapabilityOptions,
 ): LazyCapability<GitContext> {
-	return createLazy(() => initializeGit(command, options ?? {}), command);
+	return createLazy(() => initializeGit(options ?? {}), command);
 }
