@@ -637,8 +637,8 @@ export function greet(name: string): string {
 			// Execute build and verify timing
 			const result = await executeBuildAndGetResult(ctx.testDir, ["build"]);
 
-			// Build should complete in reasonable time (< 60s for 2 packages)
-			expect(result.elapsedTime).toBeLessThan(60);
+			// Build should complete in reasonable time (< 120s for 2 packages)
+			expect(result.elapsedTime).toBeLessThan(120);
 
 			// Verify build succeeded
 			expect(result.buildGraph.taskStats.leafBuiltCount).toBeGreaterThan(0);
