@@ -48,7 +48,7 @@ jobs:
       - uses: tylerbutler/actions/setup-rust@main
         with:
           targets: ${{ matrix.target }}
-          install-just: 'false'
+          tools: ''
 
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }} --manifest-path packages/repopo/crates/core/Cargo.toml
