@@ -90,7 +90,7 @@
 	},
 	"dependencies": {
 		"@fluid-tools/build-infrastructure": "~0.65.0",
-		"@oclif/core": "^4.10.6",
+		"@oclif/core": "^4.11.0",
 		"@oclif/plugin-help": "^6.2.45",
 		"@rushstack/node-core-library": "^5.23.1",
 		"@tylerbu/cli-api": "workspace:^",
