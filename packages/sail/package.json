@@ -1,6 +1,6 @@
 {
 	"name": "@tylerbu/sail",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"description": "Build orchestration CLI tool",
 	"keywords": [
 		"oclif",
