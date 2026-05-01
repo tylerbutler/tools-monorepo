@@ -43,9 +43,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # ratchet:actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v6
 
-      - uses: tylerbutler/actions/setup-rust@main
+      - uses: tylerbutler/actions/setup-rust@c4c45a8284082163bc58623acfc4b3dc98633c3d # ratchet:tylerbutler/actions/setup-rust@main
         with:
           targets: ${{ matrix.target }}
           tools: ''
@@ -73,7 +73,7 @@ jobs:
 
       - name: Upload artifact (unix)
         if: runner.os != 'Windows'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # ratchet:actions/upload-artifact@v7
         with:
           name: ${{ matrix.asset-name }}
           path: |
@@ -82,7 +82,7 @@ jobs:
 
       - name: Upload artifact (windows)
         if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # ratchet:actions/upload-artifact@v7
         with:
           name: ${{ matrix.asset-name }}
           path: |
@@ -94,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # ratchet:actions/download-artifact@v8
         with:
           path: artifacts
           merge-multiple: true
