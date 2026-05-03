@@ -73,7 +73,7 @@
 		"dirname": "tylerbu-cli-api"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.10.6",
+		"@oclif/core": "^4.11.0",
 		"@tylerbu/fundamentals": "workspace:^",
 		"@tylerbu/lilconfig-loader-ts": "workspace:^",
 		"debug": "^4.4.3",
