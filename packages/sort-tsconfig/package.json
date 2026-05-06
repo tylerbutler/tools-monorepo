@@ -76,7 +76,7 @@
 		"repositoryPrefix": "<%- repo %>/blob/main/packages/sort-tsconfig/<%- commandPath %>"
 	},
 	"dependencies": {
-		"@oclif/core": "^4.10.6",
+		"@oclif/core": "^4.11.0",
 		"@oclif/plugin-help": "^6.2.45",
 		"@tylerbu/cli-api": "workspace:^",
 		"@tylerbu/fundamentals": "workspace:^",
