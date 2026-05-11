@@ -104,7 +104,7 @@ export class CheckNative extends Command {
 					new Error(
 						`Failed to spawn repopo-core: ${err.message}\n` +
 							`Binary path: ${binaryPath}\n` +
-							"Make sure the Rust binary has been built: cargo build --manifest-path crates/core/Cargo.toml",
+							"Make sure the Rust binary has been built: pnpm nx run repopo-core:build",
 					),
 				);
 			});
@@ -134,28 +134,15 @@ export class CheckNative extends Command {
 			return nativePath;
 		}
 
-		// 2. Local release build (cargo build --release)
-		const releasePath = resolve(
-			packageRoot,
-			"crates",
-			"core",
-			"target",
-			"release",
-			binaryName,
-		);
+		// 2. Local release build (pnpm nx run repopo-core:build --configuration=release)
+		const workspaceRoot = resolve(packageRoot, "..", "..");
+		const releasePath = resolve(workspaceRoot, "target", "release", binaryName);
 		if (existsSync(releasePath)) {
 			return releasePath;
 		}
 
-		// 3. Local debug build (cargo build)
-		const debugPath = resolve(
-			packageRoot,
-			"crates",
-			"core",
-			"target",
-			"debug",
-			binaryName,
-		);
+		// 3. Local debug build (pnpm nx run repopo-core:build)
+		const debugPath = resolve(workspaceRoot, "target", "debug", binaryName);
 		if (existsSync(debugPath)) {
 			return debugPath;
 		}
@@ -163,7 +150,7 @@ export class CheckNative extends Command {
 		throw new Error(
 			"repopo-core binary not found. Either:\n" +
 				"  - Install the package (npm install repopo) to download pre-built binaries\n" +
-				"  - Build from source: cargo build --manifest-path crates/core/Cargo.toml",
+				"  - Build from source: pnpm nx run repopo-core:build",
 		);
 	}
 

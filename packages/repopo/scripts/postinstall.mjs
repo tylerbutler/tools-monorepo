@@ -24,7 +24,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const packageRoot = join(__dirname, "..");
 
 // Skip in source checkout (development)
-if (existsSync(join(packageRoot, "crates", "core", "Cargo.toml"))) {
+if (existsSync(join(packageRoot, "..", "repopo-core", "Cargo.toml"))) {
 	console.log("repopo: source checkout detected, skipping binary download.");
 	process.exit(0);
 }

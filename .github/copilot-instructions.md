@@ -38,9 +38,10 @@ Nx uses **orchestration targets** (e.g. `build`, `test`, `ci`) defined in `nx.js
 **Package-type build pipelines:**
 - **Libraries:** `build:compile` → `build:api` → `build:docs`
 - **CLI tools:** `build:compile` → `build:manifest` → `build:readme`
+- **Rust crates:** `build`, `test`, `lint` (via `@monodon/rust` executors)
 - **Doc sites (Astro):** `build:site`
 
-All orchestration config lives in root `nx.json` — there are no package-level `project.json` files.
+All orchestration config lives in root `nx.json`. Rust crates use `project.json` for executor configuration.
 
 ### OCLIF CLI Packages
 
@@ -63,6 +64,8 @@ Vitest with shared base config (`config/vitest.config.ts`). Test files: `test/**
 | `repopo.config.ts` | Repository policy enforcement |
 | `syncpack.config.cjs` | Dependency version synchronization |
 | `config/tsconfig*.json` | Shared TypeScript base configs |
+| `Cargo.toml` (root) | Cargo workspace definition |
+| `packages/repopo-core/project.json` | Rust crate Nx executor config |
 
 ## Conventions
 

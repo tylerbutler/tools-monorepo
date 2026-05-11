@@ -115,14 +115,6 @@ impl HandlerResult {
             }
         }
     }
-
-    /// Get manual fix instructions.
-    pub fn manual_fix(&self) -> Option<&str> {
-        match self {
-            HandlerResult::Failure(err) => err.manual_fix.as_deref(),
-            _ => None,
-        }
-    }
 }
 
 /// IPC request sent from Rust to the Node sidecar.
@@ -214,25 +206,6 @@ pub struct RunResolverBatchParams {
 
     /// Repo-relative paths to the files.
     pub files: Vec<String>,
-}
-
-/// A single result item within a batch response.
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct BatchResultItem {
-    /// The file this result corresponds to.
-    pub file: String,
-
-    /// The handler/resolver result for this file.
-    pub data: serde_json::Value,
-}
-
-/// Response payload for batch handler/resolver calls.
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct BatchResponse {
-    /// Results for each file in the batch.
-    pub results: Vec<BatchResultItem>,
 }
 
 /// A failure item in the compact batch response.

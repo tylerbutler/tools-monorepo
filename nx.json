@@ -33,7 +33,8 @@
 				"testTargetName": "test:vitest", // Avoid conflicts with existing test:unit
 				"serveTargetName": "serve:vite" // Avoid conflicts with existing dev targets
 			}
-		}
+		},
+		"@monodon/rust"
 	],
 
 	// ============================================
@@ -98,8 +99,7 @@
 				"build:readme", // Intra-package: OCLIF readme
 				"build:generate", // Intra-package: OCLIF snapshots
 				"build:site", // Intra-package: Astro/Vite sites
-				"build:vite", // Intra-package: Vite builds
-				"build:rust" // Intra-package: Rust compilation (repopo-core)
+				"build:vite" // Intra-package: Vite builds
 			],
 			"inputs": ["production", "^production"], // Only source code changes affect build, not lint/format results
 			"cache": true
@@ -261,26 +261,6 @@
 			"dependsOn": ["build:compile"],
 			"inputs": ["{projectRoot}/src/**/templates/**"],
 			"outputs": ["{projectRoot}/esm/**/templates/**"],
-			"cache": true
-		},
-
-		"build:rust": {
-			"inputs": [
-				"{projectRoot}/crates/**/*.rs",
-				"{projectRoot}/crates/**/Cargo.toml",
-				"{projectRoot}/crates/**/Cargo.lock"
-			],
-			"outputs": ["{projectRoot}/crates/core/target/debug/repopo-core"],
-			"cache": true
-		},
-
-		"build:rust:release": {
-			"inputs": [
-				"{projectRoot}/crates/**/*.rs",
-				"{projectRoot}/crates/**/Cargo.toml",
-				"{projectRoot}/crates/**/Cargo.lock"
-			],
-			"outputs": ["{projectRoot}/crates/core/target/release/repopo-core"],
 			"cache": true
 		},
 

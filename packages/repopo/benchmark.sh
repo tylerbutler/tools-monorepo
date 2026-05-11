@@ -10,17 +10,18 @@
 #
 # Prerequisites:
 #   - hyperfine (cargo binstall hyperfine)
-#   - Rust binary built (cargo build --manifest-path packages/repopo/crates/core/Cargo.toml)
-#   - Release binary built (cargo build --release --manifest-path packages/repopo/crates/core/Cargo.toml)
+#   - Rust binary built (pnpm nx run repopo-core:build)
+#   - Release binary built (pnpm nx run repopo-core:build --configuration=release)
 #   - TypeScript compiled (pnpm nx run repopo:build:compile)
 
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 REPOPO_PKG="$REPO_ROOT/packages/repopo"
+REPOPO_CORE="$REPO_ROOT/packages/repopo-core"
 SIDECAR="$REPOPO_PKG/sidecar/sidecar.mjs"
-RUST_DEBUG="$REPOPO_PKG/crates/core/target/debug/repopo-core"
-RUST_RELEASE="$REPOPO_PKG/crates/core/target/release/repopo-core"
+RUST_DEBUG="$REPO_ROOT/target/debug/repopo-core"
+RUST_RELEASE="$REPO_ROOT/target/release/repopo-core"
 TS_BIN="$REPOPO_PKG/bin/run.js"
 
 # NODE_PATH needed for pnpm strict hoisting - sidecar can't resolve
@@ -42,7 +43,7 @@ done
 errors=()
 command -v hyperfine >/dev/null 2>&1 || errors+=("hyperfine not found. Install: cargo binstall hyperfine")
 [[ -x "$TS_BIN" ]] || errors+=("TypeScript binary not found at $TS_BIN. Run: pnpm nx run repopo:build:compile")
-[[ -x "$RUST_DEBUG" ]] || errors+=("Rust debug binary not found. Run: cargo build --manifest-path $REPOPO_PKG/crates/core/Cargo.toml")
+[[ -x "$RUST_DEBUG" ]] || errors+=("Rust debug binary not found. Run: pnpm nx run repopo-core:build")
 
 if [[ ${#errors[@]} -gt 0 ]]; then
 	echo "ERROR: Missing prerequisites:"

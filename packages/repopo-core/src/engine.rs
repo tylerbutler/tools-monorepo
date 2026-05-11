@@ -244,10 +244,7 @@ pub fn run_check(
 
             if result.is_fix_failed() {
                 had_failures = true;
-                let msg = format!(
-                    "Error fixing {} policy failure in {file}",
-                    policy.meta.name
-                );
+                let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
                 eprintln!("{}", msg.yellow());
                 if let Some(err) = result.error_message() {
                     eprintln!("\t{err}");
@@ -308,10 +305,7 @@ pub fn run_check(
                     }
                 } else {
                     had_failures = true;
-                    let msg = format!(
-                        "Error fixing {} policy failure in {file}",
-                        policy.meta.name
-                    );
+                    let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
                     eprintln!("{}", msg.yellow());
                     if let Some(err) = resolve_result.error_message() {
                         eprintln!("\t{err}");

@@ -35,15 +35,16 @@ pnpm run test        # run tests (@tylerbu/xkcd2-api has pre-existing failures -
 
 ## Project Layout
 
-**Root:** pnpm-workspace.yaml (workspace def) | nx.json (build config) | biome.jsonc (lint/format) | repopo.config.ts (policies) | syncpack.config.cjs (dep sync)
+**Root:** pnpm-workspace.yaml (workspace def) | nx.json (build config) | Cargo.toml (Cargo workspace) | biome.jsonc (lint/format) | repopo.config.ts (policies) | syncpack.config.cjs (dep sync)
 
 **Packages (packages/*):**
 - CLI: @tylerbu/cli, dill-cli, repopo, sort-tsconfig
+- Rust: repopo-core (Cargo binary crate, built via @monodon/rust Nx plugin)
 - Libs: @tylerbu/cli-api, fundamentals, xkcd2-api, lilconfig-loader-ts, levee-client
 - Docs (Astro): dill-docs, repopo-docs
 - Config: config/ (shared tsconfig, biome configs)
 
-**Build Outputs:** esm/ (compiled TS), dist/ (Astro), oclif.manifest.json (CLI), _temp/ (gitignored)
+**Build Outputs:** esm/ (compiled TS), target/ (Cargo builds, workspace-level), dist/ (Astro), oclif.manifest.json (CLI), _temp/ (gitignored)
 
 ## CI Pipeline (.github/workflows/pr-build.yml)
 Order: `pnpm install --frozen-lockfile` → `ci:check` (format/deps/policies/lint) → `ci:build` → `ci:check:typedoc` → `ci:lint` → `ci:test`. Workflow uses `continue-on-error` and fails at end if any step failed. Run `pnpm run ci` locally to mirror CI.
