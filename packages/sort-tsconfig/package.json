@@ -101,7 +101,7 @@
 		"sort-package-json": "*",
 		"start-server-and-test": "^3.0.2",
 		"tmp-promise": "^3.0.3",
-		"tsx": "^4.21.0",
+		"tsx": "^4.22.0",
 		"type-fest": "^5.6.0",
 		"typescript": "~6.0.3",
 		"vitest": "^4.1.5"
