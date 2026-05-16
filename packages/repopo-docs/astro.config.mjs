@@ -96,11 +96,11 @@ export default defineConfig({
 				},
 				{
 					label: "Guides",
-					autogenerate: { directory: "usage" },
+					items: [{ autogenerate: { directory: "usage" } }],
 				},
 				{
 					label: "Policies",
-					autogenerate: { directory: "policies" },
+					items: [{ autogenerate: { directory: "policies" } }],
 				},
 				{
 					label: "CLI Reference",
