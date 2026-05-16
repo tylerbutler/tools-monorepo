@@ -91,7 +91,7 @@
 		"@microsoft/api-extractor": "^7.58.7",
 		"@oclif/plugin-command-snapshot": "^5.3.16",
 		"@oclif/test": "^4.1.18",
-		"@types/node": "^22.19.3",
+		"@types/node": "^22.19.11",
 		"@types/tmp": "^0.2.6",
 		"@vitest/coverage-v8": "^4.1.6",
 		"generate-license-file": "^4.1.1",

@@ -10,3 +10,19 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   yarn: true
+minimumReleaseAgeExclude:
+  - json5@1.0.2
+  - brace-expansion@5.0.5
+  - yaml@2.8.3
+  - follow-redirects@1.15.12
+  - babel-traverse@7.23.2
+  - axios@1.15.1
+  - axios@1.15.2
+overrides:
+  axios@>=1.0.0 <1.15.1: ^1.15.2
+  axios@>=1.0.0 <1.15.2: ^1.15.2
+  babel-traverse@<7.23.2: ^7.23.2
+  brace-expansion@>=4.0.0 <5.0.5: ^5.0.5
+  follow-redirects@<=1.15.11: ^1.15.12
+  json5@<1.0.2: ^1.0.2
+  yaml@>=2.0.0 <2.8.3: ^2.8.3
