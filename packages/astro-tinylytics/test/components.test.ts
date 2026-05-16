@@ -67,7 +67,7 @@ describe("Script", () => {
 			},
 		});
 		expect(html).toMatchInlineSnapshot(
-			`"<script src="https://tinylytics.app/embed/abc123.js?hits&#38;kudos=custom&#38;events&#38;beacon" defer></script>"`,
+			`"<script src="https://tinylytics.app/embed/abc123.js?hits&amp;kudos=custom&amp;events&amp;beacon" defer></script>"`,
 		);
 	});
 });
