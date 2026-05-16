@@ -86,7 +86,7 @@
 	},
 	"packageManager": "pnpm@11.1.2",
 	"engines": {
-		"node": ">=22.13.0"
+		"node": ">=22.22.0"
 	},
 	"pnpm": {
 		"peerDependencyRules": {
