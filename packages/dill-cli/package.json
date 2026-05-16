@@ -110,7 +110,7 @@
 		"@oclif/test": "^4.1.18",
 		"@types/debug": "^4.1.13",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^22.19.3",
+		"@types/node": "^22.19.11",
 		"@types/semver": "^7.7.1",
 		"@types/serve-handler": "^6.1.4",
 		"@types/tmp": "^0.2.6",
