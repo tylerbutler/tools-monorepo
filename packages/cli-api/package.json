@@ -94,7 +94,7 @@
 		"@oclif/test": "^4.1.18",
 		"@types/debug": "^4.1.13",
 		"@types/jsonfile": "^6.1.4",
-		"@types/node": "^20.19.39",
+		"@types/node": "^22.19.3",
 		"@types/semver": "^7.7.1",
 		"@vitest/coverage-v8": "^4.1.6",
 		"concurrently": "^9.2.1",
@@ -116,9 +116,6 @@
 		"consola": {
 			"optional": true
 		}
-	},
-	"engines": {
-		"node": ">=18.0.0"
 	},
 	"nx": {
 		"targets": {

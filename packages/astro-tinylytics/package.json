@@ -61,9 +61,6 @@
 	"peerDependencies": {
 		"astro": ">=4.0.0"
 	},
-	"engines": {
-		"node": ">=22.12.0"
-	},
 	"nx": {
 		"targets": {
 			"build": {},
