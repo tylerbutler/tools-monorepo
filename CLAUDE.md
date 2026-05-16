@@ -492,7 +492,7 @@ pnpm test:coverage
 - Peer dependencies configured in root package.json
 
 **Key Constraints:**
-- Node >= 18.0.0
+- Node >= 22.13.0
 - TypeScript ~5.5.4 (pinned minor version)
 - Biome 2.0.4 (shared across all packages)
 
