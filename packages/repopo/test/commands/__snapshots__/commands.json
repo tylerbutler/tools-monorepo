@@ -35,6 +35,7 @@
             "config",
             "fix",
             "quiet",
+            "runtime",
             "sidecar-path",
             "stdin",
             "verbose"
