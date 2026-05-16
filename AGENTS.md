@@ -5,7 +5,7 @@ This file provides guidance to AI coding agents working in this repository.
 ## Overview
 **pnpm workspace monorepo** with TypeScript, Nx build system, Biome linting/formatting, and Vitest testing. Contains 13 workspace packages including CLI tools (@tylerbu/cli, dill-cli, repopo, sort-tsconfig) and libraries.
 
-**Tech Stack:** pnpm 10.10.0 (via corepack) | Node 20+ | Nx 21+ | Biome 2.0.4 | Vitest 3.2+ | TypeScript 5.5
+**Tech Stack:** pnpm 10.10.0 (via corepack) | Node 22+ | Nx 21+ | Biome 2.0.4 | Vitest 3.2+ | TypeScript 5.5
 
 ## Setup & Build (CRITICAL)
 

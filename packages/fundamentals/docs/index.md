@@ -110,7 +110,7 @@ Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/li
 
 > `static` **stackTraceLimit**: `number`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.39/node\_modules/@types/node/globals.d.ts:68
+Defined in: node\_modules/.pnpm/@types+node@22.19.11/node\_modules/@types/node/globals.d.ts:68
 
 **`Beta`**
 
@@ -134,7 +134,7 @@ not capture any frames.
 
 > `static` **captureStackTrace**(`targetObject`, `constructorOpt?`): `void`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.39/node\_modules/@types/node/globals.d.ts:52
+Defined in: node\_modules/.pnpm/@types+node@22.19.11/node\_modules/@types/node/globals.d.ts:52
 
 **`Beta`**
 
@@ -204,7 +204,7 @@ a();
 
 > `static` **prepareStackTrace**(`err`, `stackTraces`): `any`
 
-Defined in: node\_modules/.pnpm/@types+node@20.19.39/node\_modules/@types/node/globals.d.ts:56
+Defined in: node\_modules/.pnpm/@types+node@22.19.11/node\_modules/@types/node/globals.d.ts:56
 
 **`Beta`**
 
@@ -481,6 +481,68 @@ Returns the element associated with the specified key. If no element is associat
 
 `Map.get`
 
+##### getOrInsert()
+
+> **getOrInsert**(`key`, `defaultValue`): `V`
+
+Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.esnext.collection.d.ts:25
+
+**`Beta`**
+
+Returns a specified element from the Map object.
+If no element is associated with the specified key, a new element with the value `defaultValue` will be inserted into the Map and returned.
+
+###### Parameters
+
+###### key
+
+`K`
+
+###### defaultValue
+
+`V`
+
+###### Returns
+
+`V`
+
+The element associated with the specified key, which will be `defaultValue` if no element previously existed.
+
+###### Inherited from
+
+`Map.getOrInsert`
+
+##### getOrInsertComputed()
+
+> **getOrInsertComputed**(`key`, `callback`): `V`
+
+Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.esnext.collection.d.ts:31
+
+**`Beta`**
+
+Returns a specified element from the Map object.
+If no element is associated with the specified key, the result of passing the specified key to the `callback` function will be inserted into the Map and returned.
+
+###### Parameters
+
+###### key
+
+`K`
+
+###### callback
+
+(`key`) => `V`
+
+###### Returns
+
+`V`
+
+The element associated with the specific key, which will be the newly computed value if no element previously existed.
+
+###### Inherited from
+
+`Map.getOrInsertComputed`
+
 ##### has()
 
 > **has**(`key`): `boolean`
@@ -579,6 +641,48 @@ Returns an iterable of values in the map
 ###### Inherited from
 
 `Map.values`
+
+##### groupBy()
+
+> `static` **groupBy**\<`K`, `T`\>(`items`, `keySelector`): `Map`\<`K`, `T`[]\>
+
+Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/lib.es2024.collection.d.ts:23
+
+**`Beta`**
+
+Groups members of an iterable according to the return value of the passed callback.
+
+###### Type Parameters
+
+###### K
+
+`K`
+
+###### T
+
+`T`
+
+###### Parameters
+
+###### items
+
+`Iterable`\<`T`\>
+
+An iterable.
+
+###### keySelector
+
+(`item`, `index`) => `K`
+
+A callback which will be invoked for each item in items.
+
+###### Returns
+
+`Map`\<`K`, `T`[]\>
+
+###### Inherited from
+
+`Map.groupBy`
 
 ## Functions
 

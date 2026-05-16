@@ -159,7 +159,6 @@
             "v"
         ],
         "flags": [
-            "config",
             "dry-run",
             "quiet",
             "verbose"

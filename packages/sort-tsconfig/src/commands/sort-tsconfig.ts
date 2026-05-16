@@ -1,6 +1,6 @@
 import { existsSync, statSync } from "node:fs";
 import { Args, type Command, Flags } from "@oclif/core";
-import { CommandWithConfig, ConfigFileFlag } from "@tylerbu/cli-api";
+import { CommandWithConfig, ConfigFlag } from "@tylerbu/cli-api";
 import { join } from "pathe";
 import { glob } from "tinyglobby";
 import { TsConfigSorter } from "../api.js";
@@ -57,7 +57,7 @@ export default class SortTsconfigCommand extends CommandWithConfig<
 			default: false,
 		}),
 		...CommandWithConfig.flags,
-		config: ConfigFileFlag,
+		config: ConfigFlag,
 	} as const;
 
 	public static override readonly examples: Command.Example[] = [

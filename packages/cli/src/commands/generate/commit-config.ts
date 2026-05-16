@@ -46,7 +46,7 @@ function parseTypes(typesObj: CCLObject): Record<string, CommitType> {
 			const description = getString(typeConfig, "description").unwrapOr("");
 			const changelogGroup =
 				getString(typeConfig, "changelog_group").unwrapOr("") || null;
-			const scopeRequired = getBool(typeConfig, "scope_required").unwrapOr(
+			const scopeRequired = getBool(typeConfig, ["scope_required"]).unwrapOr(
 				false,
 			);
 
@@ -70,7 +70,7 @@ function parseScopes(scopesObj: CCLObject): Record<string, Scope> {
 			const displayName = getString(scopeConfig, "display_name").unwrapOr(
 				scopeName,
 			);
-			const inChangelog = getBool(scopeConfig, "in_changelog").unwrapOr(true);
+			const inChangelog = getBool(scopeConfig, ["in_changelog"]).unwrapOr(true);
 
 			result[scopeName] = {
 				display_name: displayName,
@@ -117,9 +117,11 @@ function parseCCLConfig(cclText: string): CommitTypesConfig {
 	}
 
 	// Parse changelog_scope_order (list of strings)
-	const listResult = getList(obj, "changelog_scope_order");
+	const listResult = getList(obj, ["changelog_scope_order"]);
 	if (listResult.isOk) {
-		config.changelog_scope_order = listResult.value;
+		config.changelog_scope_order = listResult.value.filter((item) => {
+			return typeof item === "string";
+		});
 	}
 
 	return config;
