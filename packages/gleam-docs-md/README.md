@@ -128,6 +128,9 @@ for (const page of pages) {
 ## Credits
 
 The Gleam-formatted code rendering is a TypeScript port of
-[gleamoire](https://github.com/GearsDatapacks/gleamoire)'s `render.gleam`.
+[gleamoire](https://github.com/GearsDatapacks/gleamoire)'s `render.gleam`,
+which is licensed under Apache-2.0. Many thanks to the gleamoire authors for
+the rendering conventions this package follows.
+
 The original Node script lives in
 [gluegun](https://github.com/tylerbutler/gluegun)'s website scripts.
