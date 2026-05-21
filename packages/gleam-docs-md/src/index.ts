@@ -11,7 +11,9 @@ export {
 	type GenerateReferenceOptions,
 	type GenerateReferenceResult,
 	generateReference,
+	readPackageInterface,
 } from "./api.js";
+export { moduleSlug, type RenderedPage, renderPackage } from "./render.js";
 export type {
 	FnType,
 	GleamAlias,

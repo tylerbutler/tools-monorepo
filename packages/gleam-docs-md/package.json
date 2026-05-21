@@ -27,6 +27,14 @@
 		"./command": {
 			"types": "./esm/commands/generate.d.ts",
 			"import": "./esm/commands/generate.js"
+		},
+		"./loader": {
+			"types": "./esm/loader.d.ts",
+			"import": "./esm/loader.js"
+		},
+		"./starlight": {
+			"types": "./esm/starlight.d.ts",
+			"import": "./esm/starlight.js"
 		}
 	},
 	"types": "esm/index.d.ts",
