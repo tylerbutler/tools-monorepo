@@ -11,7 +11,7 @@
  * @type {import("@fluid-tools/build-infrastructure").IBuildProjectLayout & import("@fluid-tools/build-cli").FlubConfig}
  */
 const config = {
-	version: 1,
+	version: 2,
 	buildProject: {
 		workspaces: {
 			main: {
