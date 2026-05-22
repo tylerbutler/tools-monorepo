@@ -42,7 +42,7 @@
 		"vfile": "^6.0.3"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.8",
+		"@biomejs/biome": "2.4.15",
 		"@types/mdast": "^4.0.4",
 		"@types/node": "^22.19.3",
 		"@vitest/coverage-v8": "^4.1.6",
