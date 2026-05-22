@@ -53,11 +53,12 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 -----------
 
-The following npm package may be included in this product:
+The following npm packages may be included in this product:
 
- - simple-git@3.32.3
+ - ccl-ts@0.3.0
+ - simple-git@3.36.0
 
-This package contains the following license:
+These packages each contain the following license:
 
 MIT
 
@@ -65,8 +66,8 @@ MIT
 
 The following npm packages may be included in this product:
 
- - @oclif/plugin-commands@4.1.38
- - @oclif/plugin-which@3.2.42
+ - @oclif/plugin-commands@4.1.54
+ - @oclif/plugin-which@3.2.53
 
 These packages each contain the following license:
 
@@ -96,13 +97,13 @@ SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @oclif/core@4.8.0
- - @oclif/plugin-autocomplete@3.2.39
- - @oclif/plugin-help@6.2.36
- - @oclif/plugin-not-found@3.2.73
- - @oclif/plugin-plugins@5.4.54
- - @oclif/plugin-version@2.2.36
- - @oclif/plugin-warn-if-update-available@3.1.53
+ - @oclif/core@4.11.3
+ - @oclif/plugin-autocomplete@3.2.49
+ - @oclif/plugin-help@6.2.49
+ - @oclif/plugin-not-found@3.2.85
+ - @oclif/plugin-plugins@5.4.68
+ - @oclif/plugin-version@2.2.46
+ - @oclif/plugin-warn-if-update-available@3.1.64
 
 These packages each contain the following license:
 
@@ -132,7 +133,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - @oclif/plugin-search@1.2.36
+ - @oclif/plugin-search@1.2.48
 
 This package contains the following license:
 
@@ -162,7 +163,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - tinyglobby@0.2.15
+ - tinyglobby@0.2.16
 
 This package contains the following license:
 
@@ -271,7 +272,7 @@ DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - strip-ansi@7.1.2
+ - strip-ansi@7.2.0
 
 This package contains the following license:
 
@@ -287,12 +288,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----------
 
-The following npm packages may be included in this product:
+The following npm package may be included in this product:
 
- - ccl-ts@0.2.0
  - dill-cli@0.4.1
 
-These packages each contain the following license:
+This package contains the following license:
 
 MIT License
 
@@ -320,7 +320,7 @@ SOFTWARE.
 
 The following npm package may be included in this product:
 
- - semver@7.7.3
+ - semver@7.8.0
 
 This package contains the following license:
 
