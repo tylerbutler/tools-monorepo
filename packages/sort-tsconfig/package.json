@@ -94,7 +94,7 @@
 		"@types/node": "^22.19.3",
 		"@types/tmp": "^0.2.6",
 		"@vitest/coverage-v8": "^4.1.6",
-		"generate-license-file": "^4.1.1",
+		"generate-license-file": "^4.2.1",
 		"oclif": "^4.23.5",
 		"repopo": "workspace:^",
 		"rimraf": "^6.1.3",
