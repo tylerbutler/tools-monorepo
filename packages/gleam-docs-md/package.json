@@ -1,0 +1,105 @@
+{
+	"name": "@tylerbu/gleam-docs-md",
+	"version": "0.1.0",
+	"description": "Generate Markdown reference documentation from a Gleam package-interface.json file.",
+	"keywords": [
+		"gleam",
+		"docs",
+		"markdown",
+		"reference",
+		"starlight"
+	],
+	"homepage": "https://github.com/tylerbutler/tools-monorepo/tree/main/packages/gleam-docs-md#gleam-docs-md",
+	"bugs": "https://github.com/tylerbutler/tools-monorepo/issues",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tylerbutler/tools-monorepo.git",
+		"directory": "packages/gleam-docs-md"
+	},
+	"license": "MIT",
+	"author": "Tyler Butler <tyler@tylerbutler.com>",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./esm/index.d.ts",
+			"import": "./esm/index.js"
+		},
+		"./command": {
+			"types": "./esm/commands/generate.d.ts",
+			"import": "./esm/commands/generate.js"
+		},
+		"./loader": {
+			"types": "./esm/loader.d.ts",
+			"import": "./esm/loader.js"
+		},
+		"./starlight": {
+			"types": "./esm/starlight.d.ts",
+			"import": "./esm/starlight.js"
+		}
+	},
+	"types": "esm/index.d.ts",
+	"bin": {
+		"gleam-docs-md": "./bin/run.js"
+	},
+	"files": [
+		"/bin",
+		"/CHANGELOG.md",
+		"/esm",
+		"/oclif.manifest.json",
+		"/THIRD-PARTY-LICENSES.txt"
+	],
+	"scripts": {
+		"build:compile": "tsc",
+		"build:manifest": "oclif manifest",
+		"build:readme": "oclif readme --no-aliases",
+		"check": "concurrently npm:check:format",
+		"check:format": "biome check . --linter-enabled=false",
+		"clean": "concurrently npm:clean:build npm:clean:manifest",
+		"clean:build": "rimraf esm *.tsbuildinfo *.done.build.log",
+		"clean:manifest": "rimraf oclif.manifest.json",
+		"format": "sort-package-json && biome check . --linter-enabled=false --write",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint . --write",
+		"postpack": "pnpm clean:manifest",
+		"release:license": "generate-license-file -c ../../.generatelicensefile.cjs",
+		"test:coverage": "vitest run test --coverage",
+		"test:vitest": "vitest run test"
+	},
+	"oclif": {
+		"bin": "gleam-docs-md",
+		"commands": {
+			"strategy": "single",
+			"target": "./esm/commands/generate.js"
+		},
+		"devPlugins": [],
+		"dirname": "gleam-docs-md",
+		"plugins": [],
+		"repositoryPrefix": "<%- repo %>/blob/main/packages/gleam-docs-md/<%- commandPath %>"
+	},
+	"dependencies": {
+		"@oclif/core": "^4.11.3",
+		"@oclif/plugin-help": "^6.2.49",
+		"@tylerbu/cli-api": "workspace:^",
+		"pathe": "^2.0.3"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.8",
+		"@microsoft/api-extractor": "^7.58.7",
+		"@types/node": "^22.19.3",
+		"@vitest/coverage-v8": "^4.1.6",
+		"generate-license-file": "^4.1.1",
+		"oclif": "^4.23.5",
+		"rimraf": "^6.1.3",
+		"sort-package-json": "*",
+		"tmp-promise": "^3.0.3",
+		"typescript": "~6.0.3",
+		"vitest": "^4.1.6"
+	},
+	"nx": {
+		"targets": {
+			"build": {},
+			"test": {},
+			"ci": {}
+		}
+	}
+}
