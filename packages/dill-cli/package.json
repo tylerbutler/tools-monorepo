@@ -116,7 +116,7 @@
 		"@types/tmp": "^0.2.6",
 		"@types/whatwg-mimetype": "^5.0.0",
 		"@vitest/coverage-v8": "^4.1.6",
-		"generate-license-file": "^4.1.1",
+		"generate-license-file": "^4.2.1",
 		"get-port-please": "^3.2.0",
 		"jsonfile": "^6.2.1",
 		"msw": "^2.14.6",
