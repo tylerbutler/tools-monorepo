@@ -84,7 +84,10 @@ export interface CommandWithContext<CONTEXT> {
 export type CommitMergeability = "clean" | "conflict" | "maybeClean";
 
 // @beta
-export const ConfigFileFlag: OptionFlag<string | undefined, CustomOptions>;
+export const ConfigFlag: OptionFlag<string | undefined, CustomOptions>;
+
+// @beta
+export const ConfigFlagHidden: OptionFlag<string | undefined, CustomOptions>;
 
 // @public
 export function createBasicLogger(): Logger;

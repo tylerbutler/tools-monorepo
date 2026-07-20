@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git Workflow
+
+**Never push directly to main.** Always create a branch, commit there, and open a PR — even for small fixes. Only push to main if explicitly instructed.
+
 ## Quick Commands (for Claude)
 
 **Before making changes:**
@@ -488,7 +492,7 @@ pnpm test:coverage
 - Peer dependencies configured in root package.json
 
 **Key Constraints:**
-- Node >= 18.0.0
+- Node >= 22.13.0
 - TypeScript ~5.5.4 (pinned minor version)
 - Biome 2.0.4 (shared across all packages)
 

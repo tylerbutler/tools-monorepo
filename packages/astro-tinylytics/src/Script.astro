@@ -1,0 +1,19 @@
+---
+/**
+ * Tinylytics script loader.
+ *
+ * Renders the `<script>` tag for the Tinylytics analytics embed and exposes
+ * every documented script-URL parameter as a typed prop.
+ *
+ * @see https://tinylytics.app/docs/embedding_your_script
+ */
+import type { ScriptProps } from "./types.ts";
+import { buildScriptUrl } from "./urls.ts";
+
+export type Props = ScriptProps;
+
+const { defer = true, ...rest } = Astro.props;
+const scriptSrc = buildScriptUrl(rest);
+---
+
+{defer ? <script src={scriptSrc} defer is:inline /> : <script src={scriptSrc} is:inline />}

@@ -18,11 +18,14 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 ## Classes
 
 - [Policy](/api/classes/policy/)
+- [PolicyRunner](/api/classes/policyrunner/)
 
 ## Interfaces
 
 - [ConfiguredPolicy](/api/interfaces/configuredpolicy/)
+- [DefineCargoPolicyArgs](/api/interfaces/definecargopolicyargs/)
 - [DefineFileHeaderPolicyArgs](/api/interfaces/definefileheaderpolicyargs/)
+- [DefineGleamPolicyArgs](/api/interfaces/definegleampolicyargs/)
 - [DefinePackagePolicyArgs](/api/interfaces/definepackagepolicyargs/)
 - [FileHeaderGeneratorConfig](/api/interfaces/fileheadergeneratorconfig/)
 - [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/)
@@ -31,15 +34,25 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 - [PolicyArgs](/api/interfaces/policyargs/)
 - [PolicyError](/api/interfaces/policyerror/)
 - [~~PolicyFailure~~](/api/interfaces/policyfailure/)
+- [PolicyFileResult](/api/interfaces/policyfileresult/)
 - [~~PolicyFixResult~~](/api/interfaces/policyfixresult/)
+- [PolicyHandlerPerfStats](/api/interfaces/policyhandlerperfstats/)
 - [PolicyInstanceSettings](/api/interfaces/policyinstancesettings/)
 - [PolicyOptions](/api/interfaces/policyoptions/)
+- [PolicyRunnerOptions](/api/interfaces/policyrunneroptions/)
+- [PolicyRunResults](/api/interfaces/policyrunresults/)
 - [PolicyShape](/api/interfaces/policyshape/)
 - [RepopoConfig](/api/interfaces/repopoconfig/)
 
 ## Type Aliases
 
+- [CargoToml](/api/type-aliases/cargotoml/)
+- [CargoTomlHandler](/api/type-aliases/cargotomlhandler/)
+- [ExcludedPolicyFileMap](/api/type-aliases/excludedpolicyfilemap/)
+- [GleamToml](/api/type-aliases/gleamtoml/)
+- [GleamTomlHandler](/api/type-aliases/gleamtomlhandler/)
 - [PackageJsonHandler](/api/type-aliases/packagejsonhandler/)
+- [PolicyAction](/api/type-aliases/policyaction/)
 - [~~PolicyDefinition~~](/api/type-aliases/policydefinition/)
 - [~~PolicyDefinitionInput~~](/api/type-aliases/policydefinitioninput/)
 - [~~PolicyFunctionArguments~~](/api/type-aliases/policyfunctionarguments/)
@@ -53,7 +66,9 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 
 ## Functions
 
+- [defineCargoPolicy](/api/functions/definecargopolicy/)
 - [defineFileHeaderPolicy](/api/functions/definefileheaderpolicy/)
+- [defineGleamPolicy](/api/functions/definegleampolicy/)
 - [fromFluidHandlers](/api/functions/fromfluidhandlers/)
 - [generatePackagePolicy](/api/functions/generatepackagepolicy/)
 - [isPolicyError](/api/functions/ispolicyerror/)

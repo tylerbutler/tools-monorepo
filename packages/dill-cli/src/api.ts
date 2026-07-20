@@ -95,14 +95,27 @@ function getMimeType(response: Response): MimeInfo {
 }
 
 function decompress(fileContent: Uint8Array): Uint8Array {
-	let decompressed: Uint8Array | undefined;
+	const chunks: Uint8Array[] = [];
 	const decompressor = new Decompress((chunk) => {
-		decompressed = chunk;
+		if (chunk.length > 0) {
+			chunks.push(chunk);
+		}
 	});
 	decompressor.push(fileContent, true);
 
-	if (decompressed === undefined) {
+	if (chunks.length === 0) {
 		throw new Error("Failed to decompress file.");
+	}
+
+	const decompressedLength = chunks.reduce(
+		(length, chunk) => length + chunk.length,
+		0,
+	);
+	const decompressed = new Uint8Array(decompressedLength);
+	let offset = 0;
+	for (const chunk of chunks) {
+		decompressed.set(chunk, offset);
+		offset += chunk.length;
 	}
 	return decompressed;
 }

@@ -23,7 +23,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### config?
 
-> `optional` **config**: `C`
+> `optional` **config?**: `C`
 
 Defined in: [policy.ts:316](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L316)
 
@@ -37,7 +37,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### excludeFiles?
 
-> `optional` **excludeFiles**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
+> `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
 Defined in: [policy.ts:311](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L311)
 

@@ -1,7 +1,10 @@
 import child_process from "node:child_process";
 import fs from "node:fs";
+import registerDebug from "debug";
 import isEqual from "lodash.isequal";
 import path from "pathe";
+
+const traceExec = registerDebug("sail:exec");
 
 /**
  *	An array of commands that are known to have subcommands and should be parsed as such. These will be combined with
@@ -103,15 +106,21 @@ export async function rimrafWithErrorAsync(
 
 function printExecError(
 	ret: ExecAsyncResult,
-	_command: string,
-	_errorPrefix: string,
+	command: string,
+	errorPrefix: string,
 	warning: boolean,
 ) {
-	// TODO: Implement error handling
 	if (ret.error) {
-		// Handle error
+		traceExec(
+			`${errorPrefix}: error during command '${command}': ${ret.error.message}`,
+		);
+		if (ret.stderr) {
+			traceExec(`${errorPrefix}: stderr: ${ret.stderr}`);
+		}
 	} else if (warning && ret.stderr) {
-		// Handle warning
+		traceExec(
+			`${errorPrefix}: warning during command '${command}': ${ret.stderr}`,
+		);
 	}
 }
 

@@ -16,7 +16,7 @@ See [https://pnpm.io/package\_json](https://pnpm.io/package_json).
 ### pnpm?
 
 ```ts
-optional pnpm: object;
+optional pnpm?: object;
 ```
 
 Defined in: [packages/sail-infrastructure/src/types.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L20)
@@ -27,7 +27,7 @@ See [https://pnpm.io/package\_json](https://pnpm.io/package_json).
 #### overrides?
 
 ```ts
-optional overrides: Record<string, string>;
+optional overrides?: Record<string, string>;
 ```
 
 Instruct pnpm to override any dependency in the dependency graph.

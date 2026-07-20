@@ -31,7 +31,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### fixable?
 
-> `optional` **fixable**: `boolean`
+> `optional` **fixable?**: `boolean`
 
 Defined in: [policy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L64)
 
@@ -45,7 +45,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### fixed?
 
-> `optional` **fixed**: `boolean`
+> `optional` **fixed?**: `boolean`
 
 Defined in: [policy.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L69)
 
@@ -59,7 +59,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### manualFix?
 
-> `optional` **manualFix**: `string`
+> `optional` **manualFix?**: `string`
 
 Defined in: [policy.ts:74](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L74)
 

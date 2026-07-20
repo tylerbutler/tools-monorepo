@@ -1,4 +1,3 @@
-import { existsSync, statSync } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "pathe";
 import { FileHashCache, type hashFn, sha256 } from "../fileHashCache.js";
@@ -166,10 +165,11 @@ export class PersistentFileHashCache extends FileHashCache {
 		}
 
 		try {
-			if (existsSync(this.cacheFile)) {
-				const cacheData = JSON.parse(
-					await readFile(this.cacheFile, "utf-8"),
-				) as PersistentCacheData;
+			const content = await readFile(this.cacheFile, "utf-8").catch(
+				() => undefined,
+			);
+			if (content !== undefined) {
+				const cacheData = JSON.parse(content) as PersistentCacheData;
 
 				// Check cache version compatibility
 				if (cacheData.version === CACHE_VERSION) {
@@ -198,12 +198,12 @@ export class PersistentFileHashCache extends FileHashCache {
 	/**
 	 * Get cache statistics
 	 */
-	public getCacheStats(): CacheStats {
+	public async getCacheStats(): Promise<CacheStats> {
 		return {
 			persistentEntries: this.persistentCache.size,
 			memoryEntries: this.fileHashCaches.size,
 			cacheFile: this.cacheFile,
-			lastSaved: this.getLastSavedTime(),
+			lastSaved: await this.getLastSavedTime(),
 		};
 	}
 
@@ -239,19 +239,15 @@ export class PersistentFileHashCache extends FileHashCache {
 	}
 
 	private async ensureCacheDir(): Promise<void> {
-		if (!existsSync(this.cacheDir)) {
-			await mkdir(this.cacheDir, { recursive: true });
-		}
+		await mkdir(this.cacheDir, { recursive: true });
 	}
 
-	private getLastSavedTime(): number | undefined {
+	private async getLastSavedTime(): Promise<number | undefined> {
 		try {
-			if (existsSync(this.cacheFile)) {
-				const stats = statSync(this.cacheFile);
-				return stats.mtimeMs;
-			}
+			const stats = await stat(this.cacheFile);
+			return stats.mtimeMs;
 		} catch {
-			// Ignore errors
+			// File doesn't exist or is inaccessible
 		}
 		return undefined;
 	}

@@ -13,8 +13,5 @@
 	"author": "Tyler Butler <tyler@tylerbutler.com>",
 	"workspaces": [
 		"packages/**"
-	],
-	"dependencies": {
-		"@fluid-tools/build-infrastructure": "link:../../../../../../build-infrastructure"
-	}
+	]
 }

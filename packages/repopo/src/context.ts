@@ -1,6 +1,10 @@
 import type { PolicyHandlerPerfStats } from "./perf.js";
 import type { PolicyInstance, PolicyName } from "./policy.js";
 
+/**
+ * A map of policy names to file-path regexes that should be excluded from those policies.
+ * @alpha
+ */
 export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
 
 /**

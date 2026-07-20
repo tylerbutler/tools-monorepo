@@ -4,7 +4,7 @@
 
 [@tylerbu/sail-infrastructure](../README.md) / LoggingFunction
 
-# Type Alias: LoggingFunction()
+# Type Alias: LoggingFunction
 
 ```ts
 type LoggingFunction = (message?, ...args) => void;
@@ -20,7 +20,7 @@ A function that logs an error message.
 
 `string`
 
-### args?
+### args
 
 ...`any`[]
 

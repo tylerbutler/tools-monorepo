@@ -113,7 +113,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 	describe("DeclarativeTaskHandler - Input File Resolution", () => {
 		it("should resolve input files using globby", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([
+			vi.mocked(globby.globby).mockResolvedValue([
 				"/test/package/src/file1.ts",
 				"/test/package/src/file2.ts",
 			]);
@@ -128,7 +128,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			const inputs = await task.getCacheInputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["src/**/*.ts"],
 				expect.objectContaining({
 					cwd: "/test/package",
@@ -144,7 +144,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should respect gitignore: ['input'] for input files", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withPackageDirectory("/test/package")
@@ -157,7 +157,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheInputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["**/*.ts"],
 				expect.objectContaining({
 					gitignore: true,
@@ -167,7 +167,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should respect gitignore: ['output'] for input files (exclude gitignore)", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withPackageDirectory("/test/package")
@@ -180,7 +180,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheInputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["**/*.ts"],
 				expect.objectContaining({
 					gitignore: false,
@@ -190,7 +190,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should handle multiple input globs", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([
+			vi.mocked(globby.globby).mockResolvedValue([
 				"/test/package/src/file.ts",
 				"/test/package/lib/file.js",
 			]);
@@ -204,7 +204,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheInputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["src/**/*.ts", "lib/**/*.js"],
 				expect.any(Object),
 			);
@@ -212,7 +212,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should handle empty input glob results", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withDeclarativeTask({
@@ -227,7 +227,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should use absolute paths in cwd option", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withPackageDirectory("/absolute/path/to/package")
@@ -239,7 +239,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheInputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["src/**"],
 				expect.objectContaining({
 					cwd: "/absolute/path/to/package",
@@ -249,7 +249,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should set absolute: true in globby options", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withDeclarativeTask({
@@ -260,7 +260,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheInputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["src/**"],
 				expect.objectContaining({
 					absolute: true,
@@ -272,7 +272,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 	describe("DeclarativeTaskHandler - Output File Resolution", () => {
 		it("should resolve output files using globby", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([
+			vi.mocked(globby.globby).mockResolvedValue([
 				"/test/package/dist/output1.js",
 				"/test/package/dist/output2.js",
 			]);
@@ -287,7 +287,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			const outputs = await task.getCacheOutputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["dist/**/*.js"],
 				expect.objectContaining({
 					cwd: "/test/package",
@@ -303,7 +303,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should respect gitignore: ['output'] for output files", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withDeclarativeTask({
@@ -315,7 +315,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheOutputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["dist/**"],
 				expect.objectContaining({
 					gitignore: true,
@@ -325,7 +325,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should respect gitignore: ['input'] for output files (exclude gitignore)", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withDeclarativeTask({
@@ -337,7 +337,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheOutputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["dist/**"],
 				expect.objectContaining({
 					gitignore: false,
@@ -347,7 +347,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should respect gitignore: ['input', 'output'] for output files", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withDeclarativeTask({
@@ -359,7 +359,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheOutputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["dist/**"],
 				expect.objectContaining({
 					gitignore: true,
@@ -369,7 +369,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should handle multiple output globs", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([
+			vi.mocked(globby.globby).mockResolvedValue([
 				"/test/package/dist/bundle.js",
 				"/test/package/build/output.css",
 			]);
@@ -383,7 +383,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheOutputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["dist/**/*.js", "build/**/*.css"],
 				expect.any(Object),
 			);
@@ -391,7 +391,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should handle empty output glob results", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withDeclarativeTask({
@@ -520,7 +520,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should preserve task definition in created tasks", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const taskDefinition = {
 				inputGlobs: ["specific/**/*.pattern"],
@@ -535,7 +535,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 			await task.getCacheInputFiles();
 
-			expect(globby.default).toHaveBeenCalledWith(
+			expect(globby.globby).toHaveBeenCalledWith(
 				["specific/**/*.pattern"],
 				expect.any(Object),
 			);
@@ -545,7 +545,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 	describe("DeclarativeTaskHandler - Error Handling", () => {
 		it("should handle globby errors for input files", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockRejectedValue(
+			vi.mocked(globby.globby).mockRejectedValue(
 				new Error("Glob failed for input"),
 			);
 
@@ -563,7 +563,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 		it("should handle globby errors for output files", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockRejectedValue(
+			vi.mocked(globby.globby).mockRejectedValue(
 				new Error("Glob failed for output"),
 			);
 
@@ -583,7 +583,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 	describe("DeclarativeTaskHandler - Complex Scenarios", () => {
 		it("should handle task with many input and output globs", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const task = new LeafTaskBuilder()
 				.withDeclarativeTask({
@@ -600,12 +600,12 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 			await task.getCacheInputFiles();
 			await task.getCacheOutputFiles();
 
-			expect(globby.default).toHaveBeenCalledTimes(2);
+			expect(globby.globby).toHaveBeenCalledTimes(2);
 		});
 
 		it("should work with various package directories", async () => {
 			const globby = await import("globby");
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 
 			const directories = [
 				"/root/packages/app",
@@ -624,7 +624,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 
 				await task.getCacheInputFiles();
 
-				expect(globby.default).toHaveBeenCalledWith(
+				expect(globby.globby).toHaveBeenCalledWith(
 					["src/**"],
 					expect.objectContaining({ cwd: dir }),
 				);
@@ -637,7 +637,7 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 			const globby = await import("globby");
 
 			// Test input with gitignore
-			vi.mocked(globby.default).mockResolvedValue([]);
+			vi.mocked(globby.globby).mockResolvedValue([]);
 			const task1 = new LeafTaskBuilder()
 				.withDeclarativeTask({
 					inputGlobs: ["src/**"],
@@ -647,14 +647,14 @@ describe("DeclarativeTask - Comprehensive Tests", () => {
 				.buildDeclarativeTaskHandler();
 
 			await task1.getCacheInputFiles();
-			expect(globby.default).toHaveBeenLastCalledWith(
+			expect(globby.globby).toHaveBeenLastCalledWith(
 				["src/**"],
 				expect.objectContaining({ gitignore: true }),
 			);
 
 			// Test output without gitignore
 			await task1.getCacheOutputFiles();
-			expect(globby.default).toHaveBeenLastCalledWith(
+			expect(globby.globby).toHaveBeenLastCalledWith(
 				["dist/**"],
 				expect.objectContaining({ gitignore: false }),
 			);

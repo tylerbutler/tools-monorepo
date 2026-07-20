@@ -5,9 +5,12 @@
 
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import registerDebug from "debug";
 import * as path from "pathe";
 import { atomicWriteJson } from "./atomicWrite.js";
 import type { CacheStatistics } from "./types.js";
+
+const traceStats = registerDebug("sail:cache:statistics");
 
 /**
  * File name for persisted statistics
@@ -82,8 +85,8 @@ export async function saveStatistics(
 
 	try {
 		await atomicWriteJson(statsPath, stats, true);
-	} catch (_error) {
-		// TODO: Review error handling - should write failures be logged or propagated?
+	} catch (error) {
+		traceStats("failed to save statistics to %s: %O", statsPath, error);
 	}
 }
 
@@ -128,8 +131,8 @@ export async function updateCacheSizeStats(
 		// Update statistics
 		stats.totalEntries = totalEntries;
 		stats.totalSize = totalSize;
-	} catch (_error) {
-		// TODO: Review error handling - should scan failures be logged or leave stats unchanged?
+	} catch (error) {
+		traceStats("failed to scan cache directory %s: %O", entriesDir, error);
 	}
 }
 

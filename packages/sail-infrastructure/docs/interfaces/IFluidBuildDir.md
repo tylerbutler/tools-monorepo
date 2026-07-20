@@ -31,7 +31,7 @@ The path to the package. For release groups this should be the path to the root 
 ### ~~ignoredDirs?~~
 
 ```ts
-optional ignoredDirs: string[];
+optional ignoredDirs?: string[];
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:186](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L186)

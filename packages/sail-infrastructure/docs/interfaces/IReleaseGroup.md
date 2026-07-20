@@ -24,7 +24,7 @@ information.
 ### adoPipelineUrl?
 
 ```ts
-readonly optional adoPipelineUrl: string;
+readonly optional adoPipelineUrl?: string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/types.ts:271](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L271)
@@ -74,7 +74,7 @@ on the second.
 ### rootPackage?
 
 ```ts
-readonly optional rootPackage: IPackage<PackageJson>;
+readonly optional rootPackage?: IPackage<PackageJson>;
 ```
 
 Defined in: [packages/sail-infrastructure/src/types.ts:249](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/types.ts#L249)

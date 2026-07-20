@@ -229,7 +229,11 @@
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
 				"{projectRoot}/public/**"
 			],
-			"outputs": ["{projectRoot}/dist/**", "{projectRoot}/.astro/**"],
+			"outputs": [
+				"{projectRoot}/dist/**",
+				"{projectRoot}/.astro/**",
+				"{projectRoot}/src/content/docs/api/**"
+			],
 			"cache": true
 		},
 
@@ -435,5 +439,6 @@
 			"cache": false
 		}
 	},
-	"nxCloudId": "68fa4834e4d66c5b22e74804"
+	"nxCloudId": "68fa4834e4d66c5b22e74804",
+	"analytics": false
 }

@@ -1,5 +1,25 @@
 # repopo
 
+## 0.11.0
+
+### Minor Changes
+
+- Add experimental `check-native` command powered by a Rust core engine for significantly faster policy checking (up to 1.5x faster than the standard `check` command). The Rust engine handles file enumeration, pattern matching, and orchestration while delegating policy evaluation to a Node.js sidecar, so all existing configs and third-party policies work without changes. _[`#623`](https://github.com/tylerbutler/tools-monorepo/pull/623) [`dd15dc9`](https://github.com/tylerbutler/tools-monorepo/commit/dd15dc98c5c2a69c2a6f022a2a0c985f2c26dcf4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Also adds a simplified `policy()` function for defining policies and new focused script policies (`RequiredScripts`, `ExactScripts`, `MutuallyExclusiveScripts`, `ConditionalScripts`, `ScriptContains`) that replace the monolithic `PackageScripts` policy with more granular, composable alternatives.
+
+- Add `CargoLicenceValidated` policy that validates SPDX licence expressions in `Cargo.toml` files using the `spdx-correct` package. Includes a shared SPDX validator (`spdxValidator`) reused by both Cargo and Gleam licence policies. _[`#654`](https://github.com/tylerbutler/tools-monorepo/pull/654) [`9deb6dc`](https://github.com/tylerbutler/tools-monorepo/commit/9deb6dcce769bbb25fd067f9668cf6031f3d3bc7) [@tylerbutler](https://github.com/tylerbutler)_
+- Extract `PolicyRunner` class from `CheckPolicy` command to fix SRP violation. The new class encapsulates all policy execution logic (file iteration, exclusion checking, policy matching, handler execution, resolution attempts) and returns structured `PolicyRunResults` instead of producing side effects. `PolicyRunner` has no OCLIF dependencies and can be used programmatically. The `CheckPolicy` command is now a thin CLI wrapper handling only flag parsing, file collection, and result formatting. _[`#672`](https://github.com/tylerbutler/tools-monorepo/pull/672) [`5f5bdf9`](https://github.com/tylerbutler/tools-monorepo/commit/5f5bdf90883177258ae6cd2284515f0465347d31) [@tylerbutler](https://github.com/tylerbutler)_
+- Add 15 Gleam language policies for enforcing project conventions, structure, dependency management, documentation, and monorepo consistency. Includes `defineGleamPolicy` helper and shared TOML parser infrastructure. _[`#654`](https://github.com/tylerbutler/tools-monorepo/pull/654) [`9deb6dc`](https://github.com/tylerbutler/tools-monorepo/commit/9deb6dcce769bbb25fd067f9668cf6031f3d3bc7) [@tylerbutler](https://github.com/tylerbutler)_
+- Add 14 new Rust/Cargo.toml policies for enforcing best practices in Rust projects: _[`#654`](https://github.com/tylerbutler/tools-monorepo/pull/654) [`9deb6dc`](https://github.com/tylerbutler/tools-monorepo/commit/9deb6dcce769bbb25fd067f9668cf6031f3d3bc7) [@tylerbutler](https://github.com/tylerbutler)_
+  - **Cargo.toml**: `CargoTomlRequired`, `CargoTomlSorted`, `CargoLintsConfigured`
+  - **Project structure**: `RustToolchainExists`, `RustfmtConfigExists`, `CargoLockPolicy`, `NoTargetArtifacts`
+  - **Security**: `NoWildcardDependencies`, `NoUnsafeWithoutJustification`
+  - **Documentation**: `PublicApiDocumented`, `RustDocExists`
+  - **Workspace**: `WorkspaceMembersValid`, `SharedDependencyVersions`, `WorkspaceInheritance`
+
+  Also adds `defineCargoPolicy` helper for creating Cargo.toml-targeted policies, and `smol-toml` as an optional peer dependency for TOML parsing.
+
 ## 0.10.0
 
 ### Minor Changes

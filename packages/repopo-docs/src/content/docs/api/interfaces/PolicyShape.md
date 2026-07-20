@@ -29,7 +29,7 @@ Type of configuration object used by the policy
 
 ### defaultConfig?
 
-> `optional` **defaultConfig**: `C`
+> `optional` **defaultConfig?**: `C`
 
 Defined in: [policy.ts:232](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L232)
 
@@ -99,7 +99,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### resolver?
 
-> `optional` **resolver**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
+> `optional` **resolver?**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
 Defined in: [policy.ts:227](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L227)
 

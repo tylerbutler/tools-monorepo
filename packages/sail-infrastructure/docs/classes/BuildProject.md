@@ -33,7 +33,7 @@ The type of [IPackage](../interfaces/IPackage.md) the repo uses. This can be any
 ```ts
 new BuildProject<P>(
    searchPath, 
-   infer, 
+   infer?, 
 upstreamRemotePartialUrl?): BuildProject<P>;
 ```
 
@@ -47,7 +47,7 @@ Defined in: [packages/sail-infrastructure/src/buildProject.ts:56](https://github
 
 The path that should be searched for a BuildProject config file.
 
-##### infer
+##### infer?
 
 `boolean` = `false`
 
@@ -119,7 +119,7 @@ exists.
 ### upstreamRemotePartialUrl?
 
 ```ts
-readonly optional upstreamRemotePartialUrl: string;
+readonly optional upstreamRemotePartialUrl?: string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/buildProject.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/buildProject.ts#L63)

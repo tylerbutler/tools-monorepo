@@ -15,8 +15,5 @@
 	"workspaces": [
 		"packages/**"
 	],
-	"dependencies": {
-		"@fluid-tools/build-infrastructure": "link:../../../../../../build-infrastructure"
-	},
 	"packageManager": "yarn@1.22.22"
 }

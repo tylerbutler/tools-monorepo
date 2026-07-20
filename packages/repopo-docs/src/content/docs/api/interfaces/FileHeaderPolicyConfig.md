@@ -15,7 +15,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### autoGenText?
 
-> `optional` **autoGenText**: `string`
+> `optional` **autoGenText?**: `string`
 
 Defined in: [policyDefiners/defineFileHeaderPolicy.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L21)
 

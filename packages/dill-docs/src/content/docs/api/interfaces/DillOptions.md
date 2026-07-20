@@ -13,7 +13,7 @@ Options used to control dill's behavior.
 
 ### downloadDir?
 
-> `optional` **downloadDir**: `string`
+> `optional` **downloadDir?**: `string`
 
 Defined in: [types.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L21)
 
@@ -30,7 +30,7 @@ current working directory
 
 ### extract?
 
-> `optional` **extract**: `boolean`
+> `optional` **extract?**: `boolean`
 
 Defined in: [types.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L14)
 
@@ -44,7 +44,7 @@ If set to `true`, try extracting the file using [`fflate`](https://www.npmjs.com
 
 ### filename?
 
-> `optional` **filename**: `string`
+> `optional` **filename?**: `string`
 
 Defined in: [types.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L27)
 
@@ -55,7 +55,7 @@ If not provided, uses Content-Disposition header or `dill-download.<EXTENSION>`.
 
 ### noFile?
 
-> `optional` **noFile**: `boolean`
+> `optional` **noFile?**: `boolean`
 
 Defined in: [types.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/types.ts#L34)
 

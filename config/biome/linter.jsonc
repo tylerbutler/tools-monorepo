@@ -26,7 +26,9 @@
 				"noUndeclaredVariables": "error",
 				"noPrivateImports": "error",
 				"noRenderReturnValue": "error",
-				"useHookAtTopLevel": "error",
+				// Disabled globally - not a React project, "use*" naming is for capability composition
+				// Packages can opt-in by overriding this rule if they use React
+				"useHookAtTopLevel": "off",
 				"useImportExtensions": {
 					"level": "error",
 					"options": {

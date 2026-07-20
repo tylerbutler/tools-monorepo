@@ -4,9 +4,16 @@
 
 ```ts
 
+import type { Logger } from '@tylerbu/cli-api';
 import { Operation } from 'effection';
 import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
+
+// @alpha
+export type CargoToml = Record<string, unknown>;
+
+// @alpha
+export type CargoTomlHandler<C> = (toml: CargoToml, args: PolicyArgs<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
 
 // @alpha
 export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
@@ -16,6 +23,17 @@ export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
     excludeFiles?: (string | RegExp)[] | undefined;
     // @internal
     _internalHandler?: (args: PolicyArgs<C>) => Operation<PolicyHandlerResult>;
+}
+
+// @alpha
+export function defineCargoPolicy<C = undefined>(args: DefineCargoPolicyArgs<C>): PolicyShape<C>;
+
+// @alpha
+export interface DefineCargoPolicyArgs<C> {
+    defaultConfig?: C;
+    description: string;
+    handler: CargoTomlHandler<C>;
+    name: string;
 }
 
 // @alpha
@@ -29,12 +47,26 @@ export interface DefineFileHeaderPolicyArgs {
 }
 
 // @alpha
+export function defineGleamPolicy<C = undefined>(args: DefineGleamPolicyArgs<C>): PolicyShape<C>;
+
+// @alpha
+export interface DefineGleamPolicyArgs<C> {
+    defaultConfig?: C;
+    description: string;
+    handler: GleamTomlHandler<C>;
+    name: string;
+}
+
+// @alpha
 export interface DefinePackagePolicyArgs<J, C> {
     defaultConfig?: C;
     description: string;
     handler: PackageJsonHandler<J, C>;
     name: string;
 }
+
+// @alpha
+export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
 
 // @alpha
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -78,6 +110,12 @@ export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: Fluid
 export function generatePackagePolicy<J = PackageJson, C = undefined>(args: DefinePackagePolicyArgs<J, C>): PolicyShape<C>;
 
 // @alpha
+export type GleamToml = Record<string, unknown>;
+
+// @alpha
+export type GleamTomlHandler<C> = (toml: GleamToml, args: PolicyArgs<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
+
+// @alpha
 export function isPolicyError(toCheck: any): toCheck is PolicyError;
 
 // @alpha @deprecated
@@ -119,6 +157,9 @@ export function policy<C = void>(policyDef: PolicyShape<C>, options?: PolicyOpti
 export function policy<C>(policyDef: PolicyShape<C>, config: C, options?: PolicyOptions): ConfiguredPolicy<C>;
 
 // @alpha
+export type PolicyAction = "check" | "resolve" | "handle";
+
+// @alpha
 export interface PolicyArgs<C = void> {
     config?: C | undefined;
     file: string;
@@ -149,6 +190,16 @@ export interface PolicyFailure {
     name: PolicyName;
 }
 
+// @alpha
+export interface PolicyFileResult {
+    // (undocumented)
+    file: string;
+    outcome: PolicyHandlerResult;
+    // (undocumented)
+    policy: PolicyName;
+    resolution?: PolicyFixResult;
+}
+
 // @alpha @deprecated
 export interface PolicyFixResult extends PolicyFailure {
     resolved: boolean;
@@ -159,6 +210,16 @@ export type PolicyFunctionArguments<C> = PolicyArgs<C>;
 
 // @alpha
 export type PolicyHandler<C = unknown | undefined> = ((args: PolicyArgs<C>) => Promise<PolicyHandlerResult>) | ((args: PolicyArgs<C>) => Operation<PolicyHandlerResult>);
+
+// @alpha
+export interface PolicyHandlerPerfStats {
+    // (undocumented)
+    count: number;
+    // (undocumented)
+    data: Map<PolicyAction, Map<PolicyName, number>>;
+    // (undocumented)
+    processed: number;
+}
 
 // @alpha
 export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult | PolicyError;
@@ -185,6 +246,37 @@ export type PolicyResolver<C = void> = (args: Omit<PolicyArgs<C>, "resolve">) =>
 
 // @alpha
 export type PolicyResult = true | PolicyError;
+
+// @alpha
+export class PolicyRunner {
+    constructor(options: PolicyRunnerOptions);
+    // (undocumented)
+    run(filePaths: string[]): Operation<PolicyRunResults>;
+}
+
+// @alpha
+export interface PolicyRunnerOptions {
+    // (undocumented)
+    excludeFromAll: RegExp[];
+    // (undocumented)
+    excludePoliciesForFiles: ExcludedPolicyFileMap;
+    // (undocumented)
+    gitRoot: string;
+    // (undocumented)
+    logger?: Pick<Logger, "verbose">;
+    // (undocumented)
+    policies: PolicyInstance[];
+    // (undocumented)
+    resolve: boolean;
+}
+
+// @alpha
+export interface PolicyRunResults {
+    // (undocumented)
+    perfStats: PolicyHandlerPerfStats;
+    // (undocumented)
+    results: PolicyFileResult[];
+}
 
 // @alpha
 export interface PolicyShape<C = void> {
