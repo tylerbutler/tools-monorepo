@@ -5,7 +5,7 @@ prev: false
 title: "PolicyFileResult"
 ---
 
-Defined in: [runner.ts:32](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L32)
+Defined in: [runner.ts:46](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L46)
 
 Result of running a single policy on a single file.
 
@@ -19,7 +19,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **file**: `string`
 
-Defined in: [runner.ts:33](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L33)
+Defined in: [runner.ts:47](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L47)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -31,7 +31,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **outcome**: [`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)
 
-Defined in: [runner.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L36)
+Defined in: [runner.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L50)
 
 The raw result from the policy handler
 
@@ -45,7 +45,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **policy**: `string`
 
-Defined in: [runner.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L34)
+Defined in: [runner.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L48)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -57,7 +57,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **resolution?**: [`PolicyFixResult`](/api/interfaces/policyfixresult/)
 
-Defined in: [runner.ts:38](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L38)
+Defined in: [runner.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L52)
 
 Set when a standalone resolver was attempted (legacy resolver path)
 
