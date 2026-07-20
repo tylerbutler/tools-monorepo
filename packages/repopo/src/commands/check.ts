@@ -73,15 +73,12 @@ export class CheckPolicy<
 			this.info("Resolving errors if possible.");
 		}
 
-		const config = this.commandConfig;
-		const policies = config?.policies ?? [];
-		this.verbose(`${policies.length} policies loaded.`);
-		for (const h of policies) {
-			this.verbose(h.name);
-		}
-
 		const filePathsToCheck = await this.collectFilePaths();
 		const context: RepopoCommandContext = await this.getContext();
+		this.verbose(`${context.policies.length} policies loaded.`);
+		for (const configuredPolicy of context.policies) {
+			this.verbose(configuredPolicy.instanceId);
+		}
 
 		const runner = new PolicyRunner({
 			policies: context.policies,
@@ -154,19 +151,19 @@ export class CheckPolicy<
 
 		// Handle fix results (legacy format with resolved property)
 		if (isPolicyFixResult(outcome)) {
-			this.formatFixResult(outcome.resolved, outcome.file, result.policy);
+			this.formatFixResult(outcome.resolved, outcome.file, result.policyId);
 			return;
 		}
 
 		// Handle new PolicyError with fixed property (fix was attempted inline)
 		if (isPolicyError(outcome) && outcome.fixed !== undefined) {
-			this.formatPolicyErrorFixResult(outcome, result.file, result.policy);
+			this.formatPolicyErrorFixResult(outcome, result.file, result.policyId);
 			return;
 		}
 
 		// Handle failure with standalone resolver result
 		if (resolution !== undefined) {
-			this.formatResolutionResult(resolution, result.file, result.policy);
+			this.formatResolutionResult(resolution, result.file, result.policyId);
 			return;
 		}
 
@@ -175,7 +172,7 @@ export class CheckPolicy<
 		if (outcome === true) {
 			return;
 		}
-		this.formatPolicyFailure(outcome, result.file, result.policy);
+		this.formatPolicyFailure(outcome, result.file, result.policyId);
 	}
 
 	private formatFixResult(
