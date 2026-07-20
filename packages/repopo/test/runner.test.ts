@@ -129,6 +129,90 @@ describe("PolicyRunner", () => {
 				"Excluded all handlers: excluded/file.txt",
 			);
 		});
+
+		it.each([
+			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
+			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
+		])(
+			"should support excludeFromAll with regex $description, preserving lastIndex",
+			async ({ regex }) => {
+				let handlerCalled = false;
+				const testPolicy = policy({
+					name: "TestPolicy",
+					description: "Test",
+					match: /\.txt$/,
+					handler: async () => {
+						handlerCalled = true;
+						return true;
+					},
+				});
+
+				// Pre-set lastIndex to simulate prior regex use
+				regex.lastIndex = 2;
+				const initialLastIndex = regex.lastIndex;
+
+				const runner = new PolicyRunner(
+					makeRunnerOptions({
+						policies: [testPolicy],
+						excludeFromAll: [regex],
+					}),
+				);
+
+				const results = await run(() =>
+					runner.run(["a.txt", "b.txt", "c.txt"]),
+				);
+
+				// All files should be excluded
+				expect(handlerCalled).toBe(false);
+				expect(results.results).toEqual([]);
+
+				// lastIndex should be preserved
+				expect(regex.lastIndex).toBe(initialLastIndex);
+			},
+		);
+
+		it.each([
+			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
+			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
+		])(
+			"should support per-policy exclusions with regex $description, preserving lastIndex",
+			async ({ regex }) => {
+				let handlerCalled = false;
+				const testPolicy = policy({
+					name: "TestPolicy",
+					description: "Test",
+					match: /\.txt$/,
+					handler: async () => {
+						handlerCalled = true;
+						return true;
+					},
+				});
+
+				// Pre-set lastIndex to simulate prior regex use
+				regex.lastIndex = 2;
+				const initialLastIndex = regex.lastIndex;
+
+				const excludeMap = new Map([["TestPolicy", [regex]]]);
+
+				const runner = new PolicyRunner(
+					makeRunnerOptions({
+						policies: [testPolicy],
+						excludePoliciesForFiles: excludeMap,
+					}),
+				);
+
+				const results = await run(() =>
+					runner.run(["a.txt", "b.txt", "c.txt"]),
+				);
+
+				// All files should be excluded
+				expect(handlerCalled).toBe(false);
+				expect(results.results).toEqual([]);
+
+				// lastIndex should be preserved
+				expect(regex.lastIndex).toBe(initialLastIndex);
+			},
+		);
 	});
 
 	describe("policy matching", () => {
@@ -166,6 +250,44 @@ describe("PolicyRunner", () => {
 			expect(txtCalled).toEqual(["file.txt"]);
 			expect(jsCalled).toEqual(["file.mjs"]);
 		});
+
+		it.each([
+			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
+			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
+		])(
+			"should run policy match deterministically $description, preserving lastIndex",
+			async ({ regex }) => {
+				const handledFiles: string[] = [];
+
+				const testPolicy = policy({
+					name: "TestPolicy",
+					description: "Test",
+					match: regex,
+					handler: async ({ file }) => {
+						handledFiles.push(file);
+						return true;
+					},
+				});
+
+				// Pre-set lastIndex to simulate prior regex use
+				regex.lastIndex = 2;
+				const initialLastIndex = regex.lastIndex;
+
+				const runner = new PolicyRunner(
+					makeRunnerOptions({
+						policies: [testPolicy],
+					}),
+				);
+
+				await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
+
+				// All files should match and be handled
+				expect(handledFiles).toEqual(["a.txt", "b.txt", "c.txt"]);
+
+				// lastIndex should be preserved
+				expect(regex.lastIndex).toBe(initialLastIndex);
+			},
+		);
 	});
 
 	describe("result collection", () => {
