@@ -55,6 +55,61 @@ describe("PolicyRunner", () => {
 	});
 
 	describe("exclusion logic", () => {
+		it.each([
+			"g",
+			"y",
+		])("should deterministically apply %s excludeFromAll patterns across files", async (flag) => {
+			const handledFiles: string[] = [];
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: /\.txt$/,
+				handler: async ({ file }) => {
+					handledFiles.push(file);
+					return true;
+				},
+			});
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+					excludeFromAll: [new RegExp(String.raw`.*\.txt$`, flag)],
+				}),
+			);
+
+			await run(() => runner.run(["a.txt", "b.txt", "c.mjs"]));
+			expect(handledFiles).toEqual([]);
+		});
+
+		it.each([
+			"g",
+			"y",
+		])("should deterministically apply %s per-policy exclusions across files", async (flag) => {
+			const handledFiles: string[] = [];
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: /\.txt$/,
+				handler: async ({ file }) => {
+					handledFiles.push(file);
+					return true;
+				},
+			});
+			const excludeMap = new Map([
+				["TestPolicy", [new RegExp(String.raw`.*\.txt$`, flag)]],
+			]);
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+					excludePoliciesForFiles: excludeMap,
+				}),
+			);
+
+			await run(() => runner.run(["a.txt", "b.txt"]));
+			expect(handledFiles).toEqual([]);
+		});
+
 		it("should exclude files matching excludeFromAll patterns", async () => {
 			let handlerCalled = false;
 			const testPolicy = policy({
@@ -132,6 +187,29 @@ describe("PolicyRunner", () => {
 	});
 
 	describe("policy matching", () => {
+		it.each([
+			"g",
+			"y",
+		])("should deterministically match files with a %s policy regex", async (flag) => {
+			const handledFiles: string[] = [];
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: new RegExp(String.raw`.*\.txt$`, flag),
+				handler: async ({ file }) => {
+					handledFiles.push(file);
+					return true;
+				},
+			});
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({ policies: [testPolicy] }),
+			);
+
+			await run(() => runner.run(["a.txt", "b.txt", "c.mjs"]));
+			expect(handledFiles).toEqual(["a.txt", "b.txt"]);
+		});
+
 		it("should only run policies that match the file path", async () => {
 			const txtCalled: string[] = [];
 			const jsCalled: string[] = [];

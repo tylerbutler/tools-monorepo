@@ -25,6 +25,16 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 	);
 }
 
+function matchesRegex(regex: RegExp, value: string): boolean {
+	const previousLastIndex = regex.lastIndex;
+	regex.lastIndex = 0;
+	try {
+		return regex.test(value);
+	} finally {
+		regex.lastIndex = previousLastIndex;
+	}
+}
+
 /**
  * Result of running a single policy on a single file.
  * @alpha
@@ -107,13 +117,13 @@ export class PolicyRunner {
 	}
 
 	private *routeToPolicies(relPath: string): Operation<void> {
-		if (this.excludeFromAll.some((regex) => regex.test(relPath))) {
+		if (this.excludeFromAll.some((regex) => matchesRegex(regex, relPath))) {
 			this.logger?.verbose(`Excluded all handlers: ${relPath}`);
 			return;
 		}
 
 		const matchingPolicies = this.policies.filter((policy) =>
-			policy.match.test(relPath),
+			matchesRegex(policy.match, relPath),
 		);
 		yield* all(
 			matchingPolicies.map((policy) => {
@@ -172,7 +182,7 @@ export class PolicyRunner {
 		return (
 			this.excludePoliciesForFiles
 				.get(policy.name)
-				?.some((regex) => regex.test(relPath)) ?? false
+				?.some((regex) => matchesRegex(regex, relPath)) ?? false
 		);
 	}
 
