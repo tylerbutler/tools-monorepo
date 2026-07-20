@@ -30,12 +30,14 @@ describe("PolicyRunner", () => {
 			const results = await run(() => runner.run([]));
 			expect(results.results).toEqual([]);
 			expect(results.perfStats.count).toBe(0);
+			expect(results.perfStats.processed).toBe(0);
 		});
 
 		it("should count all processed files", async () => {
 			const runner = new PolicyRunner(makeRunnerOptions());
 			const results = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
 			expect(results.perfStats.count).toBe(3);
+			expect(results.perfStats.processed).toBe(3);
 		});
 
 		it("should return no results when all policies pass", async () => {
@@ -79,6 +81,35 @@ describe("PolicyRunner", () => {
 			);
 			expect(handlerCalled).toBe(false);
 			expect(results.results).toEqual([]);
+			expect(results.perfStats.count).toBe(1);
+			expect(results.perfStats.processed).toBe(0);
+		});
+
+		it("should only process files admitted past global exclusions", async () => {
+			const handledFiles: string[] = [];
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: /\.txt$/,
+				handler: async ({ file }) => {
+					handledFiles.push(file);
+					return true;
+				},
+			});
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+					excludeFromAll: [/generated/],
+				}),
+			);
+
+			const results = await run(() =>
+				runner.run(["file.txt", "generated/output.txt", "README.md"]),
+			);
+			expect(handledFiles).toEqual(["file.txt"]);
+			expect(results.perfStats.count).toBe(3);
+			expect(results.perfStats.processed).toBe(2);
 		});
 
 		it("should exclude files matching per-policy exclusions", async () => {
@@ -165,6 +196,31 @@ describe("PolicyRunner", () => {
 			await run(() => runner.run(["file.txt", "file.mjs"]));
 			expect(txtCalled).toEqual(["file.txt"]);
 			expect(jsCalled).toEqual(["file.mjs"]);
+		});
+
+		it("should count a file once when duplicate policy instances match it", async () => {
+			let handlerCalls = 0;
+			const duplicatePolicy: PolicyShape = {
+				name: "DuplicatePolicy",
+				description: "Matches the same file twice",
+				match: /\.txt$/,
+				handler: async () => {
+					handlerCalls++;
+					return true;
+				},
+			};
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [policy(duplicatePolicy), policy(duplicatePolicy)],
+				}),
+			);
+
+			const results = await run(() => runner.run(["file.txt"]));
+			expect(handlerCalls).toBe(2);
+			expect(results.results).toEqual([]);
+			expect(results.perfStats.count).toBe(1);
+			expect(results.perfStats.processed).toBe(1);
 		});
 	});
 

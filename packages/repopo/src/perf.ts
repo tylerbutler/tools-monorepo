@@ -13,7 +13,9 @@ export type PolicyAction = "check" | "resolve" | "handle";
  * @alpha
  */
 export interface PolicyHandlerPerfStats {
+	/** Number of non-empty candidate file paths supplied to the runner. */
 	count: number;
+	/** Number of candidate files admitted past global exclusions. */
 	processed: number;
 	data: Map<PolicyAction, Map<PolicyName, number>>;
 }
