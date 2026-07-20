@@ -13,7 +13,12 @@ export type PolicyAction = "check" | "resolve" | "handle";
  * @alpha
  */
 export interface PolicyHandlerPerfStats {
+	/** Total number of non-empty candidate file paths supplied to the runner. */
 	count: number;
+	/**
+	 * Candidate files for which at least one policy handler was executed.
+	 * The remaining candidates are reported as excluded.
+	 */
 	processed: number;
 	data: Map<PolicyAction, Map<PolicyName, number>>;
 }
@@ -45,9 +50,10 @@ export function* runWithPerf<T>(
 }
 
 export function logStats(stats: PolicyHandlerPerfStats, log: Logger): void {
+	const excluded = stats.count - stats.processed;
 	log.log(
 		`Statistics: ${stats.processed} files processed, ` +
-			`${stats.count - stats.processed} excluded, ${stats.count} total`,
+			`${excluded} excluded, ${stats.count} total`,
 	);
 	for (const [action, handlerPerf] of stats.data.entries()) {
 		log.log(`Performance for "${action}":`);

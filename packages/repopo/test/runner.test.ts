@@ -33,9 +33,18 @@ describe("PolicyRunner", () => {
 		});
 
 		it("should count all processed files", async () => {
-			const runner = new PolicyRunner(makeRunnerOptions());
+			const passingPolicy = policy({
+				name: "PassingPolicy",
+				description: "Always passes",
+				match: /\.txt$/,
+				handler: async () => true,
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({ policies: [passingPolicy] }),
+			);
 			const results = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
 			expect(results.perfStats.count).toBe(3);
+			expect(results.perfStats.processed).toBe(3);
 		});
 
 		it("should return no results when all policies pass", async () => {
@@ -79,6 +88,58 @@ describe("PolicyRunner", () => {
 			);
 			expect(handlerCalled).toBe(false);
 			expect(results.results).toEqual([]);
+			expect(results.perfStats).toMatchObject({
+				count: 1,
+				processed: 0,
+			});
+		});
+
+		it("should report accurate statistics for mixed inputs", async () => {
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: /\.txt$/,
+				handler: async () => true,
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+					excludeFromAll: [/excluded/],
+				}),
+			);
+
+			const results = await run(() =>
+				runner.run(["included.txt", "excluded.txt"]),
+			);
+
+			expect(results.perfStats).toMatchObject({
+				count: 2,
+				processed: 1,
+			});
+		});
+
+		it("should report all candidates as excluded when no handlers run", async () => {
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: /\.txt$/,
+				handler: async () => true,
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+					excludePoliciesForFiles: new Map([["TestPolicy", [/.*/]]]),
+				}),
+			);
+
+			const results = await run(() =>
+				runner.run(["excluded-a.txt", "excluded-b.txt"]),
+			);
+
+			expect(results.perfStats).toMatchObject({
+				count: 2,
+				processed: 0,
+			});
 		});
 
 		it("should exclude files matching per-policy exclusions", async () => {
@@ -93,7 +154,7 @@ describe("PolicyRunner", () => {
 				},
 			});
 
-			const excludeMap = new Map([["TestPolicy", [/generated/]]]);
+			const excludeMap = new Map([["TestPolicy", [/generated/g]]]);
 
 			const runner = new PolicyRunner(
 				makeRunnerOptions({
@@ -105,6 +166,7 @@ describe("PolicyRunner", () => {
 			const results = await run(() => runner.run(["generated/output.txt"]));
 			expect(handlerCalled).toBe(false);
 			expect(results.results).toEqual([]);
+			expect(results.perfStats.processed).toBe(0);
 		});
 
 		it("should log verbose messages for exclusions", async () => {
@@ -416,6 +478,33 @@ describe("PolicyRunner", () => {
 			const handleMap = results.perfStats.data.get("handle");
 			expect(handleMap).toBeDefined();
 			expect(handleMap?.has("PerfPolicy")).toBe(true);
+		});
+
+		it("should count a file once when multiple policy instances process it", async () => {
+			const firstHandler = vi.fn(async () => true as const);
+			const secondHandler = vi.fn(async () => true as const);
+			const firstPolicy = policy({
+				name: "FirstPolicy",
+				description: "First",
+				match: /\.txt$/,
+				handler: firstHandler,
+			});
+			const secondPolicy = policy({
+				name: "SecondPolicy",
+				description: "Second",
+				match: /\.txt$/,
+				handler: secondHandler,
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({ policies: [firstPolicy, secondPolicy] }),
+			);
+
+			const results = await run(() => runner.run(["file.txt"]));
+
+			expect(results.perfStats.count).toBe(1);
+			expect(results.perfStats.processed).toBe(1);
+			expect(firstHandler).toHaveBeenCalledOnce();
+			expect(secondHandler).toHaveBeenCalledOnce();
 		});
 	});
 });

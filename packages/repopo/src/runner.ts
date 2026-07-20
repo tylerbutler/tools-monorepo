@@ -98,7 +98,10 @@ export class PolicyRunner {
 	private *checkOrExcludeFile(relPath: string): Operation<void> {
 		this.perfStats.count++;
 		try {
-			yield* this.routeToPolicies(relPath);
+			const processed = yield* this.routeToPolicies(relPath);
+			if (processed) {
+				this.perfStats.processed++;
+			}
 		} catch (error: unknown) {
 			throw new Error(
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
@@ -106,31 +109,36 @@ export class PolicyRunner {
 		}
 	}
 
-	private *routeToPolicies(relPath: string): Operation<void> {
+	private *routeToPolicies(relPath: string): Operation<boolean> {
 		if (this.excludeFromAll.some((regex) => regex.test(relPath))) {
 			this.logger?.verbose(`Excluded all handlers: ${relPath}`);
-			return;
+			return false;
 		}
 
 		const matchingPolicies = this.policies.filter((policy) =>
 			policy.match.test(relPath),
 		);
+		const runnablePolicies = matchingPolicies.filter((policy) => {
+			if (this.isPolicyExcluded(relPath, policy)) {
+				this.logger?.verbose(
+					`Excluded from '${policy.name}' policy: ${relPath}`,
+				);
+				return false;
+			}
+			return true;
+		});
 		yield* all(
-			matchingPolicies.map((policy) => {
+			runnablePolicies.map((policy) => {
 				return this.runPolicyOnFile(relPath, policy);
 			}),
 		);
+		return runnablePolicies.length > 0;
 	}
 
 	private *runPolicyOnFile(
 		relPath: string,
 		policy: PolicyInstance,
 	): Operation<void> {
-		if (this.isPolicyExcluded(relPath, policy)) {
-			this.logger?.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
-			return;
-		}
-
 		try {
 			const result = yield* this.executePolicyHandler(relPath, policy);
 
