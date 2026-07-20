@@ -26,7 +26,7 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 }
 
 function matches(regex: RegExp, value: string): boolean {
-	if (!regex.global && !regex.sticky) {
+	if (!(regex.global || regex.sticky)) {
 		return regex.test(value);
 	}
 
