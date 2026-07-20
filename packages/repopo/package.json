@@ -107,6 +107,7 @@
 		"picomatch": "^4.0.4",
 		"resolve-workspace-root": "^2.0.1",
 		"simple-git": "^3.36.0",
+		"sort-package-json": "*",
 		"tinyglobby": "^0.2.16"
 	},
 	"devDependencies": {
@@ -133,14 +134,10 @@
 	},
 	"peerDependencies": {
 		"smol-toml": "^1.0.0",
-		"sort-package-json": "*",
 		"spdx-correct": "^3.0.0"
 	},
 	"peerDependenciesMeta": {
 		"smol-toml": {
-			"optional": true
-		},
-		"sort-package-json": {
 			"optional": true
 		},
 		"spdx-correct": {
