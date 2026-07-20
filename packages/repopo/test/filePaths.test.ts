@@ -21,7 +21,9 @@ describe("parseFilePaths", () => {
 
 	it("removes blank records and normalizes Windows separators", () => {
 		expect(
-			parseFilePaths("packages\\repopo\\src\\index.ts\r\n\r\npackages\\repopo\\test\\index.ts"),
+			parseFilePaths(
+				"packages\\repopo\\src\\index.ts\r\n\r\npackages\\repopo\\test\\index.ts",
+			),
 		).toEqual([
 			"packages/repopo/src/index.ts",
 			"packages/repopo/test/index.ts",
