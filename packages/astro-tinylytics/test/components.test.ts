@@ -191,7 +191,7 @@ describe("Webring", () => {
 	it("renders an anchor with tinylytics_webring class opening in a new tab", async () => {
 		const html = await render(Webring, { slots: { default: "Random site" } });
 		expect(html).toMatchInlineSnapshot(
-			`"<a href="#" target="_blank" rel="noopener" class="tinylytics_webring">  Random site  </a>"`,
+			`"<a href="#" target="_blank" rel="noopener" class="tinylytics_webring">Random site</a>"`,
 		);
 	});
 
@@ -201,7 +201,7 @@ describe("Webring", () => {
 			slots: { default: "Random site" },
 		});
 		expect(html).toMatchInlineSnapshot(
-			`"<a href="#" class="tinylytics_webring">  Random site  </a>"`,
+			`"<a href="#" class="tinylytics_webring">Random site</a>"`,
 		);
 	});
 
@@ -211,7 +211,7 @@ describe("Webring", () => {
 			slots: { default: "Next" },
 		});
 		expect(html).toMatchInlineSnapshot(
-			`"<a href="#" target="_blank" rel="noopener" class="tinylytics_webring"> <img class="tinylytics_webring_avatar" src="" style="display: none" alt aria-hidden="true"> Next  </a>"`,
+			`"<a href="#" target="_blank" rel="noopener" class="tinylytics_webring"><img class="tinylytics_webring_avatar" src="" style="display: none" alt aria-hidden="true">Next</a>"`,
 		);
 	});
 
@@ -221,7 +221,7 @@ describe("Webring", () => {
 			slots: { default: "Next" },
 		});
 		expect(html).toMatchInlineSnapshot(
-			`"<a href="#" target="_blank" rel="noopener" class="tinylytics_webring">  Next <img class="tinylytics_webring_avatar" src="" style="display: none" alt aria-hidden="true"> </a>"`,
+			`"<a href="#" target="_blank" rel="noopener" class="tinylytics_webring">Next<img class="tinylytics_webring_avatar" src="" style="display: none" alt aria-hidden="true"></a>"`,
 		);
 	});
 
@@ -231,7 +231,7 @@ describe("Webring", () => {
 			slots: { default: "Next" },
 		});
 		expect(html).toMatchInlineSnapshot(
-			`"<a href="#" target="_blank" rel="noopener" class="tinylytics_webring"> <img class="tinylytics_webring_avatar" src="" style="display: none" alt="Avatar for example.com"> Next  </a>"`,
+			`"<a href="#" target="_blank" rel="noopener" class="tinylytics_webring"><img class="tinylytics_webring_avatar" src="" style="display: none" alt="Avatar for example.com">Next</a>"`,
 		);
 	});
 });

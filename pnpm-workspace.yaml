@@ -1,6 +1,8 @@
 packages:
   - packages/*
   - config
+executionEnv:
+  nodeVersion: 22.23.1
 allowBuilds:
   '@parcel/watcher': true
   core-js: true
@@ -10,3 +12,5 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   yarn: true
+minimumReleaseAgeExclude:
+  - generate-license-file@4.2.1
