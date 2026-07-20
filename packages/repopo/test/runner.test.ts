@@ -136,6 +136,8 @@ describe("PolicyRunner", () => {
 			const results = await run(() => runner.run(["generated/output.txt"]));
 			expect(handlerCalled).toBe(false);
 			expect(results.results).toEqual([]);
+			expect(results.perfStats.count).toBe(1);
+			expect(results.perfStats.processed).toBe(1);
 		});
 
 		it("should log verbose messages for exclusions", async () => {
