@@ -17,6 +17,7 @@ import type {
 
 // Constants
 const fileProtocol = "file://";
+const windowsDrivePrefix = /^[A-Za-z]:/;
 
 /**
  * The default name to use for the downloaded file. This is only used if the name is not provided by the caller or
@@ -128,6 +129,31 @@ async function checkDestination(destination: string): Promise<boolean> {
 		);
 	}
 	return true;
+}
+
+function resolveArchiveEntryPath(
+	destination: string,
+	entryName: string,
+): string {
+	const portableEntryName = entryName.replaceAll("\\", "/");
+	const normalizedEntryName = path.normalize(portableEntryName);
+	const extractionRoot = path.resolve(destination);
+	const resolvedEntryPath = path.resolve(extractionRoot, normalizedEntryName);
+	const relativeEntryPath = path.relative(extractionRoot, resolvedEntryPath);
+
+	if (
+		entryName.includes("\0") ||
+		portableEntryName.startsWith("/") ||
+		windowsDrivePrefix.test(portableEntryName) ||
+		relativeEntryPath === "" ||
+		relativeEntryPath === ".." ||
+		relativeEntryPath.startsWith("../") ||
+		path.isAbsolute(relativeEntryPath)
+	) {
+		throw new Error(`Unsafe archive entry path: ${entryName}`);
+	}
+
+	return resolvedEntryPath;
 }
 
 async function writeUint8ArrayToFile(
@@ -244,19 +270,24 @@ export async function writeTarFiles(
 	destination: string,
 ): Promise<void> {
 	await checkDestination(destination);
+	const writes = tarFiles.map((tarfile) => {
+		if (tarfile.data === undefined) {
+			throw new Error("Data undefined in tarfile.");
+		}
+
+		return {
+			data: tarfile.data,
+			outPath: resolveArchiveEntryPath(destination, tarfile.name),
+		};
+	});
 
 	// Use Effection for structured concurrency with automatic cancellation
 	await run(function* () {
 		// Execute all write operations concurrently
 		// If any operation fails, Effection automatically cancels the rest
 		yield* all(
-			tarFiles.map((tarfile) =>
+			writes.map(({ data, outPath }) =>
 				(function* () {
-					if (tarfile.data === undefined) {
-						throw new Error("Data undefined in tarfile.");
-					}
-					const data = tarfile.data;
-					const outPath = path.join(destination, tarfile.name);
 					yield* call(() => mkdir(path.dirname(outPath), { recursive: true }));
 					yield* call(() => writeFile(outPath, data));
 				})(),
@@ -270,17 +301,20 @@ export async function writeZipFiles(
 	destination: string,
 ): Promise<void> {
 	await checkDestination(destination);
+	const writes = Object.entries(zipFiles).map(([zipFilePath, data]) => ({
+		data,
+		outPath: resolveArchiveEntryPath(destination, zipFilePath),
+	}));
 
 	// Use Effection for structured concurrency with automatic cancellation
 	await run(function* () {
 		// Execute all write operations concurrently
 		// If any operation fails, Effection automatically cancels the rest
 		yield* all(
-			Object.entries(zipFiles)
-				.filter(([, data]) => data.length > 0)
-				.map(([zipFilePath, data]) =>
+			writes
+				.filter(({ data }) => data.length > 0)
+				.map(({ data, outPath }) =>
 					(function* () {
-						const outPath = path.join(destination, zipFilePath);
 						yield* call(() =>
 							mkdir(path.dirname(outPath), { recursive: true }),
 						);
