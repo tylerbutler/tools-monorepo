@@ -1,4 +1,4 @@
-import { mkdir, readdir } from "node:fs/promises";
+import { mkdir, readdir, readFile, symlink, writeFile } from "node:fs/promises";
 import http from "node:http";
 import { getRandomPort } from "get-port-please";
 import jsonfile from "jsonfile";
@@ -308,6 +308,80 @@ describe("with local server", () => {
 				{ unsafeCleanup: true },
 			);
 		});
+
+		it.each([
+			"tar",
+			"zip",
+		] as const)("rejects a symlinked parent before writing %s files", async (archiveType) => {
+			await withDir(
+				async ({ path: temporaryDirectory }) => {
+					const destination = path.join(temporaryDirectory, "extract");
+					const outside = path.join(temporaryDirectory, "outside");
+					await mkdir(destination);
+					await mkdir(outside);
+					await symlink(
+						outside,
+						path.join(destination, "link"),
+						process.platform === "win32" ? "junction" : "dir",
+					);
+
+					const write =
+						archiveType === "tar"
+							? writeTarFiles(
+									[
+										{
+											name: "link/pwned",
+											data: new Uint8Array([1]),
+										},
+									] as Parameters<typeof writeTarFiles>[0],
+									destination,
+								)
+							: writeZipFiles(
+									{ "link/pwned": new Uint8Array([1]) },
+									destination,
+								);
+
+					await expect(write).rejects.toThrow(
+						"Unsafe archive entry path: link/pwned",
+					);
+					expect(await readdir(outside)).toEqual([]);
+				},
+				{ unsafeCleanup: true },
+			);
+		});
+
+		it.skipIf(process.platform === "win32")(
+			"does not follow a symlink at the final output path",
+			async () => {
+				await withDir(
+					async ({ path: temporaryDirectory }) => {
+						const destination = path.join(temporaryDirectory, "extract");
+						const protectedFile = path.join(
+							temporaryDirectory,
+							"protected.txt",
+						);
+						await mkdir(destination);
+						await writeFile(protectedFile, "safe");
+						await symlink(
+							protectedFile,
+							path.join(destination, "pwned"),
+							"file",
+						);
+
+						await expect(
+							writeTarFiles(
+								[{ name: "pwned", data: new Uint8Array([1]) }] as Parameters<
+									typeof writeTarFiles
+								>[0],
+								destination,
+							),
+						).rejects.toThrow("Unsafe archive entry path: pwned");
+						expect(await readFile(protectedFile, "utf8")).toBe("safe");
+					},
+					{ unsafeCleanup: true },
+				);
+			},
+		);
 	});
 
 	describe("writeZipFiles", () => {
