@@ -1,5 +1,23 @@
 # sort-tsconfig
 
+## 0.4.1
+
+### Patch Changes
+
+- The `--config` flag now also accepts a `-c` shorthand, inherited from the updated `ConfigFlag` in `@tylerbu/cli-api`. _[`#396`](https://github.com/tylerbutler/tools-monorepo/pull/396) [`dd64d1d`](https://github.com/tylerbutler/tools-monorepo/commit/dd64d1da4f10d6793af9a270216b296edee884a6) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`dd64d1d`](https://github.com/tylerbutler/tools-monorepo/commit/dd64d1da4f10d6793af9a270216b296edee884a6)
+
+</small>
+
+- `@tylerbu/cli-api@0.11.0`
+
+</details>
+
 ## 0.4.0
 
 ### Minor Changes

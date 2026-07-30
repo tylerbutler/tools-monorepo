@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.0.0
+
+### Major Changes
+
+- 1.0 Release _[`#761`](https://github.com/tylerbutler/tools-monorepo/pull/761) [`e448512`](https://github.com/tylerbutler/tools-monorepo/commit/e44851237eaafa1acbda4a5072fbd7da38951ec4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  API is stable. Future changes will follow SemVer.
+
+### Patch Changes
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`b263d07`](https://github.com/tylerbutler/tools-monorepo/commit/b263d07c531baf032f5f8a75444971b91c55f2ab) [`bd06230`](https://github.com/tylerbutler/tools-monorepo/commit/bd06230247adf908155ce2a9e35ba0ed5aebac3c) [`0972973`](https://github.com/tylerbutler/tools-monorepo/commit/0972973fa9df873d3dde101836adb9ff9196b8f8)
+
+</small>
+
+- `repopo@0.11.1`
+
+</details>
+
 ## 0.1.1
 
 ### Patch Changes
