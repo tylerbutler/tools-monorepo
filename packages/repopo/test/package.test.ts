@@ -8,15 +8,15 @@ interface PackageManifest {
 }
 
 describe("package dependency contract", () => {
-	it("declares sort-package-json as a required runtime dependency", async () => {
+	it("declares sort-package-json as an optional peer dependency", async () => {
 		const packageJson: PackageManifest = JSON.parse(
 			await readFile(new URL("../package.json", import.meta.url), "utf8"),
 		);
 
-		expect(packageJson.dependencies?.["sort-package-json"]).toBeDefined();
-		expect(packageJson.peerDependencies?.["sort-package-json"]).toBeUndefined();
-		expect(
-			packageJson.peerDependenciesMeta?.["sort-package-json"],
-		).toBeUndefined();
+		expect(packageJson.dependencies?.["sort-package-json"]).toBeUndefined();
+		expect(packageJson.peerDependencies?.["sort-package-json"]).toBe("*");
+		expect(packageJson.peerDependenciesMeta?.["sort-package-json"]).toEqual({
+			optional: true,
+		});
 	});
 });
