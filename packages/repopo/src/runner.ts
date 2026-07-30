@@ -176,9 +176,14 @@ export class PolicyRunner {
 
 			this.results.push(fileResult);
 		} catch (error: unknown) {
-			throw new Error(
-				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
-			);
+			const message = error instanceof Error ? error.message : String(error);
+			this.results.push({
+				file: relPath,
+				policy: policy.name,
+				outcome: {
+					error: `System Error: Error executing policy '${policy.name}' for file '${relPath}': ${message}`,
+				},
+			});
 		}
 	}
 
