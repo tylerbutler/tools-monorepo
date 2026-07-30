@@ -7,7 +7,7 @@ title: "PolicyFunctionArguments"
 
 > **PolicyFunctionArguments**\<`C`\> = [`PolicyArgs`](/api/interfaces/policyargs/)\<`C`\>
 
-Defined in: [policy.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L44)
+Defined in: [policy.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L51)
 
 :::caution[Deprecated]
 Use [PolicyArgs](/api/interfaces/policyargs/) instead.

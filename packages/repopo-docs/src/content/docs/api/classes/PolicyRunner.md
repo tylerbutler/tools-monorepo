@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunner"
 ---
 
-Defined in: [runner.ts:86](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L86)
+Defined in: [runner.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L94)
 
 Runs configured policies against files and collects results.
 
@@ -19,7 +19,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **new PolicyRunner**(`options`): `PolicyRunner`
 
-Defined in: [runner.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L94)
+Defined in: [runner.ts:102](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L102)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -41,7 +41,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **run**(`filePaths`): `Operation`\<[`PolicyRunResults`](/api/interfaces/policyrunresults/)\>
 
-Defined in: [runner.ts:103](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L103)
+Defined in: [runner.ts:114](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L114)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

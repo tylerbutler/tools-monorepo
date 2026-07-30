@@ -1,16 +1,22 @@
 import type { Logger } from "@tylerbu/cli-api";
 import { all, call, type Operation } from "effection";
 
-import type { ExcludedPolicyFileMap } from "./context.js";
+import {
+	createExcludedPolicyFileMap,
+	type ExcludedPolicyFileMap,
+} from "./context.js";
+import { identifyPolicyInstances } from "./makePolicy.js";
 import {
 	newPerfStats,
 	type PolicyHandlerPerfStats,
 	runWithPerf,
 } from "./perf.js";
 import type {
+	IdentifiedPolicy,
 	PolicyFixResult,
 	PolicyHandlerResult,
 	PolicyInstance,
+	PolicyInstanceId,
 	PolicyName,
 	PolicyStandaloneResolver,
 } from "./policy.js";
@@ -46,6 +52,8 @@ function matches(regex: RegExp, value: string): boolean {
 export interface PolicyFileResult {
 	file: string;
 	policy: PolicyName;
+	/** Stable identity of the configured policy instance */
+	policyId: PolicyInstanceId;
 	/** The raw result from the policy handler */
 	outcome: PolicyHandlerResult;
 	/** Set when a standalone resolver was attempted (legacy resolver path) */
@@ -84,7 +92,7 @@ export interface PolicyRunnerOptions {
  * @alpha
  */
 export class PolicyRunner {
-	private readonly policies: PolicyInstance[];
+	private readonly policies: IdentifiedPolicy[];
 	private readonly excludeFromAll: RegExp[];
 	private readonly excludePoliciesForFiles: ExcludedPolicyFileMap;
 	private readonly gitRoot: string;
@@ -92,9 +100,12 @@ export class PolicyRunner {
 	private readonly logger: Pick<Logger, "verbose"> | undefined;
 
 	public constructor(options: PolicyRunnerOptions) {
-		this.policies = options.policies;
+		this.policies = identifyPolicyInstances(options.policies);
 		this.excludeFromAll = options.excludeFromAll;
-		this.excludePoliciesForFiles = options.excludePoliciesForFiles;
+		this.excludePoliciesForFiles = createExcludedPolicyFileMap(this.policies);
+		for (const [instanceId, exclusions] of options.excludePoliciesForFiles) {
+			this.excludePoliciesForFiles.set(instanceId, exclusions);
+		}
 		this.gitRoot = options.gitRoot;
 		this.resolve = options.resolve;
 		this.logger = options.logger;
@@ -151,11 +162,13 @@ export class PolicyRunner {
 
 	private *runPolicyOnFile(
 		relPath: string,
-		policy: PolicyInstance,
+		policy: IdentifiedPolicy,
 		state: PolicyRunState,
 	): Operation<void> {
 		if (this.isPolicyExcluded(relPath, policy)) {
-			this.logger?.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
+			this.logger?.verbose(
+				`Excluded from '${policy.instanceId}' policy: ${relPath}`,
+			);
 			return;
 		}
 
@@ -170,6 +183,7 @@ export class PolicyRunner {
 			const fileResult: PolicyFileResult = {
 				file: relPath,
 				policy: policy.name,
+				policyId: policy.instanceId,
 				outcome: result,
 			};
 
@@ -192,28 +206,28 @@ export class PolicyRunner {
 			state.results.push(fileResult);
 		} catch (error: unknown) {
 			throw new Error(
-				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
+				`Error executing policy '${policy.instanceId}' for file '${relPath}': ${error}`,
 			);
 		}
 	}
 
-	private isPolicyExcluded(relPath: string, policy: PolicyInstance): boolean {
+	private isPolicyExcluded(relPath: string, policy: IdentifiedPolicy): boolean {
 		return (
 			this.excludePoliciesForFiles
-				.get(policy.name)
+				.get(policy.instanceId)
 				?.some((regex) => matches(regex, relPath)) ?? false
 		);
 	}
 
 	private *executePolicyHandler(
 		relPath: string,
-		policy: PolicyInstance,
+		policy: IdentifiedPolicy,
 		state: PolicyRunState,
 	): Operation<PolicyHandlerResult> {
 		const { resolve, gitRoot } = this;
 
 		const result = yield* runWithPerf(
-			policy.name,
+			policy.instanceId,
 			"handle",
 			state.perfStats,
 			function* () {
@@ -250,14 +264,14 @@ export class PolicyRunner {
 
 	private *attemptResolution(
 		relPath: string,
-		policy: PolicyInstance,
+		policy: IdentifiedPolicy,
 		resolver: PolicyStandaloneResolver,
 		state: PolicyRunState,
 	): Operation<PolicyFixResult> {
 		const { gitRoot } = this;
 
 		return yield* runWithPerf(
-			policy.name,
+			policy.instanceId,
 			"resolve",
 			state.perfStats,
 			function* () {

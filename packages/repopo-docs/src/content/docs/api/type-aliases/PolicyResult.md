@@ -7,7 +7,7 @@ title: "PolicyResult"
 
 > **PolicyResult** = `true` \| [`PolicyError`](/api/interfaces/policyerror/)
 
-Defined in: [policy.ts:83](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L83)
+Defined in: [policy.ts:90](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L90)
 
 The result of a policy handler.
 Returns `true` if the file passes the policy, or a [PolicyError](/api/interfaces/policyerror/) if it fails.

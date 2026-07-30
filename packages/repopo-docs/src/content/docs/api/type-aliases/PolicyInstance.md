@@ -7,7 +7,7 @@ title: "PolicyInstance"
 
 > **PolicyInstance**\<`C`\> = [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
 
-Defined in: [policy.ts:323](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L323)
+Defined in: [policy.ts:342](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L342)
 
 :::caution[Deprecated]
 Use [ConfiguredPolicy](/api/interfaces/configuredpolicy/) instead.
