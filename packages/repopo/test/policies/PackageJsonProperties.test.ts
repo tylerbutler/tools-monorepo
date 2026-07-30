@@ -53,7 +53,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -78,7 +78,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -105,7 +105,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -135,7 +135,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -156,7 +156,7 @@ describe("PackageJsonProperties Policy", () => {
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 			const result = await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config: undefined,
@@ -182,7 +182,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -207,7 +207,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -241,7 +241,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -270,7 +270,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -302,7 +302,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -327,7 +327,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -361,7 +361,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -387,7 +387,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -413,7 +413,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -445,7 +445,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -473,7 +473,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,

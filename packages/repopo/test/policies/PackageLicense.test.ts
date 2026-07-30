@@ -47,14 +47,14 @@ describe("PackageLicense policy", () => {
 		config?: PackageLicenseSettings,
 		resolve = false,
 	): PolicyFunctionArguments<typeof config> => ({
-		file: join(tempDir, file), // Full path for handler to read JSON
+		file,
 		root: tempDir,
 		resolve,
 		config,
 	});
 
 	describe("when package has matching LICENSE", () => {
-		it("should pass validation", async () => {
+		it("should resolve the package path from root when cwd is outside the repository", async () => {
 			const json: PackageJson = {
 				name: "@myorg/test-package",
 				version: "1.0.0",

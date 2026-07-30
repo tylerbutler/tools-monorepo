@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -302,6 +303,7 @@ function buildErrorMessage(
 async function applyFix(
 	json: PackageJson,
 	file: string,
+	root: string,
 	expectedType: "module" | "commonjs",
 	failResult: PolicyFailure,
 ): Promise<PolicyFixResult> {
@@ -312,8 +314,9 @@ async function applyFix(
 
 	try {
 		json.type = expectedType;
-		const indent = await detectIndentation(file);
-		await writeJson(file, json, { spaces: indent });
+		const filePath = resolvePath(root, file);
+		const indent = await detectIndentation(filePath);
+		await writeJson(filePath, json, { spaces: indent });
 		fixResult.resolved = true;
 	} catch {
 		fixResult.resolved = false;
@@ -362,7 +365,7 @@ export const PackageEsmType = definePackagePolicy<
 	name: "PackageEsmType",
 	description:
 		"Ensures the type field in package.json correctly indicates ESM or CommonJS module format.",
-	handler: async (json, { file, config, resolve }) => {
+	handler: async (json, { file, root, config, resolve }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
 			return true;
@@ -414,7 +417,7 @@ export const PackageEsmType = definePackagePolicy<
 		};
 
 		if (resolve) {
-			return applyFix(json, file, expectedType, failResult);
+			return applyFix(json, file, root, expectedType, failResult);
 		}
 
 		return failResult;
