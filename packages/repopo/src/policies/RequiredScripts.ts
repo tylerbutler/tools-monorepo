@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
@@ -161,7 +162,7 @@ export const RequiredScripts = definePackagePolicy<
 >({
 	name: POLICY_NAME,
 	description: "Validates that required scripts exist in package.json.",
-	handler: async (json, { file, resolve, config }) => {
+	handler: async (json, { file, root, resolve, config }) => {
 		if (config === undefined || config.scripts.length === 0) {
 			return true;
 		}
@@ -179,7 +180,7 @@ export const RequiredScripts = definePackagePolicy<
 			try {
 				const fixedScripts = await fixMissingScripts(
 					json,
-					file,
+					resolvePath(root, file),
 					validation.missingWithDefaults,
 					scripts,
 				);
