@@ -219,10 +219,12 @@ export class CheckPolicy<
 	private formatResolutionResult(
 		resolution: { resolved: boolean; errorMessages?: string[] },
 		file: string,
-		_policyName: string,
+		policyName: string,
 	): void {
 		const messages = new StringBuilder();
-		messages.append(`${newline}Attempting to resolve: ${file}`);
+		messages.append(
+			`${newline}Attempting to resolve '${policyName}' policy failure for file: ${file}`,
+		);
 
 		if (!resolution.resolved) {
 			process.exitCode = 1;
