@@ -61,6 +61,11 @@ export interface PolicyRunResults {
 	perfStats: PolicyHandlerPerfStats;
 }
 
+interface PolicyRunState {
+	results: PolicyFileResult[];
+	perfStats: PolicyHandlerPerfStats;
+}
+
 /**
  * Options for configuring a {@link PolicyRunner}.
  * @alpha
@@ -86,9 +91,6 @@ export class PolicyRunner {
 	private readonly resolve: boolean;
 	private readonly logger: Pick<Logger, "verbose"> | undefined;
 
-	private readonly results: PolicyFileResult[] = [];
-	private readonly perfStats: PolicyHandlerPerfStats = newPerfStats();
-
 	public constructor(options: PolicyRunnerOptions) {
 		this.policies = options.policies;
 		this.excludeFromAll = options.excludeFromAll;
@@ -99,20 +101,28 @@ export class PolicyRunner {
 	}
 
 	public *run(filePaths: string[]): Operation<PolicyRunResults> {
+		const state: PolicyRunState = {
+			results: [],
+			perfStats: newPerfStats(),
+		};
+
 		for (const filePath of filePaths) {
-			yield* this.checkOrExcludeFile(filePath);
+			yield* this.checkOrExcludeFile(filePath, state);
 		}
 
 		return {
-			results: this.results,
-			perfStats: this.perfStats,
+			results: state.results,
+			perfStats: state.perfStats,
 		};
 	}
 
-	private *checkOrExcludeFile(relPath: string): Operation<void> {
-		this.perfStats.count++;
+	private *checkOrExcludeFile(
+		relPath: string,
+		state: PolicyRunState,
+	): Operation<void> {
+		state.perfStats.count++;
 		try {
-			yield* this.routeToPolicies(relPath);
+			yield* this.routeToPolicies(relPath, state);
 		} catch (error: unknown) {
 			throw new Error(
 				`Error routing ${relPath} to handler: ${error}\nStack:\n${(error as Error).stack}`,
@@ -120,7 +130,10 @@ export class PolicyRunner {
 		}
 	}
 
-	private *routeToPolicies(relPath: string): Operation<void> {
+	private *routeToPolicies(
+		relPath: string,
+		state: PolicyRunState,
+	): Operation<void> {
 		if (this.excludeFromAll.some((regex) => matches(regex, relPath))) {
 			this.logger?.verbose(`Excluded all handlers: ${relPath}`);
 			return;
@@ -131,7 +144,7 @@ export class PolicyRunner {
 		);
 		yield* all(
 			matchingPolicies.map((policy) => {
-				return this.runPolicyOnFile(relPath, policy);
+				return this.runPolicyOnFile(relPath, policy, state);
 			}),
 		);
 	}
@@ -139,6 +152,7 @@ export class PolicyRunner {
 	private *runPolicyOnFile(
 		relPath: string,
 		policy: PolicyInstance,
+		state: PolicyRunState,
 	): Operation<void> {
 		if (this.isPolicyExcluded(relPath, policy)) {
 			this.logger?.verbose(`Excluded from '${policy.name}' policy: ${relPath}`);
@@ -146,7 +160,7 @@ export class PolicyRunner {
 		}
 
 		try {
-			const result = yield* this.executePolicyHandler(relPath, policy);
+			const result = yield* this.executePolicyHandler(relPath, policy, state);
 
 			// Success — nothing to report
 			if (result === true) {
@@ -170,11 +184,12 @@ export class PolicyRunner {
 					relPath,
 					policy,
 					policy.resolver,
+					state,
 				);
 				fileResult.resolution = resolution;
 			}
 
-			this.results.push(fileResult);
+			state.results.push(fileResult);
 		} catch (error: unknown) {
 			throw new Error(
 				`Error executing policy '${policy.name}' for file '${relPath}': ${error}`,
@@ -193,13 +208,14 @@ export class PolicyRunner {
 	private *executePolicyHandler(
 		relPath: string,
 		policy: PolicyInstance,
+		state: PolicyRunState,
 	): Operation<PolicyHandlerResult> {
-		const { resolve, gitRoot, perfStats } = this;
+		const { resolve, gitRoot } = this;
 
 		const result = yield* runWithPerf(
 			policy.name,
 			"handle",
-			perfStats,
+			state.perfStats,
 			function* () {
 				const args = {
 					file: relPath,
@@ -236,22 +252,28 @@ export class PolicyRunner {
 		relPath: string,
 		policy: PolicyInstance,
 		resolver: PolicyStandaloneResolver,
+		state: PolicyRunState,
 	): Operation<PolicyFixResult> {
-		const { gitRoot, perfStats } = this;
+		const { gitRoot } = this;
 
-		return yield* runWithPerf(policy.name, "resolve", perfStats, function* () {
-			const result = resolver({
-				file: relPath,
-				root: gitRoot,
-				config: policy.config,
-			});
-			if (result instanceof Promise) {
-				return yield* call(() => result);
-			}
-			if (isOperation<PolicyFixResult>(result)) {
-				return yield* result;
-			}
-			throw new Error(`Unexpected resolver result type: ${typeof result}`);
-		});
+		return yield* runWithPerf(
+			policy.name,
+			"resolve",
+			state.perfStats,
+			function* () {
+				const result = resolver({
+					file: relPath,
+					root: gitRoot,
+					config: policy.config,
+				});
+				if (result instanceof Promise) {
+					return yield* call(() => result);
+				}
+				if (isOperation<PolicyFixResult>(result)) {
+					return yield* result;
+				}
+				throw new Error(`Unexpected resolver result type: ${typeof result}`);
+			},
+		);
 	}
 }

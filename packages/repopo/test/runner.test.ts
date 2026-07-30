@@ -1,4 +1,4 @@
-import { run } from "effection";
+import { all, run } from "effection";
 import { describe, expect, it, vi } from "vitest";
 
 import { policy } from "../src/makePolicy.js";
@@ -51,6 +51,87 @@ describe("PolicyRunner", () => {
 			);
 			const results = await run(() => runner.run(["file.txt"]));
 			expect(results.results).toEqual([]);
+		});
+
+		it("should use fresh state when a runner is reused", async () => {
+			const failingPolicy = policy({
+				name: "FailPolicy",
+				description: "Always fails",
+				match: /\.txt$/,
+				handler: async (): Promise<PolicyError> => ({
+					error: "Something went wrong",
+				}),
+			});
+			const options = makeRunnerOptions({ policies: [failingPolicy] });
+			const runner = new PolicyRunner(options);
+
+			await run(() => runner.run(["first.txt"]));
+			const reusedResult = await run(() => runner.run(["second.txt"]));
+			const freshResult = await run(() =>
+				new PolicyRunner(options).run(["second.txt"]),
+			);
+
+			expect(reusedResult.results).toEqual(freshResult.results);
+			expect(reusedResult.perfStats.count).toBe(freshResult.perfStats.count);
+			expect(reusedResult.results.map(({ file }) => file)).toEqual([
+				"second.txt",
+			]);
+		});
+
+		it("should not mutate a previously returned result after reuse", async () => {
+			const failingPolicy = policy({
+				name: "FailPolicy",
+				description: "Always fails",
+				match: /\.txt$/,
+				handler: async (): Promise<PolicyError> => ({
+					error: "Something went wrong",
+				}),
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({ policies: [failingPolicy] }),
+			);
+
+			const firstResult = await run(() => runner.run(["first.txt"]));
+			const firstResultsSnapshot = structuredClone(firstResult.results);
+			const firstPerfSnapshot = structuredClone(firstResult.perfStats);
+			const secondResult = await run(() => runner.run(["second.txt"]));
+
+			expect(firstResult.results).toEqual(firstResultsSnapshot);
+			expect(firstResult.perfStats).toEqual(firstPerfSnapshot);
+			expect(firstResult.results).not.toBe(secondResult.results);
+			expect(firstResult.perfStats).not.toBe(secondResult.perfStats);
+		});
+
+		it("should isolate state between concurrent runs", async () => {
+			const failingPolicy = policy({
+				name: "FailPolicy",
+				description: "Always fails",
+				match: /\.txt$/,
+				handler: async (): Promise<PolicyError> => ({
+					error: "Something went wrong",
+				}),
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({ policies: [failingPolicy] }),
+			);
+
+			const [firstResult, secondResult] = await run(function* () {
+				return yield* all([
+					runner.run(["first.txt"]),
+					runner.run(["second.txt"]),
+				]);
+			});
+
+			expect(firstResult.results.map(({ file }) => file)).toEqual([
+				"first.txt",
+			]);
+			expect(secondResult.results.map(({ file }) => file)).toEqual([
+				"second.txt",
+			]);
+			expect(firstResult.perfStats.count).toBe(1);
+			expect(secondResult.perfStats.count).toBe(1);
+			expect(firstResult.results).not.toBe(secondResult.results);
+			expect(firstResult.perfStats).not.toBe(secondResult.perfStats);
 		});
 	});
 
