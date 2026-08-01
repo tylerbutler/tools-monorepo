@@ -1,5 +1,25 @@
 # repopo
 
+## 0.11.1
+
+### Patch Changes
+
+- Make policy and exclusion regular-expression matching deterministic for global and sticky flags. _[`#778`](https://github.com/tylerbutler/tools-monorepo/pull/778) [`b263d07`](https://github.com/tylerbutler/tools-monorepo/commit/b263d07c531baf032f5f8a75444971b91c55f2ab) [@tylerbutler](https://github.com/tylerbutler)_
+- Isolate policy run results and performance statistics across sequential and concurrent `PolicyRunner` invocations. _[`#782`](https://github.com/tylerbutler/tools-monorepo/pull/782) [`bd06230`](https://github.com/tylerbutler/tools-monorepo/commit/bd06230247adf908155ce2a9e35ba0ed5aebac3c) [@tylerbutler](https://github.com/tylerbutler)_
+- Load the optional `sort-package-json` peer dependency only when the package sorting policy runs, allowing Repopo to load without it while preserving sorting support when installed. _[`#780`](https://github.com/tylerbutler/tools-monorepo/pull/780) [`0972973`](https://github.com/tylerbutler/tools-monorepo/commit/0972973fa9df873d3dde101836adb9ff9196b8f8) [@tylerbutler](https://github.com/tylerbutler)_
+
+<details><summary>Updated 1 dependency</summary>
+
+<small>
+
+[`dd64d1d`](https://github.com/tylerbutler/tools-monorepo/commit/dd64d1da4f10d6793af9a270216b296edee884a6)
+
+</small>
+
+- `@tylerbu/cli-api@0.11.0`
+
+</details>
+
 ## 0.11.0
 
 ### Minor Changes
