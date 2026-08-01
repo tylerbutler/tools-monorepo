@@ -15,6 +15,9 @@ import {
 	type PolicyFailure,
 } from "../policy.js";
 import { type PolicyFileResult, PolicyRunner } from "../runner.js";
+import { normalizeRepoRelativeFilePath } from "../utils/safePaths.js";
+
+const trailingCarriageReturnRegex = /\r$/;
 
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
@@ -114,13 +117,78 @@ export class CheckPolicy<
 			});
 
 			if (stdInput !== undefined && stdInput !== null) {
-				return stdInput
-					.replace(
-						// normalize slashes in case they're windows paths
-						/\\/g,
-						"/",
-					)
-					.split("\n");
+				rawFilePathsToCheck.push(...this.splitInputPaths(stdInput));
+			}
+		} else {
+			const gitFiles =
+				(await this.git.raw(
+					"ls-files",
+					// include staged files and untracked files
+					"-co",
+					// exclude gitignored files and other standard ignore rules
+					"--exclude-standard",
+					// Outputs paths relative to the root of the repository, regardless of the current working directory.
+					"--full-name",
+				)) ?? "";
+
+			rawFilePathsToCheck.push(...this.splitInputPaths(gitFiles));
+		}
+
+		const filePathsToCheck = this.normalizePathsToCheck(
+			rawFilePathsToCheck,
+			context.gitRoot,
+		);
+
+		await run(() => this.checkAllFiles(filePathsToCheck, context));
+	}
+
+	private splitInputPaths(input: string): string[] {
+		return input
+			.replace(
+				// normalize slashes in case they're windows paths
+				/\\/g,
+				"/",
+			)
+			.split("\n")
+			.map((path) => path.replace(trailingCarriageReturnRegex, ""));
+	}
+
+	private normalizePathsToCheck(paths: string[], gitRoot: string): string[] {
+		const normalizedPaths: string[] = [];
+		for (const path of paths) {
+			if (path.length === 0) {
+				continue;
+			}
+
+			try {
+				normalizedPaths.push(normalizeRepoRelativeFilePath(gitRoot, path));
+			} catch (error: unknown) {
+				throw new Error(
+					`Invalid file path '${path}': ${(error as Error).message}`,
+				);
+			}
+		}
+
+		return normalizedPaths;
+	}
+
+	/**
+	 * Executes all policies against the provided paths.
+	 *
+	 * @param pathsToCheck - All paths that should be checked. Paths should be relative to the repository root.
+	 * @param context - The context.
+	 */
+	private *checkAllFiles(
+		pathsToCheck: string[],
+		context: RepopoCommandContext,
+	): Operation<void> {
+		try {
+			for (const pathToCheck of pathsToCheck) {
+				yield* this.checkOrExcludeFile(pathToCheck, context);
+			}
+		} finally {
+			if (!this.flags.quiet) {
+				logStats(context.perfStats, this.logger);
 			}
 
 			return [];
