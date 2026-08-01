@@ -575,13 +575,18 @@ describe("PolicyRunner", () => {
 	});
 
 	describe("error handling", () => {
-		it("should throw with context when handler throws", async () => {
+		it("should report a system error and continue when a handler throws", async () => {
+			const processedFiles: string[] = [];
 			const testPolicy = policy({
 				name: "ThrowPolicy",
 				description: "Throws",
 				match: /\.txt$/,
-				handler: async () => {
-					throw new Error("handler boom");
+				handler: async ({ file }) => {
+					processedFiles.push(file);
+					if (file === "bad.txt") {
+						throw new Error("handler boom");
+					}
+					return true;
 				},
 			});
 
@@ -589,9 +594,19 @@ describe("PolicyRunner", () => {
 				makeRunnerOptions({ policies: [testPolicy] }),
 			);
 
-			await expect(run(() => runner.run(["file.txt"]))).rejects.toThrow(
-				/Error executing policy 'ThrowPolicy'/,
-			);
+			const results = await run(() => runner.run(["bad.txt", "good.txt"]));
+
+			expect(processedFiles).toEqual(["bad.txt", "good.txt"]);
+			expect(results.results).toEqual([
+				{
+					file: "bad.txt",
+					policy: "ThrowPolicy",
+					outcome: {
+						error:
+							"System Error: Error executing policy 'ThrowPolicy' for file 'bad.txt': handler boom",
+					},
+				},
+			]);
 		});
 	});
 
