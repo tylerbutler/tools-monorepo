@@ -1,4 +1,4 @@
-import { readdir } from "node:fs/promises";
+import { mkdir, readdir, readFile, symlink, writeFile } from "node:fs/promises";
 import http from "node:http";
 import { getRandomPort } from "get-port-please";
 import jsonfile from "jsonfile";
@@ -10,11 +10,25 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 const { readFile: readJson } = jsonfile;
 
 import process from "node:process";
-import { decompressTarball, fetchFile, writeTarFiles } from "../src/api.js";
+import {
+	decompressTarball,
+	fetchFile,
+	writeTarFiles,
+	writeZipFiles,
+} from "../src/api.js";
 import { download } from "../src/index.js";
 import { getTestUrls, testDataPath } from "./common.js";
 
 let testUrls: URL[];
+
+const unsafeArchiveEntryNames = [
+	"../escape.txt",
+	"nested/../../escape.txt",
+	"..\\escape.txt",
+	"C:\\escape.txt",
+	"\\\\server\\share\\escape.txt",
+	"/absolute/escape.txt",
+];
 
 describe("download serverless tests", () => {
 	beforeAll(async () => {
@@ -251,6 +265,162 @@ describe("with local server", () => {
 			await expect(async () => {
 				await writeTarFiles(files, testFilePath);
 			}).rejects.toThrow("Destination path is a file that already exists");
+		});
+
+		it.each(
+			unsafeArchiveEntryNames,
+		)("rejects unsafe archive entry %s before writing", async (entryName) => {
+			await withDir(
+				async ({ path: temporaryDirectory }) => {
+					const destination = path.join(temporaryDirectory, "extract");
+					await mkdir(destination);
+					const tarFiles = [
+						{
+							name: entryName,
+							data: new Uint8Array([1]),
+						},
+					] as Parameters<typeof writeTarFiles>[0];
+
+					await expect(writeTarFiles(tarFiles, destination)).rejects.toThrow(
+						`Unsafe archive entry path: ${entryName}`,
+					);
+					expect(await readdir(temporaryDirectory)).toEqual(["extract"]);
+				},
+				{ unsafeCleanup: true },
+			);
+		});
+
+		it("validates every archive entry before writing tar files", async () => {
+			await withDir(
+				async ({ path: temporaryDirectory }) => {
+					const destination = path.join(temporaryDirectory, "extract");
+					await mkdir(destination);
+					const tarFiles = [
+						{ name: "safe.txt", data: new Uint8Array([1]) },
+						{ name: "../escape.txt", data: new Uint8Array([1]) },
+					] as Parameters<typeof writeTarFiles>[0];
+
+					await expect(writeTarFiles(tarFiles, destination)).rejects.toThrow(
+						"Unsafe archive entry path: ../escape.txt",
+					);
+					expect(await readdir(destination)).toEqual([]);
+				},
+				{ unsafeCleanup: true },
+			);
+		});
+
+		it.each([
+			"tar",
+			"zip",
+		] as const)("rejects a symlinked parent before writing %s files", async (archiveType) => {
+			await withDir(
+				async ({ path: temporaryDirectory }) => {
+					const destination = path.join(temporaryDirectory, "extract");
+					const outside = path.join(temporaryDirectory, "outside");
+					await mkdir(destination);
+					await mkdir(outside);
+					await symlink(
+						outside,
+						path.join(destination, "link"),
+						process.platform === "win32" ? "junction" : "dir",
+					);
+
+					const write =
+						archiveType === "tar"
+							? writeTarFiles(
+									[
+										{
+											name: "link/pwned",
+											data: new Uint8Array([1]),
+										},
+									] as Parameters<typeof writeTarFiles>[0],
+									destination,
+								)
+							: writeZipFiles(
+									{ "link/pwned": new Uint8Array([1]) },
+									destination,
+								);
+
+					await expect(write).rejects.toThrow(
+						"Unsafe archive entry path: link/pwned",
+					);
+					expect(await readdir(outside)).toEqual([]);
+				},
+				{ unsafeCleanup: true },
+			);
+		});
+
+		it.skipIf(process.platform === "win32")(
+			"does not follow a symlink at the final output path",
+			async () => {
+				await withDir(
+					async ({ path: temporaryDirectory }) => {
+						const destination = path.join(temporaryDirectory, "extract");
+						const protectedFile = path.join(
+							temporaryDirectory,
+							"protected.txt",
+						);
+						await mkdir(destination);
+						await writeFile(protectedFile, "safe");
+						await symlink(
+							protectedFile,
+							path.join(destination, "pwned"),
+							"file",
+						);
+
+						await expect(
+							writeTarFiles(
+								[{ name: "pwned", data: new Uint8Array([1]) }] as Parameters<
+									typeof writeTarFiles
+								>[0],
+								destination,
+							),
+						).rejects.toThrow("Unsafe archive entry path: pwned");
+						expect(await readFile(protectedFile, "utf8")).toBe("safe");
+					},
+					{ unsafeCleanup: true },
+				);
+			},
+		);
+	});
+
+	describe("writeZipFiles", () => {
+		it.each(
+			unsafeArchiveEntryNames,
+		)("rejects unsafe archive entry %s before writing", async (entryName) => {
+			await withDir(
+				async ({ path: temporaryDirectory }) => {
+					const destination = path.join(temporaryDirectory, "extract");
+					await mkdir(destination);
+
+					await expect(
+						writeZipFiles({ [entryName]: new Uint8Array([1]) }, destination),
+					).rejects.toThrow(`Unsafe archive entry path: ${entryName}`);
+					expect(await readdir(temporaryDirectory)).toEqual(["extract"]);
+				},
+				{ unsafeCleanup: true },
+			);
+		});
+
+		it("validates every archive entry before writing zip files", async () => {
+			await withDir(
+				async ({ path: temporaryDirectory }) => {
+					const destination = path.join(temporaryDirectory, "extract");
+					await mkdir(destination);
+
+					await expect(
+						writeZipFiles(
+							{
+								"safe.txt": new Uint8Array([1]),
+								"../escape.txt": new Uint8Array([1]),
+							},
+							destination,
+						),
+					).rejects.toThrow("Unsafe archive entry path: ../escape.txt");
+					expect(await readdir(destination)).toEqual([]);
+				},
+				{ unsafeCleanup: true },
+			);
 		});
 	});
 });

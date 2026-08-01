@@ -7,7 +7,7 @@ title: "download"
 
 > **download**(`url`, `options?`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`DownloadResponse`](/api/interfaces/downloadresponse/)\>
 
-Defined in: [api.ts:321](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/api.ts#L321)
+Defined in: [api.ts:355](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/dill-cli/src/api.ts#L355)
 
 Downloads a file from a URL. By default, the file will be downloaded to the current directory, and will not be
 	decompressed. These options are configurable by passing a [DillOptions](/api/interfaces/dilloptions/) object.
