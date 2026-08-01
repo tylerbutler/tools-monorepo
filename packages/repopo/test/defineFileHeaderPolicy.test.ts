@@ -83,7 +83,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright 2025" },
@@ -112,7 +112,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: undefined,
@@ -142,7 +142,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright 2025" },
@@ -172,7 +172,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: true,
 				config: { headerText },
@@ -207,7 +207,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright 2025" },
@@ -239,7 +239,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: true,
 				config: { headerText },
@@ -271,7 +271,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright" },
@@ -300,7 +300,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright" },
