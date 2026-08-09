@@ -71,7 +71,7 @@
 		"changesets-changelog-clean": "^1.4.0",
 		"concurrently": "^10.0.3",
 		"generate-license-file": "^4.2.1",
-		"nx": "22.7.2",
+		"nx": "22.7.7",
 		"pathe": "^2.0.3",
 		"repopo": "workspace:^",
 		"rimraf": "^6.1.3",
