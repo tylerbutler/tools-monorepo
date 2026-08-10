@@ -192,7 +192,7 @@ export class PolicyRunner {
 			state.results.push(fileResult);
 		} catch (error: unknown) {
 			const message = error instanceof Error ? error.message : String(error);
-			this.results.push({
+			state.results.push({
 				file: relPath,
 				policy: policy.name,
 				outcome: {
