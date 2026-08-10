@@ -205,9 +205,15 @@ export class PolicyRunner {
 
 			state.results.push(fileResult);
 		} catch (error: unknown) {
-			throw new Error(
-				`Error executing policy '${policy.instanceId}' for file '${relPath}': ${error}`,
-			);
+			const message = error instanceof Error ? error.message : String(error);
+			state.results.push({
+				file: relPath,
+				policy: policy.name,
+				policyId: policy.instanceId,
+				outcome: {
+					error: `System Error: Error executing policy '${policy.instanceId}' for file '${relPath}': ${message}`,
+				},
+			});
 		}
 	}
 
