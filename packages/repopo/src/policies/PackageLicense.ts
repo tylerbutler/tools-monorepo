@@ -128,8 +128,7 @@ export const PackageLicense = definePackagePolicy<
 		}
 
 		const packageName = json.name ?? "unknown";
-		// file is an absolute path, get the directory containing package.json
-		const packageDir = path.dirname(file);
+		const packageDir = path.dirname(path.resolve(root, file));
 		const packageLicensePath = path.join(packageDir, licenseFileName);
 		const rootLicensePath = path.join(root, licenseFileName);
 

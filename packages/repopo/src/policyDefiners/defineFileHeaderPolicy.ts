@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { EOL as newline } from "node:os";
 import { call } from "effection";
-import { extname } from "pathe";
+import { extname, resolve as resolvePath } from "pathe";
 import type { PolicyFailure, PolicyFixResult, PolicyShape } from "../policy.js";
 
 const trailingSpaces = /\s*\\r\?\\n/;
@@ -133,7 +133,7 @@ export function defineFileHeaderPolicy(
 		name,
 		description,
 		match: config.match,
-		handler: function* ({ file, resolve, config: policyConfig }) {
+		handler: function* ({ file, root, resolve, config: policyConfig }) {
 			if (policyConfig === undefined) {
 				return true;
 			}
@@ -147,7 +147,10 @@ export function defineFileHeaderPolicy(
 
 			// TODO: Consider reading only the first 512B or so since headers are typically
 			// at the beginning of the file.
-			const content = yield* call(() => readFile(file, { encoding: "utf8" }));
+			const filePath = resolvePath(root, file);
+			const content = yield* call(() =>
+				readFile(filePath, { encoding: "utf8" }),
+			);
 			const failed = !regex.test(content);
 
 			if (failed) {
@@ -157,7 +160,7 @@ export function defineFileHeaderPolicy(
 			if (failed) {
 				if (resolve) {
 					const newContent = config.replacer(content, policyConfig);
-					yield* call(() => writeFile(file, newContent));
+					yield* call(() => writeFile(filePath, newContent));
 
 					const fixResult: PolicyFixResult = {
 						...failResult,

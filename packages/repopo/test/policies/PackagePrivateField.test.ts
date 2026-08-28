@@ -1,6 +1,6 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, relative } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
@@ -31,7 +31,7 @@ describe("PackagePrivateField policy", () => {
 		filePath: string,
 		config?: PackagePrivateFieldConfig,
 	): PolicyFunctionArguments<typeof config> => ({
-		file: filePath,
+		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve: false,
 		config,

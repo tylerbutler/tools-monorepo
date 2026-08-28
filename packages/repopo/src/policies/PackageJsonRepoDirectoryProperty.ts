@@ -31,7 +31,8 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 			resolved: false,
 		};
 
-		const pkgDir = path.dirname(file);
+		const packageJsonPath = path.resolve(root, file);
+		const pkgDir = path.dirname(packageJsonPath);
 		const maybeDir = path.relative(root, pkgDir);
 		const relativePkgDir = maybeDir === "" ? undefined : maybeDir;
 
@@ -41,7 +42,7 @@ export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 		) {
 			if (resolve) {
 				try {
-					updatePackageJsonFile(file, (pkgJson) => {
+					updatePackageJsonFile(packageJsonPath, (pkgJson) => {
 						assert(typeof pkgJson.repository === "object");
 						if (relativePkgDir === undefined) {
 							delete pkgJson.repository.directory;

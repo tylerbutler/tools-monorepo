@@ -18,12 +18,14 @@ import { runHandler } from "../test-helpers.js";
 
 describe("PackageReadme policy", () => {
 	let tempDir: string;
+	const originalCwd = process.cwd();
 
 	beforeEach(() => {
 		tempDir = mkdtempSync(join(tmpdir(), "repopo-readme-test-"));
 	});
 
 	afterEach(() => {
+		process.chdir(originalCwd);
 		rmSync(tempDir, { recursive: true, force: true });
 	});
 
@@ -43,19 +45,20 @@ describe("PackageReadme policy", () => {
 		config?: PackageReadmeSettings,
 		resolve = false,
 	): PolicyFunctionArguments<typeof config> => ({
-		file: join(tempDir, file),
+		file,
 		root: tempDir,
 		resolve,
 		config,
 	});
 
 	describe("when README exists with matching title", () => {
-		it("should pass validation", async () => {
+		it("should resolve the package path from root when run from a repository subdirectory", async () => {
 			const json: PackageJson = {
 				name: "@myorg/test-package",
 				version: "1.0.0",
 			};
 			const file = createPackageJson(json);
+			process.chdir(join(tempDir, "packages"));
 			writeFileSync(
 				join(tempDir, "packages/my-pkg/README.md"),
 				"# @myorg/test-package\n\nSome content.",

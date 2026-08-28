@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
@@ -709,7 +710,7 @@ export const PackageScripts = definePackagePolicy<
 	name: "PackageScripts",
 	description:
 		"Validates package.json scripts based on configurable rules including required scripts, exact content, and conditional requirements.",
-	handler: async (json, { file, resolve, config }) => {
+	handler: async (json, { file, root, resolve, config }) => {
 		if (config === undefined) {
 			return true;
 		}
@@ -737,7 +738,7 @@ export const PackageScripts = definePackagePolicy<
 
 			try {
 				await jsonfile.writeFile(
-					file,
+					resolvePath(root, file),
 					{ ...json, scripts: updatedScripts },
 					{ spaces: 2 },
 				);

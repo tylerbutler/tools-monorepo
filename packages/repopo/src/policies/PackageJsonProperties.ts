@@ -2,6 +2,7 @@ import { defu } from "defu";
 import { call } from "effection";
 import jsonfile from "jsonfile";
 import diff from "microdiff";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -32,7 +33,7 @@ export const PackageJsonProperties = definePackagePolicy<
 	name: "PackageJsonProperties",
 	description:
 		"Ensures package.json files contain required properties with correct values.",
-	handler: function* (json, { file, config, resolve }) {
+	handler: function* (json, { file, root, config, resolve }) {
 		if (config === undefined) {
 			return true;
 		}
@@ -62,7 +63,9 @@ export const PackageJsonProperties = definePackagePolicy<
 					resolved: false,
 				};
 
-				yield* call(() => writeJson(file, merged, { spaces: "\t" }));
+				yield* call(() =>
+					writeJson(resolvePath(root, file), merged, { spaces: "\t" }),
+				);
 
 				fixResult.resolved = true;
 				return fixResult;
