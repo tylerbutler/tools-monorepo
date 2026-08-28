@@ -1,5 +1,17 @@
 # rehype-footnotes
 
+## 1.0.0
+
+### Major Changes
+
+- 1.0 Release _[`#761`](https://github.com/tylerbutler/tools-monorepo/pull/761) [`e448512`](https://github.com/tylerbutler/tools-monorepo/commit/e44851237eaafa1acbda4a5072fbd7da38951ec4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  API is stable. Future changes will follow SemVer.
+
+### Patch Changes
+
+- Footnote reference links now assign the `rel` property as a token list (`["footnote"]`) to match updated hast typings. Serialized HTML output is unchanged. _[`#760`](https://github.com/tylerbutler/tools-monorepo/pull/760) [`77a7b28`](https://github.com/tylerbutler/tools-monorepo/commit/77a7b28d18e40d49703e613009d1bac4a14383ef) [@tylerbutler](https://github.com/tylerbutler)_
+
 ## 0.1.2
 
 ### Patch Changes
