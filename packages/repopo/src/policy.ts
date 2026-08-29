@@ -11,6 +11,13 @@ import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 export type PolicyName = string;
 
 /**
+ * A stable identifier for a configured policy instance.
+ *
+ * @alpha
+ */
+export type PolicyInstanceId = string;
+
+/**
  * Arguments passed to policy handler functions.
  *
  * @alpha
@@ -274,6 +281,13 @@ export type PolicyDefinition<C = undefined> = PolicyShape<C>;
  */
 export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
 	/**
+	 * An optional stable identifier for this configured policy instance.
+	 *
+	 * This is required when the same policy definition is configured more than once.
+	 */
+	instanceId?: PolicyInstanceId | undefined;
+
+	/**
 	 * The configuration applied to this policy instance.
 	 */
 	config?: C | undefined;
@@ -303,6 +317,11 @@ export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
  */
 export interface PolicyInstanceSettings<C> {
 	/**
+	 * A stable identifier for this configured policy instance.
+	 */
+	instanceId?: PolicyInstanceId | undefined;
+
+	/**
 	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
 	 * from policy.
 	 *
@@ -321,6 +340,15 @@ export interface PolicyInstanceSettings<C> {
  * @alpha
  */
 export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
+
+/**
+ * A configured policy instance with its runtime identity assigned.
+ *
+ * @alpha
+ */
+export type IdentifiedPolicy<C = undefined> = ConfiguredPolicy<C> & {
+	instanceId: PolicyInstanceId;
+};
 
 // ============================================================================
 // Type Guards

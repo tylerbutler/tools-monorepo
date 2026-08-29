@@ -21,6 +21,7 @@ export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
     // @deprecated
     exclude?: (string | RegExp)[] | undefined;
     excludeFiles?: (string | RegExp)[] | undefined;
+    instanceId?: PolicyInstanceId | undefined;
     // @internal
     _internalHandler?: (args: PolicyArgs<C>) => Operation<PolicyHandlerResult>;
 }
@@ -66,7 +67,7 @@ export interface DefinePackagePolicyArgs<J, C> {
 }
 
 // @alpha
-export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
+export type ExcludedPolicyFileMap = Map<PolicyInstanceId, RegExp[]>;
 
 // @alpha
 export interface FileHeaderGeneratorConfig extends Partial<FileHeaderPolicyConfig> {
@@ -116,6 +117,11 @@ export type GleamToml = Record<string, unknown>;
 export type GleamTomlHandler<C> = (toml: GleamToml, args: PolicyArgs<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
 
 // @alpha
+export type IdentifiedPolicy<C = undefined> = ConfiguredPolicy<C> & {
+    instanceId: PolicyInstanceId;
+};
+
+// @alpha
 export function isPolicyError(toCheck: any): toCheck is PolicyError;
 
 // @alpha @deprecated
@@ -151,7 +157,9 @@ export abstract class Policy<C = void> implements PolicyShape<C> {
 }
 
 // @alpha
-export function policy<C = void>(policyDef: PolicyShape<C>, options?: PolicyOptions): ConfiguredPolicy<C>;
+export function policy<C = void>(policyDef: PolicyShape<C>, options?: PolicyOptions & {
+    exclude: (string | RegExp)[];
+}): ConfiguredPolicy<C>;
 
 // @alpha (undocumented)
 export function policy<C>(policyDef: PolicyShape<C>, config: C, options?: PolicyOptions): ConfiguredPolicy<C>;
@@ -197,6 +205,7 @@ export interface PolicyFileResult {
     outcome: PolicyHandlerResult;
     // (undocumented)
     policy: PolicyName;
+    policyId: PolicyInstanceId;
     resolution?: PolicyFixResult;
 }
 
@@ -216,7 +225,7 @@ export interface PolicyHandlerPerfStats {
     // (undocumented)
     count: number;
     // (undocumented)
-    data: Map<PolicyAction, Map<PolicyName, number>>;
+    data: Map<PolicyAction, Map<PolicyInstanceId, number>>;
     // (undocumented)
     processed: number;
 }
@@ -228,9 +237,13 @@ export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult | Polic
 export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
 
 // @alpha
+export type PolicyInstanceId = string;
+
+// @alpha
 export interface PolicyInstanceSettings<C> {
     config?: C | undefined;
     excludeFiles?: (string | RegExp)[];
+    instanceId?: PolicyInstanceId | undefined;
 }
 
 // @alpha
@@ -239,6 +252,7 @@ export type PolicyName = string;
 // @alpha
 export interface PolicyOptions {
     exclude?: (string | RegExp)[];
+    instanceId?: PolicyInstanceId;
 }
 
 // @alpha

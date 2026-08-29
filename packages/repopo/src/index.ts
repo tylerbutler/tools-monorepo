@@ -30,6 +30,7 @@ export {
 export type { PolicyAction, PolicyHandlerPerfStats } from "./perf.js";
 export {
 	type ConfiguredPolicy,
+	type IdentifiedPolicy,
 	// Type guards
 	isPolicyError,
 	isPolicyFailure,
@@ -46,6 +47,7 @@ export {
 	type PolicyHandler,
 	type PolicyHandlerResult,
 	type PolicyInstance,
+	type PolicyInstanceId,
 	type PolicyInstanceSettings,
 	type PolicyName,
 	type PolicyResolver,

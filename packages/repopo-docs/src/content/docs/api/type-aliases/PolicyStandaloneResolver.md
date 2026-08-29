@@ -7,7 +7,7 @@ title: "PolicyStandaloneResolver"
 
 > **PolicyStandaloneResolver**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\> \| `Operation`\<[`PolicyFixResult`](/api/interfaces/policyfixresult/)\>
 
-Defined in: [policy.ts:179](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L179)
+Defined in: [policy.ts:186](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L186)
 
 A standalone resolver function that can fix policy violations (legacy format).
 

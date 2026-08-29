@@ -288,6 +288,59 @@ describe("PolicyRunner", () => {
 			// lastIndex should be preserved
 			expect(regex.lastIndex).toBe(initialLastIndex);
 		});
+
+		it("should keep duplicate policy configurations and exclusions independent", async () => {
+			const calls: string[] = [];
+			const duplicatePolicy: PolicyShape<{ label: string }> = {
+				name: "DuplicatePolicy",
+				description: "Configured more than once",
+				match: /\.txt$/,
+				handler: async ({ config, file }): Promise<PolicyError> => {
+					calls.push(`${config?.label}:${file}`);
+					return { error: config?.label ?? "missing config" };
+				},
+			};
+			const policies = [
+				policy(
+					duplicatePolicy,
+					{ label: "first" },
+					{ exclude: ["first-only"], instanceId: "first-instance" },
+				),
+				policy(
+					duplicatePolicy,
+					{ label: "second" },
+					{ exclude: ["second-only"], instanceId: "second-instance" },
+				),
+			];
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies,
+				}),
+			);
+
+			const results = await run(() =>
+				runner.run(["first-only.txt", "second-only.txt", "shared.txt"]),
+			);
+
+			expect(calls).toEqual(
+				expect.arrayContaining([
+					"second:first-only.txt",
+					"first:second-only.txt",
+					"first:shared.txt",
+					"second:shared.txt",
+				]),
+			);
+			expect(calls).toHaveLength(4);
+			expect(results.results.map((result) => result.policyId).sort()).toEqual([
+				"first-instance",
+				"first-instance",
+				"second-instance",
+				"second-instance",
+			]);
+			expect(
+				[...(results.perfStats.data.get("handle")?.keys() ?? [])].sort(),
+			).toEqual(["first-instance", "second-instance"]);
+		});
 	});
 
 	describe("policy matching", () => {
@@ -577,18 +630,22 @@ describe("PolicyRunner", () => {
 	describe("error handling", () => {
 		it("should report a system error and continue when a handler throws", async () => {
 			const processedFiles: string[] = [];
-			const testPolicy = policy({
-				name: "ThrowPolicy",
-				description: "Throws",
-				match: /\.txt$/,
-				handler: async ({ file }) => {
-					processedFiles.push(file);
-					if (file === "bad.txt") {
-						throw new Error("handler boom");
-					}
-					return true;
+			const testPolicy = policy(
+				{
+					name: "ThrowPolicy",
+					description: "Throws",
+					match: /\.txt$/,
+					handler: async ({ file }) => {
+						processedFiles.push(file);
+						if (file === "bad.txt") {
+							throw new Error("handler boom");
+						}
+						return true;
+					},
 				},
-			});
+				undefined,
+				{ instanceId: "throw-instance" },
+			);
 
 			const runner = new PolicyRunner(
 				makeRunnerOptions({ policies: [testPolicy] }),
@@ -601,9 +658,10 @@ describe("PolicyRunner", () => {
 				{
 					file: "bad.txt",
 					policy: "ThrowPolicy",
+					policyId: "throw-instance",
 					outcome: {
 						error:
-							"System Error: Error executing policy 'ThrowPolicy' for file 'bad.txt': handler boom",
+							"System Error: Error executing policy 'throw-instance' for file 'bad.txt': handler boom",
 					},
 				},
 			]);

@@ -9,7 +9,7 @@ title: "policy"
 
 > **policy**\<`C`\>(`policyDef`, `options?`): [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:76](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L76)
+Defined in: [makePolicy.ts:89](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L89)
 
 Configure a policy for use in repopo.
 
@@ -31,7 +31,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### options?
 
-[`PolicyOptions`](/api/interfaces/policyoptions/)
+[`PolicyOptions`](/api/interfaces/policyoptions/) & `object`
 
 ### Returns
 
@@ -56,13 +56,17 @@ policy(PackageJsonProperties, { verbatim: { license: "MIT" } })
 
 // Policy with config and options
 policy(PackageJsonProperties, { verbatim: { license: "MIT" } }, { exclude: ["vendor/*"] })
+
+// Duplicate policies need stable instance IDs
+policy(PackageJsonProperties, sourceConfig, { instanceId: "source-packages" })
+policy(PackageJsonProperties, testConfig, { instanceId: "test-packages" })
 ```
 
 ## Call Signature
 
 > **policy**\<`C`\>(`policyDef`, `config`, `options?`): [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:81](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L81)
+Defined in: [makePolicy.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L94)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
