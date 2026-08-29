@@ -1,5 +1,13 @@
 # repopo
 
+## 0.12.0
+
+### Minor Changes
+
+- Distinguish duplicate configured policy instances in exclusions, diagnostics, results, and performance metrics. _[`#783`](https://github.com/tylerbutler/tools-monorepo/pull/783) [`da9f08b`](https://github.com/tylerbutler/tools-monorepo/commit/da9f08bbb90cad92f7419c474a43741eef5d3c2a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Duplicate instances must now set a unique `instanceId` in the `policy()` options.
+
 ## 0.11.1
 
 ### Patch Changes
