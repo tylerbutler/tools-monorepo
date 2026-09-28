@@ -6,7 +6,6 @@ import {
 	type BuildProjectConfig,
 	type BuildProjectConfigV2,
 	getBuildProjectConfig,
-	isV1Config,
 	isV2Config,
 	type ReleaseGroupDefinition,
 } from "./config.js";
@@ -22,7 +21,6 @@ import type {
 	WorkspaceName,
 } from "./types.js";
 import { Workspace } from "./workspace.js";
-import { loadWorkspacesFromLegacyConfig } from "./workspaceCompat.js";
 
 /**
  * {@inheritDoc IBuildProject}
@@ -94,17 +92,14 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 			this.configFilePath = searchPath;
 			this.configurationSource = "INFERRED";
 			this.root = searchPath;
-		} else if (
-			(this.configuration.buildProject ?? this.configuration.repoPackages) ===
-			undefined
-		) {
+		} else if (this.configuration.buildProject === undefined) {
 			this.configuration = generateBuildProjectConfig(searchPath);
 			this.configFilePath = searchPath;
 			this.configurationSource = "INFERRED";
 			this.root = searchPath;
 		}
 
-		// This will load both v1 and v2 configs with the buildProject setting.
+		// Load workspaces from the buildProject configuration.
 		if (this.configuration.buildProject !== undefined) {
 			this._workspaces = new WriteOnceMap<WorkspaceName, IWorkspace>(
 				Object.entries(this.configuration.buildProject.workspaces).map(
@@ -116,20 +111,7 @@ export class BuildProject<P extends IPackage> implements IBuildProject<P> {
 					},
 				),
 			);
-		} else if (
-			isV1Config(this.configuration) &&
-			this.configuration.repoPackages !== undefined
-		) {
-			// biome-ignore lint/suspicious/noConsole: Intentional deprecation warning for users
-			console.warn(
-				"The repoPackages setting is deprecated and will no longer be read in a future version. Use buildProject instead.",
-			);
-			this._workspaces = loadWorkspacesFromLegacyConfig(
-				this.configuration.repoPackages,
-				this,
-			);
 		} else {
-			// this._workspaces = this.configuration.buildProject.workspaces;
 			throw new Error("Error loading/generating configuration.");
 		}
 

@@ -11,9 +11,9 @@ import {
 /**
  * The minimum version of the BuildProject configuration currently supported.
  */
-export const BUILDPROJECT_CONFIG_MIN_VERSION = 1;
+export const BUILDPROJECT_CONFIG_MIN_VERSION = 2;
 
-export type BuildProjectConfig = BuildProjectConfigV1 | BuildProjectConfigV2;
+export type BuildProjectConfig = BuildProjectConfigV2;
 
 /**
  * Top-most configuration for BuildProject settings.
@@ -37,22 +37,6 @@ export interface BuildProjectConfigBase {
 	};
 }
 
-export interface BuildProjectConfigV1 extends BuildProjectConfigBase {
-	/**
-	 * The version of the config.
-	 */
-	version: 1;
-
-	/**
-	 * **BACK-COMPAT ONLY**
-	 *
-	 * A mapping of package or release group names to metadata about the package or release group.
-	 *
-	 * @deprecated Use the buildProject property instead.
-	 */
-	repoPackages?: IFluidBuildDirs;
-}
-
 interface BuildProjectConfigV2Base extends Partial<BuildProjectConfigBase> {
 	/**
 	 * The version of the config.
@@ -65,18 +49,6 @@ interface BuildProjectConfigV2Base extends Partial<BuildProjectConfigBase> {
 	 * sail.
 	 */
 	excludeGlobs: string[];
-}
-
-/**
- * Type guard to check if the input is a BuildProjectConfigV1.
- *
- * @param input - The input to check.
- * @returns `true` if the input is a BuildProjectConfigV1; `false` otherwise.
- */
-export function isV1Config(
-	input: BuildProjectConfig,
-): input is BuildProjectConfigV1 {
-	return input.version === 1;
 }
 
 export type BuildProjectConfigV2 = RequireExactlyOne<
@@ -150,40 +122,6 @@ export interface ReleaseGroupDefinition {
 	 * A URL to the ADO CI pipeline that builds the release group.
 	 */
 	adoPipelineUrl?: string;
-}
-
-/**
- * @deprecated Use buildProject and associated types instead.
- */
-export interface IFluidBuildDirs {
-	[name: string]: IFluidBuildDirEntry;
-}
-
-/**
- * @deprecated Use buildProject and associated types instead.
- */
-export type IFluidBuildDirEntry =
-	| string
-	| IFluidBuildDir
-	| (string | IFluidBuildDir)[];
-
-/**
- * Configures a package or release group
- *
- * @deprecated Use buildProject and associated types instead.
- */
-export interface IFluidBuildDir {
-	/**
-	 * The path to the package. For release groups this should be the path to the root of the release group.
-	 */
-	directory: string;
-
-	/**
-	 * An array of paths under `directory` that should be ignored.
-	 *
-	 * @deprecated This field is unused in all known configs and is ignored by the back-compat loading code.
-	 */
-	ignoredDirs?: string[];
 }
 
 /**
@@ -283,7 +221,7 @@ export function getBuildProjectConfig(
 	if (configResult === null || configResult === undefined) {
 		throw new Error("No BuildProject configuration found.");
 	}
-	const config = configResult.config as BuildProjectConfigV1;
+	const config = configResult.config as BuildProjectConfig;
 
 	// Only versions higher than the minimum are supported. If any other value is provided, throw an error.
 	if (config.version < BUILDPROJECT_CONFIG_MIN_VERSION) {

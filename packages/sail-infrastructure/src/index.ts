@@ -18,13 +18,8 @@ export {
 export {
 	BUILDPROJECT_CONFIG_MIN_VERSION,
 	type BuildProjectConfig,
-	type BuildProjectConfigV1,
 	type BuildProjectConfigV2,
 	getBuildProjectConfig,
-	type IFluidBuildDir,
-	type IFluidBuildDirEntry,
-	type IFluidBuildDirs,
-	isV1Config,
 	type ReleaseGroupDefinition,
 	type WorkspaceDefinition,
 } from "./config.js";
