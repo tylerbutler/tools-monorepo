@@ -21,6 +21,8 @@ import {
 	PolicyRunner,
 } from "../runner.js";
 
+const lineBreak = /\r?\n/;
+
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
 		const stdin = process.stdin;
@@ -161,27 +163,31 @@ export class CheckPolicy<
 		// Handle fix results (legacy format with resolved property)
 		if (isPolicyFixResult(outcome)) {
 			this.formatFixResult(outcome.resolved, outcome.file, result.policyId);
-			return;
-		}
-
-		// Handle new PolicyError with fixed property (fix was attempted inline)
-		if (isPolicyError(outcome) && outcome.fixed !== undefined) {
+		} else if (isPolicyError(outcome) && outcome.fixed !== undefined) {
 			this.formatPolicyErrorFixResult(outcome, result.file, result.policyId);
-			return;
-		}
-
-		// Handle failure with standalone resolver result
-		if (resolution !== undefined) {
+		} else if (resolution !== undefined) {
 			this.formatResolutionResult(resolution, result.file, result.policyId);
+		} else if (outcome !== true) {
+			this.formatPolicyFailure(outcome, result.file, result.policyId);
+		}
+
+		if (
+			outcome === true ||
+			resolution?.resolved ||
+			(isPolicyFixResult(outcome) && outcome.resolved) ||
+			(isPolicyError(outcome) && outcome.fixed)
+		) {
 			return;
 		}
 
-		// Handle plain failure (no fix attempted)
-		// The runner only collects non-true results, but TypeScript needs explicit narrowing
-		if (outcome === true) {
-			return;
+		const manualFix = resolution?.manualFix ?? outcome.manualFix;
+		if (manualFix) {
+			const messages = new StringBuilder();
+			messages.append(
+				`\tManual fix: ${manualFix.split(lineBreak).join(`${newline}\t`)}`,
+			);
+			this.logMessages(messages);
 		}
-		this.formatPolicyFailure(outcome, result.file, result.policyId);
 	}
 
 	private formatRepositoryResult(result: PolicyRepositoryResult): void {

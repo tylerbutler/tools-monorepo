@@ -56,6 +56,33 @@ await run(() => runner.run(selectedFiles, repositoryFiles));
 
 `LicenseFileExists` and `SharedDependencyVersions` are repository policies. Their `policy()` configuration is unchanged, but direct handler calls must now pass `files` instead of `file` and handle an array of findings. They no longer need a selected root `package.json` or `Cargo.toml` to trigger execution. `SharedDependencyVersions` checks the root Cargo workspace when `Cargo.toml` is in its eligible inventory.
 
+## Guidance for policy failures
+
+Return `manualFix` with a policy error to explain how to correct the violation.
+Both `repopo check` and `repopo check-native` print this guidance for unresolved
+failures, including failed auto-fix attempts. They omit it after a successful fix.
+If a standalone resolver fails without its own guidance, they print the original
+handler's guidance.
+
+For architectural policies, name the preferred implementation, point to an example,
+and explain what the author must preserve:
+
+```ts
+return {
+	error: "Package-level project.json files split task configuration.",
+	manualFix: [
+		"Put implementation commands in package.json scripts.",
+		"Put shared orchestration in root nx.json.",
+		"Follow packages/repopo/package.json as an example.",
+		"Preserve required tasks and caching settings during migration.",
+	].join("\n"),
+};
+```
+
+Keep repository-specific decisions in custom policies. Use existing linters for
+rules they support. Reserve auto-fixes for changes that preserve behavior without
+an architectural decision.
+
 ## FluidFramework Handler Adapter
 
 If you're migrating from FluidFramework's build-tools or want to reuse existing Fluid policy handlers, repopo provides an adapter to convert them to repopo policies.
