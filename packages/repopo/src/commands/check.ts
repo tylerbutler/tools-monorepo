@@ -7,6 +7,7 @@ import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
+import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
 import {
 	isPolicyError,
@@ -111,13 +112,7 @@ export class CheckPolicy<
 			});
 
 			if (stdInput !== undefined && stdInput !== null) {
-				return stdInput
-					.replace(
-						// normalize slashes in case they're windows paths
-						/\\/g,
-						"/",
-					)
-					.split("\n");
+				return parseFilePaths(stdInput);
 			}
 
 			return [];
@@ -136,7 +131,7 @@ export class CheckPolicy<
 				"--full-name",
 			)) ?? "";
 
-		return gitFiles.split("\0").filter((file) => file.length > 0);
+		return parseFilePaths(gitFiles);
 	}
 
 	/**

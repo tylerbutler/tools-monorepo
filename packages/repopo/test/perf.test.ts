@@ -47,15 +47,15 @@ describe("Performance Utilities", () => {
 			const logger = createMockLogger();
 
 			const stats: PolicyHandlerPerfStats = {
-				count: 10,
-				processed: 7,
+				count: 3,
+				processed: 2,
 				data: new Map(),
 			};
 
 			logStats(stats, logger);
 
 			expect(logger.log).toHaveBeenCalledWith(
-				"Statistics: 7 files processed, 3 excluded, 10 total",
+				"Statistics: 2 files processed, 1 excluded, 3 total",
 			);
 		});
 
