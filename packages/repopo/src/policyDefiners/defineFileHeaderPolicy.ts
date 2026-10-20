@@ -123,12 +123,6 @@ export function defineFileHeaderPolicy(
 			.join("")
 			.replace(trailingSpaces, "\\r?\\n"); // Trim trailing spaces at end-of-line.
 
-	// Detection regex matches the header start (if any), followed by lines in 'headerText',
-	// optionally followed by lines in the 'autoGenText', and finally the header end (if any).
-	const regex = new RegExp(
-		`^${pre}${toRegex(config.headerText ?? "")}(${toRegex(config.autoGenText ?? "")})?${post}`,
-	);
-
 	return {
 		name,
 		description,
@@ -137,6 +131,10 @@ export function defineFileHeaderPolicy(
 			if (policyConfig === undefined) {
 				return true;
 			}
+
+			const regex = new RegExp(
+				`^${pre}${toRegex(policyConfig.headerText)}(${toRegex(policyConfig.autoGenText ?? config.autoGenText ?? "")})?${post}`,
+			);
 
 			const failResult: PolicyFailure = {
 				name,

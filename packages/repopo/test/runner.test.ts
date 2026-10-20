@@ -25,6 +25,47 @@ function makeRunnerOptions(
 
 describe("PolicyRunner", () => {
 	describe("run", () => {
+		it("should preserve every same-file fix across asynchronous handlers", async () => {
+			let contents: { license?: string; scripts?: { test: string } } = {};
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					resolve: true,
+					policies: [
+						policy({
+							name: "AddLicense",
+							description: "Adds a license to the stored document",
+							match: /package\.json$/,
+							handler: async () => {
+								const snapshot = structuredClone(contents);
+								await Promise.resolve();
+								contents = { ...snapshot, license: "MIT" };
+								return { error: "Missing license", fixed: true };
+							},
+						}),
+						policy({
+							name: "AddTestScript",
+							description: "Adds a test script to the stored document",
+							match: /package\.json$/,
+							handler: async () => {
+								const snapshot = structuredClone(contents);
+								await Promise.resolve();
+								contents = { ...snapshot, scripts: { test: "vitest" } };
+								return { error: "Missing test script", fixed: true };
+							},
+						}),
+					],
+				}),
+			);
+
+			const results = await run(() => runner.run(["package.json"]));
+
+			expect(results.results).toHaveLength(2);
+			expect(contents).toEqual({
+				license: "MIT",
+				scripts: { test: "vitest" },
+			});
+		});
+
 		it("should return empty results for no files", async () => {
 			const runner = new PolicyRunner(makeRunnerOptions());
 			const results = await run(() => runner.run([]));
