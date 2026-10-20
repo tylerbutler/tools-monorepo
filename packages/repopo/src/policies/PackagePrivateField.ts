@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile";
+import { resolve as resolvePath } from "pathe";
 import picomatch from "picomatch";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
@@ -214,7 +215,7 @@ export const PackagePrivateField = definePackagePolicy<
 	name: "PackagePrivateField",
 	description:
 		"Enforces the private field in package.json based on package scope or name patterns.",
-	handler: async (json, { file, config, resolve }) => {
+	handler: async (json, { file, root, config, resolve }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
 			return true;
@@ -274,7 +275,7 @@ export const PackagePrivateField = definePackagePolicy<
 					delete json.private;
 				}
 
-				await writeJson(file, json, { spaces: "\t" });
+				await writeJson(resolvePath(root, file), json, { spaces: "\t" });
 				fixResult.resolved = true;
 			} catch {
 				fixResult.resolved = false;

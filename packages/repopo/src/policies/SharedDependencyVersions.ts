@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "pathe";
+import { glob } from "tinyglobby";
 import { makePolicyDefinition } from "../makePolicy.js";
 import type { PolicyDefinition } from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
@@ -107,25 +108,27 @@ function recordDependency(
 async function collectMemberDeps(
 	members: string[],
 	root: string,
+	exclude: string[],
 ): Promise<Map<string, Map<string, string[]>>> {
 	const allDeps = new Map<string, Map<string, string[]>>();
+	const memberCargoPaths = await glob(
+		members.map((member) => path.join(member, "Cargo.toml")),
+		{
+			cwd: root,
+			ignore: exclude.map((member) => path.join(member, "Cargo.toml")),
+		},
+	);
 
-	for (const member of members) {
-		if (member.includes("*")) {
-			continue;
-		}
+	for (const memberCargoPath of memberCargoPaths) {
+		const memberContent = await readFile(
+			path.resolve(root, memberCargoPath),
+			"utf-8",
+		);
+		const memberToml = await parseToml(memberContent);
+		const deps = collectDeps(memberToml);
 
-		const memberCargoPath = path.join(root, member, "Cargo.toml");
-		try {
-			const memberContent = await readFile(memberCargoPath, "utf-8");
-			const memberToml = await parseToml(memberContent);
-			const deps = collectDeps(memberToml);
-
-			for (const [name, version] of deps) {
-				recordDependency(allDeps, name, version, member);
-			}
-		} catch {
-			// Member might not exist yet (handled by WorkspaceMembersValid)
+		for (const [name, version] of deps) {
+			recordDependency(allDeps, name, version, path.dirname(memberCargoPath));
 		}
 	}
 
@@ -169,7 +172,8 @@ export const SharedDependencyVersions: PolicyDefinition<SharedDependencyVersions
 
 			// Detect mismatches across members
 			if (detectMismatches) {
-				const allDeps = await collectMemberDeps(members, root);
+				const exclude = (workspace.exclude ?? []) as string[];
+				const allDeps = await collectMemberDeps(members, root, exclude);
 
 				for (const [dep, versionMap] of allDeps) {
 					if (versionMap.size > 1) {

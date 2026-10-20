@@ -167,7 +167,9 @@ async function handleLoadConfig(params) {
 		// Build the policy map and index array
 		policiesByName.clear();
 		policiesByIndex = [];
-		const policies = loadedConfig?.policies ?? [];
+		const policies =
+			loadedConfig?.policies ??
+			(await import("../esm/config.js")).DefaultPolicyConfig.policies;
 		for (const p of policies) {
 			policiesByName.set(p.name, p);
 			policiesByIndex.push(p);
@@ -273,8 +275,8 @@ async function handleRunHandlerBatch(params) {
 						file,
 						error: result.error,
 						errorMessages: result.errorMessages,
-						fixable: result.fixable,
-						fixed: result.fixed,
+						fixable: result.fixable ?? result.autoFixable,
+						fixed: result.fixed ?? result.resolved,
 						manualFix: result.manualFix,
 					});
 				}
@@ -380,8 +382,8 @@ async function handleRunResolverBatch(params) {
 						file,
 						error: result.error,
 						errorMessages: result.errorMessages,
-						fixable: result.fixable,
-						fixed: result.fixed,
+						fixable: result.fixable ?? result.autoFixable,
+						fixed: result.fixed ?? result.resolved,
 						manualFix: result.manualFix,
 					});
 				}

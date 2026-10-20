@@ -19,6 +19,17 @@ describe("parseFilePaths", () => {
 		]);
 	});
 
+	it("parses NUL-delimited file paths", () => {
+		expect(
+			parseFilePaths(
+				"packages/repopo/src\n/index.ts\0packages/repopo/test/index.ts\0",
+			),
+		).toEqual([
+			"packages/repopo/src\n/index.ts",
+			"packages/repopo/test/index.ts",
+		]);
+	});
+
 	it("removes blank records and normalizes Windows separators", () => {
 		expect(
 			parseFilePaths(

@@ -18,6 +18,12 @@ TypeScript configuration file is recommended.
 
 The policy config must export a default object of the type `PolicyConfig`.
 
+Omit `policies` to use the default policies with either `check` or `check-native`.
+Set `policies: []` to disable them.
+
+With `check --fix`, policies run in configuration order for each file so that one
+fix does not overwrite another. Read-only checks can run policies concurrently.
+
 ## Excluding files from policy check
 
 By default, all files in the repo are checked. You can exclude files completely from the policy check by configuring the
@@ -37,11 +43,13 @@ repopo includes the following policies. All of the included policies are enabled
 
 ## HtmlFileHeaders and JsTsFileHeaders
 
-These policies set a common file header for JavaScript/TypeScript and HTML files.
+Use `HtmlFileHeaders` for `.html` and `.htm` files, and `JsTsFileHeaders` for
+JavaScript and TypeScript files.
 
 ### Configuration
 
-TODO
+Pass `{ headerText: "Copyright Example" }` to `policy()` for either policy.
+Checks compare the file header with that configured text; `--fix` adds a missing header.
 
 ## NoJsFileExtensions
 
@@ -57,6 +65,7 @@ The PackageJsonProperties policy is used to enforce fields in package.json files
 ### Configuration
 
 The `verbatim` setting requires that all the configured fields in package.json match the values in the configuration.
+Array values replace existing arrays rather than append to them. Unspecified object fields remain unchanged.
 
 ```ts
 import type { PolicyConfig } from "@tylerbu/repopo";

@@ -74,15 +74,12 @@ export class CheckPolicy<
 			this.info("Resolving errors if possible.");
 		}
 
-		const config = this.commandConfig;
-		const policies = config?.policies ?? [];
-		this.verbose(`${policies.length} policies loaded.`);
-		for (const h of policies) {
-			this.verbose(h.name);
-		}
-
 		const filePathsToCheck = await this.collectFilePaths();
 		const context: RepopoCommandContext = await this.getContext();
+		this.verbose(`${context.policies.length} policies loaded.`);
+		for (const configuredPolicy of context.policies) {
+			this.verbose(configuredPolicy.instanceId);
+		}
 
 		const runner = new PolicyRunner({
 			policies: context.policies,
@@ -126,6 +123,8 @@ export class CheckPolicy<
 				"ls-files",
 				// include staged files and untracked files
 				"-co",
+				// NUL-delimited paths are not quoted or escaped by Git.
+				"-z",
 				// exclude gitignored files and other standard ignore rules
 				"--exclude-standard",
 				// Outputs paths relative to the root of the repository, regardless of the current working directory.
@@ -143,19 +142,19 @@ export class CheckPolicy<
 
 		// Handle fix results (legacy format with resolved property)
 		if (isPolicyFixResult(outcome)) {
-			this.formatFixResult(outcome.resolved, outcome.file, result.policy);
+			this.formatFixResult(outcome.resolved, outcome.file, result.policyId);
 			return;
 		}
 
 		// Handle new PolicyError with fixed property (fix was attempted inline)
 		if (isPolicyError(outcome) && outcome.fixed !== undefined) {
-			this.formatPolicyErrorFixResult(outcome, result.file, result.policy);
+			this.formatPolicyErrorFixResult(outcome, result.file, result.policyId);
 			return;
 		}
 
 		// Handle failure with standalone resolver result
 		if (resolution !== undefined) {
-			this.formatResolutionResult(resolution, result.file, result.policy);
+			this.formatResolutionResult(resolution, result.file, result.policyId);
 			return;
 		}
 
@@ -164,7 +163,7 @@ export class CheckPolicy<
 		if (outcome === true) {
 			return;
 		}
-		this.formatPolicyFailure(outcome, result.file, result.policy);
+		this.formatPolicyFailure(outcome, result.file, result.policyId);
 	}
 
 	private formatFixResult(
@@ -211,10 +210,12 @@ export class CheckPolicy<
 	private formatResolutionResult(
 		resolution: { resolved: boolean; errorMessages?: string[] },
 		file: string,
-		_policyName: string,
+		policyName: string,
 	): void {
 		const messages = new StringBuilder();
-		messages.append(`${newline}Attempting to resolve: ${file}`);
+		messages.append(
+			`${newline}Attempting to resolve '${policyName}' policy failure for file: ${file}`,
+		);
 
 		if (!resolution.resolved) {
 			process.exitCode = 1;

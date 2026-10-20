@@ -1,6 +1,6 @@
 import type { Logger } from "@tylerbu/cli-api";
 import type { Operation } from "effection";
-import type { PolicyName } from "./policy.js";
+import type { PolicyInstanceId } from "./policy.js";
 
 /**
  * The type of action a policy can perform.
@@ -17,14 +17,14 @@ export interface PolicyHandlerPerfStats {
 	count: number;
 	/** Number of candidate files admitted past global exclusions. */
 	processed: number;
-	data: Map<PolicyAction, Map<PolicyName, number>>;
+	data: Map<PolicyAction, Map<PolicyInstanceId, number>>;
 }
 
 export function newPerfStats(): PolicyHandlerPerfStats {
 	return {
 		count: 0,
 		processed: 0,
-		data: new Map<PolicyAction, Map<PolicyName, number>>(),
+		data: new Map<PolicyAction, Map<PolicyInstanceId, number>>(),
 	};
 }
 

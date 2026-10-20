@@ -1,12 +1,21 @@
-import { defu } from "defu";
+import { createDefu } from "defu";
 import { call } from "effection";
 import jsonfile from "jsonfile";
 import diff from "microdiff";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const { writeFile: writeJson } = jsonfile;
+
+const mergeProperties = createDefu((object, key, value) => {
+	if (Array.isArray(value)) {
+		object[key] = value;
+		return true;
+	}
+	return false;
+});
 
 /**
  * Policy settings for the PackageJsonProperties repo policy.
@@ -32,7 +41,7 @@ export const PackageJsonProperties = definePackagePolicy<
 	name: "PackageJsonProperties",
 	description:
 		"Ensures package.json files contain required properties with correct values.",
-	handler: function* (json, { file, config, resolve }) {
+	handler: function* (json, { file, root, config, resolve }) {
 		if (config === undefined) {
 			return true;
 		}
@@ -45,7 +54,7 @@ export const PackageJsonProperties = definePackagePolicy<
 			errorMessages: [],
 		};
 
-		const merged = defu(verbatim, json);
+		const merged = mergeProperties(verbatim, json);
 		const result = diff(merged, json);
 
 		const messages: string[] = [];
@@ -62,7 +71,9 @@ export const PackageJsonProperties = definePackagePolicy<
 					resolved: false,
 				};
 
-				yield* call(() => writeJson(file, merged, { spaces: "\t" }));
+				yield* call(() =>
+					writeJson(resolvePath(root, file), merged, { spaces: "\t" }),
+				);
 
 				fixResult.resolved = true;
 				return fixResult;

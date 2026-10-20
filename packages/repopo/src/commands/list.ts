@@ -1,5 +1,4 @@
 import { BaseRepopoCommand } from "../baseCommand.js";
-import { DefaultPolicies } from "../policy.js";
 
 /**
  * This command lists all the policies configured to run.
@@ -14,12 +13,12 @@ export class ListCommand<
 		"Lists the policies configured to run.";
 
 	public override async run(): Promise<void> {
-		const policies = this.commandConfig?.policies ?? DefaultPolicies;
+		const { policies } = await this.getContext();
 		// list the handlers then exit
-		for (const h of policies) {
-			this.log(`${h.name}`);
-			this.log(`  ${h.description}`);
-			this.log(`  resolver: ${h.resolver !== undefined}\n`);
+		for (const configuredPolicy of policies) {
+			this.log(configuredPolicy.instanceId);
+			this.log(`  ${configuredPolicy.description}`);
+			this.log(`  resolver: ${configuredPolicy.resolver !== undefined}\n`);
 		}
 		this.log(`${policies.length} TOTAL POLICY HANDLERS`);
 	}
