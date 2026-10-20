@@ -10,9 +10,9 @@ jobs:
   renovate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v6
-      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # ratchet:pnpm/action-setup@v5
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # ratchet:actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # ratchet:pnpm/action-setup@v6
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # ratchet:actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: "pnpm"
@@ -20,7 +20,7 @@ jobs:
       - run: npm i --global corepack@latest
       - run: corepack enable
 
-      - uses: renovatebot/github-action@f66d8679fcfcfa051abde6e7a623007173bf5164 # ratchet:renovatebot/github-action@v46.1.12
+      - uses: renovatebot/github-action@a63d9a7bc606f7336fd20b47f2f32259a35e6213 # ratchet:renovatebot/github-action@v46.3.9
         with:
           configurationFile: renovate.json5
           token: ${{ secrets.GITHUB_TOKEN }}
