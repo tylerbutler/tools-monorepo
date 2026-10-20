@@ -222,11 +222,9 @@ export type PolicyHandler<C = unknown | undefined> = ((args: PolicyArgs<C>) => P
 
 // @alpha
 export interface PolicyHandlerPerfStats {
-    // (undocumented)
     count: number;
     // (undocumented)
     data: Map<PolicyAction, Map<PolicyInstanceId, number>>;
-    // (undocumented)
     processed: number;
 }
 

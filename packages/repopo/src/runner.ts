@@ -150,6 +150,8 @@ export class PolicyRunner {
 			return;
 		}
 
+		state.perfStats.processed++;
+
 		const matchingPolicies = this.policies.filter((policy) =>
 			matches(policy.match, relPath),
 		);
