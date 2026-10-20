@@ -22,6 +22,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     permissions:
+      actions: write # For repopo-core release workflow dispatch
       contents: write # For changesets PR creation
       pull-requests: write # For changesets PR updates
       id-token: write # OIDC token for npm trusted publishing
