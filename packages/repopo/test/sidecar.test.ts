@@ -52,6 +52,46 @@ describe("Native sidecar protocol", () => {
 	it.each([
 		"run_handler_batch",
 		"run_resolver_batch",
+	])("preserves multiline guidance in %s", async (method) => {
+		await writeFile(
+			configPath,
+			`const fail = async () => ({
+				error: "Wrong pattern",
+				manualFix: "Use the shared helper.\\nPreserve error handling."
+			});
+			export default {
+				policies: [{
+					name: "GuidedPolicy",
+					description: "Policy with correction guidance",
+					match: /\\.txt$/,
+					handler: fail,
+					resolver: fail
+				}]
+			};`,
+		);
+
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{ method, params: { policyId: 0, files: ["test.txt"], resolve: true } },
+		]);
+
+		expect(responses[1]).toMatchObject({
+			ok: true,
+			data: {
+				fail: [
+					{
+						file: "test.txt",
+						error: "Wrong pattern",
+						manualFix: "Use the shared helper.\nPreserve error handling.",
+					},
+				],
+			},
+		});
+	});
+
+	it.each([
+		"run_handler_batch",
+		"run_resolver_batch",
 	])("should preserve legacy fix results in %s", async (method) => {
 		await writeFile(
 			configPath,
