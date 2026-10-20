@@ -17,6 +17,10 @@ const rootDir = new URL("../..", import.meta.url).pathname;
 // https://astro.build/config
 export default defineConfig({
 	output: "server",
+	redirects: {
+		"/api/functions/generatepackagepolicy/":
+			"/api/functions/definepackagepolicy/",
+	},
 	// adapter: deno(),
 	adapter: netlify({
 		// edgeMiddleware: true

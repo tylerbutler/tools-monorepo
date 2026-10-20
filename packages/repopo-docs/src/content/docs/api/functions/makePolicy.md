@@ -9,7 +9,7 @@ title: "makePolicy"
 
 > **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:291](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L291)
+Defined in: [makePolicy.ts:257](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L257)
 
 Combine a [PolicyDefinition](/api/type-aliases/policydefinition/) with a policy-specific config and other settings.
 
@@ -48,14 +48,14 @@ This API should not be used in production and may be trimmed from a public relea
 ### Example
 
 ```typescript
-makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["bin/*"] })
+makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["^bin/"] })
 ```
 
 ## Call Signature
 
 > **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
 
-Defined in: [makePolicy.ts:297](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L297)
+Defined in: [makePolicy.ts:263](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L263)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

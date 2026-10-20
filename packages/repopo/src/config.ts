@@ -24,7 +24,7 @@ export interface RepopoConfig {
 	 *
 	 * const config: RepopoConfig = {
 	 *   policies: [
-	 *     policy(NoJsFileExtensions, { exclude: ["bin/*"] }),
+	 *     policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] }),
 	 *     policy(PackageJsonProperties, { verbatim: { license: "MIT" } }),
 	 *   ],
 	 * };
@@ -38,6 +38,8 @@ export interface RepopoConfig {
 	/**
 	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
 	 * from all policies.
+	 * Strings are case-insensitive regular expressions, not globs.
+	 * RegExp values retain their explicit flags.
 	 */
 	excludeFiles?: (string | RegExp)[];
 }

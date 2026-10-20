@@ -2,10 +2,10 @@
 editUrl: false
 next: false
 prev: false
-title: "generatePackagePolicy"
+title: "definePackagePolicy"
 ---
 
-> **generatePackagePolicy**\<`J`, `C`\>(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
+> **definePackagePolicy**\<`J`, `C`\>(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
 Defined in: [policyDefiners/definePackagePolicy.ts:93](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L93)
 

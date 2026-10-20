@@ -326,7 +326,7 @@ describe("makePolicy", () => {
 		expect(instance.handler).toBe(baseDefinition.handler);
 		expect(instance.defaultConfig).toEqual({ threshold: 50 });
 		expect(instance.description).toBe("A test policy");
-		expect(instance.config).toBeUndefined();
+		expect(instance.config).toEqual({ threshold: 50 });
 	});
 
 	it("should merge config into policy instance", () => {
@@ -389,7 +389,7 @@ describe("makePolicy", () => {
 	it("should handle undefined config gracefully", () => {
 		const instance = makePolicy(baseDefinition, undefined);
 
-		expect(instance.config).toBeUndefined();
+		expect(instance.config).toEqual({ threshold: 50 });
 		expect(instance.defaultConfig).toEqual({ threshold: 50 });
 	});
 
@@ -502,9 +502,9 @@ describe("policy()", () => {
 		});
 	});
 
-	describe("two-argument form: policy(def, options)", () => {
+	describe("options without configuration", () => {
 		it("should accept options with exclude patterns", () => {
-			const result = policy(noConfigPolicyDef, {
+			const result = policy(noConfigPolicyDef, undefined, {
 				exclude: [/node_modules/],
 			});
 
@@ -513,12 +513,12 @@ describe("policy()", () => {
 			expect(result.config).toBeUndefined();
 		});
 
-		it("should detect options vs config correctly when object has only exclude", () => {
-			const result = policy(noConfigPolicyDef, {
-				exclude: ["vendor/*"],
+		it("should accept an instance ID without exclusions", () => {
+			const result = policy(noConfigPolicyDef, undefined, {
+				instanceId: "custom-instance",
 			});
 
-			expect(result.exclude).toEqual(["vendor/*"]);
+			expect(result.instanceId).toBe("custom-instance");
 			expect(result.config).toBeUndefined();
 		});
 	});

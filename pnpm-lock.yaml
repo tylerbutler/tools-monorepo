@@ -1015,6 +1015,9 @@ importers:
       tinyglobby:
         specifier: ^0.2.17
         version: 0.2.17
+      type-fest:
+        specifier: ^5.8.0
+        version: 5.8.0
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.8
@@ -1067,9 +1070,6 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.20.1)(typescript@6.0.3)
-      type-fest:
-        specifier: ^5.8.0
-        version: 5.8.0
       typescript:
         specifier: ~6.0.3
         version: 6.0.3

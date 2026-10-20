@@ -21,7 +21,6 @@ export type CargoTomlHandler<C> = (toml: CargoToml, args: PolicyArgs<C>) => Oper
 // @alpha
 export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
     config?: C | undefined;
-    // @deprecated
     exclude?: (string | RegExp)[] | undefined;
     excludeFiles?: (string | RegExp)[] | undefined;
     instanceId?: PolicyInstanceId | undefined;
@@ -66,6 +65,11 @@ export interface DefineGleamPolicyArgs<C> {
     handler: GleamTomlHandler<C>;
     name: string;
 }
+
+// @alpha
+function definePackagePolicy<J = PackageJson, C = undefined>(args: DefinePackagePolicyArgs<J, C>): PolicyShape<C>;
+export { definePackagePolicy }
+export { definePackagePolicy as generatePackagePolicy }
 
 // @alpha
 export interface DefinePackagePolicyArgs<J, C> {
@@ -117,9 +121,6 @@ export interface FluidHandler {
 export function fromFluidHandlers(fluidHandlers: FluidHandler[], options?: FluidAdapterOptions): PolicyDefinition[];
 
 // @alpha
-export function generatePackagePolicy<J = PackageJson, C = undefined>(args: DefinePackagePolicyArgs<J, C>): PolicyShape<C>;
-
-// @alpha
 export type GleamToml = Record<string, unknown>;
 
 // @alpha
@@ -165,24 +166,14 @@ export abstract class Policy<C = void> implements PolicyShape<C> {
     // (undocumented)
     readonly name: string;
     // (undocumented)
-    readonly resolver?: PolicyStandaloneResolver<C> | undefined;
+    readonly resolver?: PolicyResolver<C> | PolicyStandaloneResolver<C> | undefined;
 }
 
 // @alpha
-export function policy<C = void>(policyDef: RepositoryPolicyDefinition<C>, options?: PolicyOptions & {
-    exclude: (string | RegExp)[];
-}): ConfiguredRepositoryPolicy<C>;
+export function policy<C = void>(policyDef: RepositoryPolicyDefinition<C>, config?: C, options?: PolicyOptions): ConfiguredRepositoryPolicy<C>;
 
 // @alpha (undocumented)
-export function policy<C>(policyDef: RepositoryPolicyDefinition<C>, config: C, options?: PolicyOptions): ConfiguredRepositoryPolicy<C>;
-
-// @alpha (undocumented)
-export function policy<C = void>(policyDef: PolicyShape<C>, options?: PolicyOptions & {
-    exclude: (string | RegExp)[];
-}): ConfiguredFilePolicy<C>;
-
-// @alpha (undocumented)
-export function policy<C>(policyDef: PolicyShape<C>, config: C, options?: PolicyOptions): ConfiguredFilePolicy<C>;
+export function policy<C = void>(policyDef: PolicyShape<C>, config?: C, options?: PolicyOptions): ConfiguredFilePolicy<C>;
 
 // @alpha
 export type PolicyAction = "check" | "resolve" | "handle";
@@ -334,7 +325,7 @@ export interface PolicyShape<C = void> {
     handler: PolicyHandler<C>;
     match: RegExp;
     name: PolicyName;
-    resolver?: PolicyStandaloneResolver<C> | undefined;
+    resolver?: PolicyResolver<C> | PolicyStandaloneResolver<C> | undefined;
     scope?: "file";
 }
 

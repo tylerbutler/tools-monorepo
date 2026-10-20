@@ -252,6 +252,7 @@
 			// Package entry points and UI component barrels (shadcn-svelte patterns)
 			"includes": [
 				"**/src/index.ts",
+				"packages/repopo/src/api.ts",
 				"**/components/ui/**/index.ts",
 				"**/lib/index.ts",
 			],

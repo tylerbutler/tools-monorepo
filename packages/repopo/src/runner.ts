@@ -14,14 +14,19 @@ import {
 } from "./perf.js";
 import type {
 	IdentifiedPolicy,
+	PolicyError,
 	PolicyFixResult,
 	PolicyHandlerResult,
 	PolicyInstanceId,
 	PolicyName,
-	PolicyStandaloneResolver,
+	PolicyShape,
 	RepositoryPolicyFinding,
 } from "./policy.js";
-import { isPolicyError, isPolicyFixResult } from "./policy.js";
+import {
+	convertToLegacyResult,
+	isPolicyError,
+	isPolicyFixResult,
+} from "./policy.js";
 
 function isOperation<T>(value: unknown): value is Operation<T> {
 	return (
@@ -58,7 +63,7 @@ export interface PolicyFileResult {
 	policyId: PolicyInstanceId;
 	/** The raw result from the policy handler */
 	outcome: PolicyHandlerResult;
-	/** Set when a standalone resolver was attempted (legacy resolver path) */
+	/** Standalone resolver result, normalized to the legacy format for compatibility. */
 	resolution?: PolicyFixResult;
 }
 
@@ -383,29 +388,37 @@ export class PolicyRunner {
 	private *attemptResolution(
 		relPath: string,
 		policy: Extract<IdentifiedPolicy, { match: RegExp }>,
-		resolver: PolicyStandaloneResolver,
+		resolver: NonNullable<PolicyShape<undefined>["resolver"]>,
 		state: PolicyRunState,
 	): Operation<PolicyFixResult> {
 		const { gitRoot } = this;
 
-		return yield* runWithPerf(
+		const result = yield* runWithPerf(
 			policy.instanceId,
 			"resolve",
 			state.perfStats,
 			function* () {
-				const result = resolver({
+				const execution = resolver({
 					file: relPath,
 					root: gitRoot,
 					config: policy.config,
 				});
-				if (result instanceof Promise) {
-					return yield* call(() => result);
+				if (execution instanceof Promise) {
+					return yield* call<PolicyFixResult | PolicyError>(() => execution);
 				}
-				if (isOperation<PolicyFixResult>(result)) {
-					return yield* result;
+				if (isOperation<PolicyFixResult | PolicyError>(execution)) {
+					return yield* execution;
 				}
-				throw new Error(`Unexpected resolver result type: ${typeof result}`);
+				throw new Error(`Unexpected resolver result type: ${typeof execution}`);
 			},
 		);
+
+		if (isPolicyError(result)) {
+			return {
+				...convertToLegacyResult(result, policy.name, relPath),
+				resolved: result.fixed === true,
+			};
+		}
+		return result;
 	}
 }
