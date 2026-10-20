@@ -6,6 +6,7 @@ import { call, run } from "effection";
 import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
+import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 import type { RepopoCommandContext } from "../context.js";
 import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
@@ -66,6 +67,12 @@ export class CheckPolicy<
 		"including with --stdin. With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
+		concurrency: Flags.integer({
+			description:
+				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
+			default: DEFAULT_CONCURRENCY,
+			parse: async (value) => validateConcurrency(Number(value)),
+		}),
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -98,6 +105,7 @@ export class CheckPolicy<
 			gitRoot: context.gitRoot,
 			resolve: this.flags.fix,
 			logger: this.logger,
+			concurrency: this.flags.concurrency,
 		});
 
 		const runResults = await run(() =>

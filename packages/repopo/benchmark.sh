@@ -82,31 +82,31 @@ fi
 echo "Bun runtime: $($HAS_BUN && echo "yes ($(bun --version))" || echo 'no (skipping bun benchmarks)')"
 
 # Build the command list
-# Note: Both commands may produce policy violations to stderr/stdout.
-# We redirect to /dev/null to measure pure execution time without I/O variance.
+# Require passing policy checks: failures must stop the benchmark, not look fast.
+# Suppress normal output but keep errors available for diagnosis.
 CMDS=(
 	-n "TypeScript (check)"
-	"$TS_BIN check --quiet 2>/dev/null; true"
+	"$TS_BIN check --quiet >/dev/null"
 	-n "Rust+node debug"
-	"$RUST_DEBUG check --sidecar-path $SIDECAR --runtime node --quiet 2>/dev/null; true"
+	"$RUST_DEBUG check --sidecar-path $SIDECAR --runtime node --quiet >/dev/null"
 )
 
 if $HAS_RELEASE; then
 	CMDS+=(
 		-n "Rust+node release"
-		"$RUST_RELEASE check --sidecar-path $SIDECAR --runtime node --quiet 2>/dev/null; true"
+		"$RUST_RELEASE check --sidecar-path $SIDECAR --runtime node --quiet >/dev/null"
 	)
 fi
 
 if $HAS_BUN; then
 	CMDS+=(
 		-n "Rust+bun debug"
-		"$RUST_DEBUG check --sidecar-path $SIDECAR --runtime bun --quiet 2>/dev/null; true"
+		"$RUST_DEBUG check --sidecar-path $SIDECAR --runtime bun --quiet >/dev/null"
 	)
 	if $HAS_RELEASE; then
 		CMDS+=(
 			-n "Rust+bun release"
-			"$RUST_RELEASE check --sidecar-path $SIDECAR --runtime bun --quiet 2>/dev/null; true"
+			"$RUST_RELEASE check --sidecar-path $SIDECAR --runtime bun --quiet >/dev/null"
 		)
 	fi
 fi

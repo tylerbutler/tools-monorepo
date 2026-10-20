@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { Command, Flags } from "@oclif/core";
 import { dirname, resolve } from "pathe";
+import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -24,6 +25,12 @@ export class CheckNative extends Command {
 		"With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
+		concurrency: Flags.integer({
+			description:
+				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
+			default: DEFAULT_CONCURRENCY,
+			parse: async (value) => validateConcurrency(Number(value)),
+		}),
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -74,6 +81,7 @@ export class CheckNative extends Command {
 		const sidecarPath = this.resolveSidecarPath(flags["sidecar-path"]);
 
 		const args: string[] = ["check", "--sidecar-path", sidecarPath];
+		args.push("--concurrency", String(flags.concurrency));
 
 		if (flags.fix) {
 			args.push("--fix");

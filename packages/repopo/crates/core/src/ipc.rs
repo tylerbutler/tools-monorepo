@@ -181,11 +181,13 @@ impl Sidecar {
         policy_id: usize,
         files: &[String],
         resolve: bool,
+        concurrency: usize,
     ) -> Result<Vec<(String, HandlerResult)>> {
         let req = IpcRequest::RunHandlerBatch(RunHandlerBatchParams {
             policy_id,
             files: files.to_vec(),
             resolve,
+            concurrency,
         });
 
         let response = self.request(&req)?;

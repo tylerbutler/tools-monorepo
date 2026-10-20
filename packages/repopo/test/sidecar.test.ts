@@ -51,6 +51,207 @@ describe("Native sidecar protocol", () => {
 	});
 
 	it.each([
+		1,
+		3,
+		undefined,
+	])("bounds read-only batches with concurrency %s and preserves input order", async (concurrency) => {
+		const limit = concurrency ?? 8;
+		await writeFile(
+			configPath,
+			`
+			let active = 0, peak = 0, started = 0;
+			let release;
+			const gate = new Promise(resolve => { release = resolve; });
+			export default { policies: [{
+				name: "Bounded", description: "Checks a bounded batch", match: /txt$/,
+				handler: async ({ file }) => {
+					active++; started++;
+					peak = Math.max(peak, active);
+					if (started === ${limit}) release();
+					await gate;
+					await Promise.resolve();
+					active--;
+					return { error: "peak=" + peak };
+				}
+			}] };`,
+		);
+		const files = Array.from({ length: 17 }, (_, index) => `${index}.txt`);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{
+				method: "run_handler_batch",
+				params: { policyId: 0, files, concurrency },
+			},
+		]);
+		expect(responses[1]).toMatchObject({
+			ok: true,
+			data: {
+				pass: [],
+				fail: files.map((file) => ({ file, error: `peak=${limit}` })),
+			},
+		});
+	});
+
+	it("keeps fix and resolver batches sequential despite the requested concurrency", async () => {
+		await writeFile(
+			configPath,
+			`
+			let active = 0, peak = 0;
+			const handler = async () => {
+				active++; peak = Math.max(peak, active);
+				await Promise.resolve();
+				active--;
+				return { error: "peak=" + peak, fixed: true };
+			};
+			export default { policies: [{
+				name: "Fix", description: "Sequential fixes", match: /txt$/,
+				handler, resolver: handler
+			}] };`,
+		);
+		const files = ["a.txt", "b.txt", "c.txt"];
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{
+				method: "run_handler_batch",
+				params: { policyId: 0, files, resolve: true, concurrency: 8 },
+			},
+			{
+				method: "run_resolver_batch",
+				params: { policyId: 0, files, concurrency: 8 },
+			},
+		]);
+		for (const response of responses.slice(1)) {
+			expect(response).toMatchObject({
+				ok: true,
+				data: {
+					fail: files.map((file) => ({ file, error: "peak=1", fixed: true })),
+				},
+			});
+		}
+	});
+
+	it("retains input order and per-file errors when handlers fail out of order", async () => {
+		await writeFile(
+			configPath,
+			`
+			let release;
+			const gate = new Promise(resolve => { release = resolve; });
+			export default { policies: [{
+				name: "Errors", description: "Reports each file failure", match: /txt$/,
+				handler: async ({ file }) => {
+					if (file === "a.txt") { await gate; return { error: "Delayed" }; }
+					if (file === "b.txt") { release(); throw new Error("Broken"); }
+					return null;
+				}
+			}] };`,
+		);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{
+				method: "run_handler_batch",
+				params: {
+					policyId: 0,
+					files: ["a.txt", "b.txt", "c.txt"],
+					concurrency: 2,
+				},
+			},
+		]);
+		expect(responses[1]).toMatchObject({
+			ok: true,
+			data: {
+				fail: [
+					{ file: "a.txt", error: "Delayed" },
+					{ file: "b.txt", error: "Handler error: Broken" },
+					{ file: "c.txt", error: expect.stringContaining("Handler error:") },
+				],
+			},
+		});
+	});
+
+	it.each([
+		0,
+		-1,
+		1.5,
+		"invalid",
+		9007199254740992,
+	])("rejects invalid IPC concurrency %s", async (concurrency) => {
+		await writeFile(
+			configPath,
+			`export default { policies: [{
+			name: "Policy", description: "Pass", match: /txt$/, handler: async () => true
+		}] };`,
+		);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{
+				method: "run_handler_batch",
+				params: { policyId: 0, files: ["a.txt"], concurrency },
+			},
+		]);
+		expect(responses[1]).toMatchObject({
+			ok: false,
+			error: expect.stringContaining("positive safe integer"),
+		});
+	});
+
+	it("shares parsing across policy batches, isolates mutations, resets on reload, and bypasses fixes", async () => {
+		const helperUrl = new URL(
+			"../esm/policyDefiners/definePackagePolicy.js",
+			import.meta.url,
+		).href;
+		const jsonfileUrl = new URL(
+			"../node_modules/jsonfile/index.js",
+			import.meta.url,
+		).href;
+		await writeFile(join(testDir, "package.json"), '{"nested":{"value":1}}');
+		await writeFile(
+			configPath,
+			`
+			import jsonfile from ${JSON.stringify(jsonfileUrl)};
+			let reads = 0;
+			const original = jsonfile.readFile;
+			jsonfile.readFile = (...args) => { reads++; return original(...args); };
+			const { definePackagePolicy } = await import(${JSON.stringify(helperUrl)});
+			export default { policies: [0, 1].map(index => ({
+				...definePackagePolicy({
+					name: "JSON" + index, description: "Reads a cached snapshot",
+					handler: async json => {
+						const value = json.nested.value;
+						json.nested.value = 99;
+						return { error: "reads=" + reads + ";value=" + value };
+					}
+				}),
+				config: undefined
+			})) };`,
+		);
+		const batch = (policyId: number, resolve = false) => ({
+			method: "run_handler_batch",
+			params: { policyId, files: ["package.json"], resolve },
+		});
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			batch(0),
+			batch(1),
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			batch(1),
+			batch(0, true),
+			batch(1, true),
+		]);
+		for (const [index, reads] of [
+			[1, 1],
+			[2, 1],
+			[4, 2],
+			[5, 3],
+			[6, 4],
+		] as const) {
+			expect(responses[index]).toMatchObject({
+				ok: true,
+				data: { fail: [{ error: `reads=${reads};value=1` }] },
+			});
+		}
+	});
+
+	it.each([
 		"run_handler_batch",
 		"run_resolver_batch",
 	])("preserves multiline guidance in %s", async (method) => {
