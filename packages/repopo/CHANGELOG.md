@@ -1,5 +1,23 @@
 # repopo
 
+## 0.12.0
+
+### Minor Changes
+
+- Distinguish duplicate configured policy instances in exclusions, diagnostics, results, and performance metrics. _[`#783`](https://github.com/tylerbutler/tools-monorepo/pull/783) [`da9f08b`](https://github.com/tylerbutler/tools-monorepo/commit/da9f08bbb90cad92f7419c474a43741eef5d3c2a) [@tylerbutler](https://github.com/tylerbutler)_
+
+  Duplicate instances must now set a unique `instanceId` in the `policy()` options.
+
+### Patch Changes
+
+- Fix policy checks and automatic fixes: _[`#791`](https://github.com/tylerbutler/tools-monorepo/pull/791) [`9236dae`](https://github.com/tylerbutler/tools-monorepo/commit/9236dae487eef8d97c8c5974d3e58cf5338cac66) [@tylerbutler](https://github.com/tylerbutler)_
+  - Run same-file fixers in configuration order to prevent lost edits.
+  - Validate configured header text, avoid duplicate headers, and apply HTML headers to HTML files.
+  - Replace verbatim package.json arrays instead of appending entries.
+  - Check Cargo workspace members selected by globs and honor workspace exclusions.
+  - Preserve Git filenames that contain Unicode, tabs, or newlines in both engines.
+  - Preserve legacy fix results and apply default policies when a native configuration omits `policies`.
+
 ## 0.11.1
 
 ### Patch Changes
