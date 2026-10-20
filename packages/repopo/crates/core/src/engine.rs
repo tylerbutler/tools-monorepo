@@ -5,7 +5,20 @@ use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
 use crate::ipc::Sidecar;
-use crate::types::{LoadConfigResponse, PolicyMeta};
+use crate::types::{HandlerResult, LoadConfigResponse, PolicyMeta};
+
+fn format_manual_fix(instructions: &str) -> String {
+    format!(
+        "\tManual fix: {}",
+        instructions.lines().collect::<Vec<_>>().join("\n\t")
+    )
+}
+
+fn log_manual_fix(result: &HandlerResult, fallback: Option<&str>) {
+    if let Some(instructions) = result.manual_fix().or(fallback).filter(|s| !s.is_empty()) {
+        eprintln!("{}", format_manual_fix(instructions));
+    }
+}
 
 /// A compiled policy ready for matching.
 struct CompiledPolicy {
@@ -182,6 +195,9 @@ pub fn run_check(
 
     // Step 4: Policy-first batching — one IPC call per policy
     for (policy_id, policy) in compiled_policies.iter().enumerate() {
+        if policy.meta.scope == "repository" {
+            continue;
+        }
         // Collect files matching this policy
         let matching_files: Vec<String> = eligible_files
             .iter()
@@ -226,6 +242,7 @@ pub fn run_check(
 
         // Collect files that need standalone resolver
         let mut needs_resolver: Vec<String> = Vec::new();
+        let mut resolver_guidance = HashMap::new();
 
         for (file, result) in &batch_results {
             if result.is_pass() {
@@ -244,20 +261,21 @@ pub fn run_check(
 
             if result.is_fix_failed() {
                 had_failures = true;
-                let msg = format!(
-                    "Error fixing {} policy failure in {file}",
-                    policy.meta.name
-                );
+                let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
                 eprintln!("{}", msg.yellow());
                 if let Some(err) = result.error_message() {
                     eprintln!("\t{err}");
                 }
+                log_manual_fix(result, None);
                 continue;
             }
 
             // Failure — try standalone resolver if available, otherwise report
             if fix && policy.meta.has_resolver {
                 needs_resolver.push(file.clone());
+                if let Some(instructions) = result.manual_fix() {
+                    resolver_guidance.insert(file.clone(), instructions.to_string());
+                }
             } else {
                 had_failures = true;
                 let fixable = result.is_fixable();
@@ -274,6 +292,7 @@ pub fn run_check(
                 if let Some(err) = result.error_message() {
                     eprintln!("\t{err}");
                 }
+                log_manual_fix(result, None);
             }
         }
 
@@ -308,15 +327,50 @@ pub fn run_check(
                     }
                 } else {
                     had_failures = true;
-                    let msg = format!(
-                        "Error fixing {} policy failure in {file}",
-                        policy.meta.name
-                    );
+                    let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
                     eprintln!("{}", msg.yellow());
                     if let Some(err) = resolve_result.error_message() {
                         eprintln!("\t{err}");
                     }
+                    log_manual_fix(
+                        resolve_result,
+                        resolver_guidance.get(file).map(String::as_str),
+                    );
                 }
+            }
+        }
+    }
+
+    if config
+        .policies
+        .iter()
+        .any(|policy| policy.scope == "repository")
+    {
+        for result in sidecar.run_repository_policies(fix)? {
+            let finding = result.outcome;
+            let location = if finding.files.is_empty() {
+                "repository".to_string()
+            } else {
+                finding.files.join(", ")
+            };
+            if finding.fixed == Some(true) {
+                if !quiet {
+                    eprintln!("Resolved {} policy failure: {location}", result.policy_id);
+                }
+                continue;
+            }
+            had_failures = true;
+            let fixable = if finding.fixable == Some(true) {
+                " (autofixable)"
+            } else {
+                ""
+            };
+            eprintln!(
+                "'{}' policy failure{fixable}: {location}\n\t{}",
+                result.policy_id, finding.error
+            );
+            if let Some(manual_fix) = finding.manual_fix {
+                eprintln!("\t{manual_fix}");
             }
         }
     }
@@ -351,7 +405,17 @@ pub fn run_list(
         );
 
         if verbose {
-            println!("    match: {}", policy.match_pattern);
+            println!(
+                "    scope: {}",
+                if policy.scope.is_empty() {
+                    "file"
+                } else {
+                    &policy.scope
+                }
+            );
+            if policy.scope != "repository" {
+                println!("    match: {}", policy.match_pattern);
+            }
             if !policy.exclude_files.is_empty() {
                 println!("    excludes: {}", policy.exclude_files.join(", "));
             }
@@ -364,4 +428,17 @@ pub fn run_list(
     );
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::format_manual_fix;
+
+    #[test]
+    fn indents_multiline_manual_fix_instructions() {
+        assert_eq!(
+            format_manual_fix("Use the shared helper.\r\nPreserve error handling."),
+            "\tManual fix: Use the shared helper.\n\tPreserve error handling."
+        );
+    }
 }

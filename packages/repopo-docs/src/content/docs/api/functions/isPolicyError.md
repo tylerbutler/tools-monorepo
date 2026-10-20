@@ -7,7 +7,7 @@ title: "isPolicyError"
 
 > **isPolicyError**(`toCheck`): `toCheck is PolicyError`
 
-Defined in: [policy.ts:378](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L378)
+Defined in: [policy.ts:437](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L437)
 
 Type guard to check if a result is a PolicyError (new format).
 

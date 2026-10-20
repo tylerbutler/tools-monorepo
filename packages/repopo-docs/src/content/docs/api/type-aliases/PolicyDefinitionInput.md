@@ -7,7 +7,7 @@ title: "PolicyDefinitionInput"
 
 > **PolicyDefinitionInput**\<`C`\> = [`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
 
-Defined in: [makePolicy.ts:224](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L224)
+Defined in: [makePolicy.ts:246](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L246)
 
 Input arguments for creating a policy definition.
 

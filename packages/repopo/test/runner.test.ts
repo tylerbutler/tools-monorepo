@@ -7,6 +7,7 @@ import type {
 	PolicyFailure,
 	PolicyFixResult,
 	PolicyShape,
+	RepositoryPolicyArgs,
 } from "../src/policy.js";
 import { PolicyRunner, type PolicyRunnerOptions } from "../src/runner.js";
 
@@ -24,6 +25,194 @@ function makeRunnerOptions(
 }
 
 describe("PolicyRunner", () => {
+	describe("repository policies", () => {
+		it("runs once on the full eligible inventory, independently of the selection", async () => {
+			const handler = vi.fn(async () => [
+				{ error: "Repository problem" },
+				{ error: "Cross-file problem", files: ["a.txt", "b.txt"] },
+			]);
+			const fileHandler = vi.fn(async () => true as const);
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [
+						policy(
+							{
+								name: "Repo",
+								description: "Repo",
+								scope: "repository",
+								handler,
+							},
+							{ exclude: ["vendor/"] },
+						),
+						policy({
+							name: "File",
+							description: "File",
+							match: /\.txt$/,
+							handler: fileHandler,
+						}),
+					],
+					excludeFromAll: [/generated/g],
+				}),
+			);
+			const result = await run(() =>
+				runner.run(
+					["a.txt"],
+					[
+						"a.txt",
+						"b.txt",
+						"vendor/c.txt",
+						"generated/a.txt",
+						"generated/b.txt",
+					],
+				),
+			);
+			expect(handler).toHaveBeenCalledExactlyOnceWith({
+				root: "/fake/root",
+				files: ["a.txt", "b.txt"],
+				resolve: false,
+				config: undefined,
+			});
+			expect(fileHandler).toHaveBeenCalledExactlyOnceWith(
+				expect.objectContaining({ file: "a.txt" }),
+			);
+			expect(result.results).toEqual([
+				{
+					scope: "repository",
+					policy: "Repo",
+					policyId: "Repo",
+					outcome: { error: "Repository problem" },
+				},
+				{
+					scope: "repository",
+					policy: "Repo",
+					policyId: "Repo",
+					outcome: { error: "Cross-file problem", files: ["a.txt", "b.txt"] },
+				},
+			]);
+			expect(result.perfStats.data.get("handle")?.has("Repo")).toBe(true);
+		});
+
+		it("runs generator handlers with defaults and instance-specific exclusions on empty selections", async () => {
+			const seen: { files: readonly string[]; enabled: boolean | undefined }[] =
+				[];
+			const definition = {
+				name: "Repo",
+				description: "Repo",
+				scope: "repository" as const,
+				defaultConfig: { enabled: true },
+				handler: function* ({
+					files,
+					config,
+				}: RepositoryPolicyArgs<{ enabled: boolean }>) {
+					seen.push({ files, enabled: config?.enabled });
+					yield* all([]);
+					return true as const;
+				},
+			};
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [
+						policy(definition, { exclude: ["a"], instanceId: "first" }),
+						policy(
+							definition,
+							{ enabled: false },
+							{ exclude: ["b"], instanceId: "second" },
+						),
+					],
+				}),
+			);
+			await run(() => runner.run([], ["a", "b"]));
+			await run(() => runner.run([], []));
+			expect(seen).toEqual([
+				{ files: ["b"], enabled: true },
+				{ files: ["a"], enabled: false },
+				{ files: [], enabled: true },
+				{ files: [], enabled: false },
+			]);
+		});
+
+		it("finishes file fixes first and refreshes inventory before each serial repository fixer", async () => {
+			const files: string[] = ["original.txt"];
+			const order: string[] = [];
+			const inventory = vi.fn(async () => [...files]);
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					resolve: true,
+					policies: [
+						policy({
+							name: "Repo1",
+							description: "Repo1",
+							scope: "repository",
+							handler: async ({ files: current, resolve }) => {
+								expect(current).toContain("file-fix.txt");
+								expect(resolve).toBe(true);
+								order.push("repo1");
+								await Promise.resolve();
+								files.push("repo-fix.txt");
+								return [{ error: "Created file", fixed: true }];
+							},
+						}),
+						policy({
+							name: "File",
+							description: "File",
+							match: /\.txt$/,
+							handler: async () => {
+								order.push("file");
+								files.push("file-fix.txt");
+								return true;
+							},
+						}),
+						policy({
+							name: "Repo2",
+							description: "Repo2",
+							scope: "repository",
+							handler: async ({ files: current }) => {
+								expect(current).toContain("repo-fix.txt");
+								order.push("repo2");
+								return true;
+							},
+						}),
+					],
+				}),
+			);
+			await run(() => runner.run(["original.txt"], inventory));
+			expect(order).toEqual(["file", "repo1", "repo2"]);
+			expect(inventory).toHaveBeenCalledTimes(2);
+		});
+
+		it("reports repository handler errors and continues to subsequent policies", async () => {
+			const next = vi.fn(async () => true as const);
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [
+						policy({
+							name: "Broken",
+							description: "Broken",
+							scope: "repository",
+							handler: async () => {
+								throw new Error("Cannot read manifest");
+							},
+						}),
+						policy({
+							name: "Next",
+							description: "Next",
+							scope: "repository",
+							handler: next,
+						}),
+					],
+				}),
+			);
+			const result = await run(() => runner.run([]));
+			expect(result.results).toEqual([
+				expect.objectContaining({
+					scope: "repository",
+					outcome: { error: expect.stringContaining("Cannot read manifest") },
+				}),
+			]);
+			expect(next).toHaveBeenCalledOnce();
+		});
+	});
+
 	describe("run", () => {
 		it("should preserve every same-file fix across asynchronous handlers", async () => {
 			let contents: { license?: string; scripts?: { test: string } } = {};
@@ -71,12 +260,14 @@ describe("PolicyRunner", () => {
 			const results = await run(() => runner.run([]));
 			expect(results.results).toEqual([]);
 			expect(results.perfStats.count).toBe(0);
+			expect(results.perfStats.processed).toBe(0);
 		});
 
 		it("should count all processed files", async () => {
 			const runner = new PolicyRunner(makeRunnerOptions());
 			const results = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
 			expect(results.perfStats.count).toBe(3);
+			expect(results.perfStats.processed).toBe(3);
 		});
 
 		it("should return no results when all policies pass", async () => {
@@ -201,6 +392,35 @@ describe("PolicyRunner", () => {
 			);
 			expect(handlerCalled).toBe(false);
 			expect(results.results).toEqual([]);
+			expect(results.perfStats.count).toBe(1);
+			expect(results.perfStats.processed).toBe(0);
+		});
+
+		it("should only process files admitted past global exclusions", async () => {
+			const handledFiles: string[] = [];
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: /\.txt$/,
+				handler: async ({ file }) => {
+					handledFiles.push(file);
+					return true;
+				},
+			});
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+					excludeFromAll: [/generated/],
+				}),
+			);
+
+			const results = await run(() =>
+				runner.run(["file.txt", "generated/output.txt", "README.md"]),
+			);
+			expect(handledFiles).toEqual(["file.txt"]);
+			expect(results.perfStats.count).toBe(3);
+			expect(results.perfStats.processed).toBe(2);
 		});
 
 		it("should exclude files matching per-policy exclusions", async () => {
@@ -227,6 +447,8 @@ describe("PolicyRunner", () => {
 			const results = await run(() => runner.run(["generated/output.txt"]));
 			expect(handlerCalled).toBe(false);
 			expect(results.results).toEqual([]);
+			expect(results.perfStats.count).toBe(1);
+			expect(results.perfStats.processed).toBe(1);
 		});
 
 		it("should log verbose messages for exclusions", async () => {
@@ -418,6 +640,38 @@ describe("PolicyRunner", () => {
 			await run(() => runner.run(["file.txt", "file.mjs"]));
 			expect(txtCalled).toEqual(["file.txt"]);
 			expect(jsCalled).toEqual(["file.mjs"]);
+		});
+
+		it("should count a file once when duplicate policy instances match it", async () => {
+			let handlerCalls = 0;
+			const duplicatePolicy: PolicyShape = {
+				name: "DuplicatePolicy",
+				description: "Matches the same file twice",
+				match: /\.txt$/,
+				handler: async () => {
+					handlerCalls++;
+					return true;
+				},
+			};
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [
+						policy(duplicatePolicy, undefined, {
+							instanceId: "first-instance",
+						}),
+						policy(duplicatePolicy, undefined, {
+							instanceId: "second-instance",
+						}),
+					],
+				}),
+			);
+
+			const results = await run(() => runner.run(["file.txt"]));
+			expect(handlerCalls).toBe(2);
+			expect(results.results).toEqual([]);
+			expect(results.perfStats.count).toBe(1);
+			expect(results.perfStats.processed).toBe(1);
 		});
 
 		it.each([

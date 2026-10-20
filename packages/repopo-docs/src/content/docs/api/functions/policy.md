@@ -7,9 +7,9 @@ title: "policy"
 
 ## Call Signature
 
-> **policy**\<`C`\>(`policyDef`, `options?`): [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+> **policy**\<`C`\>(`policyDef`, `options?`): [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:89](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L89)
+Defined in: [makePolicy.ts:93](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L93)
 
 Configure a policy for use in repopo.
 
@@ -27,7 +27,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### policyDef
 
-[`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
+[`RepositoryPolicyDefinition`](/api/interfaces/repositorypolicydefinition/)\<`C`\>
 
 #### options?
 
@@ -35,7 +35,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### Returns
 
-[`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+[`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
 ### Remarks
 
@@ -64,9 +64,73 @@ policy(PackageJsonProperties, testConfig, { instanceId: "test-packages" })
 
 ## Call Signature
 
-> **policy**\<`C`\>(`policyDef`, `config`, `options?`): [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+> **policy**\<`C`\>(`policyDef`, `config`, `options?`): [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L94)
+Defined in: [makePolicy.ts:98](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L98)
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+### Type Parameters
+
+#### C
+
+`C`
+
+### Parameters
+
+#### policyDef
+
+[`RepositoryPolicyDefinition`](/api/interfaces/repositorypolicydefinition/)\<`C`\>
+
+#### config
+
+`C`
+
+#### options?
+
+[`PolicyOptions`](/api/interfaces/policyoptions/)
+
+### Returns
+
+[`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
+
+## Call Signature
+
+> **policy**\<`C`\>(`policyDef`, `options?`): [`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>
+
+Defined in: [makePolicy.ts:104](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L104)
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+### Type Parameters
+
+#### C
+
+`C` = `void`
+
+### Parameters
+
+#### policyDef
+
+[`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
+
+#### options?
+
+[`PolicyOptions`](/api/interfaces/policyoptions/) & `object`
+
+### Returns
+
+[`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>
+
+## Call Signature
+
+> **policy**\<`C`\>(`policyDef`, `config`, `options?`): [`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>
+
+Defined in: [makePolicy.ts:109](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L109)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -94,4 +158,4 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### Returns
 
-[`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+[`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>

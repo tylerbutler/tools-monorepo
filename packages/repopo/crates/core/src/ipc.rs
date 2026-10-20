@@ -4,8 +4,8 @@ use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 
 use crate::types::{
     CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams,
-    LoadConfigResponse, PolicyErrorResult, RunHandlerBatchParams, RunHandlerParams,
-    RunResolverBatchParams, RunResolverParams,
+    LoadConfigResponse, PolicyErrorResult, RepositoryPolicyResult, RunHandlerBatchParams,
+    RunHandlerParams, RunRepositoryPoliciesParams, RunResolverBatchParams, RunResolverParams,
 };
 
 /// A connection to the sidecar process that loads TypeScript
@@ -17,6 +17,21 @@ pub struct Sidecar {
 }
 
 impl Sidecar {
+    pub fn run_repository_policies(
+        &mut self,
+        resolve: bool,
+    ) -> Result<Vec<RepositoryPolicyResult>> {
+        let response = self.request(&IpcRequest::RunRepositoryPolicies(
+            RunRepositoryPoliciesParams { resolve },
+        ))?;
+        serde_json::from_value(
+            response
+                .data
+                .context("No data in repository policy response")?,
+        )
+        .context("Failed to parse repository policy results")
+    }
+
     /// Spawn the sidecar process using the given JS runtime.
     ///
     /// The `runtime` should be `"node"`, `"bun"`, or another Node-compatible runtime.
@@ -145,9 +160,7 @@ impl Sidecar {
         });
 
         let response = self.request(&req)?;
-        let data = response
-            .data
-            .context("No data in run_resolver response")?;
+        let data = response.data.context("No data in run_resolver response")?;
 
         if data.is_boolean() {
             if data.as_bool() == Some(true) {
@@ -225,8 +238,7 @@ impl Sidecar {
     /// Convert a compact batch response into the Vec<(file, HandlerResult)> format
     /// expected by callers.
     fn expand_compact_response(batch: CompactBatchResponse) -> Vec<(String, HandlerResult)> {
-        let mut results =
-            Vec::with_capacity(batch.pass.len() + batch.fail.len());
+        let mut results = Vec::with_capacity(batch.pass.len() + batch.fail.len());
 
         for file in batch.pass {
             results.push((file, HandlerResult::Pass(true)));

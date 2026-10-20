@@ -89,6 +89,50 @@ export interface PolicyError {
  */
 export type PolicyResult = true | PolicyError;
 
+/**
+ * A repository violation, optionally associated with several repo-relative files.
+ * @alpha
+ */
+export interface RepositoryPolicyFinding extends PolicyError {
+	files?: readonly string[];
+}
+
+/**
+ * Arguments for a policy that runs once against the repository.
+ * @alpha
+ */
+export interface RepositoryPolicyArgs<C = void>
+	extends Omit<PolicyArgs<C>, "file"> {
+	/** Full file inventory after global and per-policy exclusions, not stdin selection. */
+	files: readonly string[];
+}
+
+/** @alpha */
+export type RepositoryPolicyResult = true | readonly RepositoryPolicyFinding[];
+
+/** @alpha */
+export type RepositoryPolicyHandler<C = void> = (
+	args: RepositoryPolicyArgs<C>,
+) => Promise<RepositoryPolicyResult> | Operation<RepositoryPolicyResult>;
+
+/**
+ * A policy executed once per invocation, even when the inventory is empty.
+ * Fixes are performed in the handler using `resolve`.
+ * @alpha
+ */
+export interface RepositoryPolicyDefinition<C = void> {
+	name: PolicyName;
+	description: string;
+	scope: "repository";
+	handler: RepositoryPolicyHandler<C>;
+	defaultConfig?: C | undefined;
+}
+
+/** @alpha */
+export type AnyPolicyShape<C = void> =
+	| PolicyShape<C>
+	| RepositoryPolicyDefinition<C>;
+
 // ============================================================================
 // Legacy Result Types (Still supported for backward compatibility)
 // ============================================================================
@@ -208,6 +252,8 @@ export type PolicyResolver<C = void> = (
  * @alpha
  */
 export interface PolicyShape<C = void> {
+	/** File scope is the default for existing policies. */
+	scope?: "file";
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -279,7 +325,7 @@ export type PolicyDefinition<C = undefined> = PolicyShape<C>;
  *
  * @alpha
  */
-export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
+export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
 	/**
 	 * An optional stable identifier for this configured policy instance.
 	 *
@@ -311,6 +357,19 @@ export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
 	_internalHandler?: (args: PolicyArgs<C>) => Operation<PolicyHandlerResult>;
 }
 
+/** @alpha */
+export type ConfiguredRepositoryPolicy<C = void> =
+	RepositoryPolicyDefinition<C> &
+		Pick<
+			ConfiguredFilePolicy<C>,
+			"instanceId" | "config" | "exclude" | "excludeFiles"
+		>;
+
+/** @alpha */
+export type ConfiguredPolicy<C = void> =
+	| ConfiguredFilePolicy<C>
+	| ConfiguredRepositoryPolicy<C>;
+
 /**
  * Settings for configuring a policy instance.
  * @alpha
@@ -339,7 +398,7 @@ export interface PolicyInstanceSettings<C> {
  * @deprecated Use {@link ConfiguredPolicy} instead.
  * @alpha
  */
-export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
+export type PolicyInstance<C = undefined> = ConfiguredFilePolicy<C>;
 
 /**
  * A configured policy instance with its runtime identity assigned.

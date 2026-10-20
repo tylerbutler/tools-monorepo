@@ -8,6 +8,7 @@ file in your git repo, with a straightforward way to write your own policies.
 * [Configuring policies](#configuring-policies)
 * [Included policies](#included-policies)
 * [Policy generators](#policy-generators)
+* [Benchmarking](#benchmarking)
 * [CLI Usage](#cli-usage)
 <!-- tocstop -->
 
@@ -23,6 +24,27 @@ Set `policies: []` to disable them.
 
 With `check --fix`, policies run in configuration order for each file so that one
 fix does not overwrite another. Read-only checks can run policies concurrently.
+
+## Repository policies
+
+File policies run once per matching selected file. Policies with
+`scope: "repository"` run once after all file policies, even when no files are
+selected. Both scopes use the same `policies` array and `policy()` helper.
+
+Repository handlers receive `{ root, files, resolve, config }` and return `true`
+or an array of findings. Each finding has an `error` message and can include
+`files`, `fixable`, `fixed`, and `manualFix`. Omit `files` for a repository-level
+violation. Repository policies perform fixes inside the handler using `resolve`.
+
+With `--stdin`, file policies check the input paths, but repository policies
+still receive the full Git file inventory after global and per-policy exclusions.
+With `--fix`, repository policies run serially in configuration order and can
+modify files outside stdin. The inventory is refreshed before each repository
+policy. These rules apply to both `check` and `check-native`.
+
+`LicenseFileExists` and `SharedDependencyVersions` use repository scope. Their
+handlers accept the full eligible `files` inventory and return `true` or an array
+of findings. Configure either policy with `policy()` or `makePolicy()`.
 
 ## Excluding files from policy check
 
@@ -102,6 +124,55 @@ of boilerplate code you have to write for a policy.
 
 Use `generatePackagePolicy` to generate policies for package.json files.
 
+# Benchmarking
+
+From a source checkout, compile TypeScript and build the release engine:
+
+```bash
+pnpm nx run repopo:build:compile
+cargo build --release --manifest-path packages/repopo/crates/core/Cargo.toml
+./packages/repopo/benchmark.sh --quick
+./packages/repopo/benchmark.sh --json /tmp/repopo-benchmark.json
+```
+
+The benchmark needs Node and the release binary; Bun is optional. It uses no
+Hyperfine dependency. Each round runs all cases sequentially in shuffled order
+to reduce ordering bias. Defaults are three warmup rounds and ten timed rounds;
+`--quick` uses one and three. Override with `--warmup N` and `--runs N`.
+Every command must exit successfully; policy violations and runtime errors abort
+the benchmark with diagnostic output. No fixes are applied.
+
+The matrix compares TypeScript, the direct Rust engine with Node/Bun, and the
+actual `check-native` CLI with Node/Bun. Native cases explicitly use the release
+binary. All stdin cases share one Git inventory snapshot.
+
+| Scenario | Workload |
+| --- | --- |
+| `startup` | Top-level help; CLI/binary startup without a policy check |
+| `empty` | Empty config and empty stdin; check initialization and sidecar startup |
+| `inventory-stdin` | Empty config with the file snapshot; input parsing and file routing |
+| `inventory-git` | Empty config with Git enumeration instead of stdin |
+| `config` | Twenty synthetic policies with empty stdin; policy setup without file matching |
+| `matching` | Same policies and snapshot, with no matches; matching without handlers |
+| `noop` | Twenty policies matching every path, each returning `true`; dispatch and no-op handlers |
+| `real-stdin` | Repository config with the snapshot |
+| `real-git` | Normal repository-config check with Git enumeration |
+
+Use repeated `--scenario NAME` options to select workloads. JSON output includes
+machine/runtime metadata, commands, inputs, raw samples with round/order, and
+median, mean, standard deviation, quartiles, and range in milliseconds.
+
+Compare `inventory-git` with `inventory-stdin` for the enumeration path, `config`
+with `empty` for synthetic policy setup, and `noop` with `matching` for successful
+matching, dispatch, and handler overhead. Compare matching-minus-config with
+inventory-stdin-minus-empty to estimate matching overhead beyond basic routing.
+Compare each `cli-*` case with its `core-*` counterpart for wrapper overhead.
+These are controlled workload contrasts, not exclusive phase timers: they
+include interactions, serialization, and scheduling noise. Repository policies
+still enumerate and check the full inventory in `real-stdin`. Real workloads
+include config imports, file I/O, and policy-specific work. Results apply to
+warm filesystem caches, not a controlled cold-cache run.
+
 # CLI Usage
 
 <!-- commands -->
@@ -124,6 +195,12 @@ FLAGS
 LOGGING FLAGS
   -v, --verbose  Enable verbose logging.
       --quiet    Disable all logging.
+
+DESCRIPTION
+  Checks and applies policies to the files in the repository.
+
+  File policies check selected files. Repository policies always run with the full repository file inventory, including
+  with --stdin. With --fix, repository policies can modify files outside the stdin selection.
 ```
 
 _See code: [src/commands/check.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check.ts)_
@@ -152,7 +229,9 @@ DESCRIPTION
   Checks and applies policies using the Rust engine.
 
   Runs the Rust-based repopo-core engine with the Node.js sidecar. This provides the same policy checking as 'check' but
-  with Rust-based file enumeration, regex matching, and orchestration for better performance.
+  with Rust-based file enumeration, regex matching, and orchestration for better performance. Repository policies always
+  run with the full repository inventory, including with --stdin. With --fix, repository policies can modify files
+  outside the stdin selection.
 ```
 
 _See code: [src/commands/check-native.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check-native.ts)_

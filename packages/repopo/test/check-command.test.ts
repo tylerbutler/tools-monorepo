@@ -1,3 +1,4 @@
+import { execFile } from "node:child_process";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -12,6 +13,8 @@ import type {
 	PolicyDefinition,
 	PolicyFailure,
 	PolicyFixResult,
+	PolicyHandlerResult,
+	PolicyStandaloneResolver,
 } from "../src/policy.js";
 
 class TestCheckPolicy extends CheckPolicy<typeof TestCheckPolicy> {
@@ -22,6 +25,10 @@ class TestCheckPolicy extends CheckPolicy<typeof TestCheckPolicy> {
 		verbose: false,
 		config: undefined,
 	};
+
+	public enableFix(): void {
+		this.flags.fix = true;
+	}
 }
 
 describe("Check Command - Effection Integration", () => {
@@ -56,6 +63,53 @@ describe("Check Command - Effection Integration", () => {
 
 	describe("Git file enumeration", () => {
 		it.each([
+			"test1.txt\n",
+			"",
+		])("runs repository policies with full context for stdin %j", async (stdin) => {
+			const configPath = join(testRepoDir, "repopo.config.mjs");
+			await writeFile(
+				configPath,
+				`export default {
+				policies: [{
+					name: "RepositoryCheck",
+					description: "Checks full context",
+					scope: "repository",
+					handler: async ({ files }) => [
+						{ error: "Repository-level failure" },
+						{ error: files.includes("test2.txt") ? "Full context" : "Missing context", files: ["test1.txt", "test2.txt"] }
+					]
+				}]
+			};`,
+			);
+			const result = await new Promise<{
+				code: string | number | undefined;
+				output: string;
+			}>((resolve) => {
+				const child = execFile(
+					process.execPath,
+					[
+						fileURLToPath(new URL("../bin/run.js", import.meta.url)),
+						"check",
+						"--stdin",
+						"--config",
+						configPath,
+					],
+					{ cwd: testRepoDir, timeout: 10000 },
+					(error, stdout, stderr) => {
+						resolve({ code: error?.code, output: stdout + stderr });
+					},
+				);
+				child.stdin?.end(stdin);
+			});
+			expect(result.code).toBe(1);
+			expect(result.output).toContain("repository");
+			expect(result.output).toContain("Repository-level failure");
+			expect(result.output).toContain("Full context");
+			expect(result.output).toContain("test1.txt, test2.txt");
+			expect(result.output).not.toContain("Missing context");
+		});
+
+		it.each([
 			"caf\u00e9.js",
 			"tab\tname.js",
 			"line\nname.js",
@@ -88,6 +142,128 @@ describe("Check Command - Effection Integration", () => {
 			expect(handler).toHaveBeenCalledWith(
 				expect.objectContaining({ file, root: testRepoDir }),
 			);
+		});
+	});
+
+	describe("Manual fix guidance", () => {
+		async function checkOutput(
+			outcome: PolicyHandlerResult,
+			resolver?: PolicyStandaloneResolver,
+		): Promise<string> {
+			const command = new TestCheckPolicy(
+				[],
+				await Config.load(fileURLToPath(new URL("..", import.meta.url))),
+			);
+			command.enableFix();
+			vi.spyOn(command, "git", "get").mockReturnValue(git);
+			vi.spyOn(command, "verbose").mockImplementation(() => {});
+			vi.spyOn(command, "info").mockImplementation(() => {});
+			const warning = vi.spyOn(command, "warning").mockImplementation(() => {});
+			vi.spyOn(command, "getContext").mockResolvedValue({
+				gitRoot: testRepoDir,
+				policies: [
+					{
+						name: "GuidedPolicy",
+						instanceId: "GuidedPolicy",
+						description: "Policy with correction guidance",
+						match: /^test1\.txt$/,
+						handler: async () => outcome,
+						resolver,
+					},
+				],
+				excludeFromAll: [],
+				excludePoliciesForFiles: new Map(),
+				perfStats: newPerfStats(),
+			});
+
+			const originalExitCode = process.exitCode;
+			try {
+				process.exitCode = 0;
+				await command.run();
+				return warning.mock.calls.map(([message]) => message).join("\n");
+			} finally {
+				process.exitCode = originalExitCode;
+			}
+		}
+
+		it.each([
+			{ error: "Wrong pattern" },
+			{ error: "Fix failed", fixed: false },
+			{
+				name: "GuidedPolicy",
+				file: "test1.txt",
+				errorMessages: ["Wrong pattern"],
+			},
+			{
+				name: "GuidedPolicy",
+				file: "test1.txt",
+				errorMessages: ["Fix failed"],
+				resolved: false,
+			},
+		])("prints guidance for unresolved results: %j", async (outcome) => {
+			const output = await checkOutput({
+				...outcome,
+				manualFix: "Use the shared helper.\r\nPreserve error handling.",
+			});
+
+			expect(output).toContain(
+				"\tManual fix: Use the shared helper.\n\tPreserve error handling.",
+			);
+		});
+
+		it.each([
+			false,
+			true,
+		])("uses resolver guidance when present: %s", async (hasGuidance) => {
+			const output = await checkOutput(
+				{ error: "Wrong pattern", manualFix: "Handler guidance" },
+				async () => ({
+					name: "GuidedPolicy",
+					file: "test1.txt",
+					resolved: false,
+					errorMessages: ["Resolver failed"],
+					...(hasGuidance ? { manualFix: "Resolver guidance" } : {}),
+				}),
+			);
+
+			expect(output).toContain(
+				`Manual fix: ${hasGuidance ? "Resolver" : "Handler"} guidance`,
+			);
+			expect(output.match(/Manual fix:/g)).toHaveLength(1);
+		});
+
+		it.each([
+			{ error: "Fixed", fixed: true },
+			{
+				name: "GuidedPolicy",
+				file: "test1.txt",
+				errorMessages: [],
+				resolved: true,
+			},
+		])("omits guidance after successful inline fixes: %j", async (outcome) => {
+			expect(
+				await checkOutput({ ...outcome, manualFix: "Stale guidance" }),
+			).not.toContain("Manual fix:");
+		});
+
+		it("omits guidance after a successful standalone fix", async () => {
+			const output = await checkOutput(
+				{ error: "Wrong pattern", manualFix: "Stale guidance" },
+				async () => ({
+					name: "GuidedPolicy",
+					file: "test1.txt",
+					resolved: true,
+					errorMessages: [],
+					manualFix: "Stale resolver guidance",
+				}),
+			);
+			expect(output).not.toContain("Manual fix:");
+		});
+
+		it("does not add guidance when the policy supplies none", async () => {
+			const output = await checkOutput({ error: "Wrong pattern" });
+			expect(output).toContain("Wrong pattern");
+			expect(output).not.toContain("Manual fix:");
 		});
 	});
 

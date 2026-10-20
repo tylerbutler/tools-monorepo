@@ -7,6 +7,7 @@ import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
+import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
 import {
 	isPolicyError,
@@ -14,7 +15,13 @@ import {
 	type PolicyError,
 	type PolicyFailure,
 } from "../policy.js";
-import { type PolicyFileResult, PolicyRunner } from "../runner.js";
+import {
+	type PolicyExecutionResult,
+	type PolicyRepositoryResult,
+	PolicyRunner,
+} from "../runner.js";
+
+const lineBreak = /\r?\n/;
 
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
@@ -54,6 +61,10 @@ export class CheckPolicy<
 	public static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
+	public static override readonly description =
+		"File policies check selected files. Repository policies always run with the full repository file inventory, " +
+		"including with --stdin. With --fix, repository policies can modify files outside the stdin selection.";
+
 	public static override readonly flags = {
 		fix: Flags.boolean({
 			aliases: ["resolve"],
@@ -89,7 +100,9 @@ export class CheckPolicy<
 			logger: this.logger,
 		});
 
-		const runResults = await run(() => runner.run(filePathsToCheck));
+		const runResults = await run(() =>
+			runner.run(filePathsToCheck, () => this.collectRepositoryFiles()),
+		);
 
 		// Format and log results
 		for (const result of runResults.results) {
@@ -111,18 +124,16 @@ export class CheckPolicy<
 			});
 
 			if (stdInput !== undefined && stdInput !== null) {
-				return stdInput
-					.replace(
-						// normalize slashes in case they're windows paths
-						/\\/g,
-						"/",
-					)
-					.split("\n");
+				return parseFilePaths(stdInput);
 			}
 
 			return [];
 		}
 
+		return this.collectRepositoryFiles();
+	}
+
+	private async collectRepositoryFiles(): Promise<string[]> {
 		const gitFiles =
 			(await this.git.raw(
 				"ls-files",
@@ -136,39 +147,73 @@ export class CheckPolicy<
 				"--full-name",
 			)) ?? "";
 
-		return gitFiles.split("\0").filter((file) => file.length > 0);
+		return parseFilePaths(gitFiles);
 	}
 
 	/**
 	 * Formats a single policy file result, logging messages and setting exit codes.
 	 */
-	private formatResult(result: PolicyFileResult): void {
+	private formatResult(result: PolicyExecutionResult): void {
+		if (result.scope === "repository") {
+			this.formatRepositoryResult(result);
+			return;
+		}
 		const { outcome, resolution } = result;
 
 		// Handle fix results (legacy format with resolved property)
 		if (isPolicyFixResult(outcome)) {
 			this.formatFixResult(outcome.resolved, outcome.file, result.policyId);
-			return;
-		}
-
-		// Handle new PolicyError with fixed property (fix was attempted inline)
-		if (isPolicyError(outcome) && outcome.fixed !== undefined) {
+		} else if (isPolicyError(outcome) && outcome.fixed !== undefined) {
 			this.formatPolicyErrorFixResult(outcome, result.file, result.policyId);
-			return;
-		}
-
-		// Handle failure with standalone resolver result
-		if (resolution !== undefined) {
+		} else if (resolution !== undefined) {
 			this.formatResolutionResult(resolution, result.file, result.policyId);
+		} else if (outcome !== true) {
+			this.formatPolicyFailure(outcome, result.file, result.policyId);
+		}
+
+		if (
+			outcome === true ||
+			resolution?.resolved ||
+			(isPolicyFixResult(outcome) && outcome.resolved) ||
+			(isPolicyError(outcome) && outcome.fixed)
+		) {
 			return;
 		}
 
-		// Handle plain failure (no fix attempted)
-		// The runner only collects non-true results, but TypeScript needs explicit narrowing
-		if (outcome === true) {
-			return;
+		const manualFix = resolution?.manualFix ?? outcome.manualFix;
+		if (manualFix) {
+			const messages = new StringBuilder();
+			messages.append(
+				`\tManual fix: ${manualFix.split(lineBreak).join(`${newline}\t`)}`,
+			);
+			this.logMessages(messages);
 		}
-		this.formatPolicyFailure(outcome, result.file, result.policyId);
+	}
+
+	private formatRepositoryResult(result: PolicyRepositoryResult): void {
+		const { outcome, policyId } = result;
+		const location =
+			outcome.files !== undefined && outcome.files.length > 0
+				? outcome.files.join(", ")
+				: "repository";
+		const messages = new StringBuilder();
+		if (outcome.fixed === true) {
+			messages.append(
+				`Resolved ${policyId} repository policy failure: ${location}`,
+			);
+		} else {
+			const fixable = outcome.fixable ? chalk.green(" (autofixable)") : "";
+			const action = outcome.fixed === false ? "Error fixing" : "Failure in";
+			messages.append(
+				`${action} '${chalk.bold(policyId)}' repository policy${fixable}: ${location}`,
+			);
+			messages.append(`${newline}\t${outcome.error}`);
+			if (outcome.manualFix) {
+				messages.append(`${newline}\t${outcome.manualFix}`);
+			}
+			process.exitCode = 1;
+		}
+		this.logMessages(messages);
 	}
 
 	private formatFixResult(
