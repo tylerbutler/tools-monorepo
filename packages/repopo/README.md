@@ -8,6 +8,7 @@ file in your git repo, with a straightforward way to write your own policies.
 * [Configuring policies](#configuring-policies)
 * [Included policies](#included-policies)
 * [Policy generators](#policy-generators)
+* [Benchmarking](#benchmarking)
 * [CLI Usage](#cli-usage)
 <!-- tocstop -->
 
