@@ -1,7 +1,10 @@
 import { call, type Operation } from "effection";
 import { isGeneratorFunction } from "./generators.js";
 import type {
+	AnyPolicyShape,
+	ConfiguredFilePolicy,
 	ConfiguredPolicy,
+	ConfiguredRepositoryPolicy,
 	PolicyArgs,
 	PolicyDefinition,
 	PolicyHandler,
@@ -11,6 +14,7 @@ import type {
 	PolicyInstanceSettings,
 	PolicyName,
 	PolicyShape,
+	RepositoryPolicyShape,
 } from "./policy.js";
 
 // ============================================================================
@@ -87,18 +91,29 @@ function normalizeHandler<C>(
  * @alpha
  */
 export function policy<C = void>(
+	policyDef: RepositoryPolicyShape<C>,
+	options?: PolicyOptions & { exclude: (string | RegExp)[] },
+): ConfiguredRepositoryPolicy<C>;
+/** @alpha */
+export function policy<C>(
+	policyDef: RepositoryPolicyShape<C>,
+	config: C,
+	options?: PolicyOptions,
+): ConfiguredRepositoryPolicy<C>;
+/** @alpha */
+export function policy<C = void>(
 	policyDef: PolicyShape<C>,
 	options?: PolicyOptions & { exclude: (string | RegExp)[] },
-): ConfiguredPolicy<C>;
+): ConfiguredFilePolicy<C>;
 /** @alpha */
 export function policy<C>(
 	policyDef: PolicyShape<C>,
 	config: C,
 	options?: PolicyOptions,
-): ConfiguredPolicy<C>;
+): ConfiguredFilePolicy<C>;
 /** @alpha */
 export function policy<C>(
-	policyDef: PolicyShape<C>,
+	policyDef: AnyPolicyShape<C>,
 	configOrOptions?: C | PolicyOptions,
 	maybeOptions?: PolicyOptions,
 ): ConfiguredPolicy<C> {
@@ -136,12 +151,19 @@ export function policy<C>(
 	// Support both 'exclude' and 'excludeFiles' for backward compatibility
 	const excludePatterns = options?.exclude;
 
-	return {
-		...policyDef,
+	const settings = {
 		config: effectiveConfig,
 		exclude: excludePatterns,
 		excludeFiles: excludePatterns,
 		instanceId: options?.instanceId,
+	};
+	if (policyDef.scope === "repository") {
+		return { ...policyDef, ...settings };
+	}
+
+	return {
+		...policyDef,
+		...settings,
 		_internalHandler: normalizeHandler(policyDef.handler),
 	};
 }
@@ -245,6 +267,7 @@ export function makePolicyDefinition<C = undefined>(
 ): PolicyDefinition<C> {
 	return {
 		name: args.name,
+		...(args.scope === "file" ? { scope: args.scope } : {}),
 		description: args.description,
 		match: args.match,
 		handler: args.handler,
@@ -266,13 +289,25 @@ export function makePolicyDefinition<C = undefined>(
  * @alpha
  */
 export function makePolicy<C>(
+	definition: RepositoryPolicyShape<C>,
+	config?: C,
+	settings?: PolicyInstanceSettings<C>,
+): ConfiguredRepositoryPolicy<C>;
+/** @alpha */
+export function makePolicy<C>(
 	definition: PolicyDefinition<C>,
 	config?: C,
 	settings?: PolicyInstanceSettings<C>,
-): PolicyInstance<C> {
+): PolicyInstance<C>;
+/** @alpha */
+export function makePolicy<C>(
+	definition: AnyPolicyShape<C>,
+	config?: C,
+	settings?: PolicyInstanceSettings<C>,
+): ConfiguredPolicy<C> {
 	return {
 		...definition,
 		...settings,
 		config,
-	} satisfies PolicyInstance<C>;
+	};
 }

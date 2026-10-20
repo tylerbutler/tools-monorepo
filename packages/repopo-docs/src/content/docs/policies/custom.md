@@ -7,7 +7,54 @@ sidebar:
 
 ## Creating Custom Policies
 
-Custom policies can be created using the `Policy` class or policy generator functions. Documentation for creating policies from scratch is coming soon.
+File policies run once per matching selected file. Repository policies run once per invocation, after all file policies. Configure both with `policy()` in the same `policies` array.
+
+## Repository policies
+
+Use `RepositoryPolicyShape` for checks that require several files or check for a missing file. Set `scope: "repository"` and omit `match`.
+
+```ts title="repopo.config.ts"
+import { policy, type RepopoConfig, type RepositoryPolicyShape } from "repopo";
+import { NoJsFileExtensions } from "repopo/policies";
+
+const RequiredReadme: RepositoryPolicyShape = {
+	name: "RequiredReadme",
+	description: "Requires a README at the repository root.",
+	scope: "repository",
+	handler: async ({ files }) =>
+		files.includes("README.md")
+			? true
+			: [{ error: "README.md is missing.", manualFix: "Add README.md." }],
+};
+
+export default {
+	policies: [policy(NoJsFileExtensions), policy(RequiredReadme)],
+} satisfies RepopoConfig;
+```
+
+Repository handlers receive `root`, `files`, `resolve`, and `config`. `root` is the absolute Git root. `files` contains repo-relative paths from `git ls-files -co --exclude-standard --full-name`, after global and per-policy exclusions. This includes tracked and untracked files, but not ignored untracked files. Paths do not guarantee that a file still exists on disk.
+
+Return `true` to pass, or an array of findings. Each finding has an `error` message and can include `files`, `fixable`, `fixed`, and `manualFix`. Use `files` for a violation that concerns several files. Omit it for a repository-level violation. An empty array also passes. Async functions and Effection generators are supported.
+
+Use `resolve` to apply fixes inside the handler, and set `fixed` on each finding to report the result. Repository policies do not use standalone resolvers.
+
+### Partial runs and fixes
+
+With `--stdin`, file policies check only the supplied paths. Repository policies still run, even with empty stdin, and receive the full eligible repository inventory. Exclusions filter their inventory; they do not prevent execution when the inventory is empty.
+
+Repository policies run serially in configuration order after file policies finish. In fix mode, the inventory is refreshed before each repository policy. A repository fixer can modify files outside the stdin selection. These rules apply to both `check` and `check-native`.
+
+For programmatic execution, pass the full inventory separately from the file selection:
+
+```ts
+await run(() => runner.run(selectedFiles, repositoryFiles));
+```
+
+`run` is imported from `effection`. Pass an async inventory loader instead of an array if fixes can create or remove files. If the second argument is omitted, the runner uses the selected files as the inventory; this is suitable only for full-repository runs.
+
+### Built-in repository policies
+
+`LicenseFileExists` and `SharedDependencyVersions` are repository policies. Their `policy()` configuration is unchanged, but direct handler calls must now pass `files` instead of `file` and handle an array of findings. They no longer need a selected root `package.json` or `Cargo.toml` to trigger execution. `SharedDependencyVersions` checks the root Cargo workspace when `Cargo.toml` is in its eligible inventory.
 
 ## FluidFramework Handler Adapter
 

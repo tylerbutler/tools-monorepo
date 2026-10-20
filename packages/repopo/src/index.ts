@@ -29,7 +29,10 @@ export {
 } from "./makePolicy.js";
 export type { PolicyAction, PolicyHandlerPerfStats } from "./perf.js";
 export {
+	type AnyPolicyShape,
+	type ConfiguredFilePolicy,
 	type ConfiguredPolicy,
+	type ConfiguredRepositoryPolicy,
 	type IdentifiedPolicy,
 	// Type guards
 	isPolicyError,
@@ -54,6 +57,11 @@ export {
 	type PolicyResult,
 	type PolicyShape,
 	type PolicyStandaloneResolver,
+	type RepositoryPolicyArgs,
+	type RepositoryPolicyFinding,
+	type RepositoryPolicyHandler,
+	type RepositoryPolicyResult,
+	type RepositoryPolicyShape,
 } from "./policy.js";
 export {
 	type CargoToml,
@@ -79,7 +87,9 @@ export {
 	type PackageJsonHandler,
 } from "./policyDefiners/definePackagePolicy.js";
 export {
+	type PolicyExecutionResult,
 	type PolicyFileResult,
+	type PolicyRepositoryResult,
 	PolicyRunner,
 	type PolicyRunnerOptions,
 	type PolicyRunResults,

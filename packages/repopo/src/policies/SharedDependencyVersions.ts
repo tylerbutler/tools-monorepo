@@ -1,8 +1,10 @@
 import { readFile } from "node:fs/promises";
 import path from "pathe";
 import { glob } from "tinyglobby";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition } from "../policy.js";
+import type {
+	RepositoryPolicyFinding,
+	RepositoryPolicyShape,
+} from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
 
 /**
@@ -109,6 +111,7 @@ async function collectMemberDeps(
 	members: string[],
 	root: string,
 	exclude: string[],
+	files: readonly string[],
 ): Promise<Map<string, Map<string, string[]>>> {
 	const allDeps = new Map<string, Map<string, string[]>>();
 	const memberCargoPaths = await glob(
@@ -120,6 +123,9 @@ async function collectMemberDeps(
 	);
 
 	for (const memberCargoPath of memberCargoPaths) {
+		if (!files.includes(memberCargoPath)) {
+			continue;
+		}
 		const memberContent = await readFile(
 			path.resolve(root, memberCargoPath),
 			"utf-8",
@@ -128,7 +134,7 @@ async function collectMemberDeps(
 		const deps = collectDeps(memberToml);
 
 		for (const [name, version] of deps) {
-			recordDependency(allDeps, name, version, path.dirname(memberCargoPath));
+			recordDependency(allDeps, name, version, memberCargoPath);
 		}
 	}
 
@@ -140,15 +146,18 @@ async function collectMemberDeps(
  *
  * @alpha
  */
-export const SharedDependencyVersions: PolicyDefinition<SharedDependencyVersionsConfig> =
-	makePolicyDefinition({
+export const SharedDependencyVersions: RepositoryPolicyShape<SharedDependencyVersionsConfig> =
+	{
 		name: "SharedDependencyVersions",
 		description:
 			"Detects dependency version mismatches across Cargo workspace members.",
-		match: /^Cargo\.toml$/,
-		handler: async ({ file, root, config }) => {
+		scope: "repository",
+		handler: async ({ files, root, config }) => {
+			if (!files.includes("Cargo.toml")) {
+				return true;
+			}
 			const detectMismatches = config?.detectMismatches ?? true;
-			const content = await readFile(path.resolve(root, file), "utf-8");
+			const content = await readFile(path.resolve(root, "Cargo.toml"), "utf-8");
 			const toml = await parseToml(content);
 
 			const workspace = toml.workspace as Record<string, unknown> | undefined;
@@ -162,6 +171,9 @@ export const SharedDependencyVersions: PolicyDefinition<SharedDependencyVersions
 			}
 
 			const errors: string[] = [];
+			const findings: RepositoryPolicyFinding[] = [];
+			const manualFix =
+				"Use [workspace.dependencies] with `dep.workspace = true` in member Cargo.toml files to share versions.";
 
 			// Check required workspace deps
 			const workspaceDeps = (workspace.dependencies ?? {}) as Record<
@@ -169,11 +181,14 @@ export const SharedDependencyVersions: PolicyDefinition<SharedDependencyVersions
 				unknown
 			>;
 			checkRequiredWorkspaceDeps(config, workspaceDeps, errors);
+			for (const error of errors) {
+				findings.push({ error, files: ["Cargo.toml"], manualFix });
+			}
 
 			// Detect mismatches across members
 			if (detectMismatches) {
 				const exclude = (workspace.exclude ?? []) as string[];
-				const allDeps = await collectMemberDeps(members, root, exclude);
+				const allDeps = await collectMemberDeps(members, root, exclude, files);
 
 				for (const [dep, versionMap] of allDeps) {
 					if (versionMap.size > 1) {
@@ -182,19 +197,15 @@ export const SharedDependencyVersions: PolicyDefinition<SharedDependencyVersions
 								([ver, memberList]) => `"${ver}" in ${memberList.join(", ")}`,
 							)
 							.join("; ");
-						errors.push(`Version mismatch for "${dep}": ${details}`);
+						findings.push({
+							error: `Version mismatch for "${dep}": ${details}`,
+							files: [...versionMap.values()].flat(),
+							manualFix,
+						});
 					}
 				}
 			}
 
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Use [workspace.dependencies] with `dep.workspace = true` in member Cargo.toml files to share versions.",
-				};
-			}
-
-			return true;
+			return findings.length > 0 ? findings : true;
 		},
-	});
+	};

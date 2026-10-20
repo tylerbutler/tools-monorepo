@@ -15,7 +15,11 @@ import {
 	type PolicyError,
 	type PolicyFailure,
 } from "../policy.js";
-import { type PolicyFileResult, PolicyRunner } from "../runner.js";
+import {
+	type PolicyExecutionResult,
+	type PolicyRepositoryResult,
+	PolicyRunner,
+} from "../runner.js";
 
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
@@ -55,6 +59,10 @@ export class CheckPolicy<
 	public static override readonly summary =
 		"Checks and applies policies to the files in the repository.";
 
+	public static override readonly description =
+		"File policies check selected files. Repository policies always run with the full repository file inventory, " +
+		"including with --stdin. With --fix, repository policies can modify files outside the stdin selection.";
+
 	public static override readonly flags = {
 		fix: Flags.boolean({
 			aliases: ["resolve"],
@@ -90,7 +98,9 @@ export class CheckPolicy<
 			logger: this.logger,
 		});
 
-		const runResults = await run(() => runner.run(filePathsToCheck));
+		const runResults = await run(() =>
+			runner.run(filePathsToCheck, () => this.collectRepositoryFiles()),
+		);
 
 		// Format and log results
 		for (const result of runResults.results) {
@@ -118,6 +128,10 @@ export class CheckPolicy<
 			return [];
 		}
 
+		return this.collectRepositoryFiles();
+	}
+
+	private async collectRepositoryFiles(): Promise<string[]> {
 		const gitFiles =
 			(await this.git.raw(
 				"ls-files",
@@ -137,7 +151,11 @@ export class CheckPolicy<
 	/**
 	 * Formats a single policy file result, logging messages and setting exit codes.
 	 */
-	private formatResult(result: PolicyFileResult): void {
+	private formatResult(result: PolicyExecutionResult): void {
+		if (result.scope === "repository") {
+			this.formatRepositoryResult(result);
+			return;
+		}
 		const { outcome, resolution } = result;
 
 		// Handle fix results (legacy format with resolved property)
@@ -164,6 +182,32 @@ export class CheckPolicy<
 			return;
 		}
 		this.formatPolicyFailure(outcome, result.file, result.policyId);
+	}
+
+	private formatRepositoryResult(result: PolicyRepositoryResult): void {
+		const { outcome, policyId } = result;
+		const location =
+			outcome.files !== undefined && outcome.files.length > 0
+				? outcome.files.join(", ")
+				: "repository";
+		const messages = new StringBuilder();
+		if (outcome.fixed === true) {
+			messages.append(
+				`Resolved ${policyId} repository policy failure: ${location}`,
+			);
+		} else {
+			const fixable = outcome.fixable ? chalk.green(" (autofixable)") : "";
+			const action = outcome.fixed === false ? "Error fixing" : "Failure in";
+			messages.append(
+				`${action} '${chalk.bold(policyId)}' repository policy${fixable}: ${location}`,
+			);
+			messages.append(`${newline}\t${outcome.error}`);
+			if (outcome.manualFix) {
+				messages.append(`${newline}\t${outcome.manualFix}`);
+			}
+			process.exitCode = 1;
+		}
+		this.logMessages(messages);
 	}
 
 	private formatFixResult(

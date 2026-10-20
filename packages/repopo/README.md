@@ -24,6 +24,27 @@ Set `policies: []` to disable them.
 With `check --fix`, policies run in configuration order for each file so that one
 fix does not overwrite another. Read-only checks can run policies concurrently.
 
+## Repository policies
+
+File policies run once per matching selected file. Policies with
+`scope: "repository"` run once after all file policies, even when no files are
+selected. Both scopes use the same `policies` array and `policy()` helper.
+
+Repository handlers receive `{ root, files, resolve, config }` and return `true`
+or an array of findings. Each finding has an `error` message and can include
+`files`, `fixable`, `fixed`, and `manualFix`. Omit `files` for a repository-level
+violation. Repository policies perform fixes inside the handler using `resolve`.
+
+With `--stdin`, file policies check the input paths, but repository policies
+still receive the full Git file inventory after global and per-policy exclusions.
+With `--fix`, repository policies run serially in configuration order and can
+modify files outside stdin. The inventory is refreshed before each repository
+policy. These rules apply to both `check` and `check-native`.
+
+`LicenseFileExists` and `SharedDependencyVersions` use repository scope. Their
+configuration is unchanged; direct handler calls now require `files` instead of
+`file` and return `true` or an array of findings.
+
 ## Excluding files from policy check
 
 By default, all files in the repo are checked. You can exclude files completely from the policy check by configuring the

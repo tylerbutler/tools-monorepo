@@ -7,3 +7,11 @@ sidebar:
 import { Badge } from '@astrojs/starlight/components';
 
 To use repopo, [install it](/installation) then run `repopo check` to check files.
+
+File policies check each matching selected file. Repository policies run once
+after file policies and use the full repository file inventory, after exclusions.
+This applies to both `repopo check` and `repopo check-native`.
+
+When you pipe paths to `repopo check --stdin`, only file policies are limited to
+those paths. Repository policies still run, including when stdin is empty.
+With `--fix`, repository policies can modify files outside the stdin selection.

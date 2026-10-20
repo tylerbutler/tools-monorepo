@@ -21,23 +21,17 @@ describe("SharedDependencyVersions", () => {
 		rmSync(testDir, { recursive: true, force: true });
 	});
 
-	describe("policy matching", () => {
-		it("should match root Cargo.toml", () => {
-			expect(SharedDependencyVersions.match.test("Cargo.toml")).toBe(true);
-		});
-
-		it("should not match nested Cargo.toml", () => {
-			expect(SharedDependencyVersions.match.test("crates/foo/Cargo.toml")).toBe(
-				false,
-			);
-		});
-
-		it("should not match other files", () => {
-			expect(SharedDependencyVersions.match.test("package.json")).toBe(false);
-		});
-	});
-
 	describe("pass cases", () => {
+		it("passes without reading Cargo.toml when it is absent or excluded from the inventory", async () => {
+			expect(
+				await runHandler(SharedDependencyVersions.handler, {
+					root: testDir,
+					files: [],
+					resolve: false,
+				}),
+			).toBe(true);
+		});
+
 		it("should pass when versions match across members", async () => {
 			// Workspace root
 			writeFileSync(
@@ -70,7 +64,7 @@ describe("SharedDependencyVersions", () => {
 			);
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
-				file: "Cargo.toml",
+				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
 				root: testDir,
 				resolve: false,
 			});
@@ -85,7 +79,7 @@ describe("SharedDependencyVersions", () => {
 			);
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
-				file: "Cargo.toml",
+				files: ["Cargo.toml"],
 				root: testDir,
 				resolve: false,
 			});
@@ -95,6 +89,52 @@ describe("SharedDependencyVersions", () => {
 	});
 
 	describe("fail cases", () => {
+		it("reports separate findings and compares only eligible workspace manifests", async () => {
+			await writeFile(
+				join(testDir, "Cargo.toml"),
+				'[workspace]\nmembers = ["crates/*"]\n',
+			);
+			for (const [name, version] of [
+				["foo", "1.0"],
+				["bar", "2.0"],
+			] as const) {
+				await mkdir(join(testDir, "crates", name), { recursive: true });
+				await writeFile(
+					join(testDir, "crates", name, "Cargo.toml"),
+					`[dependencies]\nserde = "${version}"\ntokio = "${version}"\n`,
+				);
+			}
+			const args = {
+				root: testDir,
+				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
+				resolve: false,
+				config: { requireWorkspaceDeps: ["serde"] },
+			};
+			const result = await runHandler(SharedDependencyVersions.handler, args);
+			expect(result).toHaveLength(3);
+			expect(result).toEqual(
+				expect.arrayContaining([
+					expect.objectContaining({ files: ["Cargo.toml"] }),
+					expect.objectContaining({
+						error: expect.stringContaining('Version mismatch for "serde"'),
+						files: expect.arrayContaining([
+							"crates/foo/Cargo.toml",
+							"crates/bar/Cargo.toml",
+						]),
+					}),
+					expect.objectContaining({
+						error: expect.stringContaining('Version mismatch for "tokio"'),
+					}),
+				]),
+			);
+			expect(
+				await runHandler(SharedDependencyVersions.handler, {
+					...args,
+					files: ["Cargo.toml", "crates/foo/Cargo.toml"],
+				}),
+			).toEqual([expect.objectContaining({ files: ["Cargo.toml"] })]);
+		});
+
 		it.each([
 			false,
 			true,
@@ -117,7 +157,7 @@ describe("SharedDependencyVersions", () => {
 			}
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
-				file: "Cargo.toml",
+				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
 				root: testDir,
 				resolve: false,
 			});
@@ -125,9 +165,15 @@ describe("SharedDependencyVersions", () => {
 			if (excludeBar) {
 				expect(result).toBe(true);
 			} else {
-				expect(result).toMatchObject({
-					error: expect.stringContaining('Version mismatch for "serde"'),
-				});
+				expect(result).toMatchObject([
+					{
+						error: expect.stringContaining('Version mismatch for "serde"'),
+						files: expect.arrayContaining([
+							"crates/foo/Cargo.toml",
+							"crates/bar/Cargo.toml",
+						]),
+					},
+				]);
 			}
 		});
 
@@ -161,15 +207,17 @@ describe("SharedDependencyVersions", () => {
 			);
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
-				file: "Cargo.toml",
+				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
 				root: testDir,
 				resolve: false,
 			});
 
 			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain('Version mismatch for "serde"');
-			}
+			expect(result).toEqual([
+				expect.objectContaining({
+					error: expect.stringContaining('Version mismatch for "serde"'),
+				}),
+			]);
 		});
 	});
 
@@ -193,7 +241,7 @@ describe("SharedDependencyVersions", () => {
 			);
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
-				file: "Cargo.toml",
+				files: ["Cargo.toml", "crates/foo/Cargo.toml"],
 				root: testDir,
 				resolve: false,
 				config: { requireWorkspaceDeps: ["serde"] },
@@ -215,18 +263,21 @@ describe("SharedDependencyVersions", () => {
 			);
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
-				file: "Cargo.toml",
+				files: ["Cargo.toml", "crates/foo/Cargo.toml"],
 				root: testDir,
 				resolve: false,
 				config: { requireWorkspaceDeps: ["serde"] },
 			});
 
 			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain(
-					'"serde" should be defined in [workspace.dependencies]',
-				);
-			}
+			expect(result).toEqual([
+				expect.objectContaining({
+					error: expect.stringContaining(
+						'"serde" should be defined in [workspace.dependencies]',
+					),
+					files: ["Cargo.toml"],
+				}),
+			]);
 		});
 	});
 
@@ -261,7 +312,7 @@ describe("SharedDependencyVersions", () => {
 			);
 
 			const result = await runHandler(SharedDependencyVersions.handler, {
-				file: "Cargo.toml",
+				files: ["Cargo.toml", "crates/foo/Cargo.toml", "crates/bar/Cargo.toml"],
 				root: testDir,
 				resolve: false,
 				config: { detectMismatches: false },

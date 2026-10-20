@@ -1,6 +1,7 @@
 import type { Logger } from "@tylerbu/cli-api";
 import { all, call, type Operation } from "effection";
 
+import type { RepopoConfig } from "./config.js";
 import {
 	createExcludedPolicyFileMap,
 	type ExcludedPolicyFileMap,
@@ -15,10 +16,10 @@ import type {
 	IdentifiedPolicy,
 	PolicyFixResult,
 	PolicyHandlerResult,
-	PolicyInstance,
 	PolicyInstanceId,
 	PolicyName,
 	PolicyStandaloneResolver,
+	RepositoryPolicyFinding,
 } from "./policy.js";
 import { isPolicyError, isPolicyFixResult } from "./policy.js";
 
@@ -50,6 +51,7 @@ function matches(regex: RegExp, value: string): boolean {
  * @alpha
  */
 export interface PolicyFileResult {
+	scope?: "file";
 	file: string;
 	policy: PolicyName;
 	/** Stable identity of the configured policy instance */
@@ -60,17 +62,30 @@ export interface PolicyFileResult {
 	resolution?: PolicyFixResult;
 }
 
+/** @alpha */
+export interface PolicyRepositoryResult {
+	scope: "repository";
+	policy: PolicyName;
+	policyId: PolicyInstanceId;
+	outcome: RepositoryPolicyFinding;
+	/** Repository findings use `outcome.files`, not a synthetic file path. */
+	file?: never;
+}
+
+/** @alpha */
+export type PolicyExecutionResult = PolicyFileResult | PolicyRepositoryResult;
+
 /**
  * Aggregated results from a full policy run.
  * @alpha
  */
 export interface PolicyRunResults {
-	results: PolicyFileResult[];
+	results: PolicyExecutionResult[];
 	perfStats: PolicyHandlerPerfStats;
 }
 
 interface PolicyRunState {
-	results: PolicyFileResult[];
+	results: PolicyExecutionResult[];
 	perfStats: PolicyHandlerPerfStats;
 }
 
@@ -79,7 +94,7 @@ interface PolicyRunState {
  * @alpha
  */
 export interface PolicyRunnerOptions {
-	policies: PolicyInstance[];
+	policies: NonNullable<RepopoConfig["policies"]>;
 	excludeFromAll: RegExp[];
 	excludePoliciesForFiles: ExcludedPolicyFileMap;
 	gitRoot: string;
@@ -111,7 +126,16 @@ export class PolicyRunner {
 		this.logger = options.logger;
 	}
 
-	public *run(filePaths: string[]): Operation<PolicyRunResults> {
+	/**
+	 * Run file policies on the selection, then repository policies on the full inventory.
+	 * Supply a loader to refresh the inventory after fixes, including repository fixes.
+	 */
+	public *run(
+		filePaths: string[],
+		repositoryFiles:
+			| readonly string[]
+			| (() => Promise<readonly string[]>) = filePaths,
+	): Operation<PolicyRunResults> {
 		const state: PolicyRunState = {
 			results: [],
 			perfStats: newPerfStats(),
@@ -121,10 +145,87 @@ export class PolicyRunner {
 			yield* this.checkOrExcludeFile(filePath, state);
 		}
 
+		let inventory: readonly string[] | undefined;
+		for (const policy of this.policies) {
+			if (policy.scope !== "repository") {
+				continue;
+			}
+			if (inventory === undefined || this.resolve) {
+				inventory =
+					typeof repositoryFiles === "function"
+						? yield* call(repositoryFiles)
+						: repositoryFiles;
+			}
+			const files = inventory.filter(
+				(file) =>
+					!(
+						this.excludeFromAll.some((regex) => matches(regex, file)) ||
+						this.isPolicyExcluded(file, policy)
+					),
+			);
+			yield* this.runRepositoryPolicy(policy, files, state);
+		}
+
 		return {
 			results: state.results,
 			perfStats: state.perfStats,
 		};
+	}
+
+	private *runRepositoryPolicy(
+		policy: Extract<IdentifiedPolicy, { scope: "repository" }>,
+		files: readonly string[],
+		state: PolicyRunState,
+	): Operation<void> {
+		try {
+			const { gitRoot, resolve } = this;
+			const result = yield* runWithPerf(
+				policy.instanceId,
+				"handle",
+				state.perfStats,
+				function* () {
+					const execution = policy.handler({
+						root: gitRoot,
+						files,
+						resolve,
+						config: policy.config,
+					});
+					if (execution instanceof Promise) {
+						return yield* call(() => execution);
+					}
+					if (isOperation(execution)) {
+						return yield* execution;
+					}
+					throw new Error("Unexpected repository handler result type.");
+				},
+			);
+			if (result === true) {
+				return;
+			}
+			if (!(Array.isArray(result) && result.every(isPolicyError))) {
+				throw new Error(
+					"Repository handler must return true or an array of findings.",
+				);
+			}
+			for (const outcome of result) {
+				state.results.push({
+					scope: "repository",
+					policy: policy.name,
+					policyId: policy.instanceId,
+					outcome,
+				});
+			}
+		} catch (error: unknown) {
+			const message = error instanceof Error ? error.message : String(error);
+			state.results.push({
+				scope: "repository",
+				policy: policy.name,
+				policyId: policy.instanceId,
+				outcome: {
+					error: `System Error: Error executing repository policy '${policy.instanceId}': ${message}`,
+				},
+			});
+		}
 	}
 
 	private *checkOrExcludeFile(
@@ -152,8 +253,9 @@ export class PolicyRunner {
 
 		state.perfStats.processed++;
 
-		const matchingPolicies = this.policies.filter((policy) =>
-			matches(policy.match, relPath),
+		const matchingPolicies = this.policies.filter(
+			(policy): policy is Extract<IdentifiedPolicy, { match: RegExp }> =>
+				policy.scope !== "repository" && matches(policy.match, relPath),
 		);
 		if (this.resolve) {
 			// Fixers can read and rewrite the same file.
@@ -172,7 +274,7 @@ export class PolicyRunner {
 
 	private *runPolicyOnFile(
 		relPath: string,
-		policy: IdentifiedPolicy,
+		policy: Extract<IdentifiedPolicy, { match: RegExp }>,
 		state: PolicyRunState,
 	): Operation<void> {
 		if (this.isPolicyExcluded(relPath, policy)) {
@@ -237,7 +339,7 @@ export class PolicyRunner {
 
 	private *executePolicyHandler(
 		relPath: string,
-		policy: IdentifiedPolicy,
+		policy: Extract<IdentifiedPolicy, { match: RegExp }>,
 		state: PolicyRunState,
 	): Operation<PolicyHandlerResult> {
 		const { resolve, gitRoot } = this;
@@ -280,7 +382,7 @@ export class PolicyRunner {
 
 	private *attemptResolution(
 		relPath: string,
-		policy: IdentifiedPolicy,
+		policy: Extract<IdentifiedPolicy, { match: RegExp }>,
 		resolver: PolicyStandaloneResolver,
 		state: PolicyRunState,
 	): Operation<PolicyFixResult> {

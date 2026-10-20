@@ -1,7 +1,6 @@
-import { existsSync } from "node:fs";
+import { stat } from "node:fs/promises";
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type { PolicyDefinition, PolicyFailure } from "../policy.js";
+import type { RepositoryPolicyShape } from "../policy.js";
 
 /**
  * Policy settings for the LicenseFileExists repo policy.
@@ -35,34 +34,42 @@ const DEFAULT_LICENSE_NAMES = [
  *
  * @alpha
  */
-export const LicenseFileExists: PolicyDefinition<LicenseFileExistsSettings> =
-	makePolicyDefinition({
+export const LicenseFileExists: RepositoryPolicyShape<LicenseFileExistsSettings> =
+	{
 		name: "LicenseFileExists",
 		description:
 			"Ensures a LICENSE file exists in the repository root for open source projects.",
-		// Only trigger on package.json to check once per repository
-		match: /^package\.json$/,
-		handler: async ({ root, config }) => {
+		scope: "repository",
+		handler: async ({ root, files, config }) => {
 			const acceptedNames = config?.acceptedNames ?? DEFAULT_LICENSE_NAMES;
 
 			// Check if any of the accepted license files exist in the root
-			const hasLicenseFile = acceptedNames.some((name) =>
-				existsSync(path.join(root, name)),
-			);
-
-			if (hasLicenseFile) {
-				return true;
+			for (const name of acceptedNames) {
+				if (!files.includes(name)) {
+					continue;
+				}
+				try {
+					if ((await stat(path.join(root, name))).isFile()) {
+						return true;
+					}
+				} catch (error: unknown) {
+					if (
+						!(
+							error instanceof Error &&
+							"code" in error &&
+							error.code === "ENOENT"
+						)
+					) {
+						throw error;
+					}
+				}
 			}
 
-			const result: PolicyFailure = {
-				name: LicenseFileExists.name,
-				file: ".", // Report against repository root
-				autoFixable: false,
-				errorMessages: [
-					`No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
-				],
-			};
-
-			return result;
+			return [
+				{
+					fixable: false,
+					error: `No LICENSE file found in repository root. Expected one of: ${acceptedNames.join(", ")}`,
+				},
+			];
 		},
-	});
+	};

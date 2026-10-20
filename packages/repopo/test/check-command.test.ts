@@ -1,3 +1,4 @@
+import { execFile } from "node:child_process";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -55,6 +56,53 @@ describe("Check Command - Effection Integration", () => {
 	});
 
 	describe("Git file enumeration", () => {
+		it.each([
+			"test1.txt\n",
+			"",
+		])("runs repository policies with full context for stdin %j", async (stdin) => {
+			const configPath = join(testRepoDir, "repopo.config.mjs");
+			await writeFile(
+				configPath,
+				`export default {
+				policies: [{
+					name: "RepositoryCheck",
+					description: "Checks full context",
+					scope: "repository",
+					handler: async ({ files }) => [
+						{ error: "Repository-level failure" },
+						{ error: files.includes("test2.txt") ? "Full context" : "Missing context", files: ["test1.txt", "test2.txt"] }
+					]
+				}]
+			};`,
+			);
+			const result = await new Promise<{
+				code: string | number | undefined;
+				output: string;
+			}>((resolve) => {
+				const child = execFile(
+					process.execPath,
+					[
+						fileURLToPath(new URL("../bin/run.js", import.meta.url)),
+						"check",
+						"--stdin",
+						"--config",
+						configPath,
+					],
+					{ cwd: testRepoDir, timeout: 10000 },
+					(error, stdout, stderr) => {
+						resolve({ code: error?.code, output: stdout + stderr });
+					},
+				);
+				child.stdin?.end(stdin);
+			});
+			expect(result.code).toBe(1);
+			expect(result.output).toContain("repository");
+			expect(result.output).toContain("Repository-level failure");
+			expect(result.output).toContain("Full context");
+			expect(result.output).toContain("test1.txt, test2.txt");
+			expect(result.output).not.toContain("Missing context");
+		});
+
 		it.each([
 			"caf\u00e9.js",
 			"tab\tname.js",
