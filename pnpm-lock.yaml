@@ -1001,8 +1001,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       picomatch:
-        specifier: ^4.0.5
-        version: 4.0.5
+        specifier: ^4.0.6
+        version: 4.0.6
       resolve-workspace-root:
         specifier: ^2.0.1
         version: 2.0.1
@@ -1228,8 +1228,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       picomatch:
-        specifier: ^4.0.5
-        version: 4.0.5
+        specifier: ^4.0.6
+        version: 4.0.6
       picospinner:
         specifier: ^3.0.0
         version: 3.0.0
@@ -9292,8 +9292,8 @@ packages:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
-  picomatch@4.0.5:
-    resolution: {integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==}
+  picomatch@4.0.6:
+    resolution: {integrity: sha512-bXCx4Swq84mgU01b/0qifY6DMxlxszBpLJ8z8elFD5gdpJ758VsAr8UzGvnDszOPHfV1p/292BOYv18XuDs+iA==}
     engines: {node: '>=12'}
 
   picoquery@2.5.0:
@@ -11457,7 +11457,7 @@ snapshots:
       '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       js-yaml: 4.1.1
-      picomatch: 4.0.5
+      picomatch: 4.0.6
       retext-smartypants: 6.2.0
       shiki: 4.0.2
       smol-toml: 1.7.0
@@ -15199,7 +15199,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
-      picomatch: 4.0.4
+      picomatch: 4.0.6
     optionalDependencies:
       rollup: 4.60.2
 
@@ -15906,7 +15906,7 @@ snapshots:
       glob: 10.5.0
       graceful-fs: 4.2.11
       node-gyp-build: 4.8.4
-      picomatch: 4.0.4
+      picomatch: 4.0.6
       resolve-from: 5.0.0
     transitivePeerDependencies:
       - encoding
@@ -15925,7 +15925,7 @@ snapshots:
       glob: 13.0.6
       graceful-fs: 4.2.11
       node-gyp-build: 4.8.4
-      picomatch: 4.0.4
+      picomatch: 4.0.6
       resolve-from: 5.0.0
     transitivePeerDependencies:
       - encoding
@@ -17881,6 +17881,10 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.4
 
+  fdir@6.5.0(picomatch@4.0.6):
+    optionalDependencies:
+      picomatch: 4.0.6
+
   fecha@4.2.3: {}
 
   fetch-blob@3.2.0:
@@ -19044,7 +19048,7 @@ snapshots:
       jest-regex-util: 30.4.0
       jest-util: 30.4.1
       jest-worker: 30.4.1
-      picomatch: 4.0.5
+      picomatch: 4.0.6
       walker: 1.0.8
     optionalDependencies:
       fsevents: 2.3.3
@@ -19088,7 +19092,7 @@ snapshots:
       chalk: 4.1.2
       graceful-fs: 4.2.11
       jest-util: 30.4.1
-      picomatch: 4.0.4
+      picomatch: 4.0.6
       pretty-format: 30.4.1
       slash: 3.0.0
       stack-utils: 2.0.6
@@ -19218,7 +19222,7 @@ snapshots:
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.11
-      picomatch: 4.0.4
+      picomatch: 4.0.6
 
   jest-util@30.4.1:
     dependencies:
@@ -19227,7 +19231,7 @@ snapshots:
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.11
-      picomatch: 4.0.5
+      picomatch: 4.0.6
 
   jest-validate@30.4.1:
     dependencies:
@@ -21424,7 +21428,7 @@ snapshots:
 
   picomatch@4.0.4: {}
 
-  picomatch@4.0.5: {}
+  picomatch@4.0.6: {}
 
   picoquery@2.5.0: {}
 
@@ -22750,13 +22754,13 @@ snapshots:
 
   tinyglobby@0.2.15:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.6)
+      picomatch: 4.0.6
 
   tinyglobby@0.2.16:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.6)
+      picomatch: 4.0.6
 
   tinyglobby@0.2.17:
     dependencies:
@@ -23328,7 +23332,7 @@ snapshots:
   vite@8.1.5(@types/node@22.20.1)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.23.1)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
-      picomatch: 4.0.5
+      picomatch: 4.0.6
       postcss: 8.5.19
       rolldown: 1.1.5
       tinyglobby: 0.2.17
@@ -23343,7 +23347,7 @@ snapshots:
   vite@8.1.5(@types/node@25.8.0)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.23.1)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
-      picomatch: 4.0.5
+      picomatch: 4.0.6
       postcss: 8.5.19
       rolldown: 1.1.5
       tinyglobby: 0.2.17
@@ -23373,7 +23377,7 @@ snapshots:
       magic-string: 0.30.21
       obug: 2.1.1
       pathe: 2.0.3
-      picomatch: 4.0.5
+      picomatch: 4.0.6
       std-env: 4.2.0
       tinybench: 2.9.0
       tinyexec: 1.2.4
@@ -23402,7 +23406,7 @@ snapshots:
       magic-string: 0.30.21
       obug: 2.1.1
       pathe: 2.0.3
-      picomatch: 4.0.5
+      picomatch: 4.0.6
       std-env: 4.2.0
       tinybench: 2.9.0
       tinyexec: 1.2.4
