@@ -15,14 +15,14 @@ A configured policy instance with its runtime identity assigned.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
-## Type Declaration
-
-### instanceId
-
-> **instanceId**: [`PolicyInstanceId`](/api/type-aliases/policyinstanceid/)
-
 ## Type Parameters
 
 ### C
 
 `C` = `undefined`
+
+## Type Declaration
+
+### instanceId
+
+> **instanceId**: [`PolicyInstanceId`](/api/type-aliases/policyinstanceid/)

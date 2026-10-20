@@ -37,7 +37,7 @@ on error, use OCLIF's built-in error() method instead.
 ### formatError?
 
 ```ts
-optional formatError?: (message) => string;
+formatError?: (message) => string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/logging.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/logging.ts#L65)

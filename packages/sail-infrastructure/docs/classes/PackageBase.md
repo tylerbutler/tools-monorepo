@@ -41,7 +41,8 @@ new PackageBase<J, TAddProps>(
    isWorkspaceRoot, 
    releaseGroup, 
    isReleaseGroupRoot, 
-additionalProperties?): PackageBase<J, TAddProps>;
+   additionalProperties?
+): PackageBase<J, TAddProps>;
 ```
 
 Defined in: [packages/sail-infrastructure/src/package.ts:109](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/package.ts#L109)

@@ -58,7 +58,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ##### repositoryFiles?
 
-readonly `string`[] \| (() => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<readonly `string`[]\>)
+readonly `string`[] \| (() => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<readonly `string`[]\>) = `filePaths`
 
 #### Returns
 
