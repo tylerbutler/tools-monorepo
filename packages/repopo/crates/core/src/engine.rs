@@ -5,7 +5,20 @@ use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
 use crate::ipc::Sidecar;
-use crate::types::{LoadConfigResponse, PolicyMeta};
+use crate::types::{HandlerResult, LoadConfigResponse, PolicyMeta};
+
+fn format_manual_fix(instructions: &str) -> String {
+    format!(
+        "\tManual fix: {}",
+        instructions.lines().collect::<Vec<_>>().join("\n\t")
+    )
+}
+
+fn log_manual_fix(result: &HandlerResult, fallback: Option<&str>) {
+    if let Some(instructions) = result.manual_fix().or(fallback).filter(|s| !s.is_empty()) {
+        eprintln!("{}", format_manual_fix(instructions));
+    }
+}
 
 /// A compiled policy ready for matching.
 struct CompiledPolicy {
@@ -226,6 +239,7 @@ pub fn run_check(
 
         // Collect files that need standalone resolver
         let mut needs_resolver: Vec<String> = Vec::new();
+        let mut resolver_guidance = HashMap::new();
 
         for (file, result) in &batch_results {
             if result.is_pass() {
@@ -244,20 +258,21 @@ pub fn run_check(
 
             if result.is_fix_failed() {
                 had_failures = true;
-                let msg = format!(
-                    "Error fixing {} policy failure in {file}",
-                    policy.meta.name
-                );
+                let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
                 eprintln!("{}", msg.yellow());
                 if let Some(err) = result.error_message() {
                     eprintln!("\t{err}");
                 }
+                log_manual_fix(result, None);
                 continue;
             }
 
             // Failure — try standalone resolver if available, otherwise report
             if fix && policy.meta.has_resolver {
                 needs_resolver.push(file.clone());
+                if let Some(instructions) = result.manual_fix() {
+                    resolver_guidance.insert(file.clone(), instructions.to_string());
+                }
             } else {
                 had_failures = true;
                 let fixable = result.is_fixable();
@@ -274,6 +289,7 @@ pub fn run_check(
                 if let Some(err) = result.error_message() {
                     eprintln!("\t{err}");
                 }
+                log_manual_fix(result, None);
             }
         }
 
@@ -308,14 +324,15 @@ pub fn run_check(
                     }
                 } else {
                     had_failures = true;
-                    let msg = format!(
-                        "Error fixing {} policy failure in {file}",
-                        policy.meta.name
-                    );
+                    let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
                     eprintln!("{}", msg.yellow());
                     if let Some(err) = resolve_result.error_message() {
                         eprintln!("\t{err}");
                     }
+                    log_manual_fix(
+                        resolve_result,
+                        resolver_guidance.get(file).map(String::as_str),
+                    );
                 }
             }
         }
@@ -364,4 +381,17 @@ pub fn run_list(
     );
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::format_manual_fix;
+
+    #[test]
+    fn indents_multiline_manual_fix_instructions() {
+        assert_eq!(
+            format_manual_fix("Use the shared helper.\r\nPreserve error handling."),
+            "\tManual fix: Use the shared helper.\n\tPreserve error handling."
+        );
+    }
 }

@@ -1,4 +1,4 @@
-import { makePolicy, type RepopoConfig } from "repopo";
+import { makePolicy, type PolicyShape, type RepopoConfig } from "repopo";
 import {
 	LicenseFileExists,
 	NoJsFileExtensions,
@@ -22,9 +22,30 @@ import { SortTsconfigsPolicy } from "sort-tsconfig";
 const vendoredPackages = ["packages/btree-typescript"];
 const vendoredPackageJsons = vendoredPackages.map((p) => `${p}/package.json`);
 
+const NoPackageProjectJson: PolicyShape = {
+	name: "NoPackageProjectJson",
+	description:
+		"Keeps Nx task orchestration centralized instead of adding package-level project.json files.",
+	match: /^packages\/.*\/project\.json$/,
+	handler: async () => ({
+		error:
+			"Package-level project.json files split task configuration across competing locations.",
+		manualFix: [
+			"Put implementation commands in the package's package.json scripts.",
+			"Put shared orchestration and task defaults in root nx.json.",
+			"Use package.json nx.targets for package-specific target settings.",
+			"Follow packages/repopo/package.json and nx.json as examples.",
+			"Preserve required tasks and caching settings when migrating; do not delete functionality to pass this check.",
+		].join("\n"),
+	}),
+};
+
 const config: RepopoConfig = {
 	excludeFiles: ["test/data", "fixtures", "config/package.json"],
 	policies: [
+		makePolicy(NoPackageProjectJson, undefined, {
+			excludeFiles: vendoredPackages,
+		}),
 		makePolicy(NoJsFileExtensions, undefined, {
 			excludeFiles: [
 				".*/bin/.*js",
