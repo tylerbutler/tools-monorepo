@@ -22,20 +22,21 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     permissions:
+      actions: write # For repopo-core release workflow dispatch
       contents: write # For changesets PR creation
       pull-requests: write # For changesets PR updates
       id-token: write # OIDC token for npm trusted publishing
       attestations: write # For GitHub build attestations
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7
         with:
           token: ${{ secrets.CHANGESET_TOKEN }}
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-node-pnpm
 
-      - uses: tylerbutler/actions/setup-rust@c4c45a8284082163bc58623acfc4b3dc98633c3d # ratchet:tylerbutler/actions/setup-rust@main
+      - uses: tylerbutler/actions/setup-rust@ed7d5e5f1d4370a5ccf06503916e3c301102ab1c # ratchet:tylerbutler/actions/setup-rust@main
         with:
           tools: ''
 
@@ -49,7 +50,7 @@ jobs:
       # the action that was actually taken.
       - name: Process changesets
         id: changesets
-        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # ratchet:changesets/action@v1
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # ratchet:changesets/action@v1
         with:
           version: pnpm ci:version
           title: "🚀 release: Update versions"
@@ -108,7 +109,7 @@ jobs:
       - name: Create table
         if: steps.publish.outputs.report != null && steps.publish.outputs.report != '[]'
         id: create-table
-        uses: parkerbxyz/json-to-markdown-table@564b4821b8128f1cd7a0eb6b5616680a818719ab # ratchet:parkerbxyz/json-to-markdown-table@v1
+        uses: parkerbxyz/json-to-markdown-table@85a9c13bbd4d87113503b5802fb3d7cbacb5f43f # ratchet:parkerbxyz/json-to-markdown-table@v1
         with:
           json: '${{ steps.publish.outputs.report }}'
 
@@ -119,7 +120,7 @@ jobs:
           steps.publish.outputs.report != null &&
           steps.publish.outputs.report != '[]' &&
           github.event.inputs.publish_public != 'false'
-        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # ratchet:actions/attest-build-provenance@v4
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # ratchet:actions/attest-build-provenance@v4
         with:
           subject-path: |
             packages/*/esm/**/*.js

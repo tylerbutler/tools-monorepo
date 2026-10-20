@@ -1,5 +1,13 @@
 # remark-shift-headings
 
+## 1.0.0
+
+### Major Changes
+
+- 1.0 Release _[`#761`](https://github.com/tylerbutler/tools-monorepo/pull/761) [`e448512`](https://github.com/tylerbutler/tools-monorepo/commit/e44851237eaafa1acbda4a5072fbd7da38951ec4) [@tylerbutler](https://github.com/tylerbutler)_
+
+  API is stable. Future changes will follow SemVer.
+
 ## 0.1.1
 
 ### Patch Changes

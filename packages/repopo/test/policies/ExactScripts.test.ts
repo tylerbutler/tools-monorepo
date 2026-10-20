@@ -1,6 +1,6 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "pathe";
+import { join, relative } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
@@ -32,7 +32,7 @@ describe("ExactScripts policy", () => {
 		config?: ExactScriptsConfig,
 		resolve = false,
 	): PolicyArgs<typeof config> => ({
-		file: filePath,
+		file: relative(tempDir, filePath),
 		root: tempDir,
 		resolve,
 		config,

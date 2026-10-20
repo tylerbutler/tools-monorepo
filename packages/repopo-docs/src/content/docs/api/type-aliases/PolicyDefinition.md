@@ -7,7 +7,7 @@ title: "PolicyDefinition"
 
 > **PolicyDefinition**\<`C`\> = [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policy.ts:266](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L266)
+Defined in: [policy.ts:273](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L273)
 
 :::caution[Deprecated]
 Use [PolicyShape](/api/interfaces/policyshape/) instead.

@@ -7,6 +7,7 @@ import chalk from "picocolors";
 
 import { BaseRepopoCommand } from "../baseCommand.js";
 import type { RepopoCommandContext } from "../context.js";
+import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
 import {
 	isPolicyError,
@@ -16,8 +17,6 @@ import {
 } from "../policy.js";
 import { type PolicyFileResult, PolicyRunner } from "../runner.js";
 import { normalizeRepoRelativeFilePath } from "../utils/safePaths.js";
-
-const trailingCarriageReturnRegex = /\r$/;
 
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
@@ -76,16 +75,13 @@ export class CheckPolicy<
 			this.info("Resolving errors if possible.");
 		}
 
-		const config = this.commandConfig;
-		const policies = config?.policies ?? [];
-		this.verbose(`${policies.length} policies loaded.`);
-		for (const h of policies) {
-			this.verbose(h.name);
+		const context: RepopoCommandContext = await this.getContext();
+		this.verbose(`${context.policies.length} policies loaded.`);
+		for (const configuredPolicy of context.policies) {
+			this.verbose(configuredPolicy.instanceId);
 		}
 
-		const filePathsToCheck = await this.collectFilePaths();
-		const context: RepopoCommandContext = await this.getContext();
-
+		const filePathsToCheck = await this.collectFilePaths(context.gitRoot);
 		const runner = new PolicyRunner({
 			policies: context.policies,
 			excludeFromAll: context.excludeFromAll,
@@ -110,85 +106,14 @@ export class CheckPolicy<
 	/**
 	 * Collects file paths to check from either stdin or git ls-files.
 	 */
-	private async collectFilePaths(): Promise<string[]> {
+	private async collectFilePaths(gitRoot: string): Promise<string[]> {
 		if (this.flags.stdin) {
 			const stdInput = await run(function* () {
 				return yield* call(() => readStdin());
 			});
 
 			if (stdInput !== undefined && stdInput !== null) {
-				rawFilePathsToCheck.push(...this.splitInputPaths(stdInput));
-			}
-		} else {
-			const gitFiles =
-				(await this.git.raw(
-					"ls-files",
-					// include staged files and untracked files
-					"-co",
-					// exclude gitignored files and other standard ignore rules
-					"--exclude-standard",
-					// Outputs paths relative to the root of the repository, regardless of the current working directory.
-					"--full-name",
-				)) ?? "";
-
-			rawFilePathsToCheck.push(...this.splitInputPaths(gitFiles));
-		}
-
-		const filePathsToCheck = this.normalizePathsToCheck(
-			rawFilePathsToCheck,
-			context.gitRoot,
-		);
-
-		await run(() => this.checkAllFiles(filePathsToCheck, context));
-	}
-
-	private splitInputPaths(input: string): string[] {
-		return input
-			.replace(
-				// normalize slashes in case they're windows paths
-				/\\/g,
-				"/",
-			)
-			.split("\n")
-			.map((path) => path.replace(trailingCarriageReturnRegex, ""));
-	}
-
-	private normalizePathsToCheck(paths: string[], gitRoot: string): string[] {
-		const normalizedPaths: string[] = [];
-		for (const path of paths) {
-			if (path.length === 0) {
-				continue;
-			}
-
-			try {
-				normalizedPaths.push(normalizeRepoRelativeFilePath(gitRoot, path));
-			} catch (error: unknown) {
-				throw new Error(
-					`Invalid file path '${path}': ${(error as Error).message}`,
-				);
-			}
-		}
-
-		return normalizedPaths;
-	}
-
-	/**
-	 * Executes all policies against the provided paths.
-	 *
-	 * @param pathsToCheck - All paths that should be checked. Paths should be relative to the repository root.
-	 * @param context - The context.
-	 */
-	private *checkAllFiles(
-		pathsToCheck: string[],
-		context: RepopoCommandContext,
-	): Operation<void> {
-		try {
-			for (const pathToCheck of pathsToCheck) {
-				yield* this.checkOrExcludeFile(pathToCheck, context);
-			}
-		} finally {
-			if (!this.flags.quiet) {
-				logStats(context.perfStats, this.logger);
+				return this.normalizePathsToCheck(parseFilePaths(stdInput), gitRoot);
 			}
 
 			return [];
@@ -199,19 +124,27 @@ export class CheckPolicy<
 				"ls-files",
 				// include staged files and untracked files
 				"-co",
+				// NUL-delimited paths are not quoted or escaped by Git.
+				"-z",
 				// exclude gitignored files and other standard ignore rules
 				"--exclude-standard",
 				// Outputs paths relative to the root of the repository, regardless of the current working directory.
 				"--full-name",
 			)) ?? "";
 
-		return gitFiles
-			.replace(
-				// normalize slashes in case they're windows paths
-				/\\/g,
-				"/",
-			)
-			.split("\n");
+		return this.normalizePathsToCheck(parseFilePaths(gitFiles), gitRoot);
+	}
+
+	private normalizePathsToCheck(paths: string[], gitRoot: string): string[] {
+		return paths.map((path) => {
+			try {
+				return normalizeRepoRelativeFilePath(gitRoot, path);
+			} catch (error: unknown) {
+				throw new Error(
+					`Invalid file path '${path}': ${(error as Error).message}`,
+				);
+			}
+		});
 	}
 
 	/**
@@ -222,19 +155,19 @@ export class CheckPolicy<
 
 		// Handle fix results (legacy format with resolved property)
 		if (isPolicyFixResult(outcome)) {
-			this.formatFixResult(outcome.resolved, outcome.file, result.policy);
+			this.formatFixResult(outcome.resolved, outcome.file, result.policyId);
 			return;
 		}
 
 		// Handle new PolicyError with fixed property (fix was attempted inline)
 		if (isPolicyError(outcome) && outcome.fixed !== undefined) {
-			this.formatPolicyErrorFixResult(outcome, result.file, result.policy);
+			this.formatPolicyErrorFixResult(outcome, result.file, result.policyId);
 			return;
 		}
 
 		// Handle failure with standalone resolver result
 		if (resolution !== undefined) {
-			this.formatResolutionResult(resolution, result.file, result.policy);
+			this.formatResolutionResult(resolution, result.file, result.policyId);
 			return;
 		}
 
@@ -243,7 +176,7 @@ export class CheckPolicy<
 		if (outcome === true) {
 			return;
 		}
-		this.formatPolicyFailure(outcome, result.file, result.policy);
+		this.formatPolicyFailure(outcome, result.file, result.policyId);
 	}
 
 	private formatFixResult(
@@ -290,10 +223,12 @@ export class CheckPolicy<
 	private formatResolutionResult(
 		resolution: { resolved: boolean; errorMessages?: string[] },
 		file: string,
-		_policyName: string,
+		policyName: string,
 	): void {
 		const messages = new StringBuilder();
-		messages.append(`${newline}Attempting to resolve: ${file}`);
+		messages.append(
+			`${newline}Attempting to resolve '${policyName}' policy failure for file: ${file}`,
+		);
 
 		if (!resolution.resolved) {
 			process.exitCode = 1;

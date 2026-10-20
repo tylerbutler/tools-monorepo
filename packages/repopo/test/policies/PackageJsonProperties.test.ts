@@ -35,6 +35,22 @@ describe("PackageJsonProperties Policy", () => {
 	});
 
 	describe("Verbatim Property Enforcement", () => {
+		it("should accept arrays that already equal the verbatim value", async () => {
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify({ name: "test-package", keywords: ["test", "example"] }),
+			);
+
+			const result = await runHandler(PackageJsonProperties.handler, {
+				file: "package.json",
+				root: testDir,
+				resolve: false,
+				config: { verbatim: { keywords: ["test", "example"] } },
+			});
+
+			expect(result).toBe(true);
+		});
+
 		it("should pass when properties match verbatim config", async () => {
 			const packageJson: PackageJson = {
 				name: "test-package",
@@ -53,7 +69,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -78,7 +94,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -105,7 +121,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -135,7 +151,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -156,7 +172,7 @@ describe("PackageJsonProperties Policy", () => {
 			await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
 			const result = await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config: undefined,
@@ -167,6 +183,27 @@ describe("PackageJsonProperties Policy", () => {
 	});
 
 	describe("Auto-Fix Behavior", () => {
+		it("should replace verbatim arrays without accumulating entries on repeated fixes", async () => {
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify({ name: "test-package", keywords: ["old"] }),
+			);
+			const args = {
+				file: "package.json",
+				root: testDir,
+				resolve: true,
+				config: { verbatim: { keywords: ["test", "example"] } },
+			};
+
+			await runHandler(PackageJsonProperties.handler, args);
+			await runHandler(PackageJsonProperties.handler, args);
+
+			expect(JSON.parse(await readFile(packageJsonPath, "utf-8"))).toEqual({
+				name: "test-package",
+				keywords: ["test", "example"],
+			});
+		});
+
 		it("should be marked as auto-fixable", async () => {
 			const packageJson: PackageJson = {
 				name: "test-package",
@@ -182,7 +219,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -207,7 +244,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -241,7 +278,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -270,7 +307,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -302,7 +339,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -327,7 +364,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -339,6 +376,28 @@ describe("PackageJsonProperties Policy", () => {
 	});
 
 	describe("Complex Property Scenarios", () => {
+		it("should clear nested verbatim arrays while preserving other object fields", async () => {
+			await writeFile(
+				packageJsonPath,
+				JSON.stringify({
+					name: "test-package",
+					workspaces: { packages: ["old/*"], nohoist: ["retained"] },
+				}),
+			);
+
+			await runHandler(PackageJsonProperties.handler, {
+				file: "package.json",
+				root: testDir,
+				resolve: true,
+				config: { verbatim: { workspaces: { packages: [] } } },
+			});
+
+			expect(JSON.parse(await readFile(packageJsonPath, "utf-8"))).toEqual({
+				name: "test-package",
+				workspaces: { packages: [], nohoist: ["retained"] },
+			});
+		});
+
 		it("should handle nested object properties", async () => {
 			const packageJson: PackageJson = {
 				name: "test-package",
@@ -361,7 +420,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -387,7 +446,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -413,7 +472,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: true,
 				config,
@@ -445,7 +504,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,
@@ -473,7 +532,7 @@ describe("PackageJsonProperties Policy", () => {
 			};
 
 			const result = (await runHandler(PackageJsonProperties.handler, {
-				file: packageJsonPath,
+				file: "package.json",
 				root: testDir,
 				resolve: false,
 				config,

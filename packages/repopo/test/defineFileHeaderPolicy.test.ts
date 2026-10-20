@@ -1,12 +1,17 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { EOL, tmpdir } from "node:os";
+import { run } from "effection";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { policy as configurePolicy } from "../src/makePolicy.js";
+import { HtmlFileHeaders } from "../src/policies/HtmlFileHeaders.js";
+import { JsTsFileHeaders } from "../src/policies/JsTsFileHeaders.js";
 import type { PolicyFailure, PolicyFixResult } from "../src/policy.js";
 import {
 	defineFileHeaderPolicy,
 	type FileHeaderGeneratorConfig,
 } from "../src/policyDefiners/defineFileHeaderPolicy.js";
+import { PolicyRunner } from "../src/runner.js";
 import { runHandler } from "./test-helpers.js";
 
 describe("defineFileHeaderPolicy", () => {
@@ -63,6 +68,24 @@ describe("defineFileHeaderPolicy", () => {
 	});
 
 	describe("Header Detection", () => {
+		it("should accept the configured header in an existing TypeScript file", async () => {
+			await writeFile(
+				join(testDir, "test.ts"),
+				["/*!", " * Copyright Example", " */", "", "export const x = 1;"].join(
+					EOL,
+				),
+			);
+
+			const result = await runHandler(JsTsFileHeaders.handler, {
+				file: "test.ts",
+				root: testDir,
+				resolve: false,
+				config: { headerText: "Copyright Example" },
+			});
+
+			expect(result).toBe(true);
+		});
+
 		it("should fail when file is missing header", async () => {
 			const testFile = join(testDir, "test.ts");
 			const content = `const x = 1;${EOL}`;
@@ -83,7 +106,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright 2025" },
@@ -147,7 +170,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: undefined,
@@ -158,6 +181,46 @@ describe("defineFileHeaderPolicy", () => {
 	});
 
 	describe("Auto-Fix Behavior", () => {
+		it("should not duplicate a configured header on a second fix", async () => {
+			const testFile = join(testDir, "test.ts");
+			await writeFile(testFile, "export const x = 1;");
+			const args = {
+				file: "test.ts",
+				root: testDir,
+				resolve: true,
+				config: { headerText: "Copyright Example" },
+			};
+
+			await runHandler(JsTsFileHeaders.handler, args);
+			const firstFix = await readFile(testFile, "utf-8");
+			await runHandler(JsTsFileHeaders.handler, args);
+
+			expect(await readFile(testFile, "utf-8")).toBe(firstFix);
+		});
+
+		it("should add HTML headers to HTML files without changing TypeScript files", async () => {
+			await writeFile(join(testDir, "index.html"), "<html></html>");
+			await writeFile(join(testDir, "index.ts"), "export const x = 1;");
+			const runner = new PolicyRunner({
+				policies: [
+					configurePolicy(HtmlFileHeaders, { headerText: "Copyright Example" }),
+				],
+				excludeFromAll: [],
+				excludePoliciesForFiles: new Map(),
+				gitRoot: testDir,
+				resolve: true,
+			});
+
+			await run(() => runner.run(["index.html", "index.ts"]));
+
+			expect
+				.soft(await readFile(join(testDir, "index.html"), "utf-8"))
+				.toContain("<!-- Copyright Example -->");
+			expect(await readFile(join(testDir, "index.ts"), "utf-8")).toBe(
+				"export const x = 1;",
+			);
+		});
+
 		it("should mark as auto-fixable", async () => {
 			const testFile = join(testDir, "test.ts");
 			await writeFile(testFile, "const x = 1;");
@@ -177,7 +240,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright 2025" },
@@ -207,7 +270,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: true,
 				config: { headerText },
@@ -242,7 +305,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright 2025" },
@@ -274,7 +337,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: true,
 				config: { headerText },
@@ -306,7 +369,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright" },
@@ -335,7 +398,7 @@ describe("defineFileHeaderPolicy", () => {
 			});
 
 			const result = (await runHandler(policy.handler, {
-				file: testFile,
+				file: "test.ts",
 				root: testDir,
 				resolve: false,
 				config: { headerText: "Copyright" },

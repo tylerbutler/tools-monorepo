@@ -1,5 +1,32 @@
 # @tylerbu/cli-api
 
+## 0.11.0
+
+### Minor Changes
+
+- Feat(cli-api): composition-based capability system _[`#396`](https://github.com/tylerbutler/tools-monorepo/pull/396) [`dd64d1d`](https://github.com/tylerbutler/tools-monorepo/commit/dd64d1da4f10d6793af9a270216b296edee884a6) [@tylerbutler](https://github.com/tylerbutler)_
+
+  A new composition-based capability system is now available as an alternative to the inheritance-based `CommandWithConfig` and `GitCommand` base classes. Commands can mix and match capabilities via `useGit()` and `useConfig()` instead of choosing a single base class. Existing base classes remain fully functional.
+
+  **Core API:**
+  - `LazyCapability<T>` — the lazy-init interface returned by capabilities after first access.
+  - `useGit(command, options)` — exposes `git` (SimpleGit), `repo`, and helpers (`getCurrentBranch`, `isCleanWorkingTree`, `hasUncommittedChanges`).
+  - `useConfig(command, options)` — config-file loading with multi-path search and default-config fallback.
+
+  **Type safety:**
+  - Discriminated unions: `GitContext = GitContextInRepo | GitContextNoRepo`, `ConfigContext = ConfigContextFound<T> | ConfigContextNotFound`.
+  - Overloads on `required` — `useGit(cmd, { required: true })` / `useConfig(cmd, { required: true })` return the narrowed in-repo / found variant directly, removing call-site narrowing.
+  - `DEFAULT_CONFIG_LOCATION` branded sentinel replaces magic `"DEFAULT"` strings.
+
+  **Distribution:**
+  - New `@tylerbu/cli-api/capabilities` subpath export.
+
+  **Breaking changes:**
+  - `ConfigFileFlag` renamed to `ConfigFlag` and moved into `flags.ts`. `ConfigFlag` now exposes a `-c` shorthand in addition to `--config`.
+  - `ConfigFileFlagHidden` renamed to `ConfigFlagHidden`. The hidden variant intentionally omits `-c` so subclasses spreading it can claim `-c` for their own purposes.
+
+  Update imports from `@tylerbu/cli-api` accordingly.
+
 ## 0.10.1
 
 ### Patch Changes
