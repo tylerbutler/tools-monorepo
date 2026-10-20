@@ -120,7 +120,7 @@ export type RepositoryPolicyHandler<C = void> = (
  * Fixes are performed in the handler using `resolve`.
  * @alpha
  */
-export interface RepositoryPolicyShape<C = void> {
+export interface RepositoryPolicyDefinition<C = void> {
 	name: PolicyName;
 	description: string;
 	scope: "repository";
@@ -131,7 +131,7 @@ export interface RepositoryPolicyShape<C = void> {
 /** @alpha */
 export type AnyPolicyShape<C = void> =
 	| PolicyShape<C>
-	| RepositoryPolicyShape<C>;
+	| RepositoryPolicyDefinition<C>;
 
 // ============================================================================
 // Legacy Result Types (Still supported for backward compatibility)
@@ -358,11 +358,12 @@ export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
 }
 
 /** @alpha */
-export type ConfiguredRepositoryPolicy<C = void> = RepositoryPolicyShape<C> &
-	Pick<
-		ConfiguredFilePolicy<C>,
-		"instanceId" | "config" | "exclude" | "excludeFiles"
-	>;
+export type ConfiguredRepositoryPolicy<C = void> =
+	RepositoryPolicyDefinition<C> &
+		Pick<
+			ConfiguredFilePolicy<C>,
+			"instanceId" | "config" | "exclude" | "excludeFiles"
+		>;
 
 /** @alpha */
 export type ConfiguredPolicy<C = void> =

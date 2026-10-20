@@ -5,12 +5,12 @@ prev: false
 title: "PolicyInstance"
 ---
 
-> **PolicyInstance**\<`C`\> = [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+> **PolicyInstance**\<`C`\> = [`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>
 
-Defined in: [policy.ts:342](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L342)
+Defined in: [policy.ts:401](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L401)
 
 :::caution[Deprecated]
-Use [ConfiguredPolicy](/api/interfaces/configuredpolicy/) instead.
+Use [ConfiguredPolicy](/api/type-aliases/configuredpolicy/) instead.
 :::
 
 :::caution[Alpha]

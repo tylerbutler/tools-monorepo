@@ -7,7 +7,7 @@ title: "PolicyResolver"
 
 > **PolicyResolver**\<`C`\> = (`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyError`](/api/interfaces/policyerror/)\> \| `Operation`\<[`PolicyError`](/api/interfaces/policyerror/)\>
 
-Defined in: [policy.ts:195](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L195)
+Defined in: [policy.ts:239](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L239)
 
 A standalone resolver function using the new format.
 

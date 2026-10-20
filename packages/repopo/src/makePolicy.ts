@@ -14,7 +14,7 @@ import type {
 	PolicyInstanceSettings,
 	PolicyName,
 	PolicyShape,
-	RepositoryPolicyShape,
+	RepositoryPolicyDefinition,
 } from "./policy.js";
 
 // ============================================================================
@@ -91,12 +91,12 @@ function normalizeHandler<C>(
  * @alpha
  */
 export function policy<C = void>(
-	policyDef: RepositoryPolicyShape<C>,
+	policyDef: RepositoryPolicyDefinition<C>,
 	options?: PolicyOptions & { exclude: (string | RegExp)[] },
 ): ConfiguredRepositoryPolicy<C>;
 /** @alpha */
 export function policy<C>(
-	policyDef: RepositoryPolicyShape<C>,
+	policyDef: RepositoryPolicyDefinition<C>,
 	config: C,
 	options?: PolicyOptions,
 ): ConfiguredRepositoryPolicy<C>;
@@ -289,7 +289,7 @@ export function makePolicyDefinition<C = undefined>(
  * @alpha
  */
 export function makePolicy<C>(
-	definition: RepositoryPolicyShape<C>,
+	definition: RepositoryPolicyDefinition<C>,
 	config?: C,
 	settings?: PolicyInstanceSettings<C>,
 ): ConfiguredRepositoryPolicy<C>;

@@ -11,13 +11,13 @@ File policies run once per matching selected file. Repository policies run once 
 
 ## Repository policies
 
-Use `RepositoryPolicyShape` for checks that require several files or check for a missing file. Set `scope: "repository"` and omit `match`.
+Use `RepositoryPolicyDefinition` for checks that require several files or check for a missing file. Set `scope: "repository"` and omit `match`.
 
 ```ts title="repopo.config.ts"
-import { policy, type RepopoConfig, type RepositoryPolicyShape } from "repopo";
+import { policy, type RepopoConfig, type RepositoryPolicyDefinition } from "repopo";
 import { NoJsFileExtensions } from "repopo/policies";
 
-const RequiredReadme: RepositoryPolicyShape = {
+const RequiredReadme: RepositoryPolicyDefinition = {
 	name: "RequiredReadme",
 	description: "Requires a README at the repository root.",
 	scope: "repository",
@@ -54,7 +54,9 @@ await run(() => runner.run(selectedFiles, repositoryFiles));
 
 ### Built-in repository policies
 
-`LicenseFileExists` and `SharedDependencyVersions` are repository policies. Their `policy()` configuration is unchanged, but direct handler calls must now pass `files` instead of `file` and handle an array of findings. They no longer need a selected root `package.json` or `Cargo.toml` to trigger execution. `SharedDependencyVersions` checks the root Cargo workspace when `Cargo.toml` is in its eligible inventory.
+`LicenseFileExists` checks for a license file at the repository root. `SharedDependencyVersions` compares dependency versions across members of the root Cargo workspace when `Cargo.toml` is in its eligible inventory.
+
+Configure either policy with `policy()`. Both run during partial and empty stdin checks. If you call their handlers directly, pass the full eligible `files` inventory and handle `true` or an array of findings.
 
 ## Guidance for policy failures
 

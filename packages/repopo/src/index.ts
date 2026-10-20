@@ -58,10 +58,10 @@ export {
 	type PolicyShape,
 	type PolicyStandaloneResolver,
 	type RepositoryPolicyArgs,
+	type RepositoryPolicyDefinition,
 	type RepositoryPolicyFinding,
 	type RepositoryPolicyHandler,
 	type RepositoryPolicyResult,
-	type RepositoryPolicyShape,
 } from "./policy.js";
 export {
 	type CargoToml,

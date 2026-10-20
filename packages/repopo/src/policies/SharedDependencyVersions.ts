@@ -2,8 +2,8 @@ import { readFile } from "node:fs/promises";
 import path from "pathe";
 import { glob } from "tinyglobby";
 import type {
+	RepositoryPolicyDefinition,
 	RepositoryPolicyFinding,
-	RepositoryPolicyShape,
 } from "../policy.js";
 import { parseToml } from "../policyDefiners/tomlParser.js";
 
@@ -146,7 +146,7 @@ async function collectMemberDeps(
  *
  * @alpha
  */
-export const SharedDependencyVersions: RepositoryPolicyShape<SharedDependencyVersionsConfig> =
+export const SharedDependencyVersions: RepositoryPolicyDefinition<SharedDependencyVersionsConfig> =
 	{
 		name: "SharedDependencyVersions",
 		description:

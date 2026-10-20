@@ -5,9 +5,11 @@ prev: false
 title: "makePolicy"
 ---
 
-> **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
+## Call Signature
 
-Defined in: [makePolicy.ts:268](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L268)
+> **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
+
+Defined in: [makePolicy.ts:291](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L291)
 
 Combine a [PolicyDefinition](/api/type-aliases/policydefinition/) with a policy-specific config and other settings.
 
@@ -19,32 +21,66 @@ Use the `policy` function instead, which has a simpler API.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
-## Type Parameters
+### Type Parameters
 
-### C
-
-`C`
-
-## Parameters
-
-### definition
-
-[`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
-
-### config?
+#### C
 
 `C`
 
-### settings?
+### Parameters
+
+#### definition
+
+[`RepositoryPolicyDefinition`](/api/interfaces/repositorypolicydefinition/)\<`C`\>
+
+#### config?
+
+`C`
+
+#### settings?
 
 [`PolicyInstanceSettings`](/api/interfaces/policyinstancesettings/)\<`C`\>
 
-## Returns
+### Returns
 
-[`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
+[`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-## Example
+### Example
 
 ```typescript
 makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["bin/*"] })
 ```
+
+## Call Signature
+
+> **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
+
+Defined in: [makePolicy.ts:297](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L297)
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+### Type Parameters
+
+#### C
+
+`C`
+
+### Parameters
+
+#### definition
+
+[`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
+
+#### config?
+
+`C`
+
+#### settings?
+
+[`PolicyInstanceSettings`](/api/interfaces/policyinstancesettings/)\<`C`\>
+
+### Returns
+
+[`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>

@@ -13,6 +13,10 @@ A policy error returned when a file fails a policy check.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
+## Extended by
+
+- [`RepositoryPolicyFinding`](/api/interfaces/repositorypolicyfinding/)
+
 ## Properties
 
 ### error

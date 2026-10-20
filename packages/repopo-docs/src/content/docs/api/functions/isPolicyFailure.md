@@ -7,7 +7,7 @@ title: "isPolicyFailure"
 
 > **isPolicyFailure**(`toCheck`): `toCheck is PolicyFailure`
 
-Defined in: [policy.ts:393](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L393)
+Defined in: [policy.ts:452](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L452)
 
 Type guard to check if a result is a [PolicyFailure](/api/interfaces/policyfailure/) (legacy format).
 

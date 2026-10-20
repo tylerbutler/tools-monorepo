@@ -1,6 +1,6 @@
 import { stat } from "node:fs/promises";
 import path from "pathe";
-import type { RepositoryPolicyShape } from "../policy.js";
+import type { RepositoryPolicyDefinition } from "../policy.js";
 
 /**
  * Policy settings for the LicenseFileExists repo policy.
@@ -34,7 +34,7 @@ const DEFAULT_LICENSE_NAMES = [
  *
  * @alpha
  */
-export const LicenseFileExists: RepositoryPolicyShape<LicenseFileExistsSettings> =
+export const LicenseFileExists: RepositoryPolicyDefinition<LicenseFileExistsSettings> =
 	{
 		name: "LicenseFileExists",
 		description:
