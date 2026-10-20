@@ -123,6 +123,55 @@ of boilerplate code you have to write for a policy.
 
 Use `generatePackagePolicy` to generate policies for package.json files.
 
+# Benchmarking
+
+From a source checkout, compile TypeScript and build the release engine:
+
+```bash
+pnpm nx run repopo:build:compile
+cargo build --release --manifest-path packages/repopo/crates/core/Cargo.toml
+./packages/repopo/benchmark.sh --quick
+./packages/repopo/benchmark.sh --json /tmp/repopo-benchmark.json
+```
+
+The benchmark needs Node and the release binary; Bun is optional. It uses no
+Hyperfine dependency. Each round runs all cases sequentially in shuffled order
+to reduce ordering bias. Defaults are three warmup rounds and ten timed rounds;
+`--quick` uses one and three. Override with `--warmup N` and `--runs N`.
+Every command must exit successfully; policy violations and runtime errors abort
+the benchmark with diagnostic output. No fixes are applied.
+
+The matrix compares TypeScript, the direct Rust engine with Node/Bun, and the
+actual `check-native` CLI with Node/Bun. Native cases explicitly use the release
+binary. All stdin cases share one Git inventory snapshot.
+
+| Scenario | Workload |
+| --- | --- |
+| `startup` | Top-level help; CLI/binary startup without a policy check |
+| `empty` | Empty config and empty stdin; check initialization and sidecar startup |
+| `inventory-stdin` | Empty config with the file snapshot; input parsing and file routing |
+| `inventory-git` | Empty config with Git enumeration instead of stdin |
+| `config` | Twenty synthetic policies with empty stdin; policy setup without file matching |
+| `matching` | Same policies and snapshot, with no matches; matching without handlers |
+| `noop` | Twenty policies matching every path, each returning `true`; dispatch and no-op handlers |
+| `real-stdin` | Repository config with the snapshot |
+| `real-git` | Normal repository-config check with Git enumeration |
+
+Use repeated `--scenario NAME` options to select workloads. JSON output includes
+machine/runtime metadata, commands, inputs, raw samples with round/order, and
+median, mean, standard deviation, quartiles, and range in milliseconds.
+
+Compare `inventory-git` with `inventory-stdin` for the enumeration path, `config`
+with `empty` for synthetic policy setup, and `noop` with `matching` for successful
+matching, dispatch, and handler overhead. Compare matching-minus-config with
+inventory-stdin-minus-empty to estimate matching overhead beyond basic routing.
+Compare each `cli-*` case with its `core-*` counterpart for wrapper overhead.
+These are controlled workload contrasts, not exclusive phase timers: they
+include interactions, serialization, and scheduling noise. Repository policies
+still enumerate and check the full inventory in `real-stdin`. Real workloads
+include config imports, file I/O, and policy-specific work. Results apply to
+warm filesystem caches, not a controlled cold-cache run.
+
 # CLI Usage
 
 <!-- commands -->
