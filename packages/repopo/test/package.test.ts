@@ -1,13 +1,15 @@
-import { readFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 import { run } from "effection";
+import { join } from "pathe";
 import {
 	definePackagePolicy,
 	generatePackagePolicy,
 	PolicyRunner,
 	policy,
 } from "repopo/api";
-import ts from "typescript";
 import { describe, expect, it } from "vitest";
 
 interface PackageManifest {
@@ -61,10 +63,10 @@ describe("public API entry points", () => {
 		expect(generatePackagePolicy).toBe(definePackagePolicy);
 	});
 
-	it("type-checks consumer imports and resolver/configuration contracts", () => {
-		const file = fileURLToPath(
-			new URL("../_temp/public-api-consumer.mts", import.meta.url),
-		);
+	it("type-checks consumer imports and resolver/configuration contracts", async () => {
+		const tempRoot = fileURLToPath(new URL("../_temp/", import.meta.url));
+		await mkdir(tempRoot, { recursive: true });
+		const directory = await mkdtemp(join(tempRoot, "public-api-"));
 		const source = `
 					import { definePackagePolicy, generatePackagePolicy, policy, Policy, run as cliRun, type PolicyShape, type PolicyResolver } from "repopo";
 					import { definePackagePolicy as apiFactory, PolicyRunner, type RepopoConfig } from "repopo/api";
@@ -86,26 +88,36 @@ describe("public API entry points", () => {
 					// @ts-expect-error Options must be supplied as the third argument.
 					policy(definition, { exclude: ["vendor/"] });
 				`;
-		const options: ts.CompilerOptions = {
-			noEmit: true,
-			strict: true,
-			skipLibCheck: true,
-			module: ts.ModuleKind.NodeNext,
-			target: ts.ScriptTarget.ES2022,
-			types: [],
-		};
-		const host = ts.createCompilerHost(options);
-		const getSourceFile = host.getSourceFile.bind(host);
-		host.getSourceFile = (name, ...args) =>
-			name === file
-				? ts.createSourceFile(name, source, ts.ScriptTarget.ES2022, true)
-				: getSourceFile(name, ...args);
-		const program = ts.createProgram([file], options, host);
-		const diagnostics = ts.getPreEmitDiagnostics(program);
-		expect(
-			diagnostics.map((diagnostic) =>
-				ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"),
-			),
-		).toEqual([]);
+		try {
+			await writeFile(join(directory, "consumer.mts"), source);
+			await writeFile(
+				join(directory, "tsconfig.json"),
+				JSON.stringify({
+					compilerOptions: {
+						noEmit: true,
+						strict: true,
+						skipLibCheck: true,
+						module: "NodeNext",
+						target: "ES2022",
+						types: [],
+					},
+					files: ["consumer.mts"],
+				}),
+			);
+			// Keep TypeScript's compiler outside the coverage-instrumented worker.
+			await expect(
+				promisify(execFile)(
+					process.execPath,
+					[
+						fileURLToPath(import.meta.resolve("typescript/bin/tsc")),
+						"--project",
+						directory,
+					],
+					{ timeout: 10000 },
+				),
+			).resolves.toMatchObject({ stdout: "", stderr: "" });
+		} finally {
+			await rm(directory, { recursive: true, force: true });
+		}
 	}, 15000);
 });
