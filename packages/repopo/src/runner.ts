@@ -153,6 +153,14 @@ export class PolicyRunner {
 		const matchingPolicies = this.policies.filter((policy) =>
 			matches(policy.match, relPath),
 		);
+		if (this.resolve) {
+			// Fixers can read and rewrite the same file.
+			for (const policy of matchingPolicies) {
+				yield* this.runPolicyOnFile(relPath, policy, state);
+			}
+			return;
+		}
+
 		yield* all(
 			matchingPolicies.map((policy) => {
 				return this.runPolicyOnFile(relPath, policy, state);

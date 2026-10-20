@@ -128,19 +128,15 @@ export class CheckPolicy<
 				"ls-files",
 				// include staged files and untracked files
 				"-co",
+				// NUL-delimited paths are not quoted or escaped by Git.
+				"-z",
 				// exclude gitignored files and other standard ignore rules
 				"--exclude-standard",
 				// Outputs paths relative to the root of the repository, regardless of the current working directory.
 				"--full-name",
 			)) ?? "";
 
-		return gitFiles
-			.replace(
-				// normalize slashes in case they're windows paths
-				/\\/g,
-				"/",
-			)
-			.split("\n");
+		return gitFiles.split("\0").filter((file) => file.length > 0);
 	}
 
 	/**

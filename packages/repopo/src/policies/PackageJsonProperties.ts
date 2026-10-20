@@ -1,4 +1,4 @@
-import { defu } from "defu";
+import { createDefu } from "defu";
 import { call } from "effection";
 import jsonfile from "jsonfile";
 import diff from "microdiff";
@@ -8,6 +8,14 @@ import type { PolicyFailure, PolicyFixResult } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const { writeFile: writeJson } = jsonfile;
+
+const mergeProperties = createDefu((object, key, value) => {
+	if (Array.isArray(value)) {
+		object[key] = value;
+		return true;
+	}
+	return false;
+});
 
 /**
  * Policy settings for the PackageJsonProperties repo policy.
@@ -46,7 +54,7 @@ export const PackageJsonProperties = definePackagePolicy<
 			errorMessages: [],
 		};
 
-		const merged = defu(verbatim, json);
+		const merged = mergeProperties(verbatim, json);
 		const result = diff(merged, json);
 
 		const messages: string[] = [];

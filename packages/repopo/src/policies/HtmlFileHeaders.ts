@@ -13,7 +13,7 @@ export const HtmlFileHeaders = defineFileHeaderPolicy({
 	name: "HtmlFileHeaders",
 	description: "Ensures HTML files have the configured header comment.",
 	config: {
-		match: /(^|\/)[^/]+\.[mc]?[jt]sx?$/i,
+		match: /(^|\/)[^/]+\.html?$/i,
 		lineStart: /<!-- /, // Lines begin with '<!-- '
 		lineEnd: / -->\r?\n/, // Lines end with ' -->' followed by CRLF or LF
 		replacer: (
