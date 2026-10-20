@@ -225,7 +225,6 @@ export interface PolicyHandlerPerfStats {
     count: number;
     // (undocumented)
     data: Map<PolicyAction, Map<PolicyInstanceId, number>>;
-    // (undocumented)
     processed: number;
 }
 
