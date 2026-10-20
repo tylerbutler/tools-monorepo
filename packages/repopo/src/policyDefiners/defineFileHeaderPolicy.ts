@@ -1,8 +1,9 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { EOL as newline } from "node:os";
 import { call } from "effection";
-import { extname, resolve as resolvePath } from "pathe";
+import { extname } from "pathe";
 import type { PolicyFailure, PolicyFixResult, PolicyShape } from "../policy.js";
+import { resolveRepoFilePath } from "../utils/safePaths.js";
 
 const trailingSpaces = /\s*\\r\?\\n/;
 
@@ -135,6 +136,7 @@ export function defineFileHeaderPolicy(
 			const regex = new RegExp(
 				`^${pre}${toRegex(policyConfig.headerText)}(${toRegex(policyConfig.autoGenText ?? config.autoGenText ?? "")})?${post}`,
 			);
+			const filePath = resolveRepoFilePath(root, file);
 
 			const failResult: PolicyFailure = {
 				name,
@@ -145,7 +147,6 @@ export function defineFileHeaderPolicy(
 
 			// TODO: Consider reading only the first 512B or so since headers are typically
 			// at the beginning of the file.
-			const filePath = resolvePath(root, file);
 			const content = yield* call(() =>
 				readFile(filePath, { encoding: "utf8" }),
 			);

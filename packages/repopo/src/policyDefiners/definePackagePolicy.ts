@@ -1,6 +1,5 @@
 import { call, type Operation } from "effection";
 import jsonfile from "jsonfile";
-import { resolve } from "pathe";
 import type { PackageJson } from "type-fest";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
@@ -8,6 +7,7 @@ import type {
 	PolicyHandlerResult,
 	PolicyShape,
 } from "../policy.js";
+import { resolveRepoFilePath } from "../utils/safePaths.js";
 
 const { readFile: readJson } = jsonfile;
 
@@ -100,9 +100,8 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 		match: PackageJsonRegexMatch,
 		defaultConfig,
 		handler: function* (innerArgs) {
-			const json: J = yield* call(() =>
-				readJson(resolve(innerArgs.root, innerArgs.file)),
-			);
+			const filePath = resolveRepoFilePath(innerArgs.root, innerArgs.file);
+			const json: J = yield* call(() => readJson(filePath));
 			const result = packageHandler(json, innerArgs);
 
 			// Handle both Operation (generator) and Promise return types

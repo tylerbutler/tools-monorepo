@@ -16,6 +16,7 @@ import {
 	type PolicyFailure,
 } from "../policy.js";
 import { type PolicyFileResult, PolicyRunner } from "../runner.js";
+import { normalizeRepoRelativeFilePath } from "../utils/safePaths.js";
 
 async function readStdin(): Promise<string> {
 	return new Promise((resolve) => {
@@ -74,13 +75,13 @@ export class CheckPolicy<
 			this.info("Resolving errors if possible.");
 		}
 
-		const filePathsToCheck = await this.collectFilePaths();
 		const context: RepopoCommandContext = await this.getContext();
 		this.verbose(`${context.policies.length} policies loaded.`);
 		for (const configuredPolicy of context.policies) {
 			this.verbose(configuredPolicy.instanceId);
 		}
 
+		const filePathsToCheck = await this.collectFilePaths(context.gitRoot);
 		const runner = new PolicyRunner({
 			policies: context.policies,
 			excludeFromAll: context.excludeFromAll,
@@ -105,14 +106,14 @@ export class CheckPolicy<
 	/**
 	 * Collects file paths to check from either stdin or git ls-files.
 	 */
-	private async collectFilePaths(): Promise<string[]> {
+	private async collectFilePaths(gitRoot: string): Promise<string[]> {
 		if (this.flags.stdin) {
 			const stdInput = await run(function* () {
 				return yield* call(() => readStdin());
 			});
 
 			if (stdInput !== undefined && stdInput !== null) {
-				return parseFilePaths(stdInput);
+				return this.normalizePathsToCheck(parseFilePaths(stdInput), gitRoot);
 			}
 
 			return [];
@@ -131,7 +132,19 @@ export class CheckPolicy<
 				"--full-name",
 			)) ?? "";
 
-		return parseFilePaths(gitFiles);
+		return this.normalizePathsToCheck(parseFilePaths(gitFiles), gitRoot);
+	}
+
+	private normalizePathsToCheck(paths: string[], gitRoot: string): string[] {
+		return paths.map((path) => {
+			try {
+				return normalizeRepoRelativeFilePath(gitRoot, path);
+			} catch (error: unknown) {
+				throw new Error(
+					`Invalid file path '${path}': ${(error as Error).message}`,
+				);
+			}
+		});
 	}
 
 	/**
