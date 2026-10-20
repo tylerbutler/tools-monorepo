@@ -5,9 +5,9 @@ prev: false
 title: "IdentifiedPolicy"
 ---
 
-> **IdentifiedPolicy**\<`C`\> = [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\> & `object`
+> **IdentifiedPolicy**\<`C`\> = [`ConfiguredPolicy`](/api/type-aliases/configuredpolicy/)\<`C`\> & `object`
 
-Defined in: [policy.ts:349](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L349)
+Defined in: [policy.ts:408](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L408)
 
 A configured policy instance with its runtime identity assigned.
 

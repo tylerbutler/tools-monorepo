@@ -3,6 +3,7 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join } from "pathe";
+import { simpleGit } from "simple-git";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { DefaultPolicies } from "../src/policy.js";
 
@@ -138,6 +139,58 @@ describe("Native sidecar protocol", () => {
 					},
 				],
 			},
+		});
+	});
+
+	it("runs repository policies once using full Git context and exclusions", async () => {
+		await simpleGit(testDir).init();
+		await writeFile(join(testDir, "unchanged.txt"), "unchanged");
+		await writeFile(join(testDir, "excluded.txt"), "excluded");
+		await writeFile(
+			configPath,
+			`export default {
+			excludeFiles: ["excluded"],
+			policies: [{
+				name: "RepositoryCheck", instanceId: "repo-check",
+				description: "Checks repository inventory", scope: "repository",
+				handler: async ({ files, resolve }) => [
+					{ error: files.includes("unchanged.txt") && !files.includes("excluded.txt") ? "Full context" : "Wrong context", fixed: resolve },
+					{ error: "Related files", files: ["unchanged.txt"] }
+				]
+			}]
+		};`,
+		);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{ method: "run_repository_policies", params: { resolve: true } },
+		]);
+		expect(responses[0]).toMatchObject({
+			ok: true,
+			data: {
+				policies: [
+					expect.objectContaining({
+						scope: "repository",
+						instanceId: "repo-check",
+					}),
+				],
+			},
+		});
+		expect(responses[1]).toEqual({
+			ok: true,
+			data: [
+				{
+					scope: "repository",
+					policy: "RepositoryCheck",
+					policyId: "repo-check",
+					outcome: { error: "Full context", fixed: true },
+				},
+				{
+					scope: "repository",
+					policy: "RepositoryCheck",
+					policyId: "repo-check",
+					outcome: { error: "Related files", files: ["unchanged.txt"] },
+				},
+			],
 		});
 	});
 

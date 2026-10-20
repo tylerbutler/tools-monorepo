@@ -15,6 +15,7 @@
  *   { "method": "run_resolver", "params": { "policyName": "...", "file": "...", "root": "..." } }
  *   { "method": "run_handler_batch", "params": { "policyName": "...", "files": [...], "root": "...", "resolve": false } }
  *   { "method": "run_resolver_batch", "params": { "policyName": "...", "files": [...], "root": "..." } }
+ *   { "method": "run_repository_policies", "params": { "resolve": false } }
  *   { "method": "shutdown" }
  *
  * Response format:
@@ -68,7 +69,10 @@ function serializeRegex(regex) {
  * @returns {object}
  */
 function serializePolicy(policy) {
-	const match = serializeRegex(policy.match);
+	const match =
+		policy.scope === "repository"
+			? { source: "", flags: "" }
+			: serializeRegex(policy.match);
 
 	// Convert excludeFiles to regex pattern strings
 	const excludeFiles = (policy.excludeFiles ?? policy.exclude ?? []).map(
@@ -82,6 +86,8 @@ function serializePolicy(policy) {
 
 	return {
 		name: policy.name,
+		instanceId: policy.instanceId,
+		scope: policy.scope ?? "file",
 		description: policy.description,
 		matchPattern: match.source,
 		matchFlags: match.flags,
@@ -170,13 +176,15 @@ async function handleLoadConfig(params) {
 		const policies =
 			loadedConfig?.policies ??
 			(await import("../esm/config.js")).DefaultPolicyConfig.policies;
-		for (const p of policies) {
+		const { identifyPolicyInstances } = await import("../esm/makePolicy.js");
+		const identifiedPolicies = identifyPolicyInstances(policies);
+		for (const p of identifiedPolicies) {
 			policiesByName.set(p.name, p);
 			policiesByIndex.push(p);
 		}
 
 		// Serialize for Rust
-		const serializedPolicies = policies.map(serializePolicy);
+		const serializedPolicies = identifiedPolicies.map(serializePolicy);
 		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map((e) => {
 			if (e instanceof RegExp) {
 				return e.source;
@@ -195,6 +203,43 @@ async function handleLoadConfig(params) {
 		respond({
 			ok: false,
 			error: `Failed to load config: ${err.message}`,
+		});
+	}
+}
+
+async function handleRunRepositoryPolicies(params) {
+	try {
+		const { PolicyRunner } = await import("../esm/runner.js");
+		const { parseFilePaths } = await import("../esm/filePaths.js");
+		const { simpleGit } = await import("simple-git");
+		const runner = new PolicyRunner({
+			policies: policiesByIndex.filter(
+				(policy) => policy.scope === "repository",
+			),
+			excludeFromAll: (loadedConfig?.excludeFiles ?? []).map(
+				(pattern) => new RegExp(pattern, "i"),
+			),
+			excludePoliciesForFiles: new Map(),
+			gitRoot: storedGitRoot,
+			resolve: params.resolve ?? false,
+		});
+		const result = await run(() =>
+			runner.run([], async () => {
+				const output = await simpleGit(storedGitRoot).raw(
+					"ls-files",
+					"-co",
+					"-z",
+					"--exclude-standard",
+					"--full-name",
+				);
+				return parseFilePaths(output);
+			}),
+		);
+		respond({ ok: true, data: result.results });
+	} catch (error) {
+		respond({
+			ok: false,
+			error: `Repository policy execution failed: ${error.message}`,
 		});
 	}
 }
@@ -447,6 +492,10 @@ async function main() {
 
 			case "run_resolver_batch":
 				await handleRunResolverBatch(params ?? {});
+				break;
+
+			case "run_repository_policies":
+				await handleRunRepositoryPolicies(params ?? {});
 				break;
 
 			case "shutdown":

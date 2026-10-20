@@ -5,7 +5,7 @@ prev: false
 title: "PolicyInstanceSettings"
 ---
 
-Defined in: [policy.ts:318](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L318)
+Defined in: [policy.ts:377](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L377)
 
 Settings for configuring a policy instance.
 
@@ -25,7 +25,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **config?**: `C`
 
-Defined in: [policy.ts:335](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L335)
+Defined in: [policy.ts:394](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L394)
 
 The config that is applied to the policy instance.
 
@@ -39,7 +39,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [policy.ts:330](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L330)
+Defined in: [policy.ts:389](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L389)
 
 An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
 from policy.
@@ -56,7 +56,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **instanceId?**: `string`
 
-Defined in: [policy.ts:322](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L322)
+Defined in: [policy.ts:381](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L381)
 
 A stable identifier for this configured policy instance.
 

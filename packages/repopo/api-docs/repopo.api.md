@@ -9,6 +9,9 @@ import { Operation } from 'effection';
 import type { PackageJson } from 'type-fest';
 import { run } from '@oclif/core';
 
+// @alpha (undocumented)
+export type AnyPolicyShape<C = void> = PolicyShape<C> | RepositoryPolicyDefinition<C>;
+
 // @alpha
 export type CargoToml = Record<string, unknown>;
 
@@ -16,7 +19,7 @@ export type CargoToml = Record<string, unknown>;
 export type CargoTomlHandler<C> = (toml: CargoToml, args: PolicyArgs<C>) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
 
 // @alpha
-export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
+export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
     config?: C | undefined;
     // @deprecated
     exclude?: (string | RegExp)[] | undefined;
@@ -25,6 +28,12 @@ export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
     // @internal
     _internalHandler?: (args: PolicyArgs<C>) => Operation<PolicyHandlerResult>;
 }
+
+// @alpha (undocumented)
+export type ConfiguredPolicy<C = void> = ConfiguredFilePolicy<C> | ConfiguredRepositoryPolicy<C>;
+
+// @alpha (undocumented)
+export type ConfiguredRepositoryPolicy<C = void> = RepositoryPolicyDefinition<C> & Pick<ConfiguredFilePolicy<C>, "instanceId" | "config" | "exclude" | "excludeFiles">;
 
 // @alpha
 export function defineCargoPolicy<C = undefined>(args: DefineCargoPolicyArgs<C>): PolicyShape<C>;
@@ -131,6 +140,9 @@ export function isPolicyFailure(toCheck: any): toCheck is PolicyFailure;
 export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult;
 
 // @alpha @deprecated
+export function makePolicy<C>(definition: RepositoryPolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): ConfiguredRepositoryPolicy<C>;
+
+// @alpha (undocumented)
 export function makePolicy<C>(definition: PolicyDefinition<C>, config?: C, settings?: PolicyInstanceSettings<C>): PolicyInstance<C>;
 
 // @alpha @deprecated
@@ -157,12 +169,20 @@ export abstract class Policy<C = void> implements PolicyShape<C> {
 }
 
 // @alpha
-export function policy<C = void>(policyDef: PolicyShape<C>, options?: PolicyOptions & {
+export function policy<C = void>(policyDef: RepositoryPolicyDefinition<C>, options?: PolicyOptions & {
     exclude: (string | RegExp)[];
-}): ConfiguredPolicy<C>;
+}): ConfiguredRepositoryPolicy<C>;
 
 // @alpha (undocumented)
-export function policy<C>(policyDef: PolicyShape<C>, config: C, options?: PolicyOptions): ConfiguredPolicy<C>;
+export function policy<C>(policyDef: RepositoryPolicyDefinition<C>, config: C, options?: PolicyOptions): ConfiguredRepositoryPolicy<C>;
+
+// @alpha (undocumented)
+export function policy<C = void>(policyDef: PolicyShape<C>, options?: PolicyOptions & {
+    exclude: (string | RegExp)[];
+}): ConfiguredFilePolicy<C>;
+
+// @alpha (undocumented)
+export function policy<C>(policyDef: PolicyShape<C>, config: C, options?: PolicyOptions): ConfiguredFilePolicy<C>;
 
 // @alpha
 export type PolicyAction = "check" | "resolve" | "handle";
@@ -189,6 +209,9 @@ export interface PolicyError {
     manualFix?: string | undefined;
 }
 
+// @alpha (undocumented)
+export type PolicyExecutionResult = PolicyFileResult | PolicyRepositoryResult;
+
 // @alpha @deprecated
 export interface PolicyFailure {
     autoFixable?: boolean | undefined;
@@ -207,6 +230,8 @@ export interface PolicyFileResult {
     policy: PolicyName;
     policyId: PolicyInstanceId;
     resolution?: PolicyFixResult;
+    // (undocumented)
+    scope?: "file";
 }
 
 // @alpha @deprecated
@@ -232,7 +257,7 @@ export interface PolicyHandlerPerfStats {
 export type PolicyHandlerResult = true | PolicyFailure | PolicyFixResult | PolicyError;
 
 // @alpha @deprecated (undocumented)
-export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
+export type PolicyInstance<C = undefined> = ConfiguredFilePolicy<C>;
 
 // @alpha
 export type PolicyInstanceId = string;
@@ -253,6 +278,19 @@ export interface PolicyOptions {
     instanceId?: PolicyInstanceId;
 }
 
+// @alpha (undocumented)
+export interface PolicyRepositoryResult {
+    file?: never;
+    // (undocumented)
+    outcome: RepositoryPolicyFinding;
+    // (undocumented)
+    policy: PolicyName;
+    // (undocumented)
+    policyId: PolicyInstanceId;
+    // (undocumented)
+    scope: "repository";
+}
+
 // @alpha
 export type PolicyResolver<C = void> = (args: Omit<PolicyArgs<C>, "resolve">) => Promise<PolicyError> | Operation<PolicyError>;
 
@@ -262,8 +300,7 @@ export type PolicyResult = true | PolicyError;
 // @alpha
 export class PolicyRunner {
     constructor(options: PolicyRunnerOptions);
-    // (undocumented)
-    run(filePaths: string[]): Operation<PolicyRunResults>;
+    run(filePaths: string[], repositoryFiles?: readonly string[] | (() => Promise<readonly string[]>)): Operation<PolicyRunResults>;
 }
 
 // @alpha
@@ -277,7 +314,7 @@ export interface PolicyRunnerOptions {
     // (undocumented)
     logger?: Pick<Logger, "verbose">;
     // (undocumented)
-    policies: PolicyInstance[];
+    policies: NonNullable<RepopoConfig["policies"]>;
     // (undocumented)
     resolve: boolean;
 }
@@ -287,7 +324,7 @@ export interface PolicyRunResults {
     // (undocumented)
     perfStats: PolicyHandlerPerfStats;
     // (undocumented)
-    results: PolicyFileResult[];
+    results: PolicyExecutionResult[];
 }
 
 // @alpha
@@ -298,6 +335,7 @@ export interface PolicyShape<C = void> {
     match: RegExp;
     name: PolicyName;
     resolver?: PolicyStandaloneResolver<C> | undefined;
+    scope?: "file";
 }
 
 // @alpha @deprecated
@@ -308,6 +346,37 @@ export interface RepopoConfig {
     excludeFiles?: (string | RegExp)[];
     policies?: (ConfiguredPolicy<any> | PolicyInstance<any>)[];
 }
+
+// @alpha
+export interface RepositoryPolicyArgs<C = void> extends Omit<PolicyArgs<C>, "file"> {
+    files: readonly string[];
+}
+
+// @alpha
+export interface RepositoryPolicyDefinition<C = void> {
+    // (undocumented)
+    defaultConfig?: C | undefined;
+    // (undocumented)
+    description: string;
+    // (undocumented)
+    handler: RepositoryPolicyHandler<C>;
+    // (undocumented)
+    name: PolicyName;
+    // (undocumented)
+    scope: "repository";
+}
+
+// @alpha
+export interface RepositoryPolicyFinding extends PolicyError {
+    // (undocumented)
+    files?: readonly string[];
+}
+
+// @alpha (undocumented)
+export type RepositoryPolicyHandler<C = void> = (args: RepositoryPolicyArgs<C>) => Promise<RepositoryPolicyResult> | Operation<RepositoryPolicyResult>;
+
+// @alpha (undocumented)
+export type RepositoryPolicyResult = true | readonly RepositoryPolicyFinding[];
 
 export { run }
 

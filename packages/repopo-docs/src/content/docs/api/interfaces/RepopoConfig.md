@@ -30,7 +30,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### policies?
 
-> `optional` **policies?**: ([`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`any`\> \| [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`any`\>)[]
+> `optional` **policies?**: ([`ConfiguredPolicy`](/api/type-aliases/configuredpolicy/)\<`any`\> \| [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`any`\>)[]
 
 Defined in: [config.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L36)
 

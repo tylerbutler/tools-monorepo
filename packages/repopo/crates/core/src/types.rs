@@ -8,6 +8,9 @@ pub struct PolicyMeta {
     /// The name of the policy.
     pub name: String,
 
+    #[serde(default)]
+    pub scope: String,
+
     /// A description of what the policy checks.
     pub description: String,
 
@@ -129,6 +132,9 @@ impl HandlerResult {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "method", content = "params")]
 pub enum IpcRequest {
+    #[serde(rename = "run_repository_policies")]
+    RunRepositoryPolicies(RunRepositoryPoliciesParams),
+
     /// Ask the sidecar to load the config and return policy metadata.
     #[serde(rename = "load_config")]
     LoadConfig(LoadConfigParams),
@@ -152,6 +158,29 @@ pub enum IpcRequest {
     /// Tell the sidecar to shut down.
     #[serde(rename = "shutdown")]
     Shutdown,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RunRepositoryPoliciesParams {
+    pub resolve: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RepositoryPolicyResult {
+    pub policy_id: String,
+    pub outcome: RepositoryPolicyFinding,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RepositoryPolicyFinding {
+    pub error: String,
+    #[serde(default)]
+    pub files: Vec<String>,
+    pub fixed: Option<bool>,
+    pub fixable: Option<bool>,
+    #[serde(rename = "manualFix")]
+    pub manual_fix: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

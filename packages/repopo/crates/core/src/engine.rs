@@ -195,6 +195,9 @@ pub fn run_check(
 
     // Step 4: Policy-first batching — one IPC call per policy
     for (policy_id, policy) in compiled_policies.iter().enumerate() {
+        if policy.meta.scope == "repository" {
+            continue;
+        }
         // Collect files matching this policy
         let matching_files: Vec<String> = eligible_files
             .iter()
@@ -338,6 +341,40 @@ pub fn run_check(
         }
     }
 
+    if config
+        .policies
+        .iter()
+        .any(|policy| policy.scope == "repository")
+    {
+        for result in sidecar.run_repository_policies(fix)? {
+            let finding = result.outcome;
+            let location = if finding.files.is_empty() {
+                "repository".to_string()
+            } else {
+                finding.files.join(", ")
+            };
+            if finding.fixed == Some(true) {
+                if !quiet {
+                    eprintln!("Resolved {} policy failure: {location}", result.policy_id);
+                }
+                continue;
+            }
+            had_failures = true;
+            let fixable = if finding.fixable == Some(true) {
+                " (autofixable)"
+            } else {
+                ""
+            };
+            eprintln!(
+                "'{}' policy failure{fixable}: {location}\n\t{}",
+                result.policy_id, finding.error
+            );
+            if let Some(manual_fix) = finding.manual_fix {
+                eprintln!("\t{manual_fix}");
+            }
+        }
+    }
+
     // Step 5: Log performance stats
     stats.log(verbose);
 
@@ -368,7 +405,17 @@ pub fn run_list(
         );
 
         if verbose {
-            println!("    match: {}", policy.match_pattern);
+            println!(
+                "    scope: {}",
+                if policy.scope.is_empty() {
+                    "file"
+                } else {
+                    &policy.scope
+                }
+            );
+            if policy.scope != "repository" {
+                println!("    match: {}", policy.match_pattern);
+            }
             if !policy.exclude_files.is_empty() {
                 println!("    excludes: {}", policy.exclude_files.join(", "));
             }

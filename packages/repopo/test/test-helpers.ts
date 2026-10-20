@@ -3,6 +3,9 @@ import type {
 	PolicyFunctionArguments,
 	PolicyHandler,
 	PolicyHandlerResult,
+	RepositoryPolicyArgs,
+	RepositoryPolicyHandler,
+	RepositoryPolicyResult,
 } from "../src/policy.js";
 
 /**
@@ -26,10 +29,18 @@ function isOperation<T>(
  * Effection generators (returning Operation). Use this in tests
  * instead of directly calling the handler.
  */
-export async function runHandler<C = undefined>(
+export function runHandler<C = undefined>(
+	handler: RepositoryPolicyHandler<C>,
+	args: RepositoryPolicyArgs<C>,
+): Promise<RepositoryPolicyResult>;
+export function runHandler<C = undefined>(
 	handler: PolicyHandler<C>,
 	args: PolicyFunctionArguments<C>,
-): Promise<PolicyHandlerResult> {
+): Promise<PolicyHandlerResult>;
+export async function runHandler<A, R>(
+	handler: (handlerArgs: A) => Promise<R> | Generator<unknown, R, unknown>,
+	args: A,
+): Promise<R> {
 	const result = handler(args);
 
 	// Handle Promise return type
@@ -38,7 +49,7 @@ export async function runHandler<C = undefined>(
 	}
 
 	// Handle Effection Operation (generator) return type
-	if (isOperation<PolicyHandlerResult>(result)) {
+	if (isOperation<R>(result)) {
 		return run(() => result);
 	}
 
