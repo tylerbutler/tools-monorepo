@@ -4,11 +4,11 @@ use std::process::Command;
 
 /// Enumerate files tracked by git in the given repository root.
 ///
-/// Runs `git ls-files -co --exclude-standard --full-name` and returns
+/// Runs `git ls-files -co -z --exclude-standard --full-name` and returns
 /// repo-relative paths with forward slashes.
 pub fn git_ls_files(git_root: &str) -> Result<Vec<String>> {
     let output = Command::new("git")
-        .args(["ls-files", "-co", "--exclude-standard", "--full-name"])
+        .args(["ls-files", "-co", "-z", "--exclude-standard", "--full-name"])
         .current_dir(git_root)
         .output()
         .context("Failed to run git ls-files")?;
@@ -21,9 +21,9 @@ pub fn git_ls_files(git_root: &str) -> Result<Vec<String>> {
     let stdout = String::from_utf8(output.stdout).context("git output is not valid UTF-8")?;
 
     let files: Vec<String> = stdout
-        .lines()
+        .split('\0')
         .filter(|line| !line.is_empty())
-        .map(|line| line.replace('\\', "/"))
+        .map(str::to_owned)
         .collect();
 
     Ok(files)

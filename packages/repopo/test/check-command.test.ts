@@ -1,13 +1,28 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { fileURLToPath } from "node:url";
+import { Config } from "@oclif/core";
 import { join } from "pathe";
 import { simpleGit } from "simple-git";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { CheckPolicy } from "../src/commands/check.js";
+import { newPerfStats } from "../src/perf.js";
+import { NoJsFileExtensions } from "../src/policies/NoJsFileExtensions.js";
 import type {
 	PolicyDefinition,
 	PolicyFailure,
 	PolicyFixResult,
 } from "../src/policy.js";
+
+class TestCheckPolicy extends CheckPolicy<typeof TestCheckPolicy> {
+	protected override flags = {
+		fix: false,
+		stdin: false,
+		quiet: true,
+		verbose: false,
+		config: undefined,
+	};
+}
 
 describe("Check Command - Effection Integration", () => {
 	let testRepoDir: string;
@@ -34,8 +49,46 @@ describe("Check Command - Effection Integration", () => {
 	});
 
 	afterEach(async () => {
+		vi.restoreAllMocks();
 		// Clean up test repository
 		await rm(testRepoDir, { recursive: true, force: true });
+	});
+
+	describe("Git file enumeration", () => {
+		it.each([
+			"caf\u00e9.js",
+			"tab\tname.js",
+			"line\nname.js",
+		])("should route the original Git filename %j to its policy", async (file) => {
+			await git.addConfig("core.quotePath", "true");
+			await writeFile(join(testRepoDir, file), "export {};");
+			const handler = vi.fn(async () => true as const);
+			const command = new TestCheckPolicy(
+				[],
+				await Config.load(fileURLToPath(new URL("..", import.meta.url))),
+			);
+			vi.spyOn(command, "git", "get").mockReturnValue(git);
+			vi.spyOn(command, "verbose").mockImplementation(() => {});
+			vi.spyOn(command, "getContext").mockResolvedValue({
+				gitRoot: testRepoDir,
+				policies: [
+					{
+						...NoJsFileExtensions,
+						instanceId: NoJsFileExtensions.name,
+						handler,
+					},
+				],
+				excludeFromAll: [],
+				excludePoliciesForFiles: new Map(),
+				perfStats: newPerfStats(),
+			});
+
+			await command.run();
+
+			expect(handler).toHaveBeenCalledWith(
+				expect.objectContaining({ file, root: testRepoDir }),
+			);
+		});
 	});
 
 	describe("Policy execution with generators", () => {

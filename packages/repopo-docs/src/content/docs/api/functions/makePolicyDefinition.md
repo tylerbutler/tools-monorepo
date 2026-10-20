@@ -7,7 +7,7 @@ title: "makePolicyDefinition"
 
 > **makePolicyDefinition**\<`C`\>(`args`): [`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
 
-Defined in: [makePolicy.ts:163](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L163)
+Defined in: [makePolicy.ts:243](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L243)
 
 Creates a [PolicyDefinition](/api/type-aliases/policydefinition/) from the provided arguments.
 

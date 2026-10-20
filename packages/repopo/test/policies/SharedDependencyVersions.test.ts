@@ -1,4 +1,5 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "pathe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -94,6 +95,42 @@ describe("SharedDependencyVersions", () => {
 	});
 
 	describe("fail cases", () => {
+		it.each([
+			false,
+			true,
+		])("should check globbed members while honoring workspace exclusions: %s", async (excludeBar) => {
+			await writeFile(
+				join(testDir, "Cargo.toml"),
+				`[workspace]\nmembers = ["crates/*"]\n${
+					excludeBar ? 'exclude = ["crates/bar"]\n' : ""
+				}`,
+			);
+			for (const [name, version] of [
+				["foo", "1.0"],
+				["bar", "2.0"],
+			] as const) {
+				await mkdir(join(testDir, "crates", name), { recursive: true });
+				await writeFile(
+					join(testDir, "crates", name, "Cargo.toml"),
+					`[package]\nname = "${name}"\n[dependencies]\nserde = "${version}"\n`,
+				);
+			}
+
+			const result = await runHandler(SharedDependencyVersions.handler, {
+				file: "Cargo.toml",
+				root: testDir,
+				resolve: false,
+			});
+
+			if (excludeBar) {
+				expect(result).toBe(true);
+			} else {
+				expect(result).toMatchObject({
+					error: expect.stringContaining('Version mismatch for "serde"'),
+				});
+			}
+		});
+
 		it("should fail when versions mismatch across members", async () => {
 			writeFileSync(
 				join(testDir, "Cargo.toml"),

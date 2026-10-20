@@ -1,4 +1,4 @@
-import { run } from "effection";
+import { all, run } from "effection";
 import { describe, expect, it, vi } from "vitest";
 
 import { policy } from "../src/makePolicy.js";
@@ -25,6 +25,47 @@ function makeRunnerOptions(
 
 describe("PolicyRunner", () => {
 	describe("run", () => {
+		it("should preserve every same-file fix across asynchronous handlers", async () => {
+			let contents: { license?: string; scripts?: { test: string } } = {};
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					resolve: true,
+					policies: [
+						policy({
+							name: "AddLicense",
+							description: "Adds a license to the stored document",
+							match: /package\.json$/,
+							handler: async () => {
+								const snapshot = structuredClone(contents);
+								await Promise.resolve();
+								contents = { ...snapshot, license: "MIT" };
+								return { error: "Missing license", fixed: true };
+							},
+						}),
+						policy({
+							name: "AddTestScript",
+							description: "Adds a test script to the stored document",
+							match: /package\.json$/,
+							handler: async () => {
+								const snapshot = structuredClone(contents);
+								await Promise.resolve();
+								contents = { ...snapshot, scripts: { test: "vitest" } };
+								return { error: "Missing test script", fixed: true };
+							},
+						}),
+					],
+				}),
+			);
+
+			const results = await run(() => runner.run(["package.json"]));
+
+			expect(results.results).toHaveLength(2);
+			expect(contents).toEqual({
+				license: "MIT",
+				scripts: { test: "vitest" },
+			});
+		});
+
 		it("should return empty results for no files", async () => {
 			const runner = new PolicyRunner(makeRunnerOptions());
 			const results = await run(() => runner.run([]));
@@ -51,6 +92,87 @@ describe("PolicyRunner", () => {
 			);
 			const results = await run(() => runner.run(["file.txt"]));
 			expect(results.results).toEqual([]);
+		});
+
+		it("should use fresh state when a runner is reused", async () => {
+			const failingPolicy = policy({
+				name: "FailPolicy",
+				description: "Always fails",
+				match: /\.txt$/,
+				handler: async (): Promise<PolicyError> => ({
+					error: "Something went wrong",
+				}),
+			});
+			const options = makeRunnerOptions({ policies: [failingPolicy] });
+			const runner = new PolicyRunner(options);
+
+			await run(() => runner.run(["first.txt"]));
+			const reusedResult = await run(() => runner.run(["second.txt"]));
+			const freshResult = await run(() =>
+				new PolicyRunner(options).run(["second.txt"]),
+			);
+
+			expect(reusedResult.results).toEqual(freshResult.results);
+			expect(reusedResult.perfStats.count).toBe(freshResult.perfStats.count);
+			expect(reusedResult.results.map(({ file }) => file)).toEqual([
+				"second.txt",
+			]);
+		});
+
+		it("should not mutate a previously returned result after reuse", async () => {
+			const failingPolicy = policy({
+				name: "FailPolicy",
+				description: "Always fails",
+				match: /\.txt$/,
+				handler: async (): Promise<PolicyError> => ({
+					error: "Something went wrong",
+				}),
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({ policies: [failingPolicy] }),
+			);
+
+			const firstResult = await run(() => runner.run(["first.txt"]));
+			const firstResultsSnapshot = structuredClone(firstResult.results);
+			const firstPerfSnapshot = structuredClone(firstResult.perfStats);
+			const secondResult = await run(() => runner.run(["second.txt"]));
+
+			expect(firstResult.results).toEqual(firstResultsSnapshot);
+			expect(firstResult.perfStats).toEqual(firstPerfSnapshot);
+			expect(firstResult.results).not.toBe(secondResult.results);
+			expect(firstResult.perfStats).not.toBe(secondResult.perfStats);
+		});
+
+		it("should isolate state between concurrent runs", async () => {
+			const failingPolicy = policy({
+				name: "FailPolicy",
+				description: "Always fails",
+				match: /\.txt$/,
+				handler: async (): Promise<PolicyError> => ({
+					error: "Something went wrong",
+				}),
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({ policies: [failingPolicy] }),
+			);
+
+			const [firstResult, secondResult] = await run(function* () {
+				return yield* all([
+					runner.run(["first.txt"]),
+					runner.run(["second.txt"]),
+				]);
+			});
+
+			expect(firstResult.results.map(({ file }) => file)).toEqual([
+				"first.txt",
+			]);
+			expect(secondResult.results.map(({ file }) => file)).toEqual([
+				"second.txt",
+			]);
+			expect(firstResult.perfStats.count).toBe(1);
+			expect(secondResult.perfStats.count).toBe(1);
+			expect(firstResult.results).not.toBe(secondResult.results);
+			expect(firstResult.perfStats).not.toBe(secondResult.perfStats);
 		});
 	});
 
@@ -129,6 +251,137 @@ describe("PolicyRunner", () => {
 				"Excluded all handlers: excluded/file.txt",
 			);
 		});
+
+		it.each([
+			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
+			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
+		])("should support excludeFromAll with regex $description, preserving lastIndex", async ({
+			regex,
+		}) => {
+			let handlerCalled = false;
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: /\.txt$/,
+				handler: async () => {
+					handlerCalled = true;
+					return true;
+				},
+			});
+
+			// Pre-set lastIndex to simulate prior regex use
+			regex.lastIndex = 2;
+			const initialLastIndex = regex.lastIndex;
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+					excludeFromAll: [regex],
+				}),
+			);
+
+			const results = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
+
+			// All files should be excluded
+			expect(handlerCalled).toBe(false);
+			expect(results.results).toEqual([]);
+
+			// lastIndex should be preserved
+			expect(regex.lastIndex).toBe(initialLastIndex);
+		});
+
+		it.each([
+			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
+			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
+		])("should support per-policy exclusions with regex $description, preserving lastIndex", async ({
+			regex,
+		}) => {
+			let handlerCalled = false;
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: /\.txt$/,
+				handler: async () => {
+					handlerCalled = true;
+					return true;
+				},
+			});
+
+			// Pre-set lastIndex to simulate prior regex use
+			regex.lastIndex = 2;
+			const initialLastIndex = regex.lastIndex;
+
+			const excludeMap = new Map([["TestPolicy", [regex]]]);
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+					excludePoliciesForFiles: excludeMap,
+				}),
+			);
+
+			const results = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
+
+			// All files should be excluded
+			expect(handlerCalled).toBe(false);
+			expect(results.results).toEqual([]);
+
+			// lastIndex should be preserved
+			expect(regex.lastIndex).toBe(initialLastIndex);
+		});
+
+		it("should keep duplicate policy configurations and exclusions independent", async () => {
+			const calls: string[] = [];
+			const duplicatePolicy: PolicyShape<{ label: string }> = {
+				name: "DuplicatePolicy",
+				description: "Configured more than once",
+				match: /\.txt$/,
+				handler: async ({ config, file }): Promise<PolicyError> => {
+					calls.push(`${config?.label}:${file}`);
+					return { error: config?.label ?? "missing config" };
+				},
+			};
+			const policies = [
+				policy(
+					duplicatePolicy,
+					{ label: "first" },
+					{ exclude: ["first-only"], instanceId: "first-instance" },
+				),
+				policy(
+					duplicatePolicy,
+					{ label: "second" },
+					{ exclude: ["second-only"], instanceId: "second-instance" },
+				),
+			];
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies,
+				}),
+			);
+
+			const results = await run(() =>
+				runner.run(["first-only.txt", "second-only.txt", "shared.txt"]),
+			);
+
+			expect(calls).toEqual(
+				expect.arrayContaining([
+					"second:first-only.txt",
+					"first:second-only.txt",
+					"first:shared.txt",
+					"second:shared.txt",
+				]),
+			);
+			expect(calls).toHaveLength(4);
+			expect(results.results.map((result) => result.policyId).sort()).toEqual([
+				"first-instance",
+				"first-instance",
+				"second-instance",
+				"second-instance",
+			]);
+			expect(
+				[...(results.perfStats.data.get("handle")?.keys() ?? [])].sort(),
+			).toEqual(["first-instance", "second-instance"]);
+		});
 	});
 
 	describe("policy matching", () => {
@@ -165,6 +418,43 @@ describe("PolicyRunner", () => {
 			await run(() => runner.run(["file.txt", "file.mjs"]));
 			expect(txtCalled).toEqual(["file.txt"]);
 			expect(jsCalled).toEqual(["file.mjs"]);
+		});
+
+		it.each([
+			{ flag: "g", regex: /.*\.txt$/g, description: "with global flag" },
+			{ flag: "y", regex: /.*\.txt$/y, description: "with sticky flag" },
+		])("should run policy match deterministically $description, preserving lastIndex", async ({
+			regex,
+		}) => {
+			const handledFiles: string[] = [];
+
+			const testPolicy = policy({
+				name: "TestPolicy",
+				description: "Test",
+				match: regex,
+				handler: async ({ file }) => {
+					handledFiles.push(file);
+					return true;
+				},
+			});
+
+			// Pre-set lastIndex to simulate prior regex use
+			regex.lastIndex = 2;
+			const initialLastIndex = regex.lastIndex;
+
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [testPolicy],
+				}),
+			);
+
+			await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
+
+			// All files should match and be handled
+			expect(handledFiles).toEqual(["a.txt", "b.txt", "c.txt"]);
+
+			// lastIndex should be preserved
+			expect(regex.lastIndex).toBe(initialLastIndex);
 		});
 	});
 
@@ -379,23 +669,43 @@ describe("PolicyRunner", () => {
 	});
 
 	describe("error handling", () => {
-		it("should throw with context when handler throws", async () => {
-			const testPolicy = policy({
-				name: "ThrowPolicy",
-				description: "Throws",
-				match: /\.txt$/,
-				handler: async () => {
-					throw new Error("handler boom");
+		it("should report a system error and continue when a handler throws", async () => {
+			const processedFiles: string[] = [];
+			const testPolicy = policy(
+				{
+					name: "ThrowPolicy",
+					description: "Throws",
+					match: /\.txt$/,
+					handler: async ({ file }) => {
+						processedFiles.push(file);
+						if (file === "bad.txt") {
+							throw new Error("handler boom");
+						}
+						return true;
+					},
 				},
-			});
+				undefined,
+				{ instanceId: "throw-instance" },
+			);
 
 			const runner = new PolicyRunner(
 				makeRunnerOptions({ policies: [testPolicy] }),
 			);
 
-			await expect(run(() => runner.run(["file.txt"]))).rejects.toThrow(
-				/Error executing policy 'ThrowPolicy'/,
-			);
+			const results = await run(() => runner.run(["bad.txt", "good.txt"]));
+
+			expect(processedFiles).toEqual(["bad.txt", "good.txt"]);
+			expect(results.results).toEqual([
+				{
+					file: "bad.txt",
+					policy: "ThrowPolicy",
+					policyId: "throw-instance",
+					outcome: {
+						error:
+							"System Error: Error executing policy 'throw-instance' for file 'bad.txt': handler boom",
+					},
+				},
+			]);
 		});
 	});
 

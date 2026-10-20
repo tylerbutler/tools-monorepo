@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { dirname, join } from "pathe";
+import { dirname, join, resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
 import type { PolicyFailure } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
@@ -217,7 +217,7 @@ export const PackageTestScripts = definePackagePolicy<
 	name: "PackageTestScripts",
 	description:
 		"Ensures packages have test scripts when test directories or test framework dependencies exist.",
-	handler: async (json, { file, config }) => {
+	handler: async (json, { file, root, config }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
 			return true;
@@ -232,7 +232,7 @@ export const PackageTestScripts = definePackagePolicy<
 		const testDirectories = config.testDirectories ?? [];
 		const testDependencies = config.testDependencies ?? [];
 		const requiredScripts = config.requiredScripts ?? ["test"];
-		const packageDir = dirname(file);
+		const packageDir = dirname(resolvePath(root, file));
 		const devDeps = json.devDependencies as Record<string, string> | undefined;
 
 		// Check if tests are expected based on what's configured
