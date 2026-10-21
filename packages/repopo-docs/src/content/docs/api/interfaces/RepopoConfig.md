@@ -17,10 +17,12 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [config.ts:42](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L42)
+Defined in: [config.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L44)
 
 An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
 from all policies.
+Strings are case-insensitive regular expressions, not globs.
+RegExp values retain their explicit flags.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -50,7 +52,7 @@ import { NoJsFileExtensions, PackageJsonProperties } from "repopo/policies";
 
 const config: RepopoConfig = {
   policies: [
-    policy(NoJsFileExtensions, { exclude: ["bin/*"] }),
+    policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] }),
     policy(PackageJsonProperties, { verbatim: { license: "MIT" } }),
   ],
 };

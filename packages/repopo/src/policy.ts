@@ -276,8 +276,10 @@ export interface PolicyShape<C = void> {
 
 	/**
 	 * An optional resolver function that can automatically fix violations.
+	 * Return a PolicyError with `fixed: true` after a successful fix.
+	 * Legacy PolicyFixResult resolvers remain supported.
 	 */
-	resolver?: PolicyStandaloneResolver<C> | undefined;
+	resolver?: PolicyResolver<C> | PolicyStandaloneResolver<C> | undefined;
 
 	/**
 	 * A default configuration that will be used if none is provided.
@@ -300,7 +302,10 @@ export abstract class Policy<C = void> implements PolicyShape<C> {
 	public readonly match: RegExp;
 	public readonly handler: PolicyHandler<C>;
 	public readonly defaultConfig?: C | undefined;
-	public readonly resolver?: PolicyStandaloneResolver<C> | undefined;
+	public readonly resolver?:
+		| PolicyResolver<C>
+		| PolicyStandaloneResolver<C>
+		| undefined;
 
 	public constructor(definition: PolicyShape<C>) {
 		this.name = definition.name;
@@ -340,12 +345,12 @@ export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
 
 	/**
 	 * File paths matching these patterns will be excluded from this policy.
-	 * @deprecated Use `excludeFiles` instead for backward compatibility.
 	 */
 	exclude?: (string | RegExp)[] | undefined;
 
 	/**
 	 * File paths matching these patterns will be excluded from this policy.
+	 * Legacy alias for `exclude`.
 	 */
 	excludeFiles?: (string | RegExp)[] | undefined;
 

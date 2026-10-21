@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use colored::Colorize;
-use regex::Regex;
+use regex::{Regex, RegexBuilder};
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
@@ -87,15 +87,17 @@ impl PerfStats {
 
 /// Build a Rust regex from a JS regex pattern and flags.
 fn compile_js_regex(pattern: &str, flags: &str) -> Result<Regex> {
-    let case_insensitive = flags.contains('i');
-
-    let rust_pattern = if case_insensitive {
-        format!("(?i){pattern}")
+    let rust_pattern = if flags.contains('y') {
+        format!(r"\A(?:{pattern})")
     } else {
         pattern.to_string()
     };
 
-    Regex::new(&rust_pattern)
+    RegexBuilder::new(&rust_pattern)
+        .case_insensitive(flags.contains('i'))
+        .multi_line(flags.contains('m'))
+        .dot_matches_new_line(flags.contains('s'))
+        .build()
         .with_context(|| format!("Failed to compile regex pattern: {pattern} (flags: {flags})"))
 }
 
@@ -109,7 +111,7 @@ fn compile_policies(config: &LoadConfigResponse) -> Result<(Vec<CompiledPolicy>,
         let exclude_regexes: Vec<Regex> = meta
             .exclude_files
             .iter()
-            .map(|pattern| compile_js_regex(pattern, "i"))
+            .map(|pattern| compile_js_regex(pattern.source(), pattern.flags()))
             .collect::<Result<Vec<_>>>()
             .with_context(|| {
                 format!(
@@ -128,7 +130,7 @@ fn compile_policies(config: &LoadConfigResponse) -> Result<(Vec<CompiledPolicy>,
     let global_excludes: Vec<Regex> = config
         .exclude_files
         .iter()
-        .map(|pattern| compile_js_regex(pattern, "i"))
+        .map(|pattern| compile_js_regex(pattern.source(), pattern.flags()))
         .collect::<Result<Vec<_>>>()
         .context("Failed to compile global exclude patterns")?;
 
@@ -418,7 +420,15 @@ pub fn run_list(
                 println!("    match: {}", policy.match_pattern);
             }
             if !policy.exclude_files.is_empty() {
-                println!("    excludes: {}", policy.exclude_files.join(", "));
+                println!(
+                    "    excludes: {}",
+                    policy
+                        .exclude_files
+                        .iter()
+                        .map(|pattern| format!("/{}/{}", pattern.source(), pattern.flags()))
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                );
             }
         }
     }
@@ -433,7 +443,45 @@ pub fn run_list(
 
 #[cfg(test)]
 mod tests {
-    use super::format_manual_fix;
+    use super::{compile_js_regex, compile_policies, format_manual_fix};
+    use crate::types::LoadConfigResponse;
+
+    #[test]
+    fn preserves_exclusion_flags_and_case_insensitive_string_defaults() {
+        let config: LoadConfigResponse = serde_json::from_value(serde_json::json!({
+            "policies": [{
+                "name": "Example",
+                "description": "Example",
+                "matchPattern": ".*",
+                "excludeFiles": [
+                    { "source": "^README", "flags": "" },
+                    { "source": "^skip$", "flags": "m" },
+                    "vendor/"
+                ]
+            }],
+            "excludeFiles": [
+                { "source": "^README", "flags": "" },
+                { "source": "^skip$", "flags": "m" },
+                "vendor/"
+            ]
+        }))
+        .unwrap();
+        let (policies, global) = compile_policies(&config).unwrap();
+        for exclusions in [&global, &policies[0].exclude_regexes] {
+            assert!(exclusions[0].is_match("README.md"));
+            assert!(!exclusions[0].is_match("readme.md"));
+            assert!(exclusions[1].is_match("prefix\nskip"));
+            assert!(exclusions[2].is_match("VENDOR/test.txt"));
+        }
+    }
+
+    #[test]
+    fn preserves_dotall_and_sticky_matching() {
+        assert!(compile_js_regex("a.b", "s").unwrap().is_match("a\nb"));
+        let sticky = compile_js_regex("a|b", "y").unwrap();
+        assert!(sticky.is_match("abc"));
+        assert!(!sticky.is_match("cab"));
+    }
 
     #[test]
     fn indents_multiline_manual_fix_instructions() {

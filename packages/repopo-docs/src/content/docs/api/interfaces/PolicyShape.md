@@ -31,7 +31,7 @@ Type of configuration object used by the policy
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:285](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L285)
+Defined in: [policy.ts:287](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L287)
 
 A default configuration that will be used if none is provided.
 
@@ -99,11 +99,13 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### resolver?
 
-> `optional` **resolver?**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
+> `optional` **resolver?**: [`PolicyResolver`](/api/type-aliases/policyresolver/)\<`C`\> \| [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
-Defined in: [policy.ts:280](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L280)
+Defined in: [policy.ts:282](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L282)
 
 An optional resolver function that can automatically fix violations.
+Return a PolicyError with `fixed: true` after a successful fix.
+Legacy PolicyFixResult resolvers remain supported.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

@@ -14,6 +14,7 @@ import type {
 	PolicyFailure,
 	PolicyFixResult,
 	PolicyHandlerResult,
+	PolicyResolver,
 	PolicyStandaloneResolver,
 } from "../src/policy.js";
 
@@ -63,6 +64,42 @@ describe("Check Command - Effection Integration", () => {
 	});
 
 	describe("Git file enumeration", () => {
+		it("preserves case-sensitive global exclusions from the config", async () => {
+			const configPath = join(testRepoDir, "repopo.config.mjs");
+			await writeFile(
+				configPath,
+				`export default {
+				excludeFiles: [/^TEST1/],
+				policies: [{
+					name: "CaseSensitive", description: "Checks exclusions", match: /^test1/,
+					handler: async () => ({ error: "Lowercase file still checked" })
+				}]
+			};`,
+			);
+			const result = await new Promise<{
+				code: string | number | undefined;
+				output: string;
+			}>((resolve) => {
+				const child = execFile(
+					process.execPath,
+					[
+						fileURLToPath(new URL("../bin/run.js", import.meta.url)),
+						"check",
+						"--stdin",
+						"--config",
+						configPath,
+					],
+					{ cwd: testRepoDir, timeout: 10000 },
+					(error, stdout, stderr) => {
+						resolve({ code: error?.code, output: stdout + stderr });
+					},
+				);
+				child.stdin?.end("test1.txt\n");
+			});
+			expect(result.code).toBe(1);
+			expect(result.output).toContain("Lowercase file still checked");
+		}, 15000);
+
 		it.each([
 			"test1.txt\n",
 			"",
@@ -149,8 +186,8 @@ describe("Check Command - Effection Integration", () => {
 	describe("Manual fix guidance", () => {
 		async function checkOutput(
 			outcome: PolicyHandlerResult,
-			resolver?: PolicyStandaloneResolver,
-		): Promise<string> {
+			resolver?: PolicyStandaloneResolver | PolicyResolver<undefined>,
+		): Promise<{ output: string; exitCode: typeof process.exitCode }> {
 			const command = new TestCheckPolicy(
 				[],
 				await Config.load(fileURLToPath(new URL("..", import.meta.url))),
@@ -158,7 +195,7 @@ describe("Check Command - Effection Integration", () => {
 			command.enableFix();
 			vi.spyOn(command, "git", "get").mockReturnValue(git);
 			vi.spyOn(command, "verbose").mockImplementation(() => {});
-			vi.spyOn(command, "info").mockImplementation(() => {});
+			const info = vi.spyOn(command, "info").mockImplementation(() => {});
 			const warning = vi.spyOn(command, "warning").mockImplementation(() => {});
 			vi.spyOn(command, "getContext").mockResolvedValue({
 				gitRoot: testRepoDir,
@@ -181,11 +218,35 @@ describe("Check Command - Effection Integration", () => {
 			try {
 				process.exitCode = 0;
 				await command.run();
-				return warning.mock.calls.map(([message]) => message).join("\n");
+				return {
+					output: [...info.mock.calls, ...warning.mock.calls]
+						.map(([message]) => message)
+						.join("\n"),
+					exitCode: process.exitCode,
+				};
 			} finally {
 				process.exitCode = originalExitCode;
 			}
 		}
+
+		it.each([
+			true,
+			false,
+			undefined,
+		])("reports new-format standalone resolution with fixed=%s", async (fixed) => {
+			const { output, exitCode } = await checkOutput(
+				{ error: "Needs a fix", manualFix: "Handler guidance" },
+				async () => ({ error: "Resolver result", fixed }),
+			);
+			expect(exitCode).toBe(fixed === true ? 0 : 1);
+			expect(output).toContain("Resolver result");
+			if (fixed === true) {
+				expect(output).not.toContain("Manual fix:");
+			} else {
+				expect(output).toContain("Resolver result");
+				expect(output).toContain("Handler guidance");
+			}
+		});
 
 		it.each([
 			{ error: "Wrong pattern" },
@@ -202,7 +263,7 @@ describe("Check Command - Effection Integration", () => {
 				resolved: false,
 			},
 		])("prints guidance for unresolved results: %j", async (outcome) => {
-			const output = await checkOutput({
+			const { output } = await checkOutput({
 				...outcome,
 				manualFix: "Use the shared helper.\r\nPreserve error handling.",
 			});
@@ -216,7 +277,7 @@ describe("Check Command - Effection Integration", () => {
 			false,
 			true,
 		])("uses resolver guidance when present: %s", async (hasGuidance) => {
-			const output = await checkOutput(
+			const { output } = await checkOutput(
 				{ error: "Wrong pattern", manualFix: "Handler guidance" },
 				async () => ({
 					name: "GuidedPolicy",
@@ -243,12 +304,12 @@ describe("Check Command - Effection Integration", () => {
 			},
 		])("omits guidance after successful inline fixes: %j", async (outcome) => {
 			expect(
-				await checkOutput({ ...outcome, manualFix: "Stale guidance" }),
+				(await checkOutput({ ...outcome, manualFix: "Stale guidance" })).output,
 			).not.toContain("Manual fix:");
 		});
 
 		it("omits guidance after a successful standalone fix", async () => {
-			const output = await checkOutput(
+			const { output } = await checkOutput(
 				{ error: "Wrong pattern", manualFix: "Stale guidance" },
 				async () => ({
 					name: "GuidedPolicy",
@@ -262,7 +323,7 @@ describe("Check Command - Effection Integration", () => {
 		});
 
 		it("does not add guidance when the policy supplies none", async () => {
-			const output = await checkOutput({ error: "Wrong pattern" });
+			const { output } = await checkOutput({ error: "Wrong pattern" });
 			expect(output).toContain("Wrong pattern");
 			expect(output).not.toContain("Manual fix:");
 		});

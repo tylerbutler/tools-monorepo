@@ -37,6 +37,8 @@ export interface PolicyOptions {
 	/**
 	 * File paths matching these patterns will be excluded from this policy.
 	 * Patterns are matched against repo-relative paths.
+	 * Strings are case-insensitive regular expressions, not globs.
+	 * RegExp values retain their explicit flags.
 	 */
 	exclude?: (string | RegExp)[];
 }
@@ -72,16 +74,19 @@ function normalizeHandler<C>(
  * Handlers are automatically normalized: async functions are wrapped for Effection
  * compatibility, while generator functions are used directly.
  *
+ * The second argument is policy configuration. Pass instance options as the third
+ * argument, using `undefined` for configuration to retain the policy's defaults.
+ *
  * @example
  * ```typescript
  * // Policy with no config, just options
- * policy(NoJsFileExtensions, { exclude: ["bin/*"] })
+ * policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] })
  *
  * // Policy with config
  * policy(PackageJsonProperties, { verbatim: { license: "MIT" } })
  *
  * // Policy with config and options
- * policy(PackageJsonProperties, { verbatim: { license: "MIT" } }, { exclude: ["vendor/*"] })
+ * policy(PackageJsonProperties, { verbatim: { license: "MIT" } }, { exclude: ["^vendor/"] })
  *
  * // Duplicate policies need stable instance IDs
  * policy(PackageJsonProperties, sourceConfig, { instanceId: "source-packages" })
@@ -92,61 +97,22 @@ function normalizeHandler<C>(
  */
 export function policy<C = void>(
 	policyDef: RepositoryPolicyDefinition<C>,
-	options?: PolicyOptions & { exclude: (string | RegExp)[] },
-): ConfiguredRepositoryPolicy<C>;
-/** @alpha */
-export function policy<C>(
-	policyDef: RepositoryPolicyDefinition<C>,
-	config: C,
+	config?: C,
 	options?: PolicyOptions,
 ): ConfiguredRepositoryPolicy<C>;
 /** @alpha */
 export function policy<C = void>(
 	policyDef: PolicyShape<C>,
-	options?: PolicyOptions & { exclude: (string | RegExp)[] },
-): ConfiguredFilePolicy<C>;
-/** @alpha */
-export function policy<C>(
-	policyDef: PolicyShape<C>,
-	config: C,
+	config?: C,
 	options?: PolicyOptions,
 ): ConfiguredFilePolicy<C>;
 /** @alpha */
 export function policy<C>(
 	policyDef: AnyPolicyShape<C>,
-	configOrOptions?: C | PolicyOptions,
-	maybeOptions?: PolicyOptions,
+	config?: C,
+	options?: PolicyOptions,
 ): ConfiguredPolicy<C> {
-	// Determine if the second argument is config or options
-	let config: C | undefined;
-	let options: PolicyOptions | undefined;
-
-	if (maybeOptions !== undefined) {
-		// Three-argument form: policy(def, config, options)
-		config = configOrOptions as C;
-		options = maybeOptions;
-	} else if (configOrOptions !== undefined) {
-		// Two-argument form: need to determine if it's config or options
-		// PolicyOptions has a specific shape with 'exclude' property
-		if (
-			typeof configOrOptions === "object" &&
-			configOrOptions !== null &&
-			"exclude" in configOrOptions &&
-			!("name" in configOrOptions) &&
-			Object.keys(configOrOptions).every(
-				(k) => k === "exclude" || k === "instanceId",
-			)
-		) {
-			// It's options (has 'exclude' and only option keys)
-			options = configOrOptions as PolicyOptions;
-		} else {
-			// It's config
-			config = configOrOptions as C;
-		}
-	}
-
-	// Merge with default config if available
-	const effectiveConfig = config ?? (policyDef.defaultConfig as C | undefined);
+	const effectiveConfig = config ?? policyDef.defaultConfig;
 
 	// Support both 'exclude' and 'excludeFiles' for backward compatibility
 	const excludePatterns = options?.exclude;
@@ -283,7 +249,7 @@ export function makePolicyDefinition<C = undefined>(
  *
  * @example
  * ```typescript
- * makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["bin/*"] })
+ * makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["^bin/"] })
  * ```
  *
  * @alpha
@@ -308,6 +274,6 @@ export function makePolicy<C>(
 	return {
 		...definition,
 		...settings,
-		config,
+		config: config ?? settings?.config ?? definition.defaultConfig,
 	};
 }

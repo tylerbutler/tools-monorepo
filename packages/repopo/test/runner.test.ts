@@ -1,11 +1,12 @@
 import { all, run, suspend } from "effection";
 import { describe, expect, it, vi } from "vitest";
 
-import { policy } from "../src/makePolicy.js";
+import { makePolicy, policy } from "../src/makePolicy.js";
 import type {
 	PolicyError,
 	PolicyFailure,
 	PolicyFixResult,
+	PolicyResolver,
 	PolicyShape,
 	RepositoryPolicyArgs,
 } from "../src/policy.js";
@@ -197,6 +198,93 @@ describe("PolicyRunner", () => {
 			expect(cleaned).toBe(2);
 		});
 	});
+
+	describe("configuration", () => {
+		it.each([
+			"file",
+			"repository",
+		] as const)("keeps exclude-shaped %s configuration separate from options", async (scope) => {
+			const configs: unknown[] = [];
+			const files: string[] = [];
+			const common = {
+				name: "Configured",
+				description: "Checks configuration delivery",
+				defaultConfig: { exclude: ["default"] },
+			};
+			const configured =
+				scope === "file"
+					? policy(
+							{
+								...common,
+								match: /.*/,
+								handler: async ({ file, config }) => {
+									files.push(file);
+									configs.push(config);
+									return true;
+								},
+							},
+							{ exclude: ["keep.txt"] },
+						)
+					: policy(
+							{
+								...common,
+								scope: "repository",
+								handler: async ({ files: inventory, config }) => {
+									files.push(...inventory);
+									configs.push(config);
+									return true;
+								},
+							},
+							{ exclude: ["keep.txt"] },
+						);
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [configured],
+				}),
+			);
+
+			await run(() => runner.run(["keep.txt"]));
+
+			expect(files).toEqual(["keep.txt"]);
+			expect(configs).toEqual([{ exclude: ["keep.txt"] }]);
+		});
+
+		it.each([
+			"file",
+			"repository",
+		] as const)("applies legacy %s defaults, settings config, and explicit overrides", async (scope) => {
+			const configs: unknown[] = [];
+			const common = {
+				name: "Legacy",
+				description: "Checks legacy configuration delivery",
+				defaultConfig: { threshold: 10 },
+				handler: async ({ config }: { config?: { threshold: number } }) => {
+					configs.push(config);
+					return true as const;
+				},
+			};
+			const configured = [
+				{ config: undefined, settings: undefined },
+				{ config: undefined, settings: { config: { threshold: 20 } } },
+				{ config: { threshold: 30 }, settings: { config: { threshold: 20 } } },
+			].map(({ config, settings }) =>
+				scope === "file"
+					? makePolicy({ ...common, match: /.*/ }, config, settings)
+					: makePolicy({ ...common, scope: "repository" }, config, settings),
+			);
+			for (const instance of configured) {
+				const runner = new PolicyRunner(
+					makeRunnerOptions({ policies: [instance] }),
+				);
+				await run(() => runner.run(["file.txt"]));
+			}
+			expect(configs).toEqual([
+				{ threshold: 10 },
+				{ threshold: 20 },
+				{ threshold: 30 },
+			]);
+		});
+	});
 	describe("repository policies", () => {
 		it("runs once on the full eligible inventory, independently of the selection", async () => {
 			const handler = vi.fn(async () => [
@@ -214,6 +302,7 @@ describe("PolicyRunner", () => {
 								scope: "repository",
 								handler,
 							},
+							undefined,
 							{ exclude: ["vendor/"] },
 						),
 						policy({
@@ -284,7 +373,10 @@ describe("PolicyRunner", () => {
 			const runner = new PolicyRunner(
 				makeRunnerOptions({
 					policies: [
-						policy(definition, { exclude: ["a"], instanceId: "first" }),
+						policy(definition, undefined, {
+							exclude: ["a"],
+							instanceId: "first",
+						}),
 						policy(
 							definition,
 							{ enabled: false },
@@ -540,6 +632,36 @@ describe("PolicyRunner", () => {
 	});
 
 	describe("exclusion logic", () => {
+		it.each([
+			{ pattern: /^README/, excluded: "README.md", included: "readme.md" },
+			{ pattern: /^skip$/m, excluded: "prefix\nskip", included: "skip.txt" },
+			{ pattern: "vendor/", excluded: "VENDOR/file.txt", included: "file.txt" },
+		])("preserves configured exclusion semantics for $pattern", async ({
+			pattern,
+			excluded,
+			included,
+		}) => {
+			const files: string[] = [];
+			const configured = policy(
+				{
+					name: "Exclusions",
+					description: "Checks configured exclusions",
+					match: /./s,
+					handler: async ({ file }) => {
+						files.push(file);
+						return true;
+					},
+				},
+				undefined,
+				{ exclude: [pattern] },
+			);
+			const runner = new PolicyRunner(
+				makeRunnerOptions({ policies: [configured] }),
+			);
+			await run(() => runner.run([excluded, included]));
+			expect(files).toEqual([included]);
+		});
+
 		it("should exclude files matching excludeFromAll patterns", async () => {
 			let handlerCalled = false;
 			const testPolicy = policy({
@@ -983,6 +1105,54 @@ describe("PolicyRunner", () => {
 	});
 
 	describe("standalone resolver", () => {
+		it.each([
+			{ kind: "async", fixed: true },
+			{ kind: "generator", fixed: false },
+			{ kind: "async", fixed: undefined },
+		])("normalizes $kind PolicyResolver results with fixed=$fixed", async ({
+			kind,
+			fixed,
+		}) => {
+			const result: PolicyError = {
+				error: "Resolver result",
+				fixed,
+				manualFix: "Manual correction",
+			};
+			const resolver: PolicyResolver =
+				kind === "async"
+					? async () => result
+					: function* () {
+							yield* all([]);
+							return result;
+						};
+			const definition: PolicyShape = {
+				name: "Resolver",
+				description: "Checks the new resolver format",
+				match: /\.txt$/,
+				handler: async () => ({ error: "Needs a fix" }),
+				resolver,
+			};
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					policies: [policy(definition)],
+					resolve: true,
+				}),
+			);
+			const { results } = await run(() => runner.run(["file.txt"]));
+			expect(results).toEqual([
+				expect.objectContaining({
+					resolution: {
+						name: "Resolver",
+						file: "file.txt",
+						resolved: fixed === true,
+						errorMessages: ["Resolver result"],
+						autoFixable: undefined,
+						manualFix: "Manual correction",
+					},
+				}),
+			]);
+		});
+
 		it("should attempt resolution when resolve=true and resolver exists", async () => {
 			const policyDef: PolicyShape = {
 				name: "ResolvablePolicy",

@@ -70,6 +70,14 @@ function serializeRegex(regex) {
 }
 
 /**
+ * @param {string | RegExp} pattern
+ * @returns {string | { source: string, flags: string }}
+ */
+function serializeExclusion(pattern) {
+	return pattern instanceof RegExp ? serializeRegex(pattern) : pattern;
+}
+
+/**
  * Serialize policy metadata for the Rust side.
  * Strips out functions and sends only what Rust needs for matching.
  * @param {import("../src/policy.js").ConfiguredPolicy} policy
@@ -81,14 +89,8 @@ function serializePolicy(policy) {
 			? { source: "", flags: "" }
 			: serializeRegex(policy.match);
 
-	// Convert excludeFiles to regex pattern strings
 	const excludeFiles = (policy.excludeFiles ?? policy.exclude ?? []).map(
-		(e) => {
-			if (e instanceof RegExp) {
-				return e.source;
-			}
-			return String(e);
-		},
+		serializeExclusion,
 	);
 
 	return {
@@ -193,12 +195,9 @@ async function handleLoadConfig(params) {
 
 		// Serialize for Rust
 		const serializedPolicies = identifiedPolicies.map(serializePolicy);
-		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map((e) => {
-			if (e instanceof RegExp) {
-				return e.source;
-			}
-			return String(e);
-		});
+		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map(
+			serializeExclusion,
+		);
 
 		respond({
 			ok: true,
@@ -219,15 +218,14 @@ async function handleRunRepositoryPolicies(params) {
 	parsedFiles.clear();
 	try {
 		const { PolicyRunner } = await import("../esm/runner.js");
+		const { exclusionRegex } = await import("../esm/context.js");
 		const { parseFilePaths } = await import("../esm/filePaths.js");
 		const { simpleGit } = await import("simple-git");
 		const runner = new PolicyRunner({
 			policies: policiesByIndex.filter(
 				(policy) => policy.scope === "repository",
 			),
-			excludeFromAll: (loadedConfig?.excludeFiles ?? []).map(
-				(pattern) => new RegExp(pattern, "i"),
-			),
+			excludeFromAll: (loadedConfig?.excludeFiles ?? []).map(exclusionRegex),
 			excludePoliciesForFiles: new Map(),
 			gitRoot: storedGitRoot,
 			resolve: params.resolve ?? false,

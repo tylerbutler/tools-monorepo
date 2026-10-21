@@ -8,6 +8,14 @@ import type { IdentifiedPolicy, PolicyInstanceId } from "./policy.js";
 export type ExcludedPolicyFileMap = Map<PolicyInstanceId, RegExp[]>;
 
 /**
+ * Preserve explicit regex flags; string exclusions remain case-insensitive.
+ * @internal
+ */
+export function exclusionRegex(pattern: string | RegExp): RegExp {
+	return typeof pattern === "string" ? new RegExp(pattern, "i") : pattern;
+}
+
+/**
  * Creates the per-instance exclusion map used by policy runners.
  *
  * @internal
@@ -18,8 +26,8 @@ export function createExcludedPolicyFileMap(
 	return new Map(
 		policies.map((configuredPolicy) => [
 			configuredPolicy.instanceId,
-			configuredPolicy.excludeFiles?.map(
-				(pattern) => new RegExp(pattern, "i"),
+			(configuredPolicy.excludeFiles ?? configuredPolicy.exclude)?.map(
+				exclusionRegex,
 			) ?? [],
 		]),
 	);

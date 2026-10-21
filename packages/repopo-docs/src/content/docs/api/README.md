@@ -7,13 +7,9 @@ title: "repopo"
 
 # repopo API
 
-A tool for enforcing repository policies and standards across codebases.
+Repository policy authoring, execution, and CLI entry point.
 
-## Remarks
-
-Repopo provides a framework for defining and enforcing policies across repositories,
-such as file headers, package.json consistency, and other code standards.
-It can be used as a CLI tool or integrated into CI/CD pipelines.
+Import `repopo/api` for the programmatic API without the CLI entry point.
 
 ## Classes
 
@@ -81,11 +77,17 @@ It can be used as a CLI tool or integrated into CI/CD pipelines.
 - [defineCargoPolicy](/api/functions/definecargopolicy/)
 - [defineFileHeaderPolicy](/api/functions/definefileheaderpolicy/)
 - [defineGleamPolicy](/api/functions/definegleampolicy/)
+- [definePackagePolicy](/api/functions/definepackagepolicy/)
 - [fromFluidHandlers](/api/functions/fromfluidhandlers/)
-- [generatePackagePolicy](/api/functions/generatepackagepolicy/)
 - [isPolicyError](/api/functions/ispolicyerror/)
 - [~~isPolicyFailure~~](/api/functions/ispolicyfailure/)
 - [~~isPolicyFixResult~~](/api/functions/ispolicyfixresult/)
 - [makePolicy](/api/functions/makepolicy/)
 - [~~makePolicyDefinition~~](/api/functions/makepolicydefinition/)
 - [policy](/api/functions/policy/)
+
+## References
+
+### generatePackagePolicy
+
+Renames and re-exports [definePackagePolicy](/api/functions/definepackagepolicy/)

@@ -292,6 +292,7 @@
 			"inputs": [
 				"default",
 				"^production",
+				"{workspaceRoot}/config/vitest.config.ts",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
 			],
 			"outputs": ["{projectRoot}/_temp/**", "{projectRoot}/.sonda/**"],
@@ -303,6 +304,7 @@
 			"inputs": [
 				"default",
 				"^production",
+				"{workspaceRoot}/config/vitest.config.ts",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
 			],
 			"outputs": [
