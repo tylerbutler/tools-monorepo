@@ -240,8 +240,8 @@ importers:
         specifier: ^7.8.5
         version: 7.8.5
       simple-git:
-        specifier: ^3.36.0
-        version: 3.36.0(supports-color@8.1.1)
+        specifier: ^4.0.1
+        version: 4.0.1
       strip-ansi:
         specifier: ^7.2.0
         version: 7.2.0
@@ -331,8 +331,8 @@ importers:
         specifier: ^7.8.5
         version: 7.8.5
       simple-git:
-        specifier: ^3.36.0
-        version: 3.36.0
+        specifier: ^4.0.1
+        version: 4.0.1
       sort-package-json:
         specifier: '*'
         version: 2.14.0
@@ -1007,8 +1007,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       simple-git:
-        specifier: ^3.36.0
-        version: 3.36.0
+        specifier: ^4.0.1
+        version: 4.0.1
       sort-package-json:
         specifier: '*'
         version: 2.14.0
@@ -1240,8 +1240,8 @@ importers:
         specifier: ^7.8.5
         version: 7.8.5
       simple-git:
-        specifier: ^3.36.0
-        version: 3.36.0
+        specifier: ^4.0.1
+        version: 4.0.1
       sort-package-json:
         specifier: 2.14.0
         version: 2.14.0
@@ -1373,8 +1373,8 @@ importers:
         specifier: ^7.8.5
         version: 7.8.5
       simple-git:
-        specifier: ^3.36.0
-        version: 3.36.0
+        specifier: ^4.0.1
+        version: 4.0.1
       sort-package-json:
         specifier: '*'
         version: 2.14.0
@@ -4742,6 +4742,9 @@ packages:
 
   '@simple-git/argv-parser@1.1.1':
     resolution: {integrity: sha512-Q9lBcfQ+VQCpQqGJFHe5yooOS5hGdLFFbJ5R+R5aDsnkPCahtn1hSkMcORX65J2Z5lxSkD0lQorMsncuBQxYUw==}
+
+  '@simple-git/argv-parser@2.0.0':
+    resolution: {integrity: sha512-wr5b8akZQKNXiShOfPA1wRECrG1X7IAwNRKiU24g4CxSxDHgNcc5c5tdfGuA3NEOyAwta5iAQ5b7UjyrqyRFtg==}
 
   '@sinclair/typebox@0.34.52':
     resolution: {integrity: sha512-XiMQh7qqVlxZzcVD+kkGMNGMzcTrDMLWI7S4x7z1MkCkbDPrekpZXEUK0eZqZFMuHQg2a2DZOcDIh9o5v3Gonw==}
@@ -10125,6 +10128,9 @@ packages:
   simple-git@3.36.0:
     resolution: {integrity: sha512-cGQjLjK8bxJw4QuYT7gxHw3/IouVESbhahSsHrX97MzCL1gu2u7oy38W6L2ZIGECEfIBG4BabsWDPjBxJENv9Q==}
 
+  simple-git@4.0.1:
+    resolution: {integrity: sha512-3OXqp9MDRL+IlkJz0qUkm7dZoxVi61xdX2RF8fOA2OHHA8BNAVD+UdiXZ+5VYkrYZZ31OCIcAm8F8xnHOSRmrg==}
+
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
@@ -14306,12 +14312,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@kwsites/file-exists@1.1.1(supports-color@8.1.1)':
-    dependencies:
-      debug: 4.4.3(supports-color@8.1.1)
-    transitivePeerDependencies:
-      - supports-color
-
   '@kwsites/promise-deferred@1.1.1': {}
 
   '@manypkg/find-root@1.1.0':
@@ -15748,6 +15748,10 @@ snapshots:
   '@simple-git/args-pathspec@1.0.4': {}
 
   '@simple-git/argv-parser@1.1.1':
+    dependencies:
+      '@simple-git/args-pathspec': 1.0.4
+
+  '@simple-git/argv-parser@2.0.0':
     dependencies:
       '@simple-git/args-pathspec': 1.0.4
 
@@ -22914,13 +22918,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  simple-git@3.36.0(supports-color@8.1.1):
+  simple-git@4.0.1:
     dependencies:
-      '@kwsites/file-exists': 1.1.1(supports-color@8.1.1)
+      '@kwsites/file-exists': 1.1.1
       '@kwsites/promise-deferred': 1.1.1
       '@simple-git/args-pathspec': 1.0.4
-      '@simple-git/argv-parser': 1.1.1
-      debug: 4.4.3(supports-color@8.1.1)
+      '@simple-git/argv-parser': 2.0.0
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
