@@ -7,14 +7,12 @@ title: "PolicyDefinition"
 
 > **PolicyDefinition**\<`C`\> = [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policy.ts:324](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L324)
+Defined in: [policy.ts:357](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L357)
+
+Legacy name for a file-policy definition.
 
 :::caution[Deprecated]
 Use [PolicyShape](/api/interfaces/policyshape/) instead.
-:::
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
 :::
 
 ## Type Parameters

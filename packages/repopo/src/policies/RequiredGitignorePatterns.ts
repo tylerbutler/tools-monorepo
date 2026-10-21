@@ -10,14 +10,22 @@ import type {
 /**
  * Policy settings for the RequiredGitignorePatterns repo policy.
  *
- * @alpha
+ * @public
  */
 export interface RequiredGitignorePatternsSettings {
 	/**
 	 * Array of patterns that must be present in .gitignore.
 	 * Each pattern can be a string or an object with pattern and comment.
 	 */
-	patterns: Array<string | { pattern: string; comment?: string }>;
+	patterns: Array<
+		| string
+		| {
+				/** Literal .gitignore entry to require. */
+				pattern: string;
+				/** Comment inserted before the entry when fixing the file. */
+				comment?: string;
+		  }
+	>;
 }
 
 /**
@@ -223,7 +231,7 @@ async function handleMissingGitignore(
  * A repo policy that ensures .gitignore contains required patterns to prevent
  * committing sensitive files, dependencies, and build artifacts.
  *
- * @alpha
+ * @public
  */
 export const RequiredGitignorePatterns: PolicyDefinition<RequiredGitignorePatternsSettings> =
 	makePolicyDefinition({

@@ -23,7 +23,7 @@ import { parsePackageName } from "../utils/packageName.js";
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export interface PackageFolderNameConfig {
 	/**
@@ -119,7 +119,7 @@ function getExpectedFolderName(
  *
  * For example:
  * - `packages/my-lib/package.json` with name `my-lib` ✓
- * - `packages/my-lib/package.json` with name `@myorg/my-lib` ✓ (if @myorg in stripScopes)
+ * - `packages/my-lib/package.json` with name `@myorg/my-lib` ✓ (if `@myorg` is in `stripScopes`)
  * - `packages/wrong-name/package.json` with name `my-lib` ✗
  *
  * @example
@@ -137,7 +137,7 @@ function getExpectedFolderName(
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageFolderName = definePackagePolicy<
 	PackageJson,

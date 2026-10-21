@@ -7,13 +7,9 @@ title: "isPolicyError"
 
 > **isPolicyError**(`toCheck`): `toCheck is PolicyError`
 
-Defined in: [policy.ts:442](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L442)
+Defined in: [policy.ts:495](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L495)
 
 Type guard to check if a result is a PolicyError (new format).
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Parameters
 
@@ -21,6 +17,10 @@ This API should not be used in production and may be trimmed from a public relea
 
 `any`
 
+Value to inspect.
+
 ## Returns
 
 `toCheck is PolicyError`
+
+Whether the value is a non-null object with a string `error` property.

@@ -5,11 +5,9 @@ prev: false
 title: "PolicyRepositoryResult"
 ---
 
-Defined in: [runner.ts:72](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L72)
+Defined in: [runner.ts:79](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L79)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+A single finding from a repository-scoped policy.
 
 ## Properties
 
@@ -17,13 +15,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **file?**: `undefined`
 
-Defined in: [runner.ts:78](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L78)
+Defined in: [runner.ts:89](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L89)
 
 Repository findings use `outcome.files`, not a synthetic file path.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -31,11 +25,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **outcome**: [`RepositoryPolicyFinding`](/api/interfaces/repositorypolicyfinding/)
 
-Defined in: [runner.ts:76](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L76)
+Defined in: [runner.ts:87](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L87)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Violation details, optional affected files, and fix status.
 
 ***
 
@@ -43,11 +35,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **policy**: `string`
 
-Defined in: [runner.ts:74](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L74)
+Defined in: [runner.ts:83](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L83)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Display name of the policy.
 
 ***
 
@@ -55,11 +45,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **policyId**: `string`
 
-Defined in: [runner.ts:75](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L75)
+Defined in: [runner.ts:85](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L85)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Stable identity of the configured policy instance.
 
 ***
 
@@ -67,8 +55,6 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **scope**: `"repository"`
 
-Defined in: [runner.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L73)
+Defined in: [runner.ts:81](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L81)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Identifies a repository-scoped result.

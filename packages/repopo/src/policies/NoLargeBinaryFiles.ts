@@ -6,7 +6,7 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
 /**
  * Policy settings for the NoLargeBinaryFiles repo policy.
  *
- * @alpha
+ * @public
  */
 export interface NoLargeBinaryFilesSettings {
 	/**
@@ -120,7 +120,7 @@ function formatBytes(bytes: number): string {
  * A repo policy that prevents large binary files from being committed to the repository.
  * Large files can bloat the repository and slow down clones. Consider using Git LFS for large assets.
  *
- * @alpha
+ * @public
  */
 export const NoLargeBinaryFiles: PolicyDefinition<NoLargeBinaryFilesSettings> =
 	makePolicyDefinition({

@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the GleamInternalModulesConfigured policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamInternalModulesConfiguredConfig {
 	/**
@@ -21,7 +21,7 @@ export interface GleamInternalModulesConfiguredConfig {
  * A policy that ensures `internal_modules` is configured in gleam.toml
  * to hide implementation details from generated documentation.
  *
- * @alpha
+ * @public
  */
 export const GleamInternalModulesConfigured: PolicyShape<GleamInternalModulesConfiguredConfig> =
 	defineGleamPolicy({

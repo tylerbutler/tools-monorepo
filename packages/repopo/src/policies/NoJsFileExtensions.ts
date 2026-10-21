@@ -9,7 +9,7 @@ import type { PolicyDefinition, PolicyFailure } from "../policy.js";
  * is processed by node. Using explicit file extensions reduces ambiguity and ensures a CJS file isn't suddenly treated
  * like an ESM file.
  *
- * @alpha
+ * @public
  */
 export const NoJsFileExtensions: PolicyDefinition = makePolicyDefinition({
 	name: "NoJsFileExtensions",

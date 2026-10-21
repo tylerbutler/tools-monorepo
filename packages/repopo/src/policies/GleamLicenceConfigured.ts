@@ -9,7 +9,7 @@ import { validateLicenceField } from "../policyDefiners/spdxValidator.js";
 /**
  * Configuration for the GleamLicenceConfigured policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamLicenceConfiguredConfig {
 	/**
@@ -35,7 +35,7 @@ const MANUAL_FIX =
 /**
  * A policy that ensures licence metadata is properly configured in gleam.toml.
  *
- * @alpha
+ * @public
  */
 export const GleamLicenceConfigured: PolicyShape<GleamLicenceConfiguredConfig> =
 	defineGleamPolicy({

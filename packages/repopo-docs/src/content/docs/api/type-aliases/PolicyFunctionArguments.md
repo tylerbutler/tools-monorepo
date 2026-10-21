@@ -7,14 +7,12 @@ title: "PolicyFunctionArguments"
 
 > **PolicyFunctionArguments**\<`C`\> = [`PolicyArgs`](/api/interfaces/policyargs/)\<`C`\>
 
-Defined in: [policy.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L51)
+Defined in: [policy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L53)
+
+Legacy name for file-policy handler arguments.
 
 :::caution[Deprecated]
 Use [PolicyArgs](/api/interfaces/policyargs/) instead.
-:::
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
 :::
 
 ## Type Parameters

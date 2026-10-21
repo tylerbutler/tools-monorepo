@@ -54,7 +54,7 @@ function checkSection(
  * A policy that validates all path dependency targets in gleam.toml exist
  * and contain a gleam.toml file.
  *
- * @alpha
+ * @public
  */
 export const GleamPathDepsValid: PolicyShape = defineGleamPolicy({
 	name: "GleamPathDepsValid",

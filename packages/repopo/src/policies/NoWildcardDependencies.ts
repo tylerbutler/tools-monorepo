@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the NoWildcardDependencies policy.
  *
- * @alpha
+ * @public
  */
 export interface NoWildcardDependenciesConfig {
 	/**
@@ -18,7 +18,7 @@ export interface NoWildcardDependenciesConfig {
 
 	/**
 	 * Version patterns to warn about.
-	 * @defaultValue [">="]
+	 * @defaultValue `[">="]`
 	 */
 	warn?: string[];
 
@@ -96,7 +96,7 @@ function checkSectionDeps(
 /**
  * A policy that prevents wildcard or overly permissive version specifications in Cargo.toml.
  *
- * @alpha
+ * @public
  */
 export const NoWildcardDependencies: PolicyShape<NoWildcardDependenciesConfig> =
 	defineCargoPolicy({

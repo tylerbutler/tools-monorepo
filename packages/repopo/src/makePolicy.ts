@@ -24,7 +24,7 @@ import type {
 /**
  * Options for configuring a policy instance.
  *
- * @alpha
+ * @public
  */
 export interface PolicyOptions {
 	/**
@@ -77,6 +77,11 @@ function normalizeHandler<C>(
  * The second argument is policy configuration. Pass instance options as the third
  * argument, using `undefined` for configuration to retain the policy's defaults.
  *
+ * @param policyDef - Repository policy to configure.
+ * @param config - Configuration override; omitted or nullish values use the definition's defaults.
+ * @param options - Instance identity and repo-relative file exclusions.
+ * @returns A configured repository policy.
+ *
  * @example
  * ```typescript
  * // Policy with no config, just options
@@ -93,20 +98,33 @@ function normalizeHandler<C>(
  * policy(PackageJsonProperties, testConfig, { instanceId: "test-packages" })
  * ```
  *
- * @alpha
+ * @public
  */
 export function policy<C = void>(
 	policyDef: RepositoryPolicyDefinition<C>,
 	config?: C,
 	options?: PolicyOptions,
 ): ConfiguredRepositoryPolicy<C>;
-/** @alpha */
+/**
+ * Configures a file policy and normalizes its handler for Effection.
+ *
+ * @param policyDef - File policy to configure.
+ * @param config - Configuration override; omitted or nullish values use the definition's defaults.
+ * @param options - Instance identity and repo-relative file exclusions.
+ * @returns A configured file policy.
+ *
+ * @public
+ */
 export function policy<C = void>(
 	policyDef: PolicyShape<C>,
 	config?: C,
 	options?: PolicyOptions,
 ): ConfiguredFilePolicy<C>;
-/** @alpha */
+/**
+ * Configures a file or repository policy with defaults and instance options.
+ *
+ * @public
+ */
 export function policy<C>(
 	policyDef: AnyPolicyShape<C>,
 	config?: C,
@@ -207,7 +225,7 @@ export function identifyPolicyInstances<
  *
  * @deprecated Use {@link PolicyShape} directly instead.
  *
- * @alpha
+ * @public
  */
 export type PolicyDefinitionInput<C = undefined> = PolicyDefinition<C>;
 
@@ -215,6 +233,9 @@ export type PolicyDefinitionInput<C = undefined> = PolicyDefinition<C>;
  * Creates a {@link PolicyDefinition} from the provided arguments.
  *
  * @deprecated Define policies as object literals satisfying {@link PolicyShape} instead.
+ *
+ * @param args - Policy metadata, handler, optional resolver, and defaults.
+ * @returns A file-policy definition.
  *
  * @example
  * ```typescript
@@ -226,7 +247,7 @@ export type PolicyDefinitionInput<C = undefined> = PolicyDefinition<C>;
  * });
  * ```
  *
- * @alpha
+ * @public
  */
 export function makePolicyDefinition<C = undefined>(
 	args: PolicyDefinitionInput<C>,
@@ -247,25 +268,46 @@ export function makePolicyDefinition<C = undefined>(
  *
  * @deprecated Use the `policy` function instead, which has a simpler API.
  *
+ * @param definition - Repository policy to configure.
+ * @param config - Configuration override, taking precedence over settings and defaults.
+ * @param settings - Instance identity, exclusions, and fallback configuration.
+ * @returns A configured repository policy.
+ *
  * @example
  * ```typescript
  * makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["^bin/"] })
  * ```
  *
- * @alpha
+ * @public
  */
 export function makePolicy<C>(
 	definition: RepositoryPolicyDefinition<C>,
 	config?: C,
 	settings?: PolicyInstanceSettings<C>,
 ): ConfiguredRepositoryPolicy<C>;
-/** @alpha */
+/**
+ * Combines a file-policy definition with configuration and legacy instance settings.
+ *
+ * @deprecated Use `policy()` instead.
+ *
+ * @param definition - File policy to configure.
+ * @param config - Configuration override, taking precedence over settings and defaults.
+ * @param settings - Instance identity, exclusions, and fallback configuration.
+ * @returns A configured file policy.
+ *
+ * @public
+ */
 export function makePolicy<C>(
 	definition: PolicyDefinition<C>,
 	config?: C,
 	settings?: PolicyInstanceSettings<C>,
 ): PolicyInstance<C>;
-/** @alpha */
+/**
+ * Combines a policy definition with configuration and legacy instance settings.
+ *
+ * @deprecated Use `policy()` instead.
+ * @public
+ */
 export function makePolicy<C>(
 	definition: AnyPolicyShape<C>,
 	config?: C,

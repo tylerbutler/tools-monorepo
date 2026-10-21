@@ -11,7 +11,7 @@ const BUILD_DIR_REGEX = /(?:^|\/)(build)\//;
  * A policy that prevents accidental commits of build directory contents.
  * Applies to Gleam's `build/` output directory.
  *
- * @alpha
+ * @public
  */
 export const NoBuildDirectory: PolicyDefinition = makePolicyDefinition({
 	name: "NoBuildDirectory",

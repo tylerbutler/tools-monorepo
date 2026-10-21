@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the GleamTomlRequired policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamTomlRequiredConfig {
 	/**
@@ -44,7 +44,7 @@ function checkRequiredFields(toml: GleamToml, fields: string[]): string[] {
 /**
  * A policy that enforces required fields exist in gleam.toml.
  *
- * @alpha
+ * @public
  */
 export const GleamTomlRequired: PolicyShape<GleamTomlRequiredConfig> =
 	defineGleamPolicy({

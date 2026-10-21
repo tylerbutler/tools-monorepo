@@ -54,11 +54,14 @@ function matches(regex: RegExp, value: string): boolean {
 
 /**
  * Result of running a single policy on a single file.
- * @alpha
+ * @public
  */
 export interface PolicyFileResult {
+	/** File scope; omitted by the runner for backward compatibility. */
 	scope?: "file";
+	/** Path of the checked file, relative to the repository root. */
 	file: string;
+	/** Display name of the policy. */
 	policy: PolicyName;
 	/** Stable identity of the configured policy instance */
 	policyId: PolicyInstanceId;
@@ -68,25 +71,39 @@ export interface PolicyFileResult {
 	resolution?: PolicyFixResult;
 }
 
-/** @alpha */
+/**
+ * A single finding from a repository-scoped policy.
+ *
+ * @public
+ */
 export interface PolicyRepositoryResult {
+	/** Identifies a repository-scoped result. */
 	scope: "repository";
+	/** Display name of the policy. */
 	policy: PolicyName;
+	/** Stable identity of the configured policy instance. */
 	policyId: PolicyInstanceId;
+	/** Violation details, optional affected files, and fix status. */
 	outcome: RepositoryPolicyFinding;
 	/** Repository findings use `outcome.files`, not a synthetic file path. */
 	file?: never;
 }
 
-/** @alpha */
+/**
+ * A file-policy result or repository-policy finding.
+ *
+ * @public
+ */
 export type PolicyExecutionResult = PolicyFileResult | PolicyRepositoryResult;
 
 /**
  * Aggregated results from a full policy run.
- * @alpha
+ * @public
  */
 export interface PolicyRunResults {
+	/** Violations, fix outcomes, and execution errors; passing checks are omitted. */
 	results: PolicyExecutionResult[];
+	/** File counts and elapsed milliseconds per action and policy instance. */
 	perfStats: PolicyHandlerPerfStats;
 }
 
@@ -98,14 +115,20 @@ interface PolicyRunState {
 
 /**
  * Options for configuring a {@link PolicyRunner}.
- * @alpha
+ * @public
  */
 export interface PolicyRunnerOptions {
+	/** Configured file and repository policies to execute. */
 	policies: NonNullable<RepopoConfig["policies"]>;
+	/** Regular expressions that exclude repo-relative paths from every policy. */
 	excludeFromAll: RegExp[];
+	/** Per-instance exclusions; supplied entries override the policy's own exclusions. */
 	excludePoliciesForFiles: ExcludedPolicyFileMap;
+	/** Absolute path to the repository root. */
 	gitRoot: string;
+	/** Whether handlers and resolvers should attempt automatic fixes. */
 	resolve: boolean;
+	/** Optional logger for file-exclusion messages. */
 	logger?: Pick<Logger, "verbose">;
 	/** Maximum active files in read-only checks. Defaults to 8; fixes remain sequential. */
 	concurrency?: number;
@@ -113,7 +136,7 @@ export interface PolicyRunnerOptions {
 
 /**
  * Runs configured policies against files and collects results.
- * @alpha
+ * @public
  */
 export class PolicyRunner {
 	private readonly policies: IdentifiedPolicy[];
@@ -124,6 +147,12 @@ export class PolicyRunner {
 	private readonly logger: Pick<Logger, "verbose"> | undefined;
 	private readonly concurrency: number;
 
+	/**
+	 * Creates a runner with stable policy identities and normalized exclusions.
+	 *
+	 * @param options - Policies, exclusions, repository root, and execution settings.
+	 * @throws If instance IDs conflict, repeated policies lack IDs, or concurrency is not a positive safe integer.
+	 */
 	public constructor(options: PolicyRunnerOptions) {
 		this.policies = identifyPolicyInstances(options.policies);
 		this.excludeFromAll = options.excludeFromAll;
@@ -142,6 +171,10 @@ export class PolicyRunner {
 	/**
 	 * Run file policies on the selection, then repository policies on the full inventory.
 	 * Supply a loader to refresh the inventory after fixes, including repository fixes.
+	 *
+	 * @param filePaths - Repo-relative paths selected for file-policy checks.
+	 * @param repositoryFiles - Full repo-relative inventory or an async loader; defaults to `filePaths`.
+	 * @returns An Effection operation yielding findings, fix outcomes, errors, and timing data.
 	 */
 	public *run(
 		filePaths: string[],

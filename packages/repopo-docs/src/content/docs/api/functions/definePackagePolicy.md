@@ -7,13 +7,9 @@ title: "definePackagePolicy"
 
 > **definePackagePolicy**\<`J`, `C`\>(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policyDefiners/definePackagePolicy.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L94)
+Defined in: [policyDefiners/definePackagePolicy.ts:97](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L97)
 
 Define a repo policy for package.json files.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Type Parameters
 
@@ -31,9 +27,13 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`DefinePackagePolicyArgs`](/api/interfaces/definepackagepolicyargs/)\<`J`, `C`\>
 
+Policy metadata, parsed-JSON handler, and optional defaults.
+
 ## Returns
 
 [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
+
+A file policy that reads and parses matching package.json files.
 
 ## Remarks
 

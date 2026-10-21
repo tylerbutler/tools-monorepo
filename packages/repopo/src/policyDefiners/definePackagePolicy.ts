@@ -22,7 +22,7 @@ const { readFile: readJson } = jsonfile;
  *
  * Both styles are supported to allow gradual migration and flexibility.
  *
- * @alpha
+ * @public
  */
 export type PackageJsonHandler<J, C> = (
 	json: J,
@@ -44,7 +44,7 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 /**
  * Input arguments for defining a package.json policy.
  *
- * @alpha
+ * @public
  */
 export interface DefinePackagePolicyArgs<J, C> {
 	/**
@@ -75,6 +75,9 @@ export interface DefinePackagePolicyArgs<J, C> {
  * This is a helper function that creates a policy pre-configured to match
  * package.json files. The handler receives the parsed JSON content.
  *
+ * @param args - Policy metadata, parsed-JSON handler, and optional defaults.
+ * @returns A file policy that reads and parses matching package.json files.
+ *
  * @example
  * ```typescript
  * const MyPackagePolicy = definePackagePolicy({
@@ -89,7 +92,7 @@ export interface DefinePackagePolicyArgs<J, C> {
  * });
  * ```
  *
- * @alpha
+ * @public
  */
 export function definePackagePolicy<J = PackageJson, C = undefined>(
 	args: DefinePackagePolicyArgs<J, C>,

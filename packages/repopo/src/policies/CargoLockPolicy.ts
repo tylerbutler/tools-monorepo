@@ -9,7 +9,7 @@ import {
 /**
  * Configuration for the CargoLockPolicy.
  *
- * @alpha
+ * @public
  */
 export interface CargoLockPolicyConfig {
 	/**
@@ -57,7 +57,7 @@ function isLibraryCrate(toml: CargoToml): boolean {
  * A context-aware policy for Cargo.lock files.
  * Binary crates should commit Cargo.lock; library crates typically shouldn't.
  *
- * @alpha
+ * @public
  */
 export const CargoLockPolicy: PolicyShape<CargoLockPolicyConfig> =
 	defineCargoPolicy({

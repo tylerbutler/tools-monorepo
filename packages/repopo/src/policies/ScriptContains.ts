@@ -4,7 +4,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 /**
  * Configuration for validating that a script's body contains required substrings.
  *
- * @alpha
+ * @public
  */
 export interface ScriptContainsRule {
 	/**
@@ -22,7 +22,7 @@ export interface ScriptContainsRule {
 /**
  * Configuration for the ScriptContains policy.
  *
- * @alpha
+ * @public
  */
 export interface ScriptContainsConfig {
 	/**
@@ -66,7 +66,7 @@ const POLICY_NAME = "ScriptContains";
  * })
  * ```
  *
- * @alpha
+ * @public
  */
 export const ScriptContains = definePackagePolicy<
 	PackageJson,

@@ -5,13 +5,9 @@ prev: false
 title: "ConfiguredFilePolicy"
 ---
 
-Defined in: [policy.ts:333](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L333)
+Defined in: [policy.ts:366](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L366)
 
 A policy instance with configuration and exclusion settings applied.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Extends
 
@@ -31,13 +27,9 @@ Type of configuration object used by the policy
 
 > `optional` **config?**: `C`
 
-Defined in: [policy.ts:344](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L344)
+Defined in: [policy.ts:377](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L377)
 
 The configuration applied to this policy instance.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -45,13 +37,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:287](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L287)
+Defined in: [policy.ts:307](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L307)
 
 A default configuration that will be used if none is provided.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -63,13 +51,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **description**: `string`
 
-Defined in: [policy.ts:265](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L265)
+Defined in: [policy.ts:285](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L285)
 
 A detailed description of the policy and its purpose.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -81,13 +65,11 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **exclude?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [policy.ts:349](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L349)
+Defined in: [policy.ts:384](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L384)
 
 File paths matching these patterns will be excluded from this policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Strings are case-insensitive regular expressions; RegExp values retain their flags.
+Paths are relative to the repository root.
 
 ***
 
@@ -95,14 +77,10 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [policy.ts:355](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L355)
+Defined in: [policy.ts:390](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L390)
 
 File paths matching these patterns will be excluded from this policy.
 Legacy alias for `exclude`.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -110,13 +88,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **handler**: [`PolicyHandler`](/api/type-aliases/policyhandler/)\<`C`\>
 
-Defined in: [policy.ts:275](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L275)
+Defined in: [policy.ts:295](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L295)
 
 The handler function that checks if a file complies with the policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -128,15 +102,11 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **instanceId?**: `string`
 
-Defined in: [policy.ts:339](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L339)
+Defined in: [policy.ts:372](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L372)
 
 An optional stable identifier for this configured policy instance.
 
 This is required when the same policy definition is configured more than once.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -144,13 +114,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **match**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policy.ts:270](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L270)
+Defined in: [policy.ts:290](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L290)
 
 A regular expression that matches files this policy applies to.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -162,13 +128,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policy.ts:260](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L260)
+Defined in: [policy.ts:280](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L280)
 
 The name of the policy; displayed in UI and used in settings.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -180,15 +142,11 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **resolver?**: [`PolicyResolver`](/api/type-aliases/policyresolver/)\<`C`\> \| [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
-Defined in: [policy.ts:282](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L282)
+Defined in: [policy.ts:302](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L302)
 
 An optional resolver function that can automatically fix violations.
 Return a PolicyError with `fixed: true` after a successful fix.
 Legacy PolicyFixResult resolvers remain supported.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -200,13 +158,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **scope?**: `"file"`
 
-Defined in: [policy.ts:256](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L256)
+Defined in: [policy.ts:276](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L276)
 
 File scope is the default for existing policies.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 

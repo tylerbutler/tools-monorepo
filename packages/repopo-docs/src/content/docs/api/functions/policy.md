@@ -5,17 +5,15 @@ prev: false
 title: "policy"
 ---
 
+Configures a file or repository policy with defaults and instance options.
+
 ## Call Signature
 
 > **policy**\<`C`\>(`policyDef`, `config?`, `options?`): [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:98](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L98)
+Defined in: [makePolicy.ts:103](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L103)
 
 Configure a policy for use in repopo.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ### Type Parameters
 
@@ -29,17 +27,25 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`RepositoryPolicyDefinition`](/api/interfaces/repositorypolicydefinition/)\<`C`\>
 
+Repository policy to configure.
+
 #### config?
 
 `C`
+
+Configuration override; omitted or nullish values use the definition's defaults.
 
 #### options?
 
 [`PolicyOptions`](/api/interfaces/policyoptions/)
 
+Instance identity and repo-relative file exclusions.
+
 ### Returns
 
 [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
+
+A configured repository policy.
 
 ### Remarks
 
@@ -73,11 +79,9 @@ policy(PackageJsonProperties, testConfig, { instanceId: "test-packages" })
 
 > **policy**\<`C`\>(`policyDef`, `config?`, `options?`): [`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:104](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L104)
+Defined in: [makePolicy.ts:118](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L118)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Configures a file policy and normalizes its handler for Effection.
 
 ### Type Parameters
 
@@ -91,14 +95,22 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
+File policy to configure.
+
 #### config?
 
 `C`
+
+Configuration override; omitted or nullish values use the definition's defaults.
 
 #### options?
 
 [`PolicyOptions`](/api/interfaces/policyoptions/)
 
+Instance identity and repo-relative file exclusions.
+
 ### Returns
 
 [`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>
+
+A configured file policy.

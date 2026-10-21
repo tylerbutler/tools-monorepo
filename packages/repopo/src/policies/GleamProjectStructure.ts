@@ -6,7 +6,7 @@ import type { PolicyDefinition } from "../policy.js";
 /**
  * Configuration for the GleamProjectStructure policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamProjectStructureConfig {
 	/**
@@ -25,7 +25,7 @@ export interface GleamProjectStructureConfig {
 /**
  * A policy that validates standard Gleam project structure.
  *
- * @alpha
+ * @public
  */
 export const GleamProjectStructure: PolicyDefinition<GleamProjectStructureConfig> =
 	makePolicyDefinition({

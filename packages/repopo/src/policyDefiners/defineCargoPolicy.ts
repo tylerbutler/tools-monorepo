@@ -13,7 +13,7 @@ import { parseToml } from "./tomlParser.js";
 /**
  * A parsed Cargo.toml represented as a record of sections and values.
  *
- * @alpha
+ * @public
  */
 export type CargoToml = Record<string, unknown>;
 
@@ -23,7 +23,7 @@ export type CargoToml = Record<string, unknown>;
  * @remarks
  * Receives the parsed TOML content and the standard policy arguments.
  *
- * @alpha
+ * @public
  */
 export type CargoTomlHandler<C> = (
 	toml: CargoToml,
@@ -45,7 +45,7 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 /**
  * Input arguments for defining a Cargo.toml policy.
  *
- * @alpha
+ * @public
  */
 export interface DefineCargoPolicyArgs<C> {
 	/**
@@ -76,6 +76,9 @@ export interface DefineCargoPolicyArgs<C> {
  * This is a helper function that creates a policy pre-configured to match
  * Cargo.toml files. The handler receives the parsed TOML content.
  *
+ * @param args - Policy metadata, parsed-TOML handler, and optional defaults.
+ * @returns A file policy that reads and parses matching Cargo.toml files.
+ *
  * @example
  * ```typescript
  * const MyCargoPolicy = defineCargoPolicy({
@@ -91,7 +94,7 @@ export interface DefineCargoPolicyArgs<C> {
  * });
  * ```
  *
- * @alpha
+ * @public
  */
 export function defineCargoPolicy<C = undefined>(
 	args: DefineCargoPolicyArgs<C>,

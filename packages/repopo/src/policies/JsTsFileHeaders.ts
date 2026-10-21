@@ -23,7 +23,7 @@ const jsTsReplacer = (
 /**
  * A RepoPolicy that checks that JavaScript and TypeScript source files have the configured header comment
  *
- * @alpha
+ * @public
  */
 export const JsTsFileHeaders = defineFileHeaderPolicy({
 	name: "JsTsFileHeaders",

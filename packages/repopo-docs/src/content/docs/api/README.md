@@ -82,7 +82,7 @@ Import `repopo/api` for the programmatic API without the CLI entry point.
 - [isPolicyError](/api/functions/ispolicyerror/)
 - [~~isPolicyFailure~~](/api/functions/ispolicyfailure/)
 - [~~isPolicyFixResult~~](/api/functions/ispolicyfixresult/)
-- [makePolicy](/api/functions/makepolicy/)
+- [~~makePolicy~~](/api/functions/makepolicy/)
 - [~~makePolicyDefinition~~](/api/functions/makepolicydefinition/)
 - [policy](/api/functions/policy/)
 

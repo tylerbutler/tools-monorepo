@@ -11,10 +11,6 @@ A FluidFramework build-tools policy handler interface.
 
 This interface matches the `Handler` interface from `@fluidframework/build-tools`.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ## Properties
 
 ### handler
@@ -24,10 +20,6 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [adapters/fluidFramework.ts:35](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L35)
 
 The handler function that checks a file against the policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Parameters
 
@@ -59,10 +51,6 @@ Defined in: [adapters/fluidFramework.ts:26](https://github.com/tylerbutler/tools
 
 A regex pattern that determines which files this handler applies to.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ***
 
 ### name
@@ -73,10 +61,6 @@ Defined in: [adapters/fluidFramework.ts:21](https://github.com/tylerbutler/tools
 
 The name of the handler, used for filtering and display.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ***
 
 ### resolver?
@@ -86,10 +70,6 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [adapters/fluidFramework.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L44)
 
 Optional resolver function that attempts to fix policy violations.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Parameters
 
@@ -107,6 +87,24 @@ Path to the repo root.
 
 #### Returns
 
-[`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<\{ `message?`: `string`; `resolved`: `boolean`; \}\> \| \{ `message?`: `string`; `resolved`: `boolean`; \}
-
 An object indicating whether the fix was successful.
+
+[`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<\{ `message?`: `string`; `resolved`: `boolean`; \}\>
+
+***
+
+##### Type Literal
+
+\{ `message?`: `string`; `resolved`: `boolean`; \}
+
+###### message?
+
+> `optional` **message?**: `string`
+
+Optional explanation of the fix result.
+
+###### resolved
+
+> **resolved**: `boolean`
+
+Whether the violation was fixed.

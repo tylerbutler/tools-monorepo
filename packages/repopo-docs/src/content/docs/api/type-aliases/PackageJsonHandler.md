@@ -11,10 +11,6 @@ Defined in: [policyDefiners/definePackagePolicy.ts:27](https://github.com/tylerb
 
 A policy handler especially for policies that target package.json.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ## Type Parameters
 
 ### J

@@ -5,7 +5,7 @@ prev: false
 title: "Policy"
 ---
 
-Defined in: [policy.ts:299](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L299)
+Defined in: [policy.ts:319](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L319)
 
 Abstract base class for creating policies with object-based construction.
 
@@ -13,10 +13,6 @@ Abstract base class for creating policies with object-based construction.
 
 This class accepts a [PolicyShape](/api/interfaces/policyshape/) object in its constructor,
 making it easier to add new optional properties in the future without breaking changes.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Type Parameters
 
@@ -34,17 +30,17 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **new Policy**\<`C`\>(`definition`): `Policy`\<`C`\>
 
-Defined in: [policy.ts:310](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L310)
+Defined in: [policy.ts:341](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L341)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Creates a policy from its definition.
 
 #### Parameters
 
 ##### definition
 
 [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
+
+File matching, handler, and optional defaults and resolver.
 
 #### Returns
 
@@ -56,13 +52,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `readonly` `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:304](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L304)
+Defined in: [policy.ts:329](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L329)
 
-A default configuration that will be used if none is provided.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Configuration used when no instance configuration is supplied.
 
 #### Implementation of
 
@@ -74,13 +66,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `readonly` **description**: `string`
 
-Defined in: [policy.ts:301](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L301)
+Defined in: [policy.ts:323](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L323)
 
-A detailed description of the policy and its purpose.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Description of the policy's purpose.
 
 #### Implementation of
 
@@ -92,13 +80,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `readonly` **handler**: [`PolicyHandler`](/api/type-aliases/policyhandler/)\<`C`\>
 
-Defined in: [policy.ts:303](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L303)
+Defined in: [policy.ts:327](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L327)
 
-The handler function that checks if a file complies with the policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Checks each matching file and optionally applies fixes.
 
 #### Implementation of
 
@@ -110,13 +94,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `readonly` **match**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policy.ts:302](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L302)
+Defined in: [policy.ts:325](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L325)
 
-A regular expression that matches files this policy applies to.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Regular expression matched against repo-relative file paths.
 
 #### Implementation of
 
@@ -128,13 +108,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `readonly` **name**: `string`
 
-Defined in: [policy.ts:300](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L300)
+Defined in: [policy.ts:321](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L321)
 
-The name of the policy; displayed in UI and used in settings.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Policy name used for display and configuration.
 
 #### Implementation of
 
@@ -146,15 +122,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `readonly` `optional` **resolver?**: [`PolicyResolver`](/api/type-aliases/policyresolver/)\<`C`\> \| [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
-Defined in: [policy.ts:305](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L305)
+Defined in: [policy.ts:331](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L331)
 
-An optional resolver function that can automatically fix violations.
-Return a PolicyError with `fixed: true` after a successful fix.
-Legacy PolicyFixResult resolvers remain supported.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Optional standalone fixer called for violations not handled by the handler.
 
 #### Implementation of
 

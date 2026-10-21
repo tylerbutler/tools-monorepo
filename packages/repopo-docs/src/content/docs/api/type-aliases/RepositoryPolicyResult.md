@@ -7,8 +7,6 @@ title: "RepositoryPolicyResult"
 
 > **RepositoryPolicyResult** = `true` \| readonly [`RepositoryPolicyFinding`](/api/interfaces/repositorypolicyfinding/)[]
 
-Defined in: [policy.ts:111](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L111)
+Defined in: [policy.ts:118](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L118)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+`true` when the repository passes, or findings describing violations and fixes.

@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the PublicApiDocumented policy.
  *
- * @alpha
+ * @public
  */
 export interface PublicApiDocumentedConfig {
 	/**
@@ -21,7 +21,7 @@ export interface PublicApiDocumentedConfig {
  * A policy that ensures public API documentation is enforced in Rust crates
  * via the `missing_docs` lint configured in Cargo.toml.
  *
- * @alpha
+ * @public
  */
 export const PublicApiDocumented: PolicyShape<PublicApiDocumentedConfig> =
 	defineCargoPolicy({

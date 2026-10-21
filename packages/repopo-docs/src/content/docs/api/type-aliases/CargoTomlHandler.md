@@ -11,10 +11,6 @@ Defined in: [policyDefiners/defineCargoPolicy.ts:28](https://github.com/tylerbut
 
 A policy handler for Cargo.toml policies.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ## Type Parameters
 
 ### C

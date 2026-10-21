@@ -6,7 +6,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 /**
  * Configuration for the ExactScripts policy.
  *
- * @alpha
+ * @public
  */
 export interface ExactScriptsConfig {
 	/**
@@ -120,7 +120,7 @@ async function fixScripts(
  * })
  * ```
  *
- * @alpha
+ * @public
  */
 export const ExactScripts = definePackagePolicy<
 	PackageJson,

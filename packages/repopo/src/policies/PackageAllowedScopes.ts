@@ -19,7 +19,7 @@ import { getPackageScope, isScoped } from "../utils/packageName.js";
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export interface PackageAllowedScopesConfig {
 	/**
@@ -136,7 +136,7 @@ function isUnscopedPackageAllowed(
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageAllowedScopes = definePackagePolicy<
 	PackageJson,

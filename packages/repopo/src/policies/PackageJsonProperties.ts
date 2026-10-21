@@ -20,7 +20,7 @@ const mergeProperties = createDefu((object, key, value) => {
 /**
  * Policy settings for the PackageJsonProperties repo policy.
  *
- * @alpha
+ * @public
  */
 export interface PackageJsonPropertiesSettings {
 	/**
@@ -32,7 +32,7 @@ export interface PackageJsonPropertiesSettings {
 /**
  * A RepoPolicy that checks that package.json properties in packages match expected values.
  *
- * @alpha
+ * @public
  */
 export const PackageJsonProperties = definePackagePolicy<
 	PackageJson,

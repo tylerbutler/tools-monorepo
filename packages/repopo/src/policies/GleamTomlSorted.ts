@@ -9,7 +9,7 @@ import {
 /**
  * Configuration for the GleamTomlSorted policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamTomlSortedConfig {
 	/**
@@ -156,7 +156,7 @@ function sortTomlSections(content: string, sectionsToSort: string[]): string {
 /**
  * A policy that ensures dependency sections in gleam.toml are sorted alphabetically.
  *
- * @alpha
+ * @public
  */
 export const GleamTomlSorted: PolicyShape<GleamTomlSortedConfig> =
 	defineGleamPolicy({
