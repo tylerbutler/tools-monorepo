@@ -17,6 +17,7 @@ exports[`tsconfig > sortTsconfigFile 1`] = `
 		"importHelpers": true,
 		"esModuleInterop": true,
 		"target": "es2019",
+		
 		// Composite projects are a way to split a project into smaller pieces that can be built together.
 		"composite": true,
 		"module": "Node16",
@@ -52,6 +53,7 @@ exports[`tsconfig > sortTsconfigFile with unknown keys 1`] = `
 		"importHelpers": true,
 		"esModuleInterop": true,
 		"target": "es2019",
+		
 		// Composite projects are a way to split a project into smaller pieces that can be built together.
 		"composite": true,
 		"module": "Node16",

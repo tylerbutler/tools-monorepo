@@ -27,7 +27,7 @@ If set, filters private packages in/out.
 ### scope?
 
 ```ts
-optional scope?: string[];
+scope?: string[];
 ```
 
 Defined in: [packages/sail-infrastructure/src/filter.ts:101](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L101)
@@ -39,7 +39,7 @@ If set, filters IN packages whose scope matches the strings provided.
 ### skipScope?
 
 ```ts
-optional skipScope?: string[];
+skipScope?: string[];
 ```
 
 Defined in: [packages/sail-infrastructure/src/filter.ts:106](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/filter.ts#L106)

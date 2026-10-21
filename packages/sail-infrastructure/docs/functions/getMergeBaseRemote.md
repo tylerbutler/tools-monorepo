@@ -11,7 +11,8 @@ function getMergeBaseRemote(
    git, 
    branch, 
    remote?, 
-localRef?): Promise<string>;
+   localRef?
+): Promise<string>;
 ```
 
 Defined in: [packages/sail-infrastructure/src/git.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/git.ts#L55)
