@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunner"
 ---
 
-Defined in: [runner.ts:109](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L109)
+Defined in: [runner.ts:114](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L114)
 
 Runs configured policies against files and collects results.
 
@@ -19,7 +19,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **new PolicyRunner**(`options`): `PolicyRunner`
 
-Defined in: [runner.ts:117](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L117)
+Defined in: [runner.ts:122](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L122)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -41,7 +41,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **run**(`filePaths`, `repositoryFiles?`): `Operation`\<[`PolicyRunResults`](/api/interfaces/policyrunresults/)\>
 
-Defined in: [runner.ts:133](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L133)
+Defined in: [runner.ts:138](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L138)
 
 Run file policies on the selection, then repository policies on the full inventory.
 Supply a loader to refresh the inventory after fixes, including repository fixes.

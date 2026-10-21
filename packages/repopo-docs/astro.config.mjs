@@ -12,6 +12,10 @@ const rootDir = new URL("../..", import.meta.url).pathname;
 export default defineConfig({
 	output: "static",
 	site: "https://repopo.tylerbutler.com",
+	redirects: {
+		"/api/functions/generatepackagepolicy/":
+			"/api/functions/definepackagepolicy/",
+	},
 	// Prevent zod from being externalized to avoid conflicts between
 	// Astro's bundled zod v3 and user-installed zod v4
 	// See: https://github.com/withastro/astro/issues/14117

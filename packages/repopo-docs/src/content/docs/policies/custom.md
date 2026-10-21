@@ -9,6 +9,44 @@ sidebar:
 
 File policies run once per matching selected file. Repository policies run once per invocation, after all file policies. Configure both with `policy()` in the same `policies` array.
 
+## Programmatic imports
+
+Use `repopo/api` to import policy types, factories, adapters, and `PolicyRunner`
+without OCLIF's CLI `run` export. The root `repopo` entry point also exports these
+APIs. Import `run` from `effection` when executing a runner.
+
+Use `definePackagePolicy` for package.json policies, `defineCargoPolicy` for
+Cargo.toml, and `defineGleamPolicy` for gleam.toml. The older
+`generatePackagePolicy` name remains an alias for `definePackagePolicy`.
+
+## Standalone file resolvers
+
+Assign a `PolicyResolver` to a file policy's `resolver` property:
+
+```ts
+import type { PolicyResolver, PolicyShape } from "repopo/api";
+
+const resolver: PolicyResolver = async ({ file }) => ({
+	error: `Cannot fix ${file} without manual input.`,
+	fixed: false,
+	manualFix: "Add the required file header.",
+});
+
+const HeaderPolicy: PolicyShape = {
+	name: "Header",
+	description: "Demonstrates a standalone resolver.",
+	match: /\.ts$/,
+	handler: async () => ({ error: "Header check failed", fixable: true }),
+	resolver,
+};
+```
+
+Return `fixed: true` only after a successful fix. Set `fixed: false` or omit it
+when the fix did not succeed. Async functions and Effection generators are
+supported. Legacy `PolicyStandaloneResolver` functions remain supported.
+`PolicyRunner` normalizes both resolver formats to `PolicyFixResult` in
+`PolicyFileResult.resolution`.
+
 ## Repository policies
 
 Use `RepositoryPolicyDefinition` for checks that require several files or check for a missing file. Set `scope: "repository"` and omit `match`.

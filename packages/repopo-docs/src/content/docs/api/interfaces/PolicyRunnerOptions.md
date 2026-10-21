@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunnerOptions"
 ---
 
-Defined in: [runner.ts:96](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L96)
+Defined in: [runner.ts:101](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L101)
 
 Options for configuring a [PolicyRunner](/api/classes/policyrunner/).
 
@@ -19,7 +19,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **excludeFromAll**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)[]
 
-Defined in: [runner.ts:98](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L98)
+Defined in: [runner.ts:103](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L103)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -31,7 +31,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **excludePoliciesForFiles**: [`ExcludedPolicyFileMap`](/api/type-aliases/excludedpolicyfilemap/)
 
-Defined in: [runner.ts:99](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L99)
+Defined in: [runner.ts:104](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L104)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -43,7 +43,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **gitRoot**: `string`
 
-Defined in: [runner.ts:100](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L100)
+Defined in: [runner.ts:105](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L105)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -55,7 +55,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **logger?**: [`Pick`](https://www.typescriptlang.org/docs/handbook/utility-types.html#picktype-keys)\<`Logger`, `"verbose"`\>
 
-Defined in: [runner.ts:102](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L102)
+Defined in: [runner.ts:107](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L107)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -67,7 +67,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **policies**: ([`ConfiguredPolicy`](/api/type-aliases/configuredpolicy/)\<`any`\> \| [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`any`\>)[]
 
-Defined in: [runner.ts:97](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L97)
+Defined in: [runner.ts:102](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L102)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -79,7 +79,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **resolve**: `boolean`
 
-Defined in: [runner.ts:101](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L101)
+Defined in: [runner.ts:106](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L106)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

@@ -121,7 +121,8 @@ export default config;
 **Legacy:**
 - `PackageScripts` - Monolithic script validation (prefer focused policies above)
 
-All built-in policies are **enabled by default** via `DefaultPolicies` array.
+`DefaultPolicies` enables `NoJsFileExtensions`, `PackageJsonRepoDirectoryProperty`,
+and `PackageJsonSorted`. Configure other built-in policies to enable them.
 
 ## Policy Generators
 
@@ -296,7 +297,7 @@ import { SortTsconfigsPolicy } from "sort-tsconfig";
 const config: RepopoConfig = {
   policies: [
     // Policy with no config, just exclusions
-    policy(NoJsFileExtensions, { exclude: [".*/bin/.*js"] }),
+    policy(NoJsFileExtensions, undefined, { exclude: [".*/bin/.*js"] }),
 
     // Policy with config
     policy(PackageJsonProperties, {
@@ -344,7 +345,7 @@ const config: RepopoConfig = {
 
 ```typescript
 // Core exports
-import { policy, generatePackagePolicy } from "repopo";
+import { policy, definePackagePolicy } from "repopo";
 import type {
   RepopoConfig,
   PolicyShape,
@@ -407,7 +408,9 @@ test("MyPolicy fails on invalid file", async () => {
 - Handlers can be async functions or Effection generators
 - File paths in `match` regex are relative to repo root
 - `resolve=true` means auto-fix should be applied (if supported)
-- All built-in policies are enabled by default
+- The second argument to `policy()` is configuration; options belong in the third argument
+- String exclusions are case-insensitive regexes; RegExp exclusions retain their flags
+- `repopo/api` exports the programmatic API without OCLIF's `run` entry point
 - Config file must have default export of type `RepopoConfig`
 - Policies run on all files in git repo (respecting `.gitignore`)
 - Use `policy()` function to configure policies (not `makePolicy()`)

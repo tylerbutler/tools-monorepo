@@ -50,6 +50,89 @@ describe("Native sidecar protocol", () => {
 		await rm(testDir, { recursive: true, force: true });
 	});
 
+	it("preserves explicit exclusion flags in metadata and repository execution", async () => {
+		await simpleGit(testDir).init();
+		await writeFile(join(testDir, "readme.md"), "readme");
+		await writeFile(join(testDir, "prefix\nskip"), "excluded");
+		await writeFile(
+			configPath,
+			`export default {
+			excludeFiles: [/^README/, /^skip$/m, "vendor/"],
+			policies: [{
+				name: "RepositoryExclusions", description: "Checks exclusions", scope: "repository",
+				excludeFiles: [/^OTHER/, /^skip$/m, "vendor/"],
+				handler: async ({ files }) => [{ error: JSON.stringify(files) }]
+			}]
+		};`,
+		);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{ method: "run_repository_policies", params: { resolve: false } },
+		]);
+		expect(responses[0]).toMatchObject({
+			ok: true,
+			data: {
+				excludeFiles: [
+					{ source: "^README", flags: "" },
+					{ source: "^skip$", flags: "m" },
+					"vendor/",
+				],
+				policies: [
+					expect.objectContaining({
+						excludeFiles: [
+							{ source: "^OTHER", flags: "" },
+							{ source: "^skip$", flags: "m" },
+							"vendor/",
+						],
+					}),
+				],
+			},
+		});
+		expect(responses[1]).toMatchObject({
+			ok: true,
+			data: [
+				expect.objectContaining({
+					outcome: {
+						error: JSON.stringify(["readme.md", "repopo.config.mjs"]),
+					},
+				}),
+			],
+		});
+	});
+
+	it.each([
+		true,
+		false,
+	])("preserves new resolver results with fixed=%s", async (fixed) => {
+		await writeFile(
+			configPath,
+			`export default {
+			policies: [{
+				name: "Resolver", description: "New-format resolver", match: /./,
+				handler: async () => ({ error: "Needs a fix" }),
+				resolver: async () => ({ error: "Resolver result", fixed: ${fixed}, manualFix: "Guidance" })
+			}]
+		};`,
+		);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{
+				method: "run_resolver",
+				params: { policyName: "Resolver", file: "file.txt", root: testDir },
+			},
+			{
+				method: "run_resolver_batch",
+				params: { policyId: 0, files: ["file.txt"] },
+			},
+		]);
+		const result = { error: "Resolver result", fixed, manualFix: "Guidance" };
+		expect(responses[1]).toEqual({ ok: true, data: result });
+		expect(responses[2]).toEqual({
+			ok: true,
+			data: { pass: [], fail: [{ file: "file.txt", ...result }] },
+		});
+	});
+
 	it.each([
 		"run_handler_batch",
 		"run_resolver_batch",

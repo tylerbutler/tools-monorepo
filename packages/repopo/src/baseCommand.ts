@@ -9,6 +9,7 @@ import { type SimpleGit, simpleGit } from "simple-git";
 import { DefaultPolicyConfig, type RepopoConfig } from "./config.js";
 import {
 	createExcludedPolicyFileMap,
+	exclusionRegex,
 	type RepopoCommandContext,
 } from "./context.js";
 import { identifyPolicyInstances, makePolicy } from "./makePolicy.js";
@@ -46,7 +47,7 @@ export abstract class BaseRepopoCommand<
 		await super.init();
 
 		const excludeFiles: RegExp[] =
-			this.commandConfig?.excludeFiles?.map((e) => new RegExp(e, "i")) ?? [];
+			this.commandConfig?.excludeFiles?.map(exclusionRegex) ?? [];
 
 		const policies = identifyPolicyInstances(
 			this.commandConfig?.policies ??

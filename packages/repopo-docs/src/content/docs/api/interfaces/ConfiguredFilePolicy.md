@@ -5,7 +5,7 @@ prev: false
 title: "ConfiguredFilePolicy"
 ---
 
-Defined in: [policy.ts:328](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L328)
+Defined in: [policy.ts:333](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L333)
 
 A policy instance with configuration and exclusion settings applied.
 
@@ -31,7 +31,7 @@ Type of configuration object used by the policy
 
 > `optional` **config?**: `C`
 
-Defined in: [policy.ts:339](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L339)
+Defined in: [policy.ts:344](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L344)
 
 The configuration applied to this policy instance.
 
@@ -45,7 +45,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:285](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L285)
+Defined in: [policy.ts:287](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L287)
 
 A default configuration that will be used if none is provided.
 
@@ -77,17 +77,13 @@ This API should not be used in production and may be trimmed from a public relea
 
 ***
 
-### ~~exclude?~~
+### exclude?
 
 > `optional` **exclude?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [policy.ts:345](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L345)
+Defined in: [policy.ts:349](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L349)
 
 File paths matching these patterns will be excluded from this policy.
-
-:::caution[Deprecated]
-Use `excludeFiles` instead for backward compatibility.
-:::
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -99,9 +95,10 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [policy.ts:350](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L350)
+Defined in: [policy.ts:355](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L355)
 
 File paths matching these patterns will be excluded from this policy.
+Legacy alias for `exclude`.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -131,7 +128,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **instanceId?**: `string`
 
-Defined in: [policy.ts:334](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L334)
+Defined in: [policy.ts:339](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L339)
 
 An optional stable identifier for this configured policy instance.
 
@@ -181,11 +178,13 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### resolver?
 
-> `optional` **resolver?**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
+> `optional` **resolver?**: [`PolicyResolver`](/api/type-aliases/policyresolver/)\<`C`\> \| [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
-Defined in: [policy.ts:280](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L280)
+Defined in: [policy.ts:282](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L282)
 
 An optional resolver function that can automatically fix violations.
+Return a PolicyError with `fixed: true` after a successful fix.
+Legacy PolicyFixResult resolvers remain supported.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
