@@ -9,7 +9,7 @@ import { validateLicenceField } from "../policyDefiners/spdxValidator.js";
 /**
  * Configuration for the CargoLicenceValidated policy.
  *
- * @alpha
+ * @public
  */
 export interface CargoLicenceValidatedConfig {
 	/**
@@ -48,7 +48,7 @@ const MANUAL_FIX =
  * `licences`). This policy validates that the value is a recognized SPDX
  * identifier and can auto-fix common mistakes like wrong casing.
  *
- * @alpha
+ * @public
  */
 export const CargoLicenceValidated: PolicyShape<CargoLicenceValidatedConfig> =
 	defineCargoPolicy({

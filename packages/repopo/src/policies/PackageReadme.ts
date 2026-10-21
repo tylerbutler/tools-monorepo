@@ -12,7 +12,7 @@ const HEADING_REGEX = /^#\s+(.+)$/;
 /**
  * Policy settings for the PackageReadme repo policy.
  *
- * @alpha
+ * @public
  */
 export interface PackageReadmeSettings {
 	/**
@@ -277,7 +277,7 @@ async function validateExistingReadme(
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageReadme = definePackagePolicy<
 	PackageJson,

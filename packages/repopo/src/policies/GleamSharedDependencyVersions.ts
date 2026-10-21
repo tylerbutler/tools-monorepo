@@ -7,7 +7,7 @@ import { parseToml } from "../policyDefiners/tomlParser.js";
 /**
  * Configuration for the GleamSharedDependencyVersions policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamSharedDependencyVersionsConfig {
 	/**
@@ -88,7 +88,7 @@ function recordDependency(
 /**
  * A policy that detects dependency version mismatches across Gleam packages in a monorepo.
  *
- * @alpha
+ * @public
  */
 export const GleamSharedDependencyVersions: PolicyDefinition<GleamSharedDependencyVersionsConfig> =
 	makePolicyDefinition({

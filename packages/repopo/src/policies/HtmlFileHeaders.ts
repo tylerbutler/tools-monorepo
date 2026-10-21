@@ -7,7 +7,7 @@ import {
 /**
  * A RepoPolicy that checks that HTML files have the configured header comment.
  *
- * @alpha
+ * @public
  */
 export const HtmlFileHeaders = defineFileHeaderPolicy({
 	name: "HtmlFileHeaders",

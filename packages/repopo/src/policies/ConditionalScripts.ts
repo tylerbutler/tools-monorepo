@@ -17,14 +17,14 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  * { clean: "rimraf dist" }
  * ```
  *
- * @alpha
+ * @public
  */
 export type ConditionalScriptEntry = string | Record<string, string>;
 
 /**
  * Configuration for a conditional script requirement.
  *
- * @alpha
+ * @public
  */
 export interface ConditionalScriptRule {
 	/**
@@ -53,7 +53,7 @@ export interface ConditionalScriptRule {
 /**
  * Configuration for the ConditionalScripts policy.
  *
- * @alpha
+ * @public
  */
 export interface ConditionalScriptsConfig {
 	/**
@@ -208,7 +208,7 @@ async function fixMissingScripts(
  * })
  * ```
  *
- * @alpha
+ * @public
  */
 export const ConditionalScripts = definePackagePolicy<
 	PackageJson,

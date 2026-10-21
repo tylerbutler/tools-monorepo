@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the GleamDepVersions policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamDepVersionsConfig {
 	/**
@@ -17,7 +17,7 @@ export interface GleamDepVersionsConfig {
 	requireVersions?: boolean;
 
 	/**
-	 * If true, warn on unbounded version ranges (e.g., ">= 1.0.0" without upper bound).
+	 * If true, warn on unbounded version ranges (e.g., `">= 1.0.0"` without an upper bound).
 	 * @defaultValue false
 	 */
 	warnUnbounded?: boolean;
@@ -74,7 +74,7 @@ function checkSection(
 /**
  * A policy that prevents missing or overly loose version constraints in Gleam dependencies.
  *
- * @alpha
+ * @public
  */
 export const GleamDepVersions: PolicyShape<GleamDepVersionsConfig> =
 	defineGleamPolicy({

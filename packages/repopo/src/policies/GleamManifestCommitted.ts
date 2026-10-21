@@ -7,7 +7,7 @@ import type { PolicyDefinition } from "../policy.js";
  * A policy that ensures manifest.toml is committed alongside gleam.toml
  * for reproducible Gleam builds.
  *
- * @alpha
+ * @public
  */
 export const GleamManifestCommitted: PolicyDefinition = makePolicyDefinition({
 	name: "GleamManifestCommitted",

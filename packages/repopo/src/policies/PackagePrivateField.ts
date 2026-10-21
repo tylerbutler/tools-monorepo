@@ -42,7 +42,7 @@ type RequiredPrivateState = boolean | typeof IGNORE_PRIVATE_STATE;
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export interface PackagePrivateFieldConfig {
 	/**
@@ -53,7 +53,7 @@ export interface PackagePrivateFieldConfig {
 	 *
 	 * @remarks
 	 *
-	 * Uses glob patterns via picomatch. Use "@scope/*" to match all packages in a scope,
+	 * Uses glob patterns via picomatch. Use `@scope/*` to match all packages in a scope,
 	 * or use exact package names.
 	 *
 	 * @example
@@ -206,7 +206,7 @@ function getRequiredPrivateState(
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackagePrivateField = definePackagePolicy<
 	PackageJson,

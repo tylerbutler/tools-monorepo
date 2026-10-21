@@ -8,7 +8,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 /**
  * Policy settings for the PackageLicense repo policy.
  *
- * @alpha
+ * @public
  */
 export interface PackageLicenseSettings {
 	/**
@@ -108,7 +108,7 @@ async function copyLicenseFile(
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageLicense = definePackagePolicy<
 	PackageJson,

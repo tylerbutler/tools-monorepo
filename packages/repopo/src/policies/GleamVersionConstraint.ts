@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the GleamVersionConstraint policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamVersionConstraintConfig {
 	/**
@@ -59,7 +59,7 @@ function isVersionAtLeast(constraint: string, minimum: string): boolean {
 /**
  * A policy that ensures the Gleam compiler version constraint is set in gleam.toml.
  *
- * @alpha
+ * @public
  */
 export const GleamVersionConstraint: PolicyShape<GleamVersionConstraintConfig> =
 	defineGleamPolicy({

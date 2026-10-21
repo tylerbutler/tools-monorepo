@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the GleamNameRestrictions policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamNameRestrictionsConfig {
 	/**
@@ -41,7 +41,7 @@ function checkDeniedPrefixes(
 /**
  * A policy that enforces naming conventions for Gleam packages.
  *
- * @alpha
+ * @public
  */
 export const GleamNameRestrictions: PolicyShape<GleamNameRestrictionsConfig> =
 	defineGleamPolicy({

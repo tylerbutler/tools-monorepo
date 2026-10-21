@@ -9,7 +9,7 @@ import {
 /**
  * Configuration for the RustDocExists policy.
  *
- * @alpha
+ * @public
  */
 export interface RustDocExistsConfig {
 	/**
@@ -29,7 +29,7 @@ const DEFAULT_REQUIRED = ["README.md"];
 /**
  * A policy that validates documentation files exist for Rust crates.
  *
- * @alpha
+ * @public
  */
 export const RustDocExists: PolicyShape<RustDocExistsConfig> =
 	defineCargoPolicy({

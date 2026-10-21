@@ -1,5 +1,5 @@
 ---
-"repopo": major
+"repopo": minor
 ---
 
 Separate policy configuration from instance options.

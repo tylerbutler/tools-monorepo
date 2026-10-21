@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the GleamNoPathDepsInPublished policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamNoPathDepsInPublishedConfig {
 	/**
@@ -35,7 +35,7 @@ function findPathDeps(deps: Record<string, unknown>): string[] {
 /**
  * A policy that warns when path dependencies are used in packages intended for publishing.
  *
- * @alpha
+ * @public
  */
 export const GleamNoPathDepsInPublished: PolicyShape<GleamNoPathDepsInPublishedConfig> =
 	defineGleamPolicy({

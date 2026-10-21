@@ -1,3 +1,11 @@
+/**
+ * Built-in file and repository policies and their configuration types.
+ *
+ * Use `policy()` from `repopo` or `repopo/api` to configure these definitions.
+ *
+ * @packageDocumentation
+ */
+
 // Cargo.toml / Rust policies
 // biome-ignore lint/performance/noBarrelFile: intentional public API entry point for policies
 export {

@@ -41,7 +41,7 @@ async function loadSortPackageJson() {
 /**
  * A repo policy that checks if package.json files in the repo are sorted using sort-package-json.
  *
- * @alpha
+ * @public
  */
 export const PackageJsonSorted = definePackagePolicy({
 	name: "PackageJsonSorted",

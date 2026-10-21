@@ -17,14 +17,14 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  * { lint: "biome lint ." }
  * ```
  *
- * @alpha
+ * @public
  */
 export type RequiredScriptEntry = string | Record<string, string>;
 
 /**
  * Configuration for the RequiredScripts policy.
  *
- * @alpha
+ * @public
  */
 export interface RequiredScriptsConfig {
 	/**
@@ -154,7 +154,7 @@ async function fixMissingScripts(
  * })
  * ```
  *
- * @alpha
+ * @public
  */
 export const RequiredScripts = definePackagePolicy<
 	PackageJson,

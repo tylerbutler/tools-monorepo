@@ -9,7 +9,7 @@ import {
 /**
  * Configuration for the CargoTomlSorted policy.
  *
- * @alpha
+ * @public
  */
 export interface CargoTomlSortedConfig {
 	/**
@@ -151,7 +151,7 @@ function sortTomlSections(content: string, sectionsToSort: string[]): string {
 /**
  * A policy that ensures dependency sections in Cargo.toml are sorted alphabetically.
  *
- * @alpha
+ * @public
  */
 export const CargoTomlSorted: PolicyShape<CargoTomlSortedConfig> =
 	defineCargoPolicy({

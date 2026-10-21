@@ -6,21 +6,21 @@ import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 /**
  * A type representing a policy name.
  *
- * @alpha
+ * @public
  */
 export type PolicyName = string;
 
 /**
  * A stable identifier for a configured policy instance.
  *
- * @alpha
+ * @public
  */
 export type PolicyInstanceId = string;
 
 /**
  * Arguments passed to policy handler functions.
  *
- * @alpha
+ * @public
  */
 export interface PolicyArgs<C = void> {
 	/**
@@ -45,8 +45,10 @@ export interface PolicyArgs<C = void> {
 }
 
 /**
+ * Legacy name for file-policy handler arguments.
+ *
  * @deprecated Use {@link PolicyArgs} instead.
- * @alpha
+ * @public
  */
 export type PolicyFunctionArguments<C> = PolicyArgs<C>;
 
@@ -57,7 +59,7 @@ export type PolicyFunctionArguments<C> = PolicyArgs<C>;
 /**
  * A policy error returned when a file fails a policy check.
  *
- * @alpha
+ * @public
  */
 export interface PolicyError {
 	/**
@@ -85,21 +87,22 @@ export interface PolicyError {
  * The result of a policy handler.
  * Returns `true` if the file passes the policy, or a {@link PolicyError} if it fails.
  *
- * @alpha
+ * @public
  */
 export type PolicyResult = true | PolicyError;
 
 /**
  * A repository violation, optionally associated with several repo-relative files.
- * @alpha
+ * @public
  */
 export interface RepositoryPolicyFinding extends PolicyError {
+	/** Repo-relative paths involved in the violation; omit for a repository-wide issue. */
 	files?: readonly string[];
 }
 
 /**
  * Arguments for a policy that runs once against the repository.
- * @alpha
+ * @public
  */
 export interface RepositoryPolicyArgs<C = void>
 	extends Omit<PolicyArgs<C>, "file"> {
@@ -107,10 +110,18 @@ export interface RepositoryPolicyArgs<C = void>
 	files: readonly string[];
 }
 
-/** @alpha */
+/**
+ * `true` when the repository passes, or findings describing violations and fixes.
+ *
+ * @public
+ */
 export type RepositoryPolicyResult = true | readonly RepositoryPolicyFinding[];
 
-/** @alpha */
+/**
+ * An async function or Effection operation that checks the repository once.
+ *
+ * @public
+ */
 export type RepositoryPolicyHandler<C = void> = (
 	args: RepositoryPolicyArgs<C>,
 ) => Promise<RepositoryPolicyResult> | Operation<RepositoryPolicyResult>;
@@ -118,17 +129,26 @@ export type RepositoryPolicyHandler<C = void> = (
 /**
  * A policy executed once per invocation, even when the inventory is empty.
  * Fixes are performed in the handler using `resolve`.
- * @alpha
+ * @public
  */
 export interface RepositoryPolicyDefinition<C = void> {
+	/** Policy name used for display and configuration. */
 	name: PolicyName;
+	/** Description of the policy's purpose. */
 	description: string;
+	/** Selects repository-wide execution instead of per-file matching. */
 	scope: "repository";
+	/** Checks the repository and applies fixes when `resolve` is true. */
 	handler: RepositoryPolicyHandler<C>;
+	/** Configuration used when no instance configuration is supplied. */
 	defaultConfig?: C | undefined;
 }
 
-/** @alpha */
+/**
+ * A file-scoped or repository-scoped policy definition.
+ *
+ * @public
+ */
 export type AnyPolicyShape<C = void> =
 	| PolicyShape<C>
 	| RepositoryPolicyDefinition<C>;
@@ -142,7 +162,7 @@ export type AnyPolicyShape<C = void> =
  *
  * @deprecated Use {@link PolicyError} instead, which has a simpler API.
  *
- * @alpha
+ * @public
  */
 export interface PolicyFailure {
 	/**
@@ -176,7 +196,7 @@ export interface PolicyFailure {
  *
  * @deprecated Use {@link PolicyError} with `fixed: boolean` instead.
  *
- * @alpha
+ * @public
  */
 export interface PolicyFixResult extends PolicyFailure {
 	/**
@@ -188,7 +208,7 @@ export interface PolicyFixResult extends PolicyFailure {
 /**
  * Result type that accepts both legacy and new formats.
  *
- * @alpha
+ * @public
  */
 export type PolicyHandlerResult =
 	| true
@@ -214,7 +234,7 @@ export type PolicyHandlerResult =
  * the new format ({@link PolicyError}). The new format is simpler and recommended
  * for new policies.
  *
- * @alpha
+ * @public
  */
 export type PolicyHandler<C = unknown | undefined> =
 	| ((args: PolicyArgs<C>) => Promise<PolicyHandlerResult>)
@@ -225,7 +245,7 @@ export type PolicyHandler<C = unknown | undefined> =
  *
  * @deprecated Use {@link PolicyResolver} instead, which uses {@link PolicyError}.
  *
- * @alpha
+ * @public
  */
 export type PolicyStandaloneResolver<C = undefined> = (
 	args: Omit<PolicyArgs<C>, "resolve">,
@@ -234,7 +254,7 @@ export type PolicyStandaloneResolver<C = undefined> = (
 /**
  * A standalone resolver function using the new format.
  *
- * @alpha
+ * @public
  */
 export type PolicyResolver<C = void> = (
 	args: Omit<PolicyArgs<C>, "resolve">,
@@ -249,7 +269,7 @@ export type PolicyResolver<C = void> = (
  *
  * @typeParam C - Type of configuration object used by the policy
  *
- * @alpha
+ * @public
  */
 export interface PolicyShape<C = void> {
 	/** File scope is the default for existing policies. */
@@ -294,19 +314,30 @@ export interface PolicyShape<C = void> {
  * This class accepts a {@link PolicyShape} object in its constructor,
  * making it easier to add new optional properties in the future without breaking changes.
  *
- * @alpha
+ * @public
  */
 export abstract class Policy<C = void> implements PolicyShape<C> {
+	/** Policy name used for display and configuration. */
 	public readonly name: string;
+	/** Description of the policy's purpose. */
 	public readonly description: string;
+	/** Regular expression matched against repo-relative file paths. */
 	public readonly match: RegExp;
+	/** Checks each matching file and optionally applies fixes. */
 	public readonly handler: PolicyHandler<C>;
+	/** Configuration used when no instance configuration is supplied. */
 	public readonly defaultConfig?: C | undefined;
+	/** Optional standalone fixer called for violations not handled by the handler. */
 	public readonly resolver?:
 		| PolicyResolver<C>
 		| PolicyStandaloneResolver<C>
 		| undefined;
 
+	/**
+	 * Creates a policy from its definition.
+	 *
+	 * @param definition - File matching, handler, and optional defaults and resolver.
+	 */
 	public constructor(definition: PolicyShape<C>) {
 		this.name = definition.name;
 		this.description = definition.description;
@@ -318,8 +349,10 @@ export abstract class Policy<C = void> implements PolicyShape<C> {
 }
 
 /**
+ * Legacy name for a file-policy definition.
+ *
  * @deprecated Use {@link PolicyShape} instead.
- * @alpha
+ * @public
  */
 export type PolicyDefinition<C = undefined> = PolicyShape<C>;
 
@@ -328,7 +361,7 @@ export type PolicyDefinition<C = undefined> = PolicyShape<C>;
  *
  * @typeParam C - Type of configuration object used by the policy
  *
- * @alpha
+ * @public
  */
 export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
 	/**
@@ -345,6 +378,8 @@ export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
 
 	/**
 	 * File paths matching these patterns will be excluded from this policy.
+	 * Strings are case-insensitive regular expressions; RegExp values retain their flags.
+	 * Paths are relative to the repository root.
 	 */
 	exclude?: (string | RegExp)[] | undefined;
 
@@ -362,7 +397,11 @@ export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
 	_internalHandler?: (args: PolicyArgs<C>) => Operation<PolicyHandlerResult>;
 }
 
-/** @alpha */
+/**
+ * A repository policy with instance identity, configuration, and file exclusions.
+ *
+ * @public
+ */
 export type ConfiguredRepositoryPolicy<C = void> =
 	RepositoryPolicyDefinition<C> &
 		Pick<
@@ -370,14 +409,18 @@ export type ConfiguredRepositoryPolicy<C = void> =
 			"instanceId" | "config" | "exclude" | "excludeFiles"
 		>;
 
-/** @alpha */
+/**
+ * A configured file-scoped or repository-scoped policy.
+ *
+ * @public
+ */
 export type ConfiguredPolicy<C = void> =
 	| ConfiguredFilePolicy<C>
 	| ConfiguredRepositoryPolicy<C>;
 
 /**
  * Settings for configuring a policy instance.
- * @alpha
+ * @public
  */
 export interface PolicyInstanceSettings<C> {
 	/**
@@ -390,6 +433,7 @@ export interface PolicyInstanceSettings<C> {
 	 * from policy.
 	 *
 	 * Paths will be matched relative to the root of the repo.
+	 * Strings are case-insensitive regular expressions; RegExp values retain their flags.
 	 */
 	excludeFiles?: (string | RegExp)[];
 
@@ -400,17 +444,20 @@ export interface PolicyInstanceSettings<C> {
 }
 
 /**
+ * Legacy name for a configured file policy.
+ *
  * @deprecated Use {@link ConfiguredPolicy} instead.
- * @alpha
+ * @public
  */
 export type PolicyInstance<C = undefined> = ConfiguredFilePolicy<C>;
 
 /**
  * A configured policy instance with its runtime identity assigned.
  *
- * @alpha
+ * @public
  */
 export type IdentifiedPolicy<C = undefined> = ConfiguredPolicy<C> & {
+	/** Unique identity used to associate results, exclusions, and timing data. */
 	instanceId: PolicyInstanceId;
 };
 
@@ -423,7 +470,10 @@ export type IdentifiedPolicy<C = undefined> = ConfiguredPolicy<C> & {
  *
  * @deprecated Use {@link isPolicyError} instead when working with the new {@link PolicyError} format.
  *
- * @alpha
+ * @param toCheck - Value to inspect.
+ * @returns Whether the value is a non-null object with a `resolved` property.
+ *
+ * @public
  */
 // biome-ignore lint/suspicious/noExplicitAny: type guard
 export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
@@ -436,7 +486,10 @@ export function isPolicyFixResult(toCheck: any): toCheck is PolicyFixResult {
 /**
  * Type guard to check if a result is a PolicyError (new format).
  *
- * @alpha
+ * @param toCheck - Value to inspect.
+ * @returns Whether the value is a non-null object with a string `error` property.
+ *
+ * @public
  */
 // biome-ignore lint/suspicious/noExplicitAny: type guard
 export function isPolicyError(toCheck: any): toCheck is PolicyError {
@@ -451,7 +504,10 @@ export function isPolicyError(toCheck: any): toCheck is PolicyError {
  *
  * @deprecated Use {@link isPolicyError} instead when working with the new {@link PolicyError} format.
  *
- * @alpha
+ * @param toCheck - Value to inspect.
+ * @returns Whether the value is a non-null object with an `errorMessages` array.
+ *
+ * @public
  */
 // biome-ignore lint/suspicious/noExplicitAny: type guard
 export function isPolicyFailure(toCheck: any): toCheck is PolicyFailure {
@@ -526,9 +582,9 @@ export function convertToLegacyResult(
 // ============================================================================
 
 /**
- * Default policies included with repopo.
+ * Default policies: NoJsFileExtensions, PackageJsonRepoDirectoryProperty, and PackageJsonSorted.
  *
- * @alpha
+ * @public
  */
 // biome-ignore lint/suspicious/noExplicitAny: FIXME
 export const DefaultPolicies: Policy<any>[] = [

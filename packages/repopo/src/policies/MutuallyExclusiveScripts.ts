@@ -4,7 +4,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 /**
  * Configuration for the MutuallyExclusiveScripts policy.
  *
- * @alpha
+ * @public
  */
 export interface MutuallyExclusiveScriptsConfig {
 	/**
@@ -46,7 +46,7 @@ const POLICY_NAME = "MutuallyExclusiveScripts";
  * })
  * ```
  *
- * @alpha
+ * @public
  */
 export const MutuallyExclusiveScripts = definePackagePolicy<
 	PackageJson,
