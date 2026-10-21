@@ -6,7 +6,8 @@ export default getViteConfig({
 	test: {
 		globals: true,
 		watch: false,
-		testTimeout: process.env.GITHUB_ACTIONS ? 15_000 : 5000,
+		maxWorkers: 2,
+		testTimeout: 15_000,
 		reporters: process.env.GITHUB_ACTIONS
 			? ["github-actions", "junit"]
 			: ["verbose", "junit"],

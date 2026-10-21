@@ -13,7 +13,8 @@ when the package.json has custom keys/values.
 
 ## Extends
 
-- [`Installable`](Installable.md).[`Reloadable`](Reloadable.md)
+- [`Installable`](Installable.md)
+- [`Reloadable`](Reloadable.md)
 
 ## Type Parameters
 

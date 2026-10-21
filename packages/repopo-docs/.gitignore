@@ -20,5 +20,6 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
-# netlify cache
-.netlify
+# Cloudflare local state and secrets
+.wrangler/
+.dev.vars*

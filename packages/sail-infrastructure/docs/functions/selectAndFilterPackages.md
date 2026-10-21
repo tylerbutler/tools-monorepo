@@ -10,7 +10,8 @@
 function selectAndFilterPackages<P>(
    buildProject, 
    selection, 
-   filter?): Promise<{
+   filter?
+): Promise<{
   filtered: P[];
   selected: P[];
 }>;

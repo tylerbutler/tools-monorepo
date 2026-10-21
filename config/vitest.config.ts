@@ -5,8 +5,9 @@ const config = defineConfig({
 	test: {
 		// Explicitly disable watch mode to prevent interactive TUI
 		watch: false,
-		// CI environments are slower, so increase timeout to prevent flaky test failures
-		testTimeout: process.env.GITHUB_ACTIONS ? 15_000 : 5000,
+		// Nx runs packages in parallel; do not give each package all CPU cores.
+		maxWorkers: 2,
+		testTimeout: 15_000,
 		reporters: process.env.GITHUB_ACTIONS
 			? // CI mode
 				["github-actions", "junit"]
