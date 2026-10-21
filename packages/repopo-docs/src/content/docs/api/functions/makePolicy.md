@@ -5,20 +5,22 @@ prev: false
 title: "makePolicy"
 ---
 
+Combines a policy definition with configuration and legacy instance settings.
+
+:::caution[Deprecated]
+Use `policy()` instead.
+:::
+
 ## Call Signature
 
 > **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:257](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L257)
+Defined in: [makePolicy.ts:283](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L283)
 
 Combine a [PolicyDefinition](/api/type-aliases/policydefinition/) with a policy-specific config and other settings.
 
 :::caution[Deprecated]
 Use the `policy` function instead, which has a simpler API.
-:::
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
 :::
 
 ### Type Parameters
@@ -33,17 +35,25 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`RepositoryPolicyDefinition`](/api/interfaces/repositorypolicydefinition/)\<`C`\>
 
+Repository policy to configure.
+
 #### config?
 
 `C`
+
+Configuration override, taking precedence over settings and defaults.
 
 #### settings?
 
 [`PolicyInstanceSettings`](/api/interfaces/policyinstancesettings/)\<`C`\>
 
+Instance identity, exclusions, and fallback configuration.
+
 ### Returns
 
 [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
+
+A configured repository policy.
 
 ### Example
 
@@ -55,10 +65,12 @@ makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["^bin/"] })
 
 > **makePolicy**\<`C`\>(`definition`, `config?`, `settings?`): [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
 
-Defined in: [makePolicy.ts:263](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L263)
+Defined in: [makePolicy.ts:300](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L300)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
+Combines a file-policy definition with configuration and legacy instance settings.
+
+:::caution[Deprecated]
+Use `policy()` instead.
 :::
 
 ### Type Parameters
@@ -73,14 +85,22 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
 
+File policy to configure.
+
 #### config?
 
 `C`
+
+Configuration override, taking precedence over settings and defaults.
 
 #### settings?
 
 [`PolicyInstanceSettings`](/api/interfaces/policyinstancesettings/)\<`C`\>
 
+Instance identity, exclusions, and fallback configuration.
+
 ### Returns
 
 [`PolicyInstance`](/api/type-aliases/policyinstance/)\<`C`\>
+
+A configured file policy.

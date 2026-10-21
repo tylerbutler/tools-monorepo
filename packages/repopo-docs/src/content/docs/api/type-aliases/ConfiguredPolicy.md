@@ -7,11 +7,9 @@ title: "ConfiguredPolicy"
 
 > **ConfiguredPolicy**\<`C`\> = [`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\> \| [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-Defined in: [policy.ts:374](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L374)
+Defined in: [policy.ts:417](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L417)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+A configured file-scoped or repository-scoped policy.
 
 ## Type Parameters
 

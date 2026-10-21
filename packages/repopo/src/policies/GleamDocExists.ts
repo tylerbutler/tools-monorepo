@@ -9,7 +9,7 @@ import {
 /**
  * Configuration for the GleamDocExists policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamDocExistsConfig {
 	/**
@@ -29,7 +29,7 @@ const DEFAULT_REQUIRED = ["README.md"];
 /**
  * A policy that validates documentation files exist for Gleam packages.
  *
- * @alpha
+ * @public
  */
 export const GleamDocExists: PolicyShape<GleamDocExistsConfig> =
 	defineGleamPolicy({

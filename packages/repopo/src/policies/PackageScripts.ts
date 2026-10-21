@@ -6,7 +6,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 /**
  * Configuration for validating that a script's body contains required substrings.
  *
- * @alpha
+ * @public
  */
 export interface ScriptMustContainRule {
 	/**
@@ -24,7 +24,7 @@ export interface ScriptMustContainRule {
 /**
  * Configuration for conditional script requirements.
  *
- * @alpha
+ * @public
  */
 export interface ConditionalScriptRule {
 	/**
@@ -65,14 +65,14 @@ export interface ConditionalScriptRule {
  * { lint: "biome lint ." }
  * ```
  *
- * @alpha
+ * @public
  */
 export type RequiredScriptEntry = string | Record<string, string>;
 
 /**
  * Policy settings for the PackageScripts repo policy.
  *
- * @alpha
+ * @public
  */
 export interface PackageScriptsSettings {
 	/**
@@ -701,7 +701,7 @@ function runAllValidations(
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageScripts = definePackagePolicy<
 	PackageJson,

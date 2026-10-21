@@ -4,19 +4,20 @@ import type { PolicyInstanceId } from "./policy.js";
 
 /**
  * The type of action a policy can perform.
- * @alpha
+ * @public
  */
 export type PolicyAction = "check" | "resolve" | "handle";
 
 /**
  * Stores performance data for each handler. Used to collect and display performance stats.
- * @alpha
+ * @public
  */
 export interface PolicyHandlerPerfStats {
 	/** Number of candidate file paths supplied to the runner. */
 	count: number;
 	/** Number of candidate files admitted past global exclusions. */
 	processed: number;
+	/** Total elapsed milliseconds per action and configured policy instance. */
 	data: Map<PolicyAction, Map<PolicyInstanceId, number>>;
 }
 

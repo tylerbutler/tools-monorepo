@@ -9,10 +9,6 @@ Defined in: [policyDefiners/defineGleamPolicy.ts:50](https://github.com/tylerbut
 
 Input arguments for defining a gleam.toml policy.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ## Type Parameters
 
 ### C
@@ -29,10 +25,6 @@ Defined in: [policyDefiners/defineGleamPolicy.ts:69](https://github.com/tylerbut
 
 Optional default configuration for the policy.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ***
 
 ### description
@@ -42,10 +34,6 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [policyDefiners/defineGleamPolicy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L59)
 
 A description of the policy's purpose.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -57,10 +45,6 @@ Defined in: [policyDefiners/defineGleamPolicy.ts:64](https://github.com/tylerbut
 
 The handler function that receives the parsed gleam.toml and policy arguments.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ***
 
 ### name
@@ -70,7 +54,3 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [policyDefiners/defineGleamPolicy.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L54)
 
 The name of the policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::

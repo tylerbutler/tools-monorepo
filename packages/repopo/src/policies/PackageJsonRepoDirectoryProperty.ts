@@ -9,7 +9,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  * A RepoPolicy that checks that the repository.directory property in package.json is set correctly. If the repository
  * field is a string instead of an object the package will be ignored.
  *
- * @alpha
+ * @public
  */
 export const PackageJsonRepoDirectoryProperty = definePackagePolicy<
 	PackageJson,

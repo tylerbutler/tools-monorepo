@@ -1,5 +1,5 @@
 ---
-"repopo": major
+"repopo": minor
 ---
 
 Add repository-scoped policies that run once after file policies in both `check` and `check-native`. Repository handlers receive the full eligible Git file inventory, including during stdin runs, and can return multiple findings with optional file locations. Repository fixes run serially and can modify files outside the stdin selection.

@@ -5,16 +5,12 @@ prev: false
 title: "PolicyFixResult"
 ---
 
-Defined in: [policy.ts:181](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L181)
+Defined in: [policy.ts:201](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L201)
 
 The result of an automatic fix for a failing policy (legacy format).
 
 :::caution[Deprecated]
 Use [PolicyError](/api/interfaces/policyerror/) with `fixed: boolean` instead.
-:::
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
 :::
 
 ## Extends
@@ -27,13 +23,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **autoFixable?**: `boolean`
 
-Defined in: [policy.ts:161](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L161)
+Defined in: [policy.ts:181](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L181)
 
 Set to `true` if the policy can be fixed automatically.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -45,13 +37,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **errorMessages**: `string`[]
 
-Defined in: [policy.ts:166](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L166)
+Defined in: [policy.ts:186](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L186)
 
 An optional error message accompanying the failure.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -63,13 +51,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **file**: `string`
 
-Defined in: [policy.ts:156](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L156)
+Defined in: [policy.ts:176](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L176)
 
 Path to the file that failed the policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -81,13 +65,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **manualFix?**: `string`
 
-Defined in: [policy.ts:171](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L171)
+Defined in: [policy.ts:191](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L191)
 
 An optional string that tells the user how to fix the failure(s).
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -99,13 +79,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policy.ts:151](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L151)
+Defined in: [policy.ts:171](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L171)
 
 Name of the policy that failed.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -117,10 +93,6 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **resolved**: `boolean`
 
-Defined in: [policy.ts:185](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L185)
+Defined in: [policy.ts:205](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L205)
 
 Set to true if the failure was resolved by the automated fixer.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::

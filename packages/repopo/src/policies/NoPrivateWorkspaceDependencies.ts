@@ -12,11 +12,13 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 /**
  * Configuration for the NoPrivateWorkspaceDependencies policy.
+ *
+ * @public
  */
 export interface NoPrivateWorkspaceDependenciesSettings {
 	/**
 	 * Whether to check devDependencies in addition to dependencies.
-	 * @default false
+	 * @defaultValue false
 	 */
 	checkDevDependencies?: boolean;
 }
@@ -120,6 +122,8 @@ function isWorkspaceDependency(version: string | undefined): boolean {
  *   checkDevDependencies: true,
  * });
  * ```
+ *
+ * @public
  */
 export const NoPrivateWorkspaceDependencies = definePackagePolicy<
 	PackageJson,

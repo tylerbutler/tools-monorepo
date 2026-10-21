@@ -6,7 +6,7 @@ import type { PolicyDefinition } from "../policy.js";
 /**
  * Configuration for the RustfmtConfigExists policy.
  *
- * @alpha
+ * @public
  */
 export interface RustfmtConfigExistsConfig {
 	/**
@@ -21,7 +21,7 @@ const DEFAULT_NAMES = ["rustfmt.toml", ".rustfmt.toml"];
 /**
  * A policy that requires a rustfmt.toml file for consistent Rust formatting.
  *
- * @alpha
+ * @public
  */
 export const RustfmtConfigExists: PolicyDefinition<RustfmtConfigExistsConfig> =
 	makePolicyDefinition({

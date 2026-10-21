@@ -7,7 +7,9 @@ import type { PolicyFailure, PolicyFixResult, PolicyShape } from "../policy.js";
 const trailingSpaces = /\s*\\r\?\\n/;
 
 /**
- * @alpha
+ * Header text required by a file-header policy.
+ *
+ * @public
  */
 export interface FileHeaderPolicyConfig {
 	/**
@@ -28,7 +30,7 @@ export interface FileHeaderPolicyConfig {
  * This interface extends FileHeaderPolicyConfig and adds formatting-specific
  * properties to control how headers are inserted into different file types.
  *
- * @alpha
+ * @public
  */
 export interface FileHeaderGeneratorConfig
 	extends Partial<FileHeaderPolicyConfig> {
@@ -36,7 +38,7 @@ export interface FileHeaderGeneratorConfig
 	match: RegExp;
 
 	/**
-	 * Regex matching header prefix (e.g. `/*!\r?\n`)
+	 * Regex matching the header prefix, such as a block-comment opener.
 	 */
 	headerStart?: RegExp;
 
@@ -68,7 +70,7 @@ export interface FileHeaderGeneratorConfig
 /**
  * Input arguments for defining a file header policy.
  *
- * @alpha
+ * @public
  */
 export interface DefineFileHeaderPolicyArgs {
 	/**
@@ -88,8 +90,12 @@ export interface DefineFileHeaderPolicyArgs {
 }
 
 /**
- * Given a {@link FileHeaderPolicyConfig}, produces a function that detects correct file headers
- * and returns an error string if the header is missing or incorrect.
+ * Creates a file-header policy that detects missing or incorrect headers and can replace them.
+ *
+ * The handler skips checks when no {@link FileHeaderPolicyConfig} is supplied.
+ *
+ * @param args - Policy metadata and header matching and replacement rules.
+ * @returns A file policy configured for the supplied file types.
  *
  * @example
  * ```typescript
@@ -100,7 +106,7 @@ export interface DefineFileHeaderPolicyArgs {
  * });
  * ```
  *
- * @alpha
+ * @public
  */
 export function defineFileHeaderPolicy(
 	args: DefineFileHeaderPolicyArgs,

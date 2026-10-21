@@ -24,7 +24,7 @@ const ARTIFACT_REGEX = new RegExp(
 /**
  * A policy that prevents accidental commits of Rust build artifacts.
  *
- * @alpha
+ * @public
  */
 export const NoTargetArtifacts: PolicyDefinition = makePolicyDefinition({
 	name: "NoTargetArtifacts",

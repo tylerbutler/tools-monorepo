@@ -5,13 +5,9 @@ prev: false
 title: "PolicyRunResults"
 ---
 
-Defined in: [runner.ts:88](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L88)
+Defined in: [runner.ts:103](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L103)
 
 Aggregated results from a full policy run.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Properties
 
@@ -19,11 +15,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **perfStats**: [`PolicyHandlerPerfStats`](/api/interfaces/policyhandlerperfstats/)
 
-Defined in: [runner.ts:90](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L90)
+Defined in: [runner.ts:107](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L107)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+File counts and elapsed milliseconds per action and policy instance.
 
 ***
 
@@ -31,8 +25,6 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **results**: [`PolicyExecutionResult`](/api/type-aliases/policyexecutionresult/)[]
 
-Defined in: [runner.ts:89](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L89)
+Defined in: [runner.ts:105](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L105)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Violations, fix outcomes, and execution errors; passing checks are omitted.

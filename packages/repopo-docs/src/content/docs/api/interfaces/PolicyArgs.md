@@ -9,10 +9,6 @@ Defined in: [policy.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 Arguments passed to policy handler functions.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ## Type Parameters
 
 ### C
@@ -29,10 +25,6 @@ Defined in: [policy.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 Optional configuration for the policy.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ***
 
 ### file
@@ -42,10 +34,6 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [policy.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L29)
 
 Path to the file, relative to the repo root.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -57,10 +45,6 @@ Defined in: [policy.ts:39](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 If true, the handler should resolve any violations automatically if possible.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ***
 
 ### root
@@ -70,7 +54,3 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [policy.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L34)
 
 Absolute path to the root of the repo.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::

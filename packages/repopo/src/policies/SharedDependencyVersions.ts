@@ -10,7 +10,7 @@ import { parseToml } from "../policyDefiners/tomlParser.js";
 /**
  * Configuration for the SharedDependencyVersions policy.
  *
- * @alpha
+ * @public
  */
 export interface SharedDependencyVersionsConfig {
 	/**
@@ -144,7 +144,7 @@ async function collectMemberDeps(
 /**
  * A policy that detects dependency version mismatches across Cargo workspace members.
  *
- * @alpha
+ * @public
  */
 export const SharedDependencyVersions: RepositoryPolicyDefinition<SharedDependencyVersionsConfig> =
 	{

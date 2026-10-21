@@ -8,7 +8,7 @@ import { parseToml } from "../policyDefiners/tomlParser.js";
 /**
  * Configuration for the WorkspaceMembersValid policy.
  *
- * @alpha
+ * @public
  */
 export interface WorkspaceMembersValidConfig {
 	/**
@@ -71,7 +71,7 @@ function validateMember(member: string, root: string, errors: string[]): void {
 /**
  * A policy that validates Cargo workspace member paths exist.
  *
- * @alpha
+ * @public
  */
 export const WorkspaceMembersValid: PolicyDefinition<WorkspaceMembersValidConfig> =
 	makePolicyDefinition({

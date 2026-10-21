@@ -3,7 +3,9 @@ import type { IdentifiedPolicy, PolicyInstanceId } from "./policy.js";
 
 /**
  * A map of policy instance IDs to file-path regexes that should be excluded from those policies.
- * @alpha
+ * Paths are relative to the repository root.
+ *
+ * @public
  */
 export type ExcludedPolicyFileMap = Map<PolicyInstanceId, RegExp[]>;
 

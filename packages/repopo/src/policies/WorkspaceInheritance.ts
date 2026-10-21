@@ -7,7 +7,7 @@ import { parseToml } from "../policyDefiners/tomlParser.js";
 /**
  * Configuration for the WorkspaceInheritance policy.
  *
- * @alpha
+ * @public
  */
 export interface WorkspaceInheritanceConfig {
 	/**
@@ -81,7 +81,7 @@ async function checkMemberInheritance(
 /**
  * A policy that ensures Cargo workspace members inherit fields from the workspace config.
  *
- * @alpha
+ * @public
  */
 export const WorkspaceInheritance: PolicyDefinition<WorkspaceInheritanceConfig> =
 	makePolicyDefinition({

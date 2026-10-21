@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the CargoTomlRequired policy.
  *
- * @alpha
+ * @public
  */
 export interface CargoTomlRequiredConfig {
 	/**
@@ -18,7 +18,7 @@ export interface CargoTomlRequiredConfig {
 
 	/**
 	 * Minimum Rust edition to require (e.g., "2021").
-	 * If set, the `edition` field must exist and be >= this value.
+	 * If set, the `edition` field must exist and be at least this value.
 	 */
 	minimumEdition?: string;
 
@@ -107,7 +107,7 @@ function checkMinimumEdition(
 /**
  * A policy that enforces required fields exist in Cargo.toml [package] section.
  *
- * @alpha
+ * @public
  */
 export const CargoTomlRequired: PolicyShape<CargoTomlRequiredConfig> =
 	defineCargoPolicy({

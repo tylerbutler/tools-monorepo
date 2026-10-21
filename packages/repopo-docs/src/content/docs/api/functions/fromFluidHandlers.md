@@ -7,16 +7,12 @@ title: "fromFluidHandlers"
 
 > **fromFluidHandlers**(`fluidHandlers`, `options?`): [`PolicyDefinition`](/api/type-aliases/policydefinition/)[]
 
-Defined in: [adapters/fluidFramework.ts:200](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L200)
+Defined in: [adapters/fluidFramework.ts:210](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L210)
 
 Converts FluidFramework handlers to repopo PolicyDefinitions.
 
 This adapter bridges the gap between FluidFramework's build-tools policy system
 and repopo's policy system, allowing you to reuse existing Fluid policies in repopo.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Parameters
 

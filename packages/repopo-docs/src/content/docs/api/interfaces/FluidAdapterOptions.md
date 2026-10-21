@@ -5,13 +5,9 @@ prev: false
 title: "FluidAdapterOptions"
 ---
 
-Defined in: [adapters/fluidFramework.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L57)
+Defined in: [adapters/fluidFramework.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L67)
 
 Options for converting FluidFramework handlers to repopo policies.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Properties
 
@@ -19,13 +15,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **namePrefix?**: `string`
 
-Defined in: [adapters/fluidFramework.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L63)
+Defined in: [adapters/fluidFramework.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L73)
 
 Optional prefix to add to policy names. Useful for namespacing Fluid policies.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Example
 

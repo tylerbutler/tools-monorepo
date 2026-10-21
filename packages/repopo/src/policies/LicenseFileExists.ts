@@ -5,7 +5,7 @@ import type { RepositoryPolicyDefinition } from "../policy.js";
 /**
  * Policy settings for the LicenseFileExists repo policy.
  *
- * @alpha
+ * @public
  */
 export interface LicenseFileExistsSettings {
 	/**
@@ -32,7 +32,7 @@ const DEFAULT_LICENSE_NAMES = [
  * A repo policy that checks that a LICENSE file exists in the repository root.
  * This is essential for open source projects to clarify usage rights and obligations.
  *
- * @alpha
+ * @public
  */
 export const LicenseFileExists: RepositoryPolicyDefinition<LicenseFileExistsSettings> =
 	{

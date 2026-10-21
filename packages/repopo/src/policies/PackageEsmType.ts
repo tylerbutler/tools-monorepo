@@ -23,7 +23,7 @@ const { writeFile: writeJson } = jsonfile;
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export interface PackageEsmTypeConfig {
 	/**
@@ -356,7 +356,7 @@ async function applyFix(
  * makePolicy(PackageEsmType, { detectFromExports: true })
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageEsmType = definePackagePolicy<
 	PackageJson,

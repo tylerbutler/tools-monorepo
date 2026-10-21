@@ -9,7 +9,9 @@ import { DefaultPolicies } from "./policy.js";
 export type PolicyList = PolicyCreator[];
 
 /**
- * @alpha
+ * Repository-wide policy configuration, exported as the default from `repopo.config.*`.
+ *
+ * @public
  */
 export interface RepopoConfig {
 	/**

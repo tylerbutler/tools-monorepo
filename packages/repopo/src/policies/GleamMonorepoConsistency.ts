@@ -7,7 +7,7 @@ import { parseToml } from "../policyDefiners/tomlParser.js";
 /**
  * Configuration for the GleamMonorepoConsistency policy.
  *
- * @alpha
+ * @public
  */
 export interface GleamMonorepoConsistencyConfig {
 	/**
@@ -69,7 +69,7 @@ function checkFieldConsistency(
 /**
  * A policy that enforces consistent metadata across Gleam packages in a monorepo.
  *
- * @alpha
+ * @public
  */
 export const GleamMonorepoConsistency: PolicyDefinition<GleamMonorepoConsistencyConfig> =
 	makePolicyDefinition({

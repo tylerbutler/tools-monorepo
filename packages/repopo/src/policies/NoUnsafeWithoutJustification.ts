@@ -6,7 +6,7 @@ import type { PolicyDefinition } from "../policy.js";
 /**
  * Configuration for the NoUnsafeWithoutJustification policy.
  *
- * @alpha
+ * @public
  */
 export interface NoUnsafeWithoutJustificationConfig {
 	/**
@@ -69,7 +69,7 @@ function isExcluded(file: string, excludePaths: string[] | undefined): boolean {
 /**
  * A policy that requires SAFETY comments on unsafe blocks in Rust source files.
  *
- * @alpha
+ * @public
  */
 export const NoUnsafeWithoutJustification: PolicyDefinition<NoUnsafeWithoutJustificationConfig> =
 	makePolicyDefinition({

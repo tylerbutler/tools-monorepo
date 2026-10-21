@@ -13,7 +13,7 @@ import { parseToml } from "./tomlParser.js";
 /**
  * A parsed gleam.toml represented as a record of sections and values.
  *
- * @alpha
+ * @public
  */
 export type GleamToml = Record<string, unknown>;
 
@@ -23,7 +23,7 @@ export type GleamToml = Record<string, unknown>;
  * @remarks
  * Receives the parsed TOML content and the standard policy arguments.
  *
- * @alpha
+ * @public
  */
 export type GleamTomlHandler<C> = (
 	toml: GleamToml,
@@ -45,7 +45,7 @@ function isOperation<T>(value: unknown): value is Operation<T> {
 /**
  * Input arguments for defining a gleam.toml policy.
  *
- * @alpha
+ * @public
  */
 export interface DefineGleamPolicyArgs<C> {
 	/**
@@ -76,6 +76,9 @@ export interface DefineGleamPolicyArgs<C> {
  * This is a helper function that creates a policy pre-configured to match
  * gleam.toml files. The handler receives the parsed TOML content.
  *
+ * @param args - Policy metadata, parsed-TOML handler, and optional defaults.
+ * @returns A file policy that reads and parses matching gleam.toml files.
+ *
  * @example
  * ```typescript
  * const MyGleamPolicy = defineGleamPolicy({
@@ -90,7 +93,7 @@ export interface DefineGleamPolicyArgs<C> {
  * });
  * ```
  *
- * @alpha
+ * @public
  */
 export function defineGleamPolicy<C = undefined>(
 	args: DefineGleamPolicyArgs<C>,

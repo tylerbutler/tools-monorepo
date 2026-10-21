@@ -12,7 +12,7 @@ import type {
  *
  * This interface matches the `Handler` interface from `@fluidframework/build-tools`.
  *
- * @alpha
+ * @public
  */
 export interface FluidHandler {
 	/**
@@ -45,14 +45,24 @@ export interface FluidHandler {
 		file: string,
 		root: string,
 	) =>
-		| Promise<{ resolved: boolean; message?: string }>
-		| { resolved: boolean; message?: string };
+		| Promise<{
+				/** Whether the violation was fixed. */
+				resolved: boolean;
+				/** Optional explanation of the fix result. */
+				message?: string;
+		  }>
+		| {
+				/** Whether the violation was fixed. */
+				resolved: boolean;
+				/** Optional explanation of the fix result. */
+				message?: string;
+		  };
 }
 
 /**
  * Options for converting FluidFramework handlers to repopo policies.
  *
- * @alpha
+ * @public
  */
 export interface FluidAdapterOptions {
 	/**
@@ -195,7 +205,7 @@ function fromFluidHandler(
  * @param options - Optional configuration applied to all conversions.
  * @returns An array of repopo PolicyDefinitions.
  *
- * @alpha
+ * @public
  */
 export function fromFluidHandlers(
 	fluidHandlers: FluidHandler[],

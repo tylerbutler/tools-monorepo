@@ -7,14 +7,11 @@ title: "defineFileHeaderPolicy"
 
 > **defineFileHeaderPolicy**(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:105](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L105)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:111](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L111)
 
-Given a [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/), produces a function that detects correct file headers
-and returns an error string if the header is missing or incorrect.
+Creates a file-header policy that detects missing or incorrect headers and can replace them.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+The handler skips checks when no [FileHeaderPolicyConfig](/api/interfaces/fileheaderpolicyconfig/) is supplied.
 
 ## Parameters
 
@@ -22,9 +19,13 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`DefineFileHeaderPolicyArgs`](/api/interfaces/definefileheaderpolicyargs/)
 
+Policy metadata and header matching and replacement rules.
+
 ## Returns
 
 [`PolicyShape`](/api/interfaces/policyshape/)\<[`FileHeaderPolicyConfig`](/api/interfaces/fileheaderpolicyconfig/)\>
+
+A file policy configured for the supplied file types.
 
 ## Example
 

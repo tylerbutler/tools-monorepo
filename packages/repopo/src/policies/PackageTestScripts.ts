@@ -27,7 +27,7 @@ import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export interface PackageTestScriptsConfig {
 	/**
@@ -208,7 +208,7 @@ function shouldSkipValidation(
  * };
  * ```
  *
- * @alpha
+ * @public
  */
 export const PackageTestScripts = definePackagePolicy<
 	PackageJson,

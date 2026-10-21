@@ -7,13 +7,9 @@ title: "PolicyHandler"
 
 > **PolicyHandler**\<`C`\> = ((`args`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>) \| ((`args`) => `Operation`\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>)
 
-Defined in: [policy.ts:219](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L219)
+Defined in: [policy.ts:239](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L239)
 
 A policy handler function that checks a file against a policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Type Parameters
 

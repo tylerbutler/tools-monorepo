@@ -6,7 +6,7 @@ import type { PolicyDefinition } from "../policy.js";
 /**
  * Configuration for the RustToolchainExists policy.
  *
- * @alpha
+ * @public
  */
 export interface RustToolchainExistsConfig {
 	/**
@@ -21,7 +21,7 @@ const DEFAULT_NAMES = ["rust-toolchain.toml", "rust-toolchain"];
 /**
  * A policy that requires a rust-toolchain.toml file for reproducible Rust builds.
  *
- * @alpha
+ * @public
  */
 export const RustToolchainExists: PolicyDefinition<RustToolchainExistsConfig> =
 	makePolicyDefinition({

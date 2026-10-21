@@ -7,7 +7,7 @@ import {
 /**
  * Configuration for the CargoLintsConfigured policy.
  *
- * @alpha
+ * @public
  */
 export interface CargoLintsConfiguredConfig {
 	/**
@@ -93,7 +93,7 @@ function checkLintsSection(
 /**
  * A policy that ensures Cargo.toml has a [lints.clippy] section configured.
  *
- * @alpha
+ * @public
  */
 export const CargoLintsConfigured: PolicyShape<CargoLintsConfiguredConfig> =
 	defineCargoPolicy({
