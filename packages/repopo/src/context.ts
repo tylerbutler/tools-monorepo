@@ -1,7 +1,37 @@
 import type { PolicyHandlerPerfStats } from "./perf.js";
-import type { PolicyInstance, PolicyName } from "./policy.js";
+import type { IdentifiedPolicy, PolicyInstanceId } from "./policy.js";
 
-export type ExcludedPolicyFileMap = Map<PolicyName, RegExp[]>;
+/**
+ * A map of policy instance IDs to file-path regexes that should be excluded from those policies.
+ * @alpha
+ */
+export type ExcludedPolicyFileMap = Map<PolicyInstanceId, RegExp[]>;
+
+/**
+ * Preserve explicit regex flags; string exclusions remain case-insensitive.
+ * @internal
+ */
+export function exclusionRegex(pattern: string | RegExp): RegExp {
+	return typeof pattern === "string" ? new RegExp(pattern, "i") : pattern;
+}
+
+/**
+ * Creates the per-instance exclusion map used by policy runners.
+ *
+ * @internal
+ */
+export function createExcludedPolicyFileMap(
+	policies: IdentifiedPolicy[],
+): ExcludedPolicyFileMap {
+	return new Map(
+		policies.map((configuredPolicy) => [
+			configuredPolicy.instanceId,
+			(configuredPolicy.excludeFiles ?? configuredPolicy.exclude)?.map(
+				exclusionRegex,
+			) ?? [],
+		]),
+	);
+}
 
 /**
  * Contextual data available to all Repopo commands.
@@ -15,7 +45,7 @@ export interface RepopoCommandContext {
 	/**
 	 * A list of handlers to apply to selected files.
 	 */
-	policies: PolicyInstance[];
+	policies: IdentifiedPolicy[];
 
 	/**
 	 * A per-handler list of regular expressions used to exclude files from specific handlers.

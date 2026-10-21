@@ -3,12 +3,12 @@ use std::io::{BufRead, BufReader, Write};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 
 use crate::types::{
-    BundleResponse, CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse,
-    LoadConfigParams, LoadConfigResponse, PolicyErrorResult, RunHandlerBatchParams,
-    RunHandlerParams, RunResolverBatchParams, RunResolverParams,
+    BundleResponse, CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams,
+    LoadConfigResponse, PolicyErrorResult, RepositoryPolicyResult, RunHandlerBatchParams,
+    RunHandlerParams, RunRepositoryPoliciesParams, RunResolverBatchParams, RunResolverParams,
 };
 
-/// A connection to the Node.js sidecar process that loads TypeScript
+/// A connection to the sidecar process that loads TypeScript
 /// configurations and executes policy handlers.
 pub struct Sidecar {
     child: Child,
@@ -17,20 +17,36 @@ pub struct Sidecar {
 }
 
 impl Sidecar {
-    /// Spawn the Node.js sidecar process.
+    pub fn run_repository_policies(
+        &mut self,
+        resolve: bool,
+    ) -> Result<Vec<RepositoryPolicyResult>> {
+        let response = self.request(&IpcRequest::RunRepositoryPolicies(
+            RunRepositoryPoliciesParams { resolve },
+        ))?;
+        serde_json::from_value(
+            response
+                .data
+                .context("No data in repository policy response")?,
+        )
+        .context("Failed to parse repository policy results")
+    }
+
+    /// Spawn the sidecar process using the given JS runtime.
     ///
+    /// The `runtime` should be `"node"`, `"bun"`, or another Node-compatible runtime.
     /// The `sidecar_path` should point to the sidecar .mjs file.
     /// The `git_root` sets the sidecar's working directory so that
     /// policy handlers can use repo-relative file paths directly.
-    pub fn spawn(sidecar_path: &str, git_root: &str) -> Result<Self> {
-        let mut child = Command::new("node")
+    pub fn spawn(runtime: &str, sidecar_path: &str, git_root: &str) -> Result<Self> {
+        let mut child = Command::new(runtime)
             .arg(sidecar_path)
             .current_dir(git_root)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::inherit())
             .spawn()
-            .with_context(|| format!("Failed to spawn Node.js sidecar at {sidecar_path}"))?;
+            .with_context(|| format!("Failed to spawn sidecar with {runtime} at {sidecar_path}"))?;
 
         let stdin = child.stdin.take().context("Failed to get sidecar stdin")?;
         let stdout = child
@@ -144,9 +160,7 @@ impl Sidecar {
         });
 
         let response = self.request(&req)?;
-        let data = response
-            .data
-            .context("No data in run_resolver response")?;
+        let data = response.data.context("No data in run_resolver response")?;
 
         if data.is_boolean() {
             if data.as_bool() == Some(true) {
@@ -167,11 +181,13 @@ impl Sidecar {
         policy_id: usize,
         files: &[String],
         resolve: bool,
+        concurrency: usize,
     ) -> Result<Vec<(String, HandlerResult)>> {
         let req = IpcRequest::RunHandlerBatch(RunHandlerBatchParams {
             policy_id,
             files: files.to_vec(),
             resolve,
+            concurrency,
         });
 
         let response = self.request(&req)?;
@@ -224,8 +240,7 @@ impl Sidecar {
     /// Convert a compact batch response into the Vec<(file, HandlerResult)> format
     /// expected by callers.
     fn expand_compact_response(batch: CompactBatchResponse) -> Vec<(String, HandlerResult)> {
-        let mut results =
-            Vec::with_capacity(batch.pass.len() + batch.fail.len());
+        let mut results = Vec::with_capacity(batch.pass.len() + batch.fail.len());
 
         for file in batch.pass {
             results.push((file, HandlerResult::Pass(true)));
@@ -267,17 +282,14 @@ impl Drop for Sidecar {
     }
 }
 
-/// Spawn the sidecar in one-shot bundle mode.
-///
-/// The sidecar loads the config, bundles all policy code with esbuild into a
-/// QuickJS-compatible IIFE, writes JSON to stdout, and exits.
-/// Returns the bundle response containing metadata + JS bundle string.
+/// Bundle policies in a one-shot sidecar process for QuickJS.
 pub fn run_bundle_mode(
+    runtime: &str,
     sidecar_path: &str,
     git_root: &str,
     config_path: Option<&str>,
 ) -> Result<BundleResponse> {
-    let mut cmd = Command::new("node");
+    let mut cmd = Command::new(runtime);
     cmd.arg(sidecar_path)
         .args(["--mode", "bundle"])
         .args(["--git-root", git_root]);
@@ -286,24 +298,17 @@ pub fn run_bundle_mode(
         cmd.args(["--config", config]);
     }
 
-    cmd.current_dir(git_root)
+    let output = cmd
+        .current_dir(git_root)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
-        .stderr(Stdio::inherit());
-
-    let output = cmd
+        .stderr(Stdio::inherit())
         .output()
         .with_context(|| format!("Failed to spawn sidecar in bundle mode at {sidecar_path}"))?;
 
     if !output.status.success() {
-        anyhow::bail!(
-            "Sidecar bundle mode exited with status {}",
-            output.status
-        );
+        anyhow::bail!("Sidecar bundle mode exited with status {}", output.status);
     }
 
-    let response: BundleResponse = serde_json::from_slice(&output.stdout)
-        .context("Failed to parse sidecar bundle response")?;
-
-    Ok(response)
+    serde_json::from_slice(&output.stdout).context("Failed to parse sidecar bundle response")
 }

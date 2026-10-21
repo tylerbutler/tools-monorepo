@@ -15,6 +15,7 @@
  *   { "method": "run_resolver", "params": { "policyName": "...", "file": "...", "root": "..." } }
  *   { "method": "run_handler_batch", "params": { "policyName": "...", "files": [...], "root": "...", "resolve": false } }
  *   { "method": "run_resolver_batch", "params": { "policyName": "...", "files": [...], "root": "..." } }
+ *   { "method": "run_repository_policies", "params": { "resolve": false } }
  *   { "method": "shutdown" }
  *
  * Response format:
@@ -27,6 +28,13 @@ import { createInterface } from "node:readline";
 import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { run } from "effection";
 import { lilconfig } from "lilconfig";
+import {
+	DEFAULT_CONCURRENCY,
+	validateConcurrency,
+} from "../esm/concurrency.js";
+import { fileCache, ParsedFileCache } from "../esm/fileCache.js";
+
+const parsedFiles = new ParsedFileCache();
 
 // --- CLI argument parsing ---
 
@@ -86,26 +94,33 @@ function serializeRegex(regex) {
 }
 
 /**
+ * @param {string | RegExp} pattern
+ * @returns {string | { source: string, flags: string }}
+ */
+function serializeExclusion(pattern) {
+	return pattern instanceof RegExp ? serializeRegex(pattern) : pattern;
+}
+
+/**
  * Serialize policy metadata for the Rust side.
  * Strips out functions and sends only what Rust needs for matching.
  * @param {import("../src/policy.js").ConfiguredPolicy} policy
  * @returns {object}
  */
 function serializePolicy(policy) {
-	const match = serializeRegex(policy.match);
+	const match =
+		policy.scope === "repository"
+			? { source: "", flags: "" }
+			: serializeRegex(policy.match);
 
-	// Convert excludeFiles to regex pattern strings
 	const excludeFiles = (policy.excludeFiles ?? policy.exclude ?? []).map(
-		(e) => {
-			if (e instanceof RegExp) {
-				return e.source;
-			}
-			return String(e);
-		},
+		serializeExclusion,
 	);
 
 	return {
 		name: policy.name,
+		instanceId: policy.instanceId,
+		scope: policy.scope ?? "file",
 		description: policy.description,
 		matchPattern: match.source,
 		matchFlags: match.flags,
@@ -157,6 +172,7 @@ async function executeHandler(handler, args) {
  * @param {object} params
  */
 async function handleLoadConfig(params) {
+	parsedFiles.clear();
 	try {
 		const searchPath = params.configPath ?? process.cwd();
 
@@ -191,20 +207,21 @@ async function handleLoadConfig(params) {
 		// Build the policy map and index array
 		policiesByName.clear();
 		policiesByIndex = [];
-		const policies = loadedConfig?.policies ?? [];
-		for (const p of policies) {
+		const policies =
+			loadedConfig?.policies ??
+			(await import("../esm/config.js")).DefaultPolicyConfig.policies;
+		const { identifyPolicyInstances } = await import("../esm/makePolicy.js");
+		const identifiedPolicies = identifyPolicyInstances(policies);
+		for (const p of identifiedPolicies) {
 			policiesByName.set(p.name, p);
 			policiesByIndex.push(p);
 		}
 
 		// Serialize for Rust
-		const serializedPolicies = policies.map(serializePolicy);
-		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map((e) => {
-			if (e instanceof RegExp) {
-				return e.source;
-			}
-			return String(e);
-		});
+		const serializedPolicies = identifiedPolicies.map(serializePolicy);
+		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map(
+			serializeExclusion,
+		);
 
 		respond({
 			ok: true,
@@ -217,6 +234,43 @@ async function handleLoadConfig(params) {
 		respond({
 			ok: false,
 			error: `Failed to load config: ${err.message}`,
+		});
+	}
+}
+
+async function handleRunRepositoryPolicies(params) {
+	parsedFiles.clear();
+	try {
+		const { PolicyRunner } = await import("../esm/runner.js");
+		const { exclusionRegex } = await import("../esm/context.js");
+		const { parseFilePaths } = await import("../esm/filePaths.js");
+		const { simpleGit } = await import("simple-git");
+		const runner = new PolicyRunner({
+			policies: policiesByIndex.filter(
+				(policy) => policy.scope === "repository",
+			),
+			excludeFromAll: (loadedConfig?.excludeFiles ?? []).map(exclusionRegex),
+			excludePoliciesForFiles: new Map(),
+			gitRoot: storedGitRoot,
+			resolve: params.resolve ?? false,
+		});
+		const result = await run(() =>
+			runner.run([], async () => {
+				const output = await simpleGit(storedGitRoot).raw(
+					"ls-files",
+					"-co",
+					"-z",
+					"--exclude-standard",
+					"--full-name",
+				);
+				return parseFilePaths(output);
+			}),
+		);
+		respond({ ok: true, data: result.results });
+	} catch (error) {
+		respond({
+			ok: false,
+			error: `Repository policy execution failed: ${error.message}`,
 		});
 	}
 }
@@ -237,11 +291,15 @@ async function handleRunHandler(params) {
 		}
 
 		const handler = policy._internalHandler ?? policy.handler;
+		if (params.resolve) {
+			parsedFiles.clear();
+		}
 		const args = {
 			file: params.file,
 			root: params.root,
 			resolve: params.resolve ?? false,
 			config: policy.config,
+			[fileCache]: params.resolve ? undefined : parsedFiles,
 		};
 
 		const result = await executeHandler(handler, args);
@@ -259,7 +317,7 @@ async function handleRunHandler(params) {
 
 /**
  * Handle a run_handler_batch request.
- * Runs the handler for each file sequentially and returns compact results.
+ * Runs read-only handlers with bounded file concurrency and returns compact results.
  * Accepts policyId (index) and uses stored gitRoot.
  * @param {object} params
  */
@@ -276,43 +334,66 @@ async function handleRunHandlerBatch(params) {
 
 		const handler = policy._internalHandler ?? policy.handler;
 		const resolve = params.resolve ?? false;
+		const concurrency = validateConcurrency(
+			params.concurrency ?? DEFAULT_CONCURRENCY,
+		);
+		if (resolve) {
+			parsedFiles.clear();
+		}
+		const outcomes = new Array(params.files.length);
+		const files = params.files.entries();
+		await Promise.all(
+			Array.from(
+				{ length: Math.min(resolve ? 1 : concurrency, params.files.length) },
+				async () => {
+					for (const [index, file] of files) {
+						try {
+							const result = await executeHandler(handler, {
+								file,
+								root: storedGitRoot,
+								resolve,
+								config: policy.config,
+								[fileCache]: resolve ? undefined : parsedFiles,
+							});
+							outcomes[index] =
+								result === true
+									? true
+									: {
+											file,
+											error: result.error,
+											errorMessages: result.errorMessages,
+											fixable: result.fixable ?? result.autoFixable,
+											fixed: result.fixed ?? result.resolved,
+											manualFix: result.manualFix,
+										};
+						} catch (err) {
+							outcomes[index] = {
+								file,
+								error: `Handler error: ${err.message}`,
+								fixable: false,
+							};
+						}
+					}
+				},
+			),
+		);
 		/** @type {string[]} */
 		const pass = [];
 		/** @type {Array<{file: string, error?: string, errorMessages?: string[], fixable?: boolean, fixed?: boolean, manualFix?: string}>} */
 		const fail = [];
 
-		for (const file of params.files) {
-			try {
-				const args = {
-					file,
-					root: storedGitRoot,
-					resolve,
-					config: policy.config,
-				};
-				const result = await executeHandler(handler, args);
-				if (result === true) {
-					pass.push(file);
-				} else {
-					fail.push({
-						file,
-						error: result.error,
-						errorMessages: result.errorMessages,
-						fixable: result.fixable,
-						fixed: result.fixed,
-						manualFix: result.manualFix,
-					});
-				}
-			} catch (err) {
-				fail.push({
-					file,
-					error: `Handler error: ${err.message}`,
-					fixable: false,
-				});
+		for (const [index, file] of params.files.entries()) {
+			const result = outcomes[index];
+			if (result === true) {
+				pass.push(file);
+			} else {
+				fail.push(result);
 			}
 		}
 
 		respond({ ok: true, data: { pass, fail } });
 	} catch (err) {
+		parsedFiles.clear();
 		respond({
 			ok: false,
 			error: `Batch handler error for policy index ${params.policyId}: ${err.message}`,
@@ -325,6 +406,7 @@ async function handleRunHandlerBatch(params) {
  * @param {object} params
  */
 async function handleRunResolver(params) {
+	parsedFiles.clear();
 	try {
 		const policy = policiesByName.get(params.policyName);
 		if (!policy) {
@@ -366,6 +448,7 @@ async function handleRunResolver(params) {
  * @param {object} params
  */
 async function handleRunResolverBatch(params) {
+	parsedFiles.clear();
 	try {
 		const policy = policiesByIndex[params.policyId];
 		if (!policy) {
@@ -404,8 +487,8 @@ async function handleRunResolverBatch(params) {
 						file,
 						error: result.error,
 						errorMessages: result.errorMessages,
-						fixable: result.fixable,
-						fixed: result.fixed,
+						fixable: result.fixable ?? result.autoFixable,
+						fixed: result.fixed ?? result.resolved,
 						manualFix: result.manualFix,
 					});
 				}
@@ -471,7 +554,12 @@ async function main() {
 				await handleRunResolverBatch(params ?? {});
 				break;
 
+			case "run_repository_policies":
+				await handleRunRepositoryPolicies(params ?? {});
+				break;
+
 			case "shutdown":
+				parsedFiles.clear();
 				process.exit(0);
 				break;
 
@@ -481,6 +569,7 @@ async function main() {
 	}
 
 	// stdin closed — exit cleanly
+	parsedFiles.clear();
 	process.exit(0);
 }
 
@@ -493,10 +582,8 @@ async function main() {
 async function bundleMode() {
 	const { build } = await import("esbuild");
 	const { join, dirname } = await import("node:path");
-	const {
-		writeFileSync: fsWriteFileSync,
-		unlinkSync: fsUnlinkSync,
-	} = await import("node:fs");
+	const { writeFileSync: fsWriteFileSync, unlinkSync: fsUnlinkSync } =
+		await import("node:fs");
 	const { tmpdir } = await import("node:os");
 	const { fileURLToPath } = await import("node:url");
 
@@ -521,12 +608,10 @@ async function bundleMode() {
 		? await configLoader.search(searchPath)
 		: await configLoader.load(searchPath);
 
-	if (!maybeConfig) {
-		process.stderr.write("No repopo config found\n");
-		process.exit(1);
-	}
-
-	const configFilePath = maybeConfig.filepath;
+	const defaultConfigPath = join(__dirname, "../esm/config.js");
+	const configFilePath = maybeConfig?.filepath ?? defaultConfigPath;
+	const loadedConfig = maybeConfig?.config?.default ?? maybeConfig?.config;
+	const needsDefaultPolicies = loadedConfig?.policies === undefined;
 
 	// Step 2: Generate entry point that imports config and bridge
 	const tmpEntry = join(tmpdir(), `repopo-entry-${Date.now()}.mjs`);
@@ -544,11 +629,18 @@ async function bundleMode() {
 		"  };",
 		"}",
 		"",
-		`import config from ${JSON.stringify(configFilePath)};`,
+		maybeConfig
+			? `import config from ${JSON.stringify(configFilePath)};`
+			: `import { DefaultPolicyConfig as config } from ${JSON.stringify(configFilePath)};`,
+		needsDefaultPolicies
+			? `import { DefaultPolicyConfig } from ${JSON.stringify(defaultConfigPath)};`
+			: "",
 		`import { initBridge } from ${JSON.stringify(join(shimsDir, "quickjs-bridge.mjs"))};`,
 		"",
 		"const resolvedConfig = config.default ?? config;",
-		"initBridge(resolvedConfig);",
+		needsDefaultPolicies
+			? "initBridge({ ...resolvedConfig, policies: resolvedConfig.policies ?? DefaultPolicyConfig.policies });"
+			: "initBridge(resolvedConfig);",
 	].join("\n");
 
 	fsWriteFileSync(tmpEntry, entryCode);
@@ -664,13 +756,10 @@ async function bundleMode() {
 				});
 
 				// Load inline modules
-				build.onLoad(
-					{ filter: /.*/, namespace: "inline-module" },
-					(args) => ({
-						contents: inlineModules.get(args.path),
-						loader: "js",
-					}),
-				);
+				build.onLoad({ filter: /.*/, namespace: "inline-module" }, (args) => ({
+					contents: inlineModules.get(args.path),
+					loader: "js",
+				}));
 
 				// 2. Stub unshimmed node: prefixed builtins
 				build.onResolve({ filter: /^node:/ }, (args) => {
@@ -697,11 +786,9 @@ async function bundleMode() {
 				// property access on the __toESM result falls through to the Proxy's
 				// get trap, which returns noop. Without this, __toESM creates a plain
 				// object and only copies enumerable own properties (losing the trap).
-				build.onLoad(
-					{ filter: /.*/, namespace: "node-stub" },
-					() => {
-						return {
-							contents: `
+				build.onLoad({ filter: /.*/, namespace: "node-stub" }, () => {
+					return {
+						contents: `
 								function noop() { return stub; }
 								const handler = {
 									get(_, prop) {
@@ -716,10 +803,9 @@ async function bundleMode() {
 								const stub = new Proxy(noop, handler);
 								module.exports = stub;
 							`,
-							loader: "js",
-						};
-					},
-				);
+						loader: "js",
+					};
+				});
 			},
 		};
 
@@ -745,13 +831,14 @@ async function bundleMode() {
 		const bundleCode = result.outputFiles[0].text;
 
 		// Step 4: Serialize policy metadata (reuse loaded config)
-		const loadedConfig =
-			maybeConfig.config?.default ?? maybeConfig.config;
-		const policies = (loadedConfig?.policies ?? []).map(serializePolicy);
-		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map((e) => {
-			if (e instanceof RegExp) return e.source;
-			return String(e);
-		});
+		const { DefaultPolicyConfig } = await import("../esm/config.js");
+		const { identifyPolicyInstances } = await import("../esm/makePolicy.js");
+		const policies = identifyPolicyInstances(
+			loadedConfig?.policies ?? DefaultPolicyConfig.policies,
+		).map(serializePolicy);
+		const excludeFiles = (loadedConfig?.excludeFiles ?? []).map(
+			serializeExclusion,
+		);
 
 		// Step 5: Output JSON to stdout
 		const output = JSON.stringify({
@@ -778,13 +865,12 @@ async function bundleMode() {
 
 if (sidecarArgs.mode === "bundle") {
 	bundleMode().catch((err) => {
-		process.stderr.write(
-			`Bundle mode error: ${err.message}\n${err.stack}\n`,
-		);
+		process.stderr.write(`Bundle mode error: ${err.message}\n${err.stack}\n`);
 		process.exit(1);
 	});
 } else {
 	main().catch((err) => {
+		parsedFiles.clear();
 		process.stderr.write(`Sidecar fatal error: ${err.message}\n`);
 		process.exit(1);
 	});

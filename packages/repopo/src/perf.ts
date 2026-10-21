@@ -1,23 +1,30 @@
 import type { Logger } from "@tylerbu/cli-api";
 import type { Operation } from "effection";
-import type { PolicyName } from "./policy.js";
+import type { PolicyInstanceId } from "./policy.js";
 
+/**
+ * The type of action a policy can perform.
+ * @alpha
+ */
 export type PolicyAction = "check" | "resolve" | "handle";
 
 /**
  * Stores performance data for each handler. Used to collect and display performance stats.
+ * @alpha
  */
 export interface PolicyHandlerPerfStats {
+	/** Number of candidate file paths supplied to the runner. */
 	count: number;
+	/** Number of candidate files admitted past global exclusions. */
 	processed: number;
-	data: Map<PolicyAction, Map<PolicyName, number>>;
+	data: Map<PolicyAction, Map<PolicyInstanceId, number>>;
 }
 
 export function newPerfStats(): PolicyHandlerPerfStats {
 	return {
 		count: 0,
 		processed: 0,
-		data: new Map<PolicyAction, Map<PolicyName, number>>(),
+		data: new Map<PolicyAction, Map<PolicyInstanceId, number>>(),
 	};
 }
 
@@ -27,14 +34,10 @@ export function* runWithPerf<T>(
 	stats: PolicyHandlerPerfStats,
 	run: () => Operation<T>,
 ): Operation<T> {
-	const actionMap = stats.data.get(action) ?? new Map<string, number>();
-	let dur = actionMap.get(name) ?? 0;
-
-	const start = Date.now();
+	const start = performance.now();
 	const result = yield* run();
-	dur += Date.now() - start;
-
-	actionMap.set(name, dur);
+	const actionMap = stats.data.get(action) ?? new Map<string, number>();
+	actionMap.set(name, (actionMap.get(name) ?? 0) + performance.now() - start);
 	stats.data.set(action, actionMap);
 	return result;
 }
@@ -47,7 +50,7 @@ export function logStats(stats: PolicyHandlerPerfStats, log: Logger): void {
 	for (const [action, handlerPerf] of stats.data.entries()) {
 		log.log(`Performance for "${action}":`);
 		for (const [handler, dur] of handlerPerf.entries()) {
-			log.log(`    ${handler}: ${dur}ms`);
+			log.log(`    ${handler}: ${Math.round(dur * 10) / 10}ms`);
 		}
 	}
 }

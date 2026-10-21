@@ -31,7 +31,8 @@ more information.
 
 ## Extends
 
-- [`Installable`](Installable.md).[`Reloadable`](Reloadable.md)
+- [`Installable`](Installable.md)
+- [`Reloadable`](Reloadable.md)
 
 ## Properties
 

@@ -7,7 +7,7 @@ title: "isPolicyFixResult"
 
 > **isPolicyFixResult**(`toCheck`): `toCheck is PolicyFixResult`
 
-Defined in: [policy.ts:337](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L337)
+Defined in: [policy.ts:429](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L429)
 
 Type guard to check if a result is a [PolicyFixResult](/api/interfaces/policyfixresult/) (legacy).
 

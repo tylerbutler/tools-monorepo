@@ -5,7 +5,7 @@ prev: false
 title: "PolicyError"
 ---
 
-Defined in: [policy.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L55)
+Defined in: [policy.ts:62](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L62)
 
 A policy error returned when a file fails a policy check.
 
@@ -13,13 +13,17 @@ A policy error returned when a file fails a policy check.
 This API should not be used in production and may be trimmed from a public release.
 :::
 
+## Extended by
+
+- [`RepositoryPolicyFinding`](/api/interfaces/repositorypolicyfinding/)
+
 ## Properties
 
 ### error
 
 > **error**: `string`
 
-Defined in: [policy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L59)
+Defined in: [policy.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L66)
 
 The error message describing what failed.
 
@@ -31,9 +35,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### fixable?
 
-> `optional` **fixable**: `boolean`
+> `optional` **fixable?**: `boolean`
 
-Defined in: [policy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L64)
+Defined in: [policy.ts:71](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L71)
 
 Set to `true` if the policy violation can be fixed automatically.
 
@@ -45,9 +49,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### fixed?
 
-> `optional` **fixed**: `boolean`
+> `optional` **fixed?**: `boolean`
 
-Defined in: [policy.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L69)
+Defined in: [policy.ts:76](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L76)
 
 Set to `true` if the violation was successfully fixed (only set when resolve=true).
 
@@ -59,9 +63,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### manualFix?
 
-> `optional` **manualFix**: `string`
+> `optional` **manualFix?**: `string`
 
-Defined in: [policy.ts:74](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L74)
+Defined in: [policy.ts:81](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L81)
 
 An optional string that tells the user how to manually fix the failure.
 

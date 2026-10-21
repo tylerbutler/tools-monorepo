@@ -10,6 +10,7 @@
             "v"
         ],
         "flags": [
+            "concurrency",
             "config",
             "fix",
             "quiet",
@@ -32,9 +33,11 @@
         ],
         "flags": [
             "binary-path",
+            "concurrency",
             "config",
             "fix",
             "quiet",
+            "runtime",
             "sidecar-path",
             "stdin",
             "verbose"

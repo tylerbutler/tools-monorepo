@@ -1,4 +1,5 @@
 import jsonfile from "jsonfile";
+import { resolve as resolvePath } from "pathe";
 import type { PackageJson } from "type-fest";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
@@ -128,7 +129,7 @@ export const ExactScripts = definePackagePolicy<
 	name: POLICY_NAME,
 	description:
 		"Validates that scripts exist and have exact content in package.json.",
-	handler: async (json, { file, resolve, config }) => {
+	handler: async (json, { file, root, resolve, config }) => {
 		if (config === undefined || Object.keys(config.scripts).length === 0) {
 			return true;
 		}
@@ -150,7 +151,7 @@ export const ExactScripts = definePackagePolicy<
 			try {
 				const fixedScripts = await fixScripts(
 					json,
-					file,
+					resolvePath(root, file),
 					scriptsToFix,
 					config.scripts,
 					scripts,

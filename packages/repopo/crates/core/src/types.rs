@@ -1,5 +1,28 @@
 use serde::{Deserialize, Serialize};
 
+/// String exclusions use case-insensitive matching; explicit regexes retain their flags.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ExclusionPattern {
+    String(String),
+    Regex { source: String, flags: String },
+}
+
+impl ExclusionPattern {
+    pub fn source(&self) -> &str {
+        match self {
+            Self::String(source) | Self::Regex { source, .. } => source,
+        }
+    }
+
+    pub fn flags(&self) -> &str {
+        match self {
+            Self::String(_) => "i",
+            Self::Regex { flags, .. } => flags,
+        }
+    }
+}
+
 /// Metadata about a policy, received from the Node sidecar.
 /// Does not include the handler function itself — that stays in Node.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -7,6 +30,9 @@ use serde::{Deserialize, Serialize};
 pub struct PolicyMeta {
     /// The name of the policy.
     pub name: String,
+
+    #[serde(default)]
+    pub scope: String,
 
     /// A description of what the policy checks.
     pub description: String,
@@ -23,9 +49,9 @@ pub struct PolicyMeta {
     #[serde(default)]
     pub has_resolver: bool,
 
-    /// Per-policy file exclusion patterns (regex strings).
+    /// Per-policy file exclusion patterns.
     #[serde(default)]
-    pub exclude_files: Vec<String>,
+    pub exclude_files: Vec<ExclusionPattern>,
 }
 
 /// The result of running a policy handler, received from the Node sidecar.
@@ -129,6 +155,9 @@ impl HandlerResult {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "method", content = "params")]
 pub enum IpcRequest {
+    #[serde(rename = "run_repository_policies")]
+    RunRepositoryPolicies(RunRepositoryPoliciesParams),
+
     /// Ask the sidecar to load the config and return policy metadata.
     #[serde(rename = "load_config")]
     LoadConfig(LoadConfigParams),
@@ -152,6 +181,29 @@ pub enum IpcRequest {
     /// Tell the sidecar to shut down.
     #[serde(rename = "shutdown")]
     Shutdown,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RunRepositoryPoliciesParams {
+    pub resolve: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RepositoryPolicyResult {
+    pub policy_id: String,
+    pub outcome: RepositoryPolicyFinding,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RepositoryPolicyFinding {
+    pub error: String,
+    #[serde(default)]
+    pub files: Vec<String>,
+    pub fixed: Option<bool>,
+    pub fixable: Option<bool>,
+    #[serde(rename = "manualFix")]
+    pub manual_fix: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -204,6 +256,13 @@ pub struct RunHandlerBatchParams {
 
     /// Whether to attempt auto-fix.
     pub resolve: bool,
+
+    #[serde(default = "default_concurrency")]
+    pub concurrency: usize,
+}
+
+fn default_concurrency() -> usize {
+    8
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -291,26 +350,17 @@ pub struct LoadConfigResponse {
     /// Metadata for all configured policies.
     pub policies: Vec<PolicyMeta>,
 
-    /// Global file exclusion patterns (regex strings).
+    /// Global file exclusion patterns.
     #[serde(default)]
-    pub exclude_files: Vec<String>,
+    pub exclude_files: Vec<ExclusionPattern>,
 }
 
-/// Response from the sidecar in bundle mode.
-///
-/// Contains policy metadata plus the esbuild-generated JS bundle
-/// that can be evaluated directly in QuickJS.
+/// Policy metadata and an esbuild bundle for in-process QuickJS execution.
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BundleResponse {
-    /// Metadata for all configured policies.
     pub policies: Vec<PolicyMeta>,
-
-    /// Global file exclusion patterns (regex strings).
     #[serde(default)]
-    pub exclude_files: Vec<String>,
-
-    /// The complete esbuild-generated JS bundle for QuickJS execution.
-    /// Contains all policy code, shims, and the bridge dispatch layer.
+    pub exclude_files: Vec<ExclusionPattern>,
     pub bundle: String,
 }

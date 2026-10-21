@@ -5,7 +5,7 @@ prev: false
 title: "DefinePackagePolicyArgs"
 ---
 
-Defined in: [policyDefiners/definePackagePolicy.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L48)
+Defined in: [policyDefiners/definePackagePolicy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L49)
 
 Input arguments for defining a package.json policy.
 
@@ -27,9 +27,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### defaultConfig?
 
-> `optional` **defaultConfig**: `C`
+> `optional` **defaultConfig?**: `C`
 
-Defined in: [policyDefiners/definePackagePolicy.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L67)
+Defined in: [policyDefiners/definePackagePolicy.ts:68](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L68)
 
 Optional default configuration for the policy.
 
@@ -43,7 +43,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **description**: `string`
 
-Defined in: [policyDefiners/definePackagePolicy.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L57)
+Defined in: [policyDefiners/definePackagePolicy.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L58)
 
 A description of the policy's purpose.
 
@@ -57,7 +57,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **handler**: [`PackageJsonHandler`](/api/type-aliases/packagejsonhandler/)\<`J`, `C`\>
 
-Defined in: [policyDefiners/definePackagePolicy.ts:62](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L62)
+Defined in: [policyDefiners/definePackagePolicy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L63)
 
 The handler function that receives the parsed package.json and policy arguments.
 
@@ -71,7 +71,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policyDefiners/definePackagePolicy.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L52)
+Defined in: [policyDefiners/definePackagePolicy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L53)
 
 The name of the policy.
 

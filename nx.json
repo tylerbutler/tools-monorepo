@@ -44,6 +44,8 @@
 		"default": ["{projectRoot}/**/*", "sharedGlobals"],
 		"production": [
 			"default",
+			"!{projectRoot}/esm/**",
+			"!{projectRoot}/dist/**",
 			"!{projectRoot}/**/*.spec.ts",
 			"!{projectRoot}/**/*.test.ts",
 			"!{projectRoot}/test/**/*",
@@ -96,7 +98,8 @@
 				"build:readme", // Intra-package: OCLIF readme
 				"build:generate", // Intra-package: OCLIF snapshots
 				"build:site", // Intra-package: Astro/Vite sites
-				"build:vite" // Intra-package: Vite builds
+				"build:vite", // Intra-package: Vite builds
+				"build:rust" // Intra-package: Rust compilation (repopo-core)
 			],
 			"inputs": ["production", "^production"], // Only source code changes affect build, not lint/format results
 			"cache": true
@@ -226,13 +229,19 @@
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
 				"{projectRoot}/public/**"
 			],
-			"outputs": ["{projectRoot}/dist/**", "{projectRoot}/.astro/**"],
+			"outputs": [
+				"{projectRoot}/dist/**",
+				"{projectRoot}/.astro/**",
+				"{projectRoot}/src/content/docs/api/**"
+			],
 			"cache": true
 		},
 
 		"build:vite": {
+			"dependsOn": ["^build:compile", "build:compile"],
 			"inputs": [
 				"{projectRoot}/src/**",
+				"^production",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}",
 				"{projectRoot}/public/**",
 				"{projectRoot}/index.html"
@@ -255,6 +264,26 @@
 			"cache": true
 		},
 
+		"build:rust": {
+			"inputs": [
+				"{projectRoot}/crates/**/*.rs",
+				"{projectRoot}/crates/**/Cargo.toml",
+				"{projectRoot}/crates/**/Cargo.lock"
+			],
+			"outputs": ["{projectRoot}/crates/core/target/debug/repopo-core"],
+			"cache": true
+		},
+
+		"build:rust:release": {
+			"inputs": [
+				"{projectRoot}/crates/**/*.rs",
+				"{projectRoot}/crates/**/Cargo.toml",
+				"{projectRoot}/crates/**/Cargo.lock"
+			],
+			"outputs": ["{projectRoot}/crates/core/target/release/repopo-core"],
+			"cache": true
+		},
+
 		// ============================================
 		// TEST IMPLEMENTATION TARGETS
 		// ============================================
@@ -263,6 +292,7 @@
 			"inputs": [
 				"default",
 				"^production",
+				"{workspaceRoot}/config/vitest.config.ts",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
 			],
 			"outputs": ["{projectRoot}/_temp/**", "{projectRoot}/.sonda/**"],
@@ -274,6 +304,7 @@
 			"inputs": [
 				"default",
 				"^production",
+				"{workspaceRoot}/config/vitest.config.ts",
 				"{projectRoot}/*.config.{ts,js,mjs,cjs}"
 			],
 			"outputs": [
@@ -410,5 +441,6 @@
 			"cache": false
 		}
 	},
-	"nxCloudId": "68fa4834e4d66c5b22e74804"
+	"nxCloudId": "68fa4834e4d66c5b22e74804",
+	"analytics": false
 }

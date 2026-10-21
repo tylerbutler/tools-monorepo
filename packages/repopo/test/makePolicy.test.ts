@@ -1,6 +1,11 @@
 import { call, type Operation } from "effection";
 import { beforeEach, describe, expect, it } from "vitest";
-import { makePolicy, makePolicyDefinition, policy } from "../src/makePolicy.js";
+import {
+	identifyPolicyInstances,
+	makePolicy,
+	makePolicyDefinition,
+	policy,
+} from "../src/makePolicy.js";
 import type {
 	PolicyDefinition,
 	PolicyFixResult,
@@ -241,6 +246,78 @@ describe("makePolicy", () => {
 		};
 	});
 
+	describe("identifyPolicyInstances", () => {
+		const duplicatePolicy: PolicyShape<{ label: string }> = {
+			name: "DuplicatePolicy",
+			description: "A policy configured more than once",
+			match: /\.txt$/,
+			handler: async () => true,
+		};
+
+		it("should require explicit identities for duplicate policy instances", () => {
+			const configuredPolicies = [
+				policy(duplicatePolicy, { label: "first" }),
+				policy(duplicatePolicy, { label: "second" }),
+			];
+
+			expect(() => identifyPolicyInstances(configuredPolicies)).toThrow(
+				"Policy 'DuplicatePolicy' is configured multiple times. Set a unique instanceId for each instance.",
+			);
+		});
+
+		it("should preserve the policy name as the identity for a single instance", () => {
+			const [configuredPolicy] = identifyPolicyInstances([
+				policy(duplicatePolicy, { label: "only" }),
+			]);
+
+			expect(configuredPolicy?.instanceId).toBe("DuplicatePolicy");
+		});
+
+		it("should preserve explicit identities", () => {
+			const sourcePolicy = policy(
+				duplicatePolicy,
+				{ label: "source" },
+				{ instanceId: "source-files" },
+			);
+			const testPolicy = policy(
+				duplicatePolicy,
+				{ label: "tests" },
+				{ instanceId: "test-files" },
+			);
+
+			expect(
+				identifyPolicyInstances([testPolicy, sourcePolicy]).map(
+					(configuredPolicy) => configuredPolicy.instanceId,
+				),
+			).toEqual(["test-files", "source-files"]);
+		});
+
+		it("should reject duplicate explicit identities", () => {
+			expect(() =>
+				identifyPolicyInstances([
+					policy(duplicatePolicy, { label: "source" }, { instanceId: "files" }),
+					policy(duplicatePolicy, { label: "tests" }, { instanceId: "files" }),
+				]),
+			).toThrow("Duplicate policy instance ID: files");
+		});
+
+		it("should treat an instanceId-only second argument as policy config", () => {
+			const policyWithInstanceIdConfig: PolicyShape<{ instanceId: string }> = {
+				...duplicatePolicy,
+				handler: async () => true,
+			};
+
+			const configuredPolicy = policy(policyWithInstanceIdConfig, {
+				instanceId: "config-value",
+			});
+
+			expect(configuredPolicy.config).toEqual({
+				instanceId: "config-value",
+			});
+			expect(configuredPolicy.instanceId).toBeUndefined();
+		});
+	});
+
 	it("should create PolicyInstance from definition only", () => {
 		const instance = makePolicy(baseDefinition);
 
@@ -249,7 +326,7 @@ describe("makePolicy", () => {
 		expect(instance.handler).toBe(baseDefinition.handler);
 		expect(instance.defaultConfig).toEqual({ threshold: 50 });
 		expect(instance.description).toBe("A test policy");
-		expect(instance.config).toBeUndefined();
+		expect(instance.config).toEqual({ threshold: 50 });
 	});
 
 	it("should merge config into policy instance", () => {
@@ -312,7 +389,7 @@ describe("makePolicy", () => {
 	it("should handle undefined config gracefully", () => {
 		const instance = makePolicy(baseDefinition, undefined);
 
-		expect(instance.config).toBeUndefined();
+		expect(instance.config).toEqual({ threshold: 50 });
 		expect(instance.defaultConfig).toEqual({ threshold: 50 });
 	});
 
@@ -425,9 +502,9 @@ describe("policy()", () => {
 		});
 	});
 
-	describe("two-argument form: policy(def, options)", () => {
+	describe("options without configuration", () => {
 		it("should accept options with exclude patterns", () => {
-			const result = policy(noConfigPolicyDef, {
+			const result = policy(noConfigPolicyDef, undefined, {
 				exclude: [/node_modules/],
 			});
 
@@ -436,12 +513,12 @@ describe("policy()", () => {
 			expect(result.config).toBeUndefined();
 		});
 
-		it("should detect options vs config correctly when object has only exclude", () => {
-			const result = policy(noConfigPolicyDef, {
-				exclude: ["vendor/*"],
+		it("should accept an instance ID without exclusions", () => {
+			const result = policy(noConfigPolicyDef, undefined, {
+				instanceId: "custom-instance",
 			});
 
-			expect(result.exclude).toEqual(["vendor/*"]);
+			expect(result.instanceId).toBe("custom-instance");
 			expect(result.config).toBeUndefined();
 		});
 	});

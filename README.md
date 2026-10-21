@@ -61,6 +61,14 @@ pnpm nx run cli:build --dry-run
 pnpm nx graph
 ```
 
+### Test Resources
+
+Nx runs up to eight tasks in parallel. Vitest uses at most two workers per
+package to limit CPU and memory use during `pnpm run ci`. Tests have a 15-second
+timeout both locally and in GitHub Actions. The shared settings are in
+`config/vitest.config.ts`; the Astro component package uses the same limits in
+its Astro-aware Vitest config.
+
 ## Key Packages
 
 **CLI Tools:**
@@ -87,10 +95,19 @@ For detailed information, see [CLAUDE.md](./CLAUDE.md):
 - Testing strategies
 - Package-specific guidelines
 
+## AI Agent Instructions
+
+This repository provides comprehensive instructions for AI coding agents:
+
+- **[.github/copilot-instructions.md](./.github/copilot-instructions.md)** - Repository-wide custom instructions for GitHub Copilot
+- **[AGENTS.md](./AGENTS.md)** - General agent instructions (used by any AI coding agent)
+- **[CLAUDE.md](./CLAUDE.md)** - Detailed instructions specifically for Claude AI
+
+These files follow [GitHub Copilot best practices](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions) to help AI agents work effectively in this repository.
+
 ## Requirements
 
 - **Node.js**: >= 18.0.0
 - **pnpm**: 10.10.0 (enforced via `packageManager` field)
 - **Nx**: Workspace orchestration
 - **Biome**: Formatting and linting
-

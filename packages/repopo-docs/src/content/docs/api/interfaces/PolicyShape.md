@@ -5,7 +5,7 @@ prev: false
 title: "PolicyShape"
 ---
 
-Defined in: [policy.ts:203](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L203)
+Defined in: [policy.ts:254](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L254)
 
 Interface describing the shape of a policy definition.
 
@@ -15,7 +15,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ## Extended by
 
-- [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)
+- [`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)
 
 ## Type Parameters
 
@@ -29,9 +29,9 @@ Type of configuration object used by the policy
 
 ### defaultConfig?
 
-> `optional` **defaultConfig**: `C`
+> `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:232](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L232)
+Defined in: [policy.ts:287](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L287)
 
 A default configuration that will be used if none is provided.
 
@@ -45,7 +45,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **description**: `string`
 
-Defined in: [policy.ts:212](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L212)
+Defined in: [policy.ts:265](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L265)
 
 A detailed description of the policy and its purpose.
 
@@ -59,7 +59,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **handler**: [`PolicyHandler`](/api/type-aliases/policyhandler/)\<`C`\>
 
-Defined in: [policy.ts:222](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L222)
+Defined in: [policy.ts:275](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L275)
 
 The handler function that checks if a file complies with the policy.
 
@@ -73,7 +73,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **match**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: [policy.ts:217](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L217)
+Defined in: [policy.ts:270](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L270)
 
 A regular expression that matches files this policy applies to.
 
@@ -87,7 +87,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policy.ts:207](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L207)
+Defined in: [policy.ts:260](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L260)
 
 The name of the policy; displayed in UI and used in settings.
 
@@ -99,11 +99,27 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### resolver?
 
-> `optional` **resolver**: [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
+> `optional` **resolver?**: [`PolicyResolver`](/api/type-aliases/policyresolver/)\<`C`\> \| [`PolicyStandaloneResolver`](/api/type-aliases/policystandaloneresolver/)\<`C`\>
 
-Defined in: [policy.ts:227](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L227)
+Defined in: [policy.ts:282](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L282)
 
 An optional resolver function that can automatically fix violations.
+Return a PolicyError with `fixed: true` after a successful fix.
+Legacy PolicyFixResult resolvers remain supported.
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+***
+
+### scope?
+
+> `optional` **scope?**: `"file"`
+
+Defined in: [policy.ts:256](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L256)
+
+File scope is the default for existing policies.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

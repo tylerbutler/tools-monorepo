@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { Command, Flags } from "@oclif/core";
 import { dirname, resolve } from "pathe";
+import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -19,9 +20,17 @@ export class CheckNative extends Command {
 	public static override readonly description =
 		"Runs the Rust-based repopo-core engine with the Node.js sidecar. " +
 		"This provides the same policy checking as 'check' but with Rust-based " +
-		"file enumeration, regex matching, and orchestration for better performance.";
+		"file enumeration, regex matching, and orchestration for better performance. " +
+		"Repository policies always run with the full repository inventory, including with --stdin. " +
+		"With --fix, repository policies can modify files outside the stdin selection.";
 
 	public static override readonly flags = {
+		concurrency: Flags.integer({
+			description:
+				"Maximum concurrent files in read-only checks. Fixes remain sequential.",
+			default: DEFAULT_CONCURRENCY,
+			parse: async (value) => validateConcurrency(Number(value)),
+		}),
 		fix: Flags.boolean({
 			aliases: ["resolve"],
 			description: "Fix errors if possible.",
@@ -57,6 +66,12 @@ export class CheckNative extends Command {
 			required: false,
 			env: "REPOPO_CORE_PATH",
 		}),
+		runtime: Flags.string({
+			description: "JS runtime for the sidecar process (auto, node, bun).",
+			required: false,
+			env: "REPOPO_RUNTIME",
+			options: ["auto", "node", "bun"],
+		}),
 	} as const;
 
 	public override async run(): Promise<void> {
@@ -66,6 +81,7 @@ export class CheckNative extends Command {
 		const sidecarPath = this.resolveSidecarPath(flags["sidecar-path"]);
 
 		const args: string[] = ["check", "--sidecar-path", sidecarPath];
+		args.push("--concurrency", String(flags.concurrency));
 
 		if (flags.fix) {
 			args.push("--fix");
@@ -81,6 +97,9 @@ export class CheckNative extends Command {
 		}
 		if (flags.config) {
 			args.push("--config", flags.config);
+		}
+		if (flags.runtime) {
+			args.push("--runtime", flags.runtime);
 		}
 
 		return new Promise<void>((resolvePromise, reject) => {
@@ -114,17 +133,48 @@ export class CheckNative extends Command {
 			return explicit;
 		}
 
-		// Look for the binary relative to the package root
 		const packageRoot = resolve(__dirname, "..", "..");
-		const cratesDir = resolve(packageRoot, "crates", "core", "target");
+		const binaryName =
+			process.platform === "win32" ? "repopo-core.exe" : "repopo-core";
 
-		// Prefer release build if it exists, fall back to debug
-		const releasePath = resolve(cratesDir, "release", "repopo-core");
+		// Check paths in priority order:
+		// 1. Postinstall-downloaded binary (npm install)
+		const nativePath = resolve(packageRoot, "native", binaryName);
+		if (existsSync(nativePath)) {
+			return nativePath;
+		}
+
+		// 2. Local release build (cargo build --release)
+		const releasePath = resolve(
+			packageRoot,
+			"crates",
+			"core",
+			"target",
+			"release",
+			binaryName,
+		);
 		if (existsSync(releasePath)) {
 			return releasePath;
 		}
 
-		return resolve(cratesDir, "debug", "repopo-core");
+		// 3. Local debug build (cargo build)
+		const debugPath = resolve(
+			packageRoot,
+			"crates",
+			"core",
+			"target",
+			"debug",
+			binaryName,
+		);
+		if (existsSync(debugPath)) {
+			return debugPath;
+		}
+
+		throw new Error(
+			"repopo-core binary not found. Either:\n" +
+				"  - Install the package (npm install repopo) to download pre-built binaries\n" +
+				"  - Build from source: cargo build --manifest-path crates/core/Cargo.toml",
+		);
 	}
 
 	private resolveSidecarPath(explicit?: string): string {

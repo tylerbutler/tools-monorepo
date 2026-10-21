@@ -389,7 +389,7 @@ function* iterateDependencies<T extends PackageJson>(
 	}
 
 	for (const [pkgName, version] of Object.entries(
-		packageJson.devDependencies ?? {},
+		packageJson.peerDependencies ?? {},
 	)) {
 		const name = pkgName as PackageName;
 		if (version === undefined) {

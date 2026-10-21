@@ -17,7 +17,7 @@ Defined in: [packages/sail-infrastructure/src/config.ts:40](https://github.com/t
 ### buildProject?
 
 ```ts
-optional buildProject: object;
+buildProject?: object;
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:30](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L30)
@@ -40,16 +40,14 @@ A mapping of workspace name to folder containing a workspace config file (e.g. p
 
 #### Inherited from
 
-```ts
-BuildProjectConfigBase.buildProject
-```
+`BuildProjectConfigBase.buildProject`
 
 ***
 
 ### ~~repoPackages?~~
 
 ```ts
-optional repoPackages: IFluidBuildDirs;
+repoPackages?: IFluidBuildDirs;
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L53)
@@ -76,6 +74,4 @@ The version of the config.
 
 #### Overrides
 
-```ts
-BuildProjectConfigBase.version
-```
+`BuildProjectConfigBase.version`

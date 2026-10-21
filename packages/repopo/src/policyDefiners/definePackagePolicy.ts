@@ -2,6 +2,7 @@ import { call, type Operation } from "effection";
 import jsonfile from "jsonfile";
 import { resolve } from "pathe";
 import type { PackageJson } from "type-fest";
+import { readParsedFile } from "../fileCache.js";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
 	PolicyArgs,
@@ -101,7 +102,9 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 		defaultConfig,
 		handler: function* (innerArgs) {
 			const json: J = yield* call(() =>
-				readJson(resolve(innerArgs.root, innerArgs.file)),
+				readParsedFile(innerArgs, "json", () =>
+					readJson(resolve(innerArgs.root, innerArgs.file)),
+				),
 			);
 			const result = packageHandler(json, innerArgs);
 

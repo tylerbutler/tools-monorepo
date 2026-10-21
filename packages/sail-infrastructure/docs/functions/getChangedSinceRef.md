@@ -10,7 +10,8 @@
 function getChangedSinceRef<P>(
    buildProject, 
    ref, 
-   remote?): Promise<{
+   remote?
+): Promise<{
   dirs: string[];
   files: string[];
   packages: P[];

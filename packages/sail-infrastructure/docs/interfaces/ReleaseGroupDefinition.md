@@ -15,7 +15,7 @@ The definition of a release group ih configuration.
 ### adoPipelineUrl?
 
 ```ts
-optional adoPipelineUrl: string;
+adoPipelineUrl?: string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:152](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L152)
@@ -27,7 +27,7 @@ A URL to the ADO CI pipeline that builds the release group.
 ### exclude?
 
 ```ts
-optional exclude: string[];
+exclude?: string[];
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:135](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L135)
@@ -55,7 +55,7 @@ To include all packages, set this value to a single element: `["*"]`.
 ### rootPackageName?
 
 ```ts
-optional rootPackageName: string;
+rootPackageName?: string;
 ```
 
 Defined in: [packages/sail-infrastructure/src/config.ts:147](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/sail-infrastructure/src/config.ts#L147)

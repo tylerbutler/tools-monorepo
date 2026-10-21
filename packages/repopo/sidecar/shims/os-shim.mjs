@@ -57,10 +57,29 @@ export function networkInterfaces() {
 }
 
 export function userInfo() {
-	return { username: "repopo", uid: 1000, gid: 1000, shell: "/bin/sh", homedir: homedir() };
+	return {
+		username: "repopo",
+		uid: 1000,
+		gid: 1000,
+		shell: "/bin/sh",
+		homedir: homedir(),
+	};
 }
 
 export default {
-	EOL, platform, tmpdir, homedir, hostname, type, arch, release, cpus,
-	endianness, freemem, totalmem, uptime, networkInterfaces, userInfo,
+	EOL,
+	platform,
+	tmpdir,
+	homedir,
+	hostname,
+	type,
+	arch,
+	release,
+	cpus,
+	endianness,
+	freemem,
+	totalmem,
+	uptime,
+	networkInterfaces,
+	userInfo,
 };

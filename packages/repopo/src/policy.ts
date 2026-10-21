@@ -11,6 +11,13 @@ import { PackageJsonSorted } from "./policies/PackageJsonSorted.js";
 export type PolicyName = string;
 
 /**
+ * A stable identifier for a configured policy instance.
+ *
+ * @alpha
+ */
+export type PolicyInstanceId = string;
+
+/**
  * Arguments passed to policy handler functions.
  *
  * @alpha
@@ -81,6 +88,50 @@ export interface PolicyError {
  * @alpha
  */
 export type PolicyResult = true | PolicyError;
+
+/**
+ * A repository violation, optionally associated with several repo-relative files.
+ * @alpha
+ */
+export interface RepositoryPolicyFinding extends PolicyError {
+	files?: readonly string[];
+}
+
+/**
+ * Arguments for a policy that runs once against the repository.
+ * @alpha
+ */
+export interface RepositoryPolicyArgs<C = void>
+	extends Omit<PolicyArgs<C>, "file"> {
+	/** Full file inventory after global and per-policy exclusions, not stdin selection. */
+	files: readonly string[];
+}
+
+/** @alpha */
+export type RepositoryPolicyResult = true | readonly RepositoryPolicyFinding[];
+
+/** @alpha */
+export type RepositoryPolicyHandler<C = void> = (
+	args: RepositoryPolicyArgs<C>,
+) => Promise<RepositoryPolicyResult> | Operation<RepositoryPolicyResult>;
+
+/**
+ * A policy executed once per invocation, even when the inventory is empty.
+ * Fixes are performed in the handler using `resolve`.
+ * @alpha
+ */
+export interface RepositoryPolicyDefinition<C = void> {
+	name: PolicyName;
+	description: string;
+	scope: "repository";
+	handler: RepositoryPolicyHandler<C>;
+	defaultConfig?: C | undefined;
+}
+
+/** @alpha */
+export type AnyPolicyShape<C = void> =
+	| PolicyShape<C>
+	| RepositoryPolicyDefinition<C>;
 
 // ============================================================================
 // Legacy Result Types (Still supported for backward compatibility)
@@ -201,6 +252,8 @@ export type PolicyResolver<C = void> = (
  * @alpha
  */
 export interface PolicyShape<C = void> {
+	/** File scope is the default for existing policies. */
+	scope?: "file";
 	/**
 	 * The name of the policy; displayed in UI and used in settings.
 	 */
@@ -223,8 +276,10 @@ export interface PolicyShape<C = void> {
 
 	/**
 	 * An optional resolver function that can automatically fix violations.
+	 * Return a PolicyError with `fixed: true` after a successful fix.
+	 * Legacy PolicyFixResult resolvers remain supported.
 	 */
-	resolver?: PolicyStandaloneResolver<C> | undefined;
+	resolver?: PolicyResolver<C> | PolicyStandaloneResolver<C> | undefined;
 
 	/**
 	 * A default configuration that will be used if none is provided.
@@ -247,7 +302,10 @@ export abstract class Policy<C = void> implements PolicyShape<C> {
 	public readonly match: RegExp;
 	public readonly handler: PolicyHandler<C>;
 	public readonly defaultConfig?: C | undefined;
-	public readonly resolver?: PolicyStandaloneResolver<C> | undefined;
+	public readonly resolver?:
+		| PolicyResolver<C>
+		| PolicyStandaloneResolver<C>
+		| undefined;
 
 	public constructor(definition: PolicyShape<C>) {
 		this.name = definition.name;
@@ -272,7 +330,14 @@ export type PolicyDefinition<C = undefined> = PolicyShape<C>;
  *
  * @alpha
  */
-export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
+export interface ConfiguredFilePolicy<C = void> extends PolicyShape<C> {
+	/**
+	 * An optional stable identifier for this configured policy instance.
+	 *
+	 * This is required when the same policy definition is configured more than once.
+	 */
+	instanceId?: PolicyInstanceId | undefined;
+
 	/**
 	 * The configuration applied to this policy instance.
 	 */
@@ -280,12 +345,12 @@ export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
 
 	/**
 	 * File paths matching these patterns will be excluded from this policy.
-	 * @deprecated Use `excludeFiles` instead for backward compatibility.
 	 */
 	exclude?: (string | RegExp)[] | undefined;
 
 	/**
 	 * File paths matching these patterns will be excluded from this policy.
+	 * Legacy alias for `exclude`.
 	 */
 	excludeFiles?: (string | RegExp)[] | undefined;
 
@@ -297,11 +362,29 @@ export interface ConfiguredPolicy<C = void> extends PolicyShape<C> {
 	_internalHandler?: (args: PolicyArgs<C>) => Operation<PolicyHandlerResult>;
 }
 
+/** @alpha */
+export type ConfiguredRepositoryPolicy<C = void> =
+	RepositoryPolicyDefinition<C> &
+		Pick<
+			ConfiguredFilePolicy<C>,
+			"instanceId" | "config" | "exclude" | "excludeFiles"
+		>;
+
+/** @alpha */
+export type ConfiguredPolicy<C = void> =
+	| ConfiguredFilePolicy<C>
+	| ConfiguredRepositoryPolicy<C>;
+
 /**
  * Settings for configuring a policy instance.
  * @alpha
  */
 export interface PolicyInstanceSettings<C> {
+	/**
+	 * A stable identifier for this configured policy instance.
+	 */
+	instanceId?: PolicyInstanceId | undefined;
+
 	/**
 	 * An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
 	 * from policy.
@@ -320,7 +403,16 @@ export interface PolicyInstanceSettings<C> {
  * @deprecated Use {@link ConfiguredPolicy} instead.
  * @alpha
  */
-export type PolicyInstance<C = undefined> = ConfiguredPolicy<C>;
+export type PolicyInstance<C = undefined> = ConfiguredFilePolicy<C>;
+
+/**
+ * A configured policy instance with its runtime identity assigned.
+ *
+ * @alpha
+ */
+export type IdentifiedPolicy<C = undefined> = ConfiguredPolicy<C> & {
+	instanceId: PolicyInstanceId;
+};
 
 // ============================================================================
 // Type Guards

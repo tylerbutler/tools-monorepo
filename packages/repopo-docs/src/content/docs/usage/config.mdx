@@ -4,6 +4,38 @@ sidebar:
   order: 4
 ---
 
-import { Badge } from '@astrojs/starlight/components';
-
 To use repopo, [install it](/installation) then run `repopo check` to check files.
+
+Create `repopo.config.ts` in the repository root:
+
+```ts
+import { policy, type RepopoConfig } from "repopo";
+import { NoJsFileExtensions, PackageJsonProperties } from "repopo/policies";
+
+export default {
+	policies: [
+		policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] }),
+		policy(PackageJsonProperties, { verbatim: { license: "MIT" } }),
+	],
+} satisfies RepopoConfig;
+```
+
+Pass policy configuration as the second argument and instance options as the
+third argument: `policy(definition, config, options)`. Use `undefined` for
+configuration to retain `defaultConfig`. Options include `exclude` and
+`instanceId`; set a distinct instance ID for each repeated policy definition.
+
+To migrate the old options shorthand, replace
+`policy(definition, { exclude: patterns })` with
+`policy(definition, undefined, { exclude: patterns })`. The second argument now
+holds policy configuration even when it contains an `exclude` property.
+
+Use `excludeFiles` at the top level for global exclusions. Exclusion strings
+are case-insensitive regular expressions, not globs. Use `"^vendor/"` rather
+than `"**/vendor/**"`. `RegExp` values retain their flags: `/^README/` is
+case-sensitive, and `/^README/i` is case-insensitive.
+
+Omit `policies` to use the default policies. Set `policies: []` to disable them.
+Both `policy(definition)` and the legacy `makePolicy(definition)` use
+`definition.defaultConfig`. For `makePolicy()`, explicit configuration takes
+precedence over `settings.config`, followed by `defaultConfig`.

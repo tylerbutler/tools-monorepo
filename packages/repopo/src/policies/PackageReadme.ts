@@ -286,7 +286,7 @@ export const PackageReadme = definePackagePolicy<
 	name: "PackageReadme",
 	description:
 		"Ensures each package has a README.md file with proper title and required content.",
-	handler: async (json, { file, resolve, config }) => {
+	handler: async (json, { file, root, resolve, config }) => {
 		const skipPrivate = config?.skipPrivate ?? true;
 		const requireMatchingTitle = config?.requireMatchingTitle ?? true;
 		const requiredContent = config?.requiredContent;
@@ -297,7 +297,7 @@ export const PackageReadme = definePackagePolicy<
 		}
 
 		const packageName = json.name ?? "unknown";
-		const packageDir = path.dirname(file);
+		const packageDir = path.dirname(path.resolve(root, file));
 		const readmePath = path.join(packageDir, "README.md");
 
 		// Check if README exists

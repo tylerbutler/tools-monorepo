@@ -1,14 +1,20 @@
 import { call, type Operation } from "effection";
 import { isGeneratorFunction } from "./generators.js";
 import type {
+	AnyPolicyShape,
+	ConfiguredFilePolicy,
 	ConfiguredPolicy,
+	ConfiguredRepositoryPolicy,
 	PolicyArgs,
 	PolicyDefinition,
 	PolicyHandler,
 	PolicyHandlerResult,
 	PolicyInstance,
+	PolicyInstanceId,
 	PolicyInstanceSettings,
+	PolicyName,
 	PolicyShape,
+	RepositoryPolicyDefinition,
 } from "./policy.js";
 
 // ============================================================================
@@ -22,8 +28,17 @@ import type {
  */
 export interface PolicyOptions {
 	/**
+	 * A stable identifier for this configured policy instance.
+	 *
+	 * This is required when the same policy definition is configured more than once.
+	 */
+	instanceId?: PolicyInstanceId;
+
+	/**
 	 * File paths matching these patterns will be excluded from this policy.
 	 * Patterns are matched against repo-relative paths.
+	 * Strings are case-insensitive regular expressions, not globs.
+	 * RegExp values retain their explicit flags.
 	 */
 	exclude?: (string | RegExp)[];
 }
@@ -59,75 +74,128 @@ function normalizeHandler<C>(
  * Handlers are automatically normalized: async functions are wrapped for Effection
  * compatibility, while generator functions are used directly.
  *
+ * The second argument is policy configuration. Pass instance options as the third
+ * argument, using `undefined` for configuration to retain the policy's defaults.
+ *
  * @example
  * ```typescript
  * // Policy with no config, just options
- * policy(NoJsFileExtensions, { exclude: ["bin/*"] })
+ * policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] })
  *
  * // Policy with config
  * policy(PackageJsonProperties, { verbatim: { license: "MIT" } })
  *
  * // Policy with config and options
- * policy(PackageJsonProperties, { verbatim: { license: "MIT" } }, { exclude: ["vendor/*"] })
+ * policy(PackageJsonProperties, { verbatim: { license: "MIT" } }, { exclude: ["^vendor/"] })
+ *
+ * // Duplicate policies need stable instance IDs
+ * policy(PackageJsonProperties, sourceConfig, { instanceId: "source-packages" })
+ * policy(PackageJsonProperties, testConfig, { instanceId: "test-packages" })
  * ```
  *
  * @alpha
  */
 export function policy<C = void>(
-	policyDef: PolicyShape<C>,
+	policyDef: RepositoryPolicyDefinition<C>,
+	config?: C,
 	options?: PolicyOptions,
-): ConfiguredPolicy<C>;
+): ConfiguredRepositoryPolicy<C>;
+/** @alpha */
+export function policy<C = void>(
+	policyDef: PolicyShape<C>,
+	config?: C,
+	options?: PolicyOptions,
+): ConfiguredFilePolicy<C>;
 /** @alpha */
 export function policy<C>(
-	policyDef: PolicyShape<C>,
-	config: C,
+	policyDef: AnyPolicyShape<C>,
+	config?: C,
 	options?: PolicyOptions,
-): ConfiguredPolicy<C>;
-/** @alpha */
-export function policy<C>(
-	policyDef: PolicyShape<C>,
-	configOrOptions?: C | PolicyOptions,
-	maybeOptions?: PolicyOptions,
 ): ConfiguredPolicy<C> {
-	// Determine if the second argument is config or options
-	let config: C | undefined;
-	let options: PolicyOptions | undefined;
-
-	if (maybeOptions !== undefined) {
-		// Three-argument form: policy(def, config, options)
-		config = configOrOptions as C;
-		options = maybeOptions;
-	} else if (configOrOptions !== undefined) {
-		// Two-argument form: need to determine if it's config or options
-		// PolicyOptions has a specific shape with 'exclude' property
-		if (
-			typeof configOrOptions === "object" &&
-			configOrOptions !== null &&
-			"exclude" in configOrOptions &&
-			!("name" in configOrOptions) &&
-			Object.keys(configOrOptions).every((k) => k === "exclude")
-		) {
-			// It's options (has only 'exclude')
-			options = configOrOptions as PolicyOptions;
-		} else {
-			// It's config
-			config = configOrOptions as C;
-		}
-	}
-
-	// Merge with default config if available
-	const effectiveConfig = config ?? (policyDef.defaultConfig as C | undefined);
+	const effectiveConfig = config ?? policyDef.defaultConfig;
 
 	// Support both 'exclude' and 'excludeFiles' for backward compatibility
 	const excludePatterns = options?.exclude;
 
-	return {
-		...policyDef,
+	const settings = {
 		config: effectiveConfig,
 		exclude: excludePatterns,
 		excludeFiles: excludePatterns,
+		instanceId: options?.instanceId,
+	};
+	if (policyDef.scope === "repository") {
+		return { ...policyDef, ...settings };
+	}
+
+	return {
+		...policyDef,
+		...settings,
 		_internalHandler: normalizeHandler(policyDef.handler),
 	};
+}
+
+/**
+ * Assigns stable identities to configured policy instances.
+ *
+ * Single instances retain the policy name for compatibility. Duplicate instances
+ * must declare explicit identities so their identities remain stable across config
+ * reordering and policy renames.
+ *
+ * @internal
+ */
+export function identifyPolicyInstances<
+	T extends {
+		name: PolicyName;
+		instanceId?: PolicyInstanceId | undefined;
+	},
+>(policies: readonly T[]): (T & { instanceId: PolicyInstanceId })[] {
+	const explicitIds = new Set<PolicyInstanceId>();
+	const nameCounts = new Map<PolicyName, number>();
+
+	for (const configuredPolicy of policies) {
+		nameCounts.set(
+			configuredPolicy.name,
+			(nameCounts.get(configuredPolicy.name) ?? 0) + 1,
+		);
+		if (configuredPolicy.instanceId !== undefined) {
+			if (explicitIds.has(configuredPolicy.instanceId)) {
+				throw new Error(
+					`Duplicate policy instance ID: ${configuredPolicy.instanceId}`,
+				);
+			}
+			explicitIds.add(configuredPolicy.instanceId);
+		}
+	}
+
+	const usedIds = new Set(explicitIds);
+
+	return policies.map((configuredPolicy) => {
+		if (configuredPolicy.instanceId !== undefined) {
+			return {
+				...configuredPolicy,
+				instanceId: configuredPolicy.instanceId,
+			};
+		}
+
+		if ((nameCounts.get(configuredPolicy.name) ?? 0) > 1) {
+			throw new Error(
+				`Policy '${configuredPolicy.name}' is configured multiple times. Set a unique instanceId for each instance.`,
+			);
+		}
+
+		const instanceId = configuredPolicy.name;
+		if (usedIds.has(instanceId)) {
+			throw new Error(
+				`Policy instance ID '${instanceId}' conflicts with another configured policy. Set an explicit unique instanceId.`,
+			);
+		}
+		usedIds.add(instanceId);
+
+		return {
+			...configuredPolicy,
+			instanceId,
+		};
+	});
 }
 
 // ============================================================================
@@ -165,6 +233,7 @@ export function makePolicyDefinition<C = undefined>(
 ): PolicyDefinition<C> {
 	return {
 		name: args.name,
+		...(args.scope === "file" ? { scope: args.scope } : {}),
 		description: args.description,
 		match: args.match,
 		handler: args.handler,
@@ -180,19 +249,31 @@ export function makePolicyDefinition<C = undefined>(
  *
  * @example
  * ```typescript
- * makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["bin/*"] })
+ * makePolicy(NoJsFileExtensions, undefined, { excludeFiles: ["^bin/"] })
  * ```
  *
  * @alpha
  */
 export function makePolicy<C>(
+	definition: RepositoryPolicyDefinition<C>,
+	config?: C,
+	settings?: PolicyInstanceSettings<C>,
+): ConfiguredRepositoryPolicy<C>;
+/** @alpha */
+export function makePolicy<C>(
 	definition: PolicyDefinition<C>,
 	config?: C,
 	settings?: PolicyInstanceSettings<C>,
-): PolicyInstance<C> {
+): PolicyInstance<C>;
+/** @alpha */
+export function makePolicy<C>(
+	definition: AnyPolicyShape<C>,
+	config?: C,
+	settings?: PolicyInstanceSettings<C>,
+): ConfiguredPolicy<C> {
 	return {
 		...definition,
 		...settings,
-		config,
-	} satisfies PolicyInstance<C>;
+		config: config ?? settings?.config ?? definition.defaultConfig,
+	};
 }

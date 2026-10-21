@@ -21,9 +21,6 @@
 			"path": "./packages/fundamentals",
 		},
 		{
-			"path": "./packages/levee-client",
-		},
-		{
 			"path": "./packages/lilconfig-loader-ts",
 		},
 		{

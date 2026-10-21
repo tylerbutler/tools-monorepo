@@ -44,16 +44,20 @@ function serializeRegex(regex) {
  * Serialize policy metadata for the Rust side.
  */
 function serializePolicy(policy) {
-	const match = serializeRegex(policy.match);
+	const match =
+		policy.scope === "repository"
+			? { source: "", flags: "" }
+			: serializeRegex(policy.match);
 	const excludeFiles = (policy.excludeFiles ?? policy.exclude ?? []).map(
 		(e) => {
-			if (e instanceof RegExp) return e.source;
+			if (e instanceof RegExp) return serializeRegex(e);
 			return String(e);
 		},
 	);
 
 	return {
 		name: policy.name,
+		scope: policy.scope ?? "file",
 		description: policy.description,
 		matchPattern: match.source,
 		matchFlags: match.flags,
@@ -100,8 +104,8 @@ function processResult(file, result, pass, fail) {
 			file,
 			error: result?.error,
 			errorMessages: result?.errorMessages,
-			fixable: result?.fixable,
-			fixed: result?.fixed,
+			fixable: result?.fixable ?? result?.autoFixable,
+			fixed: result?.fixed ?? result?.resolved,
 			manualFix: result?.manualFix,
 		});
 	}
@@ -207,9 +211,7 @@ export function initBridge(config) {
 		if (typeof policy.resolver !== "function") {
 			globalThis.__repopo_lastResult = JSON.stringify({
 				pass: [],
-				fail: [
-					{ file: "", error: `Policy index ${policyId} has no resolver` },
-				],
+				fail: [{ file: "", error: `Policy index ${policyId} has no resolver` }],
 			});
 			return;
 		}
@@ -258,7 +260,7 @@ export function initBridge(config) {
 	// Serialize policy metadata and store on globalThis for Rust to read
 	const serializedPolicies = policies.map(serializePolicy);
 	const excludeFiles = (config.excludeFiles ?? []).map((e) => {
-		if (e instanceof RegExp) return e.source;
+		if (e instanceof RegExp) return serializeRegex(e);
 		return String(e);
 	});
 

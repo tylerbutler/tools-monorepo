@@ -5,7 +5,7 @@ prev: false
 title: "PolicyInstanceSettings"
 ---
 
-Defined in: [policy.ts:304](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L304)
+Defined in: [policy.ts:382](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L382)
 
 Settings for configuring a policy instance.
 
@@ -23,9 +23,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### config?
 
-> `optional` **config**: `C`
+> `optional` **config?**: `C`
 
-Defined in: [policy.ts:316](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L316)
+Defined in: [policy.ts:399](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L399)
 
 The config that is applied to the policy instance.
 
@@ -37,14 +37,28 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### excludeFiles?
 
-> `optional` **excludeFiles**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
+> `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: [policy.ts:311](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L311)
+Defined in: [policy.ts:394](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L394)
 
 An array of strings/regular expressions. File paths that match any of these expressions will be completely excluded
 from policy.
 
 Paths will be matched relative to the root of the repo.
+
+:::caution[Alpha]
+This API should not be used in production and may be trimmed from a public release.
+:::
+
+***
+
+### instanceId?
+
+> `optional` **instanceId?**: `string`
+
+Defined in: [policy.ts:386](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L386)
+
+A stable identifier for this configured policy instance.
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.

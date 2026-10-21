@@ -7,9 +7,9 @@ title: "policy"
 
 ## Call Signature
 
-> **policy**\<`C`\>(`policyDef`, `options?`): [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+> **policy**\<`C`\>(`policyDef`, `config?`, `options?`): [`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:76](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L76)
+Defined in: [makePolicy.ts:98](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L98)
 
 Configure a policy for use in repopo.
 
@@ -27,7 +27,11 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### policyDef
 
-[`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
+[`RepositoryPolicyDefinition`](/api/interfaces/repositorypolicydefinition/)\<`C`\>
+
+#### config?
+
+`C`
 
 #### options?
 
@@ -35,7 +39,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### Returns
 
-[`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+[`ConfiguredRepositoryPolicy`](/api/type-aliases/configuredrepositorypolicy/)\<`C`\>
 
 ### Remarks
 
@@ -45,24 +49,31 @@ that can be added to the `policies` array in `repopo.config.ts`.
 Handlers are automatically normalized: async functions are wrapped for Effection
 compatibility, while generator functions are used directly.
 
+The second argument is policy configuration. Pass instance options as the third
+argument, using `undefined` for configuration to retain the policy's defaults.
+
 ### Example
 
 ```typescript
 // Policy with no config, just options
-policy(NoJsFileExtensions, { exclude: ["bin/*"] })
+policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] })
 
 // Policy with config
 policy(PackageJsonProperties, { verbatim: { license: "MIT" } })
 
 // Policy with config and options
-policy(PackageJsonProperties, { verbatim: { license: "MIT" } }, { exclude: ["vendor/*"] })
+policy(PackageJsonProperties, { verbatim: { license: "MIT" } }, { exclude: ["^vendor/"] })
+
+// Duplicate policies need stable instance IDs
+policy(PackageJsonProperties, sourceConfig, { instanceId: "source-packages" })
+policy(PackageJsonProperties, testConfig, { instanceId: "test-packages" })
 ```
 
 ## Call Signature
 
-> **policy**\<`C`\>(`policyDef`, `config`, `options?`): [`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+> **policy**\<`C`\>(`policyDef`, `config?`, `options?`): [`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>
 
-Defined in: [makePolicy.ts:81](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L81)
+Defined in: [makePolicy.ts:104](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L104)
 
 :::caution[Alpha]
 This API should not be used in production and may be trimmed from a public release.
@@ -72,7 +83,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 #### C
 
-`C`
+`C` = `void`
 
 ### Parameters
 
@@ -80,7 +91,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-#### config
+#### config?
 
 `C`
 
@@ -90,4 +101,4 @@ This API should not be used in production and may be trimmed from a public relea
 
 ### Returns
 
-[`ConfiguredPolicy`](/api/interfaces/configuredpolicy/)\<`C`\>
+[`ConfiguredFilePolicy`](/api/interfaces/configuredfilepolicy/)\<`C`\>

@@ -1,12 +1,25 @@
 use anyhow::{Context, Result};
 use colored::Colorize;
-use regex::Regex;
+use regex::{Regex, RegexBuilder};
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
 use crate::ipc::Sidecar;
 use crate::quickjs_runtime::QuickJsRuntime;
-use crate::types::{HandlerResult, LoadConfigResponse, PolicyMeta};
+use crate::types::{HandlerResult, LoadConfigResponse, PolicyMeta, RepositoryPolicyResult};
+
+fn format_manual_fix(instructions: &str) -> String {
+    format!(
+        "\tManual fix: {}",
+        instructions.lines().collect::<Vec<_>>().join("\n\t")
+    )
+}
+
+fn log_manual_fix(result: &HandlerResult, fallback: Option<&str>) {
+    if let Some(instructions) = result.manual_fix().or(fallback).filter(|s| !s.is_empty()) {
+        eprintln!("{}", format_manual_fix(instructions));
+    }
+}
 
 /// A compiled policy ready for matching.
 struct CompiledPolicy {
@@ -73,12 +86,13 @@ impl PerfStats {
     }
 }
 
-/// Execution backend for policy checks.
+/// Execution backend for file policies. Repository policies retain the sidecar runner.
 pub enum PolicyBackend<'a> {
-    /// IPC-based execution via Node.js sidecar.
     Sidecar(&'a mut Sidecar),
-    /// In-process execution via QuickJS.
-    QuickJs(&'a QuickJsRuntime),
+    QuickJs {
+        runtime: &'a QuickJsRuntime,
+        repository_sidecar: Option<&'a mut Sidecar>,
+    },
 }
 
 impl PolicyBackend<'_> {
@@ -88,10 +102,15 @@ impl PolicyBackend<'_> {
         files: &[String],
         root: &str,
         resolve: bool,
-    ) -> anyhow::Result<Vec<(String, HandlerResult)>> {
+        concurrency: usize,
+    ) -> Result<Vec<(String, HandlerResult)>> {
         match self {
-            PolicyBackend::Sidecar(s) => s.run_handler_batch(policy_id, files, resolve),
-            PolicyBackend::QuickJs(js) => js.run_handler_batch(policy_id, files, root, resolve),
+            Self::Sidecar(sidecar) => {
+                sidecar.run_handler_batch(policy_id, files, resolve, concurrency)
+            }
+            Self::QuickJs { runtime, .. } => {
+                runtime.run_handler_batch(policy_id, files, root, resolve)
+            }
         }
     }
 
@@ -100,25 +119,39 @@ impl PolicyBackend<'_> {
         policy_id: usize,
         files: &[String],
         root: &str,
-    ) -> anyhow::Result<Vec<(String, HandlerResult)>> {
+    ) -> Result<Vec<(String, HandlerResult)>> {
         match self {
-            PolicyBackend::Sidecar(s) => s.run_resolver_batch(policy_id, files),
-            PolicyBackend::QuickJs(js) => js.run_resolver_batch(policy_id, files, root),
+            Self::Sidecar(sidecar) => sidecar.run_resolver_batch(policy_id, files),
+            Self::QuickJs { runtime, .. } => runtime.run_resolver_batch(policy_id, files, root),
+        }
+    }
+
+    fn run_repository_policies(&mut self, resolve: bool) -> Result<Vec<RepositoryPolicyResult>> {
+        match self {
+            Self::Sidecar(sidecar) => sidecar.run_repository_policies(resolve),
+            Self::QuickJs {
+                repository_sidecar, ..
+            } => repository_sidecar
+                .as_mut()
+                .context("Repository policies require an initialized sidecar")?
+                .run_repository_policies(resolve),
         }
     }
 }
 
 /// Build a Rust regex from a JS regex pattern and flags.
 fn compile_js_regex(pattern: &str, flags: &str) -> Result<Regex> {
-    let case_insensitive = flags.contains('i');
-
-    let rust_pattern = if case_insensitive {
-        format!("(?i){pattern}")
+    let rust_pattern = if flags.contains('y') {
+        format!(r"\A(?:{pattern})")
     } else {
         pattern.to_string()
     };
 
-    Regex::new(&rust_pattern)
+    RegexBuilder::new(&rust_pattern)
+        .case_insensitive(flags.contains('i'))
+        .multi_line(flags.contains('m'))
+        .dot_matches_new_line(flags.contains('s'))
+        .build()
         .with_context(|| format!("Failed to compile regex pattern: {pattern} (flags: {flags})"))
 }
 
@@ -132,7 +165,7 @@ fn compile_policies(config: &LoadConfigResponse) -> Result<(Vec<CompiledPolicy>,
         let exclude_regexes: Vec<Regex> = meta
             .exclude_files
             .iter()
-            .map(|pattern| compile_js_regex(pattern, "i"))
+            .map(|pattern| compile_js_regex(pattern.source(), pattern.flags()))
             .collect::<Result<Vec<_>>>()
             .with_context(|| {
                 format!(
@@ -151,7 +184,7 @@ fn compile_policies(config: &LoadConfigResponse) -> Result<(Vec<CompiledPolicy>,
     let global_excludes: Vec<Regex> = config
         .exclude_files
         .iter()
-        .map(|pattern| compile_js_regex(pattern, "i"))
+        .map(|pattern| compile_js_regex(pattern.source(), pattern.flags()))
         .collect::<Result<Vec<_>>>()
         .context("Failed to compile global exclude patterns")?;
 
@@ -160,9 +193,7 @@ fn compile_policies(config: &LoadConfigResponse) -> Result<(Vec<CompiledPolicy>,
 
 /// Run the check engine using policy-first batching.
 ///
-/// Takes a pre-loaded config and an execution backend (IPC sidecar or QuickJS).
-/// For each policy, collects matching files and runs a single batch call,
-/// then reports results.
+/// Uses pre-loaded metadata and either the sidecar or QuickJS to execute file batches.
 pub fn run_check(
     backend: &mut PolicyBackend,
     config: &LoadConfigResponse,
@@ -171,6 +202,7 @@ pub fn run_check(
     fix: bool,
     verbose: bool,
     quiet: bool,
+    concurrency: usize,
 ) -> Result<bool> {
     if verbose {
         eprintln!("{} policies loaded.", config.policies.len());
@@ -179,10 +211,10 @@ pub fn run_check(
         }
     }
 
-    // Step 1: Compile regexes
+    // Step 2: Compile regexes
     let (compiled_policies, global_excludes) = compile_policies(config)?;
 
-    // Step 2: Filter to non-empty, non-globally-excluded files
+    // Step 3: Filter to non-empty, non-globally-excluded files
     let eligible_files: Vec<&String> = files
         .iter()
         .filter(|f| {
@@ -207,8 +239,11 @@ pub fn run_check(
         eprintln!("Resolving errors if possible.");
     }
 
-    // Step 3: Policy-first batching — one batch call per policy
+    // Step 4: Policy-first batching — one IPC call per policy
     for (policy_id, policy) in compiled_policies.iter().enumerate() {
+        if policy.meta.scope == "repository" {
+            continue;
+        }
         // Collect files matching this policy
         let matching_files: Vec<String> = eligible_files
             .iter()
@@ -239,10 +274,10 @@ pub fn run_check(
             );
         }
 
-        // Batch handler call
+        // Batch handler call — single IPC round-trip for all files
         let start = Instant::now();
         let batch_results = backend
-            .run_handler_batch(policy_id, &matching_files, git_root, fix)
+            .run_handler_batch(policy_id, &matching_files, git_root, fix, concurrency)
             .with_context(|| {
                 format!(
                     "Error executing batch handler for policy '{}'",
@@ -253,6 +288,7 @@ pub fn run_check(
 
         // Collect files that need standalone resolver
         let mut needs_resolver: Vec<String> = Vec::new();
+        let mut resolver_guidance = HashMap::new();
 
         for (file, result) in &batch_results {
             if result.is_pass() {
@@ -271,20 +307,21 @@ pub fn run_check(
 
             if result.is_fix_failed() {
                 had_failures = true;
-                let msg = format!(
-                    "Error fixing {} policy failure in {file}",
-                    policy.meta.name
-                );
+                let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
                 eprintln!("{}", msg.yellow());
                 if let Some(err) = result.error_message() {
                     eprintln!("\t{err}");
                 }
+                log_manual_fix(result, None);
                 continue;
             }
 
             // Failure — try standalone resolver if available, otherwise report
             if fix && policy.meta.has_resolver {
                 needs_resolver.push(file.clone());
+                if let Some(instructions) = result.manual_fix() {
+                    resolver_guidance.insert(file.clone(), instructions.to_string());
+                }
             } else {
                 had_failures = true;
                 let fixable = result.is_fixable();
@@ -301,6 +338,7 @@ pub fn run_check(
                 if let Some(err) = result.error_message() {
                     eprintln!("\t{err}");
                 }
+                log_manual_fix(result, None);
             }
         }
 
@@ -335,30 +373,62 @@ pub fn run_check(
                     }
                 } else {
                     had_failures = true;
-                    let msg = format!(
-                        "Error fixing {} policy failure in {file}",
-                        policy.meta.name
-                    );
+                    let msg = format!("Error fixing {} policy failure in {file}", policy.meta.name);
                     eprintln!("{}", msg.yellow());
                     if let Some(err) = resolve_result.error_message() {
                         eprintln!("\t{err}");
                     }
+                    log_manual_fix(
+                        resolve_result,
+                        resolver_guidance.get(file).map(String::as_str),
+                    );
                 }
             }
         }
     }
 
-    // Step 4: Log performance stats
+    if config
+        .policies
+        .iter()
+        .any(|policy| policy.scope == "repository")
+    {
+        for result in backend.run_repository_policies(fix)? {
+            let finding = result.outcome;
+            let location = if finding.files.is_empty() {
+                "repository".to_string()
+            } else {
+                finding.files.join(", ")
+            };
+            if finding.fixed == Some(true) {
+                if !quiet {
+                    eprintln!("Resolved {} policy failure: {location}", result.policy_id);
+                }
+                continue;
+            }
+            had_failures = true;
+            let fixable = if finding.fixable == Some(true) {
+                " (autofixable)"
+            } else {
+                ""
+            };
+            eprintln!(
+                "'{}' policy failure{fixable}: {location}\n\t{}",
+                result.policy_id, finding.error
+            );
+            if let Some(manual_fix) = finding.manual_fix {
+                eprintln!("\t{manual_fix}");
+            }
+        }
+    }
+
+    // Step 5: Log performance stats
     stats.log(verbose);
 
     Ok(!had_failures)
 }
 
 /// List all configured policies.
-pub fn run_list(
-    config: &LoadConfigResponse,
-    verbose: bool,
-) -> Result<()> {
+pub fn run_list(config: &LoadConfigResponse, verbose: bool) -> Result<()> {
     println!("{}", "Configured policies:".bold());
     for policy in &config.policies {
         let resolver_tag = if policy.has_resolver {
@@ -374,9 +444,27 @@ pub fn run_list(
         );
 
         if verbose {
-            println!("    match: {}", policy.match_pattern);
+            println!(
+                "    scope: {}",
+                if policy.scope.is_empty() {
+                    "file"
+                } else {
+                    &policy.scope
+                }
+            );
+            if policy.scope != "repository" {
+                println!("    match: {}", policy.match_pattern);
+            }
             if !policy.exclude_files.is_empty() {
-                println!("    excludes: {}", policy.exclude_files.join(", "));
+                println!(
+                    "    excludes: {}",
+                    policy
+                        .exclude_files
+                        .iter()
+                        .map(|pattern| format!("/{}/{}", pattern.source(), pattern.flags()))
+                        .collect::<Vec<_>>()
+                        .join(", ")
+                );
             }
         }
     }
@@ -387,4 +475,55 @@ pub fn run_list(
     );
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{compile_js_regex, compile_policies, format_manual_fix};
+    use crate::types::LoadConfigResponse;
+
+    #[test]
+    fn preserves_exclusion_flags_and_case_insensitive_string_defaults() {
+        let config: LoadConfigResponse = serde_json::from_value(serde_json::json!({
+            "policies": [{
+                "name": "Example",
+                "description": "Example",
+                "matchPattern": ".*",
+                "excludeFiles": [
+                    { "source": "^README", "flags": "" },
+                    { "source": "^skip$", "flags": "m" },
+                    "vendor/"
+                ]
+            }],
+            "excludeFiles": [
+                { "source": "^README", "flags": "" },
+                { "source": "^skip$", "flags": "m" },
+                "vendor/"
+            ]
+        }))
+        .unwrap();
+        let (policies, global) = compile_policies(&config).unwrap();
+        for exclusions in [&global, &policies[0].exclude_regexes] {
+            assert!(exclusions[0].is_match("README.md"));
+            assert!(!exclusions[0].is_match("readme.md"));
+            assert!(exclusions[1].is_match("prefix\nskip"));
+            assert!(exclusions[2].is_match("VENDOR/test.txt"));
+        }
+    }
+
+    #[test]
+    fn preserves_dotall_and_sticky_matching() {
+        assert!(compile_js_regex("a.b", "s").unwrap().is_match("a\nb"));
+        let sticky = compile_js_regex("a|b", "y").unwrap();
+        assert!(sticky.is_match("abc"));
+        assert!(!sticky.is_match("cab"));
+    }
+
+    #[test]
+    fn indents_multiline_manual_fix_instructions() {
+        assert_eq!(
+            format_manual_fix("Use the shared helper.\r\nPreserve error handling."),
+            "\tManual fix: Use the shared helper.\n\tPreserve error handling."
+        );
+    }
 }
