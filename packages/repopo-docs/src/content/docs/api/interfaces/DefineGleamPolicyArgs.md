@@ -5,7 +5,7 @@ prev: false
 title: "DefineGleamPolicyArgs"
 ---
 
-Defined in: [policyDefiners/defineGleamPolicy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L49)
+Defined in: [policyDefiners/defineGleamPolicy.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L50)
 
 Input arguments for defining a gleam.toml policy.
 
@@ -25,7 +25,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policyDefiners/defineGleamPolicy.ts:68](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L68)
+Defined in: [policyDefiners/defineGleamPolicy.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L69)
 
 Optional default configuration for the policy.
 
@@ -39,7 +39,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **description**: `string`
 
-Defined in: [policyDefiners/defineGleamPolicy.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L58)
+Defined in: [policyDefiners/defineGleamPolicy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L59)
 
 A description of the policy's purpose.
 
@@ -53,7 +53,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **handler**: [`GleamTomlHandler`](/api/type-aliases/gleamtomlhandler/)\<`C`\>
 
-Defined in: [policyDefiners/defineGleamPolicy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L63)
+Defined in: [policyDefiners/defineGleamPolicy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L64)
 
 The handler function that receives the parsed gleam.toml and policy arguments.
 
@@ -67,7 +67,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policyDefiners/defineGleamPolicy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L53)
+Defined in: [policyDefiners/defineGleamPolicy.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L54)
 
 The name of the policy.
 

@@ -7,7 +7,7 @@ title: "GleamTomlHandler"
 
 > **GleamTomlHandler**\<`C`\> = (`toml`, `args`) => `Operation`\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\> \| [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyHandlerResult`](/api/type-aliases/policyhandlerresult/)\>
 
-Defined in: [policyDefiners/defineGleamPolicy.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L27)
+Defined in: [policyDefiners/defineGleamPolicy.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L28)
 
 A policy handler for gleam.toml policies.
 

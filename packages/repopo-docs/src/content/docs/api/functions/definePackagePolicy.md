@@ -7,7 +7,7 @@ title: "definePackagePolicy"
 
 > **definePackagePolicy**\<`J`, `C`\>(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policyDefiners/definePackagePolicy.ts:93](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L93)
+Defined in: [policyDefiners/definePackagePolicy.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L94)
 
 Define a repo policy for package.json files.
 
