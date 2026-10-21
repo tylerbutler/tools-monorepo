@@ -5,14 +5,10 @@ prev: false
 title: "RepositoryPolicyDefinition"
 ---
 
-Defined in: [policy.ts:123](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L123)
+Defined in: [policy.ts:134](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L134)
 
 A policy executed once per invocation, even when the inventory is empty.
 Fixes are performed in the handler using `resolve`.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Type Parameters
 
@@ -26,11 +22,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policy.ts:128](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L128)
+Defined in: [policy.ts:144](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L144)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Configuration used when no instance configuration is supplied.
 
 ***
 
@@ -38,11 +32,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **description**: `string`
 
-Defined in: [policy.ts:125](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L125)
+Defined in: [policy.ts:138](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L138)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Description of the policy's purpose.
 
 ***
 
@@ -50,11 +42,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **handler**: [`RepositoryPolicyHandler`](/api/type-aliases/repositorypolicyhandler/)\<`C`\>
 
-Defined in: [policy.ts:127](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L127)
+Defined in: [policy.ts:142](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L142)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Checks the repository and applies fixes when `resolve` is true.
 
 ***
 
@@ -62,11 +52,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policy.ts:124](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L124)
+Defined in: [policy.ts:136](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L136)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Policy name used for display and configuration.
 
 ***
 
@@ -74,8 +62,6 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **scope**: `"repository"`
 
-Defined in: [policy.ts:126](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L126)
+Defined in: [policy.ts:140](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L140)
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
+Selects repository-wide execution instead of per-file matching.

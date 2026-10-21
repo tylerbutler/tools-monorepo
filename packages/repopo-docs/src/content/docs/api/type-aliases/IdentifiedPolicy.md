@@ -7,13 +7,9 @@ title: "IdentifiedPolicy"
 
 > **IdentifiedPolicy**\<`C`\> = [`ConfiguredPolicy`](/api/type-aliases/configuredpolicy/)\<`C`\> & `object`
 
-Defined in: [policy.ts:413](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L413)
+Defined in: [policy.ts:459](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L459)
 
 A configured policy instance with its runtime identity assigned.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Type Parameters
 
@@ -26,3 +22,5 @@ This API should not be used in production and may be trimmed from a public relea
 ### instanceId
 
 > **instanceId**: [`PolicyInstanceId`](/api/type-aliases/policyinstanceid/)
+
+Unique identity used to associate results, exclusions, and timing data.

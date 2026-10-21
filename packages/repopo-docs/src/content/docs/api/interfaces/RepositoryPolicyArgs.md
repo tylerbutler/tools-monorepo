@@ -5,13 +5,9 @@ prev: false
 title: "RepositoryPolicyArgs"
 ---
 
-Defined in: [policy.ts:104](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L104)
+Defined in: [policy.ts:107](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L107)
 
 Arguments for a policy that runs once against the repository.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Extends
 
@@ -33,10 +29,6 @@ Defined in: [policy.ts:44](https://github.com/tylerbutler/tools-monorepo/blob/ma
 
 Optional configuration for the policy.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 #### Inherited from
 
 `Omit.config`
@@ -47,13 +39,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **files**: readonly `string`[]
 
-Defined in: [policy.ts:107](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L107)
+Defined in: [policy.ts:110](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L110)
 
 Full file inventory after global and per-policy exclusions, not stdin selection.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -64,10 +52,6 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [policy.ts:39](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L39)
 
 If true, the handler should resolve any violations automatically if possible.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 
@@ -82,10 +66,6 @@ This API should not be used in production and may be trimmed from a public relea
 Defined in: [policy.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L34)
 
 Absolute path to the root of the repo.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 #### Inherited from
 

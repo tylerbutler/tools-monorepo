@@ -5,13 +5,9 @@ prev: false
 title: "DefineFileHeaderPolicyArgs"
 ---
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L73)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:75](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L75)
 
 Input arguments for defining a file header policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Properties
 
@@ -19,13 +15,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **config**: [`FileHeaderGeneratorConfig`](/api/interfaces/fileheadergeneratorconfig/)
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:87](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L87)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:89](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L89)
 
 Configuration for how headers are detected and inserted.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -33,13 +25,9 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **description**: `string`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:82](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L82)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:84](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L84)
 
 A description of the policy's purpose.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ***
 
@@ -47,10 +35,6 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policyDefiners/defineFileHeaderPolicy.ts:77](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L77)
+Defined in: [policyDefiners/defineFileHeaderPolicy.ts:79](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineFileHeaderPolicy.ts#L79)
 
 The name of the policy.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::

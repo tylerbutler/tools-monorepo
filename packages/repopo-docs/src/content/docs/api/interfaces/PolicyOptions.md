@@ -9,10 +9,6 @@ Defined in: [makePolicy.ts:29](https://github.com/tylerbutler/tools-monorepo/blo
 
 Options for configuring a policy instance.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ## Properties
 
 ### exclude?
@@ -26,10 +22,6 @@ Patterns are matched against repo-relative paths.
 Strings are case-insensitive regular expressions, not globs.
 RegExp values retain their explicit flags.
 
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
-
 ***
 
 ### instanceId?
@@ -41,7 +33,3 @@ Defined in: [makePolicy.ts:35](https://github.com/tylerbutler/tools-monorepo/blo
 A stable identifier for this configured policy instance.
 
 This is required when the same policy definition is configured more than once.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::

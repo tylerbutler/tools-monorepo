@@ -7,16 +7,12 @@ title: "isPolicyFailure"
 
 > **isPolicyFailure**(`toCheck`): `toCheck is PolicyFailure`
 
-Defined in: [policy.ts:457](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L457)
+Defined in: [policy.ts:513](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L513)
 
 Type guard to check if a result is a [PolicyFailure](/api/interfaces/policyfailure/) (legacy format).
 
 :::caution[Deprecated]
 Use [isPolicyError](/api/functions/ispolicyerror/) instead when working with the new [PolicyError](/api/interfaces/policyerror/) format.
-:::
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
 :::
 
 ## Parameters
@@ -25,6 +21,10 @@ This API should not be used in production and may be trimmed from a public relea
 
 `any`
 
+Value to inspect.
+
 ## Returns
 
 `toCheck is PolicyFailure`
+
+Whether the value is a non-null object with an `errorMessages` array.

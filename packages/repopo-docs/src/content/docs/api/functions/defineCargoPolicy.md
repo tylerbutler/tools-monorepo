@@ -7,13 +7,9 @@ title: "defineCargoPolicy"
 
 > **defineCargoPolicy**\<`C`\>(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policyDefiners/defineCargoPolicy.ts:96](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L96)
+Defined in: [policyDefiners/defineCargoPolicy.ts:99](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L99)
 
 Define a repo policy for Cargo.toml files.
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
-:::
 
 ## Type Parameters
 
@@ -27,9 +23,13 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`DefineCargoPolicyArgs`](/api/interfaces/definecargopolicyargs/)\<`C`\>
 
+Policy metadata, parsed-TOML handler, and optional defaults.
+
 ## Returns
 
 [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
+
+A file policy that reads and parses matching Cargo.toml files.
 
 ## Remarks
 

@@ -7,16 +7,12 @@ title: "makePolicyDefinition"
 
 > **makePolicyDefinition**\<`C`\>(`args`): [`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
 
-Defined in: [makePolicy.ts:231](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L231)
+Defined in: [makePolicy.ts:252](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/makePolicy.ts#L252)
 
 Creates a [PolicyDefinition](/api/type-aliases/policydefinition/) from the provided arguments.
 
 :::caution[Deprecated]
 Define policies as object literals satisfying [PolicyShape](/api/interfaces/policyshape/) instead.
-:::
-
-:::caution[Alpha]
-This API should not be used in production and may be trimmed from a public release.
 :::
 
 ## Type Parameters
@@ -31,9 +27,13 @@ This API should not be used in production and may be trimmed from a public relea
 
 [`PolicyDefinitionInput`](/api/type-aliases/policydefinitioninput/)\<`C`\>
 
+Policy metadata, handler, optional resolver, and defaults.
+
 ## Returns
 
 [`PolicyDefinition`](/api/type-aliases/policydefinition/)\<`C`\>
+
+A file-policy definition.
 
 ## Example
 
