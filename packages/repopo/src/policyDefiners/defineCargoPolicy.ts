@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { call, type Operation } from "effection";
 import { resolve } from "pathe";
+import { readParsedFile } from "../fileCache.js";
 import { CargoTomlRegexMatch } from "../policies/constants.js";
 import type {
 	PolicyArgs,
@@ -102,10 +103,15 @@ export function defineCargoPolicy<C = undefined>(
 		match: CargoTomlRegexMatch,
 		defaultConfig,
 		handler: function* (innerArgs) {
-			const content: string = yield* call(() =>
-				readFile(resolve(innerArgs.root, innerArgs.file), "utf-8"),
+			const toml: CargoToml = yield* call(() =>
+				readParsedFile(innerArgs, "toml", async () => {
+					const content = await readFile(
+						resolve(innerArgs.root, innerArgs.file),
+						"utf-8",
+					);
+					return parseToml(content);
+				}),
 			);
-			const toml: CargoToml = yield* call(() => parseToml(content));
 			const result = cargoHandler(toml, innerArgs);
 
 			if (result instanceof Promise) {

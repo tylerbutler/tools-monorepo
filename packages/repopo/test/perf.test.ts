@@ -1,4 +1,4 @@
-import { run } from "effection";
+import { all, call, run } from "effection";
 import { describe, expect, it, vi } from "vitest";
 import {
 	logStats,
@@ -113,6 +113,35 @@ describe("Performance Utilities", () => {
 	});
 
 	describe("runWithPerf", () => {
+		it("accumulates overlapping samples and preserves concurrently initialized entries", async () => {
+			const clock = vi.spyOn(performance, "now");
+			clock.mockReturnValue(0);
+			const stats = newPerfStats();
+			let release = () => {};
+			const gate = new Promise<void>((resolve) => {
+				release = resolve;
+			});
+			let started = 0;
+			try {
+				await run(function* () {
+					yield* all(
+						["Same", "Same", "Other"].map((name) =>
+							runWithPerf(name, "handle", stats, function* () {
+								if (++started === 3) {
+									clock.mockReturnValue(10);
+									release();
+								}
+								yield* call(() => gate);
+							}),
+						),
+					);
+				});
+				expect(stats.data.get("handle")?.get("Same")).toBe(20);
+				expect(stats.data.get("handle")?.get("Other")).toBe(10);
+			} finally {
+				clock.mockRestore();
+			}
+		});
 		it("should track execution time for handle action", async () => {
 			const stats: PolicyHandlerPerfStats = {
 				count: 0,

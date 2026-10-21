@@ -25,6 +25,7 @@ class TestCheckPolicy extends CheckPolicy<typeof TestCheckPolicy> {
 		quiet: true,
 		verbose: false,
 		config: undefined,
+		concurrency: 8,
 	};
 
 	public enableFix(): void {

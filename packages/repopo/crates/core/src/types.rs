@@ -256,6 +256,13 @@ pub struct RunHandlerBatchParams {
 
     /// Whether to attempt auto-fix.
     pub resolve: bool,
+
+    #[serde(default = "default_concurrency")]
+    pub concurrency: usize,
+}
+
+fn default_concurrency() -> usize {
+    8
 }
 
 #[derive(Debug, Serialize, Deserialize)]

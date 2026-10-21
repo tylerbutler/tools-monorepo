@@ -9,6 +9,32 @@ sidebar:
 
 File policies run once per matching selected file. Repository policies run once per invocation, after all file policies. Configure both with `policy()` in the same `policies` array.
 
+## Concurrency and manifest snapshots
+
+Read-only checks process up to 8 files at a time. Use `--concurrency <n>` with
+`check` or `check-native` to change the limit, or set `concurrency` in
+`PolicyRunnerOptions` for programmatic execution. Choose a positive safe integer.
+Use `--concurrency 1` if a custom policy depends on sequential file processing.
+
+The limit counts active files. In the TypeScript runner, matching read-only
+policies for one file can overlap, so the limit does not cap individual handler
+calls. The native engine processes policy batches in order and applies the limit
+within each batch. Both engines report file results in input order within their
+existing traversal order.
+
+During read-only checks, `definePackagePolicy`, `defineCargoPolicy`, and
+`defineGleamPolicy` reuse the first read and parse of each manifest for that run.
+Each handler receives its own copy of the parsed object, including nested values.
+Do not change files during a read-only run: later handlers see the first parsed
+snapshot. A new run reads fresh data. Direct calls to these helpers without a
+runner context keep fresh-read behavior. Custom file reads and repository
+policies do not use this cache.
+
+With `--fix`, both engines keep file handlers and standalone resolvers sequential
+and bypass the manifest cache, regardless of `--concurrency`. Later fixers read
+the changes from earlier fixers. Repository policies remain sequential and start
+after file policies finish.
+
 ## Programmatic imports
 
 Use `repopo/api` to import policy types, factories, adapters, and `PolicyRunner`

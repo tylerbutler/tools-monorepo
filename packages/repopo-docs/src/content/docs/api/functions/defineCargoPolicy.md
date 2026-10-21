@@ -7,7 +7,7 @@ title: "defineCargoPolicy"
 
 > **defineCargoPolicy**\<`C`\>(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policyDefiners/defineCargoPolicy.ts:95](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L95)
+Defined in: [policyDefiners/defineCargoPolicy.ts:96](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L96)
 
 Define a repo policy for Cargo.toml files.
 

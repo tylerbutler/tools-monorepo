@@ -1,11 +1,12 @@
 import type { Logger } from "@tylerbu/cli-api";
 import { all, call, type Operation } from "effection";
-
+import { DEFAULT_CONCURRENCY, validateConcurrency } from "./concurrency.js";
 import type { RepopoConfig } from "./config.js";
 import {
 	createExcludedPolicyFileMap,
 	type ExcludedPolicyFileMap,
 } from "./context.js";
+import { fileCache, ParsedFileCache } from "./fileCache.js";
 import { identifyPolicyInstances } from "./makePolicy.js";
 import {
 	newPerfStats,
@@ -92,6 +93,7 @@ export interface PolicyRunResults {
 interface PolicyRunState {
 	results: PolicyExecutionResult[];
 	perfStats: PolicyHandlerPerfStats;
+	cache?: ParsedFileCache | undefined;
 }
 
 /**
@@ -105,6 +107,8 @@ export interface PolicyRunnerOptions {
 	gitRoot: string;
 	resolve: boolean;
 	logger?: Pick<Logger, "verbose">;
+	/** Maximum active files in read-only checks. Defaults to 8; fixes remain sequential. */
+	concurrency?: number;
 }
 
 /**
@@ -118,6 +122,7 @@ export class PolicyRunner {
 	private readonly gitRoot: string;
 	private readonly resolve: boolean;
 	private readonly logger: Pick<Logger, "verbose"> | undefined;
+	private readonly concurrency: number;
 
 	public constructor(options: PolicyRunnerOptions) {
 		this.policies = identifyPolicyInstances(options.policies);
@@ -129,6 +134,9 @@ export class PolicyRunner {
 		this.gitRoot = options.gitRoot;
 		this.resolve = options.resolve;
 		this.logger = options.logger;
+		this.concurrency = validateConcurrency(
+			options.concurrency ?? DEFAULT_CONCURRENCY,
+		);
 	}
 
 	/**
@@ -146,8 +154,41 @@ export class PolicyRunner {
 			perfStats: newPerfStats(),
 		};
 
-		for (const filePath of filePaths) {
-			yield* this.checkOrExcludeFile(filePath, state);
+		const cache = this.resolve ? undefined : new ParsedFileCache();
+		try {
+			if (this.resolve) {
+				for (const filePath of filePaths) {
+					yield* this.checkOrExcludeFile(filePath, state);
+				}
+			} else {
+				const files = filePaths.entries();
+				const results: PolicyExecutionResult[][] = [];
+				const runner = this;
+				yield* all(
+					Array.from(
+						{ length: Math.min(this.concurrency, filePaths.length) },
+						function* () {
+							for (
+								let entry = files.next();
+								!entry.done;
+								entry = files.next()
+							) {
+								const [index, filePath] = entry.value;
+								const fileState: PolicyRunState = {
+									results: [],
+									perfStats: state.perfStats,
+									cache,
+								};
+								yield* runner.checkOrExcludeFile(filePath, fileState);
+								results[index] = fileState.results;
+							}
+						},
+					),
+				);
+				state.results = results.flat();
+			}
+		} finally {
+			cache?.clear();
 		}
 
 		let inventory: readonly string[] | undefined;
@@ -359,6 +400,7 @@ export class PolicyRunner {
 					root: gitRoot,
 					resolve,
 					config: policy.config,
+					[fileCache]: state.cache,
 				};
 
 				if (policy._internalHandler) {

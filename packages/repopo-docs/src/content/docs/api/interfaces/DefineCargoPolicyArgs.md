@@ -5,7 +5,7 @@ prev: false
 title: "DefineCargoPolicyArgs"
 ---
 
-Defined in: [policyDefiners/defineCargoPolicy.ts:49](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L49)
+Defined in: [policyDefiners/defineCargoPolicy.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L50)
 
 Input arguments for defining a Cargo.toml policy.
 
@@ -25,7 +25,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: [policyDefiners/defineCargoPolicy.ts:68](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L68)
+Defined in: [policyDefiners/defineCargoPolicy.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L69)
 
 Optional default configuration for the policy.
 
@@ -39,7 +39,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **description**: `string`
 
-Defined in: [policyDefiners/defineCargoPolicy.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L58)
+Defined in: [policyDefiners/defineCargoPolicy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L59)
 
 A description of the policy's purpose.
 
@@ -53,7 +53,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **handler**: [`CargoTomlHandler`](/api/type-aliases/cargotomlhandler/)\<`C`\>
 
-Defined in: [policyDefiners/defineCargoPolicy.ts:63](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L63)
+Defined in: [policyDefiners/defineCargoPolicy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L64)
 
 The handler function that receives the parsed Cargo.toml and policy arguments.
 
@@ -67,7 +67,7 @@ This API should not be used in production and may be trimmed from a public relea
 
 > **name**: `string`
 
-Defined in: [policyDefiners/defineCargoPolicy.ts:53](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L53)
+Defined in: [policyDefiners/defineCargoPolicy.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L54)
 
 The name of the policy.
 

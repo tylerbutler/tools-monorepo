@@ -28,6 +28,13 @@ import { createInterface } from "node:readline";
 import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { run } from "effection";
 import { lilconfig } from "lilconfig";
+import {
+	DEFAULT_CONCURRENCY,
+	validateConcurrency,
+} from "../esm/concurrency.js";
+import { fileCache, ParsedFileCache } from "../esm/fileCache.js";
+
+const parsedFiles = new ParsedFileCache();
 
 /** @type {Map<string, import("../src/policy.js").ConfiguredPolicy>} */
 let policiesByName = new Map();
@@ -141,6 +148,7 @@ async function executeHandler(handler, args) {
  * @param {object} params
  */
 async function handleLoadConfig(params) {
+	parsedFiles.clear();
 	try {
 		const searchPath = params.configPath ?? process.cwd();
 
@@ -207,6 +215,7 @@ async function handleLoadConfig(params) {
 }
 
 async function handleRunRepositoryPolicies(params) {
+	parsedFiles.clear();
 	try {
 		const { PolicyRunner } = await import("../esm/runner.js");
 		const { exclusionRegex } = await import("../esm/context.js");
@@ -258,11 +267,15 @@ async function handleRunHandler(params) {
 		}
 
 		const handler = policy._internalHandler ?? policy.handler;
+		if (params.resolve) {
+			parsedFiles.clear();
+		}
 		const args = {
 			file: params.file,
 			root: params.root,
 			resolve: params.resolve ?? false,
 			config: policy.config,
+			[fileCache]: params.resolve ? undefined : parsedFiles,
 		};
 
 		const result = await executeHandler(handler, args);
@@ -280,7 +293,7 @@ async function handleRunHandler(params) {
 
 /**
  * Handle a run_handler_batch request.
- * Runs the handler for each file sequentially and returns compact results.
+ * Runs read-only handlers with bounded file concurrency and returns compact results.
  * Accepts policyId (index) and uses stored gitRoot.
  * @param {object} params
  */
@@ -297,43 +310,66 @@ async function handleRunHandlerBatch(params) {
 
 		const handler = policy._internalHandler ?? policy.handler;
 		const resolve = params.resolve ?? false;
+		const concurrency = validateConcurrency(
+			params.concurrency ?? DEFAULT_CONCURRENCY,
+		);
+		if (resolve) {
+			parsedFiles.clear();
+		}
+		const outcomes = new Array(params.files.length);
+		const files = params.files.entries();
+		await Promise.all(
+			Array.from(
+				{ length: Math.min(resolve ? 1 : concurrency, params.files.length) },
+				async () => {
+					for (const [index, file] of files) {
+						try {
+							const result = await executeHandler(handler, {
+								file,
+								root: storedGitRoot,
+								resolve,
+								config: policy.config,
+								[fileCache]: resolve ? undefined : parsedFiles,
+							});
+							outcomes[index] =
+								result === true
+									? true
+									: {
+											file,
+											error: result.error,
+											errorMessages: result.errorMessages,
+											fixable: result.fixable ?? result.autoFixable,
+											fixed: result.fixed ?? result.resolved,
+											manualFix: result.manualFix,
+										};
+						} catch (err) {
+							outcomes[index] = {
+								file,
+								error: `Handler error: ${err.message}`,
+								fixable: false,
+							};
+						}
+					}
+				},
+			),
+		);
 		/** @type {string[]} */
 		const pass = [];
 		/** @type {Array<{file: string, error?: string, errorMessages?: string[], fixable?: boolean, fixed?: boolean, manualFix?: string}>} */
 		const fail = [];
 
-		for (const file of params.files) {
-			try {
-				const args = {
-					file,
-					root: storedGitRoot,
-					resolve,
-					config: policy.config,
-				};
-				const result = await executeHandler(handler, args);
-				if (result === true) {
-					pass.push(file);
-				} else {
-					fail.push({
-						file,
-						error: result.error,
-						errorMessages: result.errorMessages,
-						fixable: result.fixable ?? result.autoFixable,
-						fixed: result.fixed ?? result.resolved,
-						manualFix: result.manualFix,
-					});
-				}
-			} catch (err) {
-				fail.push({
-					file,
-					error: `Handler error: ${err.message}`,
-					fixable: false,
-				});
+		for (const [index, file] of params.files.entries()) {
+			const result = outcomes[index];
+			if (result === true) {
+				pass.push(file);
+			} else {
+				fail.push(result);
 			}
 		}
 
 		respond({ ok: true, data: { pass, fail } });
 	} catch (err) {
+		parsedFiles.clear();
 		respond({
 			ok: false,
 			error: `Batch handler error for policy index ${params.policyId}: ${err.message}`,
@@ -346,6 +382,7 @@ async function handleRunHandlerBatch(params) {
  * @param {object} params
  */
 async function handleRunResolver(params) {
+	parsedFiles.clear();
 	try {
 		const policy = policiesByName.get(params.policyName);
 		if (!policy) {
@@ -387,6 +424,7 @@ async function handleRunResolver(params) {
  * @param {object} params
  */
 async function handleRunResolverBatch(params) {
+	parsedFiles.clear();
 	try {
 		const policy = policiesByIndex[params.policyId];
 		if (!policy) {
@@ -497,6 +535,7 @@ async function main() {
 				break;
 
 			case "shutdown":
+				parsedFiles.clear();
 				process.exit(0);
 				break;
 
@@ -506,10 +545,12 @@ async function main() {
 	}
 
 	// stdin closed — exit cleanly
+	parsedFiles.clear();
 	process.exit(0);
 }
 
 main().catch((err) => {
+	parsedFiles.clear();
 	process.stderr.write(`Sidecar fatal error: ${err.message}\n`);
 	process.exit(1);
 });

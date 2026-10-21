@@ -7,7 +7,7 @@ title: "defineGleamPolicy"
 
 > **defineGleamPolicy**\<`C`\>(`args`): [`PolicyShape`](/api/interfaces/policyshape/)\<`C`\>
 
-Defined in: [policyDefiners/defineGleamPolicy.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L94)
+Defined in: [policyDefiners/defineGleamPolicy.ts:95](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L95)
 
 Define a repo policy for gleam.toml files.
 

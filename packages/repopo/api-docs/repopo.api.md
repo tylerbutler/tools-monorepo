@@ -296,6 +296,7 @@ export class PolicyRunner {
 
 // @alpha
 export interface PolicyRunnerOptions {
+    concurrency?: number;
     // (undocumented)
     excludeFromAll: RegExp[];
     // (undocumented)

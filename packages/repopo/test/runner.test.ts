@@ -1,4 +1,4 @@
-import { all, run } from "effection";
+import { all, run, suspend } from "effection";
 import { describe, expect, it, vi } from "vitest";
 
 import { makePolicy, policy } from "../src/makePolicy.js";
@@ -26,6 +26,179 @@ function makeRunnerOptions(
 }
 
 describe("PolicyRunner", () => {
+	describe("bounded file concurrency", () => {
+		it.each([
+			1,
+			3,
+			undefined,
+		])("bounds active files with limit %s", async (concurrency) => {
+			const limit = concurrency ?? 8;
+			let active = 0;
+			let peak = 0;
+			let release = () => {};
+			const gate = new Promise<void>((resolve) => {
+				release = resolve;
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					...(concurrency === undefined ? {} : { concurrency }),
+					policies: [
+						policy({
+							name: "Bounded",
+							description: "Waits for a full worker pool",
+							match: /\.txt$/,
+							handler: async () => {
+								active++;
+								peak = Math.max(peak, active);
+								if (active === limit) {
+									release();
+								}
+								await gate;
+								await Promise.resolve();
+								active--;
+								return true;
+							},
+						}),
+					],
+				}),
+			);
+			const result = await run(() =>
+				runner.run(Array.from({ length: 17 }, (_, i) => `${i}.txt`)),
+			);
+			expect(peak).toBe(limit);
+			expect(active).toBe(0);
+			expect(result.perfStats.processed).toBe(17);
+		});
+
+		it("reports input order despite out-of-order completion and waits before repository policies", async () => {
+			let release = () => {};
+			const gate = new Promise<void>((resolve) => {
+				release = resolve;
+			});
+			const finished: string[] = [];
+			const repoHandler = vi.fn(async () => {
+				expect(finished).toHaveLength(3);
+				return true as const;
+			});
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					concurrency: 2,
+					policies: [
+						policy({
+							name: "Delayed",
+							description: "Completes b before a",
+							match: /\.txt$/,
+							handler: async ({ file }) => {
+								if (file === "a.txt") {
+									await gate;
+								} else {
+									release();
+								}
+								finished.push(file);
+								return { error: file };
+							},
+						}),
+						policy({
+							name: "Repository",
+							description: "Runs after all files",
+							scope: "repository",
+							handler: repoHandler,
+						}),
+					],
+				}),
+			);
+			const result = await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
+			expect(
+				result.results
+					.filter((entry) => entry.scope !== "repository")
+					.map(({ file }) => file),
+			).toEqual(["a.txt", "b.txt", "c.txt"]);
+			expect(finished[0]).toBe("b.txt");
+			expect(repoHandler).toHaveBeenCalledOnce();
+			expect(result.results).toHaveLength(3);
+		});
+
+		it.each([
+			0,
+			-1,
+			1.5,
+			Number.NaN,
+			Number.POSITIVE_INFINITY,
+			Number.MAX_SAFE_INTEGER + 1,
+		])("rejects invalid concurrency %s", (concurrency) => {
+			expect(
+				() => new PolicyRunner(makeRunnerOptions({ concurrency })),
+			).toThrow("positive safe integer");
+		});
+
+		it("keeps all fix work sequential even with a higher limit", async () => {
+			let active = 0;
+			let peak = 0;
+			const seen: string[] = [];
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					resolve: true,
+					concurrency: 8,
+					policies: [
+						policy({
+							name: "Fix",
+							description: "Sequential writes",
+							match: /\.txt$/,
+							handler: async ({ file }) => {
+								active++;
+								peak = Math.max(peak, active);
+								await Promise.resolve();
+								seen.push(file);
+								active--;
+								return true;
+							},
+						}),
+					],
+				}),
+			);
+			await run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
+			expect(peak).toBe(1);
+			expect(seen).toEqual(["a.txt", "b.txt", "c.txt"]);
+		});
+
+		it("cancels worker generators without starting queued files", async () => {
+			let notify = () => {};
+			const ready = new Promise<void>((resolve) => {
+				notify = resolve;
+			});
+			let started = 0;
+			let cleaned = 0;
+			const runner = new PolicyRunner(
+				makeRunnerOptions({
+					concurrency: 2,
+					policies: [
+						policy({
+							name: "Resource",
+							description: "Owns a resource",
+							match: /\.txt$/,
+							handler: function* () {
+								try {
+									if (++started === 2) {
+										notify();
+									}
+									yield* suspend();
+									return true as const;
+								} finally {
+									cleaned++;
+								}
+							},
+						}),
+					],
+				}),
+			);
+			const task = run(() => runner.run(["a.txt", "b.txt", "c.txt"]));
+			await ready;
+			await task.halt();
+			expect(started).toBe(2);
+			expect(cleaned).toBe(2);
+		});
+	});
+
 	describe("configuration", () => {
 		it.each([
 			"file",
@@ -112,7 +285,6 @@ describe("PolicyRunner", () => {
 			]);
 		});
 	});
-
 	describe("repository policies", () => {
 		it("runs once on the full eligible inventory, independently of the selection", async () => {
 			const handler = vi.fn(async () => [

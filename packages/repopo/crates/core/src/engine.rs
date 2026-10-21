@@ -152,6 +152,7 @@ pub fn run_check(
     fix: bool,
     verbose: bool,
     quiet: bool,
+    concurrency: usize,
 ) -> Result<bool> {
     // Step 1: Load config from sidecar
     if verbose {
@@ -233,7 +234,7 @@ pub fn run_check(
         // Batch handler call — single IPC round-trip for all files
         let start = Instant::now();
         let batch_results = sidecar
-            .run_handler_batch(policy_id, &matching_files, fix)
+            .run_handler_batch(policy_id, &matching_files, fix, concurrency)
             .with_context(|| {
                 format!(
                     "Error executing batch handler for policy '{}'",

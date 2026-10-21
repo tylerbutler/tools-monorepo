@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { call, type Operation } from "effection";
 import { resolve } from "pathe";
+import { readParsedFile } from "../fileCache.js";
 import { GleamTomlRegexMatch } from "../policies/constants.js";
 import type {
 	PolicyArgs,
@@ -101,10 +102,15 @@ export function defineGleamPolicy<C = undefined>(
 		match: GleamTomlRegexMatch,
 		defaultConfig,
 		handler: function* (innerArgs) {
-			const content: string = yield* call(() =>
-				readFile(resolve(innerArgs.root, innerArgs.file), "utf-8"),
+			const toml: GleamToml = yield* call(() =>
+				readParsedFile(innerArgs, "toml", async () => {
+					const content = await readFile(
+						resolve(innerArgs.root, innerArgs.file),
+						"utf-8",
+					);
+					return parseToml(content);
+				}),
 			);
-			const toml: GleamToml = yield* call(() => parseToml(content));
 			const result = gleamHandler(toml, innerArgs);
 
 			if (result instanceof Promise) {
