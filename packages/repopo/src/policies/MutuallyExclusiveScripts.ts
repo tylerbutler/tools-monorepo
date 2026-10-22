@@ -35,15 +35,15 @@ const POLICY_NAME = "MutuallyExclusiveScripts";
  *
  * @example
  * ```typescript
- * import { policy } from "repopo";
+ * import { makePolicy } from "repopo";
  * import { MutuallyExclusiveScripts } from "repopo/policies";
  *
- * policy(MutuallyExclusiveScripts, {
+ * makePolicy(MutuallyExclusiveScripts, { config: {
  *   groups: [
  *     ["lint:eslint", "lint:biome"],
  *     ["test:jest", "test:vitest"],
  *   ],
- * })
+ * } })
  * ```
  *
  * @public

@@ -150,16 +150,16 @@ async function fixMissingScripts(
  *
  * @example
  * ```typescript
- * import { policy } from "repopo";
+ * import { makePolicy } from "repopo";
  * import { RequiredScripts } from "repopo/policies";
  *
- * policy(RequiredScripts, {
+ * makePolicy(RequiredScripts, { config: {
  *   scripts: [
  *     "test",                        // Must exist, no auto-fix
  *     { lint: "biome lint ." },      // Must exist, auto-fix adds default if missing
  *     { clean: "rimraf dist esm" },  // Must exist, auto-fix adds default if missing
  *   ],
- * })
+ * } })
  * ```
  *
  * @public

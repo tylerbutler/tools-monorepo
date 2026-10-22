@@ -37,7 +37,7 @@ const POLICY_NAME = "PackageLicense";
 
 /**
  * Copies the root LICENSE file to the package directory.
- * @returns A PolicyFixResult indicating success or failure.
+ * @returns Findings that record whether the license was fixed.
  */
 async function copyLicenseFile(
 	rootLicensePath: string,

@@ -1,7 +1,7 @@
 /**
  * Built-in file and repository policies and their configuration types.
  *
- * Use `policy()` from `repopo` or `repopo/api` to configure these definitions.
+ * Use `makePolicy()` from `repopo` or `repopo/api` to configure these definitions.
  *
  * @packageDocumentation
  */

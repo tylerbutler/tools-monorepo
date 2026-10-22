@@ -54,16 +54,16 @@ const POLICY_NAME = "ScriptContains";
  *
  * @example
  * ```typescript
- * import { policy } from "repopo";
+ * import { makePolicy } from "repopo";
  * import { ScriptContains } from "repopo/policies";
  *
- * policy(ScriptContains, {
+ * makePolicy(ScriptContains, { config: {
  *   rules: [
  *     { script: "clean", mustContain: ["rimraf"] },
  *     { script: "build", mustContain: ["tsc"] },
  *     { script: "test", mustContain: ["vitest", "run"] },
  *   ],
- * })
+ * } })
  * ```
  *
  * @public

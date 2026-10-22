@@ -45,7 +45,7 @@
 	],
 	"scripts": {
 		"api:markdown": "api-documenter markdown -i _temp/api-extractor -o _temp/docs",
-		"build:api": "api-extractor run --local",
+		"build:api": "api-extractor run --local && api-extractor run --local --config api-extractor.api.json && api-extractor run --local --config api-extractor.policies.json",
 		"build:compile": "tsc --project ./tsconfig.json",
 		"build:manifest": "oclif manifest",
 		"build:readme": "concurrently npm:readme:*",

@@ -138,13 +138,13 @@ function fromFluidHandler(
  * Key differences handled by this adapter:
  *
  * - **Handler signature**: Fluid uses `(file, root) => string | undefined`,
- *   repopo uses `(args) => PolicyHandlerResult`
+ *   repopo uses `(args) => Promise<PolicyResult> | Operation<PolicyResult>`
  *
  * - **File paths**: Fluid passes absolute paths, repopo passes repo-relative paths.
  *   The adapter converts between the two.
  *
  * - **Return types**: Fluid returns `string | undefined` (error message or success),
- *   repopo returns `true | PolicyFailure | PolicyFixResult`
+ *   repopo returns `readonly PolicyFinding[]`
  *
  * For a single handler, wrap it in an array: `fromFluidHandlers([handler])`.
  *

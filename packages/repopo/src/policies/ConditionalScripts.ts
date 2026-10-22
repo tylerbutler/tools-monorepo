@@ -204,17 +204,17 @@ async function fixMissingScripts(
  *
  * @example
  * ```typescript
- * import { policy } from "repopo";
+ * import { makePolicy } from "repopo";
  * import { ConditionalScripts } from "repopo/policies";
  *
- * policy(ConditionalScripts, {
+ * makePolicy(ConditionalScripts, { config: {
  *   rules: [
  *     // If "build" exists, "clean" must also exist (with auto-fix default)
  *     { ifPresent: "build", requires: [{ clean: "rimraf dist" }] },
  *     // If "test" exists, "test:coverage" must also exist (no auto-fix)
  *     { ifPresent: "test", requires: ["test:coverage"] },
  *   ],
- * })
+ * } })
  * ```
  *
  * @public

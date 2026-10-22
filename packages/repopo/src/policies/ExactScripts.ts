@@ -108,16 +108,16 @@ async function fixScripts(
  *
  * @example
  * ```typescript
- * import { policy } from "repopo";
+ * import { makePolicy } from "repopo";
  * import { ExactScripts } from "repopo/policies";
  *
- * policy(ExactScripts, {
+ * makePolicy(ExactScripts, { config: {
  *   scripts: {
  *     clean: "rimraf dist esm",
  *     format: "biome format --write .",
  *     lint: "biome lint .",
  *   },
- * })
+ * } })
  * ```
  *
  * @public

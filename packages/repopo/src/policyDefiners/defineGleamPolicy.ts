@@ -89,9 +89,9 @@ export interface DefineGleamPolicyArgs<C> {
  *   description: "Ensures gleam.toml has required fields",
  *   handler: async (toml, { file }) => {
  *     if (!toml.name) {
- *       return { error: "Missing name field", fixable: false };
+ *       return [{ message: "Missing name field" }];
  *     }
- *     return true;
+ *     return [];
  *   },
  * });
  * ```
@@ -101,9 +101,11 @@ export interface DefineGleamPolicyArgs<C> {
 export function defineGleamPolicy<C = void>(
 	args: DefineGleamPolicyArgs<C> & { defaultConfig: DefinedConfig<C> },
 ): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
+/** Define a Gleam policy that requires explicit configuration. @public */
 export function defineGleamPolicy<C = void>(
 	args: DefineGleamPolicyArgs<C> & { requiresConfig: true },
 ): FilePolicyDefinition<C> & { requiresConfig: true };
+/** Define a Gleam policy with optional configuration. @public */
 export function defineGleamPolicy<C = void>(
 	args: DefineGleamPolicyArgs<C>,
 ): FilePolicyDefinition<C>;

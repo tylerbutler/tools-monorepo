@@ -49,6 +49,16 @@
 	"nx": {
 		"targets": {
 			"build": {},
+			"build:site": {
+				"inputs": [
+					"{projectRoot}/src/**",
+					"{projectRoot}/*.config.{ts,js,mjs,cjs}",
+					"{projectRoot}/public/**",
+					"{projectRoot}/package.json",
+					"^production",
+					"{workspaceRoot}/packages/repopo/api-docs/README.md"
+				]
+			},
 			"ci": {}
 		}
 	}

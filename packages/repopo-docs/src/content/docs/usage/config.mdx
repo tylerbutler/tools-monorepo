@@ -4,38 +4,43 @@ sidebar:
   order: 4
 ---
 
-To use repopo, [install it](/installation) then run `repopo check` to check files.
-
 Create `repopo.config.ts` in the repository root:
 
 ```ts
-import { policy, type RepopoConfig } from "repopo";
+import { makePolicy, type RepopoConfig } from "repopo";
 import { NoJsFileExtensions, PackageJsonProperties } from "repopo/policies";
 
 export default {
+	excludeFiles: ["^vendor/"],
 	policies: [
-		policy(NoJsFileExtensions, undefined, { exclude: ["^bin/"] }),
-		policy(PackageJsonProperties, { verbatim: { license: "MIT" } }),
+		makePolicy(NoJsFileExtensions, { exclude: ["^bin/"] }),
+		makePolicy(PackageJsonProperties, {
+			config: { verbatim: { license: "MIT" } },
+		}),
 	],
 } satisfies RepopoConfig;
 ```
 
-Pass policy configuration as the second argument and instance options as the
-third argument: `policy(definition, config, options)`. Use `undefined` for
-configuration to retain `defaultConfig`. Options include `exclude` and
-`instanceId`; set a distinct instance ID for each repeated policy definition.
+Use only `makePolicy(definition, { config, exclude, instanceId })`.
+Omit options when none are needed. Set explicit unique IDs for repeated names.
+`ConfiguredPolicy` represents a configured file or repository policy.
 
-To migrate the old options shorthand, replace
-`policy(definition, { exclude: patterns })` with
-`policy(definition, undefined, { exclude: patterns })`. The second argument now
-holds policy configuration even when it contains an `exclude` property.
+Missing or undefined `config` selects `defaultConfig`. Explicit config replaces
+the whole default; there is no merge. An allowed null remains supplied.
+Definitions with `requiresConfig: true` require complete config or a complete
+default. A config's own `exclude` field does not configure instance exclusions.
 
-Use `excludeFiles` at the top level for global exclusions. Exclusion strings
-are case-insensitive regular expressions, not globs. Use `"^vendor/"` rather
-than `"**/vendor/**"`. `RegExp` values retain their flags: `/^README/` is
-case-sensitive, and `/^README/i` is case-insensitive.
+`excludeFiles` is the repository-global option. Per-instance exclusions use
+`exclude`. String patterns are case-insensitive regexes, not globs. Use
+`"^vendor/"`, not `"**/vendor/**"`. RegExp values retain their flags.
 
-Omit `policies` to use the default policies. Set `policies: []` to disable them.
-Both `policy(definition)` and the legacy `makePolicy(definition)` use
-`definition.defaultConfig`. For `makePolicy()`, explicit configuration takes
-precedence over `settings.config`, followed by `defaultConfig`.
+Omit `policies` to enable `NoJsFileExtensions`,
+`PackageJsonRepoDirectoryProperty`, and `PackageJsonSorted`.
+Set `policies: []` to disable all policies. Other built-ins are opt-in.
+
+File policies check the selected paths. Repository policies run once after
+file checks against full eligible Git inventory, including with empty stdin.
+Repository fixers can change files outside the selection.
+
+See [the migration guide](/usage/migration/) for breaking changes, runner
+inventory requirements, finding arrays, and resolver behavior.

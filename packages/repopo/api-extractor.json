@@ -1,6 +1,9 @@
 {
 	"$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
 	"extends": "../../config/api-extractor.base.json",
+	"docModel": {
+		"apiJsonFilePath": "<projectFolder>/_temp/api-extractor/repopo.api.json",
+	},
 
 	"messages": {
 		"compilerMessageReporting": {
@@ -17,6 +20,12 @@
 			},
 			"ae-internal-missing-underscore": {
 				"logLevel": "none",
+				"addToApiReportFile": false,
+			},
+			// Generic inference helpers and legacy script-rule names are declaration
+			// dependencies, not additional supported entry-point exports.
+			"ae-forgotten-export": {
+				"logLevel": "warning",
 				"addToApiReportFile": false,
 			},
 		},

@@ -88,9 +88,9 @@ export interface DefinePackagePolicyArgs<J, C> {
  *   description: "Ensures package.json has required fields",
  *   handler: async (json, { file }) => {
  *     if (!json.name) {
- *       return { error: "Missing name", fixable: false };
+ *       return [{ message: "Missing name" }];
  *     }
- *     return true;
+ *     return [];
  *   },
  * });
  * ```
@@ -100,9 +100,11 @@ export interface DefinePackagePolicyArgs<J, C> {
 export function definePackagePolicy<J = PackageJson, C = void>(
 	args: DefinePackagePolicyArgs<J, C> & { defaultConfig: DefinedConfig<C> },
 ): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
+/** Define a package policy that requires explicit configuration. @public */
 export function definePackagePolicy<J = PackageJson, C = void>(
 	args: DefinePackagePolicyArgs<J, C> & { requiresConfig: true },
 ): FilePolicyDefinition<C> & { requiresConfig: true };
+/** Define a package policy with optional configuration. @public */
 export function definePackagePolicy<J = PackageJson, C = void>(
 	args: DefinePackagePolicyArgs<J, C>,
 ): FilePolicyDefinition<C>;

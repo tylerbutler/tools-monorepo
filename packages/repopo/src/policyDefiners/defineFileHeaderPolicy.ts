@@ -94,7 +94,8 @@ export interface DefineFileHeaderPolicyArgs {
 /**
  * Creates a file-header policy that detects missing or incorrect headers and can replace them.
  *
- * The handler skips checks when no {@link FileHeaderPolicyConfig} is supplied.
+ * Supply {@link FileHeaderPolicyConfig} when configuring the policy, unless
+ * the definition supplies a complete default.
  *
  * @param args - Policy metadata and header matching and replacement rules.
  * @returns A file policy configured for the supplied file types.
@@ -116,6 +117,7 @@ export function defineFileHeaderPolicy(
 	requiresConfig: true;
 	defaultConfig: FileHeaderPolicyConfig;
 };
+/** Define a header policy that requires explicit header configuration. @public */
 export function defineFileHeaderPolicy(
 	args: DefineFileHeaderPolicyArgs,
 ): FilePolicyDefinition<FileHeaderPolicyConfig> & { requiresConfig: true };

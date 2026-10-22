@@ -90,9 +90,9 @@ export interface DefineCargoPolicyArgs<C> {
  *   handler: async (toml, { file }) => {
  *     const pkg = toml.package as Record<string, unknown> | undefined;
  *     if (!pkg?.name) {
- *       return { error: "Missing package name", fixable: false };
+ *       return [{ message: "Missing package name" }];
  *     }
- *     return true;
+ *     return [];
  *   },
  * });
  * ```
@@ -102,9 +102,11 @@ export interface DefineCargoPolicyArgs<C> {
 export function defineCargoPolicy<C = void>(
 	args: DefineCargoPolicyArgs<C> & { defaultConfig: DefinedConfig<C> },
 ): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
+/** Define a Cargo policy that requires explicit configuration. @public */
 export function defineCargoPolicy<C = void>(
 	args: DefineCargoPolicyArgs<C> & { requiresConfig: true },
 ): FilePolicyDefinition<C> & { requiresConfig: true };
+/** Define a Cargo policy with optional configuration. @public */
 export function defineCargoPolicy<C = void>(
 	args: DefineCargoPolicyArgs<C>,
 ): FilePolicyDefinition<C>;

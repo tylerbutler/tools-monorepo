@@ -140,7 +140,7 @@ export async function tryAutoFix(
  * Combines spdx-correct validation with allowlist checking and auto-fix
  * into a single helper used by both Cargo and Gleam licence policies.
  *
- * @returns `true` if valid, or a PolicyError-compatible object on failure.
+ * @returns An empty array if valid, or findings that describe invalid expressions.
  * Returns `undefined` if no validation was requested (both allowlist and
  * validateSpdx are empty/false).
  *
