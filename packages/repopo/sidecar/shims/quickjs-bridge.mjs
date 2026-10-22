@@ -13,6 +13,7 @@
  * the QuickJS event loop after calling the sync wrapper to drain microtasks.
  */
 
+import { identifyPolicyInstances } from "../../esm/makePolicy.js";
 import { run } from "./effection-shim.mjs";
 
 /** @type {Array<any>} */
@@ -57,6 +58,7 @@ function serializePolicy(policy) {
 
 	return {
 		name: policy.name,
+		instanceId: policy.instanceId,
 		scope: policy.scope ?? "file",
 		description: policy.description,
 		matchPattern: match.source,
@@ -118,15 +120,82 @@ function processResult(file, result, pass, fail) {
  * @param {object} config - The loaded RepopoConfig
  */
 export function initBridge(config) {
-	const policies = config.policies ?? [];
-	policiesArray = [];
-	for (const p of policies) {
-		policiesArray.push(p);
-	}
+	const policies = identifyPolicyInstances(config.policies ?? []);
+	policiesArray = policies;
 
 	// Storage for async results (Rust reads after pumping the event loop)
 	globalThis.__repopo_lastResult = null;
 	globalThis.__repopo_lastError = null;
+
+	const globalExclusions = (config.excludeFiles ?? []).map(exclusionRegex);
+
+	globalThis.__repopo_runRepositoryPolicySync = function (
+		policyId,
+		filesJson,
+		root,
+		resolve,
+	) {
+		globalThis.__repopo_lastResult = null;
+		globalThis.__repopo_lastError = null;
+
+		const policy = policiesArray[policyId];
+		const wrapFinding = (outcome) => ({
+			scope: "repository",
+			policy: policy?.name ?? String(policyId),
+			policyId: policy?.instanceId ?? String(policyId),
+			outcome,
+		});
+		const fail = (err) => {
+			globalThis.__repopo_lastResult = JSON.stringify([
+				wrapFinding({
+					error: `System Error: Error executing repository policy '${policy?.instanceId ?? policyId}': ${err?.message ?? String(err)}`,
+				}),
+			]);
+		};
+
+		try {
+			if (!policy || policy.scope !== "repository") {
+				throw new Error(`Unknown repository policy index: ${policyId}`);
+			}
+			const exclusions = [
+				...globalExclusions,
+				...(policy.excludeFiles ?? policy.exclude ?? []).map(exclusionRegex),
+			];
+			const inventory =
+				typeof filesJson === "string" ? JSON.parse(filesJson) : filesJson;
+			const files = inventory.filter(
+				(file) => !exclusions.some((regex) => matches(regex, file)),
+			);
+			callHandler(policy.handler, {
+				root,
+				files,
+				resolve,
+				config: policy.config,
+			})
+				.then((result) => {
+					if (result === true) {
+						globalThis.__repopo_lastResult = "[]";
+						return;
+					}
+					if (
+						!(
+							Array.isArray(result) &&
+							Array.from(result).every(isRepositoryFinding)
+						)
+					) {
+						throw new Error(
+							"Repository handler must return true or an array of findings.",
+						);
+					}
+					globalThis.__repopo_lastResult = JSON.stringify(
+						result.map(wrapFinding),
+					);
+				})
+				.catch(fail);
+		} catch (err) {
+			fail(err);
+		}
+	};
 
 	// --- Handler batch ---
 	// Calls handlers directly (no async/await) and chains Promises
@@ -269,4 +338,27 @@ export function initBridge(config) {
 		excludeFiles,
 	};
 	globalThis.__repopo_metadata = JSON.stringify(metadata);
+}
+
+function exclusionRegex(pattern) {
+	return typeof pattern === "string" ? new RegExp(pattern, "i") : pattern;
+}
+
+function matches(regex, file) {
+	regex.lastIndex = 0;
+	return regex.test(file);
+}
+
+function isRepositoryFinding(value) {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		typeof value.error === "string" &&
+		(value.files === undefined ||
+			(Array.isArray(value.files) &&
+				Array.from(value.files).every((file) => typeof file === "string"))) &&
+		(value.fixed === undefined || typeof value.fixed === "boolean") &&
+		(value.fixable === undefined || typeof value.fixable === "boolean") &&
+		(value.manualFix === undefined || typeof value.manualFix === "string")
+	);
 }

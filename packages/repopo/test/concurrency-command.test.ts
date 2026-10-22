@@ -44,6 +44,8 @@ describe("concurrency CLI options", () => {
 				"/fake/sidecar.mjs",
 				"--concurrency",
 				concurrency ?? "8",
+				"--mode",
+				"auto",
 			],
 			expect.objectContaining({ stdio: "inherit" }),
 		);

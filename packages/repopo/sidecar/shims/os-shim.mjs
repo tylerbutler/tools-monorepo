@@ -1,70 +1,42 @@
-/**
- * Node.js os module shim for QuickJS runtime.
- */
-
-export const EOL = "\n";
-
-export function platform() {
-	return "linux";
+/** Host facts only; unsupported operating-system queries fail explicitly. */
+function unsupported(name) {
+	throw new Error(`os.${name} is not supported in the QuickJS runtime`);
 }
 
-export function tmpdir() {
-	return "/tmp";
-}
+const host = JSON.parse(globalThis.__os_info);
+
+export const EOL = host.eol;
+export const platform = () => globalThis.process.platform;
+export const arch = () => globalThis.process.arch;
+export const tmpdir = () => {
+	if (host.tmpdir === null) unsupported("tmpdir non-Unicode path");
+	return host.tmpdir;
+};
+export const type = () => {
+	if (host.type === null) unsupported("type");
+	return host.type;
+};
+export const endianness = () => host.endianness;
+export const availableParallelism = () => {
+	if (host.availableParallelism === null) unsupported("availableParallelism");
+	return host.availableParallelism;
+};
 
 export function homedir() {
-	return globalThis.__process_cwd?.() ?? "/";
+	const env = globalThis.process.env;
+	const home = platform() === "win32" ? env.USERPROFILE : env.HOME;
+	if (!home) unsupported("homedir without a home environment variable");
+	return home;
 }
 
-export function hostname() {
-	return "quickjs";
-}
-
-export function type() {
-	return "Linux";
-}
-
-export function arch() {
-	return "x64";
-}
-
-export function release() {
-	return "0.0.0-quickjs";
-}
-
-export function cpus() {
-	return [{ model: "QuickJS", speed: 0 }];
-}
-
-export function endianness() {
-	return "LE";
-}
-
-export function freemem() {
-	return 1024 * 1024 * 1024;
-}
-
-export function totalmem() {
-	return 4 * 1024 * 1024 * 1024;
-}
-
-export function uptime() {
-	return 0;
-}
-
-export function networkInterfaces() {
-	return {};
-}
-
-export function userInfo() {
-	return {
-		username: "repopo",
-		uid: 1000,
-		gid: 1000,
-		shell: "/bin/sh",
-		homedir: homedir(),
-	};
-}
+export const hostname = () => unsupported("hostname");
+export const release = () => unsupported("release");
+export const cpus = () => unsupported("cpus");
+export const freemem = () => unsupported("freemem");
+export const totalmem = () => unsupported("totalmem");
+export const uptime = () => unsupported("uptime");
+export const networkInterfaces = () => unsupported("networkInterfaces");
+export const userInfo = () => unsupported("userInfo");
 
 export default {
 	EOL,
@@ -82,4 +54,5 @@ export default {
 	uptime,
 	networkInterfaces,
 	userInfo,
+	availableParallelism,
 };

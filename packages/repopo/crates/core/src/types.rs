@@ -32,6 +32,9 @@ pub struct PolicyMeta {
     pub name: String,
 
     #[serde(default)]
+    pub instance_id: String,
+
+    #[serde(default)]
     pub scope: String,
 
     /// A description of what the policy checks.
@@ -355,12 +358,32 @@ pub struct LoadConfigResponse {
     pub exclude_files: Vec<ExclusionPattern>,
 }
 
-/// Policy metadata and an esbuild bundle for in-process QuickJS execution.
+/// Compile-only output. Config values and findings are deliberately not cached.
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct BundleResponse {
-    pub policies: Vec<PolicyMeta>,
-    #[serde(default)]
-    pub exclude_files: Vec<ExclusionPattern>,
+pub struct PreparedArtifact {
+    pub schema_version: u32,
+    pub abi_version: u32,
+    pub root: String,
+    pub request: String,
+    pub producer: String,
+    pub inputs: Vec<PreparedInput>,
     pub bundle: String,
+    pub bundle_digest: String,
+    pub reasons: Vec<CompatibilityReason>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PreparedInput {
+    pub path: String,
+    pub real_path: Option<String>,
+    pub kind: String,
+    pub digest: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CompatibilityReason {
+    pub module: String,
+    pub reason: String,
 }

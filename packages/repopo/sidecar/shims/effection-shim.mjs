@@ -1,7 +1,7 @@
 /**
  * Effection shim for QuickJS runtime.
  *
- * Provides minimal `call()` and `run()` for the generator patterns used by
+ * Provides minimal `all()`, `call()`, and `run()` for the generator patterns used by
  * repopo policies. Since all fs operations resolve synchronously (Rust std::fs
  * backing), Promises in the chain resolve immediately when the event loop is
  * pumped.
@@ -22,6 +22,15 @@ export function* call(fn) {
 		return yield result;
 	}
 	return result;
+}
+
+/**
+ * Run operations concurrently and return their results in input order.
+ */
+export function* all(operations) {
+	return yield* call(() =>
+		Promise.all(Array.from(operations, (op) => run(op))),
+	);
 }
 
 /**
@@ -67,4 +76,4 @@ export function action(fn) {
 	return call(fn);
 }
 
-export default { call, run, sleep, spawn, action };
+export default { all, call, run, sleep, spawn, action };

@@ -9,6 +9,7 @@ file in your git repo, with a straightforward way to write your own policies.
 * [Included policies](#included-policies)
 * [Policy generators](#policy-generators)
 * [Programmatic API](#programmatic-api)
+* [Native execution and preparation](#native-execution-and-preparation)
 * [Benchmarking](#benchmarking)
 * [CLI Usage](#cli-usage)
 <!-- tocstop -->
@@ -183,6 +184,54 @@ Set `fixed: false` or omit it if the fix did not succeed. Legacy resolvers that
 return `PolicyFixResult` remain supported. `PolicyRunner` normalizes standalone
 resolver results to `PolicyFixResult` in the `resolution` field.
 
+# Native execution and preparation
+
+`repopo check-native` uses the Rust engine. Its default `--mode auto` selects one
+backend before it evaluates the config or runs any policy:
+
+| Mode | Behavior |
+| --- | --- |
+| `auto` | Use QuickJS for supported policy code. Otherwise, report the compatibility reason and use IPC for the entire run. |
+| `quickjs` | Require QuickJS. Reject known unsupported capabilities before config evaluation. |
+| `ipc` | Run the entire check in the Node/Bun sidecar. Do not prepare a QuickJS bundle. |
+
+```bash
+repopo prepare --runtime node
+repopo check-native --mode quickjs
+repopo check-native --mode ipc --runtime node
+```
+
+Preparation compiles code without evaluating the config or running handlers or
+fixers. It reports either QuickJS eligibility or the reason IPC is required.
+The first native check prepares automatically; `prepare` is useful as an explicit
+CI step. Both commands reuse valid prepared code.
+
+The cache is private to each Git worktree, at the path returned by
+`git rev-parse --git-path repopo/prepared`. Git metadata must be writable.
+Source, imported modules, shims, compiler dependencies, relevant manifests,
+lockfiles, tsconfigs, and module-resolution changes invalidate the cache.
+Corrupt or stale entries are rebuilt; a failed rebuild never runs stale code.
+The cache contains executable source and fingerprints, not evaluated config,
+environment values, findings, or checked-file contents.
+
+Cold preparation and IPC require Node or Bun. A valid warm **direct
+`repopo-core`** QuickJS check or list needs neither runtime executable and starts
+no JavaScript helper. The `repopo` CLI wrapper itself still requires Node.
+Config initialization runs once per check, with current environment values.
+File and repository policies share that evaluation and one QuickJS context.
+Native `repopo-core list` uses the same mode selection and cache.
+
+QuickJS supports a limited host API, not all of Node. Known unsupported imports,
+runtime module loading, timers, subprocesses, Windows path operations, and other
+unsupported host APIs require IPC. Text console output and a subset of
+filesystem, Buffer, URL, and OS operations are supported. Compatibility analysis
+is conservative, not proof that arbitrary JavaScript will execute. Unexpected
+initialization or policy errors are reported without retrying under another
+backend, including after fixes. Use `--verbose` for cache diagnostics; `--quiet`
+suppresses preparation and automatic-fallback notices.
+
+The TypeScript `repopo check` and `repopo list` commands are unchanged.
+
 # Benchmarking
 
 From a source checkout, compile TypeScript and build the release engine:
@@ -238,6 +287,7 @@ warm filesystem caches, not a controlled cold-cache run.
 * [`repopo check`](#repopo-check)
 * [`repopo check-native`](#repopo-check-native)
 * [`repopo list`](#repopo-list)
+* [`repopo prepare`](#repopo-prepare)
 
 ## `repopo check`
 
@@ -271,28 +321,30 @@ Checks and applies policies using the Rust engine.
 
 ```
 USAGE
-  $ repopo check-native [--concurrency <value>] [-f] [--stdin] [-v] [-q] [-c <value>] [--sidecar-path <value>]
-    [--binary-path <value>] [--runtime auto|node|bun]
+  $ repopo check-native [-v | -q] [-c <value>] [--sidecar-path <value>] [--binary-path <value>] [--runtime
+    auto|node|bun] [--concurrency <value>] [-f] [--stdin] [--mode auto|quickjs|ipc]
 
 FLAGS
-  -c, --config=<value>        Path to the config file.
+  -c, --config=<value>        Path to the config file or discovery directory.
   -f, --fix                   Fix errors if possible.
   -q, --quiet                 Suppress all output except errors.
-  -v, --verbose               Show verbose output including per-policy timing.
+  -v, --verbose               Show verbose output including cache diagnostics.
       --binary-path=<value>   [env: REPOPO_CORE_PATH] Path to the repopo-core Rust binary.
       --concurrency=<value>   [default: 8] Maximum concurrent files in read-only checks. Fixes remain sequential.
-      --runtime=<option>      [env: REPOPO_RUNTIME] JS runtime for the sidecar process (auto, node, bun).
+      --mode=<option>         [default: auto] Backend selection: automatic, strict QuickJS, or forced IPC.
+                              <options: auto|quickjs|ipc>
+      --runtime=<option>      [env: REPOPO_RUNTIME] JavaScript runtime for cold preparation or IPC.
                               <options: auto|node|bun>
-      --sidecar-path=<value>  [env: REPOPO_SIDECAR_PATH] Path to the Node.js sidecar script.
+      --sidecar-path=<value>  [env: REPOPO_SIDECAR_PATH] Path to the JavaScript sidecar and preparation scripts.
       --stdin                 Read list of files from stdin.
 
 DESCRIPTION
   Checks and applies policies using the Rust engine.
 
-  Runs the Rust-based repopo-core engine with the Node.js sidecar. This provides the same policy checking as 'check' but
-  with Rust-based file enumeration, regex matching, and orchestration for better performance. Repository policies always
-  run with the full repository inventory, including with --stdin. With --fix, repository policies can modify files
-  outside the stdin selection.
+  Uses cached policy code in QuickJS when supported. In auto mode, unsupported capabilities select IPC for the whole run
+  before config or policies execute. Use --mode quickjs to require QuickJS, or --mode ipc to bypass preparation.
+  Repository policies always use the full Git inventory, including with --stdin. With --fix, repository policies can
+  modify files outside the stdin selection.
 ```
 
 _See code: [src/commands/check-native.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/check-native.ts)_
@@ -311,4 +363,32 @@ LOGGING FLAGS
 ```
 
 _See code: [src/commands/list.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/list.ts)_
+
+## `repopo prepare`
+
+Prepares native policy execution without running config or policies.
+
+```
+USAGE
+  $ repopo prepare [-v | -q] [-c <value>] [--sidecar-path <value>] [--binary-path <value>] [--runtime
+    auto|node|bun]
+
+FLAGS
+  -c, --config=<value>        Path to the config file or discovery directory.
+  -q, --quiet                 Suppress all output except errors.
+  -v, --verbose               Show verbose output including cache diagnostics.
+      --binary-path=<value>   [env: REPOPO_CORE_PATH] Path to the repopo-core Rust binary.
+      --runtime=<option>      [env: REPOPO_RUNTIME] JavaScript runtime for cold preparation or IPC.
+                              <options: auto|node|bun>
+      --sidecar-path=<value>  [env: REPOPO_SIDECAR_PATH] Path to the JavaScript sidecar and preparation scripts.
+
+DESCRIPTION
+  Prepares native policy execution without running config or policies.
+
+  Compiles and validates executable policy code in the Git-private per-worktree cache. Reports QuickJS eligibility or
+  the reason IPC is required. Requires Node or Bun on a cache miss. A valid cached artifact is reused. Does not evaluate
+  the config, run handlers, or apply fixes.
+```
+
+_See code: [src/commands/prepare.ts](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/commands/prepare.ts)_
 <!-- commandsstop -->

@@ -15,3 +15,57 @@ This applies to both `repopo check` and `repopo check-native`.
 When you pipe paths to `repopo check --stdin`, only file policies are limited to
 those paths. Repository policies still run, including when stdin is empty.
 With `--fix`, repository policies can modify files outside the stdin selection.
+
+## Native backend selection
+
+`repopo check-native` uses the Rust engine. Its default `--mode auto` selects
+QuickJS when the prepared code is compatible. Otherwise, it reports the reason
+and selects the Node/Bun IPC sidecar for the entire check. Selection happens
+before config initialization or policy execution.
+
+Use `--mode quickjs` to require QuickJS, or `--mode ipc` to bypass preparation
+and run entirely in IPC. Initialization and policy errors never cause a retry
+under another backend. This also applies after a policy changes files.
+
+```bash
+repopo prepare --runtime node
+repopo check-native --mode quickjs
+repopo check-native --mode ipc --runtime node
+```
+
+## Prepared policy code
+
+Preparation compiles code without evaluating the config or running policies or
+fixers. The first native check prepares automatically. `repopo prepare` makes
+this step explicit for CI and reports QuickJS eligibility or an IPC-only reason.
+A valid cached preparation is reused.
+
+Prepared artifacts are stored in the Git-private, per-worktree location returned
+by `git rev-parse --git-path repopo/prepared`. Git metadata must be writable.
+Artifacts are validated against source and imported modules, compiler and shim
+inputs, relevant package manifests, lockfiles, tsconfigs, symlink targets, and
+module-resolution guards. Stale or corrupt artifacts are rebuilt. A failed
+rebuild does not execute old code.
+
+Only executable source and fingerprints are cached. Config values, environment
+values, findings, and checked-file contents are not cached. The config is
+evaluated once per invocation with live environment values. File and repository
+policies share the same QuickJS context.
+
+Cold preparation and IPC execution require Node or Bun. A valid warm direct
+`repopo-core check` or `repopo-core list` QuickJS invocation needs neither runtime
+executable and starts no JavaScript helper. The public `repopo` wrapper still
+requires Node. Native `list` has the same `auto`, `quickjs`, and `ipc` modes.
+The TypeScript `check` and `list` commands are unchanged.
+
+## QuickJS compatibility
+
+QuickJS has a limited host API. Supported adapters include filesystem operations,
+POSIX paths, text console output, and a subset of Buffer, URL, and OS APIs.
+Timers, subprocesses, runtime module loading, Windows path operations, console
+object inspection, and other unsupported APIs require IPC.
+
+Static compatibility analysis is conservative; it cannot prove that arbitrary
+JavaScript will execute. Unsupported runtime operations fail explicitly, without
+switching backends or repeating earlier work. Use `--verbose` for cache details.
+Use `--quiet` to suppress preparation and automatic-fallback notices.

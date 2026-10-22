@@ -1,24 +1,17 @@
-/**
- * Minimal node:url shim for QuickJS.
- * Only provides fileURLToPath and pathToFileURL which are commonly used
- * by bundled dependencies (e.g., tinyglobby).
- */
+/** URL parsing, resolution and file-path conversion use the Rust host's url crate. */
+export const URL = globalThis.URL;
 
-export function fileURLToPath(url) {
-	if (typeof url === "string") {
-		if (url.startsWith("file://")) {
-			return decodeURIComponent(url.slice(7));
-		}
-		return url;
+export function fileURLToPath(value) {
+	if (!(typeof value === "string" || value instanceof URL)) {
+		throw new TypeError("Expected a file URL string or URL");
 	}
-	if (url && typeof url.pathname === "string") {
-		return decodeURIComponent(url.pathname);
-	}
-	return String(url);
+	return globalThis.__url_fileToPath(String(value));
 }
 
 export function pathToFileURL(path) {
-	return { href: `file://${path}`, pathname: path };
+	if (typeof path !== "string")
+		throw new TypeError("Expected a filesystem path");
+	return new URL(globalThis.__url_pathToFile(path));
 }
 
-export default { fileURLToPath, pathToFileURL };
+export default { URL, fileURLToPath, pathToFileURL };

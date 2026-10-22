@@ -52,6 +52,96 @@ describe("Native sidecar protocol", () => {
 		await rm(testDir, { recursive: true, force: true });
 	});
 
+	it.each([
+		false,
+		true,
+	])("bundles public API configs and runs concurrent operations with failure=%s", async (fail) => {
+		const apiUrl = new URL("../esm/index.js", import.meta.url).href;
+		const shimUrl = new URL(
+			"../sidecar/shims/effection-shim.mjs",
+			import.meta.url,
+		).href;
+		await writeFile(
+			configPath,
+			`import { policy } from ${JSON.stringify(apiUrl)};
+				import { all, call } from ${JSON.stringify(shimUrl)};
+				export default { policies: [policy({
+					name: "Concurrent", description: "Checks concurrent operations", match: /txt$/,
+					handler: function* () {
+						let release;
+						const gate = new Promise(resolve => { release = resolve; });
+						const results = yield* all([
+							(function* () {
+								yield* call(() => gate);
+								if (${fail}) throw new Error("Concurrent operation failed");
+								return "first";
+							})(),
+							(function* () { release(); return "second"; })()
+						]);
+						return results.join(",") === "first,second"
+							? true : { error: "Operation results were reordered" };
+					}
+				})] };`,
+		);
+		const { stdout } = await promisify(execFile)(
+			process.execPath,
+			[
+				sidecarPath,
+				"--mode",
+				"bundle",
+				"--git-root",
+				testDir,
+				"--config",
+				configPath,
+			],
+			{ timeout: 10000 },
+		);
+		const bundle: { bundle: string } = JSON.parse(stdout);
+		const globals: {
+			__repopo_runHandlerBatchSync?: (
+				policyId: number,
+				files: string,
+				root: string,
+				resolve: boolean,
+			) => void;
+			__repopo_lastResult?: string | null;
+		} = {};
+		runInNewContext(
+			bundle.bundle,
+			Object.assign(globals, { process, Buffer, URL }),
+			{ timeout: 5000 },
+		);
+		if (!globals.__repopo_runHandlerBatchSync) {
+			throw new Error("QuickJS bundle did not initialize its handler bridge");
+		}
+		globals.__repopo_runHandlerBatchSync(
+			0,
+			JSON.stringify(["file.txt"]),
+			testDir,
+			false,
+		);
+		await expect
+			.poll(() => globals.__repopo_lastResult)
+			.toEqual(expect.any(String));
+		if (typeof globals.__repopo_lastResult !== "string") {
+			throw new Error("QuickJS handler batch did not return a result");
+		}
+		expect(JSON.parse(globals.__repopo_lastResult)).toEqual(
+			fail
+				? {
+						pass: [],
+						fail: [
+							{
+								file: "file.txt",
+								error: "Handler error: Concurrent operation failed",
+								fixable: false,
+							},
+						],
+					}
+				: { pass: ["file.txt"], fail: [] },
+		);
+	});
+
 	it("bundles repository policies and preserves exclusion flags for QuickJS", async () => {
 		await writeFile(
 			configPath,
@@ -82,8 +172,7 @@ describe("Native sidecar protocol", () => {
 		);
 		const bundle: {
 			bundle: string;
-			policies: unknown[];
-			excludeFiles: unknown[];
+			reasons: unknown[];
 		} = JSON.parse(stdout);
 		const expectedMetadata = {
 			excludeFiles: [{ source: "^README", flags: "" }, "vendor/"],
@@ -95,8 +184,9 @@ describe("Native sidecar protocol", () => {
 				expect.objectContaining({ scope: "repository" }),
 			],
 		};
-		expect(bundle).toMatchObject(expectedMetadata);
-		const globals: Record<string, unknown> = {};
+		expect(bundle.reasons).toEqual([]);
+		expect(bundle).not.toHaveProperty("policies");
+		const globals: Record<string, unknown> = { process, Buffer, URL };
 		runInNewContext(bundle.bundle, globals, { timeout: 5000 });
 		const metadata = globals.__repopo_metadata;
 		if (typeof metadata !== "string") {

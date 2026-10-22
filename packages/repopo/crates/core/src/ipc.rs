@@ -3,7 +3,7 @@ use std::io::{BufRead, BufReader, Write};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 
 use crate::types::{
-    BundleResponse, CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams,
+    CompactBatchResponse, HandlerResult, IpcRequest, IpcResponse, LoadConfigParams,
     LoadConfigResponse, PolicyErrorResult, RepositoryPolicyResult, RunHandlerBatchParams,
     RunHandlerParams, RunRepositoryPoliciesParams, RunResolverBatchParams, RunResolverParams,
 };
@@ -280,35 +280,4 @@ impl Drop for Sidecar {
     fn drop(&mut self) {
         let _ = self.shutdown();
     }
-}
-
-/// Bundle policies in a one-shot sidecar process for QuickJS.
-pub fn run_bundle_mode(
-    runtime: &str,
-    sidecar_path: &str,
-    git_root: &str,
-    config_path: Option<&str>,
-) -> Result<BundleResponse> {
-    let mut cmd = Command::new(runtime);
-    cmd.arg(sidecar_path)
-        .args(["--mode", "bundle"])
-        .args(["--git-root", git_root]);
-
-    if let Some(config) = config_path {
-        cmd.args(["--config", config]);
-    }
-
-    let output = cmd
-        .current_dir(git_root)
-        .stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::inherit())
-        .output()
-        .with_context(|| format!("Failed to spawn sidecar in bundle mode at {sidecar_path}"))?;
-
-    if !output.status.success() {
-        anyhow::bail!("Sidecar bundle mode exited with status {}", output.status);
-    }
-
-    serde_json::from_slice(&output.stdout).context("Failed to parse sidecar bundle response")
 }

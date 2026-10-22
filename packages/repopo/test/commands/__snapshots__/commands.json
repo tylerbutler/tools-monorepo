@@ -36,6 +36,7 @@
             "concurrency",
             "config",
             "fix",
+            "mode",
             "quiet",
             "runtime",
             "sidecar-path",
@@ -54,6 +55,25 @@
         "flags": [
             "config",
             "quiet",
+            "verbose"
+        ],
+        "plugin": "repopo"
+    },
+    {
+        "alias": [],
+        "command": "prepare",
+        "flagAliases": [],
+        "flagChars": [
+            "c",
+            "q",
+            "v"
+        ],
+        "flags": [
+            "binary-path",
+            "config",
+            "quiet",
+            "runtime",
+            "sidecar-path",
             "verbose"
         ],
         "plugin": "repopo"

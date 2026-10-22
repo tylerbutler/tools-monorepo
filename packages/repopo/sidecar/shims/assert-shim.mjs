@@ -11,50 +11,58 @@ function assert(value, message) {
 assert.ok = assert;
 
 assert.equal = (actual, expected, message) => {
-	if (actual != expected) {
+	if (actual != expected && !(Number.isNaN(actual) && Number.isNaN(expected))) {
 		throw new Error(message ?? `Expected ${expected}, got ${actual}`);
 	}
 };
 
 assert.strictEqual = (actual, expected, message) => {
-	if (actual !== expected) {
+	if (!Object.is(actual, expected)) {
 		throw new Error(message ?? `Expected ${expected}, got ${actual}`);
 	}
 };
 
 assert.notEqual = (actual, expected, message) => {
-	if (actual == expected) {
+	if (actual == expected || (Number.isNaN(actual) && Number.isNaN(expected))) {
 		throw new Error(message ?? `Expected not ${expected}`);
 	}
 };
 
 assert.notStrictEqual = (actual, expected, message) => {
-	if (actual === expected) {
+	if (Object.is(actual, expected)) {
 		throw new Error(message ?? `Expected not ${expected}`);
 	}
 };
 
-assert.deepStrictEqual = (actual, expected, message) => {
-	if (JSON.stringify(actual) !== JSON.stringify(expected)) {
-		throw new Error(message ?? "Deep strict equal assertion failed");
-	}
+assert.deepStrictEqual = () => {
+	throw new Error("Deep assertions require IPC.");
 };
 
-assert.throws = (fn, _errorOrMessage, message) => {
+assert.throws = (fn, errorOrMessage, message) => {
+	if (typeof errorOrMessage !== "string" && errorOrMessage !== undefined) {
+		throw new Error("Assertion error matching requires IPC.");
+	}
+	let threw = false;
 	try {
 		fn();
-		throw new Error(message ?? "Expected function to throw");
 	} catch (_) {
-		// Expected
+		threw = true;
 	}
+	if (!threw)
+		throw new Error(message ?? errorOrMessage ?? "Expected function to throw");
 };
 
-assert.doesNotThrow = (fn, _errorOrMessage, message) => {
+assert.doesNotThrow = (fn, errorOrMessage, message) => {
+	if (typeof errorOrMessage !== "string" && errorOrMessage !== undefined) {
+		throw new Error("Assertion error matching requires IPC.");
+	}
 	try {
 		fn();
 	} catch (err) {
 		throw new Error(
-			message ?? `Expected function not to throw, but threw: ${err.message}`,
+			message ??
+				errorOrMessage ??
+				`Expected function not to throw, but threw: ${err.message}`,
 		);
 	}
 };
@@ -63,6 +71,11 @@ assert.fail = (message) => {
 	throw new Error(typeof message === "string" ? message : "Assertion failed");
 };
 
-// strict mode is the same as default in our shim
-export const strict = assert;
+export const strict = Object.assign(
+	(value, message) => assert(value, message),
+	assert,
+	{ equal: assert.strictEqual, notEqual: assert.notStrictEqual },
+);
+strict.strict = strict;
+assert.strict = strict;
 export default assert;

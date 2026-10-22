@@ -1,6 +1,7 @@
 mod engine;
 mod files;
 mod ipc;
+mod prepared;
 mod quickjs_runtime;
 mod types;
 
@@ -9,12 +10,10 @@ use clap::{Parser, Subcommand, ValueEnum};
 use std::env;
 use std::process::{self, Command, Stdio};
 
-/// Execution mode for policy checks.
 #[derive(Clone, Debug, ValueEnum)]
 enum ExecutionMode {
-    /// In-process JavaScript execution via QuickJS (default).
+    Auto,
     Quickjs,
-    /// IPC-based execution via Node.js sidecar process.
     Ipc,
 }
 
@@ -31,67 +30,66 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Prepare policy code without evaluating the config or running policies.
+    Prepare {
+        #[arg(short, long)]
+        config: Option<String>,
+        #[arg(long, env = "REPOPO_SIDECAR_PATH")]
+        sidecar_path: Option<String>,
+        #[arg(long, value_enum, env = "REPOPO_RUNTIME", default_value_t = Runtime::Auto)]
+        runtime: Runtime,
+        #[arg(short, long)]
+        verbose: bool,
+        #[arg(short, long)]
+        quiet: bool,
+    },
     /// Check and enforce policies on repository files.
     Check {
         /// Maximum concurrent files in read-only checks. Fixes remain sequential.
         #[arg(long, default_value = "8", value_parser = parse_concurrency)]
         concurrency: usize,
-
         /// Fix policy violations if possible.
         #[arg(short, long, alias = "resolve")]
         fix: bool,
-
         /// Read list of files from stdin instead of git.
         #[arg(long)]
         stdin: bool,
-
         /// Show verbose output including per-policy timing.
         #[arg(short, long)]
         verbose: bool,
-
         /// Suppress all output except errors.
         #[arg(short, long)]
         quiet: bool,
-
         /// Path to the config file.
         #[arg(short, long)]
         config: Option<String>,
-
         /// Path to the Node.js sidecar script.
         #[arg(long, env = "REPOPO_SIDECAR_PATH")]
         sidecar_path: Option<String>,
-
-        /// Execution mode: quickjs (default) or ipc.
-        #[arg(long, default_value = "quickjs")]
+        /// Backend selection: auto (default), strict quickjs, or ipc.
+        #[arg(long, value_enum, default_value = "auto")]
         mode: ExecutionMode,
-
         /// JS runtime to use for the sidecar process.
         #[arg(long, value_enum, env = "REPOPO_RUNTIME", default_value_t = Runtime::Auto)]
         runtime: Runtime,
     },
-
     /// List all configured policies.
     List {
         /// Show verbose output.
         #[arg(short, long)]
         verbose: bool,
-
         /// Suppress non-essential output.
         #[arg(short, long)]
         quiet: bool,
-
         /// Path to the config file.
         #[arg(short, long)]
         config: Option<String>,
-
         /// Path to the Node.js sidecar script.
         #[arg(long, env = "REPOPO_SIDECAR_PATH")]
         sidecar_path: Option<String>,
-
-        /// Execution mode: quickjs (default) or ipc.
-        #[arg(long, default_value = "quickjs")]
+        /// Backend selection: auto (default), strict quickjs, or ipc.
+        #[arg(long, value_enum, default_value = "auto")]
         mode: ExecutionMode,
-
         /// JS runtime to use for the sidecar process.
         #[arg(long, value_enum, env = "REPOPO_RUNTIME", default_value_t = Runtime::Auto)]
         runtime: Runtime,
@@ -110,11 +108,8 @@ fn parse_concurrency(value: &str) -> std::result::Result<usize, String> {
 
 #[derive(Clone, Debug, ValueEnum)]
 enum Runtime {
-    /// Auto-detect: use bun if available, otherwise node.
     Auto,
-    /// Use Node.js.
     Node,
-    /// Use Bun.
     Bun,
 }
 
@@ -138,61 +133,118 @@ fn resolve_runtime(runtime: &Runtime) -> String {
     }
 }
 
-/// Resolve the sidecar path. Looks for it relative to the binary location
-/// or uses the provided/env-var path.
 fn resolve_sidecar_path(explicit: Option<&str>) -> Result<String> {
     if let Some(path) = explicit {
         return Ok(path.to_string());
     }
-
-    // Try to find the sidecar relative to the binary
     if let Ok(exe) = env::current_exe() {
         let candidates = [
-            // Postinstall binaries live in native/ beside the sidecar directory.
             exe.parent()
                 .and_then(|p| p.parent())
                 .map(|p| p.join("sidecar").join("sidecar.mjs")),
-            // Development: binary is in target/debug or target/release,
-            // sidecar is in the package root
-            exe.parent()
-                .and_then(|p| p.parent())
-                .and_then(|p| p.parent())
-                .and_then(|p| p.parent())
+            exe.ancestors()
+                .nth(5)
                 .map(|p| p.join("sidecar").join("sidecar.mjs")),
-            // Installed: sidecar is next to the binary
             exe.parent().map(|p| p.join("sidecar.mjs")),
         ];
-
         for candidate in candidates.iter().flatten() {
             if candidate.exists() {
                 return Ok(candidate.to_string_lossy().to_string());
             }
         }
     }
-
-    // Try common locations relative to cwd
     let cwd = env::current_dir().context("Failed to get current directory")?;
-    let cwd_candidates = [
+    for candidate in [
         cwd.join("sidecar").join("sidecar.mjs"),
         cwd.join("sidecar.mjs"),
-    ];
-
-    for candidate in &cwd_candidates {
+    ] {
         if candidate.exists() {
             return Ok(candidate.to_string_lossy().to_string());
         }
     }
-
     anyhow::bail!(
-        "Could not find the Node.js sidecar script. \
-         Set REPOPO_SIDECAR_PATH or pass --sidecar-path."
+        "Could not find the Node.js sidecar script. Set REPOPO_SIDECAR_PATH or pass --sidecar-path."
     )
+}
+
+fn prepare(
+    root: &str,
+    config: Option<&str>,
+    sidecar: &str,
+    runtime: &Runtime,
+    verbose: bool,
+    quiet: bool,
+) -> Result<types::PreparedArtifact> {
+    let producer = std::path::Path::new(sidecar)
+        .with_file_name("prepare.mjs")
+        .to_string_lossy()
+        .into_owned();
+    prepared::load_or_prepare(
+        root,
+        config,
+        &producer,
+        || resolve_runtime(runtime),
+        verbose,
+        quiet,
+    )
+}
+
+fn select_prepared(
+    mode: &ExecutionMode,
+    root: &str,
+    config: Option<&str>,
+    sidecar: &str,
+    runtime: &Runtime,
+    verbose: bool,
+    quiet: bool,
+) -> Result<Option<types::PreparedArtifact>> {
+    if matches!(mode, ExecutionMode::Ipc) {
+        return Ok(None);
+    }
+    let artifact = prepare(root, config, sidecar, runtime, verbose, quiet)?;
+    if artifact.reasons.is_empty() {
+        return Ok(Some(artifact));
+    }
+    let reasons = artifact
+        .reasons
+        .iter()
+        .map(|reason| format!("{}: {}", reason.module, reason.reason))
+        .collect::<Vec<_>>()
+        .join("\n  ");
+    if matches!(mode, ExecutionMode::Quickjs) {
+        anyhow::bail!("Config requires IPC; strict QuickJS was requested:\n  {reasons}");
+    }
+    if !quiet {
+        eprintln!("Using IPC for the whole run:\n  {reasons}");
+    }
+    Ok(None)
 }
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
-
     match cli.command {
+        Commands::Prepare {
+            config,
+            sidecar_path,
+            runtime,
+            verbose,
+            quiet,
+        } => {
+            let cwd = env::current_dir()?.to_string_lossy().into_owned();
+            let root = files::find_git_root(&cwd)?;
+            let sidecar = resolve_sidecar_path(sidecar_path.as_deref())?;
+            let artifact = prepare(&root, config.as_deref(), &sidecar, &runtime, verbose, quiet)?;
+            if !quiet {
+                if artifact.reasons.is_empty() {
+                    println!("Prepared for QuickJS (config and policies were not executed).");
+                } else {
+                    println!("Prepared IPC selection (config and policies were not executed):");
+                    for reason in &artifact.reasons {
+                        println!("  {}: {}", reason.module, reason.reason);
+                    }
+                }
+            }
+        }
         Commands::Check {
             concurrency,
             fix,
@@ -205,77 +257,45 @@ fn main() -> Result<()> {
             runtime,
         } => {
             let sidecar_script = resolve_sidecar_path(sidecar_path.as_deref())?;
-            let runtime_bin = resolve_runtime(&runtime);
-
-            if verbose {
-                eprintln!("Using sidecar: {sidecar_script} (runtime: {runtime_bin})");
-            }
-
             let cwd = env::current_dir()
                 .context("Failed to get current directory")?
                 .to_string_lossy()
                 .to_string();
-
             let git_root = files::find_git_root(&cwd)?;
-
             if verbose {
                 eprintln!("Git root: {git_root}");
             }
-
-            // Enumerate files
             let file_list = if stdin {
                 files::read_stdin_files()?
             } else {
                 files::git_ls_files(&git_root)?
             };
-
             if verbose {
                 eprintln!("{} files to check.", file_list.len());
             }
-
-            let success = match mode {
-                ExecutionMode::Quickjs => {
+            let artifact = select_prepared(
+                &mode,
+                &git_root,
+                config.as_deref(),
+                &sidecar_script,
+                &runtime,
+                verbose,
+                quiet,
+            )?;
+            let success = match artifact {
+                Some(bundle) => {
                     if verbose {
                         eprintln!("Mode: QuickJS (in-process)");
-                        eprintln!("Bundling policy code...");
-                    }
-
-                    let bundle = ipc::run_bundle_mode(
-                        &runtime_bin,
-                        &sidecar_script,
-                        &git_root,
-                        config.as_deref(),
-                    )?;
-
-                    let config_resp = types::LoadConfigResponse {
-                        policies: bundle.policies,
-                        exclude_files: bundle.exclude_files,
-                    };
-
-                    if verbose {
                         eprintln!("Initializing QuickJS runtime...");
                     }
-
                     let js_runtime =
                         quickjs_runtime::QuickJsRuntime::new(&git_root, &bundle.bundle)?;
-
-                    let mut repository_sidecar = if config_resp
-                        .policies
-                        .iter()
-                        .any(|policy| policy.scope == "repository")
-                    {
-                        let mut sidecar =
-                            ipc::Sidecar::spawn(&runtime_bin, &sidecar_script, &git_root)?;
-                        sidecar.load_config(config.as_deref(), &git_root)?;
-                        Some(sidecar)
-                    } else {
-                        None
-                    };
+                    let config_resp: types::LoadConfigResponse =
+                        serde_json::from_str(&js_runtime.read_metadata()?)?;
                     let mut backend = engine::PolicyBackend::QuickJs {
                         runtime: &js_runtime,
-                        repository_sidecar: repository_sidecar.as_mut(),
                     };
-                    let success = engine::run_check(
+                    engine::run_check(
                         &mut backend,
                         &config_resp,
                         file_list,
@@ -284,21 +304,16 @@ fn main() -> Result<()> {
                         verbose,
                         quiet,
                         concurrency,
-                    )?;
-                    if let Some(sidecar) = repository_sidecar.as_mut() {
-                        sidecar.shutdown()?;
-                    }
-                    success
+                    )?
                 }
-                ExecutionMode::Ipc => {
+                None => {
+                    let runtime_bin = resolve_runtime(&runtime);
                     if verbose {
                         eprintln!("Mode: IPC (Node.js sidecar)");
                     }
-
                     let mut sidecar =
                         ipc::Sidecar::spawn(&runtime_bin, &sidecar_script, &git_root)?;
                     let config_resp = sidecar.load_config(config.as_deref(), &git_root)?;
-
                     let mut backend = engine::PolicyBackend::Sidecar(&mut sidecar);
                     let success = engine::run_check(
                         &mut backend,
@@ -314,45 +329,41 @@ fn main() -> Result<()> {
                     success
                 }
             };
-
             if !success {
                 process::exit(1);
             }
         }
-
         Commands::List {
             verbose,
-            quiet: _,
+            quiet,
             config,
             sidecar_path,
             mode,
             runtime,
         } => {
             let sidecar_script = resolve_sidecar_path(sidecar_path.as_deref())?;
-            let runtime_bin = resolve_runtime(&runtime);
-
             let cwd = env::current_dir()
                 .context("Failed to get current directory")?
                 .to_string_lossy()
                 .to_string();
-
             let git_root = files::find_git_root(&cwd)?;
-
-            let config_resp = match mode {
-                ExecutionMode::Quickjs => {
-                    let bundle = ipc::run_bundle_mode(
-                        &runtime_bin,
-                        &sidecar_script,
-                        &git_root,
-                        config.as_deref(),
-                    )?;
-
-                    types::LoadConfigResponse {
-                        policies: bundle.policies,
-                        exclude_files: bundle.exclude_files,
-                    }
+            let artifact = select_prepared(
+                &mode,
+                &git_root,
+                config.as_deref(),
+                &sidecar_script,
+                &runtime,
+                verbose,
+                quiet,
+            )?;
+            let config_resp = match artifact {
+                Some(bundle) => {
+                    let js_runtime =
+                        quickjs_runtime::QuickJsRuntime::new(&git_root, &bundle.bundle)?;
+                    serde_json::from_str(&js_runtime.read_metadata()?)?
                 }
-                ExecutionMode::Ipc => {
+                None => {
+                    let runtime_bin = resolve_runtime(&runtime);
                     let mut sidecar =
                         ipc::Sidecar::spawn(&runtime_bin, &sidecar_script, &git_root)?;
                     let config_resp = sidecar.load_config(config.as_deref(), &git_root)?;
@@ -360,18 +371,15 @@ fn main() -> Result<()> {
                     config_resp
                 }
             };
-
             engine::run_list(&config_resp, verbose)?;
         }
     }
-
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
     #[test]
     fn validates_check_concurrency() {
         for value in ["0", "-1", "1.5", "bad", "9007199254740992"] {
@@ -380,9 +388,8 @@ mod tests {
         for value in ["1", "8", "32"] {
             let cli =
                 Cli::try_parse_from(["repopo-core", "check", "--concurrency", value]).unwrap();
-            assert!(
-                matches!(cli.command, Commands::Check { concurrency, .. } if concurrency == value.parse::<usize>().unwrap())
-            );
+            assert!(matches!(cli.command, Commands::Check { concurrency, .. }
+                if concurrency == value.parse::<usize>().unwrap()));
         }
         let cli = Cli::try_parse_from(["repopo-core", "check"]).unwrap();
         assert!(matches!(
