@@ -5,7 +5,7 @@ prev: false
 title: "CargoTomlSortedConfig"
 ---
 
-Defined in: policies/CargoTomlSorted.ts:14
+Defined in: [policies/CargoTomlSorted.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoTomlSorted.ts#L14)
 
 Configuration for the CargoTomlSorted policy.
 
@@ -15,7 +15,7 @@ Configuration for the CargoTomlSorted policy.
 
 > `optional` **sections?**: `string`[]
 
-Defined in: policies/CargoTomlSorted.ts:19
+Defined in: [policies/CargoTomlSorted.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoTomlSorted.ts#L19)
 
 Sections whose keys should be sorted alphabetically.
 

@@ -9,7 +9,7 @@ title: "definePackagePolicy"
 
 > **definePackagePolicy**\<`J`, `C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> & `object`
 
-Defined in: policyDefiners/definePackagePolicy.ts:101
+Defined in: [policyDefiners/definePackagePolicy.ts:101](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L101)
 
 Define a repo policy for package.json files.
 
@@ -61,7 +61,7 @@ const MyPackagePolicy = definePackagePolicy({
 
 > **definePackagePolicy**\<`J`, `C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> & `object`
 
-Defined in: policyDefiners/definePackagePolicy.ts:105
+Defined in: [policyDefiners/definePackagePolicy.ts:105](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L105)
 
 Define a package policy that requires explicit configuration.
 
@@ -89,7 +89,7 @@ Define a package policy that requires explicit configuration.
 
 > **definePackagePolicy**\<`J`, `C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\>
 
-Defined in: policyDefiners/definePackagePolicy.ts:109
+Defined in: [policyDefiners/definePackagePolicy.ts:109](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L109)
 
 Define a package policy with optional configuration.
 

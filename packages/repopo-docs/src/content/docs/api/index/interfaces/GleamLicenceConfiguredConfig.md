@@ -5,7 +5,7 @@ prev: false
 title: "GleamLicenceConfiguredConfig"
 ---
 
-Defined in: policies/GleamLicenceConfigured.ts:14
+Defined in: [policies/GleamLicenceConfigured.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamLicenceConfigured.ts#L14)
 
 Configuration for the GleamLicenceConfigured policy.
 
@@ -15,7 +15,7 @@ Configuration for the GleamLicenceConfigured policy.
 
 > `optional` **allowedLicences?**: `string`[]
 
-Defined in: policies/GleamLicenceConfigured.ts:18
+Defined in: [policies/GleamLicenceConfigured.ts:18](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamLicenceConfigured.ts#L18)
 
 Allowed SPDX licence identifiers. If set, only these are accepted.
 
@@ -25,7 +25,7 @@ Allowed SPDX licence identifiers. If set, only these are accepted.
 
 > `optional` **validateSpdx?**: `boolean`
 
-Defined in: policies/GleamLicenceConfigured.ts:29
+Defined in: [policies/GleamLicenceConfigured.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamLicenceConfigured.ts#L29)
 
 If true, validate licence values against the SPDX licence list
 using `spdx-correct`. When enabled, typos like "MIIT" are detected

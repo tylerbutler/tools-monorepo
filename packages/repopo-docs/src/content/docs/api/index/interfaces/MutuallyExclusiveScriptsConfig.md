@@ -5,7 +5,7 @@ prev: false
 title: "MutuallyExclusiveScriptsConfig"
 ---
 
-Defined in: policies/MutuallyExclusiveScripts.ts:9
+Defined in: [policies/MutuallyExclusiveScripts.ts:9](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/MutuallyExclusiveScripts.ts#L9)
 
 Configuration for the MutuallyExclusiveScripts policy.
 
@@ -15,7 +15,7 @@ Configuration for the MutuallyExclusiveScripts policy.
 
 > **groups**: `string`[][]
 
-Defined in: policies/MutuallyExclusiveScripts.ts:23
+Defined in: [policies/MutuallyExclusiveScripts.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/MutuallyExclusiveScripts.ts#L23)
 
 List of mutually exclusive script groups. Each group is an array of script names
 where at most one script from the group can be present.

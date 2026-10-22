@@ -7,7 +7,7 @@ title: "NoLargeBinaryFiles"
 
 > `const` **NoLargeBinaryFiles**: `object`
 
-Defined in: policies/NoLargeBinaryFiles.ts:123
+Defined in: [policies/NoLargeBinaryFiles.ts:123](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoLargeBinaryFiles.ts#L123)
 
 A repo policy that prevents large binary files from being committed to the repository.
 Large files can bloat the repository and slow down clones. Consider using Git LFS for large assets.

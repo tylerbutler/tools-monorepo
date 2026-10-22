@@ -7,7 +7,7 @@ title: "CargoLockPolicy"
 
 > `const` **CargoLockPolicy**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`CargoLockPolicyConfig`](/api/index/interfaces/cargolockpolicyconfig/)\>
 
-Defined in: policies/CargoLockPolicy.ts:62
+Defined in: [policies/CargoLockPolicy.ts:62](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoLockPolicy.ts#L62)
 
 A context-aware policy for Cargo.lock files.
 Binary crates should commit Cargo.lock; library crates typically shouldn't.

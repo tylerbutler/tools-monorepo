@@ -5,7 +5,7 @@ prev: false
 title: "ConditionalScriptRule"
 ---
 
-Defined in: policies/ConditionalScripts.ts:29
+Defined in: [policies/ConditionalScripts.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ConditionalScripts.ts#L29)
 
 Configuration for a conditional script requirement.
 
@@ -15,7 +15,7 @@ Configuration for a conditional script requirement.
 
 > **ifPresent**: `string`
 
-Defined in: policies/ConditionalScripts.ts:34
+Defined in: [policies/ConditionalScripts.ts:34](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ConditionalScripts.ts#L34)
 
 The script that triggers the requirement.
 If this script exists, then `requires` must also exist.
@@ -26,7 +26,7 @@ If this script exists, then `requires` must also exist.
 
 > **requires**: [`ConditionalScriptEntry`](/api/index/type-aliases/conditionalscriptentry/)[]
 
-Defined in: policies/ConditionalScripts.ts:50
+Defined in: [policies/ConditionalScripts.ts:50](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ConditionalScripts.ts#L50)
 
 Scripts that must be present if `ifPresent` script exists.
 

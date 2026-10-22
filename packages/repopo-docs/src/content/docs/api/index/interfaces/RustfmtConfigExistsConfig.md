@@ -5,7 +5,7 @@ prev: false
 title: "RustfmtConfigExistsConfig"
 ---
 
-Defined in: policies/RustfmtConfigExists.ts:9
+Defined in: [policies/RustfmtConfigExists.ts:9](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RustfmtConfigExists.ts#L9)
 
 Configuration for the RustfmtConfigExists policy.
 
@@ -15,7 +15,7 @@ Configuration for the RustfmtConfigExists policy.
 
 > `optional` **acceptedNames?**: `string`[]
 
-Defined in: policies/RustfmtConfigExists.ts:14
+Defined in: [policies/RustfmtConfigExists.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RustfmtConfigExists.ts#L14)
 
 Accepted file names for the rustfmt config.
 

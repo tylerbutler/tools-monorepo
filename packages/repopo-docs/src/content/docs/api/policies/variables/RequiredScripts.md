@@ -7,7 +7,7 @@ title: "RequiredScripts"
 
 > `const` **RequiredScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`RequiredScriptsConfig`](/api/index/interfaces/requiredscriptsconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/RequiredScripts.ts:167
+Defined in: [policies/RequiredScripts.ts:167](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RequiredScripts.ts#L167)
 
 A policy that validates required scripts exist in package.json.
 

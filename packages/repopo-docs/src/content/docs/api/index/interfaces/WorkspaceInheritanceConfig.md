@@ -5,7 +5,7 @@ prev: false
 title: "WorkspaceInheritanceConfig"
 ---
 
-Defined in: policies/WorkspaceInheritance.ts:11
+Defined in: [policies/WorkspaceInheritance.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/WorkspaceInheritance.ts#L11)
 
 Configuration for the WorkspaceInheritance policy.
 
@@ -15,7 +15,7 @@ Configuration for the WorkspaceInheritance policy.
 
 > `optional` **allowOverrides?**: `string`[]
 
-Defined in: policies/WorkspaceInheritance.ts:21
+Defined in: [policies/WorkspaceInheritance.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/WorkspaceInheritance.ts#L21)
 
 Crate paths that are allowed to override inherited fields.
 
@@ -25,7 +25,7 @@ Crate paths that are allowed to override inherited fields.
 
 > `optional` **inherit?**: `string`[]
 
-Defined in: policies/WorkspaceInheritance.ts:16
+Defined in: [policies/WorkspaceInheritance.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/WorkspaceInheritance.ts#L16)
 
 Package fields that should use workspace inheritance.
 

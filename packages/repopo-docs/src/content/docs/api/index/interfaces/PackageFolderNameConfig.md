@@ -5,7 +5,7 @@ prev: false
 title: "PackageFolderNameConfig"
 ---
 
-Defined in: policies/PackageFolderName.ts:28
+Defined in: [policies/PackageFolderName.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageFolderName.ts#L28)
 
 Configuration for the PackageFolderName policy.
 
@@ -31,7 +31,7 @@ const config: PackageFolderNameConfig = {
 
 > `optional` **excludePackages?**: `string`[]
 
-Defined in: policies/PackageFolderName.ts:67
+Defined in: [policies/PackageFolderName.ts:67](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageFolderName.ts#L67)
 
 A list of package names that are exempt from folder name matching.
 
@@ -50,7 +50,7 @@ excludePackages: ["@myorg/cli", "legacy-package"]
 
 > `optional` **stripScopes?**: `string`[]
 
-Defined in: policies/PackageFolderName.ts:54
+Defined in: [policies/PackageFolderName.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageFolderName.ts#L54)
 
 A list of npm scope patterns to strip when comparing folder names to package names.
 

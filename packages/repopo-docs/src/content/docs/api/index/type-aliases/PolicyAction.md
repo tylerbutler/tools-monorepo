@@ -7,6 +7,6 @@ title: "PolicyAction"
 
 > **PolicyAction** = `"check"` \| `"resolve"` \| `"handle"`
 
-Defined in: perf.ts:9
+Defined in: [perf.ts:9](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/perf.ts#L9)
 
 The type of action a policy can perform.

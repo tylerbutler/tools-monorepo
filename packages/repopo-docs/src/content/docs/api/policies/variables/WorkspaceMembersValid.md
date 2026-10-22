@@ -7,7 +7,7 @@ title: "WorkspaceMembersValid"
 
 > `const` **WorkspaceMembersValid**: `object`
 
-Defined in: policies/WorkspaceMembersValid.ts:75
+Defined in: [policies/WorkspaceMembersValid.ts:75](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/WorkspaceMembersValid.ts#L75)
 
 A policy that validates Cargo workspace member paths exist.
 

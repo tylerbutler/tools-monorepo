@@ -5,7 +5,7 @@ prev: false
 title: "RequiredScriptsConfig"
 ---
 
-Defined in: policies/RequiredScripts.ts:29
+Defined in: [policies/RequiredScripts.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RequiredScripts.ts#L29)
 
 Configuration for the RequiredScripts policy.
 
@@ -15,7 +15,7 @@ Configuration for the RequiredScripts policy.
 
 > **scripts**: [`RequiredScriptEntry`](/api/index/type-aliases/requiredscriptentry/)[]
 
-Defined in: policies/RequiredScripts.ts:48
+Defined in: [policies/RequiredScripts.ts:48](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RequiredScripts.ts#L48)
 
 Scripts that must be present in package.json.
 

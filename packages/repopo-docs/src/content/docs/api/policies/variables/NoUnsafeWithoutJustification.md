@@ -7,7 +7,7 @@ title: "NoUnsafeWithoutJustification"
 
 > `const` **NoUnsafeWithoutJustification**: `object`
 
-Defined in: policies/NoUnsafeWithoutJustification.ts:72
+Defined in: [policies/NoUnsafeWithoutJustification.ts:72](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoUnsafeWithoutJustification.ts#L72)
 
 A policy that requires SAFETY comments on unsafe blocks in Rust source files.
 

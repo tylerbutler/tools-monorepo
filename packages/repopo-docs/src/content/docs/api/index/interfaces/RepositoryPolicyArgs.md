@@ -5,7 +5,7 @@ prev: false
 title: "RepositoryPolicyArgs"
 ---
 
-Defined in: policy.ts:20
+Defined in: [policy.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L20)
 
 Arguments supplied to a repository handler; selection never limits files.
 
@@ -25,7 +25,7 @@ Arguments supplied to a repository handler; selection never limits files.
 
 > `optional` **config?**: `C`
 
-Defined in: policy.ts:16
+Defined in: [policy.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L16)
 
 #### Inherited from
 
@@ -37,7 +37,7 @@ Defined in: policy.ts:16
 
 > **files**: readonly `string`[]
 
-Defined in: policy.ts:22
+Defined in: [policy.ts:22](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L22)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: policy.ts:22
 
 > **resolve**: `boolean`
 
-Defined in: policy.ts:15
+Defined in: [policy.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L15)
 
 #### Inherited from
 
@@ -57,7 +57,7 @@ Defined in: policy.ts:15
 
 > **root**: `string`
 
-Defined in: policy.ts:14
+Defined in: [policy.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L14)
 
 #### Inherited from
 

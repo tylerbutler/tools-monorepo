@@ -7,7 +7,7 @@ title: "ConfiguredRepositoryPolicy"
 
 > **ConfiguredRepositoryPolicy**\<`C`\> = [`RepositoryPolicyDefinition`](/api/index/interfaces/repositorypolicydefinition/)\<`C`\> & [`PolicyOptions`](/api/index/interfaces/policyoptions/)\<`C`\>
 
-Defined in: policy.ts:94
+Defined in: [policy.ts:94](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L94)
 
 A configured repository policy.
 

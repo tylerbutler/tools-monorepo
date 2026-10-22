@@ -5,7 +5,7 @@ prev: false
 title: "DefinePackagePolicyArgs"
 ---
 
-Defined in: policyDefiners/definePackagePolicy.ts:52
+Defined in: [policyDefiners/definePackagePolicy.ts:52](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L52)
 
 Input arguments for defining a package.json policy.
 
@@ -25,7 +25,7 @@ Input arguments for defining a package.json policy.
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: policyDefiners/definePackagePolicy.ts:71
+Defined in: [policyDefiners/definePackagePolicy.ts:71](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L71)
 
 Optional default configuration for the policy.
 
@@ -35,7 +35,7 @@ Optional default configuration for the policy.
 
 > **description**: `string`
 
-Defined in: policyDefiners/definePackagePolicy.ts:61
+Defined in: [policyDefiners/definePackagePolicy.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L61)
 
 A description of the policy's purpose.
 
@@ -45,7 +45,7 @@ A description of the policy's purpose.
 
 > **handler**: [`PackageJsonHandler`](/api/index/type-aliases/packagejsonhandler/)\<`J`, `C`\>
 
-Defined in: policyDefiners/definePackagePolicy.ts:66
+Defined in: [policyDefiners/definePackagePolicy.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L66)
 
 The handler function that receives the parsed package.json and policy arguments.
 
@@ -55,7 +55,7 @@ The handler function that receives the parsed package.json and policy arguments.
 
 > **name**: `string`
 
-Defined in: policyDefiners/definePackagePolicy.ts:56
+Defined in: [policyDefiners/definePackagePolicy.ts:56](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L56)
 
 The name of the policy.
 
@@ -65,4 +65,4 @@ The name of the policy.
 
 > `optional` **requiresConfig?**: `boolean`
 
-Defined in: policyDefiners/definePackagePolicy.ts:72
+Defined in: [policyDefiners/definePackagePolicy.ts:72](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L72)

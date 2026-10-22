@@ -5,7 +5,7 @@ prev: false
 title: "CargoLicenceValidatedConfig"
 ---
 
-Defined in: policies/CargoLicenceValidated.ts:14
+Defined in: [policies/CargoLicenceValidated.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoLicenceValidated.ts#L14)
 
 Configuration for the CargoLicenceValidated policy.
 
@@ -15,7 +15,7 @@ Configuration for the CargoLicenceValidated policy.
 
 > `optional` **allowedLicences?**: `string`[]
 
-Defined in: policies/CargoLicenceValidated.ts:18
+Defined in: [policies/CargoLicenceValidated.ts:18](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoLicenceValidated.ts#L18)
 
 Allowed SPDX licence identifiers. If set, only these are accepted.
 
@@ -25,7 +25,7 @@ Allowed SPDX licence identifiers. If set, only these are accepted.
 
 > `optional` **skipWorkspace?**: `boolean`
 
-Defined in: policies/CargoLicenceValidated.ts:36
+Defined in: [policies/CargoLicenceValidated.ts:36](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoLicenceValidated.ts#L36)
 
 If true, skip workspace-only Cargo.toml files (those without a [package] section).
 
@@ -41,7 +41,7 @@ true
 
 > `optional` **validateSpdx?**: `boolean`
 
-Defined in: policies/CargoLicenceValidated.ts:29
+Defined in: [policies/CargoLicenceValidated.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoLicenceValidated.ts#L29)
 
 If true, validate the licence value against the SPDX licence list
 using `spdx-correct`. When enabled, typos like "MIIT" are detected

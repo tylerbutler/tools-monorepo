@@ -5,7 +5,7 @@ prev: false
 title: "GleamTomlRequiredConfig"
 ---
 
-Defined in: policies/GleamTomlRequired.ts:12
+Defined in: [policies/GleamTomlRequired.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamTomlRequired.ts#L12)
 
 Configuration for the GleamTomlRequired policy.
 
@@ -15,7 +15,7 @@ Configuration for the GleamTomlRequired policy.
 
 > `optional` **required?**: `string`[]
 
-Defined in: policies/GleamTomlRequired.ts:17
+Defined in: [policies/GleamTomlRequired.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamTomlRequired.ts#L17)
 
 Top-level fields that must exist in gleam.toml.
 
@@ -31,7 +31,7 @@ Top-level fields that must exist in gleam.toml.
 
 > `optional` **requireGleamVersion?**: `boolean`
 
-Defined in: policies/GleamTomlRequired.ts:23
+Defined in: [policies/GleamTomlRequired.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamTomlRequired.ts#L23)
 
 If true, require the `gleam` compiler version constraint.
 
@@ -47,7 +47,7 @@ false
 
 > `optional` **requireRepository?**: `boolean`
 
-Defined in: policies/GleamTomlRequired.ts:29
+Defined in: [policies/GleamTomlRequired.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamTomlRequired.ts#L29)
 
 If true, require the `[repository]` section.
 

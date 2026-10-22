@@ -7,7 +7,7 @@ title: "NoBuildDirectory"
 
 > `const` **NoBuildDirectory**: `object`
 
-Defined in: policies/NoBuildDirectory.ts:15
+Defined in: [policies/NoBuildDirectory.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoBuildDirectory.ts#L15)
 
 A policy that prevents accidental commits of build directory contents.
 Applies to Gleam's `build/` output directory.

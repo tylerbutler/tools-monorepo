@@ -5,7 +5,7 @@ prev: false
 title: "GleamTomlSortedConfig"
 ---
 
-Defined in: policies/GleamTomlSorted.ts:14
+Defined in: [policies/GleamTomlSorted.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamTomlSorted.ts#L14)
 
 Configuration for the GleamTomlSorted policy.
 
@@ -15,7 +15,7 @@ Configuration for the GleamTomlSorted policy.
 
 > `optional` **sections?**: `string`[]
 
-Defined in: policies/GleamTomlSorted.ts:19
+Defined in: [policies/GleamTomlSorted.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamTomlSorted.ts#L19)
 
 Sections whose keys should be sorted alphabetically.
 

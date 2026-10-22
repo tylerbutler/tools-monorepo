@@ -7,7 +7,7 @@ title: "GleamSharedDependencyVersions"
 
 > `const` **GleamSharedDependencyVersions**: `object`
 
-Defined in: policies/GleamSharedDependencyVersions.ts:92
+Defined in: [policies/GleamSharedDependencyVersions.ts:92](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamSharedDependencyVersions.ts#L92)
 
 A policy that detects dependency version mismatches across Gleam packages in a monorepo.
 

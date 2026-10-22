@@ -7,7 +7,7 @@ title: "GleamMonorepoConsistency"
 
 > `const` **GleamMonorepoConsistency**: `object`
 
-Defined in: policies/GleamMonorepoConsistency.ts:73
+Defined in: [policies/GleamMonorepoConsistency.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamMonorepoConsistency.ts#L73)
 
 A policy that enforces consistent metadata across Gleam packages in a monorepo.
 

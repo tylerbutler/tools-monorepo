@@ -5,7 +5,7 @@ prev: false
 title: "ConditionalScriptsConfig"
 ---
 
-Defined in: policies/ConditionalScripts.ts:58
+Defined in: [policies/ConditionalScripts.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ConditionalScripts.ts#L58)
 
 Configuration for the ConditionalScripts policy.
 
@@ -15,7 +15,7 @@ Configuration for the ConditionalScripts policy.
 
 > **rules**: [`ConditionalScriptRule`](/api/index/interfaces/conditionalscriptrule/)[]
 
-Defined in: policies/ConditionalScripts.ts:74
+Defined in: [policies/ConditionalScripts.ts:74](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ConditionalScripts.ts#L74)
 
 Conditional script requirements. If a script is present, other scripts must also exist.
 

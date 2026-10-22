@@ -9,7 +9,7 @@ title: "defineCargoPolicy"
 
 > **defineCargoPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> & `object`
 
-Defined in: policyDefiners/defineCargoPolicy.ts:103
+Defined in: [policyDefiners/defineCargoPolicy.ts:103](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L103)
 
 Define a repo policy for Cargo.toml files.
 
@@ -58,7 +58,7 @@ const MyCargoPolicy = defineCargoPolicy({
 
 > **defineCargoPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> & `object`
 
-Defined in: policyDefiners/defineCargoPolicy.ts:107
+Defined in: [policyDefiners/defineCargoPolicy.ts:107](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L107)
 
 Define a Cargo policy that requires explicit configuration.
 
@@ -82,7 +82,7 @@ Define a Cargo policy that requires explicit configuration.
 
 > **defineCargoPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\>
 
-Defined in: policyDefiners/defineCargoPolicy.ts:111
+Defined in: [policyDefiners/defineCargoPolicy.ts:111](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L111)
 
 Define a Cargo policy with optional configuration.
 

@@ -5,7 +5,7 @@ prev: false
 title: "CargoLockPolicyConfig"
 ---
 
-Defined in: policies/CargoLockPolicy.ts:14
+Defined in: [policies/CargoLockPolicy.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoLockPolicy.ts#L14)
 
 Configuration for the CargoLockPolicy.
 
@@ -15,7 +15,7 @@ Configuration for the CargoLockPolicy.
 
 > `optional` **binaries?**: `"require"` \| `"warn"` \| `"ignore"`
 
-Defined in: policies/CargoLockPolicy.ts:23
+Defined in: [policies/CargoLockPolicy.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoLockPolicy.ts#L23)
 
 Policy for binary crates.
 - "require": Cargo.lock must be committed (default for binaries)
@@ -34,7 +34,7 @@ Policy for binary crates.
 
 > `optional` **libraries?**: `"require"` \| `"warn"` \| `"ignore"`
 
-Defined in: policies/CargoLockPolicy.ts:33
+Defined in: [policies/CargoLockPolicy.ts:33](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/CargoLockPolicy.ts#L33)
 
 Policy for library crates.
 - "require": Cargo.lock must be committed

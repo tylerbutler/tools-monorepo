@@ -5,7 +5,7 @@ prev: false
 title: "NoWildcardDependenciesConfig"
 ---
 
-Defined in: policies/NoWildcardDependencies.ts:12
+Defined in: [policies/NoWildcardDependencies.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoWildcardDependencies.ts#L12)
 
 Configuration for the NoWildcardDependencies policy.
 
@@ -15,7 +15,7 @@ Configuration for the NoWildcardDependencies policy.
 
 > `optional` **allowDev?**: `boolean`
 
-Defined in: policies/NoWildcardDependencies.ts:29
+Defined in: [policies/NoWildcardDependencies.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoWildcardDependencies.ts#L29)
 
 If true, dev-dependencies are checked more leniently (only deny, not warn).
 
@@ -31,7 +31,7 @@ true
 
 > `optional` **deny?**: `string`[]
 
-Defined in: policies/NoWildcardDependencies.ts:17
+Defined in: [policies/NoWildcardDependencies.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoWildcardDependencies.ts#L17)
 
 Version patterns to deny outright.
 
@@ -47,7 +47,7 @@ Version patterns to deny outright.
 
 > `optional` **warn?**: `string`[]
 
-Defined in: policies/NoWildcardDependencies.ts:23
+Defined in: [policies/NoWildcardDependencies.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoWildcardDependencies.ts#L23)
 
 Version patterns to warn about.
 

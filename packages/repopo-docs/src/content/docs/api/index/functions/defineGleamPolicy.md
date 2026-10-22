@@ -9,7 +9,7 @@ title: "defineGleamPolicy"
 
 > **defineGleamPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> & `object`
 
-Defined in: policyDefiners/defineGleamPolicy.ts:102
+Defined in: [policyDefiners/defineGleamPolicy.ts:102](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L102)
 
 Define a repo policy for gleam.toml files.
 
@@ -57,7 +57,7 @@ const MyGleamPolicy = defineGleamPolicy({
 
 > **defineGleamPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> & `object`
 
-Defined in: policyDefiners/defineGleamPolicy.ts:106
+Defined in: [policyDefiners/defineGleamPolicy.ts:106](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L106)
 
 Define a Gleam policy that requires explicit configuration.
 
@@ -81,7 +81,7 @@ Define a Gleam policy that requires explicit configuration.
 
 > **defineGleamPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\>
 
-Defined in: policyDefiners/defineGleamPolicy.ts:110
+Defined in: [policyDefiners/defineGleamPolicy.ts:110](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineGleamPolicy.ts#L110)
 
 Define a Gleam policy with optional configuration.
 

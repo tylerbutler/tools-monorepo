@@ -7,6 +7,6 @@ title: "GleamDepVersions"
 
 > `const` **GleamDepVersions**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`GleamDepVersionsConfig`](/api/index/interfaces/gleamdepversionsconfig/)\>
 
-Defined in: policies/GleamDepVersions.ts:79
+Defined in: [policies/GleamDepVersions.ts:79](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamDepVersions.ts#L79)
 
 A policy that prevents missing or overly loose version constraints in Gleam dependencies.

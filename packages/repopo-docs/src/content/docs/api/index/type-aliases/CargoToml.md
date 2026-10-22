@@ -7,6 +7,6 @@ title: "CargoToml"
 
 > **CargoToml** = [`Record`](https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type)\<`string`, `unknown`\>
 
-Defined in: policyDefiners/defineCargoPolicy.ts:21
+Defined in: [policyDefiners/defineCargoPolicy.ts:21](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L21)
 
 A parsed Cargo.toml represented as a record of sections and values.

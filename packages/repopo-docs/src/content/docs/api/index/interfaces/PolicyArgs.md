@@ -5,7 +5,7 @@ prev: false
 title: "PolicyArgs"
 ---
 
-Defined in: policy.ts:12
+Defined in: [policy.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L12)
 
 Arguments supplied to a file handler.
 
@@ -21,7 +21,7 @@ Arguments supplied to a file handler.
 
 > `optional` **config?**: `C`
 
-Defined in: policy.ts:16
+Defined in: [policy.ts:16](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L16)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: policy.ts:16
 
 > **file**: `string`
 
-Defined in: policy.ts:13
+Defined in: [policy.ts:13](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L13)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: policy.ts:13
 
 > **resolve**: `boolean`
 
-Defined in: policy.ts:15
+Defined in: [policy.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L15)
 
 ***
 
@@ -45,4 +45,4 @@ Defined in: policy.ts:15
 
 > **root**: `string`
 
-Defined in: policy.ts:14
+Defined in: [policy.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L14)

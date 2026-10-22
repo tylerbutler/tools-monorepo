@@ -7,7 +7,7 @@ title: "PolicyResolver"
 
 > **PolicyResolver**\<`C`\> = `object`\[`"resolve"`\]
 
-Defined in: policy.ts:38
+Defined in: [policy.ts:38](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L38)
 
 Standalone file fixers receive and return the complete findings list.
 

@@ -5,7 +5,7 @@ prev: false
 title: "PackagePrivateFieldConfig"
 ---
 
-Defined in: policies/PackagePrivateField.ts:47
+Defined in: [policies/PackagePrivateField.ts:47](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackagePrivateField.ts#L47)
 
 Configuration for the PackagePrivateField policy.
 
@@ -34,7 +34,7 @@ const config: PackagePrivateFieldConfig = {
 
 > `optional` **mayPublish?**: `string`[]
 
-Defined in: policies/PackagePrivateField.ts:99
+Defined in: [policies/PackagePrivateField.ts:99](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackagePrivateField.ts#L99)
 
 A list of glob patterns for packages that may optionally be published.
 
@@ -58,7 +58,7 @@ mayPublish: ["@fluid-experimental/*"]
 
 > `optional` **mustBePrivate?**: `string`[]
 
-Defined in: policies/PackagePrivateField.ts:81
+Defined in: [policies/PackagePrivateField.ts:81](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackagePrivateField.ts#L81)
 
 A list of glob patterns for packages that must be private.
 
@@ -81,7 +81,7 @@ mustBePrivate: ["@fluid-internal/*", "@fluid-private/*"]
 
 > `optional` **mustPublish?**: `string`[]
 
-Defined in: policies/PackagePrivateField.ts:64
+Defined in: [policies/PackagePrivateField.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackagePrivateField.ts#L64)
 
 A list of glob patterns for packages that must be published.
 
@@ -105,7 +105,7 @@ mustPublish: ["@fluidframework/*", "@fluid-tools/*", "tinylicious"]
 
 > `optional` **unmatchedPackages?**: `"private"` \| `"ignore"` \| `"public"`
 
-Defined in: policies/PackagePrivateField.ts:110
+Defined in: [policies/PackagePrivateField.ts:110](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackagePrivateField.ts#L110)
 
 Default behavior for packages that don't match any of the above lists.
 

@@ -5,7 +5,7 @@ prev: false
 title: "PackageAllowedScopesConfig"
 ---
 
-Defined in: policies/PackageAllowedScopes.ts:24
+Defined in: [policies/PackageAllowedScopes.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageAllowedScopes.ts#L24)
 
 Configuration for the PackageAllowedScopes policy.
 
@@ -29,7 +29,7 @@ const config: PackageAllowedScopesConfig = {
 
 > `optional` **allowedScopes?**: `string`[]
 
-Defined in: policies/PackageAllowedScopes.ts:41
+Defined in: [policies/PackageAllowedScopes.ts:41](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageAllowedScopes.ts#L41)
 
 A list of npm scopes that are allowed for packages in this repository.
 
@@ -53,7 +53,7 @@ allowedScopes: ["@myorg", "@myorg-tools", "@myorg-internal"]
 
 > `optional` **unscopedPackages?**: `string`[]
 
-Defined in: policies/PackageAllowedScopes.ts:57
+Defined in: [policies/PackageAllowedScopes.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageAllowedScopes.ts#L57)
 
 A list of unscoped package names that are explicitly allowed.
 

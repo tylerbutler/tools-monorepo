@@ -7,7 +7,7 @@ title: "PackageJsonHandler"
 
 > **PackageJsonHandler**\<`J`, `C`\> = (`json`, `args`) => `Operation`\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\> \| [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\>
 
-Defined in: policyDefiners/definePackagePolicy.ts:30
+Defined in: [policyDefiners/definePackagePolicy.ts:30](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/definePackagePolicy.ts#L30)
 
 A policy handler especially for policies that target package.json.
 

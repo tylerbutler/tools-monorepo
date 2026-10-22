@@ -7,7 +7,7 @@ title: "NoJsFileExtensions"
 
 > `const` **NoJsFileExtensions**: `object`
 
-Defined in: policies/NoJsFileExtensions.ts:12
+Defined in: [policies/NoJsFileExtensions.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoJsFileExtensions.ts#L12)
 
 A repo policy that checks for JavaScript source files that just use the .js file extension. Such files may be
 interpreted by node as either CommonJS or ESM based on the `type` field in the nearest package.json file. This

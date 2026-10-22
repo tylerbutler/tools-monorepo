@@ -7,7 +7,7 @@ title: "PackageAllowedScopes"
 
 > `const` **PackageAllowedScopes**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageAllowedScopesConfig`](/api/index/interfaces/packageallowedscopesconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/PackageAllowedScopes.ts:141
+Defined in: [policies/PackageAllowedScopes.ts:141](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageAllowedScopes.ts#L141)
 
 A policy that ensures packages use only allowed scopes and package names.
 

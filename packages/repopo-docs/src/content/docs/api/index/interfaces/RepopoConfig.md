@@ -5,7 +5,7 @@ prev: false
 title: "RepopoConfig"
 ---
 
-Defined in: config.ts:5
+Defined in: [config.ts:5](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L5)
 
 Repository-wide policy configuration.
 
@@ -15,7 +15,7 @@ Repository-wide policy configuration.
 
 > `optional` **excludeFiles?**: (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: config.ts:8
+Defined in: [config.ts:8](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L8)
 
 Repo-relative regex exclusions. Strings are case-insensitive.
 
@@ -25,4 +25,4 @@ Repo-relative regex exclusions. Strings are case-insensitive.
 
 > `optional` **policies?**: [`ConfiguredPolicy`](/api/index/type-aliases/configuredpolicy/)[]
 
-Defined in: config.ts:6
+Defined in: [config.ts:6](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/config.ts#L6)

@@ -5,7 +5,7 @@ prev: false
 title: "GleamDocExistsConfig"
 ---
 
-Defined in: policies/GleamDocExists.ts:14
+Defined in: [policies/GleamDocExists.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamDocExists.ts#L14)
 
 Configuration for the GleamDocExists policy.
 
@@ -15,7 +15,7 @@ Configuration for the GleamDocExists policy.
 
 > `optional` **recommended?**: `string`[]
 
-Defined in: policies/GleamDocExists.ts:24
+Defined in: [policies/GleamDocExists.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamDocExists.ts#L24)
 
 Files that are recommended but not required. Missing ones produce warnings.
 
@@ -25,7 +25,7 @@ Files that are recommended but not required. Missing ones produce warnings.
 
 > `optional` **required?**: `string`[]
 
-Defined in: policies/GleamDocExists.ts:19
+Defined in: [policies/GleamDocExists.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamDocExists.ts#L19)
 
 Files that must exist alongside the gleam.toml.
 

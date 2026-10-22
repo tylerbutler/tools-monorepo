@@ -7,7 +7,7 @@ title: "MutuallyExclusiveScripts"
 
 > `const` **MutuallyExclusiveScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`MutuallyExclusiveScriptsConfig`](/api/index/interfaces/mutuallyexclusivescriptsconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/MutuallyExclusiveScripts.ts:51
+Defined in: [policies/MutuallyExclusiveScripts.ts:51](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/MutuallyExclusiveScripts.ts#L51)
 
 A policy that validates mutually exclusive script groups in package.json.
 

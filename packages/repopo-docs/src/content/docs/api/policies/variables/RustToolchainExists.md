@@ -7,7 +7,7 @@ title: "RustToolchainExists"
 
 > `const` **RustToolchainExists**: `object`
 
-Defined in: policies/RustToolchainExists.ts:24
+Defined in: [policies/RustToolchainExists.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RustToolchainExists.ts#L24)
 
 A policy that requires a rust-toolchain.toml file for reproducible Rust builds.
 

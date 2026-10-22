@@ -7,7 +7,7 @@ title: "PackagePrivateField"
 
 > `const` **PackagePrivateField**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackagePrivateFieldConfig`](/api/index/interfaces/packageprivatefieldconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/PackagePrivateField.ts:211
+Defined in: [policies/PackagePrivateField.ts:211](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackagePrivateField.ts#L211)
 
 A policy that enforces the `private` field in package.json based on package scope or name.
 

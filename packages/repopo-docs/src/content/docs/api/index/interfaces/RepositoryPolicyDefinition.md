@@ -5,7 +5,7 @@ prev: false
 title: "RepositoryPolicyDefinition"
 ---
 
-Defined in: policy.ts:57
+Defined in: [policy.ts:57](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L57)
 
 Repository scope is explicit; repository fixers are inline only.
 
@@ -21,7 +21,7 @@ Repository scope is explicit; repository fixers are inline only.
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: policy.ts:65
+Defined in: [policy.ts:65](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L65)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: policy.ts:65
 
 > **description**: `string`
 
-Defined in: policy.ts:59
+Defined in: [policy.ts:59](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L59)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: policy.ts:59
 
 > **name**: `string`
 
-Defined in: policy.ts:58
+Defined in: [policy.ts:58](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L58)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: policy.ts:58
 
 > `optional` **requiresConfig?**: `boolean`
 
-Defined in: policy.ts:66
+Defined in: [policy.ts:66](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L66)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: policy.ts:66
 
 > `optional` **resolver?**: `undefined`
 
-Defined in: policy.ts:64
+Defined in: [policy.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L64)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: policy.ts:64
 
 > **scope**: `"repository"`
 
-Defined in: policy.ts:60
+Defined in: [policy.ts:60](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L60)
 
 ## Methods
 
@@ -69,7 +69,7 @@ Defined in: policy.ts:60
 
 > **handler**(`args`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\> \| `Operation`\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\>
 
-Defined in: policy.ts:61
+Defined in: [policy.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L61)
 
 #### Parameters
 

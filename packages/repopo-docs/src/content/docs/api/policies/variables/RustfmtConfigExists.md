@@ -7,7 +7,7 @@ title: "RustfmtConfigExists"
 
 > `const` **RustfmtConfigExists**: `object`
 
-Defined in: policies/RustfmtConfigExists.ts:24
+Defined in: [policies/RustfmtConfigExists.ts:24](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RustfmtConfigExists.ts#L24)
 
 A policy that requires a rustfmt.toml file for consistent Rust formatting.
 

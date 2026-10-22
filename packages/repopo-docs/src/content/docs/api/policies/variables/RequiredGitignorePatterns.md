@@ -7,7 +7,7 @@ title: "RequiredGitignorePatterns"
 
 > `const` **RequiredGitignorePatterns**: `object`
 
-Defined in: policies/RequiredGitignorePatterns.ts:269
+Defined in: [policies/RequiredGitignorePatterns.ts:269](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/RequiredGitignorePatterns.ts#L269)
 
 A repo policy that ensures .gitignore contains required patterns to prevent
 committing sensitive files, dependencies, and build artifacts.

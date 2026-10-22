@@ -5,7 +5,7 @@ prev: false
 title: "GleamProjectStructureConfig"
 ---
 
-Defined in: policies/GleamProjectStructure.ts:9
+Defined in: [policies/GleamProjectStructure.ts:9](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamProjectStructure.ts#L9)
 
 Configuration for the GleamProjectStructure policy.
 
@@ -15,7 +15,7 @@ Configuration for the GleamProjectStructure policy.
 
 > `optional` **requireSrcDir?**: `boolean`
 
-Defined in: policies/GleamProjectStructure.ts:14
+Defined in: [policies/GleamProjectStructure.ts:14](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamProjectStructure.ts#L14)
 
 If true, require the src/ directory to exist.
 
@@ -31,7 +31,7 @@ true
 
 > `optional` **requireTestDir?**: `boolean`
 
-Defined in: policies/GleamProjectStructure.ts:20
+Defined in: [policies/GleamProjectStructure.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamProjectStructure.ts#L20)
 
 If true, require the test/ directory to exist.
 

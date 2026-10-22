@@ -5,7 +5,7 @@ prev: false
 title: "PackageReadmeSettings"
 ---
 
-Defined in: policies/PackageReadme.ts:17
+Defined in: [policies/PackageReadme.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageReadme.ts#L17)
 
 Policy settings for the PackageReadme repo policy.
 
@@ -15,7 +15,7 @@ Policy settings for the PackageReadme repo policy.
 
 > `optional` **requiredContent?**: `string`
 
-Defined in: policies/PackageReadme.ts:55
+Defined in: [policies/PackageReadme.ts:55](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageReadme.ts#L55)
 
 A string that must appear in the README content.
 
@@ -36,7 +36,7 @@ requiredContent: "## Trademark"
 
 > `optional` **requireMatchingTitle?**: `boolean`
 
-Defined in: policies/PackageReadme.ts:40
+Defined in: [policies/PackageReadme.ts:40](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageReadme.ts#L40)
 
 Whether to require the README title to match the package name.
 
@@ -57,7 +57,7 @@ This ensures consistency and helps users identify the package.
 
 > `optional` **skipPrivate?**: `boolean`
 
-Defined in: policies/PackageReadme.ts:28
+Defined in: [policies/PackageReadme.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageReadme.ts#L28)
 
 Whether to skip validation for private packages.
 

@@ -5,7 +5,7 @@ prev: false
 title: "PolicyFinding"
 ---
 
-Defined in: policy.ts:26
+Defined in: [policy.ts:26](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L26)
 
 A single independently actionable violation or recorded fix.
 
@@ -15,7 +15,7 @@ A single independently actionable violation or recorded fix.
 
 > `optional` **files?**: readonly `string`[]
 
-Defined in: policy.ts:31
+Defined in: [policy.ts:31](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L31)
 
 Repo-relative affected files. Only repository handlers may supply this.
 
@@ -25,7 +25,7 @@ Repo-relative affected files. Only repository handlers may supply this.
 
 > `optional` **fixStatus?**: `"available"` \| `"fixed"` \| `"failed"`
 
-Defined in: policy.ts:29
+Defined in: [policy.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L29)
 
 ***
 
@@ -33,7 +33,7 @@ Defined in: policy.ts:29
 
 > `optional` **manualFix?**: `string`
 
-Defined in: policy.ts:28
+Defined in: [policy.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L28)
 
 ***
 
@@ -41,4 +41,4 @@ Defined in: policy.ts:28
 
 > **message**: `string`
 
-Defined in: policy.ts:27
+Defined in: [policy.ts:27](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L27)

@@ -7,7 +7,7 @@ title: "PackageScripts"
 
 > `const` **PackageScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageScriptsSettings`](/api/index/interfaces/packagescriptssettings/) \| `undefined`\> & `object`
 
-Defined in: policies/PackageScripts.ts:706
+Defined in: [policies/PackageScripts.ts:706](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L706)
 
 A RepoPolicy that validates package.json scripts based on configurable rules.
 

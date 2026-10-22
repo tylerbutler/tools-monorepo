@@ -7,7 +7,7 @@ title: "PackageLicense"
 
 > `const` **PackageLicense**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageLicenseSettings`](/api/index/interfaces/packagelicensesettings/) \| `undefined`\>
 
-Defined in: policies/PackageLicense.ts:101
+Defined in: [policies/PackageLicense.ts:101](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageLicense.ts#L101)
 
 A repo policy that ensures each package has a LICENSE file that matches the root LICENSE.
 

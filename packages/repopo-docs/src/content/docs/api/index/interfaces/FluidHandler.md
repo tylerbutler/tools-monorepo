@@ -5,7 +5,7 @@ prev: false
 title: "FluidHandler"
 ---
 
-Defined in: adapters/fluidFramework.ts:11
+Defined in: [adapters/fluidFramework.ts:11](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L11)
 
 A FluidFramework build-tools policy handler interface.
 
@@ -17,7 +17,7 @@ This interface matches the `Handler` interface from `@fluidframework/build-tools
 
 > **handler**: (`file`, `root`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<`string` \| `undefined`\>
 
-Defined in: adapters/fluidFramework.ts:29
+Defined in: [adapters/fluidFramework.ts:29](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L29)
 
 The handler function that checks a file against the policy.
 
@@ -47,7 +47,7 @@ Path to the repo root.
 
 > **match**: [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp)
 
-Defined in: adapters/fluidFramework.ts:20
+Defined in: [adapters/fluidFramework.ts:20](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L20)
 
 A regex pattern that determines which files this handler applies to.
 
@@ -57,7 +57,7 @@ A regex pattern that determines which files this handler applies to.
 
 > **name**: `string`
 
-Defined in: adapters/fluidFramework.ts:15
+Defined in: [adapters/fluidFramework.ts:15](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L15)
 
 The name of the handler, used for filtering and display.
 
@@ -67,7 +67,7 @@ The name of the handler, used for filtering and display.
 
 > `optional` **resolver?**: (`file`, `root`) => [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<\{ `message?`: `string`; `resolved`: `boolean`; \}\> \| \{ `message?`: `string`; `resolved`: `boolean`; \}
 
-Defined in: adapters/fluidFramework.ts:38
+Defined in: [adapters/fluidFramework.ts:38](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/adapters/fluidFramework.ts#L38)
 
 Optional resolver function that attempts to fix policy violations.
 

@@ -5,7 +5,7 @@ prev: false
 title: "PackageScriptsSettings"
 ---
 
-Defined in: policies/PackageScripts.ts:77
+Defined in: [policies/PackageScripts.ts:77](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L77)
 
 Policy settings for the PackageScripts repo policy.
 
@@ -15,7 +15,7 @@ Policy settings for the PackageScripts repo policy.
 
 > `optional` **conditionalRequired?**: [`LegacyConditionalScriptRule`](/api/policies/interfaces/legacyconditionalscriptrule/)[]
 
-Defined in: policies/PackageScripts.ts:154
+Defined in: [policies/PackageScripts.ts:154](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L154)
 
 Conditional script requirements. If a script is present, other scripts must also exist.
 
@@ -44,7 +44,7 @@ conditionalRequired: [{ ifPresent: "build", requires: ["test", { clean: "rimraf 
 
 > `optional` **exact?**: [`Record`](https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type)\<`string`, `string`\>
 
-Defined in: policies/PackageScripts.ts:116
+Defined in: [policies/PackageScripts.ts:116](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L116)
 
 Scripts that must exist AND have exact content.
 
@@ -69,7 +69,7 @@ exact: {
 
 > `optional` **must?**: [`LegacyRequiredScriptEntry`](/api/policies/type-aliases/legacyrequiredscriptentry/)[]
 
-Defined in: policies/PackageScripts.ts:97
+Defined in: [policies/PackageScripts.ts:97](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L97)
 
 Scripts that must be present in package.json.
 
@@ -96,7 +96,7 @@ must: [
 
 > `optional` **mutuallyExclusive?**: `string`[][]
 
-Defined in: policies/PackageScripts.ts:131
+Defined in: [policies/PackageScripts.ts:131](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L131)
 
 List of mutually exclusive script groups. Each group is an array of script names
 where at most one script from the group can be present.
@@ -117,7 +117,7 @@ mutuallyExclusive: [["test:unit", "test:vitest"]]
 
 > `optional` **scriptMustContain?**: [`ScriptMustContainRule`](/api/index/interfaces/scriptmustcontainrule/)[]
 
-Defined in: policies/PackageScripts.ts:175
+Defined in: [policies/PackageScripts.ts:175](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageScripts.ts#L175)
 
 Rules for validating script body content.
 

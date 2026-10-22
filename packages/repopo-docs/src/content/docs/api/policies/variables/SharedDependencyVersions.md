@@ -7,7 +7,7 @@ title: "SharedDependencyVersions"
 
 > `const` **SharedDependencyVersions**: `object`
 
-Defined in: policies/SharedDependencyVersions.ts:146
+Defined in: [policies/SharedDependencyVersions.ts:146](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/SharedDependencyVersions.ts#L146)
 
 A policy that detects dependency version mismatches across Cargo workspace members.
 

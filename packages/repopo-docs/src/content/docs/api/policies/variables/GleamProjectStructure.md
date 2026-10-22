@@ -7,7 +7,7 @@ title: "GleamProjectStructure"
 
 > `const` **GleamProjectStructure**: `object`
 
-Defined in: policies/GleamProjectStructure.ts:28
+Defined in: [policies/GleamProjectStructure.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamProjectStructure.ts#L28)
 
 A policy that validates standard Gleam project structure.
 

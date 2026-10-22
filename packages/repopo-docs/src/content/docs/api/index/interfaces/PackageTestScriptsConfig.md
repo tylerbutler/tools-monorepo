@@ -5,7 +5,7 @@ prev: false
 title: "PackageTestScriptsConfig"
 ---
 
-Defined in: policies/PackageTestScripts.ts:32
+Defined in: [policies/PackageTestScripts.ts:32](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageTestScripts.ts#L32)
 
 Configuration for the PackageTestScripts policy.
 
@@ -36,7 +36,7 @@ const config: PackageTestScriptsConfig = {
 
 > `optional` **excludePackages?**: `string`[]
 
-Defined in: policies/PackageTestScripts.ts:73
+Defined in: [policies/PackageTestScripts.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageTestScripts.ts#L73)
 
 Package names or scopes to exclude from validation.
 
@@ -46,7 +46,7 @@ Package names or scopes to exclude from validation.
 
 > `optional` **requiredScripts?**: `string`[]
 
-Defined in: policies/PackageTestScripts.ts:68
+Defined in: [policies/PackageTestScripts.ts:68](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageTestScripts.ts#L68)
 
 Script names that must exist when tests are detected.
 
@@ -62,7 +62,7 @@ Script names that must exist when tests are detected.
 
 > `optional` **testDependencies?**: `string`[]
 
-Defined in: policies/PackageTestScripts.ts:61
+Defined in: [policies/PackageTestScripts.ts:61](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageTestScripts.ts#L61)
 
 Test framework dependencies that indicate tests are expected.
 
@@ -83,7 +83,7 @@ testDependencies: ["vitest", "jest", "mocha", "@jest/globals"]
 
 > `optional` **testDirectories?**: `string`[]
 
-Defined in: policies/PackageTestScripts.ts:46
+Defined in: [policies/PackageTestScripts.ts:46](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageTestScripts.ts#L46)
 
 Directory names that indicate test files are present.
 

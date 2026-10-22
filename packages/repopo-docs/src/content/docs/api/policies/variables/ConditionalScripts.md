@@ -7,7 +7,7 @@ title: "ConditionalScripts"
 
 > `const` **ConditionalScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`ConditionalScriptsConfig`](/api/index/interfaces/conditionalscriptsconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/ConditionalScripts.ts:222
+Defined in: [policies/ConditionalScripts.ts:222](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ConditionalScripts.ts#L222)
 
 A policy that validates conditional script requirements in package.json.
 

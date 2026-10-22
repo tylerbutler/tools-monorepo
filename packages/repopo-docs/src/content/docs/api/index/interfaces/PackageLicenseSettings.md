@@ -5,7 +5,7 @@ prev: false
 title: "PackageLicenseSettings"
 ---
 
-Defined in: policies/PackageLicense.ts:13
+Defined in: [policies/PackageLicense.ts:13](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageLicense.ts#L13)
 
 Policy settings for the PackageLicense repo policy.
 
@@ -15,7 +15,7 @@ Policy settings for the PackageLicense repo policy.
 
 > `optional` **licenseFileName?**: `string`
 
-Defined in: policies/PackageLicense.ts:32
+Defined in: [policies/PackageLicense.ts:32](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageLicense.ts#L32)
 
 The name of the LICENSE file to look for and sync.
 
@@ -31,7 +31,7 @@ The name of the LICENSE file to look for and sync.
 
 > `optional` **skipPrivate?**: `boolean`
 
-Defined in: policies/PackageLicense.ts:25
+Defined in: [policies/PackageLicense.ts:25](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageLicense.ts#L25)
 
 Whether to skip validation for private packages.
 

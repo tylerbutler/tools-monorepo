@@ -7,7 +7,7 @@ title: "GleamManifestCommitted"
 
 > `const` **GleamManifestCommitted**: `object`
 
-Defined in: policies/GleamManifestCommitted.ts:10
+Defined in: [policies/GleamManifestCommitted.ts:10](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamManifestCommitted.ts#L10)
 
 A policy that ensures manifest.toml is committed alongside gleam.toml
 for reproducible Gleam builds.

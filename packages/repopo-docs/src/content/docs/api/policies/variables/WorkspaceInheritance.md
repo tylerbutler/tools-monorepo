@@ -7,7 +7,7 @@ title: "WorkspaceInheritance"
 
 > `const` **WorkspaceInheritance**: `object`
 
-Defined in: policies/WorkspaceInheritance.ts:85
+Defined in: [policies/WorkspaceInheritance.ts:85](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/WorkspaceInheritance.ts#L85)
 
 A policy that ensures Cargo workspace members inherit fields from the workspace config.
 

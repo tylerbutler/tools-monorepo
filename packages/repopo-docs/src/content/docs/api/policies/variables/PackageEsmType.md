@@ -7,7 +7,7 @@ title: "PackageEsmType"
 
 > `const` **PackageEsmType**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageEsmTypeConfig`](/api/index/interfaces/packageesmtypeconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/PackageEsmType.ts:371
+Defined in: [policies/PackageEsmType.ts:371](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageEsmType.ts#L371)
 
 A policy that ensures the `type` field in package.json is correctly set.
 

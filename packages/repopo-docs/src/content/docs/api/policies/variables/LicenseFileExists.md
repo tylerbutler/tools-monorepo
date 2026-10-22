@@ -7,7 +7,7 @@ title: "LicenseFileExists"
 
 > `const` **LicenseFileExists**: `object`
 
-Defined in: policies/LicenseFileExists.ts:37
+Defined in: [policies/LicenseFileExists.ts:37](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/LicenseFileExists.ts#L37)
 
 A repo policy that checks that a LICENSE file exists in the repository root.
 This is essential for open source projects to clarify usage rights and obligations.

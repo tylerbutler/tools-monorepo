@@ -7,7 +7,7 @@ title: "ScriptContains"
 
 > `const` **ScriptContains**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`ScriptContainsConfig`](/api/index/interfaces/scriptcontainsconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/ScriptContains.ts:71
+Defined in: [policies/ScriptContains.ts:71](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ScriptContains.ts#L71)
 
 A policy that validates script bodies contain required substrings.
 

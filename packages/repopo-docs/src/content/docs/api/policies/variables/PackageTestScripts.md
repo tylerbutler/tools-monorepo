@@ -7,7 +7,7 @@ title: "PackageTestScripts"
 
 > `const` **PackageTestScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageTestScriptsConfig`](/api/index/interfaces/packagetestscriptsconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/PackageTestScripts.ts:213
+Defined in: [policies/PackageTestScripts.ts:213](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageTestScripts.ts#L213)
 
 A policy that ensures packages have test scripts when test files exist.
 

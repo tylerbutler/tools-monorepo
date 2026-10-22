@@ -7,7 +7,7 @@ title: "PolicyDefinition"
 
 > **PolicyDefinition**\<`C`\> = [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> \| [`RepositoryPolicyDefinition`](/api/index/interfaces/repositorypolicydefinition/)\<`C`\>
 
-Defined in: policy.ts:70
+Defined in: [policy.ts:70](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policy.ts#L70)
 
 A canonical policy definition.
 

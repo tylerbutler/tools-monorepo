@@ -5,7 +5,7 @@ prev: false
 title: "ScriptContainsRule"
 ---
 
-Defined in: policies/ScriptContains.ts:9
+Defined in: [policies/ScriptContains.ts:9](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ScriptContains.ts#L9)
 
 Configuration for validating that a script's body contains required substrings.
 
@@ -15,7 +15,7 @@ Configuration for validating that a script's body contains required substrings.
 
 > **mustContain**: `string`[]
 
-Defined in: policies/ScriptContains.ts:19
+Defined in: [policies/ScriptContains.ts:19](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ScriptContains.ts#L19)
 
 Substrings that must appear in the script body.
 All substrings must be present for the script to pass validation.
@@ -26,6 +26,6 @@ All substrings must be present for the script to pass validation.
 
 > **script**: `string`
 
-Defined in: policies/ScriptContains.ts:13
+Defined in: [policies/ScriptContains.ts:13](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ScriptContains.ts#L13)
 
 The name of the script to validate.

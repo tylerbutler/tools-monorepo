@@ -7,7 +7,7 @@ title: "CargoTomlHandler"
 
 > **CargoTomlHandler**\<`C`\> = (`toml`, `args`) => `Operation`\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\> \| [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\>
 
-Defined in: policyDefiners/defineCargoPolicy.ts:31
+Defined in: [policyDefiners/defineCargoPolicy.ts:31](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policyDefiners/defineCargoPolicy.ts#L31)
 
 A policy handler for Cargo.toml policies.
 

@@ -7,7 +7,7 @@ title: "ExactScripts"
 
 > `const` **ExactScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`ExactScriptsConfig`](/api/index/interfaces/exactscriptsconfig/) \| `undefined`\> & `object`
 
-Defined in: policies/ExactScripts.ts:125
+Defined in: [policies/ExactScripts.ts:125](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/ExactScripts.ts#L125)
 
 A policy that validates scripts exist AND have exact content in package.json.
 

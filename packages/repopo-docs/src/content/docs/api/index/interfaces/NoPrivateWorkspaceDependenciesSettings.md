@@ -5,7 +5,7 @@ prev: false
 title: "NoPrivateWorkspaceDependenciesSettings"
 ---
 
-Defined in: policies/NoPrivateWorkspaceDependencies.ts:18
+Defined in: [policies/NoPrivateWorkspaceDependencies.ts:18](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoPrivateWorkspaceDependencies.ts#L18)
 
 Configuration for the NoPrivateWorkspaceDependencies policy.
 
@@ -15,7 +15,7 @@ Configuration for the NoPrivateWorkspaceDependencies policy.
 
 > `optional` **checkDevDependencies?**: `boolean`
 
-Defined in: policies/NoPrivateWorkspaceDependencies.ts:23
+Defined in: [policies/NoPrivateWorkspaceDependencies.ts:23](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoPrivateWorkspaceDependencies.ts#L23)
 
 Whether to check devDependencies in addition to dependencies.
 

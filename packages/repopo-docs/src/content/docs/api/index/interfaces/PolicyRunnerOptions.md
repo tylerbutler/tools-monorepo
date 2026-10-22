@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunnerOptions"
 ---
 
-Defined in: runner.ts:68
+Defined in: [runner.ts:68](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L68)
 
 Shared Promise and Effection runner options.
 
@@ -15,7 +15,7 @@ Shared Promise and Effection runner options.
 
 > `optional` **concurrency?**: `number`
 
-Defined in: runner.ts:76
+Defined in: [runner.ts:76](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L76)
 
 ***
 
@@ -23,7 +23,7 @@ Defined in: runner.ts:76
 
 > `optional` **exclude?**: readonly (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: runner.ts:74
+Defined in: [runner.ts:74](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L74)
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: runner.ts:74
 
 > `optional` **files?**: readonly `string`[]
 
-Defined in: runner.ts:73
+Defined in: [runner.ts:73](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L73)
 
 Selection limits only file policies. Defaults to inventory when supplied.
 
@@ -41,7 +41,7 @@ Selection limits only file policies. Defaults to inventory when supplied.
 
 > `optional` **fix?**: `boolean`
 
-Defined in: runner.ts:75
+Defined in: [runner.ts:75](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L75)
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: runner.ts:75
 
 > `optional` **inventory?**: [`RepositoryInventory`](/api/index/type-aliases/repositoryinventory/)
 
-Defined in: runner.ts:71
+Defined in: [runner.ts:71](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L71)
 
 ***
 
@@ -57,7 +57,7 @@ Defined in: runner.ts:71
 
 > **policies**: readonly [`ConfiguredPolicy`](/api/index/type-aliases/configuredpolicy/)[]
 
-Defined in: runner.ts:69
+Defined in: [runner.ts:69](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L69)
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: runner.ts:69
 
 > **root**: `string`
 
-Defined in: runner.ts:70
+Defined in: [runner.ts:70](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L70)
 
 ***
 
@@ -73,4 +73,4 @@ Defined in: runner.ts:70
 
 > `optional` **signal?**: `AbortSignal`
 
-Defined in: runner.ts:77
+Defined in: [runner.ts:77](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/runner.ts#L77)

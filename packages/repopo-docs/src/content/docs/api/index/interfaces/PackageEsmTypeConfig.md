@@ -5,7 +5,7 @@ prev: false
 title: "PackageEsmTypeConfig"
 ---
 
-Defined in: policies/PackageEsmType.ts:28
+Defined in: [policies/PackageEsmType.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageEsmType.ts#L28)
 
 Configuration for the PackageEsmType policy.
 
@@ -29,7 +29,7 @@ const config: PackageEsmTypeConfig = {
 
 > `optional` **detectFromExports?**: `boolean`
 
-Defined in: policies/PackageEsmType.ts:54
+Defined in: [policies/PackageEsmType.ts:54](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageEsmType.ts#L54)
 
 Detect the expected `type` field from the exports or main field.
 
@@ -51,7 +51,7 @@ false
 
 > `optional` **excludePackages?**: `string`[]
 
-Defined in: policies/PackageEsmType.ts:64
+Defined in: [policies/PackageEsmType.ts:64](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageEsmType.ts#L64)
 
 Package names or scopes to exclude from validation.
 
@@ -67,7 +67,7 @@ excludePackages: ["@myorg/legacy-package", "old-cjs-lib"]
 
 > `optional` **onDetectionFailure?**: `"warn"` \| `"skip"` \| `"fail"`
 
-Defined in: policies/PackageEsmType.ts:77
+Defined in: [policies/PackageEsmType.ts:77](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageEsmType.ts#L77)
 
 Behavior when module type cannot be detected from exports/main.
 
@@ -89,7 +89,7 @@ This only applies when `detectFromExports` is true and no `requiredType` is set.
 
 > `optional` **requiredType?**: `"module"` \| `"commonjs"`
 
-Defined in: policies/PackageEsmType.ts:41
+Defined in: [policies/PackageEsmType.ts:41](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageEsmType.ts#L41)
 
 The required `type` field value for all packages.
 

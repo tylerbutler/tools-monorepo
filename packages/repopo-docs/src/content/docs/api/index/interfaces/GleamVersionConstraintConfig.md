@@ -5,7 +5,7 @@ prev: false
 title: "GleamVersionConstraintConfig"
 ---
 
-Defined in: policies/GleamVersionConstraint.ts:12
+Defined in: [policies/GleamVersionConstraint.ts:12](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamVersionConstraint.ts#L12)
 
 Configuration for the GleamVersionConstraint policy.
 
@@ -15,7 +15,7 @@ Configuration for the GleamVersionConstraint policy.
 
 > `optional` **minimumVersion?**: `string`
 
-Defined in: policies/GleamVersionConstraint.ts:17
+Defined in: [policies/GleamVersionConstraint.ts:17](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/GleamVersionConstraint.ts#L17)
 
 Minimum Gleam compiler version to require (e.g., "1.0.0").
 If set, the constraint must specify at least this version.

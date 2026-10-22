@@ -7,7 +7,7 @@ title: "PackageReadme"
 
 > `const` **PackageReadme**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageReadmeSettings`](/api/index/interfaces/packagereadmesettings/) \| `undefined`\>
 
-Defined in: policies/PackageReadme.ts:242
+Defined in: [policies/PackageReadme.ts:242](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/PackageReadme.ts#L242)
 
 A repo policy that ensures each package has a README.md file with proper content.
 

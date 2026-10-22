@@ -7,7 +7,7 @@ title: "NoPrivateWorkspaceDependencies"
 
 > `const` **NoPrivateWorkspaceDependencies**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`NoPrivateWorkspaceDependenciesSettings`](/api/index/interfaces/noprivateworkspacedependenciessettings/) \| `undefined`\>
 
-Defined in: policies/NoPrivateWorkspaceDependencies.ts:128
+Defined in: [policies/NoPrivateWorkspaceDependencies.ts:128](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoPrivateWorkspaceDependencies.ts#L128)
 
 Policy that prevents publishable packages from depending on private workspace packages.
 

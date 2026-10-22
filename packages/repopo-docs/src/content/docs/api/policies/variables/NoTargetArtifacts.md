@@ -7,7 +7,7 @@ title: "NoTargetArtifacts"
 
 > `const` **NoTargetArtifacts**: `object`
 
-Defined in: policies/NoTargetArtifacts.ts:28
+Defined in: [policies/NoTargetArtifacts.ts:28](https://github.com/tylerbutler/tools-monorepo/blob/main/packages/repopo/src/policies/NoTargetArtifacts.ts#L28)
 
 A policy that prevents accidental commits of Rust build artifacts.
 
