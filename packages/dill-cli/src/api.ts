@@ -1,4 +1,13 @@
-import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import {
+	lstat,
+	mkdir,
+	open,
+	readFile,
+	realpath,
+	stat,
+	unlink,
+	writeFile,
+} from "node:fs/promises";
 import process from "node:process";
 import { parse as parseContentDisposition } from "@tinyhttp/content-disposition";
 import { all, call, run } from "effection";
@@ -17,6 +26,8 @@ import type {
 
 // Constants
 const fileProtocol = "file://";
+const pathSeparatorPattern = /[\\/]/u;
+const windowsDrivePrefix = /^[A-Za-z]:/;
 
 /**
  * The default name to use for the downloaded file. This is only used if the name is not provided by the caller or
@@ -128,6 +139,114 @@ async function checkDestination(destination: string): Promise<boolean> {
 		);
 	}
 	return true;
+}
+
+function resolveArchiveEntryPath(
+	destination: string,
+	entryName: string,
+): string {
+	const portableEntryName = entryName.replaceAll("\\", "/");
+	const normalizedEntryName = path.normalize(portableEntryName);
+	const extractionRoot = path.resolve(destination);
+	const resolvedEntryPath = path.resolve(extractionRoot, normalizedEntryName);
+	const relativeEntryPath = path.relative(extractionRoot, resolvedEntryPath);
+
+	if (
+		entryName.includes("\0") ||
+		portableEntryName.startsWith("/") ||
+		windowsDrivePrefix.test(portableEntryName) ||
+		relativeEntryPath === "" ||
+		relativeEntryPath === ".." ||
+		relativeEntryPath.startsWith("../") ||
+		path.isAbsolute(relativeEntryPath)
+	) {
+		throw new Error(`Unsafe archive entry path: ${entryName}`);
+	}
+
+	return resolvedEntryPath;
+}
+
+function hasErrorCode(error: unknown, code: string): boolean {
+	return (error as NodeJS.ErrnoException).code === code;
+}
+
+function pathEscapesRoot(root: string, candidate: string): boolean {
+	const relativePath = path.relative(root, candidate);
+	return (
+		relativePath === ".." ||
+		relativePath.startsWith("../") ||
+		path.isAbsolute(relativePath)
+	);
+}
+
+async function prepareArchiveOutput(
+	destination: string,
+	entryName: string,
+	outputPath: string,
+): Promise<void> {
+	const extractionRoot = path.resolve(destination);
+	const realExtractionRoot = await realpath(extractionRoot);
+	const relativeParent = path.relative(
+		extractionRoot,
+		path.dirname(outputPath),
+	);
+	let currentPath = extractionRoot;
+
+	for (const component of relativeParent
+		.split(pathSeparatorPattern)
+		.filter(Boolean)) {
+		currentPath = path.join(currentPath, component);
+		try {
+			await mkdir(currentPath);
+		} catch (error) {
+			if (!hasErrorCode(error, "EEXIST")) {
+				throw error;
+			}
+		}
+
+		const stats = await lstat(currentPath);
+		if (
+			stats.isSymbolicLink() ||
+			!stats.isDirectory() ||
+			pathEscapesRoot(realExtractionRoot, await realpath(currentPath))
+		) {
+			throw new Error(`Unsafe archive entry path: ${entryName}`);
+		}
+	}
+
+	try {
+		if ((await lstat(outputPath)).isSymbolicLink()) {
+			throw new Error(`Unsafe archive entry path: ${entryName}`);
+		}
+	} catch (error) {
+		if (!hasErrorCode(error, "ENOENT")) {
+			throw error;
+		}
+	}
+}
+
+async function writeArchiveFile(
+	stream: Uint8Array,
+	filePath: string,
+	entryName: string,
+): Promise<void> {
+	try {
+		if ((await lstat(filePath)).isSymbolicLink()) {
+			throw new Error(`Unsafe archive entry path: ${entryName}`);
+		}
+		await unlink(filePath);
+	} catch (error) {
+		if (!hasErrorCode(error, "ENOENT")) {
+			throw error;
+		}
+	}
+
+	const file = await open(filePath, "wx");
+	try {
+		await file.writeFile(stream);
+	} finally {
+		await file.close();
+	}
 }
 
 async function writeUint8ArrayToFile(
@@ -244,21 +363,31 @@ export async function writeTarFiles(
 	destination: string,
 ): Promise<void> {
 	await checkDestination(destination);
+	const writes = tarFiles.map((tarfile) => {
+		if (tarfile.data === undefined) {
+			throw new Error("Data undefined in tarfile.");
+		}
+
+		return {
+			data: tarfile.data,
+			entryName: tarfile.name,
+			outPath: resolveArchiveEntryPath(destination, tarfile.name),
+		};
+	});
+	await Promise.all(
+		writes.map(({ entryName, outPath }) =>
+			prepareArchiveOutput(destination, entryName, outPath),
+		),
+	);
 
 	// Use Effection for structured concurrency with automatic cancellation
 	await run(function* () {
 		// Execute all write operations concurrently
 		// If any operation fails, Effection automatically cancels the rest
 		yield* all(
-			tarFiles.map((tarfile) =>
+			writes.map(({ data, entryName, outPath }) =>
 				(function* () {
-					if (tarfile.data === undefined) {
-						throw new Error("Data undefined in tarfile.");
-					}
-					const data = tarfile.data;
-					const outPath = path.join(destination, tarfile.name);
-					yield* call(() => mkdir(path.dirname(outPath), { recursive: true }));
-					yield* call(() => writeFile(outPath, data));
+					yield* call(() => writeArchiveFile(data, outPath, entryName));
 				})(),
 			),
 		);
@@ -270,21 +399,27 @@ export async function writeZipFiles(
 	destination: string,
 ): Promise<void> {
 	await checkDestination(destination);
+	const writes = Object.entries(zipFiles).map(([zipFilePath, data]) => ({
+		data,
+		entryName: zipFilePath,
+		outPath: resolveArchiveEntryPath(destination, zipFilePath),
+	}));
+	await Promise.all(
+		writes.map(({ entryName, outPath }) =>
+			prepareArchiveOutput(destination, entryName, outPath),
+		),
+	);
 
 	// Use Effection for structured concurrency with automatic cancellation
 	await run(function* () {
 		// Execute all write operations concurrently
 		// If any operation fails, Effection automatically cancels the rest
 		yield* all(
-			Object.entries(zipFiles)
-				.filter(([, data]) => data.length > 0)
-				.map(([zipFilePath, data]) =>
+			writes
+				.filter(({ data }) => data.length > 0)
+				.map(({ data, entryName, outPath }) =>
 					(function* () {
-						const outPath = path.join(destination, zipFilePath);
-						yield* call(() =>
-							mkdir(path.dirname(outPath), { recursive: true }),
-						);
-						yield* call(() => writeFile(outPath, data));
+						yield* call(() => writeArchiveFile(data, outPath, entryName));
 					})(),
 				),
 		);
