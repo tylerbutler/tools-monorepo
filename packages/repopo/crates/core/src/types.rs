@@ -1,356 +1,263 @@
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
-/// String exclusions use case-insensitive matching; explicit regexes retain their flags.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum ExclusionPattern {
-    String(String),
-    Regex { source: String, flags: String },
-}
-
-impl ExclusionPattern {
-    pub fn source(&self) -> &str {
-        match self {
-            Self::String(source) | Self::Regex { source, .. } => source,
-        }
-    }
-
-    pub fn flags(&self) -> &str {
-        match self {
-            Self::String(_) => "i",
-            Self::Regex { flags, .. } => flags,
-        }
-    }
-}
-
-/// Metadata about a policy, received from the Node sidecar.
-/// Does not include the handler function itself — that stays in Node.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PolicyMeta {
-    /// The name of the policy.
     pub name: String,
-
-    #[serde(default)]
-    pub scope: String,
-
-    /// A description of what the policy checks.
+    pub instance_id: String,
     pub description: String,
-
-    /// The regex pattern string that determines which files this policy applies to.
-    /// This is the source string from the JS RegExp, without delimiters.
-    pub match_pattern: String,
-
-    /// Regex flags from the JS RegExp (e.g. "i" for case-insensitive).
-    #[serde(default)]
-    pub match_flags: String,
-
-    /// Whether this policy has a resolver (auto-fix capability).
-    #[serde(default)]
+    pub scope: Scope,
     pub has_resolver: bool,
-
-    /// Per-policy file exclusion patterns.
-    #[serde(default)]
-    pub exclude_files: Vec<ExclusionPattern>,
+    pub exclude: Vec<serde_json::Value>,
+    pub r#match: Option<serde_json::Value>,
 }
 
-/// The result of running a policy handler, received from the Node sidecar.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum HandlerResult {
-    /// The file passed the policy check.
-    Pass(bool),
-    /// The file failed — contains error details.
-    Failure(PolicyErrorResult),
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Scope {
+    File,
+    Repository,
 }
 
-/// A policy error result from a handler.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct PolicyErrorResult {
-    /// The error message.
-    pub error: Option<String>,
-
-    /// Legacy: array of error messages.
-    pub error_messages: Option<Vec<String>>,
-
-    /// Legacy: the policy name (set by legacy handlers).
-    pub name: Option<String>,
-
-    /// Legacy: the file path (set by legacy handlers).
-    pub file: Option<String>,
-
-    /// Whether this violation can be auto-fixed.
-    #[serde(alias = "autoFixable")]
-    pub fixable: Option<bool>,
-
-    /// Whether the violation was fixed (only set when resolve=true).
-    #[serde(alias = "resolved")]
-    pub fixed: Option<bool>,
-
-    /// Instructions for manual fix.
-    pub manual_fix: Option<String>,
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum FixStatus {
+    Available,
+    Fixed,
+    Failed,
 }
 
-impl HandlerResult {
-    /// Returns true if the policy check passed.
-    pub fn is_pass(&self) -> bool {
-        matches!(self, HandlerResult::Pass(true))
-    }
-
-    /// Returns true if an auto-fix was attempted and succeeded.
-    pub fn is_fixed(&self) -> bool {
-        match self {
-            HandlerResult::Failure(err) => err.fixed == Some(true),
-            _ => false,
-        }
-    }
-
-    /// Returns true if an auto-fix was attempted but failed.
-    pub fn is_fix_failed(&self) -> bool {
-        match self {
-            HandlerResult::Failure(err) => err.fixed == Some(false),
-            _ => false,
-        }
-    }
-
-    /// Returns true if the violation is auto-fixable (but wasn't fixed yet).
-    pub fn is_fixable(&self) -> bool {
-        match self {
-            HandlerResult::Failure(err) => err.fixable == Some(true),
-            _ => false,
-        }
-    }
-
-    /// Get error messages as a combined string.
-    pub fn error_message(&self) -> Option<String> {
-        match self {
-            HandlerResult::Pass(_) => None,
-            HandlerResult::Failure(err) => {
-                if let Some(ref msg) = err.error {
-                    Some(msg.clone())
-                } else if let Some(ref msgs) = err.error_messages {
-                    if msgs.is_empty() {
-                        None
-                    } else {
-                        Some(msgs.join("; "))
-                    }
-                } else {
-                    None
-                }
-            }
-        }
-    }
-
-    /// Get manual fix instructions.
-    pub fn manual_fix(&self) -> Option<&str> {
-        match self {
-            HandlerResult::Failure(err) => err.manual_fix.as_deref(),
-            _ => None,
-        }
-    }
-}
-
-/// IPC request sent from Rust to the Node sidecar.
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(tag = "method", content = "params")]
+#[serde(tag = "scope", rename_all = "lowercase", deny_unknown_fields)]
+pub enum Location {
+    File {
+        file: String,
+    },
+    Repository {
+        #[serde(skip_serializing_if = "Option::is_none")]
+        files: Option<Vec<String>>,
+    },
+}
+
+impl Location {
+    pub fn display(&self) -> String {
+        match self {
+            Self::File { file } => file.clone(),
+            Self::Repository { files } => files
+                .as_ref()
+                .filter(|files| !files.is_empty())
+                .map(|files| files.join(", "))
+                .unwrap_or_else(|| "repository".to_string()),
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Finding {
+    pub policy: String,
+    pub policy_id: String,
+    #[serde(flatten)]
+    pub location: Location,
+    pub message: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub manual_fix: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fix_status: Option<FixStatus>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Phase {
+    Handle,
+    Resolve,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ErrorKind {
+    Contract,
+    Exception,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExecutionError {
+    pub policy: String,
+    pub policy_id: String,
+    #[serde(flatten)]
+    pub location: Location,
+    pub phase: Phase,
+    pub kind: ErrorKind,
+    pub message: String,
+    pub cause: serde_json::Value,
+}
+
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum SkipReason {
+    Excluded,
+    FileFixError,
+    RepositoryFixError,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SkippedWork {
+    pub policy: String,
+    pub policy_id: String,
+    #[serde(flatten)]
+    pub location: Location,
+    pub reason: SkipReason,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PerfStats {
+    pub count: usize,
+    pub processed: usize,
+    pub data: BTreeMap<String, BTreeMap<String, f64>>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RunResults {
+    pub findings: Vec<Finding>,
+    pub errors: Vec<ExecutionError>,
+    pub skipped: Vec<SkippedWork>,
+    pub perf_stats: PerfStats,
+}
+
+impl RunResults {
+    pub fn success(&self) -> bool {
+        self.errors.is_empty()
+            && self
+                .skipped
+                .iter()
+                .all(|work| work.reason == SkipReason::Excluded)
+            && self
+                .findings
+                .iter()
+                .all(|finding| finding.fix_status == Some(FixStatus::Fixed))
+    }
+}
+
+#[derive(Debug, Serialize)]
+#[serde(tag = "method", content = "params", rename_all = "snake_case")]
 pub enum IpcRequest {
-    #[serde(rename = "run_repository_policies")]
-    RunRepositoryPolicies(RunRepositoryPoliciesParams),
-
-    /// Ask the sidecar to load the config and return policy metadata.
-    #[serde(rename = "load_config")]
     LoadConfig(LoadConfigParams),
-
-    /// Ask the sidecar to run a policy handler on a file.
-    #[serde(rename = "run_handler")]
-    RunHandler(RunHandlerParams),
-
-    /// Ask the sidecar to run a policy resolver on a file.
-    #[serde(rename = "run_resolver")]
-    RunResolver(RunResolverParams),
-
-    /// Ask the sidecar to run a policy handler on a batch of files.
-    #[serde(rename = "run_handler_batch")]
-    RunHandlerBatch(RunHandlerBatchParams),
-
-    /// Ask the sidecar to run a policy resolver on a batch of files.
-    #[serde(rename = "run_resolver_batch")]
-    RunResolverBatch(RunResolverBatchParams),
-
-    /// Tell the sidecar to shut down.
-    #[serde(rename = "shutdown")]
+    RunPolicies(RunPoliciesParams),
     Shutdown,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct RunRepositoryPoliciesParams {
-    pub resolve: bool,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RepositoryPolicyResult {
-    pub policy_id: String,
-    pub outcome: RepositoryPolicyFinding,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct RepositoryPolicyFinding {
-    pub error: String,
-    #[serde(default)]
-    pub files: Vec<String>,
-    pub fixed: Option<bool>,
-    pub fixable: Option<bool>,
-    #[serde(rename = "manualFix")]
-    pub manual_fix: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LoadConfigParams {
-    /// Path to the config file.
     pub config_path: Option<String>,
-
-    /// Absolute path to the git root.
     pub git_root: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RunHandlerParams {
-    /// Name of the policy to run.
-    pub policy_name: String,
-
-    /// Repo-relative path to the file.
-    pub file: String,
-
-    /// Absolute path to the repo root.
-    pub root: String,
-
-    /// Whether to attempt auto-fix.
-    pub resolve: bool,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RunResolverParams {
-    /// Name of the policy whose resolver to run.
-    pub policy_name: String,
-
-    /// Repo-relative path to the file.
-    pub file: String,
-
-    /// Absolute path to the repo root.
-    pub root: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RunHandlerBatchParams {
-    /// Index of the policy in the load_config response array.
-    pub policy_id: usize,
-
-    /// Repo-relative paths to the files.
+#[derive(Debug, Serialize)]
+pub struct RunPoliciesParams {
     pub files: Vec<String>,
-
-    /// Whether to attempt auto-fix.
-    pub resolve: bool,
-
-    #[serde(default = "default_concurrency")]
+    pub fix: bool,
     pub concurrency: usize,
 }
 
-fn default_concurrency() -> usize {
-    8
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RunResolverBatchParams {
-    /// Index of the policy in the load_config response array.
-    pub policy_id: usize,
-
-    /// Repo-relative paths to the files.
-    pub files: Vec<String>,
-}
-
-/// A single result item within a batch response.
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct BatchResultItem {
-    /// The file this result corresponds to.
-    pub file: String,
-
-    /// The handler/resolver result for this file.
-    pub data: serde_json::Value,
-}
-
-/// Response payload for batch handler/resolver calls.
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct BatchResponse {
-    /// Results for each file in the batch.
-    pub results: Vec<BatchResultItem>,
-}
-
-/// A failure item in the compact batch response.
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CompactBatchFailureItem {
-    /// The file this failure corresponds to.
-    pub file: String,
-
-    /// The error message.
-    pub error: Option<String>,
-
-    /// Legacy: array of error messages.
-    pub error_messages: Option<Vec<String>>,
-
-    /// Whether this violation can be auto-fixed.
-    pub fixable: Option<bool>,
-
-    /// Whether the violation was fixed (only set when resolve=true).
-    pub fixed: Option<bool>,
-
-    /// Instructions for manual fix.
-    pub manual_fix: Option<String>,
-}
-
-/// Compact response payload for batch handler/resolver calls.
-/// Passing files are listed as bare strings; only failures carry detail.
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct CompactBatchResponse {
-    /// Files that passed the policy check (returned `true`).
-    pub pass: Vec<String>,
-
-    /// Files that failed, with error details.
-    pub fail: Vec<CompactBatchFailureItem>,
-}
-
-/// IPC response sent from the Node sidecar to Rust.
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Debug, Deserialize)]
 pub struct IpcResponse {
-    /// Whether the request succeeded.
     pub ok: bool,
-
-    /// Error message if the request failed.
     pub error: Option<String>,
-
-    /// The response payload.
     pub data: Option<serde_json::Value>,
 }
 
-/// Response payload for load_config.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LoadConfigResponse {
-    /// Metadata for all configured policies.
     pub policies: Vec<PolicyMeta>,
+    pub exclude_files: Vec<serde_json::Value>,
+}
 
-    /// Global file exclusion patterns.
-    #[serde(default)]
-    pub exclude_files: Vec<ExclusionPattern>,
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    fn results() -> serde_json::Value {
+        json!({
+            "findings": [
+                {"scope":"file", "file":"a.txt", "policy":"P", "policyId":"p",
+                 "message":"fixed", "fixStatus":"fixed"},
+                {"scope":"repository", "files":["a.txt","b.txt"], "policy":"P", "policyId":"r",
+                 "message":"unresolved", "manualFix":"Do this.\nThen that.", "fixStatus":"failed"}
+            ],
+            "errors": [], "skipped": [],
+            "perfStats": {"count":2,"processed":1,"data":{"handle":{"p":1.5,"r":2.0}}}
+        })
+    }
+
+    #[test]
+    fn canonical_results_round_trip_without_losing_findings_or_guidance() {
+        let value = results();
+        let result: RunResults = serde_json::from_value(value.clone()).unwrap();
+        assert!(!result.success());
+        assert_eq!(serde_json::to_value(&result).unwrap(), value);
+        assert_eq!(result.findings[1].location.display(), "a.txt, b.txt");
+    }
+
+    #[test]
+    fn only_fixed_findings_are_resolved_and_error_skips_fail() {
+        let mut value = results();
+        value["findings"].as_array_mut().unwrap().pop();
+        let result: RunResults = serde_json::from_value(value.clone()).unwrap();
+        assert!(result.success());
+        for status in [json!("available"), json!("failed"), json!(null)] {
+            value["findings"][0]["fixStatus"] = status;
+            assert!(
+                !serde_json::from_value::<RunResults>(value.clone())
+                    .unwrap()
+                    .success()
+            );
+        }
+        value["findings"] = json!([]);
+        value["skipped"] = json!([{
+            "scope":"repository","policy":"P","policyId":"r","reason":"file-fix-error"
+        }]);
+        assert!(
+            !serde_json::from_value::<RunResults>(value.clone())
+                .unwrap()
+                .success()
+        );
+        value["skipped"][0]["reason"] = json!("excluded");
+        assert!(
+            serde_json::from_value::<RunResults>(value)
+                .unwrap()
+                .success()
+        );
+    }
+
+    #[test]
+    fn structured_execution_errors_preserve_cause_and_scope() {
+        let mut value = results();
+        value["errors"] = json!([{
+            "scope":"repository","files":[],"policy":"P","policyId":"r",
+            "phase":"resolve","kind":"exception","message":"broken",
+            "cause":{"name":"Error","message":"broken","cause":{"code":"EIO"}}
+        }]);
+        let result: RunResults = serde_json::from_value(value.clone()).unwrap();
+        assert!(!result.success());
+        assert_eq!(serde_json::to_value(result).unwrap(), value);
+    }
+
+    #[test]
+    fn retired_results_and_invalid_statuses_are_not_a_protocol() {
+        for value in [
+            json!(true),
+            json!({"outcome":{"error":"old"},"resolution":{"resolved":true}}),
+            json!({"scope":"file","file":"a","policy":"P","policyId":"p","message":"a","fixStatus":"resolved"}),
+            json!({"scope":"repository","file":"synthetic","policy":"P","policyId":"p","message":"a"}),
+        ] {
+            assert!(serde_json::from_value::<Finding>(value).is_err());
+        }
+    }
 }

@@ -195,34 +195,6 @@ fn main() -> Result<()> {
                 eprintln!("Using sidecar: {sidecar_script} (runtime: {runtime_bin})");
             }
 
-            #[cfg(test)]
-            mod tests {
-                use super::*;
-
-                #[test]
-                fn validates_check_concurrency() {
-                    for value in ["0", "-1", "1.5", "bad", "9007199254740992"] {
-                        assert!(
-                            Cli::try_parse_from(["repopo-core", "check", "--concurrency", value])
-                                .is_err()
-                        );
-                    }
-                    for value in ["1", "8", "32"] {
-                        let cli =
-                            Cli::try_parse_from(["repopo-core", "check", "--concurrency", value])
-                                .unwrap();
-                        assert!(
-                            matches!(cli.command, Commands::Check { concurrency, .. } if concurrency == value.parse::<usize>().unwrap())
-                        );
-                    }
-                    let cli = Cli::try_parse_from(["repopo-core", "check"]).unwrap();
-                    assert!(matches!(
-                        cli.command,
-                        Commands::Check { concurrency: 8, .. }
-                    ));
-                }
-            }
-
             let cwd = env::current_dir()
                 .context("Failed to get current directory")?
                 .to_string_lossy()
@@ -250,13 +222,15 @@ fn main() -> Result<()> {
 
             let success = engine::run_check(
                 &mut sidecar,
-                file_list,
-                &git_root,
-                config.as_deref(),
-                fix,
-                verbose,
-                quiet,
-                concurrency,
+                engine::CheckOptions {
+                    files: file_list,
+                    git_root: &git_root,
+                    config_path: config.as_deref(),
+                    fix,
+                    verbose,
+                    quiet,
+                    concurrency,
+                },
             )?;
 
             sidecar.shutdown()?;
@@ -290,4 +264,28 @@ fn main() -> Result<()> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn validates_check_concurrency() {
+        for value in ["0", "-1", "1.5", "bad", "9007199254740992"] {
+            assert!(Cli::try_parse_from(["repopo-core", "check", "--concurrency", value]).is_err());
+        }
+        for value in ["1", "8", "32"] {
+            let cli =
+                Cli::try_parse_from(["repopo-core", "check", "--concurrency", value]).unwrap();
+            assert!(
+                matches!(cli.command, Commands::Check { concurrency, .. } if concurrency == value.parse::<usize>().unwrap())
+            );
+        }
+        let cli = Cli::try_parse_from(["repopo-core", "check"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Commands::Check { concurrency: 8, .. }
+        ));
+    }
 }
