@@ -1,20 +1,15 @@
 import { all, call, type Operation, run, spawn } from "effection";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "./concurrency.js";
 import { exclusionRegex } from "./context.js";
-import { ExecutionContractError } from "./executionContractError.js";
-import { fileCache, ParsedFileCache } from "./fileCache.js";
+import { ParsedFileCache } from "./fileCache.js";
 import { identifyPolicyInstances } from "./makePolicy.js";
-import {
-	newPerfStats,
-	type PolicyHandlerPerfStats,
-	runWithPerf,
-} from "./perf.js";
+import { newPerfStats, type PolicyHandlerPerfStats } from "./perf.js";
 import type {
 	ConfiguredPolicy,
 	IdentifiedPolicy,
 	PolicyFinding,
-	PolicyResult,
 } from "./policy.js";
+import { PolicyExecutor } from "./policyExecution.js";
 
 /** A finding with runner-owned identity and scope-safe location. @public */
 export type PolicyRunFinding =
@@ -78,26 +73,6 @@ export interface PolicyRunnerOptions {
 	signal?: AbortSignal | undefined;
 }
 
-const windowsAbsolutePath = /^[A-Za-z]:/;
-
-function* execute<T>(handler: () => Promise<T> | Operation<T>): Operation<T> {
-	const execution = handler();
-	if (execution instanceof Promise) {
-		return yield* call(() => execution);
-	}
-	if (
-		typeof execution === "object" &&
-		execution !== null &&
-		Symbol.iterator in execution &&
-		!Array.isArray(execution)
-	) {
-		return yield* execution;
-	}
-	throw new ExecutionContractError(
-		"Handlers and resolvers must be async functions or Effection generators.",
-	);
-}
-
 function matches(regex: RegExp, file: string): boolean {
 	const index = regex.lastIndex;
 	try {
@@ -106,87 +81,6 @@ function matches(regex: RegExp, file: string): boolean {
 	} finally {
 		regex.lastIndex = index;
 	}
-}
-
-function validPath(path: unknown): path is string {
-	return (
-		typeof path === "string" &&
-		path.length > 0 &&
-		!path.includes("\\") &&
-		!path.includes("\0") &&
-		!path.startsWith("/") &&
-		!windowsAbsolutePath.test(path) &&
-		path
-			.split("/")
-			.every((part) => part !== "" && part !== "." && part !== "..")
-	);
-}
-
-function validateResult(
-	result: unknown,
-	repository: boolean,
-	fix: boolean,
-): asserts result is PolicyResult {
-	const invalid = () =>
-		new ExecutionContractError(
-			"Policy handlers and resolvers must return readonly PolicyFinding[] with message, optional manualFix, fixStatus and repository-only files; legacy results are not supported.",
-		);
-	if (!Array.isArray(result)) {
-		throw invalid();
-	}
-	for (const finding of result) {
-		if (
-			typeof finding !== "object" ||
-			finding === null ||
-			Array.isArray(finding) ||
-			Reflect.ownKeys(finding).some(
-				(key) =>
-					typeof key !== "string" ||
-					!["message", "manualFix", "fixStatus", "files"].includes(key),
-			) ||
-			!("message" in finding) ||
-			typeof finding.message !== "string" ||
-			finding.message.length === 0 ||
-			("manualFix" in finding &&
-				finding.manualFix !== undefined &&
-				typeof finding.manualFix !== "string") ||
-			("fixStatus" in finding &&
-				finding.fixStatus !== undefined &&
-				!["available", "fixed", "failed"].includes(finding.fixStatus)) ||
-			(!fix &&
-				(finding.fixStatus === "fixed" || finding.fixStatus === "failed")) ||
-			("files" in finding &&
-				!(
-					repository &&
-					(finding.files === undefined ||
-						(Array.isArray(finding.files) && finding.files.every(validPath)))
-				))
-		) {
-			throw invalid();
-		}
-	}
-}
-
-function mergeFindings(
-	checked: PolicyResult,
-	resolved: PolicyResult,
-): PolicyResult {
-	// Messages identify independent findings within one invocation. Omission is not resolution.
-	const merged = [...checked];
-	const used = new Set<number>();
-	for (const finding of resolved) {
-		const index = checked.findIndex(
-			(previous, candidateIndex) =>
-				!used.has(candidateIndex) && previous.message === finding.message,
-		);
-		if (index === -1) {
-			merged.push(finding);
-		} else if (merged[index]?.fixStatus !== "fixed") {
-			merged[index] = { ...merged[index], ...finding };
-			used.add(index);
-		}
-	}
-	return merged;
 }
 
 /** Effection runner; cancellation unwinds active generator handlers and resolvers. @public */
@@ -348,59 +242,11 @@ export class PolicyRunner {
 			const eligible = (inventory ?? []).filter(
 				(file) => !this.excluded(file, policy),
 			);
-			repositoryFixError = yield* this.runRepositoryPolicy(
-				policy,
-				eligible,
-				result,
-			);
+			repositoryFixError = yield* new PolicyExecutor(
+				this.options.root,
+				fix,
+			).repository(policy, eligible, result);
 		}
-	}
-
-	private *runRepositoryPolicy(
-		policy: Extract<IdentifiedPolicy, { scope: "repository" }>,
-		eligible: readonly string[],
-		result: PolicyRunResults,
-	): Operation<boolean> {
-		const fix = this.options.fix ?? false;
-		try {
-			const findings = yield* runWithPerf(
-				policy.instanceId,
-				"handle",
-				result.perfStats,
-				() =>
-					execute(() =>
-						policy.handler({
-							files: eligible,
-							root: this.options.root,
-							resolve: fix,
-							config: policy.config,
-						}),
-					),
-			);
-			validateResult(findings, true, fix);
-			for (const finding of findings) {
-				result.findings.push({
-					...finding,
-					scope: "repository",
-					policy: policy.name,
-					policyId: policy.instanceId,
-				});
-			}
-		} catch (cause: unknown) {
-			result.errors.push({
-				scope: "repository",
-				files: eligible,
-				policy: policy.name,
-				policyId: policy.instanceId,
-				phase: "handle",
-				kind:
-					cause instanceof ExecutionContractError ? "contract" : "exception",
-				message: cause instanceof Error ? cause.message : String(cause),
-				cause,
-			});
-			return fix;
-		}
-		return false;
 	}
 
 	private *loadInventory(): Operation<readonly string[] | undefined> {
@@ -444,89 +290,10 @@ export class PolicyRunner {
 				});
 				continue;
 			}
-			stopped = yield* this.runFilePolicy(file, policy, output, cache);
-		}
-		return stopped;
-	}
-
-	private *runFilePolicy(
-		file: string,
-		policy: Exclude<IdentifiedPolicy, { scope: "repository" }>,
-		output: PolicyRunResults,
-		cache: ParsedFileCache | undefined,
-	): Operation<boolean> {
-		let stopped = false;
-		let phase: "handle" | "resolve" = "handle";
-		let checked: PolicyResult = [];
-		try {
-			const fix = this.options.fix ?? false;
-			const args = {
-				file,
-				root: this.options.root,
-				resolve: fix,
-				config: policy.config,
-				[fileCache]: cache,
-			};
-			checked = yield* runWithPerf(
-				policy.instanceId,
-				"handle",
-				output.perfStats,
-				() => execute(() => policy.handler(args)),
-			);
-			validateResult(checked, false, fix);
-			if (
-				fix &&
-				checked.length > 0 &&
-				policy.resolver &&
-				!checked.some(
-					(finding) =>
-						finding.fixStatus === "fixed" || finding.fixStatus === "failed",
-				)
-			) {
-				phase = "resolve";
-				const resolver = policy.resolver;
-				const resolved = yield* runWithPerf(
-					policy.instanceId,
-					"resolve",
-					output.perfStats,
-					() =>
-						execute(() =>
-							resolver({
-								file,
-								root: args.root,
-								config: args.config,
-								findings: checked.map((finding) => ({ ...finding })),
-							}),
-						),
-				);
-				validateResult(resolved, false, true);
-				checked = mergeFindings(checked, resolved);
-			}
-		} catch (cause: unknown) {
-			output.errors.push({
-				scope: "file",
-				file,
-				policy: policy.name,
-				policyId: policy.instanceId,
-				phase,
-				kind:
-					cause instanceof ExecutionContractError ? "contract" : "exception",
-				message: cause instanceof Error ? cause.message : String(cause),
-				cause,
-			});
-			stopped = this.options.fix ?? false;
-			if (phase === "handle") {
-				checked = [];
-			}
-		}
-		for (const { files: _files, ...finding } of checked) {
-			output.findings.push({
-				...finding,
-				scope: "file",
-				file,
-				policy: policy.name,
-				policyId: policy.instanceId,
-			});
+			stopped = yield* new PolicyExecutor(
+				this.options.root,
+				this.options.fix ?? false,
+			).file(file, policy, output, cache);
 		}
 		return stopped;
 	}

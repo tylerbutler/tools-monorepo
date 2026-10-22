@@ -9,8 +9,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Runs the Rust-based repopo-core engine with the Node.js sidecar for
- * canonical policy execution. Rust owns the native CLI and file selection;
- * the sidecar shares execution semantics with `check`.
+ * per-policy execution. Rust owns matching, ordering, concurrency, exception
+ * boundaries, repository scheduling and aggregation.
  */
 export class CheckNative extends Command {
 	public static override readonly summary =
@@ -18,7 +18,7 @@ export class CheckNative extends Command {
 
 	public static override readonly description =
 		"Runs the Rust-based repopo-core engine with the Node.js sidecar. " +
-		"Rust handles file selection and reporting; the sidecar shares canonical policy execution with 'check'. " +
+		"Rust handles file matching, scheduling and reporting; the sidecar shares per-policy contracts with 'check'. " +
 		"Repository policies always run with the full repository inventory, including with --stdin. " +
 		"With --fix, repository policies can modify files outside the stdin selection.";
 

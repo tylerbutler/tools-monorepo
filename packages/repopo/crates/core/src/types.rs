@@ -112,14 +112,14 @@ pub struct SkippedWork {
     pub reason: SkipReason,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct PerfStats {
     pub count: usize,
     pub processed: usize,
     pub data: BTreeMap<String, BTreeMap<String, f64>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RunResults {
     pub findings: Vec<Finding>,
@@ -129,6 +129,25 @@ pub struct RunResults {
 }
 
 impl RunResults {
+    pub fn append(&mut self, mut other: Self) {
+        self.findings.append(&mut other.findings);
+        self.errors.append(&mut other.errors);
+        self.skipped.append(&mut other.skipped);
+        self.perf_stats.count += other.perf_stats.count;
+        self.perf_stats.processed += other.perf_stats.processed;
+        for (action, timings) in other.perf_stats.data {
+            for (id, millis) in timings {
+                *self
+                    .perf_stats
+                    .data
+                    .entry(action.clone())
+                    .or_default()
+                    .entry(id)
+                    .or_default() += millis;
+            }
+        }
+    }
+
     pub fn success(&self) -> bool {
         self.errors.is_empty()
             && self
@@ -146,7 +165,9 @@ impl RunResults {
 #[serde(tag = "method", content = "params", rename_all = "snake_case")]
 pub enum IpcRequest {
     LoadConfig(LoadConfigParams),
-    RunPolicies(RunPoliciesParams),
+    BeginRun(BeginRunParams),
+    ExecuteUnits(ExecuteUnitsParams),
+    MatchFiles(MatchFilesParams),
     Shutdown,
 }
 
@@ -158,10 +179,29 @@ pub struct LoadConfigParams {
 }
 
 #[derive(Debug, Serialize)]
-pub struct RunPoliciesParams {
-    pub files: Vec<String>,
+pub struct BeginRunParams {
     pub fix: bool,
-    pub concurrency: usize,
+}
+
+#[derive(Debug, Serialize)]
+pub struct MatchFilesParams {
+    pub pattern: serde_json::Value,
+    pub files: Vec<String>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct ExecuteUnitsParams {
+    pub units: Vec<ExecutionUnit>,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ExecutionUnit {
+    pub policy_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
 }
 
 #[derive(Debug, Deserialize)]

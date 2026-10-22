@@ -57,8 +57,8 @@ FLAGS
 DESCRIPTION
   Checks and applies policies using the Rust engine.
 
-  Runs the Rust-based repopo-core engine with the Node.js sidecar. Rust handles file selection and reporting; the
-  sidecar shares canonical policy execution with 'check'. Repository policies always run with the full repository
+  Runs the Rust-based repopo-core engine with the Node.js sidecar. Rust handles file matching, scheduling and reporting;
+  the sidecar shares per-policy contracts with 'check'. Repository policies always run with the full repository
   inventory, including with --stdin. With --fix, repository policies can modify files outside the stdin selection.
 ```
 

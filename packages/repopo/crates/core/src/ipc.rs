@@ -1,15 +1,20 @@
 use anyhow::{Context, Result};
 use std::io::{BufRead, BufReader, Write};
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
+use std::sync::mpsc::{self, Receiver, RecvTimeoutError};
+use std::thread;
+use std::time::Duration;
 
 use crate::types::{
-    IpcRequest, IpcResponse, LoadConfigParams, LoadConfigResponse, RunPoliciesParams, RunResults,
+    BeginRunParams, ExecuteUnitsParams, ExecutionUnit, IpcRequest, IpcResponse, LoadConfigParams,
+    LoadConfigResponse, MatchFilesParams, RunResults,
 };
 
 pub struct Sidecar {
     child: Child,
-    stdin: ChildStdin,
-    stdout_reader: BufReader<ChildStdout>,
+    stdin: Option<ChildStdin>,
+    responses: Receiver<std::io::Result<String>>,
+    reader: Option<thread::JoinHandle<()>>,
     closed: bool,
 }
 
@@ -28,24 +33,47 @@ impl Sidecar {
             .stdout
             .take()
             .context("Failed to get sidecar stdout")?;
+        let (send, responses) = mpsc::channel();
+        let reader = thread::spawn(move || {
+            let mut reader = BufReader::<ChildStdout>::new(stdout);
+            loop {
+                let mut line = String::new();
+                let result = reader.read_line(&mut line).map(|_| line);
+                let done = result.as_ref().map_or(true, |line| line.is_empty());
+                if send.send(result).is_err() || done {
+                    break;
+                }
+            }
+        });
         Ok(Self {
             child,
-            stdin,
-            stdout_reader: BufReader::new(stdout),
+            stdin: Some(stdin),
+            responses,
+            reader: Some(reader),
             closed: false,
         })
     }
 
     fn request(&mut self, req: &IpcRequest) -> Result<serde_json::Value> {
         let json = serde_json::to_string(req).context("Failed to serialize IPC request")?;
-        writeln!(self.stdin, "{json}").context("Failed to write to sidecar stdin")?;
-        self.stdin
-            .flush()
-            .context("Failed to flush sidecar stdin")?;
-        let mut line = String::new();
-        self.stdout_reader
-            .read_line(&mut line)
-            .context("Failed to read from sidecar stdout")?;
+        anyhow::ensure!(
+            crate::termination::signal() == 0,
+            "Native execution cancelled"
+        );
+        let stdin = self.stdin.as_mut().context("Sidecar already closed")?;
+        writeln!(stdin, "{json}").context("Failed to write to sidecar stdin")?;
+        stdin.flush().context("Failed to flush sidecar stdin")?;
+        let line = loop {
+            if crate::termination::signal() != 0 {
+                self.shutdown()?;
+                anyhow::bail!("Native execution cancelled");
+            }
+            match self.responses.recv_timeout(Duration::from_millis(25)) {
+                Ok(response) => break response.context("Failed to read sidecar response")?,
+                Err(RecvTimeoutError::Timeout) => continue,
+                Err(error) => return Err(error.into()),
+            }
+        };
         if line.is_empty() {
             anyhow::bail!("Sidecar closed stdout unexpectedly");
         }
@@ -72,27 +100,41 @@ impl Sidecar {
         serde_json::from_value(data).context("Failed to parse load_config response")
     }
 
-    pub fn run_policies(
+    pub fn begin_run(&mut self, fix: bool) -> Result<()> {
+        self.request(&IpcRequest::BeginRun(BeginRunParams { fix }))?;
+        Ok(())
+    }
+
+    pub fn execute_units(&mut self, units: Vec<ExecutionUnit>) -> Result<Vec<RunResults>> {
+        let data = self.request(&IpcRequest::ExecuteUnits(ExecuteUnitsParams { units }))?;
+        serde_json::from_value(data).context("Failed to parse canonical unit results")
+    }
+
+    pub fn match_files(
         &mut self,
+        pattern: serde_json::Value,
         files: Vec<String>,
-        fix: bool,
-        concurrency: usize,
-    ) -> Result<RunResults> {
-        let data = self.request(&IpcRequest::RunPolicies(RunPoliciesParams {
-            files,
-            fix,
-            concurrency,
-        }))?;
-        serde_json::from_value(data).context("Failed to parse canonical run results")
+    ) -> Result<Vec<bool>> {
+        let data = self.request(&IpcRequest::MatchFiles(MatchFilesParams { pattern, files }))?;
+        serde_json::from_value(data).context("Failed to parse regex matches")
     }
 
     pub fn shutdown(&mut self) -> Result<()> {
         if !self.closed {
             self.closed = true;
-            let json = serde_json::to_string(&IpcRequest::Shutdown)?;
-            let _ = writeln!(self.stdin, "{json}");
-            let _ = self.stdin.flush();
+            if let Some(mut stdin) = self.stdin.take() {
+                if crate::termination::signal() == 0 {
+                    let json = serde_json::to_string(&IpcRequest::Shutdown)?;
+                    let _ = writeln!(stdin, "{json}");
+                    let _ = stdin.flush();
+                }
+                // EOF cancels active sidecar work; never kill it during teardown.
+                drop(stdin);
+            }
             self.child.wait().context("Failed to wait for sidecar")?;
+            if let Some(reader) = self.reader.take() {
+                let _ = reader.join();
+            }
         }
         Ok(())
     }

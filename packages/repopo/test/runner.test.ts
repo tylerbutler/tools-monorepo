@@ -93,6 +93,51 @@ describe("canonical policy execution", () => {
 	});
 
 	it.each([
+		"promise",
+		"generator",
+	] as const)("preserves hostile original causes from a %s without coercion or dropping independent work", async (mode) => {
+		const getter = vi.fn(() => {
+			throw new Error("must not inspect");
+		});
+		const cause = Proxy.revocable({}, { getPrototypeOf: getter });
+		cause.revoke();
+		const handler =
+			mode === "promise"
+				? async () => {
+						throw cause.proxy;
+					}
+				: function* () {
+						yield* sleep(0);
+						throw cause.proxy;
+					};
+		const result = await runPolicies({
+			root,
+			files: ["a.txt"],
+			inventory: [],
+			policies: [
+				makePolicy({ ...fileDefinition, handler }),
+				makePolicy({
+					...fileDefinition,
+					name: "Independent",
+					handler: async () => [{ message: "survived" }],
+				}),
+				makePolicy({ ...repositoryDefinition, handler }),
+			],
+		});
+		expect(result.errors).toHaveLength(2);
+		expect(result.errors.every((error) => error.cause === cause.proxy)).toBe(
+			true,
+		);
+		expect(result.errors.every((error) => error.kind === "exception")).toBe(
+			true,
+		);
+		expect(result.findings).toMatchObject([
+			{ policyId: "Independent", message: "survived" },
+		]);
+		expect(getter).not.toHaveBeenCalled();
+	});
+
+	it.each([
 		true,
 		undefined,
 		{},
