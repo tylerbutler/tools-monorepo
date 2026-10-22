@@ -1,20 +1,26 @@
 {
 	"extends": "../../config/tsconfig.strict.json",
-	"include": ["src/**/*"],
-	"exclude": ["src/test/**/*"],
-	"compilerOptions": {
-		"outDir": "./esm",
-		"rootDir": "./src",
-		"types": ["node"],
-		"exactOptionalPropertyTypes": false,
-		"noUnusedLocals": false,
-	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"src/test/**/*"
+	],
 	"references": [
 		{
-			"path": "../fundamentals",
+			"path": "../fundamentals"
 		},
 		{
-			"path": "../lilconfig-loader-ts",
-		},
+			"path": "../lilconfig-loader-ts"
+		}
 	],
+	"compilerOptions": {
+		"exactOptionalPropertyTypes": false,
+		"noUnusedLocals": false,
+		"types": [
+			"node"
+		],
+		"outDir": "./esm",
+		"rootDir": "./src"
+	}
 }

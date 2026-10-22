@@ -1,23 +1,27 @@
 {
 	"extends": "../../config/tsconfig.strict.json",
-	"include": ["src/**/*"],
-	"compilerOptions": {
-		"types": ["node"],
-		"outDir": "./esm",
-		"rootDir": "./src",
-	},
-	"ts-node": {
-		"esm": true,
-	},
+	"include": [
+		"src/**/*"
+	],
 	"references": [
 		{
-			"path": "../cli-api",
+			"path": "../cli-api"
 		},
 		{
-			"path": "../fundamentals",
+			"path": "../fundamentals"
 		},
 		{
-			"path": "../repopo",
-		},
+			"path": "../repopo"
+		}
 	],
+	"compilerOptions": {
+		"types": [
+			"node"
+		],
+		"outDir": "./esm",
+		"rootDir": "./src"
+	},
+	"ts-node": {
+		"esm": true
+	}
 }
