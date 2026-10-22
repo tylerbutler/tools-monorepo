@@ -6,6 +6,6 @@
 		"reportFileName": "repopo-api.api.md",
 	},
 	"docModel": {
-		"apiJsonFilePath": "<projectFolder>/_temp/api-extractor/repopo-api.api.json",
+		"apiJsonFilePath": "<projectFolder>/_temp/api-extractor/api/repopo-api.api.json",
 	},
 }

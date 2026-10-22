@@ -1022,6 +1022,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.3.8
         version: 2.3.8
+      '@microsoft/api-documenter':
+        specifier: ^7.30.7
+        version: 7.30.18(@types/node@22.20.5)
       '@microsoft/api-extractor':
         specifier: ^7.58.9
         version: 7.59.4(@types/node@22.20.5)
