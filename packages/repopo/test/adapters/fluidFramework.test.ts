@@ -6,10 +6,49 @@ import {
 	type FluidHandler,
 	fromFluidHandlers,
 } from "../../src/adapters/fluidFramework.js";
+import { makePolicy } from "../../src/makePolicy.js";
 import type { PolicyArgs } from "../../src/policy.js";
+import { runPolicies } from "../../src/runner.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("FluidFramework adapter", () => {
+	it.each([
+		"handler",
+		"resolver",
+	] as const)("preserves hostile rejected values at the external %s boundary", async (phase) => {
+		const trap = vi.fn(() => {
+			throw new Error("must not inspect");
+		});
+		const cause = new Proxy({}, { getPrototypeOf: trap, get: trap });
+		const definitions = fromFluidHandlers([
+			{
+				name: "External",
+				match: /./,
+				handler: async () => {
+					if (phase === "handler") {
+						throw cause;
+					}
+					return "needs fix";
+				},
+				resolver: async () => {
+					throw cause;
+				},
+			},
+		]);
+		const result = await runPolicies({
+			root: ".",
+			files: ["a.txt", "b.txt"],
+			fix: phase === "resolver",
+			policies: definitions.map((definition) => makePolicy(definition)),
+		});
+		expect(result.errors).toHaveLength(2);
+		expect(result.errors.every((error) => error.cause === cause)).toBe(true);
+		expect(result.errors.every((error) => error.kind === "exception")).toBe(
+			true,
+		);
+		expect(trap).not.toHaveBeenCalled();
+	});
+
 	let tempDir: string;
 
 	beforeEach(async () => {

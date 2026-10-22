@@ -10,6 +10,7 @@ import type {
 	PolicyArgs,
 	PolicyResult,
 } from "../policy.js";
+import { settlePolicyPromise } from "../settlePolicyPromise.js";
 import { parseToml } from "./tomlParser.js";
 
 /**
@@ -132,7 +133,7 @@ export function defineGleamPolicy<C = void>(
 			const result = gleamHandler(toml, innerArgs);
 
 			if (result instanceof Promise) {
-				return yield* call(() => result);
+				return yield* settlePolicyPromise(result);
 			}
 			if (isOperation<PolicyResult>(result)) {
 				return yield* result;

@@ -11,6 +11,7 @@ import type {
 	PolicyArgs,
 	PolicyResult,
 } from "../policy.js";
+import { settlePolicyPromise } from "../settlePolicyPromise.js";
 
 const { readFile: readJson } = jsonfile;
 
@@ -128,7 +129,7 @@ export function definePackagePolicy<J = PackageJson, C = void>(
 
 			// Handle both Operation (generator) and Promise return types
 			if (result instanceof Promise) {
-				return yield* call(() => result);
+				return yield* settlePolicyPromise(result);
 			}
 			// Check if it's an Effection Operation (generator)
 			if (isOperation<PolicyResult>(result)) {

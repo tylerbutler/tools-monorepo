@@ -1,28 +1,18 @@
 import { types } from "node:util";
-import { call, type Operation } from "effection";
+import type { Operation } from "effection";
 import { ExecutionContractError } from "./executionContractError.js";
 import { fileCache, type ParsedFileCache } from "./fileCache.js";
 import { runWithPerf } from "./perf.js";
 import type { IdentifiedPolicy, PolicyResult } from "./policy.js";
 import type { PolicyRunResults } from "./runner.js";
+import { settlePolicyPromise } from "./settlePolicyPromise.js";
 
 const windowsAbsolutePath = /^[A-Za-z]:/;
 
 function* execute<T>(handler: () => Promise<T> | Operation<T>): Operation<T> {
 	const execution = handler();
 	if (execution instanceof Promise) {
-		// Effection normalizes rejected values via instanceof/String, which can
-		// execute hostile traps. Carry rejection as data until our catch boundary.
-		const settled = yield* call(() =>
-			execution.then(
-				(value) => ({ ok: true, value }) as const,
-				(cause: unknown) => ({ ok: false, cause }) as const,
-			),
-		);
-		if (!settled.ok) {
-			throw settled.cause;
-		}
-		return settled.value;
+		return yield* settlePolicyPromise(execution);
 	}
 	if (
 		typeof execution === "object" &&

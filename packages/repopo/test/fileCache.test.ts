@@ -1,17 +1,17 @@
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { all, run } from "effection";
+import { all, ensure, run, sleep } from "effection";
 import jsonfile from "jsonfile";
 import { join } from "pathe";
 import { parse, TomlDate } from "smol-toml";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { makePolicy } from "../src/makePolicy.js";
-import type { ConfiguredPolicy } from "../src/policy.js";
+import type { ConfiguredPolicy, PolicyResult } from "../src/policy.js";
 import { defineCargoPolicy } from "../src/policyDefiners/defineCargoPolicy.js";
 import { defineGleamPolicy } from "../src/policyDefiners/defineGleamPolicy.js";
 import { definePackagePolicy } from "../src/policyDefiners/definePackagePolicy.js";
 import { parseToml } from "../src/policyDefiners/tomlParser.js";
-import { PolicyRunner } from "../src/runner.js";
+import { PolicyRunner, runPolicies } from "../src/runner.js";
 import { runHandler } from "./test-helpers.js";
 
 vi.mock("jsonfile", async (importOriginal) => {
@@ -58,6 +58,118 @@ describe("run-scoped parsed manifests", () => {
 			files,
 		});
 	}
+
+	it.each([
+		["package.json", definePackagePolicy<Record<string, unknown>>],
+		["Cargo.toml", defineCargoPolicy],
+		["gleam.toml", defineGleamPolicy],
+	] as const)("preserves hostile async and generator causes and continues isolated checks for %s", async (file, define) => {
+		await writeFile(
+			join(root, file),
+			file === "package.json" ? '{"name":"original"}' : 'name = "original"',
+		);
+		for (const mode of ["async", "generator"] as const) {
+			const trap = vi.fn(() => {
+				throw new Error("must not inspect rejected cause");
+			});
+			const cause = new Proxy({}, { getPrototypeOf: trap, get: trap });
+			const reject = async (): Promise<PolicyResult> => {
+				throw cause;
+			};
+			const result = await run(() =>
+				runner(
+					[
+						makePolicy(
+							define({
+								name: "Reject",
+								description: "Rejects after mutating its manifest",
+								handler:
+									mode === "async"
+										? async (manifest) => {
+												manifest.name = "mutated";
+												return reject();
+											}
+										: function* (manifest) {
+												manifest.name = "mutated";
+												yield* sleep(0);
+												throw cause;
+											},
+							}),
+						),
+						makePolicy(
+							define({
+								name: "Independent",
+								description: "Still observes its isolated manifest",
+								handler: async (manifest) => [
+									{ message: String(manifest.name) },
+								],
+							}),
+						),
+					],
+					false,
+					[file],
+				).run(),
+			);
+			expect(result.errors).toHaveLength(1);
+			expect(result.errors[0]?.cause === cause).toBe(true);
+			expect(result.errors[0]?.kind).toBe("exception");
+			expect(result.findings).toMatchObject([
+				{ policyId: "Independent", message: "original" },
+			]);
+			expect(trap).not.toHaveBeenCalled();
+		}
+	});
+
+	it.each([
+		["package.json", definePackagePolicy<Record<string, unknown>>],
+		["Cargo.toml", defineCargoPolicy],
+		["gleam.toml", defineGleamPolicy],
+	] as const)("retains contract classification and cancellation cleanup through %s helpers", async (file, define) => {
+		await writeFile(join(root, file), file === "package.json" ? "{}" : "");
+		const invalid = define({
+			name: "Invalid",
+			description: "Invalid synchronous implementation",
+			handler: async () => [],
+		});
+		const metadata = { name: "Invalid", description: "Invalid implementation" };
+		const synchronous = Reflect.apply(define, undefined, [
+			{ ...metadata, handler: () => [] },
+		]);
+		const legacy = Reflect.apply(define, undefined, [
+			{ ...metadata, handler: async () => true },
+		]);
+		for (const definition of [synchronous, legacy]) {
+			const result = await runPolicies({
+				root,
+				files: [file],
+				policies: [{ ...invalid, handler: definition.handler }],
+			});
+			expect(result.errors).toMatchObject([{ kind: "contract" }]);
+		}
+		const controller = new AbortController();
+		const cleanup = vi.fn();
+		const running = runPolicies({
+			root,
+			files: [file],
+			signal: controller.signal,
+			policies: [
+				makePolicy(
+					define({
+						name: "Cancel",
+						description: "Releases parsed helper resources",
+						handler: function* () {
+							yield* ensure(cleanup);
+							controller.abort(new Error("cancel parsed handler"));
+							yield* sleep(10000);
+							return [];
+						},
+					}),
+				),
+			],
+		});
+		await expect(running).rejects.toThrow();
+		expect(cleanup).toHaveBeenCalledOnce();
+	});
 
 	it("deduplicates simultaneous JSON reads and isolates nested mutations", async () => {
 		await writeFile(join(root, "package.json"), '{"nested":{"value":1}}');
