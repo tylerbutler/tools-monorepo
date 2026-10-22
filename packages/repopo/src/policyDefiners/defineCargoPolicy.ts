@@ -5,6 +5,7 @@ import { ExecutionContractError } from "../executionContractError.js";
 import { readParsedFile } from "../fileCache.js";
 import { CargoTomlRegexMatch } from "../policies/constants.js";
 import type {
+	DefinedConfig,
 	FilePolicyDefinition,
 	PolicyArgs,
 	PolicyResult,
@@ -99,8 +100,8 @@ export interface DefineCargoPolicyArgs<C> {
  * @public
  */
 export function defineCargoPolicy<C = void>(
-	args: DefineCargoPolicyArgs<C> & { defaultConfig: C },
-): FilePolicyDefinition<C> & { defaultConfig: C };
+	args: DefineCargoPolicyArgs<C> & { defaultConfig: DefinedConfig<C> },
+): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
 export function defineCargoPolicy<C = void>(
 	args: DefineCargoPolicyArgs<C> & { requiresConfig: true },
 ): FilePolicyDefinition<C> & { requiresConfig: true };

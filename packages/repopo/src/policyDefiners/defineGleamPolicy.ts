@@ -5,6 +5,7 @@ import { ExecutionContractError } from "../executionContractError.js";
 import { readParsedFile } from "../fileCache.js";
 import { GleamTomlRegexMatch } from "../policies/constants.js";
 import type {
+	DefinedConfig,
 	FilePolicyDefinition,
 	PolicyArgs,
 	PolicyResult,
@@ -98,8 +99,8 @@ export interface DefineGleamPolicyArgs<C> {
  * @public
  */
 export function defineGleamPolicy<C = void>(
-	args: DefineGleamPolicyArgs<C> & { defaultConfig: C },
-): FilePolicyDefinition<C> & { defaultConfig: C };
+	args: DefineGleamPolicyArgs<C> & { defaultConfig: DefinedConfig<C> },
+): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
 export function defineGleamPolicy<C = void>(
 	args: DefineGleamPolicyArgs<C> & { requiresConfig: true },
 ): FilePolicyDefinition<C> & { requiresConfig: true };

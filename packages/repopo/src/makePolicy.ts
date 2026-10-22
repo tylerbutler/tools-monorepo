@@ -2,6 +2,7 @@ import type {
 	ConfiguredFilePolicy,
 	ConfiguredPolicy,
 	ConfiguredRepositoryPolicy,
+	DefinedConfig,
 	FilePolicyDefinition,
 	PolicyDefinition,
 	PolicyInstanceId,
@@ -11,15 +12,20 @@ import type {
 } from "./policy.js";
 
 type ConfigOf<D> = D extends PolicyDefinition<infer C> ? C : never;
-type OptionsFor<D> = D extends { requiresConfig: true }
-	? D extends { defaultConfig: ConfigOf<D> }
-		? [options?: PolicyOptions<ConfigOf<D>>]
-		: [
-				options: PolicyOptions<ConfigOf<D>> & {
-					config: Exclude<ConfigOf<D>, undefined>;
-				},
-			]
-	: [options?: PolicyOptions<ConfigOf<D>>];
+type RequiredConfigDefinitions<D> = D extends { requiresConfig: true }
+	? D extends { defaultConfig: infer Default }
+		? undefined extends Default
+			? D
+			: never
+		: D
+	: never;
+type OptionsFor<D> = [RequiredConfigDefinitions<D>] extends [never]
+	? [options?: PolicyOptions<ConfigOf<D>>]
+	: [
+			options: PolicyOptions<ConfigOf<D>> & {
+				config: DefinedConfig<ConfigOf<RequiredConfigDefinitions<D>>>;
+			},
+		];
 
 /** Configure a file definition using a single options object. @public */
 export function makePolicy<D extends FilePolicyDefinition<unknown>>(

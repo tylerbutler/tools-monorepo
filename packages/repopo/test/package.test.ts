@@ -86,6 +86,33 @@ function requiredUnion(definition: PolicyDefinition<Settings> & { requiresConfig
 	makePolicy(definition);
 	return makePolicy(definition, { config });
 }
+const optionalRepository = {
+	name: "OptionalRepository", description: "OptionalRepository", scope: "repository",
+	handler: async () => [],
+} satisfies RepositoryPolicyDefinition;
+function mixedUnion(definition: typeof file | typeof optionalRepository) {
+	// @ts-expect-error Any required branch prevents omitted options.
+	makePolicy(definition);
+	// @ts-expect-error Any required branch prevents omitted config.
+	makePolicy(definition, {});
+	// @ts-expect-error An optional void-config branch cannot permit undefined config.
+	makePolicy(definition, { config: undefined });
+	// @ts-expect-error A union must not weaken complete explicit config.
+	makePolicy(definition, { config: { threshold: 1 } });
+	return makePolicy(definition, { config });
+}
+function mixedFileUnion(definition: typeof file | Omit<typeof file, "requiresConfig">) {
+	// @ts-expect-error A same-scope union also needs config for every possible branch.
+	makePolicy(definition);
+	const configured: ConfiguredFilePolicy<Settings> = makePolicy(definition, { config });
+	return configured;
+}
+function mixedRepositoryUnion(definition: typeof repository | Omit<typeof repository, "requiresConfig">) {
+	// @ts-expect-error Repository union omission must also be safe for every branch.
+	makePolicy(definition, {});
+	const configured: ConfiguredRepositoryPolicy<Settings> = makePolicy(definition, { config });
+	return configured;
+}
 // @ts-expect-error Required file config is missing.
 makePolicy(file);
 // @ts-expect-error Required repository config is missing.
@@ -109,6 +136,52 @@ const nullable = { ...repository, handler: async ({ config }) => config === null
 makePolicy(nullable, { config: null });
 const nullableFile = { ...file, resolver: undefined, handler: async ({ config }) => config === null ? [] : [], defaultConfig: config } satisfies FilePolicyDefinition<Settings | null>;
 makePolicy(nullableFile, { config: null });
+const undefinedDefault = {
+	...file, resolver: undefined, defaultConfig: undefined,
+	handler: async ({ config }) => [],
+} satisfies FilePolicyDefinition<Settings | undefined>;
+// @ts-expect-error An undefined default cannot satisfy required config.
+makePolicy(undefinedDefault);
+// @ts-expect-error Missing config still selects the unusable undefined default.
+makePolicy(undefinedDefault, {});
+// @ts-expect-error Explicit undefined also selects the unusable default.
+makePolicy(undefinedDefault, { config: undefined });
+makePolicy(undefinedDefault, { config });
+const uncertainDefault = { ...undefinedDefault, defaultConfig: Math.random() > 0.5 ? config : undefined };
+// @ts-expect-error A possibly undefined default is not definitely usable.
+makePolicy(uncertainDefault);
+function mixedDefaultUnion(definition: typeof defaults | typeof undefinedDefault) {
+	// @ts-expect-error One usable default cannot cover the other branch's undefined default.
+	makePolicy(definition);
+	// @ts-expect-error Empty options are unsafe for the branch without a usable default.
+	makePolicy(definition, {});
+	// @ts-expect-error Undefined selects defaults and one possible branch has none.
+	makePolicy(definition, { config: undefined });
+	makePolicy(definition, { config });
+}
+const nullDefault = {
+	...nullable, defaultConfig: null,
+} satisfies RepositoryPolicyDefinition<Settings | null>;
+makePolicy(nullDefault);
+makePolicy(nullDefault, {});
+makePolicy(nullDefault, { config: undefined });
+const undefinedRepositoryDefault = {
+	...repository, defaultConfig: undefined, handler: async ({ config }) => [],
+} satisfies RepositoryPolicyDefinition<Settings | undefined>;
+// @ts-expect-error Repository defaults must also be definitely defined.
+makePolicy(undefinedRepositoryDefault);
+const nullRequired = { ...nullable, defaultConfig: undefined } satisfies RepositoryPolicyDefinition<Settings | null | undefined>;
+makePolicy(nullRequired, { config: null });
+const definedDefault = {
+	...undefinedDefault, defaultConfig: config,
+} satisfies FilePolicyDefinition<Settings | undefined>;
+const definedFile: ConfiguredFilePolicy<Settings | undefined> = makePolicy(definedDefault);
+function defaultedUnion(definition: typeof definedDefault | typeof nullDefault) {
+	makePolicy(definition);
+	makePolicy(definition, { config: undefined });
+	// @ts-expect-error Union defaults do not permit incomplete explicit config.
+	makePolicy(definition, { config: { threshold: 1 } });
+}
 makePolicy(PackageJsonProperties, { config: { verbatim: { license: "MIT" } } });
 makePolicy(HtmlFileHeaders, { config: { headerText: "Copyright" } });
 makePolicy(JsTsFileHeaders, { config: { headerText: "Copyright" } });
@@ -138,6 +211,39 @@ const gleam = defineGleamPolicy<Settings>({ name: "Gleam", description: "Gleam",
 makePolicy(gleam);
 // @ts-expect-error Helper defaults do not weaken explicit config.
 makePolicy(gleam, { config: { threshold: 1 } });
+const manifestArguments = { name: "Manifest", description: "Manifest", requiresConfig: true, handler: async () => [] } satisfies { name: string; description: string; requiresConfig: true; handler: () => Promise<PolicyResult> };
+const maybeDefault: Settings | undefined = Math.random() > 0.5 ? config : undefined;
+const packageUndefined = definePackagePolicy<{}, Settings | undefined>({ ...manifestArguments, defaultConfig: undefined });
+const cargoUndefined = defineCargoPolicy<Settings | undefined>({ ...manifestArguments, defaultConfig: undefined });
+const gleamUndefined = defineGleamPolicy<Settings | undefined>({ ...manifestArguments, defaultConfig: undefined });
+const packageMaybe = definePackagePolicy<{}, Settings | undefined>({ ...manifestArguments, defaultConfig: maybeDefault });
+const cargoMaybe = defineCargoPolicy<Settings | undefined>({ ...manifestArguments, defaultConfig: maybeDefault });
+const gleamMaybe = defineGleamPolicy<Settings | undefined>({ ...manifestArguments, defaultConfig: maybeDefault });
+for (const definition of [packageUndefined, cargoUndefined, gleamUndefined, packageMaybe, cargoMaybe, gleamMaybe]) {
+	definition.requiresConfig satisfies true;
+	// @ts-expect-error Parsed-manifest helpers retain required metadata for possibly undefined defaults.
+	makePolicy(definition);
+	// @ts-expect-error Empty options cannot satisfy required config.
+	makePolicy(definition, {});
+	// @ts-expect-error Undefined cannot satisfy required config.
+	makePolicy(definition, { config: undefined });
+	// @ts-expect-error Explicit config must remain complete.
+	makePolicy(definition, { config: { threshold: 1 } });
+	makePolicy(definition, { config });
+}
+const packageDefault = definePackagePolicy<{}, Settings | undefined>({ ...manifestArguments, defaultConfig: config });
+const cargoDefault = defineCargoPolicy<Settings | undefined>({ ...manifestArguments, defaultConfig: config });
+const gleamDefault = defineGleamPolicy<Settings | undefined>({ ...manifestArguments, defaultConfig: config });
+const packageNull = definePackagePolicy<{}, Settings | null | undefined>({ ...manifestArguments, defaultConfig: null });
+const cargoNull = defineCargoPolicy<Settings | null | undefined>({ ...manifestArguments, defaultConfig: null });
+const gleamNull = defineGleamPolicy<Settings | null | undefined>({ ...manifestArguments, defaultConfig: null });
+for (const definition of [packageDefault, cargoDefault, gleamDefault, packageNull, cargoNull, gleamNull]) {
+	const configured: ConfiguredFilePolicy<Settings | null | undefined> = makePolicy(definition);
+	makePolicy(definition, {});
+	makePolicy(definition, { config: undefined });
+	// @ts-expect-error Complete defaults do not allow incomplete explicit replacements.
+	makePolicy(definition, { config: { label: "partial" } });
+}
 const settings: PolicyOptions<{ exclude: string[] }> = { config: { exclude: ["a"] } };
 const repopo = { policies: [a, b] } satisfies RepopoConfig;
 const options: PolicyRunnerOptions = { root: "/", inventory: [], files: [], policies: repopo.policies, fix: true, concurrency: 2 };

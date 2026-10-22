@@ -77,6 +77,9 @@ export type PolicyHandler<C = void> = FilePolicyDefinition<C>["handler"];
 export type RepositoryPolicyHandler<C = void> =
 	RepositoryPolicyDefinition<C>["handler"];
 
+/** Exclude undefined (including void) while preserving allowed null values. @internal */
+export type DefinedConfig<C> = NonNullable<C> | (C & null);
+
 /** Instance configuration and repo-relative regex exclusions. @public */
 export interface PolicyOptions<C = void> {
 	config?: C | undefined;

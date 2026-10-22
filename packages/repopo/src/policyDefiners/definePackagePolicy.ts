@@ -6,6 +6,7 @@ import { ExecutionContractError } from "../executionContractError.js";
 import { readParsedFile } from "../fileCache.js";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
+	DefinedConfig,
 	FilePolicyDefinition,
 	PolicyArgs,
 	PolicyResult,
@@ -97,8 +98,8 @@ export interface DefinePackagePolicyArgs<J, C> {
  * @public
  */
 export function definePackagePolicy<J = PackageJson, C = void>(
-	args: DefinePackagePolicyArgs<J, C> & { defaultConfig: C },
-): FilePolicyDefinition<C> & { defaultConfig: C };
+	args: DefinePackagePolicyArgs<J, C> & { defaultConfig: DefinedConfig<C> },
+): FilePolicyDefinition<C> & { defaultConfig: DefinedConfig<C> };
 export function definePackagePolicy<J = PackageJson, C = void>(
 	args: DefinePackagePolicyArgs<J, C> & { requiresConfig: true },
 ): FilePolicyDefinition<C> & { requiresConfig: true };
