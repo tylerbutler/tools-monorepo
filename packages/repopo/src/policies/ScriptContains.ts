@@ -72,11 +72,12 @@ export const ScriptContains = definePackagePolicy<
 	PackageJson,
 	ScriptContainsConfig | undefined
 >({
+	requiresConfig: true,
 	name: POLICY_NAME,
 	description: "Validates that script bodies contain required substrings.",
-	handler: async (json, { file, config }) => {
+	handler: async (json, { config }) => {
 		if (config === undefined || config.rules.length === 0) {
-			return true;
+			return [];
 		}
 
 		const scripts = json.scripts ?? {};
@@ -101,14 +102,8 @@ export const ScriptContains = definePackagePolicy<
 		}
 
 		if (errors.length === 0) {
-			return true;
+			return [];
 		}
-
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: false,
-			errorMessages: errors,
-		};
+		return errors.map((message) => ({ message }));
 	},
 });

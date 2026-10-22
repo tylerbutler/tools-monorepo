@@ -5,9 +5,9 @@ import type { PackageJson } from "type-fest";
 import { readParsedFile } from "../fileCache.js";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
+	FilePolicyDefinition,
 	PolicyArgs,
-	PolicyHandlerResult,
-	PolicyShape,
+	PolicyResult,
 } from "../policy.js";
 
 const { readFile: readJson } = jsonfile;
@@ -27,7 +27,7 @@ const { readFile: readJson } = jsonfile;
 export type PackageJsonHandler<J, C> = (
 	json: J,
 	args: PolicyArgs<C>,
-) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
+) => Operation<PolicyResult> | Promise<PolicyResult>;
 
 /**
  * Type guard to check if a value is an Effection Operation (generator).
@@ -66,6 +66,7 @@ export interface DefinePackagePolicyArgs<J, C> {
 	 * Optional default configuration for the policy.
 	 */
 	defaultConfig?: C;
+	requiresConfig?: boolean;
 }
 
 /**
@@ -94,15 +95,25 @@ export interface DefinePackagePolicyArgs<J, C> {
  *
  * @public
  */
-export function definePackagePolicy<J = PackageJson, C = undefined>(
+export function definePackagePolicy<J = PackageJson, C = void>(
+	args: DefinePackagePolicyArgs<J, C> & { defaultConfig: C },
+): FilePolicyDefinition<C> & { defaultConfig: C };
+export function definePackagePolicy<J = PackageJson, C = void>(
+	args: DefinePackagePolicyArgs<J, C> & { requiresConfig: true },
+): FilePolicyDefinition<C> & { requiresConfig: true };
+export function definePackagePolicy<J = PackageJson, C = void>(
 	args: DefinePackagePolicyArgs<J, C>,
-): PolicyShape<C> {
+): FilePolicyDefinition<C>;
+export function definePackagePolicy<J = PackageJson, C = void>(
+	args: DefinePackagePolicyArgs<J, C>,
+): FilePolicyDefinition<C> {
 	const { name, description, handler: packageHandler, defaultConfig } = args;
 	return {
 		name,
 		description,
 		match: PackageJsonRegexMatch,
 		defaultConfig,
+		requiresConfig: args.requiresConfig,
 		handler: function* (innerArgs) {
 			const json: J = yield* call(() =>
 				readParsedFile(innerArgs, "json", () =>
@@ -116,7 +127,7 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 				return yield* call(() => result);
 			}
 			// Check if it's an Effection Operation (generator)
-			if (isOperation<PolicyHandlerResult>(result)) {
+			if (isOperation<PolicyResult>(result)) {
 				return yield* result;
 			}
 			// This should never happen with proper handler typing
@@ -124,9 +135,3 @@ export function definePackagePolicy<J = PackageJson, C = undefined>(
 		},
 	};
 }
-
-/**
- * Alias for definePackagePolicy.
- * @alpha
- */
-export const packagePolicy = definePackagePolicy;

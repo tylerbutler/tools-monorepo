@@ -76,7 +76,10 @@ function parseRequiredEntry(entry: RequiredScriptEntry): ParsedEntry {
 
 interface ValidationResult {
 	missingScripts: string[];
-	missingWithDefaults: Array<{ name: string; defaultValue: string }>;
+	missingWithDefaults: Array<{
+		name: string;
+		defaultValue: string;
+	}>;
 }
 
 function validateRequiredScripts(
@@ -84,8 +87,10 @@ function validateRequiredScripts(
 	requiredEntries: RequiredScriptEntry[],
 ): ValidationResult {
 	const missingScripts: string[] = [];
-	const missingWithDefaults: Array<{ name: string; defaultValue: string }> = [];
-
+	const missingWithDefaults: Array<{
+		name: string;
+		defaultValue: string;
+	}> = [];
 	for (const entry of requiredEntries) {
 		const { name, defaultValue } = parseRequiredEntry(entry);
 		if (!Object.hasOwn(scripts, name)) {
@@ -102,7 +107,10 @@ function validateRequiredScripts(
 async function fixMissingScripts(
 	json: PackageJson,
 	file: string,
-	missingWithDefaults: Array<{ name: string; defaultValue: string }>,
+	missingWithDefaults: Array<{
+		name: string;
+		defaultValue: string;
+	}>,
 	existingScripts: Record<string, string | undefined>,
 ): Promise<string[]> {
 	const updatedScripts: Record<string, string> = {};
@@ -160,18 +168,19 @@ export const RequiredScripts = definePackagePolicy<
 	PackageJson,
 	RequiredScriptsConfig | undefined
 >({
+	requiresConfig: true,
 	name: POLICY_NAME,
 	description: "Validates that required scripts exist in package.json.",
 	handler: async (json, { file, root, resolve, config }) => {
 		if (config === undefined || config.scripts.length === 0) {
-			return true;
+			return [];
 		}
 
 		const scripts = json.scripts ?? {};
 		const validation = validateRequiredScripts(scripts, config.scripts);
 
 		if (validation.missingScripts.length === 0) {
-			return true;
+			return [];
 		}
 
 		const hasAutoFixableErrors = validation.missingWithDefaults.length > 0;
@@ -189,30 +198,28 @@ export const RequiredScripts = definePackagePolicy<
 				const stillMissing = validation.missingScripts.filter(
 					(name) => !fixedScripts.includes(name),
 				);
-
-				return {
-					name: POLICY_NAME,
-					file,
-					resolved: stillMissing.length === 0,
-					errorMessages:
-						stillMissing.length > 0
-							? [
-									`Fixed scripts: ${fixedScripts.join(", ")}. Still missing: ${stillMissing.join(", ")}`,
-								]
-							: [`Fixed scripts: ${fixedScripts.join(", ")}`],
-				};
+				return [
+					...fixedScripts.map((name) => ({
+						message: `Fixed scripts: ${name}`,
+						fixStatus: "fixed" as const,
+					})),
+					...stillMissing.map((name) => ({
+						message: `Still missing: ${name}`,
+					})),
+				];
 			} catch {
 				// Fall through to return regular failure
 			}
 		}
-
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: hasAutoFixableErrors,
-			errorMessages: [
-				`Missing required scripts:\n\t${validation.missingScripts.join("\n\t")}`,
-			],
-		};
+		return validation.missingScripts.map((name) => ({
+			message: `Missing required scripts:\n\t${name}`,
+			fixStatus: validation.missingWithDefaults.some(
+				(entry) => entry.name === name,
+			)
+				? resolve
+					? "failed"
+					: "available"
+				: undefined,
+		}));
 	},
 });

@@ -5,7 +5,7 @@ import jsonfile from "jsonfile";
 import { join } from "pathe";
 import { parse, TomlDate } from "smol-toml";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { policy } from "../src/makePolicy.js";
+import { makePolicy } from "../src/makePolicy.js";
 import type { ConfiguredPolicy } from "../src/policy.js";
 import { defineCargoPolicy } from "../src/policyDefiners/defineCargoPolicy.js";
 import { defineGleamPolicy } from "../src/policyDefiners/defineGleamPolicy.js";
@@ -46,14 +46,16 @@ describe("run-scoped parsed manifests", () => {
 	afterEach(async () => {
 		await rm(root, { recursive: true, force: true });
 	});
-
-	function runner(policies: ConfiguredPolicy[], resolve = false) {
+	function runner(
+		policies: ConfiguredPolicy[],
+		resolve = false,
+		files = ["package.json"],
+	) {
 		return new PolicyRunner({
 			policies,
-			gitRoot: root,
-			resolve,
-			excludeFromAll: [],
-			excludePoliciesForFiles: new Map(),
+			root,
+			fix: resolve,
+			files,
 		});
 	}
 
@@ -61,21 +63,26 @@ describe("run-scoped parsed manifests", () => {
 		await writeFile(join(root, "package.json"), '{"nested":{"value":1}}');
 		const seen: number[] = [];
 		const policies = [0, 1, 2].map((index) =>
-			policy(
-				definePackagePolicy<{ nested: { value: number } }>({
+			makePolicy(
+				definePackagePolicy<{
+					nested: {
+						value: number;
+					};
+				}>({
 					name: `JSON${index}`,
 					description: "Reads a manifest snapshot",
 					handler: async (json) => {
 						seen.push(json.nested.value);
 						json.nested.value = 99;
 						await Promise.resolve();
-						return true;
+						return [];
 					},
 				}),
 			),
 		);
-		const result = await run(() => runner(policies).run(["package.json"]));
-		expect(result.results).toEqual([]);
+		const result = await run(() => runner(policies).run());
+		expect(result.findings).toEqual([]);
+		expect(result.errors).toEqual([]);
 		expect(seen).toEqual([1, 1, 1]);
 		expect(jsonfile.readFile).toHaveBeenCalledTimes(1);
 	});
@@ -90,20 +97,21 @@ describe("run-scoped parsed manifests", () => {
 		);
 		const seen: unknown[] = [];
 		const policies = [0, 1].map((index) =>
-			policy(
+			makePolicy(
 				define({
 					name: `TOML${index}`,
 					description: "Reads TOML",
 					handler: async (toml) => {
 						seen.push(structuredClone(toml));
 						toml.nested = { value: 99 };
-						return true;
+						return [];
 					},
 				}),
 			),
 		);
-		const result = await run(() => runner(policies).run([file]));
-		expect(result.results).toEqual([]);
+		const result = await run(() => runner(policies, false, [file]).run());
+		expect(result.findings).toEqual([]);
+		expect(result.errors).toEqual([]);
 		expect(seen).toHaveLength(2);
 		expect(seen[0]).toEqual(seen[1]);
 		expect(seen[1]).toMatchObject({ name: "original", nested: { value: 1 } });
@@ -115,25 +123,28 @@ describe("run-scoped parsed manifests", () => {
 		const file = join(root, "package.json");
 		await writeFile(file, '{"name":"first"}');
 		const names: string[] = [];
-		const definition = definePackagePolicy<{ name: string }>({
+		const definition = definePackagePolicy<{
+			name: string;
+		}>({
 			name: "Names",
 			description: "Observes file changes",
 			handler: async (json) => {
 				names.push(json.name);
-				return true;
+				return [];
 			},
 		});
 		const subject = runner([
-			policy(definition, undefined, { instanceId: "first" }),
-			policy(definition, undefined, { instanceId: "second" }),
+			makePolicy(definition, {
+				instanceId: "first",
+			}),
+			makePolicy(definition, {
+				instanceId: "second",
+			}),
 		]);
-		await run(() => subject.run(["package.json"]));
+		await run(() => subject.run());
 		await writeFile(file, '{"name":"second"}');
 		await run(function* () {
-			yield* all([
-				subject.run(["package.json"]),
-				subject.run(["package.json"]),
-			]);
+			yield* all([subject.run(), subject.run()]);
 		});
 		expect(names).toEqual([
 			"first",
@@ -149,29 +160,40 @@ describe("run-scoped parsed manifests", () => {
 	it("bypasses reuse for fixes so later handlers observe writes", async () => {
 		await writeFile(join(root, "package.json"), '{"name":"before"}');
 		const definition = definePackagePolicy<
-			{ name: string },
-			{ write: boolean }
+			{
+				name: string;
+			},
+			{
+				write: boolean;
+			}
 		>({
 			name: "Fix",
 			description: "Reads and writes manifests",
 			handler: async (json, { config, root: gitRoot }) => {
 				if (config?.write) {
 					await writeFile(join(gitRoot, "package.json"), '{"name":"after"}');
-					return true;
+					return [];
 				}
-				return json.name === "after" ? true : { error: "Stale data" };
+				return json.name === "after" ? [] : [{ message: "Stale data" }];
 			},
 		});
 		const result = await run(() =>
 			runner(
 				[
-					policy(definition, { write: true }, { instanceId: "write" }),
-					policy(definition, { write: false }, { instanceId: "read" }),
+					makePolicy(definition, {
+						config: { write: true },
+						instanceId: "write",
+					}),
+					makePolicy(definition, {
+						config: { write: false },
+						instanceId: "read",
+					}),
 				],
 				true,
-			).run(["package.json"]),
+			).run(),
 		);
-		expect(result.results).toEqual([]);
+		expect(result.findings).toEqual([]);
+		expect(result.errors).toEqual([]);
 		expect(jsonfile.readFile).toHaveBeenCalledTimes(2);
 	});
 
@@ -179,20 +201,22 @@ describe("run-scoped parsed manifests", () => {
 		const definition = definePackagePolicy({
 			name: "Read",
 			description: "Reads JSON",
-			handler: async () => true,
+			handler: async () => [],
 		});
 		const subject = runner([
-			policy(definition, undefined, { instanceId: "first" }),
-			policy(definition, undefined, { instanceId: "second" }),
+			makePolicy(definition, {
+				instanceId: "first",
+			}),
+			makePolicy(definition, {
+				instanceId: "second",
+			}),
 		]);
 		await writeFile(join(root, "package.json"), "{invalid");
-		const invalid = await run(() => subject.run(["package.json"]));
-		expect(invalid.results).toHaveLength(2);
+		const invalid = await run(() => subject.run());
+		expect(invalid.errors).toHaveLength(2);
 		expect(jsonfile.readFile).toHaveBeenCalledTimes(1);
 		await writeFile(join(root, "package.json"), "{}");
-		expect((await run(() => subject.run(["package.json"]))).results).toEqual(
-			[],
-		);
+		expect((await run(() => subject.run())).errors).toEqual([]);
 		for (let index = 0; index < 2; index++) {
 			expect(
 				await runHandler(definition.handler, {
@@ -200,7 +224,7 @@ describe("run-scoped parsed manifests", () => {
 					file: "package.json",
 					resolve: false,
 				}),
-			).toBe(true);
+			).toEqual([]);
 		}
 		expect(jsonfile.readFile).toHaveBeenCalledTimes(4);
 	});
@@ -231,7 +255,7 @@ describe("run-scoped parsed manifests", () => {
 		const expected = describeDates(parse(source));
 		const seen: unknown[] = [];
 		const policies = [0, 1].map((index) =>
-			policy(
+			makePolicy(
 				define({
 					name: `Dates${index}`,
 					description: "Observes TOML dates",
@@ -243,13 +267,14 @@ describe("run-scoped parsed manifests", () => {
 						if (toml.date instanceof TomlDate) {
 							toml.date.setFullYear(2000);
 						}
-						return true;
+						return [];
 					},
 				}),
 			),
 		);
-		const result = await run(() => runner(policies).run([file]));
-		expect(result.results).toEqual([]);
+		const result = await run(() => runner(policies, false, [file]).run());
+		expect(result.findings).toEqual([]);
+		expect(result.errors).toEqual([]);
 		expect(seen).toEqual([expected, expected]);
 		expect(expected).toHaveLength(4);
 		expect(readFile).toHaveBeenCalledTimes(1);

@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -46,34 +46,32 @@ function checkRequiredFields(toml: GleamToml, fields: string[]): string[] {
  *
  * @public
  */
-export const GleamTomlRequired: PolicyShape<GleamTomlRequiredConfig> =
-	defineGleamPolicy({
-		name: "GleamTomlRequired",
-		description:
-			"Ensures gleam.toml files contain required fields for proper project configuration.",
-		handler: async (toml: GleamToml, { config }) => {
-			const errors = checkRequiredFields(
-				toml,
-				config?.required ?? DEFAULT_REQUIRED_FIELDS,
+export const GleamTomlRequired = defineGleamPolicy({
+	name: "GleamTomlRequired",
+	description:
+		"Ensures gleam.toml files contain required fields for proper project configuration.",
+	handler: async (toml: GleamToml, { config }) => {
+		const errors = checkRequiredFields(
+			toml,
+			config?.required ?? DEFAULT_REQUIRED_FIELDS,
+		);
+
+		if (config?.requireGleamVersion && toml.gleam === undefined) {
+			errors.push(
+				'Missing gleam version constraint. Add gleam = ">= x.y.z" to gleam.toml.',
 			);
+		}
 
-			if (config?.requireGleamVersion && toml.gleam === undefined) {
-				errors.push(
-					'Missing gleam version constraint. Add gleam = ">= x.y.z" to gleam.toml.',
-				);
-			}
+		if (config?.requireRepository && toml.repository === undefined) {
+			errors.push("Missing [repository] section in gleam.toml.");
+		}
 
-			if (config?.requireRepository && toml.repository === undefined) {
-				errors.push("Missing [repository] section in gleam.toml.");
-			}
-
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix: "Add the missing fields to your gleam.toml file.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix: "Add the missing fields to your gleam.toml file.",
+			}));
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<GleamTomlRequiredConfig>;

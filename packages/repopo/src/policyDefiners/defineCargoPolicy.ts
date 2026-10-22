@@ -4,9 +4,9 @@ import { resolve } from "pathe";
 import { readParsedFile } from "../fileCache.js";
 import { CargoTomlRegexMatch } from "../policies/constants.js";
 import type {
+	FilePolicyDefinition,
 	PolicyArgs,
-	PolicyHandlerResult,
-	PolicyShape,
+	PolicyResult,
 } from "../policy.js";
 import { parseToml } from "./tomlParser.js";
 
@@ -28,7 +28,7 @@ export type CargoToml = Record<string, unknown>;
 export type CargoTomlHandler<C> = (
 	toml: CargoToml,
 	args: PolicyArgs<C>,
-) => Operation<PolicyHandlerResult> | Promise<PolicyHandlerResult>;
+) => Operation<PolicyResult> | Promise<PolicyResult>;
 
 /**
  * Type guard to check if a value is an Effection Operation (generator).
@@ -67,6 +67,7 @@ export interface DefineCargoPolicyArgs<C> {
 	 * Optional default configuration for the policy.
 	 */
 	defaultConfig?: C;
+	requiresConfig?: boolean;
 }
 
 /**
@@ -96,15 +97,25 @@ export interface DefineCargoPolicyArgs<C> {
  *
  * @public
  */
-export function defineCargoPolicy<C = undefined>(
+export function defineCargoPolicy<C = void>(
+	args: DefineCargoPolicyArgs<C> & { defaultConfig: C },
+): FilePolicyDefinition<C> & { defaultConfig: C };
+export function defineCargoPolicy<C = void>(
+	args: DefineCargoPolicyArgs<C> & { requiresConfig: true },
+): FilePolicyDefinition<C> & { requiresConfig: true };
+export function defineCargoPolicy<C = void>(
 	args: DefineCargoPolicyArgs<C>,
-): PolicyShape<C> {
+): FilePolicyDefinition<C>;
+export function defineCargoPolicy<C = void>(
+	args: DefineCargoPolicyArgs<C>,
+): FilePolicyDefinition<C> {
 	const { name, description, handler: cargoHandler, defaultConfig } = args;
 	return {
 		name,
 		description,
 		match: CargoTomlRegexMatch,
 		defaultConfig,
+		requiresConfig: args.requiresConfig,
 		handler: function* (innerArgs) {
 			const toml: CargoToml = yield* call(() =>
 				readParsedFile(innerArgs, "toml", async () => {
@@ -120,7 +131,7 @@ export function defineCargoPolicy<C = undefined>(
 			if (result instanceof Promise) {
 				return yield* call(() => result);
 			}
-			if (isOperation<PolicyHandlerResult>(result)) {
+			if (isOperation<PolicyResult>(result)) {
 				return yield* result;
 			}
 			throw new Error(`Unexpected handler result type: ${typeof result}`);

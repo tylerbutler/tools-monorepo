@@ -1,11 +1,5 @@
 import path from "pathe";
-import { makePolicyDefinition } from "../makePolicy.js";
-import type {
-	PolicyDefinition,
-	PolicyFixResult,
-	PolicyHandler,
-	PolicyStandaloneResolver,
-} from "../policy.js";
+import type { FilePolicyDefinition, PolicyHandler } from "../policy.js";
 
 /**
  * A FluidFramework build-tools policy handler interface.
@@ -87,7 +81,7 @@ export interface FluidAdapterOptions {
 function fromFluidHandler(
 	fluidHandler: FluidHandler,
 	options?: FluidAdapterOptions,
-): PolicyDefinition {
+): FilePolicyDefinition {
 	const { namePrefix = "" } = options ?? {};
 	const policyName = `${namePrefix}${fluidHandler.name}`;
 
@@ -98,7 +92,7 @@ function fromFluidHandler(
 		const errorMessage = await fluidHandler.handler(absolutePath, root);
 
 		if (errorMessage === undefined) {
-			return true;
+			return [];
 		}
 
 		// Check if resolver exists to determine if auto-fixable
@@ -108,55 +102,29 @@ function fromFluidHandler(
 		if (resolve && fluidHandler.resolver !== undefined) {
 			const resolveResult = await fluidHandler.resolver(absolutePath, root);
 
-			return {
-				name: policyName,
-				file,
-				errorMessages: [resolveResult.message ?? errorMessage],
-				autoFixable: true,
-				resolved: resolveResult.resolved,
-			} satisfies PolicyFixResult;
+			return [
+				{
+					message: resolveResult.message ?? errorMessage,
+					fixStatus: resolveResult.resolved ? "fixed" : "failed",
+				},
+			];
 		}
 
-		return {
-			name: policyName,
-			file,
-			errorMessages: [errorMessage],
-			autoFixable,
-		};
+		return [
+			{
+				message: errorMessage,
+				fixStatus: autoFixable ? "available" : undefined,
+			},
+		];
 	};
 
-	// Create standalone resolver if Fluid handler has one
-	let resolver: PolicyStandaloneResolver | undefined;
-	if (fluidHandler.resolver !== undefined) {
-		resolver = async ({ file, root }) => {
-			const absolutePath = path.join(root, file);
-
-			// First get the error message for context
-			const errorMessage = await fluidHandler.handler(absolutePath, root);
-
-			// biome-ignore lint/style/noNonNullAssertion: we checked this is defined above
-			const resolveResult = await fluidHandler.resolver!(absolutePath, root);
-
-			return {
-				name: policyName,
-				file,
-				errorMessages: [
-					resolveResult.message ?? errorMessage ?? "Unknown error",
-				],
-				autoFixable: true,
-				resolved: resolveResult.resolved,
-			};
-		};
-	}
-
-	return makePolicyDefinition({
+	return {
 		name: policyName,
 		description: `FluidFramework policy: ${fluidHandler.name}`,
 		match: fluidHandler.match,
 		handler,
 		defaultConfig: undefined, // no config
-		resolver,
-	});
+	} satisfies FilePolicyDefinition;
 }
 
 /**
@@ -210,6 +178,6 @@ function fromFluidHandler(
 export function fromFluidHandlers(
 	fluidHandlers: FluidHandler[],
 	options?: FluidAdapterOptions,
-): PolicyDefinition[] {
+): FilePolicyDefinition[] {
 	return fluidHandlers.map((h) => fromFluidHandler(h, options));
 }

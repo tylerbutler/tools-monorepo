@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "pathe";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 // Pre-compiled regex for performance
@@ -92,42 +92,29 @@ function createReadmeContent(
 async function handleMissingReadme(
 	readmePath: string,
 	packageName: string,
-	file: string,
+	_file: string,
 	resolve: boolean,
 	requiredContent?: string,
-): Promise<PolicyFailure | PolicyFixResult> {
+): Promise<PolicyFinding[] | PolicyFinding[]> {
 	if (resolve) {
 		try {
 			await writeFile(
 				readmePath,
 				createReadmeContent(packageName, requiredContent),
 			);
-			return {
-				name: "PackageReadme",
-				file,
-				resolved: true,
-				autoFixable: true,
-				errorMessages: [`Created README.md for package "${packageName}"`],
-			};
+			return [`Created README.md for package "${packageName}"`].map(
+				(message) => ({ message, fixStatus: "fixed" }),
+			);
 		} catch {
-			return {
-				name: "PackageReadme",
-				file,
-				resolved: false,
-				autoFixable: true,
-				errorMessages: [
-					`Failed to create README.md for package "${packageName}"`,
-				],
-			};
+			return [`Failed to create README.md for package "${packageName}"`].map(
+				(message) => ({ message, fixStatus: "failed" }),
+			);
 		}
 	}
-
-	return {
-		name: "PackageReadme",
-		file,
-		autoFixable: true,
-		errorMessages: [`README.md missing for package "${packageName}"`],
-	};
+	return [`README.md missing for package "${packageName}"`].map((message) => ({
+		message,
+		fixStatus: "available",
+	}));
 }
 
 /**
@@ -154,9 +141,9 @@ async function handleRequiredContent(
 	readmeContent: string,
 	requiredContent: string,
 	resolve: boolean,
-): Promise<{ error?: string; fixed: boolean }> {
+): Promise<PolicyFinding | undefined> {
 	if (readmeContent.includes(requiredContent)) {
-		return { fixed: false };
+		return undefined;
 	}
 
 	if (resolve) {
@@ -166,8 +153,8 @@ async function handleRequiredContent(
 				: `${readmeContent}\n${requiredContent}\n`;
 			await writeFile(readmePath, newContent);
 			return {
-				error: `README missing required content: "${requiredContent}"`,
-				fixed: true,
+				message: `README missing required content: "${requiredContent}"`,
+				fixStatus: "fixed",
 			};
 		} catch {
 			// Fall through to report error
@@ -175,8 +162,8 @@ async function handleRequiredContent(
 	}
 
 	return {
-		error: `README missing required content: "${requiredContent}"`,
-		fixed: false,
+		message: `README missing required content: "${requiredContent}"`,
+		fixStatus: resolve ? "failed" : "available",
 	};
 }
 
@@ -195,15 +182,13 @@ interface ValidationContext {
  */
 async function validateExistingReadme(
 	ctx: ValidationContext,
-): Promise<true | PolicyFailure | PolicyFixResult> {
-	const errors: string[] = [];
-	let wasFixed = false;
-
+): Promise<PolicyFinding[]> {
+	const findings: PolicyFinding[] = [];
 	// Check title matches package name
 	if (ctx.requireMatchingTitle) {
 		const titleResult = validateTitle(ctx.readmeContent, ctx.packageName);
 		if (titleResult !== true) {
-			errors.push(titleResult);
+			findings.push({ message: titleResult });
 		}
 	}
 
@@ -215,36 +200,11 @@ async function validateExistingReadme(
 			ctx.requiredContent,
 			ctx.resolve,
 		);
-		if (contentResult.error) {
-			errors.push(contentResult.error);
-		}
-		if (contentResult.fixed) {
-			wasFixed = true;
+		if (contentResult) {
+			findings.push(contentResult);
 		}
 	}
-
-	if (errors.length === 0) {
-		return true;
-	}
-
-	if (wasFixed) {
-		return {
-			name: "PackageReadme",
-			file: ctx.file,
-			resolved: true,
-			autoFixable: true,
-			errorMessages: [errors.join("; ")],
-		};
-	}
-
-	return {
-		name: "PackageReadme",
-		file: ctx.file,
-		autoFixable:
-			ctx.requiredContent !== undefined &&
-			!ctx.readmeContent.includes(ctx.requiredContent),
-		errorMessages: [errors.join("; ")],
-	};
+	return findings;
 }
 
 /**
@@ -293,7 +253,7 @@ export const PackageReadme = definePackagePolicy<
 
 		// Skip private packages if configured to do so
 		if (skipPrivate && json.private === true) {
-			return true;
+			return [];
 		}
 
 		const packageName = json.name ?? "unknown";

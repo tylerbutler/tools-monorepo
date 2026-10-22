@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	type CargoToml,
 	defineCargoPolicy,
@@ -109,35 +109,33 @@ function checkMinimumEdition(
  *
  * @public
  */
-export const CargoTomlRequired: PolicyShape<CargoTomlRequiredConfig> =
-	defineCargoPolicy({
-		name: "CargoTomlRequired",
-		description:
-			"Ensures Cargo.toml files contain required fields in the [package] section.",
-		handler: async (toml: CargoToml, { config }) => {
-			const pkg = toml.package as Record<string, unknown> | undefined;
-			if (!pkg) {
-				// Workspace root Cargo.toml may not have [package]
-				if (toml.workspace !== undefined) {
-					return true;
-				}
-				return { error: "Missing [package] section in Cargo.toml" };
+export const CargoTomlRequired = defineCargoPolicy({
+	name: "CargoTomlRequired",
+	description:
+		"Ensures Cargo.toml files contain required fields in the [package] section.",
+	handler: async (toml: CargoToml, { config }) => {
+		const pkg = toml.package as Record<string, unknown> | undefined;
+		if (!pkg) {
+			// Workspace root Cargo.toml may not have [package]
+			if (toml.workspace !== undefined) {
+				return [];
 			}
+			return [{ message: "Missing [package] section in Cargo.toml" }];
+		}
 
-			const errors: string[] = [];
-			checkRequiredFields(pkg, config, errors);
-			checkExpectedValues(pkg, config, errors);
-			checkRustVersion(pkg, config, errors);
-			checkMinimumEdition(pkg, config, errors);
+		const errors: string[] = [];
+		checkRequiredFields(pkg, config, errors);
+		checkExpectedValues(pkg, config, errors);
+		checkRustVersion(pkg, config, errors);
+		checkMinimumEdition(pkg, config, errors);
 
-			if (errors.length > 0) {
-				return {
-					error: errors.join("; "),
-					manualFix:
-						"Add the missing fields to your Cargo.toml [package] section.",
-				};
-			}
-
-			return true;
-		},
-	});
+		if (errors.length > 0) {
+			return errors.map((message) => ({
+				message,
+				manualFix:
+					"Add the missing fields to your Cargo.toml [package] section.",
+			}));
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<CargoTomlRequiredConfig>;

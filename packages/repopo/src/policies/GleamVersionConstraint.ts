@@ -1,4 +1,4 @@
-import type { PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition } from "../policy.js";
 import {
 	defineGleamPolicy,
 	type GleamToml,
@@ -61,32 +61,34 @@ function isVersionAtLeast(constraint: string, minimum: string): boolean {
  *
  * @public
  */
-export const GleamVersionConstraint: PolicyShape<GleamVersionConstraintConfig> =
-	defineGleamPolicy({
-		name: "GleamVersionConstraint",
-		description:
-			"Ensures gleam.toml has a Gleam compiler version constraint to prevent incompatible builds.",
-		handler: async (toml: GleamToml, { config }) => {
-			const gleamVersion = toml.gleam as string | undefined;
+export const GleamVersionConstraint = defineGleamPolicy({
+	name: "GleamVersionConstraint",
+	description:
+		"Ensures gleam.toml has a Gleam compiler version constraint to prevent incompatible builds.",
+	handler: async (toml: GleamToml, { config }) => {
+		const gleamVersion = toml.gleam as string | undefined;
 
-			if (gleamVersion === undefined || gleamVersion === "") {
-				return {
-					error: "Missing gleam version constraint in gleam.toml.",
+		if (gleamVersion === undefined || gleamVersion === "") {
+			return [
+				{
+					message: "Missing gleam version constraint in gleam.toml.",
 					manualFix:
 						'Add gleam = ">= 1.0.0" (or appropriate version) to gleam.toml.',
-				};
-			}
+				},
+			];
+		}
 
-			if (
-				config?.minimumVersion &&
-				!isVersionAtLeast(gleamVersion, config.minimumVersion)
-			) {
-				return {
-					error: `Gleam version constraint "${gleamVersion}" is below minimum "${config.minimumVersion}".`,
+		if (
+			config?.minimumVersion &&
+			!isVersionAtLeast(gleamVersion, config.minimumVersion)
+		) {
+			return [
+				{
+					message: `Gleam version constraint "${gleamVersion}" is below minimum "${config.minimumVersion}".`,
 					manualFix: `Update to gleam = ">= ${config.minimumVersion}" or higher.`,
-				};
-			}
-
-			return true;
-		},
-	});
+				},
+			];
+		}
+		return [];
+	},
+}) satisfies FilePolicyDefinition<GleamVersionConstraintConfig>;

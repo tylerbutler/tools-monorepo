@@ -2,7 +2,7 @@ import jsonfile from "jsonfile";
 import { resolve as resolvePath } from "pathe";
 import picomatch from "picomatch";
 import type { PackageJson } from "type-fest";
-import type { PolicyFailure, PolicyFixResult } from "../policy.js";
+import type { PolicyFinding } from "../policy.js";
 import { definePackagePolicy } from "../policyDefiners/definePackagePolicy.js";
 
 const { writeFile: writeJson } = jsonfile;
@@ -218,33 +218,33 @@ export const PackagePrivateField = definePackagePolicy<
 	handler: async (json, { file, root, config, resolve }) => {
 		// If no config provided, skip validation
 		if (config === undefined) {
-			return true;
+			return [];
 		}
 
 		const packageName = json.name;
 
 		// Skip packages without a name (shouldn't happen in practice)
 		if (packageName === undefined) {
-			return true;
+			return [];
 		}
 
 		// Skip the root package (typically named "root" in monorepos)
 		if (packageName === "root") {
-			return true;
+			return [];
 		}
 
 		const requiredState = getRequiredPrivateState(packageName, config);
 
 		// If "ignore", the package can be either private or public
 		if (requiredState === IGNORE_PRIVATE_STATE) {
-			return true;
+			return [];
 		}
 
 		const currentlyPrivate = json.private === true;
 
 		// Check if the current state matches the required state
 		if (requiredState === currentlyPrivate) {
-			return true;
+			return [];
 		}
 
 		// State mismatch - build error message
@@ -252,20 +252,15 @@ export const PackagePrivateField = definePackagePolicy<
 			requiredState === true
 				? `Package "${packageName}" must be marked private. Add "private": true to package.json.`
 				: `Package "${packageName}" must not be marked private. Remove "private": true from package.json to allow publishing.`;
-
-		const failResult: PolicyFailure = {
-			name: PackagePrivateField.name,
-			file,
-			autoFixable: true,
-			errorMessages: [errorMessage],
-		};
-
+		const failResult: PolicyFinding[] = [errorMessage].map((message) => ({
+			message,
+			fixStatus: "available",
+		}));
 		if (resolve) {
-			const fixResult: PolicyFixResult = {
-				...failResult,
-				resolved: false,
-			};
-
+			const fixResult: PolicyFinding[] = failResult.map((finding) => ({
+				...finding,
+				fixStatus: "failed",
+			}));
 			try {
 				if (requiredState === true) {
 					// Add private: true
@@ -276,10 +271,21 @@ export const PackagePrivateField = definePackagePolicy<
 				}
 
 				await writeJson(resolvePath(root, file), json, { spaces: "\t" });
-				fixResult.resolved = true;
+				for (const finding of fixResult) {
+					finding.fixStatus = "fixed";
+				}
 			} catch {
-				fixResult.resolved = false;
-				fixResult.errorMessages = [`Failed to update ${file}`];
+				for (const finding of fixResult) {
+					finding.fixStatus = "failed";
+				}
+				fixResult.splice(
+					0,
+					fixResult.length,
+					...[`Failed to update ${file}`].map((message) => ({
+						...fixResult[0],
+						message,
+					})),
+				);
 			}
 
 			return fixResult;

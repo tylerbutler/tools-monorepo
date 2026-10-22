@@ -1,4 +1,4 @@
-import type { PolicyHandlerResult, PolicyShape } from "../policy.js";
+import type { FilePolicyDefinition, PolicyResult } from "../policy.js";
 import {
 	type CargoToml,
 	defineCargoPolicy,
@@ -51,43 +51,46 @@ function checkClippyLints(
 function checkLintsSection(
 	toml: CargoToml,
 	config: CargoLintsConfiguredConfig | undefined,
-): PolicyHandlerResult {
+): PolicyResult {
 	const lints = toml.lints as Record<string, unknown> | undefined;
 	const requireSection = config?.requireSection ?? true;
 
 	if (requireSection && lints === undefined) {
-		return {
-			error: "Missing [lints] section in Cargo.toml.",
-			manualFix:
-				'Add a [lints.clippy] section, e.g.:\n[lints.clippy]\npedantic = "warn"',
-		};
+		return [
+			{
+				message: "Missing [lints] section in Cargo.toml.",
+				manualFix:
+					'Add a [lints.clippy] section, e.g.:\n[lints.clippy]\npedantic = "warn"',
+			},
+		];
 	}
 
 	if (lints === undefined) {
-		return true;
+		return [];
 	}
 
 	const clippy = lints.clippy as Record<string, unknown> | undefined;
 	if (requireSection && clippy === undefined) {
-		return {
-			error: "Missing [lints.clippy] section in Cargo.toml.",
-			manualFix:
-				'Add a [lints.clippy] section, e.g.:\n[lints.clippy]\npedantic = "warn"',
-		};
+		return [
+			{
+				message: "Missing [lints.clippy] section in Cargo.toml.",
+				manualFix:
+					'Add a [lints.clippy] section, e.g.:\n[lints.clippy]\npedantic = "warn"',
+			},
+		];
 	}
 
 	if (config?.required && clippy) {
 		const errors = checkClippyLints(clippy, config.required);
 		if (errors.length > 0) {
-			return {
-				error: errors.join("; "),
+			return errors.map((message) => ({
+				message,
 				manualFix:
 					"Update the [lints.clippy] section with the required lint levels.",
-			};
+			}));
 		}
 	}
-
-	return true;
+	return [];
 }
 
 /**
@@ -95,17 +98,16 @@ function checkLintsSection(
  *
  * @public
  */
-export const CargoLintsConfigured: PolicyShape<CargoLintsConfiguredConfig> =
-	defineCargoPolicy({
-		name: "CargoLintsConfigured",
-		description:
-			"Ensures Cargo.toml has clippy lints configured in the [lints] section.",
-		handler: async (toml: CargoToml, { config }) => {
-			// Skip workspace root Cargo.toml files
-			if (toml.workspace !== undefined && toml.package === undefined) {
-				return true;
-			}
+export const CargoLintsConfigured = defineCargoPolicy({
+	name: "CargoLintsConfigured",
+	description:
+		"Ensures Cargo.toml has clippy lints configured in the [lints] section.",
+	handler: async (toml: CargoToml, { config }) => {
+		// Skip workspace root Cargo.toml files
+		if (toml.workspace !== undefined && toml.package === undefined) {
+			return [];
+		}
 
-			return checkLintsSection(toml, config);
-		},
-	});
+		return checkLintsSection(toml, config);
+	},
+}) satisfies FilePolicyDefinition<CargoLintsConfiguredConfig>;

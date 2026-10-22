@@ -126,19 +126,20 @@ export const ExactScripts = definePackagePolicy<
 	PackageJson,
 	ExactScriptsConfig | undefined
 >({
+	requiresConfig: true,
 	name: POLICY_NAME,
 	description:
 		"Validates that scripts exist and have exact content in package.json.",
 	handler: async (json, { file, root, resolve, config }) => {
 		if (config === undefined || Object.keys(config.scripts).length === 0) {
-			return true;
+			return [];
 		}
 
 		const scripts = json.scripts ?? {};
 		const validation = validateScripts(scripts, config.scripts);
 
 		if (validation.errors.length === 0) {
-			return true;
+			return [];
 		}
 
 		const scriptsToFix = [
@@ -156,23 +157,17 @@ export const ExactScripts = definePackagePolicy<
 					config.scripts,
 					scripts,
 				);
-
-				return {
-					name: POLICY_NAME,
-					file,
-					resolved: true,
-					errorMessages: [`Fixed scripts: ${fixedScripts.join(", ")}`],
-				};
+				return [`Fixed scripts: ${fixedScripts.join(", ")}`].map((message) => ({
+					message,
+					fixStatus: "fixed",
+				}));
 			} catch {
 				// Fall through to return regular failure
 			}
 		}
-
-		return {
-			name: POLICY_NAME,
-			file,
-			autoFixable: hasAutoFixableErrors,
-			errorMessages: validation.errors,
-		};
+		return validation.errors.map((message) => ({
+			message,
+			fixStatus: hasAutoFixableErrors ? "available" : undefined,
+		}));
 	},
 });
