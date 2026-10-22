@@ -1380,6 +1380,90 @@ describe("Native canonical sidecar", () => {
 			});
 
 			it.each([
+				["SIGTERM", ""],
+				["SIGINT", ""],
+				["SIGTERM", "a.txt\npartial"],
+				["SIGINT", "a.txt\npartial"],
+			] as const)("cancels the actual native CLI on %s with stdin held open (%j)", async (signal, input) => {
+				await writeFile(configPath, configSource("[]"));
+				const probePath = join(testDir, "sidecar-probe.mjs");
+				const pidPath = join(testDir, "sidecar-pid");
+				await writeFile(
+					probePath,
+					`import {writeFile} from "node:fs/promises";
+					await writeFile(${JSON.stringify(pidPath)},String(process.pid));
+					await import(${JSON.stringify(new URL("../sidecar/sidecar.mjs", import.meta.url).href)});`,
+				);
+				const child = spawn(
+					process.execPath,
+					[
+						cliPath,
+						"check-native",
+						"--stdin",
+						"--verbose",
+						"--config",
+						configPath,
+						"--binary-path",
+						binaryPath,
+						"--sidecar-path",
+						probePath,
+						"--runtime",
+						"node",
+					],
+					{ cwd: testDir, stdio: ["pipe", "pipe", "pipe"] },
+				);
+				let output = "";
+				child.stdout.on("data", (chunk) => {
+					output += chunk.toString();
+				});
+				child.stderr.on("data", (chunk) => {
+					output += chunk.toString();
+				});
+				const exited = new Promise<{
+					code: number | null;
+					sidecarPid: string | undefined;
+				}>((resolvePromise) => {
+					child.once("exit", async (code) =>
+						resolvePromise({
+							code,
+							sidecarPid: await readFile(pidPath, "utf8").catch(
+								() => undefined,
+							),
+						}),
+					);
+				});
+				try {
+					if (input) {
+						child.stdin.write(input);
+					}
+					await expect
+						.poll(() => output, { timeout: 10000 })
+						.toContain("Git root:");
+					child.kill(signal);
+					await expect
+						.poll(() => child.exitCode, { timeout: 3000 })
+						.toBe(signal === "SIGTERM" ? 143 : 130);
+					expect(child.stdin.writableEnded).toBe(false);
+					// Selection collection precedes sidecar startup: no process to orphan.
+					expect(await exited).toEqual({
+						code: signal === "SIGTERM" ? 143 : 130,
+						sidecarPid: undefined,
+					});
+					expect(output).not.toContain("files to check.");
+					expect(output).not.toContain("Execution error");
+				} finally {
+					// Release a regressed reader too, so failure cannot orphan native work.
+					child.stdin.end();
+					if (child.exitCode === null) {
+						child.kill(signal);
+						await expect
+							.poll(() => child.exitCode, { timeout: 5000 })
+							.not.toBeNull();
+					}
+				}
+			});
+
+			it.each([
 				"SIGTERM",
 				"SIGINT",
 			] as const)("awaits delayed sidecar cleanup before the actual native CLI exit event on %s", async (signal) => {

@@ -2,6 +2,9 @@ use anyhow::{Context, Result};
 use std::collections::HashSet;
 use std::io::{self, Read};
 use std::process::Command;
+use std::sync::mpsc::{self, RecvTimeoutError};
+use std::thread;
+use std::time::Duration;
 
 /// Enumerate files tracked by git in the given repository root.
 ///
@@ -42,12 +45,33 @@ pub fn git_ls_files(git_root: &str) -> Result<Vec<String>> {
 
 /// Read file paths from stdin (one per line).
 pub fn read_stdin_files() -> Result<Vec<String>> {
-    let stdin = io::stdin();
-    let mut input = String::new();
-    stdin
-        .lock()
-        .read_to_string(&mut input)
-        .context("Failed to read file selection from stdin")?;
+    read_file_selection(io::stdin())
+}
+
+fn read_file_selection(mut reader: impl Read + Send + 'static) -> Result<Vec<String>> {
+    let (send, received) = mpsc::channel();
+    thread::Builder::new()
+        .name("stdin-selection".into())
+        .spawn(move || {
+            let mut input = String::new();
+            let result = reader.read_to_string(&mut input).map(|_| input);
+            let _ = send.send(result);
+        })
+        .context("Failed to start stdin selection reader")?;
+
+    // Stdin belongs to the caller: cancellation cannot wait for its EOF.
+    // A blocked reader is left to process exit, before any sidecar is spawned.
+    let input = loop {
+        anyhow::ensure!(
+            crate::termination::signal() == 0,
+            "Native execution cancelled"
+        );
+        match received.recv_timeout(Duration::from_millis(25)) {
+            Ok(result) => break result.context("Failed to read file selection from stdin")?,
+            Err(RecvTimeoutError::Timeout) => continue,
+            Err(error) => return Err(error).context("Stdin selection reader stopped"),
+        }
+    };
     Ok(parse_file_paths(&input))
 }
 
@@ -87,7 +111,8 @@ pub fn find_git_root(start_dir: &str) -> Result<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::parse_file_paths;
+    use super::{parse_file_paths, read_file_selection};
+    use std::io::{self, Cursor, Read};
 
     #[test]
     fn selection_parsing_matches_typescript_for_nul_crlf_and_windows_paths() {
@@ -95,5 +120,46 @@ mod tests {
         assert_eq!(parse_file_paths("a\nb\0c\r\0"), vec!["a\nb", "c\r"]);
         assert_eq!(parse_file_paths("a\r"), vec!["a\r"]);
         assert!(parse_file_paths("").is_empty());
+    }
+
+    #[test]
+    fn selection_reader_preserves_delimiters_and_utf8_errors() {
+        assert_eq!(
+            read_file_selection(Cursor::new("a\nb\0c\r\0d\\e\0")).unwrap(),
+            vec!["a\nb", "c\r", "d/e"]
+        );
+        assert_eq!(
+            read_file_selection(Cursor::new("a\r\nb\\c\n\n")).unwrap(),
+            vec!["a", "b/c"]
+        );
+        assert!(read_file_selection(Cursor::new("")).unwrap().is_empty());
+        let error = read_file_selection(Cursor::new(vec![0xff])).unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "Failed to read file selection from stdin"
+        );
+        assert_eq!(
+            error.downcast_ref::<io::Error>().unwrap().kind(),
+            io::ErrorKind::InvalidData
+        );
+    }
+
+    #[test]
+    fn selection_reader_propagates_io_errors_without_partial_selection() {
+        struct Broken;
+        impl Read for Broken {
+            fn read(&mut self, _: &mut [u8]) -> io::Result<usize> {
+                Err(io::Error::other("selection fixture failure"))
+            }
+        }
+        let error = read_file_selection(Cursor::new(b"a.txt\n").chain(Broken)).unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "Failed to read file selection from stdin"
+        );
+        assert_eq!(
+            error.downcast_ref::<io::Error>().unwrap().to_string(),
+            "selection fixture failure"
+        );
     }
 }
