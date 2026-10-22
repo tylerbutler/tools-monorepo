@@ -25,7 +25,7 @@ import { SortTsconfigsPolicy } from "sort-tsconfig";
 // Vendored packages (git subrepo) - exclude from policies that enforce monorepo conventions
 const vendoredPackages = ["packages/btree-typescript"];
 const vendoredPackageJsons = vendoredPackages.map((p) => `${p}/package.json`);
-const NoPackageProjectJson: FilePolicyDefinition = {
+const NoPackageProjectJson = {
 	name: "NoPackageProjectJson",
 	description:
 		"Keeps Nx task orchestration centralized instead of adding package-level project.json files.",
@@ -43,7 +43,7 @@ const NoPackageProjectJson: FilePolicyDefinition = {
 			].join("\n"),
 		},
 	],
-};
+} satisfies FilePolicyDefinition;
 
 const config: RepopoConfig = {
 	excludeFiles: ["test/data", "fixtures", "config/package.json"],

@@ -95,7 +95,7 @@ async function handleMissingReadme(
 	_file: string,
 	resolve: boolean,
 	requiredContent?: string,
-): Promise<PolicyFinding[] | PolicyFinding[]> {
+): Promise<PolicyFinding[]> {
 	if (resolve) {
 		try {
 			await writeFile(

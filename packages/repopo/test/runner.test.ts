@@ -107,6 +107,12 @@ describe("canonical policy execution", () => {
 		[{ message: "bad", files: ["/absolute"] }],
 		[{ message: "bad", files: ["../outside"] }],
 		[{ message: "bad", files: ["a\\b"] }],
+		[{ message: "bad", files: [""] }],
+		[{ message: "bad", files: ["."] }],
+		[{ message: "bad", files: ["a//b"] }],
+		[{ message: "bad", files: ["a/../b"] }],
+		[{ message: "bad", files: ["C:/drive"] }],
+		[{ message: "bad", files: ["a\0b"] }],
 		[{ message: "bad", files: "file.txt" }],
 		[{ message: "bad", files: [123] }],
 	])("reports malformed and legacy results as structured contract errors: %j", async (value) => {
@@ -172,12 +178,18 @@ describe("canonical policy execution", () => {
 				}),
 				makePolicy({
 					...repositoryDefinition,
-					handler: async () => [{ message: "valid", files: [] }],
+					handler: async () => [
+						{ message: "valid", files: [] },
+						{ message: "unlocated", files: undefined },
+					],
 				}),
 			],
 		});
 		expect(result.errors).toHaveLength(1);
-		expect(result.findings).toMatchObject([{ scope: "repository", files: [] }]);
+		expect(result.findings).toMatchObject([
+			{ scope: "repository", files: [] },
+			{ scope: "repository", files: undefined },
+		]);
 	});
 
 	it.each([
@@ -235,6 +247,67 @@ describe("canonical policy execution", () => {
 			{ message: "three", fixStatus: undefined },
 		]);
 		expect(result.perfStats.data.get("resolve")?.has("File")).toBe(true);
+	});
+
+	it("reconciles duplicate messages by occurrence without losing guidance or omitted findings", async () => {
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			fix: true,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => [
+						{ message: "duplicate", manualFix: "first guidance" },
+						{ message: "duplicate", manualFix: "second guidance" },
+						{ message: "omitted" },
+					],
+					resolver: async () => [
+						{ message: "duplicate", fixStatus: "fixed" },
+						{ message: "duplicate", fixStatus: "failed" },
+					],
+				}),
+			],
+		});
+		expect(result.errors).toEqual([]);
+		expect(result.findings).toMatchObject([
+			{ message: "duplicate", manualFix: "first guidance", fixStatus: "fixed" },
+			{
+				message: "duplicate",
+				manualFix: "second guidance",
+				fixStatus: "failed",
+			},
+			{ message: "omitted" },
+		]);
+	});
+
+	it("preserves checked findings if a resolver mutates its input and then throws", async () => {
+		const cause = new Error("write failed");
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			fix: true,
+			policies: [
+				makePolicy({
+					...fileDefinition,
+					handler: async () => [
+						{ message: "original", manualFix: "keep this" },
+					],
+					resolver: async ({ findings }) => {
+						for (const finding of findings) {
+							finding.message = "mutated";
+							finding.fixStatus = "fixed";
+						}
+						throw cause;
+					},
+				}),
+			],
+		});
+		expect(result.findings).toMatchObject([
+			{ message: "original", manualFix: "keep this" },
+		]);
+		expect(result.findings[0]?.fixStatus).toBeUndefined();
+		expect(result.errors[0]?.cause).toBe(cause);
 	});
 
 	it("collects read-only exceptions and continues file and repository work with original causes", async () => {
@@ -415,6 +488,37 @@ describe("canonical policy execution", () => {
 });
 
 describe("inventory, selection and regex semantics", () => {
+	it("applies defaults and rejects missing required configuration at runner registration", async () => {
+		const definition = {
+			...fileDefinition,
+			requiresConfig: true,
+			defaultConfig: { label: "default" },
+			handler: async ({ config }) => [{ message: config?.label ?? "missing" }],
+		} satisfies FilePolicyDefinition<{ label: string }>;
+		const result = await runPolicies({
+			root,
+			files: ["one.txt"],
+			policies: [definition],
+		});
+		expect(result.findings[0]?.message).toBe("default");
+		expect(
+			() =>
+				new PolicyRunner({
+					root,
+					policies: [{ ...definition, defaultConfig: undefined }],
+				}),
+		).toThrow("requires config");
+		expect(() =>
+			Reflect.construct(PolicyRunner, [
+				{
+					root,
+					inventory: [],
+					policies: [{ ...repositoryDefinition, resolver: async () => [] }],
+				},
+			]),
+		).toThrow("inline fixes only");
+	});
+
 	it("requires an explicit inventory even when files is provided", () => {
 		expect(
 			() =>

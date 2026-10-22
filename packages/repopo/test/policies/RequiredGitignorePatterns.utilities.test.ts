@@ -40,8 +40,7 @@ dist/
 				resolve: false,
 				config: { patterns: ["node_modules/", "dist/", ".env"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should match patterns with inline comments", async () => {
@@ -59,8 +58,7 @@ dist/ # build output
 				resolve: false,
 				config: { patterns: ["node_modules/", "dist/", ".env"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should match patterns with tabs before comments", async () => {
@@ -78,8 +76,7 @@ dist/\t# build output
 				resolve: false,
 				config: { patterns: ["node_modules/", "dist/", ".env"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should match patterns with spaces before comments", async () => {
@@ -97,8 +94,7 @@ dist/  # build output
 				resolve: false,
 				config: { patterns: ["node_modules/", "dist/", ".env"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should ignore empty lines", async () => {
@@ -120,8 +116,7 @@ dist/
 				resolve: false,
 				config: { patterns: ["node_modules/", "dist/", ".env"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle patterns with special characters", async () => {
@@ -139,8 +134,7 @@ dist/
 				resolve: false,
 				config: { patterns: ["*.log", "!important.log", ".env.*"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -156,13 +150,20 @@ dist/
 					patterns: ["node_modules/", "dist/", ".env", "build/"],
 				},
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("dist/");
-				expect(result.errorMessages.join()).toContain(".env");
-				expect(result.errorMessages.join()).toContain("build/");
-				expect(result.errorMessages.join()).not.toContain("node_modules/");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"dist/",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					".env",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"build/",
+				);
+				expect(result.map((finding) => finding.message).join()).not.toContain(
+					"node_modules/",
+				);
 			}
 		});
 
@@ -180,11 +181,14 @@ dist/
 					],
 				},
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("node_modules/");
-				expect(result.errorMessages.join()).toContain(".env");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"node_modules/",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					".env",
+				);
 			}
 		});
 
@@ -203,12 +207,17 @@ dist/
 					],
 				},
 			});
-
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result === "object") {
-				expect(result.errorMessages.join()).toContain("dist/");
-				expect(result.errorMessages.join()).toContain(".env");
-				expect(result.errorMessages.join()).not.toContain("node_modules/");
+				expect(result.map((finding) => finding.message).join()).toContain(
+					"dist/",
+				);
+				expect(result.map((finding) => finding.message).join()).toContain(
+					".env",
+				);
+				expect(result.map((finding) => finding.message).join()).not.toContain(
+					"node_modules/",
+				);
 			}
 		});
 	});
@@ -229,9 +238,11 @@ dist/
 					],
 				},
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(gitignoreFile, "utf-8");
@@ -256,9 +267,11 @@ node_modules/
 					patterns: ["node_modules/", "dist/"],
 				},
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(gitignoreFile, "utf-8");
@@ -278,9 +291,11 @@ node_modules/
 					patterns: ["node_modules/", "dist/"],
 				},
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(gitignoreFile, "utf-8");
@@ -306,9 +321,11 @@ node_modules/
 				resolve: true,
 				config: { patterns },
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(gitignoreFile, "utf-8");
@@ -333,9 +350,11 @@ node_modules/
 					patterns: ["node_modules/", "dist/"],
 				},
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(gitignoreFile, "utf-8");
@@ -356,9 +375,11 @@ node_modules/
 					],
 				},
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(gitignoreFile, "utf-8");
@@ -382,9 +403,11 @@ node_modules/
 					],
 				},
 			});
-
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(true);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(gitignoreFile, "utf-8");
@@ -412,11 +435,13 @@ node_modules/
 					patterns: ["node_modules/"],
 				},
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "resolved" in result) {
-				expect(result.resolved).toBe(false);
-				expect(result.errorMessages.join()).toContain(
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(false);
+				expect(result.map((finding) => finding.message).join()).toContain(
 					"Failed to create .gitignore",
 				);
 			}
@@ -442,11 +467,13 @@ node_modules/
 						patterns: ["node_modules/", "dist/"],
 					},
 				});
-
-				expect(result).not.toBe(true);
-				if (typeof result === "object" && "resolved" in result) {
-					expect(result.resolved).toBe(false);
-					expect(result.errorMessages.join()).toContain(
+				expect(result).not.toEqual([]);
+				if (typeof result === "object" && result.length > 0) {
+					expect(
+						result.length > 0 &&
+							result.every((finding) => finding.fixStatus === "fixed"),
+					).toBe(false);
+					expect(result.map((finding) => finding.message).join()).toContain(
 						"Failed to update .gitignore",
 					);
 				}
@@ -473,8 +500,7 @@ node_modules/
 				resolve: false,
 				config: { patterns: ["node_modules/", "dist/", ".env"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should handle patterns with trailing whitespace", async () => {
@@ -492,8 +518,7 @@ dist/
 				resolve: false,
 				config: { patterns: ["node_modules/", "dist/", ".env"] },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

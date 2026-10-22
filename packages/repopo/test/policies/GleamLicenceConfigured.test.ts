@@ -31,8 +31,7 @@ describe("GleamLicenceConfigured", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should fail when licences field is missing", async () => {
@@ -43,10 +42,11 @@ describe("GleamLicenceConfigured", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("Missing or empty licences");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"Missing or empty licences",
+			);
 		}
 	});
 
@@ -58,10 +58,11 @@ describe("GleamLicenceConfigured", () => {
 			root: testDir,
 			resolve: false,
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("Missing or empty licences");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"Missing or empty licences",
+			);
 		}
 	});
 
@@ -77,10 +78,11 @@ describe("GleamLicenceConfigured", () => {
 			resolve: false,
 			config: { allowedLicences: ["MIT", "Apache-2.0"] },
 		});
-
-		expect(result).not.toBe(true);
-		if (typeof result === "object" && "error" in result) {
-			expect(result.error).toContain("not in the allowed list");
+		expect(result).not.toEqual([]);
+		if (typeof result === "object" && result.length > 0) {
+			expect(result.map((finding) => finding.message).join("; ")).toContain(
+				"not in the allowed list",
+			);
 		}
 	});
 
@@ -96,11 +98,34 @@ describe("GleamLicenceConfigured", () => {
 			resolve: false,
 			config: { allowedLicences: ["MIT", "Apache-2.0"] },
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	describe("validateSpdx (spdx-correct)", () => {
+		it("keeps unrecognized licences unresolved while preserving successful corrections", async () => {
+			const filePath = join(testDir, "gleam.toml");
+			writeFileSync(
+				filePath,
+				'name = "app"\nlicences = ["mit", "TOTALLY-FAKE-LICENSE"]\n',
+			);
+			const result = await runHandler(GleamLicenceConfigured.handler, {
+				file: "gleam.toml",
+				root: testDir,
+				resolve: true,
+				config: { validateSpdx: true },
+			});
+			expect(result).toHaveLength(2);
+			expect(result[0]).toMatchObject({
+				message: 'Licence "mit" should be "MIT"',
+				fixStatus: "fixed",
+			});
+			expect(result[1]?.message).toContain("not a recognized SPDX identifier");
+			expect(result[1]?.fixStatus).toBeUndefined();
+			expect(readFileSync(filePath, "utf8")).toContain(
+				'["MIT", "TOTALLY-FAKE-LICENSE"]',
+			);
+		});
+
 		it("should pass with a valid SPDX identifier", async () => {
 			writeFileSync(
 				join(testDir, "gleam.toml"),
@@ -113,8 +138,7 @@ describe("GleamLicenceConfigured", () => {
 				resolve: false,
 				config: { validateSpdx: true },
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should detect a typo and suggest correction", async () => {
@@ -129,12 +153,17 @@ describe("GleamLicenceConfigured", () => {
 				resolve: false,
 				config: { validateSpdx: true },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain('"mit"');
-				expect(result.error).toContain('"MIT"');
-				expect(result.fixable).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					'"mit"',
+				);
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					'"MIT"',
+				);
+				expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+					true,
+				);
 			}
 		});
 
@@ -150,10 +179,11 @@ describe("GleamLicenceConfigured", () => {
 				resolve: false,
 				config: { validateSpdx: true },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("not a recognized SPDX identifier");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"not a recognized SPDX identifier",
+				);
 			}
 		});
 
@@ -167,10 +197,12 @@ describe("GleamLicenceConfigured", () => {
 				resolve: true,
 				config: { validateSpdx: true },
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.fixed).toBe(true);
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(
+					result.length > 0 &&
+						result.every((finding) => finding.fixStatus === "fixed"),
+				).toBe(true);
 			}
 
 			const content = readFileSync(filePath, "utf-8");
@@ -191,7 +223,7 @@ describe("GleamLicenceConfigured", () => {
 			});
 
 			// Without validateSpdx, "mit" passes (no validation beyond existence)
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 });

@@ -14,10 +14,7 @@ export {
 	type FluidHandler,
 	fromFluidHandlers,
 } from "./adapters/fluidFramework.js";
-export type {
-	// PolicyList,
-	RepopoConfig,
-} from "./config.js";
+export type { RepopoConfig } from "./config.js";
 export { makePolicy } from "./makePolicy.js";
 export type { PolicyAction, PolicyHandlerPerfStats } from "./perf.js";
 export type { CargoLicenceValidatedConfig } from "./policies/CargoLicenceValidated.js";

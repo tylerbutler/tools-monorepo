@@ -229,7 +229,7 @@ async function handleMissingGitignore(
 	>,
 	_file: string,
 	resolve: boolean,
-): Promise<PolicyFinding[] | PolicyFinding[]> {
+): Promise<PolicyFinding[]> {
 	const result: PolicyFinding[] = [
 		"No .gitignore file found in repository root",
 	].map((message) => ({ message, fixStatus: "available" }));

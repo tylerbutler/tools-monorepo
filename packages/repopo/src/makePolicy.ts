@@ -55,6 +55,11 @@ export function makePolicy(
 	) {
 		throw new TypeError(guidance);
 	}
+	if (definition.scope === "repository" && definition.resolver !== undefined) {
+		throw new TypeError(
+			"Repository policies support inline fixes only; remove resolver.",
+		);
+	}
 	if (
 		options?.exclude !== undefined &&
 		!(

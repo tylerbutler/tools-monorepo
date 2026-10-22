@@ -47,7 +47,7 @@ describe("ScriptContains policy", () => {
 				ScriptContains.handler,
 				createArgs(filePath, undefined),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -60,7 +60,7 @@ describe("ScriptContains policy", () => {
 				ScriptContains.handler,
 				createArgs(filePath, { rules: [] }),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -79,7 +79,7 @@ describe("ScriptContains policy", () => {
 					rules: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when script contains multiple required substrings", async () => {
@@ -96,7 +96,7 @@ describe("ScriptContains policy", () => {
 					rules: [{ script: "test", mustContain: ["vitest", "run"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should fail when script is missing a required substring", async () => {
@@ -113,10 +113,12 @@ describe("ScriptContains policy", () => {
 					rules: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 			if (typeof result !== "boolean") {
-				expect(result).toHaveProperty("autoFixable", false);
-				expect(result).toHaveProperty("errorMessages");
+				expect(
+					result.some((finding) => finding.fixStatus !== undefined),
+				).toEqual(false);
+				expect(result.length).toBeGreaterThan(0);
 			}
 		});
 
@@ -139,7 +141,7 @@ describe("ScriptContains policy", () => {
 					],
 				}),
 			);
-			expect(result).not.toBe(true);
+			expect(result).not.toEqual([]);
 		});
 
 		it("should skip validation for scripts that don't exist", async () => {
@@ -156,7 +158,7 @@ describe("ScriptContains policy", () => {
 					rules: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should validate multiple rules independently", async () => {
@@ -180,9 +182,9 @@ describe("ScriptContains policy", () => {
 				}),
 			);
 			// clean passes, build fails (doesn't contain "tsc")
-			expect(result).not.toBe(true);
-			if (typeof result !== "boolean" && "errorMessages" in result) {
-				expect(result.errorMessages.length).toBe(1);
+			expect(result).not.toEqual([]);
+			if (typeof result !== "boolean" && result.length > 0) {
+				expect(result.map((finding) => finding.message).length).toBe(1);
 			}
 		});
 	});
@@ -201,7 +203,7 @@ describe("ScriptContains policy", () => {
 					rules: [{ script: "clean", mustContain: ["rimraf"] }],
 				}),
 			);
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 

@@ -68,13 +68,13 @@ export type RepositoryInventory =
 export interface PolicyRunnerOptions {
 	policies: readonly ConfiguredPolicy[];
 	root: string;
-	inventory?: RepositoryInventory;
+	inventory?: RepositoryInventory | undefined;
 	/** Selection limits only file policies. Defaults to inventory when supplied. */
-	files?: readonly string[];
-	exclude?: readonly (string | RegExp)[];
-	fix?: boolean;
-	concurrency?: number;
-	signal?: AbortSignal;
+	files?: readonly string[] | undefined;
+	exclude?: readonly (string | RegExp)[] | undefined;
+	fix?: boolean | undefined;
+	concurrency?: number | undefined;
+	signal?: AbortSignal | undefined;
 }
 
 class ExecutionContractError extends TypeError {}
@@ -158,8 +158,8 @@ function validateResult(
 			("files" in finding &&
 				!(
 					repository &&
-					Array.isArray(finding.files) &&
-					finding.files.every(validPath)
+					(finding.files === undefined ||
+						(Array.isArray(finding.files) && finding.files.every(validPath)))
 				))
 		) {
 			throw invalid();
@@ -196,7 +196,13 @@ export class PolicyRunner {
 	private readonly concurrency: number;
 
 	public constructor(private readonly options: PolicyRunnerOptions) {
-		this.policies = identifyPolicyInstances(options.policies);
+		this.policies = identifyPolicyInstances(
+			options.policies.map((policy) => ({
+				...policy,
+				config:
+					policy.config === undefined ? policy.defaultConfig : policy.config,
+			})),
+		);
 		this.exclusions = (options.exclude ?? []).map(exclusionRegex);
 		this.concurrency = validateConcurrency(
 			options.concurrency ?? DEFAULT_CONCURRENCY,
@@ -210,6 +216,11 @@ export class PolicyRunner {
 			);
 		}
 		for (const policy of this.policies) {
+			if (policy.scope === "repository" && policy.resolver !== undefined) {
+				throw new TypeError(
+					"Repository policies support inline fixes only; remove resolver.",
+				);
+			}
 			if (
 				policy.requiresConfig &&
 				policy.config === undefined &&
@@ -484,7 +495,7 @@ export class PolicyRunner {
 								file,
 								root: args.root,
 								config: args.config,
-								findings: checked,
+								findings: checked.map((finding) => ({ ...finding })),
 							}),
 						),
 				);

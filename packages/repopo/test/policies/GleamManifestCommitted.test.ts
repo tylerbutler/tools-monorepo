@@ -53,8 +53,7 @@ describe("GleamManifestCommitted", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 
 		it("should pass when manifest.toml exists in a nested directory", async () => {
@@ -74,8 +73,7 @@ describe("GleamManifestCommitted", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).toBe(true);
+			expect(result).toEqual([]);
 		});
 	});
 
@@ -91,10 +89,11 @@ describe("GleamManifestCommitted", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing manifest.toml");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing manifest.toml",
+				);
 			}
 		});
 
@@ -111,10 +110,11 @@ describe("GleamManifestCommitted", () => {
 				root: testDir,
 				resolve: false,
 			});
-
-			expect(result).not.toBe(true);
-			if (typeof result === "object" && "error" in result) {
-				expect(result.error).toContain("Missing manifest.toml");
+			expect(result).not.toEqual([]);
+			if (typeof result === "object" && result.length > 0) {
+				expect(result.map((finding) => finding.message).join("; ")).toContain(
+					"Missing manifest.toml",
+				);
 			}
 		});
 	});

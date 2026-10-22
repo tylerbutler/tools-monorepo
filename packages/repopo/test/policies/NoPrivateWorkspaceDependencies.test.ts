@@ -5,7 +5,7 @@ import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { NoPrivateWorkspaceDependenciesSettings } from "../../src/policies/NoPrivateWorkspaceDependencies.js";
 import { NoPrivateWorkspaceDependencies } from "../../src/policies/NoPrivateWorkspaceDependencies.js";
-import type { PolicyFunctionArguments } from "../../src/policy.js";
+import type { PolicyArgs } from "../../src/policy.js";
 import { runHandler } from "../test-helpers.js";
 
 describe("NoPrivateWorkspaceDependencies policy", () => {
@@ -37,7 +37,10 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 	const createPackageJson = (
 		relativePath: string,
 		json: PackageJson,
-	): { fullPath: string; relativePath: string } => {
+	): {
+		fullPath: string;
+		relativePath: string;
+	} => {
 		const dir = join(tempDir, relativePath);
 		mkdirSync(dir, { recursive: true });
 		const fullPath = join(dir, "package.json");
@@ -50,9 +53,7 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 	const createArgs = (
 		fullPath: string,
 		config?: NoPrivateWorkspaceDependenciesSettings,
-	): PolicyFunctionArguments<
-		NoPrivateWorkspaceDependenciesSettings | undefined
-	> => ({
+	): PolicyArgs<NoPrivateWorkspaceDependenciesSettings | undefined> => ({
 		file: fullPath,
 		root: tempDir,
 		resolve: false,
@@ -81,8 +82,7 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should fail for publishable packages with private workspace dependencies", async () => {
@@ -106,12 +106,17 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).not.toBe(true);
+		expect(result).not.toEqual([]);
 		if (typeof result === "object") {
-			expect(result.errorMessages.join()).toContain("@test/private-dep");
-			expect(result.errorMessages.join()).toContain("private packages");
-			expect(result.autoFixable).toBe(false);
+			expect(result.map((finding) => finding.message).join()).toContain(
+				"@test/private-dep",
+			);
+			expect(result.map((finding) => finding.message).join()).toContain(
+				"private packages",
+			);
+			expect(result.some((finding) => finding.fixStatus !== undefined)).toBe(
+				false,
+			);
 		}
 	});
 
@@ -136,8 +141,7 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should pass for packages with non-workspace dependencies", async () => {
@@ -155,8 +159,7 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should not check devDependencies by default", async () => {
@@ -180,8 +183,7 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should check devDependencies when configured", async () => {
@@ -205,10 +207,11 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath, { checkDevDependencies: true }),
 		);
-
-		expect(result).not.toBe(true);
+		expect(result).not.toEqual([]);
 		if (typeof result === "object") {
-			expect(result.errorMessages.join()).toContain("@test/private-dep");
+			expect(result.map((finding) => finding.message).join()).toContain(
+				"@test/private-dep",
+			);
 		}
 	});
 
@@ -240,11 +243,14 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).not.toBe(true);
+		expect(result).not.toEqual([]);
 		if (typeof result === "object") {
-			expect(result.errorMessages.join()).toContain("@test/private-dep-1");
-			expect(result.errorMessages.join()).toContain("@test/private-dep-2");
+			expect(result.map((finding) => finding.message).join()).toContain(
+				"@test/private-dep-1",
+			);
+			expect(result.map((finding) => finding.message).join()).toContain(
+				"@test/private-dep-2",
+			);
 		}
 	});
 
@@ -275,11 +281,14 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).not.toBe(true);
+		expect(result).not.toEqual([]);
 		if (typeof result === "object") {
-			expect(result.errorMessages.join()).toContain("@test/private-dep");
-			expect(result.errorMessages.join()).not.toContain("@test/public-dep");
+			expect(result.map((finding) => finding.message).join()).toContain(
+				"@test/private-dep",
+			);
+			expect(result.map((finding) => finding.message).join()).not.toContain(
+				"@test/public-dep",
+			);
 		}
 	});
 
@@ -304,10 +313,11 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).not.toBe(true);
+		expect(result).not.toEqual([]);
 		if (typeof result === "object") {
-			expect(result.errorMessages.join()).toContain("@test/private-app");
+			expect(result.map((finding) => finding.message).join()).toContain(
+				"@test/private-app",
+			);
 		}
 	});
 
@@ -321,7 +331,6 @@ describe("NoPrivateWorkspaceDependencies policy", () => {
 			NoPrivateWorkspaceDependencies.handler,
 			createArgs(fullPath),
 		);
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 });

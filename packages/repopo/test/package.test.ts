@@ -72,6 +72,8 @@ const a: ConfiguredFilePolicy<Settings> = makePolicy(file, { config });
 const b: ConfiguredRepositoryPolicy<Settings> = apiFactory(repository, { config });
 a.match.test("a");
 b.scope satisfies "repository";
+// @ts-expect-error Repository policies support inline fixes, not standalone resolvers.
+makePolicy({ ...repository, resolver }, { config });
 // @ts-expect-error Factory retains precise repository return type.
 b.match;
 // @ts-expect-error File handlers cannot receive inventory arguments.
@@ -110,6 +112,14 @@ makePolicy(nullableFile, { config: null });
 makePolicy(PackageJsonProperties, { config: { verbatim: { license: "MIT" } } });
 makePolicy(HtmlFileHeaders, { config: { headerText: "Copyright" } });
 makePolicy(JsTsFileHeaders, { config: { headerText: "Copyright" } });
+const headerArguments = { name: "Header", description: "Header", config: { match: /\\.ts$/, lineStart: /\\/\\/ /, lineEnd: /\\r?\\n/, replacer: (content: string) => content } };
+const requiredHeader = defineFileHeaderPolicy(headerArguments);
+// @ts-expect-error Header helper requires explicit configuration without defaults.
+makePolicy(requiredHeader);
+const defaultHeader = defineFileHeaderPolicy({ ...headerArguments, defaultConfig: { headerText: "Copyright" } });
+makePolicy(defaultHeader);
+// @ts-expect-error Header defaults do not permit incomplete explicit config.
+makePolicy(defaultHeader, { config: {} });
 // @ts-expect-error Required built-in metadata survives declarations.
 makePolicy(PackageJsonProperties);
 // @ts-expect-error Required header metadata survives declarations.

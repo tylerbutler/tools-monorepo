@@ -61,6 +61,7 @@ export interface RepositoryPolicyDefinition<C = void> {
 	handler(
 		args: RepositoryPolicyArgs<C>,
 	): Promise<PolicyResult> | Operation<PolicyResult>;
+	resolver?: never;
 	defaultConfig?: C | undefined;
 	requiresConfig?: boolean | undefined;
 }

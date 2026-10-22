@@ -3,7 +3,6 @@ import { tmpdir } from "node:os";
 import { join } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { PolicyFailure } from "../src/policy.js";
 import type { PackageJsonHandler } from "../src/policyDefiners/definePackagePolicy.js";
 import { definePackagePolicy } from "../src/policyDefiners/definePackagePolicy.js";
 import { runHandler } from "./test-helpers.js";
@@ -42,7 +41,7 @@ describe("definePackagePolicy", () => {
 				// Minimal yield to satisfy generator requirements
 			})();
 			receivedJson = json;
-			return true as const;
+			return [];
 		};
 
 		const policy = definePackagePolicy({
@@ -57,8 +56,7 @@ describe("definePackagePolicy", () => {
 			resolve: false,
 			config: undefined,
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 		expect(receivedJson).toEqual(packageJson);
 		expect(receivedJson?.name).toBe("test-package");
 		expect(receivedJson?.version).toBe("1.0.0");
@@ -69,7 +67,7 @@ describe("definePackagePolicy", () => {
 			yield* (function* () {
 				// Minimal yield to satisfy generator requirements
 			})();
-			return true as const;
+			return [];
 		};
 
 		const policy = definePackagePolicy({
@@ -119,7 +117,7 @@ describe("definePackagePolicy", () => {
 				// Minimal yield to satisfy generator requirements
 			})();
 			receivedJson = json;
-			return true as const;
+			return [];
 		};
 
 		const policy = definePackagePolicy({
@@ -153,17 +151,13 @@ describe("definePackagePolicy", () => {
 
 		const handler: PackageJsonHandler<PackageJson, undefined> = function* (
 			json,
-			{ file },
 		) {
 			yield* (function* () {
 				// Minimal yield to satisfy generator requirements
 			})();
-			const failure: PolicyFailure = {
-				name: "TestPackagePolicy",
-				file,
-				errorMessages: [`Package ${json.name} failed validation`],
-				autoFixable: false,
-			};
+			const failure: PolicyResult = [
+				`Package ${json.name} failed validation`,
+			].map((message) => ({ message }));
 			return failure;
 		};
 
@@ -179,12 +173,13 @@ describe("definePackagePolicy", () => {
 			resolve: false,
 			config: undefined,
 		});
-
-		expect(result).toMatchObject({
-			name: "TestPackagePolicy",
-			errorMessages: ["Package failing-package failed validation"],
-			autoFixable: false,
-		});
+		expect(result).toEqual(
+			expect.arrayContaining(
+				["Package failing-package failed validation"]
+					.map((message) => ({ message }))
+					.map((finding) => expect.objectContaining(finding)),
+			),
+		);
 	});
 
 	it("should work with custom PackageJson types", async () => {
@@ -211,7 +206,7 @@ describe("definePackagePolicy", () => {
 					// Minimal yield to satisfy generator requirements
 				})();
 				receivedCustomField = json.customField;
-				return true as const;
+				return [];
 			};
 
 		const policy = definePackagePolicy<CustomPackageJson>({
@@ -256,14 +251,9 @@ describe("definePackagePolicy", () => {
 			})();
 			receivedConfig = config;
 			if (config?.requiredVersion === json.version) {
-				return true as const;
+				return [];
 			}
-			return {
-				name: "ConfigPackagePolicy",
-				file: "",
-				errorMessages: ["Version mismatch"],
-				autoFixable: false,
-			};
+			return ["Version mismatch"].map((message) => ({ message }));
 		};
 
 		const policy = definePackagePolicy<PackageJson, TestConfig>({
@@ -278,8 +268,7 @@ describe("definePackagePolicy", () => {
 			resolve: false,
 			config: { requiredVersion: "2.0.0" },
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 		expect(receivedConfig).toEqual({ requiredVersion: "2.0.0" });
 	});
 
@@ -301,14 +290,9 @@ describe("definePackagePolicy", () => {
 				// Minimal yield to satisfy generator requirements
 			})();
 			if (json.name === "minimal" && json.version === "0.0.1") {
-				return true as const;
+				return [];
 			}
-			return {
-				name: "MinimalPackagePolicy",
-				file: "",
-				errorMessages: ["Validation failed"],
-				autoFixable: false,
-			};
+			return ["Validation failed"].map((message) => ({ message }));
 		};
 
 		const policy = definePackagePolicy({
@@ -323,8 +307,7 @@ describe("definePackagePolicy", () => {
 			resolve: false,
 			config: undefined,
 		});
-
-		expect(result).toBe(true);
+		expect(result).toEqual([]);
 	});
 
 	it("should receive all policy function arguments", async () => {
@@ -352,7 +335,7 @@ describe("definePackagePolicy", () => {
 			receivedFile = file;
 			receivedRoot = root;
 			receivedResolve = resolve;
-			return true as const;
+			return [];
 		};
 
 		const policy = definePackagePolicy({
@@ -406,7 +389,7 @@ describe("definePackagePolicy", () => {
 			})();
 			receivedExports = json.exports;
 			receivedWorkspaces = json.workspaces;
-			return true as const;
+			return [];
 		};
 
 		const policy = definePackagePolicy({
@@ -431,7 +414,7 @@ describe("definePackagePolicy", () => {
 			yield* (function* () {
 				// Minimal yield to satisfy generator requirements
 			})();
-			return true as const;
+			return [];
 		};
 
 		const policy = definePackagePolicy({

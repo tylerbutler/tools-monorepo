@@ -96,6 +96,20 @@ describe("canonical makePolicy", () => {
 		expect(configured.config).toEqual({ exclude: ["a"] });
 		expect(configured.exclude).toBeUndefined();
 	});
+
+	it("rejects repository resolvers at the JavaScript registration boundary", () => {
+		expect(() =>
+			Reflect.apply(makePolicy, undefined, [
+				{
+					name: "Repository",
+					description: "Inline fixes only",
+					scope: "repository",
+					handler: async () => [],
+					resolver: async () => [],
+				},
+			]),
+		).toThrow("inline fixes only");
+	});
 });
 
 describe("stable instance identities", () => {
