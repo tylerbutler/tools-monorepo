@@ -12,6 +12,8 @@ const sidecarPath = fileURLToPath(
 	new URL("../sidecar/sidecar.mjs", import.meta.url),
 );
 const factoryUrl = new URL("../esm/makePolicy.js", import.meta.url).href;
+const policiesUrl = new URL("../esm/policies.js", import.meta.url).href;
+const apiUrl = new URL("../esm/api.js", import.meta.url).href;
 const binaryPath = fileURLToPath(
 	new URL("../crates/core/target/debug/repopo-core", import.meta.url),
 );
@@ -189,6 +191,107 @@ describe("Native canonical sidecar", () => {
 		expect(responses[1]).toMatchObject({
 			ok: false,
 			error: expect.stringContaining("Load configuration"),
+		});
+	});
+
+	it.each([
+		"PackageAllowedScopes",
+		"PackagePrivateField",
+		"PackageEsmType",
+		"PackageTestScripts",
+		"PackageScripts",
+		"GleamSharedDependencyVersions",
+		"GleamMonorepoConsistency",
+	])("rejects omitted %s config in structural native registration", async (name) => {
+		await writeFile(
+			configPath,
+			`import { ${name} } from ${JSON.stringify(policiesUrl)};
+			export default { policies: [${name}] };`,
+		);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{ method: "begin_run", params: {} },
+		]);
+		expect(responses[0]).toMatchObject({
+			ok: false,
+			error: expect.stringContaining(`Policy '${name}' requires config`),
+		});
+		expect(responses[1]?.ok).toBe(false);
+	});
+
+	it.each([
+		"file",
+		"repository",
+	] as const)("rejects a later invalid structural %s exclusion before native execution", async (scope) => {
+		const marker = join(testDir, "effect.txt");
+		await writeFile(
+			configPath,
+			`import { writeFile } from "node:fs/promises";
+				const effect = async () => { await writeFile(${JSON.stringify(marker)}, "ran"); return [{message:"effect"}]; };
+				export default { policies: [
+					{name:"First",description:"must not run",match:/./,handler:effect,resolver:effect},
+					{name:"Later",description:"invalid exclusion",${scope === "repository" ? 'scope:"repository"' : "match:/./"},exclude:["["],handler:effect}
+				] };`,
+		);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{ method: "begin_run", params: { fix: true } },
+			{
+				method: "execute_units",
+				params: { units: [{ policyId: "First", file: "a.txt" }] },
+			},
+		]);
+		expect(responses[0]).toMatchObject({
+			ok: false,
+			error: expect.stringContaining("Invalid regular expression"),
+		});
+		expect(responses[1]?.ok).toBe(false);
+		expect(responses[2]?.ok).toBe(false);
+		await expect(access(marker)).rejects.toThrow();
+	});
+
+	it.each([
+		["package.json", "definePackagePolicy", "{}"],
+		["Cargo.toml", "defineCargoPolicy", ""],
+		["gleam.toml", "defineGleamPolicy", ""],
+	])("safely reports hostile parsed %s rejections through the native boundary", async (file, helper, content) => {
+		await writeFile(join(testDir, file), content);
+		await writeFile(
+			configPath,
+			`import { ${helper}, makePolicy } from ${JSON.stringify(apiUrl)};
+			const cause = new Proxy({}, { getPrototypeOf() { throw Error("must not inspect"); } });
+			export default { policies: [
+				makePolicy(${helper}({name:"Reject",description:"hostile",handler:async()=>{throw cause;}})),
+				makePolicy(${helper}({name:"Independent",description:"continues",handler:async()=>[{message:"survived"}]}))
+			] };`,
+		);
+		const responses = await runSidecar([
+			{ method: "load_config", params: { configPath, gitRoot: testDir } },
+			{ method: "begin_run", params: {} },
+			{
+				method: "execute_units",
+				params: {
+					units: [
+						{ policyId: "Reject", file },
+						{ policyId: "Independent", file },
+					],
+				},
+			},
+		]);
+		expect(responses[2]).toMatchObject({
+			ok: true,
+			data: [
+				{
+					errors: [
+						{ policyId: "Reject", kind: "exception", cause: { type: "proxy" } },
+					],
+					findings: [],
+				},
+				{
+					errors: [],
+					findings: [{ policyId: "Independent", message: "survived" }],
+				},
+			],
 		});
 	});
 

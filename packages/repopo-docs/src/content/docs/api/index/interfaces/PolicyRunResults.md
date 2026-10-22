@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunResults"
 ---
 
-Defined in: runner.ts:51
+Defined in: runner.ts:55
 
 Findings, failures, skipped units, and file/per-instance timing statistics.
 
@@ -15,7 +15,7 @@ Findings, failures, skipped units, and file/per-instance timing statistics.
 
 > **errors**: [`PolicyExecutionError`](/api/index/type-aliases/policyexecutionerror/)[]
 
-Defined in: runner.ts:53
+Defined in: runner.ts:57
 
 ***
 
@@ -23,7 +23,7 @@ Defined in: runner.ts:53
 
 > **findings**: [`PolicyRunFinding`](/api/index/type-aliases/policyrunfinding/)[]
 
-Defined in: runner.ts:52
+Defined in: runner.ts:56
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: runner.ts:52
 
 > **perfStats**: [`PolicyHandlerPerfStats`](/api/index/interfaces/policyhandlerperfstats/)
 
-Defined in: runner.ts:55
+Defined in: runner.ts:59
 
 ***
 
@@ -39,4 +39,4 @@ Defined in: runner.ts:55
 
 > **skipped**: [`PolicySkippedWork`](/api/index/type-aliases/policyskippedwork/)[]
 
-Defined in: runner.ts:54
+Defined in: runner.ts:58

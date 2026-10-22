@@ -1,6 +1,10 @@
 import { all, call, type Operation, run, spawn } from "effection";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "./concurrency.js";
-import { exclusionRegex } from "./context.js";
+import {
+	createExcludedPolicyFileMap,
+	type ExcludedPolicyFileMap,
+	exclusionRegex,
+} from "./context.js";
 import { ParsedFileCache } from "./fileCache.js";
 import { identifyPolicyInstances } from "./makePolicy.js";
 import { newPerfStats, type PolicyHandlerPerfStats } from "./perf.js";
@@ -87,6 +91,7 @@ function matches(regex: RegExp, file: string): boolean {
 export class PolicyRunner {
 	private readonly policies: IdentifiedPolicy[];
 	private readonly exclusions: RegExp[];
+	private readonly policyExclusions: ExcludedPolicyFileMap;
 	private readonly concurrency: number;
 
 	public constructor(private readonly options: PolicyRunnerOptions) {
@@ -98,6 +103,7 @@ export class PolicyRunner {
 			})),
 		);
 		this.exclusions = (options.exclude ?? []).map(exclusionRegex);
+		this.policyExclusions = createExcludedPolicyFileMap(this.policies);
 		this.concurrency = validateConcurrency(
 			options.concurrency ?? DEFAULT_CONCURRENCY,
 		);
@@ -257,8 +263,8 @@ export class PolicyRunner {
 	private excluded(file: string, policy: IdentifiedPolicy): boolean {
 		return (
 			this.exclusions.some((regex) => matches(regex, file)) ||
-			(policy.exclude ?? []).some((pattern) =>
-				matches(exclusionRegex(pattern), file),
+			(this.policyExclusions.get(policy.instanceId) ?? []).some((regex) =>
+				matches(regex, file),
 			)
 		);
 	}

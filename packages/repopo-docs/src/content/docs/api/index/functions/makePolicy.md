@@ -9,7 +9,7 @@ title: "makePolicy"
 
 > **makePolicy**\<`D`\>(`definition`, ...`options`): [`ConfiguredFilePolicy`](/api/index/type-aliases/configuredfilepolicy/)\<`ConfigOf`\<`D`\>\>
 
-Defined in: makePolicy.ts:31
+Defined in: makePolicy.ts:32
 
 Configure a file definition using a single options object.
 
@@ -37,7 +37,7 @@ Configure a file definition using a single options object.
 
 > **makePolicy**\<`D`\>(`definition`, ...`options`): [`ConfiguredRepositoryPolicy`](/api/index/type-aliases/configuredrepositorypolicy/)\<`ConfigOf`\<`D`\>\>
 
-Defined in: makePolicy.ts:36
+Defined in: makePolicy.ts:37
 
 Configure a repository definition using a single options object.
 
@@ -65,7 +65,7 @@ Configure a repository definition using a single options object.
 
 > **makePolicy**\<`D`\>(`definition`, ...`options`): [`ConfiguredPolicy`](/api/index/type-aliases/configuredpolicy/)\<`ConfigOf`\<`D`\>\>
 
-Defined in: makePolicy.ts:41
+Defined in: makePolicy.ts:42
 
 Configure a common-union definition without losing scope discrimination.
 

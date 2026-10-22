@@ -708,6 +708,7 @@ export const PackageScripts = definePackagePolicy<
 	PackageScriptsSettings | undefined
 >({
 	name: "PackageScripts",
+	requiresConfig: true,
 	description:
 		"Validates package.json scripts based on configurable rules including required scripts, exact content, and conditional requirements.",
 	handler: async (json, { file, root, resolve, config }) => {

@@ -5,7 +5,7 @@ prev: false
 title: "PackageEsmType"
 ---
 
-> `const` **PackageEsmType**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageEsmTypeConfig`](/api/index/interfaces/packageesmtypeconfig/) \| `undefined`\>
+> `const` **PackageEsmType**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageEsmTypeConfig`](/api/index/interfaces/packageesmtypeconfig/) \| `undefined`\> & `object`
 
 Defined in: policies/PackageEsmType.ts:371
 
@@ -13,6 +13,12 @@ A policy that ensures the `type` field in package.json is correctly set.
 
 This policy helps maintain consistency in how packages declare their module format,
 which is essential for proper module resolution in Node.js and bundlers.
+
+## Type Declaration
+
+### requiresConfig
+
+> **requiresConfig**: `true`
 
 ## Remarks
 

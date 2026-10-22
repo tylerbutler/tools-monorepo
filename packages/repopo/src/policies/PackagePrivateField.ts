@@ -213,6 +213,7 @@ export const PackagePrivateField = definePackagePolicy<
 	PackagePrivateFieldConfig | undefined
 >({
 	name: "PackagePrivateField",
+	requiresConfig: true,
 	description:
 		"Enforces the private field in package.json based on package scope or name patterns.",
 	handler: async (json, { file, root, config, resolve }) => {

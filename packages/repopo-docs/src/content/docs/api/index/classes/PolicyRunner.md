@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunner"
 ---
 
-Defined in: runner.ts:87
+Defined in: runner.ts:91
 
 Effection runner; cancellation unwinds active generator handlers and resolvers.
 
@@ -15,7 +15,7 @@ Effection runner; cancellation unwinds active generator handlers and resolvers.
 
 > **new PolicyRunner**(`options`): `PolicyRunner`
 
-Defined in: runner.ts:92
+Defined in: runner.ts:97
 
 #### Parameters
 
@@ -33,7 +33,7 @@ Defined in: runner.ts:92
 
 > **run**(): `Operation`\<[`PolicyRunResults`](/api/index/interfaces/policyrunresults/)\>
 
-Defined in: runner.ts:128
+Defined in: runner.ts:134
 
 #### Returns
 

@@ -373,6 +373,7 @@ export const PackageEsmType = definePackagePolicy<
 	PackageEsmTypeConfig | undefined
 >({
 	name: "PackageEsmType",
+	requiresConfig: true,
 	description:
 		"Ensures the type field in package.json correctly indicates ESM or CommonJS module format.",
 	handler: async (json, { file, root, config, resolve }) => {

@@ -215,6 +215,7 @@ export const PackageTestScripts = definePackagePolicy<
 	PackageTestScriptsConfig | undefined
 >({
 	name: "PackageTestScripts",
+	requiresConfig: true,
 	description:
 		"Ensures packages have test scripts when test directories or test framework dependencies exist.",
 	handler: async (json, { file, root, config }) => {

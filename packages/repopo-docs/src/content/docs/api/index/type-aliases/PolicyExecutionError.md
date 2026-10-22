@@ -7,7 +7,7 @@ title: "PolicyExecutionError"
 
 > **PolicyExecutionError** = `object` & (\{ `file`: `string`; `files?`: `never`; `scope`: `"file"`; \} \| \{ `file?`: `never`; `files`: readonly `string`[]; `scope`: `"repository"`; \})
 
-Defined in: runner.ts:31
+Defined in: runner.ts:35
 
 An execution failure, separate from ordinary policy findings.
 

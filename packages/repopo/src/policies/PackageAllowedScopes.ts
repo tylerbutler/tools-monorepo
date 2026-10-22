@@ -143,6 +143,7 @@ export const PackageAllowedScopes = definePackagePolicy<
 	PackageAllowedScopesConfig | undefined
 >({
 	name: "PackageAllowedScopes",
+	requiresConfig: true,
 	description:
 		"Ensures packages use only allowed npm scopes and package names.",
 	handler: function* (json, { config }) {

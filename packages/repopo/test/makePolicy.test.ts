@@ -1,12 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { identifyPolicyInstances, makePolicy } from "../src/makePolicy.js";
+import { GleamMonorepoConsistency } from "../src/policies/GleamMonorepoConsistency.js";
+import { GleamSharedDependencyVersions } from "../src/policies/GleamSharedDependencyVersions.js";
 import { HtmlFileHeaders } from "../src/policies/HtmlFileHeaders.js";
 import { JsTsFileHeaders } from "../src/policies/JsTsFileHeaders.js";
+import { PackageAllowedScopes } from "../src/policies/PackageAllowedScopes.js";
+import { PackageEsmType } from "../src/policies/PackageEsmType.js";
 import { PackageJsonProperties } from "../src/policies/PackageJsonProperties.js";
+import { PackagePrivateField } from "../src/policies/PackagePrivateField.js";
+import { PackageScripts } from "../src/policies/PackageScripts.js";
+import { PackageTestScripts } from "../src/policies/PackageTestScripts.js";
 import type {
 	FilePolicyDefinition,
 	RepositoryPolicyDefinition,
 } from "../src/policy.js";
+import { PolicyRunner } from "../src/runner.js";
 
 const file = {
 	name: "File",
@@ -64,6 +72,13 @@ describe("canonical makePolicy", () => {
 		PackageJsonProperties,
 		HtmlFileHeaders,
 		JsTsFileHeaders,
+		PackageAllowedScopes,
+		PackagePrivateField,
+		PackageEsmType,
+		PackageTestScripts,
+		PackageScripts,
+		GleamSharedDependencyVersions,
+		GleamMonorepoConsistency,
 	])("requires explicit config for $name at registration", (definition) => {
 		expect(() => Reflect.apply(makePolicy, undefined, [definition])).toThrow(
 			"requires config",
@@ -71,6 +86,20 @@ describe("canonical makePolicy", () => {
 		expect(() =>
 			Reflect.apply(makePolicy, undefined, [definition, { config: undefined }]),
 		).toThrow("requires config");
+		expect(
+			() => new PolicyRunner({ root: ".", policies: [definition] }),
+		).toThrow("requires config");
+	});
+
+	it.each([
+		"file",
+		"repository",
+	] as const)("validates %s exclusions when the factory registers the instance", (scope) => {
+		const definition =
+			scope === "file" ? file : { ...file, scope: "repository" as const };
+		expect(() => makePolicy(definition, { exclude: ["["] })).toThrow(
+			SyntaxError,
+		);
 	});
 
 	it.each([

@@ -156,6 +156,7 @@ export const GleamManifestCommitted: {
 // @public
 export const GleamMonorepoConsistency: {
     name: string;
+    requiresConfig: true;
     description: string;
     match: RegExp;
     handler: (input: PolicyArgs<GleamMonorepoConsistencyConfig>) => Promise<{
@@ -211,6 +212,7 @@ export interface GleamProjectStructureConfig {
 // @public
 export const GleamSharedDependencyVersions: {
     name: string;
+    requiresConfig: true;
     description: string;
     match: RegExp;
     handler: (input: PolicyArgs<GleamSharedDependencyVersionsConfig>) => Promise<{
@@ -371,7 +373,9 @@ export interface NoWildcardDependenciesConfig {
 }
 
 // @public
-export const PackageAllowedScopes: FilePolicyDefinition<PackageAllowedScopesConfig | undefined>;
+export const PackageAllowedScopes: FilePolicyDefinition<PackageAllowedScopesConfig | undefined> & {
+    requiresConfig: true;
+};
 
 // @public
 export interface PackageAllowedScopesConfig {
@@ -380,7 +384,9 @@ export interface PackageAllowedScopesConfig {
 }
 
 // @public
-export const PackageEsmType: FilePolicyDefinition<PackageEsmTypeConfig | undefined>;
+export const PackageEsmType: FilePolicyDefinition<PackageEsmTypeConfig | undefined> & {
+    requiresConfig: true;
+};
 
 // @public
 export interface PackageEsmTypeConfig {
@@ -425,7 +431,9 @@ export interface PackageLicenseSettings {
 }
 
 // @public
-export const PackagePrivateField: FilePolicyDefinition<PackagePrivateFieldConfig | undefined>;
+export const PackagePrivateField: FilePolicyDefinition<PackagePrivateFieldConfig | undefined> & {
+    requiresConfig: true;
+};
 
 // @public
 export interface PackagePrivateFieldConfig {
@@ -446,7 +454,9 @@ export interface PackageReadmeSettings {
 }
 
 // @public
-export const PackageScripts: FilePolicyDefinition<PackageScriptsSettings | undefined>;
+export const PackageScripts: FilePolicyDefinition<PackageScriptsSettings | undefined> & {
+    requiresConfig: true;
+};
 
 // @public
 export interface PackageScriptsSettings {
@@ -458,7 +468,9 @@ export interface PackageScriptsSettings {
 }
 
 // @public
-export const PackageTestScripts: FilePolicyDefinition<PackageTestScriptsConfig | undefined>;
+export const PackageTestScripts: FilePolicyDefinition<PackageTestScriptsConfig | undefined> & {
+    requiresConfig: true;
+};
 
 // @public
 export interface PackageTestScriptsConfig {

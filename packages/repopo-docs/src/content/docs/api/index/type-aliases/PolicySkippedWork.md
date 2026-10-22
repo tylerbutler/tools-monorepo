@@ -7,7 +7,7 @@ title: "PolicySkippedWork"
 
 > **PolicySkippedWork** = `object` & (\{ `file`: `string`; `scope`: `"file"`; \} \| \{ `file?`: `never`; `scope`: `"repository"`; \})
 
-Defined in: runner.ts:44
+Defined in: runner.ts:48
 
 A unit that was not executed.
 

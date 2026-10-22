@@ -95,7 +95,10 @@ const config: RepopoConfig = {
 		makePolicy(NoPrivateWorkspaceDependencies),
 		makePolicy(LicenseFileExists),
 		makePolicy(NoLargeBinaryFiles),
-		makePolicy(PackageEsmType),
+		makePolicy(PackageEsmType, {
+			config: { requiredType: "module" },
+			exclude: vendoredPackageJsons,
+		}),
 		makePolicy(PackageFolderName, {
 			config: {
 				stripScopes: ["@tylerbu"],
@@ -134,6 +137,11 @@ const config: RepopoConfig = {
 		}),
 		// PackageReadme disabled - too opinionated about title matching
 		makePolicy(PackageTestScripts, {
+			config: {
+				testDirectories: ["test", "tests", "__tests__"],
+				testDependencies: ["vitest", "jest", "mocha"],
+				requiredScripts: ["test:coverage"],
+			},
 			exclude: [...vendoredPackageJsons, "packages/.*-docs/package.json"],
 		}),
 		makePolicy(RequiredGitignorePatterns, {

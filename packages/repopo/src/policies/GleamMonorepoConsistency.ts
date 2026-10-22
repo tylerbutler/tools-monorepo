@@ -72,6 +72,7 @@ function checkFieldConsistency(
  */
 export const GleamMonorepoConsistency = {
 	name: "GleamMonorepoConsistency",
+	requiresConfig: true,
 	description:
 		"Enforces consistent metadata (licences, gleam version, etc.) across Gleam packages in a monorepo.",
 	match: /^gleam\.toml$/,

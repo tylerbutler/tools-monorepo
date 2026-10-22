@@ -38,3 +38,7 @@ A policy that enforces consistent metadata across Gleam packages in a monorepo.
 ### name
 
 > **name**: `string` = `"GleamMonorepoConsistency"`
+
+### requiresConfig
+
+> **requiresConfig**: `true` = `true`

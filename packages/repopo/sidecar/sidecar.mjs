@@ -12,7 +12,7 @@ import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { all, run } from "effection";
 import { lilconfig } from "lilconfig";
 import { DefaultPolicyConfig } from "../esm/config.js";
-import { exclusionRegex } from "../esm/context.js";
+import { createExcludedPolicyFileMap, exclusionRegex } from "../esm/context.js";
 import { ParsedFileCache } from "../esm/fileCache.js";
 import { identifyPolicyInstances, makePolicy } from "../esm/makePolicy.js";
 import { newPerfStats } from "../esm/perf.js";
@@ -221,6 +221,7 @@ async function loadConfig(params) {
 		exclude: config.excludeFiles ?? [],
 	};
 	options.exclude.forEach(exclusionRegex);
+	createExcludedPolicyFileMap(policies);
 	const metadata = {
 		policies: policies.map((policy) => ({
 			name: policy.name,

@@ -5,7 +5,7 @@ prev: false
 title: "PolicyRunnerOptions"
 ---
 
-Defined in: runner.ts:64
+Defined in: runner.ts:68
 
 Shared Promise and Effection runner options.
 
@@ -15,7 +15,7 @@ Shared Promise and Effection runner options.
 
 > `optional` **concurrency?**: `number`
 
-Defined in: runner.ts:72
+Defined in: runner.ts:76
 
 ***
 
@@ -23,7 +23,7 @@ Defined in: runner.ts:72
 
 > `optional` **exclude?**: readonly (`string` \| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp))[]
 
-Defined in: runner.ts:70
+Defined in: runner.ts:74
 
 ***
 
@@ -31,7 +31,7 @@ Defined in: runner.ts:70
 
 > `optional` **files?**: readonly `string`[]
 
-Defined in: runner.ts:69
+Defined in: runner.ts:73
 
 Selection limits only file policies. Defaults to inventory when supplied.
 
@@ -41,7 +41,7 @@ Selection limits only file policies. Defaults to inventory when supplied.
 
 > `optional` **fix?**: `boolean`
 
-Defined in: runner.ts:71
+Defined in: runner.ts:75
 
 ***
 
@@ -49,7 +49,7 @@ Defined in: runner.ts:71
 
 > `optional` **inventory?**: [`RepositoryInventory`](/api/index/type-aliases/repositoryinventory/)
 
-Defined in: runner.ts:67
+Defined in: runner.ts:71
 
 ***
 
@@ -57,7 +57,7 @@ Defined in: runner.ts:67
 
 > **policies**: readonly [`ConfiguredPolicy`](/api/index/type-aliases/configuredpolicy/)[]
 
-Defined in: runner.ts:65
+Defined in: runner.ts:69
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: runner.ts:65
 
 > **root**: `string`
 
-Defined in: runner.ts:66
+Defined in: runner.ts:70
 
 ***
 
@@ -73,4 +73,4 @@ Defined in: runner.ts:66
 
 > `optional` **signal?**: `AbortSignal`
 
-Defined in: runner.ts:73
+Defined in: runner.ts:77

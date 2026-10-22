@@ -23,6 +23,31 @@ const repositoryDefinition = {
 const root = "/repo";
 
 describe("canonical policy execution", () => {
+	it.each([
+		"file",
+		"repository",
+	] as const)("rejects invalid later structural %s exclusions before any loader, handler or resolver", (scope) => {
+		const handler = vi.fn(async () => [{ message: "needs fix" }]);
+		const resolver = vi.fn(async () => []);
+		const inventory = vi.fn(async () => ["a.txt"]);
+		const later = scope === "file" ? fileDefinition : repositoryDefinition;
+		expect(
+			() =>
+				new PolicyRunner({
+					root,
+					fix: true,
+					inventory,
+					policies: [
+						makePolicy({ ...fileDefinition, name: "First", handler, resolver }),
+						{ ...later, exclude: ["["] },
+					],
+				}),
+		).toThrow(SyntaxError);
+		expect(handler).not.toHaveBeenCalled();
+		expect(resolver).not.toHaveBeenCalled();
+		expect(inventory).not.toHaveBeenCalled();
+	});
+
 	it("retains independent messages, manual guidance, fixed findings and runner-owned scope/identity", async () => {
 		const result = await runPolicies({
 			root,

@@ -91,6 +91,7 @@ function recordDependency(
  */
 export const GleamSharedDependencyVersions = {
 	name: "GleamSharedDependencyVersions",
+	requiresConfig: true,
 	description:
 		"Detects dependency version mismatches across Gleam packages in a monorepo.",
 	match: /^gleam\.toml$/,

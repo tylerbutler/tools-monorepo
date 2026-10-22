@@ -7,7 +7,7 @@ title: "PackageJsonHandler"
 
 > **PackageJsonHandler**\<`J`, `C`\> = (`json`, `args`) => `Operation`\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\> \| [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyResult`](/api/index/type-aliases/policyresult/)\>
 
-Defined in: policyDefiners/definePackagePolicy.ts:29
+Defined in: policyDefiners/definePackagePolicy.ts:30
 
 A policy handler especially for policies that target package.json.
 

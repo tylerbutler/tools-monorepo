@@ -56,6 +56,8 @@ field remains configuration; it does not exclude work.
 `RepopoConfig.excludeFiles` remains the repository-global option. Programmatic
 runners call this option `exclude`. Exclusion strings are case-insensitive
 regular expressions, not globs; RegExp values keep their flags.
+Invalid global or per-instance regex strings fail registration before any policy
+handler, resolver, or inventory loader runs, in both engines.
 
 A single instance can use its policy name as its ID. Repeated policy names
 require explicit, unique `instanceId` values. IDs do not depend on array order.
@@ -98,6 +100,25 @@ An allowed `null` stays supplied and does not select the default.
 Registration checks required configuration even for structurally supplied
 configured objects. Built-ins such as `PackageJsonProperties`, the header
 policies, and the focused script policies require configuration.
+
+The following built-ins also require explicit configuration; none supplies a
+default or silently skips validation when configuration is omitted:
+
+| Policy | Configure |
+| --- | --- |
+| `PackageAllowedScopes` | Allowed scopes and/or unscoped package names |
+| `PackagePrivateField` | Publishing/private patterns and unmatched-package behavior |
+| `PackageEsmType` | `requiredType` or `detectFromExports: true` |
+| `PackageTestScripts` | Test directories and/or framework dependencies; required scripts default to `["test"]` |
+| `PackageScripts` | Script requirements, exact values, or other validation rules |
+| `GleamSharedDependencyVersions` | `packages` paths to the Gleam manifests to compare |
+| `GleamMonorepoConsistency` | `packages` paths to compare, and optional consistency settings |
+
+For example, use `makePolicy(PackageEsmType, { config: { requiredType: "module" } })`
+or `makePolicy(PackageTestScripts, { config: { testDependencies: ["vitest"] } })`.
+Configuration is repository-specific: Repopo does not choose allowed scopes,
+publishing rules, test frameworks, or monorepo members for you. Existing
+per-field defaults still apply to explicitly supplied configuration.
 
 ## Findings, not booleans or result wrappers
 

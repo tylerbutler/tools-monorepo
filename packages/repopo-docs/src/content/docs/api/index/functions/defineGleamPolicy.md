@@ -9,7 +9,7 @@ title: "defineGleamPolicy"
 
 > **defineGleamPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> & `object`
 
-Defined in: policyDefiners/defineGleamPolicy.ts:101
+Defined in: policyDefiners/defineGleamPolicy.ts:102
 
 Define a repo policy for gleam.toml files.
 
@@ -57,7 +57,7 @@ const MyGleamPolicy = defineGleamPolicy({
 
 > **defineGleamPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\> & `object`
 
-Defined in: policyDefiners/defineGleamPolicy.ts:105
+Defined in: policyDefiners/defineGleamPolicy.ts:106
 
 Define a Gleam policy that requires explicit configuration.
 
@@ -81,7 +81,7 @@ Define a Gleam policy that requires explicit configuration.
 
 > **defineGleamPolicy**\<`C`\>(`args`): [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<`C`\>
 
-Defined in: policyDefiners/defineGleamPolicy.ts:109
+Defined in: policyDefiners/defineGleamPolicy.ts:110
 
 Define a Gleam policy with optional configuration.
 

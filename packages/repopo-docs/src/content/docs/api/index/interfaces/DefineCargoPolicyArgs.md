@@ -5,7 +5,7 @@ prev: false
 title: "DefineCargoPolicyArgs"
 ---
 
-Defined in: policyDefiners/defineCargoPolicy.ts:52
+Defined in: policyDefiners/defineCargoPolicy.ts:53
 
 Input arguments for defining a Cargo.toml policy.
 
@@ -21,7 +21,7 @@ Input arguments for defining a Cargo.toml policy.
 
 > `optional` **defaultConfig?**: `C`
 
-Defined in: policyDefiners/defineCargoPolicy.ts:71
+Defined in: policyDefiners/defineCargoPolicy.ts:72
 
 Optional default configuration for the policy.
 
@@ -31,7 +31,7 @@ Optional default configuration for the policy.
 
 > **description**: `string`
 
-Defined in: policyDefiners/defineCargoPolicy.ts:61
+Defined in: policyDefiners/defineCargoPolicy.ts:62
 
 A description of the policy's purpose.
 
@@ -41,7 +41,7 @@ A description of the policy's purpose.
 
 > **handler**: [`CargoTomlHandler`](/api/index/type-aliases/cargotomlhandler/)\<`C`\>
 
-Defined in: policyDefiners/defineCargoPolicy.ts:66
+Defined in: policyDefiners/defineCargoPolicy.ts:67
 
 The handler function that receives the parsed Cargo.toml and policy arguments.
 
@@ -51,7 +51,7 @@ The handler function that receives the parsed Cargo.toml and policy arguments.
 
 > **name**: `string`
 
-Defined in: policyDefiners/defineCargoPolicy.ts:56
+Defined in: policyDefiners/defineCargoPolicy.ts:57
 
 The name of the policy.
 
@@ -61,4 +61,4 @@ The name of the policy.
 
 > `optional` **requiresConfig?**: `boolean`
 
-Defined in: policyDefiners/defineCargoPolicy.ts:72
+Defined in: policyDefiners/defineCargoPolicy.ts:73

@@ -5,11 +5,17 @@ prev: false
 title: "PackageScripts"
 ---
 
-> `const` **PackageScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageScriptsSettings`](/api/index/interfaces/packagescriptssettings/) \| `undefined`\>
+> `const` **PackageScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageScriptsSettings`](/api/index/interfaces/packagescriptssettings/) \| `undefined`\> & `object`
 
 Defined in: policies/PackageScripts.ts:706
 
 A RepoPolicy that validates package.json scripts based on configurable rules.
+
+## Type Declaration
+
+### requiresConfig
+
+> **requiresConfig**: `true`
 
 ## Remarks
 

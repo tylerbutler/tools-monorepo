@@ -38,3 +38,7 @@ A policy that detects dependency version mismatches across Gleam packages in a m
 ### name
 
 > **name**: `string` = `"GleamSharedDependencyVersions"`
+
+### requiresConfig
+
+> **requiresConfig**: `true` = `true`

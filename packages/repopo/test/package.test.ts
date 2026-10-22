@@ -4,9 +4,25 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { join } from "pathe";
 import { definePackagePolicy, makePolicy, runPolicies } from "repopo/api";
+import { PackageAllowedScopes } from "repopo/policies";
 import { describe, expect, it } from "vitest";
 
 describe("shipped public entry points", () => {
+	it("runs explicitly configured built-ins rather than silently disabling their checks", async () => {
+		const result = await runPolicies({
+			root: fileURLToPath(new URL("..", import.meta.url)),
+			files: ["package.json"],
+			policies: [makePolicy(PackageAllowedScopes, { config: {} })],
+		});
+		expect(result.errors).toEqual([]);
+		expect(result.findings).toMatchObject([
+			{
+				policyId: "PackageAllowedScopes",
+				message: expect.stringContaining("repopo"),
+			},
+		]);
+	});
+
 	it("runs a generated package policy through repopo/api", async () => {
 		const result = await runPolicies({
 			root: fileURLToPath(new URL("..", import.meta.url)),
@@ -47,6 +63,7 @@ describe("shipped public entry points", () => {
 import { makePolicy, run as cliRun, type FilePolicyDefinition, type RepositoryPolicyDefinition, type PolicyDefinition, type PolicyResult, type ConfiguredFilePolicy, type ConfiguredRepositoryPolicy, type PolicyOptions } from "repopo";
 import { makePolicy as apiFactory, runPolicies, PolicyRunner, definePackagePolicy, defineCargoPolicy, defineGleamPolicy, defineFileHeaderPolicy, type RepopoConfig, type PolicyResolver, type PolicyRunResults, type PolicyRunnerOptions } from "repopo/api";
 import { PackageJsonProperties, HtmlFileHeaders, JsTsFileHeaders, RequiredScripts, type PackageJsonPropertiesSettings, type NoLargeBinaryFilesSettings, type LicenseFileExistsSettings, type RequiredGitignorePatternsSettings, type NoPrivateWorkspaceDependenciesSettings } from "repopo/policies";
+import { PackageAllowedScopes, PackagePrivateField, PackageEsmType, PackageTestScripts, PackageScripts, GleamSharedDependencyVersions, GleamMonorepoConsistency } from "repopo/policies";
 import type { PackageJsonPropertiesSettings as RootSettings, NoLargeBinaryFilesSettings as RootBinary } from "repopo";
 import type { LicenseFileExistsSettings as ApiLicense, RequiredGitignorePatternsSettings as ApiGitignore, NoPrivateWorkspaceDependenciesSettings as ApiPrivate } from "repopo/api";
 // @ts-expect-error API entry point deliberately excludes OCLIF run.
@@ -58,6 +75,22 @@ import { Policy, type PolicyFailure, type PolicyFixResult, type PolicyShape } fr
 // @ts-expect-error Retired package helper alias.
 import { generatePackagePolicy } from "repopo";
 interface Settings { threshold: number; label: string }
+for (const definition of [PackageAllowedScopes, PackagePrivateField, PackageEsmType, PackageTestScripts, PackageScripts, GleamSharedDependencyVersions, GleamMonorepoConsistency]) {
+	definition.requiresConfig satisfies true;
+	// @ts-expect-error Each built-in requires an explicit config, including in unions.
+	makePolicy(definition);
+	// @ts-expect-error Empty options must not silently disable a built-in.
+	makePolicy(definition, {});
+	// @ts-expect-error Undefined cannot supply the missing built-in config.
+	makePolicy(definition, { config: undefined });
+}
+makePolicy(PackageAllowedScopes, { config: { allowedScopes: ["@example"] } });
+makePolicy(PackagePrivateField, { config: { unmatchedPackages: "private" } });
+makePolicy(PackageEsmType, { config: { requiredType: "module" } });
+makePolicy(PackageTestScripts, { config: { testDependencies: ["vitest"], requiredScripts: ["test"] } });
+makePolicy(PackageScripts, { config: { must: ["test"] } });
+makePolicy(GleamSharedDependencyVersions, { config: { packages: ["a/gleam.toml", "b/gleam.toml"] } });
+makePolicy(GleamMonorepoConsistency, { config: { packages: ["a/gleam.toml", "b/gleam.toml"] } });
 const resolver: PolicyResolver<Settings> = async ({ findings, config, file }) => findings.map(finding => ({ ...finding, fixStatus: "fixed" }));
 const file = {
 	name: "File", description: "File", match: /./, requiresConfig: true,

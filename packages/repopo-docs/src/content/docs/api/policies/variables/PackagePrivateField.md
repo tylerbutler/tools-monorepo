@@ -5,7 +5,7 @@ prev: false
 title: "PackagePrivateField"
 ---
 
-> `const` **PackagePrivateField**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackagePrivateFieldConfig`](/api/index/interfaces/packageprivatefieldconfig/) \| `undefined`\>
+> `const` **PackagePrivateField**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackagePrivateFieldConfig`](/api/index/interfaces/packageprivatefieldconfig/) \| `undefined`\> & `object`
 
 Defined in: policies/PackagePrivateField.ts:211
 
@@ -16,6 +16,12 @@ This policy is essential for monorepos where publishing control is important:
 - Prevent accidental publishing of internal packages
 - Ensure public packages don't have `private: true` blocking publishing
 - Allow experimental packages to choose their own publishing status
+
+## Type Declaration
+
+### requiresConfig
+
+> **requiresConfig**: `true`
 
 ## Remarks
 

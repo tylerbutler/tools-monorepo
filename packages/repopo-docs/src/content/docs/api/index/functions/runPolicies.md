@@ -7,7 +7,7 @@ title: "runPolicies"
 
 > **runPolicies**(`options`): [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)\<[`PolicyRunResults`](/api/index/interfaces/policyrunresults/)\>
 
-Defined in: runner.ts:303
+Defined in: runner.ts:309
 
 Promise entry point sharing the Effection runner's contracts and cancellation.
 

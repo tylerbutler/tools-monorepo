@@ -5,7 +5,7 @@ prev: false
 title: "PackageTestScripts"
 ---
 
-> `const` **PackageTestScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageTestScriptsConfig`](/api/index/interfaces/packagetestscriptsconfig/) \| `undefined`\>
+> `const` **PackageTestScripts**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageTestScriptsConfig`](/api/index/interfaces/packagetestscriptsconfig/) \| `undefined`\> & `object`
 
 Defined in: policies/PackageTestScripts.ts:213
 
@@ -13,6 +13,12 @@ A policy that ensures packages have test scripts when test files exist.
 
 This policy helps maintain testing discipline by requiring test scripts
 for packages that have test directories or test framework dependencies.
+
+## Type Declaration
+
+### requiresConfig
+
+> **requiresConfig**: `true`
 
 ## Remarks
 

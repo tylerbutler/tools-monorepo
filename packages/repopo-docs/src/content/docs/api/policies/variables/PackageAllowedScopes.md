@@ -5,7 +5,7 @@ prev: false
 title: "PackageAllowedScopes"
 ---
 
-> `const` **PackageAllowedScopes**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageAllowedScopesConfig`](/api/index/interfaces/packageallowedscopesconfig/) \| `undefined`\>
+> `const` **PackageAllowedScopes**: [`FilePolicyDefinition`](/api/index/interfaces/filepolicydefinition/)\<[`PackageAllowedScopesConfig`](/api/index/interfaces/packageallowedscopesconfig/) \| `undefined`\> & `object`
 
 Defined in: policies/PackageAllowedScopes.ts:141
 
@@ -14,6 +14,12 @@ A policy that ensures packages use only allowed scopes and package names.
 This policy prevents accidental introduction of new npm scopes or unscoped packages
 in a monorepo. It helps maintain naming consistency and prevents typos or mistakes
 when creating new packages.
+
+## Type Declaration
+
+### requiresConfig
+
+> **requiresConfig**: `true`
 
 ## Remarks
 

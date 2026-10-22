@@ -1,3 +1,4 @@
+import { exclusionRegex } from "./context.js";
 import type {
 	ConfiguredFilePolicy,
 	ConfiguredPolicy,
@@ -83,6 +84,7 @@ export function makePolicy(
 	) {
 		throw new TypeError("instanceId must be a nonempty string.");
 	}
+	options?.exclude?.forEach(exclusionRegex);
 	const config =
 		options?.config === undefined ? definition.defaultConfig : options.config;
 	if (definition.requiresConfig && config === undefined) {
