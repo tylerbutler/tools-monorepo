@@ -3,8 +3,11 @@ import { tmpdir } from "node:os";
 import { join } from "pathe";
 import type { PackageJson } from "type-fest";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { defineCargoPolicy } from "../src/policyDefiners/defineCargoPolicy.js";
+import { defineGleamPolicy } from "../src/policyDefiners/defineGleamPolicy.js";
 import type { PackageJsonHandler } from "../src/policyDefiners/definePackagePolicy.js";
 import { definePackagePolicy } from "../src/policyDefiners/definePackagePolicy.js";
+import { runPolicies } from "../src/runner.js";
 import { runHandler } from "./test-helpers.js";
 
 describe("definePackagePolicy", () => {
@@ -18,6 +21,38 @@ describe("definePackagePolicy", () => {
 
 	afterEach(async () => {
 		await rm(testDir, { recursive: true, force: true });
+	});
+
+	it.each([
+		{ file: "package.json", content: "{}", define: definePackagePolicy },
+		{
+			file: "Cargo.toml",
+			content: '[package]\nname = "app"',
+			define: defineCargoPolicy,
+		},
+		{ file: "gleam.toml", content: 'name = "app"', define: defineGleamPolicy },
+	])("reports unsupported JavaScript $file helper results as contract errors", async ({
+		file,
+		content,
+		define,
+	}) => {
+		await writeFile(join(testDir, file), content);
+		const definition = Reflect.apply(define, undefined, [
+			{
+				name: "InvalidHelper",
+				description: "An obsolete synchronous handler",
+				handler: () => true,
+			},
+		]);
+		const result = await runPolicies({
+			root: testDir,
+			files: [file],
+			policies: [definition],
+		});
+		expect(result.findings).toEqual([]);
+		expect(result.errors).toMatchObject([
+			{ kind: "contract", scope: "file", file },
+		]);
 	});
 
 	it("should read package.json and pass to handler", async () => {

@@ -1,6 +1,7 @@
 import { all, call, type Operation, run, spawn } from "effection";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "./concurrency.js";
 import { exclusionRegex } from "./context.js";
+import { ExecutionContractError } from "./executionContractError.js";
 import { fileCache, ParsedFileCache } from "./fileCache.js";
 import { identifyPolicyInstances } from "./makePolicy.js";
 import {
@@ -77,7 +78,6 @@ export interface PolicyRunnerOptions {
 	signal?: AbortSignal | undefined;
 }
 
-class ExecutionContractError extends TypeError {}
 const windowsAbsolutePath = /^[A-Za-z]:/;
 
 function* execute<T>(handler: () => Promise<T> | Operation<T>): Operation<T> {

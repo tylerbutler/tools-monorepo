@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { call, type Operation } from "effection";
 import { resolve } from "pathe";
+import { ExecutionContractError } from "../executionContractError.js";
 import { readParsedFile } from "../fileCache.js";
 import { CargoTomlRegexMatch } from "../policies/constants.js";
 import type {
@@ -134,7 +135,9 @@ export function defineCargoPolicy<C = void>(
 			if (isOperation<PolicyResult>(result)) {
 				return yield* result;
 			}
-			throw new Error(`Unexpected handler result type: ${typeof result}`);
+			throw new ExecutionContractError(
+				`Unexpected handler result type: ${typeof result}`,
+			);
 		},
 	};
 }

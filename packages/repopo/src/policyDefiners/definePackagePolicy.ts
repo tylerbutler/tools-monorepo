@@ -2,6 +2,7 @@ import { call, type Operation } from "effection";
 import jsonfile from "jsonfile";
 import { resolve } from "pathe";
 import type { PackageJson } from "type-fest";
+import { ExecutionContractError } from "../executionContractError.js";
 import { readParsedFile } from "../fileCache.js";
 import { PackageJsonRegexMatch } from "../policies/constants.js";
 import type {
@@ -131,7 +132,9 @@ export function definePackagePolicy<J = PackageJson, C = void>(
 				return yield* result;
 			}
 			// This should never happen with proper handler typing
-			throw new Error(`Unexpected handler result type: ${typeof result}`);
+			throw new ExecutionContractError(
+				`Unexpected handler result type: ${typeof result}`,
+			);
 		},
 	};
 }
