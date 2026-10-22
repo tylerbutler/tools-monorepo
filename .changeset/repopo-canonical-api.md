@@ -1,6 +1,7 @@
 ---
 "repopo": minor
 "sort-tsconfig": minor
+"remark-repopo-policies": patch
 ---
 
 Adopt the canonical Repopo 1.0 authoring and execution API. This is an
@@ -53,3 +54,6 @@ pre-1.0. Update custom policies and configurations together; see the
 canonical file definition with finding-array results. Direct handler consumers
 must handle arrays and fix statuses instead of retired success/failure values.
 Configure it with the same `makePolicy` options object shown above.
+
+`remark-repopo-policies` reads canonical instance exclusions from `exclude`, so
+generated policy tables retain exclusion details after the API migration.
