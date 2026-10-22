@@ -39,7 +39,7 @@ async function runSidecar(requests: object[]): Promise<Response[]> {
 		const child = execFile(
 			process.execPath,
 			[sidecarPath],
-			{ timeout: 15000 },
+			{ timeout: 15000, maxBuffer: 8 * 1024 * 1024 },
 			(error, output, stderr) => {
 				if (error) {
 					reject(new Error(`Sidecar failed: ${stderr}`, { cause: error }));
@@ -593,6 +593,7 @@ describe("Native canonical sidecar", () => {
 
 	it("refreshes Git inventory after file fixes and between repository fixers", async () => {
 		await writeFile(join(testDir, "removed.txt"), "old");
+		await simpleGit(testDir).add("removed.txt");
 		const result = await execute(
 			`
 			import {writeFile,rm} from "node:fs/promises";
@@ -632,12 +633,13 @@ describe("Native canonical sidecar", () => {
 	it("keeps fixes sequential and preserves Effection generator teardown", async () => {
 		const result = await execute(
 			`
+			import {sleep} from ${JSON.stringify(import.meta.resolve("effection"))};
 			let active=0,peak=0,closed=0;
 			export default {policies:[{
 				name:"Generator",description:"structured lifetime",match:/./,
 				handler:function*(){
 					active++;peak=Math.max(peak,active);
-					try {yield* (function*(){return;})();return [{message:"peak="+peak+";closed="+closed,fixStatus:"fixed"}];}
+					try {yield* sleep(1);return [{message:"peak="+peak+";closed="+closed,fixStatus:"fixed"}];}
 					finally{active--;closed++;}
 				}
 			}]};`,
@@ -862,6 +864,139 @@ describe("Native canonical sidecar", () => {
 					"Resolved Following: b.txt: independent",
 				);
 				expect(result.output).not.toContain("must not run");
+			});
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("refreshes created and unstaged-deleted tracked files across fix phases: %s", async (command) => {
+				await writeFile(join(testDir, "removed.txt"), "tracked");
+				await simpleGit(testDir).add("removed.txt");
+				await writeFile(
+					configPath,
+					`import {writeFile,rm} from "node:fs/promises";
+						export default {policies:[{
+							name:"File",description:"create and remove",match:/selected/,
+							handler:async({root})=>{
+								await rm(root+"/removed.txt");
+								await writeFile(root+"/created.txt","created");
+								return [{message:"changed",fixStatus:"fixed"}];
+							}
+						},{
+							name:"First",description:"refresh",scope:"repository",
+							handler:async({files,root})=>{
+								await rm(root+"/created.txt");
+								await writeFile(root+"/repository.txt","created");
+								return [{message:"first="+JSON.stringify(files),fixStatus:"fixed"}];
+							}
+						},{
+							name:"Second",description:"refresh again",scope:"repository",
+							handler:async({files})=>[{message:"second="+JSON.stringify(files),fixStatus:"fixed"}]
+						}]};`,
+				);
+				const result = await cli(command, true, "selected.txt\0");
+				expect(result.code).toBe(0);
+				expect(result.output).toContain(
+					`first=${JSON.stringify(["created.txt", "repopo.config.mjs"])}`,
+				);
+				expect(result.output).toContain(
+					`second=${JSON.stringify(["repopo.config.mjs", "repository.txt"])}`,
+				);
+				expect(result.output).not.toContain("removed.txt");
+			});
+
+			it.each([
+				"check",
+				"check-native",
+			] as const)("continues read-only errors with NUL selection and full repository inventory: %s", async (command) => {
+				await writeFile(join(testDir, "unchanged.txt"), "not selected");
+				await writeFile(
+					configPath,
+					configSource(`[{
+							name:"Broken",description:"throws",match:/txt$/,
+							handler:async()=>{throw new Error("read-only fixture")}
+						},{
+							name:"Following",description:"continues",match:/txt$/,
+							handler:async()=>[{message:"independent",manualFix:"Correct manually"}]
+						},{
+							name:"Repo",description:"full inventory",scope:"repository",
+							handler:async({files})=>[{message:JSON.stringify(files)}]
+						}]`),
+				);
+				const result = await cli(command, false, "a.txt\0b.txt\0");
+				expect(result.code).toBe(1);
+				expect(result.output).toContain("read-only fixture");
+				expect(result.output).toContain("Following: a.txt: independent");
+				expect(result.output).toContain("Following: b.txt: independent");
+				expect(result.output).toContain("Correct manually");
+				expect(result.output).toContain("unchanged.txt");
+			});
+
+			it("unwinds the sidecar when the actual native CLI is terminated", async () => {
+				await writeFile(
+					configPath,
+					`import {call,sleep} from ${JSON.stringify(import.meta.resolve("effection"))};
+					import {writeFile} from "node:fs/promises";
+					export default {policies:[{
+						name:"Owned",description:"cleanup",match:/./,
+						handler:function*({root}){
+							try{
+								yield* call(()=>writeFile(root+"/started","started"));
+								yield* sleep(60000);return [];
+							}finally{yield* call(()=>writeFile(root+"/closed","closed"));}
+						}
+					}]};`,
+				);
+				const child = execFile(
+					process.execPath,
+					[
+						cliPath,
+						"check-native",
+						"--stdin",
+						"--config",
+						configPath,
+						"--binary-path",
+						binaryPath,
+						"--sidecar-path",
+						sidecarPath,
+						"--runtime",
+						"node",
+					],
+					{ cwd: testDir, timeout: 15000 },
+				);
+				let output = "";
+				child.stdout?.on("data", (chunk) => {
+					output += chunk.toString();
+				});
+				child.stderr?.on("data", (chunk) => {
+					output += chunk.toString();
+				});
+				const closed = new Promise<number | null>((resolvePromise) => {
+					child.on("close", resolvePromise);
+				});
+				child.stdin?.end("a.txt\n");
+				try {
+					await expect
+						.poll(
+							() =>
+								access(join(testDir, "started")).then(
+									() => true,
+									() => false,
+								),
+							{ timeout: 10000 },
+						)
+						.toBe(true);
+					child.kill("SIGTERM");
+					expect(await closed).toBe(143);
+					expect(await readFile(join(testDir, "closed"), "utf8")).toBe(
+						"closed",
+					);
+					expect(output).not.toContain("Execution error");
+				} finally {
+					if (child.exitCode === null) {
+						child.kill("SIGKILL");
+					}
+				}
 			});
 		},
 	);

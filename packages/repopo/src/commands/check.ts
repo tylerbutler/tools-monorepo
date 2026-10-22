@@ -4,6 +4,7 @@ import { BaseRepopoCommand } from "../baseCommand.js";
 import { DEFAULT_CONCURRENCY, validateConcurrency } from "../concurrency.js";
 import { parseFilePaths } from "../filePaths.js";
 import { logStats } from "../perf.js";
+import { readRepositoryFiles } from "../repositoryFiles.js";
 import {
 	type PolicyExecutionError,
 	type PolicyRunFinding,
@@ -128,14 +129,6 @@ export class CheckPolicy<
 	}
 
 	private async collectRepositoryFiles(): Promise<string[]> {
-		return parseFilePaths(
-			(await this.git.raw(
-				"ls-files",
-				"-co",
-				"-z",
-				"--exclude-standard",
-				"--full-name",
-			)) ?? "",
-		);
+		return readRepositoryFiles(this.git);
 	}
 }

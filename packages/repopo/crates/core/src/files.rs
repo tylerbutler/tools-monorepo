@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+use std::collections::HashSet;
 use std::io::{self, Read};
 use std::process::Command;
 
@@ -20,7 +21,23 @@ pub fn git_ls_files(git_root: &str) -> Result<Vec<String>> {
 
     let stdout = String::from_utf8(output.stdout).context("git output is not valid UTF-8")?;
 
-    Ok(parse_file_paths(&stdout))
+    let deleted = Command::new("git")
+        .args(["ls-files", "--deleted", "-z", "--full-name"])
+        .current_dir(git_root)
+        .output()
+        .context("Failed to enumerate deleted Git files")?;
+    if !deleted.status.success() {
+        anyhow::bail!(
+            "git ls-files --deleted failed: {}",
+            String::from_utf8_lossy(&deleted.stderr)
+        );
+    }
+    let deleted = String::from_utf8(deleted.stdout).context("git output is not valid UTF-8")?;
+    let deleted: HashSet<_> = parse_file_paths(&deleted).into_iter().collect();
+    Ok(parse_file_paths(&stdout)
+        .into_iter()
+        .filter(|file| !deleted.contains(file))
+        .collect())
 }
 
 /// Read file paths from stdin (one per line).
@@ -35,17 +52,13 @@ pub fn read_stdin_files() -> Result<Vec<String>> {
 }
 
 fn parse_file_paths(input: &str) -> Vec<String> {
-    let normalized = input.replace('\\', "/");
+    let mut normalized = input.replace('\\', "/");
     let nul_delimited = normalized.contains('\0');
+    if !nul_delimited {
+        normalized = normalized.replace("\r\n", "\n");
+    }
     normalized
         .split(if nul_delimited { '\0' } else { '\n' })
-        .map(|path| {
-            if nul_delimited {
-                path
-            } else {
-                path.strip_suffix('\r').unwrap_or(path)
-            }
-        })
         .filter(|path| !path.is_empty())
         .map(str::to_owned)
         .collect()
@@ -80,6 +93,7 @@ mod tests {
     fn selection_parsing_matches_typescript_for_nul_crlf_and_windows_paths() {
         assert_eq!(parse_file_paths("a\r\nb\\c\n\n"), vec!["a", "b/c"]);
         assert_eq!(parse_file_paths("a\nb\0c\r\0"), vec!["a\nb", "c\r"]);
+        assert_eq!(parse_file_paths("a\r"), vec!["a\r"]);
         assert!(parse_file_paths("").is_empty());
     }
 }

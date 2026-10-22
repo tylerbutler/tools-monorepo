@@ -12,8 +12,8 @@ import { TypeScriptLoader } from "@tylerbu/lilconfig-loader-ts";
 import { lilconfig } from "lilconfig";
 import { simpleGit } from "simple-git";
 import { DefaultPolicyConfig } from "../esm/config.js";
-import { parseFilePaths } from "../esm/filePaths.js";
 import { identifyPolicyInstances, makePolicy } from "../esm/makePolicy.js";
+import { readRepositoryFiles } from "../esm/repositoryFiles.js";
 import { PolicyRunner, runPolicies } from "../esm/runner.js";
 
 // Policy logging must not corrupt the JSON response stream.
@@ -165,15 +165,7 @@ async function executeRun(params) {
 				...registration,
 				files: params.files,
 				inventory: async () =>
-					parseFilePaths(
-						await simpleGit(registration.root).raw(
-							"ls-files",
-							"-co",
-							"-z",
-							"--exclude-standard",
-							"--full-name",
-						),
-					),
+					readRepositoryFiles(simpleGit(registration.root)),
 				fix: params.fix ?? false,
 				concurrency: params.concurrency,
 				signal: active.signal,
