@@ -1,24 +1,22 @@
 {
 	"extends": "../../config/tsconfig.strict.json",
-	"include": [
-		"src/**/*"
-	],
+	"include": ["src/**/*"],
 	"references": [
 		{
-			"path": "../cli-api"
+			"path": "../cli-api",
 		},
 		{
-			"path": "../fundamentals"
+			"path": "../fundamentals",
 		},
 		{
-			"path": "../dill-cli"
-		}
+			"path": "../dill-cli",
+		},
 	],
 	"compilerOptions": {
 		"outDir": "esm",
-		"rootDir": "src"
+		"rootDir": "src",
 	},
 	"ts-node": {
-		"esm": true
-	}
+		"esm": true,
+	},
 }

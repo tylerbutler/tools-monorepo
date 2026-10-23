@@ -1,13 +1,9 @@
 {
 	"extends": "../../config/tsconfig.strict.json",
-	"include": [
-		"src/**/*"
-	],
+	"include": ["src/**/*"],
 	"compilerOptions": {
-		"types": [
-			"node"
-		],
+		"types": ["node"],
 		"outDir": "./esm",
-		"rootDir": "./src"
-	}
+		"rootDir": "./src",
+	},
 }

@@ -10,6 +10,6 @@
 		"sourceMap": true,
 		"jsx": "react",
 		"composite": true,
-		"incremental": true
-	}
+		"incremental": true,
+	},
 }

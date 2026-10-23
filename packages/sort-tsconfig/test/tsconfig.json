@@ -1,17 +1,15 @@
 {
 	"extends": "../tsconfig.json",
-	"include": [
-		"test/**/*"
-	],
+	"include": ["test/**/*"],
 	"references": [
 		{
-			"path": ".."
-		}
+			"path": "..",
+		},
 	],
 	"compilerOptions": {
 		"noEmit": true,
 		// "skipLibCheck": true,
 		"outDir": "../esm/test",
-		"rootDir": "./"
-	}
+		"rootDir": "./",
+	},
 }

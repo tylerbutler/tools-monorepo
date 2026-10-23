@@ -1,24 +1,18 @@
 {
 	"extends": "../../tsconfig.json",
-	"include": [
-		"./**/*"
-	],
+	"include": ["./**/*"],
 	"references": [
 		{
-			"path": "../.."
-		}
+			"path": "../..",
+		},
 	],
 	"compilerOptions": {
-		"types": [
-			"node",
-			"mocha",
-			"chai"
-		],
+		"types": ["node", "mocha", "chai"],
 		"declaration": false,
 		"declarationMap": false,
 		"composite": false,
 		"skipLibCheck": true,
 		"outDir": "../../lib/test",
-		"rootDir": "./"
-	}
+		"rootDir": "./",
+	},
 }

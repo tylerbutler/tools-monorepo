@@ -3,37 +3,37 @@
 	"extends": "./config/tsconfig.base.json",
 	"references": [
 		{
-			"path": "./packages/cli"
+			"path": "./packages/cli",
 		},
 		{
-			"path": "./packages/cli-api"
+			"path": "./packages/cli-api",
 		},
 		{
-			"path": "./packages/dill-cli"
+			"path": "./packages/dill-cli",
 		},
 		{
-			"path": "./packages/dill-docs"
+			"path": "./packages/dill-docs",
 		},
 		{
-			"path": "./packages/fundamentals"
+			"path": "./packages/fundamentals",
 		},
 		{
-			"path": "./packages/lilconfig-loader-ts"
+			"path": "./packages/lilconfig-loader-ts",
 		},
 		{
-			"path": "./packages/repopo"
+			"path": "./packages/repopo",
 		},
 		{
-			"path": "./packages/repopo-docs"
+			"path": "./packages/repopo-docs",
 		},
 		{
-			"path": "./packages/sort-tsconfig"
+			"path": "./packages/sort-tsconfig",
 		},
 		{
-			"path": "./packages/xkcd2-api"
-		}
+			"path": "./packages/xkcd2-api",
+		},
 	],
 	"compilerOptions": {
-		"composite": false
-	}
+		"composite": false,
+	},
 }

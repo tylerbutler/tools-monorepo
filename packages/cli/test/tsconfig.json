@@ -1,17 +1,13 @@
 {
 	"extends": "../tsconfig.json",
-	"include": [
-		"./**/*"
-	],
+	"include": ["./**/*"],
 	"references": [
 		{
-			"path": ".."
-		}
+			"path": "..",
+		},
 	],
 	"compilerOptions": {
-		"types": [
-			"node"
-		],
-		"noEmit": true
-	}
+		"types": ["node"],
+		"noEmit": true,
+	},
 }

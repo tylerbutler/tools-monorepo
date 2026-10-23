@@ -1,18 +1,14 @@
 {
 	"extends": "../../config/tsconfig.strict.json",
-	"include": [
-		"src/**/*"
-	],
+	"include": ["src/**/*"],
 	"references": [
 		{
-			"path": "../cli-api"
-		}
+			"path": "../cli-api",
+		},
 	],
 	"compilerOptions": {
-		"types": [
-			"node"
-		],
+		"types": ["node"],
 		"outDir": "./esm",
-		"rootDir": "./src"
-	}
+		"rootDir": "./src",
+	},
 }
